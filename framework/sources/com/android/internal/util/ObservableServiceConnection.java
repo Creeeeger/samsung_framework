@@ -29,7 +29,6 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
     private int mLastDisconnectReason = 0;
     private final CallbackRegistry<Callback<T>, ObservableServiceConnection<T>, T> mCallbackRegistry = new CallbackRegistry<>(new AnonymousClass1());
 
-    /* loaded from: classes5.dex */
     public interface Callback<T> {
         void onConnected(ObservableServiceConnection<T> observableServiceConnection, T t);
 
@@ -37,18 +36,15 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface DisconnectReason {
     }
 
-    /* loaded from: classes5.dex */
     public interface ServiceTransformer<T> {
         T convert(IBinder iBinder);
     }
 
-    /* renamed from: com.android.internal.util.ObservableServiceConnection$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends CallbackRegistry.NotifierCallback<Callback<T>, ObservableServiceConnection<T>, T> {
+    /* renamed from: com.android.internal.util.ObservableServiceConnection$1, reason: invalid class name */
+    class AnonymousClass1 extends CallbackRegistry.NotifierCallback<Callback<T>, ObservableServiceConnection<T>, T> {
         AnonymousClass1() {
         }
 
@@ -66,6 +62,7 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onNotifyCallback$0(Object service, Callback callback, ObservableServiceConnection sender, int disconnectReason) {
             synchronized (ObservableServiceConnection.this.mLock) {
                 if (service != null) {
@@ -114,16 +111,13 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addCallback$0(Callback callback) {
         synchronized (this.mLock) {
-            T t = this.mService;
-            if (t != null) {
-                callback.onConnected(this, t);
-            } else {
-                int i = this.mLastDisconnectReason;
-                if (i != 0) {
-                    callback.onDisconnected(this, i);
-                }
+            if (this.mService != null) {
+                callback.onConnected(this, this.mService);
+            } else if (this.mLastDisconnectReason != 0) {
+                callback.onDisconnected(this, this.mLastDisconnectReason);
             }
         }
     }
@@ -149,10 +143,9 @@ public class ObservableServiceConnection<T> implements ServiceConnection {
     @Override // android.content.ServiceConnection
     public final void onServiceConnected(ComponentName name, IBinder service) {
         synchronized (this.mLock) {
-            T convert = this.mTransformer.convert(service);
-            this.mService = convert;
+            this.mService = this.mTransformer.convert(service);
             this.mLastDisconnectReason = 0;
-            this.mCallbackRegistry.notifyCallbacks(this, 0, convert);
+            this.mCallbackRegistry.notifyCallbacks(this, this.mLastDisconnectReason, this.mService);
         }
     }
 

@@ -14,7 +14,7 @@ public abstract class FloatProperty<T> extends Property<T, Float> {
         super(Float.class, name);
     }
 
-    /* renamed from: set */
+    /* renamed from: set, reason: avoid collision after fix types in other method */
     public final void set2(T object, Float value) {
         setValue(object, value.floatValue());
     }

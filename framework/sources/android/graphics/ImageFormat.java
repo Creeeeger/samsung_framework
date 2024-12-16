@@ -34,7 +34,6 @@ public class ImageFormat {
     public static final int YV12 = 842094169;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Format {
     }
 

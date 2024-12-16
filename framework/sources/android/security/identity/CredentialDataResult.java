@@ -7,7 +7,6 @@ import java.util.Collection;
 /* loaded from: classes3.dex */
 public abstract class CredentialDataResult {
 
-    /* loaded from: classes3.dex */
     public interface Entries {
         public static final int STATUS_NOT_IN_REQUEST_MESSAGE = 3;
         public static final int STATUS_NOT_REQUESTED = 2;
@@ -18,7 +17,6 @@ public abstract class CredentialDataResult {
         public static final int STATUS_USER_AUTHENTICATION_FAILED = 4;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface Status {
         }
 
@@ -42,6 +40,9 @@ public abstract class CredentialDataResult {
     public abstract Entries getIssuerSignedEntries();
 
     public abstract byte[] getStaticAuthenticationData();
+
+    protected CredentialDataResult() {
+    }
 
     public byte[] getDeviceSignature() {
         throw new UnsupportedOperationException();

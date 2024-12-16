@@ -13,7 +13,6 @@ public interface IClassificationsCallback extends IInterface {
 
     void onContentClassificationsAvailable(int i, List<ContentClassification> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IClassificationsCallback {
         @Override // android.app.contentsuggestions.IClassificationsCallback
         public void onContentClassificationsAvailable(int statusCode, List<ContentClassification> classifications) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IClassificationsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IClassificationsCallback {
         static final int TRANSACTION_onContentClassificationsAvailable = 1;
 
@@ -68,27 +66,23 @@ public interface IClassificationsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IClassificationsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IClassificationsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IClassificationsCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    List<ContentClassification> _arg1 = data.createTypedArrayList(ContentClassification.CREATOR);
+                    data.enforceNoDataAvail();
+                    onContentClassificationsAvailable(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            List<ContentClassification> _arg1 = data.createTypedArrayList(ContentClassification.CREATOR);
-                            data.enforceNoDataAvail();
-                            onContentClassificationsAvailable(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IClassificationsCallback {
+        private static class Proxy implements IClassificationsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

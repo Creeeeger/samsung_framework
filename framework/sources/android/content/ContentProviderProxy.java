@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 /* compiled from: ContentProviderNative.java */
 /* loaded from: classes.dex */
-public final class ContentProviderProxy implements IContentProvider {
+final class ContentProviderProxy implements IContentProvider {
     private IBinder mRemote;
 
     public ContentProviderProxy(IBinder remote) {

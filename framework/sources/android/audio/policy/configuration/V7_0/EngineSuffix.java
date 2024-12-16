@@ -15,7 +15,7 @@ public enum EngineSuffix {
         return this.rawName;
     }
 
-    public static EngineSuffix fromString(String rawString) {
+    static EngineSuffix fromString(String rawString) {
         for (EngineSuffix _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

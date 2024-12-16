@@ -30,6 +30,62 @@ public final class MemInfoReader {
         }
     }
 
+    public long getTotalSize() {
+        return this.mInfos[0] * 1024;
+    }
+
+    public long getFreeSize() {
+        return this.mInfos[1] * 1024;
+    }
+
+    public long getCachedSize() {
+        return getCachedSizeKb() * 1024;
+    }
+
+    public long getKernelUsedSize() {
+        return getKernelUsedSizeKb() * 1024;
+    }
+
+    public long getTotalSizeKb() {
+        return this.mInfos[0];
+    }
+
+    public long getFreeSizeKb() {
+        return this.mInfos[1];
+    }
+
+    public long getCachedSizeKb() {
+        long kReclaimable = this.mInfos[19];
+        if (kReclaimable == 0) {
+            kReclaimable = this.mInfos[10];
+        }
+        return ((this.mInfos[2] + kReclaimable) + this.mInfos[3]) - this.mInfos[15];
+    }
+
+    public long getKernelUsedSizeKb() {
+        long size = this.mInfos[8] + this.mInfos[11] + this.mInfos[16] + this.mInfos[17];
+        if (!Debug.isVmapStack()) {
+            return size + this.mInfos[18];
+        }
+        return size;
+    }
+
+    public long getSwapTotalSizeKb() {
+        return this.mInfos[12];
+    }
+
+    public long getSwapFreeSizeKb() {
+        return this.mInfos[13];
+    }
+
+    public long getZramTotalSizeKb() {
+        return this.mInfos[14];
+    }
+
+    public long[] getRawInfo() {
+        return this.mInfos;
+    }
+
     public long getAvailableSize() {
         return this.mInfos[23] * 1024;
     }
@@ -44,6 +100,14 @@ public final class MemInfoReader {
 
     public long getRbinAllocedSize() {
         return this.mInfos[5] * 1024;
+    }
+
+    public long getActiveAnonSizeKb() {
+        return this.mInfos[24];
+    }
+
+    public long getInactiveAnonSizeKb() {
+        return this.mInfos[25];
     }
 
     public long getActiveFileSizeKb() {
@@ -114,61 +178,19 @@ public final class MemInfoReader {
         return this.mInfos[35];
     }
 
-    public long getTotalSize() {
-        return this.mInfos[0] * 1024;
+    public long getKgslShmemUsageSizeKb() {
+        return 0L;
     }
 
-    public long getFreeSize() {
-        return this.mInfos[1] * 1024;
+    public long getKgslReclaimedSizeKb() {
+        return getGpuSwapSizeKb();
     }
 
-    public long getCachedSize() {
-        return getCachedSizeKb() * 1024;
+    public long getKgslSharedMemSizeKb() {
+        return getGpuTotalSizeKb();
     }
 
-    public long getKernelUsedSize() {
-        return getKernelUsedSizeKb() * 1024;
-    }
-
-    public long getTotalSizeKb() {
-        return this.mInfos[0];
-    }
-
-    public long getFreeSizeKb() {
-        return this.mInfos[1];
-    }
-
-    public long getCachedSizeKb() {
-        long[] jArr = this.mInfos;
-        long kReclaimable = jArr[19];
-        if (kReclaimable == 0) {
-            kReclaimable = jArr[10];
-        }
-        return ((jArr[2] + kReclaimable) + jArr[3]) - jArr[15];
-    }
-
-    public long getKernelUsedSizeKb() {
-        long[] jArr = this.mInfos;
-        long size = jArr[8] + jArr[11] + jArr[16] + jArr[17];
-        if (!Debug.isVmapStack()) {
-            return size + this.mInfos[18];
-        }
-        return size;
-    }
-
-    public long getSwapTotalSizeKb() {
-        return this.mInfos[12];
-    }
-
-    public long getSwapFreeSizeKb() {
-        return this.mInfos[13];
-    }
-
-    public long getZramTotalSizeKb() {
-        return this.mInfos[14];
-    }
-
-    public long[] getRawInfo() {
-        return this.mInfos;
+    public long getSystemSizeKb() {
+        return getSystemCachedSizeKb();
     }
 }

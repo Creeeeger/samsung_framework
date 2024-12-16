@@ -7,17 +7,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class NetworkSliceInfo implements Parcelable {
     public static final Parcelable.Creator<NetworkSliceInfo> CREATOR = new Parcelable.Creator<NetworkSliceInfo>() { // from class: android.telephony.data.NetworkSliceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkSliceInfo createFromParcel(Parcel source) {
             return new NetworkSliceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkSliceInfo[] newArray(int size) {
             return new NetworkSliceInfo[size];
@@ -45,21 +44,11 @@ public final class NetworkSliceInfo implements Parcelable {
     private final int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SliceServiceType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SliceStatus {
-    }
-
-    /* synthetic */ NetworkSliceInfo(int i, int i2, int i3, int i4, int i5, NetworkSliceInfoIA networkSliceInfoIA) {
-        this(i, i2, i3, i4, i5);
-    }
-
-    /* synthetic */ NetworkSliceInfo(Parcel parcel, NetworkSliceInfoIA networkSliceInfoIA) {
-        this(parcel);
     }
 
     private NetworkSliceInfo(int sliceServiceType, int sliceDifferentiator, int mappedHplmnSliceServiceType, int mappedHplmnSliceDifferentiator, int status) {
@@ -110,23 +99,6 @@ public final class NetworkSliceInfo implements Parcelable {
         dest.writeInt(this.mMappedHplmnSliceServiceType);
         dest.writeInt(this.mMappedHplmnSliceDifferentiator);
         dest.writeInt(this.mStatus);
-    }
-
-    /* renamed from: android.telephony.data.NetworkSliceInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkSliceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkSliceInfo createFromParcel(Parcel source) {
-            return new NetworkSliceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkSliceInfo[] newArray(int size) {
-            return new NetworkSliceInfo[size];
-        }
     }
 
     public String toString() {
@@ -185,7 +157,6 @@ public final class NetworkSliceInfo implements Parcelable {
         return Objects.hash(Integer.valueOf(this.mSliceServiceType), Integer.valueOf(this.mSliceDifferentiator), Integer.valueOf(this.mMappedHplmnSliceServiceType), Integer.valueOf(this.mMappedHplmnSliceDifferentiator), Integer.valueOf(this.mStatus));
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mSliceServiceType = 0;
         private int mSliceDifferentiator = -1;

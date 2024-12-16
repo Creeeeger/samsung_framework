@@ -36,13 +36,8 @@ final class RemoteInputConnection implements InputConnection {
     private final InputMethodServiceInternalHolder mImsInternal;
     private final IRemoteInputConnectionInvoker mInvoker;
 
-    /* loaded from: classes2.dex */
-    public static final class InputMethodServiceInternalHolder {
+    private static final class InputMethodServiceInternalHolder {
         private final WeakReference<InputMethodServiceInternal> mServiceRef;
-
-        /* synthetic */ InputMethodServiceInternalHolder(WeakReference weakReference, InputMethodServiceInternalHolderIA inputMethodServiceInternalHolderIA) {
-            this(weakReference);
-        }
 
         private InputMethodServiceInternalHolder(WeakReference<InputMethodServiceInternal> ims) {
             this.mServiceRef = ims;
@@ -57,7 +52,7 @@ final class RemoteInputConnection implements InputConnection {
         }
     }
 
-    public RemoteInputConnection(WeakReference<InputMethodServiceInternal> inputMethodService, IRemoteInputConnection inputConnection, CancellationGroup cancellationGroup) {
+    RemoteInputConnection(WeakReference<InputMethodServiceInternal> inputMethodService, IRemoteInputConnection inputConnection, CancellationGroup cancellationGroup) {
         this.mImsInternal = new InputMethodServiceInternalHolder(inputMethodService);
         this.mInvoker = IRemoteInputConnectionInvoker.create(inputConnection);
         this.mCancellationGroup = cancellationGroup;
@@ -67,7 +62,7 @@ final class RemoteInputConnection implements InputConnection {
         return this.mInvoker.isSameConnection(inputConnection);
     }
 
-    public RemoteInputConnection(RemoteInputConnection original, int sessionId) {
+    RemoteInputConnection(RemoteInputConnection original, int sessionId) {
         this.mImsInternal = original.mImsInternal;
         this.mInvoker = original.mInvoker.cloneWithSessionId(sessionId);
         this.mCancellationGroup = original.mCancellationGroup;

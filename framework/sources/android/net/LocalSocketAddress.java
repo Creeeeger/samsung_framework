@@ -1,11 +1,10 @@
 package android.net;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class LocalSocketAddress {
     private final String name;
     private final Namespace namespace;
 
-    /* loaded from: classes2.dex */
     public enum Namespace {
         ABSTRACT(0),
         RESERVED(1),
@@ -17,7 +16,7 @@ public class LocalSocketAddress {
             this.id = id;
         }
 
-        public int getId() {
+        int getId() {
             return this.id;
         }
     }

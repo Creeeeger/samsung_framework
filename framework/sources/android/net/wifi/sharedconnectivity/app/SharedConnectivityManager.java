@@ -1,9 +1,11 @@
 package android.net.wifi.sharedconnectivity.app;
 
 import android.annotation.SystemApi;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.net.wifi.sharedconnectivity.app.SharedConnectivityManager;
@@ -13,6 +15,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.RemoteException;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
@@ -26,25 +29,55 @@ import java.util.function.Consumer;
 @SystemApi
 /* loaded from: classes3.dex */
 public class SharedConnectivityManager {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String TAG = SharedConnectivityManager.class.getSimpleName();
     private final Context mContext;
     private final String mIntentAction;
     private ISharedConnectivityService mService;
     private ServiceConnection mServiceConnection;
     private final String mServicePackageName;
+    private UserManager mUserManager;
     private final Map<SharedConnectivityClientCallback, SharedConnectivityCallbackProxy> mProxyMap = new HashMap();
     private final Map<SharedConnectivityClientCallback, SharedConnectivityCallbackProxy> mCallbackProxyCache = new HashMap();
     private final Object mProxyDataLock = new Object();
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager.2
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            context.unregisterReceiver(SharedConnectivityManager.this.mBroadcastReceiver);
+            SharedConnectivityManager.this.bind();
+        }
+    };
 
-    /* loaded from: classes3.dex */
-    public static final class SharedConnectivityCallbackProxy extends ISharedConnectivityCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class SharedConnectivityCallbackProxy extends ISharedConnectivityCallback.Stub {
         private final SharedConnectivityClientCallback mCallback;
         private final Executor mExecutor;
 
         SharedConnectivityCallbackProxy(Executor executor, SharedConnectivityClientCallback callback) {
             this.mExecutor = executor;
             this.mCallback = callback;
+        }
+
+        @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityCallback
+        public void onServiceConnected() {
+            if (this.mCallback != null) {
+                long token = Binder.clearCallingIdentity();
+                try {
+                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda5
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onServiceConnected$0();
+                        }
+                    });
+                } finally {
+                    Binder.restoreCallingIdentity(token);
+                }
+            }
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onServiceConnected$0() {
+            this.mCallback.onServiceConnected();
         }
 
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityCallback
@@ -55,7 +88,7 @@ public class SharedConnectivityManager {
                     this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onHotspotNetworksUpdated$0(networks);
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onHotspotNetworksUpdated$1(networks);
                         }
                     });
                 } finally {
@@ -64,7 +97,8 @@ public class SharedConnectivityManager {
             }
         }
 
-        public /* synthetic */ void lambda$onHotspotNetworksUpdated$0(List networks) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onHotspotNetworksUpdated$1(List networks) {
             this.mCallback.onHotspotNetworksUpdated(networks);
         }
 
@@ -73,10 +107,10 @@ public class SharedConnectivityManager {
             if (this.mCallback != null) {
                 long token = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda1
+                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda3
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onKnownNetworksUpdated$1(networks);
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onKnownNetworksUpdated$2(networks);
                         }
                     });
                 } finally {
@@ -85,7 +119,8 @@ public class SharedConnectivityManager {
             }
         }
 
-        public /* synthetic */ void lambda$onKnownNetworksUpdated$1(List networks) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onKnownNetworksUpdated$2(List networks) {
             this.mCallback.onKnownNetworksUpdated(networks);
         }
 
@@ -94,10 +129,10 @@ public class SharedConnectivityManager {
             if (this.mCallback != null) {
                 long token = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda0
+                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onSharedConnectivitySettingsChanged$2(state);
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onSharedConnectivitySettingsChanged$3(state);
                         }
                     });
                 } finally {
@@ -106,7 +141,8 @@ public class SharedConnectivityManager {
             }
         }
 
-        public /* synthetic */ void lambda$onSharedConnectivitySettingsChanged$2(SharedConnectivitySettingsState state) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onSharedConnectivitySettingsChanged$3(SharedConnectivitySettingsState state) {
             this.mCallback.onSharedConnectivitySettingsChanged(state);
         }
 
@@ -115,10 +151,10 @@ public class SharedConnectivityManager {
             if (this.mCallback != null) {
                 long token = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda3
+                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda4
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onHotspotNetworkConnectionStatusChanged$3(status);
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onHotspotNetworkConnectionStatusChanged$4(status);
                         }
                     });
                 } finally {
@@ -127,7 +163,8 @@ public class SharedConnectivityManager {
             }
         }
 
-        public /* synthetic */ void lambda$onHotspotNetworkConnectionStatusChanged$3(HotspotNetworkConnectionStatus status) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onHotspotNetworkConnectionStatusChanged$4(HotspotNetworkConnectionStatus status) {
             this.mCallback.onHotspotNetworkConnectionStatusChanged(status);
         }
 
@@ -136,10 +173,10 @@ public class SharedConnectivityManager {
             if (this.mCallback != null) {
                 long token = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda4
+                    this.mExecutor.execute(new Runnable() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$SharedConnectivityCallbackProxy$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onKnownNetworkConnectionStatusChanged$4(status);
+                            SharedConnectivityManager.SharedConnectivityCallbackProxy.this.lambda$onKnownNetworkConnectionStatusChanged$5(status);
                         }
                     });
                 } finally {
@@ -148,7 +185,8 @@ public class SharedConnectivityManager {
             }
         }
 
-        public /* synthetic */ void lambda$onKnownNetworkConnectionStatusChanged$4(KnownNetworkConnectionStatus status) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onKnownNetworkConnectionStatusChanged$5(KnownNetworkConnectionStatus status) {
             this.mCallback.onKnownNetworkConnectionStatusChanged(status);
         }
     }
@@ -177,11 +215,11 @@ public class SharedConnectivityManager {
         this.mContext = context;
         this.mServicePackageName = servicePackageName;
         this.mIntentAction = serviceIntentAction;
+        this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
     }
 
-    /* renamed from: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements ServiceConnection {
+    /* renamed from: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$1, reason: invalid class name */
+    class AnonymousClass1 implements ServiceConnection {
         AnonymousClass1() {
         }
 
@@ -201,14 +239,13 @@ public class SharedConnectivityManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onServiceConnected$0(SharedConnectivityClientCallback callback) {
-            SharedConnectivityManager sharedConnectivityManager = SharedConnectivityManager.this;
-            sharedConnectivityManager.registerCallbackInternal(callback, (SharedConnectivityCallbackProxy) sharedConnectivityManager.mCallbackProxyCache.get(callback));
+            SharedConnectivityManager.this.registerCallbackInternal(callback, (SharedConnectivityCallbackProxy) SharedConnectivityManager.this.mCallbackProxyCache.get(callback));
         }
 
         @Override // android.content.ServiceConnection
         public void onServiceDisconnected(ComponentName name) {
-            Log.i(SharedConnectivityManager.TAG, "onServiceDisconnected");
             SharedConnectivityManager.this.mService = null;
             synchronized (SharedConnectivityManager.this.mProxyDataLock) {
                 if (!SharedConnectivityManager.this.mCallbackProxyCache.isEmpty()) {
@@ -233,18 +270,43 @@ public class SharedConnectivityManager {
         }
     }
 
-    private void bind() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void bind() {
         this.mServiceConnection = new AnonymousClass1();
-        this.mContext.bindService(new Intent().setPackage(this.mServicePackageName).setAction(this.mIntentAction), this.mServiceConnection, 1);
+        boolean result = this.mContext.bindService(new Intent().setPackage(this.mServicePackageName).setAction(this.mIntentAction), this.mServiceConnection, 1);
+        if (!result) {
+            this.mServiceConnection = null;
+            if (this.mUserManager != null && !this.mUserManager.isUserUnlocked()) {
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(Intent.ACTION_USER_UNLOCKED);
+                this.mContext.registerReceiver(this.mBroadcastReceiver, intentFilter);
+            } else {
+                synchronized (this.mProxyDataLock) {
+                    if (!this.mCallbackProxyCache.isEmpty()) {
+                        this.mCallbackProxyCache.keySet().forEach(new Consumer() { // from class: android.net.wifi.sharedconnectivity.app.SharedConnectivityManager$$ExternalSyntheticLambda0
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                ((SharedConnectivityClientCallback) obj).onRegisterCallbackFailed(new IllegalStateException("Failed to bind after user unlock"));
+                            }
+                        });
+                        this.mCallbackProxyCache.clear();
+                    }
+                }
+            }
+        }
     }
 
+    public BroadcastReceiver getBroadcastReceiver() {
+        return this.mBroadcastReceiver;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void registerCallbackInternal(SharedConnectivityClientCallback callback, SharedConnectivityCallbackProxy proxy) {
         try {
             this.mService.registerCallback(proxy);
             synchronized (this.mProxyDataLock) {
                 this.mProxyMap.put(callback, proxy);
             }
-            callback.onServiceConnected();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in registerCallback", e);
             callback.onRegisterCallbackFailed(e);
@@ -260,10 +322,10 @@ public class SharedConnectivityManager {
     }
 
     private void unbind() {
-        ServiceConnection serviceConnection = this.mServiceConnection;
-        if (serviceConnection != null) {
-            this.mContext.unbindService(serviceConnection);
+        if (this.mServiceConnection != null) {
+            this.mContext.unbindService(this.mServiceConnection);
             this.mServiceConnection = null;
+            this.mService = null;
         }
     }
 
@@ -299,6 +361,10 @@ public class SharedConnectivityManager {
             Log.e(TAG, "Callback not found, cannot unregister");
             return false;
         }
+        try {
+            this.mContext.unregisterReceiver(this.mBroadcastReceiver);
+        } catch (IllegalArgumentException e) {
+        }
         if (this.mService == null) {
             synchronized (this.mProxyDataLock) {
                 this.mCallbackProxyCache.remove(callback);
@@ -319,20 +385,19 @@ public class SharedConnectivityManager {
                 unbind();
             }
             return true;
-        } catch (RemoteException e) {
-            Log.e(TAG, "Exception in unregisterCallback", e);
+        } catch (RemoteException e2) {
+            Log.e(TAG, "Exception in unregisterCallback", e2);
             return false;
         }
     }
 
     public boolean connectHotspotNetwork(HotspotNetwork network) {
         Objects.requireNonNull(network, "Hotspot network cannot be null");
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            iSharedConnectivityService.connectHotspotNetwork(network);
+            this.mService.connectHotspotNetwork(network);
             return true;
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in connectHotspotNetwork", e);
@@ -341,12 +406,11 @@ public class SharedConnectivityManager {
     }
 
     public boolean disconnectHotspotNetwork(HotspotNetwork network) {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            iSharedConnectivityService.disconnectHotspotNetwork(network);
+            this.mService.disconnectHotspotNetwork(network);
             return true;
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in disconnectHotspotNetwork", e);
@@ -356,12 +420,11 @@ public class SharedConnectivityManager {
 
     public boolean connectKnownNetwork(KnownNetwork network) {
         Objects.requireNonNull(network, "Known network cannot be null");
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            iSharedConnectivityService.connectKnownNetwork(network);
+            this.mService.connectKnownNetwork(network);
             return true;
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in connectKnownNetwork", e);
@@ -371,12 +434,11 @@ public class SharedConnectivityManager {
 
     public boolean forgetKnownNetwork(KnownNetwork network) {
         Objects.requireNonNull(network, "Known network cannot be null");
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            iSharedConnectivityService.forgetKnownNetwork(network);
+            this.mService.forgetKnownNetwork(network);
             return true;
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in forgetKnownNetwork", e);
@@ -385,12 +447,11 @@ public class SharedConnectivityManager {
     }
 
     public List<HotspotNetwork> getHotspotNetworks() {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iSharedConnectivityService.getHotspotNetworks();
+            return this.mService.getHotspotNetworks();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in getHotspotNetworks", e);
             return null;
@@ -398,12 +459,11 @@ public class SharedConnectivityManager {
     }
 
     public List<KnownNetwork> getKnownNetworks() {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iSharedConnectivityService.getKnownNetworks();
+            return this.mService.getKnownNetworks();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in getKnownNetworks", e);
             return null;
@@ -411,12 +471,11 @@ public class SharedConnectivityManager {
     }
 
     public SharedConnectivitySettingsState getSettingsState() {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iSharedConnectivityService.getSettingsState();
+            return this.mService.getSettingsState();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in getSettingsState", e);
             return null;
@@ -424,12 +483,11 @@ public class SharedConnectivityManager {
     }
 
     public HotspotNetworkConnectionStatus getHotspotNetworkConnectionStatus() {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iSharedConnectivityService.getHotspotNetworkConnectionStatus();
+            return this.mService.getHotspotNetworkConnectionStatus();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in getHotspotNetworkConnectionStatus", e);
             return null;
@@ -437,12 +495,11 @@ public class SharedConnectivityManager {
     }
 
     public KnownNetworkConnectionStatus getKnownNetworkConnectionStatus() {
-        ISharedConnectivityService iSharedConnectivityService = this.mService;
-        if (iSharedConnectivityService == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iSharedConnectivityService.getKnownNetworkConnectionStatus();
+            return this.mService.getKnownNetworkConnectionStatus();
         } catch (RemoteException e) {
             Log.e(TAG, "Exception in getKnownNetworkConnectionStatus", e);
             return null;

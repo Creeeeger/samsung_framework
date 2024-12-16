@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CodecsHelper {
     private static final int AUTHOR_SAMSUNG_CAMERA = 0;
     private static final int AUTHOR_SAMSUNG_EDITOR = 8;
@@ -46,13 +46,11 @@ public class CodecsHelper {
     }
 
     private static MediaExtractor newMediaExtractor() {
-        MediaExtractor mediaExtractor = sMediaExtractor;
-        return mediaExtractor != null ? mediaExtractor : new MediaExtractor();
+        return sMediaExtractor != null ? sMediaExtractor : new MediaExtractor();
     }
 
     private static MediaMetadataRetriever newMetadataRetriever() {
-        MediaMetadataRetriever mediaMetadataRetriever = sMetadataRetriever;
-        return mediaMetadataRetriever != null ? mediaMetadataRetriever : new MediaMetadataRetriever();
+        return sMetadataRetriever != null ? sMetadataRetriever : new MediaMetadataRetriever();
     }
 
     public static MediaExtractor createExtractor(String inputFilePath) throws IOException {
@@ -117,7 +115,7 @@ public class CodecsHelper {
     }
 
     private static String getMimeTypeFor(MediaFormat format) {
-        return format.getString(MediaFormat.KEY_MIME);
+        return format.getString("mime");
     }
 
     public static boolean isHevcFormat(MediaFormat format) {
@@ -223,7 +221,7 @@ public class CodecsHelper {
 
     static boolean isSupportCodec(final String mimeType, MediaCodecInfo codecInfo) {
         String[] types = codecInfo.getSupportedTypes();
-        return Arrays.stream(types).anyMatch(new Predicate() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda0
+        return Arrays.stream(types).anyMatch(new Predicate() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean equalsIgnoreCase;
@@ -279,7 +277,7 @@ public class CodecsHelper {
 
     public static int getVideoEncodingBitRate(float sizeFraction, long maxSizeKB, long timeDurationMs, int audioBitRate, int width, int height) {
         String log;
-        int bitRate = ((int) ((((((float) maxSizeKB) * sizeFraction) * 8.0f) * 1024.0f) / ((float) timeDurationMs))) - (audioBitRate + 2);
+        int bitRate = ((int) ((((maxSizeKB * sizeFraction) * 8.0f) * 1024.0f) / timeDurationMs)) - (audioBitRate + 2);
         LogS.i("TranscodeLib", "getVideoEncodingBitRate maxSizeKB: " + maxSizeKB + " sizeFraction :" + sizeFraction + " bitatre :  " + bitRate);
         int minBitRate = getVideoMinBitrate(width, height);
         int maxBitRate = suggestBitRate(width, height);
@@ -442,7 +440,7 @@ public class CodecsHelper {
             return 12000;
         }
         if (frameSize <= 2073600) {
-            return 17000;
+            return EncodeConstants.BitRate.MM_BITRATE_AVC_FHD_30;
         }
         if (frameSize <= 3686400) {
             return 25000;
@@ -492,13 +490,13 @@ public class CodecsHelper {
 
     public static boolean isSupportOMX() {
         MediaCodecInfo codecInfo = getMediaCodec("video/avc", false, false);
-        LogS.d("TranscodeLib", "isSupportOMX getMediaCodec : " + ((String) Optional.ofNullable(codecInfo).map(new Function() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda1
+        LogS.d("TranscodeLib", "isSupportOMX getMediaCodec : " + ((String) Optional.ofNullable(codecInfo).map(new Function() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ((MediaCodecInfo) obj).getName();
             }
         }).orElse("none")));
-        return ((Boolean) Optional.ofNullable(codecInfo).map(new Function() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda2
+        return ((Boolean) Optional.ofNullable(codecInfo).map(new Function() { // from class: com.samsung.android.transcode.util.CodecsHelper$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Boolean valueOf;

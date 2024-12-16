@@ -10,7 +10,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.view.InputChannel;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInteractiveAppService extends IInterface {
     public static final String DESCRIPTOR = "android.media.tv.interactive.ITvInteractiveAppService";
 
@@ -26,7 +26,6 @@ public interface ITvInteractiveAppService extends IInterface {
 
     void unregisterCallback(ITvInteractiveAppServiceCallback iTvInteractiveAppServiceCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInteractiveAppService {
         @Override // android.media.tv.interactive.ITvInteractiveAppService
         public void registerCallback(ITvInteractiveAppServiceCallback callback) throws RemoteException {
@@ -58,7 +57,6 @@ public interface ITvInteractiveAppService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInteractiveAppService {
         static final int TRANSACTION_createSession = 3;
         static final int TRANSACTION_registerAppLinkInfo = 4;
@@ -116,52 +114,49 @@ public interface ITvInteractiveAppService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITvInteractiveAppService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITvInteractiveAppService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITvInteractiveAppService.DESCRIPTOR);
+                case 1:
+                    ITvInteractiveAppServiceCallback _arg0 = ITvInteractiveAppServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0);
+                    return true;
+                case 2:
+                    ITvInteractiveAppServiceCallback _arg02 = ITvInteractiveAppServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg02);
+                    return true;
+                case 3:
+                    InputChannel _arg03 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
+                    ITvInteractiveAppSessionCallback _arg1 = ITvInteractiveAppSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    createSession(_arg03, _arg1, _arg2, _arg3);
+                    return true;
+                case 4:
+                    AppLinkInfo _arg04 = (AppLinkInfo) data.readTypedObject(AppLinkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerAppLinkInfo(_arg04);
+                    return true;
+                case 5:
+                    AppLinkInfo _arg05 = (AppLinkInfo) data.readTypedObject(AppLinkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    unregisterAppLinkInfo(_arg05);
+                    return true;
+                case 6:
+                    Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendAppLinkCommand(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITvInteractiveAppServiceCallback _arg0 = ITvInteractiveAppServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0);
-                            return true;
-                        case 2:
-                            ITvInteractiveAppServiceCallback _arg02 = ITvInteractiveAppServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg02);
-                            return true;
-                        case 3:
-                            InputChannel _arg03 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
-                            ITvInteractiveAppSessionCallback _arg1 = ITvInteractiveAppSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            createSession(_arg03, _arg1, _arg2, _arg3);
-                            return true;
-                        case 4:
-                            AppLinkInfo _arg04 = (AppLinkInfo) data.readTypedObject(AppLinkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerAppLinkInfo(_arg04);
-                            return true;
-                        case 5:
-                            AppLinkInfo _arg05 = (AppLinkInfo) data.readTypedObject(AppLinkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            unregisterAppLinkInfo(_arg05);
-                            return true;
-                        case 6:
-                            Bundle _arg06 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendAppLinkCommand(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ITvInteractiveAppService {
             private IBinder mRemote;
 

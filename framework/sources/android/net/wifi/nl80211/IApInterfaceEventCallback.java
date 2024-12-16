@@ -22,7 +22,6 @@ public interface IApInterfaceEventCallback extends IInterface {
 
     void onSoftApChannelSwitched(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IApInterfaceEventCallback {
         @Override // android.net.wifi.nl80211.IApInterfaceEventCallback
         public void onConnectedClientsChanged(NativeWifiClient client, boolean isConnected) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IApInterfaceEventCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IApInterfaceEventCallback {
         static final int TRANSACTION_onConnectedClientsChanged = 1;
         static final int TRANSACTION_onSoftApChannelSwitched = 2;
@@ -84,33 +82,29 @@ public interface IApInterfaceEventCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IApInterfaceEventCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IApInterfaceEventCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IApInterfaceEventCallback.DESCRIPTOR);
+                case 1:
+                    NativeWifiClient _arg0 = (NativeWifiClient) data.readTypedObject(NativeWifiClient.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onConnectedClientsChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSoftApChannelSwitched(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NativeWifiClient _arg0 = (NativeWifiClient) data.readTypedObject(NativeWifiClient.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onConnectedClientsChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSoftApChannelSwitched(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IApInterfaceEventCallback {
+        private static class Proxy implements IApInterfaceEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

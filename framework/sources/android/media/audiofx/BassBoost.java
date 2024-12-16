@@ -14,7 +14,6 @@ public class BassBoost extends AudioEffect {
     private final Object mParamListenerLock;
     private boolean mStrengthSupported;
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(BassBoost bassBoost, int i, int i2, short s);
     }
@@ -47,12 +46,7 @@ public class BassBoost extends AudioEffect {
         return value[0];
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(BassBoost bassBoost, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -84,14 +78,12 @@ public class BassBoost extends AudioEffect {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
                 this.mParamListener = listener;
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public short strength;
 

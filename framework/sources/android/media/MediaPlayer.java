@@ -41,9 +41,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.util.Preconditions;
+import com.samsung.android.audio.AudioManagerHelper;
 import com.samsung.android.common.AsPackageName;
 import com.samsung.android.media.AudioTag;
+import com.samsung.android.rune.CoreRune;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -188,6 +191,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     private static final String TAG = "MediaPlayer";
     public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT = 1;
     public static final int VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING = 2;
+    private String gvsTarget;
     private boolean mActiveDrmScheme;
     private boolean mDrmConfigAllowed;
     private DrmInfo mDrmInfo;
@@ -240,100 +244,82 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     private TimeProvider mTimeProvider;
     private final Object mTimeProviderLock;
     private PowerManager.WakeLock mWakeLock;
+    private String packageName;
 
-    /* loaded from: classes2.dex */
     public interface OnBufferingUpdateListener {
         void onBufferingUpdate(MediaPlayer mediaPlayer, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnCompletionListener {
         void onCompletion(MediaPlayer mediaPlayer);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnDrmConfigHelper {
         void onDrmConfig(MediaPlayer mediaPlayer);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnDrmInfoListener {
         void onDrmInfo(MediaPlayer mediaPlayer, DrmInfo drmInfo);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnDrmPreparedListener {
         void onDrmPrepared(MediaPlayer mediaPlayer, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnErrorListener {
         boolean onError(MediaPlayer mediaPlayer, int i, int i2);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnInfoListener {
         boolean onInfo(MediaPlayer mediaPlayer, int i, int i2);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnMediaTimeDiscontinuityListener {
         void onMediaTimeDiscontinuity(MediaPlayer mediaPlayer, MediaTimestamp mediaTimestamp);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnPlayReadyErrorListener {
         boolean onPlayReadyError(MediaPlayer mediaPlayer, int i, int i2, String str);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnPreparedListener {
         void onPrepared(MediaPlayer mediaPlayer);
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public interface OnRtpRxNoticeListener {
         void onRtpRxNotice(MediaPlayer mediaPlayer, int i, int[] iArr);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnSeekCompleteListener {
         void onSeekComplete(MediaPlayer mediaPlayer);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnSubtitleDataListener {
         void onSubtitleData(MediaPlayer mediaPlayer, SubtitleData subtitleData);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnTimedMetaDataAvailableListener {
         void onTimedMetaDataAvailable(MediaPlayer mediaPlayer, TimedMetaData timedMetaData);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnTimedTextListener {
         void onTimedText(MediaPlayer mediaPlayer, TimedText timedText);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnVideoSizeChangedListener {
         void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PlaybackRateAudioMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PrepareDrmStatusCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SeekMode {
     }
 
@@ -467,9 +453,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         this.mInbandTrackIndices = new BitSet();
         this.mSelectedSubtitleTrackIndex = -1;
         this.mIntSubtitleDataListener = new OnSubtitleDataListener() { // from class: android.media.MediaPlayer.3
-            AnonymousClass3() {
-            }
-
             @Override // android.media.MediaPlayer.OnSubtitleDataListener
             public void onSubtitleData(MediaPlayer mp, SubtitleData data) {
                 int index = data.getTrackIndex();
@@ -487,9 +470,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         };
         this.mTimeProviderLock = new Object();
         this.mOnCompletionInternalListener = new OnCompletionListener() { // from class: android.media.MediaPlayer.7
-            AnonymousClass7() {
-            }
-
             @Override // android.media.MediaPlayer.OnCompletionListener
             public void onCompletion(MediaPlayer mp) {
                 MediaPlayer.this.tryToDisableNativeRoutingCallback();
@@ -510,7 +490,12 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         this.mTimeProvider = new TimeProvider(this);
         this.mOpenSubtitleSources = new Vector<>();
         AttributionSource attributionSource = context == null ? AttributionSource.myAttributionSource() : context.getAttributionSource();
-        AttributionSource.ScopedParcelState attributionSourceState = (attributionSource.getPackageName() == null ? attributionSource.withPackageName("") : attributionSource).asScopedParcelState();
+        this.packageName = attributionSource.getPackageName();
+        if (this.packageName == null) {
+            attributionSource = attributionSource.withPackageName("");
+            this.packageName = "";
+        }
+        AttributionSource.ScopedParcelState attributionSourceState = attributionSource.asScopedParcelState();
         try {
             native_setup(new WeakReference(this), attributionSourceState.getParcel(), resolvePlaybackSessionId(context, sessionId));
             if (attributionSourceState != null) {
@@ -594,8 +579,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     }
 
     public static MediaPlayer create(Context context, Uri uri, SurfaceHolder holder) {
-        int s = AudioSystem.newAudioSessionId();
-        return create(context, uri, holder, null, s > 0 ? s : 0);
+        return create(context, uri, holder, null, 0);
     }
 
     public static MediaPlayer create(Context context, Uri uri, SurfaceHolder holder, AudioAttributes audioAttributes, int audioSessionId) {
@@ -622,8 +606,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     }
 
     public static MediaPlayer create(Context context, int resid) {
-        int s = AudioSystem.newAudioSessionId();
-        return create(context, resid, null, s > 0 ? s : 0);
+        return create(context, resid, null, 0);
     }
 
     public static MediaPlayer create(Context context, int resid, AudioAttributes audioAttributes, int audioSessionId) {
@@ -755,7 +738,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 }
                 throw th;
             }
-        } catch (IOException | NullPointerException | SecurityException e) {
+        } catch (IOException | NullPointerException | SecurityException ex) {
+            Log.w(TAG, "Error setting data source via ContentResolver", ex);
             return false;
         }
     }
@@ -796,7 +780,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         if (path.startsWith("file://")) {
             path = path.replaceFirst("file://", "");
         }
-        File file = new File(convertStartingPathToSystem(path));
+        File file = new File(AudioManagerHelper.convertStartingPathToSystem(path));
         FileInputStream is = new FileInputStream(file);
         try {
             try {
@@ -829,25 +813,21 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     }
 
     public void setDataSource(FileDescriptor fd, long offset, long length) throws IOException, IllegalArgumentException, IllegalStateException {
-        ParcelFileDescriptor modernFd = FileUtils.convertToModernFd(fd);
         try {
-            if (modernFd == null) {
-                _setDataSource(fd, offset, length);
-            } else {
-                _setDataSource(modernFd.getFileDescriptor(), offset, length);
-            }
-            if (modernFd != null) {
-                modernFd.close();
-            }
-        } catch (Throwable th) {
-            if (modernFd != null) {
-                try {
-                    modernFd.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
+            ParcelFileDescriptor modernFd = FileUtils.convertToModernFd(fd);
+            try {
+                if (modernFd == null) {
+                    _setDataSource(fd, offset, length);
+                } else {
+                    _setDataSource(modernFd.getFileDescriptor(), offset, length);
                 }
+                if (modernFd != null) {
+                    modernFd.close();
+                }
+            } finally {
             }
-            throw th;
+        } catch (IOException e) {
+            Log.w(TAG, "Ignoring IO error while setting data source", e);
         }
     }
 
@@ -893,8 +873,12 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
+    /* JADX WARN: Type inference failed for: r1v1, types: [android.media.MediaPlayer$1] */
     public void start() throws IllegalStateException {
-        int delay = getStartDelayMs();
+        if (CoreRune.SYSPERF_ACTIVE_APP_GVS_ENABLE) {
+            setGameVideoSpeed();
+        }
+        final int delay = getStartDelayMs();
         if (delay == 0) {
             try {
                 startImpl();
@@ -905,12 +889,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
         new Thread() { // from class: android.media.MediaPlayer.1
-            final /* synthetic */ int val$delay;
-
-            AnonymousClass1(int delay2) {
-                delay = delay2;
-            }
-
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 try {
@@ -928,31 +906,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }.start();
     }
 
-    /* renamed from: android.media.MediaPlayer$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends Thread {
-        final /* synthetic */ int val$delay;
-
-        AnonymousClass1(int delay2) {
-            delay = delay2;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e2) {
-                e2.printStackTrace();
-            }
-            MediaPlayer.this.baseSetStartDelayMs(0);
-            try {
-                MediaPlayer.this.startImpl();
-            } catch (IllegalStateException e3) {
-                MediaPlayer.this.stayAwake(false);
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void startImpl() {
         baseStart(0);
         stayAwake(true);
@@ -996,12 +950,12 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     }
 
     @Override // android.media.PlayerBase
-    public int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
+    int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation) {
         return native_applyVolumeShaper(configuration, operation);
     }
 
     @Override // android.media.PlayerBase
-    public VolumeShaper.State playerGetVolumeShaperState(int id) {
+    VolumeShaper.State playerGetVolumeShaperState(int id) {
         return native_getVolumeShaperState(id);
     }
 
@@ -1043,6 +997,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         return AudioManager.getDeviceForPortId(deviceId, 2);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void broadcastRoutingChange() {
         AudioManager.resetAudioPortGeneration();
         synchronized (this.mRoutingChangeListeners) {
@@ -1079,6 +1034,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void tryToDisableNativeRoutingCallback() {
         synchronized (this.mRoutingChangeListeners) {
             if (this.mEnableSelfRoutingMonitor) {
@@ -1125,18 +1081,16 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             Log.w(TAG, "IGNORING setWakeMode " + mode);
             return;
         }
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            if (wakeLock.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (this.mWakeLock.isHeld()) {
                 washeld = true;
                 this.mWakeLock.release();
             }
             this.mWakeLock = null;
         }
         PowerManager pm = (PowerManager) context.getSystemService("power");
-        PowerManager.WakeLock newWakeLock = pm.newWakeLock(536870912 | mode, MediaPlayer.class.getName());
-        this.mWakeLock = newWakeLock;
-        newWakeLock.setReferenceCounted(false);
+        this.mWakeLock = pm.newWakeLock(536870912 | mode, MediaPlayer.class.getName());
+        this.mWakeLock.setReferenceCounted(false);
         if (washeld) {
             this.mWakeLock.acquire();
         }
@@ -1152,10 +1106,10 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void stayAwake(boolean awake) {
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            if (awake && !wakeLock.isHeld()) {
+        if (this.mWakeLock != null) {
+            if (awake && !this.mWakeLock.isHeld()) {
                 this.mWakeLock.acquire();
             } else if (!awake && this.mWakeLock.isHeld()) {
                 this.mWakeLock.release();
@@ -1166,9 +1120,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
     }
 
     private void updateSurfaceScreenOn() {
-        SurfaceHolder surfaceHolder = this.mSurfaceHolder;
-        if (surfaceHolder != null) {
-            surfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
+        if (this.mSurfaceHolder != null) {
+            this.mSurfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
         }
     }
 
@@ -1273,9 +1226,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         this.mOnRtpRxNoticeListener = null;
         this.mOnRtpRxNoticeExecutor = null;
         synchronized (this.mTimeProviderLock) {
-            TimeProvider timeProvider = this.mTimeProvider;
-            if (timeProvider != null) {
-                timeProvider.close();
+            if (this.mTimeProvider != null) {
+                this.mTimeProvider.close();
                 this.mTimeProvider = null;
             }
         }
@@ -1306,22 +1258,19 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
             this.mOpenSubtitleSources.clear();
         }
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null) {
-            subtitleController.reset();
+        if (this.mSubtitleController != null) {
+            this.mSubtitleController.reset();
         }
         synchronized (this.mTimeProviderLock) {
-            TimeProvider timeProvider = this.mTimeProvider;
-            if (timeProvider != null) {
-                timeProvider.close();
+            if (this.mTimeProvider != null) {
+                this.mTimeProvider.close();
                 this.mTimeProvider = null;
             }
         }
         stayAwake(false);
         _reset();
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler != null) {
-            eventHandler.removeCallbacksAndMessages(null);
+        if (this.mEventHandler != null) {
+            this.mEventHandler.removeCallbacksAndMessages(null);
         }
         synchronized (this.mIndexTrackPairs) {
             this.mIndexTrackPairs.clear();
@@ -1418,17 +1367,15 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         return 0;
     }
 
-    /* loaded from: classes2.dex */
     public static class TrackInfo implements Parcelable {
         static final Parcelable.Creator<TrackInfo> CREATOR = new Parcelable.Creator<TrackInfo>() { // from class: android.media.MediaPlayer.TrackInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TrackInfo createFromParcel(Parcel in) {
                 return new TrackInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TrackInfo[] newArray(int size) {
                 return new TrackInfo[size];
@@ -1444,7 +1391,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         final int mTrackType;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface TrackType {
         }
 
@@ -1458,33 +1404,29 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
 
         public boolean hasHapticChannels() {
-            MediaFormat mediaFormat = this.mFormat;
-            return mediaFormat != null && mediaFormat.containsKey(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT) && this.mFormat.getInteger(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT) > 0;
+            return this.mFormat != null && this.mFormat.containsKey(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT) && this.mFormat.getInteger(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT) > 0;
         }
 
         public MediaFormat getFormat() {
-            int i = this.mTrackType;
-            if (i == 3 || i == 4) {
+            if (this.mTrackType == 3 || this.mTrackType == 4) {
                 return this.mFormat;
             }
             return null;
         }
 
         TrackInfo(Parcel in) {
-            int readInt = in.readInt();
-            this.mTrackType = readInt;
+            this.mTrackType = in.readInt();
             String mime = in.readString();
             String language = in.readString();
-            MediaFormat createSubtitleFormat = MediaFormat.createSubtitleFormat(mime, language);
-            this.mFormat = createSubtitleFormat;
-            if (readInt == 4) {
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_AUTOSELECT, in.readInt());
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_DEFAULT, in.readInt());
-                createSubtitleFormat.setInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, in.readInt());
-            } else if (readInt == 2) {
+            this.mFormat = MediaFormat.createSubtitleFormat(mime, language);
+            if (this.mTrackType == 4) {
+                this.mFormat.setInteger(MediaFormat.KEY_IS_AUTOSELECT, in.readInt());
+                this.mFormat.setInteger(MediaFormat.KEY_IS_DEFAULT, in.readInt());
+                this.mFormat.setInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, in.readInt());
+            } else if (this.mTrackType == 2) {
                 boolean hasHapticChannels = in.readBoolean();
                 if (hasHapticChannels) {
-                    createSubtitleFormat.setInteger(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT, in.readInt());
+                    this.mFormat.setInteger(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT, in.readInt());
                 }
             }
         }
@@ -1502,14 +1444,13 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mTrackType);
-            dest.writeString(this.mFormat.getString(MediaFormat.KEY_MIME));
+            dest.writeString(this.mFormat.getString("mime"));
             dest.writeString(getLanguage());
-            int i = this.mTrackType;
-            if (i == 4) {
+            if (this.mTrackType == 4) {
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_AUTOSELECT));
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_DEFAULT));
                 dest.writeInt(this.mFormat.getInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE));
-            } else if (i == 2) {
+            } else if (this.mTrackType == 2) {
                 boolean hasHapticChannels = this.mFormat.containsKey(MediaFormat.KEY_HAPTIC_CHANNEL_COUNT);
                 dest.writeBoolean(hasHapticChannels);
                 if (hasHapticChannels) {
@@ -1542,23 +1483,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             out.append(", " + this.mFormat.toString());
             out.append("}");
             return out.toString();
-        }
-
-        /* renamed from: android.media.MediaPlayer$TrackInfo$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<TrackInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TrackInfo createFromParcel(Parcel in) {
-                return new TrackInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TrackInfo[] newArray(int size) {
-                return new TrackInfo[size];
-            }
         }
     }
 
@@ -1604,32 +1528,21 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
 
     public void setSubtitleAnchor(SubtitleController controller, SubtitleController.Anchor anchor) {
         this.mSubtitleController = controller;
-        controller.setAnchor(anchor);
+        this.mSubtitleController.setAnchor(anchor);
     }
 
     private synchronized void setSubtitleAnchor() {
         if (this.mSubtitleController == null && ActivityThread.currentApplication() != null) {
-            TimeProvider timeProvider = (TimeProvider) getMediaTimeProvider();
-            HandlerThread thread = new HandlerThread("SetSubtitleAnchorThread");
+            final TimeProvider timeProvider = (TimeProvider) getMediaTimeProvider();
+            final HandlerThread thread = new HandlerThread("SetSubtitleAnchorThread");
             thread.start();
             Handler handler = new Handler(thread.getLooper());
             handler.post(new Runnable() { // from class: android.media.MediaPlayer.2
-                final /* synthetic */ HandlerThread val$thread;
-                final /* synthetic */ TimeProvider val$timeProvider;
-
-                AnonymousClass2(TimeProvider timeProvider2, HandlerThread thread2) {
-                    timeProvider = timeProvider2;
-                    thread = thread2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     Context context = ActivityThread.currentApplication();
                     MediaPlayer.this.mSubtitleController = new SubtitleController(context, timeProvider, MediaPlayer.this);
                     MediaPlayer.this.mSubtitleController.setAnchor(new SubtitleController.Anchor() { // from class: android.media.MediaPlayer.2.1
-                        AnonymousClass1() {
-                        }
-
                         @Override // android.media.SubtitleController.Anchor
                         public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
                         }
@@ -1641,25 +1554,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                     });
                     thread.getLooper().quitSafely();
                 }
-
-                /* renamed from: android.media.MediaPlayer$2$1 */
-                /* loaded from: classes2.dex */
-                class AnonymousClass1 implements SubtitleController.Anchor {
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.media.SubtitleController.Anchor
-                    public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-                    }
-
-                    @Override // android.media.SubtitleController.Anchor
-                    public Looper getSubtitleLooper() {
-                        return timeProvider.mEventHandler.getLooper();
-                    }
-                }
             });
             try {
-                thread2.join();
+                thread.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 Log.w(TAG, "failed to join SetSubtitleAnchorThread");
@@ -1667,83 +1564,11 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* renamed from: android.media.MediaPlayer$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ HandlerThread val$thread;
-        final /* synthetic */ TimeProvider val$timeProvider;
-
-        AnonymousClass2(TimeProvider timeProvider2, HandlerThread thread2) {
-            timeProvider = timeProvider2;
-            thread = thread2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Context context = ActivityThread.currentApplication();
-            MediaPlayer.this.mSubtitleController = new SubtitleController(context, timeProvider, MediaPlayer.this);
-            MediaPlayer.this.mSubtitleController.setAnchor(new SubtitleController.Anchor() { // from class: android.media.MediaPlayer.2.1
-                AnonymousClass1() {
-                }
-
-                @Override // android.media.SubtitleController.Anchor
-                public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-                }
-
-                @Override // android.media.SubtitleController.Anchor
-                public Looper getSubtitleLooper() {
-                    return timeProvider.mEventHandler.getLooper();
-                }
-            });
-            thread.getLooper().quitSafely();
-        }
-
-        /* renamed from: android.media.MediaPlayer$2$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements SubtitleController.Anchor {
-            AnonymousClass1() {
-            }
-
-            @Override // android.media.SubtitleController.Anchor
-            public void setSubtitleWidget(SubtitleTrack.RenderingWidget subtitleWidget) {
-            }
-
-            @Override // android.media.SubtitleController.Anchor
-            public Looper getSubtitleLooper() {
-                return timeProvider.mEventHandler.getLooper();
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.MediaPlayer$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 implements OnSubtitleDataListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.media.MediaPlayer.OnSubtitleDataListener
-        public void onSubtitleData(MediaPlayer mp, SubtitleData data) {
-            int index = data.getTrackIndex();
-            synchronized (MediaPlayer.this.mIndexTrackPairs) {
-                Iterator it = MediaPlayer.this.mIndexTrackPairs.iterator();
-                while (it.hasNext()) {
-                    Pair<Integer, SubtitleTrack> p = (Pair) it.next();
-                    if (p.first != null && p.first.intValue() == index && p.second != null) {
-                        SubtitleTrack track = p.second;
-                        track.onData(data);
-                    }
-                }
-            }
-        }
-    }
-
     @Override // android.media.SubtitleController.Listener
     public void onSubtitleTrackSelected(SubtitleTrack track) {
-        int i = this.mSelectedSubtitleTrackIndex;
-        if (i >= 0) {
+        if (this.mSelectedSubtitleTrackIndex >= 0) {
             try {
-                selectOrDeselectInbandTrack(i, false);
+                selectOrDeselectInbandTrack(this.mSelectedSubtitleTrackIndex, false);
             } catch (IllegalStateException e) {
             }
             this.mSelectedSubtitleTrackIndex = -1;
@@ -1767,10 +1592,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 }
             }
         }
-        int i2 = this.mSelectedSubtitleTrackIndex;
-        if (i2 >= 0) {
+        if (this.mSelectedSubtitleTrackIndex >= 0) {
             try {
-                selectOrDeselectInbandTrack(i2, true);
+                selectOrDeselectInbandTrack(this.mSelectedSubtitleTrackIndex, true);
             } catch (IllegalStateException e2) {
             }
             synchronized (this) {
@@ -1779,7 +1603,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    public void addSubtitleSource(InputStream is, MediaFormat format) throws IllegalStateException {
+    public void addSubtitleSource(final InputStream is, final MediaFormat format) throws IllegalStateException {
         if (is != null) {
             synchronized (this.mOpenSubtitleSources) {
                 this.mOpenSubtitleSources.add(is);
@@ -1788,20 +1612,10 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             Log.w(TAG, "addSubtitleSource called with null InputStream");
         }
         getMediaTimeProvider();
-        HandlerThread thread = new HandlerThread("SubtitleReadThread", -5);
+        final HandlerThread thread = new HandlerThread("SubtitleReadThread", -5);
         thread.start();
         Handler handler = new Handler(thread.getLooper());
         handler.post(new Runnable() { // from class: android.media.MediaPlayer.4
-            final /* synthetic */ MediaFormat val$fFormat;
-            final /* synthetic */ InputStream val$fIs;
-            final /* synthetic */ HandlerThread val$thread;
-
-            AnonymousClass4(InputStream is2, MediaFormat format2, HandlerThread thread2) {
-                is = is2;
-                format = format2;
-                thread = thread2;
-            }
-
             private int addTrack() {
                 SubtitleTrack track;
                 if (is == null || MediaPlayer.this.mSubtitleController == null || (track = MediaPlayer.this.mSubtitleController.addTrack(format)) == null) {
@@ -1871,94 +1685,12 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.MediaPlayer$4 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass4 implements Runnable {
-        final /* synthetic */ MediaFormat val$fFormat;
-        final /* synthetic */ InputStream val$fIs;
-        final /* synthetic */ HandlerThread val$thread;
-
-        AnonymousClass4(InputStream is2, MediaFormat format2, HandlerThread thread2) {
-            is = is2;
-            format = format2;
-            thread = thread2;
-        }
-
-        private int addTrack() {
-            SubtitleTrack track;
-            if (is == null || MediaPlayer.this.mSubtitleController == null || (track = MediaPlayer.this.mSubtitleController.addTrack(format)) == null) {
-                return 901;
-            }
-            try {
-                int availableSize = is.available();
-                if (availableSize > 20971520) {
-                    Log.e(MediaPlayer.TAG, "addTrack() unsupported size : " + availableSize);
-                    return 901;
-                }
-                Scanner scanner = null;
-                try {
-                    try {
-                        scanner = new Scanner(is, "UTF-8");
-                        String contents = scanner.useDelimiter("\\A").next();
-                        synchronized (MediaPlayer.this.mOpenSubtitleSources) {
-                            MediaPlayer.this.mOpenSubtitleSources.remove(is);
-                        }
-                        scanner.close();
-                        synchronized (MediaPlayer.this.mIndexTrackPairs) {
-                            MediaPlayer.this.mIndexTrackPairs.add(Pair.create(null, track));
-                        }
-                        synchronized (MediaPlayer.this.mTimeProviderLock) {
-                            if (MediaPlayer.this.mTimeProvider != null) {
-                                Handler h = MediaPlayer.this.mTimeProvider.mEventHandler;
-                                Pair<SubtitleTrack, byte[]> trackData = Pair.create(track, contents.getBytes());
-                                Message m = h.obtainMessage(1, 4, 0, trackData);
-                                h.sendMessage(m);
-                            }
-                        }
-                        return 803;
-                    } catch (Exception e) {
-                        Log.e(MediaPlayer.TAG, e.getMessage(), e);
-                        synchronized (MediaPlayer.this.mOpenSubtitleSources) {
-                            MediaPlayer.this.mOpenSubtitleSources.remove(is);
-                            if (scanner != null) {
-                                scanner.close();
-                            }
-                            return 901;
-                        }
-                    }
-                } catch (Throwable th) {
-                    synchronized (MediaPlayer.this.mOpenSubtitleSources) {
-                        MediaPlayer.this.mOpenSubtitleSources.remove(is);
-                        if (scanner != null) {
-                            scanner.close();
-                        }
-                        throw th;
-                    }
-                }
-            } catch (IOException e2) {
-                Log.e(MediaPlayer.TAG, e2.getMessage(), e2);
-                return 901;
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            int res = addTrack();
-            if (MediaPlayer.this.mEventHandler != null) {
-                Message m = MediaPlayer.this.mEventHandler.obtainMessage(200, res, 0, null);
-                MediaPlayer.this.mEventHandler.sendMessage(m);
-            }
-            thread.getLooper().quitSafely();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void scanInternalSubtitleTracks() {
         setSubtitleAnchor();
         populateInbandTracks();
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null) {
-            subtitleController.selectDefaultTrack();
+        if (this.mSubtitleController != null) {
+            this.mSubtitleController.selectDefaultTrack();
         }
     }
 
@@ -2055,14 +1787,14 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         addTimedTextSource(fd, 0L, 576460752303423487L, mimeType);
     }
 
-    public void addTimedTextSource(FileDescriptor fd, long offset, long length, String mime) throws IllegalArgumentException, IllegalStateException {
+    public void addTimedTextSource(FileDescriptor fd, final long offset, final long length, String mime) throws IllegalArgumentException, IllegalStateException {
         if (!availableMimeTypeForExternalSource(mime)) {
             throw new IllegalArgumentException("Illegal mimeType for timed text source: " + mime);
         }
         try {
-            FileDescriptor dupedFd = Os.dup(fd);
+            final FileDescriptor dupedFd = Os.dup(fd);
             MediaFormat fFormat = new MediaFormat();
-            fFormat.setString(MediaFormat.KEY_MIME, mime);
+            fFormat.setString("mime", mime);
             fFormat.setInteger(MediaFormat.KEY_IS_TIMED_TEXT, 1);
             if (this.mSubtitleController == null) {
                 setSubtitleAnchor();
@@ -2071,29 +1803,15 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 Context context = ActivityThread.currentApplication();
                 this.mSubtitleController.registerRenderer(new SRTRenderer(context, this.mEventHandler));
             }
-            SubtitleTrack track = this.mSubtitleController.addTrack(fFormat);
+            final SubtitleTrack track = this.mSubtitleController.addTrack(fFormat);
             synchronized (this.mIndexTrackPairs) {
                 this.mIndexTrackPairs.add(Pair.create(null, track));
             }
             getMediaTimeProvider();
-            HandlerThread thread = new HandlerThread("TimedTextReadThread", 9);
+            final HandlerThread thread = new HandlerThread("TimedTextReadThread", 9);
             thread.start();
             Handler handler = new Handler(thread.getLooper());
             handler.post(new Runnable() { // from class: android.media.MediaPlayer.5
-                final /* synthetic */ FileDescriptor val$dupedFd;
-                final /* synthetic */ long val$length2;
-                final /* synthetic */ long val$offset2;
-                final /* synthetic */ HandlerThread val$thread;
-                final /* synthetic */ SubtitleTrack val$track;
-
-                AnonymousClass5(FileDescriptor dupedFd2, long offset2, long length2, SubtitleTrack track2, HandlerThread thread2) {
-                    dupedFd = dupedFd2;
-                    offset = offset2;
-                    length = length2;
-                    track = track2;
-                    thread = thread2;
-                }
-
                 private int addTrack() {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     try {
@@ -2101,12 +1819,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                             Os.lseek(dupedFd, offset, OsConstants.SEEK_SET);
                             byte[] buffer = new byte[4096];
                             long total = 0;
-                            while (true) {
-                                long j = length;
-                                if (total >= j) {
-                                    break;
-                                }
-                                int bytesToRead = (int) Math.min(buffer.length, j - total);
+                            while (total < length) {
+                                int bytesToRead = (int) Math.min(buffer.length, length - total);
                                 int bytes = IoBridge.read(dupedFd, buffer, 0, bytesToRead);
                                 if (bytes < 0) {
                                     break;
@@ -2165,93 +1879,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* renamed from: android.media.MediaPlayer$5 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass5 implements Runnable {
-        final /* synthetic */ FileDescriptor val$dupedFd;
-        final /* synthetic */ long val$length2;
-        final /* synthetic */ long val$offset2;
-        final /* synthetic */ HandlerThread val$thread;
-        final /* synthetic */ SubtitleTrack val$track;
-
-        AnonymousClass5(FileDescriptor dupedFd2, long offset2, long length2, SubtitleTrack track2, HandlerThread thread2) {
-            dupedFd = dupedFd2;
-            offset = offset2;
-            length = length2;
-            track = track2;
-            thread = thread2;
-        }
-
-        private int addTrack() {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                try {
-                    Os.lseek(dupedFd, offset, OsConstants.SEEK_SET);
-                    byte[] buffer = new byte[4096];
-                    long total = 0;
-                    while (true) {
-                        long j = length;
-                        if (total >= j) {
-                            break;
-                        }
-                        int bytesToRead = (int) Math.min(buffer.length, j - total);
-                        int bytes = IoBridge.read(dupedFd, buffer, 0, bytesToRead);
-                        if (bytes < 0) {
-                            break;
-                        }
-                        bos.write(buffer, 0, bytes);
-                        total += bytes;
-                    }
-                    synchronized (MediaPlayer.this.mTimeProviderLock) {
-                        if (MediaPlayer.this.mTimeProvider != null) {
-                            Handler h = MediaPlayer.this.mTimeProvider.mEventHandler;
-                            Pair<SubtitleTrack, byte[]> trackData = Pair.create(track, bos.toByteArray());
-                            Message m = h.obtainMessage(2, 4, 0, trackData);
-                            h.sendMessage(m);
-                        }
-                    }
-                    try {
-                        Os.close(dupedFd);
-                        return 803;
-                    } catch (ErrnoException e) {
-                        Log.e(MediaPlayer.TAG, e.getMessage(), e);
-                        return 803;
-                    }
-                } catch (Exception e2) {
-                    Log.e(MediaPlayer.TAG, e2.getMessage(), e2);
-                    try {
-                        Os.close(dupedFd);
-                        return 900;
-                    } catch (ErrnoException e3) {
-                        Log.e(MediaPlayer.TAG, e3.getMessage(), e3);
-                        return 900;
-                    }
-                }
-            } catch (Throwable th) {
-                try {
-                    Os.close(dupedFd);
-                } catch (ErrnoException e4) {
-                    Log.e(MediaPlayer.TAG, e4.getMessage(), e4);
-                }
-                throw th;
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            int res = addTrack();
-            if (MediaPlayer.this.mEventHandler != null) {
-                Message m = MediaPlayer.this.mEventHandler.obtainMessage(200, res, 0, null);
-                MediaPlayer.this.mEventHandler.sendMessage(m);
-            }
-            thread.getLooper().quitSafely();
-        }
-    }
-
     public int getSelectedTrack(int trackType) throws IllegalStateException {
         SubtitleTrack subtitleTrack;
-        SubtitleController subtitleController = this.mSubtitleController;
-        if (subtitleController != null && ((trackType == 4 || trackType == 3) && (subtitleTrack = subtitleController.getSelectedTrack()) != null)) {
+        if (this.mSubtitleController != null && ((trackType == 4 || trackType == 3) && (subtitleTrack = this.mSubtitleController.getSelectedTrack()) != null)) {
             synchronized (this.mIndexTrackPairs) {
                 for (int i = 0; i < this.mIndexTrackPairs.size(); i++) {
                     if (this.mIndexTrackPairs.get(i).second == subtitleTrack && subtitleTrack.getTrackType() == trackType) {
@@ -2302,12 +1932,11 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 selectOrDeselectInbandTrack(p.first.intValue(), select);
                 return;
             }
-            SubtitleController subtitleController = this.mSubtitleController;
-            if (subtitleController == null) {
+            if (this.mSubtitleController == null) {
                 return;
             }
             if (!select) {
-                if (subtitleController.getSelectedTrack() == track) {
+                if (this.mSubtitleController.getSelectedTrack() == track) {
                     this.mSubtitleController.selectTrack(null);
                     return;
                 } else {
@@ -2377,8 +2006,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         return timeProvider;
     }
 
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
+    /* JADX INFO: Access modifiers changed from: private */
+    class EventHandler extends Handler {
         private MediaPlayer mMediaPlayer;
 
         public EventHandler(MediaPlayer mp, Looper looper) {
@@ -2390,9 +2019,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             OnDrmInfoHandlerDelegate onDrmInfoHandlerDelegate;
-            OnMediaTimeDiscontinuityListener mediaTimeListener;
+            final OnMediaTimeDiscontinuityListener mediaTimeListener;
             Handler mediaTimeHandler;
-            MediaTimestamp timestamp;
+            final MediaTimestamp timestamp;
             if (this.mMediaPlayer.mNativeContext == 0) {
                 Log.w(MediaPlayer.TAG, "mediaplayer went away with unhandled events");
                 return;
@@ -2573,24 +2202,16 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                         if (MediaPlayer.this.mSubtitleDataListenerDisabled) {
                             return;
                         }
-                        OnSubtitleDataListener extSubtitleListener = MediaPlayer.this.mExtSubtitleDataListener;
+                        final OnSubtitleDataListener extSubtitleListener = MediaPlayer.this.mExtSubtitleDataListener;
                         Handler extSubtitleHandler = MediaPlayer.this.mExtSubtitleDataHandler;
                         if (msg.obj instanceof Parcel) {
                             Parcel parcel2 = (Parcel) msg.obj;
-                            SubtitleData data = new SubtitleData(parcel2);
+                            final SubtitleData data = new SubtitleData(parcel2);
                             parcel2.recycle();
                             MediaPlayer.this.mIntSubtitleDataListener.onSubtitleData(this.mMediaPlayer, data);
                             if (extSubtitleListener != null) {
                                 if (extSubtitleHandler != null) {
                                     extSubtitleHandler.post(new Runnable() { // from class: android.media.MediaPlayer.EventHandler.1
-                                        final /* synthetic */ SubtitleData val$data;
-                                        final /* synthetic */ OnSubtitleDataListener val$extSubtitleListener;
-
-                                        AnonymousClass1(OnSubtitleDataListener extSubtitleListener2, SubtitleData data2) {
-                                            extSubtitleListener = extSubtitleListener2;
-                                            data = data2;
-                                        }
-
                                         @Override // java.lang.Runnable
                                         public void run() {
                                             extSubtitleListener.onSubtitleData(EventHandler.this.mMediaPlayer, data);
@@ -2598,7 +2219,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                                     });
                                     return;
                                 } else {
-                                    extSubtitleListener2.onSubtitleData(this.mMediaPlayer, data2);
+                                    extSubtitleListener.onSubtitleData(this.mMediaPlayer, data);
                                     return;
                                 }
                             }
@@ -2657,14 +2278,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                         }
                         if (mediaTimeHandler != null) {
                             mediaTimeHandler.post(new Runnable() { // from class: android.media.MediaPlayer.EventHandler.2
-                                final /* synthetic */ OnMediaTimeDiscontinuityListener val$mediaTimeListener;
-                                final /* synthetic */ MediaTimestamp val$timestamp;
-
-                                AnonymousClass2(OnMediaTimeDiscontinuityListener mediaTimeListener2, MediaTimestamp timestamp2) {
-                                    mediaTimeListener = mediaTimeListener2;
-                                    timestamp = timestamp2;
-                                }
-
                                 @Override // java.lang.Runnable
                                 public void run() {
                                     mediaTimeListener.onMediaTimeDiscontinuity(EventHandler.this.mMediaPlayer, timestamp);
@@ -2672,7 +2285,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                             });
                             return;
                         } else {
-                            mediaTimeListener2.onMediaTimeDiscontinuity(this.mMediaPlayer, timestamp2);
+                            mediaTimeListener.onMediaTimeDiscontinuity(this.mMediaPlayer, timestamp);
                             return;
                         }
                     }
@@ -2720,40 +2333,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
-        /* renamed from: android.media.MediaPlayer$EventHandler$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ SubtitleData val$data;
-            final /* synthetic */ OnSubtitleDataListener val$extSubtitleListener;
-
-            AnonymousClass1(OnSubtitleDataListener extSubtitleListener2, SubtitleData data2) {
-                extSubtitleListener = extSubtitleListener2;
-                data = data2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                extSubtitleListener.onSubtitleData(EventHandler.this.mMediaPlayer, data);
-            }
-        }
-
-        /* renamed from: android.media.MediaPlayer$EventHandler$2 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ OnMediaTimeDiscontinuityListener val$mediaTimeListener;
-            final /* synthetic */ MediaTimestamp val$timestamp;
-
-            AnonymousClass2(OnMediaTimeDiscontinuityListener mediaTimeListener2, MediaTimestamp timestamp2) {
-                mediaTimeListener = mediaTimeListener2;
-                timestamp = timestamp2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                mediaTimeListener.onMediaTimeDiscontinuity(EventHandler.this.mMediaPlayer, timestamp);
-            }
-        }
-
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$handleMessage$0(OnRtpRxNoticeListener rtpRxNoticeListener, int noticeType, int[] data) {
             rtpRxNoticeListener.onRtpRxNotice(this.mMediaPlayer, noticeType, data);
         }
@@ -2773,9 +2353,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             case 200:
                 if (arg1 == 2) {
                     new Thread(new Runnable() { // from class: android.media.MediaPlayer.6
-                        AnonymousClass6() {
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
                             try {
@@ -2803,26 +2380,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                     break;
                 }
         }
-        EventHandler eventHandler = mp.mEventHandler;
-        if (eventHandler != null) {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (mp.mEventHandler != null) {
+            Message m = mp.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             mp.mEventHandler.sendMessage(m);
-        }
-    }
-
-    /* renamed from: android.media.MediaPlayer$6 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass6 implements Runnable {
-        AnonymousClass6() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            try {
-                MediaPlayer.this.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -2832,20 +2392,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
 
     public void setOnCompletionListener(OnCompletionListener listener) {
         this.mOnCompletionListener = listener;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.MediaPlayer$7 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass7 implements OnCompletionListener {
-        AnonymousClass7() {
-        }
-
-        @Override // android.media.MediaPlayer.OnCompletionListener
-        public void onCompletion(MediaPlayer mp) {
-            MediaPlayer.this.tryToDisableNativeRoutingCallback();
-            MediaPlayer.this.baseStop();
-        }
     }
 
     public void setOnBufferingUpdateListener(OnBufferingUpdateListener listener) {
@@ -2978,8 +2524,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class OnDrmInfoHandlerDelegate {
+    private class OnDrmInfoHandlerDelegate {
         private Handler mHandler;
         private MediaPlayer mMediaPlayer;
         private OnDrmInfoListener mOnDrmInfoListener;
@@ -2992,44 +2537,21 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
-        /* renamed from: android.media.MediaPlayer$OnDrmInfoHandlerDelegate$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ DrmInfo val$drmInfo;
-
-            AnonymousClass1(DrmInfo drmInfo) {
-                drmInfo = drmInfo;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                OnDrmInfoHandlerDelegate.this.mOnDrmInfoListener.onDrmInfo(OnDrmInfoHandlerDelegate.this.mMediaPlayer, drmInfo);
-            }
-        }
-
-        void notifyClient(DrmInfo drmInfo) {
-            Handler handler = this.mHandler;
-            if (handler != null) {
-                handler.post(new Runnable() { // from class: android.media.MediaPlayer.OnDrmInfoHandlerDelegate.1
-                    final /* synthetic */ DrmInfo val$drmInfo;
-
-                    AnonymousClass1(DrmInfo drmInfo2) {
-                        drmInfo = drmInfo2;
-                    }
-
+        void notifyClient(final DrmInfo drmInfo) {
+            if (this.mHandler != null) {
+                this.mHandler.post(new Runnable() { // from class: android.media.MediaPlayer.OnDrmInfoHandlerDelegate.1
                     @Override // java.lang.Runnable
                     public void run() {
                         OnDrmInfoHandlerDelegate.this.mOnDrmInfoListener.onDrmInfo(OnDrmInfoHandlerDelegate.this.mMediaPlayer, drmInfo);
                     }
                 });
             } else {
-                this.mOnDrmInfoListener.onDrmInfo(this.mMediaPlayer, drmInfo2);
+                this.mOnDrmInfoListener.onDrmInfo(this.mMediaPlayer, drmInfo);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class OnDrmPreparedHandlerDelegate {
+    private class OnDrmPreparedHandlerDelegate {
         private Handler mHandler;
         private MediaPlayer mMediaPlayer;
         private OnDrmPreparedListener mOnDrmPreparedListener;
@@ -3046,31 +2568,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
-        /* renamed from: android.media.MediaPlayer$OnDrmPreparedHandlerDelegate$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ int val$status;
-
-            AnonymousClass1(int i) {
-                status = i;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                OnDrmPreparedHandlerDelegate.this.mOnDrmPreparedListener.onDrmPrepared(OnDrmPreparedHandlerDelegate.this.mMediaPlayer, status);
-            }
-        }
-
-        void notifyClient(int status) {
-            Handler handler = this.mHandler;
-            if (handler != null) {
-                handler.post(new Runnable() { // from class: android.media.MediaPlayer.OnDrmPreparedHandlerDelegate.1
-                    final /* synthetic */ int val$status;
-
-                    AnonymousClass1(int status2) {
-                        status = status2;
-                    }
-
+        void notifyClient(final int status) {
+            if (this.mHandler != null) {
+                this.mHandler.post(new Runnable() { // from class: android.media.MediaPlayer.OnDrmPreparedHandlerDelegate.1
                     @Override // java.lang.Runnable
                     public void run() {
                         OnDrmPreparedHandlerDelegate.this.mOnDrmPreparedListener.onDrmPrepared(OnDrmPreparedHandlerDelegate.this.mMediaPlayer, status);
@@ -3089,9 +2589,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 Log.v(TAG, "The Player has not been prepared yet");
                 throw new IllegalStateException("The Player has not been prepared yet");
             }
-            DrmInfo drmInfo2 = this.mDrmInfo;
-            if (drmInfo2 != null) {
-                drmInfo = drmInfo2.makeCopy();
+            if (this.mDrmInfo != null) {
+                drmInfo = this.mDrmInfo.makeCopy();
             }
         }
         return drmInfo;
@@ -3131,9 +2630,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 throw e;
             }
         }
-        OnDrmConfigHelper onDrmConfigHelper = this.mOnDrmConfigHelper;
-        if (onDrmConfigHelper != null) {
-            onDrmConfigHelper.onDrmConfig(this);
+        if (this.mOnDrmConfigHelper != null) {
+            this.mOnDrmConfigHelper.onDrmConfig(this);
         }
         synchronized (this.mDrmLock) {
             this.mDrmConfigAllowed = false;
@@ -3144,39 +2642,39 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                         this.mDrmUUID = uuid;
                         this.mActiveDrmScheme = true;
                         allDoneWithoutProvisioning = true;
-                    } catch (IllegalStateException e2) {
-                        Log.e(TAG, "prepareDrm(): Wrong usage: The player must be in the prepared state to call prepareDrm().");
-                        throw new IllegalStateException("prepareDrm(): Wrong usage: The player must be in the prepared state to call prepareDrm().");
+                    } catch (NotProvisionedException e2) {
+                        Log.w(TAG, "prepareDrm: NotProvisionedException");
+                        int result = HandleProvisioninig(uuid);
+                        if (result == 0) {
+                            if (!this.mDrmProvisioningInProgress) {
+                                this.mPrepareDrmInProgress = false;
+                            }
+                            if (0 != 0) {
+                            }
+                            if (allDoneWithoutProvisioning) {
+                                return;
+                            } else {
+                                return;
+                            }
+                        }
+                        switch (result) {
+                            case 1:
+                                Log.e(TAG, "prepareDrm: Provisioning was required but failed due to a network error.");
+                                throw new ProvisioningNetworkErrorException("prepareDrm: Provisioning was required but failed due to a network error.");
+                            case 2:
+                                Log.e(TAG, "prepareDrm: Provisioning was required but the request was denied by the server.");
+                                throw new ProvisioningServerErrorException("prepareDrm: Provisioning was required but the request was denied by the server.");
+                            default:
+                                Log.e(TAG, "prepareDrm: Post-provisioning preparation failed.");
+                                throw new IllegalStateException("prepareDrm: Post-provisioning preparation failed.");
+                        }
                     } catch (Exception e3) {
                         Log.e(TAG, "prepareDrm: Exception " + e3);
                         throw e3;
                     }
-                } catch (NotProvisionedException e4) {
-                    Log.w(TAG, "prepareDrm: NotProvisionedException");
-                    int result = HandleProvisioninig(uuid);
-                    if (result == 0) {
-                        if (!this.mDrmProvisioningInProgress) {
-                            this.mPrepareDrmInProgress = false;
-                        }
-                        if (0 != 0) {
-                        }
-                        if (allDoneWithoutProvisioning) {
-                            return;
-                        } else {
-                            return;
-                        }
-                    }
-                    switch (result) {
-                        case 1:
-                            Log.e(TAG, "prepareDrm: Provisioning was required but failed due to a network error.");
-                            throw new ProvisioningNetworkErrorException("prepareDrm: Provisioning was required but failed due to a network error.");
-                        case 2:
-                            Log.e(TAG, "prepareDrm: Provisioning was required but the request was denied by the server.");
-                            throw new ProvisioningServerErrorException("prepareDrm: Provisioning was required but the request was denied by the server.");
-                        default:
-                            Log.e(TAG, "prepareDrm: Post-provisioning preparation failed.");
-                            throw new IllegalStateException("prepareDrm: Post-provisioning preparation failed.");
-                    }
+                } catch (IllegalStateException e4) {
+                    Log.e(TAG, "prepareDrm(): Wrong usage: The player must be in the prepared state to call prepareDrm().");
+                    throw new IllegalStateException("prepareDrm(): Wrong usage: The player must be in the prepared state to call prepareDrm().");
                 }
             } finally {
                 if (!this.mDrmProvisioningInProgress) {
@@ -3332,14 +2830,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class DrmInfo {
         private Map<UUID, byte[]> mapPssh;
         private UUID[] supportedSchemes;
-
-        /* synthetic */ DrmInfo(Parcel parcel, DrmInfoIA drmInfoIA) {
-            this(parcel);
-        }
 
         public Map<UUID, byte[]> getPssh() {
             return this.mapPssh;
@@ -3373,6 +2866,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             Log.v(MediaPlayer.TAG, "DrmInfo() Parcel psshsize: " + psshsize + " supportedDRMsCount: " + supportedDRMsCount);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public DrmInfo makeCopy() {
             return new DrmInfo(this.mapPssh, this.supportedSchemes);
         }
@@ -3436,21 +2930,18 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NoDrmSchemeException extends MediaDrmException {
         public NoDrmSchemeException(String detailMessage) {
             super(detailMessage);
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class ProvisioningNetworkErrorException extends MediaDrmException {
         public ProvisioningNetworkErrorException(String detailMessage) {
             super(detailMessage);
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class ProvisioningServerErrorException extends MediaDrmException {
         public ProvisioningServerErrorException(String detailMessage) {
             super(detailMessage);
@@ -3481,8 +2972,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class ProvisioningThread extends Thread {
+    private class ProvisioningThread extends Thread {
         public static final int TIMEOUT_MS = 60000;
         private Object drmLock;
         private boolean finished;
@@ -3491,10 +2981,6 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         private int status;
         private String urlStr;
         private UUID uuid;
-
-        /* synthetic */ ProvisioningThread(MediaPlayer mediaPlayer, ProvisioningThreadIA provisioningThreadIA) {
-            this();
-        }
 
         private ProvisioningThread() {
         }
@@ -3595,9 +3081,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
         Log.v(TAG, "HandleProvisioninig provReq  data: " + Arrays.toString(provReq.getData()) + " url: " + provReq.getDefaultUrl());
         this.mDrmProvisioningInProgress = true;
-        ProvisioningThread initialize = new ProvisioningThread().initialize(provReq, uuid, this);
-        this.mDrmProvisioningThread = initialize;
-        initialize.start();
+        this.mDrmProvisioningThread = new ProvisioningThread().initialize(provReq, uuid, this);
+        this.mDrmProvisioningThread.start();
         if (this.mOnDrmPreparedHandlerDelegate != null) {
             return 0;
         }
@@ -3611,6 +3096,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean resumePrepareDrm(UUID uuid) {
         Log.v(TAG, "resumePrepareDrm: uuid: " + uuid);
         try {
@@ -3629,10 +3115,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             Log.v(TAG, "resetDrmState:  mDrmInfo=" + this.mDrmInfo + " mDrmProvisioningThread=" + this.mDrmProvisioningThread + " mPrepareDrmInProgress=" + this.mPrepareDrmInProgress + " mActiveDrmScheme=" + this.mActiveDrmScheme);
             this.mDrmInfoResolved = false;
             this.mDrmInfo = null;
-            ProvisioningThread provisioningThread = this.mDrmProvisioningThread;
-            if (provisioningThread != null) {
+            if (this.mDrmProvisioningThread != null) {
                 try {
-                    provisioningThread.join();
+                    this.mDrmProvisioningThread.join();
                 } catch (InterruptedException e) {
                     Log.w(TAG, "resetDrmState: ProvThread.join Exception " + e);
                 }
@@ -3644,16 +3129,15 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cleanDrmObj() {
         Log.v(TAG, "cleanDrmObj: mDrmObj=" + this.mDrmObj + " mDrmSessionId=" + Arrays.toString(this.mDrmSessionId));
-        byte[] bArr = this.mDrmSessionId;
-        if (bArr != null) {
-            this.mDrmObj.closeSession(bArr);
+        if (this.mDrmSessionId != null) {
+            this.mDrmObj.closeSession(this.mDrmSessionId);
             this.mDrmSessionId = null;
         }
-        MediaDrm mediaDrm = this.mDrmObj;
-        if (mediaDrm != null) {
-            mediaDrm.release();
+        if (this.mDrmObj != null) {
+            this.mDrmObj.release();
             this.mDrmObj = null;
         }
     }
@@ -3673,8 +3157,22 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         return mode == 1 || mode == 2;
     }
 
-    /* loaded from: classes2.dex */
-    public static class TimeProvider implements OnSeekCompleteListener, MediaTimeProvider {
+    private void setGameVideoSpeed() {
+        int playTime;
+        int duration;
+        this.gvsTarget = SystemProperties.get("persist.sys.gvs.target", "");
+        if (this.gvsTarget.startsWith(this.packageName) && (duration = getDuration()) > (playTime = Integer.parseInt(this.gvsTarget.split(NativeLibraryHelper.CLEAR_ABI_OVERRIDE)[1])) && playTime > 0) {
+            float speed = duration / playTime;
+            float speed2 = speed < 3.0f ? speed : 3.0f;
+            Log.d(TAG, "speed: " + speed2);
+            setPlaybackParams(getPlaybackParams().setSpeed(speed2));
+            if (!isPlaying()) {
+                pause();
+            }
+        }
+    }
+
+    static class TimeProvider implements OnSeekCompleteListener, MediaTimeProvider {
         private static final long MAX_EARLY_CALLBACK_US = 1000;
         private static final long MAX_NS_WITHOUT_POSITION_CHECK = 5000000000L;
         private static final int NOTIFY = 1;
@@ -3715,9 +3213,8 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 Looper mainLooper = Looper.getMainLooper();
                 looper = mainLooper;
                 if (mainLooper == null) {
-                    HandlerThread handlerThread = new HandlerThread("MediaPlayerMTPEventThread", -2);
-                    this.mHandlerThread = handlerThread;
-                    handlerThread.start();
+                    this.mHandlerThread = new HandlerThread("MediaPlayerMTPEventThread", -2);
+                    this.mHandlerThread.start();
                     looper = this.mHandlerThread.getLooper();
                 }
             }
@@ -3742,17 +3239,15 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         public void close() {
             this.mEventHandler.removeMessages(1);
             this.mEventHandler.removeMessages(2);
-            HandlerThread handlerThread = this.mHandlerThread;
-            if (handlerThread != null) {
-                handlerThread.quitSafely();
+            if (this.mHandlerThread != null) {
+                this.mHandlerThread.quitSafely();
                 this.mHandlerThread = null;
             }
         }
 
         protected void finalize() {
-            HandlerThread handlerThread = this.mHandlerThread;
-            if (handlerThread != null) {
-                handlerThread.quitSafely();
+            if (this.mHandlerThread != null) {
+                this.mHandlerThread.quitSafely();
             }
         }
 
@@ -3825,6 +3320,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifySeek() {
             this.mSeeking = false;
             try {
@@ -3847,12 +3343,14 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyTrackData(Pair<SubtitleTrack, byte[]> trackData) {
             SubtitleTrack track = trackData.first;
             byte[] data = trackData.second;
             track.onData(data, true, -1L);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyStop() {
             for (MediaTimeProvider.OnMediaTimeListener listener : this.mListeners) {
                 if (listener == null) {
@@ -3863,28 +3361,20 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
         }
 
         private int registerListener(MediaTimeProvider.OnMediaTimeListener listener) {
-            MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr;
-            MediaTimeProvider.OnMediaTimeListener onMediaTimeListener;
             int i = 0;
-            while (true) {
-                onMediaTimeListenerArr = this.mListeners;
-                if (i >= onMediaTimeListenerArr.length || (onMediaTimeListener = onMediaTimeListenerArr[i]) == listener || onMediaTimeListener == null) {
-                    break;
-                }
+            while (i < this.mListeners.length && this.mListeners[i] != listener && this.mListeners[i] != null) {
                 i++;
             }
-            if (i >= onMediaTimeListenerArr.length) {
+            if (i >= this.mListeners.length) {
                 MediaTimeProvider.OnMediaTimeListener[] newListeners = new MediaTimeProvider.OnMediaTimeListener[i + 1];
                 long[] newTimes = new long[i + 1];
-                System.arraycopy(onMediaTimeListenerArr, 0, newListeners, 0, onMediaTimeListenerArr.length);
-                long[] jArr = this.mTimes;
-                System.arraycopy(jArr, 0, newTimes, 0, jArr.length);
+                System.arraycopy(this.mListeners, 0, newListeners, 0, this.mListeners.length);
+                System.arraycopy(this.mTimes, 0, newTimes, 0, this.mTimes.length);
                 this.mListeners = newListeners;
                 this.mTimes = newTimes;
             }
-            MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr2 = this.mListeners;
-            if (onMediaTimeListenerArr2[i] == null) {
-                onMediaTimeListenerArr2[i] = listener;
+            if (this.mListeners[i] == null) {
+                this.mListeners[i] = listener;
                 this.mTimes[i] = -1;
             }
             return i;
@@ -3920,20 +3410,17 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             synchronized (this) {
                 int i = 0;
                 while (true) {
-                    MediaTimeProvider.OnMediaTimeListener[] onMediaTimeListenerArr = this.mListeners;
-                    if (i >= onMediaTimeListenerArr.length) {
+                    if (i >= this.mListeners.length) {
                         break;
                     }
-                    MediaTimeProvider.OnMediaTimeListener onMediaTimeListener = onMediaTimeListenerArr[i];
-                    if (onMediaTimeListener == listener) {
-                        System.arraycopy(onMediaTimeListenerArr, i + 1, onMediaTimeListenerArr, i, (onMediaTimeListenerArr.length - i) - 1);
-                        long[] jArr = this.mTimes;
-                        System.arraycopy(jArr, i + 1, jArr, i, (jArr.length - i) - 1);
-                        this.mListeners[r1.length - 1] = null;
-                        this.mTimes[r1.length - 1] = -1;
+                    if (this.mListeners[i] == listener) {
+                        System.arraycopy(this.mListeners, i + 1, this.mListeners, i, (this.mListeners.length - i) - 1);
+                        System.arraycopy(this.mTimes, i + 1, this.mTimes, i, (this.mTimes.length - i) - 1);
+                        this.mListeners[this.mListeners.length - 1] = null;
+                        this.mTimes[this.mTimes.length - 1] = -1;
                         break;
                     }
-                    if (onMediaTimeListener == null) {
+                    if (this.mListeners[i] == null) {
                         break;
                     } else {
                         i++;
@@ -3943,9 +3430,9 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public synchronized void notifyTimedEvent(boolean refreshTime) {
             long nowUs;
-            MediaTimeProvider.OnMediaTimeListener onMediaTimeListener;
             try {
                 nowUs = getCurrentTimeUs(refreshTime, true);
             } catch (IllegalStateException e) {
@@ -3974,25 +3461,18 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                 Log.d(TAG, sb.toString());
             }
             Vector<MediaTimeProvider.OnMediaTimeListener> activatedListeners = new Vector<>();
-            int ix = 0;
-            while (true) {
-                long[] jArr = this.mTimes;
-                if (ix >= jArr.length || (onMediaTimeListener = this.mListeners[ix]) == null) {
-                    break;
-                }
-                long j = jArr[ix];
-                if (j > -1) {
-                    if (j <= 1000 + nowUs) {
-                        activatedListeners.add(onMediaTimeListener);
+            for (int ix = 0; ix < this.mTimes.length && this.mListeners[ix] != null; ix++) {
+                if (this.mTimes[ix] > -1) {
+                    if (this.mTimes[ix] <= 1000 + nowUs) {
+                        activatedListeners.add(this.mListeners[ix]);
                         if (this.DEBUG) {
                             Log.d(TAG, Environment.MEDIA_REMOVED);
                         }
                         this.mTimes[ix] = -1;
-                    } else if (nextTimeUs == nowUs || j < nextTimeUs) {
-                        nextTimeUs = j;
+                    } else if (nextTimeUs == nowUs || this.mTimes[ix] < nextTimeUs) {
+                        nextTimeUs = this.mTimes[ix];
                     }
                 }
-                ix++;
             }
             if (nextTimeUs > nowUs && !this.mPaused) {
                 if (this.DEBUG) {
@@ -4009,8 +3489,7 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             }
         }
 
-        /* JADX WARN: Removed duplicated region for block: B:20:0x002f A[Catch: IllegalStateException -> 0x007c, all -> 0x00b7, TryCatch #1 {IllegalStateException -> 0x007c, blocks: (B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x003f), top: B:11:0x000d, outer: #0 }] */
-        /* JADX WARN: Removed duplicated region for block: B:27:0x0059 A[Catch: all -> 0x00b7, TRY_ENTER, TryCatch #0 {, blocks: (B:3:0x0001, B:6:0x0007, B:7:0x0009, B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x003f, B:27:0x0059, B:29:0x0061, B:31:0x0069, B:32:0x0078, B:33:0x007a, B:35:0x0074, B:38:0x007d, B:40:0x0081, B:42:0x0085, B:44:0x0091, B:46:0x0097, B:47:0x00b1, B:48:0x00b3, B:50:0x008d, B:51:0x00b6), top: B:2:0x0001, inners: #1 }] */
+        /* JADX WARN: Removed duplicated region for block: B:20:0x002f A[Catch: IllegalStateException -> 0x0080, all -> 0x00bb, TryCatch #0 {IllegalStateException -> 0x0080, blocks: (B:12:0x000d, B:14:0x0021, B:18:0x0029, B:20:0x002f, B:23:0x003f), top: B:11:0x000d, outer: #1 }] */
         @Override // android.media.MediaTimeProvider
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -4020,25 +3499,25 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             /*
                 r7 = this;
                 monitor-enter(r7)
-                boolean r0 = r7.mPaused     // Catch: java.lang.Throwable -> Lb7
+                boolean r0 = r7.mPaused     // Catch: java.lang.Throwable -> Lbb
                 if (r0 == 0) goto Lb
                 if (r8 != 0) goto Lb
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb7
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lbb
                 return r0
             Lb:
                 r0 = 1
                 r1 = 0
-                android.media.MediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                int r2 = r2.getCurrentPosition()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                long r2 = (long) r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                android.media.MediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                int r2 = r2.getCurrentPosition()     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                long r2 = (long) r2     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 r4 = 1000(0x3e8, double:4.94E-321)
                 long r2 = r2 * r4
-                r7.mLastTimeUs = r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                android.media.MediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                boolean r2 = r2.isPlaying()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                r7.mLastTimeUs = r2     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                android.media.MediaPlayer r2 = r7.mPlayer     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                boolean r2 = r2.isPlaying()     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 if (r2 == 0) goto L28
-                boolean r2 = r7.mBuffering     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                boolean r2 = r7.mBuffering     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 if (r2 == 0) goto L26
                 goto L28
             L26:
@@ -4047,92 +3526,92 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
             L28:
                 r2 = r0
             L29:
-                r7.mPaused = r2     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                boolean r2 = r7.DEBUG     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                r7.mPaused = r2     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                boolean r2 = r7.DEBUG     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 if (r2 == 0) goto L56
                 java.lang.String r2 = "MTP"
-                java.lang.StringBuilder r3 = new java.lang.StringBuilder     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                r3.<init>()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                boolean r4 = r7.mPaused     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                java.lang.StringBuilder r3 = new java.lang.StringBuilder     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                r3.<init>()     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                boolean r4 = r7.mPaused     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 if (r4 == 0) goto L3d
                 java.lang.String r4 = "paused"
                 goto L3f
             L3d:
                 java.lang.String r4 = "playing"
             L3f:
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
                 java.lang.String r4 = " at "
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                long r4 = r7.mLastTimeUs     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                java.lang.String r3 = r3.toString()     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
-                android.util.Log.v(r2, r3)     // Catch: java.lang.IllegalStateException -> L7c java.lang.Throwable -> Lb7
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                long r4 = r7.mLastTimeUs     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                java.lang.StringBuilder r3 = r3.append(r4)     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                java.lang.String r3 = r3.toString()     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
+                android.util.Log.v(r2, r3)     // Catch: java.lang.IllegalStateException -> L80 java.lang.Throwable -> Lbb
             L56:
-                if (r9 == 0) goto L74
-                long r2 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb7
-                long r4 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                int r6 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
-                if (r6 >= 0) goto L74
-                long r4 = r4 - r2
-                r2 = 1000000(0xf4240, double:4.940656E-318)
-                int r2 = (r4 > r2 ? 1 : (r4 == r2 ? 0 : -1))
-                if (r2 <= 0) goto L78
-                r7.mStopped = r1     // Catch: java.lang.Throwable -> Lb7
-                r7.mSeeking = r0     // Catch: java.lang.Throwable -> Lb7
+                if (r9 == 0) goto L78
+                long r2 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lbb
+                long r4 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                int r2 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
+                if (r2 >= 0) goto L78
+                long r2 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                long r4 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lbb
+                long r2 = r2 - r4
+                r4 = 1000000(0xf4240, double:4.940656E-318)
+                int r2 = (r2 > r4 ? 1 : (r2 == r4 ? 0 : -1))
+                if (r2 <= 0) goto L7c
+                r7.mStopped = r1     // Catch: java.lang.Throwable -> Lbb
+                r7.mSeeking = r0     // Catch: java.lang.Throwable -> Lbb
                 r0 = 3
                 r1 = 0
-                r7.scheduleNotification(r0, r1)     // Catch: java.lang.Throwable -> Lb7
-                goto L78
-            L74:
-                long r0 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb7
-                r7.mLastReportedTime = r0     // Catch: java.lang.Throwable -> Lb7
+                r7.scheduleNotification(r0, r1)     // Catch: java.lang.Throwable -> Lbb
+                goto L7c
             L78:
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb7
-                return r0
+                long r0 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lbb
+                r7.mLastReportedTime = r0     // Catch: java.lang.Throwable -> Lbb
             L7c:
-                r2 = move-exception
-                boolean r3 = r7.mPausing     // Catch: java.lang.Throwable -> Lb7
-                if (r3 == 0) goto Lb5
-                r7.mPausing = r1     // Catch: java.lang.Throwable -> Lb7
-                if (r9 == 0) goto L8d
-                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                long r5 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb7
-                int r1 = (r3 > r5 ? 1 : (r3 == r5 ? 0 : -1))
-                if (r1 >= 0) goto L91
-            L8d:
-                long r3 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lb7
-                r7.mLastReportedTime = r3     // Catch: java.lang.Throwable -> Lb7
-            L91:
-                r7.mPaused = r0     // Catch: java.lang.Throwable -> Lb7
-                boolean r0 = r7.DEBUG     // Catch: java.lang.Throwable -> Lb7
-                if (r0 == 0) goto Lb1
-                java.lang.String r0 = "MTP"
-                java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb7
-                r1.<init>()     // Catch: java.lang.Throwable -> Lb7
-                java.lang.String r3 = "illegal state, but pausing: estimating at "
-                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb7
-                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lb7
-                java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> Lb7
-                android.util.Log.d(r0, r1)     // Catch: java.lang.Throwable -> Lb7
-            Lb1:
-                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lb7
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb7
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lbb
                 return r0
+            L80:
+                r2 = move-exception
+                boolean r3 = r7.mPausing     // Catch: java.lang.Throwable -> Lbb
+                if (r3 == 0) goto Lb9
+                r7.mPausing = r1     // Catch: java.lang.Throwable -> Lbb
+                if (r9 == 0) goto L91
+                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                long r5 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lbb
+                int r1 = (r3 > r5 ? 1 : (r3 == r5 ? 0 : -1))
+                if (r1 >= 0) goto L95
+            L91:
+                long r3 = r7.mLastTimeUs     // Catch: java.lang.Throwable -> Lbb
+                r7.mLastReportedTime = r3     // Catch: java.lang.Throwable -> Lbb
+            L95:
+                r7.mPaused = r0     // Catch: java.lang.Throwable -> Lbb
+                boolean r0 = r7.DEBUG     // Catch: java.lang.Throwable -> Lbb
+                if (r0 == 0) goto Lb5
+                java.lang.String r0 = "MTP"
+                java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lbb
+                r1.<init>()     // Catch: java.lang.Throwable -> Lbb
+                java.lang.String r3 = "illegal state, but pausing: estimating at "
+                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lbb
+                long r3 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                java.lang.StringBuilder r1 = r1.append(r3)     // Catch: java.lang.Throwable -> Lbb
+                java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> Lbb
+                android.util.Log.d(r0, r1)     // Catch: java.lang.Throwable -> Lbb
             Lb5:
-                throw r2     // Catch: java.lang.Throwable -> Lb7
-            Lb7:
+                long r0 = r7.mLastReportedTime     // Catch: java.lang.Throwable -> Lbb
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lbb
+                return r0
+            Lb9:
+                throw r2     // Catch: java.lang.Throwable -> Lbb
+            Lbb:
                 r0 = move-exception
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lb7
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> Lbb
                 throw r0
             */
             throw new UnsupportedOperationException("Method not decompiled: android.media.MediaPlayer.TimeProvider.getCurrentTimeUs(boolean, boolean):long");
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public class EventHandler extends Handler {
+        private class EventHandler extends Handler {
             public EventHandler(Looper looper) {
                 super(looper);
             }
@@ -4143,32 +3622,26 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
                     switch (msg.arg1) {
                         case 0:
                             TimeProvider.this.notifyTimedEvent(true);
-                            return;
-                        case 1:
-                        default:
-                            return;
+                            break;
                         case 2:
                             TimeProvider.this.notifyStop();
-                            return;
+                            break;
                         case 3:
                             TimeProvider.this.notifySeek();
-                            return;
+                            break;
                     }
                 }
                 if (msg.what == 2) {
                     switch (msg.arg1) {
                         case 4:
                             TimeProvider.this.notifyTrackData((Pair) msg.obj);
-                            return;
-                        default:
-                            return;
+                            break;
                     }
                 }
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class MetricsConstants {
         public static final String CODEC_AUDIO = "android.media.mediaplayer.audio.codec";
         public static final String CODEC_VIDEO = "android.media.mediaplayer.video.codec";
@@ -4185,14 +3658,5 @@ public class MediaPlayer extends PlayerBase implements SubtitleController.Listen
 
         private MetricsConstants() {
         }
-    }
-
-    private String convertStartingPathToSystem(String path) {
-        if (path != null && path.startsWith("/product/media/audio/ui/")) {
-            String path2 = path.replaceFirst("/product", "/system");
-            Log.e(TAG, "convert starting path: " + path2);
-            return path2;
-        }
-        return path;
     }
 }

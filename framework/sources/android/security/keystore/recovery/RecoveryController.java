@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
-import android.security.KeyStore;
 import android.security.KeyStore2;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore2.AndroidKeyStoreProvider;
@@ -40,20 +39,18 @@ public class RecoveryController {
     public static final int RECOVERY_STATUS_SYNC_IN_PROGRESS = 1;
     private static final String TAG = "RecoveryController";
     private final ILockSettings mBinder;
-    private final KeyStore mKeyStore;
 
-    private RecoveryController(ILockSettings binder, KeyStore keystore) {
+    private RecoveryController(ILockSettings binder) {
         this.mBinder = binder;
-        this.mKeyStore = keystore;
     }
 
-    public ILockSettings getBinder() {
+    ILockSettings getBinder() {
         return this.mBinder;
     }
 
     public static RecoveryController getInstance(Context context) {
         ILockSettings lockSettings = ILockSettings.Stub.asInterface(ServiceManager.getService("lock_settings"));
-        return new RecoveryController(lockSettings, KeyStore.getInstance());
+        return new RecoveryController(lockSettings);
     }
 
     public static boolean isRecoverableKeyStoreEnabled(Context context) {
@@ -263,7 +260,7 @@ public class RecoveryController {
         }
     }
 
-    public Key getKeyFromGrant(String grantAlias) throws UnrecoverableKeyException, KeyPermanentlyInvalidatedException {
+    Key getKeyFromGrant(String grantAlias) throws UnrecoverableKeyException, KeyPermanentlyInvalidatedException {
         return AndroidKeyStoreProvider.loadAndroidKeyStoreSecretKeyFromKeystore(KeyStore2.getInstance(), getGrantDescriptor(grantAlias));
     }
 
@@ -298,7 +295,7 @@ public class RecoveryController {
         return TrustedRootCertificates.getRootCertificates();
     }
 
-    public InternalRecoveryServiceException wrapUnexpectedServiceSpecificException(ServiceSpecificException e) {
+    InternalRecoveryServiceException wrapUnexpectedServiceSpecificException(ServiceSpecificException e) {
         if (e.errorCode == 22) {
             return new InternalRecoveryServiceException(e.getMessage(), e);
         }

@@ -43,9 +43,8 @@ public class BinaryXmlSerializer implements TypedXmlSerializer {
         if (encoding != null && !StandardCharsets.UTF_8.name().equalsIgnoreCase(encoding)) {
             throw new UnsupportedOperationException();
         }
-        FastDataOutput obtainFastDataOutput = obtainFastDataOutput(os);
-        this.mOut = obtainFastDataOutput;
-        obtainFastDataOutput.write(PROTOCOL_MAGIC_VERSION_0);
+        this.mOut = obtainFastDataOutput(os);
+        this.mOut.write(PROTOCOL_MAGIC_VERSION_0);
         this.mTagCount = 0;
         this.mTagNames = new String[8];
     }
@@ -61,9 +60,8 @@ public class BinaryXmlSerializer implements TypedXmlSerializer {
 
     @Override // org.xmlpull.v1.XmlSerializer
     public void flush() throws IOException {
-        FastDataOutput fastDataOutput = this.mOut;
-        if (fastDataOutput != null) {
-            fastDataOutput.flush();
+        if (this.mOut != null) {
+            this.mOut.flush();
         }
     }
 
@@ -106,15 +104,13 @@ public class BinaryXmlSerializer implements TypedXmlSerializer {
         if (namespace != null && !namespace.isEmpty()) {
             throw illegalNamespace();
         }
-        int i = this.mTagCount;
-        String[] strArr = this.mTagNames;
-        if (i == strArr.length) {
-            this.mTagNames = (String[]) Arrays.copyOf(strArr, i + (i >> 1));
+        if (this.mTagCount == this.mTagNames.length) {
+            this.mTagNames = (String[]) Arrays.copyOf(this.mTagNames, this.mTagCount + (this.mTagCount >> 1));
         }
-        String[] strArr2 = this.mTagNames;
-        int i2 = this.mTagCount;
-        this.mTagCount = i2 + 1;
-        strArr2[i2] = name;
+        String[] strArr = this.mTagNames;
+        int i = this.mTagCount;
+        this.mTagCount = i + 1;
+        strArr[i] = name;
         this.mOut.writeByte(50);
         this.mOut.writeInternedUTF(name);
         return this;

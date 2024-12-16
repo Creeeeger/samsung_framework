@@ -148,7 +148,7 @@ public class ECAlgorithms {
         return c.decodePoint(p.getEncoded(false));
     }
 
-    public static ECPoint implCheckResult(ECPoint p) {
+    static ECPoint implCheckResult(ECPoint p) {
         if (!p.isValidPartial()) {
             throw new IllegalStateException("Invalid result");
         }
@@ -162,9 +162,9 @@ public class ECAlgorithms {
         ECPoint PsubQ = P.subtract(Q);
         ECPoint[] points = {Q, PsubQ, P, PaddQ};
         curve.normalizeAll(points);
-        ECPoint R = infinity;
-        ECPoint[] table = {points[3].negate(), points[2].negate(), points[1].negate(), points[0].negate(), R, points[0], points[1], points[2], points[3]};
+        ECPoint[] table = {points[3].negate(), points[2].negate(), points[1].negate(), points[0].negate(), infinity, points[0], points[1], points[2], points[3]};
         byte[] jsf = WNafUtil.generateJSF(k, l);
+        ECPoint R = infinity;
         int i = jsf.length;
         while (true) {
             i--;
@@ -180,7 +180,7 @@ public class ECAlgorithms {
         }
     }
 
-    public static ECPoint implShamirsTrickWNaf(ECPoint P, BigInteger k, ECPoint Q, BigInteger l) {
+    static ECPoint implShamirsTrickWNaf(ECPoint P, BigInteger k, ECPoint Q, BigInteger l) {
         boolean negK = k.signum() < 0;
         boolean negL = l.signum() < 0;
         BigInteger kAbs = k.abs();
@@ -205,7 +205,7 @@ public class ECAlgorithms {
         return implShamirsTrickWNaf(preCompP, preCompNegP, wnafP, preCompQ, preCompNegQ, wnafQ);
     }
 
-    public static ECPoint implShamirsTrickWNaf(ECEndomorphism endomorphism, ECPoint P, BigInteger k, BigInteger l) {
+    static ECPoint implShamirsTrickWNaf(ECEndomorphism endomorphism, ECPoint P, BigInteger k, BigInteger l) {
         boolean negK = k.signum() < 0;
         boolean negL = l.signum() < 0;
         BigInteger k2 = k.abs();
@@ -272,7 +272,7 @@ public class ECAlgorithms {
         int count = ps.length;
         boolean[] negs = new boolean[count];
         WNafPreCompInfo[] infos = new WNafPreCompInfo[count];
-        byte[][] wnafs = new byte[count];
+        byte[][] wnafs = new byte[count][];
         for (int i = 0; i < count; i++) {
             BigInteger ki = ks[i];
             negs[i] = ki.signum() < 0;
@@ -319,7 +319,7 @@ public class ECAlgorithms {
         int fullCount = halfCount << 1;
         boolean[] negs = new boolean[fullCount];
         WNafPreCompInfo[] infos = new WNafPreCompInfo[fullCount];
-        byte[][] wnafs = new byte[fullCount];
+        byte[][] wnafs = new byte[fullCount][];
         ECPointMap pointMap = endomorphism.getPointMap();
         int i = 0;
         while (i < halfCount) {

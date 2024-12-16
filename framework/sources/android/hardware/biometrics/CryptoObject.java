@@ -5,9 +5,10 @@ import android.security.identity.PresentationSession;
 import android.security.keystore2.AndroidKeyStoreProvider;
 import java.security.Signature;
 import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CryptoObject {
     private final Object mCrypto;
 
@@ -32,58 +33,70 @@ public class CryptoObject {
         this.mCrypto = session;
     }
 
+    public CryptoObject(KeyAgreement keyAgreement) {
+        this.mCrypto = keyAgreement;
+    }
+
+    public CryptoObject(long operationHandle) {
+        this.mCrypto = Long.valueOf(operationHandle);
+    }
+
     public Signature getSignature() {
-        Object obj = this.mCrypto;
-        if (obj instanceof Signature) {
-            return (Signature) obj;
+        if (this.mCrypto instanceof Signature) {
+            return (Signature) this.mCrypto;
         }
         return null;
     }
 
     public Cipher getCipher() {
-        Object obj = this.mCrypto;
-        if (obj instanceof Cipher) {
-            return (Cipher) obj;
+        if (this.mCrypto instanceof Cipher) {
+            return (Cipher) this.mCrypto;
         }
         return null;
     }
 
     public Mac getMac() {
-        Object obj = this.mCrypto;
-        if (obj instanceof Mac) {
-            return (Mac) obj;
+        if (this.mCrypto instanceof Mac) {
+            return (Mac) this.mCrypto;
         }
         return null;
     }
 
     @Deprecated
     public IdentityCredential getIdentityCredential() {
-        Object obj = this.mCrypto;
-        if (obj instanceof IdentityCredential) {
-            return (IdentityCredential) obj;
+        if (this.mCrypto instanceof IdentityCredential) {
+            return (IdentityCredential) this.mCrypto;
         }
         return null;
     }
 
     public PresentationSession getPresentationSession() {
-        Object obj = this.mCrypto;
-        if (obj instanceof PresentationSession) {
-            return (PresentationSession) obj;
+        if (this.mCrypto instanceof PresentationSession) {
+            return (PresentationSession) this.mCrypto;
         }
         return null;
     }
 
-    public final long getOpId() {
-        Object obj = this.mCrypto;
-        if (obj == null) {
+    public KeyAgreement getKeyAgreement() {
+        if (this.mCrypto instanceof KeyAgreement) {
+            return (KeyAgreement) this.mCrypto;
+        }
+        return null;
+    }
+
+    public long getOpId() {
+        if (this.mCrypto == null) {
             return 0L;
         }
-        if (obj instanceof IdentityCredential) {
-            return ((IdentityCredential) obj).getCredstoreOperationHandle();
+        if (this.mCrypto instanceof Long) {
+            return ((Long) this.mCrypto).longValue();
         }
-        if (obj instanceof PresentationSession) {
-            return ((PresentationSession) obj).getCredstoreOperationHandle();
+        if (this.mCrypto instanceof IdentityCredential) {
+            return ((IdentityCredential) this.mCrypto).getCredstoreOperationHandle();
         }
-        return AndroidKeyStoreProvider.getKeyStoreOperationHandle(obj);
+        if (this.mCrypto instanceof PresentationSession) {
+            return ((PresentationSession) this.mCrypto).getCredstoreOperationHandle();
+        }
+        return AndroidKeyStoreProvider.getKeyStoreOperationHandle(this.mCrypto);
     }
 }

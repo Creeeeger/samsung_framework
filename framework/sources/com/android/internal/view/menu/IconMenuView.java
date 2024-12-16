@@ -60,19 +60,15 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         this.mVerticalDividerRects = new ArrayList<>();
         this.mAnimations = a2.getResourceId(0, 0);
         a2.recycle();
-        Drawable drawable = this.mHorizontalDivider;
-        if (drawable != null) {
-            int intrinsicHeight = drawable.getIntrinsicHeight();
-            this.mHorizontalDividerHeight = intrinsicHeight;
-            if (intrinsicHeight == -1) {
+        if (this.mHorizontalDivider != null) {
+            this.mHorizontalDividerHeight = this.mHorizontalDivider.getIntrinsicHeight();
+            if (this.mHorizontalDividerHeight == -1) {
                 this.mHorizontalDividerHeight = 1;
             }
         }
-        Drawable drawable2 = this.mVerticalDivider;
-        if (drawable2 != null) {
-            int intrinsicWidth = drawable2.getIntrinsicWidth();
-            this.mVerticalDividerWidth = intrinsicWidth;
-            if (intrinsicWidth == -1) {
+        if (this.mVerticalDivider != null) {
+            this.mVerticalDividerWidth = this.mVerticalDivider.getIntrinsicWidth();
+            if (this.mVerticalDividerWidth == -1) {
                 this.mVerticalDividerWidth = 1;
             }
         }
@@ -82,7 +78,7 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         setDescendantFocusability(262144);
     }
 
-    public int getMaxItems() {
+    int getMaxItems() {
         return this.mMaxItems;
     }
 
@@ -139,38 +135,23 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return true;
     }
 
-    public Drawable getItemBackgroundDrawable() {
+    Drawable getItemBackgroundDrawable() {
         return this.mItemBackground.getConstantState().newDrawable(getContext().getResources());
     }
 
-    public IconMenuItemView createMoreItemView() {
+    IconMenuItemView createMoreItemView() {
         Context context = getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         IconMenuItemView itemView = (IconMenuItemView) inflater.inflate(R.layout.icon_menu_item_layout, (ViewGroup) null);
         Resources r = context.getResources();
         itemView.initialize(r.getText(R.string.more_item_label), this.mMoreIcon);
         itemView.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.view.menu.IconMenuView.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 IconMenuView.this.mMenu.changeMenuMode();
             }
         });
         return itemView;
-    }
-
-    /* renamed from: com.android.internal.view.menu.IconMenuView$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            IconMenuView.this.mMenu.changeMenuMode();
-        }
     }
 
     @Override // com.android.internal.view.menu.MenuView
@@ -247,14 +228,12 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measuredWidth = resolveSize(Integer.MAX_VALUE, widthMeasureSpec);
         calculateItemFittingMetadata(measuredWidth);
         layoutItems(measuredWidth);
         int layoutNumRows = this.mLayoutNumRows;
-        int i = this.mRowHeight;
-        int i2 = this.mHorizontalDividerHeight;
-        int desiredHeight = ((i + i2) * layoutNumRows) - i2;
+        int desiredHeight = ((this.mRowHeight + this.mHorizontalDividerHeight) * layoutNumRows) - this.mHorizontalDividerHeight;
         setMeasuredDimension(measuredWidth, resolveSize(desiredHeight, heightMeasureSpec));
         if (layoutNumRows > 0) {
             positionChildren(getMeasuredWidth(), getMeasuredHeight());
@@ -262,7 +241,7 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View child = getChildAt(i);
             LayoutParams childLayoutParams = (LayoutParams) child.getLayoutParams();
@@ -271,7 +250,7 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         Drawable drawable = this.mHorizontalDivider;
         if (drawable != null) {
             ArrayList<Rect> rects = this.mHorizontalDividerRects;
@@ -301,22 +280,22 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
     }
 
     @Override // android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
-    public void markStaleChildren() {
+    void markStaleChildren() {
         if (!this.mHasStaleChildren) {
             this.mHasStaleChildren = true;
             requestLayout();
         }
     }
 
-    public int getNumActualItemsShown() {
+    int getNumActualItemsShown() {
         return this.mNumActualItemsShown;
     }
 
-    public void setNumActualItemsShown(int count) {
+    void setNumActualItemsShown(int count) {
         this.mNumActualItemsShown = count;
     }
 
@@ -351,13 +330,13 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         requestFocus();
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         setCycleShortcutCaptionMode(false);
         super.onDetachedFromWindow();
     }
@@ -418,6 +397,7 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
@@ -430,6 +410,7 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         return new SavedState(superState, -1);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         View v;
@@ -440,27 +421,21 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class SavedState extends View.BaseSavedState {
+    private static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.view.menu.IconMenuView.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
         int focusedPosition;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         public SavedState(Parcelable superState, int focusedPosition) {
             super(superState);
@@ -477,26 +452,8 @@ public final class IconMenuView extends ViewGroup implements MenuBuilder.ItemInv
             super.writeToParcel(dest, flags);
             dest.writeInt(this.focusedPosition);
         }
-
-        /* renamed from: com.android.internal.view.menu.IconMenuView$SavedState$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes5.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
         int bottom;
         int desiredWidth;

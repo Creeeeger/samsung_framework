@@ -3,7 +3,6 @@ package android.media.audiopolicy;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
 import com.android.internal.util.Preconditions;
 import java.lang.ref.WeakReference;
@@ -28,17 +27,12 @@ public class AudioVolumeGroupChangeHandler {
             if (this.mHandler != null) {
                 return;
             }
-            HandlerThread handlerThread = new HandlerThread(TAG);
-            this.mHandlerThread = handlerThread;
-            handlerThread.start();
+            this.mHandlerThread = new HandlerThread(TAG);
+            this.mHandlerThread.start();
             if (this.mHandlerThread.getLooper() == null) {
                 this.mHandler = null;
             } else {
                 this.mHandler = new Handler(this.mHandlerThread.getLooper()) { // from class: android.media.audiopolicy.AudioVolumeGroupChangeHandler.1
-                    AnonymousClass1(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         ArrayList<AudioManager.VolumeGroupCallback> listeners;
@@ -71,41 +65,6 @@ public class AudioVolumeGroupChangeHandler {
         }
     }
 
-    /* renamed from: android.media.audiopolicy.AudioVolumeGroupChangeHandler$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            ArrayList<AudioManager.VolumeGroupCallback> listeners;
-            synchronized (this) {
-                if (msg.what == 4) {
-                    listeners = new ArrayList<>();
-                    if (AudioVolumeGroupChangeHandler.this.mListeners.contains(msg.obj)) {
-                        listeners.add((AudioManager.VolumeGroupCallback) msg.obj);
-                    }
-                } else {
-                    listeners = (ArrayList) AudioVolumeGroupChangeHandler.this.mListeners.clone();
-                }
-            }
-            if (listeners.isEmpty()) {
-                return;
-            }
-            switch (msg.what) {
-                case 1000:
-                    for (int i = 0; i < listeners.size(); i++) {
-                        listeners.get(i).onAudioVolumeGroupChanged(msg.arg1, msg.arg2);
-                    }
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
     protected void finalize() {
         native_finalize();
         if (this.mHandlerThread.isAlive()) {
@@ -118,9 +77,8 @@ public class AudioVolumeGroupChangeHandler {
         synchronized (this) {
             this.mListeners.add(cb);
         }
-        Handler handler = this.mHandler;
-        if (handler != null) {
-            Message m = handler.obtainMessage(4, 0, 0, cb);
+        if (this.mHandler != null) {
+            Message m = this.mHandler.obtainMessage(4, 0, 0, cb);
             this.mHandler.sendMessage(m);
         }
     }

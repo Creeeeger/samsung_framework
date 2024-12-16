@@ -63,17 +63,14 @@ public class AlarmManager {
     private final int mTargetSdkVersion;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AlarmType {
     }
 
-    /* loaded from: classes.dex */
     public interface OnAlarmListener {
         void onAlarm();
     }
 
-    /* loaded from: classes.dex */
-    public final class ListenerWrapper extends IAlarmListener.Stub implements Runnable {
+    final class ListenerWrapper extends IAlarmListener.Stub implements Runnable {
         IAlarmCompleteListener mCompletion;
         Executor mExecutor;
         final OnAlarmListener mListener;
@@ -120,13 +117,12 @@ public class AlarmManager {
         }
     }
 
-    public AlarmManager(IAlarmManager service, Context ctx) {
+    AlarmManager(IAlarmManager service, Context ctx) {
         this.mService = service;
         this.mContext = ctx;
         this.mPackageName = ctx.getPackageName();
-        int i = ctx.getApplicationInfo().targetSdkVersion;
-        this.mTargetSdkVersion = i;
-        this.mAlwaysExact = i < 19;
+        this.mTargetSdkVersion = ctx.getApplicationInfo().targetSdkVersion;
+        this.mAlwaysExact = this.mTargetSdkVersion < 19;
         this.mMainThreadHandler = new Handler(ctx.getMainLooper());
     }
 
@@ -260,12 +256,11 @@ public class AlarmManager {
                     th = th;
                     while (true) {
                         try {
-                            break;
+                            throw th;
                         } catch (Throwable th2) {
                             th = th2;
                         }
                     }
-                    throw th;
                 }
             }
             recipientWrapper2.setExecutor(targetExecutor);
@@ -319,8 +314,7 @@ public class AlarmManager {
         }
         ListenerWrapper wrapper = null;
         synchronized (AlarmManager.class) {
-            WeakHashMap<OnAlarmListener, WeakReference<ListenerWrapper>> weakHashMap = sWrappers;
-            if (weakHashMap != null && (weakRef = weakHashMap.get(listener)) != null) {
+            if (sWrappers != null && (weakRef = sWrappers.get(listener)) != null) {
                 wrapper = weakRef.get();
             }
         }
@@ -408,17 +402,15 @@ public class AlarmManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class AlarmClockInfo implements Parcelable {
         public static final Parcelable.Creator<AlarmClockInfo> CREATOR = new Parcelable.Creator<AlarmClockInfo>() { // from class: android.app.AlarmManager.AlarmClockInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AlarmClockInfo createFromParcel(Parcel in) {
                 return new AlarmClockInfo(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public AlarmClockInfo[] newArray(int size) {
                 return new AlarmClockInfo[size];
@@ -456,29 +448,11 @@ public class AlarmManager {
             dest.writeParcelable(this.mShowIntent, flags);
         }
 
-        /* renamed from: android.app.AlarmManager$AlarmClockInfo$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<AlarmClockInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AlarmClockInfo createFromParcel(Parcel in) {
-                return new AlarmClockInfo(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public AlarmClockInfo[] newArray(int size) {
-                return new AlarmClockInfo[size];
-            }
-        }
-
         public void dumpDebug(ProtoOutputStream proto, long fieldId) {
             long token = proto.start(fieldId);
             proto.write(1112396529665L, this.mTriggerTime);
-            PendingIntent pendingIntent = this.mShowIntent;
-            if (pendingIntent != null) {
-                pendingIntent.dumpDebug(proto, 1146756268034L);
+            if (this.mShowIntent != null) {
+                this.mShowIntent.dumpDebug(proto, 1146756268034L);
             }
             proto.end(token);
         }

@@ -8,6 +8,7 @@ import android.hardware.biometrics.BiometricStateListener;
 import android.hardware.biometrics.CryptoObject;
 import android.hardware.biometrics.IBiometricServiceLockoutResetCallback;
 import android.hardware.face.FaceAuthenticateOptions;
+import android.hardware.face.FaceEnrollOptions;
 import android.hardware.face.FaceManager;
 import android.hardware.face.IFaceAuthenticatorsRegisteredCallback;
 import android.hardware.face.IFaceServiceReceiver;
@@ -15,10 +16,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.HandlerExecutor;
 import android.os.IBinder;
 import android.os.IRemoteCallback;
-import android.os.Looper;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemProperties;
@@ -30,218 +30,296 @@ import android.util.Log;
 import android.util.Slog;
 import android.view.Surface;
 import com.android.internal.R;
-import com.android.internal.os.SomeArgs;
 import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /* loaded from: classes2.dex */
-public class FaceManager implements BiometricAuthenticator, BiometricFaceConstants {
-    private static final int MSG_ACQUIRED = 101;
-    private static final int MSG_AUTHENTICATION_FAILED = 103;
-    private static final int MSG_AUTHENTICATION_FRAME = 112;
-    private static final int MSG_AUTHENTICATION_SUCCEEDED = 102;
-    private static final int MSG_CHALLENGE_GENERATED = 108;
-    private static final int MSG_ENROLLMENT_FRAME = 113;
-    private static final int MSG_ENROLL_RESULT = 100;
-    private static final int MSG_ERROR = 104;
-    private static final int MSG_FACE_DETECTED = 109;
-    private static final int MSG_GET_FEATURE_COMPLETED = 106;
-    private static final int MSG_REMOVED = 105;
-    private static final int MSG_SET_FEATURE_COMPLETED = 107;
+public class FaceManager extends BiometricFaceConstants implements BiometricAuthenticator {
     private static final String TAG = "FaceManager";
     private static String mDeviceType = null;
-    private AuthenticationCallback mAuthenticationCallback;
     private final Context mContext;
-    private CryptoObject mCryptoObject;
-    private EnrollmentCallback mEnrollmentCallback;
-    private FaceDetectionCallback mFaceDetectionCallback;
-    private GenerateChallengeCallback mGenerateChallengeCallback;
-    private GetFeatureCallback mGetFeatureCallback;
+    private HandlerExecutor mExecutor;
     private Handler mHandler;
-    private RemovalCallback mRemovalCallback;
-    private Face mRemovalFace;
     private final IFaceService mService;
-    private SetFeatureCallback mSetFeatureCallback;
     private final IBinder mToken = new Binder();
     private List<FaceSensorPropertiesInternal> mProps = new ArrayList();
-    private final IFaceServiceReceiver mServiceReceiver = new AnonymousClass1();
     private Bundle mBundle = null;
     private byte[] mFidoRequestData = null;
     private Surface mSurface = null;
     private boolean mNeedtoAuthenticateExt = false;
 
-    /* loaded from: classes2.dex */
-    public interface FaceDetectionCallback {
-        void onFaceDetected(int i, int i2, boolean z);
-    }
-
-    /* loaded from: classes2.dex */
     public interface GenerateChallengeCallback {
         void onGenerateChallengeResult(int i, int i2, long j);
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class GetFeatureCallback {
         public abstract void onCompleted(boolean z, int[] iArr, boolean[] zArr);
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class SetFeatureCallback {
         public abstract void onCompleted(boolean z, int i);
     }
 
-    /* renamed from: android.hardware.face.FaceManager$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IFaceServiceReceiver.Stub {
-        AnonymousClass1() {
+    /* JADX INFO: Access modifiers changed from: private */
+    class FaceServiceReceiver extends IFaceServiceReceiver.Stub {
+        private final FaceCallback mFaceCallback;
+
+        FaceServiceReceiver(FaceCallback faceCallback) {
+            this.mFaceCallback = faceCallback;
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onEnrollResult$0(int remaining) {
+            this.mFaceCallback.sendEnrollResult(remaining);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onEnrollResult(Face face, int remaining) {
-            FaceManager.this.mHandler.obtainMessage(100, remaining, 0, face).sendToTarget();
+        public void onEnrollResult(Face face, final int remaining) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda4
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onEnrollResult$0(remaining);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onAcquired$1(int acquireInfo, int vendorCode) {
+            this.mFaceCallback.sendAcquiredResult(FaceManager.this.mContext, acquireInfo, vendorCode);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onAcquired(int acquireInfo, int vendorCode) {
-            FaceManager.this.mHandler.obtainMessage(101, acquireInfo, vendorCode).sendToTarget();
+        public void onAcquired(final int acquireInfo, final int vendorCode) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda14
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onAcquired$1(acquireInfo, vendorCode);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onAuthenticationSucceeded$2(Face face, int userId, boolean isStrongBiometric) {
+            this.mFaceCallback.sendAuthenticatedSucceeded(face, userId, isStrongBiometric);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onAuthenticationSucceeded(Face face, int i, boolean z) {
-            FaceManager.this.mHandler.obtainMessage(102, i, z ? 1 : 0, face).sendToTarget();
+        public void onAuthenticationSucceeded(final Face face, final int userId, final boolean isStrongBiometric) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda8
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onAuthenticationSucceeded$2(face, userId, isStrongBiometric);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onFaceDetected$3(int sensorId, int userId, boolean isStrongBiometric) {
+            this.mFaceCallback.sendFaceDetected(sensorId, userId, isStrongBiometric);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onFaceDetected(int sensorId, int userId, boolean isStrongBiometric) {
-            FaceManager.this.mHandler.obtainMessage(109, sensorId, userId, Boolean.valueOf(isStrongBiometric)).sendToTarget();
+        public void onFaceDetected(final int sensorId, final int userId, final boolean isStrongBiometric) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda5
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onFaceDetected$3(sensorId, userId, isStrongBiometric);
+                }
+            });
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onAuthenticationFailed() {
-            FaceManager.this.mHandler.obtainMessage(103).sendToTarget();
+            HandlerExecutor handlerExecutor = FaceManager.this.mExecutor;
+            final FaceCallback faceCallback = this.mFaceCallback;
+            Objects.requireNonNull(faceCallback);
+            handlerExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceCallback.this.sendAuthenticatedFailed();
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onError$4(int error, int vendorCode) {
+            this.mFaceCallback.sendErrorResult(FaceManager.this.mContext, error, vendorCode);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onError(int error, int vendorCode) {
-            FaceManager.this.mHandler.obtainMessage(104, error, vendorCode).sendToTarget();
+        public void onError(final int error, final int vendorCode) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda10
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onError$4(error, vendorCode);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onRemoved$5(Face face, int remaining) {
+            this.mFaceCallback.sendRemovedResult(face, remaining);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onRemoved(Face face, int remaining) {
-            FaceManager.this.mHandler.obtainMessage(105, remaining, 0, face).sendToTarget();
+        public void onRemoved(final Face face, final int remaining) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda11
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onRemoved$5(face, remaining);
+                }
+            });
             if (remaining == 0) {
                 Settings.Secure.putIntForUser(FaceManager.this.mContext.getContentResolver(), Settings.Secure.FACE_UNLOCK_RE_ENROLL, 0, -2);
             }
         }
 
-        @Override // android.hardware.face.IFaceServiceReceiver
-        public void onFeatureSet(boolean success, int feature) {
-            FaceManager.this.mHandler.obtainMessage(107, feature, 0, Boolean.valueOf(success)).sendToTarget();
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onFeatureSet$6(boolean success, int feature) {
+            this.mFaceCallback.sendSetFeatureCompleted(success, feature);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onFeatureGet(boolean success, int[] features, boolean[] featureState) {
-            SomeArgs args = SomeArgs.obtain();
-            args.arg1 = Boolean.valueOf(success);
-            args.arg2 = features;
-            args.arg3 = featureState;
-            FaceManager.this.mHandler.obtainMessage(106, args).sendToTarget();
+        public void onFeatureSet(final boolean success, final int feature) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda13
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onFeatureSet$6(success, feature);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onFeatureGet$7(boolean success, int[] features, boolean[] featureState) {
+            this.mFaceCallback.sendGetFeatureCompleted(success, features, featureState);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onChallengeGenerated(int sensorId, int userId, long challenge) {
-            FaceManager.this.mHandler.obtainMessage(108, sensorId, userId, Long.valueOf(challenge)).sendToTarget();
+        public void onFeatureGet(final boolean success, final int[] features, final boolean[] featureState) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda3
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onFeatureGet$7(success, features, featureState);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onChallengeGenerated$8(int sensorId, int userId, long challenge) {
+            this.mFaceCallback.sendChallengeGenerated(sensorId, userId, challenge);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onAuthenticationFrame(FaceAuthenticationFrame frame) {
-            FaceManager.this.mHandler.obtainMessage(112, frame).sendToTarget();
+        public void onChallengeGenerated(final int sensorId, final int userId, final long challenge) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onChallengeGenerated$8(sensorId, userId, challenge);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onAuthenticationFrame$9(FaceAuthenticationFrame frame) {
+            this.mFaceCallback.sendAuthenticationFrame(FaceManager.this.mContext, frame);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
-        public void onEnrollmentFrame(FaceEnrollFrame frame) {
-            FaceManager.this.mHandler.obtainMessage(113, frame).sendToTarget();
+        public void onAuthenticationFrame(final FaceAuthenticationFrame frame) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda15
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onAuthenticationFrame$9(frame);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onEnrollmentFrame$10(FaceEnrollFrame frame) {
+            this.mFaceCallback.sendEnrollmentFrame(FaceManager.this.mContext, frame);
+        }
+
+        @Override // android.hardware.face.IFaceServiceReceiver
+        public void onEnrollmentFrame(final FaceEnrollFrame frame) {
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda9
+                @Override // java.lang.Runnable
+                public final void run() {
+                    FaceManager.FaceServiceReceiver.this.lambda$onEnrollmentFrame$10(frame);
+                }
+            });
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onSemAuthenticationSucceeded$11(Face face, int userId, boolean isStrongBiometric, byte[] fidoResultData) {
+            this.mFaceCallback.sendAuthenticatedSucceeded(face, userId, isStrongBiometric, fidoResultData);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onSemAuthenticationSucceeded(final Face face, final int userId, final boolean isStrongBiometric, final byte[] fidoResultData) {
-            FaceManager.this.mHandler.post(new Runnable() { // from class: android.hardware.face.FaceManager$1$$ExternalSyntheticLambda1
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
-                    FaceManager.AnonymousClass1.this.lambda$onSemAuthenticationSucceeded$0(face, userId, isStrongBiometric, fidoResultData);
+                    FaceManager.FaceServiceReceiver.this.lambda$onSemAuthenticationSucceeded$11(face, userId, isStrongBiometric, fidoResultData);
                 }
             });
         }
 
-        public /* synthetic */ void lambda$onSemAuthenticationSucceeded$0(Face face, int userId, boolean isStrongBiometric, byte[] fidoResultData) {
-            if (FaceManager.this.mAuthenticationCallback != null) {
-                AuthenticationResult result = new AuthenticationResult(FaceManager.this.mCryptoObject, face, userId, isStrongBiometric);
-                FaceManager.this.mAuthenticationCallback.onAuthenticationSucceeded(result, fidoResultData);
-            }
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onSemAuthenticationSucceededWithBundle$12(Face face, int userId, boolean isStrongBiometric, Bundle b) {
+            this.mFaceCallback.sendAuthenticatedSucceeded(face, userId, isStrongBiometric, b);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onSemAuthenticationSucceededWithBundle(final Face face, final int userId, final boolean isStrongBiometric, final Bundle b) {
-            FaceManager.this.mHandler.post(new Runnable() { // from class: android.hardware.face.FaceManager$1$$ExternalSyntheticLambda2
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    FaceManager.AnonymousClass1.this.lambda$onSemAuthenticationSucceededWithBundle$1(face, userId, isStrongBiometric, b);
+                    FaceManager.FaceServiceReceiver.this.lambda$onSemAuthenticationSucceededWithBundle$12(face, userId, isStrongBiometric, b);
                 }
             });
         }
 
-        public /* synthetic */ void lambda$onSemAuthenticationSucceededWithBundle$1(Face face, int userId, boolean isStrongBiometric, Bundle b) {
-            if (FaceManager.this.mAuthenticationCallback != null) {
-                AuthenticationResult result = new AuthenticationResult(null, face, userId, isStrongBiometric);
-                FaceManager.this.mAuthenticationCallback.onAuthenticationSucceededWithBundle(result, b);
-            }
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onSemImageProcessed$13(byte[] data, int width, int height, int orientation, int imageFormat, Bundle b) {
+            this.mFaceCallback.sendImageProcessed(data, width, height, orientation, imageFormat, b);
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onSemImageProcessed(final byte[] data, final int width, final int height, final int orientation, final int imageFormat, final Bundle b) throws RemoteException {
-            FaceManager.this.mHandler.post(new Runnable() { // from class: android.hardware.face.FaceManager$1$$ExternalSyntheticLambda0
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
-                    FaceManager.AnonymousClass1.this.lambda$onSemImageProcessed$2(data, width, height, orientation, imageFormat, b);
+                    FaceManager.FaceServiceReceiver.this.lambda$onSemImageProcessed$13(data, width, height, orientation, imageFormat, b);
                 }
             });
-        }
-
-        public /* synthetic */ void lambda$onSemImageProcessed$2(byte[] data, int width, int height, int orientation, int imageFormat, Bundle b) {
-            if (FaceManager.this.mEnrollmentCallback != null) {
-                FaceManager.this.mEnrollmentCallback.onImageProcessed(data, width, height, orientation, imageFormat, b);
-            } else if (FaceManager.this.mAuthenticationCallback != null) {
-                FaceManager.this.mAuthenticationCallback.onImageProcessed(width, height, orientation, imageFormat, b);
-            }
         }
 
         @Override // android.hardware.face.IFaceServiceReceiver
         public void onSemStatusUpdate(int status, String msg) {
-            FaceManager.this.mHandler.post(new Runnable() { // from class: android.hardware.face.FaceManager$1$$ExternalSyntheticLambda3
+            FaceManager.this.mExecutor.execute(new Runnable() { // from class: android.hardware.face.FaceManager$FaceServiceReceiver$$ExternalSyntheticLambda12
                 @Override // java.lang.Runnable
                 public final void run() {
-                    FaceManager.AnonymousClass1.lambda$onSemStatusUpdate$3();
+                    FaceManager.FaceServiceReceiver.lambda$onSemStatusUpdate$14();
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onSemStatusUpdate$3() {
+        static /* synthetic */ void lambda$onSemStatusUpdate$14() {
         }
     }
 
     public FaceManager(Context context, IFaceService service) {
         this.mContext = context;
         this.mService = service;
-        if (service == null) {
+        if (this.mService == null) {
             Slog.v(TAG, "FaceAuthenticationManagerService was null");
         }
-        this.mHandler = new MyHandler(context);
+        this.mHandler = context.getMainThreadHandler();
+        this.mExecutor = new HandlerExecutor(this.mHandler);
         if (context.checkCallingOrSelfPermission(Manifest.permission.USE_BIOMETRIC_INTERNAL) == 0) {
-            addAuthenticatorsRegisteredCallback(new IFaceAuthenticatorsRegisteredCallback.Stub() { // from class: android.hardware.face.FaceManager.2
-                AnonymousClass2() {
-                }
-
+            addAuthenticatorsRegisteredCallback(new IFaceAuthenticatorsRegisteredCallback.Stub() { // from class: android.hardware.face.FaceManager.1
                 @Override // android.hardware.face.IFaceAuthenticatorsRegisteredCallback
                 public void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> sensors) {
                     FaceManager.this.mProps = sensors;
@@ -250,24 +328,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.face.FaceManager$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IFaceAuthenticatorsRegisteredCallback.Stub {
-        AnonymousClass2() {
-        }
-
-        @Override // android.hardware.face.IFaceAuthenticatorsRegisteredCallback
-        public void onAllAuthenticatorsRegistered(List<FaceSensorPropertiesInternal> sensors) {
-            FaceManager.this.mProps = sensors;
-        }
-    }
-
     private void useHandler(Handler handler) {
         if (handler != null) {
-            this.mHandler = new MyHandler(handler.getLooper());
-        } else if (this.mHandler.getLooper() != this.mContext.getMainLooper()) {
-            this.mHandler = new MyHandler(this.mContext.getMainLooper());
+            this.mHandler = handler;
+            this.mExecutor = new HandlerExecutor(this.mHandler);
+        } else if (this.mHandler != this.mContext.getMainThreadHandler()) {
+            this.mHandler = this.mContext.getMainThreadHandler();
+            this.mExecutor = new HandlerExecutor(this.mHandler);
         }
     }
 
@@ -278,15 +345,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r5v1 */
-    /* JADX WARN: Type inference failed for: r5v11 */
-    /* JADX WARN: Type inference failed for: r5v13 */
-    /* JADX WARN: Type inference failed for: r5v16 */
-    /* JADX WARN: Type inference failed for: r5v18 */
-    /* JADX WARN: Type inference failed for: r5v19 */
+    /* JADX WARN: Type inference failed for: r5v15 */
+    /* JADX WARN: Type inference failed for: r5v17 */
     /* JADX WARN: Type inference failed for: r5v2, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r5v5 */
-    /* JADX WARN: Type inference failed for: r5v6 */
-    /* JADX WARN: Type inference failed for: r5v7 */
+    /* JADX WARN: Type inference failed for: r5v20 */
+    /* JADX WARN: Type inference failed for: r5v22 */
+    /* JADX WARN: Type inference failed for: r5v8, types: [boolean] */
+    /* JADX WARN: Type inference failed for: r5v9 */
     public void authenticate(CryptoObject cryptoObject, CancellationSignal cancellationSignal, AuthenticationCallback authenticationCallback, Handler handler, FaceAuthenticateOptions faceAuthenticateOptions) {
         ?? r5;
         Object obj;
@@ -300,35 +365,33 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
         faceAuthenticateOptions.setOpPackageName(this.mContext.getOpPackageName());
         faceAuthenticateOptions.setAttributionTag(this.mContext.getAttributionTag());
-        if (this.mService != null) {
-            try {
+        try {
+            if (this.mService != null) {
                 try {
+                    FaceCallback faceCallback = new FaceCallback(authenticationCallback, cryptoObject);
                     useHandler(handler);
-                    this.mAuthenticationCallback = authenticationCallback;
-                    this.mCryptoObject = cryptoObject;
-                    r5 = cryptoObject != null ? cryptoObject.getOpId() : 0;
-                    long j = r5;
+                    long opId = cryptoObject != null ? cryptoObject.getOpId() : 0L;
                     Trace.beginSection("FaceManager#authenticate");
+                    r5 = this.mNeedtoAuthenticateExt;
                     try {
-                        if (this.mNeedtoAuthenticateExt) {
-                            semAuthenticate = this.mService.semAuthenticateExt(this.mToken, j, this.mServiceReceiver, faceAuthenticateOptions, this.mSurface, this.mFidoRequestData);
+                        if (r5 != 0) {
+                            semAuthenticate = this.mService.semAuthenticateExt(this.mToken, opId, new FaceServiceReceiver(faceCallback), faceAuthenticateOptions, this.mSurface, this.mFidoRequestData);
                             r5 = TAG;
                         } else {
-                            Bundle bundle = this.mBundle;
-                            if (bundle == null) {
+                            if (this.mBundle == null) {
                                 if (this.mFidoRequestData != null) {
                                     obj = TAG;
                                 } else {
                                     IFaceService iFaceService = this.mService;
                                     IBinder iBinder = this.mToken;
-                                    IFaceServiceReceiver iFaceServiceReceiver = this.mServiceReceiver;
+                                    FaceServiceReceiver faceServiceReceiver = new FaceServiceReceiver(faceCallback);
                                     r5 = TAG;
-                                    semAuthenticate = iFaceService.authenticate(iBinder, j, iFaceServiceReceiver, faceAuthenticateOptions);
+                                    semAuthenticate = iFaceService.authenticate(iBinder, opId, faceServiceReceiver, faceAuthenticateOptions);
                                 }
                             } else {
                                 obj = TAG;
                             }
-                            semAuthenticate = this.mService.semAuthenticate(this.mToken, j, this.mServiceReceiver, faceAuthenticateOptions, bundle, this.mFidoRequestData);
+                            semAuthenticate = this.mService.semAuthenticate(this.mToken, opId, new FaceServiceReceiver(faceCallback), faceAuthenticateOptions, this.mBundle, this.mFidoRequestData);
                             r5 = obj;
                         }
                         if (cancellationSignal != null) {
@@ -339,13 +402,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                         Slog.w(r5, "Remote exception while authenticating: ", e);
                         authenticationCallback.onAuthenticationError(1, getErrorString(this.mContext, 1, 0));
                     }
-                } finally {
-                    Trace.endSection();
+                } catch (RemoteException e2) {
+                    e = e2;
+                    r5 = TAG;
                 }
-            } catch (RemoteException e2) {
-                e = e2;
-                r5 = TAG;
             }
+        } finally {
+            Trace.endSection();
         }
     }
 
@@ -359,9 +422,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
         options.setOpPackageName(this.mContext.getOpPackageName());
         options.setAttributionTag(this.mContext.getAttributionTag());
-        this.mFaceDetectionCallback = callback;
+        FaceCallback faceCallback = new FaceCallback(callback);
         try {
-            long authId = this.mService.detectFace(this.mToken, this.mServiceReceiver, options);
+            long authId = this.mService.detectFace(this.mToken, new FaceServiceReceiver(faceCallback), options);
             cancel.setOnCancelListener(new OnFaceDetectionCancelListener(authId));
         } catch (RemoteException e) {
             Slog.w(TAG, "Remote exception when requesting finger detect", e);
@@ -369,10 +432,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void enroll(int userId, byte[] hardwareAuthToken, CancellationSignal cancel, EnrollmentCallback callback, int[] disabledFeatures) {
-        enroll(userId, hardwareAuthToken, cancel, callback, disabledFeatures, null, false);
+        enroll(userId, hardwareAuthToken, cancel, callback, disabledFeatures, null, false, new FaceEnrollOptions.Builder().build());
     }
 
-    public void enroll(int userId, byte[] hardwareAuthToken, CancellationSignal cancel, EnrollmentCallback callback, int[] disabledFeatures, Surface previewSurface, boolean debugConsent) {
+    public void enroll(int userId, byte[] hardwareAuthToken, CancellationSignal cancel, EnrollmentCallback callback, int[] disabledFeatures, Surface previewSurface, boolean debugConsent, FaceEnrollOptions options) {
         if (callback == null) {
             throw new IllegalArgumentException("Must supply an enrollment callback");
         }
@@ -384,12 +447,12 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             callback.onEnrollmentError(2, getErrorString(this.mContext, 2, 0));
             return;
         }
-        try {
-            if (this.mService != null) {
+        if (this.mService != null) {
+            try {
                 try {
-                    this.mEnrollmentCallback = callback;
+                    FaceCallback faceCallback = new FaceCallback(callback);
                     Trace.beginSection("FaceManager#enroll");
-                    long enrollId = this.mService.enroll(userId, this.mToken, hardwareAuthToken, this.mServiceReceiver, this.mContext.getOpPackageName(), disabledFeatures, previewSurface, debugConsent);
+                    long enrollId = this.mService.enroll(userId, this.mToken, hardwareAuthToken, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName(), disabledFeatures, previewSurface, debugConsent, options);
                     if (cancel != null) {
                         cancel.setOnCancelListener(new OnEnrollCancelListener(enrollId));
                     }
@@ -397,9 +460,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                     Slog.w(TAG, "Remote exception in enroll: ", e);
                     callback.onEnrollmentError(1, getErrorString(this.mContext, 1, 0));
                 }
+            } finally {
+                Trace.endSection();
             }
-        } finally {
-            Trace.endSection();
         }
     }
 
@@ -411,12 +474,12 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             Slog.w(TAG, "enrollRemotely is already canceled.");
             return;
         }
-        if (this.mService != null) {
-            try {
+        try {
+            if (this.mService != null) {
                 try {
-                    this.mEnrollmentCallback = callback;
+                    FaceCallback faceCallback = new FaceCallback(callback);
                     Trace.beginSection("FaceManager#enrollRemotely");
-                    long enrolId = this.mService.enrollRemotely(userId, this.mToken, hardwareAuthToken, this.mServiceReceiver, this.mContext.getOpPackageName(), disabledFeatures);
+                    long enrolId = this.mService.enrollRemotely(userId, this.mToken, hardwareAuthToken, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName(), disabledFeatures);
                     if (cancel != null) {
                         cancel.setOnCancelListener(new OnEnrollCancelListener(enrolId));
                     }
@@ -424,18 +487,17 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                     Slog.w(TAG, "Remote exception in enrollRemotely: ", e);
                     callback.onEnrollmentError(1, getErrorString(this.mContext, 1, 0));
                 }
-            } finally {
-                Trace.endSection();
             }
+        } finally {
+            Trace.endSection();
         }
     }
 
     public void generateChallenge(int sensorId, int userId, GenerateChallengeCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                this.mGenerateChallengeCallback = callback;
-                iFaceService.generateChallenge(this.mToken, sensorId, userId, this.mServiceReceiver, this.mContext.getOpPackageName());
+                FaceCallback faceCallback = new FaceCallback(callback);
+                this.mService.generateChallenge(this.mToken, sensorId, userId, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -453,10 +515,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void revokeChallenge(int sensorId, int userId, long challenge) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.revokeChallenge(this.mToken, sensorId, userId, this.mContext.getOpPackageName(), challenge);
+                this.mService.revokeChallenge(this.mToken, sensorId, userId, this.mContext.getOpPackageName(), challenge);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -464,10 +525,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void resetLockout(int sensorId, int userId, byte[] hardwareAuthToken) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.resetLockout(this.mToken, sensorId, userId, hardwareAuthToken, this.mContext.getOpPackageName());
+                this.mService.resetLockout(this.mToken, sensorId, userId, hardwareAuthToken, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -475,11 +535,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void setFeature(int userId, int feature, boolean enabled, byte[] hardwareAuthToken, SetFeatureCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                this.mSetFeatureCallback = callback;
-                iFaceService.setFeature(this.mToken, userId, feature, enabled, hardwareAuthToken, this.mServiceReceiver, this.mContext.getOpPackageName());
+                FaceCallback faceCallback = new FaceCallback(callback);
+                this.mService.setFeature(this.mToken, userId, feature, enabled, hardwareAuthToken, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -487,11 +546,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void getFeature(int userId, int feature, GetFeatureCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                this.mGetFeatureCallback = callback;
-                iFaceService.getFeature(this.mToken, userId, feature, this.mServiceReceiver, this.mContext.getOpPackageName());
+                FaceCallback faceCallback = new FaceCallback(callback);
+                this.mService.getFeature(this.mToken, userId, feature, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -499,12 +557,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void remove(Face face, int userId, RemovalCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                this.mRemovalCallback = callback;
-                this.mRemovalFace = face;
-                iFaceService.remove(this.mToken, face.getBiometricId(), userId, this.mServiceReceiver, this.mContext.getOpPackageName());
+                FaceCallback faceCallback = new FaceCallback(callback, face);
+                this.mService.remove(this.mToken, face.getBiometricId(), userId, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -512,11 +568,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void removeAll(int userId, RemovalCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                this.mRemovalCallback = callback;
-                iFaceService.removeAll(this.mToken, userId, this.mServiceReceiver, this.mContext.getOpPackageName());
+                FaceCallback faceCallback = new FaceCallback(callback);
+                this.mService.removeAll(this.mToken, userId, new FaceServiceReceiver(faceCallback), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -529,10 +584,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             Slog.e(TAG, "No sensors");
             return new ArrayList();
         }
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.getEnrolledFaces(faceSensorProperties.get(0).sensorId, userId, this.mContext.getOpPackageName());
+                return this.mService.getEnrolledFaces(faceSensorProperties.get(0).sensorId, userId, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -554,12 +608,11 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             Slog.e(TAG, "No sensors");
             return false;
         }
-        IFaceService iFaceService = this.mService;
-        if (iFaceService == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iFaceService.hasEnrolledFaces(faceSensorProperties.get(0).sensorId, userId, this.mContext.getOpPackageName());
+            return this.mService.hasEnrolledFaces(faceSensorProperties.get(0).sensorId, userId, this.mContext.getOpPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -571,10 +624,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             Slog.e(TAG, "No sensors");
             return false;
         }
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.isHardwareDetected(faceSensorProperties.get(0).sensorId, this.mContext.getOpPackageName());
+                return this.mService.isHardwareDetected(faceSensorProperties.get(0).sensorId, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -593,10 +645,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public List<FaceSensorPropertiesInternal> getSensorPropertiesInternal() {
-        IFaceService iFaceService;
         try {
-            if (this.mProps.isEmpty() && (iFaceService = this.mService) != null) {
-                return iFaceService.getSensorPropertiesInternal(this.mContext.getOpPackageName());
+            if (this.mProps.isEmpty() && this.mService != null) {
+                return this.mService.getSensorPropertiesInternal(this.mContext.getOpPackageName());
             }
             return this.mProps;
         } catch (RemoteException e) {
@@ -614,10 +665,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void addAuthenticatorsRegisteredCallback(IFaceAuthenticatorsRegisteredCallback callback) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.addAuthenticatorsRegisteredCallback(callback);
+                this.mService.addAuthenticatorsRegisteredCallback(callback);
                 return;
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
@@ -627,10 +677,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public int getLockoutModeForUser(int sensorId, int userId) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.getLockoutModeForUser(sensorId, userId);
+                return this.mService.getLockoutModeForUser(sensorId, userId);
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
                 return 0;
@@ -643,7 +692,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         if (this.mService != null) {
             try {
                 PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
-                this.mService.addLockoutResetCallback(new AnonymousClass3(powerManager, callback), this.mContext.getOpPackageName());
+                this.mService.addLockoutResetCallback(new AnonymousClass2(powerManager, callback), this.mContext.getOpPackageName());
                 return;
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
@@ -652,13 +701,12 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         Slog.w(TAG, "addLockoutResetCallback(): Service not connected!");
     }
 
-    /* renamed from: android.hardware.face.FaceManager$3 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass3 extends IBiometricServiceLockoutResetCallback.Stub {
+    /* renamed from: android.hardware.face.FaceManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IBiometricServiceLockoutResetCallback.Stub {
         final /* synthetic */ LockoutResetCallback val$callback;
         final /* synthetic */ PowerManager val$powerManager;
 
-        AnonymousClass3(PowerManager powerManager, LockoutResetCallback lockoutResetCallback) {
+        AnonymousClass2(PowerManager powerManager, LockoutResetCallback lockoutResetCallback) {
             this.val$powerManager = powerManager;
             this.val$callback = lockoutResetCallback;
         }
@@ -670,10 +718,10 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                 wakeLock.acquire();
                 Handler handler = FaceManager.this.mHandler;
                 final LockoutResetCallback lockoutResetCallback = this.val$callback;
-                handler.post(new Runnable() { // from class: android.hardware.face.FaceManager$3$$ExternalSyntheticLambda0
+                handler.post(new Runnable() { // from class: android.hardware.face.FaceManager$2$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
-                        FaceManager.AnonymousClass3.lambda$onLockoutReset$0(FaceManager.LockoutResetCallback.this, sensorId, wakeLock);
+                        FaceManager.AnonymousClass2.lambda$onLockoutReset$0(FaceManager.LockoutResetCallback.this, sensorId, wakeLock);
                     }
                 });
             } finally {
@@ -681,7 +729,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             }
         }
 
-        public static /* synthetic */ void lambda$onLockoutReset$0(LockoutResetCallback callback, int sensorId, PowerManager.WakeLock wakeLock) {
+        static /* synthetic */ void lambda$onLockoutReset$0(LockoutResetCallback callback, int sensorId, PowerManager.WakeLock wakeLock) {
             try {
                 callback.onLockoutReset(sensorId);
             } finally {
@@ -698,35 +746,35 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelEnrollment(long requestId) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.cancelEnrollment(this.mToken, requestId);
+                this.mService.cancelEnrollment(this.mToken, requestId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelAuthentication(long requestId) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName(), requestId);
+                this.mService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName(), requestId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelFaceDetect(long requestId) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iFaceService.cancelFaceDetect(this.mToken, this.mContext.getOpPackageName(), requestId);
+            this.mService.cancelFaceDetect(this.mToken, this.mContext.getOpPackageName(), requestId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -748,7 +796,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             case 10:
                 return "";
             case 7:
-                return context.getString(R.string.face_error_lockout);
+                return context.getString(R.string.sem_face_error_lockout);
             case 8:
                 switch (vendorCode) {
                     case 1001:
@@ -780,7 +828,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                         return context.getString(R.string.sem_face_error_camera_access_off);
                 }
             case 9:
-                return context.getString(R.string.face_error_lockout_permanent);
+                return context.getString(R.string.sem_face_error_lockout_permanent);
             case 11:
                 return context.getString(R.string.face_error_not_enrolled);
             case 15:
@@ -827,7 +875,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class AuthenticationResult {
         private final CryptoObject mCryptoObject;
         private final Face mFace;
@@ -858,7 +905,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class AuthenticationCallback extends BiometricAuthenticator.AuthenticationCallback {
         @Override // android.hardware.biometrics.BiometricAuthenticator.AuthenticationCallback
         public void onAuthenticationError(int errorCode, CharSequence errString) {
@@ -889,7 +935,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
+    public interface FaceDetectionCallback {
+        void onFaceDetected(int i, int i2, boolean z);
+
+        default void onDetectionError(int errorMsgId) {
+        }
+    }
+
     public static abstract class EnrollmentCallback {
         public void onEnrollmentError(int errMsgId, CharSequence errString) {
         }
@@ -908,7 +960,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class RemovalCallback {
         public void onRemovalError(Face face, int errMsgId, CharSequence errString) {
         }
@@ -917,19 +968,13 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class LockoutResetCallback {
         public void onLockoutReset(int sensorId) {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
+    private class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
-
-        /* synthetic */ OnEnrollCancelListener(FaceManager faceManager, long j, OnEnrollCancelListenerIA onEnrollCancelListenerIA) {
-            this(j);
-        }
 
         private OnEnrollCancelListener(long id) {
             this.mAuthRequestId = id;
@@ -942,8 +987,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
+    private class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
 
         OnAuthenticationCancelListener(long id) {
@@ -957,7 +1001,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
         }
     }
 
-    /* loaded from: classes2.dex */
     private class OnFaceDetectionCancelListener implements CancellationSignal.OnCancelListener {
         private final long mAuthRequestId;
 
@@ -970,206 +1013,6 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
             Slog.d(FaceManager.TAG, "Cancel face detect requested for: " + this.mAuthRequestId);
             FaceManager.this.cancelFaceDetect(this.mAuthRequestId);
         }
-    }
-
-    /* loaded from: classes2.dex */
-    public class MyHandler extends Handler {
-        /* synthetic */ MyHandler(FaceManager faceManager, Context context, MyHandlerIA myHandlerIA) {
-            this(context);
-        }
-
-        /* synthetic */ MyHandler(FaceManager faceManager, Looper looper, MyHandlerIA myHandlerIA) {
-            this(looper);
-        }
-
-        private MyHandler(Context context) {
-            super(context.getMainLooper());
-        }
-
-        private MyHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            Log.i(FaceManager.TAG, "handleMessage = " + msg.what + ", " + msg.arg1 + ", " + msg.arg2);
-            Trace.beginSection("FaceManager#handleMessage: " + Integer.toString(msg.what));
-            switch (msg.what) {
-                case 100:
-                    FaceManager.this.sendEnrollResult((Face) msg.obj, msg.arg1);
-                    break;
-                case 101:
-                    FaceManager.this.sendAcquiredResult(msg.arg1, msg.arg2);
-                    break;
-                case 102:
-                    FaceManager.this.sendAuthenticatedSucceeded((Face) msg.obj, msg.arg1, msg.arg2 == 1);
-                    break;
-                case 103:
-                    FaceManager.this.sendAuthenticatedFailed();
-                    break;
-                case 104:
-                    FaceManager.this.sendErrorResult(msg.arg1, msg.arg2);
-                    break;
-                case 105:
-                    FaceManager.this.sendRemovedResult((Face) msg.obj, msg.arg1);
-                    break;
-                case 106:
-                    SomeArgs args = (SomeArgs) msg.obj;
-                    FaceManager.this.sendGetFeatureCompleted(((Boolean) args.arg1).booleanValue(), (int[]) args.arg2, (boolean[]) args.arg3);
-                    args.recycle();
-                    break;
-                case 107:
-                    FaceManager.this.sendSetFeatureCompleted(((Boolean) msg.obj).booleanValue(), msg.arg1);
-                    break;
-                case 108:
-                    FaceManager.this.sendChallengeGenerated(msg.arg1, msg.arg2, ((Long) msg.obj).longValue());
-                    break;
-                case 109:
-                    FaceManager.this.sendFaceDetected(msg.arg1, msg.arg2, ((Boolean) msg.obj).booleanValue());
-                    break;
-                case 110:
-                case 111:
-                default:
-                    Slog.w(FaceManager.TAG, "Unknown message: " + msg.what);
-                    break;
-                case 112:
-                    FaceManager.this.sendAuthenticationFrame((FaceAuthenticationFrame) msg.obj);
-                    break;
-                case 113:
-                    FaceManager.this.sendEnrollmentFrame((FaceEnrollFrame) msg.obj);
-                    break;
-            }
-            Trace.endSection();
-        }
-    }
-
-    public void sendSetFeatureCompleted(boolean success, int feature) {
-        SetFeatureCallback setFeatureCallback = this.mSetFeatureCallback;
-        if (setFeatureCallback == null) {
-            return;
-        }
-        setFeatureCallback.onCompleted(success, feature);
-    }
-
-    public void sendGetFeatureCompleted(boolean success, int[] features, boolean[] featureState) {
-        GetFeatureCallback getFeatureCallback = this.mGetFeatureCallback;
-        if (getFeatureCallback == null) {
-            return;
-        }
-        getFeatureCallback.onCompleted(success, features, featureState);
-    }
-
-    public void sendChallengeGenerated(int sensorId, int userId, long challenge) {
-        GenerateChallengeCallback generateChallengeCallback = this.mGenerateChallengeCallback;
-        if (generateChallengeCallback == null) {
-            return;
-        }
-        generateChallengeCallback.onGenerateChallengeResult(sensorId, userId, challenge);
-    }
-
-    public void sendFaceDetected(int sensorId, int userId, boolean isStrongBiometric) {
-        FaceDetectionCallback faceDetectionCallback = this.mFaceDetectionCallback;
-        if (faceDetectionCallback == null) {
-            Slog.e(TAG, "sendFaceDetected, callback null");
-        } else {
-            faceDetectionCallback.onFaceDetected(sensorId, userId, isStrongBiometric);
-        }
-    }
-
-    public void sendRemovedResult(Face face, int remaining) {
-        RemovalCallback removalCallback = this.mRemovalCallback;
-        if (removalCallback == null) {
-            return;
-        }
-        removalCallback.onRemovalSucceeded(face, remaining);
-    }
-
-    public void sendErrorResult(int errMsgId, int vendorCode) {
-        int clientErrMsgId = errMsgId == 8 ? vendorCode : errMsgId;
-        EnrollmentCallback enrollmentCallback = this.mEnrollmentCallback;
-        if (enrollmentCallback != null) {
-            enrollmentCallback.onEnrollmentError(clientErrMsgId, getErrorString(this.mContext, errMsgId, vendorCode));
-            return;
-        }
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationError(clientErrMsgId, getErrorString(this.mContext, errMsgId, vendorCode));
-            return;
-        }
-        RemovalCallback removalCallback = this.mRemovalCallback;
-        if (removalCallback != null) {
-            removalCallback.onRemovalError(this.mRemovalFace, clientErrMsgId, getErrorString(this.mContext, errMsgId, vendorCode));
-        }
-    }
-
-    public void sendEnrollResult(Face face, int remaining) {
-        EnrollmentCallback enrollmentCallback = this.mEnrollmentCallback;
-        if (enrollmentCallback != null) {
-            enrollmentCallback.onEnrollmentProgress(remaining);
-        }
-    }
-
-    public void sendAuthenticatedSucceeded(Face face, int userId, boolean isStrongBiometric) {
-        if (this.mAuthenticationCallback != null) {
-            AuthenticationResult result = new AuthenticationResult(this.mCryptoObject, face, userId, isStrongBiometric);
-            this.mAuthenticationCallback.onAuthenticationSucceeded(result);
-        }
-    }
-
-    public void sendAuthenticatedFailed() {
-        AuthenticationCallback authenticationCallback = this.mAuthenticationCallback;
-        if (authenticationCallback != null) {
-            authenticationCallback.onAuthenticationFailed();
-        }
-    }
-
-    public void sendAcquiredResult(int acquireInfo, int vendorCode) {
-        if (this.mAuthenticationCallback != null) {
-            FaceAuthenticationFrame frame = new FaceAuthenticationFrame(new FaceDataFrame(acquireInfo, vendorCode));
-            sendAuthenticationFrame(frame);
-        } else if (this.mEnrollmentCallback != null) {
-            FaceEnrollFrame frame2 = new FaceEnrollFrame(null, 0, new FaceDataFrame(acquireInfo, vendorCode));
-            sendEnrollmentFrame(frame2);
-        }
-    }
-
-    public void sendAuthenticationFrame(FaceAuthenticationFrame frame) {
-        if (frame == null) {
-            Slog.w(TAG, "Received null authentication frame");
-            return;
-        }
-        if (this.mAuthenticationCallback != null) {
-            int acquireInfo = frame.getData().getAcquiredInfo();
-            int vendorCode = frame.getData().getVendorCode();
-            int helpCode = getHelpCode(acquireInfo, vendorCode);
-            String helpMessage = getAuthHelpMessage(this.mContext, acquireInfo, vendorCode);
-            this.mAuthenticationCallback.onAuthenticationAcquired(acquireInfo == 22 ? vendorCode : acquireInfo);
-            if (helpMessage != null) {
-                this.mAuthenticationCallback.onAuthenticationHelp(helpCode, helpMessage);
-            }
-        }
-    }
-
-    public void sendEnrollmentFrame(FaceEnrollFrame frame) {
-        if (frame == null) {
-            Slog.w(TAG, "Received null enrollment frame");
-            return;
-        }
-        if (this.mEnrollmentCallback != null) {
-            FaceDataFrame data = frame.getData();
-            int acquireInfo = data.getAcquiredInfo();
-            int vendorCode = data.getVendorCode();
-            int helpCode = getHelpCode(acquireInfo, vendorCode);
-            String helpMessage = getEnrollHelpMessage(this.mContext, acquireInfo, vendorCode);
-            this.mEnrollmentCallback.onEnrollmentFrame(helpCode, helpMessage, frame.getCell(), frame.getStage(), data.getPan(), data.getTilt(), data.getDistance());
-        }
-    }
-
-    private static int getHelpCode(int acquireInfo, int vendorCode) {
-        if (acquireInfo == 22) {
-            return vendorCode;
-        }
-        return acquireInfo;
     }
 
     public static String getAuthHelpMessage(Context context, int acquireInfo, int vendorCode) {
@@ -1398,13 +1241,11 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     private static boolean isTablet() {
-        String str = mDeviceType;
-        if (str != null && str.length() > 0) {
+        if (mDeviceType != null && mDeviceType.length() > 0) {
             return mDeviceType.contains(BnRConstants.DEVICETYPE_TABLET);
         }
-        String str2 = SystemProperties.get("ro.build.characteristics");
-        mDeviceType = str2;
-        return str2 != null && str2.contains(BnRConstants.DEVICETYPE_TABLET);
+        mDeviceType = SystemProperties.get("ro.build.characteristics");
+        return mDeviceType != null && mDeviceType.contains(BnRConstants.DEVICETYPE_TABLET);
     }
 
     private static boolean isVTCallOngoing(Context context) {
@@ -1438,10 +1279,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public boolean semIsEnrollSession() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semIsEnrollSession();
+                return this.mService.semIsEnrollSession();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1450,10 +1290,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semPauseEnroll() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semPauseEnroll();
+                this.mService.semPauseEnroll();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1461,10 +1300,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semResumeEnroll() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semResumeEnroll();
+                this.mService.semResumeEnroll();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1472,10 +1310,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semPauseAuth() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semPauseAuth();
+                this.mService.semPauseAuth();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1483,10 +1320,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semResumeAuth() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semResumeAuth();
+                this.mService.semResumeAuth();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1494,10 +1330,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public String semGetInfo(int type) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semGetInfo(type);
+                return this.mService.semGetInfo(type);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1510,10 +1345,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public boolean semResetAuthenticationTimeout() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semResetAuthenticationTimeout();
+                return this.mService.semResetAuthenticationTimeout();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1522,10 +1356,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semSessionOpen() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semSessionOpen();
+                this.mService.semSessionOpen();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1533,10 +1366,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public void semSessionClose() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                iFaceService.semSessionClose();
+                this.mService.semSessionClose();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1544,10 +1376,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public boolean semIsSessionClose() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semIsSessionClose();
+                return this.mService.semIsSessionClose();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1556,10 +1387,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public int semGetSecurityLevel(boolean isKeyguard) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semGetSecurityLevel(isKeyguard);
+                return this.mService.semGetSecurityLevel(isKeyguard);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1568,10 +1398,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public boolean semIsFrameworkHandleLockout() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semIsFrameworkHandleLockout();
+                return this.mService.semIsFrameworkHandleLockout();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1580,10 +1409,9 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public int semGetRemainingLockoutTime(int userId) {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semGetRemainingLockoutTime(userId);
+                return this.mService.semGetRemainingLockoutTime(userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1592,18 +1420,17 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
     }
 
     public static boolean semIsSupportOnMask() {
-        if ("landscape".contains("with_mask=true")) {
+        if ("".contains("with_mask=true")) {
             return true;
         }
-        "landscape".contains("with_mask=false");
+        "".contains("with_mask=false");
         return false;
     }
 
     public boolean semShouldRemoveTemplate() {
-        IFaceService iFaceService = this.mService;
-        if (iFaceService != null) {
+        if (this.mService != null) {
             try {
-                return iFaceService.semShouldRemoveTemplate();
+                return this.mService.semShouldRemoveTemplate();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }

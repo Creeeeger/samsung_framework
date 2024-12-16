@@ -18,6 +18,8 @@ public class HidlSupport {
     @SystemApi
     public static native int getPidIfSharable();
 
+    public static native boolean isHidlSupported();
+
     @SystemApi
     public static boolean deepEquals(Object lft, Object rgt) {
         Class<?> lftClazz;
@@ -70,7 +72,6 @@ public class HidlSupport {
         return lft.equals(rgt);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Mutable<E> {
         public E value;
 

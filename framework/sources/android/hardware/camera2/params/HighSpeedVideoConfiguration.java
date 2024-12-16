@@ -5,7 +5,7 @@ import android.util.Range;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class HighSpeedVideoConfiguration {
     private static final int HIGH_SPEED_MAX_MINIMAL_FPS = 120;
     private final int mBatchSizeMax;
@@ -21,15 +21,12 @@ public final class HighSpeedVideoConfiguration {
             throw new IllegalArgumentException("fpsMax must be at least 120");
         }
         this.mFpsMax = fpsMax;
-        int checkArgumentPositive = Preconditions.checkArgumentPositive(width, "width must be positive");
-        this.mWidth = checkArgumentPositive;
-        int checkArgumentPositive2 = Preconditions.checkArgumentPositive(height, "height must be positive");
-        this.mHeight = checkArgumentPositive2;
-        int checkArgumentPositive3 = Preconditions.checkArgumentPositive(fpsMin, "fpsMin must be positive");
-        this.mFpsMin = checkArgumentPositive3;
-        this.mSize = new Size(checkArgumentPositive, checkArgumentPositive2);
+        this.mWidth = Preconditions.checkArgumentPositive(width, "width must be positive");
+        this.mHeight = Preconditions.checkArgumentPositive(height, "height must be positive");
+        this.mFpsMin = Preconditions.checkArgumentPositive(fpsMin, "fpsMin must be positive");
+        this.mSize = new Size(this.mWidth, this.mHeight);
         this.mBatchSizeMax = Preconditions.checkArgumentPositive(batchSizeMax, "batchSizeMax must be positive");
-        this.mFpsRange = new Range<>(Integer.valueOf(checkArgumentPositive3), Integer.valueOf(fpsMax));
+        this.mFpsRange = new Range<>(Integer.valueOf(this.mFpsMin), Integer.valueOf(this.mFpsMax));
     }
 
     public int getWidth() {

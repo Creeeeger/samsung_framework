@@ -8,7 +8,7 @@ public class WallpaperSettingsActivity extends PreferenceActivity {
     public static final String EXTRA_PREVIEW_MODE = "android.service.wallpaper.PREVIEW_MODE";
 
     @Override // android.preference.PreferenceActivity, android.app.Activity
-    public void onCreate(Bundle icicle) {
+    protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
     }
 }

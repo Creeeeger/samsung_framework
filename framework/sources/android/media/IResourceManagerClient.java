@@ -20,7 +20,6 @@ public interface IResourceManagerClient extends IInterface {
 
     void stopWatchingMode() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IResourceManagerClient {
         @Override // android.media.IResourceManagerClient
         public boolean reclaimResource() throws RemoteException {
@@ -51,7 +50,6 @@ public interface IResourceManagerClient extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IResourceManagerClient {
         static final int TRANSACTION_getCodecState = 3;
         static final int TRANSACTION_getName = 2;
@@ -106,42 +104,38 @@ public interface IResourceManagerClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IResourceManagerClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IResourceManagerClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IResourceManagerClient.DESCRIPTOR);
+                case 1:
+                    boolean _result = reclaimResource();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _result2 = getName();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    int _result3 = getCodecState();
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    startWatchingMode();
+                    return true;
+                case 5:
+                    stopWatchingMode();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = reclaimResource();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _result2 = getName();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            int _result3 = getCodecState();
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            startWatchingMode();
-                            return true;
-                        case 5:
-                            stopWatchingMode();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IResourceManagerClient {
+        private static class Proxy implements IResourceManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

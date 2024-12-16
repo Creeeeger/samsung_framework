@@ -14,7 +14,7 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.util.Log;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class VisualVoicemailService extends Service {
     public static final String DATA_PHONE_ACCOUNT_HANDLE = "data_phone_account_handle";
     public static final String DATA_SMS = "data_sms";
@@ -26,9 +26,6 @@ public abstract class VisualVoicemailService extends Service {
     public static final String SERVICE_INTERFACE = "android.telephony.VisualVoicemailService";
     private static final String TAG = "VvmService";
     private final Messenger mMessenger = new Messenger(new Handler() { // from class: android.telephony.VisualVoicemailService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Handler
         public void handleMessage(Message msg) {
             PhoneAccountHandle handle = (PhoneAccountHandle) msg.getData().getParcelable(VisualVoicemailService.DATA_PHONE_ACCOUNT_HANDLE, PhoneAccountHandle.class);
@@ -36,21 +33,21 @@ public abstract class VisualVoicemailService extends Service {
             switch (msg.what) {
                 case 1:
                     VisualVoicemailService.this.onCellServiceConnected(task, handle);
-                    return;
+                    break;
                 case 2:
                     VisualVoicemailSms sms = (VisualVoicemailSms) msg.getData().getParcelable(VisualVoicemailService.DATA_SMS, VisualVoicemailSms.class);
                     VisualVoicemailService.this.onSmsReceived(task, sms);
-                    return;
+                    break;
                 case 3:
                     VisualVoicemailService.this.onSimRemoved(task, handle);
-                    return;
+                    break;
                 case 4:
                 default:
                     super.handleMessage(msg);
-                    return;
+                    break;
                 case 5:
                     VisualVoicemailService.this.onStopped(task);
-                    return;
+                    break;
             }
         }
     });
@@ -63,14 +60,9 @@ public abstract class VisualVoicemailService extends Service {
 
     public abstract void onStopped(VisualVoicemailTask visualVoicemailTask);
 
-    /* loaded from: classes3.dex */
     public static class VisualVoicemailTask {
         private final Messenger mReplyTo;
         private final int mTaskId;
-
-        /* synthetic */ VisualVoicemailTask(Messenger messenger, int i, VisualVoicemailTaskIA visualVoicemailTaskIA) {
-            this(messenger, i);
-        }
 
         private VisualVoicemailTask(Messenger replyTo, int taskId) {
             this.mTaskId = taskId;
@@ -94,38 +86,6 @@ public abstract class VisualVoicemailService extends Service {
 
         public int hashCode() {
             return this.mTaskId;
-        }
-    }
-
-    /* renamed from: android.telephony.VisualVoicemailService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends Handler {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            PhoneAccountHandle handle = (PhoneAccountHandle) msg.getData().getParcelable(VisualVoicemailService.DATA_PHONE_ACCOUNT_HANDLE, PhoneAccountHandle.class);
-            VisualVoicemailTask task = new VisualVoicemailTask(msg.replyTo, msg.arg1);
-            switch (msg.what) {
-                case 1:
-                    VisualVoicemailService.this.onCellServiceConnected(task, handle);
-                    return;
-                case 2:
-                    VisualVoicemailSms sms = (VisualVoicemailSms) msg.getData().getParcelable(VisualVoicemailService.DATA_SMS, VisualVoicemailSms.class);
-                    VisualVoicemailService.this.onSmsReceived(task, sms);
-                    return;
-                case 3:
-                    VisualVoicemailService.this.onSimRemoved(task, handle);
-                    return;
-                case 4:
-                default:
-                    super.handleMessage(msg);
-                    return;
-                case 5:
-                    VisualVoicemailService.this.onStopped(task);
-                    return;
-            }
         }
     }
 

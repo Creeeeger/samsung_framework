@@ -23,7 +23,6 @@ public interface IAugmentedAutofillService extends IInterface {
 
     void onFillRequest(int i, IBinder iBinder, int i2, ComponentName componentName, AutofillId autofillId, AutofillValue autofillValue, long j, InlineSuggestionsRequest inlineSuggestionsRequest, IFillCallback iFillCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAugmentedAutofillService {
         @Override // android.service.autofill.augmented.IAugmentedAutofillService
         public void onConnected(boolean debug, boolean verbose) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IAugmentedAutofillService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAugmentedAutofillService {
         static final int TRANSACTION_onConnected = 1;
         static final int TRANSACTION_onDestroyAllFillWindowsRequest = 4;
@@ -99,44 +97,41 @@ public interface IAugmentedAutofillService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAugmentedAutofillService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAugmentedAutofillService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAugmentedAutofillService.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onDisconnected();
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    IBinder _arg12 = data.readStrongBinder();
+                    int _arg2 = data.readInt();
+                    ComponentName _arg3 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    AutofillId _arg4 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    AutofillValue _arg5 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
+                    long _arg6 = data.readLong();
+                    InlineSuggestionsRequest _arg7 = (InlineSuggestionsRequest) data.readTypedObject(InlineSuggestionsRequest.CREATOR);
+                    IFillCallback _arg8 = IFillCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onFillRequest(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
+                    return true;
+                case 4:
+                    onDestroyAllFillWindowsRequest();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            IBinder _arg12 = data.readStrongBinder();
-                            int _arg2 = data.readInt();
-                            ComponentName _arg3 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            AutofillId _arg4 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            AutofillValue _arg5 = (AutofillValue) data.readTypedObject(AutofillValue.CREATOR);
-                            long _arg6 = data.readLong();
-                            InlineSuggestionsRequest _arg7 = (InlineSuggestionsRequest) data.readTypedObject(InlineSuggestionsRequest.CREATOR);
-                            IFillCallback _arg8 = IFillCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onFillRequest(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
-                            return true;
-                        case 4:
-                            onDestroyAllFillWindowsRequest();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IAugmentedAutofillService {
             private IBinder mRemote;
 

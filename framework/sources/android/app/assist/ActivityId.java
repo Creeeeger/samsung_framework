@@ -9,14 +9,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ActivityId implements Parcelable {
     public static final Parcelable.Creator<ActivityId> CREATOR = new Parcelable.Creator<ActivityId>() { // from class: android.app.assist.ActivityId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityId createFromParcel(Parcel parcel) {
             return new ActivityId(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityId[] newArray(int size) {
             return new ActivityId[size];
@@ -54,23 +53,6 @@ public final class ActivityId implements Parcelable {
         dest.writeStrongBinder(this.mActivityId);
     }
 
-    /* renamed from: android.app.assist.ActivityId$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ActivityId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityId createFromParcel(Parcel parcel) {
-            return new ActivityId(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityId[] newArray(int size) {
-            return new ActivityId[size];
-        }
-    }
-
     public String toString() {
         return "ActivityId { taskId = " + this.mTaskId + ", activityId = " + this.mActivityId + " }";
     }
@@ -86,9 +68,8 @@ public final class ActivityId implements Parcelable {
         if (this.mTaskId != that.mTaskId) {
             return false;
         }
-        IBinder iBinder = this.mActivityId;
-        if (iBinder != null) {
-            return iBinder.equals(that.mActivityId);
+        if (this.mActivityId != null) {
+            return this.mActivityId.equals(that.mActivityId);
         }
         if (that.mActivityId == null) {
             return true;
@@ -98,9 +79,6 @@ public final class ActivityId implements Parcelable {
 
     public int hashCode() {
         int result = this.mTaskId;
-        int i = result * 31;
-        IBinder iBinder = this.mActivityId;
-        int result2 = i + (iBinder != null ? iBinder.hashCode() : 0);
-        return result2;
+        return (result * 31) + (this.mActivityId != null ? this.mActivityId.hashCode() : 0);
     }
 }

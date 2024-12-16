@@ -11,13 +11,11 @@ import android.os.RemoteException;
 import android.util.Log;
 import com.android.internal.logging.nano.MetricsProto;
 import com.samsung.android.core.pm.runtimemanifest.RuntimeManifestUtils;
-import com.samsung.android.media.AudioParameter;
 import com.sec.android.iaft.IIAFTManagerService;
 import com.sec.android.iaft.callback.IIAFTCallback;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes6.dex */
-public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
+class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
     private static final int MSG_START_ATRACE = 2;
     private static final int MSG_START_ATRACE_ANALYZE = 3;
     private static final int MSG_START_PERFETTO = 1;
@@ -34,13 +32,12 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
     private static CountDownTimer mTraceTimer = null;
     private static int mTraceMaxTime = MetricsProto.MetricsEvent.ACTION_PERMISSION_DENIED_ACCESS_FINE_LOCATION;
 
-    public IAFTManagerServiceImpl(Context context) {
+    IAFTManagerServiceImpl(Context context) {
         this.mContext = context;
         init();
     }
 
-    /* loaded from: classes6.dex */
-    public final class ServiceHandler extends Handler {
+    private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
             super(looper);
         }
@@ -50,7 +47,7 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
             switch (msg.what) {
                 case 1:
                     Log.d(IAFTManagerServiceImpl.TAG, "Start perfetto in Handler thread");
-                    return;
+                    break;
                 case 2:
                     Log.d(IAFTManagerServiceImpl.TAG, "Start atrace in Handler thread");
                     Intent intent = new Intent();
@@ -58,10 +55,6 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
                     intent.setPackage("com.android.traceur");
                     IAFTManagerServiceImpl.this.mContext.sendBroadcast(intent);
                     IAFTManagerServiceImpl.mTraceTimer = new CountDownTimer(IAFTManagerServiceImpl.mTraceMaxTime * 1000, IAFTManagerServiceImpl.mTraceMaxTime * 1000) { // from class: com.sec.android.iaft.IAFTManagerServiceImpl.ServiceHandler.1
-                        AnonymousClass1(long millisInFuture, long countDownInterval) {
-                            super(millisInFuture, countDownInterval);
-                        }
-
                         @Override // android.os.CountDownTimer
                         public void onTick(long duration) {
                         }
@@ -74,46 +67,24 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
                             }
                         }
                     }.start();
-                    return;
+                    break;
                 case 3:
                     Log.d(IAFTManagerServiceImpl.TAG, "Start atrace and analyze in Handler thread");
                     Intent intent2 = new Intent();
                     intent2.setAction("com.android.internal.intent.action.START_TRACE_ANALYZE");
                     intent2.setPackage("com.android.traceur");
-                    intent2.putExtra(AudioParameter.SUBKEY_HIDDEN_SOUND_PID, IAFTManagerServiceImpl.mForegroundPid);
+                    intent2.putExtra("pid", IAFTManagerServiceImpl.mForegroundPid);
                     intent2.putExtra("package_name", IAFTManagerServiceImpl.mPackageName);
                     intent2.putExtra(RuntimeManifestUtils.TAG_POLICY, IAFTManagerServiceImpl.mPolicy);
                     IAFTManagerServiceImpl.this.mContext.sendBroadcast(intent2);
-                    return;
+                    break;
                 case 4:
                     Log.d(IAFTManagerServiceImpl.TAG, "Stop trace in Handler thread");
                     Intent intent3 = new Intent();
                     intent3.setAction("com.android.internal.intent.action.STOP_TRACE");
                     intent3.setPackage("com.android.traceur");
                     IAFTManagerServiceImpl.this.mContext.sendBroadcast(intent3);
-                    return;
-                default:
-                    return;
-            }
-        }
-
-        /* renamed from: com.sec.android.iaft.IAFTManagerServiceImpl$ServiceHandler$1 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass1 extends CountDownTimer {
-            AnonymousClass1(long millisInFuture, long countDownInterval) {
-                super(millisInFuture, countDownInterval);
-            }
-
-            @Override // android.os.CountDownTimer
-            public void onTick(long duration) {
-            }
-
-            @Override // android.os.CountDownTimer
-            public void onFinish() {
-                Log.d(IAFTManagerServiceImpl.TAG, "traceTimer onfinish");
-                if (IAFTManagerServiceImpl.this.mSystemReady) {
-                    IAFTManagerServiceImpl.this.mHandler.obtainMessage(4).sendToTarget();
-                }
+                    break;
             }
         }
     }
@@ -130,10 +101,9 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
 
     public static void sendResult(int tid, int code, int freq) {
         Log.d(TAG, "sendResult back.");
-        IIAFTCallback iIAFTCallback = mIAFTCallback;
-        if (iIAFTCallback != null) {
+        if (mIAFTCallback != null) {
             try {
-                iIAFTCallback.traceResult(mPackageName, tid, code, freq, mPolicy);
+                mIAFTCallback.traceResult(mPackageName, tid, code, freq, mPolicy);
             } catch (RemoteException e) {
                 Log.d(TAG, "mIAFTCallback.traceResult exception!");
             }
@@ -168,9 +138,8 @@ public class IAFTManagerServiceImpl extends IIAFTManagerService.Stub {
     @Override // com.sec.android.iaft.IIAFTManagerService
     public void stopTrace() throws RemoteException {
         Log.d(TAG, "Remote call stopTrace.");
-        CountDownTimer countDownTimer = mTraceTimer;
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+        if (mTraceTimer != null) {
+            mTraceTimer.cancel();
         }
         if (this.mSystemReady) {
             this.mHandler.obtainMessage(4).sendToTarget();

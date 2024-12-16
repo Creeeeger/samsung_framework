@@ -21,9 +21,12 @@ public class AutofillFeatureFlags {
     private static final boolean DEFAULT_AFAA_SHOULD_ENABLE_MULTILINE_FILTER = true;
     private static final boolean DEFAULT_AFAA_SHOULD_INCLUDE_ALL_AUTOFILL_TYPE_NOT_NONE_VIEWS_IN_ASSIST_STRUCTURE = true;
     public static final boolean DEFAULT_AUTOFILL_PCC_CLASSIFICATION_ENABLED = false;
+    private static final boolean DEFAULT_CREDENTIAL_MANAGER_ENABLED = true;
     private static final boolean DEFAULT_CREDENTIAL_MANAGER_SUPPRESS_FILL_AND_SAVE_DIALOG = true;
     private static final String DEFAULT_FILL_DIALOG_ENABLED_HINTS = "";
     private static final boolean DEFAULT_HAS_FILL_DIALOG_UI_FEATURE = false;
+    public static final int DEFAULT_MAX_INPUT_LENGTH_FOR_AUTOFILL = 3;
+    public static final String DEVICE_CONFIG_ALWAYS_INCLUDE_WEBVIEW_IN_ASSIST_STRUCTURE = "always_include_webview_in_assist_structure";
     public static final String DEVICE_CONFIG_AUGMENTED_SERVICE_IDLE_UNBIND_TIMEOUT = "augmented_service_idle_unbind_timeout";
     public static final String DEVICE_CONFIG_AUGMENTED_SERVICE_REQUEST_TIMEOUT = "augmented_service_request_timeout";
     public static final String DEVICE_CONFIG_AUTOFILL_COMPAT_MODE_ALLOWED_PACKAGES = "compat_mode_allowed_packages";
@@ -36,8 +39,13 @@ public class AutofillFeatureFlags {
     public static final String DEVICE_CONFIG_AUTOFILL_PCC_FEATURE_PROVIDER_HINTS = "pcc_classification_hints";
     public static final String DEVICE_CONFIG_AUTOFILL_SMART_SUGGESTION_SUPPORTED_MODES = "smart_suggestion_supported_modes";
     public static final String DEVICE_CONFIG_AUTOFILL_TOOLTIP_SHOW_UP_DELAY = "autofill_inline_tooltip_first_show_delay";
+    public static final String DEVICE_CONFIG_FILL_FIELDS_FROM_CURRENT_SESSION_ONLY = "fill_fields_from_current_session_only";
+    public static final String DEVICE_CONFIG_IGNORE_RELAYOUT_WHEN_AUTH_PENDING = "ignore_relayout_auth_pending";
+    public static final String DEVICE_CONFIG_IGNORE_VIEW_STATE_RESET_TO_EMPTY = "ignore_view_state_reset_to_empty";
     public static final String DEVICE_CONFIG_INCLUDE_ALL_AUTOFILL_TYPE_NOT_NONE_VIEWS_IN_ASSIST_STRUCTURE = "include_all_autofill_type_not_none_views_in_assist_structure";
     public static final String DEVICE_CONFIG_INCLUDE_ALL_VIEWS_IN_ASSIST_STRUCTURE = "include_all_views_in_assist_structure";
+    public static final String DEVICE_CONFIG_INCLUDE_INVISIBLE_VIEW_GROUP_IN_ASSIST_STRUCTURE = "include_invisible_view_group_in_assist_structure";
+    public static final String DEVICE_CONFIG_MAX_INPUT_LENGTH_FOR_AUTOFILL = "max_input_length_for_autofill";
     public static final String DEVICE_CONFIG_MULTILINE_FILTER_ENABLED = "multiline_filter_enabled";
     public static final String DEVICE_CONFIG_NON_AUTOFILLABLE_IME_ACTION_IDS = "non_autofillable_ime_action_ids";
     public static final String DEVICE_CONFIG_PACKAGE_AND_ACTIVITY_ALLOWLIST_FOR_TRIGGERING_FILL_REQUEST = "package_and_activity_allowlist_for_triggering_fill_request";
@@ -74,16 +82,20 @@ public class AutofillFeatureFlags {
         });
     }
 
-    public static /* synthetic */ String[] lambda$getFillDialogEnabledHints$0(int x$0) {
+    static /* synthetic */ String[] lambda$getFillDialogEnabledHints$0(int x$0) {
         return new String[x$0];
     }
 
-    public static /* synthetic */ boolean lambda$getFillDialogEnabledHints$1(String str) {
+    static /* synthetic */ boolean lambda$getFillDialogEnabledHints$1(String str) {
         return !TextUtils.isEmpty(str);
     }
 
+    public static boolean isCredentialManagerEnabled() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_AUTOFILL_CREDENTIAL_MANAGER_ENABLED, true);
+    }
+
     public static boolean isFillAndSaveDialogDisabledForCredentialManager() {
-        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_AUTOFILL_CREDENTIAL_MANAGER_SUPPRESS_FILL_AND_SAVE_DIALOG, true);
+        return isCredentialManagerEnabled() && DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_AUTOFILL_CREDENTIAL_MANAGER_SUPPRESS_FILL_AND_SAVE_DIALOG, true);
     }
 
     public static boolean isTriggerFillRequestOnUnimportantViewEnabled() {
@@ -117,6 +129,26 @@ public class AutofillFeatureFlags {
 
     public static boolean shouldIncludeAllChildrenViewInAssistStructure() {
         return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_INCLUDE_ALL_VIEWS_IN_ASSIST_STRUCTURE, false);
+    }
+
+    public static boolean shouldAlwaysIncludeWebviewInAssistStructure() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_ALWAYS_INCLUDE_WEBVIEW_IN_ASSIST_STRUCTURE, true);
+    }
+
+    public static boolean shouldIncludeInvisibleViewInAssistStructure() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_INCLUDE_INVISIBLE_VIEW_GROUP_IN_ASSIST_STRUCTURE, true);
+    }
+
+    public static boolean shouldIgnoreViewStateResetToEmpty() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_IGNORE_VIEW_STATE_RESET_TO_EMPTY, true);
+    }
+
+    public static boolean shouldIgnoreRelayoutWhenAuthPending() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_IGNORE_RELAYOUT_WHEN_AUTH_PENDING, false);
+    }
+
+    public static boolean shouldFillFieldsFromCurrentSessionOnly() {
+        return DeviceConfig.getBoolean(Context.AUTOFILL_MANAGER_SERVICE, DEVICE_CONFIG_FILL_FIELDS_FROM_CURRENT_SESSION_ONLY, true);
     }
 
     public static boolean shouldEnableMultilineFilter() {

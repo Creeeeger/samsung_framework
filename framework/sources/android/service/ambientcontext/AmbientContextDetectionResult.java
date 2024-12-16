@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AmbientContextDetectionResult implements Parcelable {
     public static final Parcelable.Creator<AmbientContextDetectionResult> CREATOR = new Parcelable.Creator<AmbientContextDetectionResult>() { // from class: android.service.ambientcontext.AmbientContextDetectionResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionResult[] newArray(int size) {
             return new AmbientContextDetectionResult[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AmbientContextDetectionResult createFromParcel(Parcel in) {
             return new AmbientContextDetectionResult(in);
@@ -33,9 +32,9 @@ public final class AmbientContextDetectionResult implements Parcelable {
 
     AmbientContextDetectionResult(List<AmbientContextEvent> events, String packageName) {
         this.mEvents = events;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) events);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mEvents);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
     }
 
     public List<AmbientContextEvent> getEvents() {
@@ -68,29 +67,11 @@ public final class AmbientContextDetectionResult implements Parcelable {
         in.readParcelableList(events, AmbientContextEvent.class.getClassLoader(), AmbientContextEvent.class);
         String packageName = in.readString();
         this.mEvents = events;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) events);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mEvents);
         this.mPackageName = packageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) packageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mPackageName);
     }
 
-    /* renamed from: android.service.ambientcontext.AmbientContextDetectionResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AmbientContextDetectionResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientContextDetectionResult[] newArray(int size) {
-            return new AmbientContextDetectionResult[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AmbientContextDetectionResult createFromParcel(Parcel in) {
-            return new AmbientContextDetectionResult(in);
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
         private ArrayList<AmbientContextEvent> mEvents;
@@ -123,18 +104,16 @@ public final class AmbientContextDetectionResult implements Parcelable {
 
         public Builder clearEvents() {
             checkNotUsed();
-            ArrayList<AmbientContextEvent> arrayList = this.mEvents;
-            if (arrayList != null) {
-                arrayList.clear();
+            if (this.mEvents != null) {
+                this.mEvents.clear();
             }
             return this;
         }
 
         public AmbientContextDetectionResult build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 2;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
+            this.mBuilderFieldsSet |= 2;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
                 this.mEvents = new ArrayList<>();
             }
             AmbientContextDetectionResult o = new AmbientContextDetectionResult(this.mEvents, this.mPackageName);

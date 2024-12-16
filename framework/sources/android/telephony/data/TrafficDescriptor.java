@@ -11,17 +11,16 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TrafficDescriptor implements Parcelable {
     public static final Parcelable.Creator<TrafficDescriptor> CREATOR = new Parcelable.Creator<TrafficDescriptor>() { // from class: android.telephony.data.TrafficDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor createFromParcel(Parcel source) {
             return new TrafficDescriptor(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TrafficDescriptor[] newArray(int size) {
             return new TrafficDescriptor[size];
@@ -30,11 +29,6 @@ public final class TrafficDescriptor implements Parcelable {
     private final String mDnn;
     private final OsAppId mOsAppId;
 
-    /* synthetic */ TrafficDescriptor(Parcel parcel, TrafficDescriptorIA trafficDescriptorIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class OsAppId {
         private final String mAppId;
         private final int mDifferentiator;
@@ -92,9 +86,7 @@ public final class TrafficDescriptor implements Parcelable {
         }
 
         public byte[] getBytes() {
-            StringBuilder append = new StringBuilder().append(this.mAppId);
-            int i = this.mDifferentiator;
-            byte[] osAppId = append.append(i > 1 ? Integer.valueOf(i) : "").toString().getBytes();
+            byte[] osAppId = (this.mAppId + (this.mDifferentiator > 1 ? Integer.valueOf(this.mDifferentiator) : "")).getBytes();
             ByteBuffer bb = ByteBuffer.allocate(osAppId.length + 17);
             bb.putLong(this.mOsId.getMostSignificantBits());
             bb.putLong(this.mOsId.getLeastSignificantBits());
@@ -142,8 +134,7 @@ public final class TrafficDescriptor implements Parcelable {
     }
 
     private void enforceAllowedIds() {
-        OsAppId osAppId = this.mOsAppId;
-        if (osAppId != null && !osAppId.getOsId().equals(OsAppId.ANDROID_OS_ID)) {
+        if (this.mOsAppId != null && !this.mOsAppId.getOsId().equals(OsAppId.ANDROID_OS_ID)) {
             throw new IllegalArgumentException("OS id " + this.mOsAppId.getOsId() + " does not match " + OsAppId.ANDROID_OS_ID);
         }
         if (this.mOsAppId != null && !OsAppId.ALLOWED_APP_IDS.contains(this.mOsAppId.getAppId())) {
@@ -156,9 +147,8 @@ public final class TrafficDescriptor implements Parcelable {
     }
 
     public byte[] getOsAppId() {
-        OsAppId osAppId = this.mOsAppId;
-        if (osAppId != null) {
-            return osAppId.getBytes();
+        if (this.mOsAppId != null) {
+            return this.mOsAppId.getBytes();
         }
         return null;
     }
@@ -175,25 +165,7 @@ public final class TrafficDescriptor implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mDnn);
-        OsAppId osAppId = this.mOsAppId;
-        dest.writeByteArray(osAppId != null ? osAppId.getBytes() : null);
-    }
-
-    /* renamed from: android.telephony.data.TrafficDescriptor$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TrafficDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TrafficDescriptor createFromParcel(Parcel source) {
-            return new TrafficDescriptor(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TrafficDescriptor[] newArray(int size) {
-            return new TrafficDescriptor[size];
-        }
+        dest.writeByteArray(this.mOsAppId != null ? this.mOsAppId.getBytes() : null);
     }
 
     public boolean equals(Object o) {
@@ -214,7 +186,6 @@ public final class TrafficDescriptor implements Parcelable {
         return Objects.hash(this.mDnn, this.mOsAppId);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String mDnn = null;
         private byte[] mOsAppId = null;

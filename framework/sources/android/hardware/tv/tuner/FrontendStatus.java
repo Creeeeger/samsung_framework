@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendStatus implements Parcelable {
     public static final Parcelable.Creator<FrontendStatus> CREATOR = new Parcelable.Creator<FrontendStatus>() { // from class: android.hardware.tv.tuner.FrontendStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendStatus createFromParcel(Parcel _aidl_source) {
             return new FrontendStatus(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendStatus[] newArray(int _aidl_size) {
             return new FrontendStatus[_aidl_size];
@@ -70,7 +69,6 @@ public final class FrontendStatus implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int agc = 14;
         public static final int allPlpInfo = 41;
@@ -119,10 +117,6 @@ public final class FrontendStatus implements Parcelable {
         public static final int transmissionMode = 27;
         public static final int tsDataRate = 32;
         public static final int uec = 28;
-    }
-
-    /* synthetic */ FrontendStatus(Parcel parcel, FrontendStatusIA frontendStatusIA) {
-        this(parcel);
     }
 
     public FrontendStatus() {
@@ -759,170 +753,151 @@ public final class FrontendStatus implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendStatus$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendStatus createFromParcel(Parcel _aidl_source) {
-            return new FrontendStatus(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendStatus[] newArray(int _aidl_size) {
-            return new FrontendStatus[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getIsDemodLocked());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getSnr());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getBer());
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getPer());
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeInt(getPreBer());
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeInt(getSignalQuality());
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeInt(getSignalStrength());
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeInt(getSymbolRate());
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeLong(getInnerFec());
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeTypedObject(getModulationStatus(), _aidl_flag);
-                return;
+                break;
             case 10:
                 _aidl_parcel.writeInt(getInversion());
-                return;
+                break;
             case 11:
                 _aidl_parcel.writeInt(getLnbVoltage());
-                return;
+                break;
             case 12:
                 _aidl_parcel.writeInt(getPlpId());
-                return;
+                break;
             case 13:
                 _aidl_parcel.writeBoolean(getIsEWBS());
-                return;
+                break;
             case 14:
                 _aidl_parcel.writeInt(getAgc());
-                return;
+                break;
             case 15:
                 _aidl_parcel.writeBoolean(getIsLnaOn());
-                return;
+                break;
             case 16:
                 _aidl_parcel.writeBooleanArray(getIsLayerError());
-                return;
+                break;
             case 17:
                 _aidl_parcel.writeInt(getMer());
-                return;
+                break;
             case 18:
                 _aidl_parcel.writeLong(getFreqOffset());
-                return;
+                break;
             case 19:
                 _aidl_parcel.writeInt(getHierarchy());
-                return;
+                break;
             case 20:
                 _aidl_parcel.writeBoolean(getIsRfLocked());
-                return;
+                break;
             case 21:
                 _aidl_parcel.writeTypedArray(getPlpInfo(), _aidl_flag);
-                return;
+                break;
             case 22:
                 _aidl_parcel.writeTypedArray(getModulations(), _aidl_flag);
-                return;
+                break;
             case 23:
                 _aidl_parcel.writeIntArray(getBers());
-                return;
+                break;
             case 24:
                 _aidl_parcel.writeLongArray(getCodeRates());
-                return;
+                break;
             case 25:
                 _aidl_parcel.writeTypedObject(getBandwidth(), _aidl_flag);
-                return;
+                break;
             case 26:
                 _aidl_parcel.writeTypedObject(getInterval(), _aidl_flag);
-                return;
+                break;
             case 27:
                 _aidl_parcel.writeTypedObject(getTransmissionMode(), _aidl_flag);
-                return;
+                break;
             case 28:
                 _aidl_parcel.writeInt(getUec());
-                return;
+                break;
             case 29:
                 _aidl_parcel.writeInt(getSystemId());
-                return;
+                break;
             case 30:
                 _aidl_parcel.writeTypedArray(getInterleaving(), _aidl_flag);
-                return;
+                break;
             case 31:
                 _aidl_parcel.writeIntArray(getIsdbtSegment());
-                return;
+                break;
             case 32:
                 _aidl_parcel.writeIntArray(getTsDataRate());
-                return;
+                break;
             case 33:
                 _aidl_parcel.writeTypedObject(getRollOff(), _aidl_flag);
-                return;
+                break;
             case 34:
                 _aidl_parcel.writeBoolean(getIsMiso());
-                return;
+                break;
             case 35:
                 _aidl_parcel.writeBoolean(getIsLinear());
-                return;
+                break;
             case 36:
                 _aidl_parcel.writeBoolean(getIsShortFrames());
-                return;
+                break;
             case 37:
                 _aidl_parcel.writeInt(getIsdbtMode());
-                return;
+                break;
             case 38:
                 _aidl_parcel.writeInt(getPartialReceptionFlag());
-                return;
+                break;
             case 39:
                 _aidl_parcel.writeIntArray(getStreamIdList());
-                return;
+                break;
             case 40:
                 _aidl_parcel.writeIntArray(getDvbtCellIds());
-                return;
+                break;
             case 41:
                 _aidl_parcel.writeTypedArray(getAllPlpInfo(), _aidl_flag);
-                return;
+                break;
             case 42:
                 _aidl_parcel.writeString(getIptvContentUrl());
-                return;
+                break;
             case 43:
                 _aidl_parcel.writeLong(getIptvPacketsReceived());
-                return;
+                break;
             case 44:
                 _aidl_parcel.writeLong(getIptvPacketsLost());
-                return;
+                break;
             case 45:
                 _aidl_parcel.writeInt(getIptvWorstJitterMs());
-                return;
+                break;
             case 46:
                 _aidl_parcel.writeInt(getIptvAverageJitterMs());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

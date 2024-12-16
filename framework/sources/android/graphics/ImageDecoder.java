@@ -43,20 +43,10 @@ public final class ImageDecoder implements AutoCloseable {
     public static final int ALLOCATOR_HARDWARE = 3;
     public static final int ALLOCATOR_SHARED_MEMORY = 2;
     public static final int ALLOCATOR_SOFTWARE = 1;
-
-    @Deprecated
-    public static final int ERROR_SOURCE_ERROR = 3;
-
-    @Deprecated
-    public static final int ERROR_SOURCE_EXCEPTION = 1;
-
-    @Deprecated
-    public static final int ERROR_SOURCE_INCOMPLETE = 2;
     public static final int MEMORY_POLICY_DEFAULT = 1;
     public static final int MEMORY_POLICY_LOW_RAM = 0;
     private final boolean mAnimated;
     private AssetFileDescriptor mAssetFd;
-    private final CloseGuard mCloseGuard;
     private Rect mCropRect;
     private int mDesiredHeight;
     private int mDesiredWidth;
@@ -85,28 +75,20 @@ public final class ImageDecoder implements AutoCloseable {
     private boolean mDecodeAsAlphaMask = false;
     private ColorSpace mDesiredColorSpace = null;
     private final AtomicBoolean mClosed = new AtomicBoolean();
+    private final CloseGuard mCloseGuard = CloseGuard.get();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Allocator {
     }
 
-    @Deprecated
-    /* loaded from: classes.dex */
-    public static class IncompleteException extends IOException {
-    }
-
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MemoryPolicy {
     }
 
-    /* loaded from: classes.dex */
     public interface OnHeaderDecodedListener {
         void onHeaderDecoded(ImageDecoder imageDecoder, ImageInfo imageInfo, Source source);
     }
 
-    /* loaded from: classes.dex */
     public interface OnPartialImageListener {
         boolean onPartialImage(DecodeException decodeException);
     }
@@ -119,13 +101,11 @@ public final class ImageDecoder implements AutoCloseable {
 
     private static native ImageDecoder nCreate(InputStream inputStream, byte[] bArr, boolean z, Source source) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native ImageDecoder nCreate(ByteBuffer byteBuffer, int i, int i2, boolean z, Source source) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native ImageDecoder nCreate(byte[] bArr, int i, int i2, boolean z, Source source) throws IOException;
-
-    private static native ImageDecoder nCreateQMG(long j, boolean z, Source source) throws IOException;
-
-    private static native ImageDecoder nCreateQMG(InputStream inputStream, byte[] bArr, boolean z, Source source) throws IOException;
 
     private static native Bitmap nDecodeBitmap(long j, ImageDecoder imageDecoder, boolean z, int i, int i2, Rect rect, boolean z2, int i3, boolean z3, boolean z4, boolean z5, long j2, boolean z6) throws IOException;
 
@@ -137,12 +117,7 @@ public final class ImageDecoder implements AutoCloseable {
 
     private static native Size nGetSampledSize(long j, int i);
 
-    /* loaded from: classes.dex */
     public static abstract class Source {
-        /* synthetic */ Source(SourceIA sourceIA) {
-            this();
-        }
-
         abstract ImageDecoder createImageDecoder(boolean z) throws IOException;
 
         private Source() {
@@ -165,8 +140,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ByteArraySource extends Source {
+    private static class ByteArraySource extends Source {
         private final byte[] mData;
         private final int mLength;
         private final int mOffset;
@@ -188,7 +162,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class ByteBufferSource extends Source {
         private final ByteBuffer mBuffer;
         private final int mLength;
@@ -196,7 +169,7 @@ public final class ImageDecoder implements AutoCloseable {
         ByteBufferSource(ByteBuffer buffer) {
             super();
             this.mBuffer = buffer;
-            this.mLength = buffer.limit() - buffer.position();
+            this.mLength = this.mBuffer.limit() - this.mBuffer.position();
         }
 
         @Override // android.graphics.ImageDecoder.Source
@@ -215,8 +188,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ContentResolverSource extends Source {
+    private static class ContentResolverSource extends Source {
         private final ContentResolver mResolver;
         private final Resources mResources;
         private final Uri mUri;
@@ -263,6 +235,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromFile(File file, boolean preferAnimation, Source source) throws IOException {
         FileInputStream stream = new FileInputStream(file);
         FileDescriptor fd = stream.getFD();
@@ -285,6 +258,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromStream(InputStream is, boolean closeInputStream, boolean preferAnimation, Source source) throws IOException {
         byte[] storage = new byte[16384];
         ImageDecoder decoder = null;
@@ -304,25 +278,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    public static ImageDecoder createFromStreamQMG(InputStream is, boolean closeInputStream, boolean preferAnimation, Source source) throws IOException {
-        byte[] storage = new byte[16384];
-        ImageDecoder decoder = null;
-        try {
-            decoder = nCreateQMG(is, storage, preferAnimation, source);
-            return decoder;
-        } finally {
-            if (decoder == null) {
-                if (closeInputStream) {
-                    IoUtils.closeQuietly(is);
-                }
-            } else {
-                decoder.mInputStream = is;
-                decoder.mOwnsInputStream = closeInputStream;
-                decoder.mTempStorage = storage;
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromAssetFileDescriptor(AssetFileDescriptor assetFd, boolean preferAnimation, Source source) throws IOException {
         if (assetFd == null) {
             throw new FileNotFoundException();
@@ -353,8 +309,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class InputStreamSource extends Source {
+    private static class InputStreamSource extends Source {
         final int mInputDensity;
         InputStream mInputStream;
         final Resources mResources;
@@ -383,10 +338,10 @@ public final class ImageDecoder implements AutoCloseable {
         public ImageDecoder createImageDecoder(boolean preferAnimation) throws IOException {
             ImageDecoder createFromStream;
             synchronized (this) {
-                InputStream is = this.mInputStream;
-                if (is == null) {
+                if (this.mInputStream == null) {
                     throw new IOException("Cannot reuse InputStreamSource");
                 }
+                InputStream is = this.mInputStream;
                 this.mInputStream = null;
                 createFromStream = ImageDecoder.createFromStream(is, false, preferAnimation, this);
             }
@@ -398,48 +353,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    private static class InputStreamSourceQMG extends Source {
-        final int mInputDensity;
-        InputStream mInputStream;
-        final Resources mResources;
-
-        InputStreamSourceQMG(Resources res, InputStream is, int inputDensity) {
-            super();
-            if (is == null) {
-                throw new IllegalArgumentException("The InputStream cannot be null");
-            }
-            this.mResources = res;
-            this.mInputStream = is;
-            this.mInputDensity = inputDensity;
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public Resources getResources() {
-            return this.mResources;
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public int getDensity() {
-            return this.mInputDensity;
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public ImageDecoder createImageDecoder(boolean preferAnimation) throws IOException {
-            ImageDecoder createFromStreamQMG;
-            synchronized (this) {
-                InputStream is = this.mInputStream;
-                if (is == null) {
-                    throw new IOException("Cannot reuse InputStreamSource");
-                }
-                this.mInputStream = null;
-                createFromStreamQMG = ImageDecoder.createFromStreamQMG(is, false, preferAnimation, this);
-            }
-            return createFromStreamQMG;
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static class AssetInputStreamSource extends Source {
         private AssetManager.AssetInputStream mAssetInputStream;
         private final int mDensity;
@@ -472,10 +385,10 @@ public final class ImageDecoder implements AutoCloseable {
         public ImageDecoder createImageDecoder(boolean preferAnimation) throws IOException {
             ImageDecoder createFromAsset;
             synchronized (this) {
-                AssetManager.AssetInputStream ais = this.mAssetInputStream;
-                if (ais == null) {
+                if (this.mAssetInputStream == null) {
                     throw new IOException("Cannot reuse AssetInputStreamSource");
                 }
+                AssetManager.AssetInputStream ais = this.mAssetInputStream;
                 this.mAssetInputStream = null;
                 createFromAsset = ImageDecoder.createFromAsset(ais, preferAnimation, this);
             }
@@ -487,53 +400,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class AssetInputStreamSourceQMG extends Source {
-        private AssetManager.AssetInputStream mAssetInputStream;
-        private final int mDensity;
-        private final Resources mResources;
-
-        public AssetInputStreamSourceQMG(AssetManager.AssetInputStream ais, Resources res, TypedValue value) {
-            super();
-            this.mAssetInputStream = ais;
-            this.mResources = res;
-            if (value.density == 0) {
-                this.mDensity = 160;
-            } else if (value.density != 65535) {
-                this.mDensity = value.density;
-            } else {
-                this.mDensity = 0;
-            }
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public Resources getResources() {
-            return this.mResources;
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public int getDensity() {
-            return this.mDensity;
-        }
-
-        @Override // android.graphics.ImageDecoder.Source
-        public ImageDecoder createImageDecoder(boolean preferAnimation) throws IOException {
-            ImageDecoder createFromAssetQMG;
-            synchronized (this) {
-                AssetManager.AssetInputStream ais = this.mAssetInputStream;
-                if (ais == null) {
-                    throw new IOException("Cannot reuse AssetInputStreamSource");
-                }
-                this.mAssetInputStream = null;
-                createFromAssetQMG = ImageDecoder.createFromAssetQMG(ais, preferAnimation, this);
-            }
-            return createFromAssetQMG;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class ResourceSource extends Source {
+    private static class ResourceSource extends Source {
         private Object mLock;
         int mResDensity;
         final int mResId;
@@ -584,6 +451,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ImageDecoder createFromAsset(AssetManager.AssetInputStream ais, boolean preferAnimation, Source source) throws IOException {
         ImageDecoder decoder = null;
         try {
@@ -600,23 +468,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    public static ImageDecoder createFromAssetQMG(AssetManager.AssetInputStream ais, boolean preferAnimation, Source source) throws IOException {
-        ImageDecoder decoder = null;
-        try {
-            long asset = ais.getNativeAsset();
-            decoder = nCreateQMG(asset, preferAnimation, source);
-            return decoder;
-        } finally {
-            if (decoder == null) {
-                IoUtils.closeQuietly(ais);
-            } else {
-                decoder.mInputStream = ais;
-                decoder.mOwnsInputStream = true;
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
     private static class AssetSource extends Source {
         private final AssetManager mAssets;
         private final String mFileName;
@@ -638,9 +489,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class FileSource extends Source {
+    private static class FileSource extends Source {
         private final File mFile;
 
         FileSource(File file) {
@@ -658,8 +507,7 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CallableSource extends Source {
+    private static class CallableSource extends Source {
         private final Callable<AssetFileDescriptor> mCallable;
 
         CallableSource(Callable<AssetFileDescriptor> callable) {
@@ -685,16 +533,11 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ImageInfo {
         private final ColorSpace mColorSpace;
         private final boolean mIsAnimated;
         private final String mMimeType;
         private final Size mSize;
-
-        /* synthetic */ ImageInfo(Size size, boolean z, String str, ColorSpace colorSpace, ImageInfoIA imageInfoIA) {
-            this(size, z, str, colorSpace);
-        }
 
         private ImageInfo(Size size, boolean isAnimated, String mimeType, ColorSpace colorSpace) {
             this.mSize = size;
@@ -720,7 +563,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class DecodeException extends IOException {
         public static final int SOURCE_EXCEPTION = 1;
         public static final int SOURCE_INCOMPLETE = 2;
@@ -729,7 +571,6 @@ public final class ImageDecoder implements AutoCloseable {
         final Source mSource;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface Error {
         }
 
@@ -768,8 +609,6 @@ public final class ImageDecoder implements AutoCloseable {
     }
 
     private ImageDecoder(long nativePtr, int width, int height, boolean animated, boolean isNinePatch) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
         this.mNativePtr = nativePtr;
         this.mWidth = width;
         this.mHeight = height;
@@ -777,14 +616,13 @@ public final class ImageDecoder implements AutoCloseable {
         this.mDesiredHeight = height;
         this.mAnimated = animated;
         this.mIsNinePatch = isNinePatch;
-        closeGuard.open("close");
+        this.mCloseGuard.open("close");
     }
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             this.mInputStream = null;
             this.mAssetFd = null;
@@ -1015,10 +853,6 @@ public final class ImageDecoder implements AutoCloseable {
         return new InputStreamSource(res, is, density);
     }
 
-    public static Source createSourceQMG(Resources res, InputStream is, int density) {
-        return new InputStreamSourceQMG(res, is, density);
-    }
-
     public static Source createSource(File file) {
         return new FileSource(file);
     }
@@ -1031,17 +865,10 @@ public final class ImageDecoder implements AutoCloseable {
         if (sampleSize <= 0) {
             throw new IllegalArgumentException("sampleSize must be positive! provided " + sampleSize);
         }
-        long j = this.mNativePtr;
-        if (j == 0) {
+        if (this.mNativePtr == 0) {
             throw new IllegalStateException("ImageDecoder is closed!");
         }
-        return nGetSampledSize(j, sampleSize);
-    }
-
-    @Deprecated
-    public ImageDecoder setResize(int width, int height) {
-        setTargetSize(width, height);
-        return this;
+        return nGetSampledSize(this.mNativePtr, sampleSize);
     }
 
     public void setTargetSize(int width, int height) {
@@ -1050,12 +877,6 @@ public final class ImageDecoder implements AutoCloseable {
         }
         this.mDesiredWidth = width;
         this.mDesiredHeight = height;
-    }
-
-    @Deprecated
-    public ImageDecoder setResize(int sampleSize) {
-        setTargetSampleSize(sampleSize);
-        return this;
     }
 
     private int getTargetDimension(int original, int sampleSize, int computed) {
@@ -1099,19 +920,8 @@ public final class ImageDecoder implements AutoCloseable {
         this.mUnpremultipliedRequired = unpremultipliedRequired;
     }
 
-    @Deprecated
-    public ImageDecoder setRequireUnpremultiplied(boolean unpremultipliedRequired) {
-        setUnpremultipliedRequired(unpremultipliedRequired);
-        return this;
-    }
-
     public boolean isUnpremultipliedRequired() {
         return this.mUnpremultipliedRequired;
-    }
-
-    @Deprecated
-    public boolean getRequireUnpremultiplied() {
-        return isUnpremultipliedRequired();
     }
 
     public void setPostProcessor(PostProcessor postProcessor) {
@@ -1146,19 +956,8 @@ public final class ImageDecoder implements AutoCloseable {
         this.mMutable = mutable;
     }
 
-    @Deprecated
-    public ImageDecoder setMutable(boolean mutable) {
-        setMutableRequired(mutable);
-        return this;
-    }
-
     public boolean isMutableRequired() {
         return this.mMutable;
-    }
-
-    @Deprecated
-    public boolean getMutable() {
-        return isMutableRequired();
     }
 
     public void setMemorySizePolicy(int policy) {
@@ -1169,44 +968,12 @@ public final class ImageDecoder implements AutoCloseable {
         return !this.mConserveMemory ? 1 : 0;
     }
 
-    @Deprecated
-    public void setConserveMemory(boolean conserveMemory) {
-        this.mConserveMemory = conserveMemory;
-    }
-
-    @Deprecated
-    public boolean getConserveMemory() {
-        return this.mConserveMemory;
-    }
-
     public void setDecodeAsAlphaMaskEnabled(boolean enabled) {
         this.mDecodeAsAlphaMask = enabled;
     }
 
-    @Deprecated
-    public ImageDecoder setDecodeAsAlphaMask(boolean enabled) {
-        setDecodeAsAlphaMaskEnabled(enabled);
-        return this;
-    }
-
-    @Deprecated
-    public ImageDecoder setAsAlphaMask(boolean asAlphaMask) {
-        setDecodeAsAlphaMask(asAlphaMask);
-        return this;
-    }
-
     public boolean isDecodeAsAlphaMaskEnabled() {
         return this.mDecodeAsAlphaMask;
-    }
-
-    @Deprecated
-    public boolean getDecodeAsAlphaMask() {
-        return this.mDecodeAsAlphaMask;
-    }
-
-    @Deprecated
-    public boolean getAsAlphaMask() {
-        return getDecodeAsAlphaMask();
     }
 
     public void setTargetColorSpace(ColorSpace colorSpace) {
@@ -1261,19 +1028,17 @@ public final class ImageDecoder implements AutoCloseable {
     }
 
     private boolean checkForExtended() {
-        ColorSpace colorSpace = this.mDesiredColorSpace;
-        if (colorSpace == null) {
+        if (this.mDesiredColorSpace == null) {
             return false;
         }
-        return colorSpace == ColorSpace.get(ColorSpace.Named.EXTENDED_SRGB) || this.mDesiredColorSpace == ColorSpace.get(ColorSpace.Named.LINEAR_EXTENDED_SRGB);
+        return this.mDesiredColorSpace == ColorSpace.get(ColorSpace.Named.EXTENDED_SRGB) || this.mDesiredColorSpace == ColorSpace.get(ColorSpace.Named.LINEAR_EXTENDED_SRGB);
     }
 
     private long getColorSpacePtr() {
-        ColorSpace colorSpace = this.mDesiredColorSpace;
-        if (colorSpace == null) {
+        if (this.mDesiredColorSpace == null) {
             return 0L;
         }
-        return colorSpace.getNativeInstance();
+        return this.mDesiredColorSpace.getNativeInstance();
     }
 
     private Bitmap decodeBitmapInternal() throws IOException {
@@ -1442,17 +1207,11 @@ public final class ImageDecoder implements AutoCloseable {
     }
 
     private static AutoCloseable traceDecoderSource(ImageDecoder decoder) {
-        boolean resourceTracingEnabled = Trace.isTagEnabled(8192L);
+        final boolean resourceTracingEnabled = Trace.isTagEnabled(8192L);
         if (resourceTracingEnabled) {
             Trace.traceBegin(8192L, describeDecoderForTrace(decoder));
         }
         return new AutoCloseable() { // from class: android.graphics.ImageDecoder.1
-            final /* synthetic */ boolean val$resourceTracingEnabled;
-
-            AnonymousClass1(boolean resourceTracingEnabled2) {
-                resourceTracingEnabled = resourceTracingEnabled2;
-            }
-
             @Override // java.lang.AutoCloseable
             public void close() throws Exception {
                 if (resourceTracingEnabled) {
@@ -1460,23 +1219,6 @@ public final class ImageDecoder implements AutoCloseable {
                 }
             }
         };
-    }
-
-    /* renamed from: android.graphics.ImageDecoder$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements AutoCloseable {
-        final /* synthetic */ boolean val$resourceTracingEnabled;
-
-        AnonymousClass1(boolean resourceTracingEnabled2) {
-            resourceTracingEnabled = resourceTracingEnabled2;
-        }
-
-        @Override // java.lang.AutoCloseable
-        public void close() throws Exception {
-            if (resourceTracingEnabled) {
-                Trace.traceEnd(8192L);
-            }
-        }
     }
 
     private int computeDensity(Source src) {
@@ -1526,12 +1268,11 @@ public final class ImageDecoder implements AutoCloseable {
                 return sIsHevcDecoderSupported;
             }
             MediaFormat format = new MediaFormat();
-            format.setString(MediaFormat.KEY_MIME, "video/hevc");
+            format.setString("mime", "video/hevc");
             MediaCodecList mcl = new MediaCodecList(0);
-            boolean z = mcl.findDecoderForFormat(format) != null;
-            sIsHevcDecoderSupported = z;
+            sIsHevcDecoderSupported = mcl.findDecoderForFormat(format) != null;
             sIsHevcDecoderSupportedInitialized = true;
-            return z;
+            return sIsHevcDecoderSupported;
         }
     }
 
@@ -1588,9 +1329,8 @@ public final class ImageDecoder implements AutoCloseable {
 
     private void onPartialImage(int error, Throwable cause) throws DecodeException {
         DecodeException exception = new DecodeException(error, cause, this.mSource);
-        OnPartialImageListener onPartialImageListener = this.mOnPartialImageListener;
-        if (onPartialImageListener != null) {
-            if (!onPartialImageListener.onPartialImage(exception)) {
+        if (this.mOnPartialImageListener != null) {
+            if (!this.mOnPartialImageListener.onPartialImage(exception)) {
                 throw exception;
             }
             return;
@@ -1598,6 +1338,7 @@ public final class ImageDecoder implements AutoCloseable {
         throw exception;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String describeDecoderForTrace(ImageDecoder decoder) {
         StringBuilder builder = new StringBuilder();
         builder.append("ID#w=");
@@ -1615,14 +1356,11 @@ public final class ImageDecoder implements AutoCloseable {
         return builder.toString();
     }
 
-    /* loaded from: classes.dex */
-    public static final class ImageDecoderSourceTrace implements AutoCloseable {
-        private final boolean mResourceTracingEnabled;
+    private static final class ImageDecoderSourceTrace implements AutoCloseable {
+        private final boolean mResourceTracingEnabled = Trace.isTagEnabled(8192);
 
         ImageDecoderSourceTrace(ImageDecoder decoder) {
-            boolean isTagEnabled = Trace.isTagEnabled(8192L);
-            this.mResourceTracingEnabled = isTagEnabled;
-            if (isTagEnabled) {
+            if (this.mResourceTracingEnabled) {
                 Trace.traceBegin(8192L, ImageDecoder.describeDecoderForTrace(decoder));
             }
         }

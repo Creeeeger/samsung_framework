@@ -11,7 +11,7 @@ public final class SaveCallback {
     private final ISaveCallback mCallback;
     private boolean mCalled;
 
-    public SaveCallback(ISaveCallback callback) {
+    SaveCallback(ISaveCallback callback) {
         this.mCallback = callback;
     }
 

@@ -11,9 +11,8 @@ import android.view.WindowManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public final class VoiceInteractionWindow extends Dialog {
+final class VoiceInteractionWindow extends Dialog {
     private static final boolean DEBUG = false;
     private static final String TAG = "VoiceInteractionWindow";
     private final Rect mBounds;
@@ -26,14 +25,11 @@ public final class VoiceInteractionWindow extends Dialog {
     private int mWindowState;
     private final int mWindowType;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public interface Callback {
+    interface Callback {
         void onBackPressed();
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     private @interface WindowState {
         public static final int DESTROYED = 4;
         public static final int REJECTED_AT_LEAST_ONCE = 3;
@@ -42,7 +38,7 @@ public final class VoiceInteractionWindow extends Dialog {
         public static final int TOKEN_SET = 1;
     }
 
-    public void setToken(IBinder token) {
+    void setToken(IBinder token) {
         switch (this.mWindowState) {
             case 0:
                 WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -64,7 +60,7 @@ public final class VoiceInteractionWindow extends Dialog {
         }
     }
 
-    public VoiceInteractionWindow(Context context, String name, int theme, Callback callback, KeyEvent.Callback keyEventCallback, KeyEvent.DispatcherState dispatcherState, int windowType, int gravity, boolean takesFocus) {
+    VoiceInteractionWindow(Context context, String name, int theme, Callback callback, KeyEvent.Callback keyEventCallback, KeyEvent.DispatcherState dispatcherState, int windowType, int gravity, boolean takesFocus) {
         super(context, theme);
         this.mBounds = new Rect();
         this.mWindowState = 0;
@@ -108,8 +104,7 @@ public final class VoiceInteractionWindow extends Dialog {
 
     @Override // android.app.Dialog, android.view.KeyEvent.Callback
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        KeyEvent.Callback callback = this.mKeyEventCallback;
-        if (callback != null && callback.onKeyDown(keyCode, event)) {
+        if (this.mKeyEventCallback != null && this.mKeyEventCallback.onKeyDown(keyCode, event)) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -117,8 +112,7 @@ public final class VoiceInteractionWindow extends Dialog {
 
     @Override // android.app.Dialog, android.view.KeyEvent.Callback
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        KeyEvent.Callback callback = this.mKeyEventCallback;
-        if (callback != null && callback.onKeyLongPress(keyCode, event)) {
+        if (this.mKeyEventCallback != null && this.mKeyEventCallback.onKeyLongPress(keyCode, event)) {
             return true;
         }
         return super.onKeyLongPress(keyCode, event);
@@ -126,8 +120,7 @@ public final class VoiceInteractionWindow extends Dialog {
 
     @Override // android.app.Dialog, android.view.KeyEvent.Callback
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        KeyEvent.Callback callback = this.mKeyEventCallback;
-        if (callback != null && callback.onKeyUp(keyCode, event)) {
+        if (this.mKeyEventCallback != null && this.mKeyEventCallback.onKeyUp(keyCode, event)) {
             return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -135,8 +128,7 @@ public final class VoiceInteractionWindow extends Dialog {
 
     @Override // android.app.Dialog, android.view.KeyEvent.Callback
     public boolean onKeyMultiple(int keyCode, int count, KeyEvent event) {
-        KeyEvent.Callback callback = this.mKeyEventCallback;
-        if (callback != null && callback.onKeyMultiple(keyCode, count, event)) {
+        if (this.mKeyEventCallback != null && this.mKeyEventCallback.onKeyMultiple(keyCode, count, event)) {
             return true;
         }
         return super.onKeyMultiple(keyCode, count, event);
@@ -144,9 +136,8 @@ public final class VoiceInteractionWindow extends Dialog {
 
     @Override // android.app.Dialog
     public void onBackPressed() {
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onBackPressed();
+        if (this.mCallback != null) {
+            this.mCallback.onBackPressed();
         } else {
             super.onBackPressed();
         }

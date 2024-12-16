@@ -1,6 +1,6 @@
 package com.samsung.android.rune;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CoreMetaData {
     public static final String COVER_LAUNCHER_INNER_APP = "com.samsung.android.foldable.cover_launcher_inner_app";
     public static final String COVER_LAUNCHER_POLICY_APP = "com.samsung.android.foldable.cover_launcher_policy_app";
@@ -17,16 +17,12 @@ public class CoreMetaData {
     public static final String METADATA_DEX_KILL_PROCESS_TIMEOUT = "com.samsung.android.dex.kill_process_timeout";
     public static final String METADATA_DEX_TRANSIENT_BAR_DELAY = "com.samsung.android.dex.transient_bar_delay";
     public static final String METADATA_KEEP_SCREEN_WHEN_FOLDING = "com.samsung.android.foldable.keep_screen_when_folding";
-    public static final String METADATA_TASK_REMOVAL_ON_DISPLAY_CHANGE = "com.samsung.android.foldable.task_removal_on_display_change";
-    public static final String MULTIDISPLAY_DO_NOT_SHOW_DISPLAYCHOOSER = "com.samsung.android.multidisplay.do_not_show_displaychooser";
     public static final String MULTIDISPLAY_FIXED_APP_CONTEXT_DISPLAY = "com.samsung.android.multidisplay.fixed_app_context_display";
-    public static final String MULTIDISPLAY_KEEP_PROCESS_ALIVE = "com.samsung.android.multidisplay.keep_process_alive";
-    public static final String MULTIDISPLAY_PRIMARY_DISPLAY = "com.samsung.android.multidisplay.primarydisplay";
     public static final String MULTIWINDOW_ALIAS_TARGET_ACTIVITY = "com.samsung.android.multiwindow.activity.alias.targetactivity";
+    public static final String MULTIWINDOW_CUSTOMIZABLE_WINDOW_HEADERS = "com.samsung.android.multiwindow.customizable_window_headers";
     public static final String MULTIWINDOW_EMBED_ACTIVITY_NOT_SUPPORTED = "com.samsung.android.multiwindow.embed_activity_not_supported";
     public static final String MULTIWINDOW_FLOATING_FORCE_HIDE = "com.samsung.android.sdk.multiwindow.force_hide_floating_multiwindow";
     public static final String MULTIWINDOW_IGNORE_NONRESIZABLE_SETTING = "com.samsung.android.multiwindow.ignore.nonresizable.setting";
-    public static final String MULTIWINDOW_LAUNCH_MULTI_WINDOW_MODE = "com.samsung.android.drag_and_drop.launch.multiwindow.mode";
     public static final String MULTIWINDOW_MAX_HEIGHT = "com.samsung.android.sdk.multiwindow.maxHeight";
     public static final String MULTIWINDOW_MAX_WIDTH = "com.samsung.android.sdk.multiwindow.maxWidth";
     public static final String MULTIWINDOW_NONRESIZEABLE = "com.samsung.android.multiwindow.nonresizeable";

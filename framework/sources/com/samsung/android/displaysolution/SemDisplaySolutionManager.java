@@ -3,7 +3,7 @@ package com.samsung.android.displaysolution;
 import android.os.RemoteException;
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemDisplaySolutionManager {
     private static long RETURN_ERROR = -1;
     private static float RETURN_ERROR_F = -1.0f;
@@ -25,120 +25,110 @@ public final class SemDisplaySolutionManager {
     }
 
     public boolean getVideoModeEnable() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.getVideoModeEnable();
+            return this.mService.getVideoModeEnable();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean getGalleryModeEnable() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.getGalleryModeEnable();
+            return this.mService.getGalleryModeEnable();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean getCameraModeEnable() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.getCameraModeEnable();
+            return this.mService.getCameraModeEnable();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean getDouAppModeEnable() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.getDouAppModeEnable();
+            return this.mService.getDouAppModeEnable();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public boolean getAutoCurrentLimitOffModeEnabled() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.getAutoCurrentLimitOffModeEnabled();
+            return this.mService.getAutoCurrentLimitOffModeEnabled();
         } catch (RemoteException e) {
             return false;
         }
     }
 
     public String getOnPixelRatioValueForPMS() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return "";
         }
         try {
-            return iSemDisplaySolutionManager.getOnPixelRatioValueForPMS();
+            return this.mService.getOnPixelRatioValueForPMS();
         } catch (RemoteException e) {
             return "";
         }
     }
 
     public int getVideoEnhancerSettingState(String name) {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR_I;
         }
         try {
-            return iSemDisplaySolutionManager.getVideoEnhancerSettingState(name);
+            return this.mService.getVideoEnhancerSettingState(name);
         } catch (RemoteException e) {
             return RETURN_ERROR_I;
         }
     }
 
     public float getFingerPrintBacklightValue(int brightnessNits) {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR_F;
         }
         try {
-            return iSemDisplaySolutionManager.getFingerPrintBacklightValue(brightnessNits);
+            return this.mService.getFingerPrintBacklightValue(brightnessNits);
         } catch (RemoteException e) {
             return RETURN_ERROR_F;
         }
     }
 
     public float getAlphaMaskLevel(float CurrentPlatformBrightnessValue, float FingerPrintPlatformValue, float br_ctrl) {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return RETURN_ERROR_F;
         }
         try {
-            return iSemDisplaySolutionManager.getAlphaMaskLevel(CurrentPlatformBrightnessValue, FingerPrintPlatformValue, br_ctrl);
+            return this.mService.getAlphaMaskLevel(CurrentPlatformBrightnessValue, FingerPrintPlatformValue, br_ctrl);
         } catch (RemoteException e) {
             return RETURN_ERROR_F;
         }
     }
 
     public boolean isMdnieScenarioControlServiceEnabled() {
-        ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-        if (iSemDisplaySolutionManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iSemDisplaySolutionManager.isMdnieScenarioControlServiceEnabled();
+            return this.mService.isMdnieScenarioControlServiceEnabled();
         } catch (RemoteException e) {
             return false;
         }
@@ -146,9 +136,8 @@ public final class SemDisplaySolutionManager {
 
     public void onDetailVeiwStateChanged(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onDetailVeiwStateChanged(enable);
+            if (this.mService != null) {
+                this.mService.onDetailVeiwStateChanged(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -157,9 +146,8 @@ public final class SemDisplaySolutionManager {
 
     public void onAutoCurrentLimitStateChanged(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onAutoCurrentLimitStateChanged(enable);
+            if (this.mService != null) {
+                this.mService.onAutoCurrentLimitStateChanged(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -168,9 +156,8 @@ public final class SemDisplaySolutionManager {
 
     public void onAutoCurrentLimitStateChangedWithBrightness(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onAutoCurrentLimitStateChangedWithBrightness(enable);
+            if (this.mService != null) {
+                this.mService.onAutoCurrentLimitStateChangedWithBrightness(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -179,9 +166,8 @@ public final class SemDisplaySolutionManager {
 
     public void onAutoCurrentLimitStateChangedInt(int value) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onAutoCurrentLimitStateChangedInt(value);
+            if (this.mService != null) {
+                this.mService.onAutoCurrentLimitStateChangedInt(value);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -190,9 +176,8 @@ public final class SemDisplaySolutionManager {
 
     public void onAutoCurrentLimitOffMode(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onAutoCurrentLimitOffMode(enable);
+            if (this.mService != null) {
+                this.mService.onAutoCurrentLimitOffMode(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -201,9 +186,8 @@ public final class SemDisplaySolutionManager {
 
     public void onBurnInPreventionDisabled(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.onBurnInPreventionDisabled(enable);
+            if (this.mService != null) {
+                this.mService.onBurnInPreventionDisabled(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -212,9 +196,18 @@ public final class SemDisplaySolutionManager {
 
     public void setHighDynamicRangeMode(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setHighDynamicRangeMode(enable);
+            if (this.mService != null) {
+                this.mService.setHighDynamicRangeMode(enable);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public void updateAutoBrightnessLux(int id, int lux) {
+        try {
+            if (this.mService != null) {
+                this.mService.updateAutoBrightnessLux(id, lux);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -223,9 +216,8 @@ public final class SemDisplaySolutionManager {
 
     public void setIRCompensationMode(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setIRCompensationMode(enable);
+            if (this.mService != null) {
+                this.mService.setIRCompensationMode(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -234,9 +226,8 @@ public final class SemDisplaySolutionManager {
 
     public void setVideoModeEnable(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setVideoModeEnable(enable);
+            if (this.mService != null) {
+                this.mService.setVideoModeEnable(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -245,9 +236,8 @@ public final class SemDisplaySolutionManager {
 
     public void setGalleryModeEnable(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setGalleryModeEnable(enable);
+            if (this.mService != null) {
+                this.mService.setGalleryModeEnable(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -256,9 +246,8 @@ public final class SemDisplaySolutionManager {
 
     public void setCameraModeEnable(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setCameraModeEnable(enable);
+            if (this.mService != null) {
+                this.mService.setCameraModeEnable(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -267,9 +256,8 @@ public final class SemDisplaySolutionManager {
 
     public void setDouAppModeEnable(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setDouAppModeEnable(enable);
+            if (this.mService != null) {
+                this.mService.setDouAppModeEnable(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -278,9 +266,8 @@ public final class SemDisplaySolutionManager {
 
     public void setAutoCurrentLimitOffModeEnabled(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setAutoCurrentLimitOffModeEnabled(enable);
+            if (this.mService != null) {
+                this.mService.setAutoCurrentLimitOffModeEnabled(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -289,9 +276,8 @@ public final class SemDisplaySolutionManager {
 
     public void setMdnieScenarioControlServiceEnable(boolean enable) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setMdnieScenarioControlServiceEnable(enable);
+            if (this.mService != null) {
+                this.mService.setMdnieScenarioControlServiceEnable(enable);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -300,9 +286,8 @@ public final class SemDisplaySolutionManager {
 
     public void setScreenBrightnessForPreview(int settingValue) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setScreenBrightnessForPreview(settingValue);
+            if (this.mService != null) {
+                this.mService.setScreenBrightnessForPreview(settingValue);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -311,9 +296,8 @@ public final class SemDisplaySolutionManager {
 
     public void setMultipleScreenBrightness(String name) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setMultipleScreenBrightness(name);
+            if (this.mService != null) {
+                this.mService.setMultipleScreenBrightness(name);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -322,9 +306,8 @@ public final class SemDisplaySolutionManager {
 
     public void setOnPixelRatioValueForPMS(String value) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setOnPixelRatioValueForPMS(value);
+            if (this.mService != null) {
+                this.mService.setOnPixelRatioValueForPMS(value);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -333,9 +316,8 @@ public final class SemDisplaySolutionManager {
 
     public void setMultipleScreenBrightnessValueForHDR(float scalefactorValueHDR) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setMultipleScreenBrightnessValueForHDR(scalefactorValueHDR);
+            if (this.mService != null) {
+                this.mService.setMultipleScreenBrightnessValueForHDR(scalefactorValueHDR);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -344,9 +326,8 @@ public final class SemDisplaySolutionManager {
 
     public void setEyeComfortWeightingFactor(float scaleValue) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setEyeComfortWeightingFactor(scaleValue);
+            if (this.mService != null) {
+                this.mService.setEyeComfortWeightingFactor(scaleValue);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -355,9 +336,8 @@ public final class SemDisplaySolutionManager {
 
     public void setVideoEnhancerSettingState(String name, int state) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setVideoEnhancerSettingState(name, state);
+            if (this.mService != null) {
+                this.mService.setVideoEnhancerSettingState(name, state);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -366,9 +346,8 @@ public final class SemDisplaySolutionManager {
 
     public void setSleepPatternBLF(String mWeekType, long mBedtime, long mWakeupTime, float mConfidence) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setSleepPatternBLF(mWeekType, mBedtime, mWakeupTime, mConfidence);
+            if (this.mService != null) {
+                this.mService.setSleepPatternBLF(mWeekType, mBedtime, mWakeupTime, mConfidence);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -377,9 +356,18 @@ public final class SemDisplaySolutionManager {
 
     public void setBlfEnableTimeBySchedule(boolean enable, int index) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setBlfEnableTimeBySchedule(enable, index);
+            if (this.mService != null) {
+                this.mService.setBlfEnableTimeBySchedule(enable, index);
+            }
+        } catch (RemoteException e) {
+            onError(e);
+        }
+    }
+
+    public void setmDNIeModeState(String mode) {
+        try {
+            if (this.mService != null) {
+                this.mService.setmDNIeModeState(mode);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -388,9 +376,8 @@ public final class SemDisplaySolutionManager {
 
     public boolean isBlueLightFilterScheduledTime() {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                return iSemDisplaySolutionManager.isBlueLightFilterScheduledTime();
+            if (this.mService != null) {
+                return this.mService.isBlueLightFilterScheduledTime();
             }
             return false;
         } catch (RemoteException e) {
@@ -401,9 +388,8 @@ public final class SemDisplaySolutionManager {
 
     public void setEadIndexOffset(int offset) {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                iSemDisplaySolutionManager.setEadIndexOffset(offset);
+            if (this.mService != null) {
+                this.mService.setEadIndexOffset(offset);
             }
         } catch (RemoteException e) {
             onError(e);
@@ -412,9 +398,8 @@ public final class SemDisplaySolutionManager {
 
     public int getBlfAdaptiveCurrentIndex() {
         try {
-            ISemDisplaySolutionManager iSemDisplaySolutionManager = this.mService;
-            if (iSemDisplaySolutionManager != null) {
-                return iSemDisplaySolutionManager.getBlfAdaptiveCurrentIndex();
+            if (this.mService != null) {
+                return this.mService.getBlfAdaptiveCurrentIndex();
             }
             return -1;
         } catch (RemoteException e) {

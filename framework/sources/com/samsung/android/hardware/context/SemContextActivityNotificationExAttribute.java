@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import android.util.Log;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityNotificationExAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextActivityNotificationExAttribute> CREATOR = new Parcelable.Creator<SemContextActivityNotificationExAttribute>() { // from class: com.samsung.android.hardware.context.SemContextActivityNotificationExAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationExAttribute createFromParcel(Parcel in) {
             return new SemContextActivityNotificationExAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityNotificationExAttribute[] newArray(int size) {
             return new SemContextActivityNotificationExAttribute[size];
@@ -27,24 +26,7 @@ public class SemContextActivityNotificationExAttribute extends SemContextAttribu
     private int[] mActivityFilter;
     private int mDuration;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityNotificationExAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityNotificationExAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityNotificationExAttribute createFromParcel(Parcel in) {
-            return new SemContextActivityNotificationExAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityNotificationExAttribute[] newArray(int size) {
-            return new SemContextActivityNotificationExAttribute[size];
-        }
-    }
-
-    public SemContextActivityNotificationExAttribute() {
+    SemContextActivityNotificationExAttribute() {
         this.mActivityFilter = null;
         this.mDuration = 30;
         this.mActivityFilter = new int[]{4};
@@ -61,9 +43,8 @@ public class SemContextActivityNotificationExAttribute extends SemContextAttribu
         this.mActivityFilter = null;
         this.mDuration = 30;
         if (activityFilter != null) {
-            int[] iArr = new int[activityFilter.length];
-            this.mActivityFilter = iArr;
-            System.arraycopy(activityFilter, 0, iArr, 0, activityFilter.length);
+            this.mActivityFilter = new int[activityFilter.length];
+            System.arraycopy(activityFilter, 0, this.mActivityFilter, 0, activityFilter.length);
             this.mDuration = duration;
             setAttribute();
             return;
@@ -77,32 +58,25 @@ public class SemContextActivityNotificationExAttribute extends SemContextAttribu
             return false;
         }
         ArrayList<Integer> list = new ArrayList<>();
-        int i = 0;
-        while (true) {
-            int[] iArr = this.mActivityFilter;
-            if (i < iArr.length) {
-                int i2 = iArr[i];
-                if ((i2 < 0 || i2 > 5) && i2 != 30) {
-                    Log.e(TAG, "The activity status is wrong.");
+        for (int i = 0; i < this.mActivityFilter.length; i++) {
+            if ((this.mActivityFilter[i] < 0 || this.mActivityFilter[i] > 5) && this.mActivityFilter[i] != 30) {
+                Log.e(TAG, "The activity status is wrong.");
+                return false;
+            }
+            list.add(Integer.valueOf(this.mActivityFilter[i]));
+            for (int j = 0; j < i; j++) {
+                if (list.get(i).equals(list.get(j))) {
+                    Log.e(TAG, "This activity status cannot have duplicated status.");
                     return false;
                 }
-                list.add(Integer.valueOf(i2));
-                for (int j = 0; j < i; j++) {
-                    if (list.get(i).equals(list.get(j))) {
-                        Log.e(TAG, "This activity status cannot have duplicated status.");
-                        return false;
-                    }
-                }
-                i++;
-            } else {
-                int i3 = this.mDuration;
-                if (i3 < 0) {
-                    Log.e(TAG, "The duration is wrong.");
-                    return false;
-                }
-                return true;
             }
         }
+        int i2 = this.mDuration;
+        if (i2 < 0) {
+            Log.e(TAG, "The duration is wrong.");
+            return false;
+        }
+        return true;
     }
 
     private void setAttribute() {

@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ICoverWindowStateListenerCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.ICoverWindowStateListenerCallback";
 
     void onCoverAppCovered(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICoverWindowStateListenerCallback {
         @Override // com.samsung.android.cover.ICoverWindowStateListenerCallback
         public void onCoverAppCovered(boolean covered) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICoverWindowStateListenerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICoverWindowStateListenerCallback {
         static final int TRANSACTION_onCoverAppCovered = 1;
 
@@ -67,25 +65,22 @@ public interface ICoverWindowStateListenerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICoverWindowStateListenerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICoverWindowStateListenerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICoverWindowStateListenerCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCoverAppCovered(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCoverAppCovered(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICoverWindowStateListenerCallback {
             private IBinder mRemote;
 

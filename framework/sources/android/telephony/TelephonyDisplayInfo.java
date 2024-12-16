@@ -6,17 +6,16 @@ import android.security.keystore.KeyProperties;
 import com.android.internal.telephony.DctConstants;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class TelephonyDisplayInfo implements Parcelable {
     public static final Parcelable.Creator<TelephonyDisplayInfo> CREATOR = new Parcelable.Creator<TelephonyDisplayInfo>() { // from class: android.telephony.TelephonyDisplayInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyDisplayInfo createFromParcel(Parcel source) {
             return new TelephonyDisplayInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyDisplayInfo[] newArray(int size) {
             return new TelephonyDisplayInfo[size];
@@ -77,25 +76,8 @@ public final class TelephonyDisplayInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mNetworkType);
         dest.writeInt(this.mOverrideNetworkType);
-        dest.writeBoolean(this.m5gAvailable);
         dest.writeBoolean(this.mIsRoaming);
-    }
-
-    /* renamed from: android.telephony.TelephonyDisplayInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TelephonyDisplayInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyDisplayInfo createFromParcel(Parcel source) {
-            return new TelephonyDisplayInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyDisplayInfo[] newArray(int size) {
-            return new TelephonyDisplayInfo[size];
-        }
+        dest.writeBoolean(this.m5gAvailable);
     }
 
     @Override // android.os.Parcelable
@@ -118,7 +100,7 @@ public final class TelephonyDisplayInfo implements Parcelable {
     }
 
     public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mNetworkType), Integer.valueOf(this.mOverrideNetworkType), Boolean.valueOf(this.m5gAvailable), Boolean.valueOf(this.mIsRoaming));
+        return Objects.hash(Integer.valueOf(this.mNetworkType), Integer.valueOf(this.mOverrideNetworkType), Boolean.valueOf(this.mIsRoaming), Boolean.valueOf(this.m5gAvailable));
     }
 
     public static String overrideNetworkTypeToString(int type) {

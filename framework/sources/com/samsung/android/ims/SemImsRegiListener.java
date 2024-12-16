@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemImsRegiListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.ims.SemImsRegiListener";
 
@@ -14,7 +14,6 @@ public interface SemImsRegiListener extends IInterface {
 
     void onRegistered(SemImsRegistration semImsRegistration) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements SemImsRegiListener {
         @Override // com.samsung.android.ims.SemImsRegiListener
         public void onRegistered(SemImsRegistration reg) throws RemoteException {
@@ -30,7 +29,6 @@ public interface SemImsRegiListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements SemImsRegiListener {
         static final int TRANSACTION_onDeregistered = 2;
         static final int TRANSACTION_onRegistered = 1;
@@ -76,32 +74,28 @@ public interface SemImsRegiListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(SemImsRegiListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(SemImsRegiListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(SemImsRegiListener.DESCRIPTOR);
+                case 1:
+                    SemImsRegistration _arg0 = (SemImsRegistration) data.readTypedObject(SemImsRegistration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRegistered(_arg0);
+                    return true;
+                case 2:
+                    SemImsRegistration _arg02 = (SemImsRegistration) data.readTypedObject(SemImsRegistration.CREATOR);
+                    SemImsRegistrationError _arg1 = (SemImsRegistrationError) data.readTypedObject(SemImsRegistrationError.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeregistered(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemImsRegistration _arg0 = (SemImsRegistration) data.readTypedObject(SemImsRegistration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRegistered(_arg0);
-                            return true;
-                        case 2:
-                            SemImsRegistration _arg02 = (SemImsRegistration) data.readTypedObject(SemImsRegistration.CREATOR);
-                            SemImsRegistrationError _arg1 = (SemImsRegistrationError) data.readTypedObject(SemImsRegistrationError.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeregistered(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements SemImsRegiListener {
+        private static class Proxy implements SemImsRegiListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class SensorProperties {
     public static final int STRENGTH_CONVENIENCE = 0;
     public static final int STRENGTH_STRONG = 2;
@@ -15,11 +15,9 @@ public class SensorProperties {
     private final int mSensorStrength;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Strength {
     }
 
-    /* loaded from: classes.dex */
     public static final class ComponentInfo {
         private final String mComponentId;
         private final String mFirmwareVersion;

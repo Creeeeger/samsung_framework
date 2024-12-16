@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IConditionListener extends IInterface {
     void onConditionsReceived(Condition[] conditionArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IConditionListener {
         @Override // android.service.notification.IConditionListener
         public void onConditionsReceived(Condition[] conditions) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IConditionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IConditionListener {
         public static final String DESCRIPTOR = "android.service.notification.IConditionListener";
         static final int TRANSACTION_onConditionsReceived = 1;
@@ -66,24 +64,21 @@ public interface IConditionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Condition[] _arg0 = (Condition[]) data.createTypedArray(Condition.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConditionsReceived(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Condition[] _arg0 = (Condition[]) data.createTypedArray(Condition.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConditionsReceived(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IConditionListener {
             private IBinder mRemote;
 

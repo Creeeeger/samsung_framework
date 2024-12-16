@@ -15,7 +15,6 @@ public class NinePatch {
 
     private static native long validateNinePatchChunk(byte[] bArr);
 
-    /* loaded from: classes.dex */
     public static class InsetStruct {
         public final Rect opticalRect;
         public final float outlineAlpha;
@@ -23,9 +22,8 @@ public class NinePatch {
         public final Rect outlineRect;
 
         InsetStruct(int opticalLeft, int opticalTop, int opticalRight, int opticalBottom, int outlineLeft, int outlineTop, int outlineRight, int outlineBottom, float outlineRadius, int outlineAlpha, float decodeScale) {
-            Rect rect = new Rect(opticalLeft, opticalTop, opticalRight, opticalBottom);
-            this.opticalRect = rect;
-            rect.scale(decodeScale);
+            this.opticalRect = new Rect(opticalLeft, opticalTop, opticalRight, opticalBottom);
+            this.opticalRect.scale(decodeScale);
             this.outlineRect = scaleInsets(outlineLeft, outlineTop, outlineRight, outlineBottom, decodeScale);
             this.outlineRadius = outlineRadius * decodeScale;
             this.outlineAlpha = outlineAlpha / 255.0f;
@@ -56,9 +54,8 @@ public class NinePatch {
 
     protected void finalize() throws Throwable {
         try {
-            long j = this.mNativeChunk;
-            if (j != 0) {
-                nativeFinalize(j);
+            if (this.mNativeChunk != 0) {
+                nativeFinalize(this.mNativeChunk);
                 this.mNativeChunk = 0L;
             }
         } finally {

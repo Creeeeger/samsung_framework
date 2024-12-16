@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class CodedInputStreamReader implements Reader {
+/* loaded from: classes3.dex */
+final class CodedInputStreamReader implements Reader {
     private static final int FIXED32_MULTIPLE_MASK = 3;
     private static final int FIXED64_MULTIPLE_MASK = 7;
     private static final int NEXT_TAG_UNSET = 0;
@@ -26,9 +26,8 @@ public final class CodedInputStreamReader implements Reader {
     }
 
     private CodedInputStreamReader(CodedInputStream input) {
-        CodedInputStream codedInputStream = (CodedInputStream) Internal.checkNotNull(input, "input");
-        this.input = codedInputStream;
-        codedInputStream.wrapper = this;
+        this.input = (CodedInputStream) Internal.checkNotNull(input, "input");
+        this.input.wrapper = this;
     }
 
     @Override // com.android.framework.protobuf.Reader
@@ -38,18 +37,16 @@ public final class CodedInputStreamReader implements Reader {
 
     @Override // com.android.framework.protobuf.Reader
     public int getFieldNumber() throws IOException {
-        int i = this.nextTag;
-        if (i != 0) {
-            this.tag = i;
+        if (this.nextTag != 0) {
+            this.tag = this.nextTag;
             this.nextTag = 0;
         } else {
             this.tag = this.input.readTag();
         }
-        int i2 = this.tag;
-        if (i2 == 0 || i2 == this.endGroupTag) {
+        if (this.tag == 0 || this.tag == this.endGroupTag) {
             return Integer.MAX_VALUE;
         }
-        return WireFormat.getTagFieldNumber(i2);
+        return WireFormat.getTagFieldNumber(this.tag);
     }
 
     @Override // com.android.framework.protobuf.Reader
@@ -59,11 +56,10 @@ public final class CodedInputStreamReader implements Reader {
 
     @Override // com.android.framework.protobuf.Reader
     public boolean skipField() throws IOException {
-        int i;
-        if (this.input.isAtEnd() || (i = this.tag) == this.endGroupTag) {
+        if (this.input.isAtEnd() || this.tag == this.endGroupTag) {
             return false;
         }
-        return this.input.skipField(i);
+        return this.input.skipField(this.tag);
     }
 
     private void requireWireType(int requiredWireType) throws IOException {
@@ -1168,7 +1164,6 @@ public final class CodedInputStreamReader implements Reader {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:8:0x0028. Please report as an issue. */
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.android.framework.protobuf.Reader
     public <K, V> void readMap(Map<K, V> map, MapEntryLite.Metadata<K, V> metadata, ExtensionRegistryLite extensionRegistry) throws IOException {
@@ -1206,16 +1201,13 @@ public final class CodedInputStreamReader implements Reader {
         map.put(obj, obj2);
     }
 
-    /* renamed from: com.android.framework.protobuf.CodedInputStreamReader$1 */
-    /* loaded from: classes4.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+    /* renamed from: com.android.framework.protobuf.CodedInputStreamReader$1, reason: invalid class name */
+    static /* synthetic */ class AnonymousClass1 {
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.BOOL.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.BOOL.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {

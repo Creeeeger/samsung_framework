@@ -11,7 +11,6 @@ public class Mesh extends BaseObj {
     Primitive[] mPrimitives;
     Allocation[] mVertexBuffers;
 
-    /* loaded from: classes3.dex */
     public enum Primitive {
         POINT(0),
         LINE(1),
@@ -27,17 +26,16 @@ public class Mesh extends BaseObj {
         }
     }
 
-    public Mesh(long id, RenderScript rs) {
+    Mesh(long id, RenderScript rs) {
         super(id, rs);
         this.guard.open("destroy");
     }
 
     public int getVertexAllocationCount() {
-        Allocation[] allocationArr = this.mVertexBuffers;
-        if (allocationArr == null) {
+        if (this.mVertexBuffers == null) {
             return 0;
         }
-        return allocationArr.length;
+        return this.mVertexBuffers.length;
     }
 
     public Allocation getVertexAllocation(int slot) {
@@ -45,11 +43,10 @@ public class Mesh extends BaseObj {
     }
 
     public int getPrimitiveCount() {
-        Allocation[] allocationArr = this.mIndexBuffers;
-        if (allocationArr == null) {
+        if (this.mIndexBuffers == null) {
             return 0;
         }
-        return allocationArr.length;
+        return this.mIndexBuffers.length;
     }
 
     public Allocation getIndexSetAllocation(int slot) {
@@ -61,7 +58,7 @@ public class Mesh extends BaseObj {
     }
 
     @Override // android.renderscript.BaseObj
-    public void updateFromNative() {
+    void updateFromNative() {
         super.updateFromNative();
         int vtxCount = this.mRS.nMeshGetVertexBufferCount(getID(this.mRS));
         int idxCount = this.mRS.nMeshGetIndexCount(getID(this.mRS));
@@ -88,7 +85,6 @@ public class Mesh extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
         int mUsage;
@@ -96,8 +92,7 @@ public class Mesh extends BaseObj {
         Entry[] mVertexTypes = new Entry[16];
         Vector mIndexTypes = new Vector();
 
-        /* loaded from: classes3.dex */
-        public class Entry {
+        class Entry {
             Element e;
             Primitive prim;
             int size;
@@ -122,12 +117,10 @@ public class Mesh extends BaseObj {
         }
 
         public Builder addVertexType(Type t) throws IllegalStateException {
-            int i = this.mVertexTypeCount;
-            Entry[] entryArr = this.mVertexTypes;
-            if (i >= entryArr.length) {
+            if (this.mVertexTypeCount >= this.mVertexTypes.length) {
                 throw new IllegalStateException("Max vertex types exceeded.");
             }
-            entryArr[i] = new Entry();
+            this.mVertexTypes[this.mVertexTypeCount] = new Entry();
             this.mVertexTypes[this.mVertexTypeCount].t = t;
             this.mVertexTypes[this.mVertexTypeCount].e = null;
             this.mVertexTypeCount++;
@@ -135,12 +128,10 @@ public class Mesh extends BaseObj {
         }
 
         public Builder addVertexType(Element e, int size) throws IllegalStateException {
-            int i = this.mVertexTypeCount;
-            Entry[] entryArr = this.mVertexTypes;
-            if (i >= entryArr.length) {
+            if (this.mVertexTypeCount >= this.mVertexTypes.length) {
                 throw new IllegalStateException("Max vertex types exceeded.");
             }
-            entryArr[i] = new Entry();
+            this.mVertexTypes[this.mVertexTypeCount] = new Entry();
             this.mVertexTypes[this.mVertexTypeCount].t = null;
             this.mVertexTypes[this.mVertexTypeCount].e = e;
             this.mVertexTypes[this.mVertexTypeCount].size = size;
@@ -230,14 +221,12 @@ public class Mesh extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class AllocationBuilder {
         RenderScript mRS;
         int mVertexTypeCount = 0;
         Entry[] mVertexTypes = new Entry[16];
         Vector mIndexTypes = new Vector();
 
-        /* loaded from: classes3.dex */
         class Entry {
             Allocation a;
             Primitive prim;
@@ -259,12 +248,10 @@ public class Mesh extends BaseObj {
         }
 
         public AllocationBuilder addVertexAllocation(Allocation a) throws IllegalStateException {
-            int i = this.mVertexTypeCount;
-            Entry[] entryArr = this.mVertexTypes;
-            if (i >= entryArr.length) {
+            if (this.mVertexTypeCount >= this.mVertexTypes.length) {
                 throw new IllegalStateException("Max vertex types exceeded.");
             }
-            entryArr[i] = new Entry();
+            this.mVertexTypes[this.mVertexTypeCount] = new Entry();
             this.mVertexTypes[this.mVertexTypeCount].a = a;
             this.mVertexTypeCount++;
             return this;
@@ -316,7 +303,6 @@ public class Mesh extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class TriangleMeshBuilder {
         public static final int COLOR = 1;
         public static final int NORMAL = 2;
@@ -350,11 +336,9 @@ public class Mesh extends BaseObj {
         }
 
         private void makeSpace(int count) {
-            int i = this.mVtxCount + count;
-            float[] fArr = this.mVtxData;
-            if (i >= fArr.length) {
-                float[] t = new float[fArr.length * 2];
-                System.arraycopy(fArr, 0, t, 0, fArr.length);
+            if (this.mVtxCount + count >= this.mVtxData.length) {
+                float[] t = new float[this.mVtxData.length * 2];
+                System.arraycopy(this.mVtxData, 0, t, 0, this.mVtxData.length);
                 this.mVtxData = t;
             }
         }
@@ -364,43 +348,50 @@ public class Mesh extends BaseObj {
                 makeSpace(4);
                 float[] fArr = this.mVtxData;
                 int i = this.mVtxCount;
-                int i2 = i + 1;
-                this.mVtxCount = i2;
+                this.mVtxCount = i + 1;
                 fArr[i] = this.mR;
-                int i3 = i2 + 1;
-                this.mVtxCount = i3;
-                fArr[i2] = this.mG;
-                int i4 = i3 + 1;
-                this.mVtxCount = i4;
-                fArr[i3] = this.mB;
+                float[] fArr2 = this.mVtxData;
+                int i2 = this.mVtxCount;
+                this.mVtxCount = i2 + 1;
+                fArr2[i2] = this.mG;
+                float[] fArr3 = this.mVtxData;
+                int i3 = this.mVtxCount;
+                this.mVtxCount = i3 + 1;
+                fArr3[i3] = this.mB;
+                float[] fArr4 = this.mVtxData;
+                int i4 = this.mVtxCount;
                 this.mVtxCount = i4 + 1;
-                fArr[i4] = this.mA;
+                fArr4[i4] = this.mA;
             }
             if ((this.mFlags & 256) != 0) {
                 makeSpace(2);
-                float[] fArr2 = this.mVtxData;
+                float[] fArr5 = this.mVtxData;
                 int i5 = this.mVtxCount;
-                int i6 = i5 + 1;
-                this.mVtxCount = i6;
-                fArr2[i5] = this.mS0;
+                this.mVtxCount = i5 + 1;
+                fArr5[i5] = this.mS0;
+                float[] fArr6 = this.mVtxData;
+                int i6 = this.mVtxCount;
                 this.mVtxCount = i6 + 1;
-                fArr2[i6] = this.mT0;
+                fArr6[i6] = this.mT0;
             }
             if ((this.mFlags & 2) != 0) {
                 makeSpace(4);
-                float[] fArr3 = this.mVtxData;
+                float[] fArr7 = this.mVtxData;
                 int i7 = this.mVtxCount;
-                int i8 = i7 + 1;
-                this.mVtxCount = i8;
-                fArr3[i7] = this.mNX;
-                int i9 = i8 + 1;
-                this.mVtxCount = i9;
-                fArr3[i8] = this.mNY;
-                int i10 = i9 + 1;
-                this.mVtxCount = i10;
-                fArr3[i9] = this.mNZ;
+                this.mVtxCount = i7 + 1;
+                fArr7[i7] = this.mNX;
+                float[] fArr8 = this.mVtxData;
+                int i8 = this.mVtxCount;
+                this.mVtxCount = i8 + 1;
+                fArr8[i8] = this.mNY;
+                float[] fArr9 = this.mVtxData;
+                int i9 = this.mVtxCount;
+                this.mVtxCount = i9 + 1;
+                fArr9[i9] = this.mNZ;
+                float[] fArr10 = this.mVtxData;
+                int i10 = this.mVtxCount;
                 this.mVtxCount = i10 + 1;
-                fArr3[i10] = 0.0f;
+                fArr10[i10] = 0.0f;
             }
             this.mMaxIndex++;
         }
@@ -412,11 +403,12 @@ public class Mesh extends BaseObj {
             makeSpace(2);
             float[] fArr = this.mVtxData;
             int i = this.mVtxCount;
-            int i2 = i + 1;
-            this.mVtxCount = i2;
+            this.mVtxCount = i + 1;
             fArr[i] = x;
+            float[] fArr2 = this.mVtxData;
+            int i2 = this.mVtxCount;
             this.mVtxCount = i2 + 1;
-            fArr[i2] = y;
+            fArr2[i2] = y;
             latch();
             return this;
         }
@@ -428,17 +420,20 @@ public class Mesh extends BaseObj {
             makeSpace(4);
             float[] fArr = this.mVtxData;
             int i = this.mVtxCount;
-            int i2 = i + 1;
-            this.mVtxCount = i2;
+            this.mVtxCount = i + 1;
             fArr[i] = x;
-            int i3 = i2 + 1;
-            this.mVtxCount = i3;
-            fArr[i2] = y;
-            int i4 = i3 + 1;
-            this.mVtxCount = i4;
-            fArr[i3] = z;
+            float[] fArr2 = this.mVtxData;
+            int i2 = this.mVtxCount;
+            this.mVtxCount = i2 + 1;
+            fArr2[i2] = y;
+            float[] fArr3 = this.mVtxData;
+            int i3 = this.mVtxCount;
+            this.mVtxCount = i3 + 1;
+            fArr3[i3] = z;
+            float[] fArr4 = this.mVtxData;
+            int i4 = this.mVtxCount;
             this.mVtxCount = i4 + 1;
-            fArr[i4] = 1.0f;
+            fArr4[i4] = 1.0f;
             latch();
             return this;
         }
@@ -474,27 +469,26 @@ public class Mesh extends BaseObj {
         }
 
         public TriangleMeshBuilder addTriangle(int idx1, int idx2, int idx3) {
-            int i = this.mMaxIndex;
-            if (idx1 >= i || idx1 < 0 || idx2 >= i || idx2 < 0 || idx3 >= i || idx3 < 0) {
+            if (idx1 >= this.mMaxIndex || idx1 < 0 || idx2 >= this.mMaxIndex || idx2 < 0 || idx3 >= this.mMaxIndex || idx3 < 0) {
                 throw new IllegalStateException("Index provided greater than vertex count.");
             }
-            int i2 = this.mIndexCount + 3;
-            short[] sArr = this.mIndexData;
-            if (i2 >= sArr.length) {
-                short[] t = new short[sArr.length * 2];
-                System.arraycopy(sArr, 0, t, 0, sArr.length);
+            if (this.mIndexCount + 3 >= this.mIndexData.length) {
+                short[] t = new short[this.mIndexData.length * 2];
+                System.arraycopy(this.mIndexData, 0, t, 0, this.mIndexData.length);
                 this.mIndexData = t;
             }
             short[] t2 = this.mIndexData;
+            int i = this.mIndexCount;
+            this.mIndexCount = i + 1;
+            t2[i] = (short) idx1;
+            short[] sArr = this.mIndexData;
+            int i2 = this.mIndexCount;
+            this.mIndexCount = i2 + 1;
+            sArr[i2] = (short) idx2;
+            short[] sArr2 = this.mIndexData;
             int i3 = this.mIndexCount;
-            int i4 = i3 + 1;
-            this.mIndexCount = i4;
-            t2[i3] = (short) idx1;
-            int i5 = i4 + 1;
-            this.mIndexCount = i5;
-            t2[i4] = (short) idx2;
-            this.mIndexCount = i5 + 1;
-            t2[i5] = (short) idx3;
+            this.mIndexCount = i3 + 1;
+            sArr2[i3] = (short) idx3;
             return this;
         }
 

@@ -10,24 +10,19 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CreateCredentialResponse implements Parcelable {
     public static final Parcelable.Creator<CreateCredentialResponse> CREATOR = new Parcelable.Creator<CreateCredentialResponse>() { // from class: android.credentials.CreateCredentialResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateCredentialResponse[] newArray(int size) {
             return new CreateCredentialResponse[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CreateCredentialResponse createFromParcel(Parcel in) {
             return new CreateCredentialResponse(in);
         }
     };
     private final Bundle mData;
-
-    /* synthetic */ CreateCredentialResponse(Parcel parcel, CreateCredentialResponseIA createCredentialResponseIA) {
-        this(parcel);
-    }
 
     public Bundle getData() {
         return this.mData;
@@ -54,23 +49,6 @@ public final class CreateCredentialResponse implements Parcelable {
     private CreateCredentialResponse(Parcel in) {
         Bundle data = in.readBundle();
         this.mData = data;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) data);
-    }
-
-    /* renamed from: android.credentials.CreateCredentialResponse$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CreateCredentialResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CreateCredentialResponse[] newArray(int size) {
-            return new CreateCredentialResponse[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CreateCredentialResponse createFromParcel(Parcel in) {
-            return new CreateCredentialResponse(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mData);
     }
 }

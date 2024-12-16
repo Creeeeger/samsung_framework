@@ -4,16 +4,40 @@ import android.annotation.SystemApi;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFormat;
 import android.media.AudioSystem;
-import android.media.audiofx.SemDolbyAudioEffect;
+import android.os.Binder;
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
 /* loaded from: classes2.dex */
-public class AudioMix {
+public class AudioMix implements Parcelable {
     private static final int CALLBACK_FLAGS_ALL = 1;
     public static final int CALLBACK_FLAG_NOTIFY_ACTIVITY = 1;
+    public static final Parcelable.Creator<AudioMix> CREATOR = new Parcelable.Creator<AudioMix>() { // from class: android.media.audiopolicy.AudioMix.1
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public AudioMix createFromParcel(Parcel p) {
+            Builder mixBuilder = new Builder();
+            mixBuilder.setRouteFlags(p.readInt());
+            mixBuilder.setCallbackFlags(p.readInt());
+            mixBuilder.setDevice(p.readInt(), p.readString8());
+            mixBuilder.setFormat(AudioFormat.CREATOR.createFromParcel(p));
+            mixBuilder.setMixingRule(AudioMixingRule.CREATOR.createFromParcel(p));
+            mixBuilder.setToken(p.readStrongBinder());
+            mixBuilder.setVirtualDeviceId(p.readInt());
+            return mixBuilder.build();
+        }
+
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public AudioMix[] newArray(int size) {
+            return new AudioMix[size];
+        }
+    };
     public static final int MIX_STATE_DISABLED = -1;
     public static final int MIX_STATE_IDLE = 0;
     public static final int MIX_STATE_MIXING = 1;
@@ -35,26 +59,25 @@ public class AudioMix {
     private int mMixType;
     private int mRouteFlags;
     private AudioMixingRule mRule;
+    private final IBinder mToken;
+    private int mVirtualDeviceId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RouteFlags {
     }
 
-    /* synthetic */ AudioMix(AudioMixingRule audioMixingRule, AudioFormat audioFormat, int i, int i2, int i3, String str, AudioMixIA audioMixIA) {
-        this(audioMixingRule, audioFormat, i, i2, i3, str);
-    }
-
-    private AudioMix(AudioMixingRule rule, AudioFormat format, int routeFlags, int callbackFlags, int deviceType, String deviceAddress) {
+    private AudioMix(AudioMixingRule rule, AudioFormat format, int routeFlags, int callbackFlags, int deviceType, String deviceAddress, IBinder token, int virtualDeviceId) {
         this.mMixType = -1;
         this.mMixState = -1;
-        this.mRule = rule;
-        this.mFormat = format;
+        this.mRule = (AudioMixingRule) Objects.requireNonNull(rule);
+        this.mFormat = (AudioFormat) Objects.requireNonNull(format);
         this.mRouteFlags = routeFlags;
         this.mMixType = rule.getTargetMixType();
         this.mCallbackFlags = callbackFlags;
         this.mDeviceSystemType = deviceType;
         this.mDeviceAddress = deviceAddress == null ? new String("") : deviceAddress;
+        this.mToken = token;
+        this.mVirtualDeviceId = virtualDeviceId;
     }
 
     public int getMixState() {
@@ -77,8 +100,15 @@ public class AudioMix {
         return this.mMixType;
     }
 
-    public void setRegistration(String regId) {
+    void setRegistration(String regId) {
         this.mDeviceAddress = regId;
+    }
+
+    public void setAudioMixingRule(AudioMixingRule rule) {
+        if (this.mRule.getTargetMixType() != rule.getTargetMixType()) {
+            throw new UnsupportedOperationException("Target mix role of updated rule doesn't match the mix role of the AudioMix");
+        }
+        this.mRule = (AudioMixingRule) Objects.requireNonNull(rule);
     }
 
     public String getRegistration() {
@@ -120,7 +150,12 @@ public class AudioMix {
         return this.mRule.isForCallRedirection();
     }
 
+    public boolean matchesVirtualDeviceId(int deviceId) {
+        return this.mVirtualDeviceId == deviceId;
+    }
+
     public boolean equals(Object o) {
+        boolean tokenMatch;
         if (this == o) {
             return true;
         }
@@ -128,17 +163,45 @@ public class AudioMix {
             return false;
         }
         AudioMix that = (AudioMix) o;
-        if (Objects.equals(Integer.valueOf(this.mRouteFlags), Integer.valueOf(that.mRouteFlags)) && Objects.equals(this.mRule, that.mRule) && Objects.equals(Integer.valueOf(this.mMixType), Integer.valueOf(that.mMixType)) && Objects.equals(this.mFormat, that.mFormat)) {
+        if (Flags.audioMixOwnership()) {
+            tokenMatch = Objects.equals(this.mToken, that.mToken);
+        } else {
+            tokenMatch = true;
+        }
+        if (Objects.equals(Integer.valueOf(this.mRouteFlags), Integer.valueOf(that.mRouteFlags)) && Objects.equals(this.mRule, that.mRule) && Objects.equals(Integer.valueOf(this.mMixType), Integer.valueOf(that.mMixType)) && Objects.equals(this.mFormat, that.mFormat) && tokenMatch) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
+        if (Flags.audioMixOwnership()) {
+            return Objects.hash(Integer.valueOf(this.mRouteFlags), this.mRule, Integer.valueOf(this.mMixType), this.mFormat, this.mToken);
+        }
         return Objects.hash(Integer.valueOf(this.mRouteFlags), this.mRule, Integer.valueOf(this.mMixType), this.mFormat);
     }
 
-    /* loaded from: classes2.dex */
+    @Override // android.os.Parcelable
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override // android.os.Parcelable
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mRouteFlags);
+        dest.writeInt(this.mCallbackFlags);
+        dest.writeInt(this.mDeviceSystemType);
+        dest.writeString8(this.mDeviceAddress);
+        this.mFormat.writeToParcel(dest, flags);
+        this.mRule.writeToParcel(dest, flags);
+        dest.writeStrongBinder(this.mToken);
+        dest.writeInt(this.mVirtualDeviceId);
+    }
+
+    public void setVirtualDeviceId(int virtualDeviceId) {
+        this.mVirtualDeviceId = virtualDeviceId;
+    }
+
     public static class Builder {
         private int mCallbackFlags;
         private String mDeviceAddress;
@@ -146,12 +209,16 @@ public class AudioMix {
         private AudioFormat mFormat;
         private int mRouteFlags;
         private AudioMixingRule mRule;
+        private IBinder mToken;
+        private int mVirtualDeviceId;
 
-        public Builder() {
+        Builder() {
             this.mRule = null;
             this.mFormat = null;
             this.mRouteFlags = 0;
             this.mCallbackFlags = 0;
+            this.mToken = null;
+            this.mVirtualDeviceId = 0;
             this.mDeviceSystemType = 0;
             this.mDeviceAddress = null;
         }
@@ -161,6 +228,8 @@ public class AudioMix {
             this.mFormat = null;
             this.mRouteFlags = 0;
             this.mCallbackFlags = 0;
+            this.mToken = null;
+            this.mVirtualDeviceId = 0;
             this.mDeviceSystemType = 0;
             this.mDeviceAddress = null;
             if (rule == null) {
@@ -169,7 +238,7 @@ public class AudioMix {
             this.mRule = rule;
         }
 
-        public Builder setMixingRule(AudioMixingRule rule) throws IllegalArgumentException {
+        Builder setMixingRule(AudioMixingRule rule) throws IllegalArgumentException {
             if (rule == null) {
                 throw new IllegalArgumentException("Illegal null AudioMixingRule argument");
             }
@@ -177,7 +246,17 @@ public class AudioMix {
             return this;
         }
 
-        public Builder setCallbackFlags(int flags) throws IllegalArgumentException {
+        Builder setToken(IBinder token) {
+            this.mToken = token;
+            return this;
+        }
+
+        Builder setVirtualDeviceId(int virtualDeviceId) {
+            this.mVirtualDeviceId = virtualDeviceId;
+            return this;
+        }
+
+        Builder setCallbackFlags(int flags) throws IllegalArgumentException {
             if (flags != 0 && (flags & 1) == 0) {
                 throw new IllegalArgumentException("Illegal callback flags 0x" + Integer.toHexString(flags).toUpperCase());
             }
@@ -233,47 +312,51 @@ public class AudioMix {
             if (this.mRouteFlags == 0) {
                 this.mRouteFlags = 2;
             }
-            AudioFormat audioFormat = this.mFormat;
-            if (audioFormat == null) {
+            if (this.mFormat == null) {
                 int rate = AudioSystem.getPrimaryOutputSamplingRate();
                 if (rate <= 0) {
-                    rate = SemDolbyAudioEffect.SAMPLE_RATE_44100;
+                    rate = 44100;
                 }
                 this.mFormat = new AudioFormat.Builder().setSampleRate(rate).build();
-            } else if ((audioFormat.getPropertySetMask() & 4) != 0 && this.mFormat.getChannelCount() == 1 && this.mFormat.getChannelMask() == 16) {
+            } else if ((this.mFormat.getPropertySetMask() & 4) != 0 && this.mFormat.getChannelCount() == 1 && this.mFormat.getChannelMask() == 16) {
                 this.mFormat = new AudioFormat.Builder(this.mFormat).setChannelMask(4).build();
             }
-            int i = this.mDeviceSystemType;
-            if (i != 0 && i != 32768 && i != -2147483392) {
-                if ((this.mRouteFlags & 1) == 0) {
-                    throw new IllegalArgumentException("Can't have audio device without flag ROUTE_FLAG_RENDER");
+            if ((this.mRouteFlags & 2) == 2) {
+                if (this.mDeviceSystemType == 0) {
+                    this.mDeviceSystemType = getLoopbackDeviceSystemTypeForAudioMixingRule(this.mRule);
+                } else if (!AudioSystem.isRemoteSubmixDevice(this.mDeviceSystemType)) {
+                    throw new IllegalArgumentException("Device " + AudioSystem.getDeviceName(this.mDeviceSystemType) + "is not supported for loopback mix.");
                 }
-                if (this.mRule.getTargetMixType() != 0) {
-                    throw new IllegalArgumentException("Unsupported device on non-playback mix");
-                }
-            } else if (i == 32768) {
-                if (this.mRule.getTargetMixType() != 0) {
-                    throw new IllegalArgumentException("DEVICE_OUT_REMOTE_SUBMIX device is not supported on non-playback mix");
-                }
-            } else {
-                int i2 = this.mRouteFlags;
-                if ((i2 & 3) == 1) {
+            }
+            if ((this.mRouteFlags & 1) == 1) {
+                if (this.mDeviceSystemType == 0) {
                     throw new IllegalArgumentException("Can't have flag ROUTE_FLAG_RENDER without an audio device");
                 }
-                if ((i2 & 2) == 2) {
-                    if (this.mRule.getTargetMixType() == 0) {
-                        this.mDeviceSystemType = 32768;
-                    } else if (this.mRule.getTargetMixType() == 1) {
-                        this.mDeviceSystemType = AudioSystem.DEVICE_IN_REMOTE_SUBMIX;
-                    } else {
-                        throw new IllegalArgumentException("Unknown mixing rule type");
-                    }
+                if (AudioSystem.DEVICE_IN_ALL_SET.contains(Integer.valueOf(this.mDeviceSystemType))) {
+                    throw new IllegalArgumentException("Input device is not supported with ROUTE_FLAG_RENDER");
+                }
+                if (this.mRule.getTargetMixType() == 1) {
+                    throw new IllegalArgumentException("ROUTE_FLAG_RENDER/ROUTE_FLAG_LOOP_BACK_RENDER is not supported for non-playback mix rule");
                 }
             }
             if (this.mRule.allowPrivilegedMediaPlaybackCapture() && (error = AudioMix.canBeUsedForPrivilegedMediaCapture(this.mFormat)) != null) {
                 throw new IllegalArgumentException(error);
             }
-            return new AudioMix(this.mRule, this.mFormat, this.mRouteFlags, this.mCallbackFlags, this.mDeviceSystemType, this.mDeviceAddress);
+            if (this.mToken == null) {
+                this.mToken = new Binder();
+            }
+            return new AudioMix(this.mRule, this.mFormat, this.mRouteFlags, this.mCallbackFlags, this.mDeviceSystemType, this.mDeviceAddress, this.mToken, this.mVirtualDeviceId);
+        }
+
+        private int getLoopbackDeviceSystemTypeForAudioMixingRule(AudioMixingRule rule) {
+            switch (this.mRule.getTargetMixType()) {
+                case 0:
+                    return 32768;
+                case 1:
+                    return AudioSystem.DEVICE_IN_REMOTE_SUBMIX;
+                default:
+                    throw new IllegalArgumentException("Unknown mixing rule type - 0x" + Integer.toHexString(rule.getTargetMixType()));
+            }
         }
     }
 }

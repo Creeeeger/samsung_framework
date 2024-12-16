@@ -63,7 +63,6 @@ public interface ISehRadioNetworkResponse extends IInterface {
 
     void setVendorSpecificConfigurationResponse(SehRadioResponseInfo sehRadioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioNetworkResponse {
         @Override // vendor.samsung.hardware.radio.network.ISehRadioNetworkResponse
         public void emergencyControlResponse(SehRadioResponseInfo info) throws RemoteException {
@@ -173,7 +172,6 @@ public interface ISehRadioNetworkResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioNetworkResponse {
         static final int TRANSACTION_emergencyControlResponse = 1;
         static final int TRANSACTION_emergencySearchResponse = 2;
@@ -228,156 +226,154 @@ public interface ISehRadioNetworkResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    emergencyControlResponse(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    emergencySearchResponse(_arg02, _arg1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehOperatorInfo[] _arg12 = (SehOperatorInfo[]) data.createTypedArray(SehOperatorInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAvailableNetworksResponse(_arg03, _arg12);
+                    return true;
+                case 4:
+                    SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCnapResponse(_arg04, _arg13);
+                    return true;
+                case 5:
+                    SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehCsgInfo[] _arg14 = (SehCsgInfo[]) data.createTypedArray(SehCsgInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCsgListResponse(_arg05, _arg14);
+                    return true;
+                case 6:
+                    SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getDisable2gResponse(_arg06, _arg15);
+                    return true;
+                case 7:
+                    SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNrIconTypeResponse(_arg07, _arg16);
+                    return true;
+                case 8:
+                    SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNrModeResponse(_arg08, _arg17);
+                    return true;
+                case 9:
+                    SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehPreferredNetworkInfo[] _arg18 = (SehPreferredNetworkInfo[]) data.createTypedArray(SehPreferredNetworkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getPreferredNetworkListResponse(_arg09, _arg18);
+                    return true;
+                case 10:
+                    SehRadioResponseInfo _arg010 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehRoamingNetworkInfo[] _arg19 = (SehRoamingNetworkInfo[]) data.createTypedArray(SehRoamingNetworkInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getRoamingNetworkInfoViaBLEResponse(_arg010, _arg19);
+                    return true;
+                case 11:
+                    SehRadioResponseInfo _arg011 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehVendorConfiguration[] _arg110 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    getVendorSpecificConfigurationResponse(_arg011, _arg110);
+                    return true;
+                case 12:
+                    SehRadioResponseInfo _arg012 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    selectCsgManualResponse(_arg012);
+                    return true;
+                case 13:
+                    SehRadioResponseInfo _arg013 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendEncodedUssdResponse(_arg013);
+                    return true;
+                case 14:
+                    SehRadioResponseInfo _arg014 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    byte[] _arg111 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendRequestRawResponse(_arg014, _arg111);
+                    return true;
+                case 15:
+                    SehRadioResponseInfo _arg015 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    String[] _arg112 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    sendRequestStringsResponse(_arg015, _arg112);
+                    return true;
+                case 16:
+                    SehRadioResponseInfo _arg016 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCurrentNetworkInfoViaBLEResponse(_arg016);
+                    return true;
+                case 17:
+                    SehRadioResponseInfo _arg017 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDisable2gResponse(_arg017);
+                    return true;
+                case 18:
+                    SehRadioResponseInfo _arg018 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setImsCallListResponse(_arg018);
+                    return true;
+                case 19:
+                    SehRadioResponseInfo _arg019 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNrModeResponse(_arg019);
+                    return true;
+                case 20:
+                    SehRadioResponseInfo _arg020 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPreferredNetworkListResponse(_arg020);
+                    return true;
+                case 21:
+                    SehRadioResponseInfo _arg021 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRoamingNetworkInfoViaBLEResponse(_arg021);
+                    return true;
+                case 22:
+                    SehRadioResponseInfo _arg022 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setScanResultViaBLEResponse(_arg022);
+                    return true;
+                case 23:
+                    SehRadioResponseInfo _arg023 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVendorSpecificConfigurationResponse(_arg023);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            emergencyControlResponse(_arg0);
-                            return true;
-                        case 2:
-                            SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            emergencySearchResponse(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehOperatorInfo[] _arg12 = (SehOperatorInfo[]) data.createTypedArray(SehOperatorInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAvailableNetworksResponse(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCnapResponse(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehCsgInfo[] _arg14 = (SehCsgInfo[]) data.createTypedArray(SehCsgInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCsgListResponse(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getDisable2gResponse(_arg06, _arg15);
-                            return true;
-                        case 7:
-                            SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNrIconTypeResponse(_arg07, _arg16);
-                            return true;
-                        case 8:
-                            SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNrModeResponse(_arg08, _arg17);
-                            return true;
-                        case 9:
-                            SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehPreferredNetworkInfo[] _arg18 = (SehPreferredNetworkInfo[]) data.createTypedArray(SehPreferredNetworkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getPreferredNetworkListResponse(_arg09, _arg18);
-                            return true;
-                        case 10:
-                            SehRadioResponseInfo _arg010 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehRoamingNetworkInfo[] _arg19 = (SehRoamingNetworkInfo[]) data.createTypedArray(SehRoamingNetworkInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getRoamingNetworkInfoViaBLEResponse(_arg010, _arg19);
-                            return true;
-                        case 11:
-                            SehRadioResponseInfo _arg011 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehVendorConfiguration[] _arg110 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            getVendorSpecificConfigurationResponse(_arg011, _arg110);
-                            return true;
-                        case 12:
-                            SehRadioResponseInfo _arg012 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            selectCsgManualResponse(_arg012);
-                            return true;
-                        case 13:
-                            SehRadioResponseInfo _arg013 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendEncodedUssdResponse(_arg013);
-                            return true;
-                        case 14:
-                            SehRadioResponseInfo _arg014 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            byte[] _arg111 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendRequestRawResponse(_arg014, _arg111);
-                            return true;
-                        case 15:
-                            SehRadioResponseInfo _arg015 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            String[] _arg112 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            sendRequestStringsResponse(_arg015, _arg112);
-                            return true;
-                        case 16:
-                            SehRadioResponseInfo _arg016 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCurrentNetworkInfoViaBLEResponse(_arg016);
-                            return true;
-                        case 17:
-                            SehRadioResponseInfo _arg017 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDisable2gResponse(_arg017);
-                            return true;
-                        case 18:
-                            SehRadioResponseInfo _arg018 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setImsCallListResponse(_arg018);
-                            return true;
-                        case 19:
-                            SehRadioResponseInfo _arg019 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNrModeResponse(_arg019);
-                            return true;
-                        case 20:
-                            SehRadioResponseInfo _arg020 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPreferredNetworkListResponse(_arg020);
-                            return true;
-                        case 21:
-                            SehRadioResponseInfo _arg021 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRoamingNetworkInfoViaBLEResponse(_arg021);
-                            return true;
-                        case 22:
-                            SehRadioResponseInfo _arg022 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setScanResultViaBLEResponse(_arg022);
-                            return true;
-                        case 23:
-                            SehRadioResponseInfo _arg023 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVendorSpecificConfigurationResponse(_arg023);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioNetworkResponse {
+        private static class Proxy implements ISehRadioNetworkResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

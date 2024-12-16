@@ -10,10 +10,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryablePair<T1, T2> implements MarshalQueryable<Pair<T1, T2>> {
 
-    /* loaded from: classes.dex */
     private class MarshalerPair extends Marshaler<Pair<T1, T2>> {
         private final Class<? super Pair<T1, T2>> mClass;
         private final Constructor<Pair<T1, T2>> mConstructor;
@@ -22,14 +21,13 @@ public class MarshalQueryablePair<T1, T2> implements MarshalQueryable<Pair<T1, T
 
         protected MarshalerPair(TypeReference<Pair<T1, T2>> typeReference, int i) {
             super(MarshalQueryablePair.this, typeReference, i);
-            Class<? super Pair<T1, T2>> rawType = typeReference.getRawType();
-            this.mClass = rawType;
+            this.mClass = typeReference.getRawType();
             try {
                 ParameterizedType parameterizedType = (ParameterizedType) typeReference.getType();
                 this.mNestedTypeMarshalerFirst = MarshalRegistry.getMarshaler(TypeReference.createSpecializedTypeReference(parameterizedType.getActualTypeArguments()[0]), this.mNativeType);
                 this.mNestedTypeMarshalerSecond = MarshalRegistry.getMarshaler(TypeReference.createSpecializedTypeReference(parameterizedType.getActualTypeArguments()[1]), this.mNativeType);
                 try {
-                    this.mConstructor = rawType.getConstructor(Object.class, Object.class);
+                    this.mConstructor = this.mClass.getConstructor(Object.class, Object.class);
                 } catch (NoSuchMethodException e) {
                     throw new AssertionError(e);
                 }

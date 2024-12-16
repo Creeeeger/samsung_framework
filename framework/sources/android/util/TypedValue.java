@@ -62,7 +62,6 @@ public class TypedValue {
     private static final String[] FRACTION_UNIT_STRS = {"%", "%p"};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ComplexDimensionUnit {
     }
 
@@ -71,8 +70,7 @@ public class TypedValue {
     }
 
     public boolean isColorType() {
-        int i = this.type;
-        return i >= 28 && i <= 31;
+        return this.type >= 28 && this.type <= 31;
     }
 
     public static float complexToFloat(int complex) {
@@ -306,12 +304,7 @@ public class TypedValue {
         sb.append("TypedValue{t=0x").append(Integer.toHexString(this.type));
         sb.append("/d=0x").append(Integer.toHexString(this.data));
         if (this.type == 3) {
-            StringBuilder append = sb.append(" \"");
-            CharSequence charSequence = this.string;
-            if (charSequence == null) {
-                charSequence = "<null>";
-            }
-            append.append(charSequence).append("\"");
+            sb.append(" \"").append(this.string != null ? this.string : "<null>").append("\"");
         }
         if (this.assetCookie != 0) {
             sb.append(" a=").append(this.assetCookie);

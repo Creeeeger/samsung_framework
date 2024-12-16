@@ -4,7 +4,7 @@ package android.media.permission;
 class CompositeSafeCloseable implements SafeCloseable {
     private final SafeCloseable[] mChildren;
 
-    public CompositeSafeCloseable(SafeCloseable... children) {
+    CompositeSafeCloseable(SafeCloseable... children) {
         this.mChildren = children;
     }
 

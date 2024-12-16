@@ -37,44 +37,39 @@ public final class SyncResultReceiver extends IResultReceiver.Stub {
 
     public String getStringResult() throws TimeoutException {
         waitResult();
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return null;
         }
-        return bundle.getString("EXTRA");
+        return this.mBundle.getString("EXTRA");
     }
 
     public String[] getStringArrayResult() throws TimeoutException {
         waitResult();
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return null;
         }
-        return bundle.getStringArray("EXTRA");
+        return this.mBundle.getStringArray("EXTRA");
     }
 
     public <P extends Parcelable> P getParcelableResult() throws TimeoutException {
         waitResult();
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return null;
         }
-        return (P) bundle.getParcelable("EXTRA");
+        return (P) this.mBundle.getParcelable("EXTRA");
     }
 
     public <P extends Parcelable> ArrayList<P> getParcelableListResult() throws TimeoutException {
         waitResult();
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return null;
         }
-        return bundle.getParcelableArrayList("EXTRA");
+        return this.mBundle.getParcelableArrayList("EXTRA");
     }
 
     public int getOptionalExtraIntResult(int defaultValue) throws TimeoutException {
         waitResult();
-        Bundle bundle = this.mBundle;
-        if (bundle == null || !bundle.containsKey("EXTRA")) {
+        if (this.mBundle == null || !this.mBundle.containsKey("EXTRA")) {
             return defaultValue;
         }
         return this.mBundle.getInt("EXTRA");
@@ -117,12 +112,7 @@ public final class SyncResultReceiver extends IResultReceiver.Stub {
         return bundle;
     }
 
-    /* loaded from: classes5.dex */
     public static final class TimeoutException extends Exception {
-        /* synthetic */ TimeoutException(String str, TimeoutExceptionIA timeoutExceptionIA) {
-            this(str);
-        }
-
         private TimeoutException(String msg) {
             super(msg);
         }

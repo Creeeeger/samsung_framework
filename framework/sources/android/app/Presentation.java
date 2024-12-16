@@ -7,11 +7,14 @@ import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
+import android.util.Slog;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.DisplayInfo;
 import android.view.Window;
 import android.view.WindowManager;
+import com.samsung.android.rune.CoreRune;
 import java.util.Objects;
 
 /* loaded from: classes.dex */
@@ -37,9 +40,6 @@ public class Presentation extends Dialog {
         super(createPresentationContext(outerContext, display, theme, type), theme, false);
         this.mHandler = new Handler((Looper) Objects.requireNonNull(Looper.myLooper(), "Presentation must be constructed on a looper thread."));
         this.mDisplayListener = new DisplayManager.DisplayListener() { // from class: android.app.Presentation.1
-            AnonymousClass1() {
-            }
-
             @Override // android.hardware.display.DisplayManager.DisplayListener
             public void onDisplayAdded(int displayId) {
             }
@@ -87,14 +87,22 @@ public class Presentation extends Dialog {
     }
 
     @Override // android.app.Dialog
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         this.mDisplayManager.registerDisplayListener(this.mDisplayListener, this.mHandler);
+        if (CoreRune.FW_FLEXIBLE_DUAL_MODE && this.mDisplay.getDisplayId() == 1) {
+            DisplayInfo info = new DisplayInfo();
+            boolean isValid = this.mDisplay.getDisplayInfo(info);
+            Slog.i(TAG, "onStart() FLAG_REAR : " + (info.flags & 8192) + ", isValid=" + isValid + " Presentation=" + this);
+            if (isValid && (info.flags & 8192) != 0) {
+                this.isRearDisplayPresentation = true;
+            }
+        }
         sendPresentationIntent(true);
     }
 
     @Override // android.app.Dialog
-    public void onStop() {
+    protected void onStop() {
         sendPresentationIntent(false);
         this.mDisplayManager.unregisterDisplayListener(this.mDisplayListener);
         super.onStop();
@@ -118,13 +126,30 @@ public class Presentation extends Dialog {
     public void onDisplayChanged() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayRemoved() {
         onDisplayRemoved();
         cancel();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayChanged() {
         onDisplayChanged();
+        if (CoreRune.FW_FLEXIBLE_DUAL_MODE && this.mDisplay.getDisplayId() == 1) {
+            DisplayInfo info = new DisplayInfo();
+            boolean isValid = this.mDisplay.getDisplayInfo(info);
+            Slog.i(TAG, "handleDisplayChanged() FLAG_REAR : " + (info.flags & 8192) + ", isRearDisplayPresentation=" + this.isRearDisplayPresentation + ", isValid=" + isValid + " Presentation=" + this);
+            if (this.isRearDisplayPresentation) {
+                if (isValid && (info.flags & 8192) == 0) {
+                    cancel();
+                    return;
+                }
+                return;
+            }
+            if (isValid && (info.flags & 8192) != 0) {
+                this.isRearDisplayPresentation = true;
+            }
+        }
     }
 
     private static Context createPresentationContext(Context outerContext, Display display, int theme) {
@@ -164,32 +189,6 @@ public class Presentation extends Dialog {
             intent2.putExtra("ownerPackageName", this.mOwnerPackageName);
             this.mContext.sendBroadcast(intent2);
             this.mIsStarted = false;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.Presentation$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements DisplayManager.DisplayListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayAdded(int displayId) {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayRemoved(int displayId) {
-            if (displayId == Presentation.this.mDisplay.getDisplayId()) {
-                Presentation.this.handleDisplayRemoved();
-            }
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayChanged(int displayId) {
-            if (displayId == Presentation.this.mDisplay.getDisplayId()) {
-                Presentation.this.handleDisplayChanged();
-            }
         }
     }
 }

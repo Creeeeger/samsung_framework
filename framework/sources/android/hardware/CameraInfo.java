@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class CameraInfo implements Parcelable {
     public static final Parcelable.Creator<CameraInfo> CREATOR = new Parcelable.Creator<CameraInfo>() { // from class: android.hardware.CameraInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraInfo createFromParcel(Parcel in) {
             CameraInfo info = new CameraInfo();
@@ -17,6 +15,7 @@ public class CameraInfo implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CameraInfo[] newArray(int size) {
             return new CameraInfo[size];
@@ -38,24 +37,5 @@ public class CameraInfo implements Parcelable {
     public void readFromParcel(Parcel in) {
         this.info.facing = in.readInt();
         this.info.orientation = in.readInt();
-    }
-
-    /* renamed from: android.hardware.CameraInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CameraInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraInfo createFromParcel(Parcel in) {
-            CameraInfo info = new CameraInfo();
-            info.readFromParcel(in);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CameraInfo[] newArray(int size) {
-            return new CameraInfo[size];
-        }
     }
 }

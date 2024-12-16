@@ -13,8 +13,8 @@ import java.util.concurrent.Executor;
 
 /* compiled from: ContextImpl.java */
 /* loaded from: classes.dex */
-public class ReceiverRestrictedContext extends ContextWrapper {
-    public ReceiverRestrictedContext(Context base) {
+class ReceiverRestrictedContext extends ContextWrapper {
+    ReceiverRestrictedContext(Context base) {
         super(base);
     }
 

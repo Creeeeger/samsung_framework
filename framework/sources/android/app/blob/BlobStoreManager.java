@@ -203,13 +203,8 @@ public class BlobStoreManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Session implements Closeable {
         private final IBlobStoreSession mSession;
-
-        /* synthetic */ Session(IBlobStoreSession iBlobStoreSession, SessionIA sessionIA) {
-            this(iBlobStoreSession);
-        }
 
         private Session(IBlobStoreSession session) {
             this.mSession = session;
@@ -340,39 +335,9 @@ public class BlobStoreManager {
             }
         }
 
-        /* renamed from: android.app.blob.BlobStoreManager$Session$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 extends IBlobCommitCallback.Stub {
-            final /* synthetic */ Executor val$executor;
-            final /* synthetic */ Consumer val$resultCallback;
-
-            AnonymousClass1(Executor executor, Consumer consumer) {
-                executor = executor;
-                resultCallback = consumer;
-            }
-
-            @Override // android.app.blob.IBlobCommitCallback
-            public void onResult(int result) {
-                executor.execute(PooledLambda.obtainRunnable(new BiConsumer() { // from class: android.app.blob.BlobStoreManager$Session$1$$ExternalSyntheticLambda0
-                    @Override // java.util.function.BiConsumer
-                    public final void accept(Object obj, Object obj2) {
-                        ((Consumer) obj).accept((Integer) obj2);
-                    }
-                }, resultCallback, Integer.valueOf(result)));
-            }
-        }
-
-        public void commit(Executor executor, Consumer<Integer> resultCallback) throws IOException {
+        public void commit(final Executor executor, final Consumer<Integer> resultCallback) throws IOException {
             try {
                 this.mSession.commit(new IBlobCommitCallback.Stub() { // from class: android.app.blob.BlobStoreManager.Session.1
-                    final /* synthetic */ Executor val$executor;
-                    final /* synthetic */ Consumer val$resultCallback;
-
-                    AnonymousClass1(Executor executor2, Consumer resultCallback2) {
-                        executor = executor2;
-                        resultCallback = resultCallback2;
-                    }
-
                     @Override // android.app.blob.IBlobCommitCallback
                     public void onResult(int result) {
                         executor.execute(PooledLambda.obtainRunnable(new BiConsumer() { // from class: android.app.blob.BlobStoreManager$Session$1$$ExternalSyntheticLambda0

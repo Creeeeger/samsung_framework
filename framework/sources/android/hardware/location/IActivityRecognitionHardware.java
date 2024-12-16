@@ -26,7 +26,6 @@ public interface IActivityRecognitionHardware extends IInterface {
 
     boolean unregisterSink(IActivityRecognitionHardwareSink iActivityRecognitionHardwareSink) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IActivityRecognitionHardware {
         @Override // android.hardware.location.IActivityRecognitionHardware
         public String[] getSupportedActivities() throws RemoteException {
@@ -69,7 +68,6 @@ public interface IActivityRecognitionHardware extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IActivityRecognitionHardware {
         public static final String DESCRIPTOR = "android.hardware.location.IActivityRecognitionHardware";
         static final int TRANSACTION_disableActivityEvent = 6;
@@ -141,69 +139,65 @@ public interface IActivityRecognitionHardware extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String[] _result = getSupportedActivities();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isActivitySupported(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    IActivityRecognitionHardwareSink _arg02 = IActivityRecognitionHardwareSink.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result3 = registerSink(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    IActivityRecognitionHardwareSink _arg03 = IActivityRecognitionHardwareSink.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result4 = unregisterSink(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    int _arg1 = data.readInt();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = enableActivityEvent(_arg04, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = disableActivityEvent(_arg05, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    boolean _result7 = flush();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String[] _result = getSupportedActivities();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isActivitySupported(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            IActivityRecognitionHardwareSink _arg02 = IActivityRecognitionHardwareSink.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result3 = registerSink(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            IActivityRecognitionHardwareSink _arg03 = IActivityRecognitionHardwareSink.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result4 = unregisterSink(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            int _arg1 = data.readInt();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = enableActivityEvent(_arg04, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = disableActivityEvent(_arg05, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            boolean _result7 = flush();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IActivityRecognitionHardware {
+        private static class Proxy implements IActivityRecognitionHardware {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -340,31 +334,31 @@ public interface IActivityRecognitionHardware extends IInterface {
             }
         }
 
-        public void getSupportedActivities_enforcePermission() throws SecurityException {
+        protected void getSupportedActivities_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void isActivitySupported_enforcePermission() throws SecurityException {
+        protected void isActivitySupported_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void registerSink_enforcePermission() throws SecurityException {
+        protected void registerSink_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void unregisterSink_enforcePermission() throws SecurityException {
+        protected void unregisterSink_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void enableActivityEvent_enforcePermission() throws SecurityException {
+        protected void enableActivityEvent_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void disableActivityEvent_enforcePermission() throws SecurityException {
+        protected void disableActivityEvent_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 
-        public void flush_enforcePermission() throws SecurityException {
+        protected void flush_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.LOCATION_HARDWARE, getCallingPid(), getCallingUid());
         }
 

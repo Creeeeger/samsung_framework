@@ -18,12 +18,13 @@ import android.view.Surface;
 import com.android.internal.os.HandlerCaller;
 import com.android.internal.os.SomeArgs;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class ITvInputSessionWrapper extends ITvInputSession.Stub implements HandlerCaller.Callback {
     private static final int DO_APP_PRIVATE_COMMAND = 9;
     private static final int DO_CREATE_OVERLAY_VIEW = 10;
     private static final int DO_DISPATCH_SURFACE_CHANGED = 4;
     private static final int DO_NOTIFY_AD_BUFFER = 28;
+    private static final int DO_NOTIFY_AD_SESSION_DATA = 36;
     private static final int DO_NOTIFY_TV_MESSAGE = 32;
     private static final int DO_PAUSE_RECORDING = 22;
     private static final int DO_RELAYOUT_OVERLAY_VIEW = 11;
@@ -32,6 +33,7 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
     private static final int DO_REMOVE_OVERLAY_VIEW = 12;
     private static final int DO_REQUEST_AD = 27;
     private static final int DO_REQUEST_BROADCAST_INFO = 24;
+    private static final int DO_RESUME_PLAYBACK = 34;
     private static final int DO_RESUME_RECORDING = 23;
     private static final int DO_SELECT_AUDIO_PRESENTATION = 29;
     private static final int DO_SELECT_TRACK = 8;
@@ -41,7 +43,9 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
     private static final int DO_SET_STREAM_VOLUME = 5;
     private static final int DO_SET_SURFACE = 3;
     private static final int DO_SET_TV_MESSAGE_ENABLED = 31;
+    private static final int DO_SET_VIDEO_FROZEN = 35;
     private static final int DO_START_RECORDING = 20;
+    private static final int DO_STOP_PLAYBACK = 33;
     private static final int DO_STOP_RECORDING = 21;
     private static final int DO_TIME_SHIFT_ENABLE_POSITION_TRACKING = 19;
     private static final int DO_TIME_SHIFT_PAUSE = 15;
@@ -79,11 +83,10 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
 
     @Override // com.android.internal.os.HandlerCaller.Callback
     public void executeMessage(Message msg) {
-        boolean z = this.mIsRecordingSession;
-        if (z && this.mTvInputRecordingSessionImpl == null) {
+        if (this.mIsRecordingSession && this.mTvInputRecordingSessionImpl == null) {
             return;
         }
-        if (!z && this.mTvInputSessionImpl == null) {
+        if (!this.mIsRecordingSession && this.mTvInputSessionImpl == null) {
             return;
         }
         long startTime = System.nanoTime();
@@ -96,14 +99,12 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
                 } else {
                     this.mTvInputSessionImpl.release();
                     this.mTvInputSessionImpl = null;
-                    TvInputEventReceiver tvInputEventReceiver = this.mReceiver;
-                    if (tvInputEventReceiver != null) {
-                        tvInputEventReceiver.dispose();
+                    if (this.mReceiver != null) {
+                        this.mReceiver.dispose();
                         this.mReceiver = null;
                     }
-                    InputChannel inputChannel = this.mChannel;
-                    if (inputChannel != null) {
-                        inputChannel.dispose();
+                    if (this.mChannel != null) {
+                        this.mChannel.dispose();
                         this.mChannel = null;
                         break;
                     }
@@ -226,6 +227,21 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
             case 32:
                 SomeArgs args9 = (SomeArgs) msg.obj;
                 this.mTvInputSessionImpl.onTvMessageReceived(((Integer) args9.arg1).intValue(), (Bundle) args9.arg2);
+                args9.recycle();
+                break;
+            case 33:
+                this.mTvInputSessionImpl.stopPlayback(msg.arg1);
+                break;
+            case 34:
+                this.mTvInputSessionImpl.resumePlayback();
+                break;
+            case 35:
+                this.mTvInputSessionImpl.setVideoFrozen(((Boolean) msg.obj).booleanValue());
+                break;
+            case 36:
+                SomeArgs args10 = (SomeArgs) msg.obj;
+                this.mTvInputSessionImpl.notifyTvAdSessionData((String) args10.arg1, (Bundle) args10.arg2);
+                args10.recycle();
                 break;
             default:
                 Log.w(TAG, "Unhandled message code: " + msg.what);
@@ -248,200 +264,186 @@ public class ITvInputSessionWrapper extends ITvInputSession.Stub implements Hand
         if (!this.mIsRecordingSession) {
             this.mTvInputSessionImpl.scheduleOverlayViewCleanup();
         }
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(1));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(1));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void setMain(boolean isMain) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(2, Boolean.valueOf(isMain)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(2, Boolean.valueOf(isMain)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void setSurface(Surface surface) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(3, surface));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(3, surface));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void dispatchSurfaceChanged(int format, int width, int height) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageIIII(4, format, width, height, 0));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIIII(4, format, width, height, 0));
     }
 
     @Override // android.media.tv.ITvInputSession
     public final void setVolume(float volume) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(5, Float.valueOf(volume)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(5, Float.valueOf(volume)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void tune(Uri channelUri, Bundle params) {
         this.mCaller.removeMessages(6);
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(6, channelUri, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(6, channelUri, params));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void setCaptionEnabled(boolean enabled) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(7, Boolean.valueOf(enabled)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(7, Boolean.valueOf(enabled)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void selectAudioPresentation(int presentationId, int programId) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(29, Integer.valueOf(presentationId), Integer.valueOf(programId)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(29, Integer.valueOf(presentationId), Integer.valueOf(programId)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void selectTrack(int type, String trackId) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(8, Integer.valueOf(type), trackId));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(8, Integer.valueOf(type), trackId));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void setInteractiveAppNotificationEnabled(boolean enabled) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(26, Boolean.valueOf(enabled)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(26, Boolean.valueOf(enabled)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void appPrivateCommand(String action, Bundle data) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(9, action, data));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(9, action, data));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void createOverlayView(IBinder windowToken, Rect frame) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(10, windowToken, frame));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(10, windowToken, frame));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void relayoutOverlayView(Rect frame) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(11, frame));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(11, frame));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void removeOverlayView() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(12));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(12));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void unblockContent(String unblockedRating) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(13, unblockedRating));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(13, unblockedRating));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftPlay(Uri recordedProgramUri) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(14, recordedProgramUri));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(14, recordedProgramUri));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftPause() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(15));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(15));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftResume() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(16));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(16));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftSeekTo(long timeMs) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(17, Long.valueOf(timeMs)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(17, Long.valueOf(timeMs)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftSetPlaybackParams(PlaybackParams params) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(18, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(18, params));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftSetMode(int mode) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(30, mode));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(30, mode));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void timeShiftEnablePositionTracking(boolean enable) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(19, Boolean.valueOf(enable)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(19, Boolean.valueOf(enable)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void startRecording(Uri programUri, Bundle params) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(20, programUri, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(20, programUri, params));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void stopRecording() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(21));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(21));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void pauseRecording(Bundle params) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(22, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(22, params));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void resumeRecording(Bundle params) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(23, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(23, params));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void requestBroadcastInfo(BroadcastInfoRequest request) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(24, request));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(24, request));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void removeBroadcastInfo(int requestId) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(25, requestId));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(25, requestId));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void requestAd(AdRequest request) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(27, request));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(27, request));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void notifyAdBufferReady(AdBuffer buffer) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(28, buffer));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(28, buffer));
+    }
+
+    @Override // android.media.tv.ITvInputSession
+    public void notifyTvAdSessionData(String type, Bundle data) {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(36, type, data));
+    }
+
+    @Override // android.media.tv.ITvInputSession
+    public void setVideoFrozen(boolean isFrozen) {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(35, Boolean.valueOf(isFrozen)));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void notifyTvMessage(int type, Bundle data) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(32, Integer.valueOf(type), data));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(32, Integer.valueOf(type), data));
     }
 
     @Override // android.media.tv.ITvInputSession
     public void setTvMessageEnabled(int type, boolean enabled) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(31, Integer.valueOf(type), Boolean.valueOf(enabled)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(31, Integer.valueOf(type), Boolean.valueOf(enabled)));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public final class TvInputEventReceiver extends InputEventReceiver {
+    @Override // android.media.tv.ITvInputSession
+    public void stopPlayback(int mode) {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(33, mode));
+    }
+
+    @Override // android.media.tv.ITvInputSession
+    public void resumePlayback() {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(34));
+    }
+
+    private final class TvInputEventReceiver extends InputEventReceiver {
         TvInputEventReceiver(InputChannel inputChannel, Looper looper) {
             super(inputChannel, looper);
         }

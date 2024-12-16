@@ -4,13 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemProperties;
 import android.telecom.Logging.EventManager;
 import android.telecom.Logging.Session;
 import android.telecom.Logging.SessionManager;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Slog;
-import com.android.internal.telephony.SemTelephonyUtils;
 import com.android.internal.util.IndentingPrintWriter;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -26,6 +26,7 @@ public class Log {
     private static final boolean FORCE_LOGGING = false;
     public static boolean INFO;
     private static final int NUM_DIALABLE_DIGITS_TO_LOG;
+    public static final boolean SHIP_BUILD;
     public static String TAG;
     private static final boolean USER_BUILD;
     public static boolean VERBOSE;
@@ -47,6 +48,11 @@ public class Log {
         WARN = isLoggable(5);
         ERROR = isLoggable(6);
         USER_BUILD = Build.IS_USER;
+        boolean z = true;
+        if (!SystemProperties.getBoolean("ro.product_ship", true) && !SystemProperties.getBoolean("persist.ril.override.product_ship", false)) {
+            z = false;
+        }
+        SHIP_BUILD = z;
         sSingletonSync = new Object();
         sLock = null;
         sIsUserExtendedLoggingEnabled = false;
@@ -225,7 +231,6 @@ public class Log {
     }
 
     public static void dumpEvents(IndentingPrintWriter pw) {
-        pw.println("Telecom EventManager Logging Start");
         synchronized (sSingletonSync) {
             if (sEventManager != null) {
                 getEventManager().dumpEvents(pw);
@@ -233,7 +238,6 @@ public class Log {
                 pw.println("No Historical Events Logged.");
             }
         }
-        pw.println("Telecom EventManager Logging End");
     }
 
     public static void dumpEventsTimeline(IndentingPrintWriter pw) {
@@ -250,12 +254,11 @@ public class Log {
         if (sIsUserExtendedLoggingEnabled == isExtendedLoggingEnabled) {
             return;
         }
-        EventManager eventManager = sEventManager;
-        if (eventManager != null) {
-            eventManager.changeEventCacheSize(isExtendedLoggingEnabled ? 20 : 10);
+        if (sEventManager != null) {
+            sEventManager.changeEventCacheSize(isExtendedLoggingEnabled ? 20 : 10);
         }
         sIsUserExtendedLoggingEnabled = isExtendedLoggingEnabled;
-        if (isExtendedLoggingEnabled) {
+        if (sIsUserExtendedLoggingEnabled) {
             sUserExtendedLoggingStopTime = System.currentTimeMillis() + 1800000;
         } else {
             sUserExtendedLoggingStopTime = 0L;
@@ -274,14 +277,13 @@ public class Log {
         if (sEventManager == null) {
             synchronized (sSingletonSync) {
                 if (sEventManager == null) {
-                    EventManager eventManager = new EventManager(new SessionManager.ISessionIdQueryHandler() { // from class: android.telecom.Log$$ExternalSyntheticLambda0
+                    sEventManager = new EventManager(new SessionManager.ISessionIdQueryHandler() { // from class: android.telecom.Log$$ExternalSyntheticLambda1
                         @Override // android.telecom.Logging.SessionManager.ISessionIdQueryHandler
                         public final String getSessionId() {
                             return Log.getSessionId();
                         }
                     });
-                    sEventManager = eventManager;
-                    return eventManager;
+                    return sEventManager;
                 }
             }
         }
@@ -292,9 +294,8 @@ public class Log {
         if (sSessionManager == null) {
             synchronized (sSingletonSync) {
                 if (sSessionManager == null) {
-                    SessionManager sessionManager = new SessionManager();
-                    sSessionManager = sessionManager;
-                    return sessionManager;
+                    sSessionManager = new SessionManager();
+                    return sSessionManager;
                 }
             }
         }
@@ -328,7 +329,7 @@ public class Log {
     }
 
     public static String piiHandle(Object pii) {
-        if (pii == null || (!SemTelephonyUtils.SHIP_BUILD && VERBOSE)) {
+        if (pii == null || (!SHIP_BUILD && VERBOSE)) {
             return String.valueOf(pii);
         }
         StringBuilder sb = new StringBuilder();
@@ -382,7 +383,7 @@ public class Log {
     }
 
     public static String pii(Object pii) {
-        if (pii == null || (!SemTelephonyUtils.SHIP_BUILD && VERBOSE)) {
+        if (pii == null || (!SHIP_BUILD && VERBOSE)) {
             return String.valueOf(pii);
         }
         return "***";
@@ -442,14 +443,15 @@ public class Log {
             r4 = r3
         L56:
             java.lang.Object r3 = android.telecom.Log.sLock
-            if (r3 == 0) goto L67
-            boolean r2 = java.lang.Thread.holdsLock(r3)
-            if (r2 == 0) goto L64
+            if (r3 == 0) goto L69
+            java.lang.Object r2 = android.telecom.Log.sLock
+            boolean r2 = java.lang.Thread.holdsLock(r2)
+            if (r2 == 0) goto L66
             java.lang.String r2 = "🔒"
-            goto L67
-        L64:
+            goto L69
+        L66:
             java.lang.String r2 = "❗"
-        L67:
+        L69:
             java.util.Locale r3 = java.util.Locale.US
             java.lang.String r5 = "%s: %s%s%s"
             java.lang.Object[] r6 = new java.lang.Object[]{r7, r4, r1, r2}
@@ -470,7 +472,7 @@ public class Log {
         if (packageName == null) {
             return "";
         }
-        return (String) Arrays.stream(packageName.split("\\.")).map(new Function() { // from class: android.telecom.Log$$ExternalSyntheticLambda1
+        return (String) Arrays.stream(packageName.split("\\.")).map(new Function() { // from class: android.telecom.Log$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return Log.lambda$getPackageAbbreviation$0((String) obj);
@@ -478,7 +480,11 @@ public class Log {
         }).collect(Collectors.joining(""));
     }
 
-    public static /* synthetic */ String lambda$getPackageAbbreviation$0(String s) {
+    static /* synthetic */ String lambda$getPackageAbbreviation$0(String s) {
         return s.length() == 0 ? "" : s.substring(0, 1);
+    }
+
+    public static Object maskPii(Object pii) {
+        return SHIP_BUILD ? "<MASKED>" : pii;
     }
 }

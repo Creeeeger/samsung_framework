@@ -15,8 +15,8 @@ public final /* synthetic */ class MediaDrm$$ExternalSyntheticLambda1 implements
 
     @Override // java.util.function.Function
     public final Object apply(Object obj) {
-        Consumer createOnExpirationUpdateListener;
-        createOnExpirationUpdateListener = this.f$0.createOnExpirationUpdateListener((MediaDrm.OnExpirationUpdateListener) obj);
-        return createOnExpirationUpdateListener;
+        Consumer createOnKeyStatusChangeListener;
+        createOnKeyStatusChangeListener = this.f$0.createOnKeyStatusChangeListener((MediaDrm.OnKeyStatusChangeListener) obj);
+        return createOnKeyStatusChangeListener;
     }
 }

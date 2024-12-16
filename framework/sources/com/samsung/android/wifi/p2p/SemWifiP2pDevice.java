@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,15 +12,14 @@ import java.util.regex.Pattern;
 /* loaded from: classes6.dex */
 public class SemWifiP2pDevice implements Parcelable {
     public static final Parcelable.Creator<SemWifiP2pDevice> CREATOR = new Parcelable.Creator<SemWifiP2pDevice>() { // from class: com.samsung.android.wifi.p2p.SemWifiP2pDevice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiP2pDevice createFromParcel(Parcel in) {
             SemWifiP2pDevice device = new SemWifiP2pDevice();
             device.mDeviceName = in.readString();
             device.mDeviceAddress = in.readString();
             device.mScreenSharingInfo = in.readInt();
+            device.mScreenSharingExtendedInfo = in.readInt();
             device.mScreenSharingDi = in.readString();
             device.mDeviceIconAttr = in.readInt();
             device.mServiceData = in.readString();
@@ -31,39 +28,23 @@ public class SemWifiP2pDevice implements Parcelable {
             return device;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemWifiP2pDevice[] newArray(int size) {
             return new SemWifiP2pDevice[size];
         }
     };
-    public static final int DEVICE_TYPE_ACC = 5;
-    public static final int DEVICE_TYPE_AIRPURIFIER = 15;
     public static final int DEVICE_TYPE_AV = 7;
-    public static final int DEVICE_TYPE_CAMCORDER = 27;
-    public static final int DEVICE_TYPE_CAMERA = 26;
-    public static final int DEVICE_TYPE_DRYER = 11;
-    public static final int DEVICE_TYPE_EBOARD = 24;
-    public static final int DEVICE_TYPE_FLOOR_AC = 12;
-    public static final int DEVICE_TYPE_HEADPHONE = 21;
-    public static final int DEVICE_TYPE_IOT = 25;
     public static final int DEVICE_TYPE_MONITOR = 23;
-    public static final int DEVICE_TYPE_OTHER = 0;
-    public static final int DEVICE_TYPE_OVEN = 16;
     public static final int DEVICE_TYPE_PC = 4;
     public static final int DEVICE_TYPE_PHONE = 1;
-    public static final int DEVICE_TYPE_PRINTER = 20;
-    public static final int DEVICE_TYPE_RANGE = 17;
     public static final int DEVICE_TYPE_REFRIGERATOR = 9;
-    public static final int DEVICE_TYPE_ROBOTVACUUM = 18;
-    public static final int DEVICE_TYPE_ROOM_AC = 13;
     public static final int DEVICE_TYPE_SIGNAGE = 8;
     public static final int DEVICE_TYPE_SMARTHOME = 19;
     public static final int DEVICE_TYPE_SPEAKER = 22;
-    public static final int DEVICE_TYPE_SYSTEM_AC = 14;
     public static final int DEVICE_TYPE_TABLET = 2;
     public static final int DEVICE_TYPE_TV = 6;
-    public static final int DEVICE_TYPE_WASHER = 10;
-    public static final int DEVICE_TYPE_WEARABLE = 3;
+    public static final int DEVICE_TYPE_VST = 50;
     private static final int FILTER_DEVICE_TYPE = 65280;
     private static final int FILTER_ICON_INDEX = 255;
     private static final String TAG = "SemWifiP2pDevice";
@@ -71,22 +52,15 @@ public class SemWifiP2pDevice implements Parcelable {
     private int mDeviceIconAttr;
     private String mDeviceName;
     private String mScreenSharingDi;
+    private int mScreenSharingExtendedInfo;
     private int mScreenSharingInfo;
     private String mServiceData;
     private int mStatus;
     private boolean mSupportFwInvite;
 
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes6.dex */
-    public @interface DeviceType {
-    }
-
-    /* synthetic */ SemWifiP2pDevice(SemWifiP2pDeviceIA semWifiP2pDeviceIA) {
-        this();
-    }
-
     private SemWifiP2pDevice() {
         this.mScreenSharingInfo = 0;
+        this.mScreenSharingExtendedInfo = 0;
         this.mScreenSharingDi = null;
         this.mDeviceIconAttr = 0;
         this.mServiceData = null;
@@ -96,6 +70,7 @@ public class SemWifiP2pDevice implements Parcelable {
 
     public SemWifiP2pDevice(String deviceAddress, String deviceName) {
         this.mScreenSharingInfo = 0;
+        this.mScreenSharingExtendedInfo = 0;
         this.mScreenSharingDi = null;
         this.mDeviceIconAttr = 0;
         this.mServiceData = null;
@@ -107,6 +82,7 @@ public class SemWifiP2pDevice implements Parcelable {
 
     public SemWifiP2pDevice(String deviceAddress, String deviceName, List<ScanResult.InformationElement> vendorElements) {
         this.mScreenSharingInfo = 0;
+        this.mScreenSharingExtendedInfo = 0;
         this.mScreenSharingDi = null;
         this.mDeviceIconAttr = 0;
         this.mServiceData = null;
@@ -118,6 +94,7 @@ public class SemWifiP2pDevice implements Parcelable {
             SemP2pInformationElement p2pIe = new SemP2pInformationElement(vendorElements);
             this.mDeviceIconAttr = p2pIe.getSamsungDeviceType();
             this.mScreenSharingInfo = p2pIe.getScreenSharingInfo();
+            this.mScreenSharingExtendedInfo = p2pIe.getScreenSharingExtendedInfo();
             this.mServiceData = p2pIe.getServiceData();
             this.mSupportFwInvite = p2pIe.isFwInviteSupported();
             this.mScreenSharingDi = p2pIe.getScreenSharingDi();
@@ -126,6 +103,7 @@ public class SemWifiP2pDevice implements Parcelable {
 
     public SemWifiP2pDevice(String deviceAddress, String deviceName, String extInfo) {
         this.mScreenSharingInfo = 0;
+        this.mScreenSharingExtendedInfo = 0;
         this.mScreenSharingDi = null;
         this.mDeviceIconAttr = 0;
         this.mServiceData = null;
@@ -160,16 +138,16 @@ public class SemWifiP2pDevice implements Parcelable {
         }
     }
 
-    public String getDeviceName() {
-        return this.mDeviceName;
-    }
-
     public String getDeviceAddress() {
         return this.mDeviceAddress;
     }
 
     public int getScreenSharingInfo() {
         return this.mScreenSharingInfo;
+    }
+
+    public int getScreenSharingExtendedInfo() {
+        return this.mScreenSharingExtendedInfo;
     }
 
     public String getScreenSharingHashedDi() {
@@ -196,23 +174,8 @@ public class SemWifiP2pDevice implements Parcelable {
         this.mStatus = status;
     }
 
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof SemWifiP2pDevice)) {
-            return false;
-        }
-        SemWifiP2pDevice other = (SemWifiP2pDevice) obj;
-        String str = other.mDeviceAddress;
-        if (str == null) {
-            return this.mDeviceAddress == null;
-        }
-        return str.equals(this.mDeviceAddress);
-    }
-
     public String toString() {
-        StringBuilder builder = new StringBuilder().append("Device: ").append(this.mDeviceName).append("\n deviceAddress: ").append(this.mDeviceAddress).append("\n screenSharingInfo : ").append(this.mScreenSharingInfo).append("\n deviceIconAttr : ").append(this.mDeviceIconAttr).append("\n serviceData : ").append(this.mServiceData).append("\n supportFwInvite : ").append(this.mSupportFwInvite).append("\n status : ").append(this.mStatus);
+        StringBuilder builder = new StringBuilder().append("Device: ").append(this.mDeviceName).append("\n deviceAddress: ").append(this.mDeviceAddress).append("\n screenSharingInfo: ").append(this.mScreenSharingInfo).append("\n screenSharingExtendedInfo: ").append(this.mScreenSharingExtendedInfo).append("\n deviceIconAttr: ").append(this.mDeviceIconAttr).append("\n serviceData: ").append(this.mServiceData).append("\n supportFwInvite: ").append(this.mSupportFwInvite).append("\n status: ").append(this.mStatus);
         return builder.toString();
     }
 
@@ -221,6 +184,7 @@ public class SemWifiP2pDevice implements Parcelable {
         parcel.writeString(this.mDeviceName);
         parcel.writeString(this.mDeviceAddress);
         parcel.writeInt(this.mScreenSharingInfo);
+        parcel.writeInt(this.mScreenSharingExtendedInfo);
         parcel.writeString(this.mScreenSharingDi);
         parcel.writeInt(this.mDeviceIconAttr);
         parcel.writeString(this.mServiceData);
@@ -231,32 +195,6 @@ public class SemWifiP2pDevice implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.wifi.p2p.SemWifiP2pDevice$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemWifiP2pDevice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiP2pDevice createFromParcel(Parcel in) {
-            SemWifiP2pDevice device = new SemWifiP2pDevice();
-            device.mDeviceName = in.readString();
-            device.mDeviceAddress = in.readString();
-            device.mScreenSharingInfo = in.readInt();
-            device.mScreenSharingDi = in.readString();
-            device.mDeviceIconAttr = in.readInt();
-            device.mServiceData = in.readString();
-            device.mSupportFwInvite = in.readInt() != 0;
-            device.mStatus = in.readInt();
-            return device;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemWifiP2pDevice[] newArray(int size) {
-            return new SemWifiP2pDevice[size];
-        }
     }
 
     private int parseHex(String hexString) {

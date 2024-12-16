@@ -4,7 +4,6 @@ import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Preconditions;
 import com.samsung.android.knox.analytics.database.Contract;
 import java.util.Arrays;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class IntArray implements Cloneable {
@@ -40,9 +39,8 @@ public class IntArray implements Cloneable {
 
     public void resize(int newSize) {
         Preconditions.checkArgumentNonnegative(newSize);
-        int[] iArr = this.mValues;
-        if (newSize <= iArr.length) {
-            Arrays.fill(iArr, newSize, iArr.length, 0);
+        if (newSize <= this.mValues.length) {
+            Arrays.fill(this.mValues, newSize, this.mValues.length, 0);
         } else {
             ensureCapacity(newSize - this.mSize);
         }
@@ -55,14 +53,11 @@ public class IntArray implements Cloneable {
 
     public void add(int index, int value) {
         ensureCapacity(1);
-        int i = this.mSize;
-        int rightSegment = i - index;
-        int i2 = i + 1;
-        this.mSize = i2;
-        ArrayUtils.checkBounds(i2, index);
+        int rightSegment = this.mSize - index;
+        this.mSize++;
+        ArrayUtils.checkBounds(this.mSize, index);
         if (rightSegment != 0) {
-            int[] iArr = this.mValues;
-            System.arraycopy(iArr, index, iArr, index + 1, rightSegment);
+            System.arraycopy(this.mValues, index, this.mValues, index + 1, rightSegment);
         }
         this.mValues[index] = value;
     }
@@ -101,8 +96,8 @@ public class IntArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public IntArray m4924clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public IntArray m5208clone() {
         return new IntArray((int[]) this.mValues.clone(), this.mSize);
     }
 
@@ -126,10 +121,13 @@ public class IntArray implements Cloneable {
         return -1;
     }
 
+    public boolean contains(int value) {
+        return indexOf(value) != -1;
+    }
+
     public void remove(int index) {
         ArrayUtils.checkBounds(this.mSize, index);
-        int[] iArr = this.mValues;
-        System.arraycopy(iArr, index + 1, iArr, index, (this.mSize - index) - 1);
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, (this.mSize - index) - 1);
         this.mSize--;
     }
 

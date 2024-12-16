@@ -15,7 +15,6 @@ public interface IAccountAuthenticatorResponse extends IInterface {
 
     void onResult(Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAccountAuthenticatorResponse {
         @Override // android.accounts.IAccountAuthenticatorResponse
         public void onResult(Bundle value) throws RemoteException {
@@ -35,7 +34,6 @@ public interface IAccountAuthenticatorResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAccountAuthenticatorResponse {
         public static final String DESCRIPTOR = "android.accounts.IAccountAuthenticatorResponse";
         static final int TRANSACTION_onError = 3;
@@ -85,35 +83,31 @@ public interface IAccountAuthenticatorResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResult(_arg0);
+                    return true;
+                case 2:
+                    onRequestContinued();
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResult(_arg0);
-                            return true;
-                        case 2:
-                            onRequestContinued();
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAccountAuthenticatorResponse {
+        private static class Proxy implements IAccountAuthenticatorResponse {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

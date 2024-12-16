@@ -3,17 +3,16 @@ package android.media.tv;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class AitInfo implements Parcelable {
     public static final Parcelable.Creator<AitInfo> CREATOR = new Parcelable.Creator<AitInfo>() { // from class: android.media.tv.AitInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AitInfo createFromParcel(Parcel in) {
             return new AitInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AitInfo[] newArray(int size) {
             return new AitInfo[size];
@@ -22,27 +21,6 @@ public final class AitInfo implements Parcelable {
     static final String TAG = "AitInfo";
     private final int mType;
     private final int mVersion;
-
-    /* synthetic */ AitInfo(Parcel parcel, AitInfoIA aitInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.media.tv.AitInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AitInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AitInfo createFromParcel(Parcel in) {
-            return new AitInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AitInfo[] newArray(int size) {
-            return new AitInfo[size];
-        }
-    }
 
     private AitInfo(Parcel in) {
         this.mType = in.readInt();

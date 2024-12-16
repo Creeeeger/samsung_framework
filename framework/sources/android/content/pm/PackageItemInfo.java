@@ -39,6 +39,7 @@ public class PackageItemInfo {
     private static volatile boolean sForceSafeLabels = false;
     public int banner;
     public int icon;
+    public boolean isArchived;
     public int labelRes;
     public int logo;
     public Bundle metaData;
@@ -57,23 +58,22 @@ public class PackageItemInfo {
     }
 
     public PackageItemInfo(PackageItemInfo orig) {
-        String str = orig.name;
-        this.name = str;
-        if (str != null) {
-            this.name = str.trim();
+        this.name = orig.name;
+        if (this.name != null) {
+            this.name = this.name.trim();
         }
         this.packageName = orig.packageName;
         this.labelRes = orig.labelRes;
-        CharSequence charSequence = orig.nonLocalizedLabel;
-        this.nonLocalizedLabel = charSequence;
-        if (charSequence != null) {
-            this.nonLocalizedLabel = charSequence.toString().trim();
+        this.nonLocalizedLabel = orig.nonLocalizedLabel;
+        if (this.nonLocalizedLabel != null) {
+            this.nonLocalizedLabel = this.nonLocalizedLabel.toString().trim();
         }
         this.icon = orig.icon;
         this.banner = orig.banner;
         this.logo = orig.logo;
         this.metaData = orig.metaData;
         this.showUserIcon = orig.showUserIcon;
+        this.isArchived = orig.isArchived;
     }
 
     public CharSequence loadLabel(PackageManager pm) {
@@ -98,17 +98,14 @@ public class PackageItemInfo {
                 return newName;
             }
         }
-        CharSequence charSequence = this.nonLocalizedLabel;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.nonLocalizedLabel != null) {
+            return this.nonLocalizedLabel;
         }
-        int i = this.labelRes;
-        if (i != 0 && (label = pm.getText(this.packageName, i, getApplicationInfo())) != null) {
+        if (this.labelRes != 0 && (label = pm.getText(this.packageName, this.labelRes, getApplicationInfo())) != null) {
             return label.toString().trim();
         }
-        CharSequence label2 = this.name;
-        if (label2 != null) {
-            return label2;
+        if (this.name != null) {
+            return this.name;
         }
         return this.packageName;
     }
@@ -139,8 +136,7 @@ public class PackageItemInfo {
 
     public Drawable loadBanner(PackageManager pm) {
         Drawable dr;
-        int i = this.banner;
-        if (i != 0 && (dr = pm.getDrawable(this.packageName, i, getApplicationInfo())) != null) {
+        if (this.banner != 0 && (dr = pm.getDrawable(this.packageName, this.banner, getApplicationInfo())) != null) {
             return dr;
         }
         return loadDefaultBanner(pm);
@@ -156,8 +152,7 @@ public class PackageItemInfo {
 
     public Drawable loadLogo(PackageManager pm) {
         Drawable d;
-        int i = this.logo;
-        if (i != 0 && (d = pm.getDrawable(this.packageName, i, getApplicationInfo())) != null) {
+        if (this.logo != 0 && (d = pm.getDrawable(this.packageName, this.logo, getApplicationInfo())) != null) {
             return d;
         }
         return loadDefaultLogo(pm);
@@ -169,14 +164,13 @@ public class PackageItemInfo {
 
     public XmlResourceParser loadXmlMetaData(PackageManager pm, String name) {
         int resid;
-        Bundle bundle = this.metaData;
-        if (bundle != null && (resid = bundle.getInt(name)) != 0) {
+        if (this.metaData != null && (resid = this.metaData.getInt(name)) != 0) {
             return pm.getXml(this.packageName, resid, getApplicationInfo());
         }
         return null;
     }
 
-    public void dumpFront(Printer pw, String prefix) {
+    protected void dumpFront(Printer pw, String prefix) {
         if (this.name != null) {
             pw.println(prefix + "name=" + this.name);
         }
@@ -186,7 +180,7 @@ public class PackageItemInfo {
         }
     }
 
-    public void dumpBack(Printer pw, String prefix) {
+    protected void dumpBack(Printer pw, String prefix) {
     }
 
     public void writeToParcel(Parcel dest, int parcelableFlags) {
@@ -199,26 +193,26 @@ public class PackageItemInfo {
         dest.writeBundle(this.metaData);
         dest.writeInt(this.banner);
         dest.writeInt(this.showUserIcon);
+        dest.writeBoolean(this.isArchived);
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId, int dumpFlags) {
         long token = proto.start(fieldId);
-        String str = this.name;
-        if (str != null) {
-            proto.write(1138166333441L, str);
+        if (this.name != null) {
+            proto.write(1138166333441L, this.name);
         }
         proto.write(1138166333442L, this.packageName);
         proto.write(1120986464259L, this.labelRes);
-        CharSequence charSequence = this.nonLocalizedLabel;
-        if (charSequence != null) {
-            proto.write(1138166333444L, charSequence.toString());
+        if (this.nonLocalizedLabel != null) {
+            proto.write(1138166333444L, this.nonLocalizedLabel.toString());
         }
         proto.write(1120986464261L, this.icon);
         proto.write(1120986464262L, this.banner);
+        proto.write(1133871366151L, this.isArchived);
         proto.end(token);
     }
 
-    public PackageItemInfo(Parcel source) {
+    protected PackageItemInfo(Parcel source) {
         this.name = source.readString8();
         this.packageName = source.readString8();
         this.labelRes = source.readInt();
@@ -228,15 +222,15 @@ public class PackageItemInfo {
         this.metaData = source.readBundle();
         this.banner = source.readInt();
         this.showUserIcon = source.readInt();
+        this.isArchived = source.readBoolean();
     }
 
-    protected ApplicationInfo getApplicationInfo() {
+    public ApplicationInfo getApplicationInfo() {
         return null;
     }
 
-    /* loaded from: classes.dex */
     public static class DisplayNameComparator implements Comparator<PackageItemInfo> {
-        private PackageManager mPM;
+        private final PackageManager mPM;
         private final Collator sCollator = Collator.getInstance();
 
         public DisplayNameComparator(PackageManager pm) {

@@ -12,7 +12,6 @@ public interface IKeyboardBacklightListener extends IInterface {
 
     void onBrightnessChanged(int i, IKeyboardBacklightState iKeyboardBacklightState, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IKeyboardBacklightListener {
         @Override // android.hardware.input.IKeyboardBacklightListener
         public void onBrightnessChanged(int deviceId, IKeyboardBacklightState state, boolean isTriggeredByKeyPress) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IKeyboardBacklightListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IKeyboardBacklightListener {
         static final int TRANSACTION_onBrightnessChanged = 1;
 
@@ -67,28 +65,24 @@ public interface IKeyboardBacklightListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKeyboardBacklightListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKeyboardBacklightListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKeyboardBacklightListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IKeyboardBacklightState _arg1 = (IKeyboardBacklightState) data.readTypedObject(IKeyboardBacklightState.CREATOR);
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onBrightnessChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IKeyboardBacklightState _arg1 = (IKeyboardBacklightState) data.readTypedObject(IKeyboardBacklightState.CREATOR);
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onBrightnessChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IKeyboardBacklightListener {
+        private static class Proxy implements IKeyboardBacklightListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

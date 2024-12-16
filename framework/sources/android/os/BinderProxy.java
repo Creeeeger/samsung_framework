@@ -10,14 +10,15 @@ import android.os.IBinder;
 import android.util.Log;
 import android.util.SparseIntArray;
 import com.android.internal.os.BinderInternal;
-import com.samsung.android.media.AudioParameter;
 import java.io.FileDescriptor;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,17 +30,18 @@ public final class BinderProxy implements IBinder {
     private static final String GMS_SHORT_LOOKUP = "gms.loc";
     private static final int NATIVE_ALLOCATION_SIZE = 1000;
     private final long mNativeData;
-    volatile boolean mWarnOnBlocking = Binder.sWarnOnBlocking;
-    private int msgForGoogleLocation = 0;
     private static volatile Binder.ProxyTransactListener sTransactListener = null;
     private static final ProxyMap sProxyMap = new ProxyMap();
+    volatile boolean mWarnOnBlocking = Binder.sWarnOnBlocking;
+    private int msgForGoogleLocation = 0;
+    private List<IBinder.DeathRecipient> mDeathRecipients = Collections.synchronizedList(new ArrayList());
 
-    /* renamed from: -$$Nest$smgetNativeFinalizer */
-    static /* bridge */ /* synthetic */ long m3133$$Nest$smgetNativeFinalizer() {
-        return getNativeFinalizer();
-    }
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long getNativeFinalizer();
 
-    private static native long getNativeFinalizer();
+    private native void linkToDeathNative(IBinder.DeathRecipient deathRecipient, int i) throws RemoteException;
+
+    private native boolean unlinkToDeathNative(IBinder.DeathRecipient deathRecipient, int i);
 
     @Override // android.os.IBinder
     public native IBinder getExtension() throws RemoteException;
@@ -51,18 +53,11 @@ public final class BinderProxy implements IBinder {
     public native boolean isBinderAlive();
 
     @Override // android.os.IBinder
-    public native void linkToDeath(IBinder.DeathRecipient deathRecipient, int i) throws RemoteException;
-
-    @Override // android.os.IBinder
     public native boolean pingBinder();
 
     public native boolean transactNative(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException;
 
-    @Override // android.os.IBinder
-    public native boolean unlinkToDeath(IBinder.DeathRecipient deathRecipient, int i);
-
-    /* loaded from: classes3.dex */
-    public static class BinderProxyMapSizeException extends AssertionError {
+    private static class BinderProxyMapSizeException extends AssertionError {
         BinderProxyMapSizeException(String s) {
             super(s);
         }
@@ -72,11 +67,9 @@ public final class BinderProxy implements IBinder {
         sTransactListener = listener;
     }
 
-    /* loaded from: classes3.dex */
-    private static final class ProxyMap {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class ProxyMap {
         private static final int CRASH_AT_SIZE = 25000;
-        private static final boolean FORCE_LIMIT_ENABLE = true;
-        private static final int FORCE_LIMIT_SIZE = 25000;
         private static final int LOG_MAIN_INDEX_SIZE = 8;
         private static final int MAIN_INDEX_MASK = 255;
         private static final int MAIN_INDEX_SIZE = 256;
@@ -87,13 +80,9 @@ public final class BinderProxy implements IBinder {
         private int mRandom;
         private int mWarnBucketSize;
 
-        /* synthetic */ ProxyMap(ProxyMapIA proxyMapIA) {
-            this();
-        }
-
         private ProxyMap() {
             this.mWarnBucketSize = 20;
-            this.mMainIndexKeys = new Long[256];
+            this.mMainIndexKeys = new Long[256][];
             this.mMainIndexValues = new ArrayList[256];
         }
 
@@ -101,6 +90,7 @@ public final class BinderProxy implements IBinder {
             return ((int) ((arg >> 2) ^ (arg >> 10))) & 255;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public int size() {
             int size = 0;
             for (ArrayList<WeakReference<BinderProxy>> a : this.mMainIndexValues) {
@@ -163,10 +153,9 @@ public final class BinderProxy implements IBinder {
 
         void set(long key, BinderProxy value) {
             int myHash = hash(key);
-            ArrayList<WeakReference<BinderProxy>>[] arrayListArr = this.mMainIndexValues;
-            ArrayList<WeakReference<BinderProxy>> valueArray = arrayListArr[myHash];
-            boolean enableProxyLimit = true;
+            ArrayList<WeakReference<BinderProxy>> valueArray = this.mMainIndexValues[myHash];
             if (valueArray == null) {
+                ArrayList<WeakReference<BinderProxy>>[] arrayListArr = this.mMainIndexValues;
                 ArrayList<WeakReference<BinderProxy>> arrayList = new ArrayList<>();
                 arrayListArr[myHash] = arrayList;
                 valueArray = arrayList;
@@ -205,17 +194,11 @@ public final class BinderProxy implements IBinder {
                 int totalSize = size();
                 Log.v("Binder", "BinderProxy map growth! bucket size = " + size + " total = " + totalSize);
                 this.mWarnBucketSize += 10;
-                boolean z = Build.IS_DEBUGGABLE;
-                if (!Build.IS_DEBUGGABLE && Binder.isSystemServer) {
-                    enableProxyLimit = false;
-                }
-                if (enableProxyLimit && totalSize >= 25000) {
+                if (totalSize >= 25000) {
                     int totalUnclearedSize = unclearedSize();
                     if (totalUnclearedSize >= 25000) {
-                        if (Build.IS_DEBUGGABLE) {
-                            dumpProxyInterfaceCounts();
-                            dumpPerUidProxyCounts();
-                        }
+                        dumpProxyInterfaceCounts();
+                        dumpPerUidProxyCounts();
                         Runtime.getRuntime().gc();
                         throw new BinderProxyMapSizeException("Binder ProxyMap has too many entries: " + totalSize + " (total), " + totalUnclearedSize + " (uncleared), " + unclearedSize() + " (uncleared after GC). BinderProxy leak?");
                     }
@@ -226,6 +209,7 @@ public final class BinderProxy implements IBinder {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public InterfaceCount[] getSortedInterfaceCounts(int maxToReturn) {
             if (maxToReturn < 0) {
                 throw new IllegalArgumentException("negative interface count");
@@ -281,7 +265,7 @@ public final class BinderProxy implements IBinder {
             return ifaceCounts;
         }
 
-        public static /* synthetic */ void lambda$getSortedInterfaceCounts$0(ArrayList proxiesToQuery, Map counts) {
+        static /* synthetic */ void lambda$getSortedInterfaceCounts$0(ArrayList proxiesToQuery, Map counts) {
             String key;
             Iterator it = proxiesToQuery.iterator();
             while (it.hasNext()) {
@@ -308,6 +292,7 @@ public final class BinderProxy implements IBinder {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void dumpProxyInterfaceCounts() {
             InterfaceCount[] sorted = getSortedInterfaceCounts(10);
             Log.v("Binder", "BinderProxy descriptor histogram (top " + Integer.toString(10) + "):");
@@ -316,6 +301,7 @@ public final class BinderProxy implements IBinder {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void dumpPerUidProxyCounts() {
             SparseIntArray counts = BinderInternal.nGetBinderProxyPerUidCounts();
             if (counts.size() == 0) {
@@ -330,7 +316,6 @@ public final class BinderProxy implements IBinder {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class InterfaceCount {
         private final int mCount;
         private final String mInterfaceName;
@@ -351,32 +336,29 @@ public final class BinderProxy implements IBinder {
 
     public static int getProxyCount() {
         int size;
-        ProxyMap proxyMap = sProxyMap;
-        synchronized (proxyMap) {
-            size = proxyMap.size();
+        synchronized (sProxyMap) {
+            size = sProxyMap.size();
         }
         return size;
     }
 
     public static void dumpProxyDebugInfo() {
         if (Build.IS_DEBUGGABLE) {
-            ProxyMap proxyMap = sProxyMap;
-            proxyMap.dumpProxyInterfaceCounts();
-            proxyMap.dumpPerUidProxyCounts();
+            sProxyMap.dumpProxyInterfaceCounts();
+            sProxyMap.dumpPerUidProxyCounts();
         }
     }
 
     private static BinderProxy getInstance(long nativeData, long iBinder) {
-        ProxyMap proxyMap = sProxyMap;
-        synchronized (proxyMap) {
+        synchronized (sProxyMap) {
             try {
-                BinderProxy result = proxyMap.get(iBinder);
+                BinderProxy result = sProxyMap.get(iBinder);
                 if (result != null) {
                     return result;
                 }
                 BinderProxy result2 = new BinderProxy(nativeData);
                 NoImagePreloadHolder.sRegistry.registerNativeAllocation(result2, nativeData);
-                proxyMap.set(iBinder, result2);
+                sProxyMap.set(iBinder, result2);
                 return result2;
             } catch (Throwable e) {
                 NativeAllocationRegistry.applyFreeFunction(NoImagePreloadHolder.sNativeFinalizer, nativeData);
@@ -389,18 +371,11 @@ public final class BinderProxy implements IBinder {
         this.mNativeData = nativeData;
     }
 
-    /* loaded from: classes3.dex */
     private static class NoImagePreloadHolder {
-        public static final long sNativeFinalizer;
-        public static final NativeAllocationRegistry sRegistry;
+        public static final long sNativeFinalizer = BinderProxy.getNativeFinalizer();
+        public static final NativeAllocationRegistry sRegistry = new NativeAllocationRegistry(BinderProxy.class.getClassLoader(), sNativeFinalizer, 1000);
 
         private NoImagePreloadHolder() {
-        }
-
-        static {
-            long m3133$$Nest$smgetNativeFinalizer = BinderProxy.m3133$$Nest$smgetNativeFinalizer();
-            sNativeFinalizer = m3133$$Nest$smgetNativeFinalizer;
-            sRegistry = new NativeAllocationRegistry(BinderProxy.class.getClassLoader(), m3133$$Nest$smgetNativeFinalizer, 1000L);
         }
     }
 
@@ -536,6 +511,18 @@ public final class BinderProxy implements IBinder {
     }
 
     @Override // android.os.IBinder
+    public void linkToDeath(IBinder.DeathRecipient recipient, int flags) throws RemoteException {
+        linkToDeathNative(recipient, flags);
+        this.mDeathRecipients.add(recipient);
+    }
+
+    @Override // android.os.IBinder
+    public boolean unlinkToDeath(IBinder.DeathRecipient recipient, int flags) {
+        this.mDeathRecipients.remove(recipient);
+        return unlinkToDeathNative(recipient, flags);
+    }
+
+    @Override // android.os.IBinder
     public void dump(FileDescriptor fd, String[] args) throws RemoteException {
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
@@ -592,11 +579,10 @@ public final class BinderProxy implements IBinder {
     }
 
     private boolean isMsgForGoogleLocation(Parcel data) {
-        int i = this.msgForGoogleLocation;
-        if (i == 1) {
+        if (this.msgForGoogleLocation == 1) {
             return false;
         }
-        if (i == 2) {
+        if (this.msgForGoogleLocation == 2) {
             return true;
         }
         this.msgForGoogleLocation = 1;
@@ -633,7 +619,7 @@ public final class BinderProxy implements IBinder {
                     bundle.putParcelable("pp", pp);
                     bundle.putString("interfaceName", data.getInterfaceName());
                     bundle.putInt("uid", Binder.getCallingUid());
-                    bundle.putInt(AudioParameter.SUBKEY_HIDDEN_SOUND_PID, Binder.getCallingPid());
+                    bundle.putInt("pid", Binder.getCallingPid());
                     Message msg = new Message();
                     msg.what = 200;
                     msg.arg1 = code;

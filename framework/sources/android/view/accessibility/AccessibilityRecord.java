@@ -155,11 +155,11 @@ public class AccessibilityRecord {
         setBooleanProperty(512, importantForAccessibility);
     }
 
-    public boolean isAccessibilityDataSensitive() {
+    boolean isAccessibilityDataSensitive() {
         return getBooleanProperty(1024);
     }
 
-    public void setAccessibilityDataSensitive(boolean accessibilityDataSensitive) {
+    void setAccessibilityDataSensitive(boolean accessibilityDataSensitive) {
         enforceNotSealed();
         setBooleanProperty(1024, accessibilityDataSensitive);
     }
@@ -329,7 +329,7 @@ public class AccessibilityRecord {
         this.mSealed = sealed;
     }
 
-    public boolean isSealed() {
+    boolean isSealed() {
         return this.mSealed;
     }
 
@@ -339,7 +339,7 @@ public class AccessibilityRecord {
         }
     }
 
-    public void enforceNotSealed() {
+    void enforceNotSealed() {
         if (isSealed()) {
             throw new IllegalStateException("Cannot perform this action on a sealed instance.");
         }
@@ -373,7 +373,7 @@ public class AccessibilityRecord {
     public void recycle() {
     }
 
-    public void init(AccessibilityRecord record) {
+    void init(AccessibilityRecord record) {
         this.mSealed = record.mSealed;
         this.mBooleanProperties = record.mBooleanProperties;
         this.mCurrentItemIndex = record.mCurrentItemIndex;
@@ -399,7 +399,7 @@ public class AccessibilityRecord {
         this.mConnectionId = record.mConnectionId;
     }
 
-    public void clear() {
+    void clear() {
         this.mSealed = false;
         this.mBooleanProperties = 0;
         this.mCurrentItemIndex = -1;
@@ -429,7 +429,7 @@ public class AccessibilityRecord {
         return appendTo(new StringBuilder()).toString();
     }
 
-    public StringBuilder appendTo(StringBuilder builder) {
+    StringBuilder appendTo(StringBuilder builder) {
         builder.append(" [ ClassName: ").append(this.mClassName);
         appendPropName(builder, "Text").append(this.mText);
         append(builder, "ContentDescription", this.mContentDescription);

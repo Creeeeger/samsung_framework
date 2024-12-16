@@ -12,14 +12,11 @@ public class HandlerCaller {
     final Handler mH;
     final Looper mMainLooper;
 
-    /* loaded from: classes5.dex */
     public interface Callback {
         void executeMessage(Message message);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public class MyHandler extends Handler {
+    class MyHandler extends Handler {
         MyHandler(Looper looper, boolean async) {
             super(looper, null, async);
         }
@@ -31,9 +28,8 @@ public class HandlerCaller {
     }
 
     public HandlerCaller(Context context, Looper looper, Callback callback, boolean asyncHandler) {
-        Looper mainLooper = looper != null ? looper : context.getMainLooper();
-        this.mMainLooper = mainLooper;
-        this.mH = new MyHandler(mainLooper, asyncHandler);
+        this.mMainLooper = looper != null ? looper : context.getMainLooper();
+        this.mH = new MyHandler(this.mMainLooper, asyncHandler);
         this.mCallback = callback;
     }
 

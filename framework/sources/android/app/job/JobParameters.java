@@ -12,7 +12,6 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.PowerManager;
 import android.os.RemoteException;
-import com.android.internal.location.GpsNetInitiatedHandler;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -24,6 +23,7 @@ public class JobParameters implements Parcelable {
     public static final int INTERNAL_STOP_REASON_DATA_CLEARED = 8;
     public static final int INTERNAL_STOP_REASON_DEVICE_IDLE = 4;
     public static final int INTERNAL_STOP_REASON_DEVICE_THERMAL = 5;
+    public static final int INTERNAL_STOP_REASON_OLAF = 13;
     public static final int INTERNAL_STOP_REASON_PREEMPT = 2;
     public static final int INTERNAL_STOP_REASON_RESTRICTED_BUCKET = 6;
     public static final int INTERNAL_STOP_REASON_RTC_UPDATED = 9;
@@ -64,16 +64,15 @@ public class JobParameters implements Parcelable {
     private final Uri[] mTriggeredContentUris;
     private final boolean overrideDeadlineExpired;
     private final Bundle transientExtras;
-    public static final int[] JOB_STOP_REASON_CODES = {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    public static final int[] JOB_STOP_REASON_CODES = {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     public static final Parcelable.Creator<JobParameters> CREATOR = new Parcelable.Creator<JobParameters>() { // from class: android.app.job.JobParameters.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobParameters createFromParcel(Parcel in) {
             return new JobParameters(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JobParameters[] newArray(int size) {
             return new JobParameters[size];
@@ -81,12 +80,7 @@ public class JobParameters implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface StopReason {
-    }
-
-    /* synthetic */ JobParameters(Parcel parcel, JobParametersIA jobParametersIA) {
-        this(parcel);
     }
 
     public static String getInternalReasonCodeDescription(int reasonCode) {
@@ -98,7 +92,7 @@ public class JobParameters implements Parcelable {
             case 2:
                 return "preempt";
             case 3:
-                return GpsNetInitiatedHandler.NI_INTENT_KEY_TIMEOUT;
+                return "timeout";
             case 4:
                 return "device_idle";
             case 5:
@@ -117,6 +111,8 @@ public class JobParameters implements Parcelable {
                 return "user_ui_stop";
             case 12:
                 return "anr";
+            case 13:
+                return "olaf";
             default:
                 return "unknown:" + reasonCode;
         }
@@ -299,22 +295,5 @@ public class JobParameters implements Parcelable {
         parcel.writeInt(this.mStopReason);
         parcel.writeInt(this.mInternalStopReason);
         parcel.writeString(this.debugStopReason);
-    }
-
-    /* renamed from: android.app.job.JobParameters$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<JobParameters> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JobParameters createFromParcel(Parcel in) {
-            return new JobParameters(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JobParameters[] newArray(int size) {
-            return new JobParameters[size];
-        }
     }
 }

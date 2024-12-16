@@ -3,6 +3,8 @@ package android.widget;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Parcel;
+import android.widget.RemoteViews;
 import com.android.internal.widget.IRemoteViewsFactory;
 import java.util.HashMap;
 
@@ -12,7 +14,8 @@ public abstract class RemoteViewsService extends Service {
     private static final HashMap<Intent.FilterComparison, RemoteViewsFactory> sRemoteViewFactories = new HashMap<>();
     private static final Object sLock = new Object();
 
-    /* loaded from: classes4.dex */
+    public abstract RemoteViewsFactory onGetViewFactory(Intent intent);
+
     public interface RemoteViewsFactory {
         int getCount();
 
@@ -31,11 +34,34 @@ public abstract class RemoteViewsService extends Service {
         void onDataSetChanged();
 
         void onDestroy();
+
+        default RemoteViews.RemoteCollectionItems getRemoteCollectionItems(int capSize) {
+            new RemoteViews.RemoteCollectionItems.Builder().build();
+            Parcel capSizeTestParcel = Parcel.obtain();
+            boolean prevAllowSquashing = capSizeTestParcel.allowSquashing();
+            try {
+                RemoteViews.RemoteCollectionItems.Builder itemsBuilder = new RemoteViews.RemoteCollectionItems.Builder();
+                onDataSetChanged();
+                itemsBuilder.setHasStableIds(hasStableIds());
+                int numOfEntries = getCount();
+                for (int i = 0; i < numOfEntries; i++) {
+                    long currentItemId = getItemId(i);
+                    RemoteViews currentView = getViewAt(i);
+                    currentView.writeToParcel(capSizeTestParcel, 0);
+                    if (capSizeTestParcel.dataSize() > capSize) {
+                        break;
+                    }
+                    itemsBuilder.addItem(currentItemId, currentView);
+                }
+                RemoteViews.RemoteCollectionItems items = itemsBuilder.build();
+                return items;
+            } finally {
+                capSizeTestParcel.restoreAllowSquashing(prevAllowSquashing);
+                capSizeTestParcel.recycle();
+            }
+        }
     }
 
-    public abstract RemoteViewsFactory onGetViewFactory(Intent intent);
-
-    /* loaded from: classes4.dex */
     private static class RemoteViewsFactoryAdapter extends IRemoteViewsFactory.Stub {
         private RemoteViewsFactory mFactory;
         private boolean mIsCreated;
@@ -162,6 +188,19 @@ public abstract class RemoteViewsService extends Service {
                 }
             }
         }
+
+        @Override // com.android.internal.widget.IRemoteViewsFactory
+        public RemoteViews.RemoteCollectionItems getRemoteCollectionItems(int capSize) {
+            RemoteViews.RemoteCollectionItems items = new RemoteViews.RemoteCollectionItems.Builder().build();
+            try {
+                RemoteViews.RemoteCollectionItems items2 = this.mFactory.getRemoteCollectionItems(capSize);
+                return items2;
+            } catch (Exception ex) {
+                Thread t = Thread.currentThread();
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(t, ex);
+                return items;
+            }
+        }
     }
 
     @Override // android.app.Service
@@ -171,14 +210,13 @@ public abstract class RemoteViewsService extends Service {
         RemoteViewsFactoryAdapter remoteViewsFactoryAdapter;
         synchronized (sLock) {
             Intent.FilterComparison fc = new Intent.FilterComparison(intent);
-            HashMap<Intent.FilterComparison, RemoteViewsFactory> hashMap = sRemoteViewFactories;
-            if (!hashMap.containsKey(fc)) {
+            if (!sRemoteViewFactories.containsKey(fc)) {
                 factory = onGetViewFactory(intent);
-                hashMap.put(fc, factory);
+                sRemoteViewFactories.put(fc, factory);
                 factory.onCreate();
                 isCreated = false;
             } else {
-                factory = hashMap.get(fc);
+                factory = sRemoteViewFactories.get(fc);
                 isCreated = true;
             }
             remoteViewsFactoryAdapter = new RemoteViewsFactoryAdapter(factory, isCreated);

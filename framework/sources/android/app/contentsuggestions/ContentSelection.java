@@ -9,14 +9,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class ContentSelection implements Parcelable {
     public static final Parcelable.Creator<ContentSelection> CREATOR = new Parcelable.Creator<ContentSelection>() { // from class: android.app.contentsuggestions.ContentSelection.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentSelection createFromParcel(Parcel source) {
             return new ContentSelection(source.readString(), source.readBundle());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentSelection[] newArray(int size) {
             return new ContentSelection[size];
@@ -47,22 +46,5 @@ public final class ContentSelection implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mSelectionId);
         dest.writeBundle(this.mExtras);
-    }
-
-    /* renamed from: android.app.contentsuggestions.ContentSelection$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentSelection> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentSelection createFromParcel(Parcel source) {
-            return new ContentSelection(source.readString(), source.readBundle());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentSelection[] newArray(int size) {
-            return new ContentSelection[size];
-        }
     }
 }

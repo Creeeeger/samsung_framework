@@ -12,7 +12,6 @@ public interface IMusicRecognitionAttributionTagCallback extends IInterface {
 
     void onAttributionTag(String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMusicRecognitionAttributionTagCallback {
         @Override // android.media.musicrecognition.IMusicRecognitionAttributionTagCallback
         public void onAttributionTag(String attributionTag) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IMusicRecognitionAttributionTagCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMusicRecognitionAttributionTagCallback {
         static final int TRANSACTION_onAttributionTag = 1;
 
@@ -67,26 +65,22 @@ public interface IMusicRecognitionAttributionTagCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMusicRecognitionAttributionTagCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMusicRecognitionAttributionTagCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMusicRecognitionAttributionTagCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAttributionTag(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAttributionTag(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMusicRecognitionAttributionTagCallback {
+        private static class Proxy implements IMusicRecognitionAttributionTagCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

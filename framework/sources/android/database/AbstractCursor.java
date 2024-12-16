@@ -15,7 +15,6 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public abstract class AbstractCursor implements CrossProcessCursor {
     private static final String TAG = "Cursor";
-    private final CloseGuard mCloseGuard;
 
     @Deprecated
     protected boolean mClosed;
@@ -25,9 +24,6 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     protected Long mCurrentRowID;
     private Uri mNotifyUri;
     private List<Uri> mNotifyUris;
-
-    @Deprecated
-    protected int mPos;
     protected int mRowIdColumnIndex;
     private ContentObserver mSelfObserver;
     private boolean mSelfObserverRegistered;
@@ -36,6 +32,10 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     private final DataSetObservable mDataSetObservable = new DataSetObservable();
     private final ContentObservable mContentObservable = new ContentObservable();
     private Bundle mExtras = Bundle.EMPTY;
+
+    @Deprecated
+    protected int mPos = -1;
+    private final CloseGuard mCloseGuard = initCloseGuard();
 
     @Override // android.database.Cursor
     public abstract String[] getColumnNames();
@@ -89,10 +89,9 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         onDeactivateOrClose();
     }
 
-    public void onDeactivateOrClose() {
-        ContentObserver contentObserver = this.mSelfObserver;
-        if (contentObserver != null) {
-            this.mContentResolver.unregisterContentObserver(contentObserver);
+    protected void onDeactivateOrClose() {
+        if (this.mSelfObserver != null) {
+            this.mContentResolver.unregisterContentObserver(this.mSelfObserver);
             this.mSelfObserverRegistered = false;
         }
         this.mDataSetObservable.notifyInvalidated();
@@ -122,7 +121,9 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         this.mClosed = true;
         this.mContentObservable.unregisterAll();
         onDeactivateOrClose();
-        this.mCloseGuard.close();
+        if (this.mCloseGuard != null) {
+            this.mCloseGuard.close();
+        }
     }
 
     @Override // android.database.CrossProcessCursor
@@ -147,10 +148,17 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     }
 
     public AbstractCursor() {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mPos = -1;
-        closeGuard.open("AbstractCursor.close");
+        if (this.mCloseGuard != null) {
+            this.mCloseGuard.open("AbstractCursor.close");
+        }
+    }
+
+    private CloseGuard initCloseGuard() {
+        return CloseGuard.get();
+    }
+
+    private CloseGuard initCloseGuard$ravenwood() {
+        return null;
     }
 
     @Override // android.database.Cursor
@@ -169,11 +177,10 @@ public abstract class AbstractCursor implements CrossProcessCursor {
             this.mPos = -1;
             return false;
         }
-        int i = this.mPos;
-        if (position == i) {
+        if (position == this.mPos) {
             return true;
         }
-        boolean result = onMove(i, position);
+        boolean result = onMove(this.mPos, position);
         if (!result) {
             this.mPos = -1;
         } else {
@@ -293,12 +300,11 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         this.mDataSetObservable.unregisterObserver(observer);
     }
 
-    public void onChange(boolean selfChange) {
+    protected void onChange(boolean selfChange) {
         synchronized (this.mSelfObserverLock) {
             this.mContentObservable.dispatchChange(selfChange, null);
-            List<Uri> list = this.mNotifyUris;
-            if (list != null && selfChange) {
-                int size = list.size();
+            if (this.mNotifyUris != null && selfChange) {
+                int size = this.mNotifyUris.size();
                 for (int i = 0; i < size; i++) {
                     Uri notifyUri = this.mNotifyUris.get(i);
                     this.mContentResolver.notifyChange(notifyUri, this.mSelfObserver);
@@ -322,11 +328,10 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     public void setNotificationUris(ContentResolver cr, List<Uri> notifyUris, int userHandle, boolean registerSelfObserver) {
         synchronized (this.mSelfObserverLock) {
             this.mNotifyUris = notifyUris;
-            this.mNotifyUri = notifyUris.get(0);
+            this.mNotifyUri = this.mNotifyUris.get(0);
             this.mContentResolver = cr;
-            ContentObserver contentObserver = this.mSelfObserver;
-            if (contentObserver != null) {
-                cr.unregisterContentObserver(contentObserver);
+            if (this.mSelfObserver != null) {
+                this.mContentResolver.unregisterContentObserver(this.mSelfObserver);
                 this.mSelfObserverRegistered = false;
             }
             if (registerSelfObserver) {
@@ -389,21 +394,19 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         return null;
     }
 
-    public void checkPosition() {
+    protected void checkPosition() {
         if (-1 == this.mPos || getCount() == this.mPos) {
             throw new CursorIndexOutOfBoundsException(this.mPos, getCount());
         }
     }
 
-    public void finalize() {
-        ContentObserver contentObserver = this.mSelfObserver;
-        if (contentObserver != null && this.mSelfObserverRegistered) {
-            this.mContentResolver.unregisterContentObserver(contentObserver);
+    protected void finalize() {
+        if (this.mSelfObserver != null && this.mSelfObserverRegistered) {
+            this.mContentResolver.unregisterContentObserver(this.mSelfObserver);
         }
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             if (!this.mClosed) {
                 close();
@@ -412,8 +415,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SelfContentObserver extends ContentObserver {
+    protected static class SelfContentObserver extends ContentObserver {
         WeakReference<AbstractCursor> mCursor;
 
         public SelfContentObserver(AbstractCursor cursor) {

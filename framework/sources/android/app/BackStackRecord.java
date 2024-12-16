@@ -14,7 +14,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 /* loaded from: classes.dex */
-public final class BackStackRecord extends FragmentTransaction implements FragmentManager.BackStackEntry, FragmentManagerImpl.OpGenerator {
+final class BackStackRecord extends FragmentTransaction implements FragmentManager.BackStackEntry, FragmentManagerImpl.OpGenerator {
     static final int OP_ADD = 1;
     static final int OP_ATTACH = 7;
     static final int OP_DETACH = 6;
@@ -48,8 +48,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
     boolean mAllowAddToBackStack = true;
     int mIndex = -1;
 
-    /* loaded from: classes.dex */
-    public static final class Op {
+    static final class Op {
         int cmd;
         int enterAnim;
         int exitAnim;
@@ -57,7 +56,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         int popEnterAnim;
         int popExitAnim;
 
-        public Op() {
+        Op() {
         }
 
         Op(int cmd, Fragment fragment) {
@@ -86,7 +85,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         dump(prefix, writer, true);
     }
 
-    public void dump(String prefix, PrintWriter writer, boolean full) {
+    void dump(String prefix, PrintWriter writer, boolean full) {
         String cmdStr;
         if (full) {
             writer.print(prefix);
@@ -203,7 +202,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
 
     public BackStackRecord(FragmentManagerImpl manager) {
         this.mManager = manager;
-        this.mReorderingAllowed = manager.getTargetSdk() > 25;
+        this.mReorderingAllowed = this.mManager.getTargetSdk() > 25;
     }
 
     @Override // android.app.FragmentManager.BackStackEntry
@@ -237,7 +236,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return this.mBreadCrumbShortTitleText;
     }
 
-    public void addOp(Op op) {
+    void addOp(Op op) {
         this.mOps.add(op);
         op.enterAnim = this.mEnterAnim;
         op.exitAnim = this.mExitAnim;
@@ -441,7 +440,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return this;
     }
 
-    public void bumpBackStackNesting(int amt) {
+    void bumpBackStackNesting(int amt) {
         if (!this.mAddToBackStack) {
             return;
         }
@@ -474,9 +473,8 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
     }
 
     public void runOnCommitRunnables() {
-        ArrayList<Runnable> arrayList = this.mCommitRunnables;
-        if (arrayList != null) {
-            int N = arrayList.size();
+        if (this.mCommitRunnables != null) {
+            int N = this.mCommitRunnables.size();
             for (int i = 0; i < N; i++) {
                 this.mCommitRunnables.get(i).run();
             }
@@ -547,7 +545,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return true;
     }
 
-    public boolean interactsWith(int containerId) {
+    boolean interactsWith(int containerId) {
         int numOps = this.mOps.size();
         int opNum = 0;
         while (true) {
@@ -564,7 +562,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         }
     }
 
-    public boolean interactsWith(ArrayList<BackStackRecord> records, int startIndex, int endIndex) {
+    boolean interactsWith(ArrayList<BackStackRecord> records, int startIndex, int endIndex) {
         int thatContainer;
         if (endIndex == startIndex) {
             return false;
@@ -596,7 +594,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return false;
     }
 
-    public void executeOps() {
+    void executeOps() {
         int numOps = this.mOps.size();
         for (int opNum = 0; opNum < numOps; opNum++) {
             Op op = this.mOps.get(opNum);
@@ -644,12 +642,11 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
             }
         }
         if (!this.mReorderingAllowed) {
-            FragmentManagerImpl fragmentManagerImpl = this.mManager;
-            fragmentManagerImpl.moveToState(fragmentManagerImpl.mCurState, true);
+            this.mManager.moveToState(this.mManager.mCurState, true);
         }
     }
 
-    public void executePopOps(boolean moveToState) {
+    void executePopOps(boolean moveToState) {
         for (int opNum = this.mOps.size() - 1; opNum >= 0; opNum--) {
             Op op = this.mOps.get(opNum);
             Fragment f = op.fragment;
@@ -696,12 +693,11 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
             }
         }
         if (!this.mReorderingAllowed && moveToState) {
-            FragmentManagerImpl fragmentManagerImpl = this.mManager;
-            fragmentManagerImpl.moveToState(fragmentManagerImpl.mCurState, true);
+            this.mManager.moveToState(this.mManager.mCurState, true);
         }
     }
 
-    public Fragment expandOps(ArrayList<Fragment> added, Fragment oldPrimaryNav) {
+    Fragment expandOps(ArrayList<Fragment> added, Fragment oldPrimaryNav) {
         int opNum = 0;
         while (opNum < this.mOps.size()) {
             Op op = this.mOps.get(opNum);
@@ -767,7 +763,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return oldPrimaryNav;
     }
 
-    public void trackAddedFragmentsInPop(ArrayList<Fragment> added) {
+    void trackAddedFragmentsInPop(ArrayList<Fragment> added) {
         for (int opNum = 0; opNum < this.mOps.size(); opNum++) {
             Op op = this.mOps.get(opNum);
             switch (op.cmd) {
@@ -783,7 +779,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         }
     }
 
-    public boolean isPostponed() {
+    boolean isPostponed() {
         for (int opNum = 0; opNum < this.mOps.size(); opNum++) {
             Op op = this.mOps.get(opNum);
             if (isFragmentPostponed(op)) {
@@ -793,7 +789,7 @@ public final class BackStackRecord extends FragmentTransaction implements Fragme
         return false;
     }
 
-    public void setOnStartPostponedListener(Fragment.OnStartEnterTransitionListener listener) {
+    void setOnStartPostponedListener(Fragment.OnStartEnterTransitionListener listener) {
         for (int opNum = 0; opNum < this.mOps.size(); opNum++) {
             Op op = this.mOps.get(opNum);
             if (isFragmentPostponed(op)) {

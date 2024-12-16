@@ -131,29 +131,23 @@ public class IssuingDistributionPoint extends ASN1Object {
         StringBuffer buf = new StringBuffer();
         buf.append("IssuingDistributionPoint: [");
         buf.append(sep);
-        DistributionPointName distributionPointName = this.distributionPoint;
-        if (distributionPointName != null) {
-            appendObject(buf, sep, "distributionPoint", distributionPointName.toString());
+        if (this.distributionPoint != null) {
+            appendObject(buf, sep, "distributionPoint", this.distributionPoint.toString());
         }
-        boolean z = this.onlyContainsUserCerts;
-        if (z) {
-            appendObject(buf, sep, "onlyContainsUserCerts", booleanToString(z));
+        if (this.onlyContainsUserCerts) {
+            appendObject(buf, sep, "onlyContainsUserCerts", booleanToString(this.onlyContainsUserCerts));
         }
-        boolean z2 = this.onlyContainsCACerts;
-        if (z2) {
-            appendObject(buf, sep, "onlyContainsCACerts", booleanToString(z2));
+        if (this.onlyContainsCACerts) {
+            appendObject(buf, sep, "onlyContainsCACerts", booleanToString(this.onlyContainsCACerts));
         }
-        ReasonFlags reasonFlags = this.onlySomeReasons;
-        if (reasonFlags != null) {
-            appendObject(buf, sep, "onlySomeReasons", reasonFlags.toString());
+        if (this.onlySomeReasons != null) {
+            appendObject(buf, sep, "onlySomeReasons", this.onlySomeReasons.toString());
         }
-        boolean z3 = this.onlyContainsAttributeCerts;
-        if (z3) {
-            appendObject(buf, sep, "onlyContainsAttributeCerts", booleanToString(z3));
+        if (this.onlyContainsAttributeCerts) {
+            appendObject(buf, sep, "onlyContainsAttributeCerts", booleanToString(this.onlyContainsAttributeCerts));
         }
-        boolean z4 = this.indirectCRL;
-        if (z4) {
-            appendObject(buf, sep, "indirectCRL", booleanToString(z4));
+        if (this.indirectCRL) {
+            appendObject(buf, sep, "indirectCRL", booleanToString(this.indirectCRL));
         }
         buf.append(NavigationBarInflaterView.SIZE_MOD_END);
         buf.append(sep);

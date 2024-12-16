@@ -20,7 +20,6 @@ public interface IDropBoxManagerService extends IInterface {
 
     boolean isTagEnabled(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDropBoxManagerService {
         @Override // com.android.internal.os.IDropBoxManagerService
         public void addData(String tag, byte[] data, int flags) throws RemoteException {
@@ -51,7 +50,6 @@ public interface IDropBoxManagerService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDropBoxManagerService {
         public static final String DESCRIPTOR = "com.android.internal.os.IDropBoxManagerService";
         static final int TRANSACTION_addData = 1;
@@ -107,63 +105,59 @@ public interface IDropBoxManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    byte[] _arg1 = data.createByteArray();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addData(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addFile(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = isTagEnabled(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    long _arg13 = data.readLong();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    DropBoxManager.Entry _result2 = getNextEntry(_arg04, _arg13, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    long _arg14 = data.readLong();
+                    String _arg24 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    DropBoxManager.Entry _result3 = getNextEntryWithAttribution(_arg05, _arg14, _arg24, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            byte[] _arg1 = data.createByteArray();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addData(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            ParcelFileDescriptor _arg12 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addFile(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = isTagEnabled(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            long _arg13 = data.readLong();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            DropBoxManager.Entry _result2 = getNextEntry(_arg04, _arg13, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            long _arg14 = data.readLong();
-                            String _arg24 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            DropBoxManager.Entry _result3 = getNextEntryWithAttribution(_arg05, _arg14, _arg24, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDropBoxManagerService {
+        private static class Proxy implements IDropBoxManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

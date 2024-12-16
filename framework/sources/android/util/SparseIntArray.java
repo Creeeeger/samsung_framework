@@ -3,7 +3,6 @@ package android.util;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import java.util.Arrays;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class SparseIntArray implements Cloneable {
@@ -20,15 +19,14 @@ public class SparseIntArray implements Cloneable {
             this.mKeys = EmptyArray.INT;
             this.mValues = EmptyArray.INT;
         } else {
-            int[] newUnpaddedIntArray = ArrayUtils.newUnpaddedIntArray(initialCapacity);
-            this.mKeys = newUnpaddedIntArray;
-            this.mValues = new int[newUnpaddedIntArray.length];
+            this.mKeys = ArrayUtils.newUnpaddedIntArray(initialCapacity);
+            this.mValues = new int[this.mKeys.length];
         }
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public SparseIntArray m4953clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SparseIntArray m5237clone() {
         SparseIntArray clone = null;
         try {
             clone = (SparseIntArray) super.clone();
@@ -60,10 +58,8 @@ public class SparseIntArray implements Cloneable {
     }
 
     public void removeAt(int index) {
-        int[] iArr = this.mKeys;
-        System.arraycopy(iArr, index + 1, iArr, index, this.mSize - (index + 1));
-        int[] iArr2 = this.mValues;
-        System.arraycopy(iArr2, index + 1, iArr2, index, this.mSize - (index + 1));
+        System.arraycopy(this.mKeys, index + 1, this.mKeys, index, this.mSize - (index + 1));
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, this.mSize - (index + 1));
         this.mSize--;
     }
 
@@ -122,12 +118,11 @@ public class SparseIntArray implements Cloneable {
     }
 
     public void append(int key, int value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        this.mKeys = GrowingArrayUtils.append(this.mKeys, i, key);
+        this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);
         this.mValues = GrowingArrayUtils.append(this.mValues, this.mSize, value);
         this.mSize++;
     }

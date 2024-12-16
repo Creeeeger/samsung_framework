@@ -4,7 +4,7 @@ import android.content.Context;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.desktopmode.SemDesktopModeState;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DesktopModeManagerWrapper {
     private static final String TAG = "DesktopModeManagerWrapper";
     private final Context mContext;
@@ -30,20 +30,18 @@ public class DesktopModeManagerWrapper {
         if (this.mListener != null) {
             dispose();
         }
-        SemDesktopModeManager.DesktopModeListener desktopModeListener = new SemDesktopModeManager.DesktopModeListener() { // from class: com.samsung.android.globalactions.util.DesktopModeManagerWrapper$$ExternalSyntheticLambda0
+        this.mListener = new SemDesktopModeManager.DesktopModeListener() { // from class: com.samsung.android.globalactions.util.DesktopModeManagerWrapper$$ExternalSyntheticLambda0
             @Override // com.samsung.android.desktopmode.SemDesktopModeManager.DesktopModeListener
             public final void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
                 action.run();
             }
         };
-        this.mListener = desktopModeListener;
-        this.mDesktopModeManager.registerListener(desktopModeListener);
+        this.mDesktopModeManager.registerListener(this.mListener);
     }
 
     public void dispose() {
-        SemDesktopModeManager semDesktopModeManager = this.mDesktopModeManager;
-        if (semDesktopModeManager != null) {
-            semDesktopModeManager.unregisterListener(this.mListener);
+        if (this.mDesktopModeManager != null) {
+            this.mDesktopModeManager.unregisterListener(this.mListener);
             this.mListener = null;
         } else {
             this.mLogWrapper.e(TAG, "dispose() : mDesktopModeManager is NULL!");
@@ -51,22 +49,20 @@ public class DesktopModeManagerWrapper {
     }
 
     public boolean isDesktopModeStandalone() {
-        SemDesktopModeManager semDesktopModeManager = this.mDesktopModeManager;
-        if (semDesktopModeManager == null) {
+        if (this.mDesktopModeManager == null) {
             this.mLogWrapper.e(TAG, "isDesktopModeStandalone() : mDesktopModeManager is NULL!");
             return false;
         }
-        SemDesktopModeState desktopModeState = semDesktopModeManager.getDesktopModeState();
+        SemDesktopModeState desktopModeState = this.mDesktopModeManager.getDesktopModeState();
         return desktopModeState != null && desktopModeState.enabled == 4 && desktopModeState.getDisplayType() == 101;
     }
 
     public boolean isDesktopModeDualView() {
-        SemDesktopModeManager semDesktopModeManager = this.mDesktopModeManager;
-        if (semDesktopModeManager == null) {
+        if (this.mDesktopModeManager == null) {
             this.mLogWrapper.e(TAG, "isDesktopModeDualView() : mDesktopModeManager is NULL!");
             return false;
         }
-        SemDesktopModeState desktopModeState = semDesktopModeManager.getDesktopModeState();
+        SemDesktopModeState desktopModeState = this.mDesktopModeManager.getDesktopModeState();
         return desktopModeState != null && desktopModeState.enabled == 4 && desktopModeState.getDisplayType() == 102;
     }
 }

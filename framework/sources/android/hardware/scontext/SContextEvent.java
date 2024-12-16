@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextEvent implements Parcelable {
     static final Parcelable.Creator<SContextEvent> CREATOR = new Parcelable.Creator<SContextEvent>() { // from class: android.hardware.scontext.SContextEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextEvent createFromParcel(Parcel in) {
             return new SContextEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextEvent[] newArray(int size) {
             return new SContextEvent[size];
@@ -254,258 +253,203 @@ public class SContextEvent implements Parcelable {
         this.timestamp = System.nanoTime();
         switch (event) {
             case 1:
-                SContextApproach sContextApproach = new SContextApproach();
-                this.mEventContext = sContextApproach;
-                sContextApproach.setValues(context);
-                return;
+                this.mEventContext = new SContextApproach();
+                this.mEventContext.setValues(context);
+                break;
             case 2:
-                SContextPedometer sContextPedometer = new SContextPedometer();
-                this.mEventContext = sContextPedometer;
-                sContextPedometer.setValues(context);
-                return;
+                this.mEventContext = new SContextPedometer();
+                this.mEventContext.setValues(context);
+                break;
             case 3:
-                SContextStepCountAlert sContextStepCountAlert = new SContextStepCountAlert();
-                this.mEventContext = sContextStepCountAlert;
-                sContextStepCountAlert.setValues(context);
-                return;
+                this.mEventContext = new SContextStepCountAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 4:
-                SContextMotion sContextMotion = new SContextMotion();
-                this.mEventContext = sContextMotion;
-                sContextMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 5:
-                SContextMovement sContextMovement = new SContextMovement();
-                this.mEventContext = sContextMovement;
-                sContextMovement.setValues(context);
-                return;
+                this.mEventContext = new SContextMovement();
+                this.mEventContext.setValues(context);
+                break;
             case 6:
-                SContextAutoRotation sContextAutoRotation = new SContextAutoRotation();
-                this.mEventContext = sContextAutoRotation;
-                sContextAutoRotation.setValues(context);
-                return;
+                this.mEventContext = new SContextAutoRotation();
+                this.mEventContext.setValues(context);
+                break;
             case 7:
-                SContextAirMotion sContextAirMotion = new SContextAirMotion();
-                this.mEventContext = sContextAirMotion;
-                sContextAirMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextAirMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 8:
-                SContextEnvironment sContextEnvironment = new SContextEnvironment();
-                this.mEventContext = sContextEnvironment;
-                sContextEnvironment.setValues(context);
-                return;
+                this.mEventContext = new SContextEnvironment();
+                this.mEventContext.setValues(context);
+                break;
             case 9:
-                SContextMovementForPositioning sContextMovementForPositioning = new SContextMovementForPositioning();
-                this.mEventContext = sContextMovementForPositioning;
-                sContextMovementForPositioning.setValues(context);
-                return;
+                this.mEventContext = new SContextMovementForPositioning();
+                this.mEventContext.setValues(context);
+                break;
             case 10:
-                SContextCurrentStatusForPositioning sContextCurrentStatusForPositioning = new SContextCurrentStatusForPositioning();
-                this.mEventContext = sContextCurrentStatusForPositioning;
-                sContextCurrentStatusForPositioning.setValues(context);
-                return;
+                this.mEventContext = new SContextCurrentStatusForPositioning();
+                this.mEventContext.setValues(context);
+                break;
             case 11:
-                SContextCallPose sContextCallPose = new SContextCallPose();
-                this.mEventContext = sContextCallPose;
-                sContextCallPose.setValues(context);
-                return;
+                this.mEventContext = new SContextCallPose();
+                this.mEventContext.setValues(context);
+                break;
             case 12:
-                SContextShakeMotion sContextShakeMotion = new SContextShakeMotion();
-                this.mEventContext = sContextShakeMotion;
-                sContextShakeMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextShakeMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 13:
-                SContextFlipCoverAction sContextFlipCoverAction = new SContextFlipCoverAction();
-                this.mEventContext = sContextFlipCoverAction;
-                sContextFlipCoverAction.setValues(context);
-                return;
+                this.mEventContext = new SContextFlipCoverAction();
+                this.mEventContext.setValues(context);
+                break;
             case 14:
-                SContextGyroTemperature sContextGyroTemperature = new SContextGyroTemperature();
-                this.mEventContext = sContextGyroTemperature;
-                sContextGyroTemperature.setValues(context);
-                return;
+                this.mEventContext = new SContextGyroTemperature();
+                this.mEventContext.setValues(context);
+                break;
             case 15:
-                SContextPutDownMotion sContextPutDownMotion = new SContextPutDownMotion();
-                this.mEventContext = sContextPutDownMotion;
-                sContextPutDownMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextPutDownMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 16:
-                SContextWakeUpVoice sContextWakeUpVoice = new SContextWakeUpVoice();
-                this.mEventContext = sContextWakeUpVoice;
-                sContextWakeUpVoice.setValues(context);
-                return;
+                this.mEventContext = new SContextWakeUpVoice();
+                this.mEventContext.setValues(context);
+                break;
             case 17:
-                SContextBounceShortMotion sContextBounceShortMotion = new SContextBounceShortMotion();
-                this.mEventContext = sContextBounceShortMotion;
-                sContextBounceShortMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextBounceShortMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 18:
-                SContextBounceLongMotion sContextBounceLongMotion = new SContextBounceLongMotion();
-                this.mEventContext = sContextBounceLongMotion;
-                sContextBounceLongMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextBounceLongMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 19:
-                SContextWristUpMotion sContextWristUpMotion = new SContextWristUpMotion();
-                this.mEventContext = sContextWristUpMotion;
-                sContextWristUpMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextWristUpMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 20:
-                SContextFlatMotion sContextFlatMotion = new SContextFlatMotion();
-                this.mEventContext = sContextFlatMotion;
-                sContextFlatMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextFlatMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 21:
-                SContextMovementAlert sContextMovementAlert = new SContextMovementAlert();
-                this.mEventContext = sContextMovementAlert;
-                sContextMovementAlert.setValues(context);
-                return;
+                this.mEventContext = new SContextMovementAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 22:
-                SContextDevicePosition sContextDevicePosition = new SContextDevicePosition();
-                this.mEventContext = sContextDevicePosition;
-                sContextDevicePosition.setValues(context);
-                return;
+                this.mEventContext = new SContextDevicePosition();
+                this.mEventContext.setValues(context);
+                break;
             case 23:
-                SContextTemperatureAlert sContextTemperatureAlert = new SContextTemperatureAlert();
-                this.mEventContext = sContextTemperatureAlert;
-                sContextTemperatureAlert.setValues(context);
-                return;
+                this.mEventContext = new SContextTemperatureAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 24:
-                SContextActivityLocationLogging sContextActivityLocationLogging = new SContextActivityLocationLogging();
-                this.mEventContext = sContextActivityLocationLogging;
-                sContextActivityLocationLogging.setValues(context);
-                return;
+                this.mEventContext = new SContextActivityLocationLogging();
+                this.mEventContext.setValues(context);
+                break;
             case 25:
-                SContextActivityTracker sContextActivityTracker = new SContextActivityTracker();
-                this.mEventContext = sContextActivityTracker;
-                sContextActivityTracker.setValues(context);
-                return;
+                this.mEventContext = new SContextActivityTracker();
+                this.mEventContext.setValues(context);
+                break;
             case 26:
-                SContextActivityBatch sContextActivityBatch = new SContextActivityBatch();
-                this.mEventContext = sContextActivityBatch;
-                sContextActivityBatch.setValues(context);
-                return;
+                this.mEventContext = new SContextActivityBatch();
+                this.mEventContext.setValues(context);
+                break;
             case 27:
-                SContextActivityNotification sContextActivityNotification = new SContextActivityNotification();
-                this.mEventContext = sContextActivityNotification;
-                sContextActivityNotification.setValues(context);
-                return;
+                this.mEventContext = new SContextActivityNotification();
+                this.mEventContext.setValues(context);
+                break;
             case 28:
-                SContextSpecificPoseAlert sContextSpecificPoseAlert = new SContextSpecificPoseAlert();
-                this.mEventContext = sContextSpecificPoseAlert;
-                sContextSpecificPoseAlert.setValues(context);
-                return;
+                this.mEventContext = new SContextSpecificPoseAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 29:
-                SContextSleepMonitor sContextSleepMonitor = new SContextSleepMonitor();
-                this.mEventContext = sContextSleepMonitor;
-                sContextSleepMonitor.setValues(context);
-                return;
+                this.mEventContext = new SContextSleepMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 30:
-                SContextActivityNotificationEx sContextActivityNotificationEx = new SContextActivityNotificationEx();
-                this.mEventContext = sContextActivityNotificationEx;
-                sContextActivityNotificationEx.setValues(context);
-                return;
+                this.mEventContext = new SContextActivityNotificationEx();
+                this.mEventContext.setValues(context);
+                break;
             case 31:
-                SContextCaptureMotion sContextCaptureMotion = new SContextCaptureMotion();
-                this.mEventContext = sContextCaptureMotion;
-                sContextCaptureMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextCaptureMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 32:
-                SContextCallMotion sContextCallMotion = new SContextCallMotion();
-                this.mEventContext = sContextCallMotion;
-                sContextCallMotion.setValues(context);
-                return;
+                this.mEventContext = new SContextCallMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 33:
-                SContextStepLevelMonitor sContextStepLevelMonitor = new SContextStepLevelMonitor();
-                this.mEventContext = sContextStepLevelMonitor;
-                sContextStepLevelMonitor.setValues(context);
-                return;
+                this.mEventContext = new SContextStepLevelMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 34:
-                SContextActiveTimeMonitor sContextActiveTimeMonitor = new SContextActiveTimeMonitor();
-                this.mEventContext = sContextActiveTimeMonitor;
-                sContextActiveTimeMonitor.setValues(context);
-                return;
+                this.mEventContext = new SContextActiveTimeMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 35:
-                SContextInactiveTimer sContextInactiveTimer = new SContextInactiveTimer();
-                this.mEventContext = sContextInactiveTimer;
-                sContextInactiveTimer.setValues(context);
-                return;
+                this.mEventContext = new SContextInactiveTimer();
+                this.mEventContext.setValues(context);
+                break;
             case 36:
-                SContextFlatMotionForTableMode sContextFlatMotionForTableMode = new SContextFlatMotionForTableMode();
-                this.mEventContext = sContextFlatMotionForTableMode;
-                sContextFlatMotionForTableMode.setValues(context);
-                return;
-            case 37:
-            case 38:
-            case 48:
-            default:
-                return;
+                this.mEventContext = new SContextFlatMotionForTableMode();
+                this.mEventContext.setValues(context);
+                break;
             case 39:
-                SContextAutoBrightness sContextAutoBrightness = new SContextAutoBrightness();
-                this.mEventContext = sContextAutoBrightness;
-                sContextAutoBrightness.setValues(context);
-                return;
+                this.mEventContext = new SContextAutoBrightness();
+                this.mEventContext.setValues(context);
+                break;
             case 40:
-                SContextExercise sContextExercise = new SContextExercise();
-                this.mEventContext = sContextExercise;
-                sContextExercise.setValues(context);
-                return;
+                this.mEventContext = new SContextExercise();
+                this.mEventContext.setValues(context);
+                break;
             case 41:
-                SContextAbnormalPressure sContextAbnormalPressure = new SContextAbnormalPressure();
-                this.mEventContext = sContextAbnormalPressure;
-                sContextAbnormalPressure.setValues(context);
-                return;
+                this.mEventContext = new SContextAbnormalPressure();
+                this.mEventContext.setValues(context);
+                break;
             case 42:
-                SContextPhoneStatusMonitor sContextPhoneStatusMonitor = new SContextPhoneStatusMonitor();
-                this.mEventContext = sContextPhoneStatusMonitor;
-                sContextPhoneStatusMonitor.setValues(context);
-                return;
+                this.mEventContext = new SContextPhoneStatusMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 43:
-                SContextHallSensor sContextHallSensor = new SContextHallSensor();
-                this.mEventContext = sContextHallSensor;
-                sContextHallSensor.setValues(context);
-                return;
+                this.mEventContext = new SContextHallSensor();
+                this.mEventContext.setValues(context);
+                break;
             case 44:
-                SContextEnvironmentAdaptiveDisplay sContextEnvironmentAdaptiveDisplay = new SContextEnvironmentAdaptiveDisplay();
-                this.mEventContext = sContextEnvironmentAdaptiveDisplay;
-                sContextEnvironmentAdaptiveDisplay.setValues(context);
-                return;
+                this.mEventContext = new SContextEnvironmentAdaptiveDisplay();
+                this.mEventContext.setValues(context);
+                break;
             case 45:
-                SContextDualDisplayAngle sContextDualDisplayAngle = new SContextDualDisplayAngle();
-                this.mEventContext = sContextDualDisplayAngle;
-                sContextDualDisplayAngle.setValues(context);
-                return;
+                this.mEventContext = new SContextDualDisplayAngle();
+                this.mEventContext.setValues(context);
+                break;
             case 46:
-                SContextWirelessChargingDetection sContextWirelessChargingDetection = new SContextWirelessChargingDetection();
-                this.mEventContext = sContextWirelessChargingDetection;
-                sContextWirelessChargingDetection.setValues(context);
-                return;
+                this.mEventContext = new SContextWirelessChargingDetection();
+                this.mEventContext.setValues(context);
+                break;
             case 47:
-                SContextSLocationCore sContextSLocationCore = new SContextSLocationCore();
-                this.mEventContext = sContextSLocationCore;
-                sContextSLocationCore.setValues(context);
-                return;
+                this.mEventContext = new SContextSLocationCore();
+                this.mEventContext.setValues(context);
+                break;
             case 49:
-                SContextFlipMotion sContextFlipMotion = new SContextFlipMotion();
-                this.mEventContext = sContextFlipMotion;
-                sContextFlipMotion.setValues(context);
-                SContextMainScreenDetection sContextMainScreenDetection = new SContextMainScreenDetection();
-                this.mDuplicatedEventContext = sContextMainScreenDetection;
-                sContextMainScreenDetection.setValues(context);
-                return;
+                this.mEventContext = new SContextFlipMotion();
+                this.mEventContext.setValues(context);
+                this.mDuplicatedEventContext = new SContextMainScreenDetection();
+                this.mDuplicatedEventContext.setValues(context);
+                break;
             case 50:
-                SContextAnyMotionDetector sContextAnyMotionDetector = new SContextAnyMotionDetector();
-                this.mEventContext = sContextAnyMotionDetector;
-                sContextAnyMotionDetector.setValues(context);
-                return;
+                this.mEventContext = new SContextAnyMotionDetector();
+                this.mEventContext.setValues(context);
+                break;
             case 51:
-                SContextDevicePhysicalContextMonitor sContextDevicePhysicalContextMonitor = new SContextDevicePhysicalContextMonitor();
-                this.mEventContext = sContextDevicePhysicalContextMonitor;
-                sContextDevicePhysicalContextMonitor.setValues(context);
-                return;
+                this.mEventContext = new SContextDevicePhysicalContextMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 52:
-                SContextSensorStatusCheck sContextSensorStatusCheck = new SContextSensorStatusCheck();
-                this.mEventContext = sContextSensorStatusCheck;
-                sContextSensorStatusCheck.setValues(context);
-                return;
+                this.mEventContext = new SContextSensorStatusCheck();
+                this.mEventContext.setValues(context);
+                break;
         }
     }
 
@@ -530,23 +474,6 @@ public class SContextEvent implements Parcelable {
         this.mEventContext = (SContextEventContext) src.readParcelable(SContextEventContext.class.getClassLoader());
         if (this.scontext.getType() == 49) {
             this.mDuplicatedEventContext = (SContextEventContext) src.readParcelable(SContextEventContext.class.getClassLoader());
-        }
-    }
-
-    /* renamed from: android.hardware.scontext.SContextEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextEvent createFromParcel(Parcel in) {
-            return new SContextEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextEvent[] newArray(int size) {
-            return new SContextEvent[size];
         }
     }
 }

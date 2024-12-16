@@ -2,6 +2,7 @@ package android.text;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.text.LineBreakConfig;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextUtils;
@@ -13,9 +14,10 @@ import android.util.ArraySet;
 import android.util.Pools;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
+import com.android.text.flags.Flags;
 import java.lang.ref.WeakReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DynamicLayout extends Layout {
     private static final int BLOCK_MINIMUM_CHARACTER_LENGTH = 400;
     private static final int COLUMNS_ELLIPSIZE = 7;
@@ -54,20 +56,19 @@ public class DynamicLayout extends Layout {
     private int mIndexFirstChangedBlock;
     private PackedIntVector mInts;
     private int mJustificationMode;
+    private LineBreakConfig mLineBreakConfig;
+    Paint.FontMetrics mMinimumFontMetrics;
     private int mNumberOfBlocks;
     private PackedObjectVector<Layout.Directions> mObjects;
+    private boolean mShiftDrawingOffsetForStartOverhang;
     private Rect mTempRect;
     private int mTopPadding;
+    private boolean mUseBoundsForWidth;
     private ChangeWatcher mWatcher;
     private static StaticLayout sStaticLayout = null;
     private static StaticLayout.Builder sBuilder = null;
     private static final Object[] sLock = new Object[0];
 
-    /* synthetic */ DynamicLayout(Builder builder, DynamicLayoutIA dynamicLayoutIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private static final Pools.SynchronizedPool<Builder> sPool = new Pools.SynchronizedPool<>(3);
         private Layout.Alignment mAlignment;
@@ -77,15 +78,19 @@ public class DynamicLayout extends Layout {
         private TextUtils.TruncateAt mEllipsize;
         private int mEllipsizedWidth;
         private boolean mFallbackLineSpacing;
-        private final Paint.FontMetricsInt mFontMetricsInt = new Paint.FontMetricsInt();
         private int mHyphenationFrequency;
         private boolean mIncludePad;
         private int mJustificationMode;
+        private Paint.FontMetrics mMinimumFontMetrics;
         private TextPaint mPaint;
+        private boolean mShiftDrawingOffsetForStartOverhang;
         private float mSpacingAdd;
         private float mSpacingMult;
         private TextDirectionHeuristic mTextDir;
+        private boolean mUseBoundsForWidth;
         private int mWidth;
+        private LineBreakConfig mLineBreakConfig = LineBreakConfig.NONE;
+        private final Paint.FontMetricsInt mFontMetricsInt = new Paint.FontMetricsInt();
 
         private Builder() {
         }
@@ -110,9 +115,11 @@ public class DynamicLayout extends Layout {
             b.mBreakStrategy = 0;
             b.mHyphenationFrequency = 0;
             b.mJustificationMode = 0;
+            b.mLineBreakConfig = LineBreakConfig.NONE;
             return b;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static void recycle(Builder b) {
             b.mBase = null;
             b.mDisplay = null;
@@ -176,6 +183,26 @@ public class DynamicLayout extends Layout {
             return this;
         }
 
+        public Builder setLineBreakConfig(LineBreakConfig lineBreakConfig) {
+            this.mLineBreakConfig = lineBreakConfig;
+            return this;
+        }
+
+        public Builder setUseBoundsForWidth(boolean useBoundsForWidth) {
+            this.mUseBoundsForWidth = useBoundsForWidth;
+            return this;
+        }
+
+        public Builder setShiftDrawingOffsetForStartOverhang(boolean shiftDrawingOffsetForStartOverhang) {
+            this.mShiftDrawingOffsetForStartOverhang = shiftDrawingOffsetForStartOverhang;
+            return this;
+        }
+
+        public Builder setMinimumFontMetrics(Paint.FontMetrics minimumFontMetrics) {
+            this.mMinimumFontMetrics = minimumFontMetrics;
+            return this;
+        }
+
         public DynamicLayout build() {
             DynamicLayout result = new DynamicLayout(this);
             recycle(this);
@@ -195,12 +222,12 @@ public class DynamicLayout extends Layout {
 
     @Deprecated
     public DynamicLayout(CharSequence base, CharSequence display, TextPaint paint, int width, Layout.Alignment align, float spacingmult, float spacingadd, boolean includepad, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-        this(base, display, paint, width, align, TextDirectionHeuristics.FIRSTSTRONG_LTR, spacingmult, spacingadd, includepad, 0, 0, 0, ellipsize, ellipsizedWidth);
+        this(base, display, paint, width, align, TextDirectionHeuristics.FIRSTSTRONG_LTR, spacingmult, spacingadd, includepad, 0, 0, 0, LineBreakConfig.NONE, ellipsize, ellipsizedWidth);
     }
 
     @Deprecated
-    public DynamicLayout(CharSequence base, CharSequence display, TextPaint paint, int width, Layout.Alignment align, TextDirectionHeuristic textDir, float spacingmult, float spacingadd, boolean includepad, int breakStrategy, int hyphenationFrequency, int justificationMode, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
-        super(createEllipsizer(ellipsize, display), paint, width, align, textDir, spacingmult, spacingadd);
+    public DynamicLayout(CharSequence base, CharSequence display, TextPaint paint, int width, Layout.Alignment align, TextDirectionHeuristic textDir, float spacingmult, float spacingadd, boolean includepad, int breakStrategy, int hyphenationFrequency, int justificationMode, LineBreakConfig lineBreakConfig, TextUtils.TruncateAt ellipsize, int ellipsizedWidth) {
+        super(createEllipsizer(ellipsize, display), paint, width, align, textDir, spacingmult, spacingadd, includepad, false, ellipsizedWidth, ellipsize, Integer.MAX_VALUE, breakStrategy, hyphenationFrequency, null, null, justificationMode, lineBreakConfig, false, false, null);
         this.mTempRect = new Rect();
         Builder b = Builder.obtain(base, paint, width).setAlignment(align).setTextDirection(textDir).setLineSpacing(spacingadd, spacingmult).setEllipsizedWidth(ellipsizedWidth).setEllipsize(ellipsize);
         this.mDisplay = display;
@@ -208,18 +235,20 @@ public class DynamicLayout extends Layout {
         this.mBreakStrategy = breakStrategy;
         this.mJustificationMode = justificationMode;
         this.mHyphenationFrequency = hyphenationFrequency;
+        this.mLineBreakConfig = lineBreakConfig;
         generate(b);
         Builder.recycle(b);
     }
 
     private DynamicLayout(Builder b) {
-        super(createEllipsizer(b.mEllipsize, b.mDisplay), b.mPaint, b.mWidth, b.mAlignment, b.mTextDir, b.mSpacingMult, b.mSpacingAdd);
+        super(createEllipsizer(b.mEllipsize, b.mDisplay), b.mPaint, b.mWidth, b.mAlignment, b.mTextDir, b.mSpacingMult, b.mSpacingAdd, b.mIncludePad, b.mFallbackLineSpacing, b.mEllipsizedWidth, b.mEllipsize, Integer.MAX_VALUE, b.mBreakStrategy, b.mHyphenationFrequency, null, null, b.mJustificationMode, b.mLineBreakConfig, b.mUseBoundsForWidth, b.mShiftDrawingOffsetForStartOverhang, b.mMinimumFontMetrics);
         this.mTempRect = new Rect();
         this.mDisplay = b.mDisplay;
         this.mIncludePad = b.mIncludePad;
         this.mBreakStrategy = b.mBreakStrategy;
         this.mJustificationMode = b.mJustificationMode;
         this.mHyphenationFrequency = b.mHyphenationFrequency;
+        this.mLineBreakConfig = b.mLineBreakConfig;
         generate(b);
     }
 
@@ -237,6 +266,9 @@ public class DynamicLayout extends Layout {
         int[] start;
         this.mBase = b.mBase;
         this.mFallbackLineSpacing = b.mFallbackLineSpacing;
+        this.mUseBoundsForWidth = b.mUseBoundsForWidth;
+        this.mShiftDrawingOffsetForStartOverhang = b.mShiftDrawingOffsetForStartOverhang;
+        this.mMinimumFontMetrics = b.mMinimumFontMetrics;
         if (b.mEllipsize != null) {
             this.mInts = new PackedIntVector(7);
             this.mEllipsizedWidth = b.mEllipsizedWidth;
@@ -275,9 +307,8 @@ public class DynamicLayout extends Layout {
             if (this.mWatcher == null) {
                 this.mWatcher = new ChangeWatcher(this);
             }
-            CharSequence charSequence = this.mBase;
-            Spannable sp = (Spannable) charSequence;
-            int baseLength = charSequence.length();
+            Spannable sp = (Spannable) this.mBase;
+            int baseLength = this.mBase.length();
             ChangeWatcher[] spans = (ChangeWatcher[]) sp.getSpans(0, baseLength, ChangeWatcher.class);
             for (ChangeWatcher changeWatcher : spans) {
                 sp.removeSpan(changeWatcher);
@@ -293,8 +324,6 @@ public class DynamicLayout extends Layout {
         int endline;
         StaticLayout reflowed;
         StaticLayout.Builder b;
-        StaticLayout reflowed2;
-        StaticLayout.Builder b2;
         int botpad;
         int botpad2;
         int[] ints;
@@ -371,25 +400,16 @@ public class DynamicLayout extends Layout {
                 th = th;
                 while (true) {
                     try {
-                        break;
+                        throw th;
                     } catch (Throwable th2) {
                         th = th2;
                     }
                 }
-                throw th;
             }
         }
-        if (reflowed == null) {
-            StaticLayout reflowed3 = new StaticLayout((CharSequence) null);
-            StaticLayout.Builder b3 = StaticLayout.Builder.obtain(text, where2, where2 + after3, getPaint(), getWidth());
-            reflowed2 = reflowed3;
-            b2 = b3;
-        } else {
-            reflowed2 = reflowed;
-            b2 = b;
-        }
-        b2.setText(text, where2, where2 + after3).setPaint(getPaint()).setWidth(getWidth()).setTextDirection(getTextDirectionHeuristic()).setLineSpacing(getSpacingAdd(), getSpacingMultiplier()).setUseLineSpacingFromFallbacks(this.mFallbackLineSpacing).setEllipsizedWidth(this.mEllipsizedWidth).setEllipsize(this.mEllipsizeAt).setBreakStrategy(this.mBreakStrategy).setHyphenationFrequency(this.mHyphenationFrequency).setJustificationMode(this.mJustificationMode).setAddLastLineLineSpacing(!islast);
-        reflowed2.generate(b2, false, true);
+        StaticLayout.Builder b2 = b == null ? StaticLayout.Builder.obtain(text, where2, where2 + after3, getPaint(), getWidth()) : b;
+        b2.setText(text, where2, where2 + after3).setPaint(getPaint()).setWidth(getWidth()).setTextDirection(getTextDirectionHeuristic()).setLineSpacing(getSpacingAdd(), getSpacingMultiplier()).setUseLineSpacingFromFallbacks(this.mFallbackLineSpacing).setEllipsizedWidth(this.mEllipsizedWidth).setEllipsize(this.mEllipsizeAt).setBreakStrategy(this.mBreakStrategy).setHyphenationFrequency(this.mHyphenationFrequency).setJustificationMode(this.mJustificationMode).setLineBreakConfig(this.mLineBreakConfig).setAddLastLineLineSpacing(!islast).setIncludePad(false).setUseBoundsForWidth(this.mUseBoundsForWidth).setShiftDrawingOffsetForStartOverhang(this.mShiftDrawingOffsetForStartOverhang).setMinimumFontMetrics(this.mMinimumFontMetrics).setCalculateBounds(true);
+        StaticLayout reflowed2 = b2.buildPartialStaticLayoutForDynamicLayout(true, reflowed);
         int n = reflowed2.getLineCount();
         int n2 = (where2 + after3 != len && reflowed2.getLineStart(n - 1) == where2 + after3) ? n - 1 : n;
         this.mInts.deleteAt(startline, endline - startline);
@@ -434,7 +454,7 @@ public class DynamicLayout extends Layout {
             }
             ints[1] = top;
             int desc = reflowed2.getLineDescent(i2);
-            int toppad2 = toppad;
+            int startv2 = startv;
             if (i2 == n2 - 1) {
                 desc += botpad2;
             }
@@ -457,7 +477,7 @@ public class DynamicLayout extends Layout {
             i2++;
             where2 = where4;
             botpad = ht2;
-            toppad = toppad2;
+            startv = startv2;
             after3 = after4;
         }
         int i3 = endline - 1;
@@ -522,28 +542,23 @@ public class DynamicLayout extends Layout {
                 return;
             }
         }
-        ArraySet<Integer> arraySet = this.mBlocksAlwaysNeedToBeRedrawn;
-        if (arraySet != null) {
-            arraySet.remove(Integer.valueOf(blockIndex));
+        if (this.mBlocksAlwaysNeedToBeRedrawn != null) {
+            this.mBlocksAlwaysNeedToBeRedrawn.remove(Integer.valueOf(blockIndex));
         }
     }
 
     private void addBlockAtOffset(int offset) {
         int line = getLineForOffset(offset);
-        int[] iArr = this.mBlockEndLines;
-        if (iArr == null) {
-            int[] newUnpaddedIntArray = ArrayUtils.newUnpaddedIntArray(1);
-            this.mBlockEndLines = newUnpaddedIntArray;
-            int i = this.mNumberOfBlocks;
-            newUnpaddedIntArray[i] = line;
-            updateAlwaysNeedsToBeRedrawn(i);
+        if (this.mBlockEndLines == null) {
+            this.mBlockEndLines = ArrayUtils.newUnpaddedIntArray(1);
+            this.mBlockEndLines[this.mNumberOfBlocks] = line;
+            updateAlwaysNeedsToBeRedrawn(this.mNumberOfBlocks);
             this.mNumberOfBlocks++;
             return;
         }
-        int i2 = this.mNumberOfBlocks;
-        int previousBlockEndLine = iArr[i2 - 1];
+        int previousBlockEndLine = this.mBlockEndLines[this.mNumberOfBlocks - 1];
         if (line > previousBlockEndLine) {
-            this.mBlockEndLines = GrowingArrayUtils.append(iArr, i2, line);
+            this.mBlockEndLines = GrowingArrayUtils.append(this.mBlockEndLines, this.mNumberOfBlocks, line);
             updateAlwaysNeedsToBeRedrawn(this.mNumberOfBlocks);
             this.mNumberOfBlocks++;
         }
@@ -551,7 +566,6 @@ public class DynamicLayout extends Layout {
 
     public void updateBlocks(int startLine, int endLine, int newLineCount) {
         int i;
-        int i2;
         int lastBlockEndLine;
         boolean createBlockAfter;
         int newFirstChangedBlock;
@@ -561,41 +575,39 @@ public class DynamicLayout extends Layout {
         }
         int firstBlock = -1;
         int lastBlock = -1;
-        int i3 = 0;
+        int i2 = 0;
+        while (true) {
+            if (i2 >= this.mNumberOfBlocks) {
+                break;
+            }
+            if (this.mBlockEndLines[i2] < startLine) {
+                i2++;
+            } else {
+                firstBlock = i2;
+                break;
+            }
+        }
+        int i3 = firstBlock;
         while (true) {
             if (i3 >= this.mNumberOfBlocks) {
                 break;
             }
-            if (this.mBlockEndLines[i3] < startLine) {
+            if (this.mBlockEndLines[i3] < endLine) {
                 i3++;
             } else {
-                firstBlock = i3;
+                lastBlock = i3;
                 break;
             }
         }
-        int i4 = firstBlock;
-        while (true) {
-            i = this.mNumberOfBlocks;
-            if (i4 >= i) {
-                break;
-            }
-            if (this.mBlockEndLines[i4] < endLine) {
-                i4++;
-            } else {
-                lastBlock = i4;
-                break;
-            }
-        }
-        int[] iArr = this.mBlockEndLines;
-        int lastBlockEndLine2 = iArr[lastBlock];
+        int lastBlockEndLine2 = this.mBlockEndLines[lastBlock];
         if (firstBlock == 0) {
-            i2 = 0;
+            i = 0;
         } else {
-            i2 = iArr[firstBlock - 1] + 1;
+            i = this.mBlockEndLines[firstBlock - 1] + 1;
         }
-        boolean createBlockBefore = startLine > i2;
+        boolean createBlockBefore = startLine > i;
         boolean createBlock = newLineCount > 0;
-        boolean createBlockAfter2 = endLine < iArr[lastBlock];
+        boolean createBlockAfter2 = endLine < this.mBlockEndLines[lastBlock];
         int numAddedBlocks = createBlockBefore ? 0 + 1 : 0;
         if (createBlock) {
             numAddedBlocks++;
@@ -604,15 +616,15 @@ public class DynamicLayout extends Layout {
             numAddedBlocks++;
         }
         int numRemovedBlocks = (lastBlock - firstBlock) + 1;
-        int newNumberOfBlocks = (i + numAddedBlocks) - numRemovedBlocks;
+        int newNumberOfBlocks = (this.mNumberOfBlocks + numAddedBlocks) - numRemovedBlocks;
         if (newNumberOfBlocks == 0) {
-            iArr[0] = 0;
+            this.mBlockEndLines[0] = 0;
             this.mBlockIndices[0] = -1;
             this.mNumberOfBlocks = 1;
             return;
         }
-        if (newNumberOfBlocks > iArr.length) {
-            int[] blockEndLines = ArrayUtils.newUnpaddedIntArray(Math.max(iArr.length * 2, newNumberOfBlocks));
+        if (newNumberOfBlocks > this.mBlockEndLines.length) {
+            int[] blockEndLines = ArrayUtils.newUnpaddedIntArray(Math.max(this.mBlockEndLines.length * 2, newNumberOfBlocks));
             int[] blockIndices = new int[blockEndLines.length];
             System.arraycopy(this.mBlockEndLines, 0, blockEndLines, 0, firstBlock);
             System.arraycopy(this.mBlockIndices, 0, blockIndices, 0, firstBlock);
@@ -626,16 +638,15 @@ public class DynamicLayout extends Layout {
             lastBlockEndLine = lastBlockEndLine2;
             createBlockAfter = createBlockAfter2;
             if (numAddedBlocks + numRemovedBlocks != 0) {
-                System.arraycopy(iArr, lastBlock + 1, iArr, firstBlock + numAddedBlocks, (i - lastBlock) - 1);
-                int[] iArr2 = this.mBlockIndices;
-                System.arraycopy(iArr2, lastBlock + 1, iArr2, firstBlock + numAddedBlocks, (this.mNumberOfBlocks - lastBlock) - 1);
+                System.arraycopy(this.mBlockEndLines, lastBlock + 1, this.mBlockEndLines, firstBlock + numAddedBlocks, (this.mNumberOfBlocks - lastBlock) - 1);
+                System.arraycopy(this.mBlockIndices, lastBlock + 1, this.mBlockIndices, firstBlock + numAddedBlocks, (this.mNumberOfBlocks - lastBlock) - 1);
             }
         }
         if (numAddedBlocks + numRemovedBlocks != 0 && this.mBlocksAlwaysNeedToBeRedrawn != null) {
             ArraySet<Integer> set = new ArraySet<>();
             int changedBlockCount = numAddedBlocks - numRemovedBlocks;
-            for (int i5 = 0; i5 < this.mBlocksAlwaysNeedToBeRedrawn.size(); i5++) {
-                Integer block = this.mBlocksAlwaysNeedToBeRedrawn.valueAt(i5);
+            for (int i4 = 0; i4 < this.mBlocksAlwaysNeedToBeRedrawn.size(); i4++) {
+                Integer block = this.mBlocksAlwaysNeedToBeRedrawn.valueAt(i4);
                 if (block.intValue() < firstBlock) {
                     set.add(block);
                 }
@@ -649,9 +660,9 @@ public class DynamicLayout extends Layout {
         int deltaLines = newLineCount - ((endLine - startLine) + 1);
         if (deltaLines != 0) {
             newFirstChangedBlock = firstBlock + numAddedBlocks;
-            for (int i6 = newFirstChangedBlock; i6 < this.mNumberOfBlocks; i6++) {
-                int[] iArr3 = this.mBlockEndLines;
-                iArr3[i6] = iArr3[i6] + deltaLines;
+            for (int i5 = newFirstChangedBlock; i5 < this.mNumberOfBlocks; i5++) {
+                int[] iArr = this.mBlockEndLines;
+                iArr[i5] = iArr[i5] + deltaLines;
             }
         } else {
             newFirstChangedBlock = this.mNumberOfBlocks;
@@ -678,15 +689,13 @@ public class DynamicLayout extends Layout {
     }
 
     public void setBlocksDataForTest(int[] blockEndLines, int[] blockIndices, int numberOfBlocks, int totalLines) {
-        int[] iArr = new int[blockEndLines.length];
-        this.mBlockEndLines = iArr;
+        this.mBlockEndLines = new int[blockEndLines.length];
         this.mBlockIndices = new int[blockIndices.length];
-        System.arraycopy(blockEndLines, 0, iArr, 0, blockEndLines.length);
+        System.arraycopy(blockEndLines, 0, this.mBlockEndLines, 0, blockEndLines.length);
         System.arraycopy(blockIndices, 0, this.mBlockIndices, 0, blockIndices.length);
         this.mNumberOfBlocks = numberOfBlocks;
         while (this.mInts.size() < totalLines) {
-            PackedIntVector packedIntVector = this.mInts;
-            packedIntVector.insertAt(packedIntVector.size(), new int[5]);
+            this.mInts.insertAt(this.mInts.size(), new int[5]);
         }
     }
 
@@ -787,8 +796,7 @@ public class DynamicLayout extends Layout {
         return this.mEllipsizedWidth;
     }
 
-    /* loaded from: classes3.dex */
-    public static class ChangeWatcher implements TextWatcher, SpanWatcher {
+    private static class ChangeWatcher implements TextWatcher, SpanWatcher {
         private WeakReference<DynamicLayout> mLayout;
         private OffsetMapping.TextUpdate mTransformedTextUpdate;
 
@@ -810,11 +818,10 @@ public class DynamicLayout extends Layout {
             DynamicLayout dynamicLayout = this.mLayout.get();
             if (dynamicLayout != null && (dynamicLayout.mDisplay instanceof OffsetMapping)) {
                 OffsetMapping transformedText = (OffsetMapping) dynamicLayout.mDisplay;
-                OffsetMapping.TextUpdate textUpdate = this.mTransformedTextUpdate;
-                if (textUpdate == null) {
+                if (this.mTransformedTextUpdate == null) {
                     this.mTransformedTextUpdate = new OffsetMapping.TextUpdate(where, before, after);
                 } else {
-                    textUpdate.where = where;
+                    this.mTransformedTextUpdate.where = where;
                     this.mTransformedTextUpdate.before = before;
                     this.mTransformedTextUpdate.after = after;
                 }
@@ -826,8 +833,7 @@ public class DynamicLayout extends Layout {
         public void onTextChanged(CharSequence s, int where, int before, int after) {
             DynamicLayout dynamicLayout = this.mLayout.get();
             if (dynamicLayout != null && (dynamicLayout.mDisplay instanceof OffsetMapping)) {
-                OffsetMapping.TextUpdate textUpdate = this.mTransformedTextUpdate;
-                if (textUpdate != null && textUpdate.where >= 0) {
+                if (this.mTransformedTextUpdate != null && this.mTransformedTextUpdate.where >= 0) {
                     where = this.mTransformedTextUpdate.where;
                     before = this.mTransformedTextUpdate.before;
                     after = this.mTransformedTextUpdate.after;
@@ -865,6 +871,16 @@ public class DynamicLayout extends Layout {
         @Override // android.text.SpanWatcher
         public void onSpanRemoved(Spannable s, Object o, int start, int end) {
             if (o instanceof UpdateLayout) {
+                if (Flags.insertModeCrashWhenDelete()) {
+                    DynamicLayout dynamicLayout = this.mLayout.get();
+                    if (dynamicLayout != null && (dynamicLayout.mDisplay instanceof OffsetMapping)) {
+                        reflow(s, 0, 0, s.length());
+                        return;
+                    } else {
+                        reflow(s, start, end - start, end - start);
+                        return;
+                    }
+                }
                 transformAndReflow(s, start, end);
             }
         }
@@ -874,6 +890,17 @@ public class DynamicLayout extends Layout {
             if (o instanceof UpdateLayout) {
                 if (start > end) {
                     start = 0;
+                }
+                if (Flags.insertModeCrashWhenDelete()) {
+                    DynamicLayout dynamicLayout = this.mLayout.get();
+                    if (dynamicLayout != null && (dynamicLayout.mDisplay instanceof OffsetMapping)) {
+                        reflow(s, 0, 0, s.length());
+                        return;
+                    } else {
+                        reflow(s, start, end - start, end - start);
+                        reflow(s, nstart, nend - nstart, nend - nstart);
+                        return;
+                    }
                 }
                 transformAndReflow(s, start, end);
                 transformAndReflow(s, nstart, nend);
@@ -895,5 +922,10 @@ public class DynamicLayout extends Layout {
             return 0;
         }
         return this.mInts.getValue(line, 6);
+    }
+
+    @Override // android.text.Layout
+    public LineBreakConfig getLineBreakConfig() {
+        return this.mLineBreakConfig;
     }
 }

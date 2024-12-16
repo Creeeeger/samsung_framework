@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IOnPrimaryClipChangedListener extends IInterface {
     void dispatchPrimaryClipChanged() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOnPrimaryClipChangedListener {
         @Override // android.content.IOnPrimaryClipChangedListener
         public void dispatchPrimaryClipChanged() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IOnPrimaryClipChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOnPrimaryClipChangedListener {
         public static final String DESCRIPTOR = "android.content.IOnPrimaryClipChangedListener";
         static final int TRANSACTION_dispatchPrimaryClipChanged = 1;
@@ -66,24 +64,20 @@ public interface IOnPrimaryClipChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    dispatchPrimaryClipChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            dispatchPrimaryClipChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IOnPrimaryClipChangedListener {
+        private static class Proxy implements IOnPrimaryClipChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

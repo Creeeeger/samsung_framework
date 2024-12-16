@@ -7,7 +7,7 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class PrivateDnsConnectivityChecker {
     private static final int CONNECTION_TIMEOUT_MS = 5000;
     private static final int PRIVATE_DNS_PORT = 853;

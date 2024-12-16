@@ -5,12 +5,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.display.DisplayManager;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.service.games.IGameSessionService;
 import android.view.Display;
 import android.view.SurfaceControlViewHost;
+import android.window.InputTransferToken;
 import com.android.internal.infra.AndroidFuture;
 import com.android.internal.util.function.QuintConsumer;
 import com.android.internal.util.function.pooled.PooledLambda;
@@ -25,8 +25,7 @@ public abstract class GameSessionService extends Service {
 
     public abstract GameSession onNewSession(CreateGameSessionRequest createGameSessionRequest);
 
-    /* renamed from: android.service.games.GameSessionService$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.games.GameSessionService$1, reason: invalid class name */
     class AnonymousClass1 extends IGameSessionService.Stub {
         AnonymousClass1() {
         }
@@ -56,6 +55,7 @@ public abstract class GameSessionService extends Service {
         return this.mInterface.asBinder();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doCreate(IGameSessionController gameSessionController, CreateGameSessionRequest createGameSessionRequest, GameSessionViewHostConfiguration gameSessionViewHostConfiguration, AndroidFuture<CreateGameSessionResult> createGameSessionResultFuture) {
         GameSession gameSession = onNewSession(createGameSessionRequest);
         Objects.requireNonNull(gameSession);
@@ -64,9 +64,8 @@ public abstract class GameSessionService extends Service {
             createGameSessionResultFuture.completeExceptionally(new IllegalStateException("No display found for id: " + gameSessionViewHostConfiguration.mDisplayId));
             return;
         }
-        IBinder hostToken = new Binder();
         Context windowContext = createWindowContext(display, 2038, null);
-        SurfaceControlViewHost surfaceControlViewHost = new SurfaceControlViewHost(windowContext, display, hostToken, "GameSessionService");
+        SurfaceControlViewHost surfaceControlViewHost = new SurfaceControlViewHost(windowContext, display, new InputTransferToken(), "GameSessionService");
         gameSession.attach(gameSessionController, createGameSessionRequest.getTaskId(), windowContext, surfaceControlViewHost, gameSessionViewHostConfiguration.mWidthPx, gameSessionViewHostConfiguration.mHeightPx);
         CreateGameSessionResult createGameSessionResult = new CreateGameSessionResult(gameSession.mInterface, surfaceControlViewHost.getSurfacePackage());
         createGameSessionResultFuture.complete(createGameSessionResult);

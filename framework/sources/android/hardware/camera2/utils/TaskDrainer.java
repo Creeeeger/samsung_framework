@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class TaskDrainer<T> {
     private static final String TAG = "TaskDrainer";
     private final boolean DEBUG;
@@ -18,7 +18,6 @@ public class TaskDrainer<T> {
     private final String mName;
     private final Set<T> mTaskSet;
 
-    /* loaded from: classes.dex */
     public interface DrainListener {
         void onDrained();
     }
@@ -92,6 +91,7 @@ public class TaskDrainer<T> {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$postDrained$0() {
         this.mListener.onDrained();
     }

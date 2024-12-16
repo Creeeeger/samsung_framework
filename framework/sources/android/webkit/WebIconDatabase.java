@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 public abstract class WebIconDatabase {
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public interface IconListener {
         void onReceivedIcon(String str, Bitmap bitmap);
     }

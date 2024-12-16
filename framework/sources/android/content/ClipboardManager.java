@@ -22,14 +22,12 @@ public class ClipboardManager extends android.text.ClipboardManager {
     private final IOnPrimaryClipChangedListener.Stub mPrimaryClipChangedServiceListener = new AnonymousClass1();
     private final IClipboard mService = IClipboard.Stub.asInterface(ServiceManager.getServiceOrThrow("clipboard"));
 
-    /* loaded from: classes.dex */
     public interface OnPrimaryClipChangedListener {
         void onPrimaryClipChanged();
     }
 
-    /* renamed from: android.content.ClipboardManager$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IOnPrimaryClipChangedListener.Stub {
+    /* renamed from: android.content.ClipboardManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IOnPrimaryClipChangedListener.Stub {
         AnonymousClass1() {
         }
 
@@ -43,6 +41,7 @@ public class ClipboardManager extends android.text.ClipboardManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchPrimaryClipChanged$0() {
             ClipboardManager.this.reportPrimaryClipChanged();
         }

@@ -11,7 +11,7 @@ import com.samsung.android.knox.dar.ddar.proxy.KnoxProxyManager;
 import java.util.Optional;
 import java.util.function.Function;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class DualDarManager {
     public static final String AGENT = "KNOXCORE_PROXY_AGENT";
     public static final String AGENT_PKG = "com.samsung.android.knox.containercore";
@@ -49,7 +49,7 @@ public final class DualDarManager {
             Log.e(TAG, "enableOnDeviceOwner - Already enabled");
             return false;
         }
-        Bundle response = processCommand(DualDarConstants.ON_DEVICE_OWNER_PROVISIONING, params);
+        Bundle response = processCommand("ON_DEVICE_OWNER_PROVISIONING", params);
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             result = true;
         }
@@ -76,7 +76,7 @@ public final class DualDarManager {
         if (!isOnDeviceOwner(userId)) {
             return false;
         }
-        Bundle response = processCommand(DualDarConstants.IS_INNER_LAYER_UNLOCKED, null);
+        Bundle response = processCommand("IS_INNER_LAYER_UNLOCKED", null);
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             result = true;
         }
@@ -96,7 +96,7 @@ public final class DualDarManager {
         return false;
     }
 
-    public static /* synthetic */ Boolean lambda$isInnerAuthRequired$0(int userId, IDarManagerService s) {
+    static /* synthetic */ Boolean lambda$isInnerAuthRequired$0(int userId, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.isInnerAuthRequired(userId));
         } catch (Exception e) {
@@ -115,7 +115,7 @@ public final class DualDarManager {
         }).orElse(false)).booleanValue();
     }
 
-    public static /* synthetic */ Boolean lambda$setDualDarInfo$1(int userId, int flag, IDarManagerService s) {
+    static /* synthetic */ Boolean lambda$setDualDarInfo$1(int userId, int flag, IDarManagerService s) {
         try {
             return Boolean.valueOf(s.setDualDarInfo(userId, flag));
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public final class DualDarManager {
         if (!isOnDeviceOwnerEnabled()) {
             return;
         }
-        Bundle response = processCommand(DualDarConstants.ENSURE_DATA_UNLOCKED, null);
+        Bundle response = processCommand("ENSURE_DATA_UNLOCKED", null);
         boolean bResponse = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             bResponse = true;
@@ -143,7 +143,7 @@ public final class DualDarManager {
         }
         Bundle bundle = new Bundle();
         bundle.putInt("user_id", userId);
-        processCommand(DualDarConstants.SCHEDULE_DATA_LOCK, bundle);
+        processCommand("SCHEDULE_DATA_LOCK", bundle);
     }
 
     public void cancelDataLock(int userId) {
@@ -152,7 +152,7 @@ public final class DualDarManager {
         }
         Bundle bundle = new Bundle();
         bundle.putInt("user_id", userId);
-        processCommand(DualDarConstants.CANCEL_DATA_LOCK, bundle);
+        processCommand("CANCEL_DATA_LOCK", bundle);
     }
 
     public String getClientPackage(int userId) {

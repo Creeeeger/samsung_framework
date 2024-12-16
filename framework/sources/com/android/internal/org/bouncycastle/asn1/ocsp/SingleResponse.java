@@ -88,13 +88,11 @@ public class SingleResponse extends ASN1Object {
         v.add(this.certID);
         v.add(this.certStatus);
         v.add(this.thisUpdate);
-        ASN1GeneralizedTime aSN1GeneralizedTime = this.nextUpdate;
-        if (aSN1GeneralizedTime != null) {
-            v.add(new DERTaggedObject(true, 0, aSN1GeneralizedTime));
+        if (this.nextUpdate != null) {
+            v.add(new DERTaggedObject(true, 0, this.nextUpdate));
         }
-        Extensions extensions = this.singleExtensions;
-        if (extensions != null) {
-            v.add(new DERTaggedObject(true, 1, extensions));
+        if (this.singleExtensions != null) {
+            v.add(new DERTaggedObject(true, 1, this.singleExtensions));
         }
         return new DERSequence(v);
     }

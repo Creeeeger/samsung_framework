@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.IRCPInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IRunnableCallback;
 import android.os.RemoteException;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemRemoteContentManager {
     public static final int ERROR = -333;
     private static final String TAG = "SemRemoteContentManager";
@@ -33,10 +32,9 @@ public class SemRemoteContentManager {
     }
 
     public IRCPInterface getRCPInterface() {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemRemoteContentManager.getRCPInterface();
+                return this.mService.getRCPInterface();
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException trying to get RCPInterface from getRCPInterface().", e);
                 e.printStackTrace();
@@ -47,69 +45,57 @@ public class SemRemoteContentManager {
     }
 
     public int copyFileInternal(int srcContainerId, String srcFilePath, int destContainerId, String destFilePath) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.copyFileInternal(srcContainerId, srcFilePath, destContainerId, destFilePath);
+        if (this.mService != null) {
+            return this.mService.copyFileInternal(srcContainerId, srcFilePath, destContainerId, destFilePath);
         }
         return -1;
     }
 
     public int moveFile(int srcContainerId, String srcFilePath, int destContainerId, String destFilePath) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.moveFile(srcContainerId, srcFilePath, destContainerId, destFilePath);
+        if (this.mService != null) {
+            return this.mService.moveFile(srcContainerId, srcFilePath, destContainerId, destFilePath);
         }
         return -1;
     }
 
     public boolean isFileExist(String path, int containerId) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.isFileExist(path, containerId);
+        if (this.mService != null) {
+            return this.mService.isFileExist(path, containerId);
         }
         return false;
     }
 
     public List<String> getFiles(String path, int containerId) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.getFiles(path, containerId);
+        if (this.mService != null) {
+            return this.mService.getFiles(path, containerId);
         }
         return new ArrayList();
     }
 
     public Bundle getFileInfo(String path, int containerId) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.getFileInfo(path, containerId);
+        if (this.mService != null) {
+            return this.mService.getFileInfo(path, containerId);
         }
         return new Bundle();
     }
 
     public int copyChunks(int srcContainerId, String srcFilePath, int destContainerId, String destFilePath, long offset, int length, long sessionId, boolean deleteSrc) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.copyChunks(srcContainerId, srcFilePath, destContainerId, destFilePath, offset, length, sessionId, deleteSrc);
+        if (this.mService != null) {
+            return this.mService.copyChunks(srcContainerId, srcFilePath, destContainerId, destFilePath, offset, length, sessionId, deleteSrc);
         }
         return ERROR;
     }
 
     public void cancelCopyChunks(long sessionId) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            iSemRemoteContentManager.cancelCopyChunks(sessionId);
+        if (this.mService != null) {
+            this.mService.cancelCopyChunks(sessionId);
         }
     }
 
     public boolean deleteFile(String path, int containerId) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.deleteFile(path, containerId);
+        if (this.mService != null) {
+            return this.mService.deleteFile(path, containerId);
         }
-        return false;
-    }
-
-    public boolean registerExchangeData(Context ctx, IRunnableCallback cb, int userId) throws RemoteException {
         return false;
     }
 
@@ -129,14 +115,6 @@ public class SemRemoteContentManager {
         return -1;
     }
 
-    public long moveFilesForApp(int requestApp, List<String> srcFilePaths, List<String> destFilePaths) throws RemoteException {
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.moveFilesForApp(requestApp, srcFilePaths, destFilePaths);
-        }
-        return -1L;
-    }
-
     public long moveFiles(int requestApp, Uri uri, int fileCount, int containerID) throws RemoteException {
         if (uri == null) {
             Log.d(TAG, "moveFiles uri is null");
@@ -146,9 +124,8 @@ public class SemRemoteContentManager {
             Log.d(TAG, "moveFiles total fileCount is smaller than zero : " + fileCount);
             return -1L;
         }
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.moveUnlimitedFiles(requestApp, uri, fileCount, containerID);
+        if (this.mService != null) {
+            return this.mService.moveUnlimitedFiles(requestApp, uri, fileCount, containerID);
         }
         return -1L;
     }
@@ -166,9 +143,8 @@ public class SemRemoteContentManager {
             Log.d(TAG, "invalid destFilePaths");
             return -1L;
         }
-        ISemRemoteContentManager iSemRemoteContentManager = this.mService;
-        if (iSemRemoteContentManager != null) {
-            return iSemRemoteContentManager.moveFilesForAppEx(requestApp, srcFilePaths, destFilePaths, containerId);
+        if (this.mService != null) {
+            return this.mService.moveFilesForAppEx(requestApp, srcFilePaths, destFilePaths, containerId);
         }
         return -1L;
     }

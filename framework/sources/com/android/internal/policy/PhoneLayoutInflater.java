@@ -18,7 +18,7 @@ public class PhoneLayoutInflater extends LayoutInflater {
     }
 
     @Override // android.view.LayoutInflater
-    public View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
+    protected View onCreateView(String name, AttributeSet attrs) throws ClassNotFoundException {
         View view;
         for (String prefix : sClassPrefixList) {
             try {

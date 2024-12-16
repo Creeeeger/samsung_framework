@@ -48,7 +48,6 @@ public class SurfaceTextureSource extends Filter {
     private static final String TAG = "SurfaceTextureSource";
     private static final boolean mLogVerbose = Log.isLoggable(TAG, 2);
 
-    /* loaded from: classes.dex */
     public interface SurfaceTextureSourceListener {
         void onSurfaceTextureSourceReady(SurfaceTexture surfaceTexture);
     }
@@ -60,9 +59,6 @@ public class SurfaceTextureSource extends Filter {
         this.mCloseOnTimeout = false;
         this.mRenderShader = "#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES tex_sampler_0;\nvarying vec2 v_texcoord;\nvoid main() {\n  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n}\n";
         this.onFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.filterpacks.videosrc.SurfaceTextureSource.1
-            AnonymousClass1() {
-            }
-
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 if (SurfaceTextureSource.mLogVerbose) {
@@ -100,28 +96,25 @@ public class SurfaceTextureSource extends Filter {
         if (mLogVerbose) {
             Log.v(TAG, "Opening SurfaceTextureSource");
         }
-        SurfaceTexture surfaceTexture = new SurfaceTexture(this.mMediaFrame.getTextureId());
-        this.mSurfaceTexture = surfaceTexture;
-        surfaceTexture.setOnFrameAvailableListener(this.onFrameAvailableListener);
+        this.mSurfaceTexture = new SurfaceTexture(this.mMediaFrame.getTextureId());
+        this.mSurfaceTexture.setOnFrameAvailableListener(this.onFrameAvailableListener);
         this.mSourceListener.onSurfaceTextureSourceReady(this.mSurfaceTexture);
         this.mFirstFrame = true;
     }
 
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
-        boolean z = mLogVerbose;
-        if (z) {
+        if (mLogVerbose) {
             Log.v(TAG, "Processing new frame");
         }
         if (this.mWaitForNewFrame || this.mFirstFrame) {
-            int i = this.mWaitTimeout;
-            if (i != 0) {
-                boolean gotNewFrame = this.mNewFrameAvailable.block(i);
+            if (this.mWaitTimeout != 0) {
+                boolean gotNewFrame = this.mNewFrameAvailable.block(this.mWaitTimeout);
                 if (!gotNewFrame) {
                     if (!this.mCloseOnTimeout) {
                         throw new RuntimeException("Timeout waiting for new frame");
                     }
-                    if (z) {
+                    if (mLogVerbose) {
                         Log.v(TAG, "Timeout waiting for a new frame. Closing.");
                     }
                     closeOutputPort("video");
@@ -136,9 +129,7 @@ public class SurfaceTextureSource extends Filter {
         this.mSurfaceTexture.updateTexImage();
         this.mSurfaceTexture.getTransformMatrix(this.mFrameTransform);
         Matrix.multiplyMM(this.mMappedCoords, 0, this.mFrameTransform, 0, mSourceCoords, 0);
-        ShaderProgram shaderProgram = this.mFrameExtractor;
-        float[] fArr = this.mMappedCoords;
-        shaderProgram.setSourceRegion(fArr[0], fArr[1], fArr[4], fArr[5], fArr[8], fArr[9], fArr[12], fArr[13]);
+        this.mFrameExtractor.setSourceRegion(this.mMappedCoords[0], this.mMappedCoords[1], this.mMappedCoords[4], this.mMappedCoords[5], this.mMappedCoords[8], this.mMappedCoords[9], this.mMappedCoords[12], this.mMappedCoords[13]);
         Frame output = context.getFrameManager().newFrame(this.mOutputFormat);
         this.mFrameExtractor.process(this.mMediaFrame, output);
         output.setTimestamp(this.mSurfaceTexture.getTimestamp());
@@ -158,9 +149,8 @@ public class SurfaceTextureSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        GLFrame gLFrame = this.mMediaFrame;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mMediaFrame != null) {
+            this.mMediaFrame.release();
         }
     }
 
@@ -168,21 +158,6 @@ public class SurfaceTextureSource extends Filter {
     public void fieldPortValueUpdated(String name, FilterContext context) {
         if (name.equals("width") || name.equals("height")) {
             this.mOutputFormat.setDimensions(this.mWidth, this.mHeight);
-        }
-    }
-
-    /* renamed from: android.filterpacks.videosrc.SurfaceTextureSource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements SurfaceTexture.OnFrameAvailableListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
-        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-            if (SurfaceTextureSource.mLogVerbose) {
-                Log.v(SurfaceTextureSource.TAG, "New frame from SurfaceTexture");
-            }
-            SurfaceTextureSource.this.mNewFrameAvailable.open();
         }
     }
 }

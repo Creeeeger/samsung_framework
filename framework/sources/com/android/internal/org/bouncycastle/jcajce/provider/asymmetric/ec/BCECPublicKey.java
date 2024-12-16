@@ -51,9 +51,8 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
     public BCECPublicKey(String algorithm, ECPublicKeySpec spec, ProviderConfiguration configuration) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = algorithm;
-        ECParameterSpec params = spec.getParams();
-        this.ecSpec = params;
-        this.ecPublicKey = new ECPublicKeyParameters(EC5Util.convertPoint(params, spec.getW()), EC5Util.getDomainParameters(configuration, spec.getParams()));
+        this.ecSpec = spec.getParams();
+        this.ecPublicKey = new ECPublicKeyParameters(EC5Util.convertPoint(this.ecSpec, spec.getW()), EC5Util.getDomainParameters(configuration, spec.getParams()));
         this.configuration = configuration;
     }
 
@@ -113,13 +112,12 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
     public BCECPublicKey(ECPublicKey key, ProviderConfiguration configuration) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = key.getAlgorithm();
-        ECParameterSpec params = key.getParams();
-        this.ecSpec = params;
-        this.ecPublicKey = new ECPublicKeyParameters(EC5Util.convertPoint(params, key.getW()), EC5Util.getDomainParameters(configuration, key.getParams()));
+        this.ecSpec = key.getParams();
+        this.ecPublicKey = new ECPublicKeyParameters(EC5Util.convertPoint(this.ecSpec, key.getW()), EC5Util.getDomainParameters(configuration, key.getParams()));
         this.configuration = configuration;
     }
 
-    public BCECPublicKey(String algorithm, SubjectPublicKeyInfo info, ProviderConfiguration configuration) {
+    BCECPublicKey(String algorithm, SubjectPublicKeyInfo info, ProviderConfiguration configuration) {
         this.algorithm = KeyProperties.KEY_ALGORITHM_EC;
         this.algorithm = algorithm;
         this.configuration = configuration;
@@ -176,11 +174,10 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
 
     @Override // com.android.internal.org.bouncycastle.jce.interfaces.ECKey
     public com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec getParameters() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec == null) {
+        if (this.ecSpec == null) {
             return null;
         }
-        return EC5Util.convertSpec(eCParameterSpec);
+        return EC5Util.convertSpec(this.ecSpec);
     }
 
     @Override // java.security.interfaces.ECPublicKey
@@ -197,14 +194,13 @@ public class BCECPublicKey implements ECPublicKey, com.android.internal.org.boun
         return q;
     }
 
-    public ECPublicKeyParameters engineGetKeyParameters() {
+    ECPublicKeyParameters engineGetKeyParameters() {
         return this.ecPublicKey;
     }
 
     com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec engineGetSpec() {
-        ECParameterSpec eCParameterSpec = this.ecSpec;
-        if (eCParameterSpec != null) {
-            return EC5Util.convertSpec(eCParameterSpec);
+        if (this.ecSpec != null) {
+            return EC5Util.convertSpec(this.ecSpec);
         }
         return this.configuration.getEcImplicitlyCa();
     }

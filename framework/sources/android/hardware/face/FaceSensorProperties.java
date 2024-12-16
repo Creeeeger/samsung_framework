@@ -15,7 +15,6 @@ public class FaceSensorProperties extends SensorProperties {
     final int mSensorType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SensorType {
     }
 

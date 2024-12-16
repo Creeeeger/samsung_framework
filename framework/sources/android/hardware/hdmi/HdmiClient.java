@@ -19,14 +19,13 @@ public abstract class HdmiClient {
     private IHdmiVendorCommandListener mIHdmiVendorCommandListener;
     final IHdmiControlService mService;
 
-    /* loaded from: classes2.dex */
     public interface OnDeviceSelectedListener {
         void onDeviceSelected(int i, int i2);
     }
 
     abstract int getDeviceType();
 
-    public HdmiClient(IHdmiControlService service) {
+    HdmiClient(IHdmiControlService service) {
         this.mService = service;
     }
 
@@ -44,9 +43,8 @@ public abstract class HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiClient$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IHdmiControlCallback.Stub {
+    /* renamed from: android.hardware.hdmi.HdmiClient$1, reason: invalid class name */
+    class AnonymousClass1 extends IHdmiControlCallback.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ OnDeviceSelectedListener val$listener;
         final /* synthetic */ int val$logicalAddress;
@@ -134,28 +132,8 @@ public abstract class HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiClient$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IHdmiVendorCommandListener.Stub {
-        AnonymousClass2() {
-        }
-
-        @Override // android.hardware.hdmi.IHdmiVendorCommandListener
-        public void onReceived(int srcAddress, int destAddress, byte[] params, boolean hasVendorId) {
-            HdmiControlManager.VendorCommandListener.this.onReceived(srcAddress, destAddress, params, hasVendorId);
-        }
-
-        @Override // android.hardware.hdmi.IHdmiVendorCommandListener
-        public void onControlStateChanged(boolean enabled, int reason) {
-            HdmiControlManager.VendorCommandListener.this.onControlStateChanged(enabled, reason);
-        }
-    }
-
-    private static IHdmiVendorCommandListener getListenerWrapper(HdmiControlManager.VendorCommandListener listener) {
+    private static IHdmiVendorCommandListener getListenerWrapper(final HdmiControlManager.VendorCommandListener listener) {
         return new IHdmiVendorCommandListener.Stub() { // from class: android.hardware.hdmi.HdmiClient.2
-            AnonymousClass2() {
-            }
-
             @Override // android.hardware.hdmi.IHdmiVendorCommandListener
             public void onReceived(int srcAddress, int destAddress, byte[] params, boolean hasVendorId) {
                 HdmiControlManager.VendorCommandListener.this.onReceived(srcAddress, destAddress, params, hasVendorId);

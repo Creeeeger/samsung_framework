@@ -7,7 +7,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.text.TextUtils;
 import java.util.ArrayList;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SelectionBuilder {
     private StringBuilder mSelection = new StringBuilder();
     private ArrayList<String> mSelectionArgs = new ArrayList<>();
@@ -42,8 +42,7 @@ public class SelectionBuilder {
     }
 
     public String[] getSelectionArgs() {
-        ArrayList<String> arrayList = this.mSelectionArgs;
-        return (String[]) arrayList.toArray(new String[arrayList.size()]);
+        return (String[]) this.mSelectionArgs.toArray(new String[this.mSelectionArgs.size()]);
     }
 
     public Cursor query(SQLiteDatabase db, String table, String[] columns, String orderBy) {

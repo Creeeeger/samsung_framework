@@ -65,11 +65,11 @@ public abstract class AccessibilityDisplayProxy {
         sendServiceInfos();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendServiceInfos() {
         AccessibilityInteractionClient.getInstance();
         IAccessibilityServiceConnection connection = AccessibilityInteractionClient.getConnection(this.mConnectionId);
-        List<AccessibilityServiceInfo> list = this.mInstalledAndEnabledServices;
-        if (list != null && list.size() > 0 && connection != null) {
+        if (this.mInstalledAndEnabledServices != null && this.mInstalledAndEnabledServices.size() > 0 && connection != null) {
             try {
                 connection.setInstalledAndEnabledServices(this.mInstalledAndEnabledServices);
                 AccessibilityInteractionClient.getInstance().clearCache(this.mConnectionId);
@@ -108,101 +108,9 @@ public abstract class AccessibilityDisplayProxy {
         }
     }
 
-    /* loaded from: classes4.dex */
     private class IAccessibilityServiceClientImpl extends AccessibilityService.IAccessibilityServiceClientWrapper {
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.view.accessibility.AccessibilityDisplayProxy$IAccessibilityServiceClientImpl$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 implements AccessibilityService.Callbacks {
-            AnonymousClass1() {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onAccessibilityEvent(AccessibilityEvent event) {
-                AccessibilityDisplayProxy.this.onAccessibilityEvent(event);
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onInterrupt() {
-                AccessibilityDisplayProxy.this.interrupt();
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onServiceConnected() {
-                AccessibilityDisplayProxy.this.sendServiceInfos();
-                AccessibilityDisplayProxy.this.onProxyConnected();
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void init(int connectionId, IBinder windowToken) {
-                AccessibilityDisplayProxy.this.mConnectionId = connectionId;
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public boolean onGesture(AccessibilityGestureEvent gestureInfo) {
-                return false;
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public boolean onKeyEvent(KeyEvent event) {
-                return false;
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onMagnificationChanged(int displayId, Region region, MagnificationConfig config) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onMotionEvent(MotionEvent event) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onTouchStateChanged(int displayId, int state) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onSoftKeyboardShowModeChanged(int showMode) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onPerformGestureResult(int sequence, boolean completedSuccessfully) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onFingerprintCapturingGesturesChanged(boolean active) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onFingerprintGesture(int gesture) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onAccessibilityButtonClicked(int displayId) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onAccessibilityButtonAvailabilityChanged(boolean available) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void onSystemActionsChanged() {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void createImeSession(IAccessibilityInputMethodSessionCallback callback) {
-            }
-
-            @Override // android.accessibilityservice.AccessibilityService.Callbacks
-            public void startInput(RemoteAccessibilityInputConnection inputConnection, EditorInfo editorInfo, boolean restarting) {
-            }
-        }
-
         IAccessibilityServiceClientImpl(Context context, Executor executor) {
             super(context, executor, new AccessibilityService.Callbacks() { // from class: android.view.accessibility.AccessibilityDisplayProxy.IAccessibilityServiceClientImpl.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.accessibilityservice.AccessibilityService.Callbacks
                 public void onAccessibilityEvent(AccessibilityEvent event) {
                     AccessibilityDisplayProxy.this.onAccessibilityEvent(event);

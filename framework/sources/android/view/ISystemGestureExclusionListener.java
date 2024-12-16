@@ -13,7 +13,6 @@ public interface ISystemGestureExclusionListener extends IInterface {
 
     void onSystemGestureExclusionChanged(int i, Region region, Region region2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISystemGestureExclusionListener {
         @Override // android.view.ISystemGestureExclusionListener
         public void onSystemGestureExclusionChanged(int displayId, Region systemGestureExclusion, Region systemGestureExclusionUnrestricted) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISystemGestureExclusionListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISystemGestureExclusionListener {
         static final int TRANSACTION_onSystemGestureExclusionChanged = 1;
 
@@ -68,27 +66,24 @@ public interface ISystemGestureExclusionListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemGestureExclusionListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemGestureExclusionListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemGestureExclusionListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Region _arg1 = (Region) data.readTypedObject(Region.CREATOR);
+                    Region _arg2 = (Region) data.readTypedObject(Region.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSystemGestureExclusionChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Region _arg1 = (Region) data.readTypedObject(Region.CREATOR);
-                            Region _arg2 = (Region) data.readTypedObject(Region.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSystemGestureExclusionChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISystemGestureExclusionListener {
+        private static class Proxy implements ISystemGestureExclusionListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class TemperatureThreshold implements Parcelable {
     public static final Parcelable.Creator<TemperatureThreshold> CREATOR = new Parcelable.Creator<TemperatureThreshold>() { // from class: android.hardware.thermal.TemperatureThreshold.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TemperatureThreshold createFromParcel(Parcel _aidl_source) {
             TemperatureThreshold _aidl_out = new TemperatureThreshold();
@@ -20,6 +18,7 @@ public class TemperatureThreshold implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TemperatureThreshold[] newArray(int _aidl_size) {
             return new TemperatureThreshold[_aidl_size];
@@ -29,25 +28,6 @@ public class TemperatureThreshold implements Parcelable {
     public float[] hotThrottlingThresholds;
     public String name;
     public int type;
-
-    /* renamed from: android.hardware.thermal.TemperatureThreshold$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TemperatureThreshold> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TemperatureThreshold createFromParcel(Parcel _aidl_source) {
-            TemperatureThreshold _aidl_out = new TemperatureThreshold();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TemperatureThreshold[] newArray(int _aidl_size) {
-            return new TemperatureThreshold[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -126,7 +106,7 @@ public class TemperatureThreshold implements Parcelable {
         _aidl_sj.add("name: " + Objects.toString(this.name));
         _aidl_sj.add("hotThrottlingThresholds: " + Arrays.toString(this.hotThrottlingThresholds));
         _aidl_sj.add("coldThrottlingThresholds: " + Arrays.toString(this.coldThrottlingThresholds));
-        return "android.hardware.thermal.TemperatureThreshold" + _aidl_sj.toString();
+        return "TemperatureThreshold" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

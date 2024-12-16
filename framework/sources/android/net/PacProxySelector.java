@@ -16,19 +16,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class PacProxySelector extends ProxySelector {
     private static final String PROXY = "PROXY ";
     public static final String PROXY_SERVICE = "com.android.net.IProxyService";
     private static final String SOCKS = "SOCKS ";
     private static final String TAG = "PacProxySelector";
     private final List<java.net.Proxy> mDefaultList;
-    private IProxyService mProxyService;
+    private IProxyService mProxyService = IProxyService.Stub.asInterface(ServiceManager.getService("com.android.net.IProxyService"));
 
     public PacProxySelector() {
-        IProxyService asInterface = IProxyService.Stub.asInterface(ServiceManager.getService("com.android.net.IProxyService"));
-        this.mProxyService = asInterface;
-        if (asInterface == null) {
+        if (this.mProxyService == null) {
             Log.e(TAG, "PacProxyService: no proxy service");
         }
         this.mDefaultList = Lists.newArrayList(java.net.Proxy.NO_PROXY);

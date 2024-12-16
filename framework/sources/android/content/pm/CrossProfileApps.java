@@ -95,6 +95,16 @@ public class CrossProfileApps {
         }
     }
 
+    public boolean isProfile(UserHandle userHandle) {
+        verifyCanAccessUser(userHandle);
+        return this.mUserManager.isProfile(userHandle.getIdentifier());
+    }
+
+    public boolean isManagedProfile(UserHandle userHandle) {
+        verifyCanAccessUser(userHandle);
+        return this.mUserManager.isManagedProfile(userHandle.getIdentifier());
+    }
+
     public CharSequence getProfileSwitchingLabel(UserHandle userHandle) {
         verifyCanAccessUser(userHandle);
         final boolean isManagedProfile = this.mUserManager.isManagedProfile(userHandle.getIdentifier());
@@ -113,18 +123,26 @@ public class CrossProfileApps {
     private CharSequence getCallingApplicationLabel() {
         PackageManager pm = this.mContext.getPackageManager();
         Intent launchIntent = pm.getLaunchIntentForPackage(this.mContext.getPackageName());
+        if (launchIntent == null) {
+            return getDefaultCallingApplicationLabel();
+        }
         List<ResolveInfo> infos = pm.queryIntentActivities(launchIntent, PackageManager.ResolveInfoFlags.of(65536L));
         if (infos.size() > 0) {
             return infos.get(0).loadLabel(pm);
         }
-        return this.mContext.getApplicationInfo().loadSafeLabel(pm, 0.0f, 3);
+        return getDefaultCallingApplicationLabel();
+    }
+
+    private CharSequence getDefaultCallingApplicationLabel() {
+        return this.mContext.getApplicationInfo().loadSafeLabel(this.mContext.getPackageManager(), 0.0f, 3);
     }
 
     private String getUpdatableProfileSwitchingLabelId(boolean isManagedProfile) {
         return isManagedProfile ? DevicePolicyResources.Strings.Core.SWITCH_TO_WORK_LABEL : DevicePolicyResources.Strings.Core.SWITCH_TO_PERSONAL_LABEL;
     }
 
-    /* renamed from: getDefaultProfileSwitchingLabel */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: getDefaultProfileSwitchingLabel, reason: merged with bridge method [inline-methods] */
     public String lambda$getProfileSwitchingLabel$0(boolean isManagedProfile, String label) {
         int stringRes = isManagedProfile ? R.string.managed_profile_app_label : R.string.user_owner_app_label;
         return this.mResources.getString(stringRes, label);
@@ -219,7 +237,7 @@ public class CrossProfileApps {
         }
     }
 
-    public static /* synthetic */ boolean lambda$resetInteractAcrossProfilesAppOps$1(Set newCrossProfilePackages, String packageName) {
+    static /* synthetic */ boolean lambda$resetInteractAcrossProfilesAppOps$1(Set newCrossProfilePackages, String packageName) {
         return !newCrossProfilePackages.contains(packageName);
     }
 

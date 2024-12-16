@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class MeasurementCorrections implements Parcelable {
     public static final Parcelable.Creator<MeasurementCorrections> CREATOR = new Parcelable.Creator<MeasurementCorrections>() { // from class: android.hardware.gnss.measurement_corrections.MeasurementCorrections.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MeasurementCorrections createFromParcel(Parcel _aidl_source) {
             MeasurementCorrections _aidl_out = new MeasurementCorrections();
@@ -18,6 +16,7 @@ public class MeasurementCorrections implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MeasurementCorrections[] newArray(int _aidl_size) {
             return new MeasurementCorrections[_aidl_size];
@@ -33,25 +32,6 @@ public class MeasurementCorrections implements Parcelable {
     public boolean hasEnvironmentBearing = false;
     public float environmentBearingDegrees = 0.0f;
     public float environmentBearingUncertaintyDegrees = 0.0f;
-
-    /* renamed from: android.hardware.gnss.measurement_corrections.MeasurementCorrections$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MeasurementCorrections> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MeasurementCorrections createFromParcel(Parcel _aidl_source) {
-            MeasurementCorrections _aidl_out = new MeasurementCorrections();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MeasurementCorrections[] newArray(int _aidl_size) {
-            return new MeasurementCorrections[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -28,7 +28,6 @@ public interface IIrisDaemonCallback extends IInterface {
 
     void onRemoved(long j, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIrisDaemonCallback {
         @Override // com.samsung.android.camera.iris.IIrisDaemonCallback
         public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) throws RemoteException {
@@ -72,7 +71,6 @@ public interface IIrisDaemonCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIrisDaemonCallback {
         static final int TRANSACTION_onAcquired = 2;
         static final int TRANSACTION_onAuthenticated = 3;
@@ -139,96 +137,92 @@ public interface IIrisDaemonCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIrisDaemonCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIrisDaemonCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIrisDaemonCallback.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollResult(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    EyeInfo _arg12 = (EyeInfo) data.readTypedObject(EyeInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    int _arg13 = data.readInt();
+                    int _arg22 = data.readInt();
+                    byte[] _arg32 = data.createByteArray();
+                    byte[] _arg4 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onAuthenticated(_arg03, _arg13, _arg22, _arg32, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    int _arg15 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRemoved(_arg05, _arg15, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    long _arg06 = data.readLong();
+                    String _arg16 = data.readString();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    onIRPropertyChanged(_arg06, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    long _arg07 = data.readLong();
+                    int[] _arg17 = data.createIntArray();
+                    int[] _arg25 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onEnumerate(_arg07, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    long _arg08 = data.readLong();
+                    int _arg18 = data.readInt();
+                    byte[] _arg26 = data.createByteArray();
+                    int _arg33 = data.readInt();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onImageProcessed(_arg08, _arg18, _arg26, _arg33, _arg42);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    long _arg09 = data.readLong();
+                    String _arg19 = data.readString();
+                    String _arg27 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGeneralParameterChanged(_arg09, _arg19, _arg27);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollResult(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            EyeInfo _arg12 = (EyeInfo) data.readTypedObject(EyeInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            int _arg13 = data.readInt();
-                            int _arg22 = data.readInt();
-                            byte[] _arg32 = data.createByteArray();
-                            byte[] _arg4 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onAuthenticated(_arg03, _arg13, _arg22, _arg32, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            int _arg15 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRemoved(_arg05, _arg15, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            long _arg06 = data.readLong();
-                            String _arg16 = data.readString();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            onIRPropertyChanged(_arg06, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            long _arg07 = data.readLong();
-                            int[] _arg17 = data.createIntArray();
-                            int[] _arg25 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onEnumerate(_arg07, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            long _arg08 = data.readLong();
-                            int _arg18 = data.readInt();
-                            byte[] _arg26 = data.createByteArray();
-                            int _arg33 = data.readInt();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onImageProcessed(_arg08, _arg18, _arg26, _arg33, _arg42);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            long _arg09 = data.readLong();
-                            String _arg19 = data.readString();
-                            String _arg27 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGeneralParameterChanged(_arg09, _arg19, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIrisDaemonCallback {
+        private static class Proxy implements IIrisDaemonCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

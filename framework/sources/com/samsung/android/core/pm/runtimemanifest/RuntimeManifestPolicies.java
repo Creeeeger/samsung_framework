@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RuntimeManifestPolicies {
     public static final String TAG = "RuntimeManifestPolicies";
     private final List<PolicyInfo> mApplications = new ArrayList();
@@ -23,7 +23,7 @@ public class RuntimeManifestPolicies {
         this.mApplications.addAll(applications);
     }
 
-    public static /* synthetic */ int lambda$getApplicationPolicies$0(PolicyInfo o1, PolicyInfo o2) {
+    static /* synthetic */ int lambda$getApplicationPolicies$0(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }
 
@@ -86,7 +86,7 @@ public class RuntimeManifestPolicies {
         return policies;
     }
 
-    public static /* synthetic */ int lambda$getAndSortFromMap$1(PolicyInfo o1, PolicyInfo o2) {
+    static /* synthetic */ int lambda$getAndSortFromMap$1(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }
 
@@ -101,11 +101,10 @@ public class RuntimeManifestPolicies {
         }
     }
 
-    public static /* synthetic */ int lambda$sortMap$2(PolicyInfo o1, PolicyInfo o2) {
+    static /* synthetic */ int lambda$sortMap$2(PolicyInfo o1, PolicyInfo o2) {
         return o2.getPriority() - o1.getPriority();
     }
 
-    /* loaded from: classes5.dex */
     public static class PolicyInfo {
         private static final String COERCED_LABEL = "coerced_label";
         private static final String ENABLED = "enabled";

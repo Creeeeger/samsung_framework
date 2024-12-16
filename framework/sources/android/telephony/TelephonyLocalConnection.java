@@ -2,11 +2,10 @@ package android.telephony;
 
 import java.util.UUID;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TelephonyLocalConnection {
     private static ConnectionImpl sInstance;
 
-    /* loaded from: classes3.dex */
     public interface ConnectionImpl {
         String getCallComposerServerUrlForHandle(int i, UUID uuid);
     }

@@ -3,20 +3,19 @@ package android.media.tv;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class CommandRequest extends BroadcastInfoRequest implements Parcelable {
     public static final String ARGUMENT_TYPE_JSON = "json";
     public static final String ARGUMENT_TYPE_XML = "xml";
     public static final Parcelable.Creator<CommandRequest> CREATOR = new Parcelable.Creator<CommandRequest>() { // from class: android.media.tv.CommandRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CommandRequest createFromParcel(Parcel source) {
             source.readInt();
             return CommandRequest.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CommandRequest[] newArray(int size) {
             return new CommandRequest[size];
@@ -28,25 +27,7 @@ public final class CommandRequest extends BroadcastInfoRequest implements Parcel
     private final String mName;
     private final String mNamespace;
 
-    /* renamed from: android.media.tv.CommandRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CommandRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CommandRequest createFromParcel(Parcel source) {
-            source.readInt();
-            return CommandRequest.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CommandRequest[] newArray(int size) {
-            return new CommandRequest[size];
-        }
-    }
-
-    public static CommandRequest createFromParcelBody(Parcel in) {
+    static CommandRequest createFromParcelBody(Parcel in) {
         return new CommandRequest(in);
     }
 

@@ -4,15 +4,15 @@ package android.filterfw.core;
 public abstract class Scheduler {
     private FilterGraph mGraph;
 
-    public abstract void reset();
+    abstract void reset();
 
-    public abstract Filter scheduleNextNode();
+    abstract Filter scheduleNextNode();
 
-    public Scheduler(FilterGraph graph) {
+    Scheduler(FilterGraph graph) {
         this.mGraph = graph;
     }
 
-    public FilterGraph getGraph() {
+    FilterGraph getGraph() {
         return this.mGraph;
     }
 

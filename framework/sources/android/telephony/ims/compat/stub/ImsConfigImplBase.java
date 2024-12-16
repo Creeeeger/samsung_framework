@@ -10,7 +10,7 @@ import com.android.ims.internal.IImsConfig;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsConfigImplBase {
     private static final String TAG = "ImsConfigImplBase";
     ImsConfigStub mImsConfigStub;
@@ -63,7 +63,6 @@ public class ImsConfigImplBase {
         this.mImsConfigStub.updateCachedValue(item, value, true);
     }
 
-    /* loaded from: classes3.dex */
     public static class ImsConfigStub extends IImsConfig.Stub {
         Context mContext;
         WeakReference<ImsConfigImplBase> mImsConfigImplBaseWeakReference;
@@ -164,9 +163,8 @@ public class ImsConfigImplBase {
             Intent configChangedIntent = new Intent(ImsConfig.ACTION_IMS_CONFIG_CHANGED);
             configChangedIntent.putExtra(ImsConfig.EXTRA_CHANGED_ITEM, item);
             configChangedIntent.putExtra("value", value);
-            Context context = this.mContext;
-            if (context != null) {
-                context.sendBroadcast(configChangedIntent);
+            if (this.mContext != null) {
+                this.mContext.sendBroadcast(configChangedIntent);
             }
         }
 

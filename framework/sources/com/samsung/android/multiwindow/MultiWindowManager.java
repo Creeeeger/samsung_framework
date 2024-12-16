@@ -3,6 +3,7 @@ package com.samsung.android.multiwindow;
 import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.PointF;
@@ -21,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MultiWindowManager {
     public static final String ACTION_AUTORUN_FLEX_PANEL = "android.intent.action.AUTORUN_FLEX_PANEL";
     public static final String ACTION_COLLAPSE_FLEX_PANEL = "android.intent.action.COLLAPSE_FLEX_PANEL";
@@ -33,10 +34,10 @@ public class MultiWindowManager {
     public static final int ASSISTANT_HOT_KEY_MODE_FREEFORM = 3;
     public static final int ASSISTANT_HOT_KEY_MODE_FULL = 1;
     public static final int ASSISTANT_HOT_KEY_MODE_SPLIT = 2;
-    public static final String BUNDLE_TASK_REMOVED = "bundle_task_removed";
     public static final int CHANGE_FREEFORM_STASH_FOCUSABLE = 1;
     public static final int CHANGE_FREEFORM_STASH_NONE_FOCUSABLE = 2;
     public static final int CHANGE_FREEFORM_STASH_UNDEFINED = 0;
+    public static final int CHANGE_TRANSIT_FLAG_FORCE_COLLECT = 2;
     public static final int CHANGE_TRANSIT_FLAG_USE_FLOATING_LAYER = 1;
     public static final int CHANGE_TRANSIT_MODE_DISMISS = 2;
     public static final int CHANGE_TRANSIT_MODE_FREEFORM_CAPTION_TYPE_CHANGE = 3;
@@ -50,25 +51,30 @@ public class MultiWindowManager {
     public static final int EMBED_ACTIVITY_PACKAGE_DISABLED = 2;
     public static final int EMBED_ACTIVITY_PACKAGE_ENABLED = 1;
     public static final int EMBED_ACTIVITY_PACKAGE_UNDEFINED = 0;
+    public static final String EXTRA_AI_HOT_KEY_LAUNCH_BOUNDS = "ai_hot_key_launch_bounds";
+    public static final String EXTRA_AI_HOT_KEY_LAUNCH_FREEFORM = "ai_hot_key_launch_freeform";
+    public static final String EXTRA_AI_LAUNCH_MODE = "ai_launch_mode";
+    public static final String EXTRA_AI_LAUNCH_SPLIT_RATIO = "ai_launch_split_ratio";
     public static final String EXTRA_IN_MULTI_WINDOW_MODE = "com.samsung.android.extra.IN_MULTI_WINDOW_MODE";
     public static final String EXTRA_MULTI_WINDOW_ENABLED = "com.samsung.android.extra.MULTI_WINDOW_ENABLED";
     public static final String EXTRA_MULTI_WINDOW_ENABLED_USER_ID = "com.samsung.android.extra.MULTI_WINDOW_ENABLED_USER_ID";
     public static final String EXTRA_MULTI_WINDOW_ENABLE_REQUESTER = "com.samsung.android.extra.MULTI_WINDOW_ENABLE_REQUESTER";
     public static final String FLEX_MODE_PANEL_ENABLED = "flex_mode_panel_enabled";
     public static final int FORCE_HIDING_TRANSIT_ENTER = 1;
+    public static final int FORCE_HIDING_TRANSIT_ENTER_WITHOUT_ANIMATION = 3;
     public static final int FORCE_HIDING_TRANSIT_EXIT = 2;
+    public static final int FORCE_HIDING_TRANSIT_EXIT_WITHOUT_ANIMATION = 4;
     public static final int FORCE_HIDING_TRANSIT_UNDEFINED = 0;
     public static final int FREEFORM_CAPTION_TYPE_BAR = 1;
-    public static final int FREEFORM_CAPTION_TYPE_HANDLER = 0;
+    public static final int FREEFORM_CAPTION_TYPE_HANDLE = 0;
     public static final int FREEFORM_CAPTION_TYPE_UNDEFINED = -1;
     public static final int FREEFORM_CORNER_RADIUS_IN_DP = 14;
     public static final int FREEFORM_TRANSIT_MINIMIZE = 1;
     public static final int FREEFORM_TRANSIT_NONE = 0;
     public static final int FREEFORM_TRANSIT_RESTORE = 2;
     private static final Singleton<IMultiTaskingBinder> IMultiTaskingBinderSingleton = new Singleton<IMultiTaskingBinder>() { // from class: com.samsung.android.multiwindow.MultiWindowManager.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public IMultiTaskingBinder create() {
             try {
@@ -118,45 +124,35 @@ public class MultiWindowManager {
     public static final int TYPE_LONG_PRESS = 1;
     private static MultiWindowManager sInstance;
 
-    /* loaded from: classes5.dex */
     public @interface AssistantHotKeyMode {
     }
 
-    /* loaded from: classes5.dex */
     public @interface ChangeFreeformStashMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ChangeTransitionFlags {
     }
 
-    /* loaded from: classes5.dex */
     public @interface ChangeTransitionMode {
     }
 
-    /* loaded from: classes5.dex */
     public @interface ForceHidingTransit {
     }
 
-    /* loaded from: classes5.dex */
     public @interface FreeformCaptionType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface MultiSplitFlags {
     }
 
-    /* loaded from: classes5.dex */
     public @interface SplitActivityPackageEnabledState {
     }
 
-    /* loaded from: classes5.dex */
     public @interface SplitFeasibleMode {
     }
 
-    /* loaded from: classes5.dex */
     public @interface embedActivityPackageEnabledState {
     }
 
@@ -188,7 +184,7 @@ public class MultiWindowManager {
             case -1:
                 return "CAPTION_TYPE_UNDEFINED";
             case 0:
-                return "CAPTION_TYPE_HANDLER";
+                return "CAPTION_TYPE_HANDLE";
             case 1:
                 return "CAPTION_TYPE_BAR";
             default:
@@ -197,13 +193,21 @@ public class MultiWindowManager {
     }
 
     public static int stringToFreeformCaptionType(String string) {
-        if ("CAPTION_TYPE_HANDLER".equals(string)) {
+        if ("CAPTION_TYPE_HANDLE".equals(string)) {
             return 0;
         }
         if ("CAPTION_TYPE_BAR".equals(string)) {
             return 1;
         }
         return -1;
+    }
+
+    public static boolean isCaptionTypeHandle(int captionType) {
+        return captionType == 0;
+    }
+
+    public static boolean isCaptionTypeBar(int captionType) {
+        return captionType == 1;
     }
 
     public static String forceHidingTransitToString(int forceHidingTransit) {
@@ -214,21 +218,12 @@ public class MultiWindowManager {
                 return "FORCE_HIDING_TRANSIT_ENTER";
             case 2:
                 return "FORCE_HIDING_TRANSIT_EXIT";
+            case 3:
+                return "FORCE_HIDING_TRANSIT_ENTER_WITHOUT_ANIMATION";
+            case 4:
+                return "FORCE_HIDING_TRANSIT_EXIT_WITHOUT_ANIMATION";
             default:
                 return Integer.toString(forceHidingTransit);
-        }
-    }
-
-    public static String splitActivityPackageEnabledStateToString(int state) {
-        switch (state) {
-            case 0:
-                return "SPLIT_ACTIVITY_PACKAGE_DISABLED";
-            case 1:
-                return "SPLIT_ACTIVITY_PACKAGE_ENABLED";
-            case 2:
-                return "SPLIT_ACTIVITY_PACKAGE_BLOCKED";
-            default:
-                return Integer.toString(state);
         }
     }
 
@@ -245,6 +240,40 @@ public class MultiWindowManager {
         }
     }
 
+    public static String splitActivityPackageEnabledStateToString(int state) {
+        switch (state) {
+            case 0:
+                return "SPLIT_ACTIVITY_PACKAGE_DISABLED";
+            case 1:
+                return "SPLIT_ACTIVITY_PACKAGE_ENABLED";
+            case 2:
+                return "SPLIT_ACTIVITY_PACKAGE_BLOCKED";
+            default:
+                return Integer.toString(state);
+        }
+    }
+
+    public static String changeFreeformStashModeToString(int changeStashMode) {
+        switch (changeStashMode) {
+            case 0:
+                return "CHANGE_FREEFORM_STASH_UNDEFINED";
+            case 1:
+                return "CHANGE_FREEFORM_STASH_FOCUSABLE";
+            case 2:
+                return "CHANGE_FREEFORM_STASH_NONE_FOCUSABLE";
+            default:
+                return Integer.toString(changeStashMode);
+        }
+    }
+
+    public void setBoostFreeformTaskLayer(int taskId, boolean boost) {
+        try {
+            getDefault().setBoostFreeformTaskLayer(taskId, boost);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
     public static MultiWindowManager getInstance() {
         if (sInstance == null) {
             sInstance = new MultiWindowManager();
@@ -252,186 +281,78 @@ public class MultiWindowManager {
         return sInstance;
     }
 
-    /* renamed from: com.samsung.android.multiwindow.MultiWindowManager$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends Singleton<IMultiTaskingBinder> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.util.Singleton
-        public IMultiTaskingBinder create() {
-            try {
-                return ActivityTaskManager.getService().getMultiTaskingBinder();
-            } catch (RemoteException e) {
-                return null;
-            }
-        }
-    }
-
     private static IMultiTaskingBinder getDefault() {
         return IMultiTaskingBinderSingleton.get();
     }
 
     private static void warningException(Exception e) {
-        if (CoreRune.SAFE_DEBUG) {
-            e.printStackTrace();
-        } else {
-            Log.w(TAG, "warningException() : caller=" + Debug.getCaller() + e.getMessage());
-        }
+        Log.w(TAG, "warningException() : caller=" + Debug.getCaller() + e.getMessage());
     }
 
-    public boolean minimizeTaskById(int taskId) {
+    public boolean exitMultiWindow(IBinder token, boolean checkPermission) {
         try {
-            return getDefault().minimizeTaskById(taskId);
+            return getDefault().exitMultiWindow(token, checkPermission);
         } catch (RemoteException e) {
             warningException(e);
             return false;
         }
     }
 
-    public boolean minimizeAllTasks(int displayId) {
+    public int getMultiWindowModeStates(int displayId) {
         try {
-            return getDefault().minimizeAllTasks(displayId);
+            return getDefault().getMultiWindowModeStates(displayId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return 0;
+        }
+    }
+
+    public void setCornerGestureEnabledWithSettings(boolean enabled) {
+        try {
+            getDefault().setCornerGestureEnabledWithSettings(enabled);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public boolean isValidCornerGesture(MotionEvent ev) {
+        try {
+            return getDefault().isValidCornerGesture(ev);
         } catch (RemoteException e) {
             warningException(e);
             return false;
         }
     }
 
-    public boolean minimizeAllTasksByRecents(int displayId) {
+    public boolean isCornerGestureRunning() {
         try {
-            return getDefault().minimizeAllTasksByRecents(displayId);
+            return getDefault().isCornerGestureRunning();
         } catch (RemoteException e) {
             warningException(e);
             return false;
         }
     }
 
-    public boolean minimizeTaskToSpecificPosition(int taskId, boolean animate, int x, int y) {
+    public void setSplitImmersiveMode(boolean enable) {
         try {
-            return getDefault().minimizeTaskToSpecificPosition(taskId, animate, x, y);
+            getDefault().setSplitImmersiveMode(enable);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public boolean isSplitImmersiveModeEnabled() {
+        try {
+            return getDefault().isSplitImmersiveModeEnabled();
         } catch (RemoteException e) {
             warningException(e);
             return false;
         }
     }
 
-    public void registerFreeformCallback(IFreeformCallback observer) {
+    public void setNaviBarImmersiveModeLocked(boolean enable) {
         try {
-            getDefault().registerFreeformCallback(observer);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void unregisterFreeformCallback(IFreeformCallback observer) {
-        try {
-            getDefault().unregisterFreeformCallback(observer);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void notifyFreeformMinimizeAnimationEnd(int taskId, PointF point) {
-        try {
-            getDefault().notifyFreeformMinimizeAnimationEnd(taskId, point);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void reportFreeformContainerPoint(PointF point) {
-        try {
-            getDefault().reportFreeformContainerPoint(point);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public PointF getFreeformContainerPoint() {
-        try {
-            getDefault().getFreeformContainerPoint();
-            return null;
-        } catch (RemoteException e) {
-            warningException(e);
-            return null;
-        }
-    }
-
-    public List<ActivityManager.RunningTaskInfo> getMinimizedFreeformTasksForCurrentUser() {
-        try {
-            return getDefault().getMinimizedFreeformTasksForCurrentUser().getList();
-        } catch (RemoteException e) {
-            warningException(e);
-            return null;
-        }
-    }
-
-    public void setBlockedMinimizeFreeformEnable(boolean enabled) {
-        try {
-            getDefault().setBlockedMinimizeFreeformEnable(enabled);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void setCustomDensityEnabled(int enabledFlags) {
-        try {
-            getDefault().setCustomDensityEnabled(enabledFlags);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void setEnsureLaunchSplitEnabled(boolean enabled) {
-        try {
-            getDefault().setEnsureLaunchSplitEnabled(enabled);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public List<ActivityManager.RunningTaskInfo> getVisibleTasks() {
-        try {
-            return getDefault().getVisibleTasks().getList();
-        } catch (Exception e) {
-            warningException(e);
-            return Collections.emptyList();
-        }
-    }
-
-    public void setMaxVisibleFreeformCountForDex(int maxCount, int maxDexCount) {
-        try {
-            getDefault().setMaxVisibleFreeformCountForDex(maxCount, maxDexCount);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void notifyDragSplitAppIconHasDrawable(boolean hasDrawable) {
-        try {
-            getDefault().notifyDragSplitAppIconHasDrawable(hasDrawable);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<String> getMWDisableRequesters() {
-        try {
-            return getDefault().getMWDisableRequesters().getList();
-        } catch (RemoteException e) {
-            warningException(e);
-            return null;
-        }
-    }
-
-    public void setMultiWindowEnabled(String key, String reason, boolean enabled) {
-        setMultiWindowEnabledForUser(key, reason, enabled, UserHandle.myUserId());
-    }
-
-    public void setMultiWindowEnabledForUser(String key, String reason, boolean enabled, int userId) {
-        try {
-            getDefault().setMultiWindowEnabledForUser(key, reason, enabled, userId);
+            getDefault().setNaviStarSplitImmersiveMode(enable);
         } catch (RemoteException e) {
             warningException(e);
         }
@@ -514,30 +435,32 @@ public class MultiWindowManager {
         }
     }
 
-    public int getDexTaskInfoFlags(IBinder token) {
+    public void notifyDragSplitAppIconHasDrawable(boolean hasDrawable) {
         try {
-            return getDefault().getDexTaskInfoFlags(token);
+            getDefault().notifyDragSplitAppIconHasDrawable(hasDrawable);
         } catch (RemoteException e) {
-            warningException(e);
-            return 0;
+            e.printStackTrace();
         }
     }
 
-    public boolean isAllTasksResizable(int taskId1, int taskId2, int taskId3) {
+    public List<String> getMWDisableRequesters() {
         try {
-            return getDefault().isAllTasksResizable(taskId1, taskId2, taskId3);
+            return getDefault().getMWDisableRequesters().getList();
         } catch (RemoteException e) {
             warningException(e);
-            return false;
+            return null;
         }
     }
 
-    public boolean isDismissedFlexPanelMode() {
+    public void setMultiWindowEnabled(String key, String reason, boolean enabled) {
+        setMultiWindowEnabledForUser(key, reason, enabled, UserHandle.myUserId());
+    }
+
+    public void setMultiWindowEnabledForUser(String key, String reason, boolean enabled, int userId) {
         try {
-            return getDefault().isDismissedFlexPanelMode();
+            getDefault().setMultiWindowEnabledForUser(key, reason, enabled, userId);
         } catch (RemoteException e) {
             warningException(e);
-            return false;
         }
     }
 
@@ -574,226 +497,81 @@ public class MultiWindowManager {
         }
     }
 
-    public SurfaceFreezerSnapshot getSurfaceFreezerSnapshot(int taskId) {
+    public boolean isAllTasksResizable(int taskId1, int taskId2, int taskId3) {
         try {
-            return getDefault().getSurfaceFreezerSnapshot(taskId);
+            return getDefault().isAllTasksResizable(taskId1, taskId2, taskId3);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public boolean isDismissedFlexPanelMode() {
+        try {
+            return getDefault().isDismissedFlexPanelMode();
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public void registerFreeformCallback(IFreeformCallback observer) {
+        try {
+            getDefault().registerFreeformCallback(observer);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void unregisterFreeformCallback(IFreeformCallback observer) {
+        try {
+            getDefault().unregisterFreeformCallback(observer);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void notifyFreeformMinimizeAnimationEnd(int taskId, PointF point) {
+        try {
+            getDefault().notifyFreeformMinimizeAnimationEnd(taskId, point);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void reportFreeformContainerPoint(PointF point) {
+        try {
+            getDefault().reportFreeformContainerPoint(point);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public PointF getFreeformContainerPoint() {
+        try {
+            getDefault().getFreeformContainerPoint();
+            return null;
         } catch (RemoteException e) {
             warningException(e);
             return null;
         }
     }
 
-    public boolean startNaturalSwitching(IBinder client, IBinder dragTargetToken) {
+    public List<ActivityManager.RunningTaskInfo> getMinimizedFreeformTasksForCurrentUser() {
         try {
-            return getDefault().startNaturalSwitching(client, dragTargetToken);
+            return getDefault().getMinimizedFreeformTasksForCurrentUser().getList();
         } catch (RemoteException e) {
             warningException(e);
-            return false;
+            return null;
         }
     }
 
-    public void finishNaturalSwitching() {
+    public List<ActivityManager.RunningTaskInfo> getVisibleTasks() {
         try {
-            getDefault().finishNaturalSwitching();
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public boolean preventNaturalSwitching(int taskId) {
-        try {
-            return getDefault().preventNaturalSwitching(taskId);
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public void rotateDexCompatTask(IBinder token) {
-        try {
-            getDefault().rotateDexCompatTask(token);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public List<String> getSplitActivityAllowPackages() {
-        try {
-            return getDefault().getSplitActivityAllowPackages();
-        } catch (RemoteException e) {
-            warningException(e);
-            return List.of();
-        }
-    }
-
-    public int getSplitActivityPackageEnabled(String packageName, int userId) {
-        try {
-            return getDefault().getSplitActivityPackageEnabled(packageName, userId);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to getSplitActivityPackageEnabled", e);
-            return 0;
-        }
-    }
-
-    public void setSplitActivityPackageEnabled(String packageName, int newState, int userId) {
-        try {
-            getDefault().setSplitActivityPackageEnabled(packageName, newState, userId);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to setSplitActivityPackageEnabled", e);
-        }
-    }
-
-    public boolean getEmbedActivityPackageEnabled(String packageName, int userId) {
-        try {
-            return getDefault().getEmbedActivityPackageEnabled(packageName, userId);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to getEmbedActivityPackageEnabled", e);
-            return true;
-        }
-    }
-
-    public void setEmbedActivityPackageEnabled(String packageName, boolean enabled, int userId) {
-        try {
-            getDefault().setEmbedActivityPackageEnabled(packageName, enabled, userId);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to setEmbedActivityPackageEnabled", e);
-        }
-    }
-
-    public List<String> getSupportEmbedActivityPackages() {
-        try {
-            return getDefault().getSupportEmbedActivityPackages();
-        } catch (RemoteException e) {
-            warningException(e);
-            return List.of();
-        }
-    }
-
-    public void toggleFreeformWindowingModeForDex(WindowContainerToken token) {
-        try {
-            getDefault().toggleFreeformWindowingModeForDex(token);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public boolean exitMultiWindow(IBinder token, boolean checkPermission) {
-        try {
-            return getDefault().exitMultiWindow(token, checkPermission);
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public int getMultiWindowModeStates(int displayId) {
-        try {
-            return getDefault().getMultiWindowModeStates(displayId);
-        } catch (RemoteException e) {
-            warningException(e);
-            return 0;
-        }
-    }
-
-    public void setCornerGestureEnabledWithSettings(boolean enabled) {
-        try {
-            getDefault().setCornerGestureEnabledWithSettings(enabled);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public boolean isValidCornerGesture(MotionEvent ev) {
-        try {
-            return getDefault().isValidCornerGesture(ev);
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public void setSplitImmersiveMode(boolean enable) {
-        try {
-            getDefault().setSplitImmersiveMode(enable);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public boolean isSplitImmersiveModeEnabled() {
-        try {
-            return getDefault().isSplitImmersiveModeEnabled();
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public void setNaviBarImmersiveModeLocked(boolean enable) {
-        try {
-            getDefault().setNaviStarSplitImmersiveMode(enable);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public List<ActivityManager.RecentTaskInfo> getTaskInfoFromPackageName(String packageName) {
-        try {
-            return getDefault().getTaskInfoFromPackageName(packageName).getList();
-        } catch (RemoteException e) {
+            return getDefault().getVisibleTasks().getList();
+        } catch (Exception e) {
             warningException(e);
             return Collections.emptyList();
-        }
-    }
-
-    public boolean removeFocusedTask(int displayId) {
-        try {
-            return getDefault().removeFocusedTask(displayId);
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public void setStayFocusActivityEnabled(boolean enabled) {
-        try {
-            getDefault().setStayFocusActivityEnabled(enabled);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void setStayFocusAndTopResumedActivityEnabled(boolean stayFocusEnabled, boolean stayTopResumedEnabled) {
-        try {
-            getDefault().setStayFocusAndTopResumedActivityEnabled(stayFocusEnabled, stayTopResumedEnabled);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public boolean hasMinimizedToggleTasks() {
-        try {
-            return getDefault().hasMinimizedToggleTasks();
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public boolean toggleFreeformWindowingMode() {
-        try {
-            return getDefault().toggleFreeformWindowingMode();
-        } catch (RemoteException e) {
-            warningException(e);
-            return false;
-        }
-    }
-
-    public void saveFreeformBounds(int taskId) {
-        try {
-            getDefault().saveFreeformBounds(taskId);
-        } catch (RemoteException e) {
-            warningException(e);
         }
     }
 
@@ -866,95 +644,79 @@ public class MultiWindowManager {
         }
     }
 
-    public void registerDexSnappingCallback(IDexSnappingCallback observer) {
+    public List<ActivityManager.RecentTaskInfo> getTaskInfoFromPackageName(String packageName) {
         try {
-            getDefault().registerDexSnappingCallback(observer);
+            return getDefault().getTaskInfoFromPackageName(packageName).getList();
+        } catch (RemoteException e) {
+            warningException(e);
+            return Collections.emptyList();
+        }
+    }
+
+    public boolean removeFocusedTask(int displayId) {
+        try {
+            return getDefault().removeFocusedTask(displayId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public boolean minimizeTaskById(int taskId) {
+        try {
+            return getDefault().minimizeTaskById(taskId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public boolean minimizeAllTasks(int displayId) {
+        try {
+            return getDefault().minimizeAllTasks(displayId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public boolean minimizeAllTasksByRecents(int displayId) {
+        try {
+            return getDefault().minimizeAllTasksByRecents(displayId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public boolean minimizeTaskToSpecificPosition(int taskId, boolean animate, int x, int y) {
+        try {
+            return getDefault().minimizeTaskToSpecificPosition(taskId, animate, x, y);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public void saveFreeformBounds(int taskId) {
+        try {
+            getDefault().saveFreeformBounds(taskId);
         } catch (RemoteException e) {
             warningException(e);
         }
     }
 
-    public void unregisterDexSnappingCallback(IDexSnappingCallback observer) {
+    public void setStayFocusActivityEnabled(boolean enabled) {
         try {
-            getDefault().unregisterDexSnappingCallback(observer);
+            getDefault().setStayFocusActivityEnabled(enabled);
         } catch (RemoteException e) {
             warningException(e);
         }
     }
 
-    public void scheduleNotifyDexSnappingCallback(int taskId, Rect otherBounds) {
+    public void setStayFocusAndTopResumedActivityEnabled(boolean stayFocusEnabled, boolean stayTopResumedEnabled) {
         try {
-            getDefault().scheduleNotifyDexSnappingCallback(taskId, otherBounds);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void initDockingBounds(Rect leftBounds, Rect rightBounds, int displayWidth) {
-        try {
-            getDefault().initDockingBounds(leftBounds, rightBounds, displayWidth);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void setCandidateTask(int TaskId) {
-        try {
-            getDefault().setCandidateTask(TaskId);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public int calculateMaxWidth(int taskDockingState, int displayWidth, int defaultMinWidth) {
-        try {
-            return getDefault().calculateMaxWidth(taskDockingState, displayWidth, defaultMinWidth);
-        } catch (RemoteException e) {
-            warningException(e);
-            return defaultMinWidth;
-        }
-    }
-
-    public void resizeOtherTaskIfNeeded(int taskId, Rect bounds) {
-        try {
-            getDefault().resizeOtherTaskIfNeeded(taskId, bounds);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void clearAllDockingTasks(String reason) {
-        try {
-            getDefault().clearAllDockingTasks(reason);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public static String changeFreeformStashModeToString(int changeStashMode) {
-        switch (changeStashMode) {
-            case 0:
-                return "CHANGE_FREEFORM_STASH_UNDEFINED";
-            case 1:
-                return "CHANGE_FREEFORM_STASH_FOCUSABLE";
-            case 2:
-                return "CHANGE_FREEFORM_STASH_NONE_FOCUSABLE";
-            default:
-                return Integer.toString(changeStashMode);
-        }
-    }
-
-    public void setBoostFreeformTaskLayer(int taskId, boolean boost) {
-        try {
-            getDefault().setBoostFreeformTaskLayer(taskId, boost);
-        } catch (RemoteException e) {
-            warningException(e);
-        }
-    }
-
-    public void toggleFreeformForDexCompatApp(int taskId) {
-        try {
-            getDefault().toggleFreeformForDexCompatApp(taskId);
+            getDefault().setStayFocusAndTopResumedActivityEnabled(stayFocusEnabled, stayTopResumedEnabled);
         } catch (RemoteException e) {
             warningException(e);
         }
@@ -1007,6 +769,252 @@ public class MultiWindowManager {
             warningException(e);
             return false;
         }
+    }
+
+    public boolean hasMinimizedToggleTasks() {
+        try {
+            return getDefault().hasMinimizedToggleTasks();
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public int getDexTaskInfoFlags(IBinder token) {
+        try {
+            return getDefault().getDexTaskInfoFlags(token);
+        } catch (RemoteException e) {
+            warningException(e);
+            return 0;
+        }
+    }
+
+    public void toggleFreeformWindowingModeForDex(WindowContainerToken token) {
+        try {
+            getDefault().toggleFreeformWindowingModeForDex(token);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void rotateDexCompatTask(IBinder token) {
+        try {
+            getDefault().rotateDexCompatTask(token);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void toggleFreeformForDexCompatApp(int taskId) {
+        try {
+            getDefault().toggleFreeformForDexCompatApp(taskId);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void setBlockedMinimizeFreeformEnable(boolean enabled) {
+        try {
+            getDefault().setBlockedMinimizeFreeformEnable(enabled);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void setCustomDensityEnabled(int enabledFlags) {
+        try {
+            getDefault().setCustomDensityEnabled(enabledFlags);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void setEnsureLaunchSplitEnabled(boolean enabled) {
+        try {
+            getDefault().setEnsureLaunchSplitEnabled(enabled);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void setMaxVisibleFreeformCountForDex(int maxCount, int maxDexCount) {
+        try {
+            getDefault().setMaxVisibleFreeformCountForDex(maxCount, maxDexCount);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void changeToHorizontalSplitLayout(IBinder token) {
+        try {
+            getDefault().changeToHorizontalSplitLayout(token);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerDexSnappingCallback(IDexSnappingCallback observer) {
+        try {
+            getDefault().registerDexSnappingCallback(observer);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void unregisterDexSnappingCallback(IDexSnappingCallback observer) {
+        try {
+            getDefault().unregisterDexSnappingCallback(observer);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void scheduleNotifyDexSnappingCallback(int taskId, Rect otherBounds) {
+        try {
+            getDefault().scheduleNotifyDexSnappingCallback(taskId, otherBounds);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public SurfaceFreezerSnapshot getSurfaceFreezerSnapshot(int taskId) {
+        try {
+            return getDefault().getSurfaceFreezerSnapshot(taskId);
+        } catch (RemoteException | IllegalArgumentException e) {
+            warningException(e);
+            return null;
+        }
+    }
+
+    public boolean startNaturalSwitching(IBinder client, IBinder dragTargetToken) {
+        try {
+            return getDefault().startNaturalSwitching(client, dragTargetToken);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public void finishNaturalSwitching() {
+        try {
+            getDefault().finishNaturalSwitching();
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public boolean preventNaturalSwitching(int taskId) {
+        try {
+            return getDefault().preventNaturalSwitching(taskId);
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public void initDockingBounds(Rect leftBounds, Rect rightBounds, int displayWidth) {
+        try {
+            getDefault().initDockingBounds(leftBounds, rightBounds, displayWidth);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void setCandidateTask(int TaskId) {
+        try {
+            getDefault().setCandidateTask(TaskId);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public int calculateMaxWidth(int taskDockingState, int displayWidth, int defaultMinWidth) {
+        try {
+            return getDefault().calculateMaxWidth(taskDockingState, displayWidth, defaultMinWidth);
+        } catch (RemoteException e) {
+            warningException(e);
+            return defaultMinWidth;
+        }
+    }
+
+    public void resizeOtherTaskIfNeeded(int taskId, Rect bounds) {
+        try {
+            getDefault().resizeOtherTaskIfNeeded(taskId, bounds);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public void clearAllDockingTasks(String reason) {
+        try {
+            getDefault().clearAllDockingTasks(reason);
+        } catch (RemoteException e) {
+            warningException(e);
+        }
+    }
+
+    public boolean toggleFreeformWindowingMode() {
+        try {
+            return getDefault().toggleFreeformWindowingMode();
+        } catch (RemoteException e) {
+            warningException(e);
+            return false;
+        }
+    }
+
+    public List<String> getSplitActivityAllowPackages() {
+        try {
+            return getDefault().getSplitActivityAllowPackages();
+        } catch (RemoteException e) {
+            warningException(e);
+            return List.of();
+        }
+    }
+
+    public int getSplitActivityPackageEnabled(String packageName, int userId) {
+        try {
+            return getDefault().getSplitActivityPackageEnabled(packageName, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to getSplitActivityPackageEnabled", e);
+            return 0;
+        }
+    }
+
+    public void setSplitActivityPackageEnabled(String packageName, int newState, int userId) {
+        try {
+            getDefault().setSplitActivityPackageEnabled(packageName, newState, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to setSplitActivityPackageEnabled", e);
+        }
+    }
+
+    public boolean getEmbedActivityPackageEnabled(String packageName, int userId) {
+        try {
+            return getDefault().getEmbedActivityPackageEnabled(packageName, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to getEmbedActivityPackageEnabled", e);
+            return true;
+        }
+    }
+
+    public void setEmbedActivityPackageEnabled(String packageName, boolean enabled, int userId) {
+        try {
+            getDefault().setEmbedActivityPackageEnabled(packageName, enabled, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to setEmbedActivityPackageEnabled", e);
+        }
+    }
+
+    public List<String> getSupportEmbedActivityPackages() {
+        try {
+            return getDefault().getSupportEmbedActivityPackages();
+        } catch (RemoteException e) {
+            warningException(e);
+            return List.of();
+        }
+    }
+
+    public void startAssistantActivityToSplit(Intent assistantActivityIntent, float splitRatio) {
     }
 
     public void registerDexTransientDelayListener(IDexTransientCaptionDelayListener listener) {

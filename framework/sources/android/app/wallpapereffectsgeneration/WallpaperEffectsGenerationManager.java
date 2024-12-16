@@ -11,7 +11,6 @@ import java.util.concurrent.Executor;
 public final class WallpaperEffectsGenerationManager {
     private final IWallpaperEffectsGenerationManager mService;
 
-    /* loaded from: classes.dex */
     public interface CinematicEffectListener {
         void onCinematicEffectGenerated(CinematicEffectResponse cinematicEffectResponse);
     }
@@ -29,8 +28,8 @@ public final class WallpaperEffectsGenerationManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class CinematicEffectListenerWrapper extends ICinematicEffectListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class CinematicEffectListenerWrapper extends ICinematicEffectListener.Stub {
         private final Executor mExecutor;
         private final CinematicEffectListener mListener;
 
@@ -39,6 +38,7 @@ public final class WallpaperEffectsGenerationManager {
             this.mExecutor = executor;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCinematicEffectGenerated$0(CinematicEffectResponse response) {
             this.mListener.onCinematicEffectGenerated(response);
         }

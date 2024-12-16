@@ -8,14 +8,13 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class PrinterId implements Parcelable {
     public static final Parcelable.Creator<PrinterId> CREATOR = new Parcelable.Creator<PrinterId>() { // from class: android.print.PrinterId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterId createFromParcel(Parcel parcel) {
             return new PrinterId(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrinterId[] newArray(int size) {
             return new PrinterId[size];
@@ -23,10 +22,6 @@ public final class PrinterId implements Parcelable {
     };
     private final String mLocalId;
     private final ComponentName mServiceName;
-
-    /* synthetic */ PrinterId(Parcel parcel, PrinterIdIA printerIdIA) {
-        this(parcel);
-    }
 
     public PrinterId(ComponentName serviceName, String localId) {
         this.mServiceName = serviceName;
@@ -83,22 +78,5 @@ public final class PrinterId implements Parcelable {
         builder.append(", localId=").append(this.mLocalId);
         builder.append('}');
         return builder.toString();
-    }
-
-    /* renamed from: android.print.PrinterId$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrinterId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterId createFromParcel(Parcel parcel) {
-            return new PrinterId(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrinterId[] newArray(int size) {
-            return new PrinterId[size];
-        }
     }
 }

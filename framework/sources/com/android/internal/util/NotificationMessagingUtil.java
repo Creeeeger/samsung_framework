@@ -17,26 +17,20 @@ public class NotificationMessagingUtil {
     private static final String DEFAULT_SMS_APP_SETTING = "sms_default_application";
     private final Context mContext;
     private final SparseArray<String> mDefaultSmsApp = new SparseArray<>();
-    private final ContentObserver mSmsContentObserver;
+    private final ContentObserver mSmsContentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.internal.util.NotificationMessagingUtil.1
+        @Override // android.database.ContentObserver
+        public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
+            if (uris.contains(Settings.Secure.getUriFor("sms_default_application"))) {
+                NotificationMessagingUtil.this.cacheDefaultSmsApp(userId);
+            }
+        }
+    };
     private final Object mStateLock;
 
     public NotificationMessagingUtil(Context context, Object stateLock) {
-        AnonymousClass1 anonymousClass1 = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.internal.util.NotificationMessagingUtil.1
-            AnonymousClass1(Handler handler) {
-                super(handler);
-            }
-
-            @Override // android.database.ContentObserver
-            public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
-                if (uris.contains(Settings.Secure.getUriFor("sms_default_application"))) {
-                    NotificationMessagingUtil.this.cacheDefaultSmsApp(userId);
-                }
-            }
-        };
-        this.mSmsContentObserver = anonymousClass1;
         this.mContext = context;
         this.mStateLock = stateLock != null ? stateLock : new Object();
-        context.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("sms_default_application"), false, anonymousClass1);
+        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("sms_default_application"), false, this.mSmsContentObserver);
     }
 
     public boolean isImportantMessaging(StatusBarNotification sbn, int importance) {
@@ -65,25 +59,11 @@ public class NotificationMessagingUtil {
         return equals;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cacheDefaultSmsApp(int userId) {
         String smsApp = Settings.Secure.getStringForUser(this.mContext.getContentResolver(), "sms_default_application", userId);
         synchronized (this.mStateLock) {
             this.mDefaultSmsApp.put(userId, smsApp);
-        }
-    }
-
-    /* renamed from: com.android.internal.util.NotificationMessagingUtil$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
-            if (uris.contains(Settings.Secure.getUriFor("sms_default_application"))) {
-                NotificationMessagingUtil.this.cacheDefaultSmsApp(userId);
-            }
         }
     }
 

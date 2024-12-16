@@ -58,42 +58,36 @@ public class OpenSSLDigest implements ExtendedDigest {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class MD5 extends OpenSSLDigest {
         public MD5() {
             super(KeyProperties.DIGEST_MD5, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA1 extends OpenSSLDigest {
         public SHA1() {
             super("SHA-1", 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA224 extends OpenSSLDigest {
         public SHA224() {
             super(KeyProperties.DIGEST_SHA224, 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA256 extends OpenSSLDigest {
         public SHA256() {
             super("SHA-256", 64);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA384 extends OpenSSLDigest {
         public SHA384() {
             super(KeyProperties.DIGEST_SHA384, 128);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA512 extends OpenSSLDigest {
         public SHA512() {
             super(KeyProperties.DIGEST_SHA512, 128);

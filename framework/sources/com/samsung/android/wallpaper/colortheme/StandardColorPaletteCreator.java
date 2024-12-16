@@ -7,7 +7,7 @@ import com.samsung.android.wallpaper.colortheme.monet.ColorScheme;
 import com.samsung.android.wallpaper.colortheme.monet.Style;
 import java.lang.reflect.Array;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class StandardColorPaletteCreator extends ColorPaletteCreator {
     private static final int MAX_RANGE = 19;
     private static final String TAG = "StandardColorPaletteCreator";
@@ -30,22 +30,15 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
 
     @Override // com.samsung.android.wallpaper.colortheme.ColorPaletteCreator
     public void generateColorPalette(boolean fromGoogle) {
-        String[] strArr;
         this.mColorPalettes.clear();
         if (fromGoogle) {
-            int i = 0;
-            while (true) {
-                strArr = this.seeds;
-                if (i >= strArr.length) {
-                    break;
-                }
+            for (int i = 0; i < this.seeds.length; i++) {
                 int seed = this.mSeedColors[i];
                 ColorScheme colorScheme = new ColorScheme(seed, false, Style.RAINBOW);
                 ColorPalette colorPalette = new ColorPalette(colorScheme);
                 this.mColorPalettes.add(colorPalette.getTable());
-                i++;
             }
-            for (int i2 = strArr.length; i2 < this.seeds.length + this.twoColorSeeds.length; i2++) {
+            for (int i2 = this.seeds.length; i2 < this.seeds.length + this.twoColorSeeds.length; i2++) {
                 int seed2 = this.mSeedColors[i2];
                 ColorScheme colorScheme2 = new ColorScheme(seed2, false, Style.FRUIT_SALAD);
                 ColorPalette colorPalette2 = new ColorPalette(colorScheme2);
@@ -63,63 +56,35 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
 
     private void setColors() {
         this.oneColorIntSeeds = new int[this.seeds.length];
-        int i = 0;
-        while (true) {
-            String[] strArr = this.seeds;
-            if (i >= strArr.length) {
-                break;
-            }
-            int colorInt = Color.parseColor(strArr[i]);
+        for (int i = 0; i < this.seeds.length; i++) {
+            int colorInt = Color.parseColor(this.seeds[i]);
             this.oneColorIntSeeds[i] = colorInt;
-            i++;
         }
-        int[] iArr = this.oneColorIntSeeds;
-        if (iArr == null || iArr.length <= 0) {
+        if (this.oneColorIntSeeds == null || this.oneColorIntSeeds.length <= 0) {
             return;
         }
-        this.mColorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, iArr.length, 3);
-        int i2 = 0;
-        while (true) {
-            int[] iArr2 = this.oneColorIntSeeds;
-            if (i2 < iArr2.length) {
-                ColorUtils.colorToHSL(iArr2[i2], this.mColorHsl[i2]);
-                i2++;
-            } else {
-                return;
-            }
+        this.mColorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, this.oneColorIntSeeds.length, 3);
+        for (int i2 = 0; i2 < this.oneColorIntSeeds.length; i2++) {
+            ColorUtils.colorToHSL(this.oneColorIntSeeds[i2], this.mColorHsl[i2]);
         }
     }
 
     private void setTwoColors() {
         this.twoColorIntSeeds = new int[this.twoColorSeeds.length];
-        int i = 0;
-        while (true) {
-            String[] strArr = this.twoColorSeeds;
-            if (i >= strArr.length) {
-                break;
-            }
-            int colorInt = Color.parseColor(strArr[i]);
+        for (int i = 0; i < this.twoColorSeeds.length; i++) {
+            int colorInt = Color.parseColor(this.twoColorSeeds[i]);
             this.twoColorIntSeeds[i] = colorInt;
-            i++;
         }
-        int[] iArr = this.twoColorIntSeeds;
-        if (iArr == null || iArr.length <= 0) {
+        if (this.twoColorIntSeeds == null || this.twoColorIntSeeds.length <= 0) {
             return;
         }
-        this.mColorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, iArr.length, 3);
-        int i2 = 0;
-        while (true) {
-            int[] iArr2 = this.twoColorIntSeeds;
-            if (i2 < iArr2.length) {
-                ColorUtils.colorToHSL(iArr2[i2], this.mColorHsl[i2]);
-                i2++;
-            } else {
-                this.mSeedColors = new int[this.oneColorIntSeeds.length + iArr2.length];
-                System.arraycopy(this.oneColorIntSeeds, 0, this.mSeedColors, 0, this.oneColorIntSeeds.length);
-                System.arraycopy(this.twoColorIntSeeds, 0, this.mSeedColors, this.oneColorIntSeeds.length, this.twoColorIntSeeds.length);
-                return;
-            }
+        this.mColorHsl = (float[][]) Array.newInstance((Class<?>) Float.TYPE, this.twoColorIntSeeds.length, 3);
+        for (int i2 = 0; i2 < this.twoColorIntSeeds.length; i2++) {
+            ColorUtils.colorToHSL(this.twoColorIntSeeds[i2], this.mColorHsl[i2]);
         }
+        this.mSeedColors = new int[this.oneColorIntSeeds.length + this.twoColorIntSeeds.length];
+        System.arraycopy(this.oneColorIntSeeds, 0, this.mSeedColors, 0, this.oneColorIntSeeds.length);
+        System.arraycopy(this.twoColorIntSeeds, 0, this.mSeedColors, this.oneColorIntSeeds.length, this.twoColorIntSeeds.length);
     }
 
     public int[] getOneColorSeeds() {
@@ -155,20 +120,15 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
         if (hue < 0.0f) {
             return 0;
         }
-        int i = 0;
-        while (true) {
-            if (i >= range.length) {
-                return -1;
-            }
-            if (r2[18] <= hue) {
+        for (int i = 0; i < range.length; i++) {
+            if (range[18] <= hue) {
                 return 0;
             }
-            if (hue >= r2[i]) {
-                i++;
-            } else {
+            if (hue < range[i]) {
                 return i - 1;
             }
         }
+        return -1;
     }
 
     static float getHue(int r) {
@@ -189,20 +149,16 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
     }
 
     private void addOneColorPalette(float[] colorHsl) {
-        float[] fArr = this.accent1;
-        fArr[0] = colorHsl[0];
-        fArr[1] = 0.7f;
-        float[] fArr2 = this.accent2;
-        fArr2[0] = colorHsl[0];
-        fArr2[1] = 0.4f;
+        this.accent1[0] = colorHsl[0];
+        this.accent1[1] = 0.7f;
+        this.accent2[0] = colorHsl[0];
+        this.accent2[1] = 0.4f;
         this.accent3[0] = hueMove(colorHsl[0], 1);
         this.accent3[1] = 0.5f;
-        float[] fArr3 = this.neutral1;
-        fArr3[0] = colorHsl[0];
-        fArr3[1] = 0.0f;
-        float[] fArr4 = this.neutral2;
-        fArr4[0] = colorHsl[0];
-        fArr4[1] = 0.0f;
+        this.neutral1[0] = colorHsl[0];
+        this.neutral1[1] = 0.0f;
+        this.neutral2[0] = colorHsl[0];
+        this.neutral2[1] = 0.0f;
         ColorPalette palette = new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2);
         this.mColorPalettes.add(palette.getTable());
     }
@@ -212,9 +168,8 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
             addGrayColorPalette();
             return;
         }
-        float[] fArr = this.accent1;
-        fArr[0] = colorHsl[0];
-        fArr[1] = 0.8f;
+        this.accent1[0] = colorHsl[0];
+        this.accent1[1] = 0.8f;
         this.accent2[0] = hueMove(colorHsl[0], 3);
         this.accent2[1] = 0.6f;
         this.accent3[0] = hueMove(colorHsl[0], 3);
@@ -228,21 +183,16 @@ public class StandardColorPaletteCreator extends ColorPaletteCreator {
     }
 
     private void addGrayColorPalette() {
-        float[] fArr = this.accent1;
-        fArr[0] = 0.0f;
-        fArr[1] = 0.0f;
-        float[] fArr2 = this.accent2;
-        fArr2[0] = 0.0f;
-        fArr2[1] = 0.0f;
-        float[] fArr3 = this.accent3;
-        fArr3[0] = 0.0f;
-        fArr3[1] = 0.0f;
-        float[] fArr4 = this.neutral1;
-        fArr4[0] = 0.0f;
-        fArr4[1] = 0.0f;
-        float[] fArr5 = this.neutral2;
-        fArr5[0] = 0.0f;
-        fArr5[1] = 0.0f;
+        this.accent1[0] = 0.0f;
+        this.accent1[1] = 0.0f;
+        this.accent2[0] = 0.0f;
+        this.accent2[1] = 0.0f;
+        this.accent3[0] = 0.0f;
+        this.accent3[1] = 0.0f;
+        this.neutral1[0] = 0.0f;
+        this.neutral1[1] = 0.0f;
+        this.neutral2[0] = 0.0f;
+        this.neutral2[1] = 0.0f;
         this.mColorPalettes.add(new ColorPalette(this.accent1, this.accent2, this.accent3, this.neutral1, this.neutral2).getTable());
     }
 

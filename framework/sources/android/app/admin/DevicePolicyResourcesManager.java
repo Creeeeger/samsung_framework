@@ -20,17 +20,16 @@ public class DevicePolicyResourcesManager {
     private static String DISABLE_RESOURCES_UPDATABILITY_FLAG = "disable_resources_updatability";
     private static boolean DEFAULT_DISABLE_RESOURCES_UPDATABILITY = false;
 
-    public DevicePolicyResourcesManager(Context context, IDevicePolicyManager service) {
+    protected DevicePolicyResourcesManager(Context context, IDevicePolicyManager service) {
         this.mContext = context;
         this.mService = service;
     }
 
     @SystemApi
     public void setDrawables(Set<DevicePolicyDrawableResource> drawables) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDrawables(new ArrayList(drawables));
+                this.mService.setDrawables(new ArrayList(drawables));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -39,10 +38,9 @@ public class DevicePolicyResourcesManager {
 
     @SystemApi
     public void resetDrawables(Set<String> drawableIds) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.resetDrawables(new ArrayList(drawableIds));
+                this.mService.resetDrawables(new ArrayList(drawableIds));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -61,10 +59,9 @@ public class DevicePolicyResourcesManager {
         if (drawableId.equals(DevicePolicyResources.UNDEFINED) || DeviceConfig.getBoolean("device_policy_manager", DISABLE_RESOURCES_UPDATABILITY_FLAG, DEFAULT_DISABLE_RESOURCES_UPDATABILITY)) {
             return ParcelableResource.loadDefaultDrawable(defaultDrawableLoader);
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ParcelableResource resource = iDevicePolicyManager.getDrawable(drawableId, drawableStyle, drawableSource);
+                ParcelableResource resource = this.mService.getDrawable(drawableId, drawableStyle, drawableSource);
                 if (resource == null) {
                     return ParcelableResource.loadDefaultDrawable(defaultDrawableLoader);
                 }
@@ -89,10 +86,9 @@ public class DevicePolicyResourcesManager {
         if (drawableId.equals(DevicePolicyResources.UNDEFINED) || DeviceConfig.getBoolean("device_policy_manager", DISABLE_RESOURCES_UPDATABILITY_FLAG, DEFAULT_DISABLE_RESOURCES_UPDATABILITY)) {
             return ParcelableResource.loadDefaultDrawable(defaultDrawableLoader);
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ParcelableResource resource = iDevicePolicyManager.getDrawable(drawableId, drawableStyle, drawableSource);
+                ParcelableResource resource = this.mService.getDrawable(drawableId, drawableStyle, drawableSource);
                 if (resource == null) {
                     return ParcelableResource.loadDefaultDrawable(defaultDrawableLoader);
                 }
@@ -113,10 +109,9 @@ public class DevicePolicyResourcesManager {
         if (drawableId.equals(DevicePolicyResources.UNDEFINED) || DeviceConfig.getBoolean("device_policy_manager", DISABLE_RESOURCES_UPDATABILITY_FLAG, DEFAULT_DISABLE_RESOURCES_UPDATABILITY)) {
             return defaultIcon;
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ParcelableResource resource = iDevicePolicyManager.getDrawable(drawableId, drawableStyle, drawableSource);
+                ParcelableResource resource = this.mService.getDrawable(drawableId, drawableStyle, drawableSource);
                 if (resource == null) {
                     return defaultIcon;
                 }
@@ -135,10 +130,9 @@ public class DevicePolicyResourcesManager {
 
     @SystemApi
     public void setStrings(Set<DevicePolicyStringResource> strings) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setStrings(new ArrayList(strings));
+                this.mService.setStrings(new ArrayList(strings));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -147,10 +141,9 @@ public class DevicePolicyResourcesManager {
 
     @SystemApi
     public void resetStrings(Set<String> stringIds) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.resetStrings(new ArrayList(stringIds));
+                this.mService.resetStrings(new ArrayList(stringIds));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -163,10 +156,9 @@ public class DevicePolicyResourcesManager {
         if (stringId.equals(DevicePolicyResources.UNDEFINED) || DeviceConfig.getBoolean("device_policy_manager", DISABLE_RESOURCES_UPDATABILITY_FLAG, DEFAULT_DISABLE_RESOURCES_UPDATABILITY)) {
             return ParcelableResource.loadDefaultString(defaultStringLoader);
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ParcelableResource resource = iDevicePolicyManager.getString(stringId);
+                ParcelableResource resource = this.mService.getString(stringId);
                 if (resource == null) {
                     return ParcelableResource.loadDefaultString(defaultStringLoader);
                 }
@@ -185,10 +177,9 @@ public class DevicePolicyResourcesManager {
         if (stringId.equals(DevicePolicyResources.UNDEFINED) || DeviceConfig.getBoolean("device_policy_manager", DISABLE_RESOURCES_UPDATABILITY_FLAG, DEFAULT_DISABLE_RESOURCES_UPDATABILITY)) {
             return ParcelableResource.loadDefaultString(defaultStringLoader);
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ParcelableResource resource = iDevicePolicyManager.getString(stringId);
+                ParcelableResource resource = this.mService.getString(stringId);
                 if (resource == null) {
                     return ParcelableResource.loadDefaultString(defaultStringLoader);
                 }

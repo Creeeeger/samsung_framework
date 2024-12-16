@@ -4,7 +4,7 @@ import com.samsung.android.sume.core.types.nn.NNFileDescriptor;
 import java.util.function.Function;
 
 /* compiled from: D8$$SyntheticClass */
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final /* synthetic */ class NNFWDescriptor$$ExternalSyntheticLambda1 implements Function {
     @Override // java.util.function.Function
     public final Object apply(Object obj) {

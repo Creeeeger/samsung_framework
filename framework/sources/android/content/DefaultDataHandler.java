@@ -78,8 +78,7 @@ public class DefaultDataHandler implements ContentInsertHandler {
                 return;
             }
             if (atts.getLength() == 0) {
-                Stack<Uri> stack = this.mUris;
-                stack.push(stack.lastElement());
+                this.mUris.push(this.mUris.lastElement());
                 return;
             } else {
                 parseRow(atts);

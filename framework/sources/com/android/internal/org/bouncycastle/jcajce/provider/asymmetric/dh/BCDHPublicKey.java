@@ -33,41 +33,39 @@ public class BCDHPublicKey implements DHPublicKey {
     private transient SubjectPublicKeyInfo info;
     private BigInteger y;
 
-    public BCDHPublicKey(DHPublicKeySpec spec) {
+    BCDHPublicKey(DHPublicKeySpec spec) {
         this.y = spec.getY();
         if (spec instanceof DHExtendedPublicKeySpec) {
             this.dhSpec = ((DHExtendedPublicKeySpec) spec).getParams();
         } else {
             this.dhSpec = new DHParameterSpec(spec.getP(), spec.getG());
         }
-        DHParameterSpec dHParameterSpec = this.dhSpec;
-        if (dHParameterSpec instanceof DHDomainParameterSpec) {
-            DHDomainParameterSpec dhSp = (DHDomainParameterSpec) dHParameterSpec;
+        if (this.dhSpec instanceof DHDomainParameterSpec) {
+            DHDomainParameterSpec dhSp = (DHDomainParameterSpec) this.dhSpec;
             this.dhPublicKey = new DHPublicKeyParameters(this.y, dhSp.getDomainParameters());
         } else {
             this.dhPublicKey = new DHPublicKeyParameters(this.y, new DHParameters(spec.getP(), spec.getG()));
         }
     }
 
-    public BCDHPublicKey(DHPublicKey key) {
+    BCDHPublicKey(DHPublicKey key) {
         this.y = key.getY();
-        DHParameterSpec params = key.getParams();
-        this.dhSpec = params;
-        if (params instanceof DHDomainParameterSpec) {
-            DHDomainParameterSpec dhSp = (DHDomainParameterSpec) params;
+        this.dhSpec = key.getParams();
+        if (this.dhSpec instanceof DHDomainParameterSpec) {
+            DHDomainParameterSpec dhSp = (DHDomainParameterSpec) this.dhSpec;
             this.dhPublicKey = new DHPublicKeyParameters(this.y, dhSp.getDomainParameters());
         } else {
             this.dhPublicKey = new DHPublicKeyParameters(this.y, new DHParameters(this.dhSpec.getP(), this.dhSpec.getG()));
         }
     }
 
-    public BCDHPublicKey(DHPublicKeyParameters params) {
+    BCDHPublicKey(DHPublicKeyParameters params) {
         this.y = params.getY();
         this.dhSpec = new DHDomainParameterSpec(params.getParameters());
         this.dhPublicKey = params;
     }
 
-    public BCDHPublicKey(BigInteger y, DHParameterSpec dhSpec) {
+    BCDHPublicKey(BigInteger y, DHParameterSpec dhSpec) {
         this.y = y;
         this.dhSpec = dhSpec;
         if (dhSpec instanceof DHDomainParameterSpec) {
@@ -123,12 +121,10 @@ public class BCDHPublicKey implements DHPublicKey {
 
     @Override // java.security.Key
     public byte[] getEncoded() {
-        SubjectPublicKeyInfo subjectPublicKeyInfo = this.info;
-        if (subjectPublicKeyInfo != null) {
-            return KeyUtil.getEncodedSubjectPublicKeyInfo(subjectPublicKeyInfo);
+        if (this.info != null) {
+            return KeyUtil.getEncodedSubjectPublicKeyInfo(this.info);
         }
-        DHParameterSpec dHParameterSpec = this.dhSpec;
-        if ((dHParameterSpec instanceof DHDomainParameterSpec) && ((DHDomainParameterSpec) dHParameterSpec).getQ() != null) {
+        if ((this.dhSpec instanceof DHDomainParameterSpec) && ((DHDomainParameterSpec) this.dhSpec).getQ() != null) {
             DHParameters params = ((DHDomainParameterSpec) this.dhSpec).getDomainParameters();
             DHValidationParameters validationParameters = params.getValidationParameters();
             ValidationParams vParams = null;

@@ -34,20 +34,14 @@ public class SequenceOfOctetString extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector();
-        int i = 0;
-        while (true) {
-            byte[][] bArr = this.octetStrings;
-            if (i != bArr.length) {
-                v.add(new DEROctetString(Arrays.clone(bArr[i])));
-                i++;
-            } else {
-                return new DERSequence(v);
-            }
+        for (int i = 0; i != this.octetStrings.length; i++) {
+            v.add(new DEROctetString(Arrays.clone(this.octetStrings[i])));
         }
+        return new DERSequence(v);
     }
 
     static byte[][] toByteArrays(ASN1Sequence seq) {
-        byte[][] octetStrings = new byte[seq.size()];
+        byte[][] octetStrings = new byte[seq.size()][];
         for (int i = 0; i != seq.size(); i++) {
             octetStrings[i] = ASN1OctetString.getInstance(seq.getObjectAt(i)).getOctets();
         }

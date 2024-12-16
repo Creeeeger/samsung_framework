@@ -8,9 +8,13 @@ public interface ParseResult<ResultType> {
 
     Exception getException();
 
+    String getPackageNameForAudit();
+
     ResultType getResult();
 
     boolean isError();
 
     boolean isSuccess();
+
+    void setPackageNameForAudit(String str);
 }

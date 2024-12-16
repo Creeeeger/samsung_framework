@@ -4,19 +4,13 @@ import android.media.midi.MidiReceiver;
 import com.android.internal.midi.EventScheduler;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MidiEventScheduler extends EventScheduler {
     private static final int POOL_EVENT_SIZE = 16;
     private static final String TAG = "MidiEventScheduler";
     private MidiReceiver mReceiver = new SchedulingReceiver();
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class SchedulingReceiver extends MidiReceiver {
-        /* synthetic */ SchedulingReceiver(MidiEventScheduler midiEventScheduler, SchedulingReceiverIA schedulingReceiverIA) {
-            this();
-        }
-
+    private class SchedulingReceiver extends MidiReceiver {
         private SchedulingReceiver() {
         }
 
@@ -34,18 +28,9 @@ public class MidiEventScheduler extends EventScheduler {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class MidiEvent extends EventScheduler.SchedulableEvent {
         public int count;
         public byte[] data;
-
-        /* synthetic */ MidiEvent(int i, MidiEventIA midiEventIA) {
-            this(i);
-        }
-
-        /* synthetic */ MidiEvent(byte[] bArr, int i, int i2, long j, MidiEventIA midiEventIA) {
-            this(bArr, i, i2, j);
-        }
 
         private MidiEvent(int count) {
             super(0L);
@@ -56,9 +41,8 @@ public class MidiEventScheduler extends EventScheduler {
         private MidiEvent(byte[] msg, int offset, int count, long timestamp) {
             super(timestamp);
             this.count = 0;
-            byte[] bArr = new byte[count];
-            this.data = bArr;
-            System.arraycopy(msg, offset, bArr, 0, count);
+            this.data = new byte[count];
+            System.arraycopy(msg, offset, this.data, 0, count);
             this.count = count;
         }
 
@@ -73,6 +57,7 @@ public class MidiEventScheduler extends EventScheduler {
 
     public MidiEvent createScheduledEvent(byte[] msg, int offset, int count, long timestamp) {
         MidiEvent event;
+        int i = 16;
         if (count > 16) {
             return new MidiEvent(msg, offset, count, timestamp);
         }
@@ -80,7 +65,7 @@ public class MidiEventScheduler extends EventScheduler {
         if (event2 != null) {
             event = event2;
         } else {
-            event = new MidiEvent(16);
+            event = new MidiEvent(i);
         }
         System.arraycopy(msg, offset, event.data, 0, count);
         event.count = count;

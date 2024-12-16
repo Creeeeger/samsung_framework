@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CbGeoUtils {
     private static final String CIRCLE_SYMBOL = "circle";
     public static final int EARTH_RADIUS_METER = 6371000;
@@ -24,7 +24,6 @@ public class CbGeoUtils {
     private static final String POLYGON_SYMBOL = "polygon";
     private static final String TAG = "CbGeoUtils";
 
-    /* loaded from: classes3.dex */
     public interface Geometry {
         boolean contains(LatLng latLng);
     }
@@ -32,7 +31,6 @@ public class CbGeoUtils {
     private CbGeoUtils() {
     }
 
-    /* loaded from: classes3.dex */
     public static class LatLng {
         public final double lat;
         public final double lng;
@@ -69,7 +67,6 @@ public class CbGeoUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Polygon implements Geometry {
         private static final double SCALE = 1000.0d;
         private final LatLng mOrigin;
@@ -123,7 +120,8 @@ public class CbGeoUtils {
             return windingNumber != 0;
         }
 
-        /* renamed from: convertAndScaleLatLng */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: convertAndScaleLatLng, reason: merged with bridge method [inline-methods] */
         public Point lambda$new$0(LatLng latLng) {
             double x = latLng.lat - this.mOrigin.lat;
             double y = latLng.lng - this.mOrigin.lng;
@@ -140,8 +138,7 @@ public class CbGeoUtils {
             return (a.x * b.y) - (a.y * b.x);
         }
 
-        /* loaded from: classes3.dex */
-        public static final class Point {
+        static final class Point {
             public final double x;
             public final double y;
 
@@ -183,7 +180,6 @@ public class CbGeoUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Circle implements Geometry {
         private final LatLng mCenter;
         private final double mRadiusMeter;
@@ -226,6 +222,7 @@ public class CbGeoUtils {
         }
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public static List<Geometry> parseGeometriesFromString(String str) {
         char c;
         List<Geometry> geometries = new ArrayList<>();
@@ -238,15 +235,19 @@ public class CbGeoUtils {
                         c = 0;
                         break;
                     }
+                    c = 65535;
                     break;
                 case -397519558:
                     if (str2.equals(POLYGON_SYMBOL)) {
                         c = 1;
                         break;
                     }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
                     break;
             }
-            c = 65535;
             switch (c) {
                 case 0:
                     geometries.add(new Circle(parseLatLngFromString(geoParameters[1]), Double.parseDouble(geoParameters[2])));
@@ -285,10 +286,11 @@ public class CbGeoUtils {
         }).collect(Collectors.joining(NavigationBarInflaterView.GRAVITY_SEPARATOR));
     }
 
-    public static /* synthetic */ boolean lambda$encodeGeometriesToString$1(String encodedStr) {
+    static /* synthetic */ boolean lambda$encodeGeometriesToString$1(String encodedStr) {
         return !TextUtils.isEmpty(encodedStr);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String encodeGeometryToString(Geometry geometry) {
         StringBuilder sb = new StringBuilder();
         if (geometry instanceof Polygon) {

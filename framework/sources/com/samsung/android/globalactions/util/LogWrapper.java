@@ -3,7 +3,7 @@ package com.samsung.android.globalactions.util;
 import android.util.Log;
 import com.samsung.android.emergencymode.Elog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LogWrapper {
     private static final boolean DEBUG = false;
     private static final String TAG = "[SamsungGlobalActions]";

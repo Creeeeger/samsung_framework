@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextWakeUpVoice extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextWakeUpVoice> CREATOR = new Parcelable.Creator<SemContextWakeUpVoice>() { // from class: com.samsung.android.hardware.context.SemContextWakeUpVoice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoice createFromParcel(Parcel in) {
             return new SemContextWakeUpVoice(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWakeUpVoice[] newArray(int size) {
             return new SemContextWakeUpVoice[size];
@@ -29,24 +28,7 @@ public class SemContextWakeUpVoice extends SemContextEventContext {
     public static final int RECOGNIZED = 1;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextWakeUpVoice$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextWakeUpVoice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWakeUpVoice createFromParcel(Parcel in) {
-            return new SemContextWakeUpVoice(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWakeUpVoice[] newArray(int size) {
-            return new SemContextWakeUpVoice[size];
-        }
-    }
-
-    public SemContextWakeUpVoice() {
+    SemContextWakeUpVoice() {
         this.mContext = new Bundle();
     }
 

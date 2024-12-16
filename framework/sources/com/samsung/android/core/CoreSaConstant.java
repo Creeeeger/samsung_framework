@@ -1,27 +1,21 @@
 package com.samsung.android.core;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface CoreSaConstant {
     public static final String APPS_TAP_APP_ID = "CVSE1045";
-    public static final String BOUNDS_COMPAT_FSA_16_9_ID = "519402";
-    public static final String BOUNDS_COMPAT_FSA_4_3_ID = "519403";
-    public static final String BOUNDS_COMPAT_FSA_FULLSCREEN_ID = "519401";
-    public static final String BOUNDS_COMPAT_LVPA_APP_DEFAULT_ID = "LVPA01";
-    public static final String BOUNDS_COMPAT_LVPA_DISABLED_ID = "LVPA00";
-    public static final String BOUNDS_COMPAT_LVPA_FULLSCREEN_ID = "LVPA02";
-    public static final String BOUNDS_COMPAT_UI_AR_ARROW_D_ID = "519304";
-    public static final String BOUNDS_COMPAT_UI_AR_ARROW_L_ID = "519301";
-    public static final String BOUNDS_COMPAT_UI_AR_ARROW_R_ID = "519302";
-    public static final String BOUNDS_COMPAT_UI_AR_ARROW_U_ID = "519303";
-    public static final String BOUNDS_COMPAT_UI_AR_STATUS_H_ID = "519305";
-    public static final String BOUNDS_COMPAT_UI_AR_STATUS_V_ID = "519306";
+    public static final String APP_COMPAT_STATUS_FSA_16_9_ID = "519402";
+    public static final String APP_COMPAT_STATUS_FSA_4_3_ID = "519403";
+    public static final String APP_COMPAT_STATUS_FSA_FULLSCREEN_ID = "519401";
+    public static final String APP_COMPAT_STATUS_LVPA_APP_DEFAULT_ID = "LVPA01";
+    public static final String APP_COMPAT_STATUS_LVPA_DISABLED_ID = "LVPA00";
+    public static final String APP_COMPAT_STATUS_LVPA_FULLSCREEN_ID = "LVPA02";
+    public static final String APP_COMPAT_STATUS_UI_AR_STATUS_H_ID = "519305";
+    public static final String APP_COMPAT_STATUS_UI_AR_STATUS_V_ID = "519306";
     public static final String DETAIL_FREEFORM_CLOSE_BOTTOM_HANDLE = "Bottom option_Handle type";
     public static final String DETAIL_FREEFORM_CLOSE_BOTTOM_HEADER = "Bottom option_Header type";
     public static final String DETAIL_FREEFORM_CLOSE_WINDOW_OPTION = "Window option";
     public static final String DETAIL_FREEFORM_HEADER_TYPE_HANDLE = "1";
     public static final String DETAIL_FREEFORM_HEADER_TYPE_HEADER = "0";
-    public static final String DETAIL_FREEFORM_HIDE_LEFT = "Left";
-    public static final String DETAIL_FREEFORM_HIDE_RIGHT = "Right";
     public static final String DETAIL_FREEFORM_SWITCH_HEADER_TO_HANDLE = "From header to handle";
     public static final String DETAIL_FREEFORM_SWITCH_HEADER_TO_HEADER = "From handle to header";
     public static final String DETAIL_FREEFORM_TO_FULLSCREEN = "Popup to Full";
@@ -35,7 +29,6 @@ public interface CoreSaConstant {
     public static final String DETAIL_FROM_EDGE_DND = "From Apps edge_D&D";
     public static final String DETAIL_FROM_EDGE_TAP = "From Apps edge_Tap";
     public static final String DETAIL_FROM_FULLSCREEN_HANDLE = "From fullscreen handle";
-    public static final String DETAIL_FROM_GAMETOOLS = "From GameTools";
     public static final String DETAIL_FROM_GESTURE = "From Gesture";
     public static final String DETAIL_FROM_KEYBOARD_SHORTCUT = "From Keyboard shortcut";
     public static final String DETAIL_FROM_MOUSE_DOUBLE_CLICKING = "From mouse double clicking";
@@ -55,7 +48,6 @@ public interface CoreSaConstant {
     public static final String DETAIL_FROM_SPLIT_SCREEN_OPTION = "From split screen option";
     public static final String DETAIL_FROM_SPLIT_VIEW_HANDLEGESTURE = "From Split view_HandleGesture";
     public static final String DETAIL_FROM_SPLIT_VIEW_OPTION = "From split view Option";
-    public static final String DETAIL_FROM_SWIPE_CORNER = "From MultiStar_SwipeCorner";
     public static final String DETAIL_FROM_TASKBAR_DND = "From Taskbar_D&D";
     public static final String DETAIL_FROM_TASK_EDGE_DND = "From Task edge_D&D";
     public static final String DETAIL_FULLSCREEN_TO_FREEFORM = "Full to Popup";
@@ -68,11 +60,7 @@ public interface CoreSaConstant {
     public static final String DETAIL_SPLIT_TO_FULLSCREEN = "Split to Full";
     public static final String DETAIL_SPLIT_TO_PIP = "Split to PIP";
     public static final String DEX_CAPTION_EVENT_APP_CLOSE = "2508";
-    public static final String DEX_CAPTION_EVENT_BACK_IN_HEADER = "2505";
     public static final String DEX_CAPTION_EVENT_FORCE_TO_ROTATE = "2503";
-    public static final String DEX_CAPTION_EVENT_MINIMIZE = "2506";
-    public static final String DEX_CAPTION_EVENT_SELECT_OPACITY = "2500";
-    public static final String DEX_CAPTION_EVENT_SELECT_PIN_WINDOW_TO_TOP = "2501";
     public static final String DEX_CAPTION_EVENT_TOGGLE_WINDOW = "2507";
     public static final String DEX_FREEFORM_EVENT_OPEN_ID = "2504";
     public static final String DND_REQUESTER_APPSEDGE = "appsEdge";
@@ -82,7 +70,6 @@ public interface CoreSaConstant {
     public static final String DND_REQUESTER_NOTIFICATION = "noti";
     public static final String DND_REQUESTER_TASKBAR = "taskbar";
     public static final String DND_REQUESTER_TASKEDGE = "taskEdge";
-    public static final String EXTRA_BOUNDS_COMPAT_UI_AR_ARROW_TAPPED = "Tapped";
     public static final String EXTRA_FOLDABLE_LOGGING_FINGERPRINT_SENSOR = "Fingerprint Sensor";
     public static final String EXTRA_FOLDABLE_LOGGING_LIFT_TO_WAKE = "Lift To Wake";
     public static final String EXTRA_FOLDABLE_LOGGING_NO_ACTION = "No Action";
@@ -100,12 +87,9 @@ public interface CoreSaConstant {
     public static final String FOLDABLE_APP_USING_CONTINUOUSLY_IN_FRONT_SCREEN_ID = "W009";
     public static final String FOLDABLE_APP_WHEN_FOLDING_ID = "W001";
     public static final String FOLDABLE_APP_WHEN_UNFOLDING_ID = "W004";
-    public static final String FOLDABLE_PAIR_APP_NAMES_IN_COVER_FLEX_MODE_ID = "W013";
-    public static final String FOLDABLE_PAIR_APP_NAMES_IN_TABLE_MODE_ID = "W012";
     public static final String FREEFORM_APP_PREVIEW_BY_HOVERING_ID = "2204";
     public static final String[] FREEFORM_DETAIL_MOVE_ICON = {"Top-left", "Top-center", "Top-right", "Middle-left", "Middle-center", "Middle-right", "Bottom-left", "Bottom-center", "Bottom-right"};
     public static final String FREEFORM_EVENT_CLOSE_ID = "2003";
-    public static final String FREEFORM_EVENT_HIDE_ID = "2010";
     public static final String FREEFORM_EVENT_MAXIMIZE_ID = "2002";
     public static final String FREEFORM_EVENT_MINIMIZE_ID = "2001";
     public static final String FREEFORM_EVENT_MOVE_MINIMIZED_APP_ID = "2203";
@@ -203,7 +187,6 @@ public interface CoreSaConstant {
     public static final int MULTI_WINDOW_MODE_CHANGE_SPLIT_TO_FULLSCREEN = 4;
     public static final int MULTI_WINDOW_MODE_CHANGE_SPLIT_TO_PIP = 6;
     public static final int MULTI_WINDOW_MODE_CHANGE_UNDEFINED = 0;
-    public static final String PACKAGE_NAME_APPS_EDGE = "com.samsung.android.app.appsedge";
     public static final String PACKAGE_NAME_EDGE_SERVICE = "com.samsung.android.app.cocktailbarservice";
     public static final String PACKAGE_NAME_RECENTS = "com.sec.android.app.launcher";
     public static final String PIP_EVENT_SWITCH_TO_PIP_VIEW = "2301";
@@ -215,7 +198,6 @@ public interface CoreSaConstant {
     public static final String REMOTE_DEVICE2_REGISTRATION_ID = "67262";
     public static final String REMOTE_DEVICE3_CONNECTION_ID = "67267";
     public static final String REMOTE_DEVICE3_REGISTRATION_ID = "67263";
-    public static final String ROTATION_LOG_ID = "R001";
     public static final String SPEN_PRESSURE_TOUCH_COUNT_ID = "SPENSTPR";
     public static final String SPEN_TOUCH_COUNT_ID = "SPENDRAW";
     public static final String SPLIT_DETAIL_DIVIDER_PANEL_ADD_APP_PAIR_TO_APPS_EDGE = "Apps edge";
@@ -263,6 +245,7 @@ public interface CoreSaConstant {
     public static final String VALUE_BIXBY = "Bixby";
     public static final String VALUE_BIXBY_VOICE = "Bixby voice";
     public static final String VALUE_CAMERA = "Camera";
+    public static final String VALUE_DIGITAL_ASSISTANT = "Digital Assistant";
     public static final String VALUE_DISABLE_ONE_HAND = "Disable one handed operation";
     public static final String VALUE_ENABLE_ONE_HAND = "Enable one handed operation";
     public static final String VALUE_FINDER = "Finder";
@@ -278,8 +261,6 @@ public interface CoreSaConstant {
     public static final String VALUE_QUICK_LAUNCH_CAMERA = "Quick launch camera";
     public static final String VALUE_QUICK_SWITCH_TO_SECURE_FOLDER = "Quick switch to Secure Folder";
     public static final String VALUE_SAMSUNG_INTERNET = "Samsung internet";
-    public static final String VALUE_SCREEN_OFF = "Screen off";
-    public static final String VALUE_SCREEN_ON = "Screen on";
     public static final String VALUE_TORCH = "Torch";
     public static final String VALUE_TV_MODE = "TV mode";
     public static final String VALUE_VOICE_TO_TEXT_MESSAGE = "Voice to text message";

@@ -2,7 +2,6 @@ package android.hardware.radio.config;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.security.keystore.KeyProperties;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.reflect.Array;
 import java.util.StringJoiner;
 
@@ -14,7 +13,7 @@ public interface MultipleEnabledProfilesMode$$ {
 
     static String arrayToString(Object _aidl_v) {
         if (_aidl_v == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         Class<?> _aidl_cls = _aidl_v.getClass();
         if (!_aidl_cls.isArray()) {

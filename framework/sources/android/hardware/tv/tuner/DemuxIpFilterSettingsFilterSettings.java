@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxIpFilterSettingsFilterSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxIpFilterSettingsFilterSettings> CREATOR = new Parcelable.Creator<DemuxIpFilterSettingsFilterSettings>() { // from class: android.hardware.tv.tuner.DemuxIpFilterSettingsFilterSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxIpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
             return new DemuxIpFilterSettingsFilterSettings(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxIpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
             return new DemuxIpFilterSettingsFilterSettings[_aidl_size];
@@ -25,15 +24,10 @@ public final class DemuxIpFilterSettingsFilterSettings implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int bPassthrough = 2;
         public static final int noinit = 0;
         public static final int section = 1;
-    }
-
-    /* synthetic */ DemuxIpFilterSettingsFilterSettings(Parcel parcel, DemuxIpFilterSettingsFilterSettingsIA demuxIpFilterSettingsFilterSettingsIA) {
-        this(parcel);
     }
 
     public DemuxIpFilterSettingsFilterSettings() {
@@ -98,38 +92,19 @@ public final class DemuxIpFilterSettingsFilterSettings implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxIpFilterSettingsFilterSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxIpFilterSettingsFilterSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxIpFilterSettingsFilterSettings createFromParcel(Parcel _aidl_source) {
-            return new DemuxIpFilterSettingsFilterSettings(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxIpFilterSettingsFilterSettings[] newArray(int _aidl_size) {
-            return new DemuxIpFilterSettingsFilterSettings[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getSection(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeBoolean(getBPassthrough());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

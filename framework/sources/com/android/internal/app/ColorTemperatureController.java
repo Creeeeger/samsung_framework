@@ -10,8 +10,9 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Slog;
 import com.android.internal.logging.MetricsLogger;
+import com.sec.android.allshare.iface.message.EventMsg;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class ColorTemperatureController {
     private static final boolean DEBUG = true;
     private static final String TAG = "ColorTemperatureController";
@@ -29,10 +30,6 @@ public final class ColorTemperatureController {
         this.mContext = context.getApplicationContext();
         this.mUserId = userId;
         this.mContentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) { // from class: com.android.internal.app.ColorTemperatureController.1
-            AnonymousClass1(Handler handler) {
-                super(handler);
-            }
-
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange, Uri uri) {
                 super.onChange(selfChange, uri);
@@ -42,24 +39,6 @@ public final class ColorTemperatureController {
                 }
             }
         };
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.app.ColorTemperatureController$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange, uri);
-            String setting = uri == null ? null : uri.getLastPathSegment();
-            if (setting != null) {
-                ColorTemperatureController.this.onSettingChanged(setting);
-            }
-        }
     }
 
     public boolean isActivated() {
@@ -87,17 +66,18 @@ public final class ColorTemperatureController {
     }
 
     public int getMinimumColorTempLevel() {
-        return 0;
+        return 4000;
     }
 
     public int getMaximumColorTempLevel() {
-        return 255;
+        return 9000;
     }
 
     public int getDefaultColorTempLevel() {
-        return 116;
+        return EventMsg.UEVENT_UNZIP_PROFILE;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public void onSettingChanged(String setting) {
         char c;
@@ -125,12 +105,10 @@ public final class ColorTemperatureController {
             switch (c) {
                 case 0:
                     this.mCallback.onActivated(isActivated());
-                    return;
+                    break;
                 case 1:
                     this.mCallback.onColorTempLevelChanged(getColorTempLevel());
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
@@ -160,7 +138,6 @@ public final class ColorTemperatureController {
         return true;
     }
 
-    /* loaded from: classes4.dex */
     public interface Callback {
         default void onActivated(boolean activated) {
         }

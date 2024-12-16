@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class DsmsThreadPoolExecutor extends ThreadPoolExecutor {
     private static final int KEEP_ALIVE_TIME_MS = 500;
     private static final int MAXIMUM_THREADS = 20;
@@ -33,9 +33,8 @@ public final class DsmsThreadPoolExecutor extends ThreadPoolExecutor {
     private DsmsThreadPoolExecutor() {
         super(4, 20, 500L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue(500));
         this.isPaused = true;
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.pauseLock = reentrantLock;
-        this.unpaused = reentrantLock.newCondition();
+        this.pauseLock = new ReentrantLock();
+        this.unpaused = this.pauseLock.newCondition();
         super.setRejectedExecutionHandler(new RejectedThread());
     }
 
@@ -69,13 +68,7 @@ public final class DsmsThreadPoolExecutor extends ThreadPoolExecutor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class RejectedThread implements RejectedExecutionHandler {
-        /* synthetic */ RejectedThread(RejectedThreadIA rejectedThreadIA) {
-            this();
-        }
-
+    private static final class RejectedThread implements RejectedExecutionHandler {
         private RejectedThread() {
         }
 

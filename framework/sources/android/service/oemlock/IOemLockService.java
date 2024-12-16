@@ -25,7 +25,6 @@ public interface IOemLockService extends IInterface {
 
     void setOemUnlockAllowedByUser(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IOemLockService {
         @Override // android.service.oemlock.IOemLockService
         public String getLockName() throws RemoteException {
@@ -66,7 +65,6 @@ public interface IOemLockService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IOemLockService {
         public static final String DESCRIPTOR = "android.service.oemlock.IOemLockService";
         static final int TRANSACTION_getLockName = 1;
@@ -140,59 +138,55 @@ public interface IOemLockService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _result = getLockName();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    boolean _arg0 = data.readBoolean();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setOemUnlockAllowedByCarrier(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result2 = isOemUnlockAllowedByCarrier();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setOemUnlockAllowedByUser(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _result3 = isOemUnlockAllowedByUser();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    boolean _result4 = isOemUnlockAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    boolean _result5 = isDeviceOemUnlocked();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = getLockName();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            boolean _arg0 = data.readBoolean();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setOemUnlockAllowedByCarrier(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result2 = isOemUnlockAllowedByCarrier();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setOemUnlockAllowedByUser(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _result3 = isOemUnlockAllowedByUser();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            boolean _result4 = isOemUnlockAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            boolean _result5 = isDeviceOemUnlocked();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IOemLockService {
+        private static class Proxy implements IOemLockService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

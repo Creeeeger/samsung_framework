@@ -1,6 +1,7 @@
 package android.hardware.location;
 
 import android.annotation.SystemApi;
+import android.chre.flags.Flags;
 import android.hardware.display.SemWifiDisplayParameter;
 import android.os.Handler;
 import android.os.HandlerExecutor;
@@ -19,6 +20,7 @@ public class ContextHubTransaction<T> {
     public static final int RESULT_FAILED_BAD_PARAMS = 2;
     public static final int RESULT_FAILED_BUSY = 4;
     public static final int RESULT_FAILED_HAL_UNAVAILABLE = 8;
+    public static final int RESULT_FAILED_NOT_SUPPORTED = 9;
     public static final int RESULT_FAILED_SERVICE_INTERNAL_FAILURE = 7;
     public static final int RESULT_FAILED_TIMEOUT = 6;
     public static final int RESULT_FAILED_UNINITIALIZED = 3;
@@ -29,6 +31,7 @@ public class ContextHubTransaction<T> {
     public static final int TYPE_ENABLE_NANOAPP = 2;
     public static final int TYPE_LOAD_NANOAPP = 0;
     public static final int TYPE_QUERY_NANOAPPS = 4;
+    public static final int TYPE_RELIABLE_MESSAGE = 5;
     public static final int TYPE_UNLOAD_NANOAPP = 1;
     private Response<T> mResponse;
     private int mTransactionType;
@@ -38,27 +41,23 @@ public class ContextHubTransaction<T> {
     private boolean mIsResponseSet = false;
 
     @FunctionalInterface
-    /* loaded from: classes2.dex */
     public interface OnCompleteListener<L> {
         void onComplete(ContextHubTransaction<L> contextHubTransaction, Response<L> response);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Result {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
     }
 
-    /* loaded from: classes2.dex */
     public static class Response<R> {
         private R mContents;
         private int mResult;
 
-        public Response(int result, R contents) {
+        Response(int result, R contents) {
             this.mResult = result;
             this.mContents = contents;
         }
@@ -72,7 +71,7 @@ public class ContextHubTransaction<T> {
         }
     }
 
-    public ContextHubTransaction(int type) {
+    ContextHubTransaction(int type) {
         this.mTransactionType = type;
     }
 
@@ -88,9 +87,13 @@ public class ContextHubTransaction<T> {
                 return upperCase ? "Disable" : SemWifiDisplayParameter.VALUE_DISABLE;
             case 4:
                 return upperCase ? "Query" : "query";
-            default:
-                return upperCase ? "Unknown" : "unknown";
+            case 5:
+                if (Flags.reliableMessage()) {
+                    return upperCase ? "Reliable Message" : "reliable message";
+                }
+                break;
         }
+        return upperCase ? "Unknown" : "unknown";
     }
 
     public int getType() {
@@ -125,6 +128,7 @@ public class ContextHubTransaction<T> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setOnCompleteListener$0() {
         this.mListener.onComplete(this, this.mResponse);
     }
@@ -133,7 +137,7 @@ public class ContextHubTransaction<T> {
         setOnCompleteListener(listener, new HandlerExecutor(Handler.getMain()));
     }
 
-    public void setResponse(Response<T> response) {
+    void setResponse(Response<T> response) {
         synchronized (this) {
             Objects.requireNonNull(response, "Response cannot be null");
             if (this.mIsResponseSet) {
@@ -153,6 +157,7 @@ public class ContextHubTransaction<T> {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setResponse$1() {
         this.mListener.onComplete(this, this.mResponse);
     }

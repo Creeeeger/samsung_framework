@@ -52,7 +52,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     private final Region mTransparentRegion;
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public AdaptiveIconDrawable() {
+    AdaptiveIconDrawable() {
         this((LayerState) null, (Resources) null);
     }
 
@@ -68,9 +68,8 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
             r = ActivityThread.currentActivityThread().getApplication().getResources();
         }
         sMask = PathParser.createPathFromPathData(r.getString(R.string.config_icon_mask));
-        Path path = new Path(sMask);
-        this.mMask = path;
-        this.mMaskScaleOnly = new Path(path);
+        this.mMask = new Path(sMask);
+        this.mMaskScaleOnly = new Path(this.mMask);
         this.mMaskMatrix = new Matrix();
         this.mCanvas = new Canvas();
         this.mTransparentRegion = new Region();
@@ -154,7 +153,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         if (bounds.isEmpty()) {
             return;
         }
@@ -195,8 +194,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         sMask.transform(this.mMaskMatrix, this.mMaskScaleOnly);
         this.mMaskMatrix.postTranslate(b.left, b.top);
         sMask.transform(this.mMaskMatrix, this.mMask);
-        Bitmap bitmap = this.mLayersBitmap;
-        if (bitmap == null || bitmap.getWidth() != b.width() || this.mLayersBitmap.getHeight() != b.height()) {
+        if (this.mLayersBitmap == null || this.mLayersBitmap.getWidth() != b.width() || this.mLayersBitmap.getHeight() != b.height()) {
             this.mLayersBitmap = Bitmap.createBitmap(b.width(), b.height(), Bitmap.Config.ARGB_8888);
         }
         this.mPaint.setShader(null);
@@ -206,12 +204,11 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
 
     @Override // android.graphics.drawable.Drawable
     public void draw(Canvas canvas) {
-        Bitmap bitmap = this.mLayersBitmap;
-        if (bitmap == null) {
+        if (this.mLayersBitmap == null) {
             return;
         }
         if (this.mLayersShader == null) {
-            this.mCanvas.setBitmap(bitmap);
+            this.mCanvas.setBitmap(this.mLayersBitmap);
             this.mCanvas.drawColor(-16777216);
             if (this.mLayerState.mChildren[0].mDrawable != null) {
                 this.mLayerState.mChildren[0].mDrawable.draw(this.mCanvas);
@@ -222,9 +219,8 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
             if (this.mNightModeLayer) {
                 this.mCanvas.drawPaint(SemAppIconSolution.PAINT_FOR_NIGHT_LAYER);
             }
-            BitmapShader bitmapShader = new BitmapShader(this.mLayersBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            this.mLayersShader = bitmapShader;
-            this.mPaint.setShader(bitmapShader);
+            this.mLayersShader = new BitmapShader(this.mLayersBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            this.mPaint.setShader(this.mLayersShader);
         }
         if (this.mMaskScaleOnly != null) {
             Rect bounds = getBounds();
@@ -260,8 +256,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         if (this.mTransparentRegion.isEmpty()) {
             this.mMask.toggleInverseFillType();
             this.mTransparentRegion.set(getBounds());
-            Region region = this.mTransparentRegion;
-            region.setPath(this.mMask, region);
+            this.mTransparentRegion.setPath(this.mMask, this.mTransparentRegion);
             this.mMask.toggleInverseFillType();
         }
         return this.mTransparentRegion;
@@ -302,19 +297,82 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:18:0x003a. Please report as an issue. */
-    /* JADX WARN: Failed to find 'out' block for switch in B:22:0x005e. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x0081  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void inflateLayers(android.content.res.Resources r17, org.xmlpull.v1.XmlPullParser r18, android.util.AttributeSet r19, android.content.res.Resources.Theme r20) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            Method dump skipped, instructions count: 238
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.AdaptiveIconDrawable.inflateLayers(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):void");
+    private void inflateLayers(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        char c;
+        int childIndex;
+        int type;
+        LayerState state = this.mLayerState;
+        int innerDepth = parser.getDepth() + 1;
+        while (true) {
+            int type2 = parser.next();
+            if (type2 != 1) {
+                int depth = parser.getDepth();
+                if (depth >= innerDepth || type2 != 3) {
+                    if (type2 == 2 && depth <= innerDepth) {
+                        String tagName = parser.getName();
+                        switch (tagName.hashCode()) {
+                            case -1905977571:
+                                if (tagName.equals("monochrome")) {
+                                    c = 2;
+                                    break;
+                                }
+                                c = 65535;
+                                break;
+                            case -1332194002:
+                                if (tagName.equals("background")) {
+                                    c = 0;
+                                    break;
+                                }
+                                c = 65535;
+                                break;
+                            case 1984457027:
+                                if (tagName.equals("foreground")) {
+                                    c = 1;
+                                    break;
+                                }
+                                c = 65535;
+                                break;
+                            default:
+                                c = 65535;
+                                break;
+                        }
+                        switch (c) {
+                            case 0:
+                                childIndex = 0;
+                                break;
+                            case 1:
+                                childIndex = 1;
+                                break;
+                            case 2:
+                                childIndex = 2;
+                                break;
+                            default:
+                                continue;
+                        }
+                        ChildDrawable layer = new ChildDrawable(state.mDensity);
+                        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.AdaptiveIconDrawableLayer);
+                        updateLayerFromTypedArray(layer, a);
+                        a.recycle();
+                        if (layer.mDrawable == null && layer.mThemeAttrs == null) {
+                            do {
+                                type = parser.next();
+                            } while (type == 4);
+                            if (type != 2) {
+                                throw new XmlPullParserException(parser.getPositionDescription() + ": <foreground> or <background> tag requires a 'drawable'attribute or child tag defining a drawable");
+                            }
+                            layer.mDrawable = Drawable.createFromXmlInnerForDensity(r, parser, attrs, this.mLayerState.mSrcDensityOverride, theme);
+                            layer.mDrawable.setCallback(this);
+                            state.mChildrenChangingConfigurations |= layer.mDrawable.getChangingConfigurations();
+                        }
+                        addLayer(childIndex, layer);
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
     }
 
     private void updateLayerFromTypedArray(ChildDrawable layer, TypedArray a) {
@@ -334,8 +392,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        LayerState layerState = this.mLayerState;
-        return (layerState != null && layerState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mLayerState != null && this.mLayerState.canApplyTheme()) || super.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -408,19 +465,17 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
                 dr.setHotspotBounds(left, top, right, bottom);
             }
         }
-        Rect rect = this.mHotspotBounds;
-        if (rect == null) {
+        if (this.mHotspotBounds == null) {
             this.mHotspotBounds = new Rect(left, top, right, bottom);
         } else {
-            rect.set(left, top, right, bottom);
+            this.mHotspotBounds.set(left, top, right, bottom);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public void getHotspotBounds(Rect outRect) {
-        Rect rect = this.mHotspotBounds;
-        if (rect != null) {
-            outRect.set(rect);
+        if (this.mHotspotBounds != null) {
+            outRect.set(this.mHotspotBounds);
         } else {
             super.getHotspotBounds(outRect);
         }
@@ -541,7 +596,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         boolean changed = false;
         ChildDrawable[] array = this.mLayerState.mChildren;
         for (int i = 0; i < 3; i++) {
@@ -557,7 +612,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         boolean changed = false;
         ChildDrawable[] array = this.mLayerState.mChildren;
         for (int i = 0; i < 3; i++) {
@@ -580,19 +635,13 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     private int getMaxIntrinsicWidth() {
         int w;
         int width = -1;
-        int i = 0;
-        while (true) {
-            LayerState layerState = this.mLayerState;
-            if (i < 3) {
-                ChildDrawable r = layerState.mChildren[i];
-                if (r.mDrawable != null && (w = r.mDrawable.getIntrinsicWidth()) > width) {
-                    width = w;
-                }
-                i++;
-            } else {
-                return width;
+        for (int i = 0; i < 3; i++) {
+            ChildDrawable r = this.mLayerState.mChildren[i];
+            if (r.mDrawable != null && (w = r.mDrawable.getIntrinsicWidth()) > width) {
+                width = w;
             }
         }
+        return width;
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -603,19 +652,13 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     private int getMaxIntrinsicHeight() {
         int h;
         int height = -1;
-        int i = 0;
-        while (true) {
-            LayerState layerState = this.mLayerState;
-            if (i < 3) {
-                ChildDrawable r = layerState.mChildren[i];
-                if (r.mDrawable != null && (h = r.mDrawable.getIntrinsicHeight()) > height) {
-                    height = h;
-                }
-                i++;
-            } else {
-                return height;
+        for (int i = 0; i < 3; i++) {
+            ChildDrawable r = this.mLayerState.mChildren[i];
+            if (r.mDrawable != null && (h = r.mDrawable.getIntrinsicHeight()) > height) {
+                height = h;
             }
         }
+        return height;
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -631,17 +674,11 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
     public Drawable mutate() {
         if (!this.mMutated && super.mutate() == this) {
             this.mLayerState = createConstantState(this.mLayerState, null);
-            int i = 0;
-            while (true) {
-                LayerState layerState = this.mLayerState;
-                if (i >= 3) {
-                    break;
-                }
-                Drawable dr = layerState.mChildren[i].mDrawable;
+            for (int i = 0; i < 3; i++) {
+                Drawable dr = this.mLayerState.mChildren[i].mDrawable;
                 if (dr != null) {
                     dr.mutate();
                 }
-                i++;
             }
             this.mMutated = true;
         }
@@ -665,8 +702,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         this.mNightModeLayer = nightMode;
     }
 
-    /* loaded from: classes.dex */
-    public static class ChildDrawable {
+    static class ChildDrawable {
         public int mDensity;
         public Drawable mDrawable;
         public int[] mThemeAttrs;
@@ -701,8 +737,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         }
 
         public boolean canApplyTheme() {
-            Drawable drawable;
-            return this.mThemeAttrs != null || ((drawable = this.mDrawable) != null && drawable.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mDrawable != null && this.mDrawable.canApplyTheme());
         }
 
         public final void setDensity(int targetDensity) {
@@ -712,8 +747,7 @@ public class AdaptiveIconDrawable extends Drawable implements Drawable.Callback 
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class LayerState extends Drawable.ConstantState {
+    static class LayerState extends Drawable.ConstantState {
         static final int N_CHILDREN = 3;
         private boolean mAutoMirrored;
         int mChangingConfigurations;

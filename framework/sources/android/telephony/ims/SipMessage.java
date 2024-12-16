@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SipMessage implements Parcelable {
     private static final String CRLF = "\r\n";
     private final String mCallIdParam;
@@ -21,23 +21,18 @@ public final class SipMessage implements Parcelable {
     private final String mViaBranchParam;
     private static final boolean IS_DEBUGGING = Build.IS_ENG;
     public static final Parcelable.Creator<SipMessage> CREATOR = new Parcelable.Creator<SipMessage>() { // from class: android.telephony.ims.SipMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipMessage createFromParcel(Parcel source) {
             return new SipMessage(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipMessage[] newArray(int size) {
             return new SipMessage[size];
         }
     };
-
-    /* synthetic */ SipMessage(Parcel parcel, SipMessageIA sipMessageIA) {
-        this(parcel);
-    }
 
     public SipMessage(String startLine, String headerSection, byte[] content) {
         Objects.requireNonNull(startLine, "Required parameter is null: startLine");
@@ -46,20 +41,18 @@ public final class SipMessage implements Parcelable {
         this.mStartLine = startLine;
         this.mHeaderSection = headerSection;
         this.mContent = content;
-        String transactionId = SipMessageParsingUtils.getTransactionId(headerSection);
-        this.mViaBranchParam = transactionId;
-        if (TextUtils.isEmpty(transactionId)) {
+        this.mViaBranchParam = SipMessageParsingUtils.getTransactionId(this.mHeaderSection);
+        if (TextUtils.isEmpty(this.mViaBranchParam)) {
             throw new IllegalArgumentException("header section MUST contain a branch parameter inside of the Via header.");
         }
-        this.mCallIdParam = SipMessageParsingUtils.getCallId(headerSection);
+        this.mCallIdParam = SipMessageParsingUtils.getCallId(this.mHeaderSection);
     }
 
     private SipMessage(Parcel source) {
         this.mStartLine = source.readString();
         this.mHeaderSection = source.readString();
-        byte[] bArr = new byte[source.readInt()];
-        this.mContent = bArr;
-        source.readByteArray(bArr);
+        this.mContent = new byte[source.readInt()];
+        source.readByteArray(this.mContent);
         this.mViaBranchParam = source.readString();
         this.mCallIdParam = source.readString();
     }
@@ -99,34 +92,16 @@ public final class SipMessage implements Parcelable {
         dest.writeString(this.mCallIdParam);
     }
 
-    /* renamed from: android.telephony.ims.SipMessage$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SipMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipMessage createFromParcel(Parcel source) {
-            return new SipMessage(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipMessage[] newArray(int size) {
-            return new SipMessage[size];
-        }
-    }
-
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append("StartLine: [");
-        boolean z = IS_DEBUGGING;
-        if (z) {
+        if (IS_DEBUGGING) {
             b.append(this.mStartLine);
         } else {
             b.append(sanitizeStartLineRequest(this.mStartLine));
         }
         b.append("], Header: [");
-        if (z) {
+        if (IS_DEBUGGING) {
             b.append(this.mHeaderSection);
         } else {
             b.append("***");
@@ -167,8 +142,7 @@ public final class SipMessage implements Parcelable {
         byte[] header = (this.mStartLine + this.mHeaderSection + CRLF).getBytes(StandardCharsets.UTF_8);
         byte[] sipMessage = new byte[header.length + this.mContent.length];
         System.arraycopy(header, 0, sipMessage, 0, header.length);
-        byte[] bArr = this.mContent;
-        System.arraycopy(bArr, 0, sipMessage, header.length, bArr.length);
+        System.arraycopy(this.mContent, 0, sipMessage, header.length, this.mContent.length);
         return sipMessage;
     }
 }

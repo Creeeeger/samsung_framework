@@ -55,15 +55,8 @@ public final class InputProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -203,12 +196,7 @@ public final class InputProperties {
     }
 
     public static Optional<Boolean> simulate_stylus_with_touch() {
-        String value = SystemProperties.get("persist.debug.input.simulate_stylus_with_touch");
-        return Optional.ofNullable(tryParseBoolean(value));
-    }
-
-    public static Optional<Boolean> enable_touchpad_gestures_library() {
-        String value = SystemProperties.get("persist.input.touchpad.gestures_library.enabled");
+        String value = SystemProperties.get("debug.input.simulate_stylus_with_touch");
         return Optional.ofNullable(tryParseBoolean(value));
     }
 
@@ -224,6 +212,26 @@ public final class InputProperties {
 
     public static Optional<Boolean> force_enable_stylus_pointer_icon() {
         String value = SystemProperties.get("persist.debug.input.force_enable_stylus_pointer_icon");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> enable_keyboard_backlight_animation() {
+        String value = SystemProperties.get("persist.input.keyboard.backlight_animation.enabled");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> enable_input_device_usage_metrics() {
+        String value = SystemProperties.get("persist.debug.input.enable_input_device_usage_metrics");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> enable_keyboard_backlight_custom_levels() {
+        String value = SystemProperties.get("persist.input.keyboard.backlight_custom_levels.enabled");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> enable_ambient_keyboard_backlight_control() {
+        String value = SystemProperties.get("persist.input.keyboard.ambient_backlight_control.enabled");
         return Optional.ofNullable(tryParseBoolean(value));
     }
 }

@@ -16,14 +16,13 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public class ScreenshotRequest implements Parcelable {
     public static final Parcelable.Creator<ScreenshotRequest> CREATOR = new Parcelable.Creator<ScreenshotRequest>() { // from class: com.android.internal.util.ScreenshotRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScreenshotRequest createFromParcel(Parcel source) {
             return new ScreenshotRequest(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ScreenshotRequest[] newArray(int size) {
             return new ScreenshotRequest[size];
@@ -38,10 +37,6 @@ public class ScreenshotRequest implements Parcelable {
     private final ComponentName mTopComponent;
     private final int mType;
     private final int mUserId;
-
-    /* synthetic */ ScreenshotRequest(int i, int i2, ComponentName componentName, int i3, int i4, Bitmap bitmap, Rect rect, Insets insets, ScreenshotRequestIA screenshotRequestIA) {
-        this(i, i2, componentName, i3, i4, bitmap, rect, insets);
-    }
 
     private ScreenshotRequest(int type, int source, ComponentName topComponent, int taskId, int userId, Bitmap bitmap, Rect boundsInScreen, Insets insets) {
         this.mType = type;
@@ -114,24 +109,6 @@ public class ScreenshotRequest implements Parcelable {
         dest.writeTypedObject(this.mInsets, 0);
     }
 
-    /* renamed from: com.android.internal.util.ScreenshotRequest$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ScreenshotRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScreenshotRequest createFromParcel(Parcel source) {
-            return new ScreenshotRequest(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ScreenshotRequest[] newArray(int size) {
-            return new ScreenshotRequest[size];
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private Bitmap mBitmap;
         private Rect mBoundsInScreen;
@@ -191,15 +168,14 @@ public class ScreenshotRequest implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class HardwareBitmapBundler {
+    private static final class HardwareBitmapBundler {
         private static final String KEY_BUFFER = "bitmap_util_buffer";
         private static final String KEY_COLOR_SPACE = "bitmap_util_color_space";
 
         private HardwareBitmapBundler() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Bundle hardwareBitmapToBundle(Bitmap bitmap) {
             ParcelableColorSpace colorSpace;
             if (bitmap == null) {
@@ -219,6 +195,7 @@ public class ScreenshotRequest implements Parcelable {
             return bundle;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Bitmap bundleToHardwareBitmap(Bundle bundle) {
             if (bundle == null) {
                 return null;

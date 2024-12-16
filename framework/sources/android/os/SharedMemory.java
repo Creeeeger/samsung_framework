@@ -21,24 +21,19 @@ public final class SharedMemory implements Parcelable, Closeable {
     private final int mSize;
     private static final int PROT_MASK = ((OsConstants.PROT_READ | OsConstants.PROT_WRITE) | OsConstants.PROT_EXEC) | OsConstants.PROT_NONE;
     public static final Parcelable.Creator<SharedMemory> CREATOR = new Parcelable.Creator<SharedMemory>() { // from class: android.os.SharedMemory.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SharedMemory createFromParcel(Parcel source) {
             FileDescriptor descriptor = source.readRawFileDescriptor();
             return new SharedMemory(descriptor);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SharedMemory[] newArray(int size) {
             return new SharedMemory[size];
         }
     };
-
-    /* synthetic */ SharedMemory(FileDescriptor fileDescriptor, SharedMemoryIA sharedMemoryIA) {
-        this(fileDescriptor);
-    }
 
     private static native FileDescriptor nCreate(String str, int i) throws ErrnoException;
 
@@ -46,22 +41,20 @@ public final class SharedMemory implements Parcelable, Closeable {
 
     private static native int nSetProt(FileDescriptor fileDescriptor, int i);
 
-    private SharedMemory(FileDescriptor fd) {
-        if (fd == null) {
+    private SharedMemory(FileDescriptor fileDescriptor) {
+        if (fileDescriptor == null) {
             throw new IllegalArgumentException("Unable to create SharedMemory from a null FileDescriptor");
         }
-        if (!fd.valid()) {
+        if (!fileDescriptor.valid()) {
             throw new IllegalArgumentException("Unable to create SharedMemory from closed FileDescriptor");
         }
-        this.mFileDescriptor = fd;
-        int nGetSize = nGetSize(fd);
-        this.mSize = nGetSize;
-        if (nGetSize <= 0) {
+        this.mFileDescriptor = fileDescriptor;
+        this.mSize = nGetSize(this.mFileDescriptor);
+        if (this.mSize <= 0) {
             throw new IllegalArgumentException("FileDescriptor is not a valid ashmem fd");
         }
-        MemoryRegistration memoryRegistration = new MemoryRegistration(nGetSize);
-        this.mMemoryRegistration = memoryRegistration;
-        this.mCleaner = Cleaner.create(fd, new Closer(fd.getInt$(), memoryRegistration));
+        this.mMemoryRegistration = new MemoryRegistration(this.mSize);
+        this.mCleaner = Cleaner.create(this.mFileDescriptor, new Closer(this.mFileDescriptor.getInt$(), this.mMemoryRegistration));
     }
 
     public static SharedMemory create(String name, int size) throws ErrnoException {
@@ -124,13 +117,13 @@ public final class SharedMemory implements Parcelable, Closeable {
             throw new IllegalArgumentException("Offset must be >= 0");
         }
         if (length > 0) {
-            if (offset + length > this.mSize) {
-                throw new IllegalArgumentException("offset + length must not exceed getSize()");
+            if (offset + length <= this.mSize) {
+                long address = Os.mmap(0L, length, prot, OsConstants.MAP_SHARED, this.mFileDescriptor, offset);
+                boolean readOnly = (prot & OsConstants.PROT_WRITE) == 0;
+                Runnable unmapper = new Unmapper(address, length, this.mMemoryRegistration.acquire());
+                return new DirectByteBuffer(length, address, this.mFileDescriptor, unmapper, readOnly);
             }
-            long address = Os.mmap(0L, length, prot, OsConstants.MAP_SHARED, this.mFileDescriptor, offset);
-            boolean readOnly = (prot & OsConstants.PROT_WRITE) == 0;
-            Runnable unmapper = new Unmapper(address, length, this.mMemoryRegistration.acquire());
-            return new DirectByteBuffer(length, address, this.mFileDescriptor, unmapper, readOnly);
+            throw new IllegalArgumentException("offset + length must not exceed getSize()");
         }
         throw new IllegalArgumentException("Length must be > 0");
     }
@@ -146,9 +139,8 @@ public final class SharedMemory implements Parcelable, Closeable {
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() {
         this.mFileDescriptor.setInt$(-1);
-        Cleaner cleaner = this.mCleaner;
-        if (cleaner != null) {
-            cleaner.clean();
+        if (this.mCleaner != null) {
+            this.mCleaner.clean();
             this.mCleaner = null;
         }
     }
@@ -168,33 +160,9 @@ public final class SharedMemory implements Parcelable, Closeable {
         return ParcelFileDescriptor.dup(this.mFileDescriptor);
     }
 
-    /* renamed from: android.os.SharedMemory$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SharedMemory> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SharedMemory createFromParcel(Parcel source) {
-            FileDescriptor descriptor = source.readRawFileDescriptor();
-            return new SharedMemory(descriptor);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SharedMemory[] newArray(int size) {
-            return new SharedMemory[size];
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static final class Closer implements Runnable {
+    private static final class Closer implements Runnable {
         private int mFd;
         private MemoryRegistration mMemoryReference;
-
-        /* synthetic */ Closer(int i, MemoryRegistration memoryRegistration, CloserIA closerIA) {
-            this(i, memoryRegistration);
-        }
 
         private Closer(int fd, MemoryRegistration memoryReference) {
             this.mFd = fd;
@@ -214,15 +182,10 @@ public final class SharedMemory implements Parcelable, Closeable {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class Unmapper implements Runnable {
+    private static final class Unmapper implements Runnable {
         private long mAddress;
         private MemoryRegistration mMemoryReference;
         private int mSize;
-
-        /* synthetic */ Unmapper(long j, int i, MemoryRegistration memoryRegistration, UnmapperIA unmapperIA) {
-            this(j, i, memoryRegistration);
-        }
 
         private Unmapper(long address, int size, MemoryRegistration memoryReference) {
             this.mAddress = address;
@@ -241,14 +204,9 @@ public final class SharedMemory implements Parcelable, Closeable {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class MemoryRegistration {
+    private static final class MemoryRegistration {
         private int mReferenceCount;
         private int mSize;
-
-        /* synthetic */ MemoryRegistration(int i, MemoryRegistrationIA memoryRegistrationIA) {
-            this(i);
-        }
 
         private MemoryRegistration(int size) {
             this.mSize = size;
@@ -262,9 +220,8 @@ public final class SharedMemory implements Parcelable, Closeable {
         }
 
         public synchronized void release() {
-            int i = this.mReferenceCount - 1;
-            this.mReferenceCount = i;
-            if (i == 0) {
+            this.mReferenceCount--;
+            if (this.mReferenceCount == 0) {
                 VMRuntime.getRuntime().registerNativeFree(this.mSize);
             }
         }

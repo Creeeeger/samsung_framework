@@ -89,15 +89,10 @@ public class RippleDrawable extends LayerDrawable {
 
     @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.LOCAL_VARIABLE, ElementType.FIELD})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RippleStyle {
     }
 
-    /* synthetic */ RippleDrawable(RippleState rippleState, Resources resources, RippleDrawableIA rippleDrawableIA) {
-        this(rippleState, resources);
-    }
-
-    public RippleDrawable() {
+    RippleDrawable() {
         this(new RippleState(null, null, null), null);
     }
 
@@ -121,13 +116,11 @@ public class RippleDrawable extends LayerDrawable {
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
     public void jumpToCurrentState() {
         super.jumpToCurrentState();
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground != null) {
-            rippleForeground.end();
+        if (this.mRipple != null) {
+            this.mRipple.end();
         }
-        RippleBackground rippleBackground = this.mBackground;
-        if (rippleBackground != null) {
-            rippleBackground.jumpToFinal();
+        if (this.mBackground != null) {
+            this.mBackground.jumpToFinal();
         }
         cancelExitingRipples();
         endPatternedAnimations();
@@ -160,7 +153,7 @@ public class RippleDrawable extends LayerDrawable {
     }
 
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
         boolean enabled = false;
         boolean pressed = false;
@@ -179,7 +172,7 @@ public class RippleDrawable extends LayerDrawable {
                 hovered = true;
             } else if (state == 16842909) {
                 windowFocused = true;
-            } else if (state == 17957265) {
+            } else if (state == 17957295) {
                 this.mSpenHovered = true;
             }
         }
@@ -223,13 +216,11 @@ public class RippleDrawable extends LayerDrawable {
                 return;
             }
             if (this.mBackground == null && (hovered || focused)) {
-                RippleBackground rippleBackground = new RippleBackground(this, this.mHotspotBounds, isBounded());
-                this.mBackground = rippleBackground;
-                rippleBackground.setup(this.mState.mMaxRadius, this.mDensity);
+                this.mBackground = new RippleBackground(this, this.mHotspotBounds, isBounded());
+                this.mBackground.setup(this.mState.mMaxRadius, this.mDensity);
             }
-            RippleBackground rippleBackground2 = this.mBackground;
-            if (rippleBackground2 != null) {
-                rippleBackground2.setState(focused, hovered, pressed);
+            if (this.mBackground != null) {
+                this.mBackground.setState(focused, hovered, pressed);
                 return;
             }
             return;
@@ -245,7 +236,7 @@ public class RippleDrawable extends LayerDrawable {
     }
 
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         if (!this.mOverrideBounds) {
             this.mHotspotBounds.set(bounds);
@@ -256,13 +247,11 @@ public class RippleDrawable extends LayerDrawable {
         for (int i = 0; i < count; i++) {
             ripples[i].onBoundsChange();
         }
-        RippleBackground rippleBackground = this.mBackground;
-        if (rippleBackground != null) {
-            rippleBackground.onBoundsChange();
+        if (this.mBackground != null) {
+            this.mBackground.onBoundsChange();
         }
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground != null) {
-            rippleForeground.onBoundsChange();
+        if (this.mRipple != null) {
+            this.mRipple.onBoundsChange();
         }
         invalidateSelf();
     }
@@ -383,8 +372,7 @@ public class RippleDrawable extends LayerDrawable {
         if (effectColor != null) {
             this.mState.mEffectColor = effectColor;
         }
-        RippleState rippleState = this.mState;
-        rippleState.mMaxRadius = a.getDimensionPixelSize(1, rippleState.mMaxRadius);
+        this.mState.mMaxRadius = a.getDimensionPixelSize(1, this.mState.mMaxRadius);
     }
 
     private void verifyRequiredAttributes(TypedArray a) throws XmlPullParserException {
@@ -423,20 +411,18 @@ public class RippleDrawable extends LayerDrawable {
 
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        RippleState rippleState = this.mState;
-        return (rippleState != null && rippleState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mState != null && this.mState.canApplyTheme()) || super.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.LayerDrawable, android.graphics.drawable.Drawable
     public void setHotspot(float x, float y) {
         this.mPendingX = x;
         this.mPendingY = y;
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground == null || this.mBackground == null) {
+        if (this.mRipple == null || this.mBackground == null) {
             this.mHasPending = true;
         }
-        if (rippleForeground != null) {
-            rippleForeground.move(x, y);
+        if (this.mRipple != null) {
+            this.mRipple.move(x, y);
         }
     }
 
@@ -462,30 +448,27 @@ public class RippleDrawable extends LayerDrawable {
     }
 
     private void tryRippleExit() {
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground != null) {
+        if (this.mRipple != null) {
             if (this.mExitingRipples == null) {
                 this.mExitingRipples = new RippleForeground[10];
             }
             RippleForeground[] rippleForegroundArr = this.mExitingRipples;
             int i = this.mExitingRipplesCount;
             this.mExitingRipplesCount = i + 1;
-            rippleForegroundArr[i] = rippleForeground;
-            rippleForeground.exit();
+            rippleForegroundArr[i] = this.mRipple;
+            this.mRipple.exit();
             this.mRipple = null;
         }
     }
 
     private void clearHotspots() {
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground != null) {
-            rippleForeground.end();
+        if (this.mRipple != null) {
+            this.mRipple.end();
             this.mRipple = null;
             this.mRippleActive = false;
         }
-        RippleBackground rippleBackground = this.mBackground;
-        if (rippleBackground != null) {
-            rippleBackground.setState(false, false, false);
+        if (this.mBackground != null) {
+            this.mBackground.setState(false, false, false);
         }
         cancelExitingRipples();
         endPatternedAnimations();
@@ -509,13 +492,11 @@ public class RippleDrawable extends LayerDrawable {
         for (int i = 0; i < count; i++) {
             ripples[i].onHotspotBoundsChanged();
         }
-        RippleForeground rippleForeground = this.mRipple;
-        if (rippleForeground != null) {
-            rippleForeground.onHotspotBoundsChanged();
+        if (this.mRipple != null) {
+            this.mRipple.onHotspotBoundsChanged();
         }
-        RippleBackground rippleBackground = this.mBackground;
-        if (rippleBackground != null) {
-            rippleBackground.onHotspotBoundsChanged();
+        if (this.mBackground != null) {
+            this.mBackground.onHotspotBoundsChanged();
         }
         float newRadius = getComputedRadius();
         for (int i2 = 0; i2 < this.mRunningAnimations.size(); i2++) {
@@ -570,9 +551,8 @@ public class RippleDrawable extends LayerDrawable {
 
     private void exitPatternedBackgroundAnimation() {
         this.mTargetBackgroundOpacity = 0.0f;
-        ValueAnimator valueAnimator = this.mBackgroundAnimation;
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
+        if (this.mBackgroundAnimation != null) {
+            this.mBackgroundAnimation.cancel();
         }
         this.mRunBackgroundAnimation = true;
         invalidateSelf(false);
@@ -603,9 +583,8 @@ public class RippleDrawable extends LayerDrawable {
             }
             this.mTargetBackgroundOpacity = f;
         }
-        ValueAnimator valueAnimator = this.mBackgroundAnimation;
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
+        if (this.mBackgroundAnimation != null) {
+            this.mBackgroundAnimation.cancel();
         }
         this.mRunBackgroundAnimation = true;
         invalidateSelf(false);
@@ -617,9 +596,8 @@ public class RippleDrawable extends LayerDrawable {
             Log.w(TAG, "Thread doesn't have a looper. Skipping animation.");
             return;
         }
-        ValueAnimator ofFloat = ValueAnimator.ofFloat(this.mBackgroundOpacity, this.mTargetBackgroundOpacity);
-        this.mBackgroundAnimation = ofFloat;
-        ofFloat.setInterpolator(LINEAR_INTERPOLATOR);
+        this.mBackgroundAnimation = ValueAnimator.ofFloat(this.mBackgroundOpacity, this.mTargetBackgroundOpacity);
+        this.mBackgroundAnimation.setInterpolator(LINEAR_INTERPOLATOR);
         this.mBackgroundAnimation.setDuration(80L);
         this.mBackgroundAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.graphics.drawable.RippleDrawable$$ExternalSyntheticLambda0
             @Override // android.animation.ValueAnimator.AnimatorUpdateListener
@@ -630,6 +608,7 @@ public class RippleDrawable extends LayerDrawable {
         this.mBackgroundAnimation.start();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startBackgroundAnimation$0(ValueAnimator update) {
         this.mBackgroundOpacity = ((Float) update.getAnimatedValue()).floatValue();
         invalidateSelf(false);
@@ -715,10 +694,12 @@ public class RippleDrawable extends LayerDrawable {
         canvas.restoreToCount(saveCount);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$drawPatterned$1() {
         invalidateSelf(false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$drawPatterned$2(RippleAnimationSession session) {
         this.mRunningAnimations.remove(session);
     }
@@ -759,15 +740,14 @@ public class RippleDrawable extends LayerDrawable {
         Paint p = new Paint(updateRipplePaint());
         float radius = getComputedRadius();
         RippleShader shader = new RippleShader();
-        PorterDuffColorFilter porterDuffColorFilter = this.mMaskColorFilter;
-        if (porterDuffColorFilter == null) {
+        if (this.mMaskColorFilter == null) {
             color = this.mState.mColor.getColorForState(getState(), -16777216);
         } else {
-            color = porterDuffColorFilter.getColor();
+            color = this.mMaskColorFilter.getColor();
         }
         int color2 = clampAlpha(color);
         int effectColor = this.mState.mEffectColor.getColorForState(getState(), Color.MAGENTA);
-        float noisePhase = (float) AnimationUtils.currentAnimationTimeMillis();
+        float noisePhase = AnimationUtils.currentAnimationTimeMillis();
         shader.setColor(color2, effectColor);
         shader.setOrigin(cx, cy);
         shader.setTouch(x, y);
@@ -776,11 +756,10 @@ public class RippleDrawable extends LayerDrawable {
         shader.setRadius(radius);
         shader.setProgress(0.0f);
         RippleAnimationSession.AnimationProperties<Float, Paint> properties = new RippleAnimationSession.AnimationProperties<>(Float.valueOf(cx), Float.valueOf(cy), Float.valueOf(radius), Float.valueOf(noisePhase), p, Float.valueOf(0.0f), color2, shader);
-        BitmapShader bitmapShader = this.mMaskShader;
-        if (bitmapShader == null) {
+        if (this.mMaskShader == null) {
             shader.setShader(null);
         } else {
-            shader.setShader(bitmapShader);
+            shader.setShader(this.mMaskShader);
         }
         p.setShader(shader);
         p.setColorFilter(null);
@@ -800,7 +779,7 @@ public class RippleDrawable extends LayerDrawable {
         invalidateSelf(true);
     }
 
-    public void invalidateSelf(boolean invalidateMask) {
+    void invalidateSelf(boolean invalidateMask) {
         super.invalidateSelf();
         if (invalidateMask) {
             this.mHasValidMask = false;
@@ -831,9 +810,8 @@ public class RippleDrawable extends LayerDrawable {
         this.mHasValidMask = true;
         Rect bounds = getBounds();
         if (maskType == 0 || bounds.isEmpty()) {
-            Bitmap bitmap = this.mMaskBuffer;
-            if (bitmap != null) {
-                bitmap.recycle();
+            if (this.mMaskBuffer != null) {
+                this.mMaskBuffer.recycle();
                 this.mMaskBuffer = null;
                 this.mMaskShader = null;
                 this.mMaskCanvas = null;
@@ -842,24 +820,20 @@ public class RippleDrawable extends LayerDrawable {
             this.mMaskColorFilter = null;
             return;
         }
-        Bitmap bitmap2 = this.mMaskBuffer;
-        if (bitmap2 == null || bitmap2.getWidth() != bounds.width() || this.mMaskBuffer.getHeight() != bounds.height()) {
-            Bitmap bitmap3 = this.mMaskBuffer;
-            if (bitmap3 != null) {
-                bitmap3.recycle();
+        if (this.mMaskBuffer == null || this.mMaskBuffer.getWidth() != bounds.width() || this.mMaskBuffer.getHeight() != bounds.height()) {
+            if (this.mMaskBuffer != null) {
+                this.mMaskBuffer.recycle();
             }
-            Bitmap createBitmap = Bitmap.createBitmap(bounds.width(), bounds.height(), Bitmap.Config.ALPHA_8);
-            this.mMaskBuffer = createBitmap;
-            this.mMaskShader = new BitmapShader(createBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            this.mMaskBuffer = Bitmap.createBitmap(bounds.width(), bounds.height(), Bitmap.Config.ALPHA_8);
+            this.mMaskShader = new BitmapShader(this.mMaskBuffer, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             this.mMaskCanvas = new Canvas(this.mMaskBuffer);
         } else {
             this.mMaskBuffer.eraseColor(0);
         }
-        Matrix matrix = this.mMaskMatrix;
-        if (matrix == null) {
+        if (this.mMaskMatrix == null) {
             this.mMaskMatrix = new Matrix();
         } else {
-            matrix.reset();
+            this.mMaskMatrix.reset();
         }
         if (this.mMaskColorFilter == null) {
             this.mMaskColorFilter = new PorterDuffColorFilter(0, PorterDuff.Mode.SRC_IN);
@@ -878,13 +852,11 @@ public class RippleDrawable extends LayerDrawable {
     }
 
     private int getMaskType() {
-        RippleBackground rippleBackground;
-        if (this.mRipple == null && this.mExitingRipplesCount <= 0 && (((rippleBackground = this.mBackground) == null || !rippleBackground.isVisible()) && this.mState.mRippleStyle == 0)) {
+        if (this.mRipple == null && this.mExitingRipplesCount <= 0 && ((this.mBackground == null || !this.mBackground.isVisible()) && this.mState.mRippleStyle == 0)) {
             return -1;
         }
-        Drawable drawable = this.mMask;
-        if (drawable != null) {
-            return drawable.getOpacity() == -1 ? 0 : 2;
+        if (this.mMask != null) {
+            return this.mMask.getOpacity() == -1 ? 0 : 2;
         }
         LayerDrawable.ChildDrawable[] array = this.mLayerState.mChildren;
         int count = this.mLayerState.mNumChildren;
@@ -936,11 +908,10 @@ public class RippleDrawable extends LayerDrawable {
         this.mMask.draw(canvas);
     }
 
-    public Paint updateRipplePaint() {
+    Paint updateRipplePaint() {
         if (this.mRipplePaint == null) {
-            Paint paint = new Paint();
-            this.mRipplePaint = paint;
-            paint.setAntiAlias(true);
+            this.mRipplePaint = new Paint();
+            this.mRipplePaint.setAntiAlias(true);
             this.mRipplePaint.setStyle(Paint.Style.FILL);
         }
         float x = this.mHotspotBounds.exactCenterX();
@@ -1026,13 +997,13 @@ public class RippleDrawable extends LayerDrawable {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.LayerDrawable
     public RippleState createConstantState(LayerDrawable.LayerState state, Resources res) {
         return new RippleState(state, this, res);
     }
 
-    /* loaded from: classes.dex */
-    public static class RippleState extends LayerDrawable.LayerState {
+    static class RippleState extends LayerDrawable.LayerState {
         ColorStateList mColor;
         ColorStateList mEffectColor;
         int mMaxRadius;
@@ -1059,22 +1030,20 @@ public class RippleDrawable extends LayerDrawable {
         }
 
         @Override // android.graphics.drawable.LayerDrawable.LayerState
-        public void onDensityChanged(int sourceDensity, int targetDensity) {
+        protected void onDensityChanged(int sourceDensity, int targetDensity) {
             super.onDensityChanged(sourceDensity, targetDensity);
             applyDensityScaling(sourceDensity, targetDensity);
         }
 
         private void applyDensityScaling(int sourceDensity, int targetDensity) {
-            int i = this.mMaxRadius;
-            if (i != -1) {
-                this.mMaxRadius = Drawable.scaleFromDensity(i, sourceDensity, targetDensity, true);
+            if (this.mMaxRadius != -1) {
+                this.mMaxRadius = Drawable.scaleFromDensity(this.mMaxRadius, sourceDensity, targetDensity, true);
             }
         }
 
         @Override // android.graphics.drawable.LayerDrawable.LayerState, android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            return this.mTouchThemeAttrs != null || ((colorStateList = this.mColor) != null && colorStateList.canApplyTheme()) || super.canApplyTheme();
+            return this.mTouchThemeAttrs != null || (this.mColor != null && this.mColor.canApplyTheme()) || super.canApplyTheme();
         }
 
         @Override // android.graphics.drawable.LayerDrawable.LayerState, android.graphics.drawable.Drawable.ConstantState
@@ -1089,9 +1058,7 @@ public class RippleDrawable extends LayerDrawable {
 
         @Override // android.graphics.drawable.LayerDrawable.LayerState, android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int changingConfigurations = super.getChangingConfigurations();
-            ColorStateList colorStateList = this.mColor;
-            return changingConfigurations | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return super.getChangingConfigurations() | (this.mColor != null ? this.mColor.getChangingConfigurations() : 0);
         }
     }
 
@@ -1104,9 +1071,8 @@ public class RippleDrawable extends LayerDrawable {
         this.mAddRipple = false;
         this.mRunningAnimations = new ArrayList<>();
         this.mSpenHovered = false;
-        RippleState rippleState = new RippleState(state, this, res);
-        this.mState = rippleState;
-        this.mLayerState = rippleState;
+        this.mState = new RippleState(state, this, res);
+        this.mLayerState = this.mState;
         this.mDensity = Drawable.resolveDensity(res, this.mState.mDensity);
         if (this.mState.mNumChildren > 0) {
             ensurePadding();

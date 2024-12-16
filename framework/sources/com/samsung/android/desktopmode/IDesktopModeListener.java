@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDesktopModeListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IDesktopModeListener";
 
     void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDesktopModeListener {
         @Override // com.samsung.android.desktopmode.IDesktopModeListener
         public void onDesktopModeStateChanged(SemDesktopModeState state) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDesktopModeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDesktopModeListener {
         static final int TRANSACTION_onDesktopModeStateChanged = 1;
 
@@ -67,26 +65,22 @@ public interface IDesktopModeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDesktopModeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDesktopModeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDesktopModeListener.DESCRIPTOR);
+                case 1:
+                    SemDesktopModeState _arg0 = (SemDesktopModeState) data.readTypedObject(SemDesktopModeState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDesktopModeStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SemDesktopModeState _arg0 = (SemDesktopModeState) data.readTypedObject(SemDesktopModeState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDesktopModeStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDesktopModeListener {
+        private static class Proxy implements IDesktopModeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

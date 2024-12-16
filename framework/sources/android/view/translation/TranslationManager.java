@@ -72,12 +72,13 @@ public final class TranslationManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createOnDeviceTranslator$4(final Executor executor, final Consumer callback, int tId, final Translator translator) {
         if (translator == null) {
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda0
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda1
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
-                    executor.execute(new Runnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda2
+                    executor.execute(new Runnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             r1.accept(null);
@@ -90,10 +91,10 @@ public final class TranslationManager {
         synchronized (this.mLock) {
             this.mTranslatorIds.add(tId);
         }
-        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda1
+        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda2
             @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
             public final void runOrThrow() {
-                executor.execute(new Runnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda4
+                executor.execute(new Runnable() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda5
                     @Override // java.lang.Runnable
                     public final void run() {
                         r1.accept(r2);
@@ -181,7 +182,7 @@ public final class TranslationManager {
         Objects.requireNonNull(pendingIntent, "pending intent should not be null");
         synchronized (this.mLock) {
             Pair<Integer, Integer> formatPair = new Pair<>(Integer.valueOf(sourceFormat), Integer.valueOf(targetFormat));
-            this.mTranslationCapabilityUpdateListeners.computeIfAbsent(formatPair, new Function() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda5
+            this.mTranslationCapabilityUpdateListeners.computeIfAbsent(formatPair, new Function() { // from class: android.view.translation.TranslationManager$$ExternalSyntheticLambda4
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return TranslationManager.lambda$addOnDeviceTranslationCapabilityUpdateListener$5((Pair) obj);
@@ -190,7 +191,7 @@ public final class TranslationManager {
         }
     }
 
-    public static /* synthetic */ ArrayList lambda$addOnDeviceTranslationCapabilityUpdateListener$5(Pair formats) {
+    static /* synthetic */ ArrayList lambda$addOnDeviceTranslationCapabilityUpdateListener$5(Pair formats) {
         return new ArrayList();
     }
 
@@ -259,7 +260,7 @@ public final class TranslationManager {
         return getOnDeviceTranslationSettingsActivityIntent();
     }
 
-    public void removeTranslator(int id) {
+    void removeTranslator(int id) {
         synchronized (this.mLock) {
             int index = this.mTranslatorIds.indexOf(id);
             if (index >= 0) {
@@ -268,7 +269,7 @@ public final class TranslationManager {
         }
     }
 
-    public AtomicInteger getAvailableRequestId() {
+    AtomicInteger getAvailableRequestId() {
         AtomicInteger atomicInteger;
         synchronized (this.mLock) {
             atomicInteger = sAvailableRequestId;
@@ -276,8 +277,8 @@ public final class TranslationManager {
         return atomicInteger;
     }
 
-    /* loaded from: classes4.dex */
-    public static class TranslationCapabilityRemoteCallback extends IRemoteCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class TranslationCapabilityRemoteCallback extends IRemoteCallback.Stub {
         private final Executor mExecutor;
         private final Consumer<TranslationCapability> mListener;
 
@@ -296,6 +297,7 @@ public final class TranslationManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendResult$1(final Bundle bundle) throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.view.translation.TranslationManager$TranslationCapabilityRemoteCallback$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
@@ -305,7 +307,8 @@ public final class TranslationManager {
             });
         }
 
-        /* renamed from: onTranslationCapabilityUpdate */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: onTranslationCapabilityUpdate, reason: merged with bridge method [inline-methods] */
         public void lambda$sendResult$0(Bundle bundle) {
             TranslationCapability capability = (TranslationCapability) bundle.getParcelable(TranslationManager.EXTRA_CAPABILITIES, TranslationCapability.class);
             this.mListener.accept(capability);

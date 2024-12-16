@@ -3,7 +3,6 @@ package android.app;
 import android.app.backup.BackupRestoreEventLogger;
 import android.app.backup.IBackupCallback;
 import android.app.backup.IBackupManager;
-import android.drm.DrmInfoRequest;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
@@ -43,7 +42,6 @@ public interface IBackupAgent extends IInterface {
 
     void getOperationType(AndroidFuture<Integer> androidFuture) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBackupAgent {
         @Override // android.app.IBackupAgent
         public void doBackup(ParcelFileDescriptor oldState, ParcelFileDescriptor data, ParcelFileDescriptor newState, long quotaBytes, IBackupCallback callbackBinder, int transportFlags) throws RemoteException {
@@ -107,7 +105,6 @@ public interface IBackupAgent extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBackupAgent {
         public static final String DESCRIPTOR = "android.app.IBackupAgent";
         static final int TRANSACTION_clearBackupRestoreEventLogger = 14;
@@ -168,7 +165,7 @@ public interface IBackupAgent extends IInterface {
                 case 10:
                     return "doRestoreFinished";
                 case 11:
-                    return DrmInfoRequest.SEM_FAIL;
+                    return "fail";
                 case 12:
                     return "getLoggerResults";
                 case 13:
@@ -190,124 +187,121 @@ public interface IBackupAgent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg3 = data.readLong();
+                    IBackupCallback _arg4 = IBackupCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    doBackup(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg12 = data.readLong();
+                    ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg32 = data.readInt();
+                    IBackupManager _arg42 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    doRestore(_arg02, _arg12, _arg22, _arg32, _arg42);
+                    return true;
+                case 3:
+                    ParcelFileDescriptor _arg03 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg13 = data.readLong();
+                    ParcelFileDescriptor _arg23 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg33 = data.readInt();
+                    IBackupManager _arg43 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    List<String> _arg52 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    doRestoreWithExcludedKeys(_arg03, _arg13, _arg23, _arg33, _arg43, _arg52);
+                    return true;
+                case 4:
+                    ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg14 = data.readLong();
+                    int _arg24 = data.readInt();
+                    IBackupManager _arg34 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    int _arg44 = data.readInt();
+                    data.enforceNoDataAvail();
+                    doFullBackup(_arg04, _arg14, _arg24, _arg34, _arg44);
+                    return true;
+                case 5:
+                    ParcelFileDescriptor _arg05 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg15 = data.readLong();
+                    int _arg25 = data.readInt();
+                    IBackupManager _arg35 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    int _arg45 = data.readInt();
+                    String[] _arg53 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    doFullBackupPath(_arg05, _arg15, _arg25, _arg35, _arg45, _arg53);
+                    return true;
+                case 6:
+                    boolean _arg06 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    doDisableDataExtractionRules(_arg06);
+                    return true;
+                case 7:
+                    long _arg07 = data.readLong();
+                    int _arg16 = data.readInt();
+                    IBackupManager _arg26 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    int _arg36 = data.readInt();
+                    data.enforceNoDataAvail();
+                    doMeasureFullBackup(_arg07, _arg16, _arg26, _arg36);
+                    return true;
+                case 8:
+                    long _arg08 = data.readLong();
+                    long _arg17 = data.readLong();
+                    IBackupCallback _arg27 = IBackupCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    doQuotaExceeded(_arg08, _arg17, _arg27);
+                    return true;
+                case 9:
+                    ParcelFileDescriptor _arg09 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg18 = data.readLong();
+                    int _arg28 = data.readInt();
+                    String _arg37 = data.readString();
+                    String _arg46 = data.readString();
+                    long _arg54 = data.readLong();
+                    long _arg6 = data.readLong();
+                    int _arg7 = data.readInt();
+                    IBackupManager _arg8 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    doRestoreFile(_arg09, _arg18, _arg28, _arg37, _arg46, _arg54, _arg6, _arg7, _arg8);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    IBackupManager _arg19 = IBackupManager.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    doRestoreFinished(_arg010, _arg19);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    fail(_arg011);
+                    return true;
+                case 12:
+                    AndroidFuture<List<BackupRestoreEventLogger.DataTypeResult>> _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getLoggerResults(_arg012);
+                    return true;
+                case 13:
+                    AndroidFuture<Integer> _arg013 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getOperationType(_arg013);
+                    return true;
+                case 14:
+                    clearBackupRestoreEventLogger();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg1 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg3 = data.readLong();
-                            IBackupCallback _arg4 = IBackupCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            doBackup(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            ParcelFileDescriptor _arg02 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg12 = data.readLong();
-                            ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg32 = data.readInt();
-                            IBackupManager _arg42 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            doRestore(_arg02, _arg12, _arg22, _arg32, _arg42);
-                            return true;
-                        case 3:
-                            ParcelFileDescriptor _arg03 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg13 = data.readLong();
-                            ParcelFileDescriptor _arg23 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg33 = data.readInt();
-                            IBackupManager _arg43 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            List<String> _arg52 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            doRestoreWithExcludedKeys(_arg03, _arg13, _arg23, _arg33, _arg43, _arg52);
-                            return true;
-                        case 4:
-                            ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg14 = data.readLong();
-                            int _arg24 = data.readInt();
-                            IBackupManager _arg34 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            int _arg44 = data.readInt();
-                            data.enforceNoDataAvail();
-                            doFullBackup(_arg04, _arg14, _arg24, _arg34, _arg44);
-                            return true;
-                        case 5:
-                            ParcelFileDescriptor _arg05 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg15 = data.readLong();
-                            int _arg25 = data.readInt();
-                            IBackupManager _arg35 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            int _arg45 = data.readInt();
-                            String[] _arg53 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            doFullBackupPath(_arg05, _arg15, _arg25, _arg35, _arg45, _arg53);
-                            return true;
-                        case 6:
-                            boolean _arg06 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            doDisableDataExtractionRules(_arg06);
-                            return true;
-                        case 7:
-                            long _arg07 = data.readLong();
-                            int _arg16 = data.readInt();
-                            IBackupManager _arg26 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            int _arg36 = data.readInt();
-                            data.enforceNoDataAvail();
-                            doMeasureFullBackup(_arg07, _arg16, _arg26, _arg36);
-                            return true;
-                        case 8:
-                            long _arg08 = data.readLong();
-                            long _arg17 = data.readLong();
-                            IBackupCallback _arg27 = IBackupCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            doQuotaExceeded(_arg08, _arg17, _arg27);
-                            return true;
-                        case 9:
-                            ParcelFileDescriptor _arg09 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg18 = data.readLong();
-                            int _arg28 = data.readInt();
-                            String _arg37 = data.readString();
-                            String _arg46 = data.readString();
-                            long _arg54 = data.readLong();
-                            long _arg6 = data.readLong();
-                            int _arg7 = data.readInt();
-                            IBackupManager _arg8 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            doRestoreFile(_arg09, _arg18, _arg28, _arg37, _arg46, _arg54, _arg6, _arg7, _arg8);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            IBackupManager _arg19 = IBackupManager.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            doRestoreFinished(_arg010, _arg19);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            fail(_arg011);
-                            return true;
-                        case 12:
-                            AndroidFuture<List<BackupRestoreEventLogger.DataTypeResult>> _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getLoggerResults(_arg012);
-                            return true;
-                        case 13:
-                            AndroidFuture<Integer> _arg013 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getOperationType(_arg013);
-                            return true;
-                        case 14:
-                            clearBackupRestoreEventLogger();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IBackupAgent {
             private IBinder mRemote;
 

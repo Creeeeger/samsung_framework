@@ -8,6 +8,8 @@ import android.util.SizeF;
 import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,28 +17,33 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     public static final Parcelable.Creator<Bundle> CREATOR;
-    public static final Bundle EMPTY;
+    public static final Bundle EMPTY = new Bundle();
     static final int FLAG_ALLOW_FDS = 1024;
+    static final int FLAG_HAS_BINDERS = 4096;
+    static final int FLAG_HAS_BINDERS_KNOWN = 2048;
     static final int FLAG_HAS_FDS = 256;
     static final int FLAG_HAS_FDS_KNOWN = 512;
+    public static final int STATUS_BINDERS_NOT_PRESENT = 0;
+    public static final int STATUS_BINDERS_PRESENT = 1;
+    public static final int STATUS_BINDERS_UNKNOWN = 2;
     public static final Bundle STRIPPED;
 
-    static {
-        Bundle bundle = new Bundle();
-        EMPTY = bundle;
-        bundle.mMap = ArrayMap.EMPTY;
-        Bundle bundle2 = new Bundle();
-        STRIPPED = bundle2;
-        bundle2.putInt("STRIPPED", 1);
-        CREATOR = new Parcelable.Creator<Bundle>() { // from class: android.os.Bundle.1
-            AnonymousClass1() {
-            }
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface HasBinderStatus {
+    }
 
+    static {
+        EMPTY.mMap = ArrayMap.EMPTY;
+        STRIPPED = new Bundle();
+        STRIPPED.putInt("STRIPPED", 1);
+        CREATOR = new Parcelable.Creator<Bundle>() { // from class: android.os.Bundle.1
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Bundle createFromParcel(Parcel in) {
                 return in.readBundle();
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Bundle[] newArray(int size) {
                 return new Bundle[size];
@@ -45,7 +52,7 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     }
 
     public Bundle() {
-        this.mFlags = 1536;
+        this.mFlags = 3584;
     }
 
     public Bundle(Parcel parcelledData) {
@@ -76,12 +83,12 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
 
     public Bundle(ClassLoader loader) {
         super(loader);
-        this.mFlags = 1536;
+        this.mFlags = 3584;
     }
 
     public Bundle(int capacity) {
         super(capacity);
-        this.mFlags = 1536;
+        this.mFlags = 3584;
     }
 
     public Bundle(Bundle b) {
@@ -91,7 +98,7 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
 
     public Bundle(PersistableBundle b) {
         super(b);
-        this.mFlags = 1536;
+        this.mFlags = 3584;
     }
 
     public static Bundle forPair(String key, String value) {
@@ -155,6 +162,9 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         if ((this.mFlags & 256) != 0) {
             this.mFlags &= -513;
         }
+        if ((this.mFlags & 4096) != 0) {
+            this.mFlags &= -2049;
+        }
     }
 
     public void putAll(Bundle bundle) {
@@ -168,6 +178,12 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         }
         if ((bundle.mFlags & 512) == 0) {
             this.mFlags &= -513;
+        }
+        if ((bundle.mFlags & 4096) != 0) {
+            this.mFlags |= 4096;
+        }
+        if ((bundle.mFlags & 2048) == 0) {
+            this.mFlags &= -2049;
         }
     }
 
@@ -191,6 +207,23 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
             this.mFlags |= 512;
         }
         return (this.mFlags & 256) != 0;
+    }
+
+    public int hasBinders() {
+        if ((this.mFlags & 2048) != 0) {
+            return (this.mFlags & 4096) != 0 ? 1 : 0;
+        }
+        Parcel p = this.mParcelledData;
+        if (p == null) {
+            return 2;
+        }
+        if (p.hasBinders()) {
+            this.mFlags = this.mFlags | 4096 | 2048;
+            return 1;
+        }
+        this.mFlags &= -4097;
+        this.mFlags |= 2048;
+        return 0;
     }
 
     @Override // android.os.BaseBundle
@@ -309,6 +342,7 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         unparcel();
         this.mMap.put(key, value);
         this.mFlags &= -513;
+        this.mFlags &= -2049;
     }
 
     public void putSize(String key, Size value) {
@@ -325,24 +359,28 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         unparcel();
         this.mMap.put(key, value);
         this.mFlags &= -513;
+        this.mFlags &= -2049;
     }
 
     public void putParcelableArrayList(String key, ArrayList<? extends Parcelable> value) {
         unparcel();
         this.mMap.put(key, value);
         this.mFlags &= -513;
+        this.mFlags &= -2049;
     }
 
     public void putParcelableList(String key, List<? extends Parcelable> value) {
         unparcel();
         this.mMap.put(key, value);
         this.mFlags &= -513;
+        this.mFlags &= -2049;
     }
 
     public void putSparseParcelableArray(String key, SparseArray<? extends Parcelable> value) {
         unparcel();
         this.mMap.put(key, value);
         this.mFlags &= -513;
+        this.mFlags &= -2049;
     }
 
     @Override // android.os.BaseBundle
@@ -398,12 +436,14 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     public void putBinder(String key, IBinder value) {
         unparcel();
         this.mMap.put(key, value);
+        this.mFlags &= -2049;
     }
 
     @Deprecated
     public void putIBinder(String key, IBinder value) {
         unparcel();
         this.mMap.put(key, value);
+        this.mFlags &= -2049;
     }
 
     @Override // android.os.BaseBundle
@@ -657,23 +697,6 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         } catch (ClassCastException e) {
             typeWarning(key, o, "IBinder", e);
             return null;
-        }
-    }
-
-    /* renamed from: android.os.Bundle$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Bundle> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Bundle createFromParcel(Parcel in) {
-            return in.readBundle();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Bundle[] newArray(int size) {
-            return new Bundle[size];
         }
     }
 

@@ -10,15 +10,14 @@ public interface SemRILConstants {
     public static final String EXTRA_LATEST_CALL_DOMAIN = "latestDomain";
     public static final String EXTRA_TEST_CS_ECALL_CONVERTED_TO_NORMAL = "isTestCsECallConvertedToNormal";
     public static final String EXTRA_TEST_EMERGENCY_NUMBER_URN = "test";
+    public static final String SATELLITE_RADIOS_ALL = "bluetooth,uwb,wifi,nfc";
 
-    /* loaded from: classes5.dex */
     public interface CarrierConfig {
         public static final String SEM_KEY_SPN_DISPLAY_RULE_IN_HOME = "sem_spn_display_rule_in_home";
         public static final String SEM_KEY_SPN_DISPLAY_RULE_IN_ROAMING = "sem_spn_display_rule_in_roaming";
         public static final String SEM_KEY_VOWIFI_OPNAME_STRING = "sem_vowifi_opname_string";
     }
 
-    /* loaded from: classes5.dex */
     public interface CmcCall {
         public static final String CMC_CALL_SD_ANSWER = "answer";
         public static final String CMC_CALL_SD_CLEAR_INFO = "sdClearInfo";
@@ -32,7 +31,6 @@ public interface SemRILConstants {
         public static final String CMC_CALL_SD_TERMINATE = "sdTerminate";
     }
 
-    /* loaded from: classes5.dex */
     public interface ConnectionAttribute {
         public static final int ATTR_FALLBACK = 256;
         public static final int ATTR_IS_MULTIPARTY = 512;
@@ -46,7 +44,6 @@ public interface SemRILConstants {
         public static final int ATTR_USE_ASSISTED_DIALING = 128;
     }
 
-    /* loaded from: classes5.dex */
     public interface E911Route {
         public static final int E911_ROUTE_CS = 1;
         public static final int E911_ROUTE_IGNORE = 5;
@@ -57,7 +54,6 @@ public interface SemRILConstants {
         public static final int E911_ROUTE_NR = 6;
     }
 
-    /* loaded from: classes5.dex */
     public interface EmergencyControl {
         public static final int EMERGENCY_CONTROL_CONNECTED = 1;
         public static final int EMERGENCY_CONTROL_DIALED = 0;
@@ -67,13 +63,16 @@ public interface SemRILConstants {
         public static final int EMERGENCY_CONTROL_FINISHED_WITH_ECM = 3;
     }
 
-    /* loaded from: classes5.dex */
+    public interface EmergencyNumberTestModeAction {
+        public static final int RELOAD_TEST_EMERGENCY_NUMBER = 1001;
+        public static final int VENDOR_ACTION_BASE = 1000;
+    }
+
     public interface EpsfbTriggerResult {
         public static final int REDIAL_TO_CS = 0;
         public static final int REDIAL_TO_LTE = 1;
     }
 
-    /* loaded from: classes5.dex */
     public interface Request {
         public static final int RIL_OEM_REQUEST_BASE = 10000;
         public static final int RIL_REQUEST_OEM_ACCESS_PHONEBOOK_ENTRY = 10011;
@@ -95,6 +94,33 @@ public interface SemRILConstants {
         public static final int RIL_REQUEST_OEM_QUERY_CSG_LIST = 10042;
         public static final int RIL_REQUEST_OEM_READ_SMS_FROM_SIM = 10046;
         public static final int RIL_REQUEST_OEM_SAFE_MODE = 10006;
+        public static final int RIL_REQUEST_OEM_SAT_ANSWER = 10052;
+        public static final int RIL_REQUEST_OEM_SAT_DIAL = 10053;
+        public static final int RIL_REQUEST_OEM_SAT_GET_ARFCN = 10070;
+        public static final int RIL_REQUEST_OEM_SAT_GET_CALL_END_REASON = 10055;
+        public static final int RIL_REQUEST_OEM_SAT_GET_CALL_STATE = 10056;
+        public static final int RIL_REQUEST_OEM_SAT_GET_REGISTRATION_STATE = 10059;
+        public static final int RIL_REQUEST_OEM_SAT_GET_SATELLITE_ID = 10074;
+        public static final int RIL_REQUEST_OEM_SAT_GET_SERIAL_NUMBER = 10069;
+        public static final int RIL_REQUEST_OEM_SAT_GET_SIGNAL_STRENGTH = 10060;
+        public static final int RIL_REQUEST_OEM_SAT_GET_TXPOWER = 10071;
+        public static final int RIL_REQUEST_OEM_SAT_HANGUP = 10054;
+        public static final int RIL_REQUEST_OEM_SAT_SEND_ICC_SIM_AUTH = 10067;
+        public static final int RIL_REQUEST_OEM_SAT_SEND_RAW_AT_COMMAND = 10076;
+        public static final int RIL_REQUEST_OEM_SAT_SEND_SMS = 10072;
+        public static final int RIL_REQUEST_OEM_SAT_SEND_SMS_EXPECT_MORE = 10073;
+        public static final int RIL_REQUEST_OEM_SAT_SET_DSI_CONFIG = 10075;
+        public static final int RIL_REQUEST_OEM_SAT_SET_GPS_INFO = 10065;
+        public static final int RIL_REQUEST_OEM_SAT_SET_IMEI = 10068;
+        public static final int RIL_REQUEST_OEM_SAT_SET_IMSI = 10066;
+        public static final int RIL_REQUEST_OEM_SAT_SET_NETWORK_QUERY_MODE = 10061;
+        public static final int RIL_REQUEST_OEM_SAT_SET_POWER = 10064;
+        public static final int RIL_REQUEST_OEM_SAT_SET_SIGNAL_STRENGTH_REPORTING = 10062;
+        public static final int RIL_REQUEST_OEM_SAT_SET_SIGNAL_THRESHOLD_REPORTING = 10063;
+        public static final int RIL_REQUEST_OEM_SAT_SET_SMSC_ADDRESS = 10077;
+        public static final int RIL_REQUEST_OEM_SAT_START_DTMF = 10057;
+        public static final int RIL_REQUEST_OEM_SAT_START_NETWORK_SEARCH = 10078;
+        public static final int RIL_REQUEST_OEM_SAT_STOP_DTMF = 10058;
         public static final int RIL_REQUEST_OEM_SELECT_CSG_MANUAL = 10043;
         public static final int RIL_REQUEST_OEM_SEND_ENCODED_USSD = 10019;
         public static final int RIL_REQUEST_OEM_SET_DISABLE_2G = 10032;
@@ -120,7 +146,6 @@ public interface SemRILConstants {
         public static final int RIL_SEC_REQUEST_BASE = 20000;
     }
 
-    /* loaded from: classes5.dex */
     public interface UnsolResponse {
         public static final int RIL_OEM_UNSOL_RESPONSE_BASE = 11000;
         public static final int RIL_UNSOL_OEM_ACB_INFO_CHANGED = 11005;
@@ -150,6 +175,17 @@ public interface SemRILConstants {
         public static final int RIL_UNSOL_OEM_RMTUIM_NEED_APDU = 11070;
         public static final int RIL_UNSOL_OEM_RRC_STATE_CHANGED = 11088;
         public static final int RIL_UNSOL_OEM_SAP = 11013;
+        public static final int RIL_UNSOL_OEM_SAT_CALL_END_REASON_UPDATED = 11095;
+        public static final int RIL_UNSOL_OEM_SAT_CALL_NUMBER_DISPLAY_INFO_UPDATED = 11096;
+        public static final int RIL_UNSOL_OEM_SAT_CALL_STATE_CHANGED = 11094;
+        public static final int RIL_UNSOL_OEM_SAT_NEW_SMS = 11102;
+        public static final int RIL_UNSOL_OEM_SAT_NEW_SMS_STATUS_REPORT = 11104;
+        public static final int RIL_UNSOL_OEM_SAT_RADIO_STATE_CHANGED = 11100;
+        public static final int RIL_UNSOL_OEM_SAT_REGISTRATION_STATE_CHANGED = 11097;
+        public static final int RIL_UNSOL_OEM_SAT_REQUEST_GPS_DATA = 11099;
+        public static final int RIL_UNSOL_OEM_SAT_REQUEST_ICC_SIM_AUTH = 11101;
+        public static final int RIL_UNSOL_OEM_SAT_SIGNAL_STRENGTH_CHANGED = 11098;
+        public static final int RIL_UNSOL_OEM_SAT_SIM_AUTH_FAILED = 11103;
         public static final int RIL_UNSOL_OEM_SIGNAL_LEVEL_INFOS = 11091;
         public static final int RIL_UNSOL_OEM_SIM_APPLICATION_REFRESH = 11062;
         public static final int RIL_UNSOL_OEM_SIM_COUNT_MISMATCHED = 11058;

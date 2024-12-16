@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISCurrentLocListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.location.ISCurrentLocListener";
 
     void onCurrentLocation(Location location) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISCurrentLocListener {
         @Override // com.samsung.android.location.ISCurrentLocListener
         public void onCurrentLocation(Location location) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISCurrentLocListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISCurrentLocListener {
         static final int TRANSACTION_onCurrentLocation = 1;
 
@@ -68,24 +66,21 @@ public interface ISCurrentLocListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISCurrentLocListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISCurrentLocListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISCurrentLocListener.DESCRIPTOR);
+                case 1:
+                    Location _arg0 = (Location) data.readTypedObject(Location.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCurrentLocation(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Location _arg0 = (Location) data.readTypedObject(Location.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCurrentLocation(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISCurrentLocListener {
             private IBinder mRemote;
 

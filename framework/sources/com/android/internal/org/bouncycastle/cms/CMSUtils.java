@@ -34,23 +34,18 @@ import java.util.List;
 import java.util.Set;
 
 /* loaded from: classes5.dex */
-public class CMSUtils {
-    private static final Set<String> des;
-    private static final Set ecAlgs;
-    private static final Set gostAlgs;
-    private static final Set mqvAlgs;
+class CMSUtils {
+    private static final Set<String> des = new HashSet();
+    private static final Set mqvAlgs = new HashSet();
+    private static final Set ecAlgs = new HashSet();
+    private static final Set gostAlgs = new HashSet();
 
     CMSUtils() {
     }
 
     static {
-        HashSet hashSet = new HashSet();
-        des = hashSet;
-        mqvAlgs = new HashSet();
-        ecAlgs = new HashSet();
-        gostAlgs = new HashSet();
-        hashSet.add("DES");
-        hashSet.add("DESEDE");
+        des.add("DES");
+        des.add("DESEDE");
     }
 
     static boolean isMQV(ASN1ObjectIdentifier algorithm) {
@@ -70,7 +65,7 @@ public class CMSUtils {
         return des.contains(name);
     }
 
-    public static boolean isEquivalent(AlgorithmIdentifier algId1, AlgorithmIdentifier algId2) {
+    static boolean isEquivalent(AlgorithmIdentifier algId1, AlgorithmIdentifier algId2) {
         if (algId1 == null || algId2 == null || !algId1.getAlgorithm().equals((ASN1Primitive) algId2.getAlgorithm())) {
             return false;
         }
@@ -88,15 +83,15 @@ public class CMSUtils {
         return true;
     }
 
-    public static ContentInfo readContentInfo(byte[] input) throws CMSException {
+    static ContentInfo readContentInfo(byte[] input) throws CMSException {
         return readContentInfo(new ASN1InputStream(input));
     }
 
-    public static ContentInfo readContentInfo(InputStream input) throws CMSException {
+    static ContentInfo readContentInfo(InputStream input) throws CMSException {
         return readContentInfo(new ASN1InputStream(input));
     }
 
-    public static List getCertificatesFromStore(Store certStore) throws CMSException {
+    static List getCertificatesFromStore(Store certStore) throws CMSException {
         List certs = new ArrayList();
         try {
             for (X509CertificateHolder c : certStore.getMatches(null)) {
@@ -108,7 +103,7 @@ public class CMSUtils {
         }
     }
 
-    public static List getAttributeCertificatesFromStore(Store attrStore) throws CMSException {
+    static List getAttributeCertificatesFromStore(Store attrStore) throws CMSException {
         List certs = new ArrayList();
         try {
             for (X509AttributeCertificateHolder attrCert : attrStore.getMatches(null)) {
@@ -120,7 +115,7 @@ public class CMSUtils {
         }
     }
 
-    public static List getCRLsFromStore(Store crlStore) throws CMSException {
+    static List getCRLsFromStore(Store crlStore) throws CMSException {
         List crls = new ArrayList();
         try {
             for (Object rev : crlStore.getMatches(null)) {
@@ -137,7 +132,7 @@ public class CMSUtils {
         }
     }
 
-    public static ASN1Set createBerSetFromList(List derObjects) {
+    static ASN1Set createBerSetFromList(List derObjects) {
         ASN1EncodableVector v = new ASN1EncodableVector();
         Iterator it = derObjects.iterator();
         while (it.hasNext()) {
@@ -197,7 +192,7 @@ public class CMSUtils {
         return result;
     }
 
-    public static OutputStream attachSignersToOutputStream(Collection signers, OutputStream s) {
+    static OutputStream attachSignersToOutputStream(Collection signers, OutputStream s) {
         OutputStream result = s;
         Iterator it = signers.iterator();
         while (it.hasNext()) {
@@ -207,7 +202,7 @@ public class CMSUtils {
         return result;
     }
 
-    public static OutputStream getSafeOutputStream(OutputStream s) {
+    static OutputStream getSafeOutputStream(OutputStream s) {
         return s == null ? new NullOutputStream() : s;
     }
 

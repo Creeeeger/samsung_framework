@@ -25,11 +25,8 @@ public class SecP224K1Field {
 
     public static void addExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.add(14, xx, yy, zz);
-        if (c != 0 || (zz[13] == -1 && Nat.gte(14, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(14, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[13] == -1 && Nat.gte(14, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(14, zz, PExtInv.length);
         }
     }
 
@@ -78,18 +75,14 @@ public class SecP224K1Field {
 
     public static void multiplyAddToExt(int[] x, int[] y, int[] zz) {
         int c = Nat224.mulAddTo(x, y, zz);
-        if (c != 0 || (zz[13] == -1 && Nat.gte(14, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(14, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[13] == -1 && Nat.gte(14, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(14, zz, PExtInv.length);
         }
     }
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat224.sub(iArr, iArr, z);
+            Nat224.sub(P, P, z);
         } else {
             Nat224.sub(P, x, z);
         }
@@ -153,11 +146,8 @@ public class SecP224K1Field {
 
     public static void subtractExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.sub(14, xx, yy, zz);
-        if (c != 0) {
-            int[] iArr = PExtInv;
-            if (Nat.subFrom(iArr.length, iArr, zz) != 0) {
-                Nat.decAt(14, zz, iArr.length);
-            }
+        if (c != 0 && Nat.subFrom(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.decAt(14, zz, PExtInv.length);
         }
     }
 

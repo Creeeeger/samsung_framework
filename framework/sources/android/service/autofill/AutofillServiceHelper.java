@@ -3,10 +3,9 @@ package android.service.autofill;
 import android.view.autofill.AutofillId;
 import com.android.internal.util.Preconditions;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public final class AutofillServiceHelper {
-    public static AutofillId[] assertValid(AutofillId[] ids) {
+final class AutofillServiceHelper {
+    static AutofillId[] assertValid(AutofillId[] ids) {
         Preconditions.checkArgument(ids != null && ids.length > 0, "must have at least one id");
         for (int i = 0; i < ids.length; i++) {
             if (ids[i] == null) {

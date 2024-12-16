@@ -13,12 +13,12 @@ public class DERTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return this.explicit || this.obj.toASN1Primitive().toDERObject().isConstructed();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive().toDERObject();
         int length = primitive.encodedLength();
         if (this.explicit) {
@@ -28,7 +28,7 @@ public class DERTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive().toDERObject();
         int flags = 128;
         if (this.explicit || primitive.isConstructed()) {
@@ -42,12 +42,12 @@ public class DERTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return this;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 }

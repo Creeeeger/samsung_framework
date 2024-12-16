@@ -10,7 +10,7 @@ public class SContextActivityCalibrationAttribute extends SContextAttribute {
     private int mData;
     private int mStatus;
 
-    public SContextActivityCalibrationAttribute() {
+    SContextActivityCalibrationAttribute() {
         this.mStatus = 0;
         this.mData = 0;
         setAttribute();
@@ -26,13 +26,11 @@ public class SContextActivityCalibrationAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mStatus;
-        if (i < 0 || i > 2) {
+        if (this.mStatus < 0 || this.mStatus > 2) {
             Log.e(TAG, "Moving Status is wrong!!");
             return false;
         }
-        int i2 = this.mData;
-        if (i2 < 0 || i2 > 3) {
+        if (this.mData < 0 || this.mData > 3) {
             Log.e(TAG, "Data of calibration is wrong!!");
             return false;
         }

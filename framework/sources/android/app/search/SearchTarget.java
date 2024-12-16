@@ -16,14 +16,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SearchTarget implements Parcelable {
     public static final Parcelable.Creator<SearchTarget> CREATOR = new Parcelable.Creator<SearchTarget>() { // from class: android.app.search.SearchTarget.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTarget createFromParcel(Parcel parcel) {
             return new SearchTarget(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SearchTarget[] newArray(int size) {
             return new SearchTarget[size];
@@ -51,21 +50,11 @@ public final class SearchTarget implements Parcelable {
     private final UserHandle mUserHandle;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SearchLayoutType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SearchResultType {
-    }
-
-    /* synthetic */ SearchTarget(int i, String str, String str2, String str3, float f, boolean z, String str4, UserHandle userHandle, SearchAction searchAction, ShortcutInfo shortcutInfo, Uri uri, AppWidgetProviderInfo appWidgetProviderInfo, Bundle bundle, SearchTargetIA searchTargetIA) {
-        this(i, str, str2, str3, f, z, str4, userHandle, searchAction, shortcutInfo, uri, appWidgetProviderInfo, bundle);
-    }
-
-    /* synthetic */ SearchTarget(Parcel parcel, SearchTargetIA searchTargetIA) {
-        this(parcel);
     }
 
     private SearchTarget(Parcel parcel) {
@@ -179,25 +168,7 @@ public final class SearchTarget implements Parcelable {
         parcel.writeBundle(this.mExtras);
     }
 
-    /* renamed from: android.app.search.SearchTarget$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SearchTarget> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchTarget createFromParcel(Parcel parcel) {
-            return new SearchTarget(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SearchTarget[] newArray(int size) {
-            return new SearchTarget[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private AppWidgetProviderInfo mAppWidgetProviderInfo;
         private Bundle mExtras;
@@ -236,8 +207,7 @@ public final class SearchTarget implements Parcelable {
 
         public Builder setShortcutInfo(ShortcutInfo shortcutInfo) {
             this.mShortcutInfo = (ShortcutInfo) Objects.requireNonNull(shortcutInfo);
-            String str = this.mPackageName;
-            if (str != null && !str.equals(shortcutInfo.getPackage())) {
+            if (this.mPackageName != null && !this.mPackageName.equals(shortcutInfo.getPackage())) {
                 throw new IllegalStateException("SearchTarget packageName is different from shortcut's packageName");
             }
             this.mPackageName = shortcutInfo.getPackage();
@@ -246,8 +216,7 @@ public final class SearchTarget implements Parcelable {
 
         public Builder setAppWidgetProviderInfo(AppWidgetProviderInfo appWidgetProviderInfo) {
             this.mAppWidgetProviderInfo = (AppWidgetProviderInfo) Objects.requireNonNull(appWidgetProviderInfo);
-            String str = this.mPackageName;
-            if (str != null && !str.equals(appWidgetProviderInfo.provider.getPackageName())) {
+            if (this.mPackageName != null && !this.mPackageName.equals(appWidgetProviderInfo.provider.getPackageName())) {
                 throw new IllegalStateException("SearchTarget packageName is different from appWidgetProviderInfo's packageName");
             }
             return this;

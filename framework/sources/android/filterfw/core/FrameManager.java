@@ -31,9 +31,8 @@ public abstract class FrameManager {
     }
 
     public GLEnvironment getGLEnvironment() {
-        FilterContext filterContext = this.mContext;
-        if (filterContext != null) {
-            return filterContext.getGLEnvironment();
+        if (this.mContext != null) {
+            return this.mContext.getGLEnvironment();
         }
         return null;
     }
@@ -41,7 +40,7 @@ public abstract class FrameManager {
     public void tearDown() {
     }
 
-    public void setContext(FilterContext context) {
+    void setContext(FilterContext context) {
         this.mContext = context;
     }
 }

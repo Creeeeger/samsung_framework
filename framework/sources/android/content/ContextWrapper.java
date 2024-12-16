@@ -48,7 +48,7 @@ public class ContextWrapper extends Context {
         this.mBase = base;
     }
 
-    public void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base) {
         if (this.mBase != null) {
             throw new IllegalStateException("Base context already set");
         }
@@ -116,11 +116,10 @@ public class ContextWrapper extends Context {
 
     @Override // android.content.Context
     public String getPackageName() {
-        Context context = this.mBase;
-        if (context == null) {
+        if (this.mBase == null) {
             return "";
         }
-        return context.getPackageName();
+        return this.mBase.getPackageName();
     }
 
     @Override // android.content.Context
@@ -784,6 +783,11 @@ public class ContextWrapper extends Context {
     }
 
     @Override // android.content.Context
+    public int checkContentUriPermissionFull(Uri uri, int pid, int uid, int modeFlags) {
+        return this.mBase.checkContentUriPermissionFull(uri, pid, uid, modeFlags);
+    }
+
+    @Override // android.content.Context
     public int[] checkUriPermissions(List<Uri> uris, int pid, int uid, int modeFlags) {
         return this.mBase.checkUriPermissions(uris, pid, uid, modeFlags);
     }
@@ -1018,9 +1022,8 @@ public class ContextWrapper extends Context {
 
     @Override // android.content.Context
     public IBinder getWindowContextToken() {
-        Context context = this.mBase;
-        if (context != null) {
-            return context.getWindowContextToken();
+        if (this.mBase != null) {
+            return this.mBase.getWindowContextToken();
         }
         return null;
     }
@@ -1062,61 +1065,54 @@ public class ContextWrapper extends Context {
 
     @Override // android.content.Context
     public AutofillOptions getAutofillOptions() {
-        Context context = this.mBase;
-        if (context == null) {
+        if (this.mBase == null) {
             return null;
         }
-        return context.getAutofillOptions();
+        return this.mBase.getAutofillOptions();
     }
 
     @Override // android.content.Context
     public void setAutofillOptions(AutofillOptions options) {
-        Context context = this.mBase;
-        if (context != null) {
-            context.setAutofillOptions(options);
+        if (this.mBase != null) {
+            this.mBase.setAutofillOptions(options);
         }
     }
 
     @Override // android.content.Context
     public ContentCaptureOptions getContentCaptureOptions() {
-        Context context = this.mBase;
-        if (context == null) {
+        if (this.mBase == null) {
             return null;
         }
-        return context.getContentCaptureOptions();
+        return this.mBase.getContentCaptureOptions();
     }
 
     @Override // android.content.Context
     public void setContentCaptureOptions(ContentCaptureOptions options) {
-        Context context = this.mBase;
-        if (context != null) {
-            context.setContentCaptureOptions(options);
+        if (this.mBase != null) {
+            this.mBase.setContentCaptureOptions(options);
         }
     }
 
     @Override // android.content.Context
     public boolean isUiContext() {
-        Context context = this.mBase;
-        if (context == null) {
+        if (this.mBase == null) {
             return false;
         }
-        return context.isUiContext();
+        return this.mBase.isUiContext();
     }
 
     @Override // android.content.Context
     public boolean isConfigurationContext() {
-        Context context = this.mBase;
-        if (context == null) {
+        if (this.mBase == null) {
             return false;
         }
-        return context.isConfigurationContext();
+        return this.mBase.isConfigurationContext();
     }
 
     @Override // android.content.Context
     public void registerComponentCallbacks(ComponentCallbacks callback) {
-        Context context = this.mBase;
-        if (context != null) {
-            context.registerComponentCallbacks(callback);
+        if (this.mBase != null) {
+            this.mBase.registerComponentCallbacks(callback);
             return;
         }
         if (!CompatChanges.isChangeEnabled(Context.OVERRIDABLE_COMPONENT_CALLBACKS)) {
@@ -1135,17 +1131,13 @@ public class ContextWrapper extends Context {
     @Override // android.content.Context
     public void unregisterComponentCallbacks(ComponentCallbacks callback) {
         synchronized (this.mLock) {
-            List<ComponentCallbacks> list = this.mCallbacksRegisteredToSuper;
-            if (list != null && list.contains(callback)) {
+            if (this.mCallbacksRegisteredToSuper != null && this.mCallbacksRegisteredToSuper.contains(callback)) {
                 super.unregisterComponentCallbacks(callback);
                 this.mCallbacksRegisteredToSuper.remove(callback);
-            } else {
-                Context context = this.mBase;
-                if (context != null) {
-                    context.unregisterComponentCallbacks(callback);
-                } else if (CompatChanges.isChangeEnabled(Context.OVERRIDABLE_COMPONENT_CALLBACKS)) {
-                    throw new IllegalStateException("ComponentCallbacks must be unregistered after this ContextWrapper is attached to a base Context.");
-                }
+            } else if (this.mBase != null) {
+                this.mBase.unregisterComponentCallbacks(callback);
+            } else if (CompatChanges.isChangeEnabled(Context.OVERRIDABLE_COMPONENT_CALLBACKS)) {
+                throw new IllegalStateException("ComponentCallbacks must be unregistered after this ContextWrapper is attached to a base Context.");
             }
         }
     }

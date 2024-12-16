@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.flags.Flags;
 import android.widget.LinearLayout;
 import com.android.internal.R;
 import com.samsung.android.widget.SemTabDotLineView;
@@ -38,8 +39,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     private boolean mStripMoved;
     private ColorStateList mTabTextColorStateList;
 
-    /* loaded from: classes4.dex */
-    public interface OnTabSelectionChanged {
+    interface OnTabSelectionChanged {
         void onTabSelectionChanged(int i, boolean z);
     }
 
@@ -87,9 +87,8 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         setChildrenDrawingOrderEnabled(true);
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, outValue, true);
-        boolean z = outValue.data != 0;
-        this.mIsThemeDeviceDefaultFamily = z;
-        if (z) {
+        this.mIsThemeDeviceDefaultFamily = outValue.data != 0;
+        if (this.mIsThemeDeviceDefaultFamily) {
             TypedArray typedArray = context.getTheme().obtainStyledAttributes(null, R.styleable.Theme, 0, 0);
             int tabTextAppearnceId = typedArray.getResourceId(143, 0);
             typedArray.recycle();
@@ -107,7 +106,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mIsThemeDeviceDefaultFamily) {
             float fontScale = getContext().getResources().getConfiguration().fontScale;
             if (fontScale > this.mMaxFontScale) {
@@ -129,28 +128,27 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         this.mStripMoved = true;
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override // android.view.ViewGroup
-    public int getChildDrawingOrder(int childCount, int i) {
-        int i2 = this.mSelectedTab;
-        if (i2 == -1) {
+    protected int getChildDrawingOrder(int childCount, int i) {
+        if (this.mSelectedTab == -1) {
             return i;
         }
         if (i == childCount - 1) {
-            return i2;
+            return this.mSelectedTab;
         }
-        if (i >= i2) {
+        if (i >= this.mSelectedTab) {
             return i + 1;
         }
         return i;
     }
 
     @Override // android.widget.LinearLayout
-    public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
+    void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         if (!isMeasureWithLargestChildEnabled() && this.mImposedTabsHeight >= 0) {
             widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(this.mImposedTabWidths[childIndex] + totalWidth, 1073741824);
             heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(this.mImposedTabsHeight, 1073741824);
@@ -159,7 +157,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     }
 
     @Override // android.widget.LinearLayout
-    public void measureHorizontal(int widthMeasureSpec, int heightMeasureSpec) {
+    void measureHorizontal(int widthMeasureSpec, int heightMeasureSpec) {
         if (View.MeasureSpec.getMode(widthMeasureSpec) == 0) {
             super.measureHorizontal(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -178,8 +176,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
                 }
             }
             if (childCount > 0) {
-                int[] iArr = this.mImposedTabWidths;
-                if (iArr == null || iArr.length != count) {
+                if (this.mImposedTabWidths == null || this.mImposedTabWidths.length != count) {
                     this.mImposedTabWidths = new int[count];
                 }
                 for (int i2 = 0; i2 < count; i2++) {
@@ -298,14 +295,13 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     }
 
     public void setCurrentTab(int index) {
-        int i;
         View tabView;
         View oldTabView;
-        if (index < 0 || index >= getTabCount() || index == (i = this.mSelectedTab)) {
+        if (index < 0 || index >= getTabCount() || index == this.mSelectedTab) {
             return;
         }
-        if (i != -1) {
-            getChildTabViewAt(i).setSelected(false);
+        if (this.mSelectedTab != -1) {
+            getChildTabViewAt(this.mSelectedTab).setSelected(false);
             if (this.mIsThemeDeviceDefaultFamily && (oldTabView = getChildTabViewAt(this.mSelectedTab)) != null) {
                 TextView oldTabTextView = (TextView) oldTabView.findViewById(16908310);
                 if (oldTabTextView != null) {
@@ -319,7 +315,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
             }
         }
         this.mSelectedTab = index;
-        getChildTabViewAt(index).setSelected(true);
+        getChildTabViewAt(this.mSelectedTab).setSelected(true);
         this.mStripMoved = true;
         if (this.mIsThemeDeviceDefaultFamily && (tabView = getChildTabViewAt(this.mSelectedTab)) != null) {
             TextView tabTextView = (TextView) tabView.findViewById(16908310);
@@ -365,24 +361,25 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     }
 
     @Override // android.view.ViewGroup
-    public void addView(View child) {
-        if (child.getLayoutParams() == null) {
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, -1, 1.0f);
-            lp.setMargins(0, 0, 0, 0);
-            child.setLayoutParams(lp);
+    public void addView(View view) {
+        if (view.getLayoutParams() == null) {
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, -1, 1.0f);
+            layoutParams.setMargins(0, 0, 0, 0);
+            view.setLayoutParams(layoutParams);
         }
-        child.setFocusable(true);
-        child.setClickable(true);
-        if (child.getPointerIcon() == null) {
-            child.setPointerIcon(PointerIcon.getSystemIcon(getContext(), 1002));
+        view.setFocusable(true);
+        view.setClickable(true);
+        if (!Flags.enableArrowIconOnHoverWhenClickable() && view.getPointerIcon() == null) {
+            view.setPointerIcon(PointerIcon.getSystemIcon(getContext(), 1002));
         }
-        super.addView(child);
-        child.setOnClickListener(new TabClickListener(getTabCount() - 1));
+        super.addView(view);
+        byte b = 0;
+        view.setOnClickListener(new TabClickListener(getTabCount() - 1));
         if (this.mIsThemeDeviceDefaultFamily) {
-            child.setOnTouchListener(new SemTabTouchListener(getTabCount() - 1));
-            TextView tabText = (TextView) child.findViewById(16908310);
-            if (tabText != null) {
-                this.mTabTextColorStateList = tabText.getTextColors();
+            view.setOnTouchListener(new SemTabTouchListener(getTabCount() - 1));
+            TextView textView = (TextView) view.findViewById(16908310);
+            if (textView != null) {
+                this.mTabTextColorStateList = textView.getTextColors();
             }
         }
     }
@@ -401,7 +398,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         return super.onResolvePointerIcon(event, pointerIndex);
     }
 
-    public void setTabSelectionListener(OnTabSelectionChanged listener) {
+    void setTabSelectionListener(OnTabSelectionChanged listener) {
         this.mSelectionChangedListener = listener;
     }
 
@@ -409,13 +406,8 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
     public void onFocusChange(View v, boolean hasFocus) {
     }
 
-    /* loaded from: classes4.dex */
-    public class TabClickListener implements View.OnClickListener {
+    private class TabClickListener implements View.OnClickListener {
         private final int mTabIndex;
-
-        /* synthetic */ TabClickListener(TabWidget tabWidget, int i, TabClickListenerIA tabClickListenerIA) {
-            this(i);
-        }
 
         private TabClickListener(int tabIndex) {
             this.mTabIndex = tabIndex;
@@ -427,66 +419,122 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class SemTabTouchListener implements View.OnTouchListener {
+    private class SemTabTouchListener implements View.OnTouchListener {
         private final int mTabIndex;
-
-        /* synthetic */ SemTabTouchListener(TabWidget tabWidget, int i, SemTabTouchListenerIA semTabTouchListenerIA) {
-            this(i);
-        }
 
         private SemTabTouchListener(int tabIndex) {
             this.mTabIndex = tabIndex;
         }
 
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            TabWidget tabWidget;
-            View oldView;
-            if (TabWidget.this.mSelectedTab == this.mTabIndex) {
-                return false;
-            }
-            int action = motionEvent.getAction();
-            SemTabDotLineView semTabDotLineView = (SemTabDotLineView) view.findViewById(R.id.sem_tab_indicator);
-            TextView tabText = (TextView) view.findViewById(16908310);
-            if (semTabDotLineView == null || tabText == null || (oldView = (tabWidget = TabWidget.this).getChildTabViewAt(tabWidget.mSelectedTab)) == null) {
-                return false;
-            }
-            SemTabDotLineView oldDotView = (SemTabDotLineView) oldView.findViewById(R.id.sem_tab_indicator);
-            TextView oldTextView = (TextView) oldView.findViewById(16908310);
-            if (oldDotView == null || oldTextView == null) {
-                return false;
-            }
-            switch (action) {
-                case 0:
-                    oldDotView.setDrawState(false);
-                    TabWidget tabWidget2 = TabWidget.this;
-                    oldTextView.setTextColor(tabWidget2.getNotSelectedColor(tabWidget2.mTabTextColorStateList));
-                    oldTextView.setTypeface(TabWidget.this.mSemRegularFont);
-                    TabWidget tabWidget3 = TabWidget.this;
-                    tabText.setTextColor(tabWidget3.getSelectedColor(tabWidget3.mTabTextColorStateList));
-                    tabText.setTypeface(TabWidget.this.mSemSemiBoldFont);
-                    tabText.setSelected(false);
-                    break;
-                case 1:
-                case 2:
-                    if (!view.isPressed()) {
-                        oldDotView.setSelected(true);
-                        oldDotView.mDrawDot = true;
-                        oldTextView.setTextColor(TabWidget.this.mTabTextColorStateList);
-                        oldTextView.setTypeface(TabWidget.this.mSemSemiBoldFont);
-                        TabWidget tabWidget4 = TabWidget.this;
-                        tabText.setTextColor(tabWidget4.getNotSelectedColor(tabWidget4.mTabTextColorStateList));
-                        tabText.setTypeface(TabWidget.this.mSemRegularFont);
-                        tabText.setSelected(false);
-                        break;
-                    }
-                    break;
-            }
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        /* JADX WARN: Code restructure failed: missing block: B:19:0x00bf, code lost:
+        
             return false;
+         */
+        @Override // android.view.View.OnTouchListener
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public boolean onTouch(android.view.View r10, android.view.MotionEvent r11) {
+            /*
+                r9 = this;
+                android.widget.TabWidget r0 = android.widget.TabWidget.this
+                int r0 = android.widget.TabWidget.m7102$$Nest$fgetmSelectedTab(r0)
+                int r1 = r9.mTabIndex
+                r2 = 0
+                if (r0 != r1) goto Lc
+                return r2
+            Lc:
+                int r0 = r11.getAction()
+                r1 = 16909722(0x102059a, float:2.3881248E-38)
+                android.view.View r3 = r10.findViewById(r1)
+                com.samsung.android.widget.SemTabDotLineView r3 = (com.samsung.android.widget.SemTabDotLineView) r3
+                r4 = 16908310(0x1020016, float:2.387729E-38)
+                android.view.View r5 = r10.findViewById(r4)
+                android.widget.TextView r5 = (android.widget.TextView) r5
+                if (r3 == 0) goto Lc1
+                if (r5 != 0) goto L28
+                goto Lc1
+            L28:
+                android.widget.TabWidget r6 = android.widget.TabWidget.this
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                int r7 = android.widget.TabWidget.m7102$$Nest$fgetmSelectedTab(r7)
+                android.view.View r6 = r6.getChildTabViewAt(r7)
+                r7 = 0
+                r8 = 0
+                if (r6 != 0) goto L39
+                return r2
+            L39:
+                android.view.View r1 = r6.findViewById(r1)
+                com.samsung.android.widget.SemTabDotLineView r1 = (com.samsung.android.widget.SemTabDotLineView) r1
+                android.view.View r4 = r6.findViewById(r4)
+                android.widget.TextView r4 = (android.widget.TextView) r4
+                if (r1 == 0) goto Lc0
+                if (r4 != 0) goto L4a
+                goto Lc0
+            L4a:
+                switch(r0) {
+                    case 0: goto L88;
+                    case 1: goto L4e;
+                    case 2: goto L4e;
+                    default: goto L4d;
+                }
+            L4d:
+                goto Lbf
+            L4e:
+                boolean r7 = r10.isPressed()
+                if (r7 != 0) goto Lbf
+                r7 = 1
+                r1.setSelected(r7)
+                r1.mDrawDot = r7
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.content.res.ColorStateList r7 = android.widget.TabWidget.m7106$$Nest$fgetmTabTextColorStateList(r7)
+                r4.setTextColor(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.graphics.Typeface r7 = android.widget.TabWidget.m7105$$Nest$fgetmSemSemiBoldFont(r7)
+                r4.setTypeface(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.widget.TabWidget r8 = android.widget.TabWidget.this
+                android.content.res.ColorStateList r8 = android.widget.TabWidget.m7106$$Nest$fgetmTabTextColorStateList(r8)
+                int r7 = android.widget.TabWidget.m7107$$Nest$mgetNotSelectedColor(r7, r8)
+                r5.setTextColor(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.graphics.Typeface r7 = android.widget.TabWidget.m7104$$Nest$fgetmSemRegularFont(r7)
+                r5.setTypeface(r7)
+                r5.setSelected(r2)
+                goto Lbf
+            L88:
+                r1.setDrawState(r2)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.widget.TabWidget r8 = android.widget.TabWidget.this
+                android.content.res.ColorStateList r8 = android.widget.TabWidget.m7106$$Nest$fgetmTabTextColorStateList(r8)
+                int r7 = android.widget.TabWidget.m7107$$Nest$mgetNotSelectedColor(r7, r8)
+                r4.setTextColor(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.graphics.Typeface r7 = android.widget.TabWidget.m7104$$Nest$fgetmSemRegularFont(r7)
+                r4.setTypeface(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.widget.TabWidget r8 = android.widget.TabWidget.this
+                android.content.res.ColorStateList r8 = android.widget.TabWidget.m7106$$Nest$fgetmTabTextColorStateList(r8)
+                int r7 = android.widget.TabWidget.m7108$$Nest$mgetSelectedColor(r7, r8)
+                r5.setTextColor(r7)
+                android.widget.TabWidget r7 = android.widget.TabWidget.this
+                android.graphics.Typeface r7 = android.widget.TabWidget.m7105$$Nest$fgetmSemSemiBoldFont(r7)
+                r5.setTypeface(r7)
+                r5.setSelected(r2)
+            Lbf:
+                return r2
+            Lc0:
+                return r2
+            Lc1:
+                return r2
+            */
+            throw new UnsupportedOperationException("Method not decompiled: android.widget.TabWidget.SemTabTouchListener.onTouch(android.view.View, android.view.MotionEvent):boolean");
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getSelectedColor(ColorStateList colorStateList) {
         if (colorStateList != null) {
             return colorStateList.getColorForState(new int[]{16842913, 16842910}, colorStateList.getDefaultColor());
@@ -494,6 +542,7 @@ public class TabWidget extends LinearLayout implements View.OnFocusChangeListene
         return -1;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getNotSelectedColor(ColorStateList colorStateList) {
         if (colorStateList != null) {
             return colorStateList.getColorForState(new int[]{-16842913, -16842908}, colorStateList.getDefaultColor());

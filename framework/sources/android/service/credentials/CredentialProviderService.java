@@ -21,6 +21,7 @@ import java.util.Objects;
 
 /* loaded from: classes3.dex */
 public abstract class CredentialProviderService extends Service {
+    public static final String EXTRA_AUTOFILL_ID = "android.service.credentials.extra.AUTOFILL_ID";
     public static final String EXTRA_BEGIN_GET_CREDENTIAL_REQUEST = "android.service.credentials.extra.BEGIN_GET_CREDENTIAL_REQUEST";
     public static final String EXTRA_BEGIN_GET_CREDENTIAL_RESPONSE = "android.service.credentials.extra.BEGIN_GET_CREDENTIAL_RESPONSE";
     public static final String EXTRA_CREATE_CREDENTIAL_EXCEPTION = "android.service.credentials.extra.CREATE_CREDENTIAL_EXCEPTION";
@@ -36,11 +37,8 @@ public abstract class CredentialProviderService extends Service {
     public static final String TEST_SYSTEM_PROVIDER_META_DATA_KEY = "android.credentials.testsystemprovider";
     private Handler mHandler;
     private final ICredentialProviderService mInterface = new ICredentialProviderService.Stub() { // from class: android.service.credentials.CredentialProviderService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.service.credentials.ICredentialProviderService
-        public void onBeginGetCredential(BeginGetCredentialRequest request, IBeginGetCredentialCallback callback) {
+        public void onBeginGetCredential(BeginGetCredentialRequest request, final IBeginGetCredentialCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
             ICancellationSignal transport = CancellationSignal.createTransport();
@@ -49,18 +47,12 @@ public abstract class CredentialProviderService extends Service {
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda0
+            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda1
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
-                    ((CredentialProviderService) obj).onBeginGetCredential((BeginGetCredentialRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.C00071) obj4);
+                    ((CredentialProviderService) obj).onBeginGetCredential((BeginGetCredentialRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.C00091) obj4);
                 }
             }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<BeginGetCredentialResponse, GetCredentialException>() { // from class: android.service.credentials.CredentialProviderService.1.1
-                final /* synthetic */ IBeginGetCredentialCallback val$callback;
-
-                C00071(IBeginGetCredentialCallback callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.os.OutcomeReceiver
                 public void onResult(BeginGetCredentialResponse result) {
                     try {
@@ -81,36 +73,8 @@ public abstract class CredentialProviderService extends Service {
             }));
         }
 
-        /* renamed from: android.service.credentials.CredentialProviderService$1$1 */
-        /* loaded from: classes3.dex */
-        class C00071 implements OutcomeReceiver<BeginGetCredentialResponse, GetCredentialException> {
-            final /* synthetic */ IBeginGetCredentialCallback val$callback;
-
-            C00071(IBeginGetCredentialCallback callback2) {
-                callback = callback2;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(BeginGetCredentialResponse result) {
-                try {
-                    callback.onSuccess(result);
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(GetCredentialException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
-        }
-
         @Override // android.service.credentials.ICredentialProviderService
-        public void onBeginCreateCredential(BeginCreateCredentialRequest request, IBeginCreateCredentialCallback callback) {
+        public void onBeginCreateCredential(BeginCreateCredentialRequest request, final IBeginCreateCredentialCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
             ICancellationSignal transport = CancellationSignal.createTransport();
@@ -119,18 +83,12 @@ public abstract class CredentialProviderService extends Service {
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda1
+            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda2
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((CredentialProviderService) obj).onBeginCreateCredential((BeginCreateCredentialRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.AnonymousClass2) obj4);
                 }
             }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<BeginCreateCredentialResponse, CreateCredentialException>() { // from class: android.service.credentials.CredentialProviderService.1.2
-                final /* synthetic */ IBeginCreateCredentialCallback val$callback;
-
-                AnonymousClass2(IBeginCreateCredentialCallback callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.os.OutcomeReceiver
                 public void onResult(BeginCreateCredentialResponse result) {
                     try {
@@ -151,36 +109,8 @@ public abstract class CredentialProviderService extends Service {
             }));
         }
 
-        /* renamed from: android.service.credentials.CredentialProviderService$1$2 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass2 implements OutcomeReceiver<BeginCreateCredentialResponse, CreateCredentialException> {
-            final /* synthetic */ IBeginCreateCredentialCallback val$callback;
-
-            AnonymousClass2(IBeginCreateCredentialCallback callback2) {
-                callback = callback2;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(BeginCreateCredentialResponse result) {
-                try {
-                    callback.onSuccess(result);
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(CreateCredentialException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
-        }
-
         @Override // android.service.credentials.ICredentialProviderService
-        public void onClearCredentialState(ClearCredentialStateRequest request, IClearCredentialStateCallback callback) {
+        public void onClearCredentialState(ClearCredentialStateRequest request, final IClearCredentialStateCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
             ICancellationSignal transport = CancellationSignal.createTransport();
@@ -189,18 +119,12 @@ public abstract class CredentialProviderService extends Service {
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda2
+            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.function.QuadConsumer
                 public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
                     ((CredentialProviderService) obj).onClearCredentialState((ClearCredentialStateRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.AnonymousClass3) obj4);
                 }
             }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<Void, ClearCredentialStateException>() { // from class: android.service.credentials.CredentialProviderService.1.3
-                final /* synthetic */ IClearCredentialStateCallback val$callback;
-
-                AnonymousClass3(IClearCredentialStateCallback callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.os.OutcomeReceiver
                 public void onResult(Void result) {
                     try {
@@ -219,34 +143,6 @@ public abstract class CredentialProviderService extends Service {
                     }
                 }
             }));
-        }
-
-        /* renamed from: android.service.credentials.CredentialProviderService$1$3 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass3 implements OutcomeReceiver<Void, ClearCredentialStateException> {
-            final /* synthetic */ IClearCredentialStateCallback val$callback;
-
-            AnonymousClass3(IClearCredentialStateCallback callback2) {
-                callback = callback2;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(Void result) {
-                try {
-                    callback.onSuccess();
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(ClearCredentialStateException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
         }
     };
 
@@ -269,223 +165,5 @@ public abstract class CredentialProviderService extends Service {
         }
         Slog.w(TAG, "Failed to bind with intent: " + intent);
         return null;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.service.credentials.CredentialProviderService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends ICredentialProviderService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.service.credentials.ICredentialProviderService
-        public void onBeginGetCredential(BeginGetCredentialRequest request, IBeginGetCredentialCallback callback2) {
-            Objects.requireNonNull(request);
-            Objects.requireNonNull(callback2);
-            ICancellationSignal transport = CancellationSignal.createTransport();
-            try {
-                callback2.onCancellable(transport);
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda0
-                @Override // com.android.internal.util.function.QuadConsumer
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
-                    ((CredentialProviderService) obj).onBeginGetCredential((BeginGetCredentialRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.C00071) obj4);
-                }
-            }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<BeginGetCredentialResponse, GetCredentialException>() { // from class: android.service.credentials.CredentialProviderService.1.1
-                final /* synthetic */ IBeginGetCredentialCallback val$callback;
-
-                C00071(IBeginGetCredentialCallback callback22) {
-                    callback = callback22;
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onResult(BeginGetCredentialResponse result) {
-                    try {
-                        callback.onSuccess(result);
-                    } catch (RemoteException e2) {
-                        e2.rethrowFromSystemServer();
-                    }
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onError(GetCredentialException e2) {
-                    try {
-                        callback.onFailure(e2.getType(), e2.getMessage());
-                    } catch (RemoteException ex) {
-                        ex.rethrowFromSystemServer();
-                    }
-                }
-            }));
-        }
-
-        /* renamed from: android.service.credentials.CredentialProviderService$1$1 */
-        /* loaded from: classes3.dex */
-        class C00071 implements OutcomeReceiver<BeginGetCredentialResponse, GetCredentialException> {
-            final /* synthetic */ IBeginGetCredentialCallback val$callback;
-
-            C00071(IBeginGetCredentialCallback callback22) {
-                callback = callback22;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(BeginGetCredentialResponse result) {
-                try {
-                    callback.onSuccess(result);
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(GetCredentialException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
-        }
-
-        @Override // android.service.credentials.ICredentialProviderService
-        public void onBeginCreateCredential(BeginCreateCredentialRequest request, IBeginCreateCredentialCallback callback2) {
-            Objects.requireNonNull(request);
-            Objects.requireNonNull(callback2);
-            ICancellationSignal transport = CancellationSignal.createTransport();
-            try {
-                callback2.onCancellable(transport);
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda1
-                @Override // com.android.internal.util.function.QuadConsumer
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
-                    ((CredentialProviderService) obj).onBeginCreateCredential((BeginCreateCredentialRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.AnonymousClass2) obj4);
-                }
-            }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<BeginCreateCredentialResponse, CreateCredentialException>() { // from class: android.service.credentials.CredentialProviderService.1.2
-                final /* synthetic */ IBeginCreateCredentialCallback val$callback;
-
-                AnonymousClass2(IBeginCreateCredentialCallback callback22) {
-                    callback = callback22;
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onResult(BeginCreateCredentialResponse result) {
-                    try {
-                        callback.onSuccess(result);
-                    } catch (RemoteException e2) {
-                        e2.rethrowFromSystemServer();
-                    }
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onError(CreateCredentialException e2) {
-                    try {
-                        callback.onFailure(e2.getType(), e2.getMessage());
-                    } catch (RemoteException ex) {
-                        ex.rethrowFromSystemServer();
-                    }
-                }
-            }));
-        }
-
-        /* renamed from: android.service.credentials.CredentialProviderService$1$2 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass2 implements OutcomeReceiver<BeginCreateCredentialResponse, CreateCredentialException> {
-            final /* synthetic */ IBeginCreateCredentialCallback val$callback;
-
-            AnonymousClass2(IBeginCreateCredentialCallback callback22) {
-                callback = callback22;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(BeginCreateCredentialResponse result) {
-                try {
-                    callback.onSuccess(result);
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(CreateCredentialException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
-        }
-
-        @Override // android.service.credentials.ICredentialProviderService
-        public void onClearCredentialState(ClearCredentialStateRequest request, IClearCredentialStateCallback callback2) {
-            Objects.requireNonNull(request);
-            Objects.requireNonNull(callback2);
-            ICancellationSignal transport = CancellationSignal.createTransport();
-            try {
-                callback2.onCancellable(transport);
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
-            CredentialProviderService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuadConsumer() { // from class: android.service.credentials.CredentialProviderService$1$$ExternalSyntheticLambda2
-                @Override // com.android.internal.util.function.QuadConsumer
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
-                    ((CredentialProviderService) obj).onClearCredentialState((ClearCredentialStateRequest) obj2, (CancellationSignal) obj3, (CredentialProviderService.AnonymousClass1.AnonymousClass3) obj4);
-                }
-            }, CredentialProviderService.this, request, CancellationSignal.fromTransport(transport), new OutcomeReceiver<Void, ClearCredentialStateException>() { // from class: android.service.credentials.CredentialProviderService.1.3
-                final /* synthetic */ IClearCredentialStateCallback val$callback;
-
-                AnonymousClass3(IClearCredentialStateCallback callback22) {
-                    callback = callback22;
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onResult(Void result) {
-                    try {
-                        callback.onSuccess();
-                    } catch (RemoteException e2) {
-                        e2.rethrowFromSystemServer();
-                    }
-                }
-
-                @Override // android.os.OutcomeReceiver
-                public void onError(ClearCredentialStateException e2) {
-                    try {
-                        callback.onFailure(e2.getType(), e2.getMessage());
-                    } catch (RemoteException ex) {
-                        ex.rethrowFromSystemServer();
-                    }
-                }
-            }));
-        }
-
-        /* renamed from: android.service.credentials.CredentialProviderService$1$3 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass3 implements OutcomeReceiver<Void, ClearCredentialStateException> {
-            final /* synthetic */ IClearCredentialStateCallback val$callback;
-
-            AnonymousClass3(IClearCredentialStateCallback callback22) {
-                callback = callback22;
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onResult(Void result) {
-                try {
-                    callback.onSuccess();
-                } catch (RemoteException e2) {
-                    e2.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.os.OutcomeReceiver
-            public void onError(ClearCredentialStateException e2) {
-                try {
-                    callback.onFailure(e2.getType(), e2.getMessage());
-                } catch (RemoteException ex) {
-                    ex.rethrowFromSystemServer();
-                }
-            }
-        }
     }
 }

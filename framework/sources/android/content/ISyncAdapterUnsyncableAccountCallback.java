@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface ISyncAdapterUnsyncableAccountCallback extends IInterface {
     void onUnsyncableAccountDone(boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISyncAdapterUnsyncableAccountCallback {
         @Override // android.content.ISyncAdapterUnsyncableAccountCallback
         public void onUnsyncableAccountDone(boolean isReady) throws RemoteException {
@@ -22,7 +21,6 @@ public interface ISyncAdapterUnsyncableAccountCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISyncAdapterUnsyncableAccountCallback {
         public static final String DESCRIPTOR = "android.content.ISyncAdapterUnsyncableAccountCallback";
         static final int TRANSACTION_onUnsyncableAccountDone = 1;
@@ -66,26 +64,22 @@ public interface ISyncAdapterUnsyncableAccountCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUnsyncableAccountDone(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUnsyncableAccountDone(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISyncAdapterUnsyncableAccountCallback {
+        private static class Proxy implements ISyncAdapterUnsyncableAccountCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

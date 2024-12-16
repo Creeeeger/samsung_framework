@@ -8,7 +8,7 @@ import android.os.RemoteException;
 
 /* loaded from: classes3.dex */
 public interface ISuspendControlServiceInternal extends IInterface {
-    public static final String DESCRIPTOR = "android$system$suspend$internal$ISuspendControlServiceInternal".replace('$', '.');
+    public static final String DESCRIPTOR = "android.system.suspend.internal.ISuspendControlServiceInternal";
 
     boolean enableAutosuspend(IBinder iBinder) throws RemoteException;
 
@@ -20,7 +20,6 @@ public interface ISuspendControlServiceInternal extends IInterface {
 
     WakeupInfo[] getWakeupStats() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISuspendControlServiceInternal {
         @Override // android.system.suspend.internal.ISuspendControlServiceInternal
         public boolean enableAutosuspend(IBinder token) throws RemoteException {
@@ -53,7 +52,6 @@ public interface ISuspendControlServiceInternal extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISuspendControlServiceInternal {
         static final int TRANSACTION_enableAutosuspend = 1;
         static final int TRANSACTION_forceSuspend = 2;
@@ -62,14 +60,14 @@ public interface ISuspendControlServiceInternal extends IInterface {
         static final int TRANSACTION_getWakeupStats = 4;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, ISuspendControlServiceInternal.DESCRIPTOR);
         }
 
         public static ISuspendControlServiceInternal asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(ISuspendControlServiceInternal.DESCRIPTOR);
             if (iin != null && (iin instanceof ISuspendControlServiceInternal)) {
                 return (ISuspendControlServiceInternal) iin;
             }
@@ -83,48 +81,44 @@ public interface ISuspendControlServiceInternal extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
-            String str = DESCRIPTOR;
             if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
+                parcel.enforceInterface(ISuspendControlServiceInternal.DESCRIPTOR);
+            }
+            if (i == 1598968902) {
+                parcel2.writeString(ISuspendControlServiceInternal.DESCRIPTOR);
+                return true;
             }
             switch (i) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    parcel2.writeString(str);
+                case 1:
+                    boolean enableAutosuspend = enableAutosuspend(parcel.readStrongBinder());
+                    parcel2.writeNoException();
+                    parcel2.writeInt(enableAutosuspend ? 1 : 0);
+                    return true;
+                case 2:
+                    boolean forceSuspend = forceSuspend();
+                    parcel2.writeNoException();
+                    parcel2.writeInt(forceSuspend ? 1 : 0);
+                    return true;
+                case 3:
+                    WakeLockInfo[] wakeLockStats = getWakeLockStats();
+                    parcel2.writeNoException();
+                    parcel2.writeTypedArray(wakeLockStats, 1);
+                    return true;
+                case 4:
+                    WakeupInfo[] wakeupStats = getWakeupStats();
+                    parcel2.writeNoException();
+                    parcel2.writeTypedArray(wakeupStats, 1);
+                    return true;
+                case 5:
+                    SuspendInfo suspendStats = getSuspendStats();
+                    parcel2.writeNoException();
+                    parcel2.writeTypedObject(suspendStats, 1);
                     return true;
                 default:
-                    switch (i) {
-                        case 1:
-                            boolean enableAutosuspend = enableAutosuspend(parcel.readStrongBinder());
-                            parcel2.writeNoException();
-                            parcel2.writeInt(enableAutosuspend ? 1 : 0);
-                            return true;
-                        case 2:
-                            boolean forceSuspend = forceSuspend();
-                            parcel2.writeNoException();
-                            parcel2.writeInt(forceSuspend ? 1 : 0);
-                            return true;
-                        case 3:
-                            WakeLockInfo[] wakeLockStats = getWakeLockStats();
-                            parcel2.writeNoException();
-                            parcel2.writeTypedArray(wakeLockStats, 1);
-                            return true;
-                        case 4:
-                            WakeupInfo[] wakeupStats = getWakeupStats();
-                            parcel2.writeNoException();
-                            parcel2.writeTypedArray(wakeupStats, 1);
-                            return true;
-                        case 5:
-                            SuspendInfo suspendStats = getSuspendStats();
-                            parcel2.writeNoException();
-                            parcel2.writeTypedObject(suspendStats, 1);
-                            return true;
-                        default:
-                            return super.onTransact(i, parcel, parcel2, i2);
-                    }
+                    return super.onTransact(i, parcel, parcel2, i2);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISuspendControlServiceInternal {
             private IBinder mRemote;
 
@@ -138,7 +132,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return ISuspendControlServiceInternal.DESCRIPTOR;
             }
 
             @Override // android.system.suspend.internal.ISuspendControlServiceInternal
@@ -146,7 +140,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISuspendControlServiceInternal.DESCRIPTOR);
                     _data.writeStrongBinder(token);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
@@ -163,7 +157,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISuspendControlServiceInternal.DESCRIPTOR);
                     this.mRemote.transact(2, _data, _reply, 0);
                     _reply.readException();
                     boolean _status = _reply.readInt() != 0;
@@ -179,7 +173,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISuspendControlServiceInternal.DESCRIPTOR);
                     this.mRemote.transact(3, _data, _reply, 0);
                     _reply.readException();
                     WakeLockInfo[] _result = (WakeLockInfo[]) _reply.createTypedArray(WakeLockInfo.CREATOR);
@@ -195,7 +189,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISuspendControlServiceInternal.DESCRIPTOR);
                     this.mRemote.transact(4, _data, _reply, 0);
                     _reply.readException();
                     WakeupInfo[] _result = (WakeupInfo[]) _reply.createTypedArray(WakeupInfo.CREATOR);
@@ -211,7 +205,7 @@ public interface ISuspendControlServiceInternal extends IInterface {
                 Parcel _data = Parcel.obtain();
                 Parcel _reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(ISuspendControlServiceInternal.DESCRIPTOR);
                     this.mRemote.transact(5, _data, _reply, 0);
                     _reply.readException();
                     SuspendInfo _result = (SuspendInfo) _reply.readTypedObject(SuspendInfo.CREATOR);

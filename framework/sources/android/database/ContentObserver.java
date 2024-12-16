@@ -9,16 +9,25 @@ import android.os.Process;
 import android.os.UserHandle;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.Executor;
 
 /* loaded from: classes.dex */
 public abstract class ContentObserver {
     private static final long ADD_CONTENT_OBSERVER_FLAGS = 150939131;
+    private final Executor mExecutor;
     Handler mHandler;
-    private final Object mLock = new Object();
+    private final Object mLock;
     private Transport mTransport;
 
     public ContentObserver(Handler handler) {
+        this.mLock = new Object();
         this.mHandler = handler;
+        this.mExecutor = null;
+    }
+
+    public ContentObserver(Executor executor, int unused) {
+        this.mLock = new Object();
+        this.mExecutor = executor;
     }
 
     public IContentObserver getContentObserver() {
@@ -71,11 +80,19 @@ public abstract class ContentObserver {
     }
 
     public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
-        if (!CompatChanges.isChangeEnabled(ADD_CONTENT_OBSERVER_FLAGS) || Process.myUid() == 1000) {
+        if (!isChangeEnabledAddContentObserverFlags() || Process.myUid() == 1000) {
             onChange(selfChange, uris, flags, UserHandle.of(userId));
         } else {
             onChange(selfChange, uris, flags);
         }
+    }
+
+    private static boolean isChangeEnabledAddContentObserverFlags() {
+        return CompatChanges.isChangeEnabled(ADD_CONTENT_OBSERVER_FLAGS);
+    }
+
+    private static boolean isChangeEnabledAddContentObserverFlags$ravenwood() {
+        return true;
     }
 
     @Deprecated
@@ -96,25 +113,36 @@ public abstract class ContentObserver {
     }
 
     public final void dispatchChange(final boolean selfChange, final Collection<Uri> uris, final int flags, final int userId) {
-        Handler handler = this.mHandler;
-        if (handler == null) {
-            onChange(selfChange, uris, flags, userId);
-        } else {
-            handler.post(new Runnable() { // from class: android.database.ContentObserver$$ExternalSyntheticLambda0
+        if (this.mExecutor != null) {
+            this.mExecutor.execute(new Runnable() { // from class: android.database.ContentObserver$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ContentObserver.this.lambda$dispatchChange$0(selfChange, uris, flags, userId);
                 }
             });
+        } else if (this.mHandler != null) {
+            this.mHandler.post(new Runnable() { // from class: android.database.ContentObserver$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ContentObserver.this.lambda$dispatchChange$1(selfChange, uris, flags, userId);
+                }
+            });
+        } else {
+            onChange(selfChange, uris, flags, userId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$dispatchChange$0(boolean selfChange, Collection uris, int flags, int userId) {
         onChange(selfChange, (Collection<Uri>) uris, flags, userId);
     }
 
-    /* loaded from: classes.dex */
-    public static final class Transport extends IContentObserver.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$dispatchChange$1(boolean selfChange, Collection uris, int flags, int userId) {
+        onChange(selfChange, (Collection<Uri>) uris, flags, userId);
+    }
+
+    private static final class Transport extends IContentObserver.Stub {
         private ContentObserver mContentObserver;
 
         public Transport(ContentObserver contentObserver) {

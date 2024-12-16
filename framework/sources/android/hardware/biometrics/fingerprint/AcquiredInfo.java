@@ -1,6 +1,6 @@
 package android.hardware.biometrics.fingerprint;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public @interface AcquiredInfo {
     public static final byte GOOD = 1;
     public static final byte IMMOBILE = 11;

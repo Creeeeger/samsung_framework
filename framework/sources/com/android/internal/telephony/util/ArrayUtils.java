@@ -67,8 +67,7 @@ public final class ArrayUtils {
         return (T[]) ((Object[]) Array.newInstance((Class<?>) cls, 0));
     }
 
-    /* loaded from: classes5.dex */
-    public static final class EmptyArray {
+    private static final class EmptyArray {
         public static final Object[] OBJECT = new Object[0];
         public static final String[] STRING = new String[0];
 

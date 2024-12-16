@@ -10,14 +10,13 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class RollbackInfo implements Parcelable {
     public static final Parcelable.Creator<RollbackInfo> CREATOR = new Parcelable.Creator<RollbackInfo>() { // from class: android.content.rollback.RollbackInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RollbackInfo createFromParcel(Parcel in) {
             return new RollbackInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RollbackInfo[] newArray(int size) {
             return new RollbackInfo[size];
@@ -28,17 +27,19 @@ public final class RollbackInfo implements Parcelable {
     private final boolean mIsStaged;
     private final List<PackageRollbackInfo> mPackages;
     private final int mRollbackId;
+    private int mRollbackImpactLevel;
 
-    /* synthetic */ RollbackInfo(Parcel parcel, RollbackInfoIA rollbackInfoIA) {
-        this(parcel);
-    }
-
-    public RollbackInfo(int rollbackId, List<PackageRollbackInfo> packages, boolean isStaged, List<VersionedPackage> causePackages, int committedSessionId) {
+    public RollbackInfo(int rollbackId, List<PackageRollbackInfo> packages, boolean isStaged, List<VersionedPackage> causePackages, int committedSessionId, int rollbackImpactLevel) {
         this.mRollbackId = rollbackId;
         this.mPackages = packages;
         this.mIsStaged = isStaged;
         this.mCausePackages = causePackages;
         this.mCommittedSessionId = committedSessionId;
+        this.mRollbackImpactLevel = rollbackImpactLevel;
+    }
+
+    public RollbackInfo(int rollbackId, List<PackageRollbackInfo> packages, boolean isStaged, List<VersionedPackage> causePackages, int committedSessionId) {
+        this(rollbackId, packages, isStaged, causePackages, committedSessionId, 0);
     }
 
     private RollbackInfo(Parcel in) {
@@ -47,6 +48,7 @@ public final class RollbackInfo implements Parcelable {
         this.mIsStaged = in.readBoolean();
         this.mCausePackages = in.createTypedArrayList(VersionedPackage.CREATOR);
         this.mCommittedSessionId = in.readInt();
+        this.mRollbackImpactLevel = in.readInt();
     }
 
     public int getRollbackId() {
@@ -73,6 +75,14 @@ public final class RollbackInfo implements Parcelable {
         return this.mCausePackages;
     }
 
+    public int getRollbackImpactLevel() {
+        return this.mRollbackImpactLevel;
+    }
+
+    public void setRollbackImpactLevel(int rollbackImpactLevel) {
+        this.mRollbackImpactLevel = rollbackImpactLevel;
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -85,22 +95,6 @@ public final class RollbackInfo implements Parcelable {
         out.writeBoolean(this.mIsStaged);
         out.writeTypedList(this.mCausePackages);
         out.writeInt(this.mCommittedSessionId);
-    }
-
-    /* renamed from: android.content.rollback.RollbackInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RollbackInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RollbackInfo createFromParcel(Parcel in) {
-            return new RollbackInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RollbackInfo[] newArray(int size) {
-            return new RollbackInfo[size];
-        }
+        out.writeInt(this.mRollbackImpactLevel);
     }
 }

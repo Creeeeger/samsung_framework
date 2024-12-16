@@ -136,7 +136,6 @@ public interface IHdmiControlService extends IInterface {
 
     void toggleAndFollowTvPower() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiControlService {
         @Override // android.hardware.hdmi.IHdmiControlService
         public int[] getSupportedTypes() throws RemoteException {
@@ -392,7 +391,6 @@ public interface IHdmiControlService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiControlService {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiControlService";
         static final int TRANSACTION_addCecSettingChangeListener = 50;
@@ -607,390 +605,386 @@ public interface IHdmiControlService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int[] _result = getSupportedTypes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result);
+                    return true;
+                case 2:
+                    HdmiDeviceInfo _result2 = getActiveSource();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    IHdmiControlCallback _arg0 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    oneTouchPlay(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    toggleAndFollowTvPower();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _result3 = shouldHandleTvPowerKey();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    IHdmiControlCallback _arg02 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    queryDisplayStatus(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    IHdmiControlStatusChangeListener _arg03 = IHdmiControlStatusChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addHdmiControlStatusChangeListener(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IHdmiControlStatusChangeListener _arg04 = IHdmiControlStatusChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeHdmiControlStatusChangeListener(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IHdmiCecVolumeControlFeatureListener _arg05 = IHdmiCecVolumeControlFeatureListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addHdmiCecVolumeControlFeatureListener(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IHdmiCecVolumeControlFeatureListener _arg06 = IHdmiCecVolumeControlFeatureListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeHdmiCecVolumeControlFeatureListener(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    IHdmiHotplugEventListener _arg07 = IHdmiHotplugEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addHotplugEventListener(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    IHdmiHotplugEventListener _arg08 = IHdmiHotplugEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeHotplugEventListener(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    IHdmiDeviceEventListener _arg09 = IHdmiDeviceEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addDeviceEventListener(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg010 = data.readInt();
+                    IHdmiControlCallback _arg1 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    deviceSelect(_arg010, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg011 = data.readInt();
+                    IHdmiControlCallback _arg12 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    portSelect(_arg011, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg012 = data.readInt();
+                    int _arg13 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendKeyEvent(_arg012, _arg13, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg013 = data.readInt();
+                    int _arg14 = data.readInt();
+                    boolean _arg22 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendVolumeKeyEvent(_arg013, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    List<HdmiPortInfo> _result4 = getPortInfo();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
+                    return true;
+                case 19:
+                    boolean _result5 = canChangeSystemAudioMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 20:
+                    boolean _result6 = getSystemAudioMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 21:
+                    int _result7 = getPhysicalAddress();
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 22:
+                    boolean _arg014 = data.readBoolean();
+                    IHdmiControlCallback _arg15 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setSystemAudioMode(_arg014, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    IHdmiSystemAudioModeChangeListener _arg015 = IHdmiSystemAudioModeChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addSystemAudioModeChangeListener(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    IHdmiSystemAudioModeChangeListener _arg016 = IHdmiSystemAudioModeChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeSystemAudioModeChangeListener(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    boolean _arg017 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setArcMode(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    boolean _arg018 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setProhibitMode(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    int _arg019 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSystemAudioVolume(_arg019, _arg16, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    boolean _arg020 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSystemAudioMute(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    IHdmiInputChangeListener _arg021 = IHdmiInputChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setInputChangeListener(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    List<HdmiDeviceInfo> _result8 = getInputDevices();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
+                    return true;
+                case 31:
+                    List<HdmiDeviceInfo> _result9 = getDeviceList();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 32:
+                    int _arg022 = data.readInt();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    powerOffRemoteDevice(_arg022, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    int _arg023 = data.readInt();
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    powerOnRemoteDevice(_arg023, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    askRemoteDeviceToBecomeActiveSource(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    int _arg025 = data.readInt();
+                    int _arg19 = data.readInt();
+                    byte[] _arg24 = data.createByteArray();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendVendorCommand(_arg025, _arg19, _arg24, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 36:
+                    IHdmiVendorCommandListener _arg026 = IHdmiVendorCommandListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addVendorCommandListener(_arg026, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    int _arg027 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendStandby(_arg027, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    IHdmiRecordListener _arg028 = IHdmiRecordListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setHdmiRecordListener(_arg028);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    int _arg029 = data.readInt();
+                    byte[] _arg112 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    startOneTouchRecord(_arg029, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopOneTouchRecord(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg031 = data.readInt();
+                    int _arg113 = data.readInt();
+                    byte[] _arg25 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    startTimerRecording(_arg031, _arg113, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg032 = data.readInt();
+                    int _arg114 = data.readInt();
+                    byte[] _arg26 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    clearTimerRecording(_arg032, _arg114, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    int _arg033 = data.readInt();
+                    int _arg115 = data.readInt();
+                    int _arg27 = data.readInt();
+                    byte[] _arg32 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendMhlVendorCommand(_arg033, _arg115, _arg27, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    IHdmiMhlVendorCommandListener _arg034 = IHdmiMhlVendorCommandListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addHdmiMhlVendorCommandListener(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    boolean _arg035 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setStandbyMode(_arg035);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg036 = data.readInt();
+                    int _arg116 = data.readInt();
+                    int _arg28 = data.readInt();
+                    boolean _arg33 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    reportAudioStatus(_arg036, _arg116, _arg28, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    setSystemAudioModeOnForAudioOnlySource();
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = setMessageHistorySize(_arg037);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 49:
+                    int _result11 = getMessageHistorySize();
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 50:
+                    String _arg038 = data.readString();
+                    IHdmiCecSettingChangeListener _arg117 = IHdmiCecSettingChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addCecSettingChangeListener(_arg038, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    String _arg039 = data.readString();
+                    IHdmiCecSettingChangeListener _arg118 = IHdmiCecSettingChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeCecSettingChangeListener(_arg039, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    List<String> _result12 = getUserCecSettings();
+                    reply.writeNoException();
+                    reply.writeStringList(_result12);
+                    return true;
+                case 53:
+                    String _arg040 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result13 = getAllowedCecSettingStringValues(_arg040);
+                    reply.writeNoException();
+                    reply.writeStringList(_result13);
+                    return true;
+                case 54:
+                    String _arg041 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result14 = getAllowedCecSettingIntValues(_arg041);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result14);
+                    return true;
+                case 55:
+                    String _arg042 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result15 = getCecSettingStringValue(_arg042);
+                    reply.writeNoException();
+                    reply.writeString(_result15);
+                    return true;
+                case 56:
+                    String _arg043 = data.readString();
+                    String _arg119 = data.readString();
+                    data.enforceNoDataAvail();
+                    setCecSettingStringValue(_arg043, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 57:
+                    String _arg044 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result16 = getCecSettingIntValue(_arg044);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 58:
+                    String _arg045 = data.readString();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCecSettingIntValue(_arg045, _arg120);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _result = getSupportedTypes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 2:
-                            HdmiDeviceInfo _result2 = getActiveSource();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            IHdmiControlCallback _arg0 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            oneTouchPlay(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            toggleAndFollowTvPower();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _result3 = shouldHandleTvPowerKey();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            IHdmiControlCallback _arg02 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            queryDisplayStatus(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            IHdmiControlStatusChangeListener _arg03 = IHdmiControlStatusChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addHdmiControlStatusChangeListener(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IHdmiControlStatusChangeListener _arg04 = IHdmiControlStatusChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeHdmiControlStatusChangeListener(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IHdmiCecVolumeControlFeatureListener _arg05 = IHdmiCecVolumeControlFeatureListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addHdmiCecVolumeControlFeatureListener(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IHdmiCecVolumeControlFeatureListener _arg06 = IHdmiCecVolumeControlFeatureListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeHdmiCecVolumeControlFeatureListener(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            IHdmiHotplugEventListener _arg07 = IHdmiHotplugEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addHotplugEventListener(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            IHdmiHotplugEventListener _arg08 = IHdmiHotplugEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeHotplugEventListener(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            IHdmiDeviceEventListener _arg09 = IHdmiDeviceEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addDeviceEventListener(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg010 = data.readInt();
-                            IHdmiControlCallback _arg1 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            deviceSelect(_arg010, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg011 = data.readInt();
-                            IHdmiControlCallback _arg12 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            portSelect(_arg011, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg012 = data.readInt();
-                            int _arg13 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            sendKeyEvent(_arg012, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg013 = data.readInt();
-                            int _arg14 = data.readInt();
-                            boolean _arg22 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            sendVolumeKeyEvent(_arg013, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            List<HdmiPortInfo> _result4 = getPortInfo();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        case 19:
-                            boolean _result5 = canChangeSystemAudioMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 20:
-                            boolean _result6 = getSystemAudioMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 21:
-                            int _result7 = getPhysicalAddress();
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 22:
-                            boolean _arg014 = data.readBoolean();
-                            IHdmiControlCallback _arg15 = IHdmiControlCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setSystemAudioMode(_arg014, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            IHdmiSystemAudioModeChangeListener _arg015 = IHdmiSystemAudioModeChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addSystemAudioModeChangeListener(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            IHdmiSystemAudioModeChangeListener _arg016 = IHdmiSystemAudioModeChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeSystemAudioModeChangeListener(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            boolean _arg017 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setArcMode(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            boolean _arg018 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setProhibitMode(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            int _arg019 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSystemAudioVolume(_arg019, _arg16, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            boolean _arg020 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSystemAudioMute(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            IHdmiInputChangeListener _arg021 = IHdmiInputChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setInputChangeListener(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            List<HdmiDeviceInfo> _result8 = getInputDevices();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result8, 1);
-                            return true;
-                        case 31:
-                            List<HdmiDeviceInfo> _result9 = getDeviceList();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 32:
-                            int _arg022 = data.readInt();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            powerOffRemoteDevice(_arg022, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            int _arg023 = data.readInt();
-                            int _arg18 = data.readInt();
-                            data.enforceNoDataAvail();
-                            powerOnRemoteDevice(_arg023, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            askRemoteDeviceToBecomeActiveSource(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            int _arg025 = data.readInt();
-                            int _arg19 = data.readInt();
-                            byte[] _arg24 = data.createByteArray();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            sendVendorCommand(_arg025, _arg19, _arg24, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            IHdmiVendorCommandListener _arg026 = IHdmiVendorCommandListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addVendorCommandListener(_arg026, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            int _arg027 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendStandby(_arg027, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            IHdmiRecordListener _arg028 = IHdmiRecordListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setHdmiRecordListener(_arg028);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            int _arg029 = data.readInt();
-                            byte[] _arg112 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            startOneTouchRecord(_arg029, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopOneTouchRecord(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg031 = data.readInt();
-                            int _arg113 = data.readInt();
-                            byte[] _arg25 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            startTimerRecording(_arg031, _arg113, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg032 = data.readInt();
-                            int _arg114 = data.readInt();
-                            byte[] _arg26 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            clearTimerRecording(_arg032, _arg114, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _arg033 = data.readInt();
-                            int _arg115 = data.readInt();
-                            int _arg27 = data.readInt();
-                            byte[] _arg32 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendMhlVendorCommand(_arg033, _arg115, _arg27, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            IHdmiMhlVendorCommandListener _arg034 = IHdmiMhlVendorCommandListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addHdmiMhlVendorCommandListener(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            boolean _arg035 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setStandbyMode(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg036 = data.readInt();
-                            int _arg116 = data.readInt();
-                            int _arg28 = data.readInt();
-                            boolean _arg33 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            reportAudioStatus(_arg036, _arg116, _arg28, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            setSystemAudioModeOnForAudioOnlySource();
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = setMessageHistorySize(_arg037);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 49:
-                            int _result11 = getMessageHistorySize();
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 50:
-                            String _arg038 = data.readString();
-                            IHdmiCecSettingChangeListener _arg117 = IHdmiCecSettingChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addCecSettingChangeListener(_arg038, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            String _arg039 = data.readString();
-                            IHdmiCecSettingChangeListener _arg118 = IHdmiCecSettingChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeCecSettingChangeListener(_arg039, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            List<String> _result12 = getUserCecSettings();
-                            reply.writeNoException();
-                            reply.writeStringList(_result12);
-                            return true;
-                        case 53:
-                            String _arg040 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result13 = getAllowedCecSettingStringValues(_arg040);
-                            reply.writeNoException();
-                            reply.writeStringList(_result13);
-                            return true;
-                        case 54:
-                            String _arg041 = data.readString();
-                            data.enforceNoDataAvail();
-                            int[] _result14 = getAllowedCecSettingIntValues(_arg041);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result14);
-                            return true;
-                        case 55:
-                            String _arg042 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result15 = getCecSettingStringValue(_arg042);
-                            reply.writeNoException();
-                            reply.writeString(_result15);
-                            return true;
-                        case 56:
-                            String _arg043 = data.readString();
-                            String _arg119 = data.readString();
-                            data.enforceNoDataAvail();
-                            setCecSettingStringValue(_arg043, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 57:
-                            String _arg044 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result16 = getCecSettingIntValue(_arg044);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 58:
-                            String _arg045 = data.readString();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCecSettingIntValue(_arg045, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiControlService {
+        private static class Proxy implements IHdmiControlService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

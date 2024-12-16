@@ -14,6 +14,7 @@ import com.android.internal.util.Preconditions;
 import com.android.internal.util.function.TriConsumer;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,24 +27,33 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class OverlayConfig {
     public static final int DEFAULT_PRIORITY = Integer.MAX_VALUE;
+    public static final String PARTITION_ORDER_FILE_PATH = "/product/overlay/partition_order.xml";
     static final String TAG = "OverlayConfig";
     private static OverlayConfig sInstance;
-    private static final Comparator<OverlayConfigParser.ParsedConfiguration> sStaticOverlayComparator = new Comparator() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda5
+    private static final Comparator<OverlayConfigParser.ParsedConfiguration> sStaticOverlayComparator = new Comparator() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda4
         @Override // java.util.Comparator
         public final int compare(Object obj, Object obj2) {
             return OverlayConfig.lambda$static$0((OverlayConfigParser.ParsedConfiguration) obj, (OverlayConfigParser.ParsedConfiguration) obj2);
         }
     };
     private final ArrayMap<String, Configuration> mConfigurations = new ArrayMap<>();
+    private final boolean mIsDefaultPartitionOrder;
+    private final String mPartitionOrder;
 
-    /* loaded from: classes4.dex */
     public interface PackageProvider {
 
-        /* loaded from: classes4.dex */
         public interface Package {
             String getBaseApkPath();
 
@@ -63,7 +73,6 @@ public class OverlayConfig {
 
     private static native String[] createIdmap(String str, String[] strArr, String[] strArr2, boolean z);
 
-    /* loaded from: classes4.dex */
     public static final class Configuration {
         public final int configIndex;
         public final OverlayConfigParser.ParsedConfiguration parsedConfig;
@@ -74,7 +83,7 @@ public class OverlayConfig {
         }
     }
 
-    public static /* synthetic */ int lambda$static$0(OverlayConfigParser.ParsedConfiguration c1, OverlayConfigParser.ParsedConfiguration c2) {
+    static /* synthetic */ int lambda$static$0(OverlayConfigParser.ParsedConfiguration c1, OverlayConfigParser.ParsedConfiguration c2) {
         OverlayScanner.ParsedOverlayInfo o1 = c1.parsedInfo;
         OverlayScanner.ParsedOverlayInfo o2 = c2.parsedInfo;
         Preconditions.checkArgument(o1.isStatic && o2.isStatic, "attempted to sort non-static overlay");
@@ -94,20 +103,22 @@ public class OverlayConfig {
         int i = 1;
         Preconditions.checkArgument((scannerFactory == null) != (packageProvider == null), "scannerFactory and packageProvider cannot be both null or both non-null");
         if (rootDirectory == null) {
-            partitions = new ArrayList<>(PackagePartitions.getOrderedPartitions(new Function() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda0
+            partitions = new ArrayList<>(PackagePartitions.getOrderedPartitions(new Function() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda2
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return new OverlayConfigParser.OverlayPartition((PackagePartitions.SystemPartition) obj);
                 }
             }));
         } else {
-            partitions = new ArrayList<>(PackagePartitions.getOrderedPartitions(new Function() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda1
+            partitions = new ArrayList<>(PackagePartitions.getOrderedPartitions(new Function() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda3
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return OverlayConfig.lambda$new$1(rootDirectory, (PackagePartitions.SystemPartition) obj);
                 }
             }));
         }
+        this.mIsDefaultPartitionOrder = !sortPartitions(PARTITION_ORDER_FILE_PATH, partitions);
+        this.mPartitionOrder = generatePartitionOrderString(partitions);
         ArrayMap<Integer, List<String>> activeApexesPerPartition = getActiveApexes(partitions);
         Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos = packageProvider == null ? null : getOverlayPackageInfos(packageProvider);
         ArrayList<OverlayConfigParser.ParsedConfiguration> overlays = new ArrayList<>();
@@ -163,14 +174,96 @@ public class OverlayConfig {
         }
     }
 
-    public static /* synthetic */ OverlayConfigParser.OverlayPartition lambda$new$1(File rootDirectory, PackagePartitions.SystemPartition p) {
+    static /* synthetic */ OverlayConfigParser.OverlayPartition lambda$new$1(File rootDirectory, PackagePartitions.SystemPartition p) {
         return new OverlayConfigParser.OverlayPartition(new File(rootDirectory, p.getNonConicalFolder().getPath()), p);
+    }
+
+    private static String generatePartitionOrderString(List<OverlayConfigParser.OverlayPartition> partitions) {
+        if (partitions == null || partitions.size() == 0) {
+            return "";
+        }
+        StringBuilder partitionOrder = new StringBuilder();
+        partitionOrder.append(partitions.get(0).getName());
+        for (int i = 1; i < partitions.size(); i++) {
+            partitionOrder.append(", ").append(partitions.get(i).getName());
+        }
+        return partitionOrder.toString();
+    }
+
+    private static boolean parseAndValidatePartitionsOrderXml(String partitionOrderFilePath, Map<String, Integer> orderMap, List<OverlayConfigParser.OverlayPartition> partitions) {
+        try {
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            e = e;
+        }
+        try {
+            File file = new File(partitionOrderFilePath);
+            if (!file.exists()) {
+                Log.w(TAG, "partition_order.xml does not exist.");
+                return false;
+            }
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(file);
+            doc.getDocumentElement().normalize();
+            Element root = doc.getDocumentElement();
+            if (!root.getNodeName().equals("partition-order")) {
+                Log.w(TAG, "Invalid partition_order.xml, xml root element is not partition-order");
+                return false;
+            }
+            NodeList partitionList = doc.getElementsByTagName("partition");
+            for (int order = 0; order < partitionList.getLength(); order++) {
+                Node partitionNode = partitionList.item(order);
+                if (partitionNode.getNodeType() == 1) {
+                    Element partitionElement = (Element) partitionNode;
+                    String partitionName = partitionElement.getAttribute("name");
+                    if (!orderMap.containsKey(partitionName)) {
+                        orderMap.put(partitionName, Integer.valueOf(order));
+                    } else {
+                        Log.w(TAG, "Invalid partition_order.xml, it has duplicate partition: " + partitionName);
+                        return false;
+                    }
+                }
+            }
+            if (orderMap.keySet().size() != partitions.size()) {
+                Log.w(TAG, "Invalid partition_order.xml, partition_order.xml has " + orderMap.keySet().size() + " partitions, which is different from SYSTEM_PARTITIONS");
+                return false;
+            }
+            for (int i = 0; i < partitions.size(); i++) {
+                if (!orderMap.keySet().contains(partitions.get(i).getName())) {
+                    Log.w(TAG, "Invalid Parsing partition_order.xml, partition_order.xml does not have partition: " + partitions.get(i).getName());
+                    return false;
+                }
+            }
+            Log.i(TAG, "Sorting partitions in the specified order from partitions_order.xml");
+            return true;
+        } catch (IOException | ParserConfigurationException | SAXException e2) {
+            e = e2;
+            Log.w(TAG, "Parsing or validating partition_order.xml failed, exception thrown: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean sortPartitions(String partitionOrderFilePath, List<OverlayConfigParser.OverlayPartition> partitions) {
+        final Map<String, Integer> orderMap = new HashMap<>();
+        if (!parseAndValidatePartitionsOrderXml(partitionOrderFilePath, orderMap, partitions)) {
+            return false;
+        }
+        Comparator<OverlayConfigParser.OverlayPartition> partitionComparator = Comparator.comparingInt(new ToIntFunction() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda0
+            @Override // java.util.function.ToIntFunction
+            public final int applyAsInt(Object obj) {
+                int intValue;
+                intValue = ((Integer) orderMap.get(((OverlayConfigParser.OverlayPartition) obj).getName())).intValue();
+                return intValue;
+            }
+        });
+        Collections.sort(partitions, partitionComparator);
+        return true;
     }
 
     public static OverlayConfig getZygoteInstance() {
         Trace.traceBegin(67108864L, "OverlayConfig#getZygoteInstance");
         try {
-            return new OverlayConfig(null, new Supplier() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda2
+            return new OverlayConfig(null, new Supplier() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda7
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     return new OverlayScanner();
@@ -194,11 +287,10 @@ public class OverlayConfig {
     }
 
     public static OverlayConfig getSystemInstance() {
-        OverlayConfig overlayConfig = sInstance;
-        if (overlayConfig == null) {
+        if (sInstance == null) {
             throw new IllegalStateException("System instance not initialized");
         }
-        return overlayConfig;
+        return sInstance;
     }
 
     public Configuration getConfiguration(String packageName) {
@@ -235,7 +327,7 @@ public class OverlayConfig {
         for (int i = 0; i < n; i++) {
             sortedOverlays.add(this.mConfigurations.valueAt(i));
         }
-        sortedOverlays.sort(Comparator.comparingInt(new ToIntFunction() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda4
+        sortedOverlays.sort(Comparator.comparingInt(new ToIntFunction() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda5
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int i2;
@@ -248,16 +340,16 @@ public class OverlayConfig {
 
     private static Map<String, OverlayScanner.ParsedOverlayInfo> getOverlayPackageInfos(PackageProvider packageManager) {
         final HashMap<String, OverlayScanner.ParsedOverlayInfo> overlays = new HashMap<>();
-        packageManager.forEachPackage(new TriConsumer() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda3
+        packageManager.forEachPackage(new TriConsumer() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda6
             @Override // com.android.internal.util.function.TriConsumer
             public final void accept(Object obj, Object obj2, Object obj3) {
-                OverlayConfig.lambda$getOverlayPackageInfos$3(overlays, (OverlayConfig.PackageProvider.Package) obj, (Boolean) obj2, (File) obj3);
+                OverlayConfig.lambda$getOverlayPackageInfos$4(overlays, (OverlayConfig.PackageProvider.Package) obj, (Boolean) obj2, (File) obj3);
             }
         });
         return overlays;
     }
 
-    public static /* synthetic */ void lambda$getOverlayPackageInfos$3(HashMap overlays, PackageProvider.Package p, Boolean isSystem, File preInstalledApexPath) {
+    static /* synthetic */ void lambda$getOverlayPackageInfos$4(HashMap overlays, PackageProvider.Package p, Boolean isSystem, File preInstalledApexPath) {
         if (p.getOverlayTarget() != null && isSystem.booleanValue()) {
             overlays.put(p.getPackageName(), new OverlayScanner.ParsedOverlayInfo(p.getPackageName(), p.getOverlayTarget(), p.getTargetSdkVersion(), p.isOverlayIsStatic(), p.getOverlayPriority(), new File(p.getBaseApkPath()), preInstalledApexPath));
         }
@@ -299,7 +391,6 @@ public class OverlayConfig {
         return result;
     }
 
-    /* loaded from: classes4.dex */
     public static class IdmapInvocation {
         public final boolean enforceOverlayable;
         public final ArrayList<String> overlayPaths = new ArrayList<>();
@@ -361,7 +452,7 @@ public class OverlayConfig {
         ipw.println("Overlay configurations:");
         ipw.increaseIndent();
         ArrayList<Configuration> configurations = new ArrayList<>(this.mConfigurations.values());
-        configurations.sort(Comparator.comparingInt(new ToIntFunction() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda6
+        configurations.sort(Comparator.comparingInt(new ToIntFunction() { // from class: com.android.internal.content.om.OverlayConfig$$ExternalSyntheticLambda1
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int i;
@@ -378,5 +469,13 @@ public class OverlayConfig {
         }
         ipw.decreaseIndent();
         ipw.println();
+    }
+
+    public boolean isDefaultPartitionOrder() {
+        return this.mIsDefaultPartitionOrder;
+    }
+
+    public String getPartitionOrder() {
+        return this.mPartitionOrder;
     }
 }

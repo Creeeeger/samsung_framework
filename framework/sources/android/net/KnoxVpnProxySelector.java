@@ -16,7 +16,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class KnoxVpnProxySelector extends ProxySelector {
     private static final boolean DBG = Debug.semIsProductDev();
     private static final String PROXY = "PROXY ";
@@ -33,17 +33,16 @@ public class KnoxVpnProxySelector extends ProxySelector {
         List<java.net.Proxy> ret = Lists.newArrayList();
         try {
             String urlString = uri.toURL().toString();
-            boolean z = DBG;
-            if (z) {
+            if (DBG) {
                 Log.d(TAG, "pac url being recieved is " + urlString + "for the caller " + Process.myUid());
             }
             String[] proxyInfo = getVpnManagerService().getProxyInfoForUid(Process.myUid());
             String host = proxyInfo[0];
-            if (z) {
+            if (DBG) {
                 Log.d(TAG, "host value is " + host + "for caller " + Process.myUid());
             }
             String port = proxyInfo[1];
-            if (z) {
+            if (DBG) {
                 Log.d(TAG, "port value is " + port + "for caller " + Process.myUid());
             }
             if (host != null && port != null) {

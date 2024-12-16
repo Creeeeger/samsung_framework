@@ -15,7 +15,6 @@ public interface IConditionProvider extends IInterface {
 
     void onUnsubscribe(Uri uri) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IConditionProvider {
         @Override // android.service.notification.IConditionProvider
         public void onConnected() throws RemoteException {
@@ -35,7 +34,6 @@ public interface IConditionProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IConditionProvider {
         public static final String DESCRIPTOR = "android.service.notification.IConditionProvider";
         static final int TRANSACTION_onConnected = 1;
@@ -85,34 +83,30 @@ public interface IConditionProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onConnected();
+                    return true;
+                case 2:
+                    Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSubscribe(_arg0);
+                    return true;
+                case 3:
+                    Uri _arg02 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUnsubscribe(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onConnected();
-                            return true;
-                        case 2:
-                            Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSubscribe(_arg0);
-                            return true;
-                        case 3:
-                            Uri _arg02 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUnsubscribe(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IConditionProvider {
+        private static class Proxy implements IConditionProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

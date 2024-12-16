@@ -11,7 +11,6 @@ import java.util.List;
 public interface IPlaybackConfigDispatcher extends IInterface {
     void dispatchPlaybackConfigChange(List<AudioPlaybackConfiguration> list, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPlaybackConfigDispatcher {
         @Override // android.media.IPlaybackConfigDispatcher
         public void dispatchPlaybackConfigChange(List<AudioPlaybackConfiguration> configs, boolean flush) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IPlaybackConfigDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPlaybackConfigDispatcher {
         public static final String DESCRIPTOR = "android.media.IPlaybackConfigDispatcher";
         static final int TRANSACTION_dispatchPlaybackConfigChange = 1;
@@ -67,26 +65,23 @@ public interface IPlaybackConfigDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<AudioPlaybackConfiguration> _arg0 = data.createTypedArrayList(AudioPlaybackConfiguration.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchPlaybackConfigChange(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<AudioPlaybackConfiguration> _arg0 = data.createTypedArrayList(AudioPlaybackConfiguration.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchPlaybackConfigChange(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPlaybackConfigDispatcher {
+        private static class Proxy implements IPlaybackConfigDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

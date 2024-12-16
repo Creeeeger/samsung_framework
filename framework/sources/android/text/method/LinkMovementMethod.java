@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.textclassifier.TextLinks;
 import android.widget.TextView;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class LinkMovementMethod extends ScrollingMovementMethod {
     private static final int CLICK = 1;
     private static final int DOWN = 3;
@@ -24,9 +24,8 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.BaseMovementMethod
-    public boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
+    protected boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
         switch (keyCode) {
             case 23:
             case 66:
@@ -38,36 +37,32 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
         return super.handleMovementKey(widget, buffer, keyCode, movementMetaState, event);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    public boolean up(TextView widget, Spannable buffer) {
+    protected boolean up(TextView widget, Spannable buffer) {
         if (action(2, widget, buffer)) {
             return true;
         }
         return super.up(widget, buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    public boolean down(TextView widget, Spannable buffer) {
+    protected boolean down(TextView widget, Spannable buffer) {
         if (action(3, widget, buffer)) {
             return true;
         }
         return super.down(widget, buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    public boolean left(TextView widget, Spannable buffer) {
+    protected boolean left(TextView widget, Spannable buffer) {
         if (action(2, widget, buffer)) {
             return true;
         }
         return super.left(widget, buffer);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod
-    public boolean right(TextView widget, Spannable buffer) {
+    protected boolean right(TextView widget, Spannable buffer) {
         if (action(3, widget, buffer)) {
             return true;
         }
@@ -107,20 +102,20 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
         }
         switch (what) {
             case 1:
-                if (selStart == selEnd) {
-                    return false;
+                if (selStart != selEnd) {
+                    ClickableSpan[] links = (ClickableSpan[]) buffer.getSpans(selStart, selEnd, ClickableSpan.class);
+                    if (links.length == 1) {
+                        ClickableSpan link = links[0];
+                        if (link instanceof TextLinks.TextLinkSpan) {
+                            ((TextLinks.TextLinkSpan) link).onClick(widget, 1);
+                            break;
+                        } else {
+                            link.onClick(widget);
+                            break;
+                        }
+                    }
                 }
-                ClickableSpan[] links = (ClickableSpan[]) buffer.getSpans(selStart, selEnd, ClickableSpan.class);
-                if (links.length != 1) {
-                    return false;
-                }
-                ClickableSpan link = links[0];
-                if (link instanceof TextLinks.TextLinkSpan) {
-                    ((TextLinks.TextLinkSpan) link).onClick(widget, 1);
-                    return false;
-                }
-                link.onClick(widget);
-                return false;
+                break;
             case 2:
                 int bestStart = -1;
                 int bestEnd = -1;
@@ -141,9 +136,9 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
                 }
                 if (bestStart >= 0) {
                     Selection.setSelection(buffer, bestEnd, bestStart);
-                    return true;
+                    break;
                 }
-                return false;
+                break;
             case 3:
                 int bestStart2 = Integer.MAX_VALUE;
                 int bestEnd2 = Integer.MAX_VALUE;
@@ -158,21 +153,20 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
                         }
                         padding2++;
                         areaTop = areaTop2;
+                    } else if (bestEnd2 >= Integer.MAX_VALUE) {
+                        break;
                     } else {
-                        if (bestEnd2 < Integer.MAX_VALUE) {
-                            Selection.setSelection(buffer, bestStart2, bestEnd2);
-                            return true;
-                        }
-                        return false;
+                        Selection.setSelection(buffer, bestStart2, bestEnd2);
+                        break;
                     }
                 }
-            default:
-                return false;
         }
+        return false;
     }
 
     @Override // android.text.method.ScrollingMovementMethod, android.text.method.BaseMovementMethod, android.text.method.MovementMethod
     public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
+        ClickableSpan[] links;
         int action = event.getAction();
         if (action == 1 || action == 0) {
             int x = (int) event.getX();
@@ -182,10 +176,18 @@ public class LinkMovementMethod extends ScrollingMovementMethod {
             int x3 = x2 + widget.getScrollX();
             int y3 = y2 + widget.getScrollY();
             Layout layout = widget.getLayout();
-            int line = layout.getLineForVertical(y3);
-            int off = layout.getOffsetForHorizontal(line, x3);
-            ClickableSpan[] links = (ClickableSpan[]) buffer.getSpans(off, off, ClickableSpan.class);
-            if (links.length != 0) {
+            if (y3 < 0 || y3 > layout.getHeight()) {
+                links = null;
+            } else {
+                int line = layout.getLineForVertical(y3);
+                if (x3 < layout.getLineLeft(line) || x3 > layout.getLineRight(line)) {
+                    links = null;
+                } else {
+                    int off = layout.getOffsetForHorizontal(line, x3);
+                    links = (ClickableSpan[]) buffer.getSpans(off, off, ClickableSpan.class);
+                }
+            }
+            if (links != null && links.length != 0) {
                 ClickableSpan link = links[0];
                 if (action == 1) {
                     if (link instanceof TextLinks.TextLinkSpan) {

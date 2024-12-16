@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class AudioPortExtSys implements Parcelable {
     public static final Parcelable.Creator<AudioPortExtSys> CREATOR = new Parcelable.Creator<AudioPortExtSys>() { // from class: android.media.AudioPortExtSys.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortExtSys createFromParcel(Parcel _aidl_source) {
             return new AudioPortExtSys(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortExtSys[] newArray(int _aidl_size) {
             return new AudioPortExtSys[_aidl_size];
@@ -26,16 +25,11 @@ public final class AudioPortExtSys implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int device = 1;
         public static final int mix = 2;
         public static final int session = 3;
         public static final int unspecified = 0;
-    }
-
-    /* synthetic */ AudioPortExtSys(Parcel parcel, AudioPortExtSysIA audioPortExtSysIA) {
-        this(parcel);
     }
 
     public AudioPortExtSys() {
@@ -108,41 +102,22 @@ public final class AudioPortExtSys implements Parcelable {
         _set(3, Integer.valueOf(_value));
     }
 
-    /* renamed from: android.media.AudioPortExtSys$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPortExtSys> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortExtSys createFromParcel(Parcel _aidl_source) {
-            return new AudioPortExtSys(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortExtSys[] newArray(int _aidl_size) {
-            return new AudioPortExtSys[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getUnspecified());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getDevice(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getMix(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeInt(getSession());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

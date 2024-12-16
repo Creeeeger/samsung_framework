@@ -33,6 +33,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     static final int SYNC_MAX_DURATION_MILLIS = 100;
     static final int SYNC_SELECTED_POSITION = 0;
     private static final String TAG = "AdapterView";
+    int mAppWidgetId;
     boolean mBlockLayoutRequests;
     boolean mDataChanged;
     private boolean mDesiredFocusableInTouchModeState;
@@ -78,24 +79,20 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     int mSyncPosition;
     long mSyncRowId;
 
-    /* loaded from: classes4.dex */
     public interface OnItemClickListener {
         void onItemClick(AdapterView<?> adapterView, View view, int i, long j);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnItemLongClickListener {
         boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long j);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnItemSelectedListener {
         void onItemSelected(AdapterView<?> adapterView, View view, int i, long j);
 
         void onNothingSelected(AdapterView<?> adapterView);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemLongPressMultiSelectionListener {
         void onItemSelected(AdapterView<?> adapterView, View view, int i, long j);
 
@@ -104,14 +101,12 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         void onLongPressMultiSelectionStarted(int i, int i2);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemMultiSelectionListener {
         void onMultiSelectionEnded(int i, int i2);
 
         void onMultiSelectionStarted(int i, int i2);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemOnMultiSelectedListener {
         void onMultiSelectStart(int i, int i2);
 
@@ -120,7 +115,6 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         void onMultiSelected(AdapterView<?> adapterView, View view, int i, long j, boolean z, boolean z2, boolean z3);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemOnNotifyKeyPressListener {
         void onNotifyKeyPress(AdapterView<?> adapterView, View view, int i, long j, boolean z);
     }
@@ -155,6 +149,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         this.mSemFillOutEmptyArea = -1;
         this.mSemFillOutPaint = new Paint();
         this.mSemEnableFillOut = false;
+        this.mAppWidgetId = 0;
         this.mNextSelectedPosition = -1;
         this.mNextSelectedRowId = Long.MIN_VALUE;
         this.mSelectedPosition = -1;
@@ -166,9 +161,8 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         if (getImportantForAccessibility() == 0) {
             setImportantForAccessibility(1);
         }
-        int focusable = getFocusable();
-        this.mDesiredFocusableState = focusable;
-        if (focusable == 16) {
+        this.mDesiredFocusableState = getFocusable();
+        if (this.mDesiredFocusableState == 16) {
             super.setFocusable(0);
         }
     }
@@ -183,9 +177,8 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
 
     public boolean performItemClick(View view, int position, long id) {
         boolean result;
-        OnItemClickListener onItemClickListener = this.mOnItemClickListener;
-        if (onItemClickListener != null) {
-            if (!(onItemClickListener instanceof ScrollingTabContainerView) && !this.mPenPressState) {
+        if (this.mOnItemClickListener != null) {
+            if (!(this.mOnItemClickListener instanceof ScrollingTabContainerView) && !this.mPenPressState) {
                 playSoundEffect(0);
             }
             this.mOnItemClickListener.onItemClick(this, view, position, id);
@@ -231,6 +224,10 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         semSetBottomColor(color);
     }
 
+    public void hidden_semSetAppWidgetId(int widgetId) {
+        this.mAppWidgetId = widgetId;
+    }
+
     public void semSetOnMultiSelectedListener(SemOnMultiSelectedListener listener) {
         this.mSemOnMultiSelectedListener = listener;
     }
@@ -239,41 +236,34 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return this.mSemOnMultiSelectedListener;
     }
 
-    public boolean semNotifyMultiSelectedState(View view, int position, long id, boolean shiftPressState, boolean ctrlPressState, boolean penPressState) {
+    protected boolean semNotifyMultiSelectedState(View view, int position, long id, boolean shiftPressState, boolean ctrlPressState, boolean penPressState) {
         if (this.mSemMultiSelectionListener != null) {
             return true;
         }
         this.mPenPressState = penPressState;
-        SemOnMultiSelectedListener semOnMultiSelectedListener = this.mSemOnMultiSelectedListener;
-        if (semOnMultiSelectedListener != null) {
-            semOnMultiSelectedListener.onMultiSelected(this, view, position, id, shiftPressState, ctrlPressState, penPressState);
+        if (this.mSemOnMultiSelectedListener != null) {
+            this.mSemOnMultiSelectedListener.onMultiSelected(this, view, position, id, shiftPressState, ctrlPressState, penPressState);
             return true;
         }
         return false;
     }
 
-    public void semNotifyMultiSelectedStart(int startX, int startY) {
-        SemMultiSelectionListener semMultiSelectionListener = this.mSemMultiSelectionListener;
-        if (semMultiSelectionListener != null) {
-            semMultiSelectionListener.onMultiSelectionStarted(startX, startY);
-            return;
-        }
-        SemOnMultiSelectedListener semOnMultiSelectedListener = this.mSemOnMultiSelectedListener;
-        if (semOnMultiSelectedListener != null) {
-            semOnMultiSelectedListener.onMultiSelectStart(startX, startY);
+    void semNotifyMultiSelectedStart(int startX, int startY) {
+        if (this.mSemMultiSelectionListener != null) {
+            this.mSemMultiSelectionListener.onMultiSelectionStarted(startX, startY);
+        } else if (this.mSemOnMultiSelectedListener != null) {
+            this.mSemOnMultiSelectedListener.onMultiSelectStart(startX, startY);
         }
     }
 
-    public void semNotifyMultiSelectedStop(int endX, int endY) {
-        SemMultiSelectionListener semMultiSelectionListener = this.mSemMultiSelectionListener;
-        if (semMultiSelectionListener != null) {
-            semMultiSelectionListener.onMultiSelectionEnded(endX, endY);
+    void semNotifyMultiSelectedStop(int endX, int endY) {
+        if (this.mSemMultiSelectionListener != null) {
+            this.mSemMultiSelectionListener.onMultiSelectionEnded(endX, endY);
             return;
         }
         this.mPenPressState = false;
-        SemOnMultiSelectedListener semOnMultiSelectedListener = this.mSemOnMultiSelectedListener;
-        if (semOnMultiSelectedListener != null) {
-            semOnMultiSelectedListener.onMultiSelectStop(endX, endY);
+        if (this.mSemOnMultiSelectedListener != null) {
+            this.mSemOnMultiSelectedListener.onMultiSelectStop(endX, endY);
         }
     }
 
@@ -295,26 +285,23 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return this.mSemLongPressMultiSelectionListener;
     }
 
-    public boolean semNotifyLongPressMultiSelectionState(View view, int position, long id) {
-        SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
-        if (semLongPressMultiSelectionListener != null) {
-            semLongPressMultiSelectionListener.onItemSelected(this, view, position, id);
+    boolean semNotifyLongPressMultiSelectionState(View view, int position, long id) {
+        if (this.mSemLongPressMultiSelectionListener != null) {
+            this.mSemLongPressMultiSelectionListener.onItemSelected(this, view, position, id);
             return true;
         }
         return false;
     }
 
-    public void semNotifyLongPressMultiSelectionStarted(int startX, int startY) {
-        SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
-        if (semLongPressMultiSelectionListener != null) {
-            semLongPressMultiSelectionListener.onLongPressMultiSelectionStarted(startX, startY);
+    void semNotifyLongPressMultiSelectionStarted(int startX, int startY) {
+        if (this.mSemLongPressMultiSelectionListener != null) {
+            this.mSemLongPressMultiSelectionListener.onLongPressMultiSelectionStarted(startX, startY);
         }
     }
 
-    public void semNotifyLongPressMultiSelectionEnded(int endX, int endY) {
-        SemLongPressMultiSelectionListener semLongPressMultiSelectionListener = this.mSemLongPressMultiSelectionListener;
-        if (semLongPressMultiSelectionListener != null) {
-            semLongPressMultiSelectionListener.onLongPressMultiSelectionEnded(endX, endY);
+    void semNotifyLongPressMultiSelectionEnded(int endX, int endY) {
+        if (this.mSemLongPressMultiSelectionListener != null) {
+            this.mSemLongPressMultiSelectionListener.onLongPressMultiSelectionEnded(endX, endY);
         }
     }
 
@@ -327,15 +314,13 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     public boolean semNotifyKeyPress(View view, int position, long id, boolean shiftPressState) {
-        SemOnNotifyKeyPressListener semOnNotifyKeyPressListener = this.mSemOnNotifyKeyPressListener;
-        if (semOnNotifyKeyPressListener != null) {
-            semOnNotifyKeyPressListener.onNotifyKeyPress(this, view, position, id, shiftPressState);
+        if (this.mSemOnNotifyKeyPressListener != null) {
+            this.mSemOnNotifyKeyPressListener.onNotifyKeyPress(this, view, position, id, shiftPressState);
             return true;
         }
         return false;
     }
 
-    /* loaded from: classes4.dex */
     public static class AdapterContextMenuInfo implements ContextMenu.ContextMenuInfo {
         public long id;
         public int position;
@@ -384,7 +369,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         this.mLayoutHeight = getHeight();
     }
 
@@ -492,7 +477,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         super.setFocusableInTouchMode(z);
     }
 
-    public void checkFocus() {
+    void checkFocus() {
         T adapter = getAdapter();
         boolean z = true;
         boolean empty = adapter == null || adapter.getCount() == 0;
@@ -512,9 +497,8 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
             empty = false;
         }
         if (empty) {
-            View view = this.mEmptyView;
-            if (view != null) {
-                view.setVisibility(0);
+            if (this.mEmptyView != null) {
+                this.mEmptyView.setVisibility(0);
                 setVisibility(8);
             } else {
                 setVisibility(0);
@@ -525,9 +509,8 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
             }
             return;
         }
-        View view2 = this.mEmptyView;
-        if (view2 != null) {
-            view2.setVisibility(8);
+        if (this.mEmptyView != null) {
+            this.mEmptyView.setVisibility(8);
         }
         setVisibility(0);
     }
@@ -554,29 +537,26 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         dispatchFreezeSelfOnly(container);
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         dispatchThawSelfOnly(container);
     }
 
-    /* loaded from: classes4.dex */
-    public class AdapterDataSetObserver extends DataSetObserver {
+    class AdapterDataSetObserver extends DataSetObserver {
         private Parcelable mInstanceState = null;
 
-        public AdapterDataSetObserver() {
+        AdapterDataSetObserver() {
         }
 
         @Override // android.database.DataSetObserver
         public void onChanged() {
             AdapterView.this.mDataChanged = true;
-            AdapterView adapterView = AdapterView.this;
-            adapterView.mOldItemCount = adapterView.mItemCount;
-            AdapterView adapterView2 = AdapterView.this;
-            adapterView2.mItemCount = adapterView2.getAdapter().getCount();
+            AdapterView.this.mOldItemCount = AdapterView.this.mItemCount;
+            AdapterView.this.mItemCount = AdapterView.this.getAdapter().getCount();
             if (AdapterView.this.getAdapter().hasStableIds() && this.mInstanceState != null && AdapterView.this.mOldItemCount == 0 && AdapterView.this.mItemCount > 0) {
                 AdapterView.this.onRestoreInstanceState(this.mInstanceState);
                 this.mInstanceState = null;
@@ -593,8 +573,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
             if (AdapterView.this.getAdapter().hasStableIds()) {
                 this.mInstanceState = AdapterView.this.onSaveInstanceState();
             }
-            AdapterView adapterView = AdapterView.this;
-            adapterView.mOldItemCount = adapterView.mItemCount;
+            AdapterView.this.mOldItemCount = AdapterView.this.mItemCount;
             AdapterView.this.mItemCount = 0;
             AdapterView.this.mSelectedPosition = -1;
             AdapterView.this.mSelectedRowId = Long.MIN_VALUE;
@@ -611,17 +590,12 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeCallbacks(this.mSelectionNotifier);
     }
 
-    /* loaded from: classes4.dex */
-    public class SelectionNotifier implements Runnable {
-        /* synthetic */ SelectionNotifier(AdapterView adapterView, SelectionNotifierIA selectionNotifierIA) {
-            this();
-        }
-
+    private class SelectionNotifier implements Runnable {
         private SelectionNotifier() {
         }
 
@@ -639,15 +613,14 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    public void selectionChanged() {
+    void selectionChanged() {
         this.mPendingSelectionNotifier = null;
         if (this.mOnItemSelectedListener != null || AccessibilityManager.getInstance(this.mContext).isEnabled()) {
             if (this.mInLayout || this.mBlockLayoutRequests) {
-                AdapterView<T>.SelectionNotifier selectionNotifier = this.mSelectionNotifier;
-                if (selectionNotifier == null) {
+                if (this.mSelectionNotifier == null) {
                     this.mSelectionNotifier = new SelectionNotifier();
                 } else {
-                    removeCallbacks(selectionNotifier);
+                    removeCallbacks(this.mSelectionNotifier);
                 }
                 post(this.mSelectionNotifier);
             } else {
@@ -664,6 +637,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         performAccessibilityActionsOnSelected();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchOnItemSelected() {
         fireOnSelected();
         performAccessibilityActionsOnSelected();
@@ -697,6 +671,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$performAccessibilityActionsOnSelected$0() {
         sendAccessibilityEvent(4);
     }
@@ -761,11 +736,11 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup
-    public boolean canAnimate() {
+    protected boolean canAnimate() {
         return super.canAnimate() && this.mItemCount > 0;
     }
 
-    public void handleDataChanged() {
+    void handleDataChanged() {
         int count = this.mItemCount;
         boolean found = false;
         if (count > 0) {
@@ -807,19 +782,18 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         notifySubtreeAccessibilityStateChangedIfNeeded();
     }
 
-    public void checkSelectionChanged() {
+    void checkSelectionChanged() {
         if (this.mSelectedPosition != this.mOldSelectedPosition || this.mSelectedRowId != this.mOldSelectedRowId) {
             selectionChanged();
             this.mOldSelectedPosition = this.mSelectedPosition;
             this.mOldSelectedRowId = this.mSelectedRowId;
         }
-        AdapterView<T>.SelectionNotifier selectionNotifier = this.mPendingSelectionNotifier;
-        if (selectionNotifier != null) {
-            selectionNotifier.run();
+        if (this.mPendingSelectionNotifier != null) {
+            this.mPendingSelectionNotifier.run();
         }
     }
 
-    public int findSyncPosition() {
+    int findSyncPosition() {
         int count = this.mItemCount;
         if (count == 0) {
             return -1;
@@ -864,32 +838,30 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return -1;
     }
 
-    public int lookForSelectablePosition(int position, boolean lookDown) {
+    int lookForSelectablePosition(int position, boolean lookDown) {
         return position;
     }
 
-    public void setSelectedPositionInt(int position) {
+    void setSelectedPositionInt(int position) {
         this.mSelectedPosition = position;
         this.mSelectedRowId = getItemIdAtPosition(position);
     }
 
-    public void setNextSelectedPositionInt(int position) {
+    void setNextSelectedPositionInt(int position) {
         this.mNextSelectedPosition = position;
-        long itemIdAtPosition = getItemIdAtPosition(position);
-        this.mNextSelectedRowId = itemIdAtPosition;
+        this.mNextSelectedRowId = getItemIdAtPosition(position);
         if (this.mNeedSync && this.mSyncMode == 0 && position >= 0) {
             this.mSyncPosition = position;
-            this.mSyncRowId = itemIdAtPosition;
+            this.mSyncRowId = this.mNextSelectedRowId;
         }
     }
 
-    public void rememberSyncState() {
+    void rememberSyncState() {
         if (getChildCount() > 0) {
             this.mNeedSync = true;
             this.mSyncHeight = this.mLayoutHeight;
-            int i = this.mSelectedPosition;
-            if (i >= 0) {
-                View v = getChildAt(i - this.mFirstPosition);
+            if (this.mSelectedPosition >= 0) {
+                View v = getChildAt(this.mSelectedPosition - this.mFirstPosition);
                 this.mSyncRowId = this.mNextSelectedRowId;
                 this.mSyncPosition = this.mNextSelectedPosition;
                 if (v != null) {
@@ -900,8 +872,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
             }
             View v2 = getChildAt(0);
             T adapter = getAdapter();
-            int i2 = this.mFirstPosition;
-            if (i2 >= 0 && i2 < adapter.getCount()) {
+            if (this.mFirstPosition >= 0 && this.mFirstPosition < adapter.getCount()) {
                 this.mSyncRowId = adapter.getItemId(this.mFirstPosition);
             } else {
                 this.mSyncRowId = -1L;
@@ -914,13 +885,12 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    public void rememberSyncStateHorizontal() {
+    void rememberSyncStateHorizontal() {
         if (getChildCount() > 0) {
             this.mNeedSync = true;
             this.mSyncHeight = this.mLayoutHeight;
-            int i = this.mSelectedPosition;
-            if (i >= 0) {
-                View v = getChildAt(i - this.mFirstPosition);
+            if (this.mSelectedPosition >= 0) {
+                View v = getChildAt(this.mSelectedPosition - this.mFirstPosition);
                 this.mSyncRowId = this.mNextSelectedRowId;
                 this.mSyncPosition = this.mNextSelectedPosition;
                 if (v != null) {
@@ -935,8 +905,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
             }
             View v2 = getChildAt(0);
             T adapter = getAdapter();
-            int i2 = this.mFirstPosition;
-            if (i2 >= 0 && i2 < adapter.getCount()) {
+            if (this.mFirstPosition >= 0 && this.mFirstPosition < adapter.getCount()) {
                 this.mSyncRowId = adapter.getItemId(this.mFirstPosition);
             } else {
                 this.mSyncRowId = -1L;
@@ -954,11 +923,11 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("scrolling:firstPosition", this.mFirstPosition);
         encoder.addProperty("list:nextSelectedPosition", this.mNextSelectedPosition);
-        encoder.addProperty("list:nextSelectedRowId", (float) this.mNextSelectedRowId);
+        encoder.addProperty("list:nextSelectedRowId", this.mNextSelectedRowId);
         encoder.addProperty("list:selectedPosition", this.mSelectedPosition);
         encoder.addProperty("list:itemCount", this.mItemCount);
     }
@@ -969,7 +938,7 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
+    protected void onProvideStructure(ViewStructure structure, int viewFor, int flags) {
         Adapter adapter;
         CharSequence[] options;
         super.onProvideStructure(structure, viewFor, flags);

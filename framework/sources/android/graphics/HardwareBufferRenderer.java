@@ -18,18 +18,14 @@ public class HardwareBufferRenderer implements AutoCloseable {
     private final RenderRequest mRenderRequest;
     private final RenderNode mRootNode;
 
-    /* renamed from: -$$Nest$smnGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1118$$Nest$smnGetFinalizer() {
-        return nGetFinalizer();
-    }
-
     private static native long nCreateHardwareBufferRenderer(HardwareBuffer hardwareBuffer, long j);
 
     private static native long nCreateRootRenderNode();
 
     private static native void nDestroyRootRenderNode(long j);
 
-    private static native long nGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetFinalizer();
 
     static native int nRender(long j, int i, int i2, int i3, long j2, Consumer<RenderResult> consumer);
 
@@ -37,9 +33,8 @@ public class HardwareBufferRenderer implements AutoCloseable {
 
     private static native void nSetLightGeometry(long j, float f, float f2, float f3, float f4);
 
-    /* loaded from: classes.dex */
     private static class HardwareBufferRendererHolder {
-        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(HardwareBufferRenderer.class.getClassLoader(), HardwareBufferRenderer.m1118$$Nest$smnGetFinalizer());
+        public static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(HardwareBufferRenderer.class.getClassLoader(), HardwareBufferRenderer.nGetFinalizer());
 
         private HardwareBufferRendererHolder() {
         }
@@ -95,7 +90,6 @@ public class HardwareBufferRenderer implements AutoCloseable {
         nSetLightAlpha(this.mProxy, ambientShadowAlpha, spotShadowAlpha);
     }
 
-    /* loaded from: classes.dex */
     public static final class RenderResult {
         public static final int ERROR_UNKNOWN = 1;
         public static final int SUCCESS = 0;
@@ -103,12 +97,7 @@ public class HardwareBufferRenderer implements AutoCloseable {
         private final int mResultStatus;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface RenderResultStatus {
-        }
-
-        /* synthetic */ RenderResult(SyncFence syncFence, int i, RenderResultIA renderResultIA) {
-            this(syncFence, i);
         }
 
         private RenderResult(SyncFence fence, int resultStatus) {
@@ -125,14 +114,9 @@ public class HardwareBufferRenderer implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
     public final class RenderRequest {
         private ColorSpace mColorSpace;
         private int mTransform;
-
-        /* synthetic */ RenderRequest(HardwareBufferRenderer hardwareBufferRenderer, RenderRequestIA renderRequestIA) {
-            this();
-        }
 
         private RenderRequest() {
             this.mColorSpace = HardwareBufferRenderer.DEFAULT_COLORSPACE;
@@ -142,10 +126,10 @@ public class HardwareBufferRenderer implements AutoCloseable {
         public void draw(final Executor executor, final Consumer<RenderResult> renderCallback) {
             int renderWidth;
             int renderHeight;
-            Consumer<RenderResult> wrapped = new Consumer() { // from class: android.graphics.HardwareBufferRenderer$RenderRequest$$ExternalSyntheticLambda1
+            Consumer<RenderResult> wrapped = new Consumer() { // from class: android.graphics.HardwareBufferRenderer$RenderRequest$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    executor.execute(new Runnable() { // from class: android.graphics.HardwareBufferRenderer$RenderRequest$$ExternalSyntheticLambda0
+                    executor.execute(new Runnable() { // from class: android.graphics.HardwareBufferRenderer$RenderRequest$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             r1.accept(r2);
@@ -154,8 +138,7 @@ public class HardwareBufferRenderer implements AutoCloseable {
                 }
             };
             if (!HardwareBufferRenderer.this.isClosed()) {
-                int i = this.mTransform;
-                if (i == 4 || i == 7) {
+                if (this.mTransform == 4 || this.mTransform == 7) {
                     int renderWidth2 = HardwareBufferRenderer.this.mHardwareBuffer.getHeight();
                     renderWidth = renderWidth2;
                     renderHeight = HardwareBufferRenderer.this.mHardwareBuffer.getWidth();
@@ -170,6 +153,7 @@ public class HardwareBufferRenderer implements AutoCloseable {
             throw new IllegalStateException("Attempt to draw with a HardwareBufferRenderer instance that has already been closed");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mColorSpace = HardwareBufferRenderer.DEFAULT_COLORSPACE;
             this.mTransform = 0;

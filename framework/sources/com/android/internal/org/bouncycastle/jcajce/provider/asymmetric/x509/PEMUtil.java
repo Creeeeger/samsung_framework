@@ -6,17 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /* loaded from: classes5.dex */
-public class PEMUtil {
+class PEMUtil {
     private final Boundaries[] _supportedBoundaries;
 
-    /* loaded from: classes5.dex */
-    public class Boundaries {
+    private class Boundaries {
         private final String _footer;
         private final String _header;
-
-        /* synthetic */ Boundaries(PEMUtil pEMUtil, String str, BoundariesIA boundariesIA) {
-            this(str);
-        }
 
         private Boundaries(String type) {
             this._header = "-----BEGIN " + type + "-----";
@@ -32,13 +27,13 @@ public class PEMUtil {
         }
     }
 
-    public PEMUtil(String type) {
+    PEMUtil(String type) {
         this._supportedBoundaries = new Boundaries[]{new Boundaries(type), new Boundaries("X509 " + type), new Boundaries("PKCS7")};
     }
 
     /* JADX WARN: Code restructure failed: missing block: B:9:0x001f, code lost:
     
-        if (r0.length() == 0) goto L68;
+        if (r0.length() == 0) goto L33;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -92,24 +87,16 @@ public class PEMUtil {
     }
 
     private Boundaries getBoundaries(String line) {
-        Boundaries boundary;
-        int i = 0;
-        while (true) {
-            Boundaries[] boundariesArr = this._supportedBoundaries;
-            if (i != boundariesArr.length) {
-                boundary = boundariesArr[i];
-                if (boundary.isTheExpectedHeader(line) || boundary.isTheExpectedFooter(line)) {
-                    break;
-                }
-                i++;
-            } else {
-                return null;
+        for (int i = 0; i != this._supportedBoundaries.length; i++) {
+            Boundaries boundary = this._supportedBoundaries[i];
+            if (boundary.isTheExpectedHeader(line) || boundary.isTheExpectedFooter(line)) {
+                return boundary;
             }
         }
-        return boundary;
+        return null;
     }
 
-    public ASN1Sequence readPEMObject(InputStream in) throws IOException {
+    ASN1Sequence readPEMObject(InputStream in) throws IOException {
         StringBuffer pemBuf = new StringBuffer();
         Boundaries header = null;
         while (header == null) {

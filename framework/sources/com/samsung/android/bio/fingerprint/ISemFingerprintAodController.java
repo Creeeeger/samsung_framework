@@ -20,7 +20,6 @@ public interface ISemFingerprintAodController extends IInterface {
 
     void turnOnDozeMode() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemFingerprintAodController {
         @Override // com.samsung.android.bio.fingerprint.ISemFingerprintAodController
         public void turnOnDozeMode() throws RemoteException {
@@ -48,7 +47,6 @@ public interface ISemFingerprintAodController extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemFingerprintAodController {
         static final int TRANSACTION_hideAodScreen = 5;
         static final int TRANSACTION_turnOffDozeHlpmMode = 4;
@@ -103,36 +101,32 @@ public interface ISemFingerprintAodController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemFingerprintAodController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemFingerprintAodController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemFingerprintAodController.DESCRIPTOR);
+                case 1:
+                    turnOnDozeMode();
+                    return true;
+                case 2:
+                    turnOffDozeMode();
+                    return true;
+                case 3:
+                    turnOnDozeHlpmMode();
+                    return true;
+                case 4:
+                    turnOffDozeHlpmMode();
+                    return true;
+                case 5:
+                    hideAodScreen();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            turnOnDozeMode();
-                            return true;
-                        case 2:
-                            turnOffDozeMode();
-                            return true;
-                        case 3:
-                            turnOnDozeHlpmMode();
-                            return true;
-                        case 4:
-                            turnOffDozeHlpmMode();
-                            return true;
-                        case 5:
-                            hideAodScreen();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemFingerprintAodController {
+        private static class Proxy implements ISemFingerprintAodController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

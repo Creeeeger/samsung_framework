@@ -218,15 +218,13 @@ public class GridLayoutManager extends LinearLayoutManager {
         if (this.mOrientation == 1) {
             int usedHeight2 = childrenBounds.height() + verticalPadding;
             width = chooseSize(hSpec, usedHeight2, getMinimumHeight());
-            int[] iArr = this.mCachedBorders;
-            usedHeight = chooseSize(wSpec, iArr[iArr.length - 1] + horizontalPadding, getMinimumWidth());
+            usedHeight = chooseSize(wSpec, this.mCachedBorders[this.mCachedBorders.length - 1] + horizontalPadding, getMinimumWidth());
         } else {
             int width2 = childrenBounds.width();
             int usedWidth = width2 + horizontalPadding;
             int width3 = chooseSize(wSpec, usedWidth, getMinimumWidth());
-            int[] iArr2 = this.mCachedBorders;
             usedHeight = width3;
-            width = chooseSize(hSpec, iArr2[iArr2.length - 1] + verticalPadding, getMinimumHeight());
+            width = chooseSize(hSpec, this.mCachedBorders[this.mCachedBorders.length - 1] + verticalPadding, getMinimumHeight());
         }
         setMeasuredDimension(usedHeight, width);
     }
@@ -259,16 +257,13 @@ public class GridLayoutManager extends LinearLayoutManager {
 
     int getSpaceForSpanRange(int startSpan, int spanSize) {
         if (this.mOrientation == 1 && isLayoutRTL()) {
-            int[] iArr = this.mCachedBorders;
-            int i = this.mSpanCount;
-            return iArr[i - startSpan] - iArr[(i - startSpan) - spanSize];
+            return this.mCachedBorders[this.mSpanCount - startSpan] - this.mCachedBorders[(this.mSpanCount - startSpan) - spanSize];
         }
-        int[] iArr2 = this.mCachedBorders;
-        return iArr2[startSpan + spanSize] - iArr2[startSpan];
+        return this.mCachedBorders[startSpan + spanSize] - this.mCachedBorders[startSpan];
     }
 
     @Override // com.android.internal.widget.LinearLayoutManager
-    public void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state, LinearLayoutManager.AnchorInfo anchorInfo, int itemDirection) {
+    void onAnchorReady(RecyclerView.Recycler recycler, RecyclerView.State state, LinearLayoutManager.AnchorInfo anchorInfo, int itemDirection) {
         super.onAnchorReady(recycler, state, anchorInfo, itemDirection);
         updateMeasurements();
         if (state.getItemCount() > 0 && !state.isPreLayout()) {
@@ -278,8 +273,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     }
 
     private void ensureViewSet() {
-        View[] viewArr = this.mSet;
-        if (viewArr == null || viewArr.length != this.mSpanCount) {
+        if (this.mSet == null || this.mSet.length != this.mSpanCount) {
             this.mSet = new View[this.mSpanCount];
         }
     }
@@ -411,7 +405,7 @@ public class GridLayoutManager extends LinearLayoutManager {
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r12v0 */
-    /* JADX WARN: Type inference failed for: r12v1, types: [int, boolean] */
+    /* JADX WARN: Type inference failed for: r12v1, types: [boolean, int] */
     /* JADX WARN: Type inference failed for: r12v21 */
     @Override // com.android.internal.widget.LinearLayoutManager
     void layoutChunk(RecyclerView.Recycler recycler, RecyclerView.State state, LinearLayoutManager.LayoutState layoutState, LinearLayoutManager.LayoutChunkResult result) {
@@ -693,7 +687,6 @@ public class GridLayoutManager extends LinearLayoutManager {
         requestLayout();
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class SpanSizeLookup {
         final SparseIntArray mSpanIndexCache = new SparseIntArray();
         private boolean mCacheSpanIndices = false;
@@ -800,7 +793,6 @@ public class GridLayoutManager extends LinearLayoutManager {
         return this.mPendingSavedState == null && !this.mPendingSpanCountChange;
     }
 
-    /* loaded from: classes5.dex */
     public static final class DefaultSpanSizeLookup extends SpanSizeLookup {
         @Override // com.android.internal.widget.GridLayoutManager.SpanSizeLookup
         public int getSpanSize(int position) {
@@ -813,7 +805,6 @@ public class GridLayoutManager extends LinearLayoutManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class LayoutParams extends RecyclerView.LayoutParams {
         public static final int INVALID_SPAN_ID = -1;
         int mSpanIndex;

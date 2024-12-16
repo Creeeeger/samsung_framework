@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IKnoxAnalyticsProxy extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.knoxanalyticsproxy.IKnoxAnalyticsProxy";
 
     void log(KnoxAnalyticsData knoxAnalyticsData) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKnoxAnalyticsProxy {
         @Override // com.samsung.android.knox.knoxanalyticsproxy.IKnoxAnalyticsProxy
         public void log(KnoxAnalyticsData data) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IKnoxAnalyticsProxy extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKnoxAnalyticsProxy {
         static final int TRANSACTION_log = 1;
 
@@ -67,27 +65,23 @@ public interface IKnoxAnalyticsProxy extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKnoxAnalyticsProxy.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKnoxAnalyticsProxy.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKnoxAnalyticsProxy.DESCRIPTOR);
+                case 1:
+                    KnoxAnalyticsData _arg0 = (KnoxAnalyticsData) data.readTypedObject(KnoxAnalyticsData.CREATOR);
+                    data.enforceNoDataAvail();
+                    log(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            KnoxAnalyticsData _arg0 = (KnoxAnalyticsData) data.readTypedObject(KnoxAnalyticsData.CREATOR);
-                            data.enforceNoDataAvail();
-                            log(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKnoxAnalyticsProxy {
+        private static class Proxy implements IKnoxAnalyticsProxy {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

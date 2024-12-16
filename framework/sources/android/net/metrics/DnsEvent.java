@@ -3,7 +3,7 @@ package android.net.metrics;
 import java.util.Arrays;
 import java.util.BitSet;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DnsEvent {
     private static final int SIZE_LIMIT = 20000;
     public int eventCount;
@@ -22,21 +22,18 @@ public final class DnsEvent {
         this.latenciesMs = new int[initialCapacity];
     }
 
-    public boolean addResult(byte eventType, byte returnCode, int latencyMs) {
+    boolean addResult(byte eventType, byte returnCode, int latencyMs) {
         boolean isSuccess = returnCode == 0;
-        int i = this.eventCount;
-        if (i >= 20000) {
+        if (this.eventCount >= 20000) {
             return isSuccess;
         }
-        if (i == this.eventTypes.length) {
-            resize((int) (i * 1.4d));
+        if (this.eventCount == this.eventTypes.length) {
+            resize((int) (this.eventCount * 1.4d));
         }
-        byte[] bArr = this.eventTypes;
-        int i2 = this.eventCount;
-        bArr[i2] = eventType;
-        this.returnCodes[i2] = returnCode;
-        this.latenciesMs[i2] = latencyMs;
-        this.eventCount = i2 + 1;
+        this.eventTypes[this.eventCount] = eventType;
+        this.returnCodes[this.eventCount] = returnCode;
+        this.latenciesMs[this.eventCount] = latencyMs;
+        this.eventCount++;
         if (isSuccess) {
             this.successCount++;
         }

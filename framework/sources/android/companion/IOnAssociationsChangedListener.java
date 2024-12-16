@@ -13,7 +13,6 @@ public interface IOnAssociationsChangedListener extends IInterface {
 
     void onAssociationsChanged(List<AssociationInfo> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOnAssociationsChangedListener {
         @Override // android.companion.IOnAssociationsChangedListener
         public void onAssociationsChanged(List<AssociationInfo> associations) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IOnAssociationsChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOnAssociationsChangedListener {
         static final int TRANSACTION_onAssociationsChanged = 1;
 
@@ -68,27 +66,23 @@ public interface IOnAssociationsChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnAssociationsChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnAssociationsChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnAssociationsChangedListener.DESCRIPTOR);
+                case 1:
+                    List<AssociationInfo> _arg0 = data.createTypedArrayList(AssociationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAssociationsChanged(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<AssociationInfo> _arg0 = data.createTypedArrayList(AssociationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAssociationsChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IOnAssociationsChangedListener {
+        private static class Proxy implements IOnAssociationsChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

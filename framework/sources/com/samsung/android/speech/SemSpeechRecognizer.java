@@ -12,11 +12,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemSpeechRecognizer {
     public static final int STATE_READY = 0;
     public static final int STATE_RUNNING = 1;
     private static final String TAG = SemSpeechRecognizer.class.getSimpleName();
+    private boolean isCallStopRecognition;
+    private boolean isStartBargeIn;
     private Context mContext;
     private AudioTask audio = null;
     private Thread audio_thread = null;
@@ -33,7 +35,6 @@ public class SemSpeechRecognizer {
     private Handler mStopHandler = null;
     private final String SVOICE_LANGUAGE_FILE = "/data/data/com.vlingo.midas/files/language.bin";
 
-    /* loaded from: classes5.dex */
     public interface ResultListener {
         void onResults(String[] strArr);
     }
@@ -52,8 +53,7 @@ public class SemSpeechRecognizer {
     }
 
     private void init() {
-        String str = TAG;
-        Log.i(str, "make new SemSpeechRecognizer VER 18.11.13");
+        Log.i(TAG, "make new SemSpeechRecognizer VER 18.11.13");
         this.isEnableBargeIn = isUseModel();
         this.isEnableChineseBargeIn = isChineseMode();
         if (isPDTModel()) {
@@ -65,11 +65,11 @@ public class SemSpeechRecognizer {
         }
         setLanguage();
         this.mState = 0;
-        Log.i(str, "isEnableBargeIn : " + this.isEnableBargeIn);
-        Log.i(str, "uselanguage : " + this.uselanguage);
-        Log.i(str, "isEnableChineseBargeIn : " + this.isEnableChineseBargeIn);
-        Log.i(str, "isEnableExtraSpanish : " + this.isEnableExtraSpanish);
-        Log.i(str, "isEnableExtraRussian : " + this.isEnableExtraRussian);
+        Log.i(TAG, "isEnableBargeIn : " + this.isEnableBargeIn);
+        Log.i(TAG, "uselanguage : " + this.uselanguage);
+        Log.i(TAG, "isEnableChineseBargeIn : " + this.isEnableChineseBargeIn);
+        Log.i(TAG, "isEnableExtraSpanish : " + this.isEnableExtraSpanish);
+        Log.i(TAG, "isEnableExtraRussian : " + this.isEnableExtraRussian);
     }
 
     public void setListener(ResultListener listener) {
@@ -88,9 +88,8 @@ public class SemSpeechRecognizer {
     }
 
     private void SendHandlerMessage(int type) {
-        Handler handler = this.handler;
-        if (handler != null) {
-            Message msg = handler.obtainMessage();
+        if (this.handler != null) {
+            Message msg = this.handler.obtainMessage();
             Bundle b = new Bundle();
             b.putInt("commandType", type);
             msg.setData(b);
@@ -105,171 +104,133 @@ public class SemSpeechRecognizer {
     }
 
     private void start(int commandType) {
-        String str = TAG;
-        Log.i(str, "start");
+        Log.i(TAG, "start");
         if (isEnabled(commandType)) {
             this.mState = 1;
-            Log.d(str, "mState change to : " + this.mState);
+            Log.d(TAG, "mState change to : " + this.mState);
             if (this.mStopHandler == null) {
                 this.mStopHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.speech.SemSpeechRecognizer.1
-                    AnonymousClass1(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         Log.e(SemSpeechRecognizer.TAG, "audio is halt without stopRecognition()");
                         SemSpeechRecognizer.this.stopRecognition();
                     }
                 };
-                Log.d(str, "StopHandler create");
+                Log.d(TAG, "StopHandler create");
             }
             if (this.handler == null) {
                 this.handler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.speech.SemSpeechRecognizer.2
-                    AnonymousClass2(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         int result = msg.getData().getInt("commandType");
-                        SemSpeechRecognizer semSpeechRecognizer = SemSpeechRecognizer.this;
-                        semSpeechRecognizer.delayedStartBargeIn(result, semSpeechRecognizer.mStopHandler);
+                        SemSpeechRecognizer.this.delayedStartBargeIn(result, SemSpeechRecognizer.this.mStopHandler);
                     }
                 };
-                Log.d(str, "handler create");
+                Log.d(TAG, "handler create");
             }
+            this.isCallStopRecognition = false;
+            this.isStartBargeIn = false;
             SendHandlerMessage(commandType);
         }
     }
 
-    /* renamed from: com.samsung.android.speech.SemSpeechRecognizer$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends Handler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            Log.e(SemSpeechRecognizer.TAG, "audio is halt without stopRecognition()");
-            SemSpeechRecognizer.this.stopRecognition();
-        }
-    }
-
-    /* renamed from: com.samsung.android.speech.SemSpeechRecognizer$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends Handler {
-        AnonymousClass2(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message msg) {
-            int result = msg.getData().getInt("commandType");
-            SemSpeechRecognizer semSpeechRecognizer = SemSpeechRecognizer.this;
-            semSpeechRecognizer.delayedStartBargeIn(result, semSpeechRecognizer.mStopHandler);
-        }
-    }
-
     public void startRecognition(int commandType) {
-        String str = TAG;
-        Log.i(str, "startRecognition");
-        Log.i(str, "commandType : " + commandType);
+        Log.i(TAG, "startRecognition");
+        Log.i(TAG, "commandType : " + commandType);
         this.intBargeInResult = -1;
         setLanguage();
         start(commandType);
     }
 
     public void startRecognition(int commandType, int setLang) {
-        String str = TAG;
-        Log.i(str, "startRecognition Type2");
-        Log.i(str, "commandType : " + commandType);
-        Log.i(str, "setLanguage : " + setLang);
+        Log.i(TAG, "startRecognition Type2");
+        Log.i(TAG, "commandType : " + commandType);
+        Log.i(TAG, "setLanguage : " + setLang);
         this.intBargeInResult = -1;
         this.uselanguage = setLang;
         start(commandType);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void delayedStartBargeIn(int commandType, Handler stopHandler) {
-        String str = TAG;
-        Log.i(str, "delayedStartBargeIn");
+        Log.i(TAG, "delayedStartBargeIn");
         synchronized (this) {
+            if (this.isCallStopRecognition) {
+                Log.i(TAG, "Stop load PDTAudioTask after when stopRecognition() call first");
+                this.isCallStopRecognition = false;
+                return;
+            }
             if (this.audio != null) {
-                Log.w(str, "BargeIn is running. So Do nothing");
+                Log.w(TAG, "BargeIn is running. So Do nothing");
                 this.audio.BargeinAct[0] = -1;
             } else {
                 if (isPDTModel()) {
-                    Log.d(str, "Load PDTAudioTask");
+                    Log.i(TAG, "Load PDTAudioTask");
                     this.audio = new PDTAudioTask(this.mListener, Config.DEFAULT_PATH, commandType, this.uselanguage, this.samsungOOVResult);
                 } else {
-                    Log.d(str, "Load OEMAudioTask");
+                    Log.i(TAG, "Load OEMAudioTask");
                 }
-                AudioTask audioTask = this.audio;
-                if (audioTask != null && audioTask.rec != null) {
+                if (this.audio != null && this.audio.rec != null) {
                     this.audio.setHandler(stopHandler);
-                    Thread thread = new Thread(this.audio);
-                    this.audio_thread = thread;
-                    thread.start();
+                    this.audio_thread = new Thread(this.audio);
+                    this.audio_thread.start();
                     this.mState = 1;
-                    Log.d(str, "mState change to : " + this.mState);
+                    Log.i(TAG, "mState change to : " + this.mState);
                 } else {
-                    Log.e(str, "fail to running Bargein");
-                    AudioTask audioTask2 = this.audio;
-                    if (audioTask2 != null) {
-                        audioTask2.stop();
+                    Log.e(TAG, "fail to running Bargein");
+                    if (this.audio != null) {
+                        this.audio.stop();
                     }
                     if (this.audio_thread != null) {
-                        Log.e(str, "why running empty audio_thread");
+                        Log.e(TAG, "why running empty audio_thread");
                     }
                     this.audio = null;
                 }
             }
+            this.isStartBargeIn = true;
+            this.isCallStopRecognition = false;
         }
     }
 
     public void stopRecognition() {
-        String str = TAG;
-        Log.i(str, "stopRecognition");
+        Log.i(TAG, "stopRecognition");
+        if (!this.isStartBargeIn) {
+            this.isCallStopRecognition = true;
+        }
         synchronized (this) {
             if (this.isEnableBargeIn) {
-                Handler handler = this.handler;
-                if (handler != null) {
-                    handler.removeMessages(0);
+                if (this.handler != null) {
+                    this.handler.removeCallbacksAndMessages(null);
                     this.handler = null;
-                    Log.d(str, "handler = null");
+                    Log.i(TAG, "handler removeCallbacksAndMessages; handler = null");
                 }
-                Handler handler2 = this.mStopHandler;
-                if (handler2 != null) {
-                    handler2.removeMessages(0);
+                if (this.mStopHandler != null) {
+                    this.mStopHandler.removeCallbacksAndMessages(null);
                     this.mStopHandler = null;
-                    Log.d(str, "Stop Handler = null");
+                    Log.i(TAG, "mStopHandler removeCallbacksAndMessages; Stop Handler = null");
                 }
-                AudioTask audioTask = this.audio;
-                if (audioTask != null) {
-                    this.intBargeInResult = audioTask.BargeinAct[0];
+                if (this.audio != null) {
+                    this.intBargeInResult = this.audio.BargeinAct[0];
                     this.audio.stop();
                     if (this.audio_thread != null) {
                         try {
-                            Log.d(str, "wait for audio to stop: begin");
+                            Log.d(TAG, "wait for audio to stop: begin");
                             this.audio_thread.join(700L);
                             this.audio.stopPhraseSpotter();
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     } else {
-                        Log.d(str, "audio_thread was not working");
+                        Log.d(TAG, "audio_thread was not working");
                     }
-                    String str2 = TAG;
-                    Log.d(str2, "wait for audio to stop: end");
+                    Log.d(TAG, "wait for audio to stop: end");
                     this.audio = null;
-                    Log.d(str2, "audio = null");
+                    Log.d(TAG, "audio = null");
                 }
                 this.audio_thread = null;
-                String str3 = TAG;
-                Log.d(str3, "audio_thread = null");
+                Log.d(TAG, "audio_thread = null");
                 this.mState = 0;
-                Log.d(str3, "mState change to : " + this.mState);
+                Log.d(TAG, "mState change to : " + this.mState);
             }
         }
     }
@@ -316,37 +277,8 @@ public class SemSpeechRecognizer {
 
     public String getBargeInCmdLanguage() {
         switch (this.uselanguage) {
-            case 0:
-                return "ko-KR";
-            case 1:
-                return "en-US";
-            case 2:
-                return "zh-CN";
-            case 3:
-                return "es-ES";
-            case 4:
-                return "fr-FR";
-            case 5:
-                return "de-DE";
-            case 6:
-                return "it-IT";
-            case 7:
-                return "ja-JP";
-            case 8:
-                return "ru-RU";
-            case 9:
-                return "pt-BR";
-            case 10:
-                return "en-GB";
-            case 11:
-                return "v-es-LA";
-            case 12:
-                return "zh-TW";
-            case 13:
-                return "zh-HK";
-            default:
-                return "en-US";
         }
+        return "en-US";
     }
 
     public String[] getCommandStringArray(int CommandType) {
@@ -354,14 +286,13 @@ public class SemSpeechRecognizer {
     }
 
     public String[] getCommandStringArray(int CommandType, int Language) {
-        String str = TAG;
-        Log.i(str, "getCommandStringArray : CommandType ( " + CommandType + " ) Language ( " + Language + " )");
+        Log.i(TAG, "getCommandStringArray : CommandType ( " + CommandType + " ) Language ( " + Language + " )");
         if (Language >= 15) {
             Language = 1;
         }
         if (!isEnabled(CommandType, Language)) {
             Language = 1;
-            Log.i(str, "getCommandStringArray : possible language is ( 1 )");
+            Log.i(TAG, "getCommandStringArray : possible language is ( 1 )");
         }
         switch (CommandType) {
             case 2:
@@ -404,9 +335,8 @@ public class SemSpeechRecognizer {
             stringLanguage = currentLocale.getLanguage();
             stringCountry = currentLocale.getCountry();
         }
-        String str = TAG;
-        Log.i(str, "stringLanguage : " + stringLanguage);
-        Log.i(str, "stringCountry : " + stringCountry);
+        Log.i(TAG, "stringLanguage : " + stringLanguage);
+        Log.i(TAG, "stringCountry : " + stringCountry);
         if (stringLanguage != null) {
             if (stringLanguage.equals(Locale.KOREA.getLanguage())) {
                 this.uselanguage = 0;
@@ -447,7 +377,7 @@ public class SemSpeechRecognizer {
                     this.uselanguage = 1;
                     return;
                 } else {
-                    Log.i(str, "Extra Sapnish is enabled : " + defaultLanguage);
+                    Log.i(TAG, "Extra Sapnish is enabled : " + defaultLanguage);
                     return;
                 }
             }
@@ -487,7 +417,7 @@ public class SemSpeechRecognizer {
             if (this.isEnableExtraRussian) {
                 if (defaultLanguage.contains("az_AZ") || defaultLanguage.contains("kk_KZ") || defaultLanguage.contains("uz_UZ") || defaultLanguage.equals("ky_KZ") || defaultLanguage.equals("tg_TJ") || defaultLanguage.equals("tk_TM") || defaultLanguage.equals("be_BY")) {
                     this.uselanguage = 8;
-                    Log.i(str, "Extra Russian is enabled : " + defaultLanguage);
+                    Log.i(TAG, "Extra Russian is enabled : " + defaultLanguage);
                     return;
                 } else {
                     this.uselanguage = 1;
@@ -500,9 +430,8 @@ public class SemSpeechRecognizer {
 
     public int getRecognitionResult() {
         synchronized (this) {
-            AudioTask audioTask = this.audio;
-            if (audioTask != null) {
-                return audioTask.BargeinAct[0];
+            if (this.audio != null) {
+                return this.audio.BargeinAct[0];
             }
             return this.intBargeInResult;
         }
@@ -544,37 +473,16 @@ public class SemSpeechRecognizer {
         }
         if (language != 1) {
             this.uselanguage = 1;
-            return isEnabled(commandType, 1);
+            return isEnabled(commandType, this.uselanguage);
         }
         return false;
     }
 
     public boolean isEnabled(int commandType, int language) {
-        if (isPDTModel()) {
-            String PDTModelPath = Config.GetPDTAM(language, commandType);
-            if (!isBargeInFile(PDTModelPath + ".bin")) {
-                return false;
-            }
+        if (isPDTModel() && commandType == 7 && language < 15) {
             Log.i(TAG, "isEnabled: PDTBargeIn is available in commandType (" + commandType + ") uselanguage(" + language + NavigationBarInflaterView.KEY_CODE_END);
             return true;
         }
-        if (isOEMModel()) {
-            String OEMModelPath = Config.GetOEMAM(language, commandType);
-            if (isBargeInFile(OEMModelPath + ".bin")) {
-                Log.i(TAG, "isEnabled: OEMBargeIn is available in commandType (" + commandType + ") uselanguage(" + language + NavigationBarInflaterView.KEY_CODE_END);
-                return true;
-            }
-        }
-        if (isSamsungModel()) {
-            String samsungModelPath = Config.GetSamsungModels(language);
-            String samsungNameList = Config.GetSamsungPath(language) + Config.GetSamsungNameList(commandType);
-            if (isBargeInFile(samsungModelPath) && isBargeInFile(samsungNameList)) {
-                Log.i(TAG, "isEnabled: SamsungBargeIn is available in commandType (" + commandType + ") uselanguage(" + language + NavigationBarInflaterView.KEY_CODE_END);
-                return true;
-            }
-        }
-        String samsungModelPath2 = TAG;
-        Log.w(samsungModelPath2, "isEnabled: BargeIn is not available in commandType (" + commandType + ") uselanguage(" + language + NavigationBarInflaterView.KEY_CODE_END);
         return false;
     }
 

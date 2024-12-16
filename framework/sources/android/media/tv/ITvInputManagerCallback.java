@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputManagerCallback extends IInterface {
     void onCurrentTunedInfosUpdated(List<TunedInfo> list) throws RemoteException;
 
@@ -21,7 +21,6 @@ public interface ITvInputManagerCallback extends IInterface {
 
     void onTvInputInfoUpdated(TvInputInfo tvInputInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputManagerCallback {
         @Override // android.media.tv.ITvInputManagerCallback
         public void onInputAdded(String inputId) throws RemoteException {
@@ -53,7 +52,6 @@ public interface ITvInputManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputManagerCallback {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputManagerCallback";
         static final int TRANSACTION_onCurrentTunedInfosUpdated = 6;
@@ -112,52 +110,48 @@ public interface ITvInputManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInputAdded(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInputRemoved(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onInputUpdated(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInputStateChanged(_arg04, _arg1);
+                    return true;
+                case 5:
+                    TvInputInfo _arg05 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTvInputInfoUpdated(_arg05);
+                    return true;
+                case 6:
+                    List<TunedInfo> _arg06 = data.createTypedArrayList(TunedInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCurrentTunedInfosUpdated(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInputAdded(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInputRemoved(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            onInputUpdated(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInputStateChanged(_arg04, _arg1);
-                            return true;
-                        case 5:
-                            TvInputInfo _arg05 = (TvInputInfo) data.readTypedObject(TvInputInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTvInputInfoUpdated(_arg05);
-                            return true;
-                        case 6:
-                            List<TunedInfo> _arg06 = data.createTypedArrayList(TunedInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCurrentTunedInfosUpdated(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInputManagerCallback {
+        private static class Proxy implements ITvInputManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

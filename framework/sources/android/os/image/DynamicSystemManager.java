@@ -15,12 +15,7 @@ public class DynamicSystemManager {
         this.mService = service;
     }
 
-    /* loaded from: classes3.dex */
     public class Session {
-        /* synthetic */ Session(DynamicSystemManager dynamicSystemManager, SessionIA sessionIA) {
-            this();
-        }
-
         private Session() {
         }
 
@@ -152,6 +147,14 @@ public class DynamicSystemManager {
     public long suggestScratchSize() {
         try {
             return this.mService.suggestScratchSize();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e.toString());
+        }
+    }
+
+    public String getActiveDsuSlot() {
+        try {
+            return this.mService.getActiveDsuSlot();
         } catch (RemoteException e) {
             throw new RuntimeException(e.toString());
         }

@@ -39,7 +39,7 @@ public class NativeFrame extends Frame {
 
     private native boolean setNativeInts(int[] iArr);
 
-    public NativeFrame(FrameFormat format, FrameManager frameManager) {
+    NativeFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.nativeFrameId = -1;
         int capacity = format.getSize();
@@ -48,13 +48,13 @@ public class NativeFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized void releaseNativeAllocation() {
+    protected synchronized void releaseNativeAllocation() {
         nativeDeallocate();
         this.nativeFrameId = -1;
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized boolean hasNativeAllocation() {
+    protected synchronized boolean hasNativeAllocation() {
         return this.nativeFrameId != -1;
     }
 

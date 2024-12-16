@@ -21,7 +21,7 @@ public class SContextSLocationCoreAttribute extends SContextAttribute {
     private long mTimeStamp;
     private int mTotalGpsCnt;
 
-    public SContextSLocationCoreAttribute() {
+    SContextSLocationCoreAttribute() {
         this.mMode = -1;
         this.mAction = -1;
         this.mFenceId = 0;
@@ -170,19 +170,16 @@ public class SContextSLocationCoreAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i;
-        int i2 = this.mMode;
-        if (i2 < -1 || i2 > 1) {
+        if (this.mMode < -1 || this.mMode > 1) {
             Log.d(TAG, "Mode value is wrong!!");
             return false;
         }
-        if (i2 == 0) {
-            int i3 = this.mAction;
-            if (i3 < -1 || i3 > 10) {
+        if (this.mMode == 0) {
+            if (this.mAction < -1 || this.mAction > 10) {
                 Log.d(TAG, "Action value is wrong!!");
                 return false;
             }
-        } else if (i2 == 1 && ((i = this.mAction) < -1 || i > 14)) {
+        } else if (this.mMode == 1 && (this.mAction < -1 || this.mAction > 14)) {
             Log.d(TAG, "Action value is wrong!!");
             return false;
         }
@@ -222,13 +219,11 @@ public class SContextSLocationCoreAttribute extends SContextAttribute {
             Log.d(TAG, "Timestamp is wrong");
             return false;
         }
-        double d = this.mLongitude;
-        if (d < -180.0d || d > 180.0d) {
+        if (this.mLongitude < -180.0d || this.mLongitude > 180.0d) {
             Log.d(TAG, "Longitude is wrong");
             return false;
         }
-        double d2 = this.mLatitude;
-        if (d2 >= -90.0d && d2 <= 90.0d) {
+        if (this.mLatitude >= -90.0d && this.mLatitude <= 90.0d) {
             return true;
         }
         Log.d(TAG, "Latitidue is wrong");
@@ -239,22 +234,21 @@ public class SContextSLocationCoreAttribute extends SContextAttribute {
         Bundle attribute = new Bundle();
         switch (this.mMode) {
             case 0:
-                int i = this.mAction;
-                if (i == 1) {
+                if (this.mAction == 1) {
                     double[] doubleType = {this.mLatitude, this.mLongitude};
                     int[] intType = {this.mFenceId, this.mRadius, this.mTotalGpsCnt, this.mSuccessGpsCnt};
                     attribute.putIntArray("IntType", intType);
                     attribute.putDoubleArray("DoubleType", doubleType);
                     break;
-                } else if (i == 2) {
+                } else if (this.mAction == 2) {
                     int[] intType2 = {this.mFenceId};
                     attribute.putIntArray("IntType", intType2);
                     break;
-                } else if (i == 7) {
+                } else if (this.mAction == 7) {
                     int[] intType3 = {this.mFenceId, this.mRadius, this.mStatus};
                     attribute.putIntArray("IntType", intType3);
                     break;
-                } else if (i == 9) {
+                } else if (this.mAction == 9) {
                     int[] intType4 = {this.mMin_Ditance, this.mMin_Time};
                     attribute.putIntArray("IntType", intType4);
                     break;

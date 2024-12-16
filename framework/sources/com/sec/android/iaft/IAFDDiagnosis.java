@@ -14,8 +14,6 @@ import android.util.Slog;
 import com.android.internal.content.NativeLibraryHelper;
 import com.samsung.android.feature.SemFloatingFeature;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
-import com.samsung.android.ims.options.SemCapabilities;
-import com.samsung.android.sm.iafdlib.IafdConstant;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -49,24 +47,7 @@ public class IAFDDiagnosis {
     private String mSalesCode;
     private String reason;
 
-    /* loaded from: classes6.dex */
-    public static class IAFD_DATA {
-        IAFD_ENTITY[] JE_CallStackTB;
-        IAFD_ENTITY[] JE_ClassNameTB;
-        IAFD_ENTITY[] JE_DetailMsgTB;
-        IAFD_ENTITY[] NE_CallStackTB;
-        IAFD_ENTITY[] NE_HeaderInfoTB;
-        IAFD_CONTROLINFO controlInfo;
-        HashMap<String, Integer> hashMapJE_ClassNameTB;
-    }
-
-    /* synthetic */ IAFDDiagnosis(IAFDDiagnosisIA iAFDDiagnosisIA) {
-        this();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes6.dex */
-    public static class IAFDDiagnosisHolder {
+    private static class IAFDDiagnosisHolder {
         private static final IAFDDiagnosis INSTANCE = new IAFDDiagnosis();
 
         private IAFDDiagnosisHolder() {
@@ -202,7 +183,7 @@ public class IAFDDiagnosis {
         }
         int istart2 = prefixLen;
         int iend2 = istart2 + limitLen;
-        int iend3 = iend2 <= srcStr.length() ? iend2 : srcStr.length();
+        int iend3 = iend2 <= strtmp.length() ? iend2 : strtmp.length();
         int j = strtmp.indexOf("\n");
         if (j > istart2) {
             iend3 = iend3 <= j ? iend3 : j;
@@ -304,7 +285,6 @@ public class IAFDDiagnosis {
     }
 
     private boolean parseExpTypeInternal(String packageName, String nativeLibraryDir, int puserId, int appuid, int flags, String exceptionClassName, String exceptionMessage, String stackTrace) {
-        IAFD_DATA iafd_data;
         this.dualUserId = 0;
         this.isParseSuccess = false;
         if (stackTrace == null) {
@@ -318,12 +298,11 @@ public class IAFDDiagnosis {
             initData(true);
             this.expType = -1;
             this.curExpEntity = null;
-            iafd_data = this.mIFADData;
         } catch (Exception e) {
             Slog.d(TAG, "parseExpType fail, skip, callstack as the following:");
             e.printStackTrace();
         }
-        if (iafd_data == null || !iafd_data.controlInfo.enable || this.mIFADData.controlInfo.isInWhiteList(packageName)) {
+        if (this.mIFADData == null || !this.mIFADData.controlInfo.enable || this.mIFADData.controlInfo.isInWhiteList(packageName)) {
             return false;
         }
         Slog.d(TAG, "parseExpType start");
@@ -364,9 +343,8 @@ public class IAFDDiagnosis {
                 this.isParseSuccess = true;
                 return true;
             }
-            IAFD_ENTITY iafd_entity = this.curExpEntity;
-            if (iafd_entity != null) {
-                if (iafd_entity.ruleType == 1 && this.curExpEntity.expID == this.expType) {
+            if (this.curExpEntity != null) {
+                if (this.curExpEntity.ruleType == 1 && this.curExpEntity.expID == this.expType) {
                     if (isContainPkgname(backTraceStr, this.mIFADData.controlInfo.NE_cstack_start, packageName)) {
                         this.isParseSuccess = true;
                         return true;
@@ -401,9 +379,8 @@ public class IAFDDiagnosis {
                                         this.isParseSuccess = true;
                                         return true;
                                     }
-                                    IAFD_ENTITY iafd_entity2 = this.curExpEntity;
-                                    if (iafd_entity2 != null) {
-                                        if (iafd_entity2.ruleType == 1 && this.curExpEntity.expID == this.expType) {
+                                    if (this.curExpEntity != null) {
+                                        if (this.curExpEntity.ruleType == 1 && this.curExpEntity.expID == this.expType) {
                                             if (isContainPkgname(subCsStr, this.mIFADData.controlInfo.JE_cstack_start, packageName)) {
                                                 this.isParseSuccess = true;
                                                 return true;
@@ -625,7 +602,7 @@ public class IAFDDiagnosis {
                 if (!this.mIFADData.controlInfo.mainLanguage.equals(lan)) {
                     lanIndex = 5;
                 }
-                if (SemCapabilities.FEATURE_TAG_NULL.equals(this.mIFADData.controlInfo.domainRepair)) {
+                if ("null".equals(this.mIFADData.controlInfo.domainRepair)) {
                     targetUrlTmp = this.mIFADData.controlInfo.prefixRepair + values[lanIndex] + this.mIFADData.controlInfo.postfixRepair;
                 } else {
                     targetUrlTmp = this.mIFADData.controlInfo.domainRepair + this.mIFADData.controlInfo.prefixRepair + values[lanIndex] + this.mIFADData.controlInfo.postfixRepair;
@@ -633,12 +610,12 @@ public class IAFDDiagnosis {
                 intent.putExtra("targetUrl", targetUrlTmp);
                 intent.putExtra("repairTrigAPP", values[3]);
             }
-            intent.putExtra(IafdConstant.KEY_PACKAGE_NAME, packageName);
-            intent.putExtra(IafdConstant.KEY_USER_ID, puserId);
+            intent.putExtra(SmLib_IafdConstant.KEY_PACKAGE_NAME, packageName);
+            intent.putExtra(SmLib_IafdConstant.KEY_USER_ID, puserId);
             intent.putExtra("type", getExpType());
             intent.putExtra("repeat", true);
             intent.putExtra("component", getComponent());
-            intent.putExtra(IafdConstant.KEY_ERROR_STACK, getCallstack());
+            intent.putExtra(SmLib_IafdConstant.KEY_ERROR_STACK, getCallstack());
             intent.putExtra("pkgUserId", appuid);
             intent.putExtra("repairType", repairType);
             intent.putExtra("dualUserId", this.dualUserId);
@@ -647,7 +624,7 @@ public class IAFDDiagnosis {
                 PackageManager pm = this.mContext.getPackageManager();
                 try {
                     PackageInfo pmInfo = pm.getPackageInfo(packageName, 0);
-                    intent.putExtra(IafdConstant.KEY_VERSION_CODE, pmInfo.getLongVersionCode());
+                    intent.putExtra(SmLib_IafdConstant.KEY_VERSION_CODE, pmInfo.getLongVersionCode());
                     intent.putExtra("versionName", pmInfo.versionName);
                     intent.putExtra("appName", pmInfo.applicationInfo.loadLabel(pm).toString());
                     intent.putExtra("hasUpdate", false);
@@ -686,8 +663,7 @@ public class IAFDDiagnosis {
         return this.callstack;
     }
 
-    /* loaded from: classes6.dex */
-    public static class IAFD_CONTROLINFO {
+    static class IAFD_CONTROLINFO {
         private boolean IAFDDBControlFeature;
         private int JE_cstack_maxSize;
         private String JE_cstack_start;
@@ -715,10 +691,10 @@ public class IAFDDiagnosis {
         private String webView_pkgName;
         private String[] whiteList;
 
-        public IAFD_CONTROLINFO() {
+        IAFD_CONTROLINFO() {
         }
 
-        public IAFD_CONTROLINFO(boolean enable, int jcsms, String jcss, int ncsms, int nchms, String ncss, int rsms, int csms) {
+        IAFD_CONTROLINFO(boolean enable, int jcsms, String jcss, int ncsms, int nchms, String ncss, int rsms, int csms) {
             this.enable = enable;
             this.JE_cstack_maxSize = jcsms;
             this.JE_cstack_start = jcss;
@@ -729,47 +705,47 @@ public class IAFDDiagnosis {
             this.callstack_maxSize = csms;
         }
 
-        public void setEnable(boolean enable) {
+        void setEnable(boolean enable) {
             this.enable = enable;
         }
 
-        public void setJE_cstack_maxSize(int jcsms) {
+        void setJE_cstack_maxSize(int jcsms) {
             this.JE_cstack_maxSize = jcsms;
         }
 
-        public void setJE_cstack_start(String jcss) {
+        void setJE_cstack_start(String jcss) {
             this.JE_cstack_start = jcss;
         }
 
-        public void setNE_cstack_maxSize(int ncsms) {
+        void setNE_cstack_maxSize(int ncsms) {
             this.NE_cstack_maxSize = ncsms;
         }
 
-        public void setNE_cHeader_maxSize(int nchms) {
+        void setNE_cHeader_maxSize(int nchms) {
             this.NE_cHeader_maxSize = nchms;
         }
 
-        public void setNE_cstack_start(String ncss) {
+        void setNE_cstack_start(String ncss) {
             this.NE_cstack_start = ncss;
         }
 
-        public void setReason_maxSize(int rsms) {
+        void setReason_maxSize(int rsms) {
             this.reason_maxSize = rsms;
         }
 
-        public void setCallstack_maxSize(int csms) {
+        void setCallstack_maxSize(int csms) {
             this.callstack_maxSize = csms;
         }
 
-        public void setDBVersion(int dbVersion) {
+        void setDBVersion(int dbVersion) {
             this.dbVersion = dbVersion;
         }
 
-        public int getDBVersion() {
+        int getDBVersion() {
             return this.dbVersion;
         }
 
-        public void setreMovableAppPaths(String rule) {
+        void setreMovableAppPaths(String rule) {
             if (rule.length() > 0) {
                 this.reMovableAppPaths = rule.split(">,<");
             } else {
@@ -777,11 +753,11 @@ public class IAFDDiagnosis {
             }
         }
 
-        public void setwebView_pkgName(String pkgName) {
+        void setwebView_pkgName(String pkgName) {
             this.webView_pkgName = pkgName;
         }
 
-        public void setenableDetectAll32bitApp(Boolean enable, String suggestion) {
+        void setenableDetectAll32bitApp(Boolean enable, String suggestion) {
             this.enableDetectAll32bitApps = enable.booleanValue();
             this.supportflagDetectAll32bitApps = 1;
             if (suggestion != null && suggestion.length() > 0) {
@@ -792,7 +768,7 @@ public class IAFDDiagnosis {
             }
         }
 
-        public void setCSCFilter(String rule, String suggestion, String salesCode) {
+        void setCSCFilter(String rule, String suggestion, String salesCode) {
             this.enableCSCFilter = true;
             this.supportCSCs = null;
             if (rule != null && rule.equals("0")) {
@@ -803,8 +779,8 @@ public class IAFDDiagnosis {
             }
             if (this.enableCSCFilter) {
                 boolean enableTmp = false;
-                String[] strArr = this.supportCSCs;
-                if (strArr != null && salesCode != null) {
+                if (this.supportCSCs != null && salesCode != null) {
+                    String[] strArr = this.supportCSCs;
                     int length = strArr.length;
                     int i = 0;
                     while (true) {
@@ -828,7 +804,7 @@ public class IAFDDiagnosis {
             }
         }
 
-        public void setIAFDDBControlFeature(String rule, String suggestion, boolean isCHN) {
+        void setIAFDDBControlFeature(String rule, String suggestion, boolean isCHN) {
             this.IAFDDBControlFeature = false;
             if (rule != null && rule.equals("1")) {
                 this.IAFDDBControlFeature = true;
@@ -848,7 +824,7 @@ public class IAFDDiagnosis {
             }
         }
 
-        public void setWhiteList(String rule, String suggestion) {
+        void setWhiteList(String rule, String suggestion) {
             this.enableWhiteList = true;
             this.whiteList = null;
             if (rule != null && rule.equals("0")) {
@@ -874,8 +850,9 @@ public class IAFDDiagnosis {
             return false;
         }
 
-        public void setSupportRepair(boolean isSupport) {
+        void setSupportRepair(boolean isSupport) {
             this.isSupportRepair = false;
+            this.isSupportRepair = isSupport;
         }
 
         void inithashMapValues(HashMap<String, String[]> linkHMap, String orgStr, String a1, String a2, String splitStr) {
@@ -901,7 +878,7 @@ public class IAFDDiagnosis {
             linkHMap.putIfAbsent(strTmp[0], values);
         }
 
-        public void sethashMapOfLinkForVocApp(String rule) {
+        void sethashMapOfLinkForVocApp(String rule) {
             if (rule != null && rule.length() > 0) {
                 String[] strArray = rule.split(">,<");
                 HashMap<String, String[]> linkHMap = new HashMap<>();
@@ -919,7 +896,7 @@ public class IAFDDiagnosis {
             }
         }
 
-        public void sethashMapOfLinkForVocAppOnlyShow(String rule) {
+        void sethashMapOfLinkForVocAppOnlyShow(String rule) {
             if (rule != null && rule.length() > 0) {
                 String[] strArray = rule.split(">,<");
                 if (strArray[0].equals("OnlyShowList")) {
@@ -939,8 +916,7 @@ public class IAFDDiagnosis {
         }
     }
 
-    /* loaded from: classes6.dex */
-    public static class IAFD_ENTITY {
+    static class IAFD_ENTITY {
         private boolean enable;
         private int expID;
         private String keyWord;
@@ -960,7 +936,7 @@ public class IAFDDiagnosis {
             if (rule != null && rule.length() > 0) {
                 String[] strArray = rule.split(">,<");
                 this.rules = strArray;
-                if (IafdConstant.KEY_PACKAGE_NAME.equals(strArray[0])) {
+                if (SmLib_IafdConstant.KEY_PACKAGE_NAME.equals(strArray[0])) {
                     this.ruleType = 1;
                 } else if ("libs".equals(strArray[0])) {
                     this.ruleType = 2;
@@ -979,15 +955,28 @@ public class IAFDDiagnosis {
             }
         }
 
-        public IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion) {
+        IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion) {
             initENTITY(tbID, expID, enable.booleanValue(), keyWord, rule, suggestion);
         }
 
-        public IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion, int index, HashMap<String, Integer> hmap) {
+        IAFD_ENTITY(int tbID, int expID, Boolean enable, String keyWord, String rule, String suggestion, int index, HashMap<String, Integer> hmap) {
             initENTITY(tbID, expID, enable.booleanValue(), keyWord, rule, suggestion);
             if (enable.booleanValue()) {
                 hmap.putIfAbsent(keyWord, Integer.valueOf(index));
             }
+        }
+    }
+
+    static class IAFD_DATA {
+        IAFD_ENTITY[] JE_CallStackTB;
+        IAFD_ENTITY[] JE_ClassNameTB;
+        IAFD_ENTITY[] JE_DetailMsgTB;
+        IAFD_ENTITY[] NE_CallStackTB;
+        IAFD_ENTITY[] NE_HeaderInfoTB;
+        IAFD_CONTROLINFO controlInfo;
+        HashMap<String, Integer> hashMapJE_ClassNameTB;
+
+        IAFD_DATA() {
         }
     }
 }

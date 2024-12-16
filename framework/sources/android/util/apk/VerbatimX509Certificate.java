@@ -9,7 +9,7 @@ class VerbatimX509Certificate extends WrappedX509Certificate {
     private final byte[] mEncodedVerbatim;
     private int mHash;
 
-    public VerbatimX509Certificate(X509Certificate wrapped, byte[] encodedVerbatim) {
+    VerbatimX509Certificate(X509Certificate wrapped, byte[] encodedVerbatim) {
         super(wrapped);
         this.mHash = -1;
         this.mEncodedVerbatim = encodedVerbatim;

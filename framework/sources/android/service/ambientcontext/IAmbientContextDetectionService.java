@@ -18,7 +18,6 @@ public interface IAmbientContextDetectionService extends IInterface {
 
     void stopDetection(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAmbientContextDetectionService {
         @Override // android.service.ambientcontext.IAmbientContextDetectionService
         public void startDetection(AmbientContextEventRequest request, String packageName, RemoteCallback detectionResultCallback, RemoteCallback statusCallback) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IAmbientContextDetectionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAmbientContextDetectionService {
         static final int TRANSACTION_queryServiceStatus = 3;
         static final int TRANSACTION_startDetection = 1;
@@ -87,39 +85,36 @@ public interface IAmbientContextDetectionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAmbientContextDetectionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAmbientContextDetectionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAmbientContextDetectionService.DESCRIPTOR);
+                case 1:
+                    AmbientContextEventRequest _arg0 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
+                    String _arg1 = data.readString();
+                    RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    RemoteCallback _arg3 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    startDetection(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    stopDetection(_arg02);
+                    return true;
+                case 3:
+                    int[] _arg03 = data.createIntArray();
+                    String _arg12 = data.readString();
+                    RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    queryServiceStatus(_arg03, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AmbientContextEventRequest _arg0 = (AmbientContextEventRequest) data.readTypedObject(AmbientContextEventRequest.CREATOR);
-                            String _arg1 = data.readString();
-                            RemoteCallback _arg2 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            RemoteCallback _arg3 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            startDetection(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            stopDetection(_arg02);
-                            return true;
-                        case 3:
-                            int[] _arg03 = data.createIntArray();
-                            String _arg12 = data.readString();
-                            RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            queryServiceStatus(_arg03, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IAmbientContextDetectionService {
             private IBinder mRemote;
 

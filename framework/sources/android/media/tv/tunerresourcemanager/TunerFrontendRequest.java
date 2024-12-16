@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TunerFrontendRequest implements Parcelable {
     public static final Parcelable.Creator<TunerFrontendRequest> CREATOR = new Parcelable.Creator<TunerFrontendRequest>() { // from class: android.media.tv.tunerresourcemanager.TunerFrontendRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerFrontendRequest createFromParcel(Parcel _aidl_source) {
             TunerFrontendRequest _aidl_out = new TunerFrontendRequest();
@@ -17,6 +15,7 @@ public class TunerFrontendRequest implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TunerFrontendRequest[] newArray(int _aidl_size) {
             return new TunerFrontendRequest[_aidl_size];
@@ -26,25 +25,6 @@ public class TunerFrontendRequest implements Parcelable {
     public int clientId = 0;
     public int frontendType = 0;
     public int desiredId = -1;
-
-    /* renamed from: android.media.tv.tunerresourcemanager.TunerFrontendRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TunerFrontendRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerFrontendRequest createFromParcel(Parcel _aidl_source) {
-            TunerFrontendRequest _aidl_out = new TunerFrontendRequest();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TunerFrontendRequest[] newArray(int _aidl_size) {
-            return new TunerFrontendRequest[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

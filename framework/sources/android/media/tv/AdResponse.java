@@ -5,17 +5,16 @@ import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class AdResponse implements Parcelable {
     public static final Parcelable.Creator<AdResponse> CREATOR = new Parcelable.Creator<AdResponse>() { // from class: android.media.tv.AdResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdResponse createFromParcel(Parcel source) {
             return new AdResponse(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdResponse[] newArray(int size) {
             return new AdResponse[size];
@@ -31,29 +30,7 @@ public final class AdResponse implements Parcelable {
     private final int mResponseType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ResponseType {
-    }
-
-    /* synthetic */ AdResponse(Parcel parcel, AdResponseIA adResponseIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.media.tv.AdResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AdResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AdResponse createFromParcel(Parcel source) {
-            return new AdResponse(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AdResponse[] newArray(int size) {
-            return new AdResponse[size];
-        }
     }
 
     public AdResponse(int id, int responseType, long elapsedTime) {

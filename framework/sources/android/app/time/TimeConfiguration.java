@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TimeConfiguration implements Parcelable {
     public static final Parcelable.Creator<TimeConfiguration> CREATOR = new Parcelable.Creator<TimeConfiguration>() { // from class: android.app.time.TimeConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeConfiguration createFromParcel(Parcel source) {
             return TimeConfiguration.readFromParcel(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeConfiguration[] newArray(int size) {
             return new TimeConfiguration[size];
@@ -29,35 +28,14 @@ public final class TimeConfiguration implements Parcelable {
     private final Bundle mBundle;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     @interface Setting {
-    }
-
-    /* synthetic */ TimeConfiguration(Builder builder, TimeConfigurationIA timeConfigurationIA) {
-        this(builder);
-    }
-
-    /* renamed from: android.app.time.TimeConfiguration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeConfiguration createFromParcel(Parcel source) {
-            return TimeConfiguration.readFromParcel(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeConfiguration[] newArray(int size) {
-            return new TimeConfiguration[size];
-        }
     }
 
     private TimeConfiguration(Builder builder) {
         this.mBundle = builder.mBundle;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static TimeConfiguration readFromParcel(Parcel in) {
         return new Builder().setPropertyBundleInternal(in.readBundle()).build();
     }
@@ -111,7 +89,6 @@ public final class TimeConfiguration implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final Bundle mBundle = new Bundle();
 

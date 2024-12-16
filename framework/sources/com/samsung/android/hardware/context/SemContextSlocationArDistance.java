@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextSlocationArDistance extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextSlocationArDistance> CREATOR = new Parcelable.Creator<SemContextSlocationArDistance>() { // from class: com.samsung.android.hardware.context.SemContextSlocationArDistance.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistance createFromParcel(Parcel in) {
             return new SemContextSlocationArDistance(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSlocationArDistance[] newArray(int size) {
             return new SemContextSlocationArDistance[size];
@@ -24,24 +23,7 @@ public class SemContextSlocationArDistance extends SemContextEventContext {
     public static final int MODE_UNKNOWN = -1;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextSlocationArDistance$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextSlocationArDistance> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSlocationArDistance createFromParcel(Parcel in) {
-            return new SemContextSlocationArDistance(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSlocationArDistance[] newArray(int size) {
-            return new SemContextSlocationArDistance[size];
-        }
-    }
-
-    public SemContextSlocationArDistance() {
+    SemContextSlocationArDistance() {
         this.mContext = new Bundle();
     }
 

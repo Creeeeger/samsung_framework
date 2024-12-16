@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextPutDownMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextPutDownMotion> CREATOR = new Parcelable.Creator<SContextPutDownMotion>() { // from class: android.hardware.scontext.SContextPutDownMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPutDownMotion createFromParcel(Parcel in) {
             return new SContextPutDownMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextPutDownMotion[] newArray(int size) {
             return new SContextPutDownMotion[size];
@@ -23,7 +22,7 @@ public class SContextPutDownMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextPutDownMotion() {
+    SContextPutDownMotion() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextPutDownMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextPutDownMotion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextPutDownMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextPutDownMotion createFromParcel(Parcel in) {
-            return new SContextPutDownMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextPutDownMotion[] newArray(int size) {
-            return new SContextPutDownMotion[size];
-        }
     }
 }

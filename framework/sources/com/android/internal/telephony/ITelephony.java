@@ -50,11 +50,17 @@ import android.telephony.ims.aidl.IImsConfigCallback;
 import android.telephony.ims.aidl.IImsRegistration;
 import android.telephony.ims.aidl.IImsRegistrationCallback;
 import android.telephony.ims.aidl.IRcsConfigCallback;
+import android.telephony.satellite.INtnSignalStrengthCallback;
+import android.telephony.satellite.ISatelliteCapabilitiesCallback;
+import android.telephony.satellite.ISatelliteCommunicationAllowedStateCallback;
 import android.telephony.satellite.ISatelliteDatagramCallback;
+import android.telephony.satellite.ISatelliteDisallowedReasonsCallback;
 import android.telephony.satellite.ISatelliteModemStateCallback;
 import android.telephony.satellite.ISatelliteProvisionStateCallback;
+import android.telephony.satellite.ISatelliteSupportedStateCallback;
 import android.telephony.satellite.ISatelliteTransmissionUpdateCallback;
 import android.telephony.satellite.SatelliteDatagram;
+import android.telephony.satellite.SatelliteSubscriberInfo;
 import com.android.ims.internal.IImsServiceFeatureCallback;
 import com.android.internal.telephony.IBooleanConsumer;
 import com.android.internal.telephony.ICallForwardingInfoCallback;
@@ -92,13 +98,17 @@ public interface ITelephony extends IInterface {
 
     boolean clearCarrierImsServiceOverride(int i) throws RemoteException;
 
+    boolean clearDomainSelectionServiceOverride() throws RemoteException;
+
     boolean clearRadioPowerOffForReason(int i, int i2) throws RemoteException;
 
     void clearSignalStrengthUpdateRequest(int i, SignalStrengthUpdateRequest signalStrengthUpdateRequest, String str) throws RemoteException;
 
     RcsContactUceCapability clearUceRegistrationOverrideShell(int i) throws RemoteException;
 
-    void deprovisionSatelliteService(int i, String str, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+    void deprovisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver resultReceiver) throws RemoteException;
+
+    void deprovisionSatelliteService(String str, IIntegerConsumer iIntegerConsumer) throws RemoteException;
 
     void dial(String str) throws RemoteException;
 
@@ -349,9 +359,11 @@ public interface ITelephony extends IInterface {
 
     boolean getRcsSingleRegistrationTestModeEnabled() throws RemoteException;
 
+    int[] getSatelliteDisallowedReasons() throws RemoteException;
+
     List<String> getSatellitePlmnsForCarrier(int i) throws RemoteException;
 
-    ServiceState getServiceStateForSubscriber(int i, boolean z, boolean z2, String str, String str2) throws RemoteException;
+    ServiceState getServiceStateForSlot(int i, boolean z, boolean z2, String str, String str2) throws RemoteException;
 
     List<String> getShaIdFromAllowList(String str, int i) throws RemoteException;
 
@@ -427,9 +439,9 @@ public interface ITelephony extends IInterface {
 
     String iccTransmitApduLogicalChannelByPort(int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String str) throws RemoteException;
 
-    int invokeOemRilRequestRaw(byte[] bArr, byte[] bArr2) throws RemoteException;
-
     boolean isAdvancedCallingSettingEnabled(int i) throws RemoteException;
+
+    boolean isAospDomainSelectionService() throws RemoteException;
 
     boolean isApnMetered(int i, int i2) throws RemoteException;
 
@@ -438,6 +450,8 @@ public interface ITelephony extends IInterface {
     boolean isAvailable(int i, int i2, int i3) throws RemoteException;
 
     boolean isCapable(int i, int i2, int i3) throws RemoteException;
+
+    boolean isCellularIdentifierDisclosureNotificationsEnabled() throws RemoteException;
 
     boolean isConcurrentVoiceAndDataAllowed(int i) throws RemoteException;
 
@@ -480,6 +494,8 @@ public interface ITelephony extends IInterface {
     boolean isNrDualConnectivityEnabled(int i) throws RemoteException;
 
     boolean isNullCipherAndIntegrityPreferenceEnabled() throws RemoteException;
+
+    boolean isNullCipherNotificationsEnabled() throws RemoteException;
 
     boolean isPremiumCapabilityAvailableForPurchase(int i, int i2) throws RemoteException;
 
@@ -545,15 +561,17 @@ public interface ITelephony extends IInterface {
 
     boolean nvWriteItem(int i, String str) throws RemoteException;
 
-    void onDeviceAlignedWithSatellite(int i, boolean z) throws RemoteException;
+    boolean overrideCarrierRoamingNtnEligibilityChanged(boolean z, boolean z2) throws RemoteException;
 
     void persistEmergencyCallDiagnosticData(String str, boolean z, long j, boolean z2, boolean z3) throws RemoteException;
 
-    void pollPendingDatagrams(int i, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+    void pollPendingDatagrams(IIntegerConsumer iIntegerConsumer) throws RemoteException;
 
     int prepareForUnattendedReboot() throws RemoteException;
 
-    ICancellationSignal provisionSatelliteService(int i, String str, byte[] bArr, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+    void provisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver resultReceiver) throws RemoteException;
+
+    ICancellationSignal provisionSatelliteService(String str, byte[] bArr, IIntegerConsumer iIntegerConsumer) throws RemoteException;
 
     void purchasePremiumCapability(int i, IIntegerConsumer iIntegerConsumer, int i2) throws RemoteException;
 
@@ -563,11 +581,23 @@ public interface ITelephony extends IInterface {
 
     void registerFeatureProvisioningChangedCallback(int i, IFeatureProvisioningCallback iFeatureProvisioningCallback) throws RemoteException;
 
-    int registerForIncomingDatagram(int i, ISatelliteDatagramCallback iSatelliteDatagramCallback) throws RemoteException;
+    int registerForCapabilitiesChanged(ISatelliteCapabilitiesCallback iSatelliteCapabilitiesCallback) throws RemoteException;
 
-    int registerForSatelliteModemStateChanged(int i, ISatelliteModemStateCallback iSatelliteModemStateCallback) throws RemoteException;
+    int registerForCommunicationAllowedStateChanged(int i, ISatelliteCommunicationAllowedStateCallback iSatelliteCommunicationAllowedStateCallback) throws RemoteException;
 
-    int registerForSatelliteProvisionStateChanged(int i, ISatelliteProvisionStateCallback iSatelliteProvisionStateCallback) throws RemoteException;
+    int registerForIncomingDatagram(ISatelliteDatagramCallback iSatelliteDatagramCallback) throws RemoteException;
+
+    void registerForNtnSignalStrengthChanged(INtnSignalStrengthCallback iNtnSignalStrengthCallback) throws RemoteException;
+
+    void registerForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback iSatelliteDisallowedReasonsCallback) throws RemoteException;
+
+    int registerForSatelliteModemStateChanged(ISatelliteModemStateCallback iSatelliteModemStateCallback) throws RemoteException;
+
+    int registerForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback iSatelliteProvisionStateCallback) throws RemoteException;
+
+    int registerForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback iSatelliteSupportedStateCallback) throws RemoteException;
+
+    void registerImsEmergencyRegistrationCallback(int i, IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
     void registerImsProvisioningChangedCallback(int i, IImsConfigCallback iImsConfigCallback) throws RemoteException;
 
@@ -595,27 +625,37 @@ public interface ITelephony extends IInterface {
 
     void requestIsCommunicationAllowedForCurrentLocation(int i, ResultReceiver resultReceiver) throws RemoteException;
 
-    void requestIsDemoModeEnabled(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestIsDemoModeEnabled(ResultReceiver resultReceiver) throws RemoteException;
 
-    void requestIsSatelliteEnabled(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestIsEmergencyModeEnabled(ResultReceiver resultReceiver) throws RemoteException;
 
-    void requestIsSatelliteProvisioned(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestIsSatelliteEnabled(ResultReceiver resultReceiver) throws RemoteException;
 
-    void requestIsSatelliteSupported(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestIsSatelliteProvisioned(ResultReceiver resultReceiver) throws RemoteException;
+
+    void requestIsSatelliteSupported(ResultReceiver resultReceiver) throws RemoteException;
 
     void requestModemActivityInfo(ResultReceiver resultReceiver) throws RemoteException;
 
     int requestNetworkScan(int i, boolean z, NetworkScanRequest networkScanRequest, Messenger messenger, IBinder iBinder, String str, String str2) throws RemoteException;
 
+    void requestNtnSignalStrength(ResultReceiver resultReceiver) throws RemoteException;
+
     void requestNumberVerification(PhoneNumberRange phoneNumberRange, long j, INumberVerificationCallback iNumberVerificationCallback, String str) throws RemoteException;
 
     boolean requestRadioPowerOffForReason(int i, int i2) throws RemoteException;
 
-    void requestSatelliteCapabilities(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestSatelliteCapabilities(ResultReceiver resultReceiver) throws RemoteException;
 
-    void requestSatelliteEnabled(int i, boolean z, boolean z2, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+    void requestSatelliteEnabled(boolean z, boolean z2, boolean z3, IIntegerConsumer iIntegerConsumer) throws RemoteException;
 
-    void requestTimeForNextSatelliteVisibility(int i, ResultReceiver resultReceiver) throws RemoteException;
+    void requestSatelliteSessionStats(int i, ResultReceiver resultReceiver) throws RemoteException;
+
+    void requestSatelliteSubscriberProvisionStatus(ResultReceiver resultReceiver) throws RemoteException;
+
+    void requestSelectedNbIotSatelliteSubscriptionId(ResultReceiver resultReceiver) throws RemoteException;
+
+    void requestTimeForNextSatelliteVisibility(ResultReceiver resultReceiver) throws RemoteException;
 
     void requestUserActivityNotification() throws RemoteException;
 
@@ -625,7 +665,7 @@ public interface ITelephony extends IInterface {
 
     void resetOtaEmergencyNumberDbFilePath() throws RemoteException;
 
-    void sendDatagram(int i, int i2, SatelliteDatagram satelliteDatagram, boolean z, IIntegerConsumer iIntegerConsumer) throws RemoteException;
+    void sendDatagram(int i, SatelliteDatagram satelliteDatagram, boolean z, IIntegerConsumer iIntegerConsumer) throws RemoteException;
 
     void sendDeviceToDeviceMessage(int i, int i2) throws RemoteException;
 
@@ -673,6 +713,8 @@ public interface ITelephony extends IInterface {
 
     void setCepEnabled(boolean z) throws RemoteException;
 
+    boolean setCountryCodes(boolean z, List<String> list, Map map, String str, long j) throws RemoteException;
+
     void setCrossSimCallingEnabled(int i, boolean z) throws RemoteException;
 
     void setDataActivationState(int i, int i2) throws RemoteException;
@@ -681,13 +723,23 @@ public interface ITelephony extends IInterface {
 
     void setDataRoamingEnabled(int i, boolean z) throws RemoteException;
 
+    boolean setDatagramControllerBooleanConfig(boolean z, int i, boolean z2) throws RemoteException;
+
+    boolean setDatagramControllerTimeoutDuration(boolean z, int i, long j) throws RemoteException;
+
+    void setDeviceAlignedWithSatellite(boolean z) throws RemoteException;
+
     void setDeviceSingleRegistrationEnabledOverride(String str) throws RemoteException;
 
     void setDeviceToDeviceForceEnabled(boolean z) throws RemoteException;
 
     void setDeviceUceEnabled(boolean z) throws RemoteException;
 
+    boolean setDomainSelectionServiceOverride(ComponentName componentName) throws RemoteException;
+
     boolean setEmergencyCallToSatelliteHandoverType(int i, int i2) throws RemoteException;
+
+    void setEnableCellularIdentifierDisclosureNotifications(boolean z) throws RemoteException;
 
     int setForbiddenPlmns(int i, int i2, List<String> list, String str, String str2) throws RemoteException;
 
@@ -705,6 +757,8 @@ public interface ITelephony extends IInterface {
 
     void setImsRegistrationState(boolean z) throws RemoteException;
 
+    boolean setIsSatelliteCommunicationAllowedForCurrentLocationCache(String str) throws RemoteException;
+
     boolean setLine1NumberForDisplayForSubscriber(int i, String str, String str2) throws RemoteException;
 
     void setMobileDataPolicyEnabled(int i, int i2, boolean z) throws RemoteException;
@@ -719,7 +773,13 @@ public interface ITelephony extends IInterface {
 
     int setNrDualConnectivityState(int i, int i2) throws RemoteException;
 
+    void setNtnSmsSupported(boolean z) throws RemoteException;
+
     void setNullCipherAndIntegrityEnabled(boolean z) throws RemoteException;
+
+    void setNullCipherNotificationsEnabled(boolean z) throws RemoteException;
+
+    boolean setOemEnabledSatelliteProvisionStatus(boolean z, boolean z2) throws RemoteException;
 
     boolean setOperatorBrandOverride(int i, String str) throws RemoteException;
 
@@ -741,15 +801,23 @@ public interface ITelephony extends IInterface {
 
     void setRttCapabilitySetting(int i, boolean z) throws RemoteException;
 
-    boolean setSatelliteDeviceAlignedTimeoutDuration(long j) throws RemoteException;
+    boolean setSatelliteAccessControlOverlayConfigs(boolean z, boolean z2, String str, long j, List<String> list) throws RemoteException;
+
+    boolean setSatelliteControllerTimeoutDuration(boolean z, int i, long j) throws RemoteException;
 
     boolean setSatelliteGatewayServicePackageName(String str) throws RemoteException;
+
+    boolean setSatelliteIgnoreCellularServiceState(boolean z) throws RemoteException;
 
     boolean setSatelliteListeningTimeoutDuration(long j) throws RemoteException;
 
     boolean setSatellitePointingUiClassName(String str, String str2) throws RemoteException;
 
-    boolean setSatelliteServicePackageName(String str) throws RemoteException;
+    boolean setSatelliteServicePackageName(String str, String str2) throws RemoteException;
+
+    boolean setSatelliteSubscriberIdListChangedIntentComponent(String str) throws RemoteException;
+
+    boolean setShouldSendDatagramToModemInDemoMode(boolean z) throws RemoteException;
 
     void setSignalStrengthUpdateRequest(int i, SignalStrengthUpdateRequest signalStrengthUpdateRequest, String str) throws RemoteException;
 
@@ -791,11 +859,11 @@ public interface ITelephony extends IInterface {
 
     void startEmergencyCallbackMode() throws RemoteException;
 
-    void startSatelliteTransmissionUpdates(int i, IIntegerConsumer iIntegerConsumer, ISatelliteTransmissionUpdateCallback iSatelliteTransmissionUpdateCallback) throws RemoteException;
+    void startSatelliteTransmissionUpdates(IIntegerConsumer iIntegerConsumer, ISatelliteTransmissionUpdateCallback iSatelliteTransmissionUpdateCallback) throws RemoteException;
 
     void stopNetworkScan(int i, int i2) throws RemoteException;
 
-    void stopSatelliteTransmissionUpdates(int i, IIntegerConsumer iIntegerConsumer, ISatelliteTransmissionUpdateCallback iSatelliteTransmissionUpdateCallback) throws RemoteException;
+    void stopSatelliteTransmissionUpdates(IIntegerConsumer iIntegerConsumer, ISatelliteTransmissionUpdateCallback iSatelliteTransmissionUpdateCallback) throws RemoteException;
 
     boolean supplyPinForSubscriber(int i, String str) throws RemoteException;
 
@@ -818,11 +886,23 @@ public interface ITelephony extends IInterface {
 
     void unregisterFeatureProvisioningChangedCallback(int i, IFeatureProvisioningCallback iFeatureProvisioningCallback) throws RemoteException;
 
-    void unregisterForIncomingDatagram(int i, ISatelliteDatagramCallback iSatelliteDatagramCallback) throws RemoteException;
+    void unregisterForCapabilitiesChanged(ISatelliteCapabilitiesCallback iSatelliteCapabilitiesCallback) throws RemoteException;
 
-    void unregisterForModemStateChanged(int i, ISatelliteModemStateCallback iSatelliteModemStateCallback) throws RemoteException;
+    void unregisterForCommunicationAllowedStateChanged(int i, ISatelliteCommunicationAllowedStateCallback iSatelliteCommunicationAllowedStateCallback) throws RemoteException;
 
-    void unregisterForSatelliteProvisionStateChanged(int i, ISatelliteProvisionStateCallback iSatelliteProvisionStateCallback) throws RemoteException;
+    void unregisterForIncomingDatagram(ISatelliteDatagramCallback iSatelliteDatagramCallback) throws RemoteException;
+
+    void unregisterForModemStateChanged(ISatelliteModemStateCallback iSatelliteModemStateCallback) throws RemoteException;
+
+    void unregisterForNtnSignalStrengthChanged(INtnSignalStrengthCallback iNtnSignalStrengthCallback) throws RemoteException;
+
+    void unregisterForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback iSatelliteDisallowedReasonsCallback) throws RemoteException;
+
+    void unregisterForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback iSatelliteProvisionStateCallback) throws RemoteException;
+
+    void unregisterForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback iSatelliteSupportedStateCallback) throws RemoteException;
+
+    void unregisterImsEmergencyRegistrationCallback(int i, IImsRegistrationCallback iImsRegistrationCallback) throws RemoteException;
 
     void unregisterImsFeatureCallback(IImsServiceFeatureCallback iImsServiceFeatureCallback) throws RemoteException;
 
@@ -848,7 +928,6 @@ public interface ITelephony extends IInterface {
 
     void userActivity() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ITelephony {
         @Override // com.android.internal.telephony.ITelephony
         public void dial(String number) throws RemoteException {
@@ -1471,11 +1550,6 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public int invokeOemRilRequestRaw(byte[] oemReq, byte[] oemResp) throws RemoteException {
-            return 0;
-        }
-
-        @Override // com.android.internal.telephony.ITelephony
         public boolean needMobileRadioShutdown() throws RemoteException {
             return false;
         }
@@ -1611,7 +1685,7 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public ServiceState getServiceStateForSubscriber(int subId, boolean renounceFineLocationAccess, boolean renounceCoarseLocationAccess, String callingPackage, String callingFeatureId) throws RemoteException {
+        public ServiceState getServiceStateForSlot(int slotIndex, boolean renounceFineLocationAccess, boolean renounceCoarseLocationAccess, String callingPackage, String callingFeatureId) throws RemoteException {
             return null;
         }
 
@@ -1856,6 +1930,14 @@ public interface ITelephony extends IInterface {
 
         @Override // com.android.internal.telephony.ITelephony
         public void unregisterImsRegistrationCallback(int subId, IImsRegistrationCallback c) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void registerImsEmergencyRegistrationCallback(int subId, IImsRegistrationCallback c) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterImsEmergencyRegistrationCallback(int subId, IImsRegistrationCallback c) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
@@ -2526,79 +2608,96 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestSatelliteEnabled(int subId, boolean enable, boolean isDemoModeEnabled, IIntegerConsumer callback) throws RemoteException {
+        public void requestSatelliteEnabled(boolean enableSatellite, boolean enableDemoMode, boolean isEmergency, IIntegerConsumer callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestIsSatelliteEnabled(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestIsSatelliteEnabled(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestIsDemoModeEnabled(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestIsDemoModeEnabled(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestIsSatelliteSupported(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestIsEmergencyModeEnabled(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestSatelliteCapabilities(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestIsSatelliteSupported(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void startSatelliteTransmissionUpdates(int subId, IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
+        public void requestSatelliteCapabilities(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void stopSatelliteTransmissionUpdates(int subId, IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
+        public void startSatelliteTransmissionUpdates(IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public ICancellationSignal provisionSatelliteService(int subId, String token, byte[] provisionData, IIntegerConsumer callback) throws RemoteException {
+        public void stopSatelliteTransmissionUpdates(IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public ICancellationSignal provisionSatelliteService(String token, byte[] provisionData, IIntegerConsumer callback) throws RemoteException {
             return null;
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void deprovisionSatelliteService(int subId, String token, IIntegerConsumer callback) throws RemoteException {
+        public void deprovisionSatelliteService(String token, IIntegerConsumer callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public int registerForSatelliteProvisionStateChanged(int subId, ISatelliteProvisionStateCallback callback) throws RemoteException {
+        public int registerForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback callback) throws RemoteException {
             return 0;
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void unregisterForSatelliteProvisionStateChanged(int subId, ISatelliteProvisionStateCallback callback) throws RemoteException {
+        public void unregisterForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestIsSatelliteProvisioned(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestIsSatelliteProvisioned(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public int registerForSatelliteModemStateChanged(int subId, ISatelliteModemStateCallback callback) throws RemoteException {
+        public int registerForSatelliteModemStateChanged(ISatelliteModemStateCallback callback) throws RemoteException {
             return 0;
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void unregisterForModemStateChanged(int subId, ISatelliteModemStateCallback callback) throws RemoteException {
+        public void unregisterForModemStateChanged(ISatelliteModemStateCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public int registerForIncomingDatagram(int subId, ISatelliteDatagramCallback callback) throws RemoteException {
+        public int registerForIncomingDatagram(ISatelliteDatagramCallback callback) throws RemoteException {
             return 0;
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void unregisterForIncomingDatagram(int subId, ISatelliteDatagramCallback callback) throws RemoteException {
+        public void unregisterForIncomingDatagram(ISatelliteDatagramCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void pollPendingDatagrams(int subId, IIntegerConsumer callback) throws RemoteException {
+        public void pollPendingDatagrams(IIntegerConsumer callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void sendDatagram(int subId, int datagramType, SatelliteDatagram datagram, boolean needFullScreenPointingUI, IIntegerConsumer callback) throws RemoteException {
+        public void sendDatagram(int datagramType, SatelliteDatagram datagram, boolean needFullScreenPointingUI, IIntegerConsumer callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public int[] getSatelliteDisallowedReasons() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void registerForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback callback) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
@@ -2606,15 +2705,19 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void requestTimeForNextSatelliteVisibility(int subId, ResultReceiver receiver) throws RemoteException {
+        public void requestTimeForNextSatelliteVisibility(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public void onDeviceAlignedWithSatellite(int subId, boolean isAligned) throws RemoteException {
+        public void requestSelectedNbIotSatelliteSubscriptionId(ResultReceiver receiver) throws RemoteException {
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public boolean setSatelliteServicePackageName(String servicePackageName) throws RemoteException {
+        public void setDeviceAlignedWithSatellite(boolean isAligned) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setSatelliteServicePackageName(String servicePackageName, String provisioned) throws RemoteException {
             return false;
         }
 
@@ -2629,17 +2732,42 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
+        public boolean setSatelliteIgnoreCellularServiceState(boolean enabled) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
         public boolean setSatellitePointingUiClassName(String packageName, String className) throws RemoteException {
             return false;
         }
 
         @Override // com.android.internal.telephony.ITelephony
-        public boolean setSatelliteDeviceAlignedTimeoutDuration(long timeoutMillis) throws RemoteException {
+        public boolean setDatagramControllerTimeoutDuration(boolean reset, int timeoutType, long timeoutMillis) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setSatelliteControllerTimeoutDuration(boolean reset, int timeoutType, long timeoutMillis) throws RemoteException {
             return false;
         }
 
         @Override // com.android.internal.telephony.ITelephony
         public boolean setEmergencyCallToSatelliteHandoverType(int handoverType, int delaySeconds) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setCountryCodes(boolean reset, List<String> currentNetworkCountryCodes, Map cachedNetworkCountryCodes, String locationCountryCode, long locationCountryCodeTimestampNanos) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setSatelliteAccessControlOverlayConfigs(boolean reset, boolean isAllowed, String s2CellFile, long locationFreshDurationNanos, List<String> satelliteCountryCodes) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setOemEnabledSatelliteProvisionStatus(boolean reset, boolean isProvisioned) throws RemoteException {
             return false;
         }
 
@@ -2662,8 +2790,125 @@ public interface ITelephony extends IInterface {
         }
 
         @Override // com.android.internal.telephony.ITelephony
+        public void requestNtnSignalStrength(ResultReceiver receiver) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void registerForNtnSignalStrengthChanged(INtnSignalStrengthCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterForNtnSignalStrengthChanged(INtnSignalStrengthCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public int registerForCapabilitiesChanged(ISatelliteCapabilitiesCallback callback) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterForCapabilitiesChanged(ISatelliteCapabilitiesCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setShouldSendDatagramToModemInDemoMode(boolean shouldSendToModemInDemoMode) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setDomainSelectionServiceOverride(ComponentName componentName) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean clearDomainSelectionServiceOverride() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean isAospDomainSelectionService() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void setEnableCellularIdentifierDisclosureNotifications(boolean enable) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean isCellularIdentifierDisclosureNotificationsEnabled() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void setNullCipherNotificationsEnabled(boolean enable) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean isNullCipherNotificationsEnabled() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
         public List<String> getSatellitePlmnsForCarrier(int subId) throws RemoteException {
             return null;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public int registerForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback callback) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public int registerForCommunicationAllowedStateChanged(int subId, ISatelliteCommunicationAllowedStateCallback callback) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void unregisterForCommunicationAllowedStateChanged(int subId, ISatelliteCommunicationAllowedStateCallback callback) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setDatagramControllerBooleanConfig(boolean reset, int booleanType, boolean enable) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setIsSatelliteCommunicationAllowedForCurrentLocationCache(String state) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void requestSatelliteSessionStats(int subId, ResultReceiver receiver) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void requestSatelliteSubscriberProvisionStatus(ResultReceiver result) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void provisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver result) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean setSatelliteSubscriberIdListChangedIntentComponent(String name) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public boolean overrideCarrierRoamingNtnEligibilityChanged(boolean status, boolean resetRequired) throws RemoteException {
+            return false;
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void deprovisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver result) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.ITelephony
+        public void setNtnSmsSupported(boolean ntnSmsSupported) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -2672,66 +2917,67 @@ public interface ITelephony extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ITelephony {
         public static final String DESCRIPTOR = "com.android.internal.telephony.ITelephony";
-        static final int TRANSACTION_addAttachRestrictionForCarrier = 386;
-        static final int TRANSACTION_addUceRegistrationOverrideShell = 324;
-        static final int TRANSACTION_bootstrapAuthenticationRequest = 297;
+        static final int TRANSACTION_addAttachRestrictionForCarrier = 397;
+        static final int TRANSACTION_addUceRegistrationOverrideShell = 325;
+        static final int TRANSACTION_bootstrapAuthenticationRequest = 298;
         static final int TRANSACTION_call = 2;
-        static final int TRANSACTION_canChangeDtmfToneLength = 138;
-        static final int TRANSACTION_canConnectTo5GInDsdsMode = 289;
-        static final int TRANSACTION_carrierActionReportDefaultNetworkStatus = 179;
-        static final int TRANSACTION_carrierActionResetAll = 180;
-        static final int TRANSACTION_carrierActionSetRadioEnabled = 178;
-        static final int TRANSACTION_changeIccLockPassword = 285;
+        static final int TRANSACTION_canChangeDtmfToneLength = 137;
+        static final int TRANSACTION_canConnectTo5GInDsdsMode = 290;
+        static final int TRANSACTION_carrierActionReportDefaultNetworkStatus = 178;
+        static final int TRANSACTION_carrierActionResetAll = 179;
+        static final int TRANSACTION_carrierActionSetRadioEnabled = 177;
+        static final int TRANSACTION_changeIccLockPassword = 286;
         static final int TRANSACTION_checkCarrierPrivilegesForPackage = 121;
         static final int TRANSACTION_checkCarrierPrivilegesForPackageAnyPhone = 122;
         static final int TRANSACTION_clearCarrierImsServiceOverride = 99;
+        static final int TRANSACTION_clearDomainSelectionServiceOverride = 407;
         static final int TRANSACTION_clearRadioPowerOffForReason = 22;
-        static final int TRANSACTION_clearSignalStrengthUpdateRequest = 332;
-        static final int TRANSACTION_clearUceRegistrationOverrideShell = 326;
-        static final int TRANSACTION_deprovisionSatelliteService = 366;
+        static final int TRANSACTION_clearSignalStrengthUpdateRequest = 333;
+        static final int TRANSACTION_clearUceRegistrationOverrideShell = 327;
+        static final int TRANSACTION_deprovisionSatellite = 425;
+        static final int TRANSACTION_deprovisionSatelliteService = 368;
         static final int TRANSACTION_dial = 1;
         static final int TRANSACTION_disableDataConnectivity = 29;
         static final int TRANSACTION_disableIms = 92;
         static final int TRANSACTION_disableLocationUpdates = 27;
         static final int TRANSACTION_disableVisualVoicemailSmsFilter = 59;
-        static final int TRANSACTION_doesSwitchMultiSimConfigTriggerReboot = 263;
+        static final int TRANSACTION_doesSwitchMultiSimConfigTriggerReboot = 264;
         static final int TRANSACTION_enableDataConnectivity = 28;
         static final int TRANSACTION_enableIms = 91;
         static final int TRANSACTION_enableLocationUpdates = 26;
-        static final int TRANSACTION_enableModemForSlot = 259;
-        static final int TRANSACTION_enableVideoCalling = 136;
+        static final int TRANSACTION_enableModemForSlot = 260;
+        static final int TRANSACTION_enableVideoCalling = 135;
         static final int TRANSACTION_enableVisualVoicemailSmsFilter = 58;
-        static final int TRANSACTION_enqueueSmsPickResult = 275;
-        static final int TRANSACTION_factoryReset = 157;
+        static final int TRANSACTION_enqueueSmsPickResult = 276;
+        static final int TRANSACTION_factoryReset = 156;
         static final int TRANSACTION_getActivePhoneType = 40;
         static final int TRANSACTION_getActivePhoneTypeForSlot = 41;
         static final int TRANSACTION_getActiveVisualVoicemailSmsFilterSettings = 61;
-        static final int TRANSACTION_getAidForAppType = 167;
+        static final int TRANSACTION_getAidForAppType = 166;
         static final int TRANSACTION_getAllCellInfo = 72;
-        static final int TRANSACTION_getAllowedCarriers = 172;
+        static final int TRANSACTION_getAllowedCarriers = 171;
         static final int TRANSACTION_getAllowedNetworkTypesBitmask = 89;
         static final int TRANSACTION_getAllowedNetworkTypesForReason = 107;
-        static final int TRANSACTION_getAttachRestrictionReasonsForCarrier = 388;
-        static final int TRANSACTION_getBoundGbaService = 299;
+        static final int TRANSACTION_getAttachRestrictionReasonsForCarrier = 399;
+        static final int TRANSACTION_getBoundGbaService = 300;
         static final int TRANSACTION_getBoundImsServicePackage = 100;
         static final int TRANSACTION_getCallComposerStatus = 8;
-        static final int TRANSACTION_getCallForwarding = 181;
+        static final int TRANSACTION_getCallForwarding = 180;
         static final int TRANSACTION_getCallState = 34;
         static final int TRANSACTION_getCallStateForSubscription = 35;
-        static final int TRANSACTION_getCallWaitingStatus = 183;
-        static final int TRANSACTION_getCapabilityFromEab = 321;
-        static final int TRANSACTION_getCardIdForDefaultEuicc = 192;
-        static final int TRANSACTION_getCarrierIdFromMccMnc = 177;
-        static final int TRANSACTION_getCarrierIdListVersion = 205;
+        static final int TRANSACTION_getCallWaitingStatus = 182;
+        static final int TRANSACTION_getCapabilityFromEab = 322;
+        static final int TRANSACTION_getCardIdForDefaultEuicc = 191;
+        static final int TRANSACTION_getCarrierIdFromMccMnc = 176;
+        static final int TRANSACTION_getCarrierIdListVersion = 204;
         static final int TRANSACTION_getCarrierPackageNamesForIntentAndPhone = 123;
         static final int TRANSACTION_getCarrierPrivilegeStatus = 119;
         static final int TRANSACTION_getCarrierPrivilegeStatusForUid = 120;
-        static final int TRANSACTION_getCarrierRestrictionStatus = 357;
-        static final int TRANSACTION_getCarrierServicePackageNameForLogicalSlot = 346;
-        static final int TRANSACTION_getCarrierSingleRegistrationEnabled = 315;
+        static final int TRANSACTION_getCarrierRestrictionStatus = 358;
+        static final int TRANSACTION_getCarrierServicePackageNameForLogicalSlot = 347;
+        static final int TRANSACTION_getCarrierSingleRegistrationEnabled = 316;
         static final int TRANSACTION_getCdmaEriIconIndex = 42;
         static final int TRANSACTION_getCdmaEriIconIndexForSubscriber = 43;
         static final int TRANSACTION_getCdmaEriIconMode = 44;
@@ -2740,16 +2986,16 @@ public interface ITelephony extends IInterface {
         static final int TRANSACTION_getCdmaEriTextForSubscriber = 47;
         static final int TRANSACTION_getCdmaMdn = 116;
         static final int TRANSACTION_getCdmaMin = 117;
-        static final int TRANSACTION_getCdmaPrlVersion = 169;
-        static final int TRANSACTION_getCdmaRoamingMode = 199;
-        static final int TRANSACTION_getCdmaSubscriptionMode = 201;
-        static final int TRANSACTION_getCellBroadcastIdRanges = 354;
+        static final int TRANSACTION_getCdmaPrlVersion = 168;
+        static final int TRANSACTION_getCdmaRoamingMode = 198;
+        static final int TRANSACTION_getCdmaSubscriptionMode = 200;
+        static final int TRANSACTION_getCellBroadcastIdRanges = 355;
         static final int TRANSACTION_getCellLocation = 31;
         static final int TRANSACTION_getCellNetworkScanResults = 103;
-        static final int TRANSACTION_getCertsFromCarrierPrivilegeAccessRules = 239;
-        static final int TRANSACTION_getClientRequestStats = 185;
-        static final int TRANSACTION_getContactFromEab = 320;
-        static final int TRANSACTION_getCurrentPackageName = 267;
+        static final int TRANSACTION_getCertsFromCarrierPrivilegeAccessRules = 240;
+        static final int TRANSACTION_getClientRequestStats = 184;
+        static final int TRANSACTION_getContactFromEab = 321;
+        static final int TRANSACTION_getCurrentPackageName = 268;
         static final int TRANSACTION_getDataActivationState = 53;
         static final int TRANSACTION_getDataActivity = 36;
         static final int TRANSACTION_getDataActivityForSubId = 37;
@@ -2758,91 +3004,92 @@ public interface ITelephony extends IInterface {
         static final int TRANSACTION_getDataNetworkTypeForSubscriber = 66;
         static final int TRANSACTION_getDataState = 38;
         static final int TRANSACTION_getDataStateForSubId = 39;
-        static final int TRANSACTION_getDefaultRespondViaMessageApplication = 349;
-        static final int TRANSACTION_getDeviceId = 147;
-        static final int TRANSACTION_getDeviceIdWithFeature = 148;
-        static final int TRANSACTION_getDeviceSingleRegistrationEnabled = 310;
-        static final int TRANSACTION_getDeviceSoftwareVersionForSlot = 154;
-        static final int TRANSACTION_getDeviceUceEnabled = 322;
-        static final int TRANSACTION_getEmergencyCallbackMode = 190;
-        static final int TRANSACTION_getEmergencyNumberDbVersion = 255;
-        static final int TRANSACTION_getEmergencyNumberList = 237;
-        static final int TRANSACTION_getEmergencyNumberListTestMode = 254;
-        static final int TRANSACTION_getEquivalentHomePlmns = 290;
-        static final int TRANSACTION_getEsn = 168;
-        static final int TRANSACTION_getForbiddenPlmns = 188;
-        static final int TRANSACTION_getGbaReleaseTime = 301;
-        static final int TRANSACTION_getHalVersion = 266;
-        static final int TRANSACTION_getImeiForSlot = 149;
+        static final int TRANSACTION_getDefaultRespondViaMessageApplication = 350;
+        static final int TRANSACTION_getDeviceId = 146;
+        static final int TRANSACTION_getDeviceIdWithFeature = 147;
+        static final int TRANSACTION_getDeviceSingleRegistrationEnabled = 311;
+        static final int TRANSACTION_getDeviceSoftwareVersionForSlot = 153;
+        static final int TRANSACTION_getDeviceUceEnabled = 323;
+        static final int TRANSACTION_getEmergencyCallbackMode = 189;
+        static final int TRANSACTION_getEmergencyNumberDbVersion = 256;
+        static final int TRANSACTION_getEmergencyNumberList = 238;
+        static final int TRANSACTION_getEmergencyNumberListTestMode = 255;
+        static final int TRANSACTION_getEquivalentHomePlmns = 291;
+        static final int TRANSACTION_getEsn = 167;
+        static final int TRANSACTION_getForbiddenPlmns = 187;
+        static final int TRANSACTION_getGbaReleaseTime = 302;
+        static final int TRANSACTION_getHalVersion = 267;
+        static final int TRANSACTION_getImeiForSlot = 148;
         static final int TRANSACTION_getImsConfig = 97;
-        static final int TRANSACTION_getImsFeatureValidationOverride = 317;
+        static final int TRANSACTION_getImsFeatureValidationOverride = 318;
         static final int TRANSACTION_getImsMmTelFeatureState = 101;
-        static final int TRANSACTION_getImsMmTelRegistrationState = 213;
-        static final int TRANSACTION_getImsMmTelRegistrationTransportType = 214;
-        static final int TRANSACTION_getImsProvisioningInt = 248;
-        static final int TRANSACTION_getImsProvisioningStatusForCapability = 245;
-        static final int TRANSACTION_getImsProvisioningString = 249;
-        static final int TRANSACTION_getImsRegTechnologyForMmTel = 146;
+        static final int TRANSACTION_getImsMmTelRegistrationState = 214;
+        static final int TRANSACTION_getImsMmTelRegistrationTransportType = 215;
+        static final int TRANSACTION_getImsProvisioningInt = 249;
+        static final int TRANSACTION_getImsProvisioningStatusForCapability = 246;
+        static final int TRANSACTION_getImsProvisioningString = 250;
+        static final int TRANSACTION_getImsRegTechnologyForMmTel = 145;
         static final int TRANSACTION_getImsRegistration = 96;
-        static final int TRANSACTION_getLastKnownCellIdentity = 340;
-        static final int TRANSACTION_getLastUcePidfXmlShell = 328;
-        static final int TRANSACTION_getLatestRcsContactUceCapabilityShell = 327;
+        static final int TRANSACTION_getLastKnownCellIdentity = 341;
+        static final int TRANSACTION_getLastUcePidfXmlShell = 329;
+        static final int TRANSACTION_getLatestRcsContactUceCapabilityShell = 328;
         static final int TRANSACTION_getLine1AlphaTagForDisplay = 126;
         static final int TRANSACTION_getLine1NumberForDisplay = 125;
         static final int TRANSACTION_getLteOnCdmaMode = 70;
         static final int TRANSACTION_getLteOnCdmaModeForSubscriber = 71;
-        static final int TRANSACTION_getManualNetworkSelectionPlmn = 288;
-        static final int TRANSACTION_getManufacturerCodeForSlot = 153;
-        static final int TRANSACTION_getMeidForSlot = 152;
+        static final int TRANSACTION_getManualNetworkSelectionPlmn = 289;
+        static final int TRANSACTION_getManufacturerCodeForSlot = 152;
+        static final int TRANSACTION_getMeidForSlot = 151;
         static final int TRANSACTION_getMergedImsisFromGroup = 128;
         static final int TRANSACTION_getMergedSubscriberIds = 127;
-        static final int TRANSACTION_getMmsUAProfUrl = 278;
-        static final int TRANSACTION_getMmsUserAgent = 277;
-        static final int TRANSACTION_getMobileProvisioningUrl = 318;
-        static final int TRANSACTION_getModemService = 342;
+        static final int TRANSACTION_getMmsUAProfUrl = 279;
+        static final int TRANSACTION_getMmsUserAgent = 278;
+        static final int TRANSACTION_getMobileProvisioningUrl = 319;
+        static final int TRANSACTION_getModemService = 343;
         static final int TRANSACTION_getNeighboringCellInfo = 33;
         static final int TRANSACTION_getNetworkCountryIsoForPhone = 32;
-        static final int TRANSACTION_getNetworkSelectionMode = 208;
+        static final int TRANSACTION_getNetworkSelectionMode = 207;
         static final int TRANSACTION_getNetworkTypeForSubscriber = 64;
-        static final int TRANSACTION_getNumberOfModemsWithSimultaneousDataConnections = 207;
-        static final int TRANSACTION_getPackagesWithCarrierPrivileges = 165;
-        static final int TRANSACTION_getPackagesWithCarrierPrivilegesForAllPhones = 166;
-        static final int TRANSACTION_getPhoneAccountHandleForSubscriptionId = 156;
-        static final int TRANSACTION_getPhoneCapability = 333;
-        static final int TRANSACTION_getPrimaryImei = 150;
-        static final int TRANSACTION_getRadioAccessFamily = 134;
-        static final int TRANSACTION_getRadioHalVersion = 265;
+        static final int TRANSACTION_getNumberOfModemsWithSimultaneousDataConnections = 206;
+        static final int TRANSACTION_getPackagesWithCarrierPrivileges = 164;
+        static final int TRANSACTION_getPackagesWithCarrierPrivilegesForAllPhones = 165;
+        static final int TRANSACTION_getPhoneAccountHandleForSubscriptionId = 155;
+        static final int TRANSACTION_getPhoneCapability = 334;
+        static final int TRANSACTION_getPrimaryImei = 149;
+        static final int TRANSACTION_getRadioAccessFamily = 133;
+        static final int TRANSACTION_getRadioHalVersion = 266;
         static final int TRANSACTION_getRadioPowerOffReasons = 23;
-        static final int TRANSACTION_getRadioPowerState = 210;
-        static final int TRANSACTION_getRcsProvisioningStatusForCapability = 246;
-        static final int TRANSACTION_getRcsSingleRegistrationTestModeEnabled = 308;
-        static final int TRANSACTION_getSatellitePlmnsForCarrier = 389;
-        static final int TRANSACTION_getServiceStateForSubscriber = 160;
-        static final int TRANSACTION_getShaIdFromAllowList = 385;
-        static final int TRANSACTION_getSignalStrength = 191;
-        static final int TRANSACTION_getSimLocaleForSubscriber = 158;
-        static final int TRANSACTION_getSimStateForSlotIndex = 350;
-        static final int TRANSACTION_getSlicingConfig = 335;
-        static final int TRANSACTION_getSlotsMapping = 264;
-        static final int TRANSACTION_getSubIdForPhoneAccountHandle = 155;
-        static final int TRANSACTION_getSubscriptionCarrierId = 173;
-        static final int TRANSACTION_getSubscriptionCarrierName = 174;
-        static final int TRANSACTION_getSubscriptionSpecificCarrierId = 175;
-        static final int TRANSACTION_getSubscriptionSpecificCarrierName = 176;
-        static final int TRANSACTION_getSystemSelectionChannels = 273;
-        static final int TRANSACTION_getTelephonyHistograms = 170;
-        static final int TRANSACTION_getTypeAllocationCodeForSlot = 151;
-        static final int TRANSACTION_getUiccCardsInfo = 193;
-        static final int TRANSACTION_getUiccSlotsInfo = 194;
+        static final int TRANSACTION_getRadioPowerState = 209;
+        static final int TRANSACTION_getRcsProvisioningStatusForCapability = 247;
+        static final int TRANSACTION_getRcsSingleRegistrationTestModeEnabled = 309;
+        static final int TRANSACTION_getSatelliteDisallowedReasons = 378;
+        static final int TRANSACTION_getSatellitePlmnsForCarrier = 413;
+        static final int TRANSACTION_getServiceStateForSlot = 159;
+        static final int TRANSACTION_getShaIdFromAllowList = 396;
+        static final int TRANSACTION_getSignalStrength = 190;
+        static final int TRANSACTION_getSimLocaleForSubscriber = 157;
+        static final int TRANSACTION_getSimStateForSlotIndex = 351;
+        static final int TRANSACTION_getSlicingConfig = 336;
+        static final int TRANSACTION_getSlotsMapping = 265;
+        static final int TRANSACTION_getSubIdForPhoneAccountHandle = 154;
+        static final int TRANSACTION_getSubscriptionCarrierId = 172;
+        static final int TRANSACTION_getSubscriptionCarrierName = 173;
+        static final int TRANSACTION_getSubscriptionSpecificCarrierId = 174;
+        static final int TRANSACTION_getSubscriptionSpecificCarrierName = 175;
+        static final int TRANSACTION_getSystemSelectionChannels = 274;
+        static final int TRANSACTION_getTelephonyHistograms = 169;
+        static final int TRANSACTION_getTypeAllocationCodeForSlot = 150;
+        static final int TRANSACTION_getUiccCardsInfo = 192;
+        static final int TRANSACTION_getUiccSlotsInfo = 193;
         static final int TRANSACTION_getVisualVoicemailPackageName = 57;
         static final int TRANSACTION_getVisualVoicemailSettings = 56;
         static final int TRANSACTION_getVisualVoicemailSmsFilterSettings = 60;
-        static final int TRANSACTION_getVoWiFiModeSetting = 231;
-        static final int TRANSACTION_getVoWiFiRoamingModeSetting = 233;
+        static final int TRANSACTION_getVoWiFiModeSetting = 232;
+        static final int TRANSACTION_getVoWiFiRoamingModeSetting = 234;
         static final int TRANSACTION_getVoiceActivationState = 52;
         static final int TRANSACTION_getVoiceMessageCountForSubscriber = 54;
         static final int TRANSACTION_getVoiceNetworkTypeForSubscriber = 67;
-        static final int TRANSACTION_getVoicemailRingtoneUri = 161;
+        static final int TRANSACTION_getVoicemailRingtoneUri = 160;
         static final int TRANSACTION_handlePinMmi = 13;
         static final int TRANSACTION_handlePinMmiForSubscriber = 15;
         static final int TRANSACTION_handleUssdRequest = 14;
@@ -2855,215 +3102,249 @@ public interface ITelephony extends IInterface {
         static final int TRANSACTION_iccTransmitApduBasicChannelByPort = 80;
         static final int TRANSACTION_iccTransmitApduLogicalChannel = 79;
         static final int TRANSACTION_iccTransmitApduLogicalChannelByPort = 78;
-        static final int TRANSACTION_invokeOemRilRequestRaw = 131;
-        static final int TRANSACTION_isAdvancedCallingSettingEnabled = 220;
-        static final int TRANSACTION_isApnMetered = 271;
-        static final int TRANSACTION_isApplicationOnUicc = 268;
-        static final int TRANSACTION_isAvailable = 218;
-        static final int TRANSACTION_isCapable = 217;
+        static final int TRANSACTION_isAdvancedCallingSettingEnabled = 221;
+        static final int TRANSACTION_isAospDomainSelectionService = 408;
+        static final int TRANSACTION_isApnMetered = 272;
+        static final int TRANSACTION_isApplicationOnUicc = 269;
+        static final int TRANSACTION_isAvailable = 219;
+        static final int TRANSACTION_isCapable = 218;
+        static final int TRANSACTION_isCellularIdentifierDisclosureNotificationsEnabled = 410;
         static final int TRANSACTION_isConcurrentVoiceAndDataAllowed = 55;
-        static final int TRANSACTION_isCrossSimCallingEnabledByUser = 226;
+        static final int TRANSACTION_isCrossSimCallingEnabledByUser = 227;
         static final int TRANSACTION_isDataConnectivityPossible = 30;
         static final int TRANSACTION_isDataEnabled = 111;
-        static final int TRANSACTION_isDataEnabledForApn = 270;
+        static final int TRANSACTION_isDataEnabledForApn = 271;
         static final int TRANSACTION_isDataEnabledForReason = 113;
-        static final int TRANSACTION_isDataRoamingEnabled = 197;
-        static final int TRANSACTION_isDomainSelectionSupported = 356;
-        static final int TRANSACTION_isEmergencyNumber = 238;
-        static final int TRANSACTION_isHearingAidCompatibilitySupported = 142;
-        static final int TRANSACTION_isIccLockEnabled = 283;
-        static final int TRANSACTION_isImsRegistered = 143;
-        static final int TRANSACTION_isInEmergencySmsMode = 209;
+        static final int TRANSACTION_isDataRoamingEnabled = 196;
+        static final int TRANSACTION_isDomainSelectionSupported = 357;
+        static final int TRANSACTION_isEmergencyNumber = 239;
+        static final int TRANSACTION_isHearingAidCompatibilitySupported = 141;
+        static final int TRANSACTION_isIccLockEnabled = 284;
+        static final int TRANSACTION_isImsRegistered = 142;
+        static final int TRANSACTION_isInEmergencySmsMode = 208;
         static final int TRANSACTION_isManualNetworkSelectionAllowed = 114;
-        static final int TRANSACTION_isMmTelCapabilitySupported = 219;
-        static final int TRANSACTION_isMobileDataPolicyEnabled = 280;
-        static final int TRANSACTION_isModemEnabledForSlot = 269;
-        static final int TRANSACTION_isMultiSimSupported = 261;
-        static final int TRANSACTION_isMvnoMatched = 274;
-        static final int TRANSACTION_isNrDualConnectivityEnabled = 294;
-        static final int TRANSACTION_isNullCipherAndIntegrityPreferenceEnabled = 353;
-        static final int TRANSACTION_isPremiumCapabilityAvailableForPurchase = 336;
-        static final int TRANSACTION_isProvisioningRequiredForCapability = 343;
-        static final int TRANSACTION_isRadioInterfaceCapabilitySupported = 295;
+        static final int TRANSACTION_isMmTelCapabilitySupported = 220;
+        static final int TRANSACTION_isMobileDataPolicyEnabled = 281;
+        static final int TRANSACTION_isModemEnabledForSlot = 270;
+        static final int TRANSACTION_isMultiSimSupported = 262;
+        static final int TRANSACTION_isMvnoMatched = 275;
+        static final int TRANSACTION_isNrDualConnectivityEnabled = 295;
+        static final int TRANSACTION_isNullCipherAndIntegrityPreferenceEnabled = 354;
+        static final int TRANSACTION_isNullCipherNotificationsEnabled = 412;
+        static final int TRANSACTION_isPremiumCapabilityAvailableForPurchase = 337;
+        static final int TRANSACTION_isProvisioningRequiredForCapability = 344;
+        static final int TRANSACTION_isRadioInterfaceCapabilitySupported = 296;
         static final int TRANSACTION_isRadioOn = 3;
         static final int TRANSACTION_isRadioOnForSubscriber = 5;
         static final int TRANSACTION_isRadioOnForSubscriberWithFeature = 6;
         static final int TRANSACTION_isRadioOnWithFeature = 4;
-        static final int TRANSACTION_isRcsProvisioningRequiredForCapability = 344;
-        static final int TRANSACTION_isRcsVolteSingleRegistrationCapable = 303;
-        static final int TRANSACTION_isRemovableEsimDefaultEuicc = 348;
-        static final int TRANSACTION_isRttSupported = 141;
+        static final int TRANSACTION_isRcsProvisioningRequiredForCapability = 345;
+        static final int TRANSACTION_isRcsVolteSingleRegistrationCapable = 304;
+        static final int TRANSACTION_isRemovableEsimDefaultEuicc = 349;
+        static final int TRANSACTION_isRttSupported = 140;
         static final int TRANSACTION_isTetheringApnRequiredForSubscriber = 90;
-        static final int TRANSACTION_isTtyModeSupported = 140;
-        static final int TRANSACTION_isTtyOverVolteEnabled = 236;
+        static final int TRANSACTION_isTtyModeSupported = 139;
+        static final int TRANSACTION_isTtyOverVolteEnabled = 237;
         static final int TRANSACTION_isUserDataEnabled = 110;
-        static final int TRANSACTION_isVideoCallingEnabled = 137;
-        static final int TRANSACTION_isVideoTelephonyAvailable = 145;
-        static final int TRANSACTION_isVoNrEnabled = 292;
-        static final int TRANSACTION_isVoWiFiRoamingSettingEnabled = 228;
-        static final int TRANSACTION_isVoWiFiSettingEnabled = 224;
-        static final int TRANSACTION_isVoicemailVibrationEnabled = 163;
-        static final int TRANSACTION_isVtSettingEnabled = 222;
-        static final int TRANSACTION_isWifiCallingAvailable = 144;
-        static final int TRANSACTION_isWorldPhone = 139;
-        static final int TRANSACTION_needMobileRadioShutdown = 132;
+        static final int TRANSACTION_isVideoCallingEnabled = 136;
+        static final int TRANSACTION_isVideoTelephonyAvailable = 144;
+        static final int TRANSACTION_isVoNrEnabled = 293;
+        static final int TRANSACTION_isVoWiFiRoamingSettingEnabled = 229;
+        static final int TRANSACTION_isVoWiFiSettingEnabled = 225;
+        static final int TRANSACTION_isVoicemailVibrationEnabled = 162;
+        static final int TRANSACTION_isVtSettingEnabled = 223;
+        static final int TRANSACTION_isWifiCallingAvailable = 143;
+        static final int TRANSACTION_isWorldPhone = 138;
+        static final int TRANSACTION_needMobileRadioShutdown = 131;
         static final int TRANSACTION_needsOtaServiceProvisioning = 48;
-        static final int TRANSACTION_notifyOtaEmergencyNumberDbInstalled = 256;
-        static final int TRANSACTION_notifyRcsAutoConfigurationReceived = 282;
+        static final int TRANSACTION_notifyOtaEmergencyNumberDbInstalled = 257;
+        static final int TRANSACTION_notifyRcsAutoConfigurationReceived = 283;
         static final int TRANSACTION_nvReadItem = 84;
         static final int TRANSACTION_nvWriteCdmaPrl = 86;
         static final int TRANSACTION_nvWriteItem = 85;
-        static final int TRANSACTION_onDeviceAlignedWithSatellite = 378;
-        static final int TRANSACTION_persistEmergencyCallDiagnosticData = 351;
-        static final int TRANSACTION_pollPendingDatagrams = 374;
-        static final int TRANSACTION_prepareForUnattendedReboot = 334;
-        static final int TRANSACTION_provisionSatelliteService = 365;
-        static final int TRANSACTION_purchasePremiumCapability = 337;
+        static final int TRANSACTION_overrideCarrierRoamingNtnEligibilityChanged = 424;
+        static final int TRANSACTION_persistEmergencyCallDiagnosticData = 352;
+        static final int TRANSACTION_pollPendingDatagrams = 376;
+        static final int TRANSACTION_prepareForUnattendedReboot = 335;
+        static final int TRANSACTION_provisionSatellite = 422;
+        static final int TRANSACTION_provisionSatelliteService = 367;
+        static final int TRANSACTION_purchasePremiumCapability = 338;
         static final int TRANSACTION_rebootModem = 88;
-        static final int TRANSACTION_refreshUiccProfile = 206;
-        static final int TRANSACTION_registerFeatureProvisioningChangedCallback = 242;
-        static final int TRANSACTION_registerForIncomingDatagram = 372;
-        static final int TRANSACTION_registerForSatelliteModemStateChanged = 370;
-        static final int TRANSACTION_registerForSatelliteProvisionStateChanged = 367;
-        static final int TRANSACTION_registerImsProvisioningChangedCallback = 240;
-        static final int TRANSACTION_registerImsRegistrationCallback = 211;
-        static final int TRANSACTION_registerImsStateCallback = 338;
-        static final int TRANSACTION_registerMmTelCapabilityCallback = 215;
+        static final int TRANSACTION_refreshUiccProfile = 205;
+        static final int TRANSACTION_registerFeatureProvisioningChangedCallback = 243;
+        static final int TRANSACTION_registerForCapabilitiesChanged = 403;
+        static final int TRANSACTION_registerForCommunicationAllowedStateChanged = 416;
+        static final int TRANSACTION_registerForIncomingDatagram = 374;
+        static final int TRANSACTION_registerForNtnSignalStrengthChanged = 401;
+        static final int TRANSACTION_registerForSatelliteDisallowedReasonsChanged = 379;
+        static final int TRANSACTION_registerForSatelliteModemStateChanged = 372;
+        static final int TRANSACTION_registerForSatelliteProvisionStateChanged = 369;
+        static final int TRANSACTION_registerForSatelliteSupportedStateChanged = 414;
+        static final int TRANSACTION_registerImsEmergencyRegistrationCallback = 212;
+        static final int TRANSACTION_registerImsProvisioningChangedCallback = 241;
+        static final int TRANSACTION_registerImsRegistrationCallback = 210;
+        static final int TRANSACTION_registerImsStateCallback = 339;
+        static final int TRANSACTION_registerMmTelCapabilityCallback = 216;
         static final int TRANSACTION_registerMmTelFeatureCallback = 94;
-        static final int TRANSACTION_registerRcsProvisioningCallback = 304;
-        static final int TRANSACTION_removeAttachRestrictionForCarrier = 387;
-        static final int TRANSACTION_removeContactFromEab = 319;
-        static final int TRANSACTION_removeUceRegistrationOverrideShell = 325;
-        static final int TRANSACTION_removeUceRequestDisallowedStatus = 329;
+        static final int TRANSACTION_registerRcsProvisioningCallback = 305;
+        static final int TRANSACTION_removeAttachRestrictionForCarrier = 398;
+        static final int TRANSACTION_removeContactFromEab = 320;
+        static final int TRANSACTION_removeUceRegistrationOverrideShell = 326;
+        static final int TRANSACTION_removeUceRequestDisallowedStatus = 330;
         static final int TRANSACTION_requestCellInfoUpdate = 73;
         static final int TRANSACTION_requestCellInfoUpdateWithWorkSource = 74;
-        static final int TRANSACTION_requestIsCommunicationAllowedForCurrentLocation = 376;
-        static final int TRANSACTION_requestIsDemoModeEnabled = 360;
-        static final int TRANSACTION_requestIsSatelliteEnabled = 359;
-        static final int TRANSACTION_requestIsSatelliteProvisioned = 369;
-        static final int TRANSACTION_requestIsSatelliteSupported = 361;
-        static final int TRANSACTION_requestModemActivityInfo = 159;
+        static final int TRANSACTION_requestIsCommunicationAllowedForCurrentLocation = 381;
+        static final int TRANSACTION_requestIsDemoModeEnabled = 361;
+        static final int TRANSACTION_requestIsEmergencyModeEnabled = 362;
+        static final int TRANSACTION_requestIsSatelliteEnabled = 360;
+        static final int TRANSACTION_requestIsSatelliteProvisioned = 371;
+        static final int TRANSACTION_requestIsSatelliteSupported = 363;
+        static final int TRANSACTION_requestModemActivityInfo = 158;
         static final int TRANSACTION_requestNetworkScan = 104;
+        static final int TRANSACTION_requestNtnSignalStrength = 400;
         static final int TRANSACTION_requestNumberVerification = 118;
         static final int TRANSACTION_requestRadioPowerOffForReason = 21;
-        static final int TRANSACTION_requestSatelliteCapabilities = 362;
-        static final int TRANSACTION_requestSatelliteEnabled = 358;
-        static final int TRANSACTION_requestTimeForNextSatelliteVisibility = 377;
-        static final int TRANSACTION_requestUserActivityNotification = 286;
+        static final int TRANSACTION_requestSatelliteCapabilities = 364;
+        static final int TRANSACTION_requestSatelliteEnabled = 359;
+        static final int TRANSACTION_requestSatelliteSessionStats = 420;
+        static final int TRANSACTION_requestSatelliteSubscriberProvisionStatus = 421;
+        static final int TRANSACTION_requestSelectedNbIotSatelliteSubscriptionId = 383;
+        static final int TRANSACTION_requestTimeForNextSatelliteVisibility = 382;
+        static final int TRANSACTION_requestUserActivityNotification = 287;
         static final int TRANSACTION_resetIms = 93;
         static final int TRANSACTION_resetModemConfig = 87;
-        static final int TRANSACTION_resetOtaEmergencyNumberDbFilePath = 258;
-        static final int TRANSACTION_sendDatagram = 375;
-        static final int TRANSACTION_sendDeviceToDeviceMessage = 312;
+        static final int TRANSACTION_resetOtaEmergencyNumberDbFilePath = 259;
+        static final int TRANSACTION_sendDatagram = 377;
+        static final int TRANSACTION_sendDeviceToDeviceMessage = 313;
         static final int TRANSACTION_sendDialerSpecialCode = 63;
         static final int TRANSACTION_sendEnvelopeWithStatus = 83;
-        static final int TRANSACTION_sendThermalMitigationRequest = 296;
+        static final int TRANSACTION_sendThermalMitigationRequest = 297;
         static final int TRANSACTION_sendVisualVoicemailSmsForSubscriber = 62;
-        static final int TRANSACTION_setActiveDeviceToDeviceTransport = 313;
-        static final int TRANSACTION_setAdvancedCallingSettingEnabled = 221;
-        static final int TRANSACTION_setAllowedCarriers = 171;
+        static final int TRANSACTION_setActiveDeviceToDeviceTransport = 314;
+        static final int TRANSACTION_setAdvancedCallingSettingEnabled = 222;
+        static final int TRANSACTION_setAllowedCarriers = 170;
         static final int TRANSACTION_setAllowedNetworkTypesForReason = 108;
-        static final int TRANSACTION_setBoundGbaServiceOverride = 298;
+        static final int TRANSACTION_setBoundGbaServiceOverride = 299;
         static final int TRANSACTION_setBoundImsServiceOverride = 98;
         static final int TRANSACTION_setCallComposerStatus = 7;
-        static final int TRANSACTION_setCallForwarding = 182;
-        static final int TRANSACTION_setCallWaitingStatus = 184;
-        static final int TRANSACTION_setCapabilitiesRequestTimeout = 330;
-        static final int TRANSACTION_setCarrierServicePackageOverride = 204;
-        static final int TRANSACTION_setCarrierSingleRegistrationEnabledOverride = 311;
-        static final int TRANSACTION_setCarrierTestOverride = 203;
-        static final int TRANSACTION_setCdmaRoamingMode = 200;
-        static final int TRANSACTION_setCdmaSubscriptionMode = 202;
-        static final int TRANSACTION_setCellBroadcastIdRanges = 355;
+        static final int TRANSACTION_setCallForwarding = 181;
+        static final int TRANSACTION_setCallWaitingStatus = 183;
+        static final int TRANSACTION_setCapabilitiesRequestTimeout = 331;
+        static final int TRANSACTION_setCarrierServicePackageOverride = 203;
+        static final int TRANSACTION_setCarrierSingleRegistrationEnabledOverride = 312;
+        static final int TRANSACTION_setCarrierTestOverride = 202;
+        static final int TRANSACTION_setCdmaRoamingMode = 199;
+        static final int TRANSACTION_setCdmaSubscriptionMode = 201;
+        static final int TRANSACTION_setCellBroadcastIdRanges = 356;
         static final int TRANSACTION_setCellInfoListRate = 75;
-        static final int TRANSACTION_setCepEnabled = 281;
-        static final int TRANSACTION_setCrossSimCallingEnabled = 227;
+        static final int TRANSACTION_setCepEnabled = 282;
+        static final int TRANSACTION_setCountryCodes = 393;
+        static final int TRANSACTION_setCrossSimCallingEnabled = 228;
         static final int TRANSACTION_setDataActivationState = 51;
         static final int TRANSACTION_setDataEnabledForReason = 112;
-        static final int TRANSACTION_setDataRoamingEnabled = 198;
-        static final int TRANSACTION_setDeviceSingleRegistrationEnabledOverride = 309;
-        static final int TRANSACTION_setDeviceToDeviceForceEnabled = 314;
-        static final int TRANSACTION_setDeviceUceEnabled = 323;
-        static final int TRANSACTION_setEmergencyCallToSatelliteHandoverType = 384;
-        static final int TRANSACTION_setForbiddenPlmns = 189;
-        static final int TRANSACTION_setGbaReleaseTimeOverride = 300;
-        static final int TRANSACTION_setIccLockEnabled = 284;
-        static final int TRANSACTION_setImsFeatureValidationOverride = 316;
-        static final int TRANSACTION_setImsProvisioningInt = 250;
-        static final int TRANSACTION_setImsProvisioningStatusForCapability = 244;
-        static final int TRANSACTION_setImsProvisioningString = 251;
+        static final int TRANSACTION_setDataRoamingEnabled = 197;
+        static final int TRANSACTION_setDatagramControllerBooleanConfig = 418;
+        static final int TRANSACTION_setDatagramControllerTimeoutDuration = 390;
+        static final int TRANSACTION_setDeviceAlignedWithSatellite = 384;
+        static final int TRANSACTION_setDeviceSingleRegistrationEnabledOverride = 310;
+        static final int TRANSACTION_setDeviceToDeviceForceEnabled = 315;
+        static final int TRANSACTION_setDeviceUceEnabled = 324;
+        static final int TRANSACTION_setDomainSelectionServiceOverride = 406;
+        static final int TRANSACTION_setEmergencyCallToSatelliteHandoverType = 392;
+        static final int TRANSACTION_setEnableCellularIdentifierDisclosureNotifications = 409;
+        static final int TRANSACTION_setForbiddenPlmns = 188;
+        static final int TRANSACTION_setGbaReleaseTimeOverride = 301;
+        static final int TRANSACTION_setIccLockEnabled = 285;
+        static final int TRANSACTION_setImsFeatureValidationOverride = 317;
+        static final int TRANSACTION_setImsProvisioningInt = 251;
+        static final int TRANSACTION_setImsProvisioningStatusForCapability = 245;
+        static final int TRANSACTION_setImsProvisioningString = 252;
         static final int TRANSACTION_setImsRegistrationState = 115;
+        static final int TRANSACTION_setIsSatelliteCommunicationAllowedForCurrentLocationCache = 419;
         static final int TRANSACTION_setLine1NumberForDisplayForSubscriber = 124;
-        static final int TRANSACTION_setMobileDataPolicyEnabled = 279;
-        static final int TRANSACTION_setModemService = 341;
-        static final int TRANSACTION_setMultiSimCarrierRestriction = 260;
+        static final int TRANSACTION_setMobileDataPolicyEnabled = 280;
+        static final int TRANSACTION_setModemService = 342;
+        static final int TRANSACTION_setMultiSimCarrierRestriction = 261;
         static final int TRANSACTION_setNetworkSelectionModeAutomatic = 102;
         static final int TRANSACTION_setNetworkSelectionModeManual = 106;
-        static final int TRANSACTION_setNrDualConnectivityState = 293;
-        static final int TRANSACTION_setNullCipherAndIntegrityEnabled = 352;
+        static final int TRANSACTION_setNrDualConnectivityState = 294;
+        static final int TRANSACTION_setNtnSmsSupported = 426;
+        static final int TRANSACTION_setNullCipherAndIntegrityEnabled = 353;
+        static final int TRANSACTION_setNullCipherNotificationsEnabled = 411;
+        static final int TRANSACTION_setOemEnabledSatelliteProvisionStatus = 395;
         static final int TRANSACTION_setOperatorBrandOverride = 129;
         static final int TRANSACTION_setRadio = 18;
         static final int TRANSACTION_setRadioForSubscriber = 19;
         static final int TRANSACTION_setRadioPower = 20;
-        static final int TRANSACTION_setRcsClientConfiguration = 302;
-        static final int TRANSACTION_setRcsProvisioningStatusForCapability = 247;
-        static final int TRANSACTION_setRcsSingleRegistrationTestModeEnabled = 307;
-        static final int TRANSACTION_setRemovableEsimAsDefaultEuicc = 347;
+        static final int TRANSACTION_setRcsClientConfiguration = 303;
+        static final int TRANSACTION_setRcsProvisioningStatusForCapability = 248;
+        static final int TRANSACTION_setRcsSingleRegistrationTestModeEnabled = 308;
+        static final int TRANSACTION_setRemovableEsimAsDefaultEuicc = 348;
         static final int TRANSACTION_setRoamingOverride = 130;
-        static final int TRANSACTION_setRttCapabilitySetting = 235;
-        static final int TRANSACTION_setSatelliteDeviceAlignedTimeoutDuration = 383;
-        static final int TRANSACTION_setSatelliteGatewayServicePackageName = 380;
-        static final int TRANSACTION_setSatelliteListeningTimeoutDuration = 381;
-        static final int TRANSACTION_setSatellitePointingUiClassName = 382;
-        static final int TRANSACTION_setSatelliteServicePackageName = 379;
-        static final int TRANSACTION_setSignalStrengthUpdateRequest = 331;
-        static final int TRANSACTION_setSimPowerStateForSlot = 186;
-        static final int TRANSACTION_setSimPowerStateForSlotWithCallback = 187;
-        static final int TRANSACTION_setSimSlotMapping = 196;
-        static final int TRANSACTION_setSystemSelectionChannels = 272;
-        static final int TRANSACTION_setVoNrEnabled = 291;
-        static final int TRANSACTION_setVoWiFiModeSetting = 232;
-        static final int TRANSACTION_setVoWiFiNonPersistent = 230;
-        static final int TRANSACTION_setVoWiFiRoamingModeSetting = 234;
-        static final int TRANSACTION_setVoWiFiRoamingSettingEnabled = 229;
-        static final int TRANSACTION_setVoWiFiSettingEnabled = 225;
+        static final int TRANSACTION_setRttCapabilitySetting = 236;
+        static final int TRANSACTION_setSatelliteAccessControlOverlayConfigs = 394;
+        static final int TRANSACTION_setSatelliteControllerTimeoutDuration = 391;
+        static final int TRANSACTION_setSatelliteGatewayServicePackageName = 386;
+        static final int TRANSACTION_setSatelliteIgnoreCellularServiceState = 388;
+        static final int TRANSACTION_setSatelliteListeningTimeoutDuration = 387;
+        static final int TRANSACTION_setSatellitePointingUiClassName = 389;
+        static final int TRANSACTION_setSatelliteServicePackageName = 385;
+        static final int TRANSACTION_setSatelliteSubscriberIdListChangedIntentComponent = 423;
+        static final int TRANSACTION_setShouldSendDatagramToModemInDemoMode = 405;
+        static final int TRANSACTION_setSignalStrengthUpdateRequest = 332;
+        static final int TRANSACTION_setSimPowerStateForSlot = 185;
+        static final int TRANSACTION_setSimPowerStateForSlotWithCallback = 186;
+        static final int TRANSACTION_setSimSlotMapping = 195;
+        static final int TRANSACTION_setSystemSelectionChannels = 273;
+        static final int TRANSACTION_setVoNrEnabled = 292;
+        static final int TRANSACTION_setVoWiFiModeSetting = 233;
+        static final int TRANSACTION_setVoWiFiNonPersistent = 231;
+        static final int TRANSACTION_setVoWiFiRoamingModeSetting = 235;
+        static final int TRANSACTION_setVoWiFiRoamingSettingEnabled = 230;
+        static final int TRANSACTION_setVoWiFiSettingEnabled = 226;
         static final int TRANSACTION_setVoiceActivationState = 50;
         static final int TRANSACTION_setVoiceMailNumber = 49;
-        static final int TRANSACTION_setVoiceServiceStateOverride = 345;
-        static final int TRANSACTION_setVoicemailRingtoneUri = 162;
-        static final int TRANSACTION_setVoicemailVibrationEnabled = 164;
-        static final int TRANSACTION_setVtSettingEnabled = 223;
-        static final int TRANSACTION_showSwitchToManagedProfileDialog = 276;
-        static final int TRANSACTION_shutdownMobileRadios = 133;
-        static final int TRANSACTION_startEmergencyCallbackMode = 252;
-        static final int TRANSACTION_startSatelliteTransmissionUpdates = 363;
+        static final int TRANSACTION_setVoiceServiceStateOverride = 346;
+        static final int TRANSACTION_setVoicemailRingtoneUri = 161;
+        static final int TRANSACTION_setVoicemailVibrationEnabled = 163;
+        static final int TRANSACTION_setVtSettingEnabled = 224;
+        static final int TRANSACTION_showSwitchToManagedProfileDialog = 277;
+        static final int TRANSACTION_shutdownMobileRadios = 132;
+        static final int TRANSACTION_startEmergencyCallbackMode = 253;
+        static final int TRANSACTION_startSatelliteTransmissionUpdates = 365;
         static final int TRANSACTION_stopNetworkScan = 105;
-        static final int TRANSACTION_stopSatelliteTransmissionUpdates = 364;
+        static final int TRANSACTION_stopSatelliteTransmissionUpdates = 366;
         static final int TRANSACTION_supplyPinForSubscriber = 9;
         static final int TRANSACTION_supplyPinReportResultForSubscriber = 11;
         static final int TRANSACTION_supplyPukForSubscriber = 10;
         static final int TRANSACTION_supplyPukReportResultForSubscriber = 12;
-        static final int TRANSACTION_switchMultiSimConfig = 262;
-        static final int TRANSACTION_switchSlots = 195;
+        static final int TRANSACTION_switchMultiSimConfig = 263;
+        static final int TRANSACTION_switchSlots = 194;
         static final int TRANSACTION_toggleRadioOnOff = 16;
         static final int TRANSACTION_toggleRadioOnOffForSubscriber = 17;
-        static final int TRANSACTION_triggerRcsReconfiguration = 306;
-        static final int TRANSACTION_unregisterFeatureProvisioningChangedCallback = 243;
-        static final int TRANSACTION_unregisterForIncomingDatagram = 373;
-        static final int TRANSACTION_unregisterForModemStateChanged = 371;
-        static final int TRANSACTION_unregisterForSatelliteProvisionStateChanged = 368;
+        static final int TRANSACTION_triggerRcsReconfiguration = 307;
+        static final int TRANSACTION_unregisterFeatureProvisioningChangedCallback = 244;
+        static final int TRANSACTION_unregisterForCapabilitiesChanged = 404;
+        static final int TRANSACTION_unregisterForCommunicationAllowedStateChanged = 417;
+        static final int TRANSACTION_unregisterForIncomingDatagram = 375;
+        static final int TRANSACTION_unregisterForModemStateChanged = 373;
+        static final int TRANSACTION_unregisterForNtnSignalStrengthChanged = 402;
+        static final int TRANSACTION_unregisterForSatelliteDisallowedReasonsChanged = 380;
+        static final int TRANSACTION_unregisterForSatelliteProvisionStateChanged = 370;
+        static final int TRANSACTION_unregisterForSatelliteSupportedStateChanged = 415;
+        static final int TRANSACTION_unregisterImsEmergencyRegistrationCallback = 213;
         static final int TRANSACTION_unregisterImsFeatureCallback = 95;
-        static final int TRANSACTION_unregisterImsProvisioningChangedCallback = 241;
-        static final int TRANSACTION_unregisterImsRegistrationCallback = 212;
-        static final int TRANSACTION_unregisterImsStateCallback = 339;
-        static final int TRANSACTION_unregisterMmTelCapabilityCallback = 216;
-        static final int TRANSACTION_unregisterRcsProvisioningCallback = 305;
-        static final int TRANSACTION_updateEmergencyNumberListTestMode = 253;
-        static final int TRANSACTION_updateOtaEmergencyNumberDbFilePath = 257;
+        static final int TRANSACTION_unregisterImsProvisioningChangedCallback = 242;
+        static final int TRANSACTION_unregisterImsRegistrationCallback = 211;
+        static final int TRANSACTION_unregisterImsStateCallback = 340;
+        static final int TRANSACTION_unregisterMmTelCapabilityCallback = 217;
+        static final int TRANSACTION_unregisterRcsProvisioningCallback = 306;
+        static final int TRANSACTION_updateEmergencyNumberListTestMode = 254;
+        static final int TRANSACTION_updateOtaEmergencyNumberDbFilePath = 258;
         static final int TRANSACTION_updateServiceLocation = 24;
         static final int TRANSACTION_updateServiceLocationWithPackageName = 25;
-        static final int TRANSACTION_uploadCallComposerPicture = 135;
-        static final int TRANSACTION_userActivity = 287;
+        static final int TRANSACTION_uploadCallComposerPicture = 134;
+        static final int TRANSACTION_userActivity = 288;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -3348,523 +3629,597 @@ public interface ITelephony extends IInterface {
                 case 130:
                     return "setRoamingOverride";
                 case 131:
-                    return "invokeOemRilRequestRaw";
-                case 132:
                     return "needMobileRadioShutdown";
-                case 133:
+                case 132:
                     return "shutdownMobileRadios";
-                case 134:
+                case 133:
                     return "getRadioAccessFamily";
-                case 135:
+                case 134:
                     return "uploadCallComposerPicture";
-                case 136:
+                case 135:
                     return "enableVideoCalling";
-                case 137:
+                case 136:
                     return "isVideoCallingEnabled";
-                case 138:
+                case 137:
                     return "canChangeDtmfToneLength";
-                case 139:
+                case 138:
                     return "isWorldPhone";
-                case 140:
+                case 139:
                     return "isTtyModeSupported";
-                case 141:
+                case 140:
                     return "isRttSupported";
-                case 142:
+                case 141:
                     return "isHearingAidCompatibilitySupported";
-                case 143:
+                case 142:
                     return "isImsRegistered";
-                case 144:
+                case 143:
                     return "isWifiCallingAvailable";
-                case 145:
+                case 144:
                     return "isVideoTelephonyAvailable";
-                case 146:
+                case 145:
                     return "getImsRegTechnologyForMmTel";
-                case 147:
+                case 146:
                     return "getDeviceId";
-                case 148:
+                case 147:
                     return "getDeviceIdWithFeature";
-                case 149:
+                case 148:
                     return "getImeiForSlot";
-                case 150:
+                case 149:
                     return "getPrimaryImei";
-                case 151:
+                case 150:
                     return "getTypeAllocationCodeForSlot";
-                case 152:
+                case 151:
                     return "getMeidForSlot";
-                case 153:
+                case 152:
                     return "getManufacturerCodeForSlot";
-                case 154:
+                case 153:
                     return "getDeviceSoftwareVersionForSlot";
-                case 155:
+                case 154:
                     return "getSubIdForPhoneAccountHandle";
-                case 156:
+                case 155:
                     return "getPhoneAccountHandleForSubscriptionId";
-                case 157:
+                case 156:
                     return "factoryReset";
-                case 158:
+                case 157:
                     return "getSimLocaleForSubscriber";
-                case 159:
+                case 158:
                     return "requestModemActivityInfo";
+                case 159:
+                    return "getServiceStateForSlot";
                 case 160:
-                    return "getServiceStateForSubscriber";
-                case 161:
                     return "getVoicemailRingtoneUri";
-                case 162:
+                case 161:
                     return "setVoicemailRingtoneUri";
-                case 163:
+                case 162:
                     return "isVoicemailVibrationEnabled";
-                case 164:
+                case 163:
                     return "setVoicemailVibrationEnabled";
-                case 165:
+                case 164:
                     return "getPackagesWithCarrierPrivileges";
-                case 166:
+                case 165:
                     return "getPackagesWithCarrierPrivilegesForAllPhones";
-                case 167:
+                case 166:
                     return "getAidForAppType";
-                case 168:
+                case 167:
                     return "getEsn";
-                case 169:
+                case 168:
                     return "getCdmaPrlVersion";
-                case 170:
+                case 169:
                     return "getTelephonyHistograms";
-                case 171:
+                case 170:
                     return "setAllowedCarriers";
-                case 172:
+                case 171:
                     return "getAllowedCarriers";
-                case 173:
+                case 172:
                     return "getSubscriptionCarrierId";
-                case 174:
+                case 173:
                     return "getSubscriptionCarrierName";
-                case 175:
+                case 174:
                     return "getSubscriptionSpecificCarrierId";
-                case 176:
+                case 175:
                     return "getSubscriptionSpecificCarrierName";
-                case 177:
+                case 176:
                     return "getCarrierIdFromMccMnc";
-                case 178:
+                case 177:
                     return "carrierActionSetRadioEnabled";
-                case 179:
+                case 178:
                     return "carrierActionReportDefaultNetworkStatus";
-                case 180:
+                case 179:
                     return "carrierActionResetAll";
-                case 181:
+                case 180:
                     return "getCallForwarding";
-                case 182:
+                case 181:
                     return "setCallForwarding";
-                case 183:
+                case 182:
                     return "getCallWaitingStatus";
-                case 184:
+                case 183:
                     return "setCallWaitingStatus";
-                case 185:
+                case 184:
                     return "getClientRequestStats";
-                case 186:
+                case 185:
                     return "setSimPowerStateForSlot";
-                case 187:
+                case 186:
                     return "setSimPowerStateForSlotWithCallback";
-                case 188:
+                case 187:
                     return "getForbiddenPlmns";
-                case 189:
+                case 188:
                     return "setForbiddenPlmns";
-                case 190:
+                case 189:
                     return "getEmergencyCallbackMode";
-                case 191:
+                case 190:
                     return "getSignalStrength";
-                case 192:
+                case 191:
                     return "getCardIdForDefaultEuicc";
-                case 193:
+                case 192:
                     return "getUiccCardsInfo";
-                case 194:
+                case 193:
                     return "getUiccSlotsInfo";
-                case 195:
+                case 194:
                     return "switchSlots";
-                case 196:
+                case 195:
                     return "setSimSlotMapping";
-                case 197:
+                case 196:
                     return "isDataRoamingEnabled";
-                case 198:
+                case 197:
                     return "setDataRoamingEnabled";
-                case 199:
+                case 198:
                     return "getCdmaRoamingMode";
-                case 200:
+                case 199:
                     return "setCdmaRoamingMode";
-                case 201:
+                case 200:
                     return "getCdmaSubscriptionMode";
-                case 202:
+                case 201:
                     return "setCdmaSubscriptionMode";
-                case 203:
+                case 202:
                     return "setCarrierTestOverride";
-                case 204:
+                case 203:
                     return "setCarrierServicePackageOverride";
-                case 205:
+                case 204:
                     return "getCarrierIdListVersion";
-                case 206:
+                case 205:
                     return "refreshUiccProfile";
-                case 207:
+                case 206:
                     return "getNumberOfModemsWithSimultaneousDataConnections";
-                case 208:
+                case 207:
                     return "getNetworkSelectionMode";
-                case 209:
+                case 208:
                     return "isInEmergencySmsMode";
-                case 210:
+                case 209:
                     return "getRadioPowerState";
-                case 211:
+                case 210:
                     return "registerImsRegistrationCallback";
-                case 212:
+                case 211:
                     return "unregisterImsRegistrationCallback";
+                case 212:
+                    return "registerImsEmergencyRegistrationCallback";
                 case 213:
-                    return "getImsMmTelRegistrationState";
+                    return "unregisterImsEmergencyRegistrationCallback";
                 case 214:
-                    return "getImsMmTelRegistrationTransportType";
+                    return "getImsMmTelRegistrationState";
                 case 215:
-                    return "registerMmTelCapabilityCallback";
+                    return "getImsMmTelRegistrationTransportType";
                 case 216:
-                    return "unregisterMmTelCapabilityCallback";
+                    return "registerMmTelCapabilityCallback";
                 case 217:
-                    return "isCapable";
+                    return "unregisterMmTelCapabilityCallback";
                 case 218:
-                    return "isAvailable";
+                    return "isCapable";
                 case 219:
-                    return "isMmTelCapabilitySupported";
+                    return "isAvailable";
                 case 220:
-                    return "isAdvancedCallingSettingEnabled";
+                    return "isMmTelCapabilitySupported";
                 case 221:
-                    return "setAdvancedCallingSettingEnabled";
+                    return "isAdvancedCallingSettingEnabled";
                 case 222:
-                    return "isVtSettingEnabled";
+                    return "setAdvancedCallingSettingEnabled";
                 case 223:
-                    return "setVtSettingEnabled";
+                    return "isVtSettingEnabled";
                 case 224:
-                    return "isVoWiFiSettingEnabled";
+                    return "setVtSettingEnabled";
                 case 225:
-                    return "setVoWiFiSettingEnabled";
+                    return "isVoWiFiSettingEnabled";
                 case 226:
-                    return "isCrossSimCallingEnabledByUser";
+                    return "setVoWiFiSettingEnabled";
                 case 227:
-                    return "setCrossSimCallingEnabled";
+                    return "isCrossSimCallingEnabledByUser";
                 case 228:
-                    return "isVoWiFiRoamingSettingEnabled";
+                    return "setCrossSimCallingEnabled";
                 case 229:
-                    return "setVoWiFiRoamingSettingEnabled";
+                    return "isVoWiFiRoamingSettingEnabled";
                 case 230:
-                    return "setVoWiFiNonPersistent";
+                    return "setVoWiFiRoamingSettingEnabled";
                 case 231:
-                    return "getVoWiFiModeSetting";
+                    return "setVoWiFiNonPersistent";
                 case 232:
-                    return "setVoWiFiModeSetting";
+                    return "getVoWiFiModeSetting";
                 case 233:
-                    return "getVoWiFiRoamingModeSetting";
+                    return "setVoWiFiModeSetting";
                 case 234:
-                    return "setVoWiFiRoamingModeSetting";
+                    return "getVoWiFiRoamingModeSetting";
                 case 235:
-                    return "setRttCapabilitySetting";
+                    return "setVoWiFiRoamingModeSetting";
                 case 236:
-                    return "isTtyOverVolteEnabled";
+                    return "setRttCapabilitySetting";
                 case 237:
-                    return "getEmergencyNumberList";
+                    return "isTtyOverVolteEnabled";
                 case 238:
-                    return "isEmergencyNumber";
+                    return "getEmergencyNumberList";
                 case 239:
-                    return "getCertsFromCarrierPrivilegeAccessRules";
+                    return "isEmergencyNumber";
                 case 240:
-                    return "registerImsProvisioningChangedCallback";
+                    return "getCertsFromCarrierPrivilegeAccessRules";
                 case 241:
-                    return "unregisterImsProvisioningChangedCallback";
+                    return "registerImsProvisioningChangedCallback";
                 case 242:
-                    return "registerFeatureProvisioningChangedCallback";
+                    return "unregisterImsProvisioningChangedCallback";
                 case 243:
-                    return "unregisterFeatureProvisioningChangedCallback";
+                    return "registerFeatureProvisioningChangedCallback";
                 case 244:
-                    return "setImsProvisioningStatusForCapability";
+                    return "unregisterFeatureProvisioningChangedCallback";
                 case 245:
-                    return "getImsProvisioningStatusForCapability";
+                    return "setImsProvisioningStatusForCapability";
                 case 246:
-                    return "getRcsProvisioningStatusForCapability";
+                    return "getImsProvisioningStatusForCapability";
                 case 247:
-                    return "setRcsProvisioningStatusForCapability";
+                    return "getRcsProvisioningStatusForCapability";
                 case 248:
-                    return "getImsProvisioningInt";
+                    return "setRcsProvisioningStatusForCapability";
                 case 249:
-                    return "getImsProvisioningString";
+                    return "getImsProvisioningInt";
                 case 250:
-                    return "setImsProvisioningInt";
+                    return "getImsProvisioningString";
                 case 251:
-                    return "setImsProvisioningString";
+                    return "setImsProvisioningInt";
                 case 252:
-                    return "startEmergencyCallbackMode";
+                    return "setImsProvisioningString";
                 case 253:
-                    return "updateEmergencyNumberListTestMode";
+                    return "startEmergencyCallbackMode";
                 case 254:
-                    return "getEmergencyNumberListTestMode";
+                    return "updateEmergencyNumberListTestMode";
                 case 255:
-                    return "getEmergencyNumberDbVersion";
+                    return "getEmergencyNumberListTestMode";
                 case 256:
-                    return "notifyOtaEmergencyNumberDbInstalled";
+                    return "getEmergencyNumberDbVersion";
                 case 257:
-                    return "updateOtaEmergencyNumberDbFilePath";
+                    return "notifyOtaEmergencyNumberDbInstalled";
                 case 258:
-                    return "resetOtaEmergencyNumberDbFilePath";
+                    return "updateOtaEmergencyNumberDbFilePath";
                 case 259:
-                    return "enableModemForSlot";
+                    return "resetOtaEmergencyNumberDbFilePath";
                 case 260:
-                    return "setMultiSimCarrierRestriction";
+                    return "enableModemForSlot";
                 case 261:
-                    return "isMultiSimSupported";
+                    return "setMultiSimCarrierRestriction";
                 case 262:
-                    return "switchMultiSimConfig";
+                    return "isMultiSimSupported";
                 case 263:
-                    return "doesSwitchMultiSimConfigTriggerReboot";
+                    return "switchMultiSimConfig";
                 case 264:
-                    return "getSlotsMapping";
+                    return "doesSwitchMultiSimConfigTriggerReboot";
                 case 265:
-                    return "getRadioHalVersion";
+                    return "getSlotsMapping";
                 case 266:
-                    return "getHalVersion";
+                    return "getRadioHalVersion";
                 case 267:
-                    return "getCurrentPackageName";
+                    return "getHalVersion";
                 case 268:
-                    return "isApplicationOnUicc";
+                    return "getCurrentPackageName";
                 case 269:
-                    return "isModemEnabledForSlot";
+                    return "isApplicationOnUicc";
                 case 270:
-                    return "isDataEnabledForApn";
+                    return "isModemEnabledForSlot";
                 case 271:
-                    return "isApnMetered";
+                    return "isDataEnabledForApn";
                 case 272:
-                    return "setSystemSelectionChannels";
+                    return "isApnMetered";
                 case 273:
-                    return "getSystemSelectionChannels";
+                    return "setSystemSelectionChannels";
                 case 274:
-                    return "isMvnoMatched";
+                    return "getSystemSelectionChannels";
                 case 275:
-                    return "enqueueSmsPickResult";
+                    return "isMvnoMatched";
                 case 276:
-                    return "showSwitchToManagedProfileDialog";
+                    return "enqueueSmsPickResult";
                 case 277:
-                    return "getMmsUserAgent";
+                    return "showSwitchToManagedProfileDialog";
                 case 278:
-                    return "getMmsUAProfUrl";
+                    return "getMmsUserAgent";
                 case 279:
-                    return "setMobileDataPolicyEnabled";
+                    return "getMmsUAProfUrl";
                 case 280:
-                    return "isMobileDataPolicyEnabled";
+                    return "setMobileDataPolicyEnabled";
                 case 281:
-                    return "setCepEnabled";
+                    return "isMobileDataPolicyEnabled";
                 case 282:
-                    return "notifyRcsAutoConfigurationReceived";
+                    return "setCepEnabled";
                 case 283:
-                    return "isIccLockEnabled";
+                    return "notifyRcsAutoConfigurationReceived";
                 case 284:
-                    return "setIccLockEnabled";
+                    return "isIccLockEnabled";
                 case 285:
-                    return "changeIccLockPassword";
+                    return "setIccLockEnabled";
                 case 286:
-                    return "requestUserActivityNotification";
+                    return "changeIccLockPassword";
                 case 287:
-                    return "userActivity";
+                    return "requestUserActivityNotification";
                 case 288:
-                    return "getManualNetworkSelectionPlmn";
+                    return "userActivity";
                 case 289:
-                    return "canConnectTo5GInDsdsMode";
+                    return "getManualNetworkSelectionPlmn";
                 case 290:
-                    return "getEquivalentHomePlmns";
+                    return "canConnectTo5GInDsdsMode";
                 case 291:
-                    return "setVoNrEnabled";
+                    return "getEquivalentHomePlmns";
                 case 292:
-                    return "isVoNrEnabled";
+                    return "setVoNrEnabled";
                 case 293:
-                    return "setNrDualConnectivityState";
+                    return "isVoNrEnabled";
                 case 294:
-                    return "isNrDualConnectivityEnabled";
+                    return "setNrDualConnectivityState";
                 case 295:
-                    return "isRadioInterfaceCapabilitySupported";
+                    return "isNrDualConnectivityEnabled";
                 case 296:
-                    return "sendThermalMitigationRequest";
+                    return "isRadioInterfaceCapabilitySupported";
                 case 297:
-                    return "bootstrapAuthenticationRequest";
+                    return "sendThermalMitigationRequest";
                 case 298:
-                    return "setBoundGbaServiceOverride";
+                    return "bootstrapAuthenticationRequest";
                 case 299:
-                    return "getBoundGbaService";
+                    return "setBoundGbaServiceOverride";
                 case 300:
-                    return "setGbaReleaseTimeOverride";
+                    return "getBoundGbaService";
                 case 301:
-                    return "getGbaReleaseTime";
+                    return "setGbaReleaseTimeOverride";
                 case 302:
-                    return "setRcsClientConfiguration";
+                    return "getGbaReleaseTime";
                 case 303:
-                    return "isRcsVolteSingleRegistrationCapable";
+                    return "setRcsClientConfiguration";
                 case 304:
-                    return "registerRcsProvisioningCallback";
+                    return "isRcsVolteSingleRegistrationCapable";
                 case 305:
-                    return "unregisterRcsProvisioningCallback";
+                    return "registerRcsProvisioningCallback";
                 case 306:
-                    return "triggerRcsReconfiguration";
+                    return "unregisterRcsProvisioningCallback";
                 case 307:
-                    return "setRcsSingleRegistrationTestModeEnabled";
+                    return "triggerRcsReconfiguration";
                 case 308:
-                    return "getRcsSingleRegistrationTestModeEnabled";
+                    return "setRcsSingleRegistrationTestModeEnabled";
                 case 309:
-                    return "setDeviceSingleRegistrationEnabledOverride";
+                    return "getRcsSingleRegistrationTestModeEnabled";
                 case 310:
-                    return "getDeviceSingleRegistrationEnabled";
+                    return "setDeviceSingleRegistrationEnabledOverride";
                 case 311:
-                    return "setCarrierSingleRegistrationEnabledOverride";
+                    return "getDeviceSingleRegistrationEnabled";
                 case 312:
-                    return "sendDeviceToDeviceMessage";
+                    return "setCarrierSingleRegistrationEnabledOverride";
                 case 313:
-                    return "setActiveDeviceToDeviceTransport";
+                    return "sendDeviceToDeviceMessage";
                 case 314:
-                    return "setDeviceToDeviceForceEnabled";
+                    return "setActiveDeviceToDeviceTransport";
                 case 315:
-                    return "getCarrierSingleRegistrationEnabled";
+                    return "setDeviceToDeviceForceEnabled";
                 case 316:
-                    return "setImsFeatureValidationOverride";
+                    return "getCarrierSingleRegistrationEnabled";
                 case 317:
-                    return "getImsFeatureValidationOverride";
+                    return "setImsFeatureValidationOverride";
                 case 318:
-                    return "getMobileProvisioningUrl";
+                    return "getImsFeatureValidationOverride";
                 case 319:
-                    return "removeContactFromEab";
+                    return "getMobileProvisioningUrl";
                 case 320:
-                    return "getContactFromEab";
+                    return "removeContactFromEab";
                 case 321:
-                    return "getCapabilityFromEab";
+                    return "getContactFromEab";
                 case 322:
-                    return "getDeviceUceEnabled";
+                    return "getCapabilityFromEab";
                 case 323:
-                    return "setDeviceUceEnabled";
+                    return "getDeviceUceEnabled";
                 case 324:
-                    return "addUceRegistrationOverrideShell";
+                    return "setDeviceUceEnabled";
                 case 325:
-                    return "removeUceRegistrationOverrideShell";
+                    return "addUceRegistrationOverrideShell";
                 case 326:
-                    return "clearUceRegistrationOverrideShell";
+                    return "removeUceRegistrationOverrideShell";
                 case 327:
-                    return "getLatestRcsContactUceCapabilityShell";
+                    return "clearUceRegistrationOverrideShell";
                 case 328:
-                    return "getLastUcePidfXmlShell";
+                    return "getLatestRcsContactUceCapabilityShell";
                 case 329:
-                    return "removeUceRequestDisallowedStatus";
+                    return "getLastUcePidfXmlShell";
                 case 330:
-                    return "setCapabilitiesRequestTimeout";
+                    return "removeUceRequestDisallowedStatus";
                 case 331:
-                    return "setSignalStrengthUpdateRequest";
+                    return "setCapabilitiesRequestTimeout";
                 case 332:
-                    return "clearSignalStrengthUpdateRequest";
+                    return "setSignalStrengthUpdateRequest";
                 case 333:
-                    return "getPhoneCapability";
+                    return "clearSignalStrengthUpdateRequest";
                 case 334:
-                    return "prepareForUnattendedReboot";
+                    return "getPhoneCapability";
                 case 335:
-                    return "getSlicingConfig";
+                    return "prepareForUnattendedReboot";
                 case 336:
-                    return "isPremiumCapabilityAvailableForPurchase";
+                    return "getSlicingConfig";
                 case 337:
-                    return "purchasePremiumCapability";
+                    return "isPremiumCapabilityAvailableForPurchase";
                 case 338:
-                    return "registerImsStateCallback";
+                    return "purchasePremiumCapability";
                 case 339:
-                    return "unregisterImsStateCallback";
+                    return "registerImsStateCallback";
                 case 340:
-                    return "getLastKnownCellIdentity";
+                    return "unregisterImsStateCallback";
                 case 341:
-                    return "setModemService";
+                    return "getLastKnownCellIdentity";
                 case 342:
-                    return "getModemService";
+                    return "setModemService";
                 case 343:
-                    return "isProvisioningRequiredForCapability";
+                    return "getModemService";
                 case 344:
-                    return "isRcsProvisioningRequiredForCapability";
+                    return "isProvisioningRequiredForCapability";
                 case 345:
-                    return "setVoiceServiceStateOverride";
+                    return "isRcsProvisioningRequiredForCapability";
                 case 346:
-                    return "getCarrierServicePackageNameForLogicalSlot";
+                    return "setVoiceServiceStateOverride";
                 case 347:
-                    return "setRemovableEsimAsDefaultEuicc";
+                    return "getCarrierServicePackageNameForLogicalSlot";
                 case 348:
-                    return "isRemovableEsimDefaultEuicc";
+                    return "setRemovableEsimAsDefaultEuicc";
                 case 349:
-                    return "getDefaultRespondViaMessageApplication";
+                    return "isRemovableEsimDefaultEuicc";
                 case 350:
-                    return "getSimStateForSlotIndex";
+                    return "getDefaultRespondViaMessageApplication";
                 case 351:
-                    return "persistEmergencyCallDiagnosticData";
+                    return "getSimStateForSlotIndex";
                 case 352:
-                    return "setNullCipherAndIntegrityEnabled";
+                    return "persistEmergencyCallDiagnosticData";
                 case 353:
-                    return "isNullCipherAndIntegrityPreferenceEnabled";
+                    return "setNullCipherAndIntegrityEnabled";
                 case 354:
-                    return "getCellBroadcastIdRanges";
+                    return "isNullCipherAndIntegrityPreferenceEnabled";
                 case 355:
-                    return "setCellBroadcastIdRanges";
+                    return "getCellBroadcastIdRanges";
                 case 356:
-                    return "isDomainSelectionSupported";
+                    return "setCellBroadcastIdRanges";
                 case 357:
-                    return "getCarrierRestrictionStatus";
+                    return "isDomainSelectionSupported";
                 case 358:
-                    return "requestSatelliteEnabled";
+                    return "getCarrierRestrictionStatus";
                 case 359:
-                    return "requestIsSatelliteEnabled";
+                    return "requestSatelliteEnabled";
                 case 360:
-                    return "requestIsDemoModeEnabled";
+                    return "requestIsSatelliteEnabled";
                 case 361:
-                    return "requestIsSatelliteSupported";
+                    return "requestIsDemoModeEnabled";
                 case 362:
-                    return "requestSatelliteCapabilities";
+                    return "requestIsEmergencyModeEnabled";
                 case 363:
-                    return "startSatelliteTransmissionUpdates";
+                    return "requestIsSatelliteSupported";
                 case 364:
-                    return "stopSatelliteTransmissionUpdates";
+                    return "requestSatelliteCapabilities";
                 case 365:
-                    return "provisionSatelliteService";
+                    return "startSatelliteTransmissionUpdates";
                 case 366:
-                    return "deprovisionSatelliteService";
+                    return "stopSatelliteTransmissionUpdates";
                 case 367:
-                    return "registerForSatelliteProvisionStateChanged";
+                    return "provisionSatelliteService";
                 case 368:
-                    return "unregisterForSatelliteProvisionStateChanged";
+                    return "deprovisionSatelliteService";
                 case 369:
-                    return "requestIsSatelliteProvisioned";
+                    return "registerForSatelliteProvisionStateChanged";
                 case 370:
-                    return "registerForSatelliteModemStateChanged";
+                    return "unregisterForSatelliteProvisionStateChanged";
                 case 371:
-                    return "unregisterForModemStateChanged";
+                    return "requestIsSatelliteProvisioned";
                 case 372:
-                    return "registerForIncomingDatagram";
+                    return "registerForSatelliteModemStateChanged";
                 case 373:
-                    return "unregisterForIncomingDatagram";
+                    return "unregisterForModemStateChanged";
                 case 374:
-                    return "pollPendingDatagrams";
+                    return "registerForIncomingDatagram";
                 case 375:
-                    return "sendDatagram";
+                    return "unregisterForIncomingDatagram";
                 case 376:
-                    return "requestIsCommunicationAllowedForCurrentLocation";
+                    return "pollPendingDatagrams";
                 case 377:
-                    return "requestTimeForNextSatelliteVisibility";
+                    return "sendDatagram";
                 case 378:
-                    return "onDeviceAlignedWithSatellite";
+                    return "getSatelliteDisallowedReasons";
                 case 379:
-                    return "setSatelliteServicePackageName";
+                    return "registerForSatelliteDisallowedReasonsChanged";
                 case 380:
-                    return "setSatelliteGatewayServicePackageName";
+                    return "unregisterForSatelliteDisallowedReasonsChanged";
                 case 381:
-                    return "setSatelliteListeningTimeoutDuration";
+                    return "requestIsCommunicationAllowedForCurrentLocation";
                 case 382:
-                    return "setSatellitePointingUiClassName";
+                    return "requestTimeForNextSatelliteVisibility";
                 case 383:
-                    return "setSatelliteDeviceAlignedTimeoutDuration";
+                    return "requestSelectedNbIotSatelliteSubscriptionId";
                 case 384:
-                    return "setEmergencyCallToSatelliteHandoverType";
+                    return "setDeviceAlignedWithSatellite";
                 case 385:
-                    return "getShaIdFromAllowList";
+                    return "setSatelliteServicePackageName";
                 case 386:
-                    return "addAttachRestrictionForCarrier";
+                    return "setSatelliteGatewayServicePackageName";
                 case 387:
-                    return "removeAttachRestrictionForCarrier";
+                    return "setSatelliteListeningTimeoutDuration";
                 case 388:
-                    return "getAttachRestrictionReasonsForCarrier";
+                    return "setSatelliteIgnoreCellularServiceState";
                 case 389:
+                    return "setSatellitePointingUiClassName";
+                case 390:
+                    return "setDatagramControllerTimeoutDuration";
+                case 391:
+                    return "setSatelliteControllerTimeoutDuration";
+                case 392:
+                    return "setEmergencyCallToSatelliteHandoverType";
+                case 393:
+                    return "setCountryCodes";
+                case 394:
+                    return "setSatelliteAccessControlOverlayConfigs";
+                case 395:
+                    return "setOemEnabledSatelliteProvisionStatus";
+                case 396:
+                    return "getShaIdFromAllowList";
+                case 397:
+                    return "addAttachRestrictionForCarrier";
+                case 398:
+                    return "removeAttachRestrictionForCarrier";
+                case 399:
+                    return "getAttachRestrictionReasonsForCarrier";
+                case 400:
+                    return "requestNtnSignalStrength";
+                case 401:
+                    return "registerForNtnSignalStrengthChanged";
+                case 402:
+                    return "unregisterForNtnSignalStrengthChanged";
+                case 403:
+                    return "registerForCapabilitiesChanged";
+                case 404:
+                    return "unregisterForCapabilitiesChanged";
+                case 405:
+                    return "setShouldSendDatagramToModemInDemoMode";
+                case 406:
+                    return "setDomainSelectionServiceOverride";
+                case 407:
+                    return "clearDomainSelectionServiceOverride";
+                case 408:
+                    return "isAospDomainSelectionService";
+                case 409:
+                    return "setEnableCellularIdentifierDisclosureNotifications";
+                case 410:
+                    return "isCellularIdentifierDisclosureNotificationsEnabled";
+                case 411:
+                    return "setNullCipherNotificationsEnabled";
+                case 412:
+                    return "isNullCipherNotificationsEnabled";
+                case 413:
                     return "getSatellitePlmnsForCarrier";
+                case 414:
+                    return "registerForSatelliteSupportedStateChanged";
+                case 415:
+                    return "unregisterForSatelliteSupportedStateChanged";
+                case 416:
+                    return "registerForCommunicationAllowedStateChanged";
+                case 417:
+                    return "unregisterForCommunicationAllowedStateChanged";
+                case 418:
+                    return "setDatagramControllerBooleanConfig";
+                case 419:
+                    return "setIsSatelliteCommunicationAllowedForCurrentLocationCache";
+                case 420:
+                    return "requestSatelliteSessionStats";
+                case 421:
+                    return "requestSatelliteSubscriberProvisionStatus";
+                case 422:
+                    return "provisionSatellite";
+                case 423:
+                    return "setSatelliteSubscriberIdListChangedIntentComponent";
+                case 424:
+                    return "overrideCarrierRoamingNtnEligibilityChanged";
+                case 425:
+                    return "deprovisionSatellite";
+                case 426:
+                    return "setNtnSmsSupported";
                 default:
                     return null;
             }
@@ -3877,2128 +4232,2135 @@ public interface ITelephony extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            byte[] _arg1;
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    dial(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    call(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = isRadioOn(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isRadioOnWithFeature(_arg04, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isRadioOnForSubscriber(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 6:
+                    return onTransact$isRadioOnForSubscriberWithFeature$(data, reply);
+                case 7:
+                    int _arg06 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCallComposerStatus(_arg06, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result4 = getCallComposerStatus(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = supplyPinForSubscriber(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 10:
+                    return onTransact$supplyPukForSubscriber$(data, reply);
+                case 11:
+                    int _arg09 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result6 = supplyPinReportResultForSubscriber(_arg09, _arg16);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result6);
+                    return true;
+                case 12:
+                    return onTransact$supplyPukReportResultForSubscriber$(data, reply);
+                case 13:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = handlePinMmi(_arg010);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 14:
+                    return onTransact$handleUssdRequest$(data, reply);
+                case 15:
+                    int _arg011 = data.readInt();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = handlePinMmiForSubscriber(_arg011, _arg17);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 16:
+                    toggleRadioOnOff();
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    toggleRadioOnOffForSubscriber(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    boolean _arg013 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = setRadio(_arg013);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 19:
+                    int _arg014 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = setRadioForSubscriber(_arg014, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 20:
+                    boolean _arg015 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = setRadioPower(_arg015);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 21:
+                    int _arg016 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = requestRadioPowerOffForReason(_arg016, _arg19);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 22:
+                    int _arg017 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = clearRadioPowerOffForReason(_arg017, _arg110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 23:
+                    return onTransact$getRadioPowerOffReasons$(data, reply);
+                case 24:
+                    updateServiceLocation();
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    String _arg018 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateServiceLocationWithPackageName(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    enableLocationUpdates();
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    disableLocationUpdates();
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = enableDataConnectivity(_arg019);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 29:
+                    String _arg020 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = disableDataConnectivity(_arg020);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 30:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result16 = isDataConnectivityPossible(_arg021);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 31:
+                    String _arg022 = data.readString();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    CellIdentity _result17 = getCellLocation(_arg022, _arg111);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result17, 1);
+                    return true;
+                case 32:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result18 = getNetworkCountryIsoForPhone(_arg023);
+                    reply.writeNoException();
+                    reply.writeString(_result18);
+                    return true;
+                case 33:
+                    String _arg024 = data.readString();
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<NeighboringCellInfo> _result19 = getNeighboringCellInfo(_arg024, _arg112);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result19, 1);
+                    return true;
+                case 34:
+                    int _result20 = getCallState();
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 35:
+                    return onTransact$getCallStateForSubscription$(data, reply);
+                case 36:
+                    int _result21 = getDataActivity();
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 37:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result22 = getDataActivityForSubId(_arg025);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 38:
+                    int _result23 = getDataState();
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 39:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result24 = getDataStateForSubId(_arg026);
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 40:
+                    int _result25 = getActivePhoneType();
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 41:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result26 = getActivePhoneTypeForSlot(_arg027);
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 42:
+                    String _arg028 = data.readString();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result27 = getCdmaEriIconIndex(_arg028, _arg113);
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 43:
+                    return onTransact$getCdmaEriIconIndexForSubscriber$(data, reply);
+                case 44:
+                    String _arg029 = data.readString();
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result28 = getCdmaEriIconMode(_arg029, _arg114);
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 45:
+                    return onTransact$getCdmaEriIconModeForSubscriber$(data, reply);
+                case 46:
+                    String _arg030 = data.readString();
+                    String _arg115 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result29 = getCdmaEriText(_arg030, _arg115);
+                    reply.writeNoException();
+                    reply.writeString(_result29);
+                    return true;
+                case 47:
+                    return onTransact$getCdmaEriTextForSubscriber$(data, reply);
+                case 48:
+                    boolean _result30 = needsOtaServiceProvisioning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 49:
+                    return onTransact$setVoiceMailNumber$(data, reply);
+                case 50:
+                    int _arg031 = data.readInt();
+                    int _arg116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVoiceActivationState(_arg031, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 51:
+                    int _arg032 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDataActivationState(_arg032, _arg117);
+                    reply.writeNoException();
+                    return true;
+                case 52:
+                    int _arg033 = data.readInt();
+                    String _arg118 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result31 = getVoiceActivationState(_arg033, _arg118);
+                    reply.writeNoException();
+                    reply.writeInt(_result31);
+                    return true;
+                case 53:
+                    int _arg034 = data.readInt();
+                    String _arg119 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result32 = getDataActivationState(_arg034, _arg119);
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    return true;
+                case 54:
+                    return onTransact$getVoiceMessageCountForSubscriber$(data, reply);
+                case 55:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result33 = isConcurrentVoiceAndDataAllowed(_arg035);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 56:
+                    String _arg036 = data.readString();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result34 = getVisualVoicemailSettings(_arg036, _arg120);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result34, 1);
+                    return true;
+                case 57:
+                    return onTransact$getVisualVoicemailPackageName$(data, reply);
+                case 58:
+                    return onTransact$enableVisualVoicemailSmsFilter$(data, reply);
+                case 59:
+                    String _arg037 = data.readString();
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableVisualVoicemailSmsFilter(_arg037, _arg121);
+                    return true;
+                case 60:
+                    String _arg038 = data.readString();
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VisualVoicemailSmsFilterSettings _result35 = getVisualVoicemailSmsFilterSettings(_arg038, _arg122);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result35, 1);
+                    return true;
+                case 61:
+                    int _arg039 = data.readInt();
+                    data.enforceNoDataAvail();
+                    VisualVoicemailSmsFilterSettings _result36 = getActiveVisualVoicemailSmsFilterSettings(_arg039);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result36, 1);
+                    return true;
+                case 62:
+                    return onTransact$sendVisualVoicemailSmsForSubscriber$(data, reply);
+                case 63:
+                    String _arg040 = data.readString();
+                    String _arg123 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendDialerSpecialCode(_arg040, _arg123);
+                    reply.writeNoException();
+                    return true;
+                case 64:
+                    return onTransact$getNetworkTypeForSubscriber$(data, reply);
+                case 65:
+                    String _arg041 = data.readString();
+                    String _arg124 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result37 = getDataNetworkType(_arg041, _arg124);
+                    reply.writeNoException();
+                    reply.writeInt(_result37);
+                    return true;
+                case 66:
+                    return onTransact$getDataNetworkTypeForSubscriber$(data, reply);
+                case 67:
+                    return onTransact$getVoiceNetworkTypeForSubscriber$(data, reply);
+                case 68:
+                    boolean _result38 = hasIccCard();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result38);
+                    return true;
+                case 69:
+                    int _arg042 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result39 = hasIccCardUsingSlotIndex(_arg042);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result39);
+                    return true;
+                case 70:
+                    String _arg043 = data.readString();
+                    String _arg125 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result40 = getLteOnCdmaMode(_arg043, _arg125);
+                    reply.writeNoException();
+                    reply.writeInt(_result40);
+                    return true;
+                case 71:
+                    return onTransact$getLteOnCdmaModeForSubscriber$(data, reply);
+                case 72:
+                    String _arg044 = data.readString();
+                    String _arg126 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<CellInfo> _result41 = getAllCellInfo(_arg044, _arg126);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result41, 1);
+                    return true;
+                case 73:
+                    return onTransact$requestCellInfoUpdate$(data, reply);
+                case 74:
+                    return onTransact$requestCellInfoUpdateWithWorkSource$(data, reply);
+                case 75:
+                    int _arg045 = data.readInt();
+                    int _arg127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCellInfoListRate(_arg045, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    IccLogicalChannelRequest _arg046 = (IccLogicalChannelRequest) data.readTypedObject(IccLogicalChannelRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    IccOpenLogicalChannelResponse _result42 = iccOpenLogicalChannel(_arg046);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result42, 1);
+                    return true;
+                case 77:
+                    IccLogicalChannelRequest _arg047 = (IccLogicalChannelRequest) data.readTypedObject(IccLogicalChannelRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result43 = iccCloseLogicalChannel(_arg047);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result43);
+                    return true;
+                case 78:
+                    return onTransact$iccTransmitApduLogicalChannelByPort$(data, reply);
+                case 79:
+                    return onTransact$iccTransmitApduLogicalChannel$(data, reply);
+                case 80:
+                    return onTransact$iccTransmitApduBasicChannelByPort$(data, reply);
+                case 81:
+                    return onTransact$iccTransmitApduBasicChannel$(data, reply);
+                case 82:
+                    return onTransact$iccExchangeSimIO$(data, reply);
+                case 83:
+                    int _arg048 = data.readInt();
+                    String _arg128 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result44 = sendEnvelopeWithStatus(_arg048, _arg128);
+                    reply.writeNoException();
+                    reply.writeString(_result44);
+                    return true;
+                case 84:
+                    int _arg049 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result45 = nvReadItem(_arg049);
+                    reply.writeNoException();
+                    reply.writeString(_result45);
+                    return true;
+                case 85:
+                    int _arg050 = data.readInt();
+                    String _arg129 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result46 = nvWriteItem(_arg050, _arg129);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result46);
+                    return true;
+                case 86:
+                    byte[] _arg051 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result47 = nvWriteCdmaPrl(_arg051);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 87:
+                    int _arg052 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result48 = resetModemConfig(_arg052);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result48);
+                    return true;
+                case 88:
+                    int _arg053 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result49 = rebootModem(_arg053);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result49);
+                    return true;
+                case 89:
+                    int _arg054 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result50 = getAllowedNetworkTypesBitmask(_arg054);
+                    reply.writeNoException();
+                    reply.writeInt(_result50);
+                    return true;
+                case 90:
+                    int _arg055 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result51 = isTetheringApnRequiredForSubscriber(_arg055);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result51);
+                    return true;
+                case 91:
+                    int _arg056 = data.readInt();
+                    data.enforceNoDataAvail();
+                    enableIms(_arg056);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    int _arg057 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disableIms(_arg057);
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    int _arg058 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetIms(_arg058);
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    int _arg059 = data.readInt();
+                    IImsServiceFeatureCallback _arg130 = IImsServiceFeatureCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerMmTelFeatureCallback(_arg059, _arg130);
+                    reply.writeNoException();
+                    return true;
+                case 95:
+                    IImsServiceFeatureCallback _arg060 = IImsServiceFeatureCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterImsFeatureCallback(_arg060);
+                    reply.writeNoException();
+                    return true;
+                case 96:
+                    int _arg061 = data.readInt();
+                    int _arg131 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImsRegistration _result52 = getImsRegistration(_arg061, _arg131);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result52);
+                    return true;
+                case 97:
+                    int _arg062 = data.readInt();
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImsConfig _result53 = getImsConfig(_arg062, _arg132);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result53);
+                    return true;
+                case 98:
+                    return onTransact$setBoundImsServiceOverride$(data, reply);
+                case 99:
+                    int _arg063 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result54 = clearCarrierImsServiceOverride(_arg063);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result54);
+                    return true;
+                case 100:
+                    return onTransact$getBoundImsServicePackage$(data, reply);
+                case 101:
+                    int _arg064 = data.readInt();
+                    IIntegerConsumer _arg133 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getImsMmTelFeatureState(_arg064, _arg133);
+                    reply.writeNoException();
+                    return true;
+                case 102:
+                    int _arg065 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNetworkSelectionModeAutomatic(_arg065);
+                    reply.writeNoException();
+                    return true;
+                case 103:
+                    return onTransact$getCellNetworkScanResults$(data, reply);
+                case 104:
+                    return onTransact$requestNetworkScan$(data, reply);
+                case 105:
+                    int _arg066 = data.readInt();
+                    int _arg134 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopNetworkScan(_arg066, _arg134);
+                    reply.writeNoException();
+                    return true;
+                case 106:
+                    return onTransact$setNetworkSelectionModeManual$(data, reply);
+                case 107:
+                    int _arg067 = data.readInt();
+                    int _arg135 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result55 = getAllowedNetworkTypesForReason(_arg067, _arg135);
+                    reply.writeNoException();
+                    reply.writeLong(_result55);
+                    return true;
+                case 108:
+                    return onTransact$setAllowedNetworkTypesForReason$(data, reply);
+                case 109:
+                    int _arg068 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result56 = getDataEnabled(_arg068);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result56);
+                    return true;
+                case 110:
+                    int _arg069 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result57 = isUserDataEnabled(_arg069);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result57);
+                    return true;
+                case 111:
+                    int _arg070 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result58 = isDataEnabled(_arg070);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result58);
+                    return true;
+                case 112:
+                    return onTransact$setDataEnabledForReason$(data, reply);
+                case 113:
+                    int _arg071 = data.readInt();
+                    int _arg136 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result59 = isDataEnabledForReason(_arg071, _arg136);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result59);
+                    return true;
+                case 114:
+                    int _arg072 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result60 = isManualNetworkSelectionAllowed(_arg072);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result60);
+                    return true;
+                case 115:
+                    boolean _arg073 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setImsRegistrationState(_arg073);
+                    reply.writeNoException();
+                    return true;
+                case 116:
+                    int _arg074 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result61 = getCdmaMdn(_arg074);
+                    reply.writeNoException();
+                    reply.writeString(_result61);
+                    return true;
+                case 117:
+                    int _arg075 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result62 = getCdmaMin(_arg075);
+                    reply.writeNoException();
+                    reply.writeString(_result62);
+                    return true;
+                case 118:
+                    return onTransact$requestNumberVerification$(data, reply);
+                case 119:
+                    int _arg076 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result63 = getCarrierPrivilegeStatus(_arg076);
+                    reply.writeNoException();
+                    reply.writeInt(_result63);
+                    return true;
+                case 120:
+                    int _arg077 = data.readInt();
+                    int _arg137 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result64 = getCarrierPrivilegeStatusForUid(_arg077, _arg137);
+                    reply.writeNoException();
+                    reply.writeInt(_result64);
+                    return true;
+                case 121:
+                    int _arg078 = data.readInt();
+                    String _arg138 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result65 = checkCarrierPrivilegesForPackage(_arg078, _arg138);
+                    reply.writeNoException();
+                    reply.writeInt(_result65);
+                    return true;
+                case 122:
+                    String _arg079 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result66 = checkCarrierPrivilegesForPackageAnyPhone(_arg079);
+                    reply.writeNoException();
+                    reply.writeInt(_result66);
+                    return true;
+                case 123:
+                    Intent _arg080 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    int _arg139 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result67 = getCarrierPackageNamesForIntentAndPhone(_arg080, _arg139);
+                    reply.writeNoException();
+                    reply.writeStringList(_result67);
+                    return true;
+                case 124:
+                    return onTransact$setLine1NumberForDisplayForSubscriber$(data, reply);
+                case 125:
+                    return onTransact$getLine1NumberForDisplay$(data, reply);
+                case 126:
+                    return onTransact$getLine1AlphaTagForDisplay$(data, reply);
+                case 127:
+                    return onTransact$getMergedSubscriberIds$(data, reply);
+                case 128:
+                    int _arg081 = data.readInt();
+                    String _arg140 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result68 = getMergedImsisFromGroup(_arg081, _arg140);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result68);
+                    return true;
+                case 129:
+                    int _arg082 = data.readInt();
+                    String _arg141 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result69 = setOperatorBrandOverride(_arg082, _arg141);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result69);
+                    return true;
+                case 130:
+                    return onTransact$setRoamingOverride$(data, reply);
+                case 131:
+                    boolean _result70 = needMobileRadioShutdown();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 132:
+                    shutdownMobileRadios();
+                    reply.writeNoException();
+                    return true;
+                case 133:
+                    int _arg083 = data.readInt();
+                    String _arg142 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result71 = getRadioAccessFamily(_arg083, _arg142);
+                    reply.writeNoException();
+                    reply.writeInt(_result71);
+                    return true;
+                case 134:
+                    return onTransact$uploadCallComposerPicture$(data, reply);
+                case 135:
+                    boolean _arg084 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableVideoCalling(_arg084);
+                    reply.writeNoException();
+                    return true;
+                case 136:
+                    String _arg085 = data.readString();
+                    String _arg143 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result72 = isVideoCallingEnabled(_arg085, _arg143);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result72);
+                    return true;
+                case 137:
+                    return onTransact$canChangeDtmfToneLength$(data, reply);
+                case 138:
+                    return onTransact$isWorldPhone$(data, reply);
+                case 139:
+                    boolean _result73 = isTtyModeSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result73);
+                    return true;
+                case 140:
+                    int _arg086 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result74 = isRttSupported(_arg086);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result74);
+                    return true;
+                case 141:
+                    boolean _result75 = isHearingAidCompatibilitySupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result75);
+                    return true;
+                case 142:
+                    int _arg087 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result76 = isImsRegistered(_arg087);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result76);
+                    return true;
+                case 143:
+                    int _arg088 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result77 = isWifiCallingAvailable(_arg088);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result77);
+                    return true;
+                case 144:
+                    int _arg089 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result78 = isVideoTelephonyAvailable(_arg089);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result78);
+                    return true;
+                case 145:
+                    int _arg090 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result79 = getImsRegTechnologyForMmTel(_arg090);
+                    reply.writeNoException();
+                    reply.writeInt(_result79);
+                    return true;
+                case 146:
+                    String _arg091 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result80 = getDeviceId(_arg091);
+                    reply.writeNoException();
+                    reply.writeString(_result80);
+                    return true;
+                case 147:
+                    String _arg092 = data.readString();
+                    String _arg144 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result81 = getDeviceIdWithFeature(_arg092, _arg144);
+                    reply.writeNoException();
+                    reply.writeString(_result81);
+                    return true;
+                case 148:
+                    return onTransact$getImeiForSlot$(data, reply);
+                case 149:
+                    String _arg093 = data.readString();
+                    String _arg145 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result82 = getPrimaryImei(_arg093, _arg145);
+                    reply.writeNoException();
+                    reply.writeString(_result82);
+                    return true;
+                case 150:
+                    int _arg094 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result83 = getTypeAllocationCodeForSlot(_arg094);
+                    reply.writeNoException();
+                    reply.writeString(_result83);
+                    return true;
+                case 151:
+                    return onTransact$getMeidForSlot$(data, reply);
+                case 152:
+                    int _arg095 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result84 = getManufacturerCodeForSlot(_arg095);
+                    reply.writeNoException();
+                    reply.writeString(_result84);
+                    return true;
+                case 153:
+                    return onTransact$getDeviceSoftwareVersionForSlot$(data, reply);
+                case 154:
+                    return onTransact$getSubIdForPhoneAccountHandle$(data, reply);
+                case 155:
+                    int _arg096 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PhoneAccountHandle _result85 = getPhoneAccountHandleForSubscriptionId(_arg096);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result85, 1);
+                    return true;
+                case 156:
+                    int _arg097 = data.readInt();
+                    String _arg146 = data.readString();
+                    data.enforceNoDataAvail();
+                    factoryReset(_arg097, _arg146);
+                    reply.writeNoException();
+                    return true;
+                case 157:
+                    int _arg098 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result86 = getSimLocaleForSubscriber(_arg098);
+                    reply.writeNoException();
+                    reply.writeString(_result86);
+                    return true;
+                case 158:
+                    ResultReceiver _arg099 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestModemActivityInfo(_arg099);
+                    return true;
+                case 159:
+                    return onTransact$getServiceStateForSlot$(data, reply);
+                case 160:
+                    PhoneAccountHandle _arg0100 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Uri _result87 = getVoicemailRingtoneUri(_arg0100);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result87, 1);
+                    return true;
+                case 161:
+                    return onTransact$setVoicemailRingtoneUri$(data, reply);
+                case 162:
+                    PhoneAccountHandle _arg0101 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result88 = isVoicemailVibrationEnabled(_arg0101);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result88);
+                    return true;
+                case 163:
+                    return onTransact$setVoicemailVibrationEnabled$(data, reply);
+                case 164:
+                    int _arg0102 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result89 = getPackagesWithCarrierPrivileges(_arg0102);
+                    reply.writeNoException();
+                    reply.writeStringList(_result89);
+                    return true;
+                case 165:
+                    List<String> _result90 = getPackagesWithCarrierPrivilegesForAllPhones();
+                    reply.writeNoException();
+                    reply.writeStringList(_result90);
+                    return true;
+                case 166:
+                    int _arg0103 = data.readInt();
+                    int _arg147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result91 = getAidForAppType(_arg0103, _arg147);
+                    reply.writeNoException();
+                    reply.writeString(_result91);
+                    return true;
+                case 167:
+                    int _arg0104 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result92 = getEsn(_arg0104);
+                    reply.writeNoException();
+                    reply.writeString(_result92);
+                    return true;
+                case 168:
+                    int _arg0105 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result93 = getCdmaPrlVersion(_arg0105);
+                    reply.writeNoException();
+                    reply.writeString(_result93);
+                    return true;
+                case 169:
+                    List<TelephonyHistogram> _result94 = getTelephonyHistograms();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result94, 1);
+                    return true;
+                case 170:
+                    CarrierRestrictionRules _arg0106 = (CarrierRestrictionRules) data.readTypedObject(CarrierRestrictionRules.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result95 = setAllowedCarriers(_arg0106);
+                    reply.writeNoException();
+                    reply.writeInt(_result95);
+                    return true;
+                case 171:
+                    CarrierRestrictionRules _result96 = getAllowedCarriers();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result96, 1);
+                    return true;
+                case 172:
+                    int _arg0107 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result97 = getSubscriptionCarrierId(_arg0107);
+                    reply.writeNoException();
+                    reply.writeInt(_result97);
+                    return true;
+                case 173:
+                    int _arg0108 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result98 = getSubscriptionCarrierName(_arg0108);
+                    reply.writeNoException();
+                    reply.writeString(_result98);
+                    return true;
+                case 174:
+                    int _arg0109 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result99 = getSubscriptionSpecificCarrierId(_arg0109);
+                    reply.writeNoException();
+                    reply.writeInt(_result99);
+                    return true;
+                case 175:
+                    int _arg0110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result100 = getSubscriptionSpecificCarrierName(_arg0110);
+                    reply.writeNoException();
+                    reply.writeString(_result100);
+                    return true;
+                case 176:
+                    return onTransact$getCarrierIdFromMccMnc$(data, reply);
+                case 177:
+                    int _arg0111 = data.readInt();
+                    boolean _arg148 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    carrierActionSetRadioEnabled(_arg0111, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 178:
+                    int _arg0112 = data.readInt();
+                    boolean _arg149 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    carrierActionReportDefaultNetworkStatus(_arg0112, _arg149);
+                    reply.writeNoException();
+                    return true;
+                case 179:
+                    int _arg0113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    carrierActionResetAll(_arg0113);
+                    reply.writeNoException();
+                    return true;
+                case 180:
+                    return onTransact$getCallForwarding$(data, reply);
+                case 181:
+                    return onTransact$setCallForwarding$(data, reply);
+                case 182:
+                    int _arg0114 = data.readInt();
+                    IIntegerConsumer _arg150 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getCallWaitingStatus(_arg0114, _arg150);
+                    reply.writeNoException();
+                    return true;
+                case 183:
+                    return onTransact$setCallWaitingStatus$(data, reply);
+                case 184:
+                    return onTransact$getClientRequestStats$(data, reply);
+                case 185:
+                    int _arg0115 = data.readInt();
+                    int _arg151 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSimPowerStateForSlot(_arg0115, _arg151);
+                    reply.writeNoException();
+                    return true;
+                case 186:
+                    return onTransact$setSimPowerStateForSlotWithCallback$(data, reply);
+                case 187:
+                    return onTransact$getForbiddenPlmns$(data, reply);
+                case 188:
+                    return onTransact$setForbiddenPlmns$(data, reply);
+                case 189:
+                    int _arg0116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result101 = getEmergencyCallbackMode(_arg0116);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result101);
+                    return true;
+                case 190:
+                    int _arg0117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SignalStrength _result102 = getSignalStrength(_arg0117);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result102, 1);
+                    return true;
+                case 191:
+                    int _arg0118 = data.readInt();
+                    String _arg152 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result103 = getCardIdForDefaultEuicc(_arg0118, _arg152);
+                    reply.writeNoException();
+                    reply.writeInt(_result103);
+                    return true;
+                case 192:
+                    String _arg0119 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<UiccCardInfo> _result104 = getUiccCardsInfo(_arg0119);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result104, 1);
+                    return true;
+                case 193:
+                    String _arg0120 = data.readString();
+                    data.enforceNoDataAvail();
+                    UiccSlotInfo[] _result105 = getUiccSlotsInfo(_arg0120);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result105, 1);
+                    return true;
+                case 194:
+                    int[] _arg0121 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    boolean _result106 = switchSlots(_arg0121);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result106);
+                    return true;
+                case 195:
+                    List<UiccSlotMapping> _arg0122 = data.createTypedArrayList(UiccSlotMapping.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result107 = setSimSlotMapping(_arg0122);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result107);
+                    return true;
+                case 196:
+                    int _arg0123 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result108 = isDataRoamingEnabled(_arg0123);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result108);
+                    return true;
+                case 197:
+                    int _arg0124 = data.readInt();
+                    boolean _arg153 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDataRoamingEnabled(_arg0124, _arg153);
+                    reply.writeNoException();
+                    return true;
+                case 198:
+                    int _arg0125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result109 = getCdmaRoamingMode(_arg0125);
+                    reply.writeNoException();
+                    reply.writeInt(_result109);
+                    return true;
+                case 199:
+                    int _arg0126 = data.readInt();
+                    int _arg154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result110 = setCdmaRoamingMode(_arg0126, _arg154);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result110);
+                    return true;
+                case 200:
+                    int _arg0127 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result111 = getCdmaSubscriptionMode(_arg0127);
+                    reply.writeNoException();
+                    reply.writeInt(_result111);
+                    return true;
+                case 201:
+                    int _arg0128 = data.readInt();
+                    int _arg155 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result112 = setCdmaSubscriptionMode(_arg0128, _arg155);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result112);
+                    return true;
+                case 202:
+                    return onTransact$setCarrierTestOverride$(data, reply);
+                case 203:
+                    return onTransact$setCarrierServicePackageOverride$(data, reply);
+                case 204:
+                    int _arg0129 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result113 = getCarrierIdListVersion(_arg0129);
+                    reply.writeNoException();
+                    reply.writeInt(_result113);
+                    return true;
+                case 205:
+                    int _arg0130 = data.readInt();
+                    data.enforceNoDataAvail();
+                    refreshUiccProfile(_arg0130);
+                    reply.writeNoException();
+                    return true;
+                case 206:
+                    return onTransact$getNumberOfModemsWithSimultaneousDataConnections$(data, reply);
+                case 207:
+                    int _arg0131 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result114 = getNetworkSelectionMode(_arg0131);
+                    reply.writeNoException();
+                    reply.writeInt(_result114);
+                    return true;
+                case 208:
+                    boolean _result115 = isInEmergencySmsMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result115);
+                    return true;
+                case 209:
+                    return onTransact$getRadioPowerState$(data, reply);
+                case 210:
+                    int _arg0132 = data.readInt();
+                    IImsRegistrationCallback _arg156 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerImsRegistrationCallback(_arg0132, _arg156);
+                    reply.writeNoException();
+                    return true;
+                case 211:
+                    int _arg0133 = data.readInt();
+                    IImsRegistrationCallback _arg157 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterImsRegistrationCallback(_arg0133, _arg157);
+                    reply.writeNoException();
+                    return true;
+                case 212:
+                    int _arg0134 = data.readInt();
+                    IImsRegistrationCallback _arg158 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerImsEmergencyRegistrationCallback(_arg0134, _arg158);
+                    reply.writeNoException();
+                    return true;
+                case 213:
+                    int _arg0135 = data.readInt();
+                    IImsRegistrationCallback _arg159 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterImsEmergencyRegistrationCallback(_arg0135, _arg159);
+                    reply.writeNoException();
+                    return true;
+                case 214:
+                    int _arg0136 = data.readInt();
+                    IIntegerConsumer _arg160 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getImsMmTelRegistrationState(_arg0136, _arg160);
+                    reply.writeNoException();
+                    return true;
+                case 215:
+                    int _arg0137 = data.readInt();
+                    IIntegerConsumer _arg161 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getImsMmTelRegistrationTransportType(_arg0137, _arg161);
+                    reply.writeNoException();
+                    return true;
+                case 216:
+                    int _arg0138 = data.readInt();
+                    IImsCapabilityCallback _arg162 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerMmTelCapabilityCallback(_arg0138, _arg162);
+                    reply.writeNoException();
+                    return true;
+                case 217:
+                    int _arg0139 = data.readInt();
+                    IImsCapabilityCallback _arg163 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterMmTelCapabilityCallback(_arg0139, _arg163);
+                    reply.writeNoException();
+                    return true;
+                case 218:
+                    return onTransact$isCapable$(data, reply);
+                case 219:
+                    return onTransact$isAvailable$(data, reply);
+                case 220:
+                    return onTransact$isMmTelCapabilitySupported$(data, reply);
+                case 221:
+                    int _arg0140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result116 = isAdvancedCallingSettingEnabled(_arg0140);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result116);
+                    return true;
+                case 222:
+                    int _arg0141 = data.readInt();
+                    boolean _arg164 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAdvancedCallingSettingEnabled(_arg0141, _arg164);
+                    reply.writeNoException();
+                    return true;
+                case 223:
+                    int _arg0142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result117 = isVtSettingEnabled(_arg0142);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result117);
+                    return true;
+                case 224:
+                    int _arg0143 = data.readInt();
+                    boolean _arg165 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVtSettingEnabled(_arg0143, _arg165);
+                    reply.writeNoException();
+                    return true;
+                case 225:
+                    int _arg0144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result118 = isVoWiFiSettingEnabled(_arg0144);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result118);
+                    return true;
+                case 226:
+                    int _arg0145 = data.readInt();
+                    boolean _arg166 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVoWiFiSettingEnabled(_arg0145, _arg166);
+                    reply.writeNoException();
+                    return true;
+                case 227:
+                    int _arg0146 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result119 = isCrossSimCallingEnabledByUser(_arg0146);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result119);
+                    return true;
+                case 228:
+                    int _arg0147 = data.readInt();
+                    boolean _arg167 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCrossSimCallingEnabled(_arg0147, _arg167);
+                    reply.writeNoException();
+                    return true;
+                case 229:
+                    int _arg0148 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result120 = isVoWiFiRoamingSettingEnabled(_arg0148);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result120);
+                    return true;
+                case 230:
+                    int _arg0149 = data.readInt();
+                    boolean _arg168 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVoWiFiRoamingSettingEnabled(_arg0149, _arg168);
+                    reply.writeNoException();
+                    return true;
+                case 231:
+                    return onTransact$setVoWiFiNonPersistent$(data, reply);
+                case 232:
+                    int _arg0150 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result121 = getVoWiFiModeSetting(_arg0150);
+                    reply.writeNoException();
+                    reply.writeInt(_result121);
+                    return true;
+                case 233:
+                    int _arg0151 = data.readInt();
+                    int _arg169 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVoWiFiModeSetting(_arg0151, _arg169);
+                    reply.writeNoException();
+                    return true;
+                case 234:
+                    int _arg0152 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result122 = getVoWiFiRoamingModeSetting(_arg0152);
+                    reply.writeNoException();
+                    reply.writeInt(_result122);
+                    return true;
+                case 235:
+                    int _arg0153 = data.readInt();
+                    int _arg170 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVoWiFiRoamingModeSetting(_arg0153, _arg170);
+                    reply.writeNoException();
+                    return true;
+                case 236:
+                    return onTransact$setRttCapabilitySetting$(data, reply);
+                case 237:
+                    int _arg0154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result123 = isTtyOverVolteEnabled(_arg0154);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result123);
+                    return true;
+                case 238:
+                    return onTransact$getEmergencyNumberList$(data, reply);
+                case 239:
+                    return onTransact$isEmergencyNumber$(data, reply);
+                case 240:
+                    int _arg0155 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result124 = getCertsFromCarrierPrivilegeAccessRules(_arg0155);
+                    reply.writeNoException();
+                    reply.writeStringList(_result124);
+                    return true;
+                case 241:
+                    return onTransact$registerImsProvisioningChangedCallback$(data, reply);
+                case 242:
+                    return onTransact$unregisterImsProvisioningChangedCallback$(data, reply);
+                case 243:
+                    return onTransact$registerFeatureProvisioningChangedCallback$(data, reply);
+                case 244:
+                    return onTransact$unregisterFeatureProvisioningChangedCallback$(data, reply);
+                case 245:
+                    return onTransact$setImsProvisioningStatusForCapability$(data, reply);
+                case 246:
+                    return onTransact$getImsProvisioningStatusForCapability$(data, reply);
+                case 247:
+                    return onTransact$getRcsProvisioningStatusForCapability$(data, reply);
+                case 248:
+                    return onTransact$setRcsProvisioningStatusForCapability$(data, reply);
+                case 249:
+                    return onTransact$getImsProvisioningInt$(data, reply);
+                case 250:
+                    return onTransact$getImsProvisioningString$(data, reply);
+                case 251:
+                    return onTransact$setImsProvisioningInt$(data, reply);
+                case 252:
+                    return onTransact$setImsProvisioningString$(data, reply);
+                case 253:
+                    startEmergencyCallbackMode();
+                    reply.writeNoException();
+                    return true;
+                case 254:
+                    return onTransact$updateEmergencyNumberListTestMode$(data, reply);
+                case 255:
+                    List<String> _result125 = getEmergencyNumberListTestMode();
+                    reply.writeNoException();
+                    reply.writeStringList(_result125);
+                    return true;
+                case 256:
+                    int _arg0156 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result126 = getEmergencyNumberDbVersion(_arg0156);
+                    reply.writeNoException();
+                    reply.writeInt(_result126);
+                    return true;
+                case 257:
+                    notifyOtaEmergencyNumberDbInstalled();
+                    reply.writeNoException();
+                    return true;
+                case 258:
+                    ParcelFileDescriptor _arg0157 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateOtaEmergencyNumberDbFilePath(_arg0157);
+                    reply.writeNoException();
+                    return true;
+                case 259:
+                    resetOtaEmergencyNumberDbFilePath();
+                    reply.writeNoException();
+                    return true;
+                case 260:
+                    return onTransact$enableModemForSlot$(data, reply);
+                case 261:
+                    boolean _arg0158 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMultiSimCarrierRestriction(_arg0158);
+                    reply.writeNoException();
+                    return true;
+                case 262:
+                    return onTransact$isMultiSimSupported$(data, reply);
+                case 263:
+                    int _arg0159 = data.readInt();
+                    data.enforceNoDataAvail();
+                    switchMultiSimConfig(_arg0159);
+                    reply.writeNoException();
+                    return true;
+                case 264:
+                    return onTransact$doesSwitchMultiSimConfigTriggerReboot$(data, reply);
+                case 265:
+                    String _arg0160 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<UiccSlotMapping> _result127 = getSlotsMapping(_arg0160);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result127, 1);
+                    return true;
+                case 266:
+                    int _result128 = getRadioHalVersion();
+                    reply.writeNoException();
+                    reply.writeInt(_result128);
+                    return true;
+                case 267:
+                    int _arg0161 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result129 = getHalVersion(_arg0161);
+                    reply.writeNoException();
+                    reply.writeInt(_result129);
+                    return true;
+                case 268:
+                    String _result130 = getCurrentPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result130);
+                    return true;
+                case 269:
+                    return onTransact$isApplicationOnUicc$(data, reply);
+                case 270:
+                    return onTransact$isModemEnabledForSlot$(data, reply);
+                case 271:
+                    return onTransact$isDataEnabledForApn$(data, reply);
+                case 272:
+                    return onTransact$isApnMetered$(data, reply);
+                case 273:
+                    return onTransact$setSystemSelectionChannels$(data, reply);
+                case 274:
+                    int _arg0162 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<RadioAccessSpecifier> _result131 = getSystemSelectionChannels(_arg0162);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result131, 1);
+                    return true;
+                case 275:
+                    return onTransact$isMvnoMatched$(data, reply);
+                case 276:
+                    return onTransact$enqueueSmsPickResult$(data, reply);
+                case 277:
+                    showSwitchToManagedProfileDialog();
+                    return true;
+                case 278:
+                    int _arg0163 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result132 = getMmsUserAgent(_arg0163);
+                    reply.writeNoException();
+                    reply.writeString(_result132);
+                    return true;
+                case 279:
+                    int _arg0164 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result133 = getMmsUAProfUrl(_arg0164);
+                    reply.writeNoException();
+                    reply.writeString(_result133);
+                    return true;
+                case 280:
+                    return onTransact$setMobileDataPolicyEnabled$(data, reply);
+                case 281:
+                    return onTransact$isMobileDataPolicyEnabled$(data, reply);
+                case 282:
+                    boolean _arg0165 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCepEnabled(_arg0165);
+                    return true;
+                case 283:
+                    return onTransact$notifyRcsAutoConfigurationReceived$(data, reply);
+                case 284:
+                    int _arg0166 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result134 = isIccLockEnabled(_arg0166);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result134);
+                    return true;
+                case 285:
+                    return onTransact$setIccLockEnabled$(data, reply);
+                case 286:
+                    return onTransact$changeIccLockPassword$(data, reply);
+                case 287:
+                    requestUserActivityNotification();
+                    return true;
+                case 288:
+                    userActivity();
+                    return true;
+                case 289:
+                    int _arg0167 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result135 = getManualNetworkSelectionPlmn(_arg0167);
+                    reply.writeNoException();
+                    reply.writeString(_result135);
+                    return true;
+                case 290:
+                    boolean _result136 = canConnectTo5GInDsdsMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result136);
+                    return true;
+                case 291:
+                    return onTransact$getEquivalentHomePlmns$(data, reply);
+                case 292:
+                    return onTransact$setVoNrEnabled$(data, reply);
+                case 293:
+                    int _arg0168 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result137 = isVoNrEnabled(_arg0168);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result137);
+                    return true;
+                case 294:
+                    return onTransact$setNrDualConnectivityState$(data, reply);
+                case 295:
+                    int _arg0169 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result138 = isNrDualConnectivityEnabled(_arg0169);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result138);
+                    return true;
+                case 296:
+                    String _arg0170 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result139 = isRadioInterfaceCapabilitySupported(_arg0170);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result139);
+                    return true;
+                case 297:
+                    return onTransact$sendThermalMitigationRequest$(data, reply);
+                case 298:
+                    return onTransact$bootstrapAuthenticationRequest$(data, reply);
+                case 299:
+                    return onTransact$setBoundGbaServiceOverride$(data, reply);
+                case 300:
+                    int _arg0171 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result140 = getBoundGbaService(_arg0171);
+                    reply.writeNoException();
+                    reply.writeString(_result140);
+                    return true;
+                case 301:
+                    return onTransact$setGbaReleaseTimeOverride$(data, reply);
+                case 302:
+                    int _arg0172 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result141 = getGbaReleaseTime(_arg0172);
+                    reply.writeNoException();
+                    reply.writeInt(_result141);
+                    return true;
+                case 303:
+                    return onTransact$setRcsClientConfiguration$(data, reply);
+                case 304:
+                    int _arg0173 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result142 = isRcsVolteSingleRegistrationCapable(_arg0173);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result142);
+                    return true;
+                case 305:
+                    return onTransact$registerRcsProvisioningCallback$(data, reply);
+                case 306:
+                    return onTransact$unregisterRcsProvisioningCallback$(data, reply);
+                case 307:
+                    int _arg0174 = data.readInt();
+                    data.enforceNoDataAvail();
+                    triggerRcsReconfiguration(_arg0174);
+                    reply.writeNoException();
+                    return true;
+                case 308:
+                    boolean _arg0175 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRcsSingleRegistrationTestModeEnabled(_arg0175);
+                    reply.writeNoException();
+                    return true;
+                case 309:
+                    boolean _result143 = getRcsSingleRegistrationTestModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result143);
+                    return true;
+                case 310:
+                    String _arg0176 = data.readString();
+                    data.enforceNoDataAvail();
+                    setDeviceSingleRegistrationEnabledOverride(_arg0176);
+                    reply.writeNoException();
+                    return true;
+                case 311:
+                    boolean _result144 = getDeviceSingleRegistrationEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result144);
+                    return true;
+                case 312:
+                    return onTransact$setCarrierSingleRegistrationEnabledOverride$(data, reply);
+                case 313:
+                    return onTransact$sendDeviceToDeviceMessage$(data, reply);
+                case 314:
+                    String _arg0177 = data.readString();
+                    data.enforceNoDataAvail();
+                    setActiveDeviceToDeviceTransport(_arg0177);
+                    reply.writeNoException();
+                    return true;
+                case 315:
+                    boolean _arg0178 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceToDeviceForceEnabled(_arg0178);
+                    reply.writeNoException();
+                    return true;
+                case 316:
+                    int _arg0179 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result145 = getCarrierSingleRegistrationEnabled(_arg0179);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result145);
+                    return true;
+                case 317:
+                    return onTransact$setImsFeatureValidationOverride$(data, reply);
+                case 318:
+                    int _arg0180 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result146 = getImsFeatureValidationOverride(_arg0180);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result146);
+                    return true;
+                case 319:
+                    String _result147 = getMobileProvisioningUrl();
+                    reply.writeNoException();
+                    reply.writeString(_result147);
+                    return true;
+                case 320:
+                    return onTransact$removeContactFromEab$(data, reply);
+                case 321:
+                    String _arg0181 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result148 = getContactFromEab(_arg0181);
+                    reply.writeNoException();
+                    reply.writeString(_result148);
+                    return true;
+                case 322:
+                    String _arg0182 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result149 = getCapabilityFromEab(_arg0182);
+                    reply.writeNoException();
+                    reply.writeString(_result149);
+                    return true;
+                case 323:
+                    boolean _result150 = getDeviceUceEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result150);
+                    return true;
+                case 324:
+                    boolean _arg0183 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceUceEnabled(_arg0183);
+                    reply.writeNoException();
+                    return true;
+                case 325:
+                    return onTransact$addUceRegistrationOverrideShell$(data, reply);
+                case 326:
+                    return onTransact$removeUceRegistrationOverrideShell$(data, reply);
+                case 327:
+                    int _arg0184 = data.readInt();
+                    data.enforceNoDataAvail();
+                    RcsContactUceCapability _result151 = clearUceRegistrationOverrideShell(_arg0184);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result151, 1);
+                    return true;
+                case 328:
+                    int _arg0185 = data.readInt();
+                    data.enforceNoDataAvail();
+                    RcsContactUceCapability _result152 = getLatestRcsContactUceCapabilityShell(_arg0185);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result152, 1);
+                    return true;
+                case 329:
+                    int _arg0186 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result153 = getLastUcePidfXmlShell(_arg0186);
+                    reply.writeNoException();
+                    reply.writeString(_result153);
+                    return true;
+                case 330:
+                    int _arg0187 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result154 = removeUceRequestDisallowedStatus(_arg0187);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result154);
+                    return true;
+                case 331:
+                    return onTransact$setCapabilitiesRequestTimeout$(data, reply);
+                case 332:
+                    return onTransact$setSignalStrengthUpdateRequest$(data, reply);
+                case 333:
+                    return onTransact$clearSignalStrengthUpdateRequest$(data, reply);
+                case 334:
+                    PhoneCapability _result155 = getPhoneCapability();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result155, 1);
+                    return true;
+                case 335:
+                    int _result156 = prepareForUnattendedReboot();
+                    reply.writeNoException();
+                    reply.writeInt(_result156);
+                    return true;
+                case 336:
+                    ResultReceiver _arg0188 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSlicingConfig(_arg0188);
+                    reply.writeNoException();
+                    return true;
+                case 337:
+                    return onTransact$isPremiumCapabilityAvailableForPurchase$(data, reply);
+                case 338:
+                    return onTransact$purchasePremiumCapability$(data, reply);
+                case 339:
+                    return onTransact$registerImsStateCallback$(data, reply);
+                case 340:
+                    IImsStateCallback _arg0189 = IImsStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterImsStateCallback(_arg0189);
+                    reply.writeNoException();
+                    return true;
+                case 341:
+                    return onTransact$getLastKnownCellIdentity$(data, reply);
+                case 342:
+                    String _arg0190 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result157 = setModemService(_arg0190);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result157);
+                    return true;
+                case 343:
+                    String _result158 = getModemService();
+                    reply.writeNoException();
+                    reply.writeString(_result158);
+                    return true;
+                case 344:
+                    return onTransact$isProvisioningRequiredForCapability$(data, reply);
+                case 345:
+                    return onTransact$isRcsProvisioningRequiredForCapability$(data, reply);
+                case 346:
+                    return onTransact$setVoiceServiceStateOverride$(data, reply);
+                case 347:
+                    int _arg0191 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result159 = getCarrierServicePackageNameForLogicalSlot(_arg0191);
+                    reply.writeNoException();
+                    reply.writeString(_result159);
+                    return true;
+                case 348:
+                    return onTransact$setRemovableEsimAsDefaultEuicc$(data, reply);
+                case 349:
+                    String _arg0192 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result160 = isRemovableEsimDefaultEuicc(_arg0192);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result160);
+                    return true;
+                case 350:
+                    return onTransact$getDefaultRespondViaMessageApplication$(data, reply);
+                case 351:
+                    int _arg0193 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result161 = getSimStateForSlotIndex(_arg0193);
+                    reply.writeNoException();
+                    reply.writeInt(_result161);
+                    return true;
+                case 352:
+                    return onTransact$persistEmergencyCallDiagnosticData$(data, reply);
+                case 353:
+                    boolean _arg0194 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNullCipherAndIntegrityEnabled(_arg0194);
+                    reply.writeNoException();
+                    return true;
+                case 354:
+                    boolean _result162 = isNullCipherAndIntegrityPreferenceEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result162);
+                    return true;
+                case 355:
+                    int _arg0195 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<CellBroadcastIdRange> _result163 = getCellBroadcastIdRanges(_arg0195);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result163, 1);
+                    return true;
+                case 356:
+                    return onTransact$setCellBroadcastIdRanges$(data, reply);
+                case 357:
+                    boolean _result164 = isDomainSelectionSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result164);
+                    return true;
+                case 358:
+                    return onTransact$getCarrierRestrictionStatus$(data, reply);
+                case 359:
+                    return onTransact$requestSatelliteEnabled$(data, reply);
+                case 360:
+                    ResultReceiver _arg0196 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIsSatelliteEnabled(_arg0196);
+                    reply.writeNoException();
+                    return true;
+                case 361:
+                    ResultReceiver _arg0197 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIsDemoModeEnabled(_arg0197);
+                    reply.writeNoException();
+                    return true;
+                case 362:
+                    ResultReceiver _arg0198 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIsEmergencyModeEnabled(_arg0198);
+                    reply.writeNoException();
+                    return true;
+                case 363:
+                    ResultReceiver _arg0199 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIsSatelliteSupported(_arg0199);
+                    reply.writeNoException();
+                    return true;
+                case 364:
+                    ResultReceiver _arg0200 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestSatelliteCapabilities(_arg0200);
+                    reply.writeNoException();
+                    return true;
+                case 365:
+                    return onTransact$startSatelliteTransmissionUpdates$(data, reply);
+                case 366:
+                    return onTransact$stopSatelliteTransmissionUpdates$(data, reply);
+                case 367:
+                    return onTransact$provisionSatelliteService$(data, reply);
+                case 368:
+                    return onTransact$deprovisionSatelliteService$(data, reply);
+                case 369:
+                    ISatelliteProvisionStateCallback _arg0201 = ISatelliteProvisionStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result165 = registerForSatelliteProvisionStateChanged(_arg0201);
+                    reply.writeNoException();
+                    reply.writeInt(_result165);
+                    return true;
+                case 370:
+                    ISatelliteProvisionStateCallback _arg0202 = ISatelliteProvisionStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForSatelliteProvisionStateChanged(_arg0202);
+                    reply.writeNoException();
+                    return true;
+                case 371:
+                    ResultReceiver _arg0203 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestIsSatelliteProvisioned(_arg0203);
+                    reply.writeNoException();
+                    return true;
+                case 372:
+                    ISatelliteModemStateCallback _arg0204 = ISatelliteModemStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result166 = registerForSatelliteModemStateChanged(_arg0204);
+                    reply.writeNoException();
+                    reply.writeInt(_result166);
+                    return true;
+                case 373:
+                    ISatelliteModemStateCallback _arg0205 = ISatelliteModemStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForModemStateChanged(_arg0205);
+                    reply.writeNoException();
+                    return true;
+                case 374:
+                    ISatelliteDatagramCallback _arg0206 = ISatelliteDatagramCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result167 = registerForIncomingDatagram(_arg0206);
+                    reply.writeNoException();
+                    reply.writeInt(_result167);
+                    return true;
+                case 375:
+                    ISatelliteDatagramCallback _arg0207 = ISatelliteDatagramCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForIncomingDatagram(_arg0207);
+                    reply.writeNoException();
+                    return true;
+                case 376:
+                    IIntegerConsumer _arg0208 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    pollPendingDatagrams(_arg0208);
+                    reply.writeNoException();
+                    return true;
+                case 377:
+                    return onTransact$sendDatagram$(data, reply);
+                case 378:
+                    int[] _result168 = getSatelliteDisallowedReasons();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result168);
+                    return true;
+                case 379:
+                    ISatelliteDisallowedReasonsCallback _arg0209 = ISatelliteDisallowedReasonsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForSatelliteDisallowedReasonsChanged(_arg0209);
+                    reply.writeNoException();
+                    return true;
+                case 380:
+                    ISatelliteDisallowedReasonsCallback _arg0210 = ISatelliteDisallowedReasonsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForSatelliteDisallowedReasonsChanged(_arg0210);
+                    reply.writeNoException();
+                    return true;
+                case 381:
+                    return onTransact$requestIsCommunicationAllowedForCurrentLocation$(data, reply);
+                case 382:
+                    ResultReceiver _arg0211 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestTimeForNextSatelliteVisibility(_arg0211);
+                    reply.writeNoException();
+                    return true;
+                case 383:
+                    ResultReceiver _arg0212 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestSelectedNbIotSatelliteSubscriptionId(_arg0212);
+                    reply.writeNoException();
+                    return true;
+                case 384:
+                    boolean _arg0213 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceAlignedWithSatellite(_arg0213);
+                    reply.writeNoException();
+                    return true;
+                case 385:
+                    return onTransact$setSatelliteServicePackageName$(data, reply);
+                case 386:
+                    String _arg0214 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result169 = setSatelliteGatewayServicePackageName(_arg0214);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result169);
+                    return true;
+                case 387:
+                    long _arg0215 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result170 = setSatelliteListeningTimeoutDuration(_arg0215);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result170);
+                    return true;
+                case 388:
+                    boolean _arg0216 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result171 = setSatelliteIgnoreCellularServiceState(_arg0216);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result171);
+                    return true;
+                case 389:
+                    return onTransact$setSatellitePointingUiClassName$(data, reply);
+                case 390:
+                    return onTransact$setDatagramControllerTimeoutDuration$(data, reply);
+                case 391:
+                    return onTransact$setSatelliteControllerTimeoutDuration$(data, reply);
+                case 392:
+                    return onTransact$setEmergencyCallToSatelliteHandoverType$(data, reply);
+                case 393:
+                    return onTransact$setCountryCodes$(data, reply);
+                case 394:
+                    return onTransact$setSatelliteAccessControlOverlayConfigs$(data, reply);
+                case 395:
+                    return onTransact$setOemEnabledSatelliteProvisionStatus$(data, reply);
+                case 396:
+                    return onTransact$getShaIdFromAllowList$(data, reply);
+                case 397:
+                    return onTransact$addAttachRestrictionForCarrier$(data, reply);
+                case 398:
+                    return onTransact$removeAttachRestrictionForCarrier$(data, reply);
+                case 399:
+                    int _arg0217 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result172 = getAttachRestrictionReasonsForCarrier(_arg0217);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result172);
+                    return true;
+                case 400:
+                    ResultReceiver _arg0218 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestNtnSignalStrength(_arg0218);
+                    reply.writeNoException();
+                    return true;
+                case 401:
+                    INtnSignalStrengthCallback _arg0219 = INtnSignalStrengthCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerForNtnSignalStrengthChanged(_arg0219);
+                    reply.writeNoException();
+                    return true;
+                case 402:
+                    INtnSignalStrengthCallback _arg0220 = INtnSignalStrengthCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForNtnSignalStrengthChanged(_arg0220);
+                    reply.writeNoException();
+                    return true;
+                case 403:
+                    ISatelliteCapabilitiesCallback _arg0221 = ISatelliteCapabilitiesCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result173 = registerForCapabilitiesChanged(_arg0221);
+                    reply.writeNoException();
+                    reply.writeInt(_result173);
+                    return true;
+                case 404:
+                    ISatelliteCapabilitiesCallback _arg0222 = ISatelliteCapabilitiesCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForCapabilitiesChanged(_arg0222);
+                    reply.writeNoException();
+                    return true;
+                case 405:
+                    boolean _arg0223 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result174 = setShouldSendDatagramToModemInDemoMode(_arg0223);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result174);
+                    return true;
+                case 406:
+                    ComponentName _arg0224 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result175 = setDomainSelectionServiceOverride(_arg0224);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result175);
+                    return true;
+                case 407:
+                    boolean _result176 = clearDomainSelectionServiceOverride();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result176);
+                    return true;
+                case 408:
+                    boolean _result177 = isAospDomainSelectionService();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result177);
+                    return true;
+                case 409:
+                    boolean _arg0225 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setEnableCellularIdentifierDisclosureNotifications(_arg0225);
+                    reply.writeNoException();
+                    return true;
+                case 410:
+                    boolean _result178 = isCellularIdentifierDisclosureNotificationsEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result178);
+                    return true;
+                case 411:
+                    boolean _arg0226 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNullCipherNotificationsEnabled(_arg0226);
+                    reply.writeNoException();
+                    return true;
+                case 412:
+                    boolean _result179 = isNullCipherNotificationsEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result179);
+                    return true;
+                case 413:
+                    int _arg0227 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result180 = getSatellitePlmnsForCarrier(_arg0227);
+                    reply.writeNoException();
+                    reply.writeStringList(_result180);
+                    return true;
+                case 414:
+                    ISatelliteSupportedStateCallback _arg0228 = ISatelliteSupportedStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result181 = registerForSatelliteSupportedStateChanged(_arg0228);
+                    reply.writeNoException();
+                    reply.writeInt(_result181);
+                    return true;
+                case 415:
+                    ISatelliteSupportedStateCallback _arg0229 = ISatelliteSupportedStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterForSatelliteSupportedStateChanged(_arg0229);
+                    reply.writeNoException();
+                    return true;
+                case 416:
+                    return onTransact$registerForCommunicationAllowedStateChanged$(data, reply);
+                case 417:
+                    return onTransact$unregisterForCommunicationAllowedStateChanged$(data, reply);
+                case 418:
+                    return onTransact$setDatagramControllerBooleanConfig$(data, reply);
+                case 419:
+                    String _arg0230 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result182 = setIsSatelliteCommunicationAllowedForCurrentLocationCache(_arg0230);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result182);
+                    return true;
+                case 420:
+                    return onTransact$requestSatelliteSessionStats$(data, reply);
+                case 421:
+                    ResultReceiver _arg0231 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestSatelliteSubscriberProvisionStatus(_arg0231);
+                    reply.writeNoException();
+                    return true;
+                case 422:
+                    return onTransact$provisionSatellite$(data, reply);
+                case 423:
+                    String _arg0232 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result183 = setSatelliteSubscriberIdListChangedIntentComponent(_arg0232);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result183);
+                    return true;
+                case 424:
+                    return onTransact$overrideCarrierRoamingNtnEligibilityChanged$(data, reply);
+                case 425:
+                    return onTransact$deprovisionSatellite$(data, reply);
+                case 426:
+                    boolean _arg0233 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNtnSmsSupported(_arg0233);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            dial(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            call(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = isRadioOn(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isRadioOnWithFeature(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isRadioOnForSubscriber(_arg05, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 6:
-                            return onTransact$isRadioOnForSubscriberWithFeature$(data, reply);
-                        case 7:
-                            int _arg06 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCallComposerStatus(_arg06, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result4 = getCallComposerStatus(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = supplyPinForSubscriber(_arg08, _arg16);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 10:
-                            return onTransact$supplyPukForSubscriber$(data, reply);
-                        case 11:
-                            int _arg09 = data.readInt();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            int[] _result6 = supplyPinReportResultForSubscriber(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result6);
-                            return true;
-                        case 12:
-                            return onTransact$supplyPukReportResultForSubscriber$(data, reply);
-                        case 13:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = handlePinMmi(_arg010);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 14:
-                            return onTransact$handleUssdRequest$(data, reply);
-                        case 15:
-                            int _arg011 = data.readInt();
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = handlePinMmiForSubscriber(_arg011, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 16:
-                            toggleRadioOnOff();
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            toggleRadioOnOffForSubscriber(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            boolean _arg013 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = setRadio(_arg013);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 19:
-                            int _arg014 = data.readInt();
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = setRadioForSubscriber(_arg014, _arg19);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 20:
-                            boolean _arg015 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = setRadioPower(_arg015);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 21:
-                            int _arg016 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = requestRadioPowerOffForReason(_arg016, _arg110);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 22:
-                            int _arg017 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = clearRadioPowerOffForReason(_arg017, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 23:
-                            return onTransact$getRadioPowerOffReasons$(data, reply);
-                        case 24:
-                            updateServiceLocation();
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            String _arg018 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateServiceLocationWithPackageName(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            enableLocationUpdates();
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            disableLocationUpdates();
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = enableDataConnectivity(_arg019);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 29:
-                            String _arg020 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = disableDataConnectivity(_arg020);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 30:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result16 = isDataConnectivityPossible(_arg021);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 31:
-                            String _arg022 = data.readString();
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            CellIdentity _result17 = getCellLocation(_arg022, _arg112);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result17, 1);
-                            return true;
-                        case 32:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result18 = getNetworkCountryIsoForPhone(_arg023);
-                            reply.writeNoException();
-                            reply.writeString(_result18);
-                            return true;
-                        case 33:
-                            String _arg024 = data.readString();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<NeighboringCellInfo> _result19 = getNeighboringCellInfo(_arg024, _arg113);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result19, 1);
-                            return true;
-                        case 34:
-                            int _result20 = getCallState();
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 35:
-                            return onTransact$getCallStateForSubscription$(data, reply);
-                        case 36:
-                            int _result21 = getDataActivity();
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 37:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result22 = getDataActivityForSubId(_arg025);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 38:
-                            int _result23 = getDataState();
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 39:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result24 = getDataStateForSubId(_arg026);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 40:
-                            int _result25 = getActivePhoneType();
-                            reply.writeNoException();
-                            reply.writeInt(_result25);
-                            return true;
-                        case 41:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result26 = getActivePhoneTypeForSlot(_arg027);
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 42:
-                            String _arg028 = data.readString();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result27 = getCdmaEriIconIndex(_arg028, _arg114);
-                            reply.writeNoException();
-                            reply.writeInt(_result27);
-                            return true;
-                        case 43:
-                            return onTransact$getCdmaEriIconIndexForSubscriber$(data, reply);
-                        case 44:
-                            String _arg029 = data.readString();
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result28 = getCdmaEriIconMode(_arg029, _arg115);
-                            reply.writeNoException();
-                            reply.writeInt(_result28);
-                            return true;
-                        case 45:
-                            return onTransact$getCdmaEriIconModeForSubscriber$(data, reply);
-                        case 46:
-                            String _arg030 = data.readString();
-                            String _arg116 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result29 = getCdmaEriText(_arg030, _arg116);
-                            reply.writeNoException();
-                            reply.writeString(_result29);
-                            return true;
-                        case 47:
-                            return onTransact$getCdmaEriTextForSubscriber$(data, reply);
-                        case 48:
-                            boolean _result30 = needsOtaServiceProvisioning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 49:
-                            return onTransact$setVoiceMailNumber$(data, reply);
-                        case 50:
-                            int _arg031 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVoiceActivationState(_arg031, _arg117);
-                            reply.writeNoException();
-                            return true;
-                        case 51:
-                            int _arg032 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDataActivationState(_arg032, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 52:
-                            int _arg033 = data.readInt();
-                            String _arg119 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result31 = getVoiceActivationState(_arg033, _arg119);
-                            reply.writeNoException();
-                            reply.writeInt(_result31);
-                            return true;
-                        case 53:
-                            int _arg034 = data.readInt();
-                            String _arg120 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result32 = getDataActivationState(_arg034, _arg120);
-                            reply.writeNoException();
-                            reply.writeInt(_result32);
-                            return true;
-                        case 54:
-                            return onTransact$getVoiceMessageCountForSubscriber$(data, reply);
-                        case 55:
-                            int _arg035 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result33 = isConcurrentVoiceAndDataAllowed(_arg035);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 56:
-                            String _arg036 = data.readString();
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result34 = getVisualVoicemailSettings(_arg036, _arg121);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result34, 1);
-                            return true;
-                        case 57:
-                            return onTransact$getVisualVoicemailPackageName$(data, reply);
-                        case 58:
-                            return onTransact$enableVisualVoicemailSmsFilter$(data, reply);
-                        case 59:
-                            String _arg037 = data.readString();
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableVisualVoicemailSmsFilter(_arg037, _arg122);
-                            return true;
-                        case 60:
-                            String _arg038 = data.readString();
-                            int _arg123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VisualVoicemailSmsFilterSettings _result35 = getVisualVoicemailSmsFilterSettings(_arg038, _arg123);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result35, 1);
-                            return true;
-                        case 61:
-                            int _arg039 = data.readInt();
-                            data.enforceNoDataAvail();
-                            VisualVoicemailSmsFilterSettings _result36 = getActiveVisualVoicemailSmsFilterSettings(_arg039);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result36, 1);
-                            return true;
-                        case 62:
-                            return onTransact$sendVisualVoicemailSmsForSubscriber$(data, reply);
-                        case 63:
-                            String _arg040 = data.readString();
-                            String _arg124 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendDialerSpecialCode(_arg040, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 64:
-                            return onTransact$getNetworkTypeForSubscriber$(data, reply);
-                        case 65:
-                            String _arg041 = data.readString();
-                            String _arg125 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result37 = getDataNetworkType(_arg041, _arg125);
-                            reply.writeNoException();
-                            reply.writeInt(_result37);
-                            return true;
-                        case 66:
-                            return onTransact$getDataNetworkTypeForSubscriber$(data, reply);
-                        case 67:
-                            return onTransact$getVoiceNetworkTypeForSubscriber$(data, reply);
-                        case 68:
-                            boolean _result38 = hasIccCard();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result38);
-                            return true;
-                        case 69:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result39 = hasIccCardUsingSlotIndex(_arg042);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result39);
-                            return true;
-                        case 70:
-                            String _arg043 = data.readString();
-                            String _arg126 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result40 = getLteOnCdmaMode(_arg043, _arg126);
-                            reply.writeNoException();
-                            reply.writeInt(_result40);
-                            return true;
-                        case 71:
-                            return onTransact$getLteOnCdmaModeForSubscriber$(data, reply);
-                        case 72:
-                            String _arg044 = data.readString();
-                            String _arg127 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<CellInfo> _result41 = getAllCellInfo(_arg044, _arg127);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result41, 1);
-                            return true;
-                        case 73:
-                            return onTransact$requestCellInfoUpdate$(data, reply);
-                        case 74:
-                            return onTransact$requestCellInfoUpdateWithWorkSource$(data, reply);
-                        case 75:
-                            int _arg045 = data.readInt();
-                            int _arg128 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCellInfoListRate(_arg045, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            IccLogicalChannelRequest _arg046 = (IccLogicalChannelRequest) data.readTypedObject(IccLogicalChannelRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            IccOpenLogicalChannelResponse _result42 = iccOpenLogicalChannel(_arg046);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result42, 1);
-                            return true;
-                        case 77:
-                            IccLogicalChannelRequest _arg047 = (IccLogicalChannelRequest) data.readTypedObject(IccLogicalChannelRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result43 = iccCloseLogicalChannel(_arg047);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 78:
-                            return onTransact$iccTransmitApduLogicalChannelByPort$(data, reply);
-                        case 79:
-                            return onTransact$iccTransmitApduLogicalChannel$(data, reply);
-                        case 80:
-                            return onTransact$iccTransmitApduBasicChannelByPort$(data, reply);
-                        case 81:
-                            return onTransact$iccTransmitApduBasicChannel$(data, reply);
-                        case 82:
-                            return onTransact$iccExchangeSimIO$(data, reply);
-                        case 83:
-                            int _arg048 = data.readInt();
-                            String _arg129 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result44 = sendEnvelopeWithStatus(_arg048, _arg129);
-                            reply.writeNoException();
-                            reply.writeString(_result44);
-                            return true;
-                        case 84:
-                            int _arg049 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result45 = nvReadItem(_arg049);
-                            reply.writeNoException();
-                            reply.writeString(_result45);
-                            return true;
-                        case 85:
-                            int _arg050 = data.readInt();
-                            String _arg130 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result46 = nvWriteItem(_arg050, _arg130);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result46);
-                            return true;
-                        case 86:
-                            byte[] _arg051 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result47 = nvWriteCdmaPrl(_arg051);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result47);
-                            return true;
-                        case 87:
-                            int _arg052 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = resetModemConfig(_arg052);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 88:
-                            int _arg053 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result49 = rebootModem(_arg053);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result49);
-                            return true;
-                        case 89:
-                            int _arg054 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result50 = getAllowedNetworkTypesBitmask(_arg054);
-                            reply.writeNoException();
-                            reply.writeInt(_result50);
-                            return true;
-                        case 90:
-                            int _arg055 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result51 = isTetheringApnRequiredForSubscriber(_arg055);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result51);
-                            return true;
-                        case 91:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            enableIms(_arg056);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            int _arg057 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disableIms(_arg057);
-                            reply.writeNoException();
-                            return true;
-                        case 93:
-                            int _arg058 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetIms(_arg058);
-                            reply.writeNoException();
-                            return true;
-                        case 94:
-                            int _arg059 = data.readInt();
-                            IImsServiceFeatureCallback _arg131 = IImsServiceFeatureCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerMmTelFeatureCallback(_arg059, _arg131);
-                            reply.writeNoException();
-                            return true;
-                        case 95:
-                            IImsServiceFeatureCallback _arg060 = IImsServiceFeatureCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterImsFeatureCallback(_arg060);
-                            reply.writeNoException();
-                            return true;
-                        case 96:
-                            int _arg061 = data.readInt();
-                            int _arg132 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImsRegistration _result52 = getImsRegistration(_arg061, _arg132);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result52);
-                            return true;
-                        case 97:
-                            int _arg062 = data.readInt();
-                            int _arg133 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImsConfig _result53 = getImsConfig(_arg062, _arg133);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result53);
-                            return true;
-                        case 98:
-                            return onTransact$setBoundImsServiceOverride$(data, reply);
-                        case 99:
-                            int _arg063 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result54 = clearCarrierImsServiceOverride(_arg063);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result54);
-                            return true;
-                        case 100:
-                            return onTransact$getBoundImsServicePackage$(data, reply);
-                        case 101:
-                            int _arg064 = data.readInt();
-                            IIntegerConsumer _arg134 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getImsMmTelFeatureState(_arg064, _arg134);
-                            reply.writeNoException();
-                            return true;
-                        case 102:
-                            int _arg065 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNetworkSelectionModeAutomatic(_arg065);
-                            reply.writeNoException();
-                            return true;
-                        case 103:
-                            return onTransact$getCellNetworkScanResults$(data, reply);
-                        case 104:
-                            return onTransact$requestNetworkScan$(data, reply);
-                        case 105:
-                            int _arg066 = data.readInt();
-                            int _arg135 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopNetworkScan(_arg066, _arg135);
-                            reply.writeNoException();
-                            return true;
-                        case 106:
-                            return onTransact$setNetworkSelectionModeManual$(data, reply);
-                        case 107:
-                            int _arg067 = data.readInt();
-                            int _arg136 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result55 = getAllowedNetworkTypesForReason(_arg067, _arg136);
-                            reply.writeNoException();
-                            reply.writeLong(_result55);
-                            return true;
-                        case 108:
-                            return onTransact$setAllowedNetworkTypesForReason$(data, reply);
-                        case 109:
-                            int _arg068 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result56 = getDataEnabled(_arg068);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result56);
-                            return true;
-                        case 110:
-                            int _arg069 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result57 = isUserDataEnabled(_arg069);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result57);
-                            return true;
-                        case 111:
-                            int _arg070 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result58 = isDataEnabled(_arg070);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result58);
-                            return true;
-                        case 112:
-                            return onTransact$setDataEnabledForReason$(data, reply);
-                        case 113:
-                            int _arg071 = data.readInt();
-                            int _arg137 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result59 = isDataEnabledForReason(_arg071, _arg137);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result59);
-                            return true;
-                        case 114:
-                            int _arg072 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result60 = isManualNetworkSelectionAllowed(_arg072);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result60);
-                            return true;
-                        case 115:
-                            boolean _arg073 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setImsRegistrationState(_arg073);
-                            reply.writeNoException();
-                            return true;
-                        case 116:
-                            int _arg074 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result61 = getCdmaMdn(_arg074);
-                            reply.writeNoException();
-                            reply.writeString(_result61);
-                            return true;
-                        case 117:
-                            int _arg075 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result62 = getCdmaMin(_arg075);
-                            reply.writeNoException();
-                            reply.writeString(_result62);
-                            return true;
-                        case 118:
-                            return onTransact$requestNumberVerification$(data, reply);
-                        case 119:
-                            int _arg076 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result63 = getCarrierPrivilegeStatus(_arg076);
-                            reply.writeNoException();
-                            reply.writeInt(_result63);
-                            return true;
-                        case 120:
-                            int _arg077 = data.readInt();
-                            int _arg138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result64 = getCarrierPrivilegeStatusForUid(_arg077, _arg138);
-                            reply.writeNoException();
-                            reply.writeInt(_result64);
-                            return true;
-                        case 121:
-                            int _arg078 = data.readInt();
-                            String _arg139 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result65 = checkCarrierPrivilegesForPackage(_arg078, _arg139);
-                            reply.writeNoException();
-                            reply.writeInt(_result65);
-                            return true;
-                        case 122:
-                            String _arg079 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result66 = checkCarrierPrivilegesForPackageAnyPhone(_arg079);
-                            reply.writeNoException();
-                            reply.writeInt(_result66);
-                            return true;
-                        case 123:
-                            Intent _arg080 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            int _arg140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result67 = getCarrierPackageNamesForIntentAndPhone(_arg080, _arg140);
-                            reply.writeNoException();
-                            reply.writeStringList(_result67);
-                            return true;
-                        case 124:
-                            return onTransact$setLine1NumberForDisplayForSubscriber$(data, reply);
-                        case 125:
-                            return onTransact$getLine1NumberForDisplay$(data, reply);
-                        case 126:
-                            return onTransact$getLine1AlphaTagForDisplay$(data, reply);
-                        case 127:
-                            return onTransact$getMergedSubscriberIds$(data, reply);
-                        case 128:
-                            int _arg081 = data.readInt();
-                            String _arg141 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result68 = getMergedImsisFromGroup(_arg081, _arg141);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result68);
-                            return true;
-                        case 129:
-                            int _arg082 = data.readInt();
-                            String _arg142 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result69 = setOperatorBrandOverride(_arg082, _arg142);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result69);
-                            return true;
-                        case 130:
-                            return onTransact$setRoamingOverride$(data, reply);
-                        case 131:
-                            byte[] _arg083 = data.createByteArray();
-                            int _arg1_length = data.readInt();
-                            if (_arg1_length < 0) {
-                                _arg1 = null;
-                            } else {
-                                _arg1 = new byte[_arg1_length];
-                            }
-                            data.enforceNoDataAvail();
-                            int _result70 = invokeOemRilRequestRaw(_arg083, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result70);
-                            reply.writeByteArray(_arg1);
-                            return true;
-                        case 132:
-                            boolean _result71 = needMobileRadioShutdown();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result71);
-                            return true;
-                        case 133:
-                            shutdownMobileRadios();
-                            reply.writeNoException();
-                            return true;
-                        case 134:
-                            int _arg084 = data.readInt();
-                            String _arg143 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result72 = getRadioAccessFamily(_arg084, _arg143);
-                            reply.writeNoException();
-                            reply.writeInt(_result72);
-                            return true;
-                        case 135:
-                            return onTransact$uploadCallComposerPicture$(data, reply);
-                        case 136:
-                            boolean _arg085 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableVideoCalling(_arg085);
-                            reply.writeNoException();
-                            return true;
-                        case 137:
-                            String _arg086 = data.readString();
-                            String _arg144 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result73 = isVideoCallingEnabled(_arg086, _arg144);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result73);
-                            return true;
-                        case 138:
-                            return onTransact$canChangeDtmfToneLength$(data, reply);
-                        case 139:
-                            return onTransact$isWorldPhone$(data, reply);
-                        case 140:
-                            boolean _result74 = isTtyModeSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result74);
-                            return true;
-                        case 141:
-                            int _arg087 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result75 = isRttSupported(_arg087);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result75);
-                            return true;
-                        case 142:
-                            boolean _result76 = isHearingAidCompatibilitySupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result76);
-                            return true;
-                        case 143:
-                            int _arg088 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result77 = isImsRegistered(_arg088);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result77);
-                            return true;
-                        case 144:
-                            int _arg089 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result78 = isWifiCallingAvailable(_arg089);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result78);
-                            return true;
-                        case 145:
-                            int _arg090 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result79 = isVideoTelephonyAvailable(_arg090);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result79);
-                            return true;
-                        case 146:
-                            int _arg091 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result80 = getImsRegTechnologyForMmTel(_arg091);
-                            reply.writeNoException();
-                            reply.writeInt(_result80);
-                            return true;
-                        case 147:
-                            String _arg092 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result81 = getDeviceId(_arg092);
-                            reply.writeNoException();
-                            reply.writeString(_result81);
-                            return true;
-                        case 148:
-                            String _arg093 = data.readString();
-                            String _arg145 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result82 = getDeviceIdWithFeature(_arg093, _arg145);
-                            reply.writeNoException();
-                            reply.writeString(_result82);
-                            return true;
-                        case 149:
-                            return onTransact$getImeiForSlot$(data, reply);
-                        case 150:
-                            String _arg094 = data.readString();
-                            String _arg146 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result83 = getPrimaryImei(_arg094, _arg146);
-                            reply.writeNoException();
-                            reply.writeString(_result83);
-                            return true;
-                        case 151:
-                            int _arg095 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result84 = getTypeAllocationCodeForSlot(_arg095);
-                            reply.writeNoException();
-                            reply.writeString(_result84);
-                            return true;
-                        case 152:
-                            return onTransact$getMeidForSlot$(data, reply);
-                        case 153:
-                            int _arg096 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result85 = getManufacturerCodeForSlot(_arg096);
-                            reply.writeNoException();
-                            reply.writeString(_result85);
-                            return true;
-                        case 154:
-                            return onTransact$getDeviceSoftwareVersionForSlot$(data, reply);
-                        case 155:
-                            return onTransact$getSubIdForPhoneAccountHandle$(data, reply);
-                        case 156:
-                            int _arg097 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PhoneAccountHandle _result86 = getPhoneAccountHandleForSubscriptionId(_arg097);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result86, 1);
-                            return true;
-                        case 157:
-                            int _arg098 = data.readInt();
-                            String _arg147 = data.readString();
-                            data.enforceNoDataAvail();
-                            factoryReset(_arg098, _arg147);
-                            reply.writeNoException();
-                            return true;
-                        case 158:
-                            int _arg099 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result87 = getSimLocaleForSubscriber(_arg099);
-                            reply.writeNoException();
-                            reply.writeString(_result87);
-                            return true;
-                        case 159:
-                            ResultReceiver _arg0100 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestModemActivityInfo(_arg0100);
-                            return true;
-                        case 160:
-                            return onTransact$getServiceStateForSubscriber$(data, reply);
-                        case 161:
-                            PhoneAccountHandle _arg0101 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Uri _result88 = getVoicemailRingtoneUri(_arg0101);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result88, 1);
-                            return true;
-                        case 162:
-                            return onTransact$setVoicemailRingtoneUri$(data, reply);
-                        case 163:
-                            PhoneAccountHandle _arg0102 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result89 = isVoicemailVibrationEnabled(_arg0102);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result89);
-                            return true;
-                        case 164:
-                            return onTransact$setVoicemailVibrationEnabled$(data, reply);
-                        case 165:
-                            int _arg0103 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result90 = getPackagesWithCarrierPrivileges(_arg0103);
-                            reply.writeNoException();
-                            reply.writeStringList(_result90);
-                            return true;
-                        case 166:
-                            List<String> _result91 = getPackagesWithCarrierPrivilegesForAllPhones();
-                            reply.writeNoException();
-                            reply.writeStringList(_result91);
-                            return true;
-                        case 167:
-                            int _arg0104 = data.readInt();
-                            int _arg148 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result92 = getAidForAppType(_arg0104, _arg148);
-                            reply.writeNoException();
-                            reply.writeString(_result92);
-                            return true;
-                        case 168:
-                            int _arg0105 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result93 = getEsn(_arg0105);
-                            reply.writeNoException();
-                            reply.writeString(_result93);
-                            return true;
-                        case 169:
-                            int _arg0106 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result94 = getCdmaPrlVersion(_arg0106);
-                            reply.writeNoException();
-                            reply.writeString(_result94);
-                            return true;
-                        case 170:
-                            List<TelephonyHistogram> _result95 = getTelephonyHistograms();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result95, 1);
-                            return true;
-                        case 171:
-                            CarrierRestrictionRules _arg0107 = (CarrierRestrictionRules) data.readTypedObject(CarrierRestrictionRules.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result96 = setAllowedCarriers(_arg0107);
-                            reply.writeNoException();
-                            reply.writeInt(_result96);
-                            return true;
-                        case 172:
-                            CarrierRestrictionRules _result97 = getAllowedCarriers();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result97, 1);
-                            return true;
-                        case 173:
-                            int _arg0108 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result98 = getSubscriptionCarrierId(_arg0108);
-                            reply.writeNoException();
-                            reply.writeInt(_result98);
-                            return true;
-                        case 174:
-                            int _arg0109 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result99 = getSubscriptionCarrierName(_arg0109);
-                            reply.writeNoException();
-                            reply.writeString(_result99);
-                            return true;
-                        case 175:
-                            int _arg0110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result100 = getSubscriptionSpecificCarrierId(_arg0110);
-                            reply.writeNoException();
-                            reply.writeInt(_result100);
-                            return true;
-                        case 176:
-                            int _arg0111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result101 = getSubscriptionSpecificCarrierName(_arg0111);
-                            reply.writeNoException();
-                            reply.writeString(_result101);
-                            return true;
-                        case 177:
-                            return onTransact$getCarrierIdFromMccMnc$(data, reply);
-                        case 178:
-                            int _arg0112 = data.readInt();
-                            boolean _arg149 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            carrierActionSetRadioEnabled(_arg0112, _arg149);
-                            reply.writeNoException();
-                            return true;
-                        case 179:
-                            int _arg0113 = data.readInt();
-                            boolean _arg150 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            carrierActionReportDefaultNetworkStatus(_arg0113, _arg150);
-                            reply.writeNoException();
-                            return true;
-                        case 180:
-                            int _arg0114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            carrierActionResetAll(_arg0114);
-                            reply.writeNoException();
-                            return true;
-                        case 181:
-                            return onTransact$getCallForwarding$(data, reply);
-                        case 182:
-                            return onTransact$setCallForwarding$(data, reply);
-                        case 183:
-                            int _arg0115 = data.readInt();
-                            IIntegerConsumer _arg151 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getCallWaitingStatus(_arg0115, _arg151);
-                            reply.writeNoException();
-                            return true;
-                        case 184:
-                            return onTransact$setCallWaitingStatus$(data, reply);
-                        case 185:
-                            return onTransact$getClientRequestStats$(data, reply);
-                        case 186:
-                            int _arg0116 = data.readInt();
-                            int _arg152 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSimPowerStateForSlot(_arg0116, _arg152);
-                            reply.writeNoException();
-                            return true;
-                        case 187:
-                            return onTransact$setSimPowerStateForSlotWithCallback$(data, reply);
-                        case 188:
-                            return onTransact$getForbiddenPlmns$(data, reply);
-                        case 189:
-                            return onTransact$setForbiddenPlmns$(data, reply);
-                        case 190:
-                            int _arg0117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result102 = getEmergencyCallbackMode(_arg0117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result102);
-                            return true;
-                        case 191:
-                            int _arg0118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SignalStrength _result103 = getSignalStrength(_arg0118);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result103, 1);
-                            return true;
-                        case 192:
-                            int _arg0119 = data.readInt();
-                            String _arg153 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result104 = getCardIdForDefaultEuicc(_arg0119, _arg153);
-                            reply.writeNoException();
-                            reply.writeInt(_result104);
-                            return true;
-                        case 193:
-                            String _arg0120 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<UiccCardInfo> _result105 = getUiccCardsInfo(_arg0120);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result105, 1);
-                            return true;
-                        case 194:
-                            String _arg0121 = data.readString();
-                            data.enforceNoDataAvail();
-                            UiccSlotInfo[] _result106 = getUiccSlotsInfo(_arg0121);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result106, 1);
-                            return true;
-                        case 195:
-                            int[] _arg0122 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            boolean _result107 = switchSlots(_arg0122);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result107);
-                            return true;
-                        case 196:
-                            List<UiccSlotMapping> _arg0123 = data.createTypedArrayList(UiccSlotMapping.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result108 = setSimSlotMapping(_arg0123);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result108);
-                            return true;
-                        case 197:
-                            int _arg0124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result109 = isDataRoamingEnabled(_arg0124);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result109);
-                            return true;
-                        case 198:
-                            int _arg0125 = data.readInt();
-                            boolean _arg154 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDataRoamingEnabled(_arg0125, _arg154);
-                            reply.writeNoException();
-                            return true;
-                        case 199:
-                            int _arg0126 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result110 = getCdmaRoamingMode(_arg0126);
-                            reply.writeNoException();
-                            reply.writeInt(_result110);
-                            return true;
-                        case 200:
-                            int _arg0127 = data.readInt();
-                            int _arg155 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result111 = setCdmaRoamingMode(_arg0127, _arg155);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result111);
-                            return true;
-                        case 201:
-                            int _arg0128 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result112 = getCdmaSubscriptionMode(_arg0128);
-                            reply.writeNoException();
-                            reply.writeInt(_result112);
-                            return true;
-                        case 202:
-                            int _arg0129 = data.readInt();
-                            int _arg156 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result113 = setCdmaSubscriptionMode(_arg0129, _arg156);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result113);
-                            return true;
-                        case 203:
-                            return onTransact$setCarrierTestOverride$(data, reply);
-                        case 204:
-                            return onTransact$setCarrierServicePackageOverride$(data, reply);
-                        case 205:
-                            int _arg0130 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result114 = getCarrierIdListVersion(_arg0130);
-                            reply.writeNoException();
-                            reply.writeInt(_result114);
-                            return true;
-                        case 206:
-                            int _arg0131 = data.readInt();
-                            data.enforceNoDataAvail();
-                            refreshUiccProfile(_arg0131);
-                            reply.writeNoException();
-                            return true;
-                        case 207:
-                            return onTransact$getNumberOfModemsWithSimultaneousDataConnections$(data, reply);
-                        case 208:
-                            int _arg0132 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result115 = getNetworkSelectionMode(_arg0132);
-                            reply.writeNoException();
-                            reply.writeInt(_result115);
-                            return true;
-                        case 209:
-                            boolean _result116 = isInEmergencySmsMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result116);
-                            return true;
-                        case 210:
-                            return onTransact$getRadioPowerState$(data, reply);
-                        case 211:
-                            int _arg0133 = data.readInt();
-                            IImsRegistrationCallback _arg157 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerImsRegistrationCallback(_arg0133, _arg157);
-                            reply.writeNoException();
-                            return true;
-                        case 212:
-                            int _arg0134 = data.readInt();
-                            IImsRegistrationCallback _arg158 = IImsRegistrationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterImsRegistrationCallback(_arg0134, _arg158);
-                            reply.writeNoException();
-                            return true;
-                        case 213:
-                            int _arg0135 = data.readInt();
-                            IIntegerConsumer _arg159 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getImsMmTelRegistrationState(_arg0135, _arg159);
-                            reply.writeNoException();
-                            return true;
-                        case 214:
-                            int _arg0136 = data.readInt();
-                            IIntegerConsumer _arg160 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getImsMmTelRegistrationTransportType(_arg0136, _arg160);
-                            reply.writeNoException();
-                            return true;
-                        case 215:
-                            int _arg0137 = data.readInt();
-                            IImsCapabilityCallback _arg161 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerMmTelCapabilityCallback(_arg0137, _arg161);
-                            reply.writeNoException();
-                            return true;
-                        case 216:
-                            int _arg0138 = data.readInt();
-                            IImsCapabilityCallback _arg162 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterMmTelCapabilityCallback(_arg0138, _arg162);
-                            reply.writeNoException();
-                            return true;
-                        case 217:
-                            return onTransact$isCapable$(data, reply);
-                        case 218:
-                            return onTransact$isAvailable$(data, reply);
-                        case 219:
-                            return onTransact$isMmTelCapabilitySupported$(data, reply);
-                        case 220:
-                            int _arg0139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result117 = isAdvancedCallingSettingEnabled(_arg0139);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result117);
-                            return true;
-                        case 221:
-                            int _arg0140 = data.readInt();
-                            boolean _arg163 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAdvancedCallingSettingEnabled(_arg0140, _arg163);
-                            reply.writeNoException();
-                            return true;
-                        case 222:
-                            int _arg0141 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result118 = isVtSettingEnabled(_arg0141);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result118);
-                            return true;
-                        case 223:
-                            int _arg0142 = data.readInt();
-                            boolean _arg164 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVtSettingEnabled(_arg0142, _arg164);
-                            reply.writeNoException();
-                            return true;
-                        case 224:
-                            int _arg0143 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result119 = isVoWiFiSettingEnabled(_arg0143);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result119);
-                            return true;
-                        case 225:
-                            int _arg0144 = data.readInt();
-                            boolean _arg165 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVoWiFiSettingEnabled(_arg0144, _arg165);
-                            reply.writeNoException();
-                            return true;
-                        case 226:
-                            int _arg0145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result120 = isCrossSimCallingEnabledByUser(_arg0145);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result120);
-                            return true;
-                        case 227:
-                            int _arg0146 = data.readInt();
-                            boolean _arg166 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCrossSimCallingEnabled(_arg0146, _arg166);
-                            reply.writeNoException();
-                            return true;
-                        case 228:
-                            int _arg0147 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result121 = isVoWiFiRoamingSettingEnabled(_arg0147);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result121);
-                            return true;
-                        case 229:
-                            int _arg0148 = data.readInt();
-                            boolean _arg167 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVoWiFiRoamingSettingEnabled(_arg0148, _arg167);
-                            reply.writeNoException();
-                            return true;
-                        case 230:
-                            return onTransact$setVoWiFiNonPersistent$(data, reply);
-                        case 231:
-                            int _arg0149 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result122 = getVoWiFiModeSetting(_arg0149);
-                            reply.writeNoException();
-                            reply.writeInt(_result122);
-                            return true;
-                        case 232:
-                            int _arg0150 = data.readInt();
-                            int _arg168 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVoWiFiModeSetting(_arg0150, _arg168);
-                            reply.writeNoException();
-                            return true;
-                        case 233:
-                            int _arg0151 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result123 = getVoWiFiRoamingModeSetting(_arg0151);
-                            reply.writeNoException();
-                            reply.writeInt(_result123);
-                            return true;
-                        case 234:
-                            int _arg0152 = data.readInt();
-                            int _arg169 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVoWiFiRoamingModeSetting(_arg0152, _arg169);
-                            reply.writeNoException();
-                            return true;
-                        case 235:
-                            int _arg0153 = data.readInt();
-                            boolean _arg170 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRttCapabilitySetting(_arg0153, _arg170);
-                            reply.writeNoException();
-                            return true;
-                        case 236:
-                            int _arg0154 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result124 = isTtyOverVolteEnabled(_arg0154);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result124);
-                            return true;
-                        case 237:
-                            String _arg0155 = data.readString();
-                            String _arg171 = data.readString();
-                            data.enforceNoDataAvail();
-                            Map _result125 = getEmergencyNumberList(_arg0155, _arg171);
-                            reply.writeNoException();
-                            reply.writeMap(_result125);
-                            return true;
-                        case 238:
-                            String _arg0156 = data.readString();
-                            boolean _arg172 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result126 = isEmergencyNumber(_arg0156, _arg172);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result126);
-                            return true;
-                        case 239:
-                            int _arg0157 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result127 = getCertsFromCarrierPrivilegeAccessRules(_arg0157);
-                            reply.writeNoException();
-                            reply.writeStringList(_result127);
-                            return true;
-                        case 240:
-                            int _arg0158 = data.readInt();
-                            IImsConfigCallback _arg173 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerImsProvisioningChangedCallback(_arg0158, _arg173);
-                            reply.writeNoException();
-                            return true;
-                        case 241:
-                            int _arg0159 = data.readInt();
-                            IImsConfigCallback _arg174 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterImsProvisioningChangedCallback(_arg0159, _arg174);
-                            reply.writeNoException();
-                            return true;
-                        case 242:
-                            int _arg0160 = data.readInt();
-                            IFeatureProvisioningCallback _arg175 = IFeatureProvisioningCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerFeatureProvisioningChangedCallback(_arg0160, _arg175);
-                            reply.writeNoException();
-                            return true;
-                        case 243:
-                            int _arg0161 = data.readInt();
-                            IFeatureProvisioningCallback _arg176 = IFeatureProvisioningCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterFeatureProvisioningChangedCallback(_arg0161, _arg176);
-                            reply.writeNoException();
-                            return true;
-                        case 244:
-                            return onTransact$setImsProvisioningStatusForCapability$(data, reply);
-                        case 245:
-                            return onTransact$getImsProvisioningStatusForCapability$(data, reply);
-                        case 246:
-                            return onTransact$getRcsProvisioningStatusForCapability$(data, reply);
-                        case 247:
-                            return onTransact$setRcsProvisioningStatusForCapability$(data, reply);
-                        case 248:
-                            int _arg0162 = data.readInt();
-                            int _arg177 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result128 = getImsProvisioningInt(_arg0162, _arg177);
-                            reply.writeNoException();
-                            reply.writeInt(_result128);
-                            return true;
-                        case 249:
-                            int _arg0163 = data.readInt();
-                            int _arg178 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result129 = getImsProvisioningString(_arg0163, _arg178);
-                            reply.writeNoException();
-                            reply.writeString(_result129);
-                            return true;
-                        case 250:
-                            return onTransact$setImsProvisioningInt$(data, reply);
-                        case 251:
-                            return onTransact$setImsProvisioningString$(data, reply);
-                        case 252:
-                            startEmergencyCallbackMode();
-                            reply.writeNoException();
-                            return true;
-                        case 253:
-                            int _arg0164 = data.readInt();
-                            EmergencyNumber _arg179 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateEmergencyNumberListTestMode(_arg0164, _arg179);
-                            reply.writeNoException();
-                            return true;
-                        case 254:
-                            List<String> _result130 = getEmergencyNumberListTestMode();
-                            reply.writeNoException();
-                            reply.writeStringList(_result130);
-                            return true;
-                        case 255:
-                            int _arg0165 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result131 = getEmergencyNumberDbVersion(_arg0165);
-                            reply.writeNoException();
-                            reply.writeInt(_result131);
-                            return true;
-                        case 256:
-                            notifyOtaEmergencyNumberDbInstalled();
-                            reply.writeNoException();
-                            return true;
-                        case 257:
-                            ParcelFileDescriptor _arg0166 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateOtaEmergencyNumberDbFilePath(_arg0166);
-                            reply.writeNoException();
-                            return true;
-                        case 258:
-                            resetOtaEmergencyNumberDbFilePath();
-                            reply.writeNoException();
-                            return true;
-                        case 259:
-                            int _arg0167 = data.readInt();
-                            boolean _arg180 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result132 = enableModemForSlot(_arg0167, _arg180);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result132);
-                            return true;
-                        case 260:
-                            boolean _arg0168 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMultiSimCarrierRestriction(_arg0168);
-                            reply.writeNoException();
-                            return true;
-                        case 261:
-                            String _arg0169 = data.readString();
-                            String _arg181 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result133 = isMultiSimSupported(_arg0169, _arg181);
-                            reply.writeNoException();
-                            reply.writeInt(_result133);
-                            return true;
-                        case 262:
-                            int _arg0170 = data.readInt();
-                            data.enforceNoDataAvail();
-                            switchMultiSimConfig(_arg0170);
-                            reply.writeNoException();
-                            return true;
-                        case 263:
-                            return onTransact$doesSwitchMultiSimConfigTriggerReboot$(data, reply);
-                        case 264:
-                            String _arg0171 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<UiccSlotMapping> _result134 = getSlotsMapping(_arg0171);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result134, 1);
-                            return true;
-                        case 265:
-                            int _result135 = getRadioHalVersion();
-                            reply.writeNoException();
-                            reply.writeInt(_result135);
-                            return true;
-                        case 266:
-                            int _arg0172 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result136 = getHalVersion(_arg0172);
-                            reply.writeNoException();
-                            reply.writeInt(_result136);
-                            return true;
-                        case 267:
-                            String _result137 = getCurrentPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result137);
-                            return true;
-                        case 268:
-                            int _arg0173 = data.readInt();
-                            int _arg182 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result138 = isApplicationOnUicc(_arg0173, _arg182);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result138);
-                            return true;
-                        case 269:
-                            return onTransact$isModemEnabledForSlot$(data, reply);
-                        case 270:
-                            return onTransact$isDataEnabledForApn$(data, reply);
-                        case 271:
-                            int _arg0174 = data.readInt();
-                            int _arg183 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result139 = isApnMetered(_arg0174, _arg183);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result139);
-                            return true;
-                        case 272:
-                            return onTransact$setSystemSelectionChannels$(data, reply);
-                        case 273:
-                            int _arg0175 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<RadioAccessSpecifier> _result140 = getSystemSelectionChannels(_arg0175);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result140, 1);
-                            return true;
-                        case 274:
-                            return onTransact$isMvnoMatched$(data, reply);
-                        case 275:
-                            return onTransact$enqueueSmsPickResult$(data, reply);
-                        case 276:
-                            showSwitchToManagedProfileDialog();
-                            return true;
-                        case 277:
-                            int _arg0176 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result141 = getMmsUserAgent(_arg0176);
-                            reply.writeNoException();
-                            reply.writeString(_result141);
-                            return true;
-                        case 278:
-                            int _arg0177 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result142 = getMmsUAProfUrl(_arg0177);
-                            reply.writeNoException();
-                            reply.writeString(_result142);
-                            return true;
-                        case 279:
-                            return onTransact$setMobileDataPolicyEnabled$(data, reply);
-                        case 280:
-                            int _arg0178 = data.readInt();
-                            int _arg184 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result143 = isMobileDataPolicyEnabled(_arg0178, _arg184);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result143);
-                            return true;
-                        case 281:
-                            boolean _arg0179 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCepEnabled(_arg0179);
-                            return true;
-                        case 282:
-                            return onTransact$notifyRcsAutoConfigurationReceived$(data, reply);
-                        case 283:
-                            int _arg0180 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result144 = isIccLockEnabled(_arg0180);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result144);
-                            return true;
-                        case 284:
-                            return onTransact$setIccLockEnabled$(data, reply);
-                        case 285:
-                            return onTransact$changeIccLockPassword$(data, reply);
-                        case 286:
-                            requestUserActivityNotification();
-                            return true;
-                        case 287:
-                            userActivity();
-                            return true;
-                        case 288:
-                            int _arg0181 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result145 = getManualNetworkSelectionPlmn(_arg0181);
-                            reply.writeNoException();
-                            reply.writeString(_result145);
-                            return true;
-                        case 289:
-                            boolean _result146 = canConnectTo5GInDsdsMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result146);
-                            return true;
-                        case 290:
-                            return onTransact$getEquivalentHomePlmns$(data, reply);
-                        case 291:
-                            int _arg0182 = data.readInt();
-                            boolean _arg185 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result147 = setVoNrEnabled(_arg0182, _arg185);
-                            reply.writeNoException();
-                            reply.writeInt(_result147);
-                            return true;
-                        case 292:
-                            int _arg0183 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result148 = isVoNrEnabled(_arg0183);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result148);
-                            return true;
-                        case 293:
-                            int _arg0184 = data.readInt();
-                            int _arg186 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result149 = setNrDualConnectivityState(_arg0184, _arg186);
-                            reply.writeNoException();
-                            reply.writeInt(_result149);
-                            return true;
-                        case 294:
-                            int _arg0185 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result150 = isNrDualConnectivityEnabled(_arg0185);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result150);
-                            return true;
-                        case 295:
-                            String _arg0186 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result151 = isRadioInterfaceCapabilitySupported(_arg0186);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result151);
-                            return true;
-                        case 296:
-                            return onTransact$sendThermalMitigationRequest$(data, reply);
-                        case 297:
-                            return onTransact$bootstrapAuthenticationRequest$(data, reply);
-                        case 298:
-                            int _arg0187 = data.readInt();
-                            String _arg187 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result152 = setBoundGbaServiceOverride(_arg0187, _arg187);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result152);
-                            return true;
-                        case 299:
-                            int _arg0188 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result153 = getBoundGbaService(_arg0188);
-                            reply.writeNoException();
-                            reply.writeString(_result153);
-                            return true;
-                        case 300:
-                            int _arg0189 = data.readInt();
-                            int _arg188 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result154 = setGbaReleaseTimeOverride(_arg0189, _arg188);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result154);
-                            return true;
-                        case 301:
-                            int _arg0190 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result155 = getGbaReleaseTime(_arg0190);
-                            reply.writeNoException();
-                            reply.writeInt(_result155);
-                            return true;
-                        case 302:
-                            int _arg0191 = data.readInt();
-                            RcsClientConfiguration _arg189 = (RcsClientConfiguration) data.readTypedObject(RcsClientConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRcsClientConfiguration(_arg0191, _arg189);
-                            reply.writeNoException();
-                            return true;
-                        case 303:
-                            int _arg0192 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result156 = isRcsVolteSingleRegistrationCapable(_arg0192);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result156);
-                            return true;
-                        case 304:
-                            int _arg0193 = data.readInt();
-                            IRcsConfigCallback _arg190 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerRcsProvisioningCallback(_arg0193, _arg190);
-                            reply.writeNoException();
-                            return true;
-                        case 305:
-                            int _arg0194 = data.readInt();
-                            IRcsConfigCallback _arg191 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterRcsProvisioningCallback(_arg0194, _arg191);
-                            reply.writeNoException();
-                            return true;
-                        case 306:
-                            int _arg0195 = data.readInt();
-                            data.enforceNoDataAvail();
-                            triggerRcsReconfiguration(_arg0195);
-                            reply.writeNoException();
-                            return true;
-                        case 307:
-                            boolean _arg0196 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRcsSingleRegistrationTestModeEnabled(_arg0196);
-                            reply.writeNoException();
-                            return true;
-                        case 308:
-                            boolean _result157 = getRcsSingleRegistrationTestModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result157);
-                            return true;
-                        case 309:
-                            String _arg0197 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDeviceSingleRegistrationEnabledOverride(_arg0197);
-                            reply.writeNoException();
-                            return true;
-                        case 310:
-                            boolean _result158 = getDeviceSingleRegistrationEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result158);
-                            return true;
-                        case 311:
-                            int _arg0198 = data.readInt();
-                            String _arg192 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result159 = setCarrierSingleRegistrationEnabledOverride(_arg0198, _arg192);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result159);
-                            return true;
-                        case 312:
-                            int _arg0199 = data.readInt();
-                            int _arg193 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendDeviceToDeviceMessage(_arg0199, _arg193);
-                            reply.writeNoException();
-                            return true;
-                        case 313:
-                            String _arg0200 = data.readString();
-                            data.enforceNoDataAvail();
-                            setActiveDeviceToDeviceTransport(_arg0200);
-                            reply.writeNoException();
-                            return true;
-                        case 314:
-                            boolean _arg0201 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeviceToDeviceForceEnabled(_arg0201);
-                            reply.writeNoException();
-                            return true;
-                        case 315:
-                            int _arg0202 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result160 = getCarrierSingleRegistrationEnabled(_arg0202);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result160);
-                            return true;
-                        case 316:
-                            int _arg0203 = data.readInt();
-                            String _arg194 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result161 = setImsFeatureValidationOverride(_arg0203, _arg194);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result161);
-                            return true;
-                        case 317:
-                            int _arg0204 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result162 = getImsFeatureValidationOverride(_arg0204);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result162);
-                            return true;
-                        case 318:
-                            String _result163 = getMobileProvisioningUrl();
-                            reply.writeNoException();
-                            reply.writeString(_result163);
-                            return true;
-                        case 319:
-                            int _arg0205 = data.readInt();
-                            String _arg195 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result164 = removeContactFromEab(_arg0205, _arg195);
-                            reply.writeNoException();
-                            reply.writeInt(_result164);
-                            return true;
-                        case 320:
-                            String _arg0206 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result165 = getContactFromEab(_arg0206);
-                            reply.writeNoException();
-                            reply.writeString(_result165);
-                            return true;
-                        case 321:
-                            String _arg0207 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result166 = getCapabilityFromEab(_arg0207);
-                            reply.writeNoException();
-                            reply.writeString(_result166);
-                            return true;
-                        case 322:
-                            boolean _result167 = getDeviceUceEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result167);
-                            return true;
-                        case 323:
-                            boolean _arg0208 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeviceUceEnabled(_arg0208);
-                            reply.writeNoException();
-                            return true;
-                        case 324:
-                            int _arg0209 = data.readInt();
-                            List<String> _arg196 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            RcsContactUceCapability _result168 = addUceRegistrationOverrideShell(_arg0209, _arg196);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result168, 1);
-                            return true;
-                        case 325:
-                            int _arg0210 = data.readInt();
-                            List<String> _arg197 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            RcsContactUceCapability _result169 = removeUceRegistrationOverrideShell(_arg0210, _arg197);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result169, 1);
-                            return true;
-                        case 326:
-                            int _arg0211 = data.readInt();
-                            data.enforceNoDataAvail();
-                            RcsContactUceCapability _result170 = clearUceRegistrationOverrideShell(_arg0211);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result170, 1);
-                            return true;
-                        case 327:
-                            int _arg0212 = data.readInt();
-                            data.enforceNoDataAvail();
-                            RcsContactUceCapability _result171 = getLatestRcsContactUceCapabilityShell(_arg0212);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result171, 1);
-                            return true;
-                        case 328:
-                            int _arg0213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result172 = getLastUcePidfXmlShell(_arg0213);
-                            reply.writeNoException();
-                            reply.writeString(_result172);
-                            return true;
-                        case 329:
-                            int _arg0214 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result173 = removeUceRequestDisallowedStatus(_arg0214);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result173);
-                            return true;
-                        case 330:
-                            int _arg0215 = data.readInt();
-                            long _arg198 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result174 = setCapabilitiesRequestTimeout(_arg0215, _arg198);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result174);
-                            return true;
-                        case 331:
-                            return onTransact$setSignalStrengthUpdateRequest$(data, reply);
-                        case 332:
-                            return onTransact$clearSignalStrengthUpdateRequest$(data, reply);
-                        case 333:
-                            PhoneCapability _result175 = getPhoneCapability();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result175, 1);
-                            return true;
-                        case 334:
-                            int _result176 = prepareForUnattendedReboot();
-                            reply.writeNoException();
-                            reply.writeInt(_result176);
-                            return true;
-                        case 335:
-                            ResultReceiver _arg0216 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSlicingConfig(_arg0216);
-                            reply.writeNoException();
-                            return true;
-                        case 336:
-                            int _arg0217 = data.readInt();
-                            int _arg199 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result177 = isPremiumCapabilityAvailableForPurchase(_arg0217, _arg199);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result177);
-                            return true;
-                        case 337:
-                            return onTransact$purchasePremiumCapability$(data, reply);
-                        case 338:
-                            return onTransact$registerImsStateCallback$(data, reply);
-                        case 339:
-                            IImsStateCallback _arg0218 = IImsStateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterImsStateCallback(_arg0218);
-                            reply.writeNoException();
-                            return true;
-                        case 340:
-                            return onTransact$getLastKnownCellIdentity$(data, reply);
-                        case 341:
-                            String _arg0219 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result178 = setModemService(_arg0219);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result178);
-                            return true;
-                        case 342:
-                            String _result179 = getModemService();
-                            reply.writeNoException();
-                            reply.writeString(_result179);
-                            return true;
-                        case 343:
-                            return onTransact$isProvisioningRequiredForCapability$(data, reply);
-                        case 344:
-                            return onTransact$isRcsProvisioningRequiredForCapability$(data, reply);
-                        case 345:
-                            return onTransact$setVoiceServiceStateOverride$(data, reply);
-                        case 346:
-                            int _arg0220 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result180 = getCarrierServicePackageNameForLogicalSlot(_arg0220);
-                            reply.writeNoException();
-                            reply.writeString(_result180);
-                            return true;
-                        case 347:
-                            boolean _arg0221 = data.readBoolean();
-                            String _arg1100 = data.readString();
-                            data.enforceNoDataAvail();
-                            setRemovableEsimAsDefaultEuicc(_arg0221, _arg1100);
-                            reply.writeNoException();
-                            return true;
-                        case 348:
-                            String _arg0222 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result181 = isRemovableEsimDefaultEuicc(_arg0222);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result181);
-                            return true;
-                        case 349:
-                            int _arg0223 = data.readInt();
-                            boolean _arg1101 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            ComponentName _result182 = getDefaultRespondViaMessageApplication(_arg0223, _arg1101);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result182, 1);
-                            return true;
-                        case 350:
-                            int _arg0224 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result183 = getSimStateForSlotIndex(_arg0224);
-                            reply.writeNoException();
-                            reply.writeInt(_result183);
-                            return true;
-                        case 351:
-                            return onTransact$persistEmergencyCallDiagnosticData$(data, reply);
-                        case 352:
-                            boolean _arg0225 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNullCipherAndIntegrityEnabled(_arg0225);
-                            reply.writeNoException();
-                            return true;
-                        case 353:
-                            boolean _result184 = isNullCipherAndIntegrityPreferenceEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result184);
-                            return true;
-                        case 354:
-                            int _arg0226 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<CellBroadcastIdRange> _result185 = getCellBroadcastIdRanges(_arg0226);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result185, 1);
-                            return true;
-                        case 355:
-                            return onTransact$setCellBroadcastIdRanges$(data, reply);
-                        case 356:
-                            boolean _result186 = isDomainSelectionSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result186);
-                            return true;
-                        case 357:
-                            IIntegerConsumer _arg0227 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-                            String _arg1102 = data.readString();
-                            data.enforceNoDataAvail();
-                            getCarrierRestrictionStatus(_arg0227, _arg1102);
-                            reply.writeNoException();
-                            return true;
-                        case 358:
-                            return onTransact$requestSatelliteEnabled$(data, reply);
-                        case 359:
-                            int _arg0228 = data.readInt();
-                            ResultReceiver _arg1103 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestIsSatelliteEnabled(_arg0228, _arg1103);
-                            reply.writeNoException();
-                            return true;
-                        case 360:
-                            int _arg0229 = data.readInt();
-                            ResultReceiver _arg1104 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestIsDemoModeEnabled(_arg0229, _arg1104);
-                            reply.writeNoException();
-                            return true;
-                        case 361:
-                            int _arg0230 = data.readInt();
-                            ResultReceiver _arg1105 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestIsSatelliteSupported(_arg0230, _arg1105);
-                            reply.writeNoException();
-                            return true;
-                        case 362:
-                            int _arg0231 = data.readInt();
-                            ResultReceiver _arg1106 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestSatelliteCapabilities(_arg0231, _arg1106);
-                            reply.writeNoException();
-                            return true;
-                        case 363:
-                            return onTransact$startSatelliteTransmissionUpdates$(data, reply);
-                        case 364:
-                            return onTransact$stopSatelliteTransmissionUpdates$(data, reply);
-                        case 365:
-                            return onTransact$provisionSatelliteService$(data, reply);
-                        case 366:
-                            return onTransact$deprovisionSatelliteService$(data, reply);
-                        case 367:
-                            int _arg0232 = data.readInt();
-                            ISatelliteProvisionStateCallback _arg1107 = ISatelliteProvisionStateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result187 = registerForSatelliteProvisionStateChanged(_arg0232, _arg1107);
-                            reply.writeNoException();
-                            reply.writeInt(_result187);
-                            return true;
-                        case 368:
-                            return onTransact$unregisterForSatelliteProvisionStateChanged$(data, reply);
-                        case 369:
-                            return onTransact$requestIsSatelliteProvisioned$(data, reply);
-                        case 370:
-                            return onTransact$registerForSatelliteModemStateChanged$(data, reply);
-                        case 371:
-                            return onTransact$unregisterForModemStateChanged$(data, reply);
-                        case 372:
-                            return onTransact$registerForIncomingDatagram$(data, reply);
-                        case 373:
-                            return onTransact$unregisterForIncomingDatagram$(data, reply);
-                        case 374:
-                            return onTransact$pollPendingDatagrams$(data, reply);
-                        case 375:
-                            return onTransact$sendDatagram$(data, reply);
-                        case 376:
-                            return onTransact$requestIsCommunicationAllowedForCurrentLocation$(data, reply);
-                        case 377:
-                            return onTransact$requestTimeForNextSatelliteVisibility$(data, reply);
-                        case 378:
-                            return onTransact$onDeviceAlignedWithSatellite$(data, reply);
-                        case 379:
-                            String _arg0233 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result188 = setSatelliteServicePackageName(_arg0233);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result188);
-                            return true;
-                        case 380:
-                            String _arg0234 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result189 = setSatelliteGatewayServicePackageName(_arg0234);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result189);
-                            return true;
-                        case 381:
-                            long _arg0235 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result190 = setSatelliteListeningTimeoutDuration(_arg0235);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result190);
-                            return true;
-                        case 382:
-                            return onTransact$setSatellitePointingUiClassName$(data, reply);
-                        case 383:
-                            long _arg0236 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result191 = setSatelliteDeviceAlignedTimeoutDuration(_arg0236);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result191);
-                            return true;
-                        case 384:
-                            return onTransact$setEmergencyCallToSatelliteHandoverType$(data, reply);
-                        case 385:
-                            return onTransact$getShaIdFromAllowList$(data, reply);
-                        case 386:
-                            return onTransact$addAttachRestrictionForCarrier$(data, reply);
-                        case 387:
-                            return onTransact$removeAttachRestrictionForCarrier$(data, reply);
-                        case 388:
-                            int _arg0237 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result192 = getAttachRestrictionReasonsForCarrier(_arg0237);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result192);
-                            return true;
-                        case 389:
-                            int _arg0238 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result193 = getSatellitePlmnsForCarrier(_arg0238);
-                            reply.writeNoException();
-                            reply.writeStringList(_result193);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ITelephony {
+        private static class Proxy implements ITelephony {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -8312,31 +8674,12 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public int invokeOemRilRequestRaw(byte[] oemReq, byte[] oemResp) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeByteArray(oemReq);
-                    _data.writeInt(oemResp.length);
-                    this.mRemote.transact(131, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    _reply.readByteArray(oemResp);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.ITelephony
             public boolean needMobileRadioShutdown() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8352,7 +8695,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8368,7 +8711,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(phoneId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(133, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8389,7 +8732,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(contentType);
                     _data.writeTypedObject(fd, 0);
                     _data.writeTypedObject(callback, 0);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8404,7 +8747,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(135, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8420,7 +8763,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8439,7 +8782,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(137, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8458,7 +8801,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8474,7 +8817,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(140, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8491,7 +8834,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subscriptionId);
-                    this.mRemote.transact(141, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8507,7 +8850,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(142, _data, _reply, 0);
+                    this.mRemote.transact(141, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8524,7 +8867,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(142, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8541,7 +8884,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8558,7 +8901,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8575,7 +8918,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(146, _data, _reply, 0);
+                    this.mRemote.transact(145, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8592,7 +8935,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8610,7 +8953,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(148, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8629,7 +8972,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(149, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8647,7 +8990,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8664,7 +9007,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8683,7 +9026,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(152, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8700,7 +9043,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8719,7 +9062,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8738,7 +9081,7 @@ public interface ITelephony extends IInterface {
                     _data.writeTypedObject(phoneAccountHandle, 0);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(154, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8755,7 +9098,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subscriptionId);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(155, _data, _reply, 0);
                     _reply.readException();
                     PhoneAccountHandle _result = (PhoneAccountHandle) _reply.readTypedObject(PhoneAccountHandle.CREATOR);
                     return _result;
@@ -8773,7 +9116,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(157, _data, _reply, 0);
+                    this.mRemote.transact(156, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8788,7 +9131,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(158, _data, _reply, 0);
+                    this.mRemote.transact(157, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8804,24 +9147,24 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(result, 0);
-                    this.mRemote.transact(159, _data, null, 1);
+                    this.mRemote.transact(158, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public ServiceState getServiceStateForSubscriber(int subId, boolean renounceFineLocationAccess, boolean renounceCoarseLocationAccess, String callingPackage, String callingFeatureId) throws RemoteException {
+            public ServiceState getServiceStateForSlot(int slotIndex, boolean renounceFineLocationAccess, boolean renounceCoarseLocationAccess, String callingPackage, String callingFeatureId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
+                    _data.writeInt(slotIndex);
                     _data.writeBoolean(renounceFineLocationAccess);
                     _data.writeBoolean(renounceCoarseLocationAccess);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(160, _data, _reply, 0);
+                    this.mRemote.transact(159, _data, _reply, 0);
                     _reply.readException();
                     ServiceState _result = (ServiceState) _reply.readTypedObject(ServiceState.CREATOR);
                     return _result;
@@ -8838,7 +9181,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(accountHandle, 0);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(160, _data, _reply, 0);
                     _reply.readException();
                     Uri _result = (Uri) _reply.readTypedObject(Uri.CREATOR);
                     return _result;
@@ -8857,7 +9200,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(phoneAccountHandle, 0);
                     _data.writeTypedObject(uri, 0);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(161, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8872,7 +9215,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(accountHandle, 0);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(162, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8891,7 +9234,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(phoneAccountHandle, 0);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(163, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8906,7 +9249,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(phoneId);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(164, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8922,7 +9265,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(165, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8940,7 +9283,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(appType);
-                    this.mRemote.transact(167, _data, _reply, 0);
+                    this.mRemote.transact(166, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8957,7 +9300,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8974,7 +9317,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(169, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8990,7 +9333,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(169, _data, _reply, 0);
                     _reply.readException();
                     List<TelephonyHistogram> _result = _reply.createTypedArrayList(TelephonyHistogram.CREATOR);
                     return _result;
@@ -9007,7 +9350,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(carrierRestrictionRules, 0);
-                    this.mRemote.transact(171, _data, _reply, 0);
+                    this.mRemote.transact(170, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9023,7 +9366,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(171, _data, _reply, 0);
                     _reply.readException();
                     CarrierRestrictionRules _result = (CarrierRestrictionRules) _reply.readTypedObject(CarrierRestrictionRules.CREATOR);
                     return _result;
@@ -9040,7 +9383,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(172, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9057,7 +9400,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(173, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9074,7 +9417,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(174, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9091,7 +9434,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9110,7 +9453,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(mccmnc);
                     _data.writeBoolean(isSubscriptionMccMnc);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9128,7 +9471,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9144,7 +9487,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(report);
-                    this.mRemote.transact(179, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9159,7 +9502,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9176,7 +9519,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(callForwardingReason);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9193,7 +9536,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeTypedObject(callForwardingInfo, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    this.mRemote.transact(181, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9209,7 +9552,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9226,7 +9569,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeBoolean(enabled);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(184, _data, _reply, 0);
+                    this.mRemote.transact(183, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9243,7 +9586,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
                     _data.writeInt(subid);
-                    this.mRemote.transact(185, _data, _reply, 0);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                     List<ClientRequestStats> _result = _reply.createTypedArrayList(ClientRequestStats.CREATOR);
                     return _result;
@@ -9261,7 +9604,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
                     _data.writeInt(state);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(185, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9278,7 +9621,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeInt(state);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9296,7 +9639,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(appType);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9317,7 +9660,7 @@ public interface ITelephony extends IInterface {
                     _data.writeStringList(fplmns);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(189, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9334,7 +9677,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(190, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9351,7 +9694,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                     SignalStrength _result = (SignalStrength) _reply.readTypedObject(SignalStrength.CREATOR);
                     return _result;
@@ -9369,7 +9712,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(192, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9386,7 +9729,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(192, _data, _reply, 0);
                     _reply.readException();
                     List<UiccCardInfo> _result = _reply.createTypedArrayList(UiccCardInfo.CREATOR);
                     return _result;
@@ -9403,7 +9746,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(194, _data, _reply, 0);
+                    this.mRemote.transact(193, _data, _reply, 0);
                     _reply.readException();
                     UiccSlotInfo[] _result = (UiccSlotInfo[]) _reply.createTypedArray(UiccSlotInfo.CREATOR);
                     return _result;
@@ -9420,7 +9763,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(physicalSlots);
-                    this.mRemote.transact(195, _data, _reply, 0);
+                    this.mRemote.transact(194, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9437,7 +9780,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedList(slotMapping, 0);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(195, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9454,7 +9797,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(197, _data, _reply, 0);
+                    this.mRemote.transact(196, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9472,7 +9815,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9487,7 +9830,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(198, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9505,7 +9848,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(mode);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9522,7 +9865,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(201, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9540,7 +9883,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(mode);
-                    this.mRemote.transact(202, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9566,7 +9909,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(spn);
                     _data.writeString(carrierPrivilegeRules);
                     _data.writeString(apn);
-                    this.mRemote.transact(203, _data, _reply, 0);
+                    this.mRemote.transact(202, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9583,7 +9926,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(carrierServicePackage);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(204, _data, _reply, 0);
+                    this.mRemote.transact(203, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9598,7 +9941,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(205, _data, _reply, 0);
+                    this.mRemote.transact(204, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9615,7 +9958,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9632,7 +9975,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9649,7 +9992,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9665,7 +10008,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(209, _data, _reply, 0);
+                    this.mRemote.transact(208, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9684,7 +10027,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(209, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9702,7 +10045,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(c);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9718,7 +10061,39 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(c);
+                    this.mRemote.transact(211, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void registerImsEmergencyRegistrationCallback(int subId, IImsRegistrationCallback c) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeStrongInterface(c);
                     this.mRemote.transact(212, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterImsEmergencyRegistrationCallback(int subId, IImsRegistrationCallback c) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeStrongInterface(c);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9734,7 +10109,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(consumer);
-                    this.mRemote.transact(213, _data, _reply, 0);
+                    this.mRemote.transact(214, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9750,7 +10125,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(consumer);
-                    this.mRemote.transact(214, _data, _reply, 0);
+                    this.mRemote.transact(215, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9766,7 +10141,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(c);
-                    this.mRemote.transact(215, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9782,7 +10157,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(c);
-                    this.mRemote.transact(216, _data, _reply, 0);
+                    this.mRemote.transact(217, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9799,7 +10174,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(regTech);
-                    this.mRemote.transact(217, _data, _reply, 0);
+                    this.mRemote.transact(218, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9818,7 +10193,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(regTech);
-                    this.mRemote.transact(218, _data, _reply, 0);
+                    this.mRemote.transact(219, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9838,7 +10213,7 @@ public interface ITelephony extends IInterface {
                     _data.writeStrongInterface(callback);
                     _data.writeInt(capability);
                     _data.writeInt(transportType);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(220, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9853,7 +10228,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(220, _data, _reply, 0);
+                    this.mRemote.transact(221, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9871,7 +10246,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(222, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9886,7 +10261,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(222, _data, _reply, 0);
+                    this.mRemote.transact(223, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9904,7 +10279,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(223, _data, _reply, 0);
+                    this.mRemote.transact(224, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9919,7 +10294,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(224, _data, _reply, 0);
+                    this.mRemote.transact(225, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9937,7 +10312,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(225, _data, _reply, 0);
+                    this.mRemote.transact(226, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9952,7 +10327,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(226, _data, _reply, 0);
+                    this.mRemote.transact(227, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9970,7 +10345,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(227, _data, _reply, 0);
+                    this.mRemote.transact(228, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9985,7 +10360,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(228, _data, _reply, 0);
+                    this.mRemote.transact(229, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10003,7 +10378,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(229, _data, _reply, 0);
+                    this.mRemote.transact(230, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10020,7 +10395,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeBoolean(isCapable);
                     _data.writeInt(mode);
-                    this.mRemote.transact(230, _data, _reply, 0);
+                    this.mRemote.transact(231, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10035,7 +10410,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(231, _data, _reply, 0);
+                    this.mRemote.transact(232, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10053,7 +10428,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(mode);
-                    this.mRemote.transact(232, _data, _reply, 0);
+                    this.mRemote.transact(233, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10068,7 +10443,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(234, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10086,7 +10461,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(mode);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10102,7 +10477,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(235, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10117,7 +10492,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(236, _data, _reply, 0);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10135,7 +10510,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(237, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -10154,7 +10529,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(number);
                     _data.writeBoolean(exactMatch);
-                    this.mRemote.transact(238, _data, _reply, 0);
+                    this.mRemote.transact(239, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10171,7 +10546,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(239, _data, _reply, 0);
+                    this.mRemote.transact(240, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -10189,7 +10564,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(240, _data, _reply, 0);
+                    this.mRemote.transact(241, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10205,7 +10580,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(241, _data, _reply, 0);
+                    this.mRemote.transact(242, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10221,7 +10596,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(242, _data, _reply, 0);
+                    this.mRemote.transact(243, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10237,7 +10612,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(243, _data, _reply, 0);
+                    this.mRemote.transact(244, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10255,7 +10630,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(capability);
                     _data.writeInt(tech);
                     _data.writeBoolean(isProvisioned);
-                    this.mRemote.transact(244, _data, _reply, 0);
+                    this.mRemote.transact(245, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10272,7 +10647,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(tech);
-                    this.mRemote.transact(245, _data, _reply, 0);
+                    this.mRemote.transact(246, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10291,7 +10666,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(tech);
-                    this.mRemote.transact(246, _data, _reply, 0);
+                    this.mRemote.transact(247, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10311,7 +10686,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(capability);
                     _data.writeInt(tech);
                     _data.writeBoolean(isProvisioned);
-                    this.mRemote.transact(247, _data, _reply, 0);
+                    this.mRemote.transact(248, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10327,7 +10702,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(key);
-                    this.mRemote.transact(248, _data, _reply, 0);
+                    this.mRemote.transact(249, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10345,7 +10720,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(key);
-                    this.mRemote.transact(249, _data, _reply, 0);
+                    this.mRemote.transact(250, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -10364,7 +10739,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(key);
                     _data.writeInt(value);
-                    this.mRemote.transact(250, _data, _reply, 0);
+                    this.mRemote.transact(251, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10383,7 +10758,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(key);
                     _data.writeString(value);
-                    this.mRemote.transact(251, _data, _reply, 0);
+                    this.mRemote.transact(252, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10399,7 +10774,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(252, _data, _reply, 0);
+                    this.mRemote.transact(253, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10415,7 +10790,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(action);
                     _data.writeTypedObject(num, 0);
-                    this.mRemote.transact(253, _data, _reply, 0);
+                    this.mRemote.transact(254, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10429,7 +10804,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(254, _data, _reply, 0);
+                    this.mRemote.transact(255, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -10446,7 +10821,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(255, _data, _reply, 0);
+                    this.mRemote.transact(256, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10462,7 +10837,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(256, _data, _reply, 0);
+                    this.mRemote.transact(257, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10477,7 +10852,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(otaParcelFileDescriptor, 0);
-                    this.mRemote.transact(257, _data, _reply, 0);
+                    this.mRemote.transact(258, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10491,7 +10866,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(258, _data, _reply, 0);
+                    this.mRemote.transact(259, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10507,7 +10882,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(259, _data, _reply, 0);
+                    this.mRemote.transact(260, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10524,7 +10899,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isMultiSimCarrierRestricted);
-                    this.mRemote.transact(260, _data, _reply, 0);
+                    this.mRemote.transact(261, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10540,7 +10915,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(261, _data, _reply, 0);
+                    this.mRemote.transact(262, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10557,7 +10932,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(numOfSims);
-                    this.mRemote.transact(262, _data, _reply, 0);
+                    this.mRemote.transact(263, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10574,7 +10949,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(263, _data, _reply, 0);
+                    this.mRemote.transact(264, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10591,7 +10966,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(264, _data, _reply, 0);
+                    this.mRemote.transact(265, _data, _reply, 0);
                     _reply.readException();
                     List<UiccSlotMapping> _result = _reply.createTypedArrayList(UiccSlotMapping.CREATOR);
                     return _result;
@@ -10607,7 +10982,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(265, _data, _reply, 0);
+                    this.mRemote.transact(266, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10624,7 +10999,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(service);
-                    this.mRemote.transact(266, _data, _reply, 0);
+                    this.mRemote.transact(267, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10640,7 +11015,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(267, _data, _reply, 0);
+                    this.mRemote.transact(268, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -10658,7 +11033,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(appType);
-                    this.mRemote.transact(268, _data, _reply, 0);
+                    this.mRemote.transact(269, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10677,7 +11052,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(269, _data, _reply, 0);
+                    this.mRemote.transact(270, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10696,7 +11071,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(apnType);
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(270, _data, _reply, 0);
+                    this.mRemote.transact(271, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10714,7 +11089,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(apnType);
                     _data.writeInt(subId);
-                    this.mRemote.transact(271, _data, _reply, 0);
+                    this.mRemote.transact(272, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10732,7 +11107,7 @@ public interface ITelephony extends IInterface {
                     _data.writeTypedList(specifiers, 0);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(resultCallback);
-                    this.mRemote.transact(272, _data, null, 1);
+                    this.mRemote.transact(273, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10745,7 +11120,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(273, _data, _reply, 0);
+                    this.mRemote.transact(274, _data, _reply, 0);
                     _reply.readException();
                     List<RadioAccessSpecifier> _result = _reply.createTypedArrayList(RadioAccessSpecifier.CREATOR);
                     return _result;
@@ -10764,7 +11139,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(slotIndex);
                     _data.writeInt(mvnoType);
                     _data.writeString(mvnoMatchData);
-                    this.mRemote.transact(274, _data, _reply, 0);
+                    this.mRemote.transact(275, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10782,7 +11157,7 @@ public interface ITelephony extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(callingAttributeTag);
                     _data.writeStrongInterface(subIdResult);
-                    this.mRemote.transact(275, _data, null, 1);
+                    this.mRemote.transact(276, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10793,7 +11168,7 @@ public interface ITelephony extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(276, _data, null, 1);
+                    this.mRemote.transact(277, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10806,7 +11181,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(277, _data, _reply, 0);
+                    this.mRemote.transact(278, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -10823,7 +11198,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(278, _data, _reply, 0);
+                    this.mRemote.transact(279, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -10842,7 +11217,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subscriptionId);
                     _data.writeInt(policy);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(279, _data, _reply, 0);
+                    this.mRemote.transact(280, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10858,7 +11233,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subscriptionId);
                     _data.writeInt(policy);
-                    this.mRemote.transact(280, _data, _reply, 0);
+                    this.mRemote.transact(281, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10874,7 +11249,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isCepEnabled);
-                    this.mRemote.transact(281, _data, null, 1);
+                    this.mRemote.transact(282, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10889,7 +11264,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeByteArray(config);
                     _data.writeBoolean(isCompressed);
-                    this.mRemote.transact(282, _data, _reply, 0);
+                    this.mRemote.transact(283, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10904,7 +11279,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(283, _data, _reply, 0);
+                    this.mRemote.transact(284, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10923,7 +11298,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeBoolean(enabled);
                     _data.writeString(password);
-                    this.mRemote.transact(284, _data, _reply, 0);
+                    this.mRemote.transact(285, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10942,7 +11317,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(oldPassword);
                     _data.writeString(newPassword);
-                    this.mRemote.transact(285, _data, _reply, 0);
+                    this.mRemote.transact(286, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10957,7 +11332,7 @@ public interface ITelephony extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(286, _data, null, 1);
+                    this.mRemote.transact(287, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10968,7 +11343,7 @@ public interface ITelephony extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(287, _data, null, 1);
+                    this.mRemote.transact(288, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -10981,7 +11356,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(288, _data, _reply, 0);
+                    this.mRemote.transact(289, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -10997,7 +11372,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(289, _data, _reply, 0);
+                    this.mRemote.transact(290, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11016,7 +11391,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(290, _data, _reply, 0);
+                    this.mRemote.transact(291, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -11034,7 +11409,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(291, _data, _reply, 0);
+                    this.mRemote.transact(292, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11051,7 +11426,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(292, _data, _reply, 0);
+                    this.mRemote.transact(293, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11069,7 +11444,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(nrDualConnectivityState);
-                    this.mRemote.transact(293, _data, _reply, 0);
+                    this.mRemote.transact(294, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11086,7 +11461,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(294, _data, _reply, 0);
+                    this.mRemote.transact(295, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11103,7 +11478,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(capability);
-                    this.mRemote.transact(295, _data, _reply, 0);
+                    this.mRemote.transact(296, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11122,7 +11497,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeTypedObject(thermalMitigationRequest, 0);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(296, _data, _reply, 0);
+                    this.mRemote.transact(297, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11144,7 +11519,7 @@ public interface ITelephony extends IInterface {
                     _data.writeTypedObject(securityProtocol, 0);
                     _data.writeBoolean(forceBootStrapping);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(297, _data, _reply, 0);
+                    this.mRemote.transact(298, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11160,7 +11535,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(298, _data, _reply, 0);
+                    this.mRemote.transact(299, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11177,7 +11552,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(299, _data, _reply, 0);
+                    this.mRemote.transact(300, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11195,7 +11570,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeInt(interval);
-                    this.mRemote.transact(300, _data, _reply, 0);
+                    this.mRemote.transact(301, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11212,7 +11587,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(301, _data, _reply, 0);
+                    this.mRemote.transact(302, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11230,7 +11605,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeTypedObject(rcc, 0);
-                    this.mRemote.transact(302, _data, _reply, 0);
+                    this.mRemote.transact(303, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11245,7 +11620,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(303, _data, _reply, 0);
+                    this.mRemote.transact(304, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11263,7 +11638,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(304, _data, _reply, 0);
+                    this.mRemote.transact(305, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11279,7 +11654,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(305, _data, _reply, 0);
+                    this.mRemote.transact(306, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11294,7 +11669,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(306, _data, _reply, 0);
+                    this.mRemote.transact(307, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11309,7 +11684,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(307, _data, _reply, 0);
+                    this.mRemote.transact(308, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11323,7 +11698,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(308, _data, _reply, 0);
+                    this.mRemote.transact(309, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11340,7 +11715,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(enabled);
-                    this.mRemote.transact(309, _data, _reply, 0);
+                    this.mRemote.transact(310, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11354,7 +11729,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(310, _data, _reply, 0);
+                    this.mRemote.transact(311, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11372,7 +11747,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(enabled);
-                    this.mRemote.transact(311, _data, _reply, 0);
+                    this.mRemote.transact(312, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11390,7 +11765,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(message);
                     _data.writeInt(value);
-                    this.mRemote.transact(312, _data, _reply, 0);
+                    this.mRemote.transact(313, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11405,7 +11780,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(transport);
-                    this.mRemote.transact(313, _data, _reply, 0);
+                    this.mRemote.transact(314, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11420,7 +11795,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isForceEnabled);
-                    this.mRemote.transact(314, _data, _reply, 0);
+                    this.mRemote.transact(315, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11435,7 +11810,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(315, _data, _reply, 0);
+                    this.mRemote.transact(316, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11453,7 +11828,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(enabled);
-                    this.mRemote.transact(316, _data, _reply, 0);
+                    this.mRemote.transact(317, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11470,7 +11845,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(317, _data, _reply, 0);
+                    this.mRemote.transact(318, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11486,7 +11861,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(318, _data, _reply, 0);
+                    this.mRemote.transact(319, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11504,7 +11879,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeString(contacts);
-                    this.mRemote.transact(319, _data, _reply, 0);
+                    this.mRemote.transact(320, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11521,7 +11896,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(contact);
-                    this.mRemote.transact(320, _data, _reply, 0);
+                    this.mRemote.transact(321, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11538,7 +11913,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(contact);
-                    this.mRemote.transact(321, _data, _reply, 0);
+                    this.mRemote.transact(322, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11554,7 +11929,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(322, _data, _reply, 0);
+                    this.mRemote.transact(323, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11571,7 +11946,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isEnabled);
-                    this.mRemote.transact(323, _data, _reply, 0);
+                    this.mRemote.transact(324, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11581,24 +11956,6 @@ public interface ITelephony extends IInterface {
 
             @Override // com.android.internal.telephony.ITelephony
             public RcsContactUceCapability addUceRegistrationOverrideShell(int subId, List<String> featureTags) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeStringList(featureTags);
-                    this.mRemote.transact(324, _data, _reply, 0);
-                    _reply.readException();
-                    RcsContactUceCapability _result = (RcsContactUceCapability) _reply.readTypedObject(RcsContactUceCapability.CREATOR);
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.ITelephony
-            public RcsContactUceCapability removeUceRegistrationOverrideShell(int subId, List<String> featureTags) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -11616,12 +11973,13 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public RcsContactUceCapability clearUceRegistrationOverrideShell(int subId) throws RemoteException {
+            public RcsContactUceCapability removeUceRegistrationOverrideShell(int subId, List<String> featureTags) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
+                    _data.writeStringList(featureTags);
                     this.mRemote.transact(326, _data, _reply, 0);
                     _reply.readException();
                     RcsContactUceCapability _result = (RcsContactUceCapability) _reply.readTypedObject(RcsContactUceCapability.CREATOR);
@@ -11633,7 +11991,7 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public RcsContactUceCapability getLatestRcsContactUceCapabilityShell(int subId) throws RemoteException {
+            public RcsContactUceCapability clearUceRegistrationOverrideShell(int subId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -11650,13 +12008,30 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public String getLastUcePidfXmlShell(int subId) throws RemoteException {
+            public RcsContactUceCapability getLatestRcsContactUceCapabilityShell(int subId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     this.mRemote.transact(328, _data, _reply, 0);
+                    _reply.readException();
+                    RcsContactUceCapability _result = (RcsContactUceCapability) _reply.readTypedObject(RcsContactUceCapability.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public String getLastUcePidfXmlShell(int subId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    this.mRemote.transact(329, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11673,7 +12048,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(329, _data, _reply, 0);
+                    this.mRemote.transact(330, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11691,7 +12066,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeLong(timeoutAfterMs);
-                    this.mRemote.transact(330, _data, _reply, 0);
+                    this.mRemote.transact(331, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11710,7 +12085,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeTypedObject(request, 0);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(331, _data, _reply, 0);
+                    this.mRemote.transact(332, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11727,7 +12102,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeTypedObject(request, 0);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(332, _data, _reply, 0);
+                    this.mRemote.transact(333, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11741,7 +12116,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(333, _data, _reply, 0);
+                    this.mRemote.transact(334, _data, _reply, 0);
                     _reply.readException();
                     PhoneCapability _result = (PhoneCapability) _reply.readTypedObject(PhoneCapability.CREATOR);
                     return _result;
@@ -11757,7 +12132,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(334, _data, _reply, 0);
+                    this.mRemote.transact(335, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11774,7 +12149,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(callback, 0);
-                    this.mRemote.transact(335, _data, _reply, 0);
+                    this.mRemote.transact(336, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11790,7 +12165,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(capability);
                     _data.writeInt(subId);
-                    this.mRemote.transact(336, _data, _reply, 0);
+                    this.mRemote.transact(337, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11809,7 +12184,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(capability);
                     _data.writeStrongInterface(callback);
                     _data.writeInt(subId);
-                    this.mRemote.transact(337, _data, _reply, 0);
+                    this.mRemote.transact(338, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11827,7 +12202,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(feature);
                     _data.writeStrongInterface(cb);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(338, _data, _reply, 0);
+                    this.mRemote.transact(339, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11842,7 +12217,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(339, _data, _reply, 0);
+                    this.mRemote.transact(340, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11859,7 +12234,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeString(callingPackage);
                     _data.writeString(callingFeatureId);
-                    this.mRemote.transact(340, _data, _reply, 0);
+                    this.mRemote.transact(341, _data, _reply, 0);
                     _reply.readException();
                     CellIdentity _result = (CellIdentity) _reply.readTypedObject(CellIdentity.CREATOR);
                     return _result;
@@ -11876,7 +12251,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(serviceName);
-                    this.mRemote.transact(341, _data, _reply, 0);
+                    this.mRemote.transact(342, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11892,7 +12267,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(342, _data, _reply, 0);
+                    this.mRemote.transact(343, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11911,7 +12286,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(tech);
-                    this.mRemote.transact(343, _data, _reply, 0);
+                    this.mRemote.transact(344, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11930,7 +12305,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(capability);
                     _data.writeInt(tech);
-                    this.mRemote.transact(344, _data, _reply, 0);
+                    this.mRemote.transact(345, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11949,7 +12324,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeBoolean(hasService);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(345, _data, _reply, 0);
+                    this.mRemote.transact(346, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11964,7 +12339,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(logicalSlotIndex);
-                    this.mRemote.transact(346, _data, _reply, 0);
+                    this.mRemote.transact(347, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11982,7 +12357,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(isDefault);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(347, _data, _reply, 0);
+                    this.mRemote.transact(348, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11997,7 +12372,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(348, _data, _reply, 0);
+                    this.mRemote.transact(349, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12015,7 +12390,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeBoolean(updateIfNeeded);
-                    this.mRemote.transact(349, _data, _reply, 0);
+                    this.mRemote.transact(350, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -12032,7 +12407,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(slotIndex);
-                    this.mRemote.transact(350, _data, _reply, 0);
+                    this.mRemote.transact(351, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -12053,7 +12428,7 @@ public interface ITelephony extends IInterface {
                     _data.writeLong(logcatStartTimestampMillis);
                     _data.writeBoolean(enableTelecomDump);
                     _data.writeBoolean(enableTelephonyDump);
-                    this.mRemote.transact(351, _data, _reply, 0);
+                    this.mRemote.transact(352, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12068,7 +12443,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(352, _data, _reply, 0);
+                    this.mRemote.transact(353, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12082,7 +12457,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(353, _data, _reply, 0);
+                    this.mRemote.transact(354, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12099,7 +12474,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(354, _data, _reply, 0);
+                    this.mRemote.transact(355, _data, _reply, 0);
                     _reply.readException();
                     List<CellBroadcastIdRange> _result = _reply.createTypedArrayList(CellBroadcastIdRange.CREATOR);
                     return _result;
@@ -12118,7 +12493,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeTypedList(ranges, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(355, _data, _reply, 0);
+                    this.mRemote.transact(356, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12132,7 +12507,7 @@ public interface ITelephony extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(356, _data, _reply, 0);
+                    this.mRemote.transact(357, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12150,24 +12525,6 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(internalCallback);
                     _data.writeString(packageName);
-                    this.mRemote.transact(357, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.ITelephony
-            public void requestSatelliteEnabled(int subId, boolean enable, boolean isDemoModeEnabled, IIntegerConsumer callback) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeBoolean(enable);
-                    _data.writeBoolean(isDemoModeEnabled);
-                    _data.writeStrongInterface(callback);
                     this.mRemote.transact(358, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -12177,13 +12534,15 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestIsSatelliteEnabled(int subId, ResultReceiver receiver) throws RemoteException {
+            public void requestSatelliteEnabled(boolean enableSatellite, boolean enableDemoMode, boolean isEmergency, IIntegerConsumer callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeTypedObject(receiver, 0);
+                    _data.writeBoolean(enableSatellite);
+                    _data.writeBoolean(enableDemoMode);
+                    _data.writeBoolean(isEmergency);
+                    _data.writeStrongInterface(callback);
                     this.mRemote.transact(359, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -12193,12 +12552,11 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestIsDemoModeEnabled(int subId, ResultReceiver receiver) throws RemoteException {
+            public void requestIsSatelliteEnabled(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(360, _data, _reply, 0);
                     _reply.readException();
@@ -12209,12 +12567,11 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestIsSatelliteSupported(int subId, ResultReceiver receiver) throws RemoteException {
+            public void requestIsDemoModeEnabled(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(361, _data, _reply, 0);
                     _reply.readException();
@@ -12225,12 +12582,11 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestSatelliteCapabilities(int subId, ResultReceiver receiver) throws RemoteException {
+            public void requestIsEmergencyModeEnabled(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(362, _data, _reply, 0);
                     _reply.readException();
@@ -12241,14 +12597,12 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void startSatelliteTransmissionUpdates(int subId, IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
+            public void requestIsSatelliteSupported(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeStrongInterface(resultCallback);
-                    _data.writeStrongInterface(callback);
+                    _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(363, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -12258,14 +12612,12 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void stopSatelliteTransmissionUpdates(int subId, IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
+            public void requestSatelliteCapabilities(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeStrongInterface(resultCallback);
-                    _data.writeStrongInterface(callback);
+                    _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(364, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -12275,19 +12627,15 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public ICancellationSignal provisionSatelliteService(int subId, String token, byte[] provisionData, IIntegerConsumer callback) throws RemoteException {
+            public void startSatelliteTransmissionUpdates(IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeString(token);
-                    _data.writeByteArray(provisionData);
+                    _data.writeStrongInterface(resultCallback);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(365, _data, _reply, 0);
                     _reply.readException();
-                    ICancellationSignal _result = ICancellationSignal.Stub.asInterface(_reply.readStrongBinder());
-                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -12295,13 +12643,12 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void deprovisionSatelliteService(int subId, String token, IIntegerConsumer callback) throws RemoteException {
+            public void stopSatelliteTransmissionUpdates(IIntegerConsumer resultCallback, ISatelliteTransmissionUpdateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeString(token);
+                    _data.writeStrongInterface(resultCallback);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(366, _data, _reply, 0);
                     _reply.readException();
@@ -12312,16 +12659,17 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public int registerForSatelliteProvisionStateChanged(int subId, ISatelliteProvisionStateCallback callback) throws RemoteException {
+            public ICancellationSignal provisionSatelliteService(String token, byte[] provisionData, IIntegerConsumer callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
+                    _data.writeString(token);
+                    _data.writeByteArray(provisionData);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(367, _data, _reply, 0);
                     _reply.readException();
-                    int _result = _reply.readInt();
+                    ICancellationSignal _result = ICancellationSignal.Stub.asInterface(_reply.readStrongBinder());
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -12330,12 +12678,12 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void unregisterForSatelliteProvisionStateChanged(int subId, ISatelliteProvisionStateCallback callback) throws RemoteException {
+            public void deprovisionSatelliteService(String token, IIntegerConsumer callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
+                    _data.writeString(token);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(368, _data, _reply, 0);
                     _reply.readException();
@@ -12346,30 +12694,13 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestIsSatelliteProvisioned(int subId, ResultReceiver receiver) throws RemoteException {
+            public int registerForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeTypedObject(receiver, 0);
-                    this.mRemote.transact(369, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.android.internal.telephony.ITelephony
-            public int registerForSatelliteModemStateChanged(int subId, ISatelliteModemStateCallback callback) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(370, _data, _reply, 0);
+                    this.mRemote.transact(369, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -12380,13 +12711,27 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void unregisterForModemStateChanged(int subId, ISatelliteModemStateCallback callback) throws RemoteException {
+            public void unregisterForSatelliteProvisionStateChanged(ISatelliteProvisionStateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
+                    this.mRemote.transact(370, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void requestIsSatelliteProvisioned(ResultReceiver receiver) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(receiver, 0);
                     this.mRemote.transact(371, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -12396,12 +12741,11 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public int registerForIncomingDatagram(int subId, ISatelliteDatagramCallback callback) throws RemoteException {
+            public int registerForSatelliteModemStateChanged(ISatelliteModemStateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(372, _data, _reply, 0);
                     _reply.readException();
@@ -12414,12 +12758,11 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void unregisterForIncomingDatagram(int subId, ISatelliteDatagramCallback callback) throws RemoteException {
+            public void unregisterForModemStateChanged(ISatelliteModemStateCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(373, _data, _reply, 0);
                     _reply.readException();
@@ -12430,14 +12773,30 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void pollPendingDatagrams(int subId, IIntegerConsumer callback) throws RemoteException {
+            public int registerForIncomingDatagram(ISatelliteDatagramCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeStrongInterface(callback);
                     this.mRemote.transact(374, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForIncomingDatagram(ISatelliteDatagramCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(375, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12446,17 +12805,77 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void sendDatagram(int subId, int datagramType, SatelliteDatagram datagram, boolean needFullScreenPointingUI, IIntegerConsumer callback) throws RemoteException {
+            public void pollPendingDatagrams(IIntegerConsumer callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(376, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void sendDatagram(int datagramType, SatelliteDatagram datagram, boolean needFullScreenPointingUI, IIntegerConsumer callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(datagramType);
                     _data.writeTypedObject(datagram, 0);
                     _data.writeBoolean(needFullScreenPointingUI);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(375, _data, _reply, 0);
+                    this.mRemote.transact(377, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public int[] getSatelliteDisallowedReasons() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(378, _data, _reply, 0);
+                    _reply.readException();
+                    int[] _result = _reply.createIntArray();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void registerForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(379, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForSatelliteDisallowedReasonsChanged(ISatelliteDisallowedReasonsCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(380, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12472,7 +12891,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
                     _data.writeTypedObject(receiver, 0);
-                    this.mRemote.transact(376, _data, _reply, 0);
+                    this.mRemote.transact(381, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12481,14 +12900,13 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void requestTimeForNextSatelliteVisibility(int subId, ResultReceiver receiver) throws RemoteException {
+            public void requestTimeForNextSatelliteVisibility(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
                     _data.writeTypedObject(receiver, 0);
-                    this.mRemote.transact(377, _data, _reply, 0);
+                    this.mRemote.transact(382, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12497,14 +12915,13 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public void onDeviceAlignedWithSatellite(int subId, boolean isAligned) throws RemoteException {
+            public void requestSelectedNbIotSatelliteSubscriptionId(ResultReceiver receiver) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(subId);
-                    _data.writeBoolean(isAligned);
-                    this.mRemote.transact(378, _data, _reply, 0);
+                    _data.writeTypedObject(receiver, 0);
+                    this.mRemote.transact(383, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12513,13 +12930,29 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public boolean setSatelliteServicePackageName(String servicePackageName) throws RemoteException {
+            public void setDeviceAlignedWithSatellite(boolean isAligned) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(isAligned);
+                    this.mRemote.transact(384, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setSatelliteServicePackageName(String servicePackageName, String provisioned) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(servicePackageName);
-                    this.mRemote.transact(379, _data, _reply, 0);
+                    _data.writeString(provisioned);
+                    this.mRemote.transact(385, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12536,7 +12969,7 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(servicePackageName);
-                    this.mRemote.transact(380, _data, _reply, 0);
+                    this.mRemote.transact(386, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12553,7 +12986,24 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(timeoutMillis);
-                    this.mRemote.transact(381, _data, _reply, 0);
+                    this.mRemote.transact(387, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setSatelliteIgnoreCellularServiceState(boolean enabled) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(enabled);
+                    this.mRemote.transact(388, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12571,7 +13021,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeString(className);
-                    this.mRemote.transact(382, _data, _reply, 0);
+                    this.mRemote.transact(389, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12582,13 +13032,34 @@ public interface ITelephony extends IInterface {
             }
 
             @Override // com.android.internal.telephony.ITelephony
-            public boolean setSatelliteDeviceAlignedTimeoutDuration(long timeoutMillis) throws RemoteException {
+            public boolean setDatagramControllerTimeoutDuration(boolean reset, int timeoutType, long timeoutMillis) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeInt(timeoutType);
                     _data.writeLong(timeoutMillis);
-                    this.mRemote.transact(383, _data, _reply, 0);
+                    this.mRemote.transact(390, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setSatelliteControllerTimeoutDuration(boolean reset, int timeoutType, long timeoutMillis) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeInt(timeoutType);
+                    _data.writeLong(timeoutMillis);
+                    this.mRemote.transact(391, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12606,7 +13077,67 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(handoverType);
                     _data.writeInt(delaySeconds);
-                    this.mRemote.transact(384, _data, _reply, 0);
+                    this.mRemote.transact(392, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setCountryCodes(boolean reset, List<String> currentNetworkCountryCodes, Map cachedNetworkCountryCodes, String locationCountryCode, long locationCountryCodeTimestampNanos) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeStringList(currentNetworkCountryCodes);
+                    _data.writeMap(cachedNetworkCountryCodes);
+                    _data.writeString(locationCountryCode);
+                    _data.writeLong(locationCountryCodeTimestampNanos);
+                    this.mRemote.transact(393, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setSatelliteAccessControlOverlayConfigs(boolean reset, boolean isAllowed, String s2CellFile, long locationFreshDurationNanos, List<String> satelliteCountryCodes) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeBoolean(isAllowed);
+                    _data.writeString(s2CellFile);
+                    _data.writeLong(locationFreshDurationNanos);
+                    _data.writeStringList(satelliteCountryCodes);
+                    this.mRemote.transact(394, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setOemEnabledSatelliteProvisionStatus(boolean reset, boolean isProvisioned) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeBoolean(isProvisioned);
+                    this.mRemote.transact(395, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12624,7 +13155,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkgName);
                     _data.writeInt(carrierId);
-                    this.mRemote.transact(385, _data, _reply, 0);
+                    this.mRemote.transact(396, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12643,7 +13174,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(reason);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(386, _data, _reply, 0);
+                    this.mRemote.transact(397, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12660,7 +13191,7 @@ public interface ITelephony extends IInterface {
                     _data.writeInt(subId);
                     _data.writeInt(reason);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(387, _data, _reply, 0);
+                    this.mRemote.transact(398, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12675,9 +13206,214 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(388, _data, _reply, 0);
+                    this.mRemote.transact(399, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void requestNtnSignalStrength(ResultReceiver receiver) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(receiver, 0);
+                    this.mRemote.transact(400, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void registerForNtnSignalStrengthChanged(INtnSignalStrengthCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(401, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForNtnSignalStrengthChanged(INtnSignalStrengthCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(402, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public int registerForCapabilitiesChanged(ISatelliteCapabilitiesCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(403, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForCapabilitiesChanged(ISatelliteCapabilitiesCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(404, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setShouldSendDatagramToModemInDemoMode(boolean shouldSendToModemInDemoMode) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(shouldSendToModemInDemoMode);
+                    this.mRemote.transact(405, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setDomainSelectionServiceOverride(ComponentName componentName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(componentName, 0);
+                    this.mRemote.transact(406, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean clearDomainSelectionServiceOverride() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(407, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean isAospDomainSelectionService() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(408, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void setEnableCellularIdentifierDisclosureNotifications(boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(enable);
+                    this.mRemote.transact(409, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean isCellularIdentifierDisclosureNotificationsEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(410, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void setNullCipherNotificationsEnabled(boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(enable);
+                    this.mRemote.transact(411, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean isNullCipherNotificationsEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(412, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -12692,10 +13428,225 @@ public interface ITelephony extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(subId);
-                    this.mRemote.transact(389, _data, _reply, 0);
+                    this.mRemote.transact(413, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public int registerForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(414, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForSatelliteSupportedStateChanged(ISatelliteSupportedStateCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(415, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public int registerForCommunicationAllowedStateChanged(int subId, ISatelliteCommunicationAllowedStateCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(416, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void unregisterForCommunicationAllowedStateChanged(int subId, ISatelliteCommunicationAllowedStateCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(417, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setDatagramControllerBooleanConfig(boolean reset, int booleanType, boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(reset);
+                    _data.writeInt(booleanType);
+                    _data.writeBoolean(enable);
+                    this.mRemote.transact(418, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setIsSatelliteCommunicationAllowedForCurrentLocationCache(String state) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(state);
+                    this.mRemote.transact(419, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void requestSatelliteSessionStats(int subId, ResultReceiver receiver) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(subId);
+                    _data.writeTypedObject(receiver, 0);
+                    this.mRemote.transact(420, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void requestSatelliteSubscriberProvisionStatus(ResultReceiver result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(result, 0);
+                    this.mRemote.transact(421, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void provisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedList(list, 0);
+                    _data.writeTypedObject(result, 0);
+                    this.mRemote.transact(422, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean setSatelliteSubscriberIdListChangedIntentComponent(String name) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(name);
+                    this.mRemote.transact(423, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public boolean overrideCarrierRoamingNtnEligibilityChanged(boolean status, boolean resetRequired) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(status);
+                    _data.writeBoolean(resetRequired);
+                    this.mRemote.transact(424, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void deprovisionSatellite(List<SatelliteSubscriberInfo> list, ResultReceiver result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedList(list, 0);
+                    _data.writeTypedObject(result, 0);
+                    this.mRemote.transact(425, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.ITelephony
+            public void setNtnSmsSupported(boolean ntnSmsSupported) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(ntnSmsSupported);
+                    this.mRemote.transact(426, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -13234,14 +14185,14 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
-        private boolean onTransact$getServiceStateForSubscriber$(Parcel data, Parcel reply) throws RemoteException {
+        private boolean onTransact$getServiceStateForSlot$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             boolean _arg1 = data.readBoolean();
             boolean _arg2 = data.readBoolean();
             String _arg3 = data.readString();
             String _arg4 = data.readString();
             data.enforceNoDataAvail();
-            ServiceState _result = getServiceStateForSubscriber(_arg0, _arg1, _arg2, _arg3, _arg4);
+            ServiceState _result = getServiceStateForSlot(_arg0, _arg1, _arg2, _arg3, _arg4);
             reply.writeNoException();
             reply.writeTypedObject(_result, 1);
             return true;
@@ -13446,6 +14397,71 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setRttCapabilitySetting$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setRttCapabilitySetting(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getEmergencyNumberList$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            Map _result = getEmergencyNumberList(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeMap(_result);
+            return true;
+        }
+
+        private boolean onTransact$isEmergencyNumber$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = isEmergencyNumber(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$registerImsProvisioningChangedCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IImsConfigCallback _arg1 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            registerImsProvisioningChangedCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$unregisterImsProvisioningChangedCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IImsConfigCallback _arg1 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterImsProvisioningChangedCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$registerFeatureProvisioningChangedCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IFeatureProvisioningCallback _arg1 = IFeatureProvisioningCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            registerFeatureProvisioningChangedCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$unregisterFeatureProvisioningChangedCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IFeatureProvisioningCallback _arg1 = IFeatureProvisioningCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterFeatureProvisioningChangedCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$setImsProvisioningStatusForCapability$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
@@ -13490,6 +14506,26 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$getImsProvisioningInt$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            int _result = getImsProvisioningInt(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$getImsProvisioningString$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            String _result = getImsProvisioningString(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeString(_result);
+            return true;
+        }
+
         private boolean onTransact$setImsProvisioningInt$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
@@ -13512,12 +14548,51 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$updateEmergencyNumberListTestMode$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            EmergencyNumber _arg1 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
+            data.enforceNoDataAvail();
+            updateEmergencyNumberListTestMode(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$enableModemForSlot$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = enableModemForSlot(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$isMultiSimSupported$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            int _result = isMultiSimSupported(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         private boolean onTransact$doesSwitchMultiSimConfigTriggerReboot$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             String _arg1 = data.readString();
             String _arg2 = data.readString();
             data.enforceNoDataAvail();
             boolean _result = doesSwitchMultiSimConfigTriggerReboot(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$isApplicationOnUicc$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = isApplicationOnUicc(_arg0, _arg1);
             reply.writeNoException();
             reply.writeBoolean(_result);
             return true;
@@ -13540,6 +14615,16 @@ public interface ITelephony extends IInterface {
             String _arg2 = data.readString();
             data.enforceNoDataAvail();
             boolean _result = isDataEnabledForApn(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$isApnMetered$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = isApnMetered(_arg0, _arg1);
             reply.writeNoException();
             reply.writeBoolean(_result);
             return true;
@@ -13581,6 +14666,16 @@ public interface ITelephony extends IInterface {
             data.enforceNoDataAvail();
             setMobileDataPolicyEnabled(_arg0, _arg1, _arg2);
             reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$isMobileDataPolicyEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = isMobileDataPolicyEnabled(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
             return true;
         }
 
@@ -13627,6 +14722,26 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setVoNrEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            int _result = setVoNrEnabled(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$setNrDualConnectivityState$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            int _result = setNrDualConnectivityState(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         private boolean onTransact$sendThermalMitigationRequest$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             ThermalMitigationRequest _arg1 = (ThermalMitigationRequest) data.readTypedObject(ThermalMitigationRequest.CREATOR);
@@ -13651,6 +14766,122 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setBoundGbaServiceOverride$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            boolean _result = setBoundGbaServiceOverride(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setGbaReleaseTimeOverride$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = setGbaReleaseTimeOverride(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setRcsClientConfiguration$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            RcsClientConfiguration _arg1 = (RcsClientConfiguration) data.readTypedObject(RcsClientConfiguration.CREATOR);
+            data.enforceNoDataAvail();
+            setRcsClientConfiguration(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$registerRcsProvisioningCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IRcsConfigCallback _arg1 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            registerRcsProvisioningCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$unregisterRcsProvisioningCallback$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IRcsConfigCallback _arg1 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterRcsProvisioningCallback(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setCarrierSingleRegistrationEnabledOverride$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            boolean _result = setCarrierSingleRegistrationEnabledOverride(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$sendDeviceToDeviceMessage$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            sendDeviceToDeviceMessage(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setImsFeatureValidationOverride$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            boolean _result = setImsFeatureValidationOverride(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$removeContactFromEab$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            int _result = removeContactFromEab(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$addUceRegistrationOverrideShell$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            List<String> _arg1 = data.createStringArrayList();
+            data.enforceNoDataAvail();
+            RcsContactUceCapability _result = addUceRegistrationOverrideShell(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
+        private boolean onTransact$removeUceRegistrationOverrideShell$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            List<String> _arg1 = data.createStringArrayList();
+            data.enforceNoDataAvail();
+            RcsContactUceCapability _result = removeUceRegistrationOverrideShell(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
+        private boolean onTransact$setCapabilitiesRequestTimeout$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            long _arg1 = data.readLong();
+            data.enforceNoDataAvail();
+            boolean _result = setCapabilitiesRequestTimeout(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
         private boolean onTransact$setSignalStrengthUpdateRequest$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             SignalStrengthUpdateRequest _arg1 = (SignalStrengthUpdateRequest) data.readTypedObject(SignalStrengthUpdateRequest.CREATOR);
@@ -13668,6 +14899,16 @@ public interface ITelephony extends IInterface {
             data.enforceNoDataAvail();
             clearSignalStrengthUpdateRequest(_arg0, _arg1, _arg2);
             reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$isPremiumCapabilityAvailableForPurchase$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = isPremiumCapabilityAvailableForPurchase(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
             return true;
         }
 
@@ -13735,6 +14976,25 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setRemovableEsimAsDefaultEuicc$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            setRemovableEsimAsDefaultEuicc(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getDefaultRespondViaMessageApplication$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            ComponentName _result = getDefaultRespondViaMessageApplication(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
         private boolean onTransact$persistEmergencyCallDiagnosticData$(Parcel data, Parcel reply) throws RemoteException {
             String _arg0 = data.readString();
             boolean _arg1 = data.readBoolean();
@@ -13757,8 +15017,17 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$getCarrierRestrictionStatus$(Parcel data, Parcel reply) throws RemoteException {
+            IIntegerConsumer _arg0 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            getCarrierRestrictionStatus(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$requestSatelliteEnabled$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
+            boolean _arg0 = data.readBoolean();
             boolean _arg1 = data.readBoolean();
             boolean _arg2 = data.readBoolean();
             IIntegerConsumer _arg3 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
@@ -13769,120 +15038,50 @@ public interface ITelephony extends IInterface {
         }
 
         private boolean onTransact$startSatelliteTransmissionUpdates$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            IIntegerConsumer _arg1 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-            ISatelliteTransmissionUpdateCallback _arg2 = ISatelliteTransmissionUpdateCallback.Stub.asInterface(data.readStrongBinder());
+            IIntegerConsumer _arg0 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+            ISatelliteTransmissionUpdateCallback _arg1 = ISatelliteTransmissionUpdateCallback.Stub.asInterface(data.readStrongBinder());
             data.enforceNoDataAvail();
-            startSatelliteTransmissionUpdates(_arg0, _arg1, _arg2);
+            startSatelliteTransmissionUpdates(_arg0, _arg1);
             reply.writeNoException();
             return true;
         }
 
         private boolean onTransact$stopSatelliteTransmissionUpdates$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            IIntegerConsumer _arg1 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-            ISatelliteTransmissionUpdateCallback _arg2 = ISatelliteTransmissionUpdateCallback.Stub.asInterface(data.readStrongBinder());
+            IIntegerConsumer _arg0 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+            ISatelliteTransmissionUpdateCallback _arg1 = ISatelliteTransmissionUpdateCallback.Stub.asInterface(data.readStrongBinder());
             data.enforceNoDataAvail();
-            stopSatelliteTransmissionUpdates(_arg0, _arg1, _arg2);
+            stopSatelliteTransmissionUpdates(_arg0, _arg1);
             reply.writeNoException();
             return true;
         }
 
         private boolean onTransact$provisionSatelliteService$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            String _arg1 = data.readString();
-            byte[] _arg2 = data.createByteArray();
-            IIntegerConsumer _arg3 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+            String _arg0 = data.readString();
+            byte[] _arg1 = data.createByteArray();
+            IIntegerConsumer _arg2 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
             data.enforceNoDataAvail();
-            ICancellationSignal _result = provisionSatelliteService(_arg0, _arg1, _arg2, _arg3);
+            ICancellationSignal _result = provisionSatelliteService(_arg0, _arg1, _arg2);
             reply.writeNoException();
             reply.writeStrongInterface(_result);
             return true;
         }
 
         private boolean onTransact$deprovisionSatelliteService$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            String _arg1 = data.readString();
-            IIntegerConsumer _arg2 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            deprovisionSatelliteService(_arg0, _arg1, _arg2);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$unregisterForSatelliteProvisionStateChanged$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ISatelliteProvisionStateCallback _arg1 = ISatelliteProvisionStateCallback.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            unregisterForSatelliteProvisionStateChanged(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$requestIsSatelliteProvisioned$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-            data.enforceNoDataAvail();
-            requestIsSatelliteProvisioned(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$registerForSatelliteModemStateChanged$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ISatelliteModemStateCallback _arg1 = ISatelliteModemStateCallback.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            int _result = registerForSatelliteModemStateChanged(_arg0, _arg1);
-            reply.writeNoException();
-            reply.writeInt(_result);
-            return true;
-        }
-
-        private boolean onTransact$unregisterForModemStateChanged$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ISatelliteModemStateCallback _arg1 = ISatelliteModemStateCallback.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            unregisterForModemStateChanged(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$registerForIncomingDatagram$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ISatelliteDatagramCallback _arg1 = ISatelliteDatagramCallback.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            int _result = registerForIncomingDatagram(_arg0, _arg1);
-            reply.writeNoException();
-            reply.writeInt(_result);
-            return true;
-        }
-
-        private boolean onTransact$unregisterForIncomingDatagram$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ISatelliteDatagramCallback _arg1 = ISatelliteDatagramCallback.Stub.asInterface(data.readStrongBinder());
-            data.enforceNoDataAvail();
-            unregisterForIncomingDatagram(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$pollPendingDatagrams$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
+            String _arg0 = data.readString();
             IIntegerConsumer _arg1 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
             data.enforceNoDataAvail();
-            pollPendingDatagrams(_arg0, _arg1);
+            deprovisionSatelliteService(_arg0, _arg1);
             reply.writeNoException();
             return true;
         }
 
         private boolean onTransact$sendDatagram$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
-            int _arg1 = data.readInt();
-            SatelliteDatagram _arg2 = (SatelliteDatagram) data.readTypedObject(SatelliteDatagram.CREATOR);
-            boolean _arg3 = data.readBoolean();
-            IIntegerConsumer _arg4 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
+            SatelliteDatagram _arg1 = (SatelliteDatagram) data.readTypedObject(SatelliteDatagram.CREATOR);
+            boolean _arg2 = data.readBoolean();
+            IIntegerConsumer _arg3 = IIntegerConsumer.Stub.asInterface(data.readStrongBinder());
             data.enforceNoDataAvail();
-            sendDatagram(_arg0, _arg1, _arg2, _arg3, _arg4);
+            sendDatagram(_arg0, _arg1, _arg2, _arg3);
             reply.writeNoException();
             return true;
         }
@@ -13896,21 +15095,13 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
-        private boolean onTransact$requestTimeForNextSatelliteVisibility$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+        private boolean onTransact$setSatelliteServicePackageName$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
             data.enforceNoDataAvail();
-            requestTimeForNextSatelliteVisibility(_arg0, _arg1);
+            boolean _result = setSatelliteServicePackageName(_arg0, _arg1);
             reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$onDeviceAlignedWithSatellite$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            boolean _arg1 = data.readBoolean();
-            data.enforceNoDataAvail();
-            onDeviceAlignedWithSatellite(_arg0, _arg1);
-            reply.writeNoException();
+            reply.writeBoolean(_result);
             return true;
         }
 
@@ -13924,11 +15115,70 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setDatagramControllerTimeoutDuration$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            int _arg1 = data.readInt();
+            long _arg2 = data.readLong();
+            data.enforceNoDataAvail();
+            boolean _result = setDatagramControllerTimeoutDuration(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setSatelliteControllerTimeoutDuration$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            int _arg1 = data.readInt();
+            long _arg2 = data.readLong();
+            data.enforceNoDataAvail();
+            boolean _result = setSatelliteControllerTimeoutDuration(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
         private boolean onTransact$setEmergencyCallToSatelliteHandoverType$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
             data.enforceNoDataAvail();
             boolean _result = setEmergencyCallToSatelliteHandoverType(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setCountryCodes$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            List<String> _arg1 = data.createStringArrayList();
+            ClassLoader cl = getClass().getClassLoader();
+            Map _arg2 = data.readHashMap(cl);
+            String _arg3 = data.readString();
+            long _arg4 = data.readLong();
+            data.enforceNoDataAvail();
+            boolean _result = setCountryCodes(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setSatelliteAccessControlOverlayConfigs$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            boolean _arg1 = data.readBoolean();
+            String _arg2 = data.readString();
+            long _arg3 = data.readLong();
+            List<String> _arg4 = data.createStringArrayList();
+            data.enforceNoDataAvail();
+            boolean _result = setSatelliteAccessControlOverlayConfigs(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setOemEnabledSatelliteProvisionStatus$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = setOemEnabledSatelliteProvisionStatus(_arg0, _arg1);
             reply.writeNoException();
             reply.writeBoolean(_result);
             return true;
@@ -13964,9 +15214,76 @@ public interface ITelephony extends IInterface {
             return true;
         }
 
+        private boolean onTransact$registerForCommunicationAllowedStateChanged$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            ISatelliteCommunicationAllowedStateCallback _arg1 = ISatelliteCommunicationAllowedStateCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            int _result = registerForCommunicationAllowedStateChanged(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$unregisterForCommunicationAllowedStateChanged$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            ISatelliteCommunicationAllowedStateCallback _arg1 = ISatelliteCommunicationAllowedStateCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterForCommunicationAllowedStateChanged(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setDatagramControllerBooleanConfig$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            int _arg1 = data.readInt();
+            boolean _arg2 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = setDatagramControllerBooleanConfig(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$requestSatelliteSessionStats$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+            data.enforceNoDataAvail();
+            requestSatelliteSessionStats(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$provisionSatellite$(Parcel data, Parcel reply) throws RemoteException {
+            List<SatelliteSubscriberInfo> _arg0 = data.createTypedArrayList(SatelliteSubscriberInfo.CREATOR);
+            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+            data.enforceNoDataAvail();
+            provisionSatellite(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$overrideCarrierRoamingNtnEligibilityChanged$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = overrideCarrierRoamingNtnEligibilityChanged(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$deprovisionSatellite$(Parcel data, Parcel reply) throws RemoteException {
+            List<SatelliteSubscriberInfo> _arg0 = data.createTypedArrayList(SatelliteSubscriberInfo.CREATOR);
+            ResultReceiver _arg1 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+            data.enforceNoDataAvail();
+            deprovisionSatellite(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 388;
+            return 425;
         }
     }
 }

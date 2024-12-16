@@ -12,7 +12,7 @@ import android.telephony.ims.ImsSsData;
 import android.telephony.ims.ImsSsInfo;
 import com.android.ims.internal.IImsUt;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsUtListener extends IInterface {
     void lineIdentificationSupplementaryServiceResponse(int i, ImsSsInfo imsSsInfo) throws RemoteException;
 
@@ -32,7 +32,6 @@ public interface IImsUtListener extends IInterface {
 
     void utConfigurationUpdated(IImsUt iImsUt, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsUtListener {
         @Override // com.android.ims.internal.IImsUtListener
         public void utConfigurationUpdated(IImsUt ut, int id) throws RemoteException {
@@ -76,7 +75,6 @@ public interface IImsUtListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsUtListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsUtListener";
         static final int TRANSACTION_lineIdentificationSupplementaryServiceResponse = 5;
@@ -144,80 +142,76 @@ public interface IImsUtListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IImsUt _arg0 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    utConfigurationUpdated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IImsUt _arg02 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    ImsReasonInfo _arg2 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationUpdateFailed(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    IImsUt _arg03 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg13 = data.readInt();
+                    Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationQueried(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    IImsUt _arg04 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg14 = data.readInt();
+                    ImsReasonInfo _arg23 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationQueryFailed(_arg04, _arg14, _arg23);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    ImsSsInfo _arg15 = (ImsSsInfo) data.readTypedObject(ImsSsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    lineIdentificationSupplementaryServiceResponse(_arg05, _arg15);
+                    return true;
+                case 6:
+                    IImsUt _arg06 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg16 = data.readInt();
+                    ImsSsInfo[] _arg24 = (ImsSsInfo[]) data.createTypedArray(ImsSsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationCallBarringQueried(_arg06, _arg16, _arg24);
+                    return true;
+                case 7:
+                    IImsUt _arg07 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg17 = data.readInt();
+                    ImsCallForwardInfo[] _arg25 = (ImsCallForwardInfo[]) data.createTypedArray(ImsCallForwardInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationCallForwardQueried(_arg07, _arg17, _arg25);
+                    return true;
+                case 8:
+                    IImsUt _arg08 = IImsUt.Stub.asInterface(data.readStrongBinder());
+                    int _arg18 = data.readInt();
+                    ImsSsInfo[] _arg26 = (ImsSsInfo[]) data.createTypedArray(ImsSsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    utConfigurationCallWaitingQueried(_arg08, _arg18, _arg26);
+                    return true;
+                case 9:
+                    ImsSsData _arg09 = (ImsSsData) data.readTypedObject(ImsSsData.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSupplementaryServiceIndication(_arg09);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsUt _arg0 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            utConfigurationUpdated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IImsUt _arg02 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            ImsReasonInfo _arg2 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationUpdateFailed(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            IImsUt _arg03 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg13 = data.readInt();
-                            Bundle _arg22 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationQueried(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            IImsUt _arg04 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg14 = data.readInt();
-                            ImsReasonInfo _arg23 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationQueryFailed(_arg04, _arg14, _arg23);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            ImsSsInfo _arg15 = (ImsSsInfo) data.readTypedObject(ImsSsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            lineIdentificationSupplementaryServiceResponse(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            IImsUt _arg06 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg16 = data.readInt();
-                            ImsSsInfo[] _arg24 = (ImsSsInfo[]) data.createTypedArray(ImsSsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationCallBarringQueried(_arg06, _arg16, _arg24);
-                            return true;
-                        case 7:
-                            IImsUt _arg07 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg17 = data.readInt();
-                            ImsCallForwardInfo[] _arg25 = (ImsCallForwardInfo[]) data.createTypedArray(ImsCallForwardInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationCallForwardQueried(_arg07, _arg17, _arg25);
-                            return true;
-                        case 8:
-                            IImsUt _arg08 = IImsUt.Stub.asInterface(data.readStrongBinder());
-                            int _arg18 = data.readInt();
-                            ImsSsInfo[] _arg26 = (ImsSsInfo[]) data.createTypedArray(ImsSsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            utConfigurationCallWaitingQueried(_arg08, _arg18, _arg26);
-                            return true;
-                        case 9:
-                            ImsSsData _arg09 = (ImsSsData) data.readTypedObject(ImsSsData.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSupplementaryServiceIndication(_arg09);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsUtListener {
+        private static class Proxy implements IImsUtListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

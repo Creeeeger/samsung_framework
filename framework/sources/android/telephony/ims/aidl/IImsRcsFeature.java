@@ -14,7 +14,7 @@ import android.telephony.ims.aidl.ISubscribeResponseCallback;
 import android.telephony.ims.feature.CapabilityChangeRequest;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsRcsFeature extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsRcsFeature";
 
@@ -38,7 +38,6 @@ public interface IImsRcsFeature extends IInterface {
 
     void subscribeForCapabilities(List<Uri> list, ISubscribeResponseCallback iSubscribeResponseCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsRcsFeature {
         @Override // android.telephony.ims.aidl.IImsRcsFeature
         public int queryCapabilityStatus() throws RemoteException {
@@ -88,7 +87,6 @@ public interface IImsRcsFeature extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsRcsFeature {
         static final int TRANSACTION_addCapabilityCallback = 3;
         static final int TRANSACTION_changeCapabilitiesConfiguration = 5;
@@ -158,78 +156,74 @@ public interface IImsRcsFeature extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsRcsFeature.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsRcsFeature.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsRcsFeature.DESCRIPTOR);
+                case 1:
+                    int _result = queryCapabilityStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _result2 = getFeatureState();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    IImsCapabilityCallback _arg0 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addCapabilityCallback(_arg0);
+                    return true;
+                case 4:
+                    IImsCapabilityCallback _arg02 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeCapabilityCallback(_arg02);
+                    return true;
+                case 5:
+                    CapabilityChangeRequest _arg03 = (CapabilityChangeRequest) data.readTypedObject(CapabilityChangeRequest.CREATOR);
+                    IImsCapabilityCallback _arg1 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    changeCapabilitiesConfiguration(_arg03, _arg1);
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    IImsCapabilityCallback _arg2 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    queryCapabilityConfiguration(_arg04, _arg12, _arg2);
+                    return true;
+                case 7:
+                    ICapabilityExchangeEventListener _arg05 = ICapabilityExchangeEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCapabilityExchangeEventListener(_arg05);
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    IPublishResponseCallback _arg13 = IPublishResponseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    publishCapabilities(_arg06, _arg13);
+                    return true;
+                case 9:
+                    List<Uri> _arg07 = data.createTypedArrayList(Uri.CREATOR);
+                    ISubscribeResponseCallback _arg14 = ISubscribeResponseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    subscribeForCapabilities(_arg07, _arg14);
+                    return true;
+                case 10:
+                    Uri _arg08 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    List<String> _arg15 = data.createStringArrayList();
+                    IOptionsResponseCallback _arg22 = IOptionsResponseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    sendOptionsCapabilityRequest(_arg08, _arg15, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = queryCapabilityStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _result2 = getFeatureState();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            IImsCapabilityCallback _arg0 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addCapabilityCallback(_arg0);
-                            return true;
-                        case 4:
-                            IImsCapabilityCallback _arg02 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeCapabilityCallback(_arg02);
-                            return true;
-                        case 5:
-                            CapabilityChangeRequest _arg03 = (CapabilityChangeRequest) data.readTypedObject(CapabilityChangeRequest.CREATOR);
-                            IImsCapabilityCallback _arg1 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            changeCapabilitiesConfiguration(_arg03, _arg1);
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            IImsCapabilityCallback _arg2 = IImsCapabilityCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            queryCapabilityConfiguration(_arg04, _arg12, _arg2);
-                            return true;
-                        case 7:
-                            ICapabilityExchangeEventListener _arg05 = ICapabilityExchangeEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCapabilityExchangeEventListener(_arg05);
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            IPublishResponseCallback _arg13 = IPublishResponseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            publishCapabilities(_arg06, _arg13);
-                            return true;
-                        case 9:
-                            List<Uri> _arg07 = data.createTypedArrayList(Uri.CREATOR);
-                            ISubscribeResponseCallback _arg14 = ISubscribeResponseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            subscribeForCapabilities(_arg07, _arg14);
-                            return true;
-                        case 10:
-                            Uri _arg08 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            List<String> _arg15 = data.createStringArrayList();
-                            IOptionsResponseCallback _arg22 = IOptionsResponseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            sendOptionsCapabilityRequest(_arg08, _arg15, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsRcsFeature {
+        private static class Proxy implements IImsRcsFeature {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

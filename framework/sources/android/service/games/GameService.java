@@ -24,22 +24,21 @@ public class GameService extends Service {
     private IGameManagerService mGameManagerService;
     private IGameServiceController mGameServiceController;
     private final IGameService mInterface = new AnonymousClass1();
-    private final IBinder.DeathRecipient mGameManagerServiceDeathRecipient = new IBinder.DeathRecipient() { // from class: android.service.games.GameService$$ExternalSyntheticLambda0
+    private final IBinder.DeathRecipient mGameManagerServiceDeathRecipient = new IBinder.DeathRecipient() { // from class: android.service.games.GameService$$ExternalSyntheticLambda1
         @Override // android.os.IBinder.DeathRecipient
         public final void binderDied() {
             GameService.this.lambda$new$0();
         }
     };
 
-    /* renamed from: android.service.games.GameService$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.games.GameService$1, reason: invalid class name */
     class AnonymousClass1 extends IGameService.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.service.games.IGameService
         public void connected(IGameServiceController gameServiceController) {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameService$1$$ExternalSyntheticLambda0
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameService$1$$ExternalSyntheticLambda1
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((GameService) obj).doOnConnected((IGameServiceController) obj2);
@@ -49,12 +48,12 @@ public class GameService extends Service {
 
         @Override // android.service.games.IGameService
         public void disconnected() {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new GameService$$ExternalSyntheticLambda1(), GameService.this));
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new GameService$$ExternalSyntheticLambda0(), GameService.this));
         }
 
         @Override // android.service.games.IGameService
         public void gameStarted(GameStartedEvent gameStartedEvent) {
-            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameService$1$$ExternalSyntheticLambda1
+            Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.games.GameService$1$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((GameService) obj).onGameStarted((GameStartedEvent) obj2);
@@ -63,9 +62,10 @@ public class GameService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0() {
         Log.w(TAG, "System service binder died. Shutting down");
-        Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new GameService$$ExternalSyntheticLambda1(), this));
+        Handler.getMain().executeOrSendMessage(PooledLambda.obtainMessage(new GameService$$ExternalSyntheticLambda0(), this));
     }
 
     @Override // android.app.Service
@@ -76,10 +76,10 @@ public class GameService extends Service {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doOnConnected(IGameServiceController gameServiceController) {
-        IGameManagerService asInterface = IGameManagerService.Stub.asInterface(ServiceManager.getService(Context.GAME_SERVICE));
-        this.mGameManagerService = asInterface;
-        Objects.requireNonNull(asInterface);
+        this.mGameManagerService = IGameManagerService.Stub.asInterface(ServiceManager.getService(Context.GAME_SERVICE));
+        Objects.requireNonNull(this.mGameManagerService);
         try {
             this.mGameManagerService.asBinder().linkToDeath(this.mGameManagerServiceDeathRecipient, 0);
         } catch (RemoteException e) {
@@ -99,12 +99,11 @@ public class GameService extends Service {
     }
 
     public final void createGameSession(int taskId) {
-        IGameServiceController iGameServiceController = this.mGameServiceController;
-        if (iGameServiceController == null) {
+        if (this.mGameServiceController == null) {
             throw new IllegalStateException("Can not call before connected()");
         }
         try {
-            iGameServiceController.createGameSession(taskId);
+            this.mGameServiceController.createGameSession(taskId);
         } catch (RemoteException e) {
             Log.e(TAG, "Request for game session failed", e);
         }

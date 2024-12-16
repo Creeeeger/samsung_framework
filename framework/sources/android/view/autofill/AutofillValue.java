@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class AutofillValue implements Parcelable {
     public static final Parcelable.Creator<AutofillValue> CREATOR = new Parcelable.Creator<AutofillValue>() { // from class: android.view.autofill.AutofillValue.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillValue createFromParcel(Parcel source) {
             return new AutofillValue(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AutofillValue[] newArray(int size) {
             return new AutofillValue[size];
@@ -27,10 +26,6 @@ public final class AutofillValue implements Parcelable {
     private static final String TAG = "AutofillValue";
     private final int mType;
     private final Object mValue;
-
-    /* synthetic */ AutofillValue(Parcel parcel, AutofillValueIA autofillValueIA) {
-        this(parcel);
-    }
 
     private AutofillValue(int type, Object value) {
         this.mType = type;
@@ -122,25 +117,22 @@ public final class AutofillValue implements Parcelable {
         switch (this.mType) {
             case 1:
                 parcel.writeCharSequence((CharSequence) this.mValue);
-                return;
+                break;
             case 2:
                 parcel.writeInt(((Boolean) this.mValue).booleanValue() ? 1 : 0);
-                return;
+                break;
             case 3:
                 parcel.writeInt(((Integer) this.mValue).intValue());
-                return;
+                break;
             case 4:
                 parcel.writeLong(((Long) this.mValue).longValue());
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     private AutofillValue(Parcel parcel) {
-        int readInt = parcel.readInt();
-        this.mType = readInt;
-        switch (readInt) {
+        this.mType = parcel.readInt();
+        switch (this.mType) {
             case 1:
                 this.mValue = parcel.readCharSequence();
                 return;
@@ -155,24 +147,7 @@ public final class AutofillValue implements Parcelable {
                 this.mValue = Long.valueOf(parcel.readLong());
                 return;
             default:
-                throw new IllegalArgumentException("type=" + readInt + " not valid");
-        }
-    }
-
-    /* renamed from: android.view.autofill.AutofillValue$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AutofillValue> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AutofillValue createFromParcel(Parcel source) {
-            return new AutofillValue(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AutofillValue[] newArray(int size) {
-            return new AutofillValue[size];
+                throw new IllegalArgumentException("type=" + this.mType + " not valid");
         }
     }
 

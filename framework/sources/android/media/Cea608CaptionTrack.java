@@ -9,10 +9,10 @@ class Cea608CaptionTrack extends SubtitleTrack {
     private final Cea608CCParser mCCParser;
     private final Cea608CCWidget mRenderingWidget;
 
-    public Cea608CaptionTrack(Cea608CCWidget renderingWidget, MediaFormat format) {
+    Cea608CaptionTrack(Cea608CCWidget renderingWidget, MediaFormat format) {
         super(format);
         this.mRenderingWidget = renderingWidget;
-        this.mCCParser = new Cea608CCParser(renderingWidget);
+        this.mCCParser = new Cea608CCParser(this.mRenderingWidget);
     }
 
     @Override // android.media.SubtitleTrack

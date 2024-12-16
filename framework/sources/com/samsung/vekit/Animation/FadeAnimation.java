@@ -18,12 +18,6 @@ public class FadeAnimation extends TransitionAnimation {
         return this.transitionType;
     }
 
-    @Override // com.samsung.vekit.Animation.TransitionAnimation, com.samsung.vekit.Animation.Animation
-    @Deprecated
-    public FadeAnimation setDuration(long duration) {
-        return (FadeAnimation) super.setDuration(duration);
-    }
-
     @Override // com.samsung.vekit.Animation.TransitionAnimation
     public FadeAnimation setTargets(Item firstTarget, Item secondTarget) {
         return (FadeAnimation) super.setTargets(firstTarget, secondTarget);
@@ -55,8 +49,13 @@ public class FadeAnimation extends TransitionAnimation {
     }
 
     @Override // com.samsung.vekit.Animation.Animation
-    public FadeAnimation setKeyFrame(KeyFrame<Float> keyFrame) {
-        return (FadeAnimation) super.setKeyFrame((KeyFrame) keyFrame);
+    public FadeAnimation setKeyFrame(KeyFrame<Float> firstKeyFrame, KeyFrame<Float> secondKeyFrame) {
+        return (FadeAnimation) super.setKeyFrame((KeyFrame) firstKeyFrame, (KeyFrame) secondKeyFrame);
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    public FadeAnimation addKeyFrame(KeyFrame<Float> keyFrame) {
+        return (FadeAnimation) super.addKeyFrame((KeyFrame) keyFrame);
     }
 
     @Override // com.samsung.vekit.Animation.TransitionAnimation, com.samsung.vekit.Animation.Animation, com.samsung.vekit.Listener.AnimationStatusListener
@@ -81,5 +80,29 @@ public class FadeAnimation extends TransitionAnimation {
     public void onAnimationCanceled(Object interpolatedValue) {
         Log.i(this.TAG, "onAnimationCanceled : " + this.id + ", " + this.name);
         super.onAnimationCanceled(interpolatedValue);
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation, com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public FadeAnimation setDuration(long duration) {
+        return (FadeAnimation) super.setDuration(duration);
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation
+    @Deprecated
+    public FadeAnimation setFrom(Float from) {
+        return this;
+    }
+
+    @Override // com.samsung.vekit.Animation.TransitionAnimation
+    @Deprecated
+    public FadeAnimation setTo(Float to) {
+        return this;
+    }
+
+    @Override // com.samsung.vekit.Animation.Animation
+    @Deprecated
+    public FadeAnimation setKeyFrame(KeyFrame<Float> keyFrame) {
+        return (FadeAnimation) super.setKeyFrame((KeyFrame) keyFrame);
     }
 }

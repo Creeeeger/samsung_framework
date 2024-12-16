@@ -4,23 +4,21 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.Time;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.TimeZone;
 import org.json.JSONObject;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxAnalyticsData implements Parcelable {
     public static final Parcelable.Creator<KnoxAnalyticsData> CREATOR = new Parcelable.Creator<KnoxAnalyticsData>() { // from class: com.samsung.android.knox.knoxanalyticsproxy.KnoxAnalyticsData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnoxAnalyticsData createFromParcel(Parcel in) {
             return new KnoxAnalyticsData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KnoxAnalyticsData[] newArray(int size) {
             return new KnoxAnalyticsData[size];
@@ -135,26 +133,7 @@ public class KnoxAnalyticsData implements Parcelable {
         return 0;
     }
 
-    /* renamed from: com.samsung.android.knox.knoxanalyticsproxy.KnoxAnalyticsData$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KnoxAnalyticsData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnoxAnalyticsData createFromParcel(Parcel in) {
-            return new KnoxAnalyticsData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KnoxAnalyticsData[] newArray(int size) {
-            return new KnoxAnalyticsData[size];
-        }
-    }
-
     public String toString() {
-        StringBuilder append = new StringBuilder().append("feature = ").append(this.feature).append(System.lineSeparator()).append("schemaVersion = ").append(this.schemaVersion).append(System.lineSeparator()).append("event = ").append(this.event).append(System.lineSeparator()).append("payload = ");
-        Bundle bundle = this.payload;
-        return append.append(bundle != null ? bundle.toString() : SemCapabilities.FEATURE_TAG_NULL).append(System.lineSeparator()).append("timestamp = ").append(this.timestamp).append(System.lineSeparator()).append("eventId = ").append(this.eventId).append(System.lineSeparator()).toString();
+        return "feature = " + this.feature + System.lineSeparator() + "schemaVersion = " + this.schemaVersion + System.lineSeparator() + "event = " + this.event + System.lineSeparator() + "payload = " + (this.payload != null ? this.payload.toString() : "null") + System.lineSeparator() + "timestamp = " + this.timestamp + System.lineSeparator() + "eventId = " + this.eventId + System.lineSeparator();
     }
 }

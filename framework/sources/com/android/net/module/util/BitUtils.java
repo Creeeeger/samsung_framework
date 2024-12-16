@@ -6,7 +6,6 @@ import com.android.internal.content.NativeLibraryHelper;
 public class BitUtils {
 
     @FunctionalInterface
-    /* loaded from: classes5.dex */
     public interface NameOf {
         String nameOf(int i);
     }

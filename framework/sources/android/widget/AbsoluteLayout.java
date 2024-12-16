@@ -10,19 +10,16 @@ import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
 import android.widget.RemoteViews;
 import com.android.internal.R;
-import com.samsung.android.widget.SemPressGestureDetector;
 
 @RemoteViews.RemoteView
 @Deprecated
 /* loaded from: classes4.dex */
 public class AbsoluteLayout extends ViewGroup {
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends ViewGroup.LayoutParams {
         public int x;
         public int y;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_xId;
             private int mLayout_yId;
@@ -86,7 +83,7 @@ public class AbsoluteLayout extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int count = getChildCount();
         int maxHeight = 0;
         int maxWidth = 0;
@@ -111,7 +108,7 @@ public class AbsoluteLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
@@ -130,7 +127,7 @@ public class AbsoluteLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
@@ -142,15 +139,5 @@ public class AbsoluteLayout extends ViewGroup {
     @Override // android.view.ViewGroup
     public boolean shouldDelayChildPressedState() {
         return false;
-    }
-
-    @Override // android.view.ViewGroup, android.view.View
-    public View semDispatchFindView(float x, float y, boolean findImage) {
-        String foundText = SemPressGestureDetector.getText(getContext(), getContext().getPackageName(), this);
-        if (foundText != null) {
-            semSetBixbyTouchFoundText(foundText);
-            return this;
-        }
-        return super.semDispatchFindView(x, y, findImage);
     }
 }

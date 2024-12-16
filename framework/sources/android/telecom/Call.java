@@ -3,6 +3,7 @@ package android.telecom;
 import android.annotation.SystemApi;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telecom.Call;
@@ -26,20 +27,14 @@ public final class Call {
     public static final String AVAILABLE_PHONE_ACCOUNTS = "selectPhoneAccountAccounts";
     public static final String EVENT_CLEAR_DIAGNOSTIC_MESSAGE = "android.telecom.event.CLEAR_DIAGNOSTIC_MESSAGE";
     public static final String EVENT_DISPLAY_DIAGNOSTIC_MESSAGE = "android.telecom.event.DISPLAY_DIAGNOSTIC_MESSAGE";
-    public static final String EVENT_HANDOVER_COMPLETE = "android.telecom.event.HANDOVER_COMPLETE";
-    public static final String EVENT_HANDOVER_FAILED = "android.telecom.event.HANDOVER_FAILED";
-    public static final String EVENT_HANDOVER_SOURCE_DISCONNECTED = "android.telecom.event.HANDOVER_SOURCE_DISCONNECTED";
-    public static final String EVENT_REQUEST_HANDOVER = "android.telecom.event.REQUEST_HANDOVER";
+    public static final String EXTRA_ASSERTED_DISPLAY_NAME = "android.telecom.extra.ASSERTED_DISPLAY_NAME";
     public static final String EXTRA_DIAGNOSTIC_MESSAGE = "android.telecom.extra.DIAGNOSTIC_MESSAGE";
     public static final String EXTRA_DIAGNOSTIC_MESSAGE_ID = "android.telecom.extra.DIAGNOSTIC_MESSAGE_ID";
-    public static final String EXTRA_HANDOVER_EXTRAS = "android.telecom.extra.HANDOVER_EXTRAS";
-    public static final String EXTRA_HANDOVER_PHONE_ACCOUNT_HANDLE = "android.telecom.extra.HANDOVER_PHONE_ACCOUNT_HANDLE";
-    public static final String EXTRA_HANDOVER_VIDEO_STATE = "android.telecom.extra.HANDOVER_VIDEO_STATE";
+    public static final String EXTRA_IS_BUSINESS_CALL = "android.telecom.extra.IS_BUSINESS_CALL";
     public static final String EXTRA_IS_SUPPRESSED_BY_DO_NOT_DISTURB = "android.telecom.extra.IS_SUPPRESSED_BY_DO_NOT_DISTURB";
     public static final String EXTRA_LAST_EMERGENCY_CALLBACK_TIME_MILLIS = "android.telecom.extra.LAST_EMERGENCY_CALLBACK_TIME_MILLIS";
     public static final String EXTRA_SILENT_RINGING_REQUESTED = "android.telecom.extra.SILENT_RINGING_REQUESTED";
     public static final String EXTRA_SUGGESTED_PHONE_ACCOUNTS = "android.telecom.extra.SUGGESTED_PHONE_ACCOUNTS";
-    private static final String LOG_TAG = "Telecom-Call";
     public static final int REJECT_REASON_DECLINED = 1;
     public static final int REJECT_REASON_UNWANTED = 2;
     public static final int STATE_ACTIVE = 4;
@@ -64,7 +59,7 @@ public final class Call {
     private List<String> mCannedTextResponses;
     private final List<Call> mChildren;
     private boolean mChildrenCached;
-    private final List<String> mChildrenIds = new ArrayList();
+    private final List<String> mChildrenIds;
     private final List<Call> mConferenceableCalls;
     private Details mDetails;
     private Bundle mExtras;
@@ -81,22 +76,18 @@ public final class Call {
     private VideoCallImpl mVideoCallImpl;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CallState {
     }
 
     @SystemApi
     @Deprecated
-    /* loaded from: classes3.dex */
     public static abstract class Listener extends Callback {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RejectReason {
     }
 
-    /* loaded from: classes3.dex */
     public static class Details {
         public static final int CAPABILITY_ADD_PARTICIPANT = 33554432;
         public static final int CAPABILITY_CANNOT_DOWNGRADE_VIDEO_TO_AUDIO = 4194304;
@@ -138,6 +129,7 @@ public final class Call {
         public static final int PROPERTY_HIGH_DEF_AUDIO = 16;
         public static final int PROPERTY_IS_ADHOC_CONFERENCE = 8192;
         public static final int PROPERTY_IS_EXTERNAL_CALL = 64;
+        public static final int PROPERTY_IS_TRANSACTIONAL = 32768;
         public static final int PROPERTY_NETWORK_IDENTIFIED_EMERGENCY_CALL = 2048;
         public static final int PROPERTY_RTT = 1024;
         public static final int PROPERTY_SELF_MANAGED = 256;
@@ -167,7 +159,6 @@ public final class Call {
         private final int mVideoState;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface CallDirection {
         }
 
@@ -305,12 +296,19 @@ public final class Call {
             if (hasProperty(properties, 16384)) {
                 builder.append(" PROPERTY_CROSS_SIM");
             }
+            if (hasProperty(properties, 32768)) {
+                builder.append(" PROPERTY_IS_TRANSACTIONAL");
+            }
             builder.append(NavigationBarInflaterView.SIZE_MOD_END);
             return builder.toString();
         }
 
         public final int getState() {
             return this.mState;
+        }
+
+        public String getId() {
+            return this.mTelecomCallId;
         }
 
         public String getTelecomCallId() {
@@ -446,7 +444,6 @@ public final class Call {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Callback {
         public static final int HANDOVER_FAILURE_DEST_APP_REJECTED = 1;
         public static final int HANDOVER_FAILURE_NOT_SUPPORTED = 2;
@@ -455,7 +452,6 @@ public final class Call {
         public static final int HANDOVER_FAILURE_USER_REJECTED = 3;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface HandoverFailureErrors {
         }
 
@@ -508,7 +504,6 @@ public final class Call {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RttCall {
         private static final int READ_BUFFER_SIZE = 1000;
         public static final int RTT_MODE_FULL = 1;
@@ -523,7 +518,6 @@ public final class Call {
         private OutputStreamWriter mTransmitStream;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface RttAudioMode {
         }
 
@@ -623,8 +617,7 @@ public final class Call {
 
     @SystemApi
     public void enterBackgroundAudioProcessing() {
-        int i = this.mState;
-        if (i != 4 && i != 2) {
+        if (this.mState != 4 && this.mState != 2) {
             throw new IllegalStateException("Call must be active or ringing");
         }
         this.mInCallAdapter.enterBackgroundAudioProcessing(this.mTelecomCallId);
@@ -755,9 +748,8 @@ public final class Call {
     }
 
     public Call getParent() {
-        String str = this.mParentId;
-        if (str != null) {
-            return this.mPhone.internalGetCallByTelecomId(str);
+        if (this.mParentId != null) {
+            return this.mPhone.internalGetCallByTelecomId(this.mParentId);
         }
         return null;
     }
@@ -788,9 +780,8 @@ public final class Call {
     }
 
     public Call getGenericConferenceActiveChildCall() {
-        String str = this.mActiveGenericConferenceChild;
-        if (str != null) {
-            return this.mPhone.internalGetCallByTelecomId(str);
+        if (this.mActiveGenericConferenceChild != null) {
+            return this.mPhone.internalGetCallByTelecomId(this.mActiveGenericConferenceChild);
         }
         return null;
     }
@@ -841,6 +832,7 @@ public final class Call {
         return "Call [id: " + this.mTelecomCallId + ", state: " + stateToString(this.mState) + ", details: " + this.mDetails + NavigationBarInflaterView.SIZE_MOD_END;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String stateToString(int state) {
         switch (state) {
             case 0:
@@ -874,10 +866,6 @@ public final class Call {
         }
     }
 
-    public static String stateToStringInternal(int state) {
-        return stateToString(state);
-    }
-
     @SystemApi
     @Deprecated
     public void addListener(Listener listener) {
@@ -891,13 +879,12 @@ public final class Call {
     }
 
     Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, String callingPackage, int targetSdkVersion) {
-        ArrayList arrayList = new ArrayList();
-        this.mChildren = arrayList;
-        this.mUnmodifiableChildren = Collections.unmodifiableList(arrayList);
+        this.mChildrenIds = new ArrayList();
+        this.mChildren = new ArrayList();
+        this.mUnmodifiableChildren = Collections.unmodifiableList(this.mChildren);
         this.mCallbackRecords = new CopyOnWriteArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        this.mConferenceableCalls = arrayList2;
-        this.mUnmodifiableConferenceableCalls = Collections.unmodifiableList(arrayList2);
+        this.mConferenceableCalls = new ArrayList();
+        this.mUnmodifiableConferenceableCalls = Collections.unmodifiableList(this.mConferenceableCalls);
         this.mParentId = null;
         this.mActiveGenericConferenceChild = null;
         this.mCannedTextResponses = null;
@@ -909,14 +896,13 @@ public final class Call {
         this.mTargetSdkVersion = targetSdkVersion;
     }
 
-    public Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, int state, String callingPackage, int targetSdkVersion) {
-        ArrayList arrayList = new ArrayList();
-        this.mChildren = arrayList;
-        this.mUnmodifiableChildren = Collections.unmodifiableList(arrayList);
+    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, int state, String callingPackage, int targetSdkVersion) {
+        this.mChildrenIds = new ArrayList();
+        this.mChildren = new ArrayList();
+        this.mUnmodifiableChildren = Collections.unmodifiableList(this.mChildren);
         this.mCallbackRecords = new CopyOnWriteArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        this.mConferenceableCalls = arrayList2;
-        this.mUnmodifiableConferenceableCalls = Collections.unmodifiableList(arrayList2);
+        this.mConferenceableCalls = new ArrayList();
+        this.mUnmodifiableConferenceableCalls = Collections.unmodifiableList(this.mConferenceableCalls);
         this.mParentId = null;
         this.mActiveGenericConferenceChild = null;
         this.mCannedTextResponses = null;
@@ -928,58 +914,54 @@ public final class Call {
         this.mTargetSdkVersion = targetSdkVersion;
     }
 
-    public final String internalGetCallId() {
+    final String internalGetCallId() {
         return this.mTelecomCallId;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:72:0x025a  */
-    /* JADX WARN: Removed duplicated region for block: B:74:0x0261  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x0268  */
-    /* JADX WARN: Removed duplicated region for block: B:78:0x026f  */
-    /* JADX WARN: Removed duplicated region for block: B:80:0x029d  */
-    /* JADX WARN: Removed duplicated region for block: B:84:0x02b1  */
-    /* JADX WARN: Removed duplicated region for block: B:90:0x02be  */
-    /* JADX WARN: Removed duplicated region for block: B:93:0x02cc  */
-    /* JADX WARN: Removed duplicated region for block: B:96:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:71:0x01dc  */
+    /* JADX WARN: Removed duplicated region for block: B:73:0x01e3  */
+    /* JADX WARN: Removed duplicated region for block: B:75:0x01ea  */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x01f1  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x01f8  */
+    /* JADX WARN: Removed duplicated region for block: B:83:0x020c  */
+    /* JADX WARN: Removed duplicated region for block: B:89:0x021b  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void internalUpdate(android.telecom.ParcelableCall r33, java.util.Map<java.lang.String, android.telecom.Call> r34) {
+    final void internalUpdate(android.telecom.ParcelableCall r32, java.util.Map<java.lang.String, android.telecom.Call> r33) {
         /*
-            Method dump skipped, instructions count: 720
+            Method dump skipped, instructions count: 559
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.telecom.Call.internalUpdate(android.telecom.ParcelableCall, java.util.Map):void");
     }
 
-    public final void internalSetPostDialWait(String remaining) {
+    final void internalSetPostDialWait(String remaining) {
         this.mRemainingPostDialSequence = remaining;
-        firePostDialWait(remaining);
+        firePostDialWait(this.mRemainingPostDialSequence);
     }
 
-    public final void internalSetDisconnected() {
+    final void internalSetDisconnected() {
         if (this.mState != 7) {
             this.mState = 7;
-            Details details = this.mDetails;
-            if (details != null) {
-                Details details2 = new Details(7, details.getTelecomCallId(), this.mDetails.getHandle(), this.mDetails.getHandlePresentation(), this.mDetails.getCallerDisplayName(), this.mDetails.getCallerDisplayNamePresentation(), this.mDetails.getAccountHandle(), this.mDetails.getCallCapabilities(), this.mDetails.getCallProperties(), this.mDetails.getDisconnectCause(), this.mDetails.getConnectTimeMillis(), this.mDetails.getGatewayInfo(), this.mDetails.getVideoState(), this.mDetails.getStatusHints(), this.mDetails.getExtras(), this.mDetails.getIntentExtras(), this.mDetails.getCreationTimeMillis(), this.mDetails.getContactDisplayName(), this.mDetails.getCallDirection(), this.mDetails.getCallerNumberVerificationStatus(), this.mDetails.getContactPhotoUri());
-                this.mDetails = details2;
-                fireDetailsChanged(details2);
+            if (this.mDetails != null) {
+                this.mDetails = new Details(this.mState, this.mDetails.getTelecomCallId(), this.mDetails.getHandle(), this.mDetails.getHandlePresentation(), this.mDetails.getCallerDisplayName(), this.mDetails.getCallerDisplayNamePresentation(), this.mDetails.getAccountHandle(), this.mDetails.getCallCapabilities(), this.mDetails.getCallProperties(), this.mDetails.getDisconnectCause(), this.mDetails.getConnectTimeMillis(), this.mDetails.getGatewayInfo(), this.mDetails.getVideoState(), this.mDetails.getStatusHints(), this.mDetails.getExtras(), this.mDetails.getIntentExtras(), this.mDetails.getCreationTimeMillis(), this.mDetails.getContactDisplayName(), this.mDetails.getCallDirection(), this.mDetails.getCallerNumberVerificationStatus(), this.mDetails.getContactPhotoUri());
+                fireDetailsChanged(this.mDetails);
             }
             fireStateChanged(this.mState);
             fireCallDestroyed();
         }
     }
 
-    public final void internalOnConnectionEvent(String event, Bundle extras) {
+    final void internalOnConnectionEvent(String event, Bundle extras) {
         fireOnConnectionEvent(event, extras);
     }
 
-    public final void internalOnRttUpgradeRequest(final int requestId) {
+    final void internalOnRttUpgradeRequest(final int requestId) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
-            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda1
+            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     Call.Callback.this.onRttRequest(call, requestId);
@@ -988,10 +970,10 @@ public final class Call {
         }
     }
 
-    public final void internalOnRttInitiationFailure(final int reason) {
+    final void internalOnRttInitiationFailure(final int reason) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
-            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda0
+            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     Call.Callback.this.onRttInitiationFailure(call, reason);
@@ -1000,10 +982,10 @@ public final class Call {
         }
     }
 
-    public final void internalOnHandoverFailed(final int error) {
+    final void internalOnHandoverFailed(final int error) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
-            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda5
+            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     Call.Callback.this.onHandoverFailed(call, error);
@@ -1012,7 +994,7 @@ public final class Call {
         }
     }
 
-    public final void internalOnHandoverComplete() {
+    final void internalOnHandoverComplete() {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda2
@@ -1024,20 +1006,10 @@ public final class Call {
         }
     }
 
-    private void fireStateChanged(int newState) {
+    private void fireStateChanged(final int newState) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.1
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ int val$newState;
-
-                AnonymousClass1(Callback callback2, Call this, int newState2) {
-                    callback = callback2;
-                    call = call;
-                    newState = newState2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onStateChanged(call, newState);
@@ -1046,39 +1018,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ int val$newState;
-
-        AnonymousClass1(Callback callback2, Call this, int newState2) {
-            callback = callback2;
-            call = call;
-            newState = newState2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onStateChanged(call, newState);
-        }
-    }
-
-    private void fireParentChanged(Call newParent) {
+    private void fireParentChanged(final Call newParent) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.2
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ Call val$newParent;
-
-                AnonymousClass2(Callback callback2, Call this, Call newParent2) {
-                    callback = callback2;
-                    call = call;
-                    newParent = newParent2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onParentChanged(call, newParent);
@@ -1087,39 +1030,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ Call val$newParent;
-
-        AnonymousClass2(Callback callback2, Call this, Call newParent2) {
-            callback = callback2;
-            call = call;
-            newParent = newParent2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onParentChanged(call, newParent);
-        }
-    }
-
-    private void fireChildrenChanged(List<Call> children) {
+    private void fireChildrenChanged(final List<Call> children) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.3
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ List val$children;
-
-                AnonymousClass3(Callback callback2, Call this, List children2) {
-                    callback = callback2;
-                    call = call;
-                    children = children2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onChildrenChanged(call, children);
@@ -1128,39 +1042,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ List val$children;
-
-        AnonymousClass3(Callback callback2, Call this, List children2) {
-            callback = callback2;
-            call = call;
-            children = children2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onChildrenChanged(call, children);
-        }
-    }
-
-    private void fireDetailsChanged(Details details) {
+    private void fireDetailsChanged(final Details details) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.4
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ Details val$details;
-
-                AnonymousClass4(Callback callback2, Call this, Details details2) {
-                    callback = callback2;
-                    call = call;
-                    details = details2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onDetailsChanged(call, details);
@@ -1169,39 +1054,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ Details val$details;
-
-        AnonymousClass4(Callback callback2, Call this, Details details2) {
-            callback = callback2;
-            call = call;
-            details = details2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onDetailsChanged(call, details);
-        }
-    }
-
-    private void fireCannedTextResponsesLoaded(List<String> cannedTextResponses) {
+    private void fireCannedTextResponsesLoaded(final List<String> cannedTextResponses) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.5
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ List val$cannedTextResponses;
-
-                AnonymousClass5(Callback callback2, Call this, List cannedTextResponses2) {
-                    callback = callback2;
-                    call = call;
-                    cannedTextResponses = cannedTextResponses2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onCannedTextResponsesLoaded(call, cannedTextResponses);
@@ -1210,39 +1066,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$5 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass5 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ List val$cannedTextResponses;
-
-        AnonymousClass5(Callback callback2, Call this, List cannedTextResponses2) {
-            callback = callback2;
-            call = call;
-            cannedTextResponses = cannedTextResponses2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onCannedTextResponsesLoaded(call, cannedTextResponses);
-        }
-    }
-
-    private void fireVideoCallChanged(InCallService.VideoCall videoCall) {
+    private void fireVideoCallChanged(final InCallService.VideoCall videoCall) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.6
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ InCallService.VideoCall val$videoCall;
-
-                AnonymousClass6(Callback callback2, Call this, InCallService.VideoCall videoCall2) {
-                    callback = callback2;
-                    call = call;
-                    videoCall = videoCall2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onVideoCallChanged(call, videoCall);
@@ -1251,39 +1078,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$6 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass6 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ InCallService.VideoCall val$videoCall;
-
-        AnonymousClass6(Callback callback2, Call this, InCallService.VideoCall videoCall2) {
-            callback = callback2;
-            call = call;
-            videoCall = videoCall2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onVideoCallChanged(call, videoCall);
-        }
-    }
-
-    private void firePostDialWait(String remainingPostDialSequence) {
+    private void firePostDialWait(final String remainingPostDialSequence) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.7
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ String val$remainingPostDialSequence;
-
-                AnonymousClass7(Callback callback2, Call this, String remainingPostDialSequence2) {
-                    callback = callback2;
-                    call = call;
-                    remainingPostDialSequence = remainingPostDialSequence2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onPostDialWait(call, remainingPostDialSequence);
@@ -1292,42 +1090,13 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$7 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass7 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ String val$remainingPostDialSequence;
-
-        AnonymousClass7(Callback callback2, Call this, String remainingPostDialSequence2) {
-            callback = callback2;
-            call = call;
-            remainingPostDialSequence = remainingPostDialSequence2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onPostDialWait(call, remainingPostDialSequence);
-        }
-    }
-
     private void fireCallDestroyed() {
         if (this.mCallbackRecords.isEmpty()) {
             this.mPhone.internalRemoveCall(this);
         }
-        for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+        for (final CallbackRecord<Callback> record : this.mCallbackRecords) {
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.8
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ CallbackRecord val$record;
-
-                AnonymousClass8(Callback callback2, Call this, CallbackRecord record2) {
-                    callback = callback2;
-                    call = call;
-                    record = record2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     boolean isFinalRemoval = false;
@@ -1354,55 +1123,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$8 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass8 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ CallbackRecord val$record;
-
-        AnonymousClass8(Callback callback2, Call this, CallbackRecord record2) {
-            callback = callback2;
-            call = call;
-            record = record2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            boolean isFinalRemoval = false;
-            RuntimeException toThrow = null;
-            try {
-                callback.onCallDestroyed(call);
-            } catch (RuntimeException e) {
-                toThrow = e;
-            }
-            synchronized (Call.this) {
-                Call.this.mCallbackRecords.remove(record);
-                if (Call.this.mCallbackRecords.isEmpty()) {
-                    isFinalRemoval = true;
-                }
-            }
-            if (isFinalRemoval) {
-                Call.this.mPhone.internalRemoveCall(call);
-            }
-            if (toThrow != null) {
-                throw toThrow;
-            }
-        }
-    }
-
     private void fireConferenceableCallsChanged() {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.9
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-
-                AnonymousClass9(Callback callback2, Call this) {
-                    callback = callback2;
-                    call = call;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onConferenceableCallsChanged(call, Call.this.mUnmodifiableConferenceableCalls);
@@ -1411,39 +1135,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$9 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass9 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-
-        AnonymousClass9(Callback callback2, Call this) {
-            callback = callback2;
-            call = call;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onConferenceableCallsChanged(call, Call.this.mUnmodifiableConferenceableCalls);
-        }
-    }
-
-    private void fireOnConnectionEvent(String event, Bundle extras) {
+    private void fireOnConnectionEvent(final String event, final Bundle extras) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
-            Callback callback = record.getCallback();
+            final Callback callback = record.getCallback();
             record.getHandler().post(new Runnable() { // from class: android.telecom.Call.10
-                final /* synthetic */ Call val$call;
-                final /* synthetic */ Callback val$callback;
-                final /* synthetic */ String val$event;
-                final /* synthetic */ Bundle val$extras;
-
-                AnonymousClass10(Callback callback2, Call this, String event2, Bundle extras2) {
-                    callback = callback2;
-                    call = call;
-                    event = event2;
-                    extras = extras2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     callback.onConnectionEvent(call, event, extras);
@@ -1452,31 +1147,10 @@ public final class Call {
         }
     }
 
-    /* renamed from: android.telecom.Call$10 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass10 implements Runnable {
-        final /* synthetic */ Call val$call;
-        final /* synthetic */ Callback val$callback;
-        final /* synthetic */ String val$event;
-        final /* synthetic */ Bundle val$extras;
-
-        AnonymousClass10(Callback callback2, Call this, String event2, Bundle extras2) {
-            callback = callback2;
-            call = call;
-            event = event2;
-            extras = extras2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            callback.onConnectionEvent(call, event, extras);
-        }
-    }
-
     private void fireOnIsRttChanged(final boolean enabled, final RttCall rttCall) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
-            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda4
+            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     Call.Callback.this.onRttStatusChanged(call, enabled, rttCall);
@@ -1488,7 +1162,7 @@ public final class Call {
     private void fireOnRttModeChanged(final int mode) {
         for (CallbackRecord<Callback> record : this.mCallbackRecords) {
             final Callback callback = record.getCallback();
-            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda3
+            record.getHandler().post(new Runnable() { // from class: android.telecom.Call$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     Call.Callback.this.onRttModeChanged(call, mode);
@@ -1497,6 +1171,7 @@ public final class Call {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean areBundlesEqual(Bundle bundle, Bundle newBundle) {
         if (bundle == null || newBundle == null) {
             return bundle == newBundle;
@@ -1506,19 +1181,23 @@ public final class Call {
         }
         for (String key : bundle.keySet()) {
             if (key != null) {
-                Object value = bundle.get(key);
-                Object newValue = newBundle.get(key);
                 if (!newBundle.containsKey(key)) {
                     return false;
                 }
-                if ((value instanceof Bundle) && (newValue instanceof Bundle) && !areBundlesEqual((Bundle) value, (Bundle) newValue)) {
-                    return false;
-                }
-                if ((value instanceof byte[]) && (newValue instanceof byte[])) {
-                    if (!Arrays.equals((byte[]) value, (byte[]) newValue)) {
+                try {
+                    Object value = bundle.get(key);
+                    Object newValue = newBundle.get(key);
+                    if ((value instanceof Bundle) && (newValue instanceof Bundle) && !areBundlesEqual((Bundle) value, (Bundle) newValue)) {
                         return false;
                     }
-                } else if (!Objects.equals(value, newValue)) {
+                    if ((value instanceof byte[]) && (newValue instanceof byte[])) {
+                        if (!Arrays.equals((byte[]) value, (byte[]) newValue)) {
+                            return false;
+                        }
+                    } else if (!Objects.equals(value, newValue)) {
+                        return false;
+                    }
+                } catch (BadParcelableException e) {
                     return false;
                 }
             }

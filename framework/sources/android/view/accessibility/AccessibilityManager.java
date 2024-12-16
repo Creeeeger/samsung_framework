@@ -30,6 +30,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.IWindow;
+import android.view.SurfaceControl;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.IAccessibilityManager;
 import android.view.accessibility.IAccessibilityManagerClient;
@@ -44,14 +45,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes4.dex */
 public final class AccessibilityManager {
-    public static final int ACCESSIBILITY_BUTTON = 0;
-    public static final int ACCESSIBILITY_DIRECT_ACCESS = 2;
-    public static final int ACCESSIBILITY_SHORTCUT_KEY = 1;
     public static final String ACTION_CHOOSE_ACCESSIBILITY_BUTTON = "com.android.internal.intent.action.CHOOSE_ACCESSIBILITY_BUTTON";
     public static final int AUTOCLICK_DELAY_DEFAULT = 600;
     public static final int AUTO_ACTION_DELAY_DEFAULT = 600;
@@ -91,30 +91,18 @@ public final class AccessibilityManager {
     private static AccessibilityManager sInstance;
     static final Object sInstanceSync = new Object();
     AccessibilityPolicy mAccessibilityPolicy;
-    private final ArrayMap<AccessibilityStateChangeListener, Handler> mAccessibilityStateChangeListeners;
-    int mAccessibilityTracingState;
-    private final ArrayMap<AudioDescriptionRequestedChangeListener, Executor> mAudioDescriptionRequestedChangeListeners;
-    private final Binder mBinder;
-    final Handler.Callback mCallback;
-    private final IAccessibilityManagerClient.Stub mClient;
     private int mFocusColor;
     private int mFocusStrokeWidth;
     final Handler mHandler;
-    private final ArrayMap<HighTextContrastChangeListener, Handler> mHighTextContrastStateChangeListeners;
     int mInteractiveUiTimeout;
     boolean mIsAudioDescriptionByDefaultRequested;
     boolean mIsEnabled;
     boolean mIsHighTextContrastEnabled;
     boolean mIsTouchExplorationEnabled;
-    private final Object mLock;
     int mNonInteractiveUiTimeout;
-    private int mPerformingAction;
-    int mRelevantEventTypes;
     private boolean mRequestFromAccessibilityTool;
     private SparseArray<List<AccessibilityRequestPreparer>> mRequestPreparerLists;
     private IAccessibilityManager mService;
-    private final ArrayMap<AccessibilityServicesStateChangeListener, Executor> mServicesStateChangeListeners;
-    private final ArrayMap<TouchExplorationStateChangeListener, Handler> mTouchExplorationStateChangeListeners;
     final int mUserId;
     public final int SEM_COLOR_FILTER_TYPE_BLUE = 0;
     public final int SEM_COLOR_FILTER_TYPE_AZURE = 1;
@@ -128,8 +116,19 @@ public final class AccessibilityManager {
     public final int SEM_COLOR_FILTER_TYPE_ROSE = 9;
     public final int SEM_COLOR_FILTER_TYPE_MAGENTA = 10;
     public final int SEM_COLOR_FILTER_TYPE_VIOLET = 11;
+    private final Object mLock = new Object();
+    int mRelevantEventTypes = -1;
+    int mAccessibilityTracingState = 0;
+    private int mPerformingAction = 0;
+    private final ArrayMap<AccessibilityStateChangeListener, Handler> mAccessibilityStateChangeListeners = new ArrayMap<>();
+    private final ArrayMap<TouchExplorationStateChangeListener, Handler> mTouchExplorationStateChangeListeners = new ArrayMap<>();
+    private final ArrayMap<HighTextContrastChangeListener, Handler> mHighTextContrastStateChangeListeners = new ArrayMap<>();
+    private final ArrayMap<AccessibilityServicesStateChangeListener, Executor> mServicesStateChangeListeners = new ArrayMap<>();
+    private final ArrayMap<AudioDescriptionRequestedChangeListener, Executor> mAudioDescriptionRequestedChangeListeners = new ArrayMap<>();
+    private final Binder mBinder = new Binder();
+    private final IAccessibilityManagerClient.Stub mClient = new AnonymousClass1();
+    final Handler.Callback mCallback = new MyCallback();
 
-    /* loaded from: classes4.dex */
     public interface AccessibilityPolicy {
         List<AccessibilityServiceInfo> getEnabledAccessibilityServiceList(int i, List<AccessibilityServiceInfo> list);
 
@@ -142,54 +141,40 @@ public final class AccessibilityManager {
         AccessibilityEvent onAccessibilityEvent(AccessibilityEvent accessibilityEvent, boolean z, int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface AccessibilityServicesStateChangeListener {
         void onAccessibilityServicesStateChanged(AccessibilityManager accessibilityManager);
     }
 
-    /* loaded from: classes4.dex */
     public interface AccessibilityStateChangeListener {
         void onAccessibilityStateChanged(boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public interface AudioDescriptionRequestedChangeListener {
         void onAudioDescriptionRequestedChanged(boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ContentFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface FlashNotificationReason {
     }
 
-    /* loaded from: classes4.dex */
     public interface HighTextContrastChangeListener {
         void onHighTextContrastStateChanged(boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface SemFlashNotificationReason {
     }
 
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
-    public @interface ShortcutType {
-    }
-
-    /* loaded from: classes4.dex */
     public interface TouchExplorationStateChangeListener {
         void onTouchExplorationStateChanged(boolean z);
     }
 
-    /* renamed from: android.view.accessibility.AccessibilityManager$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends IAccessibilityManagerClient.Stub {
+    /* renamed from: android.view.accessibility.AccessibilityManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IAccessibilityManagerClient.Stub {
         AnonymousClass1() {
         }
 
@@ -219,6 +204,7 @@ public final class AccessibilityManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyServicesStateChanged$0(AccessibilityServicesStateChangeListener listener) {
             listener.onAccessibilityServicesStateChanged(AccessibilityManager.this);
         }
@@ -252,45 +238,18 @@ public final class AccessibilityManager {
     }
 
     public AccessibilityManager(Context context, IAccessibilityManager service, int userId) {
-        Object obj = new Object();
-        this.mLock = obj;
-        this.mRelevantEventTypes = -1;
-        this.mAccessibilityTracingState = 0;
-        this.mPerformingAction = 0;
-        this.mAccessibilityStateChangeListeners = new ArrayMap<>();
-        this.mTouchExplorationStateChangeListeners = new ArrayMap<>();
-        this.mHighTextContrastStateChangeListeners = new ArrayMap<>();
-        this.mServicesStateChangeListeners = new ArrayMap<>();
-        this.mAudioDescriptionRequestedChangeListeners = new ArrayMap<>();
-        this.mBinder = new Binder();
-        this.mClient = new AnonymousClass1();
-        MyCallback myCallback = new MyCallback();
-        this.mCallback = myCallback;
-        this.mHandler = new Handler(context.getMainLooper(), myCallback);
+        this.mHandler = new Handler(context.getMainLooper(), this.mCallback);
         this.mUserId = userId;
-        synchronized (obj) {
+        synchronized (this.mLock) {
             initialFocusAppearanceLocked(context.getResources());
             tryConnectToServiceLocked(service);
         }
     }
 
     public AccessibilityManager(Context context, Handler handler, IAccessibilityManager service, int userId, boolean serviceConnect) {
-        Object obj = new Object();
-        this.mLock = obj;
-        this.mRelevantEventTypes = -1;
-        this.mAccessibilityTracingState = 0;
-        this.mPerformingAction = 0;
-        this.mAccessibilityStateChangeListeners = new ArrayMap<>();
-        this.mTouchExplorationStateChangeListeners = new ArrayMap<>();
-        this.mHighTextContrastStateChangeListeners = new ArrayMap<>();
-        this.mServicesStateChangeListeners = new ArrayMap<>();
-        this.mAudioDescriptionRequestedChangeListeners = new ArrayMap<>();
-        this.mBinder = new Binder();
-        this.mClient = new AnonymousClass1();
-        this.mCallback = new MyCallback();
         this.mHandler = handler;
         this.mUserId = userId;
-        synchronized (obj) {
+        synchronized (this.mLock) {
             initialFocusAppearanceLocked(context.getResources());
             if (serviceConnect) {
                 tryConnectToServiceLocked(service);
@@ -323,9 +282,8 @@ public final class AccessibilityManager {
 
     public boolean isEnabled() {
         boolean z;
-        AccessibilityPolicy accessibilityPolicy;
         synchronized (this.mLock) {
-            z = this.mIsEnabled || hasAnyDirectConnection() || ((accessibilityPolicy = this.mAccessibilityPolicy) != null && accessibilityPolicy.isEnabled(this.mIsEnabled));
+            z = this.mIsEnabled || hasAnyDirectConnection() || (this.mAccessibilityPolicy != null && this.mAccessibilityPolicy.isEnabled(this.mIsEnabled));
         }
         return z;
     }
@@ -354,13 +312,13 @@ public final class AccessibilityManager {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x009c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x009e, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0099, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x009b, code lost:
     
-        if (r8 == r2) goto L98;
+        if (r8 == r2) goto L38;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -371,95 +329,96 @@ public final class AccessibilityManager {
             r7 = this;
             java.lang.Object r0 = r7.mLock
             monitor-enter(r0)
-            android.view.accessibility.IAccessibilityManager r1 = r7.getServiceLocked()     // Catch: java.lang.Throwable -> La6
+            android.view.accessibility.IAccessibilityManager r1 = r7.getServiceLocked()     // Catch: java.lang.Throwable -> La8
             if (r1 != 0) goto Lb
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
             return
         Lb:
-            long r2 = android.os.SystemClock.uptimeMillis()     // Catch: java.lang.Throwable -> La6
-            r8.setEventTime(r2)     // Catch: java.lang.Throwable -> La6
-            int r2 = r8.getAction()     // Catch: java.lang.Throwable -> La6
+            long r2 = android.os.SystemClock.uptimeMillis()     // Catch: java.lang.Throwable -> La8
+            r8.setEventTime(r2)     // Catch: java.lang.Throwable -> La8
+            int r2 = r8.getAction()     // Catch: java.lang.Throwable -> La8
             if (r2 != 0) goto L1d
-            int r2 = r7.mPerformingAction     // Catch: java.lang.Throwable -> La6
-            r8.setAction(r2)     // Catch: java.lang.Throwable -> La6
+            int r2 = r7.mPerformingAction     // Catch: java.lang.Throwable -> La8
+            r8.setAction(r2)     // Catch: java.lang.Throwable -> La8
         L1d:
-            android.view.accessibility.AccessibilityManager$AccessibilityPolicy r2 = r7.mAccessibilityPolicy     // Catch: java.lang.Throwable -> La6
-            if (r2 == 0) goto L2d
-            boolean r3 = r7.mIsEnabled     // Catch: java.lang.Throwable -> La6
-            int r4 = r7.mRelevantEventTypes     // Catch: java.lang.Throwable -> La6
-            android.view.accessibility.AccessibilityEvent r2 = r2.onAccessibilityEvent(r8, r3, r4)     // Catch: java.lang.Throwable -> La6
-            if (r2 != 0) goto L2e
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
+            android.view.accessibility.AccessibilityManager$AccessibilityPolicy r2 = r7.mAccessibilityPolicy     // Catch: java.lang.Throwable -> La8
+            if (r2 == 0) goto L2f
+            android.view.accessibility.AccessibilityManager$AccessibilityPolicy r2 = r7.mAccessibilityPolicy     // Catch: java.lang.Throwable -> La8
+            boolean r3 = r7.mIsEnabled     // Catch: java.lang.Throwable -> La8
+            int r4 = r7.mRelevantEventTypes     // Catch: java.lang.Throwable -> La8
+            android.view.accessibility.AccessibilityEvent r2 = r2.onAccessibilityEvent(r8, r3, r4)     // Catch: java.lang.Throwable -> La8
+            if (r2 != 0) goto L30
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
             return
-        L2d:
+        L2f:
             r2 = r8
-        L2e:
-            boolean r3 = r7.isEnabled()     // Catch: java.lang.Throwable -> La6
-            if (r3 != 0) goto L4f
-            android.os.Looper r3 = android.os.Looper.myLooper()     // Catch: java.lang.Throwable -> La6
-            android.os.Looper r4 = android.os.Looper.getMainLooper()     // Catch: java.lang.Throwable -> La6
-            if (r3 == r4) goto L47
+        L30:
+            boolean r3 = r7.isEnabled()     // Catch: java.lang.Throwable -> La8
+            if (r3 != 0) goto L51
+            android.os.Looper r3 = android.os.Looper.myLooper()     // Catch: java.lang.Throwable -> La8
+            android.os.Looper r4 = android.os.Looper.getMainLooper()     // Catch: java.lang.Throwable -> La8
+            if (r3 == r4) goto L49
             java.lang.String r4 = "AccessibilityManager"
             java.lang.String r5 = "AccessibilityEvent sent with accessibility disabled"
-            android.util.Log.e(r4, r5)     // Catch: java.lang.Throwable -> La6
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
+            android.util.Log.e(r4, r5)     // Catch: java.lang.Throwable -> La8
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
             return
-        L47:
-            java.lang.IllegalStateException r4 = new java.lang.IllegalStateException     // Catch: java.lang.Throwable -> La6
+        L49:
+            java.lang.IllegalStateException r4 = new java.lang.IllegalStateException     // Catch: java.lang.Throwable -> La8
             java.lang.String r5 = "Accessibility off. Did you forget to check that?"
-            r4.<init>(r5)     // Catch: java.lang.Throwable -> La6
-            throw r4     // Catch: java.lang.Throwable -> La6
-        L4f:
-            int r3 = r2.getEventType()     // Catch: java.lang.Throwable -> La6
-            int r4 = r7.mRelevantEventTypes     // Catch: java.lang.Throwable -> La6
+            r4.<init>(r5)     // Catch: java.lang.Throwable -> La8
+            throw r4     // Catch: java.lang.Throwable -> La8
+        L51:
+            int r3 = r2.getEventType()     // Catch: java.lang.Throwable -> La8
+            int r4 = r7.mRelevantEventTypes     // Catch: java.lang.Throwable -> La8
             r3 = r3 & r4
-            if (r3 != 0) goto L5a
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
+            if (r3 != 0) goto L5c
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
             return
-        L5a:
-            int r3 = r7.mUserId     // Catch: java.lang.Throwable -> La6
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
-            long r4 = android.os.Binder.clearCallingIdentity()     // Catch: java.lang.Throwable -> L77 android.os.RemoteException -> L79
-            r1.sendAccessibilityEvent(r2, r3)     // Catch: java.lang.Throwable -> L71
-            android.os.Binder.restoreCallingIdentity(r4)     // Catch: java.lang.Throwable -> L77 android.os.RemoteException -> L79
-            if (r8 == r2) goto L6d
-        L6a:
+        L5c:
+            int r3 = r7.mUserId     // Catch: java.lang.Throwable -> La8
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
+            long r4 = android.os.Binder.clearCallingIdentity()     // Catch: java.lang.Throwable -> L79 android.os.RemoteException -> L7b
+            r1.sendAccessibilityEvent(r2, r3)     // Catch: java.lang.Throwable -> L73
+            android.os.Binder.restoreCallingIdentity(r4)     // Catch: java.lang.Throwable -> L79 android.os.RemoteException -> L7b
+            if (r8 == r2) goto L6f
+        L6c:
             r8.recycle()
-        L6d:
+        L6f:
             r2.recycle()
-            goto L9c
-        L71:
+            goto L9e
+        L73:
             r0 = move-exception
-            android.os.Binder.restoreCallingIdentity(r4)     // Catch: java.lang.Throwable -> L77 android.os.RemoteException -> L79
-            throw r0     // Catch: java.lang.Throwable -> L77 android.os.RemoteException -> L79
-        L77:
-            r0 = move-exception
-            goto L9d
+            android.os.Binder.restoreCallingIdentity(r4)     // Catch: java.lang.Throwable -> L79 android.os.RemoteException -> L7b
+            throw r0     // Catch: java.lang.Throwable -> L79 android.os.RemoteException -> L7b
         L79:
             r0 = move-exception
+            goto L9f
+        L7b:
+            r0 = move-exception
             java.lang.String r4 = "AccessibilityManager"
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L77
-            r5.<init>()     // Catch: java.lang.Throwable -> L77
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L79
+            r5.<init>()     // Catch: java.lang.Throwable -> L79
             java.lang.String r6 = "Error during sending "
-            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L77
-            java.lang.StringBuilder r5 = r5.append(r2)     // Catch: java.lang.Throwable -> L77
+            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L79
+            java.lang.StringBuilder r5 = r5.append(r2)     // Catch: java.lang.Throwable -> L79
             java.lang.String r6 = " "
-            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L77
-            java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L77
-            android.util.Log.e(r4, r5, r0)     // Catch: java.lang.Throwable -> L77
-            if (r8 == r2) goto L6d
-            goto L6a
-        L9c:
+            java.lang.StringBuilder r5 = r5.append(r6)     // Catch: java.lang.Throwable -> L79
+            java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L79
+            android.util.Log.e(r4, r5, r0)     // Catch: java.lang.Throwable -> L79
+            if (r8 == r2) goto L6f
+            goto L6c
+        L9e:
             return
-        L9d:
-            if (r8 == r2) goto La2
+        L9f:
+            if (r8 == r2) goto La4
             r8.recycle()
-        La2:
+        La4:
             r2.recycle()
             throw r0
-        La6:
+        La8:
             r1 = move-exception
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> La6
+            monitor-exit(r0)     // Catch: java.lang.Throwable -> La8
             throw r1
         */
         throw new UnsupportedOperationException("Method not decompiled: android.view.accessibility.AccessibilityManager.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent):void");
@@ -509,13 +468,12 @@ public final class AccessibilityManager {
             int userId = this.mUserId;
             List<AccessibilityServiceInfo> services = null;
             try {
-                services = service.getInstalledAccessibilityServiceList(userId);
+                services = service.getInstalledAccessibilityServiceList(userId).getList();
             } catch (RemoteException re) {
                 Log.e(LOG_TAG, "Error while obtaining the installed AccessibilityServices. ", re);
             }
-            AccessibilityPolicy accessibilityPolicy = this.mAccessibilityPolicy;
-            if (accessibilityPolicy != null) {
-                services = accessibilityPolicy.getInstalledAccessibilityServiceList(services);
+            if (this.mAccessibilityPolicy != null) {
+                services = this.mAccessibilityPolicy.getInstalledAccessibilityServiceList(services);
             }
             if (services != null) {
                 return Collections.unmodifiableList(services);
@@ -537,14 +495,28 @@ public final class AccessibilityManager {
             } catch (RemoteException re) {
                 Log.e(LOG_TAG, "Error while obtaining the enabled AccessibilityServices. ", re);
             }
-            AccessibilityPolicy accessibilityPolicy = this.mAccessibilityPolicy;
-            if (accessibilityPolicy != null) {
-                services = accessibilityPolicy.getEnabledAccessibilityServiceList(feedbackTypeFlags, services);
+            if (this.mAccessibilityPolicy != null) {
+                services = this.mAccessibilityPolicy.getEnabledAccessibilityServiceList(feedbackTypeFlags, services);
             }
             if (services != null) {
                 return Collections.unmodifiableList(services);
             }
             return Collections.emptyList();
+        }
+    }
+
+    public boolean isAccessibilityServiceWarningRequired(AccessibilityServiceInfo info) {
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return true;
+            }
+            try {
+                return service.isAccessibilityServiceWarningRequired(info);
+            } catch (RemoteException re) {
+                Log.e(LOG_TAG, "Error while checking isAccessibilityServiceWarningRequired: ", re);
+                return true;
+            }
         }
     }
 
@@ -732,11 +704,10 @@ public final class AccessibilityManager {
     }
 
     public List<AccessibilityRequestPreparer> getRequestPreparersForAccessibilityId(int id) {
-        SparseArray<List<AccessibilityRequestPreparer>> sparseArray = this.mRequestPreparerLists;
-        if (sparseArray == null) {
+        if (this.mRequestPreparerLists == null) {
             return null;
         }
-        return sparseArray.get(id);
+        return this.mRequestPreparerLists.get(id);
     }
 
     public void notifyPerformingAction(int actionId) {
@@ -850,6 +821,7 @@ public final class AccessibilityManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setStateLocked(int stateFlags) {
         boolean enabled = (stateFlags & 1) != 0;
         boolean touchExplorationEnabled = (stateFlags & 2) != 0;
@@ -936,6 +908,43 @@ public final class AccessibilityManager {
                 service.performAccessibilityShortcut(targetName);
             } catch (RemoteException re) {
                 Log.e(LOG_TAG, "Error performing accessibility shortcut. ", re);
+            }
+        }
+    }
+
+    public void enableShortcutsForTargets(boolean enable, int shortcutTypes, Set<String> targets, int userId) {
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return;
+            }
+            try {
+                service.enableShortcutsForTargets(enable, shortcutTypes, targets.stream().toList(), userId);
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public Map<ComponentName, ComponentName> getA11yFeatureToTileMap(int userId) {
+        ComponentName tileService;
+        Map<ComponentName, ComponentName> a11yFeatureToTileMap = new ArrayMap<>();
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return a11yFeatureToTileMap;
+            }
+            try {
+                Bundle a11yFeatureToTile = service.getA11yFeatureToTileMap(userId);
+                for (String key : a11yFeatureToTile.keySet()) {
+                    ComponentName feature = ComponentName.unflattenFromString(key);
+                    if (feature != null && (tileService = (ComponentName) a11yFeatureToTile.getParcelable(key, ComponentName.class)) != null) {
+                        a11yFeatureToTileMap.put(feature, tileService);
+                    }
+                }
+                return a11yFeatureToTileMap;
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
             }
         }
     }
@@ -1123,16 +1132,16 @@ public final class AccessibilityManager {
         }
     }
 
-    public void setWindowMagnificationConnection(IWindowMagnificationConnection connection) {
+    public void setMagnificationConnection(IMagnificationConnection connection) {
         synchronized (this.mLock) {
             IAccessibilityManager service = getServiceLocked();
             if (service == null) {
                 return;
             }
             try {
-                service.setWindowMagnificationConnection(connection);
+                service.setMagnificationConnection(connection);
             } catch (RemoteException re) {
-                Log.e(LOG_TAG, "Error setting window magnfication connection", re);
+                Log.e(LOG_TAG, "Error setting magnification connection", re);
             }
         }
     }
@@ -1247,6 +1256,7 @@ public final class AccessibilityManager {
         }
     }
 
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public boolean startFlashNotificationSequence(Context context, int reason) {
         synchronized (this.mLock) {
             IAccessibilityManager service = getServiceLocked();
@@ -1262,6 +1272,7 @@ public final class AccessibilityManager {
         }
     }
 
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public boolean stopFlashNotificationSequence(Context context) {
         synchronized (this.mLock) {
             IAccessibilityManager service = getServiceLocked();
@@ -1283,6 +1294,21 @@ public final class AccessibilityManager {
 
     public boolean semStopFlashNotificationSequence(Context context) {
         return stopFlashNotificationSequence(context);
+    }
+
+    public boolean isCameraFlashNotificationRunning() {
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return false;
+            }
+            try {
+                return service.isCameraFlashNotificationRunning();
+            } catch (RemoteException re) {
+                Log.e(LOG_TAG, "failed to get Ccamera flash notification running state", re);
+                return false;
+            }
+        }
     }
 
     public boolean startFlashNotificationEvent(Context context, int reason, String reasonPkg) {
@@ -1368,7 +1394,7 @@ public final class AccessibilityManager {
             int numListeners = listeners.size();
             for (int i = 0; i < numListeners; i++) {
                 final AccessibilityStateChangeListener listener = listeners.keyAt(i);
-                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda1
+                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityManager.AccessibilityStateChangeListener.this.onAccessibilityStateChanged(isEnabled);
@@ -1388,7 +1414,7 @@ public final class AccessibilityManager {
             int numListeners = listeners.size();
             for (int i = 0; i < numListeners; i++) {
                 final TouchExplorationStateChangeListener listener = listeners.keyAt(i);
-                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda3
+                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityManager.TouchExplorationStateChangeListener.this.onTouchExplorationStateChanged(isTouchExplorationEnabled);
@@ -1408,7 +1434,7 @@ public final class AccessibilityManager {
             int numListeners = listeners.size();
             for (int i = 0; i < numListeners; i++) {
                 final HighTextContrastChangeListener listener = listeners.keyAt(i);
-                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda2
+                listeners.valueAt(i).post(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityManager.HighTextContrastChangeListener.this.onHighTextContrastStateChanged(isHighTextContrastEnabled);
@@ -1428,7 +1454,7 @@ public final class AccessibilityManager {
             int numListeners = listeners.size();
             for (int i = 0; i < numListeners; i++) {
                 final AudioDescriptionRequestedChangeListener listener = listeners.keyAt(i);
-                listeners.valueAt(i).execute(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda0
+                listeners.valueAt(i).execute(new Runnable() { // from class: android.view.accessibility.AccessibilityManager$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         AccessibilityManager.AudioDescriptionRequestedChangeListener.this.onAudioDescriptionRequestedChanged(isAudioDescriptionByDefaultRequested);
@@ -1444,11 +1470,13 @@ public final class AccessibilityManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateUiTimeout(long uiTimeout) {
         this.mInteractiveUiTimeout = IntPair.first(uiTimeout);
         this.mNonInteractiveUiTimeout = IntPair.second(uiTimeout);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateFocusAppearanceLocked(int strokeWidth, int color) {
         if (this.mFocusStrokeWidth == strokeWidth && this.mFocusColor == color) {
             return;
@@ -1473,14 +1501,8 @@ public final class AccessibilityManager {
         return res.getBoolean(R.bool.config_showNavigationBar);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public final class MyCallback implements Handler.Callback {
+    private final class MyCallback implements Handler.Callback {
         public static final int MSG_SET_STATE = 1;
-
-        /* synthetic */ MyCallback(AccessibilityManager accessibilityManager, MyCallbackIA myCallbackIA) {
-            this();
-        }
 
         private MyCallback() {
         }
@@ -1508,6 +1530,34 @@ public final class AccessibilityManager {
             }
             try {
                 return service.getWindowTransformationSpec(windowId);
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public void attachAccessibilityOverlayToDisplay(int displayId, SurfaceControl surfaceControl) {
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return;
+            }
+            try {
+                service.attachAccessibilityOverlayToDisplay(displayId, surfaceControl);
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public void notifyQuickSettingsTilesChanged(int userId, List<ComponentName> tileComponentNames) {
+        synchronized (this.mLock) {
+            IAccessibilityManager service = getServiceLocked();
+            if (service == null) {
+                return;
+            }
+            try {
+                service.notifyQuickSettingsTilesChanged(userId, tileComponentNames);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }

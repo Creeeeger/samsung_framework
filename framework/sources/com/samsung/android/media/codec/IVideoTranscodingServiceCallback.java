@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IVideoTranscodingServiceCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.codec.IVideoTranscodingServiceCallback";
 
@@ -20,7 +20,6 @@ public interface IVideoTranscodingServiceCallback extends IInterface {
 
     void onStarted() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IVideoTranscodingServiceCallback {
         @Override // com.samsung.android.media.codec.IVideoTranscodingServiceCallback
         public void onReady() throws RemoteException {
@@ -48,7 +47,6 @@ public interface IVideoTranscodingServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IVideoTranscodingServiceCallback {
         static final int TRANSACTION_onCompleted = 4;
         static final int TRANSACTION_onError = 5;
@@ -103,43 +101,39 @@ public interface IVideoTranscodingServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVideoTranscodingServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVideoTranscodingServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVideoTranscodingServiceCallback.DESCRIPTOR);
+                case 1:
+                    onReady();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onStarted();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgressChanged(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    onCompleted();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    onError();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReady();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onStarted();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgressChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            onCompleted();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            onError();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IVideoTranscodingServiceCallback {
+        private static class Proxy implements IVideoTranscodingServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -12,7 +12,6 @@ public interface ISamsungOverlayCallback extends IInterface {
 
     void onOverlayStateChanged(String str, String str2, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISamsungOverlayCallback {
         @Override // android.content.om.ISamsungOverlayCallback
         public void onOverlayStateChanged(String path, String packageName, int state) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISamsungOverlayCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISamsungOverlayCallback {
         static final int TRANSACTION_onOverlayStateChanged = 1;
 
@@ -67,28 +65,24 @@ public interface ISamsungOverlayCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISamsungOverlayCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISamsungOverlayCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISamsungOverlayCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOverlayStateChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOverlayStateChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISamsungOverlayCallback {
+        private static class Proxy implements ISamsungOverlayCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

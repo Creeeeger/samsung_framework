@@ -14,30 +14,28 @@ import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class Internal {
     private static final int DEFAULT_BUFFER_SIZE = 4096;
-    public static final byte[] EMPTY_BYTE_ARRAY;
-    public static final ByteBuffer EMPTY_BYTE_BUFFER;
-    public static final CodedInputStream EMPTY_CODED_INPUT_STREAM;
     static final Charset US_ASCII = Charset.forName("US-ASCII");
     static final Charset UTF_8 = Charset.forName("UTF-8");
     static final Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
+    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    public static final ByteBuffer EMPTY_BYTE_BUFFER = ByteBuffer.wrap(EMPTY_BYTE_ARRAY);
+    public static final CodedInputStream EMPTY_CODED_INPUT_STREAM = CodedInputStream.newInstance(EMPTY_BYTE_ARRAY);
 
-    /* loaded from: classes4.dex */
     public interface BooleanList extends ProtobufList<Boolean> {
         void addBoolean(boolean z);
 
         boolean getBoolean(int i);
 
-        @Override // 
-        /* renamed from: mutableCopyWithCapacity */
+        @Override // com.android.framework.protobuf.Internal.ProtobufList, com.android.framework.protobuf.Internal.BooleanList
+        /* renamed from: mutableCopyWithCapacity, reason: merged with bridge method [inline-methods] */
         ProtobufList<Boolean> mutableCopyWithCapacity2(int i);
 
         boolean setBoolean(int i, boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public interface DoubleList extends ProtobufList<Double> {
         void addDouble(double d);
 
@@ -50,22 +48,18 @@ public final class Internal {
         double setDouble(int i, double d);
     }
 
-    /* loaded from: classes4.dex */
     public interface EnumLite {
         int getNumber();
     }
 
-    /* loaded from: classes4.dex */
     public interface EnumLiteMap<T extends EnumLite> {
         T findValueByNumber(int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface EnumVerifier {
         boolean isInRange(int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface FloatList extends ProtobufList<Float> {
         void addFloat(float f);
 
@@ -78,7 +72,6 @@ public final class Internal {
         float setFloat(int i, float f);
     }
 
-    /* loaded from: classes4.dex */
     public interface IntList extends ProtobufList<Integer> {
         void addInt(int i);
 
@@ -91,7 +84,6 @@ public final class Internal {
         int setInt(int i, int i2);
     }
 
-    /* loaded from: classes4.dex */
     public interface LongList extends ProtobufList<Long> {
         void addLong(long j);
 
@@ -104,7 +96,6 @@ public final class Internal {
         long setLong(int i, long j);
     }
 
-    /* loaded from: classes4.dex */
     public interface ProtobufList<E> extends List<E>, RandomAccess {
         boolean isModifiable();
 
@@ -117,21 +108,14 @@ public final class Internal {
     private Internal() {
     }
 
-    static {
-        byte[] bArr = new byte[0];
-        EMPTY_BYTE_ARRAY = bArr;
-        EMPTY_BYTE_BUFFER = ByteBuffer.wrap(bArr);
-        EMPTY_CODED_INPUT_STREAM = CodedInputStream.newInstance(bArr);
-    }
-
-    public static <T> T checkNotNull(T obj) {
+    static <T> T checkNotNull(T obj) {
         if (obj == null) {
             throw new NullPointerException();
         }
         return obj;
     }
 
-    public static <T> T checkNotNull(T obj, String message) {
+    static <T> T checkNotNull(T obj, String message) {
         if (obj == null) {
             throw new NullPointerException(message);
         }
@@ -231,7 +215,7 @@ public final class Internal {
         return h;
     }
 
-    public static int partialHash(int h, byte[] bytes, int offset, int length) {
+    static int partialHash(int h, byte[] bytes, int offset, int length) {
         for (int i = offset; i < offset + length; i++) {
             h = (h * 31) + bytes[i];
         }
@@ -299,16 +283,14 @@ public final class Internal {
         }
     }
 
-    public static Object mergeMessage(Object destination, Object source) {
+    static Object mergeMessage(Object destination, Object source) {
         return ((MessageLite) destination).toBuilder().mergeFrom((MessageLite) source).buildPartial();
     }
 
-    /* loaded from: classes4.dex */
     public static class ListAdapter<F, T> extends AbstractList<T> {
         private final Converter<F, T> converter;
         private final List<F> fromList;
 
-        /* loaded from: classes4.dex */
         public interface Converter<F, T> {
             T convert(F f);
         }
@@ -329,53 +311,26 @@ public final class Internal {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class MapAdapter<K, V, RealValue> extends AbstractMap<K, V> {
         private final Map<K, RealValue> realMap;
         private final Converter<RealValue, V> valueConverter;
 
-        /* loaded from: classes4.dex */
         public interface Converter<A, B> {
             A doBackward(B b);
 
             B doForward(A a);
         }
 
-        /* renamed from: com.android.framework.protobuf.Internal$MapAdapter$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1<T> implements Converter<Integer, T> {
-            final /* synthetic */ EnumLite val$unrecognizedValue;
-
-            AnonymousClass1(EnumLite enumLite) {
-                t = enumLite;
-            }
-
-            @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
-            public EnumLite doForward(Integer value) {
-                EnumLite findValueByNumber = EnumLiteMap.this.findValueByNumber(value.intValue());
-                return findValueByNumber == null ? t : findValueByNumber;
-            }
-
-            @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
-            public Integer doBackward(EnumLite enumLite) {
-                return Integer.valueOf(enumLite.getNumber());
-            }
-        }
-
-        public static <T extends EnumLite> Converter<Integer, T> newEnumConverter(EnumLiteMap<T> enumMap, T unrecognizedValue) {
-            return new Converter<Integer, T>() { // from class: com.android.framework.protobuf.Internal.MapAdapter.1
-                final /* synthetic */ EnumLite val$unrecognizedValue;
-
-                AnonymousClass1(EnumLite unrecognizedValue2) {
-                    t = unrecognizedValue2;
-                }
-
+        public static <T extends EnumLite> Converter<Integer, T> newEnumConverter(final EnumLiteMap<T> enumLiteMap, final T t) {
+            return (Converter<Integer, T>) new Converter<Integer, T>() { // from class: com.android.framework.protobuf.Internal.MapAdapter.1
+                /* JADX WARN: Incorrect return type in method signature: (Ljava/lang/Integer;)TT; */
                 @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
                 public EnumLite doForward(Integer value) {
                     EnumLite findValueByNumber = EnumLiteMap.this.findValueByNumber(value.intValue());
                     return findValueByNumber == null ? t : findValueByNumber;
                 }
 
+                /* JADX WARN: Incorrect types in method signature: (TT;)Ljava/lang/Integer; */
                 @Override // com.android.framework.protobuf.Internal.MapAdapter.Converter
                 public Integer doBackward(EnumLite enumLite) {
                     return Integer.valueOf(enumLite.getNumber());
@@ -411,7 +366,6 @@ public final class Internal {
             return new SetAdapter(this.realMap.entrySet());
         }
 
-        /* loaded from: classes4.dex */
         private class SetAdapter extends AbstractSet<Map.Entry<K, V>> {
             private final Set<Map.Entry<K, RealValue>> realSet;
 
@@ -430,7 +384,6 @@ public final class Internal {
             }
         }
 
-        /* loaded from: classes4.dex */
         private class IteratorAdapter implements Iterator<Map.Entry<K, V>> {
             private final Iterator<Map.Entry<K, RealValue>> realIterator;
 
@@ -454,8 +407,7 @@ public final class Internal {
             }
         }
 
-        /* loaded from: classes4.dex */
-        public class EntryAdapter implements Map.Entry<K, V> {
+        private class EntryAdapter implements Map.Entry<K, V> {
             private final Map.Entry<K, RealValue> realEntry;
 
             public EntryAdapter(Map.Entry<K, RealValue> realEntry) {

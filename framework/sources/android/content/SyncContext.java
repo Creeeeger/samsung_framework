@@ -25,9 +25,8 @@ public class SyncContext {
         }
         try {
             this.mLastHeartbeatSendTime = now;
-            ISyncContext iSyncContext = this.mSyncContext;
-            if (iSyncContext != null) {
-                iSyncContext.sendHeartbeat();
+            if (this.mSyncContext != null) {
+                this.mSyncContext.sendHeartbeat();
             }
         } catch (RemoteException e) {
         }
@@ -35,19 +34,17 @@ public class SyncContext {
 
     public void onFinished(SyncResult result) {
         try {
-            ISyncContext iSyncContext = this.mSyncContext;
-            if (iSyncContext != null) {
-                iSyncContext.onFinished(result);
+            if (this.mSyncContext != null) {
+                this.mSyncContext.onFinished(result);
             }
         } catch (RemoteException e) {
         }
     }
 
     public IBinder getSyncContextBinder() {
-        ISyncContext iSyncContext = this.mSyncContext;
-        if (iSyncContext == null) {
+        if (this.mSyncContext == null) {
             return null;
         }
-        return iSyncContext.asBinder();
+        return this.mSyncContext.asBinder();
     }
 }

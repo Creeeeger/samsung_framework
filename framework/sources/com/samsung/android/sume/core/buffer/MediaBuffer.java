@@ -23,13 +23,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface MediaBuffer extends Parcelable, Copyable<MediaBuffer> {
     public static final int BUFFER_FLAG_PACKED_EVALUATION_BUFFER = 2;
     public static final int BUFFER_FLAG_PACKED_IO_BUFFERS = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface BufferFlag {
     }
 
@@ -364,7 +363,7 @@ public interface MediaBuffer extends Parcelable, Copyable<MediaBuffer> {
     static MediaBuffer metadataBufferOf(int metadataKey, Bitmap bitmap) {
         MutableMediaFormat fmt = MediaFormat.mutableMetaOf(Integer.valueOf(metadataKey), DataType.U8C3, ColorFormat.RGB, Shape.of(bitmap.getHeight(), bitmap.getWidth()));
         fmt.setColorSpace(ColorSpace.of(bitmap));
-        float ratio = ((float) fmt.size()) / bitmap.getByteCount();
+        float ratio = fmt.size() / bitmap.getByteCount();
         if (Math.round(ratio * 100.0f) / 100.0f == 0.75f) {
             fmt.setDataType(DataType.U8C4);
             fmt.setColorFormat(ColorFormat.RGBA);
@@ -398,7 +397,7 @@ public interface MediaBuffer extends Parcelable, Copyable<MediaBuffer> {
             Bitmap bitmap = (Bitmap) t;
             MutableMediaFormat format2 = MediaFormat.mutableMetaOf(DataType.U8C3, ColorFormat.RGB, Shape.of(bitmap.getHeight(), bitmap.getWidth()));
             format2.setColorSpace(ColorSpace.of(bitmap));
-            float ratio = ((float) format2.size()) / bitmap.getByteCount();
+            float ratio = format2.size() / bitmap.getByteCount();
             if (Math.round(ratio * 100.0f) / 100.0f == 0.75f) {
                 format2.setDataType(DataType.U8C4);
                 format2.setColorFormat(ColorFormat.RGBA);
@@ -445,7 +444,7 @@ public interface MediaBuffer extends Parcelable, Copyable<MediaBuffer> {
     static MediaBuffer gainMapBufferOf(Bitmap bitmap) {
         MutableMediaFormat fmt = MediaFormat.mutableGainMapOf(DataType.U8C3, ColorFormat.RGB, Shape.of(bitmap.getHeight(), bitmap.getWidth()));
         fmt.setColorSpace(ColorSpace.of(bitmap));
-        float ratio = ((float) fmt.size()) / bitmap.getByteCount();
+        float ratio = fmt.size() / bitmap.getByteCount();
         if (Math.round(ratio * 100.0f) / 100.0f == 0.75f) {
             fmt.setDataType(DataType.U8C4);
             fmt.setColorFormat(ColorFormat.RGBA);

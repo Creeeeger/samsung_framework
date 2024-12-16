@@ -16,13 +16,13 @@ public final class AudioInjection {
     private final Object mLock = new Object();
     private int mPlayState = 1;
 
-    public void setSilent(boolean isSilent) {
+    void setSilent(boolean isSilent) {
         synchronized (this.mLock) {
             this.mIsSilent = isSilent;
         }
     }
 
-    public void setAudioTrack(AudioTrack audioTrack) {
+    void setAudioTrack(AudioTrack audioTrack) {
         Log.d(TAG, "set AudioTrack with " + audioTrack);
         synchronized (this.mLock) {
             if (audioTrack != null) {
@@ -36,23 +36,21 @@ public final class AudioInjection {
                     audioTrack.stop();
                 }
             }
-            AudioTrack audioTrack2 = this.mAudioTrack;
-            if (audioTrack2 != null) {
-                audioTrack2.release();
+            if (this.mAudioTrack != null) {
+                this.mAudioTrack.release();
             }
             this.mAudioTrack = audioTrack;
         }
     }
 
-    public AudioInjection(AudioFormat audioFormat) {
+    AudioInjection(AudioFormat audioFormat) {
         this.mAudioFormat = audioFormat;
     }
 
-    public void close() {
+    void close() {
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null) {
-                audioTrack.release();
+            if (this.mAudioTrack != null) {
+                this.mAudioTrack.release();
                 this.mAudioTrack = null;
             }
         }
@@ -69,9 +67,8 @@ public final class AudioInjection {
     public int write(byte[] audioData, int offsetInBytes, int sizeInBytes, int writeMode) {
         int sizeWrite;
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && !this.mIsSilent) {
-                sizeWrite = audioTrack.write(audioData, offsetInBytes, sizeInBytes, writeMode);
+            if (this.mAudioTrack != null && !this.mIsSilent) {
+                sizeWrite = this.mAudioTrack.write(audioData, offsetInBytes, sizeInBytes, writeMode);
             } else {
                 sizeWrite = 0;
             }
@@ -82,9 +79,8 @@ public final class AudioInjection {
     public int write(ByteBuffer audioBuffer, int sizeInBytes, int writeMode) {
         int sizeWrite;
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && !this.mIsSilent) {
-                sizeWrite = audioTrack.write(audioBuffer, sizeInBytes, writeMode);
+            if (this.mAudioTrack != null && !this.mIsSilent) {
+                sizeWrite = this.mAudioTrack.write(audioBuffer, sizeInBytes, writeMode);
             } else {
                 sizeWrite = 0;
             }
@@ -95,9 +91,8 @@ public final class AudioInjection {
     public int write(ByteBuffer audioBuffer, int sizeInBytes, int writeMode, long timestamp) {
         int sizeWrite;
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && !this.mIsSilent) {
-                sizeWrite = audioTrack.write(audioBuffer, sizeInBytes, writeMode, timestamp);
+            if (this.mAudioTrack != null && !this.mIsSilent) {
+                sizeWrite = this.mAudioTrack.write(audioBuffer, sizeInBytes, writeMode, timestamp);
             } else {
                 sizeWrite = 0;
             }
@@ -108,9 +103,8 @@ public final class AudioInjection {
     public int write(float[] audioData, int offsetInFloats, int sizeInFloats, int writeMode) {
         int sizeWrite;
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && !this.mIsSilent) {
-                sizeWrite = audioTrack.write(audioData, offsetInFloats, sizeInFloats, writeMode);
+            if (this.mAudioTrack != null && !this.mIsSilent) {
+                sizeWrite = this.mAudioTrack.write(audioData, offsetInFloats, sizeInFloats, writeMode);
             } else {
                 sizeWrite = 0;
             }
@@ -125,9 +119,8 @@ public final class AudioInjection {
     public int write(short[] audioData, int offsetInShorts, int sizeInShorts, int writeMode) {
         int sizeWrite;
         synchronized (this.mLock) {
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && !this.mIsSilent) {
-                sizeWrite = audioTrack.write(audioData, offsetInShorts, sizeInShorts, writeMode);
+            if (this.mAudioTrack != null && !this.mIsSilent) {
+                sizeWrite = this.mAudioTrack.write(audioData, offsetInShorts, sizeInShorts, writeMode);
             } else {
                 sizeWrite = 0;
             }
@@ -138,8 +131,7 @@ public final class AudioInjection {
     public void play() {
         synchronized (this.mLock) {
             this.mPlayState = 3;
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && audioTrack.getPlayState() != 3) {
+            if (this.mAudioTrack != null && this.mAudioTrack.getPlayState() != 3) {
                 this.mAudioTrack.play();
             }
         }
@@ -148,8 +140,7 @@ public final class AudioInjection {
     public void stop() {
         synchronized (this.mLock) {
             this.mPlayState = 1;
-            AudioTrack audioTrack = this.mAudioTrack;
-            if (audioTrack != null && audioTrack.getPlayState() != 1) {
+            if (this.mAudioTrack != null && this.mAudioTrack.getPlayState() != 1) {
                 this.mAudioTrack.stop();
             }
         }

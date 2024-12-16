@@ -14,7 +14,7 @@ public final class PrintDocument {
     private final PrintJobId mPrintJobId;
     private final IPrintServiceClient mPrintServiceClient;
 
-    public PrintDocument(PrintJobId printJobId, IPrintServiceClient printServiceClient, PrintDocumentInfo info) {
+    PrintDocument(PrintJobId printJobId, IPrintServiceClient printServiceClient, PrintDocumentInfo info) {
         this.mPrintJobId = printJobId;
         this.mPrintServiceClient = printServiceClient;
         this.mInfo = info;

@@ -73,7 +73,7 @@ public final class CookieSyncManager extends WebSyncManager {
     public void stopSync() {
     }
 
-    public static void setGetInstanceIsAllowed() {
+    static void setGetInstanceIsAllowed() {
         sGetInstanceAllowed = true;
     }
 

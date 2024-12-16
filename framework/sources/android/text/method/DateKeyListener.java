@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DateKeyListener extends NumberKeyListener {
     private static final String SYMBOLS_TO_IGNORE = "yMLd";
     private final char[] mCharacters;
@@ -39,9 +39,8 @@ public class DateKeyListener extends NumberKeyListener {
         LinkedHashSet<Character> chars = new LinkedHashSet<>();
         boolean success = NumberKeyListener.addDigits(chars, locale) && NumberKeyListener.addFormatCharsFromSkeletons(chars, locale, SKELETONS, SYMBOLS_TO_IGNORE);
         if (success) {
-            char[] collectionToArray = NumberKeyListener.collectionToArray(chars);
-            this.mCharacters = collectionToArray;
-            this.mNeedsAdvancedInput = true ^ ArrayUtils.containsAll(CHARACTERS, collectionToArray);
+            this.mCharacters = NumberKeyListener.collectionToArray(chars);
+            this.mNeedsAdvancedInput = true ^ ArrayUtils.containsAll(CHARACTERS, this.mCharacters);
         } else {
             this.mCharacters = CHARACTERS;
             this.mNeedsAdvancedInput = false;
@@ -56,11 +55,10 @@ public class DateKeyListener extends NumberKeyListener {
     public static DateKeyListener getInstance(Locale locale) {
         DateKeyListener instance;
         synchronized (sLock) {
-            HashMap<Locale, DateKeyListener> hashMap = sInstanceCache;
-            instance = hashMap.get(locale);
+            instance = sInstanceCache.get(locale);
             if (instance == null) {
                 instance = new DateKeyListener(locale);
-                hashMap.put(locale, instance);
+                sInstanceCache.put(locale, instance);
             }
         }
         return instance;

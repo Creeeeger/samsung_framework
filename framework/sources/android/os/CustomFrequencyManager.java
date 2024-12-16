@@ -105,20 +105,18 @@ public class CustomFrequencyManager {
     }
 
     public void setGamePowerSaving(boolean enabled) {
-        ICustomFrequencyManager iCustomFrequencyManager;
         try {
-            if (getCfmsService() != null && (iCustomFrequencyManager = this.mService) != null) {
-                iCustomFrequencyManager.setGamePowerSaving(enabled);
+            if (getCfmsService() != null && this.mService != null) {
+                this.mService.setGamePowerSaving(enabled);
             }
         } catch (RemoteException e) {
         }
     }
 
     public void setGameFps(int level) {
-        ICustomFrequencyManager iCustomFrequencyManager;
         try {
-            if (getCfmsService() != null && (iCustomFrequencyManager = this.mService) != null) {
-                iCustomFrequencyManager.setGameFps(level);
+            if (getCfmsService() != null && this.mService != null) {
+                this.mService.setGameFps(level);
             }
         } catch (RemoteException e) {
         }
@@ -137,22 +135,20 @@ public class CustomFrequencyManager {
     }
 
     public void setGameTurboMode(boolean enabled) {
-        ICustomFrequencyManager iCustomFrequencyManager;
         try {
-            if (getCfmsService() != null && (iCustomFrequencyManager = this.mService) != null) {
-                iCustomFrequencyManager.setGameTurboMode(enabled);
+            if (getCfmsService() != null && this.mService != null) {
+                this.mService.setGameTurboMode(enabled);
             }
         } catch (RemoteException e) {
         }
     }
 
     public int requestFreezeSlowdown(int pid, boolean isEnabled, String type) {
-        ICustomFrequencyManager iCustomFrequencyManager;
         try {
-            if (getCfmsService() == null || (iCustomFrequencyManager = this.mService) == null) {
+            if (getCfmsService() == null || this.mService == null) {
                 return -1;
             }
-            int ret = iCustomFrequencyManager.requestFreezeSlowdown(pid, isEnabled, type);
+            int ret = this.mService.requestFreezeSlowdown(pid, isEnabled, type);
             return ret;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -161,10 +157,9 @@ public class CustomFrequencyManager {
     }
 
     public void setFrozenTime(int timeMs) {
-        ICustomFrequencyManager iCustomFrequencyManager;
         try {
-            if (getCfmsService() != null && (iCustomFrequencyManager = this.mService) != null) {
-                iCustomFrequencyManager.setFrozenTime(timeMs);
+            if (getCfmsService() != null && this.mService != null) {
+                this.mService.setFrozenTime(timeMs);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -173,9 +168,8 @@ public class CustomFrequencyManager {
 
     private synchronized ICustomFrequencyManager getCfmsService() {
         try {
-            ICustomFrequencyManager iCustomFrequencyManager = this.mService;
-            if (iCustomFrequencyManager != null) {
-                return iCustomFrequencyManager;
+            if (this.mService != null) {
+                return this.mService;
             }
             IBinder b = ServiceManager.getService(Context.CFMS_SERVICE);
             if (b != null) {
@@ -194,9 +188,8 @@ public class CustomFrequencyManager {
             if (this.mService == null && (b = ServiceManager.getService(Context.CFMS_SERVICE)) != null) {
                 this.mService = ICustomFrequencyManager.Stub.asInterface(b);
             }
-            ICustomFrequencyManager iCustomFrequencyManager = this.mService;
-            if (iCustomFrequencyManager != null) {
-                iCustomFrequencyManager.acquire(pid, token, procName, hint, list);
+            if (this.mService != null) {
+                this.mService.acquire(pid, token, procName, hint, list);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -209,9 +202,8 @@ public class CustomFrequencyManager {
             if (this.mService == null && (b = ServiceManager.getService(Context.CFMS_SERVICE)) != null) {
                 this.mService = ICustomFrequencyManager.Stub.asInterface(b);
             }
-            ICustomFrequencyManager iCustomFrequencyManager = this.mService;
-            if (iCustomFrequencyManager != null) {
-                iCustomFrequencyManager.release(pid, token);
+            if (this.mService != null) {
+                this.mService.release(pid, token);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -224,9 +216,8 @@ public class CustomFrequencyManager {
             if (this.mService == null && (b = ServiceManager.getService(Context.CFMS_SERVICE)) != null) {
                 this.mService = ICustomFrequencyManager.Stub.asInterface(b);
             }
-            ICustomFrequencyManager iCustomFrequencyManager = this.mService;
-            if (iCustomFrequencyManager != null) {
-                return iCustomFrequencyManager.getSupportedFrequency(type, level);
+            if (this.mService != null) {
+                return this.mService.getSupportedFrequency(type, level);
             }
             return null;
         } catch (RemoteException e) {
@@ -328,11 +319,10 @@ public class CustomFrequencyManager {
     }
 
     public void sendTid(int pid, int tid, int type) {
-        if (getCfmsService() == null) {
-            return;
-        }
         try {
-            this.mService.sendTid(pid, tid, type);
+            if (getCfmsService() != null) {
+                this.mService.sendTid(pid, tid, type);
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }

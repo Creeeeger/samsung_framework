@@ -23,15 +23,10 @@ public abstract class VerityBuilder {
     private VerityBuilder() {
     }
 
-    /* loaded from: classes4.dex */
     public static class VerityResult {
         public final int merkleTreeSize;
         public final byte[] rootHash;
         public final ByteBuffer verityData;
-
-        /* synthetic */ VerityResult(ByteBuffer byteBuffer, int i, byte[] bArr, VerityResultIA verityResultIA) {
-            this(byteBuffer, i, bArr);
-        }
 
         private VerityResult(ByteBuffer verityData, int merkleTreeSize, byte[] rootHash) {
             this.verityData = verityData;
@@ -84,7 +79,7 @@ public abstract class VerityBuilder {
         }
     }
 
-    public static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory, SignatureInfo signatureInfo) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
+    static byte[] generateApkVerity(String apkPath, ByteBufferFactory bufferFactory, SignatureInfo signatureInfo) throws IOException, SignatureNotFoundException, SecurityException, DigestException, NoSuchAlgorithmException {
         RandomAccessFile apk = new RandomAccessFile(apkPath, "r");
         try {
             VerityResult result = generateVerityTreeInternal(apk, bufferFactory, signatureInfo);
@@ -105,8 +100,7 @@ public abstract class VerityBuilder {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class BufferedDigester implements DataDigester {
+    private static class BufferedDigester implements DataDigester {
         private static final int BUFFER_SIZE = 4096;
         private int mBytesDigestedSinceReset;
         private final byte[] mDigestBuffer;
@@ -114,18 +108,13 @@ public abstract class VerityBuilder {
         private final ByteBuffer mOutput;
         private final byte[] mSalt;
 
-        /* synthetic */ BufferedDigester(byte[] bArr, ByteBuffer byteBuffer, BufferedDigesterIA bufferedDigesterIA) {
-            this(bArr, byteBuffer);
-        }
-
         private BufferedDigester(byte[] salt, ByteBuffer output) throws NoSuchAlgorithmException {
             this.mDigestBuffer = new byte[32];
             this.mSalt = salt;
             this.mOutput = output.slice();
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            this.mMd = messageDigest;
-            if (salt != null) {
-                messageDigest.update(salt);
+            this.mMd = MessageDigest.getInstance("SHA-256");
+            if (this.mSalt != null) {
+                this.mMd.update(this.mSalt);
             }
             this.mBytesDigestedSinceReset = 0;
         }
@@ -140,16 +129,12 @@ public abstract class VerityBuilder {
                 this.mMd.update(buffer);
                 offset += allowance;
                 remaining -= allowance;
-                int i = this.mBytesDigestedSinceReset + allowance;
-                this.mBytesDigestedSinceReset = i;
-                if (i == 4096) {
-                    MessageDigest messageDigest = this.mMd;
-                    byte[] bArr = this.mDigestBuffer;
-                    messageDigest.digest(bArr, 0, bArr.length);
+                this.mBytesDigestedSinceReset += allowance;
+                if (this.mBytesDigestedSinceReset == 4096) {
+                    this.mMd.digest(this.mDigestBuffer, 0, this.mDigestBuffer.length);
                     this.mOutput.put(this.mDigestBuffer);
-                    byte[] bArr2 = this.mSalt;
-                    if (bArr2 != null) {
-                        this.mMd.update(bArr2);
+                    if (this.mSalt != null) {
+                        this.mMd.update(this.mSalt);
                     }
                     this.mBytesDigestedSinceReset = 0;
                 }
@@ -162,6 +147,7 @@ public abstract class VerityBuilder {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void fillUpLastOutputChunk() {
             int lastBlockSize = this.mOutput.position() % 4096;
             if (lastBlockSize == 0) {
@@ -214,39 +200,49 @@ public abstract class VerityBuilder {
 
     private static byte[] generateFsVerityTreeInternal(RandomAccessFile apk, byte[] salt, int[] levelOffset, ByteBuffer output) throws IOException, NoSuchAlgorithmException, DigestException {
         generateFsVerityDigestAtLeafLevel(apk, salt, slice(output, levelOffset[levelOffset.length - 2], levelOffset[levelOffset.length - 1]));
-        for (int level = levelOffset.length - 3; level >= 0; level--) {
-            ByteBuffer inputBuffer = slice(output, levelOffset[level + 1], levelOffset[level + 2]);
-            ByteBuffer outputBuffer = slice(output, levelOffset[level], levelOffset[level + 1]);
-            DataSource source = new ByteBufferDataSource(inputBuffer);
-            BufferedDigester digester = new BufferedDigester(salt, outputBuffer);
-            consumeByChunk(digester, source, 4096);
-            digester.assertEmptyBuffer();
-            digester.fillUpLastOutputChunk();
+        int level = levelOffset.length - 3;
+        while (true) {
+            if (level >= 0) {
+                ByteBuffer inputBuffer = slice(output, levelOffset[level + 1], levelOffset[level + 2]);
+                ByteBuffer outputBuffer = slice(output, levelOffset[level], levelOffset[level + 1]);
+                DataSource source = new ByteBufferDataSource(inputBuffer);
+                BufferedDigester digester = new BufferedDigester(salt, outputBuffer);
+                consumeByChunk(digester, source, 4096);
+                digester.assertEmptyBuffer();
+                digester.fillUpLastOutputChunk();
+                level--;
+            } else {
+                byte[] rootHash = new byte[32];
+                BufferedDigester digester2 = new BufferedDigester(salt, ByteBuffer.wrap(rootHash));
+                digester2.consume(slice(output, 0, 4096));
+                digester2.assertEmptyBuffer();
+                return rootHash;
+            }
         }
-        byte[] rootHash = new byte[32];
-        BufferedDigester digester2 = new BufferedDigester(salt, ByteBuffer.wrap(rootHash));
-        digester2.consume(slice(output, 0, 4096));
-        digester2.assertEmptyBuffer();
-        return rootHash;
     }
 
     private static byte[] generateVerityTreeInternal(RandomAccessFile apk, SignatureInfo signatureInfo, byte[] salt, int[] levelOffset, ByteBuffer output) throws IOException, NoSuchAlgorithmException, DigestException {
         assertSigningBlockAlignedAndHasFullPages(signatureInfo);
         generateApkVerityDigestAtLeafLevel(apk, signatureInfo, salt, slice(output, levelOffset[levelOffset.length - 2], levelOffset[levelOffset.length - 1]));
-        for (int level = levelOffset.length - 3; level >= 0; level--) {
-            ByteBuffer inputBuffer = slice(output, levelOffset[level + 1], levelOffset[level + 2]);
-            ByteBuffer outputBuffer = slice(output, levelOffset[level], levelOffset[level + 1]);
-            DataSource source = new ByteBufferDataSource(inputBuffer);
-            BufferedDigester digester = new BufferedDigester(salt, outputBuffer);
-            consumeByChunk(digester, source, 4096);
-            digester.assertEmptyBuffer();
-            digester.fillUpLastOutputChunk();
+        int level = levelOffset.length - 3;
+        while (true) {
+            if (level >= 0) {
+                ByteBuffer inputBuffer = slice(output, levelOffset[level + 1], levelOffset[level + 2]);
+                ByteBuffer outputBuffer = slice(output, levelOffset[level], levelOffset[level + 1]);
+                DataSource source = new ByteBufferDataSource(inputBuffer);
+                BufferedDigester digester = new BufferedDigester(salt, outputBuffer);
+                consumeByChunk(digester, source, 4096);
+                digester.assertEmptyBuffer();
+                digester.fillUpLastOutputChunk();
+                level--;
+            } else {
+                byte[] rootHash = new byte[32];
+                BufferedDigester digester2 = new BufferedDigester(salt, ByteBuffer.wrap(rootHash));
+                digester2.consume(slice(output, 0, 4096));
+                digester2.assertEmptyBuffer();
+                return rootHash;
+            }
         }
-        byte[] rootHash = new byte[32];
-        BufferedDigester digester2 = new BufferedDigester(salt, ByteBuffer.wrap(rootHash));
-        digester2.consume(slice(output, 0, 4096));
-        digester2.assertEmptyBuffer();
-        return rootHash;
     }
 
     private static ByteBuffer generateApkVerityHeader(ByteBuffer buffer, long fileSize, byte[] salt) {

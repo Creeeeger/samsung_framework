@@ -11,14 +11,13 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public class PrivacyIndicatorBounds implements Parcelable {
     public static final Parcelable.Creator<PrivacyIndicatorBounds> CREATOR = new Parcelable.Creator<PrivacyIndicatorBounds>() { // from class: android.view.PrivacyIndicatorBounds.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrivacyIndicatorBounds[] newArray(int size) {
             return new PrivacyIndicatorBounds[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrivacyIndicatorBounds createFromParcel(Parcel in) {
             return new PrivacyIndicatorBounds(in);
@@ -42,11 +41,10 @@ public class PrivacyIndicatorBounds implements Parcelable {
     }
 
     public PrivacyIndicatorBounds updateBoundsForRotation(Rect bounds, int rotation) {
-        Rect[] rectArr = this.mStaticBounds;
-        if (rotation >= rectArr.length || rotation < 0) {
+        if (rotation >= this.mStaticBounds.length || rotation < 0) {
             return this;
         }
-        Rect[] newBounds = (Rect[]) ArrayUtils.cloneOrNull(rectArr);
+        Rect[] newBounds = (Rect[]) ArrayUtils.cloneOrNull(this.mStaticBounds);
         newBounds[rotation] = bounds;
         return updateStaticBounds(newBounds);
     }
@@ -56,16 +54,10 @@ public class PrivacyIndicatorBounds implements Parcelable {
             return this;
         }
         Rect[] insetStaticBounds = new Rect[this.mStaticBounds.length];
-        int i = 0;
-        while (true) {
-            Rect[] rectArr = this.mStaticBounds;
-            if (i < rectArr.length) {
-                insetStaticBounds[i] = insetRect(rectArr[i], insetLeft, insetTop, insetRight, insetBottom);
-                i++;
-            } else {
-                return updateStaticBounds(insetStaticBounds);
-            }
+        for (int i = 0; i < this.mStaticBounds.length; i++) {
+            insetStaticBounds[i] = insetRect(this.mStaticBounds[i], insetLeft, insetTop, insetRight, insetBottom);
         }
+        return updateStaticBounds(insetStaticBounds);
     }
 
     private static Rect insetRect(Rect orig, int insetLeft, int insetTop, int insetRight, int insetBottom) {
@@ -91,16 +83,10 @@ public class PrivacyIndicatorBounds implements Parcelable {
             return this;
         }
         Rect[] scaledStaticPos = new Rect[this.mStaticBounds.length];
-        int i = 0;
-        while (true) {
-            Rect[] rectArr = this.mStaticBounds;
-            if (i < rectArr.length) {
-                scaledStaticPos[i] = scaleRect(rectArr[i], scale);
-                i++;
-            } else {
-                return new PrivacyIndicatorBounds(scaledStaticPos, this.mRotation);
-            }
+        for (int i = 0; i < this.mStaticBounds.length; i++) {
+            scaledStaticPos[i] = scaleRect(this.mStaticBounds[i], scale);
         }
+        return new PrivacyIndicatorBounds(scaledStaticPos, this.mRotation);
     }
 
     private static Rect scaleRect(Rect orig, float scale) {
@@ -154,25 +140,8 @@ public class PrivacyIndicatorBounds implements Parcelable {
         Rect[] staticBounds = (Rect[]) in.createTypedArray(Rect.CREATOR);
         int rotation = in.readInt();
         this.mStaticBounds = staticBounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) staticBounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mStaticBounds);
         this.mRotation = rotation;
-    }
-
-    /* renamed from: android.view.PrivacyIndicatorBounds$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrivacyIndicatorBounds> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrivacyIndicatorBounds[] newArray(int size) {
-            return new PrivacyIndicatorBounds[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrivacyIndicatorBounds createFromParcel(Parcel in) {
-            return new PrivacyIndicatorBounds(in);
-        }
     }
 
     @Deprecated

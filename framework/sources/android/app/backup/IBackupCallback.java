@@ -12,7 +12,6 @@ public interface IBackupCallback extends IInterface {
 
     void operationComplete(long j) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBackupCallback {
         @Override // android.app.backup.IBackupCallback
         public void operationComplete(long result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBackupCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBackupCallback {
         static final int TRANSACTION_operationComplete = 1;
 
@@ -67,25 +65,22 @@ public interface IBackupCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBackupCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBackupCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBackupCallback.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    operationComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            operationComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBackupCallback {
+        private static class Proxy implements IBackupCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

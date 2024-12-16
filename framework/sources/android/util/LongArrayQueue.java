@@ -3,7 +3,6 @@ package android.util;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import java.util.NoSuchElementException;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class LongArrayQueue {
@@ -28,17 +27,13 @@ public class LongArrayQueue {
     }
 
     private void grow() {
-        int i = this.mSize;
-        if (i < this.mValues.length) {
+        if (this.mSize < this.mValues.length) {
             throw new IllegalStateException("Queue not full yet!");
         }
-        int newSize = GrowingArrayUtils.growSize(i);
+        int newSize = GrowingArrayUtils.growSize(this.mSize);
         long[] newArray = ArrayUtils.newUnpaddedLongArray(newSize);
-        long[] jArr = this.mValues;
-        int length = jArr.length;
-        int i2 = this.mHead;
-        int r = length - i2;
-        System.arraycopy(jArr, i2, newArray, 0, r);
+        int r = this.mValues.length - this.mHead;
+        System.arraycopy(this.mValues, this.mHead, newArray, 0, r);
         System.arraycopy(this.mValues, 0, newArray, r, this.mHead);
         this.mValues = newArray;
         this.mHead = 0;
@@ -59,23 +54,18 @@ public class LongArrayQueue {
         if (this.mSize == this.mValues.length) {
             grow();
         }
-        long[] jArr = this.mValues;
-        int i = this.mTail;
-        jArr[i] = value;
-        this.mTail = (i + 1) % jArr.length;
+        this.mValues[this.mTail] = value;
+        this.mTail = (this.mTail + 1) % this.mValues.length;
         this.mSize++;
     }
 
     public long removeFirst() {
-        int i = this.mSize;
-        if (i == 0) {
+        if (this.mSize == 0) {
             throw new NoSuchElementException("Queue is empty!");
         }
-        long[] jArr = this.mValues;
-        int i2 = this.mHead;
-        long ret = jArr[i2];
-        this.mHead = (i2 + 1) % jArr.length;
-        this.mSize = i - 1;
+        long ret = this.mValues[this.mHead];
+        this.mHead = (this.mHead + 1) % this.mValues.length;
+        this.mSize--;
         return ret;
     }
 
@@ -83,10 +73,8 @@ public class LongArrayQueue {
         if (position < 0 || position >= this.mSize) {
             throw new IndexOutOfBoundsException("Index " + position + " not valid for a queue of size " + this.mSize);
         }
-        int i = this.mHead + position;
-        long[] jArr = this.mValues;
-        int index = i % jArr.length;
-        return jArr[index];
+        int index = (this.mHead + position) % this.mValues.length;
+        return this.mValues[index];
     }
 
     public long peekFirst() {
@@ -100,25 +88,20 @@ public class LongArrayQueue {
         if (this.mSize == 0) {
             throw new NoSuchElementException("Queue is empty!");
         }
-        int i = this.mTail;
-        if (i == 0) {
-            i = this.mValues.length;
-        }
-        int index = i - 1;
+        int index = (this.mTail == 0 ? this.mValues.length : this.mTail) - 1;
         return this.mValues[index];
     }
 
     public String toString() {
-        int i = this.mSize;
-        if (i <= 0) {
+        if (this.mSize <= 0) {
             return "{}";
         }
-        StringBuilder buffer = new StringBuilder(i * 64);
+        StringBuilder buffer = new StringBuilder(this.mSize * 64);
         buffer.append('{');
         buffer.append(get(0));
-        for (int i2 = 1; i2 < this.mSize; i2++) {
+        for (int i = 1; i < this.mSize; i++) {
             buffer.append(", ");
-            buffer.append(get(i2));
+            buffer.append(get(i));
         }
         buffer.append('}');
         return buffer.toString();

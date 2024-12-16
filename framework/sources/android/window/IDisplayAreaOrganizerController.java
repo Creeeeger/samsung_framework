@@ -20,7 +20,6 @@ public interface IDisplayAreaOrganizerController extends IInterface {
 
     void unregisterOrganizer(IDisplayAreaOrganizer iDisplayAreaOrganizer) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayAreaOrganizerController {
         @Override // android.window.IDisplayAreaOrganizerController
         public ParceledListSlice<DisplayAreaAppearedInfo> registerOrganizer(IDisplayAreaOrganizer organizer, int displayAreaFeature) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IDisplayAreaOrganizerController extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayAreaOrganizerController {
         static final int TRANSACTION_createTaskDisplayArea = 3;
         static final int TRANSACTION_deleteTaskDisplayArea = 4;
@@ -98,50 +96,47 @@ public interface IDisplayAreaOrganizerController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayAreaOrganizerController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayAreaOrganizerController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayAreaOrganizerController.DESCRIPTOR);
+                case 1:
+                    IDisplayAreaOrganizer _arg0 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice<DisplayAreaAppearedInfo> _result = registerOrganizer(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    IDisplayAreaOrganizer _arg02 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterOrganizer(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    IDisplayAreaOrganizer _arg03 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    DisplayAreaAppearedInfo _result2 = createTaskDisplayArea(_arg03, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    WindowContainerToken _arg04 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    deleteTaskDisplayArea(_arg04);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDisplayAreaOrganizer _arg0 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice<DisplayAreaAppearedInfo> _result = registerOrganizer(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            IDisplayAreaOrganizer _arg02 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterOrganizer(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            IDisplayAreaOrganizer _arg03 = IDisplayAreaOrganizer.Stub.asInterface(data.readStrongBinder());
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            DisplayAreaAppearedInfo _result2 = createTaskDisplayArea(_arg03, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            WindowContainerToken _arg04 = (WindowContainerToken) data.readTypedObject(WindowContainerToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            deleteTaskDisplayArea(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayAreaOrganizerController {
+        private static class Proxy implements IDisplayAreaOrganizerController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

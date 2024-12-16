@@ -1,5 +1,6 @@
 package com.samsung.android.sume.core.filter.factory;
 
+import android.view.contentprotection.ContentProtectionEventProcessor$$ExternalSyntheticLambda8;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.descriptor.ImgpDescriptor;
 import com.samsung.android.sume.core.descriptor.MFDescriptor;
@@ -20,7 +21,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NNFilterCreator implements MediaFilterCreator {
     @Override // com.samsung.android.sume.core.filter.factory.MediaFilterCreator
     public MediaFilter newFilter(MediaFilterFactory factory, MFDescriptor descriptor, MediaFilter successor) {
@@ -31,7 +32,7 @@ public class NNFilterCreator implements MediaFilterCreator {
             public final Object apply(Object obj) {
                 return ((NNFWProfile) obj).flatten();
             }
-        }).flatMap(new MediaFilterFactory$$ExternalSyntheticLambda3()).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.NNFilterCreator$$ExternalSyntheticLambda1
+        }).flatMap(new ContentProtectionEventProcessor$$ExternalSyntheticLambda8()).map(new Function() { // from class: com.samsung.android.sume.core.filter.factory.NNFilterCreator$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return NNFilterCreator.lambda$newFilter$0(NNDescriptor.this, (NNFWProfile) obj);
@@ -62,7 +63,7 @@ public class NNFilterCreator implements MediaFilterCreator {
         return filter2;
     }
 
-    public static /* synthetic */ MFDescriptorHolder lambda$newFilter$0(NNDescriptor desc, NNFWProfile e) {
+    static /* synthetic */ MFDescriptorHolder lambda$newFilter$0(NNDescriptor desc, NNFWProfile e) {
         return new MFDescriptorHolder(new NNFWDescriptor(e.getFw(), e.getHw()), desc);
     }
 }

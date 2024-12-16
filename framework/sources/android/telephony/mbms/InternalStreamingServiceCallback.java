@@ -5,7 +5,7 @@ import android.os.RemoteException;
 import android.telephony.mbms.IStreamingServiceCallback;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class InternalStreamingServiceCallback extends IStreamingServiceCallback.Stub {
     private final StreamingServiceCallback mAppCallback;
     private final Executor mExecutor;
@@ -17,21 +17,13 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
     }
 
     @Override // android.telephony.mbms.IStreamingServiceCallback
-    public void onError(int errorCode, String message) throws RemoteException {
+    public void onError(final int errorCode, final String message) throws RemoteException {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalStreamingServiceCallback.1
-                final /* synthetic */ int val$errorCode;
-                final /* synthetic */ String val$message;
-
-                AnonymousClass1(int errorCode2, String message2) {
-                    errorCode = errorCode2;
-                    message = message2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalStreamingServiceCallback.this.mAppCallback.onError(errorCode, message);
@@ -42,40 +34,14 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.mbms.InternalStreamingServiceCallback$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ int val$errorCode;
-        final /* synthetic */ String val$message;
-
-        AnonymousClass1(int errorCode2, String message2) {
-            errorCode = errorCode2;
-            message = message2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalStreamingServiceCallback.this.mAppCallback.onError(errorCode, message);
-        }
-    }
-
     @Override // android.telephony.mbms.IStreamingServiceCallback
-    public void onStreamStateUpdated(int state, int reason) throws RemoteException {
+    public void onStreamStateUpdated(final int state, final int reason) throws RemoteException {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalStreamingServiceCallback.2
-                final /* synthetic */ int val$reason;
-                final /* synthetic */ int val$state;
-
-                AnonymousClass2(int state2, int reason2) {
-                    state = state2;
-                    reason = reason2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalStreamingServiceCallback.this.mAppCallback.onStreamStateUpdated(state, reason);
@@ -83,23 +49,6 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
             });
         } finally {
             Binder.restoreCallingIdentity(token);
-        }
-    }
-
-    /* renamed from: android.telephony.mbms.InternalStreamingServiceCallback$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Runnable {
-        final /* synthetic */ int val$reason;
-        final /* synthetic */ int val$state;
-
-        AnonymousClass2(int state2, int reason2) {
-            state = state2;
-            reason = reason2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalStreamingServiceCallback.this.mAppCallback.onStreamStateUpdated(state, reason);
         }
     }
 
@@ -111,9 +60,6 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalStreamingServiceCallback.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalStreamingServiceCallback.this.mAppCallback.onMediaDescriptionUpdated();
@@ -124,32 +70,14 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
         }
     }
 
-    /* renamed from: android.telephony.mbms.InternalStreamingServiceCallback$3 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalStreamingServiceCallback.this.mAppCallback.onMediaDescriptionUpdated();
-        }
-    }
-
     @Override // android.telephony.mbms.IStreamingServiceCallback
-    public void onBroadcastSignalStrengthUpdated(int signalStrength) throws RemoteException {
+    public void onBroadcastSignalStrengthUpdated(final int signalStrength) throws RemoteException {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalStreamingServiceCallback.4
-                final /* synthetic */ int val$signalStrength;
-
-                AnonymousClass4(int signalStrength2) {
-                    signalStrength = signalStrength2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalStreamingServiceCallback.this.mAppCallback.onBroadcastSignalStrengthUpdated(signalStrength);
@@ -160,35 +88,14 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
         }
     }
 
-    /* renamed from: android.telephony.mbms.InternalStreamingServiceCallback$4 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass4 implements Runnable {
-        final /* synthetic */ int val$signalStrength;
-
-        AnonymousClass4(int signalStrength2) {
-            signalStrength = signalStrength2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalStreamingServiceCallback.this.mAppCallback.onBroadcastSignalStrengthUpdated(signalStrength);
-        }
-    }
-
     @Override // android.telephony.mbms.IStreamingServiceCallback
-    public void onStreamMethodUpdated(int methodType) throws RemoteException {
+    public void onStreamMethodUpdated(final int methodType) throws RemoteException {
         if (this.mIsStopped) {
             return;
         }
         long token = Binder.clearCallingIdentity();
         try {
             this.mExecutor.execute(new Runnable() { // from class: android.telephony.mbms.InternalStreamingServiceCallback.5
-                final /* synthetic */ int val$methodType;
-
-                AnonymousClass5(int methodType2) {
-                    methodType = methodType2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     InternalStreamingServiceCallback.this.mAppCallback.onStreamMethodUpdated(methodType);
@@ -196,21 +103,6 @@ public class InternalStreamingServiceCallback extends IStreamingServiceCallback.
             });
         } finally {
             Binder.restoreCallingIdentity(token);
-        }
-    }
-
-    /* renamed from: android.telephony.mbms.InternalStreamingServiceCallback$5 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass5 implements Runnable {
-        final /* synthetic */ int val$methodType;
-
-        AnonymousClass5(int methodType2) {
-            methodType = methodType2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            InternalStreamingServiceCallback.this.mAppCallback.onStreamMethodUpdated(methodType);
         }
     }
 

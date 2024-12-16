@@ -20,7 +20,6 @@ public interface IRemoteDeviceCallback extends IInterface {
 
     void onOrientationChanged(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRemoteDeviceCallback {
         @Override // android.hardware.IRemoteDeviceCallback
         public void onCaptureResult(CameraMetadataNative result) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IRemoteDeviceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRemoteDeviceCallback {
         static final int TRANSACTION_onCaptureResult = 1;
         static final int TRANSACTION_onError = 2;
@@ -89,35 +87,32 @@ public interface IRemoteDeviceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteDeviceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteDeviceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteDeviceCallback.DESCRIPTOR);
+                case 1:
+                    CameraMetadataNative _arg0 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureResult(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOrientationChanged(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CameraMetadataNative _arg0 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureResult(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOrientationChanged(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRemoteDeviceCallback {
+        private static class Proxy implements IRemoteDeviceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

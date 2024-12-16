@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IUceListener extends IInterface {
     void setStatus(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IUceListener {
         @Override // com.android.ims.internal.uce.uceservice.IUceListener
         public void setStatus(int serviceStatusValue) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IUceListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IUceListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.uceservice.IUceListener";
         static final int TRANSACTION_setStatus = 1;
@@ -66,27 +64,23 @@ public interface IUceListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setStatus(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setStatus(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IUceListener {
+        private static class Proxy implements IUceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

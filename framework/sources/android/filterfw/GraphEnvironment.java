@@ -20,8 +20,7 @@ public class GraphEnvironment extends MffEnvironment {
     private GraphReader mGraphReader;
     private ArrayList<GraphHandle> mGraphs;
 
-    /* loaded from: classes.dex */
-    public class GraphHandle {
+    private class GraphHandle {
         private AsyncRunner mAsyncRunner;
         private FilterGraph mGraph;
         private SyncRunner mSyncRunner;
@@ -36,9 +35,8 @@ public class GraphEnvironment extends MffEnvironment {
 
         public AsyncRunner getAsyncRunner(FilterContext environment) {
             if (this.mAsyncRunner == null) {
-                AsyncRunner asyncRunner = new AsyncRunner(environment, RoundRobinScheduler.class);
-                this.mAsyncRunner = asyncRunner;
-                asyncRunner.setGraph(this.mGraph);
+                this.mAsyncRunner = new AsyncRunner(environment, RoundRobinScheduler.class);
+                this.mAsyncRunner.setGraph(this.mGraph);
             }
             return this.mAsyncRunner;
         }

@@ -1,21 +1,14 @@
 package android.graphics;
 
-import android.content.om.SamsungThemeConstants;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.drm.DrmInfo;
-import android.drm.DrmInfoRequest;
-import android.drm.DrmManagerClient;
 import android.graphics.Bitmap;
 import android.graphics.ColorSpace;
 import android.os.ParcelFileDescriptor;
 import android.os.Trace;
 import android.util.Log;
 import android.util.TypedValue;
-import com.android.internal.widget.MessagingMessage;
-import com.google.android.mms.ContentType;
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import com.android.internal.R;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,21 +21,14 @@ public class BitmapFactory {
 
     private static native Bitmap nativeDecodeAsset(long j, Rect rect, Options options, long j2, long j3);
 
-    private static native Bitmap nativeDecodeAssetQMG(long j, Rect rect, Options options, long j2, long j3);
-
     private static native Bitmap nativeDecodeByteArray(byte[] bArr, int i, int i2, Options options, long j, long j2);
 
     private static native Bitmap nativeDecodeFileDescriptor(FileDescriptor fileDescriptor, Rect rect, Options options, long j, long j2);
 
     private static native Bitmap nativeDecodeStream(InputStream inputStream, byte[] bArr, Rect rect, Options options, long j, long j2);
 
-    private static native Bitmap nativeDecodeStreamQMG(InputStream inputStream, byte[] bArr, Rect rect, Options options, long j, long j2);
-
-    private static native boolean nativeIsQMG(InputStream inputStream);
-
     private static native boolean nativeIsSeekable(FileDescriptor fileDescriptor);
 
-    /* loaded from: classes.dex */
     public static class Options {
         public Bitmap inBitmap;
         public int inDensity;
@@ -70,6 +56,7 @@ public class BitmapFactory {
         public int outHeight;
         public String outMimeType;
         public int outWidth;
+        public String messageOnCrash = null;
         public boolean inCalledByResource = false;
         public boolean contentRedirectionToKumiho = false;
         public Bitmap.Config inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -77,6 +64,7 @@ public class BitmapFactory {
         public boolean semIsPreview = false;
         public boolean semInApplyPhotoHdr = false;
         public boolean semInCreateGainmap = false;
+        public int semBitmapDecodeMode = 0;
         public boolean inScaled = true;
         public boolean inPremultiplied = true;
 
@@ -85,13 +73,12 @@ public class BitmapFactory {
             this.mCancel = true;
         }
 
-        public static void validate(Options opts) {
+        static void validate(Options opts) {
             if (opts == null) {
                 return;
             }
-            Bitmap bitmap = opts.inBitmap;
-            if (bitmap != null) {
-                if (bitmap.getConfig() == Bitmap.Config.HARDWARE) {
+            if (opts.inBitmap != null) {
+                if (opts.inBitmap.getConfig() == Bitmap.Config.HARDWARE) {
                     throw new IllegalArgumentException("Bitmaps with Config.HARDWARE are always immutable");
                 }
                 if (opts.inBitmap.isRecycled()) {
@@ -101,102 +88,71 @@ public class BitmapFactory {
             if (opts.inMutable && opts.inPreferredConfig == Bitmap.Config.HARDWARE) {
                 throw new IllegalArgumentException("Bitmaps with Config.HARDWARE cannot be decoded into - they are immutable");
             }
-            ColorSpace colorSpace = opts.inPreferredColorSpace;
-            if (colorSpace != null) {
-                if (!(colorSpace instanceof ColorSpace.Rgb)) {
+            if (opts.inPreferredColorSpace != null) {
+                if (!(opts.inPreferredColorSpace instanceof ColorSpace.Rgb)) {
                     throw new IllegalArgumentException("The destination color space must use the RGB color model");
                 }
-                if (!colorSpace.equals(ColorSpace.get(ColorSpace.Named.BT2020_HLG)) && !opts.inPreferredColorSpace.equals(ColorSpace.get(ColorSpace.Named.BT2020_PQ)) && ((ColorSpace.Rgb) opts.inPreferredColorSpace).getTransferParameters() == null) {
+                if (!opts.inPreferredColorSpace.equals(ColorSpace.get(ColorSpace.Named.BT2020_HLG)) && !opts.inPreferredColorSpace.equals(ColorSpace.get(ColorSpace.Named.BT2020_PQ)) && ((ColorSpace.Rgb) opts.inPreferredColorSpace).getTransferParameters() == null) {
                     throw new IllegalArgumentException("The destination color space must use an ICC parametric transfer function");
                 }
             }
         }
 
-        public static long nativeInBitmap(Options opts) {
-            Bitmap bitmap;
-            if (opts == null || (bitmap = opts.inBitmap) == null) {
+        static long nativeInBitmap(Options opts) {
+            if (opts == null || opts.inBitmap == null) {
                 return 0L;
             }
-            bitmap.setGainmap(null);
+            opts.inBitmap.setGainmap(null);
             return opts.inBitmap.getNativeInstance();
         }
 
-        public static long nativeColorSpace(Options opts) {
-            ColorSpace colorSpace;
-            if (opts == null || (colorSpace = opts.inPreferredColorSpace) == null) {
+        static long nativeColorSpace(Options opts) {
+            if (opts == null || opts.inPreferredColorSpace == null) {
                 return 0L;
             }
-            return colorSpace.getNativeInstance();
+            return opts.inPreferredColorSpace.getNativeInstance();
         }
     }
 
-    public static Bitmap decodeFile(String pathName, Options opts) {
-        Options.validate(opts);
-        Bitmap bm = null;
-        InputStream stream = null;
-        try {
-            try {
-                if (pathName != null) {
-                    try {
-                        if (!pathName.endsWith(".dcf")) {
-                            stream = new FileInputStream(pathName);
-                        } else {
-                            stream = null;
-                            DrmManagerClient drmClient = new DrmManagerClient(null);
-                            String drmMimetype = drmClient.getOriginalMimeType(pathName);
-                            Log.i(TAG, "decodeFile drmMimetype = " + drmMimetype);
-                            if (drmMimetype != null && drmMimetype.startsWith(MessagingMessage.IMAGE_MIME_TYPE_PREFIX)) {
-                                int rightStatus = drmClient.checkRightsStatus(pathName, 7);
-                                if (rightStatus == 0) {
-                                    long fileLength = new File(pathName).length();
-                                    DrmInfoRequest drmInfoRequest = new DrmInfoRequest(10, ContentType.APP_DRM_CONTENT);
-                                    drmInfoRequest.put(DrmInfoRequest.SEM_DRM_PATH, pathName);
-                                    drmInfoRequest.put("LENGTH", Long.valueOf(fileLength).toString());
-                                    DrmInfo resultInfo = drmClient.acquireDrmInfo(drmInfoRequest);
-                                    String status = resultInfo.get("status").toString();
-                                    Log.i(TAG, "decodeFile acquireDrmInfo status is " + status);
-                                    if (status.equals("success")) {
-                                        if (resultInfo.getData() != null) {
-                                            stream = new ByteArrayInputStream(resultInfo.getData());
-                                        } else {
-                                            Log.e(TAG, "decodeFile acquireDrmInfo resultInfo is null");
-                                        }
-                                    } else {
-                                        Log.e(TAG, "decodeFile FAIL status = " + resultInfo.get("INFO"));
-                                    }
-                                } else {
-                                    Log.i(TAG, "decodeFile Rights not present. rightStatus = " + rightStatus);
-                                }
-                            }
-                            drmClient.release();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Unable to decode stream: " + e);
-                        if (stream != null) {
-                            stream.close();
-                        }
-                    }
-                }
-                if (stream != null) {
-                    if (pathName.startsWith("/data/overlays") || pathName.startsWith(SamsungThemeConstants.DATA_APP_DIR)) {
-                        InputStream checkStream = new FileInputStream(pathName);
-                        if (isQMGImage(checkStream)) {
-                            bm = decodeStreamQMG(stream, null, opts);
-                        }
-                    }
-                    if (bm == null) {
-                        bm = decodeStream(stream, null, opts);
-                    }
-                    stream.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (IOException e2) {
-            }
-            return bm;
-        } finally {
-        }
+    /*  JADX ERROR: Types fix failed
+        java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+        	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:56)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryPossibleTypes(FixTypesVisitor.java:183)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.deduceType(FixTypesVisitor.java:242)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.tryDeduceTypes(FixTypesVisitor.java:221)
+        	at jadx.core.dex.visitors.typeinference.FixTypesVisitor.visit(FixTypesVisitor.java:91)
+        */
+    /* JADX WARN: Failed to apply debug info
+    java.lang.NullPointerException: Cannot invoke "jadx.core.dex.instructions.args.InsnArg.getType()" because "changeArg" is null
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.moveListener(TypeUpdate.java:439)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.runListeners(TypeUpdate.java:232)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.requestUpdate(TypeUpdate.java:212)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeForSsaVar(TypeUpdate.java:183)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.updateTypeChecked(TypeUpdate.java:112)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.apply(TypeUpdate.java:83)
+    	at jadx.core.dex.visitors.typeinference.TypeUpdate.applyWithWiderIgnoreUnknown(TypeUpdate.java:74)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:137)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:133)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.searchAndApplyVarDebugInfo(DebugInfoApplyVisitor.java:75)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.lambda$applyDebugInfo$0(DebugInfoApplyVisitor.java:68)
+    	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.applyDebugInfo(DebugInfoApplyVisitor.java:68)
+    	at jadx.core.dex.visitors.debuginfo.DebugInfoApplyVisitor.visit(DebugInfoApplyVisitor.java:55)
+     */
+    /* JADX WARN: Not initialized variable reg: 16, insn: 0x0107: MOVE (r3 I:??[OBJECT, ARRAY]) = (r16 I:??[OBJECT, ARRAY] A[D('bm' android.graphics.Bitmap)]), block:B:59:0x0106 */
+    /* JADX WARN: Not initialized variable reg: 16, insn: 0x010b: MOVE (r3 I:??[OBJECT, ARRAY]) = (r16 I:??[OBJECT, ARRAY] A[D('bm' android.graphics.Bitmap)]), block:B:57:0x010b */
+    public static android.graphics.Bitmap decodeFile(java.lang.String r17, android.graphics.BitmapFactory.Options r18) {
+        /*
+            Method dump skipped, instructions count: 364
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.graphics.BitmapFactory.decodeFile(java.lang.String, android.graphics.BitmapFactory$Options):android.graphics.Bitmap");
     }
 
     public static Bitmap decodeFile(String pathName) {
@@ -221,23 +177,6 @@ public class BitmapFactory {
         }
         if (opts.inTargetDensity == 0 && res != null) {
             opts.inTargetDensity = res.getDisplayMetrics().densityDpi;
-        }
-        if (value != null && value.string != null && res != null && res.getAssets() != null) {
-            String file = value.string.toString();
-            String apkPath = res.getAssets().getApkPaths()[value.assetCookie - 1];
-            try {
-                if (apkPath.startsWith("/data/overlays") || apkPath.startsWith(SamsungThemeConstants.DATA_APP_DIR)) {
-                    InputStream checkStream = res.getAssets().openNonAsset(value.assetCookie, file, 2);
-                    if (isQMGImage(checkStream)) {
-                        Bitmap bm = decodeStreamQMG(is, pad, opts);
-                        if (bm != null) {
-                            return bm;
-                        }
-                    }
-                }
-            } catch (IOException ioe) {
-                Log.e(TAG, "[QMG] Failed to read input stream: " + ioe);
-            }
         }
         return decodeStream(is, pad, opts);
     }
@@ -281,6 +220,9 @@ public class BitmapFactory {
     }
 
     public static Bitmap decodeByteArray(byte[] data, int offset, int length, Options opts) {
+        if (opts != null) {
+            opts.messageOnCrash = Resources.getSystem().getString(R.string.message_on_crash);
+        }
         if ((offset | length) < 0 || data.length < offset + length) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -329,6 +271,7 @@ public class BitmapFactory {
     public static Bitmap decodeStream(InputStream is, Rect outPadding, Options opts) {
         Bitmap bm;
         if (opts != null) {
+            opts.messageOnCrash = Resources.getSystem().getString(R.string.message_on_crash);
             opts.contentRedirectionToKumiho = is instanceof ParcelFileDescriptor.KumihoInputStream;
         }
         if (is == null) {
@@ -353,47 +296,6 @@ public class BitmapFactory {
         }
     }
 
-    public static Bitmap decodeStreamQMG(InputStream is, Rect outPadding, Options opts) {
-        Bitmap bm;
-        if (is == null) {
-            return null;
-        }
-        Options.validate(opts);
-        Trace.traceBegin(2L, "decodeBitmapQMG");
-        try {
-            if (is instanceof AssetManager.AssetInputStream) {
-                long asset = ((AssetManager.AssetInputStream) is).getNativeAsset();
-                bm = nativeDecodeAssetQMG(asset, outPadding, opts, Options.nativeInBitmap(opts), Options.nativeColorSpace(opts));
-            } else {
-                bm = decodeStreamInternalQMG(is, outPadding, opts);
-            }
-            if (bm == null && opts != null && opts.inBitmap != null) {
-                throw new IllegalArgumentException("Problem decoding into existing bitmap");
-            }
-            setDensityFromOptions(bm, opts);
-            return bm;
-        } finally {
-            Trace.traceEnd(2L);
-        }
-    }
-
-    private static boolean isQMGImage(InputStream is) {
-        byte[] buffer = new byte[2];
-        try {
-            is.read(buffer);
-            char h0 = (char) buffer[0];
-            char h1 = (char) buffer[1];
-            is.close();
-            if (h0 != 'Q' || h1 != 'G') {
-                return false;
-            }
-            return true;
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to read input stream: " + ioe);
-            return false;
-        }
-    }
-
     private static Bitmap decodeStreamInternal(InputStream is, Rect outPadding, Options opts) {
         byte[] tempStorage = opts != null ? opts.inTempStorage : null;
         if (tempStorage == null) {
@@ -402,20 +304,18 @@ public class BitmapFactory {
         return nativeDecodeStream(is, tempStorage, outPadding, opts, Options.nativeInBitmap(opts), Options.nativeColorSpace(opts));
     }
 
-    private static Bitmap decodeStreamInternalQMG(InputStream is, Rect outPadding, Options opts) {
-        byte[] tempStorage = opts != null ? opts.inTempStorage : null;
-        if (tempStorage == null) {
-            tempStorage = new byte[16384];
-        }
-        return nativeDecodeStreamQMG(is, tempStorage, outPadding, opts, Options.nativeInBitmap(opts), Options.nativeColorSpace(opts));
-    }
-
     public static Bitmap decodeStream(InputStream is) {
         return decodeStream(is, null, null);
     }
 
     public static Bitmap decodeFileDescriptor(FileDescriptor fd, Rect outPadding, Options opts) {
         Bitmap bm;
+        if (opts == null) {
+            Log.w(TAG, "Null Options, creating a new one.");
+            opts = new Options();
+        }
+        opts.contentRedirectionToKumiho = true;
+        opts.messageOnCrash = Resources.getSystem().getString(R.string.message_on_crash);
         Options.validate(opts);
         Trace.traceBegin(2L, "decodeFileDescriptor");
         try {

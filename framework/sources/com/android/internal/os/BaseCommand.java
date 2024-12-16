@@ -9,9 +9,6 @@ public abstract class BaseCommand {
     public static final String NO_CLASS_ERROR_CODE = "Error type 3";
     public static final String NO_SYSTEM_ERROR_CODE = "Error type 2";
     protected final BasicShellCommandHandler mArgs = new BasicShellCommandHandler() { // from class: com.android.internal.os.BaseCommand.1
-        AnonymousClass1() {
-        }
-
         @Override // com.android.modules.utils.BasicShellCommandHandler
         public int onCommand(String cmd) {
             return 0;
@@ -26,22 +23,6 @@ public abstract class BaseCommand {
     public abstract void onRun() throws Exception;
 
     public abstract void onShowUsage(PrintStream printStream);
-
-    /* renamed from: com.android.internal.os.BaseCommand$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends BasicShellCommandHandler {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.modules.utils.BasicShellCommandHandler
-        public int onCommand(String cmd) {
-            return 0;
-        }
-
-        @Override // com.android.modules.utils.BasicShellCommandHandler
-        public void onHelp() {
-        }
-    }
 
     public void run(String[] args) {
         if (args.length < 1) {

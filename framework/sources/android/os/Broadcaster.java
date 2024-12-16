@@ -7,8 +7,7 @@ public class Broadcaster {
     public void request(int senderWhat, Handler target, int targetWhat) {
         int n;
         synchronized (this) {
-            Registration start = this.mReg;
-            if (start == null) {
+            if (this.mReg == null) {
                 Registration r = new Registration();
                 r.senderWhat = senderWhat;
                 r.targets = new Handler[1];
@@ -19,6 +18,7 @@ public class Broadcaster {
                 r.next = r;
                 r.prev = r;
             } else {
+                Registration start = this.mReg;
                 Registration r2 = start;
                 while (r2.senderWhat < senderWhat && (r2 = r2.next) != start) {
                 }
@@ -139,17 +139,12 @@ public class Broadcaster {
         }
     }
 
-    /* loaded from: classes3.dex */
     private class Registration {
         Registration next;
         Registration prev;
         int senderWhat;
         int[] targetWhats;
         Handler[] targets;
-
-        /* synthetic */ Registration(Broadcaster broadcaster, RegistrationIA registrationIA) {
-            this();
-        }
 
         private Registration() {
         }

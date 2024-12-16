@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IInputFilterHost extends IInterface {
     void sendInputEvent(InputEvent inputEvent, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputFilterHost {
         @Override // android.view.IInputFilterHost
         public void sendInputEvent(InputEvent event, int policyFlags) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IInputFilterHost extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputFilterHost {
         public static final String DESCRIPTOR = "android.view.IInputFilterHost";
         static final int TRANSACTION_sendInputEvent = 1;
@@ -66,27 +64,23 @@ public interface IInputFilterHost extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    InputEvent _arg0 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendInputEvent(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            InputEvent _arg0 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendInputEvent(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputFilterHost {
+        private static class Proxy implements IInputFilterHost {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

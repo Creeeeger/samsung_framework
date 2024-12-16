@@ -23,17 +23,15 @@ public class TimingLogger {
     }
 
     public void reset() {
-        boolean z = !Log.isLoggable(this.mTag, 2);
-        this.mDisabled = z;
-        if (z) {
+        this.mDisabled = !Log.isLoggable(this.mTag, 2);
+        if (this.mDisabled) {
             return;
         }
-        ArrayList<Long> arrayList = this.mSplits;
-        if (arrayList == null) {
+        if (this.mSplits == null) {
             this.mSplits = new ArrayList<>();
             this.mSplitLabels = new ArrayList<>();
         } else {
-            arrayList.clear();
+            this.mSplits.clear();
             this.mSplitLabels.clear();
         }
         addSplit(null);

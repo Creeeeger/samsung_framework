@@ -14,7 +14,6 @@ public interface IInstantAppResolver extends IInterface {
 
     void getInstantAppResolveInfoList(InstantAppRequestInfo instantAppRequestInfo, int i, IRemoteCallback iRemoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IInstantAppResolver {
         @Override // android.app.IInstantAppResolver
         public void getInstantAppResolveInfoList(InstantAppRequestInfo request, int sequence, IRemoteCallback callback) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInstantAppResolver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IInstantAppResolver {
         public static final String DESCRIPTOR = "android.app.IInstantAppResolver";
         static final int TRANSACTION_getInstantAppIntentFilterList = 2;
@@ -77,32 +75,29 @@ public interface IInstantAppResolver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    InstantAppRequestInfo _arg0 = (InstantAppRequestInfo) data.readTypedObject(InstantAppRequestInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    IRemoteCallback _arg2 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getInstantAppResolveInfoList(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    InstantAppRequestInfo _arg02 = (InstantAppRequestInfo) data.readTypedObject(InstantAppRequestInfo.CREATOR);
+                    IRemoteCallback _arg12 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getInstantAppIntentFilterList(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            InstantAppRequestInfo _arg0 = (InstantAppRequestInfo) data.readTypedObject(InstantAppRequestInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            IRemoteCallback _arg2 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getInstantAppResolveInfoList(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            InstantAppRequestInfo _arg02 = (InstantAppRequestInfo) data.readTypedObject(InstantAppRequestInfo.CREATOR);
-                            IRemoteCallback _arg12 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getInstantAppIntentFilterList(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IInstantAppResolver {
             private IBinder mRemote;
 

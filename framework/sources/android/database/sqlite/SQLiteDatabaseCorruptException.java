@@ -15,7 +15,7 @@ public class SQLiteDatabaseCorruptException extends SQLiteException {
     public SQLiteDatabaseCorruptException(String error) {
         super(error);
         this.mCorruptCode = 11;
-        this.mCorruptCode = parseCode(11, error);
+        this.mCorruptCode = parseCode(this.mCorruptCode, error);
     }
 
     public int getCorruptCode() {

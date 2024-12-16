@@ -113,7 +113,6 @@ public interface ISpenGestureService extends IInterface {
 
     void writeBleSpenCommand(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISpenGestureService {
         @Override // com.samsung.android.content.smartclip.ISpenGestureService
         public SemSmartClipDataRepository getSmartClipDataByScreenRect(Rect rect, IBinder skipWindowToken, int extractionMode, int windowTargetingType) throws RemoteException {
@@ -319,7 +318,6 @@ public interface ISpenGestureService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISpenGestureService {
         static final int TRANSACTION_getBleSpenAddress = 16;
         static final int TRANSACTION_getBleSpenCmfCode = 18;
@@ -497,310 +495,306 @@ public interface ISpenGestureService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpenGestureService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpenGestureService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpenGestureService.DESCRIPTOR);
+                case 1:
+                    Rect _arg0 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SemSmartClipDataRepository _result = getSmartClipDataByScreenRect(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    SmartClipRemoteRequestResult _arg02 = (SmartClipRemoteRequestResult) data.readTypedObject(SmartClipRemoteRequestResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSmartClipRemoteRequestResult(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    InputEvent[] _arg22 = (InputEvent[]) data.createTypedArray(InputEvent.CREATOR);
+                    boolean _arg32 = data.readBoolean();
+                    IBinder _arg4 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    injectInputEvent(_arg03, _arg12, _arg22, _arg32, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    Rect _arg04 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    IBinder _arg13 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    Bundle _result2 = getScrollableAreaInfo(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    Rect _arg05 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    int _arg14 = data.readInt();
+                    IBinder _arg23 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    Bundle _result3 = getScrollableViewInfo(_arg05, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 6:
+                    boolean _arg06 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHoverStayDetectEnabled(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg15 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setHoverStayValues(_arg07, _arg15, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    ISpenGestureHoverListener _arg08 = ISpenGestureHoverListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerHoverListener(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ISpenGestureHoverListener _arg09 = ISpenGestureHoverListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterHoverListener(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSpenPowerSavingModeEnabled(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    showTouchPointer(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    boolean _arg012 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSpenInsertionState(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    boolean _result4 = isSpenInserted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 14:
+                    boolean _result5 = isSpenReversed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 15:
+                    boolean _result6 = isSupportBleSpen();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 16:
+                    String _result7 = getBleSpenAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 17:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBleSpenAddress(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    String _result8 = getBleSpenCmfCode();
+                    reply.writeNoException();
+                    reply.writeString(_result8);
+                    return true;
+                case 19:
+                    String _arg014 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBleSpenCmfCode(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _arg015 = data.readString();
+                    data.enforceNoDataAvail();
+                    writeBleSpenCommand(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    setSpenPdctLowSensitivityEnable();
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    byte[] _arg016 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    saveBleSpenLogFile(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    boolean _arg017 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyBleSpenChargeLockState(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    IBleSpenChargeLockStateChangedListener _arg018 = IBleSpenChargeLockStateChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerBleSpenChargeLockStateChangedListener(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    IBleSpenChargeLockStateChangedListener _arg019 = IBleSpenChargeLockStateChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterBleSpenChargeLockStateChangedListener(_arg019);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    IAirGestureListener _arg020 = IAirGestureListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerAirGestureListener(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    IAirGestureListener _arg021 = IAirGestureListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAirGestureListener(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    String _arg022 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyAirGesture(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _result9 = getScreenOffReason();
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 30:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setScreenOffReason(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    IInputMethodInfoChangeListener _arg024 = IInputMethodInfoChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerInputMethodInfoChangeListener(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    IInputMethodInfoChangeListener _arg025 = IInputMethodInfoChangeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterInputMethodInfoChangeListener(_arg025);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    IRemoteInputConnection _arg026 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
+                    EditorInfo _arg16 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCurrentInputInfo(_arg026, _arg16, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    EditorInfo _result10 = getCurrentEditorInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 35:
+                    IRemoteInputConnection _result11 = getCurrentInputContext();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result11);
+                    return true;
+                case 36:
+                    int _result12 = getCurrentMissingMethodFlags();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 37:
+                    notifyKeyboardClosed();
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    int _arg027 = data.readInt();
+                    int _arg17 = data.readInt();
+                    boolean _arg26 = data.readBoolean();
+                    Rect _arg33 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    int _arg42 = data.readInt();
+                    int _arg5 = data.readInt();
+                    boolean _arg6 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    Bitmap _result13 = screenshot(_arg027, _arg17, _arg26, _arg33, _arg42, _arg5, _arg6);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 39:
+                    String _arg028 = data.readString();
+                    FileDescriptor _arg18 = data.readRawFileDescriptor();
+                    float _arg27 = data.readFloat();
+                    float _arg34 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setPenHoverIcon(_arg028, _arg18, _arg27, _arg34);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    String _arg029 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetPenHoverIcon(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    String _arg030 = data.readString();
+                    FileDescriptor _arg19 = data.readRawFileDescriptor();
+                    data.enforceNoDataAvail();
+                    setPenAttachSound(_arg030, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    String _arg031 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetPenAttachSound(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    String _arg032 = data.readString();
+                    FileDescriptor _arg110 = data.readRawFileDescriptor();
+                    data.enforceNoDataAvail();
+                    setPenDetachSound(_arg032, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    String _arg033 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetPenDetachSound(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    setScreenOffDoubleTabTime();
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    long _result14 = getScreenOffDoubleTabTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Rect _arg0 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SemSmartClipDataRepository _result = getSmartClipDataByScreenRect(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            SmartClipRemoteRequestResult _arg02 = (SmartClipRemoteRequestResult) data.readTypedObject(SmartClipRemoteRequestResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSmartClipRemoteRequestResult(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            InputEvent[] _arg22 = (InputEvent[]) data.createTypedArray(InputEvent.CREATOR);
-                            boolean _arg32 = data.readBoolean();
-                            IBinder _arg4 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            injectInputEvent(_arg03, _arg12, _arg22, _arg32, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            Rect _arg04 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            IBinder _arg13 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            Bundle _result2 = getScrollableAreaInfo(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            Rect _arg05 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            int _arg14 = data.readInt();
-                            IBinder _arg23 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            Bundle _result3 = getScrollableViewInfo(_arg05, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 6:
-                            boolean _arg06 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHoverStayDetectEnabled(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg15 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setHoverStayValues(_arg07, _arg15, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            ISpenGestureHoverListener _arg08 = ISpenGestureHoverListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerHoverListener(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ISpenGestureHoverListener _arg09 = ISpenGestureHoverListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterHoverListener(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSpenPowerSavingModeEnabled(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            showTouchPointer(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            boolean _arg012 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSpenInsertionState(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            boolean _result4 = isSpenInserted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 14:
-                            boolean _result5 = isSpenReversed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 15:
-                            boolean _result6 = isSupportBleSpen();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 16:
-                            String _result7 = getBleSpenAddress();
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 17:
-                            String _arg013 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBleSpenAddress(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            String _result8 = getBleSpenCmfCode();
-                            reply.writeNoException();
-                            reply.writeString(_result8);
-                            return true;
-                        case 19:
-                            String _arg014 = data.readString();
-                            data.enforceNoDataAvail();
-                            setBleSpenCmfCode(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            String _arg015 = data.readString();
-                            data.enforceNoDataAvail();
-                            writeBleSpenCommand(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            setSpenPdctLowSensitivityEnable();
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            byte[] _arg016 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            saveBleSpenLogFile(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            boolean _arg017 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyBleSpenChargeLockState(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            IBleSpenChargeLockStateChangedListener _arg018 = IBleSpenChargeLockStateChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerBleSpenChargeLockStateChangedListener(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            IBleSpenChargeLockStateChangedListener _arg019 = IBleSpenChargeLockStateChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterBleSpenChargeLockStateChangedListener(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            IAirGestureListener _arg020 = IAirGestureListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerAirGestureListener(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            IAirGestureListener _arg021 = IAirGestureListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterAirGestureListener(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg022 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyAirGesture(_arg022);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _result9 = getScreenOffReason();
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 30:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setScreenOffReason(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            IInputMethodInfoChangeListener _arg024 = IInputMethodInfoChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerInputMethodInfoChangeListener(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            IInputMethodInfoChangeListener _arg025 = IInputMethodInfoChangeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterInputMethodInfoChangeListener(_arg025);
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            IRemoteInputConnection _arg026 = IRemoteInputConnection.Stub.asInterface(data.readStrongBinder());
-                            EditorInfo _arg16 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCurrentInputInfo(_arg026, _arg16, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            EditorInfo _result10 = getCurrentEditorInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 35:
-                            IRemoteInputConnection _result11 = getCurrentInputContext();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result11);
-                            return true;
-                        case 36:
-                            int _result12 = getCurrentMissingMethodFlags();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 37:
-                            notifyKeyboardClosed();
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            int _arg027 = data.readInt();
-                            int _arg17 = data.readInt();
-                            boolean _arg26 = data.readBoolean();
-                            Rect _arg33 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            int _arg42 = data.readInt();
-                            int _arg5 = data.readInt();
-                            boolean _arg6 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            Bitmap _result13 = screenshot(_arg027, _arg17, _arg26, _arg33, _arg42, _arg5, _arg6);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 39:
-                            String _arg028 = data.readString();
-                            FileDescriptor _arg18 = data.readRawFileDescriptor();
-                            float _arg27 = data.readFloat();
-                            float _arg34 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setPenHoverIcon(_arg028, _arg18, _arg27, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            String _arg029 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetPenHoverIcon(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            String _arg030 = data.readString();
-                            FileDescriptor _arg19 = data.readRawFileDescriptor();
-                            data.enforceNoDataAvail();
-                            setPenAttachSound(_arg030, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            String _arg031 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetPenAttachSound(_arg031);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            String _arg032 = data.readString();
-                            FileDescriptor _arg110 = data.readRawFileDescriptor();
-                            data.enforceNoDataAvail();
-                            setPenDetachSound(_arg032, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            String _arg033 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetPenDetachSound(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 45:
-                            setScreenOffDoubleTabTime();
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            long _result14 = getScreenOffDoubleTabTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISpenGestureService {
+        private static class Proxy implements ISpenGestureService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

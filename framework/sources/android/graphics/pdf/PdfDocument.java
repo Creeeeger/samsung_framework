@@ -12,11 +12,11 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class PdfDocument {
-    private final byte[] mChunk = new byte[4096];
-    private final CloseGuard mCloseGuard;
     private Page mCurrentPage;
-    private long mNativeDocument;
-    private final List<PageInfo> mPages;
+    private final byte[] mChunk = new byte[4096];
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    private final List<PageInfo> mPages = new ArrayList();
+    private long mNativeDocument = nativeCreateDocument();
 
     private native void nativeClose(long j);
 
@@ -29,11 +29,7 @@ public class PdfDocument {
     private native void nativeWriteTo(long j, OutputStream outputStream, byte[] bArr);
 
     public PdfDocument() {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mPages = new ArrayList();
-        this.mNativeDocument = nativeCreateDocument();
-        closeGuard.open("close");
+        this.mCloseGuard.open("close");
     }
 
     public Page startPage(PageInfo pageInfo) {
@@ -43,9 +39,8 @@ public class PdfDocument {
             throw new IllegalArgumentException("page cannot be null");
         }
         Canvas canvas = new PdfCanvas(nativeStartPage(this.mNativeDocument, pageInfo.mPageWidth, pageInfo.mPageHeight, pageInfo.mContentRect.left, pageInfo.mContentRect.top, pageInfo.mContentRect.right, pageInfo.mContentRect.bottom));
-        Page page = new Page(canvas, pageInfo);
-        this.mCurrentPage = page;
-        return page;
+        this.mCurrentPage = new Page(canvas, pageInfo);
+        return this.mCurrentPage;
     }
 
     public void finishPage(Page page) {
@@ -85,9 +80,8 @@ public class PdfDocument {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             dispose();
         } finally {
@@ -96,9 +90,8 @@ public class PdfDocument {
     }
 
     private void dispose() {
-        long j = this.mNativeDocument;
-        if (j != 0) {
-            nativeClose(j);
+        if (this.mNativeDocument != 0) {
+            nativeClose(this.mNativeDocument);
             this.mCloseGuard.close();
             this.mNativeDocument = 0L;
         }
@@ -116,9 +109,7 @@ public class PdfDocument {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public final class PdfCanvas extends Canvas {
+    private final class PdfCanvas extends Canvas {
         public PdfCanvas(long nativeCanvas) {
             super(nativeCanvas);
         }
@@ -129,16 +120,11 @@ public class PdfDocument {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class PageInfo {
         private Rect mContentRect;
         private int mPageHeight;
         private int mPageNumber;
         private int mPageWidth;
-
-        /* synthetic */ PageInfo(PageInfoIA pageInfoIA) {
-            this();
-        }
 
         private PageInfo() {
         }
@@ -159,13 +145,10 @@ public class PdfDocument {
             return this.mPageNumber;
         }
 
-        /* loaded from: classes.dex */
         public static final class Builder {
-            private final PageInfo mPageInfo;
+            private final PageInfo mPageInfo = new PageInfo();
 
             public Builder(int pageWidth, int pageHeight, int pageNumber) {
-                PageInfo pageInfo = new PageInfo();
-                this.mPageInfo = pageInfo;
                 if (pageWidth <= 0) {
                     throw new IllegalArgumentException("page width must be positive");
                 }
@@ -175,9 +158,9 @@ public class PdfDocument {
                 if (pageNumber < 0) {
                     throw new IllegalArgumentException("pageNumber must be non negative");
                 }
-                pageInfo.mPageWidth = pageWidth;
-                pageInfo.mPageHeight = pageHeight;
-                pageInfo.mPageNumber = pageNumber;
+                this.mPageInfo.mPageWidth = pageWidth;
+                this.mPageInfo.mPageHeight = pageHeight;
+                this.mPageInfo.mPageNumber = pageNumber;
             }
 
             public Builder setContentRect(Rect contentRect) {
@@ -197,14 +180,9 @@ public class PdfDocument {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class Page {
         private Canvas mCanvas;
         private final PageInfo mPageInfo;
-
-        /* synthetic */ Page(Canvas canvas, PageInfo pageInfo, PageIA pageIA) {
-            this(canvas, pageInfo);
-        }
 
         private Page(Canvas canvas, PageInfo pageInfo) {
             this.mCanvas = canvas;
@@ -223,10 +201,10 @@ public class PdfDocument {
             return this.mCanvas == null;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void finish() {
-            Canvas canvas = this.mCanvas;
-            if (canvas != null) {
-                canvas.release();
+            if (this.mCanvas != null) {
+                this.mCanvas.release();
                 this.mCanvas = null;
             }
         }

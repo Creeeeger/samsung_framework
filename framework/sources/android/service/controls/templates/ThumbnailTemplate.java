@@ -25,7 +25,7 @@ public final class ThumbnailTemplate extends ControlTemplate {
         this.mContentDescription = contentDescription;
     }
 
-    public ThumbnailTemplate(Bundle b) {
+    ThumbnailTemplate(Bundle b) {
         super(b);
         this.mActive = b.getBoolean(KEY_ACTIVE);
         this.mThumbnail = (Icon) b.getParcelable(KEY_ICON, Icon.class);
@@ -60,9 +60,8 @@ public final class ThumbnailTemplate extends ControlTemplate {
         this.mThumbnail.scaleDownIfNecessary(width, height);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.templates.ControlTemplate
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putBoolean(KEY_ACTIVE, this.mActive);
         b.putObject(KEY_ICON, this.mThumbnail);

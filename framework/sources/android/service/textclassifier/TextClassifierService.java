@@ -48,7 +48,6 @@ public abstract class TextClassifierService extends Service {
     private final ExecutorService mSingleThreadExecutor = Executors.newSingleThreadExecutor();
     private final ITextClassifierService.Stub mBinder = new AnonymousClass1();
 
-    /* loaded from: classes3.dex */
     public interface Callback<T> {
         void onFailure(CharSequence charSequence);
 
@@ -56,7 +55,6 @@ public abstract class TextClassifierService extends Service {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ConnectionState {
     }
 
@@ -66,9 +64,8 @@ public abstract class TextClassifierService extends Service {
 
     public abstract void onSuggestSelection(TextClassificationSessionId textClassificationSessionId, TextSelection.Request request, CancellationSignal cancellationSignal, Callback<TextSelection> callback);
 
-    /* renamed from: android.service.textclassifier.TextClassifierService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends ITextClassifierService.Stub {
+    /* renamed from: android.service.textclassifier.TextClassifierService$1, reason: invalid class name */
+    class AnonymousClass1 extends ITextClassifierService.Stub {
         private final CancellationSignal mCancellationSignal = new CancellationSignal();
 
         AnonymousClass1() {
@@ -86,6 +83,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuggestSelection$0(TextClassificationSessionId sessionId, TextSelection.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onSuggestSelection(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -94,7 +92,7 @@ public abstract class TextClassifierService extends Service {
         public void onClassifyText(final TextClassificationSessionId sessionId, final TextClassification.Request request, final ITextClassifierCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda7
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onClassifyText$1(sessionId, request, callback);
@@ -102,6 +100,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onClassifyText$1(TextClassificationSessionId sessionId, TextClassification.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onClassifyText(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -110,7 +109,7 @@ public abstract class TextClassifierService extends Service {
         public void onGenerateLinks(final TextClassificationSessionId sessionId, final TextLinks.Request request, final ITextClassifierCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda9
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onGenerateLinks$2(sessionId, request, callback);
@@ -118,6 +117,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGenerateLinks$2(TextClassificationSessionId sessionId, TextLinks.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onGenerateLinks(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -125,7 +125,7 @@ public abstract class TextClassifierService extends Service {
         @Override // android.service.textclassifier.ITextClassifierService
         public void onSelectionEvent(final TextClassificationSessionId sessionId, final SelectionEvent event) {
             Objects.requireNonNull(event);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda5
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onSelectionEvent$3(sessionId, event);
@@ -133,6 +133,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSelectionEvent$3(TextClassificationSessionId sessionId, SelectionEvent event) {
             TextClassifierService.this.onSelectionEvent(sessionId, event);
         }
@@ -140,7 +141,7 @@ public abstract class TextClassifierService extends Service {
         @Override // android.service.textclassifier.ITextClassifierService
         public void onTextClassifierEvent(final TextClassificationSessionId sessionId, final TextClassifierEvent event) {
             Objects.requireNonNull(event);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda10
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onTextClassifierEvent$4(sessionId, event);
@@ -148,6 +149,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTextClassifierEvent$4(TextClassificationSessionId sessionId, TextClassifierEvent event) {
             TextClassifierService.this.onTextClassifierEvent(sessionId, event);
         }
@@ -164,6 +166,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDetectLanguage$5(TextClassificationSessionId sessionId, TextLanguage.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onDetectLanguage(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -172,7 +175,7 @@ public abstract class TextClassifierService extends Service {
         public void onSuggestConversationActions(final TextClassificationSessionId sessionId, final ConversationActions.Request request, final ITextClassifierCallback callback) {
             Objects.requireNonNull(request);
             Objects.requireNonNull(callback);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda8
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onSuggestConversationActions$6(sessionId, request, callback);
@@ -180,6 +183,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuggestConversationActions$6(TextClassificationSessionId sessionId, ConversationActions.Request request, ITextClassifierCallback callback) {
             TextClassifierService.this.onSuggestConversationActions(sessionId, request, this.mCancellationSignal, new ProxyCallback(callback));
         }
@@ -188,7 +192,7 @@ public abstract class TextClassifierService extends Service {
         public void onCreateTextClassificationSession(final TextClassificationContext context, final TextClassificationSessionId sessionId) {
             Objects.requireNonNull(context);
             Objects.requireNonNull(sessionId);
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda4
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onCreateTextClassificationSession$7(context, sessionId);
@@ -196,13 +200,14 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCreateTextClassificationSession$7(TextClassificationContext context, TextClassificationSessionId sessionId) {
             TextClassifierService.this.onCreateTextClassificationSession(context, sessionId);
         }
 
         @Override // android.service.textclassifier.ITextClassifierService
         public void onDestroyTextClassificationSession(final TextClassificationSessionId sessionId) {
-            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda6
+            TextClassifierService.this.mMainThreadHandler.post(new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextClassifierService.AnonymousClass1.this.lambda$onDestroyTextClassificationSession$8(sessionId);
@@ -210,6 +215,7 @@ public abstract class TextClassifierService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDestroyTextClassificationSession$8(TextClassificationSessionId sessionId) {
             TextClassifierService.this.onDestroyTextClassificationSession(sessionId);
         }
@@ -220,7 +226,7 @@ public abstract class TextClassifierService extends Service {
             Handler handler = TextClassifierService.this.mMainThreadHandler;
             if (connected == 0) {
                 final TextClassifierService textClassifierService = TextClassifierService.this;
-                runnable = new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda0
+                runnable = new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda8
                     @Override // java.lang.Runnable
                     public final void run() {
                         TextClassifierService.this.onConnected();
@@ -228,7 +234,7 @@ public abstract class TextClassifierService extends Service {
                 };
             } else {
                 final TextClassifierService textClassifierService2 = TextClassifierService.this;
-                runnable = new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda1
+                runnable = new Runnable() { // from class: android.service.textclassifier.TextClassifierService$1$$ExternalSyntheticLambda9
                     @Override // java.lang.Runnable
                     public final void run() {
                         TextClassifierService.this.onDisconnected();
@@ -268,6 +274,7 @@ public abstract class TextClassifierService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDetectLanguage$0(Callback callback, TextLanguage.Request request) {
         callback.onSuccess(getLocalTextClassifier().detectLanguage(request));
     }
@@ -281,6 +288,7 @@ public abstract class TextClassifierService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onSuggestConversationActions$1(Callback callback, ConversationActions.Request request) {
         callback.onSuccess(getLocalTextClassifier().suggestConversationActions(request));
     }
@@ -339,13 +347,8 @@ public abstract class TextClassifierService extends Service {
         return null;
     }
 
-    /* loaded from: classes3.dex */
-    public static final class ProxyCallback<T extends Parcelable> implements Callback<T> {
+    private static final class ProxyCallback<T extends Parcelable> implements Callback<T> {
         private ITextClassifierCallback mTextClassifierCallback;
-
-        /* synthetic */ ProxyCallback(ITextClassifierCallback iTextClassifierCallback, ProxyCallbackIA proxyCallbackIA) {
-            this(iTextClassifierCallback);
-        }
 
         private ProxyCallback(ITextClassifierCallback textClassifierCallback) {
             this.mTextClassifierCallback = (ITextClassifierCallback) Objects.requireNonNull(textClassifierCallback);

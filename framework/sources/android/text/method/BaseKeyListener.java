@@ -14,7 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class BaseKeyListener extends MetaKeyKeyListener implements KeyListener {
     private static final int CARRIAGE_RETURN = 13;
     private static final int LINE_FEED = 10;
@@ -362,40 +362,16 @@ public abstract class BaseKeyListener extends MetaKeyKeyListener implements KeyL
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.text.method.BaseKeyListener$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$text$method$TextKeyListener$Capitalize;
-
-        static {
-            int[] iArr = new int[TextKeyListener.Capitalize.values().length];
-            $SwitchMap$android$text$method$TextKeyListener$Capitalize = iArr;
-            try {
-                iArr[TextKeyListener.Capitalize.CHARACTERS.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$text$method$TextKeyListener$Capitalize[TextKeyListener.Capitalize.WORDS.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$text$method$TextKeyListener$Capitalize[TextKeyListener.Capitalize.SENTENCES.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-        }
-    }
-
-    public static int makeTextContentType(TextKeyListener.Capitalize caps, boolean autoText) {
+    static int makeTextContentType(TextKeyListener.Capitalize caps, boolean autoText) {
         int contentType = 1;
-        switch (AnonymousClass1.$SwitchMap$android$text$method$TextKeyListener$Capitalize[caps.ordinal()]) {
-            case 1:
+        switch (caps) {
+            case CHARACTERS:
                 contentType = 1 | 4096;
                 break;
-            case 2:
+            case WORDS:
                 contentType = 1 | 8192;
                 break;
-            case 3:
+            case SENTENCES:
                 contentType = 1 | 16384;
                 break;
         }

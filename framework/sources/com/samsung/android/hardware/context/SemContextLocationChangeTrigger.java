@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextLocationChangeTrigger extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextLocationChangeTrigger> CREATOR = new Parcelable.Creator<SemContextLocationChangeTrigger>() { // from class: com.samsung.android.hardware.context.SemContextLocationChangeTrigger.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationChangeTrigger createFromParcel(Parcel in) {
             return new SemContextLocationChangeTrigger(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextLocationChangeTrigger[] newArray(int size) {
             return new SemContextLocationChangeTrigger[size];
@@ -27,23 +26,6 @@ public class SemContextLocationChangeTrigger extends SemContextEventContext {
     public static final int TYPE_MOVING_AUTO = 3;
     public static final int TYPE_STATIONARY = 1;
     private Bundle mContext;
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextLocationChangeTrigger$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextLocationChangeTrigger> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextLocationChangeTrigger createFromParcel(Parcel in) {
-            return new SemContextLocationChangeTrigger(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextLocationChangeTrigger[] newArray(int size) {
-            return new SemContextLocationChangeTrigger[size];
-        }
-    }
 
     SemContextLocationChangeTrigger() {
         this.mContext = new Bundle();

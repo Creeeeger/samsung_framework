@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityGsm extends CellIdentity {
     private static final boolean DBG = false;
     private static final int MAX_ARFCN = 65535;
@@ -25,15 +25,14 @@ public final class CellIdentityGsm extends CellIdentity {
     private final int mLac;
     private static final String TAG = CellIdentityGsm.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityGsm> CREATOR = new Parcelable.Creator<CellIdentityGsm>() { // from class: android.telephony.CellIdentityGsm.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityGsm createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityGsm.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityGsm[] newArray(int size) {
             return new CellIdentityGsm[size];
@@ -69,7 +68,7 @@ public final class CellIdentityGsm extends CellIdentity {
         this(cid.mLac, cid.mCid, cid.mArfcn, cid.mBsic, cid.mMccStr, cid.mMncStr, cid.mAlphaLong, cid.mAlphaShort, cid.mAdditionalPlmns);
     }
 
-    public CellIdentityGsm copy() {
+    CellIdentityGsm copy() {
         return new CellIdentityGsm(this);
     }
 
@@ -154,15 +153,8 @@ public final class CellIdentityGsm extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public GsmCellLocation asCellLocation() {
         GsmCellLocation cl = new GsmCellLocation();
-        int lac = this.mLac;
-        if (lac == Integer.MAX_VALUE) {
-            lac = -1;
-        }
-        int i = this.mCid;
-        if (i == Integer.MAX_VALUE) {
-            i = -1;
-        }
-        int cid = i;
+        int lac = this.mLac != Integer.MAX_VALUE ? this.mLac : -1;
+        int cid = this.mCid != Integer.MAX_VALUE ? this.mCid : -1;
         cl.setLacAndCid(lac, cid);
         cl.setPsc(-1);
         return cl;
@@ -209,25 +201,7 @@ public final class CellIdentityGsm extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityGsm$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityGsm> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityGsm createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityGsm.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityGsm[] newArray(int size) {
-            return new CellIdentityGsm[size];
-        }
-    }
-
-    public static CellIdentityGsm createFromParcelBody(Parcel in) {
+    protected static CellIdentityGsm createFromParcelBody(Parcel in) {
         return new CellIdentityGsm(in);
     }
 }

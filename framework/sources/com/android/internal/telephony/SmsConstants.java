@@ -5,11 +5,14 @@ public class SmsConstants {
     public static final byte DCN_STATUS_CS_ONLY = 0;
     public static final byte DCN_STATUS_EMERGENCY_CALL_START = 16;
     public static final byte DCN_STATUS_EMERGENCY_CALL_STOP = 32;
-    public static final int EMERGENCY_MODE_CONNECTED = 2;
+    public static final int EMERGENCY_MODE_CANCELED = 3;
     public static final int EMERGENCY_MODE_DEFAULT = 0;
+    public static final int EMERGENCY_MODE_END = 2;
+    public static final int EMERGENCY_MODE_END_WITH_ECBM = 5;
     public static final int EMERGENCY_MODE_FAILED = 4;
-    public static final int EMERGENCY_MODE_FINISHED = 3;
     public static final int EMERGENCY_MODE_START = 1;
+    public static final int EMERGENCY_SMS_CALLBACK_MODE_ENTER = 1;
+    public static final int EMERGENCY_SMS_CALLBACK_MODE_EXIT = 0;
     public static final int ENCODING_16BIT = 3;
     public static final int ENCODING_7BIT = 1;
     public static final int ENCODING_8BIT = 2;
@@ -34,6 +37,7 @@ public class SmsConstants {
     public static final String SMS_ECM_INCOMING_SMS = "sms_ecm_incoming_sms";
     public static final String SMS_ERROR_CLASS_RETRY = "sms_error_class_retry";
     public static final String SMS_GLOBAL_MODE_SMS_ADDRESS_RULE = "sms_global_mode_sms_address_rule";
+    public static final String SMS_LINK_WARNING_INDICATION = "sms_link_warning_indication";
     public static final String SMS_MAX_RETRIES_ONE = "sms_max_retries_one";
     public static final String SMS_MAX_RETRIES_ZERO = "sms_max_retries_zero";
     public static final String SMS_MMS_UAP_BUILD_ID = "sms_mms_uap_build_id";
@@ -57,7 +61,6 @@ public class SmsConstants {
     public static final String SMS_WAP_PUSH_FORMAT_SMS = "sms_wap_push_format_sms";
     public static final String SMS_WRITE_UICC_SUPPORTED = "sms_write_uicc_supported";
 
-    /* loaded from: classes5.dex */
     public enum MessageClass {
         UNKNOWN,
         CLASS_0,

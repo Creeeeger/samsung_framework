@@ -15,7 +15,6 @@ public interface IEpicManager extends IInterface {
 
     IEpicObject Creates(int[] iArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IEpicManager {
         @Override // android.os.epic.IEpicManager
         public IEpicObject Create(int scenario_id) throws RemoteException {
@@ -33,7 +32,6 @@ public interface IEpicManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IEpicManager {
         static final int TRANSACTION_Create = 1;
         static final int TRANSACTION_Creates = 2;
@@ -79,35 +77,31 @@ public interface IEpicManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEpicManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEpicManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEpicManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IEpicObject _result = Create(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    int[] _arg02 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    IEpicObject _result2 = Creates(_arg02);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IEpicObject _result = Create(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            int[] _arg02 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            IEpicObject _result2 = Creates(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IEpicManager {
+        private static class Proxy implements IEpicManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -27,6 +27,7 @@ import libcore.io.IoUtils;
 
 /* loaded from: classes.dex */
 public class ClipData implements Parcelable {
+    private static final String TAG = "ClipData";
     private String mCallingPackageName;
     private int mCallingUserId;
     final ClipDescription mClipDescription;
@@ -38,80 +39,110 @@ public class ClipData implements Parcelable {
     static final String[] MIMETYPES_TEXT_URILIST = {ClipDescription.MIMETYPE_TEXT_URILIST};
     static final String[] MIMETYPES_TEXT_INTENT = {ClipDescription.MIMETYPE_TEXT_INTENT};
     public static final Parcelable.Creator<ClipData> CREATOR = new Parcelable.Creator<ClipData>() { // from class: android.content.ClipData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipData createFromParcel(Parcel source) {
             return new ClipData(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipData[] newArray(int size) {
             return new ClipData[size];
         }
     };
 
-    /* loaded from: classes.dex */
     public static class Item {
         private ActivityInfo mActivityInfo;
         final String mHtmlText;
         final Intent mIntent;
+        final IntentSender mIntentSender;
         final CharSequence mText;
         private TextLinks mTextLinks;
         Uri mUri;
+
+        public static final class Builder {
+            private String mHtmlText;
+            private Intent mIntent;
+            private IntentSender mIntentSender;
+            private CharSequence mText;
+            private Uri mUri;
+
+            public Builder setText(CharSequence text) {
+                this.mText = text;
+                return this;
+            }
+
+            public Builder setHtmlText(String htmlText) {
+                this.mHtmlText = htmlText;
+                return this;
+            }
+
+            public Builder setIntent(Intent intent) {
+                this.mIntent = intent;
+                return this;
+            }
+
+            public Builder setIntentSender(IntentSender intentSender) {
+                if (intentSender != null && !intentSender.isImmutable()) {
+                    throw new IllegalArgumentException("Expected intent sender to be immutable");
+                }
+                this.mIntentSender = intentSender;
+                return this;
+            }
+
+            public Builder setUri(Uri uri) {
+                this.mUri = uri;
+                return this;
+            }
+
+            public Item build() {
+                return new Item(this.mText, this.mHtmlText, this.mIntent, this.mIntentSender, this.mUri);
+            }
+        }
 
         public Item(Item other) {
             this.mText = other.mText;
             this.mHtmlText = other.mHtmlText;
             this.mIntent = other.mIntent;
+            this.mIntentSender = other.mIntentSender;
             this.mUri = other.mUri;
             this.mActivityInfo = other.mActivityInfo;
             this.mTextLinks = other.mTextLinks;
         }
 
         public Item(CharSequence text) {
-            this.mText = text;
-            this.mHtmlText = null;
-            this.mIntent = null;
-            this.mUri = null;
+            this(text, null, null, null, null);
         }
 
         public Item(CharSequence text, String htmlText) {
-            this.mText = text;
-            this.mHtmlText = htmlText;
-            this.mIntent = null;
-            this.mUri = null;
+            this(text, htmlText, null, null, null);
         }
 
         public Item(Intent intent) {
-            this.mText = null;
-            this.mHtmlText = null;
-            this.mIntent = intent;
-            this.mUri = null;
+            this(null, null, intent, null, null);
         }
 
         public Item(Uri uri) {
-            this.mText = null;
-            this.mHtmlText = null;
-            this.mIntent = null;
-            this.mUri = uri;
+            this(null, null, null, null, uri);
         }
 
         public Item(CharSequence text, Intent intent, Uri uri) {
-            this.mText = text;
-            this.mHtmlText = null;
-            this.mIntent = intent;
-            this.mUri = uri;
+            this(text, null, intent, null, uri);
         }
 
         public Item(CharSequence text, String htmlText, Intent intent, Uri uri) {
+            this(text, htmlText, intent, null, uri);
+        }
+
+        private Item(CharSequence text, String htmlText, Intent intent, IntentSender intentSender, Uri uri) {
             if (htmlText != null && text == null) {
                 throw new IllegalArgumentException("Plain text must be supplied if HTML text is supplied");
             }
             this.mText = text;
             this.mHtmlText = htmlText;
             this.mIntent = intent;
+            this.mIntentSender = intentSender;
             this.mUri = uri;
         }
 
@@ -125,6 +156,10 @@ public class ClipData implements Parcelable {
 
         public Intent getIntent() {
             return this.mIntent;
+        }
+
+        public IntentSender getIntentSender() {
+            return this.mIntentSender;
         }
 
         public Uri getUri() {
@@ -152,59 +187,67 @@ public class ClipData implements Parcelable {
             if (text != null) {
                 return text;
             }
-            Uri uri = getUri();
-            if (uri == null) {
-                Intent intent = getIntent();
-                return intent != null ? intent.toUri(1) : "";
-            }
-            ContentResolver resolver = context.getContentResolver();
-            AssetFileDescriptor descr = null;
-            FileInputStream stream = null;
-            InputStreamReader reader = null;
+            ContentResolver resolver = null;
             try {
+                resolver = context.getContentResolver();
+            } catch (Exception e) {
+                Log.w(ClipData.TAG, "Failed to obtain ContentResolver: " + e);
+            }
+            Uri uri = getUri();
+            if (uri != null && resolver != null) {
+                AssetFileDescriptor descr = null;
+                FileInputStream stream = null;
+                InputStreamReader reader = null;
                 try {
-                    descr = resolver.openTypedAssetFileDescriptor(uri, "text/*", null);
-                } catch (FileNotFoundException | RuntimeException e) {
-                } catch (SecurityException e2) {
-                    Log.w("ClipData", "Failure opening stream", e2);
-                }
-                if (descr == null) {
-                    IoUtils.closeQuietly(descr);
-                    IoUtils.closeQuietly((AutoCloseable) null);
-                    IoUtils.closeQuietly((AutoCloseable) null);
-                    String scheme = uri.getScheme();
-                    return ("content".equals(scheme) || ContentResolver.SCHEME_ANDROID_RESOURCE.equals(scheme) || "file".equals(scheme)) ? "" : uri.toString();
-                }
-                try {
-                    stream = descr.createInputStream();
-                    reader = new InputStreamReader(stream, "UTF-8");
-                    StringBuilder builder = new StringBuilder(128);
-                    char[] buffer = new char[8192];
-                    while (true) {
-                        int len = reader.read(buffer);
-                        if (len <= 0) {
-                            String sb = builder.toString();
+                    try {
+                        descr = resolver.openTypedAssetFileDescriptor(uri, "text/*", null);
+                    } catch (FileNotFoundException | RuntimeException e2) {
+                    } catch (SecurityException e3) {
+                        Log.w(ClipData.TAG, "Failure opening stream", e3);
+                    }
+                    if (descr != null) {
+                        try {
+                            stream = descr.createInputStream();
+                            reader = new InputStreamReader(stream, "UTF-8");
+                            StringBuilder builder = new StringBuilder(128);
+                            char[] buffer = new char[8192];
+                            while (true) {
+                                int len = reader.read(buffer);
+                                if (len <= 0) {
+                                    String sb = builder.toString();
+                                    IoUtils.closeQuietly(descr);
+                                    IoUtils.closeQuietly(stream);
+                                    IoUtils.closeQuietly(reader);
+                                    return sb;
+                                }
+                                builder.append(buffer, 0, len);
+                            }
+                        } catch (IOException e4) {
+                            Log.w(ClipData.TAG, "Failure loading text", e4);
+                            String iOException = e4.toString();
                             IoUtils.closeQuietly(descr);
                             IoUtils.closeQuietly(stream);
                             IoUtils.closeQuietly(reader);
-                            return sb;
+                            return iOException;
                         }
-                        builder.append(buffer, 0, len);
+                    } else {
+                        IoUtils.closeQuietly(descr);
+                        IoUtils.closeQuietly((AutoCloseable) null);
+                        IoUtils.closeQuietly((AutoCloseable) null);
                     }
-                } catch (IOException e3) {
-                    Log.w("ClipData", "Failure loading text", e3);
-                    String iOException = e3.toString();
+                } catch (Throwable th) {
                     IoUtils.closeQuietly(descr);
                     IoUtils.closeQuietly(stream);
                     IoUtils.closeQuietly(reader);
-                    return iOException;
+                    throw th;
                 }
-            } catch (Throwable th) {
-                IoUtils.closeQuietly(descr);
-                IoUtils.closeQuietly(stream);
-                IoUtils.closeQuietly(reader);
-                throw th;
             }
+            if (uri != null) {
+                String scheme = uri.getScheme();
+                return ("content".equals(scheme) || ContentResolver.SCHEME_ANDROID_RESOURCE.equals(scheme) || "file".equals(scheme)) ? "" : uri.toString();
+            }
+            Intent intent = getIntent();
+            return intent != null ? intent.toUri(1) : "";
         }
 
         public CharSequence coerceToStyledText(Context context) {
@@ -249,8 +292,7 @@ public class ClipData implements Parcelable {
 
         private CharSequence coerceToHtmlOrStyledText(Context context, boolean styled) {
             if (this.mUri == null) {
-                Intent intent = this.mIntent;
-                return intent != null ? styled ? uriToStyledText(intent.toUri(1)) : uriToHtml(intent.toUri(1)) : "";
+                return this.mIntent != null ? styled ? uriToStyledText(this.mIntent.toUri(1)) : uriToHtml(this.mIntent.toUri(1)) : "";
             }
             String[] types = null;
             try {
@@ -335,7 +377,7 @@ public class ClipData implements Parcelable {
                                     return text;
                                 }
                             } catch (IOException e7) {
-                                Log.w("ClipData", "Failure loading text", e7);
+                                Log.w(ClipData.TAG, "Failure loading text", e7);
                                 String escapeHtml2 = Html.escapeHtml(e7.toString());
                                 if (stream != null) {
                                     try {
@@ -345,7 +387,7 @@ public class ClipData implements Parcelable {
                                 }
                                 return escapeHtml2;
                             } catch (SecurityException e9) {
-                                Log.w("ClipData", "Failure opening stream", e9);
+                                Log.w(ClipData.TAG, "Failure opening stream", e9);
                                 if (stream != null) {
                                     stream.close();
                                 }
@@ -438,26 +480,16 @@ public class ClipData implements Parcelable {
 
         public void dumpDebug(ProtoOutputStream proto, long fieldId) {
             long token = proto.start(fieldId);
-            String str = this.mHtmlText;
-            if (str != null) {
-                proto.write(1138166333441L, str);
+            if (this.mHtmlText != null) {
+                proto.write(1138166333441L, this.mHtmlText);
+            } else if (this.mText != null) {
+                proto.write(1138166333442L, this.mText.toString());
+            } else if (this.mUri != null) {
+                proto.write(1138166333443L, this.mUri.toString());
+            } else if (this.mIntent != null) {
+                this.mIntent.dumpDebug(proto, 1146756268036L, true, true, true, true);
             } else {
-                CharSequence charSequence = this.mText;
-                if (charSequence != null) {
-                    proto.write(1138166333442L, charSequence.toString());
-                } else {
-                    Uri uri = this.mUri;
-                    if (uri != null) {
-                        proto.write(1138166333443L, uri.toString());
-                    } else {
-                        Intent intent = this.mIntent;
-                        if (intent != null) {
-                            intent.dumpDebug(proto, 1146756268036L, true, true, true, true);
-                        } else {
-                            proto.write(1133871366149L, true);
-                        }
-                    }
-                }
+                proto.write(1133871366149L, true);
             }
             proto.end(token);
         }
@@ -465,16 +497,14 @@ public class ClipData implements Parcelable {
 
     public ClipData(CharSequence label, String[] mimeTypes, Item item) {
         this.mCallingUserId = -10000;
-        ClipDescription clipDescription = new ClipDescription(label, mimeTypes);
-        this.mClipDescription = clipDescription;
+        this.mClipDescription = new ClipDescription(label, mimeTypes);
         if (item == null) {
             throw new NullPointerException("item is null");
         }
         this.mIcon = null;
-        ArrayList<Item> arrayList = new ArrayList<>();
-        this.mItems = arrayList;
-        arrayList.add(item);
-        clipDescription.setIsStyledText(isStyledText());
+        this.mItems = new ArrayList<>();
+        this.mItems.add(item);
+        this.mClipDescription.setIsStyledText(isStyledText());
     }
 
     public ClipData(ClipDescription description, Item item) {
@@ -484,10 +514,9 @@ public class ClipData implements Parcelable {
             throw new NullPointerException("item is null");
         }
         this.mIcon = null;
-        ArrayList<Item> arrayList = new ArrayList<>();
-        this.mItems = arrayList;
-        arrayList.add(item);
-        description.setIsStyledText(isStyledText());
+        this.mItems = new ArrayList<>();
+        this.mItems.add(item);
+        this.mClipDescription.setIsStyledText(isStyledText());
     }
 
     public ClipData(ClipDescription description, ArrayList<Item> items) {
@@ -611,22 +640,6 @@ public class ClipData implements Parcelable {
         this.mItems.set(index, item);
     }
 
-    public void setCallingUserId(int userId) {
-        this.mCallingUserId = userId;
-    }
-
-    public int getCallingUserId() {
-        return this.mCallingUserId;
-    }
-
-    public void setCallingPackageName(String packageName) {
-        this.mCallingPackageName = packageName;
-    }
-
-    public String getCallingPackageName() {
-        return this.mCallingPackageName;
-    }
-
     public void prepareToLeaveProcess(boolean leavingPackage) {
         prepareToLeaveProcess(leavingPackage, 1);
     }
@@ -647,6 +660,9 @@ public class ClipData implements Parcelable {
                 }
             }
         }
+    }
+
+    public void prepareToLeaveProcess$ravenwood(boolean leavingPackage, int intentFlags) {
     }
 
     public void prepareToEnterProcess(AttributionSource source) {
@@ -709,8 +725,7 @@ public class ClipData implements Parcelable {
     }
 
     public void toShortString(StringBuilder b, boolean redactContent) {
-        ClipDescription clipDescription = this.mClipDescription;
-        boolean first = clipDescription != null ? !clipDescription.toShortString(b, redactContent) : true;
+        boolean first = this.mClipDescription != null ? !this.mClipDescription.toShortString(b, redactContent) : true;
         if (this.mIcon != null) {
             if (!first) {
                 b.append(' ');
@@ -741,9 +756,8 @@ public class ClipData implements Parcelable {
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
-        ClipDescription clipDescription = this.mClipDescription;
-        if (clipDescription != null) {
-            clipDescription.dumpDebug(proto, 1146756268033L);
+        if (this.mClipDescription != null) {
+            this.mClipDescription.dumpDebug(proto, 1146756268033L);
         }
         if (this.mIcon != null) {
             long iToken = proto.start(1146756268034L);
@@ -796,6 +810,7 @@ public class ClipData implements Parcelable {
             TextUtils.writeToParcel(item.mText, dest, flags);
             dest.writeString8(item.mHtmlText);
             dest.writeTypedObject(item.mIntent, flags);
+            dest.writeTypedObject(item.mIntentSender, flags);
             dest.writeTypedObject(item.mUri, flags);
             dest.writeTypedObject(this.mParcelItemActivityInfos ? item.mActivityInfo : null, flags);
             dest.writeTypedObject(item.mTextLinks, flags);
@@ -805,54 +820,56 @@ public class ClipData implements Parcelable {
         dest.writeString(this.mCallingPackageName);
     }
 
-    public ClipData(Parcel in) {
+    ClipData(Parcel in) {
+        Parcel parcel = in;
         this.mCallingUserId = -10000;
-        this.mClipDescription = new ClipDescription(in);
+        this.mClipDescription = new ClipDescription(parcel);
         if (in.readInt() != 0) {
-            this.mIcon = Bitmap.CREATOR.createFromParcel(in);
+            this.mIcon = Bitmap.CREATOR.createFromParcel(parcel);
         } else {
             this.mIcon = null;
         }
         this.mItems = new ArrayList<>();
-        int N = in.readInt();
-        for (int i = 0; i < N; i++) {
-            CharSequence text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
+        int i = 0;
+        for (int N = in.readInt(); i < N; N = N) {
+            CharSequence text = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel);
             String htmlText = in.readString8();
-            Intent intent = (Intent) in.readTypedObject(Intent.CREATOR);
-            Uri uri = (Uri) in.readTypedObject(Uri.CREATOR);
-            ActivityInfo info = (ActivityInfo) in.readTypedObject(ActivityInfo.CREATOR);
-            TextLinks textLinks = (TextLinks) in.readTypedObject(TextLinks.CREATOR);
-            Item item = new Item(text, htmlText, intent, uri);
+            Intent intent = (Intent) parcel.readTypedObject(Intent.CREATOR);
+            IntentSender intentSender = (IntentSender) parcel.readTypedObject(IntentSender.CREATOR);
+            Uri uri = (Uri) parcel.readTypedObject(Uri.CREATOR);
+            ActivityInfo info = (ActivityInfo) parcel.readTypedObject(ActivityInfo.CREATOR);
+            TextLinks textLinks = (TextLinks) parcel.readTypedObject(TextLinks.CREATOR);
+            Item item = new Item(text, htmlText, intent, intentSender, uri);
             item.setActivityInfo(info);
             item.setTextLinks(textLinks);
             this.mItems.add(item);
+            i++;
+            parcel = in;
         }
-        int i2 = in.readInt();
-        this.mCallingUserId = i2;
+        this.mCallingUserId = in.readInt();
         this.mCallingPackageName = in.readString();
-    }
-
-    /* renamed from: android.content.ClipData$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ClipData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClipData createFromParcel(Parcel source) {
-            return new ClipData(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClipData[] newArray(int size) {
-            return new ClipData[size];
-        }
     }
 
     public ArrayList<Item> semGetItems() {
         if (this.mItems == null) {
-            Log.w("ClipData", "get ClipData items - null");
+            Log.w(TAG, "get ClipData items - null");
         }
         return this.mItems;
+    }
+
+    public void setCallingUserId(int userId) {
+        this.mCallingUserId = userId;
+    }
+
+    public int getCallingUserId() {
+        return this.mCallingUserId;
+    }
+
+    public void setCallingPackageName(String packageName) {
+        this.mCallingPackageName = packageName;
+    }
+
+    public String getCallingPackageName() {
+        return this.mCallingPackageName;
     }
 }

@@ -47,7 +47,6 @@ public abstract class CarrierService extends Service {
         return this.mStubWrapper;
     }
 
-    /* loaded from: classes3.dex */
     public class ICarrierServiceWrapper extends ICarrierService.Stub {
         public static final String KEY_CONFIG_BUNDLE = "config_bundle";
         public static final int RESULT_ERROR = 1;

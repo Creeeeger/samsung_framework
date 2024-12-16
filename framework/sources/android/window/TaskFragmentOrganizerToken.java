@@ -8,9 +8,7 @@ import android.window.ITaskFragmentOrganizer;
 /* loaded from: classes4.dex */
 public final class TaskFragmentOrganizerToken implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentOrganizerToken> CREATOR = new Parcelable.Creator<TaskFragmentOrganizerToken>() { // from class: android.window.TaskFragmentOrganizerToken.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentOrganizerToken createFromParcel(Parcel in) {
             ITaskFragmentOrganizer realToken = ITaskFragmentOrganizer.Stub.asInterface(in.readStrongBinder());
@@ -20,6 +18,7 @@ public final class TaskFragmentOrganizerToken implements Parcelable {
             return new TaskFragmentOrganizerToken(realToken);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentOrganizerToken[] newArray(int size) {
             return new TaskFragmentOrganizerToken[size];
@@ -27,7 +26,7 @@ public final class TaskFragmentOrganizerToken implements Parcelable {
     };
     private final ITaskFragmentOrganizer mRealToken;
 
-    public TaskFragmentOrganizerToken(ITaskFragmentOrganizer realToken) {
+    TaskFragmentOrganizerToken(ITaskFragmentOrganizer realToken) {
         this.mRealToken = realToken;
     }
 
@@ -43,27 +42,6 @@ public final class TaskFragmentOrganizerToken implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.window.TaskFragmentOrganizerToken$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentOrganizerToken> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentOrganizerToken createFromParcel(Parcel in) {
-            ITaskFragmentOrganizer realToken = ITaskFragmentOrganizer.Stub.asInterface(in.readStrongBinder());
-            if (realToken == null) {
-                return null;
-            }
-            return new TaskFragmentOrganizerToken(realToken);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentOrganizerToken[] newArray(int size) {
-            return new TaskFragmentOrganizerToken[size];
-        }
     }
 
     public int hashCode() {

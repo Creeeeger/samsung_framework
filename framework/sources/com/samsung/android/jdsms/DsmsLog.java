@@ -4,7 +4,7 @@ import android.os.Build;
 import android.util.Log;
 import java.util.Objects;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class DsmsLog {
     private static final String ENG_BUILD = "eng";
     private static final boolean IS_ENG = ENG_BUILD.equals(Build.TYPE);

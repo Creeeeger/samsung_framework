@@ -113,9 +113,8 @@ public class JDKDSAPrivateKey implements DSAPrivateKey, PKCS12BagAttributeCarrie
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         this.x = (BigInteger) in.readObject();
         this.dsaSpec = new DSAParameterSpec((BigInteger) in.readObject(), (BigInteger) in.readObject(), (BigInteger) in.readObject());
-        PKCS12BagAttributeCarrierImpl pKCS12BagAttributeCarrierImpl = new PKCS12BagAttributeCarrierImpl();
-        this.attrCarrier = pKCS12BagAttributeCarrierImpl;
-        pKCS12BagAttributeCarrierImpl.readObject(in);
+        this.attrCarrier = new PKCS12BagAttributeCarrierImpl();
+        this.attrCarrier.readObject(in);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

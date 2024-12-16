@@ -1,14 +1,23 @@
 package android.security;
 
 import com.android.internal.org.bouncycastle.util.io.pem.PemObject;
+import com.android.internal.org.bouncycastle.util.io.pem.PemReader;
 import com.android.internal.org.bouncycastle.util.io.pem.PemWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 /* loaded from: classes3.dex */
 public class Credentials {
@@ -63,62 +72,28 @@ public class Credentials {
         return bao.toByteArray();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0060, code lost:
-    
-        throw new java.lang.IllegalArgumentException("Unknown type " + r5.getType());
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static java.util.List<java.security.cert.X509Certificate> convertFromPem(byte[] r9) throws java.io.IOException, java.security.cert.CertificateException {
-        /*
-            java.io.ByteArrayInputStream r0 = new java.io.ByteArrayInputStream
-            r0.<init>(r9)
-            java.io.InputStreamReader r1 = new java.io.InputStreamReader
-            java.nio.charset.Charset r2 = java.nio.charset.StandardCharsets.US_ASCII
-            r1.<init>(r0, r2)
-            com.android.internal.org.bouncycastle.util.io.pem.PemReader r2 = new com.android.internal.org.bouncycastle.util.io.pem.PemReader
-            r2.<init>(r1)
-            java.lang.String r3 = "X509"
-            java.security.cert.CertificateFactory r3 = java.security.cert.CertificateFactory.getInstance(r3)     // Catch: java.lang.Throwable -> L66
-            java.util.ArrayList r4 = new java.util.ArrayList     // Catch: java.lang.Throwable -> L66
-            r4.<init>()     // Catch: java.lang.Throwable -> L66
-        L1c:
-            com.android.internal.org.bouncycastle.util.io.pem.PemObject r5 = r2.readPemObject()     // Catch: java.lang.Throwable -> L66
-            r6 = r5
-            if (r5 == 0) goto L61
-            java.lang.String r5 = r6.getType()     // Catch: java.lang.Throwable -> L66
-            java.lang.String r7 = "CERTIFICATE"
-            boolean r5 = r5.equals(r7)     // Catch: java.lang.Throwable -> L66
-            if (r5 == 0) goto L44
-            java.io.ByteArrayInputStream r5 = new java.io.ByteArrayInputStream     // Catch: java.lang.Throwable -> L66
-            byte[] r7 = r6.getContent()     // Catch: java.lang.Throwable -> L66
-            r5.<init>(r7)     // Catch: java.lang.Throwable -> L66
-            java.security.cert.Certificate r5 = r3.generateCertificate(r5)     // Catch: java.lang.Throwable -> L66
-            r7 = r5
-            java.security.cert.X509Certificate r7 = (java.security.cert.X509Certificate) r7     // Catch: java.lang.Throwable -> L66
-            r4.add(r7)     // Catch: java.lang.Throwable -> L66
-            goto L1c
-        L44:
-            java.lang.IllegalArgumentException r5 = new java.lang.IllegalArgumentException     // Catch: java.lang.Throwable -> L66
-            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L66
-            r7.<init>()     // Catch: java.lang.Throwable -> L66
-            java.lang.String r8 = "Unknown type "
-            java.lang.StringBuilder r7 = r7.append(r8)     // Catch: java.lang.Throwable -> L66
-            java.lang.String r8 = r6.getType()     // Catch: java.lang.Throwable -> L66
-            java.lang.StringBuilder r7 = r7.append(r8)     // Catch: java.lang.Throwable -> L66
-            java.lang.String r7 = r7.toString()     // Catch: java.lang.Throwable -> L66
-            r5.<init>(r7)     // Catch: java.lang.Throwable -> L66
-            throw r5     // Catch: java.lang.Throwable -> L66
-        L61:
-            r2.close()
-            return r4
-        L66:
-            r3 = move-exception
-            r2.close()
-            throw r3
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.security.Credentials.convertFromPem(byte[]):java.util.List");
+    public static List<X509Certificate> convertFromPem(byte[] bytes) throws IOException, CertificateException {
+        ByteArrayInputStream bai = new ByteArrayInputStream(bytes);
+        Reader reader = new InputStreamReader(bai, StandardCharsets.US_ASCII);
+        PemReader pr = new PemReader(reader);
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            List<X509Certificate> result = new ArrayList<>();
+            while (true) {
+                PemObject o = pr.readPemObject();
+                if (o != null) {
+                    if (o.getType().equals("CERTIFICATE")) {
+                        Certificate c = cf.generateCertificate(new ByteArrayInputStream(o.getContent()));
+                        result.add((X509Certificate) c);
+                    } else {
+                        throw new IllegalArgumentException("Unknown type " + o.getType());
+                    }
+                } else {
+                    return result;
+                }
+            }
+        } finally {
+            pr.close();
+        }
     }
 }

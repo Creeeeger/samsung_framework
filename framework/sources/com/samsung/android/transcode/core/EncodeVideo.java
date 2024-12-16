@@ -6,8 +6,8 @@ import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.samsung.android.feature.SemFloatingFeature;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
+import com.samsung.android.transcode.constants.EncodeConstants;
 import com.samsung.android.transcode.core.EncodeBase;
 import com.samsung.android.transcode.info.ExportMediaInfo;
 import com.samsung.android.transcode.info.MediaInfo;
@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EncodeVideo extends EncodeBase {
     private static final byte[] NAL_START_CODE = {0, 0, 0, 1};
     private static final String UNKNOWN_AUDIO = "audio/unknown";
@@ -269,6 +269,7 @@ public class EncodeVideo extends EncodeBase {
 
     @Override // com.samsung.android.transcode.core.Encode
     public void startRewriting() throws IOException {
+        ByteBuffer csd;
         if (this.mUserStop) {
             LogS.d("TranscodeLib", "Not starting encoding because it is stopped by user.");
             return;
@@ -286,11 +287,11 @@ public class EncodeVideo extends EncodeBase {
                 ByteBuffer tempBuffer = ByteBuffer.allocate(bufferSizeV);
                 if (this.mVideoExtractor.readSampleData(tempBuffer, 0) > 0) {
                     firstNalUnit = new NalUnitParser(tempBuffer);
-                    if (firstNalUnit.findHDRStaticMeta() && firstNalUnit.getHdrStaticMeta() != null) {
-                        LogS.i("TranscodeLib", "has hdr static meta : " + this.mVideoExtractor.getSampleTime());
-                    } else {
+                    if (!firstNalUnit.findHDRStaticMeta() || firstNalUnit.getHdrStaticMeta() == null) {
                         LogS.i("TranscodeLib", "fail to find hdr static meta " + this.mVideoExtractor.getSampleTime());
                         firstNalUnit = null;
+                    } else {
+                        LogS.i("TranscodeLib", "has hdr static meta : " + this.mVideoExtractor.getSampleTime());
                     }
                 }
             }
@@ -320,9 +321,27 @@ public class EncodeVideo extends EncodeBase {
                 } else if (this.mRecordingMode == 10 || this.mRecordingMode == 25) {
                     formatV.setInteger("param-meta-recording-mode", this.mRecordingMode);
                     LogS.d("TranscodeLib", "set recording mode for HDR 10 PLUS : " + this.mRecordingMode);
+                } else if (this.mRecordingMode == 26 || this.mRecordingMode == 27) {
+                    formatV.setInteger("param-meta-recording-mode", this.mRecordingMode);
+                    LogS.e("TranscodeLib", "set recording mode for Log video : " + this.mRecordingMode);
+                } else if (this.mRecordingMode == 29) {
+                    formatV.setInteger("param-meta-recording-mode", this.mRecordingMode);
+                    LogS.e("TranscodeLib", "set recording mode for MV_HEVC : " + this.mRecordingMode);
+                    if ("video/hevc".equals(formatV.getString("mime"))) {
+                        formatV.setString("mime", EncodeConstants.CodecsMime.VIDEO_CODEC_MVHEVC);
+                    }
+                    if (formatV.containsKey("csd-mvhevc-ext") && (csd = formatV.getByteBuffer("csd-mvhevc-ext")) != null) {
+                        byte[] buffer = new byte[csd.remaining()];
+                        csd.get(buffer, 0, buffer.length);
+                        ByteBuffer csdTemp = ByteBuffer.allocate(buffer.length);
+                        csdTemp.put(buffer, 0, buffer.length);
+                        csdTemp.flip();
+                        formatV.setByteBuffer("csd-1", csdTemp);
+                        formatV.removeKey("csd-mvhevc-ext");
+                    }
                 }
                 this.mVideoTrackIndex = this.mMuxer.addTrack(formatV);
-                if (formatA != null && !UNKNOWN_AUDIO.equals(formatA.getString(MediaFormat.KEY_MIME))) {
+                if (formatA != null && !UNKNOWN_AUDIO.equals(formatA.getString("mime"))) {
                     this.mAudioTrackIndex = this.mMuxer.addTrack(formatA);
                 } else {
                     audioTrack = -1;
@@ -336,10 +355,10 @@ public class EncodeVideo extends EncodeBase {
             }
             int bufferSizeV2 = getVideoSampleSize(formatV);
             rewriteVideo(this.mTrimVideoEndUs, firstNalUnit, bufferSizeV2);
-            if (audioTrack == -1 || this.mOutputAudioMute) {
-                this.mCopyAudio = false;
-            } else {
+            if (audioTrack != -1 && !this.mOutputAudioMute) {
                 rewriteAudio(this.mTrimVideoEndUs);
+            } else {
+                this.mCopyAudio = false;
             }
             if (!this.mUserStop) {
                 LogS.d("TranscodeLib", "Rewriting finished");
@@ -571,7 +590,7 @@ public class EncodeVideo extends EncodeBase {
         return formatV;
     }
 
-    /* JADX WARN: Incorrect condition in loop: B:46:0x012c */
+    /* JADX WARN: Incorrect condition in loop: B:46:0x0129 */
     @Override // com.samsung.android.transcode.core.Encode
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -579,7 +598,7 @@ public class EncodeVideo extends EncodeBase {
     */
     public void startSMRewriting() throws java.io.IOException {
         /*
-            Method dump skipped, instructions count: 659
+            Method dump skipped, instructions count: 652
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.transcode.core.EncodeVideo.startSMRewriting():void");
@@ -741,12 +760,11 @@ public class EncodeVideo extends EncodeBase {
                     th = th2;
                     while (true) {
                         try {
-                            break;
+                            throw th;
                         } catch (Throwable th3) {
                             th = th3;
                         }
                     }
-                    throw th;
                 }
             }
         } catch (Throwable th4) {
@@ -862,7 +880,7 @@ public class EncodeVideo extends EncodeBase {
         }
         this.mSMConvert = false;
         this.mSMEncode = false;
-        if (this.mSEFVideo && isSlowFast() && mInputFileinfo.Width == outWidth && mInputFileinfo.Height == outHeight && this.mOutputVideoMimeType.equals(mInputVideoinfo.getString(MediaFormat.KEY_MIME))) {
+        if (this.mSEFVideo && isSlowFast() && mInputFileinfo.Width == outWidth && mInputFileinfo.Height == outHeight && this.mOutputVideoMimeType.equals(mInputVideoinfo.getString("mime"))) {
             this.mSMConvert = true;
             LogS.d("TranscodeLib", "Slowmotion Converting case  mSMConvert");
             return true;
@@ -876,10 +894,12 @@ public class EncodeVideo extends EncodeBase {
 
     public static boolean findAtom(String srcMediaPath, String atomToHunt) throws IOException {
         Throwable th;
+        long atomSize;
+        boolean ret;
         String atomName;
         File file;
         String str = atomToHunt;
-        boolean ret = false;
+        boolean ret2 = false;
         int i = 0;
         if (srcMediaPath == null) {
             LogS.d("TranscodeLib", "findAtom : filepath is null");
@@ -918,8 +938,8 @@ public class EncodeVideo extends EncodeBase {
                 LogS.d("TranscodeLib", "file read is reached to end of the file");
             }
             try {
-                long atomSize = unsignedIntToLong(atomSizeBuf);
-                boolean ret2 = ret;
+                atomSize = unsignedIntToLong(atomSizeBuf);
+                ret = ret2;
                 try {
                     LogS.d("TranscodeLib", "Atom Size: " + atomSize);
                     if (fileObj.read(atomNameBuf, 0, atomNameBuf.length) < 0) {
@@ -936,47 +956,47 @@ public class EncodeVideo extends EncodeBase {
                 } catch (Throwable th5) {
                     th = th5;
                 }
-                try {
-                    LogS.d("TranscodeLib", "Atom Box: " + atomName);
-                    int tmpAtomPosition = Arrays.binarySearch(parentContainer, atomName);
-                    if (tmpAtomPosition >= 0) {
-                        LogS.d("TranscodeLib", "Found parent: " + atomName + " move to : " + tmpAtomPosition);
-                        filePointer += 8;
+            } catch (Throwable th6) {
+                th = th6;
+                fileObj.close();
+                throw th;
+            }
+            try {
+                LogS.d("TranscodeLib", "Atom Box: " + atomName);
+                int tmpAtomPosition = Arrays.binarySearch(parentContainer, atomName);
+                if (tmpAtomPosition >= 0) {
+                    LogS.d("TranscodeLib", "Found parent: " + atomName + " move to : " + tmpAtomPosition);
+                    filePointer += 8;
+                } else {
+                    if (atomName.equals(str)) {
+                        LogS.d("TranscodeLib", "Found: " + str);
+                        ret2 = true;
+                        break;
+                    }
+                    if (atomSize == 1) {
+                        fileObj.seek(filePointer + 8);
+                        byte[] atomLargeSizeBuf = new byte[8];
+                        if (fileObj.read(atomLargeSizeBuf, 0, atomLargeSizeBuf.length) < 0) {
+                            LogS.d("TranscodeLib", "file read is reached to end of the file");
+                        }
+                        BigInteger atomTmpLargeSize = new BigInteger(atomLargeSizeBuf);
+                        long atomLargeSize = atomTmpLargeSize.longValue();
+                        filePointer += atomLargeSize;
+                        LogS.d("TranscodeLib", "64bit: " + atomLargeSize);
                     } else {
-                        if (atomName.equals(str)) {
-                            LogS.d("TranscodeLib", "Found: " + str);
-                            ret = true;
+                        if (atomSize == 0) {
+                            LogS.d("TranscodeLib", "filePointer does not go forward. Exit.");
+                            ret2 = false;
                             break;
                         }
-                        if (atomSize == 1) {
-                            fileObj.seek(filePointer + 8);
-                            byte[] atomLargeSizeBuf = new byte[8];
-                            if (fileObj.read(atomLargeSizeBuf, 0, atomLargeSizeBuf.length) < 0) {
-                                LogS.d("TranscodeLib", "file read is reached to end of the file");
-                            }
-                            BigInteger atomTmpLargeSize = new BigInteger(atomLargeSizeBuf);
-                            long atomLargeSize = atomTmpLargeSize.longValue();
-                            filePointer += atomLargeSize;
-                            LogS.d("TranscodeLib", "64bit: " + atomLargeSize);
-                        } else {
-                            if (atomSize == 0) {
-                                LogS.d("TranscodeLib", "filePointer does not go forward. Exit.");
-                                ret = false;
-                                break;
-                            }
-                            filePointer += atomSize;
-                            LogS.d("TranscodeLib", "move: " + filePointer + " atomsize " + atomSize);
-                        }
+                        filePointer += atomSize;
+                        LogS.d("TranscodeLib", "move: " + filePointer + " atomsize " + atomSize);
                     }
-                    str = atomToHunt;
-                    ret = ret2;
-                    file2 = file;
-                    i = 0;
-                } catch (Throwable th6) {
-                    th = th6;
-                    fileObj.close();
-                    throw th;
                 }
+                str = atomToHunt;
+                ret2 = ret;
+                file2 = file;
+                i = 0;
             } catch (Throwable th7) {
                 th = th7;
                 fileObj.close();
@@ -984,7 +1004,7 @@ public class EncodeVideo extends EncodeBase {
             }
         }
         fileObj.close();
-        return ret;
+        return ret2;
     }
 
     public static boolean isSupportedFormat(String filePath) {
@@ -1090,8 +1110,8 @@ public class EncodeVideo extends EncodeBase {
                                                     if (tmp < 0) {
                                                         outputAtomNameBuf = outputAtomNameBuf2;
                                                         str3 = str6;
-                                                        outParentContainer = outParentContainer2;
                                                         parentContainer = parentContainer3;
+                                                        outParentContainer = outParentContainer2;
                                                         atomSize = atomSize2;
                                                         if (outputAtomSize == 1) {
                                                             outputRAF.seek(outputFilePointer + 8);
@@ -1130,8 +1150,8 @@ public class EncodeVideo extends EncodeBase {
                                                             outParentContainer2 = outParentContainer2;
                                                             parentContainer3 = parentContainer3;
                                                         }
-                                                        outParentContainer = outParentContainer2;
                                                         parentContainer = parentContainer3;
+                                                        outParentContainer = outParentContainer2;
                                                         long position = outputFilePointer;
                                                         outputRAF.seek(outputFilePointer);
                                                         outputRAF.write(b, 0, b.length);
@@ -1253,40 +1273,30 @@ public class EncodeVideo extends EncodeBase {
     public boolean setOutputBitdepth(int bitDepth) {
         int inputBitDepth = mInputFileinfo.HDR10 ? 10 : 8;
         this.mConvert = false;
-        LogS.d("TranscodeLib", "setOutputBitdepth  bitdepth : " + bitDepth + ", InputBitdepth : " + inputBitDepth + ", mHDRType : " + this.mHDRType);
+        LogS.d("TranscodeLib", "setOutputBitdepth  bitdepth : " + bitDepth + ", InputBitdepth : " + inputBitDepth + ", mHDRType : " + this.mHDRType + ", isHLG : " + isHLG());
         if (bitDepth != 8) {
             return false;
         }
-        if (inputBitDepth == 8) {
+        if (inputBitDepth == 8 && !isHLG()) {
             return true;
         }
-        if (!isHDR10Plus() || !supportConverter()) {
+        if (!supportConverter() || (!isHDR10() && !isHLG())) {
             return false;
         }
         this.mConvert = true;
         return true;
     }
 
-    private boolean supportConverter() {
-        return SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_MMFW_SUPPORT_HDR2SDR");
-    }
-
     private static boolean isNalStartCode(byte[] data, int index) {
         if (data.length - index <= NAL_START_CODE.length) {
             return false;
         }
-        int j = 0;
-        while (true) {
-            byte[] bArr = NAL_START_CODE;
-            if (j < bArr.length) {
-                if (data[index + j] != bArr[j]) {
-                    return false;
-                }
-                j++;
-            } else {
-                return true;
+        for (int j = 0; j < NAL_START_CODE.length; j++) {
+            if (data[index + j] != NAL_START_CODE[j]) {
+                return false;
             }
         }
+        return true;
     }
 
     private static int findNalStartCode(byte[] data, int index) {
@@ -1321,11 +1331,13 @@ public class EncodeVideo extends EncodeBase {
                 throw new IOException("Not a valid video format.");
             }
             mInputFileinfo.Framerate = MediaInfo.getVideoFramerate();
-            mInputFileinfo.VideoCodecType = mInputVideoinfo.getString(MediaFormat.KEY_MIME);
+            mInputFileinfo.VideoCodecType = mInputVideoinfo.getString("mime");
             this.mRecordingMode = mInputFileinfo.RecordingMode;
             this.mRecordingFps = mInputFileinfo.RecordingFramerate;
             if (mInputFileinfo.HDR10) {
                 this.mHDRType = MediaInfoChecker.getHDRMode(mInputFileinfo);
+            } else if (mInputFileinfo.colorTransfer == 7) {
+                this.mIsHLG = true;
             }
             if (SEFHelper.isSEFVideoMode(this.mRecordingMode)) {
                 this.mNumOfSVCLayers = mInputFileinfo.NumOfSVCLayers;
@@ -1369,7 +1381,7 @@ public class EncodeVideo extends EncodeBase {
     }
 
     private int getVideoSampleSize(MediaFormat format) {
-        if (format.getString(MediaFormat.KEY_MIME).startsWith(BnRConstants.VIDEO_DIR_PATH)) {
+        if (format.getString("mime").startsWith(BnRConstants.VIDEO_DIR_PATH)) {
             int width = format.getInteger("width");
             int height = format.getInteger("height");
             return (int) (width * 1.2f * height);

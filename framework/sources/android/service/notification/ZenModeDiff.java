@@ -1,5 +1,6 @@
 package android.service.notification;
 
+import android.app.Flags;
 import android.os.Environment;
 import android.service.notification.ZenModeConfig;
 import android.telecom.Logging.Session;
@@ -17,11 +18,9 @@ public class ZenModeDiff {
     public static final int REMOVED = 2;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ExistenceChange {
     }
 
-    /* loaded from: classes3.dex */
     public static class FieldDiff<T> {
         private final T mFrom;
         private final T mTo;
@@ -48,8 +47,7 @@ public class ZenModeDiff {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static abstract class BaseDiff {
+    private static abstract class BaseDiff {
         private int mExists;
         private ArrayMap<String, FieldDiff> mFields = new ArrayMap<>();
 
@@ -97,7 +95,6 @@ public class ZenModeDiff {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ConfigDiff extends BaseDiff {
         public static final String FIELD_ALLOW_ALARMS = "allowAlarms";
         public static final String FIELD_ALLOW_CALLS = "allowCalls";
@@ -106,6 +103,7 @@ public class ZenModeDiff {
         public static final String FIELD_ALLOW_EVENTS = "allowEvents";
         public static final String FIELD_ALLOW_MEDIA = "allowMedia";
         public static final String FIELD_ALLOW_MESSAGES = "allowMessages";
+        public static final String FIELD_ALLOW_PRIORITY_CHANNELS = "allowPriorityChannels";
         public static final String FIELD_ALLOW_REMINDERS = "allowReminders";
         public static final String FIELD_ALLOW_REPEAT_CALLERS = "allowRepeatCallers";
         public static final String FIELD_ALLOW_SYSTEM = "allowSystem";
@@ -168,6 +166,9 @@ public class ZenModeDiff {
             }
             if (from.areChannelsBypassingDnd != to.areChannelsBypassingDnd) {
                 addField(FIELD_ARE_CHANNELS_BYPASSING_DND, new FieldDiff(Boolean.valueOf(from.areChannelsBypassingDnd), Boolean.valueOf(to.areChannelsBypassingDnd)));
+            }
+            if (Flags.modesApi() && from.allowPriorityChannels != to.allowPriorityChannels) {
+                addField(FIELD_ALLOW_PRIORITY_CHANNELS, new FieldDiff(Boolean.valueOf(from.allowPriorityChannels), Boolean.valueOf(to.allowPriorityChannels)));
             }
             ArraySet<String> allRules = new ArraySet<>();
             addKeys(allRules, from.automaticRules);
@@ -242,8 +243,7 @@ public class ZenModeDiff {
                     }
                 }
             }
-            RuleDiff ruleDiff = this.mManualRuleDiff;
-            if (ruleDiff != null && ruleDiff.hasDiff()) {
+            if (this.mManualRuleDiff != null && this.mManualRuleDiff.hasDiff()) {
                 if (first) {
                     first = false;
                 } else {
@@ -281,8 +281,8 @@ public class ZenModeDiff {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class RuleDiff extends BaseDiff {
+        public static final String FIELD_ALLOW_MANUAL = "allowManualInvocation";
         public static final String FIELD_COMPONENT = "component";
         public static final String FIELD_CONDITION = "condition";
         public static final String FIELD_CONDITION_ID = "conditionId";
@@ -290,11 +290,15 @@ public class ZenModeDiff {
         public static final String FIELD_CREATION_TIME = "creationTime";
         public static final String FIELD_ENABLED = "enabled";
         public static final String FIELD_ENABLER = "enabler";
+        public static final String FIELD_ICON_RES = "iconResName";
         public static final String FIELD_ID = "id";
         public static final String FIELD_MODIFIED = "modified";
         public static final String FIELD_NAME = "name";
         public static final String FIELD_PKG = "pkg";
         public static final String FIELD_SNOOZING = "snoozing";
+        public static final String FIELD_TRIGGER_DESCRIPTION = "triggerDescription";
+        public static final String FIELD_TYPE = "type";
+        public static final String FIELD_ZEN_DEVICE_EFFECTS = "zenDeviceEffects";
         public static final String FIELD_ZEN_MODE = "zenMode";
         public static final String FIELD_ZEN_POLICY = "zenPolicy";
         FieldDiff<Boolean> mActiveDiff;
@@ -354,6 +358,23 @@ public class ZenModeDiff {
             if (!Objects.equals(from.pkg, to.pkg)) {
                 addField("pkg", new FieldDiff(from.pkg, to.pkg));
             }
+            if (Flags.modesApi()) {
+                if (!Objects.equals(from.zenDeviceEffects, to.zenDeviceEffects)) {
+                    addField(FIELD_ZEN_DEVICE_EFFECTS, new FieldDiff(from.zenDeviceEffects, to.zenDeviceEffects));
+                }
+                if (!Objects.equals(from.triggerDescription, to.triggerDescription)) {
+                    addField(FIELD_TRIGGER_DESCRIPTION, new FieldDiff(from.triggerDescription, to.triggerDescription));
+                }
+                if (from.type != to.type) {
+                    addField("type", new FieldDiff(Integer.valueOf(from.type), Integer.valueOf(to.type)));
+                }
+                if (from.allowManualInvocation != to.allowManualInvocation) {
+                    addField(FIELD_ALLOW_MANUAL, new FieldDiff(Boolean.valueOf(from.allowManualInvocation), Boolean.valueOf(to.allowManualInvocation)));
+                }
+                if (!Objects.equals(from.iconResName, to.iconResName)) {
+                    addField("iconResName", new FieldDiff(from.iconResName, to.iconResName));
+                }
+            }
         }
 
         @Override // android.service.notification.ZenModeDiff.BaseDiff
@@ -403,13 +424,11 @@ public class ZenModeDiff {
         }
 
         public boolean becameActive() {
-            FieldDiff<Boolean> fieldDiff = this.mActiveDiff;
-            return fieldDiff != null && fieldDiff.to().booleanValue();
+            return this.mActiveDiff != null && this.mActiveDiff.to().booleanValue();
         }
 
         public boolean becameInactive() {
-            FieldDiff<Boolean> fieldDiff = this.mActiveDiff;
-            return (fieldDiff == null || fieldDiff.to().booleanValue()) ? false : true;
+            return (this.mActiveDiff == null || this.mActiveDiff.to().booleanValue()) ? false : true;
         }
     }
 }

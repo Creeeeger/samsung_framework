@@ -34,7 +34,6 @@ public interface ICredentialStore extends IInterface {
 
     SecurityHardwareInfoParcel getSecurityHardwareInfo() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICredentialStore {
         @Override // android.security.identity.ICredentialStore
         public SecurityHardwareInfoParcel getSecurityHardwareInfo() throws RemoteException {
@@ -62,7 +61,6 @@ public interface ICredentialStore extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICredentialStore {
         static final int TRANSACTION_createCredential = 2;
         static final int TRANSACTION_createPresentationSession = 4;
@@ -114,49 +112,45 @@ public interface ICredentialStore extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICredentialStore.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICredentialStore.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICredentialStore.DESCRIPTOR);
+                case 1:
+                    SecurityHardwareInfoParcel _result = getSecurityHardwareInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    IWritableCredential _result2 = createCredential(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ICredential _result3 = getCredentialByName(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ISession _result4 = createPresentationSession(_arg03);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SecurityHardwareInfoParcel _result = getSecurityHardwareInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            IWritableCredential _result2 = createCredential(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ICredential _result3 = getCredentialByName(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ISession _result4 = createPresentationSession(_arg03);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICredentialStore {
+        private static class Proxy implements ICredentialStore {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

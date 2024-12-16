@@ -45,10 +45,9 @@ public class PKCS12ParametersGenerator extends PBEParametersGenerator {
         for (int i = 0; i != D.length; i++) {
             D[i] = (byte) idByte;
         }
+        int i2 = 0;
         if (this.salt != null && this.salt.length != 0) {
-            int i2 = this.v;
-            int length = this.salt.length;
-            S = new byte[i2 * (((length + r8) - 1) / this.v)];
+            S = new byte[this.v * (((this.salt.length + this.v) - 1) / this.v)];
             for (int i3 = 0; i3 != S.length; i3++) {
                 S[i3] = this.salt[i3 % this.salt.length];
             }
@@ -56,11 +55,9 @@ public class PKCS12ParametersGenerator extends PBEParametersGenerator {
             S = new byte[0];
         }
         if (this.password != null && this.password.length != 0) {
-            int i4 = this.v;
-            int length2 = this.password.length;
-            P = new byte[i4 * (((length2 + r9) - 1) / this.v)];
-            for (int i5 = 0; i5 != P.length; i5++) {
-                P[i5] = this.password[i5 % this.password.length];
+            P = new byte[this.v * (((this.password.length + this.v) - 1) / this.v)];
+            for (int i4 = 0; i4 != P.length; i4++) {
+                P[i4] = this.password[i4 % this.password.length];
             }
         } else {
             P = new byte[0];
@@ -69,35 +66,27 @@ public class PKCS12ParametersGenerator extends PBEParametersGenerator {
         System.arraycopy(S, 0, I, 0, S.length);
         System.arraycopy(P, 0, I, S.length, P.length);
         byte[] B = new byte[this.v];
-        int i6 = this.u;
-        int c = ((n + i6) - 1) / i6;
-        byte[] A = new byte[i6];
-        for (int i7 = 1; i7 <= c; i7++) {
-            this.digest.update(D, 0, D.length);
-            this.digest.update(I, 0, I.length);
-            this.digest.doFinal(A, 0);
+        int c = ((this.u + n) - 1) / this.u;
+        byte[] A = new byte[this.u];
+        for (int i5 = 1; i5 <= c; i5++) {
+            this.digest.update(D, i2, D.length);
+            this.digest.update(I, i2, I.length);
+            this.digest.doFinal(A, i2);
             for (int j = 1; j < this.iterationCount; j++) {
-                this.digest.update(A, 0, A.length);
-                this.digest.doFinal(A, 0);
+                this.digest.update(A, i2, A.length);
+                this.digest.doFinal(A, i2);
             }
             for (int j2 = 0; j2 != B.length; j2++) {
                 B[j2] = A[j2 % A.length];
             }
-            int j3 = 0;
-            while (true) {
-                int length3 = I.length;
-                int i8 = this.v;
-                if (j3 == length3 / i8) {
-                    break;
-                }
-                adjust(I, i8 * j3, B);
-                j3++;
+            for (int j3 = 0; j3 != I.length / this.v; j3++) {
+                adjust(I, this.v * j3, B);
             }
-            if (i7 == c) {
-                int i9 = this.u;
-                System.arraycopy(A, 0, dKey, (i7 - 1) * i9, dKey.length - ((i7 - 1) * i9));
+            if (i5 == c) {
+                i2 = 0;
+                System.arraycopy(A, 0, dKey, (i5 - 1) * this.u, dKey.length - ((i5 - 1) * this.u));
             } else {
-                System.arraycopy(A, 0, dKey, (i7 - 1) * this.u, A.length);
+                System.arraycopy(A, i2, dKey, (i5 - 1) * this.u, A.length);
             }
         }
         return dKey;

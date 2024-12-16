@@ -4,12 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ModemInfo implements Parcelable {
     public static final Parcelable.Creator<ModemInfo> CREATOR = new Parcelable.Creator() { // from class: android.telephony.ModemInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public ModemInfo createFromParcel(Parcel in) {
             return new ModemInfo(in);
@@ -76,22 +73,5 @@ public class ModemInfo implements Parcelable {
         dest.writeInt(this.rat);
         dest.writeBoolean(this.isVoiceSupported);
         dest.writeBoolean(this.isDataSupported);
-    }
-
-    /* renamed from: android.telephony.ModemInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ModemInfo createFromParcel(Parcel in) {
-            return new ModemInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ModemInfo[] newArray(int size) {
-            return new ModemInfo[size];
-        }
     }
 }

@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ILogAccessDialogCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.ILogAccessDialogCallback";
 
@@ -14,7 +14,6 @@ public interface ILogAccessDialogCallback extends IInterface {
 
     void declineAccessForClient(int i, String str) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ILogAccessDialogCallback {
         @Override // com.android.internal.app.ILogAccessDialogCallback
         public void approveAccessForClient(int uid, String packageName) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ILogAccessDialogCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ILogAccessDialogCallback {
         static final int TRANSACTION_approveAccessForClient = 1;
         static final int TRANSACTION_declineAccessForClient = 2;
@@ -76,31 +74,28 @@ public interface ILogAccessDialogCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILogAccessDialogCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILogAccessDialogCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILogAccessDialogCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    approveAccessForClient(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    declineAccessForClient(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            approveAccessForClient(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            declineAccessForClient(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements ILogAccessDialogCallback {
             private IBinder mRemote;
 

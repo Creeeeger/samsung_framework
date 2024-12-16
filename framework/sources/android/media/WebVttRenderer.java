@@ -14,8 +14,8 @@ public class WebVttRenderer extends SubtitleController.Renderer {
 
     @Override // android.media.SubtitleController.Renderer
     public boolean supports(MediaFormat format) {
-        if (format.containsKey(MediaFormat.KEY_MIME)) {
-            return format.getString(MediaFormat.KEY_MIME).equals("text/vtt");
+        if (format.containsKey("mime")) {
+            return format.getString("mime").equals("text/vtt");
         }
         return false;
     }

@@ -12,7 +12,6 @@ public interface IUpdateAvailableNetworksCallback extends IInterface {
 
     void onComplete(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IUpdateAvailableNetworksCallback {
         @Override // com.android.internal.telephony.IUpdateAvailableNetworksCallback
         public void onComplete(int result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IUpdateAvailableNetworksCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IUpdateAvailableNetworksCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,26 +65,22 @@ public interface IUpdateAvailableNetworksCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUpdateAvailableNetworksCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUpdateAvailableNetworksCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUpdateAvailableNetworksCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IUpdateAvailableNetworksCallback {
+        private static class Proxy implements IUpdateAvailableNetworksCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

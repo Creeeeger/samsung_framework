@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import com.android.internal.R;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MultiWindowEdgeDetector {
     public static final int EDGE_LEFT_TOP = 5;
     public static final int EDGE_NONE = 0;
@@ -120,11 +120,9 @@ public class MultiWindowEdgeDetector {
         boolean needUpdate = changed || this.mScreenOrientation == 0;
         if (needUpdate) {
             this.mScreenWidth = displayInfo.logicalWidth;
-            int i = displayInfo.logicalHeight;
-            this.mScreenHeight = i;
-            int i2 = this.mScreenWidth > i ? 2 : 1;
-            this.mScreenOrientation = i2;
-            if (i2 == 2) {
+            this.mScreenHeight = displayInfo.logicalHeight;
+            this.mScreenOrientation = this.mScreenWidth > this.mScreenHeight ? 2 : 1;
+            if (this.mScreenOrientation == 2) {
                 sWidth = (int) ((sWidth * WIDTH_SCALE_FOR_LANDSCAPE_CORNER_R) + 0.5f);
             }
             if (SAFE_DEBUG) {
@@ -192,8 +190,7 @@ public class MultiWindowEdgeDetector {
     }
 
     public boolean isEdge() {
-        int i = this.mEdgeFlags;
-        return i == 5 || i == 9;
+        return this.mEdgeFlags == 5 || this.mEdgeFlags == 9;
     }
 
     private boolean isNotSupportEdge(MotionEvent ev) {
@@ -213,7 +210,7 @@ public class MultiWindowEdgeDetector {
         int flags = 1;
         if (x < sWidth) {
             flags = 1 | 4;
-        } else if (x > this.mScreenWidth - r3) {
+        } else if (x > this.mScreenWidth - sWidth) {
             flags = 1 | 8;
         }
         Log.i(TAG, this.mPrefixLog + "checkEdgeFlags: " + Utils.edgeFlagToString(flags) + ", [" + x + "," + y + "], w=" + sWidth + ", h=" + sHeight + ", screenWidth=" + this.mScreenWidth);
@@ -221,16 +218,14 @@ public class MultiWindowEdgeDetector {
     }
 
     public boolean readyToFreeform(int x, int y) {
-        int i = this.mCornerRadius;
-        int radius = i * i;
+        int radius = this.mCornerRadius * this.mCornerRadius;
         int distance = 0;
         switch (this.mEdgeFlags) {
             case 5:
                 distance = (x * x) + (y * y);
                 break;
             case 9:
-                int i2 = this.mScreenWidth;
-                distance = ((i2 - x) * (i2 - x)) + (y * y);
+                distance = ((this.mScreenWidth - x) * (this.mScreenWidth - x)) + (y * y);
                 break;
         }
         return radius < distance;
@@ -294,7 +289,6 @@ public class MultiWindowEdgeDetector {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Utils {
         public static int dipToPixel(int dip, float density) {
             return (int) (dip * density);
@@ -313,19 +307,16 @@ public class MultiWindowEdgeDetector {
 
         public static void applyResizeRect(Rect outBounds, int edgeFlags, int x, int y) {
             if (outBounds == null) {
-                return;
             }
             switch (edgeFlags) {
                 case 5:
                     outBounds.left = x;
                     outBounds.top = y;
-                    return;
+                    break;
                 case 9:
                     outBounds.right = x;
                     outBounds.top = y;
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 

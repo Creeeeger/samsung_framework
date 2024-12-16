@@ -28,9 +28,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes2.dex */
-public final class IRemoteInputConnectionInvoker {
+final class IRemoteInputConnectionInvoker {
     private CancellationSignalBeamer.Sender mBeamer;
     private final IRemoteInputConnection mConnection;
     private final int mSessionId;
@@ -40,9 +39,7 @@ public final class IRemoteInputConnectionInvoker {
         this.mSessionId = sessionId;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static abstract class OnceResultReceiver<C> extends ResultReceiver {
+    private static abstract class OnceResultReceiver<C> extends ResultReceiver {
         private C mConsumer;
         private Executor mExecutor;
 
@@ -57,7 +54,7 @@ public final class IRemoteInputConnectionInvoker {
         }
 
         @Override // android.os.ResultReceiver
-        public final void onReceiveResult(int resultCode, Bundle resultData) {
+        protected final void onReceiveResult(int resultCode, Bundle resultData) {
             Executor executor;
             C consumer;
             synchronized (this) {
@@ -73,12 +70,12 @@ public final class IRemoteInputConnectionInvoker {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static final class IntResultReceiver extends OnceResultReceiver<IntConsumer> {
+    static final class IntResultReceiver extends OnceResultReceiver<IntConsumer> {
         IntResultReceiver(Executor executor, IntConsumer consumer) {
             super(executor, consumer);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.inputmethodservice.IRemoteInputConnectionInvoker.OnceResultReceiver
         public void dispatch(Executor executor, final IntConsumer consumer, final int code, Bundle data) {
             executor.execute(new Runnable() { // from class: android.inputmethodservice.IRemoteInputConnectionInvoker$IntResultReceiver$$ExternalSyntheticLambda0
@@ -91,12 +88,12 @@ public final class IRemoteInputConnectionInvoker {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static final class TextBoundsInfoResultReceiver extends OnceResultReceiver<Consumer<TextBoundsInfoResult>> {
+    static final class TextBoundsInfoResultReceiver extends OnceResultReceiver<Consumer<TextBoundsInfoResult>> {
         TextBoundsInfoResultReceiver(Executor executor, Consumer<TextBoundsInfoResult> consumer) {
             super(executor, consumer);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.inputmethodservice.IRemoteInputConnectionInvoker.OnceResultReceiver
         public void dispatch(Executor executor, final Consumer<TextBoundsInfoResult> consumer, int code, Bundle data) {
             final TextBoundsInfoResult textBoundsInfoResult = new TextBoundsInfoResult(code, TextBoundsInfo.createFromBundle(data));
@@ -418,14 +415,10 @@ public final class IRemoteInputConnectionInvoker {
     }
 
     private CancellationSignalBeamer.Sender getCancellationSignalBeamer() {
-        CancellationSignalBeamer.Sender sender = this.mBeamer;
-        if (sender != null) {
-            return sender;
+        if (this.mBeamer != null) {
+            return this.mBeamer;
         }
-        AnonymousClass1 anonymousClass1 = new CancellationSignalBeamer.Sender() { // from class: android.inputmethodservice.IRemoteInputConnectionInvoker.1
-            AnonymousClass1() {
-            }
-
+        this.mBeamer = new CancellationSignalBeamer.Sender() { // from class: android.inputmethodservice.IRemoteInputConnectionInvoker.1
             @Override // android.os.CancellationSignalBeamer.Sender
             public void onCancel(IBinder token) {
                 try {
@@ -442,31 +435,7 @@ public final class IRemoteInputConnectionInvoker {
                 }
             }
         };
-        this.mBeamer = anonymousClass1;
-        return anonymousClass1;
-    }
-
-    /* renamed from: android.inputmethodservice.IRemoteInputConnectionInvoker$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends CancellationSignalBeamer.Sender {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.CancellationSignalBeamer.Sender
-        public void onCancel(IBinder token) {
-            try {
-                IRemoteInputConnectionInvoker.this.mConnection.cancelCancellationSignal(token);
-            } catch (RemoteException e) {
-            }
-        }
-
-        @Override // android.os.CancellationSignalBeamer.Sender
-        public void onForget(IBinder token) {
-            try {
-                IRemoteInputConnectionInvoker.this.mConnection.forgetCancellationSignal(token);
-            } catch (RemoteException e) {
-            }
-        }
+        return this.mBeamer;
     }
 
     public AndroidFuture<Boolean> requestCursorUpdates(int cursorUpdateMode, int imeDisplayId) {

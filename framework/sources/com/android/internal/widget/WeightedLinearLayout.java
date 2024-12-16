@@ -30,7 +30,7 @@ public class WeightedLinearLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
         boolean isPortrait = screenWidth < metrics.heightPixels;

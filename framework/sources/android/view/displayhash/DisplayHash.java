@@ -6,19 +6,17 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.android.internal.util.AnnotationValidations;
-import com.samsung.android.ims.options.SemCapabilities;
 
 /* loaded from: classes4.dex */
 public final class DisplayHash implements Parcelable {
     public static final Parcelable.Creator<DisplayHash> CREATOR = new Parcelable.Creator<DisplayHash>() { // from class: android.view.displayhash.DisplayHash.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayHash[] newArray(int size) {
             return new DisplayHash[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayHash createFromParcel(Parcel in) {
             return new DisplayHash(in);
@@ -30,21 +28,17 @@ public final class DisplayHash implements Parcelable {
     private final byte[] mImageHash;
     private final long mTimeMillis;
 
-    /* synthetic */ DisplayHash(Parcel parcel, DisplayHashIA displayHashIA) {
-        this(parcel);
-    }
-
     @SystemApi
     public DisplayHash(long timeMillis, Rect boundsInWindow, String hashAlgorithm, byte[] imageHash, byte[] hmac) {
         this.mTimeMillis = timeMillis;
         this.mBoundsInWindow = boundsInWindow;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) boundsInWindow);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBoundsInWindow);
         this.mHashAlgorithm = hashAlgorithm;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hashAlgorithm);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHashAlgorithm);
         this.mImageHash = imageHash;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) imageHash);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mImageHash);
         this.mHmac = hmac;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHmac);
     }
 
     @SystemApi
@@ -78,7 +72,7 @@ public final class DisplayHash implements Parcelable {
 
     private String byteArrayToString(byte[] byteArray) {
         if (byteArray == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         int iMax = byteArray.length - 1;
         if (iMax == -1) {
@@ -121,29 +115,12 @@ public final class DisplayHash implements Parcelable {
         byte[] imageHash = in.createByteArray();
         byte[] hmac = in.createByteArray();
         this.mBoundsInWindow = boundsInWindow;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) boundsInWindow);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBoundsInWindow);
         this.mHashAlgorithm = hashAlgorithm;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hashAlgorithm);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHashAlgorithm);
         this.mImageHash = imageHash;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) imageHash);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mImageHash);
         this.mHmac = hmac;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
-    }
-
-    /* renamed from: android.view.displayhash.DisplayHash$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayHash> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayHash[] newArray(int size) {
-            return new DisplayHash[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayHash createFromParcel(Parcel in) {
-            return new DisplayHash(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHmac);
     }
 }

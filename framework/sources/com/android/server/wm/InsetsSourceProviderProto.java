@@ -17,4 +17,5 @@ public final class InsetsSourceProviderProto {
     public static final long SEAMLESS_ROTATING = 1133871366157L;
     public static final long SERVER_VISIBLE = 1133871366156L;
     public static final long SOURCE = 1146756268033L;
+    public static final long SOURCE_WINDOW_STATE = 1146756268048L;
 }

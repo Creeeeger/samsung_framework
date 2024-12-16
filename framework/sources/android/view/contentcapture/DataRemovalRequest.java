@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DataRemovalRequest implements Parcelable {
     public static final Parcelable.Creator<DataRemovalRequest> CREATOR = new Parcelable.Creator<DataRemovalRequest>() { // from class: android.view.contentcapture.DataRemovalRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataRemovalRequest createFromParcel(Parcel parcel) {
             return new DataRemovalRequest(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataRemovalRequest[] newArray(int size) {
             return new DataRemovalRequest[size];
@@ -34,16 +33,7 @@ public final class DataRemovalRequest implements Parcelable {
     private final String mPackageName;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface Flags {
-    }
-
-    /* synthetic */ DataRemovalRequest(Parcel parcel, DataRemovalRequestIA dataRemovalRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DataRemovalRequest(Builder builder, DataRemovalRequestIA dataRemovalRequestIA) {
-        this(builder);
     }
 
     private DataRemovalRequest(Builder builder) {
@@ -60,9 +50,8 @@ public final class DataRemovalRequest implements Parcelable {
 
     private DataRemovalRequest(Parcel parcel) {
         this.mPackageName = parcel.readString();
-        boolean readBoolean = parcel.readBoolean();
-        this.mForEverything = readBoolean;
-        if (!readBoolean) {
+        this.mForEverything = parcel.readBoolean();
+        if (!this.mForEverything) {
             int size = parcel.readInt();
             this.mLocusIdRequests = new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
@@ -83,7 +72,6 @@ public final class DataRemovalRequest implements Parcelable {
         return this.mLocusIdRequests;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private boolean mDestroyed;
         private IntArray mFlags;
@@ -142,31 +130,9 @@ public final class DataRemovalRequest implements Parcelable {
         }
     }
 
-    /* renamed from: android.view.contentcapture.DataRemovalRequest$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DataRemovalRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataRemovalRequest createFromParcel(Parcel parcel) {
-            return new DataRemovalRequest(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataRemovalRequest[] newArray(int size) {
-            return new DataRemovalRequest[size];
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public final class LocusIdRequest {
         private final int mFlags;
         private final LocusId mLocusId;
-
-        /* synthetic */ LocusIdRequest(DataRemovalRequest dataRemovalRequest, LocusId locusId, int i, LocusIdRequestIA locusIdRequestIA) {
-            this(locusId, i);
-        }
 
         private LocusIdRequest(LocusId locusId, int flags) {
             this.mLocusId = locusId;

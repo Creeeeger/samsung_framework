@@ -8,7 +8,7 @@ public class BezierControlPoint {
     private float controlPointY2;
 
     public BezierControlPoint() {
-        setValues(0.0f, 0.0f, 0.0f, 0.0f);
+        setValues(0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     public BezierControlPoint(float controlPointX1, float controlPointY1, float controlPointX2, float controlPointY2) {

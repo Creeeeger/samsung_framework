@@ -18,11 +18,10 @@ public class CBCBlockCipher implements BlockCipher {
     public CBCBlockCipher(BlockCipher cipher) {
         this.cipher = null;
         this.cipher = cipher;
-        int blockSize = cipher.getBlockSize();
-        this.blockSize = blockSize;
-        this.IV = new byte[blockSize];
-        this.cbcV = new byte[blockSize];
-        this.cbcNextV = new byte[blockSize];
+        this.blockSize = cipher.getBlockSize();
+        this.IV = new byte[this.blockSize];
+        this.cbcV = new byte[this.blockSize];
+        this.cbcNextV = new byte[this.blockSize];
     }
 
     public BlockCipher getUnderlyingCipher() {
@@ -76,8 +75,7 @@ public class CBCBlockCipher implements BlockCipher {
 
     @Override // com.android.internal.org.bouncycastle.crypto.BlockCipher
     public void reset() {
-        byte[] bArr = this.IV;
-        System.arraycopy(bArr, 0, this.cbcV, 0, bArr.length);
+        System.arraycopy(this.IV, 0, this.cbcV, 0, this.IV.length);
         Arrays.fill(this.cbcNextV, (byte) 0);
         this.cipher.reset();
     }
@@ -91,21 +89,19 @@ public class CBCBlockCipher implements BlockCipher {
             bArr[i] = (byte) (bArr[i] ^ in[inOff + i]);
         }
         int length = this.cipher.processBlock(this.cbcV, 0, out, outOff);
-        byte[] bArr2 = this.cbcV;
-        System.arraycopy(out, outOff, bArr2, 0, bArr2.length);
+        System.arraycopy(out, outOff, this.cbcV, 0, this.cbcV.length);
         return length;
     }
 
     private int decryptBlock(byte[] in, int inOff, byte[] out, int outOff) throws DataLengthException, IllegalStateException {
-        int i = this.blockSize;
-        if (inOff + i > in.length) {
+        if (this.blockSize + inOff > in.length) {
             throw new DataLengthException("input buffer too short");
         }
-        System.arraycopy(in, inOff, this.cbcNextV, 0, i);
+        System.arraycopy(in, inOff, this.cbcNextV, 0, this.blockSize);
         int length = this.cipher.processBlock(in, inOff, out, outOff);
-        for (int i2 = 0; i2 < this.blockSize; i2++) {
-            int i3 = outOff + i2;
-            out[i3] = (byte) (out[i3] ^ this.cbcV[i2]);
+        for (int i = 0; i < this.blockSize; i++) {
+            int i2 = outOff + i;
+            out[i2] = (byte) (out[i2] ^ this.cbcV[i]);
         }
         byte[] tmp = this.cbcV;
         this.cbcV = this.cbcNextV;

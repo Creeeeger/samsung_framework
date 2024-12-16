@@ -19,7 +19,6 @@ public final class CpuUsageProto {
     public static final long TOTAL_TIME = 1120986464271L;
     public static final long TOTAL_USER_TIME = 1120986464265L;
 
-    /* loaded from: classes3.dex */
     public final class Load {
         public static final long LOAD1 = 1108101562369L;
         public static final long LOAD15 = 1108101562371L;
@@ -29,7 +28,6 @@ public final class CpuUsageProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Stat {
         public static final long ADDED = 1133871366148L;
         public static final long MAJOR_FAULTS = 1120986464266L;

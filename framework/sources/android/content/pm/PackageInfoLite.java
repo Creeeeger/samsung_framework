@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class PackageInfoLite implements Parcelable {
     public static final Parcelable.Creator<PackageInfoLite> CREATOR = new Parcelable.Creator<PackageInfoLite>() { // from class: android.content.pm.PackageInfoLite.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageInfoLite createFromParcel(Parcel source) {
             return new PackageInfoLite(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageInfoLite[] newArray(int size) {
             return new PackageInfoLite[size];
@@ -33,10 +32,6 @@ public class PackageInfoLite implements Parcelable {
     @Deprecated
     public int versionCode;
     public int versionCodeMajor;
-
-    /* synthetic */ PackageInfoLite(Parcel parcel, PackageInfoLiteIA packageInfoLiteIA) {
-        this(parcel);
-    }
 
     public long getLongVersionCode() {
         return PackageInfo.composeLongVersionCode(this.versionCodeMajor, this.versionCode);
@@ -66,29 +61,11 @@ public class PackageInfoLite implements Parcelable {
         parcel.writeInt(this.installLocation);
         parcel.writeInt(this.multiArch ? 1 : 0);
         parcel.writeInt(this.debuggable ? 1 : 0);
-        VerifierInfo[] verifierInfoArr = this.verifiers;
-        if (verifierInfoArr == null || verifierInfoArr.length == 0) {
+        if (this.verifiers == null || this.verifiers.length == 0) {
             parcel.writeInt(0);
         } else {
-            parcel.writeInt(verifierInfoArr.length);
+            parcel.writeInt(this.verifiers.length);
             parcel.writeTypedArray(this.verifiers, i);
-        }
-    }
-
-    /* renamed from: android.content.pm.PackageInfoLite$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackageInfoLite> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageInfoLite createFromParcel(Parcel source) {
-            return new PackageInfoLite(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageInfoLite[] newArray(int size) {
-            return new PackageInfoLite[size];
         }
     }
 
@@ -106,10 +83,9 @@ public class PackageInfoLite implements Parcelable {
         int verifiersLength = source.readInt();
         if (verifiersLength == 0) {
             this.verifiers = new VerifierInfo[0];
-            return;
+        } else {
+            this.verifiers = new VerifierInfo[verifiersLength];
+            source.readTypedArray(this.verifiers, VerifierInfo.CREATOR);
         }
-        VerifierInfo[] verifierInfoArr = new VerifierInfo[verifiersLength];
-        this.verifiers = verifierInfoArr;
-        source.readTypedArray(verifierInfoArr, VerifierInfo.CREATOR);
     }
 }

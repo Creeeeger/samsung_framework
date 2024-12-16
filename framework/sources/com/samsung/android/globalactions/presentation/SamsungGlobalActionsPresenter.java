@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
     private static final String TAG = "SamsungGlobalActionsPresenter";
     public ActionViewModel mActionConfirming;
@@ -53,7 +53,7 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
     ActionViewModelFactory mViewModelFactory;
     SamsungGlobalActionsManager mWindowManagerFuncs;
     private static int NOT_SIDE_KEY_MODELS = -1;
-    public static Comparator<ActionViewModel> sViewPositionComparator = new Comparator() { // from class: com.samsung.android.globalactions.presentation.SamsungGlobalActionsPresenter$$ExternalSyntheticLambda4
+    public static Comparator<ActionViewModel> sViewPositionComparator = new Comparator() { // from class: com.samsung.android.globalactions.presentation.SamsungGlobalActionsPresenter$$ExternalSyntheticLambda0
         @Override // java.util.Comparator
         public final int compare(Object obj, Object obj2) {
             return SamsungGlobalActionsPresenter.lambda$static$4((ActionViewModel) obj, (ActionViewModel) obj2);
@@ -330,10 +330,12 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
         hideQuickPanel();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShowDialog$1() {
         this.mView.dismiss();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onShowDialog$2() {
         this.mView.dismissWithAnimation();
     }
@@ -342,7 +344,7 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
     public void registerSecureConfirmAction(final ActionViewModel viewModel) {
         if (!this.mIsRegistered) {
             this.mIsRegistered = true;
-            this.mBroadcastManager.registerSecureConfirmAction(new Runnable() { // from class: com.samsung.android.globalactions.presentation.SamsungGlobalActionsPresenter$$ExternalSyntheticLambda0
+            this.mBroadcastManager.registerSecureConfirmAction(new Runnable() { // from class: com.samsung.android.globalactions.presentation.SamsungGlobalActionsPresenter$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     ActionViewModel.this.onPressSecureConfirm();
@@ -401,7 +403,7 @@ public class SamsungGlobalActionsPresenter implements SamsungGlobalActions {
         this.mContentObserverWrapper.registerObserver(uri, runnable);
     }
 
-    public static /* synthetic */ int lambda$static$4(ActionViewModel p1, ActionViewModel p2) {
+    static /* synthetic */ int lambda$static$4(ActionViewModel p1, ActionViewModel p2) {
         return p1.getActionInfo().getViewType().getValue() < p2.getActionInfo().getViewType().getValue() ? -1 : 1;
     }
 

@@ -2,6 +2,7 @@ package android.media;
 
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import com.android.internal.vibrator.persistence.XmlConstants;
 import com.samsung.android.share.SemShareConstants;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,14 +22,12 @@ public class MediaMetrics {
     private static final int TYPE_NONE = 0;
     private static final int TYPE_RATE = 5;
 
-    /* loaded from: classes2.dex */
     public interface Key<T> {
         String getName();
 
         Class<T> getValueClass();
     }
 
-    /* loaded from: classes2.dex */
     public static class Name {
         public static final String AUDIO = "audio";
         public static final String AUDIO_BLUETOOTH = "audio.bluetooth";
@@ -44,14 +43,13 @@ public class MediaMetrics {
         public static final String METRICS_MANAGER = "metrics.manager";
     }
 
-    /* loaded from: classes2.dex */
     public static class Property {
         public static final Key<String> ADDRESS = MediaMetrics.createKey("address", String.class);
         public static final Key<String> ATTRIBUTES = MediaMetrics.createKey("attributes", String.class);
         public static final Key<String> CALLING_PACKAGE = MediaMetrics.createKey("callingPackage", String.class);
         public static final Key<String> CLIENT_NAME = MediaMetrics.createKey("clientName", String.class);
         public static final Key<Integer> CLOSED_COUNT = MediaMetrics.createKey("closedCount", Integer.class);
-        public static final Key<Integer> DELAY_MS = MediaMetrics.createKey("delayMs", Integer.class);
+        public static final Key<Integer> DELAY_MS = MediaMetrics.createKey(XmlConstants.ATTRIBUTE_DELAY_MS, Integer.class);
         public static final Key<String> DEVICE = MediaMetrics.createKey("device", String.class);
         public static final Key<String> DEVICE_DISCONNECTED = MediaMetrics.createKey("deviceDisconnected", String.class);
         public static final Key<Integer> DEVICE_ID = MediaMetrics.createKey(SemShareConstants.INTENT_EXTRA_CHOOSER_SHARE_DEVICE_ID, Integer.class);
@@ -72,6 +70,7 @@ public class MediaMetrics {
         public static final Key<Integer> HARDWARE_TYPE = MediaMetrics.createKey("hardwareType", Integer.class);
         public static final Key<String> HEAD_TRACKER_ENABLED = MediaMetrics.createKey("headTrackerEnabled", String.class);
         public static final Key<Integer> INDEX = MediaMetrics.createKey("index", Integer.class);
+        public static final Key<Integer> OLD_INDEX = MediaMetrics.createKey("oldIndex", Integer.class);
         public static final Key<Integer> INPUT_PORT_COUNT = MediaMetrics.createKey("inputPortCount", Integer.class);
         public static final Key<String> IS_SHARED = MediaMetrics.createKey("isShared", String.class);
         public static final Key<String> LOG_SESSION_ID = MediaMetrics.createKey("logSessionId", String.class);
@@ -96,7 +95,6 @@ public class MediaMetrics {
         public static final Key<String> USING_ALSA = MediaMetrics.createKey("usingAlsa", String.class);
     }
 
-    /* loaded from: classes2.dex */
     public static class Value {
         public static final String CONNECT = "connect";
         public static final String CONNECTED = "connected";
@@ -112,61 +110,17 @@ public class MediaMetrics {
         public static final String YES = "yes";
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int native_submit_bytebuffer(ByteBuffer byteBuffer, int i);
 
-    /* renamed from: android.media.MediaMetrics$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1<T> implements Key<T> {
-        private final String mName;
-        private final Class<T> mType;
-        final /* synthetic */ String val$name;
-        final /* synthetic */ Class val$type;
-
-        AnonymousClass1(String str, Class cls) {
-            this.val$name = str;
-            this.val$type = cls;
-            this.mName = str;
-            this.mType = cls;
-        }
-
-        @Override // android.media.MediaMetrics.Key
-        public String getName() {
-            return this.mName;
-        }
-
-        @Override // android.media.MediaMetrics.Key
-        public Class<T> getValueClass() {
-            return this.mType;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof Key)) {
-                return false;
-            }
-            Key<?> other = (Key) obj;
-            return this.mName.equals(other.getName()) && this.mType.equals(other.getValueClass());
-        }
-
-        public int hashCode() {
-            return Objects.hash(this.mName, this.mType);
-        }
-    }
-
-    public static <T> Key<T> createKey(String name, Class<T> type) {
-        return new Key<T>(name, type) { // from class: android.media.MediaMetrics.1
+    public static <T> Key<T> createKey(final String name, final Class<T> type) {
+        return new Key<T>() { // from class: android.media.MediaMetrics.1
             private final String mName;
             private final Class<T> mType;
-            final /* synthetic */ String val$name;
-            final /* synthetic */ Class val$type;
 
-            AnonymousClass1(String name2, Class type2) {
-                this.val$name = name2;
-                this.val$type = type2;
-                this.mName = name2;
-                this.mType = type2;
+            {
+                this.mName = name;
+                this.mType = type;
             }
 
             @Override // android.media.MediaMetrics.Key
@@ -196,7 +150,6 @@ public class MediaMetrics {
         };
     }
 
-    /* loaded from: classes2.dex */
     public static class Item {
         public static final String BUNDLE_HEADER_SIZE = "_headerSize";
         public static final String BUNDLE_KEY = "_key";
@@ -232,18 +185,16 @@ public class MediaMetrics {
             if (keyLength > 65534) {
                 throw new IllegalArgumentException("Key length too large");
             }
-            int i = keyLength + 12 + 1 + 4 + 4 + 8;
-            this.mHeaderSize = i;
-            this.mPidOffset = i - 16;
-            this.mUidOffset = i - 12;
-            this.mTimeNsOffset = i - 8;
-            this.mPropertyCountOffset = i;
-            this.mPropertyStartOffset = i + 4;
+            this.mHeaderSize = keyLength + 12 + 1 + 4 + 4 + 8;
+            this.mPidOffset = this.mHeaderSize - 16;
+            this.mUidOffset = this.mHeaderSize - 12;
+            this.mTimeNsOffset = this.mHeaderSize - 8;
+            this.mPropertyCountOffset = this.mHeaderSize;
+            this.mPropertyStartOffset = this.mHeaderSize + 4;
             this.mKey = key;
-            ByteBuffer allocateDirect = ByteBuffer.allocateDirect(Math.max(capacity, i + 4));
-            this.mBuffer = allocateDirect;
-            allocateDirect.order(ByteOrder.nativeOrder()).putInt(0).putInt(i).putChar((char) 0).putChar((char) (keyLength + 1)).put(keyBytes).put((byte) 0).putInt(pid).putInt(uid).putLong(timeNs);
-            if (i != this.mBuffer.position()) {
+            this.mBuffer = ByteBuffer.allocateDirect(Math.max(capacity, this.mHeaderSize + 4));
+            this.mBuffer.order(ByteOrder.nativeOrder()).putInt(0).putInt(this.mHeaderSize).putChar((char) 0).putChar((char) (keyLength + 1)).put(keyBytes).put((byte) 0).putInt(pid).putInt(uid).putLong(timeNs);
+            if (this.mHeaderSize != this.mBuffer.position()) {
                 throw new IllegalStateException("Mismatched sizing");
             }
             this.mBuffer.putInt(0);
@@ -329,8 +280,7 @@ public class MediaMetrics {
 
         public Item clear() {
             this.mBuffer.position(this.mPropertyStartOffset);
-            ByteBuffer byteBuffer = this.mBuffer;
-            byteBuffer.limit(byteBuffer.capacity());
+            this.mBuffer.limit(this.mBuffer.capacity());
             this.mBuffer.putLong(this.mTimeNsOffset, 0L);
             this.mPropertyCount = 0;
             return this;
@@ -338,8 +288,7 @@ public class MediaMetrics {
 
         public boolean record() {
             updateHeader();
-            ByteBuffer byteBuffer = this.mBuffer;
-            return MediaMetrics.native_submit_bytebuffer(byteBuffer, byteBuffer.limit()) >= 0;
+            return MediaMetrics.native_submit_bytebuffer(this.mBuffer, this.mBuffer.limit()) >= 0;
         }
 
         public Bundle toBundle() {
@@ -520,8 +469,7 @@ public class MediaMetrics {
         }
 
         private void updateHeader() {
-            ByteBuffer byteBuffer = this.mBuffer;
-            byteBuffer.putInt(0, byteBuffer.position()).putInt(this.mPropertyCountOffset, (char) this.mPropertyCount);
+            this.mBuffer.putInt(0, this.mBuffer.position()).putInt(this.mPropertyCountOffset, (char) this.mPropertyCount);
         }
     }
 }

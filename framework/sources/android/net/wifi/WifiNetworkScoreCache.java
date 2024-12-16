@@ -61,9 +61,8 @@ public class WifiNetworkScoreCache extends INetworkScoreCache.Stub {
                     changed = true;
                 }
             }
-            CacheListener cacheListener = this.mListener;
-            if (cacheListener != null && changed) {
-                cacheListener.post(networks);
+            if (this.mListener != null && changed) {
+                this.mListener.post(networks);
             }
         }
     }
@@ -202,7 +201,6 @@ public class WifiNetworkScoreCache extends INetworkScoreCache.Stub {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class CacheListener {
         private Handler mHandler;
 
@@ -213,29 +211,8 @@ public class WifiNetworkScoreCache extends INetworkScoreCache.Stub {
             this.mHandler = handler;
         }
 
-        /* renamed from: android.net.wifi.WifiNetworkScoreCache$CacheListener$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ List val$updatedNetworks;
-
-            AnonymousClass1(List list) {
-                updatedNetworks = list;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                CacheListener.this.networkCacheUpdated(updatedNetworks);
-            }
-        }
-
-        void post(List<ScoredNetwork> updatedNetworks) {
+        void post(final List<ScoredNetwork> updatedNetworks) {
             this.mHandler.post(new Runnable() { // from class: android.net.wifi.WifiNetworkScoreCache.CacheListener.1
-                final /* synthetic */ List val$updatedNetworks;
-
-                AnonymousClass1(List updatedNetworks2) {
-                    updatedNetworks = updatedNetworks2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     CacheListener.this.networkCacheUpdated(updatedNetworks);

@@ -10,8 +10,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioNetworkResponse extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$network$IRadioNetworkResponse".replace('$', '.');
-    public static final String HASH = "1b6608f238bd0b1c642df315621a7b605eafc883";
-    public static final int VERSION = 2;
+    public static final String HASH = "c45c122528c07c449ea08f6eacaace17bb7abc38";
+    public static final int VERSION = 3;
 
     void acknowledgeRequest(int i) throws RemoteException;
 
@@ -54,11 +54,15 @@ public interface IRadioNetworkResponse extends IInterface {
 
     void getVoiceRegistrationStateResponse(RadioResponseInfo radioResponseInfo, RegStateResult regStateResult) throws RemoteException;
 
+    void isCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo radioResponseInfo, boolean z) throws RemoteException;
+
     void isN1ModeEnabledResponse(RadioResponseInfo radioResponseInfo, boolean z) throws RemoteException;
 
     void isNrDualConnectivityEnabledResponse(RadioResponseInfo radioResponseInfo, boolean z) throws RemoteException;
 
     void isNullCipherAndIntegrityEnabledResponse(RadioResponseInfo radioResponseInfo, boolean z) throws RemoteException;
+
+    void isSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo radioResponseInfo, boolean z) throws RemoteException;
 
     void setAllowedNetworkTypesBitmapResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
@@ -69,6 +73,8 @@ public interface IRadioNetworkResponse extends IInterface {
     void setCdmaRoamingPreferenceResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
     void setCellInfoListRateResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
+
+    void setCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
     void setEmergencyModeResponse(RadioResponseInfo radioResponseInfo, EmergencyRegResult emergencyRegResult) throws RemoteException;
 
@@ -88,6 +94,8 @@ public interface IRadioNetworkResponse extends IInterface {
 
     void setNullCipherAndIntegrityEnabledResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
+    void setSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
+
     void setSignalStrengthReportingCriteriaResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
     void setSuppServiceNotificationsResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
@@ -104,7 +112,6 @@ public interface IRadioNetworkResponse extends IInterface {
 
     void triggerEmergencyNetworkScanResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioNetworkResponse {
         @Override // android.hardware.radio.network.IRadioNetworkResponse
         public void acknowledgeRequest(int serial) throws RemoteException {
@@ -279,6 +286,22 @@ public interface IRadioNetworkResponse extends IInterface {
         }
 
         @Override // android.hardware.radio.network.IRadioNetworkResponse
+        public void isCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo info, boolean isEnabled) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkResponse
+        public void setCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo info) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkResponse
+        public void setSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo info) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkResponse
+        public void isSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo info, boolean isEnabled) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkResponse
         public int getInterfaceVersion() {
             return 0;
         }
@@ -294,7 +317,6 @@ public interface IRadioNetworkResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioNetworkResponse {
         static final int TRANSACTION_acknowledgeRequest = 1;
         static final int TRANSACTION_cancelEmergencyNetworkScanResponse = 39;
@@ -316,14 +338,17 @@ public interface IRadioNetworkResponse extends IInterface {
         static final int TRANSACTION_getUsageSettingResponse = 35;
         static final int TRANSACTION_getVoiceRadioTechnologyResponse = 14;
         static final int TRANSACTION_getVoiceRegistrationStateResponse = 15;
+        static final int TRANSACTION_isCellularIdentifierTransparencyEnabledResponse = 44;
         static final int TRANSACTION_isN1ModeEnabledResponse = 42;
         static final int TRANSACTION_isNrDualConnectivityEnabledResponse = 16;
         static final int TRANSACTION_isNullCipherAndIntegrityEnabledResponse = 41;
+        static final int TRANSACTION_isSecurityAlgorithmsUpdatedEnabledResponse = 47;
         static final int TRANSACTION_setAllowedNetworkTypesBitmapResponse = 17;
         static final int TRANSACTION_setBandModeResponse = 18;
         static final int TRANSACTION_setBarringPasswordResponse = 19;
         static final int TRANSACTION_setCdmaRoamingPreferenceResponse = 20;
         static final int TRANSACTION_setCellInfoListRateResponse = 21;
+        static final int TRANSACTION_setCellularIdentifierTransparencyEnabledResponse = 45;
         static final int TRANSACTION_setEmergencyModeResponse = 36;
         static final int TRANSACTION_setIndicationFilterResponse = 22;
         static final int TRANSACTION_setLinkCapacityReportingCriteriaResponse = 23;
@@ -333,6 +358,7 @@ public interface IRadioNetworkResponse extends IInterface {
         static final int TRANSACTION_setNetworkSelectionModeManualResponse = 26;
         static final int TRANSACTION_setNrDualConnectivityStateResponse = 27;
         static final int TRANSACTION_setNullCipherAndIntegrityEnabledResponse = 40;
+        static final int TRANSACTION_setSecurityAlgorithmsUpdatedEnabledResponse = 46;
         static final int TRANSACTION_setSignalStrengthReportingCriteriaResponse = 28;
         static final int TRANSACTION_setSuppServiceNotificationsResponse = 29;
         static final int TRANSACTION_setSystemSelectionChannelsResponse = 30;
@@ -369,268 +395,288 @@ public interface IRadioNetworkResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeRequest(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAllowedNetworkTypesBitmapResponse(_arg02, _arg1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int[] _arg12 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    getAvailableBandModesResponse(_arg03, _arg12);
+                    return true;
+                case 4:
+                    RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    OperatorInfo[] _arg13 = (OperatorInfo[]) data.createTypedArray(OperatorInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getAvailableNetworksResponse(_arg04, _arg13);
+                    return true;
+                case 5:
+                    RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    CellIdentity _arg14 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    BarringInfo[] _arg2 = (BarringInfo[]) data.createTypedArray(BarringInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getBarringInfoResponse(_arg05, _arg14, _arg2);
+                    return true;
+                case 6:
+                    RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getCdmaRoamingPreferenceResponse(_arg06, _arg15);
+                    return true;
+                case 7:
+                    RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    CellInfo[] _arg16 = (CellInfo[]) data.createTypedArray(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCellInfoListResponse(_arg07, _arg16);
+                    return true;
+                case 8:
+                    RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    RegStateResult _arg17 = (RegStateResult) data.readTypedObject(RegStateResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    getDataRegistrationStateResponse(_arg08, _arg17);
+                    return true;
+                case 9:
+                    RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg18 = data.readBoolean();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getImsRegistrationStateResponse(_arg09, _arg18, _arg22);
+                    return true;
+                case 10:
+                    RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg19 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    getNetworkSelectionModeResponse(_arg010, _arg19);
+                    return true;
+                case 11:
+                    RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg110 = data.readString();
+                    String _arg23 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    getOperatorResponse(_arg011, _arg110, _arg23, _arg3);
+                    return true;
+                case 12:
+                    RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    SignalStrength _arg111 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSignalStrengthResponse(_arg012, _arg111);
+                    return true;
+                case 13:
+                    RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    RadioAccessSpecifier[] _arg112 = (RadioAccessSpecifier[]) data.createTypedArray(RadioAccessSpecifier.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSystemSelectionChannelsResponse(_arg013, _arg112);
+                    return true;
+                case 14:
+                    RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getVoiceRadioTechnologyResponse(_arg014, _arg113);
+                    return true;
+                case 15:
+                    RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    RegStateResult _arg114 = (RegStateResult) data.readTypedObject(RegStateResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    getVoiceRegistrationStateResponse(_arg015, _arg114);
+                    return true;
+                case 16:
+                    RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg115 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isNrDualConnectivityEnabledResponse(_arg016, _arg115);
+                    return true;
+                case 17:
+                    RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setAllowedNetworkTypesBitmapResponse(_arg017);
+                    return true;
+                case 18:
+                    RadioResponseInfo _arg018 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setBandModeResponse(_arg018);
+                    return true;
+                case 19:
+                    RadioResponseInfo _arg019 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setBarringPasswordResponse(_arg019);
+                    return true;
+                case 20:
+                    RadioResponseInfo _arg020 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCdmaRoamingPreferenceResponse(_arg020);
+                    return true;
+                case 21:
+                    RadioResponseInfo _arg021 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCellInfoListRateResponse(_arg021);
+                    return true;
+                case 22:
+                    RadioResponseInfo _arg022 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setIndicationFilterResponse(_arg022);
+                    return true;
+                case 23:
+                    RadioResponseInfo _arg023 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setLinkCapacityReportingCriteriaResponse(_arg023);
+                    return true;
+                case 24:
+                    RadioResponseInfo _arg024 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setLocationUpdatesResponse(_arg024);
+                    return true;
+                case 25:
+                    RadioResponseInfo _arg025 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNetworkSelectionModeAutomaticResponse(_arg025);
+                    return true;
+                case 26:
+                    RadioResponseInfo _arg026 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNetworkSelectionModeManualResponse(_arg026);
+                    return true;
+                case 27:
+                    RadioResponseInfo _arg027 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNrDualConnectivityStateResponse(_arg027);
+                    return true;
+                case 28:
+                    RadioResponseInfo _arg028 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSignalStrengthReportingCriteriaResponse(_arg028);
+                    return true;
+                case 29:
+                    RadioResponseInfo _arg029 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSuppServiceNotificationsResponse(_arg029);
+                    return true;
+                case 30:
+                    RadioResponseInfo _arg030 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSystemSelectionChannelsResponse(_arg030);
+                    return true;
+                case 31:
+                    RadioResponseInfo _arg031 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    startNetworkScanResponse(_arg031);
+                    return true;
+                case 32:
+                    RadioResponseInfo _arg032 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopNetworkScanResponse(_arg032);
+                    return true;
+                case 33:
+                    RadioResponseInfo _arg033 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyNetworkDepersonalizationResponse(_arg033, _arg116);
+                    return true;
+                case 34:
+                    RadioResponseInfo _arg034 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUsageSettingResponse(_arg034);
+                    return true;
+                case 35:
+                    RadioResponseInfo _arg035 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getUsageSettingResponse(_arg035, _arg117);
+                    return true;
+                case 36:
+                    RadioResponseInfo _arg036 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    EmergencyRegResult _arg118 = (EmergencyRegResult) data.readTypedObject(EmergencyRegResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    setEmergencyModeResponse(_arg036, _arg118);
+                    return true;
+                case 37:
+                    RadioResponseInfo _arg037 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    triggerEmergencyNetworkScanResponse(_arg037);
+                    return true;
+                case 38:
+                    RadioResponseInfo _arg038 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    exitEmergencyModeResponse(_arg038);
+                    return true;
+                case 39:
+                    RadioResponseInfo _arg039 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    cancelEmergencyNetworkScanResponse(_arg039);
+                    return true;
+                case 40:
+                    RadioResponseInfo _arg040 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNullCipherAndIntegrityEnabledResponse(_arg040);
+                    return true;
+                case 41:
+                    RadioResponseInfo _arg041 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg119 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isNullCipherAndIntegrityEnabledResponse(_arg041, _arg119);
+                    return true;
+                case 42:
+                    RadioResponseInfo _arg042 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg120 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isN1ModeEnabledResponse(_arg042, _arg120);
+                    return true;
+                case 43:
+                    RadioResponseInfo _arg043 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setN1ModeEnabledResponse(_arg043);
+                    return true;
+                case 44:
+                    RadioResponseInfo _arg044 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg121 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isCellularIdentifierTransparencyEnabledResponse(_arg044, _arg121);
+                    return true;
+                case 45:
+                    RadioResponseInfo _arg045 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCellularIdentifierTransparencyEnabledResponse(_arg045);
+                    return true;
+                case 46:
+                    RadioResponseInfo _arg046 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSecurityAlgorithmsUpdatedEnabledResponse(_arg046);
+                    return true;
+                case 47:
+                    RadioResponseInfo _arg047 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg122 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isSecurityAlgorithmsUpdatedEnabledResponse(_arg047, _arg122);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeRequest(_arg0);
-                            return true;
-                        case 2:
-                            RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAllowedNetworkTypesBitmapResponse(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int[] _arg12 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            getAvailableBandModesResponse(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            OperatorInfo[] _arg13 = (OperatorInfo[]) data.createTypedArray(OperatorInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getAvailableNetworksResponse(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            CellIdentity _arg14 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            BarringInfo[] _arg2 = (BarringInfo[]) data.createTypedArray(BarringInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getBarringInfoResponse(_arg05, _arg14, _arg2);
-                            return true;
-                        case 6:
-                            RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getCdmaRoamingPreferenceResponse(_arg06, _arg15);
-                            return true;
-                        case 7:
-                            RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            CellInfo[] _arg16 = (CellInfo[]) data.createTypedArray(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCellInfoListResponse(_arg07, _arg16);
-                            return true;
-                        case 8:
-                            RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            RegStateResult _arg17 = (RegStateResult) data.readTypedObject(RegStateResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            getDataRegistrationStateResponse(_arg08, _arg17);
-                            return true;
-                        case 9:
-                            RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg18 = data.readBoolean();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getImsRegistrationStateResponse(_arg09, _arg18, _arg22);
-                            return true;
-                        case 10:
-                            RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            getNetworkSelectionModeResponse(_arg010, _arg19);
-                            return true;
-                        case 11:
-                            RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg110 = data.readString();
-                            String _arg23 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            getOperatorResponse(_arg011, _arg110, _arg23, _arg3);
-                            return true;
-                        case 12:
-                            RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            SignalStrength _arg111 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSignalStrengthResponse(_arg012, _arg111);
-                            return true;
-                        case 13:
-                            RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            RadioAccessSpecifier[] _arg112 = (RadioAccessSpecifier[]) data.createTypedArray(RadioAccessSpecifier.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSystemSelectionChannelsResponse(_arg013, _arg112);
-                            return true;
-                        case 14:
-                            RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getVoiceRadioTechnologyResponse(_arg014, _arg113);
-                            return true;
-                        case 15:
-                            RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            RegStateResult _arg114 = (RegStateResult) data.readTypedObject(RegStateResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            getVoiceRegistrationStateResponse(_arg015, _arg114);
-                            return true;
-                        case 16:
-                            RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg115 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            isNrDualConnectivityEnabledResponse(_arg016, _arg115);
-                            return true;
-                        case 17:
-                            RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setAllowedNetworkTypesBitmapResponse(_arg017);
-                            return true;
-                        case 18:
-                            RadioResponseInfo _arg018 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setBandModeResponse(_arg018);
-                            return true;
-                        case 19:
-                            RadioResponseInfo _arg019 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setBarringPasswordResponse(_arg019);
-                            return true;
-                        case 20:
-                            RadioResponseInfo _arg020 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCdmaRoamingPreferenceResponse(_arg020);
-                            return true;
-                        case 21:
-                            RadioResponseInfo _arg021 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCellInfoListRateResponse(_arg021);
-                            return true;
-                        case 22:
-                            RadioResponseInfo _arg022 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setIndicationFilterResponse(_arg022);
-                            return true;
-                        case 23:
-                            RadioResponseInfo _arg023 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setLinkCapacityReportingCriteriaResponse(_arg023);
-                            return true;
-                        case 24:
-                            RadioResponseInfo _arg024 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setLocationUpdatesResponse(_arg024);
-                            return true;
-                        case 25:
-                            RadioResponseInfo _arg025 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNetworkSelectionModeAutomaticResponse(_arg025);
-                            return true;
-                        case 26:
-                            RadioResponseInfo _arg026 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNetworkSelectionModeManualResponse(_arg026);
-                            return true;
-                        case 27:
-                            RadioResponseInfo _arg027 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNrDualConnectivityStateResponse(_arg027);
-                            return true;
-                        case 28:
-                            RadioResponseInfo _arg028 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSignalStrengthReportingCriteriaResponse(_arg028);
-                            return true;
-                        case 29:
-                            RadioResponseInfo _arg029 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSuppServiceNotificationsResponse(_arg029);
-                            return true;
-                        case 30:
-                            RadioResponseInfo _arg030 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSystemSelectionChannelsResponse(_arg030);
-                            return true;
-                        case 31:
-                            RadioResponseInfo _arg031 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            startNetworkScanResponse(_arg031);
-                            return true;
-                        case 32:
-                            RadioResponseInfo _arg032 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopNetworkScanResponse(_arg032);
-                            return true;
-                        case 33:
-                            RadioResponseInfo _arg033 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg116 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyNetworkDepersonalizationResponse(_arg033, _arg116);
-                            return true;
-                        case 34:
-                            RadioResponseInfo _arg034 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUsageSettingResponse(_arg034);
-                            return true;
-                        case 35:
-                            RadioResponseInfo _arg035 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getUsageSettingResponse(_arg035, _arg117);
-                            return true;
-                        case 36:
-                            RadioResponseInfo _arg036 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            EmergencyRegResult _arg118 = (EmergencyRegResult) data.readTypedObject(EmergencyRegResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            setEmergencyModeResponse(_arg036, _arg118);
-                            return true;
-                        case 37:
-                            RadioResponseInfo _arg037 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            triggerEmergencyNetworkScanResponse(_arg037);
-                            return true;
-                        case 38:
-                            RadioResponseInfo _arg038 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            exitEmergencyModeResponse(_arg038);
-                            return true;
-                        case 39:
-                            RadioResponseInfo _arg039 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            cancelEmergencyNetworkScanResponse(_arg039);
-                            return true;
-                        case 40:
-                            RadioResponseInfo _arg040 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNullCipherAndIntegrityEnabledResponse(_arg040);
-                            return true;
-                        case 41:
-                            RadioResponseInfo _arg041 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg119 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            isNullCipherAndIntegrityEnabledResponse(_arg041, _arg119);
-                            return true;
-                        case 42:
-                            RadioResponseInfo _arg042 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg120 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            isN1ModeEnabledResponse(_arg042, _arg120);
-                            return true;
-                        case 43:
-                            RadioResponseInfo _arg043 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setN1ModeEnabledResponse(_arg043);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioNetworkResponse {
+        private static class Proxy implements IRadioNetworkResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -1311,6 +1357,68 @@ public interface IRadioNetworkResponse extends IInterface {
                     boolean _status = this.mRemote.transact(43, _data, null, 1);
                     if (!_status) {
                         throw new RemoteException("Method setN1ModeEnabledResponse is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkResponse
+            public void isCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo info, boolean isEnabled) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeTypedObject(info, 0);
+                    _data.writeBoolean(isEnabled);
+                    boolean _status = this.mRemote.transact(44, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method isCellularIdentifierTransparencyEnabledResponse is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkResponse
+            public void setCellularIdentifierTransparencyEnabledResponse(RadioResponseInfo info) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeTypedObject(info, 0);
+                    boolean _status = this.mRemote.transact(45, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method setCellularIdentifierTransparencyEnabledResponse is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkResponse
+            public void setSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo info) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeTypedObject(info, 0);
+                    boolean _status = this.mRemote.transact(46, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method setSecurityAlgorithmsUpdatedEnabledResponse is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkResponse
+            public void isSecurityAlgorithmsUpdatedEnabledResponse(RadioResponseInfo info, boolean isEnabled) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeTypedObject(info, 0);
+                    _data.writeBoolean(isEnabled);
+                    boolean _status = this.mRemote.transact(47, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method isSecurityAlgorithmsUpdatedEnabledResponse is unimplemented.");
                     }
                 } finally {
                     _data.recycle();

@@ -11,9 +11,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhysicalChannelConfig implements Parcelable {
     public static final Parcelable.Creator<PhysicalChannelConfig> CREATOR = new Parcelable.Creator<PhysicalChannelConfig>() { // from class: android.hardware.radio.network.PhysicalChannelConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfig createFromParcel(Parcel _aidl_source) {
             PhysicalChannelConfig _aidl_out = new PhysicalChannelConfig();
@@ -21,6 +19,7 @@ public class PhysicalChannelConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhysicalChannelConfig[] newArray(int _aidl_size) {
             return new PhysicalChannelConfig[_aidl_size];
@@ -35,25 +34,6 @@ public class PhysicalChannelConfig implements Parcelable {
     public int cellBandwidthDownlinkKhz = 0;
     public int cellBandwidthUplinkKhz = 0;
     public int physicalCellId = 0;
-
-    /* renamed from: android.hardware.radio.network.PhysicalChannelConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhysicalChannelConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalChannelConfig createFromParcel(Parcel _aidl_source) {
-            PhysicalChannelConfig _aidl_out = new PhysicalChannelConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhysicalChannelConfig[] newArray(int _aidl_size) {
-            return new PhysicalChannelConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -182,7 +162,7 @@ public class PhysicalChannelConfig implements Parcelable {
         _aidl_sj.add("contextIds: " + Arrays.toString(this.contextIds));
         _aidl_sj.add("physicalCellId: " + this.physicalCellId);
         _aidl_sj.add("band: " + Objects.toString(this.band));
-        return "android.hardware.radio.network.PhysicalChannelConfig" + _aidl_sj.toString();
+        return "PhysicalChannelConfig" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

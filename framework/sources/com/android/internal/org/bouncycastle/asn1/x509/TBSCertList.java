@@ -24,7 +24,6 @@ public class TBSCertList extends ASN1Object {
     Time thisUpdate;
     ASN1Integer version;
 
-    /* loaded from: classes5.dex */
     public static class CRLEntry extends ASN1Object {
         Extensions crlEntryExtensions;
         ASN1Sequence seq;
@@ -71,9 +70,7 @@ public class TBSCertList extends ASN1Object {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class RevokedCertificatesEnumeration implements Enumeration {
+    private class RevokedCertificatesEnumeration implements Enumeration {
         private final Enumeration en;
 
         RevokedCertificatesEnumeration(Enumeration en) {
@@ -91,13 +88,7 @@ public class TBSCertList extends ASN1Object {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EmptyEnumeration implements Enumeration {
-        /* synthetic */ EmptyEnumeration(TBSCertList tBSCertList, EmptyEnumerationIA emptyEnumerationIA) {
-            this();
-        }
-
+    private class EmptyEnumeration implements Enumeration {
         private EmptyEnumeration() {
         }
 
@@ -160,11 +151,10 @@ public class TBSCertList extends ASN1Object {
     }
 
     public int getVersionNumber() {
-        ASN1Integer aSN1Integer = this.version;
-        if (aSN1Integer == null) {
+        if (this.version == null) {
             return 1;
         }
-        return aSN1Integer.intValueExact() + 1;
+        return this.version.intValueExact() + 1;
     }
 
     public ASN1Integer getVersion() {
@@ -188,11 +178,10 @@ public class TBSCertList extends ASN1Object {
     }
 
     public CRLEntry[] getRevokedCertificates() {
-        ASN1Sequence aSN1Sequence = this.revokedCertificates;
-        if (aSN1Sequence == null) {
+        if (this.revokedCertificates == null) {
             return new CRLEntry[0];
         }
-        CRLEntry[] entries = new CRLEntry[aSN1Sequence.size()];
+        CRLEntry[] entries = new CRLEntry[this.revokedCertificates.size()];
         for (int i = 0; i < entries.length; i++) {
             entries[i] = CRLEntry.getInstance(this.revokedCertificates.getObjectAt(i));
         }
@@ -200,11 +189,10 @@ public class TBSCertList extends ASN1Object {
     }
 
     public Enumeration getRevokedCertificateEnumeration() {
-        ASN1Sequence aSN1Sequence = this.revokedCertificates;
-        if (aSN1Sequence == null) {
+        if (this.revokedCertificates == null) {
             return new EmptyEnumeration();
         }
-        return new RevokedCertificatesEnumeration(aSN1Sequence.getObjects());
+        return new RevokedCertificatesEnumeration(this.revokedCertificates.getObjects());
     }
 
     public Extensions getExtensions() {
@@ -214,24 +202,20 @@ public class TBSCertList extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(7);
-        ASN1Integer aSN1Integer = this.version;
-        if (aSN1Integer != null) {
-            v.add(aSN1Integer);
+        if (this.version != null) {
+            v.add(this.version);
         }
         v.add(this.signature);
         v.add(this.issuer);
         v.add(this.thisUpdate);
-        Time time = this.nextUpdate;
-        if (time != null) {
-            v.add(time);
+        if (this.nextUpdate != null) {
+            v.add(this.nextUpdate);
         }
-        ASN1Sequence aSN1Sequence = this.revokedCertificates;
-        if (aSN1Sequence != null) {
-            v.add(aSN1Sequence);
+        if (this.revokedCertificates != null) {
+            v.add(this.revokedCertificates);
         }
-        Extensions extensions = this.crlExtensions;
-        if (extensions != null) {
-            v.add(new DERTaggedObject(0, extensions));
+        if (this.crlExtensions != null) {
+            v.add(new DERTaggedObject(0, this.crlExtensions));
         }
         return new DERSequence(v);
     }

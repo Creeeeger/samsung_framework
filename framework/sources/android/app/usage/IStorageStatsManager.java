@@ -35,7 +35,6 @@ public interface IStorageStatsManager extends IInterface {
 
     StorageStats queryStatsForUser(String str, int i, String str2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IStorageStatsManager {
         @Override // android.app.usage.IStorageStatsManager
         public boolean isQuotaSupported(String volumeUuid, String callingPackage) throws RemoteException {
@@ -108,7 +107,6 @@ public interface IStorageStatsManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IStorageStatsManager {
         public static final String DESCRIPTOR = "android.app.usage.IStorageStatsManager";
         static final int TRANSACTION_getCacheBytes = 5;
@@ -188,135 +186,131 @@ public interface IStorageStatsManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = isQuotaSupported(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isReservedSupported(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result3 = getTotalBytes(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeLong(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result4 = getFreeBytes(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result5 = getCacheBytes(_arg05, _arg15);
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg16 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result6 = getCacheQuotaBytes(_arg06, _arg16, _arg2);
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg17 = data.readString();
+                    int _arg22 = data.readInt();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    StorageStats _result7 = queryStatsForPackage(_arg07, _arg17, _arg22, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    int _arg18 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    StorageStats _result8 = queryStatsForUid(_arg08, _arg18, _arg23);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    int _arg19 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    StorageStats _result9 = queryStatsForUser(_arg09, _arg19, _arg24);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    int _arg110 = data.readInt();
+                    String _arg25 = data.readString();
+                    data.enforceNoDataAvail();
+                    ExternalStorageStats _result10 = queryExternalStatsForUser(_arg010, _arg110, _arg25);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 11:
+                    String _arg011 = data.readString();
+                    String _arg111 = data.readString();
+                    int _arg26 = data.readInt();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result11 = queryCratesForPackage(_arg011, _arg111, _arg26, _arg32);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    int _arg112 = data.readInt();
+                    String _arg27 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result12 = queryCratesForUid(_arg012, _arg112, _arg27);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 13:
+                    String _arg013 = data.readString();
+                    int _arg113 = data.readInt();
+                    String _arg28 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result13 = queryCratesForUser(_arg013, _arg113, _arg28);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = isQuotaSupported(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isReservedSupported(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result3 = getTotalBytes(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeLong(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result4 = getFreeBytes(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result5 = getCacheBytes(_arg05, _arg15);
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg16 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result6 = getCacheQuotaBytes(_arg06, _arg16, _arg2);
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg17 = data.readString();
-                            int _arg22 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            StorageStats _result7 = queryStatsForPackage(_arg07, _arg17, _arg22, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            int _arg18 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            StorageStats _result8 = queryStatsForUid(_arg08, _arg18, _arg23);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            int _arg19 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            StorageStats _result9 = queryStatsForUser(_arg09, _arg19, _arg24);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            int _arg110 = data.readInt();
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            ExternalStorageStats _result10 = queryExternalStatsForUser(_arg010, _arg110, _arg25);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            String _arg111 = data.readString();
-                            int _arg26 = data.readInt();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result11 = queryCratesForPackage(_arg011, _arg111, _arg26, _arg32);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            int _arg112 = data.readInt();
-                            String _arg27 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result12 = queryCratesForUid(_arg012, _arg112, _arg27);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            int _arg113 = data.readInt();
-                            String _arg28 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result13 = queryCratesForUser(_arg013, _arg113, _arg28);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IStorageStatsManager {
+        private static class Proxy implements IStorageStatsManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -24,7 +24,6 @@ public class LoggingContentInterface implements ContentInterface {
         this.delegate = delegate;
     }
 
-    /* loaded from: classes.dex */
     private class Logger implements AutoCloseable {
         private final StringBuilder sb = new StringBuilder();
 

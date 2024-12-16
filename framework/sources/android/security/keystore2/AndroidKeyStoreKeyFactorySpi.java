@@ -1,7 +1,6 @@
 package android.security.keystore2;
 
 import android.os.storage.VolumeInfo;
-import android.security.KeyStore;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyInfo;
 import java.security.InvalidKeyException;
@@ -18,8 +17,6 @@ import java.security.spec.X509EncodedKeySpec;
 
 /* loaded from: classes3.dex */
 public class AndroidKeyStoreKeyFactorySpi extends KeyFactorySpi {
-    private final KeyStore mKeyStore = KeyStore.getInstance();
-
     @Override // java.security.KeyFactorySpi
     protected <T extends KeySpec> T engineGetKeySpec(Key key, Class<T> keySpecClass) throws InvalidKeySpecException {
         if (key == null) {

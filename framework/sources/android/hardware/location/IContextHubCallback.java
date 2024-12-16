@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IContextHubCallback extends IInterface {
     void onMessageReceipt(int i, int i2, ContextHubMessage contextHubMessage) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IContextHubCallback {
         @Override // android.hardware.location.IContextHubCallback
         public void onMessageReceipt(int hubId, int nanoAppId, ContextHubMessage msg) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IContextHubCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IContextHubCallback {
         public static final String DESCRIPTOR = "android.hardware.location.IContextHubCallback";
         static final int TRANSACTION_onMessageReceipt = 1;
@@ -66,28 +64,24 @@ public interface IContextHubCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    ContextHubMessage _arg2 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMessageReceipt(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            ContextHubMessage _arg2 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMessageReceipt(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IContextHubCallback {
+        private static class Proxy implements IContextHubCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

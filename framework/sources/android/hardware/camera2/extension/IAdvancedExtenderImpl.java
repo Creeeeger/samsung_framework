@@ -15,13 +15,15 @@ import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IAdvancedExtenderImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IAdvancedExtenderImpl";
 
     CameraMetadataNative getAvailableCaptureRequestKeys(String str) throws RemoteException;
 
     CameraMetadataNative getAvailableCaptureResultKeys(String str) throws RemoteException;
+
+    CameraMetadataNative getAvailableCharacteristicsKeyValues(String str) throws RemoteException;
 
     LatencyRange getEstimatedCaptureLatencyRange(String str, Size size, int i) throws RemoteException;
 
@@ -41,7 +43,6 @@ public interface IAdvancedExtenderImpl extends IInterface {
 
     boolean isPostviewAvailable() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAdvancedExtenderImpl {
         @Override // android.hardware.camera2.extension.IAdvancedExtenderImpl
         public boolean isExtensionAvailable(String cameraId, Map<String, CameraMetadataNative> charsMap) throws RemoteException {
@@ -97,16 +98,21 @@ public interface IAdvancedExtenderImpl extends IInterface {
             return false;
         }
 
+        @Override // android.hardware.camera2.extension.IAdvancedExtenderImpl
+        public CameraMetadataNative getAvailableCharacteristicsKeyValues(String cameraId) throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAdvancedExtenderImpl {
         static final int TRANSACTION_getAvailableCaptureRequestKeys = 8;
         static final int TRANSACTION_getAvailableCaptureResultKeys = 9;
+        static final int TRANSACTION_getAvailableCharacteristicsKeyValues = 12;
         static final int TRANSACTION_getEstimatedCaptureLatencyRange = 3;
         static final int TRANSACTION_getSessionProcessor = 7;
         static final int TRANSACTION_getSupportedCaptureOutputResolutions = 5;
@@ -161,6 +167,8 @@ public interface IAdvancedExtenderImpl extends IInterface {
                     return "isCaptureProcessProgressAvailable";
                 case 11:
                     return "isPostviewAvailable";
+                case 12:
+                    return "getAvailableCharacteristicsKeyValues";
                 default:
                     return null;
             }
@@ -177,121 +185,125 @@ public interface IAdvancedExtenderImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAdvancedExtenderImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAdvancedExtenderImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAdvancedExtenderImpl.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int N = data.readInt();
+                    _arg1 = N >= 0 ? new HashMap<>() : null;
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IAdvancedExtenderImpl.Stub.lambda$onTransact$0(Parcel.this, _arg1, i);
+                        }
+                    });
+                    data.enforceNoDataAvail();
+                    boolean _result = isExtensionAvailable(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int N2 = data.readInt();
+                    _arg1 = N2 >= 0 ? new HashMap<>() : null;
+                    IntStream.range(0, N2).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$$ExternalSyntheticLambda1
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IAdvancedExtenderImpl.Stub.lambda$onTransact$1(Parcel.this, _arg1, i);
+                        }
+                    });
+                    data.enforceNoDataAvail();
+                    init(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    Size _arg12 = (Size) data.readTypedObject(Size.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    LatencyRange _result2 = getEstimatedCaptureLatencyRange(_arg03, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SizeList> _result3 = getSupportedPreviewOutputResolutions(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SizeList> _result4 = getSupportedCaptureOutputResolutions(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
+                    return true;
+                case 6:
+                    Size _arg06 = (Size) data.readTypedObject(Size.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<SizeList> _result5 = getSupportedPostviewResolutions(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result5, 1);
+                    return true;
+                case 7:
+                    ISessionProcessorImpl _result6 = getSessionProcessor();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    CameraMetadataNative _result7 = getAvailableCaptureRequestKeys(_arg07);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    CameraMetadataNative _result8 = getAvailableCaptureResultKeys(_arg08);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 10:
+                    boolean _result9 = isCaptureProcessProgressAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 11:
+                    boolean _result10 = isPostviewAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 12:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    CameraMetadataNative _result11 = getAvailableCharacteristicsKeyValues(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int N = data.readInt();
-                            _arg1 = N >= 0 ? new HashMap<>() : null;
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    IAdvancedExtenderImpl.Stub.lambda$onTransact$0(Parcel.this, _arg1, i);
-                                }
-                            });
-                            data.enforceNoDataAvail();
-                            boolean _result = isExtensionAvailable(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int N2 = data.readInt();
-                            _arg1 = N2 >= 0 ? new HashMap<>() : null;
-                            IntStream.range(0, N2).forEach(new IntConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$$ExternalSyntheticLambda1
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    IAdvancedExtenderImpl.Stub.lambda$onTransact$1(Parcel.this, _arg1, i);
-                                }
-                            });
-                            data.enforceNoDataAvail();
-                            init(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            Size _arg12 = (Size) data.readTypedObject(Size.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            LatencyRange _result2 = getEstimatedCaptureLatencyRange(_arg03, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SizeList> _result3 = getSupportedPreviewOutputResolutions(_arg04);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SizeList> _result4 = getSupportedCaptureOutputResolutions(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        case 6:
-                            Size _arg06 = (Size) data.readTypedObject(Size.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<SizeList> _result5 = getSupportedPostviewResolutions(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result5, 1);
-                            return true;
-                        case 7:
-                            ISessionProcessorImpl _result6 = getSessionProcessor();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            CameraMetadataNative _result7 = getAvailableCaptureRequestKeys(_arg07);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            CameraMetadataNative _result8 = getAvailableCaptureResultKeys(_arg08);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 10:
-                            boolean _result9 = isCaptureProcessProgressAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 11:
-                            boolean _result10 = isPostviewAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             CameraMetadataNative v = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
             _arg1.put(k, v);
         }
 
-        public static /* synthetic */ void lambda$onTransact$1(Parcel data, Map _arg1, int i) {
+        static /* synthetic */ void lambda$onTransact$1(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             CameraMetadataNative v = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
             _arg1.put(k, v);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAdvancedExtenderImpl {
+        static class Proxy implements IAdvancedExtenderImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -318,7 +330,7 @@ public interface IAdvancedExtenderImpl extends IInterface {
                         _data.writeInt(-1);
                     } else {
                         _data.writeInt(charsMap.size());
-                        charsMap.forEach(new BiConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$Proxy$$ExternalSyntheticLambda1
+                        charsMap.forEach(new BiConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$Proxy$$ExternalSyntheticLambda0
                             @Override // java.util.function.BiConsumer
                             public final void accept(Object obj, Object obj2) {
                                 IAdvancedExtenderImpl.Stub.Proxy.lambda$isExtensionAvailable$0(Parcel.this, (String) obj, (CameraMetadataNative) obj2);
@@ -335,7 +347,7 @@ public interface IAdvancedExtenderImpl extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$isExtensionAvailable$0(Parcel _data, String k, CameraMetadataNative v) {
+            static /* synthetic */ void lambda$isExtensionAvailable$0(Parcel _data, String k, CameraMetadataNative v) {
                 _data.writeString(k);
                 _data.writeTypedObject(v, 0);
             }
@@ -351,7 +363,7 @@ public interface IAdvancedExtenderImpl extends IInterface {
                         _data.writeInt(-1);
                     } else {
                         _data.writeInt(charsMap.size());
-                        charsMap.forEach(new BiConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$Proxy$$ExternalSyntheticLambda0
+                        charsMap.forEach(new BiConsumer() { // from class: android.hardware.camera2.extension.IAdvancedExtenderImpl$Stub$Proxy$$ExternalSyntheticLambda1
                             @Override // java.util.function.BiConsumer
                             public final void accept(Object obj, Object obj2) {
                                 IAdvancedExtenderImpl.Stub.Proxy.lambda$init$1(Parcel.this, (String) obj, (CameraMetadataNative) obj2);
@@ -366,7 +378,7 @@ public interface IAdvancedExtenderImpl extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$init$1(Parcel _data, String k, CameraMetadataNative v) {
+            static /* synthetic */ void lambda$init$1(Parcel _data, String k, CameraMetadataNative v) {
                 _data.writeString(k);
                 _data.writeTypedObject(v, 0);
             }
@@ -522,11 +534,28 @@ public interface IAdvancedExtenderImpl extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.hardware.camera2.extension.IAdvancedExtenderImpl
+            public CameraMetadataNative getAvailableCharacteristicsKeyValues(String cameraId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IAdvancedExtenderImpl.DESCRIPTOR);
+                    _data.writeString(cameraId);
+                    this.mRemote.transact(12, _data, _reply, 0);
+                    _reply.readException();
+                    CameraMetadataNative _result = (CameraMetadataNative) _reply.readTypedObject(CameraMetadataNative.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 10;
+            return 11;
         }
     }
 }

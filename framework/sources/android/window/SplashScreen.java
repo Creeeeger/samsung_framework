@@ -9,6 +9,8 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.util.Singleton;
 import android.util.Slog;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -18,12 +20,11 @@ public interface SplashScreen {
     public static final int SPLASH_SCREEN_STYLE_SOLID_COLOR = 0;
     public static final int SPLASH_SCREEN_STYLE_UNDEFINED = -1;
 
-    /* loaded from: classes4.dex */
     public interface OnExitAnimationListener {
         void onSplashScreenExit(SplashScreenView splashScreenView);
     }
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SplashScreenStyle {
     }
 
@@ -33,7 +34,6 @@ public interface SplashScreen {
 
     void setSplashScreenTheme(int i);
 
-    /* loaded from: classes4.dex */
     public static class SplashScreenImpl implements SplashScreen {
         private static final String TAG = "SplashScreenImpl";
         private final IBinder mActivityToken;
@@ -87,13 +87,11 @@ public interface SplashScreen {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SplashScreenManagerGlobal {
         private static final String TAG = SplashScreen.class.getSimpleName();
         private static final Singleton<SplashScreenManagerGlobal> sInstance = new Singleton<SplashScreenManagerGlobal>() { // from class: android.window.SplashScreen.SplashScreenManagerGlobal.1
-            AnonymousClass1() {
-            }
-
+            /* JADX INFO: Access modifiers changed from: protected */
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.util.Singleton
             public SplashScreenManagerGlobal create() {
                 return new SplashScreenManagerGlobal();
@@ -101,10 +99,6 @@ public interface SplashScreen {
         };
         private final Object mGlobalLock;
         private final ArrayList<SplashScreenImpl> mImpls;
-
-        /* synthetic */ SplashScreenManagerGlobal(SplashScreenManagerGlobalIA splashScreenManagerGlobalIA) {
-            this();
-        }
 
         private SplashScreenManagerGlobal() {
             this.mGlobalLock = new Object();
@@ -116,24 +110,14 @@ public interface SplashScreen {
             return sInstance.get();
         }
 
-        /* renamed from: android.window.SplashScreen$SplashScreenManagerGlobal$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 extends Singleton<SplashScreenManagerGlobal> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.util.Singleton
-            public SplashScreenManagerGlobal create() {
-                return new SplashScreenManagerGlobal();
-            }
-        }
-
+        /* JADX INFO: Access modifiers changed from: private */
         public void addImpl(SplashScreenImpl impl) {
             synchronized (this.mGlobalLock) {
                 this.mImpls.add(impl);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeImpl(SplashScreenImpl impl) {
             synchronized (this.mGlobalLock) {
                 this.mImpls.remove(impl);

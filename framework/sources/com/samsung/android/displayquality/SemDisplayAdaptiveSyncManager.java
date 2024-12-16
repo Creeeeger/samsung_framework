@@ -8,7 +8,7 @@ import com.samsung.android.displayquality.ISemDisplayQualityManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemDisplayAdaptiveSyncManager {
     public static final int RESULT_ERROR = 1;
     public static final int RESULT_NO_SUPPORT = 2;
@@ -18,7 +18,6 @@ public final class SemDisplayAdaptiveSyncManager {
     private static final boolean mSupportAdaptiveSync = SemDisplayQualityFeature.ADAPTIVE_SYNC_SUPPORT;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface Result {
     }
 

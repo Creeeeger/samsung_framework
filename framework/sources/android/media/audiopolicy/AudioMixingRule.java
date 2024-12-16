@@ -4,6 +4,7 @@ import android.annotation.SystemApi;
 import android.media.AudioAttributes;
 import android.media.audiopolicy.AudioMixingRule;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,7 +19,28 @@ import java.util.function.Predicate;
 
 @SystemApi
 /* loaded from: classes2.dex */
-public class AudioMixingRule {
+public class AudioMixingRule implements Parcelable {
+    public static final Parcelable.Creator<AudioMixingRule> CREATOR = new Parcelable.Creator<AudioMixingRule>() { // from class: android.media.audiopolicy.AudioMixingRule.1
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public AudioMixingRule createFromParcel(Parcel source) {
+            Builder ruleBuilder = new Builder();
+            ruleBuilder.allowPrivilegedPlaybackCapture(source.readBoolean());
+            ruleBuilder.voiceCommunicationCaptureAllowed(source.readBoolean());
+            ruleBuilder.setTargetMixRole(source.readInt());
+            int nbRules = source.readInt();
+            for (int j = 0; j < nbRules; j++) {
+                ruleBuilder.addRuleInternal(AudioMixMatchCriterion.CREATOR.createFromParcel(source));
+            }
+            return ruleBuilder.build();
+        }
+
+        /* JADX WARN: Can't rename method to resolve collision */
+        @Override // android.os.Parcelable.Creator
+        public AudioMixingRule[] newArray(int size) {
+            return new AudioMixingRule[size];
+        }
+    };
     public static final int MIX_ROLE_INJECTOR = 1;
     public static final int MIX_ROLE_PLAYERS = 0;
     public static final int RULE_EXCLUDE_ATTRIBUTE_CAPTURE_PRESET = 32770;
@@ -38,12 +60,7 @@ public class AudioMixingRule {
     private boolean mVoiceCommunicationCaptureAllowed;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MixRole {
-    }
-
-    /* synthetic */ AudioMixingRule(int i, Collection collection, boolean z, boolean z2, AudioMixingRuleIA audioMixingRuleIA) {
-        this(i, collection, z, z2);
     }
 
     private AudioMixingRule(int mixType, Collection<AudioMixMatchCriterion> criteria, boolean allowPrivilegedMediaPlaybackCapture, boolean voiceCommunicationCaptureAllowed) {
@@ -55,22 +72,56 @@ public class AudioMixingRule {
         this.mVoiceCommunicationCaptureAllowed = voiceCommunicationCaptureAllowed;
     }
 
-    /* loaded from: classes2.dex */
-    public static final class AudioMixMatchCriterion {
+    public static final class AudioMixMatchCriterion implements Parcelable {
+        public static final Parcelable.Creator<AudioMixMatchCriterion> CREATOR = new Parcelable.Creator<AudioMixMatchCriterion>() { // from class: android.media.audiopolicy.AudioMixingRule.AudioMixMatchCriterion.1
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public AudioMixMatchCriterion createFromParcel(Parcel p) {
+                return new AudioMixMatchCriterion(p);
+            }
+
+            /* JADX WARN: Can't rename method to resolve collision */
+            @Override // android.os.Parcelable.Creator
+            public AudioMixMatchCriterion[] newArray(int size) {
+                return new AudioMixMatchCriterion[size];
+            }
+        };
         final AudioAttributes mAttr;
         final int mIntProp;
         final int mRule;
 
-        AudioMixMatchCriterion(AudioAttributes attributes, int rule) {
+        public AudioMixMatchCriterion(AudioAttributes attributes, int rule) {
             this.mAttr = attributes;
             this.mIntProp = Integer.MIN_VALUE;
             this.mRule = rule;
         }
 
-        AudioMixMatchCriterion(Integer intProp, int rule) {
+        public AudioMixMatchCriterion(Integer intProp, int rule) {
             this.mAttr = null;
             this.mIntProp = intProp.intValue();
             this.mRule = rule;
+        }
+
+        private AudioMixMatchCriterion(Parcel in) {
+            Objects.requireNonNull(in);
+            this.mRule = in.readInt();
+            int match_rule = this.mRule & (-32769);
+            switch (match_rule) {
+                case 1:
+                case 2:
+                    this.mAttr = AudioAttributes.CREATOR.createFromParcel(in);
+                    this.mIntProp = Integer.MIN_VALUE;
+                    return;
+                case 4:
+                case 8:
+                case 16:
+                    this.mIntProp = in.readInt();
+                    this.mAttr = null;
+                    return;
+                default:
+                    in.readInt();
+                    throw new IllegalArgumentException("Illegal rule value " + this.mRule + " in parcel");
+            }
         }
 
         public int hashCode() {
@@ -91,23 +142,29 @@ public class AudioMixingRule {
             return true;
         }
 
-        public void writeToParcel(Parcel dest) {
+        @Override // android.os.Parcelable
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override // android.os.Parcelable
+        public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mRule);
             int match_rule = this.mRule & (-32769);
             switch (match_rule) {
                 case 1:
                 case 2:
                     this.mAttr.writeToParcel(dest, 1);
-                    return;
+                    break;
                 case 4:
                 case 8:
                 case 16:
                     dest.writeInt(this.mIntProp);
-                    return;
+                    break;
                 default:
                     Log.e("AudioMixMatchCriterion", "Unknown match rule" + match_rule + " when writing to Parcel");
                     dest.writeInt(-1);
-                    return;
+                    break;
             }
         }
 
@@ -124,7 +181,7 @@ public class AudioMixingRule {
         }
     }
 
-    public boolean isAffectingUsage(int usage) {
+    boolean isAffectingUsage(int usage) {
         Iterator<AudioMixMatchCriterion> it = this.mCriteria.iterator();
         while (it.hasNext()) {
             AudioMixMatchCriterion criterion = it.next();
@@ -135,7 +192,7 @@ public class AudioMixingRule {
         return false;
     }
 
-    public boolean containsMatchAttributeRuleForUsage(int usage) {
+    boolean containsMatchAttributeRuleForUsage(int usage) {
         Iterator<AudioMixMatchCriterion> it = this.mCriteria.iterator();
         while (it.hasNext()) {
             AudioMixMatchCriterion criterion = it.next();
@@ -146,7 +203,7 @@ public class AudioMixingRule {
         return false;
     }
 
-    public int getTargetMixType() {
+    int getTargetMixType() {
         return this.mTargetMixType;
     }
 
@@ -199,6 +256,7 @@ public class AudioMixingRule {
         return Objects.hash(Integer.valueOf(this.mTargetMixType), this.mCriteria, Boolean.valueOf(this.mAllowPrivilegedPlaybackCapture), Boolean.valueOf(this.mVoiceCommunicationCaptureAllowed));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidSystemApiRule(int rule) {
         switch (rule) {
             case 1:
@@ -212,6 +270,7 @@ public class AudioMixingRule {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidAttributesSystemApiRule(int rule) {
         switch (rule) {
             case 1:
@@ -222,6 +281,7 @@ public class AudioMixingRule {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isValidRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -236,6 +296,7 @@ public class AudioMixingRule {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isPlayerRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -247,6 +308,7 @@ public class AudioMixingRule {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isRecorderRule(int rule) {
         int match_rule = (-32769) & rule;
         switch (match_rule) {
@@ -257,6 +319,7 @@ public class AudioMixingRule {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isAudioAttributeRule(int match_rule) {
         switch (match_rule) {
             case 1:
@@ -267,7 +330,6 @@ public class AudioMixingRule {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mTargetMixType = -1;
         private boolean mAllowPrivilegedMediaPlaybackCapture = false;
@@ -316,19 +378,19 @@ public class AudioMixingRule {
             if (mixRole != 0 && mixRole != 1) {
                 throw new IllegalArgumentException("Illegal argument for mix role");
             }
-            if (this.mCriteria.stream().map(new Function() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda1
+            if (this.mCriteria.stream().map(new Function() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return Integer.valueOf(((AudioMixingRule.AudioMixMatchCriterion) obj).getRule());
                 }
-            }).anyMatch(mixRole == 0 ? new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda2
+            }).anyMatch(mixRole == 0 ? new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda1
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean isRecorderRule;
                     isRecorderRule = AudioMixingRule.isRecorderRule(((Integer) obj).intValue());
                     return isRecorderRule;
                 }
-            } : new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda3
+            } : new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda2
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean isPlayerRule;
@@ -354,15 +416,17 @@ public class AudioMixingRule {
                 if (!(property instanceof AudioAttributes)) {
                     throw new IllegalArgumentException("Invalid AudioAttributes argument");
                 }
-                return addRuleInternal((AudioAttributes) property, null, rule);
+                return addRuleInternal(new AudioMixMatchCriterion((AudioAttributes) property, rule));
             }
             if (!(property instanceof Integer)) {
                 throw new IllegalArgumentException("Invalid Integer argument");
             }
-            return addRuleInternal(null, (Integer) property, rule);
+            return addRuleInternal(new AudioMixMatchCriterion((Integer) property, rule));
         }
 
-        private Builder addRuleInternal(AudioAttributes attrToMatch, Integer intProp, int rule) throws IllegalArgumentException {
+        /* JADX INFO: Access modifiers changed from: private */
+        public Builder addRuleInternal(AudioMixMatchCriterion criterion) throws IllegalArgumentException {
+            int rule = criterion.mRule;
             if (this.mTargetMixType == -1) {
                 if (AudioMixingRule.isPlayerRule(rule)) {
                     this.mTargetMixType = 0;
@@ -374,7 +438,7 @@ public class AudioMixingRule {
             }
             synchronized (this.mCriteria) {
                 final int oppositeRule = 32768 ^ rule;
-                if (this.mCriteria.stream().anyMatch(new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda0
+                if (this.mCriteria.stream().anyMatch(new Predicate() { // from class: android.media.audiopolicy.AudioMixingRule$Builder$$ExternalSyntheticLambda3
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         return AudioMixingRule.Builder.lambda$addRuleInternal$0(oppositeRule, (AudioMixingRule.AudioMixMatchCriterion) obj);
@@ -382,60 +446,38 @@ public class AudioMixingRule {
                 })) {
                     throw new IllegalArgumentException("AudioMixingRule cannot contain RULE_MATCH_* and RULE_EXCLUDE_* for the same dimension.");
                 }
-                int ruleWithoutExclusion = (-32769) & rule;
-                switch (ruleWithoutExclusion) {
-                    case 1:
-                    case 2:
-                        this.mCriteria.add(new AudioMixMatchCriterion(attrToMatch, rule));
-                        break;
-                    case 4:
-                    case 8:
-                    case 16:
-                        this.mCriteria.add(new AudioMixMatchCriterion(intProp, rule));
-                        break;
-                    default:
-                        throw new IllegalStateException("Unreachable code in addRuleInternal()");
-                }
+                this.mCriteria.add(criterion);
             }
             return this;
         }
 
-        public static /* synthetic */ boolean lambda$addRuleInternal$0(int oppositeRule, AudioMixMatchCriterion criterion) {
-            return criterion.mRule == oppositeRule;
-        }
-
-        public Builder addRuleFromParcel(Parcel in) throws IllegalArgumentException {
-            int rule = in.readInt();
-            int match_rule = (-32769) & rule;
-            AudioAttributes attr = null;
-            Integer intProp = null;
-            switch (match_rule) {
-                case 1:
-                case 2:
-                    AudioAttributes attr2 = AudioAttributes.CREATOR.createFromParcel(in);
-                    attr = attr2;
-                    break;
-                case 4:
-                case 8:
-                case 16:
-                    intProp = new Integer(in.readInt());
-                    break;
-                default:
-                    in.readInt();
-                    throw new IllegalArgumentException("Illegal rule value " + rule + " in parcel");
-            }
-            return addRuleInternal(attr, intProp, rule);
+        static /* synthetic */ boolean lambda$addRuleInternal$0(int oppositeRule, AudioMixMatchCriterion otherCriterion) {
+            return otherCriterion.mRule == oppositeRule;
         }
 
         public AudioMixingRule build() {
             if (this.mCriteria.isEmpty()) {
                 throw new IllegalArgumentException("Cannot build AudioMixingRule with no rules.");
             }
-            int i = this.mTargetMixType;
-            if (i == -1) {
-                i = 0;
-            }
-            return new AudioMixingRule(i, this.mCriteria, this.mAllowPrivilegedMediaPlaybackCapture, this.mVoiceCommunicationCaptureAllowed);
+            return new AudioMixingRule(this.mTargetMixType == -1 ? 0 : this.mTargetMixType, this.mCriteria, this.mAllowPrivilegedMediaPlaybackCapture, this.mVoiceCommunicationCaptureAllowed);
+        }
+    }
+
+    @Override // android.os.Parcelable
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override // android.os.Parcelable
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeBoolean(this.mAllowPrivilegedPlaybackCapture);
+        dest.writeBoolean(this.mVoiceCommunicationCaptureAllowed);
+        dest.writeInt(this.mTargetMixType);
+        dest.writeInt(this.mCriteria.size());
+        Iterator<AudioMixMatchCriterion> it = this.mCriteria.iterator();
+        while (it.hasNext()) {
+            AudioMixMatchCriterion criterion = it.next();
+            criterion.writeToParcel(dest, flags);
         }
     }
 }

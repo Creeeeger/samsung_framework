@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -25,7 +26,6 @@ public class SemWifiApWhiteList {
     private final int BUFFER_SIZE = 64;
     private Vector<WhiteList> mWhiteList = new Vector<>();
 
-    /* loaded from: classes6.dex */
     public static class WhiteList {
         private boolean mEnable;
         private String mMac;
@@ -70,6 +70,7 @@ public class SemWifiApWhiteList {
         return uniqueInstance;
     }
 
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:17:0x0034 -> B:11:0x0037). Please report as a decompilation issue!!! */
     private void createOrChangePermission() {
         File file = new File("/data/misc/wifi_hostapd/hostapd.accept");
         if (!file.exists()) {
@@ -98,7 +99,7 @@ public class SemWifiApWhiteList {
         BufferedReader buf = null;
         try {
             try {
-                buf = new BufferedReader(new FileReader("/data/misc/wifi_hostapd/hostapd.accept"), 64);
+                buf = new BufferedReader(new FileReader("/data/misc/wifi_hostapd/hostapd.accept", StandardCharsets.UTF_8), 64);
                 while (true) {
                     String bufReadLine = buf.readLine();
                     if (bufReadLine == null) {
@@ -149,7 +150,7 @@ public class SemWifiApWhiteList {
         try {
             try {
                 try {
-                    fw = new FileWriter("/data/misc/wifi_hostapd/hostapd.accept");
+                    fw = new FileWriter("/data/misc/wifi_hostapd/hostapd.accept", StandardCharsets.UTF_8);
                     Iterator<WhiteList> it = this.mWhiteList.iterator();
                     while (it.hasNext()) {
                         WhiteList wl = it.next();
@@ -164,24 +165,24 @@ public class SemWifiApWhiteList {
                         fw.write("\n");
                     }
                     fw.close();
-                } catch (Throwable th) {
+                } catch (IOException e) {
+                    e.printStackTrace();
                     if (fw != null) {
-                        try {
-                            fw.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        fw.close();
                     }
-                    throw th;
                 }
             } catch (IOException e2) {
                 e2.printStackTrace();
-                if (fw != null) {
+            }
+        } catch (Throwable th) {
+            if (0 != 0) {
+                try {
                     fw.close();
+                } catch (IOException e3) {
+                    e3.printStackTrace();
                 }
             }
-        } catch (IOException e3) {
-            e3.printStackTrace();
+            throw th;
         }
     }
 

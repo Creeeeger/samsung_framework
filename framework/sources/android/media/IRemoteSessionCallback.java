@@ -15,7 +15,6 @@ public interface IRemoteSessionCallback extends IInterface {
 
     void onVolumeChanged(MediaSession.Token token, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRemoteSessionCallback {
         @Override // android.media.IRemoteSessionCallback
         public void onVolumeChanged(MediaSession.Token sessionToken, int flags) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IRemoteSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRemoteSessionCallback {
         static final int TRANSACTION_onSessionChanged = 2;
         static final int TRANSACTION_onVolumeChanged = 1;
@@ -77,32 +75,28 @@ public interface IRemoteSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteSessionCallback.DESCRIPTOR);
+                case 1:
+                    MediaSession.Token _arg0 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVolumeChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    MediaSession.Token _arg02 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MediaSession.Token _arg0 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVolumeChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            MediaSession.Token _arg02 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRemoteSessionCallback {
+        private static class Proxy implements IRemoteSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

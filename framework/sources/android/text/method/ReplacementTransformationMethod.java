@@ -9,7 +9,7 @@ import android.text.SpannedString;
 import android.text.TextUtils;
 import android.view.View;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class ReplacementTransformationMethod implements TransformationMethod {
     protected abstract char[] getOriginal();
 
@@ -55,9 +55,7 @@ public abstract class ReplacementTransformationMethod implements TransformationM
     public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class ReplacementCharSequence implements CharSequence, GetChars {
+    private static class ReplacementCharSequence implements CharSequence, GetChars {
         private char[] mOriginal;
         private char[] mReplacement;
         private CharSequence mSource;
@@ -115,7 +113,6 @@ public abstract class ReplacementTransformationMethod implements TransformationM
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class SpannedReplacementCharSequence extends ReplacementCharSequence implements Spanned {
         private Spanned mSpanned;
 

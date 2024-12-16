@@ -38,7 +38,6 @@ public interface ITextClassifierService extends IInterface {
 
     void onTextClassifierEvent(TextClassificationSessionId textClassificationSessionId, TextClassifierEvent textClassifierEvent) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextClassifierService {
         @Override // android.service.textclassifier.ITextClassifierService
         public void onSuggestSelection(TextClassificationSessionId sessionId, TextSelection.Request request, ITextClassifierCallback callback) throws RemoteException {
@@ -86,7 +85,6 @@ public interface ITextClassifierService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextClassifierService {
         public static final String DESCRIPTOR = "android.service.textclassifier.ITextClassifierService";
         static final int TRANSACTION_onClassifyText = 2;
@@ -157,83 +155,80 @@ public interface ITextClassifierService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    TextClassificationSessionId _arg0 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    TextSelection.Request _arg1 = (TextSelection.Request) data.readTypedObject(TextSelection.Request.CREATOR);
+                    ITextClassifierCallback _arg2 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSuggestSelection(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    TextClassificationSessionId _arg02 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    TextClassification.Request _arg12 = (TextClassification.Request) data.readTypedObject(TextClassification.Request.CREATOR);
+                    ITextClassifierCallback _arg22 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onClassifyText(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    TextClassificationSessionId _arg03 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    TextLinks.Request _arg13 = (TextLinks.Request) data.readTypedObject(TextLinks.Request.CREATOR);
+                    ITextClassifierCallback _arg23 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onGenerateLinks(_arg03, _arg13, _arg23);
+                    return true;
+                case 4:
+                    TextClassificationSessionId _arg04 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    SelectionEvent _arg14 = (SelectionEvent) data.readTypedObject(SelectionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSelectionEvent(_arg04, _arg14);
+                    return true;
+                case 5:
+                    TextClassificationSessionId _arg05 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    TextClassifierEvent _arg15 = (TextClassifierEvent) data.readTypedObject(TextClassifierEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTextClassifierEvent(_arg05, _arg15);
+                    return true;
+                case 6:
+                    TextClassificationContext _arg06 = (TextClassificationContext) data.readTypedObject(TextClassificationContext.CREATOR);
+                    TextClassificationSessionId _arg16 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCreateTextClassificationSession(_arg06, _arg16);
+                    return true;
+                case 7:
+                    TextClassificationSessionId _arg07 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDestroyTextClassificationSession(_arg07);
+                    return true;
+                case 8:
+                    TextClassificationSessionId _arg08 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    TextLanguage.Request _arg17 = (TextLanguage.Request) data.readTypedObject(TextLanguage.Request.CREATOR);
+                    ITextClassifierCallback _arg24 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onDetectLanguage(_arg08, _arg17, _arg24);
+                    return true;
+                case 9:
+                    TextClassificationSessionId _arg09 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
+                    ConversationActions.Request _arg18 = (ConversationActions.Request) data.readTypedObject(ConversationActions.Request.CREATOR);
+                    ITextClassifierCallback _arg25 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSuggestConversationActions(_arg09, _arg18, _arg25);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onConnectedStateChanged(_arg010);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TextClassificationSessionId _arg0 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            TextSelection.Request _arg1 = (TextSelection.Request) data.readTypedObject(TextSelection.Request.CREATOR);
-                            ITextClassifierCallback _arg2 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSuggestSelection(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            TextClassificationSessionId _arg02 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            TextClassification.Request _arg12 = (TextClassification.Request) data.readTypedObject(TextClassification.Request.CREATOR);
-                            ITextClassifierCallback _arg22 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onClassifyText(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            TextClassificationSessionId _arg03 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            TextLinks.Request _arg13 = (TextLinks.Request) data.readTypedObject(TextLinks.Request.CREATOR);
-                            ITextClassifierCallback _arg23 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onGenerateLinks(_arg03, _arg13, _arg23);
-                            return true;
-                        case 4:
-                            TextClassificationSessionId _arg04 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            SelectionEvent _arg14 = (SelectionEvent) data.readTypedObject(SelectionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSelectionEvent(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            TextClassificationSessionId _arg05 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            TextClassifierEvent _arg15 = (TextClassifierEvent) data.readTypedObject(TextClassifierEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTextClassifierEvent(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            TextClassificationContext _arg06 = (TextClassificationContext) data.readTypedObject(TextClassificationContext.CREATOR);
-                            TextClassificationSessionId _arg16 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCreateTextClassificationSession(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            TextClassificationSessionId _arg07 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDestroyTextClassificationSession(_arg07);
-                            return true;
-                        case 8:
-                            TextClassificationSessionId _arg08 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            TextLanguage.Request _arg17 = (TextLanguage.Request) data.readTypedObject(TextLanguage.Request.CREATOR);
-                            ITextClassifierCallback _arg24 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onDetectLanguage(_arg08, _arg17, _arg24);
-                            return true;
-                        case 9:
-                            TextClassificationSessionId _arg09 = (TextClassificationSessionId) data.readTypedObject(TextClassificationSessionId.CREATOR);
-                            ConversationActions.Request _arg18 = (ConversationActions.Request) data.readTypedObject(ConversationActions.Request.CREATOR);
-                            ITextClassifierCallback _arg25 = ITextClassifierCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSuggestConversationActions(_arg09, _arg18, _arg25);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onConnectedStateChanged(_arg010);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextClassifierService {
+        private static class Proxy implements ITextClassifierService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

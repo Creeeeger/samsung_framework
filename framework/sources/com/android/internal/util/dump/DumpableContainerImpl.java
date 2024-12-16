@@ -33,7 +33,7 @@ public final class DumpableContainerImpl implements DumpableContainer {
         return true;
     }
 
-    public static /* synthetic */ String lambda$addDumpable$0(Dumpable dumpable) {
+    static /* synthetic */ String lambda$addDumpable$0(Dumpable dumpable) {
         return "name of" + dumpable;
     }
 

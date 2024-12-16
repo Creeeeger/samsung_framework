@@ -15,15 +15,15 @@ public final class HotwordRejectedResult implements Parcelable {
     public static final int CONFIDENCE_LEVEL_LOW = 1;
     public static final int CONFIDENCE_LEVEL_MEDIUM = 2;
     public static final int CONFIDENCE_LEVEL_NONE = 0;
+    public static final int CONFIDENCE_LEVEL_VERY_HIGH = 4;
     public static final Parcelable.Creator<HotwordRejectedResult> CREATOR = new Parcelable.Creator<HotwordRejectedResult>() { // from class: android.service.voice.HotwordRejectedResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordRejectedResult[] newArray(int size) {
             return new HotwordRejectedResult[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotwordRejectedResult createFromParcel(Parcel in) {
             return new HotwordRejectedResult(in);
@@ -32,21 +32,15 @@ public final class HotwordRejectedResult implements Parcelable {
     private final int mConfidenceLevel;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ConfidenceLevel {
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public @interface HotwordConfidenceLevelValue {
+    @Retention(RetentionPolicy.SOURCE)
+    @interface HotwordConfidenceLevelValue {
     }
 
-    /* renamed from: -$$Nest$smdefaultConfidenceLevel */
-    static /* bridge */ /* synthetic */ int m3984$$Nest$smdefaultConfidenceLevel() {
-        return defaultConfidenceLevel();
-    }
-
-    private static int defaultConfidenceLevel() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultConfidenceLevel() {
         return 0;
     }
 
@@ -60,6 +54,8 @@ public final class HotwordRejectedResult implements Parcelable {
                 return "CONFIDENCE_LEVEL_MEDIUM";
             case 3:
                 return "CONFIDENCE_LEVEL_HIGH";
+            case 4:
+                return "CONFIDENCE_LEVEL_VERY_HIGH";
             default:
                 return Integer.toHexString(value);
         }
@@ -67,7 +63,7 @@ public final class HotwordRejectedResult implements Parcelable {
 
     HotwordRejectedResult(int confidenceLevel) {
         this.mConfidenceLevel = confidenceLevel;
-        AnnotationValidations.validate((Class<? extends Annotation>) HotwordConfidenceLevelValue.class, (Annotation) null, confidenceLevel);
+        AnnotationValidations.validate((Class<? extends Annotation>) HotwordConfidenceLevelValue.class, (Annotation) null, this.mConfidenceLevel);
     }
 
     public int getConfidenceLevel() {
@@ -110,27 +106,9 @@ public final class HotwordRejectedResult implements Parcelable {
     HotwordRejectedResult(Parcel in) {
         int confidenceLevel = in.readInt();
         this.mConfidenceLevel = confidenceLevel;
-        AnnotationValidations.validate((Class<? extends Annotation>) HotwordConfidenceLevelValue.class, (Annotation) null, confidenceLevel);
+        AnnotationValidations.validate((Class<? extends Annotation>) HotwordConfidenceLevelValue.class, (Annotation) null, this.mConfidenceLevel);
     }
 
-    /* renamed from: android.service.voice.HotwordRejectedResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HotwordRejectedResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotwordRejectedResult[] newArray(int size) {
-            return new HotwordRejectedResult[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotwordRejectedResult createFromParcel(Parcel in) {
-            return new HotwordRejectedResult(in);
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
         private int mConfidenceLevel;
@@ -144,10 +122,9 @@ public final class HotwordRejectedResult implements Parcelable {
 
         public HotwordRejectedResult build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 2;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mConfidenceLevel = HotwordRejectedResult.m3984$$Nest$smdefaultConfidenceLevel();
+            this.mBuilderFieldsSet |= 2;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mConfidenceLevel = HotwordRejectedResult.defaultConfidenceLevel();
             }
             HotwordRejectedResult o = new HotwordRejectedResult(this.mConfidenceLevel);
             return o;

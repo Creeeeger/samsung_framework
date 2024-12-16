@@ -26,14 +26,13 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
     public static final int AUTHENTICATE_REASON_UDFPS_POINTER_DOWN = 10;
     public static final int AUTHENTICATE_REASON_UNKNOWN = 0;
     public static final Parcelable.Creator<FaceAuthenticateOptions> CREATOR = new Parcelable.Creator<FaceAuthenticateOptions>() { // from class: android.hardware.face.FaceAuthenticateOptions.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceAuthenticateOptions[] newArray(int size) {
             return new FaceAuthenticateOptions[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FaceAuthenticateOptions createFromParcel(Parcel in) {
             return new FaceAuthenticateOptions(in);
@@ -42,76 +41,48 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
     private String mAttributionTag;
     private final int mAuthenticateReason;
     private final int mDisplayState;
+    private boolean mIsMandatoryBiometrics;
     private String mOpPackageName;
     private int mSensorId;
     private final int mUserId;
     private final int mWakeReason;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AuthenticateReason {
     }
 
-    /* renamed from: -$$Nest$smdefaultAttributionTag */
-    static /* bridge */ /* synthetic */ String m1664$$Nest$smdefaultAttributionTag() {
-        return defaultAttributionTag();
-    }
-
-    /* renamed from: -$$Nest$smdefaultAuthenticateReason */
-    static /* bridge */ /* synthetic */ int m1665$$Nest$smdefaultAuthenticateReason() {
-        return defaultAuthenticateReason();
-    }
-
-    /* renamed from: -$$Nest$smdefaultDisplayState */
-    static /* bridge */ /* synthetic */ int m1666$$Nest$smdefaultDisplayState() {
-        return defaultDisplayState();
-    }
-
-    /* renamed from: -$$Nest$smdefaultOpPackageName */
-    static /* bridge */ /* synthetic */ String m1667$$Nest$smdefaultOpPackageName() {
-        return defaultOpPackageName();
-    }
-
-    /* renamed from: -$$Nest$smdefaultSensorId */
-    static /* bridge */ /* synthetic */ int m1668$$Nest$smdefaultSensorId() {
-        return defaultSensorId();
-    }
-
-    /* renamed from: -$$Nest$smdefaultUserId */
-    static /* bridge */ /* synthetic */ int m1669$$Nest$smdefaultUserId() {
-        return defaultUserId();
-    }
-
-    /* renamed from: -$$Nest$smdefaultWakeReason */
-    static /* bridge */ /* synthetic */ int m1670$$Nest$smdefaultWakeReason() {
-        return defaultWakeReason();
-    }
-
-    private static int defaultUserId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultUserId() {
         return 0;
     }
 
-    private static int defaultSensorId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultSensorId() {
         return -1;
     }
 
-    private static int defaultDisplayState() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultDisplayState() {
         return 0;
     }
 
-    private static int defaultAuthenticateReason() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultAuthenticateReason() {
         return 0;
     }
 
-    private static int defaultWakeReason() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultWakeReason() {
         return 0;
     }
 
-    private static String defaultOpPackageName() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String defaultOpPackageName() {
         return "";
     }
 
-    private static String defaultAttributionTag() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String defaultAttributionTag() {
         return null;
     }
 
@@ -144,20 +115,22 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
         }
     }
 
-    FaceAuthenticateOptions(int userId, int sensorId, int displayState, int authenticateReason, int wakeReason, String opPackageName, String attributionTag) {
+    FaceAuthenticateOptions(int userId, int sensorId, int displayState, int authenticateReason, int wakeReason, String opPackageName, String attributionTag, boolean isMandatoryBiometrics) {
         this.mUserId = userId;
         this.mSensorId = sensorId;
         this.mDisplayState = displayState;
-        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, displayState);
+        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, this.mDisplayState);
         this.mAuthenticateReason = authenticateReason;
-        if (authenticateReason != 0 && authenticateReason != 1 && authenticateReason != 2 && authenticateReason != 3 && authenticateReason != 4 && authenticateReason != 5 && authenticateReason != 6 && authenticateReason != 7 && authenticateReason != 8 && authenticateReason != 9 && authenticateReason != 10) {
-            throw new IllegalArgumentException("authenticateReason was " + authenticateReason + " but must be one of: AUTHENTICATE_REASON_UNKNOWN(0), AUTHENTICATE_REASON_STARTED_WAKING_UP(1), AUTHENTICATE_REASON_PRIMARY_BOUNCER_SHOWN(2), AUTHENTICATE_REASON_ASSISTANT_VISIBLE(3), AUTHENTICATE_REASON_ALTERNATE_BIOMETRIC_BOUNCER_SHOWN(4), AUTHENTICATE_REASON_NOTIFICATION_PANEL_CLICKED(5), AUTHENTICATE_REASON_OCCLUDING_APP_REQUESTED(6), AUTHENTICATE_REASON_PICK_UP_GESTURE_TRIGGERED(7), AUTHENTICATE_REASON_QS_EXPANDED(8), AUTHENTICATE_REASON_SWIPE_UP_ON_BOUNCER(9), AUTHENTICATE_REASON_UDFPS_POINTER_DOWN(10" + NavigationBarInflaterView.KEY_CODE_END);
+        if (this.mAuthenticateReason == 0 || this.mAuthenticateReason == 1 || this.mAuthenticateReason == 2 || this.mAuthenticateReason == 3 || this.mAuthenticateReason == 4 || this.mAuthenticateReason == 5 || this.mAuthenticateReason == 6 || this.mAuthenticateReason == 7 || this.mAuthenticateReason == 8 || this.mAuthenticateReason == 9 || this.mAuthenticateReason == 10) {
+            this.mWakeReason = wakeReason;
+            AnnotationValidations.validate((Class<? extends Annotation>) PowerManager.WakeReason.class, (Annotation) null, this.mWakeReason);
+            this.mOpPackageName = opPackageName;
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
+            this.mAttributionTag = attributionTag;
+            this.mIsMandatoryBiometrics = isMandatoryBiometrics;
+            return;
         }
-        this.mWakeReason = wakeReason;
-        AnnotationValidations.validate((Class<? extends Annotation>) PowerManager.WakeReason.class, (Annotation) null, wakeReason);
-        this.mOpPackageName = opPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
-        this.mAttributionTag = attributionTag;
+        throw new IllegalArgumentException("authenticateReason was " + this.mAuthenticateReason + " but must be one of: AUTHENTICATE_REASON_UNKNOWN(0), AUTHENTICATE_REASON_STARTED_WAKING_UP(1), AUTHENTICATE_REASON_PRIMARY_BOUNCER_SHOWN(2), AUTHENTICATE_REASON_ASSISTANT_VISIBLE(3), AUTHENTICATE_REASON_ALTERNATE_BIOMETRIC_BOUNCER_SHOWN(4), AUTHENTICATE_REASON_NOTIFICATION_PANEL_CLICKED(5), AUTHENTICATE_REASON_OCCLUDING_APP_REQUESTED(6), AUTHENTICATE_REASON_PICK_UP_GESTURE_TRIGGERED(7), AUTHENTICATE_REASON_QS_EXPANDED(8), AUTHENTICATE_REASON_SWIPE_UP_ON_BOUNCER(9), AUTHENTICATE_REASON_UDFPS_POINTER_DOWN(10" + NavigationBarInflaterView.KEY_CODE_END);
     }
 
     @Override // android.hardware.biometrics.AuthenticateOptions
@@ -193,6 +166,11 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
         return this.mAttributionTag;
     }
 
+    @Override // android.hardware.biometrics.AuthenticateOptions
+    public boolean isMandatoryBiometrics() {
+        return this.mIsMandatoryBiometrics;
+    }
+
     public FaceAuthenticateOptions setSensorId(int value) {
         this.mSensorId = value;
         return this;
@@ -200,12 +178,17 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
 
     public FaceAuthenticateOptions setOpPackageName(String value) {
         this.mOpPackageName = value;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
         return this;
     }
 
     public FaceAuthenticateOptions setAttributionTag(String value) {
         this.mAttributionTag = value;
+        return this;
+    }
+
+    public FaceAuthenticateOptions setIsMandatoryBiometrics(boolean value) {
+        this.mIsMandatoryBiometrics = value;
         return this;
     }
 
@@ -217,7 +200,7 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
             return false;
         }
         FaceAuthenticateOptions that = (FaceAuthenticateOptions) o;
-        if (this.mUserId == that.mUserId && this.mSensorId == that.mSensorId && this.mDisplayState == that.mDisplayState && this.mAuthenticateReason == that.mAuthenticateReason && this.mWakeReason == that.mWakeReason && Objects.equals(this.mOpPackageName, that.mOpPackageName) && Objects.equals(this.mAttributionTag, that.mAttributionTag)) {
+        if (this.mUserId == that.mUserId && this.mSensorId == that.mSensorId && this.mDisplayState == that.mDisplayState && this.mAuthenticateReason == that.mAuthenticateReason && this.mWakeReason == that.mWakeReason && Objects.equals(this.mOpPackageName, that.mOpPackageName) && Objects.equals(this.mAttributionTag, that.mAttributionTag) && this.mIsMandatoryBiometrics == that.mIsMandatoryBiometrics) {
             return true;
         }
         return false;
@@ -225,22 +208,24 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
 
     public int hashCode() {
         int _hash = (1 * 31) + this.mUserId;
-        return (((((((((((_hash * 31) + this.mSensorId) * 31) + this.mDisplayState) * 31) + this.mAuthenticateReason) * 31) + this.mWakeReason) * 31) + Objects.hashCode(this.mOpPackageName)) * 31) + Objects.hashCode(this.mAttributionTag);
+        return (((((((((((((_hash * 31) + this.mSensorId) * 31) + this.mDisplayState) * 31) + this.mAuthenticateReason) * 31) + this.mWakeReason) * 31) + Objects.hashCode(this.mOpPackageName)) * 31) + Objects.hashCode(this.mAttributionTag)) * 31) + Boolean.hashCode(this.mIsMandatoryBiometrics);
     }
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-        byte flg = this.mAttributionTag != null ? (byte) (0 | 64) : (byte) 0;
-        dest.writeByte(flg);
+        int flg = this.mIsMandatoryBiometrics ? 0 | 128 : 0;
+        if (this.mAttributionTag != null) {
+            flg |= 64;
+        }
+        dest.writeInt(flg);
         dest.writeInt(this.mUserId);
         dest.writeInt(this.mSensorId);
         dest.writeInt(this.mDisplayState);
         dest.writeInt(this.mAuthenticateReason);
         dest.writeInt(this.mWakeReason);
         dest.writeString(this.mOpPackageName);
-        String str = this.mAttributionTag;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mAttributionTag != null) {
+            dest.writeString(this.mAttributionTag);
         }
     }
 
@@ -250,7 +235,8 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
     }
 
     protected FaceAuthenticateOptions(Parcel in) {
-        byte flg = in.readByte();
+        int flg = in.readInt();
+        boolean isMandatoryBiometrics = (flg & 128) != 0;
         int userId = in.readInt();
         int sensorId = in.readInt();
         int displayState = in.readInt();
@@ -261,41 +247,25 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
         this.mUserId = userId;
         this.mSensorId = sensorId;
         this.mDisplayState = displayState;
-        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, displayState);
+        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, this.mDisplayState);
         this.mAuthenticateReason = authenticateReason;
-        if (authenticateReason != 0 && authenticateReason != 1 && authenticateReason != 2 && authenticateReason != 3 && authenticateReason != 4 && authenticateReason != 5 && authenticateReason != 6 && authenticateReason != 7 && authenticateReason != 8 && authenticateReason != 9 && authenticateReason != 10) {
-            throw new IllegalArgumentException("authenticateReason was " + authenticateReason + " but must be one of: AUTHENTICATE_REASON_UNKNOWN(0), AUTHENTICATE_REASON_STARTED_WAKING_UP(1), AUTHENTICATE_REASON_PRIMARY_BOUNCER_SHOWN(2), AUTHENTICATE_REASON_ASSISTANT_VISIBLE(3), AUTHENTICATE_REASON_ALTERNATE_BIOMETRIC_BOUNCER_SHOWN(4), AUTHENTICATE_REASON_NOTIFICATION_PANEL_CLICKED(5), AUTHENTICATE_REASON_OCCLUDING_APP_REQUESTED(6), AUTHENTICATE_REASON_PICK_UP_GESTURE_TRIGGERED(7), AUTHENTICATE_REASON_QS_EXPANDED(8), AUTHENTICATE_REASON_SWIPE_UP_ON_BOUNCER(9), AUTHENTICATE_REASON_UDFPS_POINTER_DOWN(10" + NavigationBarInflaterView.KEY_CODE_END);
+        if (this.mAuthenticateReason != 0 && this.mAuthenticateReason != 1 && this.mAuthenticateReason != 2 && this.mAuthenticateReason != 3 && this.mAuthenticateReason != 4 && this.mAuthenticateReason != 5 && this.mAuthenticateReason != 6 && this.mAuthenticateReason != 7 && this.mAuthenticateReason != 8 && this.mAuthenticateReason != 9 && this.mAuthenticateReason != 10) {
+            throw new IllegalArgumentException("authenticateReason was " + this.mAuthenticateReason + " but must be one of: AUTHENTICATE_REASON_UNKNOWN(0), AUTHENTICATE_REASON_STARTED_WAKING_UP(1), AUTHENTICATE_REASON_PRIMARY_BOUNCER_SHOWN(2), AUTHENTICATE_REASON_ASSISTANT_VISIBLE(3), AUTHENTICATE_REASON_ALTERNATE_BIOMETRIC_BOUNCER_SHOWN(4), AUTHENTICATE_REASON_NOTIFICATION_PANEL_CLICKED(5), AUTHENTICATE_REASON_OCCLUDING_APP_REQUESTED(6), AUTHENTICATE_REASON_PICK_UP_GESTURE_TRIGGERED(7), AUTHENTICATE_REASON_QS_EXPANDED(8), AUTHENTICATE_REASON_SWIPE_UP_ON_BOUNCER(9), AUTHENTICATE_REASON_UDFPS_POINTER_DOWN(10" + NavigationBarInflaterView.KEY_CODE_END);
         }
         this.mWakeReason = wakeReason;
-        AnnotationValidations.validate((Class<? extends Annotation>) PowerManager.WakeReason.class, (Annotation) null, wakeReason);
+        AnnotationValidations.validate((Class<? extends Annotation>) PowerManager.WakeReason.class, (Annotation) null, this.mWakeReason);
         this.mOpPackageName = opPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
         this.mAttributionTag = attributionTag;
+        this.mIsMandatoryBiometrics = isMandatoryBiometrics;
     }
 
-    /* renamed from: android.hardware.face.FaceAuthenticateOptions$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FaceAuthenticateOptions> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceAuthenticateOptions[] newArray(int size) {
-            return new FaceAuthenticateOptions[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FaceAuthenticateOptions createFromParcel(Parcel in) {
-            return new FaceAuthenticateOptions(in);
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static class Builder {
         private String mAttributionTag;
         private int mAuthenticateReason;
         private long mBuilderFieldsSet = 0;
         private int mDisplayState;
+        private boolean mIsMandatoryBiometrics;
         private String mOpPackageName;
         private int mSensorId;
         private int mUserId;
@@ -350,37 +320,43 @@ public class FaceAuthenticateOptions implements AuthenticateOptions, Parcelable 
             return this;
         }
 
+        public Builder setIsMandatoryBiometrics(boolean value) {
+            checkNotUsed();
+            this.mBuilderFieldsSet |= 128;
+            this.mIsMandatoryBiometrics = value;
+            return this;
+        }
+
         public FaceAuthenticateOptions build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 128;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mUserId = FaceAuthenticateOptions.m1669$$Nest$smdefaultUserId();
+            this.mBuilderFieldsSet |= 256;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mUserId = FaceAuthenticateOptions.defaultUserId();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mSensorId = FaceAuthenticateOptions.m1668$$Nest$smdefaultSensorId();
+                this.mSensorId = FaceAuthenticateOptions.defaultSensorId();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mDisplayState = FaceAuthenticateOptions.m1666$$Nest$smdefaultDisplayState();
+                this.mDisplayState = FaceAuthenticateOptions.defaultDisplayState();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mAuthenticateReason = FaceAuthenticateOptions.m1665$$Nest$smdefaultAuthenticateReason();
+                this.mAuthenticateReason = FaceAuthenticateOptions.defaultAuthenticateReason();
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
-                this.mWakeReason = FaceAuthenticateOptions.m1670$$Nest$smdefaultWakeReason();
+                this.mWakeReason = FaceAuthenticateOptions.defaultWakeReason();
             }
             if ((this.mBuilderFieldsSet & 32) == 0) {
-                this.mOpPackageName = FaceAuthenticateOptions.m1667$$Nest$smdefaultOpPackageName();
+                this.mOpPackageName = FaceAuthenticateOptions.defaultOpPackageName();
             }
             if ((this.mBuilderFieldsSet & 64) == 0) {
-                this.mAttributionTag = FaceAuthenticateOptions.m1664$$Nest$smdefaultAttributionTag();
+                this.mAttributionTag = FaceAuthenticateOptions.defaultAttributionTag();
             }
-            FaceAuthenticateOptions o = new FaceAuthenticateOptions(this.mUserId, this.mSensorId, this.mDisplayState, this.mAuthenticateReason, this.mWakeReason, this.mOpPackageName, this.mAttributionTag);
+            FaceAuthenticateOptions o = new FaceAuthenticateOptions(this.mUserId, this.mSensorId, this.mDisplayState, this.mAuthenticateReason, this.mWakeReason, this.mOpPackageName, this.mAttributionTag, this.mIsMandatoryBiometrics);
             return o;
         }
 
         private void checkNotUsed() {
-            if ((this.mBuilderFieldsSet & 128) != 0) {
+            if ((this.mBuilderFieldsSet & 256) != 0) {
                 throw new IllegalStateException("This Builder should not be reused. Use a new Builder instance instead");
             }
         }

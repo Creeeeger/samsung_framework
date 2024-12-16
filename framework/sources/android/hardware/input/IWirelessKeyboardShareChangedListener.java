@@ -12,7 +12,6 @@ public interface IWirelessKeyboardShareChangedListener extends IInterface {
 
     void onWirelessKeyboardShareChanged(long j, int i, String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IWirelessKeyboardShareChangedListener {
         @Override // android.hardware.input.IWirelessKeyboardShareChangedListener
         public void onWirelessKeyboardShareChanged(long whenNanos, int index, String contents) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IWirelessKeyboardShareChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IWirelessKeyboardShareChangedListener {
         static final int TRANSACTION_onWirelessKeyboardShareChanged = 1;
 
@@ -67,28 +65,24 @@ public interface IWirelessKeyboardShareChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWirelessKeyboardShareChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWirelessKeyboardShareChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWirelessKeyboardShareChangedListener.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onWirelessKeyboardShareChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onWirelessKeyboardShareChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IWirelessKeyboardShareChangedListener {
+        private static class Proxy implements IWirelessKeyboardShareChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

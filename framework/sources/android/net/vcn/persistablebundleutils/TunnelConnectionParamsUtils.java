@@ -28,8 +28,7 @@ public final class TunnelConnectionParamsUtils {
         throw new IllegalArgumentException("Invalid Tunnel Connection Params type " + in.keySet().iterator().next());
     }
 
-    /* loaded from: classes3.dex */
-    public static final class IkeTunnelConnectionParamsUtils {
+    private static final class IkeTunnelConnectionParamsUtils {
         private static final String CHILD_PARAMS_KEY = "CHILD_PARAMS_KEY";
         private static final String IKE_PARAMS_KEY = "IKE_PARAMS_KEY";
 

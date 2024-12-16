@@ -4,7 +4,7 @@ import android.annotation.SystemApi;
 import android.telephony.ims.SipMessage;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface SipDelegate {
     void cleanupSession(String str);
 

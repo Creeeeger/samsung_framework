@@ -12,7 +12,6 @@ import android.os.RemoteException;
 public interface IActivityRecognitionHardwareWatcher extends IInterface {
     void onInstanceChanged(IActivityRecognitionHardware iActivityRecognitionHardware) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IActivityRecognitionHardwareWatcher {
         @Override // android.hardware.location.IActivityRecognitionHardwareWatcher
         public void onInstanceChanged(IActivityRecognitionHardware instance) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IActivityRecognitionHardwareWatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IActivityRecognitionHardwareWatcher {
         public static final String DESCRIPTOR = "android.hardware.location.IActivityRecognitionHardwareWatcher";
         static final int TRANSACTION_onInstanceChanged = 1;
@@ -68,25 +66,22 @@ public interface IActivityRecognitionHardwareWatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IActivityRecognitionHardware _arg0 = IActivityRecognitionHardware.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onInstanceChanged(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IActivityRecognitionHardware _arg0 = IActivityRecognitionHardware.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onInstanceChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IActivityRecognitionHardwareWatcher {
             private IBinder mRemote;
 

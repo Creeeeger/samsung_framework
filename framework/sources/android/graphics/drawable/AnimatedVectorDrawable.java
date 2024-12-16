@@ -60,8 +60,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
     private boolean mMutated;
     private Resources mRes;
 
-    /* loaded from: classes.dex */
-    public interface VectorDrawableAnimator {
+    private interface VectorDrawableAnimator {
         boolean canReverse();
 
         void end();
@@ -82,6 +81,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         void removeListener(Animator.AnimatorListener animatorListener);
 
+        void removeThreadedRendererAnimatorListener();
+
         void reset();
 
         void resume();
@@ -93,53 +94,53 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         void start();
     }
 
-    /* renamed from: -$$Nest$smnCreateAnimatorSet */
-    static /* bridge */ /* synthetic */ long m1171$$Nest$smnCreateAnimatorSet() {
-        return nCreateAnimatorSet();
-    }
-
-    /* renamed from: -$$Nest$smshouldIgnoreInvalidAnimation */
-    static /* bridge */ /* synthetic */ boolean m1184$$Nest$smshouldIgnoreInvalidAnimation() {
-        return shouldIgnoreInvalidAnimation();
-    }
-
-    /* synthetic */ AnimatedVectorDrawable(AnimatedVectorDrawableState animatedVectorDrawableState, Resources resources, AnimatedVectorDrawableIA animatedVectorDrawableIA) {
-        this(animatedVectorDrawableState, resources);
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nAddAnimator(long j, long j2, long j3, long j4, long j5, int i, int i2);
 
-    private static native long nCreateAnimatorSet();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nCreateAnimatorSet();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateGroupPropertyHolder(long j, int i, float f, float f2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreatePathColorPropertyHolder(long j, int i, int i2, int i3);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreatePathDataPropertyHolder(long j, long j2, long j3);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreatePathPropertyHolder(long j, int i, float f, float f2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreateRootAlphaPropertyHolder(long j, float f, float f2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nEnd(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nReset(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nReverse(long j, VectorDrawableAnimatorRT vectorDrawableAnimatorRT, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetPropertyHolderData(long j, float[] fArr, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetPropertyHolderData(long j, int[] iArr, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetVectorDrawableTarget(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nStart(long j, VectorDrawableAnimatorRT vectorDrawableAnimatorRT, int i);
 
     public AnimatedVectorDrawable() {
@@ -150,10 +151,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         this.mAnimatorSetFromXml = null;
         this.mAnimationCallbacks = null;
         this.mAnimatorListener = null;
-        AnonymousClass1 anonymousClass1 = new Drawable.Callback() { // from class: android.graphics.drawable.AnimatedVectorDrawable.1
-            AnonymousClass1() {
-            }
-
+        this.mCallback = new Drawable.Callback() { // from class: android.graphics.drawable.AnimatedVectorDrawable.1
             @Override // android.graphics.drawable.Drawable.Callback
             public void invalidateDrawable(Drawable who) {
                 AnimatedVectorDrawable.this.invalidateSelf();
@@ -169,8 +167,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
                 AnimatedVectorDrawable.this.unscheduleSelf(what);
             }
         };
-        this.mCallback = anonymousClass1;
-        this.mAnimatedVectorState = new AnimatedVectorDrawableState(state, anonymousClass1, res);
+        this.mAnimatedVectorState = new AnimatedVectorDrawableState(state, this.mCallback, res);
         this.mAnimatorSet = new VectorDrawableAnimatorRT(this);
         this.mRes = res;
     }
@@ -193,7 +190,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         this.mMutated = false;
     }
 
-    private static boolean shouldIgnoreInvalidAnimation() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean shouldIgnoreInvalidAnimation() {
         return Compatibility.getTargetSdkVersion() < 24;
     }
 
@@ -210,28 +208,25 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
     @Override // android.graphics.drawable.Drawable
     public void draw(Canvas canvas) {
-        if (!canvas.isHardwareAccelerated()) {
-            VectorDrawableAnimator vectorDrawableAnimator = this.mAnimatorSet;
-            if ((vectorDrawableAnimator instanceof VectorDrawableAnimatorRT) && !vectorDrawableAnimator.isRunning() && ((VectorDrawableAnimatorRT) this.mAnimatorSet).mPendingAnimationActions.size() > 0) {
-                fallbackOntoUI();
-            }
+        if (!canvas.isHardwareAccelerated() && (this.mAnimatorSet instanceof VectorDrawableAnimatorRT) && !this.mAnimatorSet.isRunning() && ((VectorDrawableAnimatorRT) this.mAnimatorSet).mPendingAnimationActions.size() > 0) {
+            fallbackOntoUI();
         }
         this.mAnimatorSet.onDraw(canvas);
         this.mAnimatedVectorState.mVectorDrawable.draw(canvas);
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         this.mAnimatedVectorState.mVectorDrawable.setBounds(bounds);
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         return this.mAnimatedVectorState.mVectorDrawable.setState(state);
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         return this.mAnimatedVectorState.mVectorDrawable.setLevel(level);
     }
 
@@ -370,6 +365,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         this.mRes = state.mPendingAnims != null ? res : null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void updateAnimatorProperty(Animator animator, String targetName, VectorDrawable vectorDrawable, boolean ignoreInvalidAnim) {
         if (animator instanceof ObjectAnimator) {
             PropertyValuesHolder[] holders = ((ObjectAnimator) animator).getValues();
@@ -408,9 +404,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
     }
 
     public void forceAnimationOnUI() {
-        VectorDrawableAnimator vectorDrawableAnimator = this.mAnimatorSet;
-        if (vectorDrawableAnimator instanceof VectorDrawableAnimatorRT) {
-            VectorDrawableAnimatorRT animator = (VectorDrawableAnimatorRT) vectorDrawableAnimator;
+        if (this.mAnimatorSet instanceof VectorDrawableAnimatorRT) {
+            VectorDrawableAnimatorRT animator = (VectorDrawableAnimatorRT) this.mAnimatorSet;
             if (animator.isRunning()) {
                 throw new UnsupportedOperationException("Cannot force Animated Vector Drawable to run on UI thread when the animation has started on RenderThread.");
             }
@@ -419,14 +414,11 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
     }
 
     private void fallbackOntoUI() {
-        VectorDrawableAnimator vectorDrawableAnimator = this.mAnimatorSet;
-        if (vectorDrawableAnimator instanceof VectorDrawableAnimatorRT) {
-            VectorDrawableAnimatorRT oldAnim = (VectorDrawableAnimatorRT) vectorDrawableAnimator;
-            VectorDrawableAnimatorUI vectorDrawableAnimatorUI = new VectorDrawableAnimatorUI(this);
-            this.mAnimatorSet = vectorDrawableAnimatorUI;
-            AnimatorSet animatorSet = this.mAnimatorSetFromXml;
-            if (animatorSet != null) {
-                vectorDrawableAnimatorUI.init(animatorSet);
+        if (this.mAnimatorSet instanceof VectorDrawableAnimatorRT) {
+            VectorDrawableAnimatorRT oldAnim = (VectorDrawableAnimatorRT) this.mAnimatorSet;
+            this.mAnimatorSet = new VectorDrawableAnimatorUI(this);
+            if (this.mAnimatorSetFromXml != null) {
+                this.mAnimatorSet.init(this.mAnimatorSetFromXml);
             }
             if (oldAnim.mListener != null) {
                 this.mAnimatorSet.setListener(oldAnim.mListener);
@@ -437,8 +429,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        AnimatedVectorDrawableState animatedVectorDrawableState = this.mAnimatedVectorState;
-        return (animatedVectorDrawableState != null && animatedVectorDrawableState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mAnimatedVectorState != null && this.mAnimatedVectorState.canApplyTheme()) || super.canApplyTheme();
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -460,29 +451,26 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         return this.mAnimatorSet.getTotalDuration();
     }
 
-    /* loaded from: classes.dex */
-    public static class AnimatedVectorDrawableState extends Drawable.ConstantState {
+    private static class AnimatedVectorDrawableState extends Drawable.ConstantState {
         ArrayList<Animator> mAnimators;
         int mChangingConfigurations;
         ArrayList<PendingAnimator> mPendingAnims;
-        private final boolean mShouldIgnoreInvalidAnim = AnimatedVectorDrawable.m1184$$Nest$smshouldIgnoreInvalidAnimation();
+        private final boolean mShouldIgnoreInvalidAnim = AnimatedVectorDrawable.shouldIgnoreInvalidAnimation();
         ArrayMap<Animator, String> mTargetNameMap;
         VectorDrawable mVectorDrawable;
 
         public AnimatedVectorDrawableState(AnimatedVectorDrawableState copy, Drawable.Callback owner, Resources res) {
             if (copy != null) {
                 this.mChangingConfigurations = copy.mChangingConfigurations;
-                VectorDrawable vectorDrawable = copy.mVectorDrawable;
-                if (vectorDrawable != null) {
-                    Drawable.ConstantState cs = vectorDrawable.getConstantState();
+                if (copy.mVectorDrawable != null) {
+                    Drawable.ConstantState cs = copy.mVectorDrawable.getConstantState();
                     if (res != null) {
                         this.mVectorDrawable = (VectorDrawable) cs.newDrawable(res);
                     } else {
                         this.mVectorDrawable = (VectorDrawable) cs.newDrawable();
                     }
-                    VectorDrawable vectorDrawable2 = (VectorDrawable) this.mVectorDrawable.mutate();
-                    this.mVectorDrawable = vectorDrawable2;
-                    vectorDrawable2.setCallback(owner);
+                    this.mVectorDrawable = (VectorDrawable) this.mVectorDrawable.mutate();
+                    this.mVectorDrawable.setCallback(owner);
                     this.mVectorDrawable.setLayoutDirection(copy.mVectorDrawable.getLayoutDirection());
                     this.mVectorDrawable.setBounds(copy.mVectorDrawable.getBounds());
                     this.mVectorDrawable.setAllowCaching(false);
@@ -504,8 +492,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            VectorDrawable vectorDrawable = this.mVectorDrawable;
-            return (vectorDrawable != null && vectorDrawable.canApplyTheme()) || this.mPendingAnims != null || super.canApplyTheme();
+            return (this.mVectorDrawable != null && this.mVectorDrawable.canApplyTheme()) || this.mPendingAnims != null || super.canApplyTheme();
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -548,8 +535,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
                 }
                 this.mPendingAnims = null;
             }
-            ArrayList<Animator> arrayList = this.mAnimators;
-            int count = arrayList == null ? 0 : arrayList.size();
+            int count = this.mAnimators == null ? 0 : this.mAnimators.size();
             if (count > 0) {
                 Animator firstAnim = prepareLocalAnimator(0);
                 AnimatorSet.Builder builder = animatorSet.play(firstAnim);
@@ -562,7 +548,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         private Animator prepareLocalAnimator(int index) {
             Animator animator = this.mAnimators.get(index);
-            Animator localAnimator = animator.mo57clone();
+            Animator localAnimator = animator.mo77clone();
             String targetName = this.mTargetNameMap.get(animator);
             Object target = this.mVectorDrawable.getTargetByName(targetName);
             if (!this.mShouldIgnoreInvalidAnim) {
@@ -591,8 +577,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class PendingAnimator {
+        private static class PendingAnimator {
             public final int animResId;
             public final float pathErrorScale;
             public final String target;
@@ -627,9 +612,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
     private void ensureAnimatorSet() {
         if (this.mAnimatorSetFromXml == null) {
-            AnimatorSet animatorSet = new AnimatorSet();
-            this.mAnimatorSetFromXml = animatorSet;
-            this.mAnimatedVectorState.prepareLocalAnimators(animatorSet, this.mRes);
+            this.mAnimatorSetFromXml = new AnimatorSet();
+            this.mAnimatedVectorState.prepareLocalAnimators(this.mAnimatorSetFromXml, this.mRes);
             this.mAnimatorSet.init(this.mAnimatorSetFromXml);
             this.mRes = null;
         }
@@ -653,29 +637,6 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         return this.mAnimatorSet.canReverse();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.graphics.drawable.AnimatedVectorDrawable$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Drawable.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void invalidateDrawable(Drawable who) {
-            AnimatedVectorDrawable.this.invalidateSelf();
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void scheduleDrawable(Drawable who, Runnable what, long when) {
-            AnimatedVectorDrawable.this.scheduleSelf(what, when);
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void unscheduleDrawable(Drawable who, Runnable what) {
-            AnimatedVectorDrawable.this.unscheduleSelf(what);
-        }
-    }
-
     @Override // android.graphics.drawable.Animatable2
     public void registerAnimationCallback(Animatable2.AnimationCallback callback) {
         if (callback == null) {
@@ -687,9 +648,6 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         this.mAnimationCallbacks.add(callback);
         if (this.mAnimatorListener == null) {
             this.mAnimatorListener = new AnimatorListenerAdapter() { // from class: android.graphics.drawable.AnimatedVectorDrawable.2
-                AnonymousClass2() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     ArrayList<Animatable2.AnimationCallback> tmpCallbacks = new ArrayList<>(AnimatedVectorDrawable.this.mAnimationCallbacks);
@@ -712,46 +670,22 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         this.mAnimatorSet.setListener(this.mAnimatorListener);
     }
 
-    /* renamed from: android.graphics.drawable.AnimatedVectorDrawable$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends AnimatorListenerAdapter {
-        AnonymousClass2() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            ArrayList<Animatable2.AnimationCallback> tmpCallbacks = new ArrayList<>(AnimatedVectorDrawable.this.mAnimationCallbacks);
-            int size = tmpCallbacks.size();
-            for (int i = 0; i < size; i++) {
-                tmpCallbacks.get(i).onAnimationStart(AnimatedVectorDrawable.this);
-            }
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            ArrayList<Animatable2.AnimationCallback> tmpCallbacks = new ArrayList<>(AnimatedVectorDrawable.this.mAnimationCallbacks);
-            int size = tmpCallbacks.size();
-            for (int i = 0; i < size; i++) {
-                tmpCallbacks.get(i).onAnimationEnd(AnimatedVectorDrawable.this);
-            }
-        }
-    }
-
     private void removeAnimatorSetListener() {
-        Animator.AnimatorListener animatorListener = this.mAnimatorListener;
-        if (animatorListener != null) {
-            this.mAnimatorSet.removeListener(animatorListener);
+        if (this.mAnimatorSet instanceof VectorDrawableAnimatorRT) {
+            this.mAnimatorSet.removeThreadedRendererAnimatorListener();
+        }
+        if (this.mAnimatorListener != null) {
+            this.mAnimatorSet.removeListener(this.mAnimatorListener);
             this.mAnimatorListener = null;
         }
     }
 
     @Override // android.graphics.drawable.Animatable2
     public boolean unregisterAnimationCallback(Animatable2.AnimationCallback callback) {
-        ArrayList<Animatable2.AnimationCallback> arrayList = this.mAnimationCallbacks;
-        if (arrayList == null || callback == null) {
+        if (this.mAnimationCallbacks == null || callback == null) {
             return false;
         }
-        boolean removed = arrayList.remove(callback);
+        boolean removed = this.mAnimationCallbacks.remove(callback);
         if (this.mAnimationCallbacks.size() == 0) {
             removeAnimatorSetListener();
         }
@@ -761,15 +695,20 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
     @Override // android.graphics.drawable.Animatable2
     public void clearAnimationCallbacks() {
         removeAnimatorSetListener();
-        ArrayList<Animatable2.AnimationCallback> arrayList = this.mAnimationCallbacks;
-        if (arrayList == null) {
+        if (this.mAnimationCallbacks == null) {
             return;
         }
-        arrayList.clear();
+        this.mAnimationCallbacks.clear();
     }
 
-    /* loaded from: classes.dex */
-    public static class VectorDrawableAnimatorUI implements VectorDrawableAnimator {
+    private void hidden_semSetPathColor(int color) {
+        if (this.mAnimatedVectorState == null || this.mAnimatedVectorState.mVectorDrawable == null) {
+            return;
+        }
+        this.mAnimatedVectorState.mVectorDrawable.setPathColor("all", color);
+    }
+
+    private static class VectorDrawableAnimatorUI implements VectorDrawableAnimator {
         private final Drawable mDrawable;
         private long mTotalDuration;
         private AnimatorSet mSet = null;
@@ -785,13 +724,10 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             if (this.mSet != null) {
                 throw new UnsupportedOperationException("VectorDrawableAnimator cannot be re-initialized");
             }
-            AnimatorSet mo57clone = set.mo57clone();
-            this.mSet = mo57clone;
-            long totalDuration = mo57clone.getTotalDuration();
-            this.mTotalDuration = totalDuration;
-            this.mIsInfinite = totalDuration == -1;
-            ArrayList<Animator.AnimatorListener> arrayList = this.mListenerArray;
-            if (arrayList != null && !arrayList.isEmpty()) {
+            this.mSet = set.mo77clone();
+            this.mTotalDuration = this.mSet.getTotalDuration();
+            this.mIsInfinite = this.mTotalDuration == -1;
+            if (this.mListenerArray != null && !this.mListenerArray.isEmpty()) {
                 for (int i = 0; i < this.mListenerArray.size(); i++) {
                     this.mSet.addListener(this.mListenerArray.get(i));
                 }
@@ -802,8 +738,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void start() {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null || animatorSet.isStarted()) {
+            if (this.mSet == null || this.mSet.isStarted()) {
                 return;
             }
             this.mSet.start();
@@ -812,11 +747,10 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void end() {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
+            if (this.mSet == null) {
                 return;
             }
-            animatorSet.end();
+            this.mSet.end();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
@@ -830,65 +764,61 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void reverse() {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
+            if (this.mSet == null) {
                 return;
             }
-            animatorSet.reverse();
+            this.mSet.reverse();
             invalidateOwningView();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public boolean canReverse() {
-            AnimatorSet animatorSet = this.mSet;
-            return animatorSet != null && animatorSet.canReverse();
+            return this.mSet != null && this.mSet.canReverse();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void setListener(Animator.AnimatorListener listener) {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
+            if (this.mSet == null) {
                 if (this.mListenerArray == null) {
                     this.mListenerArray = new ArrayList<>();
                 }
                 this.mListenerArray.add(listener);
                 return;
             }
-            animatorSet.addListener(listener);
+            this.mSet.addListener(listener);
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void removeListener(Animator.AnimatorListener listener) {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
-                ArrayList<Animator.AnimatorListener> arrayList = this.mListenerArray;
-                if (arrayList == null) {
+            if (this.mSet == null) {
+                if (this.mListenerArray == null) {
                     return;
                 }
-                arrayList.remove(listener);
+                this.mListenerArray.remove(listener);
                 return;
             }
-            animatorSet.removeListener(listener);
+            this.mSet.removeListener(listener);
+        }
+
+        @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
+        public void removeThreadedRendererAnimatorListener() {
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void onDraw(Canvas canvas) {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet != null && animatorSet.isStarted()) {
+            if (this.mSet != null && this.mSet.isStarted()) {
                 invalidateOwningView();
             }
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public boolean isStarted() {
-            AnimatorSet animatorSet = this.mSet;
-            return animatorSet != null && animatorSet.isStarted();
+            return this.mSet != null && this.mSet.isStarted();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public boolean isRunning() {
-            AnimatorSet animatorSet = this.mSet;
-            return animatorSet != null && animatorSet.isRunning();
+            return this.mSet != null && this.mSet.isRunning();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
@@ -898,20 +828,18 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void pause() {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
+            if (this.mSet == null) {
                 return;
             }
-            animatorSet.pause();
+            this.mSet.pause();
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void resume() {
-            AnimatorSet animatorSet = this.mSet;
-            if (animatorSet == null) {
+            if (this.mSet == null) {
                 return;
             }
-            animatorSet.resume();
+            this.mSet.resume();
         }
 
         private void invalidateOwningView() {
@@ -924,7 +852,6 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class VectorDrawableAnimatorRT implements VectorDrawableAnimator, NativeVectorDrawableAnimator {
         private static final int END_ANIMATION = 4;
         private static final int MAX_SAMPLE_POINTS = 300;
@@ -935,6 +862,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         private Handler mHandler;
         private long mSetPtr;
         private final VirtualRefBasePtr mSetRefBasePtr;
+        private Animator.AnimatorListener mThreadedRendererAnimatorListener;
         private long mTotalDuration;
         private Animator.AnimatorListener mListener = null;
         private final LongArray mStartDelays = new LongArray();
@@ -951,9 +879,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         VectorDrawableAnimatorRT(AnimatedVectorDrawable drawable) {
             this.mSetPtr = 0L;
             this.mDrawable = drawable;
-            long m1171$$Nest$smnCreateAnimatorSet = AnimatedVectorDrawable.m1171$$Nest$smnCreateAnimatorSet();
-            this.mSetPtr = m1171$$Nest$smnCreateAnimatorSet;
-            this.mSetRefBasePtr = new VirtualRefBasePtr(m1171$$Nest$smnCreateAnimatorSet);
+            this.mSetPtr = AnimatedVectorDrawable.nCreateAnimatorSet();
+            this.mSetRefBasePtr = new VirtualRefBasePtr(this.mSetPtr);
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
@@ -965,9 +892,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             long vectorDrawableTreePtr = this.mDrawable.mAnimatedVectorState.mVectorDrawable.getNativeTree();
             AnimatedVectorDrawable.nSetVectorDrawableTarget(this.mSetPtr, vectorDrawableTreePtr);
             this.mInitialized = true;
-            long totalDuration = set.getTotalDuration();
-            this.mTotalDuration = totalDuration;
-            this.mIsInfinite = totalDuration == -1;
+            this.mTotalDuration = set.getTotalDuration();
+            this.mIsInfinite = this.mTotalDuration == -1;
             this.mIsReversible = true;
             if (this.mContainsSequentialAnimators) {
                 this.mIsReversible = false;
@@ -1163,8 +1089,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             long startDelay = extraDelay + animator.getStartDelay();
             TimeInterpolator interpolator = animator.getInterpolator();
             long nativeInterpolator = NativeInterpolatorFactory.createNativeInterpolator(interpolator, duration);
-            long startDelay2 = ((float) startDelay) * ValueAnimator.getDurationScale();
-            long duration2 = ((float) duration) * ValueAnimator.getDurationScale();
+            long startDelay2 = (long) (startDelay * ValueAnimator.getDurationScale());
+            long duration2 = (long) (duration * ValueAnimator.getDurationScale());
             this.mStartDelays.add(startDelay2);
             AnimatedVectorDrawable.nAddAnimator(this.mSetPtr, propertyPtr, nativeInterpolator, startDelay2, duration2, repeatCount, animator.getRepeatMode());
         }
@@ -1199,9 +1125,8 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         }
 
         private boolean useLastSeenTarget() {
-            WeakReference<RenderNode> weakReference = this.mLastSeenTarget;
-            if (weakReference != null) {
-                RenderNode target = weakReference.get();
+            if (this.mLastSeenTarget != null) {
+                RenderNode target = this.mLastSeenTarget.get();
                 return useTarget(target);
             }
             return false;
@@ -1282,9 +1207,11 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             this.mLastListenerId = i;
             AnimatedVectorDrawable.nStart(j, this, i);
             invalidateOwningView();
-            Animator.AnimatorListener animatorListener = this.mListener;
-            if (animatorListener != null) {
-                animatorListener.onAnimationStart(null);
+            if (this.mListener != null) {
+                this.mListener.onAnimationStart(null);
+            }
+            if (this.mThreadedRendererAnimatorListener != null) {
+                this.mThreadedRendererAnimatorListener.onAnimationStart(null);
             }
         }
 
@@ -1305,15 +1232,22 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             this.mLastListenerId = i;
             AnimatedVectorDrawable.nReverse(j, this, i);
             invalidateOwningView();
-            Animator.AnimatorListener animatorListener = this.mListener;
-            if (animatorListener != null) {
-                animatorListener.onAnimationStart(null);
+            if (this.mListener != null) {
+                this.mListener.onAnimationStart(null);
+            }
+            if (this.mThreadedRendererAnimatorListener != null) {
+                this.mThreadedRendererAnimatorListener.onAnimationStart(null);
             }
         }
 
         @Override // android.view.NativeVectorDrawableAnimator
         public long getAnimatorNativePtr() {
             return this.mSetPtr;
+        }
+
+        @Override // android.view.NativeVectorDrawableAnimator
+        public void setThreadedRendererAnimatorListener(Animator.AnimatorListener animatorListener) {
+            this.mThreadedRendererAnimatorListener = animatorListener;
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
@@ -1345,6 +1279,11 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         }
 
         @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
+        public void removeThreadedRendererAnimatorListener() {
+            this.mThreadedRendererAnimatorListener = null;
+        }
+
+        @Override // android.graphics.drawable.AnimatedVectorDrawable.VectorDrawableAnimator
         public void onDraw(Canvas canvas) {
             if (canvas.isHardwareAccelerated()) {
                 recordLastSeenTarget((RecordingCanvas) canvas);
@@ -1364,19 +1303,22 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
         public void resume() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void onAnimationEnd(int listenerId) {
             if (listenerId != this.mLastListenerId) {
                 return;
             }
             this.mStarted = false;
             invalidateOwningView();
-            Animator.AnimatorListener animatorListener = this.mListener;
-            if (animatorListener != null) {
-                animatorListener.onAnimationEnd(null);
+            if (this.mListener != null) {
+                this.mListener.onAnimationEnd(null);
+            }
+            if (this.mThreadedRendererAnimatorListener != null) {
+                this.mThreadedRendererAnimatorListener.onAnimationEnd(null);
             }
         }
 
-        private static void callOnFinished(VectorDrawableAnimatorRT set, final int id) {
+        private static void callOnFinished(final VectorDrawableAnimatorRT set, final int id) {
             set.mHandler.post(new Runnable() { // from class: android.graphics.drawable.AnimatedVectorDrawable$VectorDrawableAnimatorRT$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
@@ -1385,6 +1327,7 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable2 {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void transferPendingActions(VectorDrawableAnimator animatorSet) {
             for (int i = 0; i < this.mPendingAnimationActions.size(); i++) {
                 int pendingAction = this.mPendingAnimationActions.get(i);

@@ -39,22 +39,20 @@ public abstract class TunnelModeEnabledListener {
     }
 
     public static void register(TunnelModeEnabledListener listener) {
-        long j = listener.mNativeListener;
-        if (j == 0) {
+        if (listener.mNativeListener == 0) {
             return;
         }
-        nativeRegister(j);
+        nativeRegister(listener.mNativeListener);
     }
 
     public static void unregister(TunnelModeEnabledListener listener) {
-        long j = listener.mNativeListener;
-        if (j == 0) {
+        if (listener.mNativeListener == 0) {
             return;
         }
-        nativeUnregister(j);
+        nativeUnregister(listener.mNativeListener);
     }
 
-    public static void dispatchOnTunnelModeEnabledChanged(TunnelModeEnabledListener listener, final boolean tunnelModeEnabled) {
+    public static void dispatchOnTunnelModeEnabledChanged(final TunnelModeEnabledListener listener, final boolean tunnelModeEnabled) {
         listener.mExecutor.execute(new Runnable() { // from class: android.view.TunnelModeEnabledListener$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {

@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IDownloadSubscriptionCallback extends IInterface {
     void onComplete(DownloadSubscriptionResult downloadSubscriptionResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDownloadSubscriptionCallback {
         @Override // android.service.euicc.IDownloadSubscriptionCallback
         public void onComplete(DownloadSubscriptionResult result) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IDownloadSubscriptionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDownloadSubscriptionCallback {
         public static final String DESCRIPTOR = "android.service.euicc.IDownloadSubscriptionCallback";
         static final int TRANSACTION_onComplete = 1;
@@ -66,26 +64,22 @@ public interface IDownloadSubscriptionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    DownloadSubscriptionResult _arg0 = (DownloadSubscriptionResult) data.readTypedObject(DownloadSubscriptionResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DownloadSubscriptionResult _arg0 = (DownloadSubscriptionResult) data.readTypedObject(DownloadSubscriptionResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDownloadSubscriptionCallback {
+        private static class Proxy implements IDownloadSubscriptionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

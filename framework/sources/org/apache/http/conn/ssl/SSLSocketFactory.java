@@ -37,11 +37,6 @@ public class SSLSocketFactory implements LayeredSocketFactory {
     public static final X509HostnameVerifier BROWSER_COMPATIBLE_HOSTNAME_VERIFIER = new BrowserCompatHostnameVerifier();
     public static final X509HostnameVerifier STRICT_HOSTNAME_VERIFIER = new StrictHostnameVerifier();
 
-    /* synthetic */ SSLSocketFactory(SSLSocketFactoryIA sSLSocketFactoryIA) {
-        this();
-    }
-
-    /* loaded from: classes6.dex */
     private static class NoPreloadHolder {
         private static final SSLSocketFactory DEFAULT_FACTORY = new SSLSocketFactory();
 
@@ -58,10 +53,9 @@ public class SSLSocketFactory implements LayeredSocketFactory {
         algorithm = algorithm == null ? TLS : algorithm;
         KeyManager[] keymanagers = keystore != null ? createKeyManagers(keystore, keystorePassword) : null;
         TrustManager[] trustmanagers = truststore != null ? createTrustManagers(truststore) : null;
-        SSLContext sSLContext = SSLContext.getInstance(algorithm);
-        this.sslcontext = sSLContext;
-        sSLContext.init(keymanagers, trustmanagers, random);
-        this.socketfactory = sSLContext.getSocketFactory();
+        this.sslcontext = SSLContext.getInstance(algorithm);
+        this.sslcontext.init(keymanagers, trustmanagers, random);
+        this.socketfactory = this.sslcontext.getSocketFactory();
         this.nameResolver = nameResolver;
     }
 

@@ -13,20 +13,19 @@ import com.android.internal.R;
 import java.util.Arrays;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
 
     @Deprecated
     public static final String ACTION_SUGGESTION_PICKED = "android.text.style.SUGGESTION_PICKED";
     public static final Parcelable.Creator<SuggestionSpan> CREATOR = new Parcelable.Creator<SuggestionSpan>() { // from class: android.text.style.SuggestionSpan.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuggestionSpan createFromParcel(Parcel source) {
             return new SuggestionSpan(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuggestionSpan[] newArray(int size) {
             return new SuggestionSpan[size];
@@ -78,8 +77,7 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
     public SuggestionSpan(Context context, Locale locale, String[] suggestions, int flags, Class<?> notificationTargetClass) {
         Locale sourceLocale;
         int N = Math.min(5, suggestions.length);
-        String[] strArr = (String[]) Arrays.copyOf(suggestions, N);
-        this.mSuggestions = strArr;
+        this.mSuggestions = (String[]) Arrays.copyOf(suggestions, N);
         this.mFlags = flags;
         if (locale != null) {
             sourceLocale = locale;
@@ -89,11 +87,9 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
             Log.e(TAG, "No locale or context specified in SuggestionSpan constructor");
             sourceLocale = null;
         }
-        String locale2 = sourceLocale == null ? "" : sourceLocale.toString();
-        this.mLocaleStringForCompatibility = locale2;
-        String languageTag = sourceLocale != null ? sourceLocale.toLanguageTag() : "";
-        this.mLanguageTag = languageTag;
-        this.mHashCode = hashCodeInternal(strArr, languageTag, locale2);
+        this.mLocaleStringForCompatibility = sourceLocale == null ? "" : sourceLocale.toString();
+        this.mLanguageTag = sourceLocale != null ? sourceLocale.toLanguageTag() : "";
+        this.mHashCode = hashCodeInternal(this.mSuggestions, this.mLanguageTag, this.mLocaleStringForCompatibility);
         initStyle(context);
     }
 
@@ -127,9 +123,8 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
         typedArray4.recycle();
         this.mGrammarSuggestionUnderlineColor = -16777216;
         this.mTypoSuggestionUnderlineColor = -16777216;
-        float f = this.mMisspelledUnderlineThickness;
-        this.mGrammarSuggestionUnderlineThickness = f;
-        this.mTypoSuggestionUnderlineThickness = f;
+        this.mGrammarSuggestionUnderlineThickness = this.mMisspelledUnderlineThickness;
+        this.mTypoSuggestionUnderlineThickness = this.mMisspelledUnderlineThickness;
         if ((this.mFlags & 4096) != 0) {
             this.mGrammarSuggestionUnderlineColor = Color.parseColor("#0DB089");
         }
@@ -240,38 +235,20 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
         return Arrays.hashCode(new Object[]{Long.valueOf(SystemClock.uptimeMillis()), suggestions, languageTag, localeStringForCompatibility});
     }
 
-    /* renamed from: android.text.style.SuggestionSpan$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SuggestionSpan> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuggestionSpan createFromParcel(Parcel source) {
-            return new SuggestionSpan(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuggestionSpan[] newArray(int size) {
-            return new SuggestionSpan[size];
-        }
-    }
-
     @Override // android.text.style.CharacterStyle
     public void updateDrawState(TextPaint tp) {
-        int i = this.mFlags;
-        if ((i & 4096) != 0) {
+        if ((this.mFlags & 4096) != 0) {
             tp.setUnderlineText(this.mGrammarSuggestionUnderlineColor, this.mGrammarSuggestionUnderlineThickness);
             return;
         }
-        if ((i & 8192) != 0) {
+        if ((this.mFlags & 8192) != 0) {
             tp.setUnderlineText(this.mTypoSuggestionUnderlineColor, this.mTypoSuggestionUnderlineThickness);
             return;
         }
-        boolean misspelled = (i & 2) != 0;
-        boolean easy = (i & 1) != 0;
-        boolean autoCorrection = (i & 4) != 0;
-        boolean grammarError = (i & 8) != 0;
+        boolean misspelled = (this.mFlags & 2) != 0;
+        boolean easy = (this.mFlags & 1) != 0;
+        boolean autoCorrection = (this.mFlags & 4) != 0;
+        boolean grammarError = (this.mFlags & 8) != 0;
         if (easy) {
             if (!misspelled && !grammarError) {
                 tp.setUnderlineText(this.mEasyCorrectUnderlineColor, this.mEasyCorrectUnderlineThickness);
@@ -299,17 +276,16 @@ public class SuggestionSpan extends CharacterStyle implements ParcelableSpan {
     }
 
     public int getUnderlineColor() {
-        int i = this.mFlags;
-        if ((i & 4096) != 0) {
+        if ((this.mFlags & 4096) != 0) {
             return this.mGrammarSuggestionUnderlineColor;
         }
-        if ((i & 8192) != 0) {
+        if ((this.mFlags & 8192) != 0) {
             return this.mTypoSuggestionUnderlineColor;
         }
-        boolean misspelled = (i & 2) != 0;
-        boolean easy = (i & 1) != 0;
-        boolean autoCorrection = (i & 4) != 0;
-        boolean grammarError = (i & 8) != 0;
+        boolean misspelled = (this.mFlags & 2) != 0;
+        boolean easy = (this.mFlags & 1) != 0;
+        boolean autoCorrection = (this.mFlags & 4) != 0;
+        boolean grammarError = (this.mFlags & 8) != 0;
         if (easy) {
             if (grammarError) {
                 return this.mGrammarErrorUnderlineColor;

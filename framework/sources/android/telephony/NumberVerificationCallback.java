@@ -1,9 +1,11 @@
 package android.telephony;
 
 import android.annotation.SystemApi;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface NumberVerificationCallback {
     public static final int REASON_CONCURRENT_REQUESTS = 4;
     public static final int REASON_IN_ECBM = 5;
@@ -13,7 +15,7 @@ public interface NumberVerificationCallback {
     public static final int REASON_TOO_MANY_CALLS = 3;
     public static final int REASON_UNSPECIFIED = 0;
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface NumberVerificationFailureReason {
     }
 

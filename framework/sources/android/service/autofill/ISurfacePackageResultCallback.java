@@ -13,7 +13,6 @@ public interface ISurfacePackageResultCallback extends IInterface {
 
     void onResult(SurfaceControlViewHost.SurfacePackage surfacePackage) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISurfacePackageResultCallback {
         @Override // android.service.autofill.ISurfacePackageResultCallback
         public void onResult(SurfaceControlViewHost.SurfacePackage result) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISurfacePackageResultCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISurfacePackageResultCallback {
         static final int TRANSACTION_onResult = 1;
 
@@ -68,26 +66,22 @@ public interface ISurfacePackageResultCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISurfacePackageResultCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISurfacePackageResultCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISurfacePackageResultCallback.DESCRIPTOR);
+                case 1:
+                    SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SurfaceControlViewHost.SurfacePackage _arg0 = (SurfaceControlViewHost.SurfacePackage) data.readTypedObject(SurfaceControlViewHost.SurfacePackage.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISurfacePackageResultCallback {
+        private static class Proxy implements ISurfacePackageResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

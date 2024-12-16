@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RuntimeManifestCoreOverlayUtils {
     public static final boolean DEBUG = true;
     public static final String TAG = "RuntimeManifestUtils";
@@ -88,7 +88,7 @@ public class RuntimeManifestCoreOverlayUtils {
         if (services == null || services.size() == 0) {
             return infoList;
         }
-        services.forEach(new Consumer() { // from class: com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils$$ExternalSyntheticLambda0
+        services.forEach(new Consumer() { // from class: com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 infoList.add(((PackageParser.Service) obj).info);
@@ -116,7 +116,7 @@ public class RuntimeManifestCoreOverlayUtils {
         if (activities == null || activities.size() == 0) {
             return infoList;
         }
-        activities.forEach(new Consumer() { // from class: com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils$$ExternalSyntheticLambda1
+        activities.forEach(new Consumer() { // from class: com.samsung.android.core.pm.runtimemanifest.RuntimeManifestCoreOverlayUtils$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 infoList.add(((PackageParser.Activity) obj).info);

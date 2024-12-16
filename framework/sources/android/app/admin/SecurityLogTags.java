@@ -9,6 +9,7 @@ public class SecurityLogTags {
     public static final int SECURITY_ADB_SYNC_RECV = 210003;
     public static final int SECURITY_ADB_SYNC_SEND = 210004;
     public static final int SECURITY_APP_PROCESS_START = 210005;
+    public static final int SECURITY_BACKUP_SERVICE_TOGGLED = 210044;
     public static final int SECURITY_BLUETOOTH_CONNECTION = 210039;
     public static final int SECURITY_BLUETOOTH_DISCONNECTION = 210040;
     public static final int SECURITY_CAMERA_POLICY_SET = 210034;
@@ -221,5 +222,9 @@ public class SecurityLogTags {
 
     public static void writeSecurityPackageUninstalled(String packageName, int versionCode, int userId) {
         EventLog.writeEvent(210043, packageName, Integer.valueOf(versionCode), Integer.valueOf(userId));
+    }
+
+    public static void writeSecurityBackupServiceToggled(String package_, int adminUser, int enabled) {
+        EventLog.writeEvent(210044, package_, Integer.valueOf(adminUser), Integer.valueOf(enabled));
     }
 }

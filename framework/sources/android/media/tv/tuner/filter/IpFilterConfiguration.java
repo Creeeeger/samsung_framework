@@ -4,7 +4,7 @@ import android.annotation.SystemApi;
 import android.media.tv.tuner.TunerVersionChecker;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class IpFilterConfiguration extends FilterConfiguration {
     public static final int INVALID_IP_FILTER_CONTEXT_ID = -1;
     private final byte[] mDstIpAddress;
@@ -13,10 +13,6 @@ public final class IpFilterConfiguration extends FilterConfiguration {
     private final boolean mPassthrough;
     private final byte[] mSrcIpAddress;
     private final int mSrcPort;
-
-    /* synthetic */ IpFilterConfiguration(Settings settings, byte[] bArr, byte[] bArr2, int i, int i2, boolean z, int i3, IpFilterConfigurationIA ipFilterConfigurationIA) {
-        this(settings, bArr, bArr2, i, i2, z, i3);
-    }
 
     private IpFilterConfiguration(Settings settings, byte[] srcAddr, byte[] dstAddr, int srcPort, int dstPort, boolean passthrough, int ipCid) {
         super(settings);
@@ -61,7 +57,6 @@ public final class IpFilterConfiguration extends FilterConfiguration {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private byte[] mDstIpAddress;
         private int mDstPort;
@@ -70,10 +65,6 @@ public final class IpFilterConfiguration extends FilterConfiguration {
         private Settings mSettings;
         private byte[] mSrcIpAddress;
         private int mSrcPort;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mSrcIpAddress = new byte[]{0, 0, 0, 0};
@@ -122,13 +113,11 @@ public final class IpFilterConfiguration extends FilterConfiguration {
         }
 
         public IpFilterConfiguration build() {
-            byte[] bArr = this.mSrcIpAddress;
-            int ipAddrLength = bArr.length;
-            byte[] bArr2 = this.mDstIpAddress;
-            if (ipAddrLength != bArr2.length || (ipAddrLength != 4 && ipAddrLength != 16)) {
+            int ipAddrLength = this.mSrcIpAddress.length;
+            if (ipAddrLength != this.mDstIpAddress.length || (ipAddrLength != 4 && ipAddrLength != 16)) {
                 throw new IllegalArgumentException("The lengths of src and dst IP address must be 4 or 16 and must be the same.srcLength=" + ipAddrLength + ", dstLength=" + this.mDstIpAddress.length);
             }
-            return new IpFilterConfiguration(this.mSettings, bArr, bArr2, this.mSrcPort, this.mDstPort, this.mPassthrough, this.mIpCid);
+            return new IpFilterConfiguration(this.mSettings, this.mSrcIpAddress, this.mDstIpAddress, this.mSrcPort, this.mDstPort, this.mPassthrough, this.mIpCid);
         }
     }
 }

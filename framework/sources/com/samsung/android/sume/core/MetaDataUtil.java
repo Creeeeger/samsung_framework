@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 import java.util.regex.Pattern;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final class MetaDataUtil {
     static final /* synthetic */ boolean $assertionsDisabled = false;
     private static final int JPEG_LENGTH_SIZE = 2;
@@ -58,8 +58,7 @@ public final class MetaDataUtil {
                     break;
                 }
                 int[] markers = {buffer[0] & 255, buffer[1] & 255};
-                String str = TAG;
-                Log.d(str, "marker: " + Integer.toHexString(markers[0]) + Integer.toHexString(markers[1]));
+                Log.d(TAG, "marker: " + Integer.toHexString(markers[0]) + Integer.toHexString(markers[1]));
                 if (markers[0] != 255) {
                     throw new IllegalArgumentException("this is not valid markers");
                 }
@@ -67,7 +66,7 @@ public final class MetaDataUtil {
                     ifs.read(buffer, 0, 2);
                     int length = (255 & buffer[1]) | ((buffer[0] & 255) << 8);
                     if (226 <= markers[1] && 239 >= markers[1]) {
-                        Log.d(str, "add APP" + (markers[1] & 15) + " meta(" + length + ')');
+                        Log.d(TAG, "add APP" + (markers[1] & 15) + " meta(" + length + ')');
                         ByteBuffer meta = ByteBuffer.allocateDirect(length + 2);
                         meta.put((byte) markers[0]);
                         meta.put((byte) markers[1]);
@@ -77,7 +76,7 @@ public final class MetaDataUtil {
                         data.add(meta);
                     } else {
                         if (markers[1] == 218) {
-                            Log.d(str, "EOS reached");
+                            Log.d(TAG, "EOS reached");
                             break;
                         }
                         ifs.skip(length - 2);
@@ -121,10 +120,9 @@ public final class MetaDataUtil {
     }
 
     public static boolean copyMetadata(String src, String dst) {
-        String str = TAG;
-        Log.d(str, "copyMetadata: src=" + src + ", dst=" + dst);
+        Log.d(TAG, "copyMetadata: src=" + src + ", dst=" + dst);
         if (!Pattern.compile(".(jpg|jpeg)$").matcher(src.toLowerCase(Locale.getDefault())).find()) {
-            Log.w(str, "not supported file format: " + src);
+            Log.w(TAG, "not supported file format: " + src);
             return false;
         }
         FileInputStream ifs = null;
@@ -147,8 +145,8 @@ public final class MetaDataUtil {
                             e.printStackTrace();
                             return true;
                         }
-                    } catch (IllegalArgumentException e2) {
-                        Log.w(TAG, "src has invalid meta: " + src);
+                    } catch (FileNotFoundException e2) {
+                        e2.printStackTrace();
                         if (ifs != null) {
                             ifs.close();
                         }
@@ -158,8 +156,8 @@ public final class MetaDataUtil {
                         ofs.close();
                         return false;
                     }
-                } catch (FileNotFoundException e3) {
-                    e3.printStackTrace();
+                } catch (IllegalArgumentException e3) {
+                    Log.w(TAG, "src has invalid meta: " + src);
                     if (ifs != null) {
                         ifs.close();
                     }
@@ -190,10 +188,9 @@ public final class MetaDataUtil {
     }
 
     public static boolean copyMetadataAndExif(String src, String dst, Consumer<ExifInterface> exifHandler) {
-        String str = TAG;
-        Log.d(str, "copyMetadataAndExif: src=" + src + ", dst=" + dst);
+        Log.d(TAG, "copyMetadataAndExif: src=" + src + ", dst=" + dst);
         if (!Pattern.compile(".(jpg|jpeg)$").matcher(src.toLowerCase(Locale.getDefault())).find()) {
-            Log.w(str, "not supported file format: " + src);
+            Log.w(TAG, "not supported file format: " + src);
             return false;
         }
         FileInputStream ifs = null;
@@ -208,7 +205,7 @@ public final class MetaDataUtil {
                         setAppNMetadata(meta, ofs);
                     }
                     ExifInterface result = copyExif(ifs, ofs);
-                    Log.d(str, "exif: " + result);
+                    Log.d(TAG, "exif: " + result);
                     if (exifHandler != null) {
                         exifHandler.accept(result);
                     }

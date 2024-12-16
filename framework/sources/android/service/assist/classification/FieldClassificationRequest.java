@@ -11,14 +11,13 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes3.dex */
 public final class FieldClassificationRequest implements Parcelable {
     public static final Parcelable.Creator<FieldClassificationRequest> CREATOR = new Parcelable.Creator<FieldClassificationRequest>() { // from class: android.service.assist.classification.FieldClassificationRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FieldClassificationRequest[] newArray(int size) {
             return new FieldClassificationRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FieldClassificationRequest createFromParcel(Parcel in) {
             return new FieldClassificationRequest(in);
@@ -28,7 +27,7 @@ public final class FieldClassificationRequest implements Parcelable {
 
     public FieldClassificationRequest(AssistStructure assistStructure) {
         this.mAssistStructure = assistStructure;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) assistStructure);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAssistStructure);
     }
 
     public AssistStructure getAssistStructure() {
@@ -52,24 +51,7 @@ public final class FieldClassificationRequest implements Parcelable {
     FieldClassificationRequest(Parcel in) {
         AssistStructure assistStructure = (AssistStructure) in.readTypedObject(AssistStructure.CREATOR);
         this.mAssistStructure = assistStructure;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) assistStructure);
-    }
-
-    /* renamed from: android.service.assist.classification.FieldClassificationRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FieldClassificationRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FieldClassificationRequest[] newArray(int size) {
-            return new FieldClassificationRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FieldClassificationRequest createFromParcel(Parcel in) {
-            return new FieldClassificationRequest(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAssistStructure);
     }
 
     @Deprecated

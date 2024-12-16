@@ -6,7 +6,6 @@ public class BitwiseOutputStream {
     private int mEnd;
     private int mPos = 0;
 
-    /* loaded from: classes5.dex */
     public static class AccessException extends Exception {
         public AccessException(String s) {
             super("BitwiseOutputStream access failed: " + s);
@@ -19,22 +18,18 @@ public class BitwiseOutputStream {
     }
 
     public byte[] toByteArray() {
-        int i = this.mPos;
-        int len = (i >>> 3) + ((i & 7) > 0 ? 1 : 0);
+        int len = (this.mPos >>> 3) + ((this.mPos & 7) > 0 ? 1 : 0);
         byte[] newBuf = new byte[len];
         System.arraycopy(this.mBuf, 0, newBuf, 0, len);
         return newBuf;
     }
 
     private void possExpand(int bits) {
-        int i = this.mPos;
-        int i2 = i + bits;
-        int i3 = this.mEnd;
-        if (i2 < i3) {
+        if (this.mPos + bits < this.mEnd) {
             return;
         }
-        byte[] newBuf = new byte[(i + bits) >>> 2];
-        System.arraycopy(this.mBuf, 0, newBuf, 0, i3 >>> 3);
+        byte[] newBuf = new byte[(this.mPos + bits) >>> 2];
+        System.arraycopy(this.mBuf, 0, newBuf, 0, this.mEnd >>> 3);
         this.mBuf = newBuf;
         this.mEnd = newBuf.length << 3;
     }
@@ -44,16 +39,16 @@ public class BitwiseOutputStream {
             throw new AccessException("illegal write (" + bits + " bits)");
         }
         possExpand(bits);
-        int i = this.mPos;
-        int index = i >>> 3;
-        int offset = (16 - (i & 7)) - bits;
+        int index = this.mPos >>> 3;
+        int offset = (16 - (this.mPos & 7)) - bits;
         int data2 = (data & ((-1) >>> (32 - bits))) << offset;
-        this.mPos = i + bits;
+        this.mPos += bits;
         byte[] bArr = this.mBuf;
         bArr[index] = (byte) (bArr[index] | (data2 >>> 8));
         if (offset < 8) {
-            int i2 = index + 1;
-            bArr[i2] = (byte) (bArr[i2] | (data2 & 255));
+            byte[] bArr2 = this.mBuf;
+            int i = index + 1;
+            bArr2[i] = (byte) (bArr2[i] | (data2 & 255));
         }
     }
 

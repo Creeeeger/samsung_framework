@@ -1,20 +1,16 @@
 package android.ddm;
 
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.WindowManagerGlobal;
-import com.android.internal.util.Preconditions;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import org.apache.harmony.dalvik.ddmc.Chunk;
 import org.apache.harmony.dalvik.ddmc.ChunkHandler;
 import org.apache.harmony.dalvik.ddmc.DdmServer;
@@ -24,17 +20,6 @@ public class DdmHandleViewDebug extends DdmHandle {
     private static final int ERR_EXCEPTION = -3;
     private static final int ERR_INVALID_OP = -1;
     private static final int ERR_INVALID_PARAM = -2;
-    private static final char SIG_ARRAY = '[';
-    private static final char SIG_BOOLEAN = 'Z';
-    private static final char SIG_BYTE = 'B';
-    private static final char SIG_CHAR = 'C';
-    private static final char SIG_DOUBLE = 'D';
-    private static final char SIG_FLOAT = 'F';
-    private static final char SIG_INT = 'I';
-    private static final char SIG_LONG = 'J';
-    private static final char SIG_SHORT = 'S';
-    private static final char SIG_STRING = 'R';
-    private static final char SIG_VOID = 'V';
     private static final String TAG = "DdmViewDebug";
     private static final int VUOP_CAPTURE_VIEW = 1;
     private static final int VUOP_DUMP_DISPLAYLIST = 2;
@@ -53,11 +38,9 @@ public class DdmHandleViewDebug extends DdmHandle {
     }
 
     public static void register() {
-        int i = CHUNK_VULW;
-        DdmHandleViewDebug ddmHandleViewDebug = sInstance;
-        DdmServer.registerHandler(i, ddmHandleViewDebug);
-        DdmServer.registerHandler(CHUNK_VURT, ddmHandleViewDebug);
-        DdmServer.registerHandler(CHUNK_VUOP, ddmHandleViewDebug);
+        DdmServer.registerHandler(CHUNK_VULW, sInstance);
+        DdmServer.registerHandler(CHUNK_VURT, sInstance);
+        DdmServer.registerHandler(CHUNK_VUOP, sInstance);
     }
 
     public void onConnected() {
@@ -179,26 +162,21 @@ public class DdmHandleViewDebug extends DdmHandle {
         try {
             try {
                 ViewDebug.captureLayers(rootView, dos);
-                try {
-                    dos.close();
-                } catch (IOException e) {
-                }
                 byte[] data = b.toByteArray();
                 return new Chunk(CHUNK_VURT, data, 0, data.length);
-            } catch (IOException e2) {
-                Chunk createFailChunk = createFailChunk(1, "Unexpected error while obtaining view hierarchy: " + e2.getMessage());
+            } catch (IOException e) {
+                Chunk createFailChunk = createFailChunk(1, "Unexpected error while obtaining view hierarchy: " + e.getMessage());
                 try {
                     dos.close();
-                } catch (IOException e3) {
+                } catch (IOException e2) {
                 }
                 return createFailChunk;
             }
-        } catch (Throwable th) {
+        } finally {
             try {
                 dos.close();
-            } catch (IOException e4) {
+            } catch (IOException e3) {
             }
-            throw th;
         }
     }
 
@@ -224,33 +202,8 @@ public class DdmHandleViewDebug extends DdmHandle {
         }
     }
 
-    /* renamed from: android.ddm.DdmHandleViewDebug$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ View val$rootView;
-        final /* synthetic */ View val$targetView;
-
-        AnonymousClass1(View view, View view2) {
-            rootView = view;
-            targetView = view2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewDebug.outputDisplayList(rootView, targetView);
-        }
-    }
-
-    private Chunk dumpDisplayLists(View rootView, View targetView) {
+    private Chunk dumpDisplayLists(final View rootView, final View targetView) {
         rootView.post(new Runnable() { // from class: android.ddm.DdmHandleViewDebug.1
-            final /* synthetic */ View val$rootView;
-            final /* synthetic */ View val$targetView;
-
-            AnonymousClass1(View rootView2, View targetView2) {
-                rootView = rootView2;
-                targetView = targetView2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ViewDebug.outputDisplayList(rootView, targetView);
@@ -260,42 +213,15 @@ public class DdmHandleViewDebug extends DdmHandle {
     }
 
     private Chunk invokeViewMethod(View rootView, View targetView, ByteBuffer in) {
-        Class<?>[] argTypes;
-        Object[] args;
         int l = in.getInt();
         String methodName = getString(in, l);
-        if (!in.hasRemaining()) {
-            args = new Object[0];
-            argTypes = new Class[0];
-        } else {
-            int nArgs = in.getInt();
-            argTypes = new Class[nArgs];
-            Object[] args2 = new Object[nArgs];
-            try {
-                deserializeMethodParameters(args2, argTypes, in);
-                args = args2;
-            } catch (ViewMethodInvocationSerializationException e) {
-                return createFailChunk(-2, e.getMessage());
-            }
-        }
         try {
-            Method method = targetView.getClass().getMethod(methodName, argTypes);
-            try {
-                Object result = ViewDebug.invokeViewMethod(targetView, method, args);
-                Class<?> returnType = method.getReturnType();
-                byte[] returnValue = serializeReturnValue(returnType, returnType.cast(result));
-                return new Chunk(CHUNK_VUOP, returnValue, 0, returnValue.length);
-            } catch (Exception e2) {
-                Log.e(TAG, "Exception while invoking method: " + e2.getCause().getMessage());
-                String msg = e2.getCause().getMessage();
-                if (msg == null) {
-                    msg = e2.getCause().toString();
-                }
-                return createFailChunk(-3, msg);
-            }
-        } catch (NoSuchMethodException e3) {
-            Log.e(TAG, "No such method: " + e3.getMessage());
-            return createFailChunk(-2, "No such method: " + e3.getMessage());
+            byte[] returnValue = ViewDebug.invokeViewMethod(targetView, methodName, in);
+            return new Chunk(CHUNK_VUOP, returnValue, 0, returnValue.length);
+        } catch (ViewDebug.ViewMethodInvocationSerializationException e) {
+            return createFailChunk(-2, e.getMessage());
+        } catch (Exception e2) {
+            return createFailChunk(-3, e2.getMessage());
         }
     }
 
@@ -318,145 +244,21 @@ public class DdmHandleViewDebug extends DdmHandle {
         try {
             try {
                 ViewDebug.profileViewAndChildren(targetView, bw);
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                }
                 byte[] data = b.toByteArray();
                 return new Chunk(CHUNK_VUOP, data, 0, data.length);
-            } catch (IOException e2) {
-                Chunk createFailChunk = createFailChunk(1, "Unexpected error while profiling view: " + e2.getMessage());
+            } catch (IOException e) {
+                Chunk createFailChunk = createFailChunk(1, "Unexpected error while profiling view: " + e.getMessage());
                 try {
                     bw.close();
-                } catch (IOException e3) {
+                } catch (IOException e2) {
                 }
                 return createFailChunk;
             }
-        } catch (Throwable th) {
+        } finally {
             try {
                 bw.close();
-            } catch (IOException e4) {
+            } catch (IOException e3) {
             }
-            throw th;
-        }
-    }
-
-    public static void deserializeMethodParameters(Object[] args, Class<?>[] argTypes, ByteBuffer in) throws ViewMethodInvocationSerializationException {
-        Preconditions.checkArgument(args.length == argTypes.length);
-        for (int i = 0; i < args.length; i++) {
-            char typeSignature = in.getChar();
-            boolean isArray = typeSignature == '[';
-            if (isArray) {
-                char arrayType = in.getChar();
-                if (arrayType != 'B') {
-                    throw new ViewMethodInvocationSerializationException("Unsupported array parameter type (" + typeSignature + ") to invoke view method @argument " + i);
-                }
-                int arrayLength = in.getInt();
-                if (arrayLength > in.remaining()) {
-                    throw new BufferUnderflowException();
-                }
-                byte[] byteArray = new byte[arrayLength];
-                in.get(byteArray);
-                argTypes[i] = byte[].class;
-                args[i] = byteArray;
-            } else {
-                switch (typeSignature) {
-                    case 'B':
-                        argTypes[i] = Byte.TYPE;
-                        args[i] = Byte.valueOf(in.get());
-                        break;
-                    case 'C':
-                        argTypes[i] = Character.TYPE;
-                        args[i] = Character.valueOf(in.getChar());
-                        break;
-                    case 'D':
-                        argTypes[i] = Double.TYPE;
-                        args[i] = Double.valueOf(in.getDouble());
-                        break;
-                    case 'F':
-                        argTypes[i] = Float.TYPE;
-                        args[i] = Float.valueOf(in.getFloat());
-                        break;
-                    case 'I':
-                        argTypes[i] = Integer.TYPE;
-                        args[i] = Integer.valueOf(in.getInt());
-                        break;
-                    case 'J':
-                        argTypes[i] = Long.TYPE;
-                        args[i] = Long.valueOf(in.getLong());
-                        break;
-                    case 'R':
-                        argTypes[i] = String.class;
-                        int stringUtf8ByteCount = Short.toUnsignedInt(in.getShort());
-                        byte[] rawStringBuffer = new byte[stringUtf8ByteCount];
-                        in.get(rawStringBuffer);
-                        args[i] = new String(rawStringBuffer, StandardCharsets.UTF_8);
-                        break;
-                    case 'S':
-                        argTypes[i] = Short.TYPE;
-                        args[i] = Short.valueOf(in.getShort());
-                        break;
-                    case 'Z':
-                        argTypes[i] = Boolean.TYPE;
-                        args[i] = Boolean.valueOf(in.get() != 0);
-                        break;
-                    default:
-                        Log.e(TAG, "arg " + i + ", unrecognized type: " + typeSignature);
-                        throw new ViewMethodInvocationSerializationException("Unsupported parameter type (" + typeSignature + ") to invoke view method.");
-                }
-            }
-        }
-    }
-
-    public static byte[] serializeReturnValue(Class<?> cls, Object obj) throws ViewMethodInvocationSerializationException, IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
-        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
-        if (cls.isArray()) {
-            if (!cls.equals(byte[].class)) {
-                throw new ViewMethodInvocationSerializationException("Unsupported array return type (" + cls + NavigationBarInflaterView.KEY_CODE_END);
-            }
-            byte[] bArr = (byte[]) obj;
-            dataOutputStream.writeChar(91);
-            dataOutputStream.writeChar(66);
-            dataOutputStream.writeInt(bArr.length);
-            dataOutputStream.write(bArr);
-        } else if (Boolean.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(90);
-            dataOutputStream.write(((Boolean) obj).booleanValue() ? 1 : 0);
-        } else if (Byte.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(66);
-            dataOutputStream.writeByte(((Byte) obj).byteValue());
-        } else if (Character.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(67);
-            dataOutputStream.writeChar(((Character) obj).charValue());
-        } else if (Short.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(83);
-            dataOutputStream.writeShort(((Short) obj).shortValue());
-        } else if (Integer.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(73);
-            dataOutputStream.writeInt(((Integer) obj).intValue());
-        } else if (Long.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(74);
-            dataOutputStream.writeLong(((Long) obj).longValue());
-        } else if (Double.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(68);
-            dataOutputStream.writeDouble(((Double) obj).doubleValue());
-        } else if (Float.TYPE.equals(cls)) {
-            dataOutputStream.writeChar(70);
-            dataOutputStream.writeFloat(((Float) obj).floatValue());
-        } else if (String.class.equals(cls)) {
-            dataOutputStream.writeChar(82);
-            dataOutputStream.writeUTF(obj != null ? (String) obj : "");
-        } else {
-            dataOutputStream.writeChar(86);
-        }
-        return byteArrayOutputStream.toByteArray();
-    }
-
-    /* loaded from: classes.dex */
-    public static class ViewMethodInvocationSerializationException extends Exception {
-        ViewMethodInvocationSerializationException(String message) {
-            super(message);
         }
     }
 }

@@ -1,6 +1,7 @@
 package android.content.pm;
 
 import android.annotation.SystemApi;
+import android.app.compat.CompatChanges;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -121,6 +122,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     public static final int PRIVATE_FLAG_EXT_ATTRIBUTIONS_ARE_USER_VISIBLE = 4;
     public static final int PRIVATE_FLAG_EXT_CPU_OVERRIDE = 32;
     public static final int PRIVATE_FLAG_EXT_ENABLE_ON_BACK_INVOKED_CALLBACK = 8;
+    public static final int PRIVATE_FLAG_EXT_NOT_LAUNCHED = 64;
     public static final int PRIVATE_FLAG_EXT_PROFILEABLE = 1;
     public static final int PRIVATE_FLAG_EXT_REQUEST_FOREGROUND_SERVICE_EXEMPTION = 2;
     public static final int PRIVATE_FLAG_HAS_DOMAIN_URLS = 16;
@@ -150,6 +152,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     public static final int ZEROINIT_DEFAULT = -1;
     public static final int ZEROINIT_DISABLED = 0;
     public static final int ZEROINIT_ENABLED = 1;
+    public boolean allowCrossUidActivitySwitchFromBelow;
     public String appComponentFactory;
     public String backupAgentName;
     public int category;
@@ -191,6 +194,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     public String nativeLibraryRootDir;
     public boolean nativeLibraryRootRequiresIsa;
     public int networkSecurityConfigRes;
+    public List<SharedLibraryInfo> optionalSharedLibraryInfos;
     public String[] overlayPaths;
     public String permission;
     public String primaryCpuAbi;
@@ -230,52 +234,40 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     public int versionCode;
     public String volumeUuid;
     public String zygotePreloadName;
-    private static Parcelling.BuiltIn.ForBoolean sForBoolean = (Parcelling.BuiltIn.ForBoolean) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForBoolean.class);
+    private static final Parcelling.BuiltIn.ForBoolean sForBoolean = (Parcelling.BuiltIn.ForBoolean) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForBoolean.class);
     private static final Parcelling.BuiltIn.ForStringSet sForStringSet = (Parcelling.BuiltIn.ForStringSet) Parcelling.Cache.getOrCreate(Parcelling.BuiltIn.ForStringSet.class);
     public static final Parcelable.Creator<ApplicationInfo> CREATOR = new AnonymousClass1();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ApplicationInfoPrivateFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ApplicationInfoPrivateFlagsExt {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Category {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GwpAsanMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface HiddenApiEnforcementPolicy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MemtagMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NativeHeapZeroInitialized {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RawExternalStorage {
-    }
-
-    /* synthetic */ ApplicationInfo(Parcel parcel, ApplicationInfoIA applicationInfoIA) {
-        this(parcel);
     }
 
     public static CharSequence getCategoryTitle(Context context, int category) {
@@ -412,6 +404,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
                 pw.println(prefix + "localeConfigRes=0x" + Integer.toHexString(this.localeConfigRes));
             }
             pw.println(prefix + "enableOnBackInvokedCallback=" + isOnBackInvokedCallbackEnabled());
+            pw.println(prefix + "allowCrossUidActivitySwitchFromBelow=" + this.allowCrossUidActivitySwitchFromBelow);
         }
         pw.println(prefix + "createTimestamp=" + this.createTimestamp);
         if (this.mKnownActivityEmbeddingCerts != null) {
@@ -444,15 +437,13 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
                 proto.write(2237677961227L, dir2);
             }
         }
-        String[] strArr = this.resourceDirs;
-        if (strArr != null) {
-            for (String dir3 : strArr) {
+        if (this.resourceDirs != null) {
+            for (String dir3 : this.resourceDirs) {
                 proto.write(2237677961228L, dir3);
             }
         }
-        String[] strArr2 = this.overlayPaths;
-        if (strArr2 != null) {
-            for (String dir4 : strArr2) {
+        if (this.overlayPaths != null) {
+            for (String dir4 : this.overlayPaths) {
                 proto.write(ApplicationInfoProto.OVERLAY_PATHS, dir4);
             }
         }
@@ -472,66 +463,55 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         proto.end(versionToken);
         if ((dumpFlags & 1) != 0) {
             long detailToken = proto.start(1146756268049L);
-            String str = this.className;
-            if (str != null) {
-                proto.write(1138166333441L, str);
+            if (this.className != null) {
+                proto.write(1138166333441L, this.className);
             }
             proto.write(1138166333442L, this.taskAffinity);
             proto.write(1120986464259L, this.requiresSmallestWidthDp);
             proto.write(1120986464260L, this.compatibleWidthLimitDp);
             proto.write(1120986464261L, this.largestWidthLimitDp);
-            String str2 = this.seInfo;
-            if (str2 != null) {
-                proto.write(1138166333446L, str2);
+            if (this.seInfo != null) {
+                proto.write(1138166333446L, this.seInfo);
                 proto.write(1138166333447L, this.seInfoUser);
             }
             proto.write(1138166333448L, this.deviceProtectedDataDir);
             proto.write(1138166333449L, this.credentialProtectedDataDir);
-            String[] strArr3 = this.sharedLibraryFiles;
-            if (strArr3 != null) {
-                for (String f : strArr3) {
+            if (this.sharedLibraryFiles != null) {
+                for (String f : this.sharedLibraryFiles) {
                     proto.write(2237677961226L, f);
                 }
             }
-            String str3 = this.manageSpaceActivityName;
-            if (str3 != null) {
-                proto.write(1138166333451L, str3);
+            if (this.manageSpaceActivityName != null) {
+                proto.write(1138166333451L, this.manageSpaceActivityName);
             }
-            int i = this.descriptionRes;
-            if (i != 0) {
-                proto.write(1120986464268L, i);
+            if (this.descriptionRes != 0) {
+                proto.write(1120986464268L, this.descriptionRes);
             }
-            int i2 = this.uiOptions;
-            if (i2 != 0) {
-                proto.write(1120986464269L, i2);
+            if (this.uiOptions != 0) {
+                proto.write(1120986464269L, this.uiOptions);
             }
             proto.write(1133871366158L, hasRtlSupport());
-            int i3 = this.fullBackupContent;
-            if (i3 > 0) {
+            if (this.fullBackupContent > 0) {
                 proto.write(1138166333455L, "@xml/" + this.fullBackupContent);
             } else {
-                proto.write(1133871366160L, i3 == 0);
+                proto.write(1133871366160L, this.fullBackupContent == 0);
             }
-            int i4 = this.networkSecurityConfigRes;
-            if (i4 != 0) {
-                proto.write(1120986464273L, i4);
+            if (this.networkSecurityConfigRes != 0) {
+                proto.write(1120986464273L, this.networkSecurityConfigRes);
             }
-            int i5 = this.category;
-            if (i5 != -1) {
-                proto.write(1120986464274L, i5);
+            if (this.category != -1) {
+                proto.write(1120986464274L, this.category);
             }
-            int i6 = this.gwpAsanMode;
-            if (i6 != -1) {
-                proto.write(1120986464275L, i6);
+            if (this.gwpAsanMode != -1) {
+                proto.write(1120986464275L, this.gwpAsanMode);
             }
-            int i7 = this.memtagMode;
-            if (i7 != -1) {
-                proto.write(1120986464276L, i7);
+            if (this.memtagMode != -1) {
+                proto.write(1120986464276L, this.memtagMode);
             }
-            int i8 = this.nativeHeapZeroInitialized;
-            if (i8 != -1) {
-                proto.write(1133871366165L, i8);
+            if (this.nativeHeapZeroInitialized != -1) {
+                proto.write(1133871366165L, this.nativeHeapZeroInitialized);
             }
+            proto.write(1133871366166L, this.allowCrossUidActivitySwitchFromBelow);
             proto.end(detailToken);
         }
         if (!ArrayUtils.isEmpty(this.mKnownActivityEmbeddingCerts)) {
@@ -550,9 +530,8 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         return (this.flags & 4) != 0;
     }
 
-    /* loaded from: classes.dex */
     public static class DisplayNameComparator implements Comparator<ApplicationInfo> {
-        private PackageManager mPM;
+        private final PackageManager mPM;
         private final Collator sCollator = Collator.getInstance();
 
         public DisplayNameComparator(PackageManager pm) {
@@ -588,6 +567,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.gwpAsanMode = -1;
         this.memtagMode = -1;
         this.nativeHeapZeroInitialized = -1;
+        this.allowCrossUidActivitySwitchFromBelow = true;
         this.mHiddenApiPolicy = -1;
         this.createTimestamp = SystemClock.uptimeMillis();
     }
@@ -608,6 +588,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.gwpAsanMode = -1;
         this.memtagMode = -1;
         this.nativeHeapZeroInitialized = -1;
+        this.allowCrossUidActivitySwitchFromBelow = true;
         this.mHiddenApiPolicy = -1;
         this.taskAffinity = orig.taskAffinity;
         this.permission = orig.permission;
@@ -643,6 +624,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.seInfoUser = orig.seInfoUser;
         this.sharedLibraryFiles = orig.sharedLibraryFiles;
         this.sharedLibraryInfos = orig.sharedLibraryInfos;
+        this.optionalSharedLibraryInfos = orig.optionalSharedLibraryInfos;
         this.dataDir = orig.dataDir;
         this.deviceProtectedDataDir = orig.deviceProtectedDataDir;
         this.credentialProtectedDataDir = orig.credentialProtectedDataDir;
@@ -678,6 +660,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.nativeHeapZeroInitialized = orig.nativeHeapZeroInitialized;
         this.requestRawExternalStorageAccess = orig.requestRawExternalStorageAccess;
         this.localeConfigRes = orig.localeConfigRes;
+        this.allowCrossUidActivitySwitchFromBelow = orig.allowCrossUidActivitySwitchFromBelow;
         this.createTimestamp = SystemClock.uptimeMillis();
     }
 
@@ -734,6 +717,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         parcel.writeString8(this.seInfoUser);
         parcel.writeString8Array(this.sharedLibraryFiles);
         parcel.writeTypedList(this.sharedLibraryInfos);
+        parcel.writeTypedList(this.optionalSharedLibraryInfos);
         parcel.writeString8(this.dataDir);
         parcel.writeString8(this.deviceProtectedDataDir);
         parcel.writeString8(this.credentialProtectedDataDir);
@@ -769,11 +753,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         parcel.writeInt(this.nativeHeapZeroInitialized);
         sForBoolean.parcel(this.requestRawExternalStorageAccess, parcel, i);
         parcel.writeLong(this.createTimestamp);
-        ArrayMap<String, String> arrayMap = this.mAppClassNamesByProcess;
-        if (arrayMap == null) {
+        if (this.mAppClassNamesByProcess == null) {
             parcel.writeInt(0);
         } else {
-            int size = arrayMap.size();
+            int size = this.mAppClassNamesByProcess.size();
             parcel.writeInt(size);
             for (int i2 = 0; i2 < size; i2++) {
                 parcel.writeString(this.mAppClassNamesByProcess.keyAt(i2));
@@ -781,30 +764,32 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
             }
         }
         parcel.writeInt(this.localeConfigRes);
+        parcel.writeInt(this.allowCrossUidActivitySwitchFromBelow ? 1 : 0);
         sForStringSet.parcel(this.mKnownActivityEmbeddingCerts, parcel, this.flags);
     }
 
-    /* renamed from: android.content.pm.ApplicationInfo$1 */
-    /* loaded from: classes.dex */
+    /* renamed from: android.content.pm.ApplicationInfo$1, reason: invalid class name */
     class AnonymousClass1 implements Parcelable.Creator<ApplicationInfo> {
-        /* renamed from: $r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9-bOs */
-        public static /* synthetic */ ApplicationInfo m847$r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9bOs(Parcel parcel) {
+        /* renamed from: $r8$lambda$1E1P6HJEl7Ns7qcxzJ0zM-xcHGA, reason: not valid java name */
+        public static /* synthetic */ ApplicationInfo m925$r8$lambda$1E1P6HJEl7Ns7qcxzJ0zMxcHGA(Parcel parcel) {
             return new ApplicationInfo(parcel);
         }
 
         AnonymousClass1() {
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationInfo createFromParcel(Parcel source) {
             return (ApplicationInfo) source.readSquashed(new Parcel.SquashReadHelper() { // from class: android.content.pm.ApplicationInfo$1$$ExternalSyntheticLambda0
                 @Override // android.os.Parcel.SquashReadHelper
                 public final Object readRawParceled(Parcel parcel) {
-                    return ApplicationInfo.AnonymousClass1.m847$r8$lambda$PfZYudEWwKf_A2QDLQ4dHD9bOs(parcel);
+                    return ApplicationInfo.AnonymousClass1.m925$r8$lambda$1E1P6HJEl7Ns7qcxzJ0zMxcHGA(parcel);
                 }
             });
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApplicationInfo[] newArray(int size) {
             return new ApplicationInfo[size];
@@ -815,6 +800,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         super(source);
         boolean z;
         boolean z2;
+        boolean z3;
         this.fullBackupContent = 0;
         this.dataExtractionRulesRes = 0;
         this.uiOptions = 0;
@@ -829,6 +815,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.gwpAsanMode = -1;
         this.memtagMode = -1;
         this.nativeHeapZeroInitialized = -1;
+        this.allowCrossUidActivitySwitchFromBelow = true;
         this.mHiddenApiPolicy = -1;
         this.taskAffinity = source.readString8();
         this.permission = source.readString8();
@@ -842,9 +829,8 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.compatibleWidthLimitDp = source.readInt();
         this.largestWidthLimitDp = source.readInt();
         if (source.readInt() != 0) {
-            UUID uuid = new UUID(source.readLong(), source.readLong());
-            this.storageUuid = uuid;
-            this.volumeUuid = StorageManager.convert(uuid);
+            this.storageUuid = new UUID(source.readLong(), source.readLong());
+            this.volumeUuid = StorageManager.convert(this.storageUuid);
         }
         this.scanSourceDir = source.readString8();
         this.scanPublicSourceDir = source.readString8();
@@ -871,6 +857,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.seInfoUser = source.readString8();
         this.sharedLibraryFiles = source.createString8Array();
         this.sharedLibraryInfos = source.createTypedArrayList(SharedLibraryInfo.CREATOR);
+        this.optionalSharedLibraryInfos = source.createTypedArrayList(SharedLibraryInfo.CREATOR);
         this.dataDir = source.readString8();
         this.deviceProtectedDataDir = source.readString8();
         this.credentialProtectedDataDir = source.readString8();
@@ -904,7 +891,12 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         this.iconRes = source.readInt();
         this.roundIconRes = source.readInt();
         this.mHiddenApiPolicy = source.readInt();
-        this.hiddenUntilInstalled = source.readInt() != 0;
+        if (source.readInt() == 0) {
+            z3 = false;
+        } else {
+            z3 = true;
+        }
+        this.hiddenUntilInstalled = z3;
         this.zygotePreloadName = source.readString8();
         this.gwpAsanMode = source.readInt();
         this.memtagMode = source.readInt();
@@ -920,9 +912,9 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         }
         int i2 = source.readInt();
         this.localeConfigRes = i2;
-        Set<String> unparcel = sForStringSet.unparcel(source);
-        this.mKnownActivityEmbeddingCerts = unparcel;
-        if (unparcel.isEmpty()) {
+        this.allowCrossUidActivitySwitchFromBelow = source.readInt() != 0;
+        this.mKnownActivityEmbeddingCerts = sForStringSet.unparcel(source);
+        if (this.mKnownActivityEmbeddingCerts.isEmpty()) {
             this.mKnownActivityEmbeddingCerts = null;
         }
     }
@@ -950,12 +942,11 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
             return;
         }
         this.deviceProtectedDataDir = Environment.getDataUserDePackageDirectory(this.volumeUuid, userId, this.packageName).getAbsolutePath();
-        String absolutePath = Environment.getDataUserCePackageDirectory(this.volumeUuid, userId, this.packageName).getAbsolutePath();
-        this.credentialProtectedDataDir = absolutePath;
+        this.credentialProtectedDataDir = Environment.getDataUserCePackageDirectory(this.volumeUuid, userId, this.packageName).getAbsolutePath();
         if ((this.privateFlags & 32) != 0) {
             this.dataDir = this.deviceProtectedDataDir;
         } else {
-            this.dataDir = absolutePath;
+            this.dataDir = this.credentialProtectedDataDir;
         }
     }
 
@@ -981,11 +972,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     }
 
     public int getRequestRawExternalStorageAccess() {
-        Boolean bool = this.requestRawExternalStorageAccess;
-        if (bool == null) {
+        if (this.requestRawExternalStorageAccess == null) {
             return 0;
         }
-        return bool.booleanValue() ? 1 : 2;
+        return this.requestRawExternalStorageAccess.booleanValue() ? 1 : 2;
     }
 
     public boolean allowsNativeHeapPointerTagging() {
@@ -1006,9 +996,8 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         if (isAllowedToUseHiddenApis()) {
             return 0;
         }
-        int i = this.mHiddenApiPolicy;
-        if (i != -1) {
-            return i;
+        if (this.mHiddenApiPolicy != -1) {
+            return this.mHiddenApiPolicy;
         }
         return 2;
     }
@@ -1158,6 +1147,18 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         return (this.privateFlags & 268435456) != 0;
     }
 
+    public boolean isStopped() {
+        return (this.flags & 2097152) != 0;
+    }
+
+    public boolean isNotLaunched() {
+        return (this.privateFlagsExt & 64) != 0;
+    }
+
+    public boolean isChangeEnabled(long changeId) {
+        return CompatChanges.isChangeEnabled(changeId, this.packageName, UserHandle.getUserHandleForUid(this.uid));
+    }
+
     public boolean hasRequestForegroundServiceExemption() {
         return (this.privateFlagsExt & 2) != 0;
     }
@@ -1167,16 +1168,15 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
     }
 
     @Override // android.content.pm.PackageItemInfo
-    protected ApplicationInfo getApplicationInfo() {
+    public ApplicationInfo getApplicationInfo() {
         return this;
     }
 
     public String[] getAllApkPaths() {
         String[][] inputLists = {this.splitSourceDirs, this.sharedLibraryFiles, this.resourceDirs, this.overlayPaths};
         List<String> output = new ArrayList<>(10);
-        String str = this.sourceDir;
-        if (str != null) {
-            output.add(str);
+        if (this.sourceDir != null) {
+            output.add(this.sourceDir);
         }
         for (String[] inputList : inputLists) {
             if (inputList != null) {
@@ -1274,8 +1274,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
 
     public String getCustomApplicationClassNameForProcess(String processName) {
         String byProcess;
-        ArrayMap<String, String> arrayMap = this.mAppClassNamesByProcess;
-        if (arrayMap != null && (byProcess = arrayMap.get(processName)) != null) {
+        if (this.mAppClassNamesByProcess != null && (byProcess = this.mAppClassNamesByProcess.get(processName)) != null) {
             return byProcess;
         }
         return this.className;
@@ -1291,16 +1290,22 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public List<SharedLibraryInfo> getSharedLibraryInfos() {
-        List<SharedLibraryInfo> list = this.sharedLibraryInfos;
-        if (list == null) {
+        if (this.sharedLibraryInfos == null) {
             return Collections.EMPTY_LIST;
         }
-        return list;
+        return this.sharedLibraryInfos;
+    }
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public List<SharedLibraryInfo> getOptionalSharedLibraryInfos() {
+        if (this.optionalSharedLibraryInfos == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return this.optionalSharedLibraryInfos;
     }
 
     public Set<String> getKnownActivityEmbeddingCerts() {
-        Set<String> set = this.mKnownActivityEmbeddingCerts;
-        return set == null ? Collections.emptySet() : set;
+        return this.mKnownActivityEmbeddingCerts == null ? Collections.emptySet() : this.mKnownActivityEmbeddingCerts;
     }
 
     public void setKnownActivityEmbeddingCerts(Set<String> knownActivityEmbeddingCerts) {

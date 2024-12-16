@@ -2,14 +2,11 @@ package com.samsung.android.knox.tima.attestation;
 
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class SemEnhancedAttestationPolicyCallback {
     private static final String TAG = "SemEAPolicyCb";
     private SemEnhancedAttestationPolicyCallback mEACallback = this;
     private EnhancedAttestationPolicyCallback mCb = new EnhancedAttestationPolicyCallback() { // from class: com.samsung.android.knox.tima.attestation.SemEnhancedAttestationPolicyCallback.1
-        AnonymousClass1() {
-        }
-
         @Override // com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicyCallback
         public void onAttestationFinished(EnhancedAttestationResult result) {
             Log.d(SemEnhancedAttestationPolicyCallback.TAG, "onAttestationFinished");
@@ -27,26 +24,7 @@ public abstract class SemEnhancedAttestationPolicyCallback {
 
     public abstract void onSuccess(SemEnhancedAttestationResult semEnhancedAttestationResult);
 
-    /* renamed from: com.samsung.android.knox.tima.attestation.SemEnhancedAttestationPolicyCallback$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends EnhancedAttestationPolicyCallback {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.knox.tima.attestation.EnhancedAttestationPolicyCallback
-        public void onAttestationFinished(EnhancedAttestationResult result) {
-            Log.d(SemEnhancedAttestationPolicyCallback.TAG, "onAttestationFinished");
-            if (result.getError() == 0) {
-                SemEnhancedAttestationResult semResult = new SemEnhancedAttestationResult(result);
-                SemEnhancedAttestationPolicyCallback.this.mEACallback.onSuccess(semResult);
-            } else {
-                SemEnhancedAttestationError semError = new SemEnhancedAttestationError(result);
-                SemEnhancedAttestationPolicyCallback.this.mEACallback.onFailure(semError);
-            }
-        }
-    }
-
-    public EnhancedAttestationPolicyCallback getEnhancedAttestationPolicyCallback() {
+    EnhancedAttestationPolicyCallback getEnhancedAttestationPolicyCallback() {
         return this.mCb;
     }
 }

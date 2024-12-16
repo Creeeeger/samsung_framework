@@ -14,14 +14,12 @@ public class WebViewFragment extends Fragment {
 
     @Override // android.app.Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WebView webView = this.mWebView;
-        if (webView != null) {
-            webView.destroy();
+        if (this.mWebView != null) {
+            this.mWebView.destroy();
         }
-        WebView webView2 = new WebView(getContext());
-        this.mWebView = webView2;
+        this.mWebView = new WebView(getContext());
         this.mIsWebViewAvailable = true;
-        return webView2;
+        return this.mWebView;
     }
 
     @Override // android.app.Fragment
@@ -44,9 +42,8 @@ public class WebViewFragment extends Fragment {
 
     @Override // android.app.Fragment
     public void onDestroy() {
-        WebView webView = this.mWebView;
-        if (webView != null) {
-            webView.destroy();
+        if (this.mWebView != null) {
+            this.mWebView.destroy();
             this.mWebView = null;
         }
         super.onDestroy();

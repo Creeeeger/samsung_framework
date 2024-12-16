@@ -74,12 +74,11 @@ public class DayOfMonthCursor extends MonthDisplayHelper {
     }
 
     public boolean left() {
-        int i = this.mColumn;
-        if (i == 0) {
+        if (this.mColumn == 0) {
             this.mRow--;
             this.mColumn = 6;
         } else {
-            this.mColumn = i - 1;
+            this.mColumn--;
         }
         if (isWithinCurrentMonth(this.mRow, this.mColumn)) {
             return false;
@@ -92,12 +91,11 @@ public class DayOfMonthCursor extends MonthDisplayHelper {
     }
 
     public boolean right() {
-        int i = this.mColumn;
-        if (i == 6) {
+        if (this.mColumn == 6) {
             this.mRow++;
             this.mColumn = 0;
         } else {
-            this.mColumn = i + 1;
+            this.mColumn++;
         }
         if (isWithinCurrentMonth(this.mRow, this.mColumn)) {
             return false;

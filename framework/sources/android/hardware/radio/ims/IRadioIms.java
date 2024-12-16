@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioIms extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$ims$IRadioIms".replace('$', '.');
-    public static final String HASH = "b09f8d98a60fbe74cefaca7aea9903ab5450110a";
-    public static final int VERSION = 1;
+    public static final String HASH = "ec0dfedf764f3916783848c540ad312a74fa755d";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -34,7 +34,6 @@ public interface IRadioIms extends IInterface {
 
     void updateImsRegistrationInfo(int i, ImsRegistration imsRegistration) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioIms {
         @Override // android.hardware.radio.ims.IRadioIms
         public void setSrvccCallInfo(int serial, SrvccCall[] srvccCalls) throws RemoteException {
@@ -84,7 +83,6 @@ public interface IRadioIms extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioIms {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -124,80 +122,79 @@ public interface IRadioIms extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    SrvccCall[] _arg1 = (SrvccCall[]) data.createTypedArray(SrvccCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSrvccCallInfo(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    ImsRegistration _arg12 = (ImsRegistration) data.readTypedObject(ImsRegistration.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateImsRegistrationInfo(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startImsTraffic(_arg03, _arg13, _arg2, _arg3, _arg4);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopImsTraffic(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    triggerEpsFallback(_arg05, _arg15);
+                    return true;
+                case 6:
+                    IRadioImsResponse _arg06 = IRadioImsResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioImsIndication _arg16 = IRadioImsIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg06, _arg16);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendAnbrQuery(_arg07, _arg17, _arg22, _arg32);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    ImsCall[] _arg18 = (ImsCall[]) data.createTypedArray(ImsCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateImsCallStatus(_arg08, _arg18);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SrvccCall[] _arg1 = (SrvccCall[]) data.createTypedArray(SrvccCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSrvccCallInfo(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            ImsRegistration _arg12 = (ImsRegistration) data.readTypedObject(ImsRegistration.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateImsRegistrationInfo(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startImsTraffic(_arg03, _arg13, _arg2, _arg3, _arg4);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopImsTraffic(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            triggerEpsFallback(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            IRadioImsResponse _arg06 = IRadioImsResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioImsIndication _arg16 = IRadioImsIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendAnbrQuery(_arg07, _arg17, _arg22, _arg32);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            ImsCall[] _arg18 = (ImsCall[]) data.createTypedArray(ImsCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateImsCallStatus(_arg08, _arg18);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioIms {
             private IBinder mRemote;
             private int mCachedVersion = -1;

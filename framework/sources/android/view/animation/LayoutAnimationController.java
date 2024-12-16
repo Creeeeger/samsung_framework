@@ -22,7 +22,6 @@ public class LayoutAnimationController {
     private int mOrder;
     protected Random mRandomizer;
 
-    /* loaded from: classes4.dex */
     public static class AnimationParameters {
         public int count;
         public int index;
@@ -67,7 +66,7 @@ public class LayoutAnimationController {
 
     public void setAnimation(Animation animation) {
         this.mAnimation = animation;
-        animation.setFillBefore(true);
+        this.mAnimation.setFillBefore(true);
     }
 
     public Animation getAnimation() {
@@ -108,7 +107,7 @@ public class LayoutAnimationController {
         long delay = getDelayForView(view) + this.mAnimation.getStartOffset();
         this.mMaxDelay = Math.max(this.mMaxDelay, delay);
         try {
-            Animation animation = this.mAnimation.mo5539clone();
+            Animation animation = this.mAnimation.mo5909clone();
             animation.setStartOffset(delay);
             return animation;
         } catch (CloneNotSupportedException e) {
@@ -126,14 +125,14 @@ public class LayoutAnimationController {
         if (params == null) {
             return 0L;
         }
-        float delay = this.mDelay * ((float) this.mAnimation.getDuration());
-        long viewDelay = getTransformedIndex(params) * delay;
+        float delay = this.mDelay * this.mAnimation.getDuration();
+        long viewDelay = (long) (getTransformedIndex(params) * delay);
         float totalDelay = params.count * delay;
         if (this.mInterpolator == null) {
             this.mInterpolator = new LinearInterpolator();
         }
-        float normalizedDelay = ((float) viewDelay) / totalDelay;
-        return this.mInterpolator.getInterpolation(normalizedDelay) * totalDelay;
+        float normalizedDelay = viewDelay / totalDelay;
+        return (long) (this.mInterpolator.getInterpolation(normalizedDelay) * totalDelay);
     }
 
     protected int getTransformedIndex(AnimationParameters params) {

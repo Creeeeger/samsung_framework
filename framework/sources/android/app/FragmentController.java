@@ -39,9 +39,7 @@ public class FragmentController {
     }
 
     public void attachHost(Fragment parent) {
-        FragmentManagerImpl fragmentManagerImpl = this.mHost.mFragmentManager;
-        FragmentHostCallback<?> fragmentHostCallback = this.mHost;
-        fragmentManagerImpl.attachController(fragmentHostCallback, fragmentHostCallback, parent);
+        this.mHost.mFragmentManager.attachController(this.mHost, this.mHost, parent);
     }
 
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {

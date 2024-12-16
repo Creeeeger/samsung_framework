@@ -8,7 +8,6 @@ public interface IVoldMountCallback extends IInterface {
 
     boolean onVolumeChecking(FileDescriptor fileDescriptor, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVoldMountCallback {
         @Override // android.os.IVoldMountCallback
         public boolean onVolumeChecking(FileDescriptor fuseFd, String path, String internalPath) throws RemoteException {
@@ -21,7 +20,6 @@ public interface IVoldMountCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVoldMountCallback {
         static final int TRANSACTION_onVolumeChecking = 1;
 
@@ -64,30 +62,26 @@ public interface IVoldMountCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVoldMountCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVoldMountCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVoldMountCallback.DESCRIPTOR);
+                case 1:
+                    FileDescriptor _arg0 = data.readRawFileDescriptor();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = onVolumeChecking(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            FileDescriptor _arg0 = data.readRawFileDescriptor();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = onVolumeChecking(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IVoldMountCallback {
+        private static class Proxy implements IVoldMountCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

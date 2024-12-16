@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /* loaded from: classes3.dex */
@@ -13,14 +15,13 @@ public final class CallAttributes implements Parcelable {
     public static final String CALLER_UID_KEY = "CallerUid";
     public static final String CALL_CAPABILITIES_KEY = "TelecomCapabilities";
     public static final Parcelable.Creator<CallAttributes> CREATOR = new Parcelable.Creator<CallAttributes>() { // from class: android.telecom.CallAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallAttributes createFromParcel(Parcel source) {
             return new CallAttributes((PhoneAccountHandle) source.readParcelable(getClass().getClassLoader(), PhoneAccountHandle.class), source.readCharSequence(), (Uri) source.readParcelable(getClass().getClassLoader(), Uri.class), source.readInt(), source.readInt(), source.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallAttributes[] newArray(int size) {
             return new CallAttributes[size];
@@ -32,6 +33,7 @@ public final class CallAttributes implements Parcelable {
     public static final int SUPPORTS_SET_INACTIVE = 2;
     public static final int SUPPORTS_STREAM = 4;
     public static final int SUPPORTS_TRANSFER = 8;
+    public static final int SUPPORTS_VIDEO_CALLING = 16;
     public static final int VIDEO_CALL = 2;
     private final Uri mAddress;
     private final int mCallCapabilities;
@@ -40,20 +42,16 @@ public final class CallAttributes implements Parcelable {
     private final CharSequence mDisplayName;
     private final PhoneAccountHandle mPhoneAccountHandle;
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface CallCapability {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface CallType {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Direction {
-    }
-
-    /* synthetic */ CallAttributes(PhoneAccountHandle phoneAccountHandle, CharSequence charSequence, Uri uri, int i, int i2, int i3, CallAttributesIA callAttributesIA) {
-        this(phoneAccountHandle, charSequence, uri, i, i2, i3);
     }
 
     private CallAttributes(PhoneAccountHandle phoneAccountHandle, CharSequence displayName, Uri address, int direction, int callType, int callCapabilities) {
@@ -65,7 +63,6 @@ public final class CallAttributes implements Parcelable {
         this.mCallCapabilities = callCapabilities;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final Uri mAddress;
         private final int mDirection;
@@ -146,23 +143,6 @@ public final class CallAttributes implements Parcelable {
         dest.writeInt(this.mDirection);
         dest.writeInt(this.mCallType);
         dest.writeInt(this.mCallCapabilities);
-    }
-
-    /* renamed from: android.telecom.CallAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CallAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallAttributes createFromParcel(Parcel source) {
-            return new CallAttributes((PhoneAccountHandle) source.readParcelable(getClass().getClassLoader(), PhoneAccountHandle.class), source.readCharSequence(), (Uri) source.readParcelable(getClass().getClassLoader(), Uri.class), source.readInt(), source.readInt(), source.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallAttributes[] newArray(int size) {
-            return new CallAttributes[size];
-        }
     }
 
     public String toString() {

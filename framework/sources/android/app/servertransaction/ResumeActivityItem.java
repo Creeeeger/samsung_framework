@@ -11,14 +11,13 @@ import android.os.Trace;
 /* loaded from: classes.dex */
 public class ResumeActivityItem extends ActivityLifecycleItem {
     public static final Parcelable.Creator<ResumeActivityItem> CREATOR = new Parcelable.Creator<ResumeActivityItem>() { // from class: android.app.servertransaction.ResumeActivityItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResumeActivityItem createFromParcel(Parcel in) {
             return new ResumeActivityItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ResumeActivityItem[] newArray(int size) {
             return new ResumeActivityItem[size];
@@ -30,12 +29,8 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
     private boolean mShouldSendCompatFakeFocus;
     private boolean mUpdateProcState;
 
-    /* synthetic */ ResumeActivityItem(Parcel parcel, ResumeActivityItemIA resumeActivityItemIA) {
-        this(parcel);
-    }
-
     @Override // android.app.servertransaction.BaseClientRequest
-    public void preExecute(ClientTransactionHandler client, IBinder token) {
+    public void preExecute(ClientTransactionHandler client) {
         if (this.mUpdateProcState) {
             client.updateProcessState(this.mProcState, false);
         }
@@ -49,8 +44,8 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
     }
 
     @Override // android.app.servertransaction.BaseClientRequest
-    public void postExecute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
-        ActivityClient.getInstance().activityResumed(token, client.isHandleSplashScreenExit(token));
+    public void postExecute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
+        ActivityClient.getInstance().activityResumed(getActivityToken(), client.isHandleSplashScreenExit(getActivityToken()));
     }
 
     @Override // android.app.servertransaction.ActivityLifecycleItem
@@ -61,11 +56,12 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
     private ResumeActivityItem() {
     }
 
-    public static ResumeActivityItem obtain(int procState, boolean isForward, boolean shouldSendCompatFakeFocus) {
+    public static ResumeActivityItem obtain(IBinder activityToken, int procState, boolean isForward, boolean shouldSendCompatFakeFocus) {
         ResumeActivityItem instance = (ResumeActivityItem) ObjectPool.obtain(ResumeActivityItem.class);
         if (instance == null) {
             instance = new ResumeActivityItem();
         }
+        instance.setActivityToken(activityToken);
         instance.mProcState = procState;
         instance.mUpdateProcState = true;
         instance.mIsForward = isForward;
@@ -73,11 +69,12 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
         return instance;
     }
 
-    public static ResumeActivityItem obtain(boolean isForward, boolean shouldSendCompatFakeFocus) {
+    public static ResumeActivityItem obtain(IBinder activityToken, boolean isForward, boolean shouldSendCompatFakeFocus) {
         ResumeActivityItem instance = (ResumeActivityItem) ObjectPool.obtain(ResumeActivityItem.class);
         if (instance == null) {
             instance = new ResumeActivityItem();
         }
+        instance.setActivityToken(activityToken);
         instance.mProcState = -1;
         instance.mUpdateProcState = false;
         instance.mIsForward = isForward;
@@ -85,7 +82,7 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
         return instance;
     }
 
-    @Override // android.app.servertransaction.ActivityLifecycleItem, android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
         super.recycle();
         this.mProcState = -1;
@@ -95,8 +92,9 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
         ObjectPool.recycle(this);
     }
 
-    @Override // android.os.Parcelable
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeInt(this.mProcState);
         dest.writeBoolean(this.mUpdateProcState);
         dest.writeBoolean(this.mIsForward);
@@ -104,48 +102,32 @@ public class ResumeActivityItem extends ActivityLifecycleItem {
     }
 
     private ResumeActivityItem(Parcel in) {
+        super(in);
         this.mProcState = in.readInt();
         this.mUpdateProcState = in.readBoolean();
         this.mIsForward = in.readBoolean();
         this.mShouldSendCompatFakeFocus = in.readBoolean();
     }
 
-    /* renamed from: android.app.servertransaction.ResumeActivityItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ResumeActivityItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResumeActivityItem createFromParcel(Parcel in) {
-            return new ResumeActivityItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResumeActivityItem[] newArray(int size) {
-            return new ResumeActivityItem[size];
-        }
-    }
-
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!super.equals(o)) {
             return false;
         }
         ResumeActivityItem other = (ResumeActivityItem) o;
-        if (this.mProcState == other.mProcState && this.mUpdateProcState == other.mUpdateProcState && this.mIsForward == other.mIsForward && this.mShouldSendCompatFakeFocus == other.mShouldSendCompatFakeFocus) {
-            return true;
-        }
-        return false;
+        return this.mProcState == other.mProcState && this.mUpdateProcState == other.mUpdateProcState && this.mIsForward == other.mIsForward && this.mShouldSendCompatFakeFocus == other.mShouldSendCompatFakeFocus;
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public int hashCode() {
-        return (((((((17 * 31) + this.mProcState) * 31) + (this.mUpdateProcState ? 1 : 0)) * 31) + (this.mIsForward ? 1 : 0)) * 31) + (this.mShouldSendCompatFakeFocus ? 1 : 0);
+        return (((((((((17 * 31) + super.hashCode()) * 31) + this.mProcState) * 31) + (this.mUpdateProcState ? 1 : 0)) * 31) + (this.mIsForward ? 1 : 0)) * 31) + (this.mShouldSendCompatFakeFocus ? 1 : 0);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "ResumeActivityItem{procState=" + this.mProcState + ",updateProcState=" + this.mUpdateProcState + ",isForward=" + this.mIsForward + ",shouldSendCompatFakeFocus=" + this.mShouldSendCompatFakeFocus + "}";
+        return "ResumeActivityItem{" + super.toString() + ",procState=" + this.mProcState + ",updateProcState=" + this.mUpdateProcState + ",isForward=" + this.mIsForward + ",shouldSendCompatFakeFocus=" + this.mShouldSendCompatFakeFocus + "}";
     }
 }

@@ -1,7 +1,6 @@
 package android.hardware.radio.voice;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.reflect.Array;
 import java.util.StringJoiner;
 
@@ -13,7 +12,7 @@ public interface SrvccState$$ {
 
     static String arrayToString(Object _aidl_v) {
         if (_aidl_v == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         Class<?> _aidl_cls = _aidl_v.getClass();
         if (!_aidl_cls.isArray()) {

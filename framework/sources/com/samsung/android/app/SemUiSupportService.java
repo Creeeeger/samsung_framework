@@ -48,9 +48,8 @@ public class SemUiSupportService extends Service implements Window.Callback, Key
             Log.e(TAG, "Failed to get running tasks.", e);
         }
         this.mWindowAttributes = createLayoutParams();
-        PhoneWindow phoneWindow = new PhoneWindow(this.mContext);
-        this.mWindow = phoneWindow;
-        phoneWindow.setWindowManager(this.mWindowManager, null, null);
+        this.mWindow = new PhoneWindow(this.mContext);
+        this.mWindow.setWindowManager(this.mWindowManager, null, null);
         this.mWindowManager = this.mWindow.getWindowManager();
         this.mWindow.requestFeature(1);
         this.mWindow.setCallback(this);
@@ -60,12 +59,10 @@ public class SemUiSupportService extends Service implements Window.Callback, Key
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         Log.i(TAG, "onStartCommand()");
-        Window window = this.mWindow;
-        if (window != null) {
-            window.setAttributes(this.mWindowAttributes);
-            View decorView = this.mWindow.getDecorView();
-            this.mDecor = decorView;
-            decorView.setVisibility(0);
+        if (this.mWindow != null) {
+            this.mWindow.setAttributes(this.mWindowAttributes);
+            this.mDecor = this.mWindow.getDecorView();
+            this.mDecor.setVisibility(0);
             WindowManager.LayoutParams l = this.mWindow.getAttributes();
             if ((l.softInputMode & 256) == 0) {
                 l.softInputMode |= 256;
@@ -109,9 +106,8 @@ public class SemUiSupportService extends Service implements Window.Callback, Key
 
     private void removeDecorView() {
         try {
-            View view = this.mDecor;
-            if (view != null) {
-                this.mWindowManager.removeView(view);
+            if (this.mDecor != null) {
+                this.mWindowManager.removeView(this.mDecor);
                 this.mDecor = null;
             }
         } catch (IllegalArgumentException e) {
@@ -155,7 +151,7 @@ public class SemUiSupportService extends Service implements Window.Callback, Key
 
     public WindowManager.LayoutParams createLayoutParams() {
         Log.i(TAG, "createLayoutParams");
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(2002, R.string.config_forceVoiceInteractionServicePackage, -3);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(2002, R.string.config_deviceSpecificAudioService, -3);
         lp.privateFlags |= 16;
         lp.softInputMode = 32;
         lp.setTitle(getClass().getName());
@@ -195,8 +191,7 @@ public class SemUiSupportService extends Service implements Window.Callback, Key
         if (this.mWindow.superDispatchKeyEvent(event)) {
             return true;
         }
-        View view = this.mDecor;
-        return event.dispatch(this, view != null ? view.getKeyDispatcherState() : null, this);
+        return event.dispatch(this, this.mDecor != null ? this.mDecor.getKeyDispatcherState() : null, this);
     }
 
     @Override // android.view.Window.Callback

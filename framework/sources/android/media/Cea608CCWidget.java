@@ -61,8 +61,7 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public static class CCLineBox extends TextView {
+    private static class CCLineBox extends TextView {
         private static final float EDGE_OUTLINE_RATIO = 0.1f;
         private static final float EDGE_SHADOW_RATIO = 0.05f;
         private static final float FONT_PADDING_RATIO = 0.75f;
@@ -98,9 +97,7 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             this.mEdgeColor = captionStyle.edgeColor;
             setTextColor(this.mTextColor);
             if (this.mEdgeType == 2) {
-                float f = this.mShadowRadius;
-                float f2 = this.mShadowOffset;
-                setShadowLayer(f, f2, f2, this.mEdgeColor);
+                setShadowLayer(this.mShadowRadius, this.mShadowOffset, this.mShadowOffset, this.mEdgeColor);
             } else {
                 setShadowLayer(0.0f, 0.0f, 0.0f, 0);
             }
@@ -108,13 +105,12 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
         }
 
         @Override // android.widget.TextView, android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             float fontSize = View.MeasureSpec.getSize(heightMeasureSpec) * 0.75f;
             setTextSize(0, fontSize);
             this.mOutlineWidth = (0.1f * fontSize) + 1.0f;
-            float f = (EDGE_SHADOW_RATIO * fontSize) + 1.0f;
-            this.mShadowRadius = f;
-            this.mShadowOffset = f;
+            this.mShadowRadius = (EDGE_SHADOW_RATIO * fontSize) + 1.0f;
+            this.mShadowOffset = this.mShadowRadius;
             setScaleX(1.0f);
             getPaint().getTextBounds(Cea608CCWidget.mDummyText, 0, Cea608CCWidget.mDummyText.length(), Cea608CCWidget.mTextBounds);
             float actualTextWidth = Cea608CCWidget.mTextBounds.width();
@@ -128,11 +124,10 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
         }
 
         @Override // android.widget.TextView, android.view.View
-        public void onDraw(Canvas c) {
-            int i = this.mEdgeType;
-            if (i == -1 || i == 0 || i == 2) {
+        protected void onDraw(Canvas c) {
+            if (this.mEdgeType == -1 || this.mEdgeType == 0 || this.mEdgeType == 2) {
                 super.onDraw(c);
-            } else if (i == 1) {
+            } else if (this.mEdgeType == 1) {
                 drawEdgeOutline(c);
             } else {
                 drawEdgeRaisedOrDepressed(c);
@@ -165,9 +160,8 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
             boolean raised = this.mEdgeType == 3;
             int colorUp = raised ? -1 : this.mEdgeColor;
             int colorDown = raised ? this.mEdgeColor : -1;
-            float f = this.mShadowRadius;
-            float offset = f / 2.0f;
-            setShadowLayer(f, -offset, -offset, colorUp);
+            float offset = this.mShadowRadius / 2.0f;
+            setShadowLayer(this.mShadowRadius, -offset, -offset, colorUp);
             super.onDraw(c);
             setBackgroundSpans(0);
             setShadowLayer(this.mShadowRadius, offset, offset, colorDown);
@@ -189,7 +183,6 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
     }
 
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
     private static class CCLayout extends LinearLayout implements ClosedCaptionWidget.ClosedCaptionLayout {
         private static final int MAX_ROWS = 15;
         private static final float SAFE_AREA_RATIO = 0.9f;
@@ -229,7 +222,7 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
         }
 
         @Override // android.widget.LinearLayout, android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             int safeWidth = getMeasuredWidth();
             int safeHeight = getMeasuredHeight();
@@ -248,7 +241,7 @@ class Cea608CCWidget extends ClosedCaptionWidget implements Cea608CCParser.Displ
         }
 
         @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-        public void onLayout(boolean changed, int l, int t, int r, int b) {
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
             int safeWidth;
             int safeHeight;
             int viewPortWidth = r - l;

@@ -7,14 +7,13 @@ import android.text.TextUtils;
 /* loaded from: classes2.dex */
 public class AudioRoutesInfo implements Parcelable {
     public static final Parcelable.Creator<AudioRoutesInfo> CREATOR = new Parcelable.Creator<AudioRoutesInfo>() { // from class: android.media.AudioRoutesInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRoutesInfo createFromParcel(Parcel in) {
             return new AudioRoutesInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioRoutesInfo[] newArray(int size) {
             return new AudioRoutesInfo[size];
@@ -66,23 +65,6 @@ public class AudioRoutesInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         TextUtils.writeToParcel(this.bluetoothName, dest, flags);
         dest.writeInt(this.mainType);
-    }
-
-    /* renamed from: android.media.AudioRoutesInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioRoutesInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioRoutesInfo createFromParcel(Parcel in) {
-            return new AudioRoutesInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioRoutesInfo[] newArray(int size) {
-            return new AudioRoutesInfo[size];
-        }
     }
 
     public String getSetForcePath() {

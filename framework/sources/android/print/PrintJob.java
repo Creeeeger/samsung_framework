@@ -7,7 +7,7 @@ public final class PrintJob {
     private PrintJobInfo mCachedInfo;
     private final PrintManager mPrintManager;
 
-    public PrintJob(PrintJobInfo info, PrintManager printManager) {
+    PrintJob(PrintJobInfo info, PrintManager printManager) {
         this.mCachedInfo = info;
         this.mPrintManager = printManager;
     }

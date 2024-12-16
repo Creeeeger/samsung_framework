@@ -21,7 +21,6 @@ public interface IDataLoader extends IInterface {
 
     void stop(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDataLoader {
         @Override // android.content.pm.IDataLoader
         public void create(int id, DataLoaderParamsParcel params, FileSystemControlParcel control, IDataLoaderStatusListener listener) throws RemoteException {
@@ -49,7 +48,6 @@ public interface IDataLoader extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDataLoader {
         static final int TRANSACTION_create = 1;
         static final int TRANSACTION_destroy = 4;
@@ -104,51 +102,47 @@ public interface IDataLoader extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDataLoader.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDataLoader.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDataLoader.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    DataLoaderParamsParcel _arg1 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
+                    FileSystemControlParcel _arg2 = (FileSystemControlParcel) data.readTypedObject(FileSystemControlParcel.CREATOR);
+                    IDataLoaderStatusListener _arg3 = IDataLoaderStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    create(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    start(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stop(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    destroy(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    InstallationFileParcel[] _arg12 = (InstallationFileParcel[]) data.createTypedArray(InstallationFileParcel.CREATOR);
+                    String[] _arg22 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    prepareImage(_arg05, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            DataLoaderParamsParcel _arg1 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
-                            FileSystemControlParcel _arg2 = (FileSystemControlParcel) data.readTypedObject(FileSystemControlParcel.CREATOR);
-                            IDataLoaderStatusListener _arg3 = IDataLoaderStatusListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            create(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            start(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stop(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            destroy(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            InstallationFileParcel[] _arg12 = (InstallationFileParcel[]) data.createTypedArray(InstallationFileParcel.CREATOR);
-                            String[] _arg22 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            prepareImage(_arg05, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDataLoader {
+        private static class Proxy implements IDataLoader {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

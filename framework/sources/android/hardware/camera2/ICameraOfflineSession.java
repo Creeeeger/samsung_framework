@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraOfflineSession extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.ICameraOfflineSession";
 
     void disconnect() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraOfflineSession {
         @Override // android.hardware.camera2.ICameraOfflineSession
         public void disconnect() throws RemoteException {
@@ -25,7 +24,6 @@ public interface ICameraOfflineSession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraOfflineSession {
         static final int TRANSACTION_disconnect = 1;
 
@@ -68,24 +66,21 @@ public interface ICameraOfflineSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICameraOfflineSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICameraOfflineSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICameraOfflineSession.DESCRIPTOR);
+                case 1:
+                    disconnect();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraOfflineSession {
+        private static class Proxy implements ICameraOfflineSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

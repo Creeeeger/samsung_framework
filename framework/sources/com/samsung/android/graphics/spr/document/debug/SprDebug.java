@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprDebug {
     public static final int DEBUG_HIGH = 3;
     public static final int DEBUG_LOW = 1;
@@ -94,18 +94,16 @@ public class SprDebug {
 
     private static void drawText(Canvas canvas, String text, int y) {
         if (mTextOutlinePaint == null) {
-            Paint paint = new Paint();
-            mTextOutlinePaint = paint;
-            paint.setAntiAlias(true);
+            mTextOutlinePaint = new Paint();
+            mTextOutlinePaint.setAntiAlias(true);
             mTextOutlinePaint.setTextSize(20.0f);
             mTextOutlinePaint.setStyle(Paint.Style.STROKE);
             mTextOutlinePaint.setColor(-16777216);
             mTextOutlinePaint.setStrokeWidth(4.0f);
         }
         if (mTextPaint == null) {
-            Paint paint2 = new Paint();
-            mTextPaint = paint2;
-            paint2.setAntiAlias(true);
+            mTextPaint = new Paint();
+            mTextPaint.setAntiAlias(true);
             mTextPaint.setTextSize(20.0f);
             mTextPaint.setStyle(Paint.Style.FILL);
             mTextPaint.setColor(-1);

@@ -10,7 +10,7 @@ import com.samsung.android.desktopmode.IDesktopModeBlocker;
 import com.samsung.android.desktopmode.IDesktopModeLauncher;
 import com.samsung.android.desktopmode.IDesktopModeListener;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDesktopMode extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IDesktopMode";
 
@@ -42,7 +42,6 @@ public interface IDesktopMode extends IInterface {
 
     boolean unregisterDesktopModeListener(IDesktopModeListener iDesktopModeListener) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDesktopMode {
         @Override // com.samsung.android.desktopmode.IDesktopMode
         public boolean isDesktopDockConnected() throws RemoteException {
@@ -117,7 +116,6 @@ public interface IDesktopMode extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDesktopMode {
         static final int TRANSACTION_getDesktopModeKillPolicy = 11;
         static final int TRANSACTION_getDesktopModeState = 3;
@@ -199,107 +197,103 @@ public interface IDesktopMode extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDesktopMode.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDesktopMode.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDesktopMode.DESCRIPTOR);
+                case 1:
+                    boolean _result = isDesktopDockConnected();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = isDesktopMode();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    SemDesktopModeState _result3 = getDesktopModeState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    IDesktopModeListener _arg0 = IDesktopModeListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = registerDesktopModeListener(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    IDesktopModeBlocker _arg02 = IDesktopModeBlocker.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = registerBlocker(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    IDesktopModeListener _arg03 = IDesktopModeListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result6 = unregisterDesktopModeListener(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    IDesktopModeBlocker _arg04 = IDesktopModeBlocker.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result7 = unregisterBlocker(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    boolean _result8 = isDeviceConnected();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 9:
+                    boolean _result9 = isAllowed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 10:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    scheduleUpdateDesktopMode(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    Bundle _result10 = getDesktopModeKillPolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result10, 1);
+                    return true;
+                case 12:
+                    IDesktopModeLauncher _arg06 = IDesktopModeLauncher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerDesktopLauncher(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    Bundle _arg07 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result11 = sendMessage(_arg07);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 14:
+                    IBinder _arg08 = data.readStrongBinder();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    onSecuredAppLaunched(_arg08, _arg13);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isDesktopDockConnected();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = isDesktopMode();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            SemDesktopModeState _result3 = getDesktopModeState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            IDesktopModeListener _arg0 = IDesktopModeListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = registerDesktopModeListener(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            IDesktopModeBlocker _arg02 = IDesktopModeBlocker.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = registerBlocker(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            IDesktopModeListener _arg03 = IDesktopModeListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result6 = unregisterDesktopModeListener(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            IDesktopModeBlocker _arg04 = IDesktopModeBlocker.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result7 = unregisterBlocker(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            boolean _result8 = isDeviceConnected();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 9:
-                            boolean _result9 = isAllowed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 10:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            scheduleUpdateDesktopMode(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            Bundle _result10 = getDesktopModeKillPolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result10, 1);
-                            return true;
-                        case 12:
-                            IDesktopModeLauncher _arg06 = IDesktopModeLauncher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerDesktopLauncher(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            Bundle _arg07 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result11 = sendMessage(_arg07);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 14:
-                            IBinder _arg08 = data.readStrongBinder();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            onSecuredAppLaunched(_arg08, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDesktopMode {
+        private static class Proxy implements IDesktopMode {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -4,7 +4,7 @@ import com.samsung.android.knox.dar.ddar.securesession.SecureSessionManager;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SecureClient {
     private String clientId;
     private Map<String, SecureSessionManager.SecureSession> sessionHandles = new HashMap();
@@ -35,8 +35,8 @@ public class SecureClient {
     }
 
     public synchronized void destroy() throws Exception {
-        for (String client : this.sessionHandles.keySet()) {
-            this.sessionHandles.get(client).destroySessionkey();
+        for (Map.Entry<String, SecureSessionManager.SecureSession> entry : this.sessionHandles.entrySet()) {
+            entry.getValue().destroySessionkey();
         }
         this.sessionHandles.clear();
         this.privateSessionEndpoint.destroy();

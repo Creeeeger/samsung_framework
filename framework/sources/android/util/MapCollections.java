@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /* loaded from: classes4.dex */
-public abstract class MapCollections<K, V> {
+abstract class MapCollections<K, V> {
     MapCollections<K, V>.EntrySet mEntrySet;
     MapCollections<K, V>.KeySet mKeySet;
     MapCollections<K, V>.ValuesCollection mValues;
@@ -32,7 +32,9 @@ public abstract class MapCollections<K, V> {
 
     protected abstract V colSetValue(int i, V v);
 
-    /* loaded from: classes4.dex */
+    MapCollections() {
+    }
+
     final class ArrayIterator<T> implements Iterator<T> {
         boolean mCanRemove = false;
         int mIndex;
@@ -65,15 +67,13 @@ public abstract class MapCollections<K, V> {
             if (!this.mCanRemove) {
                 throw new IllegalStateException();
             }
-            int i = this.mIndex - 1;
-            this.mIndex = i;
+            this.mIndex--;
             this.mSize--;
             this.mCanRemove = false;
-            MapCollections.this.colRemoveAt(i);
+            MapCollections.this.colRemoveAt(this.mIndex);
         }
     }
 
-    /* loaded from: classes4.dex */
     final class MapIterator implements Iterator<Map.Entry<K, V>>, Map.Entry<K, V> {
         int mEnd;
         boolean mEntryValid = false;
@@ -160,9 +160,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public final class EntrySet implements Set<Map.Entry<K, V>> {
+    final class EntrySet implements Set<Map.Entry<K, V>> {
         EntrySet() {
         }
 
@@ -272,9 +270,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public final class KeySet implements Set<K> {
+    final class KeySet implements Set<K> {
         KeySet() {
         }
 
@@ -368,9 +364,7 @@ public abstract class MapCollections<K, V> {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public final class ValuesCollection implements Collection<V> {
+    final class ValuesCollection implements Collection<V> {
         ValuesCollection() {
         }
 

@@ -39,17 +39,17 @@ public class DERVideotexString extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.string.length) + 1 + this.string.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 21, this.string);
     }
 
@@ -59,7 +59,7 @@ public class DERVideotexString extends ASN1Primitive implements ASN1String {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof DERVideotexString)) {
             return false;
         }

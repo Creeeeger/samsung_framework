@@ -18,7 +18,6 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import java.util.ArrayList;
 import java.util.List;
 
 /* loaded from: classes.dex */
@@ -46,20 +45,50 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
     public static final String QUERY = "query";
     public static final String SEARCH_MODE = "search_mode";
     public static final String SEM_EXTRA_FROM_SVI = "isSamsungVoice";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_EXTRA = "suggest_extra_flags";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_GROUP = "suggest_group";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_ICON_1_BLOB = "suggest_icon_1_blob";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_ICON_3 = "suggest_icon_3";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_ICON_4 = "suggest_icon_4";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_INK_DATA = "suggest_ink_data";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_MIME_TYPE = "suggest_mime_type";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_TARGET_TYPE = "suggest_target_type";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_TEXT_3 = "suggest_text_3";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_TEXT_4 = "suggest_text_4";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_TEXT_5 = "suggest_text_5";
+
+    @Deprecated
     public static final String SEM_SUGGEST_COLUMN_URI = "suggest_uri";
+
+    @Deprecated
     public static final String SEM_SUGGEST_PARAMETER_END_TIME = "etime";
+
+    @Deprecated
     public static final String SEM_SUGGEST_PARAMETER_START_TIME = "stime";
+
+    @Deprecated
     public static final String SEM_SUGGEST_URI_PATH_REGEX_QUERY = "search_suggest_regex_query";
     public static final String SHORTCUT_MIME_TYPE = "vnd.android.cursor.item/vnd.android.search.suggest";
     public static final String SUGGEST_COLUMN_AUDIO_CHANNEL_CONFIG = "suggest_audio_channel_config";
@@ -103,17 +132,15 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
     OnCancelListener mCancelListener = null;
     private final ISearchManager mService = ISearchManager.Stub.asInterface(ServiceManager.getServiceOrThrow("search"));
 
-    /* loaded from: classes.dex */
     public interface OnCancelListener {
         void onCancel();
     }
 
-    /* loaded from: classes.dex */
     public interface OnDismissListener {
         void onDismiss();
     }
 
-    public SearchManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
+    SearchManager(Context context, Handler handler) throws ServiceManager.ServiceNotFoundException {
         this.mContext = context;
         this.mHandler = handler;
     }
@@ -136,9 +163,8 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
 
     private void ensureSearchDialog() {
         if (this.mSearchDialog == null) {
-            SearchDialog searchDialog = new SearchDialog(this.mContext, this);
-            this.mSearchDialog = searchDialog;
-            searchDialog.setOnCancelListener(this);
+            this.mSearchDialog = new SearchDialog(this.mContext, this);
+            this.mSearchDialog.setOnCancelListener(this);
             this.mSearchDialog.setOnDismissListener(this);
         }
     }
@@ -210,18 +236,16 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
     }
 
     public void stopSearch() {
-        SearchDialog searchDialog = this.mSearchDialog;
-        if (searchDialog != null) {
-            searchDialog.cancel();
+        if (this.mSearchDialog != null) {
+            this.mSearchDialog.cancel();
         }
     }
 
     public boolean isVisible() {
-        SearchDialog searchDialog = this.mSearchDialog;
-        if (searchDialog == null) {
+        if (this.mSearchDialog == null) {
             return false;
         }
-        return searchDialog.isShowing();
+        return this.mSearchDialog.isShowing();
     }
 
     public void setOnDismissListener(OnDismissListener listener) {
@@ -235,18 +259,16 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
     @Override // android.content.DialogInterface.OnCancelListener
     @Deprecated
     public void onCancel(DialogInterface dialog) {
-        OnCancelListener onCancelListener = this.mCancelListener;
-        if (onCancelListener != null) {
-            onCancelListener.onCancel();
+        if (this.mCancelListener != null) {
+            this.mCancelListener.onCancel();
         }
     }
 
     @Override // android.content.DialogInterface.OnDismissListener
     @Deprecated
     public void onDismiss(DialogInterface dialog) {
-        OnDismissListener onDismissListener = this.mDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mDismissListener != null) {
+            this.mDismissListener.onDismiss();
         }
     }
 
@@ -297,15 +319,6 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
         }
     }
 
-    public List<SearchableInfo> semGetSearchablesInInsightSearch(boolean includeGlobalSearch) {
-        try {
-            return this.mService.getSearchablesInInsightSearch(includeGlobalSearch);
-        } catch (RemoteException e) {
-            Log.e(TAG, "semGetSearchablesInInsightSearch() failed: " + e);
-            return new ArrayList();
-        }
-    }
-
     public Intent getAssistIntent(boolean inclContext) {
         try {
             Intent intent = new Intent(Intent.ACTION_ASSIST);
@@ -325,11 +338,10 @@ public class SearchManager implements DialogInterface.OnDismissListener, DialogI
     @SystemApi
     public void launchAssist(Bundle args) {
         try {
-            ISearchManager iSearchManager = this.mService;
-            if (iSearchManager == null) {
+            if (this.mService == null) {
                 return;
             }
-            iSearchManager.launchAssist(this.mContext.getUserId(), args);
+            this.mService.launchAssist(this.mContext.getUserId(), args);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }

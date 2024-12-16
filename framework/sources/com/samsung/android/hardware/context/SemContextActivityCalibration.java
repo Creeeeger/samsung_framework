@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActivityCalibration extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextActivityCalibration> CREATOR = new Parcelable.Creator<SemContextActivityCalibration>() { // from class: com.samsung.android.hardware.context.SemContextActivityCalibration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibration createFromParcel(Parcel in) {
             return new SemContextActivityCalibration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActivityCalibration[] newArray(int size) {
             return new SemContextActivityCalibration[size];
@@ -28,23 +27,6 @@ public class SemContextActivityCalibration extends SemContextEventContext {
     public static final int STATUS_STOP = 2;
     public static final int STATUS_UNKNOWN = 0;
     private Bundle mContext;
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextActivityCalibration$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActivityCalibration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityCalibration createFromParcel(Parcel in) {
-            return new SemContextActivityCalibration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActivityCalibration[] newArray(int size) {
-            return new SemContextActivityCalibration[size];
-        }
-    }
 
     SemContextActivityCalibration() {
         this.mContext = new Bundle();

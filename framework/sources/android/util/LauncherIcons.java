@@ -26,9 +26,8 @@ public final class LauncherIcons {
     private final SparseArray<Bitmap> mShadowCache = new SparseArray<>();
 
     public LauncherIcons(Context context) {
-        Resources resources = context.getResources();
-        this.mRes = resources;
-        this.mIconSize = resources.getDimensionPixelSize(17104896);
+        this.mRes = context.getResources();
+        this.mIconSize = this.mRes.getDimensionPixelSize(17104896);
         this.mContext = context;
     }
 
@@ -87,9 +86,7 @@ public final class LauncherIcons {
         return new LayerDrawable(drawables);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class ShadowDrawable extends DrawableWrapper {
+    private static class ShadowDrawable extends DrawableWrapper {
         final MyConstantState mState;
 
         public ShadowDrawable(Bitmap shadow, Drawable dr) {
@@ -118,9 +115,7 @@ public final class LauncherIcons {
             canvas.restore();
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class MyConstantState extends Drawable.ConstantState {
+        private static class MyConstantState extends Drawable.ConstantState {
             final Drawable.ConstantState mChildState;
             final Paint mPaint = new Paint(2);
             final Bitmap mShadow;

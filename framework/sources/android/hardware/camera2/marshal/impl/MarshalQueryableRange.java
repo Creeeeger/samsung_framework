@@ -11,11 +11,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableRange<T extends Comparable<? super T>> implements MarshalQueryable<Range<T>> {
     private static final int RANGE_COUNT = 2;
 
-    /* loaded from: classes.dex */
     private class MarshalerRange extends Marshaler<Range<T>> {
         private final Class<? super Range<T>> mClass;
         private final Constructor<Range<T>> mConstructor;
@@ -23,12 +22,11 @@ public class MarshalQueryableRange<T extends Comparable<? super T>> implements M
 
         protected MarshalerRange(TypeReference<Range<T>> typeReference, int i) {
             super(MarshalQueryableRange.this, typeReference, i);
-            Class<? super Range<T>> rawType = typeReference.getRawType();
-            this.mClass = rawType;
+            this.mClass = typeReference.getRawType();
             try {
                 this.mNestedTypeMarshaler = MarshalRegistry.getMarshaler(TypeReference.createSpecializedTypeReference(((ParameterizedType) typeReference.getType()).getActualTypeArguments()[0]), this.mNativeType);
                 try {
-                    this.mConstructor = rawType.getConstructor(Comparable.class, Comparable.class);
+                    this.mConstructor = this.mClass.getConstructor(Comparable.class, Comparable.class);
                 } catch (NoSuchMethodException e) {
                     throw new AssertionError(e);
                 }

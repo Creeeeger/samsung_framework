@@ -32,7 +32,6 @@ public interface IGnssBatching extends IInterface {
 
     void stop() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssBatching {
         @Override // android.hardware.gnss.IGnssBatching
         public void init(IGnssBatchingCallback callback) throws RemoteException {
@@ -75,7 +74,6 @@ public interface IGnssBatching extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssBatching {
         static final int TRANSACTION_cleanup = 6;
         static final int TRANSACTION_flush = 4;
@@ -141,58 +139,56 @@ public interface IGnssBatching extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IGnssBatchingCallback _arg0 = IGnssBatchingCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    init(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _result = getBatchSize();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeInt(_result);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    Options _arg02 = (Options) data.readTypedObject(Options.CREATOR);
+                    data.enforceNoDataAvail();
+                    start(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    flush();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    stop();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    cleanup();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGnssBatchingCallback _arg0 = IGnssBatchingCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            init(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _result = getBatchSize();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 3:
-                            Options _arg02 = (Options) data.readTypedObject(Options.CREATOR);
-                            data.enforceNoDataAvail();
-                            start(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            flush();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            stop();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            cleanup();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssBatching {
+        private static class Proxy implements IGnssBatching {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -362,12 +358,9 @@ public interface IGnssBatching extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Options implements Parcelable {
         public static final Parcelable.Creator<Options> CREATOR = new Parcelable.Creator<Options>() { // from class: android.hardware.gnss.IGnssBatching.Options.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Options createFromParcel(Parcel _aidl_source) {
                 Options _aidl_out = new Options();
@@ -375,6 +368,7 @@ public interface IGnssBatching extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Options[] newArray(int _aidl_size) {
                 return new Options[_aidl_size];
@@ -383,25 +377,6 @@ public interface IGnssBatching extends IInterface {
         public long periodNanos = 0;
         public float minDistanceMeters = 0.0f;
         public int flags = 0;
-
-        /* renamed from: android.hardware.gnss.IGnssBatching$Options$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Options> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Options createFromParcel(Parcel _aidl_source) {
-                Options _aidl_out = new Options();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Options[] newArray(int _aidl_size) {
-                return new Options[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

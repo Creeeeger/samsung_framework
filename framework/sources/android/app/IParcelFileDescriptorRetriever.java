@@ -13,7 +13,6 @@ public interface IParcelFileDescriptorRetriever extends IInterface {
 
     ParcelFileDescriptor getPfd() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IParcelFileDescriptorRetriever {
         @Override // android.app.IParcelFileDescriptorRetriever
         public ParcelFileDescriptor getPfd() throws RemoteException {
@@ -26,7 +25,6 @@ public interface IParcelFileDescriptorRetriever extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IParcelFileDescriptorRetriever {
         static final int TRANSACTION_getPfd = 1;
 
@@ -69,26 +67,22 @@ public interface IParcelFileDescriptorRetriever extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IParcelFileDescriptorRetriever.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IParcelFileDescriptorRetriever.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IParcelFileDescriptorRetriever.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _result = getPfd();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _result = getPfd();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IParcelFileDescriptorRetriever {
+        private static class Proxy implements IParcelFileDescriptorRetriever {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

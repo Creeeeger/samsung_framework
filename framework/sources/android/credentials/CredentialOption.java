@@ -14,14 +14,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class CredentialOption implements Parcelable {
     public static final Parcelable.Creator<CredentialOption> CREATOR = new Parcelable.Creator<CredentialOption>() { // from class: android.credentials.CredentialOption.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialOption[] newArray(int size) {
             return new CredentialOption[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CredentialOption createFromParcel(Parcel in) {
             return new CredentialOption(in);
@@ -33,14 +32,6 @@ public final class CredentialOption implements Parcelable {
     private final Bundle mCredentialRetrievalData;
     private final boolean mIsSystemProviderRequired;
     private final String mType;
-
-    /* synthetic */ CredentialOption(Parcel parcel, CredentialOptionIA credentialOptionIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ CredentialOption(String str, Bundle bundle, Bundle bundle2, boolean z, ArraySet arraySet, CredentialOptionIA credentialOptionIA) {
-        this(str, bundle, bundle2, z, arraySet);
-    }
 
     public String getType() {
         return this.mType;
@@ -98,35 +89,16 @@ public final class CredentialOption implements Parcelable {
         Bundle candidateQueryData = in.readBundle();
         boolean isSystemProviderRequired = in.readBoolean();
         this.mType = type;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) type);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mType);
         this.mCredentialRetrievalData = data;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) data);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCredentialRetrievalData);
         this.mCandidateQueryData = candidateQueryData;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) candidateQueryData);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCandidateQueryData);
         this.mIsSystemProviderRequired = isSystemProviderRequired;
-        ArraySet readArraySet = in.readArraySet(null);
-        this.mAllowedProviders = readArraySet;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) readArraySet);
+        this.mAllowedProviders = in.readArraySet(null);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAllowedProviders);
     }
 
-    /* renamed from: android.credentials.CredentialOption$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CredentialOption> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialOption[] newArray(int size) {
-            return new CredentialOption[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CredentialOption createFromParcel(Parcel in) {
-            return new CredentialOption(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Bundle mCandidateQueryData;
         private Bundle mCredentialRetrievalData;

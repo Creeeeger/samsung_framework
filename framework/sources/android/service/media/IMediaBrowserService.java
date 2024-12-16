@@ -26,7 +26,6 @@ public interface IMediaBrowserService extends IInterface {
 
     void removeSubscriptionDeprecated(String str, IMediaBrowserServiceCallbacks iMediaBrowserServiceCallbacks) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IMediaBrowserService {
         @Override // android.service.media.IMediaBrowserService
         public void connect(String pkg, Bundle rootHints, IMediaBrowserServiceCallbacks callbacks) throws RemoteException {
@@ -62,7 +61,6 @@ public interface IMediaBrowserService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IMediaBrowserService {
         public static final String DESCRIPTOR = "android.service.media.IMediaBrowserService";
         static final int TRANSACTION_addSubscription = 6;
@@ -124,67 +122,63 @@ public interface IMediaBrowserService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IMediaBrowserServiceCallbacks _arg2 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    connect(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    IMediaBrowserServiceCallbacks _arg02 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    disconnect(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    IMediaBrowserServiceCallbacks _arg12 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addSubscriptionDeprecated(_arg03, _arg12);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    IMediaBrowserServiceCallbacks _arg13 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeSubscriptionDeprecated(_arg04, _arg13);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    ResultReceiver _arg14 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
+                    IMediaBrowserServiceCallbacks _arg22 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getMediaItem(_arg05, _arg14, _arg22);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    IBinder _arg15 = data.readStrongBinder();
+                    Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IMediaBrowserServiceCallbacks _arg3 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addSubscription(_arg06, _arg15, _arg23, _arg3);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    IBinder _arg16 = data.readStrongBinder();
+                    IMediaBrowserServiceCallbacks _arg24 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeSubscription(_arg07, _arg16, _arg24);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IMediaBrowserServiceCallbacks _arg2 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            connect(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            IMediaBrowserServiceCallbacks _arg02 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            disconnect(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            IMediaBrowserServiceCallbacks _arg12 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addSubscriptionDeprecated(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            IMediaBrowserServiceCallbacks _arg13 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeSubscriptionDeprecated(_arg04, _arg13);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            ResultReceiver _arg14 = (ResultReceiver) data.readTypedObject(ResultReceiver.CREATOR);
-                            IMediaBrowserServiceCallbacks _arg22 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getMediaItem(_arg05, _arg14, _arg22);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            IBinder _arg15 = data.readStrongBinder();
-                            Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IMediaBrowserServiceCallbacks _arg3 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addSubscription(_arg06, _arg15, _arg23, _arg3);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            IBinder _arg16 = data.readStrongBinder();
-                            IMediaBrowserServiceCallbacks _arg24 = IMediaBrowserServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeSubscription(_arg07, _arg16, _arg24);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IMediaBrowserService {
+        private static class Proxy implements IMediaBrowserService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

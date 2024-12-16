@@ -20,7 +20,6 @@ public interface IProxyCallback extends IInterface {
 
     void setEnterpriseProxy(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IProxyCallback {
         @Override // com.android.net.IProxyCallback
         public void getProxyPort(IBinder callback) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IProxyCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IProxyCallback {
         static final int TRANSACTION_clearProxyServerCache = 2;
         static final int TRANSACTION_getProxyPort = 1;
@@ -96,39 +94,36 @@ public interface IProxyCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProxyCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProxyCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProxyCallback.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    getProxyPort(_arg0);
+                    return true;
+                case 2:
+                    clearProxyServerCache();
+                    return true;
+                case 3:
+                    Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IProxyCredentialsCallback _arg1 = IProxyCredentialsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCredentialsReceived(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setEnterpriseProxy(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            getProxyPort(_arg0);
-                            return true;
-                        case 2:
-                            clearProxyServerCache();
-                            return true;
-                        case 3:
-                            Bundle _arg02 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IProxyCredentialsCallback _arg1 = IProxyCredentialsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCredentialsReceived(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setEnterpriseProxy(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IProxyCallback {
             private IBinder mRemote;
 

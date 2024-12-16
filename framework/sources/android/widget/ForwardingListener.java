@@ -25,9 +25,8 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
         src.setLongClickable(true);
         src.addOnAttachStateChangeListener(this);
         this.mScaledTouchSlop = ViewConfiguration.get(src.getContext()).getScaledTouchSlop();
-        int tapTimeout = ViewConfiguration.getTapTimeout();
-        this.mTapTimeout = tapTimeout;
-        this.mLongPressTimeout = (tapTimeout + ViewConfiguration.getLongPressTimeout()) / 2;
+        this.mTapTimeout = ViewConfiguration.getTapTimeout();
+        this.mLongPressTimeout = (this.mTapTimeout + ViewConfiguration.getLongPressTimeout()) / 2;
     }
 
     @Override // android.view.View.OnTouchListener
@@ -57,9 +56,8 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
     public void onViewDetachedFromWindow(View v) {
         this.mForwarding = false;
         this.mActivePointerId = -1;
-        Runnable runnable = this.mDisallowIntercept;
-        if (runnable != null) {
-            this.mSrc.removeCallbacks(runnable);
+        if (this.mDisallowIntercept != null) {
+            this.mSrc.removeCallbacks(this.mDisallowIntercept);
         }
     }
 
@@ -82,38 +80,34 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    private boolean onTouchObserved(MotionEvent srcEvent) {
-        View src = this.mSrc;
-        if (!src.isEnabled()) {
+    private boolean onTouchObserved(MotionEvent motionEvent) {
+        View view = this.mSrc;
+        if (!view.isEnabled()) {
             return false;
         }
-        int actionMasked = srcEvent.getActionMasked();
-        switch (actionMasked) {
+        switch (motionEvent.getActionMasked()) {
             case 0:
-                this.mActivePointerId = srcEvent.getPointerId(0);
+                this.mActivePointerId = motionEvent.getPointerId(0);
+                byte b = 0;
                 if (this.mDisallowIntercept == null) {
                     this.mDisallowIntercept = new DisallowIntercept();
                 }
-                src.postDelayed(this.mDisallowIntercept, this.mTapTimeout);
+                view.postDelayed(this.mDisallowIntercept, this.mTapTimeout);
                 if (this.mTriggerLongPress == null) {
                     this.mTriggerLongPress = new TriggerLongPress();
                 }
-                src.postDelayed(this.mTriggerLongPress, this.mLongPressTimeout);
+                view.postDelayed(this.mTriggerLongPress, this.mLongPressTimeout);
                 return false;
             case 1:
             case 3:
                 clearCallbacks();
                 return false;
             case 2:
-                int activePointerIndex = srcEvent.findPointerIndex(this.mActivePointerId);
-                if (activePointerIndex >= 0) {
-                    float x = srcEvent.getX(activePointerIndex);
-                    float y = srcEvent.getY(activePointerIndex);
-                    if (!src.pointInView(x, y, this.mScaledTouchSlop)) {
-                        clearCallbacks();
-                        src.getParent().requestDisallowInterceptTouchEvent(true);
-                        return true;
-                    }
+                int findPointerIndex = motionEvent.findPointerIndex(this.mActivePointerId);
+                if (findPointerIndex >= 0 && !view.pointInView(motionEvent.getX(findPointerIndex), motionEvent.getY(findPointerIndex), this.mScaledTouchSlop)) {
+                    clearCallbacks();
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    return true;
                 }
                 return false;
             default:
@@ -122,16 +116,15 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
     }
 
     private void clearCallbacks() {
-        Runnable runnable = this.mTriggerLongPress;
-        if (runnable != null) {
-            this.mSrc.removeCallbacks(runnable);
+        if (this.mTriggerLongPress != null) {
+            this.mSrc.removeCallbacks(this.mTriggerLongPress);
         }
-        Runnable runnable2 = this.mDisallowIntercept;
-        if (runnable2 != null) {
-            this.mSrc.removeCallbacks(runnable2);
+        if (this.mDisallowIntercept != null) {
+            this.mSrc.removeCallbacks(this.mDisallowIntercept);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onLongPress() {
         clearCallbacks();
         View src = this.mSrc;
@@ -171,12 +164,7 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
         return true;
     }
 
-    /* loaded from: classes4.dex */
-    public class DisallowIntercept implements Runnable {
-        /* synthetic */ DisallowIntercept(ForwardingListener forwardingListener, DisallowInterceptIA disallowInterceptIA) {
-            this();
-        }
-
+    private class DisallowIntercept implements Runnable {
         private DisallowIntercept() {
         }
 
@@ -189,12 +177,7 @@ public abstract class ForwardingListener implements View.OnTouchListener, View.O
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class TriggerLongPress implements Runnable {
-        /* synthetic */ TriggerLongPress(ForwardingListener forwardingListener, TriggerLongPressIA triggerLongPressIA) {
-            this();
-        }
-
+    private class TriggerLongPress implements Runnable {
         private TriggerLongPress() {
         }
 

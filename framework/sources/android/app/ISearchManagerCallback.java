@@ -12,7 +12,6 @@ public interface ISearchManagerCallback extends IInterface {
 
     void onDismiss() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISearchManagerCallback {
         @Override // android.app.ISearchManagerCallback
         public void onDismiss() throws RemoteException {
@@ -28,7 +27,6 @@ public interface ISearchManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISearchManagerCallback {
         public static final String DESCRIPTOR = "android.app.ISearchManagerCallback";
         static final int TRANSACTION_onCancel = 2;
@@ -75,25 +73,22 @@ public interface ISearchManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onDismiss();
+                    return true;
+                case 2:
+                    onCancel();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDismiss();
-                            return true;
-                        case 2:
-                            onCancel();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ISearchManagerCallback {
             private IBinder mRemote;
 

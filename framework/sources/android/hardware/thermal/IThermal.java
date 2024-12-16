@@ -1,5 +1,6 @@
 package android.hardware.thermal;
 
+import android.hardware.thermal.ICoolingDeviceChangedCallback;
 import android.hardware.thermal.IThermalChangedCallback;
 import android.os.Binder;
 import android.os.IBinder;
@@ -10,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IThermal extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$thermal$IThermal".replace('$', '.');
-    public static final String HASH = "76e77ca374a7860f09aeac48e98b2ec61f576767";
-    public static final int VERSION = 1;
+    public static final String HASH = "2f49c78011338b42b43d5d0e250d9b520850cc1f";
+    public static final int VERSION = 2;
 
     CoolingDevice[] getCoolingDevices() throws RemoteException;
 
@@ -29,13 +30,16 @@ public interface IThermal extends IInterface {
 
     Temperature[] getTemperaturesWithType(int i) throws RemoteException;
 
+    void registerCoolingDeviceChangedCallbackWithType(ICoolingDeviceChangedCallback iCoolingDeviceChangedCallback, int i) throws RemoteException;
+
     void registerThermalChangedCallback(IThermalChangedCallback iThermalChangedCallback) throws RemoteException;
 
     void registerThermalChangedCallbackWithType(IThermalChangedCallback iThermalChangedCallback, int i) throws RemoteException;
 
+    void unregisterCoolingDeviceChangedCallback(ICoolingDeviceChangedCallback iCoolingDeviceChangedCallback) throws RemoteException;
+
     void unregisterThermalChangedCallback(IThermalChangedCallback iThermalChangedCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IThermal {
         @Override // android.hardware.thermal.IThermal
         public CoolingDevice[] getCoolingDevices() throws RemoteException {
@@ -80,6 +84,14 @@ public interface IThermal extends IInterface {
         }
 
         @Override // android.hardware.thermal.IThermal
+        public void registerCoolingDeviceChangedCallbackWithType(ICoolingDeviceChangedCallback callback, int type) throws RemoteException {
+        }
+
+        @Override // android.hardware.thermal.IThermal
+        public void unregisterCoolingDeviceChangedCallback(ICoolingDeviceChangedCallback callback) throws RemoteException {
+        }
+
+        @Override // android.hardware.thermal.IThermal
         public int getInterfaceVersion() {
             return 0;
         }
@@ -95,7 +107,6 @@ public interface IThermal extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IThermal {
         static final int TRANSACTION_getCoolingDevices = 1;
         static final int TRANSACTION_getCoolingDevicesWithType = 2;
@@ -105,8 +116,10 @@ public interface IThermal extends IInterface {
         static final int TRANSACTION_getTemperatureThresholdsWithType = 6;
         static final int TRANSACTION_getTemperatures = 3;
         static final int TRANSACTION_getTemperaturesWithType = 4;
+        static final int TRANSACTION_registerCoolingDeviceChangedCallbackWithType = 10;
         static final int TRANSACTION_registerThermalChangedCallback = 7;
         static final int TRANSACTION_registerThermalChangedCallbackWithType = 8;
+        static final int TRANSACTION_unregisterCoolingDeviceChangedCallback = 11;
         static final int TRANSACTION_unregisterThermalChangedCallback = 9;
 
         public Stub() {
@@ -150,6 +163,10 @@ public interface IThermal extends IInterface {
                     return "registerThermalChangedCallbackWithType";
                 case 9:
                     return "unregisterThermalChangedCallback";
+                case 10:
+                    return "registerCoolingDeviceChangedCallbackWithType";
+                case 11:
+                    return "unregisterCoolingDeviceChangedCallback";
                 case 16777214:
                     return "getInterfaceHash";
                 case 16777215:
@@ -170,82 +187,94 @@ public interface IThermal extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    CoolingDevice[] _result = getCoolingDevices();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedArray(_result, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CoolingDevice[] _result2 = getCoolingDevicesWithType(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeTypedArray(_result2, 1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    Temperature[] _result3 = getTemperatures();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Temperature[] _result4 = getTemperaturesWithType(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
+                    return true;
+                case 5:
+                    TemperatureThreshold[] _result5 = getTemperatureThresholds();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result5, 1);
+                    return true;
+                case 6:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    TemperatureThreshold[] _result6 = getTemperatureThresholdsWithType(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result6, 1);
+                    return true;
+                case 7:
+                    IThermalChangedCallback _arg04 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerThermalChangedCallback(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IThermalChangedCallback _arg05 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerThermalChangedCallbackWithType(_arg05, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IThermalChangedCallback _arg06 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterThermalChangedCallback(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    ICoolingDeviceChangedCallback _arg07 = ICoolingDeviceChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerCoolingDeviceChangedCallbackWithType(_arg07, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    ICoolingDeviceChangedCallback _arg08 = ICoolingDeviceChangedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCoolingDeviceChangedCallback(_arg08);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CoolingDevice[] _result = getCoolingDevices();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CoolingDevice[] _result2 = getCoolingDevicesWithType(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 3:
-                            Temperature[] _result3 = getTemperatures();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Temperature[] _result4 = getTemperaturesWithType(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        case 5:
-                            TemperatureThreshold[] _result5 = getTemperatureThresholds();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result5, 1);
-                            return true;
-                        case 6:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            TemperatureThreshold[] _result6 = getTemperatureThresholdsWithType(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result6, 1);
-                            return true;
-                        case 7:
-                            IThermalChangedCallback _arg04 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerThermalChangedCallback(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IThermalChangedCallback _arg05 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerThermalChangedCallbackWithType(_arg05, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IThermalChangedCallback _arg06 = IThermalChangedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterThermalChangedCallback(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IThermal {
             private IBinder mRemote;
             private int mCachedVersion = -1;
@@ -428,6 +457,43 @@ public interface IThermal extends IInterface {
                     boolean _status = this.mRemote.transact(9, _data, _reply, 0);
                     if (!_status) {
                         throw new RemoteException("Method unregisterThermalChangedCallback is unimplemented.");
+                    }
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.thermal.IThermal
+            public void registerCoolingDeviceChangedCallbackWithType(ICoolingDeviceChangedCallback callback, int type) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    _data.writeInt(type);
+                    boolean _status = this.mRemote.transact(10, _data, _reply, 0);
+                    if (!_status) {
+                        throw new RemoteException("Method registerCoolingDeviceChangedCallbackWithType is unimplemented.");
+                    }
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.thermal.IThermal
+            public void unregisterCoolingDeviceChangedCallback(ICoolingDeviceChangedCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeStrongInterface(callback);
+                    boolean _status = this.mRemote.transact(11, _data, _reply, 0);
+                    if (!_status) {
+                        throw new RemoteException("Method unregisterCoolingDeviceChangedCallback is unimplemented.");
                     }
                     _reply.readException();
                 } finally {

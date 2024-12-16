@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IRemoteAppModeListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.remoteappmode.IRemoteAppModeListener";
 
     void onRemoteAppModeStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IRemoteAppModeListener {
         @Override // com.samsung.android.remoteappmode.IRemoteAppModeListener
         public void onRemoteAppModeStateChanged(boolean isEnabled) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IRemoteAppModeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IRemoteAppModeListener {
         static final int TRANSACTION_onRemoteAppModeStateChanged = 1;
 
@@ -67,26 +65,22 @@ public interface IRemoteAppModeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteAppModeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteAppModeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteAppModeListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRemoteAppModeStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onRemoteAppModeStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IRemoteAppModeListener {
+        private static class Proxy implements IRemoteAppModeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

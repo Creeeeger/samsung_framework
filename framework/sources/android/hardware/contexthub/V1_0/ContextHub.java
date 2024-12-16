@@ -10,7 +10,7 @@ import java.util.Objects;
 public final class ContextHub {
     public String name = new String();
 
-    /* renamed from: vendor */
+    /* renamed from: vendor, reason: collision with root package name */
     public String f2vendor = new String();
     public String toolchain = new String();
     public int platformVersion = 0;
@@ -70,11 +70,11 @@ public final class ContextHub {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.name = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.f2vendor = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.f2vendor.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.toolchain = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.toolchain.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.platformVersion = _hidl_blob.getInt32(_hidl_offset + 48);
         this.toolchainVersion = _hidl_blob.getInt32(_hidl_offset + 52);
         this.hubId = _hidl_blob.getInt32(_hidl_offset + 56);

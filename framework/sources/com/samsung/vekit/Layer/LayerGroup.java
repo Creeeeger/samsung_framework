@@ -95,7 +95,7 @@ public class LayerGroup extends Element implements HierarchyInterface<Layer> {
     }
 
     public LayerGroup setPanel(Panel panel) {
-        this.panel = panel.m8985clone();
+        this.panel = panel.m9389clone();
         return this;
     }
 
@@ -166,6 +166,7 @@ public class LayerGroup extends Element implements HierarchyInterface<Layer> {
         return this.layerList.indexOf(element);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.vekit.Interface.HierarchyInterface
     public Layer getChild(int index) {
         return this.layerList.get(index);
@@ -197,6 +198,7 @@ public class LayerGroup extends Element implements HierarchyInterface<Layer> {
             checkValidAnimation(animation);
             this.context.getNativeInterface().detachAnimation(this, animation.getId());
             this.animationList.remove(animation);
+            animation.rollback();
             animation.setTarget(null);
         } catch (Exception e) {
             Log.e(this.TAG, "detachAnimation: ", e);
@@ -217,6 +219,7 @@ public class LayerGroup extends Element implements HierarchyInterface<Layer> {
         Iterator<Animation<?>> it = this.animationList.iterator();
         while (it.hasNext()) {
             Animation animation = it.next();
+            animation.rollback();
             animation.setTarget(null);
         }
         this.animationList.clear();

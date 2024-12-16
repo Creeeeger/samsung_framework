@@ -12,7 +12,7 @@ import android.service.wallpaper.IWallpaperConnection;
 
 /* loaded from: classes3.dex */
 public interface IWallpaperService extends IInterface {
-    void attach(IWallpaperConnection iWallpaperConnection, IBinder iBinder, int i, boolean z, int i2, int i3, Rect rect, int i4, int i5) throws RemoteException;
+    void attach(IWallpaperConnection iWallpaperConnection, IBinder iBinder, int i, boolean z, int i2, int i3, Rect rect, int i4, int i5, WallpaperInfo wallpaperInfo) throws RemoteException;
 
     void attachWithExtras(IWallpaperConnection iWallpaperConnection, IBinder iBinder, int i, boolean z, int i2, int i3, Rect rect, int i4, int i5, WallpaperInfo wallpaperInfo, Bundle bundle) throws RemoteException;
 
@@ -20,10 +20,9 @@ public interface IWallpaperService extends IInterface {
 
     void setCurrentUserId(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWallpaperService {
         @Override // android.service.wallpaper.IWallpaperService
-        public void attach(IWallpaperConnection connection, IBinder windowToken, int windowType, boolean isPreview, int reqWidth, int reqHeight, Rect padding, int displayId, int which) throws RemoteException {
+        public void attach(IWallpaperConnection connection, IBinder windowToken, int windowType, boolean isPreview, int reqWidth, int reqHeight, Rect padding, int displayId, int which, WallpaperInfo info) throws RemoteException {
         }
 
         @Override // android.service.wallpaper.IWallpaperService
@@ -44,7 +43,6 @@ public interface IWallpaperService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWallpaperService {
         public static final String DESCRIPTOR = "android.service.wallpaper.IWallpaperService";
         static final int TRANSACTION_attach = 1;
@@ -97,57 +95,55 @@ public interface IWallpaperService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IWallpaperConnection _arg0 = IWallpaperConnection.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg1 = data.readStrongBinder();
+                    int _arg2 = data.readInt();
+                    boolean _arg3 = data.readBoolean();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    Rect _arg6 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    int _arg7 = data.readInt();
+                    int _arg8 = data.readInt();
+                    WallpaperInfo _arg9 = (WallpaperInfo) data.readTypedObject(WallpaperInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    attach(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8, _arg9);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    detach(_arg02);
+                    return true;
+                case 3:
+                    IWallpaperConnection _arg03 = IWallpaperConnection.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg12 = data.readStrongBinder();
+                    int _arg22 = data.readInt();
+                    boolean _arg32 = data.readBoolean();
+                    int _arg42 = data.readInt();
+                    int _arg52 = data.readInt();
+                    Rect _arg62 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    int _arg72 = data.readInt();
+                    int _arg82 = data.readInt();
+                    WallpaperInfo _arg92 = (WallpaperInfo) data.readTypedObject(WallpaperInfo.CREATOR);
+                    Bundle _arg10 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    attachWithExtras(_arg03, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72, _arg82, _arg92, _arg10);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCurrentUserId(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IWallpaperConnection _arg0 = IWallpaperConnection.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg1 = data.readStrongBinder();
-                            int _arg2 = data.readInt();
-                            boolean _arg3 = data.readBoolean();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            Rect _arg6 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            int _arg7 = data.readInt();
-                            int _arg8 = data.readInt();
-                            data.enforceNoDataAvail();
-                            attach(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            detach(_arg02);
-                            return true;
-                        case 3:
-                            IWallpaperConnection _arg03 = IWallpaperConnection.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg12 = data.readStrongBinder();
-                            int _arg22 = data.readInt();
-                            boolean _arg32 = data.readBoolean();
-                            int _arg42 = data.readInt();
-                            int _arg52 = data.readInt();
-                            Rect _arg62 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            int _arg72 = data.readInt();
-                            int _arg82 = data.readInt();
-                            WallpaperInfo _arg9 = (WallpaperInfo) data.readTypedObject(WallpaperInfo.CREATOR);
-                            Bundle _arg10 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            attachWithExtras(_arg03, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72, _arg82, _arg9, _arg10);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCurrentUserId(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IWallpaperService {
             private IBinder mRemote;
 
@@ -165,7 +161,7 @@ public interface IWallpaperService extends IInterface {
             }
 
             @Override // android.service.wallpaper.IWallpaperService
-            public void attach(IWallpaperConnection connection, IBinder windowToken, int windowType, boolean isPreview, int reqWidth, int reqHeight, Rect padding, int displayId, int which) throws RemoteException {
+            public void attach(IWallpaperConnection connection, IBinder windowToken, int windowType, boolean isPreview, int reqWidth, int reqHeight, Rect padding, int displayId, int which, WallpaperInfo info) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
@@ -178,6 +174,7 @@ public interface IWallpaperService extends IInterface {
                     _data.writeTypedObject(padding, 0);
                     _data.writeInt(displayId);
                     _data.writeInt(which);
+                    _data.writeTypedObject(info, 0);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();

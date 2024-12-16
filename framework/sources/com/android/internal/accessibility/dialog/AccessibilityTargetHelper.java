@@ -7,15 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.text.BidiFormatter;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import com.android.internal.R;
 import com.android.internal.accessibility.AccessibilityShortcutController;
 import com.android.internal.accessibility.util.AccessibilityUtils;
@@ -25,10 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Predicate;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class AccessibilityTargetHelper {
     private AccessibilityTargetHelper() {
     }
@@ -81,6 +73,7 @@ public final class AccessibilityTargetHelper {
         return targets;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean arePackageNameAndLabelTheSame(AccessibilityTarget serviceTarget, AccessibilityTarget activityTarget) {
         try {
             ComponentName serviceComponentName = ComponentName.unflattenFromString(serviceTarget.getId());
@@ -105,7 +98,7 @@ public final class AccessibilityTargetHelper {
             for (AccessibilityServiceInfo info : installedServices) {
                 int targetSdk = info.getResolveInfo().serviceInfo.applicationInfo.targetSdkVersion;
                 boolean hasRequestAccessibilityButtonFlag = (info.flags & 256) != 0;
-                if (targetSdk > 29 || hasRequestAccessibilityButtonFlag || shortcutType != 0) {
+                if (targetSdk > 29 || hasRequestAccessibilityButtonFlag || shortcutType != 1) {
                     targets.add(createAccessibilityServiceTarget(context, shortcutType, info));
                 }
             }
@@ -159,45 +152,6 @@ public final class AccessibilityTargetHelper {
             default:
                 throw new IllegalStateException("Unexpected fragment type");
         }
-    }
-
-    public static View createEnableDialogContentView(Context context, final AccessibilityServiceTarget target, final View.OnClickListener allowListener, final View.OnClickListener denyListener) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View content = inflater.inflate(R.layout.accessibility_enable_service_warning, (ViewGroup) null);
-        ImageView dialogIcon = (ImageView) content.findViewById(R.id.accessibility_permissionDialog_icon);
-        dialogIcon.lambda$setImageURIAsync$2(target.getIcon());
-        TextView dialogTitle = (TextView) content.findViewById(R.id.accessibility_permissionDialog_title);
-        dialogTitle.setText(context.getString(R.string.accessibility_enable_service_title, getServiceName(context, target.getLabel())));
-        Button allowButton = (Button) content.findViewById(R.id.accessibility_permission_enable_allow_button);
-        Button denyButton = (Button) content.findViewById(R.id.accessibility_permission_enable_deny_button);
-        allowButton.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityTargetHelper$$ExternalSyntheticLambda1
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                AccessibilityTargetHelper.lambda$createEnableDialogContentView$1(AccessibilityServiceTarget.this, allowListener, view);
-            }
-        });
-        denyButton.setOnClickListener(new View.OnClickListener() { // from class: com.android.internal.accessibility.dialog.AccessibilityTargetHelper$$ExternalSyntheticLambda2
-            @Override // android.view.View.OnClickListener
-            public final void onClick(View view) {
-                AccessibilityTargetHelper.lambda$createEnableDialogContentView$2(AccessibilityServiceTarget.this, denyListener, view);
-            }
-        });
-        return content;
-    }
-
-    public static /* synthetic */ void lambda$createEnableDialogContentView$1(AccessibilityServiceTarget target, View.OnClickListener allowListener, View view) {
-        target.onCheckedChanged(true);
-        allowListener.onClick(view);
-    }
-
-    public static /* synthetic */ void lambda$createEnableDialogContentView$2(AccessibilityServiceTarget target, View.OnClickListener denyListener, View view) {
-        target.onCheckedChanged(false);
-        denyListener.onClick(view);
-    }
-
-    private static CharSequence getServiceName(Context context, CharSequence label) {
-        Locale locale = context.getResources().getConfiguration().getLocales().get(0);
-        return BidiFormatter.getInstance(locale).unicodeWrap(label);
     }
 
     public static boolean isAccessibilityTargetAllowed(Context context, String packageName, int uid) {

@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IPlatformCompatNative extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.compat.IPlatformCompatNative";
 
@@ -18,7 +18,6 @@ public interface IPlatformCompatNative extends IInterface {
 
     void reportChangeByUid(long j, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IPlatformCompatNative {
         @Override // com.android.internal.compat.IPlatformCompatNative
         public void reportChangeByPackageName(long changeId, String packageName, int userId) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IPlatformCompatNative extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IPlatformCompatNative {
         static final int TRANSACTION_isChangeEnabledByPackageName = 3;
         static final int TRANSACTION_isChangeEnabledByUid = 4;
@@ -96,51 +94,48 @@ public interface IPlatformCompatNative extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPlatformCompatNative.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPlatformCompatNative.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPlatformCompatNative.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportChangeByPackageName(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportChangeByUid(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    String _arg13 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = isChangeEnabledByPackageName(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isChangeEnabledByUid(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportChangeByPackageName(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportChangeByUid(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            String _arg13 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = isChangeEnabledByPackageName(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isChangeEnabledByUid(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IPlatformCompatNative {
             private IBinder mRemote;
 

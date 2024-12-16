@@ -17,6 +17,8 @@ public interface IThermalService extends IInterface {
 
     float getThermalHeadroom(int i) throws RemoteException;
 
+    float[] getThermalHeadroomThresholds() throws RemoteException;
+
     boolean registerThermalEventListener(IThermalEventListener iThermalEventListener) throws RemoteException;
 
     boolean registerThermalEventListenerWithType(IThermalEventListener iThermalEventListener, int i) throws RemoteException;
@@ -27,7 +29,6 @@ public interface IThermalService extends IInterface {
 
     boolean unregisterThermalStatusListener(IThermalStatusListener iThermalStatusListener) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IThermalService {
         @Override // android.os.IThermalService
         public boolean registerThermalEventListener(IThermalEventListener listener) throws RemoteException {
@@ -84,13 +85,17 @@ public interface IThermalService extends IInterface {
             return 0.0f;
         }
 
+        @Override // android.os.IThermalService
+        public float[] getThermalHeadroomThresholds() throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IThermalService {
         public static final String DESCRIPTOR = "android.os.IThermalService";
         static final int TRANSACTION_getCurrentCoolingDevices = 9;
@@ -99,6 +104,7 @@ public interface IThermalService extends IInterface {
         static final int TRANSACTION_getCurrentTemperaturesWithType = 5;
         static final int TRANSACTION_getCurrentThermalStatus = 8;
         static final int TRANSACTION_getThermalHeadroom = 11;
+        static final int TRANSACTION_getThermalHeadroomThresholds = 12;
         static final int TRANSACTION_registerThermalEventListener = 1;
         static final int TRANSACTION_registerThermalEventListenerWithType = 2;
         static final int TRANSACTION_registerThermalStatusListener = 6;
@@ -149,6 +155,8 @@ public interface IThermalService extends IInterface {
                     return "getCurrentCoolingDevicesWithType";
                 case 11:
                     return "getThermalHeadroom";
+                case 12:
+                    return "getThermalHeadroomThresholds";
                 default:
                     return null;
             }
@@ -164,93 +172,94 @@ public interface IThermalService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IThermalEventListener _arg0 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result = registerThermalEventListener(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    IThermalEventListener _arg02 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = registerThermalEventListenerWithType(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    IThermalEventListener _arg03 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result3 = unregisterThermalEventListener(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    Temperature[] _result4 = getCurrentTemperatures();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Temperature[] _result5 = getCurrentTemperaturesWithType(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result5, 1);
+                    return true;
+                case 6:
+                    IThermalStatusListener _arg05 = IThermalStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result6 = registerThermalStatusListener(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    IThermalStatusListener _arg06 = IThermalStatusListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result7 = unregisterThermalStatusListener(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    int _result8 = getCurrentThermalStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    CoolingDevice[] _result9 = getCurrentCoolingDevices();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result9, 1);
+                    return true;
+                case 10:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CoolingDevice[] _result10 = getCurrentCoolingDevicesWithType(_arg07);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result10, 1);
+                    return true;
+                case 11:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result11 = getThermalHeadroom(_arg08);
+                    reply.writeNoException();
+                    reply.writeFloat(_result11);
+                    return true;
+                case 12:
+                    float[] _result12 = getThermalHeadroomThresholds();
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IThermalEventListener _arg0 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result = registerThermalEventListener(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            IThermalEventListener _arg02 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = registerThermalEventListenerWithType(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            IThermalEventListener _arg03 = IThermalEventListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result3 = unregisterThermalEventListener(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            Temperature[] _result4 = getCurrentTemperatures();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Temperature[] _result5 = getCurrentTemperaturesWithType(_arg04);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result5, 1);
-                            return true;
-                        case 6:
-                            IThermalStatusListener _arg05 = IThermalStatusListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result6 = registerThermalStatusListener(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            IThermalStatusListener _arg06 = IThermalStatusListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result7 = unregisterThermalStatusListener(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            int _result8 = getCurrentThermalStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            CoolingDevice[] _result9 = getCurrentCoolingDevices();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result9, 1);
-                            return true;
-                        case 10:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CoolingDevice[] _result10 = getCurrentCoolingDevicesWithType(_arg07);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result10, 1);
-                            return true;
-                        case 11:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result11 = getThermalHeadroom(_arg08);
-                            reply.writeNoException();
-                            reply.writeFloat(_result11);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IThermalService {
+        private static class Proxy implements IThermalService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -450,11 +459,27 @@ public interface IThermalService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.os.IThermalService
+            public float[] getThermalHeadroomThresholds() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(12, _data, _reply, 0);
+                    _reply.readException();
+                    float[] _result = _reply.createFloatArray();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 10;
+            return 11;
         }
     }
 }

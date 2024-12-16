@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ConfigurationInfo implements Parcelable {
     public static final Parcelable.Creator<ConfigurationInfo> CREATOR = new Parcelable.Creator<ConfigurationInfo>() { // from class: android.content.pm.ConfigurationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConfigurationInfo createFromParcel(Parcel source) {
             return new ConfigurationInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConfigurationInfo[] newArray(int size) {
             return new ConfigurationInfo[size];
@@ -28,10 +27,6 @@ public class ConfigurationInfo implements Parcelable {
     public int reqKeyboardType;
     public int reqNavigation;
     public int reqTouchScreen;
-
-    /* synthetic */ ConfigurationInfo(Parcel parcel, ConfigurationInfoIA configurationInfoIA) {
-        this(parcel);
-    }
 
     public ConfigurationInfo() {
         this.reqInputFeatures = 0;
@@ -64,23 +59,6 @@ public class ConfigurationInfo implements Parcelable {
         dest.writeInt(this.reqGlEsVersion);
     }
 
-    /* renamed from: android.content.pm.ConfigurationInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConfigurationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConfigurationInfo createFromParcel(Parcel source) {
-            return new ConfigurationInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConfigurationInfo[] newArray(int size) {
-            return new ConfigurationInfo[size];
-        }
-    }
-
     private ConfigurationInfo(Parcel source) {
         this.reqInputFeatures = 0;
         this.reqTouchScreen = source.readInt();
@@ -91,9 +69,8 @@ public class ConfigurationInfo implements Parcelable {
     }
 
     public String getGlEsVersion() {
-        int i = this.reqGlEsVersion;
-        int major = ((-65536) & i) >> 16;
-        int minor = i & 65535;
+        int major = (this.reqGlEsVersion & (-65536)) >> 16;
+        int minor = this.reqGlEsVersion & 65535;
         return String.valueOf(major) + MediaMetrics.SEPARATOR + String.valueOf(minor);
     }
 }

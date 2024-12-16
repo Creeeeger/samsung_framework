@@ -1,6 +1,7 @@
 package com.android.internal.protolog;
 
 import com.android.internal.protolog.common.IProtoLogGroup;
+import java.util.UUID;
 
 /* loaded from: classes5.dex */
 public enum ProtoLogGroup implements IProtoLogGroup {
@@ -24,9 +25,9 @@ public enum ProtoLogGroup implements IProtoLogGroup {
     WM_DEBUG_APP_TRANSITIONS(true, true, false, "WindowManager"),
     WM_DEBUG_ANIM(true, true, false, "WindowManager"),
     WM_DEBUG_APP_TRANSITIONS_ANIM(true, true, false, "WindowManager"),
-    WM_DEBUG_RECENTS_ANIMATIONS(true, true, true, "WindowManager"),
+    WM_DEBUG_RECENTS_ANIMATIONS(true, true, false, "WindowManager"),
     WM_DEBUG_DRAW(true, true, false, "WindowManager"),
-    WM_DEBUG_REMOTE_ANIMATIONS(true, true, true, "WindowManager"),
+    WM_DEBUG_REMOTE_ANIMATIONS(true, true, false, "WindowManager"),
     WM_DEBUG_SCREEN_ON(true, true, false, "WindowManager"),
     WM_DEBUG_KEEP_SCREEN_ON(true, true, false, "WindowManager"),
     WM_DEBUG_WINDOW_MOVEMENT(true, true, false, "WindowManager"),
@@ -40,6 +41,9 @@ public enum ProtoLogGroup implements IProtoLogGroup {
     WM_DEBUG_WALLPAPER(true, true, false, "WindowManager"),
     WM_DEBUG_BACK_PREVIEW(true, true, true, "CoreBackPreview"),
     WM_DEBUG_DREAM(true, true, true, "WindowManager"),
+    WM_DEBUG_DIMMER(true, true, false, "WindowManager"),
+    WM_DEBUG_TPL(true, true, false, "WindowManager"),
+    WM_DEBUG_EMBEDDED_WINDOWS(true, true, false, "WindowManager"),
     WM_FORCE_DEBUG_ORIENTATION(true, true, true, "WindowManager"),
     WM_FORCE_DEBUG_FOCUS_LIGHT(true, true, true, "WindowManager"),
     WM_FORCE_DEBUG_BOOT(true, true, true, "WindowManager"),
@@ -112,10 +116,15 @@ public enum ProtoLogGroup implements IProtoLogGroup {
         this.mLogToLogcat = logToLogcat;
     }
 
-    /* loaded from: classes5.dex */
+    @Override // com.android.internal.protolog.common.IProtoLogGroup
+    public int getId() {
+        return Consts.START_ID + ordinal();
+    }
+
     private static class Consts {
         private static final boolean ENABLE_DEBUG = true;
         private static final boolean ENABLE_LOG_TO_PROTO_DEBUG = true;
+        private static final int START_ID = (int) (UUID.nameUUIDFromBytes(ProtoLogGroup.class.getName().getBytes()).getMostSignificantBits() % 2147483647L);
         private static final String TAG_WM = "WindowManager";
 
         private Consts() {

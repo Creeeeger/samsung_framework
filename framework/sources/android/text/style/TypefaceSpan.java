@@ -8,7 +8,7 @@ import android.text.ParcelableSpan;
 import android.text.TextPaint;
 import android.text.format.DateFormat;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TypefaceSpan extends MetricAffectingSpan implements ParcelableSpan {
     private final String mFamily;
     private final Typeface mTypeface;
@@ -76,14 +76,10 @@ public class TypefaceSpan extends MetricAffectingSpan implements ParcelableSpan 
     }
 
     private void updateTypeface(Paint paint) {
-        Typeface typeface = this.mTypeface;
-        if (typeface != null) {
-            paint.setTypeface(typeface);
-            return;
-        }
-        String str = this.mFamily;
-        if (str != null) {
-            applyFontFamily(paint, str);
+        if (this.mTypeface != null) {
+            paint.setTypeface(this.mTypeface);
+        } else if (this.mFamily != null) {
+            applyFontFamily(paint, this.mFamily);
         }
     }
 

@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.security.IDirEncryptServiceListener;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDirEncryptService extends IInterface {
     int encryptStorage(String str) throws RemoteException;
 
@@ -40,7 +40,6 @@ public interface IDirEncryptService extends IInterface {
 
     void unregisterListener(IDirEncryptServiceListener iDirEncryptServiceListener) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDirEncryptService {
         private static final String DESCRIPTOR = "IDirEncryptService";
         static final int TRANSACTION_encryptStorage = 9;
@@ -59,9 +58,7 @@ public interface IDirEncryptService extends IInterface {
         static final int TRANSACTION_unmountSDCardByAdmin = 10;
         static final int TRANSACTION_unregisterListener = 2;
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDirEncryptService {
+        private static class Proxy implements IDirEncryptService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

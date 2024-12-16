@@ -20,7 +20,7 @@ class CredstoreWritableIdentityCredential extends WritableIdentityCredential {
     private String mCredentialName;
     private String mDocType;
 
-    public CredstoreWritableIdentityCredential(Context context, String credentialName, String docType, IWritableCredential binder) {
+    CredstoreWritableIdentityCredential(Context context, String credentialName, String docType, IWritableCredential binder) {
         this.mContext = context;
         this.mDocType = docType;
         this.mCredentialName = credentialName;
@@ -60,7 +60,7 @@ class CredstoreWritableIdentityCredential extends WritableIdentityCredential {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static byte[] personalize(android.security.identity.IWritableCredential r22, android.security.identity.PersonalizationData r23) {
+    static byte[] personalize(android.security.identity.IWritableCredential r22, android.security.identity.PersonalizationData r23) {
         /*
             Method dump skipped, instructions count: 343
             To view this dump change 'Code comments level' option to 'DEBUG'

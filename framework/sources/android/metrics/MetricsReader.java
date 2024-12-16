@@ -13,7 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MetricsReader {
     private Queue<LogMaker> mPendingQueue = new LinkedList();
     private Queue<LogMaker> mSeenQueue = new LinkedList();
@@ -57,9 +57,8 @@ public class MetricsReader {
     }
 
     public void checkpoint() {
-        int currentTimeMillis = (int) (System.currentTimeMillis() % 2147483647L);
-        this.mCheckpointTag = currentTimeMillis;
-        this.mReader.writeCheckpoint(currentTimeMillis);
+        this.mCheckpointTag = (int) (System.currentTimeMillis() % 2147483647L);
+        this.mReader.writeCheckpoint(this.mCheckpointTag);
         this.mPendingQueue.clear();
         this.mSeenQueue.clear();
     }
@@ -85,7 +84,6 @@ public class MetricsReader {
         return next;
     }
 
-    /* loaded from: classes2.dex */
     public static class Event {
         Object mData;
         int mPid;
@@ -127,7 +125,6 @@ public class MetricsReader {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class LogReader {
         public void readEvents(int[] tags, long horizonMs, Collection<Event> events) throws IOException {
             ArrayList<EventLog.Event> nativeEvents = new ArrayList<>();

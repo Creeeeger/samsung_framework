@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterSectionSettings implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterSectionSettings> CREATOR = new Parcelable.Creator<DemuxFilterSectionSettings>() { // from class: android.hardware.tv.tuner.DemuxFilterSectionSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSectionSettings createFromParcel(Parcel _aidl_source) {
             DemuxFilterSectionSettings _aidl_out = new DemuxFilterSectionSettings();
@@ -17,6 +15,7 @@ public class DemuxFilterSectionSettings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSectionSettings[] newArray(int _aidl_size) {
             return new DemuxFilterSectionSettings[_aidl_size];
@@ -27,25 +26,6 @@ public class DemuxFilterSectionSettings implements Parcelable {
     public boolean isRepeat = false;
     public boolean isRaw = false;
     public int bitWidthOfLengthField = 0;
-
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterSectionSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterSectionSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSectionSettings createFromParcel(Parcel _aidl_source) {
-            DemuxFilterSectionSettings _aidl_out = new DemuxFilterSectionSettings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSectionSettings[] newArray(int _aidl_size) {
-            return new DemuxFilterSectionSettings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

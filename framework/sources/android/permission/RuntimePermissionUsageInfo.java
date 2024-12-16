@@ -9,14 +9,13 @@ import com.android.internal.util.Preconditions;
 /* loaded from: classes3.dex */
 public final class RuntimePermissionUsageInfo implements Parcelable {
     public static final Parcelable.Creator<RuntimePermissionUsageInfo> CREATOR = new Parcelable.Creator<RuntimePermissionUsageInfo>() { // from class: android.permission.RuntimePermissionUsageInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimePermissionUsageInfo createFromParcel(Parcel source) {
             return new RuntimePermissionUsageInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RuntimePermissionUsageInfo[] newArray(int size) {
             return new RuntimePermissionUsageInfo[size];
@@ -24,10 +23,6 @@ public final class RuntimePermissionUsageInfo implements Parcelable {
     };
     private final String mName;
     private final int mNumUsers;
-
-    /* synthetic */ RuntimePermissionUsageInfo(Parcel parcel, RuntimePermissionUsageInfoIA runtimePermissionUsageInfoIA) {
-        this(parcel);
-    }
 
     public RuntimePermissionUsageInfo(String name, int numUsers) {
         Preconditions.checkNotNull(name);
@@ -57,22 +52,5 @@ public final class RuntimePermissionUsageInfo implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(this.mName);
         parcel.writeInt(this.mNumUsers);
-    }
-
-    /* renamed from: android.permission.RuntimePermissionUsageInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RuntimePermissionUsageInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RuntimePermissionUsageInfo createFromParcel(Parcel source) {
-            return new RuntimePermissionUsageInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RuntimePermissionUsageInfo[] newArray(int size) {
-            return new RuntimePermissionUsageInfo[size];
-        }
     }
 }

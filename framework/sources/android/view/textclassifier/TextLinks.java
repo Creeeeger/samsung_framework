@@ -30,14 +30,13 @@ public final class TextLinks implements Parcelable {
     public static final int APPLY_STRATEGY_IGNORE = 0;
     public static final int APPLY_STRATEGY_REPLACE = 1;
     public static final Parcelable.Creator<TextLinks> CREATOR = new Parcelable.Creator<TextLinks>() { // from class: android.view.textclassifier.TextLinks.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextLinks createFromParcel(Parcel in) {
             return new TextLinks(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TextLinks[] newArray(int size) {
             return new TextLinks[size];
@@ -53,21 +52,11 @@ public final class TextLinks implements Parcelable {
     private final List<TextLink> mLinks;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ApplyStrategy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Status {
-    }
-
-    /* synthetic */ TextLinks(Parcel parcel, TextLinksIA textLinksIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ TextLinks(String str, ArrayList arrayList, Bundle bundle, TextLinksIA textLinksIA) {
-        this(str, arrayList, bundle);
     }
 
     private TextLinks(String fullText, ArrayList<TextLink> links, Bundle extras) {
@@ -109,40 +98,21 @@ public final class TextLinks implements Parcelable {
         dest.writeBundle(this.mExtras);
     }
 
-    /* renamed from: android.view.textclassifier.TextLinks$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TextLinks> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextLinks createFromParcel(Parcel in) {
-            return new TextLinks(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TextLinks[] newArray(int size) {
-            return new TextLinks[size];
-        }
-    }
-
     private TextLinks(Parcel in) {
         this.mFullText = in.readString();
         this.mLinks = in.createTypedArrayList(TextLink.CREATOR);
         this.mExtras = in.readBundle();
     }
 
-    /* loaded from: classes4.dex */
     public static final class TextLink implements Parcelable {
         public static final Parcelable.Creator<TextLink> CREATOR = new Parcelable.Creator<TextLink>() { // from class: android.view.textclassifier.TextLinks.TextLink.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TextLink createFromParcel(Parcel in) {
                 return TextLink.readFromParcel(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public TextLink[] newArray(int size) {
                 return new TextLink[size];
@@ -153,10 +123,6 @@ public final class TextLinks implements Parcelable {
         private final Bundle mExtras;
         private final int mStart;
         private final URLSpan mUrlSpan;
-
-        /* synthetic */ TextLink(int i, int i2, EntityConfidence entityConfidence, Bundle bundle, URLSpan uRLSpan, TextLinkIA textLinkIA) {
-            this(i, i2, entityConfidence, bundle, uRLSpan);
-        }
 
         private TextLink(int start, int end, EntityConfidence entityConfidence, Bundle extras, URLSpan urlSpan) {
             Objects.requireNonNull(entityConfidence);
@@ -211,6 +177,7 @@ public final class TextLinks implements Parcelable {
             dest.writeBundle(this.mExtras);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static TextLink readFromParcel(Parcel in) {
             EntityConfidence entityConfidence = EntityConfidence.CREATOR.createFromParcel(in);
             int start = in.readInt();
@@ -218,36 +185,17 @@ public final class TextLinks implements Parcelable {
             Bundle extras = in.readBundle();
             return new TextLink(start, end, entityConfidence, extras, null);
         }
-
-        /* renamed from: android.view.textclassifier.TextLinks$TextLink$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<TextLink> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TextLink createFromParcel(Parcel in) {
-                return TextLink.readFromParcel(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public TextLink[] newArray(int size) {
-                return new TextLink[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Request implements Parcelable {
         public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() { // from class: android.view.textclassifier.TextLinks.Request.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request createFromParcel(Parcel in) {
                 return Request.readFromParcel(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Request[] newArray(int size) {
                 return new Request[size];
@@ -260,10 +208,6 @@ public final class TextLinks implements Parcelable {
         private final ZonedDateTime mReferenceTime;
         private SystemTextClassifierMetadata mSystemTcMetadata;
         private final CharSequence mText;
-
-        /* synthetic */ Request(CharSequence charSequence, LocaleList localeList, TextClassifier.EntityConfig entityConfig, boolean z, ZonedDateTime zonedDateTime, Bundle bundle, RequestIA requestIA) {
-            this(charSequence, localeList, entityConfig, z, zonedDateTime, bundle);
-        }
 
         private Request(CharSequence text, LocaleList defaultLocales, TextClassifier.EntityConfig entityConfig, boolean legacyFallback, ZonedDateTime referenceTime, Bundle extras) {
             this.mText = text;
@@ -295,9 +239,8 @@ public final class TextLinks implements Parcelable {
         }
 
         public String getCallingPackageName() {
-            SystemTextClassifierMetadata systemTextClassifierMetadata = this.mSystemTcMetadata;
-            if (systemTextClassifierMetadata != null) {
-                return systemTextClassifierMetadata.getCallingPackageName();
+            if (this.mSystemTcMetadata != null) {
+                return this.mSystemTcMetadata.getCallingPackageName();
             }
             return null;
         }
@@ -314,7 +257,6 @@ public final class TextLinks implements Parcelable {
             return this.mExtras;
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder {
             private LocaleList mDefaultLocales;
             private TextClassifier.EntityConfig mEntityConfig;
@@ -353,16 +295,7 @@ public final class TextLinks implements Parcelable {
             }
 
             public Request build() {
-                CharSequence charSequence = this.mText;
-                LocaleList localeList = this.mDefaultLocales;
-                TextClassifier.EntityConfig entityConfig = this.mEntityConfig;
-                boolean z = this.mLegacyFallback;
-                ZonedDateTime zonedDateTime = this.mReferenceTime;
-                Bundle bundle = this.mExtras;
-                if (bundle == null) {
-                    bundle = Bundle.EMPTY;
-                }
-                return new Request(charSequence, localeList, entityConfig, z, zonedDateTime, bundle);
+                return new Request(this.mText, this.mDefaultLocales, this.mEntityConfig, this.mLegacyFallback, this.mReferenceTime, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
             }
         }
 
@@ -377,11 +310,11 @@ public final class TextLinks implements Parcelable {
             dest.writeParcelable(this.mDefaultLocales, flags);
             dest.writeParcelable(this.mEntityConfig, flags);
             dest.writeBundle(this.mExtras);
-            ZonedDateTime zonedDateTime = this.mReferenceTime;
-            dest.writeString(zonedDateTime == null ? null : zonedDateTime.toString());
+            dest.writeString(this.mReferenceTime == null ? null : this.mReferenceTime.toString());
             dest.writeParcelable(this.mSystemTcMetadata, flags);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static Request readFromParcel(Parcel in) {
             String text = in.readString();
             LocaleList defaultLocales = (LocaleList) in.readParcelable(null, LocaleList.class);
@@ -394,26 +327,8 @@ public final class TextLinks implements Parcelable {
             request.setSystemTextClassifierMetadata(systemTcMetadata);
             return request;
         }
-
-        /* renamed from: android.view.textclassifier.TextLinks$Request$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Request> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request createFromParcel(Parcel in) {
-                return Request.readFromParcel(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Request[] newArray(int size) {
-                return new Request[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
     public static class TextLinkSpan extends ClickableSpan {
         public static final int INVOCATION_METHOD_KEYBOARD = 1;
         public static final int INVOCATION_METHOD_TOUCH = 0;
@@ -421,7 +336,6 @@ public final class TextLinks implements Parcelable {
         private final TextLink mTextLink;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface InvocationMethod {
         }
 
@@ -442,10 +356,10 @@ public final class TextLinks implements Parcelable {
                     switch (invocationMethod) {
                         case 0:
                             textView.requestActionMode(this);
-                            return;
+                            break;
                         default:
                             textView.handleClick(this);
-                            return;
+                            break;
                     }
                 }
                 if (this.mTextLink.mUrlSpan != null) {
@@ -468,7 +382,6 @@ public final class TextLinks implements Parcelable {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private Bundle mExtras;
         private final String mFullText;
@@ -486,7 +399,7 @@ public final class TextLinks implements Parcelable {
             return addLink(start, end, entityScores, extras, null);
         }
 
-        public Builder addLink(int start, int end, Map<String, Float> entityScores, URLSpan urlSpan) {
+        Builder addLink(int start, int end, Map<String, Float> entityScores, URLSpan urlSpan) {
             return addLink(start, end, entityScores, Bundle.EMPTY, urlSpan);
         }
 
@@ -506,13 +419,7 @@ public final class TextLinks implements Parcelable {
         }
 
         public TextLinks build() {
-            String str = this.mFullText;
-            ArrayList<TextLink> arrayList = this.mLinks;
-            Bundle bundle = this.mExtras;
-            if (bundle == null) {
-                bundle = Bundle.EMPTY;
-            }
-            return new TextLinks(str, arrayList, bundle);
+            return new TextLinks(this.mFullText, this.mLinks, this.mExtras == null ? Bundle.EMPTY : this.mExtras);
         }
     }
 }

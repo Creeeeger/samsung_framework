@@ -3,7 +3,7 @@ package com.samsung.android.wallpaper.legibilitycolors.utils;
 import android.graphics.Color;
 import java.util.Random;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class IUXMathUtils {
     public static final float CHAR_2_NOMALIZED = 0.003921569f;
     public static final float DEG_2_RADIAN = 0.0174532f;

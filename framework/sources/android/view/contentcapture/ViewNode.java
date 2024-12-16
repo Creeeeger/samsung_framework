@@ -113,12 +113,10 @@ public final class ViewNode extends AssistStructure.ViewNode {
             this.mClassName = parcel.readString();
         }
         if ((128 & nodeFlags) != 0) {
-            int readInt = parcel.readInt();
-            this.mId = readInt;
-            if (readInt != -1) {
-                String readString = parcel.readString();
-                this.mIdEntry = readString;
-                if (readString != null) {
+            this.mId = parcel.readInt();
+            if (this.mId != -1) {
+                this.mIdEntry = parcel.readString();
+                if (this.mIdEntry != null) {
                     this.mIdType = parcel.readString();
                     this.mIdPackage = parcel.readString();
                 }
@@ -196,9 +194,8 @@ public final class ViewNode extends AssistStructure.ViewNode {
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public CharSequence getText() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mText;
+        if (this.mText != null) {
+            return this.mText.mText;
         }
         return null;
     }
@@ -335,9 +332,8 @@ public final class ViewNode extends AssistStructure.ViewNode {
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public String getHint() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mHint;
+        if (this.mText != null) {
+            return this.mText.mHint;
         }
         return null;
     }
@@ -349,72 +345,64 @@ public final class ViewNode extends AssistStructure.ViewNode {
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int getTextSelectionStart() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextSelectionStart;
+        if (this.mText != null) {
+            return this.mText.mTextSelectionStart;
         }
         return -1;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int getTextSelectionEnd() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextSelectionEnd;
+        if (this.mText != null) {
+            return this.mText.mTextSelectionEnd;
         }
         return -1;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int getTextColor() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextColor;
+        if (this.mText != null) {
+            return this.mText.mTextColor;
         }
         return 1;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int getTextBackgroundColor() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextBackgroundColor;
+        if (this.mText != null) {
+            return this.mText.mTextBackgroundColor;
         }
         return 1;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public float getTextSize() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextSize;
+        if (this.mText != null) {
+            return this.mText.mTextSize;
         }
         return 0.0f;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int getTextStyle() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mTextStyle;
+        if (this.mText != null) {
+            return this.mText.mTextStyle;
         }
         return 0;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int[] getTextLineCharOffsets() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mLineCharOffsets;
+        if (this.mText != null) {
+            return this.mText.mLineCharOffsets;
         }
         return null;
     }
 
     @Override // android.app.assist.AssistStructure.ViewNode
     public int[] getTextLineBaselines() {
-        ViewNodeText viewNodeText = this.mText;
-        if (viewNodeText != null) {
-            return viewNodeText.mLineBaselines;
+        if (this.mText != null) {
+            return this.mText.mLineBaselines;
         }
         return null;
     }
@@ -479,9 +467,13 @@ public final class ViewNode extends AssistStructure.ViewNode {
         return this.mLocaleList;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0057, code lost:
+    public void setTextIdEntry(String textIdEntry) {
+        this.mTextIdEntry = textIdEntry;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0059, code lost:
     
-        if ((((r42.mWidth & (-32768)) != 0) | ((r42.mHeight & (-32768)) != 0)) != false) goto L188;
+        if ((((r42.mWidth & (-32768)) != 0) | ((r42.mHeight & (-32768)) != 0)) != false) goto L33;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -489,7 +481,7 @@ public final class ViewNode extends AssistStructure.ViewNode {
     */
     private void writeSelfToParcel(android.os.Parcel r43, int r44) {
         /*
-            Method dump skipped, instructions count: 575
+            Method dump skipped, instructions count: 577
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.view.contentcapture.ViewNode.writeSelfToParcel(android.os.Parcel, int):void");
@@ -511,25 +503,20 @@ public final class ViewNode extends AssistStructure.ViewNode {
         return new ViewNode(nodeFlags, parcel);
     }
 
-    /* loaded from: classes4.dex */
     public static final class ViewStructureImpl extends ViewStructure {
-        final ViewNode mNode;
+        final ViewNode mNode = new ViewNode();
 
         public ViewStructureImpl(View view) {
-            ViewNode viewNode = new ViewNode();
-            this.mNode = viewNode;
-            viewNode.mAutofillId = ((View) Objects.requireNonNull(view)).getAutofillId();
+            this.mNode.mAutofillId = ((View) Objects.requireNonNull(view)).getAutofillId();
             Object parent = view.getParent();
             if (parent instanceof View) {
-                viewNode.mParentAutofillId = ((View) parent).getAutofillId();
+                this.mNode.mParentAutofillId = ((View) parent).getAutofillId();
             }
         }
 
         public ViewStructureImpl(AutofillId parentId, long virtualId, int sessionId) {
-            ViewNode viewNode = new ViewNode();
-            this.mNode = viewNode;
-            viewNode.mParentAutofillId = (AutofillId) Objects.requireNonNull(parentId);
-            viewNode.mAutofillId = new AutofillId(parentId, virtualId, sessionId);
+            this.mNode.mParentAutofillId = (AutofillId) Objects.requireNonNull(parentId);
+            this.mNode.mAutofillId = new AutofillId(parentId, virtualId, sessionId);
         }
 
         public ViewNode getNode() {
@@ -571,86 +558,72 @@ public final class ViewNode extends AssistStructure.ViewNode {
 
         @Override // android.view.ViewStructure
         public void setVisibility(int visibility) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-13)) | (visibility & 12);
+            this.mNode.mFlags = (this.mNode.mFlags & (-13)) | (visibility & 12);
         }
 
         @Override // android.view.ViewStructure
         public void setAssistBlocked(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-1025)) | (state ? 1024L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-1025)) | (state ? 1024L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setEnabled(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-2049)) | (state ? 0L : 2048L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-2049)) | (state ? 0L : 2048L);
         }
 
         @Override // android.view.ViewStructure
         public void setClickable(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-4097)) | (state ? 4096L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-4097)) | (state ? 4096L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setLongClickable(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-8193)) | (state ? 8192L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-8193)) | (state ? 8192L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setContextClickable(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-16385)) | (state ? 16384L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-16385)) | (state ? 16384L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setFocusable(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-32769)) | (state ? 32768L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-32769)) | (state ? 32768L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setFocused(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-65537)) | (state ? 65536L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-65537)) | (state ? 65536L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setAccessibilityFocused(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-131073)) | (state ? 131072L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-131073)) | (state ? 131072L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setCheckable(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-262145)) | (state ? 262144L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-262145)) | (state ? 262144L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setChecked(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-524289)) | (state ? 524288L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-524289)) | (state ? 524288L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setSelected(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-1048577)) | (state ? 1048576L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-1048577)) | (state ? 1048576L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setActivated(boolean state) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-2097153)) | (state ? 2097152L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-2097153)) | (state ? 2097152L : 0L);
         }
 
         @Override // android.view.ViewStructure
         public void setOpaque(boolean opaque) {
-            ViewNode viewNode = this.mNode;
-            viewNode.mFlags = (viewNode.mFlags & (-4194305)) | (opaque ? 4194304L : 0L);
+            this.mNode.mFlags = (this.mNode.mFlags & (-4194305)) | (opaque ? 4194304L : 0L);
         }
 
         @Override // android.view.ViewStructure
@@ -880,8 +853,7 @@ public final class ViewNode extends AssistStructure.ViewNode {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ViewNodeText {
+    static final class ViewNodeText {
         String mHint;
         int[] mLineBaselines;
         int[] mLineCharOffsets;

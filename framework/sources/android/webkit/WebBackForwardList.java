@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 /* loaded from: classes4.dex */
 public abstract class WebBackForwardList implements Cloneable, Serializable {
-    /* renamed from: clone */
-    public abstract WebBackForwardList m5867clone();
+    /* JADX INFO: Access modifiers changed from: protected */
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public abstract WebBackForwardList m6244clone();
 
     public abstract int getCurrentIndex();
 

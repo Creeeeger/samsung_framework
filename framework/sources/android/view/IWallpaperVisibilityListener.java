@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IWallpaperVisibilityListener extends IInterface {
     void onWallpaperVisibilityChanged(boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWallpaperVisibilityListener {
         @Override // android.view.IWallpaperVisibilityListener
         public void onWallpaperVisibilityChanged(boolean visible, int displayId) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IWallpaperVisibilityListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWallpaperVisibilityListener {
         public static final String DESCRIPTOR = "android.view.IWallpaperVisibilityListener";
         static final int TRANSACTION_onWallpaperVisibilityChanged = 1;
@@ -66,26 +64,23 @@ public interface IWallpaperVisibilityListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onWallpaperVisibilityChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onWallpaperVisibilityChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWallpaperVisibilityListener {
+        private static class Proxy implements IWallpaperVisibilityListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

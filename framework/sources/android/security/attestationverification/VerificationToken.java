@@ -24,17 +24,17 @@ public final class VerificationToken implements Parcelable {
 
     VerificationToken(AttestationProfile attestationProfile, int localBindingType, Bundle requirements, int verificationResult, Instant verificationTime, byte[] hmac, int uid) {
         this.mAttestationProfile = attestationProfile;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) attestationProfile);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAttestationProfile);
         this.mLocalBindingType = localBindingType;
-        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, localBindingType);
+        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, this.mLocalBindingType);
         this.mRequirements = requirements;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) requirements);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRequirements);
         this.mVerificationResult = verificationResult;
-        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, verificationResult);
+        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, this.mVerificationResult);
         this.mVerificationTime = verificationTime;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) verificationTime);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mVerificationTime);
         this.mHmac = hmac;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHmac);
         this.mUid = uid;
     }
 
@@ -67,20 +67,18 @@ public final class VerificationToken implements Parcelable {
     }
 
     static {
-        Parcelling<Instant> parcelling = Parcelling.Cache.get(Parcelling.BuiltIn.ForInstant.class);
-        sParcellingForVerificationTime = parcelling;
-        if (parcelling == null) {
+        sParcellingForVerificationTime = Parcelling.Cache.get(Parcelling.BuiltIn.ForInstant.class);
+        if (sParcellingForVerificationTime == null) {
             sParcellingForVerificationTime = Parcelling.Cache.put(new Parcelling.BuiltIn.ForInstant());
         }
         CREATOR = new Parcelable.Creator<VerificationToken>() { // from class: android.security.attestationverification.VerificationToken.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VerificationToken[] newArray(int size) {
                 return new VerificationToken[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VerificationToken createFromParcel(Parcel in) {
                 return new VerificationToken(in);
@@ -113,38 +111,20 @@ public final class VerificationToken implements Parcelable {
         byte[] hmac = in.createByteArray();
         int uid = in.readInt();
         this.mAttestationProfile = attestationProfile;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) attestationProfile);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAttestationProfile);
         this.mLocalBindingType = localBindingType;
-        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, localBindingType);
+        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, this.mLocalBindingType);
         this.mRequirements = requirements;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) requirements);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRequirements);
         this.mVerificationResult = verificationResult;
-        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, verificationResult);
+        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, this.mVerificationResult);
         this.mVerificationTime = verificationTime;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) verificationTime);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mVerificationTime);
         this.mHmac = hmac;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHmac);
         this.mUid = uid;
     }
 
-    /* renamed from: android.security.attestationverification.VerificationToken$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VerificationToken> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerificationToken[] newArray(int size) {
-            return new VerificationToken[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerificationToken createFromParcel(Parcel in) {
-            return new VerificationToken(in);
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private AttestationProfile mAttestationProfile;
         private long mBuilderFieldsSet = 0;
@@ -157,17 +137,17 @@ public final class VerificationToken implements Parcelable {
 
         public Builder(AttestationProfile attestationProfile, int localBindingType, Bundle requirements, int verificationResult, Instant verificationTime, byte[] hmac, int uid) {
             this.mAttestationProfile = attestationProfile;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) attestationProfile);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAttestationProfile);
             this.mLocalBindingType = localBindingType;
-            AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, localBindingType);
+            AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.LocalBindingType.class, (Annotation) null, this.mLocalBindingType);
             this.mRequirements = requirements;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) requirements);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mRequirements);
             this.mVerificationResult = verificationResult;
-            AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, verificationResult);
+            AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.VerificationResult.class, (Annotation) null, this.mVerificationResult);
             this.mVerificationTime = verificationTime;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) verificationTime);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mVerificationTime);
             this.mHmac = hmac;
-            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hmac);
+            AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHmac);
             this.mUid = uid;
         }
 

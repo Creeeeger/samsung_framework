@@ -5,11 +5,10 @@ import android.hardware.camera2.marshal.Marshaler;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableNativeByteToInteger implements MarshalQueryable<Integer> {
     private static final int UINT8_MASK = 255;
 
-    /* loaded from: classes.dex */
     private class MarshalerNativeByteToInteger extends Marshaler<Integer> {
         protected MarshalerNativeByteToInteger(TypeReference<Integer> typeReference, int nativeType) {
             super(MarshalQueryableNativeByteToInteger.this, typeReference, nativeType);
@@ -20,6 +19,7 @@ public class MarshalQueryableNativeByteToInteger implements MarshalQueryable<Int
             buffer.put((byte) value.intValue());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public Integer unmarshal(ByteBuffer buffer) {
             return Integer.valueOf(buffer.get() & 255);

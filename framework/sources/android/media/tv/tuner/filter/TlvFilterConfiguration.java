@@ -3,7 +3,7 @@ package android.media.tv.tuner.filter;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TlvFilterConfiguration extends FilterConfiguration {
     public static final int PACKET_TYPE_COMPRESSED = 3;
     public static final int PACKET_TYPE_IPV4 = 1;
@@ -13,10 +13,6 @@ public final class TlvFilterConfiguration extends FilterConfiguration {
     private final boolean mIsCompressedIpPacket;
     private final int mPacketType;
     private final boolean mPassthrough;
-
-    /* synthetic */ TlvFilterConfiguration(Settings settings, int i, boolean z, boolean z2, TlvFilterConfigurationIA tlvFilterConfigurationIA) {
-        this(settings, i, z, z2);
-    }
 
     private TlvFilterConfiguration(Settings settings, int packetType, boolean isCompressed, boolean passthrough) {
         super(settings);
@@ -46,16 +42,11 @@ public final class TlvFilterConfiguration extends FilterConfiguration {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private boolean mIsCompressedIpPacket;
         private int mPacketType;
         private boolean mPassthrough;
         private Settings mSettings;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mPacketType = 255;

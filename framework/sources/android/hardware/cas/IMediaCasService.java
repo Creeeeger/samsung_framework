@@ -9,7 +9,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IMediaCasService extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$cas$IMediaCasService".replace('$', '.');
     public static final String HASH = "bc51d8d70a55ec4723d3f73d0acf7003306bf69f";
@@ -29,7 +29,6 @@ public interface IMediaCasService extends IInterface {
 
     boolean isSystemIdSupported(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IMediaCasService {
         @Override // android.hardware.cas.IMediaCasService
         public IDescrambler createDescrambler(int CA_system_id) throws RemoteException {
@@ -72,7 +71,6 @@ public interface IMediaCasService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IMediaCasService {
         static final int TRANSACTION_createDescrambler = 1;
         static final int TRANSACTION_createPlugin = 2;
@@ -109,63 +107,61 @@ public interface IMediaCasService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IDescrambler _result = createDescrambler(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeStrongInterface(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    ICasListener _arg1 = ICasListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ICas _result2 = createPlugin(_arg02, _arg1);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeStrongInterface(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    AidlCasPluginDescriptor[] _result3 = enumeratePlugins();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isDescramblerSupported(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isSystemIdSupported(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IDescrambler _result = createDescrambler(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            ICasListener _arg1 = ICasListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ICas _result2 = createPlugin(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            AidlCasPluginDescriptor[] _result3 = enumeratePlugins();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isDescramblerSupported(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isSystemIdSupported(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IMediaCasService {
+        private static class Proxy implements IMediaCasService {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

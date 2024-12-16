@@ -5,15 +5,13 @@ import java.util.List;
 
 /* loaded from: classes6.dex */
 public class SemArrayIndexer extends SemAbstractIndexer {
-    private final String TAG;
-    private final boolean debug;
+    private static final String TAG = "SemArrayIndexer";
+    private static final boolean debug = false;
     protected List<String> mData;
 
     @Deprecated
     public SemArrayIndexer(List<String> listData, CharSequence indexCharacters) {
         super(indexCharacters);
-        this.TAG = "SemArrayIndexer";
-        this.debug = false;
         this.mData = listData;
     }
 

@@ -9,14 +9,16 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioNetworkIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$network$IRadioNetworkIndication".replace('$', '.');
-    public static final String HASH = "1b6608f238bd0b1c642df315621a7b605eafc883";
-    public static final int VERSION = 2;
+    public static final String HASH = "c45c122528c07c449ea08f6eacaace17bb7abc38";
+    public static final int VERSION = 3;
 
     void barringInfoChanged(int i, CellIdentity cellIdentity, BarringInfo[] barringInfoArr) throws RemoteException;
 
     void cdmaPrlChanged(int i, int i2) throws RemoteException;
 
     void cellInfoList(int i, CellInfo[] cellInfoArr) throws RemoteException;
+
+    void cellularIdentifierDisclosed(int i, CellularIdentifierDisclosure cellularIdentifierDisclosure) throws RemoteException;
 
     void currentLinkCapacityEstimate(int i, LinkCapacityEstimate linkCapacityEstimate) throws RemoteException;
 
@@ -42,11 +44,12 @@ public interface IRadioNetworkIndication extends IInterface {
 
     void restrictedStateChanged(int i, int i2) throws RemoteException;
 
+    void securityAlgorithmsUpdated(int i, SecurityAlgorithmUpdate securityAlgorithmUpdate) throws RemoteException;
+
     void suppSvcNotify(int i, SuppSvcNotification suppSvcNotification) throws RemoteException;
 
     void voiceRadioTechChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioNetworkIndication {
         @Override // android.hardware.radio.network.IRadioNetworkIndication
         public void barringInfoChanged(int type, CellIdentity cellIdentity, BarringInfo[] barringInfos) throws RemoteException {
@@ -109,6 +112,14 @@ public interface IRadioNetworkIndication extends IInterface {
         }
 
         @Override // android.hardware.radio.network.IRadioNetworkIndication
+        public void cellularIdentifierDisclosed(int type, CellularIdentifierDisclosure disclosure) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkIndication
+        public void securityAlgorithmsUpdated(int type, SecurityAlgorithmUpdate securityAlgorithmUpdate) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.network.IRadioNetworkIndication
         public int getInterfaceVersion() {
             return 0;
         }
@@ -124,11 +135,11 @@ public interface IRadioNetworkIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioNetworkIndication {
         static final int TRANSACTION_barringInfoChanged = 1;
         static final int TRANSACTION_cdmaPrlChanged = 2;
         static final int TRANSACTION_cellInfoList = 3;
+        static final int TRANSACTION_cellularIdentifierDisclosed = 16;
         static final int TRANSACTION_currentLinkCapacityEstimate = 4;
         static final int TRANSACTION_currentPhysicalChannelConfigs = 5;
         static final int TRANSACTION_currentSignalStrength = 6;
@@ -141,6 +152,7 @@ public interface IRadioNetworkIndication extends IInterface {
         static final int TRANSACTION_nitzTimeReceived = 10;
         static final int TRANSACTION_registrationFailed = 11;
         static final int TRANSACTION_restrictedStateChanged = 12;
+        static final int TRANSACTION_securityAlgorithmsUpdated = 17;
         static final int TRANSACTION_suppSvcNotify = 13;
         static final int TRANSACTION_voiceRadioTechChanged = 14;
 
@@ -171,124 +183,134 @@ public interface IRadioNetworkIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    CellIdentity _arg1 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    BarringInfo[] _arg2 = (BarringInfo[]) data.createTypedArray(BarringInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    barringInfoChanged(_arg0, _arg1, _arg2);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cdmaPrlChanged(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    CellInfo[] _arg13 = (CellInfo[]) data.createTypedArray(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    cellInfoList(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    LinkCapacityEstimate _arg14 = (LinkCapacityEstimate) data.readTypedObject(LinkCapacityEstimate.CREATOR);
+                    data.enforceNoDataAvail();
+                    currentLinkCapacityEstimate(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    PhysicalChannelConfig[] _arg15 = (PhysicalChannelConfig[]) data.createTypedArray(PhysicalChannelConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    currentPhysicalChannelConfigs(_arg05, _arg15);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    SignalStrength _arg16 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    currentSignalStrength(_arg06, _arg16);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    imsNetworkStateChanged(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    NetworkScanResult _arg17 = (NetworkScanResult) data.readTypedObject(NetworkScanResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    networkScanResult(_arg08, _arg17);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    networkStateChanged(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    String _arg18 = data.readString();
+                    long _arg22 = data.readLong();
+                    long _arg3 = data.readLong();
+                    data.enforceNoDataAvail();
+                    nitzTimeReceived(_arg010, _arg18, _arg22, _arg3);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    CellIdentity _arg19 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    String _arg23 = data.readString();
+                    int _arg32 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registrationFailed(_arg011, _arg19, _arg23, _arg32, _arg4, _arg5);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restrictedStateChanged(_arg012, _arg110);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    SuppSvcNotification _arg111 = (SuppSvcNotification) data.readTypedObject(SuppSvcNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    suppSvcNotify(_arg013, _arg111);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    voiceRadioTechChanged(_arg014, _arg112);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    EmergencyRegResult _arg113 = (EmergencyRegResult) data.readTypedObject(EmergencyRegResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    emergencyNetworkScanResult(_arg015, _arg113);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    CellularIdentifierDisclosure _arg114 = (CellularIdentifierDisclosure) data.readTypedObject(CellularIdentifierDisclosure.CREATOR);
+                    data.enforceNoDataAvail();
+                    cellularIdentifierDisclosed(_arg016, _arg114);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    SecurityAlgorithmUpdate _arg115 = (SecurityAlgorithmUpdate) data.readTypedObject(SecurityAlgorithmUpdate.CREATOR);
+                    data.enforceNoDataAvail();
+                    securityAlgorithmsUpdated(_arg017, _arg115);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            CellIdentity _arg1 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            BarringInfo[] _arg2 = (BarringInfo[]) data.createTypedArray(BarringInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            barringInfoChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cdmaPrlChanged(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            CellInfo[] _arg13 = (CellInfo[]) data.createTypedArray(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            cellInfoList(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            LinkCapacityEstimate _arg14 = (LinkCapacityEstimate) data.readTypedObject(LinkCapacityEstimate.CREATOR);
-                            data.enforceNoDataAvail();
-                            currentLinkCapacityEstimate(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            PhysicalChannelConfig[] _arg15 = (PhysicalChannelConfig[]) data.createTypedArray(PhysicalChannelConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            currentPhysicalChannelConfigs(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            SignalStrength _arg16 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
-                            data.enforceNoDataAvail();
-                            currentSignalStrength(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            imsNetworkStateChanged(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            NetworkScanResult _arg17 = (NetworkScanResult) data.readTypedObject(NetworkScanResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            networkScanResult(_arg08, _arg17);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            networkStateChanged(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            String _arg18 = data.readString();
-                            long _arg22 = data.readLong();
-                            long _arg3 = data.readLong();
-                            data.enforceNoDataAvail();
-                            nitzTimeReceived(_arg010, _arg18, _arg22, _arg3);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            CellIdentity _arg19 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            String _arg23 = data.readString();
-                            int _arg32 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registrationFailed(_arg011, _arg19, _arg23, _arg32, _arg4, _arg5);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restrictedStateChanged(_arg012, _arg110);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            SuppSvcNotification _arg111 = (SuppSvcNotification) data.readTypedObject(SuppSvcNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            suppSvcNotify(_arg013, _arg111);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            voiceRadioTechChanged(_arg014, _arg112);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            EmergencyRegResult _arg113 = (EmergencyRegResult) data.readTypedObject(EmergencyRegResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            emergencyNetworkScanResult(_arg015, _arg113);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioNetworkIndication {
+        private static class Proxy implements IRadioNetworkIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -545,6 +567,38 @@ public interface IRadioNetworkIndication extends IInterface {
                     boolean _status = this.mRemote.transact(15, _data, null, 1);
                     if (!_status) {
                         throw new RemoteException("Method emergencyNetworkScanResult is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkIndication
+            public void cellularIdentifierDisclosed(int type, CellularIdentifierDisclosure disclosure) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(type);
+                    _data.writeTypedObject(disclosure, 0);
+                    boolean _status = this.mRemote.transact(16, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method cellularIdentifierDisclosed is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.network.IRadioNetworkIndication
+            public void securityAlgorithmsUpdated(int type, SecurityAlgorithmUpdate securityAlgorithmUpdate) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(type);
+                    _data.writeTypedObject(securityAlgorithmUpdate, 0);
+                    boolean _status = this.mRemote.transact(17, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method securityAlgorithmsUpdated is unimplemented.");
                     }
                 } finally {
                     _data.recycle();

@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 /* compiled from: WallpaperExtraBundleHelper.java */
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class BundleAndJsonConverter {
     private static final String CHARSET_UTF_8 = "UTF-8";
     private static final String JSON_INDENT = "  ";
@@ -27,14 +27,17 @@ class BundleAndJsonConverter {
     private static final String JSON_VALUE_TYPE_PREFIX_STRING = "S";
     private static final String TAG = BundleAndJsonConverter.class.getSimpleName();
 
+    BundleAndJsonConverter() {
+    }
+
     public Bundle convertJsonToBundle(String jsonStr) {
         if (jsonStr == null) {
             return null;
         }
         Bundle resultBundle = new Bundle();
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(jsonStr.getBytes(CHARSET_UTF_8));
-            JsonReader reader = new JsonReader(new InputStreamReader(inputStream, CHARSET_UTF_8));
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(jsonStr.getBytes("UTF-8"));
+            JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
             putJsonObjectFieldsToBundle(reader, resultBundle);
             reader.close();
             inputStream.close();
@@ -52,12 +55,12 @@ class BundleAndJsonConverter {
         }
         try {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            JsonWriter writer = new JsonWriter(new OutputStreamWriter(outStream, CHARSET_UTF_8));
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(outStream, "UTF-8"));
             writer.setIndent(JSON_INDENT);
             writeBundleToJson(bundle, writer);
             writer.close();
             outStream.close();
-            return new String(outStream.toByteArray(), CHARSET_UTF_8);
+            return new String(outStream.toByteArray(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "convertBundleToJson : e=" + e);
             return "";
@@ -176,29 +179,30 @@ class BundleAndJsonConverter {
         switch (c) {
             case 0:
                 bundle.putString(key, strTypeValue);
-                return true;
+                break;
             case 1:
                 bundle.putBoolean(key, Boolean.valueOf(strTypeValue).booleanValue());
-                return true;
+                break;
             case 2:
                 bundle.putInt(key, Integer.valueOf(strTypeValue).intValue());
-                return true;
+                break;
             case 3:
                 bundle.putLong(key, Long.valueOf(strTypeValue).longValue());
-                return true;
+                break;
             case 4:
                 bundle.putFloat(key, Float.valueOf(strTypeValue).floatValue());
-                return true;
+                break;
             case 5:
                 bundle.putDouble(key, Double.valueOf(strTypeValue).doubleValue());
-                return true;
+                break;
             case 6:
                 bundle.putBundle(key, convertJsonToBundle(strTypeValue));
-                return true;
+                break;
             default:
                 Log.e(TAG, "putValueToBundle: unexpected data type : " + jsonValue);
-                return false;
+                break;
         }
+        return false;
     }
 
     private String determineDataTypePrefix(Object value) {

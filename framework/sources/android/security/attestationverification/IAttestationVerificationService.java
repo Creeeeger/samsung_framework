@@ -14,7 +14,6 @@ public interface IAttestationVerificationService extends IInterface {
 
     void onVerifyAttestation(Bundle bundle, byte[] bArr, AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAttestationVerificationService {
         @Override // android.security.attestationverification.IAttestationVerificationService
         public void onVerifyAttestation(Bundle requirements, byte[] attestation, AndroidFuture callback) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IAttestationVerificationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAttestationVerificationService {
         static final int TRANSACTION_onVerifyAttestation = 1;
 
@@ -69,26 +67,23 @@ public interface IAttestationVerificationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAttestationVerificationService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAttestationVerificationService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAttestationVerificationService.DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    byte[] _arg1 = data.createByteArray();
+                    AndroidFuture _arg2 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVerifyAttestation(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            byte[] _arg1 = data.createByteArray();
-                            AndroidFuture _arg2 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVerifyAttestation(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IAttestationVerificationService {
             private IBinder mRemote;
 

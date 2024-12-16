@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.timezone.TimeZoneProviderStatus;
 import android.text.TextUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,9 +27,7 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
     public static final LocationTimeZoneAlgorithmStatus RUNNING_NOT_REPORTED = new LocationTimeZoneAlgorithmStatus(2, 2, null, 2, null);
     public static final LocationTimeZoneAlgorithmStatus NOT_RUNNING = new LocationTimeZoneAlgorithmStatus(2, 2, null, 2, null);
     public static final Parcelable.Creator<LocationTimeZoneAlgorithmStatus> CREATOR = new Parcelable.Creator<LocationTimeZoneAlgorithmStatus>() { // from class: android.app.time.LocationTimeZoneAlgorithmStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
             int algorithmStatus = in.readInt();
@@ -41,6 +38,7 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
             return new LocationTimeZoneAlgorithmStatus(algorithmStatus, primaryProviderStatus, primaryProviderReportedStatus, secondaryProviderStatus, secondaryProviderReportedStatus);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocationTimeZoneAlgorithmStatus[] newArray(int size) {
             return new LocationTimeZoneAlgorithmStatus[size];
@@ -49,7 +47,6 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProviderStatus {
     }
 
@@ -115,33 +112,11 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
     }
 
     private static TimeZoneProviderStatus parseTimeZoneProviderStatusOrNull(String providerReportedStatusString) {
-        if (SemCapabilities.FEATURE_TAG_NULL.equals(providerReportedStatusString)) {
+        if ("null".equals(providerReportedStatusString)) {
             return null;
         }
         TimeZoneProviderStatus providerReportedStatus = TimeZoneProviderStatus.parseProviderStatus(providerReportedStatusString);
         return providerReportedStatus;
-    }
-
-    /* renamed from: android.app.time.LocationTimeZoneAlgorithmStatus$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LocationTimeZoneAlgorithmStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocationTimeZoneAlgorithmStatus createFromParcel(Parcel in) {
-            int algorithmStatus = in.readInt();
-            int primaryProviderStatus = in.readInt();
-            TimeZoneProviderStatus primaryProviderReportedStatus = (TimeZoneProviderStatus) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderStatus.class);
-            int secondaryProviderStatus = in.readInt();
-            TimeZoneProviderStatus secondaryProviderReportedStatus = (TimeZoneProviderStatus) in.readParcelable(getClass().getClassLoader(), TimeZoneProviderStatus.class);
-            return new LocationTimeZoneAlgorithmStatus(algorithmStatus, primaryProviderStatus, primaryProviderReportedStatus, secondaryProviderStatus, secondaryProviderReportedStatus);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocationTimeZoneAlgorithmStatus[] newArray(int size) {
-            return new LocationTimeZoneAlgorithmStatus[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -177,25 +152,20 @@ public final class LocationTimeZoneAlgorithmStatus implements Parcelable {
     }
 
     public boolean couldEnableTelephonyFallback() {
-        TimeZoneProviderStatus timeZoneProviderStatus;
-        TimeZoneProviderStatus timeZoneProviderStatus2;
-        int i = this.mStatus;
-        if (i == 0 || i == 2 || i == 1) {
+        if (this.mStatus == 0 || this.mStatus == 2 || this.mStatus == 1) {
             return false;
         }
         boolean primarySuggestsFallback = false;
-        int i2 = this.mPrimaryProviderStatus;
-        if (i2 == 1) {
+        if (this.mPrimaryProviderStatus == 1) {
             primarySuggestsFallback = true;
-        } else if (i2 == 4 && (timeZoneProviderStatus = this.mPrimaryProviderReportedStatus) != null) {
-            primarySuggestsFallback = timeZoneProviderStatus.couldEnableTelephonyFallback();
+        } else if (this.mPrimaryProviderStatus == 4 && this.mPrimaryProviderReportedStatus != null) {
+            primarySuggestsFallback = this.mPrimaryProviderReportedStatus.couldEnableTelephonyFallback();
         }
         boolean secondarySuggestsFallback = false;
-        int i3 = this.mSecondaryProviderStatus;
-        if (i3 == 1) {
+        if (this.mSecondaryProviderStatus == 1) {
             secondarySuggestsFallback = true;
-        } else if (i3 == 4 && (timeZoneProviderStatus2 = this.mSecondaryProviderReportedStatus) != null) {
-            secondarySuggestsFallback = timeZoneProviderStatus2.couldEnableTelephonyFallback();
+        } else if (this.mSecondaryProviderStatus == 4 && this.mSecondaryProviderReportedStatus != null) {
+            secondarySuggestsFallback = this.mSecondaryProviderReportedStatus.couldEnableTelephonyFallback();
         }
         return primarySuggestsFallback && secondarySuggestsFallback;
     }

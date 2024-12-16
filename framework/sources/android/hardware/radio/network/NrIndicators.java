@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NrIndicators implements Parcelable {
     public static final Parcelable.Creator<NrIndicators> CREATOR = new Parcelable.Creator<NrIndicators>() { // from class: android.hardware.radio.network.NrIndicators.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrIndicators createFromParcel(Parcel _aidl_source) {
             NrIndicators _aidl_out = new NrIndicators();
@@ -18,6 +16,7 @@ public class NrIndicators implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrIndicators[] newArray(int _aidl_size) {
             return new NrIndicators[_aidl_size];
@@ -26,25 +25,6 @@ public class NrIndicators implements Parcelable {
     public boolean isEndcAvailable = false;
     public boolean isDcNrRestricted = false;
     public boolean isNrAvailable = false;
-
-    /* renamed from: android.hardware.radio.network.NrIndicators$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NrIndicators> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NrIndicators createFromParcel(Parcel _aidl_source) {
-            NrIndicators _aidl_out = new NrIndicators();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NrIndicators[] newArray(int _aidl_size) {
-            return new NrIndicators[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -113,7 +93,7 @@ public class NrIndicators implements Parcelable {
         _aidl_sj.add("isEndcAvailable: " + this.isEndcAvailable);
         _aidl_sj.add("isDcNrRestricted: " + this.isDcNrRestricted);
         _aidl_sj.add("isNrAvailable: " + this.isNrAvailable);
-        return "android.hardware.radio.network.NrIndicators" + _aidl_sj.toString();
+        return "NrIndicators" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class GroupCall implements AutoCloseable {
     private static final String LOG_TAG = "MbmsGroupCall";
     public static final int REASON_BY_USER_REQUEST = 1;
@@ -27,12 +27,10 @@ public class GroupCall implements AutoCloseable {
     private final long mTmgi;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface GroupCallState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface GroupCallStateChangeReason {
     }
 
@@ -49,13 +47,12 @@ public class GroupCall implements AutoCloseable {
     }
 
     public void updateGroupCall(List<Integer> saiList, List<Integer> frequencyList) {
-        IMbmsGroupCallService iMbmsGroupCallService = this.mService;
         try {
-            if (iMbmsGroupCallService == null) {
+            if (this.mService == null) {
                 throw new IllegalStateException("No group call service attached");
             }
             try {
-                iMbmsGroupCallService.updateGroupCall(this.mSubscriptionId, this.mTmgi, saiList, frequencyList);
+                this.mService.updateGroupCall(this.mSubscriptionId, this.mTmgi, saiList, frequencyList);
             } catch (RemoteException e) {
                 Log.w(LOG_TAG, "Remote process died");
                 this.mService = null;
@@ -68,13 +65,12 @@ public class GroupCall implements AutoCloseable {
 
     @Override // java.lang.AutoCloseable
     public void close() {
-        IMbmsGroupCallService iMbmsGroupCallService = this.mService;
         try {
-            if (iMbmsGroupCallService == null) {
+            if (this.mService == null) {
                 throw new IllegalStateException("No group call service attached");
             }
             try {
-                iMbmsGroupCallService.stopGroupCall(this.mSubscriptionId, this.mTmgi);
+                this.mService.stopGroupCall(this.mSubscriptionId, this.mTmgi);
             } catch (RemoteException e) {
                 Log.w(LOG_TAG, "Remote process died");
                 this.mService = null;

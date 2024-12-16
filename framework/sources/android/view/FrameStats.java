@@ -11,9 +11,8 @@ public abstract class FrameStats {
     }
 
     public final int getFrameCount() {
-        long[] jArr = this.mFramesPresentedTimeNano;
-        if (jArr != null) {
-            return jArr.length;
+        if (this.mFramesPresentedTimeNano != null) {
+            return this.mFramesPresentedTimeNano.length;
         }
         return 0;
     }
@@ -29,14 +28,13 @@ public abstract class FrameStats {
         if (getFrameCount() <= 0) {
             return -1L;
         }
-        return this.mFramesPresentedTimeNano[r0.length - 1];
+        return this.mFramesPresentedTimeNano[this.mFramesPresentedTimeNano.length - 1];
     }
 
     public final long getFramePresentedTimeNano(int index) {
-        long[] jArr = this.mFramesPresentedTimeNano;
-        if (jArr == null) {
+        if (this.mFramesPresentedTimeNano == null) {
             throw new IndexOutOfBoundsException();
         }
-        return jArr[index];
+        return this.mFramesPresentedTimeNano[index];
     }
 }

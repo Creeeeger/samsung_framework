@@ -19,7 +19,7 @@ import com.samsung.android.hardware.context.SemContextMovement;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemMotionRecognitionManager {
     public static final int EVENT_DOUBLE_TAP = 8;
     public static final int EVENT_ELEVATOR_DETECTOR = 16777216;
@@ -67,9 +67,6 @@ public class SemMotionRecognitionManager {
     private IMotionRecognitionService motionService;
     private final ArrayList<MRListenerDelegate> sListenerDelegates = new ArrayList<>();
     private final SemContextListener mySemContextMotionListener = new SemContextListener() { // from class: com.samsung.android.gesture.SemMotionRecognitionManager.1
-        AnonymousClass1() {
-        }
-
         @Override // com.samsung.android.hardware.context.SemContextListener
         public void onSemContextChanged(SemContextEvent event) {
             SemContext semContext = event.semContext;
@@ -110,13 +107,12 @@ public class SemMotionRecognitionManager {
     public SemMotionRecognitionManager(Looper mainLooper) {
         this.motionService = IMotionRecognitionService.Stub.asInterface(ServiceManager.getService(Context.SEM_MOTION_RECOGNITION_SERVICE));
         this.mMainLooper = mainLooper;
-        this.mSemContextManager = new SemContextManager(mainLooper);
+        this.mSemContextManager = new SemContextManager(this.mMainLooper);
         this.motionService = IMotionRecognitionService.Stub.asInterface(ServiceManager.getService(Context.SEM_MOTION_RECOGNITION_SERVICE));
         Log.d(TAG, "motionService = " + this.motionService);
         try {
-            IMotionRecognitionService iMotionRecognitionService = this.motionService;
-            if (iMotionRecognitionService != null) {
-                this.mHasSensorHub = iMotionRecognitionService.getSSPstatus();
+            if (this.motionService != null) {
+                this.mHasSensorHub = this.motionService.getSSPstatus();
             }
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getSSPstatus: ", e);
@@ -192,7 +188,7 @@ public class SemMotionRecognitionManager {
      */
     /* JADX WARN: Code restructure failed: missing block: B:21:0x0061, code lost:
     
-        if (r3.getMotionEvents() == 0) goto L57;
+        if (r3.getMotionEvents() == 0) goto L21;
      */
     /* JADX WARN: Code restructure failed: missing block: B:22:0x0063, code lost:
     
@@ -327,12 +323,11 @@ public class SemMotionRecognitionManager {
 
     @Deprecated
     public void setMotionTiltLevel(int stopUp, int level1Up, int level2Up, int stopDown, int level1Down, int level2Down) {
-        IMotionRecognitionService iMotionRecognitionService = this.motionService;
-        if (iMotionRecognitionService == null) {
+        if (this.motionService == null) {
             return;
         }
         try {
-            iMotionRecognitionService.setMotionTiltLevel(stopUp, level1Up, level2Up, stopDown, level1Down, level2Down);
+            this.motionService.setMotionTiltLevel(stopUp, level1Up, level2Up, stopDown, level1Down, level2Down);
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in setMotionTiltLevel: ", e);
         }
@@ -340,12 +335,11 @@ public class SemMotionRecognitionManager {
     }
 
     public int resetMotionEngine() {
-        IMotionRecognitionService iMotionRecognitionService = this.motionService;
-        if (iMotionRecognitionService == null) {
+        if (this.motionService == null) {
             return -1;
         }
         try {
-            return iMotionRecognitionService.resetMotionEngine();
+            return this.motionService.resetMotionEngine();
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in resetMotionEngine: ", e);
             return 0;
@@ -361,52 +355,8 @@ public class SemMotionRecognitionManager {
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.gesture.SemMotionRecognitionManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements SemContextListener {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.hardware.context.SemContextListener
-        public void onSemContextChanged(SemContextEvent event) {
-            SemContext semContext = event.semContext;
-            SemMotionRecognitionEvent mrevent = new SemMotionRecognitionEvent();
-            boolean isEnabledPickUp = false;
-            switch (semContext.getType()) {
-                case 5:
-                    SemContextMovement semContextMovement = event.getMovementContext();
-                    if (semContextMovement.getAction() == 1) {
-                        try {
-                            isEnabledPickUp = SemMotionRecognitionManager.this.motionService.getPickUpMotionStatus();
-                            Log.d(SemMotionRecognitionManager.TAG, "  >> check setting smart alert enabled : " + isEnabledPickUp);
-                        } catch (RemoteException e) {
-                            Log.e(SemMotionRecognitionManager.TAG, "RemoteException in getPickUpMotionStatus: ", e);
-                        }
-                        if (isEnabledPickUp) {
-                            mrevent.setMotion(67);
-                            Log.d(SemMotionRecognitionManager.TAG, "mySemContextMotionListener : Send Smart alert event");
-                            synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
-                                int size = SemMotionRecognitionManager.this.sListenerDelegates.size();
-                                for (int i = 0; i < size; i++) {
-                                    MRListenerDelegate l = (MRListenerDelegate) SemMotionRecognitionManager.this.sListenerDelegates.get(i);
-                                    l.motionCallback(mrevent);
-                                }
-                            }
-                            return;
-                        }
-                        return;
-                    }
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
     public boolean isAvailable(int type) {
-        IMotionRecognitionService iMotionRecognitionService = this.motionService;
-        if (iMotionRecognitionService == null) {
+        if (this.motionService == null) {
             return false;
         }
         switch (type) {
@@ -419,25 +369,23 @@ public class SemMotionRecognitionManager {
             case 16777216:
             case 33554432:
                 try {
-                    boolean ret = iMotionRecognitionService.isAvailable(type);
-                    return ret;
+                    boolean ret = this.motionService.isAvailable(type);
+                    break;
                 } catch (RemoteException e) {
                     Log.e(TAG, "RemoteException in getSSPstatus: ", e);
                     return false;
                 }
-            default:
-                return false;
         }
+        return false;
     }
 
     public float[] getEvToLux(float[] values) {
         float[] ret = new float[3];
-        IMotionRecognitionService iMotionRecognitionService = this.motionService;
-        if (iMotionRecognitionService == null) {
+        if (this.motionService == null) {
             return ret;
         }
         try {
-            return iMotionRecognitionService.getEvToLux(values);
+            return this.motionService.getEvToLux(values);
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getSSPstatus: ", e);
             return ret;
@@ -445,12 +393,11 @@ public class SemMotionRecognitionManager {
     }
 
     public String getEvLuxTableInfo(String info) {
-        IMotionRecognitionService iMotionRecognitionService = this.motionService;
-        if (iMotionRecognitionService == null) {
+        if (this.motionService == null) {
             return "";
         }
         try {
-            String str = iMotionRecognitionService.getEvLuxTableInfo(info);
+            String str = this.motionService.getEvLuxTableInfo(info);
             return str;
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in getEvLuxTableInfo: ", e);
@@ -484,8 +431,7 @@ public class SemMotionRecognitionManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class MRListenerDelegate extends IMotionRecognitionCallback.Stub {
+    private class MRListenerDelegate extends IMotionRecognitionCallback.Stub {
         private final int EVENT_FROM_SERVICE = 53;
         private final Handler mHandler;
         private SemMotionEventListener mListener;
@@ -499,14 +445,6 @@ public class SemMotionRecognitionManager {
             this.mMotionEvents = motion_sensors;
             this.mListenerPackageName = ActivityThread.currentPackageName();
             this.mHandler = new Handler(looper) { // from class: com.samsung.android.gesture.SemMotionRecognitionManager.MRListenerDelegate.1
-                final /* synthetic */ SemMotionRecognitionManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper looper2, SemMotionRecognitionManager semMotionRecognitionManager) {
-                    super(looper2);
-                    r3 = semMotionRecognitionManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
@@ -521,33 +459,6 @@ public class SemMotionRecognitionManager {
                     }
                 }
             };
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.gesture.SemMotionRecognitionManager$MRListenerDelegate$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ SemMotionRecognitionManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper looper2, SemMotionRecognitionManager semMotionRecognitionManager) {
-                super(looper2);
-                r3 = semMotionRecognitionManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                synchronized (SemMotionRecognitionManager.this.sListenerDelegates) {
-                    try {
-                        if (MRListenerDelegate.this.mListener != null && msg != null && msg.what == 53) {
-                            SemMotionRecognitionEvent motionEvent = (SemMotionRecognitionEvent) msg.obj;
-                            MRListenerDelegate.this.mListener.onMotionEvent(motionEvent);
-                        }
-                    } catch (ClassCastException e) {
-                        Log.e(SemMotionRecognitionManager.TAG, "ClassCastException in handleMessage: msg.obj = " + msg.obj, e);
-                    }
-                }
-            }
         }
 
         public SemMotionEventListener getListener() {

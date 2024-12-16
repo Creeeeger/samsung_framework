@@ -41,7 +41,6 @@ public interface IBlobStoreManager extends IInterface {
 
     void waitForIdle(RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBlobStoreManager {
         @Override // android.app.blob.IBlobStoreManager
         public long createSession(BlobHandle handle, String packageName) throws RemoteException {
@@ -108,7 +107,6 @@ public interface IBlobStoreManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBlobStoreManager {
         static final int TRANSACTION_abandonSession = 4;
         static final int TRANSACTION_acquireLease = 5;
@@ -187,116 +185,112 @@ public interface IBlobStoreManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBlobStoreManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBlobStoreManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBlobStoreManager.DESCRIPTOR);
+                case 1:
+                    BlobHandle _arg0 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result = createSession(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeLong(_result);
+                    return true;
+                case 2:
+                    long _arg02 = data.readLong();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBlobStoreSession _result2 = openSession(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    BlobHandle _arg03 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result3 = openBlob(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    abandonSession(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    BlobHandle _arg05 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
+                    int _arg15 = data.readInt();
+                    CharSequence _arg2 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    long _arg3 = data.readLong();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    acquireLease(_arg05, _arg15, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    BlobHandle _arg06 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    releaseLease(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    releaseAllLeases(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result4 = getRemainingLeaseQuotaBytes(_arg08);
+                    reply.writeNoException();
+                    reply.writeLong(_result4);
+                    return true;
+                case 9:
+                    RemoteCallback _arg09 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    waitForIdle(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<BlobInfo> _result5 = queryBlobsForUser(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result5, 1);
+                    return true;
+                case 11:
+                    long _arg011 = data.readLong();
+                    data.enforceNoDataAvail();
+                    deleteBlob(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg012 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<BlobHandle> _result6 = getLeasedBlobs(_arg012);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result6, 1);
+                    return true;
+                case 13:
+                    BlobHandle _arg013 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    LeaseInfo _result7 = getLeaseInfo(_arg013, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BlobHandle _arg0 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result = createSession(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeLong(_result);
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBlobStoreSession _result2 = openSession(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            BlobHandle _arg03 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result3 = openBlob(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            abandonSession(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            BlobHandle _arg05 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
-                            int _arg15 = data.readInt();
-                            CharSequence _arg2 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            long _arg3 = data.readLong();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            acquireLease(_arg05, _arg15, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            BlobHandle _arg06 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            releaseLease(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            releaseAllLeases(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result4 = getRemainingLeaseQuotaBytes(_arg08);
-                            reply.writeNoException();
-                            reply.writeLong(_result4);
-                            return true;
-                        case 9:
-                            RemoteCallback _arg09 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            waitForIdle(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<BlobInfo> _result5 = queryBlobsForUser(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result5, 1);
-                            return true;
-                        case 11:
-                            long _arg011 = data.readLong();
-                            data.enforceNoDataAvail();
-                            deleteBlob(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<BlobHandle> _result6 = getLeasedBlobs(_arg012);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result6, 1);
-                            return true;
-                        case 13:
-                            BlobHandle _arg013 = (BlobHandle) data.readTypedObject(BlobHandle.CREATOR);
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            LeaseInfo _result7 = getLeaseInfo(_arg013, _arg17);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBlobStoreManager {
+        private static class Proxy implements IBlobStoreManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

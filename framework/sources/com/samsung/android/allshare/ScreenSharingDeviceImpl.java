@@ -3,7 +3,6 @@ package com.samsung.android.allshare;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.ScreenSharingDevice;
 import com.sec.android.allshare.iface.CVMessage;
@@ -14,8 +13,8 @@ import com.sec.android.allshare.iface.message.AllShareEvent;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
-public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implements IBundleHolder, IHandlerHolder {
+/* loaded from: classes3.dex */
+final class ScreenSharingDeviceImpl extends ScreenSharingDevice implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "ScreenSharingDeviceImpl";
     private ScreenSharingDevice.IScreenSharingActionResponseListner mActionResponseListener;
     private IAllShareConnector mAllShareConnector;
@@ -31,10 +30,6 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         this.mActionResponseListener = null;
         this.mIsSubscribed = false;
         this.mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.1
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
             @Override // com.samsung.android.allshare.AllShareEventHandler
             public void handleEventMessage(CVMessage cvm) {
                 ERROR error = ERROR.FAIL;
@@ -53,10 +48,6 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
             }
         };
         this.mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.2
-            AnonymousClass2(Looper looper) {
-                super(looper);
-            }
-
             @Override // com.samsung.android.allshare.AllShareResponseHandler
             public void handleResponseMessage(CVMessage cvm) {
                 String actionID = cvm.getActionID();
@@ -93,16 +84,12 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         };
     }
 
-    public ScreenSharingDeviceImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
+    ScreenSharingDeviceImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mDeviceImpl = null;
         this.mUPnPDeviceEventListener = null;
         this.mActionResponseListener = null;
         this.mIsSubscribed = false;
         this.mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.1
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
             @Override // com.samsung.android.allshare.AllShareEventHandler
             public void handleEventMessage(CVMessage cvm) {
                 ERROR error = ERROR.FAIL;
@@ -121,10 +108,6 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
             }
         };
         this.mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.ScreenSharingDeviceImpl.2
-            AnonymousClass2(Looper looper) {
-                super(looper);
-            }
-
             @Override // com.samsung.android.allshare.AllShareResponseHandler
             public void handleResponseMessage(CVMessage cvm) {
                 String actionID = cvm.getActionID();
@@ -167,117 +150,76 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.ScreenSharingDeviceImpl$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AllShareEventHandler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareEventHandler
-        public void handleEventMessage(CVMessage cvm) {
-            ERROR error = ERROR.FAIL;
-            try {
-                Bundle resBundle = cvm.getBundle();
-                ERROR error2 = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
-                if (error2 == null) {
-                    error2 = ERROR.FAIL;
-                }
-                ScreenSharingDeviceImpl.this.mUPnPDeviceEventListener.onEventReceived("", "", error2);
-            } catch (Error err) {
-                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mEventHandler.handleEventMessage Error", err);
-            } catch (Exception e) {
-                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mEventHandler.handleEventMessage Exception");
-            }
-        }
-    }
-
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public Device.DeviceDomain getDeviceDomain() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Device.DeviceDomain.UNKNOWN;
         }
-        return deviceImpl.getDeviceDomain();
+        return this.mDeviceImpl.getDeviceDomain();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public Device.DeviceType getDeviceType() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Device.DeviceType.UNKNOWN;
         }
-        return deviceImpl.getDeviceType();
+        return this.mDeviceImpl.getDeviceType();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public String getID() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getID();
-    }
-
-    @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
-    @Deprecated
-    public String getIPAdress() {
-        return getIPAddress();
+        return this.mDeviceImpl.getID();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public String getIPAddress() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getIPAddress();
+        return this.mDeviceImpl.getIPAddress();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public Uri getIcon() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Uri.parse("");
         }
-        return deviceImpl.getIcon();
+        return this.mDeviceImpl.getIcon();
     }
 
     @Override // com.samsung.android.allshare.Device
     public ArrayList<Icon> getIconList() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return new ArrayList<>();
         }
-        return deviceImpl.getIconList();
+        return this.mDeviceImpl.getIconList();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public String getModelName() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getModelName();
+        return this.mDeviceImpl.getModelName();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice, com.samsung.android.allshare.Device
     public String getName() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getName();
+        return this.mDeviceImpl.getName();
     }
 
     @Override // com.sec.android.allshare.iface.IBundleHolder
     public Bundle getBundle() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return new Bundle();
         }
-        return deviceImpl.getBundle();
+        return this.mDeviceImpl.getBundle();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice
@@ -288,73 +230,27 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice
     public ERROR setEventListener(ScreenSharingDevice.IScreenSharingEventListener listener) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setEventListener error! AllShareService is not connected");
             return ERROR.SERVICE_NOT_CONNECTED;
         }
         this.mUPnPDeviceEventListener = listener;
-        boolean z = this.mIsSubscribed;
-        if (!z && listener != null) {
+        if (!this.mIsSubscribed && listener != null) {
             this.mAllShareConnector.subscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = true;
-        } else if (z && listener == null) {
+        } else if (this.mIsSubscribed && listener == null) {
             this.mAllShareConnector.unsubscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = false;
         }
         return ERROR.SUCCESS;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.ScreenSharingDeviceImpl$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends AllShareResponseHandler {
-        AnonymousClass2(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareResponseHandler
-        public void handleResponseMessage(CVMessage cvm) {
-            String actionID = cvm.getActionID();
-            Bundle resBundle = cvm.getBundle();
-            if (actionID == null || resBundle == null) {
-                return;
-            }
-            ERROR err = ERROR.stringToEnum(resBundle.getString("BUNDLE_ENUM_ERROR"));
-            try {
-                if (ScreenSharingDeviceImpl.this.mActionResponseListener != null) {
-                    if (actionID.equals(AllShareAction.ACTION_CONNECT_SCREENSHARING_MOBILE_TO_TV)) {
-                        if (err.equals(ERROR.SUCCESS)) {
-                            String tBSSID = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_BSSID);
-                            String tWlanFreq = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WLANFREQ);
-                            String tListenFreq = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_LISTENFREQ);
-                            DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "handleResponseMessage : actionID :ACTION_CONNECT_SCREENSHARING_MOBILE_TO_TV response SUCCESS");
-                            ScreenSharingDeviceImpl.this.mActionResponseListener.onConnectScreenSharingM2TV(tBSSID, tWlanFreq, tListenFreq);
-                        }
-                    } else if (actionID.equals(AllShareAction.ACTION_CONNECT_SCREENSHARING_TV_TO_MOBILE) && err.equals(ERROR.SUCCESS)) {
-                        String tBSSID2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_BSSID);
-                        String tWlanFreq2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WLANFREQ);
-                        String tListenFreq2 = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_LISTENFREQ);
-                        String tWFDSourcePort = resBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING_TV_WFDSOURCEPORT);
-                        DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "handleResponseMessage : actionID :ACTION_CONNECT_SCREENSHARING_TV_TO_MOBILE response SUCCESS");
-                        ScreenSharingDeviceImpl.this.mActionResponseListener.onConnectScreenSharingTV2M(tBSSID2, tWlanFreq2, tListenFreq2, tWFDSourcePort);
-                    }
-                }
-            } catch (Error e) {
-                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Error", e);
-            } catch (Exception e2) {
-                DLog.w_api(ScreenSharingDeviceImpl.TAG_CLASS, "mAllShareRespHandler.handleResponseMessage Exception", e2);
-            }
-        }
-    }
-
     @Override // com.samsung.android.allshare.Device
     public String getNIC() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getNIC();
+        return this.mDeviceImpl.getNIC();
     }
 
     @Override // com.sec.android.allshare.iface.IHandlerHolder
@@ -375,27 +271,24 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
 
     @Override // com.samsung.android.allshare.Device
     public String getP2pMacAddress() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getP2pMacAddress();
+        return this.mDeviceImpl.getP2pMacAddress();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getScreenSharingInfo();
+        return this.mDeviceImpl.getScreenSharingInfo();
     }
 
     @Override // com.samsung.android.allshare.ScreenSharingDevice
     public void connectScreenSharingM2TV(String mWlanMacAddress, String mP2pDeviceAddress, String mBluetoothMacAddress, int mWFDSourcePort) {
         DLog.w_api(TAG_CLASS, "connectScreenSharingM2TV : call connectScreenSharingM2TV");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "connectScreenSharingM2TV : SERVICE_NOT_CONNECTED");
             return;
         }
@@ -419,8 +312,7 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
     @Override // com.samsung.android.allshare.ScreenSharingDevice
     public void connectScreenSharingTV2M(String mWlanMacAddress, String mP2pDeviceAddress, String mBluetoothMacAddress) {
         DLog.w_api(TAG_CLASS, "connectScreenSharingTV2M : call connectScreenSharingM2TV");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "connectScreenSharingTV2M : SERVICE_NOT_CONNECTED");
             return;
         }
@@ -443,55 +335,49 @@ public final class ScreenSharingDeviceImpl extends ScreenSharingDevice implement
     @Override // com.samsung.android.allshare.Device
     public void requestMobileToTV(String ip, int port) {
         DLog.w_api(TAG_CLASS, "requestMobileToTV : call requestMobileToTV");
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return;
         }
-        deviceImpl.requestMobileToTV(ip, port);
+        this.mDeviceImpl.requestMobileToTV(ip, port);
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingP2pMacAddr() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getScreenSharingP2pMacAddr();
+        return this.mDeviceImpl.getScreenSharingP2pMacAddr();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getSecProductP2pMacAddr() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getSecProductP2pMacAddr();
+        return this.mDeviceImpl.getSecProductP2pMacAddr();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getProductCapInfo(Device.InformationType infoType) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getProductCapInfo(infoType);
+        return this.mDeviceImpl.getProductCapInfo(infoType);
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo(Device.InformationType infoType) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getScreenSharingInfo(infoType);
+        return this.mDeviceImpl.getScreenSharingInfo(infoType);
     }
 
     @Override // com.samsung.android.allshare.Device
     public boolean isSupportedByType(int type) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return false;
         }
-        return deviceImpl.isSupportedByType(type);
+        return this.mDeviceImpl.isSupportedByType(type);
     }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AbstractMultiplePendingRequestsRemoteService<S extends AbstractMultiplePendingRequestsRemoteService<S, I>, I extends IInterface> extends AbstractRemoteService<S, I> {
     private final int mInitialCapacity;
     protected List<AbstractRemoteService.BasePendingRequest<S, I>> mPendingRequests;
@@ -20,7 +20,7 @@ public abstract class AbstractMultiplePendingRequestsRemoteService<S extends Abs
     public AbstractMultiplePendingRequestsRemoteService(Context context, String serviceInterface, ComponentName componentName, int userId, AbstractRemoteService.VultureCallback<S> callback, Handler handler, int bindingFlags, boolean verbose, int initialCapacity) {
         super(context, serviceInterface, componentName, userId, callback, handler, bindingFlags, verbose);
         this.mInitialCapacity = initialCapacity;
-        this.mPendingRequests = new ArrayList(initialCapacity);
+        this.mPendingRequests = new ArrayList(this.mInitialCapacity);
     }
 
     @Override // com.android.internal.infra.AbstractRemoteService

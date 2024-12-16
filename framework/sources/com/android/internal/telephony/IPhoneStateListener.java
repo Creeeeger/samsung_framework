@@ -21,6 +21,9 @@ import android.telephony.TelephonyDisplayInfo;
 import android.telephony.emergency.EmergencyNumber;
 import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.MediaQualityStatus;
+import android.telephony.satellite.NtnSignalStrength;
+import android.telephony.satellite.SemSatelliteServiceState;
+import android.telephony.satellite.SemSatelliteSignalStrength;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +49,13 @@ public interface IPhoneStateListener extends IInterface {
 
     void onCarrierNetworkChange(boolean z) throws RemoteException;
 
+    void onCarrierRoamingNtnAvailableServicesChanged(int[] iArr) throws RemoteException;
+
+    void onCarrierRoamingNtnEligibleStateChanged(boolean z) throws RemoteException;
+
     void onCarrierRoamingNtnModeChanged(boolean z) throws RemoteException;
+
+    void onCarrierRoamingNtnSignalStrengthChanged(NtnSignalStrength ntnSignalStrength) throws RemoteException;
 
     void onCellInfoChanged(List<CellInfo> list) throws RemoteException;
 
@@ -94,11 +103,17 @@ public interface IPhoneStateListener extends IInterface {
 
     void onRegistrationFailed(CellIdentity cellIdentity, String str, int i, int i2, int i3) throws RemoteException;
 
+    void onSemSatelliteServiceStateChanged(SemSatelliteServiceState semSatelliteServiceState) throws RemoteException;
+
+    void onSemSatelliteSignalStrengthChanged(SemSatelliteSignalStrength semSatelliteSignalStrength) throws RemoteException;
+
     void onServiceStateChanged(ServiceState serviceState) throws RemoteException;
 
     void onSignalStrengthChanged(int i) throws RemoteException;
 
     void onSignalStrengthsChanged(SignalStrength signalStrength) throws RemoteException;
+
+    void onSimultaneousCallingStateChanged(int[] iArr) throws RemoteException;
 
     void onSrvccStateChanged(int i) throws RemoteException;
 
@@ -106,7 +121,6 @@ public interface IPhoneStateListener extends IInterface {
 
     void onVoiceActivationStateChanged(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IPhoneStateListener {
         @Override // com.android.internal.telephony.IPhoneStateListener
         public void onServiceStateChanged(ServiceState serviceState) throws RemoteException {
@@ -265,7 +279,31 @@ public interface IPhoneStateListener extends IInterface {
         }
 
         @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onSimultaneousCallingStateChanged(int[] subIds) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
         public void onCarrierRoamingNtnModeChanged(boolean active) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onCarrierRoamingNtnEligibleStateChanged(boolean eligible) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onCarrierRoamingNtnAvailableServicesChanged(int[] availableServices) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onCarrierRoamingNtnSignalStrengthChanged(NtnSignalStrength ntnSignalStrength) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onSemSatelliteServiceStateChanged(SemSatelliteServiceState serviceState) throws RemoteException {
+        }
+
+        @Override // com.android.internal.telephony.IPhoneStateListener
+        public void onSemSatelliteSignalStrengthChanged(SemSatelliteSignalStrength signalStrength) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -274,7 +312,6 @@ public interface IPhoneStateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IPhoneStateListener {
         public static final String DESCRIPTOR = "com.android.internal.telephony.IPhoneStateListener";
         static final int TRANSACTION_onActiveDataSubIdChanged = 23;
@@ -287,7 +324,10 @@ public interface IPhoneStateListener extends IInterface {
         static final int TRANSACTION_onCallStateChanged = 7;
         static final int TRANSACTION_onCallStatesChanged = 25;
         static final int TRANSACTION_onCarrierNetworkChange = 19;
-        static final int TRANSACTION_onCarrierRoamingNtnModeChanged = 40;
+        static final int TRANSACTION_onCarrierRoamingNtnAvailableServicesChanged = 43;
+        static final int TRANSACTION_onCarrierRoamingNtnEligibleStateChanged = 42;
+        static final int TRANSACTION_onCarrierRoamingNtnModeChanged = 41;
+        static final int TRANSACTION_onCarrierRoamingNtnSignalStrengthChanged = 44;
         static final int TRANSACTION_onCellInfoChanged = 11;
         static final int TRANSACTION_onCellLocationChanged = 5;
         static final int TRANSACTION_onDataActivationStateChanged = 17;
@@ -311,9 +351,12 @@ public interface IPhoneStateListener extends IInterface {
         static final int TRANSACTION_onPreciseDataConnectionStateChanged = 13;
         static final int TRANSACTION_onRadioPowerStateChanged = 24;
         static final int TRANSACTION_onRegistrationFailed = 31;
+        static final int TRANSACTION_onSemSatelliteServiceStateChanged = 45;
+        static final int TRANSACTION_onSemSatelliteSignalStrengthChanged = 46;
         static final int TRANSACTION_onServiceStateChanged = 1;
         static final int TRANSACTION_onSignalStrengthChanged = 2;
         static final int TRANSACTION_onSignalStrengthsChanged = 10;
+        static final int TRANSACTION_onSimultaneousCallingStateChanged = 40;
         static final int TRANSACTION_onSrvccStateChanged = 15;
         static final int TRANSACTION_onUserMobileDataStateChanged = 20;
         static final int TRANSACTION_onVoiceActivationStateChanged = 16;
@@ -419,7 +462,19 @@ public interface IPhoneStateListener extends IInterface {
                 case 39:
                     return "onCallBackModeStopped";
                 case 40:
+                    return "onSimultaneousCallingStateChanged";
+                case 41:
                     return "onCarrierRoamingNtnModeChanged";
+                case 42:
+                    return "onCarrierRoamingNtnEligibleStateChanged";
+                case 43:
+                    return "onCarrierRoamingNtnAvailableServicesChanged";
+                case 44:
+                    return "onCarrierRoamingNtnSignalStrengthChanged";
+                case 45:
+                    return "onSemSatelliteServiceStateChanged";
+                case 46:
+                    return "onSemSatelliteSignalStrengthChanged";
                 default:
                     return null;
             }
@@ -435,234 +490,260 @@ public interface IPhoneStateListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ServiceState _arg0 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onServiceStateChanged(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSignalStrengthChanged(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onMessageWaitingIndicatorChanged(_arg03);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCallForwardingIndicatorChanged(_arg04);
+                    return true;
+                case 5:
+                    CellIdentity _arg05 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCellLocationChanged(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onLegacyCallStateChanged(_arg06, _arg1);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallStateChanged(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDataConnectionStateChanged(_arg08, _arg12);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDataActivity(_arg09);
+                    return true;
+                case 10:
+                    SignalStrength _arg010 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSignalStrengthsChanged(_arg010);
+                    return true;
+                case 11:
+                    List<CellInfo> _arg011 = data.createTypedArrayList(CellInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCellInfoChanged(_arg011);
+                    return true;
+                case 12:
+                    PreciseCallState _arg012 = (PreciseCallState) data.readTypedObject(PreciseCallState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPreciseCallStateChanged(_arg012);
+                    return true;
+                case 13:
+                    PreciseDataConnectionState _arg013 = (PreciseDataConnectionState) data.readTypedObject(PreciseDataConnectionState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPreciseDataConnectionStateChanged(_arg013);
+                    return true;
+                case 14:
+                    DataConnectionRealTimeInfo _arg014 = (DataConnectionRealTimeInfo) data.readTypedObject(DataConnectionRealTimeInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDataConnectionRealTimeInfoChanged(_arg014);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSrvccStateChanged(_arg015);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVoiceActivationStateChanged(_arg016);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDataActivationStateChanged(_arg017);
+                    return true;
+                case 18:
+                    byte[] _arg018 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onOemHookRawEvent(_arg018);
+                    return true;
+                case 19:
+                    boolean _arg019 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCarrierNetworkChange(_arg019);
+                    return true;
+                case 20:
+                    boolean _arg020 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUserMobileDataStateChanged(_arg020);
+                    return true;
+                case 21:
+                    TelephonyDisplayInfo _arg021 = (TelephonyDisplayInfo) data.readTypedObject(TelephonyDisplayInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayInfoChanged(_arg021);
+                    return true;
+                case 22:
+                    PhoneCapability _arg022 = (PhoneCapability) data.readTypedObject(PhoneCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPhoneCapabilityChanged(_arg022);
+                    return true;
+                case 23:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onActiveDataSubIdChanged(_arg023);
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRadioPowerStateChanged(_arg024);
+                    return true;
+                case 25:
+                    List<CallState> _arg025 = data.createTypedArrayList(CallState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCallStatesChanged(_arg025);
+                    return true;
+                case 26:
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _arg026 = data.readHashMap(cl);
+                    data.enforceNoDataAvail();
+                    onEmergencyNumberListChanged(_arg026);
+                    return true;
+                case 27:
+                    EmergencyNumber _arg027 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOutgoingEmergencyCall(_arg027, _arg13);
+                    return true;
+                case 28:
+                    EmergencyNumber _arg028 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOutgoingEmergencySms(_arg028, _arg14);
+                    return true;
+                case 29:
+                    int _arg029 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallDisconnectCauseChanged(_arg029, _arg15);
+                    return true;
+                case 30:
+                    ImsReasonInfo _arg030 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onImsCallDisconnectCauseChanged(_arg030);
+                    return true;
+                case 31:
+                    CellIdentity _arg031 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
+                    String _arg16 = data.readString();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRegistrationFailed(_arg031, _arg16, _arg2, _arg3, _arg4);
+                    return true;
+                case 32:
+                    BarringInfo _arg032 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBarringInfoChanged(_arg032);
+                    return true;
+                case 33:
+                    List<PhysicalChannelConfig> _arg033 = data.createTypedArrayList(PhysicalChannelConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPhysicalChannelConfigChanged(_arg033);
+                    return true;
+                case 34:
+                    boolean _arg034 = data.readBoolean();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDataEnabledChanged(_arg034, _arg17);
+                    return true;
+                case 35:
+                    int _arg035 = data.readInt();
+                    long _arg18 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAllowedNetworkTypesChanged(_arg035, _arg18);
+                    return true;
+                case 36:
+                    List<LinkCapacityEstimate> _arg036 = data.createTypedArrayList(LinkCapacityEstimate.CREATOR);
+                    data.enforceNoDataAvail();
+                    onLinkCapacityEstimateChanged(_arg036);
+                    return true;
+                case 37:
+                    MediaQualityStatus _arg037 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaQualityStatusChanged(_arg037);
+                    return true;
+                case 38:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallBackModeStarted(_arg038);
+                    return true;
+                case 39:
+                    int _arg039 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCallBackModeStopped(_arg039, _arg19);
+                    return true;
+                case 40:
+                    int[] _arg040 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onSimultaneousCallingStateChanged(_arg040);
+                    return true;
+                case 41:
+                    boolean _arg041 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCarrierRoamingNtnModeChanged(_arg041);
+                    return true;
+                case 42:
+                    boolean _arg042 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCarrierRoamingNtnEligibleStateChanged(_arg042);
+                    return true;
+                case 43:
+                    int[] _arg043 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onCarrierRoamingNtnAvailableServicesChanged(_arg043);
+                    return true;
+                case 44:
+                    NtnSignalStrength _arg044 = (NtnSignalStrength) data.readTypedObject(NtnSignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCarrierRoamingNtnSignalStrengthChanged(_arg044);
+                    return true;
+                case 45:
+                    SemSatelliteServiceState _arg045 = (SemSatelliteServiceState) data.readTypedObject(SemSatelliteServiceState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSemSatelliteServiceStateChanged(_arg045);
+                    return true;
+                case 46:
+                    SemSatelliteSignalStrength _arg046 = (SemSatelliteSignalStrength) data.readTypedObject(SemSatelliteSignalStrength.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSemSatelliteSignalStrengthChanged(_arg046);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ServiceState _arg0 = (ServiceState) data.readTypedObject(ServiceState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onServiceStateChanged(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSignalStrengthChanged(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onMessageWaitingIndicatorChanged(_arg03);
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCallForwardingIndicatorChanged(_arg04);
-                            return true;
-                        case 5:
-                            CellIdentity _arg05 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCellLocationChanged(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onLegacyCallStateChanged(_arg06, _arg1);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallStateChanged(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDataConnectionStateChanged(_arg08, _arg12);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDataActivity(_arg09);
-                            return true;
-                        case 10:
-                            SignalStrength _arg010 = (SignalStrength) data.readTypedObject(SignalStrength.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSignalStrengthsChanged(_arg010);
-                            return true;
-                        case 11:
-                            List<CellInfo> _arg011 = data.createTypedArrayList(CellInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCellInfoChanged(_arg011);
-                            return true;
-                        case 12:
-                            PreciseCallState _arg012 = (PreciseCallState) data.readTypedObject(PreciseCallState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPreciseCallStateChanged(_arg012);
-                            return true;
-                        case 13:
-                            PreciseDataConnectionState _arg013 = (PreciseDataConnectionState) data.readTypedObject(PreciseDataConnectionState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPreciseDataConnectionStateChanged(_arg013);
-                            return true;
-                        case 14:
-                            DataConnectionRealTimeInfo _arg014 = (DataConnectionRealTimeInfo) data.readTypedObject(DataConnectionRealTimeInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDataConnectionRealTimeInfoChanged(_arg014);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSrvccStateChanged(_arg015);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVoiceActivationStateChanged(_arg016);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDataActivationStateChanged(_arg017);
-                            return true;
-                        case 18:
-                            byte[] _arg018 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onOemHookRawEvent(_arg018);
-                            return true;
-                        case 19:
-                            boolean _arg019 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCarrierNetworkChange(_arg019);
-                            return true;
-                        case 20:
-                            boolean _arg020 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUserMobileDataStateChanged(_arg020);
-                            return true;
-                        case 21:
-                            TelephonyDisplayInfo _arg021 = (TelephonyDisplayInfo) data.readTypedObject(TelephonyDisplayInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayInfoChanged(_arg021);
-                            return true;
-                        case 22:
-                            PhoneCapability _arg022 = (PhoneCapability) data.readTypedObject(PhoneCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPhoneCapabilityChanged(_arg022);
-                            return true;
-                        case 23:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onActiveDataSubIdChanged(_arg023);
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRadioPowerStateChanged(_arg024);
-                            return true;
-                        case 25:
-                            List<CallState> _arg025 = data.createTypedArrayList(CallState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCallStatesChanged(_arg025);
-                            return true;
-                        case 26:
-                            ClassLoader cl = getClass().getClassLoader();
-                            Map _arg026 = data.readHashMap(cl);
-                            data.enforceNoDataAvail();
-                            onEmergencyNumberListChanged(_arg026);
-                            return true;
-                        case 27:
-                            EmergencyNumber _arg027 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOutgoingEmergencyCall(_arg027, _arg13);
-                            return true;
-                        case 28:
-                            EmergencyNumber _arg028 = (EmergencyNumber) data.readTypedObject(EmergencyNumber.CREATOR);
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOutgoingEmergencySms(_arg028, _arg14);
-                            return true;
-                        case 29:
-                            int _arg029 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallDisconnectCauseChanged(_arg029, _arg15);
-                            return true;
-                        case 30:
-                            ImsReasonInfo _arg030 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onImsCallDisconnectCauseChanged(_arg030);
-                            return true;
-                        case 31:
-                            CellIdentity _arg031 = (CellIdentity) data.readTypedObject(CellIdentity.CREATOR);
-                            String _arg16 = data.readString();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRegistrationFailed(_arg031, _arg16, _arg2, _arg3, _arg4);
-                            return true;
-                        case 32:
-                            BarringInfo _arg032 = (BarringInfo) data.readTypedObject(BarringInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBarringInfoChanged(_arg032);
-                            return true;
-                        case 33:
-                            List<PhysicalChannelConfig> _arg033 = data.createTypedArrayList(PhysicalChannelConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPhysicalChannelConfigChanged(_arg033);
-                            return true;
-                        case 34:
-                            boolean _arg034 = data.readBoolean();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDataEnabledChanged(_arg034, _arg17);
-                            return true;
-                        case 35:
-                            int _arg035 = data.readInt();
-                            long _arg18 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAllowedNetworkTypesChanged(_arg035, _arg18);
-                            return true;
-                        case 36:
-                            List<LinkCapacityEstimate> _arg036 = data.createTypedArrayList(LinkCapacityEstimate.CREATOR);
-                            data.enforceNoDataAvail();
-                            onLinkCapacityEstimateChanged(_arg036);
-                            return true;
-                        case 37:
-                            MediaQualityStatus _arg037 = (MediaQualityStatus) data.readTypedObject(MediaQualityStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaQualityStatusChanged(_arg037);
-                            return true;
-                        case 38:
-                            int _arg038 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallBackModeStarted(_arg038);
-                            return true;
-                        case 39:
-                            int _arg039 = data.readInt();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCallBackModeStopped(_arg039, _arg19);
-                            return true;
-                        case 40:
-                            boolean _arg040 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCarrierRoamingNtnModeChanged(_arg040);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IPhoneStateListener {
+        private static class Proxy implements IPhoneStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1159,12 +1240,84 @@ public interface IPhoneStateListener extends IInterface {
             }
 
             @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onSimultaneousCallingStateChanged(int[] subIds) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeIntArray(subIds);
+                    this.mRemote.transact(40, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
             public void onCarrierRoamingNtnModeChanged(boolean active) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(active);
-                    this.mRemote.transact(40, _data, null, 1);
+                    this.mRemote.transact(41, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onCarrierRoamingNtnEligibleStateChanged(boolean eligible) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(eligible);
+                    this.mRemote.transact(42, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onCarrierRoamingNtnAvailableServicesChanged(int[] availableServices) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeIntArray(availableServices);
+                    this.mRemote.transact(43, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onCarrierRoamingNtnSignalStrengthChanged(NtnSignalStrength ntnSignalStrength) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(ntnSignalStrength, 0);
+                    this.mRemote.transact(44, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onSemSatelliteServiceStateChanged(SemSatelliteServiceState serviceState) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(serviceState, 0);
+                    this.mRemote.transact(45, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.telephony.IPhoneStateListener
+            public void onSemSatelliteSignalStrengthChanged(SemSatelliteSignalStrength signalStrength) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(signalStrength, 0);
+                    this.mRemote.transact(46, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -1173,7 +1326,7 @@ public interface IPhoneStateListener extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 39;
+            return 45;
         }
     }
 }

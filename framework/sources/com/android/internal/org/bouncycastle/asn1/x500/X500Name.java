@@ -80,9 +80,8 @@ public class X500Name extends ASN1Object implements ASN1Choice {
 
     public X500Name(X500NameStyle style, RDN[] rDNs) {
         this.style = style;
-        RDN[] rdnArr = (RDN[]) rDNs.clone();
-        this.rdns = rdnArr;
-        this.rdnSeq = new DERSequence(rdnArr);
+        this.rdns = (RDN[]) rDNs.clone();
+        this.rdnSeq = new DERSequence(this.rdns);
     }
 
     public X500Name(String dirName) {
@@ -117,18 +116,12 @@ public class X500Name extends ASN1Object implements ASN1Choice {
     public RDN[] getRDNs(ASN1ObjectIdentifier attributeType) {
         RDN[] res = new RDN[this.rdns.length];
         int count = 0;
-        int i = 0;
-        while (true) {
-            RDN[] rdnArr = this.rdns;
-            if (i == rdnArr.length) {
-                break;
-            }
-            RDN rdn = rdnArr[i];
+        for (int i = 0; i != this.rdns.length; i++) {
+            RDN rdn = this.rdns[i];
             if (rdn.containsAttributeType(attributeType)) {
                 res[count] = rdn;
                 count++;
             }
-            i++;
         }
         int i2 = res.length;
         if (count < i2) {
@@ -150,9 +143,8 @@ public class X500Name extends ASN1Object implements ASN1Choice {
             return this.hashCodeValue;
         }
         this.isHashCodeCalculated = true;
-        int calculateHashCode = this.style.calculateHashCode(this);
-        this.hashCodeValue = calculateHashCode;
-        return calculateHashCode;
+        this.hashCodeValue = this.style.calculateHashCode(this);
+        return this.hashCodeValue;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object

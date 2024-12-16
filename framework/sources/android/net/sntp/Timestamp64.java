@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Random;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class Timestamp64 {
     static final long MAX_SECONDS_IN_ERA = 4294967295L;
     static final int NANOS_PER_SECOND = 1000000000;
@@ -89,12 +89,12 @@ public final class Timestamp64 {
         return Objects.hash(Long.valueOf(this.mEraSeconds), Integer.valueOf(this.mFractionBits));
     }
 
-    public static int fractionBitsToNanos(int fractionBits) {
+    static int fractionBitsToNanos(int fractionBits) {
         long fractionBitsLong = fractionBits & 4294967295L;
         return (int) ((1000000000 * fractionBitsLong) >>> 32);
     }
 
-    public static int nanosToFractionBits(long nanos) {
+    static int nanosToFractionBits(long nanos) {
         if (nanos <= 1000000000) {
             return (int) ((nanos << 32) / 1000000000);
         }

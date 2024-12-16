@@ -28,7 +28,6 @@ public final class IkeSessionParamsUtils {
     private static final String DPD_DELAY_SEC_KEY = "DPD_DELAY_SEC_KEY";
     private static final String ENCAP_TYPE_KEY = "ENCAP_TYPE_KEY";
     private static final String HARD_LIFETIME_SEC_KEY = "HARD_LIFETIME_SEC_KEY";
-    private static final Set<Integer> IKE_OPTIONS;
     private static final String IKE_OPTIONS_KEY = "IKE_OPTIONS_KEY";
     public static final int IKE_OPTION_AUTOMATIC_ADDRESS_FAMILY_SELECTION = 6;
     public static final int IKE_OPTION_AUTOMATIC_NATT_KEEPALIVES = 7;
@@ -43,19 +42,18 @@ public final class IkeSessionParamsUtils {
     private static final String SERVER_HOST_NAME_KEY = "SERVER_HOST_NAME_KEY";
     private static final String SOFT_LIFETIME_SEC_KEY = "SOFT_LIFETIME_SEC_KEY";
     private static final String TAG = IkeSessionParamsUtils.class.getSimpleName();
+    private static final Set<Integer> IKE_OPTIONS = new ArraySet();
 
     static {
-        ArraySet arraySet = new ArraySet();
-        IKE_OPTIONS = arraySet;
-        arraySet.add(0);
-        arraySet.add(1);
-        arraySet.add(2);
-        arraySet.add(3);
-        arraySet.add(4);
-        arraySet.add(5);
-        arraySet.add(6);
-        arraySet.add(7);
-        arraySet.add(8);
+        IKE_OPTIONS.add(0);
+        IKE_OPTIONS.add(1);
+        IKE_OPTIONS.add(2);
+        IKE_OPTIONS.add(3);
+        IKE_OPTIONS.add(4);
+        IKE_OPTIONS.add(5);
+        IKE_OPTIONS.add(6);
+        IKE_OPTIONS.add(7);
+        IKE_OPTIONS.add(8);
     }
 
     public static boolean isIkeOptionValid(int option) {
@@ -74,7 +72,7 @@ public final class IkeSessionParamsUtils {
         }
         PersistableBundle result = new PersistableBundle();
         result.putString(SERVER_HOST_NAME_KEY, params.getServerHostname());
-        PersistableBundle saProposalBundle = PersistableBundleUtils.fromList(params.getSaProposals(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda0
+        PersistableBundle saProposalBundle = PersistableBundleUtils.fromList(params.getSaProposals(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda2
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return IkeSaProposalUtils.toPersistableBundle((IkeSaProposal) obj);
@@ -89,7 +87,7 @@ public final class IkeSessionParamsUtils {
         for (IkeSessionParams.IkeConfigRequest req : params.getConfigurationRequests()) {
             reqList.add(new ConfigRequest(req));
         }
-        PersistableBundle configReqListBundle = PersistableBundleUtils.fromList(reqList, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda1
+        PersistableBundle configReqListBundle = PersistableBundleUtils.fromList(reqList, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda3
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return ((IkeSessionParamsUtils.ConfigRequest) obj).toPersistableBundle();
@@ -104,14 +102,19 @@ public final class IkeSessionParamsUtils {
         result.putInt(IP_VERSION_KEY, params.getIpVersion());
         result.putInt(ENCAP_TYPE_KEY, params.getEncapType());
         List<Integer> enabledIkeOptions = new ArrayList<>();
-        Iterator<Integer> it = IKE_OPTIONS.iterator();
-        while (it.hasNext()) {
-            int option = it.next().intValue();
-            if (isIkeOptionValid(option) && params.hasIkeOption(option)) {
-                enabledIkeOptions.add(Integer.valueOf(option));
+        try {
+            enabledIkeOptions.addAll(params.getIkeOptions());
+        } catch (Exception e) {
+            enabledIkeOptions.clear();
+            Iterator<Integer> it = IKE_OPTIONS.iterator();
+            while (it.hasNext()) {
+                int option = it.next().intValue();
+                if (isIkeOptionValid(option) && params.hasIkeOption(option)) {
+                    enabledIkeOptions.add(Integer.valueOf(option));
+                }
             }
         }
-        int[] optionArray = enabledIkeOptions.stream().mapToInt(new ToIntFunction() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda2
+        int[] optionArray = enabledIkeOptions.stream().mapToInt(new ToIntFunction() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda4
             @Override // java.util.function.ToIntFunction
             public final int applyAsInt(Object obj) {
                 int intValue;
@@ -129,7 +132,7 @@ public final class IkeSessionParamsUtils {
         builder.setServerHostname(in.getString(SERVER_HOST_NAME_KEY));
         PersistableBundle proposalBundle = in.getPersistableBundle(SA_PROPOSALS_KEY);
         Objects.requireNonNull(in, "SA Proposals was null");
-        List<IkeSaProposal> saProposals = PersistableBundleUtils.toList(proposalBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda3
+        List<IkeSaProposal> saProposals = PersistableBundleUtils.toList(proposalBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda0
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
             public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                 return IkeSaProposalUtils.fromPersistableBundle(persistableBundle);
@@ -149,7 +152,7 @@ public final class IkeSessionParamsUtils {
         builder.setEncapType(in.getInt(ENCAP_TYPE_KEY));
         PersistableBundle configReqListBundle = in.getPersistableBundle(CONFIG_REQUESTS_KEY);
         Objects.requireNonNull(configReqListBundle, "Config request list was null");
-        List<ConfigRequest> reqList = PersistableBundleUtils.toList(configReqListBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda4
+        List<ConfigRequest> reqList = PersistableBundleUtils.toList(configReqListBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.IkeSessionParamsUtils$$ExternalSyntheticLambda1
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
             public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                 return new IkeSessionParamsUtils.ConfigRequest(persistableBundle);
@@ -193,8 +196,7 @@ public final class IkeSessionParamsUtils {
         return builder.build();
     }
 
-    /* loaded from: classes3.dex */
-    public static final class AuthConfigUtils {
+    private static final class AuthConfigUtils {
         private static final String AUTH_METHOD_KEY = "AUTH_METHOD_KEY";
         private static final int IKE_AUTH_METHOD_EAP = 3;
         private static final int IKE_AUTH_METHOD_PSK = 1;
@@ -259,8 +261,7 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class IkeAuthPskConfigUtils {
+    private static final class IkeAuthPskConfigUtils {
         private static final String PSK_KEY = "PSK_KEY";
 
         private IkeAuthPskConfigUtils() {
@@ -287,8 +288,7 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class IkeAuthDigitalSignConfigUtils {
+    private static class IkeAuthDigitalSignConfigUtils {
         private static final String END_CERT_KEY = "END_CERT_KEY";
         private static final String INTERMEDIATE_CERTS_KEY = "INTERMEDIATE_CERTS_KEY";
         private static final String PRIVATE_KEY_KEY = "PRIVATE_KEY_KEY";
@@ -363,8 +363,7 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class IkeAuthEapConfigUtils {
+    private static final class IkeAuthEapConfigUtils {
         private static final String EAP_CONFIG_KEY = "EAP_CONFIG_KEY";
 
         private IkeAuthEapConfigUtils() {
@@ -389,8 +388,8 @@ public final class IkeSessionParamsUtils {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class ConfigRequest {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class ConfigRequest {
         private static final String ADDRESS_KEY = "address";
         private static final int IPV4_P_CSCF_ADDRESS = 1;
         private static final int IPV6_P_CSCF_ADDRESS = 2;
@@ -412,7 +411,7 @@ public final class IkeSessionParamsUtils {
             }
         }
 
-        public ConfigRequest(PersistableBundle in) {
+        ConfigRequest(PersistableBundle in) {
             Objects.requireNonNull(in, "PersistableBundle was null");
             this.type = in.getInt("type");
             String addressStr = in.getString("address");
@@ -426,9 +425,8 @@ public final class IkeSessionParamsUtils {
         public PersistableBundle toPersistableBundle() {
             PersistableBundle result = new PersistableBundle();
             result.putInt("type", this.type);
-            InetAddress inetAddress = this.address;
-            if (inetAddress != null) {
-                result.putString("address", inetAddress.getHostAddress());
+            if (this.address != null) {
+                result.putString("address", this.address.getHostAddress());
             }
             return result;
         }

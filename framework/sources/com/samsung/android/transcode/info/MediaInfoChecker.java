@@ -9,7 +9,7 @@ import com.samsung.android.transcode.info.MediaInfo;
 import com.samsung.android.transcode.util.LogS;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MediaInfoChecker {
     private static final int FOUR_K_VIDEO_RESOULTION_SIZE = 8847360;
     static final int NOT_SUPPORT_VC = 1234567890;
@@ -31,8 +31,8 @@ public class MediaInfoChecker {
     public static boolean isRewritable(MediaFormat audioformat, MediaFormat videoformat) {
         boolean bSupportedVideoType = false;
         boolean bSupportedAudioType = false;
-        String mimeAudio = audioformat.getString(MediaFormat.KEY_MIME);
-        String mimeVideo = videoformat.getString(MediaFormat.KEY_MIME);
+        String mimeAudio = audioformat.getString("mime");
+        String mimeVideo = videoformat.getString("mime");
         if (mimeVideo != null && (mimeVideo.contains("video/avc") || mimeVideo.contains("video/mp4v-es") || mimeVideo.contains("video/3gpp") || mimeVideo.contains("video/hevc"))) {
             bSupportedVideoType = true;
         } else {
@@ -88,7 +88,7 @@ public class MediaInfoChecker {
     }
 
     public static boolean isSupportedCodecType(MediaFormat inputFormat) {
-        String mime = inputFormat.getString(MediaFormat.KEY_MIME);
+        String mime = inputFormat.getString("mime");
         if (mime == null) {
             LogS.e("TranscodeLib", "isSupportedCodecType mime is null");
             return false;
@@ -125,7 +125,6 @@ public class MediaInfoChecker {
     }
 
     private static MediaCodecList getAllCodecList() {
-        MediaCodecList mediaCodecList = sMediaCodecList;
-        return mediaCodecList != null ? mediaCodecList : new MediaCodecList(1);
+        return sMediaCodecList != null ? sMediaCodecList : new MediaCodecList(1);
     }
 }

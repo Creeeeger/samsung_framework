@@ -5,7 +5,7 @@ import android.content.pm.UserInfo;
 import android.os.UserManager;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class UserManagerWrapper {
     private final UserManager mUserManager;
 

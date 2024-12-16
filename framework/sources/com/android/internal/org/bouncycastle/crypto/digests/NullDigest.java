@@ -41,12 +41,7 @@ public class NullDigest implements Digest {
         this.bOut.reset();
     }
 
-    /* loaded from: classes5.dex */
-    public static class OpenByteArrayOutputStream extends ByteArrayOutputStream {
-        /* synthetic */ OpenByteArrayOutputStream(OpenByteArrayOutputStreamIA openByteArrayOutputStreamIA) {
-            this();
-        }
-
+    private static class OpenByteArrayOutputStream extends ByteArrayOutputStream {
         private OpenByteArrayOutputStream() {
         }
 

@@ -6,9 +6,11 @@ import android.app.blob.XmlTags;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.text.LineBreakConfig;
 import android.media.TtmlUtils;
 import android.provider.Telephony;
 import android.text.Annotation;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannedString;
 import android.text.TextPaint;
@@ -18,6 +20,7 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.BulletSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.LineBreakConfigSpan;
 import android.text.style.LineHeightSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
@@ -28,6 +31,7 @@ import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.util.SparseArray;
 import com.samsung.android.util.CustomizedTextParser;
 import java.io.Closeable;
@@ -72,26 +76,22 @@ public final class StringBlock implements Closeable {
 
     public CharSequence getSequence(int idx) {
         synchronized (this) {
-            CharSequence[] charSequenceArr = this.mStrings;
-            if (charSequenceArr != null) {
-                CharSequence res = charSequenceArr[idx];
+            if (this.mStrings != null) {
+                CharSequence res = this.mStrings[idx];
                 if (res != null) {
                     return res;
                 }
+            } else if (this.mSparseStrings != null) {
+                CharSequence res2 = this.mSparseStrings.get(idx);
+                if (res2 != null) {
+                    return res2;
+                }
             } else {
-                SparseArray<CharSequence> sparseArray = this.mSparseStrings;
-                if (sparseArray != null) {
-                    CharSequence res2 = sparseArray.get(idx);
-                    if (res2 != null) {
-                        return res2;
-                    }
+                int num = nativeGetSize(this.mNative);
+                if (this.mUseSparse && num > 250) {
+                    this.mSparseStrings = new SparseArray<>();
                 } else {
-                    int num = nativeGetSize(this.mNative);
-                    if (this.mUseSparse && num > 250) {
-                        this.mSparseStrings = new SparseArray<>();
-                    } else {
-                        this.mStrings = new CharSequence[num];
-                    }
+                    this.mStrings = new CharSequence[num];
                 }
             }
             String str = nativeGetString(this.mNative, idx);
@@ -115,7 +115,7 @@ public final class StringBlock implements Closeable {
                             if (styleTag == null) {
                                 return null;
                             }
-                            if (styleTag.equals("b")) {
+                            if (styleTag.equals(XmlTags.TAG_BLOB)) {
                                 this.mStyleIDs.boldId = styleId;
                             } else if (styleTag.equals("i")) {
                                 this.mStyleIDs.italicId = styleId;
@@ -137,6 +137,10 @@ public final class StringBlock implements Closeable {
                                 this.mStyleIDs.listItemId = styleId;
                             } else if (styleTag.equals("marquee")) {
                                 this.mStyleIDs.marqueeId = styleId;
+                            } else if (styleTag.equals("nobreak")) {
+                                this.mStyleIDs.mNoBreakId = styleId;
+                            } else if (styleTag.equals("nohyphen")) {
+                                this.mStyleIDs.mNoHyphenId = styleId;
                             } else if (styleTag.equals(CustomizedTextParser.REPLACE_TAG)) {
                                 hasCustomizedString = true;
                                 this.mStyleIDs.uniqueTextId = styleId;
@@ -147,9 +151,8 @@ public final class StringBlock implements Closeable {
                 res3 = applyStyles(str, style, this.mStyleIDs, hasCustomizedString);
             }
             if (res3 != null) {
-                CharSequence[] charSequenceArr2 = this.mStrings;
-                if (charSequenceArr2 != null) {
-                    charSequenceArr2[idx] = res3;
+                if (this.mStrings != null) {
+                    this.mStrings[idx] = res3;
                 } else {
                     this.mSparseStrings.put(idx, res3);
                 }
@@ -179,8 +182,7 @@ public final class StringBlock implements Closeable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class StyleIDs {
+    static final class StyleIDs {
         private int boldId = -1;
         private int italicId = -1;
         private int underlineId = -1;
@@ -192,6 +194,8 @@ public final class StringBlock implements Closeable {
         private int strikeId = -1;
         private int listItemId = -1;
         private int marqueeId = -1;
+        private int mNoBreakId = -1;
+        private int mNoHyphenId = -1;
         private int uniqueTextId = -1;
 
         StyleIDs() {
@@ -199,16 +203,18 @@ public final class StringBlock implements Closeable {
     }
 
     /* JADX WARN: Type inference failed for: r3v0 */
-    /* JADX WARN: Type inference failed for: r3v1, types: [int, boolean] */
-    /* JADX WARN: Type inference failed for: r3v5 */
+    /* JADX WARN: Type inference failed for: r3v1, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r3v11 */
     private CharSequence applyStyles(String str, int[] style, StyleIDs ids, boolean hasCustomizedString) {
-        String str2 = str;
+        String str2;
+        boolean z;
+        String str3 = str;
         if (style.length == 0) {
-            return str2;
+            return str3;
         }
         ?? r3 = 1;
         if (hasCustomizedString) {
-            StringBuffer sb = new StringBuffer(str2);
+            StringBuffer sb = new StringBuffer(str3);
             for (int i = 0; i < style.length; i += 3) {
                 if (style[i] == ids.uniqueTextId) {
                     String originalString = sb.substring(style[i + 1], style[i + 2] + 1);
@@ -232,9 +238,9 @@ public final class StringBlock implements Closeable {
                     }
                 }
             }
-            str2 = sb.toString();
+            str3 = sb.toString();
         }
-        SpannableString buffer = new SpannableString(str2);
+        SpannableString buffer = new SpannableString(str3);
         int i4 = 0;
         while (i4 < style.length) {
             int type = style[i4];
@@ -242,26 +248,56 @@ public final class StringBlock implements Closeable {
                 Application application = ActivityThread.currentApplication();
                 int fontWeightAdjustment = application.getResources().getConfiguration().fontWeightAdjustment;
                 buffer.setSpan(new StyleSpan(r3, fontWeightAdjustment), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.italicId) {
                 buffer.setSpan(new StyleSpan(2), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.underlineId) {
                 buffer.setSpan(new UnderlineSpan(), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.ttId) {
                 buffer.setSpan(new TypefaceSpan("monospace"), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.bigId) {
                 buffer.setSpan(new RelativeSizeSpan(1.25f), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.smallId) {
                 buffer.setSpan(new RelativeSizeSpan(0.8f), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.subId) {
                 buffer.setSpan(new SubscriptSpan(), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.supId) {
                 buffer.setSpan(new SuperscriptSpan(), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.strikeId) {
                 buffer.setSpan(new StrikethroughSpan(), style[i4 + 1], style[i4 + 2] + r3, 33);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.listItemId) {
                 addParagraphSpan(buffer, new BulletSpan(10), style[i4 + 1], style[i4 + 2] + r3);
+                str2 = str3;
+                z = r3;
             } else if (type == ids.marqueeId) {
                 buffer.setSpan(TextUtils.TruncateAt.MARQUEE, style[i4 + 1], style[i4 + 2] + r3, 18);
+                str2 = str3;
+                z = r3;
+            } else if (type == ids.mNoBreakId) {
+                buffer.setSpan(LineBreakConfigSpan.createNoBreakSpan(), style[i4 + 1], style[i4 + 2] + r3, 17);
+                str2 = str3;
+                z = r3;
+            } else if (type == ids.mNoHyphenId) {
+                buffer.setSpan(LineBreakConfigSpan.createNoHyphenationSpan(), style[i4 + 1], style[i4 + 2] + r3, 17);
+                str2 = str3;
+                z = r3;
             } else {
                 String tag = nativeGetString(this.mNative, type);
                 if (tag == null) {
@@ -294,18 +330,27 @@ public final class StringBlock implements Closeable {
                     if (sub6 != null) {
                         buffer.setSpan(new TypefaceSpan(sub6), style[i4 + 1], style[i4 + 2] + r3, 33);
                     }
+                    str2 = str3;
+                    z = r3;
                 } else if (tag.startsWith("a;")) {
                     String sub7 = subtag(tag, ";href=");
                     if (sub7 != null) {
                         buffer.setSpan(new URLSpan(sub7), style[i4 + 1], style[i4 + 2] + r3, 33);
                     }
+                    str2 = str3;
+                    z = r3;
                 } else if (tag.startsWith("annotation;")) {
                     int len = tag.length();
                     int i5 = 59;
                     int t = tag.indexOf(59);
-                    while (t < len) {
+                    while (true) {
+                        if (t >= len) {
+                            str2 = str3;
+                            break;
+                        }
                         int eq = tag.indexOf(61, t);
                         if (eq < 0) {
+                            str2 = str3;
                             break;
                         }
                         int next = tag.indexOf(i5, eq);
@@ -316,14 +361,53 @@ public final class StringBlock implements Closeable {
                         String value = tag.substring(eq + 1, next);
                         buffer.setSpan(new Annotation(key, value), style[i4 + 1], style[i4 + 2] + 1, 33);
                         t = next;
-                        str2 = str2;
+                        str3 = str3;
                         i5 = 59;
+                    }
+                    z = true;
+                } else {
+                    str2 = str3;
+                    if (!tag.startsWith("lineBreakConfig;")) {
+                        z = true;
+                    } else {
+                        String lbStyleStr = subtag(tag, ";style=");
+                        int lbStyle = -1;
+                        if (lbStyleStr != null) {
+                            if (lbStyleStr.equals("none")) {
+                                lbStyle = 0;
+                            } else if (lbStyleStr.equals("normal")) {
+                                lbStyle = 2;
+                            } else if (lbStyleStr.equals("loose")) {
+                                lbStyle = 1;
+                            } else if (!lbStyleStr.equals("strict")) {
+                                Log.w(TAG, "Unknown LineBreakConfig style: " + lbStyleStr);
+                            } else {
+                                lbStyle = 3;
+                            }
+                        }
+                        String lbWordStyleStr = subtag(tag, ";wordStyle=");
+                        int lbWordStyle = -1;
+                        if (lbWordStyleStr != null) {
+                            if (lbWordStyleStr.equals("none")) {
+                                lbWordStyle = 0;
+                            } else if (!lbWordStyleStr.equals("phrase")) {
+                                Log.w(TAG, "Unknown LineBreakConfig word style: " + lbWordStyleStr);
+                            } else {
+                                lbWordStyle = 1;
+                            }
+                        }
+                        if (lbStyle == -1 && lbWordStyle == -1) {
+                            z = true;
+                        } else {
+                            z = true;
+                            buffer.setSpan(new LineBreakConfigSpan(new LineBreakConfig(lbStyle, lbWordStyle, -1)), style[i4 + 1], style[i4 + 2] + 1, 33);
+                        }
                     }
                 }
             }
             i4 += 3;
-            str2 = str2;
-            r3 = 1;
+            r3 = z;
+            str3 = str2;
         }
         return new SpannedString(buffer);
     }
@@ -356,75 +440,25 @@ public final class StringBlock implements Closeable {
         return new BackgroundColorSpan(c);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0029, code lost:
-    
-        if (r3.charAt(r6 - 1) != '\n') goto L42;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x002b, code lost:
-    
-        r6 = r6 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x002d, code lost:
-    
-        if (r6 >= r0) goto L52;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0035, code lost:
-    
-        if (r3.charAt(r6 - 1) != '\n') goto L53;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x0010, code lost:
-    
-        if (r3.charAt(r5 - 1) != '\n') goto L34;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0012, code lost:
-    
-        r5 = r5 - 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0014, code lost:
-    
-        if (r5 <= 0) goto L48;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001c, code lost:
-    
-        if (r3.charAt(r5 - 1) != '\n') goto L50;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private static void addParagraphSpan(android.text.Spannable r3, java.lang.Object r4, int r5, int r6) {
-        /*
-            int r0 = r3.length()
-            r1 = 10
-            if (r5 == 0) goto L1f
-            if (r5 == r0) goto L1f
-            int r2 = r5 + (-1)
-            char r2 = r3.charAt(r2)
-            if (r2 == r1) goto L1f
-        L12:
-            int r5 = r5 + (-1)
-            if (r5 <= 0) goto L1f
-            int r2 = r5 + (-1)
-            char r2 = r3.charAt(r2)
-            if (r2 != r1) goto L12
-        L1f:
-            if (r6 == 0) goto L38
-            if (r6 == r0) goto L38
-            int r2 = r6 + (-1)
-            char r2 = r3.charAt(r2)
-            if (r2 == r1) goto L38
-        L2b:
-            int r6 = r6 + 1
-            if (r6 >= r0) goto L38
-            int r2 = r6 + (-1)
-            char r2 = r3.charAt(r2)
-            if (r2 != r1) goto L2b
-        L38:
-            r1 = 51
-            r3.setSpan(r4, r5, r6, r1)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.content.res.StringBlock.addParagraphSpan(android.text.Spannable, java.lang.Object, int, int):void");
+    private static void addParagraphSpan(Spannable buffer, Object what, int start, int end) {
+        int len = buffer.length();
+        if (start != 0 && start != len && buffer.charAt(start - 1) != '\n') {
+            do {
+                start--;
+                if (start <= 0) {
+                    break;
+                }
+            } while (buffer.charAt(start - 1) != '\n');
+        }
+        if (end != 0 && end != len && buffer.charAt(end - 1) != '\n') {
+            do {
+                end++;
+                if (end >= len) {
+                    break;
+                }
+            } while (buffer.charAt(end - 1) != '\n');
+        }
+        buffer.setSpan(what, start, end, 51);
     }
 
     private static String subtag(String full, String attribute) {
@@ -440,8 +474,7 @@ public final class StringBlock implements Closeable {
         return full.substring(start2, end);
     }
 
-    /* loaded from: classes.dex */
-    public static class Height implements LineHeightSpan.WithDensity {
+    private static class Height implements LineHeightSpan.WithDensity {
         private static float sProportion = 0.0f;
         private int mSize;
 

@@ -51,9 +51,8 @@ public class GCMParameters extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(new DEROctetString(this.nonce));
-        int i = this.icvLen;
-        if (i != 12) {
-            v.add(new ASN1Integer(i));
+        if (this.icvLen != 12) {
+            v.add(new ASN1Integer(this.icvLen));
         }
         return new DERSequence(v);
     }

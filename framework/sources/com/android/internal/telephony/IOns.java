@@ -24,7 +24,6 @@ public interface IOns extends IInterface {
 
     void updateAvailableNetworks(List<AvailableNetworkInfo> list, IUpdateAvailableNetworksCallback iUpdateAvailableNetworksCallback, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IOns {
         @Override // com.android.internal.telephony.IOns
         public boolean setEnable(boolean enable, String callingPackage) throws RemoteException {
@@ -55,7 +54,6 @@ public interface IOns extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IOns {
         static final int TRANSACTION_getPreferredDataSubscriptionId = 4;
         static final int TRANSACTION_isEnabled = 2;
@@ -110,60 +108,57 @@ public interface IOns extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOns.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOns.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOns.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = setEnable(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isEnabled(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    ISetOpportunisticDataCallback _arg2 = ISetOpportunisticDataCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    setPreferredDataSubscriptionId(_arg03, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result3 = getPreferredDataSubscriptionId(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    List<AvailableNetworkInfo> _arg05 = data.createTypedArrayList(AvailableNetworkInfo.CREATOR);
+                    IUpdateAvailableNetworksCallback _arg14 = IUpdateAvailableNetworksCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    updateAvailableNetworks(_arg05, _arg14, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = setEnable(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isEnabled(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            ISetOpportunisticDataCallback _arg2 = ISetOpportunisticDataCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            setPreferredDataSubscriptionId(_arg03, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result3 = getPreferredDataSubscriptionId(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            List<AvailableNetworkInfo> _arg05 = data.createTypedArrayList(AvailableNetworkInfo.CREATOR);
-                            IUpdateAvailableNetworksCallback _arg14 = IUpdateAvailableNetworksCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            updateAvailableNetworks(_arg05, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IOns {
+        private static class Proxy implements IOns {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

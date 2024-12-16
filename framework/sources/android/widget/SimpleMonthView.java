@@ -25,13 +25,14 @@ import android.view.PointerIcon;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.flags.Flags;
 import com.android.internal.R;
 import com.android.internal.widget.ExploreByTouchHelper;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 /* loaded from: classes4.dex */
-public class SimpleMonthView extends View {
+class SimpleMonthView extends View {
     private static final int DAYS_IN_WEEK = 7;
     private static final int DEFAULT_SELECTED_DAY = -1;
     private static final int DEFAULT_WEEK_START = 1;
@@ -77,7 +78,6 @@ public class SimpleMonthView extends View {
     private int mWeekStart;
     private int mYear;
 
-    /* loaded from: classes4.dex */
     public interface OnDayClickListener {
         void onDayClick(SimpleMonthView simpleMonthView, Calendar calendar);
     }
@@ -117,14 +117,12 @@ public class SimpleMonthView extends View {
         this.mDesiredDayHeight = res.getDimensionPixelSize(R.dimen.date_picker_day_height);
         this.mDesiredCellWidth = res.getDimensionPixelSize(R.dimen.date_picker_day_width);
         this.mDesiredDaySelectorRadius = res.getDimensionPixelSize(R.dimen.date_picker_day_selector_radius);
-        MonthViewTouchHelper monthViewTouchHelper = new MonthViewTouchHelper(this);
-        this.mTouchHelper = monthViewTouchHelper;
-        setAccessibilityDelegate(monthViewTouchHelper);
+        this.mTouchHelper = new MonthViewTouchHelper(this);
+        setAccessibilityDelegate(this.mTouchHelper);
         setImportantForAccessibility(1);
-        Locale locale = res.getConfiguration().locale;
-        this.mLocale = locale;
-        this.mCalendar = Calendar.getInstance(locale);
-        this.mDayFormatter = NumberFormat.getIntegerInstance(locale);
+        this.mLocale = res.getConfiguration().locale;
+        this.mCalendar = Calendar.getInstance(this.mLocale);
+        this.mDayFormatter = NumberFormat.getIntegerInstance(this.mLocale);
         updateMonthYearLabel();
         updateDayOfWeekLabels();
         initPaints(res);
@@ -216,24 +214,24 @@ public class SimpleMonthView extends View {
         this.mDayPaint.setStyle(Paint.Style.FILL);
     }
 
-    public void setMonthTextColor(ColorStateList monthTextColor) {
+    void setMonthTextColor(ColorStateList monthTextColor) {
         int enabledColor = monthTextColor.getColorForState(ENABLED_STATE_SET, 0);
         this.mMonthPaint.setColor(enabledColor);
         invalidate();
     }
 
-    public void setDayOfWeekTextColor(ColorStateList dayOfWeekTextColor) {
+    void setDayOfWeekTextColor(ColorStateList dayOfWeekTextColor) {
         int enabledColor = dayOfWeekTextColor.getColorForState(ENABLED_STATE_SET, 0);
         this.mDayOfWeekPaint.setColor(enabledColor);
         invalidate();
     }
 
-    public void setDayTextColor(ColorStateList dayTextColor) {
+    void setDayTextColor(ColorStateList dayTextColor) {
         this.mDayTextColor = dayTextColor;
         invalidate();
     }
 
-    public void setDaySelectorColor(ColorStateList dayBackgroundColor) {
+    void setDaySelectorColor(ColorStateList dayBackgroundColor) {
         int activatedColor = dayBackgroundColor.getColorForState(StateSet.get(40), 0);
         this.mDaySelectorPaint.setColor(activatedColor);
         this.mDayHighlightSelectorPaint.setColor(activatedColor);
@@ -241,7 +239,7 @@ public class SimpleMonthView extends View {
         invalidate();
     }
 
-    public void setDayHighlightColor(ColorStateList dayHighlightColor) {
+    void setDayHighlightColor(ColorStateList dayHighlightColor) {
         int pressedColor = dayHighlightColor.getColorForState(StateSet.get(24), 0);
         this.mDayHighlightPaint.setColor(pressedColor);
         invalidate();
@@ -257,7 +255,6 @@ public class SimpleMonthView extends View {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0014. Please report as an issue. */
     /* JADX WARN: Removed duplicated region for block: B:12:0x003e A[RETURN] */
     @Override // android.view.View
     /*
@@ -327,10 +324,10 @@ public class SimpleMonthView extends View {
             r2 = 7
             r3 = 1
             switch(r1) {
-                case 19: goto L75;
-                case 20: goto L60;
-                case 21: goto L51;
-                case 22: goto L41;
+                case 19: goto L79;
+                case 20: goto L62;
+                case 21: goto L53;
+                case 22: goto L43;
                 case 23: goto L38;
                 case 61: goto Lc;
                 case 66: goto L38;
@@ -338,7 +335,7 @@ public class SimpleMonthView extends View {
                 default: goto La;
             }
         La:
-            goto L86
+            goto L8c
         Lc:
             r1 = 0
             boolean r2 = r8.hasNoModifiers()
@@ -350,7 +347,7 @@ public class SimpleMonthView extends View {
             if (r2 == 0) goto L1c
             r1 = 1
         L1c:
-            if (r1 == 0) goto L86
+            if (r1 == 0) goto L8c
             android.view.ViewParent r2 = r6.getParent()
             r4 = r6
         L23:
@@ -364,52 +361,55 @@ public class SimpleMonthView extends View {
             r4.requestFocus()
             return r3
         L37:
-            goto L86
+            goto L8c
         L38:
             int r1 = r6.mHighlightedDay
             r2 = -1
-            if (r1 == r2) goto L86
+            if (r1 == r2) goto L8c
+            int r1 = r6.mHighlightedDay
             r6.onDayClicked(r1)
             return r3
-        L41:
+        L43:
             boolean r1 = r8.hasNoModifiers()
-            if (r1 == 0) goto L86
+            if (r1 == 0) goto L8c
             boolean r1 = r6.isLayoutRtl()
             r1 = r1 ^ r3
             boolean r0 = r6.moveOneDay(r1)
-            goto L86
-        L51:
+            goto L8c
+        L53:
             boolean r1 = r8.hasNoModifiers()
-            if (r1 == 0) goto L86
+            if (r1 == 0) goto L8c
             boolean r1 = r6.isLayoutRtl()
             boolean r0 = r6.moveOneDay(r1)
-            goto L86
-        L60:
+            goto L8c
+        L62:
             boolean r1 = r8.hasNoModifiers()
-            if (r1 == 0) goto L86
+            if (r1 == 0) goto L8c
             r6.ensureFocusedDay()
             int r1 = r6.mHighlightedDay
             int r4 = r6.mDaysInMonth
             int r4 = r4 - r2
-            if (r1 > r4) goto L86
+            if (r1 > r4) goto L8c
+            int r1 = r6.mHighlightedDay
             int r1 = r1 + r2
             r6.mHighlightedDay = r1
             r0 = 1
-            goto L86
-        L75:
+            goto L8c
+        L79:
             boolean r1 = r8.hasNoModifiers()
-            if (r1 == 0) goto L86
+            if (r1 == 0) goto L8c
             r6.ensureFocusedDay()
             int r1 = r6.mHighlightedDay
-            if (r1 <= r2) goto L86
+            if (r1 <= r2) goto L8c
+            int r1 = r6.mHighlightedDay
             int r1 = r1 - r2
             r6.mHighlightedDay = r1
             r0 = 1
-        L86:
-            if (r0 == 0) goto L8c
+        L8c:
+            if (r0 == 0) goto L92
             r6.invalidate()
             return r3
-        L8c:
+        L92:
             boolean r1 = super.onKeyDown(r7, r8)
             return r1
         */
@@ -417,25 +417,23 @@ public class SimpleMonthView extends View {
     }
 
     private boolean moveOneDay(boolean positive) {
-        int i;
-        int i2;
         ensureFocusedDay();
         if (positive) {
-            if (isLastDayOfWeek(this.mHighlightedDay) || (i2 = this.mHighlightedDay) >= this.mDaysInMonth) {
+            if (isLastDayOfWeek(this.mHighlightedDay) || this.mHighlightedDay >= this.mDaysInMonth) {
                 return false;
             }
-            this.mHighlightedDay = i2 + 1;
+            this.mHighlightedDay++;
             return true;
         }
-        if (isFirstDayOfWeek(this.mHighlightedDay) || (i = this.mHighlightedDay) <= 1) {
+        if (isFirstDayOfWeek(this.mHighlightedDay) || this.mHighlightedDay <= 1) {
             return false;
         }
-        this.mHighlightedDay = i - 1;
+        this.mHighlightedDay--;
         return true;
     }
 
     @Override // android.view.View
-    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         if (gainFocus) {
             int offset = findDayOffset();
             switch (direction) {
@@ -445,10 +443,9 @@ public class SimpleMonthView extends View {
                     break;
                 case 33:
                     int col2 = findClosestColumn(previouslyFocusedRect);
-                    int i = this.mDaysInMonth;
-                    int maxWeeks = (offset + i) / 7;
+                    int maxWeeks = (this.mDaysInMonth + offset) / 7;
                     int day = (col2 - offset) + (maxWeeks * 7) + 1;
-                    this.mHighlightedDay = day > i ? day - 7 : day;
+                    this.mHighlightedDay = day > this.mDaysInMonth ? day - 7 : day;
                     break;
                 case 66:
                     int row = findClosestRow(previouslyFocusedRect);
@@ -499,16 +496,15 @@ public class SimpleMonthView extends View {
 
     @Override // android.view.View
     public void getFocusedRect(Rect r) {
-        int i = this.mHighlightedDay;
-        if (i > 0) {
-            getBoundsForDay(i, r);
+        if (this.mHighlightedDay > 0) {
+            getBoundsForDay(this.mHighlightedDay, r);
         } else {
             super.getFocusedRect(r);
         }
     }
 
     @Override // android.view.View
-    public void onFocusLost() {
+    protected void onFocusLost() {
         if (!this.mIsTouchHighlighted) {
             this.mPreviouslyHighlightedDay = this.mHighlightedDay;
             this.mHighlightedDay = -1;
@@ -521,14 +517,10 @@ public class SimpleMonthView extends View {
         if (this.mHighlightedDay != -1) {
             return;
         }
-        int i = this.mPreviouslyHighlightedDay;
-        if (i != -1) {
-            this.mHighlightedDay = i;
-            return;
-        }
-        int i2 = this.mActivatedDay;
-        if (i2 != -1) {
-            this.mHighlightedDay = i2;
+        if (this.mPreviouslyHighlightedDay != -1) {
+            this.mHighlightedDay = this.mPreviouslyHighlightedDay;
+        } else if (this.mActivatedDay != -1) {
+            this.mHighlightedDay = this.mActivatedDay;
         } else {
             this.mHighlightedDay = 1;
         }
@@ -545,7 +537,7 @@ public class SimpleMonthView extends View {
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         int paddingLeft = getPaddingLeft();
         int paddingTop = getPaddingTop();
         canvas.translate(paddingLeft, paddingTop);
@@ -662,10 +654,12 @@ public class SimpleMonthView extends View {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isDayEnabled(int day) {
         return day >= this.mEnabledDayStart && day <= this.mEnabledDayEnd;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isValidDayOfMonth(int day) {
         return day >= 1 && day <= this.mDaysInMonth;
     }
@@ -695,7 +689,7 @@ public class SimpleMonthView extends View {
         invalidate();
     }
 
-    public void setMonthParams(int selectedDay, int month, int year, int weekStart, int enabledDayStart, int enabledDayEnd) {
+    void setMonthParams(int selectedDay, int month, int year, int weekStart, int enabledDayStart, int enabledDayEnd) {
         this.mActivatedDay = selectedDay;
         if (isValidMonth(month)) {
             this.mMonth = month;
@@ -713,26 +707,19 @@ public class SimpleMonthView extends View {
         Calendar today = Calendar.getInstance();
         this.mToday = -1;
         this.mDaysInMonth = getDaysInMonth(this.mMonth, this.mYear);
-        int i = 0;
-        while (true) {
-            int i2 = this.mDaysInMonth;
-            if (i < i2) {
-                int day = i + 1;
-                if (sameDay(day, today)) {
-                    this.mToday = day;
-                }
-                i++;
-            } else {
-                int i3 = MathUtils.constrain(enabledDayStart, 1, i2);
-                this.mEnabledDayStart = i3;
-                this.mEnabledDayEnd = MathUtils.constrain(enabledDayEnd, i3, this.mDaysInMonth);
-                updateMonthYearLabel();
-                updateDayOfWeekLabels();
-                this.mTouchHelper.invalidateRoot();
-                invalidate();
-                return;
+        for (int i = 0; i < this.mDaysInMonth; i++) {
+            int day = i + 1;
+            if (sameDay(day, today)) {
+                this.mToday = day;
             }
         }
+        int i2 = this.mDaysInMonth;
+        this.mEnabledDayStart = MathUtils.constrain(enabledDayStart, 1, i2);
+        this.mEnabledDayEnd = MathUtils.constrain(enabledDayEnd, this.mEnabledDayStart, this.mDaysInMonth);
+        updateMonthYearLabel();
+        updateDayOfWeekLabels();
+        this.mTouchHelper.invalidateRoot();
+        invalidate();
     }
 
     private static int getDaysInMonth(int month, int year) {
@@ -762,7 +749,7 @@ public class SimpleMonthView extends View {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int preferredHeight = (this.mDesiredDayHeight * 6) + this.mDesiredDayOfWeekHeight + this.mDesiredMonthHeight + getPaddingTop() + getPaddingBottom();
         int preferredWidth = (this.mDesiredCellWidth * 7) + getPaddingStart() + getPaddingEnd();
         int resolvedWidth = resolveSize(preferredWidth, widthMeasureSpec);
@@ -777,7 +764,7 @@ public class SimpleMonthView extends View {
     }
 
     @Override // android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (!changed) {
             return;
         }
@@ -812,15 +799,14 @@ public class SimpleMonthView extends View {
     }
 
     private int findDayOffset() {
-        int i = this.mDayOfWeekStart;
-        int i2 = this.mWeekStart;
-        int offset = i - i2;
-        if (i < i2) {
+        int offset = this.mDayOfWeekStart - this.mWeekStart;
+        if (this.mDayOfWeekStart < this.mWeekStart) {
             return offset + 7;
         }
         return offset;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getDayAtLocation(int x, int y) {
         int headerHeight;
         int paddedY;
@@ -866,6 +852,7 @@ public class SimpleMonthView extends View {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean onDayClicked(int day) {
         if (!isValidDayOfMonth(day) || !isDayEnabled(day)) {
             return false;
@@ -881,20 +868,27 @@ public class SimpleMonthView extends View {
 
     @Override // android.view.View
     public PointerIcon onResolvePointerIcon(MotionEvent event, int pointerIndex) {
+        int pointerIcon;
         if (!isEnabled()) {
             return null;
         }
-        int x = (int) (event.getX() + 0.5f);
-        int y = (int) (event.getY() + 0.5f);
-        int dayUnderPointer = getDayAtLocation(x, y);
-        if (dayUnderPointer >= 0) {
-            return PointerIcon.getSystemIcon(getContext(), 1002);
+        if (event.isFromSource(8194)) {
+            int x = (int) (event.getX() + 0.5f);
+            int y = (int) (event.getY() + 0.5f);
+            int dayUnderPointer = getDayAtLocation(x, y);
+            if (dayUnderPointer >= 0) {
+                if (Flags.enableArrowIconOnHoverWhenClickable()) {
+                    pointerIcon = 1000;
+                } else {
+                    pointerIcon = 1002;
+                }
+                return PointerIcon.getSystemIcon(getContext(), pointerIcon);
+            }
         }
         return super.onResolvePointerIcon(event, pointerIndex);
     }
 
-    /* loaded from: classes4.dex */
-    public class MonthViewTouchHelper extends ExploreByTouchHelper {
+    private class MonthViewTouchHelper extends ExploreByTouchHelper {
         private static final String DATE_FORMAT = "dd MMMM yyyy";
         private final Calendar mTempCalendar;
         private final Rect mTempRect;

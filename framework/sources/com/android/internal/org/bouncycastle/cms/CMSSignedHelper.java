@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /* loaded from: classes5.dex */
-public class CMSSignedHelper {
+class CMSSignedHelper {
     static final CMSSignedHelper INSTANCE = new CMSSignedHelper();
     private static final Map encryptionAlgs = new HashMap();
 
@@ -76,7 +76,7 @@ public class CMSSignedHelper {
         encryptionAlgs.put(alias.getId(), encryption);
     }
 
-    public String getEncryptionAlgName(String encryptionAlgOID) {
+    String getEncryptionAlgName(String encryptionAlgOID) {
         String algName = (String) encryptionAlgs.get(encryptionAlgOID);
         if (algName != null) {
             return algName;
@@ -84,7 +84,7 @@ public class CMSSignedHelper {
         return encryptionAlgOID;
     }
 
-    public AlgorithmIdentifier fixAlgID(AlgorithmIdentifier algId) {
+    AlgorithmIdentifier fixAlgID(AlgorithmIdentifier algId) {
         if (algId.getParameters() == null) {
             return new AlgorithmIdentifier(algId.getAlgorithm(), DERNull.INSTANCE);
         }
@@ -95,7 +95,7 @@ public class CMSSignedHelper {
         addEntries(oid, algorithmName);
     }
 
-    public Store getCertificates(ASN1Set certSet) {
+    Store getCertificates(ASN1Set certSet) {
         if (certSet != null) {
             List certList = new ArrayList(certSet.size());
             Enumeration en = certSet.getObjects();
@@ -110,7 +110,7 @@ public class CMSSignedHelper {
         return new CollectionStore(new ArrayList());
     }
 
-    public Store getAttributeCertificates(ASN1Set certSet) {
+    Store getAttributeCertificates(ASN1Set certSet) {
         if (certSet != null) {
             List certList = new ArrayList(certSet.size());
             Enumeration en = certSet.getObjects();
@@ -125,7 +125,7 @@ public class CMSSignedHelper {
         return new CollectionStore(new ArrayList());
     }
 
-    public Store getCRLs(ASN1Set crlSet) {
+    Store getCRLs(ASN1Set crlSet) {
         if (crlSet != null) {
             List crlList = new ArrayList(crlSet.size());
             Enumeration en = crlSet.getObjects();

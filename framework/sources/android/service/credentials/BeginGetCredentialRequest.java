@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class BeginGetCredentialRequest implements Parcelable {
     public static final Parcelable.Creator<BeginGetCredentialRequest> CREATOR = new Parcelable.Creator<BeginGetCredentialRequest>() { // from class: android.service.credentials.BeginGetCredentialRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialRequest createFromParcel(Parcel in) {
             return new BeginGetCredentialRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginGetCredentialRequest[] newArray(int size) {
             return new BeginGetCredentialRequest[size];
@@ -27,14 +26,6 @@ public final class BeginGetCredentialRequest implements Parcelable {
     };
     private final List<BeginGetCredentialOption> mBeginGetCredentialOptions;
     private final CallingAppInfo mCallingAppInfo;
-
-    /* synthetic */ BeginGetCredentialRequest(Parcel parcel, BeginGetCredentialRequestIA beginGetCredentialRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ BeginGetCredentialRequest(CallingAppInfo callingAppInfo, List list, BeginGetCredentialRequestIA beginGetCredentialRequestIA) {
-        this(callingAppInfo, (List<BeginGetCredentialOption>) list);
-    }
 
     private BeginGetCredentialRequest(CallingAppInfo callingAppInfo, List<BeginGetCredentialOption> getBeginCredentialOptions) {
         this.mCallingAppInfo = callingAppInfo;
@@ -46,24 +37,7 @@ public final class BeginGetCredentialRequest implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readTypedList(arrayList, BeginGetCredentialOption.CREATOR);
         this.mBeginGetCredentialOptions = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
-    }
-
-    /* renamed from: android.service.credentials.BeginGetCredentialRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BeginGetCredentialRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginGetCredentialRequest createFromParcel(Parcel in) {
-            return new BeginGetCredentialRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginGetCredentialRequest[] newArray(int size) {
-            return new BeginGetCredentialRequest[size];
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBeginGetCredentialOptions);
     }
 
     @Override // android.os.Parcelable
@@ -85,7 +59,6 @@ public final class BeginGetCredentialRequest implements Parcelable {
         return this.mBeginGetCredentialOptions;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private CallingAppInfo mCallingAppInfo = null;
         private List<BeginGetCredentialOption> mBeginGetCredentialOptions = new ArrayList();

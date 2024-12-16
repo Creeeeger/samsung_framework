@@ -10,7 +10,7 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
     final int tagNo;
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+    abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
     public static ASN1TaggedObject getInstance(ASN1TaggedObject obj, boolean explicit) {
         if (explicit) {
@@ -43,7 +43,7 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive other) {
+    boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1TaggedObject)) {
             return false;
         }
@@ -97,12 +97,12 @@ public abstract class ASN1TaggedObject extends ASN1Primitive implements ASN1Tagg
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return new DERTaggedObject(this.explicit, this.tagNo, this.obj);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return new DLTaggedObject(this.explicit, this.tagNo, this.obj);
     }
 

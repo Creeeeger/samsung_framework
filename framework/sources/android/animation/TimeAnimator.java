@@ -7,7 +7,6 @@ public class TimeAnimator extends ValueAnimator {
     private TimeListener mListener;
     private long mPreviousTime = -1;
 
-    /* loaded from: classes.dex */
     public interface TimeListener {
         void onTimeUpdate(TimeAnimator timeAnimator, long j, long j2);
     }
@@ -22,8 +21,7 @@ public class TimeAnimator extends ValueAnimator {
     boolean animateBasedOnTime(long currentTime) {
         if (this.mListener != null) {
             long totalTime = currentTime - this.mStartTime;
-            long j = this.mPreviousTime;
-            long deltaTime = j < 0 ? 0L : currentTime - j;
+            long deltaTime = this.mPreviousTime < 0 ? 0L : currentTime - this.mPreviousTime;
             this.mPreviousTime = currentTime;
             this.mListener.onTimeUpdate(this, totalTime, deltaTime);
             return false;
@@ -44,10 +42,10 @@ public class TimeAnimator extends ValueAnimator {
     }
 
     @Override // android.animation.ValueAnimator
-    public void animateValue(float fraction) {
+    void animateValue(float fraction) {
     }
 
     @Override // android.animation.ValueAnimator
-    public void initAnimation() {
+    void initAnimation() {
     }
 }

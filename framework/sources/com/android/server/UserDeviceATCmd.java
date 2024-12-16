@@ -51,12 +51,11 @@ public class UserDeviceATCmd implements IWorkOnAt {
             Slog.i(TAG, "processCmd: params is null");
             return AT_RESPONSE_INVALID_PARAM;
         }
-        EngineeringModeManager engineeringModeManager = this.mEMMgr;
-        if (engineeringModeManager == null) {
+        if (this.mEMMgr == null) {
             Slog.i(TAG, "Cannot connect to em service");
             return AT_RESPONSE_CONN_FAILED;
         }
-        if (!engineeringModeManager.isConnected()) {
+        if (!this.mEMMgr.isConnected()) {
             Slog.i(TAG, "Failed to connect to em service");
             return AT_RESPONSE_CONN_FAILED;
         }

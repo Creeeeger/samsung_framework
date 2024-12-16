@@ -17,9 +17,8 @@ public final class SurfaceSession {
     }
 
     public void kill() {
-        long j = this.mNativeClient;
-        if (j != 0) {
-            nativeDestroy(j);
+        if (this.mNativeClient != 0) {
+            nativeDestroy(this.mNativeClient);
             this.mNativeClient = 0L;
         }
     }

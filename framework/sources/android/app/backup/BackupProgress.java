@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class BackupProgress implements Parcelable {
     public static final Parcelable.Creator<BackupProgress> CREATOR = new Parcelable.Creator<BackupProgress>() { // from class: android.app.backup.BackupProgress.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackupProgress createFromParcel(Parcel in) {
             return new BackupProgress(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BackupProgress[] newArray(int size) {
             return new BackupProgress[size];
@@ -23,10 +22,6 @@ public class BackupProgress implements Parcelable {
     };
     public final long bytesExpected;
     public final long bytesTransferred;
-
-    /* synthetic */ BackupProgress(Parcel parcel, BackupProgressIA backupProgressIA) {
-        this(parcel);
-    }
 
     public BackupProgress(long _bytesExpected, long _bytesTransferred) {
         this.bytesExpected = _bytesExpected;
@@ -42,23 +37,6 @@ public class BackupProgress implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(this.bytesExpected);
         out.writeLong(this.bytesTransferred);
-    }
-
-    /* renamed from: android.app.backup.BackupProgress$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BackupProgress> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackupProgress createFromParcel(Parcel in) {
-            return new BackupProgress(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BackupProgress[] newArray(int size) {
-            return new BackupProgress[size];
-        }
     }
 
     private BackupProgress(Parcel in) {

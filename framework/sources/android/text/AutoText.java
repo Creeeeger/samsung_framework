@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Locale;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class AutoText {
     private static final int DEFAULT = 14337;
     private static final int INCREMENT = 1024;
@@ -69,16 +69,15 @@ public class AutoText {
                 if (c == 65535) {
                     break;
                 }
-                char[] cArr = this.mTrie;
-                if (c2 != cArr[c + 0]) {
-                    c = cArr[c + 3];
+                if (c2 != this.mTrie[c + 0]) {
+                    c = this.mTrie[c + 3];
                 } else {
-                    if (i == end - 1 && cArr[c + 1] != 65535) {
-                        char c3 = cArr[c + 1];
+                    if (i == end - 1 && this.mTrie[c + 1] != 65535) {
+                        char c3 = this.mTrie[c + 1];
                         int len = this.mText.charAt(c3);
                         return this.mText.substring(c3 + 1, c3 + 1 + len);
                     }
-                    c = cArr[c + 2];
+                    c = this.mTrie[c + 2];
                 }
             }
             if (c == 65535) {
@@ -92,9 +91,8 @@ public class AutoText {
         char off;
         XmlResourceParser parser = r.getXml(R.xml.autotext);
         StringBuilder right = new StringBuilder(9300);
-        char[] cArr = new char[14337];
-        this.mTrie = cArr;
-        cArr[0] = TRIE_NULL;
+        this.mTrie = new char[14337];
+        this.mTrie[0] = TRIE_NULL;
         this.mTrieUsed = (char) 1;
         try {
             try {
@@ -140,44 +138,39 @@ public class AutoText {
             char c = src.charAt(i);
             boolean found = false;
             while (true) {
-                char[] cArr = this.mTrie;
-                char c2 = cArr[herep];
-                if (c2 == 65535) {
+                if (this.mTrie[herep] == 65535) {
                     break;
                 }
-                if (c != cArr[c2 + 0]) {
-                    herep = c2 + 3;
+                if (c != this.mTrie[this.mTrie[herep] + 0]) {
+                    herep = this.mTrie[herep] + 3;
                 } else if (i == slen - 1) {
-                    cArr[c2 + 1] = off;
+                    this.mTrie[this.mTrie[herep] + 1] = off;
                     return;
                 } else {
-                    herep = c2 + 2;
+                    herep = this.mTrie[herep] + 2;
                     found = true;
                 }
             }
             if (!found) {
                 char node = newTrieNode();
-                char[] cArr2 = this.mTrie;
-                cArr2[herep] = node;
-                cArr2[node + 0] = c;
-                cArr2[cArr2[herep] + 1] = TRIE_NULL;
-                cArr2[cArr2[herep] + 3] = TRIE_NULL;
-                cArr2[cArr2[herep] + 2] = TRIE_NULL;
+                this.mTrie[herep] = node;
+                this.mTrie[this.mTrie[herep] + 0] = c;
+                this.mTrie[this.mTrie[herep] + 1] = TRIE_NULL;
+                this.mTrie[this.mTrie[herep] + 3] = TRIE_NULL;
+                this.mTrie[this.mTrie[herep] + 2] = TRIE_NULL;
                 if (i == slen - 1) {
-                    cArr2[cArr2[herep] + 1] = off;
+                    this.mTrie[this.mTrie[herep] + 1] = off;
                     return;
                 }
-                herep = cArr2[herep] + 2;
+                herep = this.mTrie[herep] + 2;
             }
         }
     }
 
     private char newTrieNode() {
-        int i = this.mTrieUsed + 4;
-        char[] cArr = this.mTrie;
-        if (i > cArr.length) {
-            char[] copy = new char[cArr.length + 1024];
-            System.arraycopy(cArr, 0, copy, 0, cArr.length);
+        if (this.mTrieUsed + 4 > this.mTrie.length) {
+            char[] copy = new char[this.mTrie.length + 1024];
+            System.arraycopy(this.mTrie, 0, copy, 0, this.mTrie.length);
             this.mTrie = copy;
         }
         char ret = this.mTrieUsed;

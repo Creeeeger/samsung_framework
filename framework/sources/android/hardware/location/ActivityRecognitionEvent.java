@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class ActivityRecognitionEvent implements Parcelable {
     public static final Parcelable.Creator<ActivityRecognitionEvent> CREATOR = new Parcelable.Creator<ActivityRecognitionEvent>() { // from class: android.hardware.location.ActivityRecognitionEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityRecognitionEvent createFromParcel(Parcel source) {
             String activity = source.readString();
@@ -17,6 +15,7 @@ public class ActivityRecognitionEvent implements Parcelable {
             return new ActivityRecognitionEvent(activity, eventType, timestampNs);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityRecognitionEvent[] newArray(int size) {
             return new ActivityRecognitionEvent[size];
@@ -42,26 +41,6 @@ public class ActivityRecognitionEvent implements Parcelable {
 
     public long getTimestampNs() {
         return this.mTimestampNs;
-    }
-
-    /* renamed from: android.hardware.location.ActivityRecognitionEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ActivityRecognitionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityRecognitionEvent createFromParcel(Parcel source) {
-            String activity = source.readString();
-            int eventType = source.readInt();
-            long timestampNs = source.readLong();
-            return new ActivityRecognitionEvent(activity, eventType, timestampNs);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityRecognitionEvent[] newArray(int size) {
-            return new ActivityRecognitionEvent[size];
-        }
     }
 
     @Override // android.os.Parcelable

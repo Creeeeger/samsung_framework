@@ -18,14 +18,13 @@ import java.util.function.IntFunction;
 /* loaded from: classes3.dex */
 public final class FillRequest implements Parcelable {
     public static final Parcelable.Creator<FillRequest> CREATOR = new Parcelable.Creator<FillRequest>() { // from class: android.service.autofill.FillRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillRequest[] newArray(int size) {
             return new FillRequest[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FillRequest createFromParcel(Parcel in) {
             return new FillRequest(in);
@@ -40,6 +39,7 @@ public final class FillRequest implements Parcelable {
     public static final int FLAG_SCREEN_HAS_CREDMAN_FIELD = 1024;
     public static final int FLAG_SUPPORTS_FILL_DIALOG = 64;
     public static final int FLAG_VIEW_NOT_FOCUSED = 16;
+    public static final int FLAG_VIEW_REQUESTS_CREDMAN_SERVICE = 2048;
     public static final int INVALID_REQUEST_ID = Integer.MIN_VALUE;
     private final Bundle mClientState;
     private final IntentSender mDelayedFillIntentSender;
@@ -50,7 +50,6 @@ public final class FillRequest implements Parcelable {
     private final InlineSuggestionsRequest mInlineSuggestionsRequest;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RequestFlags {
     }
 
@@ -68,7 +67,7 @@ public final class FillRequest implements Parcelable {
         });
     }
 
-    public static String singleRequestFlagsToString(int value) {
+    static String singleRequestFlagsToString(int value) {
         switch (value) {
             case 1:
                 return "FLAG_MANUAL_REQUEST";
@@ -88,6 +87,8 @@ public final class FillRequest implements Parcelable {
                 return "FLAG_PCC_DETECTION";
             case 1024:
                 return "FLAG_SCREEN_HAS_CREDMAN_FIELD";
+            case 2048:
+                return "FLAG_VIEW_REQUESTS_CREDMAN_SERVICE";
             default:
                 return Integer.toHexString(value);
         }
@@ -96,12 +97,12 @@ public final class FillRequest implements Parcelable {
     public FillRequest(int id, List<FillContext> fillContexts, List<String> hints, Bundle clientState, int flags, InlineSuggestionsRequest inlineSuggestionsRequest, IntentSender delayedFillIntentSender) {
         this.mId = id;
         this.mFillContexts = fillContexts;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) fillContexts);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mFillContexts);
         this.mHints = hints;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hints);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHints);
         this.mClientState = clientState;
         this.mFlags = flags;
-        Preconditions.checkFlagsArgument(flags, 2007);
+        Preconditions.checkFlagsArgument(this.mFlags, 4055);
         this.mInlineSuggestionsRequest = inlineSuggestionsRequest;
         this.mDelayedFillIntentSender = delayedFillIntentSender;
         onConstructed();
@@ -152,18 +153,15 @@ public final class FillRequest implements Parcelable {
         dest.writeInt(this.mId);
         dest.writeParcelableList(this.mFillContexts, flags);
         dest.writeStringList(this.mHints);
-        Bundle bundle = this.mClientState;
-        if (bundle != null) {
-            dest.writeBundle(bundle);
+        if (this.mClientState != null) {
+            dest.writeBundle(this.mClientState);
         }
         dest.writeInt(this.mFlags);
-        InlineSuggestionsRequest inlineSuggestionsRequest = this.mInlineSuggestionsRequest;
-        if (inlineSuggestionsRequest != null) {
-            dest.writeTypedObject(inlineSuggestionsRequest, flags);
+        if (this.mInlineSuggestionsRequest != null) {
+            dest.writeTypedObject(this.mInlineSuggestionsRequest, flags);
         }
-        IntentSender intentSender = this.mDelayedFillIntentSender;
-        if (intentSender != null) {
-            dest.writeTypedObject(intentSender, flags);
+        if (this.mDelayedFillIntentSender != null) {
+            dest.writeTypedObject(this.mDelayedFillIntentSender, flags);
         }
     }
 
@@ -185,32 +183,15 @@ public final class FillRequest implements Parcelable {
         IntentSender delayedFillIntentSender = (flg & 64) == 0 ? null : (IntentSender) in.readTypedObject(IntentSender.CREATOR);
         this.mId = id;
         this.mFillContexts = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mFillContexts);
         this.mHints = hints;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) hints);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mHints);
         this.mClientState = clientState;
         this.mFlags = flags;
-        Preconditions.checkFlagsArgument(flags, 2007);
+        Preconditions.checkFlagsArgument(this.mFlags, 4055);
         this.mInlineSuggestionsRequest = inlineSuggestionsRequest;
         this.mDelayedFillIntentSender = delayedFillIntentSender;
         onConstructed();
-    }
-
-    /* renamed from: android.service.autofill.FillRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FillRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FillRequest[] newArray(int size) {
-            return new FillRequest[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FillRequest createFromParcel(Parcel in) {
-            return new FillRequest(in);
-        }
     }
 
     @Deprecated

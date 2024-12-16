@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class MediaBufferGroup extends MediaBufferBase {
     private static final String TAG = Def.tagOf((Class<?>) MediaBufferGroup.class);
     protected List<MediaBuffer> buffers;
@@ -152,9 +152,8 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
     public MediaBufferGroup(Parcel in) {
         super(in);
         this.primaryId = -1;
-        ArrayList arrayList = new ArrayList();
-        this.buffers = arrayList;
-        in.readParcelableList(arrayList, GenericMediaBuffer.class.getClassLoader());
+        this.buffers = new ArrayList();
+        in.readParcelableList(this.buffers, GenericMediaBuffer.class.getClassLoader());
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, android.os.Parcelable
@@ -170,7 +169,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public long size() {
-        return ((Integer) Optional.ofNullable(this.buffers).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda2
+        return ((Integer) Optional.ofNullable(this.buffers).map(new Function() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return Integer.valueOf(((List) obj).size());
@@ -180,7 +179,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public List<MediaBuffer> getMetaDataBuffers() {
-        return (List) this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda0
+        return (List) this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda4
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MediaBufferGroup.lambda$getMetaDataBuffers$0((MediaBuffer) obj);
@@ -188,13 +187,13 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ boolean lambda$getMetaDataBuffers$0(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getMetaDataBuffers$0(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META;
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public MediaBuffer getExifBuffer() {
-        return this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda1
+        return this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda3
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MediaBufferGroup.lambda$getExifBuffer$1((MediaBuffer) obj);
@@ -202,13 +201,13 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).findAny().orElse(null);
     }
 
-    public static /* synthetic */ boolean lambda$getExifBuffer$1(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getExifBuffer$1(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("exif");
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public MediaBuffer getIccBuffer() {
-        return this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda5
+        return this.buffers.stream().filter(new Predicate() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return MediaBufferGroup.lambda$getIccBuffer$2((MediaBuffer) obj);
@@ -216,7 +215,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         }).findAny().orElse(null);
     }
 
-    public static /* synthetic */ boolean lambda$getIccBuffer$2(MediaBuffer it) {
+    static /* synthetic */ boolean lambda$getIccBuffer$2(MediaBuffer it) {
         return it.getFormat().getMediaType() == MediaType.META && it.getFormat().contains("icc");
     }
 
@@ -249,6 +248,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
         return copied;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.format.Copyable
     /* renamed from: deepCopy */
     public MediaBuffer deepCopy2() {
@@ -259,7 +259,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
     public MediaBuffer asRef() {
         int useCount = this.sharedCount.incrementAndGet();
         Log.d(TAG, "use count: " + useCount + NavigationBarInflaterView.KEY_CODE_START + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
-        this.buffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda3
+        this.buffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 ((MediaBuffer) obj).asRef();
@@ -270,7 +270,7 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferBase, com.samsung.android.sume.core.buffer.MediaBuffer
     public void release() {
-        this.buffers.forEach(new MediaBufferGroup$$ExternalSyntheticLambda6());
+        this.buffers.forEach(new MediaBufferGroup$$ExternalSyntheticLambda2());
         int useCount = this.sharedCount.decrementAndGet();
         if (useCount > 0) {
             Log.d(TAG, "use count remained, skip release: " + this.sharedCount.get() + NavigationBarInflaterView.KEY_CODE_START + hashCode() + NavigationBarInflaterView.KEY_CODE_END);
@@ -284,22 +284,22 @@ public abstract class MediaBufferGroup extends MediaBufferBase {
     }
 
     protected String dataToString() {
-        return (String) IntStream.range(0, this.buffers.size()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda4
+        return (String) IntStream.range(0, this.buffers.size()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.buffer.MediaBufferGroup$$ExternalSyntheticLambda6
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
-                return MediaBufferGroup.this.m8725xde53324e(i);
+                return MediaBufferGroup.this.m9114xde53324e(i);
             }
         }).collect(Collectors.joining("\n"));
     }
 
-    /* renamed from: lambda$dataToString$3$com-samsung-android-sume-core-buffer-MediaBufferGroup */
-    public /* synthetic */ String m8725xde53324e(int it) {
+    /* renamed from: lambda$dataToString$3$com-samsung-android-sume-core-buffer-MediaBufferGroup, reason: not valid java name */
+    /* synthetic */ String m9114xde53324e(int it) {
         return NavigationBarInflaterView.KEY_CODE_START + it + "-th)" + this.buffers.get(it).contentToString();
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString(Object obj) {
-        return Def.taglnOf(obj) + Def.contentToStringln("    ", "format=" + ((String) Optional.ofNullable(this.format).map(new GenericMediaBuffer$$ExternalSyntheticLambda0()).orElse("n/a")), "extra=" + Collections.singletonList(this.extra), "data[#" + this.buffers.size() + "]\n" + dataToString());
+        return Def.taglnOf(obj) + Def.contentToStringln("    ", "format=" + ((String) Optional.ofNullable(this.format).map(new GenericMediaBuffer$$ExternalSyntheticLambda1()).orElse("n/a")), "extra=" + Collections.singletonList(this.extra), "data[#" + this.buffers.size() + "]\n" + dataToString());
     }
 
     public int getPrimaryId() {

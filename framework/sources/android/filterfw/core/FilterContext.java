@@ -11,7 +11,6 @@ public class FilterContext {
     private HashMap<String, Frame> mStoredFrames = new HashMap<>();
     private Set<FilterGraph> mGraphs = new HashSet();
 
-    /* loaded from: classes.dex */
     public interface OnFrameReceivedListener {
         void onFrameReceived(Filter filter, Frame frame, Object obj);
     }
@@ -28,7 +27,7 @@ public class FilterContext {
             throw new IllegalArgumentException("Attempting to set FrameManager which is already bound to another FilterContext!");
         }
         this.mFrameManager = manager;
-        manager.setContext(this);
+        this.mFrameManager.setContext(this);
     }
 
     public GLEnvironment getGLEnvironment() {
@@ -78,19 +77,17 @@ public class FilterContext {
             graph.tearDown(this);
         }
         this.mGraphs.clear();
-        FrameManager frameManager = this.mFrameManager;
-        if (frameManager != null) {
-            frameManager.tearDown();
+        if (this.mFrameManager != null) {
+            this.mFrameManager.tearDown();
             this.mFrameManager = null;
         }
-        GLEnvironment gLEnvironment = this.mGLEnvironment;
-        if (gLEnvironment != null) {
-            gLEnvironment.tearDown();
+        if (this.mGLEnvironment != null) {
+            this.mGLEnvironment.tearDown();
             this.mGLEnvironment = null;
         }
     }
 
-    public final void addGraph(FilterGraph graph) {
+    final void addGraph(FilterGraph graph) {
         this.mGraphs.add(graph);
     }
 }

@@ -7,10 +7,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PackageManagerWrapper {
     private final PackageManager mPackageManager;
-    private final String BIKE_MODE_PACKAGE_NAME = "com.samsung.android.app.bikemode";
     private final String KIDS_MODE_PACKAGE_NAME = "com.sec.android.app.kidshome";
     private final String KIDS_MODE_ACTIVITY_NAME = "com.sec.android.app.kidshome.apps.ui.AppsActivity";
     private final String ATT_FOTA_CLIENT_PACKAGE = "com.ws.dm";

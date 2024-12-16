@@ -32,20 +32,17 @@ public class SemImageClipDataProvider extends ContentProvider {
     private static HashMap<String, String> ImageMap = null;
     static final String TABLE_NAME = "ClipboardImageTable";
     private static final String TAG = "SemImageClipDataProvider";
-    static final UriMatcher uriMatcher;
     private SQLiteDatabase database;
     DBHelper dbHelper;
     static final String URL = "content://com.samsung.android.content.clipboard/images";
     public static final Uri CONTENT_URI = Uri.parse(URL);
+    static final UriMatcher uriMatcher = new UriMatcher(-1);
 
     static {
-        UriMatcher uriMatcher2 = new UriMatcher(-1);
-        uriMatcher = uriMatcher2;
-        uriMatcher2.addURI(AUTHORITY, "images", 1);
-        uriMatcher2.addURI(AUTHORITY, "images/#", 2);
+        uriMatcher.addURI(AUTHORITY, "images", 1);
+        uriMatcher.addURI(AUTHORITY, "images/#", 2);
     }
 
-    /* loaded from: classes5.dex */
     private static class DBHelper extends SQLiteOpenHelper {
         public DBHelper(Context context) {
             super(context, SemImageClipDataProvider.DATABASE_NAME, (SQLiteDatabase.CursorFactory) null, 1);
@@ -67,11 +64,9 @@ public class SemImageClipDataProvider extends ContentProvider {
     @Override // android.content.ContentProvider
     public boolean onCreate() {
         Context context = getContext();
-        DBHelper dBHelper = new DBHelper(context);
-        this.dbHelper = dBHelper;
-        SQLiteDatabase writableDatabase = dBHelper.getWritableDatabase();
-        this.database = writableDatabase;
-        return writableDatabase != null;
+        this.dbHelper = new DBHelper(context);
+        this.database = this.dbHelper.getWritableDatabase();
+        return this.database != null;
     }
 
     @Override // android.content.ContentProvider

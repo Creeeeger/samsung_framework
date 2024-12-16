@@ -8,14 +8,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class SemBatterySipper implements Parcelable {
     public static final Parcelable.Creator<SemBatterySipper> CREATOR = new Parcelable.Creator<SemBatterySipper>() { // from class: android.os.SemBatterySipper.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBatterySipper createFromParcel(Parcel in) {
             return new SemBatterySipper(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBatterySipper[] newArray(int size) {
             return new SemBatterySipper[size];
@@ -49,23 +48,6 @@ public class SemBatterySipper implements Parcelable {
         this.mWakeupReasonInfoList = in.createTypedArrayList(SemWakeupReasonInfo.CREATOR);
         this.mKernelWakelockInfoList = in.createTypedArrayList(SemKernelWakelockInfo.CREATOR);
         this.mScreenWakeInfoList = in.createTypedArrayList(SemScreenWakeInfo.CREATOR);
-    }
-
-    /* renamed from: android.os.SemBatterySipper$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemBatterySipper> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemBatterySipper createFromParcel(Parcel in) {
-            return new SemBatterySipper(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemBatterySipper[] newArray(int size) {
-            return new SemBatterySipper[size];
-        }
     }
 
     @Override // android.os.Parcelable

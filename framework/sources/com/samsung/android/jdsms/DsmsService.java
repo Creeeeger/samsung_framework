@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DsmsService extends IDsmsService.Stub {
     private static final long APK_TIMEOUT = TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES);
     public static final String DSMS_SERVICE = "dsms";
@@ -19,39 +19,23 @@ public class DsmsService extends IDsmsService.Stub {
     public DsmsService(Context context) {
         this.mContext = context;
         if (DsmsLog.isDebuggable()) {
-            DsmsLog.d("[Service] Created for context: " + context);
+            DsmsLog.d("[Service] Created for context: " + this.mContext);
             int uid = Binder.getCallingUid();
             DsmsLog.d("[Service] Binder.callingUid=[" + uid + NavigationBarInflaterView.SIZE_MOD_END);
             DsmsLog.d("[Service] Binder.callingPid=[" + Binder.getCallingPid() + NavigationBarInflaterView.SIZE_MOD_END);
-            if (context != null) {
-                DsmsLog.d("[Service] context.packageName=[" + context.getPackageName() + NavigationBarInflaterView.SIZE_MOD_END);
-                DsmsLog.d("[Service] context.packageManager.nameForUid=[" + context.getPackageManager().getNameForUid(uid) + NavigationBarInflaterView.SIZE_MOD_END);
+            if (this.mContext != null) {
+                DsmsLog.d("[Service] context.packageName=[" + this.mContext.getPackageName() + NavigationBarInflaterView.SIZE_MOD_END);
+                DsmsLog.d("[Service] context.packageManager.nameForUid=[" + this.mContext.getPackageManager().getNameForUid(uid) + NavigationBarInflaterView.SIZE_MOD_END);
             }
         }
-        DsmsInfoCache.getInstance().setContext(context);
+        DsmsInfoCache.getInstance().setContext(this.mContext);
         this.mTimerApkTimeout.schedule(new TimerTask() { // from class: com.samsung.android.jdsms.DsmsService.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.TimerTask, java.lang.Runnable
             public void run() {
                 DsmsInfoCache.getInstance().updateCommercializedDeviceCache();
                 DsmsThreadPoolExecutor.getInstance().resume();
             }
         }, APK_TIMEOUT);
-    }
-
-    /* renamed from: com.samsung.android.jdsms.DsmsService$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends TimerTask {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.TimerTask, java.lang.Runnable
-        public void run() {
-            DsmsInfoCache.getInstance().updateCommercializedDeviceCache();
-            DsmsThreadPoolExecutor.getInstance().resume();
-        }
     }
 
     @Override // com.samsung.android.dsms.aidl.IDsmsService

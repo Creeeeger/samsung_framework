@@ -45,21 +45,18 @@ public class MenuPopupWindow extends ListPopupWindow implements MenuItemHoverLis
 
     @Override // android.widget.MenuItemHoverListener
     public void onItemHoverEnter(MenuBuilder menu, MenuItem item) {
-        MenuItemHoverListener menuItemHoverListener = this.mHoverListener;
-        if (menuItemHoverListener != null) {
-            menuItemHoverListener.onItemHoverEnter(menu, item);
+        if (this.mHoverListener != null) {
+            this.mHoverListener.onItemHoverEnter(menu, item);
         }
     }
 
     @Override // android.widget.MenuItemHoverListener
     public void onItemHoverExit(MenuBuilder menu, MenuItem item) {
-        MenuItemHoverListener menuItemHoverListener = this.mHoverListener;
-        if (menuItemHoverListener != null) {
-            menuItemHoverListener.onItemHoverExit(menu, item);
+        if (this.mHoverListener != null) {
+            this.mHoverListener.onItemHoverExit(menu, item);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class MenuDropDownListView extends DropDownListView {
         final int mAdvanceKey;
         private MenuItemHoverListener mHoverListener;

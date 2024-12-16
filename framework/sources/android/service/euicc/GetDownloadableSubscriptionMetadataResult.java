@@ -9,14 +9,13 @@ import android.telephony.euicc.DownloadableSubscription;
 /* loaded from: classes3.dex */
 public final class GetDownloadableSubscriptionMetadataResult implements Parcelable {
     public static final Parcelable.Creator<GetDownloadableSubscriptionMetadataResult> CREATOR = new Parcelable.Creator<GetDownloadableSubscriptionMetadataResult>() { // from class: android.service.euicc.GetDownloadableSubscriptionMetadataResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetDownloadableSubscriptionMetadataResult createFromParcel(Parcel in) {
             return new GetDownloadableSubscriptionMetadataResult(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GetDownloadableSubscriptionMetadataResult[] newArray(int size) {
             return new GetDownloadableSubscriptionMetadataResult[size];
@@ -26,27 +25,6 @@ public final class GetDownloadableSubscriptionMetadataResult implements Parcelab
 
     @Deprecated
     public final int result;
-
-    /* synthetic */ GetDownloadableSubscriptionMetadataResult(Parcel parcel, GetDownloadableSubscriptionMetadataResultIA getDownloadableSubscriptionMetadataResultIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.service.euicc.GetDownloadableSubscriptionMetadataResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GetDownloadableSubscriptionMetadataResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetDownloadableSubscriptionMetadataResult createFromParcel(Parcel in) {
-            return new GetDownloadableSubscriptionMetadataResult(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GetDownloadableSubscriptionMetadataResult[] newArray(int size) {
-            return new GetDownloadableSubscriptionMetadataResult[size];
-        }
-    }
 
     public int getResult() {
         return this.result;
@@ -58,7 +36,7 @@ public final class GetDownloadableSubscriptionMetadataResult implements Parcelab
 
     public GetDownloadableSubscriptionMetadataResult(int result, DownloadableSubscription subscription) {
         this.result = result;
-        if (result == 0) {
+        if (this.result == 0) {
             this.mSubscription = subscription;
         } else {
             if (subscription != null) {

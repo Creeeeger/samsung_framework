@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IThermalChangedCallback extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$thermal$IThermalChangedCallback".replace('$', '.');
-    public static final String HASH = "76e77ca374a7860f09aeac48e98b2ec61f576767";
-    public static final int VERSION = 1;
+    public static final String HASH = "2f49c78011338b42b43d5d0e250d9b520850cc1f";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -18,7 +18,6 @@ public interface IThermalChangedCallback extends IInterface {
 
     void notifyThrottling(Temperature temperature) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IThermalChangedCallback {
         @Override // android.hardware.thermal.IThermalChangedCallback
         public void notifyThrottling(Temperature temperature) throws RemoteException {
@@ -40,7 +39,6 @@ public interface IThermalChangedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IThermalChangedCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -91,34 +89,31 @@ public interface IThermalChangedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            Temperature _arg0 = (Temperature) data.readTypedObject(Temperature.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyThrottling(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    Temperature _arg0 = (Temperature) data.readTypedObject(Temperature.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyThrottling(_arg0);
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IThermalChangedCallback {
+        private static class Proxy implements IThermalChangedCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

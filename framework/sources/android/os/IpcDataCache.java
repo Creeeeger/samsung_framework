@@ -17,17 +17,14 @@ public class IpcDataCache<Query, Result> extends PropertyInvalidatedCache<Query,
     public static final String MODULE_TEST = "test";
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface IpcDataCacheModule {
     }
 
-    /* loaded from: classes3.dex */
     public interface RemoteCall<Query, Result> {
         Result apply(Query query) throws RemoteException;
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
-    /* loaded from: classes3.dex */
     public static abstract class QueryHandler<Q, R> extends PropertyInvalidatedCache.QueryHandler<Q, R> {
         @Override // android.app.PropertyInvalidatedCache.QueryHandler
         public abstract R apply(Q q);
@@ -71,7 +68,6 @@ public class IpcDataCache<Query, Result> extends PropertyInvalidatedCache<Query,
         PropertyInvalidatedCache.invalidateCache(module, api);
     }
 
-    /* loaded from: classes3.dex */
     public static class Config {
         private final String mApi;
         private ArraySet<String> mChildren;
@@ -146,9 +142,8 @@ public class IpcDataCache<Query, Result> extends PropertyInvalidatedCache<Query,
             synchronized (this) {
                 this.mDisabled = true;
                 disableForCurrentProcess();
-                ArraySet<String> arraySet = this.mChildren;
-                if (arraySet != null) {
-                    Iterator<String> it = arraySet.iterator();
+                if (this.mChildren != null) {
+                    Iterator<String> it = this.mChildren.iterator();
                     while (it.hasNext()) {
                         String c = it.next();
                         IpcDataCache.disableForCurrentProcess(c);
@@ -162,9 +157,7 @@ public class IpcDataCache<Query, Result> extends PropertyInvalidatedCache<Query,
         super(config.maxEntries(), config.module(), config.api(), config.name(), computer);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class SystemServerCallHandler<Query, Result> extends QueryHandler<Query, Result> {
+    private static class SystemServerCallHandler<Query, Result> extends QueryHandler<Query, Result> {
         private final RemoteCall<Query, Result> mHandler;
 
         public SystemServerCallHandler(RemoteCall handler) {

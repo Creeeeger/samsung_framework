@@ -9,6 +9,15 @@ public @interface AudioSource {
     public static final int HOTWORD = 1999;
     public static final int MIC = 1;
     public static final int REMOTE_SUBMIX = 8;
+    public static final int SEC_2MIC_SVOICE_DRIVING = 14;
+    public static final int SEC_2MIC_SVOICE_NORMAL = 15;
+    public static final int SEC_BARGEIN_DRIVING = 16;
+    public static final int SEC_CAMCORDER = 17;
+    public static final int SEC_FM_RX = 11;
+    public static final int SEC_PLAYBACK_RECORD = 19;
+    public static final int SEC_VOICENOTE_BEAMFORMING = 18;
+    public static final int SEC_VOICE_COMMUNICATION = 13;
+    public static final int SEC_VOICE_RECOGNITION = 12;
     public static final int SYS_RESERVED_INVALID = -1;
     public static final int ULTRASOUND = 2000;
     public static final int UNPROCESSED = 9;

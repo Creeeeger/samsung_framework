@@ -12,9 +12,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CardStatus implements Parcelable {
     public static final Parcelable.Creator<CardStatus> CREATOR = new Parcelable.Creator<CardStatus>() { // from class: android.hardware.radio.sim.CardStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CardStatus createFromParcel(Parcel _aidl_source) {
             CardStatus _aidl_out = new CardStatus();
@@ -22,6 +20,7 @@ public class CardStatus implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CardStatus[] newArray(int _aidl_size) {
             return new CardStatus[_aidl_size];
@@ -42,25 +41,6 @@ public class CardStatus implements Parcelable {
     public int cdmaSubscriptionAppIndex = 0;
     public int imsSubscriptionAppIndex = 0;
     public int supportedMepMode = 0;
-
-    /* renamed from: android.hardware.radio.sim.CardStatus$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CardStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CardStatus createFromParcel(Parcel _aidl_source) {
-            CardStatus _aidl_out = new CardStatus();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CardStatus[] newArray(int _aidl_size) {
-            return new CardStatus[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -209,7 +189,7 @@ public class CardStatus implements Parcelable {
         _aidl_sj.add("eid: " + Objects.toString(this.eid));
         _aidl_sj.add("slotMap: " + Objects.toString(this.slotMap));
         _aidl_sj.add("supportedMepMode: " + MultipleEnabledProfilesMode$$.toString(this.supportedMepMode));
-        return "android.hardware.radio.sim.CardStatus" + _aidl_sj.toString();
+        return "CardStatus" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

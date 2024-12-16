@@ -1,6 +1,6 @@
 package com.android.internal.infra;
 
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable {
     private static final boolean DEBUG = false;
     private static Handler sMainHandler;
@@ -34,17 +34,16 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
     private final IAndroidFuture mRemoteOrigin;
     private Handler mTimeoutHandler;
     private static final String LOG_TAG = AndroidFuture.class.getSimpleName();
-    private static final Executor DIRECT_EXECUTOR = new PendingIntent$$ExternalSyntheticLambda1();
+    private static final Executor DIRECT_EXECUTOR = new PendingIntent$$ExternalSyntheticLambda0();
     private static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
     public static final Parcelable.Creator<AndroidFuture> CREATOR = new Parcelable.Creator<AndroidFuture>() { // from class: com.android.internal.infra.AndroidFuture.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AndroidFuture createFromParcel(Parcel parcel) {
             return new AndroidFuture(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AndroidFuture[] newArray(int size) {
             return new AndroidFuture[size];
@@ -122,7 +121,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return changed;
     }
 
-    public void onCompleted(T res, Throwable err) {
+    protected void onCompleted(T res, Throwable err) {
         BiConsumer<? super T, ? super Throwable> listener;
         cancelTimeout();
         synchronized (this.mLock) {
@@ -132,10 +131,9 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         if (listener != null) {
             callListenerAsync(listener, res, err);
         }
-        IAndroidFuture iAndroidFuture = this.mRemoteOrigin;
-        if (iAndroidFuture != null) {
+        if (this.mRemoteOrigin != null) {
             try {
-                iAndroidFuture.complete(this);
+                this.mRemoteOrigin.complete(this);
             } catch (RemoteException e) {
                 Log.e(LOG_TAG, "Failed to propagate completion", e);
             }
@@ -163,7 +161,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
                 if (oldListener == null) {
                     biConsumer = action;
                 } else {
-                    biConsumer = new BiConsumer() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda2
+                    biConsumer = new BiConsumer() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda1
                         @Override // java.util.function.BiConsumer
                         public final void accept(Object obj, Object obj2) {
                             AndroidFuture.lambda$whenCompleteAsync$0(oldListener, action, obj, (Throwable) obj2);
@@ -187,17 +185,16 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         }
     }
 
-    public static /* synthetic */ void lambda$whenCompleteAsync$0(BiConsumer oldListener, BiConsumer action, Object res, Throwable err) {
+    static /* synthetic */ void lambda$whenCompleteAsync$0(BiConsumer oldListener, BiConsumer action, Object res, Throwable err) {
         callListener(oldListener, res, err);
         callListener(action, res, err);
     }
 
     private void callListenerAsync(final BiConsumer<? super T, ? super Throwable> listener, final T res, final Throwable err) {
-        Executor executor = this.mListenerExecutor;
-        if (executor == DIRECT_EXECUTOR) {
+        if (this.mListenerExecutor == DIRECT_EXECUTOR) {
             callListener(listener, res, err);
         } else {
-            executor.execute(new Runnable() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda3
+            this.mListenerExecutor.execute(new Runnable() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     AndroidFuture.callListener(listener, res, err);
@@ -206,6 +203,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     /* JADX WARN: Multi-variable type inference failed */
     public static <TT> void callListener(BiConsumer<? super TT, ? super Throwable> listener, TT tt, Throwable err) {
         try {
@@ -226,7 +224,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
 
     @Override // java.util.concurrent.CompletableFuture
     public AndroidFuture<T> orTimeout(long timeout, TimeUnit unit) {
-        this.mTimeoutHandler.postDelayed(new Runnable() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda1
+        this.mTimeoutHandler.postDelayed(new Runnable() { // from class: com.android.internal.infra.AndroidFuture$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
                 AndroidFuture.this.triggerTimeout();
@@ -235,7 +233,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return this;
     }
 
-    public void triggerTimeout() {
+    void triggerTimeout() {
         cancelTimeout();
         if (!isDone()) {
             completeExceptionally(new TimeoutException());
@@ -263,8 +261,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return new ThenComposeAsync(this, fn, executor);
     }
 
-    /* loaded from: classes4.dex */
-    public static class ThenComposeAsync<T, U> extends AndroidFuture<U> implements BiConsumer<Object, Throwable>, Runnable {
+    private static class ThenComposeAsync<T, U> extends AndroidFuture<U> implements BiConsumer<Object, Throwable>, Runnable {
         private final Executor mExecutor;
         private volatile Function<? super T, ? extends CompletionStage<U>> mFn;
         private volatile T mSourceResult = null;
@@ -314,8 +311,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return new ThenApplyAsync(this, fn, executor);
     }
 
-    /* loaded from: classes4.dex */
-    public static class ThenApplyAsync<T, U> extends AndroidFuture<U> implements BiConsumer<T, Throwable>, Runnable {
+    private static class ThenApplyAsync<T, U> extends AndroidFuture<U> implements BiConsumer<T, Throwable>, Runnable {
         private final Executor mExecutor;
         private final Function<? super T, ? extends U> mFn;
         private volatile T mSourceResult = null;
@@ -332,7 +328,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
             source.whenComplete((BiConsumer) this);
         }
 
-        /* renamed from: accept */
+        /* renamed from: accept, reason: avoid collision after fix types in other method */
         public void accept2(T res, Throwable err) {
             if (err != null) {
                 completeExceptionally(err);
@@ -358,7 +354,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return new ThenCombine(this, other, combineResults);
     }
 
-    public static /* synthetic */ Object lambda$thenCombine$2(Object res, Void aVoid) {
+    static /* synthetic */ Object lambda$thenCombine$2(Object res, Void aVoid) {
         return res;
     }
 
@@ -371,8 +367,8 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         });
     }
 
-    /* loaded from: classes4.dex */
-    public static class ThenCombine<T, U, V> extends AndroidFuture<V> implements BiConsumer<Object, Throwable> {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ThenCombine<T, U, V> extends AndroidFuture<V> implements BiConsumer<Object, Throwable> {
         private final BiFunction<? super T, ? super U, ? extends V> mCombineResults;
         private volatile T mResultT = null;
         private volatile CompletionStage<? extends U> mSourceU;
@@ -408,6 +404,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$accept$0(Object r, Throwable e) {
             this.mSourceU = null;
             accept(r, e);
@@ -422,8 +419,7 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
         return new SupplyAsync(supplier, executor);
     }
 
-    /* loaded from: classes4.dex */
-    public static class SupplyAsync<T> extends AndroidFuture<T> implements Runnable {
+    private static class SupplyAsync<T> extends AndroidFuture<T> implements Runnable {
         private final Supplier<T> mSupplier;
 
         SupplyAsync(Supplier<T> supplier, Executor executor) {
@@ -458,44 +454,19 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
             }
         }
         dest.writeStrongBinder(new IAndroidFuture.Stub() { // from class: com.android.internal.infra.AndroidFuture.1
-            AnonymousClass1() {
-            }
-
             @Override // com.android.internal.infra.IAndroidFuture
             public void complete(AndroidFuture resultContainer) {
                 boolean changed;
                 try {
                     changed = AndroidFuture.this.complete(resultContainer.get());
                 } catch (Throwable t2) {
-                    AndroidFuture androidFuture = AndroidFuture.this;
-                    changed = androidFuture.completeExceptionally(androidFuture.unwrapExecutionException(t2));
+                    changed = AndroidFuture.this.completeExceptionally(AndroidFuture.this.unwrapExecutionException(t2));
                 }
                 if (!changed) {
                     Log.w(AndroidFuture.LOG_TAG, "Remote result " + resultContainer + " ignored, as local future is already completed: " + AndroidFuture.this);
                 }
             }
         }.asBinder());
-    }
-
-    /* renamed from: com.android.internal.infra.AndroidFuture$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends IAndroidFuture.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // com.android.internal.infra.IAndroidFuture
-        public void complete(AndroidFuture resultContainer) {
-            boolean changed;
-            try {
-                changed = AndroidFuture.this.complete(resultContainer.get());
-            } catch (Throwable t2) {
-                AndroidFuture androidFuture = AndroidFuture.this;
-                changed = androidFuture.completeExceptionally(androidFuture.unwrapExecutionException(t2));
-            }
-            if (!changed) {
-                Log.w(AndroidFuture.LOG_TAG, "Remote result " + resultContainer + " ignored, as local future is already completed: " + AndroidFuture.this);
-            }
-        }
     }
 
     Throwable unwrapExecutionException(Throwable t) {
@@ -580,22 +551,5 @@ public class AndroidFuture<T> extends CompletableFuture<T> implements Parcelable
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.android.internal.infra.AndroidFuture$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements Parcelable.Creator<AndroidFuture> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AndroidFuture createFromParcel(Parcel parcel) {
-            return new AndroidFuture(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AndroidFuture[] newArray(int size) {
-            return new AndroidFuture[size];
-        }
     }
 }

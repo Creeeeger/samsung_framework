@@ -4,13 +4,11 @@ import com.android.framework.protobuf.nano.CodedInputByteBufferNano;
 import com.android.framework.protobuf.nano.InternalNano;
 import com.android.framework.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.android.framework.protobuf.nano.MessageNano;
-import com.android.framework.protobuf.nano.WireFormatNano;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface OlogProto {
 
-    /* loaded from: classes4.dex */
     public static final class OlogTestEnum extends MessageNano {
         public static final int PERFLOG_ACTIVITYSLOW = 8;
         public static final int PERFLOG_AMPSS = 18;
@@ -66,17 +64,38 @@ public interface OlogProto {
             return this;
         }
 
+        /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+            jadx.core.utils.exceptions.JadxRuntimeException: Failed to find switch 'out' block (already processed)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.calcSwitchOut(SwitchRegionMaker.java:202)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.process(SwitchRegionMaker.java:61)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:115)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.LoopRegionMaker.process(LoopRegionMaker.java:103)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:92)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeMthRegion(RegionMaker.java:49)
+            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:25)
+            */
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public OlogTestEnum mergeFrom(CodedInputByteBufferNano input) throws IOException {
-            int tag;
-            do {
-                tag = input.readTag();
-                switch (tag) {
-                    case 0:
-                        return this;
+        public com.android.internal.logging.nano.OlogProto.OlogTestEnum mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano r3) throws java.io.IOException {
+            /*
+                r2 = this;
+            L1:
+                int r0 = r3.readTag()
+                switch(r0) {
+                    case 0: goto Lf;
+                    default: goto L8;
                 }
-            } while (WireFormatNano.parseUnknownField(input, tag));
-            return this;
+            L8:
+                boolean r1 = com.android.framework.protobuf.nano.WireFormatNano.parseUnknownField(r3, r0)
+                if (r1 != 0) goto L10
+                return r2
+            Lf:
+                return r2
+            L10:
+                goto L1
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.internal.logging.nano.OlogProto.OlogTestEnum.mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano):com.android.internal.logging.nano.OlogProto$OlogTestEnum");
         }
 
         public static OlogTestEnum parseFrom(byte[] data) throws InvalidProtocolBufferNanoException {

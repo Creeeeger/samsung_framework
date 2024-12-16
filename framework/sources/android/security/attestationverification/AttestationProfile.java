@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class AttestationProfile implements Parcelable {
     public static final Parcelable.Creator<AttestationProfile> CREATOR = new Parcelable.Creator<AttestationProfile>() { // from class: android.security.attestationverification.AttestationProfile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttestationProfile[] newArray(int size) {
             return new AttestationProfile[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttestationProfile createFromParcel(Parcel in) {
             return new AttestationProfile(in);
@@ -53,11 +52,10 @@ public final class AttestationProfile implements Parcelable {
 
     public String toString() {
         String humanReadableProfileId;
-        int i = this.mAttestationProfileId;
-        if (i == 1) {
+        if (this.mAttestationProfileId == 1) {
             return "AttestationProfile(package=" + this.mPackageName + ", name=" + this.mProfileName + NavigationBarInflaterView.KEY_CODE_END;
         }
-        switch (i) {
+        switch (this.mAttestationProfileId) {
             case 0:
                 humanReadableProfileId = "PROFILE_UNKNOWN";
                 break;
@@ -108,13 +106,11 @@ public final class AttestationProfile implements Parcelable {
         }
         dest.writeByte(flg);
         dest.writeInt(this.mAttestationProfileId);
-        String str = this.mPackageName;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mPackageName != null) {
+            dest.writeString(this.mPackageName);
         }
-        String str2 = this.mProfileName;
-        if (str2 != null) {
-            dest.writeString(str2);
+        if (this.mProfileName != null) {
+            dest.writeString(this.mProfileName);
         }
     }
 
@@ -129,26 +125,9 @@ public final class AttestationProfile implements Parcelable {
         String packageName = (flg & 2) == 0 ? null : in.readString();
         String profileName = (flg & 4) == 0 ? null : in.readString();
         this.mAttestationProfileId = attestationProfileId;
-        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.AttestationProfileId.class, (Annotation) null, attestationProfileId);
+        AnnotationValidations.validate((Class<? extends Annotation>) AttestationVerificationManager.AttestationProfileId.class, (Annotation) null, this.mAttestationProfileId);
         this.mPackageName = packageName;
         this.mProfileName = profileName;
-    }
-
-    /* renamed from: android.security.attestationverification.AttestationProfile$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AttestationProfile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttestationProfile[] newArray(int size) {
-            return new AttestationProfile[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttestationProfile createFromParcel(Parcel in) {
-            return new AttestationProfile(in);
-        }
     }
 
     @Deprecated

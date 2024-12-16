@@ -12,7 +12,6 @@ public interface ICarrierConfigChangeListener extends IInterface {
 
     void onCarrierConfigChanged(int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICarrierConfigChangeListener {
         @Override // com.android.internal.telephony.ICarrierConfigChangeListener
         public void onCarrierConfigChanged(int slotIndex, int subId, int carrierId, int specificCarrierId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICarrierConfigChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICarrierConfigChangeListener {
         static final int TRANSACTION_onCarrierConfigChanged = 1;
 
@@ -67,29 +65,25 @@ public interface ICarrierConfigChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICarrierConfigChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICarrierConfigChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICarrierConfigChangeListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCarrierConfigChanged(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCarrierConfigChanged(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICarrierConfigChangeListener {
+        private static class Proxy implements ICarrierConfigChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

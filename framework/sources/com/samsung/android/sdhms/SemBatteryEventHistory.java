@@ -3,7 +3,7 @@ package com.samsung.android.sdhms;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemBatteryEventHistory implements Cloneable, Parcelable {
     public static final int BATTERY_STATUS_CHARGING = 2;
     public static final int BATTERY_STATUS_DISCHARGING = 4;
@@ -11,14 +11,13 @@ public class SemBatteryEventHistory implements Cloneable, Parcelable {
     public static final int BATTERY_STATUS_NOT_CHARGING = 8;
     public static final int BATTERY_STATUS_UNKNOWN = 1;
     public static final Parcelable.Creator<SemBatteryEventHistory> CREATOR = new Parcelable.Creator<SemBatteryEventHistory>() { // from class: com.samsung.android.sdhms.SemBatteryEventHistory.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBatteryEventHistory createFromParcel(Parcel in) {
             return new SemBatteryEventHistory(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemBatteryEventHistory[] newArray(int size) {
             return new SemBatteryEventHistory[size];
@@ -67,7 +66,6 @@ public class SemBatteryEventHistory implements Cloneable, Parcelable {
         return this.eventValue;
     }
 
-    /* loaded from: classes5.dex */
     public static final class Builder {
         private int eventType;
         private int eventValue;
@@ -109,23 +107,6 @@ public class SemBatteryEventHistory implements Cloneable, Parcelable {
         this.eventValue = in.readInt();
     }
 
-    /* renamed from: com.samsung.android.sdhms.SemBatteryEventHistory$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemBatteryEventHistory> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemBatteryEventHistory createFromParcel(Parcel in) {
-            return new SemBatteryEventHistory(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemBatteryEventHistory[] newArray(int size) {
-            return new SemBatteryEventHistory[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -138,8 +119,8 @@ public class SemBatteryEventHistory implements Cloneable, Parcelable {
         parcel.writeInt(this.eventValue);
     }
 
-    /* renamed from: clone */
-    public SemBatteryEventHistory m8624clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SemBatteryEventHistory m9009clone() {
         try {
             return (SemBatteryEventHistory) super.clone();
         } catch (CloneNotSupportedException e) {

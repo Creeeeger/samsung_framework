@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IKeyguardExitCallback extends IInterface {
     void onKeyguardExitResult(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardExitCallback {
         @Override // com.android.internal.policy.IKeyguardExitCallback
         public void onKeyguardExitResult(boolean success) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IKeyguardExitCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardExitCallback {
         public static final String DESCRIPTOR = "com.android.internal.policy.IKeyguardExitCallback";
         static final int TRANSACTION_onKeyguardExitResult = 1;
@@ -66,26 +64,22 @@ public interface IKeyguardExitCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onKeyguardExitResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onKeyguardExitResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyguardExitCallback {
+        private static class Proxy implements IKeyguardExitCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

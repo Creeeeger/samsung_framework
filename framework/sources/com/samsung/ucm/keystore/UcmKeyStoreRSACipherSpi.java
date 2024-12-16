@@ -73,30 +73,29 @@ public class UcmKeyStoreRSACipherSpi extends UcmKeyStoreGenericCipher {
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
     public void update(byte[] input, int inputOffset, int inputLen) {
-        int i = this.mBufferOffset;
-        int i2 = i + inputLen;
-        byte[] bArr = this.mBuffer;
-        if (i2 > bArr.length) {
+        if (this.mBufferOffset + inputLen > this.mBuffer.length) {
             this.mIsInputTooLarge = true;
         }
-        System.arraycopy(input, inputOffset, bArr, i, inputLen);
+        System.arraycopy(input, inputOffset, this.mBuffer, this.mBufferOffset, inputLen);
         this.mBufferOffset += inputLen;
     }
 
     @Override // com.samsung.ucm.keystore.UcmKeyStoreGenericCipher
     public byte[] doFinalInternal(int padding) throws IllegalBlockSizeException {
         byte[] retBuffer;
+        if (this.mBuffer == null || this.mBuffer.length == 0) {
+            throw new IllegalBlockSizeException("Invalid input data");
+        }
         if (this.mIsInputTooLarge) {
             throw new IllegalBlockSizeException("Input must be under " + this.mBuffer.length + " bytes");
         }
-        int i = this.mBufferOffset;
-        byte[] bArr = this.mBuffer;
-        if (i != bArr.length) {
+        if (this.mBufferOffset != this.mBuffer.length) {
             if (padding == 1) {
-                retBuffer = new byte[bArr.length];
-                System.arraycopy(bArr, 0, retBuffer, bArr.length - i, i);
+                retBuffer = new byte[this.mBuffer.length];
+                System.arraycopy(this.mBuffer, 0, retBuffer, this.mBuffer.length - this.mBufferOffset, this.mBufferOffset);
             } else {
-                retBuffer = Arrays.copyOf(bArr, i);
+                byte[] retBuffer2 = this.mBuffer;
+                retBuffer = Arrays.copyOf(retBuffer2, this.mBufferOffset);
             }
         } else {
             retBuffer = this.mBuffer;

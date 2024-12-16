@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MediaEvent extends FilterEvent {
     private final List<AudioPresentation> mAudioPresentations;
     private final long mDataId;
@@ -121,8 +121,7 @@ public class MediaEvent extends FilterEvent {
     }
 
     public List<AudioPresentation> getAudioPresentations() {
-        List<AudioPresentation> list = this.mAudioPresentations;
-        return list == null ? Collections.emptyList() : list;
+        return this.mAudioPresentations == null ? Collections.emptyList() : this.mAudioPresentations;
     }
 
     protected void finalize() {

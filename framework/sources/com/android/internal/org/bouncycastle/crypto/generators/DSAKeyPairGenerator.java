@@ -35,8 +35,7 @@ public class DSAKeyPairGenerator implements AsymmetricCipherKeyPairGenerator {
         BigInteger x;
         int minWeight = q.bitLength() >>> 2;
         do {
-            BigInteger bigInteger = ONE;
-            x = BigIntegers.createRandomInRange(bigInteger, q.subtract(bigInteger), random);
+            x = BigIntegers.createRandomInRange(ONE, q.subtract(ONE), random);
         } while (WNafUtil.getNafWeight(x) < minWeight);
         return x;
     }

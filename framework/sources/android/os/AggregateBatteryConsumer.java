@@ -16,11 +16,7 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
     static final int COLUMN_INDEX_SCOPE = 1;
     static final int CONSUMER_TYPE_AGGREGATE = 0;
 
-    /* synthetic */ AggregateBatteryConsumer(Builder builder, AggregateBatteryConsumerIA aggregateBatteryConsumerIA) {
-        this(builder);
-    }
-
-    public AggregateBatteryConsumer(BatteryConsumer.BatteryConsumerData data) {
+    AggregateBatteryConsumer(BatteryConsumer.BatteryConsumerData data) {
         super(data);
     }
 
@@ -28,13 +24,13 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         super(builder.mData, builder.mPowerComponentsBuilder.build());
     }
 
-    public int getScope() {
+    int getScope() {
         return this.mData.getInt(1);
     }
 
     @Override // android.os.BatteryConsumer
     public void dump(PrintWriter pw, boolean skipEmptyComponents) {
-        this.mPowerComponents.dump(pw, skipEmptyComponents);
+        this.mPowerComponents.dump(pw, 0, 0, skipEmptyComponents);
     }
 
     @Override // android.os.BatteryConsumer
@@ -42,7 +38,7 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         return this.mData.getDouble(2);
     }
 
-    public void writeToXml(TypedXmlSerializer serializer, int scope) throws IOException {
+    void writeToXml(TypedXmlSerializer serializer, int scope) throws IOException {
         serializer.startTag(null, "aggregate");
         serializer.attributeInt(null, "scope", scope);
         serializer.attributeDouble(null, "power", getConsumedPower());
@@ -50,7 +46,7 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         serializer.endTag(null, "aggregate");
     }
 
-    public static void parseXml(TypedXmlPullParser parser, BatteryUsageStats.Builder builder) throws XmlPullParserException, IOException {
+    static void parseXml(TypedXmlPullParser parser, BatteryUsageStats.Builder builder) throws XmlPullParserException, IOException {
         int scope = parser.getAttributeInt(null, "scope");
         Builder consumerBuilder = builder.getAggregateBatteryConsumerBuilder(scope);
         int eventType = parser.getEventType();
@@ -70,7 +66,7 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         }
     }
 
-    public void writePowerComponentModelProto(ProtoOutputStream proto) {
+    void writePowerComponentModelProto(ProtoOutputStream proto) {
         for (int i = 0; i < 19; i++) {
             int powerModel = getPowerModel(i);
             if (powerModel != 0) {
@@ -82,11 +78,33 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder extends BatteryConsumer.BaseBuilder<Builder> {
+        /* JADX WARN: Type inference failed for: r1v1, types: [android.os.AggregateBatteryConsumer$Builder, android.os.BatteryConsumer$BaseBuilder] */
+        @Override // android.os.BatteryConsumer.BaseBuilder
+        public /* bridge */ /* synthetic */ Builder addConsumedPower(int i, double d, int i2) {
+            return super.addConsumedPower(i, d, i2);
+        }
+
+        /* JADX WARN: Type inference failed for: r1v1, types: [android.os.AggregateBatteryConsumer$Builder, android.os.BatteryConsumer$BaseBuilder] */
+        @Override // android.os.BatteryConsumer.BaseBuilder
+        public /* bridge */ /* synthetic */ Builder addConsumedPower(BatteryConsumer.Key key, double d, int i) {
+            return super.addConsumedPower(key, d, i);
+        }
+
+        /* JADX WARN: Type inference failed for: r1v1, types: [android.os.AggregateBatteryConsumer$Builder, android.os.BatteryConsumer$BaseBuilder] */
+        @Override // android.os.BatteryConsumer.BaseBuilder
+        public /* bridge */ /* synthetic */ Builder addConsumedPowerForCustomComponent(int i, double d) {
+            return super.addConsumedPowerForCustomComponent(i, d);
+        }
+
         @Override // android.os.BatteryConsumer.BaseBuilder
         public /* bridge */ /* synthetic */ BatteryConsumer.Key getKey(int i, int i2) {
             return super.getKey(i, i2);
+        }
+
+        @Override // android.os.BatteryConsumer.BaseBuilder
+        public /* bridge */ /* synthetic */ BatteryConsumer.Key getKey(int i, int i2, int i3, int i4) {
+            return super.getKey(i, i2, i3, i4);
         }
 
         @Override // android.os.BatteryConsumer.BaseBuilder
@@ -141,8 +159,8 @@ public final class AggregateBatteryConsumer extends BatteryConsumer {
             return super.setUsageDurationMillis(key, j);
         }
 
-        public Builder(BatteryConsumer.BatteryConsumerData data, int scope) {
-            super(data, 0);
+        public Builder(BatteryConsumer.BatteryConsumerData data, int scope, double minConsumedPowerThreshold) {
+            super(data, 0, minConsumedPowerThreshold);
             data.putInt(1, scope);
         }
 

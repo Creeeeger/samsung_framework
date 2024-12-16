@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface INetworkWatchlistManager extends IInterface {
     byte[] getWatchlistConfigHash() throws RemoteException;
 
@@ -18,7 +18,6 @@ public interface INetworkWatchlistManager extends IInterface {
 
     boolean stopWatchlistLogging() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements INetworkWatchlistManager {
         @Override // com.android.internal.net.INetworkWatchlistManager
         public boolean startWatchlistLogging() throws RemoteException {
@@ -49,7 +48,6 @@ public interface INetworkWatchlistManager extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements INetworkWatchlistManager {
         public static final String DESCRIPTOR = "com.android.internal.net.INetworkWatchlistManager";
         static final int TRANSACTION_getWatchlistConfigHash = 5;
@@ -105,44 +103,40 @@ public interface INetworkWatchlistManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _result = startWatchlistLogging();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = stopWatchlistLogging();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    reloadWatchlist();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    reportWatchlistIfNecessary();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    byte[] _result3 = getWatchlistConfigHash();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = startWatchlistLogging();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = stopWatchlistLogging();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            reloadWatchlist();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            reportWatchlistIfNecessary();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            byte[] _result3 = getWatchlistConfigHash();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements INetworkWatchlistManager {
+        private static class Proxy implements INetworkWatchlistManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

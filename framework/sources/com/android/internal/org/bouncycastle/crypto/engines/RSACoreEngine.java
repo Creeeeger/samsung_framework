@@ -13,6 +13,9 @@ class RSACoreEngine {
     private boolean forEncryption;
     private RSAKeyParameters key;
 
+    RSACoreEngine() {
+    }
+
     public void init(boolean forEncryption, CipherParameters param) {
         if (param instanceof ParametersWithRandom) {
             ParametersWithRandom rParam = (ParametersWithRandom) param;
@@ -88,9 +91,8 @@ class RSACoreEngine {
     }
 
     public BigInteger processBlock(BigInteger input) {
-        RSAKeyParameters rSAKeyParameters = this.key;
-        if (rSAKeyParameters instanceof RSAPrivateCrtKeyParameters) {
-            RSAPrivateCrtKeyParameters crtKey = (RSAPrivateCrtKeyParameters) rSAKeyParameters;
+        if (this.key instanceof RSAPrivateCrtKeyParameters) {
+            RSAPrivateCrtKeyParameters crtKey = (RSAPrivateCrtKeyParameters) this.key;
             BigInteger p = crtKey.getP();
             BigInteger q = crtKey.getQ();
             BigInteger dP = crtKey.getDP();
@@ -102,6 +104,6 @@ class RSACoreEngine {
             BigInteger m = h.multiply(qInv).mod(p).multiply(q);
             return m.add(mQ);
         }
-        return input.modPow(rSAKeyParameters.getExponent(), this.key.getModulus());
+        return input.modPow(this.key.getExponent(), this.key.getModulus());
     }
 }

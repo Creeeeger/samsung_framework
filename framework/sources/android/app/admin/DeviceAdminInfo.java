@@ -15,6 +15,8 @@ import com.android.internal.R;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,6 +25,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public final class DeviceAdminInfo implements Parcelable {
     public static final Parcelable.Creator<DeviceAdminInfo> CREATOR;
     public static final int HEADLESS_DEVICE_OWNER_MODE_AFFILIATED = 1;
+    public static final int HEADLESS_DEVICE_OWNER_MODE_SINGLE_USER = 2;
     public static final int HEADLESS_DEVICE_OWNER_MODE_UNSUPPORTED = 0;
     static final String TAG = "DeviceAdminInfo";
     public static final int USES_ENCRYPTED_STORAGE = 7;
@@ -57,11 +60,10 @@ public final class DeviceAdminInfo implements Parcelable {
     static HashMap<String, Integer> sKnownPolicies = new HashMap<>();
     static SparseArray<PolicyInfo> sRevKnownPolicies = new SparseArray<>();
 
-    /* loaded from: classes.dex */
-    private @interface HeadlessDeviceOwnerMode {
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface HeadlessDeviceOwnerMode {
     }
 
-    /* loaded from: classes.dex */
     public static class PolicyInfo {
         public final int description;
         public final int descriptionForSecondaryUsers;
@@ -112,14 +114,13 @@ public final class DeviceAdminInfo implements Parcelable {
             sKnownPolicies.put(pi.tag, Integer.valueOf(pi.ident));
         }
         CREATOR = new Parcelable.Creator<DeviceAdminInfo>() { // from class: android.app.admin.DeviceAdminInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DeviceAdminInfo createFromParcel(Parcel source) {
                 return new DeviceAdminInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public DeviceAdminInfo[] newArray(int size) {
                 return new DeviceAdminInfo[size];
@@ -131,11 +132,11 @@ public final class DeviceAdminInfo implements Parcelable {
         this(context, resolveInfo.activityInfo);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x013b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0188, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:27:?, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:25:?, code lost:
     
         return;
      */
@@ -143,9 +144,9 @@ public final class DeviceAdminInfo implements Parcelable {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public DeviceAdminInfo(android.content.Context r18, android.content.pm.ActivityInfo r19) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
+    public DeviceAdminInfo(android.content.Context r20, android.content.pm.ActivityInfo r21) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
         /*
-            Method dump skipped, instructions count: 370
+            Method dump skipped, instructions count: 447
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.app.admin.DeviceAdminInfo.<init>(android.content.Context, android.content.pm.ActivityInfo):void");
@@ -244,23 +245,6 @@ public final class DeviceAdminInfo implements Parcelable {
         dest.writeInt(this.mUsesPolicies);
         dest.writeBoolean(this.mSupportsTransferOwnership);
         dest.writeInt(this.mHeadlessDeviceOwnerMode);
-    }
-
-    /* renamed from: android.app.admin.DeviceAdminInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DeviceAdminInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceAdminInfo createFromParcel(Parcel source) {
-            return new DeviceAdminInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DeviceAdminInfo[] newArray(int size) {
-            return new DeviceAdminInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

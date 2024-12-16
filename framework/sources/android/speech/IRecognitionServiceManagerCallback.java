@@ -15,7 +15,6 @@ public interface IRecognitionServiceManagerCallback extends IInterface {
 
     void onSuccess(IRecognitionService iRecognitionService) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecognitionServiceManagerCallback {
         @Override // android.speech.IRecognitionServiceManagerCallback
         public void onSuccess(IRecognitionService service) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IRecognitionServiceManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecognitionServiceManagerCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -77,31 +75,27 @@ public interface IRecognitionServiceManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRecognitionServiceManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRecognitionServiceManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRecognitionServiceManagerCallback.DESCRIPTOR);
+                case 1:
+                    IRecognitionService _arg0 = IRecognitionService.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRecognitionService _arg0 = IRecognitionService.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecognitionServiceManagerCallback {
+        private static class Proxy implements IRecognitionServiceManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

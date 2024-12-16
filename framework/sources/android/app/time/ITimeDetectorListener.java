@@ -12,7 +12,6 @@ public interface ITimeDetectorListener extends IInterface {
 
     void onChange() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITimeDetectorListener {
         @Override // android.app.time.ITimeDetectorListener
         public void onChange() throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITimeDetectorListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITimeDetectorListener {
         static final int TRANSACTION_onChange = 1;
 
@@ -67,23 +65,20 @@ public interface ITimeDetectorListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITimeDetectorListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITimeDetectorListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITimeDetectorListener.DESCRIPTOR);
+                case 1:
+                    onChange();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onChange();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITimeDetectorListener {
+        private static class Proxy implements ITimeDetectorListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

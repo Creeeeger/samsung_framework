@@ -76,7 +76,7 @@ public class FileHelper {
             FileChannel fcout = outputStream.getChannel();
             try {
                 try {
-                    if (fcin != null) {
+                    if (fcin != null && fcout != null) {
                         try {
                             long lSize = fcin.size();
                             fcin.transferTo(0L, lSize, fcout);
@@ -114,28 +114,28 @@ public class FileHelper {
                         inputStream.close();
                     }
                     outputStream.close();
-                } catch (Throwable th) {
-                    if (fcin != null) {
-                        try {
-                            fcin.close();
-                        } catch (IOException e5) {
-                            e5.printStackTrace();
-                            throw th;
-                        }
-                    }
-                    if (fcout != null) {
-                        fcout.close();
-                    }
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                    outputStream.close();
-                    throw th;
+                } catch (IOException e5) {
+                    e5.printStackTrace();
                 }
-            } catch (IOException e6) {
-                e6.printStackTrace();
+                return result;
+            } catch (Throwable th) {
+                if (fcin != null) {
+                    try {
+                        fcin.close();
+                    } catch (IOException e6) {
+                        e6.printStackTrace();
+                        throw th;
+                    }
+                }
+                if (fcout != null) {
+                    fcout.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                outputStream.close();
+                throw th;
             }
-            return result;
         } catch (FileNotFoundException e7) {
             e7.printStackTrace();
             if (inputStream != null) {
@@ -298,8 +298,6 @@ public class FileHelper {
     }
 
     public String createThumnailFromData(Context context, SemClipData clip) {
-        int i;
-        FileOutputStream fos;
         if (context == null) {
             Log.secD(TAG, "createThumnailFromData(): context is null!");
             return null;
@@ -337,27 +335,21 @@ public class FileHelper {
                         byte[] decodedString = sFileName.substring(index + 1).getBytes();
                         bm = ClipboardDataBitmapUtil.getResizeBitmap(Base64.decode(decodedString, 4), thumbImageWidth, thumbImageHeight);
                     }
-                } else {
-                    int i2 = LENGTH_HTTP_URL;
-                    if ((length > i2 && sFileName.substring(0, i2).compareTo(PREFIX_HTTP_URL) == 0) || (length > (i = LENGTH_HTTPS_URL) && sFileName.substring(0, i).compareTo(PREFIX_HTTPS_URL) == 0)) {
-                        Log.secI(TAG, "downloadSimpleBitmap");
-                        try {
-                            Log.secD(TAG, "html : " + htmlClip.getHtml());
-                            bm = ClipboardDataBitmapUtil.downloadSimpleBitmap(sFileName, thumbImageWidth, thumbImageHeight);
-                        } catch (Exception e3) {
-                            e3.printStackTrace();
-                            return null;
-                        }
-                    } else {
-                        int i3 = LENGTH_CONTENT_URI;
-                        if (length > i3 && sFileName.substring(0, i3).compareTo("content://") == 0) {
-                            Log.secI(TAG, "getUriPathBitmap...");
-                            Uri uri = Uri.parse(sFileName);
-                            bm = ClipboardDataBitmapUtil.getUriPathBitmap(context, uri, thumbImageWidth, thumbImageHeight);
-                        } else {
-                            Log.secD(TAG, "invalid data");
-                        }
+                } else if ((length > LENGTH_HTTP_URL && sFileName.substring(0, LENGTH_HTTP_URL).compareTo(PREFIX_HTTP_URL) == 0) || (length > LENGTH_HTTPS_URL && sFileName.substring(0, LENGTH_HTTPS_URL).compareTo(PREFIX_HTTPS_URL) == 0)) {
+                    Log.secI(TAG, "downloadSimpleBitmap");
+                    try {
+                        Log.secD(TAG, "html : " + htmlClip.getHtml());
+                        bm = ClipboardDataBitmapUtil.downloadSimpleBitmap(sFileName, thumbImageWidth, thumbImageHeight);
+                    } catch (Exception e3) {
+                        e3.printStackTrace();
+                        return null;
                     }
+                } else if (length > LENGTH_CONTENT_URI && sFileName.substring(0, LENGTH_CONTENT_URI).compareTo("content://") == 0) {
+                    Log.secI(TAG, "getUriPathBitmap...");
+                    Uri uri = Uri.parse(sFileName);
+                    bm = ClipboardDataBitmapUtil.getUriPathBitmap(context, uri, thumbImageWidth, thumbImageHeight);
+                } else {
+                    Log.secD(TAG, "invalid data");
                 }
                 if (bm == null) {
                     return null;
@@ -367,17 +359,17 @@ public class FileHelper {
                 File createFile = new File(ClipboardConstants.CLIPBOARD_ROOT_PATH_TEMP, ClipboardConstants.HTML_PREVIEW_IMAGE_NAME);
                 String thumbFullPath = createFile + ClipboardConstants.THUMBNAIL_SUFFIX;
                 try {
-                    fos = new FileOutputStream(thumbFullPath);
+                    FileOutputStream fos = new FileOutputStream(thumbFullPath);
+                    try {
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.close();
+                    } finally {
+                    }
                 } catch (Exception e4) {
                     e4.printStackTrace();
                 }
-                try {
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.close();
-                    bm.recycle();
-                    return thumbFullPath;
-                } finally {
-                }
+                bm.recycle();
+                return thumbFullPath;
             }
             Log.secI(TAG, "createThumnailFromData() is false because clip is not html type. clip.GetFomat() :" + clip.getClipType());
             return null;
@@ -387,7 +379,6 @@ public class FileHelper {
     }
 
     public boolean setFirstImagePathFromHtmlData(SemHtmlClipData clip) {
-        int i;
         if (clip == null) {
             return false;
         }
@@ -424,13 +415,11 @@ public class FileHelper {
             Log.secI(TAG, "directly use firstImagePath...getFilePathBitmap : Substring Filepath  - " + sFileName);
             return true;
         }
-        int i2 = LENGTH_HTTP_URL;
-        if ((length > i2 && sFileName.substring(0, i2).compareTo(PREFIX_HTTP_URL) == 0) || (length > (i = LENGTH_HTTPS_URL) && sFileName.substring(0, i).compareTo(PREFIX_HTTPS_URL) == 0)) {
+        if ((length > LENGTH_HTTP_URL && sFileName.substring(0, LENGTH_HTTP_URL).compareTo(PREFIX_HTTP_URL) == 0) || (length > LENGTH_HTTPS_URL && sFileName.substring(0, LENGTH_HTTPS_URL).compareTo(PREFIX_HTTPS_URL) == 0)) {
             clip.setThumbnailImagePath(null);
             return true;
         }
-        int i3 = LENGTH_CONTENT_URI;
-        if (length <= i3 || sFileName.substring(0, i3).compareTo("content://") != 0) {
+        if (length <= LENGTH_CONTENT_URI || sFileName.substring(0, LENGTH_CONTENT_URI).compareTo("content://") != 0) {
             return false;
         }
         clip.setThumbnailImagePath(null);
@@ -467,8 +456,7 @@ public class FileHelper {
             Log.secI(TAG, "directly use ThumbnailPath...getFilePathBitmap : Substring Filepath  - " + sFileName);
             return true;
         }
-        int i = LENGTH_CONTENT_URI;
-        if (length <= i || sFileName.substring(0, i).compareTo("content://") != 0) {
+        if (length <= LENGTH_CONTENT_URI || sFileName.substring(0, LENGTH_CONTENT_URI).compareTo("content://") != 0) {
             return false;
         }
         clip.setThumbnailPath(null);
@@ -510,15 +498,12 @@ public class FileHelper {
                 }
             } else if (sFileName.startsWith(PREFIX_STORAGE) || sFileName.startsWith(PREFIX_FILE)) {
                 bm = ClipboardDataBitmapUtil.getFilePathBitmap(sFileName, thumbImageWidth, thumbImageHeight);
+            } else if (length > LENGTH_CONTENT_URI && sFileName.substring(0, LENGTH_CONTENT_URI).compareTo("content://") == 0) {
+                Log.secI(TAG, "getUriPathBitmap...");
+                Uri uri = Uri.parse(sFileName);
+                bm = ClipboardDataBitmapUtil.getUriPathBitmap(context, uri, thumbImageWidth, thumbImageHeight);
             } else {
-                int i = LENGTH_CONTENT_URI;
-                if (length > i && sFileName.substring(0, i).compareTo("content://") == 0) {
-                    Log.secI(TAG, "getUriPathBitmap...");
-                    Uri uri = Uri.parse(sFileName);
-                    bm = ClipboardDataBitmapUtil.getUriPathBitmap(context, uri, thumbImageWidth, thumbImageHeight);
-                } else {
-                    Log.secD(TAG, "invalid data");
-                }
+                Log.secD(TAG, "invalid data");
             }
             if (bm == null) {
                 return null;

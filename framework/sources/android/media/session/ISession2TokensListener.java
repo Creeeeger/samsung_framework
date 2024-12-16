@@ -14,7 +14,6 @@ public interface ISession2TokensListener extends IInterface {
 
     void onSession2TokensChanged(List<Session2Token> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISession2TokensListener {
         @Override // android.media.session.ISession2TokensListener
         public void onSession2TokensChanged(List<Session2Token> tokens) throws RemoteException {
@@ -26,7 +25,6 @@ public interface ISession2TokensListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISession2TokensListener {
         static final int TRANSACTION_onSession2TokensChanged = 1;
 
@@ -69,26 +67,22 @@ public interface ISession2TokensListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISession2TokensListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISession2TokensListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISession2TokensListener.DESCRIPTOR);
+                case 1:
+                    List<Session2Token> _arg0 = data.createTypedArrayList(Session2Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSession2TokensChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<Session2Token> _arg0 = data.createTypedArrayList(Session2Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSession2TokensChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISession2TokensListener {
+        private static class Proxy implements ISession2TokensListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

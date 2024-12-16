@@ -106,7 +106,6 @@ public interface IGnssXtra extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssXtra {
         private IHwBinder mRemote;
 
@@ -311,7 +310,6 @@ public interface IGnssXtra extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssXtra {
         @Override // android.hardware.gnss.V1_0.IGnssXtra, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -334,7 +332,7 @@ public interface IGnssXtra extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssXtra, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-63, 20, 38, 87, -34, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, -3, -78, -110, -91, 2, 55, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, -23, 56, SprAttributeBase.TYPE_ANIMATOR_SET, 77, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 10, -72, 53, -110, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, -42, -31, 54, 4, -2, 77, -68, -92}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-63, 20, 38, 87, -34, 22, -3, -78, -110, -91, 2, 55, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, -23, 56, SprAttributeBase.TYPE_ANIMATOR_SET, 77, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 10, -72, 53, -110, 23, -42, -31, 54, 4, -2, 77, -68, -92}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssXtra, android.internal.hidl.base.V1_0.IBase

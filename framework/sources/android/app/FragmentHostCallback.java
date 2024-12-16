@@ -32,7 +32,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         this(context instanceof Activity ? (Activity) context : null, context, chooseHandler(context, handler), windowAnimations);
     }
 
-    public FragmentHostCallback(Activity activity) {
+    FragmentHostCallback(Activity activity) {
         this(activity, activity, activity.mHandler, 0);
     }
 
@@ -115,94 +115,86 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return true;
     }
 
-    public boolean getRetainLoaders() {
+    boolean getRetainLoaders() {
         return this.mRetainLoaders;
     }
 
-    public Activity getActivity() {
+    Activity getActivity() {
         return this.mActivity;
     }
 
-    public Context getContext() {
+    Context getContext() {
         return this.mContext;
     }
 
-    public Handler getHandler() {
+    Handler getHandler() {
         return this.mHandler;
     }
 
-    public FragmentManagerImpl getFragmentManagerImpl() {
+    FragmentManagerImpl getFragmentManagerImpl() {
         return this.mFragmentManager;
     }
 
-    public LoaderManagerImpl getLoaderManagerImpl() {
-        LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
-        if (loaderManagerImpl != null) {
-            return loaderManagerImpl;
+    LoaderManagerImpl getLoaderManagerImpl() {
+        if (this.mLoaderManager != null) {
+            return this.mLoaderManager;
         }
         this.mCheckedForLoaderManager = true;
-        LoaderManagerImpl loaderManager = getLoaderManager("(root)", this.mLoadersStarted, true);
-        this.mLoaderManager = loaderManager;
-        return loaderManager;
+        this.mLoaderManager = getLoaderManager("(root)", this.mLoadersStarted, true);
+        return this.mLoaderManager;
     }
 
-    public void inactivateFragment(String who) {
+    void inactivateFragment(String who) {
         LoaderManagerImpl lm;
-        ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
-        if (arrayMap != null && (lm = (LoaderManagerImpl) arrayMap.get(who)) != null && !lm.mRetaining) {
+        if (this.mAllLoaderManagers != null && (lm = (LoaderManagerImpl) this.mAllLoaderManagers.get(who)) != null && !lm.mRetaining) {
             lm.doDestroy();
             this.mAllLoaderManagers.remove(who);
         }
     }
 
-    public void doLoaderStart() {
+    void doLoaderStart() {
         if (this.mLoadersStarted) {
             return;
         }
         this.mLoadersStarted = true;
-        LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
-        if (loaderManagerImpl != null) {
-            loaderManagerImpl.doStart();
+        if (this.mLoaderManager != null) {
+            this.mLoaderManager.doStart();
         } else if (!this.mCheckedForLoaderManager) {
-            this.mLoaderManager = getLoaderManager("(root)", true, false);
+            this.mLoaderManager = getLoaderManager("(root)", this.mLoadersStarted, false);
         }
         this.mCheckedForLoaderManager = true;
     }
 
-    public void doLoaderStop(boolean retain) {
+    void doLoaderStop(boolean retain) {
         this.mRetainLoaders = retain;
-        LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
-        if (loaderManagerImpl == null || !this.mLoadersStarted) {
+        if (this.mLoaderManager == null || !this.mLoadersStarted) {
             return;
         }
         this.mLoadersStarted = false;
         if (retain) {
-            loaderManagerImpl.doRetain();
+            this.mLoaderManager.doRetain();
         } else {
-            loaderManagerImpl.doStop();
+            this.mLoaderManager.doStop();
         }
     }
 
     void doLoaderRetain() {
-        LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
-        if (loaderManagerImpl == null) {
+        if (this.mLoaderManager == null) {
             return;
         }
-        loaderManagerImpl.doRetain();
+        this.mLoaderManager.doRetain();
     }
 
-    public void doLoaderDestroy() {
-        LoaderManagerImpl loaderManagerImpl = this.mLoaderManager;
-        if (loaderManagerImpl == null) {
+    void doLoaderDestroy() {
+        if (this.mLoaderManager == null) {
             return;
         }
-        loaderManagerImpl.doDestroy();
+        this.mLoaderManager.doDestroy();
     }
 
-    public void reportLoaderStart() {
-        ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
-        if (arrayMap != null) {
-            int N = arrayMap.size();
+    void reportLoaderStart() {
+        if (this.mAllLoaderManagers != null) {
+            int N = this.mAllLoaderManagers.size();
             LoaderManagerImpl[] loaders = new LoaderManagerImpl[N];
             for (int i = N - 1; i >= 0; i--) {
                 loaders[i] = (LoaderManagerImpl) this.mAllLoaderManagers.valueAt(i);
@@ -215,7 +207,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         }
     }
 
-    public LoaderManagerImpl getLoaderManager(String who, boolean started, boolean create) {
+    LoaderManagerImpl getLoaderManager(String who, boolean started, boolean create) {
         if (this.mAllLoaderManagers == null) {
             this.mAllLoaderManagers = new ArrayMap<>();
         }
@@ -232,11 +224,10 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return lm;
     }
 
-    public ArrayMap<String, LoaderManager> retainLoaderNonConfig() {
+    ArrayMap<String, LoaderManager> retainLoaderNonConfig() {
         boolean retainLoaders = false;
-        ArrayMap<String, LoaderManager> arrayMap = this.mAllLoaderManagers;
-        if (arrayMap != null) {
-            int N = arrayMap.size();
+        if (this.mAllLoaderManagers != null) {
+            int N = this.mAllLoaderManagers.size();
             LoaderManagerImpl[] loaders = new LoaderManagerImpl[N];
             for (int i = N - 1; i >= 0; i--) {
                 loaders[i] = (LoaderManagerImpl) this.mAllLoaderManagers.valueAt(i);
@@ -264,7 +255,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         return null;
     }
 
-    public void restoreLoaderNonConfig(ArrayMap<String, LoaderManager> loaderManagers) {
+    void restoreLoaderNonConfig(ArrayMap<String, LoaderManager> loaderManagers) {
         if (loaderManagers != null) {
             int N = loaderManagers.size();
             for (int i = 0; i < N; i++) {
@@ -274,7 +265,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer {
         this.mAllLoaderManagers = loaderManagers;
     }
 
-    public void dumpLoaders(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+    void dumpLoaders(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         writer.print(prefix);
         writer.print("mLoadersStarted=");
         writer.println(this.mLoadersStarted);

@@ -5,11 +5,10 @@ import android.os.Parcel;
 import android.util.EventLog;
 import android.util.Slog;
 import com.android.internal.util.GrowingArrayUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SparseMappingTable {
     private static final int ARRAY_MASK = 255;
     private static final int ARRAY_SHIFT = 8;
@@ -20,11 +19,10 @@ public class SparseMappingTable {
     private static final int INDEX_SHIFT = 16;
     public static final int INVALID_KEY = -1;
     private static final String TAG = "SparseMappingTable";
-    private final ArrayList<long[]> mLongs;
+    private final ArrayList<long[]> mLongs = new ArrayList<>();
     private int mNextIndex;
     private int mSequence;
 
-    /* loaded from: classes4.dex */
     public static class Table {
         private SparseMappingTable mParent;
         private int mSequence;
@@ -68,11 +66,7 @@ public class SparseMappingTable {
             }
             int key = (whichArray << 8) | (this.mParent.mNextIndex << 16) | (id << 0);
             this.mParent.mNextIndex += count;
-            int[] iArr = this.mTable;
-            if (iArr == null) {
-                iArr = EmptyArray.INT;
-            }
-            this.mTable = GrowingArrayUtils.insert(iArr, this.mSize, ~idx, key);
+            this.mTable = GrowingArrayUtils.insert(this.mTable != null ? this.mTable : EmptyArray.INT, this.mSize, ~idx, key);
             this.mSize++;
             return key;
         }
@@ -160,10 +154,9 @@ public class SparseMappingTable {
 
         public boolean readFromParcel(Parcel in) {
             this.mSequence = in.readInt();
-            int readInt = in.readInt();
-            this.mSize = readInt;
-            if (readInt != 0) {
-                this.mTable = new int[readInt];
+            this.mSize = in.readInt();
+            if (this.mSize != 0) {
+                this.mTable = new int[this.mSize];
                 for (int i = 0; i < this.mSize; i++) {
                     this.mTable[i] = in.readInt();
                 }
@@ -236,11 +229,10 @@ public class SparseMappingTable {
             sb.append(" mSize=");
             sb.append(this.mSize);
             sb.append(" mTable=");
-            int[] iArr = this.mTable;
-            if (iArr == null) {
-                sb.append(SemCapabilities.FEATURE_TAG_NULL);
+            if (this.mTable == null) {
+                sb.append("null");
             } else {
-                int N = iArr.length;
+                int N = this.mTable.length;
                 sb.append('[');
                 for (int i = 0; i < N; i++) {
                     int key = this.mTable[i];
@@ -264,9 +256,7 @@ public class SparseMappingTable {
     }
 
     public SparseMappingTable() {
-        ArrayList<long[]> arrayList = new ArrayList<>();
-        this.mLongs = arrayList;
-        arrayList.add(new long[4096]);
+        this.mLongs.add(new long[4096]);
     }
 
     public void reset() {
@@ -384,10 +374,12 @@ public class SparseMappingTable {
         return (key >> 16) & 65535;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void logOrThrow(String message) {
         logOrThrow(message, new RuntimeException("Stack trace"));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void logOrThrow(String message, Throwable th) {
         Slog.e(TAG, message, th);
         if (Build.IS_ENG) {

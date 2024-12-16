@@ -9,7 +9,7 @@ import android.os.Looper;
 import com.samsung.android.globalactions.util.BiometricPromptWrapper;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class BiometricPromptWrapper {
     private static final String TAG = "BiometricPromptWrapper";
     private final BiometricManager mBiometricManager;
@@ -21,9 +21,8 @@ public class BiometricPromptWrapper {
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private BiometricPrompt.AuthenticationCallback mCallback = new AnonymousClass1();
 
-    /* renamed from: com.samsung.android.globalactions.util.BiometricPromptWrapper$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends BiometricPrompt.AuthenticationCallback {
+    /* renamed from: com.samsung.android.globalactions.util.BiometricPromptWrapper$1, reason: invalid class name */
+    class AnonymousClass1 extends BiometricPrompt.AuthenticationCallback {
         AnonymousClass1() {
         }
 
@@ -41,6 +40,7 @@ public class BiometricPromptWrapper {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationError$0() {
             BiometricPromptWrapper.this.mFailRunnable.run();
         }
@@ -58,6 +58,7 @@ public class BiometricPromptWrapper {
             super.onAuthenticationSucceeded(result);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onAuthenticationSucceeded$1() {
             BiometricPromptWrapper.this.mSuccessRunnable.run();
         }
@@ -67,7 +68,7 @@ public class BiometricPromptWrapper {
         this.mContext = context;
         this.mLogWrapper = logWrapper;
         this.mBiometricManager = (BiometricManager) context.getSystemService(BiometricManager.class);
-        this.mBuilder = new BiometricPrompt.Builder(context);
+        this.mBuilder = new BiometricPrompt.Builder(this.mContext);
     }
 
     public void initPrompt(String title, int authenticators) {

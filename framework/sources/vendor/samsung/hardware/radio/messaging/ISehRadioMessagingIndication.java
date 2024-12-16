@@ -20,7 +20,6 @@ public interface ISehRadioMessagingIndication extends IInterface {
 
     void stkSmsSendResultIndication(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioMessagingIndication {
         @Override // vendor.samsung.hardware.radio.messaging.ISehRadioMessagingIndication
         public void deviceReadyNoti(int type) throws RemoteException {
@@ -46,7 +45,6 @@ public interface ISehRadioMessagingIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioMessagingIndication {
         static final int TRANSACTION_deviceReadyNoti = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -80,40 +78,38 @@ public interface ISehRadioMessagingIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deviceReadyNoti(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stkSmsSendResultIndication(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deviceReadyNoti(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stkSmsSendResultIndication(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioMessagingIndication {
+        private static class Proxy implements ISehRadioMessagingIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

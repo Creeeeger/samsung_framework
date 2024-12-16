@@ -55,15 +55,8 @@ public final class MediaProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -225,5 +218,25 @@ public final class MediaProperties {
     public static Optional<Integer> resolution_limit_32bit() {
         String value = SystemProperties.get("media.resolution.limit.32bit");
         return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public enum codec2_hal_selection_values {
+        AIDL("aidl"),
+        HIDL("hidl");
+
+        private final String propValue;
+
+        codec2_hal_selection_values(String propValue) {
+            this.propValue = propValue;
+        }
+
+        public String getPropValue() {
+            return this.propValue;
+        }
+    }
+
+    public static Optional<codec2_hal_selection_values> codec2_hal_selection() {
+        String value = SystemProperties.get("media.c2.hal.selection");
+        return Optional.ofNullable((codec2_hal_selection_values) tryParseEnum(codec2_hal_selection_values.class, value));
     }
 }

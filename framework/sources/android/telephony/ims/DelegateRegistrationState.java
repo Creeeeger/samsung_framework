@@ -10,17 +10,16 @@ import java.util.Objects;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DelegateRegistrationState implements Parcelable {
     public static final Parcelable.Creator<DelegateRegistrationState> CREATOR = new Parcelable.Creator<DelegateRegistrationState>() { // from class: android.telephony.ims.DelegateRegistrationState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DelegateRegistrationState createFromParcel(Parcel source) {
             return new DelegateRegistrationState(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DelegateRegistrationState[] newArray(int size) {
             return new DelegateRegistrationState[size];
@@ -41,24 +40,13 @@ public final class DelegateRegistrationState implements Parcelable {
     private ArraySet<String> mRegisteringTags;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeregisteredReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeregisteringReason {
     }
 
-    /* synthetic */ DelegateRegistrationState(Parcel parcel, DelegateRegistrationStateIA delegateRegistrationStateIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ DelegateRegistrationState(DelegateRegistrationStateIA delegateRegistrationStateIA) {
-        this();
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final DelegateRegistrationState mState = new DelegateRegistrationState();
 
@@ -102,13 +90,11 @@ public final class DelegateRegistrationState implements Parcelable {
     private DelegateRegistrationState(Parcel source) {
         this.mRegisteringTags = new ArraySet<>();
         this.mRegisteredTags = new ArraySet<>();
-        ArraySet<FeatureTagState> arraySet = new ArraySet<>();
-        this.mDeregisteringTags = arraySet;
-        ArraySet<FeatureTagState> arraySet2 = new ArraySet<>();
-        this.mDeregisteredTags = arraySet2;
+        this.mDeregisteringTags = new ArraySet<>();
+        this.mDeregisteredTags = new ArraySet<>();
         this.mRegisteredTags = source.readArraySet(null);
-        readStateFromParcel(source, arraySet);
-        readStateFromParcel(source, arraySet2);
+        readStateFromParcel(source, this.mDeregisteringTags);
+        readStateFromParcel(source, this.mDeregisteredTags);
         this.mRegisteringTags = source.readArraySet(null);
     }
 
@@ -126,23 +112,6 @@ public final class DelegateRegistrationState implements Parcelable {
 
     public Set<FeatureTagState> getDeregisteredFeatureTags() {
         return new ArraySet((ArraySet) this.mDeregisteredTags);
-    }
-
-    /* renamed from: android.telephony.ims.DelegateRegistrationState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DelegateRegistrationState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DelegateRegistrationState createFromParcel(Parcel source) {
-            return new DelegateRegistrationState(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DelegateRegistrationState[] newArray(int size) {
-            return new DelegateRegistrationState[size];
-        }
     }
 
     @Override // android.os.Parcelable

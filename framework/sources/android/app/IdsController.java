@@ -21,22 +21,21 @@ public final class IdsController {
     public static final int REASON_SETCONTENTVIEW = 3;
     public static final int REASON_VIEW_INFLATED = 4;
     private static final String TAG = "IDS_TAG";
-    private Context ctx;
-    private AtomicBoolean hasUiUpdated = new AtomicBoolean();
-    private AtomicBoolean idsWindow = new AtomicBoolean();
+    private Context mContext;
+    private AtomicBoolean mHasUiUpdated = new AtomicBoolean();
+    private AtomicBoolean mIdsWindow = new AtomicBoolean();
     private static final int DO_IDS = SystemProperties.getInt("debug.ids.setWindowSize", 10);
-    private static boolean clearData = false;
+    private static boolean sClearData = false;
 
     public IdsController(Context app) {
-        this.ctx = app;
+        this.mContext = app;
     }
 
-    public void openIdsWindow(View v, Choreographer mChoreographer) {
-        if (clearData) {
-            Log.i(TAG, "Clearing training data of " + this.ctx);
-            Context context = this.ctx;
-            if (context != null) {
-                context.deleteSharedPreferences(IDS_URI);
+    void openIdsWindow(View v, Choreographer mChoreographer) {
+        if (sClearData) {
+            Log.i(TAG, "Clearing training data of " + this.mContext);
+            if (this.mContext != null) {
+                this.mContext.deleteSharedPreferences(IDS_URI);
             }
         }
         Log.i(TAG, "Starting IDS observe window");
@@ -55,21 +54,20 @@ public final class IdsController {
                 if (sp != null && (idsCount = sp.getInt(IDS_KEY, 0)) < DO_IDS && idsCount != -1) {
                     if (getUiUpdated()) {
                         idsCount2 = -1;
-                        Log.i(TAG, "IDS disabled for " + this.ctx);
+                        Log.i(TAG, "IDS disabled for " + this.mContext);
                     } else {
                         idsCount2 = idsCount + 1;
                     }
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putInt(IDS_KEY, idsCount2);
                     editor.apply();
-                    Log.i(TAG, "IDS count updated to " + idsCount2 + " for " + this.ctx);
+                    Log.i(TAG, "IDS count updated to " + idsCount2 + " for " + this.mContext);
                 }
             }
         } catch (Exception e) {
-            Log.i(TAG, "Clearing data while writing to SP of " + this.ctx);
-            Context context = this.ctx;
-            if (context != null) {
-                context.deleteSharedPreferences(IDS_URI);
+            Log.i(TAG, "Clearing data while writing to SP of " + this.mContext);
+            if (this.mContext != null) {
+                this.mContext.deleteSharedPreferences(IDS_URI);
             }
         }
     }
@@ -79,53 +77,38 @@ public final class IdsController {
         if (sp != null) {
             int idsCount = sp.getInt(IDS_KEY, 0);
             if (idsCount == DO_IDS) {
-                Log.i(TAG, "App " + this.ctx + " being boosted by IDS");
+                Log.i(TAG, "App " + this.mContext + " being boosted by IDS");
                 return true;
             }
             if (idsCount == -1) {
-                Log.i(TAG, "App " + this.ctx + " in NO_IDS list");
+                Log.i(TAG, "App " + this.mContext + " in NO_IDS list");
                 return false;
             }
         }
-        Log.i(TAG, "App " + this.ctx + " has not finished training");
+        Log.i(TAG, "App " + this.mContext + " has not finished training");
         return false;
     }
 
     public static void clearTrainingData(boolean flag) {
-        clearData = flag;
+        sClearData = flag;
     }
 
     private SharedPreferences getIdsSharedPreference() {
         try {
-            Log.i(TAG, "Getting Shared Preference for " + this.ctx + " uid = " + Process.myUid());
+            Log.i(TAG, "Getting Shared Preference for " + this.mContext + " uid = " + Process.myUid());
             if (Process.myUid() == 1000) {
                 Log.e(TAG, "System UID: no SharedPreferences here, no IDS");
                 return null;
             }
-            return this.ctx.getSharedPreferences(IDS_URI, 0);
+            return this.mContext.getSharedPreferences(IDS_URI, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    /* renamed from: android.app.IdsController$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
-        public void onGlobalLayout() {
-            IdsController.this.uiUpdated(2);
-        }
-    }
-
     private void registerLayoutListener(View v, Choreographer mChoreographer) {
         v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() { // from class: android.app.IdsController.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public void onGlobalLayout() {
                 IdsController.this.uiUpdated(2);
@@ -134,13 +117,13 @@ public final class IdsController {
     }
 
     private boolean getUiUpdated() {
-        return this.hasUiUpdated.get();
+        return this.mHasUiUpdated.get();
     }
 
     public void uiUpdated(int reason) {
         if (isIdsWindowActive()) {
             Log.i(TAG, getReasonForUpdate(reason) + " updated UI for IDS");
-            this.hasUiUpdated.set(true);
+            this.mHasUiUpdated.set(true);
         }
     }
 
@@ -162,10 +145,10 @@ public final class IdsController {
     }
 
     private boolean isIdsWindowActive() {
-        return this.idsWindow.get();
+        return this.mIdsWindow.get();
     }
 
     private void setIdsWindowActive(boolean active) {
-        this.idsWindow.set(active);
+        this.mIdsWindow.set(active);
     }
 }

@@ -32,10 +32,6 @@ public class CutoutSpecification {
     private final Rect mRightBound;
     private final Rect mTopBound;
 
-    /* synthetic */ CutoutSpecification(Parser parser, CutoutSpecificationIA cutoutSpecificationIA) {
-        this(parser);
-    }
-
     private CutoutSpecification(Parser parser) {
         this.mPath = parser.mPath;
         this.mLeftBound = parser.mLeftBound;
@@ -50,8 +46,7 @@ public class CutoutSpecification {
         if (physicalPixelDisplaySizeRatio == 1.0f) {
             return;
         }
-        Path path = this.mPath;
-        if (path != null && !path.isEmpty()) {
+        if (this.mPath != null && !this.mPath.isEmpty()) {
             Matrix matrix = new Matrix();
             matrix.postScale(physicalPixelDisplaySizeRatio, physicalPixelDisplaySizeRatio);
             this.mPath.transform(matrix);
@@ -97,11 +92,11 @@ public class CutoutSpecification {
         return this.mInsets.toRect();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int decideWhichEdge(boolean isTopEdgeShortEdge, boolean isShortEdge, boolean isStart) {
         return isTopEdgeShortEdge ? isShortEdge ? isStart ? 48 : 80 : isStart ? 3 : 5 : isShortEdge ? isStart ? 3 : 5 : isStart ? 48 : 80;
     }
 
-    /* loaded from: classes4.dex */
     public static class Parser {
         private boolean mBindBottomCutout;
         private boolean mBindLeftCutout;
@@ -137,7 +132,7 @@ public class CutoutSpecification {
             this(stableDensity, physicalDisplayWidth, physicalDisplayHeight, 1.0f);
         }
 
-        public Parser(float stableDensity, int physicalDisplayWidth, int physicalDisplayHeight, float physicalPixelDisplaySizeRatio) {
+        Parser(float stableDensity, int physicalDisplayWidth, int physicalDisplayHeight, float physicalPixelDisplaySizeRatio) {
             this.mTmpRect = new Rect();
             this.mTmpRectF = new RectF();
             this.mPositionFromLeft = false;
@@ -152,7 +147,7 @@ public class CutoutSpecification {
             this.mPhysicalDisplayHeight = physicalDisplayHeight;
             this.mPhysicalPixelDisplaySizeRatio = physicalPixelDisplaySizeRatio;
             this.mMatrix = new Matrix();
-            this.mIsShortEdgeOnTop = physicalDisplayWidth < physicalDisplayHeight;
+            this.mIsShortEdgeOnTop = this.mPhysicalDisplayWidth < this.mPhysicalDisplayHeight;
         }
 
         private void computeBoundsRectAndAddToRegion(Path p, Region inoutRegion, Rect inoutRect) {
@@ -192,9 +187,7 @@ public class CutoutSpecification {
             }
             this.mMatrix.reset();
             if (this.mInDp) {
-                Matrix matrix = this.mMatrix;
-                float f = this.mStableDensity;
-                matrix.postScale(f, f);
+                this.mMatrix.postScale(this.mStableDensity, this.mStableDensity);
             }
             this.mMatrix.postTranslate(offsetX, offsetY);
         }
@@ -206,20 +199,11 @@ public class CutoutSpecification {
             if (gravity == 48 && rect.bottom > 0 && rect.bottom < this.mPhysicalDisplayHeight) {
                 return rect.bottom;
             }
-            if (gravity == 5 && rect.left > 0) {
-                int i = rect.left;
-                int i2 = this.mPhysicalDisplayWidth;
-                if (i < i2) {
-                    return i2 - rect.left;
-                }
+            if (gravity == 5 && rect.left > 0 && rect.left < this.mPhysicalDisplayWidth) {
+                return this.mPhysicalDisplayWidth - rect.left;
             }
-            if (gravity != 80 || rect.top <= 0) {
-                return 0;
-            }
-            int i3 = rect.top;
-            int i4 = this.mPhysicalDisplayHeight;
-            if (i3 < i4) {
-                return i4 - rect.top;
+            if (gravity == 80 && rect.top > 0 && rect.top < this.mPhysicalDisplayHeight) {
+                return this.mPhysicalDisplayHeight - rect.top;
             }
             return 0;
         }
@@ -258,13 +242,10 @@ public class CutoutSpecification {
             int gravity;
             if (isShortEdge) {
                 gravity = CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, true, isStart);
+            } else if (this.mIsTouchShortEdgeStart && this.mIsTouchShortEdgeEnd) {
+                gravity = CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, false, isStart);
             } else {
-                boolean z = this.mIsTouchShortEdgeStart;
-                if (z && this.mIsTouchShortEdgeEnd) {
-                    gravity = CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, false, isStart);
-                } else {
-                    gravity = (z || this.mIsTouchShortEdgeEnd) ? CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, true, this.mIsCloserToStartSide) : CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, isShortEdge, isStart);
-                }
+                gravity = (this.mIsTouchShortEdgeStart || this.mIsTouchShortEdgeEnd) ? CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, true, this.mIsCloserToStartSide) : CutoutSpecification.decideWhichEdge(this.mIsShortEdgeOnTop, isShortEdge, isStart);
             }
             int oldSafeInset = getSafeInset(gravity);
             int newSafeInset = computeSafeInsets(gravity, rect);
@@ -275,27 +256,19 @@ public class CutoutSpecification {
         }
 
         private void setEdgeCutout(Path newPath) {
-            boolean z = this.mBindRightCutout;
-            if (z && this.mRightBound == null) {
+            if (this.mBindRightCutout && this.mRightBound == null) {
                 this.mRightBound = onSetEdgeCutout(false, !this.mIsShortEdgeOnTop, this.mTmpRect);
+            } else if (this.mBindLeftCutout && this.mLeftBound == null) {
+                this.mLeftBound = onSetEdgeCutout(true, !this.mIsShortEdgeOnTop, this.mTmpRect);
+            } else if (this.mBindBottomCutout && this.mBottomBound == null) {
+                this.mBottomBound = onSetEdgeCutout(false, this.mIsShortEdgeOnTop, this.mTmpRect);
+            } else if (!this.mBindBottomCutout && !this.mBindLeftCutout && !this.mBindRightCutout && this.mTopBound == null) {
+                this.mTopBound = onSetEdgeCutout(true, this.mIsShortEdgeOnTop, this.mTmpRect);
             } else {
-                boolean z2 = this.mBindLeftCutout;
-                if (z2 && this.mLeftBound == null) {
-                    this.mLeftBound = onSetEdgeCutout(true, !this.mIsShortEdgeOnTop, this.mTmpRect);
-                } else {
-                    boolean z3 = this.mBindBottomCutout;
-                    if (z3 && this.mBottomBound == null) {
-                        this.mBottomBound = onSetEdgeCutout(false, this.mIsShortEdgeOnTop, this.mTmpRect);
-                    } else if (!z3 && !z2 && !z && this.mTopBound == null) {
-                        this.mTopBound = onSetEdgeCutout(true, this.mIsShortEdgeOnTop, this.mTmpRect);
-                    } else {
-                        return;
-                    }
-                }
+                return;
             }
-            Path path = this.mPath;
-            if (path != null) {
-                path.addPath(newPath);
+            if (this.mPath != null) {
+                this.mPath.addPath(newPath);
             } else {
                 this.mPath = newPath;
             }

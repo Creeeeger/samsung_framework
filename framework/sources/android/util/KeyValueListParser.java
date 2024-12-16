@@ -122,7 +122,6 @@ public class KeyValueListParser {
         return def;
     }
 
-    /* loaded from: classes4.dex */
     public static class IntValue {
         private final int mDefaultValue;
         private final String mKey;
@@ -131,7 +130,7 @@ public class KeyValueListParser {
         public IntValue(String key, int defaultValue) {
             this.mKey = key;
             this.mDefaultValue = defaultValue;
-            this.mValue = defaultValue;
+            this.mValue = this.mDefaultValue;
         }
 
         public void parse(KeyValueListParser parser) {
@@ -167,7 +166,6 @@ public class KeyValueListParser {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class LongValue {
         private final long mDefaultValue;
         private final String mKey;
@@ -176,7 +174,7 @@ public class KeyValueListParser {
         public LongValue(String key, long defaultValue) {
             this.mKey = key;
             this.mDefaultValue = defaultValue;
-            this.mValue = defaultValue;
+            this.mValue = this.mDefaultValue;
         }
 
         public void parse(KeyValueListParser parser) {
@@ -212,7 +210,6 @@ public class KeyValueListParser {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class StringValue {
         private final String mDefaultValue;
         private final String mKey;
@@ -221,7 +218,7 @@ public class KeyValueListParser {
         public StringValue(String key, String defaultValue) {
             this.mKey = key;
             this.mDefaultValue = defaultValue;
-            this.mValue = defaultValue;
+            this.mValue = this.mDefaultValue;
         }
 
         public void parse(KeyValueListParser parser) {
@@ -257,7 +254,6 @@ public class KeyValueListParser {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class FloatValue {
         private final float mDefaultValue;
         private final String mKey;
@@ -266,7 +262,7 @@ public class KeyValueListParser {
         public FloatValue(String key, float defaultValue) {
             this.mKey = key;
             this.mDefaultValue = defaultValue;
-            this.mValue = defaultValue;
+            this.mValue = this.mDefaultValue;
         }
 
         public void parse(KeyValueListParser parser) {

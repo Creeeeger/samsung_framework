@@ -29,7 +29,7 @@ public class RecoverySession implements AutoCloseable {
         this.mSessionId = sessionId;
     }
 
-    public static RecoverySession newInstance(RecoveryController recoveryController) {
+    static RecoverySession newInstance(RecoveryController recoveryController) {
         return new RecoverySession(recoveryController, newSessionId());
     }
 

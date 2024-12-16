@@ -55,7 +55,6 @@ import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
 import android.widget.RemoteViews;
 import com.android.internal.R;
-import com.samsung.android.rune.ViewRune;
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -135,7 +134,6 @@ public class ProgressBar extends View {
     private static boolean DEBUG = false;
     private static final DecelerateInterpolator PROGRESS_ANIM_INTERPOLATOR = new DecelerateInterpolator();
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ProgressBar> {
         private int mIndeterminateDrawableId;
         private int mIndeterminateId;
@@ -236,10 +234,6 @@ public class ProgressBar extends View {
         this.mCurrentMode = 0;
         this.mUseHorizontalProgress = false;
         this.VISUAL_PROGRESS = new FloatProperty<ProgressBar>("visual_progress") { // from class: android.widget.ProgressBar.2
-            AnonymousClass2(String name) {
-                super(name);
-            }
-
             @Override // android.util.FloatProperty
             public void setValue(ProgressBar object, float value) {
                 object.setVisualProgress(16908301, value);
@@ -287,10 +281,9 @@ public class ProgressBar extends View {
                 setIndeterminateDrawable(indeterminateDrawable);
             }
         }
-        boolean z2 = a.getBoolean(6, this.mOnlyIndeterminate);
-        this.mOnlyIndeterminate = z2;
+        this.mOnlyIndeterminate = a.getBoolean(6, this.mOnlyIndeterminate);
         this.mNoInvalidate = false;
-        if (!z2 && !a.getBoolean(5, this.mIndeterminate)) {
+        if (!this.mOnlyIndeterminate && !a.getBoolean(5, this.mIndeterminate)) {
             z = false;
         } else {
             z = true;
@@ -543,13 +536,12 @@ public class ProgressBar extends View {
     private void swapCurrentDrawable(Drawable newDrawable) {
         Drawable oldDrawable = this.mCurrentDrawable;
         this.mCurrentDrawable = newDrawable;
-        if (oldDrawable != newDrawable) {
+        if (oldDrawable != this.mCurrentDrawable) {
             if (oldDrawable != null) {
                 oldDrawable.setVisible(false, false);
             }
-            Drawable drawable = this.mCurrentDrawable;
-            if (drawable != null) {
-                drawable.setVisible(getWindowVisibility() == 0 && isShown(), false);
+            if (this.mCurrentDrawable != null) {
+                this.mCurrentDrawable.setVisible(getWindowVisibility() == 0 && isShown(), false);
             }
         }
     }
@@ -559,9 +551,8 @@ public class ProgressBar extends View {
     }
 
     public void setIndeterminateDrawable(Drawable d) {
-        Drawable drawable = this.mIndeterminateDrawable;
-        if (drawable != d) {
-            if (drawable != null) {
+        if (this.mIndeterminateDrawable != d) {
+            if (this.mIndeterminateDrawable != null) {
                 if (this.mUseHorizontalProgress) {
                     stopAnimation();
                 }
@@ -598,9 +589,8 @@ public class ProgressBar extends View {
     }
 
     public ColorStateList getIndeterminateTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mIndeterminateTintList;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mIndeterminateTintList;
         }
         return null;
     }
@@ -628,9 +618,8 @@ public class ProgressBar extends View {
     }
 
     public BlendMode getIndeterminateTintBlendMode() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mIndeterminateBlendMode;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mIndeterminateBlendMode;
         }
         return null;
     }
@@ -665,10 +654,9 @@ public class ProgressBar extends View {
     }
 
     public void setProgressDrawable(Drawable d) {
-        Drawable drawable = this.mProgressDrawable;
-        if (drawable != d) {
-            if (drawable != null) {
-                drawable.setCallback(null);
+        if (this.mProgressDrawable != d) {
+            if (this.mProgressDrawable != null) {
+                this.mProgressDrawable.setCallback(null);
                 unscheduleDrawable(this.mProgressDrawable);
             }
             this.mProgressDrawable = d;
@@ -718,16 +706,13 @@ public class ProgressBar extends View {
 
     private void applyPrimaryProgressTint() {
         if (this.mProgressTintInfo.mHasProgressTint || this.mProgressTintInfo.mHasProgressTintMode) {
-            if (ViewRune.APPWIDGET_COMPLICATION) {
-                Drawable drawable = this.mProgressDrawable;
-                if ((drawable instanceof VectorDrawable) && ((VectorDrawable) drawable).hasPath(SEM_PROGRESS_PATH_NAME_PRIMARY)) {
-                    this.mProgressDrawable = this.mProgressDrawable.mutate();
-                    if (this.mProgressTintInfo.mHasProgressTint) {
-                        ((VectorDrawable) this.mProgressDrawable).setPathStrokeColor(SEM_PROGRESS_PATH_NAME_PRIMARY, this.mProgressTintInfo.mProgressTintList.getDefaultColor());
-                        return;
-                    }
+            if (this.mProgressDrawable instanceof VectorDrawable) {
+                this.mProgressDrawable = this.mProgressDrawable.mutate();
+                if (this.mProgressTintInfo.mHasProgressTint) {
+                    ((VectorDrawable) this.mProgressDrawable).setPathStrokeColor(SEM_PROGRESS_PATH_NAME_PRIMARY, this.mProgressTintInfo.mProgressTintList.getDefaultColor());
                     return;
                 }
+                return;
             }
             Drawable target = getTintTarget(16908301, true);
             if (target != null) {
@@ -746,16 +731,13 @@ public class ProgressBar extends View {
 
     private void applyProgressBackgroundTint() {
         if (this.mProgressTintInfo.mHasProgressBackgroundTint || this.mProgressTintInfo.mHasProgressBackgroundTintMode) {
-            if (ViewRune.APPWIDGET_COMPLICATION) {
-                Drawable drawable = this.mProgressDrawable;
-                if ((drawable instanceof VectorDrawable) && ((VectorDrawable) drawable).hasPath(SEM_PROGRESS_PATH_NAME_BACKGROUND)) {
-                    this.mProgressDrawable = this.mProgressDrawable.mutate();
-                    if (this.mProgressTintInfo.mHasProgressBackgroundTint) {
-                        ((VectorDrawable) this.mProgressDrawable).setPathStrokeColor(SEM_PROGRESS_PATH_NAME_BACKGROUND, this.mProgressTintInfo.mProgressBackgroundTintList.getDefaultColor());
-                        return;
-                    }
+            if (this.mProgressDrawable instanceof VectorDrawable) {
+                this.mProgressDrawable = this.mProgressDrawable.mutate();
+                if (this.mProgressTintInfo.mHasProgressBackgroundTint) {
+                    ((VectorDrawable) this.mProgressDrawable).setPathStrokeColor(SEM_PROGRESS_PATH_NAME_BACKGROUND, this.mProgressTintInfo.mProgressBackgroundTintList.getDefaultColor());
                     return;
                 }
+                return;
             }
             Drawable target = getTintTarget(16908288, false);
             if (target != null) {
@@ -800,17 +782,15 @@ public class ProgressBar extends View {
     }
 
     public ColorStateList getProgressTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressTintList;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressTintList;
         }
         return null;
     }
 
-    public ColorStateList semGetProgressTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressTintList;
+    protected ColorStateList semGetProgressTintList() {
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressTintList;
         }
         return null;
     }
@@ -840,9 +820,8 @@ public class ProgressBar extends View {
     }
 
     public BlendMode getProgressTintBlendMode() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressBlendMode;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressBlendMode;
         }
         return null;
     }
@@ -860,17 +839,15 @@ public class ProgressBar extends View {
     }
 
     public ColorStateList getProgressBackgroundTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressBackgroundTintList;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressBackgroundTintList;
         }
         return null;
     }
 
     protected ColorStateList semGetProgressBackgroundTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressBackgroundTintList;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressBackgroundTintList;
         }
         return null;
     }
@@ -900,9 +877,8 @@ public class ProgressBar extends View {
     }
 
     public BlendMode getProgressBackgroundTintBlendMode() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mProgressBackgroundBlendMode;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mProgressBackgroundBlendMode;
         }
         return null;
     }
@@ -920,9 +896,8 @@ public class ProgressBar extends View {
     }
 
     public ColorStateList getSecondaryProgressTintList() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mSecondaryProgressTintList;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mSecondaryProgressTintList;
         }
         return null;
     }
@@ -952,9 +927,8 @@ public class ProgressBar extends View {
     }
 
     public BlendMode getSecondaryProgressTintBlendMode() {
-        ProgressTintInfo progressTintInfo = this.mProgressTintInfo;
-        if (progressTintInfo != null) {
-            return progressTintInfo.mSecondaryProgressBlendMode;
+        if (this.mProgressTintInfo != null) {
+            return this.mProgressTintInfo.mSecondaryProgressBlendMode;
         }
         return null;
     }
@@ -987,20 +961,18 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(Drawable who) {
         return who == this.mProgressDrawable || who == this.mIndeterminateDrawable || super.verifyDrawable(who);
     }
 
     @Override // android.view.View
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
-        Drawable drawable = this.mProgressDrawable;
-        if (drawable != null) {
-            drawable.jumpToCurrentState();
+        if (this.mProgressDrawable != null) {
+            this.mProgressDrawable.jumpToCurrentState();
         }
-        Drawable drawable2 = this.mIndeterminateDrawable;
-        if (drawable2 != null) {
-            drawable2.jumpToCurrentState();
+        if (this.mIndeterminateDrawable != null) {
+            this.mIndeterminateDrawable.jumpToCurrentState();
         }
     }
 
@@ -1010,13 +982,11 @@ public class ProgressBar extends View {
         if (d != null) {
             d.setLayoutDirection(layoutDirection);
         }
-        Drawable drawable = this.mIndeterminateDrawable;
-        if (drawable != null) {
-            drawable.setLayoutDirection(layoutDirection);
+        if (this.mIndeterminateDrawable != null) {
+            this.mIndeterminateDrawable.setLayoutDirection(layoutDirection);
         }
-        Drawable drawable2 = this.mProgressDrawable;
-        if (drawable2 != null) {
-            drawable2.setLayoutDirection(layoutDirection);
+        if (this.mProgressDrawable != null) {
+            this.mProgressDrawable.setLayoutDirection(layoutDirection);
         }
     }
 
@@ -1027,12 +997,7 @@ public class ProgressBar extends View {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class RefreshProgressRunnable implements Runnable {
-        /* synthetic */ RefreshProgressRunnable(ProgressBar progressBar, RefreshProgressRunnableIA refreshProgressRunnableIA) {
-            this();
-        }
-
+    private class RefreshProgressRunnable implements Runnable {
         private RefreshProgressRunnable() {
         }
 
@@ -1051,8 +1016,7 @@ public class ProgressBar extends View {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class RefreshData {
+    private static class RefreshData {
         private static final int POOL_MAX = 24;
         private static final Pools.SynchronizedPool<RefreshData> sPool = new Pools.SynchronizedPool<>(24);
         public boolean animate;
@@ -1080,10 +1044,10 @@ public class ProgressBar extends View {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void doRefreshProgress(int id, int progress, boolean fromUser, boolean callBackToApp, boolean animate) {
-        ObjectAnimator objectAnimator;
         int range = this.mMax - this.mMin;
-        float scale = range > 0 ? (progress - r4) / range : 0.0f;
+        float scale = range > 0 ? (progress - this.mMin) / range : 0.0f;
         boolean isPrimary = id == 16908301;
         int level = (int) (10000.0f * scale);
         Drawable d = this.mCurrentDrawable;
@@ -1116,9 +1080,6 @@ public class ProgressBar extends View {
             animator.setDuration(80L);
             animator.setInterpolator(PROGRESS_ANIM_INTERPOLATOR);
             animator.addListener(new AnimatorListenerAdapter() { // from class: android.widget.ProgressBar.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationEnd(Animator animation) {
                     ProgressBar.this.mLastProgressAnimator = null;
@@ -1127,26 +1088,14 @@ public class ProgressBar extends View {
             animator.start();
             this.mLastProgressAnimator = animator;
         } else {
-            if (isPrimary && (objectAnimator = this.mLastProgressAnimator) != null) {
-                objectAnimator.cancel();
+            if (isPrimary && this.mLastProgressAnimator != null) {
+                this.mLastProgressAnimator.cancel();
                 this.mLastProgressAnimator = null;
             }
             setVisualProgress(id, scale);
         }
         if (isPrimary && callBackToApp) {
             onProgressRefresh(scale, fromUser, progress);
-        }
-    }
-
-    /* renamed from: android.widget.ProgressBar$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            ProgressBar.this.mLastProgressAnimator = null;
         }
     }
 
@@ -1177,19 +1126,19 @@ public class ProgressBar extends View {
         super.setStateDescription(stateDescription);
     }
 
-    public void onProgressRefresh(float scale, boolean fromUser, int progress) {
+    void onProgressRefresh(float scale, boolean fromUser, int progress) {
         if (AccessibilityManager.getInstance(this.mContext).isEnabled() && getStateDescription() == null && !isIndeterminate()) {
             AccessibilityEvent event = AccessibilityEvent.obtain();
             event.setEventType(2048);
             event.setContentChangeTypes(64);
             sendAccessibilityEventUnchecked(event);
         }
-        int i = this.mSecondaryProgress;
-        if (i > this.mProgress && !fromUser) {
-            refreshProgress(16908303, i, false, false);
+        if (this.mSecondaryProgress > this.mProgress && !fromUser) {
+            refreshProgress(16908303, this.mSecondaryProgress, false, false);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setVisualProgress(int id, float progress) {
         this.mVisualProgress = progress;
         Drawable d = this.mCurrentDrawable;
@@ -1205,7 +1154,7 @@ public class ProgressBar extends View {
         onVisualProgressChanged(id, progress);
     }
 
-    public void onVisualProgressChanged(int id, float progress) {
+    void onVisualProgressChanged(int id, float progress) {
     }
 
     private synchronized void refreshProgress(int id, int progress, boolean fromUser, boolean animate) {
@@ -1234,7 +1183,7 @@ public class ProgressBar extends View {
     }
 
     @RemotableViewMethod
-    public synchronized boolean setProgressInternal(int progress, boolean fromUser, boolean animate) {
+    synchronized boolean setProgressInternal(int progress, boolean fromUser, boolean animate) {
         Drawable drawable;
         if (this.mIndeterminate) {
             return false;
@@ -1256,17 +1205,15 @@ public class ProgressBar extends View {
         if (this.mIndeterminate) {
             return;
         }
-        int i = this.mMin;
-        if (secondaryProgress < i) {
-            secondaryProgress = i;
+        if (secondaryProgress < this.mMin) {
+            secondaryProgress = this.mMin;
         }
-        int i2 = this.mMax;
-        if (secondaryProgress > i2) {
-            secondaryProgress = i2;
+        if (secondaryProgress > this.mMax) {
+            secondaryProgress = this.mMax;
         }
         if (secondaryProgress != this.mSecondaryProgress) {
             this.mSecondaryProgress = secondaryProgress;
-            refreshProgress(16908303, secondaryProgress, false, false);
+            refreshProgress(16908303, this.mSecondaryProgress, false, false);
         }
     }
 
@@ -1292,13 +1239,11 @@ public class ProgressBar extends View {
 
     @RemotableViewMethod
     public synchronized void setMin(int min) {
-        int i;
-        boolean z = this.mMaxInitialized;
-        if (z && min > (i = this.mMax)) {
-            min = i;
+        if (this.mMaxInitialized && min > this.mMax) {
+            min = this.mMax;
         }
         this.mMinInitialized = true;
-        if (z && min != this.mMin) {
+        if (this.mMaxInitialized && min != this.mMin) {
             this.mMin = min;
             postInvalidate();
             if (this.mProgress < min) {
@@ -1312,13 +1257,11 @@ public class ProgressBar extends View {
 
     @RemotableViewMethod
     public synchronized void setMax(int max) {
-        int i;
-        boolean z = this.mMinInitialized;
-        if (z && max < (i = this.mMin)) {
-            max = i;
+        if (this.mMinInitialized && max < this.mMin) {
+            max = this.mMin;
         }
         this.mMaxInitialized = true;
-        if (z && max != this.mMax) {
+        if (this.mMinInitialized && max != this.mMax) {
             this.mMax = max;
             postInvalidate();
             if (this.mProgress > max) {
@@ -1342,29 +1285,26 @@ public class ProgressBar extends View {
         if (getVisibility() != 0 || getWindowVisibility() != 0) {
             return;
         }
-        Drawable drawable = this.mIndeterminateDrawable;
-        if (drawable instanceof Animatable) {
+        if (this.mIndeterminateDrawable instanceof Animatable) {
             this.mShouldStartAnimationDrawable = true;
             this.mHasAnimation = false;
-            if (drawable instanceof AnimatedVectorDrawable) {
-                ((AnimatedVectorDrawable) drawable).registerAnimationCallback(this.mCircleAnimationCallback);
+            if (this.mIndeterminateDrawable instanceof AnimatedVectorDrawable) {
+                ((AnimatedVectorDrawable) this.mIndeterminateDrawable).registerAnimationCallback(this.mCircleAnimationCallback);
             }
         } else {
             this.mHasAnimation = true;
             if (this.mInterpolator == null) {
                 this.mInterpolator = new LinearInterpolator();
             }
-            Transformation transformation = this.mTransformation;
-            if (transformation == null) {
+            if (this.mTransformation == null) {
                 this.mTransformation = new Transformation();
             } else {
-                transformation.clear();
+                this.mTransformation.clear();
             }
-            AlphaAnimation alphaAnimation = this.mAnimation;
-            if (alphaAnimation == null) {
+            if (this.mAnimation == null) {
                 this.mAnimation = new AlphaAnimation(0.0f, 1.0f);
             } else {
-                alphaAnimation.reset();
+                this.mAnimation.reset();
             }
             this.mAnimation.setRepeatMode(this.mBehavior);
             this.mAnimation.setRepeatCount(-1);
@@ -1377,12 +1317,10 @@ public class ProgressBar extends View {
 
     void stopAnimation() {
         this.mHasAnimation = false;
-        Object obj = this.mIndeterminateDrawable;
-        if (obj instanceof Animatable) {
-            ((Animatable) obj).stop();
-            Drawable drawable = this.mIndeterminateDrawable;
-            if (drawable instanceof AnimatedVectorDrawable) {
-                ((AnimatedVectorDrawable) drawable).unregisterAnimationCallback(this.mCircleAnimationCallback);
+        if (this.mIndeterminateDrawable instanceof Animatable) {
+            ((Animatable) this.mIndeterminateDrawable).stop();
+            if (this.mIndeterminateDrawable instanceof AnimatedVectorDrawable) {
+                ((AnimatedVectorDrawable) this.mIndeterminateDrawable).unregisterAnimationCallback(this.mCircleAnimationCallback);
             }
             this.mShouldStartAnimationDrawable = false;
         }
@@ -1413,9 +1351,8 @@ public class ProgressBar extends View {
                     stopAnimation();
                 }
             }
-            Drawable drawable = this.mCurrentDrawable;
-            if (drawable != null) {
-                drawable.setVisible(isVisible, false);
+            if (this.mCurrentDrawable != null) {
+                this.mCurrentDrawable.setVisible(isVisible, false);
             }
         }
     }
@@ -1435,21 +1372,20 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         updateDrawableBounds(w, h);
     }
 
-    public void updateDrawableBounds(int w, int h) {
+    protected void updateDrawableBounds(int w, int h) {
         int w2 = w - (this.mPaddingRight + this.mPaddingLeft);
         int h2 = h - (this.mPaddingTop + this.mPaddingBottom);
         int right = w2;
         int bottom = h2;
         int top = 0;
         int left = 0;
-        Drawable drawable = this.mIndeterminateDrawable;
-        if (drawable != null) {
-            if (this.mOnlyIndeterminate && !(drawable instanceof AnimationDrawable)) {
-                int intrinsicWidth = drawable.getIntrinsicWidth();
+        if (this.mIndeterminateDrawable != null) {
+            if (this.mOnlyIndeterminate && !(this.mIndeterminateDrawable instanceof AnimationDrawable)) {
+                int intrinsicWidth = this.mIndeterminateDrawable.getIntrinsicWidth();
                 int intrinsicHeight = this.mIndeterminateDrawable.getIntrinsicHeight();
                 float intrinsicAspect = intrinsicWidth / intrinsicHeight;
                 float boundAspect = w2 / h2;
@@ -1473,20 +1409,19 @@ public class ProgressBar extends View {
             }
             this.mIndeterminateDrawable.setBounds(left, top, right, bottom);
         }
-        Drawable drawable2 = this.mProgressDrawable;
-        if (drawable2 != null) {
-            drawable2.setBounds(0, 0, right, bottom);
+        if (this.mProgressDrawable != null) {
+            this.mProgressDrawable.setBounds(0, 0, right, bottom);
         }
     }
 
     @Override // android.view.View
-    public synchronized void onDraw(Canvas canvas) {
+    protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawTrack(canvas);
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public void drawTrack(Canvas canvas) {
+    void drawTrack(Canvas canvas) {
         Drawable drawable = this.mCurrentDrawable;
         if (drawable != 0) {
             int saveCount = canvas.save();
@@ -1520,7 +1455,7 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int dw = 0;
         int dh = 0;
         Drawable d = this.mCurrentDrawable;
@@ -1541,7 +1476,7 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
         updateDrawableState();
     }
@@ -1565,27 +1500,23 @@ public class ProgressBar extends View {
     @Override // android.view.View
     public void drawableHotspotChanged(float x, float y) {
         super.drawableHotspotChanged(x, y);
-        Drawable drawable = this.mProgressDrawable;
-        if (drawable != null) {
-            drawable.setHotspot(x, y);
+        if (this.mProgressDrawable != null) {
+            this.mProgressDrawable.setHotspot(x, y);
         }
-        Drawable drawable2 = this.mIndeterminateDrawable;
-        if (drawable2 != null) {
-            drawable2.setHotspot(x, y);
+        if (this.mIndeterminateDrawable != null) {
+            this.mIndeterminateDrawable.setHotspot(x, y);
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.ProgressBar.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1593,10 +1524,6 @@ public class ProgressBar extends View {
         };
         int progress;
         int secondaryProgress;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1613,23 +1540,6 @@ public class ProgressBar extends View {
             super.writeToParcel(out, flags);
             out.writeInt(this.progress);
             out.writeInt(this.secondaryProgress);
-        }
-
-        /* renamed from: android.widget.ProgressBar$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 
@@ -1651,7 +1561,7 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (this.mIndeterminate) {
             startAnimation();
@@ -1671,15 +1581,14 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         if (this.mIndeterminate) {
             stopAnimation();
         } else {
             this.mCircleAnimationCallback = null;
         }
-        RefreshProgressRunnable refreshProgressRunnable = this.mRefreshProgressRunnable;
-        if (refreshProgressRunnable != null) {
-            removeCallbacks(refreshProgressRunnable);
+        if (this.mRefreshProgressRunnable != null) {
+            removeCallbacks(this.mRefreshProgressRunnable);
             this.mRefreshIsPosted = false;
         }
         super.onDetachedFromWindow();
@@ -1715,7 +1624,7 @@ public class ProgressBar extends View {
     }
 
     @Override // android.view.View
-    public void encodeProperties(ViewHierarchyEncoder stream) {
+    protected void encodeProperties(ViewHierarchyEncoder stream) {
         super.encodeProperties(stream);
         stream.addProperty("progress:max", getMax());
         stream.addProperty("progress:progress", getProgress());
@@ -1727,8 +1636,7 @@ public class ProgressBar extends View {
         return isIndeterminate() && getWindowVisibility() == 0 && isShown();
     }
 
-    /* loaded from: classes4.dex */
-    public static class ProgressTintInfo {
+    private static class ProgressTintInfo {
         boolean mHasIndeterminateTint;
         boolean mHasIndeterminateTintMode;
         boolean mHasProgressBackgroundTint;
@@ -1746,31 +1654,7 @@ public class ProgressBar extends View {
         BlendMode mSecondaryProgressBlendMode;
         ColorStateList mSecondaryProgressTintList;
 
-        /* synthetic */ ProgressTintInfo(ProgressTintInfoIA progressTintInfoIA) {
-            this();
-        }
-
         private ProgressTintInfo() {
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.ProgressBar$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 extends FloatProperty<ProgressBar> {
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(ProgressBar object, float value) {
-            object.setVisualProgress(16908301, value);
-            object.mVisualProgress = value;
-        }
-
-        @Override // android.util.Property
-        public Float get(ProgressBar object) {
-            return Float.valueOf(object.mVisualProgress);
         }
     }
 
@@ -1788,26 +1672,23 @@ public class ProgressBar extends View {
                 Drawable progressDrawable = this.mContext.getDrawable(R.drawable.tw_scrubber_progress_vertical_material);
                 if (progressDrawable != null) {
                     setProgressDrawableTiled(progressDrawable);
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 4:
                 Drawable progressDrawable2 = this.mContext.getDrawable(R.drawable.tw_split_seekbar_background_progress_material);
                 if (progressDrawable2 != null) {
                     setProgressDrawableTiled(progressDrawable2);
-                    return;
+                    break;
                 }
-                return;
-            case 5:
-            default:
-                return;
+                break;
             case 6:
                 initializeRoundCicleMode();
-                return;
+                break;
         }
     }
 
-    public void onSlidingRefresh(int level) {
+    protected void onSlidingRefresh(int level) {
         Drawable d = this.mCurrentDrawable;
         if (this.mCurrentDrawable != null) {
             Drawable progressDrawable = null;
@@ -1852,8 +1733,7 @@ public class ProgressBar extends View {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class CircleAnimationCallback extends Animatable2.AnimationCallback {
+    private static class CircleAnimationCallback extends Animatable2.AnimationCallback {
         final Handler mHandler = new Handler(Looper.getMainLooper());
         private WeakReference<ProgressBar> mProgressBar;
 
@@ -1861,28 +1741,9 @@ public class ProgressBar extends View {
             this.mProgressBar = new WeakReference<>(progressBar);
         }
 
-        /* renamed from: android.widget.ProgressBar$CircleAnimationCallback$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Runnable {
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                ProgressBar progressBar = (ProgressBar) CircleAnimationCallback.this.mProgressBar.get();
-                if (progressBar == null) {
-                    return;
-                }
-                ((AnimatedVectorDrawable) progressBar.mIndeterminateDrawable).start();
-            }
-        }
-
         @Override // android.graphics.drawable.Animatable2.AnimationCallback
         public void onAnimationEnd(Drawable drawable) {
             this.mHandler.post(new Runnable() { // from class: android.widget.ProgressBar.CircleAnimationCallback.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     ProgressBar progressBar = (ProgressBar) CircleAnimationCallback.this.mProgressBar.get();
@@ -1913,47 +1774,35 @@ public class ProgressBar extends View {
         return new ColorStateList(EMPTY, new int[]{color});
     }
 
-    /* loaded from: classes4.dex */
-    public class CirCleProgressDrawable extends Drawable {
-        private final IntProperty<CirCleProgressDrawable> VISUAL_CIRCLE_PROGRESS;
-        int mAlpha;
-        private RectF mArcRect;
+    private class CirCleProgressDrawable extends Drawable {
         int mColor;
         ColorStateList mColorStateList;
         private boolean mIsBackground;
-        private final Paint mPaint;
         public int mProgress;
-        private final ProgressState mState;
+        private final Paint mPaint = new Paint();
+        int mAlpha = 255;
+        private RectF mArcRect = new RectF();
+        private final ProgressState mState = new ProgressState();
+        private final IntProperty<CirCleProgressDrawable> VISUAL_CIRCLE_PROGRESS = new IntProperty<CirCleProgressDrawable>("visual_progress") { // from class: android.widget.ProgressBar.CirCleProgressDrawable.1
+            @Override // android.util.IntProperty
+            public void setValue(CirCleProgressDrawable object, int value) {
+                object.mProgress = value;
+                CirCleProgressDrawable.this.invalidateSelf();
+            }
+
+            @Override // android.util.Property
+            public Integer get(CirCleProgressDrawable object) {
+                return Integer.valueOf(object.mProgress);
+            }
+        };
 
         public CirCleProgressDrawable(boolean isBackground, ColorStateList color) {
-            Paint paint = new Paint();
-            this.mPaint = paint;
-            this.mAlpha = 255;
-            this.mArcRect = new RectF();
-            this.mState = new ProgressState();
-            this.VISUAL_CIRCLE_PROGRESS = new IntProperty<CirCleProgressDrawable>("visual_progress") { // from class: android.widget.ProgressBar.CirCleProgressDrawable.1
-                AnonymousClass1(String name) {
-                    super(name);
-                }
-
-                @Override // android.util.IntProperty
-                public void setValue(CirCleProgressDrawable object, int value) {
-                    object.mProgress = value;
-                    CirCleProgressDrawable.this.invalidateSelf();
-                }
-
-                @Override // android.util.Property
-                public Integer get(CirCleProgressDrawable object) {
-                    return Integer.valueOf(object.mProgress);
-                }
-            };
             this.mIsBackground = isBackground;
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeCap(Paint.Cap.ROUND);
+            this.mPaint.setStyle(Paint.Style.STROKE);
+            this.mPaint.setStrokeCap(Paint.Cap.ROUND);
             this.mColorStateList = color;
-            int defaultColor = color.getDefaultColor();
-            this.mColor = defaultColor;
-            paint.setColor(defaultColor);
+            this.mColor = color.getDefaultColor();
+            this.mPaint.setColor(this.mColor);
             this.mProgress = 0;
         }
 
@@ -1983,26 +1832,6 @@ public class ProgressBar extends View {
         @Override // android.graphics.drawable.Drawable
         public boolean isStateful() {
             return true;
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.widget.ProgressBar$CirCleProgressDrawable$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 extends IntProperty<CirCleProgressDrawable> {
-            AnonymousClass1(String name) {
-                super(name);
-            }
-
-            @Override // android.util.IntProperty
-            public void setValue(CirCleProgressDrawable object, int value) {
-                object.mProgress = value;
-                CirCleProgressDrawable.this.invalidateSelf();
-            }
-
-            @Override // android.util.Property
-            public Integer get(CirCleProgressDrawable object) {
-                return Integer.valueOf(object.mProgress);
-            }
         }
 
         public void setProgress(int progress, boolean animate) {
@@ -2051,20 +1880,19 @@ public class ProgressBar extends View {
             super.setTintList(tint);
             if (tint != null) {
                 this.mColorStateList = tint;
-                int defaultColor = tint.getDefaultColor();
-                this.mColor = defaultColor;
-                this.mPaint.setColor(defaultColor);
+                this.mColor = this.mColorStateList.getDefaultColor();
+                this.mPaint.setColor(this.mColor);
                 invalidateSelf();
             }
         }
 
         @Override // android.graphics.drawable.Drawable
-        public boolean onStateChange(int[] stateSet) {
+        protected boolean onStateChange(int[] stateSet) {
             boolean changed = super.onStateChange(stateSet);
             int color = this.mColorStateList.getColorForState(stateSet, this.mColor);
             if (this.mColor != color) {
                 this.mColor = color;
-                this.mPaint.setColor(color);
+                this.mPaint.setColor(this.mColor);
                 invalidateSelf();
             }
             return changed;
@@ -2075,13 +1903,7 @@ public class ProgressBar extends View {
             return this.mState;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public class ProgressState extends Drawable.ConstantState {
-            /* synthetic */ ProgressState(CirCleProgressDrawable cirCleProgressDrawable, ProgressStateIA progressStateIA) {
-                this();
-            }
-
+        private class ProgressState extends Drawable.ConstantState {
             private ProgressState() {
             }
 
@@ -2094,6 +1916,13 @@ public class ProgressBar extends View {
             public int getChangingConfigurations() {
                 return 0;
             }
+        }
+    }
+
+    @RemotableViewMethod
+    public void hidden_semSetInterpolator(int resId) {
+        if (this.mContext != null) {
+            setInterpolator(this.mContext, resId);
         }
     }
 }

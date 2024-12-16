@@ -18,7 +18,6 @@ public final class ViewStub extends View {
     private LayoutInflater mInflater;
     private int mLayoutResource;
 
-    /* loaded from: classes4.dex */
     public interface OnInflateListener {
         void onInflate(ViewStub viewStub, View view);
     }
@@ -89,7 +88,7 @@ public final class ViewStub extends View {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(0, 0);
     }
 
@@ -98,15 +97,14 @@ public final class ViewStub extends View {
     }
 
     @Override // android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
     }
 
     @Override // android.view.View
     @RemotableViewMethod(asyncImpl = "setVisibilityAsync")
     public void setVisibility(int visibility) {
-        WeakReference<View> weakReference = this.mInflatedViewRef;
-        if (weakReference != null) {
-            View view = weakReference.get();
+        if (this.mInflatedViewRef != null) {
+            View view = this.mInflatedViewRef.get();
             if (view != null) {
                 view.setVisibility(visibility);
                 return;
@@ -135,13 +133,13 @@ public final class ViewStub extends View {
             factory = LayoutInflater.from(this.mContext);
         }
         View view = factory.inflate(this.mLayoutResource, parent, false);
-        int i = this.mInflatedId;
-        if (i != -1) {
-            view.setId(i);
+        if (this.mInflatedId != -1) {
+            view.setId(this.mInflatedId);
         }
         return view;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void replaceSelfWithView(View view, ViewGroup parent) {
         int index = parent.indexOfChild(this);
         parent.removeViewInLayout(this);
@@ -161,9 +159,8 @@ public final class ViewStub extends View {
                 View view = inflateViewNoAdd(parent);
                 replaceSelfWithView(view, parent);
                 this.mInflatedViewRef = new WeakReference<>(view);
-                OnInflateListener onInflateListener = this.mInflateListener;
-                if (onInflateListener != null) {
-                    onInflateListener.onInflate(this, view);
+                if (this.mInflateListener != null) {
+                    this.mInflateListener.onInflate(this, view);
                 }
                 return view;
             }
@@ -176,7 +173,6 @@ public final class ViewStub extends View {
         this.mInflateListener = inflateListener;
     }
 
-    /* loaded from: classes4.dex */
     public class ViewReplaceRunnable implements Runnable {
         public final View view;
 
@@ -186,8 +182,7 @@ public final class ViewStub extends View {
 
         @Override // java.lang.Runnable
         public void run() {
-            ViewStub viewStub = ViewStub.this;
-            viewStub.replaceSelfWithView(this.view, (ViewGroup) viewStub.getParent());
+            ViewStub.this.replaceSelfWithView(this.view, (ViewGroup) ViewStub.this.getParent());
         }
     }
 }

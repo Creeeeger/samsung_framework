@@ -179,7 +179,7 @@ public final class TextServicesManager {
         }
     }
 
-    public void finishSpellCheckerService(ISpellCheckerSessionListener listener) {
+    void finishSpellCheckerService(ISpellCheckerSessionListener listener) {
         try {
             this.mService.finishSpellCheckerService(this.mUserId, listener);
         } catch (RemoteException e) {

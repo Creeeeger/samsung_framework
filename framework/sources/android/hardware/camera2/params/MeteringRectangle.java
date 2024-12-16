@@ -6,7 +6,7 @@ import android.hardware.camera2.utils.HashCodeHelpers;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class MeteringRectangle {
     public static final int METERING_WEIGHT_DONT_CARE = 0;
     public static final int METERING_WEIGHT_MAX = 1000;
@@ -73,9 +73,7 @@ public final class MeteringRectangle {
     }
 
     public Rect getRect() {
-        int i = this.mX;
-        int i2 = this.mY;
-        return new Rect(i, i2, this.mWidth + i, this.mHeight + i2);
+        return new Rect(this.mX, this.mY, this.mX + this.mWidth, this.mY + this.mHeight);
     }
 
     public boolean equals(Object other) {

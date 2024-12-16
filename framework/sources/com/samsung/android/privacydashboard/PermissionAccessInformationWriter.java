@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class PermissionAccessInformationWriter {
     private static final Uri PROVIDER_URI = Uri.parse("content://com.samsung.android.privacydashboard.provider/permissionAccessInformations");
 
@@ -60,10 +60,10 @@ public class PermissionAccessInformationWriter {
                     try {
                         try {
                             context.getContentResolver().bulkInsert(ContentProvider.maybeAddUserId(PROVIDER_URI, userInfo.getUserHandle().semGetIdentifier()), bulkArray2);
-                        } finally {
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
                         }
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
+                    } finally {
                     }
                 }
             }

@@ -13,7 +13,6 @@ public interface IKeyguardClient extends IInterface {
 
     void onCreateKeyguardSurface(IBinder iBinder, IKeyguardCallback iKeyguardCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IKeyguardClient {
         @Override // android.app.admin.IKeyguardClient
         public void onCreateKeyguardSurface(IBinder hostInputToken, IKeyguardCallback keyguardCallback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IKeyguardClient extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IKeyguardClient {
         static final int TRANSACTION_onCreateKeyguardSurface = 1;
 
@@ -68,25 +66,22 @@ public interface IKeyguardClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKeyguardClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKeyguardClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKeyguardClient.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    IKeyguardCallback _arg1 = IKeyguardCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCreateKeyguardSurface(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            IKeyguardCallback _arg1 = IKeyguardCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCreateKeyguardSurface(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IKeyguardClient {
             private IBinder mRemote;
 

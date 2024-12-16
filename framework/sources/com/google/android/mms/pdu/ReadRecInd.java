@@ -13,7 +13,7 @@ public class ReadRecInd extends GenericPdu {
         setReadStatus(readStatus);
     }
 
-    public ReadRecInd(PduHeaders headers) {
+    ReadRecInd(PduHeaders headers) {
         super(headers);
     }
 

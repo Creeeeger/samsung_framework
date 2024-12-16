@@ -28,7 +28,7 @@ public class Allocation extends BaseObj {
     public static final int USAGE_SCRIPT = 1;
     public static final int USAGE_SHARED = 128;
     static HashMap<Long, Allocation> mAllocationMap = new HashMap<>();
-    static BitmapFactory.Options mBitmapOptions;
+    static BitmapFactory.Options mBitmapOptions = new BitmapFactory.Options();
     Allocation mAdaptedAllocation;
     boolean mAutoPadding;
     Bitmap mBitmap;
@@ -55,15 +55,12 @@ public class Allocation extends BaseObj {
     int mUsage;
     boolean mWriteAllowed;
 
-    /* loaded from: classes3.dex */
     public interface OnBufferAvailableListener {
         void onBufferAvailable(Allocation allocation);
     }
 
     static {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        mBitmapOptions = options;
-        options.inScaled = false;
+        mBitmapOptions.inScaled = false;
     }
 
     private Element.DataType validateObjectIsPrimitiveArray(Object d, boolean checkType) {
@@ -118,7 +115,6 @@ public class Allocation extends BaseObj {
         throw new RSIllegalArgumentException("Parameter of type " + cmp.getSimpleName() + "[] is not compatible with data type " + this.mType.mElement.mType.name() + " of allocation");
     }
 
-    /* loaded from: classes3.dex */
     public enum MipmapControl {
         MIPMAP_NONE(0),
         MIPMAP_FULL(1),
@@ -132,9 +128,8 @@ public class Allocation extends BaseObj {
     }
 
     private long getIDSafe() {
-        Allocation allocation = this.mAdaptedAllocation;
-        if (allocation != null) {
-            return allocation.getID(this.mRS);
+        if (this.mAdaptedAllocation != null) {
+            return this.mAdaptedAllocation.getID(this.mRS);
         }
         return getID(this.mRS);
     }
@@ -165,16 +160,13 @@ public class Allocation extends BaseObj {
     private void updateCacheInfo(Type t) {
         this.mCurrentDimX = t.getX();
         this.mCurrentDimY = t.getY();
-        int z = t.getZ();
-        this.mCurrentDimZ = z;
-        int i = this.mCurrentDimX;
-        this.mCurrentCount = i;
-        int i2 = this.mCurrentDimY;
-        if (i2 > 1) {
-            this.mCurrentCount = i * i2;
+        this.mCurrentDimZ = t.getZ();
+        this.mCurrentCount = this.mCurrentDimX;
+        if (this.mCurrentDimY > 1) {
+            this.mCurrentCount *= this.mCurrentDimY;
         }
-        if (z > 1) {
-            this.mCurrentCount *= z;
+        if (this.mCurrentDimZ > 1) {
+            this.mCurrentCount *= this.mCurrentDimZ;
         }
     }
 
@@ -182,7 +174,7 @@ public class Allocation extends BaseObj {
         this.mBitmap = b;
     }
 
-    public Allocation(long id, RenderScript rs, Type t, int usage) {
+    Allocation(long id, RenderScript rs, Type t, int usage) {
         super(id, rs);
         this.mOwningType = false;
         this.mTimeStamp = -1L;
@@ -205,7 +197,7 @@ public class Allocation extends BaseObj {
         this.mType = t;
         this.mUsage = usage;
         if (t != null) {
-            this.mSize = t.getCount() * this.mType.getElement().getBytesSize();
+            this.mSize = this.mType.getCount() * this.mType.getElement().getBytesSize();
             updateCacheInfo(t);
         }
         try {
@@ -223,9 +215,8 @@ public class Allocation extends BaseObj {
         this.mMipmapControl = mips;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.renderscript.BaseObj
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         RenderScript.registerNativeFree.invoke(RenderScript.sRuntime, Integer.valueOf(this.mSize));
         super.finalize();
     }
@@ -280,13 +271,12 @@ public class Allocation extends BaseObj {
     }
 
     @Override // android.renderscript.BaseObj
-    public void updateFromNative() {
+    void updateFromNative() {
         super.updateFromNative();
         long typeID = this.mRS.nAllocationGetType(getID(this.mRS));
         if (typeID != 0) {
-            Type type = new Type(typeID, this.mRS);
-            this.mType = type;
-            type.updateFromNative();
+            this.mType = new Type(typeID, this.mRS);
+            this.mType.updateFromNative();
             updateCacheInfo(this.mType);
         }
     }
@@ -365,7 +355,7 @@ public class Allocation extends BaseObj {
                     i[ct * 4] = d[ct].getID(this.mRS);
                 }
                 int ct2 = this.mCurrentCount;
-                copy1DRangeFromUnchecked(0, ct2, i);
+                copy1DRangeFromUnchecked(0, ct2, (Object) i);
             } else {
                 int[] i2 = new int[d.length];
                 for (int ct3 = 0; ct3 < d.length; ct3++) {
@@ -384,56 +374,29 @@ public class Allocation extends BaseObj {
         if (bc == null) {
             throw new RSIllegalArgumentException("Bitmap has an unsupported format for this operation");
         }
-        switch (AnonymousClass1.$SwitchMap$android$graphics$Bitmap$Config[bc.ordinal()]) {
-            case 1:
+        switch (bc) {
+            case ALPHA_8:
                 if (this.mType.getElement().mKind != Element.DataKind.PIXEL_A) {
                     throw new RSIllegalArgumentException("Allocation kind is " + this.mType.getElement().mKind + ", type " + this.mType.getElement().mType + " of " + this.mType.getElement().getBytesSize() + " bytes, passed bitmap was " + bc);
                 }
                 return;
-            case 2:
+            case ARGB_8888:
                 if (this.mType.getElement().mKind != Element.DataKind.PIXEL_RGBA || this.mType.getElement().getBytesSize() != 4) {
                     throw new RSIllegalArgumentException("Allocation kind is " + this.mType.getElement().mKind + ", type " + this.mType.getElement().mType + " of " + this.mType.getElement().getBytesSize() + " bytes, passed bitmap was " + bc);
                 }
                 return;
-            case 3:
+            case RGB_565:
                 if (this.mType.getElement().mKind != Element.DataKind.PIXEL_RGB || this.mType.getElement().getBytesSize() != 2) {
                     throw new RSIllegalArgumentException("Allocation kind is " + this.mType.getElement().mKind + ", type " + this.mType.getElement().mType + " of " + this.mType.getElement().getBytesSize() + " bytes, passed bitmap was " + bc);
                 }
                 return;
-            case 4:
+            case ARGB_4444:
                 if (this.mType.getElement().mKind != Element.DataKind.PIXEL_RGBA || this.mType.getElement().getBytesSize() != 2) {
                     throw new RSIllegalArgumentException("Allocation kind is " + this.mType.getElement().mKind + ", type " + this.mType.getElement().mType + " of " + this.mType.getElement().getBytesSize() + " bytes, passed bitmap was " + bc);
                 }
                 return;
             default:
                 return;
-        }
-    }
-
-    /* renamed from: android.renderscript.Allocation$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$graphics$Bitmap$Config;
-
-        static {
-            int[] iArr = new int[Bitmap.Config.values().length];
-            $SwitchMap$android$graphics$Bitmap$Config = iArr;
-            try {
-                iArr[Bitmap.Config.ALPHA_8.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$graphics$Bitmap$Config[Bitmap.Config.ARGB_8888.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$graphics$Bitmap$Config[Bitmap.Config.RGB_565.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$graphics$Bitmap$Config[Bitmap.Config.ARGB_4444.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
         }
     }
 
@@ -447,16 +410,12 @@ public class Allocation extends BaseObj {
         try {
             Trace.traceBegin(32768L, "copyFromUnchecked");
             this.mRS.validate();
-            int i = this.mCurrentDimZ;
-            if (i > 0) {
-                copy3DRangeFromUnchecked(0, 0, 0, this.mCurrentDimX, this.mCurrentDimY, i, array, dt, arrayLen);
+            if (this.mCurrentDimZ > 0) {
+                copy3DRangeFromUnchecked(0, 0, 0, this.mCurrentDimX, this.mCurrentDimY, this.mCurrentDimZ, array, dt, arrayLen);
+            } else if (this.mCurrentDimY > 0) {
+                copy2DRangeFromUnchecked(0, 0, this.mCurrentDimX, this.mCurrentDimY, array, dt, arrayLen);
             } else {
-                int i2 = this.mCurrentDimY;
-                if (i2 > 0) {
-                    copy2DRangeFromUnchecked(0, 0, this.mCurrentDimX, i2, array, dt, arrayLen);
-                } else {
-                    copy1DRangeFromUnchecked(0, this.mCurrentCount, array, dt, arrayLen);
-                }
+                copy1DRangeFromUnchecked(0, this.mCurrentCount, array, dt, arrayLen);
             }
         } finally {
             Trace.traceEnd(32768L);
@@ -942,9 +901,8 @@ public class Allocation extends BaseObj {
         this.mRS.finish();
         long typeID = this.mRS.nAllocationGetType(getID(this.mRS));
         this.mType.setID(0L);
-        Type type = new Type(typeID, this.mRS);
-        this.mType = type;
-        type.updateFromNative();
+        this.mType = new Type(typeID, this.mRS);
+        this.mType.updateFromNative();
         updateCacheInfo(this.mType);
     }
 
@@ -1457,12 +1415,11 @@ public class Allocation extends BaseObj {
         }
     }
 
-    public static void sendBufferNotification(long id) {
-        OnBufferAvailableListener onBufferAvailableListener;
+    static void sendBufferNotification(long id) {
         synchronized (mAllocationMap) {
             Allocation a = mAllocationMap.get(new Long(id));
-            if (a != null && (onBufferAvailableListener = a.mBufferNotifier) != null) {
-                onBufferAvailableListener.onBufferAvailable(a);
+            if (a != null && a.mBufferNotifier != null) {
+                a.mBufferNotifier.onBufferAvailable(a);
             }
         }
     }
@@ -1472,9 +1429,8 @@ public class Allocation extends BaseObj {
         if ((this.mUsage & 64) != 0) {
             setSurface(null);
         }
-        Type type = this.mType;
-        if (type != null && this.mOwningType) {
-            type.destroy();
+        if (this.mType != null && this.mOwningType) {
+            this.mType.destroy();
         }
         super.destroy();
     }

@@ -37,45 +37,8 @@ public class AppClipsServiceConnector {
         }
     }
 
-    /* renamed from: com.android.internal.statusbar.AppClipsServiceConnector$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ServiceConnection {
-        final /* synthetic */ CompletableFuture val$future;
-        final /* synthetic */ int val$taskId;
-
-        AnonymousClass1(CompletableFuture completableFuture, int i) {
-            future = completableFuture;
-            taskId = i;
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try {
-                future.complete(Boolean.valueOf(IAppClipsService.Stub.asInterface(service).canLaunchCaptureContentActivityForNote(taskId)));
-            } catch (Exception e) {
-                Log.d(AppClipsServiceConnector.TAG, "Exception from service\n" + e);
-            }
-            future.complete(false);
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            if (!future.isDone()) {
-                future.complete(false);
-            }
-        }
-    }
-
-    private void connectToServiceAndProcessRequest(int taskId, CompletableFuture<Boolean> future) {
+    private void connectToServiceAndProcessRequest(final int taskId, final CompletableFuture<Boolean> future) {
         ServiceConnection serviceConnection = new ServiceConnection() { // from class: com.android.internal.statusbar.AppClipsServiceConnector.1
-            final /* synthetic */ CompletableFuture val$future;
-            final /* synthetic */ int val$taskId;
-
-            AnonymousClass1(CompletableFuture future2, int taskId2) {
-                future = future2;
-                taskId = taskId2;
-            }
-
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 try {
@@ -96,10 +59,9 @@ public class AppClipsServiceConnector {
         ComponentName serviceComponent = ComponentName.unflattenFromString(this.mContext.getResources().getString(R.string.config_screenshotAppClipsServiceComponent));
         Intent serviceIntent = new Intent();
         serviceIntent.setComponent(serviceComponent);
-        Context context = this.mContext;
-        boolean bindService = context.bindServiceAsUser(serviceIntent, serviceConnection, Enums.AUDIO_FORMAT_AAC_MAIN, this.mHandler, context.getUser());
+        boolean bindService = this.mContext.bindServiceAsUser(serviceIntent, serviceConnection, Enums.AUDIO_FORMAT_AAC_MAIN, this.mHandler, this.mContext.getUser());
         if (!bindService) {
-            future2.complete(false);
+            future.complete(false);
         }
     }
 }

@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/* loaded from: classes2.dex */
-public class LocalSocketImpl {
+/* loaded from: classes3.dex */
+class LocalSocketImpl {
     private FileDescriptor fd;
     private SocketInputStream fis;
     private SocketOutputStream fos;
@@ -27,16 +27,19 @@ public class LocalSocketImpl {
 
     private native Credentials getPeerCredentials_native(FileDescriptor fileDescriptor) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native int read_native(FileDescriptor fileDescriptor) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native int readba_native(byte[] bArr, int i, int i2, FileDescriptor fileDescriptor) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native void write_native(int i, FileDescriptor fileDescriptor) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native void writeba_native(byte[] bArr, int i, int i2, FileDescriptor fileDescriptor) throws IOException;
 
-    /* loaded from: classes2.dex */
-    public class SocketInputStream extends InputStream {
+    class SocketInputStream extends InputStream {
         SocketInputStream() {
         }
 
@@ -93,9 +96,7 @@ public class LocalSocketImpl {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public class SocketOutputStream extends OutputStream {
+    class SocketOutputStream extends OutputStream {
         SocketOutputStream() {
         }
 
@@ -135,10 +136,10 @@ public class LocalSocketImpl {
         }
     }
 
-    public LocalSocketImpl() {
+    LocalSocketImpl() {
     }
 
-    public LocalSocketImpl(FileDescriptor fd) {
+    LocalSocketImpl(FileDescriptor fd) {
         this.fd = fd;
     }
 
@@ -174,13 +175,12 @@ public class LocalSocketImpl {
 
     public void close() throws IOException {
         synchronized (this) {
-            FileDescriptor fileDescriptor = this.fd;
-            if (fileDescriptor == null || !this.mFdCreatedInternally) {
+            if (this.fd == null || !this.mFdCreatedInternally) {
                 this.fd = null;
                 return;
             }
             try {
-                Os.close(fileDescriptor);
+                Os.close(this.fd);
             } catch (ErrnoException e) {
                 e.rethrowAsIOException();
             }
@@ -188,48 +188,44 @@ public class LocalSocketImpl {
         }
     }
 
-    public void connect(LocalSocketAddress address, int timeout) throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+    protected void connect(LocalSocketAddress address, int timeout) throws IOException {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
-        connectLocal(fileDescriptor, address.getName(), address.getNamespace().getId());
+        connectLocal(this.fd, address.getName(), address.getNamespace().getId());
     }
 
     public void bind(LocalSocketAddress endpoint) throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
-        bindLocal(fileDescriptor, endpoint.getName(), endpoint.getNamespace().getId());
+        bindLocal(this.fd, endpoint.getName(), endpoint.getNamespace().getId());
     }
 
-    public void listen(int backlog) throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+    protected void listen(int backlog) throws IOException {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
         try {
-            Os.listen(fileDescriptor, backlog);
+            Os.listen(this.fd, backlog);
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
         }
     }
 
-    public void accept(LocalSocketImpl s) throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+    protected void accept(LocalSocketImpl s) throws IOException {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
         try {
-            s.fd = Os.accept(fileDescriptor, null);
+            s.fd = Os.accept(this.fd, null);
             s.mFdCreatedInternally = true;
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
         }
     }
 
-    public InputStream getInputStream() throws IOException {
+    protected InputStream getInputStream() throws IOException {
         SocketInputStream socketInputStream;
         if (this.fd == null) {
             throw new IOException("socket not created");
@@ -243,7 +239,7 @@ public class LocalSocketImpl {
         return socketInputStream;
     }
 
-    public OutputStream getOutputStream() throws IOException {
+    protected OutputStream getOutputStream() throws IOException {
         SocketOutputStream socketOutputStream;
         if (this.fd == null) {
             throw new IOException("socket not created");
@@ -261,31 +257,29 @@ public class LocalSocketImpl {
         return getInputStream().available();
     }
 
-    public void shutdownInput() throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+    protected void shutdownInput() throws IOException {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
         try {
-            Os.shutdown(fileDescriptor, OsConstants.SHUT_RD);
+            Os.shutdown(this.fd, OsConstants.SHUT_RD);
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
         }
     }
 
-    public void shutdownOutput() throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+    protected void shutdownOutput() throws IOException {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
         try {
-            Os.shutdown(fileDescriptor, OsConstants.SHUT_WR);
+            Os.shutdown(this.fd, OsConstants.SHUT_WR);
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
         }
     }
 
-    public FileDescriptor getFileDescriptor() {
+    protected FileDescriptor getFileDescriptor() {
         return this.fd;
     }
 
@@ -298,14 +292,13 @@ public class LocalSocketImpl {
     }
 
     public Object getOption(int optID) throws IOException {
-        FileDescriptor fileDescriptor = this.fd;
-        if (fileDescriptor == null) {
+        if (this.fd == null) {
             throw new IOException("socket not created");
         }
         try {
             switch (optID) {
                 case 1:
-                    Object toReturn = Integer.valueOf(Os.getsockoptInt(fileDescriptor, OsConstants.IPPROTO_TCP, OsConstants.TCP_NODELAY));
+                    Object toReturn = Integer.valueOf(Os.getsockoptInt(this.fd, OsConstants.IPPROTO_TCP, OsConstants.TCP_NODELAY));
                     return toReturn;
                 case 4:
                 case 4097:
@@ -314,14 +307,14 @@ public class LocalSocketImpl {
                     Object toReturn2 = Integer.valueOf(Os.getsockoptInt(this.fd, OsConstants.SOL_SOCKET, osOpt));
                     return toReturn2;
                 case 128:
-                    StructLinger linger = Os.getsockoptLinger(fileDescriptor, OsConstants.SOL_SOCKET, OsConstants.SO_LINGER);
+                    StructLinger linger = Os.getsockoptLinger(this.fd, OsConstants.SOL_SOCKET, OsConstants.SO_LINGER);
                     if (!linger.isOn()) {
                         return -1;
                     }
                     Object toReturn3 = Integer.valueOf(linger.l_linger);
                     return toReturn3;
                 case 4102:
-                    StructTimeval timeval = Os.getsockoptTimeval(fileDescriptor, OsConstants.SOL_SOCKET, OsConstants.SO_SNDTIMEO);
+                    StructTimeval timeval = Os.getsockoptTimeval(this.fd, OsConstants.SOL_SOCKET, OsConstants.SO_SNDTIMEO);
                     Object toReturn4 = Integer.valueOf((int) timeval.toMillis());
                     return toReturn4;
                 default:

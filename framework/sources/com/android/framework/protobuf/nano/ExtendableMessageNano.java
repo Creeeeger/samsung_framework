@@ -3,12 +3,12 @@ package com.android.framework.protobuf.nano;
 import com.android.framework.protobuf.nano.ExtendableMessageNano;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> extends MessageNano {
     protected FieldArray unknownFieldData;
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = 0;
         if (this.unknownFieldData != null) {
             for (int i = 0; i < this.unknownFieldData.size(); i++) {
@@ -31,18 +31,16 @@ public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> 
     }
 
     public final boolean hasExtension(Extension<M, ?> extension) {
-        FieldArray fieldArray = this.unknownFieldData;
-        if (fieldArray == null) {
+        if (this.unknownFieldData == null) {
             return false;
         }
-        FieldData field = fieldArray.get(WireFormatNano.getTagFieldNumber(extension.tag));
+        FieldData field = this.unknownFieldData.get(WireFormatNano.getTagFieldNumber(extension.tag));
         return field != null;
     }
 
     public final <T> T getExtension(Extension<M, T> extension) {
         FieldData fieldData;
-        FieldArray fieldArray = this.unknownFieldData;
-        if (fieldArray == null || (fieldData = fieldArray.get(WireFormatNano.getTagFieldNumber(extension.tag))) == null) {
+        if (this.unknownFieldData == null || (fieldData = this.unknownFieldData.get(WireFormatNano.getTagFieldNumber(extension.tag))) == null) {
             return null;
         }
         return (T) fieldData.getValue(extension);
@@ -51,20 +49,18 @@ public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> 
     public final <T> M setExtension(Extension<M, T> extension, T value) {
         int fieldNumber = WireFormatNano.getTagFieldNumber(extension.tag);
         if (value == null) {
-            FieldArray fieldArray = this.unknownFieldData;
-            if (fieldArray != null) {
-                fieldArray.remove(fieldNumber);
+            if (this.unknownFieldData != null) {
+                this.unknownFieldData.remove(fieldNumber);
                 if (this.unknownFieldData.isEmpty()) {
                     this.unknownFieldData = null;
                 }
             }
         } else {
             FieldData field = null;
-            FieldArray fieldArray2 = this.unknownFieldData;
-            if (fieldArray2 == null) {
+            if (this.unknownFieldData == null) {
                 this.unknownFieldData = new FieldArray();
             } else {
-                field = fieldArray2.get(fieldNumber);
+                field = this.unknownFieldData.get(fieldNumber);
             }
             if (field == null) {
                 this.unknownFieldData.put(fieldNumber, new FieldData(extension, value));
@@ -85,11 +81,10 @@ public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> 
         byte[] bytes = input.getData(startPos, endPos - startPos);
         UnknownFieldData unknownField = new UnknownFieldData(tag, bytes);
         FieldData field = null;
-        FieldArray fieldArray = this.unknownFieldData;
-        if (fieldArray == null) {
+        if (this.unknownFieldData == null) {
             this.unknownFieldData = new FieldArray();
         } else {
-            field = fieldArray.get(fieldNumber);
+            field = this.unknownFieldData.get(fieldNumber);
         }
         if (field == null) {
             field = new FieldData();
@@ -101,8 +96,8 @@ public abstract class ExtendableMessageNano<M extends ExtendableMessageNano<M>> 
 
     @Override // com.android.framework.protobuf.nano.MessageNano
     /* renamed from: clone */
-    public M mo7005clone() throws CloneNotSupportedException {
-        M m = (M) super.mo7005clone();
+    public M mo7418clone() throws CloneNotSupportedException {
+        M m = (M) super.mo7418clone();
         InternalNano.cloneUnknownFieldData(this, m);
         return m;
     }

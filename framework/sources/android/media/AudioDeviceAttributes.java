@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioDeviceAttributes implements Parcelable {
     public static final Parcelable.Creator<AudioDeviceAttributes> CREATOR = new Parcelable.Creator<AudioDeviceAttributes>() { // from class: android.media.AudioDeviceAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAttributes createFromParcel(Parcel p) {
             return new AudioDeviceAttributes(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDeviceAttributes[] newArray(int size) {
             return new AudioDeviceAttributes[size];
@@ -29,7 +28,7 @@ public final class AudioDeviceAttributes implements Parcelable {
     };
     public static final int ROLE_INPUT = 1;
     public static final int ROLE_OUTPUT = 2;
-    private final String mAddress;
+    private String mAddress;
     private final List<AudioDescriptor> mAudioDescriptors;
     private final List<AudioProfile> mAudioProfiles;
     private final String mName;
@@ -38,12 +37,7 @@ public final class AudioDeviceAttributes implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Role {
-    }
-
-    /* synthetic */ AudioDeviceAttributes(Parcel parcel, AudioDeviceAttributesIA audioDeviceAttributesIA) {
-        this(parcel);
     }
 
     @SystemApi
@@ -91,13 +85,23 @@ public final class AudioDeviceAttributes implements Parcelable {
     }
 
     public AudioDeviceAttributes(int nativeType, String address, String name) {
-        this.mRole = (Integer.MIN_VALUE & nativeType) != 0 ? 1 : 2;
+        this.mRole = AudioSystem.isInputDevice(nativeType) ? 1 : 2;
         this.mType = AudioDeviceInfo.convertInternalDeviceToDeviceType(nativeType);
         this.mAddress = address;
         this.mName = name;
         this.mNativeType = nativeType;
         this.mAudioProfiles = new ArrayList();
         this.mAudioDescriptors = new ArrayList();
+    }
+
+    public AudioDeviceAttributes(AudioDeviceAttributes ada) {
+        this.mRole = ada.getRole();
+        this.mType = ada.getType();
+        this.mAddress = ada.getAddress();
+        this.mName = ada.getName();
+        this.mNativeType = ada.getInternalType();
+        this.mAudioProfiles = ada.getAudioProfiles();
+        this.mAudioDescriptors = ada.getAudioDescriptors();
     }
 
     @SystemApi
@@ -113,6 +117,11 @@ public final class AudioDeviceAttributes implements Parcelable {
     @SystemApi
     public String getAddress() {
         return this.mAddress;
+    }
+
+    public void setAddress(String address) {
+        Objects.requireNonNull(address);
+        this.mAddress = address;
     }
 
     @SystemApi
@@ -171,7 +180,7 @@ public final class AudioDeviceAttributes implements Parcelable {
     }
 
     public String toString() {
-        return new String("AudioDeviceAttributes: role:" + roleToString(this.mRole) + " type:" + (this.mRole == 2 ? AudioSystem.getOutputDeviceName(this.mNativeType) : AudioSystem.getInputDeviceName(this.mNativeType)) + " addr:" + this.mAddress + " name:" + this.mName + " profiles:" + this.mAudioProfiles.toString() + " descriptors:" + this.mAudioDescriptors.toString());
+        return new String("AudioDeviceAttributes: role:" + roleToString(this.mRole) + " type:" + (this.mRole == 2 ? AudioSystem.getOutputDeviceName(this.mNativeType) : AudioSystem.getInputDeviceName(this.mNativeType)) + " addr:" + Utils.anonymizeBluetoothAddress(this.mNativeType, this.mAddress) + " name:" + this.mName + " profiles:" + this.mAudioProfiles.toString() + " descriptors:" + this.mAudioDescriptors.toString());
     }
 
     @Override // android.os.Parcelable
@@ -186,10 +195,8 @@ public final class AudioDeviceAttributes implements Parcelable {
         dest.writeString(this.mAddress);
         dest.writeString(this.mName);
         dest.writeInt(this.mNativeType);
-        List<AudioProfile> list = this.mAudioProfiles;
-        dest.writeParcelableArray((AudioProfile[]) list.toArray(new AudioProfile[list.size()]), flags);
-        List<AudioDescriptor> list2 = this.mAudioDescriptors;
-        dest.writeParcelableArray((AudioDescriptor[]) list2.toArray(new AudioDescriptor[list2.size()]), flags);
+        dest.writeParcelableArray((AudioProfile[]) this.mAudioProfiles.toArray(new AudioProfile[this.mAudioProfiles.size()]), flags);
+        dest.writeParcelableArray((AudioDescriptor[]) this.mAudioDescriptors.toArray(new AudioDescriptor[this.mAudioDescriptors.size()]), flags);
     }
 
     private AudioDeviceAttributes(Parcel in) {
@@ -202,22 +209,5 @@ public final class AudioDeviceAttributes implements Parcelable {
         this.mAudioProfiles = new ArrayList(Arrays.asList(audioProfilesArray));
         AudioDescriptor[] audioDescriptorsArray = (AudioDescriptor[]) in.readParcelableArray(AudioDescriptor.class.getClassLoader(), AudioDescriptor.class);
         this.mAudioDescriptors = new ArrayList(Arrays.asList(audioDescriptorsArray));
-    }
-
-    /* renamed from: android.media.AudioDeviceAttributes$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioDeviceAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDeviceAttributes createFromParcel(Parcel p) {
-            return new AudioDeviceAttributes(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDeviceAttributes[] newArray(int size) {
-            return new AudioDeviceAttributes[size];
-        }
     }
 }

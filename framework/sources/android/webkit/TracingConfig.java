@@ -18,25 +18,21 @@ public class TracingConfig {
     public static final int CATEGORIES_WEB_DEVELOPER = 4;
     public static final int RECORD_CONTINUOUSLY = 1;
     public static final int RECORD_UNTIL_FULL = 0;
-    private final List<String> mCustomIncludedCategories;
+    private final List<String> mCustomIncludedCategories = new ArrayList();
     private int mPredefinedCategories;
     private int mTracingMode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface PredefinedCategories {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface TracingMode {
     }
 
     public TracingConfig(int predefinedCategories, List<String> customIncludedCategories, int tracingMode) {
-        ArrayList arrayList = new ArrayList();
-        this.mCustomIncludedCategories = arrayList;
         this.mPredefinedCategories = predefinedCategories;
-        arrayList.addAll(customIncludedCategories);
+        this.mCustomIncludedCategories.addAll(customIncludedCategories);
         this.mTracingMode = tracingMode;
     }
 
@@ -52,7 +48,6 @@ public class TracingConfig {
         return this.mTracingMode;
     }
 
-    /* loaded from: classes4.dex */
     public static class Builder {
         private int mPredefinedCategories = 0;
         private final List<String> mCustomIncludedCategories = new ArrayList();

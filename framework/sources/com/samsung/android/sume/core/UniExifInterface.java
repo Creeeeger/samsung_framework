@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class UniExifInterface extends ExifInterface {
     ByteBuffer originExifBuffer;
     File tempFile;
@@ -59,7 +59,7 @@ public class UniExifInterface extends ExifInterface {
         this(tempFile);
         this.tempFile = tempFile;
         this.originExifBuffer = exifBuffer;
-        tempFile.deleteOnExit();
+        this.tempFile.deleteOnExit();
     }
 
     private void reset() {
@@ -144,7 +144,7 @@ public class UniExifInterface extends ExifInterface {
 
     public static UniExifInterface of(File file) {
         ByteBuffer exifBuffer = parseExif(file);
-        return (UniExifInterface) Optional.ofNullable(exifBuffer).map(new Function() { // from class: com.samsung.android.sume.core.UniExifInterface$$ExternalSyntheticLambda1
+        return (UniExifInterface) Optional.ofNullable(exifBuffer).map(new Function() { // from class: com.samsung.android.sume.core.UniExifInterface$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return UniExifInterface.of((ByteBuffer) obj);
@@ -167,7 +167,7 @@ public class UniExifInterface extends ExifInterface {
 
     private static ByteBuffer parseHeifExif(File file) {
         byte[] exifBuf = SemBitmapFactory.getExifDataFile(file.getPath());
-        return (ByteBuffer) Optional.ofNullable(exifBuf).map(new Function() { // from class: com.samsung.android.sume.core.UniExifInterface$$ExternalSyntheticLambda0
+        return (ByteBuffer) Optional.ofNullable(exifBuf).map(new Function() { // from class: com.samsung.android.sume.core.UniExifInterface$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 return ByteBuffer.wrap((byte[]) obj);

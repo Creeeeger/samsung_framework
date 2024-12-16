@@ -3,12 +3,12 @@ package com.samsung.android.sume.core.channel;
 import android.util.Log;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.buffer.MediaBuffer;
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12;
+import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class BufferSupplyChannel implements BufferChannel, Supplier<MediaBuffer> {
     private static final String TAG = Def.tagOf((Class<?>) BufferSupplyChannel.class);
     private final BufferChannel channel;
@@ -28,6 +28,7 @@ public class BufferSupplyChannel implements BufferChannel, Supplier<MediaBuffer>
         this.channel.send(data);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.channel.Channel
     public MediaBuffer receive() {
         return this.channel.receive();
@@ -53,6 +54,7 @@ public class BufferSupplyChannel implements BufferChannel, Supplier<MediaBuffer>
         return this.channel.isClosedForReceive();
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // java.util.function.Supplier
     public MediaBuffer get() {
         return (MediaBuffer) Optional.ofNullable(this.supplier).map(new Function() { // from class: com.samsung.android.sume.core.channel.BufferSupplyChannel$$ExternalSyntheticLambda0
@@ -60,6 +62,6 @@ public class BufferSupplyChannel implements BufferChannel, Supplier<MediaBuffer>
             public final Object apply(Object obj) {
                 return (MediaBuffer) ((Supplier) obj).get();
             }
-        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
     }
 }

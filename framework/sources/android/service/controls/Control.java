@@ -16,14 +16,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class Control implements Parcelable {
     public static final Parcelable.Creator<Control> CREATOR = new Parcelable.Creator<Control>() { // from class: android.service.controls.Control.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Control createFromParcel(Parcel source) {
             return new Control(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Control[] newArray(int size) {
             return new Control[size];
@@ -52,7 +51,6 @@ public final class Control implements Parcelable {
     private final CharSequence mZone;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Status {
     }
 
@@ -222,24 +220,6 @@ public final class Control implements Parcelable {
         this.mCustomControl.writeToParcel(dest, flags);
     }
 
-    /* renamed from: android.service.controls.Control$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Control> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Control createFromParcel(Parcel source) {
-            return new Control(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Control[] newArray(int size) {
-            return new Control[size];
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class StatelessBuilder {
         private static final String TAG = "StatelessBuilder";
         private PendingIntent mAppIntent;
@@ -376,7 +356,6 @@ public final class Control implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class StatefulBuilder {
         private static final String TAG = "StatefulBuilder";
         private PendingIntent mAppIntent;

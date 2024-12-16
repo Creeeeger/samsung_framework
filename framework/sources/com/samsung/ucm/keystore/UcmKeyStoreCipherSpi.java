@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.CipherSpi;
@@ -25,6 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /* loaded from: classes6.dex */
 public abstract class UcmKeyStoreCipherSpi extends CipherSpi {
@@ -224,9 +226,8 @@ public abstract class UcmKeyStoreCipherSpi extends CipherSpi {
         if (bArr[0] == 1) {
             int offset2 = offset + 1;
             int i = bArr[offset];
-            byte[] bArr2 = new byte[i];
-            this.mIV = bArr2;
-            System.arraycopy(bArr, offset2, bArr2, 0, i);
+            this.mIV = new byte[i];
+            System.arraycopy(bArr, offset2, this.mIV, 0, i);
             int offset3 = offset2 + i;
             int offset4 = offset3 + 1;
             int messageLength = ((bArr[offset3] & 255) << 8) | (bArr[offset4] & 255);
@@ -274,11 +275,18 @@ public abstract class UcmKeyStoreCipherSpi extends CipherSpi {
     public Key engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm, int wrappedKeyType) throws InvalidKeyException, NoSuchAlgorithmException {
         try {
             byte[] encoded = engineDoFinal(wrappedKey, 0, wrappedKey.length);
-            if (wrappedKeyType == 2) {
-                KeyFactory keyFactory = KeyFactory.getInstance(wrappedKeyAlgorithm);
-                return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+            switch (wrappedKeyType) {
+                case 1:
+                    KeyFactory keyFactory = KeyFactory.getInstance(wrappedKeyAlgorithm);
+                    return keyFactory.generatePublic(new X509EncodedKeySpec(encoded));
+                case 2:
+                    KeyFactory keyFactory2 = KeyFactory.getInstance(wrappedKeyAlgorithm);
+                    return keyFactory2.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+                case 3:
+                    return new SecretKeySpec(encoded, wrappedKeyAlgorithm);
+                default:
+                    throw new UnsupportedOperationException("wrappedKeyType == " + wrappedKeyType);
             }
-            throw new UnsupportedOperationException("wrappedKeyType == " + wrappedKeyType);
         } catch (InvalidKeySpecException e) {
             throw new InvalidKeyException(e);
         } catch (BadPaddingException e2) {
@@ -300,63 +308,54 @@ public abstract class UcmKeyStoreCipherSpi extends CipherSpi {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class PKCS1Padding extends UcmKeyStoreCipherSpi {
         public PKCS1Padding() {
             super(2, "RSA/ECB/PKCS1Padding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class OAEPWithSHA1AndMGF1Padding extends UcmKeyStoreCipherSpi {
         public OAEPWithSHA1AndMGF1Padding() {
             super(3, "RSA/ECB/OAEPPadding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class OAEPWithSHA224AndMGF1Padding extends UcmKeyStoreCipherSpi {
         public OAEPWithSHA224AndMGF1Padding() {
             super(3, "RSA/ECB/OAEPWithSHA-224AndMGF1Padding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class OAEPWithSHA256AndMGF1Padding extends UcmKeyStoreCipherSpi {
         public OAEPWithSHA256AndMGF1Padding() {
             super(3, "RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class OAEPWithSHA384AndMGF1Padding extends UcmKeyStoreCipherSpi {
         public OAEPWithSHA384AndMGF1Padding() {
             super(3, "RSA/ECB/OAEPWithSHA-384AndMGF1Padding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class OAEPWithSHA512AndMGF1Padding extends UcmKeyStoreCipherSpi {
         public OAEPWithSHA512AndMGF1Padding() {
             super(3, "RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class AesCbcNoPadding extends UcmKeyStoreCipherSpi {
         public AesCbcNoPadding() {
             super(1, "AES/CBC/NoPadding");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class AesCbcIso9797M2 extends UcmKeyStoreCipherSpi {
         public AesCbcIso9797M2() {
             super(4, "AES/CBC/ISO9797-M2");
         }
     }
 
-    /* loaded from: classes6.dex */
     public static class AesGcmNoPadding extends UcmKeyStoreCipherSpi {
         public AesGcmNoPadding() {
             super(1, MdfUtils.MDF_CIPHER_MODE);

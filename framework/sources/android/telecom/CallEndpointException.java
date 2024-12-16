@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 public final class CallEndpointException extends RuntimeException implements Parcelable {
     public static final String CHANGE_ERROR = "ChangeErrorKey";
     public static final Parcelable.Creator<CallEndpointException> CREATOR = new Parcelable.Creator<CallEndpointException>() { // from class: android.telecom.CallEndpointException.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallEndpointException createFromParcel(Parcel source) {
             return new CallEndpointException(source.readString8(), source.readInt());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CallEndpointException[] newArray(int size) {
             return new CallEndpointException[size];
@@ -32,7 +31,6 @@ public final class CallEndpointException extends RuntimeException implements Par
     private final String mMessage;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CallEndpointErrorCode {
     }
 
@@ -45,23 +43,6 @@ public final class CallEndpointException extends RuntimeException implements Par
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString8(this.mMessage);
         dest.writeInt(this.mCode);
-    }
-
-    /* renamed from: android.telecom.CallEndpointException$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CallEndpointException> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallEndpointException createFromParcel(Parcel source) {
-            return new CallEndpointException(source.readString8(), source.readInt());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CallEndpointException[] newArray(int size) {
-            return new CallEndpointException[size];
-        }
     }
 
     public CallEndpointException(String message, int code) {

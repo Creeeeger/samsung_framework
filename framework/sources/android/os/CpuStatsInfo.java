@@ -5,14 +5,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class CpuStatsInfo implements Parcelable {
     public static final Parcelable.Creator<CpuStatsInfo> CREATOR = new Parcelable.Creator<CpuStatsInfo>() { // from class: android.os.CpuStatsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CpuStatsInfo createFromParcel(Parcel in) {
             return new CpuStatsInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CpuStatsInfo[] newArray(int size) {
             return new CpuStatsInfo[size];
@@ -50,22 +49,5 @@ public class CpuStatsInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.os.CpuStatsInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CpuStatsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CpuStatsInfo createFromParcel(Parcel in) {
-            return new CpuStatsInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CpuStatsInfo[] newArray(int size) {
-            return new CpuStatsInfo[size];
-        }
     }
 }

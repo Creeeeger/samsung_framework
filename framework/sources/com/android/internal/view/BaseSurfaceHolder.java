@@ -72,8 +72,7 @@ public abstract class BaseSurfaceHolder implements SurfaceHolder {
         synchronized (this.mCallbacks) {
             int N = this.mCallbacks.size();
             if (N > 0) {
-                SurfaceHolder.Callback[] callbackArr = this.mGottenCallbacks;
-                if (callbackArr == null || callbackArr.length != N) {
+                if (this.mGottenCallbacks == null || this.mGottenCallbacks.length != N) {
                     this.mGottenCallbacks = new SurfaceHolder.Callback[N];
                 }
                 this.mCallbacks.toArray(this.mGottenCallbacks);
@@ -129,11 +128,9 @@ public abstract class BaseSurfaceHolder implements SurfaceHolder {
                 if (this.mRequestedType != type) {
                     this.mRequestedType = type;
                     onUpdateSurface();
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 

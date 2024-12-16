@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class ImsCall implements Parcelable {
     public static final Parcelable.Creator<ImsCall> CREATOR = new Parcelable.Creator<ImsCall>() { // from class: android.hardware.radio.ims.ImsCall.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsCall createFromParcel(Parcel _aidl_source) {
             ImsCall _aidl_out = new ImsCall();
@@ -19,6 +17,7 @@ public class ImsCall implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsCall[] newArray(int _aidl_size) {
             return new ImsCall[_aidl_size];
@@ -31,7 +30,6 @@ public class ImsCall implements Parcelable {
     public int index = 0;
     public boolean isHeldByRemote = false;
 
-    /* loaded from: classes2.dex */
     public @interface CallState {
         public static final int ACTIVE = 0;
         public static final int ALERTING = 3;
@@ -43,35 +41,14 @@ public class ImsCall implements Parcelable {
         public static final int WAITING = 5;
     }
 
-    /* loaded from: classes2.dex */
     public @interface CallType {
         public static final int EMERGENCY = 1;
         public static final int NORMAL = 0;
     }
 
-    /* loaded from: classes2.dex */
     public @interface Direction {
         public static final int INCOMING = 0;
         public static final int OUTGOING = 1;
-    }
-
-    /* renamed from: android.hardware.radio.ims.ImsCall$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsCall> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsCall createFromParcel(Parcel _aidl_source) {
-            ImsCall _aidl_out = new ImsCall();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsCall[] newArray(int _aidl_size) {
-            return new ImsCall[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -171,7 +148,7 @@ public class ImsCall implements Parcelable {
         _aidl_sj.add("callState: " + this.callState);
         _aidl_sj.add("direction: " + this.direction);
         _aidl_sj.add("isHeldByRemote: " + this.isHeldByRemote);
-        return "android.hardware.radio.ims.ImsCall" + _aidl_sj.toString();
+        return "ImsCall" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

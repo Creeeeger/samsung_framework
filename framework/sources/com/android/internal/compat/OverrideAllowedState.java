@@ -6,19 +6,18 @@ import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class OverrideAllowedState implements Parcelable {
     public static final int ALLOWED = 0;
     public static final Parcelable.Creator<OverrideAllowedState> CREATOR = new Parcelable.Creator<OverrideAllowedState>() { // from class: com.android.internal.compat.OverrideAllowedState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverrideAllowedState createFromParcel(Parcel parcel) {
             OverrideAllowedState info = new OverrideAllowedState(parcel);
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverrideAllowedState[] newArray(int size) {
             return new OverrideAllowedState[size];
@@ -35,12 +34,7 @@ public final class OverrideAllowedState implements Parcelable {
     public final int state;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface State {
-    }
-
-    /* synthetic */ OverrideAllowedState(Parcel parcel, OverrideAllowedStateIA overrideAllowedStateIA) {
-        this(parcel);
     }
 
     private OverrideAllowedState(Parcel parcel) {
@@ -84,24 +78,6 @@ public final class OverrideAllowedState implements Parcelable {
                 throw new SecurityException(String.format("Cannot override %1$d for %2$s because the change's targetSdk threshold (%3$d) is above the platform sdk.", Long.valueOf(changeId), packageName, Integer.valueOf(this.changeIdTargetSdk)));
             default:
                 return;
-        }
-    }
-
-    /* renamed from: com.android.internal.compat.OverrideAllowedState$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OverrideAllowedState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverrideAllowedState createFromParcel(Parcel parcel) {
-            OverrideAllowedState info = new OverrideAllowedState(parcel);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverrideAllowedState[] newArray(int size) {
-            return new OverrideAllowedState[size];
         }
     }
 

@@ -13,14 +13,13 @@ import java.util.Arrays;
 /* loaded from: classes3.dex */
 public final class LuhnChecksumValidator extends InternalValidator implements Validator, Parcelable {
     public static final Parcelable.Creator<LuhnChecksumValidator> CREATOR = new Parcelable.Creator<LuhnChecksumValidator>() { // from class: android.service.autofill.LuhnChecksumValidator.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LuhnChecksumValidator createFromParcel(Parcel parcel) {
             return new LuhnChecksumValidator((AutofillId[]) parcel.readParcelableArray(null, AutofillId.class));
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LuhnChecksumValidator[] newArray(int size) {
             return new LuhnChecksumValidator[size];
@@ -63,8 +62,7 @@ public final class LuhnChecksumValidator extends InternalValidator implements Va
 
     @Override // android.service.autofill.InternalValidator
     public boolean isValid(ValueFinder finder) {
-        AutofillId[] autofillIdArr = this.mIds;
-        if (autofillIdArr == null || autofillIdArr.length == 0) {
+        if (this.mIds == null || this.mIds.length == 0) {
             return false;
         }
         StringBuilder builder = new StringBuilder();
@@ -98,22 +96,5 @@ public final class LuhnChecksumValidator extends InternalValidator implements Va
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelableArray(this.mIds, flags);
-    }
-
-    /* renamed from: android.service.autofill.LuhnChecksumValidator$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LuhnChecksumValidator> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LuhnChecksumValidator createFromParcel(Parcel parcel) {
-            return new LuhnChecksumValidator((AutofillId[]) parcel.readParcelableArray(null, AutofillId.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LuhnChecksumValidator[] newArray(int size) {
-            return new LuhnChecksumValidator[size];
-        }
     }
 }

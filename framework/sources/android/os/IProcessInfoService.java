@@ -6,7 +6,6 @@ public interface IProcessInfoService extends IInterface {
 
     void getProcessStatesFromPids(int[] iArr, int[] iArr2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IProcessInfoService {
         @Override // android.os.IProcessInfoService
         public void getProcessStatesFromPids(int[] pids, int[] states) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IProcessInfoService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IProcessInfoService {
         public static final String DESCRIPTOR = "android.os.IProcessInfoService";
         static final int TRANSACTION_getProcessStatesAndOomScoresFromPids = 2;
@@ -72,52 +70,49 @@ public interface IProcessInfoService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int[] _arg0 = data.createIntArray();
+                    int _arg1_length = data.readInt();
+                    if (_arg1_length < 0) {
+                        _arg1 = null;
+                    } else {
+                        _arg1 = new int[_arg1_length];
+                    }
+                    data.enforceNoDataAvail();
+                    getProcessStatesFromPids(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeIntArray(_arg1);
+                    return true;
+                case 2:
+                    int[] _arg02 = data.createIntArray();
+                    int _arg1_length2 = data.readInt();
+                    if (_arg1_length2 < 0) {
+                        _arg12 = null;
+                    } else {
+                        _arg12 = new int[_arg1_length2];
+                    }
+                    int _arg2_length = data.readInt();
+                    if (_arg2_length < 0) {
+                        _arg2 = null;
+                    } else {
+                        _arg2 = new int[_arg2_length];
+                    }
+                    data.enforceNoDataAvail();
+                    getProcessStatesAndOomScoresFromPids(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeIntArray(_arg12);
+                    reply.writeIntArray(_arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _arg0 = data.createIntArray();
-                            int _arg1_length = data.readInt();
-                            if (_arg1_length < 0) {
-                                _arg1 = null;
-                            } else {
-                                _arg1 = new int[_arg1_length];
-                            }
-                            data.enforceNoDataAvail();
-                            getProcessStatesFromPids(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeIntArray(_arg1);
-                            return true;
-                        case 2:
-                            int[] _arg02 = data.createIntArray();
-                            int _arg1_length2 = data.readInt();
-                            if (_arg1_length2 < 0) {
-                                _arg12 = null;
-                            } else {
-                                _arg12 = new int[_arg1_length2];
-                            }
-                            int _arg2_length = data.readInt();
-                            if (_arg2_length < 0) {
-                                _arg2 = null;
-                            } else {
-                                _arg2 = new int[_arg2_length];
-                            }
-                            data.enforceNoDataAvail();
-                            getProcessStatesAndOomScoresFromPids(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeIntArray(_arg12);
-                            reply.writeIntArray(_arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IProcessInfoService {
             private IBinder mRemote;
 

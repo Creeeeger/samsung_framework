@@ -18,7 +18,7 @@ public final class PinSet {
         this.expirationTime = expirationTime;
     }
 
-    public Set<String> getPinAlgorithms() {
+    Set<String> getPinAlgorithms() {
         Set<String> algorithms = new ArraySet<>();
         for (Pin pin : this.pins) {
             algorithms.add(pin.digestAlgorithm);

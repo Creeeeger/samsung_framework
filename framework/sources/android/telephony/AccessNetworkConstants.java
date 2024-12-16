@@ -7,19 +7,17 @@ import android.mtp.MtpConstants;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.os.Process;
-import android.os.health.UidHealthStats;
 import android.util.BoostFramework;
 import android.view.WindowManagerPolicyConstants;
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.telephony.gsm.SmsCbConstants;
 import com.samsung.android.media.SemMediaPlayer;
-import com.samsung.android.media.convert.core.Convert;
 import com.samsung.android.smartface.SmartFaceManager;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class AccessNetworkConstants {
     private static final String TAG = AccessNetworkConstants.class.getSimpleName();
 
@@ -29,12 +27,10 @@ public final class AccessNetworkConstants {
     public static final int TRANSPORT_TYPE_WWAN = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RadioAccessNetworkType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TransportType {
     }
 
@@ -52,7 +48,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class AccessNetworkType {
         public static final int CDMA2000 = 4;
         public static final int EUTRAN = 3;
@@ -165,7 +160,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class GeranBand {
         public static final int BAND_450 = 3;
         public static final int BAND_480 = 4;
@@ -183,7 +177,6 @@ public final class AccessNetworkConstants {
         public static final int BAND_T810 = 7;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface GeranBands {
         }
 
@@ -191,9 +184,7 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public enum GeranBandArfcnFrequency {
+    enum GeranBandArfcnFrequency {
         GERAN_ARFCN_FREQUENCY_BAND_450(3, 450600, 259, 259, 293, 10),
         GERAN_ARFCN_FREQUENCY_BAND_480(4, 479000, 306, 306, 340, 10),
         GERAN_ARFCN_FREQUENCY_BAND_850(8, 824200, 128, 128, 251, 45),
@@ -224,7 +215,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class UtranBand {
         public static final int BAND_1 = 1;
         public static final int BAND_10 = 10;
@@ -254,7 +244,6 @@ public final class AccessNetworkConstants {
         public static final int BAND_F = 106;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface UtranBands {
         }
 
@@ -262,9 +251,7 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public enum UtranBandArfcnFrequency {
+    enum UtranBandArfcnFrequency {
         UTRAN_ARFCN_FREQUENCY_BAND_1(1, 0, 10562, 10838, 0, 9612, 9888),
         UTRAN_ARFCN_FREQUENCY_BAND_2(2, 0, 9662, 9938, 0, 9262, 9538),
         UTRAN_ARFCN_FREQUENCY_BAND_3(3, 1575000, 1162, 1513, 1525000, MetricsProto.MetricsEvent.ACTION_TEXT_SELECTION_MENU_ITEM_ASSIST, MetricsProto.MetricsEvent.ROTATION_SUGGESTION_SHOWN),
@@ -284,7 +271,7 @@ public final class AccessNetworkConstants {
         UTRAN_ARFCN_FREQUENCY_BAND_21(21, 1326000, 862, 912, 1358000, 462, 512),
         UTRAN_ARFCN_FREQUENCY_BAND_22(22, 2580000, 4662, 5038, 2525000, 4437, 4813),
         UTRAN_ARFCN_FREQUENCY_BAND_25(25, 910000, 5112, 5413, 875000, 4887, 5188),
-        UTRAN_ARFCN_FREQUENCY_BAND_A(101, 0, UidHealthStats.MEASUREMENT_MOBILE_RX_PACKETS, 10121, 0, 9504, 9596),
+        UTRAN_ARFCN_FREQUENCY_BAND_A(101, 0, 10054, 10121, 0, 9504, 9596),
         UTRAN_ARFCN_FREQUENCY_BAND_B(102, 0, 9654, 9946, 0, 9254, 9546),
         UTRAN_ARFCN_FREQUENCY_BAND_C(103, 0, 0, 0, 0, 9554, 9646),
         UTRAN_ARFCN_FREQUENCY_BAND_D(104, 0, 0, 0, 0, 12854, 13096),
@@ -310,7 +297,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class EutranBand {
         public static final int BAND_1 = 1;
         public static final int BAND_10 = 10;
@@ -374,7 +360,6 @@ public final class AccessNetworkConstants {
         public static final int BAND_9 = 9;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface EutranBands {
         }
 
@@ -382,16 +367,14 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public enum EutranBandArfcnFrequency {
+    enum EutranBandArfcnFrequency {
         EUTRAN_ARFCN_FREQUENCY_BAND_1(1, 2110000, 0, 599, 1920000, 18800, 18599),
         EUTRAN_ARFCN_FREQUENCY_BAND_2(2, 1930000, 600, 1199, 1850000, 18600, 19199),
-        EUTRAN_ARFCN_FREQUENCY_BAND_3(3, 1805000, 1200, 1949, 1710000, 19200, 19949),
-        EUTRAN_ARFCN_FREQUENCY_BAND_4(4, 2110000, SettingsEnums.SETTINGS_LANGUAGES_CATEGORY, 2399, 1710000, 19950, 20399),
+        EUTRAN_ARFCN_FREQUENCY_BAND_3(3, 1805000, 1200, SettingsEnums.ACTION_AUDIO_STREAM_CONFIRM_LAUNCH_MAIN_BUTTON_CLICK, 1710000, 19200, 19949),
+        EUTRAN_ARFCN_FREQUENCY_BAND_4(4, 2110000, 1950, 2399, 1710000, 19950, 20399),
         EUTRAN_ARFCN_FREQUENCY_BAND_5(5, 869000, 2400, 2649, 824000, 20400, 20649),
         EUTRAN_ARFCN_FREQUENCY_BAND_6(6, 875000, 2650, 2749, 830000, 20650, 20749),
-        EUTRAN_ARFCN_FREQUENCY_BAND_7(7, 2620000, SmartFaceManager.SMART_STAY_DELAY, Convert.BitRate.VIDEO_D1_BITRATE, 2500000, 20750, 21449),
+        EUTRAN_ARFCN_FREQUENCY_BAND_7(7, 2620000, SmartFaceManager.SMART_STAY_DELAY, 3449, 2500000, 20750, 21449),
         EUTRAN_ARFCN_FREQUENCY_BAND_8(8, 925000, 3450, 3799, 880000, 21450, 21799),
         EUTRAN_ARFCN_FREQUENCY_BAND_9(9, 1844900, 3800, 4149, 1749900, 21800, 22149),
         EUTRAN_ARFCN_FREQUENCY_BAND_10(10, 2110000, 4150, 4749, 1710000, 22150, 22749),
@@ -465,7 +448,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class CdmaBands {
         public static final int BAND_0 = 1;
         public static final int BAND_1 = 2;
@@ -494,7 +476,6 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class NgranBands {
         public static final int BAND_1 = 1;
         public static final int BAND_12 = 12;
@@ -560,12 +541,10 @@ public final class AccessNetworkConstants {
         public static final int FREQUENCY_RANGE_GROUP_UNKNOWN = 0;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface FrequencyRangeGroup {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface NgranBand {
         }
 
@@ -636,9 +615,7 @@ public final class AccessNetworkConstants {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public enum NgranArfcnFrequency {
+    enum NgranArfcnFrequency {
         NGRAN_ARFCN_FREQUENCY_RANGE_1(5, 0, 0, 0, 599999),
         NGRAN_ARFCN_FREQUENCY_RANGE_2(15, 3000000, 600000, 600000, 2016666),
         NGRAN_ARFCN_FREQUENCY_RANGE_3(60, 24250080, 2016667, 2016667, 3279165);

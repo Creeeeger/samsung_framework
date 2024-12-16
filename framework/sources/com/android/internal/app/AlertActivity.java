@@ -4,61 +4,21 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
-import com.android.internal.R;
 import com.android.internal.app.AlertController;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class AlertActivity extends Activity implements DialogInterface {
-    private static final float DIALOG_POP_OVER_DARK_DIM_AMOUNT = 0.65f;
-    private static final float DIALOG_POP_OVER_DIM_AMOUNT = 0.18f;
-    private static final float DIALOG_POP_OVER_ELEVATION = 8.0f;
-    private static final float DIALOG_REDUCE_TRANSPARENCY_DIM_AMOUNT = 0.35f;
     protected AlertController mAlert;
     protected AlertController.AlertParams mAlertParams;
-    private boolean mIsDeviceDefault;
-    private boolean mIsDeviceDefaultDark;
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        this.mAlert = AlertController.create(this, this, window);
+        this.mAlert = AlertController.create(this, this, getWindow());
         this.mAlertParams = new AlertController.AlertParams(this);
-        TypedValue themeValue = new TypedValue();
-        getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, themeValue, true);
-        if (themeValue.data != 0) {
-            this.mIsDeviceDefault = true;
-            TypedValue colorValue = new TypedValue();
-            getTheme().resolveAttribute(R.attr.parentIsDeviceDefaultDark, colorValue, true);
-            this.mIsDeviceDefaultDark = colorValue.data != 0;
-        }
-        WindowManager.LayoutParams l = window.getAttributes();
-        if (this.mIsDeviceDefault) {
-            if (getResources().getBoolean(R.bool.sem_config_dialogLargeScreen)) {
-                if (getResources().getConfiguration().windowConfiguration.isPopOver()) {
-                    l.dimAmount = this.mIsDeviceDefaultDark ? DIALOG_POP_OVER_DARK_DIM_AMOUNT : 0.18f;
-                    l.width = getResources().getDisplayMetrics().widthPixels;
-                }
-                window.setAttributes(l);
-            } else if (!this.mIsDeviceDefaultDark) {
-                boolean isReduceTransparency = Settings.System.getInt(getContentResolver(), "accessibility_reduce_transparency", 0) == 1;
-                if (isReduceTransparency) {
-                    l.dimAmount = DIALOG_REDUCE_TRANSPARENCY_DIM_AMOUNT;
-                    window.setAttributes(l);
-                }
-            }
-        }
-        boolean isReduceTransparency2 = this.mIsDeviceDefault;
-        if (isReduceTransparency2) {
-            float f = l.dimAmount;
-        }
     }
 
     @Override // android.content.DialogInterface
@@ -87,7 +47,7 @@ public abstract class AlertActivity extends Activity implements DialogInterface 
         return false;
     }
 
-    public void setupAlert() {
+    protected void setupAlert() {
         this.mAlert.installContent(this.mAlertParams);
     }
 

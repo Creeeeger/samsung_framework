@@ -11,9 +11,7 @@ import android.util.SparseIntArray;
 /* loaded from: classes.dex */
 public final class UsageStats implements Parcelable {
     public static final Parcelable.Creator<UsageStats> CREATOR = new Parcelable.Creator<UsageStats>() { // from class: android.app.usage.UsageStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageStats createFromParcel(Parcel in) {
             UsageStats stats = new UsageStats();
@@ -72,6 +70,7 @@ public final class UsageStats implements Parcelable {
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageStats[] newArray(int size) {
             return new UsageStats[size];
@@ -125,7 +124,7 @@ public final class UsageStats implements Parcelable {
         this.mLaunchCount = stats.mLaunchCount;
         this.mAppLaunchCount = stats.mAppLaunchCount;
         this.mLastEvent = stats.mLastEvent;
-        this.mActivities = stats.mActivities.m4953clone();
+        this.mActivities = stats.mActivities.m5237clone();
         this.mForegroundServices = new ArrayMap<>(stats.mForegroundServices);
         this.mChooserCounts = new ArrayMap<>(stats.mChooserCounts);
     }
@@ -236,9 +235,8 @@ public final class UsageStats implements Parcelable {
             this.mChooserCounts = right.mChooserCounts;
             return;
         }
-        ArrayMap<String, ArrayMap<String, Integer>> arrayMap = right.mChooserCounts;
-        if (arrayMap != null) {
-            int chooserCountsSize = arrayMap.size();
+        if (right.mChooserCounts != null) {
+            int chooserCountsSize = right.mChooserCounts.size();
             for (int i = 0; i < chooserCountsSize; i++) {
                 String action = right.mChooserCounts.keyAt(i);
                 ArrayMap<String, Integer> counts = right.mChooserCounts.valueAt(i);
@@ -283,32 +281,28 @@ public final class UsageStats implements Parcelable {
     }
 
     private void incrementTimeUsed(long timeStamp) {
-        long j = this.mLastTimeUsed;
-        if (timeStamp > j) {
-            this.mTotalTimeInForeground += timeStamp - j;
+        if (timeStamp > this.mLastTimeUsed) {
+            this.mTotalTimeInForeground += timeStamp - this.mLastTimeUsed;
             this.mLastTimeUsed = timeStamp;
         }
     }
 
     private void incrementTimeVisible(long timeStamp) {
-        long j = this.mLastTimeVisible;
-        if (timeStamp > j) {
-            this.mTotalTimeVisible += timeStamp - j;
+        if (timeStamp > this.mLastTimeVisible) {
+            this.mTotalTimeVisible += timeStamp - this.mLastTimeVisible;
             this.mLastTimeVisible = timeStamp;
         }
     }
 
     private void incrementServiceTimeUsed(long timeStamp) {
-        long j = this.mLastTimeForegroundServiceUsed;
-        if (timeStamp > j) {
-            this.mTotalTimeForegroundServiceUsed += timeStamp - j;
+        if (timeStamp > this.mLastTimeForegroundServiceUsed) {
+            this.mTotalTimeForegroundServiceUsed += timeStamp - this.mLastTimeForegroundServiceUsed;
             this.mLastTimeForegroundServiceUsed = timeStamp;
         }
     }
 
     private void updateActivity(String className, long timeStamp, int eventType, int instanceId) {
         if (eventType != 1 && eventType != 2 && eventType != 23 && eventType != 24) {
-            return;
         }
         int index = this.mActivities.indexOfKey(instanceId);
         if (index >= 0) {
@@ -332,25 +326,22 @@ public final class UsageStats implements Parcelable {
                     this.mLastTimeUsed = timeStamp;
                 }
                 this.mActivities.put(instanceId, eventType);
-                return;
+                break;
             case 2:
                 if (!hasVisibleActivity()) {
                     this.mLastTimeVisible = timeStamp;
                 }
                 this.mActivities.put(instanceId, eventType);
-                return;
+                break;
             case 23:
             case 24:
                 this.mActivities.delete(instanceId);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     private void updateForegroundService(String className, long timeStamp, int eventType) {
         if (eventType != 20 && eventType != 19) {
-            return;
         }
         Integer lastEvent = this.mForegroundServices.get(className);
         if (lastEvent != null) {
@@ -367,12 +358,10 @@ public final class UsageStats implements Parcelable {
                     this.mLastTimeForegroundServiceUsed = timeStamp;
                 }
                 this.mForegroundServices.put(className, Integer.valueOf(eventType));
-                return;
+                break;
             case 20:
                 this.mForegroundServices.remove(className);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -464,9 +453,8 @@ public final class UsageStats implements Parcelable {
         dest.writeInt(this.mAppLaunchCount);
         dest.writeInt(this.mLastEvent);
         Bundle allCounts = new Bundle();
-        ArrayMap<String, ArrayMap<String, Integer>> arrayMap = this.mChooserCounts;
-        if (arrayMap != null) {
-            int chooserCountSize = arrayMap.size();
+        if (this.mChooserCounts != null) {
+            int chooserCountSize = this.mChooserCounts.size();
             for (int i = 0; i < chooserCountSize; i++) {
                 String action = this.mChooserCounts.keyAt(i);
                 ArrayMap<String, Integer> counts = this.mChooserCounts.valueAt(i);
@@ -501,77 +489,6 @@ public final class UsageStats implements Parcelable {
         return bundle;
     }
 
-    /* renamed from: android.app.usage.UsageStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UsageStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsageStats createFromParcel(Parcel in) {
-            UsageStats stats = new UsageStats();
-            stats.mPackageName = in.readString();
-            stats.mBeginTimeStamp = in.readLong();
-            stats.mEndTimeStamp = in.readLong();
-            stats.mLastTimeUsed = in.readLong();
-            stats.mLastTimeVisible = in.readLong();
-            stats.mLastTimeComponentUsed = in.readLong();
-            stats.mLastTimeForegroundServiceUsed = in.readLong();
-            stats.mTotalTimeInForeground = in.readLong();
-            stats.mTotalTimeVisible = in.readLong();
-            stats.mTotalTimeForegroundServiceUsed = in.readLong();
-            stats.mLaunchCount = in.readInt();
-            stats.mAppLaunchCount = in.readInt();
-            stats.mLastEvent = in.readInt();
-            Bundle allCounts = in.readBundle();
-            if (allCounts != null) {
-                stats.mChooserCounts = new ArrayMap<>();
-                for (String action : allCounts.keySet()) {
-                    if (!stats.mChooserCounts.containsKey(action)) {
-                        ArrayMap<String, Integer> newCounts = new ArrayMap<>();
-                        stats.mChooserCounts.put(action, newCounts);
-                    }
-                    Bundle currentCounts = allCounts.getBundle(action);
-                    if (currentCounts != null) {
-                        for (String key : currentCounts.keySet()) {
-                            int value = currentCounts.getInt(key);
-                            if (value > 0) {
-                                stats.mChooserCounts.get(action).put(key, Integer.valueOf(value));
-                            }
-                        }
-                    }
-                }
-            }
-            readSparseIntArray(in, stats.mActivities);
-            readBundleToEventMap(in.readBundle(), stats.mForegroundServices);
-            return stats;
-        }
-
-        private void readSparseIntArray(Parcel in, SparseIntArray arr) {
-            int size = in.readInt();
-            for (int i = 0; i < size; i++) {
-                int key = in.readInt();
-                int value = in.readInt();
-                arr.put(key, value);
-            }
-        }
-
-        private void readBundleToEventMap(Bundle bundle, ArrayMap<String, Integer> eventMap) {
-            if (bundle != null) {
-                for (String className : bundle.keySet()) {
-                    int event = bundle.getInt(className);
-                    eventMap.put(className, Integer.valueOf(event));
-                }
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsageStats[] newArray(int size) {
-            return new UsageStats[size];
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private final UsageStats mUsageStats = new UsageStats();
 

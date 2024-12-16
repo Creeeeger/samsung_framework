@@ -33,9 +33,6 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
     private boolean mDelaying = false;
     private final Rect mTmpRect = new Rect();
     private final View.OnAttachStateChangeListener mAnchorOnAttachStateChangeListener = new View.OnAttachStateChangeListener() { // from class: com.android.internal.view.inline.InlineTooltipUi.1
-        AnonymousClass1() {
-        }
-
         @Override // android.view.View.OnAttachStateChangeListener
         public void onViewAttachedToWindow(View v) {
         }
@@ -49,9 +46,6 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
     private final View.OnLayoutChangeListener mAnchoredOnLayoutChangeListener = new View.OnLayoutChangeListener() { // from class: com.android.internal.view.inline.InlineTooltipUi.2
         int mHeight;
 
-        AnonymousClass2() {
-        }
-
         @Override // android.view.View.OnLayoutChangeListener
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
             if (!InlineTooltipUi.this.mHasEverDetached && this.mHeight != bottom - top) {
@@ -61,42 +55,6 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
         }
     };
     private int mShowDelayConfigMs = DeviceConfig.getInt(Context.AUTOFILL_MANAGER_SERVICE, AutofillFeatureFlags.DEVICE_CONFIG_AUTOFILL_TOOLTIP_SHOW_UP_DELAY, 250);
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.view.inline.InlineTooltipUi$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements View.OnAttachStateChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-            InlineTooltipUi.this.mHasEverDetached = true;
-            InlineTooltipUi.this.dismiss();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.view.inline.InlineTooltipUi$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements View.OnLayoutChangeListener {
-        int mHeight;
-
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnLayoutChangeListener
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            if (!InlineTooltipUi.this.mHasEverDetached && this.mHeight != bottom - top) {
-                this.mHeight = bottom - top;
-                InlineTooltipUi.this.adjustPosition();
-            }
-        }
-    }
 
     public InlineTooltipUi(Context context) {
         this.mContentContainer = new LinearLayout(new ContextWrapper(context));
@@ -123,15 +81,13 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.PopupWindow
-    public boolean hasDecorView() {
+    protected boolean hasDecorView() {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.PopupWindow
-    public WindowManager.LayoutParams getDecorViewLayoutParams() {
+    protected WindowManager.LayoutParams getDecorViewLayoutParams() {
         return this.mWindowLayoutParams;
     }
 
@@ -165,13 +121,13 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
     }
 
     private void removeDelayShowTooltip(View anchor) {
-        DelayShowRunnable delayShowRunnable = this.mDelayShowTooltip;
-        if (delayShowRunnable != null) {
-            anchor.removeCallbacks(delayShowRunnable);
+        if (this.mDelayShowTooltip != null) {
+            anchor.removeCallbacks(this.mDelayShowTooltip);
             this.mDelayShowTooltip = null;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateInner(View anchor) {
         if (this.mHasEverDetached) {
             return;
@@ -192,9 +148,8 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
         return achoredHeight == 0 ? anchor.getHeight() : achoredHeight;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.PopupWindow
-    public boolean findDropDownPosition(View anchor, WindowManager.LayoutParams outParams, int xOffset, int yOffset, int width, int height, int gravity, boolean allowScroll) {
+    protected boolean findDropDownPosition(View anchor, WindowManager.LayoutParams outParams, int xOffset, int yOffset, int width, int height, int gravity, boolean allowScroll) {
         boolean isAbove = super.findDropDownPosition(anchor, outParams, xOffset, yOffset, width, height, gravity, allowScroll);
         Object parent = anchor.getParent();
         if (parent instanceof View) {
@@ -235,16 +190,14 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
         show(p);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.PopupWindow
-    public void attachToAnchor(View anchor, int xoff, int yoff, int gravity) {
+    protected void attachToAnchor(View anchor, int xoff, int yoff, int gravity) {
         super.attachToAnchor(anchor, xoff, yoff, gravity);
         anchor.addOnAttachStateChangeListener(this.mAnchorOnAttachStateChangeListener);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.widget.PopupWindow
-    public void detachFromAnchor() {
+    protected void detachFromAnchor() {
         View anchor = getAnchor();
         if (anchor != null) {
             anchor.removeOnAttachStateChangeListener(this.mAnchorOnAttachStateChangeListener);
@@ -268,6 +221,7 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
         super.dismiss();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void adjustPosition() {
         View anchor = getAnchor();
         if (anchor == null) {
@@ -397,20 +351,18 @@ public final class InlineTooltipUi extends PopupWindow implements AutoCloseable 
             }
             pw.print(prefix2);
             pw.print("screen coordinates: ");
-            ViewGroup viewGroup = this.mContentContainer;
-            if (viewGroup == null) {
+            if (this.mContentContainer == null) {
                 pw.println("N/A");
                 return;
             }
-            int[] coordinates = viewGroup.getLocationOnScreen();
+            int[] coordinates = this.mContentContainer.getLocationOnScreen();
             pw.print(coordinates[0]);
             pw.print("x");
             pw.println(coordinates[1]);
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class DelayShowRunnable implements Runnable {
+    private class DelayShowRunnable implements Runnable {
         WeakReference<View> mAnchor;
 
         DelayShowRunnable(View anchor) {

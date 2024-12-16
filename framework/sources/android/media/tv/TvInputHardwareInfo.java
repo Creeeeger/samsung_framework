@@ -8,15 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvInputHardwareInfo implements Parcelable {
     public static final int CABLE_CONNECTION_STATUS_CONNECTED = 1;
     public static final int CABLE_CONNECTION_STATUS_DISCONNECTED = 2;
     public static final int CABLE_CONNECTION_STATUS_UNKNOWN = 0;
     public static final Parcelable.Creator<TvInputHardwareInfo> CREATOR = new Parcelable.Creator<TvInputHardwareInfo>() { // from class: android.media.tv.TvInputHardwareInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputHardwareInfo createFromParcel(Parcel source) {
             try {
@@ -29,6 +27,7 @@ public final class TvInputHardwareInfo implements Parcelable {
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputHardwareInfo[] newArray(int size) {
             return new TvInputHardwareInfo[size];
@@ -53,36 +52,7 @@ public final class TvInputHardwareInfo implements Parcelable {
     private int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CableConnectionStatus {
-    }
-
-    /* synthetic */ TvInputHardwareInfo(TvInputHardwareInfoIA tvInputHardwareInfoIA) {
-        this();
-    }
-
-    /* renamed from: android.media.tv.TvInputHardwareInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TvInputHardwareInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInputHardwareInfo createFromParcel(Parcel source) {
-            try {
-                TvInputHardwareInfo info = new TvInputHardwareInfo();
-                info.readFromParcel(source);
-                return info;
-            } catch (Exception e) {
-                Log.e(TvInputHardwareInfo.TAG, "Exception creating TvInputHardwareInfo from parcel", e);
-                return null;
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInputHardwareInfo[] newArray(int size) {
-            return new TvInputHardwareInfo[size];
-        }
     }
 
     private TvInputHardwareInfo() {
@@ -165,7 +135,6 @@ public final class TvInputHardwareInfo implements Parcelable {
         return newBuilder;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private Integer mDeviceId = null;
         private Integer mType = null;
@@ -205,11 +174,10 @@ public final class TvInputHardwareInfo implements Parcelable {
         }
 
         public TvInputHardwareInfo build() {
-            Integer num;
-            if (this.mDeviceId == null || (num = this.mType) == null) {
+            if (this.mDeviceId == null || this.mType == null) {
                 throw new UnsupportedOperationException();
             }
-            if ((num.intValue() == 9 && this.mHdmiPortId == null) || (this.mType.intValue() != 9 && this.mHdmiPortId != null)) {
+            if ((this.mType.intValue() == 9 && this.mHdmiPortId == null) || (this.mType.intValue() != 9 && this.mHdmiPortId != null)) {
                 throw new UnsupportedOperationException();
             }
             TvInputHardwareInfo info = new TvInputHardwareInfo();
@@ -219,9 +187,8 @@ public final class TvInputHardwareInfo implements Parcelable {
             if (info.mAudioType != 0) {
                 info.mAudioAddress = this.mAudioAddress;
             }
-            Integer num2 = this.mHdmiPortId;
-            if (num2 != null) {
-                info.mHdmiPortId = num2.intValue();
+            if (this.mHdmiPortId != null) {
+                info.mHdmiPortId = this.mHdmiPortId.intValue();
             }
             info.mCableConnectionStatus = this.mCableConnectionStatus.intValue();
             return info;

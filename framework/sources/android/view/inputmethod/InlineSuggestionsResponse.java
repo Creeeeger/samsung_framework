@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class InlineSuggestionsResponse implements Parcelable {
     public static final Parcelable.Creator<InlineSuggestionsResponse> CREATOR = new Parcelable.Creator<InlineSuggestionsResponse>() { // from class: android.view.inputmethod.InlineSuggestionsResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsResponse[] newArray(int size) {
             return new InlineSuggestionsResponse[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlineSuggestionsResponse createFromParcel(Parcel in) {
             return new InlineSuggestionsResponse(in);
@@ -32,7 +31,7 @@ public final class InlineSuggestionsResponse implements Parcelable {
 
     public InlineSuggestionsResponse(List<InlineSuggestion> inlineSuggestions) {
         this.mInlineSuggestions = inlineSuggestions;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlineSuggestions);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlineSuggestions);
     }
 
     public List<InlineSuggestion> getInlineSuggestions() {
@@ -73,24 +72,7 @@ public final class InlineSuggestionsResponse implements Parcelable {
         ArrayList arrayList = new ArrayList();
         in.readParcelableList(arrayList, InlineSuggestion.class.getClassLoader(), InlineSuggestion.class);
         this.mInlineSuggestions = arrayList;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) arrayList);
-    }
-
-    /* renamed from: android.view.inputmethod.InlineSuggestionsResponse$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InlineSuggestionsResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsResponse[] newArray(int size) {
-            return new InlineSuggestionsResponse[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlineSuggestionsResponse createFromParcel(Parcel in) {
-            return new InlineSuggestionsResponse(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlineSuggestions);
     }
 
     @Deprecated

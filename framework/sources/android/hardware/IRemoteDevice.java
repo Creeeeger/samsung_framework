@@ -32,7 +32,6 @@ public interface IRemoteDevice extends IInterface {
 
     void submitRequest(CameraMetadataNative cameraMetadataNative, int[] iArr, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRemoteDevice {
         @Override // android.hardware.IRemoteDevice
         public String open(String targetId, int targetLensFacing) throws RemoteException {
@@ -80,7 +79,6 @@ public interface IRemoteDevice extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRemoteDevice {
         static final int TRANSACTION_clearRequest = 7;
         static final int TRANSACTION_close = 9;
@@ -147,73 +145,70 @@ public interface IRemoteDevice extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteDevice.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteDevice.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteDevice.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result = open(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    CameraMetadataNative _result2 = getCameraCharacteristic();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    OutputConfiguration _arg02 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result3 = createStream(_arg02);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteStream(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    CameraMetadataNative _result4 = createDefaultRequest();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 6:
+                    CameraMetadataNative _arg04 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    int[] _arg12 = data.createIntArray();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    submitRequest(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    clearRequest();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    IRemoteDeviceCallback _arg05 = IRemoteDeviceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    close();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result = open(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            CameraMetadataNative _result2 = getCameraCharacteristic();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            OutputConfiguration _arg02 = (OutputConfiguration) data.readTypedObject(OutputConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result3 = createStream(_arg02);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteStream(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            CameraMetadataNative _result4 = createDefaultRequest();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 6:
-                            CameraMetadataNative _arg04 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            int[] _arg12 = data.createIntArray();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            submitRequest(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            clearRequest();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            IRemoteDeviceCallback _arg05 = IRemoteDeviceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRemoteDevice {
+        private static class Proxy implements IRemoteDevice {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

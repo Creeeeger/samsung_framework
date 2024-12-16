@@ -275,7 +275,6 @@ public class AllShareKey {
     public static final String BUNDLE_STRING_WHA_REQUEST_PARTY_ID = "BUNDLE_STRING_WHA_REQUEST_PARTY_ID";
     public static final String BUNDLE_STRING_WHA_VOLUME = "BUNDLE_STRING_WHA_VOLUME";
 
-    /* loaded from: classes6.dex */
     public static class FileReceiverKey {
         public static final String BUNDLE_BOOLEAN_FOLDER = "BUNDLE_BOOLEAN_FOLDER";
         public static final String BUNDLE_ENUM_ERROR = "BUNDLE_ENUM_ERROR";

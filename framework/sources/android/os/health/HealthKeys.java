@@ -24,23 +24,19 @@ public class HealthKeys {
 
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes3.dex */
     public @interface Constant {
         int type();
     }
 
-    /* loaded from: classes3.dex */
     public static class Constants {
         private final String mDataType;
-        private final int[][] mKeys;
+        private final int[][] mKeys = new int[5][];
 
         public Constants(Class clazz) {
-            int[][] iArr = new int[5];
-            this.mKeys = iArr;
             this.mDataType = clazz.getSimpleName();
             Field[] fields = clazz.getDeclaredFields();
             int N = fields.length;
-            SortedIntArray[] keys = new SortedIntArray[iArr.length];
+            SortedIntArray[] keys = new SortedIntArray[this.mKeys.length];
             for (int i = 0; i < keys.length; i++) {
                 keys[i] = new SortedIntArray(N);
             }
@@ -84,9 +80,7 @@ public class HealthKeys {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class SortedIntArray {
+    private static class SortedIntArray {
         int[] mArray;
         int mCount;
 
@@ -102,14 +96,12 @@ public class HealthKeys {
         }
 
         int[] getArray() {
-            int i = this.mCount;
-            int[] iArr = this.mArray;
-            if (i == iArr.length) {
-                Arrays.sort(iArr);
+            if (this.mCount == this.mArray.length) {
+                Arrays.sort(this.mArray);
                 return this.mArray;
             }
-            int[] result = new int[i];
-            System.arraycopy(iArr, 0, result, 0, i);
+            int[] result = new int[this.mCount];
+            System.arraycopy(this.mArray, 0, result, 0, this.mCount);
             Arrays.sort(result);
             return result;
         }

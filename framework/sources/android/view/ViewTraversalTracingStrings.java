@@ -1,14 +1,14 @@
 package android.view;
 
 /* loaded from: classes4.dex */
-public class ViewTraversalTracingStrings {
+class ViewTraversalTracingStrings {
     public final String classSimpleName;
     public final String onLayout;
     public final String onMeasure;
     public final String onMeasureBeforeLayout;
     public final String requestLayoutStacktracePrefix;
 
-    public ViewTraversalTracingStrings(View v) {
+    ViewTraversalTracingStrings(View v) {
         String className = v.getClass().getSimpleName();
         this.classSimpleName = className;
         this.onMeasureBeforeLayout = getTraceName("onMeasureBeforeLayout", className, v);

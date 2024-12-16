@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class ConversationChannelWrapper implements Parcelable {
     public static final Parcelable.Creator<ConversationChannelWrapper> CREATOR = new Parcelable.Creator<ConversationChannelWrapper>() { // from class: android.service.notification.ConversationChannelWrapper.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationChannelWrapper createFromParcel(Parcel in) {
             return new ConversationChannelWrapper(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConversationChannelWrapper[] newArray(int size) {
             return new ConversationChannelWrapper[size];
@@ -54,23 +53,6 @@ public final class ConversationChannelWrapper implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.service.notification.ConversationChannelWrapper$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConversationChannelWrapper> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConversationChannelWrapper createFromParcel(Parcel in) {
-            return new ConversationChannelWrapper(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConversationChannelWrapper[] newArray(int size) {
-            return new ConversationChannelWrapper[size];
-        }
     }
 
     public NotificationChannel getNotificationChannel() {

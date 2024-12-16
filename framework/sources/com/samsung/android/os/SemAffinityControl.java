@@ -9,68 +9,55 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemAffinityControl {
     private static final int HMP_CORE_FRONT = 0;
     private static final int HMP_CORE_REAR = 1;
     private static final String TAG = "SemAffinityControl";
-    private int bigIndex;
     private int core_num;
-    private int littleIndex;
     public static final boolean DEBUG = !"user".equals(Build.TYPE);
     private static final String HMP_PROPERTY = SystemProperties.get("sys.perf.hmp", "4:4");
     private static String[] strHmpCore = null;
     private static int[] nLittle = null;
     private static int[] nBig = null;
+    private static int littleIndex = -1;
+    private static int bigIndex = -1;
 
     private native int native_set_affinity(int i, int[] iArr);
 
     public SemAffinityControl() {
-        this.littleIndex = -1;
-        this.bigIndex = -1;
         this.core_num = -1;
         logOnEng(TAG, "[Java Side], SemAffinityControl Class Initialized");
-        String str = HMP_PROPERTY;
-        if (str != null && str.length() > 0) {
-            String[] split = str.split(":");
-            strHmpCore = split;
-            if (split.length > 2 && GnssSignalType.CODE_TYPE_B.equals(split[2])) {
-                this.littleIndex = 1;
-                this.bigIndex = 0;
-            } else {
-                this.littleIndex = 0;
-                this.bigIndex = 1;
-            }
-            nLittle = new int[Integer.parseInt(strHmpCore[this.littleIndex])];
-            nBig = new int[Integer.parseInt(strHmpCore[this.bigIndex])];
-            this.core_num = (Integer.parseInt(strHmpCore[this.littleIndex]) + Integer.parseInt(strHmpCore[this.bigIndex])) - 1;
+        if (HMP_PROPERTY != null && HMP_PROPERTY.length() > 0) {
+            initializeHmpCore();
+            this.core_num = (Integer.parseInt(strHmpCore[littleIndex]) + Integer.parseInt(strHmpCore[bigIndex])) - 1;
             logOnEng(TAG, "[Java Side], SemAffinityControl Class Initialized core_num : " + this.core_num);
             int offsetLittle = 0;
             int offsetBig = nLittle.length;
-            if (this.littleIndex == 1) {
+            if (littleIndex == 1) {
                 offsetLittle = nBig.length;
                 offsetBig = 0;
             }
-            int i = 0;
-            while (true) {
-                int[] iArr = nLittle;
-                if (i >= iArr.length) {
-                    break;
-                }
-                iArr[i] = i + offsetLittle;
-                i++;
+            for (int i = 0; i < nLittle.length; i++) {
+                nLittle[i] = i + offsetLittle;
             }
-            int j = 0;
-            while (true) {
-                int[] iArr2 = nBig;
-                if (j < iArr2.length) {
-                    iArr2[j] = j + offsetBig;
-                    j++;
-                } else {
-                    return;
-                }
+            for (int j = 0; j < nBig.length; j++) {
+                nBig[j] = j + offsetBig;
             }
         }
+    }
+
+    private static void initializeHmpCore() {
+        strHmpCore = HMP_PROPERTY.split(":");
+        if (strHmpCore.length > 2 && GnssSignalType.CODE_TYPE_B.equals(strHmpCore[2])) {
+            littleIndex = 1;
+            bigIndex = 0;
+        } else {
+            littleIndex = 0;
+            bigIndex = 1;
+        }
+        nLittle = new int[Integer.parseInt(strHmpCore[littleIndex])];
+        nBig = new int[Integer.parseInt(strHmpCore[bigIndex])];
     }
 
     public int setAffinity(int pid, int... cpu_list) {
@@ -83,8 +70,7 @@ public class SemAffinityControl {
     }
 
     public int setAffinityForLittle(int pid) {
-        String str = HMP_PROPERTY;
-        if (str == null || str.length() <= 0) {
+        if (HMP_PROPERTY == null || HMP_PROPERTY.length() <= 0) {
             return 1;
         }
         if (native_set_affinity(pid, nLittle) == 1) {
@@ -96,8 +82,7 @@ public class SemAffinityControl {
     }
 
     public int setAffinityForBig(int pid) {
-        String str = HMP_PROPERTY;
-        if (str == null || str.length() <= 0) {
+        if (HMP_PROPERTY == null || HMP_PROPERTY.length() <= 0) {
             return 1;
         }
         if (native_set_affinity(pid, nBig) == 1) {
@@ -125,7 +110,7 @@ public class SemAffinityControl {
         }
         int numCore2 = this.core_num;
         if (numCore2 > 0) {
-            int[] input_cpu_list = new int[numCore2 + 1];
+            int[] input_cpu_list = new int[this.core_num + 1];
             for (int i = 0; i <= this.core_num; i++) {
                 input_cpu_list[i] = i;
             }

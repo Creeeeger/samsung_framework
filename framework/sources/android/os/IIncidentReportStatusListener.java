@@ -13,7 +13,6 @@ public interface IIncidentReportStatusListener extends IInterface {
 
     void onReportStarted() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncidentReportStatusListener {
         @Override // android.os.IIncidentReportStatusListener
         public void onReportStarted() throws RemoteException {
@@ -37,7 +36,6 @@ public interface IIncidentReportStatusListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncidentReportStatusListener {
         public static final String DESCRIPTOR = "android.os.IIncidentReportStatusListener";
         static final int TRANSACTION_onReportFailed = 4;
@@ -90,36 +88,32 @@ public interface IIncidentReportStatusListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onReportStarted();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onReportSectionStatus(_arg0, _arg1);
+                    return true;
+                case 3:
+                    onReportFinished();
+                    return true;
+                case 4:
+                    onReportFailed();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReportStarted();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onReportSectionStatus(_arg0, _arg1);
-                            return true;
-                        case 3:
-                            onReportFinished();
-                            return true;
-                        case 4:
-                            onReportFailed();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncidentReportStatusListener {
+        private static class Proxy implements IIncidentReportStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

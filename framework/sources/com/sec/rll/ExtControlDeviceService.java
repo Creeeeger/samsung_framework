@@ -128,11 +128,10 @@ public class ExtControlDeviceService extends IExtControlDeviceService.Stub {
         }
         String[] packages = mPackageManager.getPackagesForUid(callerUid);
         for (String pkg : packages) {
-            boolean z = DEBUG;
-            if (z) {
+            if (DEBUG) {
                 Log.d(TAG, "Looking up pkg info for:" + pkg);
             }
-            if (z && pkg.equals("com.rll.test")) {
+            if (DEBUG && pkg.equals("com.rll.test")) {
                 Log.d(TAG, "Lets allow our test app access RLL");
                 return true;
             }

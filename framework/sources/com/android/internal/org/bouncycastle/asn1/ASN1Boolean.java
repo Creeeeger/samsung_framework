@@ -54,22 +54,22 @@ public class ASN1Boolean extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return 3;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 1, this.value);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive other) {
+    boolean asn1Equals(ASN1Primitive other) {
         if (!(other instanceof ASN1Boolean)) {
             return false;
         }
@@ -83,7 +83,7 @@ public class ASN1Boolean extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return isTrue() ? TRUE : FALSE;
     }
 
@@ -91,7 +91,7 @@ public class ASN1Boolean extends ASN1Primitive {
         return isTrue() ? "TRUE" : "FALSE";
     }
 
-    public static ASN1Boolean fromOctetString(byte[] value) {
+    static ASN1Boolean fromOctetString(byte[] value) {
         if (value.length != 1) {
             throw new IllegalArgumentException("BOOLEAN value should have 1 byte in it");
         }

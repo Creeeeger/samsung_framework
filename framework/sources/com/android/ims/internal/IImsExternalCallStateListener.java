@@ -8,11 +8,10 @@ import android.os.RemoteException;
 import android.telephony.ims.ImsExternalCallState;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsExternalCallStateListener extends IInterface {
     void onImsExternalCallStateUpdate(List<ImsExternalCallState> list) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsExternalCallStateListener {
         @Override // com.android.ims.internal.IImsExternalCallStateListener
         public void onImsExternalCallStateUpdate(List<ImsExternalCallState> externalCallDialogs) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IImsExternalCallStateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsExternalCallStateListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsExternalCallStateListener";
         static final int TRANSACTION_onImsExternalCallStateUpdate = 1;
@@ -68,26 +66,22 @@ public interface IImsExternalCallStateListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<ImsExternalCallState> _arg0 = data.createTypedArrayList(ImsExternalCallState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onImsExternalCallStateUpdate(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<ImsExternalCallState> _arg0 = data.createTypedArrayList(ImsExternalCallState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onImsExternalCallStateUpdate(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsExternalCallStateListener {
+        private static class Proxy implements IImsExternalCallStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

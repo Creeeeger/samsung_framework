@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemKeyStoreService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.util.ISemKeyStoreService";
 
@@ -20,7 +20,6 @@ public interface ISemKeyStoreService extends IInterface {
 
     int isAliasExists(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemKeyStoreService {
         @Override // com.samsung.android.knox.util.ISemKeyStoreService
         public int isAliasExists(String aliasName) throws RemoteException {
@@ -52,7 +51,6 @@ public interface ISemKeyStoreService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemKeyStoreService {
         static final int TRANSACTION_getKeystoreStatus = 5;
         static final int TRANSACTION_grantAccessForAKS = 3;
@@ -107,57 +105,53 @@ public interface ISemKeyStoreService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemKeyStoreService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemKeyStoreService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemKeyStoreService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result = isAliasExists(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    SemCertByte _arg02 = (SemCertByte) data.readTypedObject(SemCertByte.CREATOR);
+                    String _arg1 = data.readString();
+                    char[] _arg2 = data.createCharArray();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = installCertificateInAndroidKeyStore(_arg02, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    grantAccessForAKS(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    SemCertAndroidKeyStore _arg04 = (SemCertAndroidKeyStore) data.readTypedObject(SemCertAndroidKeyStore.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result3 = installCACert(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 5:
+                    int _result4 = getKeystoreStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result = isAliasExists(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            SemCertByte _arg02 = (SemCertByte) data.readTypedObject(SemCertByte.CREATOR);
-                            String _arg1 = data.readString();
-                            char[] _arg2 = data.createCharArray();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = installCertificateInAndroidKeyStore(_arg02, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            grantAccessForAKS(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            SemCertAndroidKeyStore _arg04 = (SemCertAndroidKeyStore) data.readTypedObject(SemCertAndroidKeyStore.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result3 = installCACert(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 5:
-                            int _result4 = getKeystoreStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemKeyStoreService {
+        private static class Proxy implements ISemKeyStoreService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

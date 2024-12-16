@@ -14,7 +14,6 @@ public interface IPnoScanEvent extends IInterface {
 
     void OnPnoScanFailed() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPnoScanEvent {
         @Override // android.net.wifi.nl80211.IPnoScanEvent
         public void OnPnoNetworkFound() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IPnoScanEvent extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPnoScanEvent {
         static final int TRANSACTION_OnPnoNetworkFound = 1;
         static final int TRANSACTION_OnPnoScanFailed = 2;
@@ -76,27 +74,23 @@ public interface IPnoScanEvent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPnoScanEvent.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPnoScanEvent.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPnoScanEvent.DESCRIPTOR);
+                case 1:
+                    OnPnoNetworkFound();
+                    return true;
+                case 2:
+                    OnPnoScanFailed();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            OnPnoNetworkFound();
-                            return true;
-                        case 2:
-                            OnPnoScanFailed();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPnoScanEvent {
+        private static class Proxy implements IPnoScanEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

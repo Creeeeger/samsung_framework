@@ -20,9 +20,8 @@ public class Base64 {
         for (int i4 = 57; i4 >= 48; i4--) {
             base64Alphabet[i4] = (byte) ((i4 - 48) + 52);
         }
-        byte[] bArr = base64Alphabet;
-        bArr[43] = 62;
-        bArr[47] = 63;
+        base64Alphabet[43] = 62;
+        base64Alphabet[47] = 63;
     }
 
     public static byte[] decodeBase64(byte[] base64Data) {
@@ -44,19 +43,18 @@ public class Base64 {
             int dataIndex = i * 4;
             byte marker0 = base64Data2[dataIndex + 2];
             byte marker1 = base64Data2[dataIndex + 3];
-            byte[] bArr = base64Alphabet;
-            byte b1 = bArr[base64Data2[dataIndex]];
-            byte b2 = bArr[base64Data2[dataIndex + 1]];
+            byte b1 = base64Alphabet[base64Data2[dataIndex]];
+            byte b2 = base64Alphabet[base64Data2[dataIndex + 1]];
             if (marker0 != 61 && marker1 != 61) {
-                byte b3 = bArr[marker0];
-                byte b4 = bArr[marker1];
+                byte b3 = base64Alphabet[marker0];
+                byte b4 = base64Alphabet[marker1];
                 decodedData[encodedIndex] = (byte) ((b1 << 2) | (b2 >> 4));
                 decodedData[encodedIndex + 1] = (byte) (((b2 & 15) << 4) | ((b3 >> 2) & 15));
                 decodedData[encodedIndex + 2] = (byte) ((b3 << 6) | b4);
             } else if (marker0 == 61) {
                 decodedData[encodedIndex] = (byte) ((b1 << 2) | (b2 >> 4));
             } else if (marker1 == 61) {
-                byte b32 = bArr[marker0];
+                byte b32 = base64Alphabet[marker0];
                 decodedData[encodedIndex] = (byte) ((b1 << 2) | (b2 >> 4));
                 decodedData[encodedIndex + 1] = (byte) (((b2 & 15) << 4) | ((b32 >> 2) & 15));
             }

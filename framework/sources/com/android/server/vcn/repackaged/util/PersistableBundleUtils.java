@@ -55,34 +55,32 @@ public class PersistableBundleUtils {
         }
     };
 
-    /* loaded from: classes5.dex */
     public interface Deserializer<T> {
         T fromPersistableBundle(PersistableBundle persistableBundle);
     }
 
-    /* loaded from: classes5.dex */
     public interface Serializer<T> {
         PersistableBundle toPersistableBundle(T t);
     }
 
-    public static /* synthetic */ PersistableBundle lambda$static$0(Integer i) {
+    static /* synthetic */ PersistableBundle lambda$static$0(Integer i) {
         PersistableBundle result = new PersistableBundle();
         result.putInt(INTEGER_KEY, i.intValue());
         return result;
     }
 
-    public static /* synthetic */ Integer lambda$static$1(PersistableBundle bundle) {
+    static /* synthetic */ Integer lambda$static$1(PersistableBundle bundle) {
         Objects.requireNonNull(bundle, "PersistableBundle is null");
         return Integer.valueOf(bundle.getInt(INTEGER_KEY));
     }
 
-    public static /* synthetic */ PersistableBundle lambda$static$2(String i) {
+    static /* synthetic */ PersistableBundle lambda$static$2(String i) {
         PersistableBundle result = new PersistableBundle();
         result.putString(STRING_KEY, i);
         return result;
     }
 
-    public static /* synthetic */ String lambda$static$3(PersistableBundle bundle) {
+    static /* synthetic */ String lambda$static$3(PersistableBundle bundle) {
         Objects.requireNonNull(bundle, "PersistableBundle is null");
         return bundle.getString(STRING_KEY);
     }
@@ -173,7 +171,6 @@ public class PersistableBundleUtils {
         return PersistableBundle.readFromStream(inputStream);
     }
 
-    /* loaded from: classes5.dex */
     public static class LockingReadWriteHelper {
         private final ReadWriteLock mDiskLock = new ReentrantReadWriteLock();
         private final String mPath;
@@ -323,7 +320,6 @@ public class PersistableBundleUtils {
         return true;
     }
 
-    /* loaded from: classes5.dex */
     public static class PersistableBundleWrapper {
         private final PersistableBundle mBundle;
 

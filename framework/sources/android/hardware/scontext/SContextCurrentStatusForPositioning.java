@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextCurrentStatusForPositioning extends SContextEventContext {
     public static final Parcelable.Creator<SContextCurrentStatusForPositioning> CREATOR = new Parcelable.Creator<SContextCurrentStatusForPositioning>() { // from class: android.hardware.scontext.SContextCurrentStatusForPositioning.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextCurrentStatusForPositioning createFromParcel(Parcel in) {
             return new SContextCurrentStatusForPositioning(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextCurrentStatusForPositioning[] newArray(int size) {
             return new SContextCurrentStatusForPositioning[size];
@@ -23,7 +22,7 @@ public class SContextCurrentStatusForPositioning extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextCurrentStatusForPositioning() {
+    SContextCurrentStatusForPositioning() {
         this.mContext = new Bundle();
     }
 
@@ -42,22 +41,5 @@ public class SContextCurrentStatusForPositioning extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextCurrentStatusForPositioning$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextCurrentStatusForPositioning> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextCurrentStatusForPositioning createFromParcel(Parcel in) {
-            return new SContextCurrentStatusForPositioning(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextCurrentStatusForPositioning[] newArray(int size) {
-            return new SContextCurrentStatusForPositioning[size];
-        }
     }
 }

@@ -2,7 +2,7 @@ package com.samsung.android.transcode.util;
 
 import java.nio.ByteBuffer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class AudioSolution {
     public native boolean NAACEncoderDeInit(long j);
 

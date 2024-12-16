@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkScoreCache extends IInterface {
     void clearScores() throws RemoteException;
 
     void updateScores(List<ScoredNetwork> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkScoreCache {
         @Override // android.net.INetworkScoreCache
         public void updateScores(List<ScoredNetwork> networks) throws RemoteException {
@@ -29,7 +28,6 @@ public interface INetworkScoreCache extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkScoreCache {
         public static final String DESCRIPTOR = "android.net.INetworkScoreCache";
         static final int TRANSACTION_clearScores = 2;
@@ -76,29 +74,25 @@ public interface INetworkScoreCache extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<ScoredNetwork> _arg0 = data.createTypedArrayList(ScoredNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateScores(_arg0);
+                    return true;
+                case 2:
+                    clearScores();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<ScoredNetwork> _arg0 = data.createTypedArrayList(ScoredNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateScores(_arg0);
-                            return true;
-                        case 2:
-                            clearScores();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetworkScoreCache {
+        private static class Proxy implements INetworkScoreCache {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

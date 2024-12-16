@@ -4,7 +4,6 @@ package android.os;
 public final class PsProto {
     public static final long PROCESSES = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class Process {
         public static final long ADDR = 1138166333449L;
         public static final long CMD = 1138166333457L;

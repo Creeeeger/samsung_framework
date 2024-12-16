@@ -20,6 +20,7 @@ public final class ApkAssets {
     public static final int PROPERTY_DISABLE_INCREMENTAL_HARDENING = 16;
     public static final int PROPERTY_DYNAMIC = 2;
     public static final int PROPERTY_LOADER = 4;
+    public static final int PROPERTY_ONLY_OVERLAYABLES = 32;
     private static final int PROPERTY_OVERLAY = 8;
     public static final int PROPERTY_SYSTEM = 1;
     private final AssetsProvider mAssets;
@@ -28,12 +29,10 @@ public final class ApkAssets {
     private final StringBlock mStringBlock;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FormatType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PropertyFlags {
     }
 
@@ -105,9 +104,8 @@ public final class ApkAssets {
     private ApkAssets(int format, String path, int flags, AssetsProvider assets) throws IOException {
         Objects.requireNonNull(path, "path");
         this.mFlags = flags;
-        long nativeLoad = nativeLoad(format, path, flags, assets);
-        this.mNativePtr = nativeLoad;
-        this.mStringBlock = new StringBlock(nativeGetStringBlock(nativeLoad), true);
+        this.mNativePtr = nativeLoad(format, path, flags, assets);
+        this.mStringBlock = new StringBlock(nativeGetStringBlock(this.mNativePtr), true);
         this.mAssets = assets;
     }
 
@@ -115,9 +113,8 @@ public final class ApkAssets {
         Objects.requireNonNull(fd, "fd");
         Objects.requireNonNull(friendlyName, "friendlyName");
         this.mFlags = flags;
-        long nativeLoadFd = nativeLoadFd(format, fd, friendlyName, flags, assets);
-        this.mNativePtr = nativeLoadFd;
-        this.mStringBlock = new StringBlock(nativeGetStringBlock(nativeLoadFd), true);
+        this.mNativePtr = nativeLoadFd(format, fd, friendlyName, flags, assets);
+        this.mStringBlock = new StringBlock(nativeGetStringBlock(this.mNativePtr), true);
         this.mAssets = assets;
     }
 
@@ -125,9 +122,8 @@ public final class ApkAssets {
         Objects.requireNonNull(fd, "fd");
         Objects.requireNonNull(friendlyName, "friendlyName");
         this.mFlags = flags;
-        long nativeLoadFdOffsets = nativeLoadFdOffsets(format, fd, friendlyName, offset, length, flags, assets);
-        this.mNativePtr = nativeLoadFdOffsets;
-        this.mStringBlock = new StringBlock(nativeGetStringBlock(nativeLoadFdOffsets), true);
+        this.mNativePtr = nativeLoadFdOffsets(format, fd, friendlyName, offset, length, flags, assets);
+        this.mStringBlock = new StringBlock(nativeGetStringBlock(this.mNativePtr), true);
         this.mAssets = assets;
     }
 
@@ -154,7 +150,7 @@ public final class ApkAssets {
         return nativeGetDebugName;
     }
 
-    public CharSequence getStringFromPool(int idx) {
+    CharSequence getStringFromPool(int idx) {
         CharSequence sequence;
         if (this.mStringBlock == null) {
             return null;
@@ -226,9 +222,8 @@ public final class ApkAssets {
     public void close() {
         synchronized (this) {
             if (this.mNativePtr != 0) {
-                StringBlock stringBlock = this.mStringBlock;
-                if (stringBlock != null) {
-                    stringBlock.close();
+                if (this.mStringBlock != null) {
+                    this.mStringBlock.close();
                 }
                 nativeDestroy(this.mNativePtr);
                 this.mNativePtr = 0L;
@@ -236,7 +231,7 @@ public final class ApkAssets {
         }
     }
 
-    public void dump(PrintWriter pw, String prefix) {
+    void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "debugName=" + getDebugName());
         pw.println(prefix + "assetPath=" + getAssetPath());

@@ -8,17 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SipDialogState implements Parcelable {
     public static final Parcelable.Creator<SipDialogState> CREATOR = new Parcelable.Creator<SipDialogState>() { // from class: android.telephony.ims.SipDialogState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDialogState createFromParcel(Parcel in) {
             return new SipDialogState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDialogState[] newArray(int size) {
             return new SipDialogState[size];
@@ -30,19 +29,9 @@ public final class SipDialogState implements Parcelable {
     private final int mState;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SipDialogStateCode {
     }
 
-    /* synthetic */ SipDialogState(Parcel parcel, SipDialogStateIA sipDialogStateIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ SipDialogState(Builder builder, SipDialogStateIA sipDialogStateIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mState;
 
@@ -66,23 +55,6 @@ public final class SipDialogState implements Parcelable {
 
     public int getState() {
         return this.mState;
-    }
-
-    /* renamed from: android.telephony.ims.SipDialogState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SipDialogState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDialogState createFromParcel(Parcel in) {
-            return new SipDialogState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDialogState[] newArray(int size) {
-            return new SipDialogState[size];
-        }
     }
 
     @Override // android.os.Parcelable

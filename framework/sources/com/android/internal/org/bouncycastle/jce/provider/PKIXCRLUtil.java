@@ -11,13 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public abstract class PKIXCRLUtil {
+abstract class PKIXCRLUtil {
     PKIXCRLUtil() {
     }
 
-    public static Set findCRLs(PKIXCRLStoreSelector crlselect, Date validityDate, List certStores, List pkixCrlStores) throws AnnotatedException {
+    static Set findCRLs(PKIXCRLStoreSelector crlselect, Date validityDate, List certStores, List pkixCrlStores) throws AnnotatedException {
         X509Certificate cert;
         HashSet initialSet = new HashSet();
         try {

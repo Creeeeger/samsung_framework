@@ -10,14 +10,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnWifiUnderlyingNetworkTemplate extends VcnUnderlyingNetworkTemplate {
     private static final String SSIDS_KEY = "mSsids";
     private final Set<String> mSsids;
-
-    /* synthetic */ VcnWifiUnderlyingNetworkTemplate(int i, int i2, int i3, int i4, int i5, Set set, VcnWifiUnderlyingNetworkTemplateIA vcnWifiUnderlyingNetworkTemplateIA) {
-        this(i, i2, i3, i4, i5, set);
-    }
 
     private VcnWifiUnderlyingNetworkTemplate(int meteredMatchCriteria, int minEntryUpstreamBandwidthKbps, int minExitUpstreamBandwidthKbps, int minEntryDownstreamBandwidthKbps, int minExitDownstreamBandwidthKbps, Set<String> ssids) {
         super(1, meteredMatchCriteria, minEntryUpstreamBandwidthKbps, minExitUpstreamBandwidthKbps, minEntryDownstreamBandwidthKbps, minExitDownstreamBandwidthKbps);
@@ -25,13 +21,13 @@ public final class VcnWifiUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         validate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.net.vcn.VcnUnderlyingNetworkTemplate
-    public void validate() {
+    protected void validate() {
         super.validate();
         validateSsids(this.mSsids);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validateSsids(Set<String> ssids) {
         Objects.requireNonNull(ssids, "ssids is null");
         for (String ssid : ssids) {
@@ -90,7 +86,6 @@ public final class VcnWifiUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         return Collections.singletonMap(12, 1);
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mMeteredMatchCriteria = 0;
         private final Set<String> mSsids = new ArraySet();

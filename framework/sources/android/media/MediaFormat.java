@@ -1,6 +1,8 @@
 package android.media;
 
+import android.graphics.Rect;
 import android.media.MediaFormat;
+import android.text.TextUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.nio.ByteBuffer;
@@ -25,6 +27,9 @@ public final class MediaFormat {
     public static final int COLOR_TRANSFER_LINEAR = 1;
     public static final int COLOR_TRANSFER_SDR_VIDEO = 3;
     public static final int COLOR_TRANSFER_ST2084 = 6;
+    public static final int FLAG_SECURITY_MODEL_MEMORY_SAFE = 2;
+    public static final int FLAG_SECURITY_MODEL_SANDBOXED = 1;
+    public static final int FLAG_SECURITY_MODEL_TRUSTED_CONTENT_ONLY = 4;
     public static final String KEY_AAC_DRC_ALBUM_MODE = "aac-drc-album-mode";
     public static final String KEY_AAC_DRC_ATTENUATION_FACTOR = "aac-drc-cut-level";
     public static final String KEY_AAC_DRC_BOOST_FACTOR = "aac-drc-boost-level";
@@ -41,6 +46,8 @@ public final class MediaFormat {
     public static final String KEY_AUDIO_SESSION_ID = "audio-session-id";
     public static final String KEY_BITRATE_MODE = "bitrate-mode";
     public static final String KEY_BIT_RATE = "bitrate";
+    public static final String KEY_BUFFER_BATCH_MAX_OUTPUT_SIZE = "buffer-batch-max-output-size";
+    public static final String KEY_BUFFER_BATCH_THRESHOLD_OUTPUT_SIZE = "buffer-batch-threshold-output-size";
     public static final String KEY_CAPTION_SERVICE_NUMBER = "caption-service-number";
     public static final String KEY_CAPTURE_RATE = "capture-rate";
     public static final String KEY_CA_PRIVATE_DATA = "ca-private-data";
@@ -73,6 +80,7 @@ public final class MediaFormat {
     public static final String KEY_HDR10_PLUS_INFO = "hdr10-plus-info";
     public static final String KEY_HDR_STATIC_INFO = "hdr-static-info";
     public static final String KEY_HEIGHT = "height";
+    public static final String KEY_IMPORTANCE = "importance";
     public static final String KEY_INTRA_REFRESH_PERIOD = "intra-refresh-period";
     public static final String KEY_IS_ADTS = "is-adts";
     public static final String KEY_IS_AUTOSELECT = "is-autoselect";
@@ -110,6 +118,7 @@ public final class MediaFormat {
     public static final String KEY_REPEAT_PREVIOUS_FRAME_AFTER = "repeat-previous-frame-after";
     public static final String KEY_ROTATION = "rotation-degrees";
     public static final String KEY_SAMPLE_RATE = "sample-rate";
+    public static final String KEY_SECURITY_MODEL = "security-model";
     public static final String KEY_SLICE_HEIGHT = "slice-height";
     public static final String KEY_SLOW_MOTION_MARKERS = "slow-motion-markers";
     public static final String KEY_STRIDE = "stride";
@@ -198,36 +207,61 @@ public final class MediaFormat {
     private Map<String, Object> mMap;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ColorRange {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ColorStandard {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ColorTransfer {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface PictureType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
+    public @interface SecurityModelFlag {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Type {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VideoEncodingStatisticsLevel {
     }
 
-    public MediaFormat(Map<String, Object> map) {
+    public static final class QpOffsetRect {
+        private Rect mContour;
+        private int mQpOffset;
+
+        public QpOffsetRect(Rect contour, int qpOffset) {
+            this.mContour = contour;
+            this.mQpOffset = qpOffset;
+        }
+
+        public void set(Rect contour, int qpOffset) {
+            this.mContour = contour;
+            this.mQpOffset = qpOffset;
+        }
+
+        public String flattenToString() {
+            return TextUtils.formatSimple("%d,%d-%d,%d=%d;", Integer.valueOf(this.mContour.top), Integer.valueOf(this.mContour.left), Integer.valueOf(this.mContour.bottom), Integer.valueOf(this.mContour.right), Integer.valueOf(this.mQpOffset));
+        }
+
+        public static String flattenToString(List<QpOffsetRect> qpOffsetRects) {
+            StringBuilder builder = new StringBuilder();
+            for (QpOffsetRect qpOffsetRect : qpOffsetRects) {
+                builder.append(qpOffsetRect.flattenToString());
+            }
+            return builder.toString();
+        }
+    }
+
+    MediaFormat(Map<String, Object> map) {
         this.mMap = map;
     }
 
@@ -235,7 +269,7 @@ public final class MediaFormat {
         this.mMap = new HashMap();
     }
 
-    public Map<String, Object> getMap() {
+    Map<String, Object> getMap() {
         return this.mMap;
     }
 
@@ -368,11 +402,11 @@ public final class MediaFormat {
         this.mMap.remove(KEY_FEATURE_ + name);
     }
 
-    /* loaded from: classes2.dex */
-    public abstract class FilteredMappedKeySet extends AbstractSet<String> {
+    /* JADX INFO: Access modifiers changed from: private */
+    abstract class FilteredMappedKeySet extends AbstractSet<String> {
         private Set<String> mKeys;
 
-        public abstract boolean keepKey(String str);
+        protected abstract boolean keepKey(String str);
 
         protected abstract String mapItemToKey(String str);
 
@@ -404,8 +438,8 @@ public final class MediaFormat {
             return false;
         }
 
-        /* loaded from: classes2.dex */
-        public class KeyIterator implements Iterator<String> {
+        /* JADX INFO: Access modifiers changed from: private */
+        class KeyIterator implements Iterator<String> {
             Iterator<String> mIterator;
             String mLast;
 
@@ -420,6 +454,7 @@ public final class MediaFormat {
                 }).collect(Collectors.toList())).iterator();
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ boolean lambda$new$0(String k) {
                 return FilteredMappedKeySet.this.keepKey(k);
             }
@@ -431,9 +466,8 @@ public final class MediaFormat {
 
             @Override // java.util.Iterator
             public String next() {
-                String next = this.mIterator.next();
-                this.mLast = next;
-                return FilteredMappedKeySet.this.mapKeyToItem(next);
+                this.mLast = this.mIterator.next();
+                return FilteredMappedKeySet.this.mapKeyToItem(this.mLast);
             }
 
             @Override // java.util.Iterator
@@ -459,7 +493,6 @@ public final class MediaFormat {
         }
     }
 
-    /* loaded from: classes2.dex */
     private class UnprefixedKeySet extends FilteredMappedKeySet {
         private String mPrefix;
 
@@ -469,7 +502,7 @@ public final class MediaFormat {
         }
 
         @Override // android.media.MediaFormat.FilteredMappedKeySet
-        public boolean keepKey(String key) {
+        protected boolean keepKey(String key) {
             return !key.startsWith(this.mPrefix);
         }
 
@@ -484,7 +517,6 @@ public final class MediaFormat {
         }
     }
 
-    /* loaded from: classes2.dex */
     private class PrefixedKeySetWithPrefixRemoved extends FilteredMappedKeySet {
         private String mPrefix;
         private int mPrefixLength;
@@ -496,7 +528,7 @@ public final class MediaFormat {
         }
 
         @Override // android.media.MediaFormat.FilteredMappedKeySet
-        public boolean keepKey(String key) {
+        protected boolean keepKey(String key) {
             return key.startsWith(this.mPrefix);
         }
 
@@ -530,7 +562,7 @@ public final class MediaFormat {
 
     public static final MediaFormat createAudioFormat(String mime, int sampleRate, int channelCount) {
         MediaFormat format = new MediaFormat();
-        format.setString(KEY_MIME, mime);
+        format.setString("mime", mime);
         format.setInteger(KEY_SAMPLE_RATE, sampleRate);
         format.setInteger(KEY_CHANNEL_COUNT, channelCount);
         return format;
@@ -538,14 +570,14 @@ public final class MediaFormat {
 
     public static final MediaFormat createSubtitleFormat(String mime, String language) {
         MediaFormat format = new MediaFormat();
-        format.setString(KEY_MIME, mime);
+        format.setString("mime", mime);
         format.setString("language", language);
         return format;
     }
 
     public static final MediaFormat createVideoFormat(String mime, int width, int height) {
         MediaFormat format = new MediaFormat();
-        format.setString(KEY_MIME, mime);
+        format.setString("mime", mime);
         format.setInteger("width", width);
         format.setInteger("height", height);
         return format;

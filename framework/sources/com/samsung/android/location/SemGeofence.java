@@ -4,17 +4,16 @@ import android.hardware.scontext.SContextConstants;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemGeofence implements Parcelable {
     public static final Parcelable.Creator<SemGeofence> CREATOR = new Parcelable.Creator<SemGeofence>() { // from class: com.samsung.android.location.SemGeofence.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemGeofence createFromParcel(Parcel in) {
             return new SemGeofence(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemGeofence[] newArray(int size) {
             return new SemGeofence[size];
@@ -27,10 +26,6 @@ public class SemGeofence implements Parcelable {
     private int mRadius;
     private String mRequestId;
     private int mType;
-
-    /* synthetic */ SemGeofence(Parcel parcel, SemGeofenceIA semGeofenceIA) {
-        this(parcel);
-    }
 
     public SemGeofence(int type, double latitude, double longitude, int radius) {
         this.mBssidList = null;
@@ -71,23 +66,6 @@ public class SemGeofence implements Parcelable {
 
     public void setRequestId(String requestId) {
         this.mRequestId = requestId;
-    }
-
-    /* renamed from: com.samsung.android.location.SemGeofence$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemGeofence> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemGeofence createFromParcel(Parcel in) {
-            return new SemGeofence(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemGeofence[] newArray(int size) {
-            return new SemGeofence[size];
-        }
     }
 
     @Override // android.os.Parcelable

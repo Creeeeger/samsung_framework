@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class AudioMixerAttributes implements Parcelable {
     public static final Parcelable.Creator<AudioMixerAttributes> CREATOR = new Parcelable.Creator<AudioMixerAttributes>() { // from class: android.media.AudioMixerAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMixerAttributes createFromParcel(Parcel p) {
             return new AudioMixerAttributes(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMixerAttributes[] newArray(int size) {
             return new AudioMixerAttributes[size];
@@ -28,12 +27,7 @@ public final class AudioMixerAttributes implements Parcelable {
     private final int mMixerBehavior;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MixerBehavior {
-    }
-
-    /* synthetic */ AudioMixerAttributes(Parcel parcel, AudioMixerAttributesIA audioMixerAttributesIA) {
-        this(parcel);
     }
 
     AudioMixerAttributes(AudioFormat format, int mixerBehavior) {
@@ -49,7 +43,6 @@ public final class AudioMixerAttributes implements Parcelable {
         return this.mMixerBehavior;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private final AudioFormat mFormat;
         private int mMixerBehavior = 0;
@@ -123,22 +116,5 @@ public final class AudioMixerAttributes implements Parcelable {
     private AudioMixerAttributes(Parcel in) {
         this.mFormat = (AudioFormat) in.readParcelable(AudioFormat.class.getClassLoader(), AudioFormat.class);
         this.mMixerBehavior = in.readInt();
-    }
-
-    /* renamed from: android.media.AudioMixerAttributes$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioMixerAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMixerAttributes createFromParcel(Parcel p) {
-            return new AudioMixerAttributes(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMixerAttributes[] newArray(int size) {
-            return new AudioMixerAttributes[size];
-        }
     }
 }

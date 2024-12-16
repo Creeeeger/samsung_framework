@@ -5,44 +5,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes4.dex */
-public class FieldData implements Cloneable {
+/* loaded from: classes3.dex */
+class FieldData implements Cloneable {
     private Extension<?, ?> cachedExtension;
     private List<UnknownFieldData> unknownFieldData;
     private Object value;
 
     /* JADX WARN: Multi-variable type inference failed */
-    public <T> FieldData(Extension<?, T> extension, T newValue) {
+    <T> FieldData(Extension<?, T> extension, T newValue) {
         this.cachedExtension = extension;
         this.value = newValue;
     }
 
-    public FieldData() {
+    FieldData() {
         this.unknownFieldData = new ArrayList();
     }
 
-    public void addUnknownField(UnknownFieldData unknownField) {
+    void addUnknownField(UnknownFieldData unknownField) {
         this.unknownFieldData.add(unknownField);
     }
 
     UnknownFieldData getUnknownField(int index) {
-        List<UnknownFieldData> list = this.unknownFieldData;
-        if (list != null && index < list.size()) {
+        if (this.unknownFieldData != null && index < this.unknownFieldData.size()) {
             return this.unknownFieldData.get(index);
         }
         return null;
     }
 
     int getUnknownFieldSize() {
-        List<UnknownFieldData> list = this.unknownFieldData;
-        if (list == null) {
+        if (this.unknownFieldData == null) {
             return 0;
         }
-        return list.size();
+        return this.unknownFieldData.size();
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public <T> T getValue(Extension<?, T> extension) {
+    <T> T getValue(Extension<?, T> extension) {
         if (this.value != null) {
             if (this.cachedExtension != extension) {
                 throw new IllegalStateException("Tried to getExtension with a differernt Extension.");
@@ -56,17 +54,16 @@ public class FieldData implements Cloneable {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public <T> void setValue(Extension<?, T> extension, T newValue) {
+    <T> void setValue(Extension<?, T> extension, T newValue) {
         this.cachedExtension = extension;
         this.value = newValue;
         this.unknownFieldData = null;
     }
 
-    public int computeSerializedSize() {
+    int computeSerializedSize() {
         int size = 0;
-        Object obj = this.value;
-        if (obj != null) {
-            int size2 = this.cachedExtension.computeSerializedSize(obj);
+        if (this.value != null) {
+            int size2 = this.cachedExtension.computeSerializedSize(this.value);
             return size2;
         }
         for (UnknownFieldData unknownField : this.unknownFieldData) {
@@ -75,10 +72,9 @@ public class FieldData implements Cloneable {
         return size;
     }
 
-    public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-        Object obj = this.value;
-        if (obj != null) {
-            this.cachedExtension.writeTo(obj, output);
+    void writeTo(CodedOutputByteBufferNano output) throws IOException {
+        if (this.value != null) {
+            this.cachedExtension.writeTo(this.value, output);
             return;
         }
         for (UnknownFieldData unknownField : this.unknownFieldData) {
@@ -87,7 +83,6 @@ public class FieldData implements Cloneable {
     }
 
     public boolean equals(Object o) {
-        List<UnknownFieldData> list;
         if (o == this) {
             return true;
         }
@@ -96,37 +91,34 @@ public class FieldData implements Cloneable {
         }
         FieldData other = (FieldData) o;
         if (this.value != null && other.value != null) {
-            Extension<?, ?> extension = this.cachedExtension;
-            if (extension != other.cachedExtension) {
+            if (this.cachedExtension != other.cachedExtension) {
                 return false;
             }
-            if (!extension.clazz.isArray()) {
+            if (!this.cachedExtension.clazz.isArray()) {
                 return this.value.equals(other.value);
             }
-            Object obj = this.value;
-            if (obj instanceof byte[]) {
-                return Arrays.equals((byte[]) obj, (byte[]) other.value);
+            if (this.value instanceof byte[]) {
+                return Arrays.equals((byte[]) this.value, (byte[]) other.value);
             }
-            if (obj instanceof int[]) {
-                return Arrays.equals((int[]) obj, (int[]) other.value);
+            if (this.value instanceof int[]) {
+                return Arrays.equals((int[]) this.value, (int[]) other.value);
             }
-            if (obj instanceof long[]) {
-                return Arrays.equals((long[]) obj, (long[]) other.value);
+            if (this.value instanceof long[]) {
+                return Arrays.equals((long[]) this.value, (long[]) other.value);
             }
-            if (obj instanceof float[]) {
-                return Arrays.equals((float[]) obj, (float[]) other.value);
+            if (this.value instanceof float[]) {
+                return Arrays.equals((float[]) this.value, (float[]) other.value);
             }
-            if (obj instanceof double[]) {
-                return Arrays.equals((double[]) obj, (double[]) other.value);
+            if (this.value instanceof double[]) {
+                return Arrays.equals((double[]) this.value, (double[]) other.value);
             }
-            if (obj instanceof boolean[]) {
-                return Arrays.equals((boolean[]) obj, (boolean[]) other.value);
+            if (this.value instanceof boolean[]) {
+                return Arrays.equals((boolean[]) this.value, (boolean[]) other.value);
             }
-            return Arrays.deepEquals((Object[]) obj, (Object[]) other.value);
+            return Arrays.deepEquals((Object[]) this.value, (Object[]) other.value);
         }
-        List<UnknownFieldData> list2 = this.unknownFieldData;
-        if (list2 != null && (list = other.unknownFieldData) != null) {
-            return list2.equals(list);
+        if (this.unknownFieldData != null && other.unknownFieldData != null) {
+            return this.unknownFieldData.equals(other.unknownFieldData);
         }
         try {
             return Arrays.equals(toByteArray(), other.toByteArray());
@@ -151,46 +143,44 @@ public class FieldData implements Cloneable {
         return result;
     }
 
-    /* renamed from: clone */
-    public final FieldData m7007clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public final FieldData m7420clone() {
         FieldData clone = new FieldData();
         try {
             clone.cachedExtension = this.cachedExtension;
-            List<UnknownFieldData> list = this.unknownFieldData;
-            if (list == null) {
+            if (this.unknownFieldData == null) {
                 clone.unknownFieldData = null;
             } else {
-                clone.unknownFieldData.addAll(list);
+                clone.unknownFieldData.addAll(this.unknownFieldData);
             }
-            Object obj = this.value;
-            if (obj != null) {
-                if (obj instanceof MessageNano) {
-                    clone.value = ((MessageNano) obj).mo7005clone();
-                } else if (obj instanceof byte[]) {
-                    clone.value = ((byte[]) obj).clone();
-                } else if (obj instanceof byte[][]) {
-                    byte[][] valueArray = (byte[][]) obj;
-                    byte[][] cloneArray = new byte[valueArray.length];
+            if (this.value != null) {
+                if (this.value instanceof MessageNano) {
+                    clone.value = ((MessageNano) this.value).mo7418clone();
+                } else if (this.value instanceof byte[]) {
+                    clone.value = ((byte[]) this.value).clone();
+                } else if (this.value instanceof byte[][]) {
+                    byte[][] valueArray = (byte[][]) this.value;
+                    byte[][] cloneArray = new byte[valueArray.length][];
                     clone.value = cloneArray;
                     for (int i = 0; i < valueArray.length; i++) {
                         cloneArray[i] = (byte[]) valueArray[i].clone();
                     }
-                } else if (obj instanceof boolean[]) {
-                    clone.value = ((boolean[]) obj).clone();
-                } else if (obj instanceof int[]) {
-                    clone.value = ((int[]) obj).clone();
-                } else if (obj instanceof long[]) {
-                    clone.value = ((long[]) obj).clone();
-                } else if (obj instanceof float[]) {
-                    clone.value = ((float[]) obj).clone();
-                } else if (obj instanceof double[]) {
-                    clone.value = ((double[]) obj).clone();
-                } else if (obj instanceof MessageNano[]) {
-                    MessageNano[] valueArray2 = (MessageNano[]) obj;
+                } else if (this.value instanceof boolean[]) {
+                    clone.value = ((boolean[]) this.value).clone();
+                } else if (this.value instanceof int[]) {
+                    clone.value = ((int[]) this.value).clone();
+                } else if (this.value instanceof long[]) {
+                    clone.value = ((long[]) this.value).clone();
+                } else if (this.value instanceof float[]) {
+                    clone.value = ((float[]) this.value).clone();
+                } else if (this.value instanceof double[]) {
+                    clone.value = ((double[]) this.value).clone();
+                } else if (this.value instanceof MessageNano[]) {
+                    MessageNano[] valueArray2 = (MessageNano[]) this.value;
                     MessageNano[] cloneArray2 = new MessageNano[valueArray2.length];
                     clone.value = cloneArray2;
                     for (int i2 = 0; i2 < valueArray2.length; i2++) {
-                        cloneArray2[i2] = valueArray2[i2].mo7005clone();
+                        cloneArray2[i2] = valueArray2[i2].mo7418clone();
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.android.internal.inputmethod;
 
 import android.app.ActivityThread;
 import android.os.RemoteException;
+import android.tracing.Flags;
 import android.util.Log;
 import android.util.proto.ProtoOutputStream;
 import android.view.inputmethod.InputMethodManager;
@@ -9,7 +10,7 @@ import android.view.inputmethod.InputMethodManagerGlobal;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class ImeTracing {
     public static final int IME_TRACING_FROM_CLIENT = 0;
     public static final int IME_TRACING_FROM_IMMS = 2;
@@ -23,7 +24,6 @@ public abstract class ImeTracing {
     protected final Object mDumpInProgressLock = new Object();
 
     @FunctionalInterface
-    /* loaded from: classes4.dex */
     public interface ServiceDumper {
         void dumpToProto(ProtoOutputStream protoOutputStream, byte[] bArr);
     }
@@ -36,13 +36,15 @@ public abstract class ImeTracing {
 
     public abstract void triggerClientDump(String str, InputMethodManager inputMethodManager, byte[] bArr);
 
-    public abstract void triggerManagerServiceDump(String str);
+    public abstract void triggerManagerServiceDump(String str, ServiceDumper serviceDumper);
 
     public abstract void triggerServiceDump(String str, ServiceDumper serviceDumper, byte[] bArr);
 
     public static ImeTracing getInstance() {
         if (sInstance == null) {
-            if (isSystemProcess()) {
+            if (Flags.perfettoIme()) {
+                sInstance = new ImeTracingPerfettoImpl();
+            } else if (isSystemProcess()) {
                 sInstance = new ImeTracingServerImpl();
             } else {
                 sInstance = new ImeTracingClientImpl();
@@ -51,8 +53,8 @@ public abstract class ImeTracing {
         return sInstance;
     }
 
-    public void sendToService(byte[] protoDump, int source, String where) {
-        InputMethodManagerGlobal.startProtoDump(protoDump, source, where, new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda0
+    protected void sendToService(byte[] protoDump, int source, String where) {
+        InputMethodManagerGlobal.startProtoDump(protoDump, source, where, new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda2
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Log.e(ImeTracing.TAG, "Exception while sending ime-related dump to server", (RemoteException) obj);
@@ -61,7 +63,7 @@ public abstract class ImeTracing {
     }
 
     public final void startImeTrace() {
-        InputMethodManagerGlobal.startImeTrace(new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda1
+        InputMethodManagerGlobal.startImeTrace(new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Log.e(ImeTracing.TAG, "Could not start ime trace.", (RemoteException) obj);
@@ -70,7 +72,7 @@ public abstract class ImeTracing {
     }
 
     public final void stopImeTrace() {
-        InputMethodManagerGlobal.stopImeTrace(new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda2
+        InputMethodManagerGlobal.stopImeTrace(new Consumer() { // from class: com.android.internal.inputmethod.ImeTracing$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 Log.e(ImeTracing.TAG, "Could not stop ime trace.", (RemoteException) obj);
@@ -97,7 +99,7 @@ public abstract class ImeTracing {
         return ActivityThread.isSystem();
     }
 
-    public void logAndPrintln(PrintWriter pw, String msg) {
+    protected void logAndPrintln(PrintWriter pw, String msg) {
         Log.i(TAG, msg);
         if (pw != null) {
             pw.println(msg);

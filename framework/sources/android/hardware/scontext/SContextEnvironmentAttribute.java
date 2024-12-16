@@ -10,7 +10,7 @@ public class SContextEnvironmentAttribute extends SContextAttribute {
     private int mSensorType;
     private int mUpdateInterval;
 
-    public SContextEnvironmentAttribute() {
+    SContextEnvironmentAttribute() {
         this.mSensorType = 1;
         this.mUpdateInterval = 60;
         setAttribute();

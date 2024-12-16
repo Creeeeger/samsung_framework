@@ -18,7 +18,6 @@ public interface IMicrophoneHotwordDetectionVoiceInteractionCallback extends IIn
 
     void onRejected(HotwordRejectedResult hotwordRejectedResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
         @Override // android.service.voice.IMicrophoneHotwordDetectionVoiceInteractionCallback
         public void onDetected(HotwordDetectedResult hotwordDetectedResult, AudioFormat audioFormat, ParcelFileDescriptor audioStream) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IMicrophoneHotwordDetectionVoiceInteractionCallback extends IIn
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
         static final int TRANSACTION_onDetected = 1;
         static final int TRANSACTION_onHotwordDetectionServiceFailure = 2;
@@ -87,38 +85,34 @@ public interface IMicrophoneHotwordDetectionVoiceInteractionCallback extends IIn
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMicrophoneHotwordDetectionVoiceInteractionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMicrophoneHotwordDetectionVoiceInteractionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMicrophoneHotwordDetectionVoiceInteractionCallback.DESCRIPTOR);
+                case 1:
+                    HotwordDetectedResult _arg0 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
+                    AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDetected(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    HotwordDetectionServiceFailure _arg02 = (HotwordDetectionServiceFailure) data.readTypedObject(HotwordDetectionServiceFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHotwordDetectionServiceFailure(_arg02);
+                    return true;
+                case 3:
+                    HotwordRejectedResult _arg03 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRejected(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            HotwordDetectedResult _arg0 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
-                            AudioFormat _arg1 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDetected(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            HotwordDetectionServiceFailure _arg02 = (HotwordDetectionServiceFailure) data.readTypedObject(HotwordDetectionServiceFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHotwordDetectionServiceFailure(_arg02);
-                            return true;
-                        case 3:
-                            HotwordRejectedResult _arg03 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRejected(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
+        private static class Proxy implements IMicrophoneHotwordDetectionVoiceInteractionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

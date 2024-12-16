@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class DemuxFilterMediaEvent implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterMediaEvent> CREATOR = new Parcelable.Creator<DemuxFilterMediaEvent>() { // from class: android.hardware.tv.tuner.DemuxFilterMediaEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMediaEvent createFromParcel(Parcel _aidl_source) {
             DemuxFilterMediaEvent _aidl_out = new DemuxFilterMediaEvent();
@@ -18,6 +16,7 @@ public class DemuxFilterMediaEvent implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterMediaEvent[] newArray(int _aidl_size) {
             return new DemuxFilterMediaEvent[_aidl_size];
@@ -37,25 +36,6 @@ public class DemuxFilterMediaEvent implements Parcelable {
     public long avDataId = 0;
     public int mpuSequenceNumber = 0;
     public boolean isPesPrivateData = false;
-
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterMediaEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterMediaEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterMediaEvent createFromParcel(Parcel _aidl_source) {
-            DemuxFilterMediaEvent _aidl_out = new DemuxFilterMediaEvent();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterMediaEvent[] newArray(int _aidl_size) {
-            return new DemuxFilterMediaEvent[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class HealthStatsParceler implements Parcelable {
     public static final Parcelable.Creator<HealthStatsParceler> CREATOR = new Parcelable.Creator<HealthStatsParceler>() { // from class: android.os.health.HealthStatsParceler.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HealthStatsParceler createFromParcel(Parcel in) {
             return new HealthStatsParceler(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HealthStatsParceler[] newArray(int size) {
             return new HealthStatsParceler[size];
@@ -21,23 +20,6 @@ public class HealthStatsParceler implements Parcelable {
     };
     private HealthStats mHealthStats;
     private HealthStatsWriter mWriter;
-
-    /* renamed from: android.os.health.HealthStatsParceler$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HealthStatsParceler> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HealthStatsParceler createFromParcel(Parcel in) {
-            return new HealthStatsParceler(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HealthStatsParceler[] newArray(int size) {
-            return new HealthStatsParceler[size];
-        }
-    }
 
     public HealthStatsParceler(HealthStatsWriter writer) {
         this.mWriter = writer;
@@ -54,9 +36,8 @@ public class HealthStatsParceler implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
-        HealthStatsWriter healthStatsWriter = this.mWriter;
-        if (healthStatsWriter != null) {
-            healthStatsWriter.flattenToParcel(out);
+        if (this.mWriter != null) {
+            this.mWriter.flattenToParcel(out);
             return;
         }
         throw new RuntimeException("Can not re-parcel HealthStatsParceler that was constructed from a Parcel");

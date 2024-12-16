@@ -8,4 +8,7 @@ public abstract class WritableIdentityCredential {
     public abstract Collection<X509Certificate> getCredentialKeyCertificateChain(byte[] bArr);
 
     public abstract byte[] personalize(PersonalizationData personalizationData);
+
+    protected WritableIdentityCredential() {
+    }
 }

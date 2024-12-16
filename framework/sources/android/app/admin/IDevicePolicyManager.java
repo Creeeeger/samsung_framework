@@ -3,6 +3,7 @@ package android.app.admin;
 import android.accounts.Account;
 import android.app.IApplicationThread;
 import android.app.IServiceConnection;
+import android.app.admin.IAuditLogEventsCallback;
 import android.app.admin.StartInstallingUpdateCallback;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.telephony.data.ApnSetting;
 import android.text.TextUtils;
 import com.android.internal.infra.AndroidFuture;
 import java.util.List;
+import java.util.Map;
 
 /* loaded from: classes.dex */
 public interface IDevicePolicyManager extends IInterface {
@@ -38,8 +40,6 @@ public interface IDevicePolicyManager extends IInterface {
     void acknowledgeNewUserDisclaimer(int i) throws RemoteException;
 
     void addCrossProfileIntentFilter(ComponentName componentName, String str, IntentFilter intentFilter, int i) throws RemoteException;
-
-    void addCrossProfileIntentFilterMDM(ComponentName componentName, IntentFilter intentFilter, int i, int i2) throws RemoteException;
 
     boolean addCrossProfileWidgetProvider(ComponentName componentName, String str, String str2) throws RemoteException;
 
@@ -68,8 +68,6 @@ public interface IDevicePolicyManager extends IInterface {
     void clearApplicationUserData(ComponentName componentName, String str, IPackageDataObserver iPackageDataObserver) throws RemoteException;
 
     void clearCrossProfileIntentFilters(ComponentName componentName, String str) throws RemoteException;
-
-    void clearCrossProfileIntentFiltersMDM(ComponentName componentName, int i) throws RemoteException;
 
     void clearDeviceOwner(String str) throws RemoteException;
 
@@ -105,6 +103,8 @@ public interface IDevicePolicyManager extends IInterface {
 
     long forceSecurityLogs() throws RemoteException;
 
+    void forceSetMaxPolicyStorageLimit(String str, int i) throws RemoteException;
+
     void forceUpdateUserSetupComplete(int i) throws RemoteException;
 
     boolean generateKeyPair(ComponentName componentName, String str, String str2, ParcelableKeyGenParameterSpec parcelableKeyGenParameterSpec, int i, KeymasterCertificateChain keymasterCertificateChain) throws RemoteException;
@@ -114,8 +114,6 @@ public interface IDevicePolicyManager extends IInterface {
     String[] getAccountTypesWithManagementDisabledAsUser(int i, String str, boolean z) throws RemoteException;
 
     List<ComponentName> getActiveAdmins(int i) throws RemoteException;
-
-    String getActualDeviceOwnerMDM() throws RemoteException;
 
     List<String> getAffiliationIds(ComponentName componentName) throws RemoteException;
 
@@ -131,7 +129,7 @@ public interface IDevicePolicyManager extends IInterface {
 
     int[] getApplicationExemptions(String str) throws RemoteException;
 
-    Bundle getApplicationRestrictions(ComponentName componentName, String str, String str2) throws RemoteException;
+    Bundle getApplicationRestrictions(ComponentName componentName, String str, String str2, boolean z) throws RemoteException;
 
     Bundle getApplicationRestrictionsMDM(ComponentName componentName, String str, int i) throws RemoteException;
 
@@ -149,11 +147,11 @@ public interface IDevicePolicyManager extends IInterface {
 
     boolean getBluetoothContactSharingDisabledForUser(int i) throws RemoteException;
 
-    boolean getBluetoothContactSharingEnabledForKnox(int i) throws RemoteException;
-
     boolean getCameraDisabled(ComponentName componentName, String str, int i, boolean z) throws RemoteException;
 
     String getCertInstallerPackage(ComponentName componentName) throws RemoteException;
+
+    int getContentProtectionPolicy(ComponentName componentName, String str) throws RemoteException;
 
     PackagePolicy getCredentialManagerPolicy(int i) throws RemoteException;
 
@@ -181,9 +179,13 @@ public interface IDevicePolicyManager extends IInterface {
 
     List<String> getDelegatePackages(ComponentName componentName, String str) throws RemoteException;
 
+    Map getDelegatedPackages(int i) throws RemoteException;
+
     List<String> getDelegatedScopes(ComponentName componentName, String str) throws RemoteException;
 
     ComponentName getDeviceOwnerComponent(boolean z) throws RemoteException;
+
+    ComponentName getDeviceOwnerComponentOnUser(int i) throws RemoteException;
 
     CharSequence getDeviceOwnerLockScreenInfo() throws RemoteException;
 
@@ -207,6 +209,8 @@ public interface IDevicePolicyManager extends IInterface {
 
     Bundle getEnforcingAdminAndUserDetails(int i, String str) throws RemoteException;
 
+    List<EnforcingAdmin> getEnforcingAdminsForRestriction(int i, String str) throws RemoteException;
+
     String getEnrollmentSpecificId(String str) throws RemoteException;
 
     FactoryResetProtectionPolicy getFactoryResetProtectionPolicy(ComponentName componentName) throws RemoteException;
@@ -220,6 +224,8 @@ public interface IDevicePolicyManager extends IInterface {
     int getGlobalPrivateDnsMode(ComponentName componentName) throws RemoteException;
 
     ComponentName getGlobalProxyAdmin(int i) throws RemoteException;
+
+    int getHeadlessDeviceOwnerMode(String str) throws RemoteException;
 
     List<String> getKeepUninstalledPackages(ComponentName componentName, String str) throws RemoteException;
 
@@ -250,6 +256,8 @@ public interface IDevicePolicyManager extends IInterface {
     long getManagedProfileMaximumTimeOff(ComponentName componentName) throws RemoteException;
 
     ManagedSubscriptionsPolicy getManagedSubscriptionsPolicy() throws RemoteException;
+
+    int getMaxPolicyStorageLimit(String str) throws RemoteException;
 
     int getMaximumFailedPasswordsForWipe(ComponentName componentName, int i, boolean z) throws RemoteException;
 
@@ -303,7 +311,7 @@ public interface IDevicePolicyManager extends IInterface {
 
     int getPasswordQuality(ComponentName componentName, int i, boolean z) throws RemoteException;
 
-    SystemUpdateInfo getPendingSystemUpdate(ComponentName componentName) throws RemoteException;
+    SystemUpdateInfo getPendingSystemUpdate(ComponentName componentName, String str) throws RemoteException;
 
     int getPermissionGrantState(ComponentName componentName, String str, String str2, String str3) throws RemoteException;
 
@@ -322,6 +330,8 @@ public interface IDevicePolicyManager extends IInterface {
     int getPersonalAppsSuspendedReasons(ComponentName componentName) throws RemoteException;
 
     List<UserHandle> getPolicyManagedProfiles(UserHandle userHandle) throws RemoteException;
+
+    int getPolicySizeForAdmin(String str, EnforcingAdmin enforcingAdmin) throws RemoteException;
 
     List<PreferentialNetworkServiceConfig> getPreferentialNetworkServiceConfigs() throws RemoteException;
 
@@ -358,6 +368,8 @@ public interface IDevicePolicyManager extends IInterface {
     int getStorageEncryptionStatus(String str, int i) throws RemoteException;
 
     ParcelableResource getString(String str) throws RemoteException;
+
+    int[] getSubscriptionIds(String str) throws RemoteException;
 
     SystemUpdatePolicy getSystemUpdatePolicy() throws RemoteException;
 
@@ -417,6 +429,8 @@ public interface IDevicePolicyManager extends IInterface {
 
     boolean isApplicationHidden(ComponentName componentName, String str, String str2, boolean z) throws RemoteException;
 
+    boolean isAuditLogEnabled(String str) throws RemoteException;
+
     boolean isBackupServiceEnabled(ComponentName componentName) throws RemoteException;
 
     boolean isCaCertApproved(String str, int i) throws RemoteException;
@@ -432,6 +446,8 @@ public interface IDevicePolicyManager extends IInterface {
     boolean isCurrentInputMethodSetByOwner() throws RemoteException;
 
     boolean isDeviceFinanced(String str) throws RemoteException;
+
+    boolean isDevicePotentiallyStolen(String str) throws RemoteException;
 
     boolean isDeviceProvisioned() throws RemoteException;
 
@@ -503,8 +519,6 @@ public interface IDevicePolicyManager extends IInterface {
 
     boolean isUsbDataSignalingEnabled(String str) throws RemoteException;
 
-    boolean isUsbDataSignalingEnabledForUser(int i) throws RemoteException;
-
     boolean isUsingUnifiedPassword(ComponentName componentName) throws RemoteException;
 
     List<UserHandle> listForegroundAffiliatedUsers() throws RemoteException;
@@ -527,8 +541,6 @@ public interface IDevicePolicyManager extends IInterface {
 
     void reboot(ComponentName componentName) throws RemoteException;
 
-    boolean rebootMDM(String str) throws RemoteException;
-
     void removeActiveAdmin(ComponentName componentName, int i) throws RemoteException;
 
     boolean removeCrossProfileWidgetProvider(ComponentName componentName, String str, String str2) throws RemoteException;
@@ -542,6 +554,8 @@ public interface IDevicePolicyManager extends IInterface {
     void reportFailedBiometricAttempt(int i) throws RemoteException;
 
     void reportFailedPasswordAttempt(int i, boolean z) throws RemoteException;
+
+    void reportFailedPasswordAttemptWithFailureCount(int i, int i2, boolean z) throws RemoteException;
 
     void reportKeyguardDismissed(int i) throws RemoteException;
 
@@ -617,8 +631,6 @@ public interface IDevicePolicyManager extends IInterface {
 
     void semSetAllowWifi(ComponentName componentName, boolean z) throws RemoteException;
 
-    void semSetCameraDisabled(ComponentName componentName, boolean z) throws RemoteException;
-
     void semSetChangeNotificationEnabled(ComponentName componentName, boolean z) throws RemoteException;
 
     void semSetKeyguardDisabledFeatures(ComponentName componentName, int i) throws RemoteException;
@@ -629,15 +641,9 @@ public interface IDevicePolicyManager extends IInterface {
 
     void semSetPasswordMinimumLength(ComponentName componentName, int i) throws RemoteException;
 
-    void semSetPasswordMinimumLetters(ComponentName componentName, int i) throws RemoteException;
-
     void semSetPasswordMinimumLowerCase(ComponentName componentName, int i) throws RemoteException;
 
     void semSetPasswordMinimumNonLetter(ComponentName componentName, int i) throws RemoteException;
-
-    void semSetPasswordMinimumNumeric(ComponentName componentName, int i) throws RemoteException;
-
-    void semSetPasswordMinimumSymbols(ComponentName componentName, int i) throws RemoteException;
 
     void semSetPasswordMinimumUpperCase(ComponentName componentName, int i) throws RemoteException;
 
@@ -661,11 +667,15 @@ public interface IDevicePolicyManager extends IInterface {
 
     boolean setApplicationHidden(ComponentName componentName, String str, String str2, boolean z, boolean z2) throws RemoteException;
 
-    void setApplicationRestrictions(ComponentName componentName, String str, String str2, Bundle bundle) throws RemoteException;
+    void setApplicationRestrictions(ComponentName componentName, String str, String str2, Bundle bundle, boolean z) throws RemoteException;
 
     void setApplicationRestrictionsMDM(ComponentName componentName, String str, Bundle bundle, int i) throws RemoteException;
 
     boolean setApplicationRestrictionsManagingPackage(ComponentName componentName, String str) throws RemoteException;
+
+    void setAuditLogEnabled(String str, boolean z) throws RemoteException;
+
+    void setAuditLogEventsCallback(String str, IAuditLogEventsCallback iAuditLogEventsCallback) throws RemoteException;
 
     void setAutoTimeEnabled(ComponentName componentName, String str, boolean z) throws RemoteException;
 
@@ -677,8 +687,6 @@ public interface IDevicePolicyManager extends IInterface {
 
     void setBluetoothContactSharingDisabled(ComponentName componentName, boolean z) throws RemoteException;
 
-    void setBluetoothContactSharingEnabledForKnox(int i, boolean z) throws RemoteException;
-
     void setCameraDisabled(ComponentName componentName, String str, boolean z, boolean z2) throws RemoteException;
 
     void setCertInstallerPackage(ComponentName componentName, String str) throws RemoteException;
@@ -686,6 +694,8 @@ public interface IDevicePolicyManager extends IInterface {
     void setCommonCriteriaModeEnabled(ComponentName componentName, String str, boolean z) throws RemoteException;
 
     void setConfiguredNetworksLockdownState(ComponentName componentName, String str, boolean z) throws RemoteException;
+
+    void setContentProtectionPolicy(ComponentName componentName, String str, int i) throws RemoteException;
 
     void setCredentialManagerPolicy(PackagePolicy packagePolicy) throws RemoteException;
 
@@ -763,6 +773,8 @@ public interface IDevicePolicyManager extends IInterface {
 
     void setMasterVolumeMuted(ComponentName componentName, boolean z) throws RemoteException;
 
+    void setMaxPolicyStorageLimit(String str, int i) throws RemoteException;
+
     void setMaximumFailedPasswordsForWipe(ComponentName componentName, String str, int i, boolean z) throws RemoteException;
 
     void setMaximumFailedPasswordsForWipeMDM(ComponentName componentName, int i, int i2) throws RemoteException;
@@ -794,8 +806,6 @@ public interface IDevicePolicyManager extends IInterface {
     void setOrganizationName(ComponentName componentName, String str, CharSequence charSequence) throws RemoteException;
 
     void setOverrideApnsEnabled(ComponentName componentName, boolean z) throws RemoteException;
-
-    void setOverrideKeepProfilesRunning(boolean z) throws RemoteException;
 
     String[] setPackagesSuspended(ComponentName componentName, String str, String[] strArr, boolean z) throws RemoteException;
 
@@ -891,7 +901,7 @@ public interface IDevicePolicyManager extends IInterface {
 
     void setStrings(List<DevicePolicyStringResource> list) throws RemoteException;
 
-    void setSystemSetting(ComponentName componentName, String str, String str2) throws RemoteException;
+    void setSystemSetting(ComponentName componentName, String str, String str2, boolean z) throws RemoteException;
 
     void setSystemUpdatePolicy(ComponentName componentName, String str, SystemUpdatePolicy systemUpdatePolicy) throws RemoteException;
 
@@ -945,7 +955,6 @@ public interface IDevicePolicyManager extends IInterface {
 
     void wipeDataWithReason(String str, int i, String str2, boolean z, boolean z2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IDevicePolicyManager {
         @Override // android.app.admin.IDevicePolicyManager
         public void setPasswordQuality(ComponentName who, int quality, boolean parent) throws RemoteException {
@@ -1313,6 +1322,11 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
+        public ComponentName getDeviceOwnerComponentOnUser(int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
         public boolean hasDeviceOwner() throws RemoteException {
             return false;
         }
@@ -1529,11 +1543,11 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public void setApplicationRestrictions(ComponentName who, String callerPackage, String packageName, Bundle settings) throws RemoteException {
+        public void setApplicationRestrictions(ComponentName who, String callerPackage, String packageName, Bundle settings, boolean parent) throws RemoteException {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public Bundle getApplicationRestrictions(ComponentName who, String callerPackage, String packageName) throws RemoteException {
+        public Bundle getApplicationRestrictions(ComponentName who, String callerPackage, String packageName, boolean parent) throws RemoteException {
             return null;
         }
 
@@ -1649,6 +1663,11 @@ public interface IDevicePolicyManager extends IInterface {
 
         @Override // android.app.admin.IDevicePolicyManager
         public Bundle getEnforcingAdminAndUserDetails(int userId, String restriction) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public List<EnforcingAdmin> getEnforcingAdminsForRestriction(int userId, String restriction) throws RemoteException {
             return null;
         }
 
@@ -1790,7 +1809,7 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public void setSystemSetting(ComponentName who, String setting, String value) throws RemoteException {
+        public void setSystemSetting(ComponentName who, String setting, String value, boolean parent) throws RemoteException {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -2032,7 +2051,7 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public SystemUpdateInfo getPendingSystemUpdate(ComponentName admin) throws RemoteException {
+        public SystemUpdateInfo getPendingSystemUpdate(ComponentName admin, String callerPackage) throws RemoteException {
             return null;
         }
 
@@ -2211,6 +2230,19 @@ public interface IDevicePolicyManager extends IInterface {
         @Override // android.app.admin.IDevicePolicyManager
         public long forceSecurityLogs() throws RemoteException {
             return 0L;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public void setAuditLogEnabled(String callerPackage, boolean enabled) throws RemoteException {
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public boolean isAuditLogEnabled(String callerPackage) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public void setAuditLogEventsCallback(String callerPackage, IAuditLogEventsCallback callback) throws RemoteException {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -2413,16 +2445,6 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public String getActualDeviceOwnerMDM() throws RemoteException {
-            return null;
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public boolean rebootMDM(String reason) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
         public void setPasswordQualityMDM(ComponentName admin, int quality, int userHandle) throws RemoteException {
         }
 
@@ -2484,14 +2506,6 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public void addCrossProfileIntentFilterMDM(ComponentName admin, IntentFilter filter, int flags, int userHandle) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public void clearCrossProfileIntentFiltersMDM(ComponentName admin, int userHandle) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
         public boolean resetPasswordWithTokenMDM(ComponentName admin, String password, byte[] token, int flags, int userHandle) throws RemoteException {
             return false;
         }
@@ -2523,6 +2537,15 @@ public interface IDevicePolicyManager extends IInterface {
         @Override // android.app.admin.IDevicePolicyManager
         public boolean hasDelegatedPermission(String callerPackage, int callerUid, String scope) throws RemoteException {
             return false;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public Map getDelegatedPackages(int userId) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public void reportFailedPasswordAttemptWithFailureCount(int userHandle, int count, boolean parent) throws RemoteException {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -2730,11 +2753,6 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public boolean isUsbDataSignalingEnabledForUser(int userId) throws RemoteException {
-            return false;
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
         public boolean canUsbDataSignalingBeDisabled() throws RemoteException {
             return false;
         }
@@ -2755,6 +2773,11 @@ public interface IDevicePolicyManager extends IInterface {
         @Override // android.app.admin.IDevicePolicyManager
         public WifiSsidPolicy getWifiSsidPolicy(String callerPackageName) throws RemoteException {
             return null;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public boolean isDevicePotentiallyStolen(String callerPackageName) throws RemoteException {
+            return false;
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -2828,18 +2851,6 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public void semSetPasswordMinimumLetters(ComponentName admin, int length) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public void semSetPasswordMinimumNumeric(ComponentName admin, int length) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public void semSetPasswordMinimumSymbols(ComponentName admin, int length) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
         public void semSetPasswordMinimumNonLetter(ComponentName admin, int length) throws RemoteException {
         }
 
@@ -2867,10 +2878,6 @@ public interface IDevicePolicyManager extends IInterface {
 
         @Override // android.app.admin.IDevicePolicyManager
         public void semSetKeyguardDisabledFeatures(ComponentName who, int which) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public void semSetCameraDisabled(ComponentName who, boolean disabled) throws RemoteException {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -3000,10 +3007,6 @@ public interface IDevicePolicyManager extends IInterface {
         }
 
         @Override // android.app.admin.IDevicePolicyManager
-        public void setOverrideKeepProfilesRunning(boolean enabled) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
         public boolean triggerDevicePolicyEngineMigration(boolean forceMigration) throws RemoteException {
             return false;
         }
@@ -3016,15 +3019,6 @@ public interface IDevicePolicyManager extends IInterface {
         @Override // android.app.admin.IDevicePolicyManager
         public String getFinancedDeviceKioskRoleHolder(String callerPackageName) throws RemoteException {
             return null;
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public void setBluetoothContactSharingEnabledForKnox(int userId, boolean value) throws RemoteException {
-        }
-
-        @Override // android.app.admin.IDevicePolicyManager
-        public boolean getBluetoothContactSharingEnabledForKnox(int userId) throws RemoteException {
-            return false;
         }
 
         @Override // android.app.admin.IDevicePolicyManager
@@ -3044,137 +3038,176 @@ public interface IDevicePolicyManager extends IInterface {
         public void calculateHasIncompatibleAccounts() throws RemoteException {
         }
 
+        @Override // android.app.admin.IDevicePolicyManager
+        public void setContentProtectionPolicy(ComponentName who, String callerPackageName, int policy) throws RemoteException {
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public int getContentProtectionPolicy(ComponentName who, String callerPackageName) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public int[] getSubscriptionIds(String callerPackageName) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public void setMaxPolicyStorageLimit(String callerPackageName, int storageLimit) throws RemoteException {
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public void forceSetMaxPolicyStorageLimit(String callerPackageName, int storageLimit) throws RemoteException {
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public int getMaxPolicyStorageLimit(String callerPackageName) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public int getPolicySizeForAdmin(String callerPackageName, EnforcingAdmin admin) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.app.admin.IDevicePolicyManager
+        public int getHeadlessDeviceOwnerMode(String callerPackageName) throws RemoteException {
+            return 0;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDevicePolicyManager {
         public static final String DESCRIPTOR = "android.app.admin.IDevicePolicyManager";
-        static final int TRANSACTION_acknowledgeDeviceCompliant = 370;
-        static final int TRANSACTION_acknowledgeNewUserDisclaimer = 164;
-        static final int TRANSACTION_addCrossProfileIntentFilter = 138;
-        static final int TRANSACTION_addCrossProfileIntentFilterMDM = 333;
-        static final int TRANSACTION_addCrossProfileWidgetProvider = 214;
-        static final int TRANSACTION_addOverrideApn = 309;
-        static final int TRANSACTION_addPersistentPreferredActivity = 123;
-        static final int TRANSACTION_approveCaCert = 104;
-        static final int TRANSACTION_bindDeviceAdminServiceAsUser = 285;
-        static final int TRANSACTION_calculateHasIncompatibleAccounts = 456;
-        static final int TRANSACTION_canAdminGrantSensorsPermissions = 383;
-        static final int TRANSACTION_canProfileOwnerResetPasswordWhenLocked = 372;
-        static final int TRANSACTION_canUsbDataSignalingBeDisabled = 387;
-        static final int TRANSACTION_checkDeviceIdentifierAccess = 95;
-        static final int TRANSACTION_checkProvisioningPrecondition = 241;
-        static final int TRANSACTION_choosePrivateKeyAlias = 111;
-        static final int TRANSACTION_clearApplicationUserData = 297;
-        static final int TRANSACTION_clearCrossProfileIntentFilters = 139;
-        static final int TRANSACTION_clearCrossProfileIntentFiltersMDM = 334;
-        static final int TRANSACTION_clearDeviceOwner = 83;
-        static final int TRANSACTION_clearOrganizationIdForUser = 255;
-        static final int TRANSACTION_clearPackagePersistentPreferredActivities = 124;
-        static final int TRANSACTION_clearProfileOwner = 92;
-        static final int TRANSACTION_clearResetPasswordToken = 292;
-        static final int TRANSACTION_clearResetPasswordTokenMDM = 337;
-        static final int TRANSACTION_clearSystemUpdatePolicyFreezePeriodRecord = 229;
-        static final int TRANSACTION_createAdminSupportIntent = 151;
-        static final int TRANSACTION_createAndManageUser = 155;
-        static final int TRANSACTION_createAndProvisionManagedProfile = 377;
-        static final int TRANSACTION_enableSystemApp = 166;
-        static final int TRANSACTION_enableSystemAppWithIntent = 167;
-        static final int TRANSACTION_enforceCanManageCaCerts = 103;
-        static final int TRANSACTION_finalizeWorkProfileProvisioning = 379;
-        static final int TRANSACTION_forceNetworkLogs = 272;
+        static final int TRANSACTION_acknowledgeDeviceCompliant = 373;
+        static final int TRANSACTION_acknowledgeNewUserDisclaimer = 166;
+        static final int TRANSACTION_addCrossProfileIntentFilter = 139;
+        static final int TRANSACTION_addCrossProfileWidgetProvider = 216;
+        static final int TRANSACTION_addOverrideApn = 314;
+        static final int TRANSACTION_addPersistentPreferredActivity = 124;
+        static final int TRANSACTION_approveCaCert = 105;
+        static final int TRANSACTION_bindDeviceAdminServiceAsUser = 290;
+        static final int TRANSACTION_calculateHasIncompatibleAccounts = 452;
+        static final int TRANSACTION_canAdminGrantSensorsPermissions = 386;
+        static final int TRANSACTION_canProfileOwnerResetPasswordWhenLocked = 375;
+        static final int TRANSACTION_canUsbDataSignalingBeDisabled = 389;
+        static final int TRANSACTION_checkDeviceIdentifierAccess = 96;
+        static final int TRANSACTION_checkProvisioningPrecondition = 243;
+        static final int TRANSACTION_choosePrivateKeyAlias = 112;
+        static final int TRANSACTION_clearApplicationUserData = 302;
+        static final int TRANSACTION_clearCrossProfileIntentFilters = 140;
+        static final int TRANSACTION_clearDeviceOwner = 84;
+        static final int TRANSACTION_clearOrganizationIdForUser = 257;
+        static final int TRANSACTION_clearPackagePersistentPreferredActivities = 125;
+        static final int TRANSACTION_clearProfileOwner = 93;
+        static final int TRANSACTION_clearResetPasswordToken = 297;
+        static final int TRANSACTION_clearResetPasswordTokenMDM = 338;
+        static final int TRANSACTION_clearSystemUpdatePolicyFreezePeriodRecord = 231;
+        static final int TRANSACTION_createAdminSupportIntent = 152;
+        static final int TRANSACTION_createAndManageUser = 157;
+        static final int TRANSACTION_createAndProvisionManagedProfile = 380;
+        static final int TRANSACTION_enableSystemApp = 168;
+        static final int TRANSACTION_enableSystemAppWithIntent = 169;
+        static final int TRANSACTION_enforceCanManageCaCerts = 104;
+        static final int TRANSACTION_finalizeWorkProfileProvisioning = 382;
+        static final int TRANSACTION_forceNetworkLogs = 274;
         static final int TRANSACTION_forceRemoveActiveAdmin = 70;
-        static final int TRANSACTION_forceSecurityLogs = 273;
-        static final int TRANSACTION_forceUpdateUserSetupComplete = 279;
-        static final int TRANSACTION_generateKeyPair = 109;
-        static final int TRANSACTION_getAccountTypesWithManagementDisabled = 170;
-        static final int TRANSACTION_getAccountTypesWithManagementDisabledAsUser = 171;
+        static final int TRANSACTION_forceSecurityLogs = 275;
+        static final int TRANSACTION_forceSetMaxPolicyStorageLimit = 457;
+        static final int TRANSACTION_forceUpdateUserSetupComplete = 284;
+        static final int TRANSACTION_generateKeyPair = 110;
+        static final int TRANSACTION_getAccountTypesWithManagementDisabled = 172;
+        static final int TRANSACTION_getAccountTypesWithManagementDisabledAsUser = 173;
         static final int TRANSACTION_getActiveAdmins = 66;
-        static final int TRANSACTION_getActualDeviceOwnerMDM = 316;
-        static final int TRANSACTION_getAffiliationIds = 265;
+        static final int TRANSACTION_getAffiliationIds = 267;
         static final int TRANSACTION_getAggregatedPasswordComplexityForUser = 29;
-        static final int TRANSACTION_getAllCrossProfilePackages = 353;
-        static final int TRANSACTION_getAlwaysOnVpnLockdownAllowlist = 122;
-        static final int TRANSACTION_getAlwaysOnVpnPackage = 118;
-        static final int TRANSACTION_getAlwaysOnVpnPackageForUser = 119;
-        static final int TRANSACTION_getApplicationExemptions = 441;
-        static final int TRANSACTION_getApplicationRestrictions = 128;
-        static final int TRANSACTION_getApplicationRestrictionsMDM = 332;
-        static final int TRANSACTION_getApplicationRestrictionsManagingPackage = 130;
-        static final int TRANSACTION_getAutoTimeEnabled = 220;
-        static final int TRANSACTION_getAutoTimeRequired = 218;
-        static final int TRANSACTION_getAutoTimeZoneEnabled = 222;
-        static final int TRANSACTION_getBindDeviceAdminTargetUsers = 286;
-        static final int TRANSACTION_getBluetoothContactSharingDisabled = 210;
-        static final int TRANSACTION_getBluetoothContactSharingDisabledForUser = 211;
-        static final int TRANSACTION_getBluetoothContactSharingEnabledForKnox = 452;
+        static final int TRANSACTION_getAllCrossProfilePackages = 356;
+        static final int TRANSACTION_getAlwaysOnVpnLockdownAllowlist = 123;
+        static final int TRANSACTION_getAlwaysOnVpnPackage = 119;
+        static final int TRANSACTION_getAlwaysOnVpnPackageForUser = 120;
+        static final int TRANSACTION_getApplicationExemptions = 440;
+        static final int TRANSACTION_getApplicationRestrictions = 129;
+        static final int TRANSACTION_getApplicationRestrictionsMDM = 335;
+        static final int TRANSACTION_getApplicationRestrictionsManagingPackage = 131;
+        static final int TRANSACTION_getAutoTimeEnabled = 222;
+        static final int TRANSACTION_getAutoTimeRequired = 220;
+        static final int TRANSACTION_getAutoTimeZoneEnabled = 224;
+        static final int TRANSACTION_getBindDeviceAdminTargetUsers = 291;
+        static final int TRANSACTION_getBluetoothContactSharingDisabled = 212;
+        static final int TRANSACTION_getBluetoothContactSharingDisabledForUser = 213;
         static final int TRANSACTION_getCameraDisabled = 55;
-        static final int TRANSACTION_getCertInstallerPackage = 116;
-        static final int TRANSACTION_getCredentialManagerPolicy = 205;
-        static final int TRANSACTION_getCrossProfileCalendarPackages = 348;
-        static final int TRANSACTION_getCrossProfileCalendarPackagesForUser = 350;
-        static final int TRANSACTION_getCrossProfileCallerIdDisabled = 195;
-        static final int TRANSACTION_getCrossProfileCallerIdDisabledForUser = 196;
-        static final int TRANSACTION_getCrossProfileContactsSearchDisabled = 198;
-        static final int TRANSACTION_getCrossProfileContactsSearchDisabledForUser = 199;
-        static final int TRANSACTION_getCrossProfilePackages = 352;
-        static final int TRANSACTION_getCrossProfileWidgetProviders = 216;
+        static final int TRANSACTION_getCertInstallerPackage = 117;
+        static final int TRANSACTION_getContentProtectionPolicy = 454;
+        static final int TRANSACTION_getCredentialManagerPolicy = 207;
+        static final int TRANSACTION_getCrossProfileCalendarPackages = 351;
+        static final int TRANSACTION_getCrossProfileCalendarPackagesForUser = 353;
+        static final int TRANSACTION_getCrossProfileCallerIdDisabled = 197;
+        static final int TRANSACTION_getCrossProfileCallerIdDisabledForUser = 198;
+        static final int TRANSACTION_getCrossProfileContactsSearchDisabled = 200;
+        static final int TRANSACTION_getCrossProfileContactsSearchDisabledForUser = 201;
+        static final int TRANSACTION_getCrossProfilePackages = 355;
+        static final int TRANSACTION_getCrossProfileWidgetProviders = 218;
         static final int TRANSACTION_getCurrentFailedBiometricAttempts = 32;
         static final int TRANSACTION_getCurrentFailedPasswordAttempts = 31;
-        static final int TRANSACTION_getDefaultCrossProfilePackages = 354;
-        static final int TRANSACTION_getDelegatePackages = 114;
-        static final int TRANSACTION_getDelegatedScopes = 113;
+        static final int TRANSACTION_getDefaultCrossProfilePackages = 357;
+        static final int TRANSACTION_getDelegatePackages = 115;
+        static final int TRANSACTION_getDelegatedPackages = 343;
+        static final int TRANSACTION_getDelegatedScopes = 114;
         static final int TRANSACTION_getDeviceOwnerComponent = 80;
-        static final int TRANSACTION_getDeviceOwnerLockScreenInfo = 97;
-        static final int TRANSACTION_getDeviceOwnerName = 82;
-        static final int TRANSACTION_getDeviceOwnerOrganizationName = 260;
-        static final int TRANSACTION_getDeviceOwnerType = 381;
-        static final int TRANSACTION_getDeviceOwnerUserId = 84;
-        static final int TRANSACTION_getDevicePolicyState = 446;
-        static final int TRANSACTION_getDisallowedSystemApps = 300;
-        static final int TRANSACTION_getDoNotAskCredentialsOnBoot = 233;
-        static final int TRANSACTION_getDrawable = 395;
-        static final int TRANSACTION_getEndUserSessionMessage = 306;
-        static final int TRANSACTION_getEnforcingAdminAndUserDetails = 152;
-        static final int TRANSACTION_getEnrollmentSpecificId = 375;
+        static final int TRANSACTION_getDeviceOwnerComponentOnUser = 81;
+        static final int TRANSACTION_getDeviceOwnerLockScreenInfo = 98;
+        static final int TRANSACTION_getDeviceOwnerName = 83;
+        static final int TRANSACTION_getDeviceOwnerOrganizationName = 262;
+        static final int TRANSACTION_getDeviceOwnerType = 384;
+        static final int TRANSACTION_getDeviceOwnerUserId = 85;
+        static final int TRANSACTION_getDevicePolicyState = 445;
+        static final int TRANSACTION_getDisallowedSystemApps = 305;
+        static final int TRANSACTION_getDoNotAskCredentialsOnBoot = 235;
+        static final int TRANSACTION_getDrawable = 398;
+        static final int TRANSACTION_getEndUserSessionMessage = 311;
+        static final int TRANSACTION_getEnforcingAdminAndUserDetails = 153;
+        static final int TRANSACTION_getEnforcingAdminsForRestriction = 154;
+        static final int TRANSACTION_getEnrollmentSpecificId = 378;
         static final int TRANSACTION_getFactoryResetProtectionPolicy = 44;
-        static final int TRANSACTION_getFinancedDeviceKioskRoleHolder = 450;
-        static final int TRANSACTION_getForceEphemeralUsers = 224;
-        static final int TRANSACTION_getGlobalPrivateDnsHost = 344;
-        static final int TRANSACTION_getGlobalPrivateDnsMode = 343;
+        static final int TRANSACTION_getFinancedDeviceKioskRoleHolder = 448;
+        static final int TRANSACTION_getForceEphemeralUsers = 226;
+        static final int TRANSACTION_getGlobalPrivateDnsHost = 347;
+        static final int TRANSACTION_getGlobalPrivateDnsMode = 346;
         static final int TRANSACTION_getGlobalProxyAdmin = 48;
-        static final int TRANSACTION_getKeepUninstalledPackages = 243;
-        static final int TRANSACTION_getKeyPairGrants = 359;
+        static final int TRANSACTION_getHeadlessDeviceOwnerMode = 460;
+        static final int TRANSACTION_getKeepUninstalledPackages = 245;
+        static final int TRANSACTION_getKeyPairGrants = 362;
         static final int TRANSACTION_getKeyguardDisabledFeatures = 63;
-        static final int TRANSACTION_getLastBugReportRequestTime = 289;
-        static final int TRANSACTION_getLastNetworkLogRetrievalTime = 290;
-        static final int TRANSACTION_getLastSecurityLogRetrievalTime = 288;
-        static final int TRANSACTION_getLockTaskFeatures = 180;
-        static final int TRANSACTION_getLockTaskPackages = 177;
-        static final int TRANSACTION_getLogoutUserId = 162;
-        static final int TRANSACTION_getLongSupportMessage = 250;
-        static final int TRANSACTION_getLongSupportMessageForUser = 252;
-        static final int TRANSACTION_getManagedProfileCallerIdAccessPolicy = 202;
-        static final int TRANSACTION_getManagedProfileContactsAccessPolicy = 207;
-        static final int TRANSACTION_getManagedProfileMaximumTimeOff = 368;
-        static final int TRANSACTION_getManagedSubscriptionsPolicy = 445;
+        static final int TRANSACTION_getLastBugReportRequestTime = 294;
+        static final int TRANSACTION_getLastNetworkLogRetrievalTime = 295;
+        static final int TRANSACTION_getLastSecurityLogRetrievalTime = 293;
+        static final int TRANSACTION_getLockTaskFeatures = 182;
+        static final int TRANSACTION_getLockTaskPackages = 179;
+        static final int TRANSACTION_getLogoutUserId = 164;
+        static final int TRANSACTION_getLongSupportMessage = 252;
+        static final int TRANSACTION_getLongSupportMessageForUser = 254;
+        static final int TRANSACTION_getManagedProfileCallerIdAccessPolicy = 204;
+        static final int TRANSACTION_getManagedProfileContactsAccessPolicy = 209;
+        static final int TRANSACTION_getManagedProfileMaximumTimeOff = 371;
+        static final int TRANSACTION_getManagedSubscriptionsPolicy = 444;
+        static final int TRANSACTION_getMaxPolicyStorageLimit = 458;
         static final int TRANSACTION_getMaximumFailedPasswordsForWipe = 35;
         static final int TRANSACTION_getMaximumTimeToLock = 38;
-        static final int TRANSACTION_getMeteredDataDisabledPackages = 308;
-        static final int TRANSACTION_getMinimumRequiredWifiSecurityLevel = 389;
-        static final int TRANSACTION_getMtePolicy = 443;
+        static final int TRANSACTION_getMeteredDataDisabledPackages = 313;
+        static final int TRANSACTION_getMinimumRequiredWifiSecurityLevel = 391;
+        static final int TRANSACTION_getMtePolicy = 442;
         static final int TRANSACTION_getNearbyAppStreamingPolicy = 61;
         static final int TRANSACTION_getNearbyNotificationStreamingPolicy = 59;
-        static final int TRANSACTION_getOrganizationColor = 256;
-        static final int TRANSACTION_getOrganizationColorForUser = 257;
-        static final int TRANSACTION_getOrganizationName = 259;
-        static final int TRANSACTION_getOrganizationNameForUser = 261;
-        static final int TRANSACTION_getOverrideApns = 312;
-        static final int TRANSACTION_getOwnerInstalledCaCerts = 296;
+        static final int TRANSACTION_getOrganizationColor = 258;
+        static final int TRANSACTION_getOrganizationColorForUser = 259;
+        static final int TRANSACTION_getOrganizationName = 261;
+        static final int TRANSACTION_getOrganizationNameForUser = 263;
+        static final int TRANSACTION_getOverrideApns = 317;
+        static final int TRANSACTION_getOwnerInstalledCaCerts = 301;
         static final int TRANSACTION_getPasswordComplexity = 26;
         static final int TRANSACTION_getPasswordExpiration = 22;
         static final int TRANSACTION_getPasswordExpirationTimeout = 21;
@@ -3188,326 +3221,327 @@ public interface IDevicePolicyManager extends IInterface {
         static final int TRANSACTION_getPasswordMinimumSymbols = 14;
         static final int TRANSACTION_getPasswordMinimumUpperCase = 6;
         static final int TRANSACTION_getPasswordQuality = 2;
-        static final int TRANSACTION_getPendingSystemUpdate = 235;
-        static final int TRANSACTION_getPermissionGrantState = 239;
-        static final int TRANSACTION_getPermissionPolicy = 237;
-        static final int TRANSACTION_getPermittedAccessibilityServices = 141;
-        static final int TRANSACTION_getPermittedAccessibilityServicesForUser = 142;
-        static final int TRANSACTION_getPermittedCrossProfileNotificationListeners = 149;
-        static final int TRANSACTION_getPermittedInputMethods = 145;
-        static final int TRANSACTION_getPermittedInputMethodsAsUser = 146;
-        static final int TRANSACTION_getPersonalAppsSuspendedReasons = 366;
-        static final int TRANSACTION_getPolicyManagedProfiles = 403;
-        static final int TRANSACTION_getPreferentialNetworkServiceConfigs = 175;
-        static final int TRANSACTION_getProfileOwnerAsUser = 86;
-        static final int TRANSACTION_getProfileOwnerName = 89;
-        static final int TRANSACTION_getProfileOwnerOrDeviceOwnerSupervisionComponent = 87;
+        static final int TRANSACTION_getPendingSystemUpdate = 237;
+        static final int TRANSACTION_getPermissionGrantState = 241;
+        static final int TRANSACTION_getPermissionPolicy = 239;
+        static final int TRANSACTION_getPermittedAccessibilityServices = 142;
+        static final int TRANSACTION_getPermittedAccessibilityServicesForUser = 143;
+        static final int TRANSACTION_getPermittedCrossProfileNotificationListeners = 150;
+        static final int TRANSACTION_getPermittedInputMethods = 146;
+        static final int TRANSACTION_getPermittedInputMethodsAsUser = 147;
+        static final int TRANSACTION_getPersonalAppsSuspendedReasons = 369;
+        static final int TRANSACTION_getPolicyManagedProfiles = 406;
+        static final int TRANSACTION_getPolicySizeForAdmin = 459;
+        static final int TRANSACTION_getPreferentialNetworkServiceConfigs = 177;
+        static final int TRANSACTION_getProfileOwnerAsUser = 87;
+        static final int TRANSACTION_getProfileOwnerName = 90;
+        static final int TRANSACTION_getProfileOwnerOrDeviceOwnerSupervisionComponent = 88;
         static final int TRANSACTION_getProfileWithMinimumFailedPasswordsForWipe = 33;
         static final int TRANSACTION_getRemoveWarning = 68;
         static final int TRANSACTION_getRequiredPasswordComplexity = 28;
         static final int TRANSACTION_getRequiredStrongAuthTimeout = 40;
-        static final int TRANSACTION_getRestrictionsProvider = 133;
-        static final int TRANSACTION_getSamsungSDcardEncryptionStatus = 455;
+        static final int TRANSACTION_getRestrictionsProvider = 134;
+        static final int TRANSACTION_getSamsungSDcardEncryptionStatus = 451;
         static final int TRANSACTION_getScreenCaptureDisabled = 57;
-        static final int TRANSACTION_getSecondaryUsers = 163;
-        static final int TRANSACTION_getShortSupportMessage = 248;
-        static final int TRANSACTION_getShortSupportMessageForUser = 251;
-        static final int TRANSACTION_getStartUserSessionMessage = 305;
+        static final int TRANSACTION_getSecondaryUsers = 165;
+        static final int TRANSACTION_getShortSupportMessage = 250;
+        static final int TRANSACTION_getShortSupportMessageForUser = 253;
+        static final int TRANSACTION_getStartUserSessionMessage = 310;
         static final int TRANSACTION_getStorageEncryption = 51;
         static final int TRANSACTION_getStorageEncryptionStatus = 52;
-        static final int TRANSACTION_getString = 400;
-        static final int TRANSACTION_getSystemUpdatePolicy = 228;
-        static final int TRANSACTION_getTransferOwnershipBundle = 302;
-        static final int TRANSACTION_getTrustAgentConfiguration = 213;
-        static final int TRANSACTION_getUserControlDisabledPackages = 363;
-        static final int TRANSACTION_getUserProvisioningState = 262;
-        static final int TRANSACTION_getUserRestrictions = 136;
-        static final int TRANSACTION_getUserRestrictionsGlobally = 137;
-        static final int TRANSACTION_getWifiMacAddress = 245;
-        static final int TRANSACTION_getWifiSsidPolicy = 391;
-        static final int TRANSACTION_hasDelegatedPermission = 341;
-        static final int TRANSACTION_hasDeviceOwner = 81;
+        static final int TRANSACTION_getString = 403;
+        static final int TRANSACTION_getSubscriptionIds = 455;
+        static final int TRANSACTION_getSystemUpdatePolicy = 230;
+        static final int TRANSACTION_getTransferOwnershipBundle = 307;
+        static final int TRANSACTION_getTrustAgentConfiguration = 215;
+        static final int TRANSACTION_getUserControlDisabledPackages = 366;
+        static final int TRANSACTION_getUserProvisioningState = 264;
+        static final int TRANSACTION_getUserRestrictions = 137;
+        static final int TRANSACTION_getUserRestrictionsGlobally = 138;
+        static final int TRANSACTION_getWifiMacAddress = 247;
+        static final int TRANSACTION_getWifiSsidPolicy = 393;
+        static final int TRANSACTION_hasDelegatedPermission = 342;
+        static final int TRANSACTION_hasDeviceOwner = 82;
         static final int TRANSACTION_hasGrantedPolicy = 71;
-        static final int TRANSACTION_hasKeyPair = 108;
-        static final int TRANSACTION_hasLockdownAdminConfiguredNetworks = 185;
-        static final int TRANSACTION_hasManagedProfileCallerIdAccess = 203;
-        static final int TRANSACTION_hasManagedProfileContactsAccess = 208;
-        static final int TRANSACTION_hasUserSetupCompleted = 93;
-        static final int TRANSACTION_installCaCert = 101;
-        static final int TRANSACTION_installExistingPackage = 168;
-        static final int TRANSACTION_installKeyPair = 106;
-        static final int TRANSACTION_installUpdateFromFile = 346;
-        static final int TRANSACTION_isAccessibilityServicePermittedByAdmin = 143;
+        static final int TRANSACTION_hasKeyPair = 109;
+        static final int TRANSACTION_hasLockdownAdminConfiguredNetworks = 187;
+        static final int TRANSACTION_hasManagedProfileCallerIdAccess = 205;
+        static final int TRANSACTION_hasManagedProfileContactsAccess = 210;
+        static final int TRANSACTION_hasUserSetupCompleted = 94;
+        static final int TRANSACTION_installCaCert = 102;
+        static final int TRANSACTION_installExistingPackage = 170;
+        static final int TRANSACTION_installKeyPair = 107;
+        static final int TRANSACTION_installUpdateFromFile = 349;
+        static final int TRANSACTION_isAccessibilityServicePermittedByAdmin = 144;
         static final int TRANSACTION_isActivePasswordSufficient = 23;
         static final int TRANSACTION_isActivePasswordSufficientForDeviceRequirement = 24;
         static final int TRANSACTION_isAdminActive = 65;
-        static final int TRANSACTION_isAffiliatedUser = 267;
-        static final int TRANSACTION_isAlwaysOnVpnLockdownEnabled = 120;
-        static final int TRANSACTION_isAlwaysOnVpnLockdownEnabledForUser = 121;
-        static final int TRANSACTION_isApplicationHidden = 154;
-        static final int TRANSACTION_isBackupServiceEnabled = 281;
-        static final int TRANSACTION_isCaCertApproved = 105;
-        static final int TRANSACTION_isCallerApplicationRestrictionsManagingPackage = 131;
-        static final int TRANSACTION_isCallingUserAffiliated = 266;
-        static final int TRANSACTION_isCommonCriteriaModeEnabled = 365;
-        static final int TRANSACTION_isComplianceAcknowledgementRequired = 371;
-        static final int TRANSACTION_isCurrentInputMethodSetByOwner = 295;
-        static final int TRANSACTION_isDeviceFinanced = 449;
-        static final int TRANSACTION_isDeviceProvisioned = 276;
-        static final int TRANSACTION_isDeviceProvisioningConfigApplied = 277;
-        static final int TRANSACTION_isDpcDownloaded = 396;
-        static final int TRANSACTION_isEphemeralUser = 287;
+        static final int TRANSACTION_isAffiliatedUser = 269;
+        static final int TRANSACTION_isAlwaysOnVpnLockdownEnabled = 121;
+        static final int TRANSACTION_isAlwaysOnVpnLockdownEnabledForUser = 122;
+        static final int TRANSACTION_isApplicationHidden = 156;
+        static final int TRANSACTION_isAuditLogEnabled = 277;
+        static final int TRANSACTION_isBackupServiceEnabled = 286;
+        static final int TRANSACTION_isCaCertApproved = 106;
+        static final int TRANSACTION_isCallerApplicationRestrictionsManagingPackage = 132;
+        static final int TRANSACTION_isCallingUserAffiliated = 268;
+        static final int TRANSACTION_isCommonCriteriaModeEnabled = 368;
+        static final int TRANSACTION_isComplianceAcknowledgementRequired = 374;
+        static final int TRANSACTION_isCurrentInputMethodSetByOwner = 300;
+        static final int TRANSACTION_isDeviceFinanced = 447;
+        static final int TRANSACTION_isDevicePotentiallyStolen = 394;
+        static final int TRANSACTION_isDeviceProvisioned = 281;
+        static final int TRANSACTION_isDeviceProvisioningConfigApplied = 282;
+        static final int TRANSACTION_isDpcDownloaded = 399;
+        static final int TRANSACTION_isEphemeralUser = 292;
         static final int TRANSACTION_isFactoryResetProtectionPolicySupported = 45;
-        static final int TRANSACTION_isInputMethodPermittedByAdmin = 147;
-        static final int TRANSACTION_isKeyPairGrantedToWifiAuth = 361;
-        static final int TRANSACTION_isLockTaskPermitted = 178;
-        static final int TRANSACTION_isLogoutEnabled = 299;
-        static final int TRANSACTION_isManagedKiosk = 355;
-        static final int TRANSACTION_isManagedProfile = 244;
-        static final int TRANSACTION_isMasterVolumeMuted = 190;
-        static final int TRANSACTION_isMeteredDataDisabledPackageForUser = 315;
-        static final int TRANSACTION_isNetworkLoggingEnabled = 283;
-        static final int TRANSACTION_isNewUserDisclaimerAcknowledged = 165;
-        static final int TRANSACTION_isNotificationListenerServicePermitted = 150;
-        static final int TRANSACTION_isOrganizationOwnedDeviceWithManagedProfile = 94;
-        static final int TRANSACTION_isOverrideApnEnabled = 314;
-        static final int TRANSACTION_isPackageAllowedToAccessCalendarForUser = 349;
-        static final int TRANSACTION_isPackageSuspended = 99;
+        static final int TRANSACTION_isInputMethodPermittedByAdmin = 148;
+        static final int TRANSACTION_isKeyPairGrantedToWifiAuth = 364;
+        static final int TRANSACTION_isLockTaskPermitted = 180;
+        static final int TRANSACTION_isLogoutEnabled = 304;
+        static final int TRANSACTION_isManagedKiosk = 358;
+        static final int TRANSACTION_isManagedProfile = 246;
+        static final int TRANSACTION_isMasterVolumeMuted = 192;
+        static final int TRANSACTION_isMeteredDataDisabledPackageForUser = 320;
+        static final int TRANSACTION_isNetworkLoggingEnabled = 288;
+        static final int TRANSACTION_isNewUserDisclaimerAcknowledged = 167;
+        static final int TRANSACTION_isNotificationListenerServicePermitted = 151;
+        static final int TRANSACTION_isOrganizationOwnedDeviceWithManagedProfile = 95;
+        static final int TRANSACTION_isOverrideApnEnabled = 319;
+        static final int TRANSACTION_isPackageAllowedToAccessCalendarForUser = 352;
+        static final int TRANSACTION_isPackageSuspended = 100;
         static final int TRANSACTION_isPasswordSufficientAfterProfileUnification = 25;
-        static final int TRANSACTION_isProfileOwnerOfOrganizationOwnedDeviceMDM = 340;
-        static final int TRANSACTION_isProvisioningAllowed = 240;
-        static final int TRANSACTION_isRemovingAdmin = 225;
-        static final int TRANSACTION_isResetPasswordTokenActive = 293;
-        static final int TRANSACTION_isResetPasswordTokenActiveMDM = 336;
-        static final int TRANSACTION_isSafeOperation = 374;
-        static final int TRANSACTION_isSecondaryLockscreenEnabled = 173;
-        static final int TRANSACTION_isSecurityLoggingEnabled = 269;
-        static final int TRANSACTION_isStatusBarDisabled = 232;
-        static final int TRANSACTION_isSupervisionComponent = 88;
-        static final int TRANSACTION_isUnattendedManagedKiosk = 356;
-        static final int TRANSACTION_isUninstallBlocked = 193;
-        static final int TRANSACTION_isUninstallInQueue = 274;
-        static final int TRANSACTION_isUsbDataSignalingEnabled = 385;
-        static final int TRANSACTION_isUsbDataSignalingEnabledForUser = 386;
+        static final int TRANSACTION_isProfileOwnerOfOrganizationOwnedDeviceMDM = 341;
+        static final int TRANSACTION_isProvisioningAllowed = 242;
+        static final int TRANSACTION_isRemovingAdmin = 227;
+        static final int TRANSACTION_isResetPasswordTokenActive = 298;
+        static final int TRANSACTION_isResetPasswordTokenActiveMDM = 337;
+        static final int TRANSACTION_isSafeOperation = 377;
+        static final int TRANSACTION_isSecondaryLockscreenEnabled = 175;
+        static final int TRANSACTION_isSecurityLoggingEnabled = 271;
+        static final int TRANSACTION_isStatusBarDisabled = 234;
+        static final int TRANSACTION_isSupervisionComponent = 89;
+        static final int TRANSACTION_isUnattendedManagedKiosk = 359;
+        static final int TRANSACTION_isUninstallBlocked = 195;
+        static final int TRANSACTION_isUninstallInQueue = 279;
+        static final int TRANSACTION_isUsbDataSignalingEnabled = 388;
         static final int TRANSACTION_isUsingUnifiedPassword = 30;
-        static final int TRANSACTION_listForegroundAffiliatedUsers = 392;
-        static final int TRANSACTION_listPolicyExemptApps = 100;
+        static final int TRANSACTION_listForegroundAffiliatedUsers = 395;
+        static final int TRANSACTION_listPolicyExemptApps = 101;
         static final int TRANSACTION_lockNow = 41;
-        static final int TRANSACTION_logoutUser = 160;
-        static final int TRANSACTION_logoutUserInternal = 161;
-        static final int TRANSACTION_notifyLockTaskModeChanged = 191;
-        static final int TRANSACTION_notifyPendingSystemUpdate = 234;
+        static final int TRANSACTION_logoutUser = 162;
+        static final int TRANSACTION_logoutUserInternal = 163;
+        static final int TRANSACTION_notifyLockTaskModeChanged = 193;
+        static final int TRANSACTION_notifyPendingSystemUpdate = 236;
         static final int TRANSACTION_packageHasActiveAdmins = 67;
-        static final int TRANSACTION_provisionFullyManagedDevice = 378;
-        static final int TRANSACTION_reboot = 246;
-        static final int TRANSACTION_rebootMDM = 317;
+        static final int TRANSACTION_provisionFullyManagedDevice = 381;
+        static final int TRANSACTION_reboot = 248;
         static final int TRANSACTION_removeActiveAdmin = 69;
-        static final int TRANSACTION_removeCrossProfileWidgetProvider = 215;
-        static final int TRANSACTION_removeKeyPair = 107;
-        static final int TRANSACTION_removeOverrideApn = 311;
-        static final int TRANSACTION_removeUser = 156;
+        static final int TRANSACTION_removeCrossProfileWidgetProvider = 217;
+        static final int TRANSACTION_removeKeyPair = 108;
+        static final int TRANSACTION_removeOverrideApn = 316;
+        static final int TRANSACTION_removeUser = 158;
         static final int TRANSACTION_reportFailedBiometricAttempt = 75;
         static final int TRANSACTION_reportFailedPasswordAttempt = 73;
+        static final int TRANSACTION_reportFailedPasswordAttemptWithFailureCount = 344;
         static final int TRANSACTION_reportKeyguardDismissed = 77;
         static final int TRANSACTION_reportKeyguardSecured = 78;
         static final int TRANSACTION_reportPasswordChanged = 72;
         static final int TRANSACTION_reportSuccessfulBiometricAttempt = 76;
         static final int TRANSACTION_reportSuccessfulPasswordAttempt = 74;
         static final int TRANSACTION_requestBugreport = 53;
-        static final int TRANSACTION_resetDefaultCrossProfileIntentFilters = 382;
-        static final int TRANSACTION_resetDrawables = 394;
+        static final int TRANSACTION_resetDefaultCrossProfileIntentFilters = 385;
+        static final int TRANSACTION_resetDrawables = 397;
         static final int TRANSACTION_resetPassword = 36;
-        static final int TRANSACTION_resetPasswordWithToken = 294;
-        static final int TRANSACTION_resetPasswordWithTokenMDM = 335;
-        static final int TRANSACTION_resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState = 401;
-        static final int TRANSACTION_resetStrings = 399;
-        static final int TRANSACTION_retrieveNetworkLogs = 284;
-        static final int TRANSACTION_retrievePreRebootSecurityLogs = 271;
-        static final int TRANSACTION_retrieveSecurityLogs = 270;
-        static final int TRANSACTION_semGetAllowBluetoothMode = 432;
-        static final int TRANSACTION_semGetAllowBrowser = 428;
-        static final int TRANSACTION_semGetAllowDesktopSync = 434;
-        static final int TRANSACTION_semGetAllowInternetSharing = 430;
-        static final int TRANSACTION_semGetAllowIrda = 436;
-        static final int TRANSACTION_semGetAllowPopImapEmail = 426;
-        static final int TRANSACTION_semGetAllowStorageCard = 420;
-        static final int TRANSACTION_semGetAllowTextMessaging = 424;
-        static final int TRANSACTION_semGetAllowWifi = 422;
-        static final int TRANSACTION_semGetRequireStorageCardEncryption = 438;
+        static final int TRANSACTION_resetPasswordWithToken = 299;
+        static final int TRANSACTION_resetPasswordWithTokenMDM = 336;
+        static final int TRANSACTION_resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState = 404;
+        static final int TRANSACTION_resetStrings = 402;
+        static final int TRANSACTION_retrieveNetworkLogs = 289;
+        static final int TRANSACTION_retrievePreRebootSecurityLogs = 273;
+        static final int TRANSACTION_retrieveSecurityLogs = 272;
+        static final int TRANSACTION_semGetAllowBluetoothMode = 431;
+        static final int TRANSACTION_semGetAllowBrowser = 427;
+        static final int TRANSACTION_semGetAllowDesktopSync = 433;
+        static final int TRANSACTION_semGetAllowInternetSharing = 429;
+        static final int TRANSACTION_semGetAllowIrda = 435;
+        static final int TRANSACTION_semGetAllowPopImapEmail = 425;
+        static final int TRANSACTION_semGetAllowStorageCard = 419;
+        static final int TRANSACTION_semGetAllowTextMessaging = 423;
+        static final int TRANSACTION_semGetAllowWifi = 421;
+        static final int TRANSACTION_semGetRequireStorageCardEncryption = 437;
         static final int TRANSACTION_semIsActivePasswordSufficient = 414;
         static final int TRANSACTION_semIsSimplePasswordEnabled = 416;
-        static final int TRANSACTION_semSetAllowBluetoothMode = 431;
-        static final int TRANSACTION_semSetAllowBrowser = 427;
-        static final int TRANSACTION_semSetAllowDesktopSync = 433;
-        static final int TRANSACTION_semSetAllowInternetSharing = 429;
-        static final int TRANSACTION_semSetAllowIrda = 435;
-        static final int TRANSACTION_semSetAllowPopImapEmail = 425;
-        static final int TRANSACTION_semSetAllowStorageCard = 419;
-        static final int TRANSACTION_semSetAllowTextMessaging = 423;
-        static final int TRANSACTION_semSetAllowWifi = 421;
-        static final int TRANSACTION_semSetCameraDisabled = 418;
-        static final int TRANSACTION_semSetChangeNotificationEnabled = 439;
+        static final int TRANSACTION_semSetAllowBluetoothMode = 430;
+        static final int TRANSACTION_semSetAllowBrowser = 426;
+        static final int TRANSACTION_semSetAllowDesktopSync = 432;
+        static final int TRANSACTION_semSetAllowInternetSharing = 428;
+        static final int TRANSACTION_semSetAllowIrda = 434;
+        static final int TRANSACTION_semSetAllowPopImapEmail = 424;
+        static final int TRANSACTION_semSetAllowStorageCard = 418;
+        static final int TRANSACTION_semSetAllowTextMessaging = 422;
+        static final int TRANSACTION_semSetAllowWifi = 420;
+        static final int TRANSACTION_semSetChangeNotificationEnabled = 438;
         static final int TRANSACTION_semSetKeyguardDisabledFeatures = 417;
         static final int TRANSACTION_semSetPasswordExpirationTimeout = 413;
         static final int TRANSACTION_semSetPasswordHistoryLength = 412;
-        static final int TRANSACTION_semSetPasswordMinimumLength = 405;
-        static final int TRANSACTION_semSetPasswordMinimumLetters = 408;
-        static final int TRANSACTION_semSetPasswordMinimumLowerCase = 407;
+        static final int TRANSACTION_semSetPasswordMinimumLength = 408;
+        static final int TRANSACTION_semSetPasswordMinimumLowerCase = 410;
         static final int TRANSACTION_semSetPasswordMinimumNonLetter = 411;
-        static final int TRANSACTION_semSetPasswordMinimumNumeric = 409;
-        static final int TRANSACTION_semSetPasswordMinimumSymbols = 410;
-        static final int TRANSACTION_semSetPasswordMinimumUpperCase = 406;
-        static final int TRANSACTION_semSetPasswordQuality = 404;
-        static final int TRANSACTION_semSetRequireStorageCardEncryption = 437;
+        static final int TRANSACTION_semSetPasswordMinimumUpperCase = 409;
+        static final int TRANSACTION_semSetPasswordQuality = 407;
+        static final int TRANSACTION_semSetRequireStorageCardEncryption = 436;
         static final int TRANSACTION_semSetSimplePasswordEnabled = 415;
         static final int TRANSACTION_sendLostModeLocationUpdate = 46;
-        static final int TRANSACTION_setAccountManagementDisabled = 169;
+        static final int TRANSACTION_setAccountManagementDisabled = 171;
         static final int TRANSACTION_setActiveAdmin = 64;
-        static final int TRANSACTION_setAffiliationIds = 264;
-        static final int TRANSACTION_setAlwaysOnVpnPackage = 117;
-        static final int TRANSACTION_setApplicationExemptions = 440;
-        static final int TRANSACTION_setApplicationHidden = 153;
-        static final int TRANSACTION_setApplicationRestrictions = 127;
-        static final int TRANSACTION_setApplicationRestrictionsMDM = 331;
-        static final int TRANSACTION_setApplicationRestrictionsManagingPackage = 129;
-        static final int TRANSACTION_setAutoTimeEnabled = 219;
-        static final int TRANSACTION_setAutoTimeRequired = 217;
-        static final int TRANSACTION_setAutoTimeZoneEnabled = 221;
-        static final int TRANSACTION_setBackupServiceEnabled = 280;
-        static final int TRANSACTION_setBluetoothContactSharingDisabled = 209;
-        static final int TRANSACTION_setBluetoothContactSharingEnabledForKnox = 451;
+        static final int TRANSACTION_setAffiliationIds = 266;
+        static final int TRANSACTION_setAlwaysOnVpnPackage = 118;
+        static final int TRANSACTION_setApplicationExemptions = 439;
+        static final int TRANSACTION_setApplicationHidden = 155;
+        static final int TRANSACTION_setApplicationRestrictions = 128;
+        static final int TRANSACTION_setApplicationRestrictionsMDM = 334;
+        static final int TRANSACTION_setApplicationRestrictionsManagingPackage = 130;
+        static final int TRANSACTION_setAuditLogEnabled = 276;
+        static final int TRANSACTION_setAuditLogEventsCallback = 278;
+        static final int TRANSACTION_setAutoTimeEnabled = 221;
+        static final int TRANSACTION_setAutoTimeRequired = 219;
+        static final int TRANSACTION_setAutoTimeZoneEnabled = 223;
+        static final int TRANSACTION_setBackupServiceEnabled = 285;
+        static final int TRANSACTION_setBluetoothContactSharingDisabled = 211;
         static final int TRANSACTION_setCameraDisabled = 54;
-        static final int TRANSACTION_setCertInstallerPackage = 115;
-        static final int TRANSACTION_setCommonCriteriaModeEnabled = 364;
-        static final int TRANSACTION_setConfiguredNetworksLockdownState = 184;
-        static final int TRANSACTION_setCredentialManagerPolicy = 204;
-        static final int TRANSACTION_setCrossProfileAppToIgnored = 454;
-        static final int TRANSACTION_setCrossProfileCalendarPackages = 347;
-        static final int TRANSACTION_setCrossProfileCallerIdDisabled = 194;
-        static final int TRANSACTION_setCrossProfileContactsSearchDisabled = 197;
-        static final int TRANSACTION_setCrossProfilePackages = 351;
-        static final int TRANSACTION_setDefaultDialerApplication = 126;
-        static final int TRANSACTION_setDefaultSmsApplication = 125;
-        static final int TRANSACTION_setDelegatedScopes = 112;
+        static final int TRANSACTION_setCertInstallerPackage = 116;
+        static final int TRANSACTION_setCommonCriteriaModeEnabled = 367;
+        static final int TRANSACTION_setConfiguredNetworksLockdownState = 186;
+        static final int TRANSACTION_setContentProtectionPolicy = 453;
+        static final int TRANSACTION_setCredentialManagerPolicy = 206;
+        static final int TRANSACTION_setCrossProfileAppToIgnored = 450;
+        static final int TRANSACTION_setCrossProfileCalendarPackages = 350;
+        static final int TRANSACTION_setCrossProfileCallerIdDisabled = 196;
+        static final int TRANSACTION_setCrossProfileContactsSearchDisabled = 199;
+        static final int TRANSACTION_setCrossProfilePackages = 354;
+        static final int TRANSACTION_setDefaultDialerApplication = 127;
+        static final int TRANSACTION_setDefaultSmsApplication = 126;
+        static final int TRANSACTION_setDelegatedScopes = 113;
         static final int TRANSACTION_setDeviceOwner = 79;
-        static final int TRANSACTION_setDeviceOwnerLockScreenInfo = 96;
-        static final int TRANSACTION_setDeviceOwnerType = 380;
-        static final int TRANSACTION_setDeviceProvisioningConfigApplied = 278;
-        static final int TRANSACTION_setDpcDownloaded = 397;
-        static final int TRANSACTION_setDrawables = 393;
-        static final int TRANSACTION_setEndUserSessionMessage = 304;
+        static final int TRANSACTION_setDeviceOwnerLockScreenInfo = 97;
+        static final int TRANSACTION_setDeviceOwnerType = 383;
+        static final int TRANSACTION_setDeviceProvisioningConfigApplied = 283;
+        static final int TRANSACTION_setDpcDownloaded = 400;
+        static final int TRANSACTION_setDrawables = 396;
+        static final int TRANSACTION_setEndUserSessionMessage = 309;
         static final int TRANSACTION_setFactoryResetProtectionPolicy = 43;
-        static final int TRANSACTION_setForceEphemeralUsers = 223;
-        static final int TRANSACTION_setGlobalPrivateDns = 342;
+        static final int TRANSACTION_setForceEphemeralUsers = 225;
+        static final int TRANSACTION_setGlobalPrivateDns = 345;
         static final int TRANSACTION_setGlobalProxy = 47;
-        static final int TRANSACTION_setGlobalSetting = 181;
-        static final int TRANSACTION_setKeepUninstalledPackages = 242;
-        static final int TRANSACTION_setKeyGrantForApp = 358;
-        static final int TRANSACTION_setKeyGrantToWifiAuth = 360;
-        static final int TRANSACTION_setKeyPairCertificate = 110;
-        static final int TRANSACTION_setKeyguardDisabled = 230;
+        static final int TRANSACTION_setGlobalSetting = 183;
+        static final int TRANSACTION_setKeepUninstalledPackages = 244;
+        static final int TRANSACTION_setKeyGrantForApp = 361;
+        static final int TRANSACTION_setKeyGrantToWifiAuth = 363;
+        static final int TRANSACTION_setKeyPairCertificate = 111;
+        static final int TRANSACTION_setKeyguardDisabled = 232;
         static final int TRANSACTION_setKeyguardDisabledFeatures = 62;
-        static final int TRANSACTION_setKeyguardDisabledFeaturesMDM = 330;
-        static final int TRANSACTION_setLocationEnabled = 186;
-        static final int TRANSACTION_setLockTaskFeatures = 179;
-        static final int TRANSACTION_setLockTaskPackages = 176;
-        static final int TRANSACTION_setLogoutEnabled = 298;
-        static final int TRANSACTION_setLongSupportMessage = 249;
-        static final int TRANSACTION_setManagedProfileCallerIdAccessPolicy = 201;
-        static final int TRANSACTION_setManagedProfileContactsAccessPolicy = 206;
-        static final int TRANSACTION_setManagedProfileMaximumTimeOff = 369;
-        static final int TRANSACTION_setManagedSubscriptionsPolicy = 444;
-        static final int TRANSACTION_setMasterVolumeMuted = 189;
+        static final int TRANSACTION_setKeyguardDisabledFeaturesMDM = 333;
+        static final int TRANSACTION_setLocationEnabled = 188;
+        static final int TRANSACTION_setLockTaskFeatures = 181;
+        static final int TRANSACTION_setLockTaskPackages = 178;
+        static final int TRANSACTION_setLogoutEnabled = 303;
+        static final int TRANSACTION_setLongSupportMessage = 251;
+        static final int TRANSACTION_setManagedProfileCallerIdAccessPolicy = 203;
+        static final int TRANSACTION_setManagedProfileContactsAccessPolicy = 208;
+        static final int TRANSACTION_setManagedProfileMaximumTimeOff = 372;
+        static final int TRANSACTION_setManagedSubscriptionsPolicy = 443;
+        static final int TRANSACTION_setMasterVolumeMuted = 191;
+        static final int TRANSACTION_setMaxPolicyStorageLimit = 456;
         static final int TRANSACTION_setMaximumFailedPasswordsForWipe = 34;
-        static final int TRANSACTION_setMaximumFailedPasswordsForWipeMDM = 328;
+        static final int TRANSACTION_setMaximumFailedPasswordsForWipeMDM = 331;
         static final int TRANSACTION_setMaximumTimeToLock = 37;
-        static final int TRANSACTION_setMaximumTimeToLockMDM = 329;
-        static final int TRANSACTION_setMeteredDataDisabledPackages = 307;
-        static final int TRANSACTION_setMinimumRequiredWifiSecurityLevel = 388;
-        static final int TRANSACTION_setMtePolicy = 442;
+        static final int TRANSACTION_setMaximumTimeToLockMDM = 332;
+        static final int TRANSACTION_setMeteredDataDisabledPackages = 312;
+        static final int TRANSACTION_setMinimumRequiredWifiSecurityLevel = 390;
+        static final int TRANSACTION_setMtePolicy = 441;
         static final int TRANSACTION_setNearbyAppStreamingPolicy = 60;
         static final int TRANSACTION_setNearbyNotificationStreamingPolicy = 58;
-        static final int TRANSACTION_setNetworkLoggingEnabled = 282;
-        static final int TRANSACTION_setNextOperationSafety = 373;
-        static final int TRANSACTION_setOrganizationColor = 253;
-        static final int TRANSACTION_setOrganizationColorForUser = 254;
-        static final int TRANSACTION_setOrganizationIdForUser = 376;
-        static final int TRANSACTION_setOrganizationName = 258;
-        static final int TRANSACTION_setOverrideApnsEnabled = 313;
-        static final int TRANSACTION_setOverrideKeepProfilesRunning = 447;
-        static final int TRANSACTION_setPackagesSuspended = 98;
+        static final int TRANSACTION_setNetworkLoggingEnabled = 287;
+        static final int TRANSACTION_setNextOperationSafety = 376;
+        static final int TRANSACTION_setOrganizationColor = 255;
+        static final int TRANSACTION_setOrganizationColorForUser = 256;
+        static final int TRANSACTION_setOrganizationIdForUser = 379;
+        static final int TRANSACTION_setOrganizationName = 260;
+        static final int TRANSACTION_setOverrideApnsEnabled = 318;
+        static final int TRANSACTION_setPackagesSuspended = 99;
         static final int TRANSACTION_setPasswordExpirationTimeout = 20;
-        static final int TRANSACTION_setPasswordExpirationTimeoutMDM = 327;
+        static final int TRANSACTION_setPasswordExpirationTimeoutMDM = 330;
         static final int TRANSACTION_setPasswordHistoryLength = 18;
-        static final int TRANSACTION_setPasswordHistoryLengthMDM = 326;
+        static final int TRANSACTION_setPasswordHistoryLengthMDM = 329;
         static final int TRANSACTION_setPasswordMinimumLength = 3;
-        static final int TRANSACTION_setPasswordMinimumLengthMDM = 319;
+        static final int TRANSACTION_setPasswordMinimumLengthMDM = 322;
         static final int TRANSACTION_setPasswordMinimumLetters = 9;
-        static final int TRANSACTION_setPasswordMinimumLettersMDM = 322;
+        static final int TRANSACTION_setPasswordMinimumLettersMDM = 325;
         static final int TRANSACTION_setPasswordMinimumLowerCase = 7;
-        static final int TRANSACTION_setPasswordMinimumLowerCaseMDM = 321;
+        static final int TRANSACTION_setPasswordMinimumLowerCaseMDM = 324;
         static final int TRANSACTION_setPasswordMinimumNonLetter = 15;
-        static final int TRANSACTION_setPasswordMinimumNonLetterMDM = 325;
+        static final int TRANSACTION_setPasswordMinimumNonLetterMDM = 328;
         static final int TRANSACTION_setPasswordMinimumNumeric = 11;
-        static final int TRANSACTION_setPasswordMinimumNumericMDM = 323;
+        static final int TRANSACTION_setPasswordMinimumNumericMDM = 326;
         static final int TRANSACTION_setPasswordMinimumSymbols = 13;
-        static final int TRANSACTION_setPasswordMinimumSymbolsMDM = 324;
+        static final int TRANSACTION_setPasswordMinimumSymbolsMDM = 327;
         static final int TRANSACTION_setPasswordMinimumUpperCase = 5;
-        static final int TRANSACTION_setPasswordMinimumUpperCaseMDM = 320;
+        static final int TRANSACTION_setPasswordMinimumUpperCaseMDM = 323;
         static final int TRANSACTION_setPasswordQuality = 1;
-        static final int TRANSACTION_setPasswordQualityMDM = 318;
-        static final int TRANSACTION_setPermissionGrantState = 238;
-        static final int TRANSACTION_setPermissionPolicy = 236;
-        static final int TRANSACTION_setPermittedAccessibilityServices = 140;
-        static final int TRANSACTION_setPermittedCrossProfileNotificationListeners = 148;
-        static final int TRANSACTION_setPermittedInputMethods = 144;
-        static final int TRANSACTION_setPersonalAppsSuspended = 367;
-        static final int TRANSACTION_setPreferentialNetworkServiceConfigs = 174;
-        static final int TRANSACTION_setProfileEnabled = 90;
-        static final int TRANSACTION_setProfileName = 91;
-        static final int TRANSACTION_setProfileOwner = 85;
-        static final int TRANSACTION_setProfileOwnerOnOrganizationOwnedDevice = 345;
+        static final int TRANSACTION_setPasswordQualityMDM = 321;
+        static final int TRANSACTION_setPermissionGrantState = 240;
+        static final int TRANSACTION_setPermissionPolicy = 238;
+        static final int TRANSACTION_setPermittedAccessibilityServices = 141;
+        static final int TRANSACTION_setPermittedCrossProfileNotificationListeners = 149;
+        static final int TRANSACTION_setPermittedInputMethods = 145;
+        static final int TRANSACTION_setPersonalAppsSuspended = 370;
+        static final int TRANSACTION_setPreferentialNetworkServiceConfigs = 176;
+        static final int TRANSACTION_setProfileEnabled = 91;
+        static final int TRANSACTION_setProfileName = 92;
+        static final int TRANSACTION_setProfileOwner = 86;
+        static final int TRANSACTION_setProfileOwnerOnOrganizationOwnedDevice = 348;
         static final int TRANSACTION_setRecommendedGlobalProxy = 49;
         static final int TRANSACTION_setRequiredPasswordComplexity = 27;
         static final int TRANSACTION_setRequiredStrongAuthTimeout = 39;
-        static final int TRANSACTION_setResetPasswordToken = 291;
-        static final int TRANSACTION_setResetPasswordTokenMDM = 338;
-        static final int TRANSACTION_setRestrictionsProvider = 132;
+        static final int TRANSACTION_setResetPasswordToken = 296;
+        static final int TRANSACTION_setResetPasswordTokenMDM = 339;
+        static final int TRANSACTION_setRestrictionsProvider = 133;
         static final int TRANSACTION_setScreenCaptureDisabled = 56;
-        static final int TRANSACTION_setSecondaryLockscreenEnabled = 172;
-        static final int TRANSACTION_setSecureSetting = 183;
-        static final int TRANSACTION_setSecurityLoggingEnabled = 268;
-        static final int TRANSACTION_setShortSupportMessage = 247;
-        static final int TRANSACTION_setStartUserSessionMessage = 303;
-        static final int TRANSACTION_setStatusBarDisabled = 231;
+        static final int TRANSACTION_setSecondaryLockscreenEnabled = 174;
+        static final int TRANSACTION_setSecureSetting = 185;
+        static final int TRANSACTION_setSecurityLoggingEnabled = 270;
+        static final int TRANSACTION_setShortSupportMessage = 249;
+        static final int TRANSACTION_setStartUserSessionMessage = 308;
+        static final int TRANSACTION_setStatusBarDisabled = 233;
         static final int TRANSACTION_setStorageEncryption = 50;
-        static final int TRANSACTION_setStrings = 398;
-        static final int TRANSACTION_setSystemSetting = 182;
-        static final int TRANSACTION_setSystemUpdatePolicy = 227;
-        static final int TRANSACTION_setTime = 187;
-        static final int TRANSACTION_setTimeZone = 188;
-        static final int TRANSACTION_setTrustAgentConfiguration = 212;
-        static final int TRANSACTION_setTrustAgentConfigurationMDM = 339;
-        static final int TRANSACTION_setUninstallBlocked = 192;
-        static final int TRANSACTION_setUsbDataSignalingEnabled = 384;
-        static final int TRANSACTION_setUserControlDisabledPackages = 362;
-        static final int TRANSACTION_setUserIcon = 226;
-        static final int TRANSACTION_setUserProvisioningState = 263;
-        static final int TRANSACTION_setUserRestriction = 134;
-        static final int TRANSACTION_setUserRestrictionForKnox = 453;
-        static final int TRANSACTION_setUserRestrictionGlobally = 135;
-        static final int TRANSACTION_setWifiSsidPolicy = 390;
-        static final int TRANSACTION_shouldAllowBypassingDevicePolicyManagementRoleQualification = 402;
-        static final int TRANSACTION_startManagedQuickContact = 200;
-        static final int TRANSACTION_startUserInBackground = 158;
-        static final int TRANSACTION_startViewCalendarEventInManagedProfile = 357;
-        static final int TRANSACTION_stopUser = 159;
-        static final int TRANSACTION_switchUser = 157;
-        static final int TRANSACTION_transferOwnership = 301;
-        static final int TRANSACTION_triggerDevicePolicyEngineMigration = 448;
-        static final int TRANSACTION_uninstallCaCerts = 102;
-        static final int TRANSACTION_uninstallPackageWithActiveAdmins = 275;
-        static final int TRANSACTION_updateOverrideApn = 310;
+        static final int TRANSACTION_setStrings = 401;
+        static final int TRANSACTION_setSystemSetting = 184;
+        static final int TRANSACTION_setSystemUpdatePolicy = 229;
+        static final int TRANSACTION_setTime = 189;
+        static final int TRANSACTION_setTimeZone = 190;
+        static final int TRANSACTION_setTrustAgentConfiguration = 214;
+        static final int TRANSACTION_setTrustAgentConfigurationMDM = 340;
+        static final int TRANSACTION_setUninstallBlocked = 194;
+        static final int TRANSACTION_setUsbDataSignalingEnabled = 387;
+        static final int TRANSACTION_setUserControlDisabledPackages = 365;
+        static final int TRANSACTION_setUserIcon = 228;
+        static final int TRANSACTION_setUserProvisioningState = 265;
+        static final int TRANSACTION_setUserRestriction = 135;
+        static final int TRANSACTION_setUserRestrictionForKnox = 449;
+        static final int TRANSACTION_setUserRestrictionGlobally = 136;
+        static final int TRANSACTION_setWifiSsidPolicy = 392;
+        static final int TRANSACTION_shouldAllowBypassingDevicePolicyManagementRoleQualification = 405;
+        static final int TRANSACTION_startManagedQuickContact = 202;
+        static final int TRANSACTION_startUserInBackground = 160;
+        static final int TRANSACTION_startViewCalendarEventInManagedProfile = 360;
+        static final int TRANSACTION_stopUser = 161;
+        static final int TRANSACTION_switchUser = 159;
+        static final int TRANSACTION_transferOwnership = 306;
+        static final int TRANSACTION_triggerDevicePolicyEngineMigration = 446;
+        static final int TRANSACTION_uninstallCaCerts = 103;
+        static final int TRANSACTION_uninstallPackageWithActiveAdmins = 280;
+        static final int TRANSACTION_updateOverrideApn = 315;
         static final int TRANSACTION_wipeDataWithReason = 42;
 
         public Stub() {
@@ -3535,7 +3569,7 @@ public interface IDevicePolicyManager extends IInterface {
                 case 1:
                     return "setPasswordQuality";
                 case 2:
-                    return SecContentProviderURI.ENTERPRISECONTAINERPOLICY_PASSWORDQUALITY_METHOD;
+                    return "getPasswordQuality";
                 case 3:
                     return "setPasswordMinimumLength";
                 case 4:
@@ -3601,7 +3635,7 @@ public interface IDevicePolicyManager extends IInterface {
                 case 34:
                     return "setMaximumFailedPasswordsForWipe";
                 case 35:
-                    return SecContentProviderURI.PASSWORDPOLICY_MAXIMUMFAILEDPASSWORDSFORWIPE_METHOD;
+                    return "getMaximumFailedPasswordsForWipe";
                 case 36:
                     return "resetPassword";
                 case 37:
@@ -3659,7 +3693,7 @@ public interface IDevicePolicyManager extends IInterface {
                 case 63:
                     return "getKeyguardDisabledFeatures";
                 case 64:
-                    return SecContentProviderURI.ENTERPRISEDEVICEMANAGERPOLICY_SETACTIVEADMIN_METHOD;
+                    return "setActiveAdmin";
                 case 65:
                     return "isAdminActive";
                 case 66:
@@ -3667,9 +3701,9 @@ public interface IDevicePolicyManager extends IInterface {
                 case 67:
                     return "packageHasActiveAdmins";
                 case 68:
-                    return SecContentProviderURI.ENTERPRISEDEVICEMANAGERPOLICY_REMOVEWARNINGS_METHOD;
+                    return "getRemoveWarning";
                 case 69:
-                    return SecContentProviderURI.ENTERPRISEDEVICEMANAGERPOLICY_REMOVEACTIVEADMIN_METHOD;
+                    return "removeActiveAdmin";
                 case 70:
                     return "forceRemoveActiveAdmin";
                 case 71:
@@ -3693,665 +3727,665 @@ public interface IDevicePolicyManager extends IInterface {
                 case 80:
                     return "getDeviceOwnerComponent";
                 case 81:
-                    return "hasDeviceOwner";
+                    return "getDeviceOwnerComponentOnUser";
                 case 82:
-                    return "getDeviceOwnerName";
+                    return "hasDeviceOwner";
                 case 83:
-                    return "clearDeviceOwner";
+                    return "getDeviceOwnerName";
                 case 84:
-                    return "getDeviceOwnerUserId";
+                    return "clearDeviceOwner";
                 case 85:
-                    return "setProfileOwner";
+                    return "getDeviceOwnerUserId";
                 case 86:
-                    return "getProfileOwnerAsUser";
+                    return "setProfileOwner";
                 case 87:
-                    return "getProfileOwnerOrDeviceOwnerSupervisionComponent";
+                    return "getProfileOwnerAsUser";
                 case 88:
-                    return "isSupervisionComponent";
+                    return "getProfileOwnerOrDeviceOwnerSupervisionComponent";
                 case 89:
-                    return "getProfileOwnerName";
+                    return "isSupervisionComponent";
                 case 90:
-                    return "setProfileEnabled";
+                    return "getProfileOwnerName";
                 case 91:
-                    return "setProfileName";
+                    return "setProfileEnabled";
                 case 92:
-                    return "clearProfileOwner";
+                    return "setProfileName";
                 case 93:
-                    return "hasUserSetupCompleted";
+                    return "clearProfileOwner";
                 case 94:
-                    return "isOrganizationOwnedDeviceWithManagedProfile";
+                    return "hasUserSetupCompleted";
                 case 95:
-                    return "checkDeviceIdentifierAccess";
+                    return "isOrganizationOwnedDeviceWithManagedProfile";
                 case 96:
-                    return "setDeviceOwnerLockScreenInfo";
+                    return "checkDeviceIdentifierAccess";
                 case 97:
-                    return "getDeviceOwnerLockScreenInfo";
+                    return "setDeviceOwnerLockScreenInfo";
                 case 98:
-                    return "setPackagesSuspended";
+                    return "getDeviceOwnerLockScreenInfo";
                 case 99:
-                    return "isPackageSuspended";
+                    return "setPackagesSuspended";
                 case 100:
-                    return "listPolicyExemptApps";
+                    return "isPackageSuspended";
                 case 101:
-                    return "installCaCert";
+                    return "listPolicyExemptApps";
                 case 102:
-                    return "uninstallCaCerts";
+                    return "installCaCert";
                 case 103:
-                    return "enforceCanManageCaCerts";
+                    return "uninstallCaCerts";
                 case 104:
-                    return "approveCaCert";
+                    return "enforceCanManageCaCerts";
                 case 105:
-                    return "isCaCertApproved";
+                    return "approveCaCert";
                 case 106:
-                    return "installKeyPair";
+                    return "isCaCertApproved";
                 case 107:
-                    return "removeKeyPair";
+                    return "installKeyPair";
                 case 108:
-                    return "hasKeyPair";
+                    return "removeKeyPair";
                 case 109:
-                    return "generateKeyPair";
+                    return "hasKeyPair";
                 case 110:
-                    return "setKeyPairCertificate";
+                    return "generateKeyPair";
                 case 111:
-                    return "choosePrivateKeyAlias";
+                    return "setKeyPairCertificate";
                 case 112:
-                    return "setDelegatedScopes";
+                    return "choosePrivateKeyAlias";
                 case 113:
-                    return "getDelegatedScopes";
+                    return "setDelegatedScopes";
                 case 114:
-                    return "getDelegatePackages";
+                    return "getDelegatedScopes";
                 case 115:
-                    return "setCertInstallerPackage";
+                    return "getDelegatePackages";
                 case 116:
-                    return "getCertInstallerPackage";
+                    return "setCertInstallerPackage";
                 case 117:
-                    return "setAlwaysOnVpnPackage";
+                    return "getCertInstallerPackage";
                 case 118:
-                    return "getAlwaysOnVpnPackage";
+                    return "setAlwaysOnVpnPackage";
                 case 119:
-                    return "getAlwaysOnVpnPackageForUser";
+                    return "getAlwaysOnVpnPackage";
                 case 120:
-                    return "isAlwaysOnVpnLockdownEnabled";
+                    return "getAlwaysOnVpnPackageForUser";
                 case 121:
-                    return "isAlwaysOnVpnLockdownEnabledForUser";
+                    return "isAlwaysOnVpnLockdownEnabled";
                 case 122:
-                    return "getAlwaysOnVpnLockdownAllowlist";
+                    return "isAlwaysOnVpnLockdownEnabledForUser";
                 case 123:
-                    return "addPersistentPreferredActivity";
+                    return "getAlwaysOnVpnLockdownAllowlist";
                 case 124:
-                    return "clearPackagePersistentPreferredActivities";
+                    return "addPersistentPreferredActivity";
                 case 125:
-                    return "setDefaultSmsApplication";
+                    return "clearPackagePersistentPreferredActivities";
                 case 126:
-                    return "setDefaultDialerApplication";
+                    return "setDefaultSmsApplication";
                 case 127:
-                    return "setApplicationRestrictions";
+                    return "setDefaultDialerApplication";
                 case 128:
-                    return "getApplicationRestrictions";
+                    return "setApplicationRestrictions";
                 case 129:
-                    return "setApplicationRestrictionsManagingPackage";
+                    return "getApplicationRestrictions";
                 case 130:
-                    return "getApplicationRestrictionsManagingPackage";
+                    return "setApplicationRestrictionsManagingPackage";
                 case 131:
-                    return "isCallerApplicationRestrictionsManagingPackage";
+                    return "getApplicationRestrictionsManagingPackage";
                 case 132:
-                    return "setRestrictionsProvider";
+                    return "isCallerApplicationRestrictionsManagingPackage";
                 case 133:
-                    return "getRestrictionsProvider";
+                    return "setRestrictionsProvider";
                 case 134:
-                    return "setUserRestriction";
+                    return "getRestrictionsProvider";
                 case 135:
-                    return "setUserRestrictionGlobally";
+                    return "setUserRestriction";
                 case 136:
-                    return "getUserRestrictions";
+                    return "setUserRestrictionGlobally";
                 case 137:
-                    return "getUserRestrictionsGlobally";
+                    return "getUserRestrictions";
                 case 138:
-                    return "addCrossProfileIntentFilter";
+                    return "getUserRestrictionsGlobally";
                 case 139:
-                    return "clearCrossProfileIntentFilters";
+                    return "addCrossProfileIntentFilter";
                 case 140:
-                    return "setPermittedAccessibilityServices";
+                    return "clearCrossProfileIntentFilters";
                 case 141:
-                    return "getPermittedAccessibilityServices";
+                    return "setPermittedAccessibilityServices";
                 case 142:
-                    return "getPermittedAccessibilityServicesForUser";
+                    return "getPermittedAccessibilityServices";
                 case 143:
-                    return "isAccessibilityServicePermittedByAdmin";
+                    return "getPermittedAccessibilityServicesForUser";
                 case 144:
-                    return "setPermittedInputMethods";
+                    return "isAccessibilityServicePermittedByAdmin";
                 case 145:
-                    return "getPermittedInputMethods";
+                    return "setPermittedInputMethods";
                 case 146:
-                    return "getPermittedInputMethodsAsUser";
+                    return "getPermittedInputMethods";
                 case 147:
-                    return "isInputMethodPermittedByAdmin";
+                    return "getPermittedInputMethodsAsUser";
                 case 148:
-                    return "setPermittedCrossProfileNotificationListeners";
+                    return "isInputMethodPermittedByAdmin";
                 case 149:
-                    return "getPermittedCrossProfileNotificationListeners";
+                    return "setPermittedCrossProfileNotificationListeners";
                 case 150:
-                    return "isNotificationListenerServicePermitted";
+                    return "getPermittedCrossProfileNotificationListeners";
                 case 151:
-                    return "createAdminSupportIntent";
+                    return "isNotificationListenerServicePermitted";
                 case 152:
-                    return "getEnforcingAdminAndUserDetails";
+                    return "createAdminSupportIntent";
                 case 153:
-                    return "setApplicationHidden";
+                    return "getEnforcingAdminAndUserDetails";
                 case 154:
-                    return "isApplicationHidden";
+                    return "getEnforcingAdminsForRestriction";
                 case 155:
-                    return "createAndManageUser";
+                    return "setApplicationHidden";
                 case 156:
-                    return "removeUser";
+                    return "isApplicationHidden";
                 case 157:
-                    return "switchUser";
+                    return "createAndManageUser";
                 case 158:
-                    return "startUserInBackground";
+                    return "removeUser";
                 case 159:
-                    return "stopUser";
+                    return "switchUser";
                 case 160:
-                    return "logoutUser";
+                    return "startUserInBackground";
                 case 161:
-                    return "logoutUserInternal";
+                    return "stopUser";
                 case 162:
-                    return "getLogoutUserId";
+                    return "logoutUser";
                 case 163:
-                    return "getSecondaryUsers";
+                    return "logoutUserInternal";
                 case 164:
-                    return "acknowledgeNewUserDisclaimer";
+                    return "getLogoutUserId";
                 case 165:
-                    return "isNewUserDisclaimerAcknowledged";
+                    return "getSecondaryUsers";
                 case 166:
-                    return "enableSystemApp";
+                    return "acknowledgeNewUserDisclaimer";
                 case 167:
-                    return "enableSystemAppWithIntent";
+                    return "isNewUserDisclaimerAcknowledged";
                 case 168:
-                    return "installExistingPackage";
+                    return "enableSystemApp";
                 case 169:
-                    return "setAccountManagementDisabled";
+                    return "enableSystemAppWithIntent";
                 case 170:
-                    return "getAccountTypesWithManagementDisabled";
+                    return "installExistingPackage";
                 case 171:
-                    return "getAccountTypesWithManagementDisabledAsUser";
+                    return "setAccountManagementDisabled";
                 case 172:
-                    return "setSecondaryLockscreenEnabled";
+                    return "getAccountTypesWithManagementDisabled";
                 case 173:
-                    return "isSecondaryLockscreenEnabled";
+                    return "getAccountTypesWithManagementDisabledAsUser";
                 case 174:
-                    return "setPreferentialNetworkServiceConfigs";
+                    return "setSecondaryLockscreenEnabled";
                 case 175:
-                    return "getPreferentialNetworkServiceConfigs";
+                    return "isSecondaryLockscreenEnabled";
                 case 176:
-                    return "setLockTaskPackages";
+                    return "setPreferentialNetworkServiceConfigs";
                 case 177:
-                    return "getLockTaskPackages";
+                    return "getPreferentialNetworkServiceConfigs";
                 case 178:
-                    return "isLockTaskPermitted";
+                    return "setLockTaskPackages";
                 case 179:
-                    return "setLockTaskFeatures";
+                    return "getLockTaskPackages";
                 case 180:
-                    return "getLockTaskFeatures";
+                    return "isLockTaskPermitted";
                 case 181:
-                    return "setGlobalSetting";
+                    return "setLockTaskFeatures";
                 case 182:
-                    return "setSystemSetting";
+                    return "getLockTaskFeatures";
                 case 183:
-                    return "setSecureSetting";
+                    return "setGlobalSetting";
                 case 184:
-                    return "setConfiguredNetworksLockdownState";
+                    return "setSystemSetting";
                 case 185:
-                    return "hasLockdownAdminConfiguredNetworks";
+                    return "setSecureSetting";
                 case 186:
-                    return "setLocationEnabled";
+                    return "setConfiguredNetworksLockdownState";
                 case 187:
-                    return "setTime";
+                    return "hasLockdownAdminConfiguredNetworks";
                 case 188:
-                    return "setTimeZone";
+                    return "setLocationEnabled";
                 case 189:
-                    return "setMasterVolumeMuted";
+                    return "setTime";
                 case 190:
-                    return "isMasterVolumeMuted";
+                    return "setTimeZone";
                 case 191:
-                    return "notifyLockTaskModeChanged";
+                    return "setMasterVolumeMuted";
                 case 192:
-                    return "setUninstallBlocked";
+                    return "isMasterVolumeMuted";
                 case 193:
-                    return "isUninstallBlocked";
+                    return "notifyLockTaskModeChanged";
                 case 194:
-                    return "setCrossProfileCallerIdDisabled";
+                    return "setUninstallBlocked";
                 case 195:
-                    return "getCrossProfileCallerIdDisabled";
+                    return "isUninstallBlocked";
                 case 196:
-                    return "getCrossProfileCallerIdDisabledForUser";
+                    return "setCrossProfileCallerIdDisabled";
                 case 197:
-                    return "setCrossProfileContactsSearchDisabled";
+                    return "getCrossProfileCallerIdDisabled";
                 case 198:
-                    return "getCrossProfileContactsSearchDisabled";
+                    return "getCrossProfileCallerIdDisabledForUser";
                 case 199:
-                    return "getCrossProfileContactsSearchDisabledForUser";
+                    return "setCrossProfileContactsSearchDisabled";
                 case 200:
-                    return "startManagedQuickContact";
+                    return "getCrossProfileContactsSearchDisabled";
                 case 201:
-                    return "setManagedProfileCallerIdAccessPolicy";
+                    return "getCrossProfileContactsSearchDisabledForUser";
                 case 202:
-                    return "getManagedProfileCallerIdAccessPolicy";
+                    return "startManagedQuickContact";
                 case 203:
-                    return "hasManagedProfileCallerIdAccess";
+                    return "setManagedProfileCallerIdAccessPolicy";
                 case 204:
-                    return "setCredentialManagerPolicy";
+                    return "getManagedProfileCallerIdAccessPolicy";
                 case 205:
-                    return "getCredentialManagerPolicy";
+                    return "hasManagedProfileCallerIdAccess";
                 case 206:
-                    return "setManagedProfileContactsAccessPolicy";
+                    return "setCredentialManagerPolicy";
                 case 207:
-                    return "getManagedProfileContactsAccessPolicy";
+                    return "getCredentialManagerPolicy";
                 case 208:
-                    return "hasManagedProfileContactsAccess";
+                    return "setManagedProfileContactsAccessPolicy";
                 case 209:
-                    return "setBluetoothContactSharingDisabled";
+                    return "getManagedProfileContactsAccessPolicy";
                 case 210:
-                    return "getBluetoothContactSharingDisabled";
+                    return "hasManagedProfileContactsAccess";
                 case 211:
-                    return "getBluetoothContactSharingDisabledForUser";
+                    return "setBluetoothContactSharingDisabled";
                 case 212:
-                    return "setTrustAgentConfiguration";
+                    return "getBluetoothContactSharingDisabled";
                 case 213:
-                    return "getTrustAgentConfiguration";
+                    return "getBluetoothContactSharingDisabledForUser";
                 case 214:
-                    return "addCrossProfileWidgetProvider";
+                    return "setTrustAgentConfiguration";
                 case 215:
-                    return "removeCrossProfileWidgetProvider";
+                    return "getTrustAgentConfiguration";
                 case 216:
-                    return "getCrossProfileWidgetProviders";
+                    return "addCrossProfileWidgetProvider";
                 case 217:
-                    return "setAutoTimeRequired";
+                    return "removeCrossProfileWidgetProvider";
                 case 218:
-                    return "getAutoTimeRequired";
+                    return "getCrossProfileWidgetProviders";
                 case 219:
-                    return "setAutoTimeEnabled";
+                    return "setAutoTimeRequired";
                 case 220:
-                    return "getAutoTimeEnabled";
+                    return "getAutoTimeRequired";
                 case 221:
-                    return "setAutoTimeZoneEnabled";
+                    return "setAutoTimeEnabled";
                 case 222:
-                    return "getAutoTimeZoneEnabled";
+                    return "getAutoTimeEnabled";
                 case 223:
-                    return "setForceEphemeralUsers";
+                    return "setAutoTimeZoneEnabled";
                 case 224:
-                    return "getForceEphemeralUsers";
+                    return "getAutoTimeZoneEnabled";
                 case 225:
-                    return "isRemovingAdmin";
+                    return "setForceEphemeralUsers";
                 case 226:
-                    return "setUserIcon";
+                    return "getForceEphemeralUsers";
                 case 227:
-                    return "setSystemUpdatePolicy";
+                    return "isRemovingAdmin";
                 case 228:
-                    return "getSystemUpdatePolicy";
+                    return "setUserIcon";
                 case 229:
-                    return "clearSystemUpdatePolicyFreezePeriodRecord";
+                    return "setSystemUpdatePolicy";
                 case 230:
-                    return "setKeyguardDisabled";
+                    return "getSystemUpdatePolicy";
                 case 231:
-                    return "setStatusBarDisabled";
+                    return "clearSystemUpdatePolicyFreezePeriodRecord";
                 case 232:
-                    return "isStatusBarDisabled";
+                    return "setKeyguardDisabled";
                 case 233:
-                    return "getDoNotAskCredentialsOnBoot";
+                    return "setStatusBarDisabled";
                 case 234:
-                    return "notifyPendingSystemUpdate";
+                    return "isStatusBarDisabled";
                 case 235:
-                    return "getPendingSystemUpdate";
+                    return "getDoNotAskCredentialsOnBoot";
                 case 236:
-                    return "setPermissionPolicy";
+                    return "notifyPendingSystemUpdate";
                 case 237:
-                    return "getPermissionPolicy";
+                    return "getPendingSystemUpdate";
                 case 238:
-                    return "setPermissionGrantState";
+                    return "setPermissionPolicy";
                 case 239:
-                    return "getPermissionGrantState";
+                    return "getPermissionPolicy";
                 case 240:
-                    return "isProvisioningAllowed";
+                    return "setPermissionGrantState";
                 case 241:
-                    return "checkProvisioningPrecondition";
+                    return "getPermissionGrantState";
                 case 242:
-                    return "setKeepUninstalledPackages";
+                    return "isProvisioningAllowed";
                 case 243:
-                    return "getKeepUninstalledPackages";
+                    return "checkProvisioningPrecondition";
                 case 244:
-                    return "isManagedProfile";
+                    return "setKeepUninstalledPackages";
                 case 245:
-                    return "getWifiMacAddress";
+                    return "getKeepUninstalledPackages";
                 case 246:
-                    return "reboot";
+                    return "isManagedProfile";
                 case 247:
-                    return "setShortSupportMessage";
+                    return "getWifiMacAddress";
                 case 248:
-                    return "getShortSupportMessage";
+                    return "reboot";
                 case 249:
-                    return "setLongSupportMessage";
+                    return "setShortSupportMessage";
                 case 250:
-                    return "getLongSupportMessage";
+                    return "getShortSupportMessage";
                 case 251:
-                    return "getShortSupportMessageForUser";
+                    return "setLongSupportMessage";
                 case 252:
-                    return "getLongSupportMessageForUser";
+                    return "getLongSupportMessage";
                 case 253:
-                    return "setOrganizationColor";
+                    return "getShortSupportMessageForUser";
                 case 254:
-                    return "setOrganizationColorForUser";
+                    return "getLongSupportMessageForUser";
                 case 255:
-                    return "clearOrganizationIdForUser";
+                    return "setOrganizationColor";
                 case 256:
-                    return "getOrganizationColor";
+                    return "setOrganizationColorForUser";
                 case 257:
-                    return "getOrganizationColorForUser";
+                    return "clearOrganizationIdForUser";
                 case 258:
-                    return "setOrganizationName";
+                    return "getOrganizationColor";
                 case 259:
-                    return "getOrganizationName";
+                    return "getOrganizationColorForUser";
                 case 260:
-                    return "getDeviceOwnerOrganizationName";
+                    return "setOrganizationName";
                 case 261:
-                    return "getOrganizationNameForUser";
+                    return "getOrganizationName";
                 case 262:
-                    return "getUserProvisioningState";
+                    return "getDeviceOwnerOrganizationName";
                 case 263:
-                    return "setUserProvisioningState";
+                    return "getOrganizationNameForUser";
                 case 264:
-                    return "setAffiliationIds";
+                    return "getUserProvisioningState";
                 case 265:
-                    return "getAffiliationIds";
+                    return "setUserProvisioningState";
                 case 266:
-                    return "isCallingUserAffiliated";
+                    return "setAffiliationIds";
                 case 267:
-                    return "isAffiliatedUser";
+                    return "getAffiliationIds";
                 case 268:
-                    return "setSecurityLoggingEnabled";
+                    return "isCallingUserAffiliated";
                 case 269:
-                    return "isSecurityLoggingEnabled";
+                    return "isAffiliatedUser";
                 case 270:
-                    return "retrieveSecurityLogs";
+                    return "setSecurityLoggingEnabled";
                 case 271:
-                    return "retrievePreRebootSecurityLogs";
+                    return "isSecurityLoggingEnabled";
                 case 272:
-                    return "forceNetworkLogs";
+                    return "retrieveSecurityLogs";
                 case 273:
-                    return "forceSecurityLogs";
+                    return "retrievePreRebootSecurityLogs";
                 case 274:
-                    return "isUninstallInQueue";
+                    return "forceNetworkLogs";
                 case 275:
-                    return "uninstallPackageWithActiveAdmins";
+                    return "forceSecurityLogs";
                 case 276:
-                    return "isDeviceProvisioned";
+                    return "setAuditLogEnabled";
                 case 277:
-                    return "isDeviceProvisioningConfigApplied";
+                    return SecContentProviderURI.AUDITLOGPOLICY_AUDITLOGENABLED_METHOD;
                 case 278:
-                    return "setDeviceProvisioningConfigApplied";
+                    return "setAuditLogEventsCallback";
                 case 279:
-                    return "forceUpdateUserSetupComplete";
+                    return "isUninstallInQueue";
                 case 280:
-                    return "setBackupServiceEnabled";
+                    return "uninstallPackageWithActiveAdmins";
                 case 281:
-                    return "isBackupServiceEnabled";
+                    return "isDeviceProvisioned";
                 case 282:
-                    return "setNetworkLoggingEnabled";
+                    return "isDeviceProvisioningConfigApplied";
                 case 283:
-                    return "isNetworkLoggingEnabled";
+                    return "setDeviceProvisioningConfigApplied";
                 case 284:
-                    return "retrieveNetworkLogs";
+                    return "forceUpdateUserSetupComplete";
                 case 285:
-                    return "bindDeviceAdminServiceAsUser";
+                    return "setBackupServiceEnabled";
                 case 286:
-                    return "getBindDeviceAdminTargetUsers";
+                    return "isBackupServiceEnabled";
                 case 287:
-                    return "isEphemeralUser";
+                    return "setNetworkLoggingEnabled";
                 case 288:
-                    return "getLastSecurityLogRetrievalTime";
+                    return "isNetworkLoggingEnabled";
                 case 289:
-                    return "getLastBugReportRequestTime";
+                    return "retrieveNetworkLogs";
                 case 290:
-                    return "getLastNetworkLogRetrievalTime";
+                    return "bindDeviceAdminServiceAsUser";
                 case 291:
-                    return "setResetPasswordToken";
+                    return "getBindDeviceAdminTargetUsers";
                 case 292:
-                    return "clearResetPasswordToken";
+                    return "isEphemeralUser";
                 case 293:
-                    return "isResetPasswordTokenActive";
+                    return "getLastSecurityLogRetrievalTime";
                 case 294:
-                    return "resetPasswordWithToken";
+                    return "getLastBugReportRequestTime";
                 case 295:
-                    return "isCurrentInputMethodSetByOwner";
+                    return "getLastNetworkLogRetrievalTime";
                 case 296:
-                    return "getOwnerInstalledCaCerts";
+                    return "setResetPasswordToken";
                 case 297:
-                    return "clearApplicationUserData";
+                    return "clearResetPasswordToken";
                 case 298:
-                    return "setLogoutEnabled";
+                    return "isResetPasswordTokenActive";
                 case 299:
-                    return "isLogoutEnabled";
+                    return "resetPasswordWithToken";
                 case 300:
-                    return "getDisallowedSystemApps";
+                    return "isCurrentInputMethodSetByOwner";
                 case 301:
-                    return "transferOwnership";
+                    return "getOwnerInstalledCaCerts";
                 case 302:
-                    return "getTransferOwnershipBundle";
+                    return "clearApplicationUserData";
                 case 303:
-                    return "setStartUserSessionMessage";
+                    return "setLogoutEnabled";
                 case 304:
-                    return "setEndUserSessionMessage";
+                    return "isLogoutEnabled";
                 case 305:
-                    return "getStartUserSessionMessage";
+                    return "getDisallowedSystemApps";
                 case 306:
-                    return "getEndUserSessionMessage";
+                    return "transferOwnership";
                 case 307:
-                    return "setMeteredDataDisabledPackages";
+                    return "getTransferOwnershipBundle";
                 case 308:
-                    return "getMeteredDataDisabledPackages";
+                    return "setStartUserSessionMessage";
                 case 309:
-                    return "addOverrideApn";
+                    return "setEndUserSessionMessage";
                 case 310:
-                    return "updateOverrideApn";
+                    return "getStartUserSessionMessage";
                 case 311:
-                    return "removeOverrideApn";
+                    return "getEndUserSessionMessage";
                 case 312:
-                    return "getOverrideApns";
+                    return "setMeteredDataDisabledPackages";
                 case 313:
-                    return "setOverrideApnsEnabled";
+                    return "getMeteredDataDisabledPackages";
                 case 314:
-                    return "isOverrideApnEnabled";
+                    return "addOverrideApn";
                 case 315:
-                    return "isMeteredDataDisabledPackageForUser";
+                    return "updateOverrideApn";
                 case 316:
-                    return "getActualDeviceOwnerMDM";
+                    return "removeOverrideApn";
                 case 317:
-                    return "rebootMDM";
+                    return "getOverrideApns";
                 case 318:
-                    return "setPasswordQualityMDM";
+                    return "setOverrideApnsEnabled";
                 case 319:
-                    return "setPasswordMinimumLengthMDM";
+                    return "isOverrideApnEnabled";
                 case 320:
-                    return "setPasswordMinimumUpperCaseMDM";
+                    return "isMeteredDataDisabledPackageForUser";
                 case 321:
-                    return "setPasswordMinimumLowerCaseMDM";
+                    return "setPasswordQualityMDM";
                 case 322:
-                    return "setPasswordMinimumLettersMDM";
+                    return "setPasswordMinimumLengthMDM";
                 case 323:
-                    return "setPasswordMinimumNumericMDM";
+                    return "setPasswordMinimumUpperCaseMDM";
                 case 324:
-                    return "setPasswordMinimumSymbolsMDM";
+                    return "setPasswordMinimumLowerCaseMDM";
                 case 325:
-                    return "setPasswordMinimumNonLetterMDM";
+                    return "setPasswordMinimumLettersMDM";
                 case 326:
-                    return "setPasswordHistoryLengthMDM";
+                    return "setPasswordMinimumNumericMDM";
                 case 327:
-                    return "setPasswordExpirationTimeoutMDM";
+                    return "setPasswordMinimumSymbolsMDM";
                 case 328:
-                    return "setMaximumFailedPasswordsForWipeMDM";
+                    return "setPasswordMinimumNonLetterMDM";
                 case 329:
-                    return "setMaximumTimeToLockMDM";
+                    return "setPasswordHistoryLengthMDM";
                 case 330:
-                    return "setKeyguardDisabledFeaturesMDM";
+                    return "setPasswordExpirationTimeoutMDM";
                 case 331:
-                    return "setApplicationRestrictionsMDM";
+                    return "setMaximumFailedPasswordsForWipeMDM";
                 case 332:
-                    return "getApplicationRestrictionsMDM";
+                    return "setMaximumTimeToLockMDM";
                 case 333:
-                    return "addCrossProfileIntentFilterMDM";
+                    return "setKeyguardDisabledFeaturesMDM";
                 case 334:
-                    return "clearCrossProfileIntentFiltersMDM";
+                    return "setApplicationRestrictionsMDM";
                 case 335:
-                    return "resetPasswordWithTokenMDM";
+                    return "getApplicationRestrictionsMDM";
                 case 336:
-                    return "isResetPasswordTokenActiveMDM";
+                    return "resetPasswordWithTokenMDM";
                 case 337:
-                    return "clearResetPasswordTokenMDM";
+                    return "isResetPasswordTokenActiveMDM";
                 case 338:
-                    return "setResetPasswordTokenMDM";
+                    return "clearResetPasswordTokenMDM";
                 case 339:
-                    return "setTrustAgentConfigurationMDM";
+                    return "setResetPasswordTokenMDM";
                 case 340:
-                    return "isProfileOwnerOfOrganizationOwnedDeviceMDM";
+                    return "setTrustAgentConfigurationMDM";
                 case 341:
-                    return "hasDelegatedPermission";
+                    return "isProfileOwnerOfOrganizationOwnedDeviceMDM";
                 case 342:
-                    return "setGlobalPrivateDns";
+                    return "hasDelegatedPermission";
                 case 343:
-                    return "getGlobalPrivateDnsMode";
+                    return "getDelegatedPackages";
                 case 344:
-                    return "getGlobalPrivateDnsHost";
+                    return "reportFailedPasswordAttemptWithFailureCount";
                 case 345:
-                    return "setProfileOwnerOnOrganizationOwnedDevice";
+                    return "setGlobalPrivateDns";
                 case 346:
-                    return "installUpdateFromFile";
+                    return "getGlobalPrivateDnsMode";
                 case 347:
-                    return "setCrossProfileCalendarPackages";
+                    return "getGlobalPrivateDnsHost";
                 case 348:
-                    return "getCrossProfileCalendarPackages";
+                    return "setProfileOwnerOnOrganizationOwnedDevice";
                 case 349:
-                    return "isPackageAllowedToAccessCalendarForUser";
+                    return "installUpdateFromFile";
                 case 350:
-                    return "getCrossProfileCalendarPackagesForUser";
+                    return "setCrossProfileCalendarPackages";
                 case 351:
-                    return "setCrossProfilePackages";
+                    return "getCrossProfileCalendarPackages";
                 case 352:
-                    return "getCrossProfilePackages";
+                    return "isPackageAllowedToAccessCalendarForUser";
                 case 353:
-                    return "getAllCrossProfilePackages";
+                    return "getCrossProfileCalendarPackagesForUser";
                 case 354:
-                    return "getDefaultCrossProfilePackages";
+                    return "setCrossProfilePackages";
                 case 355:
-                    return "isManagedKiosk";
+                    return "getCrossProfilePackages";
                 case 356:
-                    return "isUnattendedManagedKiosk";
+                    return "getAllCrossProfilePackages";
                 case 357:
-                    return "startViewCalendarEventInManagedProfile";
+                    return "getDefaultCrossProfilePackages";
                 case 358:
-                    return "setKeyGrantForApp";
+                    return "isManagedKiosk";
                 case 359:
-                    return "getKeyPairGrants";
+                    return "isUnattendedManagedKiosk";
                 case 360:
-                    return "setKeyGrantToWifiAuth";
+                    return "startViewCalendarEventInManagedProfile";
                 case 361:
-                    return "isKeyPairGrantedToWifiAuth";
+                    return "setKeyGrantForApp";
                 case 362:
-                    return "setUserControlDisabledPackages";
+                    return "getKeyPairGrants";
                 case 363:
-                    return "getUserControlDisabledPackages";
+                    return "setKeyGrantToWifiAuth";
                 case 364:
-                    return "setCommonCriteriaModeEnabled";
+                    return "isKeyPairGrantedToWifiAuth";
                 case 365:
-                    return "isCommonCriteriaModeEnabled";
+                    return "setUserControlDisabledPackages";
                 case 366:
-                    return "getPersonalAppsSuspendedReasons";
+                    return "getUserControlDisabledPackages";
                 case 367:
-                    return "setPersonalAppsSuspended";
+                    return "setCommonCriteriaModeEnabled";
                 case 368:
-                    return "getManagedProfileMaximumTimeOff";
+                    return "isCommonCriteriaModeEnabled";
                 case 369:
-                    return "setManagedProfileMaximumTimeOff";
+                    return "getPersonalAppsSuspendedReasons";
                 case 370:
-                    return "acknowledgeDeviceCompliant";
+                    return "setPersonalAppsSuspended";
                 case 371:
-                    return "isComplianceAcknowledgementRequired";
+                    return "getManagedProfileMaximumTimeOff";
                 case 372:
-                    return "canProfileOwnerResetPasswordWhenLocked";
+                    return "setManagedProfileMaximumTimeOff";
                 case 373:
-                    return "setNextOperationSafety";
+                    return "acknowledgeDeviceCompliant";
                 case 374:
-                    return "isSafeOperation";
+                    return "isComplianceAcknowledgementRequired";
                 case 375:
-                    return "getEnrollmentSpecificId";
+                    return "canProfileOwnerResetPasswordWhenLocked";
                 case 376:
-                    return "setOrganizationIdForUser";
+                    return "setNextOperationSafety";
                 case 377:
-                    return "createAndProvisionManagedProfile";
+                    return "isSafeOperation";
                 case 378:
-                    return "provisionFullyManagedDevice";
+                    return "getEnrollmentSpecificId";
                 case 379:
-                    return "finalizeWorkProfileProvisioning";
+                    return "setOrganizationIdForUser";
                 case 380:
-                    return "setDeviceOwnerType";
+                    return "createAndProvisionManagedProfile";
                 case 381:
-                    return "getDeviceOwnerType";
+                    return "provisionFullyManagedDevice";
                 case 382:
-                    return "resetDefaultCrossProfileIntentFilters";
+                    return "finalizeWorkProfileProvisioning";
                 case 383:
-                    return "canAdminGrantSensorsPermissions";
+                    return "setDeviceOwnerType";
                 case 384:
-                    return "setUsbDataSignalingEnabled";
+                    return "getDeviceOwnerType";
                 case 385:
-                    return "isUsbDataSignalingEnabled";
+                    return "resetDefaultCrossProfileIntentFilters";
                 case 386:
-                    return "isUsbDataSignalingEnabledForUser";
+                    return "canAdminGrantSensorsPermissions";
                 case 387:
-                    return "canUsbDataSignalingBeDisabled";
+                    return "setUsbDataSignalingEnabled";
                 case 388:
-                    return "setMinimumRequiredWifiSecurityLevel";
+                    return "isUsbDataSignalingEnabled";
                 case 389:
-                    return "getMinimumRequiredWifiSecurityLevel";
+                    return "canUsbDataSignalingBeDisabled";
                 case 390:
-                    return "setWifiSsidPolicy";
+                    return "setMinimumRequiredWifiSecurityLevel";
                 case 391:
-                    return "getWifiSsidPolicy";
+                    return "getMinimumRequiredWifiSecurityLevel";
                 case 392:
-                    return "listForegroundAffiliatedUsers";
+                    return "setWifiSsidPolicy";
                 case 393:
-                    return "setDrawables";
+                    return "getWifiSsidPolicy";
                 case 394:
-                    return "resetDrawables";
+                    return "isDevicePotentiallyStolen";
                 case 395:
-                    return "getDrawable";
+                    return "listForegroundAffiliatedUsers";
                 case 396:
-                    return "isDpcDownloaded";
+                    return "setDrawables";
                 case 397:
-                    return "setDpcDownloaded";
+                    return "resetDrawables";
                 case 398:
-                    return "setStrings";
+                    return "getDrawable";
                 case 399:
-                    return "resetStrings";
+                    return "isDpcDownloaded";
                 case 400:
-                    return "getString";
+                    return "setDpcDownloaded";
                 case 401:
-                    return "resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState";
+                    return "setStrings";
                 case 402:
-                    return "shouldAllowBypassingDevicePolicyManagementRoleQualification";
+                    return "resetStrings";
                 case 403:
-                    return "getPolicyManagedProfiles";
+                    return "getString";
                 case 404:
-                    return "semSetPasswordQuality";
+                    return "resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState";
                 case 405:
-                    return "semSetPasswordMinimumLength";
+                    return "shouldAllowBypassingDevicePolicyManagementRoleQualification";
                 case 406:
-                    return "semSetPasswordMinimumUpperCase";
+                    return "getPolicyManagedProfiles";
                 case 407:
-                    return "semSetPasswordMinimumLowerCase";
+                    return "semSetPasswordQuality";
                 case 408:
-                    return "semSetPasswordMinimumLetters";
+                    return "semSetPasswordMinimumLength";
                 case 409:
-                    return "semSetPasswordMinimumNumeric";
+                    return "semSetPasswordMinimumUpperCase";
                 case 410:
-                    return "semSetPasswordMinimumSymbols";
+                    return "semSetPasswordMinimumLowerCase";
                 case 411:
                     return "semSetPasswordMinimumNonLetter";
                 case 412:
@@ -4367,83 +4401,91 @@ public interface IDevicePolicyManager extends IInterface {
                 case 417:
                     return "semSetKeyguardDisabledFeatures";
                 case 418:
-                    return "semSetCameraDisabled";
-                case 419:
                     return "semSetAllowStorageCard";
-                case 420:
+                case 419:
                     return "semGetAllowStorageCard";
-                case 421:
+                case 420:
                     return "semSetAllowWifi";
-                case 422:
+                case 421:
                     return "semGetAllowWifi";
-                case 423:
+                case 422:
                     return "semSetAllowTextMessaging";
-                case 424:
+                case 423:
                     return "semGetAllowTextMessaging";
-                case TRANSACTION_semSetAllowPopImapEmail /* 425 */:
+                case 424:
                     return "semSetAllowPopImapEmail";
-                case TRANSACTION_semGetAllowPopImapEmail /* 426 */:
+                case 425:
                     return "semGetAllowPopImapEmail";
-                case 427:
+                case 426:
                     return "semSetAllowBrowser";
-                case TRANSACTION_semGetAllowBrowser /* 428 */:
+                case 427:
                     return "semGetAllowBrowser";
-                case 429:
+                case 428:
                     return "semSetAllowInternetSharing";
-                case 430:
+                case 429:
                     return "semGetAllowInternetSharing";
-                case 431:
+                case 430:
                     return "semSetAllowBluetoothMode";
-                case 432:
+                case 431:
                     return "semGetAllowBluetoothMode";
-                case 433:
+                case 432:
                     return "semSetAllowDesktopSync";
-                case 434:
+                case 433:
                     return "semGetAllowDesktopSync";
-                case TRANSACTION_semSetAllowIrda /* 435 */:
+                case 434:
                     return "semSetAllowIrda";
-                case TRANSACTION_semGetAllowIrda /* 436 */:
+                case 435:
                     return "semGetAllowIrda";
-                case 437:
+                case 436:
                     return "semSetRequireStorageCardEncryption";
-                case TRANSACTION_semGetRequireStorageCardEncryption /* 438 */:
+                case 437:
                     return "semGetRequireStorageCardEncryption";
-                case TRANSACTION_semSetChangeNotificationEnabled /* 439 */:
+                case 438:
                     return "semSetChangeNotificationEnabled";
-                case 440:
+                case 439:
                     return "setApplicationExemptions";
-                case 441:
+                case 440:
                     return "getApplicationExemptions";
-                case 442:
+                case 441:
                     return "setMtePolicy";
-                case 443:
+                case 442:
                     return "getMtePolicy";
-                case TRANSACTION_setManagedSubscriptionsPolicy /* 444 */:
+                case 443:
                     return "setManagedSubscriptionsPolicy";
-                case TRANSACTION_getManagedSubscriptionsPolicy /* 445 */:
+                case 444:
                     return "getManagedSubscriptionsPolicy";
-                case 446:
+                case 445:
                     return "getDevicePolicyState";
-                case TRANSACTION_setOverrideKeepProfilesRunning /* 447 */:
-                    return "setOverrideKeepProfilesRunning";
-                case 448:
+                case 446:
                     return "triggerDevicePolicyEngineMigration";
-                case 449:
+                case 447:
                     return "isDeviceFinanced";
-                case 450:
+                case 448:
                     return "getFinancedDeviceKioskRoleHolder";
-                case 451:
-                    return "setBluetoothContactSharingEnabledForKnox";
-                case 452:
-                    return "getBluetoothContactSharingEnabledForKnox";
-                case 453:
+                case 449:
                     return "setUserRestrictionForKnox";
-                case 454:
+                case 450:
                     return "setCrossProfileAppToIgnored";
-                case 455:
+                case 451:
                     return "getSamsungSDcardEncryptionStatus";
-                case 456:
+                case 452:
                     return "calculateHasIncompatibleAccounts";
+                case 453:
+                    return "setContentProtectionPolicy";
+                case 454:
+                    return "getContentProtectionPolicy";
+                case 455:
+                    return "getSubscriptionIds";
+                case 456:
+                    return "setMaxPolicyStorageLimit";
+                case 457:
+                    return "forceSetMaxPolicyStorageLimit";
+                case 458:
+                    return "getMaxPolicyStorageLimit";
+                case 459:
+                    return "getPolicySizeForAdmin";
+                case 460:
+                    return "getHeadlessDeviceOwnerMode";
                 default:
                     return null;
             }
@@ -4459,2286 +4501,2296 @@ public interface IDevicePolicyManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    return onTransact$setPasswordQuality$(data, reply);
+                case 2:
+                    return onTransact$getPasswordQuality$(data, reply);
+                case 3:
+                    return onTransact$setPasswordMinimumLength$(data, reply);
+                case 4:
+                    return onTransact$getPasswordMinimumLength$(data, reply);
+                case 5:
+                    return onTransact$setPasswordMinimumUpperCase$(data, reply);
+                case 6:
+                    return onTransact$getPasswordMinimumUpperCase$(data, reply);
+                case 7:
+                    return onTransact$setPasswordMinimumLowerCase$(data, reply);
+                case 8:
+                    return onTransact$getPasswordMinimumLowerCase$(data, reply);
+                case 9:
+                    return onTransact$setPasswordMinimumLetters$(data, reply);
+                case 10:
+                    return onTransact$getPasswordMinimumLetters$(data, reply);
+                case 11:
+                    return onTransact$setPasswordMinimumNumeric$(data, reply);
+                case 12:
+                    return onTransact$getPasswordMinimumNumeric$(data, reply);
+                case 13:
+                    return onTransact$setPasswordMinimumSymbols$(data, reply);
+                case 14:
+                    return onTransact$getPasswordMinimumSymbols$(data, reply);
+                case 15:
+                    return onTransact$setPasswordMinimumNonLetter$(data, reply);
+                case 16:
+                    return onTransact$getPasswordMinimumNonLetter$(data, reply);
+                case 17:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    PasswordMetrics _result = getPasswordMinimumMetrics(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 18:
+                    return onTransact$setPasswordHistoryLength$(data, reply);
+                case 19:
+                    return onTransact$getPasswordHistoryLength$(data, reply);
+                case 20:
+                    return onTransact$setPasswordExpirationTimeout$(data, reply);
+                case 21:
+                    return onTransact$getPasswordExpirationTimeout$(data, reply);
+                case 22:
+                    return onTransact$getPasswordExpiration$(data, reply);
+                case 23:
+                    return onTransact$isActivePasswordSufficient$(data, reply);
+                case 24:
+                    boolean _result2 = isActivePasswordSufficientForDeviceRequirement();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 25:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isPasswordSufficientAfterProfileUnification(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 26:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result4 = getPasswordComplexity(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 27:
+                    return onTransact$setRequiredPasswordComplexity$(data, reply);
+                case 28:
+                    String _arg04 = data.readString();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result5 = getRequiredPasswordComplexity(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 29:
+                    int _arg05 = data.readInt();
+                    boolean _arg14 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result6 = getAggregatedPasswordComplexityForUser(_arg05, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 30:
+                    ComponentName _arg06 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result7 = isUsingUnifiedPassword(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 31:
+                    return onTransact$getCurrentFailedPasswordAttempts$(data, reply);
+                case 32:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result8 = getCurrentFailedBiometricAttempts(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 33:
+                    int _arg08 = data.readInt();
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result9 = getProfileWithMinimumFailedPasswordsForWipe(_arg08, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 34:
+                    return onTransact$setMaximumFailedPasswordsForWipe$(data, reply);
+                case 35:
+                    return onTransact$getMaximumFailedPasswordsForWipe$(data, reply);
+                case 36:
+                    String _arg09 = data.readString();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = resetPassword(_arg09, _arg16);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 37:
+                    return onTransact$setMaximumTimeToLock$(data, reply);
+                case 38:
+                    return onTransact$getMaximumTimeToLock$(data, reply);
+                case 39:
+                    return onTransact$setRequiredStrongAuthTimeout$(data, reply);
+                case 40:
+                    return onTransact$getRequiredStrongAuthTimeout$(data, reply);
+                case 41:
+                    return onTransact$lockNow$(data, reply);
+                case 42:
+                    return onTransact$wipeDataWithReason$(data, reply);
+                case 43:
+                    return onTransact$setFactoryResetProtectionPolicy$(data, reply);
+                case 44:
+                    ComponentName _arg010 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    FactoryResetProtectionPolicy _result11 = getFactoryResetProtectionPolicy(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 45:
+                    boolean _result12 = isFactoryResetProtectionPolicySupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 46:
+                    AndroidFuture<Boolean> _arg011 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendLostModeLocationUpdate(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    return onTransact$setGlobalProxy$(data, reply);
+                case 48:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result13 = getGlobalProxyAdmin(_arg012);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 49:
+                    ComponentName _arg013 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    ProxyInfo _arg17 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRecommendedGlobalProxy(_arg013, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    ComponentName _arg014 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result14 = setStorageEncryption(_arg014, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 51:
+                    ComponentName _arg015 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = getStorageEncryption(_arg015, _arg19);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 52:
+                    String _arg016 = data.readString();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result16 = getStorageEncryptionStatus(_arg016, _arg110);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 53:
+                    ComponentName _arg017 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result17 = requestBugreport(_arg017);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 54:
+                    return onTransact$setCameraDisabled$(data, reply);
+                case 55:
+                    return onTransact$getCameraDisabled$(data, reply);
+                case 56:
+                    return onTransact$setScreenCaptureDisabled$(data, reply);
+                case 57:
+                    return onTransact$getScreenCaptureDisabled$(data, reply);
+                case 58:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNearbyNotificationStreamingPolicy(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 59:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result18 = getNearbyNotificationStreamingPolicy(_arg019);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 60:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNearbyAppStreamingPolicy(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 61:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result19 = getNearbyAppStreamingPolicy(_arg021);
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 62:
+                    return onTransact$setKeyguardDisabledFeatures$(data, reply);
+                case 63:
+                    return onTransact$getKeyguardDisabledFeatures$(data, reply);
+                case 64:
+                    return onTransact$setActiveAdmin$(data, reply);
+                case 65:
+                    ComponentName _arg022 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result20 = isAdminActive(_arg022, _arg111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 66:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<ComponentName> _result21 = getActiveAdmins(_arg023);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result21, 1);
+                    return true;
+                case 67:
+                    String _arg024 = data.readString();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result22 = packageHasActiveAdmins(_arg024, _arg112);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 68:
+                    return onTransact$getRemoveWarning$(data, reply);
+                case 69:
+                    ComponentName _arg025 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeActiveAdmin(_arg025, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 70:
+                    ComponentName _arg026 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg114 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceRemoveActiveAdmin(_arg026, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 71:
+                    return onTransact$hasGrantedPolicy$(data, reply);
+                case 72:
+                    PasswordMetrics _arg027 = (PasswordMetrics) data.readTypedObject(PasswordMetrics.CREATOR);
+                    int _arg115 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportPasswordChanged(_arg027, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    int _arg028 = data.readInt();
+                    boolean _arg116 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    reportFailedPasswordAttempt(_arg028, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 74:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportSuccessfulPasswordAttempt(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportFailedBiometricAttempt(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    int _arg031 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportSuccessfulBiometricAttempt(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 77:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportKeyguardDismissed(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    int _arg033 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportKeyguardSecured(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    return onTransact$setDeviceOwner$(data, reply);
+                case 80:
+                    boolean _arg034 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    ComponentName _result23 = getDeviceOwnerComponent(_arg034);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result23, 1);
+                    return true;
+                case 81:
+                    int _arg035 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result24 = getDeviceOwnerComponentOnUser(_arg035);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result24, 1);
+                    return true;
+                case 82:
+                    boolean _result25 = hasDeviceOwner();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 83:
+                    String _result26 = getDeviceOwnerName();
+                    reply.writeNoException();
+                    reply.writeString(_result26);
+                    return true;
+                case 84:
+                    String _arg036 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearDeviceOwner(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    int _result27 = getDeviceOwnerUserId();
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 86:
+                    ComponentName _arg037 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result28 = setProfileOwner(_arg037, _arg117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result28);
+                    return true;
+                case 87:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result29 = getProfileOwnerAsUser(_arg038);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result29, 1);
+                    return true;
+                case 88:
+                    UserHandle _arg039 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ComponentName _result30 = getProfileOwnerOrDeviceOwnerSupervisionComponent(_arg039);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result30, 1);
+                    return true;
+                case 89:
+                    ComponentName _arg040 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result31 = isSupervisionComponent(_arg040);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result31);
+                    return true;
+                case 90:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result32 = getProfileOwnerName(_arg041);
+                    reply.writeNoException();
+                    reply.writeString(_result32);
+                    return true;
+                case 91:
+                    ComponentName _arg042 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setProfileEnabled(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    ComponentName _arg043 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg118 = data.readString();
+                    data.enforceNoDataAvail();
+                    setProfileName(_arg043, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 93:
+                    ComponentName _arg044 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    clearProfileOwner(_arg044);
+                    reply.writeNoException();
+                    return true;
+                case 94:
+                    boolean _result33 = hasUserSetupCompleted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 95:
+                    boolean _result34 = isOrganizationOwnedDeviceWithManagedProfile();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 96:
+                    return onTransact$checkDeviceIdentifierAccess$(data, reply);
+                case 97:
+                    ComponentName _arg045 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CharSequence _arg119 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setDeviceOwnerLockScreenInfo(_arg045, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 98:
+                    CharSequence _result35 = getDeviceOwnerLockScreenInfo();
+                    reply.writeNoException();
+                    if (_result35 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result35, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 99:
+                    return onTransact$setPackagesSuspended$(data, reply);
+                case 100:
+                    return onTransact$isPackageSuspended$(data, reply);
+                case 101:
+                    List<String> _result36 = listPolicyExemptApps();
+                    reply.writeNoException();
+                    reply.writeStringList(_result36);
+                    return true;
+                case 102:
+                    return onTransact$installCaCert$(data, reply);
+                case 103:
+                    return onTransact$uninstallCaCerts$(data, reply);
+                case 104:
+                    ComponentName _arg046 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg120 = data.readString();
+                    data.enforceNoDataAvail();
+                    enforceCanManageCaCerts(_arg046, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 105:
+                    return onTransact$approveCaCert$(data, reply);
+                case 106:
+                    String _arg047 = data.readString();
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result37 = isCaCertApproved(_arg047, _arg121);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 107:
+                    return onTransact$installKeyPair$(data, reply);
+                case 108:
+                    return onTransact$removeKeyPair$(data, reply);
+                case 109:
+                    String _arg048 = data.readString();
+                    String _arg122 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result38 = hasKeyPair(_arg048, _arg122);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result38);
+                    return true;
+                case 110:
+                    return onTransact$generateKeyPair$(data, reply);
+                case 111:
+                    return onTransact$setKeyPairCertificate$(data, reply);
+                case 112:
+                    return onTransact$choosePrivateKeyAlias$(data, reply);
+                case 113:
+                    return onTransact$setDelegatedScopes$(data, reply);
+                case 114:
+                    ComponentName _arg049 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg123 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result39 = getDelegatedScopes(_arg049, _arg123);
+                    reply.writeNoException();
+                    reply.writeStringList(_result39);
+                    return true;
+                case 115:
+                    ComponentName _arg050 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg124 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result40 = getDelegatePackages(_arg050, _arg124);
+                    reply.writeNoException();
+                    reply.writeStringList(_result40);
+                    return true;
+                case 116:
+                    ComponentName _arg051 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg125 = data.readString();
+                    data.enforceNoDataAvail();
+                    setCertInstallerPackage(_arg051, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 117:
+                    ComponentName _arg052 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result41 = getCertInstallerPackage(_arg052);
+                    reply.writeNoException();
+                    reply.writeString(_result41);
+                    return true;
+                case 118:
+                    return onTransact$setAlwaysOnVpnPackage$(data, reply);
+                case 119:
+                    ComponentName _arg053 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result42 = getAlwaysOnVpnPackage(_arg053);
+                    reply.writeNoException();
+                    reply.writeString(_result42);
+                    return true;
+                case 120:
+                    int _arg054 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result43 = getAlwaysOnVpnPackageForUser(_arg054);
+                    reply.writeNoException();
+                    reply.writeString(_result43);
+                    return true;
+                case 121:
+                    ComponentName _arg055 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result44 = isAlwaysOnVpnLockdownEnabled(_arg055);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result44);
+                    return true;
+                case 122:
+                    int _arg056 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result45 = isAlwaysOnVpnLockdownEnabledForUser(_arg056);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result45);
+                    return true;
+                case 123:
+                    ComponentName _arg057 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result46 = getAlwaysOnVpnLockdownAllowlist(_arg057);
+                    reply.writeNoException();
+                    reply.writeStringList(_result46);
+                    return true;
+                case 124:
+                    return onTransact$addPersistentPreferredActivity$(data, reply);
+                case 125:
+                    return onTransact$clearPackagePersistentPreferredActivities$(data, reply);
+                case 126:
+                    return onTransact$setDefaultSmsApplication$(data, reply);
+                case 127:
+                    String _arg058 = data.readString();
+                    data.enforceNoDataAvail();
+                    setDefaultDialerApplication(_arg058);
+                    reply.writeNoException();
+                    return true;
+                case 128:
+                    return onTransact$setApplicationRestrictions$(data, reply);
+                case 129:
+                    return onTransact$getApplicationRestrictions$(data, reply);
+                case 130:
+                    ComponentName _arg059 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg126 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result47 = setApplicationRestrictionsManagingPackage(_arg059, _arg126);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 131:
+                    ComponentName _arg060 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result48 = getApplicationRestrictionsManagingPackage(_arg060);
+                    reply.writeNoException();
+                    reply.writeString(_result48);
+                    return true;
+                case 132:
+                    String _arg061 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result49 = isCallerApplicationRestrictionsManagingPackage(_arg061);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result49);
+                    return true;
+                case 133:
+                    ComponentName _arg062 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    ComponentName _arg127 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRestrictionsProvider(_arg062, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 134:
+                    int _arg063 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ComponentName _result50 = getRestrictionsProvider(_arg063);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result50, 1);
+                    return true;
+                case 135:
+                    return onTransact$setUserRestriction$(data, reply);
+                case 136:
+                    String _arg064 = data.readString();
+                    String _arg128 = data.readString();
+                    data.enforceNoDataAvail();
+                    setUserRestrictionGlobally(_arg064, _arg128);
+                    reply.writeNoException();
+                    return true;
+                case 137:
+                    return onTransact$getUserRestrictions$(data, reply);
+                case 138:
+                    String _arg065 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result51 = getUserRestrictionsGlobally(_arg065);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result51, 1);
+                    return true;
+                case 139:
+                    return onTransact$addCrossProfileIntentFilter$(data, reply);
+                case 140:
+                    ComponentName _arg066 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg129 = data.readString();
+                    data.enforceNoDataAvail();
+                    clearCrossProfileIntentFilters(_arg066, _arg129);
+                    reply.writeNoException();
+                    return true;
+                case 141:
+                    ComponentName _arg067 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg130 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    boolean _result52 = setPermittedAccessibilityServices(_arg067, _arg130);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result52);
+                    return true;
+                case 142:
+                    ComponentName _arg068 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result53 = getPermittedAccessibilityServices(_arg068);
+                    reply.writeNoException();
+                    reply.writeStringList(_result53);
+                    return true;
+                case 143:
+                    int _arg069 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result54 = getPermittedAccessibilityServicesForUser(_arg069);
+                    reply.writeNoException();
+                    reply.writeStringList(_result54);
+                    return true;
+                case 144:
+                    return onTransact$isAccessibilityServicePermittedByAdmin$(data, reply);
+                case 145:
+                    return onTransact$setPermittedInputMethods$(data, reply);
+                case 146:
+                    return onTransact$getPermittedInputMethods$(data, reply);
+                case 147:
+                    int _arg070 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result55 = getPermittedInputMethodsAsUser(_arg070);
+                    reply.writeNoException();
+                    reply.writeStringList(_result55);
+                    return true;
+                case 148:
+                    return onTransact$isInputMethodPermittedByAdmin$(data, reply);
+                case 149:
+                    ComponentName _arg071 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg131 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    boolean _result56 = setPermittedCrossProfileNotificationListeners(_arg071, _arg131);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result56);
+                    return true;
+                case 150:
+                    ComponentName _arg072 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result57 = getPermittedCrossProfileNotificationListeners(_arg072);
+                    reply.writeNoException();
+                    reply.writeStringList(_result57);
+                    return true;
+                case 151:
+                    String _arg073 = data.readString();
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result58 = isNotificationListenerServicePermitted(_arg073, _arg132);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result58);
+                    return true;
+                case 152:
+                    String _arg074 = data.readString();
+                    data.enforceNoDataAvail();
+                    Intent _result59 = createAdminSupportIntent(_arg074);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result59, 1);
+                    return true;
+                case 153:
+                    int _arg075 = data.readInt();
+                    String _arg133 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result60 = getEnforcingAdminAndUserDetails(_arg075, _arg133);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result60, 1);
+                    return true;
+                case 154:
+                    int _arg076 = data.readInt();
+                    String _arg134 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<EnforcingAdmin> _result61 = getEnforcingAdminsForRestriction(_arg076, _arg134);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result61, 1);
+                    return true;
+                case 155:
+                    return onTransact$setApplicationHidden$(data, reply);
+                case 156:
+                    return onTransact$isApplicationHidden$(data, reply);
+                case 157:
+                    return onTransact$createAndManageUser$(data, reply);
+                case 158:
+                    ComponentName _arg077 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg135 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result62 = removeUser(_arg077, _arg135);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result62);
+                    return true;
+                case 159:
+                    ComponentName _arg078 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg136 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result63 = switchUser(_arg078, _arg136);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result63);
+                    return true;
+                case 160:
+                    ComponentName _arg079 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg137 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result64 = startUserInBackground(_arg079, _arg137);
+                    reply.writeNoException();
+                    reply.writeInt(_result64);
+                    return true;
+                case 161:
+                    ComponentName _arg080 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg138 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result65 = stopUser(_arg080, _arg138);
+                    reply.writeNoException();
+                    reply.writeInt(_result65);
+                    return true;
+                case 162:
+                    ComponentName _arg081 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result66 = logoutUser(_arg081);
+                    reply.writeNoException();
+                    reply.writeInt(_result66);
+                    return true;
+                case 163:
+                    int _result67 = logoutUserInternal();
+                    reply.writeNoException();
+                    reply.writeInt(_result67);
+                    return true;
+                case 164:
+                    int _result68 = getLogoutUserId();
+                    reply.writeNoException();
+                    reply.writeInt(_result68);
+                    return true;
+                case 165:
+                    ComponentName _arg082 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<UserHandle> _result69 = getSecondaryUsers(_arg082);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result69, 1);
+                    return true;
+                case 166:
+                    int _arg083 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeNewUserDisclaimer(_arg083);
+                    reply.writeNoException();
+                    return true;
+                case 167:
+                    int _arg084 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result70 = isNewUserDisclaimerAcknowledged(_arg084);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 168:
+                    return onTransact$enableSystemApp$(data, reply);
+                case 169:
+                    return onTransact$enableSystemAppWithIntent$(data, reply);
+                case 170:
+                    return onTransact$installExistingPackage$(data, reply);
+                case 171:
+                    return onTransact$setAccountManagementDisabled$(data, reply);
+                case 172:
+                    String _arg085 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result71 = getAccountTypesWithManagementDisabled(_arg085);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result71);
+                    return true;
+                case 173:
+                    return onTransact$getAccountTypesWithManagementDisabledAsUser$(data, reply);
+                case 174:
+                    ComponentName _arg086 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg139 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSecondaryLockscreenEnabled(_arg086, _arg139);
+                    reply.writeNoException();
+                    return true;
+                case 175:
+                    UserHandle _arg087 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result72 = isSecondaryLockscreenEnabled(_arg087);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result72);
+                    return true;
+                case 176:
+                    List<PreferentialNetworkServiceConfig> _arg088 = data.createTypedArrayList(PreferentialNetworkServiceConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPreferentialNetworkServiceConfigs(_arg088);
+                    reply.writeNoException();
+                    return true;
+                case 177:
+                    List<PreferentialNetworkServiceConfig> _result73 = getPreferentialNetworkServiceConfigs();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result73, 1);
+                    return true;
+                case 178:
+                    return onTransact$setLockTaskPackages$(data, reply);
+                case 179:
+                    ComponentName _arg089 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg140 = data.readString();
+                    data.enforceNoDataAvail();
+                    String[] _result74 = getLockTaskPackages(_arg089, _arg140);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result74);
+                    return true;
+                case 180:
+                    String _arg090 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result75 = isLockTaskPermitted(_arg090);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result75);
+                    return true;
+                case 181:
+                    return onTransact$setLockTaskFeatures$(data, reply);
+                case 182:
+                    ComponentName _arg091 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg141 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result76 = getLockTaskFeatures(_arg091, _arg141);
+                    reply.writeNoException();
+                    reply.writeInt(_result76);
+                    return true;
+                case 183:
+                    return onTransact$setGlobalSetting$(data, reply);
+                case 184:
+                    return onTransact$setSystemSetting$(data, reply);
+                case 185:
+                    return onTransact$setSecureSetting$(data, reply);
+                case 186:
+                    return onTransact$setConfiguredNetworksLockdownState$(data, reply);
+                case 187:
+                    ComponentName _arg092 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result77 = hasLockdownAdminConfiguredNetworks(_arg092);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result77);
+                    return true;
+                case 188:
+                    ComponentName _arg093 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg142 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLocationEnabled(_arg093, _arg142);
+                    reply.writeNoException();
+                    return true;
+                case 189:
+                    return onTransact$setTime$(data, reply);
+                case 190:
+                    return onTransact$setTimeZone$(data, reply);
+                case 191:
+                    ComponentName _arg094 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg143 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMasterVolumeMuted(_arg094, _arg143);
+                    reply.writeNoException();
+                    return true;
+                case 192:
+                    ComponentName _arg095 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result78 = isMasterVolumeMuted(_arg095);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result78);
+                    return true;
+                case 193:
+                    return onTransact$notifyLockTaskModeChanged$(data, reply);
+                case 194:
+                    return onTransact$setUninstallBlocked$(data, reply);
+                case 195:
+                    String _arg096 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result79 = isUninstallBlocked(_arg096);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result79);
+                    return true;
+                case 196:
+                    ComponentName _arg097 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg144 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCrossProfileCallerIdDisabled(_arg097, _arg144);
+                    reply.writeNoException();
+                    return true;
+                case 197:
+                    ComponentName _arg098 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result80 = getCrossProfileCallerIdDisabled(_arg098);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result80);
+                    return true;
+                case 198:
+                    int _arg099 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result81 = getCrossProfileCallerIdDisabledForUser(_arg099);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result81);
+                    return true;
+                case 199:
+                    ComponentName _arg0100 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg145 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCrossProfileContactsSearchDisabled(_arg0100, _arg145);
+                    reply.writeNoException();
+                    return true;
+                case 200:
+                    ComponentName _arg0101 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result82 = getCrossProfileContactsSearchDisabled(_arg0101);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result82);
+                    return true;
+                case 201:
+                    int _arg0102 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result83 = getCrossProfileContactsSearchDisabledForUser(_arg0102);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result83);
+                    return true;
+                case 202:
+                    return onTransact$startManagedQuickContact$(data, reply);
+                case 203:
+                    PackagePolicy _arg0103 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setManagedProfileCallerIdAccessPolicy(_arg0103);
+                    reply.writeNoException();
+                    return true;
+                case 204:
+                    PackagePolicy _result84 = getManagedProfileCallerIdAccessPolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result84, 1);
+                    return true;
+                case 205:
+                    int _arg0104 = data.readInt();
+                    String _arg146 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result85 = hasManagedProfileCallerIdAccess(_arg0104, _arg146);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result85);
+                    return true;
+                case 206:
+                    PackagePolicy _arg0105 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setCredentialManagerPolicy(_arg0105);
+                    reply.writeNoException();
+                    return true;
+                case 207:
+                    int _arg0106 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PackagePolicy _result86 = getCredentialManagerPolicy(_arg0106);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result86, 1);
+                    return true;
+                case 208:
+                    PackagePolicy _arg0107 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setManagedProfileContactsAccessPolicy(_arg0107);
+                    reply.writeNoException();
+                    return true;
+                case 209:
+                    PackagePolicy _result87 = getManagedProfileContactsAccessPolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result87, 1);
+                    return true;
+                case 210:
+                    int _arg0108 = data.readInt();
+                    String _arg147 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result88 = hasManagedProfileContactsAccess(_arg0108, _arg147);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result88);
+                    return true;
+                case 211:
+                    ComponentName _arg0109 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg148 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBluetoothContactSharingDisabled(_arg0109, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 212:
+                    ComponentName _arg0110 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result89 = getBluetoothContactSharingDisabled(_arg0110);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result89);
+                    return true;
+                case 213:
+                    int _arg0111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result90 = getBluetoothContactSharingDisabledForUser(_arg0111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result90);
+                    return true;
+                case 214:
+                    return onTransact$setTrustAgentConfiguration$(data, reply);
+                case 215:
+                    return onTransact$getTrustAgentConfiguration$(data, reply);
+                case 216:
+                    return onTransact$addCrossProfileWidgetProvider$(data, reply);
+                case 217:
+                    return onTransact$removeCrossProfileWidgetProvider$(data, reply);
+                case 218:
+                    ComponentName _arg0112 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg149 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result91 = getCrossProfileWidgetProviders(_arg0112, _arg149);
+                    reply.writeNoException();
+                    reply.writeStringList(_result91);
+                    return true;
+                case 219:
+                    ComponentName _arg0113 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg150 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAutoTimeRequired(_arg0113, _arg150);
+                    reply.writeNoException();
+                    return true;
+                case 220:
+                    boolean _result92 = getAutoTimeRequired();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result92);
+                    return true;
+                case 221:
+                    return onTransact$setAutoTimeEnabled$(data, reply);
+                case 222:
+                    ComponentName _arg0114 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg151 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result93 = getAutoTimeEnabled(_arg0114, _arg151);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result93);
+                    return true;
+                case 223:
+                    return onTransact$setAutoTimeZoneEnabled$(data, reply);
+                case 224:
+                    ComponentName _arg0115 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg152 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result94 = getAutoTimeZoneEnabled(_arg0115, _arg152);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result94);
+                    return true;
+                case 225:
+                    ComponentName _arg0116 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg153 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setForceEphemeralUsers(_arg0116, _arg153);
+                    reply.writeNoException();
+                    return true;
+                case 226:
+                    ComponentName _arg0117 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result95 = getForceEphemeralUsers(_arg0117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result95);
+                    return true;
+                case 227:
+                    ComponentName _arg0118 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg154 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result96 = isRemovingAdmin(_arg0118, _arg154);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result96);
+                    return true;
+                case 228:
+                    ComponentName _arg0119 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Bitmap _arg155 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUserIcon(_arg0119, _arg155);
+                    reply.writeNoException();
+                    return true;
+                case 229:
+                    return onTransact$setSystemUpdatePolicy$(data, reply);
+                case 230:
+                    SystemUpdatePolicy _result97 = getSystemUpdatePolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result97, 1);
+                    return true;
+                case 231:
+                    clearSystemUpdatePolicyFreezePeriodRecord();
+                    reply.writeNoException();
+                    return true;
+                case 232:
+                    ComponentName _arg0120 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg156 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result98 = setKeyguardDisabled(_arg0120, _arg156);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result98);
+                    return true;
+                case 233:
+                    return onTransact$setStatusBarDisabled$(data, reply);
+                case 234:
+                    String _arg0121 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result99 = isStatusBarDisabled(_arg0121);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result99);
+                    return true;
+                case 235:
+                    boolean _result100 = getDoNotAskCredentialsOnBoot();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result100);
+                    return true;
+                case 236:
+                    SystemUpdateInfo _arg0122 = (SystemUpdateInfo) data.readTypedObject(SystemUpdateInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyPendingSystemUpdate(_arg0122);
+                    reply.writeNoException();
+                    return true;
+                case 237:
+                    ComponentName _arg0123 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg157 = data.readString();
+                    data.enforceNoDataAvail();
+                    SystemUpdateInfo _result101 = getPendingSystemUpdate(_arg0123, _arg157);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result101, 1);
+                    return true;
+                case 238:
+                    return onTransact$setPermissionPolicy$(data, reply);
+                case 239:
+                    ComponentName _arg0124 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result102 = getPermissionPolicy(_arg0124);
+                    reply.writeNoException();
+                    reply.writeInt(_result102);
+                    return true;
+                case 240:
+                    return onTransact$setPermissionGrantState$(data, reply);
+                case 241:
+                    return onTransact$getPermissionGrantState$(data, reply);
+                case 242:
+                    String _arg0125 = data.readString();
+                    String _arg158 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result103 = isProvisioningAllowed(_arg0125, _arg158);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result103);
+                    return true;
+                case 243:
+                    String _arg0126 = data.readString();
+                    String _arg159 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result104 = checkProvisioningPrecondition(_arg0126, _arg159);
+                    reply.writeNoException();
+                    reply.writeInt(_result104);
+                    return true;
+                case 244:
+                    return onTransact$setKeepUninstalledPackages$(data, reply);
+                case 245:
+                    ComponentName _arg0127 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg160 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result105 = getKeepUninstalledPackages(_arg0127, _arg160);
+                    reply.writeNoException();
+                    reply.writeStringList(_result105);
+                    return true;
+                case 246:
+                    ComponentName _arg0128 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result106 = isManagedProfile(_arg0128);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result106);
+                    return true;
+                case 247:
+                    ComponentName _arg0129 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg161 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result107 = getWifiMacAddress(_arg0129, _arg161);
+                    reply.writeNoException();
+                    reply.writeString(_result107);
+                    return true;
+                case 248:
+                    ComponentName _arg0130 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    reboot(_arg0130);
+                    reply.writeNoException();
+                    return true;
+                case 249:
+                    return onTransact$setShortSupportMessage$(data, reply);
+                case 250:
+                    ComponentName _arg0131 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg162 = data.readString();
+                    data.enforceNoDataAvail();
+                    CharSequence _result108 = getShortSupportMessage(_arg0131, _arg162);
+                    reply.writeNoException();
+                    if (_result108 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result108, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 251:
+                    ComponentName _arg0132 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CharSequence _arg163 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setLongSupportMessage(_arg0132, _arg163);
+                    reply.writeNoException();
+                    return true;
+                case 252:
+                    ComponentName _arg0133 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    CharSequence _result109 = getLongSupportMessage(_arg0133);
+                    reply.writeNoException();
+                    if (_result109 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result109, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 253:
+                    ComponentName _arg0134 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg164 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CharSequence _result110 = getShortSupportMessageForUser(_arg0134, _arg164);
+                    reply.writeNoException();
+                    if (_result110 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result110, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 254:
+                    ComponentName _arg0135 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg165 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CharSequence _result111 = getLongSupportMessageForUser(_arg0135, _arg165);
+                    reply.writeNoException();
+                    if (_result111 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result111, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 255:
+                    ComponentName _arg0136 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg166 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setOrganizationColor(_arg0136, _arg166);
+                    reply.writeNoException();
+                    return true;
+                case 256:
+                    int _arg0137 = data.readInt();
+                    int _arg167 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setOrganizationColorForUser(_arg0137, _arg167);
+                    reply.writeNoException();
+                    return true;
+                case 257:
+                    int _arg0138 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearOrganizationIdForUser(_arg0138);
+                    reply.writeNoException();
+                    return true;
+                case 258:
+                    ComponentName _arg0139 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result112 = getOrganizationColor(_arg0139);
+                    reply.writeNoException();
+                    reply.writeInt(_result112);
+                    return true;
+                case 259:
+                    int _arg0140 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result113 = getOrganizationColorForUser(_arg0140);
+                    reply.writeNoException();
+                    reply.writeInt(_result113);
+                    return true;
+                case 260:
+                    return onTransact$setOrganizationName$(data, reply);
+                case 261:
+                    ComponentName _arg0141 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg168 = data.readString();
+                    data.enforceNoDataAvail();
+                    CharSequence _result114 = getOrganizationName(_arg0141, _arg168);
+                    reply.writeNoException();
+                    if (_result114 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result114, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 262:
+                    CharSequence _result115 = getDeviceOwnerOrganizationName();
+                    reply.writeNoException();
+                    if (_result115 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result115, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 263:
+                    int _arg0142 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CharSequence _result116 = getOrganizationNameForUser(_arg0142);
+                    reply.writeNoException();
+                    if (_result116 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result116, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 264:
+                    int _arg0143 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result117 = getUserProvisioningState(_arg0143);
+                    reply.writeNoException();
+                    reply.writeInt(_result117);
+                    return true;
+                case 265:
+                    int _arg0144 = data.readInt();
+                    int _arg169 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setUserProvisioningState(_arg0144, _arg169);
+                    reply.writeNoException();
+                    return true;
+                case 266:
+                    ComponentName _arg0145 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg170 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setAffiliationIds(_arg0145, _arg170);
+                    reply.writeNoException();
+                    return true;
+                case 267:
+                    ComponentName _arg0146 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result118 = getAffiliationIds(_arg0146);
+                    reply.writeNoException();
+                    reply.writeStringList(_result118);
+                    return true;
+                case 268:
+                    boolean _result119 = isCallingUserAffiliated();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result119);
+                    return true;
+                case 269:
+                    int _arg0147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result120 = isAffiliatedUser(_arg0147);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result120);
+                    return true;
+                case 270:
+                    return onTransact$setSecurityLoggingEnabled$(data, reply);
+                case 271:
+                    ComponentName _arg0148 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg171 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result121 = isSecurityLoggingEnabled(_arg0148, _arg171);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result121);
+                    return true;
+                case 272:
+                    ComponentName _arg0149 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg172 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result122 = retrieveSecurityLogs(_arg0149, _arg172);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result122, 1);
+                    return true;
+                case 273:
+                    ComponentName _arg0150 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg173 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result123 = retrievePreRebootSecurityLogs(_arg0150, _arg173);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result123, 1);
+                    return true;
+                case 274:
+                    long _result124 = forceNetworkLogs();
+                    reply.writeNoException();
+                    reply.writeLong(_result124);
+                    return true;
+                case 275:
+                    long _result125 = forceSecurityLogs();
+                    reply.writeNoException();
+                    reply.writeLong(_result125);
+                    return true;
+                case 276:
+                    String _arg0151 = data.readString();
+                    boolean _arg174 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAuditLogEnabled(_arg0151, _arg174);
+                    reply.writeNoException();
+                    return true;
+                case 277:
+                    String _arg0152 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result126 = isAuditLogEnabled(_arg0152);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result126);
+                    return true;
+                case 278:
+                    String _arg0153 = data.readString();
+                    IAuditLogEventsCallback _arg175 = IAuditLogEventsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setAuditLogEventsCallback(_arg0153, _arg175);
+                    reply.writeNoException();
+                    return true;
+                case 279:
+                    String _arg0154 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result127 = isUninstallInQueue(_arg0154);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result127);
+                    return true;
+                case 280:
+                    String _arg0155 = data.readString();
+                    data.enforceNoDataAvail();
+                    uninstallPackageWithActiveAdmins(_arg0155);
+                    reply.writeNoException();
+                    return true;
+                case 281:
+                    boolean _result128 = isDeviceProvisioned();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result128);
+                    return true;
+                case 282:
+                    boolean _result129 = isDeviceProvisioningConfigApplied();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result129);
+                    return true;
+                case 283:
+                    setDeviceProvisioningConfigApplied();
+                    reply.writeNoException();
+                    return true;
+                case 284:
+                    int _arg0156 = data.readInt();
+                    data.enforceNoDataAvail();
+                    forceUpdateUserSetupComplete(_arg0156);
+                    reply.writeNoException();
+                    return true;
+                case 285:
+                    ComponentName _arg0157 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg176 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBackupServiceEnabled(_arg0157, _arg176);
+                    reply.writeNoException();
+                    return true;
+                case 286:
+                    ComponentName _arg0158 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result130 = isBackupServiceEnabled(_arg0158);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result130);
+                    return true;
+                case 287:
+                    return onTransact$setNetworkLoggingEnabled$(data, reply);
+                case 288:
+                    ComponentName _arg0159 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg177 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result131 = isNetworkLoggingEnabled(_arg0159, _arg177);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result131);
+                    return true;
+                case 289:
+                    return onTransact$retrieveNetworkLogs$(data, reply);
+                case 290:
+                    return onTransact$bindDeviceAdminServiceAsUser$(data, reply);
+                case 291:
+                    ComponentName _arg0160 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<UserHandle> _result132 = getBindDeviceAdminTargetUsers(_arg0160);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result132, 1);
+                    return true;
+                case 292:
+                    ComponentName _arg0161 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result133 = isEphemeralUser(_arg0161);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result133);
+                    return true;
+                case 293:
+                    long _result134 = getLastSecurityLogRetrievalTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result134);
+                    return true;
+                case 294:
+                    long _result135 = getLastBugReportRequestTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result135);
+                    return true;
+                case 295:
+                    long _result136 = getLastNetworkLogRetrievalTime();
+                    reply.writeNoException();
+                    reply.writeLong(_result136);
+                    return true;
+                case 296:
+                    return onTransact$setResetPasswordToken$(data, reply);
+                case 297:
+                    ComponentName _arg0162 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg178 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result137 = clearResetPasswordToken(_arg0162, _arg178);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result137);
+                    return true;
+                case 298:
+                    ComponentName _arg0163 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg179 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result138 = isResetPasswordTokenActive(_arg0163, _arg179);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result138);
+                    return true;
+                case 299:
+                    return onTransact$resetPasswordWithToken$(data, reply);
+                case 300:
+                    boolean _result139 = isCurrentInputMethodSetByOwner();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result139);
+                    return true;
+                case 301:
+                    UserHandle _arg0164 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    StringParceledListSlice _result140 = getOwnerInstalledCaCerts(_arg0164);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result140, 1);
+                    return true;
+                case 302:
+                    return onTransact$clearApplicationUserData$(data, reply);
+                case 303:
+                    ComponentName _arg0165 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg180 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLogoutEnabled(_arg0165, _arg180);
+                    reply.writeNoException();
+                    return true;
+                case 304:
+                    boolean _result141 = isLogoutEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result141);
+                    return true;
+                case 305:
+                    return onTransact$getDisallowedSystemApps$(data, reply);
+                case 306:
+                    return onTransact$transferOwnership$(data, reply);
+                case 307:
+                    PersistableBundle _result142 = getTransferOwnershipBundle();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result142, 1);
+                    return true;
+                case 308:
+                    ComponentName _arg0166 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CharSequence _arg181 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setStartUserSessionMessage(_arg0166, _arg181);
+                    reply.writeNoException();
+                    return true;
+                case 309:
+                    ComponentName _arg0167 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    CharSequence _arg182 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setEndUserSessionMessage(_arg0167, _arg182);
+                    reply.writeNoException();
+                    return true;
+                case 310:
+                    ComponentName _arg0168 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    CharSequence _result143 = getStartUserSessionMessage(_arg0168);
+                    reply.writeNoException();
+                    if (_result143 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result143, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 311:
+                    ComponentName _arg0169 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    CharSequence _result144 = getEndUserSessionMessage(_arg0169);
+                    reply.writeNoException();
+                    if (_result144 != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result144, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
+                    return true;
+                case 312:
+                    ComponentName _arg0170 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg183 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    List<String> _result145 = setMeteredDataDisabledPackages(_arg0170, _arg183);
+                    reply.writeNoException();
+                    reply.writeStringList(_result145);
+                    return true;
+                case 313:
+                    ComponentName _arg0171 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result146 = getMeteredDataDisabledPackages(_arg0171);
+                    reply.writeNoException();
+                    reply.writeStringList(_result146);
+                    return true;
+                case 314:
+                    ComponentName _arg0172 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    ApnSetting _arg184 = (ApnSetting) data.readTypedObject(ApnSetting.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result147 = addOverrideApn(_arg0172, _arg184);
+                    reply.writeNoException();
+                    reply.writeInt(_result147);
+                    return true;
+                case 315:
+                    return onTransact$updateOverrideApn$(data, reply);
+                case 316:
+                    ComponentName _arg0173 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg185 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result148 = removeOverrideApn(_arg0173, _arg185);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result148);
+                    return true;
+                case 317:
+                    ComponentName _arg0174 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<ApnSetting> _result149 = getOverrideApns(_arg0174);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result149, 1);
+                    return true;
+                case 318:
+                    ComponentName _arg0175 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg186 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setOverrideApnsEnabled(_arg0175, _arg186);
+                    reply.writeNoException();
+                    return true;
+                case 319:
+                    ComponentName _arg0176 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result150 = isOverrideApnEnabled(_arg0176);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result150);
+                    return true;
+                case 320:
+                    return onTransact$isMeteredDataDisabledPackageForUser$(data, reply);
+                case 321:
+                    return onTransact$setPasswordQualityMDM$(data, reply);
+                case 322:
+                    return onTransact$setPasswordMinimumLengthMDM$(data, reply);
+                case 323:
+                    return onTransact$setPasswordMinimumUpperCaseMDM$(data, reply);
+                case 324:
+                    return onTransact$setPasswordMinimumLowerCaseMDM$(data, reply);
+                case 325:
+                    return onTransact$setPasswordMinimumLettersMDM$(data, reply);
+                case 326:
+                    return onTransact$setPasswordMinimumNumericMDM$(data, reply);
+                case 327:
+                    return onTransact$setPasswordMinimumSymbolsMDM$(data, reply);
+                case 328:
+                    return onTransact$setPasswordMinimumNonLetterMDM$(data, reply);
+                case 329:
+                    return onTransact$setPasswordHistoryLengthMDM$(data, reply);
+                case 330:
+                    return onTransact$setPasswordExpirationTimeoutMDM$(data, reply);
+                case 331:
+                    return onTransact$setMaximumFailedPasswordsForWipeMDM$(data, reply);
+                case 332:
+                    return onTransact$setMaximumTimeToLockMDM$(data, reply);
+                case 333:
+                    return onTransact$setKeyguardDisabledFeaturesMDM$(data, reply);
+                case 334:
+                    return onTransact$setApplicationRestrictionsMDM$(data, reply);
+                case 335:
+                    return onTransact$getApplicationRestrictionsMDM$(data, reply);
+                case 336:
+                    return onTransact$resetPasswordWithTokenMDM$(data, reply);
+                case 337:
+                    ComponentName _arg0177 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg187 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result151 = isResetPasswordTokenActiveMDM(_arg0177, _arg187);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result151);
+                    return true;
+                case 338:
+                    ComponentName _arg0178 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg188 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result152 = clearResetPasswordTokenMDM(_arg0178, _arg188);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result152);
+                    return true;
+                case 339:
+                    return onTransact$setResetPasswordTokenMDM$(data, reply);
+                case 340:
+                    return onTransact$setTrustAgentConfigurationMDM$(data, reply);
+                case 341:
+                    int _arg0179 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result153 = isProfileOwnerOfOrganizationOwnedDeviceMDM(_arg0179);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result153);
+                    return true;
+                case 342:
+                    return onTransact$hasDelegatedPermission$(data, reply);
+                case 343:
+                    int _arg0180 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Map _result154 = getDelegatedPackages(_arg0180);
+                    reply.writeNoException();
+                    reply.writeMap(_result154);
+                    return true;
+                case 344:
+                    return onTransact$reportFailedPasswordAttemptWithFailureCount$(data, reply);
+                case 345:
+                    return onTransact$setGlobalPrivateDns$(data, reply);
+                case 346:
+                    ComponentName _arg0181 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result155 = getGlobalPrivateDnsMode(_arg0181);
+                    reply.writeNoException();
+                    reply.writeInt(_result155);
+                    return true;
+                case 347:
+                    ComponentName _arg0182 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result156 = getGlobalPrivateDnsHost(_arg0182);
+                    reply.writeNoException();
+                    reply.writeString(_result156);
+                    return true;
+                case 348:
+                    return onTransact$setProfileOwnerOnOrganizationOwnedDevice$(data, reply);
+                case 349:
+                    return onTransact$installUpdateFromFile$(data, reply);
+                case 350:
+                    ComponentName _arg0183 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg189 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setCrossProfileCalendarPackages(_arg0183, _arg189);
+                    reply.writeNoException();
+                    return true;
+                case 351:
+                    ComponentName _arg0184 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result157 = getCrossProfileCalendarPackages(_arg0184);
+                    reply.writeNoException();
+                    reply.writeStringList(_result157);
+                    return true;
+                case 352:
+                    String _arg0185 = data.readString();
+                    int _arg190 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result158 = isPackageAllowedToAccessCalendarForUser(_arg0185, _arg190);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result158);
+                    return true;
+                case 353:
+                    int _arg0186 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result159 = getCrossProfileCalendarPackagesForUser(_arg0186);
+                    reply.writeNoException();
+                    reply.writeStringList(_result159);
+                    return true;
+                case 354:
+                    ComponentName _arg0187 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    List<String> _arg191 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    setCrossProfilePackages(_arg0187, _arg191);
+                    reply.writeNoException();
+                    return true;
+                case 355:
+                    ComponentName _arg0188 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result160 = getCrossProfilePackages(_arg0188);
+                    reply.writeNoException();
+                    reply.writeStringList(_result160);
+                    return true;
+                case 356:
+                    int _arg0189 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result161 = getAllCrossProfilePackages(_arg0189);
+                    reply.writeNoException();
+                    reply.writeStringList(_result161);
+                    return true;
+                case 357:
+                    List<String> _result162 = getDefaultCrossProfilePackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result162);
+                    return true;
+                case 358:
+                    boolean _result163 = isManagedKiosk();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result163);
+                    return true;
+                case 359:
+                    boolean _result164 = isUnattendedManagedKiosk();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result164);
+                    return true;
+                case 360:
+                    return onTransact$startViewCalendarEventInManagedProfile$(data, reply);
+                case 361:
+                    return onTransact$setKeyGrantForApp$(data, reply);
+                case 362:
+                    String _arg0190 = data.readString();
+                    String _arg192 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelableGranteeMap _result165 = getKeyPairGrants(_arg0190, _arg192);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result165, 1);
+                    return true;
+                case 363:
+                    return onTransact$setKeyGrantToWifiAuth$(data, reply);
+                case 364:
+                    String _arg0191 = data.readString();
+                    String _arg193 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result166 = isKeyPairGrantedToWifiAuth(_arg0191, _arg193);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result166);
+                    return true;
+                case 365:
+                    return onTransact$setUserControlDisabledPackages$(data, reply);
+                case 366:
+                    ComponentName _arg0192 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    String _arg194 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result167 = getUserControlDisabledPackages(_arg0192, _arg194);
+                    reply.writeNoException();
+                    reply.writeStringList(_result167);
+                    return true;
+                case 367:
+                    return onTransact$setCommonCriteriaModeEnabled$(data, reply);
+                case 368:
+                    ComponentName _arg0193 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result168 = isCommonCriteriaModeEnabled(_arg0193);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result168);
+                    return true;
+                case 369:
+                    ComponentName _arg0194 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result169 = getPersonalAppsSuspendedReasons(_arg0194);
+                    reply.writeNoException();
+                    reply.writeInt(_result169);
+                    return true;
+                case 370:
+                    ComponentName _arg0195 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    boolean _arg195 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setPersonalAppsSuspended(_arg0195, _arg195);
+                    reply.writeNoException();
+                    return true;
+                case 371:
+                    ComponentName _arg0196 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result170 = getManagedProfileMaximumTimeOff(_arg0196);
+                    reply.writeNoException();
+                    reply.writeLong(_result170);
+                    return true;
+                case 372:
+                    ComponentName _arg0197 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    long _arg196 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setManagedProfileMaximumTimeOff(_arg0197, _arg196);
+                    reply.writeNoException();
+                    return true;
+                case 373:
+                    acknowledgeDeviceCompliant();
+                    reply.writeNoException();
+                    return true;
+                case 374:
+                    boolean _result171 = isComplianceAcknowledgementRequired();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result171);
+                    return true;
+                case 375:
+                    int _arg0198 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result172 = canProfileOwnerResetPasswordWhenLocked(_arg0198);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result172);
+                    return true;
+                case 376:
+                    int _arg0199 = data.readInt();
+                    int _arg197 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setNextOperationSafety(_arg0199, _arg197);
+                    reply.writeNoException();
+                    return true;
+                case 377:
+                    int _arg0200 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result173 = isSafeOperation(_arg0200);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result173);
+                    return true;
+                case 378:
+                    String _arg0201 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result174 = getEnrollmentSpecificId(_arg0201);
+                    reply.writeNoException();
+                    reply.writeString(_result174);
+                    return true;
+                case 379:
+                    return onTransact$setOrganizationIdForUser$(data, reply);
+                case 380:
+                    ManagedProfileProvisioningParams _arg0202 = (ManagedProfileProvisioningParams) data.readTypedObject(ManagedProfileProvisioningParams.CREATOR);
+                    String _arg198 = data.readString();
+                    data.enforceNoDataAvail();
+                    UserHandle _result175 = createAndProvisionManagedProfile(_arg0202, _arg198);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result175, 1);
+                    return true;
+                case 381:
+                    FullyManagedDeviceProvisioningParams _arg0203 = (FullyManagedDeviceProvisioningParams) data.readTypedObject(FullyManagedDeviceProvisioningParams.CREATOR);
+                    String _arg199 = data.readString();
+                    data.enforceNoDataAvail();
+                    provisionFullyManagedDevice(_arg0203, _arg199);
+                    reply.writeNoException();
+                    return true;
+                case 382:
+                    UserHandle _arg0204 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    Account _arg1100 = (Account) data.readTypedObject(Account.CREATOR);
+                    data.enforceNoDataAvail();
+                    finalizeWorkProfileProvisioning(_arg0204, _arg1100);
+                    reply.writeNoException();
+                    return true;
+                case 383:
+                    ComponentName _arg0205 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg1101 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDeviceOwnerType(_arg0205, _arg1101);
+                    reply.writeNoException();
+                    return true;
+                case 384:
+                    ComponentName _arg0206 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result176 = getDeviceOwnerType(_arg0206);
+                    reply.writeNoException();
+                    reply.writeInt(_result176);
+                    return true;
+                case 385:
+                    int _arg0207 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetDefaultCrossProfileIntentFilters(_arg0207);
+                    reply.writeNoException();
+                    return true;
+                case 386:
+                    boolean _result177 = canAdminGrantSensorsPermissions();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result177);
+                    return true;
+                case 387:
+                    String _arg0208 = data.readString();
+                    boolean _arg1102 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setUsbDataSignalingEnabled(_arg0208, _arg1102);
+                    reply.writeNoException();
+                    return true;
+                case 388:
+                    String _arg0209 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result178 = isUsbDataSignalingEnabled(_arg0209);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result178);
+                    return true;
+                case 389:
+                    boolean _result179 = canUsbDataSignalingBeDisabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result179);
+                    return true;
+                case 390:
+                    String _arg0210 = data.readString();
+                    int _arg1103 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMinimumRequiredWifiSecurityLevel(_arg0210, _arg1103);
+                    reply.writeNoException();
+                    return true;
+                case 391:
+                    int _result180 = getMinimumRequiredWifiSecurityLevel();
+                    reply.writeNoException();
+                    reply.writeInt(_result180);
+                    return true;
+                case 392:
+                    return onTransact$setWifiSsidPolicy$(data, reply);
+                case 393:
+                    String _arg0211 = data.readString();
+                    data.enforceNoDataAvail();
+                    WifiSsidPolicy _result181 = getWifiSsidPolicy(_arg0211);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result181, 1);
+                    return true;
+                case 394:
+                    String _arg0212 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result182 = isDevicePotentiallyStolen(_arg0212);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result182);
+                    return true;
+                case 395:
+                    List<UserHandle> _result183 = listForegroundAffiliatedUsers();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result183, 1);
+                    return true;
+                case 396:
+                    List<DevicePolicyDrawableResource> _arg0213 = data.createTypedArrayList(DevicePolicyDrawableResource.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDrawables(_arg0213);
+                    reply.writeNoException();
+                    return true;
+                case 397:
+                    List<String> _arg0214 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    resetDrawables(_arg0214);
+                    reply.writeNoException();
+                    return true;
+                case 398:
+                    return onTransact$getDrawable$(data, reply);
+                case 399:
+                    boolean _result184 = isDpcDownloaded();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result184);
+                    return true;
+                case 400:
+                    boolean _arg0215 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDpcDownloaded(_arg0215);
+                    reply.writeNoException();
+                    return true;
+                case 401:
+                    List<DevicePolicyStringResource> _arg0216 = data.createTypedArrayList(DevicePolicyStringResource.CREATOR);
+                    data.enforceNoDataAvail();
+                    setStrings(_arg0216);
+                    reply.writeNoException();
+                    return true;
+                case 402:
+                    List<String> _arg0217 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    resetStrings(_arg0217);
+                    reply.writeNoException();
+                    return true;
+                case 403:
+                    String _arg0218 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParcelableResource _result185 = getString(_arg0218);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result185, 1);
+                    return true;
+                case 404:
+                    resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState();
+                    reply.writeNoException();
+                    return true;
+                case 405:
+                    boolean _result186 = shouldAllowBypassingDevicePolicyManagementRoleQualification();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result186);
+                    return true;
+                case 406:
+                    UserHandle _arg0219 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<UserHandle> _result187 = getPolicyManagedProfiles(_arg0219);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result187, 1);
+                    return true;
+                case 407:
+                    return onTransact$semSetPasswordQuality$(data, reply);
+                case 408:
+                    return onTransact$semSetPasswordMinimumLength$(data, reply);
+                case 409:
+                    return onTransact$semSetPasswordMinimumUpperCase$(data, reply);
+                case 410:
+                    return onTransact$semSetPasswordMinimumLowerCase$(data, reply);
+                case 411:
+                    return onTransact$semSetPasswordMinimumNonLetter$(data, reply);
+                case 412:
+                    return onTransact$semSetPasswordHistoryLength$(data, reply);
+                case 413:
+                    return onTransact$semSetPasswordExpirationTimeout$(data, reply);
+                case 414:
+                    int _arg0220 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result188 = semIsActivePasswordSufficient(_arg0220);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result188);
+                    return true;
+                case 415:
+                    return onTransact$semSetSimplePasswordEnabled$(data, reply);
+                case 416:
+                    return onTransact$semIsSimplePasswordEnabled$(data, reply);
+                case 417:
+                    return onTransact$semSetKeyguardDisabledFeatures$(data, reply);
+                case 418:
+                    return onTransact$semSetAllowStorageCard$(data, reply);
+                case 419:
+                    return onTransact$semGetAllowStorageCard$(data, reply);
+                case 420:
+                    return onTransact$semSetAllowWifi$(data, reply);
+                case 421:
+                    return onTransact$semGetAllowWifi$(data, reply);
+                case 422:
+                    return onTransact$semSetAllowTextMessaging$(data, reply);
+                case 423:
+                    return onTransact$semGetAllowTextMessaging$(data, reply);
+                case 424:
+                    return onTransact$semSetAllowPopImapEmail$(data, reply);
+                case 425:
+                    return onTransact$semGetAllowPopImapEmail$(data, reply);
+                case 426:
+                    return onTransact$semSetAllowBrowser$(data, reply);
+                case 427:
+                    return onTransact$semGetAllowBrowser$(data, reply);
+                case 428:
+                    return onTransact$semSetAllowInternetSharing$(data, reply);
+                case 429:
+                    return onTransact$semGetAllowInternetSharing$(data, reply);
+                case 430:
+                    return onTransact$semSetAllowBluetoothMode$(data, reply);
+                case 431:
+                    return onTransact$semGetAllowBluetoothMode$(data, reply);
+                case 432:
+                    return onTransact$semSetAllowDesktopSync$(data, reply);
+                case 433:
+                    return onTransact$semGetAllowDesktopSync$(data, reply);
+                case 434:
+                    return onTransact$semSetAllowIrda$(data, reply);
+                case 435:
+                    return onTransact$semGetAllowIrda$(data, reply);
+                case 436:
+                    return onTransact$semSetRequireStorageCardEncryption$(data, reply);
+                case 437:
+                    return onTransact$semGetRequireStorageCardEncryption$(data, reply);
+                case 438:
+                    return onTransact$semSetChangeNotificationEnabled$(data, reply);
+                case 439:
+                    return onTransact$setApplicationExemptions$(data, reply);
+                case 440:
+                    String _arg0221 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result189 = getApplicationExemptions(_arg0221);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result189);
+                    return true;
+                case 441:
+                    return onTransact$setMtePolicy$(data, reply);
+                case 442:
+                    String _arg0222 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result190 = getMtePolicy(_arg0222);
+                    reply.writeNoException();
+                    reply.writeInt(_result190);
+                    return true;
+                case 443:
+                    ManagedSubscriptionsPolicy _arg0223 = (ManagedSubscriptionsPolicy) data.readTypedObject(ManagedSubscriptionsPolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setManagedSubscriptionsPolicy(_arg0223);
+                    reply.writeNoException();
+                    return true;
+                case 444:
+                    ManagedSubscriptionsPolicy _result191 = getManagedSubscriptionsPolicy();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result191, 1);
+                    return true;
+                case 445:
+                    DevicePolicyState _result192 = getDevicePolicyState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result192, 1);
+                    return true;
+                case 446:
+                    boolean _arg0224 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result193 = triggerDevicePolicyEngineMigration(_arg0224);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result193);
+                    return true;
+                case 447:
+                    String _arg0225 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result194 = isDeviceFinanced(_arg0225);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result194);
+                    return true;
+                case 448:
+                    String _arg0226 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result195 = getFinancedDeviceKioskRoleHolder(_arg0226);
+                    reply.writeNoException();
+                    reply.writeString(_result195);
+                    return true;
+                case 449:
+                    return onTransact$setUserRestrictionForKnox$(data, reply);
+                case 450:
+                    return onTransact$setCrossProfileAppToIgnored$(data, reply);
+                case 451:
+                    return onTransact$getSamsungSDcardEncryptionStatus$(data, reply);
+                case 452:
+                    calculateHasIncompatibleAccounts();
+                    reply.writeNoException();
+                    return true;
+                case 453:
+                    return onTransact$setContentProtectionPolicy$(data, reply);
+                case 454:
+                    return onTransact$getContentProtectionPolicy$(data, reply);
+                case 455:
+                    String _arg0227 = data.readString();
+                    data.enforceNoDataAvail();
+                    int[] _result196 = getSubscriptionIds(_arg0227);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result196);
+                    return true;
+                case 456:
+                    return onTransact$setMaxPolicyStorageLimit$(data, reply);
+                case 457:
+                    return onTransact$forceSetMaxPolicyStorageLimit$(data, reply);
+                case 458:
+                    String _arg0228 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result197 = getMaxPolicyStorageLimit(_arg0228);
+                    reply.writeNoException();
+                    reply.writeInt(_result197);
+                    return true;
+                case 459:
+                    return onTransact$getPolicySizeForAdmin$(data, reply);
+                case 460:
+                    String _arg0229 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result198 = getHeadlessDeviceOwnerMode(_arg0229);
+                    reply.writeNoException();
+                    reply.writeInt(_result198);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            return onTransact$setPasswordQuality$(data, reply);
-                        case 2:
-                            return onTransact$getPasswordQuality$(data, reply);
-                        case 3:
-                            return onTransact$setPasswordMinimumLength$(data, reply);
-                        case 4:
-                            return onTransact$getPasswordMinimumLength$(data, reply);
-                        case 5:
-                            return onTransact$setPasswordMinimumUpperCase$(data, reply);
-                        case 6:
-                            return onTransact$getPasswordMinimumUpperCase$(data, reply);
-                        case 7:
-                            return onTransact$setPasswordMinimumLowerCase$(data, reply);
-                        case 8:
-                            return onTransact$getPasswordMinimumLowerCase$(data, reply);
-                        case 9:
-                            return onTransact$setPasswordMinimumLetters$(data, reply);
-                        case 10:
-                            return onTransact$getPasswordMinimumLetters$(data, reply);
-                        case 11:
-                            return onTransact$setPasswordMinimumNumeric$(data, reply);
-                        case 12:
-                            return onTransact$getPasswordMinimumNumeric$(data, reply);
-                        case 13:
-                            return onTransact$setPasswordMinimumSymbols$(data, reply);
-                        case 14:
-                            return onTransact$getPasswordMinimumSymbols$(data, reply);
-                        case 15:
-                            return onTransact$setPasswordMinimumNonLetter$(data, reply);
-                        case 16:
-                            return onTransact$getPasswordMinimumNonLetter$(data, reply);
-                        case 17:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            PasswordMetrics _result = getPasswordMinimumMetrics(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 18:
-                            return onTransact$setPasswordHistoryLength$(data, reply);
-                        case 19:
-                            return onTransact$getPasswordHistoryLength$(data, reply);
-                        case 20:
-                            return onTransact$setPasswordExpirationTimeout$(data, reply);
-                        case 21:
-                            return onTransact$getPasswordExpirationTimeout$(data, reply);
-                        case 22:
-                            return onTransact$getPasswordExpiration$(data, reply);
-                        case 23:
-                            return onTransact$isActivePasswordSufficient$(data, reply);
-                        case 24:
-                            boolean _result2 = isActivePasswordSufficientForDeviceRequirement();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 25:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isPasswordSufficientAfterProfileUnification(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 26:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result4 = getPasswordComplexity(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 27:
-                            return onTransact$setRequiredPasswordComplexity$(data, reply);
-                        case 28:
-                            String _arg04 = data.readString();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result5 = getRequiredPasswordComplexity(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 29:
-                            int _arg05 = data.readInt();
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result6 = getAggregatedPasswordComplexityForUser(_arg05, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 30:
-                            ComponentName _arg06 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result7 = isUsingUnifiedPassword(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 31:
-                            return onTransact$getCurrentFailedPasswordAttempts$(data, reply);
-                        case 32:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result8 = getCurrentFailedBiometricAttempts(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 33:
-                            int _arg08 = data.readInt();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result9 = getProfileWithMinimumFailedPasswordsForWipe(_arg08, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 34:
-                            return onTransact$setMaximumFailedPasswordsForWipe$(data, reply);
-                        case 35:
-                            return onTransact$getMaximumFailedPasswordsForWipe$(data, reply);
-                        case 36:
-                            String _arg09 = data.readString();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = resetPassword(_arg09, _arg16);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 37:
-                            return onTransact$setMaximumTimeToLock$(data, reply);
-                        case 38:
-                            return onTransact$getMaximumTimeToLock$(data, reply);
-                        case 39:
-                            return onTransact$setRequiredStrongAuthTimeout$(data, reply);
-                        case 40:
-                            return onTransact$getRequiredStrongAuthTimeout$(data, reply);
-                        case 41:
-                            return onTransact$lockNow$(data, reply);
-                        case 42:
-                            return onTransact$wipeDataWithReason$(data, reply);
-                        case 43:
-                            return onTransact$setFactoryResetProtectionPolicy$(data, reply);
-                        case 44:
-                            ComponentName _arg010 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            FactoryResetProtectionPolicy _result11 = getFactoryResetProtectionPolicy(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 45:
-                            boolean _result12 = isFactoryResetProtectionPolicySupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 46:
-                            AndroidFuture<Boolean> _arg011 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendLostModeLocationUpdate(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            return onTransact$setGlobalProxy$(data, reply);
-                        case 48:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ComponentName _result13 = getGlobalProxyAdmin(_arg012);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 49:
-                            ComponentName _arg013 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            ProxyInfo _arg17 = (ProxyInfo) data.readTypedObject(ProxyInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRecommendedGlobalProxy(_arg013, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            ComponentName _arg014 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result14 = setStorageEncryption(_arg014, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 51:
-                            ComponentName _arg015 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = getStorageEncryption(_arg015, _arg19);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 52:
-                            String _arg016 = data.readString();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result16 = getStorageEncryptionStatus(_arg016, _arg110);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 53:
-                            ComponentName _arg017 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result17 = requestBugreport(_arg017);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 54:
-                            return onTransact$setCameraDisabled$(data, reply);
-                        case 55:
-                            return onTransact$getCameraDisabled$(data, reply);
-                        case 56:
-                            return onTransact$setScreenCaptureDisabled$(data, reply);
-                        case 57:
-                            return onTransact$getScreenCaptureDisabled$(data, reply);
-                        case 58:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNearbyNotificationStreamingPolicy(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 59:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result18 = getNearbyNotificationStreamingPolicy(_arg019);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 60:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNearbyAppStreamingPolicy(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 61:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result19 = getNearbyAppStreamingPolicy(_arg021);
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 62:
-                            return onTransact$setKeyguardDisabledFeatures$(data, reply);
-                        case 63:
-                            return onTransact$getKeyguardDisabledFeatures$(data, reply);
-                        case 64:
-                            return onTransact$setActiveAdmin$(data, reply);
-                        case 65:
-                            ComponentName _arg022 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result20 = isAdminActive(_arg022, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 66:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<ComponentName> _result21 = getActiveAdmins(_arg023);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result21, 1);
-                            return true;
-                        case 67:
-                            String _arg024 = data.readString();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result22 = packageHasActiveAdmins(_arg024, _arg112);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 68:
-                            return onTransact$getRemoveWarning$(data, reply);
-                        case 69:
-                            ComponentName _arg025 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg113 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeActiveAdmin(_arg025, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 70:
-                            ComponentName _arg026 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceRemoveActiveAdmin(_arg026, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 71:
-                            return onTransact$hasGrantedPolicy$(data, reply);
-                        case 72:
-                            PasswordMetrics _arg027 = (PasswordMetrics) data.readTypedObject(PasswordMetrics.CREATOR);
-                            int _arg115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportPasswordChanged(_arg027, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            int _arg028 = data.readInt();
-                            boolean _arg116 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            reportFailedPasswordAttempt(_arg028, _arg116);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportSuccessfulPasswordAttempt(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportFailedBiometricAttempt(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            int _arg031 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportSuccessfulBiometricAttempt(_arg031);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportKeyguardDismissed(_arg032);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportKeyguardSecured(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            return onTransact$setDeviceOwner$(data, reply);
-                        case 80:
-                            boolean _arg034 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            ComponentName _result23 = getDeviceOwnerComponent(_arg034);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result23, 1);
-                            return true;
-                        case 81:
-                            boolean _result24 = hasDeviceOwner();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result24);
-                            return true;
-                        case 82:
-                            String _result25 = getDeviceOwnerName();
-                            reply.writeNoException();
-                            reply.writeString(_result25);
-                            return true;
-                        case 83:
-                            String _arg035 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearDeviceOwner(_arg035);
-                            reply.writeNoException();
-                            return true;
-                        case 84:
-                            int _result26 = getDeviceOwnerUserId();
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 85:
-                            ComponentName _arg036 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result27 = setProfileOwner(_arg036, _arg117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 86:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ComponentName _result28 = getProfileOwnerAsUser(_arg037);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result28, 1);
-                            return true;
-                        case 87:
-                            UserHandle _arg038 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ComponentName _result29 = getProfileOwnerOrDeviceOwnerSupervisionComponent(_arg038);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result29, 1);
-                            return true;
-                        case 88:
-                            ComponentName _arg039 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result30 = isSupervisionComponent(_arg039);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 89:
-                            int _arg040 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result31 = getProfileOwnerName(_arg040);
-                            reply.writeNoException();
-                            reply.writeString(_result31);
-                            return true;
-                        case 90:
-                            ComponentName _arg041 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setProfileEnabled(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 91:
-                            ComponentName _arg042 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg118 = data.readString();
-                            data.enforceNoDataAvail();
-                            setProfileName(_arg042, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            ComponentName _arg043 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            clearProfileOwner(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 93:
-                            boolean _result32 = hasUserSetupCompleted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result32);
-                            return true;
-                        case 94:
-                            boolean _result33 = isOrganizationOwnedDeviceWithManagedProfile();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result33);
-                            return true;
-                        case 95:
-                            return onTransact$checkDeviceIdentifierAccess$(data, reply);
-                        case 96:
-                            ComponentName _arg044 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CharSequence _arg119 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setDeviceOwnerLockScreenInfo(_arg044, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 97:
-                            CharSequence _result34 = getDeviceOwnerLockScreenInfo();
-                            reply.writeNoException();
-                            if (_result34 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result34, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 98:
-                            return onTransact$setPackagesSuspended$(data, reply);
-                        case 99:
-                            return onTransact$isPackageSuspended$(data, reply);
-                        case 100:
-                            List<String> _result35 = listPolicyExemptApps();
-                            reply.writeNoException();
-                            reply.writeStringList(_result35);
-                            return true;
-                        case 101:
-                            return onTransact$installCaCert$(data, reply);
-                        case 102:
-                            return onTransact$uninstallCaCerts$(data, reply);
-                        case 103:
-                            ComponentName _arg045 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg120 = data.readString();
-                            data.enforceNoDataAvail();
-                            enforceCanManageCaCerts(_arg045, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 104:
-                            return onTransact$approveCaCert$(data, reply);
-                        case 105:
-                            String _arg046 = data.readString();
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result36 = isCaCertApproved(_arg046, _arg121);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result36);
-                            return true;
-                        case 106:
-                            return onTransact$installKeyPair$(data, reply);
-                        case 107:
-                            return onTransact$removeKeyPair$(data, reply);
-                        case 108:
-                            String _arg047 = data.readString();
-                            String _arg122 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result37 = hasKeyPair(_arg047, _arg122);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 109:
-                            return onTransact$generateKeyPair$(data, reply);
-                        case 110:
-                            return onTransact$setKeyPairCertificate$(data, reply);
-                        case 111:
-                            return onTransact$choosePrivateKeyAlias$(data, reply);
-                        case 112:
-                            return onTransact$setDelegatedScopes$(data, reply);
-                        case 113:
-                            ComponentName _arg048 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg123 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result38 = getDelegatedScopes(_arg048, _arg123);
-                            reply.writeNoException();
-                            reply.writeStringList(_result38);
-                            return true;
-                        case 114:
-                            ComponentName _arg049 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg124 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result39 = getDelegatePackages(_arg049, _arg124);
-                            reply.writeNoException();
-                            reply.writeStringList(_result39);
-                            return true;
-                        case 115:
-                            ComponentName _arg050 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg125 = data.readString();
-                            data.enforceNoDataAvail();
-                            setCertInstallerPackage(_arg050, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 116:
-                            ComponentName _arg051 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result40 = getCertInstallerPackage(_arg051);
-                            reply.writeNoException();
-                            reply.writeString(_result40);
-                            return true;
-                        case 117:
-                            return onTransact$setAlwaysOnVpnPackage$(data, reply);
-                        case 118:
-                            ComponentName _arg052 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result41 = getAlwaysOnVpnPackage(_arg052);
-                            reply.writeNoException();
-                            reply.writeString(_result41);
-                            return true;
-                        case 119:
-                            int _arg053 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result42 = getAlwaysOnVpnPackageForUser(_arg053);
-                            reply.writeNoException();
-                            reply.writeString(_result42);
-                            return true;
-                        case 120:
-                            ComponentName _arg054 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result43 = isAlwaysOnVpnLockdownEnabled(_arg054);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 121:
-                            int _arg055 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result44 = isAlwaysOnVpnLockdownEnabledForUser(_arg055);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result44);
-                            return true;
-                        case 122:
-                            ComponentName _arg056 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result45 = getAlwaysOnVpnLockdownAllowlist(_arg056);
-                            reply.writeNoException();
-                            reply.writeStringList(_result45);
-                            return true;
-                        case 123:
-                            return onTransact$addPersistentPreferredActivity$(data, reply);
-                        case 124:
-                            return onTransact$clearPackagePersistentPreferredActivities$(data, reply);
-                        case 125:
-                            return onTransact$setDefaultSmsApplication$(data, reply);
-                        case 126:
-                            String _arg057 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDefaultDialerApplication(_arg057);
-                            reply.writeNoException();
-                            return true;
-                        case 127:
-                            return onTransact$setApplicationRestrictions$(data, reply);
-                        case 128:
-                            return onTransact$getApplicationRestrictions$(data, reply);
-                        case 129:
-                            ComponentName _arg058 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg126 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result46 = setApplicationRestrictionsManagingPackage(_arg058, _arg126);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result46);
-                            return true;
-                        case 130:
-                            ComponentName _arg059 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result47 = getApplicationRestrictionsManagingPackage(_arg059);
-                            reply.writeNoException();
-                            reply.writeString(_result47);
-                            return true;
-                        case 131:
-                            String _arg060 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = isCallerApplicationRestrictionsManagingPackage(_arg060);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 132:
-                            ComponentName _arg061 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            ComponentName _arg127 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRestrictionsProvider(_arg061, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 133:
-                            int _arg062 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ComponentName _result49 = getRestrictionsProvider(_arg062);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result49, 1);
-                            return true;
-                        case 134:
-                            return onTransact$setUserRestriction$(data, reply);
-                        case 135:
-                            String _arg063 = data.readString();
-                            String _arg128 = data.readString();
-                            data.enforceNoDataAvail();
-                            setUserRestrictionGlobally(_arg063, _arg128);
-                            reply.writeNoException();
-                            return true;
-                        case 136:
-                            return onTransact$getUserRestrictions$(data, reply);
-                        case 137:
-                            String _arg064 = data.readString();
-                            data.enforceNoDataAvail();
-                            Bundle _result50 = getUserRestrictionsGlobally(_arg064);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result50, 1);
-                            return true;
-                        case 138:
-                            return onTransact$addCrossProfileIntentFilter$(data, reply);
-                        case 139:
-                            ComponentName _arg065 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg129 = data.readString();
-                            data.enforceNoDataAvail();
-                            clearCrossProfileIntentFilters(_arg065, _arg129);
-                            reply.writeNoException();
-                            return true;
-                        case 140:
-                            ComponentName _arg066 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg130 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            boolean _result51 = setPermittedAccessibilityServices(_arg066, _arg130);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result51);
-                            return true;
-                        case 141:
-                            ComponentName _arg067 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result52 = getPermittedAccessibilityServices(_arg067);
-                            reply.writeNoException();
-                            reply.writeStringList(_result52);
-                            return true;
-                        case 142:
-                            int _arg068 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result53 = getPermittedAccessibilityServicesForUser(_arg068);
-                            reply.writeNoException();
-                            reply.writeStringList(_result53);
-                            return true;
-                        case 143:
-                            return onTransact$isAccessibilityServicePermittedByAdmin$(data, reply);
-                        case 144:
-                            return onTransact$setPermittedInputMethods$(data, reply);
-                        case 145:
-                            return onTransact$getPermittedInputMethods$(data, reply);
-                        case 146:
-                            int _arg069 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result54 = getPermittedInputMethodsAsUser(_arg069);
-                            reply.writeNoException();
-                            reply.writeStringList(_result54);
-                            return true;
-                        case 147:
-                            return onTransact$isInputMethodPermittedByAdmin$(data, reply);
-                        case 148:
-                            ComponentName _arg070 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg131 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            boolean _result55 = setPermittedCrossProfileNotificationListeners(_arg070, _arg131);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result55);
-                            return true;
-                        case 149:
-                            ComponentName _arg071 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result56 = getPermittedCrossProfileNotificationListeners(_arg071);
-                            reply.writeNoException();
-                            reply.writeStringList(_result56);
-                            return true;
-                        case 150:
-                            String _arg072 = data.readString();
-                            int _arg132 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result57 = isNotificationListenerServicePermitted(_arg072, _arg132);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result57);
-                            return true;
-                        case 151:
-                            String _arg073 = data.readString();
-                            data.enforceNoDataAvail();
-                            Intent _result58 = createAdminSupportIntent(_arg073);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result58, 1);
-                            return true;
-                        case 152:
-                            int _arg074 = data.readInt();
-                            String _arg133 = data.readString();
-                            data.enforceNoDataAvail();
-                            Bundle _result59 = getEnforcingAdminAndUserDetails(_arg074, _arg133);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result59, 1);
-                            return true;
-                        case 153:
-                            return onTransact$setApplicationHidden$(data, reply);
-                        case 154:
-                            return onTransact$isApplicationHidden$(data, reply);
-                        case 155:
-                            return onTransact$createAndManageUser$(data, reply);
-                        case 156:
-                            ComponentName _arg075 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg134 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result60 = removeUser(_arg075, _arg134);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result60);
-                            return true;
-                        case 157:
-                            ComponentName _arg076 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg135 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result61 = switchUser(_arg076, _arg135);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result61);
-                            return true;
-                        case 158:
-                            ComponentName _arg077 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg136 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result62 = startUserInBackground(_arg077, _arg136);
-                            reply.writeNoException();
-                            reply.writeInt(_result62);
-                            return true;
-                        case 159:
-                            ComponentName _arg078 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg137 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result63 = stopUser(_arg078, _arg137);
-                            reply.writeNoException();
-                            reply.writeInt(_result63);
-                            return true;
-                        case 160:
-                            ComponentName _arg079 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result64 = logoutUser(_arg079);
-                            reply.writeNoException();
-                            reply.writeInt(_result64);
-                            return true;
-                        case 161:
-                            int _result65 = logoutUserInternal();
-                            reply.writeNoException();
-                            reply.writeInt(_result65);
-                            return true;
-                        case 162:
-                            int _result66 = getLogoutUserId();
-                            reply.writeNoException();
-                            reply.writeInt(_result66);
-                            return true;
-                        case 163:
-                            ComponentName _arg080 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<UserHandle> _result67 = getSecondaryUsers(_arg080);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result67, 1);
-                            return true;
-                        case 164:
-                            int _arg081 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeNewUserDisclaimer(_arg081);
-                            reply.writeNoException();
-                            return true;
-                        case 165:
-                            int _arg082 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result68 = isNewUserDisclaimerAcknowledged(_arg082);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result68);
-                            return true;
-                        case 166:
-                            return onTransact$enableSystemApp$(data, reply);
-                        case 167:
-                            return onTransact$enableSystemAppWithIntent$(data, reply);
-                        case 168:
-                            return onTransact$installExistingPackage$(data, reply);
-                        case 169:
-                            return onTransact$setAccountManagementDisabled$(data, reply);
-                        case 170:
-                            String _arg083 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result69 = getAccountTypesWithManagementDisabled(_arg083);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result69);
-                            return true;
-                        case 171:
-                            return onTransact$getAccountTypesWithManagementDisabledAsUser$(data, reply);
-                        case 172:
-                            ComponentName _arg084 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg138 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSecondaryLockscreenEnabled(_arg084, _arg138);
-                            reply.writeNoException();
-                            return true;
-                        case 173:
-                            UserHandle _arg085 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result70 = isSecondaryLockscreenEnabled(_arg085);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result70);
-                            return true;
-                        case 174:
-                            List<PreferentialNetworkServiceConfig> _arg086 = data.createTypedArrayList(PreferentialNetworkServiceConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPreferentialNetworkServiceConfigs(_arg086);
-                            reply.writeNoException();
-                            return true;
-                        case 175:
-                            List<PreferentialNetworkServiceConfig> _result71 = getPreferentialNetworkServiceConfigs();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result71, 1);
-                            return true;
-                        case 176:
-                            return onTransact$setLockTaskPackages$(data, reply);
-                        case 177:
-                            ComponentName _arg087 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg139 = data.readString();
-                            data.enforceNoDataAvail();
-                            String[] _result72 = getLockTaskPackages(_arg087, _arg139);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result72);
-                            return true;
-                        case 178:
-                            String _arg088 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result73 = isLockTaskPermitted(_arg088);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result73);
-                            return true;
-                        case 179:
-                            return onTransact$setLockTaskFeatures$(data, reply);
-                        case 180:
-                            ComponentName _arg089 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg140 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result74 = getLockTaskFeatures(_arg089, _arg140);
-                            reply.writeNoException();
-                            reply.writeInt(_result74);
-                            return true;
-                        case 181:
-                            return onTransact$setGlobalSetting$(data, reply);
-                        case 182:
-                            return onTransact$setSystemSetting$(data, reply);
-                        case 183:
-                            return onTransact$setSecureSetting$(data, reply);
-                        case 184:
-                            return onTransact$setConfiguredNetworksLockdownState$(data, reply);
-                        case 185:
-                            ComponentName _arg090 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result75 = hasLockdownAdminConfiguredNetworks(_arg090);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result75);
-                            return true;
-                        case 186:
-                            ComponentName _arg091 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg141 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLocationEnabled(_arg091, _arg141);
-                            reply.writeNoException();
-                            return true;
-                        case 187:
-                            return onTransact$setTime$(data, reply);
-                        case 188:
-                            return onTransact$setTimeZone$(data, reply);
-                        case 189:
-                            ComponentName _arg092 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg142 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMasterVolumeMuted(_arg092, _arg142);
-                            reply.writeNoException();
-                            return true;
-                        case 190:
-                            ComponentName _arg093 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result76 = isMasterVolumeMuted(_arg093);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result76);
-                            return true;
-                        case 191:
-                            return onTransact$notifyLockTaskModeChanged$(data, reply);
-                        case 192:
-                            return onTransact$setUninstallBlocked$(data, reply);
-                        case 193:
-                            String _arg094 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result77 = isUninstallBlocked(_arg094);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result77);
-                            return true;
-                        case 194:
-                            ComponentName _arg095 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg143 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCrossProfileCallerIdDisabled(_arg095, _arg143);
-                            reply.writeNoException();
-                            return true;
-                        case 195:
-                            ComponentName _arg096 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result78 = getCrossProfileCallerIdDisabled(_arg096);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result78);
-                            return true;
-                        case 196:
-                            int _arg097 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result79 = getCrossProfileCallerIdDisabledForUser(_arg097);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result79);
-                            return true;
-                        case 197:
-                            ComponentName _arg098 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg144 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setCrossProfileContactsSearchDisabled(_arg098, _arg144);
-                            reply.writeNoException();
-                            return true;
-                        case 198:
-                            ComponentName _arg099 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result80 = getCrossProfileContactsSearchDisabled(_arg099);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result80);
-                            return true;
-                        case 199:
-                            int _arg0100 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result81 = getCrossProfileContactsSearchDisabledForUser(_arg0100);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result81);
-                            return true;
-                        case 200:
-                            return onTransact$startManagedQuickContact$(data, reply);
-                        case 201:
-                            PackagePolicy _arg0101 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setManagedProfileCallerIdAccessPolicy(_arg0101);
-                            reply.writeNoException();
-                            return true;
-                        case 202:
-                            PackagePolicy _result82 = getManagedProfileCallerIdAccessPolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result82, 1);
-                            return true;
-                        case 203:
-                            int _arg0102 = data.readInt();
-                            String _arg145 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result83 = hasManagedProfileCallerIdAccess(_arg0102, _arg145);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result83);
-                            return true;
-                        case 204:
-                            PackagePolicy _arg0103 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setCredentialManagerPolicy(_arg0103);
-                            reply.writeNoException();
-                            return true;
-                        case 205:
-                            int _arg0104 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PackagePolicy _result84 = getCredentialManagerPolicy(_arg0104);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result84, 1);
-                            return true;
-                        case 206:
-                            PackagePolicy _arg0105 = (PackagePolicy) data.readTypedObject(PackagePolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setManagedProfileContactsAccessPolicy(_arg0105);
-                            reply.writeNoException();
-                            return true;
-                        case 207:
-                            PackagePolicy _result85 = getManagedProfileContactsAccessPolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result85, 1);
-                            return true;
-                        case 208:
-                            int _arg0106 = data.readInt();
-                            String _arg146 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result86 = hasManagedProfileContactsAccess(_arg0106, _arg146);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result86);
-                            return true;
-                        case 209:
-                            ComponentName _arg0107 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg147 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBluetoothContactSharingDisabled(_arg0107, _arg147);
-                            reply.writeNoException();
-                            return true;
-                        case 210:
-                            ComponentName _arg0108 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result87 = getBluetoothContactSharingDisabled(_arg0108);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result87);
-                            return true;
-                        case 211:
-                            int _arg0109 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result88 = getBluetoothContactSharingDisabledForUser(_arg0109);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result88);
-                            return true;
-                        case 212:
-                            return onTransact$setTrustAgentConfiguration$(data, reply);
-                        case 213:
-                            return onTransact$getTrustAgentConfiguration$(data, reply);
-                        case 214:
-                            return onTransact$addCrossProfileWidgetProvider$(data, reply);
-                        case 215:
-                            return onTransact$removeCrossProfileWidgetProvider$(data, reply);
-                        case 216:
-                            ComponentName _arg0110 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg148 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result89 = getCrossProfileWidgetProviders(_arg0110, _arg148);
-                            reply.writeNoException();
-                            reply.writeStringList(_result89);
-                            return true;
-                        case 217:
-                            ComponentName _arg0111 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg149 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAutoTimeRequired(_arg0111, _arg149);
-                            reply.writeNoException();
-                            return true;
-                        case 218:
-                            boolean _result90 = getAutoTimeRequired();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result90);
-                            return true;
-                        case 219:
-                            return onTransact$setAutoTimeEnabled$(data, reply);
-                        case 220:
-                            ComponentName _arg0112 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg150 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result91 = getAutoTimeEnabled(_arg0112, _arg150);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result91);
-                            return true;
-                        case 221:
-                            return onTransact$setAutoTimeZoneEnabled$(data, reply);
-                        case 222:
-                            ComponentName _arg0113 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg151 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result92 = getAutoTimeZoneEnabled(_arg0113, _arg151);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result92);
-                            return true;
-                        case 223:
-                            ComponentName _arg0114 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg152 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setForceEphemeralUsers(_arg0114, _arg152);
-                            reply.writeNoException();
-                            return true;
-                        case 224:
-                            ComponentName _arg0115 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result93 = getForceEphemeralUsers(_arg0115);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result93);
-                            return true;
-                        case 225:
-                            ComponentName _arg0116 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg153 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result94 = isRemovingAdmin(_arg0116, _arg153);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result94);
-                            return true;
-                        case 226:
-                            ComponentName _arg0117 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Bitmap _arg154 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
-                            data.enforceNoDataAvail();
-                            setUserIcon(_arg0117, _arg154);
-                            reply.writeNoException();
-                            return true;
-                        case 227:
-                            return onTransact$setSystemUpdatePolicy$(data, reply);
-                        case 228:
-                            SystemUpdatePolicy _result95 = getSystemUpdatePolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result95, 1);
-                            return true;
-                        case 229:
-                            clearSystemUpdatePolicyFreezePeriodRecord();
-                            reply.writeNoException();
-                            return true;
-                        case 230:
-                            ComponentName _arg0118 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg155 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result96 = setKeyguardDisabled(_arg0118, _arg155);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result96);
-                            return true;
-                        case 231:
-                            return onTransact$setStatusBarDisabled$(data, reply);
-                        case 232:
-                            String _arg0119 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result97 = isStatusBarDisabled(_arg0119);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result97);
-                            return true;
-                        case 233:
-                            boolean _result98 = getDoNotAskCredentialsOnBoot();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result98);
-                            return true;
-                        case 234:
-                            SystemUpdateInfo _arg0120 = (SystemUpdateInfo) data.readTypedObject(SystemUpdateInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyPendingSystemUpdate(_arg0120);
-                            reply.writeNoException();
-                            return true;
-                        case 235:
-                            ComponentName _arg0121 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            SystemUpdateInfo _result99 = getPendingSystemUpdate(_arg0121);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result99, 1);
-                            return true;
-                        case 236:
-                            return onTransact$setPermissionPolicy$(data, reply);
-                        case 237:
-                            ComponentName _arg0122 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result100 = getPermissionPolicy(_arg0122);
-                            reply.writeNoException();
-                            reply.writeInt(_result100);
-                            return true;
-                        case 238:
-                            return onTransact$setPermissionGrantState$(data, reply);
-                        case 239:
-                            return onTransact$getPermissionGrantState$(data, reply);
-                        case 240:
-                            String _arg0123 = data.readString();
-                            String _arg156 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result101 = isProvisioningAllowed(_arg0123, _arg156);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result101);
-                            return true;
-                        case 241:
-                            String _arg0124 = data.readString();
-                            String _arg157 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result102 = checkProvisioningPrecondition(_arg0124, _arg157);
-                            reply.writeNoException();
-                            reply.writeInt(_result102);
-                            return true;
-                        case 242:
-                            return onTransact$setKeepUninstalledPackages$(data, reply);
-                        case 243:
-                            ComponentName _arg0125 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg158 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result103 = getKeepUninstalledPackages(_arg0125, _arg158);
-                            reply.writeNoException();
-                            reply.writeStringList(_result103);
-                            return true;
-                        case 244:
-                            ComponentName _arg0126 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result104 = isManagedProfile(_arg0126);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result104);
-                            return true;
-                        case 245:
-                            ComponentName _arg0127 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg159 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result105 = getWifiMacAddress(_arg0127, _arg159);
-                            reply.writeNoException();
-                            reply.writeString(_result105);
-                            return true;
-                        case 246:
-                            ComponentName _arg0128 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            reboot(_arg0128);
-                            reply.writeNoException();
-                            return true;
-                        case 247:
-                            return onTransact$setShortSupportMessage$(data, reply);
-                        case 248:
-                            ComponentName _arg0129 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg160 = data.readString();
-                            data.enforceNoDataAvail();
-                            CharSequence _result106 = getShortSupportMessage(_arg0129, _arg160);
-                            reply.writeNoException();
-                            if (_result106 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result106, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 249:
-                            ComponentName _arg0130 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CharSequence _arg161 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setLongSupportMessage(_arg0130, _arg161);
-                            reply.writeNoException();
-                            return true;
-                        case 250:
-                            ComponentName _arg0131 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            CharSequence _result107 = getLongSupportMessage(_arg0131);
-                            reply.writeNoException();
-                            if (_result107 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result107, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 251:
-                            ComponentName _arg0132 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg162 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CharSequence _result108 = getShortSupportMessageForUser(_arg0132, _arg162);
-                            reply.writeNoException();
-                            if (_result108 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result108, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 252:
-                            ComponentName _arg0133 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg163 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CharSequence _result109 = getLongSupportMessageForUser(_arg0133, _arg163);
-                            reply.writeNoException();
-                            if (_result109 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result109, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 253:
-                            ComponentName _arg0134 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg164 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setOrganizationColor(_arg0134, _arg164);
-                            reply.writeNoException();
-                            return true;
-                        case 254:
-                            int _arg0135 = data.readInt();
-                            int _arg165 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setOrganizationColorForUser(_arg0135, _arg165);
-                            reply.writeNoException();
-                            return true;
-                        case 255:
-                            int _arg0136 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearOrganizationIdForUser(_arg0136);
-                            reply.writeNoException();
-                            return true;
-                        case 256:
-                            ComponentName _arg0137 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result110 = getOrganizationColor(_arg0137);
-                            reply.writeNoException();
-                            reply.writeInt(_result110);
-                            return true;
-                        case 257:
-                            int _arg0138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result111 = getOrganizationColorForUser(_arg0138);
-                            reply.writeNoException();
-                            reply.writeInt(_result111);
-                            return true;
-                        case 258:
-                            return onTransact$setOrganizationName$(data, reply);
-                        case 259:
-                            ComponentName _arg0139 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg166 = data.readString();
-                            data.enforceNoDataAvail();
-                            CharSequence _result112 = getOrganizationName(_arg0139, _arg166);
-                            reply.writeNoException();
-                            if (_result112 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result112, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 260:
-                            CharSequence _result113 = getDeviceOwnerOrganizationName();
-                            reply.writeNoException();
-                            if (_result113 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result113, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 261:
-                            int _arg0140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CharSequence _result114 = getOrganizationNameForUser(_arg0140);
-                            reply.writeNoException();
-                            if (_result114 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result114, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 262:
-                            int _arg0141 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result115 = getUserProvisioningState(_arg0141);
-                            reply.writeNoException();
-                            reply.writeInt(_result115);
-                            return true;
-                        case 263:
-                            int _arg0142 = data.readInt();
-                            int _arg167 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setUserProvisioningState(_arg0142, _arg167);
-                            reply.writeNoException();
-                            return true;
-                        case 264:
-                            ComponentName _arg0143 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg168 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setAffiliationIds(_arg0143, _arg168);
-                            reply.writeNoException();
-                            return true;
-                        case 265:
-                            ComponentName _arg0144 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result116 = getAffiliationIds(_arg0144);
-                            reply.writeNoException();
-                            reply.writeStringList(_result116);
-                            return true;
-                        case 266:
-                            boolean _result117 = isCallingUserAffiliated();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result117);
-                            return true;
-                        case 267:
-                            int _arg0145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result118 = isAffiliatedUser(_arg0145);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result118);
-                            return true;
-                        case 268:
-                            return onTransact$setSecurityLoggingEnabled$(data, reply);
-                        case 269:
-                            ComponentName _arg0146 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg169 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result119 = isSecurityLoggingEnabled(_arg0146, _arg169);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result119);
-                            return true;
-                        case 270:
-                            ComponentName _arg0147 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg170 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result120 = retrieveSecurityLogs(_arg0147, _arg170);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result120, 1);
-                            return true;
-                        case 271:
-                            ComponentName _arg0148 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg171 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result121 = retrievePreRebootSecurityLogs(_arg0148, _arg171);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result121, 1);
-                            return true;
-                        case 272:
-                            long _result122 = forceNetworkLogs();
-                            reply.writeNoException();
-                            reply.writeLong(_result122);
-                            return true;
-                        case 273:
-                            long _result123 = forceSecurityLogs();
-                            reply.writeNoException();
-                            reply.writeLong(_result123);
-                            return true;
-                        case 274:
-                            String _arg0149 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result124 = isUninstallInQueue(_arg0149);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result124);
-                            return true;
-                        case 275:
-                            String _arg0150 = data.readString();
-                            data.enforceNoDataAvail();
-                            uninstallPackageWithActiveAdmins(_arg0150);
-                            reply.writeNoException();
-                            return true;
-                        case 276:
-                            boolean _result125 = isDeviceProvisioned();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result125);
-                            return true;
-                        case 277:
-                            boolean _result126 = isDeviceProvisioningConfigApplied();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result126);
-                            return true;
-                        case 278:
-                            setDeviceProvisioningConfigApplied();
-                            reply.writeNoException();
-                            return true;
-                        case 279:
-                            int _arg0151 = data.readInt();
-                            data.enforceNoDataAvail();
-                            forceUpdateUserSetupComplete(_arg0151);
-                            reply.writeNoException();
-                            return true;
-                        case 280:
-                            ComponentName _arg0152 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg172 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBackupServiceEnabled(_arg0152, _arg172);
-                            reply.writeNoException();
-                            return true;
-                        case 281:
-                            ComponentName _arg0153 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result127 = isBackupServiceEnabled(_arg0153);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result127);
-                            return true;
-                        case 282:
-                            return onTransact$setNetworkLoggingEnabled$(data, reply);
-                        case 283:
-                            ComponentName _arg0154 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg173 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result128 = isNetworkLoggingEnabled(_arg0154, _arg173);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result128);
-                            return true;
-                        case 284:
-                            return onTransact$retrieveNetworkLogs$(data, reply);
-                        case 285:
-                            return onTransact$bindDeviceAdminServiceAsUser$(data, reply);
-                        case 286:
-                            ComponentName _arg0155 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<UserHandle> _result129 = getBindDeviceAdminTargetUsers(_arg0155);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result129, 1);
-                            return true;
-                        case 287:
-                            ComponentName _arg0156 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result130 = isEphemeralUser(_arg0156);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result130);
-                            return true;
-                        case 288:
-                            long _result131 = getLastSecurityLogRetrievalTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result131);
-                            return true;
-                        case 289:
-                            long _result132 = getLastBugReportRequestTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result132);
-                            return true;
-                        case 290:
-                            long _result133 = getLastNetworkLogRetrievalTime();
-                            reply.writeNoException();
-                            reply.writeLong(_result133);
-                            return true;
-                        case 291:
-                            return onTransact$setResetPasswordToken$(data, reply);
-                        case 292:
-                            ComponentName _arg0157 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg174 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result134 = clearResetPasswordToken(_arg0157, _arg174);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result134);
-                            return true;
-                        case 293:
-                            ComponentName _arg0158 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg175 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result135 = isResetPasswordTokenActive(_arg0158, _arg175);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result135);
-                            return true;
-                        case 294:
-                            return onTransact$resetPasswordWithToken$(data, reply);
-                        case 295:
-                            boolean _result136 = isCurrentInputMethodSetByOwner();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result136);
-                            return true;
-                        case 296:
-                            UserHandle _arg0159 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            StringParceledListSlice _result137 = getOwnerInstalledCaCerts(_arg0159);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result137, 1);
-                            return true;
-                        case 297:
-                            return onTransact$clearApplicationUserData$(data, reply);
-                        case 298:
-                            ComponentName _arg0160 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg176 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLogoutEnabled(_arg0160, _arg176);
-                            reply.writeNoException();
-                            return true;
-                        case 299:
-                            boolean _result138 = isLogoutEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result138);
-                            return true;
-                        case 300:
-                            return onTransact$getDisallowedSystemApps$(data, reply);
-                        case 301:
-                            return onTransact$transferOwnership$(data, reply);
-                        case 302:
-                            PersistableBundle _result139 = getTransferOwnershipBundle();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result139, 1);
-                            return true;
-                        case 303:
-                            ComponentName _arg0161 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CharSequence _arg177 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setStartUserSessionMessage(_arg0161, _arg177);
-                            reply.writeNoException();
-                            return true;
-                        case 304:
-                            ComponentName _arg0162 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            CharSequence _arg178 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setEndUserSessionMessage(_arg0162, _arg178);
-                            reply.writeNoException();
-                            return true;
-                        case 305:
-                            ComponentName _arg0163 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            CharSequence _result140 = getStartUserSessionMessage(_arg0163);
-                            reply.writeNoException();
-                            if (_result140 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result140, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 306:
-                            ComponentName _arg0164 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            CharSequence _result141 = getEndUserSessionMessage(_arg0164);
-                            reply.writeNoException();
-                            if (_result141 != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result141, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        case 307:
-                            ComponentName _arg0165 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg179 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            List<String> _result142 = setMeteredDataDisabledPackages(_arg0165, _arg179);
-                            reply.writeNoException();
-                            reply.writeStringList(_result142);
-                            return true;
-                        case 308:
-                            ComponentName _arg0166 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result143 = getMeteredDataDisabledPackages(_arg0166);
-                            reply.writeNoException();
-                            reply.writeStringList(_result143);
-                            return true;
-                        case 309:
-                            ComponentName _arg0167 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            ApnSetting _arg180 = (ApnSetting) data.readTypedObject(ApnSetting.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result144 = addOverrideApn(_arg0167, _arg180);
-                            reply.writeNoException();
-                            reply.writeInt(_result144);
-                            return true;
-                        case 310:
-                            return onTransact$updateOverrideApn$(data, reply);
-                        case 311:
-                            ComponentName _arg0168 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg181 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result145 = removeOverrideApn(_arg0168, _arg181);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result145);
-                            return true;
-                        case 312:
-                            ComponentName _arg0169 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<ApnSetting> _result146 = getOverrideApns(_arg0169);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result146, 1);
-                            return true;
-                        case 313:
-                            ComponentName _arg0170 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg182 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setOverrideApnsEnabled(_arg0170, _arg182);
-                            reply.writeNoException();
-                            return true;
-                        case 314:
-                            ComponentName _arg0171 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result147 = isOverrideApnEnabled(_arg0171);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result147);
-                            return true;
-                        case 315:
-                            return onTransact$isMeteredDataDisabledPackageForUser$(data, reply);
-                        case 316:
-                            String _result148 = getActualDeviceOwnerMDM();
-                            reply.writeNoException();
-                            reply.writeString(_result148);
-                            return true;
-                        case 317:
-                            String _arg0172 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result149 = rebootMDM(_arg0172);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result149);
-                            return true;
-                        case 318:
-                            return onTransact$setPasswordQualityMDM$(data, reply);
-                        case 319:
-                            return onTransact$setPasswordMinimumLengthMDM$(data, reply);
-                        case 320:
-                            return onTransact$setPasswordMinimumUpperCaseMDM$(data, reply);
-                        case 321:
-                            return onTransact$setPasswordMinimumLowerCaseMDM$(data, reply);
-                        case 322:
-                            return onTransact$setPasswordMinimumLettersMDM$(data, reply);
-                        case 323:
-                            return onTransact$setPasswordMinimumNumericMDM$(data, reply);
-                        case 324:
-                            return onTransact$setPasswordMinimumSymbolsMDM$(data, reply);
-                        case 325:
-                            return onTransact$setPasswordMinimumNonLetterMDM$(data, reply);
-                        case 326:
-                            return onTransact$setPasswordHistoryLengthMDM$(data, reply);
-                        case 327:
-                            return onTransact$setPasswordExpirationTimeoutMDM$(data, reply);
-                        case 328:
-                            return onTransact$setMaximumFailedPasswordsForWipeMDM$(data, reply);
-                        case 329:
-                            return onTransact$setMaximumTimeToLockMDM$(data, reply);
-                        case 330:
-                            return onTransact$setKeyguardDisabledFeaturesMDM$(data, reply);
-                        case 331:
-                            return onTransact$setApplicationRestrictionsMDM$(data, reply);
-                        case 332:
-                            return onTransact$getApplicationRestrictionsMDM$(data, reply);
-                        case 333:
-                            return onTransact$addCrossProfileIntentFilterMDM$(data, reply);
-                        case 334:
-                            ComponentName _arg0173 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg183 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearCrossProfileIntentFiltersMDM(_arg0173, _arg183);
-                            reply.writeNoException();
-                            return true;
-                        case 335:
-                            return onTransact$resetPasswordWithTokenMDM$(data, reply);
-                        case 336:
-                            ComponentName _arg0174 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg184 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result150 = isResetPasswordTokenActiveMDM(_arg0174, _arg184);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result150);
-                            return true;
-                        case 337:
-                            ComponentName _arg0175 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg185 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result151 = clearResetPasswordTokenMDM(_arg0175, _arg185);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result151);
-                            return true;
-                        case 338:
-                            return onTransact$setResetPasswordTokenMDM$(data, reply);
-                        case 339:
-                            return onTransact$setTrustAgentConfigurationMDM$(data, reply);
-                        case 340:
-                            int _arg0176 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result152 = isProfileOwnerOfOrganizationOwnedDeviceMDM(_arg0176);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result152);
-                            return true;
-                        case 341:
-                            return onTransact$hasDelegatedPermission$(data, reply);
-                        case 342:
-                            return onTransact$setGlobalPrivateDns$(data, reply);
-                        case 343:
-                            ComponentName _arg0177 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result153 = getGlobalPrivateDnsMode(_arg0177);
-                            reply.writeNoException();
-                            reply.writeInt(_result153);
-                            return true;
-                        case 344:
-                            ComponentName _arg0178 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result154 = getGlobalPrivateDnsHost(_arg0178);
-                            reply.writeNoException();
-                            reply.writeString(_result154);
-                            return true;
-                        case 345:
-                            return onTransact$setProfileOwnerOnOrganizationOwnedDevice$(data, reply);
-                        case 346:
-                            return onTransact$installUpdateFromFile$(data, reply);
-                        case 347:
-                            ComponentName _arg0179 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg186 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setCrossProfileCalendarPackages(_arg0179, _arg186);
-                            reply.writeNoException();
-                            return true;
-                        case 348:
-                            ComponentName _arg0180 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result155 = getCrossProfileCalendarPackages(_arg0180);
-                            reply.writeNoException();
-                            reply.writeStringList(_result155);
-                            return true;
-                        case 349:
-                            String _arg0181 = data.readString();
-                            int _arg187 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result156 = isPackageAllowedToAccessCalendarForUser(_arg0181, _arg187);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result156);
-                            return true;
-                        case 350:
-                            int _arg0182 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result157 = getCrossProfileCalendarPackagesForUser(_arg0182);
-                            reply.writeNoException();
-                            reply.writeStringList(_result157);
-                            return true;
-                        case 351:
-                            ComponentName _arg0183 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            List<String> _arg188 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            setCrossProfilePackages(_arg0183, _arg188);
-                            reply.writeNoException();
-                            return true;
-                        case 352:
-                            ComponentName _arg0184 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<String> _result158 = getCrossProfilePackages(_arg0184);
-                            reply.writeNoException();
-                            reply.writeStringList(_result158);
-                            return true;
-                        case 353:
-                            int _arg0185 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result159 = getAllCrossProfilePackages(_arg0185);
-                            reply.writeNoException();
-                            reply.writeStringList(_result159);
-                            return true;
-                        case 354:
-                            List<String> _result160 = getDefaultCrossProfilePackages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result160);
-                            return true;
-                        case 355:
-                            boolean _result161 = isManagedKiosk();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result161);
-                            return true;
-                        case 356:
-                            boolean _result162 = isUnattendedManagedKiosk();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result162);
-                            return true;
-                        case 357:
-                            return onTransact$startViewCalendarEventInManagedProfile$(data, reply);
-                        case 358:
-                            return onTransact$setKeyGrantForApp$(data, reply);
-                        case 359:
-                            String _arg0186 = data.readString();
-                            String _arg189 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelableGranteeMap _result163 = getKeyPairGrants(_arg0186, _arg189);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result163, 1);
-                            return true;
-                        case 360:
-                            return onTransact$setKeyGrantToWifiAuth$(data, reply);
-                        case 361:
-                            String _arg0187 = data.readString();
-                            String _arg190 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result164 = isKeyPairGrantedToWifiAuth(_arg0187, _arg190);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result164);
-                            return true;
-                        case 362:
-                            return onTransact$setUserControlDisabledPackages$(data, reply);
-                        case 363:
-                            ComponentName _arg0188 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            String _arg191 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result165 = getUserControlDisabledPackages(_arg0188, _arg191);
-                            reply.writeNoException();
-                            reply.writeStringList(_result165);
-                            return true;
-                        case 364:
-                            return onTransact$setCommonCriteriaModeEnabled$(data, reply);
-                        case 365:
-                            ComponentName _arg0189 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result166 = isCommonCriteriaModeEnabled(_arg0189);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result166);
-                            return true;
-                        case 366:
-                            ComponentName _arg0190 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result167 = getPersonalAppsSuspendedReasons(_arg0190);
-                            reply.writeNoException();
-                            reply.writeInt(_result167);
-                            return true;
-                        case 367:
-                            ComponentName _arg0191 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            boolean _arg192 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setPersonalAppsSuspended(_arg0191, _arg192);
-                            reply.writeNoException();
-                            return true;
-                        case 368:
-                            ComponentName _arg0192 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result168 = getManagedProfileMaximumTimeOff(_arg0192);
-                            reply.writeNoException();
-                            reply.writeLong(_result168);
-                            return true;
-                        case 369:
-                            ComponentName _arg0193 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            long _arg193 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setManagedProfileMaximumTimeOff(_arg0193, _arg193);
-                            reply.writeNoException();
-                            return true;
-                        case 370:
-                            acknowledgeDeviceCompliant();
-                            reply.writeNoException();
-                            return true;
-                        case 371:
-                            boolean _result169 = isComplianceAcknowledgementRequired();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result169);
-                            return true;
-                        case 372:
-                            int _arg0194 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result170 = canProfileOwnerResetPasswordWhenLocked(_arg0194);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result170);
-                            return true;
-                        case 373:
-                            int _arg0195 = data.readInt();
-                            int _arg194 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setNextOperationSafety(_arg0195, _arg194);
-                            reply.writeNoException();
-                            return true;
-                        case 374:
-                            int _arg0196 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result171 = isSafeOperation(_arg0196);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result171);
-                            return true;
-                        case 375:
-                            String _arg0197 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result172 = getEnrollmentSpecificId(_arg0197);
-                            reply.writeNoException();
-                            reply.writeString(_result172);
-                            return true;
-                        case 376:
-                            return onTransact$setOrganizationIdForUser$(data, reply);
-                        case 377:
-                            ManagedProfileProvisioningParams _arg0198 = (ManagedProfileProvisioningParams) data.readTypedObject(ManagedProfileProvisioningParams.CREATOR);
-                            String _arg195 = data.readString();
-                            data.enforceNoDataAvail();
-                            UserHandle _result173 = createAndProvisionManagedProfile(_arg0198, _arg195);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result173, 1);
-                            return true;
-                        case 378:
-                            FullyManagedDeviceProvisioningParams _arg0199 = (FullyManagedDeviceProvisioningParams) data.readTypedObject(FullyManagedDeviceProvisioningParams.CREATOR);
-                            String _arg196 = data.readString();
-                            data.enforceNoDataAvail();
-                            provisionFullyManagedDevice(_arg0199, _arg196);
-                            reply.writeNoException();
-                            return true;
-                        case 379:
-                            UserHandle _arg0200 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            Account _arg197 = (Account) data.readTypedObject(Account.CREATOR);
-                            data.enforceNoDataAvail();
-                            finalizeWorkProfileProvisioning(_arg0200, _arg197);
-                            reply.writeNoException();
-                            return true;
-                        case 380:
-                            ComponentName _arg0201 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg198 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDeviceOwnerType(_arg0201, _arg198);
-                            reply.writeNoException();
-                            return true;
-                        case 381:
-                            ComponentName _arg0202 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result174 = getDeviceOwnerType(_arg0202);
-                            reply.writeNoException();
-                            reply.writeInt(_result174);
-                            return true;
-                        case 382:
-                            int _arg0203 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetDefaultCrossProfileIntentFilters(_arg0203);
-                            reply.writeNoException();
-                            return true;
-                        case 383:
-                            boolean _result175 = canAdminGrantSensorsPermissions();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result175);
-                            return true;
-                        case 384:
-                            String _arg0204 = data.readString();
-                            boolean _arg199 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setUsbDataSignalingEnabled(_arg0204, _arg199);
-                            reply.writeNoException();
-                            return true;
-                        case 385:
-                            String _arg0205 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result176 = isUsbDataSignalingEnabled(_arg0205);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result176);
-                            return true;
-                        case 386:
-                            int _arg0206 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result177 = isUsbDataSignalingEnabledForUser(_arg0206);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result177);
-                            return true;
-                        case 387:
-                            boolean _result178 = canUsbDataSignalingBeDisabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result178);
-                            return true;
-                        case 388:
-                            String _arg0207 = data.readString();
-                            int _arg1100 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMinimumRequiredWifiSecurityLevel(_arg0207, _arg1100);
-                            reply.writeNoException();
-                            return true;
-                        case 389:
-                            int _result179 = getMinimumRequiredWifiSecurityLevel();
-                            reply.writeNoException();
-                            reply.writeInt(_result179);
-                            return true;
-                        case 390:
-                            String _arg0208 = data.readString();
-                            WifiSsidPolicy _arg1101 = (WifiSsidPolicy) data.readTypedObject(WifiSsidPolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setWifiSsidPolicy(_arg0208, _arg1101);
-                            reply.writeNoException();
-                            return true;
-                        case 391:
-                            String _arg0209 = data.readString();
-                            data.enforceNoDataAvail();
-                            WifiSsidPolicy _result180 = getWifiSsidPolicy(_arg0209);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result180, 1);
-                            return true;
-                        case 392:
-                            List<UserHandle> _result181 = listForegroundAffiliatedUsers();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result181, 1);
-                            return true;
-                        case 393:
-                            List<DevicePolicyDrawableResource> _arg0210 = data.createTypedArrayList(DevicePolicyDrawableResource.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDrawables(_arg0210);
-                            reply.writeNoException();
-                            return true;
-                        case 394:
-                            List<String> _arg0211 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            resetDrawables(_arg0211);
-                            reply.writeNoException();
-                            return true;
-                        case 395:
-                            return onTransact$getDrawable$(data, reply);
-                        case 396:
-                            boolean _result182 = isDpcDownloaded();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result182);
-                            return true;
-                        case 397:
-                            boolean _arg0212 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDpcDownloaded(_arg0212);
-                            reply.writeNoException();
-                            return true;
-                        case 398:
-                            List<DevicePolicyStringResource> _arg0213 = data.createTypedArrayList(DevicePolicyStringResource.CREATOR);
-                            data.enforceNoDataAvail();
-                            setStrings(_arg0213);
-                            reply.writeNoException();
-                            return true;
-                        case 399:
-                            List<String> _arg0214 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            resetStrings(_arg0214);
-                            reply.writeNoException();
-                            return true;
-                        case 400:
-                            String _arg0215 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParcelableResource _result183 = getString(_arg0215);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result183, 1);
-                            return true;
-                        case 401:
-                            resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState();
-                            reply.writeNoException();
-                            return true;
-                        case 402:
-                            boolean _result184 = shouldAllowBypassingDevicePolicyManagementRoleQualification();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result184);
-                            return true;
-                        case 403:
-                            UserHandle _arg0216 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<UserHandle> _result185 = getPolicyManagedProfiles(_arg0216);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result185, 1);
-                            return true;
-                        case 404:
-                            ComponentName _arg0217 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg1102 = data.readInt();
-                            data.enforceNoDataAvail();
-                            semSetPasswordQuality(_arg0217, _arg1102);
-                            reply.writeNoException();
-                            return true;
-                        case 405:
-                            ComponentName _arg0218 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg1103 = data.readInt();
-                            data.enforceNoDataAvail();
-                            semSetPasswordMinimumLength(_arg0218, _arg1103);
-                            reply.writeNoException();
-                            return true;
-                        case 406:
-                            ComponentName _arg0219 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg1104 = data.readInt();
-                            data.enforceNoDataAvail();
-                            semSetPasswordMinimumUpperCase(_arg0219, _arg1104);
-                            reply.writeNoException();
-                            return true;
-                        case 407:
-                            return onTransact$semSetPasswordMinimumLowerCase$(data, reply);
-                        case 408:
-                            return onTransact$semSetPasswordMinimumLetters$(data, reply);
-                        case 409:
-                            return onTransact$semSetPasswordMinimumNumeric$(data, reply);
-                        case 410:
-                            return onTransact$semSetPasswordMinimumSymbols$(data, reply);
-                        case 411:
-                            return onTransact$semSetPasswordMinimumNonLetter$(data, reply);
-                        case 412:
-                            return onTransact$semSetPasswordHistoryLength$(data, reply);
-                        case 413:
-                            return onTransact$semSetPasswordExpirationTimeout$(data, reply);
-                        case 414:
-                            int _arg0220 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result186 = semIsActivePasswordSufficient(_arg0220);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result186);
-                            return true;
-                        case 415:
-                            return onTransact$semSetSimplePasswordEnabled$(data, reply);
-                        case 416:
-                            return onTransact$semIsSimplePasswordEnabled$(data, reply);
-                        case 417:
-                            return onTransact$semSetKeyguardDisabledFeatures$(data, reply);
-                        case 418:
-                            return onTransact$semSetCameraDisabled$(data, reply);
-                        case 419:
-                            return onTransact$semSetAllowStorageCard$(data, reply);
-                        case 420:
-                            return onTransact$semGetAllowStorageCard$(data, reply);
-                        case 421:
-                            return onTransact$semSetAllowWifi$(data, reply);
-                        case 422:
-                            return onTransact$semGetAllowWifi$(data, reply);
-                        case 423:
-                            return onTransact$semSetAllowTextMessaging$(data, reply);
-                        case 424:
-                            return onTransact$semGetAllowTextMessaging$(data, reply);
-                        case TRANSACTION_semSetAllowPopImapEmail /* 425 */:
-                            return onTransact$semSetAllowPopImapEmail$(data, reply);
-                        case TRANSACTION_semGetAllowPopImapEmail /* 426 */:
-                            return onTransact$semGetAllowPopImapEmail$(data, reply);
-                        case 427:
-                            return onTransact$semSetAllowBrowser$(data, reply);
-                        case TRANSACTION_semGetAllowBrowser /* 428 */:
-                            return onTransact$semGetAllowBrowser$(data, reply);
-                        case 429:
-                            return onTransact$semSetAllowInternetSharing$(data, reply);
-                        case 430:
-                            return onTransact$semGetAllowInternetSharing$(data, reply);
-                        case 431:
-                            return onTransact$semSetAllowBluetoothMode$(data, reply);
-                        case 432:
-                            return onTransact$semGetAllowBluetoothMode$(data, reply);
-                        case 433:
-                            return onTransact$semSetAllowDesktopSync$(data, reply);
-                        case 434:
-                            return onTransact$semGetAllowDesktopSync$(data, reply);
-                        case TRANSACTION_semSetAllowIrda /* 435 */:
-                            return onTransact$semSetAllowIrda$(data, reply);
-                        case TRANSACTION_semGetAllowIrda /* 436 */:
-                            return onTransact$semGetAllowIrda$(data, reply);
-                        case 437:
-                            return onTransact$semSetRequireStorageCardEncryption$(data, reply);
-                        case TRANSACTION_semGetRequireStorageCardEncryption /* 438 */:
-                            return onTransact$semGetRequireStorageCardEncryption$(data, reply);
-                        case TRANSACTION_semSetChangeNotificationEnabled /* 439 */:
-                            return onTransact$semSetChangeNotificationEnabled$(data, reply);
-                        case 440:
-                            return onTransact$setApplicationExemptions$(data, reply);
-                        case 441:
-                            String _arg0221 = data.readString();
-                            data.enforceNoDataAvail();
-                            int[] _result187 = getApplicationExemptions(_arg0221);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result187);
-                            return true;
-                        case 442:
-                            return onTransact$setMtePolicy$(data, reply);
-                        case 443:
-                            String _arg0222 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result188 = getMtePolicy(_arg0222);
-                            reply.writeNoException();
-                            reply.writeInt(_result188);
-                            return true;
-                        case TRANSACTION_setManagedSubscriptionsPolicy /* 444 */:
-                            ManagedSubscriptionsPolicy _arg0223 = (ManagedSubscriptionsPolicy) data.readTypedObject(ManagedSubscriptionsPolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setManagedSubscriptionsPolicy(_arg0223);
-                            reply.writeNoException();
-                            return true;
-                        case TRANSACTION_getManagedSubscriptionsPolicy /* 445 */:
-                            ManagedSubscriptionsPolicy _result189 = getManagedSubscriptionsPolicy();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result189, 1);
-                            return true;
-                        case 446:
-                            DevicePolicyState _result190 = getDevicePolicyState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result190, 1);
-                            return true;
-                        case TRANSACTION_setOverrideKeepProfilesRunning /* 447 */:
-                            boolean _arg0224 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setOverrideKeepProfilesRunning(_arg0224);
-                            reply.writeNoException();
-                            return true;
-                        case 448:
-                            boolean _arg0225 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result191 = triggerDevicePolicyEngineMigration(_arg0225);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result191);
-                            return true;
-                        case 449:
-                            String _arg0226 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result192 = isDeviceFinanced(_arg0226);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result192);
-                            return true;
-                        case 450:
-                            String _arg0227 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result193 = getFinancedDeviceKioskRoleHolder(_arg0227);
-                            reply.writeNoException();
-                            reply.writeString(_result193);
-                            return true;
-                        case 451:
-                            return onTransact$setBluetoothContactSharingEnabledForKnox$(data, reply);
-                        case 452:
-                            int _arg0228 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result194 = getBluetoothContactSharingEnabledForKnox(_arg0228);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result194);
-                            return true;
-                        case 453:
-                            return onTransact$setUserRestrictionForKnox$(data, reply);
-                        case 454:
-                            return onTransact$setCrossProfileAppToIgnored$(data, reply);
-                        case 455:
-                            return onTransact$getSamsungSDcardEncryptionStatus$(data, reply);
-                        case 456:
-                            calculateHasIncompatibleAccounts();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDevicePolicyManager {
+        private static class Proxy implements IDevicePolicyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -8157,12 +8209,29 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
+            public ComponentName getDeviceOwnerComponentOnUser(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(81, _data, _reply, 0);
+                    _reply.readException();
+                    ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
             public boolean hasDeviceOwner() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8178,7 +8247,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(83, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8195,7 +8264,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8209,7 +8278,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(84, _data, _reply, 0);
+                    this.mRemote.transact(85, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8227,7 +8296,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(85, _data, _reply, 0);
+                    this.mRemote.transact(86, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8244,7 +8313,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -8261,7 +8330,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -8278,7 +8347,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8295,7 +8364,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8312,7 +8381,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8328,7 +8397,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(profileName);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8343,7 +8412,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8357,7 +8426,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8373,7 +8442,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8392,7 +8461,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(pid);
                     _data.writeInt(uid);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8415,7 +8484,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8429,7 +8498,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -8449,7 +8518,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeStringArray(packageNames);
                     _data.writeBoolean(suspended);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -8468,7 +8537,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8484,7 +8553,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8503,7 +8572,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeByteArray(certBuffer);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8522,7 +8591,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeStringArray(aliases);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8538,7 +8607,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(103, _data, _reply, 0);
+                    this.mRemote.transact(104, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8555,7 +8624,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(alias);
                     _data.writeInt(userHandle);
                     _data.writeBoolean(approval);
-                    this.mRemote.transact(104, _data, _reply, 0);
+                    this.mRemote.transact(105, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8573,7 +8642,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(alias);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(105, _data, _reply, 0);
+                    this.mRemote.transact(106, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8597,7 +8666,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(alias);
                     _data.writeBoolean(requestAccess);
                     _data.writeBoolean(isUserSelectable);
-                    this.mRemote.transact(106, _data, _reply, 0);
+                    this.mRemote.transact(107, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8616,7 +8685,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackage);
                     _data.writeString(alias);
-                    this.mRemote.transact(107, _data, _reply, 0);
+                    this.mRemote.transact(108, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8634,7 +8703,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
                     _data.writeString(alias);
-                    this.mRemote.transact(108, _data, _reply, 0);
+                    this.mRemote.transact(109, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8655,7 +8724,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(algorithm);
                     _data.writeTypedObject(keySpec, 0);
                     _data.writeInt(idAttestationFlags);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(110, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     if (_reply.readInt() != 0) {
@@ -8680,7 +8749,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeByteArray(certBuffer);
                     _data.writeByteArray(certChainBuffer);
                     _data.writeBoolean(isUserSelectable);
-                    this.mRemote.transact(110, _data, _reply, 0);
+                    this.mRemote.transact(111, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8700,7 +8769,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(uri, 0);
                     _data.writeString(alias);
                     _data.writeStrongBinder(aliasCallback);
-                    this.mRemote.transact(111, _data, _reply, 0);
+                    this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8717,7 +8786,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(delegatePackage);
                     _data.writeStringList(scopes);
-                    this.mRemote.transact(112, _data, _reply, 0);
+                    this.mRemote.transact(113, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8733,7 +8802,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(delegatePackage);
-                    this.mRemote.transact(113, _data, _reply, 0);
+                    this.mRemote.transact(114, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8751,7 +8820,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(scope);
-                    this.mRemote.transact(114, _data, _reply, 0);
+                    this.mRemote.transact(115, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8769,7 +8838,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(installerPackage);
-                    this.mRemote.transact(115, _data, _reply, 0);
+                    this.mRemote.transact(116, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8784,7 +8853,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(116, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8804,7 +8873,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(vpnPackage);
                     _data.writeBoolean(lockdown);
                     _data.writeStringList(lockdownAllowlist);
-                    this.mRemote.transact(117, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8821,7 +8890,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8838,7 +8907,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8855,7 +8924,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8872,7 +8941,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(121, _data, _reply, 0);
+                    this.mRemote.transact(122, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8889,7 +8958,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(123, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -8909,7 +8978,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackageName);
                     _data.writeTypedObject(filter, 0);
                     _data.writeTypedObject(activity, 0);
-                    this.mRemote.transact(123, _data, _reply, 0);
+                    this.mRemote.transact(124, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8926,7 +8995,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeString(packageName);
-                    this.mRemote.transact(124, _data, _reply, 0);
+                    this.mRemote.transact(125, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8944,7 +9013,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackageName);
                     _data.writeString(packageName);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(125, _data, _reply, 0);
+                    this.mRemote.transact(126, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8959,24 +9028,6 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(126, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void setApplicationRestrictions(ComponentName who, String callerPackage, String packageName, Bundle settings) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(who, 0);
-                    _data.writeString(callerPackage);
-                    _data.writeString(packageName);
-                    _data.writeTypedObject(settings, 0);
                     this.mRemote.transact(127, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -8986,7 +9037,7 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
-            public Bundle getApplicationRestrictions(ComponentName who, String callerPackage, String packageName) throws RemoteException {
+            public void setApplicationRestrictions(ComponentName who, String callerPackage, String packageName, Bundle settings, boolean parent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -8994,7 +9045,27 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
+                    _data.writeTypedObject(settings, 0);
+                    _data.writeBoolean(parent);
                     this.mRemote.transact(128, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public Bundle getApplicationRestrictions(ComponentName who, String callerPackage, String packageName, boolean parent) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(who, 0);
+                    _data.writeString(callerPackage);
+                    _data.writeString(packageName);
+                    _data.writeBoolean(parent);
+                    this.mRemote.transact(129, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -9012,7 +9083,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
-                    this.mRemote.transact(129, _data, _reply, 0);
+                    this.mRemote.transact(130, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9029,7 +9100,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(130, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9046,7 +9117,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(131, _data, _reply, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9064,7 +9135,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeTypedObject(provider, 0);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(133, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9079,7 +9150,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                     ComponentName _result = (ComponentName) _reply.readTypedObject(ComponentName.CREATOR);
                     return _result;
@@ -9100,7 +9171,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(key);
                     _data.writeBoolean(enable);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(135, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9116,7 +9187,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
                     _data.writeString(key);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9133,7 +9204,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackage);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(137, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -9150,7 +9221,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -9170,7 +9241,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackageName);
                     _data.writeTypedObject(filter, 0);
                     _data.writeInt(flags);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9186,7 +9257,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9202,7 +9273,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(packageList);
-                    this.mRemote.transact(140, _data, _reply, 0);
+                    this.mRemote.transact(141, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9219,7 +9290,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(141, _data, _reply, 0);
+                    this.mRemote.transact(142, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9236,7 +9307,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(142, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9255,7 +9326,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9275,7 +9346,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackageName);
                     _data.writeStringList(packageList);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(145, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9294,7 +9365,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9311,7 +9382,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(146, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9331,7 +9402,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(userId);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9349,7 +9420,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(packageList);
-                    this.mRemote.transact(148, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9366,7 +9437,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(149, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9384,7 +9455,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9401,7 +9472,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(restriction);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                     Intent _result = (Intent) _reply.readTypedObject(Intent.CREATOR);
                     return _result;
@@ -9419,9 +9490,27 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(restriction);
-                    this.mRemote.transact(152, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public List<EnforcingAdmin> getEnforcingAdminsForRestriction(int userId, String restriction) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    _data.writeString(restriction);
+                    this.mRemote.transact(154, _data, _reply, 0);
+                    _reply.readException();
+                    List<EnforcingAdmin> _result = _reply.createTypedArrayList(EnforcingAdmin.CREATOR);
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -9440,7 +9529,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeBoolean(hidden);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(155, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9460,7 +9549,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(156, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9481,7 +9570,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(profileOwner, 0);
                     _data.writeTypedObject(adminExtras, 0);
                     _data.writeInt(flags);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(157, _data, _reply, 0);
                     _reply.readException();
                     UserHandle _result = (UserHandle) _reply.readTypedObject(UserHandle.CREATOR);
                     return _result;
@@ -9499,7 +9588,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(158, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9517,7 +9606,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(157, _data, _reply, 0);
+                    this.mRemote.transact(159, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9535,7 +9624,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(158, _data, _reply, 0);
+                    this.mRemote.transact(160, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9553,7 +9642,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(159, _data, _reply, 0);
+                    this.mRemote.transact(161, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9570,7 +9659,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(160, _data, _reply, 0);
+                    this.mRemote.transact(162, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9586,7 +9675,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(163, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9602,7 +9691,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(164, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9619,7 +9708,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(165, _data, _reply, 0);
                     _reply.readException();
                     List<UserHandle> _result = _reply.createTypedArrayList(UserHandle.CREATOR);
                     return _result;
@@ -9636,7 +9725,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(166, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9651,7 +9740,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9670,7 +9759,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9687,7 +9776,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeTypedObject(intent, 0);
-                    this.mRemote.transact(167, _data, _reply, 0);
+                    this.mRemote.transact(169, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9706,7 +9795,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(170, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9727,7 +9816,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(accountType);
                     _data.writeBoolean(disabled);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(169, _data, _reply, 0);
+                    this.mRemote.transact(171, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9742,7 +9831,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(172, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9761,7 +9850,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInt(userId);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(171, _data, _reply, 0);
+                    this.mRemote.transact(173, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9779,7 +9868,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(174, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9794,7 +9883,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9811,7 +9900,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedList(preferentialNetworkServiceConfigs, 0);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9825,7 +9914,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                     List<PreferentialNetworkServiceConfig> _result = _reply.createTypedArrayList(PreferentialNetworkServiceConfig.CREATOR);
                     return _result;
@@ -9844,7 +9933,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeStringArray(packages);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9860,7 +9949,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -9877,7 +9966,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(pkg);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9896,7 +9985,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeInt(flags);
-                    this.mRemote.transact(179, _data, _reply, 0);
+                    this.mRemote.transact(181, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9912,7 +10001,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9931,7 +10020,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(setting);
                     _data.writeString(value);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(183, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9940,7 +10029,7 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
-            public void setSystemSetting(ComponentName who, String setting, String value) throws RemoteException {
+            public void setSystemSetting(ComponentName who, String setting, String value, boolean parent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -9948,7 +10037,8 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(setting);
                     _data.writeString(value);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    _data.writeBoolean(parent);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9965,7 +10055,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(setting);
                     _data.writeString(value);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(185, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9982,7 +10072,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(lockdown);
-                    this.mRemote.transact(184, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9997,7 +10087,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(185, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10015,7 +10105,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(locationEnabled);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10032,7 +10122,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeLong(millis);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10051,7 +10141,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeString(timeZone);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10069,7 +10159,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(on);
-                    this.mRemote.transact(189, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10084,7 +10174,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(190, _data, _reply, 0);
+                    this.mRemote.transact(192, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10103,7 +10193,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeBoolean(isEnabled);
                     _data.writeString(pkg);
                     _data.writeInt(userId);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(193, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10121,7 +10211,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
                     _data.writeBoolean(uninstallBlocked);
-                    this.mRemote.transact(192, _data, _reply, 0);
+                    this.mRemote.transact(194, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10136,7 +10226,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(195, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10154,7 +10244,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(194, _data, _reply, 0);
+                    this.mRemote.transact(196, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10169,7 +10259,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(195, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10186,7 +10276,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(198, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10204,7 +10294,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(197, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10219,7 +10309,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10236,7 +10326,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10257,7 +10347,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeBoolean(isContactIdIgnored);
                     _data.writeLong(directoryId);
                     _data.writeTypedObject(originalIntent, 0);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(202, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10272,7 +10362,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(201, _data, _reply, 0);
+                    this.mRemote.transact(203, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10286,7 +10376,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(202, _data, _reply, 0);
+                    this.mRemote.transact(204, _data, _reply, 0);
                     _reply.readException();
                     PackagePolicy _result = (PackagePolicy) _reply.readTypedObject(PackagePolicy.CREATOR);
                     return _result;
@@ -10304,7 +10394,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(203, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10321,7 +10411,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(204, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10336,7 +10426,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(205, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                     PackagePolicy _result = (PackagePolicy) _reply.readTypedObject(PackagePolicy.CREATOR);
                     return _result;
@@ -10353,7 +10443,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(208, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10367,7 +10457,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(209, _data, _reply, 0);
                     _reply.readException();
                     PackagePolicy _result = (PackagePolicy) _reply.readTypedObject(PackagePolicy.CREATOR);
                     return _result;
@@ -10385,7 +10475,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10403,7 +10493,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(209, _data, _reply, 0);
+                    this.mRemote.transact(211, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10418,7 +10508,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(212, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10435,7 +10525,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10456,7 +10546,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(agent, 0);
                     _data.writeTypedObject(args, 0);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(212, _data, _reply, 0);
+                    this.mRemote.transact(214, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10474,7 +10564,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(agent, 0);
                     _data.writeInt(userId);
                     _data.writeBoolean(parent);
-                    this.mRemote.transact(213, _data, _reply, 0);
+                    this.mRemote.transact(215, _data, _reply, 0);
                     _reply.readException();
                     List<PersistableBundle> _result = _reply.createTypedArrayList(PersistableBundle.CREATOR);
                     return _result;
@@ -10493,7 +10583,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeString(packageName);
-                    this.mRemote.transact(214, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10512,7 +10602,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeString(packageName);
-                    this.mRemote.transact(215, _data, _reply, 0);
+                    this.mRemote.transact(217, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10530,7 +10620,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(216, _data, _reply, 0);
+                    this.mRemote.transact(218, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -10548,7 +10638,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(required);
-                    this.mRemote.transact(217, _data, _reply, 0);
+                    this.mRemote.transact(219, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10562,7 +10652,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(218, _data, _reply, 0);
+                    this.mRemote.transact(220, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10581,7 +10671,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(221, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10597,7 +10687,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(220, _data, _reply, 0);
+                    this.mRemote.transact(222, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10616,7 +10706,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(223, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10632,7 +10722,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(222, _data, _reply, 0);
+                    this.mRemote.transact(224, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10650,7 +10740,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(forceEpehemeralUsers);
-                    this.mRemote.transact(223, _data, _reply, 0);
+                    this.mRemote.transact(225, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10665,7 +10755,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
-                    this.mRemote.transact(224, _data, _reply, 0);
+                    this.mRemote.transact(226, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10683,7 +10773,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(adminReceiver, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(225, _data, _reply, 0);
+                    this.mRemote.transact(227, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10701,7 +10791,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeTypedObject(icon, 0);
-                    this.mRemote.transact(226, _data, _reply, 0);
+                    this.mRemote.transact(228, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10718,7 +10808,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(227, _data, _reply, 0);
+                    this.mRemote.transact(229, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10732,7 +10822,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(228, _data, _reply, 0);
+                    this.mRemote.transact(230, _data, _reply, 0);
                     _reply.readException();
                     SystemUpdatePolicy _result = (SystemUpdatePolicy) _reply.readTypedObject(SystemUpdatePolicy.CREATOR);
                     return _result;
@@ -10748,7 +10838,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(229, _data, _reply, 0);
+                    this.mRemote.transact(231, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10764,7 +10854,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(230, _data, _reply, 0);
+                    this.mRemote.transact(232, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10783,7 +10873,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(231, _data, _reply, 0);
+                    this.mRemote.transact(233, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10800,7 +10890,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(232, _data, _reply, 0);
+                    this.mRemote.transact(234, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10816,7 +10906,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10833,7 +10923,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10842,13 +10932,14 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
-            public SystemUpdateInfo getPendingSystemUpdate(ComponentName admin) throws RemoteException {
+            public SystemUpdateInfo getPendingSystemUpdate(ComponentName admin, String callerPackage) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(235, _data, _reply, 0);
+                    _data.writeString(callerPackage);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                     SystemUpdateInfo _result = (SystemUpdateInfo) _reply.readTypedObject(SystemUpdateInfo.CREATOR);
                     return _result;
@@ -10867,7 +10958,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeInt(policy);
-                    this.mRemote.transact(236, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10882,7 +10973,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(237, _data, _reply, 0);
+                    this.mRemote.transact(239, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10904,7 +10995,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(permission);
                     _data.writeInt(grantState);
                     _data.writeTypedObject(resultReceiver, 0);
-                    this.mRemote.transact(238, _data, _reply, 0);
+                    this.mRemote.transact(240, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10922,7 +11013,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
                     _data.writeString(permission);
-                    this.mRemote.transact(239, _data, _reply, 0);
+                    this.mRemote.transact(241, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10940,7 +11031,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(action);
                     _data.writeString(packageName);
-                    this.mRemote.transact(240, _data, _reply, 0);
+                    this.mRemote.transact(242, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -10958,7 +11049,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(action);
                     _data.writeString(packageName);
-                    this.mRemote.transact(241, _data, _reply, 0);
+                    this.mRemote.transact(243, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -10977,7 +11068,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
                     _data.writeStringList(packageList);
-                    this.mRemote.transact(242, _data, _reply, 0);
+                    this.mRemote.transact(244, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -10993,7 +11084,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(243, _data, _reply, 0);
+                    this.mRemote.transact(245, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -11010,7 +11101,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(244, _data, _reply, 0);
+                    this.mRemote.transact(246, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11028,7 +11119,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(245, _data, _reply, 0);
+                    this.mRemote.transact(247, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -11045,7 +11136,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(246, _data, _reply, 0);
+                    this.mRemote.transact(248, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11067,7 +11158,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(247, _data, _reply, 0);
+                    this.mRemote.transact(249, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11083,7 +11174,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(248, _data, _reply, 0);
+                    this.mRemote.transact(250, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11106,7 +11197,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(249, _data, _reply, 0);
+                    this.mRemote.transact(251, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11121,7 +11212,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(250, _data, _reply, 0);
+                    this.mRemote.transact(252, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11139,7 +11230,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(251, _data, _reply, 0);
+                    this.mRemote.transact(253, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11157,7 +11248,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(252, _data, _reply, 0);
+                    this.mRemote.transact(254, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11175,7 +11266,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(color);
-                    this.mRemote.transact(253, _data, _reply, 0);
+                    this.mRemote.transact(255, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11191,7 +11282,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(color);
                     _data.writeInt(userId);
-                    this.mRemote.transact(254, _data, _reply, 0);
+                    this.mRemote.transact(256, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11206,7 +11297,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(255, _data, _reply, 0);
+                    this.mRemote.transact(257, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11221,7 +11312,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(256, _data, _reply, 0);
+                    this.mRemote.transact(258, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11238,7 +11329,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(257, _data, _reply, 0);
+                    this.mRemote.transact(259, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11262,7 +11353,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(258, _data, _reply, 0);
+                    this.mRemote.transact(260, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11278,7 +11369,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(259, _data, _reply, 0);
+                    this.mRemote.transact(261, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11294,7 +11385,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(260, _data, _reply, 0);
+                    this.mRemote.transact(262, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11311,7 +11402,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(261, _data, _reply, 0);
+                    this.mRemote.transact(263, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -11328,7 +11419,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(262, _data, _reply, 0);
+                    this.mRemote.transact(264, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -11346,7 +11437,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(state);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(263, _data, _reply, 0);
+                    this.mRemote.transact(265, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11362,7 +11453,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(ids);
-                    this.mRemote.transact(264, _data, _reply, 0);
+                    this.mRemote.transact(266, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11377,7 +11468,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(265, _data, _reply, 0);
+                    this.mRemote.transact(267, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -11393,7 +11484,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(266, _data, _reply, 0);
+                    this.mRemote.transact(268, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11410,7 +11501,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(267, _data, _reply, 0);
+                    this.mRemote.transact(269, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11429,7 +11520,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(268, _data, _reply, 0);
+                    this.mRemote.transact(270, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11445,7 +11536,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
-                    this.mRemote.transact(269, _data, _reply, 0);
+                    this.mRemote.transact(271, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11463,7 +11554,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
-                    this.mRemote.transact(270, _data, _reply, 0);
+                    this.mRemote.transact(272, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -11481,7 +11572,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
-                    this.mRemote.transact(271, _data, _reply, 0);
+                    this.mRemote.transact(273, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -11497,7 +11588,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(272, _data, _reply, 0);
+                    this.mRemote.transact(274, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -11513,10 +11604,59 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(273, _data, _reply, 0);
+                    this.mRemote.transact(275, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void setAuditLogEnabled(String callerPackage, boolean enabled) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackage);
+                    _data.writeBoolean(enabled);
+                    this.mRemote.transact(276, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public boolean isAuditLogEnabled(String callerPackage) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackage);
+                    this.mRemote.transact(277, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void setAuditLogEventsCallback(String callerPackage, IAuditLogEventsCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackage);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(278, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -11530,7 +11670,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(274, _data, _reply, 0);
+                    this.mRemote.transact(279, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11547,7 +11687,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(275, _data, _reply, 0);
+                    this.mRemote.transact(280, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11561,7 +11701,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(276, _data, _reply, 0);
+                    this.mRemote.transact(281, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11577,7 +11717,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(277, _data, _reply, 0);
+                    this.mRemote.transact(282, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11593,7 +11733,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(278, _data, _reply, 0);
+                    this.mRemote.transact(283, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11608,7 +11748,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(279, _data, _reply, 0);
+                    this.mRemote.transact(284, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11624,7 +11764,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(280, _data, _reply, 0);
+                    this.mRemote.transact(285, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11639,7 +11779,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(281, _data, _reply, 0);
+                    this.mRemote.transact(286, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11658,7 +11798,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(282, _data, _reply, 0);
+                    this.mRemote.transact(287, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11674,7 +11814,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
-                    this.mRemote.transact(283, _data, _reply, 0);
+                    this.mRemote.transact(288, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11693,7 +11833,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeLong(batchToken);
-                    this.mRemote.transact(284, _data, _reply, 0);
+                    this.mRemote.transact(289, _data, _reply, 0);
                     _reply.readException();
                     List<NetworkEvent> _result = _reply.createTypedArrayList(NetworkEvent.CREATOR);
                     return _result;
@@ -11716,7 +11856,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeStrongInterface(connection);
                     _data.writeLong(flags);
                     _data.writeInt(targetUserId);
-                    this.mRemote.transact(285, _data, _reply, 0);
+                    this.mRemote.transact(290, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11733,7 +11873,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(286, _data, _reply, 0);
+                    this.mRemote.transact(291, _data, _reply, 0);
                     _reply.readException();
                     List<UserHandle> _result = _reply.createTypedArrayList(UserHandle.CREATOR);
                     return _result;
@@ -11750,7 +11890,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(287, _data, _reply, 0);
+                    this.mRemote.transact(292, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11766,7 +11906,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(288, _data, _reply, 0);
+                    this.mRemote.transact(293, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -11782,7 +11922,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(289, _data, _reply, 0);
+                    this.mRemote.transact(294, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -11798,7 +11938,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(290, _data, _reply, 0);
+                    this.mRemote.transact(295, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -11817,7 +11957,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeByteArray(token);
-                    this.mRemote.transact(291, _data, _reply, 0);
+                    this.mRemote.transact(296, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11835,7 +11975,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(292, _data, _reply, 0);
+                    this.mRemote.transact(297, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11853,7 +11993,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(293, _data, _reply, 0);
+                    this.mRemote.transact(298, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11874,7 +12014,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(password);
                     _data.writeByteArray(token);
                     _data.writeInt(flags);
-                    this.mRemote.transact(294, _data, _reply, 0);
+                    this.mRemote.transact(299, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11890,7 +12030,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(295, _data, _reply, 0);
+                    this.mRemote.transact(300, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11907,7 +12047,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(296, _data, _reply, 0);
+                    this.mRemote.transact(301, _data, _reply, 0);
                     _reply.readException();
                     StringParceledListSlice _result = (StringParceledListSlice) _reply.readTypedObject(StringParceledListSlice.CREATOR);
                     return _result;
@@ -11926,7 +12066,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(297, _data, _reply, 0);
+                    this.mRemote.transact(302, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11942,7 +12082,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(298, _data, _reply, 0);
+                    this.mRemote.transact(303, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -11956,7 +12096,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(299, _data, _reply, 0);
+                    this.mRemote.transact(304, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -11975,7 +12115,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(userId);
                     _data.writeString(provisioningAction);
-                    this.mRemote.transact(300, _data, _reply, 0);
+                    this.mRemote.transact(305, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -11994,7 +12134,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeTypedObject(target, 0);
                     _data.writeTypedObject(bundle, 0);
-                    this.mRemote.transact(301, _data, _reply, 0);
+                    this.mRemote.transact(306, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12008,7 +12148,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(302, _data, _reply, 0);
+                    this.mRemote.transact(307, _data, _reply, 0);
                     _reply.readException();
                     PersistableBundle _result = (PersistableBundle) _reply.readTypedObject(PersistableBundle.CREATOR);
                     return _result;
@@ -12031,7 +12171,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(303, _data, _reply, 0);
+                    this.mRemote.transact(308, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12052,7 +12192,7 @@ public interface IDevicePolicyManager extends IInterface {
                     } else {
                         _data.writeInt(0);
                     }
-                    this.mRemote.transact(304, _data, _reply, 0);
+                    this.mRemote.transact(309, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12067,7 +12207,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(305, _data, _reply, 0);
+                    this.mRemote.transact(310, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -12084,7 +12224,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(306, _data, _reply, 0);
+                    this.mRemote.transact(311, _data, _reply, 0);
                     _reply.readException();
                     CharSequence _result = (CharSequence) _reply.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
                     return _result;
@@ -12102,7 +12242,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(packageNames);
-                    this.mRemote.transact(307, _data, _reply, 0);
+                    this.mRemote.transact(312, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12119,7 +12259,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(308, _data, _reply, 0);
+                    this.mRemote.transact(313, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12137,7 +12277,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeTypedObject(apnSetting, 0);
-                    this.mRemote.transact(309, _data, _reply, 0);
+                    this.mRemote.transact(314, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -12156,7 +12296,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(apnId);
                     _data.writeTypedObject(apnSetting, 0);
-                    this.mRemote.transact(310, _data, _reply, 0);
+                    this.mRemote.transact(315, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12174,7 +12314,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(apnId);
-                    this.mRemote.transact(311, _data, _reply, 0);
+                    this.mRemote.transact(316, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12191,7 +12331,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(312, _data, _reply, 0);
+                    this.mRemote.transact(317, _data, _reply, 0);
                     _reply.readException();
                     List<ApnSetting> _result = _reply.createTypedArrayList(ApnSetting.CREATOR);
                     return _result;
@@ -12209,7 +12349,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(313, _data, _reply, 0);
+                    this.mRemote.transact(318, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12224,7 +12364,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(314, _data, _reply, 0);
+                    this.mRemote.transact(319, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12243,40 +12383,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(315, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public String getActualDeviceOwnerMDM() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(316, _data, _reply, 0);
-                    _reply.readException();
-                    String _result = _reply.readString();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public boolean rebootMDM(String reason) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(reason);
-                    this.mRemote.transact(317, _data, _reply, 0);
+                    this.mRemote.transact(320, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12295,7 +12402,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(quality);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(318, _data, _reply, 0);
+                    this.mRemote.transact(321, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12312,7 +12419,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(319, _data, _reply, 0);
+                    this.mRemote.transact(322, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12329,7 +12436,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(320, _data, _reply, 0);
+                    this.mRemote.transact(323, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12346,7 +12453,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(321, _data, _reply, 0);
+                    this.mRemote.transact(324, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12363,7 +12470,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(322, _data, _reply, 0);
+                    this.mRemote.transact(325, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12380,7 +12487,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(323, _data, _reply, 0);
+                    this.mRemote.transact(326, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12397,7 +12504,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(324, _data, _reply, 0);
+                    this.mRemote.transact(327, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12414,7 +12521,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(325, _data, _reply, 0);
+                    this.mRemote.transact(328, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12431,7 +12538,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(326, _data, _reply, 0);
+                    this.mRemote.transact(329, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12448,7 +12555,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeLong(expiration);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(327, _data, _reply, 0);
+                    this.mRemote.transact(330, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12465,7 +12572,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(num);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(328, _data, _reply, 0);
+                    this.mRemote.transact(331, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12482,7 +12589,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeLong(timeMs);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(329, _data, _reply, 0);
+                    this.mRemote.transact(332, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12499,7 +12606,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(which);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(330, _data, _reply, 0);
+                    this.mRemote.transact(333, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12517,7 +12624,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(packageName);
                     _data.writeTypedObject(settings, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(331, _data, _reply, 0);
+                    this.mRemote.transact(334, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12534,44 +12641,10 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeString(packageName);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(332, _data, _reply, 0);
+                    this.mRemote.transact(335, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void addCrossProfileIntentFilterMDM(ComponentName admin, IntentFilter filter, int flags, int userHandle) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(admin, 0);
-                    _data.writeTypedObject(filter, 0);
-                    _data.writeInt(flags);
-                    _data.writeInt(userHandle);
-                    this.mRemote.transact(333, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void clearCrossProfileIntentFiltersMDM(ComponentName admin, int userHandle) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(admin, 0);
-                    _data.writeInt(userHandle);
-                    this.mRemote.transact(334, _data, _reply, 0);
-                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -12589,7 +12662,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeByteArray(token);
                     _data.writeInt(flags);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(335, _data, _reply, 0);
+                    this.mRemote.transact(336, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12607,7 +12680,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(336, _data, _reply, 0);
+                    this.mRemote.transact(337, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12625,7 +12698,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(337, _data, _reply, 0);
+                    this.mRemote.transact(338, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12644,7 +12717,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeByteArray(token);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(338, _data, _reply, 0);
+                    this.mRemote.transact(339, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12664,7 +12737,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeTypedObject(agent, 0);
                     _data.writeTypedObject(args, 0);
-                    this.mRemote.transact(339, _data, _reply, 0);
+                    this.mRemote.transact(340, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12679,7 +12752,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(340, _data, _reply, 0);
+                    this.mRemote.transact(341, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12698,10 +12771,45 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeInt(callerUid);
                     _data.writeString(scope);
-                    this.mRemote.transact(341, _data, _reply, 0);
+                    this.mRemote.transact(342, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public Map getDelegatedPackages(int userId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userId);
+                    this.mRemote.transact(343, _data, _reply, 0);
+                    _reply.readException();
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _result = _reply.readHashMap(cl);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void reportFailedPasswordAttemptWithFailureCount(int userHandle, int count, boolean parent) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(userHandle);
+                    _data.writeInt(count);
+                    _data.writeBoolean(parent);
+                    this.mRemote.transact(344, _data, _reply, 0);
+                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -12717,7 +12825,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(mode);
                     _data.writeString(privateDnsHost);
-                    this.mRemote.transact(342, _data, _reply, 0);
+                    this.mRemote.transact(345, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -12734,7 +12842,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(343, _data, _reply, 0);
+                    this.mRemote.transact(346, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -12751,7 +12859,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(344, _data, _reply, 0);
+                    this.mRemote.transact(347, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -12770,7 +12878,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userId);
                     _data.writeBoolean(isProfileOwnerOnOrganizationOwnedDevice);
-                    this.mRemote.transact(345, _data, _reply, 0);
+                    this.mRemote.transact(348, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12788,7 +12896,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackageName);
                     _data.writeTypedObject(updateFileDescriptor, 0);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(346, _data, _reply, 0);
+                    this.mRemote.transact(349, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12804,7 +12912,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(packageNames);
-                    this.mRemote.transact(347, _data, _reply, 0);
+                    this.mRemote.transact(350, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12819,7 +12927,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(348, _data, _reply, 0);
+                    this.mRemote.transact(351, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12837,7 +12945,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(349, _data, _reply, 0);
+                    this.mRemote.transact(352, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12854,7 +12962,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(350, _data, _reply, 0);
+                    this.mRemote.transact(353, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12872,7 +12980,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeStringList(packageNames);
-                    this.mRemote.transact(351, _data, _reply, 0);
+                    this.mRemote.transact(354, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -12887,7 +12995,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(352, _data, _reply, 0);
+                    this.mRemote.transact(355, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12904,7 +13012,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(353, _data, _reply, 0);
+                    this.mRemote.transact(356, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12920,7 +13028,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(354, _data, _reply, 0);
+                    this.mRemote.transact(357, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -12936,7 +13044,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(355, _data, _reply, 0);
+                    this.mRemote.transact(358, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12952,7 +13060,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(356, _data, _reply, 0);
+                    this.mRemote.transact(359, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12974,7 +13082,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeLong(end);
                     _data.writeBoolean(allDay);
                     _data.writeInt(flags);
-                    this.mRemote.transact(357, _data, _reply, 0);
+                    this.mRemote.transact(360, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -12995,7 +13103,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(alias);
                     _data.writeString(packageName);
                     _data.writeBoolean(hasGrant);
-                    this.mRemote.transact(358, _data, _reply, 0);
+                    this.mRemote.transact(361, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13013,7 +13121,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
                     _data.writeString(alias);
-                    this.mRemote.transact(359, _data, _reply, 0);
+                    this.mRemote.transact(362, _data, _reply, 0);
                     _reply.readException();
                     ParcelableGranteeMap _result = (ParcelableGranteeMap) _reply.readTypedObject(ParcelableGranteeMap.CREATOR);
                     return _result;
@@ -13032,7 +13140,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(alias);
                     _data.writeBoolean(hasGrant);
-                    this.mRemote.transact(360, _data, _reply, 0);
+                    this.mRemote.transact(363, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13050,7 +13158,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
                     _data.writeString(alias);
-                    this.mRemote.transact(361, _data, _reply, 0);
+                    this.mRemote.transact(364, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13069,7 +13177,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeStringList(packages);
-                    this.mRemote.transact(362, _data, _reply, 0);
+                    this.mRemote.transact(365, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13085,7 +13193,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(363, _data, _reply, 0);
+                    this.mRemote.transact(366, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -13104,7 +13212,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(admin, 0);
                     _data.writeString(callerPackageName);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(364, _data, _reply, 0);
+                    this.mRemote.transact(367, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13119,7 +13227,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(365, _data, _reply, 0);
+                    this.mRemote.transact(368, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13136,7 +13244,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(366, _data, _reply, 0);
+                    this.mRemote.transact(369, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -13154,7 +13262,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeBoolean(suspended);
-                    this.mRemote.transact(367, _data, _reply, 0);
+                    this.mRemote.transact(370, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13169,7 +13277,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(368, _data, _reply, 0);
+                    this.mRemote.transact(371, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -13187,7 +13295,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeLong(timeoutMs);
-                    this.mRemote.transact(369, _data, _reply, 0);
+                    this.mRemote.transact(372, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13201,7 +13309,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(370, _data, _reply, 0);
+                    this.mRemote.transact(373, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13215,7 +13323,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(371, _data, _reply, 0);
+                    this.mRemote.transact(374, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13232,7 +13340,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(372, _data, _reply, 0);
+                    this.mRemote.transact(375, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13250,7 +13358,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(operation);
                     _data.writeInt(reason);
-                    this.mRemote.transact(373, _data, _reply, 0);
+                    this.mRemote.transact(376, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13265,7 +13373,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(reason);
-                    this.mRemote.transact(374, _data, _reply, 0);
+                    this.mRemote.transact(377, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13282,7 +13390,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(375, _data, _reply, 0);
+                    this.mRemote.transact(378, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -13301,7 +13409,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(enterpriseId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(376, _data, _reply, 0);
+                    this.mRemote.transact(379, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13317,7 +13425,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(provisioningParams, 0);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(377, _data, _reply, 0);
+                    this.mRemote.transact(380, _data, _reply, 0);
                     _reply.readException();
                     UserHandle _result = (UserHandle) _reply.readTypedObject(UserHandle.CREATOR);
                     return _result;
@@ -13335,7 +13443,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(provisioningParams, 0);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(378, _data, _reply, 0);
+                    this.mRemote.transact(381, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13351,7 +13459,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(managedProfileUser, 0);
                     _data.writeTypedObject(migratedAccount, 0);
-                    this.mRemote.transact(379, _data, _reply, 0);
+                    this.mRemote.transact(382, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13367,7 +13475,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(deviceOwnerType);
-                    this.mRemote.transact(380, _data, _reply, 0);
+                    this.mRemote.transact(383, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13382,7 +13490,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
-                    this.mRemote.transact(381, _data, _reply, 0);
+                    this.mRemote.transact(384, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -13399,7 +13507,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(382, _data, _reply, 0);
+                    this.mRemote.transact(385, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13413,7 +13521,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(383, _data, _reply, 0);
+                    this.mRemote.transact(386, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13431,7 +13539,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(384, _data, _reply, 0);
+                    this.mRemote.transact(387, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13446,24 +13554,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackage);
-                    this.mRemote.transact(385, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public boolean isUsbDataSignalingEnabledForUser(int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(386, _data, _reply, 0);
+                    this.mRemote.transact(388, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13479,7 +13570,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(387, _data, _reply, 0);
+                    this.mRemote.transact(389, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13497,7 +13588,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
                     _data.writeInt(level);
-                    this.mRemote.transact(388, _data, _reply, 0);
+                    this.mRemote.transact(390, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13511,7 +13602,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(389, _data, _reply, 0);
+                    this.mRemote.transact(391, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -13529,7 +13620,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(390, _data, _reply, 0);
+                    this.mRemote.transact(392, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13544,9 +13635,26 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(391, _data, _reply, 0);
+                    this.mRemote.transact(393, _data, _reply, 0);
                     _reply.readException();
                     WifiSsidPolicy _result = (WifiSsidPolicy) _reply.readTypedObject(WifiSsidPolicy.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public boolean isDevicePotentiallyStolen(String callerPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    this.mRemote.transact(394, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -13560,7 +13668,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(392, _data, _reply, 0);
+                    this.mRemote.transact(395, _data, _reply, 0);
                     _reply.readException();
                     List<UserHandle> _result = _reply.createTypedArrayList(UserHandle.CREATOR);
                     return _result;
@@ -13577,7 +13685,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedList(drawables, 0);
-                    this.mRemote.transact(393, _data, _reply, 0);
+                    this.mRemote.transact(396, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13592,7 +13700,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringList(drawableIds);
-                    this.mRemote.transact(394, _data, _reply, 0);
+                    this.mRemote.transact(397, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13609,7 +13717,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(drawableId);
                     _data.writeString(drawableStyle);
                     _data.writeString(drawableSource);
-                    this.mRemote.transact(395, _data, _reply, 0);
+                    this.mRemote.transact(398, _data, _reply, 0);
                     _reply.readException();
                     ParcelableResource _result = (ParcelableResource) _reply.readTypedObject(ParcelableResource.CREATOR);
                     return _result;
@@ -13625,7 +13733,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(396, _data, _reply, 0);
+                    this.mRemote.transact(399, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13642,7 +13750,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(downloaded);
-                    this.mRemote.transact(397, _data, _reply, 0);
+                    this.mRemote.transact(400, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13657,7 +13765,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedList(strings, 0);
-                    this.mRemote.transact(398, _data, _reply, 0);
+                    this.mRemote.transact(401, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13672,7 +13780,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStringList(stringIds);
-                    this.mRemote.transact(399, _data, _reply, 0);
+                    this.mRemote.transact(402, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13687,7 +13795,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(stringId);
-                    this.mRemote.transact(400, _data, _reply, 0);
+                    this.mRemote.transact(403, _data, _reply, 0);
                     _reply.readException();
                     ParcelableResource _result = (ParcelableResource) _reply.readTypedObject(ParcelableResource.CREATOR);
                     return _result;
@@ -13703,7 +13811,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(401, _data, _reply, 0);
+                    this.mRemote.transact(404, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13717,7 +13825,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(402, _data, _reply, 0);
+                    this.mRemote.transact(405, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -13734,7 +13842,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(userHandle, 0);
-                    this.mRemote.transact(403, _data, _reply, 0);
+                    this.mRemote.transact(406, _data, _reply, 0);
                     _reply.readException();
                     List<UserHandle> _result = _reply.createTypedArrayList(UserHandle.CREATOR);
                     return _result;
@@ -13752,7 +13860,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(quality);
-                    this.mRemote.transact(404, _data, _reply, 0);
+                    this.mRemote.transact(407, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13768,7 +13876,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
-                    this.mRemote.transact(405, _data, _reply, 0);
+                    this.mRemote.transact(408, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -13784,54 +13892,6 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(admin, 0);
                     _data.writeInt(length);
-                    this.mRemote.transact(406, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void semSetPasswordMinimumLowerCase(ComponentName admin, int length) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(admin, 0);
-                    _data.writeInt(length);
-                    this.mRemote.transact(407, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void semSetPasswordMinimumLetters(ComponentName admin, int length) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(admin, 0);
-                    _data.writeInt(length);
-                    this.mRemote.transact(408, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void semSetPasswordMinimumNumeric(ComponentName admin, int length) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(admin, 0);
-                    _data.writeInt(length);
                     this.mRemote.transact(409, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -13841,7 +13901,7 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
-            public void semSetPasswordMinimumSymbols(ComponentName admin, int length) throws RemoteException {
+            public void semSetPasswordMinimumLowerCase(ComponentName admin, int length) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -13972,22 +14032,6 @@ public interface IDevicePolicyManager extends IInterface {
             }
 
             @Override // android.app.admin.IDevicePolicyManager
-            public void semSetCameraDisabled(ComponentName who, boolean disabled) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeTypedObject(who, 0);
-                    _data.writeBoolean(disabled);
-                    this.mRemote.transact(418, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
             public void semSetAllowStorageCard(ComponentName who, boolean value) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -13995,7 +14039,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(419, _data, _reply, 0);
+                    this.mRemote.transact(418, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14011,7 +14055,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(420, _data, _reply, 0);
+                    this.mRemote.transact(419, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14029,7 +14073,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(421, _data, _reply, 0);
+                    this.mRemote.transact(420, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14045,7 +14089,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(422, _data, _reply, 0);
+                    this.mRemote.transact(421, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14063,7 +14107,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(423, _data, _reply, 0);
+                    this.mRemote.transact(422, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14079,7 +14123,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(424, _data, _reply, 0);
+                    this.mRemote.transact(423, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14097,7 +14141,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(Stub.TRANSACTION_semSetAllowPopImapEmail, _data, _reply, 0);
+                    this.mRemote.transact(424, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14113,7 +14157,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(Stub.TRANSACTION_semGetAllowPopImapEmail, _data, _reply, 0);
+                    this.mRemote.transact(425, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14131,7 +14175,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(427, _data, _reply, 0);
+                    this.mRemote.transact(426, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14147,7 +14191,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(Stub.TRANSACTION_semGetAllowBrowser, _data, _reply, 0);
+                    this.mRemote.transact(427, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14165,7 +14209,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(429, _data, _reply, 0);
+                    this.mRemote.transact(428, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14181,7 +14225,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(430, _data, _reply, 0);
+                    this.mRemote.transact(429, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14199,7 +14243,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(size);
-                    this.mRemote.transact(431, _data, _reply, 0);
+                    this.mRemote.transact(430, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14215,7 +14259,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(432, _data, _reply, 0);
+                    this.mRemote.transact(431, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -14233,7 +14277,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(433, _data, _reply, 0);
+                    this.mRemote.transact(432, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14249,7 +14293,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(434, _data, _reply, 0);
+                    this.mRemote.transact(433, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14267,7 +14311,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(Stub.TRANSACTION_semSetAllowIrda, _data, _reply, 0);
+                    this.mRemote.transact(434, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14283,7 +14327,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(Stub.TRANSACTION_semGetAllowIrda, _data, _reply, 0);
+                    this.mRemote.transact(435, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14302,7 +14346,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(value);
                     _data.writeBoolean(isParent);
-                    this.mRemote.transact(437, _data, _reply, 0);
+                    this.mRemote.transact(436, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14319,7 +14363,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
                     _data.writeBoolean(isParent);
-                    this.mRemote.transact(Stub.TRANSACTION_semGetRequireStorageCardEncryption, _data, _reply, 0);
+                    this.mRemote.transact(437, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14337,7 +14381,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeBoolean(notifyChanges);
-                    this.mRemote.transact(Stub.TRANSACTION_semSetChangeNotificationEnabled, _data, _reply, 0);
+                    this.mRemote.transact(438, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14354,7 +14398,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(callerPackage);
                     _data.writeString(packageName);
                     _data.writeIntArray(exemptions);
-                    this.mRemote.transact(440, _data, _reply, 0);
+                    this.mRemote.transact(439, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14369,7 +14413,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(441, _data, _reply, 0);
+                    this.mRemote.transact(440, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -14387,7 +14431,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(flag);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(442, _data, _reply, 0);
+                    this.mRemote.transact(441, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14402,7 +14446,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(443, _data, _reply, 0);
+                    this.mRemote.transact(442, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -14419,7 +14463,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(Stub.TRANSACTION_setManagedSubscriptionsPolicy, _data, _reply, 0);
+                    this.mRemote.transact(443, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14433,7 +14477,7 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(Stub.TRANSACTION_getManagedSubscriptionsPolicy, _data, _reply, 0);
+                    this.mRemote.transact(444, _data, _reply, 0);
                     _reply.readException();
                     ManagedSubscriptionsPolicy _result = (ManagedSubscriptionsPolicy) _reply.readTypedObject(ManagedSubscriptionsPolicy.CREATOR);
                     return _result;
@@ -14449,25 +14493,10 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(446, _data, _reply, 0);
+                    this.mRemote.transact(445, _data, _reply, 0);
                     _reply.readException();
                     DevicePolicyState _result = (DevicePolicyState) _reply.readTypedObject(DevicePolicyState.CREATOR);
                     return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void setOverrideKeepProfilesRunning(boolean enabled) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeBoolean(enabled);
-                    this.mRemote.transact(Stub.TRANSACTION_setOverrideKeepProfilesRunning, _data, _reply, 0);
-                    _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -14481,7 +14510,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(forceMigration);
-                    this.mRemote.transact(448, _data, _reply, 0);
+                    this.mRemote.transact(446, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14498,7 +14527,7 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(449, _data, _reply, 0);
+                    this.mRemote.transact(447, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14515,42 +14544,9 @@ public interface IDevicePolicyManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callerPackageName);
-                    this.mRemote.transact(450, _data, _reply, 0);
+                    this.mRemote.transact(448, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public void setBluetoothContactSharingEnabledForKnox(int userId, boolean value) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    _data.writeBoolean(value);
-                    this.mRemote.transact(451, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.app.admin.IDevicePolicyManager
-            public boolean getBluetoothContactSharingEnabledForKnox(int userId) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(userId);
-                    this.mRemote.transact(452, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -14568,7 +14564,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeString(key);
                     _data.writeBoolean(enable);
                     _data.writeInt(userId);
-                    this.mRemote.transact(453, _data, _reply, 0);
+                    this.mRemote.transact(449, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14584,7 +14580,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(userId);
                     _data.writeString(packageName);
-                    this.mRemote.transact(454, _data, _reply, 0);
+                    this.mRemote.transact(450, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -14600,7 +14596,7 @@ public interface IDevicePolicyManager extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(who, 0);
                     _data.writeInt(userHandle);
-                    this.mRemote.transact(455, _data, _reply, 0);
+                    this.mRemote.transact(451, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -14616,8 +14612,144 @@ public interface IDevicePolicyManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(452, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void setContentProtectionPolicy(ComponentName who, String callerPackageName, int policy) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(who, 0);
+                    _data.writeString(callerPackageName);
+                    _data.writeInt(policy);
+                    this.mRemote.transact(453, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public int getContentProtectionPolicy(ComponentName who, String callerPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(who, 0);
+                    _data.writeString(callerPackageName);
+                    this.mRemote.transact(454, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public int[] getSubscriptionIds(String callerPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    this.mRemote.transact(455, _data, _reply, 0);
+                    _reply.readException();
+                    int[] _result = _reply.createIntArray();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void setMaxPolicyStorageLimit(String callerPackageName, int storageLimit) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    _data.writeInt(storageLimit);
                     this.mRemote.transact(456, _data, _reply, 0);
                     _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public void forceSetMaxPolicyStorageLimit(String callerPackageName, int storageLimit) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    _data.writeInt(storageLimit);
+                    this.mRemote.transact(457, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public int getMaxPolicyStorageLimit(String callerPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    this.mRemote.transact(458, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public int getPolicySizeForAdmin(String callerPackageName, EnforcingAdmin admin) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    _data.writeTypedObject(admin, 0);
+                    this.mRemote.transact(459, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.admin.IDevicePolicyManager
+            public int getHeadlessDeviceOwnerMode(String callerPackageName) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callerPackageName);
+                    this.mRemote.transact(460, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -15289,8 +15421,9 @@ public interface IDevicePolicyManager extends IInterface {
             String _arg1 = data.readString();
             String _arg2 = data.readString();
             Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+            boolean _arg4 = data.readBoolean();
             data.enforceNoDataAvail();
-            setApplicationRestrictions(_arg0, _arg1, _arg2, _arg3);
+            setApplicationRestrictions(_arg0, _arg1, _arg2, _arg3, _arg4);
             reply.writeNoException();
             return true;
         }
@@ -15299,8 +15432,9 @@ public interface IDevicePolicyManager extends IInterface {
             ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
             String _arg1 = data.readString();
             String _arg2 = data.readString();
+            boolean _arg3 = data.readBoolean();
             data.enforceNoDataAvail();
-            Bundle _result = getApplicationRestrictions(_arg0, _arg1, _arg2);
+            Bundle _result = getApplicationRestrictions(_arg0, _arg1, _arg2, _arg3);
             reply.writeNoException();
             reply.writeTypedObject(_result, 1);
             return true;
@@ -15513,8 +15647,9 @@ public interface IDevicePolicyManager extends IInterface {
             ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
             String _arg1 = data.readString();
             String _arg2 = data.readString();
+            boolean _arg3 = data.readBoolean();
             data.enforceNoDataAvail();
-            setSystemSetting(_arg0, _arg1, _arg2);
+            setSystemSetting(_arg0, _arg1, _arg2, _arg3);
             reply.writeNoException();
             return true;
         }
@@ -16021,17 +16156,6 @@ public interface IDevicePolicyManager extends IInterface {
             return true;
         }
 
-        private boolean onTransact$addCrossProfileIntentFilterMDM$(Parcel data, Parcel reply) throws RemoteException {
-            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-            IntentFilter _arg1 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-            int _arg2 = data.readInt();
-            int _arg3 = data.readInt();
-            data.enforceNoDataAvail();
-            addCrossProfileIntentFilterMDM(_arg0, _arg1, _arg2, _arg3);
-            reply.writeNoException();
-            return true;
-        }
-
         private boolean onTransact$resetPasswordWithTokenMDM$(Parcel data, Parcel reply) throws RemoteException {
             ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
             String _arg1 = data.readString();
@@ -16075,6 +16199,16 @@ public interface IDevicePolicyManager extends IInterface {
             boolean _result = hasDelegatedPermission(_arg0, _arg1, _arg2);
             reply.writeNoException();
             reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$reportFailedPasswordAttemptWithFailureCount$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            boolean _arg2 = data.readBoolean();
+            data.enforceNoDataAvail();
+            reportFailedPasswordAttemptWithFailureCount(_arg0, _arg1, _arg2);
+            reply.writeNoException();
             return true;
         }
 
@@ -16178,6 +16312,15 @@ public interface IDevicePolicyManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setWifiSsidPolicy$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            WifiSsidPolicy _arg1 = (WifiSsidPolicy) data.readTypedObject(WifiSsidPolicy.CREATOR);
+            data.enforceNoDataAvail();
+            setWifiSsidPolicy(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$getDrawable$(Parcel data, Parcel reply) throws RemoteException {
             String _arg0 = data.readString();
             String _arg1 = data.readString();
@@ -16189,38 +16332,38 @@ public interface IDevicePolicyManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$semSetPasswordQuality$(Parcel data, Parcel reply) throws RemoteException {
+            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            semSetPasswordQuality(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$semSetPasswordMinimumLength$(Parcel data, Parcel reply) throws RemoteException {
+            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            semSetPasswordMinimumLength(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$semSetPasswordMinimumUpperCase$(Parcel data, Parcel reply) throws RemoteException {
+            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            semSetPasswordMinimumUpperCase(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$semSetPasswordMinimumLowerCase$(Parcel data, Parcel reply) throws RemoteException {
             ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
             int _arg1 = data.readInt();
             data.enforceNoDataAvail();
             semSetPasswordMinimumLowerCase(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$semSetPasswordMinimumLetters$(Parcel data, Parcel reply) throws RemoteException {
-            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-            int _arg1 = data.readInt();
-            data.enforceNoDataAvail();
-            semSetPasswordMinimumLetters(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$semSetPasswordMinimumNumeric$(Parcel data, Parcel reply) throws RemoteException {
-            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-            int _arg1 = data.readInt();
-            data.enforceNoDataAvail();
-            semSetPasswordMinimumNumeric(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$semSetPasswordMinimumSymbols$(Parcel data, Parcel reply) throws RemoteException {
-            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-            int _arg1 = data.readInt();
-            data.enforceNoDataAvail();
-            semSetPasswordMinimumSymbols(_arg0, _arg1);
             reply.writeNoException();
             return true;
         }
@@ -16276,15 +16419,6 @@ public interface IDevicePolicyManager extends IInterface {
             int _arg1 = data.readInt();
             data.enforceNoDataAvail();
             semSetKeyguardDisabledFeatures(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
-        private boolean onTransact$semSetCameraDisabled$(Parcel data, Parcel reply) throws RemoteException {
-            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-            boolean _arg1 = data.readBoolean();
-            data.enforceNoDataAvail();
-            semSetCameraDisabled(_arg0, _arg1);
             reply.writeNoException();
             return true;
         }
@@ -16509,15 +16643,6 @@ public interface IDevicePolicyManager extends IInterface {
             return true;
         }
 
-        private boolean onTransact$setBluetoothContactSharingEnabledForKnox$(Parcel data, Parcel reply) throws RemoteException {
-            int _arg0 = data.readInt();
-            boolean _arg1 = data.readBoolean();
-            data.enforceNoDataAvail();
-            setBluetoothContactSharingEnabledForKnox(_arg0, _arg1);
-            reply.writeNoException();
-            return true;
-        }
-
         private boolean onTransact$setUserRestrictionForKnox$(Parcel data, Parcel reply) throws RemoteException {
             ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
             String _arg1 = data.readString();
@@ -16548,9 +16673,57 @@ public interface IDevicePolicyManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setContentProtectionPolicy$(Parcel data, Parcel reply) throws RemoteException {
+            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+            String _arg1 = data.readString();
+            int _arg2 = data.readInt();
+            data.enforceNoDataAvail();
+            setContentProtectionPolicy(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getContentProtectionPolicy$(Parcel data, Parcel reply) throws RemoteException {
+            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            int _result = getContentProtectionPolicy(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$setMaxPolicyStorageLimit$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            setMaxPolicyStorageLimit(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$forceSetMaxPolicyStorageLimit$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            forceSetMaxPolicyStorageLimit(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getPolicySizeForAdmin$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            EnforcingAdmin _arg1 = (EnforcingAdmin) data.readTypedObject(EnforcingAdmin.CREATOR);
+            data.enforceNoDataAvail();
+            int _result = getPolicySizeForAdmin(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 455;
+            return 459;
         }
     }
 }

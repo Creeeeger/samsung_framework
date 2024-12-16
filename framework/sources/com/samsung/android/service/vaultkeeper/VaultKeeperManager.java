@@ -5,7 +5,7 @@ import android.os.ServiceManager;
 import android.util.Log;
 import com.samsung.android.service.vaultkeeper.IVaultKeeperService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class VaultKeeperManager {
     public static final int ERR_DEVICE_NOT_READY = -109;
     public static final int ERR_EXCEPTION = -103;

@@ -1,6 +1,5 @@
 package com.android.modules.utils;
 
-import dalvik.system.VMRuntime;
 import java.io.Closeable;
 import java.io.DataInput;
 import java.io.EOFException;
@@ -18,20 +17,16 @@ public class FastDataInput implements DataInput, Closeable {
     protected int mBufferLim;
     protected int mBufferPos;
     private InputStream mIn;
-    protected final VMRuntime mRuntime;
     private int mStringRefCount = 0;
     private String[] mStringRefs = new String[32];
 
     public FastDataInput(InputStream in, int bufferSize) {
-        VMRuntime runtime = VMRuntime.getRuntime();
-        this.mRuntime = runtime;
         this.mIn = (InputStream) Objects.requireNonNull(in);
         if (bufferSize < 8) {
             throw new IllegalArgumentException();
         }
-        byte[] bArr = (byte[]) runtime.newNonMovableArray(Byte.TYPE, bufferSize);
-        this.mBuffer = bArr;
-        this.mBufferCap = bArr.length;
+        this.mBuffer = newByteArray(bufferSize);
+        this.mBufferCap = this.mBuffer.length;
     }
 
     public static FastDataInput obtain(InputStream in) {
@@ -45,7 +40,11 @@ public class FastDataInput implements DataInput, Closeable {
         this.mStringRefCount = 0;
     }
 
-    public void setInput(InputStream in) {
+    public byte[] newByteArray(int bufferSize) {
+        return new byte[bufferSize];
+    }
+
+    protected void setInput(InputStream in) {
         if (this.mIn != null) {
             throw new IllegalStateException("setInput() called before calling release()");
         }
@@ -55,20 +54,14 @@ public class FastDataInput implements DataInput, Closeable {
         this.mStringRefCount = 0;
     }
 
-    public void fill(int need) throws IOException {
-        int i = this.mBufferLim;
-        int i2 = this.mBufferPos;
-        int remain = i - i2;
-        byte[] bArr = this.mBuffer;
-        System.arraycopy(bArr, i2, bArr, 0, remain);
+    protected void fill(int need) throws IOException {
+        int remain = this.mBufferLim - this.mBufferPos;
+        System.arraycopy(this.mBuffer, this.mBufferPos, this.mBuffer, 0, remain);
         this.mBufferPos = 0;
         this.mBufferLim = remain;
         int need2 = need - remain;
         while (need2 > 0) {
-            InputStream inputStream = this.mIn;
-            byte[] bArr2 = this.mBuffer;
-            int i3 = this.mBufferLim;
-            int c = inputStream.read(bArr2, i3, this.mBufferCap - i3);
+            int c = this.mIn.read(this.mBuffer, this.mBufferLim, this.mBufferCap - this.mBufferLim);
             if (c == -1) {
                 throw new EOFException();
             }
@@ -98,10 +91,8 @@ public class FastDataInput implements DataInput, Closeable {
             this.mBufferPos += len;
             return;
         }
-        int i = this.mBufferLim;
-        int i2 = this.mBufferPos;
-        int remain = i - i2;
-        System.arraycopy(this.mBuffer, i2, b, off, remain);
+        int remain = this.mBufferLim - this.mBufferPos;
+        System.arraycopy(this.mBuffer, this.mBufferPos, b, off, remain);
         this.mBufferPos += remain;
         int off2 = off + remain;
         int len2 = len - remain;
@@ -126,7 +117,7 @@ public class FastDataInput implements DataInput, Closeable {
             this.mBufferPos += len;
             return res;
         }
-        byte[] tmp = (byte[]) this.mRuntime.newNonMovableArray(Byte.TYPE, len + 1);
+        byte[] tmp = newByteArray(len + 1);
         readFully(tmp, 0, len);
         return ModifiedUtf8.decode(tmp, new char[len], 0, len);
     }
@@ -135,18 +126,19 @@ public class FastDataInput implements DataInput, Closeable {
         int ref = readUnsignedShort();
         if (ref == 65535) {
             String s = readUTF();
-            int i = this.mStringRefCount;
-            if (i < 65535) {
-                String[] strArr = this.mStringRefs;
-                if (i == strArr.length) {
-                    this.mStringRefs = (String[]) Arrays.copyOf(strArr, i + (i >> 1));
+            if (this.mStringRefCount < 65535) {
+                if (this.mStringRefCount == this.mStringRefs.length) {
+                    this.mStringRefs = (String[]) Arrays.copyOf(this.mStringRefs, this.mStringRefCount + (this.mStringRefCount >> 1));
                 }
-                String[] strArr2 = this.mStringRefs;
-                int i2 = this.mStringRefCount;
-                this.mStringRefCount = i2 + 1;
-                strArr2[i2] = s;
+                String[] strArr = this.mStringRefs;
+                int i = this.mStringRefCount;
+                this.mStringRefCount = i + 1;
+                strArr[i] = s;
             }
             return s;
+        }
+        if (ref >= this.mStringRefs.length) {
+            throw new IOException("Invalid interned string reference " + ref + " for " + this.mStringRefs.length + " interned strings");
         }
         return this.mStringRefs[ref];
     }
@@ -186,11 +178,12 @@ public class FastDataInput implements DataInput, Closeable {
         }
         byte[] bArr = this.mBuffer;
         int i = this.mBufferPos;
-        int i2 = i + 1;
-        this.mBufferPos = i2;
-        int i3 = (bArr[i] & 255) << 8;
-        this.mBufferPos = i2 + 1;
-        return (short) (((bArr[i2] & 255) << 0) | i3);
+        this.mBufferPos = i + 1;
+        int i2 = (bArr[i] & 255) << 8;
+        byte[] bArr2 = this.mBuffer;
+        int i3 = this.mBufferPos;
+        this.mBufferPos = i3 + 1;
+        return (short) (i2 | ((bArr2[i3] & 255) << 0));
     }
 
     @Override // java.io.DataInput
@@ -210,17 +203,20 @@ public class FastDataInput implements DataInput, Closeable {
         }
         byte[] bArr = this.mBuffer;
         int i = this.mBufferPos;
-        int i2 = i + 1;
-        this.mBufferPos = i2;
-        int i3 = (bArr[i] & 255) << 24;
-        int i4 = i2 + 1;
-        this.mBufferPos = i4;
-        int i5 = i3 | ((bArr[i2] & 255) << 16);
-        int i6 = i4 + 1;
-        this.mBufferPos = i6;
-        int i7 = i5 | ((bArr[i4] & 255) << 8);
-        this.mBufferPos = i6 + 1;
-        return ((bArr[i6] & 255) << 0) | i7;
+        this.mBufferPos = i + 1;
+        int i2 = (bArr[i] & 255) << 24;
+        byte[] bArr2 = this.mBuffer;
+        int i3 = this.mBufferPos;
+        this.mBufferPos = i3 + 1;
+        int i4 = i2 | ((bArr2[i3] & 255) << 16);
+        byte[] bArr3 = this.mBuffer;
+        int i5 = this.mBufferPos;
+        this.mBufferPos = i5 + 1;
+        int i6 = i4 | ((bArr3[i5] & 255) << 8);
+        byte[] bArr4 = this.mBuffer;
+        int i7 = this.mBufferPos;
+        this.mBufferPos = i7 + 1;
+        return i6 | ((bArr4[i7] & 255) << 0);
     }
 
     @Override // java.io.DataInput
@@ -230,29 +226,36 @@ public class FastDataInput implements DataInput, Closeable {
         }
         byte[] bArr = this.mBuffer;
         int i = this.mBufferPos;
-        int i2 = i + 1;
-        this.mBufferPos = i2;
-        int i3 = (bArr[i] & 255) << 24;
-        int i4 = i2 + 1;
-        this.mBufferPos = i4;
-        int i5 = i3 | ((bArr[i2] & 255) << 16);
-        int i6 = i4 + 1;
-        this.mBufferPos = i6;
-        int i7 = i5 | ((bArr[i4] & 255) << 8);
-        int i8 = i6 + 1;
-        this.mBufferPos = i8;
-        int h = i7 | ((bArr[i6] & 255) << 0);
-        int i9 = i8 + 1;
-        this.mBufferPos = i9;
-        int i10 = (bArr[i8] & 255) << 24;
-        int i11 = i9 + 1;
-        this.mBufferPos = i11;
-        int i12 = ((bArr[i9] & 255) << 16) | i10;
-        int i13 = i11 + 1;
-        this.mBufferPos = i13;
-        int i14 = ((bArr[i11] & 255) << 8) | i12;
-        this.mBufferPos = i13 + 1;
-        int l = ((bArr[i13] & 255) << 0) | i14;
+        this.mBufferPos = i + 1;
+        int i2 = (bArr[i] & 255) << 24;
+        byte[] bArr2 = this.mBuffer;
+        int i3 = this.mBufferPos;
+        this.mBufferPos = i3 + 1;
+        int i4 = i2 | ((bArr2[i3] & 255) << 16);
+        byte[] bArr3 = this.mBuffer;
+        int i5 = this.mBufferPos;
+        this.mBufferPos = i5 + 1;
+        int i6 = i4 | ((bArr3[i5] & 255) << 8);
+        byte[] bArr4 = this.mBuffer;
+        int i7 = this.mBufferPos;
+        this.mBufferPos = i7 + 1;
+        int h = i6 | ((bArr4[i7] & 255) << 0);
+        byte[] bArr5 = this.mBuffer;
+        int i8 = this.mBufferPos;
+        this.mBufferPos = i8 + 1;
+        int i9 = (bArr5[i8] & 255) << 24;
+        byte[] bArr6 = this.mBuffer;
+        int i10 = this.mBufferPos;
+        this.mBufferPos = i10 + 1;
+        int i11 = i9 | ((bArr6[i10] & 255) << 16);
+        byte[] bArr7 = this.mBuffer;
+        int i12 = this.mBufferPos;
+        this.mBufferPos = i12 + 1;
+        int i13 = ((bArr7[i12] & 255) << 8) | i11;
+        byte[] bArr8 = this.mBuffer;
+        int i14 = this.mBufferPos;
+        this.mBufferPos = i14 + 1;
+        int l = i13 | ((bArr8[i14] & 255) << 0);
         return (h << 32) | (l & 4294967295L);
     }
 

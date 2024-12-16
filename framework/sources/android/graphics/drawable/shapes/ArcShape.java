@@ -34,8 +34,8 @@ public class ArcShape extends RectShape {
 
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape
     /* renamed from: clone */
-    public ArcShape mo1293clone() throws CloneNotSupportedException {
-        return (ArcShape) super.mo1293clone();
+    public ArcShape mo1387clone() throws CloneNotSupportedException {
+        return (ArcShape) super.mo1387clone();
     }
 
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape

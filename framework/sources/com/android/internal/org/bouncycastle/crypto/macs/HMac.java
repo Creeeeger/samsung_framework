@@ -14,7 +14,7 @@ import java.util.Hashtable;
 public class HMac implements Mac {
     private static final byte IPAD = 54;
     private static final byte OPAD = 92;
-    private static Hashtable blockLengths;
+    private static Hashtable blockLengths = new Hashtable();
     private int blockLength;
     private Digest digest;
     private int digestSize;
@@ -24,9 +24,7 @@ public class HMac implements Mac {
     private byte[] outputBuf;
 
     static {
-        Hashtable hashtable = new Hashtable();
-        blockLengths = hashtable;
-        hashtable.put(KeyProperties.DIGEST_MD5, Integers.valueOf(64));
+        blockLengths.put(KeyProperties.DIGEST_MD5, Integers.valueOf(64));
         blockLengths.put("SHA-1", Integers.valueOf(64));
         blockLengths.put(KeyProperties.DIGEST_SHA224, Integers.valueOf(64));
         blockLengths.put("SHA-256", Integers.valueOf(64));
@@ -51,11 +49,10 @@ public class HMac implements Mac {
 
     private HMac(Digest digest, int byteLength) {
         this.digest = digest;
-        int digestSize = digest.getDigestSize();
-        this.digestSize = digestSize;
+        this.digestSize = digest.getDigestSize();
         this.blockLength = byteLength;
-        this.inputPad = new byte[byteLength];
-        this.outputBuf = new byte[digestSize + byteLength];
+        this.inputPad = new byte[this.blockLength];
+        this.outputBuf = new byte[this.blockLength + this.digestSize];
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
@@ -69,7 +66,6 @@ public class HMac implements Mac {
 
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
     public void init(CipherParameters params) {
-        byte[] bArr;
         this.digest.reset();
         byte[] key = ((KeyParameter) params).getKey();
         int keyLength = key.length;
@@ -80,30 +76,19 @@ public class HMac implements Mac {
         } else {
             System.arraycopy(key, 0, this.inputPad, 0, keyLength);
         }
-        int i = keyLength;
-        while (true) {
-            bArr = this.inputPad;
-            if (i >= bArr.length) {
-                break;
-            }
-            bArr[i] = 0;
-            i++;
+        for (int i = keyLength; i < this.inputPad.length; i++) {
+            this.inputPad[i] = 0;
         }
-        System.arraycopy(bArr, 0, this.outputBuf, 0, this.blockLength);
+        System.arraycopy(this.inputPad, 0, this.outputBuf, 0, this.blockLength);
         xorPad(this.inputPad, this.blockLength, IPAD);
         xorPad(this.outputBuf, this.blockLength, OPAD);
-        Digest digest = this.digest;
-        if (digest instanceof Memoable) {
-            Memoable copy = ((Memoable) digest).copy();
-            this.opadState = copy;
-            ((Digest) copy).update(this.outputBuf, 0, this.blockLength);
+        if (this.digest instanceof Memoable) {
+            this.opadState = ((Memoable) this.digest).copy();
+            ((Digest) this.opadState).update(this.outputBuf, 0, this.blockLength);
         }
-        Digest digest2 = this.digest;
-        byte[] bArr2 = this.inputPad;
-        digest2.update(bArr2, 0, bArr2.length);
-        Digest digest3 = this.digest;
-        if (digest3 instanceof Memoable) {
-            this.ipadState = ((Memoable) digest3).copy();
+        this.digest.update(this.inputPad, 0, this.inputPad.length);
+        if (this.digest instanceof Memoable) {
+            this.ipadState = ((Memoable) this.digest).copy();
         }
     }
 
@@ -125,33 +110,20 @@ public class HMac implements Mac {
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
     public int doFinal(byte[] out, int outOff) {
         this.digest.doFinal(this.outputBuf, this.blockLength);
-        Memoable memoable = this.opadState;
-        if (memoable != null) {
-            ((Memoable) this.digest).reset(memoable);
-            Digest digest = this.digest;
-            digest.update(this.outputBuf, this.blockLength, digest.getDigestSize());
+        if (this.opadState != null) {
+            ((Memoable) this.digest).reset(this.opadState);
+            this.digest.update(this.outputBuf, this.blockLength, this.digest.getDigestSize());
         } else {
-            Digest digest2 = this.digest;
-            byte[] bArr = this.outputBuf;
-            digest2.update(bArr, 0, bArr.length);
+            this.digest.update(this.outputBuf, 0, this.outputBuf.length);
         }
         int len = this.digest.doFinal(out, outOff);
-        int i = this.blockLength;
-        while (true) {
-            byte[] bArr2 = this.outputBuf;
-            if (i >= bArr2.length) {
-                break;
-            }
-            bArr2[i] = 0;
-            i++;
+        for (int i = this.blockLength; i < this.outputBuf.length; i++) {
+            this.outputBuf[i] = 0;
         }
-        Memoable memoable2 = this.ipadState;
-        if (memoable2 != null) {
-            ((Memoable) this.digest).reset(memoable2);
+        if (this.ipadState != null) {
+            ((Memoable) this.digest).reset(this.ipadState);
         } else {
-            Digest digest3 = this.digest;
-            byte[] bArr3 = this.inputPad;
-            digest3.update(bArr3, 0, bArr3.length);
+            this.digest.update(this.inputPad, 0, this.inputPad.length);
         }
         return len;
     }
@@ -159,9 +131,7 @@ public class HMac implements Mac {
     @Override // com.android.internal.org.bouncycastle.crypto.Mac
     public void reset() {
         this.digest.reset();
-        Digest digest = this.digest;
-        byte[] bArr = this.inputPad;
-        digest.update(bArr, 0, bArr.length);
+        this.digest.update(this.inputPad, 0, this.inputPad.length);
     }
 
     private static void xorPad(byte[] pad, int len, byte n) {

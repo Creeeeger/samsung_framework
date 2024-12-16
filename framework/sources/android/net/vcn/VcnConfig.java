@@ -18,47 +18,39 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnConfig implements Parcelable {
-    private static final Set<Integer> ALLOWED_TRANSPORTS;
     public static final Parcelable.Creator<VcnConfig> CREATOR;
     private static final String GATEWAY_CONNECTION_CONFIGS_KEY = "mGatewayConnectionConfigs";
     private static final String IS_TEST_MODE_PROFILE_KEY = "mIsTestModeProfile";
     private static final String PACKAGE_NAME_KEY = "mPackageName";
     private static final Set<Integer> RESTRICTED_TRANSPORTS_DEFAULT;
     private static final String RESTRICTED_TRANSPORTS_KEY = "mRestrictedTransports";
-    private static final String TAG = VcnConfig.class.getSimpleName();
     private final Set<VcnGatewayConnectionConfig> mGatewayConnectionConfigs;
     private final boolean mIsTestModeProfile;
     private final String mPackageName;
     private final Set<Integer> mRestrictedTransports;
+    private static final String TAG = VcnConfig.class.getSimpleName();
+    private static final Set<Integer> ALLOWED_TRANSPORTS = new ArraySet();
 
     @Target({ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcnUnderlyingNetworkTransport {
     }
 
-    /* synthetic */ VcnConfig(String str, Set set, Set set2, boolean z, VcnConfigIA vcnConfigIA) {
-        this(str, set, set2, z);
-    }
-
     static {
-        ArraySet arraySet = new ArraySet();
-        ALLOWED_TRANSPORTS = arraySet;
-        arraySet.add(1);
-        arraySet.add(0);
-        arraySet.add(7);
+        ALLOWED_TRANSPORTS.add(1);
+        ALLOWED_TRANSPORTS.add(0);
+        ALLOWED_TRANSPORTS.add(7);
         RESTRICTED_TRANSPORTS_DEFAULT = Collections.singleton(1);
         CREATOR = new Parcelable.Creator<VcnConfig>() { // from class: android.net.vcn.VcnConfig.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VcnConfig createFromParcel(Parcel in) {
                 return new VcnConfig((PersistableBundle) in.readParcelable(null, PersistableBundle.class));
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public VcnConfig[] newArray(int size) {
                 return new VcnConfig[size];
@@ -163,37 +155,16 @@ public final class VcnConfig implements Parcelable {
         out.writeParcelable(toPersistableBundle(), flags);
     }
 
-    /* renamed from: android.net.vcn.VcnConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VcnConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnConfig createFromParcel(Parcel in) {
-            return new VcnConfig((PersistableBundle) in.readParcelable(null, PersistableBundle.class));
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VcnConfig[] newArray(int size) {
-            return new VcnConfig[size];
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
-        private final Set<VcnGatewayConnectionConfig> mGatewayConnectionConfigs = new ArraySet();
-        private boolean mIsTestModeProfile;
         private final String mPackageName;
-        private final Set<Integer> mRestrictedTransports;
+        private final Set<VcnGatewayConnectionConfig> mGatewayConnectionConfigs = new ArraySet();
+        private final Set<Integer> mRestrictedTransports = new ArraySet();
+        private boolean mIsTestModeProfile = false;
 
         public Builder(Context context) {
-            ArraySet arraySet = new ArraySet();
-            this.mRestrictedTransports = arraySet;
-            this.mIsTestModeProfile = false;
             Objects.requireNonNull(context, "context was null");
             this.mPackageName = context.getOpPackageName();
-            arraySet.addAll(VcnConfig.RESTRICTED_TRANSPORTS_DEFAULT);
+            this.mRestrictedTransports.addAll(VcnConfig.RESTRICTED_TRANSPORTS_DEFAULT);
         }
 
         public Builder addGatewayConnectionConfig(VcnGatewayConnectionConfig gatewayConnectionConfig) {

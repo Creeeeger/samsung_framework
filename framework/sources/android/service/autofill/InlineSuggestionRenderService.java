@@ -20,6 +20,7 @@ import android.util.Size;
 import android.view.SurfaceControlViewHost;
 import android.view.View;
 import android.view.WindowManager;
+import android.window.InputTransferToken;
 import com.android.internal.util.function.NonaConsumer;
 import com.android.internal.util.function.TriConsumer;
 import com.android.internal.util.function.pooled.PooledLambda;
@@ -36,10 +37,6 @@ public abstract class InlineSuggestionRenderService extends Service {
     private IInlineSuggestionUiCallback mCallback;
     private final Handler mMainHandler = new Handler(Looper.getMainLooper(), null, true);
     private final LruCache<InlineSuggestionUiImpl, Boolean> mActiveInlineSuggestions = new LruCache<InlineSuggestionUiImpl, Boolean>(30) { // from class: android.service.autofill.InlineSuggestionRenderService.1
-        AnonymousClass1(int maxSize) {
-            super(maxSize);
-        }
-
         @Override // android.util.LruCache
         public void entryRemoved(boolean evicted, InlineSuggestionUiImpl key, Boolean oldValue, Boolean newValue) {
             if (evicted) {
@@ -48,22 +45,6 @@ public abstract class InlineSuggestionRenderService extends Service {
             }
         }
     };
-
-    /* renamed from: android.service.autofill.InlineSuggestionRenderService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends LruCache<InlineSuggestionUiImpl, Boolean> {
-        AnonymousClass1(int maxSize) {
-            super(maxSize);
-        }
-
-        @Override // android.util.LruCache
-        public void entryRemoved(boolean evicted, InlineSuggestionUiImpl key, Boolean oldValue, Boolean newValue) {
-            if (evicted) {
-                Log.w(InlineSuggestionRenderService.TAG, "Hit max=30 entries in the cache. Releasing oldest one to make space.");
-                key.releaseSurfaceControlViewHost();
-            }
-        }
-    }
 
     private Size measuredSize(View view, int width, int height, Size minSize, Size maxSize) {
         int widthMeasureSpec;
@@ -85,6 +66,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         return new Size(width, height);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleRenderSuggestion(final IInlineSuggestionUiCallback callback, InlinePresentation presentation, int width, int height, IBinder hostInputToken, int displayId, int userId, int sessionId) {
         if (hostInputToken != null) {
             updateDisplay(displayId);
@@ -106,7 +88,7 @@ public abstract class InlineSuggestionRenderService extends Service {
                 InlineSuggestionRoot suggestionRoot = new InlineSuggestionRoot(this, callback);
                 suggestionRoot.addView(suggestionView);
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams(measuredSize.getWidth(), measuredSize.getHeight(), 2, 0, -2);
-                final SurfaceControlViewHost host = new SurfaceControlViewHost(this, getDisplay(), hostInputToken, TAG);
+                final SurfaceControlViewHost host = new SurfaceControlViewHost(this, getDisplay(), new InputTransferToken(hostInputToken), TAG);
                 host.setView(suggestionRoot, lp);
                 suggestionView.setFocusable(false);
                 suggestionView.setOnClickListener(new View.OnClickListener() { // from class: android.service.autofill.InlineSuggestionRenderService$$ExternalSyntheticLambda0
@@ -142,7 +124,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    public static /* synthetic */ void lambda$handleRenderSuggestion$0(IInlineSuggestionUiCallback callback, View v) {
+    static /* synthetic */ void lambda$handleRenderSuggestion$0(IInlineSuggestionUiCallback callback, View v) {
         try {
             callback.onClick();
         } catch (RemoteException e) {
@@ -150,7 +132,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    public static /* synthetic */ boolean lambda$handleRenderSuggestion$1(View.OnLongClickListener onLongClickListener, IInlineSuggestionUiCallback callback, View v) {
+    static /* synthetic */ boolean lambda$handleRenderSuggestion$1(View.OnLongClickListener onLongClickListener, IInlineSuggestionUiCallback callback, View v) {
         if (onLongClickListener != null) {
             onLongClickListener.onLongClick(v);
         }
@@ -163,7 +145,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    public static /* synthetic */ void lambda$handleRenderSuggestion$2(IInlineSuggestionUiCallback callback, InlineSuggestionUiImpl uiImpl, SurfaceControlViewHost host, Size measuredSize) {
+    static /* synthetic */ void lambda$handleRenderSuggestion$2(IInlineSuggestionUiCallback callback, InlineSuggestionUiImpl uiImpl, SurfaceControlViewHost host, Size measuredSize) {
         try {
             callback.onContent(new InlineSuggestionUiWrapper(uiImpl), host.getSurfacePackage(), measuredSize.getWidth(), measuredSize.getHeight());
         } catch (RemoteException e) {
@@ -171,11 +153,13 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleGetInlineSuggestionsRendererInfo(RemoteCallback callback) {
         Bundle rendererInfo = onGetInlineSuggestionsRendererInfo();
         callback.sendResult(rendererInfo);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDestroySuggestionViews(int userId, int sessionId) {
         Log.v(TAG, "handleDestroySuggestionViews called for " + userId + ":" + sessionId);
         for (InlineSuggestionUiImpl inlineSuggestionUi : this.mActiveInlineSuggestions.snapshot().keySet()) {
@@ -186,8 +170,8 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class InlineSuggestionUiWrapper extends IInlineSuggestionUi.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class InlineSuggestionUiWrapper extends IInlineSuggestionUi.Stub {
         private final WeakReference<InlineSuggestionUiImpl> mUiImpl;
 
         InlineSuggestionUiWrapper(InlineSuggestionUiImpl uiImpl) {
@@ -211,8 +195,8 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class InlineSuggestionUiImpl {
+    /* JADX INFO: Access modifiers changed from: private */
+    final class InlineSuggestionUiImpl {
         private final Handler mHandler;
         private final int mSessionId;
         private final int mUserId;
@@ -226,7 +210,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         }
 
         public void releaseSurfaceControlViewHost() {
-            this.mHandler.post(new Runnable() { // from class: android.service.autofill.InlineSuggestionRenderService$InlineSuggestionUiImpl$$ExternalSyntheticLambda0
+            this.mHandler.post(new Runnable() { // from class: android.service.autofill.InlineSuggestionRenderService$InlineSuggestionUiImpl$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     InlineSuggestionRenderService.InlineSuggestionUiImpl.this.lambda$releaseSurfaceControlViewHost$0();
@@ -234,6 +218,7 @@ public abstract class InlineSuggestionRenderService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$releaseSurfaceControlViewHost$0() {
             if (this.mViewHost == null) {
                 return;
@@ -247,7 +232,7 @@ public abstract class InlineSuggestionRenderService extends Service {
 
         public void getSurfacePackage(final ISurfacePackageResultCallback callback) {
             Log.d(InlineSuggestionRenderService.TAG, "getSurfacePackage");
-            this.mHandler.post(new Runnable() { // from class: android.service.autofill.InlineSuggestionRenderService$InlineSuggestionUiImpl$$ExternalSyntheticLambda1
+            this.mHandler.post(new Runnable() { // from class: android.service.autofill.InlineSuggestionRenderService$InlineSuggestionUiImpl$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     InlineSuggestionRenderService.InlineSuggestionUiImpl.this.lambda$getSurfacePackage$1(callback);
@@ -255,16 +240,17 @@ public abstract class InlineSuggestionRenderService extends Service {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$getSurfacePackage$1(ISurfacePackageResultCallback callback) {
             try {
-                SurfaceControlViewHost surfaceControlViewHost = this.mViewHost;
-                callback.onResult(surfaceControlViewHost == null ? null : surfaceControlViewHost.getSurfacePackage());
+                callback.onResult(this.mViewHost == null ? null : this.mViewHost.getSurfacePackage());
             } catch (RemoteException e) {
                 Log.w(InlineSuggestionRenderService.TAG, "RemoteException calling onSurfacePackage");
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public final void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.println("mActiveInlineSuggestions: " + this.mActiveInlineSuggestions.size());
@@ -283,8 +269,7 @@ public abstract class InlineSuggestionRenderService extends Service {
         return null;
     }
 
-    /* renamed from: android.service.autofill.InlineSuggestionRenderService$2 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.autofill.InlineSuggestionRenderService$2, reason: invalid class name */
     class AnonymousClass2 extends IInlineSuggestionRenderService.Stub {
         AnonymousClass2() {
         }
@@ -301,7 +286,7 @@ public abstract class InlineSuggestionRenderService extends Service {
 
         @Override // android.service.autofill.IInlineSuggestionRenderService
         public void getInlineSuggestionsRendererInfo(RemoteCallback callback) {
-            InlineSuggestionRenderService.this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.autofill.InlineSuggestionRenderService$2$$ExternalSyntheticLambda2
+            InlineSuggestionRenderService.this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.autofill.InlineSuggestionRenderService$2$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((InlineSuggestionRenderService) obj).handleGetInlineSuggestionsRendererInfo((RemoteCallback) obj2);
@@ -311,7 +296,7 @@ public abstract class InlineSuggestionRenderService extends Service {
 
         @Override // android.service.autofill.IInlineSuggestionRenderService
         public void destroySuggestionViews(int userId, int sessionId) {
-            InlineSuggestionRenderService.this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.autofill.InlineSuggestionRenderService$2$$ExternalSyntheticLambda0
+            InlineSuggestionRenderService.this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.autofill.InlineSuggestionRenderService$2$$ExternalSyntheticLambda2
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((InlineSuggestionRenderService) obj).handleDestroySuggestionViews(((Integer) obj2).intValue(), ((Integer) obj3).intValue());
@@ -321,12 +306,11 @@ public abstract class InlineSuggestionRenderService extends Service {
     }
 
     public final void startIntentSender(IntentSender intentSender) {
-        IInlineSuggestionUiCallback iInlineSuggestionUiCallback = this.mCallback;
-        if (iInlineSuggestionUiCallback == null) {
+        if (this.mCallback == null) {
             return;
         }
         try {
-            iInlineSuggestionUiCallback.onStartIntentSender(intentSender);
+            this.mCallback.onStartIntentSender(intentSender);
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }

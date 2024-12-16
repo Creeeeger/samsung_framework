@@ -9,7 +9,7 @@ import android.view.autofill.AutofillId;
 import android.view.inputmethod.InlineSuggestionsRequest;
 import com.android.internal.inputmethod.IInlineSuggestionsResponseCallback;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInlineSuggestionsRequestCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInlineSuggestionsRequestCallback";
 
@@ -29,7 +29,6 @@ public interface IInlineSuggestionsRequestCallback extends IInterface {
 
     void onInputMethodStartInputView() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInlineSuggestionsRequestCallback {
         @Override // com.android.internal.inputmethod.IInlineSuggestionsRequestCallback
         public void onInlineSuggestionsUnsupported() throws RemoteException {
@@ -69,7 +68,6 @@ public interface IInlineSuggestionsRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInlineSuggestionsRequestCallback {
         static final int TRANSACTION_onInlineSuggestionsRequest = 2;
         static final int TRANSACTION_onInlineSuggestionsSessionInvalidated = 8;
@@ -133,52 +131,48 @@ public interface IInlineSuggestionsRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineSuggestionsRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineSuggestionsRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineSuggestionsRequestCallback.DESCRIPTOR);
+                case 1:
+                    onInlineSuggestionsUnsupported();
+                    return true;
+                case 2:
+                    InlineSuggestionsRequest _arg0 = (InlineSuggestionsRequest) data.readTypedObject(InlineSuggestionsRequest.CREATOR);
+                    IInlineSuggestionsResponseCallback _arg1 = IInlineSuggestionsResponseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onInlineSuggestionsRequest(_arg0, _arg1);
+                    return true;
+                case 3:
+                    AutofillId _arg02 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInputMethodStartInput(_arg02);
+                    return true;
+                case 4:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onInputMethodShowInputRequested(_arg03);
+                    return true;
+                case 5:
+                    onInputMethodStartInputView();
+                    return true;
+                case 6:
+                    onInputMethodFinishInputView();
+                    return true;
+                case 7:
+                    onInputMethodFinishInput();
+                    return true;
+                case 8:
+                    onInlineSuggestionsSessionInvalidated();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onInlineSuggestionsUnsupported();
-                            return true;
-                        case 2:
-                            InlineSuggestionsRequest _arg0 = (InlineSuggestionsRequest) data.readTypedObject(InlineSuggestionsRequest.CREATOR);
-                            IInlineSuggestionsResponseCallback _arg1 = IInlineSuggestionsResponseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onInlineSuggestionsRequest(_arg0, _arg1);
-                            return true;
-                        case 3:
-                            AutofillId _arg02 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInputMethodStartInput(_arg02);
-                            return true;
-                        case 4:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onInputMethodShowInputRequested(_arg03);
-                            return true;
-                        case 5:
-                            onInputMethodStartInputView();
-                            return true;
-                        case 6:
-                            onInputMethodFinishInputView();
-                            return true;
-                        case 7:
-                            onInputMethodFinishInput();
-                            return true;
-                        case 8:
-                            onInlineSuggestionsSessionInvalidated();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInlineSuggestionsRequestCallback {
+        private static class Proxy implements IInlineSuggestionsRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

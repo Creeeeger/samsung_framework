@@ -105,7 +105,6 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class NetworkCapability {
         public static final short NOT_METERED = 1;
         public static final short NOT_ROAMING = 2;
@@ -138,7 +137,6 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NetworkAttributes {
         public short capabilities;
         public long networkHandle = 0;
@@ -191,7 +189,7 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
             this.isConnected = _hidl_blob.getBool(_hidl_offset + 8);
             this.capabilities = _hidl_blob.getInt16(_hidl_offset + 10);
             this.apn = _hidl_blob.getString(_hidl_offset + 16);
-            parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+            parcel.readEmbeddedBuffer(this.apn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         }
 
         public final void writeToParcel(HwParcel parcel) {
@@ -221,7 +219,6 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IAGnssRil {
         private IHwBinder mRemote;
 
@@ -494,7 +491,6 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IAGnssRil {
         @Override // android.hardware.gnss.V2_0.IAGnssRil, android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -517,7 +513,7 @@ public interface IAGnssRil extends android.hardware.gnss.V1_0.IAGnssRil {
 
         @Override // android.hardware.gnss.V2_0.IAGnssRil, android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 74, MidiConstants.STATUS_PROGRAM_CHANGE, 104, -88, -118, 114, 54, 2, Byte.MIN_VALUE, -39, 74, Byte.MAX_VALUE, 111, -41, -58, 56, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -63, -18, -92, -119, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, 14, MidiConstants.STATUS_CONTROL_CHANGE, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -108, -45, -25, -25, 117, MidiConstants.STATUS_SONG_POSITION}, new byte[]{-47, 110, 106, 53, -101, -26, -106, 62, -89, 83, -41, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -114, -124, -20, MidiConstants.STATUS_SONG_POSITION, -71, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 82, 9, 121, 56, -109, -116, 77, 54, -41, -92, 126, -94, -30, -82}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN, 74, MidiConstants.STATUS_PROGRAM_CHANGE, 104, -88, -118, 114, 54, 2, Byte.MIN_VALUE, -39, 74, Byte.MAX_VALUE, 111, -41, -58, 56, 19, -63, -18, -92, -119, 26, 14, MidiConstants.STATUS_CONTROL_CHANGE, 19, -108, -45, -25, -25, 117, MidiConstants.STATUS_SONG_POSITION}, new byte[]{-47, 110, 106, 53, -101, -26, -106, 62, -89, 83, -41, 19, -114, -124, -20, MidiConstants.STATUS_SONG_POSITION, -71, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 82, 9, 121, 56, -109, -116, 77, 54, -41, -92, 126, -94, -30, -82}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_0.IAGnssRil, android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase

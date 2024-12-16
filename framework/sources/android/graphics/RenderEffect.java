@@ -7,11 +7,6 @@ import libcore.util.NativeAllocationRegistry;
 public final class RenderEffect {
     private final long mNativeRenderEffect;
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1146$$Nest$smnativeGetFinalizer() {
-        return nativeGetFinalizer();
-    }
-
     private static native long nativeCreateBitmapEffect(long j, float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8);
 
     private static native long nativeCreateBlendModeEffect(long j, long j2, int i);
@@ -28,12 +23,11 @@ public final class RenderEffect {
 
     private static native long nativeCreateShaderEffect(long j);
 
-    private static native long nativeGetFinalizer();
-
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class RenderEffectHolder {
-        public static final NativeAllocationRegistry RENDER_EFFECT_REGISTRY = NativeAllocationRegistry.createMalloced(RenderEffect.class.getClassLoader(), RenderEffect.m1146$$Nest$smnativeGetFinalizer());
+    public static native long nativeGetFinalizer();
+
+    private static class RenderEffectHolder {
+        public static final NativeAllocationRegistry RENDER_EFFECT_REGISTRY = NativeAllocationRegistry.createMalloced(RenderEffect.class.getClassLoader(), RenderEffect.nativeGetFinalizer());
 
         private RenderEffectHolder() {
         }
@@ -107,10 +101,10 @@ public final class RenderEffect {
 
     private RenderEffect(long nativeRenderEffect) {
         this.mNativeRenderEffect = nativeRenderEffect;
-        RenderEffectHolder.RENDER_EFFECT_REGISTRY.registerNativeAllocation(this, nativeRenderEffect);
+        RenderEffectHolder.RENDER_EFFECT_REGISTRY.registerNativeAllocation(this, this.mNativeRenderEffect);
     }
 
-    public long getNativeInstance() {
+    long getNativeInstance() {
         return this.mNativeRenderEffect;
     }
 }

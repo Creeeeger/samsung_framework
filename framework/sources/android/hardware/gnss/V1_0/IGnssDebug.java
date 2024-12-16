@@ -104,7 +104,6 @@ public interface IGnssDebug extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class SatelliteEphemerisType {
         public static final byte ALMANAC_ONLY = 1;
         public static final byte EPHEMERIS = 0;
@@ -142,7 +141,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class SatelliteEphemerisSource {
         public static final byte DEMODULATED = 0;
         public static final byte OTHER = 3;
@@ -188,7 +186,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class SatelliteEphemerisHealth {
         public static final byte BAD = 1;
         public static final byte GOOD = 0;
@@ -226,7 +223,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class PositionDebug {
         public boolean valid = false;
         public double latitudeDegrees = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
@@ -329,7 +325,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class TimeDebug {
         public long timeEstimate = 0;
         public float timeUncertaintyNs = 0.0f;
@@ -408,7 +403,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class SatelliteData {
         public short svid = 0;
         public byte constellation = 0;
@@ -502,7 +496,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class DebugData {
         public PositionDebug position = new PositionDebug();
         public TimeDebug time = new TimeDebug();
@@ -595,7 +588,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssDebug {
         private IHwBinder mRemote;
 
@@ -783,7 +775,6 @@ public interface IGnssDebug extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssDebug {
         @Override // android.hardware.gnss.V1_0.IGnssDebug, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -806,7 +797,7 @@ public interface IGnssDebug extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssDebug, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{69, 66, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, -106, -5, MidiConstants.STATUS_SONG_POSITION, 113, 1, -53, -126, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, -70, -5, 118, -25, -56, MidiConstants.STATUS_CHANNEL_PRESSURE, 50, -39, 119, -35, 16, 88, -19, -40, -27, -120, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, -91, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{69, 66, 18, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, -106, -5, MidiConstants.STATUS_SONG_POSITION, 113, 1, -53, -126, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, -70, -5, 118, -25, -56, MidiConstants.STATUS_CHANNEL_PRESSURE, 50, -39, 119, -35, 16, 88, -19, -40, -27, -120, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, -91, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssDebug, android.internal.hidl.base.V1_0.IBase

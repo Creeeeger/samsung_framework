@@ -104,7 +104,6 @@ public interface ISehThermalChangedCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes6.dex */
     public static final class Proxy implements ISehThermalChangedCallback {
         private IHwBinder mRemote;
 
@@ -289,7 +288,6 @@ public interface ISehThermalChangedCallback extends IBase {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends HwBinder implements ISehThermalChangedCallback {
         @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermalChangedCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -312,7 +310,7 @@ public interface ISehThermalChangedCallback extends IBase {
 
         @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermalChangedCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{53, 11, -38, 81, 71, -84, 0, 71, 54, 1, 51, -73, -1, 122, -34, -46, -91, 70, -52, MidiConstants.STATUS_CHANNEL_PRESSURE, 106, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -98, -117, -79, -104, 113, 8, 56, SprAttributeBase.TYPE_SHADOW, -78, 102}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{53, 11, -38, 81, 71, -84, 0, 71, 54, 1, 51, -73, -1, 122, -34, -46, -91, 70, -52, MidiConstants.STATUS_CHANNEL_PRESSURE, 106, 24, -98, -117, -79, -104, 113, 8, 56, SprAttributeBase.TYPE_SHADOW, -78, 102}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // vendor.samsung.hardware.thermal.V1_0.ISehThermalChangedCallback, android.internal.hidl.base.V1_0.IBase

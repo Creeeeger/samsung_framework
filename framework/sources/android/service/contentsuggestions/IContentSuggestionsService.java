@@ -24,7 +24,6 @@ public interface IContentSuggestionsService extends IInterface {
 
     void suggestContentSelections(SelectionsRequest selectionsRequest, ISelectionsCallback iSelectionsCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IContentSuggestionsService {
         @Override // android.service.contentsuggestions.IContentSuggestionsService
         public void provideContextImage(int taskId, HardwareBuffer contextImage, int colorSpaceId, Bundle imageContextRequestExtras) throws RemoteException {
@@ -48,7 +47,6 @@ public interface IContentSuggestionsService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IContentSuggestionsService {
         static final int TRANSACTION_classifyContentSelections = 3;
         static final int TRANSACTION_notifyInteraction = 4;
@@ -100,45 +98,42 @@ public interface IContentSuggestionsService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IContentSuggestionsService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IContentSuggestionsService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IContentSuggestionsService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    HardwareBuffer _arg1 = (HardwareBuffer) data.readTypedObject(HardwareBuffer.CREATOR);
+                    int _arg2 = data.readInt();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    provideContextImage(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    SelectionsRequest _arg02 = (SelectionsRequest) data.readTypedObject(SelectionsRequest.CREATOR);
+                    ISelectionsCallback _arg12 = ISelectionsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    suggestContentSelections(_arg02, _arg12);
+                    return true;
+                case 3:
+                    ClassificationsRequest _arg03 = (ClassificationsRequest) data.readTypedObject(ClassificationsRequest.CREATOR);
+                    IClassificationsCallback _arg13 = IClassificationsCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    classifyContentSelections(_arg03, _arg13);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    Bundle _arg14 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyInteraction(_arg04, _arg14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            HardwareBuffer _arg1 = (HardwareBuffer) data.readTypedObject(HardwareBuffer.CREATOR);
-                            int _arg2 = data.readInt();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            provideContextImage(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            SelectionsRequest _arg02 = (SelectionsRequest) data.readTypedObject(SelectionsRequest.CREATOR);
-                            ISelectionsCallback _arg12 = ISelectionsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            suggestContentSelections(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            ClassificationsRequest _arg03 = (ClassificationsRequest) data.readTypedObject(ClassificationsRequest.CREATOR);
-                            IClassificationsCallback _arg13 = IClassificationsCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            classifyContentSelections(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            Bundle _arg14 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyInteraction(_arg04, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IContentSuggestionsService {
             private IBinder mRemote;
 

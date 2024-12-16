@@ -3,20 +3,20 @@ package android.companion.virtual.sensor;
 import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateFormat;
 import java.util.Objects;
 
 @SystemApi
 /* loaded from: classes.dex */
 public final class VirtualSensorConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualSensorConfig> CREATOR = new Parcelable.Creator<VirtualSensorConfig>() { // from class: android.companion.virtual.sensor.VirtualSensorConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorConfig createFromParcel(Parcel source) {
             return new VirtualSensorConfig(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorConfig[] newArray(int size) {
             return new VirtualSensorConfig[size];
@@ -35,14 +35,6 @@ public final class VirtualSensorConfig implements Parcelable {
     private final float mResolution;
     private final int mType;
     private final String mVendor;
-
-    /* synthetic */ VirtualSensorConfig(int i, String str, String str2, float f, float f2, float f3, int i2, int i3, int i4, VirtualSensorConfigIA virtualSensorConfigIA) {
-        this(i, str, str2, f, f2, f3, i2, i3, i4);
-    }
-
-    /* synthetic */ VirtualSensorConfig(Parcel parcel, VirtualSensorConfigIA virtualSensorConfigIA) {
-        this(parcel);
-    }
 
     private VirtualSensorConfig(int type, String name, String vendor2, float maximumRange, float resolution, float power, int minDelay, int maxDelay, int flags) {
         this.mType = type;
@@ -84,6 +76,10 @@ public final class VirtualSensorConfig implements Parcelable {
         parcel.writeInt(this.mMinDelay);
         parcel.writeInt(this.mMaxDelay);
         parcel.writeInt(this.mFlags);
+    }
+
+    public String toString() {
+        return "VirtualSensorConfig{mType=" + this.mType + ", mName='" + this.mName + DateFormat.QUOTE + '}';
     }
 
     public int getType() {
@@ -128,11 +124,10 @@ public final class VirtualSensorConfig implements Parcelable {
 
     public int getDirectChannelTypesSupported() {
         int memoryTypes = 0;
-        int i = this.mFlags;
-        if ((i & 1024) > 0) {
+        if ((this.mFlags & 1024) > 0) {
             memoryTypes = 0 | 1;
         }
-        if ((i & 2048) > 0) {
+        if ((this.mFlags & 2048) > 0) {
             return memoryTypes | 2;
         }
         return memoryTypes;
@@ -142,7 +137,6 @@ public final class VirtualSensorConfig implements Parcelable {
         return this.mFlags;
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private static final int FLAG_MEMORY_FILE_DIRECT_CHANNEL_SUPPORTED = 1024;
         private int mFlags;
@@ -165,15 +159,13 @@ public final class VirtualSensorConfig implements Parcelable {
         }
 
         public VirtualSensorConfig build() {
-            int i = this.mHighestDirectReportRateLevel;
-            if (i > 0) {
-                int i2 = this.mFlags;
-                if ((i2 & 1024) == 0) {
+            if (this.mHighestDirectReportRateLevel > 0) {
+                if ((this.mFlags & 1024) == 0) {
                     throw new IllegalArgumentException("Setting direct channel type is required for sensors with direct channel support.");
                 }
-                this.mFlags = i2 | (i << 7);
+                this.mFlags |= this.mHighestDirectReportRateLevel << 7;
             }
-            if ((this.mFlags & 1024) > 0 && i == 0) {
+            if ((this.mFlags & 1024) > 0 && this.mHighestDirectReportRateLevel == 0) {
                 throw new IllegalArgumentException("Highest direct report rate level is required for sensors with direct channel support.");
             }
             return new VirtualSensorConfig(this.mType, this.mName, this.mVendor, this.mMaximumRange, this.mResolution, this.mPower, this.mMinDelay, this.mMaxDelay, this.mFlags);
@@ -224,23 +216,6 @@ public final class VirtualSensorConfig implements Parcelable {
                 throw new IllegalArgumentException("Only TYPE_MEMORY_FILE direct channels can be supported for virtual sensors.");
             }
             return this;
-        }
-    }
-
-    /* renamed from: android.companion.virtual.sensor.VirtualSensorConfig$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualSensorConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensorConfig createFromParcel(Parcel source) {
-            return new VirtualSensorConfig(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensorConfig[] newArray(int size) {
-            return new VirtualSensorConfig[size];
         }
     }
 }

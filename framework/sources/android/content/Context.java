@@ -59,6 +59,7 @@ public abstract class Context {
     public static final String AMBIENT_CONTEXT_SERVICE = "ambient_context";
     public static final String APPWIDGET_SERVICE = "appwidget";
     public static final String APP_BINDING_SERVICE = "app_binding";
+    public static final String APP_FUNCTION_SERVICE = "app_function";
 
     @SystemApi
     public static final String APP_HIBERNATION_SERVICE = "app_hibernation";
@@ -112,10 +113,12 @@ public abstract class Context {
     public static final int BIND_IMPORTANT = 64;
     public static final int BIND_IMPORTANT_BACKGROUND = 8388608;
     public static final int BIND_INCLUDE_CAPABILITIES = 4096;
+    public static final long BIND_MATCH_QUARANTINED_COMPONENTS = 8589934592L;
     public static final int BIND_NOT_APP_COMPONENT_USAGE = 32768;
     public static final int BIND_NOT_FOREGROUND = 4;
     public static final int BIND_NOT_PERCEPTIBLE = 256;
     public static final int BIND_NOT_VISIBLE = 1073741824;
+    public static final int BIND_PACKAGE_ISOLATED_PROCESS = 16384;
     public static final int BIND_REDUCTION_FLAGS = 1073742128;
     public static final int BIND_RESTRICT_ASSOCIATIONS = 2097152;
     public static final int BIND_SCHEDULE_LIKE_TOP_APP = 524288;
@@ -130,6 +133,9 @@ public abstract class Context {
     public static final String BIOMETRIC_SERVICE = "biometric";
     public static final String BLOB_STORE_SERVICE = "blob_store";
     public static final String BLOCKCHAIN_SERVICE = "blockchain";
+
+    @SystemApi
+    public static final String BLOCKED_NUMBERS_SERVICE = "blocked_numbers";
     public static final String BLUETOOTH_SERVICE = "bluetooth";
     public static final String BUGREPORT_SERVICE = "bugreport";
     public static final String CAMERA_SERVICE = "camera";
@@ -147,6 +153,7 @@ public abstract class Context {
     public static final String CONNECTIVITY_DIAGNOSTICS_SERVICE = "connectivity_diagnostics";
     public static final String CONNECTIVITY_SERVICE = "connectivity";
     public static final String CONSUMER_IR_SERVICE = "consumer_ir";
+    public static final String CONTACT_KEYS_SERVICE = "contact_keys";
     public static final String CONTENT_CAPTURE_MANAGER_SERVICE = "content_capture";
 
     @SystemApi
@@ -154,6 +161,9 @@ public abstract class Context {
 
     @SystemApi
     public static final String CONTEXTHUB_SERVICE = "contexthub";
+
+    @SystemApi
+    public static final String CONTEXTUAL_SEARCH_SERVICE = "contextual_search";
     public static final int CONTEXT_CREDENTIAL_PROTECTED_STORAGE = 16;
     public static final int CONTEXT_DEVICE_PROTECTED_STORAGE = 8;
     public static final int CONTEXT_IGNORE_SECURITY = 2;
@@ -173,6 +183,9 @@ public abstract class Context {
     public static final String DEVICE_LOCK_SERVICE = "device_lock";
     public static final String DEVICE_POLICY_SERVICE = "device_policy";
     public static final String DEVICE_STATE_SERVICE = "device_state";
+
+    @SystemApi
+    public static final String DISPLAY_AIQE_SERVICE = "display_aiqe";
     public static final String DISPLAY_HASH_SERVICE = "display_hash";
     public static final String DISPLAY_SERVICE = "display";
     public static final String DOMAIN_VERIFICATION_SERVICE = "domain_verification";
@@ -180,6 +193,9 @@ public abstract class Context {
     public static final String DREAM_SERVICE = "dream";
     public static final String DROPBOX_SERVICE = "dropbox";
     public static final String DYNAMIC_SYSTEM_SERVICE = "dynamic_system";
+
+    @SystemApi
+    public static final String ECM_ENHANCED_CONFIRMATION_SERVICE = "ecm_enhanced_confirmation";
     public static final String EPIC_SERVICE = "epic";
 
     @SystemApi
@@ -191,6 +207,7 @@ public abstract class Context {
     public static final String EXTENDED_ETHERNET_SERVICE = "extendedethernetservice";
     public static final String EXYNOS_DISPLAY_SOLUTION_SERVICE = "exynos_display";
     public static final String FACE_SERVICE = "face";
+    public static final String FEATURE_FLAGS_SERVICE = "feature_flags";
     public static final String FILE_INTEGRITY_SERVICE = "file_integrity";
     public static final String FINGERPRINT_SERVICE = "fingerprint";
 
@@ -274,6 +291,9 @@ public abstract class Context {
 
     @SystemApi
     public static final String OEM_LOCK_SERVICE = "oem_lock";
+
+    @SystemApi
+    public static final String ON_DEVICE_INTELLIGENCE_SERVICE = "on_device_intelligence";
     public static final String OVERLAY_SERVICE = "overlay";
     public static final long OVERRIDABLE_COMPONENT_CALLBACKS = 193247900;
 
@@ -289,8 +309,6 @@ public abstract class Context {
 
     @SystemApi
     public static final String PERMISSION_SERVICE = "permission";
-
-    @SystemApi
     public static final String PERSISTENT_DATA_BLOCK_SERVICE = "persistent_data_block";
     public static final String PERSONA_SERVICE = "persona";
     public static final String PLATFORM_COMPAT_NATIVE_SERVICE = "platform_compat_native";
@@ -301,9 +319,8 @@ public abstract class Context {
 
     @Deprecated
     public static final String POWER_WHITELIST_MANAGER = "power_whitelist";
-    public static final String PRELAUNCHER_SERVICE = "prelauncher";
     public static final String PRINT_SERVICE = "print";
-    public static final String Power_Solution_FrameWork_Service = "PowerSolution_Framework_service";
+    public static final String PROFILING_SERVICE = "profiling";
     public static final String RADIO_SERVICE = "broadcastradio";
     public static final String RCP_SERVICE = "rcp";
 
@@ -316,9 +333,9 @@ public abstract class Context {
     public static final int RECEIVER_NOT_EXPORTED = 4;
     public static final int RECEIVER_VISIBLE_TO_INSTANT_APPS = 1;
     public static final String RECOVERY_SERVICE = "recovery";
+    public static final String REMOTE_AUTH_SERVICE = "remote_auth";
     public static final String REMOTE_PROVISIONING_SERVICE = "remote_provisioning";
     public static final String RESOURCES_SERVICE = "resources";
-    public static final String RESOURCE_ECONOMY_SERVICE = "tare";
     public static final String RESTRICTIONS_SERVICE = "restrictions";
     public static final String ROLE_SERVICE = "role";
 
@@ -337,9 +354,11 @@ public abstract class Context {
 
     @SystemApi
     public static final String SECURE_ELEMENT_SERVICE = "secure_element";
+    public static final String SECURITY_STATE_SERVICE = "security_state";
     public static final String SELECTION_TOOLBAR_SERVICE = "selection_toolbar";
     public static final String SEM_ALL_AROUND_SENSING_SERVICE = "AAS";
     public static final String SEM_CLIPBOARD_SERVICE = "semclipboard";
+    public static final String SEM_CONTEXT_ENGINE_SERVICE = "SemContextEngineService";
     public static final String SEM_CONTEXT_SERVICE = "scontext";
     public static final String SEM_CONTINUITY_SERVICE = "SemContinuityService";
     public static final String SEM_CUSTOM_DUMP_SERVICE = "semcustomdump";
@@ -362,15 +381,14 @@ public abstract class Context {
     public static final String SEM_RCP_SERVICE = "rcp";
     public static final String SEM_REMOTE_APP_MODE_SERVICE = "remoteappmode";
     public static final String SEM_SPEN_GESTURE_SERVICE = "spengestureservice";
+    public static final String SEM_SSDID_SERVICE = "sem_ssdid";
     public static final String SEM_STATUS_BAR_SERVICE = "sem_statusbar";
     public static final String SEM_TELECOM_SERVICE = "samsung_telecom";
     public static final String SEM_VIDEO_TRANSCODING_SERVICE = "SemVideoTranscodingService";
-
-    @Deprecated(forRemoval = true, since = "15.0")
-    public static final String SEM_VR_MANAGER_SERVICE = "vr";
     public static final String SEM_WIFI_AWARE_SERVICE = "sem_wifi_aware";
     public static final String SEM_WIFI_P2P_SERVICE = "sem_wifi_p2p";
     public static final String SEM_WIFI_SERVICE = "sem_wifi";
+    public static final String SENSITIVE_CONTENT_PROTECTION_SERVICE = "sensitive_content_protection_service";
     public static final String SENSOR_PRIVACY_SERVICE = "sensor_privacy";
     public static final String SENSOR_SERVICE = "sensor";
     public static final String SEP_UNION_SERVICE = "sepunion";
@@ -388,6 +406,7 @@ public abstract class Context {
     public static final String SOUND_TRIGGER_MIDDLEWARE_SERVICE = "soundtrigger_middleware";
     public static final String SOUND_TRIGGER_SERVICE = "soundtrigger";
     public static final String SPEECH_RECOGNITION_SERVICE = "speech_recognition";
+    public static final String STANDARD_PLUS_SERVICE = "stdp_service";
     public static final String STATS_BOOTSTRAP_ATOM_SERVICE = "statsbootstrap";
     public static final String STATS_COMPANION_SERVICE = "statscompanion";
 
@@ -420,6 +439,9 @@ public abstract class Context {
     public static final String TEXT_SERVICES_MANAGER_SERVICE = "textservices";
     public static final String TEXT_TO_SPEECH_MANAGER_SERVICE = "texttospeech";
     public static final String THERMAL_SERVICE = "thermalservice";
+
+    @SystemApi
+    public static final String THREAD_NETWORK_SERVICE = "thread_network";
     public static final String TIME_DETECTOR_SERVICE = "time_detector";
 
     @SystemApi
@@ -429,6 +451,7 @@ public abstract class Context {
     @SystemApi
     public static final String TRANSLATION_MANAGER_SERVICE = "translation";
     public static final String TRUST_SERVICE = "trust";
+    public static final String TV_AD_SERVICE = "tv_ad";
     public static final String TV_INPUT_SERVICE = "tv_input";
     public static final String TV_INTERACTIVE_APP_SERVICE = "tv_interactive_app";
     public static final String TV_TUNER_RESOURCE_MGR_SERVICE = "tv_tuner_resource_mgr";
@@ -466,6 +489,9 @@ public abstract class Context {
 
     @SystemApi
     public static final String WEARABLE_SENSING_SERVICE = "wearable_sensing";
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public static final String WEBVIEW_UPDATE_SERVICE = "webviewupdate";
     public static final String WIFI_AWARE_SERVICE = "wifiaware";
 
     @SystemApi
@@ -484,42 +510,34 @@ public abstract class Context {
     private static int sLastAutofillId = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BindServiceFlagsBits {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BindServiceFlagsLongBits {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CreatePackageOptions {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DatabaseMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FileMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PreferencesMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RegisterReceiverFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ServiceName {
     }
 
@@ -805,7 +823,6 @@ public abstract class Context {
 
     public abstract void updateDisplay(int i);
 
-    /* loaded from: classes.dex */
     public static final class BindServiceFlags {
         private final long mValue;
 
@@ -833,9 +850,8 @@ public abstract class Context {
         if (sLastAutofillId == 1073741822) {
             sLastAutofillId = -1;
         }
-        int i = sLastAutofillId + 1;
-        sLastAutofillId = i;
-        return i;
+        sLastAutofillId++;
+        return sLastAutofillId;
     }
 
     public void registerComponentCallbacks(ComponentCallbacks callback) {
@@ -1052,6 +1068,10 @@ public abstract class Context {
             return (T) getSystemService(systemServiceName);
         }
         return null;
+    }
+
+    public int checkContentUriPermissionFull(Uri uri, int pid, int uid, int modeFlags) {
+        throw new RuntimeException("Not implemented. Must override in a subclass.");
     }
 
     public int[] checkUriPermissions(List<Uri> uris, int pid, int uid, int modeFlags) {

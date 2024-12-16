@@ -9,14 +9,13 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SizeConfigurationBuckets implements Parcelable {
     public static final Parcelable.Creator<SizeConfigurationBuckets> CREATOR = new Parcelable.Creator<SizeConfigurationBuckets>() { // from class: android.window.SizeConfigurationBuckets.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeConfigurationBuckets[] newArray(int size) {
             return new SizeConfigurationBuckets[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SizeConfigurationBuckets createFromParcel(Parcel in) {
             return new SizeConfigurationBuckets(in);
@@ -104,9 +103,8 @@ public final class SizeConfigurationBuckets implements Parcelable {
         if (!secondConfig.isLayoutSizeAtLeast(firstConfig.screenLayout & 15)) {
             return true;
         }
-        int[] iArr = this.mScreenLayoutSize;
-        if (iArr != null) {
-            for (int screenLayoutSize : iArr) {
+        if (this.mScreenLayoutSize != null) {
+            for (int screenLayoutSize : this.mScreenLayoutSize) {
                 if (firstConfig.isLayoutSizeAtLeast(screenLayoutSize) != secondConfig.isLayoutSizeAtLeast(screenLayoutSize)) {
                     return true;
                 }
@@ -186,21 +184,17 @@ public final class SizeConfigurationBuckets implements Parcelable {
             flg = (byte) (flg | 8);
         }
         dest.writeByte(flg);
-        int[] iArr = this.mHorizontal;
-        if (iArr != null) {
-            dest.writeIntArray(iArr);
+        if (this.mHorizontal != null) {
+            dest.writeIntArray(this.mHorizontal);
         }
-        int[] iArr2 = this.mVertical;
-        if (iArr2 != null) {
-            dest.writeIntArray(iArr2);
+        if (this.mVertical != null) {
+            dest.writeIntArray(this.mVertical);
         }
-        int[] iArr3 = this.mSmallest;
-        if (iArr3 != null) {
-            dest.writeIntArray(iArr3);
+        if (this.mSmallest != null) {
+            dest.writeIntArray(this.mSmallest);
         }
-        int[] iArr4 = this.mScreenLayoutSize;
-        if (iArr4 != null) {
-            dest.writeIntArray(iArr4);
+        if (this.mScreenLayoutSize != null) {
+            dest.writeIntArray(this.mScreenLayoutSize);
         }
     }
 
@@ -221,23 +215,6 @@ public final class SizeConfigurationBuckets implements Parcelable {
         this.mSmallest = smallest;
         this.mScreenLayoutSize = screenLayoutSize;
         this.mScreenLayoutLongSet = screenLayoutLongSet;
-    }
-
-    /* renamed from: android.window.SizeConfigurationBuckets$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SizeConfigurationBuckets> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SizeConfigurationBuckets[] newArray(int size) {
-            return new SizeConfigurationBuckets[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SizeConfigurationBuckets createFromParcel(Parcel in) {
-            return new SizeConfigurationBuckets(in);
-        }
     }
 
     @Deprecated

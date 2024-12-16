@@ -23,8 +23,8 @@ public class AmbientDisplayConfiguration {
 
     public AmbientDisplayConfiguration(Context context) {
         this.mContext = context;
-        this.mAlwaysOnByDefault = context.getResources().getBoolean(R.bool.config_dozeAlwaysOnEnabled);
-        this.mPickupGestureEnabledByDefault = context.getResources().getBoolean(R.bool.config_dozePickupGestureEnabled);
+        this.mAlwaysOnByDefault = this.mContext.getResources().getBoolean(R.bool.config_dozeAlwaysOnEnabled);
+        this.mPickupGestureEnabledByDefault = this.mContext.getResources().getBoolean(R.bool.config_dozePickupGestureEnabled);
     }
 
     public boolean enabled(int user) {

@@ -13,7 +13,6 @@ public final class WirelessChargerDetectorProto {
     public static final long REST = 1146756268035L;
     public static final long TOTAL_SAMPLES = 1120986464263L;
 
-    /* loaded from: classes5.dex */
     public final class VectorProto {
         public static final long X = 1108101562369L;
         public static final long Y = 1108101562370L;

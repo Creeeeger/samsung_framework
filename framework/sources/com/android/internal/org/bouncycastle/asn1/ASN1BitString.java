@@ -14,9 +14,9 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
     protected final int padBits;
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+    abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
-    public static int getPadBits(int bitString) {
+    protected static int getPadBits(int bitString) {
         int val = 0;
         int i = 3;
         while (true) {
@@ -52,7 +52,7 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         }
     }
 
-    public static byte[] getBytes(int bitString) {
+    protected static byte[] getBytes(int bitString) {
         if (bitString == 0) {
             return new byte[0];
         }
@@ -67,7 +67,7 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         return result;
     }
 
-    public ASN1BitString(byte data, int padBits) {
+    protected ASN1BitString(byte data, int padBits) {
         if (padBits > 7 || padBits < 0) {
             throw new IllegalArgumentException("pad bits cannot be greater than 7 or less than 0");
         }
@@ -95,9 +95,8 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
         try {
             byte[] string = getEncoded();
             for (int i = 0; i != string.length; i++) {
-                char[] cArr = table;
-                buf.append(cArr[(string[i] >>> 4) & 15]);
-                buf.append(cArr[string[i] & 15]);
+                buf.append(table[(string[i] >>> 4) & 15]);
+                buf.append(table[string[i] & 15]);
             }
             return buf.toString();
         } catch (IOException e) {
@@ -126,11 +125,10 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
     }
 
     public byte[] getBytes() {
-        byte[] bArr = this.data;
-        if (bArr.length == 0) {
-            return bArr;
+        if (this.data.length == 0) {
+            return this.data;
         }
-        byte[] rv = Arrays.clone(bArr);
+        byte[] rv = Arrays.clone(this.data);
         int length = this.data.length - 1;
         rv[length] = (byte) (rv[length] & (255 << this.padBits));
         return rv;
@@ -146,18 +144,17 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive, com.android.internal.org.bouncycastle.asn1.ASN1Object
     public int hashCode() {
-        byte[] bArr = this.data;
-        int end = bArr.length - 1;
+        int end = this.data.length - 1;
         if (end < 0) {
             return 1;
         }
-        byte der = (byte) (bArr[end] & (255 << this.padBits));
-        int hc = Arrays.hashCode(bArr, 0, end);
+        byte der = (byte) (this.data[end] & (255 << this.padBits));
+        int hc = Arrays.hashCode(this.data, 0, end);
         return this.padBits ^ ((hc * 257) ^ der);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1BitString)) {
             return false;
         }
@@ -181,13 +178,12 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
             }
         }
         int i2 = a[end2];
-        int i3 = this.padBits;
-        byte derA = (byte) (i2 & (255 << i3));
-        byte derB = (byte) ((255 << i3) & b[end2]);
+        byte derA = (byte) (i2 & (255 << this.padBits));
+        byte derB = (byte) (b[end2] & (255 << this.padBits));
         return derA == derB;
     }
 
-    public static ASN1BitString fromInputStream(int length, InputStream stream) throws IOException {
+    static ASN1BitString fromInputStream(int length, InputStream stream) throws IOException {
         if (length < 1) {
             throw new IllegalArgumentException("truncated BIT STRING detected");
         }
@@ -209,12 +205,12 @@ public abstract class ASN1BitString extends ASN1Primitive implements ASN1String 
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return new DERBitString(this.data, this.padBits);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return new DLBitString(this.data, this.padBits);
     }
 }

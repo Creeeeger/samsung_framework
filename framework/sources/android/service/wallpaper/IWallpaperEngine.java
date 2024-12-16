@@ -50,7 +50,6 @@ public interface IWallpaperEngine extends IInterface {
 
     void setZoomOut(float f) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWallpaperEngine {
         @Override // android.service.wallpaper.IWallpaperEngine
         public void setDesiredSize(int width, int height) throws RemoteException {
@@ -131,7 +130,6 @@ public interface IWallpaperEngine extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWallpaperEngine {
         public static final String DESCRIPTOR = "android.service.wallpaper.IWallpaperEngine";
         static final int TRANSACTION_addLocalColorsAreas = 15;
@@ -226,109 +224,105 @@ public interface IWallpaperEngine extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDesiredSize(_arg0, _arg1);
+                    return true;
+                case 2:
+                    Rect _arg02 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDisplayPadding(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVisibility(_arg03);
+                    return true;
+                case 4:
+                    onScreenTurningOn();
+                    return true;
+                case 5:
+                    onScreenTurnedOn();
+                    return true;
+                case 6:
+                    boolean _arg04 = data.readBoolean();
+                    long _arg12 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setInAmbientMode(_arg04, _arg12);
+                    return true;
+                case 7:
+                    MotionEvent _arg05 = (MotionEvent) data.readTypedObject(MotionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchPointer(_arg05);
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchWallpaperCommand(_arg06, _arg13, _arg2, _arg3, _arg4);
+                    return true;
+                case 9:
+                    float _arg07 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setSurfaceAlpha(_arg07);
+                    return true;
+                case 10:
+                    requestWallpaperColors();
+                    return true;
+                case 11:
+                    destroy();
+                    return true;
+                case 12:
+                    float _arg08 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setZoomOut(_arg08);
+                    return true;
+                case 13:
+                    Rect _arg09 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    resizePreview(_arg09);
+                    return true;
+                case 14:
+                    List<RectF> _arg010 = data.createTypedArrayList(RectF.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeLocalColorsAreas(_arg010);
+                    return true;
+                case 15:
+                    List<RectF> _arg011 = data.createTypedArrayList(RectF.CREATOR);
+                    data.enforceNoDataAvail();
+                    addLocalColorsAreas(_arg011);
+                    return true;
+                case 16:
+                    SurfaceControl _result = mirrorSurfaceControl();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 17:
+                    float _arg012 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    applyDimming(_arg012);
+                    return true;
+                case 18:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWallpaperFlags(_arg013);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDesiredSize(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            Rect _arg02 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDisplayPadding(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVisibility(_arg03);
-                            return true;
-                        case 4:
-                            onScreenTurningOn();
-                            return true;
-                        case 5:
-                            onScreenTurnedOn();
-                            return true;
-                        case 6:
-                            boolean _arg04 = data.readBoolean();
-                            long _arg12 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setInAmbientMode(_arg04, _arg12);
-                            return true;
-                        case 7:
-                            MotionEvent _arg05 = (MotionEvent) data.readTypedObject(MotionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchPointer(_arg05);
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            Bundle _arg4 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchWallpaperCommand(_arg06, _arg13, _arg2, _arg3, _arg4);
-                            return true;
-                        case 9:
-                            float _arg07 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setSurfaceAlpha(_arg07);
-                            return true;
-                        case 10:
-                            requestWallpaperColors();
-                            return true;
-                        case 11:
-                            destroy();
-                            return true;
-                        case 12:
-                            float _arg08 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setZoomOut(_arg08);
-                            return true;
-                        case 13:
-                            Rect _arg09 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            resizePreview(_arg09);
-                            return true;
-                        case 14:
-                            List<RectF> _arg010 = data.createTypedArrayList(RectF.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeLocalColorsAreas(_arg010);
-                            return true;
-                        case 15:
-                            List<RectF> _arg011 = data.createTypedArrayList(RectF.CREATOR);
-                            data.enforceNoDataAvail();
-                            addLocalColorsAreas(_arg011);
-                            return true;
-                        case 16:
-                            SurfaceControl _result = mirrorSurfaceControl();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 17:
-                            float _arg012 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            applyDimming(_arg012);
-                            return true;
-                        case 18:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWallpaperFlags(_arg013);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWallpaperEngine {
+        private static class Proxy implements IWallpaperEngine {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

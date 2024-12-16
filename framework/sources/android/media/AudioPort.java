@@ -32,31 +32,29 @@ public class AudioPort {
     protected final int mRole;
     private final int[] mSamplingRates;
 
-    public AudioPort(AudioHandle handle, int role, String name, int[] samplingRates, int[] channelMasks, int[] channelIndexMasks, int[] formats, AudioGain[] gains) {
-        int[] iArr = formats;
+    AudioPort(AudioHandle handle, int role, String name, int[] samplingRates, int[] channelMasks, int[] channelIndexMasks, int[] formats, AudioGain[] gains) {
         this.mHandle = handle;
         this.mRole = role;
         this.mName = name;
         this.mSamplingRates = samplingRates;
         this.mChannelMasks = channelMasks;
         this.mChannelIndexMasks = channelIndexMasks;
-        this.mFormats = iArr;
+        this.mFormats = formats;
         this.mGains = gains;
         this.mProfiles = new ArrayList();
-        if (iArr != null) {
-            int length = iArr.length;
+        if (this.mFormats != null) {
+            int[] iArr = this.mFormats;
             int i = 0;
-            while (i < length) {
+            for (int length = iArr.length; i < length; length = length) {
                 int format = iArr[i];
                 this.mProfiles.add(new AudioProfile(format, samplingRates, channelMasks, channelIndexMasks, 0));
                 i++;
-                iArr = formats;
             }
         }
         this.mDescriptors = new ArrayList();
     }
 
-    public AudioPort(AudioHandle handle, int role, String name, List<AudioProfile> profiles, AudioGain[] gains, List<AudioDescriptor> descriptors) {
+    AudioPort(AudioHandle handle, int role, String name, List<AudioProfile> profiles, AudioGain[] gains, List<AudioDescriptor> descriptors) {
         this.mHandle = handle;
         this.mRole = role;
         this.mName = name;
@@ -79,7 +77,7 @@ public class AudioPort {
         this.mFormats = formats.stream().mapToInt(new AudioPort$$ExternalSyntheticLambda0()).toArray();
     }
 
-    public AudioHandle handle() {
+    AudioHandle handle() {
         return this.mHandle;
     }
 
@@ -123,15 +121,11 @@ public class AudioPort {
         return this.mGains;
     }
 
-    public AudioGain gain(int index) {
-        if (index < 0) {
+    AudioGain gain(int index) {
+        if (index < 0 || index >= this.mGains.length) {
             return null;
         }
-        AudioGain[] audioGainArr = this.mGains;
-        if (index >= audioGainArr.length) {
-            return null;
-        }
-        return audioGainArr[index];
+        return this.mGains[index];
     }
 
     public AudioPortConfig buildConfig(int samplingRate, int channelMask, int format, AudioGainConfig gain) {

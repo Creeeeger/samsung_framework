@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.android.internal.R;
 import com.android.internal.app.AlertController;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class HarmfulAppWarningActivity extends AlertActivity implements DialogInterface.OnClickListener {
     private static final String EXTRA_HARMFUL_APP_WARNING = "harmful_app_warning";
     private static final String TAG = HarmfulAppWarningActivity.class.getSimpleName();
@@ -24,15 +24,14 @@ public class HarmfulAppWarningActivity extends AlertActivity implements DialogIn
     private IntentSender mTarget;
 
     @Override // com.android.internal.app.AlertActivity, android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addSystemFlags(524288);
         Intent intent = getIntent();
         this.mPackageName = intent.getStringExtra("android.intent.extra.PACKAGE_NAME");
         this.mTarget = (IntentSender) intent.getParcelableExtra("android.intent.extra.INTENT", IntentSender.class);
-        String stringExtra = intent.getStringExtra(EXTRA_HARMFUL_APP_WARNING);
-        this.mHarmfulAppWarning = stringExtra;
-        if (this.mPackageName == null || this.mTarget == null || stringExtra == null) {
+        this.mHarmfulAppWarning = intent.getStringExtra(EXTRA_HARMFUL_APP_WARNING);
+        if (this.mPackageName == null || this.mTarget == null || this.mHarmfulAppWarning == null) {
             Log.wtf(TAG, "Invalid intent: " + intent.toString());
             finish();
         }
@@ -54,8 +53,8 @@ public class HarmfulAppWarningActivity extends AlertActivity implements DialogIn
 
     private View createView(ApplicationInfo applicationInfo) {
         View view = getLayoutInflater().inflate(R.layout.harmful_app_warning_dialog, (ViewGroup) null);
-        ((TextView) view.findViewById(R.id.app_name_text)).setText(applicationInfo.loadSafeLabel(getPackageManager(), 1000.0f, 5));
-        ((TextView) view.findViewById(16908299)).setText(this.mHarmfulAppWarning);
+        ((TextView) view.findViewById(R.id.app_name_text)).lambda$setTextAsync$0(applicationInfo.loadSafeLabel(getPackageManager(), 1000.0f, 5));
+        ((TextView) view.findViewById(16908299)).lambda$setTextAsync$0(this.mHarmfulAppWarning);
         return view;
     }
 
@@ -73,14 +72,12 @@ public class HarmfulAppWarningActivity extends AlertActivity implements DialogIn
                 }
                 EventLogTags.writeHarmfulAppWarningLaunchAnyway(this.mPackageName);
                 finish();
-                return;
+                break;
             case -1:
                 getPackageManager().deletePackage(this.mPackageName, null, 0);
                 EventLogTags.writeHarmfulAppWarningUninstall(this.mPackageName);
                 finish();
-                return;
-            default:
-                return;
+                break;
         }
     }
 

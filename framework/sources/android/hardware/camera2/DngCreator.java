@@ -21,11 +21,10 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class DngCreator implements AutoCloseable {
     private static final int BYTES_PER_RGB_PIX = 3;
     private static final int DEFAULT_PIXEL_STRIDE = 2;
-    private static final String GPS_DATE_FORMAT_STR = "yyyy:MM:dd";
     private static final String GPS_LAT_REF_NORTH = "N";
     private static final String GPS_LAT_REF_SOUTH = "S";
     private static final String GPS_LONG_REF_EAST = "E";
@@ -34,9 +33,10 @@ public final class DngCreator implements AutoCloseable {
     private static final String TAG = "DngCreator";
     private static final int TAG_ORIENTATION_UNKNOWN = 9;
     private static final String TIFF_DATETIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
-    private static final DateFormat sExifGPSDateStamp;
     private final Calendar mGPSTimeStampCalendar = Calendar.getInstance(TimeZone.getTimeZone(Time.TIMEZONE_UTC));
     private long mNativeContext;
+    private static final String GPS_DATE_FORMAT_STR = "yyyy:MM:dd";
+    private static final DateFormat sExifGPSDateStamp = new SimpleDateFormat(GPS_DATE_FORMAT_STR, Locale.US);
 
     private static native void nativeClassInit();
 
@@ -221,9 +221,7 @@ public final class DngCreator implements AutoCloseable {
     }
 
     static {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(GPS_DATE_FORMAT_STR, Locale.US);
-        sExifGPSDateStamp = simpleDateFormat;
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(Time.TIMEZONE_UTC));
+        sExifGPSDateStamp.setTimeZone(TimeZone.getTimeZone(Time.TIMEZONE_UTC));
         nativeClassInit();
     }
 

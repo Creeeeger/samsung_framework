@@ -20,7 +20,6 @@ public interface ISemHqmManager extends IInterface {
 
     void sendSystemInfoToHQM(int i, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISemHqmManager {
         @Override // android.os.ISemHqmManager
         public boolean sendHWParamServer(int type, String id, String ver, String manufacture, String hitType, String feature, String logMaps, String envlogMaps) throws RemoteException {
@@ -67,7 +66,6 @@ public interface ISemHqmManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISemHqmManager {
         static final int TRANSACTION_getCFServerEnable = 8;
         static final int TRANSACTION_getDVServerEnable = 7;
@@ -131,106 +129,102 @@ public interface ISemHqmManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemHqmManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemHqmManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemHqmManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    String _arg5 = data.readString();
+                    String _arg6 = data.readString();
+                    String _arg7 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = sendHWParamServer(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    String _arg32 = data.readString();
+                    String _arg42 = data.readString();
+                    String _arg52 = data.readString();
+                    String _arg62 = data.readString();
+                    String _arg72 = data.readString();
+                    String _arg8 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = sendHWParamToHQM(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72, _arg8);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    String _arg33 = data.readString();
+                    String _arg43 = data.readString();
+                    String _arg53 = data.readString();
+                    String _arg63 = data.readString();
+                    String _arg73 = data.readString();
+                    String _arg82 = data.readString();
+                    String _arg9 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = sendHWParamToHQMwithAppId(_arg03, _arg13, _arg23, _arg33, _arg43, _arg53, _arg63, _arg73, _arg82, _arg9);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    String _arg34 = data.readString();
+                    String _arg44 = data.readString();
+                    String _arg54 = data.readString();
+                    String _arg64 = data.readString();
+                    String _arg74 = data.readString();
+                    String _arg83 = data.readString();
+                    String _arg92 = data.readString();
+                    String _arg10 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = sendHWParamToHQMwithFile(_arg04, _arg14, _arg24, _arg34, _arg44, _arg54, _arg64, _arg74, _arg83, _arg92, _arg10);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg15 = data.readString();
+                    String _arg25 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendSystemInfoToHQM(_arg05, _arg15, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    boolean _result5 = getHqmEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 7:
+                    boolean _result6 = getDVServerEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 8:
+                    boolean _result7 = getCFServerEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            String _arg5 = data.readString();
-                            String _arg6 = data.readString();
-                            String _arg7 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = sendHWParamServer(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            String _arg32 = data.readString();
-                            String _arg42 = data.readString();
-                            String _arg52 = data.readString();
-                            String _arg62 = data.readString();
-                            String _arg72 = data.readString();
-                            String _arg8 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = sendHWParamToHQM(_arg02, _arg12, _arg22, _arg32, _arg42, _arg52, _arg62, _arg72, _arg8);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            String _arg33 = data.readString();
-                            String _arg43 = data.readString();
-                            String _arg53 = data.readString();
-                            String _arg63 = data.readString();
-                            String _arg73 = data.readString();
-                            String _arg82 = data.readString();
-                            String _arg9 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = sendHWParamToHQMwithAppId(_arg03, _arg13, _arg23, _arg33, _arg43, _arg53, _arg63, _arg73, _arg82, _arg9);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            String _arg34 = data.readString();
-                            String _arg44 = data.readString();
-                            String _arg54 = data.readString();
-                            String _arg64 = data.readString();
-                            String _arg74 = data.readString();
-                            String _arg83 = data.readString();
-                            String _arg92 = data.readString();
-                            String _arg10 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = sendHWParamToHQMwithFile(_arg04, _arg14, _arg24, _arg34, _arg44, _arg54, _arg64, _arg74, _arg83, _arg92, _arg10);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg15 = data.readString();
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendSystemInfoToHQM(_arg05, _arg15, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            boolean _result5 = getHqmEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 7:
-                            boolean _result6 = getDVServerEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 8:
-                            boolean _result7 = getCFServerEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISemHqmManager {
+        private static class Proxy implements ISemHqmManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

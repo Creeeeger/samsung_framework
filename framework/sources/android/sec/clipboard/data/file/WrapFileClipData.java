@@ -57,11 +57,10 @@ public class WrapFileClipData implements Serializable {
     }
 
     public void save() {
-        SemClipData semClipData = this.mClip;
-        if (semClipData == null) {
+        if (this.mClip == null) {
             return;
         }
-        semClipData.toSave();
+        this.mClip.toSave();
         FileHelper.getInstance().saveObjectFile(this.mPath, this.mClip);
     }
 
@@ -78,8 +77,7 @@ public class WrapFileClipData implements Serializable {
     }
 
     private Object loadData() {
-        File file = this.mPath;
-        if (file != null && file.getAbsolutePath().contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
+        if (this.mPath != null && this.mPath.getAbsolutePath().contains(CompatabilityHelper.OLD_CLIPBOARD_ROOT_PATH)) {
             this.mPath = new File(CompatabilityHelper.replacePathForCompatability(this.mPath.getAbsolutePath()));
             this.mDir = new File(CompatabilityHelper.replacePathForCompatability(this.mDir.getAbsolutePath()));
         }
@@ -91,32 +89,30 @@ public class WrapFileClipData implements Serializable {
             return false;
         }
         this.mClip = data;
-        data.checkClipId();
+        this.mClip.checkClipId();
         switch (this.mClip.getClipType()) {
             case 1:
                 SemTextClipData textData = (SemTextClipData) this.mClip;
                 textData.toLoad();
                 if (TextUtils.isEmpty(textData.getText())) {
                     Log.secD(TAG, "SemTextClipData is empty. Hence return false");
-                    return false;
+                    break;
                 }
-                return true;
+                break;
             case 2:
                 SemImageClipData imageData = (SemImageClipData) this.mClip;
                 imageData.toLoad();
                 File tempFile = new File(imageData.getBitmapPath());
                 if (!tempFile.exists()) {
                     Log.secD(TAG, "SemImageClipData is not exist. Hence return false");
-                    return false;
+                    break;
                 }
-                return true;
-            case 3:
-            default:
-                return true;
+                break;
             case 4:
                 SemHtmlClipData htmlClipData = (SemHtmlClipData) this.mClip;
                 htmlClipData.toLoad();
-                return true;
+                break;
         }
+        return false;
     }
 }

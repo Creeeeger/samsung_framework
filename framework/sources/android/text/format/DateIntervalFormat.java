@@ -6,7 +6,7 @@ import android.util.LruCache;
 import java.text.FieldPosition;
 import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class DateIntervalFormat {
     private static final LruCache<String, android.icu.text.DateIntervalFormat> CACHED_FORMATTERS = new LruCache<>(8);
 
@@ -49,14 +49,13 @@ public final class DateIntervalFormat {
 
     private static android.icu.text.DateIntervalFormat getFormatter(String skeleton, ULocale locale, android.icu.util.TimeZone icuTimeZone) {
         String key = skeleton + "\t" + locale + "\t" + icuTimeZone;
-        LruCache<String, android.icu.text.DateIntervalFormat> lruCache = CACHED_FORMATTERS;
-        android.icu.text.DateIntervalFormat formatter = lruCache.get(key);
+        android.icu.text.DateIntervalFormat formatter = CACHED_FORMATTERS.get(key);
         if (formatter != null) {
             return formatter;
         }
         android.icu.text.DateIntervalFormat formatter2 = android.icu.text.DateIntervalFormat.getInstance(skeleton, locale);
         formatter2.setTimeZone(icuTimeZone);
-        lruCache.put(key, formatter2);
+        CACHED_FORMATTERS.put(key, formatter2);
         return formatter2;
     }
 

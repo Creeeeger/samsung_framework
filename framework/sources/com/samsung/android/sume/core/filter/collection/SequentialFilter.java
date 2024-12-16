@@ -5,17 +5,15 @@ import com.samsung.android.sume.core.descriptor.SequentialDescriptor;
 import com.samsung.android.sume.core.filter.MediaFilterGroupBase;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class SequentialFilter extends MediaFilterGroupBase {
     protected SequentialDescriptor descriptor;
 
-    /* loaded from: classes4.dex */
     public enum Mode {
         BATCHED,
         BUFFERED
     }
 
-    /* loaded from: classes4.dex */
     public enum Type {
         PICKER,
         CONVEYOR

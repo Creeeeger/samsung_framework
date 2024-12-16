@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class WrappedApplicationKey implements Parcelable {
     public static final Parcelable.Creator<WrappedApplicationKey> CREATOR = new Parcelable.Creator<WrappedApplicationKey>() { // from class: android.security.keystore.recovery.WrappedApplicationKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WrappedApplicationKey createFromParcel(Parcel in) {
             return new WrappedApplicationKey(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WrappedApplicationKey[] newArray(int length) {
             return new WrappedApplicationKey[length];
@@ -26,11 +25,6 @@ public final class WrappedApplicationKey implements Parcelable {
     private byte[] mEncryptedKeyMaterial;
     private byte[] mMetadata;
 
-    /* synthetic */ WrappedApplicationKey(WrappedApplicationKeyIA wrappedApplicationKeyIA) {
-        this();
-    }
-
-    /* loaded from: classes3.dex */
     public static class Builder {
         private WrappedApplicationKey mInstance = new WrappedApplicationKey();
 
@@ -75,23 +69,6 @@ public final class WrappedApplicationKey implements Parcelable {
 
     public byte[] getMetadata() {
         return this.mMetadata;
-    }
-
-    /* renamed from: android.security.keystore.recovery.WrappedApplicationKey$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WrappedApplicationKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WrappedApplicationKey createFromParcel(Parcel in) {
-            return new WrappedApplicationKey(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WrappedApplicationKey[] newArray(int length) {
-            return new WrappedApplicationKey[length];
-        }
     }
 
     @Override // android.os.Parcelable

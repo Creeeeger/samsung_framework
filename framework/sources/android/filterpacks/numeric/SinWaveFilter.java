@@ -5,7 +5,6 @@ import android.filterfw.core.FilterContext;
 import android.filterfw.core.Frame;
 import android.filterfw.core.FrameFormat;
 import android.filterfw.core.GenerateFieldPort;
-import android.filterfw.core.MutableFrameFormat;
 import android.filterfw.format.ObjectFormat;
 
 /* loaded from: classes.dex */
@@ -24,9 +23,8 @@ public class SinWaveFilter extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void setupPorts() {
-        MutableFrameFormat fromClass = ObjectFormat.fromClass(Float.class, 1);
-        this.mOutputFormat = fromClass;
-        addOutputPort("value", fromClass);
+        this.mOutputFormat = ObjectFormat.fromClass(Float.class, 1);
+        addOutputPort("value", this.mOutputFormat);
     }
 
     @Override // android.filterfw.core.Filter

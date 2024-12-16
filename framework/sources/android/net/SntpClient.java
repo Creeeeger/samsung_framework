@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class SntpClient {
     private static final boolean DBG = true;
     private static final int NTP_LEAP_NOSYNC = 3;
@@ -44,8 +44,7 @@ public class SntpClient {
     private InetSocketAddress mServerSocketAddress;
     private final Supplier<Instant> mSystemTimeSupplier;
 
-    /* loaded from: classes2.dex */
-    public static class InvalidServerReplyException extends Exception {
+    private static class InvalidServerReplyException extends Exception {
         public InvalidServerReplyException(String message) {
             super(message);
         }
@@ -99,14 +98,14 @@ public class SntpClient {
         return false;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:25:0x0185  */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x0189  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public boolean requestTime(java.net.InetAddress r40, int r41, int r42, android.net.Network r43) {
         /*
-            Method dump skipped, instructions count: 396
+            Method dump skipped, instructions count: 400
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.net.SntpClient.requestTime(java.net.InetAddress, int, int, android.net.Network):boolean");

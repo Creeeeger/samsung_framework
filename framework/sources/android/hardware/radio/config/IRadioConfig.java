@@ -11,8 +11,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioConfig extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$config$IRadioConfig".replace('$', '.');
-    public static final String HASH = "0be135cf3de9586d6aabb58cb6af0ba425431743";
-    public static final int VERSION = 2;
+    public static final String HASH = "1e3dcfffc1e90fc886cf5a22ecaa94601b115710";
+    public static final int VERSION = 3;
 
     void getHalDeviceCapabilities(int i) throws RemoteException;
 
@@ -26,6 +26,8 @@ public interface IRadioConfig extends IInterface {
 
     void getSimSlotsStatus(int i) throws RemoteException;
 
+    void getSimultaneousCallingSupport(int i) throws RemoteException;
+
     void setNumOfLiveModems(int i, byte b) throws RemoteException;
 
     void setPreferredDataModem(int i, byte b) throws RemoteException;
@@ -34,7 +36,6 @@ public interface IRadioConfig extends IInterface {
 
     void setSimSlotsMapping(int i, SlotPortMapping[] slotPortMappingArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioConfig {
         @Override // android.hardware.radio.config.IRadioConfig
         public void getHalDeviceCapabilities(int serial) throws RemoteException {
@@ -69,6 +70,10 @@ public interface IRadioConfig extends IInterface {
         }
 
         @Override // android.hardware.radio.config.IRadioConfig
+        public void getSimultaneousCallingSupport(int serial) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.config.IRadioConfig
         public int getInterfaceVersion() {
             return 0;
         }
@@ -84,7 +89,6 @@ public interface IRadioConfig extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioConfig {
         static final int TRANSACTION_getHalDeviceCapabilities = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -92,6 +96,7 @@ public interface IRadioConfig extends IInterface {
         static final int TRANSACTION_getNumOfLiveModems = 2;
         static final int TRANSACTION_getPhoneCapability = 3;
         static final int TRANSACTION_getSimSlotsStatus = 4;
+        static final int TRANSACTION_getSimultaneousCallingSupport = 9;
         static final int TRANSACTION_setNumOfLiveModems = 5;
         static final int TRANSACTION_setPreferredDataModem = 6;
         static final int TRANSACTION_setResponseFunctions = 7;
@@ -124,71 +129,75 @@ public interface IRadioConfig extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getHalDeviceCapabilities(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getNumOfLiveModems(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPhoneCapability(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSimSlotsStatus(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    byte _arg1 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setNumOfLiveModems(_arg05, _arg1);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    byte _arg12 = data.readByte();
+                    data.enforceNoDataAvail();
+                    setPreferredDataModem(_arg06, _arg12);
+                    return true;
+                case 7:
+                    IRadioConfigResponse _arg07 = IRadioConfigResponse.Stub.asInterface(data.readStrongBinder());
+                    IRadioConfigIndication _arg13 = IRadioConfigIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg07, _arg13);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    SlotPortMapping[] _arg14 = (SlotPortMapping[]) data.createTypedArray(SlotPortMapping.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSimSlotsMapping(_arg08, _arg14);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSimultaneousCallingSupport(_arg09);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getHalDeviceCapabilities(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getNumOfLiveModems(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPhoneCapability(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSimSlotsStatus(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            byte _arg1 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setNumOfLiveModems(_arg05, _arg1);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            byte _arg12 = data.readByte();
-                            data.enforceNoDataAvail();
-                            setPreferredDataModem(_arg06, _arg12);
-                            return true;
-                        case 7:
-                            IRadioConfigResponse _arg07 = IRadioConfigResponse.Stub.asInterface(data.readStrongBinder());
-                            IRadioConfigIndication _arg13 = IRadioConfigIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg07, _arg13);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            SlotPortMapping[] _arg14 = (SlotPortMapping[]) data.createTypedArray(SlotPortMapping.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSimSlotsMapping(_arg08, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRadioConfig {
             private IBinder mRemote;
             private int mCachedVersion = -1;
@@ -325,6 +334,21 @@ public interface IRadioConfig extends IInterface {
                     boolean _status = this.mRemote.transact(8, _data, null, 1);
                     if (!_status) {
                         throw new RemoteException("Method setSimSlotsMapping is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.config.IRadioConfig
+            public void getSimultaneousCallingSupport(int serial) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(serial);
+                    boolean _status = this.mRemote.transact(9, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method getSimultaneousCallingSupport is unimplemented.");
                     }
                 } finally {
                     _data.recycle();

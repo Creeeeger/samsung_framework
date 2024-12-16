@@ -22,19 +22,12 @@ public class ChangeImageTransform extends Transition {
     private static final String PROPNAME_BOUNDS = "android:changeImageTransform:bounds";
     private static final String[] sTransitionProperties = {PROPNAME_MATRIX, PROPNAME_BOUNDS};
     private static TypeEvaluator<Matrix> NULL_MATRIX_EVALUATOR = new TypeEvaluator<Matrix>() { // from class: android.transition.ChangeImageTransform.1
-        AnonymousClass1() {
-        }
-
         @Override // android.animation.TypeEvaluator
         public Matrix evaluate(float fraction, Matrix startValue, Matrix endValue) {
             return null;
         }
     };
     private static Property<ImageView, Matrix> ANIMATED_TRANSFORM_PROPERTY = new Property<ImageView, Matrix>(Matrix.class, "animatedTransform") { // from class: android.transition.ChangeImageTransform.2
-        AnonymousClass2(Class cls, String name) {
-            super(cls, name);
-        }
-
         @Override // android.util.Property
         public void set(ImageView object, Matrix value) {
             object.animateTransform(value);
@@ -45,36 +38,6 @@ public class ChangeImageTransform extends Transition {
             return null;
         }
     };
-
-    /* renamed from: android.transition.ChangeImageTransform$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements TypeEvaluator<Matrix> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.TypeEvaluator
-        public Matrix evaluate(float fraction, Matrix startValue, Matrix endValue) {
-            return null;
-        }
-    }
-
-    /* renamed from: android.transition.ChangeImageTransform$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 extends Property<ImageView, Matrix> {
-        AnonymousClass2(Class cls, String name) {
-            super(cls, name);
-        }
-
-        @Override // android.util.Property
-        public void set(ImageView object, Matrix value) {
-            object.animateTransform(value);
-        }
-
-        @Override // android.util.Property
-        public Matrix get(ImageView object) {
-            return null;
-        }
-    }
 
     public ChangeImageTransform() {
     }

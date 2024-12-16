@@ -7,6 +7,10 @@ public class LightingColorFilter extends ColorFilter {
 
     private static native long native_CreateLightingFilter(int i, int i2);
 
+    private static native void native_SetLightingFilterAdd(long j, int i);
+
+    private static native void native_SetLightingFilterMul(long j, int i);
+
     public LightingColorFilter(int mul, int add) {
         this.mMul = mul;
         this.mAdd = add;
@@ -19,7 +23,7 @@ public class LightingColorFilter extends ColorFilter {
     public void setColorMultiply(int mul) {
         if (this.mMul != mul) {
             this.mMul = mul;
-            discardNativeInstance();
+            native_SetLightingFilterMul(getNativeInstance(), mul);
         }
     }
 
@@ -30,7 +34,7 @@ public class LightingColorFilter extends ColorFilter {
     public void setColorAdd(int add) {
         if (this.mAdd != add) {
             this.mAdd = add;
-            discardNativeInstance();
+            native_SetLightingFilterAdd(getNativeInstance(), add);
         }
     }
 

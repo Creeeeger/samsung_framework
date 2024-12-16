@@ -12,7 +12,6 @@ public class Script extends BaseObj {
     long[] mInIdsBuffer;
     private final SparseArray<KernelID> mKIDs;
 
-    /* loaded from: classes3.dex */
     public static final class KernelID extends BaseObj {
         Script mScript;
         int mSig;
@@ -26,7 +25,7 @@ public class Script extends BaseObj {
         }
     }
 
-    public KernelID createKernelID(int slot, int sig, Element ein, Element eout) {
+    protected KernelID createKernelID(int slot, int sig, Element ein, Element eout) {
         KernelID k = this.mKIDs.get(slot);
         if (k != null) {
             return k;
@@ -40,7 +39,6 @@ public class Script extends BaseObj {
         return k2;
     }
 
-    /* loaded from: classes3.dex */
     public static final class InvokeID extends BaseObj {
         Script mScript;
         int mSlot;
@@ -66,7 +64,6 @@ public class Script extends BaseObj {
         return i2;
     }
 
-    /* loaded from: classes3.dex */
     public static final class FieldID extends BaseObj {
         Script mScript;
         int mSlot;
@@ -78,7 +75,7 @@ public class Script extends BaseObj {
         }
     }
 
-    public FieldID createFieldID(int slot, Element e) {
+    protected FieldID createFieldID(int slot, Element e) {
         FieldID f = this.mFIDs.get(slot);
         if (f != null) {
             return f;
@@ -104,11 +101,11 @@ public class Script extends BaseObj {
         }
     }
 
-    public void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v) {
+    protected void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v) {
         forEach(slot, ain, aout, v, (LaunchOptions) null);
     }
 
-    public void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v, LaunchOptions sc) {
+    protected void forEach(int slot, Allocation ain, Allocation aout, FieldPacker v, LaunchOptions sc) {
         byte[] params;
         int[] limits;
         this.mRS.validate();
@@ -215,7 +212,7 @@ public class Script extends BaseObj {
         this.mRS.nScriptReduce(getID(this.mRS), slot, in_ids, out_id, limits);
     }
 
-    public Script(long id, RenderScript rs) {
+    Script(long id, RenderScript rs) {
         super(id, rs);
         this.mKIDs = new SparseArray<>();
         this.mIIDs = new SparseArray<>();
@@ -308,7 +305,6 @@ public class Script extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         RenderScript mRS;
 
@@ -317,7 +313,6 @@ public class Script extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class FieldBase {
         protected Allocation mAllocation;
         protected Element mElement;
@@ -349,7 +344,6 @@ public class Script extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class LaunchOptions {
         private int strategy;
         private int xstart = 0;

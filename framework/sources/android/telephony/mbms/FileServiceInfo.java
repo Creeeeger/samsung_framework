@@ -9,17 +9,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class FileServiceInfo extends ServiceInfo implements Parcelable {
     public static final Parcelable.Creator<FileServiceInfo> CREATOR = new Parcelable.Creator<FileServiceInfo>() { // from class: android.telephony.mbms.FileServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FileServiceInfo createFromParcel(Parcel source) {
             return new FileServiceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FileServiceInfo[] newArray(int size) {
             return new FileServiceInfo[size];
@@ -33,28 +32,10 @@ public final class FileServiceInfo extends ServiceInfo implements Parcelable {
         this.files = new ArrayList(newFiles);
     }
 
-    /* renamed from: android.telephony.mbms.FileServiceInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FileServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FileServiceInfo createFromParcel(Parcel source) {
-            return new FileServiceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FileServiceInfo[] newArray(int size) {
-            return new FileServiceInfo[size];
-        }
-    }
-
     FileServiceInfo(Parcel in) {
         super(in);
-        ArrayList arrayList = new ArrayList();
-        this.files = arrayList;
-        in.readList(arrayList, FileInfo.class.getClassLoader(), FileInfo.class);
+        this.files = new ArrayList();
+        in.readList(this.files, FileInfo.class.getClassLoader(), FileInfo.class);
     }
 
     @Override // android.telephony.mbms.ServiceInfo, android.os.Parcelable

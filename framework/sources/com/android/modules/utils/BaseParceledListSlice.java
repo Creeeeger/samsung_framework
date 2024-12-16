@@ -1,6 +1,5 @@
 package com.android.modules.utils;
 
-import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,9 +8,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public abstract class BaseParceledListSlice<T> implements Parcelable {
+abstract class BaseParceledListSlice<T> implements Parcelable {
     private int mInlineCountLimit = Integer.MAX_VALUE;
     private final List<T> mList;
     private static String TAG = "ParceledListSlice";
@@ -28,7 +26,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         this.mList = list;
     }
 
-    public BaseParceledListSlice(Parcel p, ClassLoader loader) {
+    BaseParceledListSlice(Parcel p, ClassLoader loader) {
         int N = p.readInt();
         this.mList = new ArrayList(N);
         if (DEBUG) {
@@ -49,10 +47,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
             }
             this.mList.add(parcelable);
             if (DEBUG) {
-                String str = TAG;
-                StringBuilder append = new StringBuilder().append("Read inline #").append(i).append(": ");
-                List<T> list = this.mList;
-                Log.d(str, append.append(list.get(list.size() - 1)).toString());
+                Log.d(TAG, "Read inline #" + i + ": " + this.mList.get(this.mList.size() - 1));
             }
             i++;
         }
@@ -75,7 +70,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
                     verifySameType(listElementClass, parcelable2.getClass());
                     this.mList.add(parcelable2);
                     if (DEBUG) {
-                        Log.d(TAG, new StringBuilder().append("Read extra #").append(i2).append(": ").append(this.mList.get(r15.size() - 1)).toString());
+                        Log.d(TAG, "Read extra #" + i2 + ": " + this.mList.get(this.mList.size() - 1));
                     }
                     i2++;
                 }
@@ -95,6 +90,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         return (T) creator.createFromParcel(parcel);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void verifySameType(Class<?> expected, Class<?> actual) {
         if (!actual.equals(expected)) {
             throw new IllegalArgumentException("Can't unparcel type " + (actual == null ? null : actual.getName()) + " in list of type " + (expected != null ? expected.getName() : null));
@@ -116,7 +112,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
      */
     /* JADX WARN: Code restructure failed: missing block: B:20:0x00a1, code lost:
     
-        if (com.android.modules.utils.BaseParceledListSlice.DEBUG == false) goto L49;
+        if (com.android.modules.utils.BaseParceledListSlice.DEBUG == false) goto L20;
      */
     /* JADX WARN: Code restructure failed: missing block: B:21:0x00a3, code lost:
     
@@ -135,7 +131,7 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void writeToParcel(android.os.Parcel r10, int r11) {
+    public void writeToParcel(android.os.Parcel r10, final int r11) {
         /*
             r9 = this;
             java.util.List<T> r0 = r9.mList
@@ -223,49 +219,5 @@ public abstract class BaseParceledListSlice<T> implements Parcelable {
             return
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.modules.utils.BaseParceledListSlice.writeToParcel(android.os.Parcel, int):void");
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.modules.utils.BaseParceledListSlice$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends Binder {
-        final /* synthetic */ int val$N;
-        final /* synthetic */ int val$callFlags;
-        final /* synthetic */ Class val$listElementClass;
-
-        AnonymousClass1(int i, Class cls, int i2) {
-            r2 = i;
-            r3 = cls;
-            r4 = i2;
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        @Override // android.os.Binder
-        public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            if (code != 1) {
-                return super.onTransact(code, data, reply, flags);
-            }
-            int i = data.readInt();
-            if (BaseParceledListSlice.DEBUG) {
-                Log.d(BaseParceledListSlice.TAG, "Writing more @" + i + " of " + r2);
-            }
-            while (i < r2 && reply.dataSize() < BaseParceledListSlice.MAX_IPC_SIZE) {
-                reply.writeInt(1);
-                Object obj = BaseParceledListSlice.this.mList.get(i);
-                BaseParceledListSlice.verifySameType(r3, obj.getClass());
-                BaseParceledListSlice.this.writeElement(obj, reply, r4);
-                if (BaseParceledListSlice.DEBUG) {
-                    Log.d(BaseParceledListSlice.TAG, "Wrote extra #" + i + ": " + BaseParceledListSlice.this.mList.get(i));
-                }
-                i++;
-            }
-            if (i < r2) {
-                if (BaseParceledListSlice.DEBUG) {
-                    Log.d(BaseParceledListSlice.TAG, "Breaking @" + i + " of " + r2);
-                }
-                reply.writeInt(0);
-            }
-            return true;
-        }
     }
 }

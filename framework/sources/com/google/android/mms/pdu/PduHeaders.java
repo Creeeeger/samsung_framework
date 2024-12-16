@@ -206,7 +206,7 @@ public class PduHeaders {
         this.mHeaderMap = new HashMap<>();
     }
 
-    public int getOctet(int field) {
+    protected int getOctet(int field) {
         Integer octet = (Integer) this.mHeaderMap.get(Integer.valueOf(field));
         if (octet == null) {
             return 0;
@@ -214,7 +214,7 @@ public class PduHeaders {
         return octet.intValue();
     }
 
-    public void setOctet(int value, int field) throws InvalidHeaderValueException {
+    protected void setOctet(int value, int field) throws InvalidHeaderValueException {
         switch (field) {
             case 134:
             case 144:
@@ -316,11 +316,11 @@ public class PduHeaders {
         this.mHeaderMap.put(Integer.valueOf(field), Integer.valueOf(value));
     }
 
-    public byte[] getTextString(int field) {
+    protected byte[] getTextString(int field) {
         return (byte[]) this.mHeaderMap.get(Integer.valueOf(field));
     }
 
-    public void setTextString(byte[] value, int field) {
+    protected void setTextString(byte[] value, int field) {
         if (value == null) {
             throw new NullPointerException();
         }
@@ -343,11 +343,11 @@ public class PduHeaders {
         }
     }
 
-    public EncodedStringValue getEncodedStringValue(int field) {
+    protected EncodedStringValue getEncodedStringValue(int field) {
         return (EncodedStringValue) this.mHeaderMap.get(Integer.valueOf(field));
     }
 
-    public EncodedStringValue[] getEncodedStringValues(int field) {
+    protected EncodedStringValue[] getEncodedStringValues(int field) {
         ArrayList<EncodedStringValue> list = (ArrayList) this.mHeaderMap.get(Integer.valueOf(field));
         if (list == null) {
             return null;
@@ -356,7 +356,7 @@ public class PduHeaders {
         return (EncodedStringValue[]) list.toArray(values);
     }
 
-    public void setEncodedStringValue(EncodedStringValue value, int field) {
+    protected void setEncodedStringValue(EncodedStringValue value, int field) {
         if (value == null) {
             throw new NullPointerException();
         }
@@ -377,7 +377,7 @@ public class PduHeaders {
         }
     }
 
-    public void setEncodedStringValues(EncodedStringValue[] value, int field) {
+    protected void setEncodedStringValues(EncodedStringValue[] value, int field) {
         if (value == null) {
             throw new NullPointerException();
         }
@@ -396,7 +396,7 @@ public class PduHeaders {
         }
     }
 
-    public void appendEncodedStringValue(EncodedStringValue value, int field) {
+    protected void appendEncodedStringValue(EncodedStringValue value, int field) {
         if (value == null) {
             throw new NullPointerException();
         }
@@ -416,7 +416,7 @@ public class PduHeaders {
         }
     }
 
-    public long getLongInteger(int field) {
+    protected long getLongInteger(int field) {
         Long longInteger = (Long) this.mHeaderMap.get(Integer.valueOf(field));
         if (longInteger == null) {
             return -1L;
@@ -424,7 +424,7 @@ public class PduHeaders {
         return longInteger.longValue();
     }
 
-    public void setLongInteger(long value, int field) {
+    protected void setLongInteger(long value, int field) {
         switch (field) {
             case 133:
             case 135:

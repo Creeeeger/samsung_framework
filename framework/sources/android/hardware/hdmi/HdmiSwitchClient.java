@@ -18,32 +18,16 @@ public class HdmiSwitchClient extends HdmiClient {
     private static final String TAG = "HdmiSwitchClient";
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public interface OnSelectListener {
         void onSelect(int i);
     }
 
-    public HdmiSwitchClient(IHdmiControlService service) {
+    HdmiSwitchClient(IHdmiControlService service) {
         super(service);
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IHdmiControlCallback.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.hardware.hdmi.IHdmiControlCallback
-        public void onComplete(int result) {
-            OnSelectListener.this.onSelect(result);
-        }
-    }
-
-    private static IHdmiControlCallback getCallbackWrapper(OnSelectListener listener) {
+    private static IHdmiControlCallback getCallbackWrapper(final OnSelectListener listener) {
         return new IHdmiControlCallback.Stub() { // from class: android.hardware.hdmi.HdmiSwitchClient.1
-            AnonymousClass1() {
-            }
-
             @Override // android.hardware.hdmi.IHdmiControlCallback
             public void onComplete(int result) {
                 OnSelectListener.this.onSelect(result);
@@ -88,8 +72,7 @@ public class HdmiSwitchClient extends HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$2 */
-    /* loaded from: classes2.dex */
+    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$2, reason: invalid class name */
     class AnonymousClass2 extends IHdmiControlCallback.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ OnSelectListener val$listener;
@@ -103,10 +86,10 @@ public class HdmiSwitchClient extends HdmiClient {
         public void onComplete(final int result) {
             final Executor executor = this.val$executor;
             final OnSelectListener onSelectListener = this.val$listener;
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.hardware.hdmi.HdmiSwitchClient$2$$ExternalSyntheticLambda1
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.hardware.hdmi.HdmiSwitchClient$2$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
-                    executor.execute(new Runnable() { // from class: android.hardware.hdmi.HdmiSwitchClient$2$$ExternalSyntheticLambda0
+                    executor.execute(new Runnable() { // from class: android.hardware.hdmi.HdmiSwitchClient$2$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             HdmiSwitchClient.OnSelectListener.this.onSelect(r2);
@@ -128,8 +111,7 @@ public class HdmiSwitchClient extends HdmiClient {
         }
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$3 */
-    /* loaded from: classes2.dex */
+    /* renamed from: android.hardware.hdmi.HdmiSwitchClient$3, reason: invalid class name */
     class AnonymousClass3 extends IHdmiControlCallback.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ OnSelectListener val$listener;

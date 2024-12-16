@@ -19,7 +19,7 @@ import java.util.Set;
 class WrappedX509Certificate extends X509Certificate {
     private final X509Certificate mWrapped;
 
-    public WrappedX509Certificate(X509Certificate wrapped) {
+    WrappedX509Certificate(X509Certificate wrapped) {
         this.mWrapped = wrapped;
     }
 

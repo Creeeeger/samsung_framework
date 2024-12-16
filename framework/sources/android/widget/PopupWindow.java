@@ -81,7 +81,6 @@ public class PopupWindow {
     private boolean mIgnoreCheekPress;
     private int mInputMethodMode;
     private boolean mIsAnchorRootAttached;
-    private boolean mIsDecorViewBGNull;
     private boolean mIsDeviceDefault;
     private boolean mIsDropdown;
     private boolean mIsReplacedPoupBackground;
@@ -119,45 +118,11 @@ public class PopupWindow {
     private static final int[] ABOVE_ANCHOR_STATE_SET = {16842922};
     private static final int[] ONEUI_BLUR_POPUP_BACKGROUND_RES = {R.drawable.sem_popup_background_material_dark, R.drawable.sem_popup_background_material, R.drawable.sem_list_popup_background_material_dark, R.drawable.sem_list_popup_background_material, R.drawable.sem_search_popup_background_material_dark, R.drawable.sem_search_popup_background_material, R.drawable.sem_spinner_popup_background_material_dark, R.drawable.sem_spinner_popup_background_material};
 
-    /* loaded from: classes4.dex */
     public interface OnDismissListener {
         void onDismiss();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.PopupWindow$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements View.OnAttachStateChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-            PopupWindow.this.alignToAnchor();
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.PopupWindow$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements View.OnAttachStateChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewAttachedToWindow(View v) {
-        }
-
-        @Override // android.view.View.OnAttachStateChangeListener
-        public void onViewDetachedFromWindow(View v) {
-            PopupWindow.this.mIsAnchorRootAttached = false;
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         alignToAnchor(left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom);
     }
@@ -198,9 +163,6 @@ public class PopupWindow {
         this.mGravity = 0;
         this.mShowWhenLocked = false;
         this.mOnAnchorDetachedListener = new View.OnAttachStateChangeListener() { // from class: android.widget.PopupWindow.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
                 PopupWindow.this.alignToAnchor();
@@ -211,9 +173,6 @@ public class PopupWindow {
             }
         };
         this.mOnAnchorRootDetachedListener = new View.OnAttachStateChangeListener() { // from class: android.widget.PopupWindow.2
-            AnonymousClass2() {
-            }
-
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
             }
@@ -238,7 +197,6 @@ public class PopupWindow {
         this.mIsDeviceDefault = false;
         this.mStatusBarHeight = 0;
         this.mNavigationBarHeight = 0;
-        this.mIsDecorViewBGNull = false;
         this.mContext = context;
         this.mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PopupWindow, defStyleAttr, defStyleRes);
@@ -247,7 +205,7 @@ public class PopupWindow {
         this.mOverlapAnchor = a.getBoolean(2, false);
         if (a.hasValueOrEmpty(1)) {
             int animStyle = a.getResourceId(1, 0);
-            if (animStyle == 16974599) {
+            if (animStyle == 16974614) {
                 this.mAnimationStyle = -1;
             } else {
                 this.mAnimationStyle = animStyle;
@@ -259,7 +217,7 @@ public class PopupWindow {
         if (a.hasValueOrEmpty(5)) {
             exitTransition = getTransition(a.getResourceId(5, 0));
         } else {
-            exitTransition = enterTransition == null ? null : enterTransition.mo4916clone();
+            exitTransition = enterTransition == null ? null : enterTransition.mo5201clone();
         }
         boolean isOneUIBlurBackground = false;
         int popupBackgroundResId = a.getResourceId(0, -1);
@@ -319,9 +277,6 @@ public class PopupWindow {
         this.mGravity = 0;
         this.mShowWhenLocked = false;
         this.mOnAnchorDetachedListener = new View.OnAttachStateChangeListener() { // from class: android.widget.PopupWindow.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
                 PopupWindow.this.alignToAnchor();
@@ -332,9 +287,6 @@ public class PopupWindow {
             }
         };
         this.mOnAnchorRootDetachedListener = new View.OnAttachStateChangeListener() { // from class: android.widget.PopupWindow.2
-            AnonymousClass2() {
-            }
-
             @Override // android.view.View.OnAttachStateChangeListener
             public void onViewAttachedToWindow(View v) {
             }
@@ -359,11 +311,9 @@ public class PopupWindow {
         this.mIsDeviceDefault = false;
         this.mStatusBarHeight = 0;
         this.mNavigationBarHeight = 0;
-        this.mIsDecorViewBGNull = false;
         if (contentView != null) {
-            Context context = contentView.getContext();
-            this.mContext = context;
-            this.mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            this.mContext = contentView.getContext();
+            this.mWindowManager = (WindowManager) this.mContext.getSystemService(Context.WINDOW_SERVICE);
         }
         setContentView(contentView);
         setWidth(width);
@@ -421,8 +371,8 @@ public class PopupWindow {
     public void setBackgroundDrawable(Drawable background) {
         this.mIsReplacedPoupBackground = true;
         this.mBackground = background;
-        if (background instanceof StateListDrawable) {
-            StateListDrawable stateList = (StateListDrawable) background;
+        if (this.mBackground instanceof StateListDrawable) {
+            StateListDrawable stateList = (StateListDrawable) this.mBackground;
             int aboveAnchorStateIndex = stateList.findStateDrawableIndex(ABOVE_ANCHOR_STATE_SET);
             int count = stateList.getStateCount();
             int belowAnchorStateIndex = -1;
@@ -477,15 +427,14 @@ public class PopupWindow {
             return;
         }
         this.mContentView = contentView;
-        if (this.mContext == null && contentView != null) {
-            this.mContext = contentView.getContext();
+        if (this.mContext == null && this.mContentView != null) {
+            this.mContext = this.mContentView.getContext();
         }
         if (this.mWindowManager == null && this.mContentView != null) {
             this.mWindowManager = (WindowManager) this.mContext.getSystemService(Context.WINDOW_SERVICE);
         }
-        Context context = this.mContext;
-        if (context != null && !this.mAttachedInDecorSet) {
-            setAttachedInDecor(context.getApplicationInfo().targetSdkVersion >= 22);
+        if (this.mContext != null && !this.mAttachedInDecorSet) {
+            setAttachedInDecor(this.mContext.getApplicationInfo().targetSdkVersion >= 22);
         }
     }
 
@@ -559,18 +508,16 @@ public class PopupWindow {
         this.mClipToScreen = enabled;
     }
 
-    public void setAllowScrollingAnchorParent(boolean enabled) {
+    void setAllowScrollingAnchorParent(boolean enabled) {
         this.mAllowScrollingAnchorParent = enabled;
     }
 
-    public final boolean getAllowScrollingAnchorParent() {
+    protected final boolean getAllowScrollingAnchorParent() {
         return this.mAllowScrollingAnchorParent;
     }
 
     public boolean isSplitTouchEnabled() {
-        Context context;
-        int i = this.mSplitTouchEnabled;
-        return (i >= 0 || (context = this.mContext) == null) ? i == 1 : context.getApplicationInfo().targetSdkVersion >= 11;
+        return (this.mSplitTouchEnabled >= 0 || this.mContext == null) ? this.mSplitTouchEnabled == 1 : this.mContext.getApplicationInfo().targetSdkVersion >= 11;
     }
 
     public void setSplitTouchEnabled(boolean z) {
@@ -608,7 +555,7 @@ public class PopupWindow {
         this.mLayoutInsetDecor = enabled;
     }
 
-    public final boolean isLayoutInsetDecor() {
+    protected final boolean isLayoutInsetDecor() {
         return this.mLayoutInsetDecor;
     }
 
@@ -662,19 +609,19 @@ public class PopupWindow {
         return this.mIsShowing;
     }
 
-    public final void setShowing(boolean isShowing) {
+    protected final void setShowing(boolean isShowing) {
         this.mIsShowing = isShowing;
     }
 
-    public final void setDropDown(boolean isDropDown) {
+    protected final void setDropDown(boolean isDropDown) {
         this.mIsDropdown = isDropDown;
     }
 
-    public final void setTransitioningToDismiss(boolean transitioningToDismiss) {
+    protected final void setTransitioningToDismiss(boolean transitioningToDismiss) {
         this.mIsTransitioningToDismiss = transitioningToDismiss;
     }
 
-    public final boolean isTransitioningToDismiss() {
+    protected final boolean isTransitioningToDismiss() {
         return this.mIsTransitioningToDismiss;
     }
 
@@ -735,22 +682,20 @@ public class PopupWindow {
         invokePopup(params);
     }
 
-    public final void updateAboveAnchor(boolean aboveAnchor) {
-        View view;
+    protected final void updateAboveAnchor(boolean aboveAnchor) {
         if (aboveAnchor != this.mAboveAnchor) {
             this.mAboveAnchor = aboveAnchor;
-            if (this.mBackground != null && (view = this.mBackgroundView) != null) {
-                Drawable drawable = this.mAboveAnchorBackgroundDrawable;
-                if (drawable != null) {
-                    if (aboveAnchor) {
-                        view.setBackground(drawable);
+            if (this.mBackground != null && this.mBackgroundView != null) {
+                if (this.mAboveAnchorBackgroundDrawable != null) {
+                    if (this.mAboveAnchor) {
+                        this.mBackgroundView.setBackground(this.mAboveAnchorBackgroundDrawable);
                         return;
                     } else {
-                        view.setBackground(this.mBelowAnchorBackgroundDrawable);
+                        this.mBackgroundView.setBackground(this.mBelowAnchorBackgroundDrawable);
                         return;
                     }
                 }
-                view.refreshDrawableState();
+                this.mBackgroundView.refreshDrawableState();
             }
         }
     }
@@ -766,23 +711,20 @@ public class PopupWindow {
         if (p.accessibilityTitle == null) {
             p.accessibilityTitle = this.mContext.getString(R.string.popup_window_default_title);
         }
-        PopupDecorView popupDecorView = this.mDecorView;
-        if (popupDecorView != null) {
-            popupDecorView.cancelTransitions();
+        if (this.mDecorView != null) {
+            this.mDecorView.cancelTransitions();
         }
         if (this.mBackground != null) {
-            PopupBackgroundView createBackgroundView = createBackgroundView(this.mContentView);
-            this.mBackgroundView = createBackgroundView;
-            createBackgroundView.setBackground(this.mBackground);
+            this.mBackgroundView = createBackgroundView(this.mContentView);
+            this.mBackgroundView.setBackground(this.mBackground);
             if (this.mIsDeviceDefault) {
                 this.mBackgroundView.setClipToOutline(true);
             }
         } else {
             this.mBackgroundView = this.mContentView;
         }
-        PopupDecorView createDecorView = createDecorView(this.mBackgroundView);
-        this.mDecorView = createDecorView;
-        createDecorView.setIsRootNamespace(true);
+        this.mDecorView = createDecorView(this.mBackgroundView);
+        this.mDecorView.setIsRootNamespace(true);
         if (this.mIsDeviceDefault && (this.mBackground instanceof NinePatchDrawable)) {
             this.mBackgroundView.setElevation(0.0f);
             this.mBackgroundView.setClipToOutline(false);
@@ -791,9 +733,6 @@ public class PopupWindow {
         }
         p.setSurfaceInsets(this.mBackgroundView, true, true);
         this.mPopupViewInitialLayoutDirectionInherited = this.mContentView.getRawLayoutDirection() == 2;
-        if (this.mIsDecorViewBGNull) {
-            this.mDecorView.setBackground(null);
-        }
     }
 
     private PopupBackgroundView createBackgroundView(View contentView) {
@@ -826,17 +765,15 @@ public class PopupWindow {
     }
 
     private void invokePopup(WindowManager.LayoutParams p) {
-        WeakReference<View> weakReference;
         View parentRoot;
         WindowInsets windowInsets;
-        Context context = this.mContext;
-        if (context != null) {
-            p.packageName = context.getPackageName();
+        if (this.mContext != null) {
+            p.packageName = this.mContext.getPackageName();
         }
         PopupDecorView decorView = this.mDecorView;
         decorView.setFitsSystemWindows(this.mLayoutInsetDecor);
         setLayoutDirectionFromAnchor();
-        if (CoreRune.MW_CAPTION_SHELL_DEX && (weakReference = this.mParentRootView) != null && (parentRoot = weakReference.get()) != null) {
+        if (CoreRune.MW_CAPTION_SHELL_DEX && this.mParentRootView != null && (parentRoot = this.mParentRootView.get()) != null) {
             Configuration config = parentRoot.getResources().getConfiguration();
             if ((config.isDexMode() || (CoreRune.MT_NEW_DEX && config.isNewDexMode() && config.windowConfiguration.getWindowingMode() == 1)) && (windowInsets = parentRoot.getRootWindowInsets()) != null) {
                 Insets insets = windowInsets.getInsets(WindowInsets.Type.captionBar());
@@ -846,16 +783,14 @@ public class PopupWindow {
             }
         }
         this.mWindowManager.addView(decorView, p);
-        Transition transition = this.mEnterTransition;
-        if (transition != null) {
-            decorView.requestEnterTransition(transition);
+        if (this.mEnterTransition != null) {
+            decorView.requestEnterTransition(this.mEnterTransition);
         }
     }
 
     private void setLayoutDirectionFromAnchor() {
-        WeakReference<View> weakReference = this.mAnchor;
-        if (weakReference != null) {
-            View anchor = weakReference.get();
+        if (this.mAnchor != null) {
+            View anchor = this.mAnchor.get();
             anchor.resolveLayoutDirection();
             if (anchor != null && this.mPopupViewInitialLayoutDirectionInherited) {
                 this.mDecorView.setLayoutDirection(anchor.getLayoutDirection());
@@ -864,10 +799,7 @@ public class PopupWindow {
     }
 
     private int computeGravity() {
-        int gravity = this.mGravity;
-        if (gravity == 0) {
-            gravity = DEFAULT_ANCHORED_GRAVITY;
-        }
+        int gravity = this.mGravity == 0 ? DEFAULT_ANCHORED_GRAVITY : this.mGravity;
         if (!this.mIsDropdown) {
             return gravity;
         }
@@ -877,7 +809,7 @@ public class PopupWindow {
         return gravity;
     }
 
-    public WindowManager.LayoutParams createPopupLayoutParams(IBinder token) {
+    protected WindowManager.LayoutParams createPopupLayoutParams(IBinder token) {
         WindowManager.LayoutParams p = new WindowManager.LayoutParams();
         p.gravity = computeGravity();
         p.flags = computeFlags(p.flags);
@@ -885,14 +817,13 @@ public class PopupWindow {
         p.token = token;
         p.softInputMode = this.mSoftInputMode;
         p.windowAnimations = computeAnimationResource();
-        Drawable drawable = this.mBackground;
-        if (drawable != null) {
-            p.format = drawable.getOpacity();
+        if (this.mBackground != null) {
+            p.format = this.mBackground.getOpacity();
         } else {
             p.format = -3;
         }
-        int i = this.mHeightMode;
-        if (i < 0) {
+        if (this.mHeightMode < 0) {
+            int i = this.mHeightMode;
             this.mLastHeight = i;
             p.height = i;
         } else {
@@ -900,8 +831,8 @@ public class PopupWindow {
             this.mLastHeight = i2;
             p.height = i2;
         }
-        int i3 = this.mWidthMode;
-        if (i3 < 0) {
+        if (this.mWidthMode < 0) {
+            int i3 = this.mWidthMode;
             this.mLastWidth = i3;
             p.width = i3;
         } else {
@@ -959,8 +890,7 @@ public class PopupWindow {
     }
 
     private int computeAnimationResource() {
-        int i = this.mAnimationStyle;
-        if (i == -1) {
+        if (this.mAnimationStyle == -1) {
             if (this.mIsDropdown) {
                 if (this.mAboveAnchor) {
                     return R.style.Animation_DropDownUp;
@@ -969,21 +899,23 @@ public class PopupWindow {
             }
             return 0;
         }
-        return i;
+        return this.mAnimationStyle;
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r28v4 */
-    /* JADX WARN: Type inference failed for: r28v5 */
-    /* JADX WARN: Type inference failed for: r28v8 */
-    public boolean findDropDownPosition(View view, WindowManager.LayoutParams layoutParams, int i, int i2, int i3, int i4, int i5, boolean z) {
+    /* JADX WARN: Type inference failed for: r29v4 */
+    /* JADX WARN: Type inference failed for: r29v5 */
+    /* JADX WARN: Type inference failed for: r29v8 */
+    protected boolean findDropDownPosition(View view, WindowManager.LayoutParams layoutParams, int i, int i2, int i3, int i4, int i5, boolean z) {
         int i6;
         int i7;
-        WindowManager.LayoutParams layoutParams2;
-        int i8;
         boolean z2;
-        WindowManager.LayoutParams layoutParams3;
+        int i8;
+        WindowManager.LayoutParams layoutParams2;
+        int i9;
         boolean z3;
+        WindowManager.LayoutParams layoutParams3;
+        boolean z4;
         int height = view.getHeight();
         int width = view.getWidth();
         if (!this.mOverlapAnchor) {
@@ -1009,67 +941,72 @@ public class PopupWindow {
             i7 = rect.right - rect.left;
         }
         int semGetCenterPointForFoldable = semGetCenterPointForFoldable();
-        int i9 = (semGetCenterPointForFoldable == 0 || iArr3[1] >= semGetCenterPointForFoldable) ? rect.bottom : semGetCenterPointForFoldable;
-        int i10 = (semGetCenterPointForFoldable == 0 || iArr3[1] < semGetCenterPointForFoldable) ? rect.top : semGetCenterPointForFoldable;
-        int i11 = i4;
-        if (i11 == -1) {
-            i11 = i9 - i10;
+        int i10 = (semGetCenterPointForFoldable == 0 || iArr3[1] >= semGetCenterPointForFoldable) ? rect.bottom : semGetCenterPointForFoldable;
+        int i11 = (semGetCenterPointForFoldable == 0 || iArr3[1] < semGetCenterPointForFoldable) ? rect.top : semGetCenterPointForFoldable;
+        if (iArr[1] < semGetCenterPointForFoldable) {
+            z2 = true;
+        } else {
+            z2 = false;
+        }
+        if (i4 != -1) {
+            i8 = i4;
+        } else {
+            i8 = z2 ? i10 - i11 : rect.bottom - rect.top;
         }
         layoutParams.gravity = computeGravity();
         layoutParams.width = i7;
-        layoutParams.height = i11;
+        layoutParams.height = i8;
         int absoluteGravity = Gravity.getAbsoluteGravity(i5, view.getLayoutDirection()) & 7;
         if (absoluteGravity == 5) {
             layoutParams.x -= i7 - width;
         }
-        int i12 = i11;
-        int i13 = i7;
-        boolean tryFitVertical = tryFitVertical(layoutParams, i6, i12, height, iArr3[1], iArr2[1], i10, i9, false);
-        boolean tryFitHorizontal = tryFitHorizontal(layoutParams, i, i13, width, iArr3[0], iArr2[0], rect.left, rect.right, false);
+        int i12 = i7;
+        int i13 = i8;
+        boolean tryFitVertical = tryFitVertical(layoutParams, i6, i8, height, iArr3[1], iArr2[1], z2 ? i11 : rect.top, z2 ? i10 : rect.bottom, false);
+        boolean tryFitHorizontal = tryFitHorizontal(layoutParams, i, i12, width, iArr3[0], iArr2[0], rect.left, rect.right, false);
         if (tryFitVertical && tryFitHorizontal) {
-            z3 = 1;
+            z4 = 1;
             layoutParams3 = layoutParams;
         } else {
             int scrollX = view.getScrollX();
             int scrollY = view.getScrollY();
-            Rect rect2 = new Rect(scrollX, scrollY, scrollX + i13 + i, scrollY + i12 + height + i6);
+            Rect rect2 = new Rect(scrollX, scrollY, scrollX + i12 + i, scrollY + i13 + height + i6);
             if (!z) {
                 layoutParams2 = layoutParams;
-                i8 = absoluteGravity;
-                z2 = true;
+                i9 = absoluteGravity;
+                z3 = true;
             } else if (!view.requestRectangleOnScreen(rect2, true)) {
                 layoutParams2 = layoutParams;
-                z2 = true;
-                i8 = absoluteGravity;
+                z3 = true;
+                i9 = absoluteGravity;
             } else {
                 view.getLocationOnScreen(iArr2);
                 iArr3[0] = iArr2[0] - iArr[0];
                 iArr3[1] = iArr2[1] - iArr[1];
                 int i14 = iArr3[0] + i;
                 layoutParams2 = layoutParams;
-                boolean z4 = true;
+                boolean z5 = true;
                 layoutParams2.x = i14;
                 layoutParams2.y = iArr3[1] + height + i6;
-                i8 = absoluteGravity;
-                z2 = z4;
-                if (i8 == 5) {
-                    layoutParams2.x -= i13 - width;
-                    z2 = z4;
+                i9 = absoluteGravity;
+                z3 = z5;
+                if (i9 == 5) {
+                    layoutParams2.x -= i12 - width;
+                    z3 = z5;
                 }
             }
             layoutParams3 = layoutParams2;
-            tryFitVertical(layoutParams, i6, i12, height, iArr3[z2 ? 1 : 0], iArr2[z2 ? 1 : 0], i10, i9, this.mClipToScreen);
-            tryFitHorizontal(layoutParams, i, i13, width, iArr3[0], iArr2[0], rect.left, rect.right, this.mClipToScreen);
-            z3 = z2;
+            tryFitVertical(layoutParams, i6, i13, height, iArr3[z3 ? 1 : 0], iArr2[z3 ? 1 : 0], z2 ? i11 : rect.top, z2 ? i10 : rect.bottom, this.mClipToScreen);
+            tryFitHorizontal(layoutParams, i, i12, width, iArr3[0], iArr2[0], rect.left, rect.right, this.mClipToScreen);
+            z4 = z3;
         }
-        if (layoutParams3.y < iArr3[z3]) {
-            return z3;
+        if (layoutParams3.y < iArr3[z4]) {
+            return z4;
         }
         return false;
     }
 
     private void getVisibleDisplayRect(View rootView, Rect outRect) {
-        Context context;
         if (rootView == null || outRect == null) {
             return;
         }
@@ -1094,8 +1031,8 @@ public class PopupWindow {
             visibleDisplayFrame.top = hasStatusBar ? this.mStatusBarHeight : 0;
             visibleDisplayFrame.right = size.x;
             visibleDisplayFrame.bottom = size.y;
-            if (ViewRune.NAVIBAR_ENABLED && (context = this.mContext) != null) {
-                int orientation = context.getResources().getConfiguration().orientation;
+            if (ViewRune.NAVIBAR_ENABLED && this.mContext != null) {
+                int orientation = this.mContext.getResources().getConfiguration().orientation;
                 if (orientation != 2) {
                     visibleDisplayFrame.bottom -= this.mNavigationBarHeight;
                 }
@@ -1252,21 +1189,20 @@ public class PopupWindow {
         }
         int distanceToTop = (anchorPos[1] - displayFrame.top) + yOffset;
         int returnedHeight = Math.max(distanceToBottom, distanceToTop);
-        Drawable drawable = this.mBackground;
-        if (drawable != null) {
-            drawable.getPadding(this.mTempRect);
+        if (this.mBackground != null) {
+            this.mBackground.getPadding(this.mTempRect);
             return returnedHeight - (this.mTempRect.top + this.mTempRect.bottom);
         }
         return returnedHeight;
     }
 
     public void dismiss() {
-        ViewGroup contentHolder;
+        final ViewGroup contentHolder;
         if (!isShowing() || isTransitioningToDismiss()) {
             return;
         }
-        PopupDecorView decorView = this.mDecorView;
-        View contentView = this.mContentView;
+        final PopupDecorView decorView = this.mDecorView;
+        final View contentView = this.mContentView;
         unregisterBackCallback(decorView.findOnBackInvokedDispatcher());
         ViewParent contentParent = contentView.getParent();
         if (contentParent instanceof ViewGroup) {
@@ -1287,54 +1223,24 @@ public class PopupWindow {
             p.flags |= 8;
             p.flags &= -131073;
             this.mWindowManager.updateViewLayout(decorView, p);
-            WeakReference<View> weakReference = this.mAnchorRoot;
-            View anchorRoot = weakReference != null ? weakReference.get() : null;
+            View anchorRoot = this.mAnchorRoot != null ? this.mAnchorRoot.get() : null;
             Rect epicenter = getTransitionEpicenter();
             decorView.startExitTransition(exitTransition, anchorRoot, epicenter, new TransitionListenerAdapter() { // from class: android.widget.PopupWindow.3
-                final /* synthetic */ ViewGroup val$contentHolder;
-                final /* synthetic */ View val$contentView;
-                final /* synthetic */ PopupDecorView val$decorView;
-
-                AnonymousClass3(PopupDecorView decorView2, ViewGroup contentHolder2, View contentView2) {
-                    decorView = decorView2;
-                    contentHolder = contentHolder2;
-                    contentView = contentView2;
-                }
-
                 @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                 public void onTransitionEnd(Transition transition) {
                     PopupWindow.this.dismissImmediate(decorView, contentHolder, contentView);
                 }
             });
         } else {
-            dismissImmediate(decorView2, contentHolder2, contentView2);
+            dismissImmediate(decorView, contentHolder, contentView);
         }
         detachFromAnchor();
-        OnDismissListener onDismissListener = this.mOnDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mOnDismissListener != null) {
+            this.mOnDismissListener.onDismiss();
         }
     }
 
-    /* renamed from: android.widget.PopupWindow$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 extends TransitionListenerAdapter {
-        final /* synthetic */ ViewGroup val$contentHolder;
-        final /* synthetic */ View val$contentView;
-        final /* synthetic */ PopupDecorView val$decorView;
-
-        AnonymousClass3(PopupDecorView decorView2, ViewGroup contentHolder2, View contentView2) {
-            decorView = decorView2;
-            contentHolder = contentHolder2;
-            contentView = contentView2;
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionEnd(Transition transition) {
-            PopupWindow.this.dismissImmediate(decorView, contentHolder, contentView);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void unregisterBackCallback(OnBackInvokedDispatcher onBackInvokedDispatcher) {
         OnBackInvokedCallback backCallback = this.mBackCallback;
         this.mBackCallback = null;
@@ -1343,9 +1249,8 @@ public class PopupWindow {
         }
     }
 
-    public final Rect getTransitionEpicenter() {
-        WeakReference<View> weakReference = this.mAnchor;
-        View anchor = weakReference != null ? weakReference.get() : null;
+    protected final Rect getTransitionEpicenter() {
+        View anchor = this.mAnchor != null ? this.mAnchor.get() : null;
         View decor = this.mDecorView;
         if (anchor == null || decor == null) {
             return null;
@@ -1363,6 +1268,7 @@ public class PopupWindow {
         return bounds;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dismissImmediate(View decorView, ViewGroup contentHolder, View contentView) {
         if (decorView.getParent() != null) {
             this.mWindowManager.removeViewImmediate(decorView);
@@ -1379,7 +1285,7 @@ public class PopupWindow {
         this.mOnDismissListener = onDismissListener;
     }
 
-    public final OnDismissListener getOnDismissListener() {
+    protected final OnDismissListener getOnDismissListener() {
         return this.mOnDismissListener;
     }
 
@@ -1405,8 +1311,7 @@ public class PopupWindow {
             update = true;
         }
         if (update) {
-            WeakReference<View> weakReference = this.mAnchor;
-            update(weakReference != null ? weakReference.get() : null, p);
+            update(this.mAnchor != null ? this.mAnchor.get() : null, p);
         }
     }
 
@@ -1438,19 +1343,13 @@ public class PopupWindow {
         }
         WindowManager.LayoutParams p = getDecorViewLayoutParams();
         boolean update = force;
-        int finalWidth = this.mWidthMode;
-        if (finalWidth >= 0) {
-            finalWidth = this.mLastWidth;
-        }
+        int finalWidth = this.mWidthMode < 0 ? this.mWidthMode : this.mLastWidth;
         if (width != -1 && p.width != finalWidth) {
             this.mLastWidth = finalWidth;
             p.width = finalWidth;
             update = true;
         }
-        int finalHeight = this.mHeightMode;
-        if (finalHeight >= 0) {
-            finalHeight = this.mLastHeight;
-        }
+        int finalHeight = this.mHeightMode < 0 ? this.mHeightMode : this.mLastHeight;
         if (height != -1 && p.height != finalHeight) {
             this.mLastHeight = finalHeight;
             p.height = finalHeight;
@@ -1481,8 +1380,7 @@ public class PopupWindow {
         }
         View anchor = null;
         int newAccessibilityIdOfAnchor = -1;
-        WeakReference<View> weakReference = this.mAnchor;
-        if (weakReference != null && weakReference.get() != null) {
+        if (this.mAnchor != null && this.mAnchor.get() != null) {
             anchor = this.mAnchor.get();
             newAccessibilityIdOfAnchor = anchor.getAccessibilityViewId();
         }
@@ -1499,11 +1397,11 @@ public class PopupWindow {
         return this.mContentView != null;
     }
 
-    public boolean hasDecorView() {
+    protected boolean hasDecorView() {
         return this.mDecorView != null;
     }
 
-    public WindowManager.LayoutParams getDecorViewLayoutParams() {
+    protected WindowManager.LayoutParams getDecorViewLayoutParams() {
         return (WindowManager.LayoutParams) this.mDecorView.getLayoutParams();
     }
 
@@ -1556,15 +1454,14 @@ public class PopupWindow {
         update(p.x, p.y, newWidth, newHeight, paramsChanged);
     }
 
-    public void detachFromAnchor() {
+    protected void detachFromAnchor() {
         View anchor = getAnchor();
         if (anchor != null) {
             ViewTreeObserver vto = anchor.getViewTreeObserver();
             vto.removeOnScrollChangedListener(this.mOnScrollChangedListener);
             anchor.removeOnAttachStateChangeListener(this.mOnAnchorDetachedListener);
         }
-        WeakReference<View> weakReference = this.mAnchorRoot;
-        View anchorRoot = weakReference != null ? weakReference.get() : null;
+        View anchorRoot = this.mAnchorRoot != null ? this.mAnchorRoot.get() : null;
         if (anchorRoot != null) {
             anchorRoot.removeOnAttachStateChangeListener(this.mOnAnchorRootDetachedListener);
             anchorRoot.removeOnLayoutChangeListener(this.mOnLayoutChangeListener);
@@ -1574,7 +1471,7 @@ public class PopupWindow {
         this.mIsAnchorRootAttached = false;
     }
 
-    public void attachToAnchor(View anchor, int xoff, int yoff, int gravity) {
+    protected void attachToAnchor(View anchor, int xoff, int yoff, int gravity) {
         detachFromAnchor();
         ViewTreeObserver vto = anchor.getViewTreeObserver();
         if (vto != null) {
@@ -1593,10 +1490,9 @@ public class PopupWindow {
         this.mAnchoredGravity = gravity;
     }
 
-    public View getAnchor() {
-        WeakReference<View> weakReference = this.mAnchor;
-        if (weakReference != null) {
-            return weakReference.get();
+    protected View getAnchor() {
+        if (this.mAnchor != null) {
+            return this.mAnchor.get();
         }
         return null;
     }
@@ -1612,9 +1508,9 @@ public class PopupWindow {
         alignToAnchor();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void alignToAnchor() {
-        WeakReference<View> weakReference = this.mAnchor;
-        View anchor = weakReference != null ? weakReference.get() : null;
+        View anchor = this.mAnchor != null ? this.mAnchor.get() : null;
         if (anchor != null && anchor.isAttachedToWindow() && hasDecorView()) {
             WindowManager.LayoutParams p = getDecorViewLayoutParams();
             updateAboveAnchor(findDropDownPosition(anchor, p, this.mAnchorXoff, this.mAnchorYoff, p.width, p.height, this.mAnchoredGravity, false));
@@ -1651,7 +1547,6 @@ public class PopupWindow {
         return (this.mContext.getApplicationInfo().flags & 1) != 0;
     }
 
-    /* loaded from: classes4.dex */
     public class PopupDecorView extends FrameLayout {
         private Runnable mCleanupAfterExit;
         private boolean mIsPenSelectionMode;
@@ -1661,9 +1556,6 @@ public class PopupWindow {
             super(context);
             this.mIsPenSelectionMode = false;
             this.mOnAnchorRootDetachedListener = new View.OnAttachStateChangeListener() { // from class: android.widget.PopupWindow.PopupDecorView.4
-                AnonymousClass4() {
-                }
-
                 @Override // android.view.View.OnAttachStateChangeListener
                 public void onViewAttachedToWindow(View v) {
                 }
@@ -1755,28 +1647,16 @@ public class PopupWindow {
         public void requestEnterTransition(Transition transition) {
             ViewTreeObserver observer = getViewTreeObserver();
             if (observer != null && transition != null) {
-                Transition enterTransition = transition.mo4916clone();
+                final Transition enterTransition = transition.mo5201clone();
                 observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() { // from class: android.widget.PopupWindow.PopupDecorView.1
-                    final /* synthetic */ Transition val$enterTransition;
-
-                    AnonymousClass1(Transition enterTransition2) {
-                        enterTransition = enterTransition2;
-                    }
-
                     @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
                     public void onGlobalLayout() {
                         ViewTreeObserver observer2 = PopupDecorView.this.getViewTreeObserver();
                         if (observer2 != null) {
                             observer2.removeOnGlobalLayoutListener(this);
                         }
-                        Rect epicenter = PopupWindow.this.getTransitionEpicenter();
+                        final Rect epicenter = PopupWindow.this.getTransitionEpicenter();
                         enterTransition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.widget.PopupWindow.PopupDecorView.1.1
-                            final /* synthetic */ Rect val$epicenter;
-
-                            C00131(Rect epicenter2) {
-                                epicenter = epicenter2;
-                            }
-
                             @Override // android.transition.Transition.EpicenterCallback
                             public Rect onGetEpicenter(Transition transition2) {
                                 return epicenter;
@@ -1784,72 +1664,11 @@ public class PopupWindow {
                         });
                         PopupDecorView.this.startEnterTransition(enterTransition);
                     }
-
-                    /* renamed from: android.widget.PopupWindow$PopupDecorView$1$1 */
-                    /* loaded from: classes4.dex */
-                    class C00131 extends Transition.EpicenterCallback {
-                        final /* synthetic */ Rect val$epicenter;
-
-                        C00131(Rect epicenter2) {
-                            epicenter = epicenter2;
-                        }
-
-                        @Override // android.transition.Transition.EpicenterCallback
-                        public Rect onGetEpicenter(Transition transition2) {
-                            return epicenter;
-                        }
-                    }
                 });
             }
         }
 
-        /* renamed from: android.widget.PopupWindow$PopupDecorView$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 implements ViewTreeObserver.OnGlobalLayoutListener {
-            final /* synthetic */ Transition val$enterTransition;
-
-            AnonymousClass1(Transition enterTransition2) {
-                enterTransition = enterTransition2;
-            }
-
-            @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
-            public void onGlobalLayout() {
-                ViewTreeObserver observer2 = PopupDecorView.this.getViewTreeObserver();
-                if (observer2 != null) {
-                    observer2.removeOnGlobalLayoutListener(this);
-                }
-                Rect epicenter2 = PopupWindow.this.getTransitionEpicenter();
-                enterTransition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.widget.PopupWindow.PopupDecorView.1.1
-                    final /* synthetic */ Rect val$epicenter;
-
-                    C00131(Rect epicenter22) {
-                        epicenter = epicenter22;
-                    }
-
-                    @Override // android.transition.Transition.EpicenterCallback
-                    public Rect onGetEpicenter(Transition transition2) {
-                        return epicenter;
-                    }
-                });
-                PopupDecorView.this.startEnterTransition(enterTransition);
-            }
-
-            /* renamed from: android.widget.PopupWindow$PopupDecorView$1$1 */
-            /* loaded from: classes4.dex */
-            class C00131 extends Transition.EpicenterCallback {
-                final /* synthetic */ Rect val$epicenter;
-
-                C00131(Rect epicenter22) {
-                    epicenter = epicenter22;
-                }
-
-                @Override // android.transition.Transition.EpicenterCallback
-                public Rect onGetEpicenter(Transition transition2) {
-                    return epicenter;
-                }
-            }
-        }
-
+        /* JADX INFO: Access modifiers changed from: private */
         public void startEnterTransition(Transition enterTransition) {
             int count = getChildCount();
             for (int i = 0; i < count; i++) {
@@ -1863,24 +1682,21 @@ public class PopupWindow {
             }
         }
 
-        public void startExitTransition(final Transition transition, final View anchorRoot, Rect epicenter, final Transition.TransitionListener listener) {
+        public void startExitTransition(final Transition transition, final View anchorRoot, final Rect epicenter, final Transition.TransitionListener listener) {
             if (transition == null) {
                 return;
             }
             if (anchorRoot != null) {
                 anchorRoot.addOnAttachStateChangeListener(this.mOnAnchorRootDetachedListener);
             }
-            this.mCleanupAfterExit = new Runnable() { // from class: android.widget.PopupWindow$PopupDecorView$$ExternalSyntheticLambda1
+            this.mCleanupAfterExit = new Runnable() { // from class: android.widget.PopupWindow$PopupDecorView$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     PopupWindow.PopupDecorView.this.lambda$startExitTransition$0(listener, transition, anchorRoot);
                 }
             };
-            Transition exitTransition = transition.mo4916clone();
+            Transition exitTransition = transition.mo5201clone();
             exitTransition.addListener(new TransitionListenerAdapter() { // from class: android.widget.PopupWindow.PopupDecorView.2
-                AnonymousClass2() {
-                }
-
                 @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                 public void onTransitionEnd(Transition t) {
                     t.removeListener(this);
@@ -1890,12 +1706,6 @@ public class PopupWindow {
                 }
             });
             exitTransition.setEpicenterCallback(new Transition.EpicenterCallback() { // from class: android.widget.PopupWindow.PopupDecorView.3
-                final /* synthetic */ Rect val$epicenter;
-
-                AnonymousClass3(Rect epicenter2) {
-                    epicenter = epicenter2;
-                }
-
                 @Override // android.transition.Transition.EpicenterCallback
                 public Rect onGetEpicenter(Transition transition2) {
                     return epicenter;
@@ -1913,6 +1723,7 @@ public class PopupWindow {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$startExitTransition$0(Transition.TransitionListener listener, Transition transition, View anchorRoot) {
             listener.onTransitionEnd(transition);
             if (anchorRoot != null) {
@@ -1921,61 +1732,10 @@ public class PopupWindow {
             this.mCleanupAfterExit = null;
         }
 
-        /* renamed from: android.widget.PopupWindow$PopupDecorView$2 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass2 extends TransitionListenerAdapter {
-            AnonymousClass2() {
-            }
-
-            @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-            public void onTransitionEnd(Transition t) {
-                t.removeListener(this);
-                if (PopupDecorView.this.mCleanupAfterExit != null) {
-                    PopupDecorView.this.mCleanupAfterExit.run();
-                }
-            }
-        }
-
-        /* renamed from: android.widget.PopupWindow$PopupDecorView$3 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass3 extends Transition.EpicenterCallback {
-            final /* synthetic */ Rect val$epicenter;
-
-            AnonymousClass3(Rect epicenter2) {
-                epicenter = epicenter2;
-            }
-
-            @Override // android.transition.Transition.EpicenterCallback
-            public Rect onGetEpicenter(Transition transition2) {
-                return epicenter;
-            }
-        }
-
         public void cancelTransitions() {
             TransitionManager.endTransitions(this);
-            Runnable runnable = this.mCleanupAfterExit;
-            if (runnable != null) {
-                runnable.run();
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.widget.PopupWindow$PopupDecorView$4 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass4 implements View.OnAttachStateChangeListener {
-            AnonymousClass4() {
-            }
-
-            @Override // android.view.View.OnAttachStateChangeListener
-            public void onViewAttachedToWindow(View v) {
-            }
-
-            @Override // android.view.View.OnAttachStateChangeListener
-            public void onViewDetachedFromWindow(View v) {
-                v.removeOnAttachStateChangeListener(this);
-                if (PopupDecorView.this.isAttachedToWindow()) {
-                    TransitionManager.endTransitions(PopupDecorView.this);
-                }
+            if (this.mCleanupAfterExit != null) {
+                this.mCleanupAfterExit.run();
             }
         }
 
@@ -1988,14 +1748,15 @@ public class PopupWindow {
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onAttachedToWindow() {
+        protected void onAttachedToWindow() {
             OnBackInvokedDispatcher dispatcher;
             super.onAttachedToWindow();
             if (!WindowOnBackInvokedDispatcher.isOnBackInvokedCallbackEnabled(this.mContext) || (dispatcher = findOnBackInvokedDispatcher()) == null) {
                 return;
             }
-            final PopupWindow popupWindow = PopupWindow.this;
-            popupWindow.mBackCallback = new OnBackInvokedCallback() { // from class: android.widget.PopupWindow$PopupDecorView$$ExternalSyntheticLambda0
+            PopupWindow popupWindow = PopupWindow.this;
+            final PopupWindow popupWindow2 = PopupWindow.this;
+            popupWindow.mBackCallback = new OnBackInvokedCallback() { // from class: android.widget.PopupWindow$PopupDecorView$$ExternalSyntheticLambda1
                 @Override // android.window.OnBackInvokedCallback
                 public final void onBackInvoked() {
                     PopupWindow.this.dismiss();
@@ -2005,20 +1766,19 @@ public class PopupWindow {
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public void onDetachedFromWindow() {
+        protected void onDetachedFromWindow() {
             super.onDetachedFromWindow();
             PopupWindow.this.unregisterBackCallback(findOnBackInvokedDispatcher());
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class PopupBackgroundView extends FrameLayout {
+    private class PopupBackgroundView extends FrameLayout {
         public PopupBackgroundView(Context context) {
             super(context);
         }
 
         @Override // android.view.ViewGroup, android.view.View
-        public int[] onCreateDrawableState(int extraSpace) {
+        protected int[] onCreateDrawableState(int extraSpace) {
             if (PopupWindow.this.mAboveAnchor) {
                 int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
                 View.mergeDrawableStates(drawableState, PopupWindow.ABOVE_ANCHOR_STATE_SET);
@@ -2028,15 +1788,14 @@ public class PopupWindow {
         }
     }
 
-    public boolean semIsAvailableBlurBackground() {
+    boolean semIsAvailableBlurBackground() {
         return !this.mIsReplacedPoupBackground;
     }
 
     int semGetCenterPointForFoldable() {
         DisplayManager displayManager;
         Display display;
-        Context context = this.mContext;
-        if (context == null || (displayManager = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE)) == null || (display = displayManager.getDisplay(0)) == null || !SemWindowManager.getInstance().isTableMode() || !this.mIsDeviceDefault) {
+        if (this.mContext == null || (displayManager = (DisplayManager) this.mContext.getSystemService(Context.DISPLAY_SERVICE)) == null || (display = displayManager.getDisplay(0)) == null || !SemWindowManager.getInstance().isTableMode() || !this.mIsDeviceDefault) {
             return 0;
         }
         try {
@@ -2063,7 +1822,7 @@ public class PopupWindow {
         }
     }
 
-    public void setDecorViewBGNull(boolean isNull) {
-        this.mIsDecorViewBGNull = isNull;
+    private View hidden_semGetBackgroundView() {
+        return this.mBackgroundView;
     }
 }

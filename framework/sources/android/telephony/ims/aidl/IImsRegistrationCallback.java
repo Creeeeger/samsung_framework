@@ -10,7 +10,7 @@ import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.ImsRegistrationAttributes;
 import android.telephony.ims.SipDetails;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsRegistrationCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsRegistrationCallback";
 
@@ -26,7 +26,6 @@ public interface IImsRegistrationCallback extends IInterface {
 
     void onTechnologyChangeFailed(int i, ImsReasonInfo imsReasonInfo) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsRegistrationCallback {
         @Override // android.telephony.ims.aidl.IImsRegistrationCallback
         public void onRegistered(ImsRegistrationAttributes attr) throws RemoteException {
@@ -58,7 +57,6 @@ public interface IImsRegistrationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsRegistrationCallback {
         static final int TRANSACTION_onDeregistered = 3;
         static final int TRANSACTION_onDeregisteredWithDetails = 4;
@@ -116,56 +114,53 @@ public interface IImsRegistrationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsRegistrationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsRegistrationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsRegistrationCallback.DESCRIPTOR);
+                case 1:
+                    ImsRegistrationAttributes _arg0 = (ImsRegistrationAttributes) data.readTypedObject(ImsRegistrationAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRegistered(_arg0);
+                    return true;
+                case 2:
+                    ImsRegistrationAttributes _arg02 = (ImsRegistrationAttributes) data.readTypedObject(ImsRegistrationAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRegistering(_arg02);
+                    return true;
+                case 3:
+                    ImsReasonInfo _arg03 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDeregistered(_arg03, _arg1, _arg2);
+                    return true;
+                case 4:
+                    ImsReasonInfo _arg04 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    SipDetails _arg3 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeregisteredWithDetails(_arg04, _arg12, _arg22, _arg3);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    ImsReasonInfo _arg13 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTechnologyChangeFailed(_arg05, _arg13);
+                    return true;
+                case 6:
+                    Uri[] _arg06 = (Uri[]) data.createTypedArray(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSubscriberAssociatedUriChanged(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ImsRegistrationAttributes _arg0 = (ImsRegistrationAttributes) data.readTypedObject(ImsRegistrationAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRegistered(_arg0);
-                            return true;
-                        case 2:
-                            ImsRegistrationAttributes _arg02 = (ImsRegistrationAttributes) data.readTypedObject(ImsRegistrationAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRegistering(_arg02);
-                            return true;
-                        case 3:
-                            ImsReasonInfo _arg03 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDeregistered(_arg03, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            ImsReasonInfo _arg04 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            SipDetails _arg3 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeregisteredWithDetails(_arg04, _arg12, _arg22, _arg3);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            ImsReasonInfo _arg13 = (ImsReasonInfo) data.readTypedObject(ImsReasonInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTechnologyChangeFailed(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            Uri[] _arg06 = (Uri[]) data.createTypedArray(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSubscriberAssociatedUriChanged(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsRegistrationCallback {
+        private static class Proxy implements IImsRegistrationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

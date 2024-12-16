@@ -1,7 +1,7 @@
 package com.android.internal.power;
 
-import android.content.res.XmlResourceParser;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseDoubleArray;
@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes5.dex */
@@ -19,9 +20,10 @@ public class ModemPowerProfile {
     private static final String ATTR_LEVEL = "level";
     private static final String ATTR_NR_FREQUENCY = "nrFrequency";
     private static final String ATTR_RAT = "rat";
+    private static final int IGNORE = -1;
     public static final int MODEM_DRAIN_TYPE_IDLE = 268435456;
     private static final int MODEM_DRAIN_TYPE_MASK = -268435456;
-    private static final SparseArray<String> MODEM_DRAIN_TYPE_NAMES;
+    private static final SparseArray<String> MODEM_DRAIN_TYPE_NAMES = new SparseArray<>(4);
     public static final int MODEM_DRAIN_TYPE_RX = 536870912;
     public static final int MODEM_DRAIN_TYPE_SLEEP = 0;
     public static final int MODEM_DRAIN_TYPE_TX = 805306368;
@@ -55,55 +57,47 @@ public class ModemPowerProfile {
     private final SparseDoubleArray mPowerConstants = new SparseDoubleArray();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ModemDrainType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ModemNrFrequencyRange {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ModemRatType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface ModemTxLevel {
     }
 
     static {
-        SparseArray<String> sparseArray = new SparseArray<>(4);
-        MODEM_DRAIN_TYPE_NAMES = sparseArray;
-        sparseArray.put(0, "SLEEP");
-        sparseArray.put(268435456, "IDLE");
-        sparseArray.put(536870912, "RX");
-        sparseArray.put(805306368, "TX");
-        SparseArray<String> sparseArray2 = new SparseArray<>(5);
-        MODEM_TX_LEVEL_NAMES = sparseArray2;
-        sparseArray2.put(0, "0");
-        sparseArray2.put(16777216, "1");
-        sparseArray2.put(33554432, "2");
-        sparseArray2.put(50331648, "3");
-        sparseArray2.put(67108864, "4");
+        MODEM_DRAIN_TYPE_NAMES.put(0, "SLEEP");
+        MODEM_DRAIN_TYPE_NAMES.put(268435456, "IDLE");
+        MODEM_DRAIN_TYPE_NAMES.put(536870912, "RX");
+        MODEM_DRAIN_TYPE_NAMES.put(805306368, "TX");
+        MODEM_TX_LEVEL_NAMES = new SparseArray<>(5);
+        MODEM_TX_LEVEL_NAMES.put(0, "0");
+        MODEM_TX_LEVEL_NAMES.put(16777216, "1");
+        MODEM_TX_LEVEL_NAMES.put(33554432, "2");
+        MODEM_TX_LEVEL_NAMES.put(50331648, "3");
+        MODEM_TX_LEVEL_NAMES.put(67108864, "4");
         MODEM_TX_LEVEL_MAP = new int[]{0, 16777216, 33554432, 50331648, 67108864};
-        SparseArray<String> sparseArray3 = new SparseArray<>(3);
-        MODEM_RAT_TYPE_NAMES = sparseArray3;
-        sparseArray3.put(0, "DEFAULT");
-        sparseArray3.put(1048576, DctConstants.RAT_NAME_LTE);
-        sparseArray3.put(2097152, "NR");
-        SparseArray<String> sparseArray4 = new SparseArray<>(5);
-        MODEM_NR_FREQUENCY_RANGE_NAMES = sparseArray4;
-        sparseArray4.put(0, "DEFAULT");
-        sparseArray4.put(65536, "LOW");
-        sparseArray4.put(131072, "MID");
-        sparseArray4.put(196608, "HIGH");
-        sparseArray4.put(262144, "MMWAVE");
+        MODEM_RAT_TYPE_NAMES = new SparseArray<>(3);
+        MODEM_RAT_TYPE_NAMES.put(0, "DEFAULT");
+        MODEM_RAT_TYPE_NAMES.put(1048576, DctConstants.RAT_NAME_LTE);
+        MODEM_RAT_TYPE_NAMES.put(2097152, "NR");
+        MODEM_NR_FREQUENCY_RANGE_NAMES = new SparseArray<>(5);
+        MODEM_NR_FREQUENCY_RANGE_NAMES.put(0, "DEFAULT");
+        MODEM_NR_FREQUENCY_RANGE_NAMES.put(65536, "LOW");
+        MODEM_NR_FREQUENCY_RANGE_NAMES.put(131072, "MID");
+        MODEM_NR_FREQUENCY_RANGE_NAMES.put(196608, "HIGH");
+        MODEM_NR_FREQUENCY_RANGE_NAMES.put(262144, "MMWAVE");
     }
 
-    public void parseFromXml(XmlResourceParser parser) throws IOException, XmlPullParserException {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    public void parseFromXml(XmlPullParser parser) throws IOException, XmlPullParserException {
         char c;
         int depth = parser.getDepth();
         while (XmlUtils.nextElementWithin(parser, depth)) {
@@ -114,21 +108,26 @@ public class ModemPowerProfile {
                         c = 2;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 3227604:
                     if (name.equals(TAG_IDLE)) {
                         c = 1;
                         break;
                     }
+                    c = 65535;
                     break;
                 case 109522647:
                     if (name.equals(TAG_SLEEP)) {
                         c = 0;
                         break;
                     }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
                     break;
             }
-            c = 65535;
             switch (c) {
                 case 0:
                     if (parser.next() == 4) {
@@ -156,7 +155,8 @@ public class ModemPowerProfile {
         }
     }
 
-    private void parseActivePowerConstantsFromXml(XmlResourceParser parser) throws IOException, XmlPullParserException {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    private void parseActivePowerConstantsFromXml(XmlPullParser parser) throws IOException, XmlPullParserException {
         int nrfType;
         boolean z;
         try {
@@ -175,15 +175,19 @@ public class ModemPowerProfile {
                             z = false;
                             break;
                         }
+                        z = -1;
                         break;
                     case 1280889520:
                         if (name.equals(TAG_TRANSMIT)) {
                             z = true;
                             break;
                         }
+                        z = -1;
+                        break;
+                    default:
+                        z = -1;
                         break;
                 }
-                z = -1;
                 switch (z) {
                     case false:
                         if (parser.next() == 4) {
@@ -221,7 +225,7 @@ public class ModemPowerProfile {
         }
     }
 
-    private static int getTypeFromAttribute(XmlResourceParser parser, String attr, SparseArray<String> names) {
+    private static int getTypeFromAttribute(XmlPullParser parser, String attr, SparseArray<String> names) {
         String value = XmlUtils.readStringAttribute(parser, attr);
         if (value == null) {
             return 0;
@@ -248,6 +252,65 @@ public class ModemPowerProfile {
             this.mPowerConstants.put(key, Double.valueOf(value).doubleValue());
         } catch (Exception e) {
             Slog.e(TAG, "Failed to set power constant 0x" + Integer.toHexString(key) + NavigationBarInflaterView.KEY_CODE_START + keyToString(key) + ") to " + value, e);
+        }
+    }
+
+    public static long getAverageBatteryDrainKey(int drainType, int rat, int freqRange, int txLevel) {
+        long key = drainType != -1 ? 4294967296L | drainType : 4294967296L;
+        switch (rat) {
+            case -1:
+                break;
+            case 0:
+                key |= 0;
+                break;
+            case 1:
+                key |= 1048576;
+                break;
+            case 2:
+                key |= 2097152;
+                break;
+            default:
+                Log.w(TAG, "Unexpected RadioAccessTechnology : " + rat);
+                break;
+        }
+        switch (freqRange) {
+            case -1:
+                break;
+            case 0:
+                key |= 0;
+                break;
+            case 1:
+                key |= 65536;
+                break;
+            case 2:
+                key |= 131072;
+                break;
+            case 3:
+                key |= 196608;
+                break;
+            case 4:
+                key |= 262144;
+                break;
+            default:
+                Log.w(TAG, "Unexpected NR frequency range : " + freqRange);
+                break;
+        }
+        switch (txLevel) {
+            case -1:
+                return key;
+            case 0:
+                return key | 0;
+            case 1:
+                return key | 16777216;
+            case 2:
+                return key | 33554432;
+            case 3:
+                return key | 50331648;
+            case 4:
+                return key | 67108864;
+            default:
+                Log.w(TAG, "Unexpected transmission level : " + txLevel);
+                return key;
         }
     }
 

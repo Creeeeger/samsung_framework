@@ -14,17 +14,15 @@ import com.samsung.android.core.pm.PmUtils;
 import com.samsung.android.wallpaperbackup.BnRConstants;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MultiUserSupportsHelper {
     public static final boolean DEFAULT_ENABLE_STATUS;
     public static final int DEFAULT_MAX_USERS;
-    public static final boolean IS_TABLET;
+    public static final boolean IS_TABLET = SystemProperties.get("ro.build.characteristics", "").contains(BnRConstants.DEVICETYPE_TABLET);
 
     static {
-        boolean contains = SystemProperties.get("ro.build.characteristics", "").contains(BnRConstants.DEVICETYPE_TABLET);
-        IS_TABLET = contains;
-        DEFAULT_MAX_USERS = contains ? 8 : 1;
-        DEFAULT_ENABLE_STATUS = contains;
+        DEFAULT_MAX_USERS = IS_TABLET ? 8 : 1;
+        DEFAULT_ENABLE_STATUS = IS_TABLET;
     }
 
     public static boolean supportsMultipleUsers() {

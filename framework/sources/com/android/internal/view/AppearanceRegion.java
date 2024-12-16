@@ -11,14 +11,13 @@ import com.android.internal.util.AnnotationValidations;
 /* loaded from: classes5.dex */
 public class AppearanceRegion implements Parcelable {
     public static final Parcelable.Creator<AppearanceRegion> CREATOR = new Parcelable.Creator<AppearanceRegion>() { // from class: com.android.internal.view.AppearanceRegion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppearanceRegion[] newArray(int size) {
             return new AppearanceRegion[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppearanceRegion createFromParcel(Parcel in) {
             return new AppearanceRegion(in);
@@ -49,7 +48,7 @@ public class AppearanceRegion implements Parcelable {
     public AppearanceRegion(int appearance, Rect bounds) {
         this.mAppearance = appearance;
         this.mBounds = bounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) bounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBounds);
     }
 
     public int getAppearance() {
@@ -76,24 +75,7 @@ public class AppearanceRegion implements Parcelable {
         Rect bounds = (Rect) in.readTypedObject(Rect.CREATOR);
         this.mAppearance = appearance;
         this.mBounds = bounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) bounds);
-    }
-
-    /* renamed from: com.android.internal.view.AppearanceRegion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppearanceRegion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppearanceRegion[] newArray(int size) {
-            return new AppearanceRegion[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppearanceRegion createFromParcel(Parcel in) {
-            return new AppearanceRegion(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBounds);
     }
 
     @Deprecated

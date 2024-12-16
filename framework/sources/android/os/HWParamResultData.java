@@ -9,7 +9,7 @@ public class HWParamResultData extends HWParamData {
     private int server = -1;
     private int interfaceType = -1;
 
-    public void readFromParcelLocked(Parcel in) {
+    void readFromParcelLocked(Parcel in) {
         this.time = in.readLong();
         this.interfaceType = in.readInt();
         this.server = in.readInt();
@@ -25,7 +25,7 @@ public class HWParamResultData extends HWParamData {
         this.envlogMaps = in.readString();
     }
 
-    public void writeToParcelLocked(Parcel out) {
+    void writeToParcelLocked(Parcel out) {
         out.writeLong(this.time);
         out.writeInt(this.interfaceType);
         out.writeInt(this.server);
@@ -88,22 +88,20 @@ public class HWParamResultData extends HWParamData {
     public String getInfo() {
         StringBuilder sb = new StringBuilder();
         sb.setLength(0);
-        int i = this.server;
-        if (i == -1) {
+        if (this.server == -1) {
             sb.append("N ");
-        } else if (i == 0) {
+        } else if (this.server == 0) {
             sb.append("D ");
-        } else if (i == 1) {
+        } else if (this.server == 1) {
             sb.append("C ");
         }
-        int i2 = this.interfaceType;
-        if (i2 == -1) {
+        if (this.interfaceType == -1) {
             sb.append("? ");
-        } else if (i2 == 0) {
+        } else if (this.interfaceType == 0) {
             sb.append("K ");
-        } else if (i2 == 1) {
+        } else if (this.interfaceType == 1) {
             sb.append("A ");
-        } else if (i2 == 2) {
+        } else if (this.interfaceType == 2) {
             sb.append("I ");
         }
         if (this.compID != null) {
@@ -139,22 +137,20 @@ public class HWParamResultData extends HWParamData {
             sb.append("?????");
         }
         sb.append("\n");
-        int i = this.server;
-        if (i == -1) {
+        if (this.server == -1) {
             sb.append("N ");
-        } else if (i == 0) {
+        } else if (this.server == 0) {
             sb.append("D ");
-        } else if (i == 1) {
+        } else if (this.server == 1) {
             sb.append("C ");
         }
-        int i2 = this.interfaceType;
-        if (i2 == -1) {
+        if (this.interfaceType == -1) {
             sb.append("? ");
-        } else if (i2 == 0) {
+        } else if (this.interfaceType == 0) {
             sb.append("K ");
-        } else if (i2 == 1) {
+        } else if (this.interfaceType == 1) {
             sb.append("A ");
-        } else if (i2 == 2) {
+        } else if (this.interfaceType == 2) {
             sb.append("I ");
         }
         if (this.compID != null) {

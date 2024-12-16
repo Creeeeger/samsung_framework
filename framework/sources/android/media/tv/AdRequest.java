@@ -8,17 +8,16 @@ import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class AdRequest implements Parcelable {
     public static final Parcelable.Creator<AdRequest> CREATOR = new Parcelable.Creator<AdRequest>() { // from class: android.media.tv.AdRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdRequest createFromParcel(Parcel source) {
             return new AdRequest(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AdRequest[] newArray(int size) {
             return new AdRequest[size];
@@ -39,29 +38,7 @@ public final class AdRequest implements Parcelable {
     private final Uri mUri;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RequestType {
-    }
-
-    /* synthetic */ AdRequest(Parcel parcel, AdRequestIA adRequestIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.media.tv.AdRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AdRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AdRequest createFromParcel(Parcel source) {
-            return new AdRequest(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AdRequest[] newArray(int size) {
-            return new AdRequest[size];
-        }
     }
 
     public AdRequest(int id, int requestType, ParcelFileDescriptor fileDescriptor, long startTime, long stopTime, long echoInterval, String mediaFileType, Bundle metadata) {

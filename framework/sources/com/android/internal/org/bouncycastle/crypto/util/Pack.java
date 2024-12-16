@@ -1,11 +1,9 @@
 package com.android.internal.org.bouncycastle.crypto.util;
 
-import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
-
 /* loaded from: classes5.dex */
 public abstract class Pack {
     public static int bigEndianToInt(byte[] bs, int off) {
-        int n = bs[off] << SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT;
+        int n = bs[off] << 24;
         int off2 = off + 1;
         int n2 = n | ((bs[off2] & 255) << 16);
         int off3 = off2 + 1;
@@ -89,7 +87,7 @@ public abstract class Pack {
         int off2 = off + 1;
         int n2 = n | ((bs[off2] & 255) << 8);
         int off3 = off2 + 1;
-        return n2 | ((bs[off3] & 255) << 16) | (bs[off3 + 1] << SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT);
+        return n2 | ((bs[off3] & 255) << 16) | (bs[off3 + 1] << 24);
     }
 
     public static void littleEndianToInt(byte[] bs, int off, int[] ns) {

@@ -10,14 +10,13 @@ import com.android.internal.view.IDragAndDropPermissions;
 /* loaded from: classes4.dex */
 public final class DragAndDropPermissions implements Parcelable {
     public static final Parcelable.Creator<DragAndDropPermissions> CREATOR = new Parcelable.Creator<DragAndDropPermissions>() { // from class: android.view.DragAndDropPermissions.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DragAndDropPermissions createFromParcel(Parcel source) {
             return new DragAndDropPermissions(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DragAndDropPermissions[] newArray(int size) {
             return new DragAndDropPermissions[size];
@@ -26,10 +25,6 @@ public final class DragAndDropPermissions implements Parcelable {
     private static final boolean DEBUG = false;
     private static final String TAG = "DragAndDrop";
     private final IDragAndDropPermissions mDragAndDropPermissions;
-
-    /* synthetic */ DragAndDropPermissions(Parcel parcel, DragAndDropPermissionsIA dragAndDropPermissionsIA) {
-        this(parcel);
-    }
 
     public static DragAndDropPermissions obtain(DragEvent dragEvent) {
         if (dragEvent.getDragAndDropPermissions() == null) {
@@ -75,23 +70,6 @@ public final class DragAndDropPermissions implements Parcelable {
             return this.mDragAndDropPermissions.getFlags();
         } catch (RemoteException e) {
             return 0;
-        }
-    }
-
-    /* renamed from: android.view.DragAndDropPermissions$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DragAndDropPermissions> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DragAndDropPermissions createFromParcel(Parcel source) {
-            return new DragAndDropPermissions(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DragAndDropPermissions[] newArray(int size) {
-            return new DragAndDropPermissions[size];
         }
     }
 

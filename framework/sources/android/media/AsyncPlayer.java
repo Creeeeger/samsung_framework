@@ -20,18 +20,13 @@ public class AsyncPlayer {
     private final LinkedList<Command> mCmdQueue = new LinkedList<>();
     private int mState = 2;
 
-    /* loaded from: classes2.dex */
-    public static final class Command {
+    private static final class Command {
         AudioAttributes attributes;
         int code;
         Context context;
         boolean looping;
         long requestTime;
         Uri uri;
-
-        /* synthetic */ Command(CommandIA commandIA) {
-            this();
-        }
 
         private Command() {
         }
@@ -41,6 +36,7 @@ public class AsyncPlayer {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void startSound(Command cmd) {
         try {
             MediaPlayer player = new MediaPlayer();
@@ -49,9 +45,8 @@ public class AsyncPlayer {
             player.setLooping(cmd.looping);
             player.prepare();
             player.start();
-            MediaPlayer mediaPlayer = this.mPlayer;
-            if (mediaPlayer != null) {
-                mediaPlayer.release();
+            if (this.mPlayer != null) {
+                this.mPlayer.release();
             }
             this.mPlayer = player;
             long delay = SystemClock.uptimeMillis() - cmd.requestTime;
@@ -63,108 +58,45 @@ public class AsyncPlayer {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class Thread extends java.lang.Thread {
+    private final class Thread extends java.lang.Thread {
         Thread() {
             super("AsyncPlayer-" + AsyncPlayer.this.mTag);
         }
 
-        /* JADX WARN: Removed duplicated region for block: B:18:0x0086 A[EXC_TOP_SPLITTER, SYNTHETIC] */
         @Override // java.lang.Thread, java.lang.Runnable
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
         public void run() {
-            /*
-                r7 = this;
-            L1:
-                r0 = 0
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                java.util.LinkedList r1 = android.media.AsyncPlayer.m2139$$Nest$fgetmCmdQueue(r1)
-                monitor-enter(r1)
-                android.media.AsyncPlayer r2 = android.media.AsyncPlayer.this     // Catch: java.lang.Throwable -> La4
-                java.util.LinkedList r2 = android.media.AsyncPlayer.m2139$$Nest$fgetmCmdQueue(r2)     // Catch: java.lang.Throwable -> La4
-                java.lang.Object r2 = r2.removeFirst()     // Catch: java.lang.Throwable -> La4
-                android.media.AsyncPlayer$Command r2 = (android.media.AsyncPlayer.Command) r2     // Catch: java.lang.Throwable -> La4
-                r0 = r2
-                monitor-exit(r1)     // Catch: java.lang.Throwable -> La4
-                int r1 = r0.code
-                r2 = 0
-                switch(r1) {
-                    case 1: goto L79;
-                    case 2: goto L1e;
-                    default: goto L1d;
+            Command cmd;
+            while (true) {
+                synchronized (AsyncPlayer.this.mCmdQueue) {
+                    cmd = (Command) AsyncPlayer.this.mCmdQueue.removeFirst();
                 }
-            L1d:
-                goto L7f
-            L1e:
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                android.media.MediaPlayer r1 = android.media.AsyncPlayer.m2140$$Nest$fgetmPlayer(r1)
-                if (r1 == 0) goto L6d
-                long r3 = android.os.SystemClock.uptimeMillis()
-                long r5 = r0.requestTime
-                long r3 = r3 - r5
-                r5 = 1000(0x3e8, double:4.94E-321)
-                int r1 = (r3 > r5 ? 1 : (r3 == r5 ? 0 : -1))
-                if (r1 <= 0) goto L55
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                java.lang.String r1 = android.media.AsyncPlayer.m2141$$Nest$fgetmTag(r1)
-                java.lang.StringBuilder r5 = new java.lang.StringBuilder
-                r5.<init>()
-                java.lang.String r6 = "Notification stop delayed by "
-                java.lang.StringBuilder r5 = r5.append(r6)
-                java.lang.StringBuilder r5 = r5.append(r3)
-                java.lang.String r6 = "msecs"
-                java.lang.StringBuilder r5 = r5.append(r6)
-                java.lang.String r5 = r5.toString()
-                android.util.Log.w(r1, r5)
-            L55:
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                android.media.MediaPlayer r1 = android.media.AsyncPlayer.m2140$$Nest$fgetmPlayer(r1)
-                r1.stop()
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                android.media.MediaPlayer r1 = android.media.AsyncPlayer.m2140$$Nest$fgetmPlayer(r1)
-                r1.release()
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                android.media.AsyncPlayer.m2142$$Nest$fputmPlayer(r1, r2)
-                goto L7f
-            L6d:
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                java.lang.String r1 = android.media.AsyncPlayer.m2141$$Nest$fgetmTag(r1)
-                java.lang.String r3 = "STOP command without a player"
-                android.util.Log.w(r1, r3)
-                goto L7f
-            L79:
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                android.media.AsyncPlayer.m2145$$Nest$mstartSound(r1, r0)
-            L7f:
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this
-                java.util.LinkedList r3 = android.media.AsyncPlayer.m2139$$Nest$fgetmCmdQueue(r1)
-                monitor-enter(r3)
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this     // Catch: java.lang.Throwable -> La1
-                java.util.LinkedList r1 = android.media.AsyncPlayer.m2139$$Nest$fgetmCmdQueue(r1)     // Catch: java.lang.Throwable -> La1
-                int r1 = r1.size()     // Catch: java.lang.Throwable -> La1
-                if (r1 != 0) goto L9e
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this     // Catch: java.lang.Throwable -> La1
-                android.media.AsyncPlayer.m2143$$Nest$fputmThread(r1, r2)     // Catch: java.lang.Throwable -> La1
-                android.media.AsyncPlayer r1 = android.media.AsyncPlayer.this     // Catch: java.lang.Throwable -> La1
-                android.media.AsyncPlayer.m2144$$Nest$mreleaseWakeLock(r1)     // Catch: java.lang.Throwable -> La1
-                monitor-exit(r3)     // Catch: java.lang.Throwable -> La1
-                return
-            L9e:
-                monitor-exit(r3)     // Catch: java.lang.Throwable -> La1
-                goto L1
-            La1:
-                r1 = move-exception
-                monitor-exit(r3)     // Catch: java.lang.Throwable -> La1
-                throw r1
-            La4:
-                r2 = move-exception
-                monitor-exit(r1)     // Catch: java.lang.Throwable -> La4
-                throw r2
-            */
-            throw new UnsupportedOperationException("Method not decompiled: android.media.AsyncPlayer.Thread.run():void");
+                switch (cmd.code) {
+                    case 1:
+                        AsyncPlayer.this.startSound(cmd);
+                        break;
+                    case 2:
+                        if (AsyncPlayer.this.mPlayer != null) {
+                            long delay = SystemClock.uptimeMillis() - cmd.requestTime;
+                            if (delay > 1000) {
+                                Log.w(AsyncPlayer.this.mTag, "Notification stop delayed by " + delay + "msecs");
+                            }
+                            AsyncPlayer.this.mPlayer.stop();
+                            AsyncPlayer.this.mPlayer.release();
+                            AsyncPlayer.this.mPlayer = null;
+                            break;
+                        } else {
+                            Log.w(AsyncPlayer.this.mTag, "STOP command without a player");
+                            break;
+                        }
+                }
+                synchronized (AsyncPlayer.this.mCmdQueue) {
+                    if (AsyncPlayer.this.mCmdQueue.size() == 0) {
+                        AsyncPlayer.this.mThread = null;
+                        AsyncPlayer.this.releaseWakeLock();
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -221,9 +153,8 @@ public class AsyncPlayer {
         this.mCmdQueue.add(cmd);
         if (this.mThread == null) {
             acquireWakeLock();
-            Thread thread = new Thread();
-            this.mThread = thread;
-            thread.start();
+            this.mThread = new Thread();
+            this.mThread.start();
         }
     }
 
@@ -236,16 +167,15 @@ public class AsyncPlayer {
     }
 
     private void acquireWakeLock() {
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            wakeLock.acquire();
+        if (this.mWakeLock != null) {
+            this.mWakeLock.acquire();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void releaseWakeLock() {
-        PowerManager.WakeLock wakeLock = this.mWakeLock;
-        if (wakeLock != null) {
-            wakeLock.release();
+        if (this.mWakeLock != null) {
+            this.mWakeLock.release();
         }
     }
 }

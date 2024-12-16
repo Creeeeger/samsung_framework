@@ -14,7 +14,6 @@ public final class FailureSuggestedAction {
     public static final int UNKNOWN = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface FailureSuggestedActionDef {
     }
 

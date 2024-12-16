@@ -6,17 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class NetworkSlicingConfig implements Parcelable {
     public static final Parcelable.Creator<NetworkSlicingConfig> CREATOR = new Parcelable.Creator<NetworkSlicingConfig>() { // from class: android.telephony.data.NetworkSlicingConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkSlicingConfig createFromParcel(Parcel source) {
             return new NetworkSlicingConfig(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkSlicingConfig[] newArray(int size) {
             return new NetworkSlicingConfig[size];
@@ -53,23 +52,6 @@ public final class NetworkSlicingConfig implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.mUrspRules, flags);
         dest.writeTypedList(this.mSliceInfo, flags);
-    }
-
-    /* renamed from: android.telephony.data.NetworkSlicingConfig$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkSlicingConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkSlicingConfig createFromParcel(Parcel source) {
-            return new NetworkSlicingConfig(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkSlicingConfig[] newArray(int size) {
-            return new NetworkSlicingConfig[size];
-        }
     }
 
     @Override // android.os.Parcelable

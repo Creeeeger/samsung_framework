@@ -11,7 +11,6 @@ import android.printservice.recommendation.IRecommendationServiceCallbacks;
 public interface IRecommendationService extends IInterface {
     void registerCallbacks(IRecommendationServiceCallbacks iRecommendationServiceCallbacks) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecommendationService {
         @Override // android.printservice.recommendation.IRecommendationService
         public void registerCallbacks(IRecommendationServiceCallbacks callbacks) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IRecommendationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecommendationService {
         public static final String DESCRIPTOR = "android.printservice.recommendation.IRecommendationService";
         static final int TRANSACTION_registerCallbacks = 1;
@@ -67,24 +65,21 @@ public interface IRecommendationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IRecommendationServiceCallbacks _arg0 = IRecommendationServiceCallbacks.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallbacks(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRecommendationServiceCallbacks _arg0 = IRecommendationServiceCallbacks.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallbacks(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IRecommendationService {
             private IBinder mRemote;
 

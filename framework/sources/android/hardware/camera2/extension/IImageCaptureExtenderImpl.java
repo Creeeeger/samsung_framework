@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IImageCaptureExtenderImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IImageCaptureExtenderImpl";
 
@@ -51,7 +51,6 @@ public interface IImageCaptureExtenderImpl extends IInterface {
 
     CaptureStageImpl onPresetSession() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IImageCaptureExtenderImpl {
         @Override // android.hardware.camera2.extension.IImageCaptureExtenderImpl
         public void onInit(IBinder token, String cameraId, CameraMetadataNative cameraCharacteristics) throws RemoteException {
@@ -151,7 +150,6 @@ public interface IImageCaptureExtenderImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IImageCaptureExtenderImpl {
         static final int TRANSACTION_getAvailableCaptureRequestKeys = 15;
         static final int TRANSACTION_getAvailableCaptureResultKeys = 16;
@@ -248,129 +246,125 @@ public interface IImageCaptureExtenderImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImageCaptureExtenderImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImageCaptureExtenderImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImageCaptureExtenderImpl.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    String _arg1 = data.readString();
+                    CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    onInit(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onDeInit(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    CaptureStageImpl _result = onPresetSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    CaptureStageImpl _result2 = onEnableSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    CaptureStageImpl _result3 = onDisableSession();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 6:
+                    int _result4 = getSessionType();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 7:
+                    String _arg03 = data.readString();
+                    CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isExtensionAvailable(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    String _arg04 = data.readString();
+                    CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
+                    data.enforceNoDataAvail();
+                    init(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ICaptureProcessorImpl _result6 = getCaptureProcessor();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 10:
+                    List<CaptureStageImpl> _result7 = getCaptureStages();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result7, 1);
+                    return true;
+                case 11:
+                    int _result8 = getMaxCaptureStage();
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 12:
+                    List<SizeList> _result9 = getSupportedResolutions();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 13:
+                    Size _arg05 = (Size) data.readTypedObject(Size.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<SizeList> _result10 = getSupportedPostviewResolutions(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result10, 1);
+                    return true;
+                case 14:
+                    Size _arg06 = (Size) data.readTypedObject(Size.CREATOR);
+                    data.enforceNoDataAvail();
+                    LatencyRange _result11 = getEstimatedCaptureLatencyRange(_arg06);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 15:
+                    CameraMetadataNative _result12 = getAvailableCaptureRequestKeys();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 16:
+                    CameraMetadataNative _result13 = getAvailableCaptureResultKeys();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 17:
+                    boolean _result14 = isCaptureProcessProgressAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 18:
+                    LatencyPair _result15 = getRealtimeCaptureLatency();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 19:
+                    boolean _result16 = isPostviewAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            String _arg1 = data.readString();
-                            CameraMetadataNative _arg2 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            onInit(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onDeInit(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            CaptureStageImpl _result = onPresetSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            CaptureStageImpl _result2 = onEnableSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            CaptureStageImpl _result3 = onDisableSession();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 6:
-                            int _result4 = getSessionType();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 7:
-                            String _arg03 = data.readString();
-                            CameraMetadataNative _arg12 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isExtensionAvailable(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            String _arg04 = data.readString();
-                            CameraMetadataNative _arg13 = (CameraMetadataNative) data.readTypedObject(CameraMetadataNative.CREATOR);
-                            data.enforceNoDataAvail();
-                            init(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ICaptureProcessorImpl _result6 = getCaptureProcessor();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 10:
-                            List<CaptureStageImpl> _result7 = getCaptureStages();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result7, 1);
-                            return true;
-                        case 11:
-                            int _result8 = getMaxCaptureStage();
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 12:
-                            List<SizeList> _result9 = getSupportedResolutions();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 13:
-                            Size _arg05 = (Size) data.readTypedObject(Size.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<SizeList> _result10 = getSupportedPostviewResolutions(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result10, 1);
-                            return true;
-                        case 14:
-                            Size _arg06 = (Size) data.readTypedObject(Size.CREATOR);
-                            data.enforceNoDataAvail();
-                            LatencyRange _result11 = getEstimatedCaptureLatencyRange(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result11, 1);
-                            return true;
-                        case 15:
-                            CameraMetadataNative _result12 = getAvailableCaptureRequestKeys();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 16:
-                            CameraMetadataNative _result13 = getAvailableCaptureResultKeys();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result13, 1);
-                            return true;
-                        case 17:
-                            boolean _result14 = isCaptureProcessProgressAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 18:
-                            LatencyPair _result15 = getRealtimeCaptureLatency();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 19:
-                            boolean _result16 = isPostviewAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IImageCaptureExtenderImpl {
+        private static class Proxy implements IImageCaptureExtenderImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

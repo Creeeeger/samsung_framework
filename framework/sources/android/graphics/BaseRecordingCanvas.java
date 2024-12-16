@@ -325,6 +325,11 @@ public class BaseRecordingCanvas extends Canvas {
         nDrawPath(this.mNativeCanvasWrapper, path.readOnlyNI(), paint.getNativeInstance());
     }
 
+    @Override // android.graphics.Canvas, android.graphics.BaseCanvas
+    public void drawRegion(Region region, Paint paint) {
+        nDrawRegion(this.mNativeCanvasWrapper, region.mNativeRegion, paint.getNativeInstance());
+    }
+
     @Override // android.graphics.Canvas
     public final void drawPicture(Picture picture) {
         picture.endRecording();

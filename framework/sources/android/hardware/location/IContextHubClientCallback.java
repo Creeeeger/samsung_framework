@@ -24,7 +24,6 @@ public interface IContextHubClientCallback extends IInterface {
 
     void onNanoAppUnloaded(long j) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IContextHubClientCallback {
         @Override // android.hardware.location.IContextHubClientCallback
         public void onMessageFromNanoApp(NanoAppMessage message) throws RemoteException {
@@ -64,7 +63,6 @@ public interface IContextHubClientCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IContextHubClientCallback {
         public static final String DESCRIPTOR = "android.hardware.location.IContextHubClientCallback";
         static final int TRANSACTION_onClientAuthorizationChanged = 8;
@@ -129,61 +127,57 @@ public interface IContextHubClientCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    NanoAppMessage _arg0 = (NanoAppMessage) data.readTypedObject(NanoAppMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMessageFromNanoApp(_arg0);
+                    return true;
+                case 2:
+                    onHubReset();
+                    return true;
+                case 3:
+                    long _arg02 = data.readLong();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNanoAppAborted(_arg02, _arg1);
+                    return true;
+                case 4:
+                    long _arg03 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onNanoAppLoaded(_arg03);
+                    return true;
+                case 5:
+                    long _arg04 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onNanoAppUnloaded(_arg04);
+                    return true;
+                case 6:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onNanoAppEnabled(_arg05);
+                    return true;
+                case 7:
+                    long _arg06 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onNanoAppDisabled(_arg06);
+                    return true;
+                case 8:
+                    long _arg07 = data.readLong();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onClientAuthorizationChanged(_arg07, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NanoAppMessage _arg0 = (NanoAppMessage) data.readTypedObject(NanoAppMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMessageFromNanoApp(_arg0);
-                            return true;
-                        case 2:
-                            onHubReset();
-                            return true;
-                        case 3:
-                            long _arg02 = data.readLong();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNanoAppAborted(_arg02, _arg1);
-                            return true;
-                        case 4:
-                            long _arg03 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onNanoAppLoaded(_arg03);
-                            return true;
-                        case 5:
-                            long _arg04 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onNanoAppUnloaded(_arg04);
-                            return true;
-                        case 6:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onNanoAppEnabled(_arg05);
-                            return true;
-                        case 7:
-                            long _arg06 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onNanoAppDisabled(_arg06);
-                            return true;
-                        case 8:
-                            long _arg07 = data.readLong();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onClientAuthorizationChanged(_arg07, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IContextHubClientCallback {
+        private static class Proxy implements IContextHubClientCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

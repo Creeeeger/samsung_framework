@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import com.samsung.android.wallpaper.Rune;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class WhichChecker {
     private static final String TAG = "WhichChecker";
 
@@ -90,5 +90,12 @@ public class WhichChecker {
         if (getMode(which) == 0) {
             Log.e(TAG, "assertModeIsPresent: mode is not present. which = " + which, new Exception());
         }
+    }
+
+    public static int getSourceWhich(int which) {
+        if (isSystemAndLock(which)) {
+            return getMode(which) | 1;
+        }
+        return which;
     }
 }

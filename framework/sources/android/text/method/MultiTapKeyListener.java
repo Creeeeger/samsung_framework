@@ -8,28 +8,28 @@ import android.text.SpanWatcher;
 import android.text.Spannable;
 import android.text.method.TextKeyListener;
 import android.util.SparseArray;
+import android.view.KeyEvent;
+import android.view.View;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MultiTapKeyListener extends BaseKeyListener implements SpanWatcher {
     private static MultiTapKeyListener[] sInstance = new MultiTapKeyListener[TextKeyListener.Capitalize.values().length * 2];
-    private static final SparseArray<String> sRecs;
+    private static final SparseArray<String> sRecs = new SparseArray<>();
     private boolean mAutoText;
     private TextKeyListener.Capitalize mCapitalize;
 
     static {
-        SparseArray<String> sparseArray = new SparseArray<>();
-        sRecs = sparseArray;
-        sparseArray.put(8, ".,1!@#$%^&*:/?'=()");
-        sparseArray.put(9, "abc2ABC");
-        sparseArray.put(10, "def3DEF");
-        sparseArray.put(11, "ghi4GHI");
-        sparseArray.put(12, "jkl5JKL");
-        sparseArray.put(13, "mno6MNO");
-        sparseArray.put(14, "pqrs7PQRS");
-        sparseArray.put(15, "tuv8TUV");
-        sparseArray.put(16, "wxyz9WXYZ");
-        sparseArray.put(7, "0+");
-        sparseArray.put(18, " ");
+        sRecs.put(8, ".,1!@#$%^&*:/?'=()");
+        sRecs.put(9, "abc2ABC");
+        sRecs.put(10, "def3DEF");
+        sRecs.put(11, "ghi4GHI");
+        sRecs.put(12, "jkl5JKL");
+        sRecs.put(13, "mno6MNO");
+        sRecs.put(14, "pqrs7PQRS");
+        sRecs.put(15, "tuv8TUV");
+        sRecs.put(16, "wxyz9WXYZ");
+        sRecs.put(7, "0+");
+        sRecs.put(18, " ");
     }
 
     public MultiTapKeyListener(TextKeyListener.Capitalize cap, boolean autotext) {
@@ -39,9 +39,8 @@ public class MultiTapKeyListener extends BaseKeyListener implements SpanWatcher 
 
     public static MultiTapKeyListener getInstance(boolean z, TextKeyListener.Capitalize capitalize) {
         int ordinal = (capitalize.ordinal() * 2) + (z ? 1 : 0);
-        MultiTapKeyListener[] multiTapKeyListenerArr = sInstance;
-        if (multiTapKeyListenerArr[ordinal] == null) {
-            multiTapKeyListenerArr[ordinal] = new MultiTapKeyListener(capitalize, z);
+        if (sInstance[ordinal] == null) {
+            sInstance[ordinal] = new MultiTapKeyListener(capitalize, z);
         }
         return sInstance[ordinal];
     }
@@ -51,19 +50,102 @@ public class MultiTapKeyListener extends BaseKeyListener implements SpanWatcher 
         return makeTextContentType(this.mCapitalize, this.mAutoText);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:33:0x00e8  */
-    /* JADX WARN: Removed duplicated region for block: B:60:0x0181  */
     @Override // android.text.method.BaseKeyListener, android.text.method.MetaKeyKeyListener, android.text.method.KeyListener
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean onKeyDown(android.view.View r21, android.text.Editable r22, int r23, android.view.KeyEvent r24) {
-        /*
-            Method dump skipped, instructions count: 390
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.text.method.MultiTapKeyListener.onKeyDown(android.view.View, android.text.Editable, int, android.view.KeyEvent):boolean");
+    public boolean onKeyDown(View view, Editable content, int keyCode, KeyEvent event) {
+        int pref;
+        int rec;
+        int selStart;
+        int off;
+        if (view == null) {
+            pref = 0;
+        } else {
+            int pref2 = TextKeyListener.getInstance().getPrefs(view.getContext());
+            pref = pref2;
+        }
+        int a = Selection.getSelectionStart(content);
+        int b = Selection.getSelectionEnd(content);
+        int selStart2 = Math.min(a, b);
+        int selEnd = Math.max(a, b);
+        int activeStart = content.getSpanStart(TextKeyListener.ACTIVE);
+        int activeEnd = content.getSpanEnd(TextKeyListener.ACTIVE);
+        int rec2 = (content.getSpanFlags(TextKeyListener.ACTIVE) & (-16777216)) >>> 24;
+        if (activeStart == selStart2 && activeEnd == selEnd && selEnd - selStart2 == 1 && rec2 >= 0 && rec2 < sRecs.size()) {
+            if (keyCode == 17) {
+                char current = content.charAt(selStart2);
+                if (Character.isLowerCase(current)) {
+                    content.replace(selStart2, selEnd, String.valueOf(current).toUpperCase());
+                    removeTimeouts(content);
+                    new Timeout(content);
+                    return true;
+                }
+                if (Character.isUpperCase(current)) {
+                    content.replace(selStart2, selEnd, String.valueOf(current).toLowerCase());
+                    removeTimeouts(content);
+                    new Timeout(content);
+                    return true;
+                }
+            }
+            if (sRecs.indexOfKey(keyCode) == rec2) {
+                String val = sRecs.valueAt(rec2);
+                char ch = content.charAt(selStart2);
+                int ix = val.indexOf(ch);
+                if (ix >= 0) {
+                    int ix2 = (ix + 1) % val.length();
+                    content.replace(selStart2, selEnd, val, ix2, ix2 + 1);
+                    removeTimeouts(content);
+                    new Timeout(content);
+                    return true;
+                }
+            }
+            int rec3 = sRecs.indexOfKey(keyCode);
+            if (rec3 < 0) {
+                rec = selStart2;
+                selStart = rec3;
+            } else {
+                Selection.setSelection(content, selEnd, selEnd);
+                rec = selEnd;
+                selStart = rec3;
+            }
+        } else {
+            rec = selStart2;
+            selStart = sRecs.indexOfKey(keyCode);
+        }
+        if (selStart >= 0) {
+            String val2 = sRecs.valueAt(selStart);
+            if ((pref & 1) != 0 && TextKeyListener.shouldCap(this.mCapitalize, content, rec)) {
+                for (int i = 0; i < val2.length(); i++) {
+                    if (Character.isUpperCase(val2.charAt(i))) {
+                        int off2 = i;
+                        off = off2;
+                        break;
+                    }
+                }
+            }
+            off = 0;
+            if (rec != selEnd) {
+                Selection.setSelection(content, selEnd);
+            }
+            content.setSpan(OLD_SEL_START, rec, rec, 17);
+            content.replace(rec, selEnd, val2, off, off + 1);
+            int oldStart = content.getSpanStart(OLD_SEL_START);
+            int selEnd2 = Selection.getSelectionEnd(content);
+            if (selEnd2 != oldStart) {
+                Selection.setSelection(content, oldStart, selEnd2);
+                content.setSpan(TextKeyListener.LAST_TYPED, oldStart, selEnd2, 33);
+                content.setSpan(TextKeyListener.ACTIVE, oldStart, selEnd2, 33 | (selStart << 24));
+            }
+            removeTimeouts(content);
+            new Timeout(content);
+            if (content.getSpanStart(this) < 0) {
+                Object[] methods = (KeyListener[]) content.getSpans(0, content.length(), KeyListener.class);
+                for (Object method : methods) {
+                    content.removeSpan(method);
+                }
+                content.setSpan(this, 0, content.length(), 18);
+            }
+            return true;
+        }
+        return super.onKeyDown(view, content, keyCode, event);
     }
 
     @Override // android.text.SpanWatcher
@@ -82,13 +164,12 @@ public class MultiTapKeyListener extends BaseKeyListener implements SpanWatcher 
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Timeout extends Handler implements Runnable {
+    private class Timeout extends Handler implements Runnable {
         private Editable mBuffer;
 
         public Timeout(Editable buffer) {
             this.mBuffer = buffer;
-            buffer.setSpan(this, 0, buffer.length(), 18);
+            this.mBuffer.setSpan(this, 0, this.mBuffer.length(), 18);
             postAtTime(this, SystemClock.uptimeMillis() + 2000);
         }
 

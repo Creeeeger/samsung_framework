@@ -14,7 +14,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
     public static final String HASH = "fc957f1d3d261d065ff5e5415f2d21caa79c310f";
     public static final int VERSION = 2;
 
-    /* loaded from: classes2.dex */
     public @interface NfwProtocolStack {
         public static final int CTRL_PLANE = 0;
         public static final int IMS = 10;
@@ -23,7 +22,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         public static final int SUPL = 1;
     }
 
-    /* loaded from: classes2.dex */
     public @interface NfwRequestor {
         public static final int AUTOMOBILE_CLIENT = 20;
         public static final int CARRIER = 0;
@@ -34,7 +32,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         public static final int OTHER_REQUESTOR = 100;
     }
 
-    /* loaded from: classes2.dex */
     public @interface NfwResponseType {
         public static final int ACCEPTED_LOCATION_PROVIDED = 2;
         public static final int ACCEPTED_NO_LOCATION_PROVIDED = 1;
@@ -49,7 +46,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
 
     void nfwNotifyCb(NfwNotification nfwNotification) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssVisibilityControlCallback {
         @Override // android.hardware.gnss.visibility_control.IGnssVisibilityControlCallback
         public void nfwNotifyCb(NfwNotification notification) throws RemoteException {
@@ -76,7 +72,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssVisibilityControlCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -130,40 +125,38 @@ public interface IGnssVisibilityControlCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    NfwNotification _arg0 = (NfwNotification) data.readTypedObject(NfwNotification.CREATOR);
+                    data.enforceNoDataAvail();
+                    nfwNotifyCb(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    boolean _result = isInEmergencySession();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NfwNotification _arg0 = (NfwNotification) data.readTypedObject(NfwNotification.CREATOR);
-                            data.enforceNoDataAvail();
-                            nfwNotifyCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _result = isInEmergencySession();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssVisibilityControlCallback {
+        private static class Proxy implements IGnssVisibilityControlCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -264,12 +257,9 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class NfwNotification implements Parcelable {
         public static final Parcelable.Creator<NfwNotification> CREATOR = new Parcelable.Creator<NfwNotification>() { // from class: android.hardware.gnss.visibility_control.IGnssVisibilityControlCallback.NfwNotification.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NfwNotification createFromParcel(Parcel _aidl_source) {
                 NfwNotification _aidl_out = new NfwNotification();
@@ -277,6 +267,7 @@ public interface IGnssVisibilityControlCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NfwNotification[] newArray(int _aidl_size) {
                 return new NfwNotification[_aidl_size];
@@ -290,25 +281,6 @@ public interface IGnssVisibilityControlCallback extends IInterface {
         public int requestor;
         public String requestorId;
         public int responseType;
-
-        /* renamed from: android.hardware.gnss.visibility_control.IGnssVisibilityControlCallback$NfwNotification$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<NfwNotification> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NfwNotification createFromParcel(Parcel _aidl_source) {
-                NfwNotification _aidl_out = new NfwNotification();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NfwNotification[] newArray(int _aidl_size) {
-                return new NfwNotification[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

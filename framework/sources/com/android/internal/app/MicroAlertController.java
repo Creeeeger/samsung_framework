@@ -10,7 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MicroAlertController extends AlertController {
     public MicroAlertController(Context context, DialogInterface di, Window window) {
         super(context, di, window);
@@ -24,7 +24,7 @@ public class MicroAlertController extends AlertController {
             return;
         }
         if (this.mMessage != null) {
-            this.mMessageView.setText(this.mMessage);
+            this.mMessageView.lambda$setTextAsync$0(this.mMessage);
             return;
         }
         this.mMessageView.setVisibility(8);
@@ -52,7 +52,7 @@ public class MicroAlertController extends AlertController {
     }
 
     @Override // com.android.internal.app.AlertController
-    public void setupTitle(ViewGroup topPanel) {
+    protected void setupTitle(ViewGroup topPanel) {
         super.setupTitle(topPanel);
         if (topPanel.getVisibility() == 8) {
             topPanel.setVisibility(4);
@@ -60,7 +60,7 @@ public class MicroAlertController extends AlertController {
     }
 
     @Override // com.android.internal.app.AlertController
-    public void setupButtons(ViewGroup buttonPanel) {
+    protected void setupButtons(ViewGroup buttonPanel) {
         super.setupButtons(buttonPanel);
         if (buttonPanel.getVisibility() == 8) {
             buttonPanel.setVisibility(4);

@@ -11,7 +11,7 @@ import libcore.util.NativeAllocationRegistry;
 
 /* loaded from: classes.dex */
 public final class PositionedGlyphs {
-    private static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(Typeface.class.getClassLoader(), nReleaseFunc());
+    public static final float NO_OVERRIDE = Float.MIN_VALUE;
     private final ArrayList<Font> mFonts;
     private final long mLayoutPtr;
     private final float mXOffset;
@@ -24,6 +24,12 @@ public final class PositionedGlyphs {
     private static native float nGetDescent(long j);
 
     @CriticalNative
+    private static native boolean nGetFakeBold(long j, int i);
+
+    @CriticalNative
+    private static native boolean nGetFakeItalic(long j, int i);
+
+    @CriticalNative
     private static native long nGetFont(long j, int i);
 
     @CriticalNative
@@ -33,7 +39,13 @@ public final class PositionedGlyphs {
     private static native int nGetGlyphId(long j, int i);
 
     @CriticalNative
+    private static native float nGetItalicOverride(long j, int i);
+
+    @CriticalNative
     private static native float nGetTotalAdvance(long j);
+
+    @CriticalNative
+    private static native float nGetWeightOverride(long j, int i);
 
     @CriticalNative
     private static native float nGetX(long j, int i);
@@ -41,8 +53,16 @@ public final class PositionedGlyphs {
     @CriticalNative
     private static native float nGetY(long j, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
-    private static native long nReleaseFunc();
+    public static native long nReleaseFunc();
+
+    private static class NoImagePreloadHolder {
+        private static final NativeAllocationRegistry REGISTRY = NativeAllocationRegistry.createMalloced(Typeface.class.getClassLoader(), PositionedGlyphs.nReleaseFunc());
+
+        private NoImagePreloadHolder() {
+        }
+    }
 
     public float getAdvance() {
         return nGetTotalAdvance(this.mLayoutPtr);
@@ -88,6 +108,34 @@ public final class PositionedGlyphs {
         return nGetY(this.mLayoutPtr, index) + this.mYOffset;
     }
 
+    public boolean getFakeBold(int index) {
+        Preconditions.checkArgumentInRange(index, 0, glyphCount() - 1, "index");
+        return nGetFakeBold(this.mLayoutPtr, index);
+    }
+
+    public boolean getFakeItalic(int index) {
+        Preconditions.checkArgumentInRange(index, 0, glyphCount() - 1, "index");
+        return nGetFakeItalic(this.mLayoutPtr, index);
+    }
+
+    public float getWeightOverride(int index) {
+        Preconditions.checkArgumentInRange(index, 0, glyphCount() - 1, "index");
+        float value = nGetWeightOverride(this.mLayoutPtr, index);
+        if (value == -1.0f) {
+            return Float.MIN_VALUE;
+        }
+        return value;
+    }
+
+    public float getItalicOverride(int index) {
+        Preconditions.checkArgumentInRange(index, 0, glyphCount() - 1, "index");
+        float value = nGetItalicOverride(this.mLayoutPtr, index);
+        if (value == -1.0f) {
+            return Float.MIN_VALUE;
+        }
+        return value;
+    }
+
     public PositionedGlyphs(long layoutPtr, float xOffset, float yOffset) {
         this.mLayoutPtr = layoutPtr;
         int glyphCount = nGetGlyphCount(layoutPtr);
@@ -104,7 +152,7 @@ public final class PositionedGlyphs {
             }
             this.mFonts.add(prevFont);
         }
-        REGISTRY.registerNativeAllocation(this, layoutPtr);
+        NoImagePreloadHolder.REGISTRY.registerNativeAllocation(this, layoutPtr);
     }
 
     public boolean equals(Object o) {

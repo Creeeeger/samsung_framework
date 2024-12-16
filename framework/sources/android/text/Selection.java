@@ -1,13 +1,12 @@
 package android.text;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Selection {
     private static final char PARAGRAPH_SEPARATOR = '\n';
     private static final Object SELECTION_MEMORY = new MEMORY();
     public static final Object SELECTION_START = new START();
     public static final Object SELECTION_END = new END();
 
-    /* loaded from: classes3.dex */
     public interface PositionIterator {
         public static final int DONE = -1;
 
@@ -79,7 +78,6 @@ public class Selection {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class MemoryTextWatcher implements TextWatcher {
         @Override // android.text.TextWatcher
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,9 +107,8 @@ public class Selection {
     }
 
     private static void extendSelection(Spannable text, int index, int memory) {
-        Object obj = SELECTION_END;
-        if (text.getSpanStart(obj) != index) {
-            text.setSpan(obj, index, index, 34);
+        if (text.getSpanStart(SELECTION_END) != index) {
+            text.setSpan(SELECTION_END, index, index, 34);
         }
         updateMemory(text, memory);
     }
@@ -418,32 +415,17 @@ public class Selection {
         return Math.min(off1, off2);
     }
 
-    /* loaded from: classes3.dex */
     private static final class START implements NoCopySpan {
-        /* synthetic */ START(STARTIA startia) {
-            this();
-        }
-
         private START() {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class END implements NoCopySpan {
-        /* synthetic */ END(ENDIA endia) {
-            this();
-        }
-
         private END() {
         }
     }
 
-    /* loaded from: classes3.dex */
     private static final class MEMORY implements NoCopySpan {
-        /* synthetic */ MEMORY(MEMORYIA memoryia) {
-            this();
-        }
-
         private MEMORY() {
         }
     }

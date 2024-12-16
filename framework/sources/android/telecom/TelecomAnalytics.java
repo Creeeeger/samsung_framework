@@ -10,14 +10,13 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public final class TelecomAnalytics implements Parcelable {
     public static final Parcelable.Creator<TelecomAnalytics> CREATOR = new Parcelable.Creator<TelecomAnalytics>() { // from class: android.telecom.TelecomAnalytics.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelecomAnalytics createFromParcel(Parcel in) {
             return new TelecomAnalytics(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelecomAnalytics[] newArray(int size) {
             return new TelecomAnalytics[size];
@@ -26,38 +25,15 @@ public final class TelecomAnalytics implements Parcelable {
     private List<ParcelableCallAnalytics> mCallAnalytics;
     private List<SessionTiming> mSessionTimings;
 
-    /* synthetic */ TelecomAnalytics(Parcel parcel, TelecomAnalyticsIA telecomAnalyticsIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.telecom.TelecomAnalytics$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TelecomAnalytics> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelecomAnalytics createFromParcel(Parcel in) {
-            return new TelecomAnalytics(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelecomAnalytics[] newArray(int size) {
-            return new TelecomAnalytics[size];
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class SessionTiming extends TimedEvent<Integer> implements Parcelable {
         public static final Parcelable.Creator<SessionTiming> CREATOR = new Parcelable.Creator<SessionTiming>() { // from class: android.telecom.TelecomAnalytics.SessionTiming.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SessionTiming createFromParcel(Parcel in) {
                 return new SessionTiming(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SessionTiming[] newArray(int size) {
                 return new SessionTiming[size];
@@ -83,27 +59,6 @@ public final class TelecomAnalytics implements Parcelable {
         private int mId;
         private long mTime;
 
-        /* synthetic */ SessionTiming(Parcel parcel, SessionTimingIA sessionTimingIA) {
-            this(parcel);
-        }
-
-        /* renamed from: android.telecom.TelecomAnalytics$SessionTiming$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SessionTiming> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SessionTiming createFromParcel(Parcel in) {
-                return new SessionTiming(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SessionTiming[] newArray(int size) {
-                return new SessionTiming[size];
-            }
-        }
-
         public SessionTiming(int id, long time) {
             this.mId = id;
             this.mTime = time;
@@ -114,6 +69,7 @@ public final class TelecomAnalytics implements Parcelable {
             this.mTime = in.readLong();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.telecom.TimedEvent
         public Integer getKey() {
             return Integer.valueOf(this.mId);
@@ -142,12 +98,10 @@ public final class TelecomAnalytics implements Parcelable {
     }
 
     private TelecomAnalytics(Parcel in) {
-        ArrayList arrayList = new ArrayList();
-        this.mSessionTimings = arrayList;
-        in.readTypedList(arrayList, SessionTiming.CREATOR);
-        ArrayList arrayList2 = new ArrayList();
-        this.mCallAnalytics = arrayList2;
-        in.readTypedList(arrayList2, ParcelableCallAnalytics.CREATOR);
+        this.mSessionTimings = new ArrayList();
+        in.readTypedList(this.mSessionTimings, SessionTiming.CREATOR);
+        this.mCallAnalytics = new ArrayList();
+        in.readTypedList(this.mCallAnalytics, ParcelableCallAnalytics.CREATOR);
     }
 
     public List<SessionTiming> getSessionTimings() {

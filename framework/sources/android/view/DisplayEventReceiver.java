@@ -38,15 +38,13 @@ public abstract class DisplayEventReceiver {
     }
 
     public DisplayEventReceiver(Looper looper, int vsyncSource, int eventRegistration, long layerHandle) {
-        VsyncEventData vsyncEventData = new VsyncEventData();
-        this.mVsyncEventData = vsyncEventData;
+        this.mVsyncEventData = new VsyncEventData();
         if (looper == null) {
             throw new IllegalArgumentException("looper must not be null");
         }
         this.mMessageQueue = looper.getQueue();
-        long nativeInit = nativeInit(new WeakReference(this), new WeakReference(vsyncEventData), this.mMessageQueue, vsyncSource, eventRegistration, layerHandle);
-        this.mReceiverPtr = nativeInit;
-        this.mFreeNativeResources = sNativeAllocationRegistry.registerNativeAllocation(this, nativeInit);
+        this.mReceiverPtr = nativeInit(new WeakReference(this), new WeakReference(this.mVsyncEventData), this.mMessageQueue, vsyncSource, eventRegistration, layerHandle);
+        this.mFreeNativeResources = sNativeAllocationRegistry.registerNativeAllocation(this, this.mReceiverPtr);
     }
 
     public void dispose() {
@@ -57,7 +55,6 @@ public abstract class DisplayEventReceiver {
         this.mMessageQueue = null;
     }
 
-    /* loaded from: classes4.dex */
     public static final class VsyncEventData {
         static final int FRAME_TIMELINES_CAPACITY = 7;
         public long frameInterval;
@@ -65,7 +62,6 @@ public abstract class DisplayEventReceiver {
         public int frameTimelinesLength;
         public int preferredFrameTimelineIndex;
 
-        /* loaded from: classes4.dex */
         public static class FrameTimeline {
             public long deadline;
             public long expectedPresentationTime;
@@ -73,66 +69,50 @@ public abstract class DisplayEventReceiver {
 
             FrameTimeline() {
                 this.vsyncId = -1L;
-                this.expectedPresentationTime = Long.MAX_VALUE;
-                this.deadline = Long.MAX_VALUE;
+                this.deadline = System.nanoTime() + 10000000;
+                this.expectedPresentationTime = this.deadline + 10000000;
             }
 
             FrameTimeline(long vsyncId, long expectedPresentationTime, long deadline) {
                 this.vsyncId = -1L;
-                this.expectedPresentationTime = Long.MAX_VALUE;
-                this.deadline = Long.MAX_VALUE;
                 this.vsyncId = vsyncId;
                 this.expectedPresentationTime = expectedPresentationTime;
                 this.deadline = deadline;
             }
 
-            public void copyFrom(FrameTimeline other) {
+            void copyFrom(FrameTimeline other) {
                 this.vsyncId = other.vsyncId;
                 this.expectedPresentationTime = other.expectedPresentationTime;
                 this.deadline = other.deadline;
             }
         }
 
-        public VsyncEventData() {
+        VsyncEventData() {
             this.frameInterval = -1L;
             this.preferredFrameTimelineIndex = 0;
-            this.frameTimelinesLength = 0;
+            this.frameTimelinesLength = 1;
             this.frameTimelines = new FrameTimeline[7];
-            int i = 0;
-            while (true) {
-                FrameTimeline[] frameTimelineArr = this.frameTimelines;
-                if (i < frameTimelineArr.length) {
-                    frameTimelineArr[i] = new FrameTimeline();
-                    i++;
-                } else {
-                    return;
-                }
+            for (int i = 0; i < this.frameTimelines.length; i++) {
+                this.frameTimelines[i] = new FrameTimeline();
             }
         }
 
         VsyncEventData(FrameTimeline[] frameTimelines, int preferredFrameTimelineIndex, int frameTimelinesLength, long frameInterval) {
             this.frameInterval = -1L;
             this.preferredFrameTimelineIndex = 0;
-            this.frameTimelinesLength = 0;
+            this.frameTimelinesLength = 1;
             this.frameTimelines = frameTimelines;
             this.preferredFrameTimelineIndex = preferredFrameTimelineIndex;
             this.frameTimelinesLength = frameTimelinesLength;
             this.frameInterval = frameInterval;
         }
 
-        public void copyFrom(VsyncEventData other) {
+        void copyFrom(VsyncEventData other) {
             this.preferredFrameTimelineIndex = other.preferredFrameTimelineIndex;
             this.frameTimelinesLength = other.frameTimelinesLength;
             this.frameInterval = other.frameInterval;
-            int i = 0;
-            while (true) {
-                FrameTimeline[] frameTimelineArr = this.frameTimelines;
-                if (i < frameTimelineArr.length) {
-                    frameTimelineArr[i].copyFrom(other.frameTimelines[i]);
-                    i++;
-                } else {
-                    return;
-                }
+            for (int i = 0; i < this.frameTimelines.length; i++) {
+                this.frameTimelines[i].copyFrom(other.frameTimelines[i]);
             }
         }
 
@@ -147,10 +127,15 @@ public abstract class DisplayEventReceiver {
     public void onHotplug(long timestampNanos, long physicalDisplayId, boolean connected) {
     }
 
+    public void onHotplugConnectionError(long timestampNanos, int connectionError) {
+    }
+
     public void onModeChanged(long timestampNanos, long physicalDisplayId, int modeId, long renderPeriod) {
     }
 
-    /* loaded from: classes4.dex */
+    public void onHdcpLevelsChanged(long physicalDisplayId, int connectedLevel, int maxLevel) {
+    }
+
     public static class FrameRateOverride {
         public final float frameRateHz;
         public final int uid;
@@ -169,15 +154,14 @@ public abstract class DisplayEventReceiver {
     }
 
     public void scheduleVsync() {
-        long j = this.mReceiverPtr;
-        if (j == 0) {
+        if (this.mReceiverPtr == 0) {
             Log.w(TAG, "Attempted to schedule a vertical sync pulse but the display event receiver has already been disposed.");
         } else {
-            nativeScheduleVsync(j);
+            nativeScheduleVsync(this.mReceiverPtr);
         }
     }
 
-    public VsyncEventData getLatestVsyncEventData() {
+    VsyncEventData getLatestVsyncEventData() {
         return nativeGetLatestVsyncEventData(this.mReceiverPtr);
     }
 
@@ -189,11 +173,19 @@ public abstract class DisplayEventReceiver {
         onHotplug(timestampNanos, physicalDisplayId, connected);
     }
 
+    private void dispatchHotplugConnectionError(long timestampNanos, int connectionError) {
+        onHotplugConnectionError(timestampNanos, connectionError);
+    }
+
     private void dispatchModeChanged(long timestampNanos, long physicalDisplayId, int modeId, long renderPeriod) {
         onModeChanged(timestampNanos, physicalDisplayId, modeId, renderPeriod);
     }
 
     private void dispatchFrameRateOverrides(long timestampNanos, long physicalDisplayId, FrameRateOverride[] overrides) {
         onFrameRateOverridesChanged(timestampNanos, physicalDisplayId, overrides);
+    }
+
+    private void dispatchHdcpLevelsChanged(long physicalDisplayId, int connectedLevel, int maxLevel) {
+        onHdcpLevelsChanged(physicalDisplayId, connectedLevel, maxLevel);
     }
 }

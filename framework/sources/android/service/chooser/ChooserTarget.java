@@ -10,14 +10,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public final class ChooserTarget implements Parcelable {
     public static final Parcelable.Creator<ChooserTarget> CREATOR = new Parcelable.Creator<ChooserTarget>() { // from class: android.service.chooser.ChooserTarget.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ChooserTarget createFromParcel(Parcel source) {
             return new ChooserTarget(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ChooserTarget[] newArray(int size) {
             return new ChooserTarget[size];
@@ -94,22 +93,5 @@ public final class ChooserTarget implements Parcelable {
         dest.writeFloat(this.mScore);
         ComponentName.writeToParcel(this.mComponentName, dest);
         dest.writeBundle(this.mIntentExtras);
-    }
-
-    /* renamed from: android.service.chooser.ChooserTarget$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ChooserTarget> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ChooserTarget createFromParcel(Parcel source) {
-            return new ChooserTarget(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ChooserTarget[] newArray(int size) {
-            return new ChooserTarget[size];
-        }
     }
 }

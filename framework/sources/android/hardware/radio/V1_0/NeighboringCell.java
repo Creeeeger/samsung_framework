@@ -54,7 +54,7 @@ public final class NeighboringCell {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.cid = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r2.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.cid.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.rssi = _hidl_blob.getInt32(16 + _hidl_offset);
     }
 

@@ -1,6 +1,6 @@
 package android.text;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface TextWatcher extends NoCopySpan {
     void afterTextChanged(Editable editable);
 

@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextWirelessChargingDetection extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextWirelessChargingDetection> CREATOR = new Parcelable.Creator<SemContextWirelessChargingDetection>() { // from class: com.samsung.android.hardware.context.SemContextWirelessChargingDetection.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWirelessChargingDetection createFromParcel(Parcel in) {
             return new SemContextWirelessChargingDetection(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextWirelessChargingDetection[] newArray(int size) {
             return new SemContextWirelessChargingDetection[size];
@@ -24,24 +23,7 @@ public class SemContextWirelessChargingDetection extends SemContextEventContext 
     public static final int NOMOVE = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextWirelessChargingDetection$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextWirelessChargingDetection> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWirelessChargingDetection createFromParcel(Parcel in) {
-            return new SemContextWirelessChargingDetection(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextWirelessChargingDetection[] newArray(int size) {
-            return new SemContextWirelessChargingDetection[size];
-        }
-    }
-
-    public SemContextWirelessChargingDetection() {
+    SemContextWirelessChargingDetection() {
         this.mContext = new Bundle();
     }
 

@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemIRCPCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.SemIRCPCallback";
 
@@ -19,7 +19,6 @@ public interface SemIRCPCallback extends IInterface {
 
     void onProgress(String str, int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements SemIRCPCallback {
         @Override // com.samsung.android.knox.SemIRCPCallback
         public void onComplete(List<String> srcPathsOrig, int destinationUserId, int successCnt) throws RemoteException {
@@ -43,7 +42,6 @@ public interface SemIRCPCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements SemIRCPCallback {
         static final int TRANSACTION_onComplete = 1;
         static final int TRANSACTION_onDone = 2;
@@ -95,52 +93,48 @@ public interface SemIRCPCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(SemIRCPCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(SemIRCPCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(SemIRCPCallback.DESCRIPTOR);
+                case 1:
+                    List<String> _arg0 = data.createStringArrayList();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDone(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFail(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgress(_arg04, _arg14, _arg23);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _arg0 = data.createStringArrayList();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDone(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFail(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgress(_arg04, _arg14, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements SemIRCPCallback {
+        private static class Proxy implements SemIRCPCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

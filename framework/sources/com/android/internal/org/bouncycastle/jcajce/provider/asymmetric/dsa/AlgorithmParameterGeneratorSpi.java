@@ -52,17 +52,14 @@ public class AlgorithmParameterGeneratorSpi extends BaseAlgorithmParameterGenera
             this.random = CryptoServicesRegistrar.getSecureRandom();
         }
         int certainty = PrimeCertaintyCalculator.getDefaultCertainty(this.strength);
-        int i = this.strength;
-        if (i == 1024) {
-            DSAParameterGenerationParameters dSAParameterGenerationParameters = new DSAParameterGenerationParameters(1024, 160, certainty, this.random);
-            this.params = dSAParameterGenerationParameters;
-            pGen.init(dSAParameterGenerationParameters);
-        } else if (i > 1024) {
-            DSAParameterGenerationParameters dSAParameterGenerationParameters2 = new DSAParameterGenerationParameters(i, 256, certainty, this.random);
-            this.params = dSAParameterGenerationParameters2;
-            pGen.init(dSAParameterGenerationParameters2);
+        if (this.strength == 1024) {
+            this.params = new DSAParameterGenerationParameters(1024, 160, certainty, this.random);
+            pGen.init(this.params);
+        } else if (this.strength > 1024) {
+            this.params = new DSAParameterGenerationParameters(this.strength, 256, certainty, this.random);
+            pGen.init(this.params);
         } else {
-            pGen.init(i, certainty, this.random);
+            pGen.init(this.strength, certainty, this.random);
         }
         DSAParameters p = pGen.generateParameters();
         try {

@@ -24,14 +24,13 @@ public final class CinematicEffectResponse implements Parcelable {
     public static final int CINEMATIC_EFFECT_STATUS_PENDING = 3;
     public static final int CINEMATIC_EFFECT_STATUS_TOO_MANY_REQUESTS = 4;
     public static final Parcelable.Creator<CinematicEffectResponse> CREATOR = new Parcelable.Creator<CinematicEffectResponse>() { // from class: android.app.wallpapereffectsgeneration.CinematicEffectResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CinematicEffectResponse createFromParcel(Parcel in) {
             return new CinematicEffectResponse(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CinematicEffectResponse[] newArray(int size) {
             return new CinematicEffectResponse[size];
@@ -49,30 +48,19 @@ public final class CinematicEffectResponse implements Parcelable {
     private List<TexturedMesh> mTexturedMeshes;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CinematicEffectStatusCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ImageContentType {
-    }
-
-    /* synthetic */ CinematicEffectResponse(int i, String str, int i2, List list, CameraAttributes cameraAttributes, CameraAttributes cameraAttributes2, CinematicEffectResponseIA cinematicEffectResponseIA) {
-        this(i, str, i2, list, cameraAttributes, cameraAttributes2);
-    }
-
-    /* synthetic */ CinematicEffectResponse(Parcel parcel, CinematicEffectResponseIA cinematicEffectResponseIA) {
-        this(parcel);
     }
 
     private CinematicEffectResponse(Parcel in) {
         this.mStatusCode = in.readInt();
         this.mTaskId = in.readString();
         this.mImageContentType = in.readInt();
-        ArrayList arrayList = new ArrayList();
-        this.mTexturedMeshes = arrayList;
-        in.readTypedList(arrayList, TexturedMesh.CREATOR);
+        this.mTexturedMeshes = new ArrayList();
+        in.readTypedList(this.mTexturedMeshes, TexturedMesh.CREATOR);
         this.mStartKeyFrame = (CameraAttributes) in.readTypedObject(CameraAttributes.CREATOR);
         this.mEndKeyFrame = (CameraAttributes) in.readTypedObject(CameraAttributes.CREATOR);
     }
@@ -110,23 +98,6 @@ public final class CinematicEffectResponse implements Parcelable {
         return this.mEndKeyFrame;
     }
 
-    /* renamed from: android.app.wallpapereffectsgeneration.CinematicEffectResponse$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CinematicEffectResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CinematicEffectResponse createFromParcel(Parcel in) {
-            return new CinematicEffectResponse(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CinematicEffectResponse[] newArray(int size) {
-            return new CinematicEffectResponse[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -158,7 +129,6 @@ public final class CinematicEffectResponse implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private CameraAttributes mEndKeyFrame;
         private int mImageContentType;

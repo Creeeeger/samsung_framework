@@ -2,7 +2,6 @@ package com.android.internal.util;
 
 import android.util.Log;
 import android.util.Printer;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -29,13 +28,7 @@ public class FastPrintWriter extends PrintWriter {
     private final char[] mText;
     private final Writer mWriter;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class DummyWriter extends Writer {
-        /* synthetic */ DummyWriter(DummyWriterIA dummyWriterIA) {
-            this();
-        }
-
+    private static class DummyWriter extends Writer {
         private DummyWriter() {
         }
 
@@ -71,7 +64,7 @@ public class FastPrintWriter extends PrintWriter {
         }
         this.mBufferLen = bufferLen;
         this.mText = new char[bufferLen];
-        this.mBytes = ByteBuffer.allocate(bufferLen);
+        this.mBytes = ByteBuffer.allocate(this.mBufferLen);
         this.mOutputStream = out;
         this.mWriter = null;
         this.mPrinter = null;
@@ -126,9 +119,8 @@ public class FastPrintWriter extends PrintWriter {
 
     private final void initEncoder(String csn) throws UnsupportedEncodingException {
         try {
-            CharsetEncoder newEncoder = Charset.forName(csn).newEncoder();
-            this.mCharset = newEncoder;
-            newEncoder.onMalformedInput(CodingErrorAction.REPLACE);
+            this.mCharset = Charset.forName(csn).newEncoder();
+            this.mCharset.onMalformedInput(CodingErrorAction.REPLACE);
             this.mCharset.onUnmappableCharacter(CodingErrorAction.REPLACE);
         } catch (Exception e) {
             throw new UnsupportedEncodingException(csn);
@@ -160,9 +152,8 @@ public class FastPrintWriter extends PrintWriter {
     }
 
     private final void initDefaultEncoder() {
-        CharsetEncoder newEncoder = Charset.defaultCharset().newEncoder();
-        this.mCharset = newEncoder;
-        newEncoder.onMalformedInput(CodingErrorAction.REPLACE);
+        this.mCharset = Charset.defaultCharset().newEncoder();
+        this.mCharset.onMalformedInput(CodingErrorAction.REPLACE);
         this.mCharset.onUnmappableCharacter(CodingErrorAction.REPLACE);
     }
 
@@ -226,10 +217,9 @@ public class FastPrintWriter extends PrintWriter {
     }
 
     private void flushLocked() throws IOException {
-        int i = this.mPos;
-        if (i > 0) {
+        if (this.mPos > 0) {
             if (this.mOutputStream != null) {
-                CharBuffer charBuffer = CharBuffer.wrap(this.mText, 0, i);
+                CharBuffer charBuffer = CharBuffer.wrap(this.mText, 0, this.mPos);
                 CoderResult result = this.mCharset.encode(charBuffer, this.mBytes, true);
                 while (!this.mIoError) {
                     if (result.isError()) {
@@ -245,35 +235,22 @@ public class FastPrintWriter extends PrintWriter {
                     flushBytesLocked();
                     this.mOutputStream.flush();
                 }
+            } else if (this.mWriter != null) {
+                if (!this.mIoError) {
+                    this.mWriter.write(this.mText, 0, this.mPos);
+                    this.mWriter.flush();
+                }
             } else {
-                Writer writer = this.mWriter;
-                if (writer != null) {
-                    if (!this.mIoError) {
-                        writer.write(this.mText, 0, i);
-                        this.mWriter.flush();
-                    }
+                int nonEolOff = 0;
+                int sepLen = this.mSeparator.length();
+                int len = sepLen < this.mPos ? sepLen : this.mPos;
+                while (nonEolOff < len && this.mText[(this.mPos - 1) - nonEolOff] == this.mSeparator.charAt((this.mSeparator.length() - 1) - nonEolOff)) {
+                    nonEolOff++;
+                }
+                if (nonEolOff >= this.mPos) {
+                    this.mPrinter.println("");
                 } else {
-                    int nonEolOff = 0;
-                    int sepLen = this.mSeparator.length();
-                    int len = this.mPos;
-                    if (sepLen < len) {
-                        len = sepLen;
-                    }
-                    while (nonEolOff < len) {
-                        char c = this.mText[(this.mPos - 1) - nonEolOff];
-                        String str = this.mSeparator;
-                        if (c != str.charAt((str.length() - 1) - nonEolOff)) {
-                            break;
-                        } else {
-                            nonEolOff++;
-                        }
-                    }
-                    int i2 = this.mPos;
-                    if (nonEolOff >= i2) {
-                        this.mPrinter.println("");
-                    } else {
-                        this.mPrinter.println(new String(this.mText, 0, i2 - nonEolOff));
-                    }
+                    this.mPrinter.println(new String(this.mText, 0, this.mPos - nonEolOff));
                 }
             }
             this.mPos = 0;
@@ -286,14 +263,10 @@ public class FastPrintWriter extends PrintWriter {
             try {
                 flushLocked();
                 if (!this.mIoError) {
-                    OutputStream outputStream = this.mOutputStream;
-                    if (outputStream != null) {
-                        outputStream.flush();
-                    } else {
-                        Writer writer = this.mWriter;
-                        if (writer != null) {
-                            writer.flush();
-                        }
+                    if (this.mOutputStream != null) {
+                        this.mOutputStream.flush();
+                    } else if (this.mWriter != null) {
+                        this.mWriter.flush();
                     }
                 }
             } catch (IOException e) {
@@ -308,14 +281,10 @@ public class FastPrintWriter extends PrintWriter {
         synchronized (this.lock) {
             try {
                 flushLocked();
-                OutputStream outputStream = this.mOutputStream;
-                if (outputStream != null) {
-                    outputStream.close();
-                } else {
-                    Writer writer = this.mWriter;
-                    if (writer != null) {
-                        writer.close();
-                    }
+                if (this.mOutputStream != null) {
+                    this.mOutputStream.close();
+                } else if (this.mWriter != null) {
+                    this.mWriter.close();
                 }
             } catch (IOException e) {
                 Log.w("FastPrintWriter", "Write failure", e);
@@ -385,8 +354,7 @@ public class FastPrintWriter extends PrintWriter {
     public void println() {
         synchronized (this.lock) {
             try {
-                String str = this.mSeparator;
-                appendLocked(str, 0, str.length());
+                appendLocked(this.mSeparator, 0, this.mSeparator.length());
                 if (this.mAutoFlush) {
                     flushLocked();
                 }
@@ -478,7 +446,7 @@ public class FastPrintWriter extends PrintWriter {
     @Override // java.io.PrintWriter, java.io.Writer, java.lang.Appendable
     public PrintWriter append(CharSequence csq, int start, int end) {
         if (csq == null) {
-            csq = SemCapabilities.FEATURE_TAG_NULL;
+            csq = "null";
         }
         String output = csq.subSequence(start, end).toString();
         write(output, 0, output.length());

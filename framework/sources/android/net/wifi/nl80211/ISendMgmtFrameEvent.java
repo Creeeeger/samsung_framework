@@ -19,7 +19,6 @@ public interface ISendMgmtFrameEvent extends IInterface {
 
     void OnFailure(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISendMgmtFrameEvent {
         @Override // android.net.wifi.nl80211.ISendMgmtFrameEvent
         public void OnAck(int elapsedTimeMs) throws RemoteException {
@@ -35,7 +34,6 @@ public interface ISendMgmtFrameEvent extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISendMgmtFrameEvent {
         static final int TRANSACTION_OnAck = 1;
         static final int TRANSACTION_OnFailure = 2;
@@ -81,31 +79,27 @@ public interface ISendMgmtFrameEvent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISendMgmtFrameEvent.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISendMgmtFrameEvent.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISendMgmtFrameEvent.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    OnAck(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    OnFailure(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            OnAck(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            OnFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISendMgmtFrameEvent {
+        private static class Proxy implements ISendMgmtFrameEvent {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

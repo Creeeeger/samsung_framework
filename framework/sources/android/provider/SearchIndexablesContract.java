@@ -49,7 +49,6 @@ public class SearchIndexablesContract {
     public static final String[] NON_INDEXABLES_KEYS_COLUMNS = {"key"};
     public static final String[] SLICE_URI_PAIRS_COLUMNS = {"key", "slice_uri"};
 
-    /* loaded from: classes3.dex */
     public static final class SiteMapColumns {
         public static final String CHILD_CLASS = "child_class";
         public static final String CHILD_TITLE = "child_title";
@@ -57,7 +56,6 @@ public class SearchIndexablesContract {
         public static final String PARENT_TITLE = "parent_title";
     }
 
-    /* loaded from: classes3.dex */
     public static final class SliceUriPairColumns {
         public static final String KEY = "key";
         public static final String SLICE_URI = "slice_uri";
@@ -66,7 +64,6 @@ public class SearchIndexablesContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class XmlResource extends BaseColumns {
         public static final String COLUMN_XML_RESID = "xmlResId";
         public static final String MIME_TYPE = "vnd.android.cursor.dir/indexables_xml_res";
@@ -76,7 +73,6 @@ public class SearchIndexablesContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class RawData extends BaseColumns {
         public static final String COLUMN_ENTRIES = "entries";
         public static final String COLUMN_KEY = "key";
@@ -95,7 +91,6 @@ public class SearchIndexablesContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class NonIndexableKey extends BaseColumns {
         public static final String COLUMN_KEY_VALUE = "key";
         public static final String MIME_TYPE = "vnd.android.cursor.dir/non_indexables_key";
@@ -105,7 +100,6 @@ public class SearchIndexablesContract {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class BaseColumns {
         public static final String COLUMN_CLASS_NAME = "className";
         public static final String COLUMN_ICON_RESID = "iconResId";
@@ -113,10 +107,6 @@ public class SearchIndexablesContract {
         public static final String COLUMN_INTENT_TARGET_CLASS = "intentTargetClass";
         public static final String COLUMN_INTENT_TARGET_PACKAGE = "intentTargetPackage";
         public static final String COLUMN_RANK = "rank";
-
-        /* synthetic */ BaseColumns(BaseColumnsIA baseColumnsIA) {
-            this();
-        }
 
         private BaseColumns() {
         }

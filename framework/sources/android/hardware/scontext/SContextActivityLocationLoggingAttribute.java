@@ -13,7 +13,7 @@ public class SContextActivityLocationLoggingAttribute extends SContextAttribute 
     private int mStopPeriod;
     private int mWaitPeriod;
 
-    public SContextActivityLocationLoggingAttribute() {
+    SContextActivityLocationLoggingAttribute() {
         this.mStopPeriod = 60;
         this.mWaitPeriod = 120;
         this.mStayingRadius = 50;
@@ -54,8 +54,7 @@ public class SContextActivityLocationLoggingAttribute extends SContextAttribute 
             Log.e(TAG, "The area radius is wrong.");
             return false;
         }
-        int i = this.mLppResolution;
-        if (i < 0 || i > 2) {
+        if (this.mLppResolution < 0 || this.mLppResolution > 2) {
             Log.e(TAG, "The lpp resolution is wrong.");
             return false;
         }

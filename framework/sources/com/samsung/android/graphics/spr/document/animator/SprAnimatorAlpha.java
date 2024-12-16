@@ -5,7 +5,7 @@ import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAnimatorAlpha extends SprAnimatorBase {
     private float from;
     private float to;
@@ -25,21 +25,11 @@ public class SprAnimatorAlpha extends SprAnimatorBase {
     }
 
     private void init() {
-        float f = this.from;
-        if (f < 0.0f) {
-            f = 0.0f;
-        }
-        this.from = f;
-        if (f > 1.0f) {
-            f = 1.0f;
-        }
-        this.from = f;
-        float f2 = this.to;
-        float f3 = f2 >= 0.0f ? f2 : 0.0f;
-        this.to = f3;
-        float f4 = f3 <= 1.0f ? f3 : 1.0f;
-        this.to = f4;
-        setFloatValues(f, f4);
+        this.from = this.from < 0.0f ? 0.0f : this.from;
+        this.from = this.from > 1.0f ? 1.0f : this.from;
+        this.to = this.to >= 0.0f ? this.to : 0.0f;
+        this.to = this.to <= 1.0f ? this.to : 1.0f;
+        setFloatValues(this.from, this.to);
     }
 
     @Override // com.samsung.android.graphics.spr.document.animator.SprAnimatorBase
@@ -52,20 +42,11 @@ public class SprAnimatorAlpha extends SprAnimatorBase {
     @Override // com.samsung.android.graphics.spr.document.animator.SprAnimatorBase
     public void toSPR(DataOutputStream out) throws IOException {
         super.toSPR(out);
-        float f = this.from;
-        if (f < 0.0f) {
-            f = 0.0f;
-        }
-        this.from = f;
-        if (f > 1.0f) {
-            f = 1.0f;
-        }
-        this.from = f;
-        float f2 = this.to;
-        float f3 = f2 >= 0.0f ? f2 : 0.0f;
-        this.to = f3;
-        this.to = f3 <= 1.0f ? f3 : 1.0f;
-        out.writeFloat(f);
+        this.from = this.from < 0.0f ? 0.0f : this.from;
+        this.from = this.from > 1.0f ? 1.0f : this.from;
+        this.to = this.to >= 0.0f ? this.to : 0.0f;
+        this.to = this.to <= 1.0f ? this.to : 1.0f;
+        out.writeFloat(this.from);
         out.writeFloat(this.to);
     }
 

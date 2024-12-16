@@ -10,7 +10,7 @@ import com.samsung.android.globalactions.util.KeyGuardManagerWrapper;
 import com.samsung.android.globalactions.util.LogWrapper;
 import com.samsung.android.view.SemWindowManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class FrontDisplayStrategy implements SecureConfirmStrategy, DisposingStrategy {
     private static final String TAG = "FrontDisplayStrategy";
     private static SemWindowManager.FoldStateListener sFoldStateListener;
@@ -26,7 +26,7 @@ public class FrontDisplayStrategy implements SecureConfirmStrategy, DisposingStr
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // com.samsung.android.globalactions.presentation.strategies.SecureConfirmStrategy
-    public boolean doActionBeforeSecureConfirm(ActionViewModel viewModel, SamsungGlobalActions globalActions) {
+    public boolean doActionBeforeSecureConfirm(final ActionViewModel viewModel, SamsungGlobalActions globalActions) {
         char c;
         String name = viewModel.getActionInfo().getName();
         switch (name.hashCode()) {
@@ -51,17 +51,9 @@ public class FrontDisplayStrategy implements SecureConfirmStrategy, DisposingStr
         switch (c) {
             case 0:
             case 1:
-                String extraUnlockType = viewModel.getActionInfo().getName() == "power" ? UsbManager.USB_FUNCTION_SHUTDOWN : "reboot";
+                final String extraUnlockType = viewModel.getActionInfo().getName() == "power" ? UsbManager.USB_FUNCTION_SHUTDOWN : "reboot";
                 if (isFoldedState()) {
                     sFoldStateListener = new SemWindowManager.FoldStateListener() { // from class: com.samsung.android.globalactions.features.FrontDisplayStrategy.1
-                        final /* synthetic */ String val$extraUnlockType;
-                        final /* synthetic */ ActionViewModel val$viewModel;
-
-                        AnonymousClass1(ActionViewModel viewModel2, String extraUnlockType2) {
-                            viewModel = viewModel2;
-                            extraUnlockType = extraUnlockType2;
-                        }
-
                         @Override // com.samsung.android.view.SemWindowManager.FoldStateListener
                         public void onFoldStateChanged(boolean isFolded) {
                             if (!isFolded) {
@@ -81,32 +73,6 @@ public class FrontDisplayStrategy implements SecureConfirmStrategy, DisposingStr
                 }
             default:
                 return true;
-        }
-    }
-
-    /* renamed from: com.samsung.android.globalactions.features.FrontDisplayStrategy$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements SemWindowManager.FoldStateListener {
-        final /* synthetic */ String val$extraUnlockType;
-        final /* synthetic */ ActionViewModel val$viewModel;
-
-        AnonymousClass1(ActionViewModel viewModel2, String extraUnlockType2) {
-            viewModel = viewModel2;
-            extraUnlockType = extraUnlockType2;
-        }
-
-        @Override // com.samsung.android.view.SemWindowManager.FoldStateListener
-        public void onFoldStateChanged(boolean isFolded) {
-            if (!isFolded) {
-                FrontDisplayStrategy.this.mLogWrapper.i(FrontDisplayStrategy.TAG, "registerSecureConfirm by FoldStateChangedListener");
-                FrontDisplayStrategy.this.mKeyguardManagerWrapper.setRegisterState(false);
-                FrontDisplayStrategy.this.mGlobalActions.registerSecureConfirmAction(viewModel);
-                FrontDisplayStrategy.this.mKeyguardManagerWrapper.setPendingIntentAfterUnlock(extraUnlockType);
-            }
-        }
-
-        @Override // com.samsung.android.view.SemWindowManager.FoldStateListener
-        public void onTableModeChanged(boolean b) {
         }
     }
 

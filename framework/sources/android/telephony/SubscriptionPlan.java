@@ -14,19 +14,18 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SubscriptionPlan implements Parcelable {
     public static final long BYTES_UNKNOWN = -1;
     public static final long BYTES_UNLIMITED = Long.MAX_VALUE;
     public static final Parcelable.Creator<SubscriptionPlan> CREATOR = new Parcelable.Creator<SubscriptionPlan>() { // from class: android.telephony.SubscriptionPlan.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubscriptionPlan createFromParcel(Parcel source) {
             return new SubscriptionPlan(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubscriptionPlan[] newArray(int size) {
             return new SubscriptionPlan[size];
@@ -47,16 +46,7 @@ public final class SubscriptionPlan implements Parcelable {
     private CharSequence title;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LimitBehavior {
-    }
-
-    /* synthetic */ SubscriptionPlan(Parcel parcel, SubscriptionPlanIA subscriptionPlanIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ SubscriptionPlan(RecurrenceRule recurrenceRule, SubscriptionPlanIA subscriptionPlanIA) {
-        this(recurrenceRule);
     }
 
     private SubscriptionPlan(RecurrenceRule cycleRule) {
@@ -116,23 +106,6 @@ public final class SubscriptionPlan implements Parcelable {
         return Objects.equals(this.cycleRule, other.cycleRule) && Objects.equals(this.title, other.title) && Objects.equals(this.summary, other.summary) && this.dataLimitBytes == other.dataLimitBytes && this.dataLimitBehavior == other.dataLimitBehavior && this.dataUsageBytes == other.dataUsageBytes && this.dataUsageTime == other.dataUsageTime && Arrays.equals(this.networkTypes, other.networkTypes);
     }
 
-    /* renamed from: android.telephony.SubscriptionPlan$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SubscriptionPlan> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubscriptionPlan createFromParcel(Parcel source) {
-            return new SubscriptionPlan(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubscriptionPlan[] newArray(int size) {
-            return new SubscriptionPlan[size];
-        }
-    }
-
     public RecurrenceRule getCycleRule() {
         return this.cycleRule;
     }
@@ -162,15 +135,13 @@ public final class SubscriptionPlan implements Parcelable {
     }
 
     public int[] getNetworkTypes() {
-        int[] iArr = this.networkTypes;
-        return Arrays.copyOf(iArr, iArr.length);
+        return Arrays.copyOf(this.networkTypes, this.networkTypes.length);
     }
 
     public Iterator<Range<ZonedDateTime>> cycleIterator() {
         return this.cycleRule.cycleIterator();
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private final SubscriptionPlan plan;
 

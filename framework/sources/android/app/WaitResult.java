@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class WaitResult implements Parcelable {
     public static final Parcelable.Creator<WaitResult> CREATOR = new Parcelable.Creator<WaitResult>() { // from class: android.app.WaitResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WaitResult createFromParcel(Parcel source) {
             return new WaitResult(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WaitResult[] newArray(int size) {
             return new WaitResult[size];
@@ -37,12 +36,7 @@ public class WaitResult implements Parcelable {
     public ComponentName who;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface LaunchState {
-    }
-
-    /* synthetic */ WaitResult(Parcel parcel, WaitResultIA waitResultIA) {
-        this(parcel);
     }
 
     public WaitResult() {
@@ -60,23 +54,6 @@ public class WaitResult implements Parcelable {
         ComponentName.writeToParcel(this.who, parcel);
         parcel.writeLong(this.totalTime);
         parcel.writeInt(this.launchState);
-    }
-
-    /* renamed from: android.app.WaitResult$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WaitResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WaitResult createFromParcel(Parcel source) {
-            return new WaitResult(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WaitResult[] newArray(int size) {
-            return new WaitResult[size];
-        }
     }
 
     private WaitResult(Parcel source) {

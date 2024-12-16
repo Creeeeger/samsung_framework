@@ -9,10 +9,9 @@ import com.android.framework.protobuf.nano.MessageNano;
 import com.android.framework.protobuf.nano.WireFormatNano;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface GnssLogsProto {
 
-    /* loaded from: classes4.dex */
     public static final class GnssLog extends MessageNano {
         private static volatile GnssLog[] _emptyArray;
         public String hardwareRevision;
@@ -78,41 +77,32 @@ public interface GnssLogsProto {
 
         @Override // com.android.framework.protobuf.nano.MessageNano
         public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-            int i = this.numLocationReportProcessed;
-            if (i != 0) {
-                output.writeInt32(1, i);
+            if (this.numLocationReportProcessed != 0) {
+                output.writeInt32(1, this.numLocationReportProcessed);
             }
-            int i2 = this.percentageLocationFailure;
-            if (i2 != 0) {
-                output.writeInt32(2, i2);
+            if (this.percentageLocationFailure != 0) {
+                output.writeInt32(2, this.percentageLocationFailure);
             }
-            int i3 = this.numTimeToFirstFixProcessed;
-            if (i3 != 0) {
-                output.writeInt32(3, i3);
+            if (this.numTimeToFirstFixProcessed != 0) {
+                output.writeInt32(3, this.numTimeToFirstFixProcessed);
             }
-            int i4 = this.meanTimeToFirstFixSecs;
-            if (i4 != 0) {
-                output.writeInt32(4, i4);
+            if (this.meanTimeToFirstFixSecs != 0) {
+                output.writeInt32(4, this.meanTimeToFirstFixSecs);
             }
-            int i5 = this.standardDeviationTimeToFirstFixSecs;
-            if (i5 != 0) {
-                output.writeInt32(5, i5);
+            if (this.standardDeviationTimeToFirstFixSecs != 0) {
+                output.writeInt32(5, this.standardDeviationTimeToFirstFixSecs);
             }
-            int i6 = this.numPositionAccuracyProcessed;
-            if (i6 != 0) {
-                output.writeInt32(6, i6);
+            if (this.numPositionAccuracyProcessed != 0) {
+                output.writeInt32(6, this.numPositionAccuracyProcessed);
             }
-            int i7 = this.meanPositionAccuracyMeters;
-            if (i7 != 0) {
-                output.writeInt32(7, i7);
+            if (this.meanPositionAccuracyMeters != 0) {
+                output.writeInt32(7, this.meanPositionAccuracyMeters);
             }
-            int i8 = this.standardDeviationPositionAccuracyMeters;
-            if (i8 != 0) {
-                output.writeInt32(8, i8);
+            if (this.standardDeviationPositionAccuracyMeters != 0) {
+                output.writeInt32(8, this.standardDeviationPositionAccuracyMeters);
             }
-            int i9 = this.numTopFourAverageCn0Processed;
-            if (i9 != 0) {
-                output.writeInt32(9, i9);
+            if (this.numTopFourAverageCn0Processed != 0) {
+                output.writeInt32(9, this.numTopFourAverageCn0Processed);
             }
             if (Double.doubleToLongBits(this.meanTopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 output.writeDouble(10, this.meanTopFourAverageCn0DbHz);
@@ -120,32 +110,26 @@ public interface GnssLogsProto {
             if (Double.doubleToLongBits(this.standardDeviationTopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 output.writeDouble(11, this.standardDeviationTopFourAverageCn0DbHz);
             }
-            PowerMetrics powerMetrics = this.powerMetrics;
-            if (powerMetrics != null) {
-                output.writeMessage(12, powerMetrics);
+            if (this.powerMetrics != null) {
+                output.writeMessage(12, this.powerMetrics);
             }
             if (!this.hardwareRevision.equals("")) {
                 output.writeString(13, this.hardwareRevision);
             }
-            int i10 = this.numSvStatusProcessed;
-            if (i10 != 0) {
-                output.writeInt32(14, i10);
+            if (this.numSvStatusProcessed != 0) {
+                output.writeInt32(14, this.numSvStatusProcessed);
             }
-            int i11 = this.numL5SvStatusProcessed;
-            if (i11 != 0) {
-                output.writeInt32(15, i11);
+            if (this.numL5SvStatusProcessed != 0) {
+                output.writeInt32(15, this.numL5SvStatusProcessed);
             }
-            int i12 = this.numSvStatusUsedInFix;
-            if (i12 != 0) {
-                output.writeInt32(16, i12);
+            if (this.numSvStatusUsedInFix != 0) {
+                output.writeInt32(16, this.numSvStatusUsedInFix);
             }
-            int i13 = this.numL5SvStatusUsedInFix;
-            if (i13 != 0) {
-                output.writeInt32(17, i13);
+            if (this.numL5SvStatusUsedInFix != 0) {
+                output.writeInt32(17, this.numL5SvStatusUsedInFix);
             }
-            int i14 = this.numL5TopFourAverageCn0Processed;
-            if (i14 != 0) {
-                output.writeInt32(18, i14);
+            if (this.numL5TopFourAverageCn0Processed != 0) {
+                output.writeInt32(18, this.numL5TopFourAverageCn0Processed);
             }
             if (Double.doubleToLongBits(this.meanL5TopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 output.writeDouble(19, this.meanL5TopFourAverageCn0DbHz);
@@ -157,43 +141,34 @@ public interface GnssLogsProto {
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
-            int i = this.numLocationReportProcessed;
-            if (i != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(1, i);
+            if (this.numLocationReportProcessed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(1, this.numLocationReportProcessed);
             }
-            int i2 = this.percentageLocationFailure;
-            if (i2 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(2, i2);
+            if (this.percentageLocationFailure != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(2, this.percentageLocationFailure);
             }
-            int i3 = this.numTimeToFirstFixProcessed;
-            if (i3 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(3, i3);
+            if (this.numTimeToFirstFixProcessed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(3, this.numTimeToFirstFixProcessed);
             }
-            int i4 = this.meanTimeToFirstFixSecs;
-            if (i4 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(4, i4);
+            if (this.meanTimeToFirstFixSecs != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(4, this.meanTimeToFirstFixSecs);
             }
-            int i5 = this.standardDeviationTimeToFirstFixSecs;
-            if (i5 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(5, i5);
+            if (this.standardDeviationTimeToFirstFixSecs != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(5, this.standardDeviationTimeToFirstFixSecs);
             }
-            int i6 = this.numPositionAccuracyProcessed;
-            if (i6 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(6, i6);
+            if (this.numPositionAccuracyProcessed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(6, this.numPositionAccuracyProcessed);
             }
-            int i7 = this.meanPositionAccuracyMeters;
-            if (i7 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(7, i7);
+            if (this.meanPositionAccuracyMeters != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(7, this.meanPositionAccuracyMeters);
             }
-            int i8 = this.standardDeviationPositionAccuracyMeters;
-            if (i8 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(8, i8);
+            if (this.standardDeviationPositionAccuracyMeters != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(8, this.standardDeviationPositionAccuracyMeters);
             }
-            int i9 = this.numTopFourAverageCn0Processed;
-            if (i9 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(9, i9);
+            if (this.numTopFourAverageCn0Processed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(9, this.numTopFourAverageCn0Processed);
             }
             if (Double.doubleToLongBits(this.meanTopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 size += CodedOutputByteBufferNano.computeDoubleSize(10, this.meanTopFourAverageCn0DbHz);
@@ -201,32 +176,26 @@ public interface GnssLogsProto {
             if (Double.doubleToLongBits(this.standardDeviationTopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 size += CodedOutputByteBufferNano.computeDoubleSize(11, this.standardDeviationTopFourAverageCn0DbHz);
             }
-            PowerMetrics powerMetrics = this.powerMetrics;
-            if (powerMetrics != null) {
-                size += CodedOutputByteBufferNano.computeMessageSize(12, powerMetrics);
+            if (this.powerMetrics != null) {
+                size += CodedOutputByteBufferNano.computeMessageSize(12, this.powerMetrics);
             }
             if (!this.hardwareRevision.equals("")) {
                 size += CodedOutputByteBufferNano.computeStringSize(13, this.hardwareRevision);
             }
-            int i10 = this.numSvStatusProcessed;
-            if (i10 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(14, i10);
+            if (this.numSvStatusProcessed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(14, this.numSvStatusProcessed);
             }
-            int i11 = this.numL5SvStatusProcessed;
-            if (i11 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(15, i11);
+            if (this.numL5SvStatusProcessed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(15, this.numL5SvStatusProcessed);
             }
-            int i12 = this.numSvStatusUsedInFix;
-            if (i12 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(16, i12);
+            if (this.numSvStatusUsedInFix != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(16, this.numSvStatusUsedInFix);
             }
-            int i13 = this.numL5SvStatusUsedInFix;
-            if (i13 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(17, i13);
+            if (this.numL5SvStatusUsedInFix != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(17, this.numL5SvStatusUsedInFix);
             }
-            int i14 = this.numL5TopFourAverageCn0Processed;
-            if (i14 != 0) {
-                size += CodedOutputByteBufferNano.computeInt32Size(18, i14);
+            if (this.numL5TopFourAverageCn0Processed != 0) {
+                size += CodedOutputByteBufferNano.computeInt32Size(18, this.numL5TopFourAverageCn0Processed);
             }
             if (Double.doubleToLongBits(this.meanL5TopFourAverageCn0DbHz) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 size += CodedOutputByteBufferNano.computeDoubleSize(19, this.meanL5TopFourAverageCn0DbHz);
@@ -325,7 +294,6 @@ public interface GnssLogsProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class PowerMetrics extends MessageNano {
         private static volatile PowerMetrics[] _emptyArray;
         public double energyConsumedMah;
@@ -357,55 +325,38 @@ public interface GnssLogsProto {
 
         @Override // com.android.framework.protobuf.nano.MessageNano
         public void writeTo(CodedOutputByteBufferNano output) throws IOException {
-            long j = this.loggingDurationMs;
-            if (j != 0) {
-                output.writeInt64(1, j);
+            if (this.loggingDurationMs != 0) {
+                output.writeInt64(1, this.loggingDurationMs);
             }
             if (Double.doubleToLongBits(this.energyConsumedMah) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 output.writeDouble(2, this.energyConsumedMah);
             }
-            long[] jArr = this.timeInSignalQualityLevelMs;
-            if (jArr != null && jArr.length > 0) {
-                int i = 0;
-                while (true) {
-                    long[] jArr2 = this.timeInSignalQualityLevelMs;
-                    if (i >= jArr2.length) {
-                        break;
-                    }
-                    output.writeInt64(3, jArr2[i]);
-                    i++;
+            if (this.timeInSignalQualityLevelMs != null && this.timeInSignalQualityLevelMs.length > 0) {
+                for (int i = 0; i < this.timeInSignalQualityLevelMs.length; i++) {
+                    output.writeInt64(3, this.timeInSignalQualityLevelMs[i]);
                 }
             }
             super.writeTo(output);
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public int computeSerializedSize() {
+        protected int computeSerializedSize() {
             int size = super.computeSerializedSize();
-            long j = this.loggingDurationMs;
-            if (j != 0) {
-                size += CodedOutputByteBufferNano.computeInt64Size(1, j);
+            if (this.loggingDurationMs != 0) {
+                size += CodedOutputByteBufferNano.computeInt64Size(1, this.loggingDurationMs);
             }
             if (Double.doubleToLongBits(this.energyConsumedMah) != Double.doubleToLongBits(SContextConstants.ENVIRONMENT_VALUE_UNKNOWN)) {
                 size += CodedOutputByteBufferNano.computeDoubleSize(2, this.energyConsumedMah);
             }
-            long[] jArr = this.timeInSignalQualityLevelMs;
-            if (jArr != null && jArr.length > 0) {
+            if (this.timeInSignalQualityLevelMs != null && this.timeInSignalQualityLevelMs.length > 0) {
                 int dataSize = 0;
-                int i = 0;
-                while (true) {
-                    long[] jArr2 = this.timeInSignalQualityLevelMs;
-                    if (i < jArr2.length) {
-                        long element = jArr2[i];
-                        dataSize += CodedOutputByteBufferNano.computeInt64SizeNoTag(element);
-                        i++;
-                    } else {
-                        return size + dataSize + (jArr2.length * 1);
-                    }
+                for (int i = 0; i < this.timeInSignalQualityLevelMs.length; i++) {
+                    long element = this.timeInSignalQualityLevelMs[i];
+                    dataSize += CodedOutputByteBufferNano.computeInt64SizeNoTag(element);
                 }
-            } else {
-                return size;
+                return size + dataSize + (this.timeInSignalQualityLevelMs.length * 1);
             }
+            return size;
         }
 
         @Override // com.android.framework.protobuf.nano.MessageNano
@@ -423,11 +374,10 @@ public interface GnssLogsProto {
                         break;
                     case 24:
                         int arrayLength = WireFormatNano.getRepeatedFieldArrayLength(input, 24);
-                        long[] jArr = this.timeInSignalQualityLevelMs;
-                        int i = jArr == null ? 0 : jArr.length;
+                        int i = this.timeInSignalQualityLevelMs == null ? 0 : this.timeInSignalQualityLevelMs.length;
                         long[] newArray = new long[i + arrayLength];
                         if (i != 0) {
-                            System.arraycopy(jArr, 0, newArray, 0, i);
+                            System.arraycopy(this.timeInSignalQualityLevelMs, 0, newArray, 0, i);
                         }
                         while (i < newArray.length - 1) {
                             newArray[i] = input.readInt64();
@@ -447,11 +397,10 @@ public interface GnssLogsProto {
                             arrayLength2++;
                         }
                         input.rewindToPosition(startPos);
-                        long[] jArr2 = this.timeInSignalQualityLevelMs;
-                        int i2 = jArr2 == null ? 0 : jArr2.length;
+                        int i2 = this.timeInSignalQualityLevelMs == null ? 0 : this.timeInSignalQualityLevelMs.length;
                         long[] newArray2 = new long[i2 + arrayLength2];
                         if (i2 != 0) {
-                            System.arraycopy(jArr2, 0, newArray2, 0, i2);
+                            System.arraycopy(this.timeInSignalQualityLevelMs, 0, newArray2, 0, i2);
                         }
                         while (i2 < newArray2.length) {
                             newArray2[i2] = input.readInt64();

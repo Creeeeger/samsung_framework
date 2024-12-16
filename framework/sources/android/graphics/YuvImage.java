@@ -18,23 +18,17 @@ public class YuvImage {
 
     private static native boolean nativeCompressToJpeg(byte[] bArr, int i, int i2, int i3, int[] iArr, int[] iArr2, int i4, OutputStream outputStream, byte[] bArr2);
 
-    private static native boolean nativeCompressToJpegR(byte[] bArr, int i, byte[] bArr2, int i2, int i3, int i4, int i5, OutputStream outputStream, byte[] bArr3);
+    private static native boolean nativeCompressToJpegR(byte[] bArr, int i, byte[] bArr2, int i2, int i3, int i4, int i5, OutputStream outputStream, byte[] bArr3, byte[] bArr4, int[] iArr, int[] iArr2);
 
     private static String printSupportedFormats() {
         StringBuilder sb = new StringBuilder();
-        int i = 0;
-        while (true) {
-            String[] strArr = sSupportedFormats;
-            if (i < strArr.length) {
-                sb.append(strArr[i]);
-                if (i != strArr.length - 1) {
-                    sb.append(", ");
-                }
-                i++;
-            } else {
-                return sb.toString();
+        for (int i = 0; i < sSupportedFormats.length; i++) {
+            sb.append(sSupportedFormats[i]);
+            if (i != sSupportedFormats.length - 1) {
+                sb.append(", ");
             }
         }
+        return sb.toString();
     }
 
     private static String printSupportedJpegRColorSpaces(boolean isHdr) {
@@ -89,8 +83,7 @@ public class YuvImage {
     }
 
     public boolean compressToJpeg(Rect rectangle, int quality, OutputStream stream) {
-        int i = this.mFormat;
-        if (i != 17 && i != 20) {
+        if (this.mFormat != 17 && this.mFormat != 20) {
             throw new IllegalArgumentException("Only ImageFormat.NV21 and ImageFormat.YUY2 are supported.");
         }
         if (this.mColorSpace.getId() != ColorSpace.Named.SRGB.ordinal()) {
@@ -112,28 +105,33 @@ public class YuvImage {
     }
 
     public boolean compressToJpegR(YuvImage sdr, int quality, OutputStream stream) {
+        byte[] emptyExif = new byte[0];
+        return compressToJpegR(sdr, quality, stream, emptyExif);
+    }
+
+    public boolean compressToJpegR(YuvImage sdr, int quality, OutputStream stream, byte[] exif) {
         if (sdr == null) {
             throw new IllegalArgumentException("SDR input cannot be null");
         }
         if (this.mData.length == 0 || sdr.getYuvData().length == 0) {
             throw new IllegalArgumentException("Input images cannot be empty");
         }
-        if (this.mFormat != 54 || sdr.getYuvFormat() != 35) {
-            throw new IllegalArgumentException("only support ImageFormat.YCBCR_P010 and ImageFormat.YUV_420_888");
+        if (this.mFormat == 54 && sdr.getYuvFormat() == 35) {
+            if (sdr.getWidth() != this.mWidth || sdr.getHeight() != this.mHeight) {
+                throw new IllegalArgumentException("HDR and SDR resolution mismatch");
+            }
+            if (quality < 0 || quality > 100) {
+                throw new IllegalArgumentException("quality must be 0..100");
+            }
+            if (stream == null) {
+                throw new IllegalArgumentException("stream cannot be null");
+            }
+            if (!isSupportedJpegRColorSpace(true, this.mColorSpace.getId()) || !isSupportedJpegRColorSpace(false, sdr.getColorSpace().getId())) {
+                throw new IllegalArgumentException("Not supported color space. SDR only supports: " + printSupportedJpegRColorSpaces(false) + "HDR only supports: " + printSupportedJpegRColorSpaces(true));
+            }
+            return nativeCompressToJpegR(this.mData, this.mColorSpace.getDataSpace(), sdr.getYuvData(), sdr.getColorSpace().getDataSpace(), this.mWidth, this.mHeight, quality, stream, new byte[4096], exif, this.mStrides, sdr.getStrides());
         }
-        if (sdr.getWidth() != this.mWidth || sdr.getHeight() != this.mHeight) {
-            throw new IllegalArgumentException("HDR and SDR resolution mismatch");
-        }
-        if (quality < 0 || quality > 100) {
-            throw new IllegalArgumentException("quality must be 0..100");
-        }
-        if (stream == null) {
-            throw new IllegalArgumentException("stream cannot be null");
-        }
-        if (!isSupportedJpegRColorSpace(true, this.mColorSpace.getId()) || !isSupportedJpegRColorSpace(false, sdr.getColorSpace().getId())) {
-            throw new IllegalArgumentException("Not supported color space. SDR only supports: " + printSupportedJpegRColorSpaces(false) + "HDR only supports: " + printSupportedJpegRColorSpaces(true));
-        }
-        return nativeCompressToJpegR(this.mData, this.mColorSpace.getDataSpace(), sdr.getYuvData(), sdr.getColorSpace().getDataSpace(), this.mWidth, this.mHeight, quality, stream, new byte[4096]);
+        throw new IllegalArgumentException("only support ImageFormat.YCBCR_P010 and ImageFormat.YUV_420_888");
     }
 
     public byte[] getYuvData() {
@@ -161,14 +159,11 @@ public class YuvImage {
     }
 
     int[] calculateOffsets(int left, int top) {
-        int i = this.mFormat;
-        if (i == 17) {
-            int[] iArr = this.mStrides;
-            int i2 = iArr[0];
-            int[] offsets = {(top * i2) + left, (this.mHeight * i2) + ((top / 2) * iArr[1]) + ((left / 2) * 2)};
+        if (this.mFormat == 17) {
+            int[] offsets = {(this.mStrides[0] * top) + left, (this.mHeight * this.mStrides[0]) + ((top / 2) * this.mStrides[1]) + ((left / 2) * 2)};
             return offsets;
         }
-        if (i != 20) {
+        if (this.mFormat != 20) {
             return null;
         }
         int[] offsets2 = {(this.mStrides[0] * top) + ((left / 2) * 4)};

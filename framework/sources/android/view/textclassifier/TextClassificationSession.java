@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import sun.misc.Cleaner;
 
 /* loaded from: classes4.dex */
-public final class TextClassificationSession implements TextClassifier {
+final class TextClassificationSession implements TextClassifier {
     private static final String LOG_TAG = "TextClassificationSession";
     private final TextClassificationContext mClassificationContext;
     private final Cleaner mCleaner;
@@ -19,28 +19,24 @@ public final class TextClassificationSession implements TextClassifier {
     private boolean mDestroyed;
     private final SelectionEventHelper mEventHelper;
     private final Object mLock = new Object();
-    private final TextClassificationSessionId mSessionId;
+    private final TextClassificationSessionId mSessionId = new TextClassificationSessionId();
 
-    public TextClassificationSession(TextClassificationContext context, TextClassifier delegate) {
-        TextClassificationContext textClassificationContext = (TextClassificationContext) Objects.requireNonNull(context);
-        this.mClassificationContext = textClassificationContext;
-        TextClassifier textClassifier = (TextClassifier) Objects.requireNonNull(delegate);
-        this.mDelegate = textClassifier;
-        TextClassificationSessionId textClassificationSessionId = new TextClassificationSessionId();
-        this.mSessionId = textClassificationSessionId;
-        SelectionEventHelper selectionEventHelper = new SelectionEventHelper(textClassificationSessionId, textClassificationContext);
-        this.mEventHelper = selectionEventHelper;
+    TextClassificationSession(TextClassificationContext context, TextClassifier delegate) {
+        this.mClassificationContext = (TextClassificationContext) Objects.requireNonNull(context);
+        this.mDelegate = (TextClassifier) Objects.requireNonNull(delegate);
+        this.mEventHelper = new SelectionEventHelper(this.mSessionId, this.mClassificationContext);
         initializeRemoteSession();
-        this.mCleaner = Cleaner.create(this, new CleanerRunnable(selectionEventHelper, textClassifier));
+        this.mCleaner = Cleaner.create(this, new CleanerRunnable(this.mEventHelper, this.mDelegate));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextSelection lambda$suggestSelection$0(TextSelection.Request request) {
         return this.mDelegate.suggestSelection(request);
     }
 
     @Override // android.view.textclassifier.TextClassifier
     public TextSelection suggestSelection(final TextSelection.Request request) {
-        return (TextSelection) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda3
+        return (TextSelection) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda5
             @Override // java.util.function.Supplier
             public final Object get() {
                 TextSelection lambda$suggestSelection$0;
@@ -51,19 +47,19 @@ public final class TextClassificationSession implements TextClassifier {
     }
 
     private void initializeRemoteSession() {
-        TextClassifier textClassifier = this.mDelegate;
-        if (textClassifier instanceof SystemTextClassifier) {
-            ((SystemTextClassifier) textClassifier).initializeRemoteSession(this.mClassificationContext, this.mSessionId);
+        if (this.mDelegate instanceof SystemTextClassifier) {
+            ((SystemTextClassifier) this.mDelegate).initializeRemoteSession(this.mClassificationContext, this.mSessionId);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextClassification lambda$classifyText$1(TextClassification.Request request) {
         return this.mDelegate.classifyText(request);
     }
 
     @Override // android.view.textclassifier.TextClassifier
     public TextClassification classifyText(final TextClassification.Request request) {
-        return (TextClassification) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda1
+        return (TextClassification) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
                 TextClassification lambda$classifyText$1;
@@ -73,13 +69,14 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextLinks lambda$generateLinks$2(TextLinks.Request request) {
         return this.mDelegate.generateLinks(request);
     }
 
     @Override // android.view.textclassifier.TextClassifier
     public TextLinks generateLinks(final TextLinks.Request request) {
-        return (TextLinks) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda2
+        return (TextLinks) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda4
             @Override // java.util.function.Supplier
             public final Object get() {
                 TextLinks lambda$generateLinks$2;
@@ -89,13 +86,14 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ConversationActions lambda$suggestConversationActions$3(ConversationActions.Request request) {
         return this.mDelegate.suggestConversationActions(request);
     }
 
     @Override // android.view.textclassifier.TextClassifier
     public ConversationActions suggestConversationActions(final ConversationActions.Request request) {
-        return (ConversationActions) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda0
+        return (ConversationActions) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda6
             @Override // java.util.function.Supplier
             public final Object get() {
                 ConversationActions lambda$suggestConversationActions$3;
@@ -105,13 +103,14 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ TextLanguage lambda$detectLanguage$4(TextLanguage.Request request) {
         return this.mDelegate.detectLanguage(request);
     }
 
     @Override // android.view.textclassifier.TextClassifier
     public TextLanguage detectLanguage(final TextLanguage.Request request) {
-        return (TextLanguage) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda6
+        return (TextLanguage) checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
             public final Object get() {
                 TextLanguage lambda$detectLanguage$4;
@@ -135,7 +134,7 @@ public final class TextClassificationSession implements TextClassifier {
 
     @Override // android.view.textclassifier.TextClassifier
     public void onSelectionEvent(final SelectionEvent event) {
-        checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda4
+        checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda3
             @Override // java.util.function.Supplier
             public final Object get() {
                 Object lambda$onSelectionEvent$5;
@@ -145,6 +144,7 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$onSelectionEvent$5(SelectionEvent event) {
         try {
             if (this.mEventHelper.sanitizeEvent(event)) {
@@ -160,7 +160,7 @@ public final class TextClassificationSession implements TextClassifier {
 
     @Override // android.view.textclassifier.TextClassifier
     public void onTextClassifierEvent(final TextClassifierEvent event) {
-        checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda5
+        checkDestroyedAndRun(new Supplier() { // from class: android.view.textclassifier.TextClassificationSession$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
                 Object lambda$onTextClassifierEvent$6;
@@ -170,6 +170,7 @@ public final class TextClassificationSession implements TextClassifier {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$onTextClassifierEvent$6(TextClassifierEvent event) {
         try {
             event.mHiddenTempSessionId = this.mSessionId;
@@ -212,8 +213,7 @@ public final class TextClassificationSession implements TextClassifier {
         throw new IllegalStateException("This TextClassification session has been destroyed");
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SelectionEventHelper {
+    private static final class SelectionEventHelper {
         private final TextClassificationContext mContext;
         private int mInvocationMethod = 0;
         private SelectionEvent mPrevEvent;
@@ -241,8 +241,7 @@ public final class TextClassificationSession implements TextClassifier {
                     this.mStartEvent = event;
                     break;
                 case 2:
-                    SelectionEvent selectionEvent = this.mPrevEvent;
-                    if (selectionEvent != null && selectionEvent.getAbsoluteStart() == event.getAbsoluteStart() && this.mPrevEvent.getAbsoluteEnd() == event.getAbsoluteEnd()) {
+                    if (this.mPrevEvent != null && this.mPrevEvent.getAbsoluteStart() == event.getAbsoluteStart() && this.mPrevEvent.getAbsoluteEnd() == event.getAbsoluteEnd()) {
                         return false;
                     }
                     break;
@@ -253,25 +252,21 @@ public final class TextClassificationSession implements TextClassifier {
                     break;
                 case 100:
                 case 107:
-                    SelectionEvent selectionEvent2 = this.mPrevEvent;
-                    if (selectionEvent2 != null) {
-                        event.setEntityType(selectionEvent2.getEntityType());
+                    if (this.mPrevEvent != null) {
+                        event.setEntityType(this.mPrevEvent.getEntityType());
                         break;
                     }
                     break;
             }
             event.setEventTime(now);
-            SelectionEvent selectionEvent3 = this.mStartEvent;
-            if (selectionEvent3 != null) {
-                event.setSessionId(selectionEvent3.getSessionId()).setDurationSinceSessionStart(now - this.mStartEvent.getEventTime()).setStart(event.getAbsoluteStart() - this.mStartEvent.getAbsoluteStart()).setEnd(event.getAbsoluteEnd() - this.mStartEvent.getAbsoluteStart());
+            if (this.mStartEvent != null) {
+                event.setSessionId(this.mStartEvent.getSessionId()).setDurationSinceSessionStart(now - this.mStartEvent.getEventTime()).setStart(event.getAbsoluteStart() - this.mStartEvent.getAbsoluteStart()).setEnd(event.getAbsoluteEnd() - this.mStartEvent.getAbsoluteStart());
             }
-            SelectionEvent selectionEvent4 = this.mSmartEvent;
-            if (selectionEvent4 != null) {
-                event.setResultId(selectionEvent4.getResultId()).setSmartStart(this.mSmartEvent.getAbsoluteStart() - this.mStartEvent.getAbsoluteStart()).setSmartEnd(this.mSmartEvent.getAbsoluteEnd() - this.mStartEvent.getAbsoluteStart());
+            if (this.mSmartEvent != null) {
+                event.setResultId(this.mSmartEvent.getResultId()).setSmartStart(this.mSmartEvent.getAbsoluteStart() - this.mStartEvent.getAbsoluteStart()).setSmartEnd(this.mSmartEvent.getAbsoluteEnd() - this.mStartEvent.getAbsoluteStart());
             }
-            SelectionEvent selectionEvent5 = this.mPrevEvent;
-            if (selectionEvent5 != null) {
-                event.setDurationSincePreviousEvent(now - selectionEvent5.getEventTime()).setEventIndex(this.mPrevEvent.getEventIndex() + 1);
+            if (this.mPrevEvent != null) {
+                event.setDurationSincePreviousEvent(now - this.mPrevEvent.getEventTime()).setEventIndex(this.mPrevEvent.getEventIndex() + 1);
             }
             this.mPrevEvent = event;
             return true;
@@ -300,23 +295,20 @@ public final class TextClassificationSession implements TextClassifier {
                     if (SelectionSessionLogger.isPlatformLocalTextClassifierSmartSelection(event.getResultId())) {
                         if (event.getAbsoluteEnd() - event.getAbsoluteStart() > 1) {
                             event.setEventType(4);
-                            return;
+                            break;
                         } else {
                             event.setEventType(3);
-                            return;
+                            break;
                         }
+                    } else {
+                        event.setEventType(5);
+                        break;
                     }
-                    event.setEventType(5);
-                    return;
-                default:
-                    return;
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class CleanerRunnable implements Runnable {
+    private static class CleanerRunnable implements Runnable {
         private final TextClassifier mDelegate;
         private final SelectionEventHelper mEventHelper;
 

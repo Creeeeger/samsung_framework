@@ -2,6 +2,7 @@ package android.window;
 
 import android.app.ActivityManager;
 import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,14 +16,13 @@ import android.window.IWindowlessStartingSurfaceCallback;
 /* loaded from: classes4.dex */
 public final class StartingWindowInfo implements Parcelable {
     public static final Parcelable.Creator<StartingWindowInfo> CREATOR = new Parcelable.Creator<StartingWindowInfo>() { // from class: android.window.StartingWindowInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartingWindowInfo createFromParcel(Parcel source) {
             return new StartingWindowInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StartingWindowInfo[] newArray(int size) {
             return new StartingWindowInfo[size];
@@ -38,6 +38,7 @@ public final class StartingWindowInfo implements Parcelable {
     public static final int TYPE_PARAMETER_ACTIVITY_DRAWN = 64;
     public static final int TYPE_PARAMETER_ALLOW_HANDLE_SOLID_COLOR_SCREEN = 128;
     public static final int TYPE_PARAMETER_ALLOW_TASK_SNAPSHOT = 8;
+    public static final int TYPE_PARAMETER_APP_PREFERS_ICON = 512;
     public static final int TYPE_PARAMETER_LEGACY_SPLASH_SCREEN = Integer.MIN_VALUE;
     public static final int TYPE_PARAMETER_NEW_TASK = 1;
     public static final int TYPE_PARAMETER_PROCESS_RUNNING = 4;
@@ -52,40 +53,36 @@ public final class StartingWindowInfo implements Parcelable {
     public int splashScreenThemeResId;
     public int startingWindowTypeParameter;
     public ActivityInfo targetActivityInfo;
+    public final Rect taskBounds;
     public ActivityManager.RunningTaskInfo taskInfo;
     public TaskSnapshot taskSnapshot;
     public InsetsState topOpaqueWindowInsetsState;
     public WindowManager.LayoutParams topOpaqueWindowLayoutParams;
     public IWindowlessStartingSurfaceCallback windowlessStartingSurfaceCallback;
 
-    /* loaded from: classes4.dex */
     public @interface StartingTypeParams {
     }
 
-    /* loaded from: classes4.dex */
     public @interface StartingWindowType {
     }
 
-    /* synthetic */ StartingWindowInfo(Parcel parcel, StartingWindowInfoIA startingWindowInfoIA) {
-        this(parcel);
-    }
-
     public void notifyAddComplete(SurfaceControl addedSurface) {
-        IWindowlessStartingSurfaceCallback iWindowlessStartingSurfaceCallback = this.windowlessStartingSurfaceCallback;
-        if (iWindowlessStartingSurfaceCallback != null) {
+        if (this.windowlessStartingSurfaceCallback != null) {
             try {
-                iWindowlessStartingSurfaceCallback.onSurfaceAdded(addedSurface);
+                this.windowlessStartingSurfaceCallback.onSurfaceAdded(addedSurface);
             } catch (RemoteException e) {
             }
         }
     }
 
     public StartingWindowInfo() {
+        this.taskBounds = new Rect();
         this.isKeyguardOccluded = false;
         this.requestedVisibleTypes = WindowInsets.Type.defaultVisible();
     }
 
     private StartingWindowInfo(Parcel source) {
+        this.taskBounds = new Rect();
         this.isKeyguardOccluded = false;
         this.requestedVisibleTypes = WindowInsets.Type.defaultVisible();
         readFromParcel(source);
@@ -103,6 +100,7 @@ public final class StartingWindowInfo implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedObject(this.taskInfo, flags);
+        this.taskBounds.writeToParcel(dest, flags);
         dest.writeTypedObject(this.targetActivityInfo, flags);
         dest.writeInt(this.startingWindowTypeParameter);
         dest.writeTypedObject(this.topOpaqueWindowInsetsState, flags);
@@ -119,6 +117,7 @@ public final class StartingWindowInfo implements Parcelable {
 
     void readFromParcel(Parcel source) {
         this.taskInfo = (ActivityManager.RunningTaskInfo) source.readTypedObject(ActivityManager.RunningTaskInfo.CREATOR);
+        this.taskBounds.readFromParcel(source);
         this.targetActivityInfo = (ActivityInfo) source.readTypedObject(ActivityInfo.CREATOR);
         this.startingWindowTypeParameter = source.readInt();
         this.topOpaqueWindowInsetsState = (InsetsState) source.readTypedObject(InsetsState.CREATOR);
@@ -135,22 +134,5 @@ public final class StartingWindowInfo implements Parcelable {
 
     public String toString() {
         return "StartingWindowInfo{taskId=" + this.taskInfo.taskId + " targetActivityInfo=" + this.targetActivityInfo + " displayId=" + this.taskInfo.displayId + " topActivityType=" + this.taskInfo.topActivityType + " preferredStartingWindowType=" + Integer.toHexString(this.startingWindowTypeParameter) + " insetsState=" + this.topOpaqueWindowInsetsState + " topWindowLayoutParams=" + this.topOpaqueWindowLayoutParams + " mainWindowLayoutParams=" + this.mainWindowLayoutParams + " splashScreenThemeResId " + Integer.toHexString(this.splashScreenThemeResId);
-    }
-
-    /* renamed from: android.window.StartingWindowInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StartingWindowInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StartingWindowInfo createFromParcel(Parcel source) {
-            return new StartingWindowInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StartingWindowInfo[] newArray(int size) {
-            return new StartingWindowInfo[size];
-        }
     }
 }

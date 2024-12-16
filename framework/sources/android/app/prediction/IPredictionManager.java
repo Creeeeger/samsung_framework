@@ -5,6 +5,7 @@ import android.content.pm.ParceledListSlice;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.os.IRemoteCallback;
 import android.os.Parcel;
 import android.os.RemoteException;
 
@@ -24,11 +25,12 @@ public interface IPredictionManager extends IInterface {
 
     void requestPredictionUpdate(AppPredictionSessionId appPredictionSessionId) throws RemoteException;
 
+    void requestServiceFeatures(AppPredictionSessionId appPredictionSessionId, IRemoteCallback iRemoteCallback) throws RemoteException;
+
     void sortAppTargets(AppPredictionSessionId appPredictionSessionId, ParceledListSlice parceledListSlice, IPredictionCallback iPredictionCallback) throws RemoteException;
 
     void unregisterPredictionUpdates(AppPredictionSessionId appPredictionSessionId, IPredictionCallback iPredictionCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPredictionManager {
         @Override // android.app.prediction.IPredictionManager
         public void createPredictionSession(AppPredictionContext context, AppPredictionSessionId sessionId, IBinder token) throws RemoteException {
@@ -62,13 +64,16 @@ public interface IPredictionManager extends IInterface {
         public void onDestroyPredictionSession(AppPredictionSessionId sessionId) throws RemoteException {
         }
 
+        @Override // android.app.prediction.IPredictionManager
+        public void requestServiceFeatures(AppPredictionSessionId sessionId, IRemoteCallback callback) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPredictionManager {
         static final int TRANSACTION_createPredictionSession = 1;
         static final int TRANSACTION_notifyAppTargetEvent = 2;
@@ -76,6 +81,7 @@ public interface IPredictionManager extends IInterface {
         static final int TRANSACTION_onDestroyPredictionSession = 8;
         static final int TRANSACTION_registerPredictionUpdates = 5;
         static final int TRANSACTION_requestPredictionUpdate = 7;
+        static final int TRANSACTION_requestServiceFeatures = 9;
         static final int TRANSACTION_sortAppTargets = 4;
         static final int TRANSACTION_unregisterPredictionUpdates = 6;
 
@@ -117,6 +123,8 @@ public interface IPredictionManager extends IInterface {
                     return "requestPredictionUpdate";
                 case 8:
                     return "onDestroyPredictionSession";
+                case 9:
+                    return "requestServiceFeatures";
                 default:
                     return null;
             }
@@ -132,78 +140,81 @@ public interface IPredictionManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPredictionManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPredictionManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPredictionManager.DESCRIPTOR);
+                case 1:
+                    AppPredictionContext _arg0 = (AppPredictionContext) data.readTypedObject(AppPredictionContext.CREATOR);
+                    AppPredictionSessionId _arg1 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    IBinder _arg2 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    createPredictionSession(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    AppPredictionSessionId _arg02 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    AppTargetEvent _arg12 = (AppTargetEvent) data.readTypedObject(AppTargetEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyAppTargetEvent(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    AppPredictionSessionId _arg03 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    String _arg13 = data.readString();
+                    ParceledListSlice _arg22 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyLaunchLocationShown(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    AppPredictionSessionId _arg04 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    ParceledListSlice _arg14 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    IPredictionCallback _arg23 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    sortAppTargets(_arg04, _arg14, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    AppPredictionSessionId _arg05 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    IPredictionCallback _arg15 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerPredictionUpdates(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    AppPredictionSessionId _arg06 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    IPredictionCallback _arg16 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPredictionUpdates(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    AppPredictionSessionId _arg07 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestPredictionUpdate(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    AppPredictionSessionId _arg08 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDestroyPredictionSession(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    AppPredictionSessionId _arg09 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
+                    IRemoteCallback _arg17 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestServiceFeatures(_arg09, _arg17);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AppPredictionContext _arg0 = (AppPredictionContext) data.readTypedObject(AppPredictionContext.CREATOR);
-                            AppPredictionSessionId _arg1 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            IBinder _arg2 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            createPredictionSession(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            AppPredictionSessionId _arg02 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            AppTargetEvent _arg12 = (AppTargetEvent) data.readTypedObject(AppTargetEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyAppTargetEvent(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            AppPredictionSessionId _arg03 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            String _arg13 = data.readString();
-                            ParceledListSlice _arg22 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyLaunchLocationShown(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            AppPredictionSessionId _arg04 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            ParceledListSlice _arg14 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            IPredictionCallback _arg23 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            sortAppTargets(_arg04, _arg14, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            AppPredictionSessionId _arg05 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            IPredictionCallback _arg15 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPredictionUpdates(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            AppPredictionSessionId _arg06 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            IPredictionCallback _arg16 = IPredictionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterPredictionUpdates(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            AppPredictionSessionId _arg07 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestPredictionUpdate(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            AppPredictionSessionId _arg08 = (AppPredictionSessionId) data.readTypedObject(AppPredictionSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDestroyPredictionSession(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPredictionManager {
+        private static class Proxy implements IPredictionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -347,11 +358,27 @@ public interface IPredictionManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.app.prediction.IPredictionManager
+            public void requestServiceFeatures(AppPredictionSessionId sessionId, IRemoteCallback callback) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IPredictionManager.DESCRIPTOR);
+                    _data.writeTypedObject(sessionId, 0);
+                    _data.writeStrongInterface(callback);
+                    this.mRemote.transact(9, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 7;
+            return 8;
         }
     }
 }

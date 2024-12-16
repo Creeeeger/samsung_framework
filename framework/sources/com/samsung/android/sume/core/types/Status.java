@@ -5,9 +5,13 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum Status {
-    OK(0);
+    OK(0),
+    ERROR_NOT_SUPPORTED(-1),
+    ERROR_PROCESS_FAILED(-2),
+    ERROR_DECODE_FAILED(-3),
+    ERROR_ENCODE_FAILED(-4);
 
     private final int value;
 
@@ -29,11 +33,11 @@ public enum Status {
         });
     }
 
-    public static /* synthetic */ boolean lambda$from$0(int value, Status e) {
+    static /* synthetic */ boolean lambda$from$0(int value, Status e) {
         return e.value == value;
     }
 
-    public static /* synthetic */ InvalidParameterException lambda$from$1(int value) {
+    static /* synthetic */ InvalidParameterException lambda$from$1(int value) {
         return new InvalidParameterException("invalid Status value: " + value);
     }
 }

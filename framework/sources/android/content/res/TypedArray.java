@@ -35,7 +35,7 @@ public class TypedArray implements AutoCloseable {
     TypedValue mValue = new TypedValue();
     XmlBlock.Parser mXml;
 
-    public static TypedArray obtain(Resources res, int len) {
+    static TypedArray obtain(Resources res, int len) {
         TypedArray attrs = res.mTypedArrayPool.acquire();
         if (attrs == null) {
             attrs = new TypedArray(res);
@@ -53,12 +53,10 @@ public class TypedArray implements AutoCloseable {
         int indicesLen = len + 1;
         VMRuntime runtime = VMRuntime.getRuntime();
         if (this.mDataAddress == 0 || this.mData.length < dataLen) {
-            int[] iArr = (int[]) runtime.newNonMovableArray(Integer.TYPE, dataLen);
-            this.mData = iArr;
-            this.mDataAddress = runtime.addressOf(iArr);
-            int[] iArr2 = (int[]) runtime.newNonMovableArray(Integer.TYPE, indicesLen);
-            this.mIndices = iArr2;
-            this.mIndicesAddress = runtime.addressOf(iArr2);
+            this.mData = (int[]) runtime.newNonMovableArray(Integer.TYPE, dataLen);
+            this.mDataAddress = runtime.addressOf(this.mData);
+            this.mIndices = (int[]) runtime.newNonMovableArray(Integer.TYPE, indicesLen);
+            this.mIndicesAddress = runtime.addressOf(this.mIndices);
         }
     }
 
@@ -144,7 +142,11 @@ public class TypedArray implements AutoCloseable {
         if (type == 3) {
             int cookie = data[index2 + 2];
             if (cookie < 0) {
-                return this.mXml.getPooledString(data[index2 + 1]).toString();
+                String value = this.mXml.getPooledString(data[index2 + 1]).toString();
+                if (value != null && this.mXml != null && this.mXml.mValidator != null) {
+                    this.mXml.mValidator.validateResStrAttr(this.mXml, index2, value);
+                }
+                return value;
             }
             return null;
         }
@@ -572,8 +574,7 @@ public class TypedArray implements AutoCloseable {
         if (this.mRecycled) {
             throw new RuntimeException("Cannot make calls to a recycled instance!");
         }
-        XmlBlock.Parser parser = this.mXml;
-        return parser != null ? parser.getPositionDescription() : "<internal>";
+        return this.mXml != null ? this.mXml.getPositionDescription() : "<internal>";
     }
 
     public void recycle() {
@@ -661,20 +662,24 @@ public class TypedArray implements AutoCloseable {
     private CharSequence loadStringValueAt(int index) {
         int[] data = this.mData;
         int cookie = data[index + 2];
+        CharSequence value = null;
         if (cookie < 0) {
-            XmlBlock.Parser parser = this.mXml;
-            if (parser != null) {
-                return parser.getPooledString(data[index + 1]);
+            if (this.mXml != null) {
+                value = this.mXml.getPooledString(data[index + 1]);
             }
-            return null;
+        } else {
+            value = this.mAssets.getPooledStringForCookie(cookie, data[index + 1]);
         }
-        return this.mAssets.getPooledStringForCookie(cookie, data[index + 1]);
+        if (value != null && this.mXml != null && this.mXml.mValidator != null) {
+            this.mXml.mValidator.validateResStrAttr(this.mXml, index / 7, value);
+        }
+        return value;
     }
 
     protected TypedArray(Resources resources) {
         this.mResources = resources;
-        this.mMetrics = resources.getDisplayMetrics();
-        this.mAssets = resources.getAssets();
+        this.mMetrics = this.mResources.getDisplayMetrics();
+        this.mAssets = this.mResources.getAssets();
     }
 
     public String toString() {

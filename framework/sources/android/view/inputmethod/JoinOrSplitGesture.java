@@ -8,28 +8,19 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class JoinOrSplitGesture extends HandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<JoinOrSplitGesture> CREATOR = new Parcelable.Creator<JoinOrSplitGesture>() { // from class: android.view.inputmethod.JoinOrSplitGesture.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JoinOrSplitGesture createFromParcel(Parcel source) {
             return new JoinOrSplitGesture(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public JoinOrSplitGesture[] newArray(int size) {
             return new JoinOrSplitGesture[size];
         }
     };
     private final PointF mPoint;
-
-    /* synthetic */ JoinOrSplitGesture(PointF pointF, String str, JoinOrSplitGestureIA joinOrSplitGestureIA) {
-        this(pointF, str);
-    }
-
-    /* synthetic */ JoinOrSplitGesture(Parcel parcel, JoinOrSplitGestureIA joinOrSplitGestureIA) {
-        this(parcel);
-    }
 
     private JoinOrSplitGesture(PointF point, String fallbackText) {
         this.mType = 16;
@@ -47,7 +38,6 @@ public final class JoinOrSplitGesture extends HandwritingGesture implements Parc
         return this.mPoint;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private String mFallbackText;
         private PointF mPoint;
@@ -67,23 +57,6 @@ public final class JoinOrSplitGesture extends HandwritingGesture implements Parc
                 throw new IllegalArgumentException("Point must be set.");
             }
             return new JoinOrSplitGesture(this.mPoint, this.mFallbackText);
-        }
-    }
-
-    /* renamed from: android.view.inputmethod.JoinOrSplitGesture$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<JoinOrSplitGesture> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JoinOrSplitGesture createFromParcel(Parcel source) {
-            return new JoinOrSplitGesture(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public JoinOrSplitGesture[] newArray(int size) {
-            return new JoinOrSplitGesture[size];
         }
     }
 

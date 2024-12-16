@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.DrawableContainer;
 import android.util.AttributeSet;
 import android.util.StateSet;
+import com.android.ims.ImsConfig;
 import com.android.internal.R;
 import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
@@ -16,10 +17,6 @@ public class StateListDrawable extends DrawableContainer {
     private static final String TAG = "StateListDrawable";
     private boolean mMutated;
     private StateListState mStateListState;
-
-    /* synthetic */ StateListDrawable(StateListState stateListState, Resources resources, StateListDrawableIA stateListDrawableIA) {
-        this(stateListState, resources);
-    }
 
     public StateListDrawable() {
         this(null, null);
@@ -43,7 +40,7 @@ public class StateListDrawable extends DrawableContainer {
     }
 
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
         int idx = this.mStateListState.indexOfStateSet(stateSet);
         if (idx < 0) {
@@ -75,104 +72,41 @@ public class StateListDrawable extends DrawableContainer {
         state.mAutoMirrored = a.getBoolean(6, state.mAutoMirrored);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003f, code lost:
-    
-        if (r7 == null) goto L59;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:
-    
-        r9 = r13.next();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0047, code lost:
-    
-        if (r9 != 4) goto L79;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x004a, code lost:
-    
-        if (r9 != 2) goto L73;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x004c, code lost:
-    
-        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r12, r13, r14, r15);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x006d, code lost:
-    
-        throw new org.xmlpull.v1.XmlPullParserException(r13.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x006e, code lost:
-    
-        r0.addStateSet(r8, r7);
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void inflateChildElements(android.content.res.Resources r12, org.xmlpull.v1.XmlPullParser r13, android.util.AttributeSet r14, android.content.res.Resources.Theme r15) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            r11 = this;
-            android.graphics.drawable.StateListDrawable$StateListState r0 = r11.mStateListState
-            int r1 = r13.getDepth()
-            r2 = 1
-            int r1 = r1 + r2
-        L8:
-            int r3 = r13.next()
-            r4 = r3
-            if (r3 == r2) goto L72
-            int r3 = r13.getDepth()
-            r5 = r3
-            if (r3 >= r1) goto L19
-            r3 = 3
-            if (r4 == r3) goto L72
-        L19:
-            r3 = 2
-            if (r4 == r3) goto L1d
-            goto L8
-        L1d:
-            if (r5 > r1) goto L8
-            java.lang.String r6 = r13.getName()
-            java.lang.String r7 = "item"
-            boolean r6 = r6.equals(r7)
-            if (r6 != 0) goto L2d
-            goto L8
-        L2d:
-            int[] r6 = com.android.internal.R.styleable.StateListDrawableItem
-            android.content.res.TypedArray r6 = obtainAttributes(r12, r15, r14, r6)
-            r7 = 0
-            android.graphics.drawable.Drawable r7 = r6.getDrawable(r7)
-            r6.recycle()
-            int[] r8 = r11.extractStateSet(r14)
-            if (r7 != 0) goto L6e
-        L41:
-            int r9 = r13.next()
-            r4 = r9
-            r10 = 4
-            if (r9 != r10) goto L4a
-            goto L41
-        L4a:
-            if (r4 != r3) goto L51
-            android.graphics.drawable.Drawable r7 = android.graphics.drawable.Drawable.createFromXmlInner(r12, r13, r14, r15)
-            goto L6e
-        L51:
-            org.xmlpull.v1.XmlPullParserException r2 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r3 = new java.lang.StringBuilder
-            r3.<init>()
-            java.lang.String r9 = r13.getPositionDescription()
-            java.lang.StringBuilder r3 = r3.append(r9)
-            java.lang.String r9 = ": <item> tag requires a 'drawable' attribute or child tag defining a drawable"
-            java.lang.StringBuilder r3 = r3.append(r9)
-            java.lang.String r3 = r3.toString()
-            r2.<init>(r3)
-            throw r2
-        L6e:
-            r0.addStateSet(r8, r7)
-            goto L8
-        L72:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.graphics.drawable.StateListDrawable.inflateChildElements(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):void");
+    private void inflateChildElements(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        int type;
+        StateListState state = this.mStateListState;
+        int innerDepth = parser.getDepth() + 1;
+        while (true) {
+            int type2 = parser.next();
+            if (type2 != 1) {
+                int depth = parser.getDepth();
+                if (depth >= innerDepth || type2 != 3) {
+                    if (type2 == 2 && depth <= innerDepth && parser.getName().equals(ImsConfig.EXTRA_CHANGED_ITEM)) {
+                        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.StateListDrawableItem);
+                        Drawable dr = a.getDrawable(0);
+                        a.recycle();
+                        int[] states = extractStateSet(attrs);
+                        if (dr == null) {
+                            do {
+                                type = parser.next();
+                            } while (type == 4);
+                            if (type != 2) {
+                                throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+                            }
+                            dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
+                        }
+                        state.addStateSet(states, dr);
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
     }
 
-    public int[] extractStateSet(AttributeSet attrs) {
+    int[] extractStateSet(AttributeSet attrs) {
         int j = 0;
         int numAttrs = attrs.getAttributeCount();
         int[] states = new int[numAttrs];
@@ -201,24 +135,12 @@ public class StateListDrawable extends DrawableContainer {
         return this.mStateListState.getChildCount();
     }
 
-    private int hidden_getStateCount() {
-        return getStateCount();
-    }
-
     public int[] getStateSet(int index) {
         return this.mStateListState.mStateSets[index];
     }
 
-    private int[] hidden_getStateSet(int index) {
-        return getStateSet(index);
-    }
-
     public Drawable getStateDrawable(int index) {
         return this.mStateListState.getChild(index);
-    }
-
-    private Drawable hidden_getStateDrawable(int index) {
-        return getStateDrawable(index);
     }
 
     public int findStateDrawableIndex(int[] stateSet) {
@@ -234,6 +156,7 @@ public class StateListDrawable extends DrawableContainer {
         return this;
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.graphics.drawable.DrawableContainer
     public StateListState cloneConstantState() {
         return new StateListState(this.mStateListState, this, null);
@@ -245,41 +168,37 @@ public class StateListDrawable extends DrawableContainer {
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static class StateListState extends DrawableContainer.DrawableContainerState {
+    static class StateListState extends DrawableContainer.DrawableContainerState {
         int[][] mStateSets;
         int[] mThemeAttrs;
 
-        public StateListState(StateListState orig, StateListDrawable owner, Resources res) {
+        StateListState(StateListState orig, StateListDrawable owner, Resources res) {
             super(orig, owner, res);
             if (orig != null) {
                 this.mThemeAttrs = orig.mThemeAttrs;
                 this.mStateSets = orig.mStateSets;
             } else {
                 this.mThemeAttrs = null;
-                this.mStateSets = new int[getCapacity()];
+                this.mStateSets = new int[getCapacity()][];
             }
         }
 
         void mutate() {
-            int[] iArr = this.mThemeAttrs;
-            this.mThemeAttrs = iArr != null ? (int[]) iArr.clone() : null;
-            int[][] iArr2 = this.mStateSets;
-            int[][] stateSets = new int[iArr2.length];
-            for (int i = iArr2.length - 1; i >= 0; i--) {
-                int[] iArr3 = this.mStateSets[i];
-                stateSets[i] = iArr3 != null ? (int[]) iArr3.clone() : null;
+            this.mThemeAttrs = this.mThemeAttrs != null ? (int[]) this.mThemeAttrs.clone() : null;
+            int[][] stateSets = new int[this.mStateSets.length][];
+            for (int i = this.mStateSets.length - 1; i >= 0; i--) {
+                stateSets[i] = this.mStateSets[i] != null ? (int[]) this.mStateSets[i].clone() : null;
             }
             this.mStateSets = stateSets;
         }
 
-        public int addStateSet(int[] stateSet, Drawable drawable) {
+        int addStateSet(int[] stateSet, Drawable drawable) {
             int pos = addChild(drawable);
             this.mStateSets[pos] = stateSet;
             return pos;
         }
 
-        public int indexOfStateSet(int[] stateSet) {
+        int indexOfStateSet(int[] stateSet) {
             int[][] stateSets = this.mStateSets;
             int N = getChildCount();
             for (int i = 0; i < N; i++) {
@@ -312,7 +231,7 @@ public class StateListDrawable extends DrawableContainer {
         @Override // android.graphics.drawable.DrawableContainer.DrawableContainerState
         public void growArray(int oldSize, int newSize) {
             super.growArray(oldSize, newSize);
-            int[][] newStateSets = new int[newSize];
+            int[][] newStateSets = new int[newSize][];
             System.arraycopy(this.mStateSets, 0, newStateSets, 0, oldSize);
             this.mStateSets = newStateSets;
         }
@@ -325,7 +244,7 @@ public class StateListDrawable extends DrawableContainer {
     }
 
     @Override // android.graphics.drawable.DrawableContainer
-    public void setConstantState(DrawableContainer.DrawableContainerState state) {
+    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof StateListState) {
             this.mStateListState = (StateListState) state;
@@ -338,7 +257,7 @@ public class StateListDrawable extends DrawableContainer {
         onStateChange(getState());
     }
 
-    public StateListDrawable(StateListState state) {
+    StateListDrawable(StateListState state) {
         if (state != null) {
             setConstantState(state);
         }

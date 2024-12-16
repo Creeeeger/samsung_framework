@@ -53,36 +53,32 @@ public class Spatializer {
     private final Object mPoseListenerLock = new Object();
     private final Object mOutputListenerLock = new Object();
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface HeadTrackingMode {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface HeadTrackingModeSet {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface HeadTrackingModeSupported {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ImmersiveAudioLevel {
     }
 
     @SystemApi(client = SystemApi.Client.PRIVILEGED_APPS)
-    /* loaded from: classes2.dex */
     public interface OnHeadToSoundstagePoseUpdatedListener {
         void onHeadToSoundstagePoseUpdated(Spatializer spatializer, float[] fArr);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnHeadTrackerAvailableListener {
         void onHeadTrackerAvailableChanged(Spatializer spatializer, boolean z);
     }
 
     @SystemApi(client = SystemApi.Client.PRIVILEGED_APPS)
-    /* loaded from: classes2.dex */
     public interface OnHeadTrackingModeChangedListener {
         void onDesiredHeadTrackingModeChanged(Spatializer spatializer, int i);
 
@@ -90,19 +86,17 @@ public class Spatializer {
     }
 
     @SystemApi(client = SystemApi.Client.PRIVILEGED_APPS)
-    /* loaded from: classes2.dex */
     public interface OnSpatializerOutputChangedListener {
         void onSpatializerOutputChanged(Spatializer spatializer, int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnSpatializerStateChangedListener {
         void onSpatializerAvailableChanged(Spatializer spatializer, boolean z);
 
         void onSpatializerEnabledChanged(Spatializer spatializer, boolean z);
     }
 
-    public Spatializer(AudioManager am) {
+    protected Spatializer(AudioManager am) {
         this.mAm = (AudioManager) Objects.requireNonNull(am);
     }
 
@@ -177,7 +171,7 @@ public class Spatializer {
     }
 
     public void addOnHeadTrackerAvailableListener(Executor executor, OnHeadTrackerAvailableListener listener) {
-        this.mHeadTrackerListenerMgr.addListener(executor, listener, "addOnHeadTrackerAvailableListener", new Supplier() { // from class: android.media.Spatializer$$ExternalSyntheticLambda0
+        this.mHeadTrackerListenerMgr.addListener(executor, listener, "addOnHeadTrackerAvailableListener", new Supplier() { // from class: android.media.Spatializer$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
                 CallbackUtil.DispatcherStub lambda$addOnHeadTrackerAvailableListener$0;
@@ -187,6 +181,7 @@ public class Spatializer {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnHeadTrackerAvailableListener$0() {
         return new SpatializerHeadTrackerAvailableDispatcherStub();
     }
@@ -240,7 +235,7 @@ public class Spatializer {
     }
 
     public void addOnSpatializerStateChangedListener(Executor executor, OnSpatializerStateChangedListener listener) {
-        this.mStateListenerMgr.addListener(executor, listener, "addOnSpatializerStateChangedListener", new Supplier() { // from class: android.media.Spatializer$$ExternalSyntheticLambda2
+        this.mStateListenerMgr.addListener(executor, listener, "addOnSpatializerStateChangedListener", new Supplier() { // from class: android.media.Spatializer$$ExternalSyntheticLambda0
             @Override // java.util.function.Supplier
             public final Object get() {
                 CallbackUtil.DispatcherStub lambda$addOnSpatializerStateChangedListener$1;
@@ -250,6 +245,7 @@ public class Spatializer {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnSpatializerStateChangedListener$1() {
         return new SpatializerInfoDispatcherStub();
     }
@@ -286,12 +282,8 @@ public class Spatializer {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SpatializerInfoDispatcherStub extends ISpatializerCallback.Stub implements CallbackUtil.DispatcherStub {
-        /* synthetic */ SpatializerInfoDispatcherStub(Spatializer spatializer, SpatializerInfoDispatcherStubIA spatializerInfoDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class SpatializerInfoDispatcherStub extends ISpatializerCallback.Stub implements CallbackUtil.DispatcherStub {
         private SpatializerInfoDispatcherStub() {
         }
 
@@ -312,7 +304,7 @@ public class Spatializer {
 
         @Override // android.media.ISpatializerCallback
         public void dispatchSpatializerEnabledChanged(final boolean enabled) {
-            Spatializer.this.mStateListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerInfoDispatcherStub$$ExternalSyntheticLambda1
+            Spatializer.this.mStateListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerInfoDispatcherStub$$ExternalSyntheticLambda0
                 @Override // android.media.CallbackUtil.CallbackMethod
                 public final void callbackMethod(Object obj) {
                     Spatializer.SpatializerInfoDispatcherStub.this.lambda$dispatchSpatializerEnabledChanged$0(enabled, (Spatializer.OnSpatializerStateChangedListener) obj);
@@ -320,13 +312,14 @@ public class Spatializer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerEnabledChanged$0(boolean enabled, OnSpatializerStateChangedListener listener) {
             listener.onSpatializerEnabledChanged(Spatializer.this, enabled);
         }
 
         @Override // android.media.ISpatializerCallback
         public void dispatchSpatializerAvailableChanged(final boolean available) {
-            Spatializer.this.mStateListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerInfoDispatcherStub$$ExternalSyntheticLambda0
+            Spatializer.this.mStateListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerInfoDispatcherStub$$ExternalSyntheticLambda1
                 @Override // android.media.CallbackUtil.CallbackMethod
                 public final void callbackMethod(Object obj) {
                     Spatializer.SpatializerInfoDispatcherStub.this.lambda$dispatchSpatializerAvailableChanged$1(available, (Spatializer.OnSpatializerStateChangedListener) obj);
@@ -334,6 +327,7 @@ public class Spatializer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerAvailableChanged$1(boolean available, OnSpatializerStateChangedListener listener) {
             listener.onSpatializerAvailableChanged(Spatializer.this, available);
         }
@@ -404,6 +398,7 @@ public class Spatializer {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnHeadTrackingModeChangedListener$2() {
         return new SpatializerHeadTrackingDispatcherStub();
     }
@@ -524,12 +519,8 @@ public class Spatializer {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SpatializerHeadTrackingDispatcherStub extends ISpatializerHeadTrackingModeCallback.Stub implements CallbackUtil.DispatcherStub {
-        /* synthetic */ SpatializerHeadTrackingDispatcherStub(Spatializer spatializer, SpatializerHeadTrackingDispatcherStubIA spatializerHeadTrackingDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class SpatializerHeadTrackingDispatcherStub extends ISpatializerHeadTrackingModeCallback.Stub implements CallbackUtil.DispatcherStub {
         private SpatializerHeadTrackingDispatcherStub() {
         }
 
@@ -550,7 +541,7 @@ public class Spatializer {
 
         @Override // android.media.ISpatializerHeadTrackingModeCallback
         public void dispatchSpatializerActualHeadTrackingModeChanged(final int mode) {
-            Spatializer.this.mHeadTrackingListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerHeadTrackingDispatcherStub$$ExternalSyntheticLambda0
+            Spatializer.this.mHeadTrackingListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerHeadTrackingDispatcherStub$$ExternalSyntheticLambda1
                 @Override // android.media.CallbackUtil.CallbackMethod
                 public final void callbackMethod(Object obj) {
                     Spatializer.SpatializerHeadTrackingDispatcherStub.this.lambda$dispatchSpatializerActualHeadTrackingModeChanged$0(mode, (Spatializer.OnHeadTrackingModeChangedListener) obj);
@@ -558,13 +549,14 @@ public class Spatializer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerActualHeadTrackingModeChanged$0(int mode, OnHeadTrackingModeChangedListener listener) {
             listener.onHeadTrackingModeChanged(Spatializer.this, mode);
         }
 
         @Override // android.media.ISpatializerHeadTrackingModeCallback
         public void dispatchSpatializerDesiredHeadTrackingModeChanged(final int mode) {
-            Spatializer.this.mHeadTrackingListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerHeadTrackingDispatcherStub$$ExternalSyntheticLambda1
+            Spatializer.this.mHeadTrackingListenerMgr.callListeners(new CallbackUtil.CallbackMethod() { // from class: android.media.Spatializer$SpatializerHeadTrackingDispatcherStub$$ExternalSyntheticLambda0
                 @Override // android.media.CallbackUtil.CallbackMethod
                 public final void callbackMethod(Object obj) {
                     Spatializer.SpatializerHeadTrackingDispatcherStub.this.lambda$dispatchSpatializerDesiredHeadTrackingModeChanged$1(mode, (Spatializer.OnHeadTrackingModeChangedListener) obj);
@@ -572,17 +564,14 @@ public class Spatializer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerDesiredHeadTrackingModeChanged$1(int mode, OnHeadTrackingModeChangedListener listener) {
             listener.onDesiredHeadTrackingModeChanged(Spatializer.this, mode);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SpatializerHeadTrackerAvailableDispatcherStub extends ISpatializerHeadTrackerAvailableCallback.Stub implements CallbackUtil.DispatcherStub {
-        /* synthetic */ SpatializerHeadTrackerAvailableDispatcherStub(Spatializer spatializer, SpatializerHeadTrackerAvailableDispatcherStubIA spatializerHeadTrackerAvailableDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class SpatializerHeadTrackerAvailableDispatcherStub extends ISpatializerHeadTrackerAvailableCallback.Stub implements CallbackUtil.DispatcherStub {
         private SpatializerHeadTrackerAvailableDispatcherStub() {
         }
 
@@ -606,17 +595,14 @@ public class Spatializer {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerHeadTrackerAvailable$0(boolean available, OnHeadTrackerAvailableListener listener) {
             listener.onHeadTrackerAvailableChanged(Spatializer.this, available);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SpatializerPoseDispatcherStub extends ISpatializerHeadToSoundStagePoseCallback.Stub {
-        /* synthetic */ SpatializerPoseDispatcherStub(Spatializer spatializer, SpatializerPoseDispatcherStubIA spatializerPoseDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class SpatializerPoseDispatcherStub extends ISpatializerHeadToSoundStagePoseCallback.Stub {
         private SpatializerPoseDispatcherStub() {
         }
 
@@ -652,17 +638,14 @@ public class Spatializer {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchPoseChanged$0(CallbackUtil.ListenerInfo listener, float[] pose) {
             ((OnHeadToSoundstagePoseUpdatedListener) listener.mListener).onHeadToSoundstagePoseUpdated(Spatializer.this, pose);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SpatializerOutputDispatcherStub extends ISpatializerOutputCallback.Stub {
-        /* synthetic */ SpatializerOutputDispatcherStub(Spatializer spatializer, SpatializerOutputDispatcherStubIA spatializerOutputDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class SpatializerOutputDispatcherStub extends ISpatializerOutputCallback.Stub {
         private SpatializerOutputDispatcherStub() {
         }
 
@@ -698,6 +681,7 @@ public class Spatializer {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$dispatchSpatializerOutputChanged$0(CallbackUtil.ListenerInfo listener, int output) {
             ((OnSpatializerOutputChangedListener) listener.mListener).onSpatializerOutputChanged(Spatializer.this, output);
         }

@@ -4,7 +4,7 @@ import java.io.FileDescriptor;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemHeifConverter extends AutoCloseable {
     int convert(SemHeifConfig semHeifConfig, FileDescriptor fileDescriptor);
 
@@ -18,7 +18,6 @@ public interface SemHeifConverter extends AutoCloseable {
 
     void initialize();
 
-    /* loaded from: classes5.dex */
     public static class Factory {
         public static SemHeifConverter create(int format, int quality) {
             return new HeifConverterNativeImpl(format, quality);

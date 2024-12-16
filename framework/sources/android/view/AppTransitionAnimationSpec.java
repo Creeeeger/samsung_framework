@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public class AppTransitionAnimationSpec implements Parcelable {
     public static final Parcelable.Creator<AppTransitionAnimationSpec> CREATOR = new Parcelable.Creator<AppTransitionAnimationSpec>() { // from class: android.view.AppTransitionAnimationSpec.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTransitionAnimationSpec createFromParcel(Parcel in) {
             return new AppTransitionAnimationSpec(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTransitionAnimationSpec[] newArray(int size) {
             return new AppTransitionAnimationSpec[size];
@@ -47,23 +46,6 @@ public class AppTransitionAnimationSpec implements Parcelable {
         dest.writeInt(this.taskId);
         dest.writeTypedObject(this.rect, 0);
         dest.writeTypedObject(this.buffer, 0);
-    }
-
-    /* renamed from: android.view.AppTransitionAnimationSpec$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppTransitionAnimationSpec> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTransitionAnimationSpec createFromParcel(Parcel in) {
-            return new AppTransitionAnimationSpec(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTransitionAnimationSpec[] newArray(int size) {
-            return new AppTransitionAnimationSpec[size];
-        }
     }
 
     public String toString() {

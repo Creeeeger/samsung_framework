@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.hardware.secinputdev.SemInputConstants;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemInputDeviceManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.hardware.secinputdev.ISemInputDeviceManager";
 
@@ -49,7 +49,7 @@ public interface ISemInputDeviceManager extends IInterface {
 
     int setCommand(SemInputConstants.Device device, SemInputConstants.Command command, String str) throws RemoteException;
 
-    int setFodEnable(int i, int i2, int i3) throws RemoteException;
+    int setFodEnable(int i, int i2, int i3, int i4) throws RemoteException;
 
     int setFodLpMode(int i) throws RemoteException;
 
@@ -71,7 +71,6 @@ public interface ISemInputDeviceManager extends IInterface {
 
     boolean unregisterListener(IBinder iBinder, int i, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemInputDeviceManager {
         @Override // com.samsung.android.hardware.secinputdev.ISemInputDeviceManager
         public String getKeyPressStateAll() throws RemoteException {
@@ -169,7 +168,7 @@ public interface ISemInputDeviceManager extends IInterface {
         }
 
         @Override // com.samsung.android.hardware.secinputdev.ISemInputDeviceManager
-        public int setFodEnable(int mode, int pressFast, int strictMode) throws RemoteException {
+        public int setFodEnable(int mode, int pressFast, int strictMode, int control) throws RemoteException {
             return 0;
         }
 
@@ -229,7 +228,6 @@ public interface ISemInputDeviceManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemInputDeviceManager {
         static final int TRANSACTION_activate = 26;
         static final int TRANSACTION_enableMotion = 7;
@@ -359,260 +357,257 @@ public interface ISemInputDeviceManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemInputDeviceManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemInputDeviceManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemInputDeviceManager.DESCRIPTOR);
+                case 1:
+                    String _result = getKeyPressStateAll();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isKeyPressedByKeycode(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    IBinder _arg02 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = registerListener(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    IBinder _arg03 = data.readStrongBinder();
+                    int _arg12 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = unregisterListener(_arg03, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    SemInputConstants.Device _arg04 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    int[] _arg13 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    int _result5 = sendRawdataTsp(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = isSupportMotion(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    boolean _arg14 = data.readBoolean();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result7 = enableMotion(_arg06, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = isEnableMotion(_arg07, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    int _arg16 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = setMotionControl(_arg08, _arg16, _arg24);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 10:
+                    String _arg09 = data.readString();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result10 = getMotionControl(_arg09, _arg17);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 11:
+                    SemInputConstants.Device _arg010 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result11 = getSupportDevice(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 12:
+                    SemInputConstants.Device _arg011 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result12 = getTspSupportFeature(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 13:
+                    SemInputConstants.Device _arg012 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result13 = getDeviceEnabled(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 14:
+                    SemInputConstants.Device _arg013 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result14 = getCommandList(_arg013);
+                    reply.writeNoException();
+                    reply.writeString(_result14);
+                    return true;
+                case 15:
+                    int _arg014 = data.readInt();
+                    int _arg18 = data.readInt();
+                    boolean _arg25 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result15 = setTspEnabled(_arg014, _arg18, _arg25);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result16 = setTemperature(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 17:
+                    int _arg016 = data.readInt();
+                    int _arg19 = data.readInt();
+                    int _arg26 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result17 = setAodRect(_arg016, _arg19, _arg26, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 18:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result18 = setAodEnable(_arg017);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 19:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result19 = setAotEnable(_arg018);
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 20:
+                    int _arg019 = data.readInt();
+                    int _arg110 = data.readInt();
+                    int _arg27 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result20 = setFodEnable(_arg019, _arg110, _arg27, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    int _arg111 = data.readInt();
+                    int _arg28 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result21 = setFodRect(_arg020, _arg111, _arg28, _arg33);
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 22:
+                    int _arg021 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result22 = setFodLpMode(_arg021);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 23:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result23 = setSingletapEnable(_arg022);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result24 = setSyncChanged(_arg023);
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 25:
+                    int _arg024 = data.readInt();
+                    int _arg112 = data.readInt();
+                    boolean _arg29 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result25 = setSpenEnabled(_arg024, _arg112, _arg29);
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 26:
+                    SemInputConstants.Device _arg025 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    SemInputConstants.DisplayState _arg113 = (SemInputConstants.DisplayState) data.readTypedObject(SemInputConstants.DisplayState.CREATOR);
+                    boolean _arg210 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result26 = activate(_arg025, _arg113, _arg210);
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 27:
+                    SemInputConstants.Device _arg026 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    SemInputConstants.Command _arg114 = (SemInputConstants.Command) data.readTypedObject(SemInputConstants.Command.CREATOR);
+                    String _arg211 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result27 = setCommand(_arg026, _arg114, _arg211);
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 28:
+                    SemInputConstants.Device _arg027 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    SemInputConstants.Property _arg115 = (SemInputConstants.Property) data.readTypedObject(SemInputConstants.Property.CREATOR);
+                    String _arg212 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result28 = setProperty(_arg027, _arg115, _arg212);
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 29:
+                    SemInputConstants.Device _arg028 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    SemInputConstants.Property _arg116 = (SemInputConstants.Property) data.readTypedObject(SemInputConstants.Property.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result29 = getProperty(_arg028, _arg116);
+                    reply.writeNoException();
+                    reply.writeString(_result29);
+                    return true;
+                case 30:
+                    SemInputConstants.Device _arg029 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
+                    String _arg117 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result30 = runCommand(_arg029, _arg117);
+                    reply.writeNoException();
+                    reply.writeString(_result30);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = getKeyPressStateAll();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isKeyPressedByKeycode(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            IBinder _arg02 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = registerListener(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            IBinder _arg03 = data.readStrongBinder();
-                            int _arg12 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = unregisterListener(_arg03, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            SemInputConstants.Device _arg04 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            int[] _arg13 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            int _result5 = sendRawdataTsp(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = isSupportMotion(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            boolean _arg14 = data.readBoolean();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result7 = enableMotion(_arg06, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = isEnableMotion(_arg07, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            int _arg16 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = setMotionControl(_arg08, _arg16, _arg24);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 10:
-                            String _arg09 = data.readString();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result10 = getMotionControl(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 11:
-                            SemInputConstants.Device _arg010 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result11 = getSupportDevice(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 12:
-                            SemInputConstants.Device _arg011 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result12 = getTspSupportFeature(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 13:
-                            SemInputConstants.Device _arg012 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result13 = getDeviceEnabled(_arg012);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 14:
-                            SemInputConstants.Device _arg013 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result14 = getCommandList(_arg013);
-                            reply.writeNoException();
-                            reply.writeString(_result14);
-                            return true;
-                        case 15:
-                            int _arg014 = data.readInt();
-                            int _arg18 = data.readInt();
-                            boolean _arg25 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result15 = setTspEnabled(_arg014, _arg18, _arg25);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result16 = setTemperature(_arg015);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 17:
-                            int _arg016 = data.readInt();
-                            int _arg19 = data.readInt();
-                            int _arg26 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = setAodRect(_arg016, _arg19, _arg26, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 18:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result18 = setAodEnable(_arg017);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 19:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result19 = setAotEnable(_arg018);
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 20:
-                            int _arg019 = data.readInt();
-                            int _arg110 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result20 = setFodEnable(_arg019, _arg110, _arg27);
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            int _arg111 = data.readInt();
-                            int _arg28 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result21 = setFodRect(_arg020, _arg111, _arg28, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 22:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result22 = setFodLpMode(_arg021);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 23:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result23 = setSingletapEnable(_arg022);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result24 = setSyncChanged(_arg023);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 25:
-                            int _arg024 = data.readInt();
-                            int _arg112 = data.readInt();
-                            boolean _arg29 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result25 = setSpenEnabled(_arg024, _arg112, _arg29);
-                            reply.writeNoException();
-                            reply.writeInt(_result25);
-                            return true;
-                        case 26:
-                            SemInputConstants.Device _arg025 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            SemInputConstants.DisplayState _arg113 = (SemInputConstants.DisplayState) data.readTypedObject(SemInputConstants.DisplayState.CREATOR);
-                            boolean _arg210 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result26 = activate(_arg025, _arg113, _arg210);
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 27:
-                            SemInputConstants.Device _arg026 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            SemInputConstants.Command _arg114 = (SemInputConstants.Command) data.readTypedObject(SemInputConstants.Command.CREATOR);
-                            String _arg211 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result27 = setCommand(_arg026, _arg114, _arg211);
-                            reply.writeNoException();
-                            reply.writeInt(_result27);
-                            return true;
-                        case 28:
-                            SemInputConstants.Device _arg027 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            SemInputConstants.Property _arg115 = (SemInputConstants.Property) data.readTypedObject(SemInputConstants.Property.CREATOR);
-                            String _arg212 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result28 = setProperty(_arg027, _arg115, _arg212);
-                            reply.writeNoException();
-                            reply.writeInt(_result28);
-                            return true;
-                        case 29:
-                            SemInputConstants.Device _arg028 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            SemInputConstants.Property _arg116 = (SemInputConstants.Property) data.readTypedObject(SemInputConstants.Property.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result29 = getProperty(_arg028, _arg116);
-                            reply.writeNoException();
-                            reply.writeString(_result29);
-                            return true;
-                        case 30:
-                            SemInputConstants.Device _arg029 = (SemInputConstants.Device) data.readTypedObject(SemInputConstants.Device.CREATOR);
-                            String _arg117 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result30 = runCommand(_arg029, _arg117);
-                            reply.writeNoException();
-                            reply.writeString(_result30);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemInputDeviceManager {
+        private static class Proxy implements ISemInputDeviceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -967,7 +962,7 @@ public interface ISemInputDeviceManager extends IInterface {
             }
 
             @Override // com.samsung.android.hardware.secinputdev.ISemInputDeviceManager
-            public int setFodEnable(int mode, int pressFast, int strictMode) throws RemoteException {
+            public int setFodEnable(int mode, int pressFast, int strictMode, int control) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -975,6 +970,7 @@ public interface ISemInputDeviceManager extends IInterface {
                     _data.writeInt(mode);
                     _data.writeInt(pressFast);
                     _data.writeInt(strictMode);
+                    _data.writeInt(control);
                     this.mRemote.transact(20, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();

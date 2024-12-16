@@ -20,7 +20,6 @@ public interface IAttentionService extends IInterface {
 
     void onStopProximityUpdates() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAttentionService {
         @Override // android.service.attention.IAttentionService
         public void checkAttention(IAttentionCallback callback) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IAttentionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAttentionService {
         static final int TRANSACTION_cancelAttentionCheck = 2;
         static final int TRANSACTION_checkAttention = 1;
@@ -96,37 +94,34 @@ public interface IAttentionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAttentionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAttentionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAttentionService.DESCRIPTOR);
+                case 1:
+                    IAttentionCallback _arg0 = IAttentionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    checkAttention(_arg0);
+                    return true;
+                case 2:
+                    IAttentionCallback _arg02 = IAttentionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelAttentionCheck(_arg02);
+                    return true;
+                case 3:
+                    IProximityUpdateCallback _arg03 = IProximityUpdateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onStartProximityUpdates(_arg03);
+                    return true;
+                case 4:
+                    onStopProximityUpdates();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAttentionCallback _arg0 = IAttentionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            checkAttention(_arg0);
-                            return true;
-                        case 2:
-                            IAttentionCallback _arg02 = IAttentionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelAttentionCheck(_arg02);
-                            return true;
-                        case 3:
-                            IProximityUpdateCallback _arg03 = IProximityUpdateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onStartProximityUpdates(_arg03);
-                            return true;
-                        case 4:
-                            onStopProximityUpdates();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IAttentionService {
             private IBinder mRemote;
 

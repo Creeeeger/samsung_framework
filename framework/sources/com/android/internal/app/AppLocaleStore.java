@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AppLocaleStore {
     private static final String TAG = AppLocaleStore.class.getSimpleName();
 
@@ -93,6 +93,7 @@ public class AppLocaleStore {
         }));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean matchLanguageInSet(Locale locale, HashSet<Locale> localesSet) {
         if (localesSet.contains(locale)) {
             return true;
@@ -127,12 +128,10 @@ public class AppLocaleStore {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class AppLocaleResult {
         public HashSet<Locale> mAppSupportedLocales;
         LocaleStatus mLocaleStatus;
 
-        /* loaded from: classes4.dex */
         public enum LocaleStatus {
             UNKNOWN_FAILURE,
             NO_SUPPORTED_LANGUAGE_IN_APP,

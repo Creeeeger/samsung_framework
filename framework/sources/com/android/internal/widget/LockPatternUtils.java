@@ -22,6 +22,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.storage.StorageManager;
@@ -48,6 +49,8 @@ import com.samsung.android.knox.dar.StreamCipher;
 import com.samsung.android.knox.dar.VirtualLockUtils;
 import com.samsung.android.knox.dar.ddar.DualDarAuthUtils;
 import com.samsung.android.knox.dar.ddar.IDualDarAuthProgressCallback;
+import com.samsung.android.lock.LsConstants;
+import com.samsung.android.lock.LsLog;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.nio.charset.StandardCharsets;
@@ -55,28 +58,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
 /* loaded from: classes5.dex */
-public class LockPatternUtils {
+public class LockPatternUtils implements LsConstants {
     private static final String APP_LOCK_FINGERPRINT_LOCKSCREEN_KEY = "lockscreen.applock_fingerprint";
-    public static final int ATTEMPTS_BEFORE_AUTO_WIPE = 20;
     public static final String AUTO_PIN_CONFIRM = "lockscreen.auto_pin_confirm";
-    public static final String BIOMETRIC_ATTEMPT_DEADLINE = "lockscreen.lockout_biometric_attempt_deadline";
-    public static final String BIOMETRIC_ATTEMPT_TIMEOUT_MS = "lockscreen.lockout_biometric_attempt_timeoutms";
-    public static final String BIOMETRIC_LOCKSCREEN_KEY = "lockscreen.samsung_biometric";
-    public static final int BIOMETRIC_STATE_OFF = 0;
-    public static final int BIOMETRIC_STATE_ON = 1;
-    public static final int BIOMETRIC_TYPE_ALL = 257;
-    public static final int BIOMETRIC_TYPE_FACE = 256;
-    public static final int BIOMETRIC_TYPE_FINGERPRINT = 1;
-    public static final int BIOMETRIC_TYPE_NONE = 0;
     private static final String CREDENTIAL_TYPE_API = "getCredentialType";
     public static final int CREDENTIAL_TYPE_NONE = -1;
     public static final int CREDENTIAL_TYPE_PASSWORD = 4;
@@ -92,16 +83,11 @@ public class LockPatternUtils {
     public static final int FAILED_ATTEMPTS_BEFORE_WIPE_GRACE = 5;
     public static final long FAILED_ATTEMPT_COUNTDOWN_INTERVAL_MS = 1000;
     public static final String FLAG_ENABLE_AUTO_PIN_CONFIRMATION = "AutoPinConfirmation__enable_auto_pin_confirmation";
-    private static final String FMM_FAIELD_ATTEMPT_KEY = "lockscreen.failed_fmm_attempts";
-    public static final int FMM_LOCK = 0;
     private static final boolean FRP_CREDENTIAL_ENABLED = true;
+    private static final String GSI_RUNNING_PROP = "ro.gsid.image_running";
     private static final String IS_TRUST_USUALLY_MANAGED = "lockscreen.istrustusuallymanaged";
     private static final String KNOWN_TRUST_AGENTS = "lockscreen.knowntrustagents";
     public static final String KNOX_DEVICE_OWNER_KEY = "knox.device_owner";
-    public static final int KNOX_GUARD = 3;
-    public static final String LOCKOUT_ATTEMPT_DEADLINE = "lockscreen.lockoutattemptdeadline";
-    public static final String LOCKOUT_ATTEMPT_TIMEOUT_MS = "lockscreen.lockoutattempttimeoutmss";
-    public static final String LOCKSCREEN_FOLDER_INSTANTLY_LOCKS = "lockscreen.folder_instantly_locks";
     public static final String LOCKSCREEN_POWER_BUTTON_INSTANTLY_LOCKS = "lockscreen.power_button_instantly_locks";
 
     @Deprecated
@@ -111,62 +97,24 @@ public class LockPatternUtils {
     public static final String LOCK_SCREEN_DEVICE_OWNER_INFO = "lockscreen.device_owner_info";
     public static final String LOCK_SCREEN_OWNER_INFO = "lock_screen_owner_info";
     public static final String LOCK_SCREEN_OWNER_INFO_ENABLED = "lock_screen_owner_info_enabled";
-    public static final int MAX_PREV_CREDENTIAL_ATTEMPTS = 3;
     public static final String MIGRATED_MDFPP_PWD_DATA = "migrated_mdfpp_pwd_data";
     public static final int MIN_AUTO_PIN_REQUIREMENT_LENGTH = 6;
     public static final int MIN_LOCK_PASSWORD_SIZE = 4;
     public static final int MIN_LOCK_PATTERN_SIZE = 4;
     public static final int MIN_PATTERN_REGISTER_FAIL = 4;
-    public static final String NON_STRONG_BIO_IDLE_TIMEOUT = "lockscreen.non_strong_bio_idle_timeout";
-    public static final String NON_STRONG_BIO_TIMEOUT = "lockscreen.non_strong_bio_timeout";
-    private static final String PASSWORD_HINT_KEY = "lockscreen.password_hint";
     public static final String PASSWORD_HISTORY_DELIMITER = ",";
     public static final String PASSWORD_HISTORY_KEY = "lockscreen.passwordhistory";
 
     @Deprecated
     public static final String PASSWORD_TYPE_ALTERNATE_KEY = "lockscreen.password_type_alternate";
     public static final String PASSWORD_TYPE_KEY = "lockscreen.password_type";
-    public static final String PATTERN_EVER_CHOSEN_KEY = "lockscreen.patterneverchosen";
     public static final int PIN_LENGTH_UNAVAILABLE = -1;
-    public static final String PREV_ATTEMPTS_COUNT = "prev.attempts.count";
-    public static final int REMOTELOCK_SIZE = 4;
-    public static final int REMOTELOCK_SYSTEMUI = 4;
-    public static final int REMOTELOCK_SYSTEMUI_DESKTOP = 5;
-    public static final int RMM_LOCK = 2;
     public static final String SDP_MDFPPMODE_ENABLED_FOR_SYSTEM_KEY = "sdp-mdfppmode-for-system";
-    public static final int SECURE_STATE_BIO = 16;
-    public static final int SECURE_STATE_BIO_LOCKOUT = 64;
-    public static final int SECURE_STATE_CARRIER = 8;
-    public static final int SECURE_STATE_CLEAR_LOCK = 1;
-    public static final int SECURE_STATE_CREDENTIAL_TYPE = 2;
-    public static final int SECURE_STATE_DEVICE_OWNERINFO = 256;
-    public static final int SECURE_STATE_FMM = 4;
-    public static final int SECURE_STATE_LOCKOUT = 32;
-    public static final int SECURE_STATE_LOCK_DISABLED = 512;
-    public static final int SECURE_STATE_OWNERINFO = 128;
-    public static final int SECURE_STATE_UPDATE_ALL = 4094;
-    public static final boolean SECURITY_ADDITIONAL_LOG = true;
-    public static final boolean SECURITY_AOSP_BUG_FIX = true;
-    public static final boolean SECURITY_BIOMETRICS = true;
-    public static final boolean SECURITY_CACHED_LOCK_STATE = true;
-    public static final int SECURITY_DEBUG_DEV = 2;
-    public static final int SECURITY_DEBUG_LOW = 0;
-    public static final int SECURITY_DEBUG_MID = 1;
-    public static final boolean SECURITY_FORGOT_PASSWORD = true;
-    public static final boolean SECURITY_PASSWORD_HINT = true;
-    public static final boolean SECURITY_POLICY = true;
-    public static final boolean SECURITY_REMOTE_LOCKSCREEN = true;
-    public static final boolean SECURITY_SIMPLE_PIN = true;
-    public static final int SKT_CARRIER_LOCK = 1;
-    private static final String SKT_CARRIER_LOCK_MODE_FILE = "/efs/sms/sktcarrierlockmode";
-    private static final String SKT_LOCKOUT_ATTEMPT_DEADLINE = "sktlockscreen.lockoutdeadline";
-    private static final long SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT = 600000;
-    public static final String STRONG_BIO_TIMEOUT = "lockscreen.strong_bio_timeout";
     private static final String TAG = "LockPatternUtils";
-    private static final char TEXT_SEPERATOR = ':';
     public static final int USER_FRP = -9999;
-    public static final int USER_PREV = -9998;
+    public static final int USER_REPAIR_MODE = -9998;
     public static final int VERIFY_FLAG_REQUEST_GK_PW_HANDLE = 1;
+    public static final int VERIFY_FLAG_WRITE_REPAIR_MODE_PW = 2;
     private final ContentResolver mContentResolver;
     private final Context mContext;
     private final PropertyInvalidatedCache<Integer, Integer> mCredentialTypeCache;
@@ -177,33 +125,28 @@ public class LockPatternUtils {
     private Boolean mHasSecureLockScreen;
     private LockPatternUtilForDualDarDo mLockPatternUtilForDualDarDo;
     private ILockSettings mLockSettingsService;
+    private final SparseLongArray mLockoutDeadlines;
     private UserManager mUserManager;
-    private final SparseLongArray mLockoutDeadlines = new SparseLongArray();
-    private HashMap<UserHandle, UserManager> mUserManagerCache = new HashMap<>();
+    private HashMap<UserHandle, UserManager> mUserManagerCache;
 
-    /* loaded from: classes5.dex */
     public interface CheckCredentialProgressCallback {
         void onEarlyMatched();
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface CredentialType {
     }
 
-    /* loaded from: classes5.dex */
     public interface DualDarAuthProgressCallback {
         void onInnerLayerUnlockFailed();
 
         void onInnerLayerUnlocked();
     }
 
-    /* loaded from: classes5.dex */
     public interface EscrowTokenStateChangeCallback {
         void onEscrowTokenActivated(long j, int i);
     }
 
-    /* loaded from: classes5.dex */
     public enum SecAppLockType {
         None,
         Pattern,
@@ -214,7 +157,6 @@ public class LockPatternUtils {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface VerifyFlag {
     }
 
@@ -264,7 +206,6 @@ public class LockPatternUtils {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class RequestThrottledException extends Exception {
         private int mTimeoutMs;
 
@@ -279,9 +220,8 @@ public class LockPatternUtils {
 
     public DevicePolicyManager getDevicePolicyManager() {
         if (this.mDevicePolicyManager == null) {
-            DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            this.mDevicePolicyManager = devicePolicyManager;
-            if (devicePolicyManager == null) {
+            this.mDevicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            if (this.mDevicePolicyManager == null) {
                 Log.e(TAG, "Can't get DevicePolicyManagerService: is it running?", new IllegalStateException("Stack trace:"));
             }
         }
@@ -319,10 +259,13 @@ public class LockPatternUtils {
     }
 
     public LockPatternUtils(Context context) {
-        AnonymousClass1 anonymousClass1 = new PropertyInvalidatedCache.QueryHandler<Integer, Integer>() { // from class: com.android.internal.widget.LockPatternUtils.1
-            AnonymousClass1() {
-            }
+        this(context, null);
+    }
 
+    public LockPatternUtils(Context context, ILockSettings lockSettings) {
+        this.mLockoutDeadlines = new SparseLongArray();
+        this.mUserManagerCache = new HashMap<>();
+        this.mCredentialTypeQuery = new PropertyInvalidatedCache.QueryHandler<Integer, Integer>() { // from class: com.android.internal.widget.LockPatternUtils.1
             @Override // android.app.PropertyInvalidatedCache.QueryHandler
             public Integer apply(Integer userHandle) {
                 try {
@@ -335,15 +278,15 @@ public class LockPatternUtils {
 
             @Override // android.app.PropertyInvalidatedCache.QueryHandler
             public boolean shouldBypassCache(Integer userHandle) {
-                return userHandle.intValue() == -9999;
+                return LockPatternUtils.isSpecialUserId(userHandle.intValue());
             }
         };
-        this.mCredentialTypeQuery = anonymousClass1;
-        this.mCredentialTypeCache = new PropertyInvalidatedCache<>(4, "system_server", CREDENTIAL_TYPE_API, CREDENTIAL_TYPE_API, anonymousClass1);
+        this.mCredentialTypeCache = new PropertyInvalidatedCache<>(4, "system_server", CREDENTIAL_TYPE_API, CREDENTIAL_TYPE_API, this.mCredentialTypeQuery);
         this.mContext = context;
         this.mContentResolver = context.getContentResolver();
         Looper looper = Looper.myLooper();
         this.mHandler = looper != null ? new Handler(looper) : null;
+        this.mLockSettingsService = lockSettings;
     }
 
     public ILockSettings getLockSettings() {
@@ -398,27 +341,36 @@ public class LockPatternUtils {
     }
 
     public void reportFailedPasswordAttempt(int userId) {
-        if (userId == -9999 && frpCredentialEnabled(this.mContext)) {
+        if (isSpecialUserId(this.mContext, userId, true)) {
             return;
         }
-        if (userId == -9998) {
-            int count = ((int) getLong(PREV_ATTEMPTS_COUNT, 0L, 0)) + 1;
+        if (userId == -9899) {
+            int count = ((int) getLong(LsConstants.PREV_ATTEMPTS_COUNT, 0L, 0)) + 1;
             if (count < 3) {
-                setLong(PREV_ATTEMPTS_COUNT, count, 0);
+                setLong(LsConstants.PREV_ATTEMPTS_COUNT, count, 0);
                 return;
             }
             return;
         }
-        getDevicePolicyManager().reportFailedPasswordAttempt(userId);
+        int count2 = 0;
+        try {
+            count2 = getLockSettings().getFailureCount(userId);
+        } catch (RemoteException re) {
+            Log.e(TAG, "failed to getFailureCount", re);
+        }
+        Log.w(TAG, "getFailureCount = " + count2);
+        if (count2 > 0) {
+            getDevicePolicyManager().reportFailedPasswordAttemptWithFailureCount(userId, count2);
+        }
         getTrustManager().reportUnlockAttempt(false, userId);
     }
 
     public void reportSuccessfulPasswordAttempt(int userId) {
-        if (userId == -9999 && frpCredentialEnabled(this.mContext)) {
+        if (isSpecialUserId(this.mContext, userId, true)) {
             return;
         }
-        if (userId == -9998) {
-            setLong(PREV_ATTEMPTS_COUNT, 0L, 0);
+        if (userId == -9899) {
+            setLong(LsConstants.PREV_ATTEMPTS_COUNT, 0L, 0);
         } else {
             getDevicePolicyManager().reportSuccessfulPasswordAttempt(userId);
             getTrustManager().reportUnlockAttempt(true, userId);
@@ -426,24 +378,24 @@ public class LockPatternUtils {
     }
 
     public void reportPasswordLockout(int timeoutMs, int userId) {
-        if ((userId == -9999 && frpCredentialEnabled(this.mContext)) || userId == -9998) {
+        if (isSpecialUserId(this.mContext, userId, true) || userId == -9899) {
             return;
         }
         getTrustManager().reportUnlockLockout(timeoutMs, userId);
     }
 
     public int getCurrentFailedPasswordAttempts(int userId) {
-        if (userId == -9999 && frpCredentialEnabled(this.mContext)) {
+        if (isSpecialUserId(this.mContext, userId, true)) {
             return 0;
         }
-        if (userId == -9998) {
-            return (int) getLong(PREV_ATTEMPTS_COUNT, 0L, 0);
+        if (userId == -9899) {
+            return (int) getLong(LsConstants.PREV_ATTEMPTS_COUNT, 0L, 0);
         }
         return getDevicePolicyManager().getCurrentFailedPasswordAttempts(userId);
     }
 
     public int getMaximumFailedPasswordsForWipe(int userId) {
-        if ((userId == -9999 && frpCredentialEnabled(this.mContext)) || userId == -9998) {
+        if (isSpecialUserId(this.mContext, userId, true) || userId == -9899) {
             return 0;
         }
         return getDevicePolicyManager().getMaximumFailedPasswordsForWipe(null, userId);
@@ -451,6 +403,7 @@ public class LockPatternUtils {
 
     public VerifyCredentialResponse verifyCredential(LockscreenCredential credential, int userId, int flags) {
         throwIfCalledOnMainThread();
+        LsLog.verifyRequest(userId, Process.myPid(), this.mContext.getPackageName());
         try {
             if (isEnterpriseUser(userId)) {
                 return verifyCredentialForEnterpriseUser(credential, userId, flags);
@@ -502,6 +455,7 @@ public class LockPatternUtils {
 
     public boolean checkCredential(LockscreenCredential credential, int userId, CheckCredentialProgressCallback progressCallback) throws RequestThrottledException {
         throwIfCalledOnMainThread();
+        LsLog.verifyRequest(userId, Process.myPid(), this.mContext.getPackageName());
         try {
             if (isEnterpriseUser(userId)) {
                 return checkCredentialForEnterpriseUser(credential, userId, progressCallback);
@@ -587,6 +541,7 @@ public class LockPatternUtils {
     }
 
     public byte[] getPasswordHistoryHashFactor(LockscreenCredential currentPassword, int userId) {
+        LsLog.verifyRequest(userId, Process.myPid(), this.mContext.getPackageName());
         try {
             if (isEnterpriseUser(userId)) {
                 return getPasswordHistoryHashFactorForEnterpriseUser(currentPassword, userId);
@@ -632,12 +587,8 @@ public class LockPatternUtils {
         return false;
     }
 
-    public boolean isPatternEverChosen(int userId) {
-        return getBoolean(PATTERN_EVER_CHOSEN_KEY, false, userId);
-    }
-
     public int getPinLength(int userId) {
-        if (userId == -9998) {
+        if (userId == -9899) {
             return -1;
         }
         try {
@@ -655,10 +606,6 @@ public class LockPatternUtils {
             Log.e(TAG, "Could not store PIN length on disk " + e);
             return false;
         }
-    }
-
-    public void reportPatternWasChosen(int userId) {
-        setBoolean(PATTERN_EVER_CHOSEN_KEY, true, userId);
     }
 
     public int getActivePasswordQuality(int userId) {
@@ -727,6 +674,19 @@ public class LockPatternUtils {
         }
     }
 
+    public static int pinOrPasswordQualityToCredentialType(int quality) {
+        if (isQualitySmartCard(quality)) {
+            return 6;
+        }
+        if (isQualityAlphabeticPassword(quality)) {
+            return 4;
+        }
+        if (isQualityNumericPin(quality)) {
+            return 3;
+        }
+        throw new IllegalArgumentException("Quality is neither Pin nor password: " + quality);
+    }
+
     public boolean setLockCredential(LockscreenCredential newCredential, LockscreenCredential savedCredential, int userHandle) {
         return setLockCredential(newCredential, savedCredential, userHandle, false);
     }
@@ -735,16 +695,14 @@ public class LockPatternUtils {
         if (!hasSecureLockScreen() && newCredential.getType() != -1) {
             throw new UnsupportedOperationException("This operation requires the lock screen feature.");
         }
-        newCredential.checkLength();
-        makeLpuLog(userHandle, "setLockCredential new type = " + newCredential.getType());
+        LsLog.enrollRequest(userHandle, Process.myPid(), this.mContext.getPackageName());
+        LsLog.enroll(String.format("Enroll [User %d %s][%s:%d]\n%s", Integer.valueOf(userHandle), credentialTypeToString(newCredential.getType()), this.mContext.getPackageName(), Integer.valueOf(Process.myPid()), Debug.getCallers(10, "    ")));
         try {
             if (isEnterpriseUser(userHandle)) {
                 if (!setLockCredentialForEnterpriseUser(newCredential, savedCredential, userHandle, ignoreNotifyPasswordChanged)) {
-                    makeLpuLog(userHandle, "setLockCredential return false!");
                     return false;
                 }
             } else if (!getLockSettings().setLockCredential(newCredential, savedCredential, userHandle)) {
-                makeLpuLog(userHandle, "setLockCredential return false!");
                 return false;
             }
             if (newCredential.isNone()) {
@@ -757,7 +715,6 @@ public class LockPatternUtils {
             }
             return true;
         } catch (RemoteException e2) {
-            makeLpuLog(userHandle, "setLockCredential failed", e2);
             throw new RuntimeException("Unable to save lock password", e2);
         }
     }
@@ -900,6 +857,10 @@ public class LockPatternUtils {
         return isCredentialSharableWithParent(userHandle) && hasSeparateChallenge(userHandle);
     }
 
+    public boolean isProfileWithUnifiedChallenge(int userHandle) {
+        return isCredentialSharableWithParent(userHandle) && !hasSeparateChallenge(userHandle);
+    }
+
     public boolean isManagedProfileWithUnifiedChallenge(int userHandle) {
         return isManagedProfile(userHandle) && !hasSeparateChallenge(userHandle);
     }
@@ -961,29 +922,6 @@ public class LockPatternUtils {
         return Long.toHexString(salt);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.LockPatternUtils$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends PropertyInvalidatedCache.QueryHandler<Integer, Integer> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.app.PropertyInvalidatedCache.QueryHandler
-        public Integer apply(Integer userHandle) {
-            try {
-                return Integer.valueOf(LockPatternUtils.this.getLockSettings().getCredentialType(userHandle.intValue()));
-            } catch (RemoteException re) {
-                Log.e(LockPatternUtils.TAG, "failed to get credential type", re);
-                return -1;
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache.QueryHandler
-        public boolean shouldBypassCache(Integer userHandle) {
-            return userHandle.intValue() == -9999;
-        }
-    }
-
     public static final void invalidateCredentialTypeCache() {
         PropertyInvalidatedCache.invalidateCache("system_server", CREDENTIAL_TYPE_API);
     }
@@ -994,7 +932,7 @@ public class LockPatternUtils {
 
     public boolean isSecure(int userId) {
         int type = getCredentialTypeForUser(userId);
-        return type != -1 || isFMMLockEnabled(userId) || isCarrierLockEnabled(userId) || isRMMLockEnabled(userId);
+        return type != -1 || isRemoteLock(userId);
     }
 
     public boolean isLockPasswordEnabled(int userId) {
@@ -1012,7 +950,7 @@ public class LockPatternUtils {
             Log.d(TAG, "pattern visibility disabled by MDM for user : " + userId);
             return false;
         }
-        return getBoolean("lock_pattern_visible_pattern", false, userId);
+        return getBoolean("lock_pattern_visible_pattern", true, userId);
     }
 
     public void setVisiblePatternEnabled(boolean enabled, int userId) {
@@ -1039,34 +977,31 @@ public class LockPatternUtils {
         return getString(LOCK_PIN_ENHANCED_PRIVACY, userId) != null;
     }
 
-    public void setVisiblePasswordEnabled(boolean enabled, int userId) {
-    }
-
     public long setLockoutAttemptDeadline(int userId, int timeoutMs) {
         long deadline = SystemClock.elapsedRealtime() + timeoutMs;
         if (userId == -9999) {
             return deadline;
         }
-        if (userId == -9998) {
+        if (userId == -9899) {
             return 0L;
         }
-        setLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, timeoutMs, userId);
-        setLong(LOCKOUT_ATTEMPT_DEADLINE, deadline, userId);
+        setLong(LsConstants.LOCKOUT_ATTEMPT_TIMEOUT_MS, timeoutMs, userId);
+        setLong(LsConstants.LOCKOUT_ATTEMPT_DEADLINE, deadline, userId);
         return deadline;
     }
 
     public long getLockoutAttemptDeadline(int userId) {
-        long deadline = getLong(LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
-        long timeoutMs = getLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        long deadline = getLong(LsConstants.LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+        long timeoutMs = getLong(LsConstants.LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
         long now = SystemClock.elapsedRealtime();
         if (deadline < now && deadline != 0) {
-            setLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
-            setLong(LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+            setLong(LsConstants.LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
+            setLong(LsConstants.LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
             return 0L;
         }
         if (deadline > now + timeoutMs) {
             long deadline2 = now + timeoutMs;
-            setLong(LOCKOUT_ATTEMPT_DEADLINE, deadline2, userId);
+            setLong(LsConstants.LOCKOUT_ATTEMPT_DEADLINE, deadline2, userId);
             return deadline2;
         }
         return deadline;
@@ -1277,15 +1212,15 @@ public class LockPatternUtils {
     }
 
     public boolean isBiometricAllowedForUser(int userId) {
-        return (getStrongAuthForUser(userId) & (-269)) == 0 && !isUCMLockEnabled(userId);
+        return (getStrongAuthForUser(userId) & (-781)) == 0 && !isUCMLockEnabled(userId);
     }
 
     public boolean isUserInLockdown(int userId) {
         return (getStrongAuthForUser(userId) & 32) != 0;
     }
 
-    /* loaded from: classes5.dex */
-    public static class WrappedCallback extends ICheckCredentialProgressCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class WrappedCallback extends ICheckCredentialProgressCallback.Stub {
         private CheckCredentialProgressCallback mCallback;
         private Handler mHandler;
 
@@ -1308,6 +1243,7 @@ public class LockPatternUtils {
             this.mHandler = null;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCredentialVerified$0() {
             this.mCallback.onEarlyMatched();
             this.mCallback = null;
@@ -1384,8 +1320,7 @@ public class LockPatternUtils {
         if (!hasSecureLockScreen() && credential.getType() != -1) {
             throw new UnsupportedOperationException("This operation requires the lock screen feature.");
         }
-        makeLpuLog(userHandle, "setLockCredentialWithToken credential = " + credential);
-        credential.checkLength();
+        LsLog.enroll(String.format("Enroll [User %d %s][%s]\n%s", Integer.valueOf(userHandle), credentialTypeToString(credential.getType()), this.mContext.getPackageName(), Debug.getCallers(10, "    ")));
         LockSettingsInternal localService = getLockSettingsInternal();
         return localService.setLockCredentialWithToken(credential, tokenHandle, token, userHandle);
     }
@@ -1394,14 +1329,14 @@ public class LockPatternUtils {
         return getLockSettingsInternal().unlockUserWithToken(tokenHandle, token, userId);
     }
 
-    /* loaded from: classes5.dex */
     public static class StrongAuthTracker {
-        private static final int ALLOWING_BIOMETRIC = 268;
+        private static final int ALLOWING_BIOMETRIC = 780;
         public static final int KNOX_STRONG_AUTH_REQUIRED_AFTER_BIOMETRIC_LOCKOUT = 4096;
         public static final int KNOX_STRONG_AUTH_REQUIRED_AFTER_FACE_CHANGE = 32768;
         public static final int KNOX_STRONG_AUTH_REQUIRED_AFTER_FINGERPRINT_CHANGE = 16384;
         public static final int KNOX_STRONG_AUTH_REQUIRED_AFTER_LOCK = 8192;
         public static final int KNOX_STRONG_AUTH_REQUIRED_NON_STRONG_IDLE_TIMEOUT = 65536;
+        public static final int SOME_AUTH_REQUIRED_AFTER_ADAPTIVE_AUTH_REQUEST = 512;
         public static final int SOME_AUTH_REQUIRED_AFTER_TRUSTAGENT_EXPIRED = 256;
         public static final int SOME_AUTH_REQUIRED_AFTER_USER_REQUEST = 4;
         public static final int STRONG_AUTH_NOT_REQUIRED = 0;
@@ -1420,7 +1355,6 @@ public class LockPatternUtils {
         private final IStrongAuthTracker.Stub mStub;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface StrongAuthFlags {
         }
 
@@ -1433,9 +1367,6 @@ public class LockPatternUtils {
             this.mIsNonStrongBiometricAllowedForUser = new SparseBooleanArray();
             this.mDefaultIsNonStrongBiometricAllowed = true;
             this.mStub = new IStrongAuthTracker.Stub() { // from class: com.android.internal.widget.LockPatternUtils.StrongAuthTracker.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.app.trust.IStrongAuthTracker
                 public void onStrongAuthRequiredChanged(int strongAuthFlags, int userId) {
                     StrongAuthTracker.this.mHandler.obtainMessage(1, strongAuthFlags, userId).sendToTarget();
@@ -1463,7 +1394,7 @@ public class LockPatternUtils {
         }
 
         public boolean isBiometricAllowedForUser(boolean isStrongBiometric, int userId) {
-            boolean allowed = (getStrongAuthForUser(userId) & (-269)) == 0;
+            boolean allowed = (getStrongAuthForUser(userId) & (-781)) == 0;
             if (!isStrongBiometric) {
                 return allowed & isNonStrongBiometricAllowedAfterIdleTimeout(userId);
             }
@@ -1504,31 +1435,11 @@ public class LockPatternUtils {
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.android.internal.widget.LockPatternUtils$StrongAuthTracker$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends IStrongAuthTracker.Stub {
-            AnonymousClass1() {
-            }
-
-            @Override // android.app.trust.IStrongAuthTracker
-            public void onStrongAuthRequiredChanged(int strongAuthFlags, int userId) {
-                StrongAuthTracker.this.mHandler.obtainMessage(1, strongAuthFlags, userId).sendToTarget();
-            }
-
-            @Override // android.app.trust.IStrongAuthTracker
-            public void onIsNonStrongBiometricAllowedChanged(boolean z, int i) {
-                StrongAuthTracker.this.mHandler.obtainMessage(2, z ? 1 : 0, i).sendToTarget();
-            }
-        }
-
         public IStrongAuthTracker.Stub getStub() {
             return this.mStub;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public class H extends Handler {
+        private class H extends Handler {
             static final int MSG_ON_IS_NON_STRONG_BIOMETRIC_ALLOWED_CHANGED = 2;
             static final int MSG_ON_STRONG_AUTH_REQUIRED_CHANGED = 1;
 
@@ -1541,12 +1452,10 @@ public class LockPatternUtils {
                 switch (msg.what) {
                     case 1:
                         StrongAuthTracker.this.handleStrongAuthRequiredChanged(msg.arg1, msg.arg2);
-                        return;
+                        break;
                     case 2:
                         StrongAuthTracker.this.handleIsNonStrongBiometricAllowedChanged(msg.arg1 == 1, msg.arg2);
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }
@@ -1666,6 +1575,43 @@ public class LockPatternUtils {
         return context.getResources().getBoolean(R.bool.config_enableCredentialFactoryResetProtection);
     }
 
+    public static boolean isRepairModeSupported(Context context) {
+        return context.getResources().getBoolean(R.bool.config_repairModeSupported);
+    }
+
+    public static boolean isRepairModeActive(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(), Settings.Global.REPAIR_MODE_ACTIVE, 0) > 0;
+    }
+
+    public static boolean canUserEnterRepairMode(Context context, UserInfo info) {
+        return info != null && info.isAdmin() && isRepairModeSupported(context);
+    }
+
+    public static boolean isGsiRunning() {
+        return SystemProperties.getInt(GSI_RUNNING_PROP, 0) > 0;
+    }
+
+    public static boolean isSpecialUserId(int userId) {
+        return isSpecialUserId(null, userId, false);
+    }
+
+    private static boolean isSpecialUserId(Context context, int userId, boolean checkDeviceSupported) {
+        switch (userId) {
+            case USER_FRP /* -9999 */:
+                if (checkDeviceSupported) {
+                    return frpCredentialEnabled(context);
+                }
+                return true;
+            case USER_REPAIR_MODE /* -9998 */:
+                if (checkDeviceSupported) {
+                    return isRepairModeSupported(context);
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean tryUnlockWithCachedUnifiedChallenge(int userId) {
         try {
             return getLockSettings().tryUnlockWithCachedUnifiedChallenge(userId);
@@ -1686,38 +1632,79 @@ public class LockPatternUtils {
         return Settings.Secure.getIntForUser(this.mContentResolver, "is_smpw_key", 0, userId) == 1;
     }
 
+    public void unlockUserKeyIfUnsecured(int userId) {
+        LsLog.verifyRequest(userId, Process.myPid(), this.mContext.getPackageName());
+        try {
+            getLockSettings().unlockUserKeyIfUnsecured(userId);
+        } catch (RemoteException re) {
+            re.rethrowFromSystemServer();
+        }
+    }
+
+    public void createNewUser(int userId, int userSerialNumber) {
+        getLockSettingsInternal().createNewUser(userId, userSerialNumber);
+    }
+
+    public void removeUser(int userId) {
+        getLockSettingsInternal().removeUser(userId);
+    }
+
+    public RemoteLockscreenValidationSession startRemoteLockscreenValidation() {
+        try {
+            return getLockSettings().startRemoteLockscreenValidation();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public RemoteLockscreenValidationResult validateRemoteLockscreen(byte[] encryptedCredential) {
+        try {
+            return getLockSettings().validateRemoteLockscreen(encryptedCredential);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public long getLockoutAttemptTimeout(int userId) {
-        return getLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        return getLong(LsConstants.LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
     }
 
     public void clearLockoutAttemptDeadline(int userId) {
-        setLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
-        setLong(LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+        setLong(LsConstants.LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        setLong(LsConstants.LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+    }
+
+    public void backupLockSettingsDB() {
+        setLong(LsConstants.LOCKSETTINGS_DB_BACKUP, System.currentTimeMillis(), 0);
+    }
+
+    public void restoreLockSettingsDB() {
+        setLong(LsConstants.LOCKSETTINGS_DB_RESTORE, System.currentTimeMillis(), 0);
     }
 
     public void setPasswordHint(String hint, int userId) {
         if (hint != null && hint.isEmpty()) {
             hint = null;
         }
-        setString(PASSWORD_HINT_KEY, hint, userId);
+        setString(LsConstants.PASSWORD_HINT_KEY, hint, userId);
     }
 
     public String getPasswordHint(int userId) {
-        return getString(PASSWORD_HINT_KEY, userId);
+        return getString(LsConstants.PASSWORD_HINT_KEY, userId);
     }
 
     public long addFailedFMMUnlockAttempt(int userId) {
         long count = getFailedFMMUnlockAttempt(userId) + 1;
-        setLong(FMM_FAIELD_ATTEMPT_KEY, count, userId);
+        setLong(LsConstants.FMM_FAIELD_ATTEMPT_KEY, count, userId);
         return count;
     }
 
     public long getFailedFMMUnlockAttempt(int userId) {
-        return getLong(FMM_FAIELD_ATTEMPT_KEY, 0L, userId);
+        return getLong(LsConstants.FMM_FAIELD_ATTEMPT_KEY, 0L, userId);
     }
 
     public void clearFailedFMMUnlockAttempt(int userId) {
-        setLong(FMM_FAIELD_ATTEMPT_KEY, 0L, userId);
+        setLong(LsConstants.FMM_FAIELD_ATTEMPT_KEY, 0L, userId);
     }
 
     public boolean isCarrierLockEnabled(int userId) {
@@ -1738,19 +1725,19 @@ public class LockPatternUtils {
     }
 
     public long setCarrierLockoutAttemptDeadline(int userId) {
-        long deadline = System.currentTimeMillis() + SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT;
-        setLong(SKT_LOCKOUT_ATTEMPT_DEADLINE, deadline, userId);
+        long deadline = System.currentTimeMillis() + LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT;
+        setLong(LsConstants.SKT_LOCKOUT_ATTEMPT_DEADLINE, deadline, userId);
         return deadline;
     }
 
     public long getCarrierLockoutAttemptDeadline(int userId) {
-        long deadline = getLong(SKT_LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+        long deadline = getLong(LsConstants.SKT_LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
         long now = System.currentTimeMillis();
         if (deadline <= now) {
             return 0L;
         }
-        if (deadline - now > SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT) {
-            Log.e(TAG, "getCarrierLockoutAttemptDeadline : Need to adjust deadline " + (deadline - now) + " to " + SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT);
+        if (deadline - now > LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT) {
+            Log.e(TAG, "getCarrierLockoutAttemptDeadline : Need to adjust deadline " + (deadline - now) + " to " + LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT);
             return setCarrierLockoutAttemptDeadline(userId);
         }
         return deadline;
@@ -1761,21 +1748,18 @@ public class LockPatternUtils {
             case 0:
                 try {
                     getLockSettings().setLockFMMPassword(password, 0);
-                    return;
+                    break;
                 } catch (RemoteException re) {
                     Log.e(TAG, "Unable to save lock FMM Password " + re);
-                    return;
                 }
             case 1:
                 try {
                     getLockSettings().setLockCarrierPassword(password, userId);
-                    return;
+                    break;
                 } catch (RemoteException re2) {
                     Log.e(TAG, "Unable to save lock Carrier Password " + re2);
                     return;
                 }
-            default:
-                return;
         }
     }
 
@@ -1815,13 +1799,19 @@ public class LockPatternUtils {
     }
 
     public boolean isRMMLockEnabled(int userId) {
-        for (int i = 0; i < 4; i++) {
-            boolean lockState = getBoolean(i + "locked", false, userId);
-            if (lockState) {
-                return true;
-            }
-        }
         return false;
+    }
+
+    public boolean isKnoxguardLockEnabled(int userId) {
+        return getBoolean("3locked", false, userId);
+    }
+
+    private boolean isRemoteLock(int userId) {
+        try {
+            return getLockSettings().isRemoteLock(userId);
+        } catch (RemoteException e) {
+            return false;
+        }
     }
 
     public long getExpireTimeForPrev() {
@@ -1852,29 +1842,6 @@ public class LockPatternUtils {
         }
     }
 
-    private void makeLpuLog(int userId, String contents) {
-        makeLpuLog(userId, contents, null);
-    }
-
-    private void makeLpuLog(int userId, String contents, Exception e) {
-        StringBuilder sb = new StringBuilder(1024);
-        sb.append("lock enroll event ").append("\n").append("Contents : ").append(contents).append("\n").append("Time : ").append(makeTime()).append("\n").append("User id : ").append(userId).append("\n").append("UID : ").append(Process.myUid()).append("  PID : ").append(Process.myPid()).append("\n").append("Package : ").append(this.mContext.getPackageName()).append("\n").append("Callers : \n").append(Debug.getCallers(10, makeTime()));
-        if (e != null) {
-            sb.append("\nException : \n").append(Log.getStackTraceString(e));
-        }
-        try {
-            getLockSettings().addLog(0, sb.toString());
-        } catch (RemoteException e2) {
-            Log.e(TAG, "Lss log is written failed");
-        }
-    }
-
-    private String makeTime() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        return String.format(Locale.US, "%02d-%02d %02d:%02d:%02d.%03d ", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)));
-    }
-
     public void setSecurityDebugLevel(int level) {
         try {
             getLockSettings().setSecurityDebugLevel(level);
@@ -1889,7 +1856,7 @@ public class LockPatternUtils {
         if (isUPSM || isEMC) {
             return 0;
         }
-        return (int) getLong(BIOMETRIC_LOCKSCREEN_KEY, 0L, userId);
+        return (int) getLong(LsConstants.BIOMETRIC_LOCKSCREEN_KEY, 0L, userId);
     }
 
     public int getBiometricState(int biometricType, int userId) {
@@ -1903,7 +1870,7 @@ public class LockPatternUtils {
         int oldValue = getBiometricType(userId);
         int newValue = state == 1 ? oldValue | biometricType : (~biometricType) & oldValue;
         Log.d(TAG, "setBiometricState ( oldValue = " + Integer.toHexString(oldValue) + " , newValue = " + Integer.toHexString(newValue) + " )");
-        setLong(BIOMETRIC_LOCKSCREEN_KEY, newValue, userId);
+        setLong(LsConstants.BIOMETRIC_LOCKSCREEN_KEY, newValue, userId);
         reportAuditLog(biometricType, state == 1, userId);
     }
 
@@ -1939,35 +1906,35 @@ public class LockPatternUtils {
 
     public long setBiometricAttemptDeadline(int userId, int timeoutMs) {
         long deadline = SystemClock.elapsedRealtime() + timeoutMs;
-        setLong(BIOMETRIC_ATTEMPT_TIMEOUT_MS, timeoutMs, userId);
-        setLong(BIOMETRIC_ATTEMPT_DEADLINE, deadline, userId);
+        setLong(LsConstants.BIOMETRIC_ATTEMPT_TIMEOUT_MS, timeoutMs, userId);
+        setLong(LsConstants.BIOMETRIC_ATTEMPT_DEADLINE, deadline, userId);
         return deadline;
     }
 
     public long getBiometricAttemptDeadline(int userId) {
-        long deadline = getLong(BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
-        long timeoutMs = getLong(BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        long deadline = getLong(LsConstants.BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
+        long timeoutMs = getLong(LsConstants.BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
         long now = SystemClock.elapsedRealtime();
         if (deadline != 0 && deadline < now) {
-            setLong(BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
-            setLong(BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
+            setLong(LsConstants.BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
+            setLong(LsConstants.BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
             return 0L;
         }
         if (timeoutMs != 0 && deadline > now + timeoutMs) {
             long deadline2 = now + timeoutMs;
-            setLong(BIOMETRIC_ATTEMPT_DEADLINE, deadline2, userId);
+            setLong(LsConstants.BIOMETRIC_ATTEMPT_DEADLINE, deadline2, userId);
             return deadline2;
         }
         return deadline;
     }
 
     public long getBiometricAttemptTimeout(int userId) {
-        return getLong(BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        return getLong(LsConstants.BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
     }
 
     public void clearBiometricAttemptDeadline(int userId) {
-        setLong(BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
-        setLong(BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
+        setLong(LsConstants.BIOMETRIC_ATTEMPT_TIMEOUT_MS, 0L, userId);
+        setLong(LsConstants.BIOMETRIC_ATTEMPT_DEADLINE, 0L, userId);
     }
 
     private void clearBiometricAndLockState(int userHandle) {
@@ -1989,11 +1956,11 @@ public class LockPatternUtils {
     }
 
     public void setFolderInstantlyLocks(boolean enabled, int userId) {
-        setBoolean(LOCKSCREEN_FOLDER_INSTANTLY_LOCKS, enabled, userId);
+        setBoolean(LsConstants.LOCKSCREEN_FOLDER_INSTANTLY_LOCKS, enabled, userId);
     }
 
     public boolean getFolderInstantlyLocks(int userId) {
-        return getBoolean(LOCKSCREEN_FOLDER_INSTANTLY_LOCKS, true, userId);
+        return getBoolean(LsConstants.LOCKSCREEN_FOLDER_INSTANTLY_LOCKS, true, userId);
     }
 
     public void setBiometricStrongAuthTimeout(String bioTimeoutKey, long timeoutMs, int userId) {
@@ -2005,39 +1972,11 @@ public class LockPatternUtils {
     }
 
     public boolean isUCMLockEnabled(int userId) {
-        return getCredentialTypeForUser(userId) == 6 && getBiometricState(1, userId) == 0;
+        return getCredentialTypeForUser(userId) == 6 && getBiometricState(1, userId) == 0 && getBiometricState(256, userId) == 0;
     }
 
     public static boolean isQualitySmartCard(int quality) {
         return quality == 458752;
-    }
-
-    public void unlockUserKeyIfUnsecured(int userId) {
-        getLockSettingsInternal().unlockUserKeyIfUnsecured(userId);
-    }
-
-    public void createNewUser(int userId, int userSerialNumber) {
-        getLockSettingsInternal().createNewUser(userId, userSerialNumber);
-    }
-
-    public void removeUser(int userId) {
-        getLockSettingsInternal().removeUser(userId);
-    }
-
-    public RemoteLockscreenValidationSession startRemoteLockscreenValidation() {
-        try {
-            return getLockSettings().startRemoteLockscreenValidation();
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public RemoteLockscreenValidationResult validateRemoteLockscreen(byte[] encryptedCredential) {
-        try {
-            return getLockSettings().validateRemoteLockscreen(encryptedCredential);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
     }
 
     private Optional<IDarManagerService> getDarManagerService() {
@@ -2092,8 +2031,8 @@ public class LockPatternUtils {
         return getLong(SDP_MDFPPMODE_ENABLED_FOR_SYSTEM_KEY, 0L, 0) == 1;
     }
 
-    /* loaded from: classes5.dex */
-    public static class WrappedCallbackForDualDar extends IDualDarAuthProgressCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class WrappedCallbackForDualDar extends IDualDarAuthProgressCallback.Stub {
         private DualDarAuthProgressCallback mCallback;
         private Handler mHandler;
 
@@ -2116,6 +2055,7 @@ public class LockPatternUtils {
             this.mHandler = null;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onInnerLayerUnlocked$0() {
             this.mCallback.onInnerLayerUnlocked();
             this.mCallback = null;
@@ -2145,15 +2085,10 @@ public class LockPatternUtils {
         return this.mLockPatternUtilForDualDarDo;
     }
 
-    /* loaded from: classes5.dex */
     public final class LockPatternUtilForDualDarDo {
         static final int OPT_PENDING_UNLOCK = 1;
         private final Context mContext;
         private DualDarAuthUtils mDualDarAuthUtils;
-
-        /* synthetic */ LockPatternUtilForDualDarDo(LockPatternUtils lockPatternUtils, Context context, LockPatternUtilForDualDarDoIA lockPatternUtilForDualDarDoIA) {
-            this(context);
-        }
 
         private LockPatternUtilForDualDarDo(Context context) {
             this.mContext = context;
@@ -2174,7 +2109,7 @@ public class LockPatternUtils {
             return getAuthUtils().isInnerAuthUserForDo(userId);
         }
 
-        public boolean checkCredential(LockscreenCredential credential, int userId, int option, DualDarAuthProgressCallback progressCallback) throws RequestThrottledException {
+        protected boolean checkCredential(LockscreenCredential credential, int userId, int option, DualDarAuthProgressCallback progressCallback) throws RequestThrottledException {
             return LockPatternUtils.this.checkCredentialForDualDarDo(credential, userId, option, progressCallback);
         }
 
@@ -2183,6 +2118,7 @@ public class LockPatternUtils {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean checkCredentialForDualDarDo(LockscreenCredential credential, int userId, int option, DualDarAuthProgressCallback progressCallback) throws RequestThrottledException {
         throwIfCalledOnMainThread();
         try {

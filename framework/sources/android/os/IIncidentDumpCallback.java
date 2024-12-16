@@ -6,7 +6,6 @@ public interface IIncidentDumpCallback extends IInterface {
 
     void onDumpSection(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncidentDumpCallback {
         @Override // android.os.IIncidentDumpCallback
         public void onDumpSection(ParcelFileDescriptor fd) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IIncidentDumpCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncidentDumpCallback {
         static final int TRANSACTION_onDumpSection = 1;
 
@@ -61,26 +59,22 @@ public interface IIncidentDumpCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIncidentDumpCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIncidentDumpCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIncidentDumpCallback.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDumpSection(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDumpSection(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncidentDumpCallback {
+        private static class Proxy implements IIncidentDumpCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

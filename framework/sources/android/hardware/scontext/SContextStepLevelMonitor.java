@@ -14,21 +14,20 @@ public class SContextStepLevelMonitor extends SContextEventContext {
     private static final double[] NO_DOUBLES = new double[0];
     private static final long[] NO_LONGS = new long[0];
     public static final Parcelable.Creator<SContextStepLevelMonitor> CREATOR = new Parcelable.Creator<SContextStepLevelMonitor>() { // from class: android.hardware.scontext.SContextStepLevelMonitor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextStepLevelMonitor createFromParcel(Parcel in) {
             return new SContextStepLevelMonitor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextStepLevelMonitor[] newArray(int size) {
             return new SContextStepLevelMonitor[size];
         }
     };
 
-    public SContextStepLevelMonitor() {
+    SContextStepLevelMonitor() {
         this.mContext = new Bundle();
         this.mInfo = new Bundle();
         this.mMode = 0;
@@ -43,75 +42,68 @@ public class SContextStepLevelMonitor extends SContextEventContext {
     }
 
     public long[] getTimeStamp() {
-        int i = this.mMode;
-        if (i == 0) {
+        if (this.mMode == 0) {
             if (this.mInfo == null) {
                 return NO_LONGS;
             }
             int size = this.mContext.getInt("DataCount");
             int[] duration = this.mInfo.getIntArray("DurationArray");
             long[] timestamp = new long[size];
-            for (int i2 = 0; i2 < size; i2++) {
-                if (i2 == 0) {
-                    timestamp[i2] = this.mContext.getLong("TimeStamp");
+            for (int i = 0; i < size; i++) {
+                if (i == 0) {
+                    timestamp[i] = this.mContext.getLong("TimeStamp");
                 } else {
-                    timestamp[i2] = timestamp[i2 - 1] + duration[i2 - 1];
+                    timestamp[i] = timestamp[i - 1] + duration[i - 1];
                 }
             }
             return timestamp;
         }
-        if (i != 1) {
+        if (this.mMode != 1) {
             return null;
         }
         return this.mContext.getLongArray("TimeStampArray");
     }
 
     public int[] getDuration() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return NO_INTS;
         }
-        return bundle.getIntArray("DurationArray");
+        return this.mInfo.getIntArray("DurationArray");
     }
 
     public int[] getStepLevel() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return NO_INTS;
         }
-        return bundle.getIntArray("StepTypeArray");
+        return this.mInfo.getIntArray("StepTypeArray");
     }
 
     public int[] getStepCount() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return NO_INTS;
         }
-        return bundle.getIntArray("StepCountArray");
+        return this.mInfo.getIntArray("StepCountArray");
     }
 
     public double[] getDistance() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return NO_DOUBLES;
         }
-        return bundle.getDoubleArray("DistanceArray");
+        return this.mInfo.getDoubleArray("DistanceArray");
     }
 
     public double[] getCalorie() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return NO_DOUBLES;
         }
-        return bundle.getDoubleArray("CalorieArray");
+        return this.mInfo.getDoubleArray("CalorieArray");
     }
 
     public int getMode() {
-        Bundle bundle = this.mInfo;
-        if (bundle == null) {
+        if (this.mInfo == null) {
             return 0;
         }
-        return bundle.getInt("Mode");
+        return this.mInfo.getInt("Mode");
     }
 
     @Override // android.hardware.scontext.SContextEventContext, com.samsung.android.hardware.context.SemContextEventContext
@@ -132,22 +124,5 @@ public class SContextStepLevelMonitor extends SContextEventContext {
         this.mContext = src.readBundle();
         this.mInfo = src.readBundle();
         this.mMode = src.readInt();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextStepLevelMonitor$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextStepLevelMonitor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextStepLevelMonitor createFromParcel(Parcel in) {
-            return new SContextStepLevelMonitor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextStepLevelMonitor[] newArray(int size) {
-            return new SContextStepLevelMonitor[size];
-        }
     }
 }

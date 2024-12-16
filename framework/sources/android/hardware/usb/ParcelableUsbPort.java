@@ -6,9 +6,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class ParcelableUsbPort implements Parcelable {
     public static final Parcelable.Creator<ParcelableUsbPort> CREATOR = new Parcelable.Creator<ParcelableUsbPort>() { // from class: android.hardware.usb.ParcelableUsbPort.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableUsbPort createFromParcel(Parcel in) {
             String id = in.readString();
@@ -21,6 +19,7 @@ public final class ParcelableUsbPort implements Parcelable {
             return new ParcelableUsbPort(id, supportedModes, supportedContaminantProtectionModes, supportsEnableContaminantPresenceProtection, supportsEnableContaminantPresenceDetection, supportsComplianceWarnings, supportedAltModesMask);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableUsbPort[] newArray(int size) {
             return new ParcelableUsbPort[size];
@@ -33,10 +32,6 @@ public final class ParcelableUsbPort implements Parcelable {
     private final boolean mSupportsComplianceWarnings;
     private final boolean mSupportsEnableContaminantPresenceDetection;
     private final boolean mSupportsEnableContaminantPresenceProtection;
-
-    /* synthetic */ ParcelableUsbPort(String str, int i, int i2, boolean z, boolean z2, boolean z3, int i3, ParcelableUsbPortIA parcelableUsbPortIA) {
-        this(str, i, i2, z, z2, z3, i3);
-    }
 
     private ParcelableUsbPort(String id, int supportedModes, int supportedContaminantProtectionModes, boolean supportsEnableContaminantPresenceProtection, boolean supportsEnableContaminantPresenceDetection, boolean supportsComplianceWarnings, int supportedAltModesMask) {
         this.mId = id;
@@ -70,29 +65,5 @@ public final class ParcelableUsbPort implements Parcelable {
         dest.writeBoolean(this.mSupportsEnableContaminantPresenceDetection);
         dest.writeBoolean(this.mSupportsComplianceWarnings);
         dest.writeInt(this.mSupportedAltModesMask);
-    }
-
-    /* renamed from: android.hardware.usb.ParcelableUsbPort$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelableUsbPort> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableUsbPort createFromParcel(Parcel in) {
-            String id = in.readString();
-            int supportedModes = in.readInt();
-            int supportedContaminantProtectionModes = in.readInt();
-            boolean supportsEnableContaminantPresenceProtection = in.readBoolean();
-            boolean supportsEnableContaminantPresenceDetection = in.readBoolean();
-            boolean supportsComplianceWarnings = in.readBoolean();
-            int supportedAltModesMask = in.readInt();
-            return new ParcelableUsbPort(id, supportedModes, supportedContaminantProtectionModes, supportsEnableContaminantPresenceProtection, supportsEnableContaminantPresenceDetection, supportsComplianceWarnings, supportedAltModesMask);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableUsbPort[] newArray(int size) {
-            return new ParcelableUsbPort[size];
-        }
     }
 }

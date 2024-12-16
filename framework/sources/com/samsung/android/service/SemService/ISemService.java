@@ -6,11 +6,13 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.service.SemService.ISemService";
 
     int ICD() throws RemoteException;
+
+    void agent_SLOG(String str) throws RemoteException;
 
     void check_Network(int i) throws RemoteException;
 
@@ -25,6 +27,8 @@ public interface ISemService extends IInterface {
     int deactivate_Cards(int i, String[] strArr, int[] iArr, int i2) throws RemoteException;
 
     int deactivate_CardsAID(int i, int i2, String[] strArr, int[] iArr, int i3) throws RemoteException;
+
+    int eSE_AidFactoryReset(byte[] bArr, int i) throws RemoteException;
 
     int eSE_FactoryReset() throws RemoteException;
 
@@ -58,7 +62,7 @@ public interface ISemService extends IInterface {
 
     String[] handle_CCMCB(byte[] bArr, int i, byte[] bArr2, int i2) throws RemoteException;
 
-    int inject_esesm_keyset() throws RemoteException;
+    int handle_CCMScp11c(byte[] bArr, int i) throws RemoteException;
 
     int isLccmSwp() throws RemoteException;
 
@@ -86,9 +90,6 @@ public interface ISemService extends IInterface {
 
     void stop_request_credentials() throws RemoteException;
 
-    int verify_esesm_keyset() throws RemoteException;
-
-    /* loaded from: classes5.dex */
     public static class Default implements ISemService {
         @Override // com.samsung.android.service.SemService.ISemService
         public String get_ESEA() throws RemoteException {
@@ -266,17 +267,21 @@ public interface ISemService extends IInterface {
         }
 
         @Override // com.samsung.android.service.SemService.ISemService
-        public int inject_esesm_keyset() throws RemoteException {
-            return 0;
-        }
-
-        @Override // com.samsung.android.service.SemService.ISemService
-        public int verify_esesm_keyset() throws RemoteException {
-            return 0;
-        }
-
-        @Override // com.samsung.android.service.SemService.ISemService
         public void check_Network(int type) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.service.SemService.ISemService
+        public int handle_CCMScp11c(byte[] ccmData, int ccmDataLen) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.service.SemService.ISemService
+        public int eSE_AidFactoryReset(byte[] aid, int aidLen) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.service.SemService.ISemService
+        public void agent_SLOG(String log) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -285,16 +290,17 @@ public interface ISemService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemService {
         static final int TRANSACTION_ICD = 11;
-        static final int TRANSACTION_check_Network = 39;
+        static final int TRANSACTION_agent_SLOG = 40;
+        static final int TRANSACTION_check_Network = 37;
         static final int TRANSACTION_check_SeState = 22;
         static final int TRANSACTION_closeSpiDriver = 32;
         static final int TRANSACTION_close_Spi = 20;
         static final int TRANSACTION_continue_attestation = 13;
         static final int TRANSACTION_deactivate_Cards = 8;
         static final int TRANSACTION_deactivate_CardsAID = 9;
+        static final int TRANSACTION_eSE_AidFactoryReset = 39;
         static final int TRANSACTION_eSE_FactoryReset = 10;
         static final int TRANSACTION_eSE_FullFactoryReset = 34;
         static final int TRANSACTION_eSE_LowFactoryReset = 33;
@@ -311,7 +317,7 @@ public interface ISemService extends IInterface {
         static final int TRANSACTION_grdm_request_key = 26;
         static final int TRANSACTION_handle_CCM = 4;
         static final int TRANSACTION_handle_CCMCB = 5;
-        static final int TRANSACTION_inject_esesm_keyset = 37;
+        static final int TRANSACTION_handle_CCMScp11c = 38;
         static final int TRANSACTION_isLccmSwp = 6;
         static final int TRANSACTION_openSpiDriver = 31;
         static final int TRANSACTION_open_Spi = 19;
@@ -325,7 +331,6 @@ public interface ISemService extends IInterface {
         static final int TRANSACTION_start_request_credentials = 23;
         static final int TRANSACTION_stop_SLOG = 16;
         static final int TRANSACTION_stop_request_credentials = 24;
-        static final int TRANSACTION_verify_esesm_keyset = 38;
 
         public Stub() {
             attachInterface(this, ISemService.DESCRIPTOR);
@@ -422,11 +427,13 @@ public interface ISemService extends IInterface {
                 case 36:
                     return "scp11_certificate_check";
                 case 37:
-                    return "inject_esesm_keyset";
-                case 38:
-                    return "verify_esesm_keyset";
-                case 39:
                     return "check_Network";
+                case 38:
+                    return "handle_CCMScp11c";
+                case 39:
+                    return "eSE_AidFactoryReset";
+                case 40:
+                    return "agent_SLOG";
                 default:
                     return null;
             }
@@ -442,277 +449,287 @@ public interface ISemService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemService.DESCRIPTOR);
+                case 1:
+                    String _result = get_ESEA();
+                    reply.writeNoException();
+                    reply.writeString(_result);
+                    return true;
+                case 2:
+                    String _result2 = getCPLC14mode();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    sem_factory();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    byte[] _arg0 = data.createByteArray();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result3 = handle_CCM(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    reply.writeByteArray(_arg0);
+                    return true;
+                case 5:
+                    byte[] _arg02 = data.createByteArray();
+                    int _arg12 = data.readInt();
+                    byte[] _arg2 = data.createByteArray();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result4 = handle_CCMCB(_arg02, _arg12, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result4);
+                    reply.writeByteArray(_arg02);
+                    reply.writeByteArray(_arg2);
+                    return true;
+                case 6:
+                    int _result5 = isLccmSwp();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result6 = get_HQMMemory(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    reply.writeByteArray(_arg03);
+                    return true;
+                case 8:
+                    int _arg04 = data.readInt();
+                    String[] _arg13 = data.createStringArray();
+                    int[] _arg22 = data.createIntArray();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result7 = deactivate_Cards(_arg04, _arg13, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 9:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    String[] _arg23 = data.createStringArray();
+                    int[] _arg33 = data.createIntArray();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result8 = deactivate_CardsAID(_arg05, _arg14, _arg23, _arg33, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 10:
+                    int _result9 = eSE_FactoryReset();
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 11:
+                    int _result10 = ICD();
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 12:
+                    byte[] _arg06 = data.createByteArray();
+                    int _arg15 = data.readInt();
+                    byte[] _arg24 = data.createByteArray();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result11 = start_attestation(_arg06, _arg15, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    reply.writeByteArray(_arg06);
+                    reply.writeByteArray(_arg24);
+                    return true;
+                case 13:
+                    String _arg07 = data.readString();
+                    int _arg16 = data.readInt();
+                    byte[] _arg25 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result12 = continue_attestation(_arg07, _arg16, _arg25);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    reply.writeByteArray(_arg25);
+                    return true;
+                case 14:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    secureLog(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    start_SLOG();
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    stop_SLOG();
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _result13 = getAtr_Spi();
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 18:
+                    int _result14 = resetForCOSU();
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 19:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result15 = open_Spi(_arg09);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 20:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result16 = close_Spi(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 21:
+                    byte[] _arg011 = data.createByteArray();
+                    int _arg17 = data.readInt();
+                    byte[] _arg26 = data.createByteArray();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result17 = send_Data(_arg011, _arg17, _arg26, _arg35);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    reply.writeByteArray(_arg011);
+                    reply.writeByteArray(_arg26);
+                    return true;
+                case 22:
+                    byte[] _arg012 = data.createByteArray();
+                    byte[] _arg18 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result18 = check_SeState(_arg012, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 23:
+                    byte[] _arg013 = data.createByteArray();
+                    byte[] _arg19 = data.createByteArray();
+                    String _arg27 = data.readString();
+                    byte[] _arg36 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result19 = start_request_credentials(_arg013, _arg19, _arg27, _arg36);
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    reply.writeByteArray(_arg36);
+                    return true;
+                case 24:
+                    stop_request_credentials();
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    int _result20 = grdm_get_session();
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 26:
+                    int _arg014 = data.readInt();
+                    byte[] _arg110 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result21 = grdm_request_key(_arg014, _arg110);
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    reply.writeByteArray(_arg110);
+                    return true;
+                case 27:
+                    int _result22 = grdm_release_session();
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 28:
+                    int _arg015 = data.readInt();
+                    byte[] _arg111 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result23 = grdm_get_attes_cert(_arg015, _arg111);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    reply.writeByteArray(_arg111);
+                    return true;
+                case 29:
+                    String _result24 = grdm_check_restricted_mode();
+                    reply.writeNoException();
+                    reply.writeString(_result24);
+                    return true;
+                case 30:
+                    int _result25 = grdm_Check_Status();
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 31:
+                    int _result26 = openSpiDriver();
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 32:
+                    int _result27 = closeSpiDriver();
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 33:
+                    int _result28 = eSE_LowFactoryReset();
+                    reply.writeNoException();
+                    reply.writeInt(_result28);
+                    return true;
+                case 34:
+                    int _result29 = eSE_FullFactoryReset();
+                    reply.writeNoException();
+                    reply.writeInt(_result29);
+                    return true;
+                case 35:
+                    int _result30 = esek_certificate_check();
+                    reply.writeNoException();
+                    reply.writeInt(_result30);
+                    return true;
+                case 36:
+                    int _result31 = scp11_certificate_check();
+                    reply.writeNoException();
+                    reply.writeInt(_result31);
+                    return true;
+                case 37:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    check_Network(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    byte[] _arg017 = data.createByteArray();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result32 = handle_CCMScp11c(_arg017, _arg112);
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    reply.writeByteArray(_arg017);
+                    return true;
+                case 39:
+                    byte[] _arg018 = data.createByteArray();
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result33 = eSE_AidFactoryReset(_arg018, _arg113);
+                    reply.writeNoException();
+                    reply.writeInt(_result33);
+                    return true;
+                case 40:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    agent_SLOG(_arg019);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _result = get_ESEA();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        case 2:
-                            String _result2 = getCPLC14mode();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            sem_factory();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            byte[] _arg0 = data.createByteArray();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result3 = handle_CCM(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            reply.writeByteArray(_arg0);
-                            return true;
-                        case 5:
-                            byte[] _arg02 = data.createByteArray();
-                            int _arg12 = data.readInt();
-                            byte[] _arg2 = data.createByteArray();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result4 = handle_CCMCB(_arg02, _arg12, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result4);
-                            reply.writeByteArray(_arg02);
-                            reply.writeByteArray(_arg2);
-                            return true;
-                        case 6:
-                            int _result5 = isLccmSwp();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result6 = get_HQMMemory(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            reply.writeByteArray(_arg03);
-                            return true;
-                        case 8:
-                            int _arg04 = data.readInt();
-                            String[] _arg13 = data.createStringArray();
-                            int[] _arg22 = data.createIntArray();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = deactivate_Cards(_arg04, _arg13, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 9:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            String[] _arg23 = data.createStringArray();
-                            int[] _arg33 = data.createIntArray();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result8 = deactivate_CardsAID(_arg05, _arg14, _arg23, _arg33, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 10:
-                            int _result9 = eSE_FactoryReset();
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 11:
-                            int _result10 = ICD();
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 12:
-                            byte[] _arg06 = data.createByteArray();
-                            int _arg15 = data.readInt();
-                            byte[] _arg24 = data.createByteArray();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = start_attestation(_arg06, _arg15, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            reply.writeByteArray(_arg06);
-                            reply.writeByteArray(_arg24);
-                            return true;
-                        case 13:
-                            String _arg07 = data.readString();
-                            int _arg16 = data.readInt();
-                            byte[] _arg25 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result12 = continue_attestation(_arg07, _arg16, _arg25);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            reply.writeByteArray(_arg25);
-                            return true;
-                        case 14:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            secureLog(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            start_SLOG();
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            stop_SLOG();
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _result13 = getAtr_Spi();
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 18:
-                            int _result14 = resetForCOSU();
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 19:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result15 = open_Spi(_arg09);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 20:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result16 = close_Spi(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 21:
-                            byte[] _arg011 = data.createByteArray();
-                            int _arg17 = data.readInt();
-                            byte[] _arg26 = data.createByteArray();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = send_Data(_arg011, _arg17, _arg26, _arg35);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            reply.writeByteArray(_arg011);
-                            reply.writeByteArray(_arg26);
-                            return true;
-                        case 22:
-                            byte[] _arg012 = data.createByteArray();
-                            byte[] _arg18 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result18 = check_SeState(_arg012, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 23:
-                            byte[] _arg013 = data.createByteArray();
-                            byte[] _arg19 = data.createByteArray();
-                            String _arg27 = data.readString();
-                            byte[] _arg36 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result19 = start_request_credentials(_arg013, _arg19, _arg27, _arg36);
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            reply.writeByteArray(_arg36);
-                            return true;
-                        case 24:
-                            stop_request_credentials();
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            int _result20 = grdm_get_session();
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 26:
-                            int _arg014 = data.readInt();
-                            byte[] _arg110 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result21 = grdm_request_key(_arg014, _arg110);
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            reply.writeByteArray(_arg110);
-                            return true;
-                        case 27:
-                            int _result22 = grdm_release_session();
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 28:
-                            int _arg015 = data.readInt();
-                            byte[] _arg111 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result23 = grdm_get_attes_cert(_arg015, _arg111);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            reply.writeByteArray(_arg111);
-                            return true;
-                        case 29:
-                            String _result24 = grdm_check_restricted_mode();
-                            reply.writeNoException();
-                            reply.writeString(_result24);
-                            return true;
-                        case 30:
-                            int _result25 = grdm_Check_Status();
-                            reply.writeNoException();
-                            reply.writeInt(_result25);
-                            return true;
-                        case 31:
-                            int _result26 = openSpiDriver();
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 32:
-                            int _result27 = closeSpiDriver();
-                            reply.writeNoException();
-                            reply.writeInt(_result27);
-                            return true;
-                        case 33:
-                            int _result28 = eSE_LowFactoryReset();
-                            reply.writeNoException();
-                            reply.writeInt(_result28);
-                            return true;
-                        case 34:
-                            int _result29 = eSE_FullFactoryReset();
-                            reply.writeNoException();
-                            reply.writeInt(_result29);
-                            return true;
-                        case 35:
-                            int _result30 = esek_certificate_check();
-                            reply.writeNoException();
-                            reply.writeInt(_result30);
-                            return true;
-                        case 36:
-                            int _result31 = scp11_certificate_check();
-                            reply.writeNoException();
-                            reply.writeInt(_result31);
-                            return true;
-                        case 37:
-                            int _result32 = inject_esesm_keyset();
-                            reply.writeNoException();
-                            reply.writeInt(_result32);
-                            return true;
-                        case 38:
-                            int _result33 = verify_esesm_keyset();
-                            reply.writeNoException();
-                            reply.writeInt(_result33);
-                            return true;
-                        case 39:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            check_Network(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ISemService {
             private IBinder mRemote;
 
@@ -1348,45 +1365,65 @@ public interface ISemService extends IInterface {
             }
 
             @Override // com.samsung.android.service.SemService.ISemService
-            public int inject_esesm_keyset() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemService.DESCRIPTOR);
-                    this.mRemote.transact(37, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.service.SemService.ISemService
-            public int verify_esesm_keyset() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemService.DESCRIPTOR);
-                    this.mRemote.transact(38, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.service.SemService.ISemService
             public void check_Network(int type) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemService.DESCRIPTOR);
                     _data.writeInt(type);
+                    this.mRemote.transact(37, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.service.SemService.ISemService
+            public int handle_CCMScp11c(byte[] ccmData, int ccmDataLen) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemService.DESCRIPTOR);
+                    _data.writeByteArray(ccmData);
+                    _data.writeInt(ccmDataLen);
+                    this.mRemote.transact(38, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    _reply.readByteArray(ccmData);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.service.SemService.ISemService
+            public int eSE_AidFactoryReset(byte[] aid, int aidLen) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemService.DESCRIPTOR);
+                    _data.writeByteArray(aid);
+                    _data.writeInt(aidLen);
                     this.mRemote.transact(39, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.service.SemService.ISemService
+            public void agent_SLOG(String log) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemService.DESCRIPTOR);
+                    _data.writeString(log);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1397,7 +1434,7 @@ public interface ISemService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 38;
+            return 39;
         }
     }
 }

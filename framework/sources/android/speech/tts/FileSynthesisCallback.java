@@ -26,7 +26,7 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
     private final Object mStateLock;
     protected int mStatusCode;
 
-    public FileSynthesisCallback(FileChannel fileChannel, TextToSpeechService.UtteranceProgressDispatcher dispatcher, boolean clientIsUsingV2) {
+    FileSynthesisCallback(FileChannel fileChannel, TextToSpeechService.UtteranceProgressDispatcher dispatcher, boolean clientIsUsingV2) {
         super(clientIsUsingV2);
         this.mStateLock = new Object();
         this.mStarted = false;
@@ -37,7 +37,7 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
     }
 
     @Override // android.speech.tts.AbstractSynthesisCallback
-    public void stop() {
+    void stop() {
         synchronized (this.mStateLock) {
             if (this.mDone) {
                 return;
@@ -71,11 +71,10 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
         }
         this.mDispatcher.dispatchOnBeginSynthesis(sampleRateInHz, audioFormat, channelCount);
         synchronized (this.mStateLock) {
-            int i = this.mStatusCode;
-            if (i == -2) {
+            if (this.mStatusCode == -2) {
                 return errorCodeOnStop();
             }
-            if (i != 0) {
+            if (this.mStatusCode != 0) {
                 return -1;
             }
             if (this.mStarted) {
@@ -105,15 +104,13 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
     @Override // android.speech.tts.SynthesisCallback
     public int audioAvailable(byte[] buffer, int offset, int length) {
         synchronized (this.mStateLock) {
-            int i = this.mStatusCode;
-            if (i == -2) {
+            if (this.mStatusCode == -2) {
                 return errorCodeOnStop();
             }
-            if (i != 0) {
+            if (this.mStatusCode != 0) {
                 return -1;
             }
-            FileChannel fileChannel = this.mFileChannel;
-            if (fileChannel == null) {
+            if (this.mFileChannel == null) {
                 Log.e(TAG, "File not open");
                 this.mStatusCode = -5;
                 return -1;
@@ -122,6 +119,7 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
                 Log.e(TAG, "Start method was not called");
                 return -1;
             }
+            FileChannel fileChannel = this.mFileChannel;
             byte[] bufferCopy = new byte[length];
             System.arraycopy(buffer, offset, bufferCopy, 0, length);
             this.mDispatcher.dispatchOnAudioAvailable(bufferCopy);
@@ -146,20 +144,19 @@ class FileSynthesisCallback extends AbstractSynthesisCallback {
                 Log.w(TAG, "Duplicate call to done()");
                 return -1;
             }
-            int i = this.mStatusCode;
-            if (i == -2) {
+            if (this.mStatusCode == -2) {
                 return errorCodeOnStop();
             }
-            if (i != 0 && i != -2) {
-                this.mDispatcher.dispatchOnError(i);
+            if (this.mStatusCode != 0 && this.mStatusCode != -2) {
+                this.mDispatcher.dispatchOnError(this.mStatusCode);
                 return -1;
             }
-            FileChannel fileChannel = this.mFileChannel;
-            if (fileChannel == null) {
+            if (this.mFileChannel == null) {
                 Log.e(TAG, "File not open");
                 return -1;
             }
             this.mDone = true;
+            FileChannel fileChannel = this.mFileChannel;
             int sampleRateInHz = this.mSampleRateInHz;
             int audioFormat = this.mAudioFormat;
             int channelCount = this.mChannelCount;

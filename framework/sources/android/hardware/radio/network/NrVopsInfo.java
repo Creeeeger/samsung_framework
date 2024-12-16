@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class NrVopsInfo implements Parcelable {
     public static final Parcelable.Creator<NrVopsInfo> CREATOR = new Parcelable.Creator<NrVopsInfo>() { // from class: android.hardware.radio.network.NrVopsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrVopsInfo createFromParcel(Parcel _aidl_source) {
             NrVopsInfo _aidl_out = new NrVopsInfo();
@@ -18,6 +16,7 @@ public class NrVopsInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NrVopsInfo[] newArray(int _aidl_size) {
             return new NrVopsInfo[_aidl_size];
@@ -37,25 +36,6 @@ public class NrVopsInfo implements Parcelable {
     public byte vopsSupported = 0;
     public byte emcSupported = 0;
     public byte emfSupported = 0;
-
-    /* renamed from: android.hardware.radio.network.NrVopsInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NrVopsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NrVopsInfo createFromParcel(Parcel _aidl_source) {
-            NrVopsInfo _aidl_out = new NrVopsInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NrVopsInfo[] newArray(int _aidl_size) {
-            return new NrVopsInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -124,7 +104,7 @@ public class NrVopsInfo implements Parcelable {
         _aidl_sj.add("vopsSupported: " + ((int) this.vopsSupported));
         _aidl_sj.add("emcSupported: " + ((int) this.emcSupported));
         _aidl_sj.add("emfSupported: " + ((int) this.emfSupported));
-        return "android.hardware.radio.network.NrVopsInfo" + _aidl_sj.toString();
+        return "NrVopsInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

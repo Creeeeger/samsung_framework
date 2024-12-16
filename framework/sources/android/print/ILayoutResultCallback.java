@@ -18,7 +18,6 @@ public interface ILayoutResultCallback extends IInterface {
 
     void onLayoutStarted(ICancellationSignal iCancellationSignal, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ILayoutResultCallback {
         @Override // android.print.ILayoutResultCallback
         public void onLayoutStarted(ICancellationSignal cancellation, int sequence) throws RemoteException {
@@ -42,7 +41,6 @@ public interface ILayoutResultCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ILayoutResultCallback {
         public static final String DESCRIPTOR = "android.print.ILayoutResultCallback";
         static final int TRANSACTION_onLayoutCanceled = 4;
@@ -95,45 +93,41 @@ public interface ILayoutResultCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLayoutStarted(_arg0, _arg1);
+                    return true;
+                case 2:
+                    PrintDocumentInfo _arg02 = (PrintDocumentInfo) data.readTypedObject(PrintDocumentInfo.CREATOR);
+                    boolean _arg12 = data.readBoolean();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLayoutFinished(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    CharSequence _arg03 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLayoutFailed(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLayoutCanceled(_arg04);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLayoutStarted(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            PrintDocumentInfo _arg02 = (PrintDocumentInfo) data.readTypedObject(PrintDocumentInfo.CREATOR);
-                            boolean _arg12 = data.readBoolean();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLayoutFinished(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            CharSequence _arg03 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLayoutFailed(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLayoutCanceled(_arg04);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ILayoutResultCallback {
+        private static class Proxy implements ILayoutResultCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

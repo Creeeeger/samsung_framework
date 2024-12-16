@@ -1,12 +1,16 @@
 package android.graphics.fonts;
 
+import android.util.ArraySet;
 import dalvik.annotation.optimization.FastNative;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Collections;
+import java.util.Set;
 
 /* loaded from: classes.dex */
 public class FontFileUtil {
     private static final int ANALYZE_ERROR = -1;
+    private static final int FVAR_TABLE_TAG = 1719034226;
     private static final int OS2_TABLE_TAG = 1330851634;
     private static final int SFNT_VERSION_1 = 65536;
     private static final int SFNT_VERSION_OTTO = 1330926671;
@@ -132,5 +136,58 @@ public class FontFileUtil {
             return 0;
         }
         return -1;
+    }
+
+    private static int getUInt16(ByteBuffer buffer, int offset) {
+        return buffer.getShort(offset) & 65535;
+    }
+
+    public static Set<Integer> getSupportedAxes(ByteBuffer buffer, int index) {
+        ByteOrder originalOrder = buffer.order();
+        buffer.order(ByteOrder.BIG_ENDIAN);
+        int fontFileOffset = 0;
+        try {
+            int magicNumber = buffer.getInt(0);
+            if (magicNumber == TTC_TAG) {
+                if (index >= buffer.getInt(8)) {
+                    return Collections.EMPTY_SET;
+                }
+                fontFileOffset = buffer.getInt((index * 4) + 12);
+            }
+            int sfntVersion = buffer.getInt(fontFileOffset);
+            if (sfntVersion != 65536 && sfntVersion != SFNT_VERSION_OTTO) {
+                return Collections.EMPTY_SET;
+            }
+            int numTables = buffer.getShort(fontFileOffset + 4);
+            int fvarTableOffset = -1;
+            int i = 0;
+            while (true) {
+                if (i >= numTables) {
+                    break;
+                }
+                int tableOffset = fontFileOffset + 12 + (i * 16);
+                if (buffer.getInt(tableOffset) == FVAR_TABLE_TAG) {
+                    fvarTableOffset = buffer.getInt(tableOffset + 8);
+                    break;
+                }
+                i++;
+            }
+            if (fvarTableOffset == -1) {
+                return Collections.EMPTY_SET;
+            }
+            if (buffer.getShort(fvarTableOffset) == 1 && buffer.getShort(fvarTableOffset + 2) == 0) {
+                int axesArrayOffset = getUInt16(buffer, fvarTableOffset + 4);
+                int axisCount = getUInt16(buffer, fvarTableOffset + 8);
+                int axisSize = getUInt16(buffer, fvarTableOffset + 10);
+                ArraySet<Integer> axes = new ArraySet<>();
+                for (int i2 = 0; i2 < axisCount; i2++) {
+                    axes.add(Integer.valueOf(buffer.getInt(fvarTableOffset + axesArrayOffset + (axisSize * i2))));
+                }
+                return axes;
+            }
+            return Collections.EMPTY_SET;
+        } finally {
+            buffer.order(originalOrder);
+        }
     }
 }

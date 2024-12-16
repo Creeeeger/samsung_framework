@@ -4,17 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.android.ims.internal.uce.common.CapInfo;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class OptionsCapInfo implements Parcelable {
     public static final Parcelable.Creator<OptionsCapInfo> CREATOR = new Parcelable.Creator<OptionsCapInfo>() { // from class: com.android.ims.internal.uce.options.OptionsCapInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OptionsCapInfo createFromParcel(Parcel source) {
             return new OptionsCapInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OptionsCapInfo[] newArray(int size) {
             return new OptionsCapInfo[size];
@@ -22,10 +21,6 @@ public class OptionsCapInfo implements Parcelable {
     };
     private CapInfo mCapInfo;
     private String mSdp;
-
-    /* synthetic */ OptionsCapInfo(Parcel parcel, OptionsCapInfoIA optionsCapInfoIA) {
-        this(parcel);
-    }
 
     public static OptionsCapInfo getOptionsCapInfoInstance() {
         return new OptionsCapInfo();
@@ -61,23 +56,6 @@ public class OptionsCapInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mSdp);
         dest.writeParcelable(this.mCapInfo, flags);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.options.OptionsCapInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OptionsCapInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OptionsCapInfo createFromParcel(Parcel source) {
-            return new OptionsCapInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OptionsCapInfo[] newArray(int size) {
-            return new OptionsCapInfo[size];
-        }
     }
 
     private OptionsCapInfo(Parcel source) {

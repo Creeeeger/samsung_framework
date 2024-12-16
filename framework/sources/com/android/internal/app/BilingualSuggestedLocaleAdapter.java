@@ -12,7 +12,7 @@ import com.android.internal.app.LocaleStore;
 import java.util.Locale;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class BilingualSuggestedLocaleAdapter extends SuggestedLocaleAdapter {
     private final Locale mSecondaryLocale;
     private final int mSecondaryLocaleTextDir;
@@ -112,11 +112,11 @@ public class BilingualSuggestedLocaleAdapter extends SuggestedLocaleAdapter {
             throw new NullPointerException("Cannot set locale, locale info is null.");
         }
         TextView textNative = (TextView) itemView.findViewById(R.id.locale_native);
-        textNative.setText(localeInfo.getLabel(this.mCountryMode));
+        textNative.lambda$setTextAsync$0(localeInfo.getLabel(this.mCountryMode));
         textNative.setTextLocale(localeInfo.getLocale());
         textNative.setContentDescription(localeInfo.getContentDescription(this.mCountryMode));
         TextView textSecondary = (TextView) itemView.findViewById(R.id.locale_secondary);
-        textSecondary.setText(localeInfo.getLocale().getDisplayLanguage(this.mSecondaryLocale));
+        textSecondary.lambda$setTextAsync$0(localeInfo.getLocale().getDisplayLanguage(this.mSecondaryLocale));
         textSecondary.setTextDirection(this.mSecondaryLocaleTextDir);
         if (this.mCountryMode) {
             int layoutDir = TextUtils.getLayoutDirectionFromLocale(localeInfo.getParent());

@@ -32,6 +32,8 @@ public class RecognizerIntent {
     public static final String EXTRA_LANGUAGE_MODEL = "android.speech.extra.LANGUAGE_MODEL";
     public static final String EXTRA_LANGUAGE_PREFERENCE = "android.speech.extra.LANGUAGE_PREFERENCE";
     public static final String EXTRA_LANGUAGE_SWITCH_ALLOWED_LANGUAGES = "android.speech.extra.LANGUAGE_SWITCH_ALLOWED_LANGUAGES";
+    public static final String EXTRA_LANGUAGE_SWITCH_INITIAL_ACTIVE_DURATION_TIME_MILLIS = "android.speech.extra.LANGUAGE_SWITCH_INITIAL_ACTIVE_DURATION_TIME_MILLIS";
+    public static final String EXTRA_LANGUAGE_SWITCH_MAX_SWITCHES = "android.speech.extra.LANGUAGE_SWITCH_MAX_SWITCHES";
     public static final String EXTRA_MASK_OFFENSIVE_WORDS = "android.speech.extra.MASK_OFFENSIVE_WORDS";
     public static final String EXTRA_MAX_RESULTS = "android.speech.extra.MAX_RESULTS";
     public static final String EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE = "android.speech.extra.ONLY_RETURN_LANGUAGE_PREFERENCE";

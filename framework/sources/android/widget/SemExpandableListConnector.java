@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /* loaded from: classes4.dex */
-public class SemExpandableListConnector extends BaseAdapter implements Filterable {
+class SemExpandableListConnector extends BaseAdapter implements Filterable {
     private ExpandableListAdapter mExpandableListAdapter;
     private ItemDecorator mItemDecorator;
     private int mTotalExpChildrenCount;
@@ -19,9 +19,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
     private boolean mIsRegisteredObserver = false;
     private ArrayList<GroupMetadata> mExpGroupMetadataList = new ArrayList<>();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public interface ItemDecorator {
+    interface ItemDecorator {
         View onItemDecorate(View view, View view2, PositionMetadata positionMetadata);
 
         View unfoldDecoratedView(View view);
@@ -32,38 +30,33 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
     }
 
     public void setExpandableListAdapter(ExpandableListAdapter expandableListAdapter) {
-        ExpandableListAdapter expandableListAdapter2 = this.mExpandableListAdapter;
-        if (expandableListAdapter2 != null) {
-            expandableListAdapter2.unregisterDataSetObserver(this.mDataSetObserver);
+        if (this.mExpandableListAdapter != null) {
+            this.mExpandableListAdapter.unregisterDataSetObserver(this.mDataSetObserver);
         }
         this.mExpandableListAdapter = expandableListAdapter;
         expandableListAdapter.registerDataSetObserver(this.mDataSetObserver);
         this.mIsRegisteredObserver = true;
     }
 
-    public void setItemDecorator(ItemDecorator itemDecorator) {
+    void setItemDecorator(ItemDecorator itemDecorator) {
         this.mItemDecorator = itemDecorator;
     }
 
-    public void semRegisterDataSetObserver() {
-        DataSetObserver dataSetObserver;
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter != null && (dataSetObserver = this.mDataSetObserver) != null && !this.mIsRegisteredObserver) {
-            expandableListAdapter.registerDataSetObserver(dataSetObserver);
+    void semRegisterDataSetObserver() {
+        if (this.mExpandableListAdapter != null && this.mDataSetObserver != null && !this.mIsRegisteredObserver) {
+            this.mExpandableListAdapter.registerDataSetObserver(this.mDataSetObserver);
             this.mIsRegisteredObserver = true;
         }
     }
 
-    public void semUnregisterDataSetObserver() {
-        DataSetObserver dataSetObserver;
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter != null && (dataSetObserver = this.mDataSetObserver) != null && this.mIsRegisteredObserver) {
-            expandableListAdapter.unregisterDataSetObserver(dataSetObserver);
+    void semUnregisterDataSetObserver() {
+        if (this.mExpandableListAdapter != null && this.mDataSetObserver != null && this.mIsRegisteredObserver) {
+            this.mExpandableListAdapter.unregisterDataSetObserver(this.mDataSetObserver);
             this.mIsRegisteredObserver = false;
         }
     }
 
-    public PositionMetadata getUnflattenedPos(int flPos) {
+    PositionMetadata getUnflattenedPos(int flPos) {
         int insertPosition;
         int groupPos;
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
@@ -109,7 +102,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return PositionMetadata.obtain(flPos, 2, groupPos, -1, null, insertPosition);
     }
 
-    public PositionMetadata getFlattenedPos(SemExpandableListPosition pos) {
+    PositionMetadata getFlattenedPos(SemExpandableListPosition pos) {
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
         int numExpGroups = egml.size();
         int leftExpGroupIndex = 0;
@@ -217,9 +210,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         View retValue;
         PositionMetadata posMetadata = getUnflattenedPos(flatListPos);
         View originalConvertView = convertView;
-        ItemDecorator itemDecorator = this.mItemDecorator;
-        if (itemDecorator != null) {
-            originalConvertView = itemDecorator.unfoldDecoratedView(convertView);
+        if (this.mItemDecorator != null) {
+            originalConvertView = this.mItemDecorator.unfoldDecoratedView(convertView);
         }
         if (posMetadata.position.type == 2) {
             retValue = this.mExpandableListAdapter.getGroupView(posMetadata.position.groupPos, posMetadata.isExpanded(), originalConvertView, parent);
@@ -229,9 +221,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         } else {
             throw new RuntimeException("Flat list position is of unknown type");
         }
-        ItemDecorator itemDecorator2 = this.mItemDecorator;
-        if (itemDecorator2 != null) {
-            retValue = itemDecorator2.onItemDecorate(convertView, retValue, posMetadata);
+        if (this.mItemDecorator != null) {
+            retValue = this.mItemDecorator.onItemDecorate(convertView, retValue, posMetadata);
         }
         posMetadata.recycle();
         return retValue;
@@ -242,9 +233,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         int retValue;
         PositionMetadata metadata = getUnflattenedPos(flatListPos);
         SemExpandableListPosition pos = metadata.position;
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter instanceof HeterogeneousExpandableList) {
-            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) expandableListAdapter;
+        if (this.mExpandableListAdapter instanceof HeterogeneousExpandableList) {
+            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) this.mExpandableListAdapter;
             if (pos.type == 2) {
                 retValue = adapter.getGroupType(pos.groupPos);
             } else {
@@ -263,9 +253,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
 
     @Override // android.widget.BaseAdapter, android.widget.Adapter
     public int getViewTypeCount() {
-        ExpandableListAdapter expandableListAdapter = this.mExpandableListAdapter;
-        if (expandableListAdapter instanceof HeterogeneousExpandableList) {
-            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) expandableListAdapter;
+        if (this.mExpandableListAdapter instanceof HeterogeneousExpandableList) {
+            HeterogeneousExpandableList adapter = (HeterogeneousExpandableList) this.mExpandableListAdapter;
             return adapter.getGroupTypeCount() + adapter.getChildTypeCount();
         }
         return 2;
@@ -276,6 +265,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return this.mExpandableListAdapter.hasStableIds();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void refreshExpGroupMetadataList(boolean forceChildrenCountRefresh, boolean syncGroupPositions) {
         int gChildrenCount;
         ArrayList<GroupMetadata> egml = this.mExpGroupMetadataList;
@@ -319,7 +309,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         }
     }
 
-    public boolean collapseGroup(int groupPos) {
+    boolean collapseGroup(int groupPos) {
         SemExpandableListPosition elGroupPos = SemExpandableListPosition.obtain(2, groupPos, -1, -1);
         PositionMetadata pm = getFlattenedPos(elGroupPos);
         elGroupPos.recycle();
@@ -331,7 +321,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return retValue;
     }
 
-    public boolean collapseGroup(PositionMetadata posMetadata) {
+    boolean collapseGroup(PositionMetadata posMetadata) {
         if (posMetadata.groupMetadata == null) {
             return false;
         }
@@ -342,7 +332,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return true;
     }
 
-    public boolean expandGroup(int groupPos) {
+    boolean expandGroup(int groupPos) {
         SemExpandableListPosition elGroupPos = SemExpandableListPosition.obtain(2, groupPos, -1, -1);
         PositionMetadata pm = getFlattenedPos(elGroupPos);
         if (pm == null) {
@@ -354,7 +344,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return retValue;
     }
 
-    public boolean expandGroup(PositionMetadata posMetadata) {
+    boolean expandGroup(PositionMetadata posMetadata) {
         if (posMetadata.position.groupPos < 0) {
             throw new RuntimeException("Need group");
         }
@@ -407,16 +397,15 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return null;
     }
 
-    public ArrayList<GroupMetadata> getExpandedGroupMetadataList() {
+    ArrayList<GroupMetadata> getExpandedGroupMetadataList() {
         return this.mExpGroupMetadataList;
     }
 
-    public void setExpandedGroupMetadataList(ArrayList<GroupMetadata> expandedGroupMetadataList) {
-        ExpandableListAdapter expandableListAdapter;
-        if (expandedGroupMetadataList == null || (expandableListAdapter = this.mExpandableListAdapter) == null) {
+    void setExpandedGroupMetadataList(ArrayList<GroupMetadata> expandedGroupMetadataList) {
+        if (expandedGroupMetadataList == null || this.mExpandableListAdapter == null) {
             return;
         }
-        int numGroups = expandableListAdapter.getGroupCount();
+        int numGroups = this.mExpandableListAdapter.getGroupCount();
         for (int i = expandedGroupMetadataList.size() - 1; i >= 0; i--) {
             if (expandedGroupMetadataList.get(i).gPos >= numGroups) {
                 return;
@@ -472,9 +461,7 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         return -1;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* loaded from: classes4.dex */
-    public class MyDataSetObserver extends DataSetObserver {
+    protected class MyDataSetObserver extends DataSetObserver {
         protected MyDataSetObserver() {
         }
 
@@ -491,18 +478,16 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class GroupMetadata implements Parcelable, Comparable<GroupMetadata> {
+    static class GroupMetadata implements Parcelable, Comparable<GroupMetadata> {
         public static final Parcelable.Creator<GroupMetadata> CREATOR = new Parcelable.Creator<GroupMetadata>() { // from class: android.widget.SemExpandableListConnector.GroupMetadata.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GroupMetadata createFromParcel(Parcel in) {
                 GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
                 return gm;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GroupMetadata[] newArray(int size) {
                 return new GroupMetadata[size];
@@ -546,27 +531,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
             dest.writeInt(this.gPos);
             dest.writeLong(this.gId);
         }
-
-        /* renamed from: android.widget.SemExpandableListConnector$GroupMetadata$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GroupMetadata> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GroupMetadata createFromParcel(Parcel in) {
-                GroupMetadata gm = GroupMetadata.obtain(in.readInt(), in.readInt(), in.readInt(), in.readLong());
-                return gm;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GroupMetadata[] newArray(int size) {
-                return new GroupMetadata[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
     public static class PositionMetadata {
         private static final int MAX_POOL_SIZE = 5;
         private static ArrayList<PositionMetadata> sPool = new ArrayList<>(5);
@@ -575,9 +541,8 @@ public class SemExpandableListConnector extends BaseAdapter implements Filterabl
         public SemExpandableListPosition position;
 
         private void resetState() {
-            SemExpandableListPosition semExpandableListPosition = this.position;
-            if (semExpandableListPosition != null) {
-                semExpandableListPosition.recycle();
+            if (this.position != null) {
+                this.position.recycle();
                 this.position = null;
             }
             this.groupMetadata = null;

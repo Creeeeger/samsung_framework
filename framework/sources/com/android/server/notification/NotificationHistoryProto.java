@@ -6,7 +6,6 @@ public final class NotificationHistoryProto {
     public static final long NOTIFICATION = 2246267895811L;
     public static final long STRING_POOL = 1146756268033L;
 
-    /* loaded from: classes5.dex */
     public final class StringPool {
         public static final long SIZE = 1120986464257L;
         public static final long STRINGS = 2237677961218L;
@@ -15,7 +14,6 @@ public final class NotificationHistoryProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Notification {
         public static final long CHANNEL_ID = 1138166333445L;
         public static final long CHANNEL_ID_INDEX = 1120986464262L;
@@ -24,6 +22,7 @@ public final class NotificationHistoryProto {
         public static final long CHECKED = 1133871366161L;
         public static final long CONVERSATION_ID = 1138166333453L;
         public static final long CONVERSATION_ID_INDEX = 1120986464270L;
+        public static final long EXT_TITLE = 1138166333460L;
         public static final long ICON = 1146756268044L;
         public static final long MESSAGE_URI = 1138166333458L;
         public static final long PACKAGE = 1138166333441L;
@@ -46,7 +45,6 @@ public final class NotificationHistoryProto {
         public Notification() {
         }
 
-        /* loaded from: classes5.dex */
         public final class Icon {
             public static final long IMAGE_BITMAP_FILENAME = 1138166333442L;
             public static final long IMAGE_DATA = 1151051235333L;

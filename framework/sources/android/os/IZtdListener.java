@@ -8,7 +8,6 @@ public interface IZtdListener extends IInterface {
 
     void onUnauthorizedAccessDetected(int i, int i2, int i3, long j, int i4, int i5, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IZtdListener {
         @Override // android.os.IZtdListener
         public void onSysDataTraced(int traceType, int resultCode, String[] dataList) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IZtdListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IZtdListener {
         static final int TRANSACTION_onSysDataTraced = 1;
         static final int TRANSACTION_onUnauthorizedAccessDetected = 2;
@@ -70,41 +68,37 @@ public interface IZtdListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IZtdListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IZtdListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IZtdListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    String[] _arg2 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    onSysDataTraced(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    long _arg3 = data.readLong();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    String _arg6 = data.readString();
+                    String _arg7 = data.readString();
+                    data.enforceNoDataAvail();
+                    onUnauthorizedAccessDetected(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6, _arg7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            String[] _arg2 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            onSysDataTraced(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            long _arg3 = data.readLong();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            String _arg6 = data.readString();
-                            String _arg7 = data.readString();
-                            data.enforceNoDataAvail();
-                            onUnauthorizedAccessDetected(_arg02, _arg12, _arg22, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IZtdListener {
+        private static class Proxy implements IZtdListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

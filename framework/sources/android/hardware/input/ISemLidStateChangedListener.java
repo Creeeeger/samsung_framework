@@ -12,7 +12,6 @@ public interface ISemLidStateChangedListener extends IInterface {
 
     void onLidStateChanged(long j, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISemLidStateChangedListener {
         @Override // android.hardware.input.ISemLidStateChangedListener
         public void onLidStateChanged(long whenNanos, boolean lidOpen) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISemLidStateChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISemLidStateChangedListener {
         static final int TRANSACTION_onLidStateChanged = 1;
 
@@ -67,27 +65,23 @@ public interface ISemLidStateChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemLidStateChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemLidStateChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemLidStateChangedListener.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onLidStateChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onLidStateChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISemLidStateChangedListener {
+        private static class Proxy implements ISemLidStateChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

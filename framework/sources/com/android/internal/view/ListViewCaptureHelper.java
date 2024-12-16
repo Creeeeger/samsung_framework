@@ -35,7 +35,7 @@ public class ListViewCaptureHelper implements ScrollCaptureViewHelper<ListView> 
         view.setVerticalScrollBarEnabled(false);
     }
 
-    /* renamed from: onScrollRequested */
+    /* renamed from: onScrollRequested, reason: avoid collision after fix types in other method */
     public void onScrollRequested2(ListView listView, Rect scrollBounds, Rect requestRect, CancellationSignal signal, Consumer<ScrollCaptureViewHelper.ScrollResult> resultConsumer) {
         Log.d(TAG, "-----------------------------------------------------------");
         Log.d(TAG, "onScrollRequested(scrollBounds=" + scrollBounds + ", requestRect=" + requestRect + NavigationBarInflaterView.KEY_CODE_END);
@@ -68,9 +68,8 @@ public class ListViewCaptureHelper implements ScrollCaptureViewHelper<ListView> 
         listView.scrollListBy(scrollAmount);
         int scrollDistance = refTop - refView.getTop();
         Log.d(TAG, "Parent view has scrolled vertically by " + scrollDistance + " px");
-        int i = this.mScrollDelta + scrollDistance;
-        this.mScrollDelta = i;
-        result.scrollDelta = i;
+        this.mScrollDelta += scrollDistance;
+        result.scrollDelta = this.mScrollDelta;
         if (scrollDistance != 0) {
             Log.d(TAG, "Scroll delta is now " + this.mScrollDelta + " px");
         }

@@ -28,7 +28,7 @@ class Instance {
         }
     }
 
-    public static Instance createInstance(int sequenceType, int orientationType, Gesture gesture, String label) {
+    static Instance createInstance(int sequenceType, int orientationType, Gesture gesture, String label) {
         if (sequenceType == 2) {
             float[] pts = temporalSampler(orientationType, gesture);
             Instance instance = new Instance(gesture.getID(), pts, label);

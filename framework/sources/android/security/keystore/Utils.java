@@ -7,14 +7,14 @@ abstract class Utils {
     private Utils() {
     }
 
-    public static Date cloneIfNotNull(Date value) {
+    static Date cloneIfNotNull(Date value) {
         if (value != null) {
             return (Date) value.clone();
         }
         return null;
     }
 
-    public static byte[] cloneIfNotNull(byte[] value) {
+    static byte[] cloneIfNotNull(byte[] value) {
         if (value != null) {
             return (byte[]) value.clone();
         }

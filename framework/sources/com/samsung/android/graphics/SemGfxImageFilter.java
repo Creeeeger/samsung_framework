@@ -2,12 +2,14 @@ package com.samsung.android.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.RecordingCanvas;
 import android.util.Log;
 import android.view.SemBlurInfo;
 import android.view.View;
+import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemGfxImageFilter {
     private static final String LOG_TAG = "SemGfxImageFilter";
     private static final int PARAM_INDEX_BLUR_QUALITY = 0;
@@ -24,13 +26,23 @@ public class SemGfxImageFilter {
     private View attachedToView = null;
     private int nativeFunctor;
 
+    private static native void nApplyMeshGradient(int i, int i2, int i3, int[] iArr, PointF[] pointFArr);
+
     private static native void nApplyToBitmap(int i, int[] iArr, int[] iArr2, int i2, int i3);
 
     private static native int nCreate();
 
     private static native void nDestroy(int i);
 
+    private static native void nDestroyContext();
+
     private static native float nGetParam(int i, int i2);
+
+    private static native void nSetIndexedColor(int i, int i2, int i3);
+
+    private static native void nSetIndexedPoint(int i, int i2, float f, float f2);
+
+    private static native void nSetMeshHandles(int i, int i2, float f, float f2, float f3, float f4);
 
     private static native void nSetParam(int i, int i2, float f);
 
@@ -39,15 +51,18 @@ public class SemGfxImageFilter {
         this.nativeFunctor = nCreate();
     }
 
+    public static void destroyContext() {
+        nDestroyContext();
+    }
+
     protected void finalize() throws Throwable {
         super.finalize();
         nDestroy(this.nativeFunctor);
     }
 
     public final void onAttachToView(View view) {
-        View view2 = this.attachedToView;
-        if (view2 != null) {
-            view2.semSetGfxImageFilter(null);
+        if (this.attachedToView != null) {
+            this.attachedToView.semSetGfxImageFilter(null);
         }
         this.attachedToView = view;
         if (view.getLayerType() != 2) {
@@ -61,12 +76,11 @@ public class SemGfxImageFilter {
     }
 
     public final void draw(Canvas canvas) {
-        View view = this.attachedToView;
-        if (view == null) {
+        if (this.attachedToView == null) {
             Log.e(LOG_TAG, "Can't draw SemGfxImageFilter. Should be attached to View!");
             return;
         }
-        if (view.getLayerType() != 2) {
+        if (this.attachedToView.getLayerType() != 2) {
             Log.e(LOG_TAG, "Can't draw SemGfxImageFilter. LayerType must be 'LAYER_TYPE_HARDWARE'!");
         } else if (!(canvas instanceof RecordingCanvas)) {
             Log.e(LOG_TAG, "Can't draw SemGfxImageFilter. Canvas should be instance of 'RecordingCanvas'!");
@@ -76,11 +90,11 @@ public class SemGfxImageFilter {
     }
 
     public final void setBlurPreset(int preset) {
-        if (preset < 11 || preset > 16) {
-            Log.e(LOG_TAG, "BlurPreset is not valid!");
+        float[] presetAttrs = SemBlurInfo.Builder.getBlurPresetAttrs(preset);
+        if (presetAttrs == null) {
+            Log.e(LOG_TAG, "BlurPresetAttrs was null");
             return;
         }
-        float[] presetAttrs = SemBlurInfo.Builder.getBlurPresetAttrs(preset);
         if (presetAttrs.length != 7) {
             Log.e(LOG_TAG, "BlurPreset size is a mismatch with SemGfxImageFilter!");
             return;
@@ -100,6 +114,37 @@ public class SemGfxImageFilter {
 
     public void setBlurRadius(float radius) {
         setParam(1, clamp(radius, 0.0f, 1000.0f));
+    }
+
+    public void applyMeshGradient(int width, int height, int[] colors, List<PointF> points) {
+        if (colors.length != width * height) {
+            throw new IllegalArgumentException("Colors array must have exactly width * height elements.");
+        }
+        if (points.size() != width * height) {
+            throw new IllegalArgumentException("Points list must have exactly width * height elements.");
+        }
+        nApplyMeshGradient(this.nativeFunctor, width, height, colors, (PointF[]) points.toArray(new PointF[0]));
+    }
+
+    public void setIndexedColor(int index, int color) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Index must be greater than or equal to 0.");
+        }
+        nSetIndexedColor(this.nativeFunctor, index, color);
+    }
+
+    public void setIndexedPoint(int index, PointF point) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Index must be greater than or equal to 0.");
+        }
+        nSetIndexedPoint(this.nativeFunctor, index, point.x, point.y);
+    }
+
+    public void setIndexedMeshHandles(int index, PointF upHandle, PointF leftHandle) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Index must be greater than or equal to 0.");
+        }
+        nSetMeshHandles(this.nativeFunctor, index, upHandle.x, upHandle.y, leftHandle.x, leftHandle.y);
     }
 
     public void setSaturation(float saturation) {
@@ -169,9 +214,8 @@ public class SemGfxImageFilter {
 
     private void setParam(int id, float val) {
         nSetParam(this.nativeFunctor, id, val);
-        View view = this.attachedToView;
-        if (view != null) {
-            view.invalidate();
+        if (this.attachedToView != null) {
+            this.attachedToView.invalidate();
         }
     }
 

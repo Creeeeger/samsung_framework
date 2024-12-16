@@ -1,6 +1,6 @@
 package com.samsung.android.globalactions.presentation.view;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public enum ViewAnimationState {
     IDLE,
     SHOW_ANIMATE,

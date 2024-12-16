@@ -41,12 +41,12 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
     protected BCDHPrivateKey() {
     }
 
-    public BCDHPrivateKey(DHPrivateKey key) {
+    BCDHPrivateKey(DHPrivateKey key) {
         this.x = key.getX();
         this.dhSpec = key.getParams();
     }
 
-    public BCDHPrivateKey(DHPrivateKeySpec spec) {
+    BCDHPrivateKey(DHPrivateKeySpec spec) {
         this.x = spec.getX();
         if (spec instanceof DHExtendedPrivateKeySpec) {
             this.dhSpec = ((DHExtendedPrivateKeySpec) spec).getParams();
@@ -82,7 +82,7 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
         throw new IllegalArgumentException("unknown algorithm type: " + id);
     }
 
-    public BCDHPrivateKey(DHPrivateKeyParameters params) {
+    BCDHPrivateKey(DHPrivateKeyParameters params) {
         this.x = params.getX();
         this.dhSpec = new DHDomainParameterSpec(params.getParameters());
     }
@@ -102,12 +102,10 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
         PrivateKeyInfo info;
         ValidationParams vParams;
         try {
-            PrivateKeyInfo privateKeyInfo = this.info;
-            if (privateKeyInfo != null) {
-                return privateKeyInfo.getEncoded(ASN1Encoding.DER);
+            if (this.info != null) {
+                return this.info.getEncoded(ASN1Encoding.DER);
             }
-            DHParameterSpec dHParameterSpec = this.dhSpec;
-            if ((dHParameterSpec instanceof DHDomainParameterSpec) && ((DHDomainParameterSpec) dHParameterSpec).getQ() != null) {
+            if ((this.dhSpec instanceof DHDomainParameterSpec) && ((DHDomainParameterSpec) this.dhSpec).getQ() != null) {
                 DHParameters params = ((DHDomainParameterSpec) this.dhSpec).getDomainParameters();
                 DHValidationParameters validationParameters = params.getValidationParameters();
                 if (validationParameters == null) {
@@ -140,16 +138,14 @@ public class BCDHPrivateKey implements DHPrivateKey, PKCS12BagAttributeCarrier {
         return this.x;
     }
 
-    public DHPrivateKeyParameters engineGetKeyParameters() {
-        DHPrivateKeyParameters dHPrivateKeyParameters = this.dhPrivateKey;
-        if (dHPrivateKeyParameters != null) {
-            return dHPrivateKeyParameters;
+    DHPrivateKeyParameters engineGetKeyParameters() {
+        if (this.dhPrivateKey != null) {
+            return this.dhPrivateKey;
         }
-        DHParameterSpec dHParameterSpec = this.dhSpec;
-        if (dHParameterSpec instanceof DHDomainParameterSpec) {
-            return new DHPrivateKeyParameters(this.x, ((DHDomainParameterSpec) dHParameterSpec).getDomainParameters());
+        if (this.dhSpec instanceof DHDomainParameterSpec) {
+            return new DHPrivateKeyParameters(this.x, ((DHDomainParameterSpec) this.dhSpec).getDomainParameters());
         }
-        return new DHPrivateKeyParameters(this.x, new DHParameters(dHParameterSpec.getP(), this.dhSpec.getG(), null, this.dhSpec.getL()));
+        return new DHPrivateKeyParameters(this.x, new DHParameters(this.dhSpec.getP(), this.dhSpec.getG(), null, this.dhSpec.getL()));
     }
 
     public boolean equals(Object o) {

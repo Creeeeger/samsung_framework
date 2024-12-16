@@ -9,7 +9,7 @@ import com.android.internal.R;
 import com.android.internal.app.AbstractMultiProfilePagerAdapter;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class WorkProfilePausedEmptyStateProvider implements AbstractMultiProfilePagerAdapter.EmptyStateProvider {
     private final Context mContext;
     private final String mMetricsCategory;
@@ -46,20 +46,20 @@ public class WorkProfilePausedEmptyStateProvider implements AbstractMultiProfile
         }, this.mMetricsCategory);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getEmptyState$0() {
         return this.mContext.getString(R.string.resolver_turn_on_work_apps);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getEmptyState$1(AbstractMultiProfilePagerAdapter.EmptyState.TabControl tab) {
         tab.showSpinner();
-        AbstractMultiProfilePagerAdapter.OnSwitchOnWorkSelectedListener onSwitchOnWorkSelectedListener = this.mOnSwitchOnWorkSelectedListener;
-        if (onSwitchOnWorkSelectedListener != null) {
-            onSwitchOnWorkSelectedListener.onSwitchOnWorkSelected();
+        if (this.mOnSwitchOnWorkSelectedListener != null) {
+            this.mOnSwitchOnWorkSelectedListener.onSwitchOnWorkSelected();
         }
         this.mQuietModeManager.requestQuietModeEnabled(false, this.mWorkProfileUserHandle);
     }
 
-    /* loaded from: classes4.dex */
     public static class WorkProfileOffEmptyState implements AbstractMultiProfilePagerAdapter.EmptyState {
         private final String mMetricsCategory;
         private final AbstractMultiProfilePagerAdapter.EmptyState.ClickListener mOnClick;

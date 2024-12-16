@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IMediaScannerListener extends IInterface {
     void scanCompleted(String str, Uri uri) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaScannerListener {
         @Override // android.media.IMediaScannerListener
         public void scanCompleted(String path, Uri uri) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IMediaScannerListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaScannerListener {
         public static final String DESCRIPTOR = "android.media.IMediaScannerListener";
         static final int TRANSACTION_scanCompleted = 1;
@@ -67,27 +65,23 @@ public interface IMediaScannerListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    scanCompleted(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            scanCompleted(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaScannerListener {
+        private static class Proxy implements IMediaScannerListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

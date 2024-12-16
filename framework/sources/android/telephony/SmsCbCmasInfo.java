@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SmsCbCmasInfo implements Parcelable {
     public static final int CMAS_CATEGORY_CBRNE = 10;
     public static final int CMAS_CATEGORY_ENV = 7;
@@ -49,14 +49,13 @@ public final class SmsCbCmasInfo implements Parcelable {
     public static final int CMAS_URGENCY_IMMEDIATE = 0;
     public static final int CMAS_URGENCY_UNKNOWN = -1;
     public static final Parcelable.Creator<SmsCbCmasInfo> CREATOR = new Parcelable.Creator<SmsCbCmasInfo>() { // from class: android.telephony.SmsCbCmasInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbCmasInfo createFromParcel(Parcel in) {
             return new SmsCbCmasInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbCmasInfo[] newArray(int size) {
             return new SmsCbCmasInfo[size];
@@ -75,32 +74,26 @@ public final class SmsCbCmasInfo implements Parcelable {
     private final int mUrgency;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Category {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Certainty {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Class {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ResponseType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Severity {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Urgency {
     }
 
@@ -118,7 +111,7 @@ public final class SmsCbCmasInfo implements Parcelable {
         this.mLanguage = 0;
     }
 
-    public SmsCbCmasInfo(Parcel in) {
+    SmsCbCmasInfo(Parcel in) {
         this.mMessageClass = in.readInt();
         this.mCategory = in.readInt();
         this.mResponseType = in.readInt();
@@ -178,23 +171,6 @@ public final class SmsCbCmasInfo implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.SmsCbCmasInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SmsCbCmasInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmsCbCmasInfo createFromParcel(Parcel in) {
-            return new SmsCbCmasInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmsCbCmasInfo[] newArray(int size) {
-            return new SmsCbCmasInfo[size];
-        }
     }
 
     public SmsCbCmasInfo(int messageClass, int category, int responseType, int severity, int urgency, int certainty, int recordTypeAll) {

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ColorPaletteExtractor extends ColorExtractor {
     public static final float DEFAULT_GRAYSCALE_THRESHOLD_BRIGHTNESS = 0.18f;
     public static final float DEFAULT_GRAYSCALE_THRESHOLD_SATURATION = 0.12f;
@@ -26,49 +26,19 @@ public class ColorPaletteExtractor extends ColorExtractor {
     static float sMaxHSV = sHsvSpaceHueRadiusValue * 2.0f;
     static float sMaxLab = (int) Math.sqrt((Math.pow(sLabSpaceLightnessScale * 100.0f, 2.0d) + Math.pow(255.0d, 2.0d)) + Math.pow(255.0d, 2.0d));
 
-    /* loaded from: classes5.dex */
     public enum ColorMergeType {
         MIX,
         A,
         B
     }
 
-    /* loaded from: classes5.dex */
-    public static final class ColorSpace extends Enum<ColorSpace> {
-        static ColorSpace[] ColorSpaceIndex = {new ColorSpace(), new ColorSpace(), new ColorSpace()};
-        public static final ColorSpace HSV;
-        public static final ColorSpace LAB;
-        public static final ColorSpace RGB;
-        public static final ColorSpace HUE = new ColorSpace();
-        private static final /* synthetic */ ColorSpace[] $VALUES = $values();
+    public enum ColorSpace {
+        RGB,
+        HSV,
+        LAB,
+        HUE;
 
-        private static /* synthetic */ ColorSpace[] $values() {
-            return new ColorSpace[]{RGB, HSV, LAB, HUE};
-        }
-
-        private ColorSpace(String str, int i) {
-            super(str, i);
-        }
-
-        public static ColorSpace valueOf(String name) {
-            return (ColorSpace) Enum.valueOf(ColorSpace.class, name);
-        }
-
-        public static ColorSpace[] values() {
-            return (ColorSpace[]) $VALUES.clone();
-        }
-
-        static {
-            ColorSpace colorSpace = new ColorSpace();
-            RGB = colorSpace;
-            ColorSpace colorSpace2 = new ColorSpace();
-            HSV = colorSpace2;
-            ColorSpace colorSpace3 = new ColorSpace();
-            LAB = colorSpace3;
-            HUE = new ColorSpace();
-            $VALUES = $values();
-            ColorSpaceIndex = new ColorSpace[]{colorSpace, colorSpace2, colorSpace3};
-        }
+        static ColorSpace[] ColorSpaceIndex = {RGB, HSV, LAB};
     }
 
     public static void setSaturationThresholdForGrayscale(float saturationThreshold) {
@@ -89,7 +59,7 @@ public class ColorPaletteExtractor extends ColorExtractor {
 
     public static void setHsvSpaceHueRadiusValue(float hsvSpaceHueRadiusValue) {
         sHsvSpaceHueRadiusValue = hsvSpaceHueRadiusValue;
-        sMaxHSV = 2.0f * hsvSpaceHueRadiusValue;
+        sMaxHSV = sHsvSpaceHueRadiusValue * 2.0f;
     }
 
     public static float getHsvSpaceHueRadiusValue() {
@@ -114,26 +84,21 @@ public class ColorPaletteExtractor extends ColorExtractor {
         clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{0.0f, 0.0f, 0.3333f})));
         clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{0.0f, 0.0f, 0.6666f})));
         clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{0.0f, 0.0f, 1.0f})));
-        float hue = 0.0f;
-        while (hue < 360.0f) {
+        if (hueInterval < 0.0f) {
+            hueInterval *= -1.0f;
+        }
+        for (float hue = 0.0f; hue < 360.0f; hue += hueInterval) {
             clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{hue, 1.0f, 1.0f})));
-            hue += hueInterval;
         }
         for (int i = 0; i < svValues.length; i++) {
-            float hue2 = 0.0f;
-            while (hue2 < 360.0f) {
+            for (float hue2 = 0.0f; hue2 < 360.0f; hue2 += hueInterval) {
                 clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{hue2, svValues[i], 1.0f})));
-                hue2 += hueInterval;
             }
-            float hue3 = 0.0f;
-            while (hue3 < 360.0f) {
+            for (float hue3 = 0.0f; hue3 < 360.0f; hue3 += hueInterval) {
                 clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{hue3, 1.0f, svValues[i]})));
-                hue3 += hueInterval;
             }
-            float hue4 = 0.0f;
-            while (hue4 < 360.0f) {
+            for (float hue4 = 0.0f; hue4 < 360.0f; hue4 += hueInterval) {
                 clusterGroupArrayList.add(Integer.valueOf(Color.HSVToColor(new float[]{hue4, svValues[i], svValues[i]})));
-                hue4 += hueInterval;
             }
         }
         int[] clusterGroupArray = new int[clusterGroupArrayList.size()];
@@ -147,8 +112,7 @@ public class ColorPaletteExtractor extends ColorExtractor {
         return clusterGroupArray;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ColorResultData {
+    static class ColorResultData {
         double dist;
         int index;
         int indexTarget;
@@ -162,7 +126,6 @@ public class ColorPaletteExtractor extends ColorExtractor {
 
     public static int discardSameColorFromDominantColorsForColorPalette(ColorExtractor.DominantColorResult[] dominantColorArray, double normalizedMergeMinDistance, ColorSpace colorSpace, boolean isBrightnessOrientedMerge) {
         int mergedColorNum;
-        double[] labA;
         ColorResultData[] colorResultDataArray;
         int loopCount;
         float luminanceB;
@@ -170,11 +133,12 @@ public class ColorPaletteExtractor extends ColorExtractor {
         int size;
         double squaredDistance;
         double[] labB;
+        double[] labA;
         int i;
         ColorResultData[] colorResultDataArray2;
         double[] labB2;
-        float hueA2;
         double[] labA2;
+        float hueA2;
         double minDistance;
         int a;
         int size2;
@@ -183,13 +147,11 @@ public class ColorPaletteExtractor extends ColorExtractor {
         int a2;
         int minIndex2;
         float hueA4;
-        double[] labA3;
-        double d;
         ColorExtractor.DominantColorResult[] dominantColorResultArr = dominantColorArray;
         ColorSpace colorSpace2 = colorSpace;
         float[] hsvA = new float[3];
         float[] hsvB = new float[3];
-        double[] labA4 = new double[3];
+        double[] labA3 = new double[3];
         double[] labB3 = new double[3];
         int loopCount2 = 0;
         float luminanceA = 0.0f;
@@ -222,15 +184,14 @@ public class ColorPaletteExtractor extends ColorExtractor {
             int mergedColorNum3 = mergedColorNum;
             ColorResultData[] colorResultDataArray3 = new ColorResultData[size3];
             float luminanceA2 = luminanceA;
-            int colorB = 0;
+            int a3 = 0;
             while (true) {
-                if (colorB < size3) {
+                if (a3 < size3) {
                     luminanceB = luminanceB2;
-                    ColorExtractor.DominantColorResult dominantColorResultA = dominantColorResultArr[colorB];
+                    ColorExtractor.DominantColorResult dominantColorResultA = dominantColorResultArr[a3];
                     hueA = hueA5;
                     float hueA6 = dominantColorResultA.percentage;
                     if (hueA6 == 0.0f) {
-                        labA = labA4;
                         colorResultDataArray = colorResultDataArray3;
                         loopCount = loopCount2;
                         size = size3;
@@ -245,116 +206,96 @@ public class ColorPaletteExtractor extends ColorExtractor {
                             luminanceA2 = luminanceA3;
                         } else {
                             if (colorSpace2 == ColorSpace.LAB) {
-                                ColorUtils.colorToLAB(colorA, labA4);
+                                ColorUtils.colorToLAB(colorA, labA3);
                             }
                             hueA2 = hueA;
                         }
                         int minIndex3 = -1;
                         ColorResultData[] colorResultDataArray4 = colorResultDataArray3;
                         int loopCount3 = loopCount2;
-                        int colorA2 = colorB + 1;
+                        int colorA2 = a3 + 1;
                         double minDistance2 = Double.MAX_VALUE;
                         while (true) {
                             if (colorA2 < size3) {
                                 size2 = size3;
                                 ColorExtractor.DominantColorResult dominantColorResultB = dominantColorResultArr[colorA2];
                                 if (dominantColorResultB.percentage == 0.0f) {
-                                    labA2 = labA4;
                                     minDistance = minDistance2;
-                                    a = colorB;
+                                    a = a3;
                                     minIndex = minIndex3;
                                     hueA3 = hueA2;
                                 } else {
-                                    int colorB2 = dominantColorResultB.color;
-                                    int a3 = colorB;
+                                    int colorB = dominantColorResultB.color;
+                                    int a4 = a3;
                                     if (colorSpace2 == ColorSpace.HSV || colorSpace2 == ColorSpace.HUE) {
                                         dominantColorResultB.copyHSV(hsvB);
                                     } else if (colorSpace2 == ColorSpace.LAB) {
-                                        ColorUtils.colorToLAB(colorB2, labB3);
+                                        ColorUtils.colorToLAB(colorB, labB3);
                                     }
                                     double minDistance3 = minDistance2;
-                                    switch (AnonymousClass2.$SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace[colorSpace.ordinal()]) {
-                                        case 1:
+                                    switch (colorSpace) {
+                                        case RGB:
                                             minIndex2 = minIndex3;
-                                            float hueA7 = hueA2;
+                                            hueA4 = hueA2;
+                                            int colorB2 = dominantColorResultA.color;
+                                            double squaredDistance4 = IUXColorUtils.colorDistance_rgb_sqaure2(colorB2, dominantColorResultB.color);
+                                            squaredDistance3 = squaredDistance4;
+                                            break;
+                                        case HSV:
+                                            minIndex2 = minIndex3;
+                                            hueA4 = hueA2;
+                                            double squaredDistance5 = IUXColorUtils.getHsvDistanceSquare2FromCornSpaceDoubleFast(hsvA, hsvB, sHsvSpaceHueRadiusValue);
+                                            squaredDistance3 = squaredDistance5;
+                                            break;
+                                        case LAB:
+                                            minIndex2 = minIndex3;
+                                            hueA4 = hueA2;
+                                            squaredDistance3 = IUXMathUtils.distanceSqrt2((labA3[0] * sLabSpaceLightnessScale) - (labB3[0] * sLabSpaceLightnessScale), labA3[1] - labB3[1], labA3[2] - labB3[2]);
+                                            break;
+                                        case HUE:
                                             if (dominantColorResultA.isGrayScale == dominantColorResultB.isGrayScale) {
-                                                if (dominantColorResultA.isGrayScale) {
-                                                    labA3 = labA4;
-                                                    squaredDistance3 = Math.pow((luminanceA2 - IUXColorUtils.calculateLuminance(colorB2)) * distanceThreshold * 1.5d, 2.0d);
-                                                    d = 2.0d;
-                                                    hueA4 = hueA7;
+                                                if (!dominantColorResultA.isGrayScale) {
+                                                    squaredDistance3 = Math.pow(IUXColorUtils.colorDistanceHueFast(hueA2, hsvB[0]), 2.0d);
+                                                    minIndex2 = minIndex3;
+                                                    hueA4 = hueA2;
                                                     break;
                                                 } else {
-                                                    hueA4 = hueA7;
-                                                    squaredDistance3 = Math.pow(IUXColorUtils.colorDistanceHueFast(hueA4, hsvB[0]), 2.0d);
-                                                    labA3 = labA4;
-                                                    d = 2.0d;
+                                                    squaredDistance3 = Math.pow((luminanceA2 - IUXColorUtils.calculateLuminance(colorB)) * distanceThreshold * 1.5d, 2.0d);
+                                                    minIndex2 = minIndex3;
+                                                    hueA4 = hueA2;
                                                     break;
                                                 }
                                             } else {
-                                                hueA4 = hueA7;
-                                                double sqrt = Math.sqrt(IUXColorUtils.getHsvDistanceSquare2FromCornSpaceDoubleFast(hsvA, hsvB, sHsvSpaceHueRadiusValue));
-                                                double sameSVdistance = sMaxHSV;
-                                                double normalizedHSVdistance = sqrt / sameSVdistance;
-                                                labA3 = labA4;
-                                                d = 2.0d;
-                                                double squaredDistance4 = Math.pow(Math.max(((normalizedHSVdistance - 0.019999999552965164d) * 360.0d) + distanceThreshold, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN), 2.0d);
-                                                squaredDistance3 = squaredDistance4;
+                                                double normalizedHSVdistance = Math.sqrt(IUXColorUtils.getHsvDistanceSquare2FromCornSpaceDoubleFast(hsvA, hsvB, sHsvSpaceHueRadiusValue)) / sMaxHSV;
+                                                double squaredDistance6 = Math.pow(Math.max(((normalizedHSVdistance - 0.019999999552965164d) * 360.0d) + distanceThreshold, SContextConstants.ENVIRONMENT_VALUE_UNKNOWN), 2.0d);
+                                                squaredDistance3 = squaredDistance6;
+                                                minIndex2 = minIndex3;
+                                                hueA4 = hueA2;
                                                 break;
                                             }
-                                        case 2:
-                                            minIndex2 = minIndex3;
-                                            double squaredDistance5 = IUXColorUtils.colorDistance_rgb_sqaure2(dominantColorResultA.color, dominantColorResultB.color);
-                                            labA3 = labA4;
-                                            squaredDistance3 = squaredDistance5;
-                                            hueA4 = hueA2;
-                                            d = 2.0d;
-                                            break;
-                                        case 3:
-                                            minIndex2 = minIndex3;
-                                            double squaredDistance6 = IUXColorUtils.getHsvDistanceSquare2FromCornSpaceDoubleFast(hsvA, hsvB, sHsvSpaceHueRadiusValue);
-                                            labA3 = labA4;
-                                            squaredDistance3 = squaredDistance6;
-                                            hueA4 = hueA2;
-                                            d = 2.0d;
-                                            break;
-                                        case 4:
-                                            double d2 = labA4[0];
-                                            float f = sLabSpaceLightnessScale;
-                                            minIndex2 = minIndex3;
-                                            labA3 = labA4;
-                                            squaredDistance3 = IUXMathUtils.distanceSqrt2((d2 * f) - (labB3[0] * f), labA4[1] - labB3[1], labA4[2] - labB3[2]);
-                                            hueA4 = hueA2;
-                                            d = 2.0d;
-                                            break;
                                         default:
-                                            labA3 = labA4;
                                             minIndex2 = minIndex3;
                                             hueA4 = hueA2;
-                                            d = 2.0d;
                                             break;
                                     }
-                                    double squaredDistance7 = Math.pow(distanceThreshold, d);
-                                    if (squaredDistance3 >= squaredDistance7 || minDistance3 <= squaredDistance3) {
+                                    if (squaredDistance3 >= Math.pow(distanceThreshold, 2.0d) || minDistance3 <= squaredDistance3) {
+                                        minDistance2 = minDistance3;
                                         minIndex3 = minIndex2;
                                     } else {
                                         int minIndex4 = colorA2;
+                                        minDistance2 = squaredDistance3;
                                         minIndex3 = minIndex4;
-                                        minDistance3 = squaredDistance3;
                                     }
                                     colorA2++;
                                     dominantColorResultArr = dominantColorArray;
                                     colorSpace2 = colorSpace;
-                                    hueA2 = hueA4;
                                     size3 = size2;
-                                    colorB = a3;
-                                    minDistance2 = minDistance3;
-                                    labA4 = labA3;
+                                    a3 = a4;
+                                    hueA2 = hueA4;
                                 }
                             } else {
-                                labA2 = labA4;
                                 minDistance = minDistance2;
-                                a = colorB;
+                                a = a3;
                                 size2 = size3;
                                 minIndex = minIndex3;
                                 hueA3 = hueA2;
@@ -368,19 +309,17 @@ public class ColorPaletteExtractor extends ColorExtractor {
                             colorResultDataArray4[a2] = new ColorResultData(a2, minIndex5, minDistance);
                             mergedColorNum2 = 1;
                         }
-                        colorB = a2 + 1;
+                        a3 = a2 + 1;
                         dominantColorResultArr = dominantColorArray;
                         colorSpace2 = colorSpace;
-                        hueA5 = hueA3;
                         luminanceB2 = luminanceB;
                         squaredDistance2 = squaredDistance3;
                         loopCount2 = loopCount3;
                         colorResultDataArray3 = colorResultDataArray4;
                         size3 = size2;
-                        labA4 = labA2;
+                        hueA5 = hueA3;
                     }
                 } else {
-                    labA = labA4;
                     colorResultDataArray = colorResultDataArray3;
                     loopCount = loopCount2;
                     luminanceB = luminanceB2;
@@ -391,13 +330,11 @@ public class ColorPaletteExtractor extends ColorExtractor {
             }
             if (mergedColorNum2 == 0) {
                 labB = labB3;
+                labA = labA3;
                 mergedColorNum = mergedColorNum3;
             } else {
                 ColorResultData[] colorResultDataArray5 = colorResultDataArray;
                 Arrays.sort(colorResultDataArray5, new Comparator<ColorResultData>() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // java.util.Comparator
                     public int compare(ColorResultData lhs, ColorResultData rhs) {
                         if (lhs == null && rhs == null) {
@@ -418,10 +355,12 @@ public class ColorPaletteExtractor extends ColorExtractor {
                 while (true) {
                     if (i2 >= length) {
                         labB = labB3;
+                        labA = labA3;
                     } else {
                         ColorResultData colorResultData = colorResultDataArray5[i2];
                         if (colorResultData == null) {
                             labB = labB3;
+                            labA = labA3;
                         } else {
                             int indexA = colorResultData.index;
                             int indexB = colorResultData.indexTarget;
@@ -431,22 +370,25 @@ public class ColorPaletteExtractor extends ColorExtractor {
                                 i = length;
                                 colorResultDataArray2 = colorResultDataArray5;
                                 labB2 = labB3;
+                                labA2 = labA3;
                             } else {
                                 if (!isBrightnessOrientedMerge) {
                                     mergeDominantColorUnit(dominantColorResultA2, dominantColorResultB2, ColorMergeType.A);
                                     i = length;
                                     colorResultDataArray2 = colorResultDataArray5;
                                     labB2 = labB3;
+                                    labA2 = labA3;
                                 } else {
                                     int colorA3 = dominantColorResultA2.color;
                                     dominantColorResultA2.copyHSV(hsvA);
+                                    i = length;
                                     int colorB3 = dominantColorResultB2.color;
                                     dominantColorResultB2.copyHSV(hsvB);
-                                    i = length;
-                                    boolean isGrayscaleA = dominantColorResultA2.isGrayScale;
                                     colorResultDataArray2 = colorResultDataArray5;
-                                    float percentageA = dominantColorResultA2.percentage;
+                                    boolean isGrayscaleA = dominantColorResultA2.isGrayScale;
                                     labB2 = labB3;
+                                    float percentageA = dominantColorResultA2.percentage;
+                                    labA2 = labA3;
                                     float percentageB = dominantColorResultB2.percentage;
                                     float brightnessA = IUXColorUtils.calculateLuminance(colorA3);
                                     float brightnessB = IUXColorUtils.calculateLuminance(colorB3);
@@ -477,6 +419,7 @@ public class ColorPaletteExtractor extends ColorExtractor {
                             length = i;
                             labB3 = labB2;
                             colorResultDataArray5 = colorResultDataArray2;
+                            labA3 = labA2;
                         }
                     }
                 }
@@ -493,65 +436,15 @@ public class ColorPaletteExtractor extends ColorExtractor {
                     squaredDistance2 = squaredDistance;
                     labB3 = labB;
                     size3 = size;
-                    labA4 = labA;
+                    labA3 = labA;
                 }
             }
         }
         return mergedColorNum;
     }
 
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$2 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace;
-
-        static {
-            int[] iArr = new int[ColorSpace.values().length];
-            $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace = iArr;
-            try {
-                iArr[ColorSpace.HUE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace[ColorSpace.RGB.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace[ColorSpace.HSV.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$wallpaper$legibilitycolors$utils$ColorPaletteExtractor$ColorSpace[ColorSpace.LAB.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
-    }
-
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.ColorPaletteExtractor$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Comparator<ColorResultData> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(ColorResultData lhs, ColorResultData rhs) {
-            if (lhs == null && rhs == null) {
-                return 0;
-            }
-            if (lhs == null) {
-                return 1;
-            }
-            if (rhs == null) {
-                return -1;
-            }
-            return Double.compare(lhs.dist, rhs.dist);
-        }
-    }
-
     public static int[] getOnlyColorsFromDominantColor(ColorExtractor.DominantColorResult[] dominantColorArray, double minHueDistance) {
         ArrayList<ColorExtractor.DominantColorResult> dominantColorArrayUnitList = new ArrayList<>();
-        float[] fArr = new float[3];
-        float[] fArr2 = new float[3];
         int a = dominantColorArray.length;
         while (true) {
             a--;
@@ -632,10 +525,10 @@ public class ColorPaletteExtractor extends ColorExtractor {
         int clusterNum = iArr.length;
         ColorExtractor.DominantColorResult[] dominantColorResults = new ColorExtractor.DominantColorResult[clusterNum];
         int[] clusterGroupsAvgColor = new int[clusterNum];
-        float[][] clusterGroupsCornSpace2 = new float[clusterNum];
-        float[][] clusterGroupsAvgHSV = new float[clusterNum];
+        float[][] clusterGroupsCornSpace2 = new float[clusterNum][];
+        float[][] clusterGroupsAvgHSV = new float[clusterNum][];
         int[] aN2 = new int[clusterNum];
-        long[][] aColorAvg2 = new long[clusterNum];
+        long[][] aColorAvg2 = new long[clusterNum][];
         int i = 3;
         float[] tempHsv2 = new float[3];
         float hsvSpaceClusteringRadiusValue2 = sHsvSpaceHueRadiusValue;

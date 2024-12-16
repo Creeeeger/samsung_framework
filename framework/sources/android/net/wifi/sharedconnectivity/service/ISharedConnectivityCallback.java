@@ -24,9 +24,10 @@ public interface ISharedConnectivityCallback extends IInterface {
 
     void onKnownNetworksUpdated(List<KnownNetwork> list) throws RemoteException;
 
+    void onServiceConnected() throws RemoteException;
+
     void onSharedConnectivitySettingsChanged(SharedConnectivitySettingsState sharedConnectivitySettingsState) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISharedConnectivityCallback {
         @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityCallback
         public void onHotspotNetworksUpdated(List<HotspotNetwork> networks) throws RemoteException {
@@ -48,18 +49,22 @@ public interface ISharedConnectivityCallback extends IInterface {
         public void onSharedConnectivitySettingsChanged(SharedConnectivitySettingsState state) throws RemoteException {
         }
 
+        @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityCallback
+        public void onServiceConnected() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISharedConnectivityCallback {
         static final int TRANSACTION_onHotspotNetworkConnectionStatusChanged = 2;
         static final int TRANSACTION_onHotspotNetworksUpdated = 1;
         static final int TRANSACTION_onKnownNetworkConnectionStatusChanged = 4;
         static final int TRANSACTION_onKnownNetworksUpdated = 3;
+        static final int TRANSACTION_onServiceConnected = 6;
         static final int TRANSACTION_onSharedConnectivitySettingsChanged = 5;
 
         public Stub() {
@@ -94,6 +99,8 @@ public interface ISharedConnectivityCallback extends IInterface {
                     return "onKnownNetworkConnectionStatusChanged";
                 case 5:
                     return "onSharedConnectivitySettingsChanged";
+                case 6:
+                    return "onServiceConnected";
                 default:
                     return null;
             }
@@ -109,46 +116,45 @@ public interface ISharedConnectivityCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISharedConnectivityCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISharedConnectivityCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISharedConnectivityCallback.DESCRIPTOR);
+                case 1:
+                    List<HotspotNetwork> _arg0 = data.createTypedArrayList(HotspotNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHotspotNetworksUpdated(_arg0);
+                    return true;
+                case 2:
+                    HotspotNetworkConnectionStatus _arg02 = (HotspotNetworkConnectionStatus) data.readTypedObject(HotspotNetworkConnectionStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHotspotNetworkConnectionStatusChanged(_arg02);
+                    return true;
+                case 3:
+                    List<KnownNetwork> _arg03 = data.createTypedArrayList(KnownNetwork.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKnownNetworksUpdated(_arg03);
+                    return true;
+                case 4:
+                    KnownNetworkConnectionStatus _arg04 = (KnownNetworkConnectionStatus) data.readTypedObject(KnownNetworkConnectionStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKnownNetworkConnectionStatusChanged(_arg04);
+                    return true;
+                case 5:
+                    SharedConnectivitySettingsState _arg05 = (SharedConnectivitySettingsState) data.readTypedObject(SharedConnectivitySettingsState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSharedConnectivitySettingsChanged(_arg05);
+                    return true;
+                case 6:
+                    onServiceConnected();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<HotspotNetwork> _arg0 = data.createTypedArrayList(HotspotNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHotspotNetworksUpdated(_arg0);
-                            return true;
-                        case 2:
-                            HotspotNetworkConnectionStatus _arg02 = (HotspotNetworkConnectionStatus) data.readTypedObject(HotspotNetworkConnectionStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHotspotNetworkConnectionStatusChanged(_arg02);
-                            return true;
-                        case 3:
-                            List<KnownNetwork> _arg03 = data.createTypedArrayList(KnownNetwork.CREATOR);
-                            data.enforceNoDataAvail();
-                            onKnownNetworksUpdated(_arg03);
-                            return true;
-                        case 4:
-                            KnownNetworkConnectionStatus _arg04 = (KnownNetworkConnectionStatus) data.readTypedObject(KnownNetworkConnectionStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            onKnownNetworkConnectionStatusChanged(_arg04);
-                            return true;
-                        case 5:
-                            SharedConnectivitySettingsState _arg05 = (SharedConnectivitySettingsState) data.readTypedObject(SharedConnectivitySettingsState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSharedConnectivitySettingsChanged(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISharedConnectivityCallback {
+        private static class Proxy implements ISharedConnectivityCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -223,11 +229,22 @@ public interface ISharedConnectivityCallback extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.net.wifi.sharedconnectivity.service.ISharedConnectivityCallback
+            public void onServiceConnected() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISharedConnectivityCallback.DESCRIPTOR);
+                    this.mRemote.transact(6, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 4;
+            return 5;
         }
     }
 }

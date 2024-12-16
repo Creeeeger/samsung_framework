@@ -50,14 +50,14 @@ public abstract class PolicyUpdateReceiver extends BroadcastReceiver {
             case 0:
                 Log.i(TAG, "Received ACTION_DEVICE_POLICY_SET_RESULT");
                 onPolicySetResult(context, getPolicyKey(intent), getPolicyExtraBundle(intent), getTargetUser(intent), getPolicyChangedReason(intent));
-                return;
+                break;
             case 1:
                 Log.i(TAG, "Received ACTION_DEVICE_POLICY_CHANGED");
                 onPolicyChanged(context, getPolicyKey(intent), getPolicyExtraBundle(intent), getTargetUser(intent), getPolicyChangedReason(intent));
-                return;
+                break;
             default:
                 Log.e(TAG, "Unknown action received: " + intent.getAction());
-                return;
+                break;
         }
     }
 

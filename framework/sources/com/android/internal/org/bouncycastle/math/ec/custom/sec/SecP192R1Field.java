@@ -25,11 +25,8 @@ public class SecP192R1Field {
 
     public static void addExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.add(12, xx, yy, zz);
-        if (c != 0 || (zz[11] == -1 && Nat.gte(12, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(12, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[11] == -1 && Nat.gte(12, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(12, zz, PExtInv.length);
         }
     }
 
@@ -42,11 +39,8 @@ public class SecP192R1Field {
 
     public static int[] fromBigInteger(BigInteger x) {
         int[] z = Nat192.fromBigInteger(x);
-        if (z[5] == -1) {
-            int[] iArr = P;
-            if (Nat192.gte(z, iArr)) {
-                Nat192.subFrom(iArr, z);
-            }
+        if (z[5] == -1 && Nat192.gte(z, P)) {
+            Nat192.subFrom(P, z);
         }
         return z;
     }
@@ -81,18 +75,14 @@ public class SecP192R1Field {
 
     public static void multiplyAddToExt(int[] x, int[] y, int[] zz) {
         int c = Nat192.mulAddTo(x, y, zz);
-        if (c != 0 || (zz[11] == -1 && Nat.gte(12, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(12, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[11] == -1 && Nat.gte(12, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(12, zz, PExtInv.length);
         }
     }
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat192.sub(iArr, iArr, z);
+            Nat192.sub(P, P, z);
         } else {
             Nat192.sub(P, x, z);
         }
@@ -203,11 +193,8 @@ public class SecP192R1Field {
 
     public static void subtractExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.sub(12, xx, yy, zz);
-        if (c != 0) {
-            int[] iArr = PExtInv;
-            if (Nat.subFrom(iArr.length, iArr, zz) != 0) {
-                Nat.decAt(12, zz, iArr.length);
-            }
+        if (c != 0 && Nat.subFrom(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.decAt(12, zz, PExtInv.length);
         }
     }
 

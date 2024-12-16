@@ -14,9 +14,6 @@ public abstract class MidiDeviceService extends Service {
     public static final String SERVICE_INTERFACE = "android.media.midi.MidiDeviceService";
     private static final String TAG = "MidiDeviceService";
     private final MidiDeviceServer.Callback mCallback = new MidiDeviceServer.Callback() { // from class: android.media.midi.MidiDeviceService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.midi.MidiDeviceServer.Callback
         public void onDeviceStatusChanged(MidiDeviceServer server, MidiDeviceStatus status) {
             MidiDeviceService.this.onDeviceStatusChanged(status);
@@ -33,31 +30,13 @@ public abstract class MidiDeviceService extends Service {
 
     public abstract MidiReceiver[] onGetInputPortReceivers();
 
-    /* renamed from: android.media.midi.MidiDeviceService$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements MidiDeviceServer.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.midi.MidiDeviceServer.Callback
-        public void onDeviceStatusChanged(MidiDeviceServer server, MidiDeviceStatus status) {
-            MidiDeviceService.this.onDeviceStatusChanged(status);
-        }
-
-        @Override // android.media.midi.MidiDeviceServer.Callback
-        public void onClose() {
-            MidiDeviceService.this.onClose();
-        }
-    }
-
     @Override // android.app.Service
     public void onCreate() {
         MidiDeviceServer server;
         MidiDeviceInfo deviceInfo;
-        IMidiManager asInterface = IMidiManager.Stub.asInterface(ServiceManager.getService("midi"));
-        this.mMidiManager = asInterface;
+        this.mMidiManager = IMidiManager.Stub.asInterface(ServiceManager.getService("midi"));
         try {
-            deviceInfo = asInterface.getServiceDeviceInfo(getPackageName(), getClass().getName());
+            deviceInfo = this.mMidiManager.getServiceDeviceInfo(getPackageName(), getClass().getName());
         } catch (RemoteException e) {
             Log.e(TAG, "RemoteException in IMidiManager.getServiceDeviceInfo");
             server = null;
@@ -76,11 +55,10 @@ public abstract class MidiDeviceService extends Service {
     }
 
     public final MidiReceiver[] getOutputPortReceivers() {
-        MidiDeviceServer midiDeviceServer = this.mServer;
-        if (midiDeviceServer == null) {
+        if (this.mServer == null) {
             return null;
         }
-        return midiDeviceServer.getOutputPortReceivers();
+        return this.mServer.getOutputPortReceivers();
     }
 
     public final MidiDeviceInfo getDeviceInfo() {
@@ -95,9 +73,8 @@ public abstract class MidiDeviceService extends Service {
 
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {
-        MidiDeviceServer midiDeviceServer;
-        if (SERVICE_INTERFACE.equals(intent.getAction()) && (midiDeviceServer = this.mServer) != null) {
-            return midiDeviceServer.getBinderInterface().asBinder();
+        if (SERVICE_INTERFACE.equals(intent.getAction()) && this.mServer != null) {
+            return this.mServer.getBinderInterface().asBinder();
         }
         return null;
     }

@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputHardwareCallback extends IInterface {
     void onReleased() throws RemoteException;
 
     void onStreamConfigChanged(TvStreamConfig[] tvStreamConfigArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputHardwareCallback {
         @Override // android.media.tv.ITvInputHardwareCallback
         public void onReleased() throws RemoteException {
@@ -28,7 +27,6 @@ public interface ITvInputHardwareCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputHardwareCallback {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputHardwareCallback";
         static final int TRANSACTION_onReleased = 1;
@@ -75,29 +73,25 @@ public interface ITvInputHardwareCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onReleased();
+                    return true;
+                case 2:
+                    TvStreamConfig[] _arg0 = (TvStreamConfig[]) data.createTypedArray(TvStreamConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    onStreamConfigChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onReleased();
-                            return true;
-                        case 2:
-                            TvStreamConfig[] _arg0 = (TvStreamConfig[]) data.createTypedArray(TvStreamConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            onStreamConfigChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInputHardwareCallback {
+        private static class Proxy implements ITvInputHardwareCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

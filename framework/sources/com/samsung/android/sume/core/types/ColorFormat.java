@@ -1,6 +1,6 @@
 package com.samsung.android.sume.core.types;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum ColorFormat implements NumericEnum {
     NONE(0),
     OPAQUE(1),
@@ -34,20 +34,20 @@ public enum ColorFormat implements NumericEnum {
     }
 
     public float bytePerPixel() {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$types$ColorFormat[ordinal()]) {
-            case 1:
-            case 2:
+        switch (this) {
+            case NONE:
+            case GRAY:
                 return 1.0f;
-            case 3:
-            case 4:
-            case 5:
+            case NV12:
+            case NV21:
+            case YUV420:
                 return 1.5f;
-            case 6:
-            case 7:
+            case RGB:
+            case BGR:
                 return 3.0f;
-            case 8:
-            case 9:
-            case 10:
+            case RGBA:
+            case ARGB:
+            case BGRA:
                 return 4.0f;
             default:
                 throw new UnsupportedOperationException("not support");

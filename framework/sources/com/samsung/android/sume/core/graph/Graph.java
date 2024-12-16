@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface Graph<T> {
     void pause();
 
@@ -24,68 +24,26 @@ public interface Graph<T> {
 
     void setMessageSubscriber(MessageSubscriber messageSubscriber);
 
-    /* renamed from: com.samsung.android.sume.core.graph.Graph$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ArrayList<MediaBuffer> {
-        final /* synthetic */ MediaBuffer val$buffer;
-
-        AnonymousClass1(MediaBuffer mediaBuffer) {
-            this.val$buffer = mediaBuffer;
-            add(mediaBuffer);
-        }
-    }
-
-    default MediaBuffer run(MediaBuffer buffer) {
+    default MediaBuffer run(final MediaBuffer buffer) {
         List<MediaBuffer> output = new ArrayList<>();
-        run(new ArrayList<MediaBuffer>(buffer) { // from class: com.samsung.android.sume.core.graph.Graph.1
-            final /* synthetic */ MediaBuffer val$buffer;
-
-            AnonymousClass1(MediaBuffer buffer2) {
-                this.val$buffer = buffer2;
-                add(buffer2);
+        run(new ArrayList<MediaBuffer>() { // from class: com.samsung.android.sume.core.graph.Graph.1
+            {
+                add(buffer);
             }
         }, output);
         Def.require(output.size() == 1);
         return output.get(0);
     }
 
-    /* renamed from: com.samsung.android.sume.core.graph.Graph$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 extends ArrayList<MediaBuffer> {
-        final /* synthetic */ MediaBuffer val$outputBuffer;
-
-        AnonymousClass2(MediaBuffer mediaBuffer) {
-            this.val$outputBuffer = mediaBuffer;
-            add(mediaBuffer);
-        }
-    }
-
-    /* renamed from: com.samsung.android.sume.core.graph.Graph$3 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass3 extends ArrayList<MediaBuffer> {
-        final /* synthetic */ MediaBuffer val$inputBuffer;
-
-        AnonymousClass3(MediaBuffer mediaBuffer) {
-            this.val$inputBuffer = mediaBuffer;
-            add(mediaBuffer);
-        }
-    }
-
-    default void run(MediaBuffer inputBuffer, MediaBuffer outputBuffer) {
-        List<MediaBuffer> output = new ArrayList<MediaBuffer>(outputBuffer) { // from class: com.samsung.android.sume.core.graph.Graph.2
-            final /* synthetic */ MediaBuffer val$outputBuffer;
-
-            AnonymousClass2(MediaBuffer outputBuffer2) {
-                this.val$outputBuffer = outputBuffer2;
-                add(outputBuffer2);
+    default void run(final MediaBuffer inputBuffer, final MediaBuffer outputBuffer) {
+        List<MediaBuffer> output = new ArrayList<MediaBuffer>() { // from class: com.samsung.android.sume.core.graph.Graph.2
+            {
+                add(outputBuffer);
             }
         };
-        run(new ArrayList<MediaBuffer>(inputBuffer) { // from class: com.samsung.android.sume.core.graph.Graph.3
-            final /* synthetic */ MediaBuffer val$inputBuffer;
-
-            AnonymousClass3(MediaBuffer inputBuffer2) {
-                this.val$inputBuffer = inputBuffer2;
-                add(inputBuffer2);
+        run(new ArrayList<MediaBuffer>() { // from class: com.samsung.android.sume.core.graph.Graph.3
+            {
+                add(inputBuffer);
             }
         }, output);
         Def.require(output.size() == 1);
@@ -98,7 +56,6 @@ public interface Graph<T> {
         return output;
     }
 
-    /* loaded from: classes4.dex */
     public static class Option extends OptionBase {
         public static final int CACHEABLE = 1;
         public static final int IGNORE_FILTER_EXCEPTION = 6;
@@ -112,14 +69,13 @@ public interface Graph<T> {
         public static final int TRACE_MEDIAFILTER = 8;
         private static final String TAG = Def.tagOf((Class<?>) Option.class);
         public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() { // from class: com.samsung.android.sume.core.graph.Graph.Option.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option createFromParcel(Parcel in) {
                 return new Option(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Option[] newArray(int size) {
                 return new Option[size];
@@ -129,25 +85,8 @@ public interface Graph<T> {
         public Option() {
         }
 
-        public Option(Parcel in) {
+        protected Option(Parcel in) {
             super(in);
-        }
-
-        /* renamed from: com.samsung.android.sume.core.graph.Graph$Option$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Option> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option createFromParcel(Parcel in) {
-                return new Option(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Option[] newArray(int size) {
-                return new Option[size];
-            }
         }
 
         public long getMaxDuration(TimeUnit timeUnit) {

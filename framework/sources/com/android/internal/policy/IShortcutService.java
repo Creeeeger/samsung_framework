@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IShortcutService extends IInterface {
     void notifyShortcutKeyPressed(long j) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IShortcutService {
         @Override // com.android.internal.policy.IShortcutService
         public void notifyShortcutKeyPressed(long shortcutCode) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IShortcutService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IShortcutService {
         public static final String DESCRIPTOR = "com.android.internal.policy.IShortcutService";
         static final int TRANSACTION_notifyShortcutKeyPressed = 1;
@@ -66,25 +64,22 @@ public interface IShortcutService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    notifyShortcutKeyPressed(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            notifyShortcutKeyPressed(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IShortcutService {
+        private static class Proxy implements IShortcutService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

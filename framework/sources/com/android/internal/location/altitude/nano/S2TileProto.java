@@ -9,7 +9,7 @@ import com.android.framework.protobuf.nano.WireFormatNano;
 import java.io.IOException;
 import java.util.Arrays;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class S2TileProto extends MessageNano {
     private static volatile S2TileProto[] _emptyArray;
     public byte[] byteBuffer;
@@ -59,7 +59,7 @@ public final class S2TileProto extends MessageNano {
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
         if (!this.tileKey.equals("")) {
             size += CodedOutputByteBufferNano.computeStringSize(1, this.tileKey);

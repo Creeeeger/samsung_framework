@@ -12,7 +12,6 @@ public interface IConversationListener extends IInterface {
 
     void onConversationUpdate(ConversationChannel conversationChannel) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IConversationListener {
         @Override // android.app.people.IConversationListener
         public void onConversationUpdate(ConversationChannel conversation) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IConversationListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IConversationListener {
         static final int TRANSACTION_onConversationUpdate = 1;
 
@@ -67,26 +65,22 @@ public interface IConversationListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IConversationListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IConversationListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IConversationListener.DESCRIPTOR);
+                case 1:
+                    ConversationChannel _arg0 = (ConversationChannel) data.readTypedObject(ConversationChannel.CREATOR);
+                    data.enforceNoDataAvail();
+                    onConversationUpdate(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ConversationChannel _arg0 = (ConversationChannel) data.readTypedObject(ConversationChannel.CREATOR);
-                            data.enforceNoDataAvail();
-                            onConversationUpdate(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IConversationListener {
+        private static class Proxy implements IConversationListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

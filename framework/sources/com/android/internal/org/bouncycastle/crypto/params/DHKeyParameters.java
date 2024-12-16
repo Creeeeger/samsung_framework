@@ -4,7 +4,7 @@ package com.android.internal.org.bouncycastle.crypto.params;
 public class DHKeyParameters extends AsymmetricKeyParameter {
     private DHParameters params;
 
-    public DHKeyParameters(boolean isPrivate, DHParameters params) {
+    protected DHKeyParameters(boolean isPrivate, DHParameters params) {
         super(isPrivate);
         this.params = params;
     }
@@ -18,18 +18,16 @@ public class DHKeyParameters extends AsymmetricKeyParameter {
             return false;
         }
         DHKeyParameters dhKey = (DHKeyParameters) obj;
-        DHParameters dHParameters = this.params;
-        if (dHParameters == null) {
+        if (this.params == null) {
             return dhKey.getParameters() == null;
         }
-        return dHParameters.equals(dhKey.getParameters());
+        return this.params.equals(dhKey.getParameters());
     }
 
     public int hashCode() {
         int i = !isPrivate() ? 1 : 0;
-        DHParameters dHParameters = this.params;
-        if (dHParameters != null) {
-            return i ^ dHParameters.hashCode();
+        if (this.params != null) {
+            return i ^ this.params.hashCode();
         }
         return i;
     }

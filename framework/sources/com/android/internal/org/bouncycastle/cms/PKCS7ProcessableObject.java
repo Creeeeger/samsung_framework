@@ -25,9 +25,8 @@ public class PKCS7ProcessableObject implements CMSTypedData {
 
     @Override // com.android.internal.org.bouncycastle.cms.CMSProcessable
     public void write(OutputStream cOut) throws IOException, CMSException {
-        ASN1Encodable aSN1Encodable = this.structure;
-        if (aSN1Encodable instanceof ASN1Sequence) {
-            ASN1Sequence s = ASN1Sequence.getInstance(aSN1Encodable);
+        if (this.structure instanceof ASN1Sequence) {
+            ASN1Sequence s = ASN1Sequence.getInstance(this.structure);
             Iterator it = s.iterator();
             while (it.hasNext()) {
                 ASN1Encodable enc = it.next();
@@ -35,7 +34,7 @@ public class PKCS7ProcessableObject implements CMSTypedData {
             }
             return;
         }
-        byte[] encoded = aSN1Encodable.toASN1Primitive().getEncoded(ASN1Encoding.DER);
+        byte[] encoded = this.structure.toASN1Primitive().getEncoded(ASN1Encoding.DER);
         int index = 1;
         while ((encoded[index] & 255) > 127) {
             index++;

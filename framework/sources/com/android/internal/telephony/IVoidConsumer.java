@@ -12,7 +12,6 @@ public interface IVoidConsumer extends IInterface {
 
     void accept() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IVoidConsumer {
         @Override // com.android.internal.telephony.IVoidConsumer
         public void accept() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IVoidConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IVoidConsumer {
         static final int TRANSACTION_accept = 1;
 
@@ -67,24 +65,20 @@ public interface IVoidConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVoidConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVoidConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVoidConsumer.DESCRIPTOR);
+                case 1:
+                    accept();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            accept();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IVoidConsumer {
+        private static class Proxy implements IVoidConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

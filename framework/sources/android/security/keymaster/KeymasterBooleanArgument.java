@@ -3,7 +3,7 @@ package android.security.keymaster;
 import android.os.Parcel;
 
 /* loaded from: classes3.dex */
-public class KeymasterBooleanArgument extends KeymasterArgument {
+class KeymasterBooleanArgument extends KeymasterArgument {
     public final boolean value;
 
     public KeymasterBooleanArgument(int tag) {

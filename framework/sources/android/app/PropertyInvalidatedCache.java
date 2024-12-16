@@ -70,7 +70,6 @@ public class PropertyInvalidatedCache<Query, Result> {
     private static volatile boolean sTesting = false;
     private static final HashMap<String, Long> sTestingPropertyMap = new HashMap<>();
 
-    /* loaded from: classes.dex */
     public static abstract class QueryHandler<Q, R> {
         public abstract R apply(Q q);
 
@@ -116,9 +115,7 @@ public class PropertyInvalidatedCache<Query, Result> {
         return n >= 0 && n <= 3;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class DefaultComputer<Query, Result> extends QueryHandler<Query, Result> {
+    private static class DefaultComputer<Query, Result> extends QueryHandler<Query, Result> {
         final PropertyInvalidatedCache<Query, Result> mCache;
 
         DefaultComputer(PropertyInvalidatedCache<Query, Result> cache) {
@@ -173,10 +170,6 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     private LinkedHashMap<Query, Result> createMap() {
         return new LinkedHashMap<Query, Result>(2, 0.75f, true) { // from class: android.app.PropertyInvalidatedCache.1
-            AnonymousClass1(int initialCapacity, float loadFactor, boolean accessOrder) {
-                super(initialCapacity, loadFactor, accessOrder);
-            }
-
             @Override // java.util.LinkedHashMap
             protected boolean removeEldestEntry(Map.Entry eldest) {
                 int size = size();
@@ -192,27 +185,6 @@ public class PropertyInvalidatedCache<Query, Result> {
         };
     }
 
-    /* renamed from: android.app.PropertyInvalidatedCache$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends LinkedHashMap<Query, Result> {
-        AnonymousClass1(int initialCapacity, float loadFactor, boolean accessOrder) {
-            super(initialCapacity, loadFactor, accessOrder);
-        }
-
-        @Override // java.util.LinkedHashMap
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            int size = size();
-            if (size > PropertyInvalidatedCache.this.mHighWaterMark) {
-                PropertyInvalidatedCache.this.mHighWaterMark = size;
-            }
-            if (size > PropertyInvalidatedCache.this.mMaxEntries) {
-                PropertyInvalidatedCache.this.mMissOverflow++;
-                return true;
-            }
-            return false;
-        }
-    }
-
     private void registerCache() {
         synchronized (sGlobalLock) {
             if (sDisabledKeys.contains(this.mCacheName)) {
@@ -224,16 +196,14 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     public static void setTestMode(boolean mode) {
         sTesting = mode;
-        HashMap<String, Long> hashMap = sTestingPropertyMap;
-        synchronized (hashMap) {
-            hashMap.clear();
+        synchronized (sTestingPropertyMap) {
+            sTestingPropertyMap.clear();
         }
     }
 
     private static void testPropertyName(String name) {
-        HashMap<String, Long> hashMap = sTestingPropertyMap;
-        synchronized (hashMap) {
-            hashMap.put(name, 0L);
+        synchronized (sTestingPropertyMap) {
+            sTestingPropertyMap.put(name, 0L);
         }
     }
 
@@ -243,9 +213,8 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     private long getCurrentNonce() {
         if (sTesting) {
-            HashMap<String, Long> hashMap = sTestingPropertyMap;
-            synchronized (hashMap) {
-                Long n = hashMap.get(this.mPropertyName);
+            synchronized (sTestingPropertyMap) {
+                Long n = sTestingPropertyMap.get(this.mPropertyName);
                 if (n != null) {
                     return n.longValue();
                 }
@@ -264,11 +233,10 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     private static void setNonce(String name, long val) {
         if (sTesting) {
-            HashMap<String, Long> hashMap = sTestingPropertyMap;
-            synchronized (hashMap) {
-                Long n = hashMap.get(name);
+            synchronized (sTestingPropertyMap) {
+                Long n = sTestingPropertyMap.get(name);
                 if (n != null) {
-                    hashMap.put(name, Long.valueOf(val));
+                    sTestingPropertyMap.put(name, Long.valueOf(val));
                     return;
                 }
             }
@@ -297,9 +265,8 @@ public class PropertyInvalidatedCache<Query, Result> {
 
     private static long getNonce(String name) {
         if (sTesting) {
-            HashMap<String, Long> hashMap = sTestingPropertyMap;
-            synchronized (hashMap) {
-                Long n = hashMap.get(name);
+            synchronized (sTestingPropertyMap) {
+                Long n = sTestingPropertyMap.get(name);
                 if (n != null) {
                     return n.longValue();
                 }
@@ -438,8 +405,7 @@ public class PropertyInvalidatedCache<Query, Result> {
         return recompute(query);
     }
 
-    /* loaded from: classes.dex */
-    public static final class NoPreloadHolder {
+    private static final class NoPreloadHolder {
         private static final AtomicLong sNextNonce = new AtomicLong(new Random().nextLong());
 
         private NoPreloadHolder() {
@@ -476,12 +442,11 @@ public class PropertyInvalidatedCache<Query, Result> {
         synchronized (sCorkLock) {
             Integer numberCorks = sCorks.get(name);
             if (numberCorks != null && numberCorks.intValue() > 0) {
-                HashMap<String, Long> hashMap = sCorkedInvalidates;
-                long count = hashMap.getOrDefault(name, 0L).longValue();
-                hashMap.put(name, Long.valueOf(1 + count));
-                return;
+                long count = sCorkedInvalidates.getOrDefault(name, 0L).longValue();
+                sCorkedInvalidates.put(name, Long.valueOf(1 + count));
+            } else {
+                invalidateCacheLocked(name);
             }
-            invalidateCacheLocked(name);
         }
     }
 
@@ -495,9 +460,8 @@ public class PropertyInvalidatedCache<Query, Result> {
             newValue = NoPreloadHolder.next();
         } while (isReservedNonce(newValue));
         setNonce(name, newValue);
-        HashMap<String, Long> hashMap = sInvalidates;
-        long invalidateCount = hashMap.getOrDefault(name, 0L).longValue();
-        hashMap.put(name, Long.valueOf(1 + invalidateCount));
+        long invalidateCount = sInvalidates.getOrDefault(name, 0L).longValue();
+        sInvalidates.put(name, Long.valueOf(1 + invalidateCount));
     }
 
     public static void corkInvalidations(String name) {
@@ -505,19 +469,17 @@ public class PropertyInvalidatedCache<Query, Result> {
             return;
         }
         synchronized (sCorkLock) {
-            HashMap<String, Integer> hashMap = sCorks;
-            int numberCorks = hashMap.getOrDefault(name, 0).intValue();
+            int numberCorks = sCorks.getOrDefault(name, 0).intValue();
             if (numberCorks == 0) {
                 long nonce = getNonce(name);
                 if (nonce != 0 && nonce != 1) {
                     setNonce(name, 2L);
                 }
             } else {
-                HashMap<String, Long> hashMap2 = sCorkedInvalidates;
-                long count = hashMap2.getOrDefault(name, 0L).longValue();
-                hashMap2.put(name, Long.valueOf(1 + count));
+                long count = sCorkedInvalidates.getOrDefault(name, 0L).longValue();
+                sCorkedInvalidates.put(name, Long.valueOf(1 + count));
             }
-            hashMap.put(name, Integer.valueOf(numberCorks + 1));
+            sCorks.put(name, Integer.valueOf(numberCorks + 1));
         }
     }
 
@@ -526,21 +488,19 @@ public class PropertyInvalidatedCache<Query, Result> {
             return;
         }
         synchronized (sCorkLock) {
-            HashMap<String, Integer> hashMap = sCorks;
-            int numberCorks = hashMap.getOrDefault(name, 0).intValue();
+            int numberCorks = sCorks.getOrDefault(name, 0).intValue();
             if (numberCorks < 1) {
                 throw new AssertionError("cork underflow: " + name);
             }
             if (numberCorks == 1) {
-                hashMap.remove(name);
+                sCorks.remove(name);
                 invalidateCacheLocked(name);
             } else {
-                hashMap.put(name, Integer.valueOf(numberCorks - 1));
+                sCorks.put(name, Integer.valueOf(numberCorks - 1));
             }
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class AutoCorker {
         public static final int DEFAULT_AUTO_CORK_DELAY_MS = 50;
         private final int mAutoCorkDelayMs;
@@ -580,6 +540,7 @@ public class PropertyInvalidatedCache<Query, Result> {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void handleMessage(Message msg) {
             synchronized (this.mLock) {
                 if (this.mUncorkDeadlineMs < 0) {
@@ -596,26 +557,9 @@ public class PropertyInvalidatedCache<Query, Result> {
             }
         }
 
-        /* renamed from: android.app.PropertyInvalidatedCache$AutoCorker$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends Handler {
-            AnonymousClass1(Looper looper) {
-                super(looper);
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                AutoCorker.this.handleMessage(msg);
-            }
-        }
-
         private Handler getHandlerLocked() {
             if (this.mHandler == null) {
                 this.mHandler = new Handler(Looper.getMainLooper()) { // from class: android.app.PropertyInvalidatedCache.AutoCorker.1
-                    AnonymousClass1(Looper looper) {
-                        super(looper);
-                    }
-
                     @Override // android.os.Handler
                     public void handleMessage(Message msg) {
                         AutoCorker.this.handleMessage(msg);
@@ -705,7 +649,6 @@ public class PropertyInvalidatedCache<Query, Result> {
         long corkedInvalidates;
         Object obj;
         long skips;
-        Object[] objArr;
         if (detailed && !showDetailed(args)) {
             return;
         }
@@ -719,49 +662,37 @@ public class PropertyInvalidatedCache<Query, Result> {
                 try {
                     pw.println(TextUtils.formatSimple("  Cache Name: %s", cacheName()));
                     pw.println(TextUtils.formatSimple("    Property: %s", this.mPropertyName));
-                    long[] jArr = this.mSkips;
-                    skips = jArr[2] + jArr[0] + jArr[1] + jArr[3];
-                    objArr = new Object[4];
+                    skips = this.mSkips[2] + this.mSkips[0] + this.mSkips[1] + this.mSkips[3];
                 } catch (Throwable th) {
                     th = th;
                     obj = obj2;
                 }
-                try {
-                    objArr[0] = Long.valueOf(this.mHits);
-                    objArr[1] = Long.valueOf(this.mMisses);
-                    objArr[2] = Long.valueOf(skips);
-                    objArr[3] = Long.valueOf(this.mClears);
-                    pw.println(TextUtils.formatSimple("    Hits: %d, Misses: %d, Skips: %d, Clears: %d", objArr));
-                    pw.println(TextUtils.formatSimple("    Skip-corked: %d, Skip-unset: %d, Skip-bypass: %d, Skip-other: %d", Long.valueOf(this.mSkips[2]), Long.valueOf(this.mSkips[0]), Long.valueOf(this.mSkips[3]), Long.valueOf(this.mSkips[1])));
-                    Object[] objArr2 = new Object[3];
-                    objArr2[0] = Long.valueOf(this.mLastSeenNonce);
-                    objArr2[1] = Long.valueOf(invalidateCount);
-                    objArr2[2] = Long.valueOf(corkedInvalidates);
-                    pw.println(TextUtils.formatSimple("    Nonce: 0x%016x, Invalidates: %d, CorkedInvalidates: %d", objArr2));
-                    pw.println(TextUtils.formatSimple("    Current Size: %d, Max Size: %d, HW Mark: %d, Overflows: %d", Integer.valueOf(this.mCache.size()), Integer.valueOf(this.mMaxEntries), Long.valueOf(this.mHighWaterMark), Long.valueOf(this.mMissOverflow)));
-                    Object[] objArr3 = new Object[1];
-                    objArr3[0] = this.mDisabled ? "false" : "true";
-                    pw.println(TextUtils.formatSimple("    Enabled: %s", objArr3));
-                    pw.println("");
-                    if (detailed) {
-                        Set<Map.Entry<Query, Result>> cacheEntries = this.mCache.entrySet();
-                        if (cacheEntries.size() == 0) {
-                            return;
-                        }
-                        pw.println("    Contents:");
-                        for (Map.Entry<Query, Result> entry : cacheEntries) {
-                            String key = Objects.toString(entry.getKey());
-                            String value = Objects.toString(entry.getValue());
-                            pw.println(TextUtils.formatSimple("      Key: %s\n      Value: %s\n", key, value));
-                        }
+            } catch (Throwable th2) {
+                th = th2;
+            }
+            try {
+                pw.println(TextUtils.formatSimple("    Hits: %d, Misses: %d, Skips: %d, Clears: %d", Long.valueOf(this.mHits), Long.valueOf(this.mMisses), Long.valueOf(skips), Long.valueOf(this.mClears)));
+                pw.println(TextUtils.formatSimple("    Skip-corked: %d, Skip-unset: %d, Skip-bypass: %d, Skip-other: %d", Long.valueOf(this.mSkips[2]), Long.valueOf(this.mSkips[0]), Long.valueOf(this.mSkips[3]), Long.valueOf(this.mSkips[1])));
+                pw.println(TextUtils.formatSimple("    Nonce: 0x%016x, Invalidates: %d, CorkedInvalidates: %d", Long.valueOf(this.mLastSeenNonce), Long.valueOf(invalidateCount), Long.valueOf(corkedInvalidates)));
+                pw.println(TextUtils.formatSimple("    Current Size: %d, Max Size: %d, HW Mark: %d, Overflows: %d", Integer.valueOf(this.mCache.size()), Integer.valueOf(this.mMaxEntries), Long.valueOf(this.mHighWaterMark), Long.valueOf(this.mMissOverflow)));
+                pw.println(TextUtils.formatSimple("    Enabled: %s", this.mDisabled ? "false" : "true"));
+                pw.println("");
+                if (detailed) {
+                    Set<Map.Entry<Query, Result>> cacheEntries = this.mCache.entrySet();
+                    if (cacheEntries.size() == 0) {
+                        return;
                     }
-                } catch (Throwable th2) {
-                    th = th2;
-                    obj = obj2;
-                    throw th;
+                    pw.println("    Contents:");
+                    for (Map.Entry<Query, Result> entry : cacheEntries) {
+                        String key = Objects.toString(entry.getKey());
+                        String value = Objects.toString(entry.getValue());
+                        pw.println(TextUtils.formatSimple("      Key: %s\n      Value: %s\n", key, value));
+                    }
                 }
             } catch (Throwable th3) {
                 th = th3;
+                obj = obj2;
+                throw th;
             }
         }
     }

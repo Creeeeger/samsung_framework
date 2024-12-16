@@ -21,7 +21,6 @@ public class CallbackFilter extends Filter {
     @GenerateFieldPort(hasDefault = true, name = "userData")
     private Object mUserData;
 
-    /* loaded from: classes.dex */
     private class CallbackRunnable implements Runnable {
         private Filter mFilter;
         private Frame mFrame;
@@ -62,8 +61,7 @@ public class CallbackFilter extends Filter {
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
         Frame input = pullInput("frame");
-        FilterContext.OnFrameReceivedListener onFrameReceivedListener = this.mListener;
-        if (onFrameReceivedListener != null) {
+        if (this.mListener != null) {
             if (this.mCallbacksOnUiThread) {
                 input.retain();
                 CallbackRunnable uiRunnable = new CallbackRunnable(this.mListener, this, input, this.mUserData);
@@ -72,7 +70,7 @@ public class CallbackFilter extends Filter {
                 }
                 return;
             }
-            onFrameReceivedListener.onFrameReceived(this, input, this.mUserData);
+            this.mListener.onFrameReceived(this, input, this.mUserData);
             return;
         }
         throw new RuntimeException("CallbackFilter received frame, but no listener set!");

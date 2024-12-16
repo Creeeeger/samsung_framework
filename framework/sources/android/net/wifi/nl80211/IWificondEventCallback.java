@@ -12,7 +12,6 @@ public interface IWificondEventCallback extends IInterface {
 
     void OnRegDomainChanged(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWificondEventCallback {
         @Override // android.net.wifi.nl80211.IWificondEventCallback
         public void OnRegDomainChanged(String countryCode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IWificondEventCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWificondEventCallback {
         static final int TRANSACTION_OnRegDomainChanged = 1;
 
@@ -67,26 +65,22 @@ public interface IWificondEventCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWificondEventCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWificondEventCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWificondEventCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    OnRegDomainChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            OnRegDomainChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWificondEventCallback {
+        private static class Proxy implements IWificondEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -3,7 +3,7 @@ package com.android.internal.graphics;
 import android.animation.AnimationHandler;
 import android.view.Choreographer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class SfVsyncFrameCallbackProvider implements AnimationHandler.AnimationFrameCallbackProvider {
     private final Choreographer mChoreographer;
 

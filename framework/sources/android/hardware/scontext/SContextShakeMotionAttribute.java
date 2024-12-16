@@ -10,7 +10,7 @@ public class SContextShakeMotionAttribute extends SContextAttribute {
     private int mDuration;
     private int mStrength;
 
-    public SContextShakeMotionAttribute() {
+    SContextShakeMotionAttribute() {
         this.mStrength = 2;
         this.mDuration = 800;
         setAttribute();

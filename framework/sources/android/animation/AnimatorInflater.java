@@ -16,7 +16,6 @@ import android.view.animation.BaseInterpolator;
 import android.view.animation.Interpolator;
 import com.android.ims.ImsConfig;
 import com.android.internal.R;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -377,13 +376,8 @@ public class AnimatorInflater {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class PathDataEvaluator implements TypeEvaluator<PathParser.PathData> {
+    private static class PathDataEvaluator implements TypeEvaluator<PathParser.PathData> {
         private final PathParser.PathData mPathData;
-
-        /* synthetic */ PathDataEvaluator(PathDataEvaluatorIA pathDataEvaluatorIA) {
-            this();
-        }
 
         private PathDataEvaluator() {
             this.mPathData = new PathParser.PathData();
@@ -578,13 +572,14 @@ public class AnimatorInflater {
     private static void setupObjectAnimator(ValueAnimator anim, TypedArray arrayObjectAnimator, int valueType, float pixelSize) {
         Keyframes xKeyframes;
         Keyframes yKeyframes;
+        int valueType2 = valueType;
         ObjectAnimator oa = (ObjectAnimator) anim;
         String pathData = arrayObjectAnimator.getString(1);
         if (pathData != null) {
             String propertyXName = arrayObjectAnimator.getString(2);
             String propertyYName = arrayObjectAnimator.getString(3);
-            if (valueType == 2 || valueType == 4) {
-                valueType = 0;
+            if (valueType2 == 2 || valueType2 == 4) {
+                valueType2 = 0;
             }
             if (propertyXName == null && propertyYName == null) {
                 throw new InflateException(arrayObjectAnimator.getPositionDescription() + " propertyXName or propertyYName is needed for PathData");
@@ -592,7 +587,7 @@ public class AnimatorInflater {
             Path path = PathParser.createPathFromPathData(pathData);
             float error = 0.5f * pixelSize;
             PathKeyframes keyframeSet = KeyframeSet.ofPath(path, error);
-            if (valueType == 0) {
+            if (valueType2 == 0) {
                 xKeyframes = keyframeSet.createXFloatKeyframes();
                 yKeyframes = keyframeSet.createYFloatKeyframes();
             } else {
@@ -844,14 +839,12 @@ public class AnimatorInflater {
         int count = keyframes.length;
         for (int i = 0; i < count; i++) {
             Keyframe keyframe = (Keyframe) keyframes[i];
-            StringBuilder append = new StringBuilder().append("Keyframe ").append(i).append(": fraction ");
-            float fraction = keyframe.getFraction();
-            Object obj = SemCapabilities.FEATURE_TAG_NULL;
-            StringBuilder append2 = append.append(fraction < 0.0f ? SemCapabilities.FEATURE_TAG_NULL : Float.valueOf(keyframe.getFraction())).append(", , value : ");
+            Object obj = "null";
+            StringBuilder append = new StringBuilder().append("Keyframe ").append(i).append(": fraction ").append(keyframe.getFraction() < 0.0f ? "null" : Float.valueOf(keyframe.getFraction())).append(", , value : ");
             if (keyframe.hasValue()) {
                 obj = keyframe.getValue();
             }
-            Log.d(TAG, append2.append(obj).toString());
+            Log.d(TAG, append.append(obj).toString());
         }
     }
 
@@ -1062,10 +1055,9 @@ public class AnimatorInflater {
 
     private static int getChangingConfigs(Resources resources, int id) {
         int i;
-        TypedValue typedValue = sTmpTypedValue;
-        synchronized (typedValue) {
-            resources.getValue(id, typedValue, true);
-            i = typedValue.changingConfigurations;
+        synchronized (sTmpTypedValue) {
+            resources.getValue(id, sTmpTypedValue, true);
+            i = sTmpTypedValue.changingConfigurations;
         }
         return i;
     }

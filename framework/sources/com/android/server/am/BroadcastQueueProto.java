@@ -2,6 +2,7 @@ package com.android.server.am;
 
 /* loaded from: classes5.dex */
 public final class BroadcastQueueProto {
+    public static final long FROZEN_BROADCASTS = 2246267895816L;
     public static final long HISTORICAL_BROADCASTS = 2246267895813L;
     public static final long HISTORICAL_BROADCASTS_SUMMARY = 2246267895814L;
     public static final long ORDERED_BROADCASTS = 2246267895811L;
@@ -10,7 +11,6 @@ public final class BroadcastQueueProto {
     public static final long PENDING_BROADCASTS = 2246267895815L;
     public static final long QUEUE_NAME = 1138166333441L;
 
-    /* loaded from: classes5.dex */
     public final class BroadcastSummary {
         public static final long DISPATCH_CLOCK_TIME_MS = 1112396529667L;
         public static final long ENQUEUE_CLOCK_TIME_MS = 1112396529666L;

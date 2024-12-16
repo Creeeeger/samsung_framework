@@ -13,7 +13,6 @@ public interface IInternalServiceRetriever extends IInterface {
 
     IDeviceIdleControllerAdapter getDeviceIdleController() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInternalServiceRetriever {
         @Override // com.android.internal.telecom.IInternalServiceRetriever
         public IDeviceIdleControllerAdapter getDeviceIdleController() throws RemoteException {
@@ -26,7 +25,6 @@ public interface IInternalServiceRetriever extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInternalServiceRetriever {
         static final int TRANSACTION_getDeviceIdleController = 1;
 
@@ -69,26 +67,22 @@ public interface IInternalServiceRetriever extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInternalServiceRetriever.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInternalServiceRetriever.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInternalServiceRetriever.DESCRIPTOR);
+                case 1:
+                    IDeviceIdleControllerAdapter _result = getDeviceIdleController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDeviceIdleControllerAdapter _result = getDeviceIdleController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInternalServiceRetriever {
+        private static class Proxy implements IInternalServiceRetriever {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

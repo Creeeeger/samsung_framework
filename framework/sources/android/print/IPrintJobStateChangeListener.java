@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPrintJobStateChangeListener extends IInterface {
     void onPrintJobStateChanged(PrintJobId printJobId) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintJobStateChangeListener {
         @Override // android.print.IPrintJobStateChangeListener
         public void onPrintJobStateChanged(PrintJobId printJobId) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPrintJobStateChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintJobStateChangeListener {
         public static final String DESCRIPTOR = "android.print.IPrintJobStateChangeListener";
         static final int TRANSACTION_onPrintJobStateChanged = 1;
@@ -66,26 +64,22 @@ public interface IPrintJobStateChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    PrintJobId _arg0 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintJobStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PrintJobId _arg0 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintJobStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintJobStateChangeListener {
+        private static class Proxy implements IPrintJobStateChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

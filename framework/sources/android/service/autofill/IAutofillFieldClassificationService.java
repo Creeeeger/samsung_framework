@@ -15,7 +15,6 @@ import java.util.Map;
 public interface IAutofillFieldClassificationService extends IInterface {
     void calculateScores(RemoteCallback remoteCallback, List<AutofillValue> list, String[] strArr, String[] strArr2, String str, Bundle bundle, Map map, Map map2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAutofillFieldClassificationService {
         @Override // android.service.autofill.IAutofillFieldClassificationService
         public void calculateScores(RemoteCallback callback, List<AutofillValue> actualValues, String[] userDataValues, String[] categoryIds, String defaultAlgorithm, Bundle defaultArgs, Map algorithms, Map args) throws RemoteException {
@@ -27,7 +26,6 @@ public interface IAutofillFieldClassificationService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAutofillFieldClassificationService {
         public static final String DESCRIPTOR = "android.service.autofill.IAutofillFieldClassificationService";
         static final int TRANSACTION_calculateScores = 1;
@@ -71,32 +69,29 @@ public interface IAutofillFieldClassificationService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    List<AutofillValue> _arg1 = data.createTypedArrayList(AutofillValue.CREATOR);
+                    String[] _arg2 = data.createStringArray();
+                    String[] _arg3 = data.createStringArray();
+                    String _arg4 = data.readString();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _arg6 = data.readHashMap(cl);
+                    Map _arg7 = data.readHashMap(cl);
+                    data.enforceNoDataAvail();
+                    calculateScores(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemoteCallback _arg0 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            List<AutofillValue> _arg1 = data.createTypedArrayList(AutofillValue.CREATOR);
-                            String[] _arg2 = data.createStringArray();
-                            String[] _arg3 = data.createStringArray();
-                            String _arg4 = data.readString();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ClassLoader cl = getClass().getClassLoader();
-                            Map _arg6 = data.readHashMap(cl);
-                            Map _arg7 = data.readHashMap(cl);
-                            data.enforceNoDataAvail();
-                            calculateScores(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IAutofillFieldClassificationService {
             private IBinder mRemote;
 

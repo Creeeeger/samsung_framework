@@ -2,7 +2,7 @@ package android.text;
 
 import java.text.CharacterIterator;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class CharSequenceCharacterIterator implements CharacterIterator {
     private final int mBeginIndex;
     private final CharSequence mCharSeq;
@@ -24,47 +24,39 @@ public class CharSequenceCharacterIterator implements CharacterIterator {
 
     @Override // java.text.CharacterIterator
     public char last() {
-        int i = this.mBeginIndex;
-        int i2 = this.mEndIndex;
-        if (i == i2) {
-            this.mIndex = i2;
+        if (this.mBeginIndex == this.mEndIndex) {
+            this.mIndex = this.mEndIndex;
             return (char) 65535;
         }
-        int i3 = i2 - 1;
-        this.mIndex = i3;
-        return this.mCharSeq.charAt(i3);
+        this.mIndex = this.mEndIndex - 1;
+        return this.mCharSeq.charAt(this.mIndex);
     }
 
     @Override // java.text.CharacterIterator
     public char current() {
-        int i = this.mIndex;
-        if (i == this.mEndIndex) {
+        if (this.mIndex == this.mEndIndex) {
             return (char) 65535;
         }
-        return this.mCharSeq.charAt(i);
+        return this.mCharSeq.charAt(this.mIndex);
     }
 
     @Override // java.text.CharacterIterator
     public char next() {
-        int i = this.mIndex + 1;
-        this.mIndex = i;
-        int i2 = this.mEndIndex;
-        if (i >= i2) {
-            this.mIndex = i2;
+        this.mIndex++;
+        if (this.mIndex >= this.mEndIndex) {
+            this.mIndex = this.mEndIndex;
             return (char) 65535;
         }
-        return this.mCharSeq.charAt(i);
+        return this.mCharSeq.charAt(this.mIndex);
     }
 
     @Override // java.text.CharacterIterator
     public char previous() {
-        int i = this.mIndex;
-        if (i <= this.mBeginIndex) {
+        if (this.mIndex <= this.mBeginIndex) {
             return (char) 65535;
         }
-        int i2 = i - 1;
-        this.mIndex = i2;
-        return this.mCharSeq.charAt(i2);
+        this.mIndex--;
+        return this.mCharSeq.charAt(this.mIndex);
     }
 
     @Override // java.text.CharacterIterator

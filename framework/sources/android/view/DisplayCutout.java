@@ -16,6 +16,7 @@ import android.util.RotationUtils;
 import android.util.proto.ProtoOutputStream;
 import android.view.CutoutSpecification;
 import com.android.internal.R;
+import com.android.window.flags.Flags;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -30,76 +31,60 @@ public final class DisplayCutout {
     public static final int BOUNDS_POSITION_LENGTH = 4;
     public static final int BOUNDS_POSITION_RIGHT = 2;
     public static final int BOUNDS_POSITION_TOP = 1;
-    private static final Object CACHE_LOCK;
-    private static final CutoutPathParserInfo EMPTY_PARSER_INFO;
     public static final String EMULATION_OVERLAY_CATEGORY = "com.android.internal.display_cutout_emulation";
+    private static final int INVALID_SIDE_OVERRIDE = -1;
     public static final int LETTERBOX_BOTTOM = 8;
     public static final int LETTERBOX_LEFT = 1;
     public static final int LETTERBOX_NONE = 0;
     public static final int LETTERBOX_RIGHT = 2;
     public static final int LETTERBOX_TOP = 4;
-    public static final DisplayCutout NO_CUTOUT;
-    private static final Pair<Path, DisplayCutout> NULL_PAIR;
+    private static final String SIDE_STRING_BOTTOM = "bottom";
+    private static final String SIDE_STRING_LEFT = "left";
+    private static final String SIDE_STRING_RIGHT = "right";
+    private static final String SIDE_STRING_TOP = "top";
     private static final String TAG = "DisplayCutout";
-    private static final Rect ZERO_RECT;
-    private static Pair<Path, DisplayCutout> sCachedCutout;
     private static Path sCachedCutoutPath;
     private static CutoutPathParserInfo sCachedCutoutPathParserInfo;
     private static float sCachedDensity;
     private static int sCachedDisplayHeight;
     private static int sCachedDisplayWidth;
     private static float sCachedPhysicalPixelDisplaySizeRatio;
+    private static int[] sCachedSideOverrides;
     private static String sCachedSpec;
     private static Insets sCachedWaterfallInsets;
     private final Bounds mBounds;
     private final CutoutPathParserInfo mCutoutPathParserInfo;
     private final Rect mSafeInsets;
+    private int[] mSideOverrides;
     private final Insets mWaterfallInsets;
+    private static final Rect ZERO_RECT = new Rect();
+    private static final CutoutPathParserInfo EMPTY_PARSER_INFO = new CutoutPathParserInfo(0, 0, 0, 0, 0.0f, "", 0, 0.0f, 0.0f);
+    public static final DisplayCutout NO_CUTOUT = new DisplayCutout(ZERO_RECT, Insets.NONE, ZERO_RECT, ZERO_RECT, ZERO_RECT, ZERO_RECT, EMPTY_PARSER_INFO, false);
+    private static final Pair<Path, DisplayCutout> NULL_PAIR = new Pair<>(null, null);
+    private static final Object CACHE_LOCK = new Object();
+    private static Pair<Path, DisplayCutout> sCachedCutout = NULL_PAIR;
+    static final int[] INVALID_OVERRIDES = {-1, -1, -1, -1};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface BoundsPosition {
     }
 
-    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Rect rect2, Rect rect3, Rect rect4, Rect rect5, CutoutPathParserInfo cutoutPathParserInfo, boolean z, DisplayCutoutIA displayCutoutIA) {
-        this(rect, insets, rect2, rect3, rect4, rect5, cutoutPathParserInfo, z);
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface CutoutPolicy {
+        public static final int DEFAULT = 0;
+        public static final int NOT_OVERLAP = 2;
+        public static final int OVERLAP = 1;
     }
 
-    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Bounds bounds, CutoutPathParserInfo cutoutPathParserInfo, DisplayCutoutIA displayCutoutIA) {
-        this(rect, insets, bounds, cutoutPathParserInfo);
-    }
-
-    /* synthetic */ DisplayCutout(Rect rect, Insets insets, Rect[] rectArr, CutoutPathParserInfo cutoutPathParserInfo, boolean z, DisplayCutoutIA displayCutoutIA) {
-        this(rect, insets, rectArr, cutoutPathParserInfo, z);
-    }
-
-    static {
-        Rect rect = new Rect();
-        ZERO_RECT = rect;
-        CutoutPathParserInfo cutoutPathParserInfo = new CutoutPathParserInfo(0, 0, 0, 0, 0.0f, "", 0, 0.0f, 0.0f);
-        EMPTY_PARSER_INFO = cutoutPathParserInfo;
-        NO_CUTOUT = new DisplayCutout(rect, Insets.NONE, rect, rect, rect, rect, cutoutPathParserInfo, false);
-        Pair<Path, DisplayCutout> pair = new Pair<>(null, null);
-        NULL_PAIR = pair;
-        CACHE_LOCK = new Object();
-        sCachedCutout = pair;
-    }
-
-    /* loaded from: classes4.dex */
-    public static class Bounds {
+    private static class Bounds {
         private final Rect[] mRects;
 
-        /* synthetic */ Bounds(Rect rect, Rect rect2, Rect rect3, Rect rect4, boolean z, BoundsIA boundsIA) {
-            this(rect, rect2, rect3, rect4, z);
-        }
-
-        /* synthetic */ Bounds(Rect[] rectArr, boolean z, BoundsIA boundsIA) {
-            this(rectArr, z);
-        }
-
         private Bounds(Rect left, Rect top, Rect right, Rect bottom, boolean copyArguments) {
-            this.mRects = r0;
-            Rect[] rectArr = {DisplayCutout.getCopyOrRef(left, copyArguments), DisplayCutout.getCopyOrRef(top, copyArguments), DisplayCutout.getCopyOrRef(right, copyArguments), DisplayCutout.getCopyOrRef(bottom, copyArguments)};
+            this.mRects = new Rect[4];
+            this.mRects[0] = DisplayCutout.getCopyOrRef(left, copyArguments);
+            this.mRects[1] = DisplayCutout.getCopyOrRef(top, copyArguments);
+            this.mRects[2] = DisplayCutout.getCopyOrRef(right, copyArguments);
+            this.mRects[3] = DisplayCutout.getCopyOrRef(bottom, copyArguments);
         }
 
         private Bounds(Rect[] rects, boolean copyArguments) {
@@ -121,6 +106,7 @@ public final class DisplayCutout {
             this.mRects = rects;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEmpty() {
             for (Rect rect : this.mRects) {
                 if (!rect.isEmpty()) {
@@ -130,10 +116,12 @@ public final class DisplayCutout {
             return true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Rect getRect(int pos) {
             return new Rect(this.mRects[pos]);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Rect[] getRects() {
             Rect[] rects = new Rect[4];
             for (int i = 0; i < 4; i++) {
@@ -142,6 +130,7 @@ public final class DisplayCutout {
             return rects;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void scale(float scale) {
             for (int i = 0; i < 4; i++) {
                 this.mRects[i].scale(scale);
@@ -172,7 +161,6 @@ public final class DisplayCutout {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class CutoutPathParserInfo {
         private final String mCutoutSpec;
         private final float mDensity;
@@ -244,6 +232,7 @@ public final class DisplayCutout {
             return this.mPhysicalPixelDisplaySizeRatio;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean hasCutout() {
             return !this.mCutoutSpec.isEmpty();
         }
@@ -270,43 +259,47 @@ public final class DisplayCutout {
     }
 
     public DisplayCutout(Insets safeInsets, Rect boundLeft, Rect boundTop, Rect boundRight, Rect boundBottom) {
-        this(safeInsets.toRect(), Insets.NONE, boundLeft, boundTop, boundRight, boundBottom, null, true);
+        this(getCopyOrRef(safeInsets.toRect(), true), Insets.NONE, new Bounds(boundLeft, boundTop, boundRight, boundBottom, true), (CutoutPathParserInfo) null, (int[]) null);
     }
 
     public DisplayCutout(Insets safeInsets, Rect boundLeft, Rect boundTop, Rect boundRight, Rect boundBottom, Insets waterfallInsets, CutoutPathParserInfo info) {
-        this(safeInsets.toRect(), waterfallInsets, boundLeft, boundTop, boundRight, boundBottom, info, true);
+        this(getCopyOrRef(safeInsets.toRect(), true), waterfallInsets, new Bounds(boundLeft, boundTop, boundRight, boundBottom, true), info, (int[]) null);
+    }
+
+    public DisplayCutout(Insets safeInsets, Rect boundLeft, Rect boundTop, Rect boundRight, Rect boundBottom, Insets waterfallInsets, CutoutPathParserInfo info, int[] sideOverrides) {
+        this(safeInsets.toRect(), waterfallInsets, new Bounds(boundLeft, boundTop, boundRight, boundBottom, true), info, sideOverrides);
     }
 
     public DisplayCutout(Insets safeInsets, Rect boundLeft, Rect boundTop, Rect boundRight, Rect boundBottom, Insets waterfallInsets) {
-        this(safeInsets.toRect(), waterfallInsets, boundLeft, boundTop, boundRight, boundBottom, null, true);
+        this(getCopyOrRef(safeInsets.toRect(), true), waterfallInsets, new Bounds(boundLeft, boundTop, boundRight, boundBottom, true), (CutoutPathParserInfo) null, (int[]) null);
     }
 
     @Deprecated
     public DisplayCutout(Rect safeInsets, List<Rect> boundingRects) {
-        this(safeInsets, Insets.NONE, extractBoundsFromList(safeInsets, boundingRects), (CutoutPathParserInfo) null, true);
+        this(getCopyOrRef(safeInsets, true), Insets.NONE, new Bounds(extractBoundsFromList(safeInsets, boundingRects), true), (CutoutPathParserInfo) null, (int[]) null);
     }
 
     private DisplayCutout(Rect safeInsets, Insets waterfallInsets, Rect boundLeft, Rect boundTop, Rect boundRight, Rect boundBottom, CutoutPathParserInfo info, boolean copyArguments) {
-        this.mSafeInsets = getCopyOrRef(safeInsets, copyArguments);
-        this.mWaterfallInsets = waterfallInsets == null ? Insets.NONE : waterfallInsets;
-        this.mBounds = new Bounds(boundLeft, boundTop, boundRight, boundBottom, copyArguments);
-        this.mCutoutPathParserInfo = info == null ? EMPTY_PARSER_INFO : info;
+        this(getCopyOrRef(safeInsets, copyArguments), waterfallInsets, new Bounds(boundLeft, boundTop, boundRight, boundBottom, copyArguments), info, (int[]) null);
     }
 
     private DisplayCutout(Rect safeInsets, Insets waterfallInsets, Rect[] bounds, CutoutPathParserInfo info, boolean copyArguments) {
-        this.mSafeInsets = getCopyOrRef(safeInsets, copyArguments);
-        this.mWaterfallInsets = waterfallInsets == null ? Insets.NONE : waterfallInsets;
-        this.mBounds = new Bounds(bounds, copyArguments);
-        this.mCutoutPathParserInfo = info == null ? EMPTY_PARSER_INFO : info;
+        this(getCopyOrRef(safeInsets, copyArguments), waterfallInsets, new Bounds(bounds, copyArguments), info, (int[]) null);
     }
 
     private DisplayCutout(Rect safeInsets, Insets waterfallInsets, Bounds bounds, CutoutPathParserInfo info) {
+        this(safeInsets, waterfallInsets, bounds, info, (int[]) null);
+    }
+
+    private DisplayCutout(Rect safeInsets, Insets waterfallInsets, Bounds bounds, CutoutPathParserInfo info, int[] sideOverrides) {
         this.mSafeInsets = safeInsets;
         this.mWaterfallInsets = waterfallInsets == null ? Insets.NONE : waterfallInsets;
         this.mBounds = bounds;
         this.mCutoutPathParserInfo = info == null ? EMPTY_PARSER_INFO : info;
+        this.mSideOverrides = sideOverrides;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Rect getCopyOrRef(Rect r, boolean copyArguments) {
         if (r == null) {
             return ZERO_RECT;
@@ -407,8 +400,7 @@ public final class DisplayCutout {
         if (!this.mCutoutPathParserInfo.hasCutout()) {
             return null;
         }
-        Object obj = CACHE_LOCK;
-        synchronized (obj) {
+        synchronized (CACHE_LOCK) {
             if (this.mCutoutPathParserInfo.equals(sCachedCutoutPathParserInfo)) {
                 return sCachedCutoutPath;
             }
@@ -423,7 +415,7 @@ public final class DisplayCutout {
             }
             matrix.postScale(this.mCutoutPathParserInfo.getScale(), this.mCutoutPathParserInfo.getScale());
             cutoutPath.transform(matrix);
-            synchronized (obj) {
+            synchronized (CACHE_LOCK) {
                 sCachedCutoutPathParserInfo = new CutoutPathParserInfo(this.mCutoutPathParserInfo);
                 sCachedCutoutPath = cutoutPath;
             }
@@ -437,7 +429,7 @@ public final class DisplayCutout {
 
     public int hashCode() {
         int result = (0 * 48271) + this.mSafeInsets.hashCode();
-        return (48271 * ((((result * 48271) + this.mBounds.hashCode()) * 48271) + this.mWaterfallInsets.hashCode())) + this.mCutoutPathParserInfo.hashCode();
+        return (48271 * ((((((result * 48271) + this.mBounds.hashCode()) * 48271) + this.mWaterfallInsets.hashCode()) * 48271) + this.mCutoutPathParserInfo.hashCode())) + Arrays.hashCode(this.mSideOverrides);
     }
 
     public boolean equals(Object o) {
@@ -448,11 +440,49 @@ public final class DisplayCutout {
             return false;
         }
         DisplayCutout c = (DisplayCutout) o;
-        return this.mSafeInsets.equals(c.mSafeInsets) && this.mBounds.equals(c.mBounds) && this.mWaterfallInsets.equals(c.mWaterfallInsets) && this.mCutoutPathParserInfo.equals(c.mCutoutPathParserInfo);
+        return this.mSafeInsets.equals(c.mSafeInsets) && this.mBounds.equals(c.mBounds) && this.mWaterfallInsets.equals(c.mWaterfallInsets) && this.mCutoutPathParserInfo.equals(c.mCutoutPathParserInfo) && Arrays.equals(this.mSideOverrides, c.mSideOverrides);
     }
 
     public String toString() {
-        return "DisplayCutout{insets=" + this.mSafeInsets + " waterfall=" + this.mWaterfallInsets + " boundingRect={" + this.mBounds + "} cutoutPathParserInfo={" + this.mCutoutPathParserInfo + "}}";
+        return "DisplayCutout{insets=" + this.mSafeInsets + " waterfall=" + this.mWaterfallInsets + " boundingRect={" + this.mBounds + "} cutoutPathParserInfo={" + this.mCutoutPathParserInfo + "} sideOverrides=" + sideOverridesToString(this.mSideOverrides) + "}";
+    }
+
+    private static String sideOverridesToString(int[] sideOverrides) {
+        if (sideOverrides == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        int length = sideOverrides.length;
+        if (length != 4) {
+            sb.append("length=").append(sideOverrides.length).append(". ");
+        }
+        boolean hasContent = false;
+        for (int i = 0; i < length; i++) {
+            int override = sideOverrides[i];
+            if (override != -1) {
+                if (hasContent) {
+                    sb.append(", ");
+                }
+                sb.append(Surface.rotationToString(i)).append(": ");
+                switch (override) {
+                    case 0:
+                        sb.append("left");
+                        break;
+                    case 1:
+                        sb.append("top");
+                        break;
+                    case 2:
+                        sb.append("right");
+                        break;
+                    case 3:
+                        sb.append("bottom");
+                        break;
+                }
+                hasContent = true;
+            }
+        }
+        return sb.append("}").toString();
     }
 
     public void dumpDebug(ProtoOutputStream proto, long fieldId) {
@@ -463,6 +493,11 @@ public final class DisplayCutout {
         this.mBounds.getRect(2).dumpDebug(proto, 1146756268037L);
         this.mBounds.getRect(3).dumpDebug(proto, 1146756268038L);
         this.mWaterfallInsets.toRect().dumpDebug(proto, 1146756268039L);
+        if (this.mSideOverrides != null) {
+            for (int sideOverride : this.mSideOverrides) {
+                proto.write(DisplayCutoutProto.SIDE_OVERRIDES, sideOverride);
+            }
+        }
         proto.end(token);
     }
 
@@ -501,7 +536,7 @@ public final class DisplayCutout {
     }
 
     public DisplayCutout replaceSafeInsets(Rect safeInsets) {
-        return new DisplayCutout(new Rect(safeInsets), this.mWaterfallInsets, this.mBounds, this.mCutoutPathParserInfo);
+        return new DisplayCutout(new Rect(safeInsets), this.mWaterfallInsets, this.mBounds, this.mCutoutPathParserInfo, this.mSideOverrides);
     }
 
     private static int atLeastZero(int value) {
@@ -574,11 +609,16 @@ public final class DisplayCutout {
     }
 
     private static Insets getWaterfallInsets(Resources res, String displayUniqueId) {
+        int resourceId;
         Insets insets;
         int index = DisplayUtils.getDisplayUniqueIdConfigIndex(res, displayUniqueId);
         TypedArray array = res.obtainTypedArray(R.array.config_waterfallCutoutArray);
-        if (index >= 0 && index < array.length() && array.getResourceId(index, 0) > 0) {
-            int resourceId = array.getResourceId(index, 0);
+        if (index >= 0 && index < array.length()) {
+            resourceId = array.getResourceId(index, 0);
+        } else {
+            resourceId = 0;
+        }
+        if (resourceId != 0) {
             TypedArray waterfall = res.obtainTypedArray(resourceId);
             insets = Insets.of(waterfall.getDimensionPixelSize(0, 0), waterfall.getDimensionPixelSize(1, 0), waterfall.getDimensionPixelSize(2, 0), waterfall.getDimensionPixelSize(3, 0));
             waterfall.recycle();
@@ -589,52 +629,107 @@ public final class DisplayCutout {
         return insets;
     }
 
+    private static int[] getDisplayCutoutSideOverrides(Resources res, String displayUniqueId) throws IllegalArgumentException {
+        int[] rawOverrides;
+        if (!Flags.movableCutoutConfiguration()) {
+            return null;
+        }
+        int index = DisplayUtils.getDisplayUniqueIdConfigIndex(res, displayUniqueId);
+        TypedArray array = res.obtainTypedArray(R.array.config_displayCutoutSideOverrideArray);
+        int resourceId = 0;
+        if (index >= 0 && index < array.length()) {
+            resourceId = array.getResourceId(index, 0);
+        }
+        if (resourceId != 0) {
+            rawOverrides = array.getResources().getIntArray(resourceId);
+        } else {
+            rawOverrides = res.getIntArray(R.array.config_mainBuiltInDisplayCutoutSideOverride);
+        }
+        array.recycle();
+        if (rawOverrides.length == 0) {
+            return INVALID_OVERRIDES;
+        }
+        if (rawOverrides.length != 4) {
+            throw new IllegalArgumentException("Invalid side override definition, exact 4 overrides required: " + Arrays.toString(rawOverrides));
+        }
+        for (int rotation = 0; rotation <= 3; rotation++) {
+            if (rawOverrides[rotation] < 0 || rawOverrides[rotation] >= 4) {
+                throw new IllegalArgumentException("Invalid side override definition: " + Arrays.toString(rawOverrides));
+            }
+        }
+        return rawOverrides;
+    }
+
     public static DisplayCutout fromResourcesRectApproximation(Resources res, String displayUniqueId, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight) {
         return fromResourcesRectApproximation(res, displayUniqueId, physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight, DisplayMetrics.DENSITY_DEVICE_STABLE, false);
     }
 
     public static DisplayCutout fromResourcesRectApproximation(Resources res, String displayUniqueId, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, int displayDensity, boolean isSubBuiltInDisplay) {
-        return pathAndDisplayCutoutFromSpec(getDisplayCutoutPath(res, displayUniqueId), getDisplayCutoutApproximationRect(res, displayUniqueId), physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight, displayDensity / 160.0f, getWaterfallInsets(res, displayUniqueId)).second;
+        return pathAndDisplayCutoutFromSpec(getDisplayCutoutPath(res, displayUniqueId), getDisplayCutoutApproximationRect(res, displayUniqueId), physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight, displayDensity / 160.0f, getWaterfallInsets(res, displayUniqueId), getDisplayCutoutSideOverrides(res, displayUniqueId)).second;
     }
 
-    public static DisplayCutout fromSpec(String pathSpec, int displayWidth, int displayHeight, float density, Insets waterfallInsets) {
-        return pathAndDisplayCutoutFromSpec(pathSpec, null, displayWidth, displayHeight, displayWidth, displayHeight, density, waterfallInsets).second;
+    public static DisplayCutout fromSpec(String pathSpec, int displayWidth, int displayHeight, float density, Insets waterfallInsets, int[] sideOverrides) {
+        return pathAndDisplayCutoutFromSpec(pathSpec, null, displayWidth, displayHeight, displayWidth, displayHeight, density, waterfallInsets, sideOverrides).second;
     }
 
-    private static Pair<Path, DisplayCutout> pathAndDisplayCutoutFromSpec(String pathSpec, String rectSpec, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, float density, Insets waterfallInsets) {
+    private static Pair<Path, DisplayCutout> pathAndDisplayCutoutFromSpec(String pathSpec, String rectSpec, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, float density, Insets waterfallInsets, int[] sideOverrides) {
         String spec = rectSpec != null ? rectSpec : pathSpec;
         if (TextUtils.isEmpty(spec) && waterfallInsets.equals(Insets.NONE)) {
             return NULL_PAIR;
         }
         float physicalPixelDisplaySizeRatio = DisplayUtils.getPhysicalPixelDisplaySizeRatio(physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight);
-        Object obj = CACHE_LOCK;
-        synchronized (obj) {
-            if (spec.equals(sCachedSpec) && sCachedDisplayWidth == displayWidth && sCachedDisplayHeight == displayHeight && sCachedDensity == density && waterfallInsets.equals(sCachedWaterfallInsets) && sCachedPhysicalPixelDisplaySizeRatio == physicalPixelDisplaySizeRatio) {
-                return sCachedCutout;
+        synchronized (CACHE_LOCK) {
+            try {
+                if (spec.equals(sCachedSpec)) {
+                    try {
+                        if (sCachedDisplayWidth == displayWidth && sCachedDisplayHeight == displayHeight && sCachedDensity == density && waterfallInsets.equals(sCachedWaterfallInsets) && sCachedPhysicalPixelDisplaySizeRatio == physicalPixelDisplaySizeRatio && Arrays.equals(sCachedSideOverrides, sideOverrides)) {
+                            return sCachedCutout;
+                        }
+                    } catch (Throwable th) {
+                        th = th;
+                        while (true) {
+                            try {
+                                throw th;
+                            } catch (Throwable th2) {
+                                th = th2;
+                            }
+                        }
+                    }
+                }
+                String spec2 = spec.trim();
+                CutoutSpecification cutoutSpec = new CutoutSpecification.Parser(density, physicalDisplayWidth, physicalDisplayHeight, physicalPixelDisplaySizeRatio).parse(spec2);
+                Rect safeInset = cutoutSpec.getSafeInset();
+                Rect boundLeft = cutoutSpec.getLeftBound();
+                Rect boundTop = cutoutSpec.getTopBound();
+                Rect boundRight = cutoutSpec.getRightBound();
+                Rect boundBottom = cutoutSpec.getBottomBound();
+                if (!waterfallInsets.equals(Insets.NONE)) {
+                    safeInset.set(Math.max(waterfallInsets.left, safeInset.left), Math.max(waterfallInsets.top, safeInset.top), Math.max(waterfallInsets.right, safeInset.right), Math.max(waterfallInsets.bottom, safeInset.bottom));
+                }
+                CutoutPathParserInfo cutoutPathParserInfo = new CutoutPathParserInfo(displayWidth, displayHeight, physicalDisplayWidth, physicalDisplayHeight, density, pathSpec.trim(), 0, 1.0f, physicalPixelDisplaySizeRatio);
+                int sideOverride = getSideOverride(sideOverrides, 0);
+                Rect[] bounds = new Bounds(boundLeft, boundTop, boundRight, boundBottom, false).getRects();
+                int rotateDistance = getRotationToOverride(sideOverride, bounds, 0);
+                if (rotateDistance != 0) {
+                    Collections.rotate(Arrays.asList(bounds), rotateDistance);
+                }
+                Rect safeInsets = computeSafeInsets(displayWidth, displayHeight, waterfallInsets, bounds);
+                DisplayCutout cutout = new DisplayCutout(safeInsets, waterfallInsets, new Bounds(bounds[0], bounds[1], bounds[2], bounds[3], false), cutoutPathParserInfo, sideOverrides);
+                Pair<Path, DisplayCutout> result = new Pair<>(cutoutSpec.getPath(), cutout);
+                synchronized (CACHE_LOCK) {
+                    sCachedSpec = spec2;
+                    sCachedDisplayWidth = displayWidth;
+                    sCachedDisplayHeight = displayHeight;
+                    sCachedDensity = density;
+                    sCachedCutout = result;
+                    sCachedWaterfallInsets = waterfallInsets;
+                    sCachedPhysicalPixelDisplaySizeRatio = physicalPixelDisplaySizeRatio;
+                    sCachedSideOverrides = sideOverrides;
+                }
+                return result;
+            } catch (Throwable th3) {
+                th = th3;
             }
-            String spec2 = spec.trim();
-            CutoutSpecification cutoutSpec = new CutoutSpecification.Parser(density, physicalDisplayWidth, physicalDisplayHeight, physicalPixelDisplaySizeRatio).parse(spec2);
-            Rect safeInset = cutoutSpec.getSafeInset();
-            Rect boundLeft = cutoutSpec.getLeftBound();
-            Rect boundTop = cutoutSpec.getTopBound();
-            Rect boundRight = cutoutSpec.getRightBound();
-            Rect boundBottom = cutoutSpec.getBottomBound();
-            if (!waterfallInsets.equals(Insets.NONE)) {
-                safeInset.set(Math.max(waterfallInsets.left, safeInset.left), Math.max(waterfallInsets.top, safeInset.top), Math.max(waterfallInsets.right, safeInset.right), Math.max(waterfallInsets.bottom, safeInset.bottom));
-            }
-            CutoutPathParserInfo cutoutPathParserInfo = new CutoutPathParserInfo(displayWidth, displayHeight, physicalDisplayWidth, physicalDisplayHeight, density, pathSpec.trim(), 0, 1.0f, physicalPixelDisplaySizeRatio);
-            DisplayCutout cutout = new DisplayCutout(safeInset, waterfallInsets, boundLeft, boundTop, boundRight, boundBottom, cutoutPathParserInfo, false);
-            Pair<Path, DisplayCutout> result = new Pair<>(cutoutSpec.getPath(), cutout);
-            synchronized (obj) {
-                sCachedSpec = spec2;
-                sCachedDisplayWidth = displayWidth;
-                sCachedDisplayHeight = displayHeight;
-                sCachedDensity = density;
-                sCachedCutout = result;
-                sCachedWaterfallInsets = waterfallInsets;
-                sCachedPhysicalPixelDisplaySizeRatio = physicalPixelDisplaySizeRatio;
-            }
-            return result;
         }
     }
 
@@ -643,9 +738,8 @@ public final class DisplayCutout {
     }
 
     public DisplayCutout getRotated(int startWidth, int startHeight, int fromRotation, int toRotation) {
-        DisplayCutout displayCutout = NO_CUTOUT;
-        if (this == displayCutout) {
-            return displayCutout;
+        if (this == NO_CUTOUT) {
+            return NO_CUTOUT;
         }
         int rotation = RotationUtils.deltaRotation(fromRotation, toRotation);
         if (rotation == 0) {
@@ -659,7 +753,9 @@ public final class DisplayCutout {
                 RotationUtils.rotateBounds(newBounds[i], displayBounds, rotation);
             }
         }
-        Collections.rotate(Arrays.asList(newBounds), -rotation);
+        int i2 = -rotation;
+        int override = getSideOverride(this.mSideOverrides, toRotation);
+        Collections.rotate(Arrays.asList(newBounds), getRotationToOverride(override, newBounds, i2));
         CutoutPathParserInfo info = getCutoutPathParserInfo();
         CutoutPathParserInfo newInfo = new CutoutPathParserInfo(info.getDisplayWidth(), info.getDisplayHeight(), info.getPhysicalDisplayWidth(), info.getPhysicalDisplayHeight(), info.getDensity(), info.getCutoutSpec(), toRotation, info.getScale(), info.getPhysicalPixelDisplaySizeRatio());
         boolean swapAspect = rotation % 2 != 0;
@@ -667,17 +763,49 @@ public final class DisplayCutout {
         int endHeight = swapAspect ? startWidth : startHeight;
         DisplayCutout tmp = constructDisplayCutout(newBounds, waterfallInsets, newInfo);
         Rect safeInsets = computeSafeInsets(endWidth, endHeight, tmp);
+        tmp.mSideOverrides = this.mSideOverrides;
         return tmp.replaceSafeInsets(safeInsets);
     }
 
-    public static Rect computeSafeInsets(int displayW, int displayH, DisplayCutout cutout) {
-        if (displayW == displayH) {
-            throw new UnsupportedOperationException("not implemented: display=" + displayW + "x" + displayH + " cutout=" + cutout);
+    private static int getSideOverride(int[] sideOverrides, int rotation) {
+        if (sideOverrides == null || sideOverrides.length != 4) {
+            return -1;
         }
-        int leftInset = Math.max(cutout.getWaterfallInsets().left, findCutoutInsetForSide(displayW, displayH, cutout.getBoundingRectLeft(), 3));
-        int topInset = Math.max(cutout.getWaterfallInsets().top, findCutoutInsetForSide(displayW, displayH, cutout.getBoundingRectTop(), 48));
-        int rightInset = Math.max(cutout.getWaterfallInsets().right, findCutoutInsetForSide(displayW, displayH, cutout.getBoundingRectRight(), 5));
-        int bottomInset = Math.max(cutout.getWaterfallInsets().bottom, findCutoutInsetForSide(displayW, displayH, cutout.getBoundingRectBottom(), 80));
+        return sideOverrides[rotation];
+    }
+
+    private static int getRotationToOverride(int sideOverride, Rect[] bounds, int defaultRotation) {
+        if (sideOverride == -1) {
+            return defaultRotation;
+        }
+        int side = -1;
+        for (int i = 0; i <= 3; i++) {
+            if (!bounds[i].isEmpty()) {
+                if (side != -1) {
+                    return defaultRotation;
+                }
+                side = i;
+            }
+        }
+        if (side == -1) {
+            return defaultRotation;
+        }
+        int rotation = sideOverride - side;
+        if (rotation < 0) {
+            return rotation + 4;
+        }
+        return rotation;
+    }
+
+    public static Rect computeSafeInsets(int displayW, int displayH, DisplayCutout cutout) {
+        return computeSafeInsets(displayW, displayH, cutout.getWaterfallInsets(), cutout.getBoundingRectsAll());
+    }
+
+    private static Rect computeSafeInsets(int displayW, int displayH, Insets waterFallInsets, Rect[] bounds) {
+        int leftInset = Math.max(waterFallInsets.left, findCutoutInsetForSide(displayW, displayH, bounds[0], 3));
+        int topInset = Math.max(waterFallInsets.top, findCutoutInsetForSide(displayW, displayH, bounds[1], 48));
+        int rightInset = Math.max(waterFallInsets.right, findCutoutInsetForSide(displayW, displayH, bounds[2], 5));
+        int bottomInset = Math.max(waterFallInsets.bottom, findCutoutInsetForSide(displayW, displayH, bounds[3], 80));
         return new Rect(leftInset, topInset, rightInset, bottomInset);
     }
 
@@ -699,17 +827,15 @@ public final class DisplayCutout {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class ParcelableWrapper implements Parcelable {
         public static final Parcelable.Creator<ParcelableWrapper> CREATOR = new Parcelable.Creator<ParcelableWrapper>() { // from class: android.view.DisplayCutout.ParcelableWrapper.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableWrapper createFromParcel(Parcel in) {
                 return new ParcelableWrapper(ParcelableWrapper.readCutoutFromParcel(in));
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ParcelableWrapper[] newArray(int size) {
                 return new ParcelableWrapper[size];
@@ -757,27 +883,11 @@ public final class DisplayCutout {
             out.writeInt(cutout.mCutoutPathParserInfo.getRotation());
             out.writeFloat(cutout.mCutoutPathParserInfo.getScale());
             out.writeFloat(cutout.mCutoutPathParserInfo.getPhysicalPixelDisplaySizeRatio());
+            out.writeIntArray(cutout.mSideOverrides);
         }
 
         public void readFromParcel(Parcel in) {
             this.mInner = readCutoutFromParcel(in);
-        }
-
-        /* renamed from: android.view.DisplayCutout$ParcelableWrapper$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ParcelableWrapper> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ParcelableWrapper createFromParcel(Parcel in) {
-                return new ParcelableWrapper(ParcelableWrapper.readCutoutFromParcel(in));
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ParcelableWrapper[] newArray(int size) {
-                return new ParcelableWrapper[size];
-            }
         }
 
         public static DisplayCutout readCutoutFromParcel(Parcel in) {
@@ -800,7 +910,8 @@ public final class DisplayCutout {
                 float scale = in.readFloat();
                 float physicalPixelDisplaySizeRatio = in.readFloat();
                 CutoutPathParserInfo info = new CutoutPathParserInfo(displayWidth, displayHeight, physicalDisplayWidth, physicalDisplayHeight, density, cutoutSpec, rotation, scale, physicalPixelDisplaySizeRatio);
-                return new DisplayCutout(safeInsets, waterfallInsets, bounds, info, false);
+                int[] sideOverrides = in.createIntArray();
+                return new DisplayCutout(safeInsets, waterfallInsets, new Bounds(bounds, false), info, sideOverrides);
             }
             return DisplayCutout.NO_CUTOUT;
         }
@@ -825,7 +936,8 @@ public final class DisplayCutout {
             Rect waterfallInsets = this.mInner.mWaterfallInsets.toRect();
             waterfallInsets.scale(scale);
             CutoutPathParserInfo info = new CutoutPathParserInfo(this.mInner.mCutoutPathParserInfo.getDisplayWidth(), this.mInner.mCutoutPathParserInfo.getDisplayHeight(), this.mInner.mCutoutPathParserInfo.getPhysicalDisplayWidth(), this.mInner.mCutoutPathParserInfo.getPhysicalDisplayHeight(), this.mInner.mCutoutPathParserInfo.getDensity(), this.mInner.mCutoutPathParserInfo.getCutoutSpec(), this.mInner.mCutoutPathParserInfo.getRotation(), scale, this.mInner.mCutoutPathParserInfo.getPhysicalPixelDisplaySizeRatio());
-            this.mInner = new DisplayCutout(safeInsets, Insets.of(waterfallInsets), bounds, info);
+            int[] sideOverrides = this.mInner.mSideOverrides;
+            this.mInner = new DisplayCutout(safeInsets, Insets.of(waterfallInsets), bounds, info, sideOverrides);
         }
 
         public int hashCode() {
@@ -841,7 +953,6 @@ public final class DisplayCutout {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private Path mCutoutPath;
         private Insets mSafeInsets = Insets.NONE;
@@ -901,12 +1012,12 @@ public final class DisplayCutout {
         }
     }
 
-    public static DisplayCutout fromResourcesRectApproximation(Resources res, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, int displayDensity, String pathSpec) {
-        return pathAndDisplayCutoutFromSpec(pathSpec, null, physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight, displayDensity / 160.0f, loadWaterfallInset(res)).second;
+    public static DisplayCutout fromResourcesRectApproximation(Resources res, String displayUniqueId, int physicalDisplayWidth, int physicalDisplayHeight, int displayWidth, int displayHeight, int displayDensity, String pathSpec) {
+        return pathAndDisplayCutoutFromSpec(pathSpec, null, physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight, displayDensity / 160.0f, loadWaterfallInset(res), getDisplayCutoutSideOverrides(res, displayUniqueId)).second;
     }
 
     public static Path pathFromResourcesForUDC(Resources res, String displayUniqueId, int displayWidth, int displayHeight, int displayDensity, boolean isSubBuiltInDisplay) {
         String pathSpec = res.getString(R.string.config_mainBuiltInDisplayCutoutForUDC);
-        return pathAndDisplayCutoutFromSpec(pathSpec, null, displayWidth, displayHeight, displayWidth, displayHeight, displayDensity / 160.0f, getWaterfallInsets(res, displayUniqueId)).first;
+        return pathAndDisplayCutoutFromSpec(pathSpec, null, displayWidth, displayHeight, displayWidth, displayHeight, displayDensity / 160.0f, getWaterfallInsets(res, displayUniqueId), getDisplayCutoutSideOverrides(res, displayUniqueId)).first;
     }
 }

@@ -19,14 +19,13 @@ public class PasswordPolicy {
     public int nonLetter = 0;
 
     public PasswordMetrics getMinMetrics() {
-        int i = this.quality;
-        if (i == 0) {
+        if (this.quality == 0) {
             return new PasswordMetrics(-1);
         }
-        if (i == 32768 || i == 65536) {
+        if (this.quality == 32768 || this.quality == 65536) {
             return new PasswordMetrics(1);
         }
-        if (i == 131072 || i == 196608) {
+        if (this.quality == 131072 || this.quality == 196608) {
             PasswordMetrics result = new PasswordMetrics(3);
             result.length = this.length;
             if (this.quality == 196608) {
@@ -36,13 +35,12 @@ public class PasswordPolicy {
         }
         PasswordMetrics result2 = new PasswordMetrics(4);
         result2.length = this.length;
-        int i2 = this.quality;
-        if (i2 == 262144) {
+        if (this.quality == 262144) {
             result2.nonNumeric = 1;
-        } else if (i2 == 327680) {
+        } else if (this.quality == 327680) {
             result2.numeric = 1;
             result2.nonNumeric = 1;
-        } else if (i2 == 393216) {
+        } else if (this.quality == 393216) {
             result2.numeric = this.numeric;
             result2.letters = this.letters;
             result2.upperCase = this.upperCase;

@@ -51,15 +51,14 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
         }
         DSAParameterSpec spec = BouncyCastleProvider.CONFIGURATION.getDSADefaultParameters(strength);
         if (spec != null) {
-            DSAKeyGenerationParameters dSAKeyGenerationParameters = new DSAKeyGenerationParameters(random, new DSAParameters(spec.getP(), spec.getQ(), spec.getG()));
-            this.param = dSAKeyGenerationParameters;
-            this.engine.init(dSAKeyGenerationParameters);
+            this.param = new DSAKeyGenerationParameters(random, new DSAParameters(spec.getP(), spec.getQ(), spec.getG()));
+            this.engine.init(this.param);
             this.initialised = true;
-            return;
+        } else {
+            this.strength = strength;
+            this.random = random;
+            this.initialised = false;
         }
-        this.strength = strength;
-        this.random = random;
-        this.initialised = false;
     }
 
     @Override // java.security.KeyPairGenerator, java.security.KeyPairGeneratorSpi
@@ -71,9 +70,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
         if (random == null) {
             random = new SecureRandom();
         }
-        DSAKeyGenerationParameters dSAKeyGenerationParameters = new DSAKeyGenerationParameters(random, new DSAParameters(dsaParams.getP(), dsaParams.getQ(), dsaParams.getG()));
-        this.param = dSAKeyGenerationParameters;
-        this.engine.init(dSAKeyGenerationParameters);
+        this.param = new DSAKeyGenerationParameters(random, new DSAParameters(dsaParams.getP(), dsaParams.getQ(), dsaParams.getG()));
+        this.engine.init(this.param);
         this.initialised = true;
     }
 
@@ -90,8 +88,7 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
                         this.param = (DSAKeyGenerationParameters) params.get(paramStrength);
                     } else {
                         int certainty = PrimeCertaintyCalculator.getDefaultCertainty(this.strength);
-                        int i = this.strength;
-                        if (i == 1024) {
+                        if (this.strength == 1024) {
                             pGen = new DSAParametersGenerator();
                             if (Properties.isOverrideSet("com.android.internal.org.bouncycastle.dsa.FIPS186-2for1024bits")) {
                                 pGen.init(this.strength, certainty, this.random);
@@ -99,8 +96,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
                                 DSAParameterGenerationParameters dsaParams = new DSAParameterGenerationParameters(1024, 160, certainty, this.random);
                                 pGen.init(dsaParams);
                             }
-                        } else if (i > 1024) {
-                            DSAParameterGenerationParameters dsaParams2 = new DSAParameterGenerationParameters(i, 256, certainty, this.random);
+                        } else if (this.strength > 1024) {
+                            DSAParameterGenerationParameters dsaParams2 = new DSAParameterGenerationParameters(this.strength, 256, certainty, this.random);
                             DSAParametersGenerator pGen2 = new DSAParametersGenerator(new SHA256Digest());
                             pGen2.init(dsaParams2);
                             pGen = pGen2;
@@ -108,9 +105,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
                             pGen = new DSAParametersGenerator();
                             pGen.init(this.strength, certainty, this.random);
                         }
-                        DSAKeyGenerationParameters dSAKeyGenerationParameters = new DSAKeyGenerationParameters(this.random, pGen.generateParameters());
-                        this.param = dSAKeyGenerationParameters;
-                        params.put(paramStrength, dSAKeyGenerationParameters);
+                        this.param = new DSAKeyGenerationParameters(this.random, pGen.generateParameters());
+                        params.put(paramStrength, this.param);
                     }
                 }
             }

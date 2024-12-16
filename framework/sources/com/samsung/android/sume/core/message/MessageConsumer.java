@@ -1,6 +1,6 @@
 package com.samsung.android.sume.core.message;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface MessageConsumer {
     default int[] getConsumeMessage() {
         return null;

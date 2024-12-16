@@ -9,19 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class OptionBase implements Parcelable, Serializable {
     private static final String TAG = Def.tagOf((Class<?>) OptionBase.class);
-    private final Map<Integer, Object> data;
+    private final Map<Integer, Object> data = new HashMap();
 
-    public OptionBase() {
-        this.data = new HashMap();
+    protected OptionBase() {
     }
 
-    public OptionBase(Parcel in) {
-        HashMap hashMap = new HashMap();
-        this.data = hashMap;
-        in.readMap(hashMap, null);
+    protected OptionBase(Parcel in) {
+        in.readMap(this.data, null);
     }
 
     @Override // android.os.Parcelable
@@ -67,7 +64,7 @@ public abstract class OptionBase implements Parcelable, Serializable {
         other.data.putAll(this.data);
     }
 
-    public Map<Integer, Object> getAll() {
+    protected Map<Integer, Object> getAll() {
         return this.data;
     }
 

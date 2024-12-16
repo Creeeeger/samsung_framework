@@ -14,7 +14,6 @@ public interface IPaymentManager extends IInterface {
 
     PaymentTZServiceCommnInfo registerSPayFW(PaymentTZServiceConfig paymentTZServiceConfig) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPaymentManager {
         @Override // android.spay.IPaymentManager
         public PaymentTZServiceCommnInfo registerSPayFW(PaymentTZServiceConfig config) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IPaymentManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPaymentManager {
         static final int TRANSACTION_getMeasurementFile = 2;
         static final int TRANSACTION_registerSPayFW = 1;
@@ -78,31 +76,28 @@ public interface IPaymentManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPaymentManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPaymentManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPaymentManager.DESCRIPTOR);
+                case 1:
+                    PaymentTZServiceConfig _arg0 = (PaymentTZServiceConfig) data.readTypedObject(PaymentTZServiceConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    PaymentTZServiceCommnInfo _result = registerSPayFW(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    byte[] _result2 = getMeasurementFile();
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PaymentTZServiceConfig _arg0 = (PaymentTZServiceConfig) data.readTypedObject(PaymentTZServiceConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            PaymentTZServiceCommnInfo _result = registerSPayFW(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            byte[] _result2 = getMeasurementFile();
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IPaymentManager {
             private IBinder mRemote;
 

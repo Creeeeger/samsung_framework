@@ -12,7 +12,6 @@ public interface IAudioFocusDispatcher extends IInterface {
 
     void dispatchFocusResultFromExtPolicy(int i, String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioFocusDispatcher {
         @Override // android.media.IAudioFocusDispatcher
         public void dispatchAudioFocusChange(int focusChange, String clientId) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IAudioFocusDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioFocusDispatcher {
         public static final String DESCRIPTOR = "android.media.IAudioFocusDispatcher";
         static final int TRANSACTION_dispatchAudioFocusChange = 1;
@@ -75,32 +73,29 @@ public interface IAudioFocusDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    dispatchAudioFocusChange(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    dispatchFocusResultFromExtPolicy(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            dispatchAudioFocusChange(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            dispatchFocusResultFromExtPolicy(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioFocusDispatcher {
+        private static class Proxy implements IAudioFocusDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

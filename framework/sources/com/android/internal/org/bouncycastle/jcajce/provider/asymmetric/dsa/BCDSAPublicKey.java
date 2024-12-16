@@ -28,19 +28,19 @@ public class BCDSAPublicKey implements DSAPublicKey {
     private transient DSAPublicKeyParameters lwKeyParams;
     private BigInteger y;
 
-    public BCDSAPublicKey(DSAPublicKeySpec spec) {
+    BCDSAPublicKey(DSAPublicKeySpec spec) {
         this.y = spec.getY();
         this.dsaSpec = new DSAParameterSpec(spec.getP(), spec.getQ(), spec.getG());
         this.lwKeyParams = new DSAPublicKeyParameters(this.y, DSAUtil.toDSAParameters(this.dsaSpec));
     }
 
-    public BCDSAPublicKey(DSAPublicKey key) {
+    BCDSAPublicKey(DSAPublicKey key) {
         this.y = key.getY();
         this.dsaSpec = key.getParams();
         this.lwKeyParams = new DSAPublicKeyParameters(this.y, DSAUtil.toDSAParameters(this.dsaSpec));
     }
 
-    public BCDSAPublicKey(DSAPublicKeyParameters params) {
+    BCDSAPublicKey(DSAPublicKeyParameters params) {
         this.y = params.getY();
         if (params.getParameters() != null) {
             this.dsaSpec = new DSAParameterSpec(params.getParameters().getP(), params.getParameters().getQ(), params.getParameters().getG());
@@ -80,7 +80,7 @@ public class BCDSAPublicKey implements DSAPublicKey {
         return "X.509";
     }
 
-    public DSAPublicKeyParameters engineGetKeyParameters() {
+    DSAPublicKeyParameters engineGetKeyParameters() {
         return this.lwKeyParams;
     }
 
@@ -138,12 +138,11 @@ public class BCDSAPublicKey implements DSAPublicKey {
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        DSAParams dSAParams = this.dsaSpec;
-        if (dSAParams == null) {
+        if (this.dsaSpec == null) {
             out.writeObject(ZERO);
             return;
         }
-        out.writeObject(dSAParams.getP());
+        out.writeObject(this.dsaSpec.getP());
         out.writeObject(this.dsaSpec.getQ());
         out.writeObject(this.dsaSpec.getG());
     }

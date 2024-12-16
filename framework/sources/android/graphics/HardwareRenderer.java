@@ -4,13 +4,18 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.hardware.DataSpace;
 import android.hardware.OverlayProperties;
 import android.hardware.display.DisplayManager;
+import android.hardware.display.DisplayManagerGlobal;
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -47,63 +52,55 @@ public class HardwareRenderer {
     public static final int SYNC_LOST_SURFACE_REWARD_IF_FOUND = 2;
     public static final int SYNC_OK = 0;
     public static final int SYNC_REDRAW_REQUESTED = 1;
-    private static int sDensityDpi = 0;
+    private static final boolean USE_LOGICAL_SCREEN_RESOLUTION;
+    private static int sDensityDpi;
     private final long mNativeProxy;
     protected RenderNode mRootNode;
     private boolean mOpaque = true;
-    private boolean mForceDark = false;
+    private int mForceDark = 0;
     private int mColorMode = 0;
     private float mDesiredSdrHdrRatio = 1.0f;
     private FrameRenderRequest mRenderRequest = new FrameRenderRequest();
 
-    /* loaded from: classes.dex */
     public interface ASurfaceTransactionCallback {
         boolean onMergeTransaction(long j, long j2, long j3);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CacheLimitLevel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface CacheTrimLevel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DumpFlags {
     }
 
-    /* loaded from: classes.dex */
     public interface FrameCommitCallback {
         void onFrameCommit(boolean z);
     }
 
-    /* loaded from: classes.dex */
     public interface FrameCompleteCallback {
         void onFrameComplete();
     }
 
-    /* loaded from: classes.dex */
     public interface PictureCapturedCallback {
         void onPictureCaptured(Picture picture);
     }
 
-    /* loaded from: classes.dex */
     public interface PrepareSurfaceControlForWebviewCallback {
         void prepare();
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SyncAndDrawResult {
     }
 
     public static native void disableVsync();
 
-    public static native boolean isWebViewOverlaysEnabled();
+    protected static native boolean isWebViewOverlaysEnabled();
 
     private static native void nAddObserver(long j, long j2);
 
@@ -127,6 +124,7 @@ public class HardwareRenderer {
 
     private static native long nCreateTextureLayer(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nDeleteProxy(long j);
 
     private static native void nDestroy(long j, long j2);
@@ -145,9 +143,11 @@ public class HardwareRenderer {
 
     private static native void nForceDrawNextFrame(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int nGetRenderThreadTid(long j);
 
-    public static native void nInitDisplayInfo(int i, int i2, float f, int i3, long j, long j2, boolean z, boolean z2);
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void nInitDisplayInfo(int i, int i2, float f, int i3, long j, long j2, boolean z, boolean z2, boolean z3);
 
     private static native boolean nIsDrawingEnabled();
 
@@ -175,6 +175,7 @@ public class HardwareRenderer {
 
     private static native void nRemoveRenderNode(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nRotateProcessStatsBuffer();
 
     private static native boolean nSemSetResourceCacheLimit(int i);
@@ -193,18 +194,21 @@ public class HardwareRenderer {
 
     private static native void nSetDrawingEnabled(boolean z);
 
-    private static native void nSetForceDark(long j, boolean z);
+    private static native void nSetForceDark(long j, int i);
 
     private static native void nSetFrameCallback(long j, FrameDrawingCallback frameDrawingCallback);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetFrameCommitCallback(long j, FrameCommitCallback frameCommitCallback);
 
     private static native void nSetFrameCompleteCallback(long j, FrameCompleteCallback frameCompleteCallback);
 
     private static native void nSetHighContrastText(boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetIsHighEndGfx(boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetIsLowRam(boolean z);
 
     private static native void nSetIsSystemOrPersistent(boolean z);
@@ -225,7 +229,10 @@ public class HardwareRenderer {
 
     private static native void nSetPrepareSurfaceControlForWebviewCallback(long j, PrepareSurfaceControlForWebviewCallback prepareSurfaceControlForWebviewCallback);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nSetProcessStatsBuffer(int i);
+
+    private static native void nSetRendererAsGl(boolean z);
 
     private static native void nSetRtAnimationsEnabled(boolean z);
 
@@ -251,18 +258,21 @@ public class HardwareRenderer {
 
     protected static native void setupShadersDiskCache(String str, String str2);
 
+    static {
+        USE_LOGICAL_SCREEN_RESOLUTION = SystemProperties.getInt("ro.hwui.logical_resolution_surface_area", 1) != 0;
+        sDensityDpi = 0;
+    }
+
     public HardwareRenderer() {
         ProcessInitializer.sInstance.initUsingContext();
-        RenderNode adopt = RenderNode.adopt(nCreateRootRenderNode());
-        this.mRootNode = adopt;
-        adopt.setClipToBounds(false);
-        long nCreateProxy = nCreateProxy(true ^ this.mOpaque, this.mRootNode.mNativeRenderNode);
-        this.mNativeProxy = nCreateProxy;
-        if (nCreateProxy == 0) {
+        this.mRootNode = RenderNode.adopt(nCreateRootRenderNode());
+        this.mRootNode.setClipToBounds(false);
+        this.mNativeProxy = nCreateProxy(true ^ this.mOpaque, this.mRootNode.mNativeRenderNode);
+        if (this.mNativeProxy == 0) {
             throw new OutOfMemoryError("Unable to create hardware renderer");
         }
-        Cleaner.create(this, new DestroyContextRunnable(nCreateProxy));
-        ProcessInitializer.sInstance.init(nCreateProxy);
+        Cleaner.create(this, new DestroyContextRunnable(this.mNativeProxy));
+        ProcessInitializer.sInstance.init(this.mNativeProxy);
     }
 
     public void destroy() {
@@ -310,19 +320,15 @@ public class HardwareRenderer {
         nSetSurfaceControl(this.mNativeProxy, surfaceControl != null ? surfaceControl.mNativeObject : 0L);
     }
 
-    /* loaded from: classes.dex */
     public final class FrameRenderRequest {
         private FrameInfo mFrameInfo;
         private boolean mWaitForPresent;
-
-        /* synthetic */ FrameRenderRequest(HardwareRenderer hardwareRenderer, FrameRenderRequestIA frameRenderRequestIA) {
-            this();
-        }
 
         private FrameRenderRequest() {
             this.mFrameInfo = new FrameInfo();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void reset() {
             this.mWaitForPresent = false;
             HardwareRenderer.this.mRenderRequest.setVsyncTime(AnimationUtils.currentAnimationTimeMillis() * 1000000);
@@ -378,6 +384,7 @@ public class HardwareRenderer {
     }
 
     public int syncAndDrawFrame(FrameInfo frameInfo) {
+        forceDrawIfSTBFrame();
         return nSyncAndDrawFrame(this.mNativeProxy, frameInfo.frameInfo, frameInfo.frameInfo.length);
     }
 
@@ -401,10 +408,10 @@ public class HardwareRenderer {
         nDestroyHardwareResources(this.mNativeProxy);
     }
 
-    public boolean setForceDark(boolean enable) {
-        if (this.mForceDark != enable) {
-            this.mForceDark = enable;
-            nSetForceDark(this.mNativeProxy, enable);
+    public boolean setForceDark(int type) {
+        if (this.mForceDark != type) {
+            this.mForceDark = type;
+            nSetForceDark(this.mNativeProxy, type);
             return true;
         }
         return false;
@@ -421,7 +428,7 @@ public class HardwareRenderer {
     public void setOpaque(boolean opaque) {
         if (this.mOpaque != opaque) {
             this.mOpaque = opaque;
-            nSetOpaque(this.mNativeProxy, opaque);
+            nSetOpaque(this.mNativeProxy, this.mOpaque);
         }
     }
 
@@ -509,11 +516,11 @@ public class HardwareRenderer {
         nCancelLayerUpdate(this.mNativeProxy, layer.getDeferredLayerUpdater());
     }
 
-    public void setASurfaceTransactionCallback(ASurfaceTransactionCallback callback) {
+    protected void setASurfaceTransactionCallback(ASurfaceTransactionCallback callback) {
         nSetASurfaceTransactionCallback(this.mNativeProxy, callback);
     }
 
-    public void setPrepareSurfaceControlForWebviewCallback(PrepareSurfaceControlForWebviewCallback callback) {
+    protected void setPrepareSurfaceControlForWebviewCallback(PrepareSurfaceControlForWebviewCallback callback) {
         nSetPrepareSurfaceControlForWebviewCallback(this.mNativeProxy, callback);
     }
 
@@ -562,7 +569,6 @@ public class HardwareRenderer {
         callback.onPictureCaptured(picture);
     }
 
-    /* loaded from: classes.dex */
     public interface FrameDrawingCallback {
         void onFrameDraw(long j);
 
@@ -634,14 +640,13 @@ public class HardwareRenderer {
         nSetDebuggingEnabled(enable);
     }
 
-    /* loaded from: classes.dex */
     public static abstract class CopyRequest {
         protected Bitmap mDestinationBitmap;
         final Rect mSrcRect;
 
         public abstract void onCopyFinished(int i);
 
-        public CopyRequest(Rect srcRect, Bitmap destinationBitmap) {
+        protected CopyRequest(Rect srcRect, Bitmap destinationBitmap) {
             this.mDestinationBitmap = destinationBitmap;
             if (srcRect != null) {
                 this.mSrcRect = srcRect;
@@ -702,6 +707,10 @@ public class HardwareRenderer {
         nSetIsSystemOrPersistent(true);
     }
 
+    public static void setRendererAsGl(boolean isGl) {
+        nSetRendererAsGl(isGl);
+    }
+
     public static boolean isDrawingEnabled() {
         return nIsDrawingEnabled();
     }
@@ -714,9 +723,7 @@ public class HardwareRenderer {
         nSetRtAnimationsEnabled(enabled);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static final class DestroyContextRunnable implements Runnable {
+    private static final class DestroyContextRunnable implements Runnable {
         private final long mNativeInstance;
 
         DestroyContextRunnable(long nativeInstance) {
@@ -729,8 +736,7 @@ public class HardwareRenderer {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ProcessInitializer {
+    private static class ProcessInitializer {
         static ProcessInitializer sInstance = new ProcessInitializer();
         private Context mContext;
         private IGraphicsStats mGraphicsStatsService;
@@ -739,29 +745,67 @@ public class HardwareRenderer {
         private boolean mDisplayInitialized = false;
         private boolean mIsolated = false;
         private IGraphicsStatsCallback mGraphicsStatsCallback = new IGraphicsStatsCallback.Stub() { // from class: android.graphics.HardwareRenderer.ProcessInitializer.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.IGraphicsStatsCallback
             public void onRotateGraphicsStatsBuffer() throws RemoteException {
                 ProcessInitializer.this.rotateBuffer();
             }
         };
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.graphics.HardwareRenderer$ProcessInitializer$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends IGraphicsStatsCallback.Stub {
-            AnonymousClass1() {
+        private int mLargestWidth = 0;
+        private int mLargestHeight = 0;
+        private final DisplayManager.DisplayListener mDisplayListener = new DisplayManager.DisplayListener() { // from class: android.graphics.HardwareRenderer.ProcessInitializer.2
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayAdded(int i) {
             }
 
-            @Override // android.view.IGraphicsStatsCallback
-            public void onRotateGraphicsStatsBuffer() throws RemoteException {
-                ProcessInitializer.this.rotateBuffer();
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayRemoved(int i) {
             }
-        }
+
+            @Override // android.hardware.display.DisplayManager.DisplayListener
+            public void onDisplayChanged(int i) {
+                if (ProcessInitializer.this.mContext == null) {
+                    Log.d(HardwareRenderer.LOG_TAG, "mContext is null.");
+                    return;
+                }
+                DisplayManager dm = (DisplayManager) ProcessInitializer.this.mContext.getSystemService(Context.DISPLAY_SERVICE);
+                if (dm == null) {
+                    Log.d(HardwareRenderer.LOG_TAG, "Failed to find DisplayManager for display-based configuration");
+                    return;
+                }
+                int i2 = 0;
+                Display defaultDisplay = dm.getDisplay(0);
+                if (defaultDisplay == null) {
+                    Log.d(HardwareRenderer.LOG_TAG, "Failed to find default display for display-based configuration");
+                    return;
+                }
+                Point realSize = new Point();
+                defaultDisplay.getRealSize(realSize);
+                int width = realSize.x;
+                int height = realSize.y;
+                if (width * height != ProcessInitializer.this.mLargestWidth * ProcessInitializer.this.mLargestHeight) {
+                    Log.d(HardwareRenderer.LOG_TAG, "onDisplayChanged. displayId=" + i + " current wxh=" + width + "x" + height + " mLargest wxh=" + ProcessInitializer.this.mLargestWidth + "x" + ProcessInitializer.this.mLargestHeight);
+                    ProcessInitializer.this.mLargestWidth = width;
+                    ProcessInitializer.this.mLargestHeight = height;
+                    ColorSpace defaultWideColorSpace = defaultDisplay.getPreferredWideGamutColorSpace();
+                    if (defaultWideColorSpace != null) {
+                        i2 = defaultWideColorSpace.getDataSpace();
+                    }
+                    int wideColorDataspace = i2;
+                    OverlayProperties overlayProperties = defaultDisplay.getOverlaySupport();
+                    HardwareRenderer.nInitDisplayInfo(ProcessInitializer.this.mLargestWidth, ProcessInitializer.this.mLargestHeight, defaultDisplay.getRefreshRate(), wideColorDataspace, defaultDisplay.getAppVsyncOffsetNanos(), defaultDisplay.getPresentationDeadlineNanos(), overlayProperties.isCombinationSupported(411107328, 22), overlayProperties.isCombinationSupported(DataSpace.pack(655360, 8388608, 402653184), 59), overlayProperties.isMixedColorSpacesSupported());
+                }
+            }
+        };
 
         private ProcessInitializer() {
+        }
+
+        protected void finalize() throws Throwable {
+            if (HardwareRenderer.USE_LOGICAL_SCREEN_RESOLUTION) {
+                DisplayManagerGlobal.getInstance().unregisterDisplayListener(this.mDisplayListener);
+                this.mContext = null;
+            }
+            super.finalize();
         }
 
         synchronized void setPackageName(String name) {
@@ -826,12 +870,15 @@ public class HardwareRenderer {
             initDisplayInfo();
             HardwareRenderer.nSetIsHighEndGfx(ActivityManager.isHighEndGfx());
             HardwareRenderer.nSetIsLowRam(ActivityManager.isLowRamDeviceStatic());
-            this.mContext = null;
+            if (HardwareRenderer.USE_LOGICAL_SCREEN_RESOLUTION) {
+                DisplayManagerGlobal.getInstance().registerDisplayListener(this.mDisplayListener, new Handler(Looper.getMainLooper()), 7L, this.mContext.getBasePackageName());
+            } else {
+                this.mContext = null;
+            }
         }
 
         private void initDisplayInfo() {
             int wideColorDataspace;
-            boolean supportFp16ForHdr;
             ColorSpace cs;
             if (this.mDisplayInitialized) {
                 return;
@@ -845,11 +892,19 @@ public class HardwareRenderer {
                 Log.d(HardwareRenderer.LOG_TAG, "Failed to find DisplayManager for display-based configuration");
                 return;
             }
-            boolean z = false;
+            int wideColorDataspace2 = 0;
             Display defaultDisplay = dm.getDisplay(0);
             if (defaultDisplay == null) {
                 Log.d(HardwareRenderer.LOG_TAG, "Failed to find default display for display-based configuration");
                 return;
+            }
+            if (HardwareRenderer.USE_LOGICAL_SCREEN_RESOLUTION) {
+                this.mDisplayListener.onDisplayChanged(defaultDisplay.getDisplayId());
+                if (this.mLargestWidth != 0 && this.mLargestHeight != 0) {
+                    this.mDisplayInitialized = true;
+                    Log.d(HardwareRenderer.LOG_TAG, "Set largestWidth and largestHeight as logical resolution. (" + this.mLargestWidth + "x" + this.mLargestHeight + NavigationBarInflaterView.KEY_CODE_END);
+                    return;
+                }
             }
             Display[] allDisplays = dm.getDisplays();
             if (allDisplays.length == 0) {
@@ -858,46 +913,48 @@ public class HardwareRenderer {
             }
             Display.Mode activeMode = defaultDisplay.getMode();
             ColorSpace defaultWideColorSpace = defaultDisplay.getPreferredWideGamutColorSpace();
-            if (defaultWideColorSpace == null) {
-                wideColorDataspace = 0;
-            } else {
-                wideColorDataspace = defaultWideColorSpace.getDataSpace();
+            if (defaultWideColorSpace != null) {
+                wideColorDataspace2 = defaultWideColorSpace.getDataSpace();
             }
             int largestWidth = activeMode.getPhysicalWidth();
             int largestHeight = activeMode.getPhysicalHeight();
             OverlayProperties overlayProperties = defaultDisplay.getOverlaySupport();
-            if (overlayProperties == null) {
-                supportFp16ForHdr = false;
-            } else {
-                supportFp16ForHdr = overlayProperties.supportFp16ForHdr();
-            }
-            if (overlayProperties != null) {
-                z = overlayProperties.supportMixedColorSpaces();
-            }
-            boolean supportMixedColorSpaces = z;
-            for (Display display : allDisplays) {
-                if (wideColorDataspace == 0 && (cs = display.getPreferredWideGamutColorSpace()) != null) {
-                    wideColorDataspace = cs.getDataSpace();
+            int i = 0;
+            while (i < allDisplays.length) {
+                Display display = allDisplays[i];
+                if (wideColorDataspace2 == 0 && (cs = display.getPreferredWideGamutColorSpace()) != null) {
+                    wideColorDataspace2 = cs.getDataSpace();
                 }
                 Display.Mode[] modes = display.getSupportedModes();
+                DisplayManager dm2 = dm;
                 int j = 0;
-                while (j < modes.length) {
-                    Display.Mode mode = modes[j];
-                    int width = mode.getPhysicalWidth();
-                    int height = mode.getPhysicalHeight();
-                    DisplayManager dm2 = dm;
-                    if (width * height > largestWidth * largestHeight) {
-                        largestWidth = width;
-                        largestHeight = height;
+                while (true) {
+                    wideColorDataspace = wideColorDataspace2;
+                    int wideColorDataspace3 = modes.length;
+                    if (j < wideColorDataspace3) {
+                        Display.Mode mode = modes[j];
+                        int width = mode.getPhysicalWidth();
+                        int height = mode.getPhysicalHeight();
+                        Display.Mode[] modes2 = modes;
+                        if (width * height > largestWidth * largestHeight) {
+                            largestWidth = width;
+                            largestHeight = height;
+                        }
+                        j++;
+                        wideColorDataspace2 = wideColorDataspace;
+                        modes = modes2;
                     }
-                    j++;
-                    dm = dm2;
                 }
+                i++;
+                wideColorDataspace2 = wideColorDataspace;
+                dm = dm2;
             }
-            HardwareRenderer.nInitDisplayInfo(largestWidth, largestHeight, defaultDisplay.getRefreshRate(), wideColorDataspace, defaultDisplay.getAppVsyncOffsetNanos(), defaultDisplay.getPresentationDeadlineNanos(), supportFp16ForHdr, supportMixedColorSpaces);
+            Log.d(HardwareRenderer.LOG_TAG, "Set largestWidth and largestHeight as physical resolution. (" + largestWidth + "x" + largestHeight + NavigationBarInflaterView.KEY_CODE_END);
+            HardwareRenderer.nInitDisplayInfo(largestWidth, largestHeight, defaultDisplay.getRefreshRate(), wideColorDataspace2, defaultDisplay.getAppVsyncOffsetNanos(), defaultDisplay.getPresentationDeadlineNanos(), overlayProperties.isCombinationSupported(411107328, 22), overlayProperties.isCombinationSupported(DataSpace.pack(655360, 8388608, 402653184), 59), overlayProperties.isMixedColorSpacesSupported());
             this.mDisplayInitialized = true;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void rotateBuffer() {
             HardwareRenderer.nRotateProcessStatsBuffer();
             requestBuffer();

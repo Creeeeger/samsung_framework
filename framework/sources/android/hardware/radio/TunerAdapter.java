@@ -5,12 +5,13 @@ import android.hardware.radio.ProgramList;
 import android.hardware.radio.RadioManager;
 import android.os.RemoteException;
 import android.util.Log;
+import com.android.internal.hidden_from_bootclasspath.android.hardware.radio.Flags;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /* loaded from: classes2.dex */
-public final class TunerAdapter extends RadioTuner {
+final class TunerAdapter extends RadioTuner {
     private static final String TAG = "BroadcastRadio.TunerAdapter";
     private int mBand;
     private final TunerCallbackAdapter mCallback;
@@ -20,7 +21,7 @@ public final class TunerAdapter extends RadioTuner {
     private final Object mLock = new Object();
     private final ITuner mTuner;
 
-    public TunerAdapter(ITuner tuner, TunerCallbackAdapter callback, int band) {
+    TunerAdapter(ITuner tuner, TunerCallbackAdapter callback, int band) {
         this.mTuner = (ITuner) Objects.requireNonNull(tuner, "Tuner cannot be null");
         this.mCallback = (TunerCallbackAdapter) Objects.requireNonNull(callback, "Callback cannot be null");
         this.mBand = band;
@@ -34,9 +35,8 @@ public final class TunerAdapter extends RadioTuner {
                 return;
             }
             this.mIsClosed = true;
-            ProgramList programList = this.mLegacyListProxy;
-            if (programList != null) {
-                programList.close();
+            if (this.mLegacyListProxy != null) {
+                this.mLegacyListProxy.close();
                 this.mLegacyListProxy = null;
             }
             this.mCallback.close();
@@ -233,8 +233,15 @@ public final class TunerAdapter extends RadioTuner {
 
     @Override // android.hardware.radio.RadioTuner
     public Bitmap getMetadataImage(int id) {
+        if (id == 0) {
+            throw new IllegalArgumentException("Invalid metadata image id 0");
+        }
         try {
-            return this.mTuner.getImage(id);
+            Bitmap bitmap = this.mTuner.getImage(id);
+            if (bitmap == null) {
+                throw new IllegalArgumentException("Metadata image with id " + id + " is not available");
+            }
+            return bitmap;
         } catch (RemoteException e) {
             throw new RuntimeException("Service died", e);
         }
@@ -280,9 +287,8 @@ public final class TunerAdapter extends RadioTuner {
     @Override // android.hardware.radio.RadioTuner
     public ProgramList getDynamicProgramList(ProgramList.Filter filter) {
         synchronized (this.mLock) {
-            ProgramList programList = this.mLegacyListProxy;
-            if (programList != null) {
-                programList.close();
+            if (this.mLegacyListProxy != null) {
+                this.mLegacyListProxy.close();
                 this.mLegacyListProxy = null;
             }
             this.mLegacyListFilter = null;
@@ -311,6 +317,7 @@ public final class TunerAdapter extends RadioTuner {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getDynamicProgramList$1() {
         try {
             this.mTuner.stopProgramListUpdates();
@@ -351,7 +358,7 @@ public final class TunerAdapter extends RadioTuner {
     @Override // android.hardware.radio.RadioTuner
     public boolean isConfigFlagSet(int flag) {
         try {
-            return this.mTuner.isConfigFlagSet(flag);
+            return this.mTuner.isConfigFlagSet(convertForceAnalogConfigFlag(flag));
         } catch (RemoteException e) {
             throw new RuntimeException("Service died", e);
         }
@@ -360,7 +367,7 @@ public final class TunerAdapter extends RadioTuner {
     @Override // android.hardware.radio.RadioTuner
     public void setConfigFlag(int flag, boolean value) {
         try {
-            this.mTuner.setConfigFlag(flag, value);
+            this.mTuner.setConfigFlag(convertForceAnalogConfigFlag(flag), value);
         } catch (RemoteException e) {
             throw new RuntimeException("Service died", e);
         }
@@ -396,5 +403,12 @@ public final class TunerAdapter extends RadioTuner {
         } catch (RemoteException e) {
             return false;
         }
+    }
+
+    private int convertForceAnalogConfigFlag(int flag) throws RemoteException {
+        if (Flags.hdRadioImproved() && flag == 2 && this.mTuner.isConfigFlagSupported(10)) {
+            return 10;
+        }
+        return flag;
     }
 }

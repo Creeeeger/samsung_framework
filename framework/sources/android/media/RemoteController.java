@@ -47,7 +47,6 @@ public final class RemoteController {
     private MediaSessionManager.OnActiveSessionsChangedListener mSessionListener;
     private MediaSessionManager mSessionManager;
 
-    /* loaded from: classes2.dex */
     public interface OnClientUpdateListener {
         void onClientChange(boolean z);
 
@@ -64,7 +63,8 @@ public final class RemoteController {
         this(context, updateListener, null);
     }
 
-    public RemoteController(Context context, OnClientUpdateListener updateListener, Looper looper) throws IllegalArgumentException {
+    public RemoteController(Context context, OnClientUpdateListener onClientUpdateListener, Looper looper) throws IllegalArgumentException {
+        byte b = 0;
         this.mSessionCb = new MediaControllerCallback();
         this.mIsRegistered = false;
         this.mArtworkWidth = -1;
@@ -73,36 +73,35 @@ public final class RemoteController {
         if (context == null) {
             throw new IllegalArgumentException("Invalid null Context");
         }
-        if (updateListener == null) {
+        if (onClientUpdateListener == null) {
             throw new IllegalArgumentException("Invalid null OnClientUpdateListener");
         }
         if (looper != null) {
             this.mEventHandler = new EventHandler(this, looper);
         } else {
-            Looper l = Looper.myLooper();
-            if (l != null) {
-                this.mEventHandler = new EventHandler(this, l);
+            Looper myLooper = Looper.myLooper();
+            if (myLooper != null) {
+                this.mEventHandler = new EventHandler(this, myLooper);
             } else {
                 throw new IllegalArgumentException("Calling thread not associated with a looper");
             }
         }
-        this.mOnClientUpdateListener = updateListener;
+        this.mOnClientUpdateListener = onClientUpdateListener;
         this.mContext = context;
         this.mSessionManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         this.mSessionListener = new TopTransportSessionListener();
         if (ActivityManager.isLowRamDeviceStatic()) {
             this.mMaxBitmapDimension = 512;
         } else {
-            DisplayMetrics dm = context.getResources().getDisplayMetrics();
-            this.mMaxBitmapDimension = Math.max(dm.widthPixels, dm.heightPixels);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            this.mMaxBitmapDimension = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels);
         }
     }
 
     public long getEstimatedMediaPosition() {
         PlaybackState state;
         synchronized (mInfoLock) {
-            MediaController mediaController = this.mCurrentSession;
-            if (mediaController != null && (state = mediaController.getPlaybackState()) != null) {
+            if (this.mCurrentSession != null && (state = this.mCurrentSession.getPlaybackState()) != null) {
                 return state.getPosition();
             }
             return -1L;
@@ -114,11 +113,10 @@ public final class RemoteController {
             throw new IllegalArgumentException("not a media key event");
         }
         synchronized (mInfoLock) {
-            MediaController mediaController = this.mCurrentSession;
-            if (mediaController == null) {
+            if (this.mCurrentSession == null) {
                 return false;
             }
-            return mediaController.dispatchMediaButtonEvent(keyEvent);
+            return this.mCurrentSession.dispatchMediaButtonEvent(keyEvent);
         }
     }
 
@@ -131,9 +129,8 @@ public final class RemoteController {
             throw new IllegalArgumentException("illegal negative time value");
         }
         synchronized (mInfoLock) {
-            MediaController mediaController = this.mCurrentSession;
-            if (mediaController != null) {
-                mediaController.getTransportControls().seekTo(timeMs);
+            if (this.mCurrentSession != null) {
+                this.mCurrentSession.getTransportControls().seekTo(timeMs);
             }
         }
         return true;
@@ -143,12 +140,11 @@ public final class RemoteController {
         synchronized (mInfoLock) {
             if (wantBitmap) {
                 if (width > 0 && height > 0) {
-                    int i = this.mMaxBitmapDimension;
-                    if (width > i) {
-                        width = i;
+                    if (width > this.mMaxBitmapDimension) {
+                        width = this.mMaxBitmapDimension;
                     }
-                    if (height > i) {
-                        height = i;
+                    if (height > this.mMaxBitmapDimension) {
+                        height = this.mMaxBitmapDimension;
                     }
                     this.mArtworkWidth = width;
                     this.mArtworkHeight = height;
@@ -192,7 +188,6 @@ public final class RemoteController {
         return editor;
     }
 
-    /* loaded from: classes2.dex */
     public class MetadataEditor extends MediaMetadataEditor {
         protected MetadataEditor() {
         }
@@ -241,13 +236,7 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class MediaControllerCallback extends MediaController.Callback {
-        /* synthetic */ MediaControllerCallback(RemoteController remoteController, MediaControllerCallbackIA mediaControllerCallbackIA) {
-            this();
-        }
-
+    private class MediaControllerCallback extends MediaController.Callback {
         private MediaControllerCallback() {
         }
 
@@ -262,13 +251,7 @@ public final class RemoteController {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class TopTransportSessionListener implements MediaSessionManager.OnActiveSessionsChangedListener {
-        /* synthetic */ TopTransportSessionListener(RemoteController remoteController, TopTransportSessionListenerIA topTransportSessionListenerIA) {
-            this();
-        }
-
+    private class TopTransportSessionListener implements MediaSessionManager.OnActiveSessionsChangedListener {
         private TopTransportSessionListener() {
         }
 
@@ -287,8 +270,7 @@ public final class RemoteController {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         public EventHandler(RemoteController rc, Looper looper) {
             super(looper);
         }
@@ -298,21 +280,21 @@ public final class RemoteController {
             switch (msg.what) {
                 case 0:
                     RemoteController.this.onClientChange(msg.arg2 == 1);
-                    return;
+                    break;
                 case 1:
                     RemoteController.this.onNewPlaybackState((PlaybackState) msg.obj);
-                    return;
+                    break;
                 case 2:
                     RemoteController.this.onNewMediaMetadata((MediaMetadata) msg.obj);
-                    return;
+                    break;
                 default:
                     Log.e(RemoteController.TAG, "unknown event " + msg.what);
-                    return;
+                    break;
             }
         }
     }
 
-    public void startListeningToSessions() {
+    void startListeningToSessions() {
         ComponentName listenerComponent = new ComponentName(this.mContext, this.mOnClientUpdateListener.getClass());
         Handler handler = null;
         if (Looper.myLooper() == null) {
@@ -322,7 +304,7 @@ public final class RemoteController {
         this.mSessionListener.onActiveSessionsChanged(this.mSessionManager.getActiveSessions(listenerComponent));
     }
 
-    public void stopListeningToSessions() {
+    void stopListeningToSessions() {
         this.mSessionManager.removeOnActiveSessionsChangedListener(this.mSessionListener);
     }
 
@@ -339,6 +321,7 @@ public final class RemoteController {
         handler.sendMessageDelayed(handler.obtainMessage(msg, arg1, arg2, obj), delayMs);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onClientChange(boolean clearing) {
         OnClientUpdateListener l;
         synchronized (mInfoLock) {
@@ -350,23 +333,22 @@ public final class RemoteController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateController(MediaController controller) {
         synchronized (mInfoLock) {
             if (controller == null) {
-                MediaController mediaController = this.mCurrentSession;
-                if (mediaController != null) {
-                    mediaController.unregisterCallback(this.mSessionCb);
+                if (this.mCurrentSession != null) {
+                    this.mCurrentSession.unregisterCallback(this.mSessionCb);
                     this.mCurrentSession = null;
                     sendMsg(this.mEventHandler, 0, 0, 0, 1, null, 0);
                 }
             } else if (this.mCurrentSession == null || !controller.getSessionToken().equals(this.mCurrentSession.getSessionToken())) {
-                MediaController mediaController2 = this.mCurrentSession;
-                if (mediaController2 != null) {
-                    mediaController2.unregisterCallback(this.mSessionCb);
+                if (this.mCurrentSession != null) {
+                    this.mCurrentSession.unregisterCallback(this.mSessionCb);
                 }
                 sendMsg(this.mEventHandler, 0, 0, 0, 0, null, 0);
                 this.mCurrentSession = controller;
-                controller.registerCallback(this.mSessionCb, this.mEventHandler);
+                this.mCurrentSession.registerCallback(this.mSessionCb, this.mEventHandler);
                 PlaybackState state = controller.getPlaybackState();
                 sendMsg(this.mEventHandler, 1, 0, 0, 0, state, 0);
                 MediaMetadata metadata = controller.getMetadata();
@@ -375,6 +357,7 @@ public final class RemoteController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onNewPlaybackState(PlaybackState state) {
         OnClientUpdateListener l;
         synchronized (mInfoLock) {
@@ -393,6 +376,7 @@ public final class RemoteController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onNewMediaMetadata(MediaMetadata metadata) {
         OnClientUpdateListener l;
         MetadataEditor metadataEditor;
@@ -401,19 +385,17 @@ public final class RemoteController {
         }
         synchronized (mInfoLock) {
             l = this.mOnClientUpdateListener;
-            MediaController mediaController = this.mCurrentSession;
-            boolean canRate = (mediaController == null || mediaController.getRatingType() == 0) ? false : true;
+            boolean canRate = (this.mCurrentSession == null || this.mCurrentSession.getRatingType() == 0) ? false : true;
             long editableKeys = canRate ? 268435457L : 0L;
             Bundle legacyMetadata = MediaSessionLegacyHelper.getOldMetadata(metadata, this.mArtworkWidth, this.mArtworkHeight);
-            metadataEditor = new MetadataEditor(legacyMetadata, editableKeys);
-            this.mMetadataEditor = metadataEditor;
+            this.mMetadataEditor = new MetadataEditor(legacyMetadata, editableKeys);
+            metadataEditor = this.mMetadataEditor;
         }
         if (l != null) {
             l.onClientMetadataUpdate(metadataEditor);
         }
     }
 
-    /* loaded from: classes2.dex */
     private static class PlaybackInfo {
         long mCurrentPosMs;
         float mSpeed;

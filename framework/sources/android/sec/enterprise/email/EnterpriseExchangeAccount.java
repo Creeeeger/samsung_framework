@@ -30,14 +30,13 @@ public class EnterpriseExchangeAccount implements Parcelable {
     public static final String ACTION_SET_EMAIL_ACCOUNT_PASSWORD = "com.samsung.android.knox.intent.action.SET_EMAILACCOUNT_PASSWORD_INTERNAL";
     public static final String ACTION_SMIME_INSTALL_STATUS = "com.samsung.edm.intent.action.EXCHANGE_SMIME_INSTALL_STATUS";
     public static final Parcelable.Creator<EnterpriseExchangeAccount> CREATOR = new Parcelable.Creator<EnterpriseExchangeAccount>() { // from class: android.sec.enterprise.email.EnterpriseExchangeAccount.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnterpriseExchangeAccount createFromParcel(Parcel in) {
             return new EnterpriseExchangeAccount(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnterpriseExchangeAccount[] newArray(int size) {
             return new EnterpriseExchangeAccount[size];
@@ -147,28 +146,7 @@ public class EnterpriseExchangeAccount implements Parcelable {
     public boolean mUseSSL;
     public boolean mUseTLS;
 
-    /* synthetic */ EnterpriseExchangeAccount(Parcel parcel, EnterpriseExchangeAccountIA enterpriseExchangeAccountIA) {
-        this(parcel);
-    }
-
     public EnterpriseExchangeAccount() {
-    }
-
-    /* renamed from: android.sec.enterprise.email.EnterpriseExchangeAccount$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EnterpriseExchangeAccount> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnterpriseExchangeAccount createFromParcel(Parcel in) {
-            return new EnterpriseExchangeAccount(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnterpriseExchangeAccount[] newArray(int size) {
-            return new EnterpriseExchangeAccount[size];
-        }
     }
 
     @Override // android.os.Parcelable

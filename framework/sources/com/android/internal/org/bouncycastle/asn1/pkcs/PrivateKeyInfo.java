@@ -67,9 +67,8 @@ public class PrivateKeyInfo extends ASN1Object {
 
     private PrivateKeyInfo(ASN1Sequence seq) {
         Enumeration e = seq.getObjects();
-        ASN1Integer aSN1Integer = ASN1Integer.getInstance(e.nextElement());
-        this.version = aSN1Integer;
-        int versionValue = getVersionValue(aSN1Integer);
+        this.version = ASN1Integer.getInstance(e.nextElement());
+        int versionValue = getVersionValue(this.version);
         this.privateKeyAlgorithm = AlgorithmIdentifier.getInstance(e.nextElement());
         this.privateKey = ASN1OctetString.getInstance(e.nextElement());
         int lastTag = -1;
@@ -121,11 +120,10 @@ public class PrivateKeyInfo extends ASN1Object {
     }
 
     public ASN1Encodable parsePublicKey() throws IOException {
-        ASN1BitString aSN1BitString = this.publicKey;
-        if (aSN1BitString == null) {
+        if (this.publicKey == null) {
             return null;
         }
-        return ASN1Primitive.fromByteArray(aSN1BitString.getOctets());
+        return ASN1Primitive.fromByteArray(this.publicKey.getOctets());
     }
 
     public ASN1BitString getPublicKeyData() {
@@ -138,13 +136,11 @@ public class PrivateKeyInfo extends ASN1Object {
         v.add(this.version);
         v.add(this.privateKeyAlgorithm);
         v.add(this.privateKey);
-        ASN1Set aSN1Set = this.attributes;
-        if (aSN1Set != null) {
-            v.add(new DERTaggedObject(false, 0, aSN1Set));
+        if (this.attributes != null) {
+            v.add(new DERTaggedObject(false, 0, this.attributes));
         }
-        ASN1BitString aSN1BitString = this.publicKey;
-        if (aSN1BitString != null) {
-            v.add(new DERTaggedObject(false, 1, aSN1BitString));
+        if (this.publicKey != null) {
+            v.add(new DERTaggedObject(false, 1, this.publicKey));
         }
         return new DERSequence(v);
     }

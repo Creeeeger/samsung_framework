@@ -11,7 +11,6 @@ public class MediaServiceManager {
     private static final String MEDIA_SESSION_SERVICE = "media_session";
     private static final String MEDIA_TRANSCODING_SERVICE = "media.transcoding";
 
-    /* loaded from: classes2.dex */
     public static final class ServiceRegisterer {
         private final boolean mLazyStart;
         private final String mServiceName;

@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeyCreationWithGeneralInfo implements Parcelable {
     public static final Parcelable.Creator<KeyCreationWithGeneralInfo> CREATOR = new Parcelable.Creator<KeyCreationWithGeneralInfo>() { // from class: android.security.metrics.KeyCreationWithGeneralInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyCreationWithGeneralInfo createFromParcel(Parcel _aidl_source) {
             KeyCreationWithGeneralInfo _aidl_out = new KeyCreationWithGeneralInfo();
@@ -17,6 +15,7 @@ public class KeyCreationWithGeneralInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyCreationWithGeneralInfo[] newArray(int _aidl_size) {
             return new KeyCreationWithGeneralInfo[_aidl_size];
@@ -28,25 +27,6 @@ public class KeyCreationWithGeneralInfo implements Parcelable {
     public int key_size = 0;
     public int error_code = 0;
     public boolean attestation_requested = false;
-
-    /* renamed from: android.security.metrics.KeyCreationWithGeneralInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyCreationWithGeneralInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCreationWithGeneralInfo createFromParcel(Parcel _aidl_source) {
-            KeyCreationWithGeneralInfo _aidl_out = new KeyCreationWithGeneralInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCreationWithGeneralInfo[] newArray(int _aidl_size) {
-            return new KeyCreationWithGeneralInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

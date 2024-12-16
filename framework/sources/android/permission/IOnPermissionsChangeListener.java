@@ -10,12 +10,11 @@ import android.os.RemoteException;
 public interface IOnPermissionsChangeListener extends IInterface {
     public static final String DESCRIPTOR = "android.permission.IOnPermissionsChangeListener";
 
-    void onPermissionsChanged(int i) throws RemoteException;
+    void onPermissionsChanged(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IOnPermissionsChangeListener {
         @Override // android.permission.IOnPermissionsChangeListener
-        public void onPermissionsChanged(int uid) throws RemoteException {
+        public void onPermissionsChanged(int uid, String persistentDeviceId) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -24,7 +23,6 @@ public interface IOnPermissionsChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IOnPermissionsChangeListener {
         static final int TRANSACTION_onPermissionsChanged = 1;
 
@@ -67,25 +65,23 @@ public interface IOnPermissionsChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnPermissionsChangeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnPermissionsChangeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnPermissionsChangeListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onPermissionsChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPermissionsChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IOnPermissionsChangeListener {
+        private static class Proxy implements IOnPermissionsChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -102,11 +98,12 @@ public interface IOnPermissionsChangeListener extends IInterface {
             }
 
             @Override // android.permission.IOnPermissionsChangeListener
-            public void onPermissionsChanged(int uid) throws RemoteException {
+            public void onPermissionsChanged(int uid, String persistentDeviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IOnPermissionsChangeListener.DESCRIPTOR);
                     _data.writeInt(uid);
+                    _data.writeString(persistentDeviceId);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();

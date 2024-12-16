@@ -38,9 +38,8 @@ public abstract class KeyPairGeneratorSpi extends KeyPairGenerator {
         super(algorithmName);
     }
 
-    /* loaded from: classes5.dex */
     public static class EC extends KeyPairGeneratorSpi {
-        private static Hashtable ecParameters;
+        private static Hashtable ecParameters = new Hashtable();
         String algorithm;
         ProviderConfiguration configuration;
         Object ecParams;
@@ -51,9 +50,7 @@ public abstract class KeyPairGeneratorSpi extends KeyPairGenerator {
         int strength;
 
         static {
-            Hashtable hashtable = new Hashtable();
-            ecParameters = hashtable;
-            hashtable.put(Integers.valueOf(192), new ECGenParameterSpec("prime192v1"));
+            ecParameters.put(Integers.valueOf(192), new ECGenParameterSpec("prime192v1"));
             ecParameters.put(Integers.valueOf(239), new ECGenParameterSpec("prime239v1"));
             ecParameters.put(Integers.valueOf(256), new ECGenParameterSpec("prime256v1"));
             ecParameters.put(Integers.valueOf(224), new ECGenParameterSpec("P-224"));
@@ -142,16 +139,15 @@ public abstract class KeyPairGeneratorSpi extends KeyPairGenerator {
             AsymmetricCipherKeyPair pair = this.engine.generateKeyPair();
             ECPublicKeyParameters pub = (ECPublicKeyParameters) pair.getPublic();
             ECPrivateKeyParameters priv = (ECPrivateKeyParameters) pair.getPrivate();
-            Object obj = this.ecParams;
-            if (obj instanceof ECParameterSpec) {
-                ECParameterSpec p = (ECParameterSpec) obj;
+            if (this.ecParams instanceof ECParameterSpec) {
+                ECParameterSpec p = (ECParameterSpec) this.ecParams;
                 BCECPublicKey pubKey = new BCECPublicKey(this.algorithm, pub, p, this.configuration);
                 return new KeyPair(pubKey, new BCECPrivateKey(this.algorithm, priv, pubKey, p, this.configuration));
             }
-            if (obj == null) {
+            if (this.ecParams == null) {
                 return new KeyPair(new BCECPublicKey(this.algorithm, pub, this.configuration), new BCECPrivateKey(this.algorithm, priv, this.configuration));
             }
-            java.security.spec.ECParameterSpec p2 = (java.security.spec.ECParameterSpec) obj;
+            java.security.spec.ECParameterSpec p2 = (java.security.spec.ECParameterSpec) this.ecParams;
             BCECPublicKey pubKey2 = new BCECPublicKey(this.algorithm, pub, p2, this.configuration);
             return new KeyPair(pubKey2, new BCECPrivateKey(this.algorithm, priv, pubKey2, p2, this.configuration));
         }
@@ -200,28 +196,24 @@ public abstract class KeyPairGeneratorSpi extends KeyPairGenerator {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDSA extends EC {
         public ECDSA() {
             super("ECDSA", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDH extends EC {
         public ECDH() {
             super("ECDH", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECDHC extends EC {
         public ECDHC() {
             super("ECDHC", BouncyCastleProvider.CONFIGURATION);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ECMQV extends EC {
         public ECMQV() {
             super("ECMQV", BouncyCastleProvider.CONFIGURATION);

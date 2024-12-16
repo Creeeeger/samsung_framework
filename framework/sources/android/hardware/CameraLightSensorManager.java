@@ -78,9 +78,6 @@ public class CameraLightSensorManager {
         if (this.mCameraLightSensorConnection == null) {
             Log.d("CameraLightSensor_Manager", "Creating new connection for service.");
             this.mCameraLightSensorConnection = new ServiceConnection() { // from class: android.hardware.CameraLightSensorManager.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.content.ServiceConnection
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     Log.d("CameraLightSensor_Manager", " Service is connected, cmp name = " + name + " service = " + service);
@@ -122,41 +119,6 @@ public class CameraLightSensorManager {
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("CameraLightSensor_Manager", "Exception while starting service.");
-            }
-        }
-    }
-
-    /* renamed from: android.hardware.CameraLightSensorManager$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements ServiceConnection {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d("CameraLightSensor_Manager", " Service is connected, cmp name = " + name + " service = " + service);
-            synchronized (CameraLightSensorManager.this.mLockIPC) {
-                CameraLightSensorManager.this.mSystemIPC = new Messenger(service);
-                if (CameraLightSensorManager.this.mSystemHandler != null && CameraLightSensorManager.this.mEnabledService && CameraLightSensorManager.this.mConnectionFailed) {
-                    CameraLightSensorManager.this.mSystemHandler.removeMessages(1);
-                    CameraLightSensorManager.this.mSystemHandler.sendEmptyMessage(1);
-                    CameraLightSensorManager.this.mConnectionFailed = false;
-                }
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d("CameraLightSensor_Manager", " Service is disconnected, cmp name = " + name);
-            synchronized (CameraLightSensorManager.this.mLockIPC) {
-                CameraLightSensorManager.this.mProcessBinded = false;
-                CameraLightSensorManager.this.mSystemIPC = null;
-                if (CameraLightSensorManager.this.mCameraLightSensorConnection != null) {
-                    Log.d("CameraLightSensor_Manager", "Unbinding and removing connection for service.");
-                    CameraLightSensorManager.this.mContext.unbindService(CameraLightSensorManager.this.mCameraLightSensorConnection);
-                    CameraLightSensorManager.this.mCameraLightSensorConnection = null;
-                    CameraLightSensorManager.this.mSystemHandler = null;
-                }
             }
         }
     }
@@ -204,18 +166,15 @@ public class CameraLightSensorManager {
                             if (this.mkeyguard != null) {
                                 Log.d("Debug_Camera_Manager", "lock screen, mkeyguard= " + this.mkeyguard.isDeviceLocked() + " isFaceUnlockActive= " + isFaceUnlockActive);
                             }
-                            KeyguardManager keyguardManager = this.mkeyguard;
-                            if (keyguardManager != null && keyguardManager.isDeviceLocked() && isFaceUnlockActive) {
+                            if (this.mkeyguard != null && this.mkeyguard.isDeviceLocked() && isFaceUnlockActive) {
                                 Log.d("CameraLightSensor_Manager", "On lock screen, FaceUnlock is true");
-                                ResponseHandler responseHandler = this.mSystemHandler;
-                                if (responseHandler != null) {
-                                    responseHandler.sendEmptyMessageDelayed(1, 300L);
+                                if (this.mSystemHandler != null) {
+                                    this.mSystemHandler.sendEmptyMessageDelayed(1, 300L);
                                 }
                             } else {
                                 Log.d("CameraLightSensor_Manager", "On lock screen, FaceUnlock is false");
-                                ResponseHandler responseHandler2 = this.mSystemHandler;
-                                if (responseHandler2 != null) {
-                                    responseHandler2.sendEmptyMessage(1);
+                                if (this.mSystemHandler != null) {
+                                    this.mSystemHandler.sendEmptyMessage(1);
                                 }
                             }
                             Log.d("CameraLightSensor_Manager", sensorListener + " registered");
@@ -224,9 +183,8 @@ public class CameraLightSensorManager {
                             Log.e("CameraLightSensor_Manager", "Error during FaceUnlock check.");
                         }
                     } else {
-                        ResponseHandler responseHandler3 = this.mSystemHandler;
-                        if (responseHandler3 != null) {
-                            responseHandler3.sendEmptyMessage(1);
+                        if (this.mSystemHandler != null) {
+                            this.mSystemHandler.sendEmptyMessage(1);
                         }
                         Log.d("CameraLightSensor_Manager", sensorListener + " registered");
                     }
@@ -242,9 +200,8 @@ public class CameraLightSensorManager {
     public boolean unRegisterCameraLightSensor(SensorEventListener sensorListener) {
         Log.d("Debug_Camera_Manager", "Entering2 unRegisterCameraLightSensor" + sensorListener);
         synchronized (this.mLockIPC) {
-            List<SensorEventListener> list = this.mCameraLightListener;
-            if (list != null) {
-                synchronized (list) {
+            if (this.mCameraLightListener != null) {
+                synchronized (this.mCameraLightListener) {
                     if (!this.mCameraLightListener.contains(sensorListener)) {
                         Log.e("CameraLightSensor_Manager", "No camera light sensor listeners present");
                         return false;
@@ -252,9 +209,8 @@ public class CameraLightSensorManager {
                     this.mCameraLightListener.remove(sensorListener);
                     Log.d("Debug_Camera_Manager", "Exit2 unRegisterCameraLightSensor" + sensorListener);
                     this.mEnabledService = false;
-                    ResponseHandler responseHandler = this.mSystemHandler;
-                    if (responseHandler != null) {
-                        responseHandler.removeMessages(1);
+                    if (this.mSystemHandler != null) {
+                        this.mSystemHandler.removeMessages(1);
                         this.mSystemHandler.sendEmptyMessage(3);
                     }
                     return true;
@@ -296,8 +252,7 @@ public class CameraLightSensorManager {
         return false;
     }
 
-    /* loaded from: classes.dex */
-    public class ResponseHandler extends Handler {
+    class ResponseHandler extends Handler {
         public float[] camera_ev_bv;
         private float old_lux;
         private int retry;
@@ -334,7 +289,7 @@ public class CameraLightSensorManager {
                             Intent in = new Intent();
                             in.setComponent(new ComponentName("com.samsung.adaptivebrightnessgo", "com.samsung.adaptivebrightnessgo.CameraLightSensorService"));
                             CameraLightSensorManager cameraLightSensorManager = CameraLightSensorManager.this;
-                            Context context = cameraLightSensorManager.mContext;
+                            Context context = CameraLightSensorManager.this.mContext;
                             ServiceConnection serviceConnection = CameraLightSensorManager.this.mCameraLightSensorConnection;
                             Context unused = CameraLightSensorManager.this.mContext;
                             cameraLightSensorManager.mProcessBinded = context.bindServiceAsUser(in, serviceConnection, 1, UserHandle.CURRENT_OR_SELF);
@@ -374,9 +329,8 @@ public class CameraLightSensorManager {
                 case 6:
                     synchronized (CameraLightSensorManager.this.mLockIPC) {
                         Bundle bundle = msg.getData();
-                        float[] floatArray = bundle.getFloatArray("respData");
-                        this.camera_ev_bv = floatArray;
-                        if (floatArray == null) {
+                        this.camera_ev_bv = bundle.getFloatArray("respData");
+                        if (this.camera_ev_bv == null) {
                             Log.d("CameraLightSensor_Manager", "received a null event from service");
                             return;
                         }

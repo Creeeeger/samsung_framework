@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehRoamingNetworkInfo implements Parcelable {
     public static final Parcelable.Creator<SehRoamingNetworkInfo> CREATOR = new Parcelable.Creator<SehRoamingNetworkInfo>() { // from class: vendor.samsung.hardware.radio.network.SehRoamingNetworkInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehRoamingNetworkInfo createFromParcel(Parcel _aidl_source) {
             SehRoamingNetworkInfo _aidl_out = new SehRoamingNetworkInfo();
@@ -30,25 +27,6 @@ public class SehRoamingNetworkInfo implements Parcelable {
     public byte rat = 0;
     public byte regState = 0;
     public byte opResult = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehRoamingNetworkInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehRoamingNetworkInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehRoamingNetworkInfo createFromParcel(Parcel _aidl_source) {
-            SehRoamingNetworkInfo _aidl_out = new SehRoamingNetworkInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehRoamingNetworkInfo[] newArray(int _aidl_size) {
-            return new SehRoamingNetworkInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -147,7 +125,7 @@ public class SehRoamingNetworkInfo implements Parcelable {
         _aidl_sj.add("opResult: " + ((int) this.opResult));
         _aidl_sj.add("date: " + Arrays.toString(this.date));
         _aidl_sj.add("arfcnInfo: " + Arrays.toString(this.arfcnInfo));
-        return "vendor.samsung.hardware.radio.network.SehRoamingNetworkInfo" + _aidl_sj.toString();
+        return "SehRoamingNetworkInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

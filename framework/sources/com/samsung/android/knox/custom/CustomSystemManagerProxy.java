@@ -4,7 +4,7 @@ import android.sec.enterprise.EnterpriseDeviceManager;
 import android.sec.enterprise.IEDMProxy;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CustomSystemManagerProxy {
     private static final String TAG = "CustomSystemManagerProxy";
     private static CustomSystemManagerProxy mProxy;

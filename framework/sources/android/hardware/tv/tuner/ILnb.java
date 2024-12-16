@@ -29,7 +29,6 @@ public interface ILnb extends IInterface {
 
     void setVoltage(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ILnb {
         @Override // android.hardware.tv.tuner.ILnb
         public void setCallback(ILnbCallback callback) throws RemoteException {
@@ -71,7 +70,6 @@ public interface ILnb extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ILnb {
         static final int TRANSACTION_close = 6;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -109,63 +107,61 @@ public interface ILnb extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    ILnbCallback _arg0 = ILnbCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVoltage(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setTone(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSatellitePosition(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    byte[] _arg05 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    sendDiseqcMessage(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    close();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ILnbCallback _arg0 = ILnbCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVoltage(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setTone(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSatellitePosition(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            byte[] _arg05 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            sendDiseqcMessage(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ILnb {
+        private static class Proxy implements ILnb {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

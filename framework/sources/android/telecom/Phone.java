@@ -18,17 +18,16 @@ import java.util.concurrent.Executor;
 public final class Phone {
     public static final int SDK_VERSION_R = 30;
     private CallAudioState mCallAudioState;
-    private final Map<String, Call> mCallByTelecomCallId = new ArrayMap();
     private final String mCallingPackage;
-    private final List<Call> mCalls;
-    private boolean mCanAddCall;
     private final InCallAdapter mInCallAdapter;
-    private final List<Listener> mListeners;
-    private final Object mLock;
     private final int mTargetSdkVersion;
-    private final List<Call> mUnmodifiableCalls;
+    private final Map<String, Call> mCallByTelecomCallId = new ArrayMap();
+    private final List<Call> mCalls = new CopyOnWriteArrayList();
+    private final List<Call> mUnmodifiableCalls = Collections.unmodifiableList(this.mCalls);
+    private final List<Listener> mListeners = new CopyOnWriteArrayList();
+    private boolean mCanAddCall = true;
+    private final Object mLock = new Object();
 
-    /* loaded from: classes3.dex */
     public static abstract class Listener {
         @Deprecated
         public void onAudioStateChanged(Phone phone, AudioState audioState) {
@@ -53,19 +52,13 @@ public final class Phone {
         }
     }
 
-    public Phone(InCallAdapter adapter, String callingPackage, int targetSdkVersion) {
-        CopyOnWriteArrayList copyOnWriteArrayList = new CopyOnWriteArrayList();
-        this.mCalls = copyOnWriteArrayList;
-        this.mUnmodifiableCalls = Collections.unmodifiableList(copyOnWriteArrayList);
-        this.mListeners = new CopyOnWriteArrayList();
-        this.mCanAddCall = true;
-        this.mLock = new Object();
+    Phone(InCallAdapter adapter, String callingPackage, int targetSdkVersion) {
         this.mInCallAdapter = adapter;
         this.mCallingPackage = callingPackage;
         this.mTargetSdkVersion = targetSdkVersion;
     }
 
-    public final void internalAddCall(ParcelableCall parcelableCall) {
+    final void internalAddCall(ParcelableCall parcelableCall) {
         if (this.mTargetSdkVersion < 30 && parcelableCall.getState() == 12) {
             Log.i(this, "Skipping adding audio processing call for sdk compatibility", new Object[0]);
             return;
@@ -80,6 +73,9 @@ public final class Phone {
             checkCallTree(parcelableCall);
             call2.internalUpdate(parcelableCall, this.mCallByTelecomCallId);
             fireCallAdded(call2);
+            if (call2.getState() == 7) {
+                internalRemoveCall(call2);
+            }
             return;
         }
         Log.w(this, "Call %s added, but it was already present", call.internalGetCallId());
@@ -87,7 +83,7 @@ public final class Phone {
         call.internalUpdate(parcelableCall, this.mCallByTelecomCallId);
     }
 
-    public final void internalRemoveCall(Call call) {
+    final void internalRemoveCall(Call call) {
         synchronized (this.mLock) {
             this.mCallByTelecomCallId.remove(call.internalGetCallId());
             this.mCalls.remove(call);
@@ -99,7 +95,7 @@ public final class Phone {
         fireCallRemoved(call);
     }
 
-    public final void internalUpdateCall(ParcelableCall parcelableCall) {
+    final void internalUpdateCall(ParcelableCall parcelableCall) {
         if (this.mTargetSdkVersion < 30 && parcelableCall.getState() == 12) {
             Log.i(this, "removing audio processing call during update for sdk compatibility", new Object[0]);
             Call call = getCallById(parcelableCall.getId());
@@ -129,75 +125,75 @@ public final class Phone {
         return call;
     }
 
-    public final void internalSetPostDialWait(String telecomId, String remaining) {
+    final void internalSetPostDialWait(String telecomId, String remaining) {
         Call call = getCallById(telecomId);
         if (call != null) {
             call.internalSetPostDialWait(remaining);
         }
     }
 
-    public final void internalCallAudioStateChanged(CallAudioState callAudioState) {
+    final void internalCallAudioStateChanged(CallAudioState callAudioState) {
         if (!Objects.equals(this.mCallAudioState, callAudioState)) {
             this.mCallAudioState = callAudioState;
             fireCallAudioStateChanged(callAudioState);
         }
     }
 
-    public final Call internalGetCallByTelecomId(String telecomId) {
+    final Call internalGetCallByTelecomId(String telecomId) {
         return getCallById(telecomId);
     }
 
-    public final void internalBringToForeground(boolean showDialpad) {
+    final void internalBringToForeground(boolean showDialpad) {
         fireBringToForeground(showDialpad);
     }
 
-    public final void internalSetCanAddCall(boolean canAddCall) {
+    final void internalSetCanAddCall(boolean canAddCall) {
         if (this.mCanAddCall != canAddCall) {
             this.mCanAddCall = canAddCall;
             fireCanAddCallChanged(canAddCall);
         }
     }
 
-    public final void internalSilenceRinger() {
+    final void internalSilenceRinger() {
         fireSilenceRinger();
     }
 
-    public final void internalOnConnectionEvent(String telecomId, String event, Bundle extras) {
+    final void internalOnConnectionEvent(String telecomId, String event, Bundle extras) {
         Call call = getCallById(telecomId);
         if (call != null) {
             call.internalOnConnectionEvent(event, extras);
         }
     }
 
-    public final void internalOnRttUpgradeRequest(String callId, int requestId) {
+    final void internalOnRttUpgradeRequest(String callId, int requestId) {
         Call call = getCallById(callId);
         if (call != null) {
             call.internalOnRttUpgradeRequest(requestId);
         }
     }
 
-    public final void internalOnRttInitiationFailure(String callId, int reason) {
+    final void internalOnRttInitiationFailure(String callId, int reason) {
         Call call = getCallById(callId);
         if (call != null) {
             call.internalOnRttInitiationFailure(reason);
         }
     }
 
-    public final void internalOnHandoverFailed(String callId, int error) {
+    final void internalOnHandoverFailed(String callId, int error) {
         Call call = getCallById(callId);
         if (call != null) {
             call.internalOnHandoverFailed(error);
         }
     }
 
-    public final void internalOnHandoverComplete(String callId) {
+    final void internalOnHandoverComplete(String callId) {
         Call call = getCallById(callId);
         if (call != null) {
             call.internalOnHandoverComplete();
         }
     }
 
-    public final void destroy() {
+    final void destroy() {
         for (Call call : this.mCalls) {
             InCallService.VideoCall videoCall = call.getVideoCall();
             if (videoCall != null) {

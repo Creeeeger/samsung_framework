@@ -14,7 +14,6 @@ public interface IMidiDeviceListener extends IInterface {
 
     void onDeviceStatusChanged(MidiDeviceStatus midiDeviceStatus) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMidiDeviceListener {
         @Override // android.media.midi.IMidiDeviceListener
         public void onDeviceAdded(MidiDeviceInfo device) throws RemoteException {
@@ -34,7 +33,6 @@ public interface IMidiDeviceListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMidiDeviceListener {
         public static final String DESCRIPTOR = "android.media.midi.IMidiDeviceListener";
         static final int TRANSACTION_onDeviceAdded = 1;
@@ -84,36 +82,32 @@ public interface IMidiDeviceListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    MidiDeviceInfo _arg0 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceAdded(_arg0);
+                    return true;
+                case 2:
+                    MidiDeviceInfo _arg02 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceRemoved(_arg02);
+                    return true;
+                case 3:
+                    MidiDeviceStatus _arg03 = (MidiDeviceStatus) data.readTypedObject(MidiDeviceStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceStatusChanged(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            MidiDeviceInfo _arg0 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceAdded(_arg0);
-                            return true;
-                        case 2:
-                            MidiDeviceInfo _arg02 = (MidiDeviceInfo) data.readTypedObject(MidiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceRemoved(_arg02);
-                            return true;
-                        case 3:
-                            MidiDeviceStatus _arg03 = (MidiDeviceStatus) data.readTypedObject(MidiDeviceStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceStatusChanged(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMidiDeviceListener {
+        private static class Proxy implements IMidiDeviceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

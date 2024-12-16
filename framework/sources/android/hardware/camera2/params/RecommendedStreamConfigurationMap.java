@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class RecommendedStreamConfigurationMap {
     public static final int MAX_USECASE_COUNT = 32;
     private static final String TAG = "RecommendedStreamConfigurationMap";
@@ -28,7 +28,6 @@ public final class RecommendedStreamConfigurationMap {
     private int mUsecase;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RecommendedUsecase {
     }
 

@@ -14,12 +14,12 @@ public class SparseDoubleArray implements Cloneable {
         this.mValues = new SparseLongArray(initialCapacity);
     }
 
-    /* renamed from: clone */
-    public SparseDoubleArray m4952clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SparseDoubleArray m5236clone() {
         SparseDoubleArray clone = null;
         try {
             clone = (SparseDoubleArray) super.clone();
-            clone.mValues = this.mValues.m4954clone();
+            clone.mValues = this.mValues.m5238clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             return clone;

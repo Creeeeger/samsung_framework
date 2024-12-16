@@ -23,9 +23,6 @@ public class MediaActionSound {
     public static final int STOP_VIDEO_RECORDING = 3;
     private static final String TAG = "MediaActionSound";
     private SoundPool.OnLoadCompleteListener mLoadCompleteListener = new SoundPool.OnLoadCompleteListener() { // from class: android.media.MediaActionSound.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.SoundPool.OnLoadCompleteListener
         public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
             for (SoundState sound : MediaActionSound.this.mSounds) {
@@ -60,7 +57,7 @@ public class MediaActionSound {
             }
         }
     };
-    private SoundPool mSoundPool;
+    private SoundPool mSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(new AudioAttributes.Builder().setUsage(13).setFlags(1).setContentType(4).build()).build();
     private SoundState[] mSounds;
 
     public static boolean mustPlayShutterSound() {
@@ -75,8 +72,7 @@ public class MediaActionSound {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class SoundState {
+    private class SoundState {
         public final int name;
         public int id = 0;
         public int state = 0;
@@ -87,19 +83,10 @@ public class MediaActionSound {
     }
 
     public MediaActionSound() {
-        SoundPool build = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(new AudioAttributes.Builder().setUsage(13).setFlags(1).setContentType(4).build()).build();
-        this.mSoundPool = build;
-        build.setOnLoadCompleteListener(this.mLoadCompleteListener);
+        this.mSoundPool.setOnLoadCompleteListener(this.mLoadCompleteListener);
         this.mSounds = new SoundState[SOUND_FILES.length];
-        int i = 0;
-        while (true) {
-            SoundState[] soundStateArr = this.mSounds;
-            if (i < soundStateArr.length) {
-                soundStateArr[i] = new SoundState(i);
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i < this.mSounds.length; i++) {
+            this.mSounds[i] = new SoundState(i);
         }
     }
 
@@ -159,47 +146,6 @@ public class MediaActionSound {
                 case 3:
                     this.mSoundPool.play(sound.id, 1.0f, 1.0f, 0, 0, 1.0f);
                     break;
-            }
-        }
-    }
-
-    /* renamed from: android.media.MediaActionSound$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements SoundPool.OnLoadCompleteListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.SoundPool.OnLoadCompleteListener
-        public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-            for (SoundState sound : MediaActionSound.this.mSounds) {
-                if (sound.id == sampleId) {
-                    int playSoundId = 0;
-                    synchronized (sound) {
-                        if (status != 0) {
-                            sound.state = 0;
-                            sound.id = 0;
-                            Log.e(MediaActionSound.TAG, "OnLoadCompleteListener() error: " + status + " loading sound: " + sound.name);
-                            return;
-                        }
-                        switch (sound.state) {
-                            case 1:
-                                sound.state = 3;
-                                break;
-                            case 2:
-                                playSoundId = sound.id;
-                                sound.state = 3;
-                                break;
-                            default:
-                                Log.e(MediaActionSound.TAG, "OnLoadCompleteListener() called in wrong state: " + sound.state + " for sound: " + sound.name);
-                                break;
-                        }
-                        if (playSoundId != 0) {
-                            soundPool.play(playSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
-                            return;
-                        }
-                        return;
-                    }
-                }
             }
         }
     }

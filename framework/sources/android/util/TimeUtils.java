@@ -98,12 +98,8 @@ public class TimeUtils {
         if (always || amt > 0) {
             if (amt > 999) {
                 int tmp = 0;
-                while (amt != 0) {
-                    char[] cArr = sTmpFormatStr;
-                    if (tmp >= cArr.length) {
-                        break;
-                    }
-                    cArr[tmp] = (char) ((amt % 10) + 48);
+                while (amt != 0 && tmp < sTmpFormatStr.length) {
+                    sTmpFormatStr[tmp] = (char) ((amt % 10) + 48);
                     tmp++;
                     amt /= 10;
                 }
@@ -133,9 +129,9 @@ public class TimeUtils {
         return pos;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x0136, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x0133, code lost:
     
-        if (r9 != r7) goto L164;
+        if (r9 != r8) goto L80;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -143,7 +139,7 @@ public class TimeUtils {
     */
     private static int formatDurationLocked(long r27, int r29) {
         /*
-            Method dump skipped, instructions count: 337
+            Method dump skipped, instructions count: 340
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.util.TimeUtils.formatDurationLocked(long, int):int");

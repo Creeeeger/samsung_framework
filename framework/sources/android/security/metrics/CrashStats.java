@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class CrashStats implements Parcelable {
     public static final Parcelable.Creator<CrashStats> CREATOR = new Parcelable.Creator<CrashStats>() { // from class: android.security.metrics.CrashStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CrashStats createFromParcel(Parcel _aidl_source) {
             CrashStats _aidl_out = new CrashStats();
@@ -17,31 +15,13 @@ public class CrashStats implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CrashStats[] newArray(int _aidl_size) {
             return new CrashStats[_aidl_size];
         }
     };
     public int count_of_crash_events = 0;
-
-    /* renamed from: android.security.metrics.CrashStats$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CrashStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CrashStats createFromParcel(Parcel _aidl_source) {
-            CrashStats _aidl_out = new CrashStats();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CrashStats[] newArray(int _aidl_size) {
-            return new CrashStats[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

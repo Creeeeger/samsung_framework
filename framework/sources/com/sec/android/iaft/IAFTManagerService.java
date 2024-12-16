@@ -13,7 +13,6 @@ public class IAFTManagerService extends Service {
     private Context mContext = this;
     private IAFTManagerServiceImpl mIAFTManagerServiceImpl = new IAFTManagerServiceImpl(this.mContext);
 
-    /* loaded from: classes6.dex */
     public interface CallBack {
         void traceResult(String str, int i, int i2);
 

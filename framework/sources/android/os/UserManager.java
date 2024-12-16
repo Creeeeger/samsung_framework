@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.multiuser.Flags;
 import android.os.IUserManager;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -55,12 +56,14 @@ public class UserManager {
 
     @Deprecated
     public static final String DISALLOW_ADD_MANAGED_PROFILE = "no_add_managed_profile";
+    public static final String DISALLOW_ADD_PRIVATE_PROFILE = "no_add_private_profile";
     public static final String DISALLOW_ADD_USER = "no_add_user";
     public static final String DISALLOW_ADD_WIFI_CONFIG = "no_add_wifi_config";
     public static final String DISALLOW_ADJUST_VOLUME = "no_adjust_volume";
     public static final String DISALLOW_AIRPLANE_MODE = "no_airplane_mode";
     public static final String DISALLOW_AMBIENT_DISPLAY = "no_ambient_display";
     public static final String DISALLOW_APPS_CONTROL = "no_control_apps";
+    public static final String DISALLOW_ASSIST_CONTENT = "no_assist_content";
     public static final String DISALLOW_AUTOFILL = "no_autofill";
     public static final String DISALLOW_BIOMETRIC = "disallow_biometric";
     public static final String DISALLOW_BLUETOOTH = "no_bluetooth";
@@ -68,6 +71,7 @@ public class UserManager {
     public static final String DISALLOW_CAMERA = "no_camera";
     public static final String DISALLOW_CAMERA_TOGGLE = "disallow_camera_toggle";
     public static final String DISALLOW_CELLULAR_2G = "no_cellular_2g";
+    public static final String DISALLOW_CHANGE_NEAR_FIELD_COMMUNICATION_RADIO = "no_change_near_field_communication_radio";
     public static final String DISALLOW_CHANGE_WIFI_STATE = "no_change_wifi_state";
     public static final String DISALLOW_CONFIG_BLUETOOTH = "no_config_bluetooth";
     public static final String DISALLOW_CONFIG_BRIGHTNESS = "no_config_brightness";
@@ -98,6 +102,7 @@ public class UserManager {
     public static final String DISALLOW_MICROPHONE_TOGGLE = "disallow_microphone_toggle";
     public static final String DISALLOW_MODIFY_ACCOUNTS = "no_modify_accounts";
     public static final String DISALLOW_MOUNT_PHYSICAL_MEDIA = "no_physical_media";
+    public static final String DISALLOW_NEAR_FIELD_COMMUNICATION_RADIO = "no_near_field_communication_radio";
     public static final String DISALLOW_NETWORK_RESET = "no_network_reset";
     public static final String DISALLOW_NON_MARKET_APP_BY_KNOX = "no_non_market_app_by_knox";
 
@@ -121,8 +126,10 @@ public class UserManager {
     public static final String DISALLOW_SHARE_INTO_MANAGED_PROFILE = "no_sharing_into_profile";
     public static final String DISALLOW_SHARE_LOCATION = "no_share_location";
     public static final String DISALLOW_SHARING_ADMIN_CONFIGURED_WIFI = "no_sharing_admin_configured_wifi";
+    public static final String DISALLOW_SIM_GLOBALLY = "no_sim_globally";
     public static final String DISALLOW_SMS = "no_sms";
     public static final String DISALLOW_SYSTEM_ERROR_DIALOGS = "no_system_error_dialogs";
+    public static final String DISALLOW_THREAD_NETWORK = "no_thread_network";
     public static final String DISALLOW_ULTRA_WIDEBAND_RADIO = "no_ultra_wideband_radio";
     public static final String DISALLOW_UNIFIED_PASSWORD = "no_unified_password";
     public static final String DISALLOW_UNINSTALL_APPS = "no_uninstall_apps";
@@ -172,6 +179,7 @@ public class UserManager {
 
     @SystemApi
     public static final int REMOVE_RESULT_REMOVED = 0;
+    public static final int REMOVE_RESULT_USER_IS_REMOVABLE = 3;
 
     @SystemApi
     public static final int RESTRICTION_NOT_SET = 0;
@@ -208,10 +216,12 @@ public class UserManager {
     public static final int USER_CREATION_FAILED_NOT_PERMITTED = 1;
     public static final int USER_CREATION_FAILED_NO_MORE_USERS = 2;
     public static final int USER_OPERATION_ERROR_CURRENT_USER = 4;
+    public static final int USER_OPERATION_ERROR_DISABLED_USER = 8;
     public static final int USER_OPERATION_ERROR_LOW_STORAGE = 5;
     public static final int USER_OPERATION_ERROR_MANAGED_PROFILE = 2;
     public static final int USER_OPERATION_ERROR_MAX_RUNNING_USERS = 3;
     public static final int USER_OPERATION_ERROR_MAX_USERS = 6;
+    public static final int USER_OPERATION_ERROR_PRIVATE_PROFILE = 9;
     public static final int USER_OPERATION_ERROR_UNKNOWN = 1;
 
     @SystemApi
@@ -228,131 +238,48 @@ public class UserManager {
 
     @SystemApi
     public static final String USER_TYPE_FULL_SYSTEM = "android.os.usertype.full.SYSTEM";
-
-    @SystemApi
     public static final String USER_TYPE_PROFILE_CLONE = "android.os.usertype.profile.CLONE";
-
-    @SystemApi
+    public static final String USER_TYPE_PROFILE_COMMUNAL = "android.os.usertype.profile.COMMUNAL";
     public static final String USER_TYPE_PROFILE_MANAGED = "android.os.usertype.profile.MANAGED";
+    public static final String USER_TYPE_PROFILE_PRIVATE = "android.os.usertype.profile.PRIVATE";
     public static final String USER_TYPE_PROFILE_TEST = "android.os.usertype.profile.TEST";
 
     @SystemApi
     public static final String USER_TYPE_SYSTEM_HEADLESS = "android.os.usertype.system.HEADLESS";
     private static Boolean sIsHeadlessSystemUser = null;
     private final Context mContext;
+    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockedCache;
+    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockingOrUnlockedCache;
+    private final PropertyInvalidatedCache<Integer, String> mProfileTypeCache;
+    private String mProfileTypeOfProcessUser = null;
     private final IUserManager mService;
     private final int mUserId;
-    private String mProfileTypeOfProcessUser = null;
-    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(32, CACHE_KEY_IS_USER_UNLOCKED_PROPERTY) { // from class: android.os.UserManager.1
-        AnonymousClass1(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public Boolean recompute(Integer query) {
-            try {
-                return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    };
-    private final PropertyInvalidatedCache<Integer, Boolean> mIsUserUnlockingOrUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(32, CACHE_KEY_IS_USER_UNLOCKED_PROPERTY) { // from class: android.os.UserManager.2
-        AnonymousClass2(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public Boolean recompute(Integer query) {
-            try {
-                return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    };
-    private final PropertyInvalidatedCache<Integer, String> mProfileTypeCache = new PropertyInvalidatedCache<Integer, String>(32, CACHE_KEY_STATIC_USER_PROPERTIES) { // from class: android.os.UserManager.3
-        AnonymousClass3(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public String recompute(Integer query) {
-            try {
-                String profileType = UserManager.this.mService.getProfileType(query.intValue());
-                return profileType != null ? profileType.intern() : profileType;
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    };
-    private final PropertyInvalidatedCache<Integer, UserProperties> mUserPropertiesCache = new PropertyInvalidatedCache<Integer, UserProperties>(16, CACHE_KEY_USER_PROPERTIES) { // from class: android.os.UserManager.4
-        AnonymousClass4(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public UserProperties recompute(Integer userId) {
-            try {
-                return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    };
+    private final PropertyInvalidatedCache<Integer, UserProperties> mUserPropertiesCache;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QuietModeFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RemoveResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserOperationResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserRestrictionKey {
     }
 
-    @SystemApi
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserRestrictionSource {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UserSwitchabilityResult {
     }
 
-    /* loaded from: classes3.dex */
     public static class UserOperationException extends RuntimeException {
         private final int mUserOperationResult;
 
@@ -377,7 +304,6 @@ public class UserManager {
         return null;
     }
 
-    /* loaded from: classes3.dex */
     public static class CheckedUserOperationException extends AndroidException {
         private final int mUserOperationResult;
 
@@ -411,6 +337,69 @@ public class UserManager {
     }
 
     public UserManager(Context context, IUserManager service) {
+        int i = 32;
+        String str = CACHE_KEY_IS_USER_UNLOCKED_PROPERTY;
+        this.mIsUserUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(i, str) { // from class: android.os.UserManager.1
+            @Override // android.app.PropertyInvalidatedCache
+            public Boolean recompute(Integer query) {
+                try {
+                    return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
+                } catch (RemoteException re) {
+                    throw re.rethrowFromSystemServer();
+                }
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean bypass(Integer query) {
+                return query.intValue() < 0;
+            }
+        };
+        this.mIsUserUnlockingOrUnlockedCache = new PropertyInvalidatedCache<Integer, Boolean>(i, str) { // from class: android.os.UserManager.2
+            @Override // android.app.PropertyInvalidatedCache
+            public Boolean recompute(Integer query) {
+                try {
+                    return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
+                } catch (RemoteException re) {
+                    throw re.rethrowFromSystemServer();
+                }
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean bypass(Integer query) {
+                return query.intValue() < 0;
+            }
+        };
+        this.mProfileTypeCache = new PropertyInvalidatedCache<Integer, String>(i, CACHE_KEY_STATIC_USER_PROPERTIES) { // from class: android.os.UserManager.3
+            @Override // android.app.PropertyInvalidatedCache
+            public String recompute(Integer query) {
+                try {
+                    String profileType = UserManager.this.mService.getProfileType(query.intValue());
+                    return profileType != null ? profileType.intern() : profileType;
+                } catch (RemoteException re) {
+                    throw re.rethrowFromSystemServer();
+                }
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean bypass(Integer query) {
+                return query.intValue() < 0;
+            }
+        };
+        this.mUserPropertiesCache = new PropertyInvalidatedCache<Integer, UserProperties>(16, CACHE_KEY_USER_PROPERTIES) { // from class: android.os.UserManager.4
+            @Override // android.app.PropertyInvalidatedCache
+            public UserProperties recompute(Integer userId) {
+                try {
+                    return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
+                } catch (RemoteException re) {
+                    throw re.rethrowFromSystemServer();
+                }
+            }
+
+            @Override // android.app.PropertyInvalidatedCache
+            public boolean bypass(Integer query) {
+                return query.intValue() < 0;
+            }
+        };
         this.mService = service;
         Context appContext = context.getApplicationContext();
         this.mContext = appContext == null ? context : appContext;
@@ -427,6 +416,17 @@ public class UserManager {
 
     public static boolean isGuestUserAllowEphemeralStateChange() {
         return Resources.getSystem().getBoolean(R.bool.config_guestUserAllowEphemeralStateChange);
+    }
+
+    public static boolean isCommunalProfileEnabled() {
+        return SystemProperties.getBoolean("persist.fw.omnipresent_communal_user", Resources.getSystem().getBoolean(R.bool.config_omnipresentCommunalUser));
+    }
+
+    public static boolean isPrivateProfileEnabled() {
+        if (Flags.blockPrivateSpaceCreation()) {
+            return !ActivityManager.isLowRamDeviceStatic();
+        }
+        return true;
     }
 
     public static boolean isMultipleAdminEnabled() {
@@ -483,16 +483,14 @@ public class UserManager {
     }
 
     public String getUserName() {
-        int myUserId = UserHandle.myUserId();
-        int i = this.mUserId;
-        if (myUserId == i) {
+        if (UserHandle.myUserId() == this.mUserId) {
             try {
                 return this.mService.getUserName();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
         }
-        UserInfo userInfo = getUserInfo(i);
+        UserInfo userInfo = getUserInfo(this.mUserId);
         if (userInfo != null && userInfo.name != null) {
             return userInfo.name;
         }
@@ -545,6 +543,26 @@ public class UserManager {
         }
     }
 
+    public UserHandle getCommunalProfile() {
+        try {
+            int userId = this.mService.getCommunalProfileId();
+            if (userId == -10000) {
+                return null;
+            }
+            return UserHandle.of(userId);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    public boolean isCommunalProfile() {
+        return isCommunalProfile(this.mUserId);
+    }
+
+    private boolean isCommunalProfile(int userId) {
+        return isUserTypeCommunalProfile(getProfileType(userId));
+    }
+
     public boolean isAdminUser() {
         try {
             return this.mService.isAdminUser(getContextUserIfAppropriate());
@@ -556,6 +574,14 @@ public class UserManager {
     public boolean isUserAdmin(int userId) {
         UserInfo user = getUserInfo(userId);
         return user != null && user.isAdmin();
+    }
+
+    public boolean isForegroundUserAdmin() {
+        try {
+            return this.mService.isForegroundUserAdmin();
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
     }
 
     @SystemApi
@@ -585,6 +611,14 @@ public class UserManager {
 
     public static boolean isUserTypeCloneProfile(String userType) {
         return USER_TYPE_PROFILE_CLONE.equals(userType);
+    }
+
+    public static boolean isUserTypeCommunalProfile(String userType) {
+        return USER_TYPE_PROFILE_COMMUNAL.equals(userType);
+    }
+
+    public static boolean isUserTypePrivateProfile(String userType) {
+        return USER_TYPE_PROFILE_PRIVATE.equals(userType);
     }
 
     @Deprecated
@@ -617,6 +651,20 @@ public class UserManager {
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
+    }
+
+    public boolean canAddPrivateProfile() {
+        if (!Flags.enablePrivateSpaceFeatures()) {
+            return false;
+        }
+        if (Flags.blockPrivateSpaceCreation()) {
+            try {
+                return this.mService.canAddPrivateProfile(this.mUserId);
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+        return true;
     }
 
     @SystemApi
@@ -673,7 +721,7 @@ public class UserManager {
         return isProfile(this.mUserId);
     }
 
-    private boolean isProfile(int userId) {
+    public boolean isProfile(int userId) {
         String profileType = getProfileType(userId);
         return (profileType == null || profileType.equals("")) ? false : true;
     }
@@ -684,9 +732,8 @@ public class UserManager {
 
     private String getProfileType(int userId) {
         if (userId == UserHandle.myUserId()) {
-            String str = this.mProfileTypeOfProcessUser;
-            if (str != null) {
-                return str;
+            if (this.mProfileTypeOfProcessUser != null) {
+                return this.mProfileTypeOfProcessUser;
             }
             try {
                 String profileType = this.mService.getProfileType(userId);
@@ -714,6 +761,11 @@ public class UserManager {
     @SystemApi
     public boolean isCloneProfile() {
         return isUserTypeCloneProfile(getProfileType());
+    }
+
+    @SystemApi
+    public boolean isPrivateProfile() {
+        return isUserTypePrivateProfile(getProfileType());
     }
 
     public boolean isEphemeralUser() {
@@ -808,52 +860,6 @@ public class UserManager {
 
     public boolean isUserUnlocked(UserHandle user) {
         return isUserUnlocked(user.getIdentifier());
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.UserManager$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends PropertyInvalidatedCache<Integer, Boolean> {
-        AnonymousClass1(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public Boolean recompute(Integer query) {
-            try {
-                return Boolean.valueOf(UserManager.this.mService.isUserUnlocked(query.intValue()));
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.UserManager$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends PropertyInvalidatedCache<Integer, Boolean> {
-        AnonymousClass2(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public Boolean recompute(Integer query) {
-            try {
-                return Boolean.valueOf(UserManager.this.mService.isUserUnlockingOrUnlocked(query.intValue()));
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
     }
 
     public boolean isUserUnlocked(int userId) {
@@ -1457,6 +1463,16 @@ public class UserManager {
         }
     }
 
+    public List<UserInfo> getProfilesIncludingCommunal(int userId) {
+        UserInfo communalInfo;
+        List<UserInfo> profiles = getProfiles(userId);
+        UserHandle communalProfile = getCommunalProfile();
+        if (communalProfile != null && (communalInfo = getUserInfo(communalProfile.getIdentifier())) != null) {
+            profiles.add(communalInfo);
+        }
+        return profiles;
+    }
+
     @SystemApi
     public boolean isSameProfileGroup(UserHandle user, UserHandle otherUser) {
         return isSameProfileGroup(user.getIdentifier(), otherUser.getIdentifier());
@@ -1521,6 +1537,14 @@ public class UserManager {
 
     public int[] getEnabledProfileIds(int userId) {
         return getProfileIds(userId, true);
+    }
+
+    public int[] getProfileIdsExcludingHidden(int userId, boolean enabled) {
+        try {
+            return this.mService.getProfileIdsExcludingHidden(userId, enabled);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
     }
 
     public int getCredentialOwnerProfile(int userId) {
@@ -1633,6 +1657,14 @@ public class UserManager {
         }
     }
 
+    public int getUserStatusBarIconResId(int userId) {
+        try {
+            return this.mService.getUserStatusBarIconResId(userId);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
     public Drawable getBadgedIconForUser(Drawable icon, UserHandle user) {
         return this.mContext.getPackageManager().getUserBadgedIcon(icon, user);
     }
@@ -1641,18 +1673,46 @@ public class UserManager {
         return this.mContext.getPackageManager().getUserBadgedDrawableForDensity(badgedDrawable, user, badgeLocation, badgeDensity);
     }
 
+    @SystemApi
+    public Drawable getUserBadge() {
+        if (!isProfile(this.mUserId)) {
+            throw new Resources.NotFoundException("No badge found for this user.");
+        }
+        if (isManagedProfile(this.mUserId)) {
+            DevicePolicyManager dpm = (DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class);
+            return dpm.getResources().getDrawable(DevicePolicyResources.Drawables.WORK_PROFILE_ICON_BADGE, DevicePolicyResources.Drawables.Style.SOLID_COLORED, new Supplier() { // from class: android.os.UserManager$$ExternalSyntheticLambda0
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    Drawable lambda$getUserBadge$0;
+                    lambda$getUserBadge$0 = UserManager.this.lambda$getUserBadge$0();
+                    return lambda$getUserBadge$0;
+                }
+            });
+        }
+        return getDefaultUserBadge(this.mUserId);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ Drawable lambda$getUserBadge$0() {
+        return getDefaultUserBadge(this.mUserId);
+    }
+
+    private Drawable getDefaultUserBadge(int userId) {
+        return this.mContext.getResources().getDrawable(getUserBadgeResId(userId), this.mContext.getTheme());
+    }
+
     public CharSequence getBadgedLabelForUser(final CharSequence label, UserHandle user) {
         final int userId = user.getIdentifier();
         if (!hasBadge(userId)) {
             return label;
         }
         DevicePolicyManager dpm = (DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class);
-        return dpm.getResources().getString(getUpdatableUserBadgedLabelId(userId), new Supplier() { // from class: android.os.UserManager$$ExternalSyntheticLambda0
+        return dpm.getResources().getString(getUpdatableUserBadgedLabelId(userId), new Supplier() { // from class: android.os.UserManager$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
-                String lambda$getBadgedLabelForUser$0;
-                lambda$getBadgedLabelForUser$0 = UserManager.this.lambda$getBadgedLabelForUser$0(label, userId);
-                return lambda$getBadgedLabelForUser$0;
+                String lambda$getBadgedLabelForUser$1;
+                lambda$getBadgedLabelForUser$1 = UserManager.this.lambda$getBadgedLabelForUser$1(label, userId);
+                return lambda$getBadgedLabelForUser$1;
             }
         }, label);
     }
@@ -1661,13 +1721,73 @@ public class UserManager {
         return isManagedProfile(userId) ? DevicePolicyResources.Strings.Core.WORK_PROFILE_BADGED_LABEL : DevicePolicyResources.UNDEFINED;
     }
 
-    /* renamed from: getDefaultUserBadgedLabel */
-    public String lambda$getBadgedLabelForUser$0(CharSequence label, int userId) {
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: getDefaultUserBadgedLabel, reason: merged with bridge method [inline-methods] */
+    public String lambda$getBadgedLabelForUser$1(CharSequence label, int userId) {
         try {
             int resourceId = this.mService.getUserBadgeLabelResId(userId);
             return Resources.getSystem().getString(resourceId, label);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public String getProfileLabel() {
+        if (isManagedProfile(this.mUserId)) {
+            DevicePolicyManager dpm = (DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class);
+            return dpm.getResources().getString(DevicePolicyResources.Strings.Core.RESOLVER_WORK_TAB, new Supplier() { // from class: android.os.UserManager$$ExternalSyntheticLambda2
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    String lambda$getProfileLabel$2;
+                    lambda$getProfileLabel$2 = UserManager.this.lambda$getProfileLabel$2();
+                    return lambda$getProfileLabel$2;
+                }
+            });
+        }
+        return getDefaultProfileLabel(this.mUserId);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ String lambda$getProfileLabel$2() {
+        return getDefaultProfileLabel(this.mUserId);
+    }
+
+    private String getDefaultProfileLabel(int userId) {
+        try {
+            int resourceId = this.mService.getProfileLabelResId(userId);
+            return Resources.getSystem().getString(resourceId);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    public String getProfileAccessibilityString(final int userId) {
+        if (isManagedProfile(this.mUserId)) {
+            DevicePolicyManager dpm = (DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class);
+            dpm.getResources().getString(DevicePolicyResources.Strings.SystemUi.STATUS_BAR_WORK_ICON_ACCESSIBILITY, new Supplier() { // from class: android.os.UserManager$$ExternalSyntheticLambda3
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    String lambda$getProfileAccessibilityString$3;
+                    lambda$getProfileAccessibilityString$3 = UserManager.this.lambda$getProfileAccessibilityString$3(userId);
+                    return lambda$getProfileAccessibilityString$3;
+                }
+            });
+        }
+        return lambda$getProfileAccessibilityString$3(userId);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: getProfileAccessibilityLabel, reason: merged with bridge method [inline-methods] */
+    public String lambda$getProfileAccessibilityString$3(int userId) {
+        try {
+            int resourceId = this.mService.getProfileAccessibilityLabelResId(userId);
+            return Resources.getSystem().getString(resourceId);
+        } catch (Resources.NotFoundException nfe) {
+            Log.e(TAG, "Accessibility label not defined for user " + userId);
+            throw nfe;
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -1917,55 +2037,8 @@ public class UserManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.UserManager$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 extends PropertyInvalidatedCache<Integer, String> {
-        AnonymousClass3(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public String recompute(Integer query) {
-            try {
-                String profileType = UserManager.this.mService.getProfileType(query.intValue());
-                return profileType != null ? profileType.intern() : profileType;
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
-    }
-
     public static final void invalidateStaticUserProperties() {
         PropertyInvalidatedCache.invalidateCache(CACHE_KEY_STATIC_USER_PROPERTIES);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.os.UserManager$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 extends PropertyInvalidatedCache<Integer, UserProperties> {
-        AnonymousClass4(int maxEntries, String propertyName) {
-            super(maxEntries, propertyName);
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public UserProperties recompute(Integer userId) {
-            try {
-                return UserManager.this.mService.getUserPropertiesCopy(userId.intValue());
-            } catch (RemoteException re) {
-                throw re.rethrowFromSystemServer();
-            }
-        }
-
-        @Override // android.app.PropertyInvalidatedCache
-        public boolean bypass(Integer query) {
-            return query.intValue() < 0;
-        }
     }
 
     public static final void invalidateUserPropertiesCache() {
@@ -1973,17 +2046,15 @@ public class UserManager {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class EnforcingUser implements Parcelable {
         public static final Parcelable.Creator<EnforcingUser> CREATOR = new Parcelable.Creator<EnforcingUser>() { // from class: android.os.UserManager.EnforcingUser.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EnforcingUser createFromParcel(Parcel in) {
                 return new EnforcingUser(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public EnforcingUser[] newArray(int size) {
                 return new EnforcingUser[size];
@@ -1991,10 +2062,6 @@ public class UserManager {
         };
         private final int userId;
         private final int userRestrictionSource;
-
-        /* synthetic */ EnforcingUser(Parcel parcel, EnforcingUserIA enforcingUserIA) {
-            this(parcel);
-        }
 
         public EnforcingUser(int userId, int userRestrictionSource) {
             this.userId = userId;
@@ -2004,23 +2071,6 @@ public class UserManager {
         private EnforcingUser(Parcel in) {
             this.userId = in.readInt();
             this.userRestrictionSource = in.readInt();
-        }
-
-        /* renamed from: android.os.UserManager$EnforcingUser$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<EnforcingUser> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public EnforcingUser createFromParcel(Parcel in) {
-                return new EnforcingUser(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public EnforcingUser[] newArray(int size) {
-                return new EnforcingUser[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -2090,6 +2140,18 @@ public class UserManager {
 
     public boolean semIsGuestUser() {
         return isGuestUser();
+    }
+
+    public SemUserInfo semCreateUser(String name, int flags) {
+        UserInfo userInfo = createUser(name, UserInfo.getDefaultUserType(flags), flags);
+        if (userInfo == null) {
+            return null;
+        }
+        return new SemUserInfo(userInfo);
+    }
+
+    public boolean semRemoveUser(int userId) {
+        return removeUser(userId);
     }
 
     public boolean updateUserInfo(int userId, Bundle data) {

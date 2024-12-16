@@ -16,7 +16,7 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class Proxy {
     private static final String ENTERPRISE_PROXY_PROPERTY = "enterprise.proxy.auth";
 
@@ -140,6 +140,9 @@ public final class Proxy {
         }
         if (exclList != null) {
             exclList = exclList.replace(",", NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER);
+        }
+        if (DBG) {
+            Log.d(TAG, "setHttpProxySystemProperty :" + host + ":" + port + " - " + exclList);
         }
         if (host != null) {
             System.setProperty("http.proxyHost", host);

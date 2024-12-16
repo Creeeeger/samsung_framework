@@ -10,46 +10,34 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public class PackageStats implements Parcelable {
     public static final Parcelable.Creator<PackageStats> CREATOR = new Parcelable.Creator<PackageStats>() { // from class: android.content.pm.PackageStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageStats createFromParcel(Parcel in) {
             return new PackageStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackageStats[] newArray(int size) {
             return new PackageStats[size];
         }
     };
+    public long apkSize;
     public long cacheSize;
     public long codeSize;
+    public long curProfSize;
     public long dataSize;
+    public long dexoptSize;
+    public long dmSize;
     public long externalCacheSize;
     public long externalCodeSize;
     public long externalDataSize;
     public long externalMediaSize;
     public long externalObbSize;
+    public long libSize;
     public String packageName;
+    public long refProfSize;
     public int userHandle;
-
-    /* renamed from: android.content.pm.PackageStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackageStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageStats createFromParcel(Parcel in) {
-            return new PackageStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackageStats[] newArray(int size) {
-            return new PackageStats[size];
-        }
-    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder("PackageStats{");
@@ -67,6 +55,30 @@ public class PackageStats implements Parcelable {
         if (this.cacheSize != 0) {
             sb.append(" cache=");
             sb.append(this.cacheSize);
+        }
+        if (this.apkSize != 0) {
+            sb.append(" apk=");
+            sb.append(this.apkSize);
+        }
+        if (this.libSize != 0) {
+            sb.append(" lib=");
+            sb.append(this.libSize);
+        }
+        if (this.dmSize != 0) {
+            sb.append(" dm=");
+            sb.append(this.dmSize);
+        }
+        if (this.dexoptSize != 0) {
+            sb.append(" dexopt=");
+            sb.append(this.dexoptSize);
+        }
+        if (this.curProfSize != 0) {
+            sb.append(" curProf=");
+            sb.append(this.curProfSize);
+        }
+        if (this.refProfSize != 0) {
+            sb.append(" refProf=");
+            sb.append(this.refProfSize);
         }
         if (this.externalCodeSize != 0) {
             sb.append(" extCode=");
@@ -108,6 +120,12 @@ public class PackageStats implements Parcelable {
         this.codeSize = source.readLong();
         this.dataSize = source.readLong();
         this.cacheSize = source.readLong();
+        this.apkSize = source.readLong();
+        this.libSize = source.readLong();
+        this.dmSize = source.readLong();
+        this.dexoptSize = source.readLong();
+        this.curProfSize = source.readLong();
+        this.refProfSize = source.readLong();
         this.externalCodeSize = source.readLong();
         this.externalDataSize = source.readLong();
         this.externalCacheSize = source.readLong();
@@ -121,6 +139,12 @@ public class PackageStats implements Parcelable {
         this.codeSize = pStats.codeSize;
         this.dataSize = pStats.dataSize;
         this.cacheSize = pStats.cacheSize;
+        this.apkSize = pStats.apkSize;
+        this.libSize = pStats.libSize;
+        this.dmSize = pStats.dmSize;
+        this.dexoptSize = pStats.dexoptSize;
+        this.curProfSize = pStats.curProfSize;
+        this.refProfSize = pStats.refProfSize;
         this.externalCodeSize = pStats.externalCodeSize;
         this.externalDataSize = pStats.externalDataSize;
         this.externalCacheSize = pStats.externalCacheSize;
@@ -140,6 +164,12 @@ public class PackageStats implements Parcelable {
         dest.writeLong(this.codeSize);
         dest.writeLong(this.dataSize);
         dest.writeLong(this.cacheSize);
+        dest.writeLong(this.apkSize);
+        dest.writeLong(this.libSize);
+        dest.writeLong(this.dmSize);
+        dest.writeLong(this.dexoptSize);
+        dest.writeLong(this.curProfSize);
+        dest.writeLong(this.refProfSize);
         dest.writeLong(this.externalCodeSize);
         dest.writeLong(this.externalDataSize);
         dest.writeLong(this.externalCacheSize);
@@ -152,10 +182,10 @@ public class PackageStats implements Parcelable {
             return false;
         }
         PackageStats otherStats = (PackageStats) obj;
-        return TextUtils.equals(this.packageName, otherStats.packageName) && this.userHandle == otherStats.userHandle && this.codeSize == otherStats.codeSize && this.dataSize == otherStats.dataSize && this.cacheSize == otherStats.cacheSize && this.externalCodeSize == otherStats.externalCodeSize && this.externalDataSize == otherStats.externalDataSize && this.externalCacheSize == otherStats.externalCacheSize && this.externalMediaSize == otherStats.externalMediaSize && this.externalObbSize == otherStats.externalObbSize;
+        return TextUtils.equals(this.packageName, otherStats.packageName) && this.userHandle == otherStats.userHandle && this.codeSize == otherStats.codeSize && this.dataSize == otherStats.dataSize && this.cacheSize == otherStats.cacheSize && this.apkSize == otherStats.apkSize && this.libSize == otherStats.libSize && this.dmSize == otherStats.dmSize && this.dexoptSize == otherStats.dexoptSize && this.curProfSize == otherStats.curProfSize && this.refProfSize == otherStats.refProfSize && this.externalCodeSize == otherStats.externalCodeSize && this.externalDataSize == otherStats.externalDataSize && this.externalCacheSize == otherStats.externalCacheSize && this.externalMediaSize == otherStats.externalMediaSize && this.externalObbSize == otherStats.externalObbSize;
     }
 
     public int hashCode() {
-        return Objects.hash(this.packageName, Integer.valueOf(this.userHandle), Long.valueOf(this.codeSize), Long.valueOf(this.dataSize), Long.valueOf(this.cacheSize), Long.valueOf(this.externalCodeSize), Long.valueOf(this.externalDataSize), Long.valueOf(this.externalCacheSize), Long.valueOf(this.externalMediaSize), Long.valueOf(this.externalObbSize));
+        return Objects.hash(this.packageName, Integer.valueOf(this.userHandle), Long.valueOf(this.codeSize), Long.valueOf(this.dataSize), Long.valueOf(this.apkSize), Long.valueOf(this.libSize), Long.valueOf(this.dmSize), Long.valueOf(this.dexoptSize), Long.valueOf(this.curProfSize), Long.valueOf(this.refProfSize), Long.valueOf(this.cacheSize), Long.valueOf(this.externalCodeSize), Long.valueOf(this.externalDataSize), Long.valueOf(this.externalCacheSize), Long.valueOf(this.externalMediaSize), Long.valueOf(this.externalObbSize));
     }
 }

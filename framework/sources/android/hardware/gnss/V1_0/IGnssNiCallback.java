@@ -103,7 +103,6 @@ public interface IGnssNiCallback extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssNiType {
         public static final byte EMERGENCY_SUPL = 4;
         public static final byte UMTS_CTRL_PLANE = 3;
@@ -152,7 +151,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssNiNotifyFlags {
         public static final int NEED_NOTIFY = 1;
         public static final int NEED_VERIFY = 2;
@@ -193,7 +191,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssUserResponseType {
         public static final byte RESPONSE_ACCEPT = 1;
         public static final byte RESPONSE_DENY = 2;
@@ -234,7 +231,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssNiEncodingType {
         public static final int ENC_NONE = 0;
         public static final int ENC_SUPL_GSM_DEFAULT = 1;
@@ -288,7 +284,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssNiNotification {
         public int notifyFlags;
         public int notificationId = 0;
@@ -348,9 +343,9 @@ public interface IGnssNiCallback extends IBase {
             this.timeoutSec = _hidl_blob.getInt32(_hidl_offset + 12);
             this.defaultResponse = _hidl_blob.getInt8(_hidl_offset + 16);
             this.requestorId = _hidl_blob.getString(_hidl_offset + 24);
-            parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+            parcel.readEmbeddedBuffer(this.requestorId.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
             this.notificationMessage = _hidl_blob.getString(_hidl_offset + 40);
-            parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
+            parcel.readEmbeddedBuffer(this.notificationMessage.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
             this.requestorIdEncoding = _hidl_blob.getInt32(_hidl_offset + 56);
             this.notificationIdEncoding = _hidl_blob.getInt32(_hidl_offset + 60);
         }
@@ -387,7 +382,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssNiCallback {
         private IHwBinder mRemote;
 
@@ -573,7 +567,6 @@ public interface IGnssNiCallback extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssNiCallback {
         @Override // android.hardware.gnss.V1_0.IGnssNiCallback, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -596,7 +589,7 @@ public interface IGnssNiCallback extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IGnssNiCallback, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-57, -127, -73, -79, 37, -10, -117, -27, -37, -118, -116, 61, 65, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 82, 106, -51, -67, -9, 125, -52, 89, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, 76, 14, -41, 11, -116, -28, -2, 108, 73}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-57, -127, -73, -79, 37, -10, -117, -27, -37, -118, -116, 61, 65, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 82, 106, -51, -67, -9, 125, -52, 89, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, 76, 14, -41, 11, -116, -28, -2, 108, 73}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IGnssNiCallback, android.internal.hidl.base.V1_0.IBase

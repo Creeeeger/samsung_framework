@@ -12,7 +12,6 @@ public interface ISwitchEventChangedListener extends IInterface {
 
     void onSwitchEventChanged(int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISwitchEventChangedListener {
         @Override // android.hardware.input.ISwitchEventChangedListener
         public void onSwitchEventChanged(int switchValues, int switchMask, int extraValues, int extraMask) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISwitchEventChangedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISwitchEventChangedListener {
         static final int TRANSACTION_onSwitchEventChanged = 1;
 
@@ -67,29 +65,25 @@ public interface ISwitchEventChangedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISwitchEventChangedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISwitchEventChangedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISwitchEventChangedListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSwitchEventChanged(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSwitchEventChanged(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISwitchEventChangedListener {
+        private static class Proxy implements ISwitchEventChangedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

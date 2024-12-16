@@ -7,9 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes5.dex */
-public class SecCarrier {
+/* loaded from: classes6.dex */
+class SecCarrier {
     private static final String FEATURE_GROUP_KEY = "CarrierFeature_Common_CarrierGroup";
     private static final String TAG_CARRIER_ID = "canonical_id";
     private static final String TAG_CUSTOMER = "customer";
@@ -24,7 +23,7 @@ public class SecCarrier {
     private String mapped_cid_version;
     private String version;
 
-    public SecCarrier(String jsonText, String salesCode, int carrierId) throws JSONException {
+    SecCarrier(String jsonText, String salesCode, int carrierId) throws JSONException {
         JSONArray specificFeatureObject;
         this.isCarrierGroupValid = false;
         this.feature = new LinkedHashMap();
@@ -81,19 +80,19 @@ public class SecCarrier {
         this.feature = custFeatures;
     }
 
-    public Map<String, String> getFeature() {
+    Map<String, String> getFeature() {
         return this.feature;
     }
 
-    public int getVersion() {
+    int getVersion() {
         return Integer.parseInt(this.version);
     }
 
-    public int getMappedCidVersion() {
+    int getMappedCidVersion() {
         return Integer.parseInt(this.mapped_cid_version);
     }
 
-    public boolean isCarrierGroupValid() {
+    boolean isCarrierGroupValid() {
         return this.isCarrierGroupValid;
     }
 }

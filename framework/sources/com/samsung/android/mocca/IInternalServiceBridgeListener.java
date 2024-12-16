@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IInternalServiceBridgeListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.mocca.IInternalServiceBridgeListener";
 
     void onUpdated(String str, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInternalServiceBridgeListener {
         @Override // com.samsung.android.mocca.IInternalServiceBridgeListener
         public void onUpdated(String type, Bundle value) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IInternalServiceBridgeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInternalServiceBridgeListener {
         static final int TRANSACTION_onUpdated = 1;
 
@@ -68,27 +66,23 @@ public interface IInternalServiceBridgeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInternalServiceBridgeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInternalServiceBridgeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInternalServiceBridgeListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUpdated(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUpdated(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInternalServiceBridgeListener {
+        private static class Proxy implements IInternalServiceBridgeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

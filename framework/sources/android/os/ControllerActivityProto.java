@@ -8,7 +8,6 @@ public final class ControllerActivityProto {
     public static final long RX_DURATION_MS = 1112396529666L;
     public static final long TX = 2246267895812L;
 
-    /* loaded from: classes3.dex */
     public final class TxLevel {
         public static final long DURATION_MS = 1112396529666L;
         public static final long LEVEL = 1120986464257L;

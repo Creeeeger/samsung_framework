@@ -13,15 +13,14 @@ public class TestLooperManager {
     private boolean mReleased;
 
     public TestLooperManager(Looper looper) {
-        ArraySet<Looper> arraySet = sHeldLoopers;
-        synchronized (arraySet) {
-            if (arraySet.contains(looper)) {
+        synchronized (sHeldLoopers) {
+            if (sHeldLoopers.contains(looper)) {
                 throw new RuntimeException("TestLooperManager already held for this looper");
             }
-            arraySet.add(looper);
+            sHeldLoopers.add(looper);
         }
         this.mLooper = looper;
-        this.mQueue = looper.getQueue();
+        this.mQueue = this.mLooper.getQueue();
         new Handler(looper).post(new LooperHolder());
     }
 
@@ -49,9 +48,8 @@ public class TestLooperManager {
     }
 
     public void release() {
-        ArraySet<Looper> arraySet = sHeldLoopers;
-        synchronized (arraySet) {
-            arraySet.remove(this.mLooper);
+        synchronized (sHeldLoopers) {
+            sHeldLoopers.remove(this.mLooper);
         }
         checkReleased();
         this.mReleased = true;
@@ -99,13 +97,7 @@ public class TestLooperManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public class LooperHolder implements Runnable {
-        /* synthetic */ LooperHolder(TestLooperManager testLooperManager, LooperHolderIA looperHolderIA) {
-            this();
-        }
-
+    private class LooperHolder implements Runnable {
         private LooperHolder() {
         }
 
@@ -142,14 +134,9 @@ public class TestLooperManager {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class MessageExecution {
+    private static class MessageExecution {
         private Message m;
         private Throwable response;
-
-        /* synthetic */ MessageExecution(MessageExecutionIA messageExecutionIA) {
-            this();
-        }
 
         private MessageExecution() {
         }

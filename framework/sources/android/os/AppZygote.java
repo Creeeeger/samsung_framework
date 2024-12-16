@@ -27,9 +27,8 @@ public class AppZygote {
 
     public ChildZygoteProcess getProcess() {
         synchronized (this.mLock) {
-            ChildZygoteProcess childZygoteProcess = this.mZygote;
-            if (childZygoteProcess != null) {
-                return childZygoteProcess;
+            if (this.mZygote != null) {
+                return this.mZygote;
             }
             connectToZygoteIfNeededLocked();
             return this.mZygote;
@@ -47,9 +46,8 @@ public class AppZygote {
     }
 
     private void stopZygoteLocked() {
-        ChildZygoteProcess childZygoteProcess = this.mZygote;
-        if (childZygoteProcess != null) {
-            childZygoteProcess.close();
+        if (this.mZygote != null) {
+            this.mZygote.close();
             Process.killProcessGroup(this.mZygoteUid, this.mZygote.getPid());
             this.mZygote = null;
         }
@@ -59,12 +57,8 @@ public class AppZygote {
         String abi = this.mAppInfo.primaryCpuAbi != null ? this.mAppInfo.primaryCpuAbi : Build.SUPPORTED_ABIS[0];
         try {
             int runtimeFlags = Zygote.getMemorySafetyRuntimeFlagsForSecondaryZygote(this.mAppInfo, this.mProcessInfo);
-            ZygoteProcess zygoteProcess = Process.ZYGOTE_PROCESS;
-            String str = this.mAppInfo.processName + "_zygote";
-            int i = this.mZygoteUid;
-            ChildZygoteProcess startChildZygote = zygoteProcess.startChildZygote("com.android.internal.os.AppZygoteInit", str, i, i, null, runtimeFlags, "app_zygote", abi, abi, VMRuntime.getInstructionSet(abi), this.mZygoteUidGidMin, this.mZygoteUidGidMax);
-            this.mZygote = startChildZygote;
-            ZygoteProcess.waitForConnectionToZygote(startChildZygote.getPrimarySocketAddress());
+            this.mZygote = Process.ZYGOTE_PROCESS.startChildZygote("com.android.internal.os.AppZygoteInit", this.mAppInfo.processName + "_zygote", this.mZygoteUid, this.mZygoteUid, null, runtimeFlags, "app_zygote", abi, abi, VMRuntime.getInstructionSet(abi), this.mZygoteUidGidMin, this.mZygoteUidGidMax);
+            ZygoteProcess.waitForConnectionToZygote(this.mZygote.getPrimarySocketAddress());
             Log.i(LOG_TAG, "Starting application preload.");
             this.mZygote.preloadApp(this.mAppInfo, abi);
             Log.i(LOG_TAG, "Application preload done.");

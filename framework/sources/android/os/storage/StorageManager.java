@@ -54,7 +54,6 @@ import com.android.internal.os.FuseAppLoop;
 import com.android.internal.os.FuseUnavailableMountException;
 import com.android.internal.os.RoSystemProperties;
 import com.android.internal.util.Preconditions;
-import com.samsung.android.allshare.file.Const;
 import com.samsung.android.media.AudioParameter;
 import com.samsung.android.share.SemShareConstants;
 import dalvik.system.BlockGuard;
@@ -79,6 +78,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* loaded from: classes3.dex */
 public class StorageManager {
@@ -187,8 +188,9 @@ public class StorageManager {
     private static final long DEFAULT_THRESHOLD_MAX_BYTES = DataUnit.MEBIBYTES.toBytes(500);
     private static final long DEFAULT_FULL_THRESHOLD_BYTES = DataUnit.MEBIBYTES.toBytes(1);
     private static final long DEFAULT_EXHAUSTION_THRESHOLD_BYTES = DataUnit.GIBIBYTES.toBytes(1);
+    private static final Pattern PATTERN_USER_ID = Pattern.compile("(?i)^/storage/emulated/([0-9]+)");
     private final AtomicInteger mNextNonce = new AtomicInteger(0);
-    private final String[] mAllowedPackagesForDataMvCp = {"com.sec.android.app.vepreload", "com.samsung.app.newtrim", "com.samsung.android.aware.service", Const.SERVICE_PACKAGE, SemShareConstants.GALLERY_PACKAGE, "com.sec.android.mimage.photoretouching", "com.sec.android.app.camera", "com.samsung.android.app.smartcapture", "com.sec.android.easyMover", "com.samsung.android.scloud"};
+    private final String[] mAllowedPackagesForDataMvCp = {"com.sec.android.app.vepreload", "com.samsung.app.newtrim", "com.samsung.android.aware.service", "com.samsung.android.allshare.service.fileshare", SemShareConstants.GALLERY_PACKAGE, "com.sec.android.mimage.photoretouching", "com.sec.android.app.camera", "com.samsung.android.app.smartcapture", "com.sec.android.easyMover", "com.samsung.android.scloud", SemShareConstants.SHARE_LIVE_PKG};
     private final ArrayList<StorageEventListenerDelegate> mDelegates = new ArrayList<>();
     private final ObbActionListener mObbActionListener = new ObbActionListener();
     private final Object mFuseAppLoopLock = new Object();
@@ -199,38 +201,33 @@ public class StorageManager {
     private IActivityManager mActivityManager = ActivityManager.getService();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AllocateFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface AppIoBlockedReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ExtStorageManageMode {
     }
 
-    /* loaded from: classes3.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface MountMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QuotaType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StorageFlags {
     }
 
     private static native boolean setQuotaProjectId(String str, long j);
 
-    /* loaded from: classes3.dex */
-    public class StorageEventListenerDelegate extends IStorageEventListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class StorageEventListenerDelegate extends IStorageEventListener.Stub {
         final StorageVolumeCallback mCallback;
         final Executor mExecutor;
         final StorageEventListener mListener;
@@ -251,13 +248,14 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onUsbMassStorageConnectionChanged$0(boolean connected) {
             this.mListener.onUsbMassStorageConnectionChanged(connected);
         }
 
         @Override // android.os.storage.IStorageEventListener
         public void onStorageStateChanged(final String path, final String oldState, final String newState) {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda2
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onStorageStateChanged$1(path, oldState, newState);
@@ -265,6 +263,7 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onStorageStateChanged$1(String path, String oldState, String newState) {
             this.mListener.onStorageStateChanged(path, oldState, newState);
             if (path != null) {
@@ -278,7 +277,7 @@ public class StorageManager {
 
         @Override // android.os.storage.IStorageEventListener
         public void onVolumeStateChanged(final VolumeInfo vol, final int oldState, final int newState) {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda6
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onVolumeStateChanged$2(vol, oldState, newState);
@@ -286,6 +285,7 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeStateChanged$2(VolumeInfo vol, int oldState, int newState) {
             this.mListener.onVolumeStateChanged(vol, oldState, newState);
             File path = vol.getPathForUser(UserHandle.myUserId());
@@ -300,7 +300,7 @@ public class StorageManager {
 
         @Override // android.os.storage.IStorageEventListener
         public void onVolumeRecordChanged(final VolumeRecord rec) {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda4
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onVolumeRecordChanged$3(rec);
@@ -308,13 +308,14 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeRecordChanged$3(VolumeRecord rec) {
             this.mListener.onVolumeRecordChanged(rec);
         }
 
         @Override // android.os.storage.IStorageEventListener
         public void onVolumeForgotten(final String fsUuid) {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda1
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onVolumeForgotten$4(fsUuid);
@@ -322,13 +323,14 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVolumeForgotten$4(String fsUuid) {
             this.mListener.onVolumeForgotten(fsUuid);
         }
 
         @Override // android.os.storage.IStorageEventListener
         public void onDiskScanned(final DiskInfo disk, final int volumeCount) {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda0
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onDiskScanned$5(disk, volumeCount);
@@ -336,13 +338,14 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDiskScanned$5(DiskInfo disk, int volumeCount) {
             this.mListener.onDiskScanned(disk, volumeCount);
         }
 
         @Override // android.os.storage.IStorageEventListener
         public void onDiskDestroyed(final DiskInfo disk) throws RemoteException {
-            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda3
+            this.mExecutor.execute(new Runnable() { // from class: android.os.storage.StorageManager$StorageEventListenerDelegate$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     StorageManager.StorageEventListenerDelegate.this.lambda$onDiskDestroyed$6(disk);
@@ -350,19 +353,14 @@ public class StorageManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onDiskDestroyed$6(DiskInfo disk) {
             this.mListener.onDiskDestroyed(disk);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public class ObbActionListener extends IObbActionListener.Stub {
+    private class ObbActionListener extends IObbActionListener.Stub {
         private SparseArray<ObbListenerDelegate> mListeners;
-
-        /* synthetic */ ObbActionListener(StorageManager storageManager, ObbActionListenerIA obbActionListenerIA) {
-            this();
-        }
 
         private ObbActionListener() {
             this.mListeners = new SparseArray<>();
@@ -383,7 +381,7 @@ public class StorageManager {
         }
 
         public int addListener(OnObbStateChangeListener listener) {
-            ObbListenerDelegate delegate = new ObbListenerDelegate(listener);
+            ObbListenerDelegate delegate = StorageManager.this.new ObbListenerDelegate(listener);
             synchronized (this.mListeners) {
                 this.mListeners.put(delegate.nonce, delegate);
             }
@@ -391,12 +389,12 @@ public class StorageManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getNextNonce() {
         return this.mNextNonce.getAndIncrement();
     }
 
-    /* loaded from: classes3.dex */
-    public class ObbListenerDelegate {
+    private class ObbListenerDelegate {
         private final Handler mHandler;
         private final WeakReference<OnObbStateChangeListener> mObbEventListenerRef;
         private final int nonce;
@@ -405,14 +403,6 @@ public class StorageManager {
             this.nonce = StorageManager.this.getNextNonce();
             this.mObbEventListenerRef = new WeakReference<>(listener);
             this.mHandler = new Handler(StorageManager.this.mLooper) { // from class: android.os.storage.StorageManager.ObbListenerDelegate.1
-                final /* synthetic */ StorageManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper looper, StorageManager storageManager) {
-                    super(looper);
-                    r3 = storageManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     OnObbStateChangeListener changeListener = ObbListenerDelegate.this.getListener();
@@ -424,34 +414,11 @@ public class StorageManager {
             };
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.os.storage.StorageManager$ObbListenerDelegate$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ StorageManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper looper, StorageManager storageManager) {
-                super(looper);
-                r3 = storageManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                OnObbStateChangeListener changeListener = ObbListenerDelegate.this.getListener();
-                if (changeListener == null) {
-                    return;
-                }
-                changeListener.onObbStateChange((String) msg.obj, msg.arg1);
-            }
-        }
-
         OnObbStateChangeListener getListener() {
-            WeakReference<OnObbStateChangeListener> weakReference = this.mObbEventListenerRef;
-            if (weakReference == null) {
+            if (this.mObbEventListenerRef == null) {
                 return null;
             }
-            return weakReference.get();
+            return this.mObbEventListenerRef.get();
         }
 
         void sendObbStateChanged(String path, int state) {
@@ -468,7 +435,7 @@ public class StorageManager {
         this.mContext = context;
         this.mResolver = context.getContentResolver();
         this.mLooper = looper;
-        this.mAppOps = (AppOpsManager) context.getSystemService(AppOpsManager.class);
+        this.mAppOps = (AppOpsManager) this.mContext.getSystemService(AppOpsManager.class);
     }
 
     public void registerListener(StorageEventListener listener) {
@@ -500,7 +467,6 @@ public class StorageManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class StorageVolumeCallback {
         public void onStateChanged(StorageVolume volume) {
         }
@@ -830,35 +796,10 @@ public class StorageManager {
         }
     }
 
-    /* renamed from: android.os.storage.StorageManager$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends IVoldTaskListener.Stub {
-        final /* synthetic */ CompletableFuture val$result;
-
-        AnonymousClass1(CompletableFuture completableFuture) {
-            result = completableFuture;
-        }
-
-        @Override // android.os.IVoldTaskListener
-        public void onStatus(int status, PersistableBundle extras) {
-        }
-
-        @Override // android.os.IVoldTaskListener
-        public void onFinished(int status, PersistableBundle extras) {
-            result.complete(extras);
-        }
-    }
-
     @Deprecated
     public long benchmark(String volId) {
-        CompletableFuture<PersistableBundle> result = new CompletableFuture<>();
+        final CompletableFuture<PersistableBundle> result = new CompletableFuture<>();
         benchmark(volId, new IVoldTaskListener.Stub() { // from class: android.os.storage.StorageManager.1
-            final /* synthetic */ CompletableFuture val$result;
-
-            AnonymousClass1(CompletableFuture result2) {
-                result = result2;
-            }
-
             @Override // android.os.IVoldTaskListener
             public void onStatus(int status, PersistableBundle extras) {
             }
@@ -869,7 +810,7 @@ public class StorageManager {
             }
         });
         try {
-            return result2.get(3L, TimeUnit.MINUTES).getLong("run", Long.MAX_VALUE) * 1000000;
+            return result.get(3L, TimeUnit.MINUTES).getLong("run", Long.MAX_VALUE) * 1000000;
         } catch (Exception e) {
             return Long.MAX_VALUE;
         }
@@ -983,7 +924,7 @@ public class StorageManager {
 
     /* JADX WARN: Code restructure failed: missing block: B:34:0x0084, code lost:
     
-        if (r0.equals("external_primary") != false) goto L105;
+        if (r0.equals("external_primary") != false) goto L34;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -1062,6 +1003,14 @@ public class StorageManager {
 
     public long getPrimaryStorageSize() {
         return FileUtils.roundStorageSize(Environment.getDataDirectory().getTotalSpace() + Environment.getRootDirectory().getTotalSpace());
+    }
+
+    public long getInternalStorageBlockDeviceSize() {
+        try {
+            return this.mStorageManager.getInternalStorageBlockDeviceSize();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     public void mkdirs(File file) {
@@ -1167,33 +1116,33 @@ public class StorageManager {
         return Settings.Global.getLong(this.mResolver, Settings.Global.SYS_STORAGE_FULL_THRESHOLD_BYTES, DEFAULT_FULL_THRESHOLD_BYTES);
     }
 
-    public void createUserKey(int userId, int serialNumber, boolean ephemeral) {
+    public void createUserStorageKeys(int userId, boolean ephemeral) {
         try {
-            this.mStorageManager.createUserKey(userId, serialNumber, ephemeral);
+            this.mStorageManager.createUserStorageKeys(userId, ephemeral);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public void destroyUserKey(int userId) {
+    public void destroyUserStorageKeys(int userId) {
         try {
-            this.mStorageManager.destroyUserKey(userId);
+            this.mStorageManager.destroyUserStorageKeys(userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public void lockUserKey(int userId) {
+    public void lockCeStorage(int userId) {
         try {
-            this.mStorageManager.lockUserKey(userId);
+            this.mStorageManager.lockCeStorage(userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    public void prepareUserStorage(String volumeUuid, int userId, int serialNumber, int flags) {
+    public void prepareUserStorage(String volumeUuid, int userId, int flags) {
         try {
-            this.mStorageManager.prepareUserStorage(volumeUuid, userId, serialNumber, flags);
+            this.mStorageManager.prepareUserStorage(volumeUuid, userId, flags);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1207,18 +1156,18 @@ public class StorageManager {
         }
     }
 
-    public static boolean isUserKeyUnlocked(int userId) {
+    public static boolean isCeStorageUnlocked(int userId) {
         if (sStorageManager == null) {
             sStorageManager = IStorageManager.Stub.asInterface(ServiceManager.getService(AudioParameter.VALUE_MOUNT));
         }
         if (sStorageManager == null) {
-            Slog.w(TAG, "Early during boot, assuming locked");
+            Slog.w(TAG, "Early during boot, assuming CE storage is locked");
             return false;
         }
         long token = Binder.clearCallingIdentity();
         try {
             try {
-                return sStorageManager.isUserKeyUnlocked(userId);
+                return sStorageManager.isCeStorageUnlocked(userId);
             } catch (RemoteException e) {
                 throw e.rethrowAsRuntimeException();
             }
@@ -1246,16 +1195,6 @@ public class StorageManager {
             return false;
         }
         return RoSystemProperties.CRYPTO_FILE_ENCRYPTED;
-    }
-
-    @Deprecated
-    public static boolean isFileEncryptedNativeOnly() {
-        return isFileEncrypted();
-    }
-
-    @Deprecated
-    public static boolean isFileEncryptedNativeOrEmulated() {
-        return isFileEncrypted();
     }
 
     public static boolean hasAdoptable() {
@@ -1393,7 +1332,6 @@ public class StorageManager {
                         if (pfd == null) {
                             this.mFuseAppLoop.unregisterCallback(fileId);
                             throw new FuseUnavailableMountException(this.mFuseAppLoop.getMountPointId());
-                            break;
                         }
                     } catch (FuseUnavailableMountException exception) {
                         if (newlyCreated) {
@@ -1421,8 +1359,7 @@ public class StorageManager {
     public int getProxyFileDescriptorMountPointId() {
         int mountPointId;
         synchronized (this.mFuseAppLoopLock) {
-            FuseAppLoop fuseAppLoop = this.mFuseAppLoop;
-            mountPointId = fuseAppLoop != null ? fuseAppLoop.getMountPointId() : -1;
+            mountPointId = this.mFuseAppLoop != null ? this.mFuseAppLoop.getMountPointId() : -1;
         }
         return mountPointId;
     }
@@ -1534,43 +1471,51 @@ public class StorageManager {
 
     @SystemApi
     public void updateExternalStorageFileQuotaType(File path, int quotaType) throws IOException {
+        int volFlags;
         long projectId;
-        String filePath = path.getCanonicalPath();
-        int volFlags = 1536;
-        if (this.mContext.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == 0) {
-            volFlags = 1536 | 4096;
-        }
-        StorageVolume[] availableVolumes = getVolumeList(this.mContext.getUserId(), volFlags);
-        StorageVolume volume = getStorageVolume(availableVolumes, path);
-        if (volume == null) {
-            Log.w(TAG, "Failed to update quota type for " + filePath);
-            return;
-        }
-        if (!volume.isEmulated()) {
-            return;
-        }
-        int userId = volume.getOwner().getIdentifier();
-        if (userId < 0) {
-            throw new IllegalStateException("Failed to update quota type for " + filePath);
-        }
-        switch (quotaType) {
-            case 0:
-                projectId = getProjectIdForUser(userId, 1000);
-                break;
-            case 1:
-                projectId = getProjectIdForUser(userId, 1003);
-                break;
-            case 2:
-                projectId = getProjectIdForUser(userId, 1001);
-                break;
-            case 3:
-                projectId = getProjectIdForUser(userId, 1002);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid quota type: " + quotaType);
-        }
-        if (!setQuotaProjectId(filePath, projectId)) {
-            throw new IOException("Failed to update quota type for " + filePath);
+        if (path.exists()) {
+            String filePath = path.getCanonicalPath();
+            Matcher matcher = PATTERN_USER_ID.matcher(filePath);
+            if (matcher.find()) {
+                volFlags = Integer.parseInt(matcher.group(1));
+            } else {
+                int volFlags2 = 1536;
+                if (this.mContext.checkSelfPermission(Manifest.permission.MANAGE_EXTERNAL_STORAGE) == 0) {
+                    volFlags2 = 1536 | 4096;
+                }
+                StorageVolume[] availableVolumes = getVolumeList(this.mContext.getUserId(), volFlags2);
+                StorageVolume volume = getStorageVolume(availableVolumes, path);
+                if (volume == null) {
+                    Log.w(TAG, "Failed to update quota type for " + filePath);
+                    return;
+                } else if (!volume.isEmulated()) {
+                    return;
+                } else {
+                    volFlags = volume.getOwner().getIdentifier();
+                }
+            }
+            if (volFlags < 0) {
+                throw new IllegalStateException("Failed to update quota type for " + filePath);
+            }
+            switch (quotaType) {
+                case 0:
+                    projectId = getProjectIdForUser(volFlags, 1000);
+                    break;
+                case 1:
+                    projectId = getProjectIdForUser(volFlags, 1003);
+                    break;
+                case 2:
+                    projectId = getProjectIdForUser(volFlags, 1001);
+                    break;
+                case 3:
+                    projectId = getProjectIdForUser(volFlags, 1002);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid quota type: " + quotaType);
+            }
+            if (!setQuotaProjectId(filePath, projectId)) {
+                throw new IOException("Failed to update quota type for " + filePath);
+            }
         }
     }
 
@@ -1721,6 +1666,15 @@ public class StorageManager {
     public String getCloudMediaProvider() {
         try {
             return this.mStorageManager.getCloudMediaProvider();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public int getInternalStorageRemainingLifetime() {
+        try {
+            return this.mStorageManager.getInternalStorageRemainingLifetime();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

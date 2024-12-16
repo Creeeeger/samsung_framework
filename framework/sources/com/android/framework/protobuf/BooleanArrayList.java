@@ -5,23 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.RandomAccess;
 
-/* loaded from: classes4.dex */
-public final class BooleanArrayList extends AbstractProtobufList<Boolean> implements Internal.BooleanList, RandomAccess, PrimitiveNonBoxingCollection {
-    private static final BooleanArrayList EMPTY_LIST;
+/* loaded from: classes3.dex */
+final class BooleanArrayList extends AbstractProtobufList<Boolean> implements Internal.BooleanList, RandomAccess, PrimitiveNonBoxingCollection {
+    private static final BooleanArrayList EMPTY_LIST = new BooleanArrayList(new boolean[0], 0);
     private boolean[] array;
     private int size;
 
     static {
-        BooleanArrayList booleanArrayList = new BooleanArrayList(new boolean[0], 0);
-        EMPTY_LIST = booleanArrayList;
-        booleanArrayList.makeImmutable();
+        EMPTY_LIST.makeImmutable();
     }
 
     public static BooleanArrayList emptyList() {
         return EMPTY_LIST;
     }
 
-    public BooleanArrayList() {
+    BooleanArrayList() {
         this(new boolean[10], 0);
     }
 
@@ -36,8 +34,7 @@ public final class BooleanArrayList extends AbstractProtobufList<Boolean> implem
         if (toIndex < fromIndex) {
             throw new IndexOutOfBoundsException("toIndex < fromIndex");
         }
-        boolean[] zArr = this.array;
-        System.arraycopy(zArr, toIndex, zArr, fromIndex, this.size - toIndex);
+        System.arraycopy(this.array, toIndex, this.array, fromIndex, this.size - toIndex);
         this.size -= toIndex - fromIndex;
         this.modCount++;
     }
@@ -126,9 +123,8 @@ public final class BooleanArrayList extends AbstractProtobufList<Boolean> implem
     public boolean setBoolean(int index, boolean element) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        boolean[] zArr = this.array;
-        boolean previousValue = zArr[index];
-        zArr[index] = element;
+        boolean previousValue = this.array[index];
+        this.array[index] = element;
         return previousValue;
     }
 
@@ -146,33 +142,29 @@ public final class BooleanArrayList extends AbstractProtobufList<Boolean> implem
     @Override // com.android.framework.protobuf.Internal.BooleanList
     public void addBoolean(boolean element) {
         ensureIsMutable();
-        int i = this.size;
-        boolean[] zArr = this.array;
-        if (i == zArr.length) {
-            int length = ((i * 3) / 2) + 1;
+        if (this.size == this.array.length) {
+            int length = ((this.size * 3) / 2) + 1;
             boolean[] newArray = new boolean[length];
-            System.arraycopy(zArr, 0, newArray, 0, i);
+            System.arraycopy(this.array, 0, newArray, 0, this.size);
             this.array = newArray;
         }
-        boolean[] zArr2 = this.array;
-        int i2 = this.size;
-        this.size = i2 + 1;
-        zArr2[i2] = element;
+        boolean[] zArr = this.array;
+        int i = this.size;
+        this.size = i + 1;
+        zArr[i] = element;
     }
 
     private void addBoolean(int index, boolean element) {
-        int i;
         ensureIsMutable();
-        if (index < 0 || index > (i = this.size)) {
+        if (index < 0 || index > this.size) {
             throw new IndexOutOfBoundsException(makeOutOfBoundsExceptionMessage(index));
         }
-        boolean[] zArr = this.array;
-        if (i < zArr.length) {
-            System.arraycopy(zArr, index, zArr, index + 1, i - index);
+        if (this.size < this.array.length) {
+            System.arraycopy(this.array, index, this.array, index + 1, this.size - index);
         } else {
-            int length = ((i * 3) / 2) + 1;
+            int length = ((this.size * 3) / 2) + 1;
             boolean[] newArray = new boolean[length];
-            System.arraycopy(zArr, 0, newArray, 0, index);
+            System.arraycopy(this.array, 0, newArray, 0, index);
             System.arraycopy(this.array, index, newArray, index + 1, this.size - index);
             this.array = newArray;
         }
@@ -189,19 +181,16 @@ public final class BooleanArrayList extends AbstractProtobufList<Boolean> implem
             return super.addAll(collection);
         }
         BooleanArrayList list = (BooleanArrayList) collection;
-        int i = list.size;
-        if (i == 0) {
+        if (list.size == 0) {
             return false;
         }
-        int i2 = this.size;
-        int overflow = Integer.MAX_VALUE - i2;
-        if (overflow < i) {
+        int overflow = Integer.MAX_VALUE - this.size;
+        if (overflow < list.size) {
             throw new OutOfMemoryError();
         }
-        int newSize = i2 + i;
-        boolean[] zArr = this.array;
-        if (newSize > zArr.length) {
-            this.array = Arrays.copyOf(zArr, newSize);
+        int newSize = this.size + list.size;
+        if (newSize > this.array.length) {
+            this.array = Arrays.copyOf(this.array, newSize);
         }
         System.arraycopy(list.array, 0, this.array, this.size, list.size);
         this.size = newSize;
@@ -213,10 +202,9 @@ public final class BooleanArrayList extends AbstractProtobufList<Boolean> implem
     public Boolean remove(int index) {
         ensureIsMutable();
         ensureIndexInRange(index);
-        boolean[] zArr = this.array;
-        boolean value = zArr[index];
+        boolean value = this.array[index];
         if (index < this.size - 1) {
-            System.arraycopy(zArr, index + 1, zArr, index, (r2 - index) - 1);
+            System.arraycopy(this.array, index + 1, this.array, index, (this.size - index) - 1);
         }
         this.size--;
         this.modCount++;

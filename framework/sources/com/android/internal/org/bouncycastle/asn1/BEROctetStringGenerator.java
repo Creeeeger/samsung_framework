@@ -23,8 +23,7 @@ public class BEROctetStringGenerator extends BERGenerator {
         return new BufferedBEROctetStream(buf);
     }
 
-    /* loaded from: classes5.dex */
-    public class BufferedBEROctetStream extends OutputStream {
+    private class BufferedBEROctetStream extends OutputStream {
         private byte[] _buf;
         private DEROutputStream _derOut;
         private int _off = 0;
@@ -38,11 +37,10 @@ public class BEROctetStringGenerator extends BERGenerator {
         public void write(int b) throws IOException {
             byte[] bArr = this._buf;
             int i = this._off;
-            int i2 = i + 1;
-            this._off = i2;
+            this._off = i + 1;
             bArr[i] = (byte) b;
-            if (i2 == bArr.length) {
-                DEROctetString.encode(this._derOut, true, bArr, 0, bArr.length);
+            if (this._off == this._buf.length) {
+                DEROctetString.encode(this._derOut, true, this._buf, 0, this._buf.length);
                 this._off = 0;
             }
         }
@@ -52,11 +50,9 @@ public class BEROctetStringGenerator extends BERGenerator {
             while (len > 0) {
                 int numToCopy = Math.min(len, this._buf.length - this._off);
                 System.arraycopy(b, off, this._buf, this._off, numToCopy);
-                int i = this._off + numToCopy;
-                this._off = i;
-                byte[] bArr = this._buf;
-                if (i >= bArr.length) {
-                    DEROctetString.encode(this._derOut, true, bArr, 0, bArr.length);
+                this._off += numToCopy;
+                if (this._off >= this._buf.length) {
+                    DEROctetString.encode(this._derOut, true, this._buf, 0, this._buf.length);
                     this._off = 0;
                     off += numToCopy;
                     len -= numToCopy;
@@ -68,9 +64,8 @@ public class BEROctetStringGenerator extends BERGenerator {
 
         @Override // java.io.OutputStream, java.io.Closeable, java.lang.AutoCloseable
         public void close() throws IOException {
-            int i = this._off;
-            if (i != 0) {
-                DEROctetString.encode(this._derOut, true, this._buf, 0, i);
+            if (this._off != 0) {
+                DEROctetString.encode(this._derOut, true, this._buf, 0, this._off);
             }
             this._derOut.flushInternal();
             BEROctetStringGenerator.this.writeBEREnd();

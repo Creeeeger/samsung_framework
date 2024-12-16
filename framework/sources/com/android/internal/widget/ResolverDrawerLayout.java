@@ -1,6 +1,7 @@
 package com.android.internal.widget;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -48,6 +49,7 @@ public class ResolverDrawerLayout extends ViewGroup {
     private int mMaxCollapsedHeight;
     private int mMaxCollapsedHeightSmall;
     private int mMaxWidth;
+    private int mMaxWidthResId;
     private MetricsLogger mMetricsLogger;
     private final float mMinFlingVelocity;
     private AbsListView mNestedListChild;
@@ -68,33 +70,12 @@ public class ResolverDrawerLayout extends ViewGroup {
     private int mUncollapsibleHeight;
     private final VelocityTracker mVelocityTracker;
 
-    /* loaded from: classes5.dex */
     public interface OnCollapsedChangedListener {
         void onCollapsedChanged(boolean z);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnDismissedListener {
         void onDismissed();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.ResolverDrawerLayout$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements ViewTreeObserver.OnTouchModeChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewTreeObserver.OnTouchModeChangeListener
-        public void onTouchModeChanged(boolean isInTouchMode) {
-            if (isInTouchMode || !ResolverDrawerLayout.this.hasFocus()) {
-                return;
-            }
-            ResolverDrawerLayout resolverDrawerLayout = ResolverDrawerLayout.this;
-            if (resolverDrawerLayout.isDescendantClipped(resolverDrawerLayout.getFocusedChild())) {
-                ResolverDrawerLayout.this.smoothScrollTo(0, 0.0f);
-            }
-        }
     }
 
     public ResolverDrawerLayout(Context context) {
@@ -112,25 +93,18 @@ public class ResolverDrawerLayout extends ViewGroup {
         this.mActivePointerId = -1;
         this.mTempRect = new Rect();
         this.mTouchModeChangeListener = new ViewTreeObserver.OnTouchModeChangeListener() { // from class: com.android.internal.widget.ResolverDrawerLayout.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.ViewTreeObserver.OnTouchModeChangeListener
             public void onTouchModeChanged(boolean isInTouchMode) {
-                if (isInTouchMode || !ResolverDrawerLayout.this.hasFocus()) {
-                    return;
-                }
-                ResolverDrawerLayout resolverDrawerLayout = ResolverDrawerLayout.this;
-                if (resolverDrawerLayout.isDescendantClipped(resolverDrawerLayout.getFocusedChild())) {
+                if (!isInTouchMode && ResolverDrawerLayout.this.hasFocus() && ResolverDrawerLayout.this.isDescendantClipped(ResolverDrawerLayout.this.getFocusedChild())) {
                     ResolverDrawerLayout.this.smoothScrollTo(0, 0.0f);
                 }
             }
         };
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ResolverDrawerLayout, defStyleAttr, 0);
+        this.mMaxWidthResId = a.getResourceId(0, -1);
         this.mMaxWidth = a.getDimensionPixelSize(0, -1);
-        int dimensionPixelSize = a.getDimensionPixelSize(2, 0);
-        this.mMaxCollapsedHeight = dimensionPixelSize;
-        this.mMaxCollapsedHeightSmall = a.getDimensionPixelSize(3, dimensionPixelSize);
+        this.mMaxCollapsedHeight = a.getDimensionPixelSize(2, 0);
+        this.mMaxCollapsedHeightSmall = a.getDimensionPixelSize(3, this.mMaxCollapsedHeight);
         this.mIsMaxCollapsedHeightSmallExplicit = a.hasValue(3);
         this.mShowAtTop = a.getBoolean(4, false);
         if (a.hasValue(1)) {
@@ -152,7 +126,7 @@ public class ResolverDrawerLayout extends ViewGroup {
         }
         this.mMaxCollapsedHeight = heightInPixels;
         if (!this.mIsMaxCollapsedHeightSmallExplicit) {
-            this.mMaxCollapsedHeightSmall = heightInPixels;
+            this.mMaxCollapsedHeightSmall = this.mMaxCollapsedHeight;
         }
         requestLayout();
     }
@@ -194,7 +168,7 @@ public class ResolverDrawerLayout extends ViewGroup {
     public void setCollapsibleHeightReserved(int heightPixels) {
         int oldReserved = this.mCollapsibleHeightReserved;
         this.mCollapsibleHeightReserved = heightPixels;
-        if (oldReserved != heightPixels) {
+        if (oldReserved != this.mCollapsibleHeightReserved) {
             requestLayout();
         }
         int dReserved = this.mCollapsibleHeightReserved - oldReserved;
@@ -222,7 +196,6 @@ public class ResolverDrawerLayout extends ViewGroup {
     }
 
     private boolean updateCollapseOffset(int oldCollapsibleHeight, boolean remainClosed) {
-        int i;
         if (oldCollapsibleHeight == this.mCollapsibleHeight) {
             return false;
         }
@@ -231,12 +204,11 @@ public class ResolverDrawerLayout extends ViewGroup {
             return false;
         }
         if (isLaidOut()) {
-            float f = this.mCollapseOffset;
-            boolean isCollapsedOld = f != 0.0f;
-            if (remainClosed && oldCollapsibleHeight < (i = this.mCollapsibleHeight) && f == oldCollapsibleHeight) {
-                setCollapseOffset(i);
+            boolean isCollapsedOld = this.mCollapseOffset != 0.0f;
+            if (remainClosed && oldCollapsibleHeight < this.mCollapsibleHeight && this.mCollapseOffset == oldCollapsibleHeight) {
+                setCollapseOffset(this.mCollapsibleHeight);
             } else {
-                setCollapseOffset(Math.min(f, this.mCollapsibleHeight));
+                setCollapseOffset(Math.min(this.mCollapseOffset, this.mCollapsibleHeight));
             }
             boolean isCollapsedNew = this.mCollapseOffset != 0.0f;
             if (isCollapsedOld != isCollapsedNew) {
@@ -298,9 +270,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                 if (Math.abs(dy) > this.mTouchSlop && findChildUnder(x2, y2) != null && (getNestedScrollAxes() & 2) == 0) {
                     this.mActivePointerId = ev.getPointerId(0);
                     this.mIsDragging = true;
-                    float f = this.mLastTouchY;
-                    int i = this.mTouchSlop;
-                    this.mLastTouchY = Math.max(f - i, Math.min(f + dy, f + i));
+                    this.mLastTouchY = Math.max(this.mLastTouchY - this.mTouchSlop, Math.min(this.mLastTouchY + dy, this.mLastTouchY + this.mTouchSlop));
                     break;
                 }
                 break;
@@ -315,16 +285,14 @@ public class ResolverDrawerLayout extends ViewGroup {
     }
 
     private boolean isNestedListChildScrolled() {
-        AbsListView absListView = this.mNestedListChild;
-        if (absListView == null || absListView.getChildCount() <= 0) {
+        if (this.mNestedListChild == null || this.mNestedListChild.getChildCount() <= 0) {
             return false;
         }
         return this.mNestedListChild.getFirstVisiblePosition() > 0 || this.mNestedListChild.getChildAt(0).getTop() < 0;
     }
 
     private boolean isNestedRecyclerChildScrolled() {
-        RecyclerView recyclerView = this.mNestedRecyclerChild;
-        if (recyclerView == null || recyclerView.getChildCount() <= 0) {
+        if (this.mNestedRecyclerChild == null || this.mNestedRecyclerChild.getChildCount() <= 0) {
             return false;
         }
         RecyclerView.ViewHolder vh = this.mNestedRecyclerChild.findViewHolderForAdapterPosition(0);
@@ -372,22 +340,15 @@ public class ResolverDrawerLayout extends ViewGroup {
                         } else {
                             smoothScrollTo(yvel >= 0.0f ? this.mCollapsibleHeight : 0, yvel);
                         }
+                    } else if (isDismissable() && yvel > 0.0f && this.mCollapseOffset > this.mCollapsibleHeight) {
+                        smoothScrollTo(this.mCollapsibleHeight + this.mUncollapsibleHeight, yvel);
+                        this.mDismissOnScrollerFinished = true;
                     } else {
-                        if (isDismissable() && yvel > 0.0f) {
-                            float f = this.mCollapseOffset;
-                            int i = this.mCollapsibleHeight;
-                            if (f > i) {
-                                smoothScrollTo(i + this.mUncollapsibleHeight, yvel);
-                                this.mDismissOnScrollerFinished = true;
-                            }
-                        }
                         scrollNestedScrollableChildBackToTop();
                         smoothScrollTo(yvel >= 0.0f ? this.mCollapsibleHeight : 0, yvel);
                     }
                 } else {
-                    float f2 = this.mCollapseOffset;
-                    int i2 = this.mCollapsibleHeight;
-                    smoothScrollTo(f2 >= ((float) (i2 / 2)) ? i2 : 0, 0.0f);
+                    smoothScrollTo(this.mCollapseOffset >= ((float) (this.mCollapsibleHeight / 2)) ? this.mCollapsibleHeight : 0, 0.0f);
                 }
                 resetTouch();
                 return handled;
@@ -409,9 +370,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                     if (Math.abs(dy) > this.mTouchSlop && findChildUnder(x2, y3) != null) {
                         this.mIsDragging = true;
                         handled = true;
-                        float f3 = this.mLastTouchY;
-                        int i3 = this.mTouchSlop;
-                        this.mLastTouchY = Math.max(f3 - i3, Math.min(f3 + dy, f3 + i3));
+                        this.mLastTouchY = Math.max(this.mLastTouchY - this.mTouchSlop, Math.min(this.mLastTouchY + dy, this.mLastTouchY + this.mTouchSlop));
                     }
                 }
                 if (this.mIsDragging) {
@@ -428,9 +387,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                 return handled;
             case 3:
                 if (this.mIsDragging) {
-                    float f4 = this.mCollapseOffset;
-                    int i4 = this.mCollapsibleHeight;
-                    smoothScrollTo(f4 >= ((float) (i4 / 2)) ? i4 : 0, 0.0f);
+                    smoothScrollTo(this.mCollapseOffset >= ((float) (this.mCollapsibleHeight / 2)) ? this.mCollapsibleHeight : 0, 0.0f);
                 }
                 resetTouch();
                 return true;
@@ -483,9 +440,8 @@ public class ResolverDrawerLayout extends ViewGroup {
     }
 
     private void dismiss() {
-        RunOnDismissedListener runOnDismissedListener = new RunOnDismissedListener();
-        this.mRunOnDismissedListener = runOnDismissedListener;
-        post(runOnDismissedListener);
+        this.mRunOnDismissedListener = new RunOnDismissedListener();
+        post(this.mRunOnDismissedListener);
     }
 
     @Override // android.view.View
@@ -513,18 +469,16 @@ public class ResolverDrawerLayout extends ViewGroup {
             return 0.0f;
         }
         float newPos = Math.max(0.0f, Math.min(this.mCollapseOffset + dy, this.mCollapsibleHeight + this.mUncollapsibleHeight));
-        float f = this.mCollapseOffset;
-        if (newPos == f) {
+        if (newPos == this.mCollapseOffset) {
             return 0.0f;
         }
-        float dy2 = newPos - f;
-        float f2 = this.mDragRemainder + (dy2 - ((int) dy2));
-        this.mDragRemainder = f2;
-        if (f2 >= 1.0f) {
-            this.mDragRemainder = f2 - 1.0f;
+        float dy2 = newPos - this.mCollapseOffset;
+        this.mDragRemainder += dy2 - ((int) dy2);
+        if (this.mDragRemainder >= 1.0f) {
+            this.mDragRemainder -= 1.0f;
             dy2 += 1.0f;
-        } else if (f2 <= -1.0f) {
-            this.mDragRemainder = f2 + 1.0f;
+        } else if (this.mDragRemainder <= -1.0f) {
+            this.mDragRemainder += 1.0f;
             dy2 -= 1.0f;
         }
         boolean isIgnoreOffsetLimitSet = false;
@@ -569,30 +523,28 @@ public class ResolverDrawerLayout extends ViewGroup {
         if (this.mScrollIndicatorDrawable != null) {
             setWillNotDraw(!isCollapsed);
         }
-        OnCollapsedChangedListener onCollapsedChangedListener = this.mOnCollapsedChangedListener;
-        if (onCollapsedChangedListener != null) {
-            onCollapsedChangedListener.onCollapsedChanged(isCollapsed);
+        if (this.mOnCollapsedChangedListener != null) {
+            this.mOnCollapsedChangedListener.onCollapsedChanged(isCollapsed);
         }
     }
 
     void dispatchOnDismissed() {
-        OnDismissedListener onDismissedListener = this.mOnDismissedListener;
-        if (onDismissedListener != null) {
-            onDismissedListener.onDismissed();
+        if (this.mOnDismissedListener != null) {
+            this.mOnDismissedListener.onDismissed();
         }
-        RunOnDismissedListener runOnDismissedListener = this.mRunOnDismissedListener;
-        if (runOnDismissedListener != null) {
-            removeCallbacks(runOnDismissedListener);
+        if (this.mRunOnDismissedListener != null) {
+            removeCallbacks(this.mRunOnDismissedListener);
             this.mRunOnDismissedListener = null;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void smoothScrollTo(int yOffset, float velocity) {
         int duration;
         abortAnimation();
         int sy = (int) this.mCollapseOffset;
         int dy = yOffset - sy;
-        if (dy == 0) {
+        if (yOffset == 0 && dy == 0) {
             return;
         }
         int height = getHeight();
@@ -647,6 +599,7 @@ public class ResolverDrawerLayout extends ViewGroup {
         return listChild != null && isDescendantClipped(listChild);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isDescendantClipped(View child) {
         View v;
         this.mTempRect.set(0, 0, child.getWidth(), child.getHeight());
@@ -690,13 +643,13 @@ public class ResolverDrawerLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnTouchModeChangeListener(this.mTouchModeChangeListener);
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         getViewTreeObserver().removeOnTouchModeChangeListener(this.mTouchModeChangeListener);
         abortAnimation();
@@ -726,12 +679,7 @@ public class ResolverDrawerLayout extends ViewGroup {
     public void onStopNestedScroll(View child) {
         super.onStopNestedScroll(child);
         if (this.mScroller.isFinished()) {
-            float f = this.mCollapseOffset;
-            int i = this.mCollapsibleHeight;
-            if (f < i / 2) {
-                i = 0;
-            }
-            smoothScrollTo(i, 0.0f);
+            smoothScrollTo(this.mCollapseOffset < ((float) (this.mCollapsibleHeight / 2)) ? 0 : this.mCollapsibleHeight, 0.0f);
         }
     }
 
@@ -770,15 +718,10 @@ public class ResolverDrawerLayout extends ViewGroup {
             } else {
                 smoothScrollTo(velocityY < 0.0f ? this.mCollapsibleHeight : 0, velocityY);
             }
+        } else if (isDismissable() && velocityY < 0.0f && this.mCollapseOffset > this.mCollapsibleHeight) {
+            smoothScrollTo(this.mCollapsibleHeight + this.mUncollapsibleHeight, velocityY);
+            this.mDismissOnScrollerFinished = true;
         } else {
-            if (isDismissable() && velocityY < 0.0f) {
-                float f = this.mCollapseOffset;
-                int i = this.mCollapsibleHeight;
-                if (f > i) {
-                    smoothScrollTo(i + this.mUncollapsibleHeight, velocityY);
-                    this.mDismissOnScrollerFinished = true;
-                }
-            }
             smoothScrollTo(velocityY <= 0.0f ? this.mCollapsibleHeight : 0, velocityY);
         }
         return true;
@@ -796,10 +739,8 @@ public class ResolverDrawerLayout extends ViewGroup {
                 }
                 return false;
             case 524288:
-                float f = this.mCollapseOffset;
-                int i = this.mCollapsibleHeight;
-                if (f < i) {
-                    smoothScrollTo(i, 0.0f);
+                if (this.mCollapseOffset < this.mCollapsibleHeight) {
+                    smoothScrollTo(this.mCollapsibleHeight, 0.0f);
                     return true;
                 }
                 return false;
@@ -838,9 +779,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                 info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_DOWN);
                 info.setScrollable(true);
             }
-            float f = this.mCollapseOffset;
-            int i = this.mCollapsibleHeight;
-            if (f < this.mUncollapsibleHeight + i && (f < i || isDismissable())) {
+            if (this.mCollapseOffset < this.mCollapsibleHeight + this.mUncollapsibleHeight && (this.mCollapseOffset < this.mCollapsibleHeight || isDismissable())) {
                 info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_UP);
                 info.setScrollable(true);
             }
@@ -867,15 +806,14 @@ public class ResolverDrawerLayout extends ViewGroup {
 
     @Override // android.view.View
     public void onDrawForeground(Canvas canvas) {
-        Drawable drawable = this.mScrollIndicatorDrawable;
-        if (drawable != null) {
-            drawable.draw(canvas);
+        if (this.mScrollIndicatorDrawable != null) {
+            this.mScrollIndicatorDrawable.draw(canvas);
         }
         super.onDrawForeground(canvas);
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize;
         int i;
         int i2;
@@ -886,9 +824,8 @@ public class ResolverDrawerLayout extends ViewGroup {
         int i7;
         int sourceWidth = View.MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
-        int i8 = this.mMaxWidth;
-        if (i8 >= 0) {
-            int widthSize2 = Math.min(sourceWidth, i8 + getPaddingLeft() + getPaddingRight());
+        if (this.mMaxWidth >= 0) {
+            int widthSize2 = Math.min(sourceWidth, this.mMaxWidth + getPaddingLeft() + getPaddingRight());
             widthSize = widthSize2;
         } else {
             widthSize = sourceWidth;
@@ -897,16 +834,16 @@ public class ResolverDrawerLayout extends ViewGroup {
         int heightSpec = View.MeasureSpec.makeMeasureSpec(heightSize, 1073741824);
         int childCount = getChildCount();
         int heightUsed = 0;
-        int i9 = 0;
+        int i8 = 0;
         while (true) {
             i = Integer.MIN_VALUE;
             i2 = -1;
             i3 = 8;
             i4 = 0;
-            if (i9 >= childCount) {
+            if (i8 >= childCount) {
                 break;
             }
-            View child = getChildAt(i9);
+            View child = getChildAt(i8);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             if (lp.alwaysShow && child.getVisibility() != 8) {
                 if (lp.maxHeight != -1) {
@@ -917,7 +854,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                 }
                 heightUsed += child.getMeasuredHeight();
             }
-            i9++;
+            i8++;
         }
         this.mAlwaysShowHeight = heightUsed;
         int heightUsed2 = heightUsed;
@@ -947,20 +884,19 @@ public class ResolverDrawerLayout extends ViewGroup {
             }
             heightUsed3++;
             i4 = i5;
-            i3 = i6;
             i2 = i7;
+            i3 = i6;
             i = Integer.MIN_VALUE;
         }
-        int i10 = i4;
+        int i9 = i4;
         int oldCollapsibleHeight = this.mCollapsibleHeight;
-        int max = Math.max(i10, (heightUsed2 - this.mAlwaysShowHeight) - getMaxCollapsedHeight());
-        this.mCollapsibleHeight = max;
-        this.mUncollapsibleHeight = heightUsed2 - max;
+        this.mCollapsibleHeight = Math.max(i9, (heightUsed2 - this.mAlwaysShowHeight) - getMaxCollapsedHeight());
+        this.mUncollapsibleHeight = heightUsed2 - this.mCollapsibleHeight;
         updateCollapseOffset(oldCollapsibleHeight, !isDragging());
         if (!getShowAtTop()) {
-            this.mTopOffset = Math.max(i10, heightSize - heightUsed2) + ((int) this.mCollapseOffset);
+            this.mTopOffset = Math.max(i9, heightSize - heightUsed2) + ((int) this.mCollapseOffset);
         } else {
-            this.mTopOffset = i10;
+            this.mTopOffset = i9;
         }
         setMeasuredDimension(sourceWidth, heightSize);
     }
@@ -969,8 +905,16 @@ public class ResolverDrawerLayout extends ViewGroup {
         return this.mAlwaysShowHeight;
     }
 
+    @Override // android.view.View
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.mMaxWidthResId > 0) {
+            this.mMaxWidth = getResources().getDimensionPixelSize(this.mMaxWidthResId);
+        }
+    }
+
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int width;
         View indicatorHost;
         int width2 = getWidth();
@@ -993,8 +937,7 @@ public class ResolverDrawerLayout extends ViewGroup {
                 width = width2;
                 indicatorHost = indicatorHost2;
             } else {
-                int i2 = this.mIgnoreOffsetTopLimitViewId;
-                if (i2 != 0 && !isIgnoreOffsetLimitSet && i2 == child.getId()) {
+                if (this.mIgnoreOffsetTopLimitViewId != 0 && !isIgnoreOffsetLimitSet && this.mIgnoreOffsetTopLimitViewId == child.getId()) {
                     ignoreOffsetLimit = child.getBottom() + lp.bottomMargin;
                     isIgnoreOffsetLimitSet = true;
                 }
@@ -1062,6 +1005,7 @@ public class ResolverDrawerLayout extends ViewGroup {
         return new LayoutParams(-1, -2);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         SavedState ss = new SavedState(super.onSaveInstanceState());
@@ -1070,6 +1014,7 @@ public class ResolverDrawerLayout extends ViewGroup {
         return ss;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
@@ -1080,14 +1025,12 @@ public class ResolverDrawerLayout extends ViewGroup {
 
     private View findIgnoreOffsetLimitView() {
         View v;
-        int i = this.mIgnoreOffsetTopLimitViewId;
-        if (i == 0 || (v = findViewById(i)) == null || v == this || v.getParent() != this || v.getVisibility() == 8) {
+        if (this.mIgnoreOffsetTopLimitViewId == 0 || (v = findViewById(this.mIgnoreOffsetTopLimitViewId)) == null || v == this || v.getParent() != this || v.getVisibility() == 8) {
             return null;
         }
         return v;
     }
 
-    /* loaded from: classes5.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
         public boolean alwaysShow;
         public boolean hasNestedScrollIndicator;
@@ -1126,17 +1069,15 @@ public class ResolverDrawerLayout extends ViewGroup {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.ResolverDrawerLayout.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1144,10 +1085,6 @@ public class ResolverDrawerLayout extends ViewGroup {
         };
         private int mCollapsibleHeightReserved;
         boolean open;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1165,31 +1102,9 @@ public class ResolverDrawerLayout extends ViewGroup {
             parcel.writeInt(this.open ? 1 : 0);
             parcel.writeInt(this.mCollapsibleHeightReserved);
         }
-
-        /* renamed from: com.android.internal.widget.ResolverDrawerLayout$SavedState$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes5.dex */
-    public class RunOnDismissedListener implements Runnable {
-        /* synthetic */ RunOnDismissedListener(ResolverDrawerLayout resolverDrawerLayout, RunOnDismissedListenerIA runOnDismissedListenerIA) {
-            this();
-        }
-
+    private class RunOnDismissedListener implements Runnable {
         private RunOnDismissedListener() {
         }
 

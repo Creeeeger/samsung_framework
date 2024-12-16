@@ -13,7 +13,6 @@ public interface IDreamOverlay extends IInterface {
 
     void getClient(IDreamOverlayClientCallback iDreamOverlayClientCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDreamOverlay {
         @Override // android.service.dreams.IDreamOverlay
         public void getClient(IDreamOverlayClientCallback callback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDreamOverlay extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDreamOverlay {
         static final int TRANSACTION_getClient = 1;
 
@@ -68,27 +66,23 @@ public interface IDreamOverlay extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDreamOverlay.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDreamOverlay.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDreamOverlay.DESCRIPTOR);
+                case 1:
+                    IDreamOverlayClientCallback _arg0 = IDreamOverlayClientCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getClient(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IDreamOverlayClientCallback _arg0 = IDreamOverlayClientCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getClient(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IDreamOverlay {
+        private static class Proxy implements IDreamOverlay {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

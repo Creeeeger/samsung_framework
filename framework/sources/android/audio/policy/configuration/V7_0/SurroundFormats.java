@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class SurroundFormats {
     private List<Format> format;
 
-    /* loaded from: classes.dex */
     public static class Format {
         private String name;
         private List<String> subformats;
@@ -76,7 +75,7 @@ public class SurroundFormats {
         return this.format;
     }
 
-    public static SurroundFormats read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static SurroundFormats read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         SurroundFormats _instance = new SurroundFormats();
         _parser.getDepth();

@@ -9,7 +9,7 @@ import android.os.RemoteException;
 import android.view.Surface;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICaptureProcessorImpl extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.ICaptureProcessorImpl";
 
@@ -23,7 +23,6 @@ public interface ICaptureProcessorImpl extends IInterface {
 
     void process(List<CaptureBundle> list, IProcessResultImpl iProcessResultImpl, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICaptureProcessorImpl {
         @Override // android.hardware.camera2.extension.ICaptureProcessorImpl
         public void onOutputSurface(Surface surface, int imageFormat) throws RemoteException {
@@ -51,7 +50,6 @@ public interface ICaptureProcessorImpl extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICaptureProcessorImpl {
         static final int TRANSACTION_onImageFormatUpdate = 4;
         static final int TRANSACTION_onOutputSurface = 1;
@@ -106,55 +104,51 @@ public interface ICaptureProcessorImpl extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICaptureProcessorImpl.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICaptureProcessorImpl.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICaptureProcessorImpl.DESCRIPTOR);
+                case 1:
+                    Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOutputSurface(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    Surface _arg02 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPostviewOutputSurface(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    Size _arg03 = (Size) data.readTypedObject(Size.CREATOR);
+                    Size _arg12 = (Size) data.readTypedObject(Size.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResolutionUpdate(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onImageFormatUpdate(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    List<CaptureBundle> _arg05 = data.createTypedArrayList(CaptureBundle.CREATOR);
+                    IProcessResultImpl _arg13 = IProcessResultImpl.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    process(_arg05, _arg13, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Surface _arg0 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOutputSurface(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            Surface _arg02 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPostviewOutputSurface(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            Size _arg03 = (Size) data.readTypedObject(Size.CREATOR);
-                            Size _arg12 = (Size) data.readTypedObject(Size.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResolutionUpdate(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onImageFormatUpdate(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            List<CaptureBundle> _arg05 = data.createTypedArrayList(CaptureBundle.CREATOR);
-                            IProcessResultImpl _arg13 = IProcessResultImpl.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            process(_arg05, _arg13, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICaptureProcessorImpl {
+        private static class Proxy implements ICaptureProcessorImpl {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

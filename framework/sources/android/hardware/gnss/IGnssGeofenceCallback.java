@@ -39,7 +39,6 @@ public interface IGnssGeofenceCallback extends IInterface {
 
     void gnssGeofenceTransitionCb(int i, GnssLocation gnssLocation, int i2, long j) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssGeofenceCallback {
         @Override // android.hardware.gnss.IGnssGeofenceCallback
         public void gnssGeofenceTransitionCb(int geofenceId, GnssLocation location, int transition, long timestampMillis) throws RemoteException {
@@ -81,7 +80,6 @@ public interface IGnssGeofenceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssGeofenceCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -147,73 +145,71 @@ public interface IGnssGeofenceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    GnssLocation _arg1 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
+                    int _arg2 = data.readInt();
+                    long _arg3 = data.readLong();
+                    data.enforceNoDataAvail();
+                    gnssGeofenceTransitionCb(_arg0, _arg1, _arg2, _arg3);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    GnssLocation _arg12 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssGeofenceStatusCb(_arg02, _arg12);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssGeofenceAddCb(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssGeofenceRemoveCb(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssGeofencePauseCb(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg16 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssGeofenceResumeCb(_arg06, _arg16);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            GnssLocation _arg1 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
-                            int _arg2 = data.readInt();
-                            long _arg3 = data.readLong();
-                            data.enforceNoDataAvail();
-                            gnssGeofenceTransitionCb(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            GnssLocation _arg12 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssGeofenceStatusCb(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssGeofenceAddCb(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssGeofenceRemoveCb(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssGeofencePauseCb(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg16 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssGeofenceResumeCb(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssGeofenceCallback {
+        private static class Proxy implements IGnssGeofenceCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

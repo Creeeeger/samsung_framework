@@ -5,7 +5,7 @@ import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 
 /* compiled from: D8$$SyntheticClass */
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final /* synthetic */ class TelephonyRegistryManager$CarrierPrivilegesCallbackWrapper$$ExternalSyntheticLambda1 implements Supplier {
     public final /* synthetic */ WeakReference f$0;
 

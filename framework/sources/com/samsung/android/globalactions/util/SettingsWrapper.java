@@ -10,16 +10,14 @@ import android.provider.Settings;
 import android.sec.enterprise.content.SecContentProviderURI;
 import com.samsung.android.audio.AudioConstants;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SettingsWrapper {
     private static final String TAG = "SettingsWrapper";
     private final Context mContext;
     private final LogWrapper mLogWrapper;
     private final ContentResolver mResolver;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class State {
+    private static class State {
         static int OFF = 0;
         static int ON = 1;
 
@@ -135,6 +133,6 @@ public class SettingsWrapper {
     public boolean isRepairMode() {
         int currentUser = ActivityManager.getCurrentUser();
         this.mLogWrapper.i(TAG, "(isRepairMode)current User : " + currentUser);
-        return currentUser == 77;
+        return false;
     }
 }

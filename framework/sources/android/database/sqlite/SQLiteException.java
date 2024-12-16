@@ -29,7 +29,7 @@ public class SQLiteException extends SQLException {
         }
     }
 
-    public int parseCode(int code, String message) {
+    protected int parseCode(int code, String message) {
         int endIndex;
         if (message != null) {
             try {

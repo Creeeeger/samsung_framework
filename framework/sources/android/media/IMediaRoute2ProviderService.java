@@ -30,7 +30,6 @@ public interface IMediaRoute2ProviderService extends IInterface {
 
     void updateDiscoveryPreference(RouteDiscoveryPreference routeDiscoveryPreference) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaRoute2ProviderService {
         @Override // android.media.IMediaRoute2ProviderService
         public void setCallback(IMediaRoute2ProviderServiceCallback callback) throws RemoteException {
@@ -74,7 +73,6 @@ public interface IMediaRoute2ProviderService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaRoute2ProviderService {
         static final int TRANSACTION_deselectRoute = 6;
         static final int TRANSACTION_releaseSession = 9;
@@ -141,78 +139,75 @@ public interface IMediaRoute2ProviderService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMediaRoute2ProviderService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMediaRoute2ProviderService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMediaRoute2ProviderService.DESCRIPTOR);
+                case 1:
+                    IMediaRoute2ProviderServiceCallback _arg0 = IMediaRoute2ProviderServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
+                    return true;
+                case 2:
+                    RouteDiscoveryPreference _arg02 = (RouteDiscoveryPreference) data.readTypedObject(RouteDiscoveryPreference.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateDiscoveryPreference(_arg02);
+                    return true;
+                case 3:
+                    long _arg03 = data.readLong();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRouteVolume(_arg03, _arg1, _arg2);
+                    return true;
+                case 4:
+                    long _arg04 = data.readLong();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestCreateSession(_arg04, _arg12, _arg22, _arg3);
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    selectRoute(_arg05, _arg13, _arg23);
+                    return true;
+                case 6:
+                    long _arg06 = data.readLong();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    deselectRoute(_arg06, _arg14, _arg24);
+                    return true;
+                case 7:
+                    long _arg07 = data.readLong();
+                    String _arg15 = data.readString();
+                    String _arg25 = data.readString();
+                    data.enforceNoDataAvail();
+                    transferToRoute(_arg07, _arg15, _arg25);
+                    return true;
+                case 8:
+                    long _arg08 = data.readLong();
+                    String _arg16 = data.readString();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSessionVolume(_arg08, _arg16, _arg26);
+                    return true;
+                case 9:
+                    long _arg09 = data.readLong();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    releaseSession(_arg09, _arg17);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IMediaRoute2ProviderServiceCallback _arg0 = IMediaRoute2ProviderServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            return true;
-                        case 2:
-                            RouteDiscoveryPreference _arg02 = (RouteDiscoveryPreference) data.readTypedObject(RouteDiscoveryPreference.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateDiscoveryPreference(_arg02);
-                            return true;
-                        case 3:
-                            long _arg03 = data.readLong();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRouteVolume(_arg03, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            long _arg04 = data.readLong();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestCreateSession(_arg04, _arg12, _arg22, _arg3);
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            selectRoute(_arg05, _arg13, _arg23);
-                            return true;
-                        case 6:
-                            long _arg06 = data.readLong();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            deselectRoute(_arg06, _arg14, _arg24);
-                            return true;
-                        case 7:
-                            long _arg07 = data.readLong();
-                            String _arg15 = data.readString();
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            transferToRoute(_arg07, _arg15, _arg25);
-                            return true;
-                        case 8:
-                            long _arg08 = data.readLong();
-                            String _arg16 = data.readString();
-                            int _arg26 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSessionVolume(_arg08, _arg16, _arg26);
-                            return true;
-                        case 9:
-                            long _arg09 = data.readLong();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            releaseSession(_arg09, _arg17);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IMediaRoute2ProviderService {
             private IBinder mRemote;
 

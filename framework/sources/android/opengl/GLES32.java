@@ -214,7 +214,6 @@ public class GLES32 extends GLES31 {
     public static final int GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY = 36879;
     public static final int GL_VERTEX_ARRAY = 32884;
 
-    /* loaded from: classes3.dex */
     public interface DebugProc {
         void onMessage(int i, int i2, int i3, int i4, String str);
     }

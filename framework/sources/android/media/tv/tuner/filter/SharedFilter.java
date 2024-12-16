@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class SharedFilter implements AutoCloseable {
     public static final int STATUS_INACCESSIBLE = 128;
     private static final String TAG = "SharedFilter";
@@ -20,7 +20,6 @@ public final class SharedFilter implements AutoCloseable {
     private boolean mIsAccessible = true;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Status {
     }
 
@@ -42,15 +41,14 @@ public final class SharedFilter implements AutoCloseable {
     }
 
     private void onFilterStatus(final int status) {
-        Executor executor;
         synchronized (this.mLock) {
             if (status == 128) {
                 this.mIsAccessible = false;
             }
         }
         synchronized (this.mCallbackLock) {
-            if (this.mCallback != null && (executor = this.mExecutor) != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.SharedFilter$$ExternalSyntheticLambda1
+            if (this.mCallback != null && this.mExecutor != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.SharedFilter$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         SharedFilter.this.lambda$onFilterStatus$0(status);
@@ -60,26 +58,25 @@ public final class SharedFilter implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterStatus$0(int status) {
         synchronized (this.mCallbackLock) {
-            SharedFilterCallback sharedFilterCallback = this.mCallback;
-            if (sharedFilterCallback != null) {
-                sharedFilterCallback.onFilterStatusChanged(this, status);
+            if (this.mCallback != null) {
+                this.mCallback.onFilterStatusChanged(this, status);
             }
         }
     }
 
     private void onFilterEvent(final FilterEvent[] events) {
-        Executor executor;
         synchronized (this.mCallbackLock) {
-            if (this.mCallback == null || (executor = this.mExecutor) == null) {
+            if (this.mCallback == null || this.mExecutor == null) {
                 for (FilterEvent event : events) {
                     if (event instanceof MediaEvent) {
                         ((MediaEvent) event).release();
                     }
                 }
             } else {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.SharedFilter$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.filter.SharedFilter$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         SharedFilter.this.lambda$onFilterEvent$1(events);
@@ -89,11 +86,11 @@ public final class SharedFilter implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onFilterEvent$1(FilterEvent[] events) {
         synchronized (this.mCallbackLock) {
-            SharedFilterCallback sharedFilterCallback = this.mCallback;
-            if (sharedFilterCallback != null) {
-                sharedFilterCallback.onFilterEvent(this, events);
+            if (this.mCallback != null) {
+                this.mCallback.onFilterEvent(this, events);
             } else {
                 for (FilterEvent event : events) {
                     if (event instanceof MediaEvent) {

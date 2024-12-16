@@ -13,19 +13,16 @@ import android.util.Pair;
 /* loaded from: classes3.dex */
 public class SyncStateContract {
 
-    /* loaded from: classes3.dex */
     public interface Columns extends BaseColumns {
         public static final String ACCOUNT_NAME = "account_name";
         public static final String ACCOUNT_TYPE = "account_type";
         public static final String DATA = "data";
     }
 
-    /* loaded from: classes3.dex */
     public static class Constants implements Columns {
         public static final String CONTENT_DIRECTORY = "syncstate";
     }
 
-    /* loaded from: classes3.dex */
     public static final class Helpers {
         private static final String[] DATA_PROJECTION = {"data", "_id"};
         private static final String SELECT_BY_ACCOUNT = "account_name=? AND account_type=?";

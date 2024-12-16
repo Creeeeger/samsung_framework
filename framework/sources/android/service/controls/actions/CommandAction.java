@@ -14,7 +14,7 @@ public final class CommandAction extends ControlAction {
         this(templateId, null);
     }
 
-    public CommandAction(Bundle b) {
+    CommandAction(Bundle b) {
         super(b);
     }
 

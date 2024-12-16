@@ -24,7 +24,6 @@ public interface IVolumeController extends IInterface {
 
     void volumeChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVolumeController {
         @Override // android.media.IVolumeController
         public void displaySafeVolumeWarning(int flags) throws RemoteException {
@@ -64,7 +63,6 @@ public interface IVolumeController extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVolumeController {
         public static final String DESCRIPTOR = "android.media.IVolumeController";
         static final int TRANSACTION_dismiss = 5;
@@ -129,58 +127,55 @@ public interface IVolumeController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    displaySafeVolumeWarning(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    volumeChanged(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    masterMuteChanged(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLayoutDirection(_arg04);
+                    return true;
+                case 5:
+                    dismiss();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setA11yMode(_arg05);
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    displayCsdWarning(_arg06, _arg12);
+                    return true;
+                case 8:
+                    displayVolumeLimiterToast();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            displaySafeVolumeWarning(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            volumeChanged(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            masterMuteChanged(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLayoutDirection(_arg04);
-                            return true;
-                        case 5:
-                            dismiss();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setA11yMode(_arg05);
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            displayCsdWarning(_arg06, _arg12);
-                            return true;
-                        case 8:
-                            displayVolumeLimiterToast();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IVolumeController {
+        private static class Proxy implements IVolumeController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

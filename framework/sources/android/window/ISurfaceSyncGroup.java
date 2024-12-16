@@ -14,7 +14,6 @@ public interface ISurfaceSyncGroup extends IInterface {
 
     boolean onAddedToSyncGroup(IBinder iBinder, boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISurfaceSyncGroup {
         @Override // android.window.ISurfaceSyncGroup
         public boolean onAddedToSyncGroup(IBinder parentSyncGroupToken, boolean parentSyncGroupMerge) throws RemoteException {
@@ -32,7 +31,6 @@ public interface ISurfaceSyncGroup extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISurfaceSyncGroup {
         static final int TRANSACTION_addToSync = 2;
         static final int TRANSACTION_onAddedToSyncGroup = 1;
@@ -78,36 +76,33 @@ public interface ISurfaceSyncGroup extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISurfaceSyncGroup.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISurfaceSyncGroup.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISurfaceSyncGroup.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result = onAddedToSyncGroup(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    ISurfaceSyncGroup _arg02 = asInterface(data.readStrongBinder());
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = addToSync(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result = onAddedToSyncGroup(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            ISurfaceSyncGroup _arg02 = asInterface(data.readStrongBinder());
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = addToSync(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISurfaceSyncGroup {
+        private static class Proxy implements ISurfaceSyncGroup {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

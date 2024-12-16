@@ -26,6 +26,7 @@ import android.util.TypedValue;
 import com.android.internal.R;
 import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
 import com.samsung.android.knox.analytics.database.Contract;
+import com.samsung.android.util.SemViewUtils;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -53,6 +54,7 @@ public class GradientDrawable extends Drawable {
     private boolean mGradientIsDirty;
     private float mGradientRadius;
     private GradientState mGradientState;
+    private boolean mIsSmoothCorner;
     private Paint mLayerPaint;
     private boolean mMutated;
     private Rect mPadding;
@@ -65,11 +67,9 @@ public class GradientDrawable extends Drawable {
     private static final Orientation DEFAULT_ORIENTATION = Orientation.TOP_BOTTOM;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GradientType {
     }
 
-    /* loaded from: classes.dex */
     public enum Orientation {
         TOP_BOTTOM,
         TR_BL,
@@ -82,17 +82,11 @@ public class GradientDrawable extends Drawable {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RadiusType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Shape {
-    }
-
-    /* synthetic */ GradientDrawable(GradientState gradientState, Resources resources, GradientDrawableIA gradientDrawableIA) {
-        this(gradientState, resources);
     }
 
     public GradientDrawable() {
@@ -105,9 +99,8 @@ public class GradientDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean getPadding(Rect padding) {
-        Rect rect = this.mPadding;
-        if (rect != null) {
-            padding.set(rect);
+        if (this.mPadding != null) {
+            padding.set(this.mPadding);
             return true;
         }
         return super.getPadding(padding);
@@ -164,9 +157,8 @@ public class GradientDrawable extends Drawable {
 
     private void setStrokeInternal(int width, int color, float dashWidth, float dashGap) {
         if (this.mStrokePaint == null) {
-            Paint paint = new Paint(1);
-            this.mStrokePaint = paint;
-            paint.setStyle(Paint.Style.STROKE);
+            this.mStrokePaint = new Paint(1);
+            this.mStrokePaint.setStyle(Paint.Style.STROKE);
         }
         this.mStrokePaint.setStrokeWidth(width);
         this.mStrokePaint.setColor(color);
@@ -245,8 +237,7 @@ public class GradientDrawable extends Drawable {
     }
 
     private int modulateAlpha(int alpha) {
-        int i = this.mAlpha;
-        int scale = i + (i >> 7);
+        int scale = this.mAlpha + (this.mAlpha >> 7);
         return (alpha * scale) >> 8;
     }
 
@@ -287,25 +278,19 @@ public class GradientDrawable extends Drawable {
     @Override // android.graphics.drawable.Drawable
     public void draw(Canvas canvas) {
         ColorFilter colorFilter;
-        Paint paint;
         if (!ensureValidRect()) {
             return;
         }
         int prevFillAlpha = this.mFillPaint.getAlpha();
-        Paint paint2 = this.mStrokePaint;
         boolean z = false;
-        int prevStrokeAlpha = paint2 != null ? paint2.getAlpha() : 0;
+        int prevStrokeAlpha = this.mStrokePaint != null ? this.mStrokePaint.getAlpha() : 0;
         int currFillAlpha = modulateAlpha(prevFillAlpha);
         int currStrokeAlpha = modulateAlpha(prevStrokeAlpha);
-        boolean haveStroke = currStrokeAlpha > 0 && (paint = this.mStrokePaint) != null && paint.getStrokeWidth() > 0.0f;
+        boolean haveStroke = currStrokeAlpha > 0 && this.mStrokePaint != null && this.mStrokePaint.getStrokeWidth() > 0.0f;
         boolean haveFill = currFillAlpha > 0;
         GradientState st = this.mGradientState;
-        ColorFilter colorFilter2 = this.mColorFilter;
-        if (colorFilter2 == null) {
-            colorFilter2 = this.mBlendModeColorFilter;
-        }
-        ColorFilter colorFilter3 = colorFilter2;
-        if (haveStroke && haveFill && st.mShape != 2 && currStrokeAlpha < 255 && (this.mAlpha < 255 || colorFilter3 != null)) {
+        ColorFilter colorFilter2 = this.mColorFilter != null ? this.mColorFilter : this.mBlendModeColorFilter;
+        if (haveStroke && haveFill && st.mShape != 2 && currStrokeAlpha < 255 && (this.mAlpha < 255 || colorFilter2 != null)) {
             z = true;
         }
         boolean useLayer = z;
@@ -315,14 +300,14 @@ public class GradientDrawable extends Drawable {
             }
             this.mLayerPaint.setDither(st.mDither);
             this.mLayerPaint.setAlpha(this.mAlpha);
-            this.mLayerPaint.setColorFilter(colorFilter3);
+            this.mLayerPaint.setColorFilter(colorFilter2);
             float rad = this.mStrokePaint.getStrokeWidth();
-            colorFilter = colorFilter3;
+            colorFilter = colorFilter2;
             canvas.saveLayer(this.mRect.left - rad, this.mRect.top - rad, this.mRect.right + rad, this.mRect.bottom + rad, this.mLayerPaint);
             this.mFillPaint.setColorFilter(null);
             this.mStrokePaint.setColorFilter(null);
         } else {
-            colorFilter = colorFilter3;
+            colorFilter = colorFilter2;
             this.mFillPaint.setAlpha(currFillAlpha);
             this.mFillPaint.setDither(st.mDither);
             this.mFillPaint.setColorFilter(colorFilter);
@@ -340,9 +325,14 @@ public class GradientDrawable extends Drawable {
                 if (st.mRadiusArray == null) {
                     if (st.mRadius > 0.0f) {
                         float rad2 = Math.min(st.mRadius, Math.min(this.mRect.width(), this.mRect.height()) * 0.5f);
-                        canvas.drawRoundRect(this.mRect, rad2, rad2, this.mFillPaint);
-                        if (haveStroke) {
-                            canvas.drawRoundRect(this.mRect, rad2, rad2, this.mStrokePaint);
+                        if (!this.mIsSmoothCorner) {
+                            canvas.drawRoundRect(this.mRect, rad2, rad2, this.mFillPaint);
+                            if (haveStroke) {
+                                canvas.drawRoundRect(this.mRect, rad2, rad2, this.mStrokePaint);
+                                break;
+                            }
+                        } else {
+                            drawSmoothCornerRect(canvas, rad2, haveStroke);
                             break;
                         }
                     } else {
@@ -488,11 +478,10 @@ public class GradientDrawable extends Drawable {
         innerBounds.inset(x - radius, y - radius);
         RectF bounds2 = new RectF(innerBounds);
         bounds2.inset(-thickness, -thickness);
-        Path path = this.mRingPath;
-        if (path == null) {
+        if (this.mRingPath == null) {
             this.mRingPath = new Path();
         } else {
-            path.reset();
+            this.mRingPath.reset();
         }
         Path ringPath = this.mRingPath;
         if (sweep < 360.0f && sweep > -360.0f) {
@@ -532,7 +521,7 @@ public class GradientDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         ColorStateList strokeColors;
         boolean invalidateSelf = false;
         GradientState s = this.mGradientState;
@@ -636,7 +625,7 @@ public class GradientDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect r) {
+    protected void onBoundsChange(Rect r) {
         super.onBoundsChange(r);
         this.mRingPath = null;
         this.mPathIsDirty = true;
@@ -644,7 +633,7 @@ public class GradientDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         super.onLevelChange(level);
         this.mGradientIsDirty = true;
         this.mPathIsDirty = true;
@@ -662,9 +651,8 @@ public class GradientDrawable extends Drawable {
             this.mGradientIsDirty = false;
             Rect bounds = getBounds();
             float inset = 0.0f;
-            Paint paint = this.mStrokePaint;
-            if (paint != null) {
-                inset = paint.getStrokeWidth() * 0.5f;
+            if (this.mStrokePaint != null) {
+                inset = this.mStrokePaint.getStrokeWidth() * 0.5f;
             }
             GradientState st = this.mGradientState;
             this.mRect.set(bounds.left + inset, bounds.top + inset, bounds.right - inset, bounds.bottom - inset);
@@ -681,8 +669,8 @@ public class GradientDrawable extends Drawable {
                 RectF r = this.mRect;
                 if (st.mGradient == 0) {
                     float level = st.mUseLevel ? getLevel() / 10000.0f : 1.0f;
-                    switch (AnonymousClass1.$SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[st.mOrientation.ordinal()]) {
-                        case 1:
+                    switch (st.mOrientation) {
+                        case TOP_BOTTOM:
                             float x02 = r.left;
                             float y02 = r.top;
                             float y12 = r.bottom * level;
@@ -691,7 +679,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x02;
                             y1 = y12;
                             break;
-                        case 2:
+                        case TR_BL:
                             float x03 = r.right;
                             float y03 = r.top;
                             float x12 = r.left * level;
@@ -701,7 +689,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x12;
                             y1 = y13;
                             break;
-                        case 3:
+                        case RIGHT_LEFT:
                             float x04 = r.right;
                             float y04 = r.top;
                             float x13 = r.left * level;
@@ -710,7 +698,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x13;
                             y1 = y04;
                             break;
-                        case 4:
+                        case BR_TL:
                             float x05 = r.right;
                             float y05 = r.bottom;
                             float x14 = r.left * level;
@@ -720,7 +708,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x14;
                             y1 = y14;
                             break;
-                        case 5:
+                        case BOTTOM_TOP:
                             float x06 = r.left;
                             float y06 = r.bottom;
                             float y15 = r.top * level;
@@ -729,7 +717,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x06;
                             y1 = y15;
                             break;
-                        case 6:
+                        case BL_TR:
                             float x07 = r.left;
                             float y07 = r.bottom;
                             float x15 = r.right * level;
@@ -739,7 +727,7 @@ public class GradientDrawable extends Drawable {
                             x1 = x15;
                             y1 = y16;
                             break;
-                        case 7:
+                        case LEFT_RIGHT:
                             float x08 = r.left;
                             float y08 = r.top;
                             float x16 = r.right * level;
@@ -817,45 +805,6 @@ public class GradientDrawable extends Drawable {
             }
         }
         return !this.mRect.isEmpty();
-    }
-
-    /* renamed from: android.graphics.drawable.GradientDrawable$1 */
-    /* loaded from: classes.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation;
-
-        static {
-            int[] iArr = new int[Orientation.values().length];
-            $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation = iArr;
-            try {
-                iArr[Orientation.TOP_BOTTOM.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.TR_BL.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.RIGHT_LEFT.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.BR_TL.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.BOTTOM_TOP.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.BL_TR.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$android$graphics$drawable$GradientDrawable$Orientation[Orientation.LEFT_RIGHT.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-        }
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -936,8 +885,7 @@ public class GradientDrawable extends Drawable {
 
     @Override // android.graphics.drawable.Drawable
     public boolean canApplyTheme() {
-        GradientState gradientState = this.mGradientState;
-        return (gradientState != null && gradientState.canApplyTheme()) || super.canApplyTheme();
+        return (this.mGradientState != null && this.mGradientState.canApplyTheme()) || super.canApplyTheme();
     }
 
     private void applyThemeChildElements(Resources.Theme t) {
@@ -1231,8 +1179,7 @@ public class GradientDrawable extends Drawable {
     }
 
     private boolean isOpaqueForState() {
-        Paint paint;
-        if (this.mGradientState.mStrokeWidth < 0 || (paint = this.mStrokePaint) == null || isOpaque(paint.getColor())) {
+        if (this.mGradientState.mStrokeWidth < 0 || this.mStrokePaint == null || isOpaque(this.mStrokePaint.getColor())) {
             return this.mGradientState.mGradientColors != null || isOpaque(this.mFillPaint.getColor());
         }
         return false;
@@ -1241,10 +1188,9 @@ public class GradientDrawable extends Drawable {
     @Override // android.graphics.drawable.Drawable
     public void getOutline(Outline outline) {
         float f;
-        Paint paint;
         GradientState st = this.mGradientState;
         Rect bounds = getBounds();
-        boolean useFillOpacity = st.mOpaqueOverShape && (this.mGradientState.mStrokeWidth <= 0 || (paint = this.mStrokePaint) == null || paint.getAlpha() == this.mFillPaint.getAlpha());
+        boolean useFillOpacity = st.mOpaqueOverShape && (this.mGradientState.mStrokeWidth <= 0 || this.mStrokePaint == null || this.mStrokePaint.getAlpha() == this.mFillPaint.getAlpha());
         if (useFillOpacity) {
             f = modulateAlpha(this.mFillPaint.getAlpha()) / 255.0f;
         } else {
@@ -1256,28 +1202,31 @@ public class GradientDrawable extends Drawable {
                 if (st.mRadiusArray != null) {
                     buildPathIfDirty();
                     outline.setPath(this.mPath);
-                    return;
+                    break;
                 } else {
                     float rad = 0.0f;
                     if (st.mRadius > 0.0f) {
                         rad = Math.min(st.mRadius, Math.min(bounds.width(), bounds.height()) * 0.5f);
                     }
-                    outline.setRoundRect(bounds, rad);
-                    return;
+                    if (this.mIsSmoothCorner) {
+                        SemViewUtils.getSmoothCornerRectPath(this.mPath, rad, bounds.left, bounds.top, bounds.width(), bounds.height());
+                        outline.setPath(this.mPath);
+                        break;
+                    } else {
+                        outline.setRoundRect(bounds, rad);
+                        break;
+                    }
                 }
             case 1:
                 outline.setOval(bounds);
-                return;
+                break;
             case 2:
-                Paint paint2 = this.mStrokePaint;
-                float halfStrokeWidth = paint2 == null ? 1.0E-4f : paint2.getStrokeWidth() * 0.5f;
+                float halfStrokeWidth = this.mStrokePaint == null ? 1.0E-4f : this.mStrokePaint.getStrokeWidth() * 0.5f;
                 float centerY = bounds.centerY();
                 int top = (int) Math.floor(centerY - halfStrokeWidth);
                 int bottom = (int) Math.ceil(centerY + halfStrokeWidth);
                 outline.setRect(bounds.left, top, bounds.right, bottom);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -1297,8 +1246,7 @@ public class GradientDrawable extends Drawable {
         this.mMutated = false;
     }
 
-    /* loaded from: classes.dex */
-    public static final class GradientState extends Drawable.ConstantState {
+    static final class GradientState extends Drawable.ConstantState {
         public int mAngle;
         int[] mAttrCorners;
         int[] mAttrGradient;
@@ -1407,22 +1355,19 @@ public class GradientDrawable extends Drawable {
             this.mAngle = orig.mAngle;
             this.mOrientation = orig.mOrientation;
             this.mSolidColors = orig.mSolidColors;
-            ColorStateList[] colorStateListArr = orig.mGradientColors;
-            if (colorStateListArr != null) {
-                this.mGradientColors = (ColorStateList[]) colorStateListArr.clone();
+            if (orig.mGradientColors != null) {
+                this.mGradientColors = (ColorStateList[]) orig.mGradientColors.clone();
             }
-            float[] fArr = orig.mPositions;
-            if (fArr != null) {
-                this.mPositions = (float[]) fArr.clone();
+            if (orig.mPositions != null) {
+                this.mPositions = (float[]) orig.mPositions.clone();
             }
             this.mStrokeColors = orig.mStrokeColors;
             this.mStrokeWidth = orig.mStrokeWidth;
             this.mStrokeDashWidth = orig.mStrokeDashWidth;
             this.mStrokeDashGap = orig.mStrokeDashGap;
             this.mRadius = orig.mRadius;
-            float[] fArr2 = orig.mRadiusArray;
-            if (fArr2 != null) {
-                this.mRadiusArray = (float[]) fArr2.clone();
+            if (orig.mRadiusArray != null) {
+                this.mRadiusArray = (float[]) orig.mRadiusArray.clone();
             }
             if (orig.mPadding != null) {
                 this.mPadding = new Rect(orig.mPadding);
@@ -1452,11 +1397,9 @@ public class GradientDrawable extends Drawable {
             this.mAttrStroke = orig.mAttrStroke;
             this.mAttrCorners = orig.mAttrCorners;
             this.mAttrPadding = orig.mAttrPadding;
-            int resolveDensity = Drawable.resolveDensity(res, orig.mDensity);
-            this.mDensity = resolveDensity;
-            int i = orig.mDensity;
-            if (i != resolveDensity) {
-                applyDensityScaling(i, resolveDensity);
+            this.mDensity = Drawable.resolveDensity(res, orig.mDensity);
+            if (orig.mDensity != this.mDensity) {
+                applyDensityScaling(orig.mDensity, this.mDensity);
             }
         }
 
@@ -1469,18 +1412,15 @@ public class GradientDrawable extends Drawable {
         }
 
         public boolean hasCenterColor() {
-            ColorStateList[] colorStateListArr = this.mGradientColors;
-            return colorStateListArr != null && colorStateListArr.length == 3;
+            return this.mGradientColors != null && this.mGradientColors.length == 3;
         }
 
         private void applyDensityScaling(int sourceDensity, int targetDensity) {
-            int i = this.mInnerRadius;
-            if (i > 0) {
-                this.mInnerRadius = Drawable.scaleFromDensity(i, sourceDensity, targetDensity, true);
+            if (this.mInnerRadius > 0) {
+                this.mInnerRadius = Drawable.scaleFromDensity(this.mInnerRadius, sourceDensity, targetDensity, true);
             }
-            int i2 = this.mThickness;
-            if (i2 > 0) {
-                this.mThickness = Drawable.scaleFromDensity(i2, sourceDensity, targetDensity, true);
+            if (this.mThickness > 0) {
+                this.mThickness = Drawable.scaleFromDensity(this.mThickness, sourceDensity, targetDensity, true);
             }
             if (this.mOpticalInsets != Insets.NONE) {
                 int left = Drawable.scaleFromDensity(this.mOpticalInsets.left, sourceDensity, targetDensity, true);
@@ -1489,71 +1429,50 @@ public class GradientDrawable extends Drawable {
                 int bottom = Drawable.scaleFromDensity(this.mOpticalInsets.bottom, sourceDensity, targetDensity, true);
                 this.mOpticalInsets = Insets.of(left, top, right, bottom);
             }
-            Rect rect = this.mPadding;
-            if (rect != null) {
-                rect.left = Drawable.scaleFromDensity(rect.left, sourceDensity, targetDensity, false);
-                Rect rect2 = this.mPadding;
-                rect2.top = Drawable.scaleFromDensity(rect2.top, sourceDensity, targetDensity, false);
-                Rect rect3 = this.mPadding;
-                rect3.right = Drawable.scaleFromDensity(rect3.right, sourceDensity, targetDensity, false);
-                Rect rect4 = this.mPadding;
-                rect4.bottom = Drawable.scaleFromDensity(rect4.bottom, sourceDensity, targetDensity, false);
+            if (this.mPadding != null) {
+                this.mPadding.left = Drawable.scaleFromDensity(this.mPadding.left, sourceDensity, targetDensity, false);
+                this.mPadding.top = Drawable.scaleFromDensity(this.mPadding.top, sourceDensity, targetDensity, false);
+                this.mPadding.right = Drawable.scaleFromDensity(this.mPadding.right, sourceDensity, targetDensity, false);
+                this.mPadding.bottom = Drawable.scaleFromDensity(this.mPadding.bottom, sourceDensity, targetDensity, false);
             }
-            float f = this.mRadius;
-            if (f > 0.0f) {
-                this.mRadius = Drawable.scaleFromDensity(f, sourceDensity, targetDensity);
+            if (this.mRadius > 0.0f) {
+                this.mRadius = Drawable.scaleFromDensity(this.mRadius, sourceDensity, targetDensity);
             }
-            float[] fArr = this.mRadiusArray;
-            if (fArr != null) {
-                fArr[0] = Drawable.scaleFromDensity((int) fArr[0], sourceDensity, targetDensity, true);
-                this.mRadiusArray[1] = Drawable.scaleFromDensity((int) r0[1], sourceDensity, targetDensity, true);
-                this.mRadiusArray[2] = Drawable.scaleFromDensity((int) r0[2], sourceDensity, targetDensity, true);
-                this.mRadiusArray[3] = Drawable.scaleFromDensity((int) r0[3], sourceDensity, targetDensity, true);
+            if (this.mRadiusArray != null) {
+                this.mRadiusArray[0] = Drawable.scaleFromDensity((int) this.mRadiusArray[0], sourceDensity, targetDensity, true);
+                this.mRadiusArray[1] = Drawable.scaleFromDensity((int) this.mRadiusArray[1], sourceDensity, targetDensity, true);
+                this.mRadiusArray[2] = Drawable.scaleFromDensity((int) this.mRadiusArray[2], sourceDensity, targetDensity, true);
+                this.mRadiusArray[3] = Drawable.scaleFromDensity((int) this.mRadiusArray[3], sourceDensity, targetDensity, true);
             }
-            int i3 = this.mStrokeWidth;
-            if (i3 > 0) {
-                this.mStrokeWidth = Drawable.scaleFromDensity(i3, sourceDensity, targetDensity, true);
+            if (this.mStrokeWidth > 0) {
+                this.mStrokeWidth = Drawable.scaleFromDensity(this.mStrokeWidth, sourceDensity, targetDensity, true);
             }
             if (this.mStrokeDashWidth > 0.0f) {
                 this.mStrokeDashWidth = Drawable.scaleFromDensity(this.mStrokeDashGap, sourceDensity, targetDensity);
             }
-            float f2 = this.mStrokeDashGap;
-            if (f2 > 0.0f) {
-                this.mStrokeDashGap = Drawable.scaleFromDensity(f2, sourceDensity, targetDensity);
+            if (this.mStrokeDashGap > 0.0f) {
+                this.mStrokeDashGap = Drawable.scaleFromDensity(this.mStrokeDashGap, sourceDensity, targetDensity);
             }
             if (this.mGradientRadiusType == 0) {
                 this.mGradientRadius = Drawable.scaleFromDensity(this.mGradientRadius, sourceDensity, targetDensity);
             }
-            int i4 = this.mWidth;
-            if (i4 > 0) {
-                this.mWidth = Drawable.scaleFromDensity(i4, sourceDensity, targetDensity, true);
+            if (this.mWidth > 0) {
+                this.mWidth = Drawable.scaleFromDensity(this.mWidth, sourceDensity, targetDensity, true);
             }
-            int i5 = this.mHeight;
-            if (i5 > 0) {
-                this.mHeight = Drawable.scaleFromDensity(i5, sourceDensity, targetDensity, true);
+            if (this.mHeight > 0) {
+                this.mHeight = Drawable.scaleFromDensity(this.mHeight, sourceDensity, targetDensity, true);
             }
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            ColorStateList colorStateList2;
-            ColorStateList colorStateList3;
-            ColorStateList[] colorStateListArr = this.mGradientColors;
-            boolean mGradientColorState = colorStateListArr != null;
-            if (colorStateListArr != null) {
-                int i = 0;
-                while (true) {
-                    ColorStateList[] colorStateListArr2 = this.mGradientColors;
-                    if (i >= colorStateListArr2.length) {
-                        break;
-                    }
-                    ColorStateList colorStateList4 = colorStateListArr2[i];
-                    mGradientColorState |= colorStateList4 != null && colorStateList4.canApplyTheme();
-                    i++;
+            boolean mGradientColorState = this.mGradientColors != null;
+            if (this.mGradientColors != null) {
+                for (int i = 0; i < this.mGradientColors.length; i++) {
+                    mGradientColorState |= this.mGradientColors[i] != null && this.mGradientColors[i].canApplyTheme();
                 }
             }
-            return (this.mThemeAttrs == null && this.mAttrSize == null && this.mAttrGradient == null && this.mAttrSolid == null && this.mAttrStroke == null && this.mAttrCorners == null && this.mAttrPadding == null && ((colorStateList = this.mTint) == null || !colorStateList.canApplyTheme()) && (((colorStateList2 = this.mStrokeColors) == null || !colorStateList2.canApplyTheme()) && (((colorStateList3 = this.mSolidColors) == null || !colorStateList3.canApplyTheme()) && !mGradientColorState && !super.canApplyTheme()))) ? false : true;
+            return (this.mThemeAttrs == null && this.mAttrSize == null && this.mAttrGradient == null && this.mAttrSolid == null && this.mAttrStroke == null && this.mAttrCorners == null && this.mAttrPadding == null && (this.mTint == null || !this.mTint.canApplyTheme()) && ((this.mStrokeColors == null || !this.mStrokeColors.canApplyTheme()) && ((this.mSolidColors == null || !this.mSolidColors.canApplyTheme()) && !mGradientColorState && !super.canApplyTheme()))) ? false : true;
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -1575,13 +1494,7 @@ public class GradientDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mStrokeColors;
-            int changingConfigurations = i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
-            ColorStateList colorStateList2 = this.mSolidColors;
-            int changingConfigurations2 = changingConfigurations | (colorStateList2 != null ? colorStateList2.getChangingConfigurations() : 0);
-            ColorStateList colorStateList3 = this.mTint;
-            return changingConfigurations2 | (colorStateList3 != null ? colorStateList3.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mStrokeColors != null ? this.mStrokeColors.getChangingConfigurations() : 0) | (this.mSolidColors != null ? this.mSolidColors.getChangingConfigurations() : 0) | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
 
         public void setShape(int shape) {
@@ -1606,8 +1519,7 @@ public class GradientDrawable extends Drawable {
             if (colors == null) {
                 this.mGradientColors = null;
             } else {
-                ColorStateList[] colorStateListArr = this.mGradientColors;
-                if (colorStateListArr == null || colorStateListArr.length != colors.length) {
+                if (this.mGradientColors == null || this.mGradientColors.length != colors.length) {
                     this.mGradientColors = new ColorStateList[colors.length];
                 }
                 for (int i = 0; i < colors.length; i++) {
@@ -1624,21 +1536,14 @@ public class GradientDrawable extends Drawable {
             computeOpacity();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void computeOpacity() {
             boolean z = false;
             this.mOpaqueOverBounds = false;
             this.mOpaqueOverShape = false;
             if (this.mGradientColors != null) {
-                int i = 0;
-                while (true) {
-                    ColorStateList[] colorStateListArr = this.mGradientColors;
-                    if (i >= colorStateListArr.length) {
-                        break;
-                    }
-                    ColorStateList colorStateList = colorStateListArr[i];
-                    if (colorStateList == null || GradientDrawable.isOpaque(colorStateList.getDefaultColor())) {
-                        i++;
-                    } else {
+                for (int i = 0; i < this.mGradientColors.length; i++) {
+                    if (this.mGradientColors[i] != null && !GradientDrawable.isOpaque(this.mGradientColors[i].getDefaultColor())) {
                         return;
                     }
                 }
@@ -1699,6 +1604,7 @@ public class GradientDrawable extends Drawable {
         this.mPath = new Path();
         this.mRect = new RectF();
         this.mPathIsDirty = true;
+        this.mIsSmoothCorner = false;
         this.mGradientState = state;
         updateLocalState(res);
     }
@@ -1716,9 +1622,8 @@ public class GradientDrawable extends Drawable {
         }
         this.mPadding = state.mPadding;
         if (state.mStrokeWidth >= 0) {
-            Paint paint = new Paint(1);
-            this.mStrokePaint = paint;
-            paint.setStyle(Paint.Style.STROKE);
+            this.mStrokePaint = new Paint(1);
+            this.mStrokePaint.setStyle(Paint.Style.STROKE);
             this.mStrokePaint.setStrokeWidth(state.mStrokeWidth);
             if (state.mStrokeColors != null) {
                 int[] currentState2 = getState();
@@ -1733,5 +1638,17 @@ public class GradientDrawable extends Drawable {
         this.mBlendModeColorFilter = updateBlendModeFilter(this.mBlendModeColorFilter, state.mTint, state.mBlendMode);
         this.mGradientIsDirty = true;
         state.computeOpacity();
+    }
+
+    void setSmoothCorner(boolean smoothCorner) {
+        this.mIsSmoothCorner = smoothCorner;
+    }
+
+    private void drawSmoothCornerRect(Canvas canvas, float rad, boolean haveStroke) {
+        SemViewUtils.getSmoothCornerRectPath(this.mPath, rad, this.mRect.left, this.mRect.top, this.mRect.width(), this.mRect.height());
+        canvas.drawPath(this.mPath, this.mFillPaint);
+        if (haveStroke) {
+            canvas.drawPath(this.mPath, this.mStrokePaint);
+        }
     }
 }

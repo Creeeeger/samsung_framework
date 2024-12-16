@@ -42,8 +42,7 @@ public class ToRGBAFilter extends Filter {
 
     public void createProgram(FilterContext context, FrameFormat format) {
         this.mInputBPP = format.getBytesPerSample();
-        FrameFormat frameFormat = this.mLastFormat;
-        if (frameFormat == null || frameFormat.getBytesPerSample() != this.mInputBPP) {
+        if (this.mLastFormat == null || this.mLastFormat.getBytesPerSample() != this.mInputBPP) {
             this.mLastFormat = format;
             switch (this.mInputBPP) {
                 case 1:

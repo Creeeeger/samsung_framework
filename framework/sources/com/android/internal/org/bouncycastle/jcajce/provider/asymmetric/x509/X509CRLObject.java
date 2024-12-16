@@ -16,7 +16,7 @@ class X509CRLObject extends X509CRLImpl {
     private volatile boolean hashValueSet;
     private X509CRLInternal internalCRLValue;
 
-    public X509CRLObject(JcaJceHelper bcHelper, CertificateList c) throws CRLException {
+    X509CRLObject(JcaJceHelper bcHelper, CertificateList c) throws CRLException {
         super(bcHelper, c, createSigAlgName(c), createSigAlgParams(c), isIndirectCRL(c));
         this.cacheLock = new Object();
     }
@@ -53,9 +53,8 @@ class X509CRLObject extends X509CRLImpl {
         byte[] encoding;
         X509CRLInternal x509CRLInternal;
         synchronized (this.cacheLock) {
-            X509CRLInternal x509CRLInternal2 = this.internalCRLValue;
-            if (x509CRLInternal2 != null) {
-                return x509CRLInternal2;
+            if (this.internalCRLValue != null) {
+                return this.internalCRLValue;
             }
             try {
                 byte[] encoding2 = getEncoded();

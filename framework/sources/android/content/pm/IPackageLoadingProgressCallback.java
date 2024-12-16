@@ -12,7 +12,6 @@ public interface IPackageLoadingProgressCallback extends IInterface {
 
     void onPackageLoadingProgressChanged(float f) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageLoadingProgressCallback {
         @Override // android.content.pm.IPackageLoadingProgressCallback
         public void onPackageLoadingProgressChanged(float progress) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IPackageLoadingProgressCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageLoadingProgressCallback {
         static final int TRANSACTION_onPackageLoadingProgressChanged = 1;
 
@@ -67,24 +65,21 @@ public interface IPackageLoadingProgressCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPackageLoadingProgressCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPackageLoadingProgressCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPackageLoadingProgressCallback.DESCRIPTOR);
+                case 1:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onPackageLoadingProgressChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onPackageLoadingProgressChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IPackageLoadingProgressCallback {
             private IBinder mRemote;
 

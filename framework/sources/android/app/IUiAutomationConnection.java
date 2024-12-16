@@ -1,7 +1,6 @@
 package android.app;
 
 import android.accessibilityservice.IAccessibilityServiceClient;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.usb.UsbManager;
 import android.media.MediaMetrics;
@@ -15,11 +14,18 @@ import android.view.InputEvent;
 import android.view.SurfaceControl;
 import android.view.WindowAnimationFrameStats;
 import android.view.WindowContentFrameStats;
+import android.window.ScreenCapture;
 import java.util.List;
 
 /* loaded from: classes.dex */
 public interface IUiAutomationConnection extends IInterface {
+    void addOverridePermissionState(int i, String str, int i2) throws RemoteException;
+
     void adoptShellPermissionIdentity(int i, String[] strArr) throws RemoteException;
+
+    void clearAllOverridePermissionStates() throws RemoteException;
+
+    void clearOverridePermissionStates(int i) throws RemoteException;
 
     void clearWindowAnimationFrameStats() throws RemoteException;
 
@@ -47,6 +53,8 @@ public interface IUiAutomationConnection extends IInterface {
 
     void injectInputEventToInputFilter(InputEvent inputEvent) throws RemoteException;
 
+    void removeOverridePermissionState(int i, String str) throws RemoteException;
+
     void revokeRuntimePermission(String str, String str2, int i) throws RemoteException;
 
     boolean setRotation(int i) throws RemoteException;
@@ -55,11 +63,10 @@ public interface IUiAutomationConnection extends IInterface {
 
     void syncInputTransactions(boolean z) throws RemoteException;
 
-    Bitmap takeScreenshot(Rect rect) throws RemoteException;
+    boolean takeScreenshot(Rect rect, ScreenCapture.ScreenCaptureListener screenCaptureListener) throws RemoteException;
 
-    Bitmap takeSurfaceControlScreenshot(SurfaceControl surfaceControl) throws RemoteException;
+    boolean takeSurfaceControlScreenshot(SurfaceControl surfaceControl, ScreenCapture.ScreenCaptureListener screenCaptureListener) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUiAutomationConnection {
         @Override // android.app.IUiAutomationConnection
         public void connect(IAccessibilityServiceClient client, int flags) throws RemoteException {
@@ -88,13 +95,13 @@ public interface IUiAutomationConnection extends IInterface {
         }
 
         @Override // android.app.IUiAutomationConnection
-        public Bitmap takeScreenshot(Rect crop) throws RemoteException {
-            return null;
+        public boolean takeScreenshot(Rect crop, ScreenCapture.ScreenCaptureListener listener) throws RemoteException {
+            return false;
         }
 
         @Override // android.app.IUiAutomationConnection
-        public Bitmap takeSurfaceControlScreenshot(SurfaceControl surfaceControl) throws RemoteException {
-            return null;
+        public boolean takeSurfaceControlScreenshot(SurfaceControl surfaceControl, ScreenCapture.ScreenCaptureListener listener) throws RemoteException {
+            return false;
         }
 
         @Override // android.app.IUiAutomationConnection
@@ -149,16 +156,34 @@ public interface IUiAutomationConnection extends IInterface {
             return null;
         }
 
+        @Override // android.app.IUiAutomationConnection
+        public void addOverridePermissionState(int uid, String permission, int result) throws RemoteException {
+        }
+
+        @Override // android.app.IUiAutomationConnection
+        public void removeOverridePermissionState(int uid, String permission) throws RemoteException {
+        }
+
+        @Override // android.app.IUiAutomationConnection
+        public void clearOverridePermissionStates(int uid) throws RemoteException {
+        }
+
+        @Override // android.app.IUiAutomationConnection
+        public void clearAllOverridePermissionStates() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUiAutomationConnection {
         public static final String DESCRIPTOR = "android.app.IUiAutomationConnection";
+        static final int TRANSACTION_addOverridePermissionState = 21;
         static final int TRANSACTION_adoptShellPermissionIdentity = 16;
+        static final int TRANSACTION_clearAllOverridePermissionStates = 24;
+        static final int TRANSACTION_clearOverridePermissionStates = 23;
         static final int TRANSACTION_clearWindowAnimationFrameStats = 11;
         static final int TRANSACTION_clearWindowContentFrameStats = 9;
         static final int TRANSACTION_connect = 1;
@@ -172,6 +197,7 @@ public interface IUiAutomationConnection extends IInterface {
         static final int TRANSACTION_grantRuntimePermission = 14;
         static final int TRANSACTION_injectInputEvent = 3;
         static final int TRANSACTION_injectInputEventToInputFilter = 4;
+        static final int TRANSACTION_removeOverridePermissionState = 22;
         static final int TRANSACTION_revokeRuntimePermission = 15;
         static final int TRANSACTION_setRotation = 6;
         static final int TRANSACTION_shutdown = 18;
@@ -241,6 +267,14 @@ public interface IUiAutomationConnection extends IInterface {
                     return "executeShellCommandWithStderr";
                 case 20:
                     return "getAdoptedShellPermissions";
+                case 21:
+                    return "addOverridePermissionState";
+                case 22:
+                    return "removeOverridePermissionState";
+                case 23:
+                    return "clearOverridePermissionStates";
+                case 24:
+                    return "clearAllOverridePermissionStates";
                 default:
                     return null;
             }
@@ -256,148 +290,172 @@ public interface IUiAutomationConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IAccessibilityServiceClient _arg0 = IAccessibilityServiceClient.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    connect(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    disconnect();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    InputEvent _arg02 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
+                    boolean _arg12 = data.readBoolean();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result = injectInputEvent(_arg02, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    InputEvent _arg03 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    injectInputEventToInputFilter(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    syncInputTransactions(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = setRotation(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 7:
+                    Rect _arg06 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    ScreenCapture.ScreenCaptureListener _arg13 = (ScreenCapture.ScreenCaptureListener) data.readTypedObject(ScreenCapture.ScreenCaptureListener.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result3 = takeScreenshot(_arg06, _arg13);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 8:
+                    SurfaceControl _arg07 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    ScreenCapture.ScreenCaptureListener _arg14 = (ScreenCapture.ScreenCaptureListener) data.readTypedObject(ScreenCapture.ScreenCaptureListener.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = takeSurfaceControlScreenshot(_arg07, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = clearWindowContentFrameStats(_arg08);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    WindowContentFrameStats _result6 = getWindowContentFrameStats(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 11:
+                    clearWindowAnimationFrameStats();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    WindowAnimationFrameStats _result7 = getWindowAnimationFrameStats();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 13:
+                    String _arg010 = data.readString();
+                    ParcelFileDescriptor _arg15 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    executeShellCommand(_arg010, _arg15, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    String _arg011 = data.readString();
+                    String _arg16 = data.readString();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    grantRuntimePermission(_arg011, _arg16, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg012 = data.readString();
+                    String _arg17 = data.readString();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    revokeRuntimePermission(_arg012, _arg17, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg013 = data.readInt();
+                    String[] _arg18 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    adoptShellPermissionIdentity(_arg013, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    dropShellPermissionIdentity();
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    shutdown();
+                    return true;
+                case 19:
+                    String _arg014 = data.readString();
+                    ParcelFileDescriptor _arg19 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg25 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    ParcelFileDescriptor _arg3 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    data.enforceNoDataAvail();
+                    executeShellCommandWithStderr(_arg014, _arg19, _arg25, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    List<String> _result8 = getAdoptedShellPermissions();
+                    reply.writeNoException();
+                    reply.writeStringList(_result8);
+                    return true;
+                case 21:
+                    int _arg015 = data.readInt();
+                    String _arg110 = data.readString();
+                    int _arg26 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addOverridePermissionState(_arg015, _arg110, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg016 = data.readInt();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeOverridePermissionState(_arg016, _arg111);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearOverridePermissionStates(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    clearAllOverridePermissionStates();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAccessibilityServiceClient _arg0 = IAccessibilityServiceClient.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            connect(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            InputEvent _arg02 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
-                            boolean _arg12 = data.readBoolean();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result = injectInputEvent(_arg02, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            InputEvent _arg03 = (InputEvent) data.readTypedObject(InputEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            injectInputEventToInputFilter(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            syncInputTransactions(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = setRotation(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 7:
-                            Rect _arg06 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bitmap _result3 = takeScreenshot(_arg06);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 8:
-                            SurfaceControl _arg07 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bitmap _result4 = takeSurfaceControlScreenshot(_arg07);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = clearWindowContentFrameStats(_arg08);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            WindowContentFrameStats _result6 = getWindowContentFrameStats(_arg09);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 11:
-                            clearWindowAnimationFrameStats();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            WindowAnimationFrameStats _result7 = getWindowAnimationFrameStats();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 13:
-                            String _arg010 = data.readString();
-                            ParcelFileDescriptor _arg13 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg22 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            executeShellCommand(_arg010, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            String _arg011 = data.readString();
-                            String _arg14 = data.readString();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            grantRuntimePermission(_arg011, _arg14, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            String _arg012 = data.readString();
-                            String _arg15 = data.readString();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            revokeRuntimePermission(_arg012, _arg15, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg013 = data.readInt();
-                            String[] _arg16 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            adoptShellPermissionIdentity(_arg013, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            dropShellPermissionIdentity();
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            shutdown();
-                            return true;
-                        case 19:
-                            String _arg014 = data.readString();
-                            ParcelFileDescriptor _arg17 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg25 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            ParcelFileDescriptor _arg3 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            data.enforceNoDataAvail();
-                            executeShellCommandWithStderr(_arg014, _arg17, _arg25, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            List<String> _result8 = getAdoptedShellPermissions();
-                            reply.writeNoException();
-                            reply.writeStringList(_result8);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUiAutomationConnection {
+        private static class Proxy implements IUiAutomationConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -510,15 +568,16 @@ public interface IUiAutomationConnection extends IInterface {
             }
 
             @Override // android.app.IUiAutomationConnection
-            public Bitmap takeScreenshot(Rect crop) throws RemoteException {
+            public boolean takeScreenshot(Rect crop, ScreenCapture.ScreenCaptureListener listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(crop, 0);
+                    _data.writeTypedObject(listener, 0);
                     this.mRemote.transact(7, _data, _reply, 0);
                     _reply.readException();
-                    Bitmap _result = (Bitmap) _reply.readTypedObject(Bitmap.CREATOR);
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -527,15 +586,16 @@ public interface IUiAutomationConnection extends IInterface {
             }
 
             @Override // android.app.IUiAutomationConnection
-            public Bitmap takeSurfaceControlScreenshot(SurfaceControl surfaceControl) throws RemoteException {
+            public boolean takeSurfaceControlScreenshot(SurfaceControl surfaceControl, ScreenCapture.ScreenCaptureListener listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(surfaceControl, 0);
+                    _data.writeTypedObject(listener, 0);
                     this.mRemote.transact(8, _data, _reply, 0);
                     _reply.readException();
-                    Bitmap _result = (Bitmap) _reply.readTypedObject(Bitmap.CREATOR);
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -732,11 +792,73 @@ public interface IUiAutomationConnection extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.app.IUiAutomationConnection
+            public void addOverridePermissionState(int uid, String permission, int result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    _data.writeString(permission);
+                    _data.writeInt(result);
+                    this.mRemote.transact(21, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IUiAutomationConnection
+            public void removeOverridePermissionState(int uid, String permission) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    _data.writeString(permission);
+                    this.mRemote.transact(22, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IUiAutomationConnection
+            public void clearOverridePermissionStates(int uid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(uid);
+                    this.mRemote.transact(23, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.app.IUiAutomationConnection
+            public void clearAllOverridePermissionStates() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(24, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 19;
+            return 23;
         }
     }
 }

@@ -37,8 +37,7 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
     }
 
     protected byte[] bigIntToBytes(BigInteger r) {
-        X9IntegerConverter x9IntegerConverter = converter;
-        return x9IntegerConverter.integerToBytes(r, x9IntegerConverter.getByteLength(this.parameters.getCurve()));
+        return converter.integerToBytes(r, converter.getByteLength(this.parameters.getCurve()));
     }
 
     @Override // javax.crypto.KeyAgreementSpi
@@ -58,36 +57,11 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
             return null;
         } catch (Exception e) {
             throw new InvalidKeyException("calculation failed: " + e.getMessage()) { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.ec.KeyAgreementSpi.1
-                final /* synthetic */ Exception val$e;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(String arg0, Exception e2) {
-                    super(arg0);
-                    e = e2;
-                }
-
                 @Override // java.lang.Throwable
                 public Throwable getCause() {
                     return e;
                 }
             };
-        }
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.ec.KeyAgreementSpi$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends InvalidKeyException {
-        final /* synthetic */ Exception val$e;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(String arg0, Exception e2) {
-            super(arg0);
-            e = e2;
-        }
-
-        @Override // java.lang.Throwable
-        public Throwable getCause() {
-            return e;
         }
     }
 
@@ -131,7 +105,6 @@ public class KeyAgreementSpi extends BaseAgreementSpi {
         return Arrays.clone(this.result);
     }
 
-    /* loaded from: classes5.dex */
     public static class DH extends KeyAgreementSpi {
         public DH() {
             super("ECDH", new ECDHBasicAgreement(), null);

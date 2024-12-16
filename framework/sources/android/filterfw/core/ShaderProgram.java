@@ -59,9 +59,8 @@ public class ShaderProgram extends Program {
     }
 
     public ShaderProgram(FilterContext context, String fragmentShader) {
-        GLEnvironment gLEnvironment = getGLEnvironment(context);
-        this.mGLEnvironment = gLEnvironment;
-        allocate(gLEnvironment, null, fragmentShader);
+        this.mGLEnvironment = getGLEnvironment(context);
+        allocate(this.mGLEnvironment, null, fragmentShader);
         if (!compileAndLink()) {
             throw new RuntimeException("Could not compile and link shader!");
         }
@@ -69,9 +68,8 @@ public class ShaderProgram extends Program {
     }
 
     public ShaderProgram(FilterContext context, String vertexShader, String fragmentShader) {
-        GLEnvironment gLEnvironment = getGLEnvironment(context);
-        this.mGLEnvironment = gLEnvironment;
-        allocate(gLEnvironment, vertexShader, fragmentShader);
+        this.mGLEnvironment = getGLEnvironment(context);
+        allocate(this.mGLEnvironment, vertexShader, fragmentShader);
         if (!compileAndLink()) {
             throw new RuntimeException("Could not compile and link shader!");
         }
@@ -110,10 +108,8 @@ public class ShaderProgram extends Program {
         if (output instanceof GLFrame) {
             GLFrame glOutput = (GLFrame) output;
             if (this.mMaxTileSize > 0) {
-                int width = output.getFormat().getWidth();
-                int xTiles = ((width + r3) - 1) / this.mMaxTileSize;
-                int height = output.getFormat().getHeight();
-                int yTiles = ((height + r4) - 1) / this.mMaxTileSize;
+                int xTiles = ((output.getFormat().getWidth() + this.mMaxTileSize) - 1) / this.mMaxTileSize;
+                int yTiles = ((output.getFormat().getHeight() + this.mMaxTileSize) - 1) / this.mMaxTileSize;
                 setShaderTileCounts(xTiles, yTiles);
             }
             if (!shaderProcess(glInputs, glOutput)) {

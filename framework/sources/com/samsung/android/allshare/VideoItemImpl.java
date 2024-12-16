@@ -1,6 +1,5 @@
 package com.samsung.android.allshare;
 
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -9,20 +8,18 @@ import com.samsung.android.allshare.Item;
 import com.sec.android.allshare.iface.IBundleHolder;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
-public final class VideoItemImpl extends Item implements IBundleHolder {
+/* loaded from: classes3.dex */
+final class VideoItemImpl extends Item implements IBundleHolder {
     public static final Parcelable.Creator<VideoItemImpl> CREATOR = new Parcelable.Creator<VideoItemImpl>() { // from class: com.samsung.android.allshare.VideoItemImpl.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VideoItemImpl createFromParcel(Parcel src) {
             return new VideoItemImpl(src);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VideoItemImpl[] newArray(int size) {
             return new VideoItemImpl[size];
@@ -30,11 +27,7 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
     };
     private final ItemImpl mItemImpl;
 
-    /* synthetic */ VideoItemImpl(Parcel parcel, VideoItemImplIA videoItemImplIA) {
-        this(parcel);
-    }
-
-    public VideoItemImpl(Bundle bundle) {
+    VideoItemImpl(Bundle bundle) {
         this.mItemImpl = new ItemImpl(bundle);
     }
 
@@ -56,7 +49,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
         return this.mItemImpl.getBundle().getLong(AllShareKey.BUNDLE_LONG_VIDEO_ITEM_DURATION);
     }
 
-    @Override // com.samsung.android.allshare.Item
     public String getResolution() {
         return this.mItemImpl.getBundle() == null ? "" : this.mItemImpl.getBundle().getString(AllShareKey.BUNDLE_STRING_VIDEO_ITEM_RESOLUTION);
     }
@@ -69,16 +61,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
     @Override // com.samsung.android.allshare.Item
     public String getExtension() {
         return this.mItemImpl.getBundle() == null ? "" : this.mItemImpl.getBundle().getString(AllShareKey.BUNDLE_STRING_ITEM_EXTENSION);
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Item.MediaType getType() {
-        return Item.MediaType.ITEM_VIDEO;
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Date getDate() {
-        return this.mItemImpl.getDate();
     }
 
     @Override // com.samsung.android.allshare.Item
@@ -128,23 +110,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
         this.mItemImpl = new ItemImpl(bundle);
     }
 
-    /* renamed from: com.samsung.android.allshare.VideoItemImpl$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VideoItemImpl> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VideoItemImpl createFromParcel(Parcel src) {
-            return new VideoItemImpl(src);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VideoItemImpl[] newArray(int size) {
-            return new VideoItemImpl[size];
-        }
-    }
-
     @Override // com.samsung.android.allshare.Item
     public String getAlbumTitle() {
         return "";
@@ -161,11 +126,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
     }
 
     @Override // com.samsung.android.allshare.Item
-    public Location getLocation() {
-        return null;
-    }
-
-    @Override // com.samsung.android.allshare.Item
     public boolean isRootFolder() {
         return false;
     }
@@ -173,17 +133,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
     @Override // com.samsung.android.allshare.Item
     public Item.ContentBuildType getContentBuildType() {
         return this.mItemImpl.getContentBuildType();
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Item.WebContentBuilder.DeliveryMode getWebContentDeliveryMode() {
-        return this.mItemImpl.getWebContentDeliveryMode();
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    @Deprecated
-    public Item.WebContentBuilder.PlayMode getWebContentPlayMode() {
-        return this.mItemImpl.getWebContentPlayMode();
     }
 
     @Override // com.samsung.android.allshare.Item
@@ -226,11 +175,6 @@ public final class VideoItemImpl extends Item implements IBundleHolder {
             return -1;
         }
         return bundle.getInt(AllShareKey.BUNDLE_STRING_VIDEO_ITEM_BITRATE);
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public ArrayList<Item.Resource> getResourceList() {
-        return this.mItemImpl.getResourceList();
     }
 
     @Override // com.samsung.android.allshare.Item

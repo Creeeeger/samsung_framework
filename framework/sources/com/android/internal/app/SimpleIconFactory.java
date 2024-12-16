@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import org.xmlpull.v1.XmlPullParser;
 
 @Deprecated
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SimpleIconFactory {
     private static final int AMBIENT_SHADOW_ALPHA = 7;
     private static final float BLUR_FACTOR = 0.03125f;
@@ -49,7 +49,6 @@ public class SimpleIconFactory {
     private int mBadgeBitmapSize;
     private final Bitmap mBitmap;
     private final Rect mBounds;
-    private Canvas mCanvas;
     private Context mContext;
     private BlurMaskFilter mDefaultBlurMaskFilter;
     private int mFillResIconDpi;
@@ -65,6 +64,7 @@ public class SimpleIconFactory {
     private final Rect mOldBounds = new Rect();
     private Paint mBlurPaint = new Paint(3);
     private Paint mDrawPaint = new Paint(3);
+    private Canvas mCanvas = new Canvas();
 
     @Deprecated
     public static SimpleIconFactory obtain(Context ctx) {
@@ -110,23 +110,18 @@ public class SimpleIconFactory {
 
     @Deprecated
     private SimpleIconFactory(Context context, int fillResIconDpi, int iconBitmapSize, int badgeBitmapSize) {
-        Context applicationContext = context.getApplicationContext();
-        this.mContext = applicationContext;
-        this.mPm = applicationContext.getPackageManager();
+        this.mContext = context.getApplicationContext();
+        this.mPm = this.mContext.getPackageManager();
         this.mIconBitmapSize = iconBitmapSize;
         this.mBadgeBitmapSize = badgeBitmapSize;
         this.mFillResIconDpi = fillResIconDpi;
-        Canvas canvas = new Canvas();
-        this.mCanvas = canvas;
-        canvas.setDrawFilter(new PaintFlagsDrawFilter(4, 2));
-        int i = iconBitmapSize * 2;
-        this.mMaxSize = i;
-        Bitmap createBitmap = Bitmap.createBitmap(i, i, Bitmap.Config.ALPHA_8);
-        this.mBitmap = createBitmap;
-        this.mScaleCheckCanvas = new Canvas(createBitmap);
-        this.mPixels = new byte[i * i];
-        this.mLeftBorder = new float[i];
-        this.mRightBorder = new float[i];
+        this.mCanvas.setDrawFilter(new PaintFlagsDrawFilter(4, 2));
+        this.mMaxSize = iconBitmapSize * 2;
+        this.mBitmap = Bitmap.createBitmap(this.mMaxSize, this.mMaxSize, Bitmap.Config.ALPHA_8);
+        this.mScaleCheckCanvas = new Canvas(this.mBitmap);
+        this.mPixels = new byte[this.mMaxSize * this.mMaxSize];
+        this.mLeftBorder = new float[this.mMaxSize];
+        this.mRightBorder = new float[this.mMaxSize];
         this.mBounds = new Rect();
         this.mAdaptiveIconBounds = new Rect();
         this.mAdaptiveIconScale = 0.0f;
@@ -182,12 +177,7 @@ public class SimpleIconFactory {
         this.mCanvas.setBitmap(bitmap);
         recreateIcon(Bitmap.createBitmap(bitmap), this.mCanvas);
         if (renderedAppIcon != null) {
-            int i = this.mBadgeBitmapSize;
-            Bitmap renderedAppIcon2 = Bitmap.createScaledBitmap(renderedAppIcon, i, i, false);
-            Canvas canvas = this.mCanvas;
-            int i2 = this.mIconBitmapSize;
-            int i3 = this.mBadgeBitmapSize;
-            canvas.drawBitmap(renderedAppIcon2, i2 - i3, i2 - i3, (Paint) null);
+            this.mCanvas.drawBitmap(Bitmap.createScaledBitmap(renderedAppIcon, this.mBadgeBitmapSize, this.mBadgeBitmapSize, false), this.mIconBitmapSize - this.mBadgeBitmapSize, this.mIconBitmapSize - this.mBadgeBitmapSize, (Paint) null);
         }
         this.mCanvas.setBitmap(null);
         return bitmap;
@@ -287,11 +277,13 @@ public class SimpleIconFactory {
         return bitmap;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createIconBitmap$0(Rect childRect, Drawable drawable) {
         drawable.setBounds(childRect);
         drawable.draw(this.mCanvas);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createIconBitmap$1(Rect childRect, Drawable drawable) {
         drawable.setBounds(childRect);
         drawable.draw(this.mCanvas);
@@ -316,31 +308,31 @@ public class SimpleIconFactory {
         return icon;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:85:0x0042, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x0045, code lost:
     
-        if (r3 <= r22.mMaxSize) goto L126;
+        if (r3 <= r22.mMaxSize) goto L26;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:87:0x0045, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:88:0x0048, code lost:
     
         r6 = r3;
      */
-    /* JADX WARN: Removed duplicated region for block: B:24:0x007f  */
-    /* JADX WARN: Removed duplicated region for block: B:48:0x00d3 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:54:0x00ed A[Catch: all -> 0x01a2, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:21:0x0056, B:26:0x008a, B:33:0x009c, B:36:0x00a5, B:41:0x00b9, B:43:0x00c4, B:52:0x00dd, B:54:0x00ed, B:58:0x00ff, B:59:0x00f8, B:62:0x0102, B:65:0x0122, B:67:0x0134, B:68:0x0168, B:70:0x0171, B:71:0x017e, B:73:0x0186, B:75:0x018d, B:80:0x0117, B:82:0x0030, B:84:0x0040, B:90:0x004c, B:95:0x0053, B:96:0x0047), top: B:3:0x0007 }] */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0113  */
-    /* JADX WARN: Removed duplicated region for block: B:67:0x0134 A[Catch: all -> 0x01a2, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:21:0x0056, B:26:0x008a, B:33:0x009c, B:36:0x00a5, B:41:0x00b9, B:43:0x00c4, B:52:0x00dd, B:54:0x00ed, B:58:0x00ff, B:59:0x00f8, B:62:0x0102, B:65:0x0122, B:67:0x0134, B:68:0x0168, B:70:0x0171, B:71:0x017e, B:73:0x0186, B:75:0x018d, B:80:0x0117, B:82:0x0030, B:84:0x0040, B:90:0x004c, B:95:0x0053, B:96:0x0047), top: B:3:0x0007 }] */
-    /* JADX WARN: Removed duplicated region for block: B:70:0x0171 A[Catch: all -> 0x01a2, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:21:0x0056, B:26:0x008a, B:33:0x009c, B:36:0x00a5, B:41:0x00b9, B:43:0x00c4, B:52:0x00dd, B:54:0x00ed, B:58:0x00ff, B:59:0x00f8, B:62:0x0102, B:65:0x0122, B:67:0x0134, B:68:0x0168, B:70:0x0171, B:71:0x017e, B:73:0x0186, B:75:0x018d, B:80:0x0117, B:82:0x0030, B:84:0x0040, B:90:0x004c, B:95:0x0053, B:96:0x0047), top: B:3:0x0007 }] */
-    /* JADX WARN: Removed duplicated region for block: B:78:0x017c  */
-    /* JADX WARN: Removed duplicated region for block: B:79:0x0162  */
-    /* JADX WARN: Removed duplicated region for block: B:80:0x0117 A[Catch: all -> 0x01a2, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:21:0x0056, B:26:0x008a, B:33:0x009c, B:36:0x00a5, B:41:0x00b9, B:43:0x00c4, B:52:0x00dd, B:54:0x00ed, B:58:0x00ff, B:59:0x00f8, B:62:0x0102, B:65:0x0122, B:67:0x0134, B:68:0x0168, B:70:0x0171, B:71:0x017e, B:73:0x0186, B:75:0x018d, B:80:0x0117, B:82:0x0030, B:84:0x0040, B:90:0x004c, B:95:0x0053, B:96:0x0047), top: B:3:0x0007 }] */
-    /* JADX WARN: Removed duplicated region for block: B:81:0x0198 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x0084  */
+    /* JADX WARN: Removed duplicated region for block: B:49:0x00dc A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x00f6 A[Catch: all -> 0x01af, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:20:0x002e, B:22:0x0059, B:27:0x0092, B:34:0x00a4, B:37:0x00ad, B:42:0x00c1, B:44:0x00cc, B:53:0x00e6, B:55:0x00f6, B:59:0x010c, B:60:0x0101, B:63:0x010f, B:66:0x012f, B:68:0x0141, B:69:0x0175, B:71:0x017e, B:72:0x018b, B:74:0x0193, B:76:0x019a, B:81:0x0124, B:83:0x0032, B:85:0x0043, B:91:0x004f, B:96:0x0056, B:97:0x004a), top: B:3:0x0007 }] */
+    /* JADX WARN: Removed duplicated region for block: B:65:0x0120  */
+    /* JADX WARN: Removed duplicated region for block: B:68:0x0141 A[Catch: all -> 0x01af, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:20:0x002e, B:22:0x0059, B:27:0x0092, B:34:0x00a4, B:37:0x00ad, B:42:0x00c1, B:44:0x00cc, B:53:0x00e6, B:55:0x00f6, B:59:0x010c, B:60:0x0101, B:63:0x010f, B:66:0x012f, B:68:0x0141, B:69:0x0175, B:71:0x017e, B:72:0x018b, B:74:0x0193, B:76:0x019a, B:81:0x0124, B:83:0x0032, B:85:0x0043, B:91:0x004f, B:96:0x0056, B:97:0x004a), top: B:3:0x0007 }] */
+    /* JADX WARN: Removed duplicated region for block: B:71:0x017e A[Catch: all -> 0x01af, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:20:0x002e, B:22:0x0059, B:27:0x0092, B:34:0x00a4, B:37:0x00ad, B:42:0x00c1, B:44:0x00cc, B:53:0x00e6, B:55:0x00f6, B:59:0x010c, B:60:0x0101, B:63:0x010f, B:66:0x012f, B:68:0x0141, B:69:0x0175, B:71:0x017e, B:72:0x018b, B:74:0x0193, B:76:0x019a, B:81:0x0124, B:83:0x0032, B:85:0x0043, B:91:0x004f, B:96:0x0056, B:97:0x004a), top: B:3:0x0007 }] */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x0189  */
+    /* JADX WARN: Removed duplicated region for block: B:80:0x016f  */
+    /* JADX WARN: Removed duplicated region for block: B:81:0x0124 A[Catch: all -> 0x01af, TryCatch #0 {, blocks: (B:4:0x0007, B:6:0x000c, B:9:0x0014, B:10:0x0019, B:14:0x001d, B:18:0x002a, B:20:0x002e, B:22:0x0059, B:27:0x0092, B:34:0x00a4, B:37:0x00ad, B:42:0x00c1, B:44:0x00cc, B:53:0x00e6, B:55:0x00f6, B:59:0x010c, B:60:0x0101, B:63:0x010f, B:66:0x012f, B:68:0x0141, B:69:0x0175, B:71:0x017e, B:72:0x018b, B:74:0x0193, B:76:0x019a, B:81:0x0124, B:83:0x0032, B:85:0x0043, B:91:0x004f, B:96:0x0056, B:97:0x004a), top: B:3:0x0007 }] */
+    /* JADX WARN: Removed duplicated region for block: B:82:0x01a5 A[ADDED_TO_REGION] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     private synchronized float getScale(android.graphics.drawable.Drawable r23, android.graphics.RectF r24) {
         /*
-            Method dump skipped, instructions count: 421
+            Method dump skipped, instructions count: 434
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.app.SimpleIconFactory.getScale(android.graphics.drawable.Drawable, android.graphics.RectF):float");
@@ -399,7 +391,6 @@ public class SimpleIconFactory {
         out.drawBitmap(icon, 0.0f, 0.0f, this.mDrawPaint);
     }
 
-    /* loaded from: classes4.dex */
     public static class FixedScaleDrawable extends DrawableWrapper {
         private static final float LEGACY_ICON_SCALE = 0.46669f;
         private float mScaleX;
@@ -430,19 +421,16 @@ public class SimpleIconFactory {
         public void setScale(float scale) {
             float h = getIntrinsicHeight();
             float w = getIntrinsicWidth();
-            float f = scale * LEGACY_ICON_SCALE;
-            this.mScaleX = f;
-            float f2 = LEGACY_ICON_SCALE * scale;
-            this.mScaleY = f2;
+            this.mScaleX = scale * LEGACY_ICON_SCALE;
+            this.mScaleY = LEGACY_ICON_SCALE * scale;
             if (h > w && w > 0.0f) {
-                this.mScaleX = f * (w / h);
+                this.mScaleX *= w / h;
             } else if (w > h && h > 0.0f) {
-                this.mScaleY = f2 * (h / w);
+                this.mScaleY *= h / w;
             }
         }
     }
 
-    /* loaded from: classes4.dex */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
         FixedSizeBitmapDrawable(Bitmap bitmap) {
             super((Resources) null, bitmap);

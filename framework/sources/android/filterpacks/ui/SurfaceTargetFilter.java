@@ -59,9 +59,8 @@ public class SurfaceTargetFilter extends Filter {
     }
 
     public void updateRenderMode() {
-        String str = this.mRenderModeString;
-        if (str != null) {
-            if (str.equals("stretch")) {
+        if (this.mRenderModeString != null) {
+            if (this.mRenderModeString.equals("stretch")) {
                 this.mRenderMode = 0;
             } else if (this.mRenderModeString.equals("fit")) {
                 this.mRenderMode = 1;
@@ -77,9 +76,8 @@ public class SurfaceTargetFilter extends Filter {
     @Override // android.filterfw.core.Filter
     public void prepare(FilterContext context) {
         this.mGlEnv = context.getGLEnvironment();
-        ShaderProgram createIdentity = ShaderProgram.createIdentity(context);
-        this.mProgram = createIdentity;
-        createIdentity.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
+        this.mProgram = ShaderProgram.createIdentity(context);
+        this.mProgram.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
         this.mProgram.setClearsOutput(true);
         this.mProgram.setClearColor(0.0f, 0.0f, 0.0f);
         MutableFrameFormat screenFormat = ImageFormat.create(this.mScreenWidth, this.mScreenHeight, 3, 3);
@@ -139,57 +137,49 @@ public class SurfaceTargetFilter extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        GLFrame gLFrame = this.mScreen;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mScreen != null) {
+            this.mScreen.release();
         }
     }
 
     private void updateTargetRect() {
-        int i;
-        ShaderProgram shaderProgram;
-        int i2 = this.mScreenWidth;
-        if (i2 > 0 && (i = this.mScreenHeight) > 0 && (shaderProgram = this.mProgram) != null) {
-            float screenAspectRatio = i2 / i;
+        if (this.mScreenWidth > 0 && this.mScreenHeight > 0 && this.mProgram != null) {
+            float screenAspectRatio = this.mScreenWidth / this.mScreenHeight;
             float relativeAspectRatio = screenAspectRatio / this.mAspectRatio;
             switch (this.mRenderMode) {
                 case 0:
-                    shaderProgram.setTargetRect(0.0f, 0.0f, 1.0f, 1.0f);
-                    return;
+                    this.mProgram.setTargetRect(0.0f, 0.0f, 1.0f, 1.0f);
+                    break;
                 case 1:
                     if (relativeAspectRatio > 1.0f) {
-                        shaderProgram.setTargetRect(0.5f - (0.5f / relativeAspectRatio), 0.0f, 1.0f / relativeAspectRatio, 1.0f);
-                        return;
+                        this.mProgram.setTargetRect(0.5f - (0.5f / relativeAspectRatio), 0.0f, 1.0f / relativeAspectRatio, 1.0f);
+                        break;
                     } else {
-                        shaderProgram.setTargetRect(0.0f, 0.5f - (relativeAspectRatio * 0.5f), 1.0f, relativeAspectRatio);
-                        return;
+                        this.mProgram.setTargetRect(0.0f, 0.5f - (relativeAspectRatio * 0.5f), 1.0f, relativeAspectRatio);
+                        break;
                     }
                 case 2:
                     if (relativeAspectRatio > 1.0f) {
-                        shaderProgram.setTargetRect(0.0f, 0.5f - (relativeAspectRatio * 0.5f), 1.0f, relativeAspectRatio);
-                        return;
+                        this.mProgram.setTargetRect(0.0f, 0.5f - (relativeAspectRatio * 0.5f), 1.0f, relativeAspectRatio);
+                        break;
                     } else {
-                        shaderProgram.setTargetRect(0.5f - (0.5f / relativeAspectRatio), 0.0f, 1.0f / relativeAspectRatio, 1.0f);
-                        return;
+                        this.mProgram.setTargetRect(0.5f - (0.5f / relativeAspectRatio), 0.0f, 1.0f / relativeAspectRatio, 1.0f);
+                        break;
                     }
-                default:
-                    return;
             }
         }
     }
 
     private void registerSurface() {
-        int registerSurface = this.mGlEnv.registerSurface(this.mSurface);
-        this.mSurfaceId = registerSurface;
-        if (registerSurface < 0) {
+        this.mSurfaceId = this.mGlEnv.registerSurface(this.mSurface);
+        if (this.mSurfaceId < 0) {
             throw new RuntimeException("Could not register Surface: " + this.mSurface);
         }
     }
 
     private void unregisterSurface() {
-        int i = this.mSurfaceId;
-        if (i > 0) {
-            this.mGlEnv.unregisterSurfaceId(i);
+        if (this.mSurfaceId > 0) {
+            this.mGlEnv.unregisterSurfaceId(this.mSurfaceId);
         }
     }
 }

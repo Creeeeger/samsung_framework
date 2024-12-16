@@ -74,7 +74,6 @@ public class DrmEventService extends Service {
         this.mServiceHandler = new ServiceHandler(this.mServiceLooper);
     }
 
-    /* loaded from: classes5.dex */
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
             super(looper);

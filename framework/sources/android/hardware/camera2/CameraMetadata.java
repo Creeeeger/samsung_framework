@@ -4,6 +4,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.impl.CameraMetadataNative;
+import android.hardware.camera2.impl.ExtensionKey;
 import android.hardware.camera2.impl.PublicKey;
 import android.hardware.camera2.impl.SyntheticKey;
 import android.sec.enterprise.proxy.EnterpriseProxyConstants;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public abstract class CameraMetadata<TKey> {
     public static final int AUTOMOTIVE_LENS_FACING_EXTERIOR_FRONT = 1;
     public static final int AUTOMOTIVE_LENS_FACING_EXTERIOR_LEFT = 3;
@@ -58,6 +59,7 @@ public abstract class CameraMetadata<TKey> {
     public static final int CONTROL_AE_MODE_ON_AUTO_FLASH = 2;
     public static final int CONTROL_AE_MODE_ON_AUTO_FLASH_REDEYE = 4;
     public static final int CONTROL_AE_MODE_ON_EXTERNAL_FLASH = 5;
+    public static final int CONTROL_AE_MODE_ON_LOW_LIGHT_BOOST_BRIGHTNESS_PRIORITY = 6;
     public static final int CONTROL_AE_PRECAPTURE_TRIGGER_CANCEL = 2;
     public static final int CONTROL_AE_PRECAPTURE_TRIGGER_IDLE = 0;
     public static final int CONTROL_AE_PRECAPTURE_TRIGGER_START = 1;
@@ -125,6 +127,8 @@ public abstract class CameraMetadata<TKey> {
     public static final int CONTROL_EXTENDED_SCENE_MODE_BOKEH_STILL_CAPTURE = 1;
     public static final int CONTROL_EXTENDED_SCENE_MODE_DISABLED = 0;
     public static final int CONTROL_EXTENDED_SCENE_MODE_VENDOR_START = 64;
+    public static final int CONTROL_LOW_LIGHT_BOOST_STATE_ACTIVE = 1;
+    public static final int CONTROL_LOW_LIGHT_BOOST_STATE_INACTIVE = 0;
     public static final int CONTROL_MODE_AUTO = 1;
     public static final int CONTROL_MODE_OFF = 0;
     public static final int CONTROL_MODE_OFF_KEEP_STATE = 3;
@@ -168,6 +172,9 @@ public abstract class CameraMetadata<TKey> {
     public static final int EDGE_MODE_HIGH_QUALITY = 2;
     public static final int EDGE_MODE_OFF = 0;
     public static final int EDGE_MODE_ZERO_SHUTTER_LAG = 3;
+    public static final int EFV_STABILIZATION_MODE_GIMBAL = 1;
+    public static final int EFV_STABILIZATION_MODE_LOCKED = 2;
+    public static final int EFV_STABILIZATION_MODE_OFF = 0;
     public static final int FLASH_MODE_OFF = 0;
     public static final int FLASH_MODE_SINGLE = 1;
     public static final int FLASH_MODE_TORCH = 2;
@@ -327,16 +334,18 @@ public abstract class CameraMetadata<TKey> {
 
     protected abstract <T> T getProtected(TKey tkey);
 
-    public void setNativeInstance(CameraMetadataNative nativeInstance) {
+    protected CameraMetadata() {
+    }
+
+    protected void setNativeInstance(CameraMetadataNative nativeInstance) {
         this.mNativeInstance = nativeInstance;
     }
 
     public long getNativeMetadataPtr() {
-        CameraMetadataNative cameraMetadataNative = this.mNativeInstance;
-        if (cameraMetadataNative == null) {
+        if (this.mNativeInstance == null) {
             return 0L;
         }
-        return cameraMetadataNative.getMetadataPtr();
+        return this.mNativeInstance.getMetadataPtr();
     }
 
     public CameraMetadataNative getNativeMetadata() {
@@ -348,7 +357,7 @@ public abstract class CameraMetadata<TKey> {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public <TKey> ArrayList<TKey> getKeys(Class<?> cls, Class<TKey> cls2, CameraMetadata<TKey> cameraMetadata, int[] iArr, boolean z) {
+    <TKey> ArrayList<TKey> getKeys(Class<?> cls, Class<TKey> cls2, CameraMetadata<TKey> cameraMetadata, int[] iArr, boolean z) {
         String name;
         long vendorId;
         if (cls.equals(TotalCaptureResult.class)) {
@@ -372,11 +381,10 @@ public abstract class CameraMetadata<TKey> {
                 }
             }
         }
-        CameraMetadataNative cameraMetadataNative = this.mNativeInstance;
-        if (cameraMetadataNative == null) {
+        if (this.mNativeInstance == null) {
             return anonymousClass1;
         }
-        ArrayList allVendorKeys = cameraMetadataNative.getAllVendorKeys(cls2);
+        ArrayList allVendorKeys = this.mNativeInstance.getAllVendorKeys(cls2);
         if (allVendorKeys != null) {
             Iterator it = allVendorKeys.iterator();
             while (it.hasNext()) {
@@ -416,7 +424,7 @@ public abstract class CameraMetadata<TKey> {
         } else {
             throw new IllegalArgumentException("key type must be that of a metadata key");
         }
-        if (field.getAnnotation(PublicKey.class) == null) {
+        if (field.getAnnotation(PublicKey.class) == null && field.getAnnotation(ExtensionKey.class) == null) {
             return false;
         }
         if (filterTags == null) {

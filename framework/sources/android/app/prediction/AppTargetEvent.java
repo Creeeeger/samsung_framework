@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Objects;
 
 @SystemApi
 /* loaded from: classes.dex */
@@ -15,14 +16,13 @@ public final class AppTargetEvent implements Parcelable {
     public static final int ACTION_UNDISMISS = 5;
     public static final int ACTION_UNPIN = 4;
     public static final Parcelable.Creator<AppTargetEvent> CREATOR = new Parcelable.Creator<AppTargetEvent>() { // from class: android.app.prediction.AppTargetEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTargetEvent createFromParcel(Parcel parcel) {
             return new AppTargetEvent(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppTargetEvent[] newArray(int size) {
             return new AppTargetEvent[size];
@@ -33,16 +33,7 @@ public final class AppTargetEvent implements Parcelable {
     private final AppTarget mTarget;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ActionType {
-    }
-
-    /* synthetic */ AppTargetEvent(AppTarget appTarget, String str, int i, AppTargetEventIA appTargetEventIA) {
-        this(appTarget, str, i);
-    }
-
-    /* synthetic */ AppTargetEvent(Parcel parcel, AppTargetEventIA appTargetEventIA) {
-        this(parcel);
     }
 
     private AppTargetEvent(AppTarget target, String location, int actionType) {
@@ -77,6 +68,11 @@ public final class AppTargetEvent implements Parcelable {
         return this.mTarget.equals(other.mTarget) && this.mLocation.equals(other.mLocation) && this.mAction == other.mAction;
     }
 
+    public int hashCode() {
+        int hashCode = Objects.hash(this.mTarget, this.mLocation);
+        return (hashCode * 31) + this.mAction;
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -89,25 +85,7 @@ public final class AppTargetEvent implements Parcelable {
         dest.writeInt(this.mAction);
     }
 
-    /* renamed from: android.app.prediction.AppTargetEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppTargetEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTargetEvent createFromParcel(Parcel parcel) {
-            return new AppTargetEvent(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppTargetEvent[] newArray(int size) {
-            return new AppTargetEvent[size];
-        }
-    }
-
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private int mAction;
         private String mLocation;

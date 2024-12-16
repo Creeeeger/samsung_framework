@@ -35,24 +35,37 @@ public final class MediaProjection {
         this.mContext = context;
         this.mImpl = impl;
         try {
-            impl.start(new MediaProjectionCallback());
+            this.mImpl.start(new MediaProjectionCallback());
             this.mDisplayManager = displayManager;
         } catch (RemoteException e) {
+            Log.e(TAG, "Content Recording: Failed to start media projection", e);
             throw new RuntimeException("Failed to start media projection", e);
         }
     }
 
     public void registerCallback(Callback callback, Handler handler) {
-        Callback c = (Callback) Objects.requireNonNull(callback);
-        if (handler == null) {
-            handler = new Handler();
+        try {
+            Callback c = (Callback) Objects.requireNonNull(callback);
+            if (handler == null) {
+                handler = new Handler(this.mContext.getMainLooper());
+            }
+            this.mCallbacks.put(c, new CallbackRecord(c, handler));
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Content Recording: cannot register null Callback", e);
+            throw e;
+        } catch (RuntimeException e2) {
+            Log.e(TAG, "Content Recording: failed to create new Handler to register Callback", e2);
         }
-        this.mCallbacks.put(c, new CallbackRecord(c, handler));
     }
 
     public void unregisterCallback(Callback callback) {
-        Callback c = (Callback) Objects.requireNonNull(callback);
-        this.mCallbacks.remove(c);
+        try {
+            Callback c = (Callback) Objects.requireNonNull(callback);
+            this.mCallbacks.remove(c);
+        } catch (NullPointerException e) {
+            Log.d(TAG, "Content Recording: cannot unregister null Callback", e);
+            throw e;
+        }
     }
 
     public VirtualDisplay createVirtualDisplay(String name, int width, int height, int dpi, boolean isSecure, Surface surface, VirtualDisplay.Callback callback, Handler handler) {
@@ -69,7 +82,9 @@ public final class MediaProjection {
 
     public VirtualDisplay createVirtualDisplay(String name, int width, int height, int dpi, int flags, Surface surface, VirtualDisplay.Callback callback, Handler handler) {
         if (shouldMediaProjectionRequireCallback() && this.mCallbacks.isEmpty()) {
-            throw new IllegalStateException("Must register a callback before starting capture, to manage resources in response to MediaProjection states.");
+            IllegalStateException e = new IllegalStateException("Must register a callback before starting capture, to manage resources in response to MediaProjection states.");
+            Log.e(TAG, "Content Recording: no callback registered for virtual display", e);
+            throw e;
         }
         VirtualDisplayConfig.Builder builder = new VirtualDisplayConfig.Builder(name, width, height, dpi).setFlags(flags);
         if (surface != null) {
@@ -99,6 +114,7 @@ public final class MediaProjection {
 
     public void stop() {
         try {
+            Log.d(TAG, "Content Recording: stopping projection");
             this.mImpl.stop();
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to stop projection", e);
@@ -109,7 +125,6 @@ public final class MediaProjection {
         return this.mImpl;
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public void onStop() {
         }
@@ -121,13 +136,7 @@ public final class MediaProjection {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public final class MediaProjectionCallback extends IMediaProjectionCallback.Stub {
-        /* synthetic */ MediaProjectionCallback(MediaProjection mediaProjection, MediaProjectionCallbackIA mediaProjectionCallbackIA) {
-            this();
-        }
-
+    private final class MediaProjectionCallback extends IMediaProjectionCallback.Stub {
         private MediaProjectionCallback() {
         }
 
@@ -154,8 +163,8 @@ public final class MediaProjection {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class CallbackRecord extends Callback {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class CallbackRecord extends Callback {
         private final Callback mCallback;
         private final Handler mHandler;
 
@@ -164,24 +173,9 @@ public final class MediaProjection {
             this.mHandler = handler;
         }
 
-        /* renamed from: android.media.projection.MediaProjection$CallbackRecord$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 implements Runnable {
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                CallbackRecord.this.mCallback.onStop();
-            }
-        }
-
         @Override // android.media.projection.MediaProjection.Callback
         public void onStop() {
             this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection.CallbackRecord.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     CallbackRecord.this.mCallback.onStop();
@@ -189,13 +183,14 @@ public final class MediaProjection {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCapturedContentResize$0(int width, int height) {
             this.mCallback.onCapturedContentResize(width, height);
         }
 
         @Override // android.media.projection.MediaProjection.Callback
         public void onCapturedContentResize(final int width, final int height) {
-            this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection$CallbackRecord$$ExternalSyntheticLambda1
+            this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection$CallbackRecord$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaProjection.CallbackRecord.this.lambda$onCapturedContentResize$0(width, height);
@@ -203,13 +198,14 @@ public final class MediaProjection {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCapturedContentVisibilityChanged$1(boolean isVisible) {
             this.mCallback.onCapturedContentVisibilityChanged(isVisible);
         }
 
         @Override // android.media.projection.MediaProjection.Callback
         public void onCapturedContentVisibilityChanged(final boolean isVisible) {
-            this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection$CallbackRecord$$ExternalSyntheticLambda0
+            this.mHandler.post(new Runnable() { // from class: android.media.projection.MediaProjection$CallbackRecord$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaProjection.CallbackRecord.this.lambda$onCapturedContentVisibilityChanged$1(isVisible);

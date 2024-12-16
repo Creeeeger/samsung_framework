@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 public class CdmaNumberInfoRecord implements Parcelable {
     public static final int CDMA_NUMBER_INFO_BUFFER_LENGTH = 81;
     public static final Parcelable.Creator<CdmaNumberInfoRecord> CREATOR = new Parcelable.Creator<CdmaNumberInfoRecord>() { // from class: android.hardware.radio.voice.CdmaNumberInfoRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaNumberInfoRecord createFromParcel(Parcel _aidl_source) {
             CdmaNumberInfoRecord _aidl_out = new CdmaNumberInfoRecord();
@@ -20,6 +18,7 @@ public class CdmaNumberInfoRecord implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaNumberInfoRecord[] newArray(int _aidl_size) {
             return new CdmaNumberInfoRecord[_aidl_size];
@@ -30,25 +29,6 @@ public class CdmaNumberInfoRecord implements Parcelable {
     public byte numberPlan = 0;
     public byte pi = 0;
     public byte si = 0;
-
-    /* renamed from: android.hardware.radio.voice.CdmaNumberInfoRecord$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaNumberInfoRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaNumberInfoRecord createFromParcel(Parcel _aidl_source) {
-            CdmaNumberInfoRecord _aidl_out = new CdmaNumberInfoRecord();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaNumberInfoRecord[] newArray(int _aidl_size) {
-            return new CdmaNumberInfoRecord[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class CdmaNumberInfoRecord implements Parcelable {
         _aidl_sj.add("numberPlan: " + ((int) this.numberPlan));
         _aidl_sj.add("pi: " + ((int) this.pi));
         _aidl_sj.add("si: " + ((int) this.si));
-        return "android.hardware.radio.voice.CdmaNumberInfoRecord" + _aidl_sj.toString();
+        return "CdmaNumberInfoRecord" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

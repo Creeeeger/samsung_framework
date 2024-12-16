@@ -25,7 +25,7 @@ public final class AmrInputStream extends InputStream {
         Log.w(TAG, "@@@@ AmrInputStream is not a public API @@@@");
         this.mInputStream = inputStream;
         MediaFormat format = new MediaFormat();
-        format.setString(MediaFormat.KEY_MIME, "audio/3gpp");
+        format.setString("mime", "audio/3gpp");
         format.setInteger(MediaFormat.KEY_SAMPLE_RATE, 8000);
         format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, 1);
         format.setInteger(MediaFormat.KEY_BIT_RATE, 12200);
@@ -33,14 +33,12 @@ public final class AmrInputStream extends InputStream {
         String name = mcl.findEncoderForFormat(format);
         if (name != null) {
             try {
-                MediaCodec createByCodecName = MediaCodec.createByCodecName(name);
-                this.mCodec = createByCodecName;
-                createByCodecName.configure(format, (Surface) null, (MediaCrypto) null, 1);
+                this.mCodec = MediaCodec.createByCodecName(name);
+                this.mCodec.configure(format, (Surface) null, (MediaCrypto) null, 1);
                 this.mCodec.start();
             } catch (IOException e) {
-                MediaCodec mediaCodec = this.mCodec;
-                if (mediaCodec != null) {
-                    mediaCodec.release();
+                if (this.mCodec != null) {
+                    this.mCodec.release();
                 }
                 this.mCodec = null;
             }
@@ -100,17 +98,15 @@ public final class AmrInputStream extends InputStream {
                 }
             }
         }
-        int index3 = this.mBufOut;
-        int i = this.mBufIn;
-        if (index3 >= i) {
+        if (this.mBufOut >= this.mBufIn) {
             return (this.mSawInputEOS && this.mSawOutputEOS) ? -1 : 0;
         }
-        if (length <= i - index3) {
-            length2 = length;
+        if (length > this.mBufIn - this.mBufOut) {
+            length2 = this.mBufIn - this.mBufOut;
         } else {
-            length2 = i - index3;
+            length2 = length;
         }
-        System.arraycopy(this.mBuf, index3, b, offset, length2);
+        System.arraycopy(this.mBuf, this.mBufOut, b, offset, length2);
         this.mBufOut += length2;
         return length2;
     }
@@ -118,24 +114,21 @@ public final class AmrInputStream extends InputStream {
     @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
     public void close() throws IOException {
         try {
-            InputStream inputStream = this.mInputStream;
-            if (inputStream != null) {
-                inputStream.close();
+            if (this.mInputStream != null) {
+                this.mInputStream.close();
             }
             this.mInputStream = null;
             try {
-                MediaCodec mediaCodec = this.mCodec;
-                if (mediaCodec != null) {
-                    mediaCodec.release();
+                if (this.mCodec != null) {
+                    this.mCodec.release();
                 }
             } finally {
             }
         } catch (Throwable th) {
             this.mInputStream = null;
             try {
-                MediaCodec mediaCodec2 = this.mCodec;
-                if (mediaCodec2 != null) {
-                    mediaCodec2.release();
+                if (this.mCodec != null) {
+                    this.mCodec.release();
                 }
                 throw th;
             } finally {

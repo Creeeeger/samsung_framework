@@ -22,7 +22,6 @@ public interface ISoundTriggerDetectionService extends IInterface {
 
     void setClient(ParcelUuid parcelUuid, Bundle bundle, ISoundTriggerDetectionServiceClient iSoundTriggerDetectionServiceClient) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISoundTriggerDetectionService {
         @Override // android.media.soundtrigger.ISoundTriggerDetectionService
         public void setClient(ParcelUuid uuid, Bundle params, ISoundTriggerDetectionServiceClient client) throws RemoteException {
@@ -50,7 +49,6 @@ public interface ISoundTriggerDetectionService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerDetectionService {
         public static final String DESCRIPTOR = "android.media.soundtrigger.ISoundTriggerDetectionService";
         static final int TRANSACTION_onError = 4;
@@ -106,51 +104,48 @@ public interface ISoundTriggerDetectionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ISoundTriggerDetectionServiceClient _arg2 = ISoundTriggerDetectionServiceClient.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setClient(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    ParcelUuid _arg02 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeClient(_arg02);
+                    return true;
+                case 3:
+                    ParcelUuid _arg03 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg12 = data.readInt();
+                    SoundTrigger.GenericRecognitionEvent _arg22 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGenericRecognitionEvent(_arg03, _arg12, _arg22);
+                    return true;
+                case 4:
+                    ParcelUuid _arg04 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg13 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg04, _arg13, _arg23);
+                    return true;
+                case 5:
+                    ParcelUuid _arg05 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStopOperation(_arg05, _arg14);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelUuid _arg0 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ISoundTriggerDetectionServiceClient _arg2 = ISoundTriggerDetectionServiceClient.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setClient(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            ParcelUuid _arg02 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeClient(_arg02);
-                            return true;
-                        case 3:
-                            ParcelUuid _arg03 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg12 = data.readInt();
-                            SoundTrigger.GenericRecognitionEvent _arg22 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGenericRecognitionEvent(_arg03, _arg12, _arg22);
-                            return true;
-                        case 4:
-                            ParcelUuid _arg04 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg13 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg04, _arg13, _arg23);
-                            return true;
-                        case 5:
-                            ParcelUuid _arg05 = (ParcelUuid) data.readTypedObject(ParcelUuid.CREATOR);
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStopOperation(_arg05, _arg14);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ISoundTriggerDetectionService {
             private IBinder mRemote;
 

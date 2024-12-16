@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaT53ClirInfoRecord implements Parcelable {
     public static final Parcelable.Creator<CdmaT53ClirInfoRecord> CREATOR = new Parcelable.Creator<CdmaT53ClirInfoRecord>() { // from class: android.hardware.radio.voice.CdmaT53ClirInfoRecord.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaT53ClirInfoRecord createFromParcel(Parcel _aidl_source) {
             CdmaT53ClirInfoRecord _aidl_out = new CdmaT53ClirInfoRecord();
@@ -18,31 +16,13 @@ public class CdmaT53ClirInfoRecord implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaT53ClirInfoRecord[] newArray(int _aidl_size) {
             return new CdmaT53ClirInfoRecord[_aidl_size];
         }
     };
     public byte cause = 0;
-
-    /* renamed from: android.hardware.radio.voice.CdmaT53ClirInfoRecord$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaT53ClirInfoRecord> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaT53ClirInfoRecord createFromParcel(Parcel _aidl_source) {
-            CdmaT53ClirInfoRecord _aidl_out = new CdmaT53ClirInfoRecord();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaT53ClirInfoRecord[] newArray(int _aidl_size) {
-            return new CdmaT53ClirInfoRecord[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -91,7 +71,7 @@ public class CdmaT53ClirInfoRecord implements Parcelable {
     public String toString() {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("cause: " + ((int) this.cause));
-        return "android.hardware.radio.voice.CdmaT53ClirInfoRecord" + _aidl_sj.toString();
+        return "CdmaT53ClirInfoRecord" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

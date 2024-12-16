@@ -1,12 +1,9 @@
 package android.graphics.drawable;
 
 import android.content.Context;
-import android.content.pm.PackageParser;
 import android.content.res.Resources;
-import android.os.BatteryManager;
 import android.util.AttributeSet;
 import android.view.InflateException;
-import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
 import com.samsung.android.location.SemLocationManager;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +35,7 @@ public final class DrawableInflater {
         return inflateFromXmlForDensity(name, parser, attrs, 0, theme);
     }
 
-    public Drawable inflateFromXmlForDensity(String name, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
+    Drawable inflateFromXmlForDensity(String name, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
         if (name.equals("drawable") && (name = attrs.getAttributeValue(null, "class")) == null) {
             throw new InflateException("<drawable> tag must specify class attribute");
         }
@@ -87,7 +84,7 @@ public final class DrawableInflater {
                 c = 65535;
                 break;
             case -1388777169:
-                if (name.equals(SemSmartClipMetaTagType.BITMAP)) {
+                if (name.equals("bitmap")) {
                     c = 17;
                     break;
                 }
@@ -150,7 +147,7 @@ public final class DrawableInflater {
                 c = 65535;
                 break;
             case 109250890:
-                if (name.equals(BatteryManager.EXTRA_SCALE)) {
+                if (name.equals("scale")) {
                     c = 11;
                     break;
                 }
@@ -251,12 +248,11 @@ public final class DrawableInflater {
     private Drawable inflateFromClass(String className) {
         Constructor<? extends Drawable> constructor;
         try {
-            HashMap<String, Constructor<? extends Drawable>> hashMap = CONSTRUCTOR_MAP;
-            synchronized (hashMap) {
-                constructor = hashMap.get(className);
+            synchronized (CONSTRUCTOR_MAP) {
+                constructor = CONSTRUCTOR_MAP.get(className);
                 if (constructor == null) {
                     constructor = this.mClassLoader.loadClass(className).asSubclass(Drawable.class).getConstructor(new Class[0]);
-                    hashMap.put(className, constructor);
+                    CONSTRUCTOR_MAP.put(className, constructor);
                 }
             }
             return constructor.newInstance(new Object[0]);
@@ -280,12 +276,12 @@ public final class DrawableInflater {
     }
 
     private Drawable inflateSpr(String name, XmlPullParser parser, AttributeSet attrs) throws XmlPullParserException, IOException {
-        if (!SemSmartClipMetaTagType.BITMAP.equalsIgnoreCase(name)) {
+        if (!"bitmap".equalsIgnoreCase(name)) {
             return null;
         }
         boolean isSpr = false;
         boolean z = false;
-        int id = attrs.getAttributeResourceValue(PackageParser.ANDROID_RESOURCES, "src", 0);
+        int id = attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "src", 0);
         if (id != 0) {
             InputStream is = null;
             byte[] b = new byte[3];

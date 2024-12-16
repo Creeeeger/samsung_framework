@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityTracker extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityTracker> CREATOR = new Parcelable.Creator<SContextActivityTracker>() { // from class: android.hardware.scontext.SContextActivityTracker.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityTracker createFromParcel(Parcel in) {
             return new SContextActivityTracker(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityTracker[] newArray(int size) {
             return new SContextActivityTracker[size];
@@ -23,7 +22,7 @@ public class SContextActivityTracker extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextActivityTracker() {
+    SContextActivityTracker() {
         this.mContext = new Bundle();
     }
 
@@ -55,22 +54,5 @@ public class SContextActivityTracker extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextActivityTracker$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextActivityTracker> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityTracker createFromParcel(Parcel in) {
-            return new SContextActivityTracker(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityTracker[] newArray(int size) {
-            return new SContextActivityTracker[size];
-        }
     }
 }

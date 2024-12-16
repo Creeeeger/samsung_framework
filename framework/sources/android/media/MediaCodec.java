@@ -5,12 +5,15 @@ import android.graphics.Rect;
 import android.hardware.HardwareBuffer;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.Image;
+import android.media.MediaCodec;
+import android.media.codec.Flags;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IHwBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.Surface;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -18,20 +21,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.nio.ByteBuffer;
 import java.nio.NioUtils;
 import java.nio.ReadOnlyBufferException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 /* loaded from: classes2.dex */
 public final class MediaCodec {
@@ -48,8 +55,10 @@ public final class MediaCodec {
     private static final int CB_CRYPTO_ERROR = 6;
     private static final int CB_ERROR = 3;
     private static final int CB_INPUT_AVAILABLE = 1;
+    private static final int CB_LARGE_FRAME_OUTPUT_AVAILABLE = 7;
     private static final int CB_OUTPUT_AVAILABLE = 2;
     private static final int CB_OUTPUT_FORMAT_CHANGE = 4;
+    public static final int CONFIGURE_FLAG_DETACHED_SURFACE = 8;
     public static final int CONFIGURE_FLAG_ENCODE = 1;
     public static final int CONFIGURE_FLAG_USE_BLOCK_MODEL = 2;
     public static final int CONFIGURE_FLAG_USE_CRYPTO_ASYNC = 4;
@@ -67,6 +76,8 @@ public final class MediaCodec {
     public static final String PARAMETER_KEY_HDR10_PLUS_INFO = "hdr10-plus-info";
     public static final String PARAMETER_KEY_LOW_LATENCY = "low-latency";
     public static final String PARAMETER_KEY_OFFSET_TIME = "time-offset-us";
+    public static final String PARAMETER_KEY_QP_OFFSET_MAP = "qp-offset-map";
+    public static final String PARAMETER_KEY_QP_OFFSET_RECTS = "qp-offset-rects";
     public static final String PARAMETER_KEY_REQUEST_SYNC_FRAME = "request-sync";
     public static final String PARAMETER_KEY_SUSPEND = "drop-input-frames";
     public static final String PARAMETER_KEY_SUSPEND_TIME = "drop-start-time-us";
@@ -102,32 +113,26 @@ public final class MediaCodec {
     private BitSet mValidOutputIndices;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BufferFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ConfigureFlag {
     }
 
-    /* loaded from: classes2.dex */
     public interface OnFirstTunnelFrameReadyListener {
         void onFirstTunnelFrameReady(MediaCodec mediaCodec);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnFrameRenderedListener {
         void onFrameRendered(MediaCodec mediaCodec, long j, long j2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface OutputBufferInfo {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VideoScalingMode {
     }
 
@@ -143,6 +148,7 @@ public final class MediaCodec {
 
     private final native MediaCodecInfo getOwnCodecInfo();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void native_closeMediaImage(long j);
 
     private final native void native_configure(String[] strArr, Object[] objArr, Surface surface, MediaCrypto mediaCrypto, IHwBinder iHwBinder, int i);
@@ -152,6 +158,8 @@ public final class MediaCodec {
     private final native int native_dequeueInputBuffer(long j);
 
     private final native int native_dequeueOutputBuffer(BufferInfo bufferInfo, long j);
+
+    private native void native_detachOutputSurface();
 
     private native void native_enableOnFirstTunnelFrameReadyListener(boolean z);
 
@@ -173,16 +181,23 @@ public final class MediaCodec {
 
     private static native Image native_mapHardwareBuffer(HardwareBuffer hardwareBuffer);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native void native_queueHardwareBuffer(int i, HardwareBuffer hardwareBuffer, long j, int i2, ArrayList<String> arrayList, ArrayList<Object> arrayList2);
 
     private final native void native_queueInputBuffer(int i, int i2, int i3, long j, int i4) throws CryptoException;
 
-    public native void native_queueLinearBlock(int i, LinearBlock linearBlock, int i2, int i3, CryptoInfo cryptoInfo, long j, int i4, ArrayList<String> arrayList, ArrayList<Object> arrayList2);
+    private final native void native_queueInputBuffers(int i, Object[] objArr) throws CryptoException, CodecException;
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public native void native_queueLinearBlock(int i, LinearBlock linearBlock, Object[] objArr, Object[] objArr2, ArrayList<String> arrayList, ArrayList<Object> arrayList2);
 
     private final native void native_queueSecureInputBuffer(int i, int i2, CryptoInfo cryptoInfo, long j, int i3) throws CryptoException;
 
+    private final native void native_queueSecureInputBuffers(int i, Object[] objArr, Object[] objArr2) throws CryptoException, CodecException;
+
     private final native void native_release();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static final native void native_releasePersistentInputSurface(Surface surface);
 
     private final native void native_reset();
@@ -217,7 +232,6 @@ public final class MediaCodec {
 
     public final native void signalEndOfInputStream();
 
-    /* loaded from: classes2.dex */
     public static final class BufferInfo {
         public int flags;
         public int offset;
@@ -238,8 +252,7 @@ public final class MediaCodec {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private MediaCodec mCodec;
 
         public EventHandler(MediaCodec codec, Looper looper) {
@@ -290,8 +303,6 @@ public final class MediaCodec {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Failed to find 'out' block for switch in B:17:0x005d. Please report as an issue. */
-        /* JADX WARN: Failed to find 'out' block for switch in B:40:0x00e4. Please report as an issue. */
         private void handleCallback(Message msg) {
             if (MediaCodec.this.mCallback == null) {
                 return;
@@ -302,8 +313,7 @@ public final class MediaCodec {
                     synchronized (MediaCodec.this.mBufferLock) {
                         switch (MediaCodec.this.mBufferMode) {
                             case 0:
-                                MediaCodec mediaCodec = MediaCodec.this;
-                                mediaCodec.validateInputByteBufferLocked(mediaCodec.mCachedInputBuffers, index);
+                                MediaCodec.this.validateInputByteBufferLocked(MediaCodec.this.mCachedInputBuffers, index);
                                 break;
                             case 1:
                                 while (MediaCodec.this.mQueueRequests.size() <= index) {
@@ -328,8 +338,7 @@ public final class MediaCodec {
                     synchronized (MediaCodec.this.mBufferLock) {
                         switch (MediaCodec.this.mBufferMode) {
                             case 0:
-                                MediaCodec mediaCodec2 = MediaCodec.this;
-                                mediaCodec2.validateOutputByteBufferLocked(mediaCodec2.mCachedOutputBuffers, index2, info);
+                                MediaCodec.this.validateOutputByteBufferLocked(MediaCodec.this.mCachedOutputBuffers, index2, info);
                                 break;
                             case 1:
                                 while (MediaCodec.this.mOutputFrames.size() <= index2) {
@@ -361,7 +370,45 @@ public final class MediaCodec {
                 case 6:
                     MediaCodec.this.mCallback.onCryptoError(this.mCodec, (CryptoException) msg.obj);
                     return;
+                case 7:
+                    int index3 = msg.arg2;
+                    ArrayDeque<BufferInfo> infos = (ArrayDeque) msg.obj;
+                    synchronized (MediaCodec.this.mBufferLock) {
+                        switch (MediaCodec.this.mBufferMode) {
+                            case 0:
+                                MediaCodec.this.validateOutputByteBuffersLocked(MediaCodec.this.mCachedOutputBuffers, index3, infos);
+                                break;
+                            case 1:
+                                while (MediaCodec.this.mOutputFrames.size() <= index3) {
+                                    MediaCodec.this.mOutputFrames.add(null);
+                                }
+                                OutputFrame frame2 = (OutputFrame) MediaCodec.this.mOutputFrames.get(index3);
+                                if (frame2 == null) {
+                                    frame2 = new OutputFrame(index3);
+                                    MediaCodec.this.mOutputFrames.set(index3, frame2);
+                                }
+                                frame2.setBufferInfos(infos);
+                                frame2.setAccessible(true);
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unrecognized buffer mode: for large frame output");
+                        }
+                    }
+                    MediaCodec.this.mCallback.onOutputBuffersAvailable(this.mCodec, index3, infos);
+                    return;
             }
+        }
+    }
+
+    static boolean GetFlag(Supplier<Boolean> flagValueSupplier) {
+        return GetFlag(flagValueSupplier, false);
+    }
+
+    static boolean GetFlag(Supplier<Boolean> flagValueSupplier, boolean defaultValue) {
+        try {
+            return flagValueSupplier.get().booleanValue();
+        } catch (RuntimeException e) {
+            return defaultValue;
         }
     }
 
@@ -386,7 +433,7 @@ public final class MediaCodec {
         this(name, nameIsType, encoder, -1, -1);
     }
 
-    private MediaCodec(String name, boolean nameIsType, boolean encoder, int pid, int uid) {
+    private MediaCodec(String str, boolean z, boolean z2, int i, int i2) {
         this.mListenerLock = new Object();
         this.mCodecInfoLock = new Object();
         this.mHasSurface = false;
@@ -400,24 +447,23 @@ public final class MediaCodec {
         this.mOutputFrames = new ArrayList<>();
         this.mNativeContext = 0L;
         this.mNativeContextLock = new ReentrantLock();
-        Looper looper = Looper.myLooper();
-        if (looper != null) {
-            this.mEventHandler = new EventHandler(this, looper);
+        Looper myLooper = Looper.myLooper();
+        if (myLooper != null) {
+            this.mEventHandler = new EventHandler(this, myLooper);
         } else {
-            Looper looper2 = Looper.getMainLooper();
-            if (looper2 != null) {
-                this.mEventHandler = new EventHandler(this, looper2);
+            Looper mainLooper = Looper.getMainLooper();
+            if (mainLooper != null) {
+                this.mEventHandler = new EventHandler(this, mainLooper);
             } else {
                 this.mEventHandler = null;
             }
         }
-        EventHandler eventHandler = this.mEventHandler;
-        this.mCallbackHandler = eventHandler;
-        this.mOnFirstTunnelFrameReadyHandler = eventHandler;
-        this.mOnFrameRenderedHandler = eventHandler;
+        this.mCallbackHandler = this.mEventHandler;
+        this.mOnFirstTunnelFrameReadyHandler = this.mEventHandler;
+        this.mOnFrameRenderedHandler = this.mEventHandler;
         this.mBufferLock = new Object();
-        this.mNameAtCreation = nameIsType ? null : name;
-        native_setup(name, nameIsType, encoder, pid, uid);
+        this.mNameAtCreation = z ? null : str;
+        native_setup(str, z, z2, i, i2);
     }
 
     protected void finalize() {
@@ -437,7 +483,6 @@ public final class MediaCodec {
         this.mCrypto = null;
     }
 
-    /* loaded from: classes2.dex */
     public class IncompatibleWithBlockModelException extends RuntimeException {
         IncompatibleWithBlockModelException() {
         }
@@ -455,7 +500,6 @@ public final class MediaCodec {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class InvalidBufferFlagsException extends RuntimeException {
         InvalidBufferFlagsException(String message) {
             super(message);
@@ -471,10 +515,34 @@ public final class MediaCodec {
     }
 
     private void configure(MediaFormat format, Surface surface, MediaCrypto crypto, IHwBinder descramblerBinder, int flags) {
+        boolean canDetach;
         String[] keys;
         Object[] values;
         if (crypto != null && descramblerBinder != null) {
             throw new IllegalArgumentException("Can't use crypto and descrambler together!");
+        }
+        boolean canDetach2 = GetFlag(new Supplier() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda6
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                Boolean valueOf;
+                valueOf = Boolean.valueOf(Flags.nullOutputSurfaceSupport());
+                return valueOf;
+            }
+        });
+        if (GetFlag(new Supplier() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda7
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                Boolean valueOf;
+                valueOf = Boolean.valueOf(Flags.nullOutputSurface());
+                return valueOf;
+            }
+        })) {
+            if (surface == null && (flags & 8) != 0 && !canDetach2) {
+                throw new IllegalArgumentException("Codec does not support detached surface");
+            }
+            canDetach = canDetach2;
+        } else {
+            canDetach = false;
         }
         if (format == null) {
             keys = null;
@@ -512,6 +580,9 @@ public final class MediaCodec {
             }
         }
         native_configure(keys, values, surface, crypto, descramblerBinder, flags);
+        if (canDetach && surface == null && (flags & 8) != 0) {
+            this.mHasSurface = true;
+        }
     }
 
     public void setOutputSurface(Surface surface) {
@@ -521,11 +592,28 @@ public final class MediaCodec {
         native_setSurface(surface);
     }
 
+    public void detachOutputSurface() {
+        if (!this.mHasSurface) {
+            throw new IllegalStateException("codec was not configured for an output surface");
+        }
+        if (GetFlag(new Supplier() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda8
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                Boolean valueOf;
+                valueOf = Boolean.valueOf(Flags.nullOutputSurfaceSupport());
+                return valueOf;
+            }
+        })) {
+            native_detachOutputSurface();
+            return;
+        }
+        throw new IllegalStateException("codec does not support detaching output surface");
+    }
+
     public static Surface createPersistentInputSurface() {
         return native_createPersistentInputSurface();
     }
 
-    /* loaded from: classes2.dex */
     static class PersistentSurface extends Surface {
         private long mPersistentObject;
 
@@ -554,18 +642,15 @@ public final class MediaCodec {
         native_stop();
         freeAllTrackedBuffers();
         synchronized (this.mListenerLock) {
-            EventHandler eventHandler = this.mCallbackHandler;
-            if (eventHandler != null) {
-                eventHandler.removeMessages(2);
+            if (this.mCallbackHandler != null) {
+                this.mCallbackHandler.removeMessages(2);
                 this.mCallbackHandler.removeMessages(1);
             }
-            EventHandler eventHandler2 = this.mOnFirstTunnelFrameReadyHandler;
-            if (eventHandler2 != null) {
-                eventHandler2.removeMessages(4);
+            if (this.mOnFirstTunnelFrameReadyHandler != null) {
+                this.mOnFirstTunnelFrameReadyHandler.removeMessages(4);
             }
-            EventHandler eventHandler3 = this.mOnFrameRenderedHandler;
-            if (eventHandler3 != null) {
-                eventHandler3.removeMessages(3);
+            if (this.mOnFrameRenderedHandler != null) {
+                this.mOnFrameRenderedHandler.removeMessages(3);
             }
         }
     }
@@ -582,7 +667,6 @@ public final class MediaCodec {
         native_flush();
     }
 
-    /* loaded from: classes2.dex */
     public static final class CodecException extends IllegalStateException {
         private static final int ACTION_RECOVERABLE = 2;
         private static final int ACTION_TRANSIENT = 1;
@@ -593,7 +677,6 @@ public final class MediaCodec {
         private final int mErrorCode;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface ReasonCode {
         }
 
@@ -622,7 +705,6 @@ public final class MediaCodec {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class CryptoException extends RuntimeException implements MediaDrmThrowable {
         public static final int ERROR_FRAME_TOO_LARGE = 8;
         public static final int ERROR_INSUFFICIENT_OUTPUT_PROTECTION = 4;
@@ -640,7 +722,6 @@ public final class MediaCodec {
         private final int mVendorError;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface CryptoErrorCode {
         }
 
@@ -700,7 +781,22 @@ public final class MediaCodec {
         }
     }
 
-    /* loaded from: classes2.dex */
+    public final void queueInputBuffers(int index, ArrayDeque<BufferInfo> bufferInfos) {
+        synchronized (this.mBufferLock) {
+            if (this.mBufferMode == 1) {
+                throw new IncompatibleWithBlockModelException("queueInputBuffers() is not compatible with CONFIGURE_FLAG_USE_BLOCK_MODEL. Please use getQueueRequest() to queue buffers");
+            }
+            invalidateByteBufferLocked(this.mCachedInputBuffers, index, true);
+            this.mDequeuedInputBuffers.remove(index);
+        }
+        try {
+            native_queueInputBuffers(index, bufferInfos.toArray());
+        } catch (CryptoException | IllegalArgumentException | IllegalStateException e) {
+            revalidateByteBuffer(this.mCachedInputBuffers, index, true);
+            throw e;
+        }
+    }
+
     public static final class CryptoInfo {
         private static final Pattern ZERO_PATTERN = new Pattern(0, 0);
         public byte[] iv;
@@ -711,7 +807,6 @@ public final class MediaCodec {
         public int[] numBytesOfEncryptedData;
         public int numSubSamples;
 
-        /* loaded from: classes2.dex */
         public static final class Pattern {
             private int mEncryptBlocks;
             private int mSkipBlocks;
@@ -762,37 +857,25 @@ public final class MediaCodec {
         public String toString() {
             StringBuilder builder = new StringBuilder();
             builder.append(this.numSubSamples + " subsamples, key [");
-            int i = 0;
-            while (true) {
-                byte[] bArr = this.key;
-                if (i >= bArr.length) {
-                    break;
-                }
-                builder.append("0123456789abcdef".charAt((bArr[i] & 240) >> 4));
+            for (int i = 0; i < this.key.length; i++) {
+                builder.append("0123456789abcdef".charAt((this.key[i] & 240) >> 4));
                 builder.append("0123456789abcdef".charAt(this.key[i] & 15));
-                i++;
             }
             builder.append("], iv [");
-            int i2 = 0;
-            while (true) {
-                byte[] bArr2 = this.iv;
-                if (i2 < bArr2.length) {
-                    builder.append("0123456789abcdef".charAt((bArr2[i2] & 240) >> 4));
-                    builder.append("0123456789abcdef".charAt(this.iv[i2] & 15));
-                    i2++;
-                } else {
-                    builder.append("], clear ");
-                    builder.append(Arrays.toString(this.numBytesOfClearData));
-                    builder.append(", encrypted ");
-                    builder.append(Arrays.toString(this.numBytesOfEncryptedData));
-                    builder.append(", pattern (encrypt: ");
-                    builder.append(this.mPattern.mEncryptBlocks);
-                    builder.append(", skip: ");
-                    builder.append(this.mPattern.mSkipBlocks);
-                    builder.append(NavigationBarInflaterView.KEY_CODE_END);
-                    return builder.toString();
-                }
+            for (int i2 = 0; i2 < this.iv.length; i2++) {
+                builder.append("0123456789abcdef".charAt((this.iv[i2] & 240) >> 4));
+                builder.append("0123456789abcdef".charAt(this.iv[i2] & 15));
             }
+            builder.append("], clear ");
+            builder.append(Arrays.toString(this.numBytesOfClearData));
+            builder.append(", encrypted ");
+            builder.append(Arrays.toString(this.numBytesOfEncryptedData));
+            builder.append(", pattern (encrypt: ");
+            builder.append(this.mPattern.mEncryptBlocks);
+            builder.append(", skip: ");
+            builder.append(this.mPattern.mSkipBlocks);
+            builder.append(NavigationBarInflaterView.KEY_CODE_END);
+            return builder.toString();
         }
     }
 
@@ -815,6 +898,22 @@ public final class MediaCodec {
         }
     }
 
+    public final void queueSecureInputBuffers(int index, ArrayDeque<BufferInfo> bufferInfos, ArrayDeque<CryptoInfo> cryptoInfos) {
+        synchronized (this.mBufferLock) {
+            if (this.mBufferMode == 1) {
+                throw new IncompatibleWithBlockModelException("queueSecureInputBuffers() is not compatible with CONFIGURE_FLAG_USE_BLOCK_MODEL. Please use getQueueRequest() to queue buffers");
+            }
+            invalidateByteBufferLocked(this.mCachedInputBuffers, index, true);
+            this.mDequeuedInputBuffers.remove(index);
+        }
+        try {
+            native_queueSecureInputBuffers(index, bufferInfos.toArray(), cryptoInfos.toArray());
+        } catch (CryptoException | IllegalArgumentException | IllegalStateException e) {
+            revalidateByteBuffer(this.mCachedInputBuffers, index, true);
+            throw e;
+        }
+    }
+
     public final int dequeueInputBuffer(long timeoutUs) {
         synchronized (this.mBufferLock) {
             if (this.mBufferMode == 1) {
@@ -830,7 +929,6 @@ public final class MediaCodec {
         return res;
     }
 
-    /* loaded from: classes2.dex */
     public static final class LinearBlock {
         private static final BlockingQueue<LinearBlock> sPool = new LinkedBlockingQueue();
         private final Object mLock = new Object();
@@ -884,9 +982,8 @@ public final class MediaCodec {
                 if (!this.mValid) {
                     throw new IllegalStateException("The linear block is invalid");
                 }
-                ByteBuffer byteBuffer = this.mMapped;
-                if (byteBuffer != null) {
-                    byteBuffer.setAccessible(false);
+                if (this.mMapped != null) {
+                    this.mMapped.setAccessible(false);
                     this.mMapped = null;
                 }
                 native_recycle();
@@ -929,11 +1026,11 @@ public final class MediaCodec {
         return native_mapHardwareBuffer(hardwareBuffer);
     }
 
-    /* loaded from: classes2.dex */
     public final class QueueRequest {
         private boolean mAccessible;
+        private final ArrayDeque<BufferInfo> mBufferInfos;
         private final MediaCodec mCodec;
-        private CryptoInfo mCryptoInfo;
+        private final ArrayDeque<CryptoInfo> mCryptoInfos;
         private int mFlags;
         private HardwareBuffer mHardwareBuffer;
         private final int mIndex;
@@ -944,18 +1041,15 @@ public final class MediaCodec {
         private final ArrayList<String> mTuningKeys;
         private final ArrayList<Object> mTuningValues;
 
-        /* synthetic */ QueueRequest(MediaCodec mediaCodec, MediaCodec mediaCodec2, int i, QueueRequestIA queueRequestIA) {
-            this(mediaCodec2, i);
-        }
-
         private QueueRequest(MediaCodec codec, int index) {
             this.mLinearBlock = null;
             this.mOffset = 0;
             this.mSize = 0;
-            this.mCryptoInfo = null;
             this.mHardwareBuffer = null;
             this.mPresentationTimeUs = 0L;
             this.mFlags = 0;
+            this.mBufferInfos = new ArrayDeque<>();
+            this.mCryptoInfos = new ArrayDeque<>();
             this.mTuningKeys = new ArrayList<>();
             this.mTuningValues = new ArrayList<>();
             this.mAccessible = false;
@@ -973,7 +1067,21 @@ public final class MediaCodec {
             this.mLinearBlock = block;
             this.mOffset = offset;
             this.mSize = size;
-            this.mCryptoInfo = null;
+            this.mCryptoInfos.clear();
+            return this;
+        }
+
+        public QueueRequest setMultiFrameLinearBlock(LinearBlock block, ArrayDeque<BufferInfo> infos) {
+            if (!isAccessible()) {
+                throw new IllegalStateException("The request is stale");
+            }
+            if (this.mLinearBlock != null || this.mHardwareBuffer != null) {
+                throw new IllegalStateException("Cannot set block twice");
+            }
+            this.mLinearBlock = block;
+            this.mBufferInfos.clear();
+            this.mBufferInfos.addAll(infos);
+            this.mCryptoInfos.clear();
             return this;
         }
 
@@ -988,7 +1096,23 @@ public final class MediaCodec {
             this.mLinearBlock = block;
             this.mOffset = offset;
             this.mSize = size;
-            this.mCryptoInfo = cryptoInfo;
+            this.mCryptoInfos.clear();
+            this.mCryptoInfos.add(cryptoInfo);
+            return this;
+        }
+
+        public QueueRequest setMultiFrameEncryptedLinearBlock(LinearBlock block, ArrayDeque<BufferInfo> bufferInfos, ArrayDeque<CryptoInfo> cryptoInfos) {
+            if (!isAccessible()) {
+                throw new IllegalStateException("The request is stale");
+            }
+            if (this.mLinearBlock != null || this.mHardwareBuffer != null) {
+                throw new IllegalStateException("Cannot set block twice");
+            }
+            this.mLinearBlock = block;
+            this.mBufferInfos.clear();
+            this.mBufferInfos.addAll(bufferInfos);
+            this.mCryptoInfos.clear();
+            this.mCryptoInfos.addAll(cryptoInfos);
             return this;
         }
 
@@ -1068,31 +1192,35 @@ public final class MediaCodec {
             if (!isAccessible()) {
                 throw new IllegalStateException("The request is stale");
             }
-            if (this.mLinearBlock != null || this.mHardwareBuffer != null) {
-                setAccessible(false);
-                LinearBlock linearBlock = this.mLinearBlock;
-                if (linearBlock != null) {
-                    this.mCodec.native_queueLinearBlock(this.mIndex, linearBlock, this.mOffset, this.mSize, this.mCryptoInfo, this.mPresentationTimeUs, this.mFlags, this.mTuningKeys, this.mTuningValues);
-                } else {
-                    HardwareBuffer hardwareBuffer = this.mHardwareBuffer;
-                    if (hardwareBuffer != null) {
-                        this.mCodec.native_queueHardwareBuffer(this.mIndex, hardwareBuffer, this.mPresentationTimeUs, this.mFlags, this.mTuningKeys, this.mTuningValues);
-                    }
-                }
-                clear();
-                return;
+            if (this.mLinearBlock == null && this.mHardwareBuffer == null) {
+                throw new IllegalStateException("No block is set");
             }
-            throw new IllegalStateException("No block is set");
+            setAccessible(false);
+            if (this.mBufferInfos.isEmpty()) {
+                BufferInfo info = new BufferInfo();
+                info.size = this.mSize;
+                info.offset = this.mOffset;
+                info.presentationTimeUs = this.mPresentationTimeUs;
+                info.flags = this.mFlags;
+                this.mBufferInfos.add(info);
+            }
+            if (this.mLinearBlock != null) {
+                this.mCodec.native_queueLinearBlock(this.mIndex, this.mLinearBlock, this.mCryptoInfos.isEmpty() ? null : this.mCryptoInfos.toArray(), this.mBufferInfos.toArray(), this.mTuningKeys, this.mTuningValues);
+            } else if (this.mHardwareBuffer != null) {
+                this.mCodec.native_queueHardwareBuffer(this.mIndex, this.mHardwareBuffer, this.mPresentationTimeUs, this.mFlags, this.mTuningKeys, this.mTuningValues);
+            }
+            clear();
         }
 
         QueueRequest clear() {
             this.mLinearBlock = null;
             this.mOffset = 0;
             this.mSize = 0;
-            this.mCryptoInfo = null;
             this.mHardwareBuffer = null;
             this.mPresentationTimeUs = 0L;
             this.mFlags = 0;
+            this.mBufferInfos.clear();
+            this.mCryptoInfos.clear();
             this.mTuningKeys.clear();
             this.mTuningValues.clear();
             return this;
@@ -1161,7 +1289,6 @@ public final class MediaCodec {
         releaseOutputBufferInternal(index, true, true, renderTimestampNs);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x0007. Please report as an issue. */
     private void releaseOutputBufferInternal(int index, boolean render, boolean updatePts, long renderTimestampNs) {
         synchronized (this.mBufferLock) {
             switch (this.mBufferMode) {
@@ -1170,6 +1297,7 @@ public final class MediaCodec {
                     this.mDequeuedOutputBuffers.remove(index);
                     if (this.mHasSurface || this.mCachedOutputBuffers == null) {
                         this.mDequeuedOutputInfos.remove(Integer.valueOf(index));
+                        break;
                     }
                     break;
                 case 1:
@@ -1196,39 +1324,27 @@ public final class MediaCodec {
         return new MediaFormat(getOutputFormatNative(index));
     }
 
-    /* loaded from: classes2.dex */
-    public static class BufferMap {
+    private static class BufferMap {
         private final Map<Integer, CodecBuffer> mMap;
-
-        /* synthetic */ BufferMap(BufferMapIA bufferMapIA) {
-            this();
-        }
 
         private BufferMap() {
             this.mMap = new HashMap();
         }
 
-        /* loaded from: classes2.dex */
-        public static class CodecBuffer {
+        private static class CodecBuffer {
             private ByteBuffer mByteBuffer;
             private Image mImage;
-
-            /* synthetic */ CodecBuffer(CodecBufferIA codecBufferIA) {
-                this();
-            }
 
             private CodecBuffer() {
             }
 
             public void free() {
-                ByteBuffer byteBuffer = this.mByteBuffer;
-                if (byteBuffer != null) {
-                    NioUtils.freeDirectBuffer(byteBuffer);
+                if (this.mByteBuffer != null) {
+                    NioUtils.freeDirectBuffer(this.mByteBuffer);
                     this.mByteBuffer = null;
                 }
-                Image image = this.mImage;
-                if (image != null) {
-                    image.close();
+                if (this.mImage != null) {
+                    this.mImage.close();
                     this.mImage = null;
                 }
             }
@@ -1293,6 +1409,7 @@ public final class MediaCodec {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void validateInputByteBufferLocked(ByteBuffer[] buffers, int index) {
         ByteBuffer buffer;
         if (buffers == null) {
@@ -1319,6 +1436,37 @@ public final class MediaCodec {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public void validateOutputByteBuffersLocked(ByteBuffer[] buffers, int index, ArrayDeque<BufferInfo> infoDeque) {
+        ByteBuffer buffer;
+        Optional<BufferInfo> minInfo = infoDeque.stream().min(new Comparator() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda0
+            @Override // java.util.Comparator
+            public final int compare(Object obj, Object obj2) {
+                int compare;
+                compare = Integer.compare(((MediaCodec.BufferInfo) obj).offset, ((MediaCodec.BufferInfo) obj2).offset);
+                return compare;
+            }
+        });
+        Optional<BufferInfo> maxInfo = infoDeque.stream().max(new Comparator() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda1
+            @Override // java.util.Comparator
+            public final int compare(Object obj, Object obj2) {
+                int compare;
+                compare = Integer.compare(((MediaCodec.BufferInfo) obj).offset, ((MediaCodec.BufferInfo) obj2).offset);
+                return compare;
+            }
+        });
+        if (buffers == null) {
+            if (index >= 0) {
+                this.mValidOutputIndices.set(index);
+            }
+        } else if (index >= 0 && index < buffers.length && (buffer = buffers[index]) != null && minInfo.isPresent() && maxInfo.isPresent()) {
+            buffer.setAccessible(true);
+            buffer.limit(maxInfo.get().offset + maxInfo.get().size);
+            buffer.position(minInfo.get().offset);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void validateOutputByteBufferLocked(ByteBuffer[] buffers, int index, BufferInfo info) {
         ByteBuffer buffer;
         if (buffers == null) {
@@ -1407,10 +1555,10 @@ public final class MediaCodec {
             if (this.mCachedInputBuffers == null) {
                 cacheBuffersLocked(true);
             }
-            byteBufferArr = this.mCachedInputBuffers;
-            if (byteBufferArr == null) {
+            if (this.mCachedInputBuffers == null) {
                 throw new IllegalStateException();
             }
+            byteBufferArr = this.mCachedInputBuffers;
         }
         return byteBufferArr;
     }
@@ -1424,10 +1572,10 @@ public final class MediaCodec {
             if (this.mCachedOutputBuffers == null) {
                 cacheBuffersLocked(false);
             }
-            byteBufferArr = this.mCachedOutputBuffers;
-            if (byteBufferArr == null) {
+            if (this.mCachedOutputBuffers == null) {
                 throw new IllegalStateException();
             }
+            byteBufferArr = this.mCachedOutputBuffers;
         }
         return byteBufferArr;
     }
@@ -1488,7 +1636,6 @@ public final class MediaCodec {
         return newImage;
     }
 
-    /* loaded from: classes2.dex */
     public static final class OutputFrame {
         private final int mIndex;
         private LinearBlock mLinearBlock = null;
@@ -1496,6 +1643,7 @@ public final class MediaCodec {
         private long mPresentationTimeUs = 0;
         private int mFlags = 0;
         private MediaFormat mFormat = null;
+        private final ArrayDeque<BufferInfo> mBufferInfos = new ArrayDeque<>();
         private final ArrayList<String> mChangedKeys = new ArrayList<>();
         private final Set<String> mKeySet = new HashSet();
         private boolean mAccessible = false;
@@ -1527,6 +1675,15 @@ public final class MediaCodec {
             return this.mFlags;
         }
 
+        public ArrayDeque<BufferInfo> getBufferInfos() {
+            if (this.mBufferInfos.isEmpty()) {
+                BufferInfo bufferInfo = new BufferInfo();
+                bufferInfo.set(0, 0, this.mPresentationTimeUs, this.mFlags);
+                this.mBufferInfos.add(bufferInfo);
+            }
+            return this.mBufferInfos;
+        }
+
         public MediaFormat getFormat() {
             return this.mFormat;
         }
@@ -1542,6 +1699,7 @@ public final class MediaCodec {
             this.mLinearBlock = null;
             this.mHardwareBuffer = null;
             this.mFormat = null;
+            this.mBufferInfos.clear();
             this.mChangedKeys.clear();
             this.mKeySet.clear();
             this.mLoaded = false;
@@ -1556,8 +1714,14 @@ public final class MediaCodec {
         }
 
         void setBufferInfo(BufferInfo info) {
+            this.mBufferInfos.clear();
             this.mPresentationTimeUs = info.presentationTimeUs;
             this.mFlags = info.flags;
+        }
+
+        void setBufferInfos(ArrayDeque<BufferInfo> infos) {
+            this.mBufferInfos.clear();
+            this.mBufferInfos.addAll(infos);
         }
 
         boolean isLoaded() {
@@ -1602,8 +1766,7 @@ public final class MediaCodec {
 
     public final String getName() {
         String canonicalName = getCanonicalName();
-        String str = this.mNameAtCreation;
-        return str != null ? str : canonicalName;
+        return this.mNameAtCreation != null ? this.mNameAtCreation : canonicalName;
     }
 
     public PersistableBundle getMetrics() {
@@ -1641,30 +1804,81 @@ public final class MediaCodec {
         setParameters(keys, values);
     }
 
+    private void logAndRun(String message, Runnable r) {
+        Log.d("MediaCodec", "enter: " + message);
+        r.run();
+        Log.d("MediaCodec", "exit : " + message);
+    }
+
     public void setCallback(Callback cb, Handler handler) {
         if (cb != null) {
             synchronized (this.mListenerLock) {
                 EventHandler newHandler = getEventHandlerOn(handler, this.mCallbackHandler);
-                EventHandler eventHandler = this.mCallbackHandler;
-                if (newHandler != eventHandler) {
-                    eventHandler.removeMessages(2);
-                    this.mCallbackHandler.removeMessages(1);
+                if (newHandler != this.mCallbackHandler) {
+                    if (Flags.setCallbackStall()) {
+                        logAndRun("[new handler] removeMessages(SET_CALLBACK)", new Runnable() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda2
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                MediaCodec.this.lambda$setCallback$5();
+                            }
+                        });
+                        logAndRun("[new handler] removeMessages(CALLBACK)", new Runnable() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda3
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                MediaCodec.this.lambda$setCallback$6();
+                            }
+                        });
+                    } else {
+                        this.mCallbackHandler.removeMessages(2);
+                        this.mCallbackHandler.removeMessages(1);
+                    }
                     this.mCallbackHandler = newHandler;
                 }
             }
-        } else {
-            EventHandler eventHandler2 = this.mCallbackHandler;
-            if (eventHandler2 != null) {
-                eventHandler2.removeMessages(2);
+        } else if (this.mCallbackHandler != null) {
+            if (Flags.setCallbackStall()) {
+                logAndRun("[null handler] removeMessages(SET_CALLBACK)", new Runnable() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda4
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        MediaCodec.this.lambda$setCallback$7();
+                    }
+                });
+                logAndRun("[null handler] removeMessages(CALLBACK)", new Runnable() { // from class: android.media.MediaCodec$$ExternalSyntheticLambda5
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        MediaCodec.this.lambda$setCallback$8();
+                    }
+                });
+            } else {
+                this.mCallbackHandler.removeMessages(2);
                 this.mCallbackHandler.removeMessages(1);
             }
         }
-        EventHandler eventHandler3 = this.mCallbackHandler;
-        if (eventHandler3 != null) {
-            Message msg = eventHandler3.obtainMessage(2, 0, 0, cb);
+        if (this.mCallbackHandler != null) {
+            Message msg = this.mCallbackHandler.obtainMessage(2, 0, 0, cb);
             this.mCallbackHandler.sendMessage(msg);
             native_setCallback(cb);
         }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setCallback$5() {
+        this.mCallbackHandler.removeMessages(2);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setCallback$6() {
+        this.mCallbackHandler.removeMessages(1);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setCallback$7() {
+        this.mCallbackHandler.removeMessages(2);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setCallback$8() {
+        this.mCallbackHandler.removeMessages(1);
     }
 
     public void setCallback(Callback cb) {
@@ -1676,16 +1890,12 @@ public final class MediaCodec {
             this.mOnFirstTunnelFrameReadyListener = listener;
             if (listener != null) {
                 EventHandler newHandler = getEventHandlerOn(handler, this.mOnFirstTunnelFrameReadyHandler);
-                EventHandler eventHandler = this.mOnFirstTunnelFrameReadyHandler;
-                if (newHandler != eventHandler) {
-                    eventHandler.removeMessages(4);
+                if (newHandler != this.mOnFirstTunnelFrameReadyHandler) {
+                    this.mOnFirstTunnelFrameReadyHandler.removeMessages(4);
                 }
                 this.mOnFirstTunnelFrameReadyHandler = newHandler;
-            } else {
-                EventHandler eventHandler2 = this.mOnFirstTunnelFrameReadyHandler;
-                if (eventHandler2 != null) {
-                    eventHandler2.removeMessages(4);
-                }
+            } else if (this.mOnFirstTunnelFrameReadyHandler != null) {
+                this.mOnFirstTunnelFrameReadyHandler.removeMessages(4);
             }
             native_enableOnFirstTunnelFrameReadyListener(listener != null);
         }
@@ -1696,16 +1906,12 @@ public final class MediaCodec {
             this.mOnFrameRenderedListener = listener;
             if (listener != null) {
                 EventHandler newHandler = getEventHandlerOn(handler, this.mOnFrameRenderedHandler);
-                EventHandler eventHandler = this.mOnFrameRenderedHandler;
-                if (newHandler != eventHandler) {
-                    eventHandler.removeMessages(3);
+                if (newHandler != this.mOnFrameRenderedHandler) {
+                    this.mOnFrameRenderedHandler.removeMessages(3);
                 }
                 this.mOnFrameRenderedHandler = newHandler;
-            } else {
-                EventHandler eventHandler2 = this.mOnFrameRenderedHandler;
-                if (eventHandler2 != null) {
-                    eventHandler2.removeMessages(3);
-                }
+            } else if (this.mOnFrameRenderedHandler != null) {
+                this.mOnFrameRenderedHandler.removeMessages(3);
             }
             native_enableOnFrameRenderedListener(listener != null);
         }
@@ -1715,7 +1921,6 @@ public final class MediaCodec {
         return native_getSupportedVendorParameters();
     }
 
-    /* loaded from: classes2.dex */
     public static class ParameterDescriptor {
         private String mName;
         private int mType;
@@ -1767,7 +1972,6 @@ public final class MediaCodec {
         return new EventHandler(this, looper);
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public abstract void onError(MediaCodec mediaCodec, CodecException codecException);
 
@@ -1776,6 +1980,10 @@ public final class MediaCodec {
         public abstract void onOutputBufferAvailable(MediaCodec mediaCodec, int i, BufferInfo bufferInfo);
 
         public abstract void onOutputFormatChanged(MediaCodec mediaCodec, MediaFormat mediaFormat);
+
+        public void onOutputBuffersAvailable(MediaCodec codec, int index, ArrayDeque<BufferInfo> infos) {
+            throw new IllegalStateException("Client must override onOutputBuffersAvailable when codec is configured to operate with multiple access units");
+        }
 
         public void onCryptoError(MediaCodec codec, CryptoException e) {
             throw new IllegalStateException("Client must override onCryptoError when the codec is configured with CONFIGURE_FLAG_USE_CRYPTO_ASYNC.", e);
@@ -1804,9 +2012,8 @@ public final class MediaCodec {
         String name = getName();
         synchronized (this.mCodecInfoLock) {
             if (this.mCodecInfo == null) {
-                MediaCodecInfo ownCodecInfo = getOwnCodecInfo();
-                this.mCodecInfo = ownCodecInfo;
-                if (ownCodecInfo == null) {
+                this.mCodecInfo = getOwnCodecInfo();
+                if (this.mCodecInfo == null) {
                     this.mCodecInfo = MediaCodecList.getInfoFor(name);
                 }
             }
@@ -1830,7 +2037,6 @@ public final class MediaCodec {
         this.mNativeContextLock.unlock();
     }
 
-    /* loaded from: classes2.dex */
     public static class MediaImage extends Image {
         private static final int TYPE_YUV = 1;
         private final ByteBuffer mBuffer;
@@ -1886,20 +2092,17 @@ public final class MediaCodec {
         @Override // android.media.Image
         public Image.Plane[] getPlanes() {
             throwISEIfImageIsInvalid();
-            Image.Plane[] planeArr = this.mPlanes;
-            return (Image.Plane[]) Arrays.copyOf(planeArr, planeArr.length);
+            return (Image.Plane[]) Arrays.copyOf(this.mPlanes, this.mPlanes.length);
         }
 
         @Override // android.media.Image, java.lang.AutoCloseable
         public void close() {
             if (this.mIsImageValid) {
-                ByteBuffer byteBuffer = this.mBuffer;
-                if (byteBuffer != null) {
-                    NioUtils.freeDirectBuffer(byteBuffer);
+                if (this.mBuffer != null) {
+                    NioUtils.freeDirectBuffer(this.mBuffer);
                 }
-                long j = this.mBufferContext;
-                if (j != 0) {
-                    MediaCodec.native_closeMediaImage(j);
+                if (this.mBufferContext != 0) {
+                    MediaCodec.native_closeMediaImage(this.mBufferContext);
                 }
                 this.mIsImageValid = false;
             }
@@ -1915,8 +2118,9 @@ public final class MediaCodec {
 
         public MediaImage(ByteBuffer buffer, ByteBuffer info, boolean readOnly, long timestamp, int xOffset, int yOffset, Rect cropRect) {
             int planeOffsetInc;
-            int pixelStride;
+            int planeOffsetInc2;
             Rect cropRect2;
+            char c;
             ByteBuffer byteBuffer = buffer;
             int i = yOffset;
             this.mTimestamp = timestamp;
@@ -1938,12 +2142,10 @@ public final class MediaCodec {
                 if (numPlanes != 3) {
                     throw new RuntimeException("unexpected number of planes: " + numPlanes);
                 }
-                int i2 = info.getInt();
-                this.mWidth = i2;
-                int i3 = info.getInt();
-                this.mHeight = i3;
-                if (i2 < 1 || i3 < 1) {
-                    throw new UnsupportedOperationException("unsupported size: " + i2 + "x" + i3);
+                this.mWidth = info.getInt();
+                this.mHeight = info.getInt();
+                if (this.mWidth < 1 || this.mHeight < 1) {
+                    throw new UnsupportedOperationException("unsupported size: " + this.mWidth + "x" + this.mHeight);
                 }
                 int bitDepth = info.getInt();
                 if (bitDepth != 8 && bitDepth != 10) {
@@ -1954,11 +2156,11 @@ public final class MediaCodec {
                     if (bitDepth == 8 && bitDepthAllocated == 8) {
                         this.mFormat = 35;
                         planeOffsetInc = 1;
-                        pixelStride = 2;
+                        planeOffsetInc2 = 2;
                     } else if (bitDepth == 10 && bitDepthAllocated == 16) {
                         this.mFormat = 54;
                         planeOffsetInc = 2;
-                        pixelStride = 4;
+                        planeOffsetInc2 = 4;
                     } else {
                         throw new UnsupportedOperationException("couldn't infer ImageFormat bitDepth: " + bitDepth + " bitDepthAllocated: " + bitDepthAllocated);
                     }
@@ -1982,18 +2184,22 @@ public final class MediaCodec {
                                 byteBuffer.position(this.mBuffer.position() + planeOffset + ((xOffset / horiz) * colInc) + ((i / vert) * rowInc));
                                 byteBuffer.limit(buffer.position() + Utils.divUp(bitDepth, 8) + (((this.mHeight / vert) - 1) * rowInc) + (((this.mWidth / horiz) - 1) * colInc));
                                 this.mPlanes[ix] = new MediaPlane(buffer.slice(), rowInc, colInc);
-                                int i4 = this.mFormat;
-                                if ((i4 == 35 || i4 == 54) && ix == 1) {
+                                if ((this.mFormat == 35 || this.mFormat == 54) && ix == 1) {
                                     cbPlaneOffset = planeOffset;
-                                } else if ((i4 == 35 || i4 == 54) && ix == 2) {
-                                    crPlaneOffset = planeOffset;
+                                    c = '#';
+                                } else {
+                                    int cbPlaneOffset2 = this.mFormat;
+                                    c = '#';
+                                    if ((cbPlaneOffset2 == 35 || this.mFormat == 54) && ix == 2) {
+                                        crPlaneOffset = planeOffset;
+                                    }
                                 }
                                 ix++;
                                 byteBuffer = buffer;
-                                i = yOffset;
                                 type = type2;
                                 numPlanes = numPlanes2;
                                 bitDepthAllocated = bitDepthAllocated2;
+                                i = yOffset;
                             }
                         }
                         throw new UnsupportedOperationException("unexpected subsampling: " + horiz + "x" + vert + " on plane " + ix);
@@ -2002,7 +2208,7 @@ public final class MediaCodec {
                         if (crPlaneOffset != cbPlaneOffset + planeOffsetInc) {
                             throw new UnsupportedOperationException("Invalid plane offsets cbPlaneOffset: " + cbPlaneOffset + " crPlaneOffset: " + crPlaneOffset);
                         }
-                        if (this.mPlanes[1].getPixelStride() != pixelStride || this.mPlanes[2].getPixelStride() != pixelStride) {
+                        if (this.mPlanes[1].getPixelStride() != planeOffsetInc2 || this.mPlanes[2].getPixelStride() != planeOffsetInc2) {
                             throw new UnsupportedOperationException("Invalid pixelStride");
                         }
                     }
@@ -2056,7 +2262,6 @@ public final class MediaCodec {
             throw new IllegalArgumentException("buffers, rowStrides and pixelStrides should have the same length");
         }
 
-        /* loaded from: classes2.dex */
         private class MediaPlane extends Image.Plane {
             private final int mColInc;
             private final ByteBuffer mData;
@@ -2088,7 +2293,6 @@ public final class MediaCodec {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class MetricsConstants {
         public static final String CODEC = "android.media.mediacodec.codec";
         public static final String ENCODER = "android.media.mediacodec.encoder";

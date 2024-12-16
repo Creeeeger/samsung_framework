@@ -4,7 +4,7 @@ import android.telecom.PhoneAccount;
 import android.webkit.WebView;
 import gov.nist.javax.sip.address.GenericURI;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemTelUri extends GenericURI {
     private static final String LOG_TAG = "TelUri";
     private boolean mIsInternational = false;

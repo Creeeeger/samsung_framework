@@ -17,7 +17,6 @@ public interface ITAController extends IInterface {
 
     void unloadTA() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITAController {
         @Override // android.blockchain.ITAController
         public boolean loadTA(ParcelFileDescriptor pfd, long offset, long len) throws RemoteException {
@@ -39,7 +38,6 @@ public interface ITAController extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITAController {
         static final int TRANSACTION_loadTA = 1;
         static final int TRANSACTION_processTACommand = 3;
@@ -88,39 +86,36 @@ public interface ITAController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITAController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITAController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITAController.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result = loadTA(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    unloadTA();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    TACommandRequest _arg02 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    TACommandResponse _result2 = processTACommand(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result = loadTA(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            unloadTA();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            TACommandRequest _arg02 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            TACommandResponse _result2 = processTACommand(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements ITAController {
             private IBinder mRemote;
 

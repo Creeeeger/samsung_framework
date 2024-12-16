@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class CollectBufferGroup extends MediaBufferGroup {
     private static final String TAG = Def.tagOf((Class<?>) CollectBufferGroup.class);
     public static final Parcelable.Creator<CollectBufferGroup> CREATOR = new Parcelable.Creator<CollectBufferGroup>() { // from class: com.samsung.android.sume.core.buffer.CollectBufferGroup.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CollectBufferGroup createFromParcel(Parcel in) {
             return new CollectBufferGroup(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CollectBufferGroup[] newArray(int size) {
             return new CollectBufferGroup[size];
@@ -86,22 +85,5 @@ public class CollectBufferGroup extends MediaBufferGroup {
     @Override // com.samsung.android.sume.core.buffer.MediaBuffer
     public String contentToString() {
         return super.contentToString(this);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.buffer.CollectBufferGroup$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CollectBufferGroup> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CollectBufferGroup createFromParcel(Parcel in) {
-            return new CollectBufferGroup(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CollectBufferGroup[] newArray(int size) {
-            return new CollectBufferGroup[size];
-        }
     }
 }

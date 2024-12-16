@@ -62,7 +62,7 @@ public final class CallForwardInfo {
         this.serviceClass = _hidl_blob.getInt32(_hidl_offset + 8);
         this.toa = _hidl_blob.getInt32(_hidl_offset + 12);
         this.number = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.timeSeconds = _hidl_blob.getInt32(_hidl_offset + 32);
     }
 

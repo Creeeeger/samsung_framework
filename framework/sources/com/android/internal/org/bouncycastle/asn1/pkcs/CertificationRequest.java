@@ -24,7 +24,7 @@ public class CertificationRequest extends ASN1Object {
         return null;
     }
 
-    public CertificationRequest() {
+    protected CertificationRequest() {
         this.reqInfo = null;
         this.sigAlgId = null;
         this.sigBits = null;

@@ -9,7 +9,7 @@ import android.os.RemoteException;
 import com.samsung.android.cover.CoverManager;
 import com.samsung.android.cover.INfcLedCoverTouchListenerCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class NfcLedCoverTouchListenerDelegate extends INfcLedCoverTouchListenerCallback.Stub {
     private static final int MSG_LISTEN_COVER_TOUCH_ACCEPT = 0;
     private static final int MSG_LISTEN_COVER_TOUCH_REJECT = 1;
@@ -19,7 +19,7 @@ class NfcLedCoverTouchListenerDelegate extends INfcLedCoverTouchListenerCallback
     private ListenerDelegateHandler mHandler;
     private CoverManager.NfcLedCoverTouchListener mListener;
 
-    public NfcLedCoverTouchListenerDelegate(CoverManager.NfcLedCoverTouchListener listener, Handler handler, Context context) {
+    NfcLedCoverTouchListenerDelegate(CoverManager.NfcLedCoverTouchListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
         this.mHandler = new ListenerDelegateHandler(looper, this.mListener);
@@ -55,9 +55,7 @@ class NfcLedCoverTouchListenerDelegate extends INfcLedCoverTouchListenerCallback
     public void onSystemCoverEvent(int event, Bundle args) throws RemoteException {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ListenerDelegateHandler extends Handler {
+    private static class ListenerDelegateHandler extends Handler {
         private final CoverManager.NfcLedCoverTouchListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.NfcLedCoverTouchListener listener) {
@@ -71,12 +69,10 @@ class NfcLedCoverTouchListenerDelegate extends INfcLedCoverTouchListenerCallback
                 switch (msg.what) {
                     case 0:
                         this.mListener.onCoverTouchAccept();
-                        return;
+                        break;
                     case 1:
                         this.mListener.onCoverTouchReject();
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }

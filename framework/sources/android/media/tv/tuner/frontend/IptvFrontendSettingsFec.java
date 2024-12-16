@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class IptvFrontendSettingsFec {
     public static final int FEC_TYPE_COLUMN = 1;
     public static final int FEC_TYPE_COLUMN_ROW = 4;
@@ -16,12 +16,7 @@ public final class IptvFrontendSettingsFec {
     private final int mFecType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface FecType {
-    }
-
-    /* synthetic */ IptvFrontendSettingsFec(int i, int i2, int i3, IptvFrontendSettingsFecIA iptvFrontendSettingsFecIA) {
-        this(i, i2, i3);
     }
 
     private IptvFrontendSettingsFec(int fecType, int fecRowNum, int fecColNum) {
@@ -42,7 +37,6 @@ public final class IptvFrontendSettingsFec {
         return this.mFecColNum;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private int mFecColNum;
         private int mFecRowNum;

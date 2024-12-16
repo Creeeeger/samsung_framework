@@ -6,12 +6,12 @@ public abstract class OneTimeUseBuilder<T> {
 
     public abstract T build();
 
-    public void markUsed() {
+    protected void markUsed() {
         checkNotUsed();
         this.used = true;
     }
 
-    public void checkNotUsed() {
+    protected void checkNotUsed() {
         if (this.used) {
             throw new IllegalStateException("This Builder should not be reused. Use a new Builder instance instead");
         }

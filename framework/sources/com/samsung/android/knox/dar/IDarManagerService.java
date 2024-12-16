@@ -5,7 +5,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
-import android.os.IZtdListener;
 import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.knox.dar.sdp.ISdpListener;
@@ -14,7 +13,7 @@ import com.samsung.android.knox.sdp.core.SdpEngineInfo;
 import com.samsung.android.knox.zt.devicetrust.IEndpointMonitorListener;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDarManagerService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.dar.IDarManagerService";
 
@@ -88,6 +87,8 @@ public interface IDarManagerService extends IInterface {
 
     int removeEngine(String str) throws RemoteException;
 
+    void reportApplicationBinding(long j, int i, int i2, String str, String str2) throws RemoteException;
+
     int reserveUserIdForSystem() throws RemoteException;
 
     int resetPassword(String str, String str2, String str3) throws RemoteException;
@@ -108,15 +109,11 @@ public interface IDarManagerService extends IInterface {
 
     boolean setSensitive(int i, String str) throws RemoteException;
 
-    void startMonitoringDomains(int i, int[] iArr, List<String> list, IZtdListener iZtdListener) throws RemoteException;
-
-    void startMonitoringFiles(int i, int[] iArr, List<String> list, List<String> list2, IZtdListener iZtdListener) throws RemoteException;
+    int startMonitoring(int i, int i2, Bundle bundle, IEndpointMonitorListener iEndpointMonitorListener) throws RemoteException;
 
     int startTracing(int i, int i2, Bundle bundle, IEndpointMonitorListener iEndpointMonitorListener) throws RemoteException;
 
-    void stopMonitoringDomains(int i) throws RemoteException;
-
-    void stopMonitoringFiles(int i) throws RemoteException;
+    int stopMonitoring(int i, int i2) throws RemoteException;
 
     int stopTracing(int i, int i2) throws RemoteException;
 
@@ -130,7 +127,6 @@ public interface IDarManagerService extends IInterface {
 
     int unregisterListener(String str, ISdpListener iSdpListener) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDarManagerService {
         @Override // com.samsung.android.knox.dar.IDarManagerService
         public boolean isDarSupported() throws RemoteException {
@@ -385,19 +381,17 @@ public interface IDarManagerService extends IInterface {
         }
 
         @Override // com.samsung.android.knox.dar.IDarManagerService
-        public void startMonitoringFiles(int requestorUid, int[] allowedUids, List<String> files, List<String> inodes, IZtdListener listener) throws RemoteException {
+        public int startMonitoring(int type, int requesterUid, Bundle options, IEndpointMonitorListener listener) throws RemoteException {
+            return 0;
         }
 
         @Override // com.samsung.android.knox.dar.IDarManagerService
-        public void stopMonitoringFiles(int requestorUid) throws RemoteException {
+        public int stopMonitoring(int type, int requesterUid) throws RemoteException {
+            return 0;
         }
 
         @Override // com.samsung.android.knox.dar.IDarManagerService
-        public void startMonitoringDomains(int requestorUid, int[] allowedUids, List<String> domains, IZtdListener listener) throws RemoteException {
-        }
-
-        @Override // com.samsung.android.knox.dar.IDarManagerService
-        public void stopMonitoringDomains(int requestorUid) throws RemoteException {
+        public void reportApplicationBinding(long bindingTime, int pid, int uid, String procName, String label) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -406,7 +400,6 @@ public interface IDarManagerService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDarManagerService {
         static final int TRANSACTION_addBlockedClearablePackages = 47;
         static final int TRANSACTION_addEngine = 27;
@@ -443,6 +436,7 @@ public interface IDarManagerService extends IInterface {
         static final int TRANSACTION_registerClient = 38;
         static final int TRANSACTION_registerListener = 20;
         static final int TRANSACTION_removeEngine = 28;
+        static final int TRANSACTION_reportApplicationBinding = 55;
         static final int TRANSACTION_reserveUserIdForSystem = 5;
         static final int TRANSACTION_resetPassword = 18;
         static final int TRANSACTION_resetPasswordWithToken = 11;
@@ -453,11 +447,9 @@ public interface IDarManagerService extends IInterface {
         static final int TRANSACTION_setPassword = 17;
         static final int TRANSACTION_setResetPasswordToken = 8;
         static final int TRANSACTION_setSensitive = 30;
-        static final int TRANSACTION_startMonitoringDomains = 55;
-        static final int TRANSACTION_startMonitoringFiles = 53;
+        static final int TRANSACTION_startMonitoring = 53;
         static final int TRANSACTION_startTracing = 51;
-        static final int TRANSACTION_stopMonitoringDomains = 56;
-        static final int TRANSACTION_stopMonitoringFiles = 54;
+        static final int TRANSACTION_stopMonitoring = 54;
         static final int TRANSACTION_stopTracing = 52;
         static final int TRANSACTION_systemReady = 2;
         static final int TRANSACTION_unlock = 15;
@@ -592,13 +584,11 @@ public interface IDarManagerService extends IInterface {
                 case 52:
                     return "stopTracing";
                 case 53:
-                    return "startMonitoringFiles";
+                    return "startMonitoring";
                 case 54:
-                    return "stopMonitoringFiles";
+                    return "stopMonitoring";
                 case 55:
-                    return "startMonitoringDomains";
-                case 56:
-                    return "stopMonitoringDomains";
+                    return "reportApplicationBinding";
                 default:
                     return null;
             }
@@ -614,410 +604,404 @@ public interface IDarManagerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDarManagerService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDarManagerService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDarManagerService.DESCRIPTOR);
+                case 1:
+                    boolean _result = isDarSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    systemReady();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result2 = isDeviceRootKeyInstalled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    boolean _result3 = isKnoxKeyInstallable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 5:
+                    int _result4 = reserveUserIdForSystem();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 6:
+                    int _result5 = getReservedUserIdForSystem();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    int _result6 = getAvailableUserId();
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 8:
+                    byte[] _arg0 = data.createByteArray();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = setResetPasswordToken(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 9:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = clearResetPasswordToken(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 10:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = isResetPasswordTokenActive(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 11:
+                    String _arg04 = data.readString();
+                    byte[] _arg12 = data.createByteArray();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = resetPasswordWithToken(_arg04, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 12:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = isSDPEnabled(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 13:
+                    boolean _result12 = isSdpSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 14:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = isSdpSupportedSecureFolder(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 15:
+                    String _arg07 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result14 = unlock(_arg07, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 16:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result15 = lock(_arg08);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 17:
+                    String _arg09 = data.readString();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result16 = setPassword(_arg09, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result16);
+                    return true;
+                case 18:
+                    String _arg010 = data.readString();
+                    String _arg15 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result17 = resetPassword(_arg010, _arg15, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 19:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result18 = migrate(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 20:
+                    String _arg012 = data.readString();
+                    ISdpListener _arg16 = ISdpListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result19 = registerListener(_arg012, _arg16);
+                    reply.writeNoException();
+                    reply.writeInt(_result19);
+                    return true;
+                case 21:
+                    String _arg013 = data.readString();
+                    ISdpListener _arg17 = ISdpListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result20 = unregisterListener(_arg013, _arg17);
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 22:
+                    int _result21 = isLicensed();
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 23:
+                    String _arg014 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result22 = exists(_arg014);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 24:
+                    String _arg015 = data.readString();
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result23 = allow(_arg015, _arg18);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 25:
+                    String _arg016 = data.readString();
+                    String _arg19 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result24 = disallow(_arg016, _arg19);
+                    reply.writeNoException();
+                    reply.writeInt(_result24);
+                    return true;
+                case 26:
+                    double _result25 = getSupportedSDKVersion();
+                    reply.writeNoException();
+                    reply.writeDouble(_result25);
+                    return true;
+                case 27:
+                    SdpCreationParam _arg017 = (SdpCreationParam) data.readTypedObject(SdpCreationParam.CREATOR);
+                    String _arg110 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result26 = addEngine(_arg017, _arg110, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result26);
+                    return true;
+                case 28:
+                    String _arg018 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result27 = removeEngine(_arg018);
+                    reply.writeNoException();
+                    reply.writeInt(_result27);
+                    return true;
+                case 29:
+                    String _arg019 = data.readString();
+                    data.enforceNoDataAvail();
+                    SdpEngineInfo _result28 = getEngineInfo(_arg019);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result28, 1);
+                    return true;
+                case 30:
+                    int _arg020 = data.readInt();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result29 = setSensitive(_arg020, _arg111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 31:
+                    String _arg021 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result30 = isSensitive(_arg021);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 32:
+                    int _arg022 = data.readInt();
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result31 = createEncPkgDir(_arg022, _arg112);
+                    reply.writeNoException();
+                    reply.writeInt(_result31);
+                    return true;
+                case 33:
+                    String _arg023 = data.readString();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result32 = saveTokenIntoTrusted(_arg023, _arg113);
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    return true;
+                case 34:
+                    String _arg024 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result33 = deleteToeknFromTrusted(_arg024);
+                    reply.writeNoException();
+                    reply.writeInt(_result33);
+                    return true;
+                case 35:
+                    String _arg025 = data.readString();
+                    String _arg114 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result34 = unlockViaTrusted(_arg025, _arg114);
+                    reply.writeNoException();
+                    reply.writeInt(_result34);
+                    return true;
+                case 36:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBiometricsAuthenticated(_arg026);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDeviceOwnerLocked(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    int _arg028 = data.readInt();
+                    ISdpListener _arg115 = ISdpListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerClient(_arg028, _arg115);
+                    return true;
+                case 39:
+                    int _arg029 = data.readInt();
+                    ISdpListener _arg116 = ISdpListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterClient(_arg029, _arg116);
+                    return true;
+                case 40:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result35 = isDefaultPathUser(_arg030);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result35);
+                    return true;
+                case 41:
+                    int _arg031 = data.readInt();
+                    int _arg117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result36 = setDualDarInfo(_arg031, _arg117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result36);
+                    return true;
+                case 42:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result37 = isInnerAuthRequired(_arg032);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 43:
+                    int _arg033 = data.readInt();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setInnerAuthUserId(_arg033, _arg118);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    int _arg034 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result38 = getInnerAuthUserId(_arg034);
+                    reply.writeNoException();
+                    reply.writeInt(_result38);
+                    return true;
+                case 45:
+                    int _arg035 = data.readInt();
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMainUserId(_arg035, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg036 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result39 = getMainUserId(_arg036);
+                    reply.writeNoException();
+                    reply.writeInt(_result39);
+                    return true;
+                case 47:
+                    int _arg037 = data.readInt();
+                    String _arg120 = data.readString();
+                    data.enforceNoDataAvail();
+                    addBlockedClearablePackages(_arg037, _arg120);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result40 = getBlockedClearablePackages(_arg038);
+                    reply.writeNoException();
+                    reply.writeStringList(_result40);
+                    return true;
+                case 49:
+                    String _arg039 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result41 = getPackageListForDualDarPolicy(_arg039);
+                    reply.writeNoException();
+                    reply.writeStringList(_result41);
+                    return true;
+                case 50:
+                    int _result42 = getPasswordMinimumLengthForInner();
+                    reply.writeNoException();
+                    reply.writeInt(_result42);
+                    return true;
+                case 51:
+                    int _arg040 = data.readInt();
+                    int _arg121 = data.readInt();
+                    Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IEndpointMonitorListener _arg3 = IEndpointMonitorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result43 = startTracing(_arg040, _arg121, _arg24, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result43);
+                    return true;
+                case 52:
+                    int _arg041 = data.readInt();
+                    int _arg122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result44 = stopTracing(_arg041, _arg122);
+                    reply.writeNoException();
+                    reply.writeInt(_result44);
+                    return true;
+                case 53:
+                    int _arg042 = data.readInt();
+                    int _arg123 = data.readInt();
+                    Bundle _arg25 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    IEndpointMonitorListener _arg32 = IEndpointMonitorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result45 = startMonitoring(_arg042, _arg123, _arg25, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result45);
+                    return true;
+                case 54:
+                    int _arg043 = data.readInt();
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result46 = stopMonitoring(_arg043, _arg124);
+                    reply.writeNoException();
+                    reply.writeInt(_result46);
+                    return true;
+                case 55:
+                    long _arg044 = data.readLong();
+                    int _arg125 = data.readInt();
+                    int _arg26 = data.readInt();
+                    String _arg33 = data.readString();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    reportApplicationBinding(_arg044, _arg125, _arg26, _arg33, _arg4);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = isDarSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            systemReady();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result2 = isDeviceRootKeyInstalled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            boolean _result3 = isKnoxKeyInstallable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 5:
-                            int _result4 = reserveUserIdForSystem();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 6:
-                            int _result5 = getReservedUserIdForSystem();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            int _result6 = getAvailableUserId();
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 8:
-                            byte[] _arg0 = data.createByteArray();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = setResetPasswordToken(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 9:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = clearResetPasswordToken(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 10:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = isResetPasswordTokenActive(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 11:
-                            String _arg04 = data.readString();
-                            byte[] _arg12 = data.createByteArray();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = resetPasswordWithToken(_arg04, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 12:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = isSDPEnabled(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 13:
-                            boolean _result12 = isSdpSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 14:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = isSdpSupportedSecureFolder(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 15:
-                            String _arg07 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result14 = unlock(_arg07, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 16:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result15 = lock(_arg08);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 17:
-                            String _arg09 = data.readString();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result16 = setPassword(_arg09, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result16);
-                            return true;
-                        case 18:
-                            String _arg010 = data.readString();
-                            String _arg15 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result17 = resetPassword(_arg010, _arg15, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 19:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result18 = migrate(_arg011);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 20:
-                            String _arg012 = data.readString();
-                            ISdpListener _arg16 = ISdpListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result19 = registerListener(_arg012, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result19);
-                            return true;
-                        case 21:
-                            String _arg013 = data.readString();
-                            ISdpListener _arg17 = ISdpListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result20 = unregisterListener(_arg013, _arg17);
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 22:
-                            int _result21 = isLicensed();
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 23:
-                            String _arg014 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result22 = exists(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 24:
-                            String _arg015 = data.readString();
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result23 = allow(_arg015, _arg18);
-                            reply.writeNoException();
-                            reply.writeInt(_result23);
-                            return true;
-                        case 25:
-                            String _arg016 = data.readString();
-                            String _arg19 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result24 = disallow(_arg016, _arg19);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 26:
-                            double _result25 = getSupportedSDKVersion();
-                            reply.writeNoException();
-                            reply.writeDouble(_result25);
-                            return true;
-                        case 27:
-                            SdpCreationParam _arg017 = (SdpCreationParam) data.readTypedObject(SdpCreationParam.CREATOR);
-                            String _arg110 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result26 = addEngine(_arg017, _arg110, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 28:
-                            String _arg018 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result27 = removeEngine(_arg018);
-                            reply.writeNoException();
-                            reply.writeInt(_result27);
-                            return true;
-                        case 29:
-                            String _arg019 = data.readString();
-                            data.enforceNoDataAvail();
-                            SdpEngineInfo _result28 = getEngineInfo(_arg019);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result28, 1);
-                            return true;
-                        case 30:
-                            int _arg020 = data.readInt();
-                            String _arg111 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result29 = setSensitive(_arg020, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result29);
-                            return true;
-                        case 31:
-                            String _arg021 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result30 = isSensitive(_arg021);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 32:
-                            int _arg022 = data.readInt();
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result31 = createEncPkgDir(_arg022, _arg112);
-                            reply.writeNoException();
-                            reply.writeInt(_result31);
-                            return true;
-                        case 33:
-                            String _arg023 = data.readString();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result32 = saveTokenIntoTrusted(_arg023, _arg113);
-                            reply.writeNoException();
-                            reply.writeInt(_result32);
-                            return true;
-                        case 34:
-                            String _arg024 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result33 = deleteToeknFromTrusted(_arg024);
-                            reply.writeNoException();
-                            reply.writeInt(_result33);
-                            return true;
-                        case 35:
-                            String _arg025 = data.readString();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result34 = unlockViaTrusted(_arg025, _arg114);
-                            reply.writeNoException();
-                            reply.writeInt(_result34);
-                            return true;
-                        case 36:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBiometricsAuthenticated(_arg026);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDeviceOwnerLocked(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            int _arg028 = data.readInt();
-                            ISdpListener _arg115 = ISdpListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerClient(_arg028, _arg115);
-                            return true;
-                        case 39:
-                            int _arg029 = data.readInt();
-                            ISdpListener _arg116 = ISdpListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterClient(_arg029, _arg116);
-                            return true;
-                        case 40:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result35 = isDefaultPathUser(_arg030);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 41:
-                            int _arg031 = data.readInt();
-                            int _arg117 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result36 = setDualDarInfo(_arg031, _arg117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result36);
-                            return true;
-                        case 42:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result37 = isInnerAuthRequired(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 43:
-                            int _arg033 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setInnerAuthUserId(_arg033, _arg118);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            int _arg034 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result38 = getInnerAuthUserId(_arg034);
-                            reply.writeNoException();
-                            reply.writeInt(_result38);
-                            return true;
-                        case 45:
-                            int _arg035 = data.readInt();
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMainUserId(_arg035, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg036 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result39 = getMainUserId(_arg036);
-                            reply.writeNoException();
-                            reply.writeInt(_result39);
-                            return true;
-                        case 47:
-                            int _arg037 = data.readInt();
-                            String _arg120 = data.readString();
-                            data.enforceNoDataAvail();
-                            addBlockedClearablePackages(_arg037, _arg120);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            int _arg038 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result40 = getBlockedClearablePackages(_arg038);
-                            reply.writeNoException();
-                            reply.writeStringList(_result40);
-                            return true;
-                        case 49:
-                            String _arg039 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result41 = getPackageListForDualDarPolicy(_arg039);
-                            reply.writeNoException();
-                            reply.writeStringList(_result41);
-                            return true;
-                        case 50:
-                            int _result42 = getPasswordMinimumLengthForInner();
-                            reply.writeNoException();
-                            reply.writeInt(_result42);
-                            return true;
-                        case 51:
-                            int _arg040 = data.readInt();
-                            int _arg121 = data.readInt();
-                            Bundle _arg24 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            IEndpointMonitorListener _arg3 = IEndpointMonitorListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result43 = startTracing(_arg040, _arg121, _arg24, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result43);
-                            return true;
-                        case 52:
-                            int _arg041 = data.readInt();
-                            int _arg122 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result44 = stopTracing(_arg041, _arg122);
-                            reply.writeNoException();
-                            reply.writeInt(_result44);
-                            return true;
-                        case 53:
-                            int _arg042 = data.readInt();
-                            int[] _arg123 = data.createIntArray();
-                            List<String> _arg25 = data.createStringArrayList();
-                            List<String> _arg32 = data.createStringArrayList();
-                            IZtdListener _arg4 = IZtdListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startMonitoringFiles(_arg042, _arg123, _arg25, _arg32, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 54:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopMonitoringFiles(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 55:
-                            int _arg044 = data.readInt();
-                            int[] _arg124 = data.createIntArray();
-                            List<String> _arg26 = data.createStringArrayList();
-                            IZtdListener _arg33 = IZtdListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startMonitoringDomains(_arg044, _arg124, _arg26, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 56:
-                            int _arg045 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stopMonitoringDomains(_arg045);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDarManagerService {
+        private static class Proxy implements IDarManagerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1912,18 +1896,19 @@ public interface IDarManagerService extends IInterface {
             }
 
             @Override // com.samsung.android.knox.dar.IDarManagerService
-            public void startMonitoringFiles(int requestorUid, int[] allowedUids, List<String> files, List<String> inodes, IZtdListener listener) throws RemoteException {
+            public int startMonitoring(int type, int requesterUid, Bundle options, IEndpointMonitorListener listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IDarManagerService.DESCRIPTOR);
-                    _data.writeInt(requestorUid);
-                    _data.writeIntArray(allowedUids);
-                    _data.writeStringList(files);
-                    _data.writeStringList(inodes);
+                    _data.writeInt(type);
+                    _data.writeInt(requesterUid);
+                    _data.writeTypedObject(options, 0);
                     _data.writeStrongInterface(listener);
                     this.mRemote.transact(53, _data, _reply, 0);
                     _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -1931,14 +1916,17 @@ public interface IDarManagerService extends IInterface {
             }
 
             @Override // com.samsung.android.knox.dar.IDarManagerService
-            public void stopMonitoringFiles(int requestorUid) throws RemoteException {
+            public int stopMonitoring(int type, int requesterUid) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IDarManagerService.DESCRIPTOR);
-                    _data.writeInt(requestorUid);
+                    _data.writeInt(type);
+                    _data.writeInt(requesterUid);
                     this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -1946,31 +1934,17 @@ public interface IDarManagerService extends IInterface {
             }
 
             @Override // com.samsung.android.knox.dar.IDarManagerService
-            public void startMonitoringDomains(int requestorUid, int[] allowedUids, List<String> domains, IZtdListener listener) throws RemoteException {
+            public void reportApplicationBinding(long bindingTime, int pid, int uid, String procName, String label) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IDarManagerService.DESCRIPTOR);
-                    _data.writeInt(requestorUid);
-                    _data.writeIntArray(allowedUids);
-                    _data.writeStringList(domains);
-                    _data.writeStrongInterface(listener);
+                    _data.writeLong(bindingTime);
+                    _data.writeInt(pid);
+                    _data.writeInt(uid);
+                    _data.writeString(procName);
+                    _data.writeString(label);
                     this.mRemote.transact(55, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.knox.dar.IDarManagerService
-            public void stopMonitoringDomains(int requestorUid) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(IDarManagerService.DESCRIPTOR);
-                    _data.writeInt(requestorUid);
-                    this.mRemote.transact(56, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1981,7 +1955,7 @@ public interface IDarManagerService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 55;
+            return 54;
         }
     }
 }

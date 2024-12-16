@@ -11,18 +11,17 @@ import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class IpManagerEvent implements IpConnectivityLog.Event {
     public static final int COMPLETE_LIFECYCLE = 3;
     public static final Parcelable.Creator<IpManagerEvent> CREATOR = new Parcelable.Creator<IpManagerEvent>() { // from class: android.net.metrics.IpManagerEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IpManagerEvent createFromParcel(Parcel in) {
             return new IpManagerEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IpManagerEvent[] newArray(int size) {
             return new IpManagerEvent[size];
@@ -39,12 +38,7 @@ public final class IpManagerEvent implements IpConnectivityLog.Event {
     public final int eventType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EventType {
-    }
-
-    /* synthetic */ IpManagerEvent(Parcel parcel, IpManagerEventIA ipManagerEventIA) {
-        this(parcel);
     }
 
     public IpManagerEvent(int eventType, long duration) {
@@ -68,23 +62,6 @@ public final class IpManagerEvent implements IpConnectivityLog.Event {
         return 0;
     }
 
-    /* renamed from: android.net.metrics.IpManagerEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IpManagerEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IpManagerEvent createFromParcel(Parcel in) {
-            return new IpManagerEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IpManagerEvent[] newArray(int size) {
-            return new IpManagerEvent[size];
-        }
-    }
-
     public String toString() {
         return String.format("IpManagerEvent(%s, %dms)", Decoder.constants.get(this.eventType), Long.valueOf(this.durationMs));
     }
@@ -97,7 +74,6 @@ public final class IpManagerEvent implements IpConnectivityLog.Event {
         return this.eventType == other.eventType && this.durationMs == other.durationMs;
     }
 
-    /* loaded from: classes2.dex */
     static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{IpManagerEvent.class}, new String[]{"PROVISIONING_", "COMPLETE_", "ERROR_"});
 

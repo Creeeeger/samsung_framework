@@ -30,7 +30,6 @@ public abstract class NotificationAssistantService extends NotificationListenerS
     protected Handler mHandler;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Source {
     }
 
@@ -39,7 +38,7 @@ public abstract class NotificationAssistantService extends NotificationListenerS
     public abstract void onNotificationSnoozedUntilContext(StatusBarNotification statusBarNotification, String str);
 
     @Override // android.service.notification.NotificationListenerService, android.app.Service, android.content.ContextWrapper
-    public void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new MyHandler(getContext().getMainLooper());
     }
@@ -135,12 +134,7 @@ public abstract class NotificationAssistantService extends NotificationListenerS
         }
     }
 
-    /* loaded from: classes3.dex */
     private class NotificationAssistantServiceWrapper extends NotificationListenerService.NotificationListenerWrapper {
-        /* synthetic */ NotificationAssistantServiceWrapper(NotificationAssistantService notificationAssistantService, NotificationAssistantServiceWrapperIA notificationAssistantServiceWrapperIA) {
-            this();
-        }
-
         private NotificationAssistantServiceWrapper() {
             super();
         }
@@ -266,13 +260,13 @@ public abstract class NotificationAssistantService extends NotificationListenerS
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setAdjustmentIssuer(Adjustment adjustment) {
         if (adjustment != null) {
             adjustment.setIssuer(getOpPackageName() + "/" + getClass().getName());
         }
     }
 
-    /* loaded from: classes3.dex */
     private final class MyHandler extends Handler {
         public static final int MSG_ON_ACTION_INVOKED = 7;
         public static final int MSG_ON_ALLOWED_ADJUSTMENTS_CHANGED = 8;

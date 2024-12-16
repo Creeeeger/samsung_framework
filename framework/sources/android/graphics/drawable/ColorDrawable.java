@@ -27,10 +27,6 @@ public class ColorDrawable extends Drawable {
     private boolean mMutated;
     private final Paint mPaint;
 
-    /* synthetic */ ColorDrawable(ColorState colorState, Resources resources, ColorDrawableIA colorDrawableIA) {
-        this(colorState, resources);
-    }
-
     public ColorDrawable() {
         this.mPaint = new Paint(1);
         this.mColorState = new ColorState();
@@ -82,7 +78,7 @@ public class ColorDrawable extends Drawable {
     public void setColor(int color) {
         if (this.mColorState.mBaseColor != color || this.mColorState.mUseColor != color) {
             ColorState colorState = this.mColorState;
-            colorState.mUseColor = color;
+            this.mColorState.mUseColor = color;
             colorState.mBaseColor = color;
             invalidateSelf();
         }
@@ -129,7 +125,7 @@ public class ColorDrawable extends Drawable {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         ColorState state = this.mColorState;
         if (state.mTint != null && state.mBlendMode != null) {
             this.mBlendModeColorFilter = updateBlendModeFilter(this.mBlendModeColorFilter, state.mTint, state.mBlendMode);
@@ -165,12 +161,11 @@ public class ColorDrawable extends Drawable {
         }
         switch (this.mColorState.mUseColor >>> 24) {
             case 0:
-                return -2;
+                break;
             case 255:
-                return -1;
-            default:
-                return -3;
+                break;
         }
+        return -3;
     }
 
     @Override // android.graphics.drawable.Drawable
@@ -224,8 +219,7 @@ public class ColorDrawable extends Drawable {
         return this.mColorState;
     }
 
-    /* loaded from: classes.dex */
-    public static final class ColorState extends Drawable.ConstantState {
+    static final class ColorState extends Drawable.ConstantState {
         int mBaseColor;
         BlendMode mBlendMode;
         int mChangingConfigurations;
@@ -253,8 +247,7 @@ public class ColorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            return this.mThemeAttrs != null || ((colorStateList = this.mTint) != null && colorStateList.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mTint != null && this.mTint.canApplyTheme());
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
@@ -269,9 +262,7 @@ public class ColorDrawable extends Drawable {
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mTint;
-            return i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
     }
 

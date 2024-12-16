@@ -9,7 +9,6 @@ public abstract class IdentityCredentialStore {
     public static final int CIPHERSUITE_ECDHE_HKDF_ECDSA_WITH_AES_256_GCM_SHA256 = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Ciphersuite {
     }
 
@@ -21,6 +20,9 @@ public abstract class IdentityCredentialStore {
     public abstract IdentityCredential getCredentialByName(String str, int i) throws CipherSuiteNotSupportedException;
 
     public abstract String[] getSupportedDocTypes();
+
+    IdentityCredentialStore() {
+    }
 
     public static IdentityCredentialStore getInstance(Context context) {
         return CredstoreIdentityCredentialStore.getInstance(context);

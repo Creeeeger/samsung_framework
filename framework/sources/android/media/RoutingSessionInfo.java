@@ -4,10 +4,13 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import com.android.internal.R;
 import com.android.internal.util.Preconditions;
 import java.io.PrintWriter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,14 +20,13 @@ import java.util.function.UnaryOperator;
 /* loaded from: classes2.dex */
 public final class RoutingSessionInfo implements Parcelable {
     public static final Parcelable.Creator<RoutingSessionInfo> CREATOR = new Parcelable.Creator<RoutingSessionInfo>() { // from class: android.media.RoutingSessionInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoutingSessionInfo createFromParcel(Parcel in) {
             return new RoutingSessionInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RoutingSessionInfo[] newArray(int size) {
             return new RoutingSessionInfo[size];
@@ -33,6 +35,9 @@ public final class RoutingSessionInfo implements Parcelable {
     private static final String KEY_GROUP_ROUTE = "androidx.mediarouter.media.KEY_GROUP_ROUTE";
     private static final String KEY_VOLUME_HANDLING = "volumeHandling";
     private static final String TAG = "RoutingSessionInfo";
+    public static final int TRANSFER_REASON_APP = 2;
+    public static final int TRANSFER_REASON_FALLBACK = 0;
+    public static final int TRANSFER_REASON_SYSTEM_REQUEST = 1;
     final String mClientPackageName;
     final Bundle mControlHints;
     final List<String> mDeselectableRoutes;
@@ -43,26 +48,16 @@ public final class RoutingSessionInfo implements Parcelable {
     final String mProviderId;
     final List<String> mSelectableRoutes;
     final List<String> mSelectedRoutes;
+    final String mTransferInitiatorPackageName;
+    final UserHandle mTransferInitiatorUserHandle;
+    final int mTransferReason;
     final List<String> mTransferableRoutes;
     final int mVolume;
     final int mVolumeHandling;
     final int mVolumeMax;
 
-    /* renamed from: android.media.RoutingSessionInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RoutingSessionInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RoutingSessionInfo createFromParcel(Parcel in) {
-            return new RoutingSessionInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RoutingSessionInfo[] newArray(int size) {
-            return new RoutingSessionInfo[size];
-        }
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TransferReason {
     }
 
     RoutingSessionInfo(Builder builder) {
@@ -72,8 +67,7 @@ public final class RoutingSessionInfo implements Parcelable {
         this.mOwnerPackageName = builder.mOwnerPackageName;
         this.mClientPackageName = builder.mClientPackageName;
         this.mProviderId = builder.mProviderId;
-        List<String> unmodifiableList = Collections.unmodifiableList(convertToUniqueRouteIds(builder.mSelectedRoutes));
-        this.mSelectedRoutes = unmodifiableList;
+        this.mSelectedRoutes = Collections.unmodifiableList(convertToUniqueRouteIds(builder.mSelectedRoutes));
         this.mSelectableRoutes = Collections.unmodifiableList(convertToUniqueRouteIds(builder.mSelectableRoutes));
         this.mDeselectableRoutes = Collections.unmodifiableList(convertToUniqueRouteIds(builder.mDeselectableRoutes));
         this.mTransferableRoutes = Collections.unmodifiableList(convertToUniqueRouteIds(builder.mTransferableRoutes));
@@ -81,20 +75,22 @@ public final class RoutingSessionInfo implements Parcelable {
         this.mVolume = builder.mVolume;
         this.mIsSystemSession = builder.mIsSystemSession;
         boolean volumeAdjustmentForRemoteGroupSessions = Resources.getSystem().getBoolean(R.bool.config_volumeAdjustmentForRemoteGroupSessions);
-        int defineVolumeHandling = defineVolumeHandling(builder.mVolumeHandling, unmodifiableList, volumeAdjustmentForRemoteGroupSessions);
-        this.mVolumeHandling = defineVolumeHandling;
-        this.mControlHints = updateVolumeHandlingInHints(builder.mControlHints, defineVolumeHandling);
+        this.mVolumeHandling = defineVolumeHandling(this.mIsSystemSession, builder.mVolumeHandling, this.mSelectedRoutes, volumeAdjustmentForRemoteGroupSessions);
+        this.mControlHints = updateVolumeHandlingInHints(builder.mControlHints, this.mVolumeHandling);
+        this.mTransferReason = builder.mTransferReason;
+        this.mTransferInitiatorUserHandle = builder.mTransferInitiatorUserHandle;
+        this.mTransferInitiatorPackageName = builder.mTransferInitiatorPackageName;
     }
 
     RoutingSessionInfo(Parcel src) {
         this.mId = src.readString();
-        Preconditions.checkArgument(!TextUtils.isEmpty(r0));
+        Preconditions.checkArgument(!TextUtils.isEmpty(this.mId));
         this.mName = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(src);
         this.mOwnerPackageName = src.readString();
         this.mClientPackageName = ensureString(src.readString());
         this.mProviderId = src.readString();
         this.mSelectedRoutes = ensureList(src.createStringArrayList());
-        Preconditions.checkArgument(!r0.isEmpty());
+        Preconditions.checkArgument(!this.mSelectedRoutes.isEmpty());
         this.mSelectableRoutes = ensureList(src.createStringArrayList());
         this.mDeselectableRoutes = ensureList(src.createStringArrayList());
         this.mTransferableRoutes = ensureList(src.createStringArrayList());
@@ -103,6 +99,9 @@ public final class RoutingSessionInfo implements Parcelable {
         this.mVolume = src.readInt();
         this.mControlHints = src.readBundle();
         this.mIsSystemSession = src.readBoolean();
+        this.mTransferReason = src.readInt();
+        this.mTransferInitiatorUserHandle = UserHandle.readFromParcel(src);
+        this.mTransferInitiatorPackageName = src.readString();
     }
 
     private static Bundle updateVolumeHandlingInHints(Bundle controlHints, int volumeHandling) {
@@ -117,8 +116,8 @@ public final class RoutingSessionInfo implements Parcelable {
         return controlHints;
     }
 
-    private static int defineVolumeHandling(int volumeHandling, List<String> selectedRoutes, boolean volumeAdjustmentForRemoteGroupSessions) {
-        if (!volumeAdjustmentForRemoteGroupSessions && selectedRoutes.size() > 1) {
+    private static int defineVolumeHandling(boolean isSystemSession, int volumeHandling, List<String> selectedRoutes, boolean volumeAdjustmentForRemoteGroupSessions) {
+        if (!isSystemSession && !volumeAdjustmentForRemoteGroupSessions && selectedRoutes.size() > 1) {
             return 0;
         }
         return volumeHandling;
@@ -198,6 +197,18 @@ public final class RoutingSessionInfo implements Parcelable {
         return this.mIsSystemSession;
     }
 
+    public int getTransferReason() {
+        return this.mTransferReason;
+    }
+
+    public UserHandle getTransferInitiatorUserHandle() {
+        return this.mTransferInitiatorUserHandle;
+    }
+
+    public String getTransferInitiatorPackageName() {
+        return this.mTransferInitiatorPackageName;
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -219,6 +230,9 @@ public final class RoutingSessionInfo implements Parcelable {
         dest.writeInt(this.mVolume);
         dest.writeBundle(this.mControlHints);
         dest.writeBoolean(this.mIsSystemSession);
+        dest.writeInt(this.mTransferReason);
+        UserHandle.writeToParcel(this.mTransferInitiatorUserHandle, dest);
+        dest.writeString(this.mTransferInitiatorPackageName);
     }
 
     public void dump(PrintWriter pw, String prefix) {
@@ -233,31 +247,37 @@ public final class RoutingSessionInfo implements Parcelable {
         pw.println(indent + "mSelectableRoutes=" + this.mSelectableRoutes);
         pw.println(indent + "mDeselectableRoutes=" + this.mDeselectableRoutes);
         pw.println(indent + "mTransferableRoutes=" + this.mTransferableRoutes);
-        pw.println(indent + "mVolumeHandling=" + this.mVolumeHandling);
-        pw.println(indent + "mVolumeMax=" + this.mVolumeMax);
-        pw.println(indent + "mVolume=" + this.mVolume);
+        pw.println(indent + MediaRoute2Info.getVolumeString(this.mVolume, this.mVolumeMax, this.mVolumeHandling));
         pw.println(indent + "mControlHints=" + this.mControlHints);
         pw.println(indent + "mIsSystemSession=" + this.mIsSystemSession);
+        pw.println(indent + "mTransferReason=" + this.mTransferReason);
+        pw.println(indent + "mtransferInitiatorUserHandle=" + this.mTransferInitiatorUserHandle);
+        pw.println(indent + "mtransferInitiatorPackageName=" + this.mTransferInitiatorPackageName);
     }
 
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof RoutingSessionInfo)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         RoutingSessionInfo other = (RoutingSessionInfo) obj;
-        return Objects.equals(this.mId, other.mId) && Objects.equals(this.mName, other.mName) && Objects.equals(this.mOwnerPackageName, other.mOwnerPackageName) && Objects.equals(this.mClientPackageName, other.mClientPackageName) && Objects.equals(this.mProviderId, other.mProviderId) && Objects.equals(this.mSelectedRoutes, other.mSelectedRoutes) && Objects.equals(this.mSelectableRoutes, other.mSelectableRoutes) && Objects.equals(this.mDeselectableRoutes, other.mDeselectableRoutes) && Objects.equals(this.mTransferableRoutes, other.mTransferableRoutes) && this.mVolumeHandling == other.mVolumeHandling && this.mVolumeMax == other.mVolumeMax && this.mVolume == other.mVolume;
+        if (!Objects.equals(this.mId, other.mId) || !Objects.equals(this.mName, other.mName) || !Objects.equals(this.mOwnerPackageName, other.mOwnerPackageName) || !Objects.equals(this.mClientPackageName, other.mClientPackageName) || !Objects.equals(this.mProviderId, other.mProviderId) || !Objects.equals(this.mSelectedRoutes, other.mSelectedRoutes) || !Objects.equals(this.mSelectableRoutes, other.mSelectableRoutes) || !Objects.equals(this.mDeselectableRoutes, other.mDeselectableRoutes) || !Objects.equals(this.mTransferableRoutes, other.mTransferableRoutes) || this.mVolumeHandling != other.mVolumeHandling || this.mVolumeMax != other.mVolumeMax || this.mVolume != other.mVolume || this.mTransferReason != other.mTransferReason || !Objects.equals(this.mTransferInitiatorUserHandle, other.mTransferInitiatorUserHandle) || !Objects.equals(this.mTransferInitiatorPackageName, other.mTransferInitiatorPackageName)) {
+            return false;
+        }
+        return true;
     }
 
     public int hashCode() {
-        return Objects.hash(this.mId, this.mName, this.mOwnerPackageName, this.mClientPackageName, this.mProviderId, this.mSelectedRoutes, this.mSelectableRoutes, this.mDeselectableRoutes, this.mTransferableRoutes, Integer.valueOf(this.mVolumeMax), Integer.valueOf(this.mVolumeHandling), Integer.valueOf(this.mVolume));
+        return Objects.hash(this.mId, this.mName, this.mOwnerPackageName, this.mClientPackageName, this.mProviderId, this.mSelectedRoutes, this.mSelectableRoutes, this.mDeselectableRoutes, this.mTransferableRoutes, Integer.valueOf(this.mVolumeMax), Integer.valueOf(this.mVolumeHandling), Integer.valueOf(this.mVolume), Integer.valueOf(this.mTransferReason), this.mTransferInitiatorUserHandle, this.mTransferInitiatorPackageName);
     }
 
     public String toString() {
-        StringBuilder result = new StringBuilder().append("RoutingSessionInfo{ ").append("sessionId=").append(getId()).append(", name=").append(getName()).append(", clientPackageName=").append(getClientPackageName()).append(", selectedRoutes={").append(String.join(",", getSelectedRoutes())).append("}").append(", selectableRoutes={").append(String.join(",", getSelectableRoutes())).append("}").append(", deselectableRoutes={").append(String.join(",", getDeselectableRoutes())).append("}").append(", transferableRoutes={").append(String.join(",", getTransferableRoutes())).append("}").append(", volumeHandling=").append(getVolumeHandling()).append(", volumeMax=").append(getVolumeMax()).append(", volume=").append(getVolume()).append(" }");
-        return result.toString();
+        return "RoutingSessionInfo{ sessionId=" + getId() + ", name=" + getName() + ", clientPackageName=" + getClientPackageName() + ", selectedRoutes={" + String.join(",", getSelectedRoutes()) + "}, selectableRoutes={" + String.join(",", getSelectableRoutes()) + "}, deselectableRoutes={" + String.join(",", getDeselectableRoutes()) + "}, transferableRoutes={" + String.join(",", getTransferableRoutes()) + "}, " + MediaRoute2Info.getVolumeString(this.mVolume, this.mVolumeMax, this.mVolumeHandling) + ", transferReason=" + getTransferReason() + ", transferInitiatorUserHandle=" + getTransferInitiatorUserHandle() + ", transferInitiatorPackageName=" + getTransferInitiatorPackageName() + " }";
     }
 
     private List<String> convertToUniqueRouteIds(List<String> routeIds) {
@@ -272,25 +292,28 @@ public final class RoutingSessionInfo implements Parcelable {
         return result;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
-        String mClientPackageName;
-        Bundle mControlHints;
-        final List<String> mDeselectableRoutes;
-        final String mId;
-        boolean mIsSystemSession;
-        CharSequence mName;
-        String mOwnerPackageName;
-        String mProviderId;
-        final List<String> mSelectableRoutes;
-        final List<String> mSelectedRoutes;
-        final List<String> mTransferableRoutes;
-        int mVolume;
-        int mVolumeHandling;
-        int mVolumeMax;
+        private String mClientPackageName;
+        private Bundle mControlHints;
+        private final List<String> mDeselectableRoutes;
+        private final String mId;
+        private boolean mIsSystemSession;
+        private CharSequence mName;
+        private String mOwnerPackageName;
+        private String mProviderId;
+        private final List<String> mSelectableRoutes;
+        private final List<String> mSelectedRoutes;
+        private String mTransferInitiatorPackageName;
+        private UserHandle mTransferInitiatorUserHandle;
+        private int mTransferReason;
+        private final List<String> mTransferableRoutes;
+        private int mVolume;
+        private int mVolumeHandling;
+        private int mVolumeMax;
 
         public Builder(String id, String clientPackageName) {
             this.mVolumeHandling = 0;
+            this.mTransferReason = 0;
             if (TextUtils.isEmpty(id)) {
                 throw new IllegalArgumentException("id must not be empty");
             }
@@ -304,39 +327,36 @@ public final class RoutingSessionInfo implements Parcelable {
 
         public Builder(RoutingSessionInfo sessionInfo) {
             this.mVolumeHandling = 0;
+            this.mTransferReason = 0;
             Objects.requireNonNull(sessionInfo, "sessionInfo must not be null");
             this.mId = sessionInfo.mId;
             this.mName = sessionInfo.mName;
             this.mClientPackageName = sessionInfo.mClientPackageName;
             this.mProviderId = sessionInfo.mProviderId;
-            ArrayList arrayList = new ArrayList(sessionInfo.mSelectedRoutes);
-            this.mSelectedRoutes = arrayList;
-            ArrayList arrayList2 = new ArrayList(sessionInfo.mSelectableRoutes);
-            this.mSelectableRoutes = arrayList2;
-            ArrayList arrayList3 = new ArrayList(sessionInfo.mDeselectableRoutes);
-            this.mDeselectableRoutes = arrayList3;
-            ArrayList arrayList4 = new ArrayList(sessionInfo.mTransferableRoutes);
-            this.mTransferableRoutes = arrayList4;
+            this.mSelectedRoutes = new ArrayList(sessionInfo.mSelectedRoutes);
+            this.mSelectableRoutes = new ArrayList(sessionInfo.mSelectableRoutes);
+            this.mDeselectableRoutes = new ArrayList(sessionInfo.mDeselectableRoutes);
+            this.mTransferableRoutes = new ArrayList(sessionInfo.mTransferableRoutes);
             if (this.mProviderId != null) {
-                arrayList.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
+                this.mSelectedRoutes.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return MediaRouter2Utils.getOriginalId((String) obj);
                     }
                 });
-                arrayList2.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
+                this.mSelectableRoutes.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return MediaRouter2Utils.getOriginalId((String) obj);
                     }
                 });
-                arrayList3.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
+                this.mDeselectableRoutes.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return MediaRouter2Utils.getOriginalId((String) obj);
                     }
                 });
-                arrayList4.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
+                this.mTransferableRoutes.replaceAll(new UnaryOperator() { // from class: android.media.RoutingSessionInfo$Builder$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return MediaRouter2Utils.getOriginalId((String) obj);
@@ -348,6 +368,9 @@ public final class RoutingSessionInfo implements Parcelable {
             this.mVolume = sessionInfo.mVolume;
             this.mControlHints = sessionInfo.mControlHints;
             this.mIsSystemSession = sessionInfo.mIsSystemSession;
+            this.mTransferReason = sessionInfo.mTransferReason;
+            this.mTransferInitiatorUserHandle = sessionInfo.mTransferInitiatorUserHandle;
+            this.mTransferInitiatorPackageName = sessionInfo.mTransferInitiatorPackageName;
         }
 
         public Builder setName(CharSequence name) {
@@ -479,6 +502,17 @@ public final class RoutingSessionInfo implements Parcelable {
 
         public Builder setSystemSession(boolean isSystemSession) {
             this.mIsSystemSession = isSystemSession;
+            return this;
+        }
+
+        public Builder setTransferReason(int transferReason) {
+            this.mTransferReason = transferReason;
+            return this;
+        }
+
+        public Builder setTransferInitiator(UserHandle transferInitiatorUserHandle, String transferInitiatorPackageName) {
+            this.mTransferInitiatorUserHandle = transferInitiatorUserHandle;
+            this.mTransferInitiatorPackageName = transferInitiatorPackageName;
             return this;
         }
 

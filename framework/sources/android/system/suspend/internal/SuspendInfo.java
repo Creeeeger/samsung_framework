@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class SuspendInfo implements Parcelable {
     public static final Parcelable.Creator<SuspendInfo> CREATOR = new Parcelable.Creator<SuspendInfo>() { // from class: android.system.suspend.internal.SuspendInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuspendInfo createFromParcel(Parcel _aidl_source) {
             SuspendInfo _aidl_out = new SuspendInfo();
@@ -17,6 +15,7 @@ public class SuspendInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuspendInfo[] newArray(int _aidl_size) {
             return new SuspendInfo[_aidl_size];
@@ -32,25 +31,6 @@ public class SuspendInfo implements Parcelable {
     public long newBackoffCount = 0;
     public long backoffContinueCount = 0;
     public long sleepTimeMillis = 0;
-
-    /* renamed from: android.system.suspend.internal.SuspendInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SuspendInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuspendInfo createFromParcel(Parcel _aidl_source) {
-            SuspendInfo _aidl_out = new SuspendInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuspendInfo[] newArray(int _aidl_size) {
-            return new SuspendInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

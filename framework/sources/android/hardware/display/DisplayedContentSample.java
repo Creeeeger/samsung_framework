@@ -8,7 +8,6 @@ public final class DisplayedContentSample {
     private long[] mSamplesComponent2;
     private long[] mSamplesComponent3;
 
-    /* loaded from: classes2.dex */
     public enum ColorComponent {
         CHANNEL0,
         CHANNEL1,
@@ -24,42 +23,15 @@ public final class DisplayedContentSample {
         this.mSamplesComponent3 = sampleComponent3;
     }
 
-    /* renamed from: android.hardware.display.DisplayedContentSample$1 */
-    /* loaded from: classes2.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent;
-
-        static {
-            int[] iArr = new int[ColorComponent.values().length];
-            $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent = iArr;
-            try {
-                iArr[ColorComponent.CHANNEL0.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent[ColorComponent.CHANNEL1.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent[ColorComponent.CHANNEL2.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent[ColorComponent.CHANNEL3.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
-    }
-
     public long[] getSampleComponent(ColorComponent component) {
-        switch (AnonymousClass1.$SwitchMap$android$hardware$display$DisplayedContentSample$ColorComponent[component.ordinal()]) {
-            case 1:
+        switch (component) {
+            case CHANNEL0:
                 return this.mSamplesComponent0;
-            case 2:
+            case CHANNEL1:
                 return this.mSamplesComponent1;
-            case 3:
+            case CHANNEL2:
                 return this.mSamplesComponent2;
-            case 4:
+            case CHANNEL3:
                 return this.mSamplesComponent3;
             default:
                 throw new ArrayIndexOutOfBoundsException();

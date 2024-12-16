@@ -8,12 +8,12 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Log;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class DisableCarModeActivity extends Activity {
     private static final String TAG = "DisableCarModeActivity";
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             IUiModeManager uiModeManager = IUiModeManager.Stub.asInterface(ServiceManager.getService(Context.UI_MODE_SERVICE));

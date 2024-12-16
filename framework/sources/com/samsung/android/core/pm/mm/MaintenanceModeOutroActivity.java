@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +20,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.internal.R;
-import com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MaintenanceModeOutroActivity extends Activity {
     private static final long EXIT_PROGRESS_TIMEOUT = 120000;
     private static final String TAG = "MaintenanceMode";
@@ -40,11 +37,10 @@ public class MaintenanceModeOutroActivity extends Activity {
     private boolean mIsFold = false;
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context applicationContext = getApplicationContext();
-        this.mContext = applicationContext;
-        this.mResources = applicationContext.getResources();
+        this.mContext = getApplicationContext();
+        this.mResources = this.mContext.getResources();
         this.mCallingPackage = getCallingPackage();
         if (ActivityManager.getCurrentUser() != 77) {
             finish();
@@ -62,23 +58,18 @@ public class MaintenanceModeOutroActivity extends Activity {
         if (this.mCallingPackage != null && (actionBar = getActionBar()) != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        TextView outroTextView = (TextView) findViewById(R.id.maintenance_mode_outro_textview);
-        if (this.mIsTablet) {
-            outroTextView.setText(R.string.maintenance_mode_outro_textview_message_tablet);
-        } else {
-            outroTextView.setText(R.string.maintenance_mode_outro_textview_message_phone);
-        }
         if (this.mIsTablet) {
             ImageView imageView = (ImageView) findViewById(R.id.maintenance_mode_outro_imageview);
             imageView.setMaxWidth(this.mResources.getDimensionPixelSize(R.dimen.maintenance_mode_image_max_width_tablet));
+            TextView outroTextView = (TextView) findViewById(R.id.maintenance_mode_outro_textview);
+            outroTextView.setText(R.string.maintenance_mode_outro_textview_message_tablet);
         }
-        Button button = (Button) findViewById(R.id.maintenance_mode_outro_exit_button);
-        this.mExitButton = button;
+        this.mExitButton = (Button) findViewById(R.id.maintenance_mode_outro_exit_button);
         if (this.mIsTablet) {
-            button.setWidth(this.mResources.getDimensionPixelSize(R.dimen.maintenance_mode_body_button_width_tablet));
+            this.mExitButton.setWidth(this.mResources.getDimensionPixelSize(R.dimen.maintenance_mode_body_button_width_tablet));
         }
         this.mExitButton.setTextSize(0, MaintenanceModeUtils.getFontSize(this.mContext, R.dimen.maintenance_mode_common_button_text_size));
-        this.mExitButton.setOnClickListener(new View.OnClickListener() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda2
+        this.mExitButton.setOnClickListener(new View.OnClickListener() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda3
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 MaintenanceModeOutroActivity.this.lambda$setContentView$0(view);
@@ -86,6 +77,7 @@ public class MaintenanceModeOutroActivity extends Activity {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$setContentView$0(View v) {
         showDialog();
     }
@@ -97,9 +89,8 @@ public class MaintenanceModeOutroActivity extends Activity {
     }
 
     private void prepareProgressView() {
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(-1, -1, 0, 0, 2024, 131328, -3);
-        this.mViewWindowParams = layoutParams;
-        layoutParams.gravity = 17;
+        this.mViewWindowParams = new WindowManager.LayoutParams(-1, -1, 0, 0, 2024, 131328, -3);
+        this.mViewWindowParams.gravity = 17;
         this.mViewWindowParams.privateFlags |= 16;
         this.mViewWindowParams.screenOrientation = 1;
         this.mViewWindowParams.layoutInDisplayCutoutMode = 1;
@@ -133,12 +124,12 @@ public class MaintenanceModeOutroActivity extends Activity {
         AlertDialog.Builder builder2 = builder.setMessage(i).setPositiveButton(R.string.maintenance_mode_dialog_button_text_restart, new DialogInterface.OnClickListener() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda0
             @Override // android.content.DialogInterface.OnClickListener
             public final void onClick(DialogInterface dialogInterface, int i2) {
-                MaintenanceModeOutroActivity.this.lambda$showDialog$1(dialogInterface, i2);
+                MaintenanceModeOutroActivity.this.lambda$showDialog$4(dialogInterface, i2);
             }
         }).setNegativeButton(R.string.maintenance_mode_dialog_button_text_cancel, new DialogInterface.OnClickListener() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda1
             @Override // android.content.DialogInterface.OnClickListener
             public final void onClick(DialogInterface dialogInterface, int i2) {
-                MaintenanceModeOutroActivity.lambda$showDialog$2(dialogInterface, i2);
+                MaintenanceModeOutroActivity.lambda$showDialog$5(dialogInterface, i2);
             }
         });
         AlertDialog dialog = builder2.create();
@@ -146,67 +137,47 @@ public class MaintenanceModeOutroActivity extends Activity {
         dialog.show();
     }
 
-    public /* synthetic */ void lambda$showDialog$1(DialogInterface dialog, int which) {
-        confirmSecureLock();
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showDialog$4(DialogInterface dialog, int which) {
+        Runnable runningJob = new Runnable() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda2
+            @Override // java.lang.Runnable
+            public final void run() {
+                MaintenanceModeOutroActivity.this.lambda$showDialog$3();
+            }
+        };
+        MaintenanceModeUtils.confirmSecureLock(this, runningJob);
     }
 
-    public static /* synthetic */ void lambda$showDialog$2(DialogInterface dialog, int which) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showDialog$3() {
+        this.mExitButton.setClickable(false);
+        this.mWm.addView(this.mProgressView, this.mViewWindowParams);
+        new Thread(new Runnable() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda4
+            @Override // java.lang.Runnable
+            public final void run() {
+                MaintenanceModeOutroActivity.this.lambda$showDialog$1();
+            }
+        }).start();
+        this.mRootView.postDelayed(new Runnable() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$$ExternalSyntheticLambda5
+            @Override // java.lang.Runnable
+            public final void run() {
+                MaintenanceModeOutroActivity.this.lambda$showDialog$2();
+            }
+        }, 120000L);
     }
 
-    private void confirmSecureLock() {
-        BiometricPrompt.Builder builder = new BiometricPrompt.Builder(this.mContext);
-        builder.setUseDefaultTitle();
-        builder.setAllowedAuthenticators(33023);
-        BiometricPrompt biometricPrompt = builder.build();
-        biometricPrompt.authenticateUser(new CancellationSignal(), getMainExecutor(), new AnonymousClass1(), 0);
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$showDialog$2() {
+        this.mWm.removeView(this.mProgressView);
+        this.mExitButton.setClickable(true);
     }
 
-    /* renamed from: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends BiometricPrompt.AuthenticationCallback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.hardware.biometrics.BiometricPrompt.AuthenticationCallback, android.hardware.biometrics.BiometricAuthenticator.AuthenticationCallback
-        public void onAuthenticationError(int errorCode, CharSequence errString) {
-            super.onAuthenticationError(errorCode, errString);
-        }
-
-        @Override // android.hardware.biometrics.BiometricPrompt.AuthenticationCallback
-        public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-            super.onAuthenticationSucceeded(result);
-            MaintenanceModeOutroActivity.this.mExitButton.setClickable(false);
-            MaintenanceModeOutroActivity.this.mWm.addView(MaintenanceModeOutroActivity.this.mProgressView, MaintenanceModeOutroActivity.this.mViewWindowParams);
-            new Thread(new Runnable() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MaintenanceModeOutroActivity.AnonymousClass1.this.lambda$onAuthenticationSucceeded$0();
-                }
-            }).start();
-            MaintenanceModeOutroActivity.this.mRootView.postDelayed(new Runnable() { // from class: com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity$1$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MaintenanceModeOutroActivity.AnonymousClass1.this.lambda$onAuthenticationSucceeded$1();
-                }
-            }, 120000L);
-        }
-
-        public /* synthetic */ void lambda$onAuthenticationSucceeded$0() {
-            MaintenanceModeOutroActivity.this.exitMaintenanceMode();
-        }
-
-        public /* synthetic */ void lambda$onAuthenticationSucceeded$1() {
-            MaintenanceModeOutroActivity.this.mWm.removeView(MaintenanceModeOutroActivity.this.mProgressView);
-            MaintenanceModeOutroActivity.this.mExitButton.setClickable(true);
-        }
-
-        @Override // android.hardware.biometrics.BiometricPrompt.AuthenticationCallback, android.hardware.biometrics.BiometricAuthenticator.AuthenticationCallback
-        public void onAuthenticationFailed() {
-            super.onAuthenticationFailed();
-        }
+    static /* synthetic */ void lambda$showDialog$5(DialogInterface dialog, int which) {
     }
 
-    public void exitMaintenanceMode() {
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: exitMaintenanceMode, reason: merged with bridge method [inline-methods] */
+    public void lambda$showDialog$1() {
         try {
             UserManager um = (UserManager) this.mContext.getSystemService("user");
             um.removeUser(77);

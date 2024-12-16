@@ -6,7 +6,7 @@ import android.text.Spanned;
 import com.android.internal.graphics.ColorUtils;
 import com.samsung.android.wallpaper.legibilitycolors.utils.IUXColorUtils;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class BitmapImageProcessing {
     protected Bitmap.Config mConfig;
     protected final int mImageHeight;
@@ -14,14 +14,11 @@ public class BitmapImageProcessing {
     protected int[] mPixels;
 
     public BitmapImageProcessing(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        this.mImageWidth = width;
-        int height = bitmap.getHeight();
-        this.mImageHeight = height;
+        this.mImageWidth = bitmap.getWidth();
+        this.mImageHeight = bitmap.getHeight();
         this.mConfig = bitmap.getConfig();
-        int[] iArr = new int[width * height];
-        this.mPixels = iArr;
-        bitmap.getPixels(iArr, 0, width, 0, 0, width, height);
+        this.mPixels = new int[this.mImageWidth * this.mImageHeight];
+        bitmap.getPixels(this.mPixels, 0, this.mImageWidth, 0, 0, this.mImageWidth, this.mImageHeight);
     }
 
     public BitmapImageProcessing(int[] pixels, int width, int height, Bitmap.Config config) {
@@ -46,17 +43,14 @@ public class BitmapImageProcessing {
     }
 
     public int[] getCopiedPixels() {
-        int[] iArr = this.mPixels;
-        int[] pixels = new int[iArr.length];
-        System.arraycopy(iArr, 0, pixels, 0, iArr.length);
+        int[] pixels = new int[this.mPixels.length];
+        System.arraycopy(this.mPixels, 0, pixels, 0, this.mPixels.length);
         return pixels;
     }
 
     public Bitmap createBitmapFromCurrent() {
         Bitmap convertedBitmap = Bitmap.createBitmap(this.mImageWidth, this.mImageHeight, this.mConfig);
-        int[] iArr = this.mPixels;
-        int i = this.mImageWidth;
-        convertedBitmap.setPixels(iArr, 0, i, 0, 0, i, this.mImageHeight);
+        convertedBitmap.setPixels(this.mPixels, 0, this.mImageWidth, 0, 0, this.mImageWidth, this.mImageHeight);
         return convertedBitmap;
     }
 

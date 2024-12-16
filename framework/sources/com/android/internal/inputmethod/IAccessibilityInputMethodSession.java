@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import android.view.inputmethod.EditorInfo;
 import com.android.internal.inputmethod.IRemoteAccessibilityInputConnection;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IAccessibilityInputMethodSession extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IAccessibilityInputMethodSession";
 
@@ -20,7 +20,6 @@ public interface IAccessibilityInputMethodSession extends IInterface {
 
     void updateSelection(int i, int i2, int i3, int i4, int i5, int i6) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAccessibilityInputMethodSession {
         @Override // com.android.internal.inputmethod.IAccessibilityInputMethodSession
         public void updateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IAccessibilityInputMethodSession extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAccessibilityInputMethodSession {
         static final int TRANSACTION_finishInput = 2;
         static final int TRANSACTION_finishSession = 3;
@@ -96,43 +94,40 @@ public interface IAccessibilityInputMethodSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAccessibilityInputMethodSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAccessibilityInputMethodSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAccessibilityInputMethodSession.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateSelection(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    finishInput();
+                    return true;
+                case 3:
+                    finishSession();
+                    return true;
+                case 4:
+                    EditorInfo _arg02 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
+                    IRemoteAccessibilityInputConnection _arg12 = IRemoteAccessibilityInputConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    invalidateInput(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateSelection(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            finishInput();
-                            return true;
-                        case 3:
-                            finishSession();
-                            return true;
-                        case 4:
-                            EditorInfo _arg02 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
-                            IRemoteAccessibilityInputConnection _arg12 = IRemoteAccessibilityInputConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            invalidateInput(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAccessibilityInputMethodSession {
+        private static class Proxy implements IAccessibilityInputMethodSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

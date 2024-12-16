@@ -6,7 +6,6 @@ public interface IClientCallback extends IInterface {
 
     void onClients(IBinder iBinder, boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IClientCallback {
         @Override // android.os.IClientCallback
         public void onClients(IBinder registered, boolean hasClients) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IClientCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IClientCallback {
         static final int TRANSACTION_onClients = 1;
 
@@ -61,27 +59,23 @@ public interface IClientCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IClientCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IClientCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IClientCallback.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onClients(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onClients(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IClientCallback {
+        private static class Proxy implements IClientCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,13 +9,13 @@ import android.os.RemoteException;
 import com.samsung.android.cover.CoverManager;
 import com.samsung.android.cover.INfcLedCoverTouchListenerCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class LedSystemEventListenerDelegate extends INfcLedCoverTouchListenerCallback.Stub {
     private static final int MSG_SYSTEM_COVER_EVENT = 0;
     private ListenerDelegateHandler mHandler;
     private CoverManager.LedSystemEventListener mListener;
 
-    public LedSystemEventListenerDelegate(CoverManager.LedSystemEventListener listener, Handler handler, Context context) {
+    LedSystemEventListenerDelegate(CoverManager.LedSystemEventListener listener, Handler handler, Context context) {
         this.mListener = listener;
         Looper looper = handler == null ? context.getMainLooper() : handler.getLooper();
         this.mHandler = new ListenerDelegateHandler(looper, this.mListener);
@@ -53,9 +53,7 @@ class LedSystemEventListenerDelegate extends INfcLedCoverTouchListenerCallback.S
         msg.sendToTarget();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class ListenerDelegateHandler extends Handler {
+    private static class ListenerDelegateHandler extends Handler {
         private final CoverManager.LedSystemEventListener mListener;
 
         ListenerDelegateHandler(Looper looper, CoverManager.LedSystemEventListener listener) {
@@ -70,9 +68,7 @@ class LedSystemEventListenerDelegate extends INfcLedCoverTouchListenerCallback.S
                     case 0:
                         Bundle args = (Bundle) msg.obj;
                         this.mListener.onSystemCoverEvent(msg.arg1, args);
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }

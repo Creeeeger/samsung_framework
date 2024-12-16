@@ -20,14 +20,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaOutputStreamFilter {
     private static final String TAG = Def.tagOf((Class<?>) MediaCodecFilter.class);
     protected final CodecDescriptor codecDescriptor;
-    private final Condition condition;
     protected int contentId;
-    protected final ConditionVariable cvPause;
-    private final ReentrantLock lock;
     protected MediaCodec mediaCodec;
     protected MessageProducer messageProducer;
     protected boolean reachedInputEos;
@@ -42,28 +39,28 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
     protected AtomicLong startTimeUs = new AtomicLong(-1);
     protected AtomicLong endTimeUs = new AtomicLong(Long.MAX_VALUE);
     protected AtomicLong lastTimestampUs = new AtomicLong(Long.MAX_VALUE);
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Condition condition = this.lock.newCondition();
+    protected final ConditionVariable cvPause = new ConditionVariable();
 
     protected abstract void configCodec(Message message);
 
-    public MediaCodecFilter(CodecDescriptor codecDescriptor) {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.lock = reentrantLock;
-        this.condition = reentrantLock.newCondition();
-        ConditionVariable conditionVariable = new ConditionVariable();
-        this.cvPause = conditionVariable;
+    protected MediaCodecFilter(CodecDescriptor codecDescriptor) {
         this.codecDescriptor = codecDescriptor;
-        conditionVariable.open();
+        this.cvPause.open();
     }
 
-    public void awaitCodecToReady() {
+    protected void awaitCodecToReady() {
+        String str;
         StringBuilder sb;
-        String str = TAG;
-        Log.d(str, "awaitCodecToReady...E: " + this);
+        String str2 = "awaitCodecToReady...X: ";
+        Log.d(TAG, "awaitCodecToReady...E: " + this);
         this.lock.lock();
         try {
             try {
                 this.condition.await();
                 this.lock.unlock();
+                str = TAG;
                 sb = new StringBuilder();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -71,26 +68,23 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
                 str = TAG;
                 sb = new StringBuilder();
             }
-            Log.d(str, sb.append("awaitCodecToReady...X: ").append(this).toString());
+            str2 = sb.append("awaitCodecToReady...X: ").append(this).toString();
+            Log.d(str, str2);
         } catch (Throwable th) {
             this.lock.unlock();
-            Log.d(TAG, "awaitCodecToReady...X: " + this);
+            Log.d(TAG, str2 + this);
             throw th;
         }
     }
 
-    public void signalCodecFromReady() {
-        String str = TAG;
-        Log.d(str, "signalCodecFromReady...E: " + this);
+    protected void signalCodecFromReady() {
+        Log.d(TAG, "signalCodecFromReady...E: " + this);
         this.lock.lock();
         try {
             this.condition.signalAll();
-            this.lock.unlock();
-            Log.d(str, "signalCodecFromReady...X: " + this);
-        } catch (Throwable th) {
+        } finally {
             this.lock.unlock();
             Log.d(TAG, "signalCodecFromReady...X: " + this);
-            throw th;
         }
     }
 
@@ -102,8 +96,7 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
     @Override // com.samsung.android.sume.core.message.MessageConsumer
     public boolean onMessageReceived(Message message) throws UnsupportedOperationException {
         boolean consumed = true;
-        String str = TAG;
-        Log.d(str, "onMessageReceived: " + message.getCode());
+        Log.d(TAG, "onMessageReceived: " + message.getCode());
         Map<String, Object> replyData = new HashMap<>();
         switch (message.getCode()) {
             case 1:
@@ -117,7 +110,7 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
                         configCodec(message);
                         break;
                     }
-                    Log.d(str, "config-data of " + mediaType + " is not match this codec type " + descriptor.getMediaType());
+                    Log.d(TAG, "config-data of " + mediaType + " is not match this codec type " + descriptor.getMediaType());
                     return false;
                 }
             case 2:
@@ -138,7 +131,7 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
                 break;
             case 5:
                 long timestampUs = ((Long) message.get("last-timestampUs")).longValue();
-                Log.d(str, "last timestampUs set as " + timestampUs);
+                Log.d(TAG, "last timestampUs set as " + timestampUs);
                 this.lastTimestampUs.set(timestampUs);
                 break;
         }
@@ -156,11 +149,10 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
     @Override // com.samsung.android.sume.core.filter.MediaFilter
     public void release() {
         Log.d(TAG, "release...E");
-        MediaCodec mediaCodec = this.mediaCodec;
-        if (mediaCodec != null) {
+        if (this.mediaCodec != null) {
             try {
                 try {
-                    mediaCodec.stop();
+                    this.mediaCodec.stop();
                 } catch (IllegalStateException e) {
                     Log.w(TAG, "codec stop called but not started yet");
                 }
@@ -229,7 +221,7 @@ public abstract class MediaCodecFilter implements MediaInputStreamFilter, MediaO
         return this.sendChannelCount;
     }
 
-    public String tagged(String fmt, Object... args) {
+    protected String tagged(String fmt, Object... args) {
         return String.format(NavigationBarInflaterView.SIZE_MOD_START + this.codecTag + NavigationBarInflaterView.SIZE_MOD_END + fmt, args);
     }
 }

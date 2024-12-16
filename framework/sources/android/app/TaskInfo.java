@@ -13,17 +13,11 @@ import android.os.Parcel;
 import android.window.WindowContainerToken;
 import com.samsung.android.core.SizeCompatInfo;
 import com.samsung.android.rune.CoreRune;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /* loaded from: classes.dex */
 public class TaskInfo {
-    public static final int CAMERA_COMPAT_CONTROL_DISMISSED = 3;
-    public static final int CAMERA_COMPAT_CONTROL_HIDDEN = 0;
-    public static final int CAMERA_COMPAT_CONTROL_TREATMENT_APPLIED = 2;
-    public static final int CAMERA_COMPAT_CONTROL_TREATMENT_SUGGESTED = 1;
     public static final int PROPERTY_VALUE_UNSET = -1;
     private static final String TAG = "TaskInfo";
     public ComponentName baseActivity;
@@ -31,21 +25,23 @@ public class TaskInfo {
     public int defaultMinSize;
     public Rect displayCutoutInsets;
     public int displayId;
+    public boolean hasConfigChanged;
     public boolean hasPopOver;
     public boolean hasWallpaper;
+    public boolean isAliasManaged;
     public boolean isAllowedSeamlessRotation;
     public boolean isCaptionHandlerHidden;
     public boolean isCoverLauncherWidgetTask;
-    public boolean isCoverScreenTask;
     public boolean isFocused;
     public boolean isForceHidden;
-    public boolean isFromLetterboxDoubleTap;
     public boolean isFullScreenCaptionState;
-    public boolean isLetterboxDoubleTapEnabled;
+    public boolean isKeepScreenOn;
     public boolean isResizeable;
     public boolean isRotationButtonVisible;
     public boolean isRunning;
     public boolean isSleeping;
+    public boolean isTopActivityStyleFloating;
+    public boolean isTopActivityTransparent;
     public boolean isTopTaskInStage;
     public boolean isTopTransparentActivity;
     public boolean isTranslucentTask;
@@ -70,7 +66,6 @@ public class TaskInfo {
     public int resizeMode;
     public String rootAffinity;
     public boolean shouldDockBigOverlays;
-    public boolean singleTapFromLetterbox;
     public SizeCompatInfo sizeCompatInfo;
     public Rect snappingGuideBounds;
     public boolean supportsMultiWindow;
@@ -79,32 +74,18 @@ public class TaskInfo {
     public int taskId;
     public WindowContainerToken token;
     public ComponentName topActivity;
-    public Rect topActivityBounds;
-    public boolean topActivityEligibleForLetterboxEducation;
-    public boolean topActivityInBoundsCompat;
-    public boolean topActivityInDisplayCompat;
-    public boolean topActivityInFixedAspectRatio;
     public boolean topActivityInSizeCompat;
     public ActivityInfo topActivityInfo;
-    public int topActivityLetterboxHeight;
-    public int topActivityLetterboxHorizontalPosition;
-    public int topActivityLetterboxVerticalPosition;
-    public int topActivityLetterboxWidth;
     public int topActivityType;
     public int topActivityUiMode;
     public int userId;
     public int displayAreaFeatureId = -1;
     public final Configuration configuration = new Configuration();
     public ArrayList<IBinder> launchCookies = new ArrayList<>();
-    public int cameraCompatControlState = 0;
-    public boolean isMinimized = false;
+    public AppCompatTaskInfo appCompatTaskInfo = AppCompatTaskInfo.create();
+    public boolean isAiKeyRemoveAppTask = false;
 
-    @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
-    public @interface CameraCompatControlState {
-    }
-
-    public TaskInfo() {
+    TaskInfo() {
     }
 
     private TaskInfo(Parcel source) {
@@ -135,6 +116,10 @@ public class TaskInfo {
         return this.configuration.windowConfiguration.getWindowingMode();
     }
 
+    public boolean isFreeform() {
+        return this.configuration.windowConfiguration.getWindowingMode() == 5;
+    }
+
     public int getActivityType() {
         return this.configuration.windowConfiguration.getActivityType();
     }
@@ -144,15 +129,6 @@ public class TaskInfo {
             return;
         }
         this.launchCookies.add(cookie);
-    }
-
-    public boolean hasCameraCompatControl() {
-        int i = this.cameraCompatControlState;
-        return (i == 0 || i == 3) ? false : true;
-    }
-
-    public boolean hasCompatUI() {
-        return hasCameraCompatControl() || this.topActivityInSizeCompat || this.topActivityEligibleForLetterboxEducation || this.isLetterboxDoubleTapEnabled;
     }
 
     public boolean containsLaunchCookie(IBinder cookie) {
@@ -175,85 +151,55 @@ public class TaskInfo {
         return this.configuration.windowConfiguration.isSplitScreen();
     }
 
-    public boolean isFreeform() {
-        return this.configuration.windowConfiguration.getWindowingMode() == 5;
+    public boolean preserveOrientationOnResize() {
+        return this.resizeMode == 6 || this.resizeMode == 5 || this.resizeMode == 7;
     }
 
     public boolean equalsForTaskOrganizer(TaskInfo that) {
         if (that == null) {
             return false;
         }
-        if ((CoreRune.FW_BOUNDS_COMPAT_UI && !equalsForAllBoundsCompats(that)) || this.isForceHidden != that.isForceHidden) {
-            return false;
-        }
         if (CoreRune.MW_CAPTION_SHELL) {
-            if (this.isCaptionHandlerHidden != that.isCaptionHandlerHidden || this.configuration.fontScale != that.getConfiguration().fontScale) {
+            if (this.isCaptionHandlerHidden != that.isCaptionHandlerHidden || this.isTranslucentTask != that.isTranslucentTask || this.configuration.fontScale != that.getConfiguration().fontScale) {
                 return false;
             }
             if (isFreeform() && this.configuration.semDisplayDeviceType != that.getConfiguration().semDisplayDeviceType) {
                 return false;
             }
         }
-        if (!CoreRune.MW_CAPTION_SHELL_FULL_SCREEN || this.isFullScreenCaptionState == that.isFullScreenCaptionState) {
-            return (!CoreRune.MD_DEX_COMPAT_CAPTION_SHELL || this.isRotationButtonVisible == that.isRotationButtonVisible) && this.topActivityType == that.topActivityType && this.isResizeable == that.isResizeable && this.supportsMultiWindow == that.supportsMultiWindow && this.displayAreaFeatureId == that.displayAreaFeatureId && this.isFromLetterboxDoubleTap == that.isFromLetterboxDoubleTap && this.topActivityLetterboxVerticalPosition == that.topActivityLetterboxVerticalPosition && this.topActivityLetterboxWidth == that.topActivityLetterboxWidth && this.topActivityLetterboxHeight == that.topActivityLetterboxHeight && this.topActivityLetterboxHorizontalPosition == that.topActivityLetterboxHorizontalPosition && Objects.equals(this.positionInParent, that.positionInParent) && Objects.equals(this.pictureInPictureParams, that.pictureInPictureParams) && Objects.equals(Boolean.valueOf(this.shouldDockBigOverlays), Boolean.valueOf(that.shouldDockBigOverlays)) && Objects.equals(this.displayCutoutInsets, that.displayCutoutInsets) && getWindowingMode() == that.getWindowingMode() && this.configuration.uiMode == that.configuration.uiMode && Objects.equals(this.taskDescription, that.taskDescription) && this.isFocused == that.isFocused && this.isVisible == that.isVisible && this.isVisibleRequested == that.isVisibleRequested && this.isSleeping == that.isSleeping && Objects.equals(this.mTopActivityLocusId, that.mTopActivityLocusId) && this.parentTaskId == that.parentTaskId && Objects.equals(this.topActivity, that.topActivity);
+        if ((CoreRune.MW_CAPTION_SHELL_FULL_SCREEN && this.isFullScreenCaptionState != that.isFullScreenCaptionState) || this.isForceHidden != that.isForceHidden) {
+            return false;
+        }
+        if (CoreRune.MW_CAPTION_SHELL_KEEP_SCREEN_ON && this.isKeepScreenOn != that.isKeepScreenOn) {
+            return false;
+        }
+        if (!CoreRune.MD_DEX_COMPAT_CAPTION_SHELL || this.isRotationButtonVisible == that.isRotationButtonVisible) {
+            return (!CoreRune.MW_SPLIT_FLEX_PANEL_MODE || this.configuration.windowConfiguration.isFlexPanelEnabled() == that.configuration.windowConfiguration.isFlexPanelEnabled()) && this.topActivityType == that.topActivityType && this.isResizeable == that.isResizeable && this.supportsMultiWindow == that.supportsMultiWindow && this.displayAreaFeatureId == that.displayAreaFeatureId && Objects.equals(this.positionInParent, that.positionInParent) && Objects.equals(this.pictureInPictureParams, that.pictureInPictureParams) && Objects.equals(Boolean.valueOf(this.shouldDockBigOverlays), Boolean.valueOf(that.shouldDockBigOverlays)) && Objects.equals(this.displayCutoutInsets, that.displayCutoutInsets) && getWindowingMode() == that.getWindowingMode() && this.configuration.uiMode == that.configuration.uiMode && Objects.equals(this.taskDescription, that.taskDescription) && this.isFocused == that.isFocused && this.isVisible == that.isVisible && this.isVisibleRequested == that.isVisibleRequested && this.isSleeping == that.isSleeping && Objects.equals(this.mTopActivityLocusId, that.mTopActivityLocusId) && this.parentTaskId == that.parentTaskId && Objects.equals(this.topActivity, that.topActivity) && this.isTopActivityTransparent == that.isTopActivityTransparent && this.isTopActivityStyleFloating == that.isTopActivityStyleFloating && this.appCompatTaskInfo.equalsForTaskOrganizer(that.appCompatTaskInfo);
         }
         return false;
     }
 
     public boolean equalsForCompatUi(TaskInfo that) {
-        if (that == null || this.displayId != that.displayId || this.taskId != that.taskId || this.topActivityInSizeCompat != that.topActivityInSizeCompat || this.isFromLetterboxDoubleTap != that.isFromLetterboxDoubleTap || this.topActivityEligibleForLetterboxEducation != that.topActivityEligibleForLetterboxEducation || this.topActivityLetterboxVerticalPosition != that.topActivityLetterboxVerticalPosition || this.topActivityLetterboxHorizontalPosition != that.topActivityLetterboxHorizontalPosition || this.topActivityLetterboxWidth != that.topActivityLetterboxWidth || this.topActivityLetterboxHeight != that.topActivityLetterboxHeight || this.cameraCompatControlState != that.cameraCompatControlState) {
+        if (that == null) {
             return false;
         }
-        if (hasCompatUI() && !this.configuration.windowConfiguration.getBounds().equals(that.configuration.windowConfiguration.getBounds())) {
+        boolean hasCompatUI = this.appCompatTaskInfo.hasCompatUI();
+        if (this.displayId != that.displayId || this.taskId != that.taskId || this.topActivityInSizeCompat != that.topActivityInSizeCompat || this.isFocused != that.isFocused || this.isTopActivityTransparent != that.isTopActivityTransparent || !this.appCompatTaskInfo.equalsForCompatUi(that.appCompatTaskInfo)) {
             return false;
         }
-        if (hasCompatUI() && this.configuration.getLayoutDirection() != that.configuration.getLayoutDirection()) {
+        if (hasCompatUI && !this.configuration.windowConfiguration.getBounds().equals(that.configuration.windowConfiguration.getBounds())) {
             return false;
         }
-        if (!hasCompatUI() || this.configuration.uiMode == that.configuration.uiMode) {
-            return !hasCompatUI() || this.isVisible == that.isVisible;
+        if (hasCompatUI && this.configuration.getLayoutDirection() != that.configuration.getLayoutDirection()) {
+            return false;
+        }
+        if (!hasCompatUI || this.configuration.uiMode == that.configuration.uiMode) {
+            return !hasCompatUI || this.isVisible == that.isVisible;
         }
         return false;
     }
 
-    public boolean equalsForAllBoundsCompats(TaskInfo that) {
-        return that != null && equalsForFixedAspectRatio(that) && equalsForBoundsCompat(that);
-    }
-
-    public boolean equalsForFixedAspectRatio(TaskInfo that) {
-        boolean z;
-        if (that == null || this.displayId != that.displayId || this.taskId != that.taskId || (z = this.topActivityInFixedAspectRatio) != that.topActivityInFixedAspectRatio) {
-            return false;
-        }
-        if (z && !this.configuration.windowConfiguration.getBounds().equals(that.configuration.windowConfiguration.getBounds())) {
-            return false;
-        }
-        if (!this.topActivityInFixedAspectRatio || this.configuration.getLayoutDirection() == that.configuration.getLayoutDirection()) {
-            return !this.topActivityInFixedAspectRatio || this.isVisible == that.isVisible;
-        }
-        return false;
-    }
-
-    public boolean equalsForBoundsCompat(TaskInfo that) {
-        boolean z;
-        if (that == null || this.displayId != that.displayId || this.taskId != that.taskId || (z = this.topActivityInBoundsCompat) != that.topActivityInBoundsCompat) {
-            return false;
-        }
-        if (z && !this.configuration.windowConfiguration.getBounds().equals(that.configuration.windowConfiguration.getBounds())) {
-            return false;
-        }
-        if (!this.topActivityInBoundsCompat || this.configuration.getLayoutDirection() == that.configuration.getLayoutDirection()) {
-            return !this.topActivityInBoundsCompat || this.isVisible == that.isVisible;
-        }
-        return false;
-    }
-
-    public boolean preserveOrientationOnResize() {
-        int i = this.resizeMode;
-        return i == 6 || i == 5 || i == 7;
-    }
-
-    public void readFromParcel(Parcel source) {
+    void readFromParcel(Parcel source) {
         this.userId = source.readInt();
         this.taskId = source.readInt();
         this.displayId = source.readInt();
@@ -288,38 +234,19 @@ public class TaskInfo {
         this.isVisible = source.readBoolean();
         this.isVisibleRequested = source.readBoolean();
         this.isSleeping = source.readBoolean();
-        this.topActivityInSizeCompat = source.readBoolean();
-        this.topActivityEligibleForLetterboxEducation = source.readBoolean();
         this.mTopActivityLocusId = (LocusId) source.readTypedObject(LocusId.CREATOR);
         this.displayAreaFeatureId = source.readInt();
-        this.cameraCompatControlState = source.readInt();
-        this.isLetterboxDoubleTapEnabled = source.readBoolean();
-        this.isFromLetterboxDoubleTap = source.readBoolean();
-        this.topActivityLetterboxVerticalPosition = source.readInt();
-        this.topActivityLetterboxHorizontalPosition = source.readInt();
-        this.topActivityLetterboxWidth = source.readInt();
-        this.topActivityLetterboxHeight = source.readInt();
+        this.isTopActivityTransparent = source.readBoolean();
+        this.isTopActivityStyleFloating = source.readBoolean();
+        this.appCompatTaskInfo = (AppCompatTaskInfo) source.readTypedObject(AppCompatTaskInfo.CREATOR);
         this.lastGainFocusTime = source.readLong();
         this.originallySupportedMultiWindow = source.readBoolean();
         this.supportsPipOnly = source.readBoolean();
         this.hasWallpaper = source.readBoolean();
-        if (CoreRune.FW_FIXED_ASPECT_RATIO_MODE) {
-            this.topActivityInFixedAspectRatio = source.readBoolean();
-        }
         this.rootAffinity = source.readString();
-        if (CoreRune.MW_CAPTION_SHELL) {
-            this.maxWidth = source.readInt();
-            this.maxHeight = source.readInt();
-        }
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT) {
+        if (CoreRune.MT_SIZE_COMPAT_POLICY) {
+            this.topActivityInSizeCompat = source.readBoolean();
             this.sizeCompatInfo = (SizeCompatInfo) source.readTypedObject(SizeCompatInfo.CREATOR);
-        }
-        if (CoreRune.FW_BOUNDS_COMPAT_UI_SUPPORT_ALIGNMENT) {
-            this.topActivityInBoundsCompat = source.readBoolean();
-            this.topActivityBounds = (Rect) source.readTypedObject(Rect.CREATOR);
-        }
-        if (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_FOR_BOUNDS_COMPAT_UI_EXPERIENCE) {
-            this.singleTapFromLetterbox = source.readBoolean();
         }
         this.isTopTaskInStage = source.readBoolean();
         if (CoreRune.MW_CAPTION_SHELL) {
@@ -330,17 +257,28 @@ public class TaskInfo {
         if (CoreRune.MW_CAPTION_SHELL_FULL_SCREEN) {
             this.isFullScreenCaptionState = source.readBoolean();
         }
+        if (CoreRune.MW_CAPTION_SHELL_KEEP_SCREEN_ON) {
+            this.isKeepScreenOn = source.readBoolean();
+        }
         if (CoreRune.MD_DEX_COMPAT_CAPTION_SHELL) {
             this.isRotationButtonVisible = source.readBoolean();
         }
-        this.snappingGuideBounds = (Rect) source.readTypedObject(Rect.CREATOR);
-        this.isForceHidden = source.readBoolean();
         this.isAllowedSeamlessRotation = source.readBoolean();
+        this.isForceHidden = source.readBoolean();
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_RESIZE_VIEW) {
+            this.maxWidth = source.readInt();
+            this.maxHeight = source.readInt();
+        }
         this.isTopTransparentActivity = source.readBoolean();
+        if (CoreRune.MW_CAPTION_SHELL_DEX_SNAPPING_WINDOW) {
+            this.snappingGuideBounds = (Rect) source.readTypedObject(Rect.CREATOR);
+        }
         this.hasPopOver = source.readBoolean();
-        this.isMinimized = source.readBoolean();
+        this.isAliasManaged = source.readBoolean();
+        this.hasConfigChanged = source.readBoolean();
     }
 
+    /* JADX INFO: Access modifiers changed from: package-private */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.userId);
         dest.writeInt(this.taskId);
@@ -376,38 +314,19 @@ public class TaskInfo {
         dest.writeBoolean(this.isVisible);
         dest.writeBoolean(this.isVisibleRequested);
         dest.writeBoolean(this.isSleeping);
-        dest.writeBoolean(this.topActivityInSizeCompat);
-        dest.writeBoolean(this.topActivityEligibleForLetterboxEducation);
         dest.writeTypedObject(this.mTopActivityLocusId, flags);
         dest.writeInt(this.displayAreaFeatureId);
-        dest.writeInt(this.cameraCompatControlState);
-        dest.writeBoolean(this.isLetterboxDoubleTapEnabled);
-        dest.writeBoolean(this.isFromLetterboxDoubleTap);
-        dest.writeInt(this.topActivityLetterboxVerticalPosition);
-        dest.writeInt(this.topActivityLetterboxHorizontalPosition);
-        dest.writeInt(this.topActivityLetterboxWidth);
-        dest.writeInt(this.topActivityLetterboxHeight);
+        dest.writeBoolean(this.isTopActivityTransparent);
+        dest.writeBoolean(this.isTopActivityStyleFloating);
+        dest.writeTypedObject(this.appCompatTaskInfo, flags);
         dest.writeLong(this.lastGainFocusTime);
         dest.writeBoolean(this.originallySupportedMultiWindow);
         dest.writeBoolean(this.supportsPipOnly);
         dest.writeBoolean(this.hasWallpaper);
-        if (CoreRune.FW_FIXED_ASPECT_RATIO_MODE) {
-            dest.writeBoolean(this.topActivityInFixedAspectRatio);
-        }
         dest.writeString(this.rootAffinity);
-        if (CoreRune.MW_CAPTION_SHELL) {
-            dest.writeInt(this.maxWidth);
-            dest.writeInt(this.maxHeight);
-        }
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT) {
+        if (CoreRune.MT_SIZE_COMPAT_POLICY) {
+            dest.writeBoolean(this.topActivityInSizeCompat);
             dest.writeTypedObject(this.sizeCompatInfo, flags);
-        }
-        if (CoreRune.FW_BOUNDS_COMPAT_UI_SUPPORT_ALIGNMENT) {
-            dest.writeBoolean(this.topActivityInBoundsCompat);
-            dest.writeTypedObject(this.topActivityBounds, flags);
-        }
-        if (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_FOR_BOUNDS_COMPAT_UI_EXPERIENCE) {
-            dest.writeBoolean(this.singleTapFromLetterbox);
         }
         dest.writeBoolean(this.isTopTaskInStage);
         if (CoreRune.MW_CAPTION_SHELL) {
@@ -418,33 +337,28 @@ public class TaskInfo {
         if (CoreRune.MW_CAPTION_SHELL_FULL_SCREEN) {
             dest.writeBoolean(this.isFullScreenCaptionState);
         }
+        if (CoreRune.MW_CAPTION_SHELL_KEEP_SCREEN_ON) {
+            dest.writeBoolean(this.isKeepScreenOn);
+        }
         if (CoreRune.MD_DEX_COMPAT_CAPTION_SHELL) {
             dest.writeBoolean(this.isRotationButtonVisible);
         }
-        dest.writeTypedObject(this.snappingGuideBounds, flags);
-        dest.writeBoolean(this.isForceHidden);
         dest.writeBoolean(this.isAllowedSeamlessRotation);
+        dest.writeBoolean(this.isForceHidden);
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_RESIZE_VIEW) {
+            dest.writeInt(this.maxWidth);
+            dest.writeInt(this.maxHeight);
+        }
         dest.writeBoolean(this.isTopTransparentActivity);
+        if (CoreRune.MW_CAPTION_SHELL_DEX_SNAPPING_WINDOW) {
+            dest.writeTypedObject(this.snappingGuideBounds, flags);
+        }
         dest.writeBoolean(this.hasPopOver);
-        dest.writeBoolean(this.isMinimized);
+        dest.writeBoolean(this.isAliasManaged);
+        dest.writeBoolean(this.hasConfigChanged);
     }
 
     public String toString() {
-        return "TaskInfo{userId=" + this.userId + " taskId=" + this.taskId + " displayId=" + this.displayId + " isRunning=" + this.isRunning + " baseIntent=" + this.baseIntent + " baseActivity=" + this.baseActivity + " topActivity=" + this.topActivity + " origActivity=" + this.origActivity + " realActivity=" + this.realActivity + " numActivities=" + this.numActivities + " lastActiveTime=" + this.lastActiveTime + " supportsMultiWindow=" + this.supportsMultiWindow + " resizeMode=" + this.resizeMode + " isResizeable=" + this.isResizeable + " minWidth=" + this.minWidth + " minHeight=" + this.minHeight + " maxWidth=" + this.maxWidth + " maxHeight=" + this.maxHeight + " defaultMinSize=" + this.defaultMinSize + " token=" + this.token + " topActivityType=" + this.topActivityType + " pictureInPictureParams=" + this.pictureInPictureParams + " shouldDockBigOverlays=" + this.shouldDockBigOverlays + " launchIntoPipHostTaskId=" + this.launchIntoPipHostTaskId + " lastParentTaskIdBeforePip=" + this.lastParentTaskIdBeforePip + " displayCutoutSafeInsets=" + this.displayCutoutInsets + " topActivityInfo=" + this.topActivityInfo + " launchCookies=" + this.launchCookies + " positionInParent=" + this.positionInParent + " parentTaskId=" + this.parentTaskId + " isFocused=" + this.isFocused + " isVisible=" + this.isVisible + " isVisibleRequested=" + this.isVisibleRequested + " isSleeping=" + this.isSleeping + " topActivityInSizeCompat=" + this.topActivityInSizeCompat + " topActivityEligibleForLetterboxEducation= " + this.topActivityEligibleForLetterboxEducation + " topActivityLetterboxed= " + this.isLetterboxDoubleTapEnabled + " isFromDoubleTap= " + this.isFromLetterboxDoubleTap + " topActivityLetterboxVerticalPosition= " + this.topActivityLetterboxVerticalPosition + " topActivityLetterboxHorizontalPosition= " + this.topActivityLetterboxHorizontalPosition + " topActivityLetterboxWidth=" + this.topActivityLetterboxWidth + " topActivityLetterboxHeight=" + this.topActivityLetterboxHeight + " locusId=" + this.mTopActivityLocusId + " displayAreaFeatureId=" + this.displayAreaFeatureId + " cameraCompatControlState=" + cameraCompatControlStateToString(this.cameraCompatControlState) + " originallySupportedMultiWindow=" + this.originallySupportedMultiWindow + (this.supportsPipOnly ? " pipOnly=true" : "") + " hasWallpaper=" + this.hasWallpaper + " topActivityInFixedAspectRatio=" + this.topActivityInFixedAspectRatio + " rootAffinity=" + this.rootAffinity + " topActivityInDisplayCompat=" + this.topActivityInDisplayCompat + " topActivityInBoundsCompat=" + this.topActivityInBoundsCompat + " topActivityBounds=" + this.topActivityBounds + " singleTapFromLetterbox=" + this.singleTapFromLetterbox + " isTopTaskInStage=" + this.isTopTaskInStage + (this.isTranslucentTask ? " isTranslucentTask=true" : "") + (this.isCaptionHandlerHidden ? " handlerHidden=true" : "") + (this.topActivityUiMode != 0 ? " topActivityUiMode=" + this.topActivityUiMode : "") + (this.isFullScreenCaptionState ? "FullScreenCaptionState=true" : "") + " CoverLauncherWidgetTask=" + this.isCoverLauncherWidgetTask + " CoverScreenTask=" + this.isCoverScreenTask + " isAllowedSeamlessRotation=" + this.isAllowedSeamlessRotation + " isTopTransparentActivity=" + this.isTopTransparentActivity + " hasPopOver=" + this.hasPopOver + "}";
-    }
-
-    public static String cameraCompatControlStateToString(int cameraCompatControlState) {
-        switch (cameraCompatControlState) {
-            case 0:
-                return "hidden";
-            case 1:
-                return "treatment-suggested";
-            case 2:
-                return "treatment-applied";
-            case 3:
-                return "dismissed";
-            default:
-                throw new AssertionError("Unexpected camera compat control state: " + cameraCompatControlState);
-        }
+        return "TaskInfo{userId=" + this.userId + " taskId=" + this.taskId + " displayId=" + this.displayId + " isRunning=" + this.isRunning + " baseIntent=" + this.baseIntent + " baseActivity=" + this.baseActivity + " topActivity=" + this.topActivity + " origActivity=" + this.origActivity + " realActivity=" + this.realActivity + " numActivities=" + this.numActivities + " lastActiveTime=" + this.lastActiveTime + " supportsMultiWindow=" + this.supportsMultiWindow + " resizeMode=" + this.resizeMode + " isResizeable=" + this.isResizeable + " minWidth=" + this.minWidth + " minHeight=" + this.minHeight + " maxWidth=" + this.maxWidth + " maxHeight=" + this.maxHeight + " defaultMinSize=" + this.defaultMinSize + " token=" + this.token + " topActivityType=" + this.topActivityType + " pictureInPictureParams=" + this.pictureInPictureParams + " shouldDockBigOverlays=" + this.shouldDockBigOverlays + " launchIntoPipHostTaskId=" + this.launchIntoPipHostTaskId + " lastParentTaskIdBeforePip=" + this.lastParentTaskIdBeforePip + " displayCutoutSafeInsets=" + this.displayCutoutInsets + " topActivityInfo=" + this.topActivityInfo + " launchCookies=" + this.launchCookies + " positionInParent=" + this.positionInParent + " parentTaskId=" + this.parentTaskId + " isFocused=" + this.isFocused + " isVisible=" + this.isVisible + " isVisibleRequested=" + this.isVisibleRequested + " isSleeping=" + this.isSleeping + " topActivityInSizeCompat=" + this.topActivityInSizeCompat + " locusId=" + this.mTopActivityLocusId + " displayAreaFeatureId=" + this.displayAreaFeatureId + " isTopActivityTransparent=" + this.isTopActivityTransparent + " isTopActivityStyleFloating=" + this.isTopActivityStyleFloating + " appCompatTaskInfo=" + this.appCompatTaskInfo + " originallySupportedMultiWindow=" + this.originallySupportedMultiWindow + (this.supportsPipOnly ? " pipOnly=true" : "") + " hasWallpaper=" + this.hasWallpaper + " rootAffinity=" + this.rootAffinity + " isTopTaskInStage=" + this.isTopTaskInStage + (this.isTranslucentTask ? " isTranslucentTask=true" : "") + (this.isCaptionHandlerHidden ? " handlerHidden=true" : "") + (this.topActivityUiMode != 0 ? " topActivityUiMode=" + this.topActivityUiMode : "") + (this.isFullScreenCaptionState ? "FullScreenCaptionState=true" : "") + " CoverLauncherWidgetTask=" + this.isCoverLauncherWidgetTask + (this.isKeepScreenOn ? " isKeepScreenOn=true" : "") + " isAllowedSeamlessRotation=" + this.isAllowedSeamlessRotation + " isTopTransparentActivity=" + this.isTopTransparentActivity + " snappingGuideBounds=" + this.snappingGuideBounds + " hasPopOver=" + this.hasPopOver + " isAliasManaged=" + this.isAliasManaged + " hasConfigChanged=" + this.hasConfigChanged + " isAiKeyRemoveAppTask=" + this.isAiKeyRemoveAppTask + "}";
     }
 }

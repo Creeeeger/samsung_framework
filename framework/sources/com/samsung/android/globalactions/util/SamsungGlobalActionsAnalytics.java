@@ -1,6 +1,6 @@
 package com.samsung.android.globalactions.util;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SamsungGlobalActionsAnalytics {
     public static final String DID_BIKE_MODE = "Bike mode";
     public static final String DID_BIXBY_KEY = "Bixby key";

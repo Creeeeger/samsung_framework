@@ -3,7 +3,7 @@ package android.hardware.camera2.params;
 import android.hardware.camera2.utils.HashCodeHelpers;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class OisSample {
     private final long mTimestampNs;
     private final float mXShift;
@@ -45,7 +45,7 @@ public final class OisSample {
     }
 
     public int hashCode() {
-        int timestampHash = HashCodeHelpers.hashCode((float) this.mTimestampNs);
+        int timestampHash = HashCodeHelpers.hashCode(this.mTimestampNs);
         return HashCodeHelpers.hashCode(this.mXShift, this.mYShift, timestampHash);
     }
 

@@ -22,7 +22,6 @@ public interface IAppTask extends IInterface {
 
     int startActivity(IBinder iBinder, String str, String str2, Intent intent, String str3, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAppTask {
         @Override // android.app.IAppTask
         public void finishAndRemoveTask() throws RemoteException {
@@ -52,7 +51,6 @@ public interface IAppTask extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAppTask {
         public static final String DESCRIPTOR = "android.app.IAppTask";
         static final int TRANSACTION_finishAndRemoveTask = 1;
@@ -108,54 +106,51 @@ public interface IAppTask extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    finishAndRemoveTask();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    ActivityManager.RecentTaskInfo _result = getTaskInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 3:
+                    IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    moveToFront(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    IBinder _arg02 = data.readStrongBinder();
+                    String _arg12 = data.readString();
+                    String _arg2 = data.readString();
+                    Intent _arg3 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg4 = data.readString();
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result2 = startActivity(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setExcludeFromRecents(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            finishAndRemoveTask();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            ActivityManager.RecentTaskInfo _result = getTaskInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 3:
-                            IApplicationThread _arg0 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            moveToFront(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            IBinder _arg02 = data.readStrongBinder();
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            Intent _arg3 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg4 = data.readString();
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result2 = startActivity(_arg02, _arg12, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setExcludeFromRecents(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAppTask {
+        private static class Proxy implements IAppTask {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

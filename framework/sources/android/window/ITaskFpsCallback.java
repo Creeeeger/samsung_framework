@@ -12,7 +12,6 @@ public interface ITaskFpsCallback extends IInterface {
 
     void onFpsReported(float f) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ITaskFpsCallback {
         @Override // android.window.ITaskFpsCallback
         public void onFpsReported(float fps) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITaskFpsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ITaskFpsCallback {
         static final int TRANSACTION_onFpsReported = 1;
 
@@ -67,26 +65,22 @@ public interface ITaskFpsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITaskFpsCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITaskFpsCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITaskFpsCallback.DESCRIPTOR);
+                case 1:
+                    float _arg0 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onFpsReported(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float _arg0 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onFpsReported(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ITaskFpsCallback {
+        private static class Proxy implements ITaskFpsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

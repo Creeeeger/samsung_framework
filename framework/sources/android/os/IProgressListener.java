@@ -8,7 +8,6 @@ public interface IProgressListener extends IInterface {
 
     void onStarted(int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IProgressListener {
         @Override // android.os.IProgressListener
         public void onStarted(int id, Bundle extras) throws RemoteException {
@@ -28,7 +27,6 @@ public interface IProgressListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IProgressListener {
         public static final String DESCRIPTOR = "android.os.IProgressListener";
         static final int TRANSACTION_onFinished = 3;
@@ -78,39 +76,36 @@ public interface IProgressListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onStarted(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onProgress(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onFinished(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onStarted(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onProgress(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onFinished(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IProgressListener {
+        private static class Proxy implements IProgressListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

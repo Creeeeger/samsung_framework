@@ -38,7 +38,6 @@ public interface IPrintServiceClient extends IInterface {
 
     void writePrintJobData(ParcelFileDescriptor parcelFileDescriptor, PrintJobId printJobId) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrintServiceClient {
         @Override // android.printservice.IPrintServiceClient
         public List<PrintJobInfo> getPrintJobInfos() throws RemoteException {
@@ -94,7 +93,6 @@ public interface IPrintServiceClient extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrintServiceClient {
         public static final String DESCRIPTOR = "android.printservice.IPrintServiceClient";
         static final int TRANSACTION_getPrintJobInfo = 2;
@@ -168,97 +166,93 @@ public interface IPrintServiceClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    List<PrintJobInfo> _result = getPrintJobInfos();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    PrintJobId _arg0 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    data.enforceNoDataAvail();
+                    PrintJobInfo _result2 = getPrintJobInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = setPrintJobState(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    PrintJobId _arg03 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = setPrintJobTag(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    PrintJobId _arg13 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    data.enforceNoDataAvail();
+                    writePrintJobData(_arg04, _arg13);
+                    return true;
+                case 6:
+                    PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    float _arg14 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setProgress(_arg05, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    PrintJobId _arg06 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    CharSequence _arg15 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setStatus(_arg06, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    PrintJobId _arg07 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
+                    int _arg16 = data.readInt();
+                    CharSequence _arg22 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    setStatusRes(_arg07, _arg16, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    ParceledListSlice _arg08 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintersAdded(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    ParceledListSlice _arg09 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintersRemoved(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    PrinterId _arg010 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
+                    Icon _arg17 = (Icon) data.readTypedObject(Icon.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCustomPrinterIconLoaded(_arg010, _arg17);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<PrintJobInfo> _result = getPrintJobInfos();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            PrintJobId _arg0 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            data.enforceNoDataAvail();
-                            PrintJobInfo _result2 = getPrintJobInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            PrintJobId _arg02 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = setPrintJobState(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            PrintJobId _arg03 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = setPrintJobTag(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            ParcelFileDescriptor _arg04 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            PrintJobId _arg13 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            data.enforceNoDataAvail();
-                            writePrintJobData(_arg04, _arg13);
-                            return true;
-                        case 6:
-                            PrintJobId _arg05 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            float _arg14 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setProgress(_arg05, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            PrintJobId _arg06 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            CharSequence _arg15 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setStatus(_arg06, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            PrintJobId _arg07 = (PrintJobId) data.readTypedObject(PrintJobId.CREATOR);
-                            int _arg16 = data.readInt();
-                            CharSequence _arg22 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            setStatusRes(_arg07, _arg16, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            ParceledListSlice _arg08 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintersAdded(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            ParceledListSlice _arg09 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintersRemoved(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            PrinterId _arg010 = (PrinterId) data.readTypedObject(PrinterId.CREATOR);
-                            Icon _arg17 = (Icon) data.readTypedObject(Icon.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCustomPrinterIconLoaded(_arg010, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrintServiceClient {
+        private static class Proxy implements IPrintServiceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

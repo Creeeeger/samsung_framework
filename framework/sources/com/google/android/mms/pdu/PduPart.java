@@ -68,25 +68,22 @@ public class PduPart {
         if (data == null) {
             return;
         }
-        byte[] bArr = new byte[data.length];
-        this.mPartData = bArr;
-        System.arraycopy(data, 0, bArr, 0, data.length);
+        this.mPartData = new byte[data.length];
+        System.arraycopy(data, 0, this.mPartData, 0, data.length);
     }
 
     public byte[] getData() {
-        byte[] bArr = this.mPartData;
-        if (bArr == null) {
+        if (this.mPartData == null) {
             return null;
         }
-        byte[] byteArray = new byte[bArr.length];
-        System.arraycopy(bArr, 0, byteArray, 0, bArr.length);
+        byte[] byteArray = new byte[this.mPartData.length];
+        System.arraycopy(this.mPartData, 0, byteArray, 0, this.mPartData.length);
         return byteArray;
     }
 
     public int getDataLength() {
-        byte[] bArr = this.mPartData;
-        if (bArr != null) {
-            return bArr.length;
+        if (this.mPartData != null) {
+            return this.mPartData.length;
         }
         return 0;
     }

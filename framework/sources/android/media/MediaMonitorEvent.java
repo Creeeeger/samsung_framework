@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class MediaMonitorEvent implements Parcelable {
     public static final Parcelable.Creator<MediaMonitorEvent> CREATOR = new Parcelable.Creator<MediaMonitorEvent>() { // from class: android.media.MediaMonitorEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaMonitorEvent createFromParcel(Parcel in) {
             return new MediaMonitorEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaMonitorEvent[] newArray(int size) {
             return new MediaMonitorEvent[size];
@@ -21,23 +20,6 @@ public class MediaMonitorEvent implements Parcelable {
     };
     public MediaMonitorDimension[] mCustomDimensions;
     public String mName;
-
-    /* renamed from: android.media.MediaMonitorEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaMonitorEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaMonitorEvent createFromParcel(Parcel in) {
-            return new MediaMonitorEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaMonitorEvent[] newArray(int size) {
-            return new MediaMonitorEvent[size];
-        }
-    }
 
     MediaMonitorEvent(Parcel src) {
         this.mName = src.readString();

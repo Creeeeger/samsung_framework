@@ -13,7 +13,7 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraExtensionForwardProcessor {
     private static final int FORWARD_QUEUE_SIZE = 3;
     public static final String TAG = "CameraExtensionForward";
@@ -36,14 +36,12 @@ public class CameraExtensionForwardProcessor {
     }
 
     public void close() {
-        ImageWriter imageWriter = this.mOutputWriter;
-        if (imageWriter != null) {
-            imageWriter.close();
+        if (this.mOutputWriter != null) {
+            this.mOutputWriter.close();
             this.mOutputWriter = null;
         }
-        ImageReader imageReader = this.mIntermediateReader;
-        if (imageReader != null) {
-            imageReader.close();
+        if (this.mIntermediateReader != null) {
+            this.mIntermediateReader.close();
             this.mIntermediateReader = null;
         }
     }
@@ -68,15 +66,13 @@ public class CameraExtensionForwardProcessor {
     }
 
     private void initializePipeline() throws RemoteException {
-        ImageWriter imageWriter = this.mOutputWriter;
-        if (imageWriter != null) {
-            imageWriter.close();
+        if (this.mOutputWriter != null) {
+            this.mOutputWriter.close();
             this.mOutputWriter = null;
         }
         if (this.mIntermediateReader == null) {
-            ImageReader newInstance = ImageReader.newInstance(this.mResolution.getWidth(), this.mResolution.getHeight(), 35, 3, this.mOutputSurfaceUsage);
-            this.mIntermediateReader = newInstance;
-            this.mIntermediateSurface = newInstance.getSurface();
+            this.mIntermediateReader = ImageReader.newInstance(this.mResolution.getWidth(), this.mResolution.getHeight(), 35, 3, this.mOutputSurfaceUsage);
+            this.mIntermediateSurface = this.mIntermediateReader.getSurface();
             this.mIntermediateReader.setOnImageAvailableListener(new ForwardCallback(), this.mHandler);
             this.mProcessor.onOutputSurface(this.mIntermediateSurface, this.mOutputSurfaceFormat);
             this.mProcessor.onImageFormatUpdate(35);
@@ -88,18 +84,12 @@ public class CameraExtensionForwardProcessor {
     }
 
     public void process(ParcelImage image, TotalCaptureResult totalCaptureResult, IProcessResultImpl resultCallback) throws RemoteException {
-        Surface surface = this.mIntermediateSurface;
-        if (surface != null && surface.isValid() && !this.mOutputAbandoned) {
+        if (this.mIntermediateSurface != null && this.mIntermediateSurface.isValid() && !this.mOutputAbandoned) {
             this.mProcessor.process(image, totalCaptureResult.getNativeMetadata(), totalCaptureResult.getSequenceId(), resultCallback);
         }
     }
 
-    /* loaded from: classes.dex */
-    public class ForwardCallback implements ImageReader.OnImageAvailableListener {
-        /* synthetic */ ForwardCallback(CameraExtensionForwardProcessor cameraExtensionForwardProcessor, ForwardCallbackIA forwardCallbackIA) {
-            this();
-        }
-
+    private class ForwardCallback implements ImageReader.OnImageAvailableListener {
         private ForwardCallback() {
         }
 
@@ -113,8 +103,7 @@ public class CameraExtensionForwardProcessor {
                 }
                 if (CameraExtensionForwardProcessor.this.mOutputSurface != null && CameraExtensionForwardProcessor.this.mOutputSurface.isValid() && !CameraExtensionForwardProcessor.this.mOutputAbandoned) {
                     if (CameraExtensionForwardProcessor.this.mOutputWriter == null) {
-                        CameraExtensionForwardProcessor cameraExtensionForwardProcessor = CameraExtensionForwardProcessor.this;
-                        cameraExtensionForwardProcessor.mOutputWriter = ImageWriter.newInstance(cameraExtensionForwardProcessor.mOutputSurface, 3, processedImage.getFormat());
+                        CameraExtensionForwardProcessor.this.mOutputWriter = ImageWriter.newInstance(CameraExtensionForwardProcessor.this.mOutputSurface, 3, processedImage.getFormat());
                     }
                     try {
                         CameraExtensionForwardProcessor.this.mOutputWriter.queueInputImage(processedImage);

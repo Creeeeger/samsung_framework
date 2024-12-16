@@ -62,7 +62,7 @@ public abstract class AbstractX500NameStyle implements X500NameStyle {
         return encodeStringValue(oid, value);
     }
 
-    public ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
+    protected ASN1Encodable encodeStringValue(ASN1ObjectIdentifier oid, String value) {
         return new DERUTF8String(value);
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractX500NameStyle implements X500NameStyle {
         return false;
     }
 
-    public boolean rdnAreEqual(RDN rdn1, RDN rdn2) {
+    protected boolean rdnAreEqual(RDN rdn1, RDN rdn2) {
         return IETFUtils.rDNAreEqual(rdn1, rdn2);
     }
 }

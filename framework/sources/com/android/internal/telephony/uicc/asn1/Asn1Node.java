@@ -20,18 +20,9 @@ public final class Asn1Node {
     private static final byte[] TRUE_BYTES = {-1};
     private static final byte[] FALSE_BYTES = {0};
 
-    /* synthetic */ Asn1Node(int i, List list, Asn1NodeIA asn1NodeIA) {
-        this(i, list);
-    }
-
-    /* loaded from: classes5.dex */
     public static final class Builder {
         private final List<Asn1Node> mChildren;
         private final int mTag;
-
-        /* synthetic */ Builder(int i, BuilderIA builderIA) {
-            this(i);
-        }
 
         private Builder(int tag) {
             if (!Asn1Node.isConstructedTag(tag)) {
@@ -125,6 +116,7 @@ public final class Asn1Node {
         return new Builder(tag);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean isConstructedTag(int tag) {
         byte[] tagBytes = IccUtils.unsignedIntToBytes(tag);
         return (tagBytes[0] & 32) != 0;
@@ -138,15 +130,14 @@ public final class Asn1Node {
         return 1;
     }
 
-    public Asn1Node(int tag, byte[] src, int offset, int length) {
+    Asn1Node(int tag, byte[] src, int offset, int length) {
         this.mTag = tag;
-        boolean isConstructedTag = isConstructedTag(tag);
-        this.mConstructed = isConstructedTag;
+        this.mConstructed = isConstructedTag(tag);
         this.mDataBytes = src;
         this.mDataOffset = offset;
         this.mDataLength = length;
-        this.mChildren = isConstructedTag ? new ArrayList<>() : EMPTY_NODE_LIST;
-        this.mEncodedLength = IccUtils.byteNumForUnsignedInt(tag) + calculateEncodedBytesNumForLength(this.mDataLength) + this.mDataLength;
+        this.mChildren = this.mConstructed ? new ArrayList<>() : EMPTY_NODE_LIST;
+        this.mEncodedLength = IccUtils.byteNumForUnsignedInt(this.mTag) + calculateEncodedBytesNumForLength(this.mDataLength) + this.mDataLength;
     }
 
     private Asn1Node(int tag, List<Asn1Node> children) {
@@ -238,9 +229,8 @@ public final class Asn1Node {
         if (!this.mConstructed) {
             return EMPTY_NODE_LIST;
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr != null) {
-            Asn1Decoder subDecoder = new Asn1Decoder(bArr, this.mDataOffset, this.mDataLength);
+        if (this.mDataBytes != null) {
+            Asn1Decoder subDecoder = new Asn1Decoder(this.mDataBytes, this.mDataOffset, this.mDataLength);
             while (subDecoder.hasNextNode()) {
                 this.mChildren.add(subDecoder.nextNode());
             }
@@ -258,12 +248,11 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
         try {
-            return IccUtils.bytesToInt(bArr, this.mDataOffset, this.mDataLength);
+            return IccUtils.bytesToInt(this.mDataBytes, this.mDataOffset, this.mDataLength);
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes.", e);
         }
@@ -273,12 +262,11 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
         try {
-            return IccUtils.bytesToRawLong(bArr, this.mDataOffset, this.mDataLength);
+            return IccUtils.bytesToRawLong(this.mDataBytes, this.mDataOffset, this.mDataLength);
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes.", e);
         }
@@ -288,12 +276,11 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
         try {
-            return new String(bArr, this.mDataOffset, this.mDataLength, StandardCharsets.UTF_8);
+            return new String(this.mDataBytes, this.mDataOffset, this.mDataLength, StandardCharsets.UTF_8);
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes.", e);
         }
@@ -303,14 +290,12 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
-        int i = this.mDataLength;
-        byte[] output = new byte[i];
+        byte[] output = new byte[this.mDataLength];
         try {
-            System.arraycopy(bArr, this.mDataOffset, output, 0, i);
+            System.arraycopy(this.mDataBytes, this.mDataOffset, output, 0, this.mDataLength);
             return output;
         } catch (IndexOutOfBoundsException e) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes.", e);
@@ -321,12 +306,11 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
         try {
-            int bits = IccUtils.bytesToInt(bArr, this.mDataOffset + 1, this.mDataLength - 1);
+            int bits = IccUtils.bytesToInt(this.mDataBytes, this.mDataOffset + 1, this.mDataLength - 1);
             for (int i = this.mDataLength - 1; i < 4; i++) {
                 bits <<= 8;
             }
@@ -341,22 +325,19 @@ public final class Asn1Node {
         if (this.mConstructed) {
             throw new IllegalStateException("Cannot get value of a constructed node.");
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr == null) {
+        if (this.mDataBytes == null) {
             throw new InvalidAsn1DataException(this.mTag, "Data bytes cannot be null.");
         }
         if (this.mDataLength != 1) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes as boolean: length=" + this.mDataLength);
         }
-        int i = this.mDataOffset;
-        if (i < 0 || i >= bArr.length) {
+        if (this.mDataOffset < 0 || this.mDataOffset >= this.mDataBytes.length) {
             throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes.", new ArrayIndexOutOfBoundsException(this.mDataOffset));
         }
-        byte b = bArr[i];
-        if (b == -1) {
+        if (this.mDataBytes[this.mDataOffset] == -1) {
             return Boolean.TRUE.booleanValue();
         }
-        if (b == 0) {
+        if (this.mDataBytes[this.mDataOffset] == 0) {
             return Boolean.FALSE.booleanValue();
         }
         throw new InvalidAsn1DataException(this.mTag, "Cannot parse data bytes as boolean: " + ((int) this.mDataBytes[this.mDataOffset]));
@@ -389,40 +370,37 @@ public final class Asn1Node {
 
     public String getHeadAsHex() {
         String headHex = IccUtils.bytesToHexString(IccUtils.unsignedIntToBytes(this.mTag));
-        int i = this.mDataLength;
-        if (i <= 127) {
+        if (this.mDataLength <= 127) {
             return headHex + IccUtils.byteToHex((byte) this.mDataLength);
         }
-        byte[] lenBytes = IccUtils.unsignedIntToBytes(i);
+        byte[] lenBytes = IccUtils.unsignedIntToBytes(this.mDataLength);
         return (headHex + IccUtils.byteToHex((byte) (lenBytes.length | 128))) + IccUtils.bytesToHexString(lenBytes);
     }
 
     private int write(byte[] dest, int offset) {
-        int offset2;
-        int offset3 = offset + IccUtils.unsignedIntToBytes(this.mTag, dest, offset);
-        int i = this.mDataLength;
-        if (i <= 127) {
-            offset2 = offset3 + 1;
-            dest[offset3] = (byte) i;
+        int lenLen;
+        int offset2 = offset + IccUtils.unsignedIntToBytes(this.mTag, dest, offset);
+        if (this.mDataLength <= 127) {
+            lenLen = offset2 + 1;
+            dest[offset2] = (byte) this.mDataLength;
         } else {
-            int offset4 = offset3 + 1;
-            int lenLen = IccUtils.unsignedIntToBytes(i, dest, offset4);
-            dest[offset4 - 1] = (byte) (lenLen | 128);
-            offset2 = offset4 + lenLen;
+            int offset3 = offset2 + 1;
+            int lenLen2 = IccUtils.unsignedIntToBytes(this.mDataLength, dest, offset3);
+            dest[offset3 - 1] = (byte) (lenLen2 | 128);
+            lenLen = offset3 + lenLen2;
         }
         if (this.mConstructed && this.mDataBytes == null) {
             int size = this.mChildren.size();
-            for (int i2 = 0; i2 < size; i2++) {
-                Asn1Node child = this.mChildren.get(i2);
-                offset2 = child.write(dest, offset2);
+            for (int i = 0; i < size; i++) {
+                Asn1Node child = this.mChildren.get(i);
+                lenLen = child.write(dest, lenLen);
             }
-            return offset2;
+            return lenLen;
         }
-        byte[] bArr = this.mDataBytes;
-        if (bArr != null) {
-            System.arraycopy(bArr, this.mDataOffset, dest, offset2, this.mDataLength);
-            return offset2 + this.mDataLength;
+        if (this.mDataBytes != null) {
+            System.arraycopy(this.mDataBytes, this.mDataOffset, dest, lenLen, this.mDataLength);
+            return lenLen + this.mDataLength;
         }
-        return offset2;
+        return lenLen;
     }
 }

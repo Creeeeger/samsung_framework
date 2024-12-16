@@ -7,9 +7,9 @@ import android.view.ViewParent;
 
 /* loaded from: classes5.dex */
 public class ViewClippingUtil {
-    private static final int CLIP_CHILDREN_TAG = 16908901;
-    private static final int CLIP_CLIPPING_SET = 16908900;
-    private static final int CLIP_TO_PADDING = 16908903;
+    private static final int CLIP_CHILDREN_TAG = 16908906;
+    private static final int CLIP_CLIPPING_SET = 16908905;
+    private static final int CLIP_TO_PADDING = 16908908;
 
     public static void setClippingDeactivated(View transformedView, boolean deactivated, ClippingParameters clippingParameters) {
         if ((!deactivated && !clippingParameters.isClippingEnablingAllowed(transformedView)) || !(transformedView.getParent() instanceof ViewGroup)) {
@@ -20,27 +20,27 @@ public class ViewClippingUtil {
             if (!deactivated && !clippingParameters.isClippingEnablingAllowed(transformedView)) {
                 return;
             }
-            ArraySet<View> clipSet = (ArraySet) parent.getTag(16908900);
+            ArraySet<View> clipSet = (ArraySet) parent.getTag(16908905);
             if (clipSet == null) {
                 clipSet = new ArraySet<>();
-                parent.setTagInternal(16908900, clipSet);
+                parent.setTagInternal(16908905, clipSet);
             }
-            Boolean clipChildren = (Boolean) parent.getTag(16908901);
+            Boolean clipChildren = (Boolean) parent.getTag(16908906);
             if (clipChildren == null) {
                 clipChildren = Boolean.valueOf(parent.getClipChildren());
-                parent.setTagInternal(16908901, clipChildren);
+                parent.setTagInternal(16908906, clipChildren);
             }
-            Boolean clipToPadding = (Boolean) parent.getTag(16908903);
+            Boolean clipToPadding = (Boolean) parent.getTag(16908908);
             if (clipToPadding == null) {
                 clipToPadding = Boolean.valueOf(parent.getClipToPadding());
-                parent.setTagInternal(16908903, clipToPadding);
+                parent.setTagInternal(16908908, clipToPadding);
             }
             if (!deactivated) {
                 clipSet.remove(transformedView);
                 if (clipSet.isEmpty()) {
                     parent.setClipChildren(clipChildren.booleanValue());
                     parent.setClipToPadding(clipToPadding.booleanValue());
-                    parent.setTagInternal(16908900, null);
+                    parent.setTagInternal(16908905, null);
                     clippingParameters.onClippingStateChanged(parent, true);
                 }
             } else {
@@ -61,7 +61,6 @@ public class ViewClippingUtil {
         }
     }
 
-    /* loaded from: classes5.dex */
     public interface ClippingParameters {
         boolean shouldFinish(View view);
 

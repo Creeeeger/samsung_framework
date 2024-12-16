@@ -21,7 +21,6 @@ public final class UidRecordProto {
     public static final long UID = 1120986464257L;
     public static final long WHILELIST = 1133871366149L;
 
-    /* loaded from: classes5.dex */
     public final class ProcStateSequence {
         public static final long CURURENT = 1112396529665L;
         public static final long LAST_DISPATCHED = 1112396529667L;

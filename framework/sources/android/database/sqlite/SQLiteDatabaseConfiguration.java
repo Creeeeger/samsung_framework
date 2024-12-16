@@ -48,9 +48,8 @@ public final class SQLiteDatabaseConfiguration {
         this.automaticIndexEnabled = true;
         this.caseSensitiveLikeEnabled = false;
         this.busyTimeout = DEFAULT_BUSY_TIMEOUT;
-        SQLiteDatabaseSharedConfiguration sQLiteDatabaseSharedConfiguration = new SQLiteDatabaseSharedConfiguration(this);
-        this.sharedConfig = sQLiteDatabaseSharedConfiguration;
-        if (sQLiteDatabaseSharedConfiguration.useWalModeByDefault) {
+        this.sharedConfig = new SQLiteDatabaseSharedConfiguration(this);
+        if (this.sharedConfig.useWalModeByDefault) {
             this.openFlags |= 536870912;
         }
         if (isInMemoryDb()) {
@@ -105,7 +104,7 @@ public final class SQLiteDatabaseConfiguration {
         return (this.openFlags & 1) != 0;
     }
 
-    public boolean isLegacyCompatibilityWalEnabled() {
+    boolean isLegacyCompatibilityWalEnabled() {
         return this.journalMode == null && this.syncMode == null && (this.openFlags & Integer.MIN_VALUE) != 0;
     }
 
@@ -116,7 +115,7 @@ public final class SQLiteDatabaseConfiguration {
         return EMAIL_IN_DB_PATTERN.matcher(path).replaceAll("XX@YY");
     }
 
-    public boolean isLookasideConfigSet() {
+    boolean isLookasideConfigSet() {
         return this.lookasideSlotCount >= 0 && this.lookasideSlotSize >= 0;
     }
 
@@ -125,22 +124,17 @@ public final class SQLiteDatabaseConfiguration {
             return "";
         }
         if (isInMemoryDb()) {
-            String str = this.journalMode;
-            if (str != null && str.equalsIgnoreCase("OFF")) {
+            if (this.journalMode != null && this.journalMode.equalsIgnoreCase("OFF")) {
                 return "OFF";
             }
             return SQLiteDatabase.JOURNAL_MODE_MEMORY;
         }
         this.shouldTruncateWalFile = false;
-        if (isWalEnabledInternal()) {
-            this.shouldTruncateWalFile = true;
-            return SQLiteDatabase.JOURNAL_MODE_WAL;
+        if (!isWalEnabledInternal()) {
+            return this.journalMode != null ? this.journalMode : SQLiteGlobal.getDefaultJournalMode();
         }
-        String str2 = this.journalMode;
-        if (str2 != null) {
-            return str2;
-        }
-        return SQLiteGlobal.getDefaultJournalMode();
+        this.shouldTruncateWalFile = true;
+        return SQLiteDatabase.JOURNAL_MODE_WAL;
     }
 
     public String resolveSyncMode() {
@@ -171,8 +165,7 @@ public final class SQLiteDatabaseConfiguration {
         if (walEnabled || isCompatibilityWalEnabled) {
             return true;
         }
-        String str = this.journalMode;
-        return str != null && str.equalsIgnoreCase(SQLiteDatabase.JOURNAL_MODE_WAL);
+        return this.journalMode != null && this.journalMode.equalsIgnoreCase(SQLiteDatabase.JOURNAL_MODE_WAL);
     }
 
     public boolean isQueryCollectDb() {

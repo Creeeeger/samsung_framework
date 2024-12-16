@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public class ExtensionRegistryLite {
     static final String EXTENSION_CLASS_NAME = "com.android.framework.protobuf.Extension";
     private static volatile ExtensionRegistryLite emptyRegistry;
@@ -14,7 +14,6 @@ public class ExtensionRegistryLite {
     private static boolean doFullRuntimeInheritanceCheck = true;
     static final ExtensionRegistryLite EMPTY_REGISTRY_LITE = new ExtensionRegistryLite(true);
 
-    /* loaded from: classes4.dex */
     private static class ExtensionClassHolder {
         static final Class<?> INSTANCE = resolveExtensionClass();
 
@@ -91,7 +90,7 @@ public class ExtensionRegistryLite {
         }
     }
 
-    public ExtensionRegistryLite() {
+    ExtensionRegistryLite() {
         this.extensionsByNumber = new HashMap();
     }
 
@@ -107,8 +106,7 @@ public class ExtensionRegistryLite {
         this.extensionsByNumber = Collections.emptyMap();
     }
 
-    /* loaded from: classes4.dex */
-    public static final class ObjectIntPair {
+    private static final class ObjectIntPair {
         private final int number;
         private final Object object;
 

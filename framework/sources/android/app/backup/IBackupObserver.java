@@ -14,7 +14,6 @@ public interface IBackupObserver extends IInterface {
 
     void onUpdate(String str, BackupProgress backupProgress) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBackupObserver {
         @Override // android.app.backup.IBackupObserver
         public void onUpdate(String currentPackage, BackupProgress backupProgress) throws RemoteException {
@@ -34,7 +33,6 @@ public interface IBackupObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBackupObserver {
         public static final String DESCRIPTOR = "android.app.backup.IBackupObserver";
         static final int TRANSACTION_backupFinished = 3;
@@ -84,37 +82,34 @@ public interface IBackupObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    BackupProgress _arg1 = (BackupProgress) data.readTypedObject(BackupProgress.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUpdate(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onResult(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    backupFinished(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            BackupProgress _arg1 = (BackupProgress) data.readTypedObject(BackupProgress.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUpdate(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onResult(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            backupFinished(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBackupObserver {
+        private static class Proxy implements IBackupObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

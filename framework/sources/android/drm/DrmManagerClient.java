@@ -16,7 +16,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.google.android.mms.util.DownloadDrmHelper;
 import com.samsung.android.os.SemDvfsManager;
 import dalvik.system.CloseGuard;
 import java.io.File;
@@ -45,12 +44,7 @@ public class DrmManagerClient implements AutoCloseable {
     public static final int INVALID_SESSION = -1;
     private static final String TAG = "DrmManagerClient";
     private static final boolean isLogEnabled = false;
-    private String DRM_DISPLAYPORT_ENABLE;
-    private boolean isAcquired;
-    private final CloseGuard mCloseGuard;
-    private final AtomicBoolean mClosed = new AtomicBoolean();
     private Context mContext;
-    private SemDvfsManager mDvfsHelper;
     SemDvfsManager mDvfsHintManager;
     private EventHandler mEventHandler;
     HandlerThread mEventThread;
@@ -62,18 +56,20 @@ public class DrmManagerClient implements AutoCloseable {
     private OnInfoListener mOnInfoListener;
     private volatile boolean mReleased;
     private int mUniqueId;
+    private final AtomicBoolean mClosed = new AtomicBoolean();
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    private String DRM_DISPLAYPORT_ENABLE = "/sys/class/dp_sec/dp_drm";
+    private SemDvfsManager mDvfsHelper = null;
+    private boolean isAcquired = false;
 
-    /* loaded from: classes.dex */
     public interface OnErrorListener {
         void onError(DrmManagerClient drmManagerClient, DrmErrorEvent drmErrorEvent);
     }
 
-    /* loaded from: classes.dex */
     public interface OnEventListener {
         void onEvent(DrmManagerClient drmManagerClient, DrmEvent drmEvent);
     }
 
-    /* loaded from: classes.dex */
     public interface OnInfoListener {
         void onInfo(DrmManagerClient drmManagerClient, DrmInfoEvent drmInfoEvent);
     }
@@ -104,10 +100,12 @@ public class DrmManagerClient implements AutoCloseable {
 
     private native int _openConvertSession(int i, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native DrmInfoStatus _processDrmInfo(int i, DrmInfo drmInfo);
 
     private native void _release(int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public native int _removeAllRights(int i);
 
     private native int _removeRights(int i, String str);
@@ -126,8 +124,7 @@ public class DrmManagerClient implements AutoCloseable {
         System.loadLibrary("drmframework_jni");
     }
 
-    /* loaded from: classes.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         public EventHandler(Looper looper) {
             super(looper);
         }
@@ -139,8 +136,7 @@ public class DrmManagerClient implements AutoCloseable {
             HashMap<String, Object> attributes = new HashMap<>();
             switch (msg.what) {
                 case 1001:
-                    DrmManagerClient drmManagerClient = DrmManagerClient.this;
-                    if (drmManagerClient._removeAllRights(drmManagerClient.mUniqueId) == 0) {
+                    if (DrmManagerClient.this._removeAllRights(DrmManagerClient.this.mUniqueId) == 0) {
                         event = new DrmEvent(DrmManagerClient.this.mUniqueId, 1001, null);
                         break;
                     } else {
@@ -161,8 +157,7 @@ public class DrmManagerClient implements AutoCloseable {
                             Log.e(DrmManagerClient.TAG, "Exception the file " + e.toString());
                         }
                     }
-                    DrmManagerClient drmManagerClient2 = DrmManagerClient.this;
-                    DrmInfoStatus status = drmManagerClient2._processDrmInfo(drmManagerClient2.mUniqueId, drmInfo);
+                    DrmInfoStatus status = DrmManagerClient.this._processDrmInfo(DrmManagerClient.this.mUniqueId, drmInfo);
                     attributes.put(DrmEvent.DRM_INFO_STATUS_OBJECT, status);
                     attributes.put(DrmEvent.DRM_INFO_OBJECT, drmInfo);
                     if (fis != null) {
@@ -201,16 +196,14 @@ public class DrmManagerClient implements AutoCloseable {
     }
 
     public static void notify(Object thisReference, int uniqueId, int infoType, String message) {
-        InfoHandler infoHandler;
         DrmManagerClient instance = (DrmManagerClient) ((WeakReference) thisReference).get();
-        if (instance != null && (infoHandler = instance.mInfoHandler) != null) {
-            Message m = infoHandler.obtainMessage(1, uniqueId, infoType, message);
+        if (instance != null && instance.mInfoHandler != null) {
+            Message m = instance.mInfoHandler.obtainMessage(1, uniqueId, infoType, message);
             instance.mInfoHandler.sendMessage(m);
         }
     }
 
-    /* loaded from: classes.dex */
-    public class InfoHandler extends Handler {
+    private class InfoHandler extends Handler {
         public static final int INFO_EVENT_TYPE = 1;
 
         public InfoHandler(Looper looper) {
@@ -251,12 +244,12 @@ public class DrmManagerClient implements AutoCloseable {
                     }
                     if (DrmManagerClient.this.mOnErrorListener != null && error != null) {
                         DrmManagerClient.this.mOnErrorListener.onError(DrmManagerClient.this, error);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 default:
                     Log.e(DrmManagerClient.TAG, "Unknown message type " + msg.what);
-                    return;
+                    break;
             }
         }
     }
@@ -287,22 +280,16 @@ public class DrmManagerClient implements AutoCloseable {
     }
 
     public DrmManagerClient(Context context) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.DRM_DISPLAYPORT_ENABLE = "/sys/class/dp_sec/dp_drm";
-        this.mDvfsHelper = null;
-        this.isAcquired = false;
         this.mContext = context;
         createEventThreads();
         this.mUniqueId = _initialize();
-        closeGuard.open("release");
+        this.mCloseGuard.open("release");
     }
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             close();
         } finally {
@@ -457,15 +444,13 @@ public class DrmManagerClient implements AutoCloseable {
             int[] iArr = {0};
             if (this.mDvfsHelper == null) {
                 Log.i(TAG, "mDvfsHelper initialize");
-                SemDvfsManager createInstance = SemDvfsManager.createInstance(this.mContext, "DRM_SECURE_PLAY", 21);
-                this.mDvfsHintManager = createInstance;
-                if (createInstance != null) {
-                    createInstance.setHint(1400);
+                this.mDvfsHintManager = SemDvfsManager.createInstance(this.mContext, "DRM_SECURE_PLAY", 21);
+                if (this.mDvfsHintManager != null) {
+                    this.mDvfsHintManager.setHint(1400);
                 }
             }
-            SemDvfsManager semDvfsManager = this.mDvfsHintManager;
-            if (semDvfsManager != null) {
-                semDvfsManager.acquire();
+            if (this.mDvfsHintManager != null) {
+                this.mDvfsHintManager.acquire();
                 Log.i(TAG, "mDvfsHintManager acquired ");
                 this.isAcquired = true;
             }
@@ -473,9 +458,8 @@ public class DrmManagerClient implements AutoCloseable {
     }
 
     private void releaseDvfsBooster() {
-        SemDvfsManager semDvfsManager = this.mDvfsHintManager;
-        if (semDvfsManager != null) {
-            semDvfsManager.release();
+        if (this.mDvfsHintManager != null) {
+            this.mDvfsHintManager.release();
             this.mDvfsHintManager = null;
             this.isAcquired = false;
             Log.v(TAG, "releaseDRMDVFS: done:");
@@ -488,8 +472,7 @@ public class DrmManagerClient implements AutoCloseable {
         if (!_saveSRL(roSerial)) {
             Log.e(TAG, "SRL Write save failed");
         }
-        Context context = this.mContext;
-        if (context != null && context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == 0) {
+        if (this.mContext != null && this.mContext.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == 0) {
             TelephonyManager tmgr = (TelephonyManager) this.mContext.getSystemService("phone");
             String deviceID = tmgr.getDeviceId();
             if (!_saveIMEI(deviceID)) {
@@ -608,11 +591,10 @@ public class DrmManagerClient implements AutoCloseable {
         if (drmInfo == null || !drmInfo.isValid()) {
             throw new IllegalArgumentException("Given drmInfo is invalid/null");
         }
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler == null) {
+        if (this.mEventHandler == null) {
             return ERROR_UNKNOWN;
         }
-        Message msg = eventHandler.obtainMessage(1002, drmInfo);
+        Message msg = this.mEventHandler.obtainMessage(1002, drmInfo);
         int result = this.mEventHandler.sendMessage(msg) ? 0 : -2000;
         return result;
     }
@@ -705,10 +687,6 @@ public class DrmManagerClient implements AutoCloseable {
                     fd = is.getFD();
                 }
                 mime = _getOriginalMimeType(this.mUniqueId, path, fd);
-                if (mime.equals("") && path.toLowerCase().endsWith(DownloadDrmHelper.EXTENSION_INTERNAL_FWDL)) {
-                    mime = "unsupported/drm.mimetype";
-                    Log.i(TAG, "No supported OMA Plugin found. Update mime as : " + mime);
-                }
                 if (is != null) {
                     is.close();
                 }
@@ -838,11 +816,10 @@ public class DrmManagerClient implements AutoCloseable {
     }
 
     public int removeAllRights() {
-        EventHandler eventHandler = this.mEventHandler;
-        if (eventHandler == null) {
+        if (this.mEventHandler == null) {
             return ERROR_UNKNOWN;
         }
-        Message msg = eventHandler.obtainMessage(1001);
+        Message msg = this.mEventHandler.obtainMessage(1001);
         int result = this.mEventHandler.sendMessage(msg) ? 0 : -2000;
         return result;
     }
@@ -865,6 +842,7 @@ public class DrmManagerClient implements AutoCloseable {
         return _closeConvertSession(this.mUniqueId, convertId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getEventType(int infoType) {
         switch (infoType) {
             case 1:
@@ -876,6 +854,7 @@ public class DrmManagerClient implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getErrorType(int infoType, DrmInfoStatus infoStatus) {
         switch (infoType) {
             case 1:
@@ -931,13 +910,11 @@ public class DrmManagerClient implements AutoCloseable {
 
     private void createEventThreads() {
         if (this.mEventHandler == null && this.mInfoHandler == null) {
-            HandlerThread handlerThread = new HandlerThread("DrmManagerClient.InfoHandler");
-            this.mInfoThread = handlerThread;
-            handlerThread.start();
+            this.mInfoThread = new HandlerThread("DrmManagerClient.InfoHandler");
+            this.mInfoThread.start();
             this.mInfoHandler = new InfoHandler(this.mInfoThread.getLooper());
-            HandlerThread handlerThread2 = new HandlerThread("DrmManagerClient.EventHandler");
-            this.mEventThread = handlerThread2;
-            handlerThread2.start();
+            this.mEventThread = new HandlerThread("DrmManagerClient.EventHandler");
+            this.mEventThread.start();
             this.mEventHandler = new EventHandler(this.mEventThread.getLooper());
         }
     }

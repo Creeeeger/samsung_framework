@@ -13,7 +13,7 @@ public class SContextExerciseAttribute extends SContextAttribute {
     private static int REQUIRED_DATA_BAROMETER = 2;
     private static int REQUIRED_DATA_PEDOMETER = 4;
 
-    public SContextExerciseAttribute() {
+    SContextExerciseAttribute() {
         this.mRequiredDataType = new int[]{1};
         setAttribute();
     }
@@ -27,27 +27,20 @@ public class SContextExerciseAttribute extends SContextAttribute {
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
         ArrayList<Integer> list = new ArrayList<>();
-        int i = 0;
-        while (true) {
-            int[] iArr = this.mRequiredDataType;
-            if (i >= iArr.length) {
-                return true;
+        for (int i = 0; i < this.mRequiredDataType.length; i++) {
+            if (this.mRequiredDataType[i] < 1 || this.mRequiredDataType[i] > 3) {
+                Log.e(TAG, "The required data type is wrong.");
+                return false;
             }
-            int i2 = iArr[i];
-            if (i2 < 1 || i2 > 3) {
-                break;
-            }
-            list.add(Integer.valueOf(i2));
+            list.add(Integer.valueOf(this.mRequiredDataType[i]));
             for (int j = 0; j < i; j++) {
                 if (list.get(i) == list.get(j)) {
                     Log.e(TAG, "This required data type cannot have duplicated type.");
                     return false;
                 }
             }
-            i++;
         }
-        Log.e(TAG, "The required data type is wrong.");
-        return false;
+        return true;
     }
 
     private void setAttribute() {

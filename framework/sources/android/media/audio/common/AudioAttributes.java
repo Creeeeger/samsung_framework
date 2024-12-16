@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioAttributes implements Parcelable {
     public static final Parcelable.Creator<AudioAttributes> CREATOR = new Parcelable.Creator<AudioAttributes>() { // from class: android.media.audio.common.AudioAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioAttributes createFromParcel(Parcel _aidl_source) {
             AudioAttributes _aidl_out = new AudioAttributes();
@@ -20,6 +18,7 @@ public class AudioAttributes implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioAttributes[] newArray(int _aidl_size) {
             return new AudioAttributes[_aidl_size];
@@ -30,25 +29,6 @@ public class AudioAttributes implements Parcelable {
     public int usage = 0;
     public int source = 0;
     public int flags = 0;
-
-    /* renamed from: android.media.audio.common.AudioAttributes$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioAttributes createFromParcel(Parcel _aidl_source) {
-            AudioAttributes _aidl_out = new AudioAttributes();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioAttributes[] newArray(int _aidl_size) {
-            return new AudioAttributes[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -137,7 +117,7 @@ public class AudioAttributes implements Parcelable {
         _aidl_sj.add("source: " + this.source);
         _aidl_sj.add("flags: " + this.flags);
         _aidl_sj.add("tags: " + Arrays.toString(this.tags));
-        return "android.media.audio.common.AudioAttributes" + _aidl_sj.toString();
+        return "AudioAttributes" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

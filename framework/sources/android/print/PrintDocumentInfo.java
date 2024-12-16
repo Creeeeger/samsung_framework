@@ -13,14 +13,13 @@ public final class PrintDocumentInfo implements Parcelable {
     public static final int CONTENT_TYPE_PHOTO = 1;
     public static final int CONTENT_TYPE_UNKNOWN = -1;
     public static final Parcelable.Creator<PrintDocumentInfo> CREATOR = new Parcelable.Creator<PrintDocumentInfo>() { // from class: android.print.PrintDocumentInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintDocumentInfo createFromParcel(Parcel parcel) {
             return new PrintDocumentInfo(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PrintDocumentInfo[] newArray(int size) {
             return new PrintDocumentInfo[size];
@@ -33,20 +32,7 @@ public final class PrintDocumentInfo implements Parcelable {
     private int mPageCount;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ContentType {
-    }
-
-    /* synthetic */ PrintDocumentInfo(Parcel parcel, PrintDocumentInfoIA printDocumentInfoIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ PrintDocumentInfo(PrintDocumentInfoIA printDocumentInfoIA) {
-        this();
-    }
-
-    /* synthetic */ PrintDocumentInfo(PrintDocumentInfo printDocumentInfo, PrintDocumentInfoIA printDocumentInfoIA) {
-        this(printDocumentInfo);
     }
 
     private PrintDocumentInfo() {
@@ -61,9 +47,8 @@ public final class PrintDocumentInfo implements Parcelable {
 
     private PrintDocumentInfo(Parcel parcel) {
         this.mName = (String) Preconditions.checkStringNotEmpty(parcel.readString());
-        int readInt = parcel.readInt();
-        this.mPageCount = readInt;
-        Preconditions.checkArgument(readInt == -1 || readInt > 0);
+        this.mPageCount = parcel.readInt();
+        Preconditions.checkArgument(this.mPageCount == -1 || this.mPageCount > 0);
         this.mContentType = parcel.readInt();
         this.mDataSize = Preconditions.checkArgumentNonnegative(parcel.readLong());
     }
@@ -102,12 +87,8 @@ public final class PrintDocumentInfo implements Parcelable {
     }
 
     public int hashCode() {
-        int i = 1 * 31;
-        String str = this.mName;
-        int result = i + (str != null ? str.hashCode() : 0);
-        int result2 = ((((result * 31) + this.mContentType) * 31) + this.mPageCount) * 31;
-        long j = this.mDataSize;
-        return ((result2 + ((int) j)) * 31) + ((int) (j >> 32));
+        int result = (1 * 31) + (this.mName != null ? this.mName.hashCode() : 0);
+        return (((((((result * 31) + this.mContentType) * 31) + this.mPageCount) * 31) + ((int) this.mDataSize)) * 31) + ((int) (this.mDataSize >> 32));
     }
 
     public boolean equals(Object obj) {
@@ -146,7 +127,6 @@ public final class PrintDocumentInfo implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final PrintDocumentInfo mPrototype;
 
@@ -154,9 +134,8 @@ public final class PrintDocumentInfo implements Parcelable {
             if (TextUtils.isEmpty(name)) {
                 throw new IllegalArgumentException("name cannot be empty");
             }
-            PrintDocumentInfo printDocumentInfo = new PrintDocumentInfo();
-            this.mPrototype = printDocumentInfo;
-            printDocumentInfo.mName = name;
+            this.mPrototype = new PrintDocumentInfo();
+            this.mPrototype.mName = name;
         }
 
         public Builder setPageCount(int pageCount) {
@@ -177,23 +156,6 @@ public final class PrintDocumentInfo implements Parcelable {
                 this.mPrototype.mPageCount = -1;
             }
             return new PrintDocumentInfo();
-        }
-    }
-
-    /* renamed from: android.print.PrintDocumentInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PrintDocumentInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintDocumentInfo createFromParcel(Parcel parcel) {
-            return new PrintDocumentInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PrintDocumentInfo[] newArray(int size) {
-            return new PrintDocumentInfo[size];
         }
     }
 }

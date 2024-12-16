@@ -12,36 +12,18 @@ public final class ForegroundAppEnergyInfo implements Parcelable {
     private int mUid;
     private static final String TAG = ForegroundAppEnergyInfo.class.getSimpleName();
     public static final Parcelable.Creator<ForegroundAppEnergyInfo> CREATOR = new Parcelable.Creator<ForegroundAppEnergyInfo>() { // from class: android.os.ForegroundAppEnergyInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ForegroundAppEnergyInfo createFromParcel(Parcel in) {
             return new ForegroundAppEnergyInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ForegroundAppEnergyInfo[] newArray(int size) {
             return new ForegroundAppEnergyInfo[size];
         }
     };
-
-    /* renamed from: android.os.ForegroundAppEnergyInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ForegroundAppEnergyInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ForegroundAppEnergyInfo createFromParcel(Parcel in) {
-            return new ForegroundAppEnergyInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ForegroundAppEnergyInfo[] newArray(int size) {
-            return new ForegroundAppEnergyInfo[size];
-        }
-    }
 
     public ForegroundAppEnergyInfo() {
         initialize();
@@ -105,7 +87,7 @@ public final class ForegroundAppEnergyInfo implements Parcelable {
         long currentDuration = 0;
         if (isTimerRunning()) {
             this.mEndTime = elapsedRealtime;
-            currentDuration = elapsedRealtime - this.mStartTime;
+            currentDuration = this.mEndTime - this.mStartTime;
         }
         this.mDuration += currentDuration;
     }

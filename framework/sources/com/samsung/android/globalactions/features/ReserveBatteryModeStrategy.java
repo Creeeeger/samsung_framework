@@ -4,7 +4,7 @@ import com.samsung.android.globalactions.presentation.strategies.DefaultActionsC
 import com.samsung.android.globalactions.util.ConditionChecker;
 import com.samsung.android.globalactions.util.SystemConditions;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ReserveBatteryModeStrategy implements DefaultActionsCreationStrategy {
     private final ConditionChecker mConditionChecker;
 

@@ -9,10 +9,10 @@ import android.hardware.input.InputManagerGlobal;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.telecom.TelecomManager;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.flags.Flags;
 import com.android.internal.R;
 
 /* loaded from: classes4.dex */
@@ -23,6 +23,8 @@ public class ViewConfiguration {
     private static final float AMBIGUOUS_GESTURE_MULTIPLIER = 2.0f;
     private static final int BIT_COUNT_DENSITY = 10;
     private static final int BIT_COUNT_WIDTH_HEIGHT = 11;
+    private static final int DEFAULT_KEY_REPEAT_DELAY_MS = 50;
+    private static final int DEFAULT_KEY_REPEAT_TIMEOUT_MS = 400;
     public static final int DEFAULT_LONG_PRESS_TIMEOUT = 400;
     private static final int DEFAULT_MULTI_PRESS_TIMEOUT = 300;
     private static final int DOUBLE_TAP_MIN_TIME = 40;
@@ -44,7 +46,6 @@ public class ViewConfiguration {
     private static final int HOVER_TOOLTIP_HIDE_TIMEOUT = 15000;
     private static final int HOVER_TOOLTIP_SHOW_TIMEOUT = 500;
     private static final int JUMP_TAP_TIMEOUT = 500;
-    private static final int KEY_REPEAT_DELAY = 50;
     private static final int LONG_PRESS_TOOLTIP_HIDE_TIMEOUT = 1500;
 
     @Deprecated
@@ -54,6 +55,7 @@ public class ViewConfiguration {
     private static final int MIN_SCROLLBAR_TOUCH_TARGET = 48;
     private static final int NO_FLING_MAX_VELOCITY = Integer.MIN_VALUE;
     private static final int NO_FLING_MIN_VELOCITY = Integer.MAX_VALUE;
+    public static final int NO_HAPTIC_SCROLL_TICK_INTERVAL = Integer.MAX_VALUE;
     private static final int OVERFLING_DISTANCE = 6;
     private static final int OVERSCROLL_DISTANCE = 0;
     private static final int PAGING_TOUCH_SLOP = 16;
@@ -96,6 +98,8 @@ public class ViewConfiguration {
     private final int mOverscrollDistance;
     private final int mPagingTouchSlop;
     private final boolean mPreferKeepClearForFocusEnabled;
+    private final boolean mRotaryEncoderHapticScrollFeedbackEnabled;
+    private final int mRotaryEncoderHapticScrollFeedbackTickIntervalPixels;
     private final long mScreenshotChordKeyTimeout;
     private final int mScrollbarSize;
     private final boolean mShowMenuShortcutsWhenKeyboardPresent;
@@ -103,6 +107,7 @@ public class ViewConfiguration {
     private final int mSmartSelectionInitializingTimeout;
     private final int mTouchSlop;
     private final float mVerticalScrollFactor;
+    private final boolean mViewBasedRotaryEncoderScrollHapticsEnabledConfig;
     private final int mWindowTouchSlop;
     private boolean sHasPermanentMenuKey;
     private boolean sHasPermanentMenuKeySet;
@@ -116,6 +121,9 @@ public class ViewConfiguration {
         this.mMaximumFlingVelocity = 8000;
         this.mMinimumRotaryEncoderFlingVelocity = 50;
         this.mMaximumRotaryEncoderFlingVelocity = 8000;
+        this.mRotaryEncoderHapticScrollFeedbackEnabled = false;
+        this.mRotaryEncoderHapticScrollFeedbackTickIntervalPixels = Integer.MAX_VALUE;
+        this.mViewBasedRotaryEncoderScrollHapticsEnabledConfig = false;
         this.mScrollbarSize = 4;
         this.mTouchSlop = 8;
         this.mHandwritingSlop = 2;
@@ -196,13 +204,12 @@ public class ViewConfiguration {
             }
         }
         this.mFadingMarqueeEnabled = res.getBoolean(R.bool.config_ui_enableFadingMarquee);
-        int dimensionPixelSize = res.getDimensionPixelSize(R.dimen.config_viewConfigurationTouchSlop);
-        this.mTouchSlop = dimensionPixelSize;
+        this.mTouchSlop = res.getDimensionPixelSize(R.dimen.config_viewConfigurationTouchSlop);
         this.mHandwritingSlop = res.getDimensionPixelSize(R.dimen.config_viewConfigurationHandwritingSlop);
         this.mHoverSlop = res.getDimensionPixelSize(R.dimen.config_viewConfigurationHoverSlop);
         this.mMinScrollbarTouchTarget = res.getDimensionPixelSize(R.dimen.config_minScrollbarTouchTarget);
-        this.mPagingTouchSlop = dimensionPixelSize * 2;
-        this.mDoubleTapTouchSlop = dimensionPixelSize;
+        this.mPagingTouchSlop = this.mTouchSlop * 2;
+        this.mDoubleTapTouchSlop = this.mTouchSlop;
         this.mHandwritingGestureLineMargin = res.getDimensionPixelSize(17104906);
         this.mMinimumFlingVelocity = res.getDimensionPixelSize(R.dimen.config_viewMinFlingVelocity);
         this.mMaximumFlingVelocity = res.getDimensionPixelSize(R.dimen.config_viewMaxFlingVelocity);
@@ -215,6 +222,9 @@ public class ViewConfiguration {
             this.mMinimumRotaryEncoderFlingVelocity = configMinRotaryEncoderFlingVelocity;
             this.mMaximumRotaryEncoderFlingVelocity = configMaxRotaryEncoderFlingVelocity;
         }
+        int configRotaryEncoderHapticScrollFeedbackTickIntervalPixels = res.getDimensionPixelSize(R.dimen.config_rotaryEncoderAxisScrollTickInterval);
+        this.mRotaryEncoderHapticScrollFeedbackTickIntervalPixels = configRotaryEncoderHapticScrollFeedbackTickIntervalPixels > 0 ? configRotaryEncoderHapticScrollFeedbackTickIntervalPixels : Integer.MAX_VALUE;
+        this.mRotaryEncoderHapticScrollFeedbackEnabled = res.getBoolean(R.bool.config_viewRotaryEncoderHapticScrollFedbackEnabled);
         this.mGlobalActionsKeyTimeout = res.getInteger(R.integer.config_globalActionsKeyTimeout);
         this.mHorizontalScrollFactor = res.getDimensionPixelSize(R.dimen.config_horizontalScrollFactor);
         this.mVerticalScrollFactor = res.getDimensionPixelSize(R.dimen.config_verticalScrollFactor);
@@ -224,21 +234,29 @@ public class ViewConfiguration {
         this.mSmartSelectionInitializedTimeout = res.getInteger(R.integer.config_smartSelectionInitializedTimeoutMillis);
         this.mSmartSelectionInitializingTimeout = res.getInteger(R.integer.config_smartSelectionInitializingTimeoutMillis);
         this.mPreferKeepClearForFocusEnabled = res.getBoolean(R.bool.config_preferKeepClearForFocus);
+        this.mViewBasedRotaryEncoderScrollHapticsEnabledConfig = res.getBoolean(R.bool.config_viewBasedRotaryEncoderHapticsEnabled);
     }
 
     public static ViewConfiguration get(Context context) {
         StrictMode.assertConfigurationContext(context, TAG);
+        int density = getDisplayDensity(context);
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        int density = (int) (metrics.density * 100.0f);
         int screenFactor = ((metrics.widthPixels / 10) << 21) | ((metrics.heightPixels / 10) << 10) | density;
-        SparseArray<ViewConfiguration> sparseArray = sConfigurations;
-        ViewConfiguration configuration = sparseArray.get(screenFactor);
+        ViewConfiguration configuration = sConfigurations.get(screenFactor);
         if (configuration == null) {
             ViewConfiguration configuration2 = new ViewConfiguration(context);
-            sparseArray.put(screenFactor, configuration2);
+            sConfigurations.put(screenFactor, configuration2);
             return configuration2;
         }
         return configuration;
+    }
+
+    public static void resetCacheForTesting() {
+        sConfigurations.clear();
+    }
+
+    public static void setInstanceForTesting(Context context, ViewConfiguration instance) {
+        sConfigurations.put(getDisplayDensity(context), instance);
     }
 
     @Deprecated
@@ -284,11 +302,11 @@ public class ViewConfiguration {
     }
 
     public static int getKeyRepeatTimeout() {
-        return getLongPressTimeout();
+        return AppGlobals.getIntCoreSetting(Settings.Secure.KEY_REPEAT_TIMEOUT_MS, 400);
     }
 
     public static int getKeyRepeatDelay() {
-        return 50;
+        return AppGlobals.getIntCoreSetting(Settings.Secure.KEY_REPEAT_DELAY_MS, 50);
     }
 
     public static int getTapTimeout() {
@@ -423,7 +441,7 @@ public class ViewConfiguration {
     }
 
     public static long getZoomControlsTimeout() {
-        return TelecomManager.VERY_SHORT_CALL_TIME_MS;
+        return 3000L;
     }
 
     @Deprecated
@@ -440,7 +458,7 @@ public class ViewConfiguration {
     }
 
     public long getAccessibilityShortcutKeyTimeout() {
-        return TelecomManager.VERY_SHORT_CALL_TIME_MS;
+        return 3000L;
     }
 
     public long getAccessibilityShortcutKeyTimeoutAfterConfirmation() {
@@ -480,6 +498,24 @@ public class ViewConfiguration {
             return source == 4194304 ? this.mMaximumRotaryEncoderFlingVelocity : this.mMaximumFlingVelocity;
         }
         return Integer.MIN_VALUE;
+    }
+
+    public boolean isHapticScrollFeedbackEnabled(int inputDeviceId, int axis, int source) {
+        if (isInputDeviceInfoValid(inputDeviceId, axis, source) && source == 4194304 && axis == 26) {
+            return this.mRotaryEncoderHapticScrollFeedbackEnabled;
+        }
+        return false;
+    }
+
+    public int getHapticScrollFeedbackTickInterval(int inputDeviceId, int axis, int source) {
+        if (this.mRotaryEncoderHapticScrollFeedbackEnabled && isInputDeviceInfoValid(inputDeviceId, axis, source) && source == 4194304 && axis == 26) {
+            return this.mRotaryEncoderHapticScrollFeedbackTickIntervalPixels;
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public boolean isViewBasedRotaryEncoderHapticScrollFeedbackEnabled() {
+        return this.mViewBasedRotaryEncoderScrollHapticsEnabledConfig && Flags.useViewBasedRotaryEncoderScrollHaptics();
     }
 
     private static boolean isInputDeviceInfoValid(int id, int axis, int source) {
@@ -528,5 +564,10 @@ public class ViewConfiguration {
 
     public static int getHoverTooltipHideShortTimeout() {
         return 3000;
+    }
+
+    private static final int getDisplayDensity(Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return (int) (metrics.density * 100.0f);
     }
 }

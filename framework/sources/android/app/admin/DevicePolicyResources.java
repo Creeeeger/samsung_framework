@@ -9,7 +9,6 @@ public final class DevicePolicyResources {
     private DevicePolicyResources() {
     }
 
-    /* loaded from: classes.dex */
     public static final class Drawables {
         public static final String WORK_PROFILE_ICON = "WORK_PROFILE_ICON";
         public static final String WORK_PROFILE_ICON_BADGE = "WORK_PROFILE_ICON_BADGE";
@@ -19,7 +18,6 @@ public final class DevicePolicyResources {
         private Drawables() {
         }
 
-        /* loaded from: classes.dex */
         public static final class Source {
             public static final String HOME_WIDGET = "HOME_WIDGET";
             public static final String LAUNCHER_OFF_BUTTON = "LAUNCHER_OFF_BUTTON";
@@ -32,7 +30,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class Style {
             public static final String OUTLINE = "OUTLINE";
             public static final String SOLID_COLORED = "SOLID_COLORED";
@@ -44,12 +41,10 @@ public final class DevicePolicyResources {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Strings {
         private Strings() {
         }
 
-        /* loaded from: classes.dex */
         public static final class Settings {
             public static final String ACCESSIBILITY_CATEGORY_CLONE = "Settings.ACCESSIBILITY_CATEGORY_CLONE";
             public static final String ACCESSIBILITY_CATEGORY_PERSONAL = "Settings.ACCESSIBILITY_CATEGORY_PERSONAL";
@@ -89,6 +84,7 @@ public final class DevicePolicyResources {
             public static final String APP_CAN_ACCESS_PERSONAL_DATA = "Settings.APP_CAN_ACCESS_PERSONAL_DATA";
             public static final String APP_CAN_ACCESS_PERSONAL_PERMISSIONS = "Settings.APP_CAN_ACCESS_PERSONAL_PERMISSIONS";
             public static final String AUTO_SYNC_PERSONAL_DATA = "Settings.AUTO_SYNC_PERSONAL_DATA";
+            public static final String AUTO_SYNC_PRIVATE_DATA = "Settings.AUTO_SYNC_PRIVATE_DATA";
             public static final String AUTO_SYNC_WORK_DATA = "Settings.AUTO_SYNC_WORK_DATA";
             public static final String CA_CERTS_DEVICE = "Settings.CA_CERTS_DEVICE";
             public static final String CA_CERTS_PERSONAL_PROFILE = "Settings.CA_CERTS_PERSONAL_PROFILE";
@@ -158,6 +154,7 @@ public final class DevicePolicyResources {
             public static final String PERSONAL_PROFILE_APP_SUBTEXT = "Settings.PERSONAL_PROFILE_APP_SUBTEXT";
             public static final String PIN_RECENTLY_USED = "Settings.PIN_RECENTLY_USED";
             private static final String PREFIX = "Settings.";
+            public static final String PRIVATE_CATEGORY_HEADER = "Settings.PRIVATE_CATEGORY_HEADER";
             public static final String REENTER_WORK_PROFILE_PASSWORD_HEADER = "Settings.REENTER_WORK_PROFILE_PASSWORD_HEADER";
             public static final String REENTER_WORK_PROFILE_PIN_HEADER = "Settings.REENTER_WORK_PROFILE_PIN_HEADER";
             public static final String REMOVE_ACCOUNT_FAILED_ADMIN_RESTRICTION = "Settings.REMOVE_ACCOUNT_FAILED_ADMIN_RESTRICTION";
@@ -236,7 +233,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class SystemUi {
             public static final String BIOMETRIC_DIALOG_WORK_LOCK_FAILED_ATTEMPTS = "SystemUi.BIOMETRIC_DIALOG_WORK_LOCK_FAILED_ATTEMPTS";
             public static final String BIOMETRIC_DIALOG_WORK_PASSWORD_LAST_ATTEMPT = "SystemUi.BIOMETRIC_DIALOG_WORK_PASSWORD_LAST_ATTEMPT";
@@ -285,7 +281,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class Core {
             public static final String CANT_ADD_ACCOUNT_MESSAGE = "Core.CANT_ADD_ACCOUNT_MESSAGE";
             public static final String FORWARD_INTENT_TO_PERSONAL = "Core.FORWARD_INTENT_TO_PERSONAL";
@@ -346,7 +341,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class Telecomm {
             public static final String NOTIFICATION_MISSED_WORK_CALL_TITLE = "Telecomm.NOTIFICATION_MISSED_WORK_CALL_TITLE";
             private static final String PREFIX = "Telecomm.";
@@ -355,7 +349,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class PermissionSettings {
             public static final String BACKGROUND_ACCESS_DISABLED_BY_ADMIN_MESSAGE = "PermissionSettings.BACKGROUND_ACCESS_DISABLED_BY_ADMIN_MESSAGE";
             public static final String BACKGROUND_ACCESS_ENABLED_BY_ADMIN_MESSAGE = "PermissionSettings.BACKGROUND_ACCESS_ENABLED_BY_ADMIN_MESSAGE";
@@ -367,7 +360,6 @@ public final class DevicePolicyResources {
             }
         }
 
-        /* loaded from: classes.dex */
         public static final class DefaultAppSettings {
             public static final String HOME_MISSING_WORK_PROFILE_SUPPORT_MESSAGE = "DefaultAppSettings.HOME_MISSING_WORK_PROFILE_SUPPORT_MESSAGE";
             private static final String PREFIX = "DefaultAppSettings.";

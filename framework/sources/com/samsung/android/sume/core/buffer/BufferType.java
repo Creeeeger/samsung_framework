@@ -2,7 +2,7 @@ package com.samsung.android.sume.core.buffer;
 
 import com.samsung.android.sume.core.types.NumericEnum;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public enum BufferType implements NumericEnum {
     NONE(0),
     HEAP(1),

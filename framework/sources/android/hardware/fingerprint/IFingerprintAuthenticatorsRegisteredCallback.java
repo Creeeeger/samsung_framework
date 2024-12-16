@@ -13,7 +13,6 @@ public interface IFingerprintAuthenticatorsRegisteredCallback extends IInterface
 
     void onAllAuthenticatorsRegistered(List<FingerprintSensorPropertiesInternal> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFingerprintAuthenticatorsRegisteredCallback {
         @Override // android.hardware.fingerprint.IFingerprintAuthenticatorsRegisteredCallback
         public void onAllAuthenticatorsRegistered(List<FingerprintSensorPropertiesInternal> sensors) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IFingerprintAuthenticatorsRegisteredCallback extends IInterface
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFingerprintAuthenticatorsRegisteredCallback {
         static final int TRANSACTION_onAllAuthenticatorsRegistered = 1;
 
@@ -68,26 +66,22 @@ public interface IFingerprintAuthenticatorsRegisteredCallback extends IInterface
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFingerprintAuthenticatorsRegisteredCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFingerprintAuthenticatorsRegisteredCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFingerprintAuthenticatorsRegisteredCallback.DESCRIPTOR);
+                case 1:
+                    List<FingerprintSensorPropertiesInternal> _arg0 = data.createTypedArrayList(FingerprintSensorPropertiesInternal.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAllAuthenticatorsRegistered(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<FingerprintSensorPropertiesInternal> _arg0 = data.createTypedArrayList(FingerprintSensorPropertiesInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAllAuthenticatorsRegistered(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFingerprintAuthenticatorsRegisteredCallback {
+        private static class Proxy implements IFingerprintAuthenticatorsRegisteredCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

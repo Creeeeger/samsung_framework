@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEdgeLightingCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.edge.IEdgeLightingCallback";
 
@@ -20,7 +20,6 @@ public interface IEdgeLightingCallback extends IInterface {
 
     void onStopEdgeLighting(String str, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEdgeLightingCallback {
         @Override // com.samsung.android.edge.IEdgeLightingCallback
         public void onStartEdgeLighting(String packageName, SemEdgeLightingInfo info, int reason) throws RemoteException {
@@ -48,7 +47,6 @@ public interface IEdgeLightingCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEdgeLightingCallback {
         static final int TRANSACTION_onEdgeLightingStarted = 4;
         static final int TRANSACTION_onEdgeLightingStopped = 5;
@@ -103,43 +101,40 @@ public interface IEdgeLightingCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEdgeLightingCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEdgeLightingCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEdgeLightingCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    SemEdgeLightingInfo _arg1 = (SemEdgeLightingInfo) data.readTypedObject(SemEdgeLightingInfo.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStartEdgeLighting(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStopEdgeLighting(_arg02, _arg12);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onScreenChanged(_arg03);
+                    return true;
+                case 4:
+                    onEdgeLightingStarted();
+                    return true;
+                case 5:
+                    onEdgeLightingStopped();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            SemEdgeLightingInfo _arg1 = (SemEdgeLightingInfo) data.readTypedObject(SemEdgeLightingInfo.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStartEdgeLighting(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStopEdgeLighting(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onScreenChanged(_arg03);
-                            return true;
-                        case 4:
-                            onEdgeLightingStarted();
-                            return true;
-                        case 5:
-                            onEdgeLightingStopped();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IEdgeLightingCallback {
             private IBinder mRemote;
 

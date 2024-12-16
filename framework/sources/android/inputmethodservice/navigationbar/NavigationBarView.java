@@ -49,19 +49,21 @@ public final class NavigationBarView extends FrameLayout {
         this.mNavigationIconHints = 1;
         this.mNavBarMode = 2;
         this.mDeadZoneConsuming = false;
-        SparseArray<ButtonDispatcher> sparseArray = new SparseArray<>();
-        this.mButtonDispatchers = sparseArray;
+        this.mButtonDispatchers = new SparseArray<>();
         this.mLightContext = context;
         this.mLightIconColor = -1;
         this.mDarkIconColor = -1728053248;
         this.mConfiguration = new Configuration();
         this.mTmpLastConfiguration = new Configuration();
         this.mConfiguration.updateFrom(context.getResources().getConfiguration());
-        sparseArray.put(R.id.input_method_nav_back, new ButtonDispatcher(R.id.input_method_nav_back));
-        sparseArray.put(R.id.input_method_nav_ime_switcher, new ButtonDispatcher(R.id.input_method_nav_ime_switcher));
-        sparseArray.put(R.id.input_method_nav_home_handle, new ButtonDispatcher(R.id.input_method_nav_home_handle));
+        this.mButtonDispatchers.put(R.id.input_method_nav_back, new ButtonDispatcher(R.id.input_method_nav_back));
+        this.mButtonDispatchers.put(R.id.input_method_nav_ime_switcher, new ButtonDispatcher(R.id.input_method_nav_ime_switcher));
+        this.mButtonDispatchers.put(R.id.input_method_nav_home_handle, new ButtonDispatcher(R.id.input_method_nav_home_handle));
         this.mDeadZone = new DeadZone(this);
-        getImeSwitchButton().setOnClickListener(new View.OnClickListener() { // from class: android.inputmethodservice.navigationbar.NavigationBarView$$ExternalSyntheticLambda1
+        getBackButton().setLongClickable(false);
+        ButtonDispatcher imeSwitchButton = getImeSwitchButton();
+        imeSwitchButton.setLongClickable(false);
+        imeSwitchButton.setOnClickListener(new View.OnClickListener() { // from class: android.inputmethodservice.navigationbar.NavigationBarView$$ExternalSyntheticLambda0
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
                 ((InputMethodManager) view.getContext().getSystemService(InputMethodManager.class)).showInputMethodPicker();
@@ -80,24 +82,51 @@ public final class NavigationBarView extends FrameLayout {
         return super.onTouchEvent(event);
     }
 
-    private boolean shouldDeadZoneConsumeTouchEvents(MotionEvent event) {
-        int action = event.getActionMasked();
-        if (action == 0) {
-            this.mDeadZoneConsuming = false;
-        }
-        if (!this.mDeadZone.onTouchEvent(event) && !this.mDeadZoneConsuming) {
-            return false;
-        }
-        switch (action) {
-            case 0:
-                this.mDeadZoneConsuming = true;
-                break;
-            case 1:
-            case 3:
-                this.mDeadZoneConsuming = false;
-                break;
-        }
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0022, code lost:
+    
         return true;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    private boolean shouldDeadZoneConsumeTouchEvents(android.view.MotionEvent r4) {
+        /*
+            r3 = this;
+            int r0 = r4.getActionMasked()
+            r1 = 0
+            if (r0 != 0) goto L9
+            r3.mDeadZoneConsuming = r1
+        L9:
+            android.inputmethodservice.navigationbar.DeadZone r2 = r3.mDeadZone
+            boolean r2 = r2.onTouchEvent(r4)
+            if (r2 != 0) goto L17
+            boolean r2 = r3.mDeadZoneConsuming
+            if (r2 == 0) goto L16
+            goto L17
+        L16:
+            return r1
+        L17:
+            r2 = 1
+            switch(r0) {
+                case 0: goto L1f;
+                case 1: goto L1c;
+                case 2: goto L1b;
+                case 3: goto L1c;
+                default: goto L1b;
+            }
+        L1b:
+            goto L22
+        L1c:
+            r3.mDeadZoneConsuming = r1
+            goto L22
+        L1f:
+            r3.mDeadZoneConsuming = r2
+        L22:
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.inputmethodservice.navigationbar.NavigationBarView.shouldDeadZoneConsumeTouchEvents(android.view.MotionEvent):boolean");
     }
 
     public View getCurrentView() {
@@ -105,9 +134,8 @@ public final class NavigationBarView extends FrameLayout {
     }
 
     public void forEachView(Consumer<View> consumer) {
-        View view = this.mHorizontal;
-        if (view != null) {
-            consumer.accept(view);
+        if (this.mHorizontal != null) {
+            consumer.accept(this.mHorizontal);
         }
     }
 
@@ -190,13 +218,13 @@ public final class NavigationBarView extends FrameLayout {
     }
 
     public void setNavigationIconHints(int hints) {
-        int i = this.mNavigationIconHints;
-        if (hints == i) {
+        if (hints == this.mNavigationIconHints) {
             return;
         }
         if ((hints & 1) != 0) {
         }
-        boolean z = (i & 1) != 0;
+        if ((this.mNavigationIconHints & 1) != 0) {
+        }
         this.mNavigationIconHints = hints;
         updateNavButtonIcons();
     }
@@ -219,15 +247,14 @@ public final class NavigationBarView extends FrameLayout {
     @Override // android.view.View
     public void onFinishInflate() {
         super.onFinishInflate();
-        NavigationBarInflaterView navigationBarInflaterView = (NavigationBarInflaterView) findViewById(R.id.input_method_nav_inflater);
-        this.mNavigationInflaterView = navigationBarInflaterView;
-        navigationBarInflaterView.setButtonDispatchers(this.mButtonDispatchers);
+        this.mNavigationInflaterView = (NavigationBarInflaterView) findViewById(R.id.input_method_nav_inflater);
+        this.mNavigationInflaterView.setButtonDispatchers(this.mButtonDispatchers);
         updateOrientationViews();
         reloadNavIcons();
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         this.mDeadZone.onDraw(canvas);
         super.onDraw(canvas);
     }
@@ -239,12 +266,10 @@ public final class NavigationBarView extends FrameLayout {
 
     private void updateCurrentView() {
         resetViews();
-        View view = this.mHorizontal;
-        this.mCurrentView = view;
-        view.setVisibility(0);
-        int rotation = getContextDisplay().getRotation();
-        this.mCurrentRotation = rotation;
-        this.mNavigationInflaterView.setAlternativeOrder(rotation == 1);
+        this.mCurrentView = this.mHorizontal;
+        this.mCurrentView.setVisibility(0);
+        this.mCurrentRotation = getContextDisplay().getRotation();
+        this.mNavigationInflaterView.setAlternativeOrder(this.mCurrentRotation == 1);
         this.mNavigationInflaterView.updateButtonDispatchersCurrentView();
     }
 
@@ -254,7 +279,7 @@ public final class NavigationBarView extends FrameLayout {
 
     private void reorient() {
         updateCurrentView();
-        NavigationBarFrame frame = (NavigationBarFrame) getRootView().findViewByPredicate(new Predicate() { // from class: android.inputmethodservice.navigationbar.NavigationBarView$$ExternalSyntheticLambda0
+        NavigationBarFrame frame = (NavigationBarFrame) getRootView().findViewByPredicate(new Predicate() { // from class: android.inputmethodservice.navigationbar.NavigationBarView$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return NavigationBarView.lambda$reorient$1((View) obj);
@@ -268,12 +293,12 @@ public final class NavigationBarView extends FrameLayout {
         updateNavButtonIcons();
     }
 
-    public static /* synthetic */ boolean lambda$reorient$1(View view) {
+    static /* synthetic */ boolean lambda$reorient$1(View view) {
         return view instanceof NavigationBarFrame;
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         this.mTmpLastConfiguration.updateFrom(this.mConfiguration);
         this.mConfiguration.updateFrom(newConfig);
@@ -284,7 +309,7 @@ public final class NavigationBarView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         requestApplyInsets();
         reorient();
@@ -292,7 +317,7 @@ public final class NavigationBarView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         for (int i = 0; i < this.mButtonDispatchers.size(); i++) {
             this.mButtonDispatchers.valueAt(i).onDestroy();

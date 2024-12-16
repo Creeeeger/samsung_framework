@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextSLocationCore extends SContextEventContext {
     public static final Parcelable.Creator<SContextSLocationCore> CREATOR = new Parcelable.Creator<SContextSLocationCore>() { // from class: android.hardware.scontext.SContextSLocationCore.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSLocationCore createFromParcel(Parcel in) {
             return new SContextSLocationCore(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSLocationCore[] newArray(int size) {
             return new SContextSLocationCore[size];
@@ -23,7 +22,7 @@ public class SContextSLocationCore extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextSLocationCore() {
+    SContextSLocationCore() {
         this.mContext = new Bundle();
     }
 
@@ -115,22 +114,5 @@ public class SContextSLocationCore extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextSLocationCore$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextSLocationCore> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSLocationCore createFromParcel(Parcel in) {
-            return new SContextSLocationCore(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSLocationCore[] newArray(int size) {
-            return new SContextSLocationCore[size];
-        }
     }
 }

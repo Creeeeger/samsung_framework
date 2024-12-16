@@ -21,7 +21,6 @@ public class EncoderCapabilities {
 
     private static final native void native_init();
 
-    /* loaded from: classes2.dex */
     public static class VideoEncoderCap {
         public final int mCodec;
         public final int mMaxBitRate;
@@ -46,7 +45,6 @@ public class EncoderCapabilities {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class AudioEncoderCap {
         public final int mCodec;
         public final int mMaxBitRate;

@@ -69,9 +69,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void add(T object) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                arrayList.add(object);
+            if (this.mOriginalValues != null) {
+                this.mOriginalValues.add(object);
             } else {
                 this.mObjects.add(object);
             }
@@ -84,9 +83,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void addAll(Collection<? extends T> collection) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                arrayList.addAll(collection);
+            if (this.mOriginalValues != null) {
+                this.mOriginalValues.addAll(collection);
             } else {
                 this.mObjects.addAll(collection);
             }
@@ -99,9 +97,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void addAll(T... items) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                Collections.addAll(arrayList, items);
+            if (this.mOriginalValues != null) {
+                Collections.addAll(this.mOriginalValues, items);
             } else {
                 Collections.addAll(this.mObjects, items);
             }
@@ -114,9 +111,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void insert(T object, int index) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                arrayList.add(index, object);
+            if (this.mOriginalValues != null) {
+                this.mOriginalValues.add(index, object);
             } else {
                 this.mObjects.add(index, object);
             }
@@ -129,9 +125,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void remove(T object) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                arrayList.remove(object);
+            if (this.mOriginalValues != null) {
+                this.mOriginalValues.remove(object);
             } else {
                 this.mObjects.remove(object);
             }
@@ -144,9 +139,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void clear() {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                arrayList.clear();
+            if (this.mOriginalValues != null) {
+                this.mOriginalValues.clear();
             } else {
                 this.mObjects.clear();
             }
@@ -159,9 +153,8 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     public void sort(Comparator<? super T> comparator) {
         synchronized (this.mLock) {
-            ArrayList<T> arrayList = this.mOriginalValues;
-            if (arrayList != null) {
-                Collections.sort(arrayList, comparator);
+            if (this.mOriginalValues != null) {
+                Collections.sort(this.mOriginalValues, comparator);
             } else {
                 Collections.sort(this.mObjects, comparator);
             }
@@ -218,20 +211,19 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
             view = convertView;
         }
         try {
-            int i = this.mFieldId;
-            if (i == 0) {
+            if (this.mFieldId == 0) {
                 text = (TextView) view;
             } else {
-                text = (TextView) view.findViewById(i);
+                text = (TextView) view.findViewById(this.mFieldId);
                 if (text == null) {
                     throw new RuntimeException("Failed to find view with ID " + this.mContext.getResources().getResourceName(this.mFieldId) + " in item layout");
                 }
             }
             T item = getItem(position);
             if (item instanceof CharSequence) {
-                text.setText((CharSequence) item);
+                text.lambda$setTextAsync$0((CharSequence) item);
             } else if (item != null) {
-                text.setText(item.toString());
+                text.lambda$setTextAsync$0(item.toString());
             }
             return view;
         } catch (ClassCastException e) {
@@ -258,20 +250,15 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     @Override // android.widget.ThemedSpinnerAdapter
     public Resources.Theme getDropDownViewTheme() {
-        LayoutInflater layoutInflater = this.mDropDownInflater;
-        if (layoutInflater == null) {
+        if (this.mDropDownInflater == null) {
             return null;
         }
-        return layoutInflater.getContext().getTheme();
+        return this.mDropDownInflater.getContext().getTheme();
     }
 
     @Override // android.widget.BaseAdapter, android.widget.SpinnerAdapter
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater layoutInflater = this.mDropDownInflater;
-        if (layoutInflater == null) {
-            layoutInflater = this.mInflater;
-        }
-        LayoutInflater inflater = layoutInflater;
+        LayoutInflater inflater = this.mDropDownInflater == null ? this.mInflater : this.mDropDownInflater;
         return createViewFromResource(inflater, position, convertView, parent, this.mDropDownResource);
     }
 
@@ -290,12 +277,11 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
 
     @Override // android.widget.BaseAdapter, android.widget.Adapter
     public CharSequence[] getAutofillOptions() {
-        List<T> list;
         CharSequence[] explicitOptions = super.getAutofillOptions();
         if (explicitOptions != null) {
             return explicitOptions;
         }
-        if (!this.mObjectsFromResources || (list = this.mObjects) == null || list.isEmpty()) {
+        if (!this.mObjectsFromResources || this.mObjects == null || this.mObjects.isEmpty()) {
             return null;
         }
         int size = this.mObjects.size();
@@ -304,12 +290,7 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable, ThemedSp
         return options;
     }
 
-    /* loaded from: classes4.dex */
     private class ArrayFilter extends Filter {
-        /* synthetic */ ArrayFilter(ArrayAdapter arrayAdapter, ArrayFilterIA arrayFilterIA) {
-            this();
-        }
-
         private ArrayFilter() {
         }
 

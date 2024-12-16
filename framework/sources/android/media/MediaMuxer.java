@@ -23,7 +23,6 @@ public final class MediaMuxer {
     private int mLastTrackIndex = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Format {
     }
 
@@ -47,7 +46,6 @@ public final class MediaMuxer {
         System.loadLibrary("media_jni");
     }
 
-    /* loaded from: classes2.dex */
     public static final class OutputFormat {
         public static final int MUXER_OUTPUT_3GPP = 2;
         public static final int MUXER_OUTPUT_FIRST = 0;
@@ -130,23 +128,19 @@ public final class MediaMuxer {
             String msg2 = "Longitude: " + longitude + " out of range";
             throw new IllegalArgumentException(msg2);
         }
-        if (this.mState == 0) {
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeSetLocation(j, latitudex10000, longitudex10000);
-                return;
-            }
+        if (this.mState == 0 && this.mNativeObject != 0) {
+            nativeSetLocation(this.mNativeObject, latitudex10000, longitudex10000);
+            return;
         }
         throw new IllegalStateException("Can't set location due to wrong state(" + convertMuxerStateCodeToString(this.mState) + NavigationBarInflaterView.KEY_CODE_END);
     }
 
     public void start() {
-        long j = this.mNativeObject;
-        if (j == 0) {
+        if (this.mNativeObject == 0) {
             throw new IllegalStateException("Muxer has been released!");
         }
         if (this.mState == 0) {
-            nativeStart(j);
+            nativeStart(this.mNativeObject);
             this.mState = 1;
             return;
         }
@@ -171,13 +165,11 @@ public final class MediaMuxer {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeRelease(j);
+            if (this.mNativeObject != 0) {
+                nativeRelease(this.mNativeObject);
                 this.mNativeObject = 0L;
             }
         } finally {
@@ -229,23 +221,21 @@ public final class MediaMuxer {
         if (bufferInfo.size < 0 || bufferInfo.offset < 0 || bufferInfo.offset + bufferInfo.size > byteBuf.capacity()) {
             throw new IllegalArgumentException("bufferInfo must specify a valid buffer offset and size");
         }
-        long j = this.mNativeObject;
-        if (j == 0) {
+        if (this.mNativeObject == 0) {
             throw new IllegalStateException("Muxer has been released!");
         }
         if (this.mState != 1) {
             throw new IllegalStateException("Can't write, muxer is not started");
         }
-        nativeWriteSampleData(j, trackIndex, byteBuf, bufferInfo.offset, bufferInfo.size, bufferInfo.presentationTimeUs, bufferInfo.flags);
+        nativeWriteSampleData(this.mNativeObject, trackIndex, byteBuf, bufferInfo.offset, bufferInfo.size, bufferInfo.presentationTimeUs, bufferInfo.flags);
     }
 
     public void release() {
         if (this.mState == 1) {
             stop();
         }
-        long j = this.mNativeObject;
-        if (j != 0) {
-            nativeRelease(j);
+        if (this.mNativeObject != 0) {
+            nativeRelease(this.mNativeObject);
             this.mNativeObject = 0L;
             this.mCloseGuard.close();
         }

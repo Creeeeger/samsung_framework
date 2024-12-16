@@ -29,8 +29,7 @@ public abstract class SimpleImageFilter extends Filter {
         if (this.mParameterName != null) {
             try {
                 Field programField = SimpleImageFilter.class.getDeclaredField("mProgram");
-                String str = this.mParameterName;
-                addProgramPort(str, str, programField, Float.TYPE, false);
+                addProgramPort(this.mParameterName, this.mParameterName, programField, Float.TYPE, false);
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException("Internal Error: mProgram field not found!");
             }
@@ -68,11 +67,10 @@ public abstract class SimpleImageFilter extends Filter {
                     this.mProgram = null;
                     break;
             }
-            Program program = this.mProgram;
-            if (program == null) {
+            if (this.mProgram == null) {
                 throw new RuntimeException("Could not create a program for image filter " + this + "!");
             }
-            initProgramInputs(program, context);
+            initProgramInputs(this.mProgram, context);
             this.mCurrentTarget = target;
         }
     }

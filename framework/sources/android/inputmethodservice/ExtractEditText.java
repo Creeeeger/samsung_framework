@@ -27,7 +27,7 @@ public class ExtractEditText extends EditText {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setIME(InputMethodService ime) {
+    void setIME(InputMethodService ime) {
         this.mIME = ime;
     }
 
@@ -51,17 +51,15 @@ public class ExtractEditText extends EditText {
 
     @Override // android.widget.TextView
     protected void onSelectionChanged(int selStart, int selEnd) {
-        InputMethodService inputMethodService;
-        if (this.mSettingExtractedText == 0 && (inputMethodService = this.mIME) != null && selStart >= 0 && selEnd >= 0) {
-            inputMethodService.onExtractedSelectionChanged(selStart, selEnd);
+        if (this.mSettingExtractedText == 0 && this.mIME != null && selStart >= 0 && selEnd >= 0) {
+            this.mIME.onExtractedSelectionChanged(selStart, selEnd);
         }
     }
 
     @Override // android.widget.TextView, android.view.View
     public boolean performClick() {
-        InputMethodService inputMethodService;
-        if (!super.performClick() && (inputMethodService = this.mIME) != null) {
-            inputMethodService.onExtractedTextClicked();
+        if (!super.performClick() && this.mIME != null) {
+            this.mIME.onExtractedTextClicked();
             return true;
         }
         return false;
@@ -72,8 +70,7 @@ public class ExtractEditText extends EditText {
         if (id == 16908319 || id == 16908340) {
             return super.onTextContextMenuItem(id);
         }
-        InputMethodService inputMethodService = this.mIME;
-        if (inputMethodService != null && inputMethodService.onExtractTextContextMenuItem(id)) {
+        if (this.mIME != null && this.mIME.onExtractTextContextMenuItem(id)) {
             if (id == 16908321 || id == 16908322) {
                 stopTextActionMode();
                 return true;
@@ -109,9 +106,8 @@ public class ExtractEditText extends EditText {
 
     @Override // android.widget.TextView
     protected void viewClicked(InputMethodManager imm) {
-        InputMethodService inputMethodService = this.mIME;
-        if (inputMethodService != null) {
-            inputMethodService.onViewClicked(false);
+        if (this.mIME != null) {
+            this.mIME.onViewClicked(false);
         }
     }
 
@@ -121,22 +117,22 @@ public class ExtractEditText extends EditText {
     }
 
     @Override // android.widget.TextView
-    public void deleteText_internal(int start, int end) {
+    protected void deleteText_internal(int start, int end) {
         this.mIME.onExtractedDeleteText(start, end);
     }
 
     @Override // android.widget.TextView
-    public void replaceText_internal(int start, int end, CharSequence text) {
+    protected void replaceText_internal(int start, int end, CharSequence text) {
         this.mIME.onExtractedReplaceText(start, end, text);
     }
 
     @Override // android.widget.TextView
-    public void setSpan_internal(Object span, int start, int end, int flags) {
+    protected void setSpan_internal(Object span, int start, int end, int flags) {
         this.mIME.onExtractedSetSpan(span, start, end, flags);
     }
 
     @Override // android.widget.TextView
-    public void setCursorPosition_internal(int start, int end) {
+    protected void setCursorPosition_internal(int start, int end) {
         this.mIME.onExtractedSelectionChanged(start, end);
     }
 }

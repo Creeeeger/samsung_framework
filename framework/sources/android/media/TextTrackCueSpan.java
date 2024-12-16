@@ -7,10 +7,10 @@ class TextTrackCueSpan {
     String mText;
     long mTimestampMs;
 
-    public TextTrackCueSpan(String text, long timestamp) {
+    TextTrackCueSpan(String text, long timestamp) {
         this.mTimestampMs = timestamp;
         this.mText = text;
-        this.mEnabled = timestamp < 0;
+        this.mEnabled = this.mTimestampMs < 0;
     }
 
     public boolean equals(Object o) {

@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class NanoApp implements Parcelable {
     public static final Parcelable.Creator<NanoApp> CREATOR = new Parcelable.Creator<NanoApp>() { // from class: android.hardware.location.NanoApp.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoApp createFromParcel(Parcel in) {
             return new NanoApp(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoApp[] newArray(int size) {
             return new NanoApp[size];
@@ -37,10 +36,6 @@ public class NanoApp implements Parcelable {
     private int mNeededWriteMemBytes;
     private int[] mOutputEvents;
     private String mPublisher;
-
-    /* synthetic */ NanoApp(Parcel parcel, NanoAppIA nanoAppIA) {
-        this(parcel);
-    }
 
     public NanoApp() {
         this(0L, (byte[]) null);
@@ -165,17 +160,14 @@ public class NanoApp implements Parcelable {
         this.mNeededWriteMemBytes = in.readInt();
         this.mNeededExecMemBytes = in.readInt();
         int mNeededSensorsLength = in.readInt();
-        int[] iArr = new int[mNeededSensorsLength];
-        this.mNeededSensors = iArr;
-        in.readIntArray(iArr);
+        this.mNeededSensors = new int[mNeededSensorsLength];
+        in.readIntArray(this.mNeededSensors);
         int mOutputEventsLength = in.readInt();
-        int[] iArr2 = new int[mOutputEventsLength];
-        this.mOutputEvents = iArr2;
-        in.readIntArray(iArr2);
+        this.mOutputEvents = new int[mOutputEventsLength];
+        in.readIntArray(this.mOutputEvents);
         int binaryLength = in.readInt();
-        byte[] bArr = new byte[binaryLength];
-        this.mAppBinary = bArr;
-        in.readByteArray(bArr);
+        this.mAppBinary = new byte[binaryLength];
+        in.readByteArray(this.mAppBinary);
     }
 
     @Override // android.os.Parcelable
@@ -204,23 +196,6 @@ public class NanoApp implements Parcelable {
         out.writeIntArray(this.mOutputEvents);
         out.writeInt(this.mAppBinary.length);
         out.writeByteArray(this.mAppBinary);
-    }
-
-    /* renamed from: android.hardware.location.NanoApp$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NanoApp> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoApp createFromParcel(Parcel in) {
-            return new NanoApp(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoApp[] newArray(int size) {
-            return new NanoApp[size];
-        }
     }
 
     public String toString() {

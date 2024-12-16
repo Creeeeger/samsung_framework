@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class RemotelyProvisionedKey implements Parcelable {
     public static final Parcelable.Creator<RemotelyProvisionedKey> CREATOR = new Parcelable.Creator<RemotelyProvisionedKey>() { // from class: android.security.rkp.RemotelyProvisionedKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemotelyProvisionedKey createFromParcel(Parcel _aidl_source) {
             RemotelyProvisionedKey _aidl_out = new RemotelyProvisionedKey();
@@ -17,6 +15,7 @@ public class RemotelyProvisionedKey implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemotelyProvisionedKey[] newArray(int _aidl_size) {
             return new RemotelyProvisionedKey[_aidl_size];
@@ -24,25 +23,6 @@ public class RemotelyProvisionedKey implements Parcelable {
     };
     public byte[] encodedCertChain;
     public byte[] keyBlob;
-
-    /* renamed from: android.security.rkp.RemotelyProvisionedKey$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemotelyProvisionedKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemotelyProvisionedKey createFromParcel(Parcel _aidl_source) {
-            RemotelyProvisionedKey _aidl_out = new RemotelyProvisionedKey();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemotelyProvisionedKey[] newArray(int _aidl_size) {
-            return new RemotelyProvisionedKey[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

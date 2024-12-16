@@ -1,7 +1,7 @@
 package com.android.framework.protobuf;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 interface MessageInfo {
     MessageLite getDefaultInstance();
 

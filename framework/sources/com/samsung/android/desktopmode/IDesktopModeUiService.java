@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.samsung.android.desktopmode.IDesktopModeUiServiceCallback;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDesktopModeUiService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IDesktopModeUiService";
 
@@ -41,7 +41,6 @@ public interface IDesktopModeUiService extends IInterface {
 
     void startActivity(int i, int i2, IDesktopModeUiServiceCallback iDesktopModeUiServiceCallback) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDesktopModeUiService {
         @Override // com.samsung.android.desktopmode.IDesktopModeUiService
         public boolean hasUiElement() throws RemoteException {
@@ -114,7 +113,6 @@ public interface IDesktopModeUiService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDesktopModeUiService {
         static final int TRANSACTION_dismissDialog = 3;
         static final int TRANSACTION_dismissOverlay = 6;
@@ -199,119 +197,116 @@ public interface IDesktopModeUiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDesktopModeUiService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDesktopModeUiService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDesktopModeUiService.DESCRIPTOR);
+                case 1:
+                    boolean _result = hasUiElement();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    IDesktopModeUiServiceCallback _arg2 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    showDialog(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dismissDialog(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _result2 = getCurrentDialogType();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 5:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    IDesktopModeUiServiceCallback _arg22 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    showOverlay(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dismissOverlay(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = getCurrentOverlayType(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = hasOverlay(_arg06, _arg15);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    showNotification(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeNotification(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg09 = data.readInt();
+                    int _arg16 = data.readInt();
+                    IDesktopModeUiServiceCallback _arg23 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    startActivity(_arg09, _arg16, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    finishActivity(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = isActivityShowing(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 14:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    showNavBarIcon(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeNavBarIcon(_arg013);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = hasUiElement();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            IDesktopModeUiServiceCallback _arg2 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            showDialog(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dismissDialog(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _result2 = getCurrentDialogType();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 5:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            IDesktopModeUiServiceCallback _arg22 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            showOverlay(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dismissOverlay(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = getCurrentOverlayType(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = hasOverlay(_arg06, _arg15);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            showNotification(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeNotification(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg09 = data.readInt();
-                            int _arg16 = data.readInt();
-                            IDesktopModeUiServiceCallback _arg23 = IDesktopModeUiServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            startActivity(_arg09, _arg16, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            finishActivity(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = isActivityShowing(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 14:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            showNavBarIcon(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg013 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeNavBarIcon(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IDesktopModeUiService {
             private IBinder mRemote;
 

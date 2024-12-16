@@ -12,7 +12,6 @@ public interface StartInstallingUpdateCallback extends IInterface {
 
     void onStartInstallingUpdateError(int i, String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements StartInstallingUpdateCallback {
         @Override // android.app.admin.StartInstallingUpdateCallback
         public void onStartInstallingUpdateError(int errorCode, String errorMessage) throws RemoteException {
@@ -24,7 +23,6 @@ public interface StartInstallingUpdateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements StartInstallingUpdateCallback {
         static final int TRANSACTION_onStartInstallingUpdateError = 1;
 
@@ -67,27 +65,23 @@ public interface StartInstallingUpdateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(StartInstallingUpdateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(StartInstallingUpdateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(StartInstallingUpdateCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStartInstallingUpdateError(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStartInstallingUpdateError(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements StartInstallingUpdateCallback {
+        private static class Proxy implements StartInstallingUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -45,7 +45,7 @@ public final class BigIntegers {
 
     /* JADX WARN: Code restructure failed: missing block: B:9:0x0012, code lost:
     
-        if (r0.length != 1) goto L30;
+        if (r0.length != 1) goto L12;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -163,15 +163,14 @@ public final class BigIntegers {
         if (M.signum() != 1) {
             throw new ArithmeticException("BigInteger: modulus not positive");
         }
-        BigInteger bigInteger = ONE;
-        if (M.equals(bigInteger)) {
+        if (M.equals(ONE)) {
             return ZERO;
         }
         if (X.signum() < 0 || X.compareTo(M) >= 0) {
             X = X.mod(M);
         }
-        if (X.equals(bigInteger)) {
-            return bigInteger;
+        if (X.equals(ONE)) {
+            return ONE;
         }
         int bits = M.bitLength();
         int[] m = Nat.fromBigInteger(bits, M);

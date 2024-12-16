@@ -58,10 +58,10 @@ public final class CdmaCallWaiting {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.number = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.numberPresentation = _hidl_blob.getInt32(_hidl_offset + 16);
         this.name = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         this.signalInfoRecord.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 40);
         this.numberType = _hidl_blob.getInt32(_hidl_offset + 44);
         this.numberPlan = _hidl_blob.getInt32(_hidl_offset + 48);

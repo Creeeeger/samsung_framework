@@ -268,8 +268,7 @@ public class X509CertificateObject extends X509Certificate implements PKCS12BagA
 
     @Override // java.security.cert.X509Certificate
     public int getBasicConstraints() {
-        BasicConstraints basicConstraints = this.basicConstraints;
-        if (basicConstraints == null || !basicConstraints.isCA()) {
+        if (this.basicConstraints == null || !this.basicConstraints.isCA()) {
             return -1;
         }
         if (this.basicConstraints.getPathLenConstraint() == null) {
@@ -572,7 +571,6 @@ public class X509CertificateObject extends X509Certificate implements PKCS12BagA
         return id1.getParameters().equals(id2.getParameters());
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:10:0x0033. Please report as an issue. */
     private static Collection getAlternativeNames(byte[] extVal) throws CertificateParsingException {
         if (extVal == null) {
             return null;

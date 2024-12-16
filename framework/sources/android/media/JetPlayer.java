@@ -35,7 +35,6 @@ public class JetPlayer {
     private final Object mEventListenerLock = new Object();
     private OnJetEventListener mJetEventListener = null;
 
-    /* loaded from: classes2.dex */
     public interface OnJetEventListener {
         void onJetEvent(JetPlayer jetPlayer, short s, byte b, byte b2, byte b3, byte b4);
 
@@ -175,8 +174,7 @@ public class JetPlayer {
         return native_clearQueue();
     }
 
-    /* loaded from: classes2.dex */
-    public class NativeEventHandler extends Handler {
+    private class NativeEventHandler extends Handler {
         private JetPlayer mJet;
 
         public NativeEventHandler(JetPlayer jet, Looper looper) {
@@ -242,10 +240,9 @@ public class JetPlayer {
     }
 
     private static void postEventFromNative(Object jetplayer_ref, int what, int arg1, int arg2) {
-        NativeEventHandler nativeEventHandler;
         JetPlayer jet = (JetPlayer) ((WeakReference) jetplayer_ref).get();
-        if (jet != null && (nativeEventHandler = jet.mEventHandler) != null) {
-            Message m = nativeEventHandler.obtainMessage(what, arg1, arg2, null);
+        if (jet != null && jet.mEventHandler != null) {
+            Message m = jet.mEventHandler.obtainMessage(what, arg1, arg2, null);
             jet.mEventHandler.sendMessage(m);
         }
     }
@@ -254,6 +251,7 @@ public class JetPlayer {
         Log.d(TAG, "[ android.media.JetPlayer ] " + msg);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void loge(String msg) {
         Log.e(TAG, "[ android.media.JetPlayer ] " + msg);
     }

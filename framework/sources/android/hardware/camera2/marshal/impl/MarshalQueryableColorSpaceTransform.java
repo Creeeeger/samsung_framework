@@ -6,12 +6,11 @@ import android.hardware.camera2.params.ColorSpaceTransform;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableColorSpaceTransform implements MarshalQueryable<ColorSpaceTransform> {
     private static final int ELEMENTS_INT32 = 18;
     private static final int SIZE = 72;
 
-    /* loaded from: classes.dex */
     private class MarshalerColorSpaceTransform extends Marshaler<ColorSpaceTransform> {
         protected MarshalerColorSpaceTransform(TypeReference<ColorSpaceTransform> typeReference, int nativeType) {
             super(MarshalQueryableColorSpaceTransform.this, typeReference, nativeType);
@@ -26,6 +25,7 @@ public class MarshalQueryableColorSpaceTransform implements MarshalQueryable<Col
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public ColorSpaceTransform unmarshal(ByteBuffer buffer) {
             int[] transformAsArray = new int[18];

@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioFormatDescription implements Parcelable {
     public static final Parcelable.Creator<AudioFormatDescription> CREATOR = new Parcelable.Creator<AudioFormatDescription>() { // from class: android.media.audio.common.AudioFormatDescription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFormatDescription createFromParcel(Parcel _aidl_source) {
             AudioFormatDescription _aidl_out = new AudioFormatDescription();
@@ -20,6 +18,7 @@ public class AudioFormatDescription implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFormatDescription[] newArray(int _aidl_size) {
             return new AudioFormatDescription[_aidl_size];
@@ -28,25 +27,6 @@ public class AudioFormatDescription implements Parcelable {
     public String encoding;
     public byte type = 0;
     public byte pcm = 0;
-
-    /* renamed from: android.media.audio.common.AudioFormatDescription$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioFormatDescription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioFormatDescription createFromParcel(Parcel _aidl_source) {
-            AudioFormatDescription _aidl_out = new AudioFormatDescription();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioFormatDescription[] newArray(int _aidl_size) {
-            return new AudioFormatDescription[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -115,7 +95,7 @@ public class AudioFormatDescription implements Parcelable {
         _aidl_sj.add("type: " + ((int) this.type));
         _aidl_sj.add("pcm: " + ((int) this.pcm));
         _aidl_sj.add("encoding: " + Objects.toString(this.encoding));
-        return "android.media.audio.common.AudioFormatDescription" + _aidl_sj.toString();
+        return "AudioFormatDescription" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

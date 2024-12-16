@@ -21,17 +21,13 @@ public class HidlMemory implements Closeable {
     }
 
     public HidlMemory dup() throws IOException {
-        String str = this.mName;
-        long j = this.mSize;
-        NativeHandle nativeHandle = this.mHandle;
-        return new HidlMemory(str, j, nativeHandle != null ? nativeHandle.dup() : null);
+        return new HidlMemory(this.mName, this.mSize, this.mHandle != null ? this.mHandle.dup() : null);
     }
 
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() throws IOException {
-        NativeHandle nativeHandle = this.mHandle;
-        if (nativeHandle != null) {
-            nativeHandle.close();
+        if (this.mHandle != null) {
+            this.mHandle.close();
             this.mHandle = null;
         }
     }

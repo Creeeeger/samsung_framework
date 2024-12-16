@@ -10,8 +10,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioModemResponse extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$modem$IRadioModemResponse".replace('$', '.');
-    public static final String HASH = "09927560afccc75a063944fbbab3af48099261ca";
-    public static final int VERSION = 2;
+    public static final String HASH = "8586a5528f0085c15cff4b6628f1b8153aca29ad";
+    public static final int VERSION = 3;
 
     void acknowledgeRequest(int i) throws RemoteException;
 
@@ -55,7 +55,6 @@ public interface IRadioModemResponse extends IInterface {
 
     void setRadioPowerResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioModemResponse {
         @Override // android.hardware.radio.modem.IRadioModemResponse
         public void acknowledgeRequest(int serial) throws RemoteException {
@@ -141,7 +140,6 @@ public interface IRadioModemResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioModemResponse {
         static final int TRANSACTION_acknowledgeRequest = 1;
         static final int TRANSACTION_enableModemResponse = 2;
@@ -190,126 +188,124 @@ public interface IRadioModemResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeRequest(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    enableModemResponse(_arg02);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    getBasebandVersionResponse(_arg03, _arg1);
+                    return true;
+                case 4:
+                    RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg12 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    getDeviceIdentityResponse(_arg04, _arg12, _arg2, _arg3, _arg4);
+                    return true;
+                case 5:
+                    RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    HardwareConfig[] _arg13 = (HardwareConfig[]) data.createTypedArray(HardwareConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    getHardwareConfigResponse(_arg05, _arg13);
+                    return true;
+                case 6:
+                    RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    ActivityStatsInfo _arg14 = (ActivityStatsInfo) data.readTypedObject(ActivityStatsInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getModemActivityInfoResponse(_arg06, _arg14);
+                    return true;
+                case 7:
+                    RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    getModemStackStatusResponse(_arg07, _arg15);
+                    return true;
+                case 8:
+                    RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    RadioCapability _arg16 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    getRadioCapabilityResponse(_arg08, _arg16);
+                    return true;
+                case 9:
+                    RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    nvReadItemResponse(_arg09, _arg17);
+                    return true;
+                case 10:
+                    RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    nvResetConfigResponse(_arg010);
+                    return true;
+                case 11:
+                    RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    nvWriteCdmaPrlResponse(_arg011);
+                    return true;
+                case 12:
+                    RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    nvWriteItemResponse(_arg012);
+                    return true;
+                case 13:
+                    RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestShutdownResponse(_arg013);
+                    return true;
+                case 14:
+                    RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendDeviceStateResponse(_arg014);
+                    return true;
+                case 15:
+                    RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    RadioCapability _arg18 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRadioCapabilityResponse(_arg015, _arg18);
+                    return true;
+                case 16:
+                    RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRadioPowerResponse(_arg016);
+                    return true;
+                case 17:
+                    RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    ImeiInfo _arg19 = (ImeiInfo) data.readTypedObject(ImeiInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    getImeiResponse(_arg017, _arg19);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeRequest(_arg0);
-                            return true;
-                        case 2:
-                            RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            enableModemResponse(_arg02);
-                            return true;
-                        case 3:
-                            RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            getBasebandVersionResponse(_arg03, _arg1);
-                            return true;
-                        case 4:
-                            RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg12 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            getDeviceIdentityResponse(_arg04, _arg12, _arg2, _arg3, _arg4);
-                            return true;
-                        case 5:
-                            RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            HardwareConfig[] _arg13 = (HardwareConfig[]) data.createTypedArray(HardwareConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            getHardwareConfigResponse(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            ActivityStatsInfo _arg14 = (ActivityStatsInfo) data.readTypedObject(ActivityStatsInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getModemActivityInfoResponse(_arg06, _arg14);
-                            return true;
-                        case 7:
-                            RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            getModemStackStatusResponse(_arg07, _arg15);
-                            return true;
-                        case 8:
-                            RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            RadioCapability _arg16 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            getRadioCapabilityResponse(_arg08, _arg16);
-                            return true;
-                        case 9:
-                            RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            nvReadItemResponse(_arg09, _arg17);
-                            return true;
-                        case 10:
-                            RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            nvResetConfigResponse(_arg010);
-                            return true;
-                        case 11:
-                            RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            nvWriteCdmaPrlResponse(_arg011);
-                            return true;
-                        case 12:
-                            RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            nvWriteItemResponse(_arg012);
-                            return true;
-                        case 13:
-                            RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestShutdownResponse(_arg013);
-                            return true;
-                        case 14:
-                            RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendDeviceStateResponse(_arg014);
-                            return true;
-                        case 15:
-                            RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            RadioCapability _arg18 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRadioCapabilityResponse(_arg015, _arg18);
-                            return true;
-                        case 16:
-                            RadioResponseInfo _arg016 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRadioPowerResponse(_arg016);
-                            return true;
-                        case 17:
-                            RadioResponseInfo _arg017 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            ImeiInfo _arg19 = (ImeiInfo) data.readTypedObject(ImeiInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            getImeiResponse(_arg017, _arg19);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioModemResponse {
+        private static class Proxy implements IRadioModemResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

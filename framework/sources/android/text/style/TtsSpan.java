@@ -6,7 +6,7 @@ import android.text.ParcelableSpan;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TtsSpan implements ParcelableSpan {
     public static final String ANIMACY_ANIMATE = "android.animate";
     public static final String ANIMACY_INANIMATE = "android.inanimate";
@@ -135,7 +135,6 @@ public class TtsSpan implements ParcelableSpan {
         return 24;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder<C extends Builder<?>> {
         private PersistableBundle mArgs = new PersistableBundle();
         private final String mType;
@@ -167,7 +166,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SemioticClassBuilder<C extends SemioticClassBuilder<?>> extends Builder<C> {
         public SemioticClassBuilder(String type) {
             super(type);
@@ -190,7 +188,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class TextBuilder extends SemioticClassBuilder<TextBuilder> {
         public TextBuilder() {
             super(TtsSpan.TYPE_TEXT);
@@ -207,7 +204,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class CardinalBuilder extends SemioticClassBuilder<CardinalBuilder> {
         public CardinalBuilder() {
             super(TtsSpan.TYPE_CARDINAL);
@@ -233,7 +229,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class OrdinalBuilder extends SemioticClassBuilder<OrdinalBuilder> {
         public OrdinalBuilder() {
             super(TtsSpan.TYPE_ORDINAL);
@@ -259,7 +254,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DecimalBuilder extends SemioticClassBuilder<DecimalBuilder> {
         public DecimalBuilder() {
             super(TtsSpan.TYPE_DECIMAL);
@@ -307,7 +301,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class FractionBuilder extends SemioticClassBuilder<FractionBuilder> {
         public FractionBuilder() {
             super(TtsSpan.TYPE_FRACTION);
@@ -348,7 +341,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class MeasureBuilder extends SemioticClassBuilder<MeasureBuilder> {
         public MeasureBuilder() {
             super(TtsSpan.TYPE_MEASURE);
@@ -401,7 +393,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class TimeBuilder extends SemioticClassBuilder<TimeBuilder> {
         public TimeBuilder() {
             super(TtsSpan.TYPE_TIME);
@@ -424,7 +415,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DateBuilder extends SemioticClassBuilder<DateBuilder> {
         public DateBuilder() {
             super(TtsSpan.TYPE_DATE);
@@ -467,7 +457,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class MoneyBuilder extends SemioticClassBuilder<MoneyBuilder> {
         public MoneyBuilder() {
             super(TtsSpan.TYPE_MONEY);
@@ -498,7 +487,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class TelephoneBuilder extends SemioticClassBuilder<TelephoneBuilder> {
         public TelephoneBuilder() {
             super(TtsSpan.TYPE_TELEPHONE);
@@ -525,7 +513,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ElectronicBuilder extends SemioticClassBuilder<ElectronicBuilder> {
         public ElectronicBuilder() {
             super(TtsSpan.TYPE_ELECTRONIC);
@@ -576,7 +563,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DigitsBuilder extends SemioticClassBuilder<DigitsBuilder> {
         public DigitsBuilder() {
             super(TtsSpan.TYPE_DIGITS);
@@ -593,7 +579,6 @@ public class TtsSpan implements ParcelableSpan {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class VerbatimBuilder extends SemioticClassBuilder<VerbatimBuilder> {
         public VerbatimBuilder() {
             super(TtsSpan.TYPE_VERBATIM);

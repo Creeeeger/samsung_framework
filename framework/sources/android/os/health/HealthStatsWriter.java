@@ -49,9 +49,9 @@ public class HealthStatsWriter {
 
     public void addStats(int key, String name, HealthStatsWriter value) {
         int index = this.mConstants.getIndex(2, key);
-        ArrayMap<String, HealthStatsWriter>[] arrayMapArr = this.mStatsValues;
-        ArrayMap<String, HealthStatsWriter> map = arrayMapArr[index];
+        ArrayMap<String, HealthStatsWriter> map = this.mStatsValues[index];
         if (map == null) {
+            ArrayMap<String, HealthStatsWriter>[] arrayMapArr = this.mStatsValues;
             ArrayMap<String, HealthStatsWriter> arrayMap = new ArrayMap<>(1);
             arrayMapArr[index] = arrayMap;
             map = arrayMap;
@@ -61,9 +61,9 @@ public class HealthStatsWriter {
 
     public void addTimers(int key, String name, TimerStat value) {
         int index = this.mConstants.getIndex(3, key);
-        ArrayMap<String, TimerStat>[] arrayMapArr = this.mTimersValues;
-        ArrayMap<String, TimerStat> map = arrayMapArr[index];
+        ArrayMap<String, TimerStat> map = this.mTimersValues[index];
         if (map == null) {
+            ArrayMap<String, TimerStat>[] arrayMapArr = this.mTimersValues;
             ArrayMap<String, TimerStat> arrayMap = new ArrayMap<>(1);
             arrayMapArr[index] = arrayMap;
             map = arrayMap;
@@ -73,9 +73,9 @@ public class HealthStatsWriter {
 
     public void addMeasurements(int key, String name, long value) {
         int index = this.mConstants.getIndex(4, key);
-        ArrayMap<String, Long>[] arrayMapArr = this.mMeasurementsValues;
-        ArrayMap<String, Long> map = arrayMapArr[index];
+        ArrayMap<String, Long> map = this.mMeasurementsValues[index];
         if (map == null) {
+            ArrayMap<String, Long>[] arrayMapArr = this.mMeasurementsValues;
             ArrayMap<String, Long> arrayMap = new ArrayMap<>(1);
             arrayMapArr[index] = arrayMap;
             map = arrayMap;

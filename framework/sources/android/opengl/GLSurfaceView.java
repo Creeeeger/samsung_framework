@@ -40,31 +40,26 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Renderer mRenderer;
     private final WeakReference<GLSurfaceView> mThisWeakRef;
 
-    /* loaded from: classes3.dex */
     public interface EGLConfigChooser {
         javax.microedition.khronos.egl.EGLConfig chooseConfig(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay);
     }
 
-    /* loaded from: classes3.dex */
     public interface EGLContextFactory {
         javax.microedition.khronos.egl.EGLContext createContext(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLConfig eGLConfig);
 
         void destroyContext(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLContext eGLContext);
     }
 
-    /* loaded from: classes3.dex */
     public interface EGLWindowSurfaceFactory {
         javax.microedition.khronos.egl.EGLSurface createWindowSurface(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLConfig eGLConfig, Object obj);
 
         void destroySurface(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLSurface eGLSurface);
     }
 
-    /* loaded from: classes3.dex */
     public interface GLWrapper {
         GL wrap(GL gl);
     }
 
-    /* loaded from: classes3.dex */
     public interface Renderer {
         void onDrawFrame(GL10 gl10);
 
@@ -87,9 +82,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     protected void finalize() throws Throwable {
         try {
-            GLThread gLThread = this.mGLThread;
-            if (gLThread != null) {
-                gLThread.requestExitAndWait();
+            if (this.mGLThread != null) {
+                this.mGLThread.requestExitAndWait();
             }
         } finally {
             super.finalize();
@@ -126,6 +120,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         if (this.mEGLConfigChooser == null) {
             this.mEGLConfigChooser = new SimpleEGLConfigChooser(true);
         }
+        byte b = 0;
         if (this.mEGLContextFactory == null) {
             this.mEGLContextFactory = new DefaultContextFactory();
         }
@@ -133,9 +128,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             this.mEGLWindowSurfaceFactory = new DefaultWindowSurfaceFactory();
         }
         this.mRenderer = renderer;
-        GLThread gLThread = new GLThread(this.mThisWeakRef);
-        this.mGLThread = gLThread;
-        gLThread.start();
+        this.mGLThread = new GLThread(this.mThisWeakRef);
+        this.mGLThread.start();
     }
 
     public void setEGLContextFactory(EGLContextFactory factory) {
@@ -195,9 +189,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override // android.view.SurfaceHolder.Callback2
     public void surfaceRedrawNeededAsync(SurfaceHolder holder, Runnable finishDrawing) {
-        GLThread gLThread = this.mGLThread;
-        if (gLThread != null) {
-            gLThread.requestRenderAndNotify(finishDrawing);
+        if (this.mGLThread != null) {
+            this.mGLThread.requestRenderAndNotify(finishDrawing);
         }
     }
 
@@ -219,18 +212,16 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @Override // android.view.SurfaceView, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (this.mDetached && this.mRenderer != null) {
             int renderMode = 1;
-            GLThread gLThread = this.mGLThread;
-            if (gLThread != null) {
-                renderMode = gLThread.getRenderMode();
+            if (this.mGLThread != null) {
+                renderMode = this.mGLThread.getRenderMode();
             }
-            GLThread gLThread2 = new GLThread(this.mThisWeakRef);
-            this.mGLThread = gLThread2;
+            this.mGLThread = new GLThread(this.mThisWeakRef);
             if (renderMode != 1) {
-                gLThread2.setRenderMode(renderMode);
+                this.mGLThread.setRenderMode(renderMode);
             }
             this.mGLThread.start();
         }
@@ -238,22 +229,16 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     @Override // android.view.SurfaceView, android.view.View
-    public void onDetachedFromWindow() {
-        GLThread gLThread = this.mGLThread;
-        if (gLThread != null) {
-            gLThread.requestExitAndWait();
+    protected void onDetachedFromWindow() {
+        if (this.mGLThread != null) {
+            this.mGLThread.requestExitAndWait();
         }
         this.mDetached = true;
         super.onDetachedFromWindow();
     }
 
-    /* loaded from: classes3.dex */
     private class DefaultContextFactory implements EGLContextFactory {
         private int EGL_CONTEXT_CLIENT_VERSION;
-
-        /* synthetic */ DefaultContextFactory(GLSurfaceView gLSurfaceView, DefaultContextFactoryIA defaultContextFactoryIA) {
-            this();
-        }
 
         private DefaultContextFactory() {
             this.EGL_CONTEXT_CLIENT_VERSION = 12440;
@@ -274,12 +259,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes3.dex */
     private static class DefaultWindowSurfaceFactory implements EGLWindowSurfaceFactory {
-        /* synthetic */ DefaultWindowSurfaceFactory(DefaultWindowSurfaceFactoryIA defaultWindowSurfaceFactoryIA) {
-            this();
-        }
-
         private DefaultWindowSurfaceFactory() {
         }
 
@@ -300,9 +280,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public abstract class BaseConfigChooser implements EGLConfigChooser {
+    private abstract class BaseConfigChooser implements EGLConfigChooser {
         protected int[] mConfigSpec;
 
         abstract javax.microedition.khronos.egl.EGLConfig chooseConfig(EGL10 egl10, javax.microedition.khronos.egl.EGLDisplay eGLDisplay, javax.microedition.khronos.egl.EGLConfig[] eGLConfigArr);
@@ -350,9 +328,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public class ComponentSizeChooser extends BaseConfigChooser {
+    private class ComponentSizeChooser extends BaseConfigChooser {
         protected int mAlphaSize;
         protected int mBlueSize;
         protected int mDepthSize;
@@ -398,15 +374,13 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes3.dex */
     private class SimpleEGLConfigChooser extends ComponentSizeChooser {
         public SimpleEGLConfigChooser(boolean withDepthBuffer) {
             super(8, 8, 8, 0, withDepthBuffer ? 16 : 0, 0);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class EglHelper {
+    private static class EglHelper {
         EGL10 mEgl;
         javax.microedition.khronos.egl.EGLConfig mEglConfig;
         javax.microedition.khronos.egl.EGLContext mEglContext;
@@ -419,11 +393,9 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
         public void start() {
-            EGL10 egl10 = (EGL10) javax.microedition.khronos.egl.EGLContext.getEGL();
-            this.mEgl = egl10;
-            javax.microedition.khronos.egl.EGLDisplay eglGetDisplay = egl10.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-            this.mEglDisplay = eglGetDisplay;
-            if (eglGetDisplay == EGL10.EGL_NO_DISPLAY) {
+            this.mEgl = (EGL10) javax.microedition.khronos.egl.EGLContext.getEGL();
+            this.mEglDisplay = this.mEgl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+            if (this.mEglDisplay == EGL10.EGL_NO_DISPLAY) {
                 throw new RuntimeException("eglGetDisplay failed");
             }
             int[] version = new int[2];
@@ -438,8 +410,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 this.mEglConfig = view.mEGLConfigChooser.chooseConfig(this.mEgl, this.mEglDisplay);
                 this.mEglContext = view.mEGLContextFactory.createContext(this.mEgl, this.mEglDisplay, this.mEglConfig);
             }
-            javax.microedition.khronos.egl.EGLContext eGLContext = this.mEglContext;
-            if (eGLContext == null || eGLContext == EGL10.EGL_NO_CONTEXT) {
+            if (this.mEglContext == null || this.mEglContext == EGL10.EGL_NO_CONTEXT) {
                 this.mEglContext = null;
                 throwEglException("createContext");
             }
@@ -463,18 +434,14 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             } else {
                 this.mEglSurface = null;
             }
-            javax.microedition.khronos.egl.EGLSurface eGLSurface = this.mEglSurface;
-            if (eGLSurface == null || eGLSurface == EGL10.EGL_NO_SURFACE) {
+            if (this.mEglSurface == null || this.mEglSurface == EGL10.EGL_NO_SURFACE) {
                 int error = this.mEgl.eglGetError();
                 if (error == 12299) {
                     Log.e("EglHelper", "createWindowSurface returned EGL_BAD_NATIVE_WINDOW.");
                 }
                 return false;
             }
-            EGL10 egl10 = this.mEgl;
-            javax.microedition.khronos.egl.EGLDisplay eGLDisplay = this.mEglDisplay;
-            javax.microedition.khronos.egl.EGLSurface eGLSurface2 = this.mEglSurface;
-            if (!egl10.eglMakeCurrent(eGLDisplay, eGLSurface2, eGLSurface2, this.mEglContext)) {
+            if (!this.mEgl.eglMakeCurrent(this.mEglDisplay, this.mEglSurface, this.mEglSurface, this.mEglContext)) {
                 logEglErrorAsWarning("EGLHelper", "eglMakeCurrent", this.mEgl.eglGetError());
                 return false;
             }
@@ -516,8 +483,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
         private void destroySurfaceImp() {
-            javax.microedition.khronos.egl.EGLSurface eGLSurface = this.mEglSurface;
-            if (eGLSurface != null && eGLSurface != EGL10.EGL_NO_SURFACE) {
+            if (this.mEglSurface != null && this.mEglSurface != EGL10.EGL_NO_SURFACE) {
                 this.mEgl.eglMakeCurrent(this.mEglDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
                 GLSurfaceView view = this.mGLSurfaceViewWeakRef.get();
                 if (view != null) {
@@ -535,9 +501,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
                 this.mEglContext = null;
             }
-            javax.microedition.khronos.egl.EGLDisplay eGLDisplay = this.mEglDisplay;
-            if (eGLDisplay != null) {
-                this.mEgl.eglTerminate(eGLDisplay);
+            if (this.mEglDisplay != null) {
+                this.mEgl.eglTerminate(this.mEglDisplay);
                 this.mEglDisplay = null;
             }
         }
@@ -560,8 +525,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class GLThread extends Thread {
+    static class GLThread extends Thread {
         private static final String TAG = "GLThread";
         private EglHelper mEglHelper;
         private boolean mExited;
@@ -577,7 +541,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         private boolean mShouldReleaseEglContext;
         private boolean mSurfaceIsBad;
         private boolean mWaitingForSurface;
-        private String mTag = TAG;
         private ArrayList<Runnable> mEventQueue = new ArrayList<>();
         private boolean mSizeChanged = true;
         private Runnable mFinishDrawingRunnable = null;
@@ -589,11 +552,6 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         GLThread(WeakReference<GLSurfaceView> glSurfaceViewWeakRef) {
             this.mGLSurfaceViewWeakRef = glSurfaceViewWeakRef;
-            setTag();
-        }
-
-        private void setTag() {
-            this.mTag = "GLThread@" + getId();
         }
 
         @Override // java.lang.Thread, java.lang.Runnable
@@ -624,9 +582,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
-        /* JADX WARN: Failed to find 'out' block for switch in B:116:0x0245. Please report as an issue. */
-        /* JADX WARN: Removed duplicated region for block: B:126:0x0268  */
-        /* JADX WARN: Removed duplicated region for block: B:222:0x02a2 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+        /* JADX WARN: Removed duplicated region for block: B:137:0x0263  */
+        /* JADX WARN: Removed duplicated region for block: B:219:0x029b A[EXC_TOP_SPLITTER, SYNTHETIC] */
         /* JADX WARN: Unreachable blocks removed: 2, instructions: 2 */
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -634,7 +591,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         */
         private void guardedRun() throws java.lang.InterruptedException {
             /*
-                Method dump skipped, instructions count: 696
+                Method dump skipped, instructions count: 688
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
             throw new UnsupportedOperationException("Method not decompiled: android.opengl.GLSurfaceView.GLThread.guardedRun():void");
@@ -692,7 +649,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
-        public static /* synthetic */ void lambda$requestRenderAndNotify$0(Runnable oldCallback, Runnable finishDrawing) {
+        static /* synthetic */ void lambda$requestRenderAndNotify$0(Runnable oldCallback, Runnable finishDrawing) {
             if (oldCallback != null) {
                 oldCallback.run();
             }
@@ -811,8 +768,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class LogWriter extends Writer {
+    static class LogWriter extends Writer {
         private StringBuilder mBuilder = new StringBuilder();
 
         LogWriter() {
@@ -843,8 +799,7 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         private void flushBuilder() {
             if (this.mBuilder.length() > 0) {
                 Log.v(GLSurfaceView.TAG, this.mBuilder.toString());
-                StringBuilder sb = this.mBuilder;
-                sb.delete(0, sb.length());
+                this.mBuilder.delete(0, this.mBuilder.length());
             }
         }
     }
@@ -855,13 +810,8 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class GLThreadManager {
+    private static class GLThreadManager {
         private static String TAG = "GLThreadManager";
-
-        /* synthetic */ GLThreadManager(GLThreadManagerIA gLThreadManagerIA) {
-            this();
-        }
 
         private GLThreadManager() {
         }

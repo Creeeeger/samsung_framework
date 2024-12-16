@@ -9,15 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.ExtensionDescriptor> {
+    ExtensionSchemaLite() {
+    }
+
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public boolean hasExtensions(MessageLite prototype) {
+    boolean hasExtensions(MessageLite prototype) {
         return prototype instanceof GeneratedMessageLite.ExtendableMessage;
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public FieldSet<GeneratedMessageLite.ExtensionDescriptor> getExtensions(Object message) {
+    FieldSet<GeneratedMessageLite.ExtensionDescriptor> getExtensions(Object message) {
         return ((GeneratedMessageLite.ExtendableMessage) message).extensions;
     }
 
@@ -27,20 +30,19 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public FieldSet<GeneratedMessageLite.ExtensionDescriptor> getMutableExtensions(Object message) {
+    FieldSet<GeneratedMessageLite.ExtensionDescriptor> getMutableExtensions(Object message) {
         return ((GeneratedMessageLite.ExtendableMessage) message).ensureExtensionsAreMutable();
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public void makeImmutable(Object message) {
+    void makeImmutable(Object message) {
         getExtensions(message).makeImmutable();
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:43:0x0135. Please report as an issue. */
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public <UT, UB> UB parseExtension(Object obj, Reader reader, Object obj2, ExtensionRegistryLite extensionRegistryLite, FieldSet<GeneratedMessageLite.ExtensionDescriptor> fieldSet, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) throws IOException {
+    <UT, UB> UB parseExtension(Object obj, Reader reader, Object obj2, ExtensionRegistryLite extensionRegistryLite, FieldSet<GeneratedMessageLite.ExtensionDescriptor> fieldSet, UB ub, UnknownFieldSchema<UT, UB> unknownFieldSchema) throws IOException {
         ArrayList arrayList;
         UB ub2 = ub;
         GeneratedMessageLite.GeneratedExtension generatedExtension = (GeneratedMessageLite.GeneratedExtension) obj2;
@@ -234,16 +236,13 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
         return ub2;
     }
 
-    /* renamed from: com.android.framework.protobuf.ExtensionSchemaLite$1 */
-    /* loaded from: classes4.dex */
+    /* renamed from: com.android.framework.protobuf.ExtensionSchemaLite$1, reason: invalid class name */
     static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType;
+        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$WireFormat$FieldType = new int[WireFormat.FieldType.values().length];
 
         static {
-            int[] iArr = new int[WireFormat.FieldType.values().length];
-            $SwitchMap$com$google$protobuf$WireFormat$FieldType = iArr;
             try {
-                iArr[WireFormat.FieldType.DOUBLE.ordinal()] = 1;
+                $SwitchMap$com$google$protobuf$WireFormat$FieldType[WireFormat.FieldType.DOUBLE.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -318,156 +317,152 @@ final class ExtensionSchemaLite extends ExtensionSchema<GeneratedMessageLite.Ext
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public int extensionNumber(Map.Entry<?, ?> extension) {
+    int extensionNumber(Map.Entry<?, ?> extension) {
         GeneratedMessageLite.ExtensionDescriptor descriptor = (GeneratedMessageLite.ExtensionDescriptor) extension.getKey();
         return descriptor.getNumber();
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public void serializeExtension(Writer writer, Map.Entry<?, ?> extension) throws IOException {
+    void serializeExtension(Writer writer, Map.Entry<?, ?> extension) throws IOException {
         GeneratedMessageLite.ExtensionDescriptor descriptor = (GeneratedMessageLite.ExtensionDescriptor) extension.getKey();
         if (descriptor.isRepeated()) {
             switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[descriptor.getLiteType().ordinal()]) {
                 case 1:
                     SchemaUtil.writeDoubleList(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 2:
                     SchemaUtil.writeFloatList(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 3:
                     SchemaUtil.writeInt64List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 4:
                     SchemaUtil.writeUInt64List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 5:
                     SchemaUtil.writeInt32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 6:
                     SchemaUtil.writeFixed64List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 7:
                     SchemaUtil.writeFixed32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 8:
                     SchemaUtil.writeBoolList(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 9:
                     SchemaUtil.writeUInt32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 10:
                     SchemaUtil.writeSFixed32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 11:
                     SchemaUtil.writeSFixed64List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 12:
                     SchemaUtil.writeSInt32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 13:
                     SchemaUtil.writeSInt64List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 14:
                     SchemaUtil.writeInt32List(descriptor.getNumber(), (List) extension.getValue(), writer, descriptor.isPacked());
-                    return;
+                    break;
                 case 15:
                     SchemaUtil.writeBytesList(descriptor.getNumber(), (List) extension.getValue(), writer);
-                    return;
+                    break;
                 case 16:
                     SchemaUtil.writeStringList(descriptor.getNumber(), (List) extension.getValue(), writer);
-                    return;
+                    break;
                 case 17:
                     List<?> data = (List) extension.getValue();
                     if (data != null && !data.isEmpty()) {
                         SchemaUtil.writeGroupList(descriptor.getNumber(), (List) extension.getValue(), writer, Protobuf.getInstance().schemaFor((Class) data.get(0).getClass()));
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 18:
                     List<?> data2 = (List) extension.getValue();
                     if (data2 != null && !data2.isEmpty()) {
                         SchemaUtil.writeMessageList(descriptor.getNumber(), (List) extension.getValue(), writer, Protobuf.getInstance().schemaFor((Class) data2.get(0).getClass()));
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
         switch (AnonymousClass1.$SwitchMap$com$google$protobuf$WireFormat$FieldType[descriptor.getLiteType().ordinal()]) {
             case 1:
                 writer.writeDouble(descriptor.getNumber(), ((Double) extension.getValue()).doubleValue());
-                return;
+                break;
             case 2:
                 writer.writeFloat(descriptor.getNumber(), ((Float) extension.getValue()).floatValue());
-                return;
+                break;
             case 3:
                 writer.writeInt64(descriptor.getNumber(), ((Long) extension.getValue()).longValue());
-                return;
+                break;
             case 4:
                 writer.writeUInt64(descriptor.getNumber(), ((Long) extension.getValue()).longValue());
-                return;
+                break;
             case 5:
                 writer.writeInt32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 6:
                 writer.writeFixed64(descriptor.getNumber(), ((Long) extension.getValue()).longValue());
-                return;
+                break;
             case 7:
                 writer.writeFixed32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 8:
                 writer.writeBool(descriptor.getNumber(), ((Boolean) extension.getValue()).booleanValue());
-                return;
+                break;
             case 9:
                 writer.writeUInt32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 10:
                 writer.writeSFixed32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 11:
                 writer.writeSFixed64(descriptor.getNumber(), ((Long) extension.getValue()).longValue());
-                return;
+                break;
             case 12:
                 writer.writeSInt32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 13:
                 writer.writeSInt64(descriptor.getNumber(), ((Long) extension.getValue()).longValue());
-                return;
+                break;
             case 14:
                 writer.writeInt32(descriptor.getNumber(), ((Integer) extension.getValue()).intValue());
-                return;
+                break;
             case 15:
                 writer.writeBytes(descriptor.getNumber(), (ByteString) extension.getValue());
-                return;
+                break;
             case 16:
                 writer.writeString(descriptor.getNumber(), (String) extension.getValue());
-                return;
+                break;
             case 17:
                 writer.writeGroup(descriptor.getNumber(), extension.getValue(), Protobuf.getInstance().schemaFor((Class) extension.getValue().getClass()));
-                return;
+                break;
             case 18:
                 writer.writeMessage(descriptor.getNumber(), extension.getValue(), Protobuf.getInstance().schemaFor((Class) extension.getValue().getClass()));
-                return;
-            default:
-                return;
+                break;
         }
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public Object findExtensionByNumber(ExtensionRegistryLite extensionRegistry, MessageLite defaultInstance, int number) {
+    Object findExtensionByNumber(ExtensionRegistryLite extensionRegistry, MessageLite defaultInstance, int number) {
         return extensionRegistry.findLiteExtensionByNumber(defaultInstance, number);
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public void parseLengthPrefixedMessageSetItem(Reader reader, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
+    void parseLengthPrefixedMessageSetItem(Reader reader, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
         GeneratedMessageLite.GeneratedExtension<?, ?> extension = (GeneratedMessageLite.GeneratedExtension) extensionObject;
         Object value = reader.readMessage(extension.getMessageDefaultInstance().getClass(), extensionRegistry);
         extensions.setField(extension.descriptor, value);
     }
 
     @Override // com.android.framework.protobuf.ExtensionSchema
-    public void parseMessageSetItem(ByteString data, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
+    void parseMessageSetItem(ByteString data, Object extensionObject, ExtensionRegistryLite extensionRegistry, FieldSet<GeneratedMessageLite.ExtensionDescriptor> extensions) throws IOException {
         GeneratedMessageLite.GeneratedExtension<?, ?> extension = (GeneratedMessageLite.GeneratedExtension) extensionObject;
         MessageLite.Builder builder = extension.getMessageDefaultInstance().newBuilderForType();
         CodedInputStream input = data.newCodedInput();

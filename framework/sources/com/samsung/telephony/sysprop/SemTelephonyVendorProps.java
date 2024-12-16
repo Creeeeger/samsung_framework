@@ -55,15 +55,8 @@ public final class SemTelephonyVendorProps {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -106,7 +99,7 @@ public final class SemTelephonyVendorProps {
         }
     }
 
-    public static String tryParseString(String str) {
+    private static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;
         }
@@ -217,16 +210,9 @@ public final class SemTelephonyVendorProps {
         return Optional.ofNullable(tryParseString(value));
     }
 
-    public static List<String> build_characteristics() {
+    public static Optional<String> build_characteristics() {
         String value = SystemProperties.get("ro.vendor.build.characteristics");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyVendorProps$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                String tryParseString;
-                tryParseString = SemTelephonyVendorProps.tryParseString((String) obj);
-                return tryParseString;
-            }
-        }, value);
+        return Optional.ofNullable(tryParseString(value));
     }
 
     public static Optional<Integer> radio_default_network() {

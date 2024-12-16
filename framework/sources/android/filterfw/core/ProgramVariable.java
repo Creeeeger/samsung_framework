@@ -19,18 +19,16 @@ public class ProgramVariable {
     }
 
     public void setValue(Object value) {
-        Program program = this.mProgram;
-        if (program == null) {
+        if (this.mProgram == null) {
             throw new RuntimeException("Attempting to set program variable '" + this.mVarName + "' but the program is null!");
         }
-        program.setHostValue(this.mVarName, value);
+        this.mProgram.setHostValue(this.mVarName, value);
     }
 
     public Object getValue() {
-        Program program = this.mProgram;
-        if (program == null) {
+        if (this.mProgram == null) {
             throw new RuntimeException("Attempting to get program variable '" + this.mVarName + "' but the program is null!");
         }
-        return program.getHostValue(this.mVarName);
+        return this.mProgram.getHostValue(this.mVarName);
     }
 }

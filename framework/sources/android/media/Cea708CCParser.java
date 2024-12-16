@@ -9,10 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: Cea708CaptionRenderer.java */
 /* loaded from: classes2.dex */
-public class Cea708CCParser {
+class Cea708CCParser {
     public static final int CAPTION_EMIT_TYPE_BUFFER = 1;
     public static final int CAPTION_EMIT_TYPE_COMMAND_CLW = 4;
     public static final int CAPTION_EMIT_TYPE_COMMAND_CWX = 3;
@@ -37,29 +36,12 @@ public class Cea708CCParser {
     private DisplayListener mListener;
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public interface DisplayListener {
+    interface DisplayListener {
         void emitEvent(CaptionEvent captionEvent);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* compiled from: Cea708CaptionRenderer.java */
-    /* renamed from: android.media.Cea708CCParser$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements DisplayListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.Cea708CCParser.DisplayListener
-        public void emitEvent(CaptionEvent event) {
-        }
-    }
-
-    public Cea708CCParser(DisplayListener listener) {
+    Cea708CCParser(DisplayListener listener) {
         this.mListener = new DisplayListener() { // from class: android.media.Cea708CCParser.1
-            AnonymousClass1() {
-            }
-
             @Override // android.media.Cea708CCParser.DisplayListener
             public void emitEvent(CaptionEvent event) {
             }
@@ -90,31 +72,29 @@ public class Cea708CCParser {
     }
 
     private int parseServiceBlockData(byte[] data, int pos) {
-        int i = data[pos] & 255;
-        this.mCommand = i;
+        this.mCommand = data[pos] & 255;
         int pos2 = pos + 1;
-        if (i == 16) {
+        if (this.mCommand == 16) {
             return parseExt1(data, pos2);
         }
-        if (i >= 0 && i <= 31) {
+        if (this.mCommand >= 0 && this.mCommand <= 31) {
             return parseC0(data, pos2);
         }
-        if (i >= 128 && i <= 159) {
+        if (this.mCommand >= 128 && this.mCommand <= 159) {
             return parseC1(data, pos2);
         }
-        if (i >= 32 && i <= 127) {
+        if (this.mCommand >= 32 && this.mCommand <= 127) {
             return parseG0(data, pos2);
         }
-        if (i >= 160 && i <= 255) {
+        if (this.mCommand >= 160 && this.mCommand <= 255) {
             return parseG1(data, pos2);
         }
         return pos2;
     }
 
     private int parseC0(byte[] data, int pos) {
-        int i = this.mCommand;
-        if (i >= 24 && i <= 31) {
-            if (i == 24) {
+        if (this.mCommand >= 24 && this.mCommand <= 31) {
+            if (this.mCommand == 24) {
                 try {
                     if (data[pos] == 0) {
                         this.mBuffer.append((char) data[pos + 1]);
@@ -128,36 +108,33 @@ public class Cea708CCParser {
             }
             return pos + 2;
         }
-        if (i >= 16 && i <= 23) {
+        if (this.mCommand >= 16 && this.mCommand <= 23) {
             return pos + 1;
         }
-        switch (i) {
+        switch (this.mCommand) {
             case 0:
             default:
                 return pos;
             case 3:
-                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) i)));
+                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) this.mCommand)));
                 return pos;
             case 8:
-                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) i)));
+                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) this.mCommand)));
                 return pos;
             case 12:
-                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) i)));
+                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) this.mCommand)));
                 return pos;
             case 13:
                 this.mBuffer.append('\n');
                 return pos;
             case 14:
-                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) i)));
+                emitCaptionEvent(new CaptionEvent(2, Character.valueOf((char) this.mCommand)));
                 return pos;
         }
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0012. Please report as an issue. */
     private int parseC1(byte[] data, int pos) {
-        int windowBitmap = this.mCommand;
-        switch (windowBitmap) {
+        switch (this.mCommand) {
             case 128:
             case 129:
             case 130:
@@ -166,29 +143,35 @@ public class Cea708CCParser {
             case 133:
             case 134:
             case 135:
+                int windowBitmap = this.mCommand;
                 int windowId = windowBitmap - 128;
                 emitCaptionEvent(new CaptionEvent(3, Integer.valueOf(windowId)));
-                return pos;
+                break;
             case 136:
+                int windowBitmap2 = data[pos];
                 int pos2 = pos + 1;
-                emitCaptionEvent(new CaptionEvent(4, Integer.valueOf(data[pos] & 255)));
+                emitCaptionEvent(new CaptionEvent(4, Integer.valueOf(windowBitmap2 & 255)));
                 return pos2;
             case 137:
+                int windowBitmap3 = data[pos];
                 int pos3 = pos + 1;
-                emitCaptionEvent(new CaptionEvent(5, Integer.valueOf(data[pos] & 255)));
+                emitCaptionEvent(new CaptionEvent(5, Integer.valueOf(windowBitmap3 & 255)));
                 return pos3;
             case 138:
+                int windowBitmap4 = data[pos];
                 int pos4 = pos + 1;
-                emitCaptionEvent(new CaptionEvent(6, Integer.valueOf(data[pos] & 255)));
+                emitCaptionEvent(new CaptionEvent(6, Integer.valueOf(windowBitmap4 & 255)));
                 return pos4;
             case 139:
+                int windowBitmap5 = data[pos];
                 int pos5 = pos + 1;
-                emitCaptionEvent(new CaptionEvent(7, Integer.valueOf(data[pos] & 255)));
+                emitCaptionEvent(new CaptionEvent(7, Integer.valueOf(windowBitmap5 & 255)));
                 return pos5;
             case 140:
                 int tenthsOfSeconds = data[pos];
+                int windowBitmap6 = tenthsOfSeconds & 255;
                 int pos6 = pos + 1;
-                emitCaptionEvent(new CaptionEvent(8, Integer.valueOf(tenthsOfSeconds & 255)));
+                emitCaptionEvent(new CaptionEvent(8, Integer.valueOf(windowBitmap6)));
                 return pos6;
             case 141:
                 int tenthsOfSeconds2 = data[pos] & 255;
@@ -197,10 +180,10 @@ public class Cea708CCParser {
                 return pos7;
             case 142:
                 emitCaptionEvent(new CaptionEvent(10, null));
-                return pos;
+                break;
             case 143:
                 emitCaptionEvent(new CaptionEvent(11, null));
-                return pos;
+                break;
             case 144:
                 int opacity = data[pos];
                 int textTag = (opacity & 240) >> 4;
@@ -240,12 +223,6 @@ public class Cea708CCParser {
                 int pos12 = pos + 2;
                 emitCaptionEvent(new CaptionEvent(14, new CaptionPenLocation(row2, column)));
                 return pos12;
-            case 147:
-            case 148:
-            case 149:
-            case 150:
-            default:
-                return pos;
             case 151:
                 int windowId2 = data[pos];
                 int opacity4 = (windowId2 & 192) >> 6;
@@ -276,7 +253,7 @@ public class Cea708CCParser {
             case 157:
             case 158:
             case 159:
-                int windowId3 = windowBitmap - 152;
+                int windowId3 = this.mCommand - 152;
                 boolean visible = (data[pos] & 32) != 0;
                 boolean rowLock = (data[pos] & 16) != 0;
                 boolean columnLock = (data[pos] & 8) != 0;
@@ -293,14 +270,14 @@ public class Cea708CCParser {
                 emitCaptionEvent(new CaptionEvent(16, new CaptionWindow(windowId3, visible, rowLock, columnLock, priority, relativePositioning, anchorVertical, anchorHorizontal, anchorId, rowCount, columnCount, penStyle, windowStyle)));
                 return pos14;
         }
+        return pos;
     }
 
     private int parseG0(byte[] data, int pos) {
-        int i = this.mCommand;
-        if (i == 127) {
+        if (this.mCommand == 127) {
             this.mBuffer.append(MUSIC_NOTE_CHAR);
         } else {
-            this.mBuffer.append((char) i);
+            this.mBuffer.append((char) this.mCommand);
         }
         return pos;
     }
@@ -311,34 +288,32 @@ public class Cea708CCParser {
     }
 
     private int parseExt1(byte[] data, int pos) {
-        int i = data[pos] & 255;
-        this.mCommand = i;
+        this.mCommand = data[pos] & 255;
         int pos2 = pos + 1;
-        if (i >= 0 && i <= 31) {
+        if (this.mCommand >= 0 && this.mCommand <= 31) {
             return parseC2(data, pos2);
         }
-        if (i >= 128 && i <= 159) {
+        if (this.mCommand >= 128 && this.mCommand <= 159) {
             return parseC3(data, pos2);
         }
-        if (i >= 32 && i <= 127) {
+        if (this.mCommand >= 32 && this.mCommand <= 127) {
             return parseG2(data, pos2);
         }
-        if (i >= 160 && i <= 255) {
+        if (this.mCommand >= 160 && this.mCommand <= 255) {
             return parseG3(data, pos2);
         }
         return pos2;
     }
 
     private int parseC2(byte[] data, int pos) {
-        int i = this.mCommand;
-        if (i < 0 || i > 7) {
-            if (i >= 8 && i <= 15) {
+        if (this.mCommand < 0 || this.mCommand > 7) {
+            if (this.mCommand >= 8 && this.mCommand <= 15) {
                 return pos + 1;
             }
-            if (i >= 16 && i <= 23) {
+            if (this.mCommand >= 16 && this.mCommand <= 23) {
                 return pos + 2;
             }
-            if (i >= 24 && i <= 31) {
+            if (this.mCommand >= 24 && this.mCommand <= 31) {
                 return pos + 3;
             }
             return pos;
@@ -347,24 +322,20 @@ public class Cea708CCParser {
     }
 
     private int parseC3(byte[] data, int pos) {
-        int i = this.mCommand;
-        if (i >= 128 && i <= 135) {
+        if (this.mCommand >= 128 && this.mCommand <= 135) {
             return pos + 4;
         }
-        if (i >= 136 && i <= 143) {
+        if (this.mCommand >= 136 && this.mCommand <= 143) {
             return pos + 5;
         }
         return pos;
     }
 
+    /* JADX WARN: Failed to find 'out' block for switch in B:2:0x0002. Please report as an issue. */
     private int parseG2(byte[] data, int pos) {
         switch (this.mCommand) {
-            case 32:
-            case 33:
-            case 48:
-            default:
-                return pos;
         }
+        return pos;
     }
 
     private int parseG3(byte[] data, int pos) {
@@ -372,7 +343,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     private static class Const {
         public static final int CODE_C0_BS = 8;
         public static final int CODE_C0_CR = 13;
@@ -453,7 +423,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionColor {
         public static final int OPACITY_FLASH = 1;
         public static final int OPACITY_SOLID = 0;
@@ -474,14 +443,11 @@ public class Cea708CCParser {
         }
 
         public int getArgbValue() {
-            int i = OPACITY_MAP[this.opacity];
-            int[] iArr = COLOR_MAP;
-            return Color.argb(i, iArr[this.red], iArr[this.green], iArr[this.blue]);
+            return Color.argb(OPACITY_MAP[this.opacity], COLOR_MAP[this.red], COLOR_MAP[this.green], COLOR_MAP[this.blue]);
         }
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionEvent {
         public final Object obj;
         public final int type;
@@ -493,7 +459,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionPenAttr {
         public static final int OFFSET_NORMAL = 1;
         public static final int OFFSET_SUBSCRIPT = 0;
@@ -521,7 +486,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionPenColor {
         public final CaptionColor backgroundColor;
         public final CaptionColor edgeColor;
@@ -535,7 +499,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionPenLocation {
         public final int column;
         public final int row;
@@ -547,7 +510,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionWindowAttr {
         public final CaptionColor borderColor;
         public final int borderType;
@@ -575,7 +537,6 @@ public class Cea708CCParser {
     }
 
     /* compiled from: Cea708CaptionRenderer.java */
-    /* loaded from: classes2.dex */
     public static class CaptionWindow {
         public final int anchorHorizontal;
         public final int anchorId;

@@ -1,14 +1,14 @@
 package com.android.internal.org.bouncycastle.asn1;
 
 /* loaded from: classes5.dex */
-public class BERFactory {
+class BERFactory {
     static final BERSequence EMPTY_SEQUENCE = new BERSequence();
     static final BERSet EMPTY_SET = new BERSet();
 
     BERFactory() {
     }
 
-    public static BERSequence createSequence(ASN1EncodableVector v) {
+    static BERSequence createSequence(ASN1EncodableVector v) {
         if (v.size() < 1) {
             return EMPTY_SEQUENCE;
         }

@@ -6,12 +6,13 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetdEventCallback extends IInterface {
     public static final int CALLBACK_CALLER_CONNECTIVITY_SERVICE = 0;
     public static final int CALLBACK_CALLER_DEVICE_POLICY = 1;
     public static final int CALLBACK_CALLER_ECHOLOCATE_SERVICE = 4;
     public static final int CALLBACK_CALLER_INDIVIDUAL_APPS = 3;
+    public static final int CALLBACK_CALLER_INTELLIGENT_NETWORK_TRAFFIC_CONTROLLER = 5;
     public static final int CALLBACK_CALLER_NETWORK_WATCHLIST = 2;
 
     void onConnectEvent(String str, int i, long j, int i2) throws RemoteException;
@@ -22,7 +23,6 @@ public interface INetdEventCallback extends IInterface {
 
     void onPrivateDnsValidationEvent(int i, String str, String str2, boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetdEventCallback {
         @Override // android.net.INetdEventCallback
         public void onDnsEvent(int netId, int eventType, int returnCode, String hostname, String[] ipAddresses, int ipAddressesCount, long timestamp, int uid) throws RemoteException {
@@ -46,7 +46,6 @@ public interface INetdEventCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetdEventCallback {
         public static final String DESCRIPTOR = "android.net.INetdEventCallback";
         static final int TRANSACTION_onConnectEvent = 4;
@@ -99,57 +98,53 @@ public interface INetdEventCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    String[] _arg4 = data.createStringArray();
+                    int _arg5 = data.readInt();
+                    long _arg6 = data.readLong();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDnsEvent(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onNat64PrefixEvent(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    boolean _arg33 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onPrivateDnsValidationEvent(_arg03, _arg13, _arg23, _arg33);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    long _arg24 = data.readLong();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onConnectEvent(_arg04, _arg14, _arg24, _arg34);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            String[] _arg4 = data.createStringArray();
-                            int _arg5 = data.readInt();
-                            long _arg6 = data.readLong();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDnsEvent(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onNat64PrefixEvent(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            boolean _arg33 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onPrivateDnsValidationEvent(_arg03, _arg13, _arg23, _arg33);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            long _arg24 = data.readLong();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onConnectEvent(_arg04, _arg14, _arg24, _arg34);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetdEventCallback {
+        private static class Proxy implements INetdEventCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

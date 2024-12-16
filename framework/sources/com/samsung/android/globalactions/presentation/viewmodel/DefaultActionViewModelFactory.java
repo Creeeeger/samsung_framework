@@ -22,7 +22,7 @@ import com.samsung.android.globalactions.util.ToastController;
 import com.samsung.android.globalactions.util.UsageStatsWrapper;
 import com.samsung.android.globalactions.util.UtilFactory;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DefaultActionViewModelFactory implements ActionViewModelFactory {
     private final ConditionChecker mConditionChecker;
     FeatureFactory mFeatureFactory;

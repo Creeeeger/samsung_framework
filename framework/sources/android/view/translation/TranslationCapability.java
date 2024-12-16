@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class TranslationCapability implements Parcelable {
     public static final Parcelable.Creator<TranslationCapability> CREATOR = new Parcelable.Creator<TranslationCapability>() { // from class: android.view.translation.TranslationCapability.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationCapability[] newArray(int size) {
             return new TranslationCapability[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TranslationCapability createFromParcel(Parcel in) {
             return new TranslationCapability(in);
@@ -40,7 +39,6 @@ public final class TranslationCapability implements Parcelable {
     private final boolean mUiTranslationEnabled;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ModelState {
     }
 
@@ -119,33 +117,16 @@ public final class TranslationCapability implements Parcelable {
         TranslationSpec targetSpec = (TranslationSpec) in.readTypedObject(TranslationSpec.CREATOR);
         int supportedTranslationFlags = in.readInt();
         this.mState = state;
-        if (state != 1 && state != 2 && state != 3 && state != 4 && state != 1000) {
-            throw new IllegalArgumentException("state was " + state + " but must be one of: STATE_AVAILABLE_TO_DOWNLOAD(1), STATE_DOWNLOADING(2), STATE_ON_DEVICE(3), STATE_NOT_AVAILABLE(4), STATE_REMOVED_AND_AVAILABLE(1000" + NavigationBarInflaterView.KEY_CODE_END);
+        if (this.mState != 1 && this.mState != 2 && this.mState != 3 && this.mState != 4 && this.mState != 1000) {
+            throw new IllegalArgumentException("state was " + this.mState + " but must be one of: STATE_AVAILABLE_TO_DOWNLOAD(1), STATE_DOWNLOADING(2), STATE_ON_DEVICE(3), STATE_NOT_AVAILABLE(4), STATE_REMOVED_AND_AVAILABLE(1000" + NavigationBarInflaterView.KEY_CODE_END);
         }
         this.mSourceSpec = sourceSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) sourceSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSourceSpec);
         this.mTargetSpec = targetSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) targetSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mTargetSpec);
         this.mUiTranslationEnabled = uiTranslationEnabled;
         this.mSupportedTranslationFlags = supportedTranslationFlags;
-        AnnotationValidations.validate((Class<? extends Annotation>) TranslationContext.TranslationFlag.class, (Annotation) null, supportedTranslationFlags);
-    }
-
-    /* renamed from: android.view.translation.TranslationCapability$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TranslationCapability> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationCapability[] newArray(int size) {
-            return new TranslationCapability[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TranslationCapability createFromParcel(Parcel in) {
-            return new TranslationCapability(in);
-        }
+        AnnotationValidations.validate((Class<? extends Annotation>) TranslationContext.TranslationFlag.class, (Annotation) null, this.mSupportedTranslationFlags);
     }
 
     @Deprecated

@@ -14,7 +14,6 @@ public interface IWritableCredential extends IInterface {
 
     byte[] personalize(AccessControlProfileParcel[] accessControlProfileParcelArr, EntryNamespaceParcel[] entryNamespaceParcelArr, long j) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IWritableCredential {
         @Override // android.security.identity.IWritableCredential
         public byte[] getCredentialKeyCertificateChain(byte[] challenge) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IWritableCredential extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IWritableCredential {
         static final int TRANSACTION_getCredentialKeyCertificateChain = 1;
         static final int TRANSACTION_personalize = 2;
@@ -78,36 +76,33 @@ public interface IWritableCredential extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWritableCredential.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWritableCredential.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWritableCredential.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result = getCredentialKeyCertificateChain(_arg0);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
+                    return true;
+                case 2:
+                    AccessControlProfileParcel[] _arg02 = (AccessControlProfileParcel[]) data.createTypedArray(AccessControlProfileParcel.CREATOR);
+                    EntryNamespaceParcel[] _arg1 = (EntryNamespaceParcel[]) data.createTypedArray(EntryNamespaceParcel.CREATOR);
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = personalize(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result = getCredentialKeyCertificateChain(_arg0);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        case 2:
-                            AccessControlProfileParcel[] _arg02 = (AccessControlProfileParcel[]) data.createTypedArray(AccessControlProfileParcel.CREATOR);
-                            EntryNamespaceParcel[] _arg1 = (EntryNamespaceParcel[]) data.createTypedArray(EntryNamespaceParcel.CREATOR);
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = personalize(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IWritableCredential {
+        private static class Proxy implements IWritableCredential {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -2,9 +2,8 @@ package com.android.internal.os;
 
 import android.app.ApplicationLoaders;
 import android.content.pm.SharedLibraryInfo;
+import android.content.pm.VersionedPackage;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.MediaMetrics;
 import android.os.Build;
 import android.os.Environment;
@@ -32,7 +31,6 @@ import android.util.TimingsTraceLog;
 import android.view.WindowManager;
 import android.webkit.WebViewFactory;
 import android.widget.TextView;
-import com.android.internal.R;
 import com.android.internal.os.RuntimeInit;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.internal.util.Preconditions;
@@ -59,23 +57,18 @@ public class ZygoteInit {
     private static final String ABI_LIST_ARG = "--abi-list=";
     private static final int LOG_BOOT_PROGRESS_PRELOAD_END = 3030;
     private static final int LOG_BOOT_PROGRESS_PRELOAD_START = 3020;
-    private static boolean PARALLEL_LOAD = false;
-    private static boolean PARALLEL_LOAD_PROPERTY = false;
     private static final String PRELOADED_CLASSES = "/system/etc/preloaded-classes";
-    private static final boolean PRELOAD_RESOURCES = true;
     private static final String PROPERTY_DISABLE_GRAPHICS_DRIVER_PRELOADING = "ro.zygote.disable_gl_preload";
     private static final int ROOT_GID = 0;
     private static final int ROOT_UID = 0;
     private static final String SOCKET_NAME_ARG = "--socket-name=";
     private static final int UNPRIVILEGED_GID = 9999;
     private static final int UNPRIVILEGED_UID = 9999;
-    private static Resources mResources;
-    private static ClassLoader sCachedSystemServerClassLoader;
     private static boolean sPreloadComplete;
-    private static boolean startSystemServer;
     private static final String TAG = "Zygote";
     private static final boolean LOGGING_DEBUG = Log.isLoggable(TAG, 3);
-    private static boolean PARALLEL_LOAD_FEATURE = SystemProperties.getBoolean("persist.zit.enable", false);
+    private static boolean startSystemServer = false;
+    private static ClassLoader sCachedSystemServerClassLoader = null;
 
     private static native void nativePreloadAppProcessHALs();
 
@@ -83,15 +76,7 @@ public class ZygoteInit {
 
     private static native void nativeZygoteInit();
 
-    static {
-        boolean z = SystemProperties.getBoolean("persist.zit.try", false);
-        PARALLEL_LOAD_PROPERTY = z;
-        PARALLEL_LOAD = z & PARALLEL_LOAD_FEATURE;
-        startSystemServer = false;
-        sCachedSystemServerClassLoader = null;
-    }
-
-    public static void preload(TimingsTraceLog bootTimingsTraceLog) {
+    static void preload(TimingsTraceLog bootTimingsTraceLog) {
         Log.d(TAG, "begin preload");
         if (startSystemServer) {
             Log.i(TAG, "!@Boot: Begin of preload()");
@@ -104,7 +89,7 @@ public class ZygoteInit {
             Log.i(TAG, "!@Boot_EBS_F: Preload Classes");
         }
         bootTimingsTraceLog.traceBegin("PreloadClasses");
-        selectPreloadClasses();
+        preloadClasses();
         bootTimingsTraceLog.traceEnd();
         bootTimingsTraceLog.traceBegin("CacheNonBootClasspathClassLoaders");
         cacheNonBootClasspathClassLoaders();
@@ -113,7 +98,7 @@ public class ZygoteInit {
         if (startSystemServer) {
             Log.i(TAG, "!@Boot_EBS_F: Preload Resources");
         }
-        preloadResources();
+        Resources.preloadResources();
         bootTimingsTraceLog.traceEnd();
         Trace.traceBegin(16384L, "PreloadAppProcessHALs");
         nativePreloadAppProcessHALs();
@@ -134,7 +119,7 @@ public class ZygoteInit {
         sPreloadComplete = true;
     }
 
-    public static void lazyPreload() {
+    static void lazyPreload() {
         Preconditions.checkState(!sPreloadComplete);
         Log.i(TAG, "Lazily preloading resources.");
         preload(new TimingsTraceLog("ZygoteInitTiming_lazy", 16384L));
@@ -203,7 +188,7 @@ public class ZygoteInit {
         return SystemProperties.getBoolean("persist.device_config.runtime_native_boot." + experiment, defaultValue);
     }
 
-    public static boolean shouldProfileSystemServer() {
+    static boolean shouldProfileSystemServer() {
         return isExperimentEnabled("profilesystemserver");
     }
 
@@ -362,169 +347,18 @@ public class ZygoteInit {
 
     private static void cacheNonBootClasspathClassLoaders() {
         List<SharedLibraryInfo> libs = new ArrayList<>();
-        libs.add(new SharedLibraryInfo("/system/framework/android.hidl.base-V1.0-java.jar", null, null, null, 0L, 0, null, null, null, false));
-        libs.add(new SharedLibraryInfo("/system/framework/android.hidl.manager-V1.0-java.jar", null, null, null, 0L, 0, null, null, null, false));
-        libs.add(new SharedLibraryInfo("/system/framework/android.test.base.jar", null, null, null, 0L, 0, null, null, null, false));
-        if (WindowManager.hasWindowExtensionsEnabled()) {
+        libs.add(new SharedLibraryInfo("/system/framework/android.hidl.base-V1.0-java.jar", (String) null, (List<String>) null, (String) null, 0L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
+        libs.add(new SharedLibraryInfo("/system/framework/android.hidl.manager-V1.0-java.jar", (String) null, (List<String>) null, (String) null, 0L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
+        libs.add(new SharedLibraryInfo("/system/framework/android.test.base.jar", (String) null, (List<String>) null, (String) null, 0L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
+        if (Flags.enableApacheHttpLegacyPreload()) {
+            libs.add(new SharedLibraryInfo("/system/framework/org.apache.http.legacy.jar", (String) null, (List<String>) null, (String) null, 0L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
+        }
+        if (WindowManager.HAS_WINDOW_EXTENSIONS_ON_DEVICE) {
             String systemExtFrameworkPath = new File(Environment.getSystemExtDirectory(), "framework").getPath();
-            libs.add(new SharedLibraryInfo(systemExtFrameworkPath + "/androidx.window.extensions.jar", "androidx.window.extensions", null, "androidx.window.extensions", -1L, 0, null, null, null, false));
-            libs.add(new SharedLibraryInfo(systemExtFrameworkPath + "/androidx.window.sidecar.jar", "androidx.window.sidecar", null, "androidx.window.sidecar", -1L, 0, null, null, null, false));
+            libs.add(new SharedLibraryInfo(systemExtFrameworkPath + "/androidx.window.extensions.jar", "androidx.window.extensions", (List<String>) null, "androidx.window.extensions", -1L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
+            libs.add(new SharedLibraryInfo(systemExtFrameworkPath + "/androidx.window.sidecar.jar", "androidx.window.sidecar", (List<String>) null, "androidx.window.sidecar", -1L, 0, (VersionedPackage) null, (List<VersionedPackage>) null, (List<SharedLibraryInfo>) null, false));
         }
         ApplicationLoaders.getDefault().createAndCacheNonBootclasspathSystemClassLoaders(libs);
-    }
-
-    private static void selectPreloadClasses() {
-        if (!PARALLEL_LOAD_FEATURE) {
-            preloadClasses();
-            return;
-        }
-        if (!PARALLEL_LOAD_PROPERTY) {
-            Log.i(TAG, "ZIT disabled temporarily by property");
-            preloadClasses();
-        } else if (PARALLEL_LOAD && startSystemServer) {
-            parallelPreloadClasses();
-        } else {
-            preloadClasses();
-        }
-    }
-
-    private static void parallelPreloadClasses() {
-        VMRuntime runtime = VMRuntime.getRuntime();
-        Log.i(TAG, "!@Boot: Parallel Preloading classes...");
-        long startTime = SystemClock.uptimeMillis();
-        int reuid = Os.getuid();
-        int regid = Os.getgid();
-        boolean droppedPriviliges = false;
-        if (reuid == 0 && regid == 0) {
-            try {
-                Os.setregid(0, 9999);
-                Os.setreuid(0, 9999);
-                droppedPriviliges = true;
-            } catch (ErrnoException ex) {
-                throw new RuntimeException("Failed to drop root", ex);
-            }
-        }
-        try {
-            try {
-                try {
-                    InputStream is = new FileInputStream(PRELOADED_CLASSES);
-                    try {
-                        BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"), 256);
-                        try {
-                            ZygoteInitThreadPool zygoteInitThreadPool = new ZygoteInitThreadPool(startSystemServer);
-                            int count = zygoteInitThreadPool.preparePreloadClassList(br);
-                            zygoteInitThreadPool.parallelPreloadTimeout();
-                            Log.i(TAG, "...preloaded " + count + " parallelPreloadClasses in " + (SystemClock.uptimeMillis() - startTime) + "ms.");
-                            br.close();
-                            is.close();
-                            Trace.traceBegin(16384L, "PreloadDexCaches");
-                            runtime.preloadDexCaches();
-                            Trace.traceEnd(16384L);
-                            if (droppedPriviliges) {
-                                try {
-                                    Os.setreuid(0, 0);
-                                    Os.setregid(0, 0);
-                                } catch (ErrnoException ex2) {
-                                    throw new RuntimeException("Failed to restore root", ex2);
-                                }
-                            }
-                        } finally {
-                        }
-                    } finally {
-                    }
-                } catch (Exception ex3) {
-                    Log.e(TAG, "Exception Error reading /system/etc/preloaded-classes.", ex3);
-                    Trace.traceBegin(16384L, "PreloadDexCaches");
-                    runtime.preloadDexCaches();
-                    Trace.traceEnd(16384L);
-                    if (droppedPriviliges) {
-                        try {
-                            Os.setreuid(0, 0);
-                            Os.setregid(0, 0);
-                        } catch (ErrnoException ex4) {
-                            throw new RuntimeException("Failed to restore root", ex4);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error reading /system/etc/preloaded-classes.", e);
-                Trace.traceBegin(16384L, "PreloadDexCaches");
-                runtime.preloadDexCaches();
-                Trace.traceEnd(16384L);
-                if (droppedPriviliges) {
-                    try {
-                        Os.setreuid(0, 0);
-                        Os.setregid(0, 0);
-                    } catch (ErrnoException ex5) {
-                        throw new RuntimeException("Failed to restore root", ex5);
-                    }
-                }
-            }
-        } catch (Throwable ex6) {
-            Trace.traceBegin(16384L, "PreloadDexCaches");
-            runtime.preloadDexCaches();
-            Trace.traceEnd(16384L);
-            if (droppedPriviliges) {
-                try {
-                    Os.setreuid(0, 0);
-                    Os.setregid(0, 0);
-                } catch (ErrnoException ex7) {
-                    throw new RuntimeException("Failed to restore root", ex7);
-                }
-            }
-            throw ex6;
-        }
-    }
-
-    private static void preloadResources() {
-        try {
-            Resources system = Resources.getSystem();
-            mResources = system;
-            system.startPreloading();
-            Log.i(TAG, "Preloading resources...");
-            long startTime = SystemClock.uptimeMillis();
-            TypedArray ar = mResources.obtainTypedArray(R.array.preloaded_drawables);
-            int N = preloadDrawables(ar);
-            ar.recycle();
-            Log.i(TAG, "...preloaded " + N + " resources in " + (SystemClock.uptimeMillis() - startTime) + "ms.");
-            long startTime2 = SystemClock.uptimeMillis();
-            TypedArray ar2 = mResources.obtainTypedArray(R.array.preloaded_color_state_lists);
-            int N2 = preloadColorStateLists(ar2);
-            ar2.recycle();
-            Log.i(TAG, "...preloaded " + N2 + " resources in " + (SystemClock.uptimeMillis() - startTime2) + "ms.");
-            if (mResources.getBoolean(R.bool.config_freeformWindowManagement)) {
-                long startTime3 = SystemClock.uptimeMillis();
-                TypedArray ar3 = mResources.obtainTypedArray(R.array.preloaded_freeform_multi_window_drawables);
-                int N3 = preloadDrawables(ar3);
-                ar3.recycle();
-                Log.i(TAG, "...preloaded " + N3 + " resource in " + (SystemClock.uptimeMillis() - startTime3) + "ms.");
-            }
-            mResources.finishPreloading();
-        } catch (RuntimeException e) {
-            Log.w(TAG, "Failure preloading resources", e);
-        }
-    }
-
-    private static int preloadColorStateLists(TypedArray ar) {
-        int N = ar.length();
-        for (int i = 0; i < N; i++) {
-            int id = ar.getResourceId(i, 0);
-            if (id != 0 && mResources.getColorStateList(id, null) == null) {
-                throw new IllegalArgumentException("Unable to find preloaded color resource #0x" + Integer.toHexString(id) + " (" + ar.getString(i) + NavigationBarInflaterView.KEY_CODE_END);
-            }
-        }
-        return N;
-    }
-
-    private static int preloadDrawables(TypedArray ar) {
-        int N = ar.length();
-        for (int i = 0; i < N; i++) {
-            int id = ar.getResourceId(i, 0);
-            if (id != 0 && mResources.getDrawable(id, null) == null) {
-                throw new IllegalArgumentException("Unable to find preloaded drawable resource #0x" + Integer.toHexString(id) + " (" + ar.getString(i) + NavigationBarInflaterView.KEY_CODE_END);
-            }
-        }
-        return N;
     }
 
     private static void gcAndFinalize() {
@@ -623,7 +457,7 @@ public class ZygoteInit {
         VMRuntime.setHiddenApiUsageLogger(logger);
     }
 
-    public static ClassLoader createPathClassLoader(String classPath, int targetSdkVersion) {
+    static ClassLoader createPathClassLoader(String classPath, int targetSdkVersion) {
         String libraryPath = System.getProperty("java.library.path");
         ClassLoader parent = ClassLoader.getSystemClassLoader().getParent();
         return ClassLoaderFactory.createClassLoader(classPath, libraryPath, libraryPath, parent, targetSdkVersion, true, null);
@@ -634,7 +468,7 @@ public class ZygoteInit {
         StructCapUserHeader header = new StructCapUserHeader(OsConstants._LINUX_CAPABILITY_VERSION_3, 0);
         try {
             StructCapUserData[] data = Os.capget(header);
-            long capabilities2 = ((Integer.toUnsignedLong(data[1].effective) << 32) | Integer.toUnsignedLong(data[0].effective)) & capabilities;
+            long capabilities2 = capabilities & (Integer.toUnsignedLong(data[0].effective) | (Integer.toUnsignedLong(data[1].effective) << 32));
             String[] args = {"--setuid=1000", "--setgid=1000", "--setgroups=1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1018,1021,1023,1024,1032,1065,3001,3002,3003,3005,3006,3007,3009,3010,3011,3012,5666,5678", "--capabilities=" + capabilities2 + "," + capabilities2, "--nice-name=system_server", "--runtime-args", "--target-sdk-version=10000", "com.android.server.SystemServer"};
             try {
                 ZygoteCommandBuffer commandBuffer = new ZygoteCommandBuffer(args);
@@ -644,7 +478,7 @@ public class ZygoteInit {
                     Zygote.applyDebuggerSystemProperty(parsedArgs);
                     Zygote.applyInvokeWithSystemProperty(parsedArgs);
                     if (Zygote.nativeSupportsMemoryTagging()) {
-                        String mode = SystemProperties.get("arm64.memtag.process.system_server", "");
+                        String mode = SystemProperties.get("persist.arm64.memtag.system_server", "");
                         if (mode.isEmpty()) {
                             mode = SystemProperties.get("persist.arm64.memtag.default", "async");
                         }
@@ -696,9 +530,7 @@ public class ZygoteInit {
 
     public static void main(String[] argv) {
         ZygoteServer zygoteServer = null;
-        if (!PARALLEL_LOAD_FEATURE) {
-            ZygoteHooks.startZygoteNoThreadCreation();
-        }
+        ZygoteHooks.startZygoteNoThreadCreation();
         try {
             Os.setpgid(0, 0);
             try {
@@ -773,10 +605,6 @@ public class ZygoteInit {
                 zygoteServer = new ZygoteServer(isPrimaryZygote);
                 try {
                     if (startSystemServer) {
-                        if (PARALLEL_LOAD_FEATURE && !PARALLEL_LOAD_PROPERTY) {
-                            Log.i(TAG, "We're turning on ZygoteInitThreadPool prop, because we success booting!");
-                            SystemProperties.set("persist.zit.try", "true");
-                        }
                         Log.i(TAG, "!@Boot_EBS_F: zygote forkSystemServer");
                         Runnable r = forkSystemServer(abiList, zygoteSocketName, zygoteServer);
                         if (r != null) {
@@ -816,7 +644,7 @@ public class ZygoteInit {
         ZygoteProcess.waitForConnectionToZygote(otherZygoteName);
     }
 
-    public static boolean isPreloadComplete() {
+    static boolean isPreloadComplete() {
         return sPreloadComplete;
     }
 
@@ -831,7 +659,7 @@ public class ZygoteInit {
         return RuntimeInit.applicationInit(targetSdkVersion, disabledCompatChanges, argv, classLoader);
     }
 
-    public static Runnable childZygoteInit(String[] argv) {
+    static Runnable childZygoteInit(String[] argv) {
         RuntimeInit.Arguments args = new RuntimeInit.Arguments(argv);
         return RuntimeInit.findStaticMain(args.startClass, args.startArgs, null);
     }

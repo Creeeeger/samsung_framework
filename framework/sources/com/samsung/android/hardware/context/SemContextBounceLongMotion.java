@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextBounceLongMotion extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextBounceLongMotion> CREATOR = new Parcelable.Creator<SemContextBounceLongMotion>() { // from class: com.samsung.android.hardware.context.SemContextBounceLongMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextBounceLongMotion createFromParcel(Parcel in) {
             return new SemContextBounceLongMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextBounceLongMotion[] newArray(int size) {
             return new SemContextBounceLongMotion[size];
@@ -26,24 +25,7 @@ public class SemContextBounceLongMotion extends SemContextEventContext {
     public static final int UNHAND = 3;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextBounceLongMotion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextBounceLongMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextBounceLongMotion createFromParcel(Parcel in) {
-            return new SemContextBounceLongMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextBounceLongMotion[] newArray(int size) {
-            return new SemContextBounceLongMotion[size];
-        }
-    }
-
-    public SemContextBounceLongMotion() {
+    SemContextBounceLongMotion() {
         this.mContext = new Bundle();
     }
 

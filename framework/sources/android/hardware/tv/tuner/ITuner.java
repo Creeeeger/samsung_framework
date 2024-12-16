@@ -52,7 +52,6 @@ public interface ITuner extends IInterface {
 
     void setMaxNumberOfFrontends(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITuner {
         @Override // android.hardware.tv.tuner.ITuner
         public int[] getFrontendIds() throws RemoteException {
@@ -148,7 +147,6 @@ public interface ITuner extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITuner {
         static final int TRANSACTION_getDemuxCaps = 4;
         static final int TRANSACTION_getDemuxIds = 14;
@@ -198,139 +196,138 @@ public interface ITuner extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int[] _result = getFrontendIds();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeIntArray(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IFrontend _result2 = openFrontendById(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeStrongInterface(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg0_length = data.readInt();
+                    if (_arg0_length < 0) {
+                        _arg0 = null;
+                    } else {
+                        _arg0 = new int[_arg0_length];
+                    }
+                    data.enforceNoDataAvail();
+                    IDemux _result3 = openDemux(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    reply.writeIntArray(_arg0);
+                    return true;
+                case 4:
+                    DemuxCapabilities _result4 = getDemuxCaps();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    IDescrambler _result5 = openDescrambler();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 6:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    FrontendInfo _result6 = getFrontendInfo(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    int[] _result7 = getLnbIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result7);
+                    return true;
+                case 8:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ILnb _result8 = openLnbById(_arg04);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result8);
+                    return true;
+                case 9:
+                    String _arg05 = data.readString();
+                    int _arg1_length = data.readInt();
+                    if (_arg1_length < 0) {
+                        _arg1 = null;
+                    } else {
+                        _arg1 = new int[_arg1_length];
+                    }
+                    data.enforceNoDataAvail();
+                    ILnb _result9 = openLnbByName(_arg05, _arg1);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result9);
+                    reply.writeIntArray(_arg1);
+                    return true;
+                case 10:
+                    boolean _arg06 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLna(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg07 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMaxNumberOfFrontends(_arg07, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = getMaxNumberOfFrontends(_arg08);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 13:
+                    boolean _result11 = isLnaSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 14:
+                    int[] _result12 = getDemuxIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result12);
+                    return true;
+                case 15:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IDemux _result13 = openDemuxById(_arg09);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result13);
+                    return true;
+                case 16:
+                    int _arg010 = data.readInt();
+                    data.enforceNoDataAvail();
+                    DemuxInfo _result14 = getDemuxInfo(_arg010);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result14, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int[] _result = getFrontendIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IFrontend _result2 = openFrontendById(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            int _arg0_length = data.readInt();
-                            if (_arg0_length < 0) {
-                                _arg0 = null;
-                            } else {
-                                _arg0 = new int[_arg0_length];
-                            }
-                            data.enforceNoDataAvail();
-                            IDemux _result3 = openDemux(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            reply.writeIntArray(_arg0);
-                            return true;
-                        case 4:
-                            DemuxCapabilities _result4 = getDemuxCaps();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            IDescrambler _result5 = openDescrambler();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 6:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            FrontendInfo _result6 = getFrontendInfo(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            int[] _result7 = getLnbIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result7);
-                            return true;
-                        case 8:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ILnb _result8 = openLnbById(_arg04);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result8);
-                            return true;
-                        case 9:
-                            String _arg05 = data.readString();
-                            int _arg1_length = data.readInt();
-                            if (_arg1_length < 0) {
-                                _arg1 = null;
-                            } else {
-                                _arg1 = new int[_arg1_length];
-                            }
-                            data.enforceNoDataAvail();
-                            ILnb _result9 = openLnbByName(_arg05, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result9);
-                            reply.writeIntArray(_arg1);
-                            return true;
-                        case 10:
-                            boolean _arg06 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLna(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg07 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMaxNumberOfFrontends(_arg07, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = getMaxNumberOfFrontends(_arg08);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 13:
-                            boolean _result11 = isLnaSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 14:
-                            int[] _result12 = getDemuxIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result12);
-                            return true;
-                        case 15:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IDemux _result13 = openDemuxById(_arg09);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result13);
-                            return true;
-                        case 16:
-                            int _arg010 = data.readInt();
-                            data.enforceNoDataAvail();
-                            DemuxInfo _result14 = getDemuxInfo(_arg010);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result14, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ITuner {
             private IBinder mRemote;
             private int mCachedVersion = -1;

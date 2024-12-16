@@ -6,7 +6,11 @@ import java.math.BigInteger;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.RSAKeyGenParameterSpec;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 /* loaded from: classes3.dex */
@@ -15,24 +19,19 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
     private static final int ALGORITHM_PARAMETER_SPEC_NONE = 1;
     private static final int ALGORITHM_PARAMETER_SPEC_RSA = 2;
     public static final Parcelable.Creator<ParcelableKeyGenParameterSpec> CREATOR = new Parcelable.Creator<ParcelableKeyGenParameterSpec>() { // from class: android.security.keystore.ParcelableKeyGenParameterSpec.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableKeyGenParameterSpec createFromParcel(Parcel in) {
             return new ParcelableKeyGenParameterSpec(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelableKeyGenParameterSpec[] newArray(int size) {
             return new ParcelableKeyGenParameterSpec[size];
         }
     };
     private final KeyGenParameterSpec mSpec;
-
-    /* synthetic */ ParcelableKeyGenParameterSpec(Parcel parcel, ParcelableKeyGenParameterSpecIA parcelableKeyGenParameterSpecIA) {
-        this(parcel);
-    }
 
     public ParcelableKeyGenParameterSpec(KeyGenParameterSpec spec) {
         this.mSpec = spec;
@@ -84,6 +83,11 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
             out.writeStringArray(this.mSpec.getDigests());
         } else {
             out.writeStringArray(null);
+        }
+        if (this.mSpec.isMgf1DigestsSpecified()) {
+            out.writeStringList(List.copyOf(this.mSpec.getMgf1Digests()));
+        } else {
+            out.writeStringList(null);
         }
         out.writeStringArray(this.mSpec.getEncryptionPaddings());
         out.writeStringArray(this.mSpec.getSignaturePaddings());
@@ -145,6 +149,7 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
         Date keyValidityForOriginationEnd = readDateOrNull(in);
         Date keyValidityForConsumptionEnd = readDateOrNull(in);
         String[] digests = in.createStringArray();
+        ArrayList<String> mgf1Digests = in.createStringArrayList();
         String[] encryptionPaddings = in.createStringArray();
         String[] signaturePaddings = in.createStringArray();
         String[] blockModes = in.createStringArray();
@@ -166,24 +171,7 @@ public final class ParcelableKeyGenParameterSpec implements Parcelable {
         int maxUsageCount = in.readInt();
         String attestKeyAlias = in.readString();
         long boundToSecureUserId = in.readLong();
-        this.mSpec = new KeyGenParameterSpec(keystoreAlias, namespace, keySize, algorithmSpec, certificateSubject, certificateSerialNumber, certificateNotBefore, certificateNotAfter, keyValidityStartDate, keyValidityForOriginationEnd, keyValidityForConsumptionEnd, purposes, digests, encryptionPaddings, signaturePaddings, blockModes, randomizedEncryptionRequired, userAuthenticationRequired, userAuthenticationValidityDurationSeconds, userAuthenticationTypes, userPresenceRequired, attestationChallenge, devicePropertiesAttestationIncluded, attestationIds, uniqueIdIncluded, userAuthenticationValidWhileOnBody, invalidatedByBiometricEnrollment, isStrongBoxBacked, userConfirmationRequired, unlockedDeviceRequired, criticalToDeviceEncryption, maxUsageCount, attestKeyAlias, boundToSecureUserId);
-    }
-
-    /* renamed from: android.security.keystore.ParcelableKeyGenParameterSpec$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ParcelableKeyGenParameterSpec> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableKeyGenParameterSpec createFromParcel(Parcel in) {
-            return new ParcelableKeyGenParameterSpec(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableKeyGenParameterSpec[] newArray(int size) {
-            return new ParcelableKeyGenParameterSpec[size];
-        }
+        this.mSpec = new KeyGenParameterSpec(keystoreAlias, namespace, keySize, algorithmSpec, certificateSubject, certificateSerialNumber, certificateNotBefore, certificateNotAfter, keyValidityStartDate, keyValidityForOriginationEnd, keyValidityForConsumptionEnd, purposes, digests, mgf1Digests != null ? Set.copyOf(mgf1Digests) : Collections.emptySet(), encryptionPaddings, signaturePaddings, blockModes, randomizedEncryptionRequired, userAuthenticationRequired, userAuthenticationValidityDurationSeconds, userAuthenticationTypes, userPresenceRequired, attestationChallenge, devicePropertiesAttestationIncluded, attestationIds, uniqueIdIncluded, userAuthenticationValidWhileOnBody, invalidatedByBiometricEnrollment, isStrongBoxBacked, userConfirmationRequired, unlockedDeviceRequired, criticalToDeviceEncryption, maxUsageCount, attestKeyAlias, boundToSecureUserId);
     }
 
     public KeyGenParameterSpec getSpec() {

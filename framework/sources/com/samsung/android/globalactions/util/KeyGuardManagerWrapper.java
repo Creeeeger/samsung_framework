@@ -5,10 +5,9 @@ import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.audio.Enums;
 import com.samsung.android.view.SemWindowManager;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KeyGuardManagerWrapper {
     private static final String ACTION_SHOW_GLOBAL_ACTIONS = "android.intent.action.SHOW_GLOBAL_ACTIONS";
     private static final String TAG = "KeyguardManagerWrapper";
@@ -19,7 +18,7 @@ public class KeyGuardManagerWrapper {
 
     public KeyGuardManagerWrapper(Context context, LogWrapper logWrapper) {
         this.mContext = context;
-        this.mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService(Context.KEYGUARD_SERVICE);
         this.mLogWrapper = logWrapper;
     }
 
@@ -37,7 +36,7 @@ public class KeyGuardManagerWrapper {
             return;
         }
         Intent intent = new Intent("android.intent.action.SHOW_GLOBAL_ACTIONS");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, intent, Enums.AUDIO_FORMAT_DTS_HD);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, intent, 201326592);
         Intent fillInIntent = new Intent();
         fillInIntent.putExtra("afterKeyguardGone", false);
         fillInIntent.putExtra("dismissType", dissmissType);
@@ -50,7 +49,7 @@ public class KeyGuardManagerWrapper {
             return;
         }
         Intent intent = new Intent("android.intent.action.SHOW_GLOBAL_ACTIONS");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, intent, Enums.AUDIO_FORMAT_DTS_HD);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, intent, 201326592);
         Intent fillInIntent = new Intent();
         if (oncover && SemWindowManager.getInstance().isFolded()) {
             fillInIntent.putExtra("runOnCover", true);

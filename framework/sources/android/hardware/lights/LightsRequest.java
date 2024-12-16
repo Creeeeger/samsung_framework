@@ -13,17 +13,12 @@ public final class LightsRequest {
     final List<LightState> mLightStates;
     final Map<Light, LightState> mRequests;
 
-    /* synthetic */ LightsRequest(Map map, LightsRequestIA lightsRequestIA) {
-        this(map);
-    }
-
     private LightsRequest(Map<Light, LightState> requests) {
-        HashMap hashMap = new HashMap();
-        this.mRequests = hashMap;
+        this.mRequests = new HashMap();
         this.mLightIds = new ArrayList();
         this.mLightStates = new ArrayList();
-        hashMap.putAll(requests);
-        List<Light> lights = new ArrayList<>(hashMap.keySet());
+        this.mRequests.putAll(requests);
+        List<Light> lights = new ArrayList<>(this.mRequests.keySet());
         for (int i = 0; i < lights.size(); i++) {
             Light light = lights.get(i);
             this.mLightIds.add(i, Integer.valueOf(light.getId()));
@@ -43,7 +38,6 @@ public final class LightsRequest {
         return this.mRequests;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         final Map<Light, LightState> mChanges = new HashMap();
 

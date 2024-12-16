@@ -5,7 +5,7 @@ import android.security.keystore.KeyProperties;
 import java.util.BitSet;
 import java.util.StringJoiner;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DefaultNetworkEvent {
     public final long creationTimeMs;
     public long durationMs;
@@ -43,14 +43,13 @@ public class DefaultNetworkEvent {
     }
 
     private String ipSupport() {
-        boolean z = this.ipv4;
-        if (z && this.ipv6) {
+        if (this.ipv4 && this.ipv6) {
             return "IPv4v6";
         }
         if (this.ipv6) {
             return "IPv6";
         }
-        if (z) {
+        if (this.ipv4) {
             return "IPv4";
         }
         return KeyProperties.DIGEST_NONE;

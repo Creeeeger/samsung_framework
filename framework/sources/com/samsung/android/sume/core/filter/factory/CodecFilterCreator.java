@@ -5,49 +5,20 @@ import com.samsung.android.sume.core.descriptor.MFDescriptor;
 import com.samsung.android.sume.core.filter.DecoderFilter;
 import com.samsung.android.sume.core.filter.EncoderFilter;
 import com.samsung.android.sume.core.filter.MediaFilter;
-import com.samsung.android.sume.core.types.MediaType;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class CodecFilterCreator implements MediaFilterCreator {
     @Override // com.samsung.android.sume.core.filter.factory.MediaFilterCreator
     public MediaFilter newFilter(MediaFilterFactory factory, MFDescriptor descriptor, MediaFilter successor) {
-        CodecDescriptor codecDescriptor = (CodecDescriptor) descriptor;
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$sume$core$types$MediaType[codecDescriptor.getMediaType().ordinal()]) {
-            case 1:
-            case 2:
+        switch (codecDescriptor.getMediaType()) {
+            case COMPRESSED_AUDIO:
+            case COMPRESSED_VIDEO:
                 return new DecoderFilter((CodecDescriptor) descriptor);
-            case 3:
-            case 4:
+            case RAW_AUDIO:
+            case RAW_VIDEO:
                 return new EncoderFilter((CodecDescriptor) descriptor);
             default:
                 throw new IllegalArgumentException("");
-        }
-    }
-
-    /* renamed from: com.samsung.android.sume.core.filter.factory.CodecFilterCreator$1 */
-    /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$sume$core$types$MediaType;
-
-        static {
-            int[] iArr = new int[MediaType.values().length];
-            $SwitchMap$com$samsung$android$sume$core$types$MediaType = iArr;
-            try {
-                iArr[MediaType.COMPRESSED_AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.COMPRESSED_VIDEO.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.RAW_AUDIO.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$sume$core$types$MediaType[MediaType.RAW_VIDEO.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
         }
     }
 }

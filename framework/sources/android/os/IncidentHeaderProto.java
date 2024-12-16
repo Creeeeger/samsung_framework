@@ -7,7 +7,6 @@ public final class IncidentHeaderProto {
     public static final long REASON = 1138166333442L;
     public static final long TRIGGER_DETAILS = 1151051235332L;
 
-    /* loaded from: classes3.dex */
     public final class StatsdConfigKey {
         public static final long ID = 1112396529666L;
         public static final long UID = 1120986464257L;

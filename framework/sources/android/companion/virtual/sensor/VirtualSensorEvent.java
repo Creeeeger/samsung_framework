@@ -9,14 +9,13 @@ import android.os.SystemClock;
 /* loaded from: classes.dex */
 public final class VirtualSensorEvent implements Parcelable {
     public static final Parcelable.Creator<VirtualSensorEvent> CREATOR = new Parcelable.Creator<VirtualSensorEvent>() { // from class: android.companion.virtual.sensor.VirtualSensorEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorEvent createFromParcel(Parcel source) {
             return new VirtualSensorEvent(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualSensorEvent[] newArray(int size) {
             return new VirtualSensorEvent[size];
@@ -25,14 +24,6 @@ public final class VirtualSensorEvent implements Parcelable {
     private long mTimestampNanos;
     private float[] mValues;
 
-    /* synthetic */ VirtualSensorEvent(Parcel parcel, VirtualSensorEventIA virtualSensorEventIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ VirtualSensorEvent(float[] fArr, long j, VirtualSensorEventIA virtualSensorEventIA) {
-        this(fArr, j);
-    }
-
     private VirtualSensorEvent(float[] values, long timestampNanos) {
         this.mValues = values;
         this.mTimestampNanos = timestampNanos;
@@ -40,9 +31,8 @@ public final class VirtualSensorEvent implements Parcelable {
 
     private VirtualSensorEvent(Parcel parcel) {
         int valuesLength = parcel.readInt();
-        float[] fArr = new float[valuesLength];
-        this.mValues = fArr;
-        parcel.readFloatArray(fArr);
+        this.mValues = new float[valuesLength];
+        parcel.readFloatArray(this.mValues);
         this.mTimestampNanos = parcel.readLong();
     }
 
@@ -66,7 +56,6 @@ public final class VirtualSensorEvent implements Parcelable {
         return this.mTimestampNanos;
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private long mTimestampNanos = 0;
         private float[] mValues;
@@ -76,8 +65,7 @@ public final class VirtualSensorEvent implements Parcelable {
         }
 
         public VirtualSensorEvent build() {
-            float[] fArr = this.mValues;
-            if (fArr == null || fArr.length == 0) {
+            if (this.mValues == null || this.mValues.length == 0) {
                 throw new IllegalArgumentException("Cannot build virtual sensor event with no values.");
             }
             if (this.mTimestampNanos <= 0) {
@@ -89,23 +77,6 @@ public final class VirtualSensorEvent implements Parcelable {
         public Builder setTimestampNanos(long timestampNanos) {
             this.mTimestampNanos = timestampNanos;
             return this;
-        }
-    }
-
-    /* renamed from: android.companion.virtual.sensor.VirtualSensorEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualSensorEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensorEvent createFromParcel(Parcel source) {
-            return new VirtualSensorEvent(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualSensorEvent[] newArray(int size) {
-            return new VirtualSensorEvent[size];
         }
     }
 }

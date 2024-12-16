@@ -56,11 +56,11 @@ public final class OperatorInfo {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.alphaLong = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.alphaLong.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.alphaShort = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.alphaShort.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.operatorNumeric = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.operatorNumeric.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.status = _hidl_blob.getInt32(_hidl_offset + 48);
     }
 

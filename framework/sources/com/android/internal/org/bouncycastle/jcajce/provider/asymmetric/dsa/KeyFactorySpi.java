@@ -19,7 +19,7 @@ import java.security.spec.KeySpec;
 /* loaded from: classes5.dex */
 public class KeyFactorySpi extends BaseKeyFactorySpi {
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
+    protected KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if (spec.isAssignableFrom(DSAPublicKeySpec.class) && (key instanceof DSAPublicKey)) {
             DSAPublicKey k = (DSAPublicKey) key;
             return new DSAPublicKeySpec(k.getY(), k.getParams().getP(), k.getParams().getQ(), k.getParams().getG());
@@ -61,7 +61,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof DSAPrivateKeySpec) {
             return new BCDSAPrivateKey((DSAPrivateKeySpec) keySpec);
         }
@@ -69,20 +69,12 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof DSAPublicKeySpec) {
             try {
                 return new BCDSAPublicKey((DSAPublicKeySpec) keySpec);
             } catch (Exception e) {
                 throw new InvalidKeySpecException("invalid KeySpec: " + e.getMessage()) { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.dsa.KeyFactorySpi.1
-                    final /* synthetic */ Exception val$e;
-
-                    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                    AnonymousClass1(String arg0, Exception e2) {
-                        super(arg0);
-                        e = e2;
-                    }
-
                     @Override // java.lang.Throwable
                     public Throwable getCause() {
                         return e;
@@ -91,22 +83,5 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
             }
         }
         return super.engineGeneratePublic(keySpec);
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.dsa.KeyFactorySpi$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends InvalidKeySpecException {
-        final /* synthetic */ Exception val$e;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(String arg0, Exception e2) {
-            super(arg0);
-            e = e2;
-        }
-
-        @Override // java.lang.Throwable
-        public Throwable getCause() {
-            return e;
-        }
     }
 }

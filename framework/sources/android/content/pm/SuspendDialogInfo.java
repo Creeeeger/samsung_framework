@@ -37,14 +37,13 @@ public final class SuspendDialogInfo implements Parcelable {
     private final int mTitleResId;
     private static final String TAG = SuspendDialogInfo.class.getSimpleName();
     public static final Parcelable.Creator<SuspendDialogInfo> CREATOR = new Parcelable.Creator<SuspendDialogInfo>() { // from class: android.content.pm.SuspendDialogInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuspendDialogInfo createFromParcel(Parcel source) {
             return new SuspendDialogInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SuspendDialogInfo[] newArray(int size) {
             return new SuspendDialogInfo[size];
@@ -52,12 +51,7 @@ public final class SuspendDialogInfo implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ButtonAction {
-    }
-
-    /* synthetic */ SuspendDialogInfo(Parcel parcel, SuspendDialogInfoIA suspendDialogInfoIA) {
-        this(parcel);
     }
 
     public int getIconResId() {
@@ -93,25 +87,21 @@ public final class SuspendDialogInfo implements Parcelable {
     }
 
     public void saveToXml(TypedXmlSerializer out) throws IOException {
-        int i = this.mIconResId;
-        if (i != 0) {
-            out.attributeInt(null, "iconResId", i);
+        if (this.mIconResId != 0) {
+            out.attributeInt(null, "iconResId", this.mIconResId);
         }
-        int i2 = this.mTitleResId;
-        if (i2 != 0) {
-            out.attributeInt(null, XML_ATTR_TITLE_RES_ID, i2);
+        if (this.mTitleResId != 0) {
+            out.attributeInt(null, XML_ATTR_TITLE_RES_ID, this.mTitleResId);
         } else {
             XmlUtils.writeStringAttribute(out, "title", this.mTitle);
         }
-        int i3 = this.mDialogMessageResId;
-        if (i3 != 0) {
-            out.attributeInt(null, XML_ATTR_DIALOG_MESSAGE_RES_ID, i3);
+        if (this.mDialogMessageResId != 0) {
+            out.attributeInt(null, XML_ATTR_DIALOG_MESSAGE_RES_ID, this.mDialogMessageResId);
         } else {
             XmlUtils.writeStringAttribute(out, XML_ATTR_DIALOG_MESSAGE, this.mDialogMessage);
         }
-        int i4 = this.mNeutralButtonTextResId;
-        if (i4 != 0) {
-            out.attributeInt(null, XML_ATTR_BUTTON_TEXT_RES_ID, i4);
+        if (this.mNeutralButtonTextResId != 0) {
+            out.attributeInt(null, XML_ATTR_BUTTON_TEXT_RES_ID, this.mNeutralButtonTextResId);
         } else {
             XmlUtils.writeStringAttribute(out, XML_ATTR_BUTTON_TEXT, this.mNeutralButtonText);
         }
@@ -240,36 +230,15 @@ public final class SuspendDialogInfo implements Parcelable {
 
     SuspendDialogInfo(Builder b) {
         this.mIconResId = b.mIconResId;
-        int i = b.mTitleResId;
-        this.mTitleResId = i;
-        this.mTitle = i == 0 ? b.mTitle : null;
-        int i2 = b.mDialogMessageResId;
-        this.mDialogMessageResId = i2;
-        this.mDialogMessage = i2 == 0 ? b.mDialogMessage : null;
-        int i3 = b.mNeutralButtonTextResId;
-        this.mNeutralButtonTextResId = i3;
-        this.mNeutralButtonText = i3 == 0 ? b.mNeutralButtonText : null;
+        this.mTitleResId = b.mTitleResId;
+        this.mTitle = this.mTitleResId == 0 ? b.mTitle : null;
+        this.mDialogMessageResId = b.mDialogMessageResId;
+        this.mDialogMessage = this.mDialogMessageResId == 0 ? b.mDialogMessage : null;
+        this.mNeutralButtonTextResId = b.mNeutralButtonTextResId;
+        this.mNeutralButtonText = this.mNeutralButtonTextResId == 0 ? b.mNeutralButtonText : null;
         this.mNeutralButtonAction = b.mNeutralButtonAction;
     }
 
-    /* renamed from: android.content.pm.SuspendDialogInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SuspendDialogInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuspendDialogInfo createFromParcel(Parcel source) {
-            return new SuspendDialogInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SuspendDialogInfo[] newArray(int size) {
-            return new SuspendDialogInfo[size];
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private String mDialogMessage;
         private String mNeutralButtonText;

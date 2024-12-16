@@ -18,10 +18,11 @@ import android.os.UserManager;
 import android.telecom.TelecomManager;
 import android.util.Log;
 import com.android.internal.R;
+import com.android.internal.hidden_from_bootclasspath.android.os.Flags;
 import com.samsung.android.knox.SemPersonaManager;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class UnlaunchableAppActivity extends Activity implements DialogInterface.OnDismissListener, DialogInterface.OnClickListener {
     private static final String EXTRA_UNLAUNCHABLE_REASON = "unlaunchable_reason";
     private static final String TAG = "UnlaunchableAppActivity";
@@ -32,7 +33,7 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
     private int mUserId;
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         Resources resources;
         int i;
         boolean showEmergencyCallButton;
@@ -44,49 +45,56 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
         this.mReason = intent.getIntExtra(EXTRA_UNLAUNCHABLE_REASON, -1);
         this.mUserId = intent.getIntExtra("android.intent.extra.user_handle", -10000);
         this.mTarget = (IntentSender) intent.getParcelableExtra("android.intent.extra.INTENT", IntentSender.class);
-        if (this.mUserId != -10000) {
-            if (this.mReason != 1) {
-                Log.wtf(TAG, "Invalid unlaunchable type: " + this.mReason);
-                finish();
-                return;
-            }
-            String dialogTitle = getDialogTitle();
-            String dialogMessage = getDialogMessage();
-            if (SemPersonaManager.isSecureFolderId(this.mUserId)) {
-                resources = getResources();
-                i = R.string.secure_folder_decrypt_btn;
-            } else {
-                resources = getResources();
-                i = R.string.work_mode_turn_on_btn;
-            }
-            String btnTitle = resources.getString(i);
-            String targetPackageName = intent.getStringExtra("android.intent.extra.PACKAGE_NAME");
-            if (targetPackageName != null && targetPackageName.equals(this.mTelecomManager.getDefaultDialerPackage(UserHandle.of(this.mUserId)))) {
-                showEmergencyCallButton = true;
-            } else {
-                showEmergencyCallButton = false;
-            }
-            if (showEmergencyCallButton) {
-                builder = new AlertDialog.Builder(this, R.style.AlertDialogWithEmergencyButton);
-                builder.setNeutralButton(R.string.work_mode_emergency_call_button, this);
-            } else {
-                builder = new AlertDialog.Builder(this);
-            }
-            builder.setTitle(dialogTitle).setOnDismissListener(this).setPositiveButton(btnTitle, this).setNegativeButton(17039360, (DialogInterface.OnClickListener) null);
-            builder.setMessage(dialogMessage);
-            AlertDialog dialog = builder.create();
-            dialog.create();
-            if (showEmergencyCallButton) {
-                dialog.getWindow().findViewById(R.id.parentPanel).setPadding(0, 0, 0, 30);
-                dialog.getWindow().findViewById(16908315).setOutlineProvider(null);
-            }
-            getWindow().setHideOverlayWindows(true);
-            dialog.getButton(-1).setFilterTouchesWhenObscured(true);
-            dialog.show();
+        String targetPackageName = intent.getStringExtra("android.intent.extra.PACKAGE_NAME");
+        Log.i(TAG, "Unlaunchable activity for target package: " + targetPackageName);
+        UserManager userManager = UserManager.get(this);
+        if (this.mUserId == -10000) {
+            Log.wtf(TAG, "Invalid user id: " + this.mUserId + ". Stopping.");
+            finish();
             return;
         }
-        Log.wtf(TAG, "Invalid user id: " + this.mUserId + ". Stopping.");
-        finish();
+        if (Flags.allowPrivateProfile() && android.multiuser.Flags.enablePrivateSpaceFeatures() && !userManager.isManagedProfile(this.mUserId)) {
+            Log.e(TAG, "Unlaunchable activity for target package " + targetPackageName + " called for a non-managed-profile " + this.mUserId);
+            finish();
+            return;
+        }
+        if (this.mReason != 1) {
+            Log.wtf(TAG, "Invalid unlaunchable type: " + this.mReason);
+            finish();
+            return;
+        }
+        String dialogTitle = getDialogTitle();
+        String dialogMessage = getDialogMessage();
+        if (SemPersonaManager.isSecureFolderId(this.mUserId)) {
+            resources = getResources();
+            i = R.string.secure_folder_decrypt_btn;
+        } else {
+            resources = getResources();
+            i = R.string.work_mode_turn_on_btn;
+        }
+        String btnTitle = resources.getString(i);
+        if (targetPackageName != null && targetPackageName.equals(this.mTelecomManager.getDefaultDialerPackage(UserHandle.of(this.mUserId)))) {
+            showEmergencyCallButton = true;
+        } else {
+            showEmergencyCallButton = false;
+        }
+        if (showEmergencyCallButton) {
+            builder = new AlertDialog.Builder(this, R.style.AlertDialogWithEmergencyButton);
+            builder.setNeutralButton(R.string.work_mode_emergency_call_button, this);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle(dialogTitle).setOnDismissListener(this).setPositiveButton(btnTitle, this).setNegativeButton(17039360, (DialogInterface.OnClickListener) null);
+        builder.setMessage(dialogMessage);
+        AlertDialog dialog = builder.create();
+        dialog.create();
+        if (showEmergencyCallButton) {
+            dialog.getWindow().findViewById(R.id.parentPanel).setPadding(0, 0, 0, 30);
+            dialog.getWindow().findViewById(16908315).setOutlineProvider(null);
+        }
+        getWindow().setHideOverlayWindows(true);
+        dialog.getButton(-1).setFilterTouchesWhenObscured(true);
+        dialog.show();
     }
 
     private String getWorkProfileName() {
@@ -108,6 +116,7 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ String lambda$getDialogTitle$0() {
         return getString(R.string.work_mode_off_title_alert, getWorkProfileName());
     }
@@ -142,6 +151,7 @@ public class UnlaunchableAppActivity extends Activity implements DialogInterface
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onClick$1(UserManager userManager) {
         userManager.requestQuietModeEnabled(false, UserHandle.of(this.mUserId), this.mTarget);
     }

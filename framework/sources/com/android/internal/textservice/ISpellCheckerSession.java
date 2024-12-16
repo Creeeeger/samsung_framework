@@ -17,7 +17,6 @@ public interface ISpellCheckerSession extends IInterface {
 
     void onGetSuggestionsMultiple(TextInfo[] textInfoArr, int i, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISpellCheckerSession {
         @Override // com.android.internal.textservice.ISpellCheckerSession
         public void onGetSuggestionsMultiple(TextInfo[] textInfos, int suggestionsLimit, boolean multipleWords) throws RemoteException {
@@ -41,7 +40,6 @@ public interface ISpellCheckerSession extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISpellCheckerSession {
         public static final String DESCRIPTOR = "com.android.internal.textservice.ISpellCheckerSession";
         static final int TRANSACTION_onCancel = 3;
@@ -94,40 +92,36 @@ public interface ISpellCheckerSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    TextInfo[] _arg0 = (TextInfo[]) data.createTypedArray(TextInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onGetSuggestionsMultiple(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    TextInfo[] _arg02 = (TextInfo[]) data.createTypedArray(TextInfo.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGetSentenceSuggestionsMultiple(_arg02, _arg12);
+                    return true;
+                case 3:
+                    onCancel();
+                    return true;
+                case 4:
+                    onClose();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TextInfo[] _arg0 = (TextInfo[]) data.createTypedArray(TextInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onGetSuggestionsMultiple(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            TextInfo[] _arg02 = (TextInfo[]) data.createTypedArray(TextInfo.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGetSentenceSuggestionsMultiple(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            onCancel();
-                            return true;
-                        case 4:
-                            onClose();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISpellCheckerSession {
+        private static class Proxy implements ISpellCheckerSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

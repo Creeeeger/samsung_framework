@@ -9,6 +9,10 @@ import java.lang.reflect.Method;
 
 /* loaded from: classes4.dex */
 public class SemInputMethodManagerUtils {
+    public static final String ACTION_DEACTIVATE = "actionDeactivate";
+    public static final String ACTION_SHOW_TOOLKIT_HBD = "actionShowToolKitHbd";
+    public static final String ACTION_UPDATE_TOOLKIT_HBD = "actionUpdateToolKitHbd";
+    public static final String CLASS_NAME_TOOLKIT_HONEYBOARD = "com.samsung.android.writingtoolkit.service.FakeHoneyBoardService";
     public static final String METHOD_ID_BIXBY = "com.samsung.android.bixby.voiceinput/com.samsung.android.svoiceime.BixbyDictVoiceReco";
     public static final String METHOD_ID_BIXBY_DICTATION = "com.samsung.android.bixby.service/.dictation.DictationInputMethodService";
     public static final String METHOD_ID_BIXBY_OLD = "com.samsung.android.svoiceime/.BixbyDictVoiceReco";
@@ -16,6 +20,7 @@ public class SemInputMethodManagerUtils {
     public static final String METHOD_ID_GOOGLE_VOICE_TTS = "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService";
     public static final String METHOD_ID_HONEYBOARD = "com.samsung.android.honeyboard/.service.HoneyBoardService";
     public static final String METHOD_ID_SWIFTKEY = "com.touchtype.swiftkey/com.touchtype.KeyboardService";
+    public static final String METHOD_ID_TOOLKIT_HONEYBOARD = "com.samsung.android.honeyboard/com.samsung.android.writingtoolkit.service.FakeHoneyBoardService";
     public static final String PACKAGE_GOOGLE_VOICE = "com.google.android.googlequicksearchbox";
     public static final String PACKAGE_GOOGLE_VOICE_TTS = "com.google.android.tts";
     public static final String PACKAGE_HONEYBOARD = "com.samsung.android.honeyboard";
@@ -23,7 +28,7 @@ public class SemInputMethodManagerUtils {
     private static final String PROP_ENABLE_DEBUG_CALL_STACK = "persist.sys.ime.enable_debug_call_stack";
     static final boolean DEBUG_CALL_STACK = SystemProperties.getBoolean(PROP_ENABLE_DEBUG_CALL_STACK, false);
 
-    public static void putInfoInExtra(View view, EditorInfo editorInfo) {
+    static void putInfoInExtra(View view, EditorInfo editorInfo, String caller) {
         int maxLength;
         if (InputMethodManager.DEBUG_SEP) {
             Log.v(TAG, "Starting input: editorInfo=" + editorInfo);
@@ -33,12 +38,12 @@ public class SemInputMethodManagerUtils {
         }
         if (view.getDisplay() != null) {
             int displayId = view.getDisplay().getDisplayId();
-            Log.d(TAG, "startInputInner - Id : " + displayId);
+            Log.d(TAG, caller + " - Id : " + displayId);
             editorInfo.extras.putInt("displayId", displayId);
         } else {
             if (view.getContext().getDisplay() != null) {
                 int displayId2 = view.getContext().getDisplay().getDisplayId();
-                Log.d(TAG, "startInputInner - Id from getContext : " + displayId2);
+                Log.d(TAG, caller + " - Id from getContext : " + displayId2);
                 editorInfo.extras.putInt("displayId", displayId2);
                 return;
             }

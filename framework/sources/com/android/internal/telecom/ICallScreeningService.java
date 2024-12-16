@@ -12,7 +12,6 @@ import com.android.internal.telecom.ICallScreeningAdapter;
 public interface ICallScreeningService extends IInterface {
     void screenCall(ICallScreeningAdapter iCallScreeningAdapter, ParcelableCall parcelableCall) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallScreeningService {
         @Override // com.android.internal.telecom.ICallScreeningService
         public void screenCall(ICallScreeningAdapter adapter, ParcelableCall call) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICallScreeningService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallScreeningService {
         public static final String DESCRIPTOR = "com.android.internal.telecom.ICallScreeningService";
         static final int TRANSACTION_screenCall = 1;
@@ -68,25 +66,22 @@ public interface ICallScreeningService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ICallScreeningAdapter _arg0 = ICallScreeningAdapter.Stub.asInterface(data.readStrongBinder());
+                    ParcelableCall _arg1 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    screenCall(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICallScreeningAdapter _arg0 = ICallScreeningAdapter.Stub.asInterface(data.readStrongBinder());
-                            ParcelableCall _arg1 = (ParcelableCall) data.readTypedObject(ParcelableCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            screenCall(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICallScreeningService {
             private IBinder mRemote;
 

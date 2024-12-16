@@ -3,6 +3,8 @@ package android.security.keystore2;
 import android.app.AppGlobals;
 import android.hardware.biometrics.BiometricManager;
 import android.hardware.security.keymint.KeyParameter;
+import android.os.StrictMode;
+import android.security.Flags;
 import android.security.GateKeeper;
 import android.security.KeyStore2;
 import android.security.KeyStoreException;
@@ -100,6 +102,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         }
         KeyDescriptor descriptor = makeKeyDescriptor(alias);
         try {
+            StrictMode.noteDiskRead();
             return this.mKeyStore.getKeyEntry(descriptor);
         } catch (KeyStoreException e) {
             if (e.getErrorCode() != 7) {
@@ -152,7 +155,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         return toCertificate(encodedCert2);
     }
 
-    public static X509Certificate toCertificate(byte[] bytes) {
+    static X509Certificate toCertificate(byte[] bytes) {
         try {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             return (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(bytes));
@@ -169,6 +172,15 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         } catch (CertificateException e) {
             Log.w(NAME, "Couldn't parse certificates in keystore", e);
             return new ArrayList();
+        }
+    }
+
+    private static boolean getMgf1DigestSetterFlag() {
+        try {
+            return Flags.mgf1DigestSetterV2();
+        } catch (SecurityException e) {
+            Log.w(NAME, "Cannot read MGF1 Digest setter flag value", e);
+            return false;
         }
     }
 
@@ -220,37 +232,36 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
     private void setPrivateKeyEntry(String alias, PrivateKey privateKey, Certificate[] chain, KeyStore.ProtectionParameter param) throws java.security.KeyStoreException {
         int flags;
         KeyProtection spec;
-        int flags2;
         byte[] chainBytes;
-        int[] keymasterEncryptionPaddings;
-        int length;
-        int i;
-        int targetDomain;
-        int i2;
+        String keyFormat;
         String str;
+        int i;
+        int defaultMgf1Digest;
+        int i2;
+        String str2 = "SHA-1";
+        int securitylevel = 1;
+        int flags2 = 0;
         if (param == null) {
             flags = 0;
             spec = getLegacyKeyProtectionParameter(privateKey);
-            flags2 = 1;
         } else if (param instanceof KeyStoreParameter) {
             flags = 0;
             spec = getLegacyKeyProtectionParameter(privateKey);
-            flags2 = 1;
-        } else {
-            if (!(param instanceof KeyProtection)) {
-                throw new java.security.KeyStoreException("Unsupported protection parameter class:" + param.getClass().getName() + ". Supported: " + KeyProtection.class.getName() + ", " + KeyStoreParameter.class.getName());
-            }
+        } else if (param instanceof KeyProtection) {
             KeyProtection spec2 = (KeyProtection) param;
-            int flags3 = spec2.isCriticalToDeviceEncryption() ? 0 | 1 : 0;
-            if (spec2.isStrongBoxBacked()) {
-                flags = flags3;
-                spec = spec2;
-                flags2 = 2;
-            } else {
-                flags = flags3;
-                spec = spec2;
-                flags2 = 1;
+            if (spec2.isCriticalToDeviceEncryption()) {
+                flags2 = 0 | 1;
             }
+            if (!spec2.isStrongBoxBacked()) {
+                flags = flags2;
+                spec = spec2;
+            } else {
+                securitylevel = 2;
+                flags = flags2;
+                spec = spec2;
+            }
+        } else {
+            throw new java.security.KeyStoreException("Unsupported protection parameter class:" + param.getClass().getName() + ". Supported: " + KeyProtection.class.getName() + ", " + KeyStoreParameter.class.getName());
         }
         if (chain == null || chain.length == 0) {
             throw new java.security.KeyStoreException("Must supply at least one Certificate with PrivateKey");
@@ -268,7 +279,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         try {
             byte[] userCertBytes = x509chain[0].getEncoded();
             if (chain.length > 1) {
-                byte[][] certsBytes = new byte[x509chain.length - 1];
+                byte[][] certsBytes = new byte[x509chain.length - 1][];
                 int totalCertLength = 0;
                 for (int i4 = 0; i4 < certsBytes.length; i4++) {
                     try {
@@ -290,22 +301,22 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
             } else {
                 chainBytes = null;
             }
-            int targetDomain2 = getTargetDomain();
-            String str2 = "Failed to store certificate and certificate chain";
+            int targetDomain = getTargetDomain();
             if (privateKey instanceof AndroidKeyStorePrivateKey) {
                 AndroidKeyStoreKey ksKey = (AndroidKeyStoreKey) privateKey;
                 KeyDescriptor descriptor = ksKey.getUserKeyDescriptor();
-                assertCanReplace(alias, targetDomain2, this.mNamespace, descriptor);
+                assertCanReplace(alias, targetDomain, this.mNamespace, descriptor);
                 try {
+                    StrictMode.noteDiskWrite();
                     this.mKeyStore.updateSubcomponents(((AndroidKeyStorePrivateKey) privateKey).getKeyIdDescriptor(), userCertBytes, chainBytes);
                     return;
                 } catch (KeyStoreException e2) {
                     throw new java.security.KeyStoreException("Failed to store certificate and certificate chain", e2);
                 }
             }
-            String keyFormat = privateKey.getFormat();
-            if (keyFormat == null || !"PKCS#8".equals(keyFormat)) {
-                throw new java.security.KeyStoreException("Unsupported private key export format: " + keyFormat + ". Only private keys which export their key material in PKCS#8 format are supported.");
+            String keyFormat2 = privateKey.getFormat();
+            if (keyFormat2 == null || !"PKCS#8".equals(keyFormat2)) {
+                throw new java.security.KeyStoreException("Unsupported private key export format: " + keyFormat2 + ". Only private keys which export their key material in PKCS#8 format are supported.");
             }
             byte[] pkcs8EncodedPrivateKeyBytes = privateKey.getEncoded();
             if (pkcs8EncodedPrivateKeyBytes == null) {
@@ -320,36 +331,49 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
                         importArgs.add(KeyStore2ParameterUtils.makeEnum(536870913, KeyProperties.Purpose.toKeymaster(((Integer) obj).intValue())));
                     }
                 });
-                if (spec.isDigestsSpecified()) {
+                if (!spec.isDigestsSpecified()) {
+                    keyFormat = keyFormat2;
+                } else {
                     try {
                         String[] digests = spec.getDigests();
-                        int length2 = digests.length;
+                        int length = digests.length;
+                        keyFormat = keyFormat2;
                         int i6 = 0;
-                        while (i6 < length2) {
-                            String[] strArr = digests;
-                            int i7 = length2;
-                            importArgs.add(KeyStore2ParameterUtils.makeEnum(536870917, KeyProperties.Digest.toKeymaster(digests[i6])));
-                            i6++;
-                            digests = strArr;
-                            length2 = i7;
+                        while (i6 < length) {
+                            try {
+                                String digest = digests[i6];
+                                String[] strArr = digests;
+                                int i7 = length;
+                                importArgs.add(KeyStore2ParameterUtils.makeEnum(536870917, KeyProperties.Digest.toKeymaster(digest)));
+                                i6++;
+                                digests = strArr;
+                                length = i7;
+                            } catch (IllegalArgumentException | IllegalStateException e3) {
+                                e = e3;
+                                throw new java.security.KeyStoreException(e);
+                            }
                         }
-                    } catch (IllegalArgumentException | IllegalStateException e3) {
-                        e = e3;
+                    } catch (IllegalArgumentException | IllegalStateException e4) {
+                        e = e4;
                     }
                 }
+            } catch (IllegalArgumentException | IllegalStateException e5) {
+                e = e5;
+            }
+            try {
                 String[] blockModes = spec.getBlockModes();
-                int length3 = blockModes.length;
+                int length2 = blockModes.length;
                 int i8 = 0;
-                while (i8 < length3) {
+                while (i8 < length2) {
                     String blockMode = blockModes[i8];
                     String[] strArr2 = blockModes;
-                    int i9 = length3;
+                    int i9 = length2;
                     importArgs.add(KeyStore2ParameterUtils.makeEnum(536870916, KeyProperties.BlockMode.toKeymaster(blockMode)));
                     i8++;
                     blockModes = strArr2;
-                    length3 = i9;
+                    length2 = i9;
                 }
-                keymasterEncryptionPaddings = KeyProperties.EncryptionPadding.allToKeymaster(spec.getEncryptionPaddings());
+                int[] keymasterEncryptionPaddings = KeyProperties.EncryptionPadding.allToKeymaster(spec.getEncryptionPaddings());
                 if ((spec.getPurposes() & 1) != 0 && spec.isRandomizedEncryptionRequired()) {
                     for (int keymasterPadding : keymasterEncryptionPaddings) {
                         if (!KeymasterUtils.isKeymasterPaddingSchemeIndCpaCompatibleWithAsymmetricCrypto(keymasterPadding)) {
@@ -357,77 +381,68 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
                         }
                     }
                 }
-                length = keymasterEncryptionPaddings.length;
-                i = 0;
-            } catch (IllegalArgumentException | IllegalStateException e4) {
-                e = e4;
-            }
-            while (true) {
-                String keyFormat2 = keyFormat;
-                if (i >= length) {
-                    break;
-                }
-                try {
-                    int padding = keymasterEncryptionPaddings[i];
+                int length3 = keymasterEncryptionPaddings.length;
+                int i10 = 0;
+                while (i10 < length3) {
+                    int padding = keymasterEncryptionPaddings[i10];
                     int[] keymasterEncryptionPaddings2 = keymasterEncryptionPaddings;
                     importArgs.add(KeyStore2ParameterUtils.makeEnum(536870918, padding));
                     if (padding != 2) {
-                        i2 = length;
                         str = str2;
-                        targetDomain = targetDomain2;
-                    } else if (!KeymasterUtils.isKeyMintDevice(flags2)) {
-                        i2 = length;
+                        i = length3;
+                    } else if (!KeymasterUtils.isKeyMintDevice(securitylevel)) {
                         str = str2;
-                        targetDomain = targetDomain2;
-                    } else if (spec.isDigestsSpecified()) {
-                        boolean hasDefaultMgf1DigestBeenAdded = false;
-                        String[] digests2 = spec.getDigests();
-                        i2 = length;
-                        int length4 = digests2.length;
-                        int i10 = 0;
-                        while (true) {
-                            str = str2;
-                            targetDomain = targetDomain2;
-                            if (i10 >= length4) {
-                                break;
-                            }
-                            try {
-                                String digest = digests2[i10];
-                                importArgs.add(KeyStore2ParameterUtils.makeEnum(536871115, KeyProperties.Digest.toKeymaster(digest)));
-                                hasDefaultMgf1DigestBeenAdded |= digest.equals("SHA-1");
-                                i10++;
-                                str2 = str;
-                                targetDomain2 = targetDomain;
-                                digests2 = digests2;
-                            } catch (IllegalArgumentException | IllegalStateException e5) {
-                                e = e5;
-                            }
+                        i = length3;
+                    } else if (spec.isMgf1DigestsSpecified()) {
+                        for (String mgf1Digest : spec.getMgf1Digests()) {
+                            importArgs.add(KeyStore2ParameterUtils.makeEnum(536871115, KeyProperties.Digest.toKeymaster(mgf1Digest)));
+                            length3 = length3;
                         }
-                        if (!hasDefaultMgf1DigestBeenAdded) {
-                            importArgs.add(KeyStore2ParameterUtils.makeEnum(536871115, KeyProperties.Digest.toKeymaster("SHA-1")));
-                        }
+                        i = length3;
+                        str = str2;
                     } else {
-                        i2 = length;
-                        str = str2;
-                        targetDomain = targetDomain2;
+                        i = length3;
+                        importArgs.add(KeyStore2ParameterUtils.makeEnum(536871115, KeyProperties.Digest.toKeymaster(str2)));
+                        if (getMgf1DigestSetterFlag()) {
+                            str = str2;
+                        } else {
+                            int defaultMgf1Digest2 = KeyProperties.Digest.toKeymaster(str2);
+                            String[] digests2 = spec.getDigests();
+                            int length4 = digests2.length;
+                            str = str2;
+                            int i11 = 0;
+                            while (i11 < length4) {
+                                String digest2 = digests2[i11];
+                                int digestToAddAsMgf1Digest = KeyProperties.Digest.toKeymaster(digest2);
+                                String[] strArr3 = digests2;
+                                if (digestToAddAsMgf1Digest == defaultMgf1Digest2) {
+                                    defaultMgf1Digest = defaultMgf1Digest2;
+                                    i2 = length4;
+                                } else {
+                                    defaultMgf1Digest = defaultMgf1Digest2;
+                                    i2 = length4;
+                                    importArgs.add(KeyStore2ParameterUtils.makeEnum(536871115, digestToAddAsMgf1Digest));
+                                }
+                                i11++;
+                                length4 = i2;
+                                digests2 = strArr3;
+                                defaultMgf1Digest2 = defaultMgf1Digest;
+                            }
+                        }
                     }
-                    i++;
-                    keyFormat = keyFormat2;
+                    i10++;
                     keymasterEncryptionPaddings = keymasterEncryptionPaddings2;
-                    length = i2;
                     str2 = str;
-                    targetDomain2 = targetDomain;
-                } catch (IllegalArgumentException | IllegalStateException e6) {
-                    e = e6;
+                    length3 = i;
                 }
-                e = e5;
-                throw new java.security.KeyStoreException(e);
-            }
-            String str3 = str2;
-            targetDomain = targetDomain2;
-            try {
-                for (String str4 : spec.getSignaturePaddings()) {
-                    importArgs.add(KeyStore2ParameterUtils.makeEnum(536870918, KeyProperties.SignaturePadding.toKeymaster(str4)));
+                String[] signaturePaddings = spec.getSignaturePaddings();
+                int length5 = signaturePaddings.length;
+                int i12 = 0;
+                while (i12 < length5) {
+                    String[] strArr4 = signaturePaddings;
+                    importArgs.add(KeyStore2ParameterUtils.makeEnum(536870918, KeyProperties.SignaturePadding.toKeymaster(signaturePaddings[i12])));
+                    i12++;
+                    signaturePaddings = strArr4;
                 }
                 KeyStore2ParameterUtils.addUserAuthArgs(importArgs, spec);
                 if (spec.getKeyValidityStart() != null) {
@@ -446,28 +461,30 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
                     importArgs.add(KeyStore2ParameterUtils.makeEnum(268435466, getKeymasterEcCurve(privateKey)));
                 }
                 try {
-                    KeyStoreSecurityLevel securityLevelInterface = this.mKeyStore.getSecurityLevel(flags2);
+                    KeyStoreSecurityLevel securityLevelInterface = this.mKeyStore.getSecurityLevel(securitylevel);
                     KeyDescriptor descriptor2 = makeKeyDescriptor(alias);
                     try {
                         KeyMetadata metadata = securityLevelInterface.importKey(descriptor2, null, importArgs, flags, pkcs8EncodedPrivateKeyBytes);
                         try {
+                            StrictMode.noteDiskWrite();
                             this.mKeyStore.updateSubcomponents(metadata.key, userCertBytes, chainBytes);
-                        } catch (KeyStoreException e7) {
+                        } catch (KeyStoreException e6) {
                             this.mKeyStore.deleteKey(metadata.key);
-                            throw new java.security.KeyStoreException(str3, e7);
+                            throw new java.security.KeyStoreException("Failed to store certificate and certificate chain", e6);
                         }
-                    } catch (KeyStoreException e8) {
-                        e = e8;
+                    } catch (KeyStoreException e7) {
+                        e = e7;
                         throw new java.security.KeyStoreException("Failed to store private key", e);
                     }
-                } catch (KeyStoreException e9) {
-                    e = e9;
+                } catch (KeyStoreException e8) {
+                    e = e8;
                 }
-            } catch (IllegalArgumentException | IllegalStateException e10) {
-                e = e10;
+            } catch (IllegalArgumentException | IllegalStateException e9) {
+                e = e9;
+                throw new java.security.KeyStoreException(e);
             }
-        } catch (CertificateEncodingException e11) {
-            throw new java.security.KeyStoreException("Failed to encode certificate #0", e11);
+        } catch (CertificateEncodingException e10) {
+            throw new java.security.KeyStoreException("Failed to encode certificate #0", e10);
         }
     }
 
@@ -498,7 +515,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
     }
 
     private static void assertCanReplace(String alias, int targetDomain, int targetNamespace, KeyDescriptor descriptor) throws java.security.KeyStoreException {
-        if (!alias.equals(descriptor.alias) || descriptor.domain != targetDomain || (descriptor.domain == 2 && descriptor.nspace != targetNamespace)) {
+        if (alias == null || !alias.equals(descriptor.alias) || descriptor.domain != targetDomain || (descriptor.domain == 2 && descriptor.nspace != targetNamespace)) {
             throw new java.security.KeyStoreException("Can only replace keys with same alias: " + alias + " != " + descriptor.alias + " in the same target domain: " + targetDomain + " != " + descriptor.domain + (targetDomain == 2 ? " in the same target namespace: " + targetNamespace + " != " + descriptor.nspace : ""));
         }
     }
@@ -670,6 +687,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
             }
             KeyDescriptor wrappingkey = makeKeyDescriptor(entry.getWrappingKeyAlias());
             try {
+                StrictMode.noteDiskRead();
                 KeyEntryResponse response = this.mKeyStore.getKeyEntry(wrappingkey);
                 KeyDescriptor wrappedKey = makeKeyDescriptor(alias);
                 KeyStoreSecurityLevel securityLevel = new KeyStoreSecurityLevel(response.iSecurityLevel);
@@ -722,6 +740,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
                     }
                 }
                 try {
+                    StrictMode.noteDiskWrite();
                     try {
                         securityLevel.importWrappedKey(wrappedKey, wrappingkey, entry.getWrappedKeyBytes(), null, args, (AuthenticatorSpec[]) authenticatorSpecs.toArray(new AuthenticatorSpec[0]));
                     } catch (KeyStoreException e) {
@@ -760,6 +779,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         try {
             byte[] encoded = cert.getEncoded();
             try {
+                StrictMode.noteDiskWrite();
                 this.mKeyStore.updateSubcomponents(makeKeyDescriptor(alias), null, encoded);
             } catch (KeyStoreException e) {
                 throw new java.security.KeyStoreException("Couldn't insert certificate.", e);
@@ -773,6 +793,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
     public void engineDeleteEntry(String alias) throws java.security.KeyStoreException {
         KeyDescriptor descriptor = makeKeyDescriptor(alias);
         try {
+            StrictMode.noteDiskWrite();
             this.mKeyStore.deleteKey(descriptor);
         } catch (KeyStoreException e) {
             if (e.getErrorCode() != 7) {
@@ -781,8 +802,10 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public KeyDescriptor[] getAliasesBatch(String startPastAlias) {
         try {
+            StrictMode.noteDiskRead();
             return this.mKeyStore.listBatch(getTargetDomain(), this.mNamespace, startPastAlias);
         } catch (KeyStoreException e) {
             Log.e(TAG, "Failed to list keystore entries.", e);
@@ -806,6 +829,7 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
     @Override // java.security.KeyStoreSpi
     public int engineSize() {
         try {
+            StrictMode.noteDiskRead();
             return this.mKeyStore.getNumberOfEntries(getTargetDomain(), this.mNamespace);
         } catch (KeyStoreException e) {
             Log.e(TAG, "Failed to get the number of keystore entries.", e);
@@ -851,11 +875,15 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
             }
             KeyDescriptor[] keyDescriptors = null;
             try {
+                StrictMode.noteDiskRead();
                 keyDescriptors = this.mKeyStore.list(getTargetDomain(), this.mNamespace);
             } catch (KeyStoreException e) {
                 Log.w(TAG, "Failed to get list of keystore entries.", e);
             }
             String caAlias = null;
+            if (keyDescriptors == null) {
+                return null;
+            }
             for (KeyDescriptor d : keyDescriptors) {
                 KeyEntryResponse response = getKeyMetadata(d.alias);
                 if (response != null) {
@@ -936,15 +964,10 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         }
     }
 
-    /* loaded from: classes3.dex */
     private class KeyEntriesEnumerator implements Enumeration<String> {
         private KeyDescriptor[] mCurrentBatch;
         private int mCurrentEntry;
         private String mLastAlias;
-
-        /* synthetic */ KeyEntriesEnumerator(AndroidKeyStoreSpi androidKeyStoreSpi, KeyEntriesEnumeratorIA keyEntriesEnumeratorIA) {
-            this();
-        }
 
         private KeyEntriesEnumerator() {
             this.mCurrentEntry = 0;
@@ -959,21 +982,18 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
 
         @Override // java.util.Enumeration
         public boolean hasMoreElements() {
-            KeyDescriptor[] keyDescriptorArr = this.mCurrentBatch;
-            return keyDescriptorArr != null && keyDescriptorArr.length > 0;
+            return this.mCurrentBatch != null && this.mCurrentBatch.length > 0;
         }
 
         @Override // java.util.Enumeration
         public String nextElement() {
-            KeyDescriptor[] keyDescriptorArr = this.mCurrentBatch;
-            if (keyDescriptorArr == null || keyDescriptorArr.length == 0) {
+            if (this.mCurrentBatch == null || this.mCurrentBatch.length == 0) {
                 throw new NoSuchElementException("Error while fetching entries.");
             }
-            KeyDescriptor currentEntry = keyDescriptorArr[this.mCurrentEntry];
+            KeyDescriptor currentEntry = this.mCurrentBatch[this.mCurrentEntry];
             this.mLastAlias = currentEntry.alias;
-            int i = this.mCurrentEntry + 1;
-            this.mCurrentEntry = i;
-            if (i >= this.mCurrentBatch.length) {
+            this.mCurrentEntry++;
+            if (this.mCurrentEntry >= this.mCurrentBatch.length) {
                 getAndValidateNextBatch();
             }
             return this.mLastAlias;

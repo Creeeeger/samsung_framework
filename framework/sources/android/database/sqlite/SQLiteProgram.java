@@ -14,12 +14,11 @@ public abstract class SQLiteProgram extends SQLiteClosable {
     private final boolean mReadOnly;
     private final String mSql;
 
-    public SQLiteProgram(SQLiteDatabase db, String sql, Object[] bindArgs, CancellationSignal cancellationSignalForPrepare) {
+    SQLiteProgram(SQLiteDatabase db, String sql, Object[] bindArgs, CancellationSignal cancellationSignalForPrepare) {
         boolean z;
         this.mDatabase = db;
-        String trim = sql.trim();
-        this.mSql = trim;
-        int n = DatabaseUtils.getSqlStatementType(trim);
+        this.mSql = sql.trim();
+        int n = DatabaseUtils.getSqlStatementType(this.mSql);
         switch (n) {
             case 4:
             case 5:
@@ -32,7 +31,7 @@ public abstract class SQLiteProgram extends SQLiteClosable {
                 boolean assumeReadOnly = n == 1;
                 try {
                     SQLiteStatementInfo info = new SQLiteStatementInfo();
-                    db.getThreadSession().prepare(trim, db.getThreadDefaultConnectionFlags(assumeReadOnly), cancellationSignalForPrepare, info);
+                    db.getThreadSession().prepare(this.mSql, db.getThreadDefaultConnectionFlags(assumeReadOnly), cancellationSignalForPrepare, info);
                     if (n != 7 && n != 8) {
                         z = info.readOnly;
                         this.mReadOnly = z;
@@ -53,42 +52,40 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         if (bindArgs != null && bindArgs.length > this.mNumParameters) {
             throw new IllegalArgumentException("Too many bind arguments.  " + bindArgs.length + " arguments were provided but the statement needs " + this.mNumParameters + " arguments.");
         }
-        int i = this.mNumParameters;
-        if (i != 0) {
-            Object[] objArr = new Object[i];
-            this.mBindArgs = objArr;
+        if (this.mNumParameters != 0) {
+            this.mBindArgs = new Object[this.mNumParameters];
             if (bindArgs != null) {
-                System.arraycopy(bindArgs, 0, objArr, 0, bindArgs.length);
+                System.arraycopy(bindArgs, 0, this.mBindArgs, 0, bindArgs.length);
             }
         } else {
             this.mBindArgs = null;
         }
         if (n == 7) {
-            SQLitePragma.checkAndSetSpecialPragma(db, trim, cancellationSignalForPrepare);
+            SQLitePragma.checkAndSetSpecialPragma(this.mDatabase, this.mSql, cancellationSignalForPrepare);
         }
     }
 
-    public final SQLiteDatabase getDatabase() {
+    final SQLiteDatabase getDatabase() {
         return this.mDatabase;
     }
 
-    public final String getSql() {
+    final String getSql() {
         return this.mSql;
     }
 
-    public final Object[] getBindArgs() {
+    final Object[] getBindArgs() {
         return this.mBindArgs;
     }
 
-    public final String[] getColumnNames() {
+    final String[] getColumnNames() {
         return this.mColumnNames;
     }
 
-    public final SQLiteSession getSession() {
+    protected final SQLiteSession getSession() {
         return this.mDatabase.getThreadSession();
     }
 
-    public final int getConnectionFlags() {
+    protected final int getConnectionFlags() {
         return this.mDatabase.getThreadDefaultConnectionFlags(this.mReadOnly);
     }
 
@@ -96,7 +93,7 @@ public abstract class SQLiteProgram extends SQLiteClosable {
         this.mDatabase.onCorruption();
     }
 
-    public final void onCorruption(int errCode) {
+    protected final void onCorruption(int errCode) {
         this.mDatabase.onCorruption(errCode);
     }
 
@@ -132,9 +129,8 @@ public abstract class SQLiteProgram extends SQLiteClosable {
     }
 
     public void clearBindings() {
-        Object[] objArr = this.mBindArgs;
-        if (objArr != null) {
-            Arrays.fill(objArr, (Object) null);
+        if (this.mBindArgs != null) {
+            Arrays.fill(this.mBindArgs, (Object) null);
         }
     }
 

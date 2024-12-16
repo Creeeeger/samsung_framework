@@ -36,18 +36,17 @@ public class SignerInfoGenerator {
     private final SignerIdentifier signerIdentifier;
     private final CMSAttributeTableGenerator unsAttrGen;
 
-    public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder) throws OperatorCreationException {
+    SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder) throws OperatorCreationException {
         this(signerIdentifier, signer, digesterProvider, sigEncAlgFinder, false);
     }
 
-    public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, boolean isDirectSignature) throws OperatorCreationException {
-        DefaultDigestAlgorithmIdentifierFinder defaultDigestAlgorithmIdentifierFinder = new DefaultDigestAlgorithmIdentifierFinder();
-        this.digAlgFinder = defaultDigestAlgorithmIdentifierFinder;
+    SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, boolean isDirectSignature) throws OperatorCreationException {
+        this.digAlgFinder = new DefaultDigestAlgorithmIdentifierFinder();
         this.calculatedDigest = null;
         this.signerIdentifier = signerIdentifier;
         this.signer = signer;
         if (digesterProvider != null) {
-            this.digester = digesterProvider.get(defaultDigestAlgorithmIdentifierFinder.find(signer.getAlgorithmIdentifier()));
+            this.digester = digesterProvider.get(this.digAlgFinder.find(signer.getAlgorithmIdentifier()));
         } else {
             this.digester = null;
         }
@@ -72,14 +71,13 @@ public class SignerInfoGenerator {
         this.unsAttrGen = unsAttrGen;
     }
 
-    public SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, CMSAttributeTableGenerator sAttrGen, CMSAttributeTableGenerator unsAttrGen) throws OperatorCreationException {
-        DefaultDigestAlgorithmIdentifierFinder defaultDigestAlgorithmIdentifierFinder = new DefaultDigestAlgorithmIdentifierFinder();
-        this.digAlgFinder = defaultDigestAlgorithmIdentifierFinder;
+    SignerInfoGenerator(SignerIdentifier signerIdentifier, ContentSigner signer, DigestCalculatorProvider digesterProvider, CMSSignatureEncryptionAlgorithmFinder sigEncAlgFinder, CMSAttributeTableGenerator sAttrGen, CMSAttributeTableGenerator unsAttrGen) throws OperatorCreationException {
+        this.digAlgFinder = new DefaultDigestAlgorithmIdentifierFinder();
         this.calculatedDigest = null;
         this.signerIdentifier = signerIdentifier;
         this.signer = signer;
         if (digesterProvider != null) {
-            this.digester = digesterProvider.get(defaultDigestAlgorithmIdentifierFinder.find(signer.getAlgorithmIdentifier()));
+            this.digester = digesterProvider.get(this.digAlgFinder.find(signer.getAlgorithmIdentifier()));
         } else {
             this.digester = null;
         }
@@ -105,20 +103,18 @@ public class SignerInfoGenerator {
     }
 
     public AlgorithmIdentifier getDigestAlgorithm() {
-        DigestCalculator digestCalculator = this.digester;
-        if (digestCalculator != null) {
-            return digestCalculator.getAlgorithmIdentifier();
+        if (this.digester != null) {
+            return this.digester.getAlgorithmIdentifier();
         }
         return this.digAlgFinder.find(this.signer.getAlgorithmIdentifier());
     }
 
     public OutputStream getCalculatingOutputStream() {
-        DigestCalculator digestCalculator = this.digester;
-        if (digestCalculator != null) {
+        if (this.digester != null) {
             if (this.sAttrGen == null) {
                 return new TeeOutputStream(this.digester.getOutputStream(), this.signer.getOutputStream());
             }
-            return digestCalculator.getOutputStream();
+            return this.digester.getOutputStream();
         }
         return this.signer.getOutputStream();
     }
@@ -138,17 +134,14 @@ public class SignerInfoGenerator {
                 sOut.write(signedAttr.getEncoded(ASN1Encoding.DER));
                 sOut.close();
                 digestAlg = digestAlg2;
+            } else if (this.digester != null) {
+                AlgorithmIdentifier digestAlg3 = this.digester.getAlgorithmIdentifier();
+                this.calculatedDigest = this.digester.getDigest();
+                digestAlg = digestAlg3;
             } else {
-                DigestCalculator digestCalculator = this.digester;
-                if (digestCalculator != null) {
-                    AlgorithmIdentifier digestAlg3 = digestCalculator.getAlgorithmIdentifier();
-                    this.calculatedDigest = this.digester.getDigest();
-                    digestAlg = digestAlg3;
-                } else {
-                    AlgorithmIdentifier digestAlg4 = this.digAlgFinder.find(this.signer.getAlgorithmIdentifier());
-                    this.calculatedDigest = null;
-                    digestAlg = digestAlg4;
-                }
+                AlgorithmIdentifier digestAlg4 = this.digAlgFinder.find(this.signer.getAlgorithmIdentifier());
+                this.calculatedDigest = null;
+                digestAlg = digestAlg4;
             }
             byte[] sigBytes = this.signer.getSignature();
             if (this.unsAttrGen == null) {
@@ -166,7 +159,7 @@ public class SignerInfoGenerator {
         }
     }
 
-    public void setAssociatedCertificate(X509CertificateHolder certHolder) {
+    void setAssociatedCertificate(X509CertificateHolder certHolder) {
         this.certHolder = certHolder;
     }
 
@@ -189,9 +182,8 @@ public class SignerInfoGenerator {
     }
 
     public byte[] getCalculatedDigest() {
-        byte[] bArr = this.calculatedDigest;
-        if (bArr != null) {
-            return Arrays.clone(bArr);
+        if (this.calculatedDigest != null) {
+            return Arrays.clone(this.calculatedDigest);
         }
         return null;
     }

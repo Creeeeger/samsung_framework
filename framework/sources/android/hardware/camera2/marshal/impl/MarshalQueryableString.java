@@ -6,21 +6,19 @@ import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableString implements MarshalQueryable<String> {
     private static final boolean DEBUG = false;
     private static final byte NUL = 0;
     private static final String TAG = MarshalQueryableString.class.getSimpleName();
 
-    /* loaded from: classes.dex */
-    public static class PreloadHolder {
+    private static class PreloadHolder {
         public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
         private PreloadHolder() {
         }
     }
 
-    /* loaded from: classes.dex */
     private class MarshalerString extends Marshaler<String> {
         protected MarshalerString(TypeReference<String> typeReference, int nativeType) {
             super(MarshalQueryableString.this, typeReference, nativeType);

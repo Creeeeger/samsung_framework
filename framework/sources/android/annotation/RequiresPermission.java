@@ -11,13 +11,11 @@ import java.lang.annotation.Target;
 public @interface RequiresPermission {
 
     @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-    /* loaded from: classes.dex */
     public @interface Read {
         RequiresPermission value() default @RequiresPermission;
     }
 
     @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-    /* loaded from: classes.dex */
     public @interface Write {
         RequiresPermission value() default @RequiresPermission;
     }

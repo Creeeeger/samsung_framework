@@ -39,7 +39,6 @@ public final class SoundTriggerDetector {
     private final SoundTrigger.GenericSoundModel mSoundModel;
     private final ISoundTriggerSession mSoundTriggerSession;
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public abstract void onAvailabilityChanged(int i);
 
@@ -53,21 +52,15 @@ public final class SoundTriggerDetector {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RecognitionFlags {
     }
 
-    /* loaded from: classes2.dex */
     public static class EventPayload {
         private final AudioFormat mAudioFormat;
         private final boolean mCaptureAvailable;
         private final int mCaptureSession;
         private final byte[] mData;
         private final boolean mTriggerAvailable;
-
-        /* synthetic */ EventPayload(boolean z, boolean z2, AudioFormat audioFormat, int i, byte[] bArr, EventPayloadIA eventPayloadIA) {
-            this(z, z2, audioFormat, i, bArr);
-        }
 
         private EventPayload(boolean triggerAvailable, boolean captureAvailable, AudioFormat audioFormat, int captureSession, byte[] data) {
             this.mTriggerAvailable = triggerAvailable;
@@ -103,7 +96,7 @@ public final class SoundTriggerDetector {
         }
     }
 
-    public SoundTriggerDetector(ISoundTriggerSession soundTriggerSession, SoundTrigger.GenericSoundModel soundModel, Callback callback, Handler handler) {
+    SoundTriggerDetector(ISoundTriggerSession soundTriggerSession, SoundTrigger.GenericSoundModel soundModel, Callback callback, Handler handler) {
         this.mSoundTriggerSession = soundTriggerSession;
         this.mSoundModel = soundModel;
         this.mCallback = callback;
@@ -153,13 +146,7 @@ public final class SoundTriggerDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class RecognitionCallback extends IRecognitionStatusCallback.Stub {
-        /* synthetic */ RecognitionCallback(SoundTriggerDetector soundTriggerDetector, RecognitionCallbackIA recognitionCallbackIA) {
-            this();
-        }
-
+    private class RecognitionCallback extends IRecognitionStatusCallback.Stub {
         private RecognitionCallback() {
         }
 
@@ -211,9 +198,7 @@ public final class SoundTriggerDetector {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class MyHandler extends Handler {
+    private class MyHandler extends Handler {
         MyHandler() {
         }
 
@@ -225,24 +210,23 @@ public final class SoundTriggerDetector {
         public void handleMessage(Message msg) {
             if (SoundTriggerDetector.this.mCallback == null) {
                 Slog.w(SoundTriggerDetector.TAG, "Received message: " + msg.what + " for NULL callback.");
-                return;
             }
             switch (msg.what) {
                 case 2:
                     SoundTriggerDetector.this.mCallback.onDetected((EventPayload) msg.obj);
-                    return;
+                    break;
                 case 3:
                     SoundTriggerDetector.this.mCallback.onError();
-                    return;
+                    break;
                 case 4:
                     SoundTriggerDetector.this.mCallback.onRecognitionPaused();
-                    return;
+                    break;
                 case 5:
                     SoundTriggerDetector.this.mCallback.onRecognitionResumed();
-                    return;
+                    break;
                 default:
                     super.handleMessage(msg);
-                    return;
+                    break;
             }
         }
     }

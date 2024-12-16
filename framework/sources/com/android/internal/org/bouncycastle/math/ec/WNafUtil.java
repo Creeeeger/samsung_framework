@@ -19,14 +19,8 @@ public abstract class WNafUtil {
         }
         BigInteger n = c.getOrder();
         int bits = n == null ? c.getFieldSize() + 1 : n.bitLength();
-        int confWidth = Math.min(16, getWindowSize(bits) + 3);
+        final int confWidth = Math.min(16, getWindowSize(bits) + 3);
         c.precompute(p, PRECOMP_NAME, new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.WNafUtil.1
-            final /* synthetic */ int val$confWidth;
-
-            AnonymousClass1(int confWidth2) {
-                confWidth = confWidth2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 WNafPreCompInfo existingWNaf = existing instanceof WNafPreCompInfo ? (WNafPreCompInfo) existing : null;
@@ -46,36 +40,6 @@ public abstract class WNafUtil {
                 return result;
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.math.ec.WNafUtil$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PreCompCallback {
-        final /* synthetic */ int val$confWidth;
-
-        AnonymousClass1(int confWidth2) {
-            confWidth = confWidth2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
-        public PreCompInfo precompute(PreCompInfo existing) {
-            WNafPreCompInfo existingWNaf = existing instanceof WNafPreCompInfo ? (WNafPreCompInfo) existing : null;
-            if (existingWNaf != null && existingWNaf.getConfWidth() == confWidth) {
-                existingWNaf.setPromotionCountdown(0);
-                return existingWNaf;
-            }
-            WNafPreCompInfo result = new WNafPreCompInfo();
-            result.setPromotionCountdown(0);
-            result.setConfWidth(confWidth);
-            if (existingWNaf != null) {
-                result.setPreComp(existingWNaf.getPreComp());
-                result.setPreCompNeg(existingWNaf.getPreCompNeg());
-                result.setTwice(existingWNaf.getTwice());
-                result.setWidth(existingWNaf.getWidth());
-            }
-            return result;
-        }
     }
 
     public static int[] generateCompactNaf(BigInteger k) {
@@ -311,21 +275,9 @@ public abstract class WNafUtil {
         return Math.max(2, Math.min(maxWidth, w + 2));
     }
 
-    public static WNafPreCompInfo precompute(ECPoint p, int minWidth, boolean includeNegated) {
-        ECCurve c = p.getCurve();
+    public static WNafPreCompInfo precompute(final ECPoint p, final int minWidth, final boolean includeNegated) {
+        final ECCurve c = p.getCurve();
         return (WNafPreCompInfo) c.precompute(p, PRECOMP_NAME, new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.WNafUtil.2
-            final /* synthetic */ ECCurve val$c;
-            final /* synthetic */ boolean val$includeNegated;
-            final /* synthetic */ int val$minWidth;
-            final /* synthetic */ ECPoint val$p;
-
-            AnonymousClass2(int minWidth2, boolean includeNegated2, ECPoint p2, ECCurve c2) {
-                minWidth = minWidth2;
-                includeNegated = includeNegated2;
-                p = p2;
-                c = c2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 int pos;
@@ -436,142 +388,9 @@ public abstract class WNafUtil {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.math.ec.WNafUtil$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements PreCompCallback {
-        final /* synthetic */ ECCurve val$c;
-        final /* synthetic */ boolean val$includeNegated;
-        final /* synthetic */ int val$minWidth;
-        final /* synthetic */ ECPoint val$p;
-
-        AnonymousClass2(int minWidth2, boolean includeNegated2, ECPoint p2, ECCurve c2) {
-            minWidth = minWidth2;
-            includeNegated = includeNegated2;
-            p = p2;
-            c = c2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
-        public PreCompInfo precompute(PreCompInfo existing) {
-            int pos;
-            WNafPreCompInfo existingWNaf = existing instanceof WNafPreCompInfo ? (WNafPreCompInfo) existing : null;
-            int width = Math.max(2, Math.min(16, minWidth));
-            if (checkExisting(existingWNaf, width, 1 << (width - 2), includeNegated)) {
-                existingWNaf.decrementPromotionCountdown();
-                return existingWNaf;
-            }
-            WNafPreCompInfo result = new WNafPreCompInfo();
-            ECPoint[] preComp = null;
-            ECPoint[] preCompNeg = null;
-            ECPoint twiceP = null;
-            if (existingWNaf != null) {
-                int promotionCountdown = existingWNaf.decrementPromotionCountdown();
-                result.setPromotionCountdown(promotionCountdown);
-                int confWidth = existingWNaf.getConfWidth();
-                result.setConfWidth(confWidth);
-                preComp = existingWNaf.getPreComp();
-                preCompNeg = existingWNaf.getPreCompNeg();
-                twiceP = existingWNaf.getTwice();
-            }
-            int promotionCountdown2 = result.getConfWidth();
-            int width2 = Math.min(16, Math.max(promotionCountdown2, width));
-            int reqPreCompLen = 1 << (width2 - 2);
-            int iniPreCompLen = 0;
-            if (preComp == null) {
-                preComp = WNafUtil.EMPTY_POINTS;
-            } else {
-                iniPreCompLen = preComp.length;
-            }
-            if (iniPreCompLen < reqPreCompLen) {
-                preComp = WNafUtil.resizeTable(preComp, reqPreCompLen);
-                if (reqPreCompLen == 1) {
-                    preComp[0] = p.normalize();
-                } else {
-                    int curPreCompLen = iniPreCompLen;
-                    if (curPreCompLen == 0) {
-                        preComp[0] = p;
-                        curPreCompLen = 1;
-                    }
-                    ECFieldElement iso = null;
-                    if (reqPreCompLen == 2) {
-                        preComp[1] = p.threeTimes();
-                    } else {
-                        ECPoint isoTwiceP = twiceP;
-                        ECPoint last = preComp[curPreCompLen - 1];
-                        if (isoTwiceP == null) {
-                            isoTwiceP = preComp[0].twice();
-                            twiceP = isoTwiceP;
-                            if (!twiceP.isInfinity() && ECAlgorithms.isFpCurve(c) && c.getFieldSize() >= 64) {
-                                switch (c.getCoordinateSystem()) {
-                                    case 2:
-                                    case 3:
-                                    case 4:
-                                        iso = twiceP.getZCoord(0);
-                                        isoTwiceP = c.createPoint(twiceP.getXCoord().toBigInteger(), twiceP.getYCoord().toBigInteger());
-                                        ECFieldElement iso2 = iso.square();
-                                        ECFieldElement iso3 = iso2.multiply(iso);
-                                        last = last.scaleX(iso2).scaleY(iso3);
-                                        if (iniPreCompLen == 0) {
-                                            preComp[0] = last;
-                                            break;
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                        while (curPreCompLen < reqPreCompLen) {
-                            ECPoint add = last.add(isoTwiceP);
-                            last = add;
-                            preComp[curPreCompLen] = add;
-                            curPreCompLen++;
-                        }
-                    }
-                    c.normalizeAll(preComp, iniPreCompLen, reqPreCompLen - iniPreCompLen, iso);
-                }
-            }
-            if (includeNegated) {
-                if (preCompNeg == null) {
-                    pos = 0;
-                    preCompNeg = new ECPoint[reqPreCompLen];
-                } else {
-                    pos = preCompNeg.length;
-                    if (pos < reqPreCompLen) {
-                        preCompNeg = WNafUtil.resizeTable(preCompNeg, reqPreCompLen);
-                    }
-                }
-                while (pos < reqPreCompLen) {
-                    preCompNeg[pos] = preComp[pos].negate();
-                    pos++;
-                }
-            }
-            result.setPreComp(preComp);
-            result.setPreCompNeg(preCompNeg);
-            result.setTwice(twiceP);
-            result.setWidth(width2);
-            return result;
-        }
-
-        private boolean checkExisting(WNafPreCompInfo existingWNaf, int width, int reqPreCompLen, boolean includeNegated2) {
-            return existingWNaf != null && existingWNaf.getWidth() >= Math.max(existingWNaf.getConfWidth(), width) && checkTable(existingWNaf.getPreComp(), reqPreCompLen) && (!includeNegated2 || checkTable(existingWNaf.getPreCompNeg(), reqPreCompLen));
-        }
-
-        private boolean checkTable(ECPoint[] table, int reqLen) {
-            return table != null && table.length >= reqLen;
-        }
-    }
-
-    public static WNafPreCompInfo precomputeWithPointMap(ECPoint p, ECPointMap pointMap, WNafPreCompInfo fromWNaf, boolean includeNegated) {
+    public static WNafPreCompInfo precomputeWithPointMap(ECPoint p, final ECPointMap pointMap, final WNafPreCompInfo fromWNaf, final boolean includeNegated) {
         ECCurve c = p.getCurve();
         return (WNafPreCompInfo) c.precompute(p, PRECOMP_NAME, new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.WNafUtil.3
-            final /* synthetic */ boolean val$includeNegated;
-            final /* synthetic */ ECPointMap val$pointMap;
-
-            AnonymousClass3(boolean includeNegated2, ECPointMap pointMap2) {
-                includeNegated = includeNegated2;
-                pointMap = pointMap2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 WNafPreCompInfo existingWNaf = existing instanceof WNafPreCompInfo ? (WNafPreCompInfo) existing : null;
@@ -615,60 +434,6 @@ public abstract class WNafUtil {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.math.ec.WNafUtil$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 implements PreCompCallback {
-        final /* synthetic */ boolean val$includeNegated;
-        final /* synthetic */ ECPointMap val$pointMap;
-
-        AnonymousClass3(boolean includeNegated2, ECPointMap pointMap2) {
-            includeNegated = includeNegated2;
-            pointMap = pointMap2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
-        public PreCompInfo precompute(PreCompInfo existing) {
-            WNafPreCompInfo existingWNaf = existing instanceof WNafPreCompInfo ? (WNafPreCompInfo) existing : null;
-            int width = WNafPreCompInfo.this.getWidth();
-            int reqPreCompLen = WNafPreCompInfo.this.getPreComp().length;
-            if (checkExisting(existingWNaf, width, reqPreCompLen, includeNegated)) {
-                existingWNaf.decrementPromotionCountdown();
-                return existingWNaf;
-            }
-            WNafPreCompInfo result = new WNafPreCompInfo();
-            result.setPromotionCountdown(WNafPreCompInfo.this.getPromotionCountdown());
-            ECPoint twiceFrom = WNafPreCompInfo.this.getTwice();
-            if (twiceFrom != null) {
-                ECPoint twice = pointMap.map(twiceFrom);
-                result.setTwice(twice);
-            }
-            ECPoint[] preCompFrom = WNafPreCompInfo.this.getPreComp();
-            ECPoint[] preComp = new ECPoint[preCompFrom.length];
-            for (int i = 0; i < preCompFrom.length; i++) {
-                preComp[i] = pointMap.map(preCompFrom[i]);
-            }
-            result.setPreComp(preComp);
-            result.setWidth(width);
-            if (includeNegated) {
-                ECPoint[] preCompNeg = new ECPoint[preComp.length];
-                for (int i2 = 0; i2 < preCompNeg.length; i2++) {
-                    preCompNeg[i2] = preComp[i2].negate();
-                }
-                result.setPreCompNeg(preCompNeg);
-            }
-            return result;
-        }
-
-        private boolean checkExisting(WNafPreCompInfo existingWNaf, int width, int reqPreCompLen, boolean includeNegated2) {
-            return existingWNaf != null && existingWNaf.getWidth() >= width && checkTable(existingWNaf.getPreComp(), reqPreCompLen) && (!includeNegated2 || checkTable(existingWNaf.getPreCompNeg(), reqPreCompLen));
-        }
-
-        private boolean checkTable(ECPoint[] table, int reqLen) {
-            return table != null && table.length >= reqLen;
-        }
-    }
-
     private static byte[] trim(byte[] a, int length) {
         byte[] result = new byte[length];
         System.arraycopy(a, 0, result, 0, result.length);
@@ -681,6 +446,7 @@ public abstract class WNafUtil {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static ECPoint[] resizeTable(ECPoint[] a, int length) {
         ECPoint[] result = new ECPoint[length];
         System.arraycopy(a, 0, result, 0, a.length);

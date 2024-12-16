@@ -5,7 +5,7 @@ import android.util.Range;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class Capability {
     public static final int COUNT = 3;
     private final Size mMaxStreamingSize;

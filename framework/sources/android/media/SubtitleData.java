@@ -50,9 +50,8 @@ public final class SubtitleData {
         this.mTrackIndex = parcel.readInt();
         this.mStartTimeUs = parcel.readLong();
         this.mDurationUs = parcel.readLong();
-        byte[] bArr = new byte[parcel.readInt()];
-        this.mData = bArr;
-        parcel.readByteArray(bArr);
+        this.mData = new byte[parcel.readInt()];
+        parcel.readByteArray(this.mData);
         return true;
     }
 }

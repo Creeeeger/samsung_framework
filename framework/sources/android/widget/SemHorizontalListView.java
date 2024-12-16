@@ -65,7 +65,6 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     private final Rect mTempRect;
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public class FixedViewInfo {
 
         @Deprecated
@@ -89,26 +88,11 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         this.mDndListAnimator = animator;
         setChildrenDrawingOrderEnabled(true);
         this.mDndListAnimator.setAutoScrollListener(new SemAbsDragAndDropAnimator.SemDragAutoScrollListener() { // from class: android.widget.SemHorizontalListView.1
-            AnonymousClass1() {
-            }
-
             @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
             public void onAutoScroll(int delta) {
                 SemHorizontalListView.this.trackMotionScroll(delta, delta);
             }
         });
-    }
-
-    /* renamed from: android.widget.SemHorizontalListView$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements SemAbsDragAndDropAnimator.SemDragAutoScrollListener {
-        AnonymousClass1() {
-        }
-
-        @Override // com.samsung.android.animation.SemAbsDragAndDropAnimator.SemDragAutoScrollListener
-        public void onAutoScroll(int delta) {
-            SemHorizontalListView.this.trackMotionScroll(delta, delta);
-        }
     }
 
     @Deprecated
@@ -391,7 +375,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.widget.SemHorizontalAbsListView
-    public void resetList() {
+    void resetList() {
         clearRecycledState(this.mHeaderViewInfos);
         clearRecycledState(this.mFooterViewInfos);
         super.resetList();
@@ -629,7 +613,6 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     private View fillFromRight(int nextRight) {
-        int i = this.mItemCount - 1;
         this.mFirstPosition = Math.min(this.mFirstPosition, this.mSelectedPosition);
         this.mFirstPosition = Math.min(this.mFirstPosition, this.mItemCount - 1);
         if (this.mFirstPosition < 0) {
@@ -810,14 +793,9 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         return sel;
     }
 
-    /* loaded from: classes4.dex */
     private class FocusSelector implements Runnable {
         private int mPosition;
         private int mPositionLeft;
-
-        /* synthetic */ FocusSelector(SemHorizontalListView semHorizontalListView, FocusSelectorIA focusSelectorIA) {
-            this();
-        }
 
         private FocusSelector() {
         }
@@ -836,7 +814,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.widget.SemHorizontalAbsListView, android.view.View
     @Deprecated
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         View focusedChild;
         int left;
         if (getChildCount() > 0 && (focusedChild = getFocusedChild()) != null) {
@@ -859,7 +837,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.widget.SemHorizontalAbsListView, android.view.View
     @Deprecated
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int heightSize;
         int widthSize;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -932,10 +910,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
             return this.mListPadding.left + this.mListPadding.right;
         }
         int returnedWidth = this.mListPadding.left + this.mListPadding.right;
-        int dividerHeight = this.mDividerHeight;
-        if (dividerHeight <= 0 || this.mDivider == null) {
-            dividerHeight = 0;
-        }
+        int dividerHeight = (this.mDividerHeight <= 0 || this.mDivider == null) ? 0 : this.mDividerHeight;
         int prevWidthWithoutPartialChild = 0;
         int endPosition2 = endPosition == -1 ? adapter.getCount() - 1 : endPosition;
         SemHorizontalAbsListView.RecycleBin recycleBin = this.mRecycler;
@@ -1163,8 +1138,8 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         if (this.mFirstPosition == 0 && childCount > 0) {
             View firstChild = getChildAt(0);
             int firstRight = firstChild.getRight();
-            int i = this.mListPadding.right;
-            int end = (this.mRight - this.mLeft) - this.mListPadding.right;
+            int start = this.mListPadding.right;
+            int end = (this.mRight - this.mLeft) - start;
             int rightOffset = end - firstRight;
             View lastChild = getChildAt(childCount - 1);
             int lastLeft = lastChild.getLeft();
@@ -1192,8 +1167,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     @Override // android.widget.SemHorizontalAbsListView, android.view.ViewGroup
     @Deprecated
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = this.mDndListAnimator;
-        if (semDragAndDropHorizontalListAnimator == null || !semDragAndDropHorizontalListAnimator.onInterceptTouchEvent(ev)) {
+        if (this.mDndListAnimator == null || !this.mDndListAnimator.onInterceptTouchEvent(ev)) {
             return super.onInterceptTouchEvent(ev);
         }
         return true;
@@ -1202,8 +1176,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     @Override // android.widget.SemHorizontalAbsListView, android.view.View
     @Deprecated
     public boolean onTouchEvent(MotionEvent ev) {
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = this.mDndListAnimator;
-        if (semDragAndDropHorizontalListAnimator == null || !semDragAndDropHorizontalListAnimator.onTouchEvent(ev)) {
+        if (this.mDndListAnimator == null || !this.mDndListAnimator.onTouchEvent(ev)) {
             return super.onTouchEvent(ev);
         }
         return true;
@@ -1211,9 +1184,8 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.view.ViewGroup
     @Deprecated
-    public int getChildDrawingOrder(int childCount, int i) {
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = this.mDndListAnimator;
-        return semDragAndDropHorizontalListAnimator != null ? semDragAndDropHorizontalListAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
+    protected int getChildDrawingOrder(int childCount, int i) {
+        return this.mDndListAnimator != null ? this.mDndListAnimator.getChildDrawingOrder(childCount, i) : super.getChildDrawingOrder(childCount, i);
     }
 
     /* JADX WARN: Removed duplicated region for block: B:151:0x0362 A[Catch: all -> 0x0494, TryCatch #0 {all -> 0x0494, blocks: (B:7:0x0011, B:9:0x001b, B:14:0x0026, B:15:0x0042, B:16:0x0045, B:17:0x006f, B:20:0x0077, B:21:0x007c, B:23:0x0085, B:24:0x008b, B:25:0x0099, B:27:0x009f, B:28:0x00a2, B:30:0x00a6, B:35:0x00b1, B:37:0x00bb, B:39:0x00cc, B:41:0x00d2, B:46:0x00dd, B:48:0x00e3, B:50:0x00e9, B:52:0x00f4, B:53:0x010d, B:56:0x0118, B:58:0x0129, B:59:0x0133, B:63:0x013e, B:66:0x0157, B:67:0x015f, B:70:0x0170, B:72:0x0244, B:74:0x0248, B:75:0x0306, B:77:0x030c, B:79:0x0310, B:81:0x0316, B:85:0x0320, B:89:0x0331, B:91:0x0337, B:92:0x033a, B:94:0x034b, B:97:0x039e, B:100:0x03a6, B:102:0x03ad, B:105:0x03b6, B:107:0x03c5, B:109:0x03cb, B:111:0x03e0, B:114:0x03e7, B:116:0x03f8, B:117:0x0409, B:120:0x0411, B:122:0x0416, B:123:0x0405, B:125:0x041b, B:127:0x0421, B:128:0x0424, B:130:0x042d, B:131:0x0434, B:133:0x0443, B:134:0x0446, B:139:0x033e, B:140:0x0326, B:143:0x0348, B:144:0x0352, B:146:0x0357, B:151:0x0362, B:153:0x036d, B:155:0x0390, B:158:0x0398, B:159:0x0373, B:161:0x0377, B:163:0x0382, B:165:0x0388, B:167:0x0258, B:168:0x026d, B:170:0x0271, B:171:0x0282, B:172:0x0299, B:174:0x029d, B:176:0x02a1, B:178:0x02a7, B:181:0x02b1, B:182:0x02ad, B:183:0x02b6, B:185:0x02bc, B:188:0x02c6, B:189:0x02c2, B:190:0x02cb, B:191:0x02d2, B:193:0x02d6, B:195:0x02dc, B:198:0x02e6, B:199:0x02e2, B:200:0x02eb, B:202:0x02f1, B:205:0x02fb, B:206:0x02f7, B:207:0x0300, B:208:0x0174, B:209:0x018e, B:211:0x019e, B:212:0x01a8, B:213:0x01b2, B:215:0x01c2, B:216:0x01ce, B:217:0x01da, B:219:0x01ea, B:220:0x01fb, B:221:0x01f3, B:224:0x020e, B:225:0x0218, B:226:0x021e, B:228:0x022e, B:229:0x023d, B:230:0x0236, B:231:0x0152, B:232:0x011e, B:234:0x0126, B:236:0x00ed, B:240:0x0453, B:241:0x0493, B:242:0x0048, B:245:0x0052), top: B:6:0x0011 }] */
@@ -1224,7 +1196,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void layoutChildren() {
+    protected void layoutChildren() {
         /*
             Method dump skipped, instructions count: 1210
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -1357,7 +1329,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.widget.AdapterView, android.view.ViewGroup
     @Deprecated
-    public boolean canAnimate() {
+    protected boolean canAnimate() {
         return super.canAnimate() && this.mItemCount > 0;
     }
 
@@ -1451,7 +1423,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.widget.AdapterView
-    public int lookForSelectablePosition(int position, boolean lookDown) {
+    int lookForSelectablePosition(int position, boolean lookDown) {
         ListAdapter adapter = this.mAdapter;
         if (adapter == null || isInTouchMode()) {
             return -1;
@@ -1701,19 +1673,12 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                     break;
             }
         }
-        if (handled || sendToTextFilter(keyCode, count, event)) {
+        if (!handled && !sendToTextFilter(keyCode, count, event)) {
+            switch (action) {
+            }
             return true;
         }
-        switch (action) {
-            case 0:
-                return super.onKeyDown(keyCode, event);
-            case 1:
-                return super.onKeyUp(keyCode, event);
-            case 2:
-                return super.onKeyMultiple(keyCode, count, event);
-            default:
-                return false;
-        }
+        return true;
     }
 
     boolean pageScroll(int direction) {
@@ -2068,14 +2033,9 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         return Math.min(amountToScroll2, max4);
     }
 
-    /* loaded from: classes4.dex */
-    public static class ArrowScrollFocusResult {
+    private static class ArrowScrollFocusResult {
         private int mAmountToScroll;
         private int mSelectedPosition;
-
-        /* synthetic */ ArrowScrollFocusResult(ArrowScrollFocusResultIA arrowScrollFocusResultIA) {
-            this();
-        }
 
         private ArrowScrollFocusResult() {
         }
@@ -2488,7 +2448,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.widget.SemHorizontalAbsListView, android.view.ViewGroup, android.view.View
     @Deprecated
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         ListAdapter adapter;
         int itemCount;
         int effectivePaddingLeft;
@@ -2529,22 +2489,21 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
             boolean fillForMissingDividers = isOpaque() && !super.isOpaque();
             if (fillForMissingDividers) {
                 itemCount = itemCount2;
-                if (this.mDividerPaint != null || !this.mIsCacheColorOpaque) {
+                if (this.mDividerPaint == null && this.mIsCacheColorOpaque) {
+                    this.mDividerPaint = new Paint();
                     adapter = adapter3;
+                    this.mDividerPaint.setColor(getCacheColorHint());
                 } else {
-                    Paint paint2 = new Paint();
-                    this.mDividerPaint = paint2;
                     adapter = adapter3;
-                    paint2.setColor(getCacheColorHint());
                 }
             } else {
                 adapter = adapter3;
                 itemCount = itemCount2;
             }
-            Paint paint3 = this.mDividerPaint;
+            Paint paint2 = this.mDividerPaint;
             int effectivePaddingRight = 0;
             int effectivePaddingLeft2 = this.mGroupFlags;
-            Paint paint4 = paint3;
+            Paint paint3 = paint2;
             if ((effectivePaddingLeft2 & 34) != 34) {
                 effectivePaddingLeft = 0;
             } else {
@@ -2611,7 +2570,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                                 if (fillForMissingDividers) {
                                     bounds.left = left - dividerHeight;
                                     bounds.right = left;
-                                    canvas.drawRect(bounds, paint4);
+                                    canvas.drawRect(bounds, paint3);
                                 }
                             }
                         } else {
@@ -2674,7 +2633,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                         drawOverscrollHeader = drawOverscrollHeader2;
                         drawDividers = drawDividers2;
                         adapter2 = adapter;
-                        paint = paint4;
+                        paint = paint3;
                     } else {
                         View child2 = getChildAt(i4);
                         scrollX2 = child2.getRight();
@@ -2684,12 +2643,12 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                             listRight = listRight2;
                             drawDividers = drawDividers2;
                             adapter2 = adapter;
-                            paint = paint4;
+                            paint = paint3;
                         } else if (drawOverscrollFooter2 && isLastItem) {
                             listRight = listRight2;
                             drawDividers = drawDividers2;
                             adapter2 = adapter;
-                            paint = paint4;
+                            paint = paint3;
                         } else {
                             listRight = listRight2;
                             int listRight4 = itemIndex + 1;
@@ -2701,22 +2660,22 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                                         bounds.left = scrollX2;
                                         bounds.right = scrollX2 + dividerHeight;
                                         drawDivider(canvas, bounds, i4);
-                                        paint = paint4;
+                                        paint = paint3;
                                     }
                                 }
                             }
                             if (!fillForMissingDividers) {
-                                paint = paint4;
+                                paint = paint3;
                             } else {
                                 bounds.left = scrollX2;
                                 bounds.right = scrollX2 + dividerHeight;
-                                paint = paint4;
+                                paint = paint3;
                                 canvas.drawRect(bounds, paint);
                             }
                         }
                     }
                     i4++;
-                    paint4 = paint;
+                    paint3 = paint;
                     adapter = adapter2;
                     overscrollHeader2 = overscrollHeader3;
                     drawOverscrollHeader2 = drawOverscrollHeader;
@@ -2736,31 +2695,27 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
                 }
             }
         }
-        SemAddDeleteHorizontalListAnimator semAddDeleteHorizontalListAnimator = this.mAddDeleteListAnimator;
-        if (semAddDeleteHorizontalListAnimator != null) {
-            semAddDeleteHorizontalListAnimator.draw(canvas);
+        if (this.mAddDeleteListAnimator != null) {
+            this.mAddDeleteListAnimator.draw(canvas);
         }
         super.dispatchDraw(canvas);
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = this.mDndListAnimator;
-        if (semDragAndDropHorizontalListAnimator != null) {
-            semDragAndDropHorizontalListAnimator.dispatchDraw(canvas);
+        if (this.mDndListAnimator != null) {
+            this.mDndListAnimator.dispatchDraw(canvas);
         }
     }
 
     @Override // android.view.ViewGroup
     @Deprecated
-    public boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator = this.mDndListAnimator;
-        if (semDragAndDropHorizontalListAnimator != null && !semDragAndDropHorizontalListAnimator.preDrawChild(canvas, child, drawingTime)) {
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        if (this.mDndListAnimator != null && !this.mDndListAnimator.preDrawChild(canvas, child, drawingTime)) {
             return false;
         }
         boolean more = super.drawChild(canvas, child, drawingTime);
         if (this.mCachingActive && child.mCachingFailed) {
             this.mCachingActive = false;
         }
-        SemDragAndDropHorizontalListAnimator semDragAndDropHorizontalListAnimator2 = this.mDndListAnimator;
-        if (semDragAndDropHorizontalListAnimator2 != null) {
-            semDragAndDropHorizontalListAnimator2.postDrawChild(canvas, child, drawingTime);
+        if (this.mDndListAnimator != null) {
+            this.mDndListAnimator.postDrawChild(canvas, child, drawingTime);
         }
         return more;
     }
@@ -2849,7 +2804,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
 
     @Override // android.widget.SemHorizontalAbsListView, android.view.View
     @Deprecated
-    public void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         ListAdapter adapter = this.mAdapter;
         int closetChildIndex = -1;
@@ -2885,26 +2840,11 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         }
         if (gainFocus && this.mDndListAnimator != null) {
             post(new Runnable() { // from class: android.widget.SemHorizontalListView.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SemHorizontalListView.this.mDndListAnimator.speakDescriptionForAccessibility();
                 }
             });
-        }
-    }
-
-    /* renamed from: android.widget.SemHorizontalListView$2 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SemHorizontalListView.this.mDndListAnimator.speakDescriptionForAccessibility();
         }
     }
 
@@ -2914,9 +2854,6 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         super.onWindowFocusChanged(hasWindowFocus);
         if (hasWindowFocus && this.mDndListAnimator != null) {
             post(new Runnable() { // from class: android.widget.SemHorizontalListView.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SemHorizontalListView.this.mDndListAnimator.speakDescriptionForAccessibility();
@@ -2925,21 +2862,9 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         }
     }
 
-    /* renamed from: android.widget.SemHorizontalListView$3 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SemHorizontalListView.this.mDndListAnimator.speakDescriptionForAccessibility();
-        }
-    }
-
     @Override // android.view.View
     @Deprecated
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         int count = getChildCount();
         if (count > 0) {
@@ -2951,7 +2876,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public <T extends View> T findViewTraversal(int i) {
+    protected <T extends View> T findViewTraversal(int i) {
         T t = (T) super.findViewTraversal(i);
         if (t == null) {
             T t2 = (T) findViewInHeadersOrFooters(this.mHeaderViewInfos, i);
@@ -2982,7 +2907,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public <T extends View> T findViewWithTagTraversal(Object obj) {
+    protected <T extends View> T findViewWithTagTraversal(Object obj) {
         T t = (T) super.findViewWithTagTraversal(obj);
         if (t == null) {
             T t2 = (T) findViewWithTagInHeadersOrFooters(this.mHeaderViewInfos, obj);
@@ -3013,7 +2938,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
+    protected <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t = (T) super.findViewByPredicateTraversal(predicate, view);
         if (t == null) {
             T t2 = (T) findViewByPredicateInHeadersOrFooters(this.mHeaderViewInfos, predicate, view);
@@ -3044,7 +2969,7 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
     }
 
     @Override // android.widget.SemHorizontalAbsListView
-    public int getWidthForPosition(int position) {
+    int getWidthForPosition(int position) {
         int width = super.getWidthForPosition(position);
         if (shouldAdjustWidthForDivider(position)) {
             return this.mDividerHeight + width;
@@ -3240,18 +3165,15 @@ public class SemHorizontalListView extends SemHorizontalAbsListView {
         return childWidthSpec2;
     }
 
-    /* loaded from: classes4.dex */
-    public class ItemInfoTag {
-        protected Configuration mConfiguration;
+    private class ItemInfoTag {
         protected int mHeightSpec;
         protected int mWidthSpec;
         protected long mChildrenVisibilityBitsGone = 0;
         protected int mChildrenNumberTotal = -1;
+        protected Configuration mConfiguration = new Configuration();
 
         public ItemInfoTag() {
-            Configuration configuration = new Configuration();
-            this.mConfiguration = configuration;
-            configuration.setToDefaults();
+            this.mConfiguration.setToDefaults();
             this.mWidthSpec = -1;
             this.mHeightSpec = -1;
         }

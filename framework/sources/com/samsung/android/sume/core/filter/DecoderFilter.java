@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.CancellationException;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class DecoderFilter extends MediaCodecFilter implements BufferSupplier {
     private static final String TAG = Def.tagOf((Class<?>) DecoderFilter.class);
 
@@ -32,15 +32,14 @@ public class DecoderFilter extends MediaCodecFilter implements BufferSupplier {
 
     @Override // com.samsung.android.sume.core.filter.MediaCodecFilter
     protected void configCodec(Message configData) {
-        String str = TAG;
-        Log.d(str, "configCodec: " + configData);
+        Log.d(TAG, "configCodec: " + configData);
         CodecDescriptor descriptor = (CodecDescriptor) getDescriptor();
-        String mimeType = (String) configData.get(MediaFormat.KEY_MIME);
+        String mimeType = (String) configData.get("mime");
         MediaType mediaType = descriptor.getMediaType();
         try {
             MediaFormat mediaFormat = (MediaFormat) configData.get("media-format");
             BufferChannel outputChannel = this.sendChannelQuery.apply(mediaType);
-            Log.d(str, "outputChannel: " + outputChannel);
+            Log.d(TAG, "outputChannel: " + outputChannel);
             Surface surface = null;
             if (outputChannel instanceof SurfaceChannel) {
                 int width = mediaFormat.getInteger("width");
@@ -152,6 +151,7 @@ public class DecoderFilter extends MediaCodecFilter implements BufferSupplier {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public MediaBuffer supplyMediaBuffer() {
         Log.d(TAG, "supplyMediaBuffer");
         if (this.mediaCodec == null) {
@@ -159,18 +159,17 @@ public class DecoderFilter extends MediaCodecFilter implements BufferSupplier {
         }
         while (true) {
             int bufferIdx = this.mediaCodec.dequeueInputBuffer(JobInfo.MIN_BACKOFF_MILLIS);
-            String str = TAG;
-            Log.d(str, tagged("dequeue input buffer: " + bufferIdx, new Object[0]));
+            Log.d(TAG, tagged("dequeue input buffer: " + bufferIdx, new Object[0]));
             if (bufferIdx < 0) {
                 try {
-                    Log.d(str, tagged("fail to dequeue input buffer, wait 50ms", new Object[0]));
+                    Log.d(TAG, tagged("fail to dequeue input buffer, wait 50ms", new Object[0]));
                     Thread.sleep(50L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Log.d(TAG, tagged("retry to dequeue input buffer: " + bufferIdx, new Object[0]));
                 }
             } else {
-                Log.d(str, tagged("success to dequeue input buffer: " + bufferIdx, new Object[0]));
+                Log.d(TAG, tagged("success to dequeue input buffer: " + bufferIdx, new Object[0]));
                 ByteBuffer byteBuffer = this.mediaCodec.getInputBuffer(bufferIdx);
                 MediaType mediaType = ((CodecDescriptor) getDescriptor()).getMediaType();
                 MediaBuffer mediaBuffer = MediaBuffer.of(mediaType, byteBuffer);

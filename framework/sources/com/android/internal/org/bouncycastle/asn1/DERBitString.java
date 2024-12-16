@@ -50,17 +50,17 @@ public class DERBitString extends ASN1BitString {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.data.length + 1) + 1 + this.data.length + 1;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1BitString, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         int len = this.data.length;
         if (len == 0 || this.padBits == 0 || this.data[len - 1] == ((byte) (this.data[len - 1] & (255 << this.padBits)))) {
             out.writeEncoded(withTag, 3, (byte) this.padBits, this.data);
@@ -71,12 +71,12 @@ public class DERBitString extends ASN1BitString {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1BitString, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return this;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1BitString, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 

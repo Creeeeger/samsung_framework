@@ -95,6 +95,7 @@ public final class TvSettingsEnums {
     public static final int CONNECTED_SLICE_DEVICE_ENTRY = 404750336;
     public static final int CONNECTED_SLICE_DEVICE_ENTRY_FORGET = 404946944;
     public static final int CONNECTED_SLICE_DEVICE_ENTRY_RENAME = 404881408;
+    public static final int CONNECTED_SLICE_DEVICE_ENTRY_TOGGLE_ACTIVE_AUDIO_OUTPUT = 405012480;
     public static final int CONNECTED_SLICE_DEVICE_ENTRY_UPDATE = 404815872;
     public static final int CONNECTED_SLICE_HDMICEC = 405798912;
     public static final int CONNECTED_SLICE_HDMICEC_ON_OFF = 405864448;
@@ -149,6 +150,7 @@ public final class TvSettingsEnums {
     public static final int NETWORK_NOT_CONNECTED_AP = 288358400;
     public static final int NETWORK_SEE_ALL = 289406976;
     public static final int NETWORK_SEE_FEWER = 290455552;
+    public static final int NETWORK_T_N = 295698432;
     public static final int NETWORK_WIFI_ON_OFF = 286261248;
     public static final int PAGE_CLASSIC_DEFAULT = 2;
     public static final int PAGE_FOCUSED = 1;
@@ -262,6 +264,12 @@ public final class TvSettingsEnums {
     public static final int SYSTEM_A11Y_TALKBACK = 394592256;
     public static final int SYSTEM_A11Y_TALKBACK_CONFIG = 394600448;
     public static final int SYSTEM_A11Y_TALKBACK_ON_OFF = 394596352;
+    public static final int SYSTEM_A11Y_TIMEOUT = 395116544;
+    public static final int SYSTEM_A11Y_TIMEOUT_DEFAULT = 395120640;
+    public static final int SYSTEM_A11Y_TIMEOUT_ONE_MINUTE = 395132928;
+    public static final int SYSTEM_A11Y_TIMEOUT_TEN_SECONDS = 395124736;
+    public static final int SYSTEM_A11Y_TIMEOUT_THIRTY_SECONDS = 395128832;
+    public static final int SYSTEM_A11Y_TIMEOUT_TWO_MINUTE = 395137024;
     public static final int SYSTEM_A11Y_TTS = 394461184;
     public static final int SYSTEM_A11Y_TTS_ENGINE_CONFIG = 394469376;
     public static final int SYSTEM_A11Y_TTS_ENGINE_CONFIG_INSTALL_VOICE_DATA = 394470144;

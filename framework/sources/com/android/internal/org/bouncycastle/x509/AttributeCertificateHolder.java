@@ -32,7 +32,7 @@ import javax.security.auth.x500.X500Principal;
 public class AttributeCertificateHolder implements CertSelector, Selector {
     final Holder holder;
 
-    public AttributeCertificateHolder(ASN1Sequence seq) {
+    AttributeCertificateHolder(ASN1Sequence seq) {
         this.holder = Holder.getInstance(seq);
     }
 

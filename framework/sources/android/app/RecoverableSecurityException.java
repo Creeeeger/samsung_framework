@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class RecoverableSecurityException extends SecurityException implements Parcelable {
     public static final Parcelable.Creator<RecoverableSecurityException> CREATOR = new Parcelable.Creator<RecoverableSecurityException>() { // from class: android.app.RecoverableSecurityException.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecoverableSecurityException createFromParcel(Parcel source) {
             return new RecoverableSecurityException(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecoverableSecurityException[] newArray(int size) {
             return new RecoverableSecurityException[size];
@@ -70,7 +69,6 @@ public final class RecoverableSecurityException extends SecurityException implem
         ft.commitAllowingStateLoss();
     }
 
-    /* loaded from: classes.dex */
     public static class LocalDialog extends DialogFragment {
         @Override // android.app.DialogFragment
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -94,22 +92,5 @@ public final class RecoverableSecurityException extends SecurityException implem
         dest.writeString(getMessage());
         dest.writeCharSequence(this.mUserMessage);
         this.mUserAction.writeToParcel(dest, flags);
-    }
-
-    /* renamed from: android.app.RecoverableSecurityException$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecoverableSecurityException> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecoverableSecurityException createFromParcel(Parcel source) {
-            return new RecoverableSecurityException(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecoverableSecurityException[] newArray(int size) {
-            return new RecoverableSecurityException[size];
-        }
     }
 }

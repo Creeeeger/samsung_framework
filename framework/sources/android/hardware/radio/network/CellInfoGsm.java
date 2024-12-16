@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellInfoGsm implements Parcelable {
     public static final Parcelable.Creator<CellInfoGsm> CREATOR = new Parcelable.Creator<CellInfoGsm>() { // from class: android.hardware.radio.network.CellInfoGsm.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoGsm createFromParcel(Parcel _aidl_source) {
             CellInfoGsm _aidl_out = new CellInfoGsm();
@@ -19,6 +17,7 @@ public class CellInfoGsm implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoGsm[] newArray(int _aidl_size) {
             return new CellInfoGsm[_aidl_size];
@@ -26,25 +25,6 @@ public class CellInfoGsm implements Parcelable {
     };
     public CellIdentityGsm cellIdentityGsm;
     public GsmSignalStrength signalStrengthGsm;
-
-    /* renamed from: android.hardware.radio.network.CellInfoGsm$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellInfoGsm> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoGsm createFromParcel(Parcel _aidl_source) {
-            CellInfoGsm _aidl_out = new CellInfoGsm();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoGsm[] newArray(int _aidl_size) {
-            return new CellInfoGsm[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class CellInfoGsm implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("cellIdentityGsm: " + Objects.toString(this.cellIdentityGsm));
         _aidl_sj.add("signalStrengthGsm: " + Objects.toString(this.signalStrengthGsm));
-        return "android.hardware.radio.network.CellInfoGsm" + _aidl_sj.toString();
+        return "CellInfoGsm" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

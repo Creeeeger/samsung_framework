@@ -35,11 +35,10 @@ public class AttributeCertificateIssuer implements CertSelector, Selector {
 
     private Object[] getNames() {
         GeneralNames name;
-        ASN1Encodable aSN1Encodable = this.form;
-        if (aSN1Encodable instanceof V2Form) {
-            name = ((V2Form) aSN1Encodable).getIssuerName();
+        if (this.form instanceof V2Form) {
+            name = ((V2Form) this.form).getIssuerName();
         } else {
-            name = (GeneralNames) aSN1Encodable;
+            name = (GeneralNames) this.form;
         }
         GeneralName[] names = name.getNames();
         List l = new ArrayList(names.length);
@@ -95,9 +94,8 @@ public class AttributeCertificateIssuer implements CertSelector, Selector {
             return false;
         }
         X509Certificate x509Cert = (X509Certificate) cert;
-        ASN1Encodable aSN1Encodable = this.form;
-        if (aSN1Encodable instanceof V2Form) {
-            V2Form issuer = (V2Form) aSN1Encodable;
+        if (this.form instanceof V2Form) {
+            V2Form issuer = (V2Form) this.form;
             if (issuer.getBaseCertificateID() != null) {
                 return issuer.getBaseCertificateID().getSerial().hasValue(x509Cert.getSerialNumber()) && matchesDN(x509Cert.getIssuerX500Principal(), issuer.getBaseCertificateID().getIssuer());
             }
@@ -106,7 +104,7 @@ public class AttributeCertificateIssuer implements CertSelector, Selector {
                 return true;
             }
         } else {
-            GeneralNames name2 = (GeneralNames) aSN1Encodable;
+            GeneralNames name2 = (GeneralNames) this.form;
             if (matchesDN(x509Cert.getSubjectX500Principal(), name2)) {
                 return true;
             }

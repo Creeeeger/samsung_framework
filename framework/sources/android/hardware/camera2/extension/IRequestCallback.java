@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IRequestCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IRequestCallback";
 
@@ -24,7 +24,6 @@ public interface IRequestCallback extends IInterface {
 
     void onCaptureStarted(int i, long j, long j2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IRequestCallback {
         @Override // android.hardware.camera2.extension.IRequestCallback
         public void onCaptureStarted(int requestId, long frameNumber, long timestamp) throws RemoteException {
@@ -60,7 +59,6 @@ public interface IRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IRequestCallback {
         static final int TRANSACTION_onCaptureBufferLost = 5;
         static final int TRANSACTION_onCaptureCompleted = 3;
@@ -121,71 +119,67 @@ public interface IRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRequestCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onCaptureStarted(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    ParcelCaptureResult _arg12 = (ParcelCaptureResult) data.readTypedObject(ParcelCaptureResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureProgressed(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    ParcelTotalCaptureResult _arg13 = (ParcelTotalCaptureResult) data.readTypedObject(ParcelTotalCaptureResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureCompleted(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    CaptureFailure _arg14 = (CaptureFailure) data.readTypedObject(CaptureFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCaptureFailed(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    long _arg15 = data.readLong();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureBufferLost(_arg05, _arg15, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    long _arg16 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onCaptureSequenceCompleted(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCaptureSequenceAborted(_arg07);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onCaptureStarted(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            ParcelCaptureResult _arg12 = (ParcelCaptureResult) data.readTypedObject(ParcelCaptureResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureProgressed(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            ParcelTotalCaptureResult _arg13 = (ParcelTotalCaptureResult) data.readTypedObject(ParcelTotalCaptureResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureCompleted(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            CaptureFailure _arg14 = (CaptureFailure) data.readTypedObject(CaptureFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCaptureFailed(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            long _arg15 = data.readLong();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureBufferLost(_arg05, _arg15, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            long _arg16 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onCaptureSequenceCompleted(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCaptureSequenceAborted(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IRequestCallback {
+        private static class Proxy implements IRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

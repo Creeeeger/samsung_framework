@@ -5,11 +5,10 @@ import com.android.internal.logging.UiEventLogger;
 import java.util.LinkedList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class UiEventLoggerFake implements UiEventLogger {
     private List<FakeUiEvent> mLogs = new LinkedList();
 
-    /* loaded from: classes4.dex */
     public static class FakeUiEvent {
         public final int eventId;
         public final InstanceId instanceId;

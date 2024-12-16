@@ -4,7 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.util.Rational;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class MarshalHelpers {
     public static final int SIZEOF_BYTE = 1;
     public static final int SIZEOF_DOUBLE = 8;

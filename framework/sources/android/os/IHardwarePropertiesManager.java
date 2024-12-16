@@ -8,7 +8,6 @@ public interface IHardwarePropertiesManager extends IInterface {
 
     float[] getFanSpeeds(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IHardwarePropertiesManager {
         @Override // android.os.IHardwarePropertiesManager
         public float[] getDeviceTemperatures(String callingPackage, int type, int source) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IHardwarePropertiesManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IHardwarePropertiesManager {
         public static final String DESCRIPTOR = "android.os.IHardwarePropertiesManager";
         static final int TRANSACTION_getCpuUsages = 2;
@@ -81,44 +79,40 @@ public interface IHardwarePropertiesManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float[] _result = getDeviceTemperatures(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    CpuUsageInfo[] _result2 = getCpuUsages(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    float[] _result3 = getFanSpeeds(_arg03);
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float[] _result = getDeviceTemperatures(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            CpuUsageInfo[] _result2 = getCpuUsages(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            float[] _result3 = getFanSpeeds(_arg03);
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IHardwarePropertiesManager {
+        private static class Proxy implements IHardwarePropertiesManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

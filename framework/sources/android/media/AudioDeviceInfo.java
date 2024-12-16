@@ -14,7 +14,7 @@ import java.util.TreeSet;
 public final class AudioDeviceInfo {
     private static final SparseIntArray EXT_TO_INT_DEVICE_MAPPING;
     private static final SparseIntArray EXT_TO_INT_INPUT_DEVICE_MAPPING;
-    private static final SparseIntArray INT_TO_EXT_DEVICE_MAPPING;
+    private static final SparseIntArray INT_TO_EXT_DEVICE_MAPPING = new SparseIntArray();
     public static final int SEM_TYPE_DEFAULT = -1001;
     public static final int SEM_TYPE_DEFAULT_WITH_STOP_COMMAND = -1002;
     public static final int SEM_TYPE_REMOTE_SUBMIX = 10001;
@@ -55,21 +55,18 @@ public final class AudioDeviceInfo {
     private final AudioDevicePort mPort;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioDeviceType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioDeviceTypeIn {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioDeviceTypeOut {
     }
 
-    public static boolean isValidAudioDeviceTypeOut(int type) {
+    static boolean isValidAudioDeviceTypeOut(int type) {
         switch (type) {
             case 1:
             case 2:
@@ -287,115 +284,111 @@ public final class AudioDeviceInfo {
     }
 
     static {
-        SparseIntArray sparseIntArray = new SparseIntArray();
-        INT_TO_EXT_DEVICE_MAPPING = sparseIntArray;
-        sparseIntArray.put(1, 1);
-        sparseIntArray.put(2, 2);
-        sparseIntArray.put(4, 3);
-        sparseIntArray.put(8, 4);
-        sparseIntArray.put(16, 7);
-        sparseIntArray.put(32, 7);
-        sparseIntArray.put(64, 7);
-        sparseIntArray.put(128, 8);
-        sparseIntArray.put(256, 8);
-        sparseIntArray.put(512, 8);
-        sparseIntArray.put(1024, 9);
-        sparseIntArray.put(2048, 31);
-        sparseIntArray.put(4096, 13);
-        sparseIntArray.put(8192, 12);
-        sparseIntArray.put(16384, 11);
-        sparseIntArray.put(67108864, 22);
-        sparseIntArray.put(65536, 18);
-        sparseIntArray.put(131072, 5);
-        sparseIntArray.put(262144, 10);
-        sparseIntArray.put(262145, 29);
-        sparseIntArray.put(524288, 6);
-        sparseIntArray.put(1048576, 14);
-        sparseIntArray.put(2097152, 19);
-        sparseIntArray.put(8388608, 20);
-        sparseIntArray.put(16777216, 21);
-        sparseIntArray.put(134217728, 23);
-        sparseIntArray.put(4194304, 24);
-        sparseIntArray.put(32768, 25);
-        sparseIntArray.put(536870912, 26);
-        sparseIntArray.put(536870913, 27);
-        sparseIntArray.put(536870914, 30);
-        sparseIntArray.put(-2147483644, 15);
-        sparseIntArray.put(-2147483640, 7);
-        sparseIntArray.put(-2147483632, 3);
-        sparseIntArray.put(-2147483616, 9);
-        sparseIntArray.put(-2147483584, 18);
-        sparseIntArray.put(-2147483520, 15);
-        sparseIntArray.put(-2147483136, 31);
-        sparseIntArray.put(-2147482624, 13);
-        sparseIntArray.put(-2147481600, 12);
-        sparseIntArray.put(-2147479552, 11);
-        sparseIntArray.put(AudioSystem.DEVICE_IN_USB_HEADSET, 22);
-        sparseIntArray.put(-2147475456, 16);
-        sparseIntArray.put(-2147467264, 17);
-        sparseIntArray.put(-2147450880, 5);
-        sparseIntArray.put(-2147418112, 6);
-        sparseIntArray.put(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, 8);
-        sparseIntArray.put(AudioSystem.DEVICE_IN_IP, 20);
-        sparseIntArray.put(AudioSystem.DEVICE_IN_BUS, 21);
-        sparseIntArray.put(AudioSystem.DEVICE_IN_REMOTE_SUBMIX, 25);
-        sparseIntArray.put(-1610612736, 26);
-        sparseIntArray.put(-2013265920, 10);
-        sparseIntArray.put(-2013265919, 29);
-        sparseIntArray.put(-1879048192, 28);
-        SparseIntArray sparseIntArray2 = new SparseIntArray();
-        EXT_TO_INT_DEVICE_MAPPING = sparseIntArray2;
-        sparseIntArray2.put(1, 1);
-        sparseIntArray2.put(2, 2);
-        sparseIntArray2.put(3, 4);
-        sparseIntArray2.put(4, 8);
-        sparseIntArray2.put(5, 131072);
-        sparseIntArray2.put(6, 524288);
-        sparseIntArray2.put(7, 16);
-        sparseIntArray2.put(8, 128);
-        sparseIntArray2.put(9, 1024);
-        sparseIntArray2.put(10, 262144);
-        sparseIntArray2.put(29, 262145);
-        sparseIntArray2.put(11, 16384);
-        sparseIntArray2.put(22, 67108864);
-        sparseIntArray2.put(12, 8192);
-        sparseIntArray2.put(13, 4096);
-        sparseIntArray2.put(31, 2048);
-        sparseIntArray2.put(14, 1048576);
-        sparseIntArray2.put(18, 65536);
-        sparseIntArray2.put(19, 2097152);
-        sparseIntArray2.put(20, 8388608);
-        sparseIntArray2.put(21, 16777216);
-        sparseIntArray2.put(23, 134217728);
-        sparseIntArray2.put(24, 4194304);
-        sparseIntArray2.put(25, 32768);
-        sparseIntArray2.put(26, 536870912);
-        sparseIntArray2.put(27, 536870913);
-        sparseIntArray2.put(30, 536870914);
-        SparseIntArray sparseIntArray3 = new SparseIntArray();
-        EXT_TO_INT_INPUT_DEVICE_MAPPING = sparseIntArray3;
-        sparseIntArray3.put(15, -2147483644);
-        sparseIntArray3.put(7, -2147483640);
-        sparseIntArray3.put(3, -2147483632);
-        sparseIntArray3.put(9, -2147483616);
-        sparseIntArray3.put(18, -2147483584);
-        sparseIntArray3.put(13, -2147482624);
-        sparseIntArray3.put(31, -2147483136);
-        sparseIntArray3.put(12, -2147481600);
-        sparseIntArray3.put(11, -2147479552);
-        sparseIntArray3.put(22, AudioSystem.DEVICE_IN_USB_HEADSET);
-        sparseIntArray3.put(16, -2147475456);
-        sparseIntArray3.put(17, -2147467264);
-        sparseIntArray3.put(5, -2147450880);
-        sparseIntArray3.put(6, -2147418112);
-        sparseIntArray3.put(8, AudioSystem.DEVICE_IN_BLUETOOTH_A2DP);
-        sparseIntArray3.put(20, AudioSystem.DEVICE_IN_IP);
-        sparseIntArray3.put(21, AudioSystem.DEVICE_IN_BUS);
-        sparseIntArray3.put(25, AudioSystem.DEVICE_IN_REMOTE_SUBMIX);
-        sparseIntArray3.put(26, -1610612736);
-        sparseIntArray3.put(10, -2013265920);
-        sparseIntArray3.put(29, -2013265919);
-        sparseIntArray3.put(28, -1879048192);
+        INT_TO_EXT_DEVICE_MAPPING.put(1, 1);
+        INT_TO_EXT_DEVICE_MAPPING.put(2, 2);
+        INT_TO_EXT_DEVICE_MAPPING.put(4, 3);
+        INT_TO_EXT_DEVICE_MAPPING.put(8, 4);
+        INT_TO_EXT_DEVICE_MAPPING.put(16, 7);
+        INT_TO_EXT_DEVICE_MAPPING.put(32, 7);
+        INT_TO_EXT_DEVICE_MAPPING.put(64, 7);
+        INT_TO_EXT_DEVICE_MAPPING.put(128, 8);
+        INT_TO_EXT_DEVICE_MAPPING.put(256, 8);
+        INT_TO_EXT_DEVICE_MAPPING.put(512, 8);
+        INT_TO_EXT_DEVICE_MAPPING.put(1024, 9);
+        INT_TO_EXT_DEVICE_MAPPING.put(2048, 31);
+        INT_TO_EXT_DEVICE_MAPPING.put(4096, 13);
+        INT_TO_EXT_DEVICE_MAPPING.put(8192, 12);
+        INT_TO_EXT_DEVICE_MAPPING.put(16384, 11);
+        INT_TO_EXT_DEVICE_MAPPING.put(67108864, 22);
+        INT_TO_EXT_DEVICE_MAPPING.put(65536, 18);
+        INT_TO_EXT_DEVICE_MAPPING.put(131072, 5);
+        INT_TO_EXT_DEVICE_MAPPING.put(262144, 10);
+        INT_TO_EXT_DEVICE_MAPPING.put(262145, 29);
+        INT_TO_EXT_DEVICE_MAPPING.put(524288, 6);
+        INT_TO_EXT_DEVICE_MAPPING.put(1048576, 14);
+        INT_TO_EXT_DEVICE_MAPPING.put(2097152, 19);
+        INT_TO_EXT_DEVICE_MAPPING.put(8388608, 20);
+        INT_TO_EXT_DEVICE_MAPPING.put(16777216, 21);
+        INT_TO_EXT_DEVICE_MAPPING.put(134217728, 23);
+        INT_TO_EXT_DEVICE_MAPPING.put(4194304, 24);
+        INT_TO_EXT_DEVICE_MAPPING.put(32768, 25);
+        INT_TO_EXT_DEVICE_MAPPING.put(536870912, 26);
+        INT_TO_EXT_DEVICE_MAPPING.put(536870913, 27);
+        INT_TO_EXT_DEVICE_MAPPING.put(536870914, 30);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483644, 15);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483640, 7);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483632, 3);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483616, 9);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483584, 18);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483520, 15);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147483136, 31);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147482624, 13);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147481600, 12);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147479552, 11);
+        INT_TO_EXT_DEVICE_MAPPING.put(AudioSystem.DEVICE_IN_USB_HEADSET, 22);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147475456, 16);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147467264, 17);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147450880, 5);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2147418112, 6);
+        INT_TO_EXT_DEVICE_MAPPING.put(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, 8);
+        INT_TO_EXT_DEVICE_MAPPING.put(AudioSystem.DEVICE_IN_IP, 20);
+        INT_TO_EXT_DEVICE_MAPPING.put(AudioSystem.DEVICE_IN_BUS, 21);
+        INT_TO_EXT_DEVICE_MAPPING.put(AudioSystem.DEVICE_IN_REMOTE_SUBMIX, 25);
+        INT_TO_EXT_DEVICE_MAPPING.put(-1610612736, 26);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2013265920, 10);
+        INT_TO_EXT_DEVICE_MAPPING.put(-2013265919, 29);
+        INT_TO_EXT_DEVICE_MAPPING.put(-1879048192, 28);
+        EXT_TO_INT_DEVICE_MAPPING = new SparseIntArray();
+        EXT_TO_INT_DEVICE_MAPPING.put(1, 1);
+        EXT_TO_INT_DEVICE_MAPPING.put(2, 2);
+        EXT_TO_INT_DEVICE_MAPPING.put(3, 4);
+        EXT_TO_INT_DEVICE_MAPPING.put(4, 8);
+        EXT_TO_INT_DEVICE_MAPPING.put(5, 131072);
+        EXT_TO_INT_DEVICE_MAPPING.put(6, 524288);
+        EXT_TO_INT_DEVICE_MAPPING.put(7, 16);
+        EXT_TO_INT_DEVICE_MAPPING.put(8, 128);
+        EXT_TO_INT_DEVICE_MAPPING.put(9, 1024);
+        EXT_TO_INT_DEVICE_MAPPING.put(10, 262144);
+        EXT_TO_INT_DEVICE_MAPPING.put(29, 262145);
+        EXT_TO_INT_DEVICE_MAPPING.put(11, 16384);
+        EXT_TO_INT_DEVICE_MAPPING.put(22, 67108864);
+        EXT_TO_INT_DEVICE_MAPPING.put(12, 8192);
+        EXT_TO_INT_DEVICE_MAPPING.put(13, 4096);
+        EXT_TO_INT_DEVICE_MAPPING.put(31, 2048);
+        EXT_TO_INT_DEVICE_MAPPING.put(14, 1048576);
+        EXT_TO_INT_DEVICE_MAPPING.put(18, 65536);
+        EXT_TO_INT_DEVICE_MAPPING.put(19, 2097152);
+        EXT_TO_INT_DEVICE_MAPPING.put(20, 8388608);
+        EXT_TO_INT_DEVICE_MAPPING.put(21, 16777216);
+        EXT_TO_INT_DEVICE_MAPPING.put(23, 134217728);
+        EXT_TO_INT_DEVICE_MAPPING.put(24, 4194304);
+        EXT_TO_INT_DEVICE_MAPPING.put(25, 32768);
+        EXT_TO_INT_DEVICE_MAPPING.put(26, 536870912);
+        EXT_TO_INT_DEVICE_MAPPING.put(27, 536870913);
+        EXT_TO_INT_DEVICE_MAPPING.put(30, 536870914);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING = new SparseIntArray();
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(15, -2147483644);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(7, -2147483640);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(3, -2147483632);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(9, -2147483616);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(18, -2147483584);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(13, -2147482624);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(31, -2147483136);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(12, -2147481600);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(11, -2147479552);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(22, AudioSystem.DEVICE_IN_USB_HEADSET);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(16, -2147475456);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(17, -2147467264);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(5, -2147450880);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(6, -2147418112);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(8, AudioSystem.DEVICE_IN_BLUETOOTH_A2DP);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(20, AudioSystem.DEVICE_IN_IP);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(21, AudioSystem.DEVICE_IN_BUS);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(25, AudioSystem.DEVICE_IN_REMOTE_SUBMIX);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(26, -1610612736);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(10, -2013265920);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(29, -2013265919);
+        EXT_TO_INT_INPUT_DEVICE_MAPPING.put(28, -1879048192);
     }
 
     public int getDeviceId() {

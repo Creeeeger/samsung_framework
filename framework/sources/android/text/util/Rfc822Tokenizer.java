@@ -4,7 +4,7 @@ import android.widget.MultiAutoCompleteTextView;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Rfc822Tokenizer implements MultiAutoCompleteTextView.Tokenizer {
     public static void tokenize(CharSequence text, Collection<Rfc822Token> out) {
         StringBuilder name = new StringBuilder();

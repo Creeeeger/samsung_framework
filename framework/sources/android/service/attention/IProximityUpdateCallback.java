@@ -12,7 +12,6 @@ public interface IProximityUpdateCallback extends IInterface {
 
     void onProximityUpdate(double d) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IProximityUpdateCallback {
         @Override // android.service.attention.IProximityUpdateCallback
         public void onProximityUpdate(double distance) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IProximityUpdateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IProximityUpdateCallback {
         static final int TRANSACTION_onProximityUpdate = 1;
 
@@ -67,26 +65,22 @@ public interface IProximityUpdateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProximityUpdateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProximityUpdateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProximityUpdateCallback.DESCRIPTOR);
+                case 1:
+                    double _arg0 = data.readDouble();
+                    data.enforceNoDataAvail();
+                    onProximityUpdate(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            double _arg0 = data.readDouble();
-                            data.enforceNoDataAvail();
-                            onProximityUpdate(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IProximityUpdateCallback {
+        private static class Proxy implements IProximityUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

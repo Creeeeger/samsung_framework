@@ -24,6 +24,7 @@ import android.graphics.ColorSpace;
 import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -45,10 +46,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.StrictMode;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.os.UserHandle;
+import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -57,12 +61,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.MathUtils;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.DisplayInfo;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import com.android.internal.R;
-import com.samsung.android.app.SemWallpaperUtils;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.wallpaper.Rune;
 import com.samsung.android.wallpaper.colortheme.ColorPalette;
@@ -88,11 +92,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import libcore.io.IoUtils;
 
 /* loaded from: classes.dex */
@@ -107,6 +113,7 @@ public class WallpaperManager implements SemWallpaperManager {
     public static final String BNR_XML_FILE_NAME_HOME = "backup_home.xml";
     public static final String BNR_XML_FILE_NAME_LOCK = "backup_lock.xml";
     public static final String COMMAND_AOD_STATE = "android.wallpaper.aodstate";
+    public static final String COMMAND_DISPLAY_SWITCH = "android.wallpaper.displayswitch";
     public static final String COMMAND_DROP = "android.home.drop";
     public static final String COMMAND_FREEZE = "android.wallpaper.freeze";
     public static final String COMMAND_GOING_TO_SLEEP = "android.wallpaper.goingtosleep";
@@ -139,11 +146,13 @@ public class WallpaperManager implements SemWallpaperManager {
     public static final int KWP_TYPE_MOTION = 1;
     public static final int KWP_TYPE_PRELOAD_MOTION = 2;
     public static final int KWP_TYPE_VIDEO = 8;
+    public static final int LANDSCAPE = 1;
     public static final int LID_ABSENT = -1;
     public static final int LID_CLOSED = 0;
     public static final int LID_OPEN = 1;
     private static final int ONEUI_5_1 = 140100;
     private static final int ONEUI_6_1 = 150100;
+    public static final int ORIENTATION_UNKNOWN = -1;
     private static final String PACKAGE_NAME_DRESSROOM = "com.samsung.android.app.dressroom";
     private static final String PACKAGE_NAME_DYNAMIC_LOCKSCREEN = "com.samsung.android.dynamiclock";
     private static final String PACKAGE_NAME_EMERGENCY_LAUNCHER = "com.sec.android.emergencylauncher";
@@ -152,15 +161,12 @@ public class WallpaperManager implements SemWallpaperManager {
     private static final String PACKAGE_NAME_SPRITE = "com.samsung.android.wallpaper.live";
     private static final String PACKAGE_NAME_SYSTEMUI = "com.android.systemui";
     private static final String PACKAGE_NAME_THEME_CENTER = "com.samsung.android.themecenter";
+    public static final int PORTRAIT = 0;
     private static final String PROP_LOCK_WALLPAPER = "ro.config.lock_wallpaper";
     private static final String PROP_WALLPAPER = "ro.config.wallpaper";
     private static final String PROP_WALLPAPER_COMPONENT = "ro.config.wallpaper_component";
     static final long RETURN_DEFAULT_ON_SECURITY_EXCEPTION = 239784307;
     public static final String SEM_ATTRIBUTE_TILT = "tilt";
-    public static final int SEM_BACKUP_STATUS_CANCELED = 2;
-    public static final int SEM_BACKUP_STATUS_CLEARED = 4;
-    public static final int SEM_BACKUP_STATUS_REQUESTED = 1;
-    public static final int SEM_BACKUP_STATUS_RESTORED = 3;
     public static final int SEM_FLAG_DEX = 8;
     public static final int SEM_FLAG_LOCK = 2;
     public static final int SEM_FLAG_SUB_DISPLAY = 16;
@@ -184,9 +190,12 @@ public class WallpaperManager implements SemWallpaperManager {
     private static final String SETTINGS_SYSTEMUI_TRANSPARENCY = "android.wallpaper.settings_systemui_transparency";
     private static final String SETTINGS_SYSTEMUI_TRANSPARENCY_SUB = "sub_display_system_wallpaper_transparency";
     public static final String SETTINGS_TSS_ACTIVATED = "tss_activated";
+    public static final int SQUARE_LANDSCAPE = 3;
+    public static final int SQUARE_PORTRAIT = 2;
     public static final int SWP_TYPE_CUSTOM = 0;
     public static final int SWP_TYPE_PRELOAD = 1;
     public static final int SWP_TYPE_THEME = 2;
+    public static final int SWP_TYPE_THEME_SINGLE = 3;
     private static final String SYSUI_DESKTOP_PKG_NAME = "com.samsung.desktopsystemui";
     private static final String THEME_VIDEO_RES_ID = "video_1.mp4";
     static final long THROW_ON_SECURITY_EXCEPTION = 237508058;
@@ -206,21 +215,47 @@ public class WallpaperManager implements SemWallpaperManager {
     private static final RectF LOCAL_COLOR_BOUNDS = new RectF(0.0f, 0.0f, 1.0f, 1.0f);
     private static final String VALUE_CMF_COLOR = SystemProperties.get("ro.boot.hardware.color");
     private static final Object sSync = new Object[0];
-    private static Boolean sIsLockscreenLiveWallpaperEnabled = null;
     private static Boolean sIsMultiCropEnabled = null;
 
-    /* loaded from: classes.dex */
     public interface LocalWallpaperColorConsumer {
         void onColorsChanged(RectF rectF, WallpaperColors wallpaperColors);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface ScreenOrientation {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SetWallpaperFlags {
     }
 
-    /* loaded from: classes.dex */
-    public static class FastBitmapDrawable extends Drawable {
+    public static int getOrientation(Point screenSize) {
+        float ratio = screenSize.x / screenSize.y;
+        if (ratio >= 1.3333334f) {
+            return 1;
+        }
+        if (ratio > 1.0f) {
+            return 3;
+        }
+        return ratio > 0.75f ? 2 : 0;
+    }
+
+    public static int getRotatedOrientation(int orientation) {
+        switch (orientation) {
+            case 0:
+                return 1;
+            case 1:
+                return 0;
+            case 2:
+                return 3;
+            case 3:
+                return 2;
+            default:
+                return -1;
+        }
+    }
+
+    static class FastBitmapDrawable extends Drawable {
         private final Bitmap mBitmap;
         private int mDrawLeft;
         private int mDrawTop;
@@ -228,20 +263,13 @@ public class WallpaperManager implements SemWallpaperManager {
         private final Paint mPaint;
         private final int mWidth;
 
-        /* synthetic */ FastBitmapDrawable(Bitmap bitmap, FastBitmapDrawableIA fastBitmapDrawableIA) {
-            this(bitmap);
-        }
-
         private FastBitmapDrawable(Bitmap bitmap) {
             this.mBitmap = bitmap;
-            int width = bitmap.getWidth();
-            this.mWidth = width;
-            int height = bitmap.getHeight();
-            this.mHeight = height;
-            setBounds(0, 0, width, height);
-            Paint paint = new Paint();
-            this.mPaint = paint;
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+            this.mWidth = bitmap.getWidth();
+            this.mHeight = bitmap.getHeight();
+            setBounds(0, 0, this.mWidth, this.mHeight);
+            this.mPaint = new Paint();
+            this.mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         }
 
         @Override // android.graphics.drawable.Drawable
@@ -301,8 +329,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CachedWallpaper {
+    private static class CachedWallpaper {
         final Bitmap mCachedWallpaper;
         final int mCachedWallpaperUserId;
         final int mWhich;
@@ -318,8 +345,8 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class Globals extends IWallpaperManagerCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class Globals extends IWallpaperManagerCallback.Stub {
         private CachedWallpaper mCachedWallpaper;
         private boolean mColorCallbackRegistered;
         private Bitmap mDefaultWallpaper;
@@ -330,9 +357,6 @@ public class WallpaperManager implements SemWallpaperManager {
         private final ArrayList<Pair<OnColorsChangedListener, Handler>> mColorListeners = new ArrayList<>();
         private ArrayMap<LocalWallpaperColorConsumer, ArraySet<RectF>> mLocalColorCallbackAreas = new ArrayMap<>();
         private ILocalWallpaperColorConsumer mLocalColorCallback = new ILocalWallpaperColorConsumer.Stub() { // from class: android.app.WallpaperManager.Globals.1
-            AnonymousClass1() {
-            }
-
             @Override // android.app.ILocalWallpaperColorConsumer
             public void onColorsChanged(RectF area, WallpaperColors colors) {
                 for (LocalWallpaperColorConsumer callback : Globals.this.mLocalColorCallbackAreas.keySet()) {
@@ -344,24 +368,6 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         };
         private final ArrayList<Pair<OnSemColorsChangedListener, Handler>> mSemColorListeners = new ArrayList<>();
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: android.app.WallpaperManager$Globals$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends ILocalWallpaperColorConsumer.Stub {
-            AnonymousClass1() {
-            }
-
-            @Override // android.app.ILocalWallpaperColorConsumer
-            public void onColorsChanged(RectF area, WallpaperColors colors) {
-                for (LocalWallpaperColorConsumer callback : Globals.this.mLocalColorCallbackAreas.keySet()) {
-                    ArraySet<RectF> areas = (ArraySet) Globals.this.mLocalColorCallbackAreas.get(callback);
-                    if (areas != null && areas.contains(area)) {
-                        callback.onColorsChanged(area, colors);
-                    }
-                }
-            }
-        }
 
         Globals(IWallpaperManager service, Looper looper) {
             this.mService = service;
@@ -376,10 +382,6 @@ public class WallpaperManager implements SemWallpaperManager {
 
         @Override // android.app.IWallpaperManagerCallback
         public void onSemWallpaperChanged(int type, int which, Bundle extras) {
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemMultipackApplied(int which) {
         }
 
         public void addOnColorsChangedListener(OnColorsChangedListener callback, Handler handler, int userId, int displayId) {
@@ -437,7 +439,7 @@ public class WallpaperManager implements SemWallpaperManager {
 
         public void removeOnColorsChangedListener(final OnColorsChangedListener callback, int userId, int displayId) {
             synchronized (this) {
-                this.mColorListeners.removeIf(new Predicate() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda2
+                this.mColorListeners.removeIf(new Predicate() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda3
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         return WallpaperManager.Globals.lambda$removeOnColorsChangedListener$0(WallpaperManager.OnColorsChangedListener.this, (Pair) obj);
@@ -454,7 +456,7 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        public static /* synthetic */ boolean lambda$removeOnColorsChangedListener$0(OnColorsChangedListener callback, Pair pair) {
+        static /* synthetic */ boolean lambda$removeOnColorsChangedListener$0(OnColorsChangedListener callback, Pair pair) {
             return pair.first == callback;
         }
 
@@ -472,7 +474,7 @@ public class WallpaperManager implements SemWallpaperManager {
                         Handler handler3 = this.mMainLooperHandler;
                         handler = handler3;
                     }
-                    handler.post(new Runnable() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda0
+                    handler.post(new Runnable() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             WallpaperManager.Globals.this.lambda$onWallpaperColorsChanged$1(listener, colors, which, userId);
@@ -482,6 +484,7 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onWallpaperColorsChanged$1(Pair listener, WallpaperColors colors, int which, int userId) {
             boolean stillExists;
             synchronized (WallpaperManager.sGlobals) {
@@ -503,13 +506,12 @@ public class WallpaperManager implements SemWallpaperManager {
 
         SemWallpaperColors semGetWallpaperColors(int which) {
             Log.d(WallpaperManager.TAG, "semGetWallpaperColors: which = " + which);
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager == null) {
+            if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
                 return null;
             }
             try {
-                return iWallpaperManager.semGetWallpaperColors(which);
+                return this.mService.semGetWallpaperColors(which);
             } catch (RemoteException e) {
                 return null;
             }
@@ -517,38 +519,35 @@ public class WallpaperManager implements SemWallpaperManager {
 
         SemWallpaperColors semGetPrimaryWallpaperColors(int which) {
             Log.d(WallpaperManager.TAG, "semGetPrimaryWallpaperColors: which = " + which);
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager == null) {
+            if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
                 return null;
             }
             try {
-                return iWallpaperManager.semGetPrimaryWallpaperColors(which);
+                return this.mService.semGetPrimaryWallpaperColors(which);
             } catch (RemoteException e) {
                 return null;
             }
         }
 
         void semSetSmartCropRect(int which, Rect original, Rect smartCrop) {
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager == null) {
+            if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
             } else {
                 try {
-                    iWallpaperManager.semSetSmartCropRect(which, original, smartCrop);
+                    this.mService.semSetSmartCropRect(which, original, smartCrop);
                 } catch (RemoteException e) {
                 }
             }
         }
 
         Rect semGetSmartCropRect(int which) {
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager == null) {
+            if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
                 return null;
             }
             try {
-                return iWallpaperManager.semGetSmartCropRect(which);
+                return this.mService.semGetSmartCropRect(which);
             } catch (RemoteException e) {
                 return null;
             }
@@ -563,13 +562,16 @@ public class WallpaperManager implements SemWallpaperManager {
         }
 
         public Bitmap peekWallpaperBitmap(Context context, boolean returnDefault, int which, int userId, boolean hardware, ColorManagementProxy cmProxy, boolean useCache) {
-            CachedWallpaper cachedWallpaper;
             Log.d(WallpaperManager.TAG, "peekWallpaperBitmap: which =" + which + ", useCache = " + useCache);
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager != null) {
+            if (this.mService != null) {
                 try {
-                    if (!iWallpaperManager.isWallpaperSupported(context.getOpPackageName())) {
-                        return null;
+                    try {
+                        Trace.beginSection("WPMS.isWallpaperSupported");
+                        if (!this.mService.isWallpaperSupported(context.getOpPackageName())) {
+                            return null;
+                        }
+                    } finally {
+                        Trace.endSection();
                     }
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
@@ -578,8 +580,7 @@ public class WallpaperManager implements SemWallpaperManager {
             try {
                 boolean isDesktopMode = WallpaperManager.sGlobals.mService.isDesktopModeEnabled(which);
                 synchronized (this) {
-                    boolean z = this.mIsCachedWallpaperForDeX;
-                    if (((z && isDesktopMode) || (!z && !isDesktopMode)) && useCache && (cachedWallpaper = this.mCachedWallpaper) != null && cachedWallpaper.isValid(userId, which) && context.checkSelfPermission(Manifest.permission.READ_WALLPAPER_INTERNAL) == 0) {
+                    if (((this.mIsCachedWallpaperForDeX && isDesktopMode) || (!this.mIsCachedWallpaperForDeX && !isDesktopMode)) && useCache && this.mCachedWallpaper != null && this.mCachedWallpaper.isValid(userId, which) && context.checkSelfPermission(Manifest.permission.READ_WALLPAPER_INTERNAL) == 0) {
                         Log.d(WallpaperManager.TAG, "peekWallpaperBitmap() cached image height=" + this.mCachedWallpaper.mCachedWallpaper.getHeight() + " width=" + this.mCachedWallpaper.mCachedWallpaper.getWidth());
                         return this.mCachedWallpaper.mCachedWallpaper;
                     }
@@ -587,37 +588,45 @@ public class WallpaperManager implements SemWallpaperManager {
                     Bitmap currentWallpaper = null;
                     this.mIsCachedWallpaperForDeX = false;
                     try {
-                    } catch (RemoteException e2) {
-                        throw e2.rethrowFromSystemServer();
-                    } catch (OutOfMemoryError e3) {
-                        Log.w(WallpaperManager.TAG, "Out of memory loading the current wallpaper: " + e3);
-                    } catch (SecurityException e4) {
-                        if (CompatChanges.isChangeEnabled(WallpaperManager.RETURN_DEFAULT_ON_SECURITY_EXCEPTION) && !CompatChanges.isChangeEnabled(WallpaperManager.THROW_ON_SECURITY_EXCEPTION)) {
-                            Log.w(WallpaperManager.TAG, "No permission to access wallpaper, returning default wallpaper to avoid crashing legacy app.");
-                            return getDefaultWallpaper(context, 1);
+                        try {
+                            try {
+                                try {
+                                    Trace.beginSection("WPMS.getCurrentWallpaperLocked");
+                                } catch (RemoteException e2) {
+                                    throw e2.rethrowFromSystemServer();
+                                }
+                            } catch (SecurityException e3) {
+                                if (CompatChanges.isChangeEnabled(WallpaperManager.RETURN_DEFAULT_ON_SECURITY_EXCEPTION) && !CompatChanges.isChangeEnabled(WallpaperManager.THROW_ON_SECURITY_EXCEPTION)) {
+                                    Log.w(WallpaperManager.TAG, "No permission to access wallpaper, returning default wallpaper to avoid crashing legacy app.");
+                                    return getDefaultWallpaper(context, 1);
+                                }
+                                if (context.getApplicationInfo().targetSdkVersion >= 27) {
+                                    throw e3;
+                                }
+                                Log.w(WallpaperManager.TAG, "No permission to access wallpaper, suppressing exception to avoid crashing legacy app.");
+                            }
+                        } catch (OutOfMemoryError e4) {
+                            Log.w(WallpaperManager.TAG, "Out of memory loading the current wallpaper: " + e4);
                         }
-                        if (context.getApplicationInfo().targetSdkVersion >= 27) {
-                            throw e4;
+                        if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE && this.mService != null && WhichChecker.isSubDisplay(which) && this.mService.isWaitingForUnlockUser(which, userId)) {
+                            return null;
                         }
-                        Log.w(WallpaperManager.TAG, "No permission to access wallpaper, suppressing exception to avoid crashing legacy app.");
-                    }
-                    if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE && this.mService != null && WhichChecker.isSubDisplay(which) && this.mService.isWaitingForUnlockUser(which, userId)) {
+                        currentWallpaper = getCurrentWallpaperLocked(context, which, userId, hardware, cmProxy);
+                        this.mIsCachedWallpaperForDeX = isDesktopMode;
+                        if (currentWallpaper != null) {
+                            this.mCachedWallpaper = new CachedWallpaper(currentWallpaper, userId, which);
+                            return currentWallpaper;
+                        }
+                        if (this.mCachedWallpaper != null && this.mCachedWallpaper.isValid(userId, which)) {
+                            return this.mCachedWallpaper.mCachedWallpaper;
+                        }
+                        if (returnDefault || (WhichChecker.isLock(which) && isStaticWallpaper(which))) {
+                            return getDefaultWallpaper(context, which);
+                        }
                         return null;
+                    } catch (Throwable th) {
+                        throw th;
                     }
-                    currentWallpaper = getCurrentWallpaperLocked(context, which, userId, hardware, cmProxy);
-                    this.mIsCachedWallpaperForDeX = isDesktopMode;
-                    if (currentWallpaper != null) {
-                        this.mCachedWallpaper = new CachedWallpaper(currentWallpaper, userId, which);
-                        return currentWallpaper;
-                    }
-                    CachedWallpaper cachedWallpaper2 = this.mCachedWallpaper;
-                    if (cachedWallpaper2 != null && cachedWallpaper2.isValid(userId, which)) {
-                        return this.mCachedWallpaper.mCachedWallpaper;
-                    }
-                    if (returnDefault || (WhichChecker.isLock(which) && isStaticWallpaper(which))) {
-                        return getDefaultWallpaper(context, which);
-                    }
-                    return null;
                 }
             } catch (RemoteException e5) {
                 throw e5.rethrowFromSystemServer();
@@ -627,102 +636,103 @@ public class WallpaperManager implements SemWallpaperManager {
         public Rect peekWallpaperDimensions(Context context, boolean returnDefault, int which, int userId) {
             int i;
             ParcelFileDescriptor pfd;
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager != null) {
-                try {
-                    if (!iWallpaperManager.isWallpaperSupported(context.getOpPackageName())) {
-                        return new Rect();
-                    }
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-            Rect dimensions = null;
-            synchronized (this) {
-                try {
-                    Bundle params = new Bundle();
-                    try {
-                        i = which;
-                        try {
-                            pfd = this.mService.getWallpaperWithFeature(context.getOpPackageName(), context.getAttributionTag(), this, i, params, userId, true, false, -1);
-                        } catch (RemoteException e2) {
-                            ex = e2;
-                            i = 0;
-                        } catch (IOException e3) {
-                            i = 0;
-                        }
-                    } catch (RemoteException e4) {
-                        ex = e4;
-                        i = 0;
-                    } catch (IOException e5) {
-                        i = 0;
-                    }
-                    try {
-                        if (pfd != null) {
-                            try {
-                                BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inJustDecodeBounds = true;
-                                BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
-                                i = 0;
-                                try {
-                                    dimensions = new Rect(0, 0, options.outWidth, options.outHeight);
-                                } catch (Throwable th) {
-                                    th = th;
-                                    Throwable th2 = th;
-                                    if (pfd == null) {
-                                        throw th2;
-                                    }
-                                    try {
-                                        pfd.close();
-                                        throw th2;
-                                    } catch (Throwable th3) {
-                                        th2.addSuppressed(th3);
-                                        throw th2;
-                                    }
-                                }
-                            } catch (Throwable th4) {
-                                th = th4;
-                            }
-                        } else {
-                            i = 0;
-                        }
-                        if (pfd != null) {
-                            pfd.close();
-                        }
-                    } catch (RemoteException e6) {
-                        ex = e6;
-                        Log.w(WallpaperManager.TAG, "peek wallpaper dimensions failed", ex);
-                    } catch (IOException e7) {
-                    }
-                } catch (Throwable th5) {
-                    th = th5;
-                    while (true) {
-                        try {
-                            break;
-                        } catch (Throwable th6) {
-                            th = th6;
-                        }
-                    }
-                    throw th;
-                }
-            }
-            if (dimensions != null && dimensions.width() != 0 && dimensions.height() != 0) {
-                return dimensions;
-            }
-            if (!returnDefault && (!WhichChecker.isLock(which) || !isStaticWallpaper(which))) {
-                return dimensions;
-            }
-            InputStream is = WallpaperManager.openDefaultWallpaper(context, which);
-            if (is == null) {
-                return dimensions;
+            BitmapFactory.Options options;
+            if (this.mService == null) {
+                Log.w(WallpaperManager.TAG, "WallpaperService not running");
+                return null;
             }
             try {
-                BitmapFactory.Options options2 = new BitmapFactory.Options();
-                options2.inJustDecodeBounds = true;
-                BitmapFactory.decodeStream(is, null, options2);
-                return new Rect(i, i, options2.outWidth, options2.outHeight);
-            } finally {
-                IoUtils.closeQuietly(is);
+                if (!this.mService.isWallpaperSupported(context.getOpPackageName())) {
+                    return new Rect();
+                }
+                Rect dimensions = null;
+                synchronized (this) {
+                    try {
+                        Bundle params = new Bundle();
+                        try {
+                            i = which;
+                            try {
+                                pfd = this.mService.getWallpaperWithFeature(context.getOpPackageName(), context.getAttributionTag(), this, i, params, userId, true, false, -1);
+                            } catch (RemoteException e) {
+                                ex = e;
+                                i = 0;
+                            } catch (IOException e2) {
+                                i = 0;
+                            }
+                            try {
+                                if (pfd != null) {
+                                    try {
+                                        options = new BitmapFactory.Options();
+                                        options.inJustDecodeBounds = true;
+                                        BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor(), null, options);
+                                        i = 0;
+                                    } catch (Throwable th) {
+                                        th = th;
+                                    }
+                                    try {
+                                        dimensions = new Rect(0, 0, options.outWidth, options.outHeight);
+                                    } catch (Throwable th2) {
+                                        th = th2;
+                                        Throwable th3 = th;
+                                        if (pfd == null) {
+                                            throw th3;
+                                        }
+                                        try {
+                                            pfd.close();
+                                            throw th3;
+                                        } catch (Throwable th4) {
+                                            th3.addSuppressed(th4);
+                                            throw th3;
+                                        }
+                                    }
+                                } else {
+                                    i = 0;
+                                }
+                                if (pfd != null) {
+                                    pfd.close();
+                                }
+                            } catch (RemoteException e3) {
+                                ex = e3;
+                                Log.w(WallpaperManager.TAG, "peek wallpaper dimensions failed", ex);
+                            } catch (IOException e4) {
+                            }
+                        } catch (RemoteException e5) {
+                            ex = e5;
+                            i = 0;
+                        } catch (IOException e6) {
+                            i = 0;
+                        }
+                    } catch (Throwable th5) {
+                        th = th5;
+                        while (true) {
+                            try {
+                                throw th;
+                            } catch (Throwable th6) {
+                                th = th6;
+                            }
+                        }
+                    }
+                }
+                if (dimensions != null && dimensions.width() != 0 && dimensions.height() != 0) {
+                    return dimensions;
+                }
+                if (!returnDefault && (!WhichChecker.isLock(which) || !isStaticWallpaper(which))) {
+                    return dimensions;
+                }
+                InputStream is = WallpaperManager.openDefaultWallpaper(context, which);
+                if (is == null) {
+                    return dimensions;
+                }
+                try {
+                    BitmapFactory.Options options2 = new BitmapFactory.Options();
+                    options2.inJustDecodeBounds = true;
+                    BitmapFactory.decodeStream(is, null, options2);
+                    return new Rect(i, i, options2.outWidth, options2.outHeight);
+                } finally {
+                    IoUtils.closeQuietly(is);
+                }
+            } catch (RemoteException e7) {
+                throw e7.rethrowFromSystemServer();
             }
         }
 
@@ -735,114 +745,75 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Bitmap getCurrentWallpaperLocked(Context context, int which, int userId, final boolean hardware, final ColorManagementProxy cmProxy) {
-            InputStream fis;
+            Bundle params;
+            ImageDecoder.Source src;
             if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
                 return null;
             }
             Log.d(WallpaperManager.TAG, "getCurrentWallpaperLocked userId=" + userId + " by : " + context.getOpPackageName());
             try {
-                Bundle params = new Bundle();
-                final ParcelFileDescriptor pfd = this.mService.getWallpaperWithFeature(context.getOpPackageName(), context.getAttributionTag(), this, which, params, userId, true, false, -1);
-                if (pfd != null) {
-                    Bitmap bitmap = null;
+                params = new Bundle();
+            } catch (RemoteException e) {
+                e = e;
+            }
+            try {
+                Trace.beginSection("WPMS.getWallpaperWithFeature_" + which);
+                ParcelFileDescriptor pfd = this.mService.getWallpaperWithFeature(context.getOpPackageName(), context.getAttributionTag(), this, which, params, userId, true, false, -1);
+                Trace.endSection();
+                try {
+                    if (pfd == null) {
+                        return null;
+                    }
                     try {
+                        InputStream is = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
                         try {
                             try {
-                                try {
-                                    fis = new FileInputStream(pfd.getFileDescriptor());
-                                } catch (Exception e) {
-                                    Log.e(WallpaperManager.TAG, "getCurrentWallpaperLocked : e=" + e, e);
-                                }
-                                try {
-                                    BufferedInputStream bis = new BufferedInputStream(fis);
-                                    try {
-                                        if (SemWallpaperUtils.isQmgImage(bis)) {
-                                            Log.d(WallpaperManager.TAG, "getCurrentWallpaperLocked : QMG image type");
-                                            BitmapFactory.Options options = new BitmapFactory.Options();
-                                            bitmap = BitmapFactory.decodeStreamQMG(bis, null, options);
-                                            if (bitmap == null) {
-                                                Log.e(WallpaperManager.TAG, "getCurrentWallpaperLocked : failed to decode QMG");
-                                            }
-                                        }
-                                        bis.close();
-                                        fis.close();
-                                        if (bitmap == null) {
-                                            try {
-                                                ImageDecoder.Source src = ImageDecoder.createSource((Callable<AssetFileDescriptor>) new Callable() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda4
-                                                    @Override // java.util.concurrent.Callable
-                                                    public final Object call() {
-                                                        return WallpaperManager.Globals.lambda$getCurrentWallpaperLocked$2(ParcelFileDescriptor.this);
-                                                    }
-                                                });
-                                                try {
-                                                    bitmap = ImageDecoder.decodeBitmap(src, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda5
-                                                        @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
-                                                        public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
-                                                            WallpaperManager.Globals.lambda$getCurrentWallpaperLocked$3(hardware, cmProxy, imageDecoder, imageInfo, source);
-                                                        }
-                                                    });
-                                                } catch (RemoteException e2) {
-                                                    e = e2;
-                                                    throw e.rethrowFromSystemServer();
-                                                } catch (IOException | OutOfMemoryError e3) {
-                                                    e = e3;
-                                                    Log.w(WallpaperManager.TAG, "Can't decode file", e);
-                                                    return null;
-                                                } catch (ArrayIndexOutOfBoundsException e4) {
-                                                    e = e4;
-                                                    Log.e(WallpaperManager.TAG, "Can't decode file", e);
-                                                    return null;
-                                                }
-                                            } catch (RemoteException e5) {
-                                                e = e5;
-                                            } catch (IOException | OutOfMemoryError e6) {
-                                                e = e6;
-                                            } catch (ArrayIndexOutOfBoundsException e7) {
-                                                e = e7;
-                                            }
-                                        }
-                                        try {
-                                            return checkDeviceDensity(context, bitmap, which);
-                                        } catch (IOException | OutOfMemoryError e8) {
-                                            e = e8;
-                                            Log.w(WallpaperManager.TAG, "Can't decode file", e);
-                                            return null;
-                                        } catch (ArrayIndexOutOfBoundsException e9) {
-                                            e = e9;
-                                            Log.e(WallpaperManager.TAG, "Can't decode file", e);
-                                            return null;
-                                        }
-                                    } finally {
-                                    }
-                                } finally {
-                                }
-                            } catch (ArrayIndexOutOfBoundsException e10) {
-                                e = e10;
-                                Log.e(WallpaperManager.TAG, "Can't decode file", e);
-                                return null;
+                                src = ImageDecoder.createSource(context.getResources(), is);
+                            } catch (Throwable th) {
+                                th = th;
                             }
-                        } catch (RemoteException e11) {
-                            e = e11;
-                            throw e.rethrowFromSystemServer();
+                            try {
+                                Bitmap decodeBitmap = ImageDecoder.decodeBitmap(src, new ImageDecoder.OnHeaderDecodedListener() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda0
+                                    @Override // android.graphics.ImageDecoder.OnHeaderDecodedListener
+                                    public final void onHeaderDecoded(ImageDecoder imageDecoder, ImageDecoder.ImageInfo imageInfo, ImageDecoder.Source source) {
+                                        WallpaperManager.Globals.lambda$getCurrentWallpaperLocked$2(hardware, cmProxy, imageDecoder, imageInfo, source);
+                                    }
+                                });
+                                is.close();
+                                return decodeBitmap;
+                            } catch (Throwable th2) {
+                                th = th2;
+                                Throwable th3 = th;
+                                try {
+                                    is.close();
+                                    throw th3;
+                                } catch (Throwable th4) {
+                                    th3.addSuppressed(th4);
+                                    throw th3;
+                                }
+                            }
+                        } catch (IOException | OutOfMemoryError e2) {
+                            e = e2;
+                            Log.w(WallpaperManager.TAG, "Can't decode file", e);
+                            return null;
                         }
-                    } catch (IOException | OutOfMemoryError e12) {
-                        e = e12;
+                    } catch (IOException | OutOfMemoryError e3) {
+                        e = e3;
                     }
+                } catch (RemoteException e4) {
+                    e = e4;
+                    throw e.rethrowFromSystemServer();
                 }
-                return null;
-            } catch (RemoteException e13) {
-                e = e13;
+            } catch (RemoteException e5) {
+                e = e5;
+                throw e.rethrowFromSystemServer();
             }
         }
 
-        public static /* synthetic */ AssetFileDescriptor lambda$getCurrentWallpaperLocked$2(ParcelFileDescriptor pfd) throws Exception {
-            AssetFileDescriptor afd = new AssetFileDescriptor(pfd, 0L, -1L);
-            return afd;
-        }
-
-        public static /* synthetic */ void lambda$getCurrentWallpaperLocked$3(boolean hardware, ColorManagementProxy cmProxy, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
+        static /* synthetic */ void lambda$getCurrentWallpaperLocked$2(boolean hardware, ColorManagementProxy cmProxy, ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source source) {
             decoder.setMutableRequired(!hardware);
             if (cmProxy != null) {
                 cmProxy.doColorManagement(decoder, info);
@@ -850,29 +821,34 @@ public class WallpaperManager implements SemWallpaperManager {
         }
 
         private Bitmap getDefaultWallpaper(Context context, int which) {
+            Trace.beginSection("WPMS.getDefaultWallpaper_" + which);
             Bitmap defaultWallpaper = getDefaultWallpaper(which);
             if (defaultWallpaper == null || defaultWallpaper.isRecycled()) {
                 defaultWallpaper = null;
+                Trace.beginSection("WPMS.openDefaultWallpaper");
                 try {
                     InputStream is = WallpaperManager.openDefaultWallpaper(context, which);
-                    if (is != null) {
-                        try {
+                    try {
+                        Trace.endSection();
+                        if (is != null) {
                             BitmapFactory.Options options = new BitmapFactory.Options();
+                            Trace.beginSection("WPMS.decodeStream");
                             Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
                             defaultWallpaper = checkDeviceDensity(context, bitmap, which);
-                        } catch (Throwable th) {
-                            if (is != null) {
-                                try {
-                                    is.close();
-                                } catch (Throwable th2) {
-                                    th.addSuppressed(th2);
-                                }
-                            }
-                            throw th;
+                            Trace.endSection();
                         }
-                    }
-                    if (is != null) {
-                        is.close();
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (Throwable th) {
+                        if (is != null) {
+                            try {
+                                is.close();
+                            } catch (Throwable th2) {
+                                th.addSuppressed(th2);
+                            }
+                        }
+                        throw th;
                     }
                 } catch (IOException | OutOfMemoryError e) {
                     Log.w(WallpaperManager.TAG, "Can't decode stream", e);
@@ -881,17 +857,17 @@ public class WallpaperManager implements SemWallpaperManager {
             synchronized (this) {
                 setDefaultWallpaper(which, defaultWallpaper);
             }
+            Trace.endSection();
             return defaultWallpaper;
         }
 
         private boolean isStaticWallpaper(int which) {
-            IWallpaperManager iWallpaperManager = this.mService;
-            if (iWallpaperManager == null) {
+            if (this.mService == null) {
                 Log.w(WallpaperManager.TAG, "WallpaperService not running");
                 throw new RuntimeException(new DeadSystemException());
             }
             try {
-                return iWallpaperManager.isStaticWallpaper(which);
+                return this.mService.isStaticWallpaper(which);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -976,10 +952,10 @@ public class WallpaperManager implements SemWallpaperManager {
 
         public void removeOnSemColorsChangedListener(final OnSemColorsChangedListener callback, int userId, int displayId) {
             synchronized (this) {
-                this.mSemColorListeners.removeIf(new Predicate() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda3
+                this.mSemColorListeners.removeIf(new Predicate() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda4
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
-                        return WallpaperManager.Globals.lambda$removeOnSemColorsChangedListener$4(OnSemColorsChangedListener.this, (Pair) obj);
+                        return WallpaperManager.Globals.lambda$removeOnSemColorsChangedListener$3(OnSemColorsChangedListener.this, (Pair) obj);
                     }
                 });
                 if (this.mSemColorListeners.size() == 0 && this.mColorCallbackRegistered) {
@@ -993,7 +969,7 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
 
-        public static /* synthetic */ boolean lambda$removeOnSemColorsChangedListener$4(OnSemColorsChangedListener callback, Pair pair) {
+        static /* synthetic */ boolean lambda$removeOnSemColorsChangedListener$3(OnSemColorsChangedListener callback, Pair pair) {
             return pair.first == callback;
         }
 
@@ -1008,17 +984,18 @@ public class WallpaperManager implements SemWallpaperManager {
                     if (listener.second == null) {
                         handler = this.mMainLooperHandler;
                     }
-                    handler.post(new Runnable() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda1
+                    handler.post(new Runnable() { // from class: android.app.WallpaperManager$Globals$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
-                            WallpaperManager.Globals.this.lambda$onSemWallpaperColorsChanged$5(listener, colors, which);
+                            WallpaperManager.Globals.this.lambda$onSemWallpaperColorsChanged$4(listener, colors, which);
                         }
                     });
                 }
             }
         }
 
-        public /* synthetic */ void lambda$onSemWallpaperColorsChanged$5(Pair listener, SemWallpaperColors colors, int which) {
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onSemWallpaperColorsChanged$4(Pair listener, SemWallpaperColors colors, int which) {
             boolean stillExists;
             synchronized (this) {
                 stillExists = this.mSemColorListeners.contains(listener);
@@ -1031,10 +1008,6 @@ public class WallpaperManager implements SemWallpaperManager {
         @Override // android.app.IWallpaperManagerCallback
         public void onSemWallpaperColorsAnalysisRequested(int which, int userId) {
         }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemBackupStatusChanged(int which, int status, int key) {
-        }
     }
 
     static void initGlobals(IWallpaperManager service, Looper looper) {
@@ -1045,21 +1018,23 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    public WallpaperManager(IWallpaperManager service, Context context, Handler handler) {
+    WallpaperManager(IWallpaperManager service, Context context, Handler handler) {
         this.mWallpaperXStep = -1.0f;
         this.mWallpaperYStep = -1.0f;
         this.mContext = context;
         if (service != null) {
             initGlobals(service, context.getMainLooper());
         }
-        if (sWallpaperResourcesInfo == null) {
-            sWallpaperResourcesInfo = new SemWallpaperResourcesInfo(context);
+        synchronized (sSync) {
+            if (sWallpaperResourcesInfo == null) {
+                sWallpaperResourcesInfo = new SemWallpaperResourcesInfo(context);
+            }
         }
         this.mWcgEnabled = context.getResources().getConfiguration().isScreenWideColorGamut() && (context.getResources().getBoolean(R.bool.config_enableWcgMode) || Rune.SUPPORT_WCG);
         this.mCmProxy = new ColorManagementProxy(context);
     }
 
-    public WallpaperManager() {
+    WallpaperManager() {
         this.mWallpaperXStep = -1.0f;
         this.mWallpaperYStep = -1.0f;
         this.mContext = null;
@@ -1076,33 +1051,12 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     public boolean isLockscreenLiveWallpaperEnabled() {
-        return isLockscreenLiveWallpaperEnabledHelper();
-    }
-
-    private static boolean isLockscreenLiveWallpaperEnabledHelper() {
-        if (sGlobals == null) {
-            sIsLockscreenLiveWallpaperEnabled = Boolean.valueOf(SystemProperties.getBoolean("persist.wm.debug.lockscreen_live_wallpaper", false));
-        }
-        if (sIsLockscreenLiveWallpaperEnabled == null) {
-            try {
-                sIsLockscreenLiveWallpaperEnabled = Boolean.valueOf(sGlobals.mService.isLockscreenLiveWallpaperEnabled());
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-        return sIsLockscreenLiveWallpaperEnabled.booleanValue();
+        return true;
     }
 
     public static boolean isMultiCropEnabled() {
-        if (sGlobals == null) {
-            sIsMultiCropEnabled = Boolean.valueOf(SystemProperties.getBoolean("persist.wm.debug.wallpaper_multi_crop", false));
-        }
         if (sIsMultiCropEnabled == null) {
-            try {
-                sIsMultiCropEnabled = Boolean.valueOf(sGlobals.mService.isMultiCropEnabled());
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
+            sIsMultiCropEnabled = Boolean.valueOf(com.android.window.flags.Flags.multiCrop());
         }
         return sIsMultiCropEnabled.booleanValue();
     }
@@ -1134,10 +1088,15 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     public Drawable semGetDrawable(int which, int orientation) {
+        int which2;
+        int modeEnsuredWhich;
+        int i;
+        int whichForSystemAndLockPaired;
+        Drawable dr;
         ParcelFileDescriptor fd;
         if (!WhichChecker.isSystem(which) && !WhichChecker.isLock(which)) {
             if (WhichChecker.isDex(which)) {
-                which = 9;
+                which2 = 9;
             } else {
                 if (which == 0) {
                     InputStream is = openDefaultWallpaper(this.mContext, 2, false);
@@ -1146,74 +1105,83 @@ public class WallpaperManager implements SemWallpaperManager {
                     }
                     return getDrawableFromStream(is);
                 }
-                which = 1;
+                which2 = 1;
             }
+        } else {
+            which2 = which;
         }
+        if (!WhichChecker.isModeAbsent(which2)) {
+            modeEnsuredWhich = which2;
+        } else {
+            modeEnsuredWhich = getModeEnsuredWhich(which2);
+            Log.d(TAG, "semGetDrawable: mode is absent. which=" + which2 + ", adjustedWhich=" + modeEnsuredWhich);
+        }
+        int wallpaperType = semGetWallpaperType(modeEnsuredWhich);
+        Log.i(TAG, "semGetDrawable: which = " + modeEnsuredWhich + ", wallpaperType = " + wallpaperType + ", orientation=" + orientation + ", caller=" + this.mContext.getPackageName());
+        if (orientation == 1) {
+            i = 0;
+        } else {
+            i = 1;
+        }
+        int rotation = i;
         try {
-            boolean isDesktopMode = sGlobals.mService.isDesktopModeEnabled(which);
-            if (Rune.SUPPORT_SUB_DISPLAY_MODE && WhichChecker.isModeAbsent(which)) {
-                which |= isSubDisplay() ? 16 : 4;
+            fd = semGetThumbnailFileDescriptor(modeEnsuredWhich, this.mContext.getUserId(), rotation);
+        } catch (IOException e) {
+            Log.e(TAG, "semGetDrawable: e=" + e, e);
+        }
+        if (fd != null) {
+            try {
+                Drawable drawableFromBitmap = getDrawableFromBitmap(BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor()));
+                if (fd != null) {
+                    fd.close();
+                }
+                return drawableFromBitmap;
+            } finally {
             }
-            boolean isKeyguardWallpaperShowing = isKeyguardWallpaperShowing(which);
-            boolean isDefaultVideoWallpaper = sWallpaperResourcesInfo.isDefaultVideo(2) && !isDesktopMode && isVideoWallpaper();
-            boolean isLock = WhichChecker.isLock(which);
-            if (isKeyguardWallpaperShowing && isDefaultVideoWallpaper && isLock) {
-                String fileName = getVideoFileName(which);
-                AssetFileDescriptor assetFd = null;
-                try {
-                    assetFd = getVideoFDFromPackage(WALLPAPER_PACKAGE, fileName);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        } else {
+            if (fd != null) {
+                fd.close();
+            }
+            Log.w(TAG, "semGetDrawable: Couldn't get thumbnail. Keep going..");
+            try {
+                boolean isDesktopMode = sGlobals.mService.isDesktopModeEnabled(modeEnsuredWhich);
+                boolean isDefaultVideoWallpaper = sWallpaperResourcesInfo.isDefaultVideo(modeEnsuredWhich) && !isDesktopMode && isVideoWallpaper();
+                boolean isLock = WhichChecker.isLock(modeEnsuredWhich);
+                int whichForSystemAndLockPaired2 = modeEnsuredWhich;
+                if (isLock && isSystemAndLockPaired(modeEnsuredWhich)) {
+                    int whichForSystemAndLockPaired3 = WhichChecker.getMode(modeEnsuredWhich) | 1;
+                    whichForSystemAndLockPaired = whichForSystemAndLockPaired3;
+                } else {
+                    whichForSystemAndLockPaired = whichForSystemAndLockPaired2;
                 }
-                Bitmap bitmap = getVideoWallpaperFrame(assetFd, null, fileName);
-                if (bitmap != null) {
-                    return new BitmapDrawable(this.mContext.getResources(), bitmap);
-                }
-            } else if (isLiveWallpaper(which) && !WhichChecker.isDex(which) && (!isKeyguardWallpaperShowing || WhichChecker.isSystem(which))) {
-                if (WhichChecker.isLock(which)) {
-                    Log.d(TAG, "semGetDrawable: Converting FLAG_LOCK to FLAG_SYSTEM. Since lockscreen wallpaper does not exist.");
-                    which = WhichChecker.getMode(which) | 1;
-                }
-                ParcelFileDescriptor fd2 = null;
-                try {
+                if (isDefaultVideoWallpaper) {
+                    String fileName = getVideoFileName(modeEnsuredWhich);
+                    AssetFileDescriptor assetFd = null;
                     try {
-                        fd = sGlobals.mService.getWallpaperThumbnailFileDescriptor(7, this.mContext.getUserId(), which, orientation, 268435456);
-                        if (fd == null) {
-                            WallpaperInfo info = getWallpaperInfo(which, this.mContext.getUserId());
-                            if (info != null) {
-                                return info.loadThumbnail(this.mContext.getPackageManager());
-                            }
-                            return null;
-                        }
-                    } finally {
+                        assetFd = getVideoFDFromPackage(WALLPAPER_PACKAGE, fileName);
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
                     }
-                } catch (RemoteException e2) {
-                    throw e2.rethrowFromSystemServer();
-                }
-            }
-            ColorManagementProxy cmProxy = getColorManagementProxy();
-            Globals globals = sGlobals;
-            Context context = this.mContext;
-            Bitmap wallpaperBmp = globals.getCurrentWallpaperLocked(context, which, context.getUserId(), false, cmProxy);
-            if (wallpaperBmp == null && isLock && isSystemAndLockPaired(which)) {
-                fd = null;
-                try {
-                    try {
-                        fd = getLockWallpaperFile(this.mContext.getUserId(), which);
-                        if (fd != null) {
-                            BitmapFactory.Options options = new BitmapFactory.Options();
-                            wallpaperBmp = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, options);
-                        }
-                    } catch (OutOfMemoryError e3) {
-                        Log.w(TAG, "Can't decode file descriptor", e3);
+                    Bitmap bitmap = getVideoWallpaperFrame(assetFd, null, fileName);
+                    if (bitmap != null) {
+                        return new BitmapDrawable(this.mContext.getResources(), bitmap);
                     }
-                } finally {
+                } else if (wallpaperType == 7) {
+                    WallpaperInfo info = getWallpaperInfo(whichForSystemAndLockPaired, this.mContext.getUserId());
+                    if (info != null) {
+                        return info.loadThumbnail(this.mContext.getPackageManager());
+                    }
+                    return null;
                 }
+                ColorManagementProxy cmProxy = getColorManagementProxy();
+                Bitmap wallpaperBmp = sGlobals.getCurrentWallpaperLocked(this.mContext, whichForSystemAndLockPaired, this.mContext.getUserId(), false, cmProxy);
+                if (wallpaperBmp != null && !wallpaperBmp.isRecycled() && (dr = getDrawableFromBitmap(wallpaperBmp)) != null) {
+                    return dr;
+                }
+                return getDrawableFromStream(openDefaultWallpaper(this.mContext, modeEnsuredWhich, false));
+            } catch (RemoteException e3) {
+                throw e3.rethrowFromSystemServer();
             }
-            Drawable dr = getDrawableFromBitmap(wallpaperBmp);
-            return dr != null ? dr : getDrawableFromStream(openDefaultWallpaper(this.mContext, which, false));
-        } catch (RemoteException e4) {
-            throw e4.rethrowFromSystemServer();
         }
     }
 
@@ -1250,6 +1218,27 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    public ParcelFileDescriptor semGetScreenshotFileDescriptor(int which, int userId, Bundle extras) {
+        checkExactlyOneWallpaperFlagSet(which);
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        try {
+            return sGlobals.mService.getScreenshotFileDescriptor(which, userId, extras);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    private int getModeEnsuredWhich(int which) {
+        if (!WhichChecker.isModeAbsent(which)) {
+            return which;
+        }
+        int mode = isSubDisplay() ? 16 : 4;
+        return WhichChecker.getType(which) | mode;
+    }
+
     public Drawable getBuiltInDrawable() {
         return getBuiltInDrawable(0, 0, false, 0.0f, 0.0f, 1);
     }
@@ -1264,7 +1253,7 @@ public class WallpaperManager implements SemWallpaperManager {
 
     /* JADX WARN: Type inference failed for: r1v18 */
     /* JADX WARN: Type inference failed for: r1v3 */
-    /* JADX WARN: Type inference failed for: r1v4, types: [android.graphics.Rect, android.graphics.BitmapFactory$Options] */
+    /* JADX WARN: Type inference failed for: r1v4, types: [android.graphics.BitmapFactory$Options, android.graphics.Rect] */
     public Drawable getBuiltInDrawable(int outWidth, int outHeight, boolean scaleToFit, float horizontalAlignment, float verticalAlignment, int which) {
         int which2;
         ?? r1;
@@ -1407,6 +1396,10 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     public Drawable peekDrawable(int which) {
+        if (!canPeekWallpaper(which)) {
+            checkPermission(new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.READ_WALLPAPER_INTERNAL});
+            return null;
+        }
         return getDrawable(which);
     }
 
@@ -1417,11 +1410,15 @@ public class WallpaperManager implements SemWallpaperManager {
     public Drawable getFastDrawable(int which) {
         ColorManagementProxy cmProxy = getColorManagementProxy();
         boolean returnDefault = !WhichChecker.isLock(which);
-        Bitmap bm = sGlobals.peekWallpaperBitmap(this.mContext, returnDefault, which, cmProxy);
-        if (bm == null) {
+        if (!canPeekWallpaper(which)) {
+            checkPermission(new String[]{Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.READ_WALLPAPER_INTERNAL});
             return null;
         }
-        return new FastBitmapDrawable(bm);
+        Bitmap bm = sGlobals.peekWallpaperBitmap(this.mContext, returnDefault, which, cmProxy);
+        if (bm != null) {
+            return new FastBitmapDrawable(bm);
+        }
+        return null;
     }
 
     public Drawable peekFastDrawable() {
@@ -1511,9 +1508,79 @@ public class WallpaperManager implements SemWallpaperManager {
 
     public Rect peekBitmapDimensions(int which, boolean returnDefault) {
         checkExactlyOneWallpaperFlagSet(which);
-        Globals globals = sGlobals;
-        Context context = this.mContext;
-        return globals.peekWallpaperDimensions(context, returnDefault, which, context.getUserId());
+        if (!canPeekWallpaper(which)) {
+            return null;
+        }
+        return sGlobals.peekWallpaperDimensions(this.mContext, returnDefault, which, this.mContext.getUserId());
+    }
+
+    public List<Rect> getBitmapCrops(List<Point> displaySizes, int which, boolean originalBitmap) {
+        checkExactlyOneWallpaperFlagSet(which);
+        try {
+            List<Rect> result = sGlobals.mService.getBitmapCrops(displaySizes, which, originalBitmap, this.mContext.getUserId());
+            if (result != null) {
+                return result;
+            }
+            Rect bitmapDimensions = peekBitmapDimensions(which, true);
+            if (bitmapDimensions == null) {
+                return List.of();
+            }
+            Point bitmapSize = new Point(bitmapDimensions.width(), bitmapDimensions.height());
+            return getBitmapCrops(bitmapSize, displaySizes, (Map<Point, Rect>) null);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public List<Rect> getBitmapCrops(Point bitmapSize, List<Point> displaySizes, Map<Point, Rect> cropHints) {
+        if (cropHints == null) {
+            try {
+                cropHints = Map.of();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        Set<Map.Entry<Point, Rect>> entries = cropHints.entrySet();
+        int[] screenOrientations = entries.stream().mapToInt(new ToIntFunction() { // from class: android.app.WallpaperManager$$ExternalSyntheticLambda2
+            @Override // java.util.function.ToIntFunction
+            public final int applyAsInt(Object obj) {
+                int orientation;
+                orientation = WallpaperManager.getOrientation((Point) ((Map.Entry) obj).getKey());
+                return orientation;
+            }
+        }).toArray();
+        List<Rect> crops = entries.stream().map(new WallpaperManager$$ExternalSyntheticLambda3()).toList();
+        return sGlobals.mService.getFutureBitmapCrops(bitmapSize, displaySizes, screenOrientations, crops);
+    }
+
+    public WallpaperColors getWallpaperColors(Bitmap bitmap, Map<Point, Rect> cropHints) {
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        if (cropHints == null) {
+            try {
+                cropHints = Map.of();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        Set<Map.Entry<Point, Rect>> entries = cropHints.entrySet();
+        int[] screenOrientations = entries.stream().mapToInt(new ToIntFunction() { // from class: android.app.WallpaperManager$$ExternalSyntheticLambda4
+            @Override // java.util.function.ToIntFunction
+            public final int applyAsInt(Object obj) {
+                int orientation;
+                orientation = WallpaperManager.getOrientation((Point) ((Map.Entry) obj).getKey());
+                return orientation;
+            }
+        }).toArray();
+        List<Rect> crops = entries.stream().map(new WallpaperManager$$ExternalSyntheticLambda3()).toList();
+        Point bitmapSize = new Point(bitmap.getWidth(), bitmap.getHeight());
+        Rect crop = sGlobals.mService.getBitmapCrop(bitmapSize, screenOrientations, crops);
+        float dimAmount = getWallpaperDimAmount();
+        Bitmap croppedBitmap = Bitmap.createBitmap(bitmap, crop.left, crop.top, crop.width(), crop.height());
+        WallpaperColors result = WallpaperColors.fromBitmap(croppedBitmap, dimAmount);
+        return result;
     }
 
     public ParcelFileDescriptor getWallpaperFile(int which) {
@@ -1547,9 +1614,8 @@ public class WallpaperManager implements SemWallpaperManager {
 
     public void addOnColorsChangedListener(LocalWallpaperColorConsumer callback, List<RectF> regions, int which) throws IllegalArgumentException {
         for (RectF region : regions) {
-            RectF rectF = LOCAL_COLOR_BOUNDS;
-            if (!rectF.contains(region)) {
-                throw new IllegalArgumentException("Regions must be within bounds " + rectF);
+            if (!LOCAL_COLOR_BOUNDS.contains(region)) {
+                throw new IllegalArgumentException("Regions must be within bounds " + LOCAL_COLOR_BOUNDS);
             }
         }
         sGlobals.addOnColorsChangedListener(callback, regions, which, this.mContext.getUserId(), this.mContext.getDisplayId());
@@ -1582,22 +1648,13 @@ public class WallpaperManager implements SemWallpaperManager {
             return SemWallpaperColors.getBlankWallpaperColors();
         }
         if ((which & 2) != 0) {
-            try {
-                if (sGlobals.mService.isDesktopStandAloneMode()) {
-                    if (WhichChecker.getMode(which) == 0) {
-                        int i = which | 8;
-                    }
-                }
-                int em = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_EMERGENCY_MODE, 0, this.mContext.getUserId());
-                int upsm = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_ULTRA_POWERSAVING_MODE, 0, this.mContext.getUserId());
-                int mbu = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_MINIMAL_BATTERY_USE, 0, this.mContext.getUserId());
-                if (em == 1 || upsm == 1 || mbu == 1) {
-                    return SemWallpaperColors.getBlankWallpaperColors();
-                }
-                return null;
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
+            int em = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_EMERGENCY_MODE, 0, this.mContext.getUserId());
+            int upsm = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_ULTRA_POWERSAVING_MODE, 0, this.mContext.getUserId());
+            int mbu = Settings.System.getIntForUser(this.mContext.getContentResolver(), Settings.System.SEM_MINIMAL_BATTERY_USE, 0, this.mContext.getUserId());
+            if (em == 1 || upsm == 1 || mbu == 1) {
+                return SemWallpaperColors.getBlankWallpaperColors();
             }
+            return null;
         }
         return null;
     }
@@ -1640,13 +1697,13 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    public void semSetWallpaperColorOverrideAreas(int which, int userId, String colorAreas) {
+    public ParcelFileDescriptor semGetThumbnailFileDescriptor(int which, int userId, int rotation) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
             throw new RuntimeException(new DeadSystemException());
         }
         try {
-            sGlobals.mService.semSetWallpaperColorOverrideAreas(which, userId, colorAreas);
+            return sGlobals.mService.semGetThumbnailFileDescriptor(which, userId, rotation);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1712,6 +1769,10 @@ public class WallpaperManager implements SemWallpaperManager {
         }
         try {
             Bundle outParams = new Bundle();
+            int mode = WhichChecker.getMode(which);
+            if (isSystemAndLockPaired(mode)) {
+                which = mode | 1;
+            }
             return sGlobals.mService.getWallpaperWithFeature(this.mContext.getOpPackageName(), this.mContext.getAttributionTag(), null, which, outParams, userId, getCropped, true, 0);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -1726,6 +1787,10 @@ public class WallpaperManager implements SemWallpaperManager {
         }
         try {
             Bundle outParams = new Bundle();
+            int mode = WhichChecker.getMode(which);
+            if (isSystemAndLockPaired(mode)) {
+                which = mode | 1;
+            }
             return sGlobals.mService.getLockWallpaper(null, outParams, userId, which);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -1837,16 +1902,15 @@ public class WallpaperManager implements SemWallpaperManager {
         return setResource(context, resid, which, 0, allowBackup, true, extras);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:32:0x011f A[Catch: RemoteException -> 0x014b, TRY_ENTER, TryCatch #5 {RemoteException -> 0x014b, blocks: (B:28:0x00fd, B:32:0x011f, B:35:0x0127, B:38:0x0193, B:41:0x019b, B:44:0x01ae, B:49:0x0138, B:52:0x0152, B:55:0x015a, B:57:0x0160, B:59:0x016d, B:61:0x0173, B:62:0x0175, B:64:0x0182, B:70:0x010d, B:73:0x0112, B:74:0x0116), top: B:16:0x00d6 }] */
-    /* JADX WARN: Removed duplicated region for block: B:44:0x01ae A[Catch: RemoteException -> 0x014b, TRY_ENTER, TRY_LEAVE, TryCatch #5 {RemoteException -> 0x014b, blocks: (B:28:0x00fd, B:32:0x011f, B:35:0x0127, B:38:0x0193, B:41:0x019b, B:44:0x01ae, B:49:0x0138, B:52:0x0152, B:55:0x015a, B:57:0x0160, B:59:0x016d, B:61:0x0173, B:62:0x0175, B:64:0x0182, B:70:0x010d, B:73:0x0112, B:74:0x0116), top: B:16:0x00d6 }] */
-    /* JADX WARN: Removed duplicated region for block: B:51:0x0150  */
+    /* JADX WARN: Removed duplicated region for block: B:31:0x011b  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0125  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private int setResource(android.content.Context r21, int r22, int r23, int r24, boolean r25, boolean r26, android.os.Bundle r27) throws java.io.IOException {
+    private int setResource(android.content.Context r19, int r20, int r21, int r22, boolean r23, boolean r24, android.os.Bundle r25) throws java.io.IOException {
         /*
-            Method dump skipped, instructions count: 473
+            Method dump skipped, instructions count: 339
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.app.WallpaperManager.setResource(android.content.Context, int, int, int, boolean, boolean, android.os.Bundle):int");
@@ -1893,103 +1957,48 @@ public class WallpaperManager implements SemWallpaperManager {
         semSetUri(uri, allowBackup, which, type, null);
     }
 
-    public void semSetUri(Uri uri, boolean allowBackup, int which, int type, Bundle extras) throws IOException, PackageManager.NameNotFoundException {
-        int type2;
-        int i;
-        String str;
-        String resName;
-        int type3;
-        String resName2;
-        Context pkgContext;
-        IWallpaperManager iWallpaperManager;
-        String uri2;
-        String opPackageName;
-        int userId;
-        Log.d(TAG, "semSetUri: uri =" + uri + ",allowBackup=" + allowBackup + ",which=" + which + ",hasExtras=" + (extras != null));
-        if (uri == null) {
+    /* JADX WARN: Removed duplicated region for block: B:24:0x00a6  */
+    /* JADX WARN: Removed duplicated region for block: B:29:0x00b0  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void semSetUri(android.net.Uri r18, boolean r19, int r20, int r21, android.os.Bundle r22) throws java.io.IOException, android.content.pm.PackageManager.NameNotFoundException {
+        /*
+            Method dump skipped, instructions count: 356
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.app.WallpaperManager.semSetUri(android.net.Uri, boolean, int, int, android.os.Bundle):void");
+    }
+
+    private void semSetWallpaper(String uri, boolean allowBackup, int which, int type, Bundle extras) throws IOException {
+        if (type == 1000 && !WhichChecker.isLock(which)) {
             return;
         }
-        String scheme = uri.getScheme();
-        String pkgName = uri.getAuthority();
-        String resName3 = uri.getLastPathSegment();
-        int type4 = SEM_SCHEME_MULTIPACK.equals(scheme) ? 3 : type;
         try {
-            iWallpaperManager = sGlobals.mService;
-            uri2 = uri.toString();
-            opPackageName = this.mContext.getOpPackageName();
-            userId = this.mContext.getUserId();
-            type2 = type4;
-            i = 3;
-            str = SEM_SCHEME_MULTIPACK;
-            resName = resName3;
-        } catch (RemoteException e) {
-            e = e;
-            type2 = type4;
-            i = 3;
-            str = SEM_SCHEME_MULTIPACK;
-            resName = resName3;
-        }
-        try {
-            iWallpaperManager.semSetUri(uri2, allowBackup, which, type2, opPackageName, userId, extras);
-            if (WhichChecker.isLock(which)) {
-                sGlobals.mService.setKWPTypeLiveWallpaperWithMode(WhichChecker.getMode(which), 1);
+            ParcelFileDescriptor fd = sGlobals.mService.semSetWallpaper(uri, this.mContext.getOpPackageName(), null, null, allowBackup, null, which, null, this.mContext.getUserId(), type, false, extras);
+            if (fd != null) {
+                FileOutputStream fos = null;
+                try {
+                    fos = new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+                    fos.close();
+                    IoUtils.closeQuietly(fos);
+                } catch (Throwable th) {
+                    IoUtils.closeQuietly(fos);
+                    throw th;
+                }
+            }
+            if (isNeedToClearBackupData()) {
+                try {
+                    semClearBackupWallpapers(which);
+                } catch (RemoteException e) {
+                    e = e;
+                    e.printStackTrace();
+                }
             }
         } catch (RemoteException e2) {
             e = e2;
             e.printStackTrace();
-            type3 = type2;
-            if (type3 != i) {
-            }
-            semClearBackupWallpapers(which);
-            if (!str.equals(scheme)) {
-            }
-            return;
-        }
-        type3 = type2;
-        if ((type3 != i || type3 == 5) && isNeedToClearBackupData()) {
-            semClearBackupWallpapers(which);
-        }
-        if (!str.equals(scheme) || type3 == 5 || pkgName == null) {
-            return;
-        }
-        if (!pkgName.isEmpty() && (resName2 = resName) != null && !resName2.isEmpty()) {
-            try {
-                pkgContext = this.mContext.createPackageContext(pkgName, 0);
-            } catch (PackageManager.NameNotFoundException e3) {
-                nnfe = e3;
-            } catch (IOException e4) {
-                ioe = e4;
-            }
-            if (pkgContext == null) {
-                return;
-            }
-            int resId = pkgContext.getResources().getIdentifier(resName2, "drawable", pkgName);
-            if (resId <= 0) {
-                try {
-                    Log.d(TAG, "Resource id not found");
-                    return;
-                } catch (PackageManager.NameNotFoundException e5) {
-                    nnfe = e5;
-                    nnfe.printStackTrace();
-                    Log.d(TAG, "Set wallpaper based on END");
-                } catch (IOException e6) {
-                    ioe = e6;
-                    ioe.printStackTrace();
-                    Log.d(TAG, "Set wallpaper based on END");
-                }
-            }
-            try {
-                setPreloadedResource(pkgContext, resId, which, allowBackup, extras);
-            } catch (PackageManager.NameNotFoundException e7) {
-                nnfe = e7;
-                nnfe.printStackTrace();
-                Log.d(TAG, "Set wallpaper based on END");
-            } catch (IOException e8) {
-                ioe = e8;
-                ioe.printStackTrace();
-                Log.d(TAG, "Set wallpaper based on END");
-            }
-            Log.d(TAG, "Set wallpaper based on END");
         }
     }
 
@@ -2017,12 +2026,12 @@ public class WallpaperManager implements SemWallpaperManager {
         return setBitmap(fullImage, visibleCropHint, allowBackup, which, userId, 0, null);
     }
 
+    @Override // android.app.SemWallpaperManager
     public int setBitmap(Bitmap fullImage, Rect visibleCropHint, boolean allowBackup, int which, Bundle extras) throws IOException {
         return setBitmap(fullImage, visibleCropHint, allowBackup, which, this.mContext.getUserId(), 0, extras);
     }
 
     private int setBitmap(Bitmap fullImage, Rect visibleCropHint, boolean allowBackup, int which, int userId, int type, Bundle extras) throws IOException {
-        int i;
         Log.d(TAG, "setBitmap calling package = " + this.mContext.getOpPackageName() + ", allowBackup = " + allowBackup + ", which = " + which + ", userId = " + userId + ", type = " + type + ", hasExtras = " + (extras != null));
         if (fullImage != null) {
             Log.d(TAG, "setBitmap bitmap width = " + fullImage.getWidth() + ", height = " + fullImage.getHeight());
@@ -2030,73 +2039,114 @@ public class WallpaperManager implements SemWallpaperManager {
         if (visibleCropHint != null) {
             Log.d(TAG, "setBitmap crop hint = " + visibleCropHint);
         }
+        if (com.android.window.flags.Flags.multiCrop()) {
+            SparseArray<Rect> cropMap = new SparseArray<>();
+            if (visibleCropHint != null) {
+                cropMap.put(-1, visibleCropHint);
+            }
+            return setBitmapWithCrops(fullImage, cropMap, allowBackup, which, userId);
+        }
         validateRect(visibleCropHint);
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
             throw new RuntimeException(new DeadSystemException());
         }
-        boolean isLiveWallpaper = isLiveWallpaper(which);
-        boolean isKeyguardWallpaperShowing = isKeyguardWallpaperShowing(which);
+        Bundle result = new Bundle();
+        WallpaperSetCompletion completion = new WallpaperSetCompletion();
+        List<Rect> crops = visibleCropHint == null ? null : List.of(visibleCropHint);
+        try {
+            ParcelFileDescriptor fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), null, crops, allowBackup, result, which, completion, userId, type, false, extras);
+            if (fd != null) {
+                FileOutputStream fos = null;
+                try {
+                    fos = new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+                    fullImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                    fos.close();
+                    completion.waitForCompletion();
+                    IoUtils.closeQuietly(fos);
+                } catch (Throwable th) {
+                    IoUtils.closeQuietly(fos);
+                    throw th;
+                }
+            }
+            return result.getInt(EXTRA_NEW_WALLPAPER_ID, 0);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public int setBitmapWithCrops(Bitmap fullImage, Map<Point, Rect> cropHints, boolean allowBackup, int which) throws IOException {
+        final SparseArray<Rect> crops = new SparseArray<>();
+        cropHints.forEach(new BiConsumer() { // from class: android.app.WallpaperManager$$ExternalSyntheticLambda0
+            @Override // java.util.function.BiConsumer
+            public final void accept(Object obj, Object obj2) {
+                SparseArray.this.put(WallpaperManager.getOrientation((Point) obj), (Rect) obj2);
+            }
+        });
+        return setBitmapWithCrops(fullImage, crops, allowBackup, which, this.mContext.getUserId());
+    }
+
+    private int setBitmapWithCrops(Bitmap fullImage, SparseArray<Rect> cropHints, boolean allowBackup, int which, int userId) throws IOException {
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        int size = cropHints.size();
+        int[] screenOrientations = new int[size];
+        List<Rect> crops = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            screenOrientations[i] = cropHints.keyAt(i);
+            Rect cropHint = cropHints.valueAt(i);
+            validateRect(cropHint);
+            crops.add(cropHint);
+        }
         Bundle result = new Bundle();
         WallpaperSetCompletion completion = new WallpaperSetCompletion();
         try {
             try {
-                ParcelFileDescriptor fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), visibleCropHint, allowBackup, result, which, completion, userId, type, false, extras);
-                try {
-                    if (fd != null) {
-                        FileOutputStream fos = null;
+                ParcelFileDescriptor fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), screenOrientations, crops, allowBackup, result, which, completion, userId, 0, false, null);
+                if (fd != null) {
+                    FileOutputStream fos = null;
+                    try {
                         try {
                             fos = new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+                        } catch (Throwable th) {
+                            th = th;
+                        }
+                        try {
                             fullImage.compress(Bitmap.CompressFormat.PNG, 90, fos);
                             fos.close();
                             completion.waitForCompletion();
                             IoUtils.closeQuietly(fos);
-                        } catch (Throwable th) {
+                        } catch (Throwable th2) {
+                            th = th2;
                             IoUtils.closeQuietly(fos);
                             throw th;
                         }
+                    } catch (RemoteException e) {
+                        e = e;
+                        throw e.rethrowFromSystemServer();
                     }
-                    if (WhichChecker.isSystemAndLock(which)) {
-                        if (!isLockscreenLiveWallpaperEnabled()) {
-                            sGlobals.mService.copyFileToWallpaperFile(which, this.mContext.getOpPackageName());
-                            i = 1;
-                        } else {
-                            i = 1;
-                        }
-                    } else if (!isLiveWallpaper || WhichChecker.isDex(which)) {
-                        i = 1;
-                    } else if (!isKeyguardWallpaperShowing) {
-                        if (!WhichChecker.isSystem(which)) {
-                            i = 1;
-                        } else {
-                            Log.d(TAG, "setBitmap: call clear() to change the lock wallpaper to default. Since the system wallpaper has been changed and live wallpaper has been broken");
-                            int flag = 2;
-                            if (Rune.SUPPORT_SUB_DISPLAY_MODE && WhichChecker.isSubDisplay(which)) {
-                                flag = 2 | 16;
-                            }
-                            i = 1;
-                            sGlobals.mService.setKWPTypeLiveWallpaperWithMode(flag, 1);
-                        }
-                    } else {
-                        i = 1;
-                        Log.d(TAG, "setBitmap: The type of lockscreen wallpaper is not live wallpaper already. Just keep going.");
-                    }
-                    if (!isRequestForDex(which) && WhichChecker.isLock(which) && !isKeyguardWallpaperShowing) {
-                        sGlobals.mService.setKWPTypeLiveWallpaperWithMode(WhichChecker.getMode(which), i);
-                    }
+                }
+                try {
                     if (isNeedToClearBackupData()) {
-                        semClearBackupWallpapers(which);
+                        try {
+                            semClearBackupWallpapers(which);
+                        } catch (RemoteException e2) {
+                            e = e2;
+                            throw e.rethrowFromSystemServer();
+                        }
                     }
                     return result.getInt(EXTRA_NEW_WALLPAPER_ID, 0);
-                } catch (RemoteException e) {
-                    e = e;
+                } catch (RemoteException e3) {
+                    e = e3;
                     throw e.rethrowFromSystemServer();
                 }
-            } catch (RemoteException e2) {
-                e = e2;
+            } catch (RemoteException e4) {
+                e = e4;
             }
-        } catch (RemoteException e3) {
-            e = e3;
+        } catch (RemoteException e5) {
+            e = e5;
         }
     }
 
@@ -2151,9 +2201,8 @@ public class WallpaperManager implements SemWallpaperManager {
         return setStream(bitmapData, visibleCropHint, allowBackup, which, type, false, null);
     }
 
+    @Override // android.app.SemWallpaperManager
     public int setStream(InputStream bitmapData, Rect visibleCropHint, boolean allowBackup, int which, int type, boolean isPreloaded, Bundle extras) throws IOException {
-        ParcelFileDescriptor fd;
-        int i;
         Log.d(TAG, "setStream calling package = " + this.mContext.getOpPackageName() + ", allowBackup = " + allowBackup + ", which = " + which + ", type = " + type + ", hasExtra = " + (extras != null));
         if (bitmapData != null) {
             Log.d(TAG, "setStream bitmap data = " + bitmapData);
@@ -2161,27 +2210,25 @@ public class WallpaperManager implements SemWallpaperManager {
         if (visibleCropHint != null) {
             Log.d(TAG, "setStream crop hint = " + visibleCropHint);
         }
+        if (com.android.window.flags.Flags.multiCrop()) {
+            SparseArray<Rect> cropMap = new SparseArray<>();
+            if (visibleCropHint != null) {
+                cropMap.put(-1, visibleCropHint);
+            }
+            return setStreamWithCrops(bitmapData, cropMap, allowBackup, which, extras);
+        }
         validateRect(visibleCropHint);
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
             throw new RuntimeException(new DeadSystemException());
         }
-        boolean isLiveWallpaper = isLiveWallpaper(which);
-        boolean isKeyguardWallpaperShowing = isKeyguardWallpaperShowing(which);
         Bundle result = new Bundle();
         WallpaperSetCompletion completion = new WallpaperSetCompletion();
+        List<Rect> crops = visibleCropHint == null ? null : List.of(visibleCropHint);
         try {
             Log.d(TAG, "begin setWallpaper()");
-            try {
-                fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), visibleCropHint, allowBackup, result, which, completion, this.mContext.getUserId(), type, isPreloaded, extras);
-                Log.d(TAG, "finish setWallpaper()");
-            } catch (RemoteException e) {
-                e = e;
-            }
-        } catch (RemoteException e2) {
-            e = e2;
-        }
-        try {
+            ParcelFileDescriptor fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), null, crops, allowBackup, result, which, completion, this.mContext.getUserId(), type, isPreloaded, extras);
+            Log.d(TAG, "finish setWallpaper()");
             if (fd != null) {
                 FileOutputStream fos = null;
                 try {
@@ -2195,64 +2242,105 @@ public class WallpaperManager implements SemWallpaperManager {
                     throw th;
                 }
             }
-            int userId = UserHandle.getCallingUserId();
-            Log.d(TAG, "setStream: userId : " + userId);
-            if (WhichChecker.isSystemAndLock(which)) {
-                if (isLockscreenLiveWallpaperEnabled()) {
-                    i = 1;
-                } else if (isPreloaded) {
-                    sGlobals.mService.copyPreloadedFileToWallpaperFile(which, this.mContext.getOpPackageName());
-                    i = 1;
-                } else {
-                    sGlobals.mService.copyFileToWallpaperFile(which, this.mContext.getOpPackageName());
-                    i = 1;
-                }
-            } else if (!isLiveWallpaper || WhichChecker.isDex(which)) {
-                i = 1;
-            } else if (!isKeyguardWallpaperShowing) {
-                if (!WhichChecker.isSystem(which)) {
-                    i = 1;
-                } else {
-                    Log.d(TAG, "setStream: call clear() to change the lock wallpaper to default. Since the system wallpaper has been changed and live wallpaper has been broken");
-                    int flag = 2;
-                    if (Rune.SUPPORT_SUB_DISPLAY_MODE && WhichChecker.isSubDisplay(which)) {
-                        flag = 2 | 16;
-                    }
-                    i = 1;
-                    sGlobals.mService.setKWPTypeLiveWallpaperWithMode(flag, 1);
-                }
-            } else {
-                i = 1;
-                Log.d(TAG, "setStream: The type of lockscreen wallpaper is not live wallpaper already. Just keep going.");
-            }
-            if (SemDesktopModeManager.LAUNCHER_PACKAGE.equals(this.mContext.getOpPackageName())) {
-                if (WhichChecker.isSystem(which)) {
-                    File systemFile = new File(Environment.getUserSystemDirectory(this.mContext.getUserId()), "wallpaper_desktop_orig");
-                    if (systemFile.exists() && systemFile.canRead()) {
-                        Log.d(TAG, "setStream() result : wallpaper_desktop_orig file length=" + systemFile.length());
-                    } else {
-                        Log.d(TAG, "setStream() result : Invalid file path. which=" + which);
-                    }
-                } else if (WhichChecker.isLock(which)) {
-                    File lockFile = new File(Environment.getUserSystemDirectory(this.mContext.getUserId()), "wallpaper_lock_images/wallpaper_desktop_lock_orig");
-                    if (lockFile.exists() && lockFile.canRead()) {
-                        Log.d(TAG, "setStream() result : wallpaper_desktop_lock_orig file length=" + lockFile.length());
-                    } else {
-                        Log.d(TAG, "setStream() result : Invalid file path. which=" + which);
-                    }
-                }
-            }
-            if (!isRequestForDex(which) && WhichChecker.isLock(which) && !isKeyguardWallpaperShowing) {
-                sGlobals.mService.setKWPTypeLiveWallpaperWithMode(WhichChecker.getMode(which), i);
-            }
-            if (isNeedToClearBackupData()) {
-                semClearBackupWallpapers(which);
-            }
             return result.getInt(EXTRA_NEW_WALLPAPER_ID, 0);
-        } catch (RemoteException e3) {
-            e = e3;
-            e.printStackTrace();
+        } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public int setStreamWithCrops(InputStream bitmapData, Map<Point, Rect> cropHints, boolean allowBackup, int which) throws IOException {
+        final SparseArray<Rect> crops = new SparseArray<>();
+        cropHints.forEach(new BiConsumer() { // from class: android.app.WallpaperManager$$ExternalSyntheticLambda1
+            @Override // java.util.function.BiConsumer
+            public final void accept(Object obj, Object obj2) {
+                SparseArray.this.put(WallpaperManager.getOrientation((Point) obj), (Rect) obj2);
+            }
+        });
+        return setStreamWithCrops(bitmapData, crops, allowBackup, which);
+    }
+
+    public int setStreamWithCrops(InputStream bitmapData, SparseArray<Rect> cropHints, boolean allowBackup, int which) throws IOException {
+        return setStreamWithCrops(bitmapData, cropHints, allowBackup, which, null);
+    }
+
+    private int setStreamWithCrops(InputStream bitmapData, SparseArray<Rect> cropHints, boolean allowBackup, int which, Bundle extras) throws IOException {
+        ParcelFileDescriptor fd;
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        int size = cropHints.size();
+        int[] screenOrientations = new int[size];
+        List<Rect> crops = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            screenOrientations[i] = cropHints.keyAt(i);
+            Rect cropHint = cropHints.valueAt(i);
+            validateRect(cropHint);
+            crops.add(cropHint);
+        }
+        Bundle result = new Bundle();
+        WallpaperSetCompletion completion = new WallpaperSetCompletion();
+        try {
+            try {
+                fd = sGlobals.mService.setWallpaper(null, this.mContext.getOpPackageName(), screenOrientations, crops, allowBackup, result, which, completion, this.mContext.getUserId(), 0, false, extras);
+            } catch (RemoteException e) {
+                e = e;
+            }
+            try {
+                if (fd != null) {
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new ParcelFileDescriptor.AutoCloseOutputStream(fd);
+                    } catch (Throwable th) {
+                        th = th;
+                    }
+                    try {
+                        copyStreamToWallpaperFile(bitmapData, fos);
+                        fos.close();
+                        completion.waitForCompletion();
+                        IoUtils.closeQuietly(fos);
+                    } catch (Throwable th2) {
+                        th = th2;
+                        IoUtils.closeQuietly(fos);
+                        throw th;
+                    }
+                }
+                try {
+                    int userId = UserHandle.getCallingUserId();
+                    Log.i(TAG, "setStreamWithCrops: finished. which=" + which + ", userId=" + userId);
+                    if (SemDesktopModeManager.LAUNCHER_PACKAGE.equals(this.mContext.getOpPackageName())) {
+                        if (WhichChecker.isSystem(which)) {
+                            File systemFile = new File(Environment.getUserSystemDirectory(this.mContext.getUserId()), "wallpaper_desktop_orig");
+                            if (systemFile.exists() && systemFile.canRead()) {
+                                Log.i(TAG, "setStreamWithCrops: result : wallpaper_desktop_orig file length=" + systemFile.length());
+                            } else {
+                                Log.i(TAG, "setStreamWithCrops: result : Invalid file path. which=" + which);
+                            }
+                        } else if (WhichChecker.isLock(which)) {
+                            File lockFile = new File(Environment.getUserSystemDirectory(this.mContext.getUserId()), "wallpaper_lock_images/wallpaper_desktop_lock_orig");
+                            if (lockFile.exists() && lockFile.canRead()) {
+                                Log.i(TAG, "setStreamWithCrops: result : wallpaper_desktop_lock_orig file length=" + lockFile.length());
+                            } else {
+                                Log.i(TAG, "setStreamWithCrops: result : Invalid file path. which=" + which);
+                            }
+                        }
+                    }
+                    if (isNeedToClearBackupData()) {
+                        semClearBackupWallpapers(which);
+                    }
+                    return result.getInt(EXTRA_NEW_WALLPAPER_ID, 0);
+                } catch (RemoteException e2) {
+                    e = e2;
+                    e.printStackTrace();
+                    throw e.rethrowFromSystemServer();
+                }
+            } catch (RemoteException e3) {
+                e = e3;
+                e.printStackTrace();
+                throw e.rethrowFromSystemServer();
+            }
+        } catch (RemoteException e4) {
+            e = e4;
         }
     }
 
@@ -2348,9 +2436,7 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     public void clearWallpaper() {
-        Log.d(TAG, "clearWallpaper()");
-        clearWallpaper(appendCurrentModeIfNeeded(5), this.mContext.getUserId());
-        clearWallpaper(appendCurrentModeIfNeeded(6), this.mContext.getUserId());
+        clearWallpaper(3, this.mContext.getUserId());
     }
 
     @SystemApi
@@ -2361,7 +2447,9 @@ public class WallpaperManager implements SemWallpaperManager {
             throw new RuntimeException(new DeadSystemException());
         }
         try {
-            sGlobals.mService.clearWallpaper(this.mContext.getOpPackageName(), which, userId);
+            synchronized (sSync) {
+                sGlobals.mService.clearWallpaper(this.mContext.getOpPackageName(), which, userId);
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2507,12 +2595,7 @@ public class WallpaperManager implements SemWallpaperManager {
     }
 
     public void clear() throws IOException {
-        Log.d(TAG, "clear()");
-        int mode = isSubDisplay() ? 16 : 4;
-        int systemFlag = mode | 1;
-        int lockFlag = mode | 2;
-        setStream(openDefaultWallpaper(this.mContext, systemFlag, false), null, false, systemFlag);
-        clear(lockFlag);
+        clear(3);
     }
 
     public void clear(int which) throws IOException {
@@ -2531,23 +2614,37 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    private boolean isKeyguardWallpaperShowing(int which) {
-        try {
-            boolean isSubDisplay = WhichChecker.isSubDisplay(which);
-            String settingName = isSubDisplay ? SETTINGS_LOCKSCREEN_WALLPAPER_SUB : SETTINGS_LOCKSCREEN_WALLPAPER;
-            return Settings.System.getIntForUser(this.mContext.getContentResolver(), settingName, 1, this.mContext.getUserId()) == 1;
-        } catch (Exception e) {
-            Log.e(TAG, "isKeyguardWallpaperShowing: " + e.getMessage());
-            return true;
-        }
-    }
-
     private int appendCurrentModeIfNeeded(int which) {
         if (!isSubDisplay()) {
             return which;
         }
-        int convertedWhich = which & (-5);
-        return convertedWhich | 16;
+        int convertedWhich = which | 16;
+        return convertedWhich;
+    }
+
+    public boolean isThemeSingleWallpaper(Context context, int which) {
+        String settingsName;
+        if (Rune.SUPPORT_SUB_DISPLAY_MODE && WhichChecker.getMode(which) == 0) {
+            Log.d(TAG, "isThemeSingleWallpaper: which = " + which + ". 'which' does not have mode. getCurrentImplicitMode.");
+            which |= WhichChecker.getCurrentImplicitMode(context);
+        }
+        if (WhichChecker.isSubDisplay(which)) {
+            if (WhichChecker.isLock(which)) {
+                settingsName = "sub_display_lockscreen_wallpaper_transparency";
+            } else {
+                settingsName = "sub_display_system_wallpaper_transparency";
+            }
+        } else if (WhichChecker.isLock(which)) {
+            settingsName = "lockscreen_wallpaper_transparent";
+        } else {
+            settingsName = "android.wallpaper.settings_systemui_transparency";
+        }
+        int type = Settings.System.getIntForUser(context.getContentResolver(), settingsName, -1, context.getUserId());
+        Log.d(TAG, "isThemeSingleWallpaper: which = " + which + ", name = " + settingsName + ", type = " + type);
+        if (type == 3) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isThemeWallpaper(Context context, int which) {
@@ -2582,9 +2679,6 @@ public class WallpaperManager implements SemWallpaperManager {
 
     public static InputStream openDefaultWallpaper(Context context, int which) {
         if (FactoryTest.isFactoryBinary()) {
-            if (WhichChecker.isLock(which) && !isLockscreenLiveWallpaperEnabledHelper()) {
-                return null;
-            }
             String path = SystemProperties.get(PROP_WALLPAPER);
             InputStream wallpaperInputStream = getWallpaperInputStream(path);
             if (wallpaperInputStream != null) {
@@ -2636,8 +2730,10 @@ public class WallpaperManager implements SemWallpaperManager {
             }
         }
         if (is == null) {
-            if (sWallpaperResourcesInfo == null) {
-                sWallpaperResourcesInfo = new SemWallpaperResourcesInfo(context);
+            synchronized (sSync) {
+                if (sWallpaperResourcesInfo == null) {
+                    sWallpaperResourcesInfo = new SemWallpaperResourcesInfo(context);
+                }
             }
             is = sWallpaperResourcesInfo.getDefaultImageWallpaper(which);
         }
@@ -2652,17 +2748,18 @@ public class WallpaperManager implements SemWallpaperManager {
 
     @Override // android.app.SemWallpaperManager
     public int getDefaultWallpaperType(int which) {
-        return sWallpaperResourcesInfo.getDefaultWallpaperType(which, getDeviceColor(this.mContext));
+        return sWallpaperResourcesInfo.getDefaultWallpaperType(getModeEnsuredWhich(which), getDeviceColor(this.mContext));
     }
 
     @Override // android.app.SemWallpaperManager
     public String getDefaultMultipackStyle(int which) {
-        return sWallpaperResourcesInfo.getDefaultMultipackStyle(which);
+        return sWallpaperResourcesInfo.getDefaultMultipackStyle(getModeEnsuredWhich(which));
     }
 
     @Override // android.app.SemWallpaperManager
     public boolean isSupportDefaultMultipleWallpaper() {
-        return isSubDisplay() ? sWallpaperResourcesInfo.isDefaultMultipack(18) : sWallpaperResourcesInfo.isDefaultMultipack(2);
+        int modeEnsuredWhich = getModeEnsuredWhich(2);
+        return sWallpaperResourcesInfo.isDefaultMultipack(modeEnsuredWhich);
     }
 
     public static File getDefaultWallpaperFile(Context context) {
@@ -2743,6 +2840,16 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    public static String getLastCallingPackage(Context context, int which, boolean includePrefix) {
+        try {
+            String pakcage = getInstance(context).getIWallpaperManager().getLastCallingPackageWithPrefix(which, includePrefix);
+            return pakcage;
+        } catch (RemoteException e) {
+            Log.d(TAG, "getLastCallingPackageWithPrefix:" + e);
+            return "";
+        }
+    }
+
     private static InputStream getWallpaperInputStream(String path) {
         if (!TextUtils.isEmpty(path)) {
             File file = new File(path);
@@ -2778,16 +2885,49 @@ public class WallpaperManager implements SemWallpaperManager {
                 cn = ComponentName.unflattenFromString(flat2);
             }
         }
-        if (cn != null) {
-            try {
-                PackageManager packageManager = context.getPackageManager();
-                packageManager.getPackageInfo(cn.getPackageName(), 786432);
-                return cn;
-            } catch (PackageManager.NameNotFoundException e) {
-                return null;
-            }
+        if (!isComponentExist(context, cn)) {
+            return null;
         }
         return cn;
+    }
+
+    public static ComponentName getCmfDefaultWallpaperComponent(Context context) {
+        String[] cmfWallpaper;
+        ComponentName cn = null;
+        String[] cmfWallpaperMap = context.getResources().getStringArray(R.array.default_wallpaper_component_per_device_color);
+        if (cmfWallpaperMap != null && cmfWallpaperMap.length > 0) {
+            int length = cmfWallpaperMap.length;
+            int i = 0;
+            while (true) {
+                if (i >= length) {
+                    break;
+                }
+                String entry = cmfWallpaperMap[i];
+                if (TextUtils.isEmpty(entry) || (cmfWallpaper = entry.split(",")) == null || cmfWallpaper.length != 2 || !VALUE_CMF_COLOR.equals(cmfWallpaper[0]) || TextUtils.isEmpty(cmfWallpaper[1])) {
+                    i++;
+                } else {
+                    cn = ComponentName.unflattenFromString(cmfWallpaper[1]);
+                    break;
+                }
+            }
+        }
+        if (!isComponentExist(context, cn)) {
+            cn = null;
+        }
+        return cn == null ? getDefaultWallpaperComponent(context) : cn;
+    }
+
+    private static boolean isComponentExist(Context context, ComponentName cn) {
+        if (cn == null) {
+            return false;
+        }
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            packageManager.getPackageInfo(cn.getPackageName(), 786432);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public boolean setLockWallpaperCallback(IWallpaperManagerCallback callback) {
@@ -2845,6 +2985,7 @@ public class WallpaperManager implements SemWallpaperManager {
         return this.mCmProxy;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void checkExactlyOneWallpaperFlagSet(int which) {
         if (WhichChecker.isSingleType(which)) {
         } else {
@@ -2852,16 +2993,13 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ColorManagementProxy {
-        private final Set<ColorSpace> mSupportedColorSpaces;
+        private final Set<ColorSpace> mSupportedColorSpaces = new HashSet();
 
         public ColorManagementProxy(Context context) {
-            HashSet hashSet = new HashSet();
-            this.mSupportedColorSpaces = hashSet;
             Display display = context.getDisplayNoVerify();
             if (display != null) {
-                hashSet.addAll(Arrays.asList(display.getSupportedWideColorGamut()));
+                this.mSupportedColorSpaces.addAll(Arrays.asList(display.getSupportedWideColorGamut()));
             }
         }
 
@@ -2878,6 +3016,56 @@ public class WallpaperManager implements SemWallpaperManager {
                 decoder.setTargetColorSpace(ColorSpace.get(ColorSpace.Named.SRGB));
                 Log.w(WallpaperManager.TAG, "Not supported color space: " + info.getColorSpace());
             }
+        }
+    }
+
+    private class WallpaperSetCompletion extends IWallpaperManagerCallback.Stub {
+        final CountDownLatch mLatch = new CountDownLatch(1);
+
+        public WallpaperSetCompletion() {
+        }
+
+        public void waitForCompletion() {
+            try {
+                boolean completed = this.mLatch.await(30L, TimeUnit.SECONDS);
+                if (completed) {
+                    Log.d(WallpaperManager.TAG, "Wallpaper set completion.");
+                } else {
+                    Log.d(WallpaperManager.TAG, "Timeout waiting for wallpaper set completion!");
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+
+        @Override // android.app.IWallpaperManagerCallback
+        public void onWallpaperChanged() throws RemoteException {
+            this.mLatch.countDown();
+        }
+
+        @Override // android.app.IWallpaperManagerCallback
+        public void onSemWallpaperChanged(int type, int which, Bundle extras) throws RemoteException {
+        }
+
+        @Override // android.app.IWallpaperManagerCallback
+        public void onWallpaperColorsChanged(WallpaperColors colors, int which, int userId) throws RemoteException {
+            WallpaperManager.sGlobals.onWallpaperColorsChanged(colors, which, userId);
+        }
+
+        @Override // android.app.IWallpaperManagerCallback
+        public void onSemWallpaperColorsChanged(SemWallpaperColors colors, int which, int userId) throws RemoteException {
+            WallpaperManager.sGlobals.onSemWallpaperColorsChanged(colors, which, userId);
+        }
+
+        @Override // android.app.IWallpaperManagerCallback
+        public void onSemWallpaperColorsAnalysisRequested(int which, int userId) throws RemoteException {
+        }
+    }
+
+    public interface OnColorsChangedListener {
+        void onColorsChanged(WallpaperColors wallpaperColors, int i);
+
+        default void onColorsChanged(WallpaperColors colors, int which, int userId) {
+            onColorsChanged(colors, which);
         }
     }
 
@@ -2987,67 +3175,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class WallpaperSetCompletion extends IWallpaperManagerCallback.Stub {
-        final CountDownLatch mLatch = new CountDownLatch(1);
-
-        public WallpaperSetCompletion() {
-        }
-
-        public void waitForCompletion() {
-            try {
-                boolean completed = this.mLatch.await(30L, TimeUnit.SECONDS);
-                if (completed) {
-                    Log.d(WallpaperManager.TAG, "Wallpaper set completion.");
-                } else {
-                    Log.d(WallpaperManager.TAG, "Timeout waiting for wallpaper set completion!");
-                }
-            } catch (InterruptedException e) {
-            }
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onWallpaperChanged() throws RemoteException {
-            this.mLatch.countDown();
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemWallpaperChanged(int type, int which, Bundle extras) throws RemoteException {
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemMultipackApplied(int which) throws RemoteException {
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onWallpaperColorsChanged(WallpaperColors colors, int which, int userId) throws RemoteException {
-            WallpaperManager.sGlobals.onWallpaperColorsChanged(colors, which, userId);
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemWallpaperColorsChanged(SemWallpaperColors colors, int which, int userId) throws RemoteException {
-            WallpaperManager.sGlobals.onSemWallpaperColorsChanged(colors, which, userId);
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemWallpaperColorsAnalysisRequested(int which, int userId) throws RemoteException {
-        }
-
-        @Override // android.app.IWallpaperManagerCallback
-        public void onSemBackupStatusChanged(int which, int status, int key) throws RemoteException {
-            WallpaperManager.sGlobals.onSemBackupStatusChanged(which, status, key);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public interface OnColorsChangedListener {
-        void onColorsChanged(WallpaperColors wallpaperColors, int i);
-
-        default void onColorsChanged(WallpaperColors colors, int which, int userId) {
-            onColorsChanged(colors, which);
-        }
-    }
-
     @Override // android.app.SemWallpaperManager
     public int getLockWallpaperType() {
         return semGetWallpaperType(2);
@@ -3069,6 +3196,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public ComponentName semGetWallpaperComponent(int which, int userId) {
         checkExactlyOneWallpaperFlagSet(which);
         if (sGlobals.mService == null) {
@@ -3082,6 +3210,19 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    public boolean semIsPreloadedWallpaper(int which, int userId) {
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        try {
+            return sGlobals.mService.semIsPreloadedWallpaper(which, userId);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @Override // android.app.SemWallpaperManager
     public boolean isSystemAndLockPaired(int mode) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
@@ -3111,16 +3252,12 @@ public class WallpaperManager implements SemWallpaperManager {
             Log.w(TAG, "WallpaperService not running");
             throw new RuntimeException(new DeadSystemException());
         }
-        boolean isSupportLockOnlyLive = Rune.SUPPORT_PREVIEW_LOCK_ONLY_LIVE_WALLPAPER || isLockscreenLiveWallpaperEnabled();
-        if (!isSupportLockOnlyLive && WhichChecker.isLock(which)) {
-            Log.e(TAG, "setWallpaperComponentWithExtras : lock type is not supported. which = " + which);
-            return false;
-        }
         try {
             resetMultipleWallpaperSettingIfNeeded();
             sGlobals.mService.setWallpaperComponentChecked(name, callingPackage, which, userId, extras);
             if (isNeedToClearBackupData()) {
                 semClearBackupWallpapers(which);
+                return true;
             }
             return true;
         } catch (RemoteException e) {
@@ -3140,6 +3277,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public Bundle getWallpaperExtras(int which, int userId) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
@@ -3152,6 +3290,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public Bundle getWallpaperAssets(int which, int userId) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
@@ -3164,6 +3303,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public ParcelFileDescriptor getWallpaperAssetFile(int which, int userId, String assetFilePath) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
@@ -3176,6 +3316,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public int getWallpaperOrientation(int which, int userId) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "WallpaperService not running");
@@ -3248,31 +3389,26 @@ public class WallpaperManager implements SemWallpaperManager {
         setVideoWallpaper(videoFilePath, themePackage, fileName, userId, which, false, true, extras);
     }
 
-    /* JADX WARN: Can't wrap try/catch for region: R(8:(6:(3:11|12|(2:14|(26:16|17|18|19|(1:21)|22|23|24|25|26|(4:28|29|30|31)(1:76)|32|33|(1:35)(1:69)|36|37|(1:39)(1:65)|(2:60|61)|41|42|43|44|45|(1:47)|48|(2:50|51)(1:53))))|44|45|(0)|48|(0)(0))|36|37|(0)(0)|(0)|41|42|43) */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x012b, code lost:
-    
-        r0 = e;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:28:0x00a9  */
-    /* JADX WARN: Removed duplicated region for block: B:35:0x00cb  */
-    /* JADX WARN: Removed duplicated region for block: B:39:0x00d7  */
-    /* JADX WARN: Removed duplicated region for block: B:47:0x0110 A[Catch: RemoteException -> 0x0129, TryCatch #3 {RemoteException -> 0x0129, blocks: (B:45:0x010b, B:47:0x0110, B:48:0x011e, B:50:0x0124), top: B:44:0x010b }] */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x0124 A[Catch: RemoteException -> 0x0129, TRY_LEAVE, TryCatch #3 {RemoteException -> 0x0129, blocks: (B:45:0x010b, B:47:0x0110, B:48:0x011e, B:50:0x0124), top: B:44:0x010b }] */
-    /* JADX WARN: Removed duplicated region for block: B:53:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:60:0x00dd A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:65:0x00da  */
-    /* JADX WARN: Removed duplicated region for block: B:69:0x00cf  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x00be  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void setVideoWallpaper(java.lang.String r19, java.lang.String r20, java.lang.String r21, int r22, int r23, boolean r24, boolean r25, android.os.Bundle r26) {
-        /*
-            Method dump skipped, instructions count: 355
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.app.WallpaperManager.setVideoWallpaper(java.lang.String, java.lang.String, java.lang.String, int, int, boolean, boolean, android.os.Bundle):void");
+    public void setVideoWallpaper(String videoFilePath, String themePackage, String fileName, int userId, int which, boolean updateSetting, boolean allowBackup, Bundle extras) {
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "setVideoWallpaper: WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
+        }
+        try {
+            String callingPackage = this.mContext.getOpPackageName();
+            sGlobals.mService.setVideoWallpaper(videoFilePath, themePackage, fileName, callingPackage, userId, which, allowBackup, extras);
+            if (isNeedToClearBackupData()) {
+                try {
+                    semClearBackupWallpapers(which);
+                } catch (RemoteException e) {
+                    e = e;
+                    e.printStackTrace();
+                    throw e.rethrowFromSystemServer();
+                }
+            }
+        } catch (RemoteException e2) {
+            e = e2;
+        }
     }
 
     public boolean semSetWallpaperThumbnail(int which, Bitmap bitmap) {
@@ -3353,19 +3489,6 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    public boolean isWaitingForUnlockUser(int which, int userId) {
-        if (sGlobals.mService == null) {
-            Log.w(TAG, "WallpaperService not running");
-            throw new RuntimeException(new DeadSystemException());
-        }
-        try {
-            boolean isWaitingForUnlockUser = sGlobals.mService.isWaitingForUnlockUser(which, userId);
-            return isWaitingForUnlockUser;
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
     @Override // android.app.SemWallpaperManager
     public boolean isVideoWallpaper() {
         if (sGlobals.mService == null) {
@@ -3437,7 +3560,7 @@ public class WallpaperManager implements SemWallpaperManager {
                         }
                         MediaMetadataRetriever.BitmapParams param = new MediaMetadataRetriever.BitmapParams();
                         param.setPreferredConfig(Bitmap.Config.ARGB_8888);
-                        bitmap = mediaMetadataRetriever.getFrameAtTime(timeUs, 3, param);
+                        bitmap = mediaMetadataRetriever.getFrameAtTime(timeUs, 2, param);
                     }
                     Log.d(TAG, "getVideoWallpaperFrame " + timeUs);
                     mediaMetadataRetriever.release();
@@ -3460,6 +3583,30 @@ public class WallpaperManager implements SemWallpaperManager {
             }
             throw th;
         }
+    }
+
+    private void checkPermission(String[] permissions) {
+        int uid = Process.myUid();
+        int pid = Process.myPid();
+        boolean hasPrivilege = false;
+        for (String permission : permissions) {
+            if (this.mContext.checkPermission(permission, pid, uid) == 0) {
+                hasPrivilege = true;
+            }
+        }
+        String callingPackage = this.mContext.getOpPackageName();
+        if (!hasPrivilege) {
+            ((StorageManager) this.mContext.getSystemService(StorageManager.class)).checkPermissionReadImages(true, pid, uid, callingPackage, null);
+        }
+    }
+
+    private boolean canPeekWallpaper(int which) {
+        boolean isSystemAndLockPaired = isSystemAndLockPaired(which);
+        if (WhichChecker.isLock(which) && isSystemAndLockPaired) {
+            Log.w(TAG, "canPeekWallpaper failed, which = " + which);
+            return false;
+        }
+        return true;
     }
 
     private Bitmap getThemeWallpaperBackground(String pkgname) {
@@ -3578,7 +3725,6 @@ public class WallpaperManager implements SemWallpaperManager {
             ParcelFileDescriptor thumbnailFileFd = sGlobals.mService.getWallpaperThumbnailFileDescriptor(1, this.mContext.getUserId(), which, 1, 1006632960);
             saveWallpaperThumbnailFile(motionBackground, thumbnailFileFd);
             sGlobals.mService.setMotionWallpaper(packageName, callingPackage, which, allowBackup);
-            sGlobals.mService.setKWPTypeLiveWallpaperWithMode(WhichChecker.getMode(which), 1);
             if (isNeedToClearBackupData()) {
                 semClearBackupWallpapers(which);
             }
@@ -3625,7 +3771,6 @@ public class WallpaperManager implements SemWallpaperManager {
             ParcelFileDescriptor thumbnailFileFd = sGlobals.mService.getWallpaperThumbnailFileDescriptor(4, this.mContext.getUserId(), which, 1, 1006632960);
             saveWallpaperThumbnailFile(animatedBackground, thumbnailFileFd);
             sGlobals.mService.setAnimatedWallpaper(packageName, callingPackage, which, allowBackup);
-            sGlobals.mService.setKWPTypeLiveWallpaperWithMode(WhichChecker.getMode(which), 1);
             if (isNeedToClearBackupData()) {
                 semClearBackupWallpapers(which);
             }
@@ -3901,58 +4046,20 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
-    public boolean isLiveWallpaper(int which) {
-        int whichToCheck = which;
-        if (!isLockscreenLiveWallpaperEnabled() || WhichChecker.isSystemAndLock(which)) {
-            whichToCheck = WhichChecker.getMode(which) | 1;
-        }
-        return getWallpaperInfo(whichToCheck, this.mContext.getUserId()) != null || semGetWallpaperType(whichToCheck) == 7;
-    }
-
     @Override // android.app.SemWallpaperManager
-    public boolean isExternalLiveWallpaper() {
-        String settingsName;
-        if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE || Rune.VIRTUAL_DISPLAY_WALLPAPER) {
-            settingsName = SETTINGS_LOCKSCREEN_WALLPAPER;
-        } else if (isSubDisplay()) {
-            settingsName = SETTINGS_LOCKSCREEN_WALLPAPER_SUB;
-        } else {
-            settingsName = SETTINGS_LOCKSCREEN_WALLPAPER;
+    public boolean isStockLiveWallpaper(int which) {
+        if (sGlobals.mService == null) {
+            Log.w(TAG, "isStockLiveWallpaper: WallpaperService not running");
+            throw new RuntimeException(new DeadSystemException());
         }
-        return Settings.System.getIntForUser(this.mContext.getContentResolver(), settingsName, 1, this.mContext.getUserId()) == 0;
+        try {
+            return sGlobals.mService.isStockLiveWallpaper(which, this.mContext.getUserId());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
-    @Override // android.app.SemWallpaperManager
-    public boolean isExternalLiveWallpaper(int which) {
-        String settingsName;
-        if (WhichChecker.isLock(which) && (WhichChecker.isSubDisplay(which) || WhichChecker.isPhone(which))) {
-            if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE || Rune.VIRTUAL_DISPLAY_WALLPAPER) {
-                settingsName = SETTINGS_LOCKSCREEN_WALLPAPER;
-            } else if (WhichChecker.isSubDisplay(which)) {
-                settingsName = SETTINGS_LOCKSCREEN_WALLPAPER_SUB;
-            } else {
-                settingsName = SETTINGS_LOCKSCREEN_WALLPAPER;
-            }
-            return Settings.System.getIntForUser(this.mContext.getContentResolver(), settingsName, 1, this.mContext.getUserId()) == 0;
-        }
-        ComponentName component = semGetWallpaperComponent(which, this.mContext.getUserId());
-        if (component == null) {
-            return false;
-        }
-        String serviceName = component.getClassName();
-        return true ^ IMAGE_WALLPAPER_SERVICE_NAME.equals(serviceName);
-    }
-
-    public boolean isPreloadedLiveWallpaper(int which) {
-        ComponentName component = semGetWallpaperComponent(which, this.mContext.getUserId());
-        if (component == null) {
-            return false;
-        }
-        String pkgName = component.getPackageName();
-        return isPreloadedLiveWallpaperPackage(pkgName);
-    }
-
-    public boolean isPreloadedLiveWallpaperPackage(String packageName) {
+    public boolean isStockLiveWallpaperPackage(String packageName) {
         return PACKAGE_NAME_SPRITE.equals(packageName);
     }
 
@@ -4201,7 +4308,7 @@ public class WallpaperManager implements SemWallpaperManager {
                 canBackup = true;
             }
         }
-        if (canBackup && wallpaperType == 7 && !isPreloadedLiveWallpaper(which)) {
+        if (canBackup && wallpaperType == 7 && !isStockLiveWallpaper(which)) {
             Log.d(TAG, "canBackup: which = " + which + ", external live wallpaper");
             canBackup = false;
         }
@@ -4233,6 +4340,7 @@ public class WallpaperManager implements SemWallpaperManager {
         }
     }
 
+    @Override // android.app.SemWallpaperManager
     public boolean isWallpaperDataExists(int which) {
         if (sGlobals.mService == null) {
             Log.w(TAG, "isWallpaperDataExist: WallpaperService not running");

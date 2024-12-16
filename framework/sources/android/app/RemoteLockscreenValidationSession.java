@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class RemoteLockscreenValidationSession implements Parcelable {
     public static final Parcelable.Creator<RemoteLockscreenValidationSession> CREATOR = new Parcelable.Creator<RemoteLockscreenValidationSession>() { // from class: android.app.RemoteLockscreenValidationSession.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteLockscreenValidationSession createFromParcel(Parcel source) {
             return new RemoteLockscreenValidationSession(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteLockscreenValidationSession[] newArray(int size) {
             return new RemoteLockscreenValidationSession[size];
@@ -26,32 +25,6 @@ public final class RemoteLockscreenValidationSession implements Parcelable {
     private int mRemainingAttempts;
     private byte[] mSourcePublicKey;
 
-    /* synthetic */ RemoteLockscreenValidationSession(RemoteLockscreenValidationSessionIA remoteLockscreenValidationSessionIA) {
-        this();
-    }
-
-    /* synthetic */ RemoteLockscreenValidationSession(Parcel parcel, RemoteLockscreenValidationSessionIA remoteLockscreenValidationSessionIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.app.RemoteLockscreenValidationSession$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemoteLockscreenValidationSession> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteLockscreenValidationSession createFromParcel(Parcel source) {
-            return new RemoteLockscreenValidationSession(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteLockscreenValidationSession[] newArray(int size) {
-            return new RemoteLockscreenValidationSession[size];
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private RemoteLockscreenValidationSession mInstance = new RemoteLockscreenValidationSession();
 

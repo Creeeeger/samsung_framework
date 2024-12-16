@@ -30,7 +30,6 @@ public class SearchRecentSuggestionsProvider extends ContentProvider {
     private boolean mTwoLineDisplay;
     private UriMatcher mUriMatcher;
 
-    /* loaded from: classes.dex */
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private int mNewVersion;
 
@@ -66,9 +65,8 @@ public class SearchRecentSuggestionsProvider extends ContentProvider {
         this.mAuthority = new String(authority);
         this.mMode = mode;
         this.mSuggestionsUri = Uri.parse(SecContentProviderURI.CONTENT + this.mAuthority + "/suggestions");
-        UriMatcher uriMatcher = new UriMatcher(-1);
-        this.mUriMatcher = uriMatcher;
-        uriMatcher.addURI(this.mAuthority, SearchManager.SUGGEST_URI_PATH_QUERY, 1);
+        this.mUriMatcher = new UriMatcher(-1);
+        this.mUriMatcher.addURI(this.mAuthority, SearchManager.SUGGEST_URI_PATH_QUERY, 1);
         if (this.mTwoLineDisplay) {
             this.mSuggestSuggestionClause = "display1 LIKE ? OR display2 LIKE ?";
             this.mSuggestionProjection = new String[]{"0 AS suggest_format", "'android.resource://system/17301578' AS suggest_icon_1", "display1 AS suggest_text_1", "display2 AS suggest_text_2", "query AS suggest_intent_query", "_id"};
@@ -139,11 +137,10 @@ public class SearchRecentSuggestionsProvider extends ContentProvider {
 
     @Override // android.content.ContentProvider
     public boolean onCreate() {
-        int i;
-        if (this.mAuthority == null || (i = this.mMode) == 0) {
+        if (this.mAuthority == null || this.mMode == 0) {
             throw new IllegalArgumentException("Provider not configured");
         }
-        int mWorkingDbVersion = i + 512;
+        int mWorkingDbVersion = this.mMode + 512;
         this.mOpenHelper = new DatabaseHelper(getContext(), mWorkingDbVersion);
         return true;
     }

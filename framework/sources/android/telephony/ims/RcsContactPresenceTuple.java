@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
@@ -19,17 +18,16 @@ import java.util.Collections;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RcsContactPresenceTuple implements Parcelable {
     public static final Parcelable.Creator<RcsContactPresenceTuple> CREATOR = new Parcelable.Creator<RcsContactPresenceTuple>() { // from class: android.telephony.ims.RcsContactPresenceTuple.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsContactPresenceTuple createFromParcel(Parcel in) {
             return new RcsContactPresenceTuple(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsContactPresenceTuple[] newArray(int size) {
             return new RcsContactPresenceTuple[size];
@@ -63,34 +61,22 @@ public final class RcsContactPresenceTuple implements Parcelable {
     private Instant mTimestamp;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BasicStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ServiceId {
     }
 
-    /* synthetic */ RcsContactPresenceTuple(Parcel parcel, RcsContactPresenceTupleIA rcsContactPresenceTupleIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ RcsContactPresenceTuple(String str, String str2, String str3, RcsContactPresenceTupleIA rcsContactPresenceTupleIA) {
-        this(str, str2, str3);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class ServiceCapabilities implements Parcelable {
         public static final Parcelable.Creator<ServiceCapabilities> CREATOR = new Parcelable.Creator<ServiceCapabilities>() { // from class: android.telephony.ims.RcsContactPresenceTuple.ServiceCapabilities.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ServiceCapabilities createFromParcel(Parcel in) {
                 return new ServiceCapabilities(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public ServiceCapabilities[] newArray(int size) {
                 return new ServiceCapabilities[size];
@@ -106,15 +92,9 @@ public final class RcsContactPresenceTuple implements Parcelable {
         private final List<String> mUnsupportedDuplexModeList;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface DuplexMode {
         }
 
-        /* synthetic */ ServiceCapabilities(Parcel parcel, ServiceCapabilitiesIA serviceCapabilitiesIA) {
-            this(parcel);
-        }
-
-        /* loaded from: classes3.dex */
         public static final class Builder {
             private ServiceCapabilities mCapabilities;
 
@@ -145,14 +125,12 @@ public final class RcsContactPresenceTuple implements Parcelable {
         }
 
         private ServiceCapabilities(Parcel in) {
-            ArrayList arrayList = new ArrayList();
-            this.mSupportedDuplexModeList = arrayList;
-            ArrayList arrayList2 = new ArrayList();
-            this.mUnsupportedDuplexModeList = arrayList2;
+            this.mSupportedDuplexModeList = new ArrayList();
+            this.mUnsupportedDuplexModeList = new ArrayList();
             this.mIsAudioCapable = in.readBoolean();
             this.mIsVideoCapable = in.readBoolean();
-            in.readStringList(arrayList);
-            in.readStringList(arrayList2);
+            in.readStringList(this.mSupportedDuplexModeList);
+            in.readStringList(this.mUnsupportedDuplexModeList);
         }
 
         @Override // android.os.Parcelable
@@ -166,23 +144,6 @@ public final class RcsContactPresenceTuple implements Parcelable {
         @Override // android.os.Parcelable
         public int describeContents() {
             return 0;
-        }
-
-        /* renamed from: android.telephony.ims.RcsContactPresenceTuple$ServiceCapabilities$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<ServiceCapabilities> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ServiceCapabilities createFromParcel(Parcel in) {
-                return new ServiceCapabilities(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public ServiceCapabilities[] newArray(int size) {
-                return new ServiceCapabilities[size];
-            }
         }
 
         public boolean isAudioCapable() {
@@ -206,7 +167,6 @@ public final class RcsContactPresenceTuple implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final RcsContactPresenceTuple mPresenceTuple;
 
@@ -271,23 +231,6 @@ public final class RcsContactPresenceTuple implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.telephony.ims.RcsContactPresenceTuple$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RcsContactPresenceTuple> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsContactPresenceTuple createFromParcel(Parcel in) {
-            return new RcsContactPresenceTuple(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsContactPresenceTuple[] newArray(int size) {
-            return new RcsContactPresenceTuple[size];
-        }
-    }
-
     private String convertInstantToStringFormat(Instant instant) {
         if (instant == null) {
             return "";
@@ -346,7 +289,7 @@ public final class RcsContactPresenceTuple implements Parcelable {
             builder.append(this.mContactUri);
         } else {
             builder.append("u=");
-            builder.append(this.mContactUri != null ? "XXX" : SemCapabilities.FEATURE_TAG_NULL);
+            builder.append(this.mContactUri != null ? "XXX" : "null");
         }
         builder.append(", id=");
         builder.append(this.mServiceId);

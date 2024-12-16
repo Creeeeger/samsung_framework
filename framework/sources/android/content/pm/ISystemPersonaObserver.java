@@ -21,7 +21,6 @@ public interface ISystemPersonaObserver extends IInterface {
 
     void onStateChange(int i, SemPersonaState semPersonaState, SemPersonaState semPersonaState2) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISystemPersonaObserver {
         @Override // android.content.pm.ISystemPersonaObserver
         public void onPersonaActive(int personaId) throws RemoteException {
@@ -49,7 +48,6 @@ public interface ISystemPersonaObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISystemPersonaObserver {
         static final int TRANSACTION_onKnoxContainerLaunch = 4;
         static final int TRANSACTION_onPersonaActive = 1;
@@ -104,53 +102,49 @@ public interface ISystemPersonaObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISystemPersonaObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISystemPersonaObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISystemPersonaObserver.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPersonaActive(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRemovePersona(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onResetPersona(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onKnoxContainerLaunch(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    SemPersonaState _arg1 = (SemPersonaState) data.readTypedObject(SemPersonaState.CREATOR);
+                    SemPersonaState _arg2 = (SemPersonaState) data.readTypedObject(SemPersonaState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onStateChange(_arg05, _arg1, _arg2);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPersonaActive(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRemovePersona(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onResetPersona(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onKnoxContainerLaunch(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            SemPersonaState _arg1 = (SemPersonaState) data.readTypedObject(SemPersonaState.CREATOR);
-                            SemPersonaState _arg2 = (SemPersonaState) data.readTypedObject(SemPersonaState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onStateChange(_arg05, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISystemPersonaObserver {
+        private static class Proxy implements ISystemPersonaObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

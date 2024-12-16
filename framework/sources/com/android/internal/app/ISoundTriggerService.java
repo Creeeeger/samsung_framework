@@ -11,7 +11,7 @@ import android.os.RemoteException;
 import com.android.internal.app.ISoundTriggerSession;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ISoundTriggerService extends IInterface {
     ISoundTriggerSession attachAsMiddleman(Identity identity, Identity identity2, SoundTrigger.ModuleProperties moduleProperties, IBinder iBinder) throws RemoteException;
 
@@ -23,7 +23,6 @@ public interface ISoundTriggerService extends IInterface {
 
     void setInPhoneCallState(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISoundTriggerService {
         @Override // com.android.internal.app.ISoundTriggerService
         public ISoundTriggerSession attachAsOriginator(Identity originatorIdentity, SoundTrigger.ModuleProperties moduleProperties, IBinder client) throws RemoteException {
@@ -54,7 +53,6 @@ public interface ISoundTriggerService extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerService {
         public static final String DESCRIPTOR = "com.android.internal.app.ISoundTriggerService";
         static final int TRANSACTION_attachAsMiddleman = 2;
@@ -110,58 +108,55 @@ public interface ISoundTriggerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Identity _arg0 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    SoundTrigger.ModuleProperties _arg1 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
+                    IBinder _arg2 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    ISoundTriggerSession _result = attachAsOriginator(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    Identity _arg02 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    Identity _arg12 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    SoundTrigger.ModuleProperties _arg22 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
+                    IBinder _arg3 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    ISoundTriggerSession _result2 = attachAsMiddleman(_arg02, _arg12, _arg22, _arg3);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    Identity _arg03 = (Identity) data.readTypedObject(Identity.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<SoundTrigger.ModuleProperties> _result3 = listModuleProperties(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 4:
+                    ISoundTriggerInjection _arg04 = ISoundTriggerInjection.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attachInjection(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setInPhoneCallState(_arg05);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Identity _arg0 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            SoundTrigger.ModuleProperties _arg1 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
-                            IBinder _arg2 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            ISoundTriggerSession _result = attachAsOriginator(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            Identity _arg02 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            Identity _arg12 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            SoundTrigger.ModuleProperties _arg22 = (SoundTrigger.ModuleProperties) data.readTypedObject(SoundTrigger.ModuleProperties.CREATOR);
-                            IBinder _arg3 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            ISoundTriggerSession _result2 = attachAsMiddleman(_arg02, _arg12, _arg22, _arg3);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            Identity _arg03 = (Identity) data.readTypedObject(Identity.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<SoundTrigger.ModuleProperties> _result3 = listModuleProperties(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 4:
-                            ISoundTriggerInjection _arg04 = ISoundTriggerInjection.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            attachInjection(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setInPhoneCallState(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISoundTriggerService {
+        private static class Proxy implements ISoundTriggerService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

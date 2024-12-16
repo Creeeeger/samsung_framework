@@ -9,7 +9,7 @@ import com.android.ims.internal.IImsFeatureStatusCallback;
 import com.android.ims.internal.IImsMMTelFeature;
 import com.android.ims.internal.IImsRcsFeature;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsServiceController extends IInterface {
     void addFeatureStatusCallback(int i, int i2, IImsFeatureStatusCallback iImsFeatureStatusCallback) throws RemoteException;
 
@@ -23,7 +23,6 @@ public interface IImsServiceController extends IInterface {
 
     void removeImsFeature(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsServiceController {
         @Override // com.android.ims.internal.IImsServiceController
         public IImsMMTelFeature createEmergencyMMTelFeature(int slotId) throws RemoteException {
@@ -58,7 +57,6 @@ public interface IImsServiceController extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsServiceController {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsServiceController";
         static final int TRANSACTION_addFeatureStatusCallback = 5;
@@ -117,63 +115,60 @@ public interface IImsServiceController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImsMMTelFeature _result = createEmergencyMMTelFeature(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImsMMTelFeature _result2 = createMMTelFeature(_arg02);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImsRcsFeature _result3 = createRcsFeature(_arg03);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeImsFeature(_arg04, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg12 = data.readInt();
+                    IImsFeatureStatusCallback _arg2 = IImsFeatureStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addFeatureStatusCallback(_arg05, _arg12, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    IImsFeatureStatusCallback _arg22 = IImsFeatureStatusCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeFeatureStatusCallback(_arg06, _arg13, _arg22);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImsMMTelFeature _result = createEmergencyMMTelFeature(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImsMMTelFeature _result2 = createMMTelFeature(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImsRcsFeature _result3 = createRcsFeature(_arg03);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeImsFeature(_arg04, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg12 = data.readInt();
-                            IImsFeatureStatusCallback _arg2 = IImsFeatureStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addFeatureStatusCallback(_arg05, _arg12, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            IImsFeatureStatusCallback _arg22 = IImsFeatureStatusCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeFeatureStatusCallback(_arg06, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
         private static class Proxy implements IImsServiceController {
             private IBinder mRemote;
 

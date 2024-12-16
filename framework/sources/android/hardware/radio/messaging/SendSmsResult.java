@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SendSmsResult implements Parcelable {
     public static final Parcelable.Creator<SendSmsResult> CREATOR = new Parcelable.Creator<SendSmsResult>() { // from class: android.hardware.radio.messaging.SendSmsResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SendSmsResult createFromParcel(Parcel _aidl_source) {
             SendSmsResult _aidl_out = new SendSmsResult();
@@ -19,6 +17,7 @@ public class SendSmsResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SendSmsResult[] newArray(int _aidl_size) {
             return new SendSmsResult[_aidl_size];
@@ -27,25 +26,6 @@ public class SendSmsResult implements Parcelable {
     public String ackPDU;
     public int messageRef = 0;
     public int errorCode = 0;
-
-    /* renamed from: android.hardware.radio.messaging.SendSmsResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SendSmsResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SendSmsResult createFromParcel(Parcel _aidl_source) {
-            SendSmsResult _aidl_out = new SendSmsResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SendSmsResult[] newArray(int _aidl_size) {
-            return new SendSmsResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class SendSmsResult implements Parcelable {
         _aidl_sj.add("messageRef: " + this.messageRef);
         _aidl_sj.add("ackPDU: " + Objects.toString(this.ackPDU));
         _aidl_sj.add("errorCode: " + this.errorCode);
-        return "android.hardware.radio.messaging.SendSmsResult" + _aidl_sj.toString();
+        return "SendSmsResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

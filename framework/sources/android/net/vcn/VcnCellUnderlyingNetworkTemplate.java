@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetworkTemplate {
     private static final String ALLOWED_NETWORK_PLMN_IDS_KEY = "mAllowedNetworkPlmnIds";
     private static final String ALLOWED_SPECIFIC_CARRIER_IDS_KEY = "mAllowedSpecificCarrierIds";
@@ -27,10 +27,6 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
     private final Map<Integer, Integer> mCapabilitiesMatchCriteria;
     private final int mOpportunisticMatchCriteria;
     private final int mRoamingMatchCriteria;
-
-    /* synthetic */ VcnCellUnderlyingNetworkTemplate(int i, int i2, int i3, int i4, int i5, Set set, Set set2, int i6, int i7, Map map, VcnCellUnderlyingNetworkTemplateIA vcnCellUnderlyingNetworkTemplateIA) {
-        this(i, i2, i3, i4, i5, set, set2, i6, i7, map);
-    }
 
     static {
         Map<Integer, Integer> capsMatchCriteria = new HashMap<>();
@@ -53,9 +49,8 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         validate();
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.net.vcn.VcnUnderlyingNetworkTemplate
-    public void validate() {
+    protected void validate() {
         super.validate();
         validatePlmnIds(this.mAllowedNetworkPlmnIds);
         validateCapabilitiesMatchCriteria(this.mCapabilitiesMatchCriteria);
@@ -64,6 +59,7 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         validateMatchCriteria(this.mOpportunisticMatchCriteria, OPPORTUNISTIC_MATCH_KEY);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void validatePlmnIds(Set<String> matchingOperatorPlmnIds) {
         Objects.requireNonNull(matchingOperatorPlmnIds, "matchingOperatorPlmnIds is null");
         for (String id : matchingOperatorPlmnIds) {
@@ -207,29 +203,20 @@ public final class VcnCellUnderlyingNetworkTemplate extends VcnUnderlyingNetwork
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
-        private final Map<Integer, Integer> mCapabilitiesMatchCriteria;
-        private int mMinEntryDownstreamBandwidthKbps;
-        private int mMinEntryUpstreamBandwidthKbps;
-        private int mMinExitDownstreamBandwidthKbps;
-        private int mMinExitUpstreamBandwidthKbps;
-        private int mOpportunisticMatchCriteria;
-        private int mRoamingMatchCriteria;
         private int mMeteredMatchCriteria = 0;
         private final Set<String> mAllowedNetworkPlmnIds = new ArraySet();
         private final Set<Integer> mAllowedSpecificCarrierIds = new ArraySet();
+        private final Map<Integer, Integer> mCapabilitiesMatchCriteria = new HashMap();
+        private int mRoamingMatchCriteria = 0;
+        private int mOpportunisticMatchCriteria = 0;
+        private int mMinEntryUpstreamBandwidthKbps = 0;
+        private int mMinExitUpstreamBandwidthKbps = 0;
+        private int mMinEntryDownstreamBandwidthKbps = 0;
+        private int mMinExitDownstreamBandwidthKbps = 0;
 
         public Builder() {
-            HashMap hashMap = new HashMap();
-            this.mCapabilitiesMatchCriteria = hashMap;
-            this.mRoamingMatchCriteria = 0;
-            this.mOpportunisticMatchCriteria = 0;
-            this.mMinEntryUpstreamBandwidthKbps = 0;
-            this.mMinExitUpstreamBandwidthKbps = 0;
-            this.mMinEntryDownstreamBandwidthKbps = 0;
-            this.mMinExitDownstreamBandwidthKbps = 0;
-            hashMap.putAll(VcnCellUnderlyingNetworkTemplate.CAPABILITIES_MATCH_CRITERIA_DEFAULT);
+            this.mCapabilitiesMatchCriteria.putAll(VcnCellUnderlyingNetworkTemplate.CAPABILITIES_MATCH_CRITERIA_DEFAULT);
         }
 
         public Builder setMetered(int matchCriteria) {

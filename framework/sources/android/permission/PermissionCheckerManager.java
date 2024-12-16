@@ -21,7 +21,6 @@ public class PermissionCheckerManager {
     private final IPermissionChecker mService = IPermissionChecker.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.PERMISSION_CHECKER_SERVICE));
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PermissionResult {
     }
 

@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes4.dex */
-public class ResolverRankerServiceResolverComparator extends AbstractResolverComparator {
+/* loaded from: classes5.dex */
+class ResolverRankerServiceResolverComparator extends AbstractResolverComparator {
     private static final int CONNECTION_COST_TIMEOUT_MILLIS = 200;
     private static final boolean DEBUG = false;
     private static final float RECENCY_MULTIPLIER = 2.0f;
@@ -70,9 +70,8 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         this.mCollator = Collator.getInstance(launchedFromContext.getResources().getConfiguration().locale);
         this.mReferrerPackage = referrerPackage;
         this.mContext = launchedFromContext;
-        long currentTimeMillis = System.currentTimeMillis();
-        this.mCurrentTime = currentTimeMillis;
-        this.mSinceTime = currentTimeMillis - 604800000;
+        this.mCurrentTime = System.currentTimeMillis();
+        this.mSinceTime = this.mCurrentTime - 604800000;
         this.mStatsPerUser = new HashMap();
         this.mTargetsDictPerUser = new HashMap();
         for (UserHandle user : targetUserSpaceList) {
@@ -142,13 +141,13 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
                         it = it2;
                     } else {
                         it = it2;
-                        float recencyScore = (float) Math.max(pkStats.getLastTimeUsed() - recentSinceTime, 0L);
+                        float recencyScore = Math.max(pkStats.getLastTimeUsed() - recentSinceTime, 0L);
                         resolverTarget.setRecencyScore(recencyScore);
                         if (recencyScore > mostRecencyScore) {
                             mostRecencyScore = recencyScore;
                         }
                     }
-                    float timeSpentScore = (float) pkStats.getTotalTimeInForeground();
+                    float timeSpentScore = pkStats.getTotalTimeInForeground();
                     resolverTarget.setTimeSpentScore(timeSpentScore);
                     if (timeSpentScore > mostTimeSpentScore) {
                         mostTimeSpentScore = timeSpentScore;
@@ -220,9 +219,8 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
     public void destroy() {
         this.mHandler.removeMessages(0);
         this.mHandler.removeMessages(1);
-        ResolverRankerServiceConnection resolverRankerServiceConnection = this.mConnection;
-        if (resolverRankerServiceConnection != null) {
-            this.mContext.unbindService(resolverRankerServiceConnection);
+        if (this.mConnection != null) {
+            this.mContext.unbindService(this.mConnection);
             this.mConnection.destroy();
         }
         afterCompute();
@@ -235,11 +233,9 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
                 if (intent == null) {
                     return;
                 }
-                CountDownLatch countDownLatch = new CountDownLatch(1);
-                this.mConnectSignal = countDownLatch;
-                ResolverRankerServiceConnection resolverRankerServiceConnection = new ResolverRankerServiceConnection(countDownLatch);
-                this.mConnection = resolverRankerServiceConnection;
-                context.bindServiceAsUser(intent, resolverRankerServiceConnection, 1, UserHandle.SYSTEM);
+                this.mConnectSignal = new CountDownLatch(1);
+                this.mConnection = new ResolverRankerServiceConnection(this.mConnectSignal);
+                context.bindServiceAsUser(intent, this.mConnection, 1, UserHandle.SYSTEM);
             }
         }
     }
@@ -269,13 +265,9 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         return null;
     }
 
-    /* loaded from: classes4.dex */
-    public class ResolverRankerServiceConnection implements ServiceConnection {
+    private class ResolverRankerServiceConnection implements ServiceConnection {
         private final CountDownLatch mConnectSignal;
         public final IResolverRankerResult resolverRankerResult = new IResolverRankerResult.Stub() { // from class: com.android.internal.app.ResolverRankerServiceResolverComparator.ResolverRankerServiceConnection.1
-            AnonymousClass1() {
-            }
-
             @Override // android.service.resolver.IResolverRankerResult
             public void sendResult(List<ResolverTarget> targets) throws RemoteException {
                 synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
@@ -291,30 +283,11 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
             this.mConnectSignal = connectSignal;
         }
 
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.android.internal.app.ResolverRankerServiceResolverComparator$ResolverRankerServiceConnection$1 */
-        /* loaded from: classes4.dex */
-        public class AnonymousClass1 extends IResolverRankerResult.Stub {
-            AnonymousClass1() {
-            }
-
-            @Override // android.service.resolver.IResolverRankerResult
-            public void sendResult(List<ResolverTarget> targets) throws RemoteException {
-                synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
-                    Message msg = Message.obtain();
-                    msg.what = 0;
-                    msg.obj = targets;
-                    ResolverRankerServiceResolverComparator.this.mHandler.sendMessage(msg);
-                }
-            }
-        }
-
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName name, IBinder service) {
             synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
                 ResolverRankerServiceResolverComparator.this.mRanker = IResolverRankerService.Stub.asInterface(service);
-                ResolverRankerServiceResolverComparator resolverRankerServiceResolverComparator = ResolverRankerServiceResolverComparator.this;
-                resolverRankerServiceResolverComparator.mComparatorModel = resolverRankerServiceResolverComparator.buildUpdatedModel();
+                ResolverRankerServiceResolverComparator.this.mComparatorModel = ResolverRankerServiceResolverComparator.this.buildUpdatedModel();
                 this.mConnectSignal.countDown();
             }
         }
@@ -329,14 +302,13 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         public void destroy() {
             synchronized (ResolverRankerServiceResolverComparator.this.mLock) {
                 ResolverRankerServiceResolverComparator.this.mRanker = null;
-                ResolverRankerServiceResolverComparator resolverRankerServiceResolverComparator = ResolverRankerServiceResolverComparator.this;
-                resolverRankerServiceResolverComparator.mComparatorModel = resolverRankerServiceResolverComparator.buildUpdatedModel();
+                ResolverRankerServiceResolverComparator.this.mComparatorModel = ResolverRankerServiceResolverComparator.this.buildUpdatedModel();
             }
         }
     }
 
     @Override // com.android.internal.app.AbstractResolverComparator
-    public void beforeCompute() {
+    void beforeCompute() {
         super.beforeCompute();
         for (UserHandle userHandle : this.mTargetsDictPerUser.keySet()) {
             this.mTargetsDictPerUser.get(userHandle).clear();
@@ -353,9 +325,8 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
             try {
                 this.mConnectSignal.await(200L, TimeUnit.MILLISECONDS);
                 synchronized (this.mLock) {
-                    IResolverRankerService iResolverRankerService = this.mRanker;
-                    if (iResolverRankerService != null) {
-                        iResolverRankerService.predict(targets, this.mConnection.resolverRankerResult);
+                    if (this.mRanker != null) {
+                        this.mRanker.predict(targets, this.mConnection.resolverRankerResult);
                         return;
                     }
                 }
@@ -384,12 +355,12 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
         return (rci == null || rci.getCount() <= 0 || (rci.getResolveInfoAt(0).activityInfo.applicationInfo.flags & 8) == 0) ? false : true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public ResolverRankerServiceComparatorModel buildUpdatedModel() {
         return new ResolverRankerServiceComparatorModel(this.mStatsPerUser, this.mTargetsDictPerUser, this.mTargets, this.mCollator, this.mRanker, this.mRankerServiceName, this.mAnnotations != null, this.mPmMap);
     }
 
-    /* loaded from: classes4.dex */
-    public static class ResolverRankerServiceComparatorModel implements ResolverComparatorModel {
+    static class ResolverRankerServiceComparatorModel implements ResolverComparatorModel {
         private final boolean mAnnotationsUsed;
         private final Collator mCollator;
         private final Map<UserHandle, PackageManager> mPmMap;
@@ -422,6 +393,7 @@ public class ResolverRankerServiceResolverComparator extends AbstractResolverCom
             };
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$getComparator$0(ResolveInfo lhs, ResolveInfo rhs) {
             int selectProbabilityDiff;
             ResolverTarget lhsTarget = getActivityResolverTargetForUser(lhs.activityInfo, lhs.userHandle);

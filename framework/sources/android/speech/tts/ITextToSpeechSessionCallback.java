@@ -17,7 +17,6 @@ public interface ITextToSpeechSessionCallback extends IInterface {
 
     void onError(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITextToSpeechSessionCallback {
         @Override // android.speech.tts.ITextToSpeechSessionCallback
         public void onConnected(ITextToSpeechSession session, IBinder serviceBinder) throws RemoteException {
@@ -37,7 +36,6 @@ public interface ITextToSpeechSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITextToSpeechSessionCallback {
         static final int TRANSACTION_onConnected = 1;
         static final int TRANSACTION_onDisconnected = 2;
@@ -86,34 +84,31 @@ public interface ITextToSpeechSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITextToSpeechSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITextToSpeechSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITextToSpeechSessionCallback.DESCRIPTOR);
+                case 1:
+                    ITextToSpeechSession _arg0 = ITextToSpeechSession.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onConnected(_arg0, _arg1);
+                    return true;
+                case 2:
+                    onDisconnected();
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITextToSpeechSession _arg0 = ITextToSpeechSession.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onConnected(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            onDisconnected();
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITextToSpeechSessionCallback {
+        private static class Proxy implements ITextToSpeechSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

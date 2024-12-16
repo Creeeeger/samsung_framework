@@ -9,8 +9,7 @@ public class FilterFunction {
     private boolean mFilterIsSetup = false;
     private FrameHolderPort[] mResultHolders;
 
-    /* loaded from: classes.dex */
-    public class FrameHolderPort extends StreamPort {
+    private class FrameHolderPort extends StreamPort {
         public FrameHolderPort() {
             super(null, "holder");
         }

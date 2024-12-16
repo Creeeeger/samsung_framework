@@ -25,7 +25,6 @@ public interface IDisplayWindowListener extends IInterface {
 
     void onKeepClearAreasChanged(int i, List<Rect> list, List<Rect> list2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IDisplayWindowListener {
         @Override // android.view.IDisplayWindowListener
         public void onDisplayAdded(int displayId) throws RemoteException {
@@ -57,7 +56,6 @@ public interface IDisplayWindowListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IDisplayWindowListener {
         static final int TRANSACTION_onDisplayAdded = 1;
         static final int TRANSACTION_onDisplayConfigurationChanged = 2;
@@ -115,54 +113,51 @@ public interface IDisplayWindowListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDisplayWindowListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDisplayWindowListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDisplayWindowListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDisplayAdded(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    Configuration _arg1 = (Configuration) data.readTypedObject(Configuration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDisplayConfigurationChanged(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDisplayRemoved(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFixedRotationStarted(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFixedRotationFinished(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    List<Rect> _arg13 = data.createTypedArrayList(Rect.CREATOR);
+                    List<Rect> _arg2 = data.createTypedArrayList(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKeepClearAreasChanged(_arg06, _arg13, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDisplayAdded(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            Configuration _arg1 = (Configuration) data.readTypedObject(Configuration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDisplayConfigurationChanged(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDisplayRemoved(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFixedRotationStarted(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFixedRotationFinished(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            List<Rect> _arg13 = data.createTypedArrayList(Rect.CREATOR);
-                            List<Rect> _arg2 = data.createTypedArrayList(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            onKeepClearAreasChanged(_arg06, _arg13, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IDisplayWindowListener {
+        private static class Proxy implements IDisplayWindowListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

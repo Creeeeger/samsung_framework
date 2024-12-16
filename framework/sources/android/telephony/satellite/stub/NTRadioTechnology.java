@@ -1,6 +1,6 @@
 package android.telephony.satellite.stub;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public @interface NTRadioTechnology {
     public static final int EMTC_NTN = 2;
     public static final int NB_IOT_NTN = 0;

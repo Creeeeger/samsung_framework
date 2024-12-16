@@ -7,7 +7,7 @@ import android.text.Layout;
 import android.text.ParcelableSpan;
 import android.text.Spanned;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class BulletSpan implements LeadingMarginSpan, ParcelableSpan {
     private static final int STANDARD_BULLET_RADIUS = 4;
     private static final int STANDARD_COLOR = 0;
@@ -110,9 +110,8 @@ public class BulletSpan implements LeadingMarginSpan, ParcelableSpan {
                 bottom2 = bottom - layout.getLineExtra(line);
             }
             float yPosition = (top + bottom2) / 2.0f;
-            int i = this.mBulletRadius;
-            float xPosition = (dir * i) + x;
-            canvas.drawCircle(xPosition, yPosition, i, paint);
+            float xPosition = (this.mBulletRadius * dir) + x;
+            canvas.drawCircle(xPosition, yPosition, this.mBulletRadius, paint);
             if (this.mWantColor) {
                 paint.setColor(oldcolor);
             }

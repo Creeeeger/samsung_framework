@@ -16,7 +16,6 @@ public interface IDeviceStateManagerCallback extends IInterface {
 
     void onRequestCanceled(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IDeviceStateManagerCallback {
         @Override // android.hardware.devicestate.IDeviceStateManagerCallback
         public void onDeviceStateInfoChanged(DeviceStateInfo info) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IDeviceStateManagerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IDeviceStateManagerCallback {
         static final int TRANSACTION_onDeviceStateInfoChanged = 1;
         static final int TRANSACTION_onRequestActive = 2;
@@ -85,36 +83,32 @@ public interface IDeviceStateManagerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceStateManagerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceStateManagerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceStateManagerCallback.DESCRIPTOR);
+                case 1:
+                    DeviceStateInfo _arg0 = (DeviceStateInfo) data.readTypedObject(DeviceStateInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDeviceStateInfoChanged(_arg0);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onRequestActive(_arg02);
+                    return true;
+                case 3:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onRequestCanceled(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            DeviceStateInfo _arg0 = (DeviceStateInfo) data.readTypedObject(DeviceStateInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDeviceStateInfoChanged(_arg0);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onRequestActive(_arg02);
-                            return true;
-                        case 3:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onRequestCanceled(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IDeviceStateManagerCallback {
+        private static class Proxy implements IDeviceStateManagerCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

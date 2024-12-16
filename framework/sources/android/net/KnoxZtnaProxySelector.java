@@ -11,7 +11,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class KnoxZtnaProxySelector extends ProxySelector {
     private static final String TAG = "knoxNwFilter-KnoxZtnaProxySelector";
 

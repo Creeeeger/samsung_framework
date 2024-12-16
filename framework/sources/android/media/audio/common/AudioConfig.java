@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioConfig implements Parcelable {
     public static final Parcelable.Creator<AudioConfig> CREATOR = new Parcelable.Creator<AudioConfig>() { // from class: android.media.audio.common.AudioConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioConfig createFromParcel(Parcel _aidl_source) {
             AudioConfig _aidl_out = new AudioConfig();
@@ -20,6 +18,7 @@ public class AudioConfig implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioConfig[] newArray(int _aidl_size) {
             return new AudioConfig[_aidl_size];
@@ -28,25 +27,6 @@ public class AudioConfig implements Parcelable {
     public AudioConfigBase base;
     public long frameCount = 0;
     public AudioOffloadInfo offloadInfo;
-
-    /* renamed from: android.media.audio.common.AudioConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioConfig createFromParcel(Parcel _aidl_source) {
-            AudioConfig _aidl_out = new AudioConfig();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioConfig[] newArray(int _aidl_size) {
-            return new AudioConfig[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -115,7 +95,7 @@ public class AudioConfig implements Parcelable {
         _aidl_sj.add("base: " + Objects.toString(this.base));
         _aidl_sj.add("offloadInfo: " + Objects.toString(this.offloadInfo));
         _aidl_sj.add("frameCount: " + this.frameCount);
-        return "android.media.audio.common.AudioConfig" + _aidl_sj.toString();
+        return "AudioConfig" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

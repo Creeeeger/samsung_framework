@@ -17,7 +17,6 @@ public interface IConsumerIrService extends IInterface {
 
     void transmit(String str, int i, int[] iArr) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IConsumerIrService {
         @Override // android.hardware.IConsumerIrService
         public boolean hasIrEmitter() throws RemoteException {
@@ -39,7 +38,6 @@ public interface IConsumerIrService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IConsumerIrService {
         public static final String DESCRIPTOR = "android.hardware.IConsumerIrService";
         static final int TRANSACTION_getCarrierFrequencies = 3;
@@ -99,39 +97,35 @@ public interface IConsumerIrService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _result = hasIrEmitter();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int[] _arg2 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    transmit(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int[] _result2 = getCarrierFrequencies();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = hasIrEmitter();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int[] _arg2 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            transmit(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int[] _result2 = getCarrierFrequencies();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IConsumerIrService {
+        private static class Proxy implements IConsumerIrService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

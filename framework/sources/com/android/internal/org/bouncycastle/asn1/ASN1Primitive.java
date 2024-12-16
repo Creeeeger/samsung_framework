@@ -5,16 +5,19 @@ import java.io.OutputStream;
 
 /* loaded from: classes5.dex */
 public abstract class ASN1Primitive extends ASN1Object {
-    public abstract boolean asn1Equals(ASN1Primitive aSN1Primitive);
+    abstract boolean asn1Equals(ASN1Primitive aSN1Primitive);
 
-    public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+    abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
 
-    public abstract int encodedLength() throws IOException;
+    abstract int encodedLength() throws IOException;
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object
     public abstract int hashCode();
 
-    public abstract boolean isConstructed();
+    abstract boolean isConstructed();
+
+    ASN1Primitive() {
+    }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object
     public void encodeTo(OutputStream output) throws IOException {
@@ -60,11 +63,11 @@ public abstract class ASN1Primitive extends ASN1Object {
         return this;
     }
 
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return this;
     }
 
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return this;
     }
 }

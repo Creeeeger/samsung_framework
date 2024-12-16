@@ -7,13 +7,12 @@ import android.os.IRemoteCallback;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricServiceLockoutResetCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricServiceLockoutResetCallback";
 
     void onLockoutReset(int i, IRemoteCallback iRemoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricServiceLockoutResetCallback {
         @Override // android.hardware.biometrics.IBiometricServiceLockoutResetCallback
         public void onLockoutReset(int sensorId, IRemoteCallback callback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IBiometricServiceLockoutResetCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricServiceLockoutResetCallback {
         static final int TRANSACTION_onLockoutReset = 1;
 
@@ -68,27 +66,23 @@ public interface IBiometricServiceLockoutResetCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricServiceLockoutResetCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricServiceLockoutResetCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricServiceLockoutResetCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IRemoteCallback _arg1 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onLockoutReset(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IRemoteCallback _arg1 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onLockoutReset(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBiometricServiceLockoutResetCallback {
+        private static class Proxy implements IBiometricServiceLockoutResetCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -39,6 +39,7 @@ import com.android.internal.app.ResolverActivity;
 import com.android.internal.app.chooser.DisplayResolveInfo;
 import com.android.internal.app.chooser.TargetInfo;
 import com.samsung.android.app.SemDualAppManager;
+import com.samsung.android.core.pm.PmUtils;
 import com.samsung.android.knox.SemPersonaManager;
 import com.samsung.android.share.SemShareConstants;
 import java.text.Collator;
@@ -51,10 +52,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ResolverListAdapter extends BaseAdapter {
     private static String PACKAGE_NAME_GOOGLE_MESSAGES = "com.google.android.apps.messaging";
     private static String PACKAGE_NAME_SAMSUNG_MESSAGES = "com.samsung.android.messaging";
@@ -90,11 +90,6 @@ public class ResolverListAdapter extends BaseAdapter {
     private int mLastChosenActivityIndex = -1;
     List<DisplayResolveInfo> mDisplayList = new ArrayList();
 
-    /* renamed from: -$$Nest$smgetSuspendedColorMatrix */
-    static /* bridge */ /* synthetic */ ColorMatrixColorFilter m7164$$Nest$smgetSuspendedColorMatrix() {
-        return getSuspendedColorMatrix();
-    }
-
     public ResolverListAdapter(Context context, List<Intent> payloadIntents, Intent[] initialIntents, List<ResolveInfo> rList, boolean filterLastUsed, ResolverListController resolverListController, ResolverListCommunicator resolverListCommunicator, boolean isAudioCaptureDevice, UserHandle initialIntentsUserSpace) {
         this.mContext = context;
         this.mIntents = payloadIntents;
@@ -107,7 +102,7 @@ public class ResolverListAdapter extends BaseAdapter {
         this.mResolverListController = resolverListController;
         this.mResolverListCommunicator = resolverListCommunicator;
         this.mIsAudioCaptureDevice = isAudioCaptureDevice;
-        ActivityManager am = (ActivityManager) context.getSystemService("activity");
+        ActivityManager am = (ActivityManager) this.mContext.getSystemService("activity");
         this.mIconDpi = am.getLauncherLargeIconDensity();
         this.mInitialIntentsUserSpace = initialIntentsUserSpace;
     }
@@ -145,9 +140,8 @@ public class ResolverListAdapter extends BaseAdapter {
     }
 
     public DisplayResolveInfo getFilteredItem() {
-        int i;
-        if (this.mFilterLastUsed && (i = this.mLastChosenPosition) >= 0) {
-            return this.mDisplayList.get(i);
+        if (this.mFilterLastUsed && this.mLastChosenPosition >= 0) {
+            return this.mDisplayList.get(this.mLastChosenPosition);
         }
         return null;
     }
@@ -157,9 +151,8 @@ public class ResolverListAdapter extends BaseAdapter {
     }
 
     public int getFilteredPosition() {
-        int i;
-        if (this.mFilterLastUsed && (i = this.mLastChosenPosition) >= 0) {
-            return i;
+        if (this.mFilterLastUsed && this.mLastChosenPosition >= 0) {
+            return this.mLastChosenPosition;
         }
         return -1;
     }
@@ -184,11 +177,11 @@ public class ResolverListAdapter extends BaseAdapter {
         this.mResolverListController.updateChooserCounts(packageName, userHandle, action);
     }
 
-    public List<ResolverActivity.ResolvedComponentInfo> getUnfilteredResolveList() {
+    List<ResolverActivity.ResolvedComponentInfo> getUnfilteredResolveList() {
         return this.mUnfilteredResolveList;
     }
 
-    public boolean rebuildList(boolean doPostProcessing) {
+    protected boolean rebuildList(boolean doPostProcessing) {
         Trace.beginSection("ResolverListAdapter#rebuildList");
         this.mIsTabLoaded = false;
         this.mLastChosenPosition = -1;
@@ -263,10 +256,9 @@ public class ResolverListAdapter extends BaseAdapter {
         }
         this.mOtherProfile = null;
         try {
-            ResolveInfo lastChosen = this.mResolverListController.getLastChosen();
-            this.mLastChosen = lastChosen;
-            if (lastChosen != null) {
-                setLastChosenInfo(lastChosen);
+            this.mLastChosen = this.mResolverListController.getLastChosen();
+            if (this.mLastChosen != null) {
+                setLastChosenInfo(this.mLastChosen);
             }
         } catch (RemoteException re) {
             Log.d(TAG, "Error calling getLastChosenActivity\n" + re);
@@ -293,14 +285,9 @@ public class ResolverListAdapter extends BaseAdapter {
         return false;
     }
 
-    AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> createSortingTask(boolean doPostProcessing) {
+    AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> createSortingTask(final boolean doPostProcessing) {
         return new AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>>() { // from class: com.android.internal.app.ResolverListAdapter.1
-            final /* synthetic */ boolean val$doPostProcessing;
-
-            AnonymousClass1(boolean doPostProcessing2) {
-                doPostProcessing = doPostProcessing2;
-            }
-
+            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public List<ResolverActivity.ResolvedComponentInfo> doInBackground(List<ResolverActivity.ResolvedComponentInfo>... params) {
                 Log.d(ResolverListAdapter.TAG, "list up doInBackground!");
@@ -309,9 +296,7 @@ public class ResolverListAdapter extends BaseAdapter {
                 } else {
                     ResolverListAdapter.this.mResolverListController.sort(params[0]);
                     try {
-                        List<ResolverActivity.ResolvedComponentInfo> list = params[0];
-                        ResolverListAdapter resolverListAdapter = ResolverListAdapter.this;
-                        Collections.sort(list, new SemResolverListComparator(resolverListAdapter.mContext));
+                        Collections.sort(params[0], ResolverListAdapter.this.new SemResolverListComparator(ResolverListAdapter.this.mContext));
                     } catch (Exception e) {
                         Log.e(ResolverListAdapter.TAG, "SemResolverListComparator failed!!", e);
                     }
@@ -319,6 +304,7 @@ public class ResolverListAdapter extends BaseAdapter {
                 return params[0];
             }
 
+            /* JADX INFO: Access modifiers changed from: protected */
             @Override // android.os.AsyncTask
             public void onPostExecute(List<ResolverActivity.ResolvedComponentInfo> sortedComponents) {
                 Log.d(ResolverListAdapter.TAG, "list up process done!!");
@@ -331,65 +317,20 @@ public class ResolverListAdapter extends BaseAdapter {
         };
     }
 
-    /* renamed from: com.android.internal.app.ResolverListAdapter$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends AsyncTask<List<ResolverActivity.ResolvedComponentInfo>, Void, List<ResolverActivity.ResolvedComponentInfo>> {
-        final /* synthetic */ boolean val$doPostProcessing;
-
-        AnonymousClass1(boolean doPostProcessing2) {
-            doPostProcessing = doPostProcessing2;
-        }
-
-        @Override // android.os.AsyncTask
-        public List<ResolverActivity.ResolvedComponentInfo> doInBackground(List<ResolverActivity.ResolvedComponentInfo>... params) {
-            Log.d(ResolverListAdapter.TAG, "list up doInBackground!");
-            if (ResolverListAdapter.this.mResolverListCommunicator.semIsDestroyed() || ResolverListAdapter.this.mResolverListCommunicator.semIsFinishing()) {
-                Log.w(ResolverListAdapter.TAG, "activity is finished.. stop sorting!");
-            } else {
-                ResolverListAdapter.this.mResolverListController.sort(params[0]);
-                try {
-                    List<ResolverActivity.ResolvedComponentInfo> list = params[0];
-                    ResolverListAdapter resolverListAdapter = ResolverListAdapter.this;
-                    Collections.sort(list, new SemResolverListComparator(resolverListAdapter.mContext));
-                } catch (Exception e) {
-                    Log.e(ResolverListAdapter.TAG, "SemResolverListComparator failed!!", e);
-                }
-            }
-            return params[0];
-        }
-
-        @Override // android.os.AsyncTask
-        public void onPostExecute(List<ResolverActivity.ResolvedComponentInfo> sortedComponents) {
-            Log.d(ResolverListAdapter.TAG, "list up process done!!");
-            ResolverListAdapter.this.processSortedList(sortedComponents, doPostProcessing);
-            ResolverListAdapter.this.notifyDataSetChanged();
-            if (doPostProcessing) {
-                ResolverListAdapter.this.mResolverListCommunicator.updateProfileViewButton();
-            }
-        }
-    }
-
-    public void processSortedList(List<ResolverActivity.ResolvedComponentInfo> sortedComponents, boolean doPostProcessing) {
-        SemPersonaManager semPersonaManager;
+    protected void processSortedList(List<ResolverActivity.ResolvedComponentInfo> sortedComponents, boolean doPostProcessing) {
         int n = sortedComponents != null ? sortedComponents.size() : 0;
         Trace.beginSection("ResolverListAdapter#processSortedList:" + n);
-        boolean isAppSeparationPresent = false;
-        Set<String> separatedAppsList = new HashSet<>();
-        if (SemPersonaManager.isDoEnabled(this.mInitialIntentsUserSpace.getIdentifier()) && (semPersonaManager = this.mSpm) != null && semPersonaManager.isAppSeparationPresent()) {
-            isAppSeparationPresent = true;
-            separatedAppsList = new HashSet<>(this.mSpm.getSeparatedAppsList());
+        new HashSet();
+        if (SemPersonaManager.isDoEnabled(this.mInitialIntentsUserSpace.getIdentifier()) && this.mSpm != null && this.mSpm.isAppSeparationPresent()) {
+            new HashSet(this.mSpm.getSeparatedAppsList());
         }
         this.mDisplayList.clear();
         boolean z = true;
         if (n != 0) {
             if (this.mInitialIntents != null) {
                 int i = 0;
-                while (true) {
-                    Intent[] intentArr = this.mInitialIntents;
-                    if (i >= intentArr.length) {
-                        break;
-                    }
-                    Intent ii = intentArr[i];
+                while (i < this.mInitialIntents.length) {
+                    Intent ii = this.mInitialIntents[i];
                     if (ii != null) {
                         Intent rii = ii.getClass() == Intent.class ? ii : new Intent(ii);
                         ActivityInfo ai = rii.resolveActivityInfo(this.mPm, 0);
@@ -411,23 +352,19 @@ public class ResolverListAdapter extends BaseAdapter {
                                 ri.noResourceId = z;
                                 ri.icon = 0;
                             }
-                            if (!isAppSeparationPresent || !separatedAppsList.contains(ri.activityInfo.packageName)) {
-                                ri.userHandle = this.mInitialIntentsUserSpace;
-                                addResolveInfo(new DisplayResolveInfo(ii, ri, ri.loadLabel(this.mPm), null, ii, makePresentationGetter(ri)));
-                            }
+                            ri.userHandle = this.mInitialIntentsUserSpace;
+                            addResolveInfo(new DisplayResolveInfo(ii, ri, ri.loadLabel(this.mPm), null, ii, makePresentationGetter(ri)));
                         }
                     }
                     i++;
                     z = true;
                 }
             }
-            DisplayResolveInfo displayResolveInfo = this.mCopyButtonDri;
-            if (displayResolveInfo != null) {
-                addResolveInfo(displayResolveInfo);
+            if (this.mCopyButtonDri != null) {
+                addResolveInfo(this.mCopyButtonDri);
             }
             for (ResolverActivity.ResolvedComponentInfo rci : sortedComponents) {
-                ResolveInfo ri2 = rci.getResolveInfoAt(0);
-                if (ri2 != null && (!isAppSeparationPresent || !separatedAppsList.contains(ri2.activityInfo.packageName))) {
+                if (rci.getResolveInfoAt(0) != null) {
                     addResolveInfoWithAlternates(rci);
                 }
             }
@@ -440,43 +377,13 @@ public class ResolverListAdapter extends BaseAdapter {
         Trace.endSection();
     }
 
-    public void postListReadyRunnable(boolean doPostProcessing, boolean rebuildCompleted) {
+    void postListReadyRunnable(boolean doPostProcessing, boolean rebuildCompleted) {
         postListReadyRunnable(doPostProcessing, rebuildCompleted, false);
     }
 
-    /* renamed from: com.android.internal.app.ResolverListAdapter$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ boolean val$doPostProcessing;
-        final /* synthetic */ boolean val$rebuildCompleted;
-        final /* synthetic */ boolean val$skipAutoLaunch;
-
-        AnonymousClass2(boolean z, boolean z2, boolean z3) {
-            doPostProcessing = z;
-            rebuildCompleted = z2;
-            skipAutoLaunch = z3;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ResolverListAdapter.this.mResolverListCommunicator.onPostListReady(ResolverListAdapter.this, doPostProcessing, rebuildCompleted, skipAutoLaunch);
-            ResolverListAdapter.this.mPostListReadyRunnable = null;
-        }
-    }
-
-    void postListReadyRunnable(boolean doPostProcessing, boolean rebuildCompleted, boolean skipAutoLaunch) {
+    void postListReadyRunnable(final boolean doPostProcessing, final boolean rebuildCompleted, final boolean skipAutoLaunch) {
         if (this.mPostListReadyRunnable == null) {
             this.mPostListReadyRunnable = new Runnable() { // from class: com.android.internal.app.ResolverListAdapter.2
-                final /* synthetic */ boolean val$doPostProcessing;
-                final /* synthetic */ boolean val$rebuildCompleted;
-                final /* synthetic */ boolean val$skipAutoLaunch;
-
-                AnonymousClass2(boolean doPostProcessing2, boolean rebuildCompleted2, boolean skipAutoLaunch2) {
-                    doPostProcessing = doPostProcessing2;
-                    rebuildCompleted = rebuildCompleted2;
-                    skipAutoLaunch = skipAutoLaunch2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     ResolverListAdapter.this.mResolverListCommunicator.onPostListReady(ResolverListAdapter.this, doPostProcessing, rebuildCompleted, skipAutoLaunch);
@@ -526,10 +433,9 @@ public class ResolverListAdapter extends BaseAdapter {
     }
 
     private void updateLastChosenPosition(ResolveInfo info, Boolean isHasSimilarList) {
-        ResolveInfo resolveInfo;
         if (this.mOtherProfile != null) {
             this.mLastChosenPosition = -1;
-        } else if (isHasSimilarList.booleanValue() && (resolveInfo = this.mLastChosen) != null && resolveInfo.activityInfo.packageName.equals(info.activityInfo.packageName)) {
+        } else if (isHasSimilarList.booleanValue() && this.mLastChosen != null && this.mLastChosen.activityInfo.packageName.equals(info.activityInfo.packageName)) {
             this.mLastChosenPosition = this.mDisplayList.size() - 1;
             setLastChosenInfo(this.mLastChosen);
         }
@@ -558,7 +464,7 @@ public class ResolverListAdapter extends BaseAdapter {
         }
     }
 
-    public boolean shouldAddResolveInfo(DisplayResolveInfo dri) {
+    protected boolean shouldAddResolveInfo(DisplayResolveInfo dri) {
         if (!this.mMessageAppSkipped && !this.mResolverListCommunicator.semIsSupportsAlwaysUseOption() && needToHideSmsPackage(dri)) {
             return false;
         }
@@ -590,8 +496,7 @@ public class ResolverListAdapter extends BaseAdapter {
 
     @Override // android.widget.Adapter
     public int getCount() {
-        List<DisplayResolveInfo> list = this.mDisplayList;
-        if (list == null || list.isEmpty()) {
+        if (this.mDisplayList == null || this.mDisplayList.isEmpty()) {
             int totalSize = this.mPlaceholderCount;
             return totalSize;
         }
@@ -654,7 +559,7 @@ public class ResolverListAdapter extends BaseAdapter {
     protected void onBindView(View view, TargetInfo info, int position) {
         ViewHolder holder = (ViewHolder) view.getTag();
         if (info == null) {
-            holder.icon.lambda$setImageURIAsync$2(this.mContext.getDrawable(R.drawable.resolver_icon_placeholder));
+            holder.icon.setImageDrawable(this.mContext.getDrawable(R.drawable.resolver_icon_placeholder));
             holder.bindLabel("", "", false);
             return;
         }
@@ -686,7 +591,7 @@ public class ResolverListAdapter extends BaseAdapter {
         return new LoadLabelTask(info, holder);
     }
 
-    public final void loadIcon(DisplayResolveInfo info) {
+    protected final void loadIcon(DisplayResolveInfo info) {
         if (this.mIconLoaders.get(info) == null) {
             LoadIconTask task = new LoadIconTask(info);
             this.mIconLoaders.put(info, task);
@@ -711,9 +616,8 @@ public class ResolverListAdapter extends BaseAdapter {
             this.mContext.getMainThreadHandler().removeCallbacks(this.mPostListReadyRunnable);
             this.mPostListReadyRunnable = null;
         }
-        ResolverListController resolverListController = this.mResolverListController;
-        if (resolverListController != null) {
-            resolverListController.destroy();
+        if (this.mResolverListController != null) {
+            this.mResolverListController.destroy();
         }
         cancelTasks(this.mIconLoaders.values());
         cancelTasks(this.mLabelLoaders.values());
@@ -727,7 +631,8 @@ public class ResolverListAdapter extends BaseAdapter {
         }
     }
 
-    private static ColorMatrixColorFilter getSuspendedColorMatrix() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static ColorMatrixColorFilter getSuspendedColorMatrix() {
         if (sSuspendedMatrixColorFilter == null) {
             ColorMatrix tempBrightnessMatrix = new ColorMatrix();
             float[] mat = tempBrightnessMatrix.getArray();
@@ -745,11 +650,11 @@ public class ResolverListAdapter extends BaseAdapter {
         return sSuspendedMatrixColorFilter;
     }
 
-    public ActivityInfoPresentationGetter makePresentationGetter(ActivityInfo ai) {
+    ActivityInfoPresentationGetter makePresentationGetter(ActivityInfo ai) {
         return new ActivityInfoPresentationGetter(this.mContext, this.mIconDpi, ai);
     }
 
-    public ResolveInfoPresentationGetter makePresentationGetter(ResolveInfo ri) {
+    ResolveInfoPresentationGetter makePresentationGetter(ResolveInfo ri) {
         return new ResolveInfoPresentationGetter(this.mContext, this.mIconDpi, ri);
     }
 
@@ -760,50 +665,22 @@ public class ResolverListAdapter extends BaseAdapter {
         return makePresentationGetter(ri).getIcon(ResolverActivity.getResolveInfoUserHandle(ri, getUserHandle()));
     }
 
-    void loadFilteredItemIconTaskAsync(ImageView iconView) {
-        DisplayResolveInfo iconInfo = getFilteredItem();
+    void loadFilteredItemIconTaskAsync(final ImageView iconView) {
+        final DisplayResolveInfo iconInfo = getFilteredItem();
         if (iconView != null && iconInfo != null) {
             new AsyncTask<Void, Void, Drawable>() { // from class: com.android.internal.app.ResolverListAdapter.3
-                final /* synthetic */ DisplayResolveInfo val$iconInfo;
-                final /* synthetic */ ImageView val$iconView;
-
-                AnonymousClass3(DisplayResolveInfo iconInfo2, ImageView iconView2) {
-                    iconInfo = iconInfo2;
-                    iconView = iconView2;
-                }
-
+                /* JADX INFO: Access modifiers changed from: protected */
                 @Override // android.os.AsyncTask
                 public Drawable doInBackground(Void... params) {
                     return ResolverListAdapter.this.loadIconForResolveInfo(iconInfo.getResolveInfo());
                 }
 
+                /* JADX INFO: Access modifiers changed from: protected */
                 @Override // android.os.AsyncTask
                 public void onPostExecute(Drawable d) {
-                    iconView.lambda$setImageURIAsync$2(d);
+                    iconView.setImageDrawable(d);
                 }
             }.execute(new Void[0]);
-        }
-    }
-
-    /* renamed from: com.android.internal.app.ResolverListAdapter$3 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass3 extends AsyncTask<Void, Void, Drawable> {
-        final /* synthetic */ DisplayResolveInfo val$iconInfo;
-        final /* synthetic */ ImageView val$iconView;
-
-        AnonymousClass3(DisplayResolveInfo iconInfo2, ImageView iconView2) {
-            iconInfo = iconInfo2;
-            iconView = iconView2;
-        }
-
-        @Override // android.os.AsyncTask
-        public Drawable doInBackground(Void... params) {
-            return ResolverListAdapter.this.loadIconForResolveInfo(iconInfo.getResolveInfo());
-        }
-
-        @Override // android.os.AsyncTask
-        public void onPostExecute(Drawable d) {
-            iconView.lambda$setImageURIAsync$2(d);
         }
     }
 
@@ -811,19 +688,19 @@ public class ResolverListAdapter extends BaseAdapter {
         return this.mResolverListController.getUserHandle();
     }
 
-    public List<ResolverActivity.ResolvedComponentInfo> getResolversForUser(UserHandle userHandle) {
+    protected List<ResolverActivity.ResolvedComponentInfo> getResolversForUser(UserHandle userHandle) {
         return this.mResolverListController.getResolversForIntentAsUser(true, this.mResolverListCommunicator.shouldGetActivityMetadata(), this.mResolverListCommunicator.shouldGetOnlyDefaultActivities(), this.mIntents, userHandle);
     }
 
-    public List<Intent> getIntents() {
+    protected List<Intent> getIntents() {
         return this.mIntents;
     }
 
-    public boolean isTabLoaded() {
+    protected boolean isTabLoaded() {
         return this.mIsTabLoaded;
     }
 
-    public void markTabLoaded() {
+    protected void markTabLoaded() {
         this.mIsTabLoaded = true;
     }
 
@@ -856,8 +733,7 @@ public class ResolverListAdapter extends BaseAdapter {
         return new DisplayResolveInfo(resolvedComponentInfo.getIntentAt(0), resolveInfo, resolveInfo.loadLabel(pm), resolveInfo.loadLabel(pm), pOrigIntent != null ? pOrigIntent : replacementIntent, presentationGetter);
     }
 
-    /* loaded from: classes4.dex */
-    public interface ResolverListCommunicator {
+    interface ResolverListCommunicator {
         Intent getReplacementIntent(ActivityInfo activityInfo, Intent intent);
 
         Intent getTargetIntent();
@@ -903,7 +779,6 @@ public class ResolverListAdapter extends BaseAdapter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ViewHolder {
         public ImageView badge;
         public Drawable defaultItemViewBackground;
@@ -922,11 +797,11 @@ public class ResolverListAdapter extends BaseAdapter {
         }
 
         public void bindLabel(CharSequence label, CharSequence subLabel, boolean showSubLabel) {
-            this.text.setText(label);
+            this.text.lambda$setTextAsync$0(label);
             if (TextUtils.equals(label, subLabel)) {
                 subLabel = null;
             }
-            this.text2.setText(subLabel);
+            this.text2.lambda$setTextAsync$0(subLabel);
             if (showSubLabel || subLabel != null) {
                 this.text2.setVisibility(0);
                 this.text.setLines(1);
@@ -942,17 +817,16 @@ public class ResolverListAdapter extends BaseAdapter {
         }
 
         public void bindIcon(TargetInfo info) {
-            this.icon.lambda$setImageURIAsync$2(info.getDisplayIcon(this.itemView.getContext()));
+            this.icon.setImageDrawable(info.getDisplayIcon(this.itemView.getContext()));
             if (info.isSuspended()) {
-                this.icon.setColorFilter(ResolverListAdapter.m7164$$Nest$smgetSuspendedColorMatrix());
+                this.icon.setColorFilter(ResolverListAdapter.getSuspendedColorMatrix());
             } else {
                 this.icon.setColorFilter((ColorFilter) null);
             }
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class LoadLabelTask extends AsyncTask<Void, Void, CharSequence[]> {
+    protected class LoadLabelTask extends AsyncTask<Void, Void, CharSequence[]> {
         private final DisplayResolveInfo mDisplayResolveInfo;
         private ViewHolder mHolder;
 
@@ -965,6 +839,7 @@ public class ResolverListAdapter extends BaseAdapter {
             this.mDisplayResolveInfo = dri;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public CharSequence[] doInBackground(Void... voids) {
             ResolveInfoPresentationGetter pg = ResolverListAdapter.this.makePresentationGetter(this.mDisplayResolveInfo.getResolveInfo());
@@ -980,6 +855,7 @@ public class ResolverListAdapter extends BaseAdapter {
             return new CharSequence[]{pg.getLabel(), pg.getSubLabel()};
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(CharSequence[] result) {
             if (this.mDisplayResolveInfo.hasDisplayLabel()) {
@@ -996,14 +872,12 @@ public class ResolverListAdapter extends BaseAdapter {
                 Log.i(ResolverListAdapter.TAG, "ClassName : " + ResolverListAdapter.this.mLastChosen.activityInfo.name + ", mLastChosenActivityIndex : " + ResolverListAdapter.this.mLastChosenActivityIndex + ", mDisplayResolveInfo.getSimilarList().size() : " + this.mDisplayResolveInfo.getSimilarList().size());
             }
             this.mDisplayResolveInfo.setDisplayLabel(result[0]);
-            DisplayResolveInfo displayResolveInfo = this.mDisplayResolveInfo;
-            displayResolveInfo.setExtendedInfo((displayResolveInfo.getSimilarList().size() <= 1 || ResolverListAdapter.this.mLastChosenActivityIndex < 0) ? result[1] : ResolverListAdapter.this.getLastChosenActivity());
+            this.mDisplayResolveInfo.setExtendedInfo((this.mDisplayResolveInfo.getSimilarList().size() <= 1 || ResolverListAdapter.this.mLastChosenActivityIndex < 0) ? result[1] : ResolverListAdapter.this.getLastChosenActivity());
             ResolverListAdapter.this.notifyDataSetChanged();
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class LoadIconTask extends AsyncTask<Void, Void, Drawable> {
+    class LoadIconTask extends AsyncTask<Void, Void, Drawable> {
         boolean mCheckViewHolder;
         protected final DisplayResolveInfo mDisplayResolveInfo;
         private ViewHolder mHolder;
@@ -1015,30 +889,30 @@ public class ResolverListAdapter extends BaseAdapter {
             this.mHolder = holder;
         }
 
-        public LoadIconTask(DisplayResolveInfo dri) {
+        LoadIconTask(DisplayResolveInfo dri) {
             this.mDisplayResolveInfo = dri;
             this.mResolveInfo = dri.getResolveInfo();
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public Drawable doInBackground(Void... params) {
             return ResolverListAdapter.this.loadIconForResolveInfo(this.mResolveInfo);
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.AsyncTask
         public void onPostExecute(Drawable d) {
-            DisplayResolveInfo otherProfile = ResolverListAdapter.this.getOtherProfile();
-            DisplayResolveInfo displayResolveInfo = this.mDisplayResolveInfo;
-            if (otherProfile == displayResolveInfo) {
+            if (ResolverListAdapter.this.getOtherProfile() == this.mDisplayResolveInfo) {
                 ResolverListAdapter.this.mResolverListCommunicator.updateProfileViewButton();
-            } else if (!displayResolveInfo.hasDisplayIcon()) {
+            } else if (!this.mDisplayResolveInfo.hasDisplayIcon()) {
                 this.mDisplayResolveInfo.setDisplayIcon(d);
                 ResolverListAdapter.this.notifyDataSetChanged();
             }
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ResolveInfoPresentationGetter extends ActivityInfoPresentationGetter {
         private final ResolveInfo mRi;
 
@@ -1070,6 +944,7 @@ public class ResolverListAdapter extends BaseAdapter {
             return this.mRi.getComponentInfo().loadLabel(this.mPm).toString();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public Drawable getKnoxIcon() {
             Drawable dr = this.mRi.loadIcon(this.mPm);
             return (dr == null || SemPersonaManager.ICON_CLASS_FOR_INTENT_FORWARD_TO_PARENT.equals(this.mRi.activityInfo.name)) ? super.getIconSubstituteInternal() : dr;
@@ -1089,7 +964,6 @@ public class ResolverListAdapter extends BaseAdapter {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ActivityInfoPresentationGetter extends TargetPresentationGetter {
         private final ActivityInfo mActivityInfo;
 
@@ -1153,8 +1027,7 @@ public class ResolverListAdapter extends BaseAdapter {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class TargetPresentationGetter {
+    private static abstract class TargetPresentationGetter {
         private final ApplicationInfo mAi;
         private Context mCtx;
         private final boolean mHasSubstitutePermission;
@@ -1169,11 +1042,10 @@ public class ResolverListAdapter extends BaseAdapter {
 
         TargetPresentationGetter(Context ctx, int iconDpi, ApplicationInfo ai) {
             this.mCtx = ctx;
-            PackageManager packageManager = ctx.getPackageManager();
-            this.mPm = packageManager;
+            this.mPm = ctx.getPackageManager();
             this.mAi = ai;
             this.mIconDpi = iconDpi;
-            this.mHasSubstitutePermission = packageManager.checkPermission(Manifest.permission.SUBSTITUTE_SHARE_TARGET_APP_NAME_AND_ICON, ai.packageName) == 0;
+            this.mHasSubstitutePermission = this.mPm.checkPermission(Manifest.permission.SUBSTITUTE_SHARE_TARGET_APP_NAME_AND_ICON, this.mAi.packageName) == 0;
         }
 
         public Drawable getIcon(UserHandle userHandle) {
@@ -1185,8 +1057,7 @@ public class ResolverListAdapter extends BaseAdapter {
             if (this.mHasSubstitutePermission) {
                 dr = getIconSubstituteInternal();
             }
-            Object obj = this.mCtx;
-            if ((obj instanceof ResolverListCommunicator) && ((ResolverListCommunicator) obj).semIsOverlayThemesEnabled() && ((ResolverListCommunicator) this.mCtx).semGetAppIconTheme() != null) {
+            if (((this.mCtx instanceof ResolverListCommunicator) && ((ResolverListCommunicator) this.mCtx).semIsOverlayThemesEnabled() && ((ResolverListCommunicator) this.mCtx).semGetAppIconTheme() != null) || PmUtils.supportLiveIcon(this.mAi, this.mCtx)) {
                 if (dr == null) {
                     dr = this.mAi.loadUnbadgedIcon(this.mPm);
                 } else if (this.mPm.semShouldPackIntoIconTray(this.mAi.packageName)) {
@@ -1198,7 +1069,8 @@ public class ResolverListAdapter extends BaseAdapter {
                         if (this.mAi.icon != 0) {
                             dr = loadIconFromResource(this.mPm.getResourcesForApplication(this.mAi), this.mAi.icon);
                         }
-                    } catch (PackageManager.NameNotFoundException e) {
+                    } catch (PackageManager.NameNotFoundException ignore) {
+                        Log.e(ResolverListAdapter.TAG, "Failed to load icon", ignore);
                     }
                 }
                 if (dr == null) {
@@ -1208,8 +1080,7 @@ public class ResolverListAdapter extends BaseAdapter {
                     dr = this.mPm.semGetDrawableForIconTray(dr, 48);
                 }
             }
-            Bitmap icon = drawableToBitmap(this.mPm.getUserBadgedIcon(dr, getUserHandle(this.mAi.uid)));
-            return icon;
+            return drawableToBitmap(this.mPm.getUserBadgedIcon(dr, getUserHandle(this.mAi.uid)));
         }
 
         public UserHandle getUserHandle(int uid) {
@@ -1250,7 +1121,7 @@ public class ResolverListAdapter extends BaseAdapter {
         protected Drawable loadIconFromResource(Resources res, int resId) {
             try {
                 return res.getDrawableForDensity(resId, this.mIconDpi);
-            } catch (Exception e) {
+            } catch (Resources.NotFoundException e) {
                 Log.w(ResolverListAdapter.TAG, "loadIconFromResource: " + e);
                 return null;
             }
@@ -1292,12 +1163,7 @@ public class ResolverListAdapter extends BaseAdapter {
     }
 
     private boolean needToHideSmsPackage(DisplayResolveInfo dri) {
-        try {
-            if (TextUtils.isEmpty(this.mDefaultSms)) {
-                Log.i(TAG, "no default sms");
-                this.mMessageAppSkipped = true;
-                return false;
-            }
+        if (!TextUtils.isEmpty(this.mDefaultSms)) {
             if (PACKAGE_NAME_SAMSUNG_MESSAGES.equals(this.mDefaultSms)) {
                 if (PACKAGE_NAME_GOOGLE_MESSAGES.equals(dri.getResolveInfo().activityInfo.packageName)) {
                     Log.i(TAG, "skip add " + dri.getResolveInfo().activityInfo.packageName + ". Default SMS package is " + this.mDefaultSms);
@@ -1312,10 +1178,10 @@ public class ResolverListAdapter extends BaseAdapter {
                 return true;
             }
             return false;
-        } catch (Exception e) {
-            Log.e(TAG, "getDefaultSmsPackage: " + e);
-            return false;
         }
+        Log.i(TAG, "no default sms");
+        this.mMessageAppSkipped = true;
+        return false;
     }
 
     private void setLastChosenInfo(ResolveInfo resolveInfo) {
@@ -1341,8 +1207,7 @@ public class ResolverListAdapter extends BaseAdapter {
         return this.mLastChosenActivityIndex;
     }
 
-    /* loaded from: classes4.dex */
-    public class SemResolverListComparator implements Comparator<ResolverActivity.ResolvedComponentInfo> {
+    class SemResolverListComparator implements Comparator<ResolverActivity.ResolvedComponentInfo> {
         Collator mCollator;
 
         SemResolverListComparator(Context context) {

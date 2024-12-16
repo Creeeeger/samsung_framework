@@ -51,9 +51,8 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
         }
         DHParameterSpec dhParams = (DHParameterSpec) params2;
         try {
-            DHKeyGenerationParameters convertParams = convertParams(random, dhParams);
-            this.param = convertParams;
-            this.engine.init(convertParams);
+            this.param = convertParams(random, dhParams);
+            this.engine.init(this.param);
             this.initialised = true;
         } catch (IllegalArgumentException e) {
             throw new InvalidAlgorithmParameterException(e.getMessage(), e);
@@ -80,11 +79,9 @@ public class KeyPairGeneratorSpi extends KeyPairGenerator {
                             this.param = (DHKeyGenerationParameters) params.get(paramStrength);
                         } else {
                             DHParametersGenerator pGen = new DHParametersGenerator();
-                            int i = this.strength;
-                            pGen.init(i, PrimeCertaintyCalculator.getDefaultCertainty(i), this.random);
-                            DHKeyGenerationParameters dHKeyGenerationParameters = new DHKeyGenerationParameters(this.random, pGen.generateParameters());
-                            this.param = dHKeyGenerationParameters;
-                            params.put(paramStrength, dHKeyGenerationParameters);
+                            pGen.init(this.strength, PrimeCertaintyCalculator.getDefaultCertainty(this.strength), this.random);
+                            this.param = new DHKeyGenerationParameters(this.random, pGen.generateParameters());
+                            params.put(paramStrength, this.param);
                         }
                     }
                 }

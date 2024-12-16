@@ -36,9 +36,8 @@ public class SemTextClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void toLoad() {
-        String str = this.mValue;
-        if (str != null) {
-            if (str.length() > 131072) {
+        if (this.mValue != null) {
+            if (this.mValue.length() > 131072) {
                 this.mText = "";
                 return;
             }
@@ -52,18 +51,13 @@ public class SemTextClipData extends SemClipData {
                 this.mText = this.mValue;
             }
             int numNewLine = 0;
-            for (int i = 1; i <= this.mText.length() - 1; i++) {
-                CharSequence charSequence = this.mText;
-                if (charSequence.charAt(charSequence.length() - i) != '\n') {
-                    break;
-                }
+            for (int i = 1; i <= this.mText.length() - 1 && this.mText.charAt(this.mText.length() - i) == '\n'; i++) {
                 numNewLine++;
             }
             int i2 = this.mNumberOfTrailingWhiteLines;
             if (numNewLine > i2) {
-                int gap = numNewLine - i2;
-                CharSequence charSequence2 = this.mText;
-                this.mText = charSequence2.subSequence(0, charSequence2.length() - gap);
+                int gap = numNewLine - this.mNumberOfTrailingWhiteLines;
+                this.mText = this.mText.subSequence(0, this.mText.length() - gap);
             }
             Log.secD(TAG, "textclipdata toLoad called");
         }
@@ -71,20 +65,15 @@ public class SemTextClipData extends SemClipData {
 
     @Override // com.samsung.android.content.clipboard.data.SemClipData
     public void toSave() {
-        CharSequence charSequence = this.mText;
-        if (charSequence != null) {
-            if (charSequence instanceof Spanned) {
+        if (this.mText != null) {
+            if (this.mText instanceof Spanned) {
                 this.mNumberOfTrailingWhiteLines = 0;
-                for (int i = 1; i <= this.mText.length() - 1; i++) {
-                    CharSequence charSequence2 = this.mText;
-                    if (charSequence2.charAt(charSequence2.length() - i) != '\n') {
-                        break;
-                    }
+                for (int i = 1; i <= this.mText.length() - 1 && this.mText.charAt(this.mText.length() - i) == '\n'; i++) {
                     this.mNumberOfTrailingWhiteLines++;
                 }
                 this.mValue = Html.toHtml((Spanned) this.mText);
             } else {
-                this.mValue = charSequence.toString();
+                this.mValue = this.mText.toString();
             }
             Log.secD(TAG, "textclipdata toSave called");
         }

@@ -25,11 +25,8 @@ public class SecP384R1Field {
 
     public static void addExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.add(24, xx, yy, zz);
-        if (c != 0 || (zz[23] == -1 && Nat.gte(24, zz, PExt))) {
-            int[] iArr = PExtInv;
-            if (Nat.addTo(iArr.length, iArr, zz) != 0) {
-                Nat.incAt(24, zz, iArr.length);
-            }
+        if ((c != 0 || (zz[23] == -1 && Nat.gte(24, zz, PExt))) && Nat.addTo(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.incAt(24, zz, PExtInv.length);
         }
     }
 
@@ -42,11 +39,8 @@ public class SecP384R1Field {
 
     public static int[] fromBigInteger(BigInteger x) {
         int[] z = Nat.fromBigInteger(384, x);
-        if (z[11] == -1) {
-            int[] iArr = P;
-            if (Nat.gte(12, z, iArr)) {
-                Nat.subFrom(12, iArr, z);
-            }
+        if (z[11] == -1 && Nat.gte(12, z, P)) {
+            Nat.subFrom(12, P, z);
         }
         return z;
     }
@@ -81,8 +75,7 @@ public class SecP384R1Field {
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat.sub(12, iArr, iArr, z);
+            Nat.sub(12, P, P, z);
         } else {
             Nat.sub(12, P, x, z);
         }
@@ -201,11 +194,8 @@ public class SecP384R1Field {
 
     public static void subtractExt(int[] xx, int[] yy, int[] zz) {
         int c = Nat.sub(24, xx, yy, zz);
-        if (c != 0) {
-            int[] iArr = PExtInv;
-            if (Nat.subFrom(iArr.length, iArr, zz) != 0) {
-                Nat.decAt(24, zz, iArr.length);
-            }
+        if (c != 0 && Nat.subFrom(PExtInv.length, PExtInv, zz) != 0) {
+            Nat.decAt(24, zz, PExtInv.length);
         }
     }
 

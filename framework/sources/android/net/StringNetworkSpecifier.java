@@ -6,17 +6,16 @@ import android.text.TextUtils;
 import com.android.internal.util.Preconditions;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class StringNetworkSpecifier extends NetworkSpecifier implements Parcelable {
     public static final Parcelable.Creator<StringNetworkSpecifier> CREATOR = new Parcelable.Creator<StringNetworkSpecifier>() { // from class: android.net.StringNetworkSpecifier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StringNetworkSpecifier createFromParcel(Parcel in) {
             return new StringNetworkSpecifier(in.readString());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StringNetworkSpecifier[] newArray(int size) {
             return new StringNetworkSpecifier[size];
@@ -57,22 +56,5 @@ public final class StringNetworkSpecifier extends NetworkSpecifier implements Pa
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.specifier);
-    }
-
-    /* renamed from: android.net.StringNetworkSpecifier$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StringNetworkSpecifier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StringNetworkSpecifier createFromParcel(Parcel in) {
-            return new StringNetworkSpecifier(in.readString());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StringNetworkSpecifier[] newArray(int size) {
-            return new StringNetworkSpecifier[size];
-        }
     }
 }

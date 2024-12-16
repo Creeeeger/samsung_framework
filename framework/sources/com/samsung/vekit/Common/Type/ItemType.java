@@ -9,5 +9,6 @@ public enum ItemType {
     AUDIO,
     FRAGMENT_AUDIO,
     COLOR,
-    EMPTY
+    EMPTY,
+    PORTRAIT_VIDEO
 }

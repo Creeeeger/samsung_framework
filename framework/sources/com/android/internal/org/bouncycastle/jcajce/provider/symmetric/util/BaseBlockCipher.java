@@ -78,8 +78,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
     private PBEParameterSpec pbeSpec;
     private int scheme;
 
-    /* loaded from: classes5.dex */
-    public interface GenericBlockCipher {
+    private interface GenericBlockCipher {
         int doFinal(byte[] bArr, int i) throws IllegalStateException, BadPaddingException;
 
         String getAlgorithmName();
@@ -101,7 +100,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         boolean wrapOnNoPadding();
     }
 
-    public BaseBlockCipher(BlockCipher engine) {
+    protected BaseBlockCipher(BlockCipher engine) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
         this.ivLength = 0;
@@ -113,7 +112,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(engine);
     }
 
-    public BaseBlockCipher(BlockCipher engine, int scheme, int digest, int keySizeInBits, int ivLength) {
+    protected BaseBlockCipher(BlockCipher engine, int scheme, int digest, int keySizeInBits, int ivLength) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
         this.ivLength = 0;
@@ -129,7 +128,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(engine);
     }
 
-    public BaseBlockCipher(BlockCipherProvider provider) {
+    protected BaseBlockCipher(BlockCipherProvider provider) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
         this.ivLength = 0;
@@ -142,7 +141,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new BufferedGenericBlockCipher(provider.get());
     }
 
-    public BaseBlockCipher(AEADBlockCipher engine) {
+    protected BaseBlockCipher(AEADBlockCipher engine) {
         this.availableSpecs = new Class[]{gcmSpecClass, IvParameterSpec.class, PBEParameterSpec.class};
         this.scheme = -1;
         this.ivLength = 0;
@@ -150,9 +149,8 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.pbeSpec = null;
         this.pbeAlgorithm = null;
         this.modeName = null;
-        BlockCipher underlyingCipher = engine.getUnderlyingCipher();
-        this.baseEngine = underlyingCipher;
-        this.ivLength = underlyingCipher.getBlockSize();
+        this.baseEngine = engine.getUnderlyingCipher();
+        this.ivLength = this.baseEngine.getBlockSize();
         this.cipher = new AEADGenericBlockCipher(engine);
     }
 
@@ -184,7 +182,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.cipher = new AEADGenericBlockCipher(engine);
     }
 
-    public BaseBlockCipher(BlockCipher engine, int ivLength) {
+    protected BaseBlockCipher(BlockCipher engine, int ivLength) {
         this(engine, true, ivLength);
     }
 
@@ -202,7 +200,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         this.ivLength = ivLength / 8;
     }
 
-    public BaseBlockCipher(BufferedBlockCipher engine, int ivLength) {
+    protected BaseBlockCipher(BufferedBlockCipher engine, int ivLength) {
         this(engine, true, ivLength);
     }
 
@@ -222,22 +220,19 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
     protected int engineGetBlockSize() {
-        BlockCipher blockCipher = this.baseEngine;
-        if (blockCipher == null) {
+        if (this.baseEngine == null) {
             return -1;
         }
-        return blockCipher.getBlockSize();
+        return this.baseEngine.getBlockSize();
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
     protected byte[] engineGetIV() {
-        AEADParameters aEADParameters = this.aeadParams;
-        if (aEADParameters != null) {
-            return aEADParameters.getNonce();
+        if (this.aeadParams != null) {
+            return this.aeadParams.getNonce();
         }
-        ParametersWithIV parametersWithIV = this.ivParam;
-        if (parametersWithIV != null) {
-            return parametersWithIV.getIV();
+        if (this.ivParam != null) {
+            return this.ivParam.getIV();
         }
         return null;
     }
@@ -295,13 +290,12 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
-    public void engineSetMode(String mode) throws NoSuchAlgorithmException {
+    protected void engineSetMode(String mode) throws NoSuchAlgorithmException {
         if (this.baseEngine == null) {
             throw new NoSuchAlgorithmException("no mode supported for this algorithm");
         }
-        String upperCase = Strings.toUpperCase(mode);
-        this.modeName = upperCase;
-        if (upperCase.equals(KeyProperties.BLOCK_MODE_ECB)) {
+        this.modeName = Strings.toUpperCase(mode);
+        if (this.modeName.equals(KeyProperties.BLOCK_MODE_ECB)) {
             this.ivLength = 0;
             this.cipher = new BufferedGenericBlockCipher(this.baseEngine);
             return;
@@ -318,8 +312,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
                 this.cipher = new BufferedGenericBlockCipher(new OFBBlockCipher(this.baseEngine, wordSize));
                 return;
             } else {
-                BlockCipher blockCipher = this.baseEngine;
-                this.cipher = new BufferedGenericBlockCipher(new OFBBlockCipher(blockCipher, blockCipher.getBlockSize() * 8));
+                this.cipher = new BufferedGenericBlockCipher(new OFBBlockCipher(this.baseEngine, this.baseEngine.getBlockSize() * 8));
                 return;
             }
         }
@@ -330,8 +323,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
                 this.cipher = new BufferedGenericBlockCipher(new CFBBlockCipher(this.baseEngine, wordSize2));
                 return;
             } else {
-                BlockCipher blockCipher2 = this.baseEngine;
-                this.cipher = new BufferedGenericBlockCipher(new CFBBlockCipher(blockCipher2, blockCipher2.getBlockSize() * 8));
+                this.cipher = new BufferedGenericBlockCipher(new CFBBlockCipher(this.baseEngine, this.baseEngine.getBlockSize() * 8));
                 return;
             }
         }
@@ -356,7 +348,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher, javax.crypto.CipherSpi
-    public void engineSetPadding(String padding) throws NoSuchPaddingException {
+    protected void engineSetPadding(String padding) throws NoSuchPaddingException {
         if (this.baseEngine == null) {
             throw new NoSuchPaddingException("no padding supported for this algorithm");
         }
@@ -413,7 +405,6 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         KeyParameter keyParam;
         int i;
         KeyParameter keyParam2;
-        BlockCipher blockCipher;
         this.pbeSpec = null;
         this.pbeAlgorithm = null;
         this.engineParams = null;
@@ -421,7 +412,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         if (!(key instanceof SecretKey)) {
             throw new InvalidKeyException("Key for algorithm " + (key != null ? key.getAlgorithm() : null) + " not suitable for symmetric enryption.");
         }
-        if (params == null && (blockCipher = this.baseEngine) != null && blockCipher.getAlgorithmName().startsWith("RC5-64")) {
+        if (params == null && this.baseEngine != null && this.baseEngine.getAlgorithmName().startsWith("RC5-64")) {
             throw new InvalidAlgorithmParameterException("RC5 requires an RC5ParametersSpec to be passed in.");
         }
         if ((this.scheme == 2 || (key instanceof PKCS12Key)) && !isBCPBEKeyWithoutIV(key)) {
@@ -470,9 +461,8 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
             if (k2.getParam() != null) {
                 param = adjustParameters(params, k2.getParam());
             } else if (params instanceof PBEParameterSpec) {
-                PBEParameterSpec pBEParameterSpec = (PBEParameterSpec) params;
-                this.pbeSpec = pBEParameterSpec;
-                if (pBEParameterSpec.getSalt().length != 0 && this.pbeSpec.getIterationCount() > 0) {
+                this.pbeSpec = (PBEParameterSpec) params;
+                if (this.pbeSpec.getSalt().length != 0 && this.pbeSpec.getIterationCount() > 0) {
                     k2 = new BCPBEKey(k2.getAlgorithm(), k2.getOID(), k2.getType(), k2.getDigest(), k2.getKeySize(), k2.getIvSize(), new PBEKeySpec(k2.getPassword(), this.pbeSpec.getSalt(), this.pbeSpec.getIterationCount(), k2.getKeySize()), null);
                 }
                 param = PBE.Util.makePBEParameters(k2, params, this.cipher.getUnderlyingCipher().getAlgorithmName());
@@ -484,9 +474,8 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
             }
         } else if (key instanceof PBEKey) {
             PBEKey k3 = (PBEKey) key;
-            PBEParameterSpec pBEParameterSpec2 = (PBEParameterSpec) params;
-            this.pbeSpec = pBEParameterSpec2;
-            if ((k3 instanceof PKCS12KeyWithParameters) && pBEParameterSpec2 == null) {
+            this.pbeSpec = (PBEParameterSpec) params;
+            if ((k3 instanceof PKCS12KeyWithParameters) && this.pbeSpec == null) {
                 this.pbeSpec = new PBEParameterSpec(k3.getSalt(), k3.getIterationCount());
             }
             param = PBE.Util.makePBEParameters(k3.getEncoded(), this.scheme, this.digest, this.keySizeInBits, this.ivLength * 8, this.pbeSpec, this.cipher.getAlgorithmName());
@@ -494,8 +483,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
                 this.ivParam = (ParametersWithIV) param;
             }
         } else {
-            int i2 = this.scheme;
-            if (i2 == 0 || i2 == 4 || i2 == 1 || i2 == 5) {
+            if (this.scheme == 0 || this.scheme == 4 || this.scheme == 1 || this.scheme == 5) {
                 throw new InvalidKeyException("Algorithm requires a PBE key");
             }
             param = new KeyParameter(key.getEncoded());
@@ -525,29 +513,23 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
                     param = new ParametersWithIV(param, p.getIV());
                 }
                 this.ivParam = (ParametersWithIV) param;
+            } else if (this.modeName != null && this.modeName.equals(KeyProperties.BLOCK_MODE_ECB)) {
+                throw new InvalidAlgorithmParameterException("ECB mode does not use an IV");
+            }
+        } else if (gcmSpecClass != null && gcmSpecClass.isInstance(params)) {
+            if (!isAEADModeName(this.modeName) && !(this.cipher instanceof AEADGenericBlockCipher)) {
+                throw new InvalidAlgorithmParameterException("GCMParameterSpec can only be used with AEAD modes.");
+            }
+            if (param instanceof ParametersWithIV) {
+                keyParam = (KeyParameter) ((ParametersWithIV) param).getParameters();
             } else {
-                String str = this.modeName;
-                if (str != null && str.equals(KeyProperties.BLOCK_MODE_ECB)) {
-                    throw new InvalidAlgorithmParameterException("ECB mode does not use an IV");
-                }
+                keyParam = (KeyParameter) param;
             }
-        } else {
-            Class cls = gcmSpecClass;
-            if (cls != null && cls.isInstance(params)) {
-                if (!isAEADModeName(this.modeName) && !(this.cipher instanceof AEADGenericBlockCipher)) {
-                    throw new InvalidAlgorithmParameterException("GCMParameterSpec can only be used with AEAD modes.");
-                }
-                if (param instanceof ParametersWithIV) {
-                    keyParam = (KeyParameter) ((ParametersWithIV) param).getParameters();
-                } else {
-                    keyParam = (KeyParameter) param;
-                }
-                AEADParameters extractAeadParameters = GcmSpecUtil.extractAeadParameters(keyParam, params);
-                this.aeadParams = extractAeadParameters;
-                param = extractAeadParameters;
-            } else if (params != null && !(params instanceof PBEParameterSpec)) {
-                throw new InvalidAlgorithmParameterException("unknown parameter type.");
-            }
+            AEADParameters extractAeadParameters = GcmSpecUtil.extractAeadParameters(keyParam, params);
+            this.aeadParams = extractAeadParameters;
+            param = extractAeadParameters;
+        } else if (params != null && !(params instanceof PBEParameterSpec)) {
+            throw new InvalidAlgorithmParameterException("unknown parameter type.");
         }
         if (this.ivLength == 0 || (param instanceof ParametersWithIV) || (param instanceof AEADParameters)) {
             i = opmode;
@@ -586,9 +568,8 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
                 default:
                     throw new InvalidParameterException("unknown opmode " + i + " passed");
             }
-            GenericBlockCipher genericBlockCipher = this.cipher;
-            if ((genericBlockCipher instanceof AEADGenericBlockCipher) && this.aeadParams == null) {
-                AEADCipher aeadCipher = ((AEADGenericBlockCipher) genericBlockCipher).cipher;
+            if ((this.cipher instanceof AEADGenericBlockCipher) && this.aeadParams == null) {
+                AEADCipher aeadCipher = ((AEADGenericBlockCipher) this.cipher).cipher;
                 this.aeadParams = new AEADParameters((KeyParameter) this.ivParam.getParameters(), aeadCipher.getMac().length * 8, this.ivParam.getIV());
             }
         } catch (Exception e2) {
@@ -742,9 +723,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         return "CCM".equals(modeName) || "GCM".equals(modeName);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class BufferedGenericBlockCipher implements GenericBlockCipher {
+    private static class BufferedGenericBlockCipher implements GenericBlockCipher {
         private BufferedBlockCipher cipher;
 
         BufferedGenericBlockCipher(BufferedBlockCipher cipher) {
@@ -814,8 +793,7 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class AEADGenericBlockCipher implements GenericBlockCipher {
+    private static class AEADGenericBlockCipher implements GenericBlockCipher {
         private static final Constructor aeadBadTagConstructor;
         private AEADCipher cipher;
 
@@ -847,11 +825,10 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseBlockCipher.GenericBlockCipher
         public String getAlgorithmName() {
-            AEADCipher aEADCipher = this.cipher;
-            if (aEADCipher instanceof AEADBlockCipher) {
-                return ((AEADBlockCipher) aEADCipher).getUnderlyingCipher().getAlgorithmName();
+            if (this.cipher instanceof AEADBlockCipher) {
+                return ((AEADBlockCipher) this.cipher).getUnderlyingCipher().getAlgorithmName();
             }
-            return aEADCipher.getAlgorithmName();
+            return this.cipher.getAlgorithmName();
         }
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseBlockCipher.GenericBlockCipher
@@ -861,9 +838,8 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.symmetric.util.BaseBlockCipher.GenericBlockCipher
         public BlockCipher getUnderlyingCipher() {
-            AEADCipher aEADCipher = this.cipher;
-            if (aEADCipher instanceof AEADBlockCipher) {
-                return ((AEADBlockCipher) aEADCipher).getUnderlyingCipher();
+            if (this.cipher instanceof AEADBlockCipher) {
+                return ((AEADBlockCipher) this.cipher).getUnderlyingCipher();
             }
             return null;
         }
@@ -898,11 +874,10 @@ public class BaseBlockCipher extends BaseWrapCipher implements PBE {
             try {
                 return this.cipher.doFinal(out, outOff);
             } catch (InvalidCipherTextException e) {
-                Constructor constructor = aeadBadTagConstructor;
-                if (constructor != null) {
+                if (aeadBadTagConstructor != null) {
                     BadPaddingException aeadBadTag = null;
                     try {
-                        aeadBadTag = (BadPaddingException) constructor.newInstance(e.getMessage());
+                        aeadBadTag = (BadPaddingException) aeadBadTagConstructor.newInstance(e.getMessage());
                     } catch (Exception e2) {
                     }
                     if (aeadBadTag != null) {

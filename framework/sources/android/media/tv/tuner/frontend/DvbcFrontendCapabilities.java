@@ -3,7 +3,7 @@ package android.media.tv.tuner.frontend;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvbcFrontendCapabilities extends FrontendCapabilities {
     private final int mAnnexCap;
     private final long mFecCap;
@@ -21,11 +21,10 @@ public class DvbcFrontendCapabilities extends FrontendCapabilities {
 
     @Deprecated
     public int getFecCapability() {
-        long j = this.mFecCap;
-        if (j > 2147483647L) {
+        if (this.mFecCap > 2147483647L) {
             return 0;
         }
-        return (int) j;
+        return (int) this.mFecCap;
     }
 
     public long getCodeRateCapability() {

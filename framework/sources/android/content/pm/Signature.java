@@ -19,14 +19,13 @@ import java.util.Arrays;
 /* loaded from: classes.dex */
 public class Signature implements Parcelable {
     public static final Parcelable.Creator<Signature> CREATOR = new Parcelable.Creator<Signature>() { // from class: android.content.pm.Signature.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Signature createFromParcel(Parcel source) {
             return new Signature(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Signature[] newArray(int size) {
             return new Signature[size];
@@ -38,10 +37,6 @@ public class Signature implements Parcelable {
     private boolean mHaveHashCode;
     private final byte[] mSignature;
     private SoftReference<String> mStringRef;
-
-    /* synthetic */ Signature(Parcel parcel, SignatureIA signatureIA) {
-        this(parcel);
-    }
 
     public Signature(byte[] signature) {
         this.mSignature = (byte[]) signature.clone();
@@ -129,8 +124,7 @@ public class Signature implements Parcelable {
     }
 
     public String toCharsString() {
-        SoftReference<String> softReference = this.mStringRef;
-        String str = softReference == null ? null : softReference.get();
+        String str = this.mStringRef == null ? null : this.mStringRef.get();
         if (str != null) {
             return str;
         }
@@ -140,9 +134,8 @@ public class Signature implements Parcelable {
     }
 
     public byte[] toByteArray() {
-        byte[] bArr = this.mSignature;
-        byte[] bytes = new byte[bArr.length];
-        System.arraycopy(bArr, 0, bytes, 0, bArr.length);
+        byte[] bytes = new byte[this.mSignature.length];
+        System.arraycopy(this.mSignature, 0, bytes, 0, this.mSignature.length);
         return bytes;
     }
 
@@ -154,14 +147,14 @@ public class Signature implements Parcelable {
     }
 
     public Signature[] getChainSignatures() throws CertificateEncodingException {
-        Certificate[] certificateArr = this.mCertificateChain;
-        if (certificateArr == null) {
+        if (this.mCertificateChain == null) {
             return new Signature[]{this};
         }
-        Signature[] chain = new Signature[certificateArr.length + 1];
+        Signature[] chain = new Signature[this.mCertificateChain.length + 1];
         int i = 0;
         chain[0] = this;
         int i2 = 1;
+        Certificate[] certificateArr = this.mCertificateChain;
         int length = certificateArr.length;
         while (i < length) {
             Certificate c = certificateArr[i];
@@ -192,10 +185,9 @@ public class Signature implements Parcelable {
         if (this.mHaveHashCode) {
             return this.mHashCode;
         }
-        int hashCode = Arrays.hashCode(this.mSignature);
-        this.mHashCode = hashCode;
+        this.mHashCode = Arrays.hashCode(this.mSignature);
         this.mHaveHashCode = true;
-        return hashCode;
+        return this.mHashCode;
     }
 
     @Override // android.os.Parcelable
@@ -208,23 +200,6 @@ public class Signature implements Parcelable {
         dest.writeByteArray(this.mSignature);
     }
 
-    /* renamed from: android.content.pm.Signature$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Signature> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Signature createFromParcel(Parcel source) {
-            return new Signature(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Signature[] newArray(int size) {
-            return new Signature[size];
-        }
-    }
-
     public void writeToXmlAttributeBytesHex(TypedXmlSerializer out, String namespace, String name) throws IOException {
         out.attributeBytesHex(namespace, name, this.mSignature);
     }
@@ -233,11 +208,23 @@ public class Signature implements Parcelable {
         this.mSignature = source.createByteArray();
     }
 
-    public static boolean areExactMatch(Signature[] a, Signature[] b) {
+    public static boolean areExactMatch(SigningDetails ad, SigningDetails bd) {
+        return areExactArraysMatch(ad.getSignatures(), bd.getSignatures());
+    }
+
+    public static boolean areExactMatch(SigningDetails ad, Signature[] b) {
+        return areExactArraysMatch(ad.getSignatures(), b);
+    }
+
+    static boolean areExactArraysMatch(Signature[] a, Signature[] b) {
         return ArrayUtils.size(a) == ArrayUtils.size(b) && ArrayUtils.containsAll(a, b) && ArrayUtils.containsAll(b, a);
     }
 
-    public static boolean areEffectiveMatch(Signature[] a, Signature[] b) throws CertificateException {
+    public static boolean areEffectiveMatch(SigningDetails a, SigningDetails b) throws CertificateException {
+        return areEffectiveArraysMatch(a.getSignatures(), b.getSignatures());
+    }
+
+    static boolean areEffectiveArraysMatch(Signature[] a, Signature[] b) throws CertificateException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Signature[] aPrime = new Signature[a.length];
         for (int i = 0; i < a.length; i++) {
@@ -248,7 +235,7 @@ public class Signature implements Parcelable {
         for (int i3 = 0; i3 < b.length; i3++) {
             bPrime[i3] = bounce(cf, b[i3]);
         }
-        return areExactMatch(aPrime, bPrime);
+        return areExactArraysMatch(aPrime, bPrime);
     }
 
     public static boolean areEffectiveMatch(Signature a, Signature b) throws CertificateException {

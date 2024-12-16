@@ -36,14 +36,12 @@ public class FilterSurfaceView extends SurfaceView implements SurfaceHolder.Call
         if (listener == null) {
             throw new NullPointerException("Attempting to bind null filter to SurfaceView!");
         }
-        SurfaceHolder.Callback callback = this.mListener;
-        if (callback != null && callback != listener) {
+        if (this.mListener != null && this.mListener != listener) {
             throw new RuntimeException("Attempting to bind filter " + listener + " to SurfaceView with another open filter " + this.mListener + " attached already!");
         }
         this.mListener = listener;
-        GLEnvironment gLEnvironment = this.mGLEnv;
-        if (gLEnvironment != null && gLEnvironment != glEnv) {
-            gLEnvironment.unregisterSurfaceId(this.mSurfaceId);
+        if (this.mGLEnv != null && this.mGLEnv != glEnv) {
+            this.mGLEnv.unregisterSurfaceId(this.mSurfaceId);
         }
         this.mGLEnv = glEnv;
         if (this.mState >= STATE_CREATED) {
@@ -73,9 +71,8 @@ public class FilterSurfaceView extends SurfaceView implements SurfaceHolder.Call
         if (this.mGLEnv != null) {
             registerSurface();
         }
-        SurfaceHolder.Callback callback = this.mListener;
-        if (callback != null) {
-            callback.surfaceCreated(holder);
+        if (this.mListener != null) {
+            this.mListener.surfaceCreated(holder);
         }
     }
 
@@ -85,35 +82,30 @@ public class FilterSurfaceView extends SurfaceView implements SurfaceHolder.Call
         this.mWidth = width;
         this.mHeight = height;
         this.mState = STATE_INITIALIZED;
-        SurfaceHolder.Callback callback = this.mListener;
-        if (callback != null) {
-            callback.surfaceChanged(holder, format, width, height);
+        if (this.mListener != null) {
+            this.mListener.surfaceChanged(holder, format, width, height);
         }
     }
 
     @Override // android.view.SurfaceHolder.Callback
     public synchronized void surfaceDestroyed(SurfaceHolder holder) {
         this.mState = STATE_ALLOCATED;
-        SurfaceHolder.Callback callback = this.mListener;
-        if (callback != null) {
-            callback.surfaceDestroyed(holder);
+        if (this.mListener != null) {
+            this.mListener.surfaceDestroyed(holder);
         }
         unregisterSurface();
     }
 
     private void registerSurface() {
-        int registerSurface = this.mGLEnv.registerSurface(getHolder().getSurface());
-        this.mSurfaceId = registerSurface;
-        if (registerSurface < 0) {
+        this.mSurfaceId = this.mGLEnv.registerSurface(getHolder().getSurface());
+        if (this.mSurfaceId < 0) {
             throw new RuntimeException("Could not register Surface: " + getHolder().getSurface() + " in FilterSurfaceView!");
         }
     }
 
     private void unregisterSurface() {
-        int i;
-        GLEnvironment gLEnvironment = this.mGLEnv;
-        if (gLEnvironment != null && (i = this.mSurfaceId) > 0) {
-            gLEnvironment.unregisterSurfaceId(i);
+        if (this.mGLEnv != null && this.mSurfaceId > 0) {
+            this.mGLEnv.unregisterSurfaceId(this.mSurfaceId);
         }
     }
 }

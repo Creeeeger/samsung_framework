@@ -58,13 +58,11 @@ public class Location implements Parcelable {
     private static final ThreadLocal<BearingDistanceCache> sBearingDistanceCache = ThreadLocal.withInitial(new Supplier() { // from class: android.location.Location$$ExternalSyntheticLambda0
         @Override // java.util.function.Supplier
         public final Object get() {
-            return Location.$r8$lambda$AN3VJCcYjECjC7u5pDkntGBLoAg();
+            return Location.m2105$r8$lambda$LCoyno7iOKo6n1w2mcfXqv702o();
         }
     });
     public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() { // from class: android.location.Location.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Location createFromParcel(Parcel in) {
             Location l = new Location(in.readString8());
@@ -107,6 +105,7 @@ public class Location implements Parcelable {
             return l;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Location[] newArray(int size) {
             return new Location[size];
@@ -116,11 +115,11 @@ public class Location implements Parcelable {
     private Bundle mExtras = null;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Format {
     }
 
-    public static /* synthetic */ BearingDistanceCache $r8$lambda$AN3VJCcYjECjC7u5pDkntGBLoAg() {
+    /* renamed from: $r8$lambda$LCoyno7iOKo6n1w2mcfX-qv702o, reason: not valid java name */
+    public static /* synthetic */ BearingDistanceCache m2105$r8$lambda$LCoyno7iOKo6n1w2mcfXqv702o() {
         return new BearingDistanceCache();
     }
 
@@ -382,7 +381,6 @@ public class Location implements Parcelable {
     }
 
     public double getMslAltitudeMeters() {
-        Preconditions.checkState(hasMslAltitude(), "The Mean Sea Level altitude of this location is not set.");
         return this.mMslAltitudeMeters;
     }
 
@@ -400,7 +398,6 @@ public class Location implements Parcelable {
     }
 
     public float getMslAltitudeAccuracyMeters() {
-        Preconditions.checkState(hasMslAltitudeAccuracy(), "The Mean Sea Level altitude accuracy of this location is not set.");
         return this.mMslAltitudeAccuracyMeters;
     }
 
@@ -531,8 +528,7 @@ public class Location implements Parcelable {
         if (isMock()) {
             s.append(" mock");
         }
-        Bundle bundle = this.mExtras;
-        if (bundle != null && !bundle.isEmpty()) {
+        if (this.mExtras != null && !this.mExtras.isEmpty()) {
             s.append(" {").append(this.mExtras).append('}');
         }
         s.append(']');
@@ -542,60 +538,6 @@ public class Location implements Parcelable {
     @Deprecated
     public void dump(Printer pw, String prefix) {
         pw.println(prefix + this);
-    }
-
-    /* renamed from: android.location.Location$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Location> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Location createFromParcel(Parcel in) {
-            Location l = new Location(in.readString8());
-            l.mFieldsMask = in.readInt();
-            l.mTimeMs = in.readLong();
-            l.mElapsedRealtimeNs = in.readLong();
-            if (l.hasElapsedRealtimeUncertaintyNanos()) {
-                l.mElapsedRealtimeUncertaintyNs = in.readDouble();
-            }
-            l.mLatitudeDegrees = in.readDouble();
-            l.mLongitudeDegrees = in.readDouble();
-            if (l.hasAltitude()) {
-                l.mAltitudeMeters = in.readDouble();
-            }
-            if (l.hasSpeed()) {
-                l.mSpeedMetersPerSecond = in.readFloat();
-            }
-            if (l.hasBearing()) {
-                l.mBearingDegrees = in.readFloat();
-            }
-            if (l.hasAccuracy()) {
-                l.mHorizontalAccuracyMeters = in.readFloat();
-            }
-            if (l.hasVerticalAccuracy()) {
-                l.mAltitudeAccuracyMeters = in.readFloat();
-            }
-            if (l.hasSpeedAccuracy()) {
-                l.mSpeedAccuracyMetersPerSecond = in.readFloat();
-            }
-            if (l.hasBearingAccuracy()) {
-                l.mBearingAccuracyDegrees = in.readFloat();
-            }
-            if (l.hasMslAltitude()) {
-                l.mMslAltitudeMeters = in.readDouble();
-            }
-            if (l.hasMslAltitudeAccuracy()) {
-                l.mMslAltitudeAccuracyMeters = in.readFloat();
-            }
-            l.mExtras = Bundle.setDefusable(in.readBundle(), true);
-            return l;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Location[] newArray(int size) {
-            return new Location[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -826,8 +768,8 @@ public class Location implements Parcelable {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class BearingDistanceCache {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class BearingDistanceCache {
         float mDistance;
         float mFinalBearing;
         float mInitialBearing;
@@ -835,10 +777,6 @@ public class Location implements Parcelable {
         double mLat2;
         double mLon1;
         double mLon2;
-
-        /* synthetic */ BearingDistanceCache(BearingDistanceCacheIA bearingDistanceCacheIA) {
-            this();
-        }
 
         private BearingDistanceCache() {
             this.mLat1 = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;

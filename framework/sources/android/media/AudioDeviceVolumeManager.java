@@ -34,26 +34,18 @@ public class AudioDeviceVolumeManager {
     private final Object mDeviceVolumeListenerLock = new Object();
     private final CallbackUtil.LazyListenerManager<OnDeviceVolumeBehaviorChangedListener> mDeviceVolumeBehaviorChangedListenerMgr = new CallbackUtil.LazyListenerManager<>();
 
-    /* loaded from: classes2.dex */
     public interface OnAudioDeviceVolumeChangedListener {
         void onAudioDeviceVolumeAdjusted(AudioDeviceAttributes audioDeviceAttributes, VolumeInfo volumeInfo, int i, int i2);
 
         void onAudioDeviceVolumeChanged(AudioDeviceAttributes audioDeviceAttributes, VolumeInfo volumeInfo);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnDeviceVolumeBehaviorChangedListener {
         void onDeviceVolumeBehaviorChanged(AudioDeviceAttributes audioDeviceAttributes, int i);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VolumeAdjustmentMode {
-    }
-
-    /* renamed from: -$$Nest$smgetService */
-    static /* bridge */ /* synthetic */ IAudioService m2165$$Nest$smgetService() {
-        return getService();
     }
 
     public AudioDeviceVolumeManager(Context context) {
@@ -61,8 +53,7 @@ public class AudioDeviceVolumeManager {
         this.mPackageName = context.getApplicationContext().getOpPackageName();
     }
 
-    /* loaded from: classes2.dex */
-    public static class ListenerInfo {
+    static class ListenerInfo {
         final AudioDeviceAttributes mDevice;
         final Executor mExecutor;
         final boolean mHandlesVolumeAdjustment;
@@ -76,14 +67,13 @@ public class AudioDeviceVolumeManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class DeviceVolumeDispatcherStub extends IAudioDeviceVolumeDispatcher.Stub {
+    final class DeviceVolumeDispatcherStub extends IAudioDeviceVolumeDispatcher.Stub {
         DeviceVolumeDispatcherStub() {
         }
 
         public void register(boolean register, AudioDeviceAttributes device, List<VolumeInfo> volumes, boolean handlesVolumeAdjustment, int behavior) {
             try {
-                AudioDeviceVolumeManager.m2165$$Nest$smgetService().registerDeviceVolumeDispatcherForAbsoluteVolume(register, this, AudioDeviceVolumeManager.this.mPackageName, (AudioDeviceAttributes) Objects.requireNonNull(device), (List) Objects.requireNonNull(volumes), handlesVolumeAdjustment, behavior);
+                AudioDeviceVolumeManager.getService().registerDeviceVolumeDispatcherForAbsoluteVolume(register, this, AudioDeviceVolumeManager.this.mPackageName, (AudioDeviceAttributes) Objects.requireNonNull(device), (List) Objects.requireNonNull(volumes), handlesVolumeAdjustment, behavior);
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
@@ -165,7 +155,7 @@ public class AudioDeviceVolumeManager {
                     this.mDeviceVolumeDispatcherStub = new DeviceVolumeDispatcherStub();
                 }
             } else {
-                this.mDeviceVolumeListeners.removeIf(new Predicate() { // from class: android.media.AudioDeviceVolumeManager$$ExternalSyntheticLambda1
+                this.mDeviceVolumeListeners.removeIf(new Predicate() { // from class: android.media.AudioDeviceVolumeManager$$ExternalSyntheticLambda0
                     @Override // java.util.function.Predicate
                     public final boolean test(Object obj) {
                         boolean equalTypeAddress;
@@ -180,7 +170,7 @@ public class AudioDeviceVolumeManager {
     }
 
     public void addOnDeviceVolumeBehaviorChangedListener(Executor executor, OnDeviceVolumeBehaviorChangedListener listener) throws SecurityException {
-        this.mDeviceVolumeBehaviorChangedListenerMgr.addListener(executor, listener, "addOnDeviceVolumeBehaviorChangedListener", new Supplier() { // from class: android.media.AudioDeviceVolumeManager$$ExternalSyntheticLambda0
+        this.mDeviceVolumeBehaviorChangedListenerMgr.addListener(executor, listener, "addOnDeviceVolumeBehaviorChangedListener", new Supplier() { // from class: android.media.AudioDeviceVolumeManager$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
                 CallbackUtil.DispatcherStub lambda$addOnDeviceVolumeBehaviorChangedListener$1;
@@ -190,6 +180,7 @@ public class AudioDeviceVolumeManager {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CallbackUtil.DispatcherStub lambda$addOnDeviceVolumeBehaviorChangedListener$1() {
         return new DeviceVolumeBehaviorDispatcherStub();
     }
@@ -236,19 +227,15 @@ public class AudioDeviceVolumeManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class DeviceVolumeBehaviorDispatcherStub extends IDeviceVolumeBehaviorDispatcher.Stub implements CallbackUtil.DispatcherStub {
-        /* synthetic */ DeviceVolumeBehaviorDispatcherStub(AudioDeviceVolumeManager audioDeviceVolumeManager, DeviceVolumeBehaviorDispatcherStubIA deviceVolumeBehaviorDispatcherStubIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class DeviceVolumeBehaviorDispatcherStub extends IDeviceVolumeBehaviorDispatcher.Stub implements CallbackUtil.DispatcherStub {
         private DeviceVolumeBehaviorDispatcherStub() {
         }
 
         @Override // android.media.CallbackUtil.DispatcherStub
         public void register(boolean register) {
             try {
-                AudioDeviceVolumeManager.m2165$$Nest$smgetService().registerDeviceVolumeBehaviorDispatcher(register, this);
+                AudioDeviceVolumeManager.getService().registerDeviceVolumeBehaviorDispatcher(register, this);
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
             }
@@ -265,14 +252,13 @@ public class AudioDeviceVolumeManager {
         }
     }
 
-    private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+    /* JADX INFO: Access modifiers changed from: private */
+    public static IAudioService getService() {
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 }

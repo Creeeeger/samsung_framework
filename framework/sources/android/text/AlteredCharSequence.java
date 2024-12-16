@@ -1,16 +1,12 @@
 package android.text;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class AlteredCharSequence implements CharSequence, GetChars {
     private char[] mChars;
     private int mEnd;
     private CharSequence mSource;
     private int mStart;
-
-    /* synthetic */ AlteredCharSequence(CharSequence charSequence, char[] cArr, int i, int i2, AlteredCharSequenceIA alteredCharSequenceIA) {
-        this(charSequence, cArr, i, i2);
-    }
 
     public static AlteredCharSequence make(CharSequence source, char[] sub, int substart, int subend) {
         if (source instanceof Spanned) {
@@ -32,13 +28,8 @@ public class AlteredCharSequence implements CharSequence, GetChars {
         this.mEnd = subend;
     }
 
-    /* loaded from: classes3.dex */
-    public static class AlteredSpanned extends AlteredCharSequence implements Spanned {
+    private static class AlteredSpanned extends AlteredCharSequence implements Spanned {
         private Spanned mSpanned;
-
-        /* synthetic */ AlteredSpanned(CharSequence charSequence, char[] cArr, int i, int i2, AlteredSpannedIA alteredSpannedIA) {
-            this(charSequence, cArr, i, i2);
-        }
 
         private AlteredSpanned(CharSequence source, char[] sub, int substart, int subend) {
             super(source, sub, substart, subend);
@@ -73,9 +64,8 @@ public class AlteredCharSequence implements CharSequence, GetChars {
 
     @Override // java.lang.CharSequence
     public char charAt(int off) {
-        int i = this.mStart;
-        if (off >= i && off < this.mEnd) {
-            return this.mChars[off - i];
+        if (off >= this.mStart && off < this.mEnd) {
+            return this.mChars[off - this.mStart];
         }
         return this.mSource.charAt(off);
     }

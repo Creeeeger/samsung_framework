@@ -12,9 +12,7 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class UsbDevice implements Parcelable {
     public static final Parcelable.Creator<UsbDevice> CREATOR = new Parcelable.Creator<UsbDevice>() { // from class: android.hardware.usb.UsbDevice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbDevice createFromParcel(Parcel in) {
             String name = in.readString();
@@ -37,6 +35,7 @@ public class UsbDevice implements Parcelable {
             return device;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsbDevice[] newArray(int size) {
             return new UsbDevice[size];
@@ -62,10 +61,6 @@ public class UsbDevice implements Parcelable {
     private final int mVendorId;
     private final String mVersion;
 
-    /* synthetic */ UsbDevice(String str, int i, int i2, int i3, int i4, int i5, String str2, String str3, String str4, UsbConfiguration[] usbConfigurationArr, IUsbSerialReader iUsbSerialReader, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, UsbDeviceIA usbDeviceIA) {
-        this(str, i, i2, i3, i4, i5, str2, str3, str4, usbConfigurationArr, iUsbSerialReader, z, z2, z3, z4, z5);
-    }
-
     private static native int native_get_device_id(String str);
 
     private static native String native_get_device_name(int i);
@@ -81,15 +76,14 @@ public class UsbDevice implements Parcelable {
         this.mProductName = productName;
         this.mVersion = (String) Preconditions.checkStringNotEmpty(version);
         this.mConfigurations = (UsbConfiguration[]) Preconditions.checkArrayElementsNotNull(configurations, "configurations");
-        IUsbSerialReader iUsbSerialReader = (IUsbSerialReader) Objects.requireNonNull(serialNumberReader);
-        this.mSerialNumberReader = iUsbSerialReader;
+        this.mSerialNumberReader = (IUsbSerialReader) Objects.requireNonNull(serialNumberReader);
         this.mHasAudioPlayback = hasAudioPlayback;
         this.mHasAudioCapture = hasAudioCapture;
         this.mHasMidi = hasMidi;
         this.mHasVideoPlayback = hasVideoPlayback;
         this.mHasVideoCapture = hasVideoCapture;
         if (ActivityThread.isSystem()) {
-            Preconditions.checkArgument(iUsbSerialReader instanceof IUsbSerialReader.Stub);
+            Preconditions.checkArgument(this.mSerialNumberReader instanceof IUsbSerialReader.Stub);
         }
     }
 
@@ -225,40 +219,6 @@ public class UsbDevice implements Parcelable {
         return builder.toString();
     }
 
-    /* renamed from: android.hardware.usb.UsbDevice$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UsbDevice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsbDevice createFromParcel(Parcel in) {
-            String name = in.readString();
-            int vendorId = in.readInt();
-            int productId = in.readInt();
-            int clasz = in.readInt();
-            int subClass = in.readInt();
-            int protocol = in.readInt();
-            String manufacturerName = in.readString();
-            String productName = in.readString();
-            String version = in.readString();
-            IUsbSerialReader serialNumberReader = IUsbSerialReader.Stub.asInterface(in.readStrongBinder());
-            UsbConfiguration[] configurations = (UsbConfiguration[]) in.readParcelableArray(UsbConfiguration.class.getClassLoader(), UsbConfiguration.class);
-            boolean hasAudioPlayback = in.readInt() == 1;
-            boolean hasAudioCapture = in.readInt() == 1;
-            boolean hasMidi = in.readInt() == 1;
-            boolean hasVideoPlayback = in.readInt() == 1;
-            boolean hasVideoCapture = in.readInt() == 1;
-            UsbDevice device = new UsbDevice(name, vendorId, productId, clasz, subClass, protocol, manufacturerName, productName, version, configurations, serialNumberReader, hasAudioPlayback, hasAudioCapture, hasMidi, hasVideoPlayback, hasVideoCapture);
-            return device;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsbDevice[] newArray(int size) {
-            return new UsbDevice[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -292,7 +252,6 @@ public class UsbDevice implements Parcelable {
         return native_get_device_name(id);
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private final int mClass;
         private final UsbConfiguration[] mConfigurations;

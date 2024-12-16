@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.util.Log;
+import android.util.NtpTrustedTime;
 import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +18,7 @@ public final class ViewTreeObserver {
     private boolean mAlive = true;
     private CopyOnWriteArray<Consumer<List<Rect>>> mGestureExclusionListeners;
     private boolean mInDispatchOnDraw;
-    private String mLastDispatchOnPreDrawCanceledReason;
+    private StringBuilder mLastDispatchOnPreDrawCanceledReason;
     String mLog;
     private CopyOnWriteArray<OnComputeInternalInsetsListener> mOnComputeInternalInsetsListeners;
     private ArrayList<OnDrawListener> mOnDrawListeners;
@@ -35,74 +36,60 @@ public final class ViewTreeObserver {
     private CopyOnWriteArrayList<OnWindowVisibilityChangeListener> mOnWindowVisibilityListeners;
     private boolean mWindowShown;
 
-    /* loaded from: classes4.dex */
     public interface OnComputeInternalInsetsListener {
         void onComputeInternalInsets(InternalInsetsInfo internalInsetsInfo);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnDrawListener {
         void onDraw();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnEnterAnimationCompleteListener {
         void onEnterAnimationComplete();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnGlobalFocusChangeListener {
         void onGlobalFocusChanged(View view, View view2);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnGlobalLayoutListener {
         void onGlobalLayout();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnPreDrawListener {
         boolean onPreDraw();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnScrollChangedListener {
         void onScrollChanged();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnTouchModeChangeListener {
         void onTouchModeChanged(boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowAttachListener {
         void onWindowAttached();
 
         void onWindowDetached();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowFocusChangeListener {
         void onWindowFocusChanged(boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowShownListener {
         void onWindowShown();
     }
 
-    /* loaded from: classes4.dex */
     public interface OnWindowVisibilityChangeListener {
         void onWindowVisibilityChanged(int i);
     }
 
-    /* loaded from: classes4.dex */
     public interface SemOnStylusButtonEventListener {
         void onStylusButtonEvent(MotionEvent motionEvent);
     }
 
-    /* loaded from: classes4.dex */
     public static final class InternalInsetsInfo {
         public static final int TOUCHABLE_INSETS_CONTENT = 1;
         public static final int TOUCHABLE_INSETS_FRAME = 0;
@@ -111,20 +98,24 @@ public final class ViewTreeObserver {
         int mTouchableInsets;
         public final Rect contentInsets = new Rect();
         public final Rect visibleInsets = new Rect();
+        public final Rect minimizedInsets = new Rect();
         public final Region touchableRegion = new Region();
 
         public void setTouchableInsets(int val) {
             this.mTouchableInsets = val;
         }
 
-        public void reset() {
+        void reset() {
             this.contentInsets.setEmpty();
             this.visibleInsets.setEmpty();
             this.touchableRegion.setEmpty();
             this.mTouchableInsets = 0;
+            if (CoreRune.FW_MINIMIZED_IME_INSET_ANIM) {
+                this.minimizedInsets.setEmpty();
+            }
         }
 
-        public boolean isEmpty() {
+        boolean isEmpty() {
             return this.contentInsets.isEmpty() && this.visibleInsets.isEmpty() && this.touchableRegion.isEmpty() && this.mTouchableInsets == 0;
         }
 
@@ -141,148 +132,124 @@ public final class ViewTreeObserver {
                 return false;
             }
             InternalInsetsInfo other = (InternalInsetsInfo) o;
-            if (this.mTouchableInsets == other.mTouchableInsets && this.contentInsets.equals(other.contentInsets) && this.visibleInsets.equals(other.visibleInsets) && this.touchableRegion.equals(other.touchableRegion)) {
+            if (this.mTouchableInsets == other.mTouchableInsets && this.contentInsets.equals(other.contentInsets) && this.visibleInsets.equals(other.visibleInsets) && this.touchableRegion.equals(other.touchableRegion) && (!CoreRune.FW_MINIMIZED_IME_INSET_ANIM || this.minimizedInsets.equals(other.minimizedInsets))) {
                 return true;
             }
             return false;
         }
 
-        public void set(InternalInsetsInfo other) {
+        void set(InternalInsetsInfo other) {
             this.contentInsets.set(other.contentInsets);
             this.visibleInsets.set(other.visibleInsets);
             this.touchableRegion.set(other.touchableRegion);
             this.mTouchableInsets = other.mTouchableInsets;
+            if (CoreRune.FW_MINIMIZED_IME_INSET_ANIM) {
+                this.minimizedInsets.set(other.minimizedInsets);
+            }
         }
     }
 
-    public ViewTreeObserver(Context context) {
+    ViewTreeObserver(Context context) {
         sIllegalOnDrawModificationIsFatal = context.getApplicationInfo().targetSdkVersion >= 26;
     }
 
-    public void merge(ViewTreeObserver observer) {
-        CopyOnWriteArrayList<OnWindowAttachListener> copyOnWriteArrayList = observer.mOnWindowAttachListeners;
-        if (copyOnWriteArrayList != null) {
-            CopyOnWriteArrayList<OnWindowAttachListener> copyOnWriteArrayList2 = this.mOnWindowAttachListeners;
-            if (copyOnWriteArrayList2 != null) {
-                copyOnWriteArrayList2.addAll(copyOnWriteArrayList);
+    void merge(ViewTreeObserver observer) {
+        if (observer.mOnWindowAttachListeners != null) {
+            if (this.mOnWindowAttachListeners != null) {
+                this.mOnWindowAttachListeners.addAll(observer.mOnWindowAttachListeners);
             } else {
-                this.mOnWindowAttachListeners = copyOnWriteArrayList;
+                this.mOnWindowAttachListeners = observer.mOnWindowAttachListeners;
             }
         }
-        CopyOnWriteArrayList<OnWindowFocusChangeListener> copyOnWriteArrayList3 = observer.mOnWindowFocusListeners;
-        if (copyOnWriteArrayList3 != null) {
-            CopyOnWriteArrayList<OnWindowFocusChangeListener> copyOnWriteArrayList4 = this.mOnWindowFocusListeners;
-            if (copyOnWriteArrayList4 != null) {
-                copyOnWriteArrayList4.addAll(copyOnWriteArrayList3);
+        if (observer.mOnWindowFocusListeners != null) {
+            if (this.mOnWindowFocusListeners != null) {
+                this.mOnWindowFocusListeners.addAll(observer.mOnWindowFocusListeners);
             } else {
-                this.mOnWindowFocusListeners = copyOnWriteArrayList3;
+                this.mOnWindowFocusListeners = observer.mOnWindowFocusListeners;
             }
         }
-        CopyOnWriteArrayList<OnWindowVisibilityChangeListener> copyOnWriteArrayList5 = observer.mOnWindowVisibilityListeners;
-        if (copyOnWriteArrayList5 != null) {
-            CopyOnWriteArrayList<OnWindowVisibilityChangeListener> copyOnWriteArrayList6 = this.mOnWindowVisibilityListeners;
-            if (copyOnWriteArrayList6 != null) {
-                copyOnWriteArrayList6.addAll(copyOnWriteArrayList5);
+        if (observer.mOnWindowVisibilityListeners != null) {
+            if (this.mOnWindowVisibilityListeners != null) {
+                this.mOnWindowVisibilityListeners.addAll(observer.mOnWindowVisibilityListeners);
             } else {
-                this.mOnWindowVisibilityListeners = copyOnWriteArrayList5;
+                this.mOnWindowVisibilityListeners = observer.mOnWindowVisibilityListeners;
             }
         }
-        CopyOnWriteArrayList<OnGlobalFocusChangeListener> copyOnWriteArrayList7 = observer.mOnGlobalFocusListeners;
-        if (copyOnWriteArrayList7 != null) {
-            CopyOnWriteArrayList<OnGlobalFocusChangeListener> copyOnWriteArrayList8 = this.mOnGlobalFocusListeners;
-            if (copyOnWriteArrayList8 != null) {
-                copyOnWriteArrayList8.addAll(copyOnWriteArrayList7);
+        if (observer.mOnGlobalFocusListeners != null) {
+            if (this.mOnGlobalFocusListeners != null) {
+                this.mOnGlobalFocusListeners.addAll(observer.mOnGlobalFocusListeners);
             } else {
-                this.mOnGlobalFocusListeners = copyOnWriteArrayList7;
+                this.mOnGlobalFocusListeners = observer.mOnGlobalFocusListeners;
             }
         }
-        CopyOnWriteArray<OnGlobalLayoutListener> copyOnWriteArray = observer.mOnGlobalLayoutListeners;
-        if (copyOnWriteArray != null) {
-            CopyOnWriteArray<OnGlobalLayoutListener> copyOnWriteArray2 = this.mOnGlobalLayoutListeners;
-            if (copyOnWriteArray2 != null) {
-                copyOnWriteArray2.addAll(copyOnWriteArray);
+        if (observer.mOnGlobalLayoutListeners != null) {
+            if (this.mOnGlobalLayoutListeners != null) {
+                this.mOnGlobalLayoutListeners.addAll(observer.mOnGlobalLayoutListeners);
             } else {
-                this.mOnGlobalLayoutListeners = copyOnWriteArray;
+                this.mOnGlobalLayoutListeners = observer.mOnGlobalLayoutListeners;
             }
         }
-        CopyOnWriteArray<OnPreDrawListener> copyOnWriteArray3 = observer.mOnPreDrawListeners;
-        if (copyOnWriteArray3 != null) {
-            CopyOnWriteArray<OnPreDrawListener> copyOnWriteArray4 = this.mOnPreDrawListeners;
-            if (copyOnWriteArray4 != null) {
-                copyOnWriteArray4.addAll(copyOnWriteArray3);
+        if (observer.mOnPreDrawListeners != null) {
+            if (this.mOnPreDrawListeners != null) {
+                this.mOnPreDrawListeners.addAll(observer.mOnPreDrawListeners);
             } else {
-                this.mOnPreDrawListeners = copyOnWriteArray3;
+                this.mOnPreDrawListeners = observer.mOnPreDrawListeners;
             }
         }
-        ArrayList<OnDrawListener> arrayList = observer.mOnDrawListeners;
-        if (arrayList != null) {
-            ArrayList<OnDrawListener> arrayList2 = this.mOnDrawListeners;
-            if (arrayList2 != null) {
-                arrayList2.addAll(arrayList);
+        if (observer.mOnDrawListeners != null) {
+            if (this.mOnDrawListeners != null) {
+                this.mOnDrawListeners.addAll(observer.mOnDrawListeners);
             } else {
-                this.mOnDrawListeners = arrayList;
+                this.mOnDrawListeners = observer.mOnDrawListeners;
             }
         }
         if (observer.mOnFrameCommitListeners != null) {
-            ArrayList<Runnable> arrayList3 = this.mOnFrameCommitListeners;
-            if (arrayList3 != null) {
-                arrayList3.addAll(observer.captureFrameCommitCallbacks());
+            if (this.mOnFrameCommitListeners != null) {
+                this.mOnFrameCommitListeners.addAll(observer.captureFrameCommitCallbacks());
             } else {
                 this.mOnFrameCommitListeners = observer.captureFrameCommitCallbacks();
             }
         }
-        CopyOnWriteArrayList<OnTouchModeChangeListener> copyOnWriteArrayList9 = observer.mOnTouchModeChangeListeners;
-        if (copyOnWriteArrayList9 != null) {
-            CopyOnWriteArrayList<OnTouchModeChangeListener> copyOnWriteArrayList10 = this.mOnTouchModeChangeListeners;
-            if (copyOnWriteArrayList10 != null) {
-                copyOnWriteArrayList10.addAll(copyOnWriteArrayList9);
+        if (observer.mOnTouchModeChangeListeners != null) {
+            if (this.mOnTouchModeChangeListeners != null) {
+                this.mOnTouchModeChangeListeners.addAll(observer.mOnTouchModeChangeListeners);
             } else {
-                this.mOnTouchModeChangeListeners = copyOnWriteArrayList9;
+                this.mOnTouchModeChangeListeners = observer.mOnTouchModeChangeListeners;
             }
         }
-        CopyOnWriteArray<OnComputeInternalInsetsListener> copyOnWriteArray5 = observer.mOnComputeInternalInsetsListeners;
-        if (copyOnWriteArray5 != null) {
-            CopyOnWriteArray<OnComputeInternalInsetsListener> copyOnWriteArray6 = this.mOnComputeInternalInsetsListeners;
-            if (copyOnWriteArray6 != null) {
-                copyOnWriteArray6.addAll(copyOnWriteArray5);
+        if (observer.mOnComputeInternalInsetsListeners != null) {
+            if (this.mOnComputeInternalInsetsListeners != null) {
+                this.mOnComputeInternalInsetsListeners.addAll(observer.mOnComputeInternalInsetsListeners);
             } else {
-                this.mOnComputeInternalInsetsListeners = copyOnWriteArray5;
+                this.mOnComputeInternalInsetsListeners = observer.mOnComputeInternalInsetsListeners;
             }
         }
-        CopyOnWriteArray<OnScrollChangedListener> copyOnWriteArray7 = observer.mOnScrollChangedListeners;
-        if (copyOnWriteArray7 != null) {
-            CopyOnWriteArray<OnScrollChangedListener> copyOnWriteArray8 = this.mOnScrollChangedListeners;
-            if (copyOnWriteArray8 != null) {
-                copyOnWriteArray8.addAll(copyOnWriteArray7);
+        if (observer.mOnScrollChangedListeners != null) {
+            if (this.mOnScrollChangedListeners != null) {
+                this.mOnScrollChangedListeners.addAll(observer.mOnScrollChangedListeners);
             } else {
-                this.mOnScrollChangedListeners = copyOnWriteArray7;
+                this.mOnScrollChangedListeners = observer.mOnScrollChangedListeners;
             }
         }
-        CopyOnWriteArray<OnWindowShownListener> copyOnWriteArray9 = observer.mOnWindowShownListeners;
-        if (copyOnWriteArray9 != null) {
-            CopyOnWriteArray<OnWindowShownListener> copyOnWriteArray10 = this.mOnWindowShownListeners;
-            if (copyOnWriteArray10 != null) {
-                copyOnWriteArray10.addAll(copyOnWriteArray9);
+        if (observer.mOnWindowShownListeners != null) {
+            if (this.mOnWindowShownListeners != null) {
+                this.mOnWindowShownListeners.addAll(observer.mOnWindowShownListeners);
             } else {
-                this.mOnWindowShownListeners = copyOnWriteArray9;
+                this.mOnWindowShownListeners = observer.mOnWindowShownListeners;
             }
         }
-        CopyOnWriteArray<Consumer<List<Rect>>> copyOnWriteArray11 = observer.mGestureExclusionListeners;
-        if (copyOnWriteArray11 != null) {
-            CopyOnWriteArray<Consumer<List<Rect>>> copyOnWriteArray12 = this.mGestureExclusionListeners;
-            if (copyOnWriteArray12 != null) {
-                copyOnWriteArray12.addAll(copyOnWriteArray11);
+        if (observer.mGestureExclusionListeners != null) {
+            if (this.mGestureExclusionListeners != null) {
+                this.mGestureExclusionListeners.addAll(observer.mGestureExclusionListeners);
             } else {
-                this.mGestureExclusionListeners = copyOnWriteArray11;
+                this.mGestureExclusionListeners = observer.mGestureExclusionListeners;
             }
         }
-        ArrayList<SemOnStylusButtonEventListener> arrayList4 = observer.mOnStylusButtonEventListeners;
-        if (arrayList4 != null) {
-            ArrayList<SemOnStylusButtonEventListener> arrayList5 = this.mOnStylusButtonEventListeners;
-            if (arrayList5 != null) {
-                arrayList5.addAll(arrayList4);
+        if (observer.mOnStylusButtonEventListeners != null) {
+            if (this.mOnStylusButtonEventListeners != null) {
+                this.mOnStylusButtonEventListeners.addAll(observer.mOnStylusButtonEventListeners);
             } else {
-                this.mOnStylusButtonEventListeners = arrayList4;
+                this.mOnStylusButtonEventListeners = observer.mOnStylusButtonEventListeners;
             }
         }
         observer.kill();
@@ -298,11 +265,10 @@ public final class ViewTreeObserver {
 
     public void removeOnWindowAttachListener(OnWindowAttachListener victim) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnWindowAttachListener> copyOnWriteArrayList = this.mOnWindowAttachListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnWindowAttachListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(victim);
+        this.mOnWindowAttachListeners.remove(victim);
     }
 
     public void addOnWindowFocusChangeListener(OnWindowFocusChangeListener listener) {
@@ -315,11 +281,10 @@ public final class ViewTreeObserver {
 
     public void removeOnWindowFocusChangeListener(OnWindowFocusChangeListener victim) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnWindowFocusChangeListener> copyOnWriteArrayList = this.mOnWindowFocusListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnWindowFocusListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(victim);
+        this.mOnWindowFocusListeners.remove(victim);
     }
 
     public void addOnWindowVisibilityChangeListener(OnWindowVisibilityChangeListener listener) {
@@ -332,11 +297,10 @@ public final class ViewTreeObserver {
 
     public void removeOnWindowVisibilityChangeListener(OnWindowVisibilityChangeListener victim) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnWindowVisibilityChangeListener> copyOnWriteArrayList = this.mOnWindowVisibilityListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnWindowVisibilityListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(victim);
+        this.mOnWindowVisibilityListeners.remove(victim);
     }
 
     public void addOnGlobalFocusChangeListener(OnGlobalFocusChangeListener listener) {
@@ -349,11 +313,10 @@ public final class ViewTreeObserver {
 
     public void removeOnGlobalFocusChangeListener(OnGlobalFocusChangeListener victim) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnGlobalFocusChangeListener> copyOnWriteArrayList = this.mOnGlobalFocusListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnGlobalFocusListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(victim);
+        this.mOnGlobalFocusListeners.remove(victim);
     }
 
     public void addOnGlobalLayoutListener(OnGlobalLayoutListener listener) {
@@ -371,11 +334,10 @@ public final class ViewTreeObserver {
 
     public void removeOnGlobalLayoutListener(OnGlobalLayoutListener victim) {
         checkIsAlive();
-        CopyOnWriteArray<OnGlobalLayoutListener> copyOnWriteArray = this.mOnGlobalLayoutListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mOnGlobalLayoutListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(victim);
+        this.mOnGlobalLayoutListeners.remove(victim);
     }
 
     public void addOnPreDrawListener(OnPreDrawListener listener) {
@@ -388,11 +350,10 @@ public final class ViewTreeObserver {
 
     public void removeOnPreDrawListener(OnPreDrawListener victim) {
         checkIsAlive();
-        CopyOnWriteArray<OnPreDrawListener> copyOnWriteArray = this.mOnPreDrawListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mOnPreDrawListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(victim);
+        this.mOnPreDrawListeners.remove(victim);
     }
 
     public void addOnWindowShownListener(OnWindowShownListener listener) {
@@ -408,11 +369,10 @@ public final class ViewTreeObserver {
 
     public void removeOnWindowShownListener(OnWindowShownListener victim) {
         checkIsAlive();
-        CopyOnWriteArray<OnWindowShownListener> copyOnWriteArray = this.mOnWindowShownListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mOnWindowShownListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(victim);
+        this.mOnWindowShownListeners.remove(victim);
     }
 
     public void addOnDrawListener(OnDrawListener listener) {
@@ -453,7 +413,7 @@ public final class ViewTreeObserver {
         this.mOnFrameCommitListeners.add(callback);
     }
 
-    public ArrayList<Runnable> captureFrameCommitCallbacks() {
+    ArrayList<Runnable> captureFrameCommitCallbacks() {
         ArrayList<Runnable> ret = this.mOnFrameCommitListeners;
         this.mOnFrameCommitListeners = null;
         return ret;
@@ -461,11 +421,10 @@ public final class ViewTreeObserver {
 
     public boolean unregisterFrameCommitCallback(Runnable callback) {
         checkIsAlive();
-        ArrayList<Runnable> arrayList = this.mOnFrameCommitListeners;
-        if (arrayList == null) {
+        if (this.mOnFrameCommitListeners == null) {
             return false;
         }
-        return arrayList.remove(callback);
+        return this.mOnFrameCommitListeners.remove(callback);
     }
 
     public void addOnScrollChangedListener(OnScrollChangedListener listener) {
@@ -478,11 +437,10 @@ public final class ViewTreeObserver {
 
     public void removeOnScrollChangedListener(OnScrollChangedListener victim) {
         checkIsAlive();
-        CopyOnWriteArray<OnScrollChangedListener> copyOnWriteArray = this.mOnScrollChangedListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mOnScrollChangedListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(victim);
+        this.mOnScrollChangedListeners.remove(victim);
     }
 
     public void addOnTouchModeChangeListener(OnTouchModeChangeListener listener) {
@@ -495,11 +453,10 @@ public final class ViewTreeObserver {
 
     public void removeOnTouchModeChangeListener(OnTouchModeChangeListener victim) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnTouchModeChangeListener> copyOnWriteArrayList = this.mOnTouchModeChangeListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnTouchModeChangeListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(victim);
+        this.mOnTouchModeChangeListeners.remove(victim);
     }
 
     public void addOnComputeInternalInsetsListener(OnComputeInternalInsetsListener listener) {
@@ -512,11 +469,10 @@ public final class ViewTreeObserver {
 
     public void removeOnComputeInternalInsetsListener(OnComputeInternalInsetsListener victim) {
         checkIsAlive();
-        CopyOnWriteArray<OnComputeInternalInsetsListener> copyOnWriteArray = this.mOnComputeInternalInsetsListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mOnComputeInternalInsetsListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(victim);
+        this.mOnComputeInternalInsetsListeners.remove(victim);
     }
 
     public void addOnEnterAnimationCompleteListener(OnEnterAnimationCompleteListener listener) {
@@ -529,11 +485,10 @@ public final class ViewTreeObserver {
 
     public void removeOnEnterAnimationCompleteListener(OnEnterAnimationCompleteListener listener) {
         checkIsAlive();
-        CopyOnWriteArrayList<OnEnterAnimationCompleteListener> copyOnWriteArrayList = this.mOnEnterAnimationCompleteListeners;
-        if (copyOnWriteArrayList == null) {
+        if (this.mOnEnterAnimationCompleteListeners == null) {
             return;
         }
-        copyOnWriteArrayList.remove(listener);
+        this.mOnEnterAnimationCompleteListeners.remove(listener);
     }
 
     public void addOnSystemGestureExclusionRectsChangedListener(Consumer<List<Rect>> listener) {
@@ -546,11 +501,10 @@ public final class ViewTreeObserver {
 
     public void removeOnSystemGestureExclusionRectsChangedListener(Consumer<List<Rect>> listener) {
         checkIsAlive();
-        CopyOnWriteArray<Consumer<List<Rect>>> copyOnWriteArray = this.mGestureExclusionListeners;
-        if (copyOnWriteArray == null) {
+        if (this.mGestureExclusionListeners == null) {
             return;
         }
-        copyOnWriteArray.remove(listener);
+        this.mGestureExclusionListeners.remove(listener);
     }
 
     private void checkIsAlive() {
@@ -567,7 +521,7 @@ public final class ViewTreeObserver {
         this.mAlive = false;
     }
 
-    public final void dispatchOnWindowAttachedChange(boolean attached) {
+    final void dispatchOnWindowAttachedChange(boolean attached) {
         CopyOnWriteArrayList<OnWindowAttachListener> listeners = this.mOnWindowAttachListeners;
         if (listeners != null && listeners.size() > 0) {
             Iterator<OnWindowAttachListener> it = listeners.iterator();
@@ -582,7 +536,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public final void dispatchOnWindowFocusChange(boolean hasFocus) {
+    final void dispatchOnWindowFocusChange(boolean hasFocus) {
         CopyOnWriteArrayList<OnWindowFocusChangeListener> listeners = this.mOnWindowFocusListeners;
         if (listeners != null && listeners.size() > 0) {
             Iterator<OnWindowFocusChangeListener> it = listeners.iterator();
@@ -593,7 +547,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public void dispatchOnWindowVisibilityChange(int visibility) {
+    void dispatchOnWindowVisibilityChange(int visibility) {
         CopyOnWriteArrayList<OnWindowVisibilityChangeListener> listeners = this.mOnWindowVisibilityListeners;
         if (listeners != null && listeners.size() > 0) {
             Iterator<OnWindowVisibilityChangeListener> it = listeners.iterator();
@@ -604,7 +558,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public final void dispatchOnGlobalFocusChange(View oldFocus, View newFocus) {
+    final void dispatchOnGlobalFocusChange(View oldFocus, View newFocus) {
         CopyOnWriteArrayList<OnGlobalFocusChangeListener> listeners = this.mOnGlobalFocusListeners;
         if (listeners != null && listeners.size() > 0) {
             Iterator<OnGlobalFocusChangeListener> it = listeners.iterator();
@@ -631,8 +585,7 @@ public final class ViewTreeObserver {
     }
 
     final boolean hasOnPreDrawListeners() {
-        CopyOnWriteArray<OnPreDrawListener> copyOnWriteArray = this.mOnPreDrawListeners;
-        return copyOnWriteArray != null && copyOnWriteArray.size() > 0;
+        return this.mOnPreDrawListeners != null && this.mOnPreDrawListeners.size() > 0;
     }
 
     public final boolean dispatchOnPreDraw() {
@@ -646,13 +599,18 @@ public final class ViewTreeObserver {
                 int count = access.size();
                 for (int i = 0; i < count; i++) {
                     OnPreDrawListener preDrawListener = access.get(i);
-                    boolean cancel = !preDrawListener.onPreDraw();
-                    if (cancel && (CoreRune.SAFE_DEBUG || CoreRune.IS_DEBUG_LEVEL_MID || CoreRune.IS_DEBUG_LEVEL_HIGH)) {
-                        this.mLog += preDrawListener.toString() + " ";
-                    }
-                    cancelDraw |= cancel;
-                    if (cancelDraw) {
-                        this.mLastDispatchOnPreDrawCanceledReason = preDrawListener.getClass().getName();
+                    boolean listenerCanceledDraw = !preDrawListener.onPreDraw();
+                    cancelDraw |= listenerCanceledDraw;
+                    if (listenerCanceledDraw) {
+                        String className = preDrawListener.getClass().getName();
+                        if (this.mLastDispatchOnPreDrawCanceledReason == null) {
+                            this.mLastDispatchOnPreDrawCanceledReason = new StringBuilder(className);
+                        } else {
+                            this.mLastDispatchOnPreDrawCanceledReason.append(NtpTrustedTime.NTP_SETTING_SERVER_NAME_DELIMITER).append(className);
+                        }
+                        if (CoreRune.IS_DEBUG_LEVEL_MID || CoreRune.IS_DEBUG_LEVEL_HIGH) {
+                            this.mLog += preDrawListener.toString() + " ";
+                        }
                     }
                 }
             } finally {
@@ -662,8 +620,11 @@ public final class ViewTreeObserver {
         return cancelDraw;
     }
 
-    public final String getLastDispatchOnPreDrawCanceledReason() {
-        return this.mLastDispatchOnPreDrawCanceledReason;
+    final String getLastDispatchOnPreDrawCanceledReason() {
+        if (this.mLastDispatchOnPreDrawCanceledReason != null) {
+            return this.mLastDispatchOnPreDrawCanceledReason.toString();
+        }
+        return null;
     }
 
     public final void dispatchOnWindowShown() {
@@ -694,7 +655,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public final void dispatchOnTouchModeChanged(boolean inTouchMode) {
+    final void dispatchOnTouchModeChanged(boolean inTouchMode) {
         CopyOnWriteArrayList<OnTouchModeChangeListener> listeners = this.mOnTouchModeChangeListeners;
         if (listeners != null && listeners.size() > 0) {
             Iterator<OnTouchModeChangeListener> it = listeners.iterator();
@@ -705,7 +666,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public final void dispatchOnScrollChanged() {
+    final void dispatchOnScrollChanged() {
         CopyOnWriteArray<OnScrollChangedListener> listeners = this.mOnScrollChangedListeners;
         if (listeners != null && listeners.size() > 0) {
             CopyOnWriteArray.Access<OnScrollChangedListener> access = listeners.start();
@@ -720,12 +681,12 @@ public final class ViewTreeObserver {
         }
     }
 
-    public final boolean hasComputeInternalInsetsListeners() {
+    final boolean hasComputeInternalInsetsListeners() {
         CopyOnWriteArray<OnComputeInternalInsetsListener> listeners = this.mOnComputeInternalInsetsListeners;
         return listeners != null && listeners.size() > 0;
     }
 
-    public final void dispatchOnComputeInternalInsets(InternalInsetsInfo inoutInfo) {
+    final void dispatchOnComputeInternalInsets(InternalInsetsInfo inoutInfo) {
         CopyOnWriteArray<OnComputeInternalInsetsListener> listeners = this.mOnComputeInternalInsetsListeners;
         if (listeners != null && listeners.size() > 0) {
             CopyOnWriteArray.Access<OnComputeInternalInsetsListener> access = listeners.start();
@@ -751,7 +712,7 @@ public final class ViewTreeObserver {
         }
     }
 
-    public void dispatchOnSystemGestureExclusionRectsChanged(List<Rect> rects) {
+    void dispatchOnSystemGestureExclusionRectsChanged(List<Rect> rects) {
         CopyOnWriteArray<Consumer<List<Rect>>> listeners = this.mGestureExclusionListeners;
         if (listeners != null && listeners.size() > 0) {
             CopyOnWriteArray.Access<Consumer<List<Rect>>> access = listeners.start();
@@ -766,15 +727,13 @@ public final class ViewTreeObserver {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class CopyOnWriteArray<T> {
+    static class CopyOnWriteArray<T> {
         private ArrayList<T> mDataCopy;
         private boolean mStart;
         private ArrayList<T> mData = new ArrayList<>();
         private final Access<T> mAccess = new Access<>();
 
-        /* loaded from: classes4.dex */
-        public static class Access<T> {
+        static class Access<T> {
             private ArrayList<T> mData;
             private int mSize;
 
@@ -819,9 +778,8 @@ public final class ViewTreeObserver {
                 throw new IllegalStateException("Iteration not started");
             }
             this.mStart = false;
-            ArrayList<T> arrayList = this.mDataCopy;
-            if (arrayList != null) {
-                this.mData = arrayList;
+            if (this.mDataCopy != null) {
+                this.mData = this.mDataCopy;
                 ((Access) this.mAccess).mData.clear();
                 ((Access) this.mAccess).mSize = 0;
             }
@@ -859,16 +817,14 @@ public final class ViewTreeObserver {
 
     public void semRemoveOnStylusButtonEventListener(SemOnStylusButtonEventListener victim) {
         checkIsAlive();
-        ArrayList<SemOnStylusButtonEventListener> arrayList = this.mOnStylusButtonEventListeners;
-        if (arrayList == null) {
+        if (this.mOnStylusButtonEventListeners == null) {
             return;
         }
-        arrayList.remove(victim);
+        this.mOnStylusButtonEventListeners.remove(victim);
     }
 
     public final void dispatchOnPenButtonEventListener(MotionEvent event) {
-        ArrayList<SemOnStylusButtonEventListener> arrayList = this.mOnStylusButtonEventListeners;
-        if (arrayList != null && arrayList.size() > 0) {
+        if (this.mOnStylusButtonEventListeners != null && this.mOnStylusButtonEventListeners.size() > 0) {
             ArrayList<SemOnStylusButtonEventListener> listeners = (ArrayList) this.mOnStylusButtonEventListeners.clone();
             int numListeners = listeners.size();
             for (int i = 0; i < numListeners; i++) {

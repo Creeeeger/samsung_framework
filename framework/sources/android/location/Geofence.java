@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class Geofence implements Parcelable {
     public static final Parcelable.Creator<Geofence> CREATOR = new Parcelable.Creator<Geofence>() { // from class: android.location.Geofence.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Geofence createFromParcel(Parcel in) {
             return new Geofence(in.readDouble(), in.readDouble(), in.readFloat(), in.readLong());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Geofence[] newArray(int size) {
             return new Geofence[size];
@@ -61,23 +60,6 @@ public final class Geofence implements Parcelable {
 
     public boolean isExpired(long referenceRealtimeMs) {
         return referenceRealtimeMs >= this.mExpirationRealtimeMs;
-    }
-
-    /* renamed from: android.location.Geofence$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Geofence> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Geofence createFromParcel(Parcel in) {
-            return new Geofence(in.readDouble(), in.readDouble(), in.readFloat(), in.readLong());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Geofence[] newArray(int size) {
-            return new Geofence[size];
-        }
     }
 
     @Override // android.os.Parcelable

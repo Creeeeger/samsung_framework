@@ -1,12 +1,11 @@
 package android.util;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes4.dex */
-public class ContainerHelpers {
+class ContainerHelpers {
     ContainerHelpers() {
     }
 
-    public static int binarySearch(int[] array, int size, int value) {
+    static int binarySearch(int[] array, int size, int value) {
         int lo = 0;
         int hi = size - 1;
         while (lo <= hi) {
@@ -23,7 +22,7 @@ public class ContainerHelpers {
         return ~lo;
     }
 
-    public static int binarySearch(long[] array, int size, long value) {
+    static int binarySearch(long[] array, int size, long value) {
         int lo = 0;
         int hi = size - 1;
         while (lo <= hi) {

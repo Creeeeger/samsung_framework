@@ -13,7 +13,7 @@ public final class FillCallback {
     private static final String TAG = FillCallback.class.getSimpleName();
     private final AugmentedAutofillService.AutofillProxy mProxy;
 
-    public FillCallback(AugmentedAutofillService.AutofillProxy proxy) {
+    FillCallback(AugmentedAutofillService.AutofillProxy proxy) {
         this.mProxy = proxy;
     }
 

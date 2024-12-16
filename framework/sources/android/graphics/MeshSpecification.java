@@ -19,21 +19,15 @@ public class MeshSpecification {
     long mNativeMeshSpec;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     private @interface AlphaType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     private @interface Type {
     }
 
-    /* renamed from: -$$Nest$smnativeGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1143$$Nest$smnativeGetFinalizer() {
-        return nativeGetFinalizer();
-    }
-
-    private static native long nativeGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nativeGetFinalizer();
 
     private static native long nativeMake(Attribute[] attributeArr, int i, Varying[] varyingArr, String str, String str2);
 
@@ -41,7 +35,6 @@ public class MeshSpecification {
 
     private static native long nativeMakeWithCS(Attribute[] attributeArr, int i, Varying[] varyingArr, String str, String str2, long j);
 
-    /* loaded from: classes.dex */
     public static class Attribute {
         private final String mName;
         private final int mOffset;
@@ -70,7 +63,6 @@ public class MeshSpecification {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Varying {
         private final String mName;
         private final int mType;
@@ -93,10 +85,8 @@ public class MeshSpecification {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class MeshSpecificationHolder {
-        public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), MeshSpecification.m1143$$Nest$smnativeGetFinalizer());
+    private static class MeshSpecificationHolder {
+        public static final NativeAllocationRegistry MESH_SPECIFICATION_REGISTRY = NativeAllocationRegistry.createMalloced(MeshSpecification.class.getClassLoader(), MeshSpecification.nativeGetFinalizer());
 
         private MeshSpecificationHolder() {
         }

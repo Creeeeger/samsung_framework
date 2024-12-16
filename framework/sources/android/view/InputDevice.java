@@ -12,6 +12,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.text.TextUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -20,14 +21,13 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public final class InputDevice implements Parcelable {
     public static final Parcelable.Creator<InputDevice> CREATOR = new Parcelable.Creator<InputDevice>() { // from class: android.view.InputDevice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputDevice createFromParcel(Parcel in) {
             return new InputDevice(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InputDevice[] newArray(int size) {
             return new InputDevice[size];
@@ -95,6 +95,8 @@ public final class InputDevice implements Parcelable {
     private final int mAssociatedDisplayId;
     private final int mControllerNumber;
     private final String mDescriptor;
+    private final int mDeviceBus;
+    private final boolean mEnabled;
     private final int mGeneration;
     private final boolean mHasBattery;
     private final boolean mHasButtonUnderPad;
@@ -118,52 +120,34 @@ public final class InputDevice implements Parcelable {
     private final int mVendorId;
     private Vibrator mVibrator;
     private VibratorManager mVibratorManager;
+    private final ViewBehavior mViewBehavior;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface InputSourceClass {
     }
 
-    /* synthetic */ InputDevice(int i, int i2, int i3, String str, int i4, int i5, String str2, boolean z, int i6, int i7, KeyCharacterMap keyCharacterMap, String str3, String str4, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, int i8, int i9, int i10, InputDeviceIA inputDeviceIA) {
-        this(i, i2, i3, str, i4, i5, str2, z, i6, i7, keyCharacterMap, str3, str4, z2, z3, z4, z5, z6, i8, i9, i10);
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Source {
     }
 
-    /* synthetic */ InputDevice(Parcel parcel, InputDeviceIA inputDeviceIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.view.InputDevice$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InputDevice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputDevice createFromParcel(Parcel in) {
-            return new InputDevice(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InputDevice[] newArray(int size) {
-            return new InputDevice[size];
-        }
-    }
-
-    private InputDevice(int id, int generation, int controllerNumber, String name, int vendorId, int productId, String descriptor, boolean isExternal, int sources, int keyboardType, KeyCharacterMap keyCharacterMap, String keyboardLanguageTag, String keyboardLayoutType, boolean hasVibrator, boolean hasMicrophone, boolean hasButtonUnderPad, boolean hasSensor, boolean hasBattery, int usiVersionMajor, int usiVersionMinor, int associatedDisplayId) {
+    private InputDevice(int id, int generation, int controllerNumber, String name, int vendorId, int productId, int deviceBus, String descriptor, boolean isExternal, int sources, int keyboardType, KeyCharacterMap keyCharacterMap, String keyboardLanguageTag, String keyboardLayoutType, boolean hasVibrator, boolean hasMicrophone, boolean hasButtonUnderPad, boolean hasSensor, boolean hasBattery, int usiVersionMajor, int usiVersionMinor, int associatedDisplayId, boolean enabled) {
         this.mMotionRanges = new ArrayList<>();
+        this.mViewBehavior = new ViewBehavior(this);
         this.mId = id;
         this.mGeneration = generation;
         this.mControllerNumber = controllerNumber;
         this.mName = name;
         this.mVendorId = vendorId;
         this.mProductId = productId;
+        this.mDeviceBus = deviceBus;
         this.mDescriptor = descriptor;
         this.mIsExternal = isExternal;
         this.mSources = sources;
         this.mKeyboardType = keyboardType;
         this.mKeyCharacterMap = keyCharacterMap;
-        if (keyboardLanguageTag != null) {
-            this.mKeyboardLanguageTag = ULocale.createCanonical(ULocale.forLanguageTag(keyboardLanguageTag)).toLanguageTag();
+        if (!TextUtils.isEmpty(keyboardLanguageTag)) {
+            String langTag = ULocale.createCanonical(ULocale.forLanguageTag(keyboardLanguageTag)).toLanguageTag();
+            this.mKeyboardLanguageTag = TextUtils.equals(langTag, "und") ? null : langTag;
         } else {
             this.mKeyboardLanguageTag = null;
         }
@@ -176,21 +160,21 @@ public final class InputDevice implements Parcelable {
         this.mIdentifier = new InputDeviceIdentifier(descriptor, vendorId, productId);
         this.mHostUsiVersion = new HostUsiVersion(usiVersionMajor, usiVersionMinor);
         this.mAssociatedDisplayId = associatedDisplayId;
+        this.mEnabled = enabled;
     }
 
     private InputDevice(Parcel in) {
         this.mMotionRanges = new ArrayList<>();
+        this.mViewBehavior = new ViewBehavior(this);
         this.mKeyCharacterMap = KeyCharacterMap.CREATOR.createFromParcel(in);
         this.mId = in.readInt();
         this.mGeneration = in.readInt();
         this.mControllerNumber = in.readInt();
         this.mName = in.readString();
-        int readInt = in.readInt();
-        this.mVendorId = readInt;
-        int readInt2 = in.readInt();
-        this.mProductId = readInt2;
-        String readString = in.readString();
-        this.mDescriptor = readString;
+        this.mVendorId = in.readInt();
+        this.mProductId = in.readInt();
+        this.mDeviceBus = in.readInt();
+        this.mDescriptor = in.readString();
         this.mIsExternal = in.readInt() != 0;
         this.mSources = in.readInt();
         this.mKeyboardType = in.readInt();
@@ -203,22 +187,25 @@ public final class InputDevice implements Parcelable {
         this.mHasBattery = in.readInt() != 0;
         this.mHostUsiVersion = HostUsiVersion.CREATOR.createFromParcel(in);
         this.mAssociatedDisplayId = in.readInt();
-        this.mIdentifier = new InputDeviceIdentifier(readString, readInt, readInt2);
+        this.mEnabled = in.readInt() != 0;
+        this.mIdentifier = new InputDeviceIdentifier(this.mDescriptor, this.mVendorId, this.mProductId);
         int numRanges = in.readInt();
         numRanges = numRanges > 1000 ? 1000 : numRanges;
         for (int i = 0; i < numRanges; i++) {
             addMotionRange(in.readInt(), in.readInt(), in.readFloat(), in.readFloat(), in.readFloat(), in.readFloat(), in.readFloat());
         }
+        this.mViewBehavior.mShouldSmoothScroll = in.readBoolean();
     }
 
-    /* loaded from: classes4.dex */
     public static class Builder {
+        private boolean mShouldSmoothScroll;
         private int mId = 0;
         private int mGeneration = 0;
         private int mControllerNumber = 0;
         private String mName = "";
         private int mVendorId = 0;
         private int mProductId = 0;
+        private int mDeviceBus = 0;
         private String mDescriptor = "";
         private boolean mIsExternal = false;
         private int mSources = 0;
@@ -234,6 +221,7 @@ public final class InputDevice implements Parcelable {
         private int mUsiVersionMajor = -1;
         private int mUsiVersionMinor = -1;
         private int mAssociatedDisplayId = -1;
+        private boolean mEnabled = true;
         private List<MotionRange> mMotionRanges = new ArrayList();
 
         public Builder setId(int id) {
@@ -263,6 +251,11 @@ public final class InputDevice implements Parcelable {
 
         public Builder setProductId(int productId) {
             this.mProductId = productId;
+            return this;
+        }
+
+        public Builder setDeviceBus(int deviceBus) {
+            this.mDeviceBus = deviceBus;
             return this;
         }
 
@@ -337,18 +330,29 @@ public final class InputDevice implements Parcelable {
             return this;
         }
 
+        public Builder setEnabled(boolean enabled) {
+            this.mEnabled = enabled;
+            return this;
+        }
+
         public Builder addMotionRange(int axis, int source, float min, float max, float flat, float fuzz, float resolution) {
             this.mMotionRanges.add(new MotionRange(axis, source, min, max, flat, fuzz, resolution));
             return this;
         }
 
+        public Builder setShouldSmoothScroll(boolean shouldSmoothScroll) {
+            this.mShouldSmoothScroll = shouldSmoothScroll;
+            return this;
+        }
+
         public InputDevice build() {
-            InputDevice device = new InputDevice(this.mId, this.mGeneration, this.mControllerNumber, this.mName, this.mVendorId, this.mProductId, this.mDescriptor, this.mIsExternal, this.mSources, this.mKeyboardType, this.mKeyCharacterMap, this.mKeyboardLanguageTag, this.mKeyboardLayoutType, this.mHasVibrator, this.mHasMicrophone, this.mHasButtonUnderPad, this.mHasSensor, this.mHasBattery, this.mUsiVersionMajor, this.mUsiVersionMinor, this.mAssociatedDisplayId);
+            InputDevice device = new InputDevice(this.mId, this.mGeneration, this.mControllerNumber, this.mName, this.mVendorId, this.mProductId, this.mDeviceBus, this.mDescriptor, this.mIsExternal, this.mSources, this.mKeyboardType, this.mKeyCharacterMap, this.mKeyboardLanguageTag, this.mKeyboardLayoutType, this.mHasVibrator, this.mHasMicrophone, this.mHasButtonUnderPad, this.mHasSensor, this.mHasBattery, this.mUsiVersionMajor, this.mUsiVersionMinor, this.mAssociatedDisplayId, this.mEnabled);
             int numRanges = this.mMotionRanges.size();
             for (int i = 0; i < numRanges; i++) {
                 MotionRange range = this.mMotionRanges.get(i);
                 device.addMotionRange(range.getAxis(), range.getSource(), range.getMin(), range.getMax(), range.getFlat(), range.getFuzz(), range.getResolution());
             }
+            device.setShouldSmoothScroll(this.mShouldSmoothScroll);
             return device;
         }
     }
@@ -383,6 +387,10 @@ public final class InputDevice implements Parcelable {
 
     public int getProductId() {
         return this.mProductId;
+    }
+
+    public int getDeviceBus() {
+        return this.mDeviceBus;
     }
 
     public String getDescriptor() {
@@ -463,8 +471,18 @@ public final class InputDevice implements Parcelable {
         return this.mMotionRanges;
     }
 
+    public ViewBehavior getViewBehavior() {
+        return this.mViewBehavior;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void addMotionRange(int axis, int source, float min, float max, float flat, float fuzz, float resolution) {
         this.mMotionRanges.add(new MotionRange(axis, source, min, max, flat, fuzz, resolution));
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void setShouldSmoothScroll(boolean shouldSmoothScroll) {
+        this.mViewBehavior.mShouldSmoothScroll = shouldSmoothScroll;
     }
 
     public String getBluetoothAddress() {
@@ -519,7 +537,7 @@ public final class InputDevice implements Parcelable {
     }
 
     public boolean isEnabled() {
-        return InputManagerGlobal.getInstance().isInputDeviceEnabled(this.mId);
+        return this.mEnabled;
     }
 
     public void enable() {
@@ -542,24 +560,11 @@ public final class InputDevice implements Parcelable {
         return this.mHasSensor;
     }
 
-    public void setPointerType(int pointerType) {
-        InputManagerGlobal.getInstance().setPointerIconType(pointerType);
-    }
-
-    private void hidden_setPointerType(int pointerType) {
-        setPointerType(pointerType);
+    public boolean hasBattery() {
+        return this.mHasBattery;
     }
 
     public void semSetPointerType(int pointerType) {
-        setPointerType(pointerType);
-    }
-
-    public void setCustomPointerIcon(PointerIcon icon) {
-        InputManagerGlobal.getInstance().setCustomPointerIcon(icon);
-    }
-
-    public boolean hasBattery() {
-        return this.mHasBattery;
     }
 
     public HostUsiVersion getHostUsiVersion() {
@@ -573,7 +578,6 @@ public final class InputDevice implements Parcelable {
         return this.mAssociatedDisplayId;
     }
 
-    /* loaded from: classes4.dex */
     public static final class MotionRange {
         private int mAxis;
         private float mFlat;
@@ -582,10 +586,6 @@ public final class InputDevice implements Parcelable {
         private float mMin;
         private float mResolution;
         private int mSource;
-
-        /* synthetic */ MotionRange(int i, int i2, float f, float f2, float f3, float f4, float f5, MotionRangeIA motionRangeIA) {
-            this(i, i2, f, f2, f3, f4, f5);
-        }
 
         private MotionRange(int axis, int source, float min, float max, float flat, float fuzz, float resolution) {
             this.mAxis = axis;
@@ -634,6 +634,23 @@ public final class InputDevice implements Parcelable {
         }
     }
 
+    public static final class ViewBehavior {
+        private static final boolean DEFAULT_SHOULD_SMOOTH_SCROLL = false;
+        private final InputDevice mInputDevice;
+        private boolean mShouldSmoothScroll = false;
+
+        public ViewBehavior(InputDevice inputDevice) {
+            this.mInputDevice = inputDevice;
+        }
+
+        public boolean shouldSmoothScroll(int axis, int source) {
+            if (this.mInputDevice.getMotionRange(axis, source) == null) {
+                return false;
+            }
+            return this.mShouldSmoothScroll;
+        }
+    }
+
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int i) {
         this.mKeyCharacterMap.writeToParcel(parcel, i);
@@ -643,6 +660,7 @@ public final class InputDevice implements Parcelable {
         parcel.writeString(this.mName);
         parcel.writeInt(this.mVendorId);
         parcel.writeInt(this.mProductId);
+        parcel.writeInt(this.mDeviceBus);
         parcel.writeString(this.mDescriptor);
         parcel.writeInt(this.mIsExternal ? 1 : 0);
         parcel.writeInt(this.mSources);
@@ -656,6 +674,7 @@ public final class InputDevice implements Parcelable {
         parcel.writeInt(this.mHasBattery ? 1 : 0);
         this.mHostUsiVersion.writeToParcel(parcel, i);
         parcel.writeInt(this.mAssociatedDisplayId);
+        parcel.writeInt(this.mEnabled ? 1 : 0);
         int size = this.mMotionRanges.size();
         int i2 = size <= 1000 ? size : 1000;
         parcel.writeInt(i2);
@@ -669,6 +688,7 @@ public final class InputDevice implements Parcelable {
             parcel.writeFloat(motionRange.mFuzz);
             parcel.writeFloat(motionRange.mResolution);
         }
+        parcel.writeBoolean(this.mViewBehavior.mShouldSmoothScroll);
     }
 
     @Override // android.os.Parcelable
@@ -682,6 +702,7 @@ public final class InputDevice implements Parcelable {
         description.append("  Descriptor: ").append(this.mDescriptor).append("\n");
         description.append("  Generation: ").append(this.mGeneration).append("\n");
         description.append("  Location: ").append(this.mIsExternal ? "external" : "built-in").append("\n");
+        description.append("  Enabled: ").append(isEnabled()).append("\n");
         description.append("  Keyboard Type: ");
         switch (this.mKeyboardType) {
             case 0:

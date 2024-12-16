@@ -98,7 +98,7 @@ public class Profile {
         this.encapsulationType = encapsulationType;
     }
 
-    public static Profile read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static Profile read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         Profile _instance = new Profile();
         String _raw = _parser.getAttributeValue(null, "name");
         if (_raw != null) {

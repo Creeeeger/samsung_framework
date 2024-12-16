@@ -10,7 +10,7 @@ import android.telephony.ims.SipDetails;
 import android.telephony.ims.aidl.IOptionsRequestCallback;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ICapabilityExchangeEventListener extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ICapabilityExchangeEventListener";
 
@@ -22,7 +22,6 @@ public interface ICapabilityExchangeEventListener extends IInterface {
 
     void onUnpublish() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICapabilityExchangeEventListener {
         @Override // android.telephony.ims.aidl.ICapabilityExchangeEventListener
         public void onRequestPublishCapabilities(int publishTriggerType) throws RemoteException {
@@ -46,7 +45,6 @@ public interface ICapabilityExchangeEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICapabilityExchangeEventListener {
         static final int TRANSACTION_onPublishUpdated = 3;
         static final int TRANSACTION_onRemoteCapabilityRequest = 4;
@@ -98,41 +96,37 @@ public interface ICapabilityExchangeEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICapabilityExchangeEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICapabilityExchangeEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICapabilityExchangeEventListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRequestPublishCapabilities(_arg0);
+                    return true;
+                case 2:
+                    onUnpublish();
+                    return true;
+                case 3:
+                    SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPublishUpdated(_arg02);
+                    return true;
+                case 4:
+                    Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    List<String> _arg1 = data.createStringArrayList();
+                    IOptionsRequestCallback _arg2 = IOptionsRequestCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onRemoteCapabilityRequest(_arg03, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRequestPublishCapabilities(_arg0);
-                            return true;
-                        case 2:
-                            onUnpublish();
-                            return true;
-                        case 3:
-                            SipDetails _arg02 = (SipDetails) data.readTypedObject(SipDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPublishUpdated(_arg02);
-                            return true;
-                        case 4:
-                            Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            List<String> _arg1 = data.createStringArrayList();
-                            IOptionsRequestCallback _arg2 = IOptionsRequestCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onRemoteCapabilityRequest(_arg03, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICapabilityExchangeEventListener {
+        private static class Proxy implements ICapabilityExchangeEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

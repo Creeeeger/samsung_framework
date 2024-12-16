@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.PopupWindow;
 import com.android.internal.util.Preconditions;
+import com.samsung.android.rune.ViewRune;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public final class FloatingToolbar {
     public static final String FLOATING_TOOLBAR_TAG = "floating_toolbar";
-    private static final MenuItem.OnMenuItemClickListener NO_OP_MENUITEM_CLICK_LISTENER = new MenuItem.OnMenuItemClickListener() { // from class: com.android.internal.widget.floatingtoolbar.FloatingToolbar$$ExternalSyntheticLambda0
+    private static final MenuItem.OnMenuItemClickListener NO_OP_MENUITEM_CLICK_LISTENER = new MenuItem.OnMenuItemClickListener() { // from class: com.android.internal.widget.floatingtoolbar.FloatingToolbar$$ExternalSyntheticLambda1
         @Override // android.view.MenuItem.OnMenuItemClickListener
         public final boolean onMenuItemClick(MenuItem menuItem) {
             return FloatingToolbar.lambda$static$0(menuItem);
@@ -34,9 +35,6 @@ public final class FloatingToolbar {
         private final Rect mNewRect = new Rect();
         private final Rect mOldRect = new Rect();
 
-        AnonymousClass1() {
-        }
-
         @Override // android.view.View.OnLayoutChangeListener
         public void onLayoutChange(View view, int newLeft, int newRight, int newTop, int newBottom, int oldLeft, int oldRight, int oldTop, int oldBottom) {
             int orientation = view.getContext().getResources().getConfiguration().orientation;
@@ -52,44 +50,18 @@ public final class FloatingToolbar {
             }
         }
     };
-    private final Comparator<MenuItem> mMenuItemComparator = new Comparator() { // from class: com.android.internal.widget.floatingtoolbar.FloatingToolbar$$ExternalSyntheticLambda1
+    private final Comparator<MenuItem> mMenuItemComparator = new Comparator() { // from class: com.android.internal.widget.floatingtoolbar.FloatingToolbar$$ExternalSyntheticLambda0
         @Override // java.util.Comparator
         public final int compare(Object obj, Object obj2) {
             return FloatingToolbar.lambda$new$1((MenuItem) obj, (MenuItem) obj2);
         }
     };
 
-    public static /* synthetic */ boolean lambda$static$0(MenuItem item) {
+    static /* synthetic */ boolean lambda$static$0(MenuItem item) {
         return false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.widget.floatingtoolbar.FloatingToolbar$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements View.OnLayoutChangeListener {
-        private final Rect mNewRect = new Rect();
-        private final Rect mOldRect = new Rect();
-
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnLayoutChangeListener
-        public void onLayoutChange(View view, int newLeft, int newRight, int newTop, int newBottom, int oldLeft, int oldRight, int oldTop, int oldBottom) {
-            int orientation = view.getContext().getResources().getConfiguration().orientation;
-            if (FloatingToolbar.this.mOrientation != orientation) {
-                FloatingToolbar.this.mPopup.setIsMovingStarted(false);
-            }
-            FloatingToolbar.this.mOrientation = orientation;
-            this.mNewRect.set(newLeft, newRight, newTop, newBottom);
-            this.mOldRect.set(oldLeft, oldRight, oldTop, oldBottom);
-            if (!FloatingToolbar.this.mPopup.isDismissed() && !this.mNewRect.equals(this.mOldRect)) {
-                FloatingToolbar.this.mPopup.setWidthChanged(true);
-                FloatingToolbar.this.updateLayout();
-            }
-        }
-    }
-
-    public static /* synthetic */ int lambda$new$1(MenuItem menuItem, MenuItem menuItem2) {
+    static /* synthetic */ int lambda$new$1(MenuItem menuItem, MenuItem menuItem2) {
         if (menuItem.getItemId() == 16908353) {
             return menuItem2.getItemId() == 16908353 ? 0 : -1;
         }
@@ -197,7 +169,9 @@ public final class FloatingToolbar {
 
     private void doShow() {
         List<MenuItem> menuItems = getVisibleAndEnabledMenuItems(this.mMenu);
-        tidy(menuItems);
+        if (!ViewRune.SUPPORT_WRITING_TOOLKIT) {
+            tidy(menuItems);
+        }
         this.mPopup.show(menuItems, this.mMenuItemClickListener, this.mContentRect);
     }
 

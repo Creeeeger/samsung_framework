@@ -20,15 +20,9 @@ public abstract class EndoUtil {
         return new BigInteger[]{a, b};
     }
 
-    public static ECPoint mapPoint(ECEndomorphism endomorphism, ECPoint p) {
+    public static ECPoint mapPoint(final ECEndomorphism endomorphism, final ECPoint p) {
         ECCurve c = p.getCurve();
         EndoPreCompInfo precomp = (EndoPreCompInfo) c.precompute(p, PRECOMP_NAME, new PreCompCallback() { // from class: com.android.internal.org.bouncycastle.math.ec.endo.EndoUtil.1
-            final /* synthetic */ ECPoint val$p;
-
-            AnonymousClass1(ECPoint p2) {
-                p = p2;
-            }
-
             @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
             public PreCompInfo precompute(PreCompInfo existing) {
                 EndoPreCompInfo existingEndo = existing instanceof EndoPreCompInfo ? (EndoPreCompInfo) existing : null;
@@ -47,33 +41,6 @@ public abstract class EndoUtil {
             }
         });
         return precomp.getMappedPoint();
-    }
-
-    /* renamed from: com.android.internal.org.bouncycastle.math.ec.endo.EndoUtil$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PreCompCallback {
-        final /* synthetic */ ECPoint val$p;
-
-        AnonymousClass1(ECPoint p2) {
-            p = p2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.math.ec.PreCompCallback
-        public PreCompInfo precompute(PreCompInfo existing) {
-            EndoPreCompInfo existingEndo = existing instanceof EndoPreCompInfo ? (EndoPreCompInfo) existing : null;
-            if (checkExisting(existingEndo, ECEndomorphism.this)) {
-                return existingEndo;
-            }
-            ECPoint mappedPoint = ECEndomorphism.this.getPointMap().map(p);
-            EndoPreCompInfo result = new EndoPreCompInfo();
-            result.setEndomorphism(ECEndomorphism.this);
-            result.setMappedPoint(mappedPoint);
-            return result;
-        }
-
-        private boolean checkExisting(EndoPreCompInfo existingEndo, ECEndomorphism endomorphism2) {
-            return (existingEndo == null || existingEndo.getEndomorphism() != endomorphism2 || existingEndo.getMappedPoint() == null) ? false : true;
-        }
     }
 
     private static BigInteger calculateB(BigInteger k, BigInteger g, int t) {

@@ -25,7 +25,7 @@ public @interface BufferUsage {
     public static final long PROTECTED = 16384;
     public static final long RENDERSCRIPT = 1048576;
     public static final long SENSOR_DIRECT_DATA = 8388608;
-    public static final long VENDOR_MASK = -268435456;
+    public static final long VENDOR_MASK = 4026531840L;
     public static final long VENDOR_MASK_HI = -281474976710656L;
     public static final long VIDEO_DECODER = 4194304;
     public static final long VIDEO_ENCODER = 65536;

@@ -2,6 +2,7 @@ package android.text;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.icu.lang.UCharacter;
 import android.icu.text.CaseMap;
 import android.icu.text.Edits;
@@ -22,6 +23,7 @@ import android.text.style.EasyEditSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.LineBackgroundSpan;
+import android.text.style.LineBreakConfigSpan;
 import android.text.style.LineHeightSpan;
 import android.text.style.LocaleSpan;
 import android.text.style.ParagraphStyle;
@@ -42,12 +44,12 @@ import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.text.style.UpdateAppearance;
+import android.util.EmptyArray;
 import android.util.Log;
 import android.util.Printer;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Preconditions;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.media.SemExtendedFormat;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -58,7 +60,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class TextUtils {
     public static final int ABSOLUTE_SIZE_SPAN = 16;
     public static final int ACCESSIBILITY_CLICKABLE_SPAN = 25;
@@ -77,9 +79,10 @@ public class TextUtils {
     private static final String ELLIPSIS_TWO_DOTS = "‥";
     public static final int FIRST_SPAN = 1;
     public static final int FOREGROUND_COLOR_SPAN = 2;
-    public static final int LAST_SPAN = 29;
+    public static final int LAST_SPAN = 30;
     public static final int LEADING_MARGIN_SPAN = 10;
     public static final int LINE_BACKGROUND_SPAN = 27;
+    public static final int LINE_BREAK_CONFIG_SPAN = 30;
     public static final int LINE_FEED_CODE_POINT = 10;
     public static final int LINE_HEIGHT_SPAN = 28;
     public static final int LOCALE_SPAN = 23;
@@ -105,11 +108,10 @@ public class TextUtils {
     public static final int UNDERLINE_SPAN = 6;
     public static final int URL_SPAN = 11;
     public static final Parcelable.Creator<CharSequence> CHAR_SEQUENCE_CREATOR = new Parcelable.Creator<CharSequence>() { // from class: android.text.TextUtils.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CharSequence createFromParcel(Parcel p) {
+            Object span;
             int kind = p.readInt();
             String string = p.readString8();
             if (string == null) {
@@ -124,101 +126,106 @@ public class TextUtils {
                 if (kind2 != 0) {
                     switch (kind2) {
                         case 1:
-                            TextUtils.readSpan(p, sp, new AlignmentSpan.Standard(p));
+                            span = new AlignmentSpan.Standard(p);
                             break;
                         case 2:
-                            TextUtils.readSpan(p, sp, new ForegroundColorSpan(p));
+                            span = new ForegroundColorSpan(p);
                             break;
                         case 3:
-                            TextUtils.readSpan(p, sp, new RelativeSizeSpan(p));
+                            span = new RelativeSizeSpan(p);
                             break;
                         case 4:
-                            TextUtils.readSpan(p, sp, new ScaleXSpan(p));
+                            span = new ScaleXSpan(p);
                             break;
                         case 5:
-                            TextUtils.readSpan(p, sp, new StrikethroughSpan(p));
+                            span = new StrikethroughSpan(p);
                             break;
                         case 6:
-                            TextUtils.readSpan(p, sp, new UnderlineSpan(p));
+                            span = new UnderlineSpan(p);
                             break;
                         case 7:
-                            TextUtils.readSpan(p, sp, new StyleSpan(p));
+                            span = new StyleSpan(p);
                             break;
                         case 8:
-                            TextUtils.readSpan(p, sp, new BulletSpan(p));
+                            span = new BulletSpan(p);
                             break;
                         case 9:
-                            TextUtils.readSpan(p, sp, new QuoteSpan(p));
+                            span = new QuoteSpan(p);
                             break;
                         case 10:
-                            TextUtils.readSpan(p, sp, new LeadingMarginSpan.Standard(p));
+                            span = new LeadingMarginSpan.Standard(p);
                             break;
                         case 11:
-                            TextUtils.readSpan(p, sp, new URLSpan(p));
+                            span = new URLSpan(p);
                             break;
                         case 12:
-                            TextUtils.readSpan(p, sp, new BackgroundColorSpan(p));
+                            span = new BackgroundColorSpan(p);
                             break;
                         case 13:
-                            TextUtils.readSpan(p, sp, new TypefaceSpan(p));
+                            span = new TypefaceSpan(p);
                             break;
                         case 14:
-                            TextUtils.readSpan(p, sp, new SuperscriptSpan(p));
+                            span = new SuperscriptSpan(p);
                             break;
                         case 15:
-                            TextUtils.readSpan(p, sp, new SubscriptSpan(p));
+                            span = new SubscriptSpan(p);
                             break;
                         case 16:
-                            TextUtils.readSpan(p, sp, new AbsoluteSizeSpan(p));
+                            span = new AbsoluteSizeSpan(p);
                             break;
                         case 17:
-                            TextUtils.readSpan(p, sp, new TextAppearanceSpan(p));
+                            span = new TextAppearanceSpan(p);
                             break;
                         case 18:
-                            TextUtils.readSpan(p, sp, new Annotation(p));
+                            span = new Annotation(p);
                             break;
                         case 19:
-                            TextUtils.readSpan(p, sp, new SuggestionSpan(p));
+                            span = new SuggestionSpan(p);
                             break;
                         case 20:
-                            TextUtils.readSpan(p, sp, new SpellCheckSpan(p));
+                            span = new SpellCheckSpan(p);
                             break;
                         case 21:
-                            TextUtils.readSpan(p, sp, new SuggestionRangeSpan(p));
+                            span = new SuggestionRangeSpan(p);
                             break;
                         case 22:
-                            TextUtils.readSpan(p, sp, new EasyEditSpan(p));
+                            span = new EasyEditSpan(p);
                             break;
                         case 23:
-                            TextUtils.readSpan(p, sp, new LocaleSpan(p));
+                            span = new LocaleSpan(p);
                             break;
                         case 24:
-                            TextUtils.readSpan(p, sp, new TtsSpan(p));
+                            span = new TtsSpan(p);
                             break;
                         case 25:
-                            TextUtils.readSpan(p, sp, new AccessibilityClickableSpan(p));
+                            span = new AccessibilityClickableSpan(p);
                             break;
                         case 26:
-                            TextUtils.readSpan(p, sp, new AccessibilityURLSpan(p));
+                            span = new AccessibilityURLSpan(p);
                             break;
                         case 27:
-                            TextUtils.readSpan(p, sp, new LineBackgroundSpan.Standard(p));
+                            span = new LineBackgroundSpan.Standard(p);
                             break;
                         case 28:
-                            TextUtils.readSpan(p, sp, new LineHeightSpan.Standard(p));
+                            span = new LineHeightSpan.Standard(p);
                             break;
                         case 29:
-                            TextUtils.readSpan(p, sp, new AccessibilityReplacementSpan(p));
+                            span = new AccessibilityReplacementSpan(p);
+                            break;
+                        case 30:
+                            span = LineBreakConfigSpan.CREATOR.createFromParcel(p);
                             break;
                         default:
                             throw new RuntimeException("bogus span encoding " + kind2);
                     }
+                    TextUtils.readSpan(p, sp, span);
                 } else {
                     return sp;
                 }
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CharSequence[] newArray(int size) {
             return new CharSequence[size];
@@ -226,24 +233,19 @@ public class TextUtils {
     };
     private static Object sLock = new Object();
     private static char[] sTemp = null;
-    private static String[] EMPTY_STRING_ARRAY = new String[0];
 
-    /* loaded from: classes3.dex */
     public interface EllipsizeCallback {
         void ellipsized(int i, int i2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SafeStringFlags {
     }
 
-    /* loaded from: classes3.dex */
     public interface StringSplitter extends Iterable<String> {
         void setString(String str);
     }
 
-    /* loaded from: classes3.dex */
     public enum TruncateAt {
         START,
         MIDDLE,
@@ -501,19 +503,18 @@ public class TextUtils {
 
     public static String[] split(String text, String expression) {
         if (text.length() == 0) {
-            return EMPTY_STRING_ARRAY;
+            return EmptyArray.STRING;
         }
         return text.split(expression, -1);
     }
 
     public static String[] split(String text, Pattern pattern) {
         if (text.length() == 0) {
-            return EMPTY_STRING_ARRAY;
+            return EmptyArray.STRING;
         }
         return pattern.split(text, -1);
     }
 
-    /* loaded from: classes3.dex */
     public static class SimpleStringSplitter implements StringSplitter, Iterator<String> {
         private char mDelimiter;
         private int mLength;
@@ -528,7 +529,7 @@ public class TextUtils {
         public void setString(String string) {
             this.mString = string;
             this.mPosition = 0;
-            this.mLength = string.length();
+            this.mLength = this.mString.length();
         }
 
         @Override // java.lang.Iterable
@@ -641,7 +642,6 @@ public class TextUtils {
         return new Reverser(source, start, end);
     }
 
-    /* loaded from: classes3.dex */
     private static class Reverser implements CharSequence, GetChars {
         private int mEnd;
         private CharSequence mSource;
@@ -677,16 +677,14 @@ public class TextUtils {
 
         @Override // android.text.GetChars
         public void getChars(int start, int end, char[] dest, int destoff) {
-            CharSequence charSequence = this.mSource;
-            int i = this.mStart;
-            TextUtils.getChars(charSequence, start + i, i + end, dest, destoff);
+            TextUtils.getChars(this.mSource, this.mStart + start, this.mStart + end, dest, destoff);
             AndroidCharacter.mirror(dest, 0, end - start);
             int len = end - start;
             int n = (end - start) / 2;
-            for (int i2 = 0; i2 < n; i2++) {
-                char tmp = dest[destoff + i2];
-                dest[destoff + i2] = dest[((destoff + len) - i2) - 1];
-                dest[((destoff + len) - i2) - 1] = tmp;
+            for (int i = 0; i < n; i++) {
+                char tmp = dest[destoff + i];
+                dest[destoff + i] = dest[((destoff + len) - i) - 1];
+                dest[((destoff + len) - i) - 1] = tmp;
             }
         }
     }
@@ -706,7 +704,7 @@ public class TextUtils {
                 if (prop instanceof ParcelableSpan) {
                     ParcelableSpan ps = (ParcelableSpan) prop;
                     int spanTypeId = ps.getSpanTypeIdInternal();
-                    if (spanTypeId < 1 || spanTypeId > 29) {
+                    if (spanTypeId < 1 || spanTypeId > 30) {
                         Log.e(TAG, "External class \"" + ps.getClass().getSimpleName() + "\" is attempting to use the frameworks-only ParcelableSpan interface");
                     } else {
                         p.writeInt(spanTypeId);
@@ -730,129 +728,6 @@ public class TextUtils {
         p.writeInt(sp.getSpanStart(o));
         p.writeInt(sp.getSpanEnd(o));
         p.writeInt(sp.getSpanFlags(o));
-    }
-
-    /* renamed from: android.text.TextUtils$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CharSequence> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CharSequence createFromParcel(Parcel p) {
-            int kind = p.readInt();
-            String string = p.readString8();
-            if (string == null) {
-                return null;
-            }
-            if (kind == 1) {
-                return string;
-            }
-            SpannableString sp = new SpannableString(string);
-            while (true) {
-                int kind2 = p.readInt();
-                if (kind2 != 0) {
-                    switch (kind2) {
-                        case 1:
-                            TextUtils.readSpan(p, sp, new AlignmentSpan.Standard(p));
-                            break;
-                        case 2:
-                            TextUtils.readSpan(p, sp, new ForegroundColorSpan(p));
-                            break;
-                        case 3:
-                            TextUtils.readSpan(p, sp, new RelativeSizeSpan(p));
-                            break;
-                        case 4:
-                            TextUtils.readSpan(p, sp, new ScaleXSpan(p));
-                            break;
-                        case 5:
-                            TextUtils.readSpan(p, sp, new StrikethroughSpan(p));
-                            break;
-                        case 6:
-                            TextUtils.readSpan(p, sp, new UnderlineSpan(p));
-                            break;
-                        case 7:
-                            TextUtils.readSpan(p, sp, new StyleSpan(p));
-                            break;
-                        case 8:
-                            TextUtils.readSpan(p, sp, new BulletSpan(p));
-                            break;
-                        case 9:
-                            TextUtils.readSpan(p, sp, new QuoteSpan(p));
-                            break;
-                        case 10:
-                            TextUtils.readSpan(p, sp, new LeadingMarginSpan.Standard(p));
-                            break;
-                        case 11:
-                            TextUtils.readSpan(p, sp, new URLSpan(p));
-                            break;
-                        case 12:
-                            TextUtils.readSpan(p, sp, new BackgroundColorSpan(p));
-                            break;
-                        case 13:
-                            TextUtils.readSpan(p, sp, new TypefaceSpan(p));
-                            break;
-                        case 14:
-                            TextUtils.readSpan(p, sp, new SuperscriptSpan(p));
-                            break;
-                        case 15:
-                            TextUtils.readSpan(p, sp, new SubscriptSpan(p));
-                            break;
-                        case 16:
-                            TextUtils.readSpan(p, sp, new AbsoluteSizeSpan(p));
-                            break;
-                        case 17:
-                            TextUtils.readSpan(p, sp, new TextAppearanceSpan(p));
-                            break;
-                        case 18:
-                            TextUtils.readSpan(p, sp, new Annotation(p));
-                            break;
-                        case 19:
-                            TextUtils.readSpan(p, sp, new SuggestionSpan(p));
-                            break;
-                        case 20:
-                            TextUtils.readSpan(p, sp, new SpellCheckSpan(p));
-                            break;
-                        case 21:
-                            TextUtils.readSpan(p, sp, new SuggestionRangeSpan(p));
-                            break;
-                        case 22:
-                            TextUtils.readSpan(p, sp, new EasyEditSpan(p));
-                            break;
-                        case 23:
-                            TextUtils.readSpan(p, sp, new LocaleSpan(p));
-                            break;
-                        case 24:
-                            TextUtils.readSpan(p, sp, new TtsSpan(p));
-                            break;
-                        case 25:
-                            TextUtils.readSpan(p, sp, new AccessibilityClickableSpan(p));
-                            break;
-                        case 26:
-                            TextUtils.readSpan(p, sp, new AccessibilityURLSpan(p));
-                            break;
-                        case 27:
-                            TextUtils.readSpan(p, sp, new LineBackgroundSpan.Standard(p));
-                            break;
-                        case 28:
-                            TextUtils.readSpan(p, sp, new LineHeightSpan.Standard(p));
-                            break;
-                        case 29:
-                            TextUtils.readSpan(p, sp, new AccessibilityReplacementSpan(p));
-                            break;
-                        default:
-                            throw new RuntimeException("bogus span encoding " + kind2);
-                    }
-                } else {
-                    return sp;
-                }
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CharSequence[] newArray(int size) {
-            return new CharSequence[size];
-        }
     }
 
     public static void dumpSpans(CharSequence cs, Printer printer, String prefix) {
@@ -975,6 +850,7 @@ public class TextUtils {
         return offset2;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void readSpan(Parcel p, Spannable sp, Object o) {
         sp.setSpan(o, p.readInt(), p.readInt(), p.readInt());
     }
@@ -1102,8 +978,8 @@ public class TextUtils {
         return commaEllipsize(text, p, avail, oneMore, more, TextDirectionHeuristics.FIRSTSTRONG_LTR);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:39:0x00f8  */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x00fd  */
+    /* JADX WARN: Removed duplicated region for block: B:39:0x00f6  */
+    /* JADX WARN: Removed duplicated region for block: B:41:0x00fb  */
     @java.lang.Deprecated
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -1111,17 +987,17 @@ public class TextUtils {
     */
     public static java.lang.CharSequence commaEllipsize(java.lang.CharSequence r22, android.text.TextPaint r23, float r24, java.lang.String r25, java.lang.String r26, android.text.TextDirectionHeuristic r27) {
         /*
-            Method dump skipped, instructions count: 257
+            Method dump skipped, instructions count: 255
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.text.TextUtils.commaEllipsize(java.lang.CharSequence, android.text.TextPaint, float, java.lang.String, java.lang.String, android.text.TextDirectionHeuristic):java.lang.CharSequence");
     }
 
-    public static boolean couldAffectRtl(char c) {
+    static boolean couldAffectRtl(char c) {
         return (1424 <= c && c <= 2303) || c == 8206 || c == 8207 || (8234 <= c && c <= 8238) || ((8294 <= c && c <= 8297) || ((55296 <= c && c <= 57343) || ((64285 <= c && c <= 65023) || (65136 <= c && c <= 65278))));
     }
 
-    public static boolean doesNotNeedBidi(char[] text, int start, int len) {
+    static boolean doesNotNeedBidi(char[] text, int start, int len) {
         int end = start + len;
         for (int i = start; i < end; i++) {
             if (couldAffectRtl(text[i])) {
@@ -1131,7 +1007,7 @@ public class TextUtils {
         return true;
     }
 
-    public static char[] obtain(int len) {
+    static char[] obtain(int len) {
         char[] buf;
         synchronized (sLock) {
             buf = sTemp;
@@ -1143,13 +1019,20 @@ public class TextUtils {
         return buf;
     }
 
-    public static void recycle(char[] temp) {
+    static char[] obtain$ravenwood(int len) {
+        return new char[len];
+    }
+
+    static void recycle(char[] temp) {
         if (temp.length > 1000) {
             return;
         }
         synchronized (sLock) {
             sTemp = temp;
         }
+    }
+
+    static void recycle$ravenwood(char[] temp) {
     }
 
     public static String htmlEncode(String s) {
@@ -1207,7 +1090,7 @@ public class TextUtils {
             int length2 = text.length;
             while (i < length2) {
                 CharSequence piece = text[i];
-                ssb.append(piece == null ? SemCapabilities.FEATURE_TAG_NULL : piece);
+                ssb.append(piece == null ? "null" : piece);
                 i++;
             }
             return new SpannedString(ssb);
@@ -1606,14 +1489,20 @@ public class TextUtils {
         if (ellipsizeDip == 0.0f) {
             return gettingCleaned.toString();
         }
+        if (Typeface.getSystemFontMap().isEmpty()) {
+            int charCount = (int) ((0.5f + ellipsizeDip) / 23.94f);
+            String text = gettingCleaned.toString();
+            if (!isEmpty(text) && text.length() > charCount) {
+                return ((String) trimToSize(text, charCount)) + getEllipsisString(TruncateAt.END);
+            }
+            return text;
+        }
         TextPaint paint = new TextPaint();
         paint.setTextSize(42.0f);
         return ellipsize(gettingCleaned.toString(), paint, ellipsizeDip, TruncateAt.END);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public static class StringWithRemovedChars {
+    private static class StringWithRemovedChars {
         private final String mOriginal;
         private BitSet mRemovedChars;
 

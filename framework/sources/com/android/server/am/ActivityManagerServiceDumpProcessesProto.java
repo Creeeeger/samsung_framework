@@ -61,7 +61,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
     public static final long VALIDATE_UIDS = 2246267895813L;
     public static final long VR_CONTROLLER = 1146756268061L;
 
-    /* loaded from: classes5.dex */
     public final class LruProcesses {
         public static final long LIST = 2246267895812L;
         public static final long NON_ACT_AT = 1120986464258L;
@@ -72,7 +71,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class ScreenCompatPackage {
         public static final long MODE = 1120986464258L;
         public static final long PACKAGE = 1138166333441L;
@@ -81,7 +79,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class UidObserverRegistrationProto {
         public static final long CUT_POINT = 1120986464260L;
         public static final long FLAGS = 2259152797699L;
@@ -92,7 +89,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         public UidObserverRegistrationProto() {
         }
 
-        /* loaded from: classes5.dex */
         public final class ProcState {
             public static final long STATE = 1120986464258L;
             public static final long UID = 1120986464257L;
@@ -102,7 +98,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class PendingTempWhitelist {
         public static final long CALLING_UID = 1120986464262L;
         public static final long DURATION_MS = 1112396529666L;
@@ -115,7 +110,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class SleepStatus {
         public static final long SHUTTING_DOWN = 1133871366148L;
         public static final long SLEEPING = 1133871366147L;
@@ -127,7 +121,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Voice {
         public static final long SESSION = 1138166333441L;
         public static final long WAKELOCK = 1146756268034L;
@@ -136,7 +129,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DebugApp {
         public static final long DEBUG_APP = 1138166333441L;
         public static final long DEBUG_TRANSIENT = 1133871366147L;
@@ -147,7 +139,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class MemWatchProcess {
         public static final long DUMP = 1146756268034L;
         public static final long PROCS = 2246267895809L;
@@ -155,7 +146,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         public MemWatchProcess() {
         }
 
-        /* loaded from: classes5.dex */
         public final class Process {
             public static final long MEM_STATS = 2246267895810L;
             public static final long NAME = 1138166333441L;
@@ -163,7 +153,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
             public Process() {
             }
 
-            /* loaded from: classes5.dex */
             public final class MemStats {
                 public static final long REPORT_TO = 1138166333443L;
                 public static final long SIZE = 1138166333442L;
@@ -174,7 +163,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
             }
         }
 
-        /* loaded from: classes5.dex */
         public final class Dump {
             public static final long IS_USER_INITIATED = 1133871366149L;
             public static final long PID = 1120986464259L;
@@ -187,7 +175,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Profile {
         public static final long APP_NAME = 1138166333441L;
         public static final long INFO = 1146756268035L;
@@ -198,7 +185,6 @@ public final class ActivityManagerServiceDumpProcessesProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class Controller {
         public static final long CONTROLLER = 1138166333441L;
         public static final long IS_A_MONKEY = 1133871366146L;

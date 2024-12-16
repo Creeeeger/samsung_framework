@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaMetrics;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
@@ -30,7 +29,7 @@ final class ProvisioningIntentHelper {
 
     public static Intent createProvisioningIntentFromNfcIntent(Intent nfcIntent) {
         Objects.requireNonNull(nfcIntent);
-        if (!NfcAdapter.ACTION_NDEF_DISCOVERED.equals(nfcIntent.getAction())) {
+        if (!"android.nfc.action.NDEF_DISCOVERED".equals(nfcIntent.getAction())) {
             Log.e(TAG, "Wrong Nfc action: " + nfcIntent.getAction());
             return null;
         }
@@ -78,13 +77,12 @@ final class ProvisioningIntentHelper {
     }
 
     private static void addPropertyToBundle(String propertyName, Properties properties, Bundle bundle) {
-        Map<String, Class> map = EXTRAS_TO_CLASS_MAP;
-        if (map.get(propertyName) == ComponentName.class) {
+        if (EXTRAS_TO_CLASS_MAP.get(propertyName) == ComponentName.class) {
             ComponentName componentName = ComponentName.unflattenFromString(properties.getProperty(propertyName));
             bundle.putParcelable(propertyName, componentName);
             return;
         }
-        if (map.get(propertyName) == PersistableBundle.class) {
+        if (EXTRAS_TO_CLASS_MAP.get(propertyName) == PersistableBundle.class) {
             try {
                 bundle.putParcelable(propertyName, deserializeExtrasBundle(properties, propertyName));
                 return;
@@ -93,13 +91,13 @@ final class ProvisioningIntentHelper {
                 return;
             }
         }
-        if (map.get(propertyName) == Boolean.class) {
+        if (EXTRAS_TO_CLASS_MAP.get(propertyName) == Boolean.class) {
             bundle.putBoolean(propertyName, Boolean.parseBoolean(properties.getProperty(propertyName)));
             return;
         }
-        if (map.get(propertyName) == Long.class) {
+        if (EXTRAS_TO_CLASS_MAP.get(propertyName) == Long.class) {
             bundle.putLong(propertyName, Long.parseLong(properties.getProperty(propertyName)));
-        } else if (map.get(propertyName) == Integer.class) {
+        } else if (EXTRAS_TO_CLASS_MAP.get(propertyName) == Integer.class) {
             bundle.putInt(propertyName, Integer.parseInt(properties.getProperty(propertyName)));
         } else {
             bundle.putString(propertyName, properties.getProperty(propertyName));
@@ -134,7 +132,7 @@ final class ProvisioningIntentHelper {
     }
 
     private static NdefRecord getFirstNdefRecord(Intent nfcIntent) {
-        Parcelable[] ndefMessages = nfcIntent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        Parcelable[] ndefMessages = nfcIntent.getParcelableArrayExtra("android.nfc.extra.NDEF_MESSAGES");
         if (ndefMessages == null) {
             Log.i(TAG, "No EXTRA_NDEF_MESSAGES from nfcIntent");
             return null;

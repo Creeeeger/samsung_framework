@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class AudioHalVersion implements Parcelable {
     public static final Parcelable.Creator<AudioHalVersion> CREATOR = new Parcelable.Creator<AudioHalVersion>() { // from class: android.media.AudioHalVersion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVersion createFromParcel(Parcel _aidl_source) {
             AudioHalVersion _aidl_out = new AudioHalVersion();
@@ -17,6 +15,7 @@ public class AudioHalVersion implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalVersion[] newArray(int _aidl_size) {
             return new AudioHalVersion[_aidl_size];
@@ -26,29 +25,9 @@ public class AudioHalVersion implements Parcelable {
     public int major = 0;
     public int minor = 0;
 
-    /* loaded from: classes2.dex */
     public @interface Type {
         public static final int AIDL = 1;
         public static final int HIDL = 0;
-    }
-
-    /* renamed from: android.media.AudioHalVersion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioHalVersion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVersion createFromParcel(Parcel _aidl_source) {
-            AudioHalVersion _aidl_out = new AudioHalVersion();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalVersion[] newArray(int _aidl_size) {
-            return new AudioHalVersion[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable

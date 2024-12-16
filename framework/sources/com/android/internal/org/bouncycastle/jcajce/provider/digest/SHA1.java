@@ -14,7 +14,6 @@ public class SHA1 {
     private SHA1() {
     }
 
-    /* loaded from: classes5.dex */
     public static class Digest extends BCMessageDigest implements Cloneable {
         public Digest() {
             super(new SHA1Digest());
@@ -28,48 +27,41 @@ public class SHA1 {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class HashMac extends BaseMac {
         public HashMac() {
             super(new HMac(new SHA1Digest()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KeyGenerator extends BaseKeyGenerator {
         public KeyGenerator() {
             super("HMACSHA1", 160, new CipherKeyGenerator());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SHA1Mac extends BaseMac {
         public SHA1Mac() {
             super(new HMac(new SHA1Digest()));
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class PBEWithMacKeyFactory extends PBESecretKeyFactory {
         public PBEWithMacKeyFactory() {
             super("PBEwithHmacSHA", null, false, 2, 1, 160, 0);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Mappings extends DigestAlgorithmProvider {
         private static final String PREFIX = SHA1.class.getName();
 
         @Override // com.android.internal.org.bouncycastle.jcajce.provider.util.AlgorithmProvider
         public void configure(ConfigurableProvider provider) {
-            StringBuilder sb = new StringBuilder();
-            String str = PREFIX;
-            provider.addAlgorithm("Mac.PBEWITHHMACSHA", sb.append(str).append("$SHA1Mac").toString());
-            provider.addAlgorithm("Mac.PBEWITHHMACSHA1", str + "$SHA1Mac");
+            provider.addAlgorithm("Mac.PBEWITHHMACSHA", PREFIX + "$SHA1Mac");
+            provider.addAlgorithm("Mac.PBEWITHHMACSHA1", PREFIX + "$SHA1Mac");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory.PBEWITHHMACSHA", "PBEWITHHMACSHA1");
             provider.addAlgorithm("Alg.Alias.SecretKeyFactory." + OIWObjectIdentifiers.idSHA1, "PBEWITHHMACSHA1");
             provider.addAlgorithm("Alg.Alias.Mac." + OIWObjectIdentifiers.idSHA1, "PBEWITHHMACSHA");
-            provider.addAlgorithm("SecretKeyFactory.PBEWITHHMACSHA1", str + "$PBEWithMacKeyFactory");
+            provider.addAlgorithm("SecretKeyFactory.PBEWITHHMACSHA1", PREFIX + "$PBEWithMacKeyFactory");
         }
     }
 }

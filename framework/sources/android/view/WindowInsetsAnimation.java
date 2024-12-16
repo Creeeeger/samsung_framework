@@ -29,9 +29,8 @@ public final class WindowInsetsAnimation {
     }
 
     public float getInterpolatedFraction() {
-        Interpolator interpolator = this.mInterpolator;
-        if (interpolator != null) {
-            return interpolator.getInterpolation(this.mFraction);
+        if (this.mInterpolator != null) {
+            return this.mInterpolator.getInterpolation(this.mFraction);
         }
         return this.mFraction;
     }
@@ -56,7 +55,6 @@ public final class WindowInsetsAnimation {
         this.mAlpha = alpha;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Bounds {
         private final Insets mLowerBound;
         private final Insets mUpperBound;
@@ -83,14 +81,12 @@ public final class WindowInsetsAnimation {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Callback {
         public static final int DISPATCH_MODE_CONTINUE_ON_SUBTREE = 1;
         public static final int DISPATCH_MODE_STOP = 0;
         private final int mDispatchMode;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes4.dex */
         public @interface DispatchMode {
         }
 

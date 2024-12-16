@@ -35,7 +35,6 @@ public interface IVideoProvider extends IInterface {
 
     void setZoom(float f) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IVideoProvider {
         @Override // com.android.internal.telecom.IVideoProvider
         public void addVideoCallback(IBinder videoCallbackBinder) throws RemoteException {
@@ -91,7 +90,6 @@ public interface IVideoProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IVideoProvider {
         public static final String DESCRIPTOR = "com.android.internal.telecom.IVideoProvider";
         static final int TRANSACTION_addVideoCallback = 1;
@@ -168,79 +166,76 @@ public interface IVideoProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    addVideoCallback(_arg0);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    removeVideoCallback(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setCamera(_arg03, _arg1, _arg2);
+                    return true;
+                case 4:
+                    Surface _arg04 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPreviewSurface(_arg04);
+                    return true;
+                case 5:
+                    Surface _arg05 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDisplaySurface(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDeviceOrientation(_arg06);
+                    return true;
+                case 7:
+                    float _arg07 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setZoom(_arg07);
+                    return true;
+                case 8:
+                    VideoProfile _arg08 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    VideoProfile _arg12 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSessionModifyRequest(_arg08, _arg12);
+                    return true;
+                case 9:
+                    VideoProfile _arg09 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSessionModifyResponse(_arg09);
+                    return true;
+                case 10:
+                    requestCameraCapabilities();
+                    return true;
+                case 11:
+                    requestCallDataUsage();
+                    return true;
+                case 12:
+                    Uri _arg010 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    setPauseImage(_arg010);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            addVideoCallback(_arg0);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            removeVideoCallback(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setCamera(_arg03, _arg1, _arg2);
-                            return true;
-                        case 4:
-                            Surface _arg04 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPreviewSurface(_arg04);
-                            return true;
-                        case 5:
-                            Surface _arg05 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDisplaySurface(_arg05);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDeviceOrientation(_arg06);
-                            return true;
-                        case 7:
-                            float _arg07 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setZoom(_arg07);
-                            return true;
-                        case 8:
-                            VideoProfile _arg08 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            VideoProfile _arg12 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSessionModifyRequest(_arg08, _arg12);
-                            return true;
-                        case 9:
-                            VideoProfile _arg09 = (VideoProfile) data.readTypedObject(VideoProfile.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSessionModifyResponse(_arg09);
-                            return true;
-                        case 10:
-                            requestCameraCapabilities();
-                            return true;
-                        case 11:
-                            requestCallDataUsage();
-                            return true;
-                        case 12:
-                            Uri _arg010 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            setPauseImage(_arg010);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IVideoProvider {
+        private static class Proxy implements IVideoProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

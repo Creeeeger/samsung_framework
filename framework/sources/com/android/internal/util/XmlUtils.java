@@ -1,6 +1,7 @@
 package com.android.internal.util;
 
 import android.app.slice.Slice;
+import android.app.slice.SliceItem;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,7 +13,6 @@ import android.widget.SemRemoteViewsValueAnimation;
 import com.android.ims.ImsConfig;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,18 +34,15 @@ import org.xmlpull.v1.XmlSerializer;
 public class XmlUtils {
     private static final String STRING_ARRAY_SEPARATOR = ":";
 
-    /* loaded from: classes5.dex */
     public interface ReadMapCallback {
         Object readThisUnknownObjectXml(TypedXmlPullParser typedXmlPullParser, String str) throws XmlPullParserException, IOException;
     }
 
-    /* loaded from: classes5.dex */
     public interface WriteMapCallback {
         void writeUnknownObject(Object obj, String str, TypedXmlSerializer typedXmlSerializer) throws XmlPullParserException, IOException;
     }
 
-    /* loaded from: classes5.dex */
-    public static class ForcedTypedXmlSerializer extends XmlSerializerWrapper implements TypedXmlSerializer {
+    private static class ForcedTypedXmlSerializer extends XmlSerializerWrapper implements TypedXmlSerializer {
         public ForcedTypedXmlSerializer(XmlSerializer wrapped) {
             super(wrapped);
         }
@@ -108,8 +105,7 @@ public class XmlUtils {
         return new ForcedTypedXmlSerializer(xml);
     }
 
-    /* loaded from: classes5.dex */
-    public static class ForcedTypedXmlPullParser extends XmlPullParserWrapper implements TypedXmlPullParser {
+    private static class ForcedTypedXmlPullParser extends XmlPullParserWrapper implements TypedXmlPullParser {
         public ForcedTypedXmlPullParser(XmlPullParser wrapped) {
             super(wrapped);
         }
@@ -328,8 +324,8 @@ public class XmlUtils {
 
     public static final void writeMapXml(Map val, String name, TypedXmlSerializer out, WriteMapCallback callback) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "map");
@@ -352,8 +348,8 @@ public class XmlUtils {
 
     public static final void writeListXml(List val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, Slice.HINT_LIST);
@@ -369,8 +365,8 @@ public class XmlUtils {
 
     public static final void writeSetXml(Set val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "set");
@@ -385,8 +381,8 @@ public class XmlUtils {
 
     public static final void writeByteArrayXml(byte[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "byte-array");
@@ -401,8 +397,8 @@ public class XmlUtils {
 
     public static final void writeIntArrayXml(int[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "int-array");
@@ -421,8 +417,8 @@ public class XmlUtils {
 
     public static final void writeLongArrayXml(long[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "long-array");
@@ -441,8 +437,8 @@ public class XmlUtils {
 
     public static final void writeDoubleArrayXml(double[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "double-array");
@@ -461,8 +457,8 @@ public class XmlUtils {
 
     public static final void writeStringArrayXml(String[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "string-array");
@@ -481,8 +477,8 @@ public class XmlUtils {
 
     public static final void writeBooleanArrayXml(boolean[] val, String name, TypedXmlSerializer out) throws XmlPullParserException, IOException {
         if (val == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
+            out.endTag(null, "null");
             return;
         }
         out.startTag(null, "boolean-array");
@@ -510,11 +506,11 @@ public class XmlUtils {
 
     private static final void writeValueXml(Object v, String name, TypedXmlSerializer out, WriteMapCallback callback) throws XmlPullParserException, IOException {
         if (v == null) {
-            out.startTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.startTag(null, "null");
             if (name != null) {
                 out.attribute(null, "name", name);
             }
-            out.endTag(null, SemCapabilities.FEATURE_TAG_NULL);
+            out.endTag(null, "null");
             return;
         }
         if (v instanceof String) {
@@ -536,12 +532,12 @@ public class XmlUtils {
             return;
         }
         if (v instanceof Long) {
-            out.startTag(null, "long");
+            out.startTag(null, SliceItem.FORMAT_LONG);
             if (name != null) {
                 out.attribute(null, "name", name);
             }
             out.attributeLong(null, "value", ((Long) v).longValue());
-            out.endTag(null, "long");
+            out.endTag(null, SliceItem.FORMAT_LONG);
             return;
         }
         if (v instanceof Float) {
@@ -912,7 +908,7 @@ public class XmlUtils {
         int eventType;
         String valueName = parser.getAttributeValue(null, "name");
         String tagName = parser.getName();
-        if (tagName.equals(SemCapabilities.FEATURE_TAG_NULL)) {
+        if (tagName.equals("null")) {
             res2 = null;
         } else if (tagName.equals("string")) {
             StringBuilder value = new StringBuilder();
@@ -1022,7 +1018,7 @@ public class XmlUtils {
         if (tagName.equals("int")) {
             return Integer.valueOf(parser.getAttributeInt(null, "value"));
         }
-        if (tagName.equals("long")) {
+        if (tagName.equals(SliceItem.FORMAT_LONG)) {
             return Long.valueOf(parser.getAttributeLong(null, "value"));
         }
         if (tagName.equals(SemRemoteViewsValueAnimation.VALUE_TYPE_FLOAT)) {

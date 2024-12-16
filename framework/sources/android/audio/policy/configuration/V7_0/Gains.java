@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Gains {
     private List<Gain> gain;
 
-    /* loaded from: classes.dex */
     public static class Gain {
         private AudioChannelMask channel_mask;
         private Integer defaultValueMB;
@@ -74,11 +73,10 @@ public class Gains {
         }
 
         public int getMinValueMB() {
-            Integer num = this.minValueMB;
-            if (num == null) {
+            if (this.minValueMB == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.minValueMB.intValue();
         }
 
         boolean hasMinValueMB() {
@@ -93,11 +91,10 @@ public class Gains {
         }
 
         public int getMaxValueMB() {
-            Integer num = this.maxValueMB;
-            if (num == null) {
+            if (this.maxValueMB == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.maxValueMB.intValue();
         }
 
         boolean hasMaxValueMB() {
@@ -112,11 +109,10 @@ public class Gains {
         }
 
         public int getDefaultValueMB() {
-            Integer num = this.defaultValueMB;
-            if (num == null) {
+            if (this.defaultValueMB == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.defaultValueMB.intValue();
         }
 
         boolean hasDefaultValueMB() {
@@ -131,11 +127,10 @@ public class Gains {
         }
 
         public int getStepValueMB() {
-            Integer num = this.stepValueMB;
-            if (num == null) {
+            if (this.stepValueMB == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.stepValueMB.intValue();
         }
 
         boolean hasStepValueMB() {
@@ -150,11 +145,10 @@ public class Gains {
         }
 
         public int getMinRampMs() {
-            Integer num = this.minRampMs;
-            if (num == null) {
+            if (this.minRampMs == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.minRampMs.intValue();
         }
 
         boolean hasMinRampMs() {
@@ -169,11 +163,10 @@ public class Gains {
         }
 
         public int getMaxRampMs() {
-            Integer num = this.maxRampMs;
-            if (num == null) {
+            if (this.maxRampMs == null) {
                 return 0;
             }
-            return num.intValue();
+            return this.maxRampMs.intValue();
         }
 
         boolean hasMaxRampMs() {
@@ -188,11 +181,10 @@ public class Gains {
         }
 
         public boolean getUseForVolume() {
-            Boolean bool = this.useForVolume;
-            if (bool == null) {
+            if (this.useForVolume == null) {
                 return false;
             }
-            return bool.booleanValue();
+            return this.useForVolume.booleanValue();
         }
 
         boolean hasUseForVolume() {
@@ -272,7 +264,7 @@ public class Gains {
         return this.gain;
     }
 
-    public static Gains read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static Gains read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         Gains _instance = new Gains();
         _parser.getDepth();

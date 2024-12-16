@@ -18,8 +18,7 @@ public abstract class IntentService extends Service {
 
     protected abstract void onHandleIntent(Intent intent);
 
-    /* loaded from: classes.dex */
-    public final class ServiceHandler extends Handler {
+    private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
             super(looper);
         }

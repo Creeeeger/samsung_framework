@@ -26,8 +26,8 @@ public final class TunnelModeChildSessionParamsUtils {
     private static final String SOFT_LIFETIME_SEC_KEY = "SOFT_LIFETIME_SEC_KEY";
     private static final String TAG = TunnelModeChildSessionParamsUtils.class.getSimpleName();
 
-    /* loaded from: classes3.dex */
-    public static class ConfigRequest {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ConfigRequest {
         private static final String IP6_PREFIX_LEN = "ip6PrefixLen";
         private static final int PREFIX_LEN_UNUSED = -1;
         private static final int TYPE_IPV4_ADDRESS = 1;
@@ -49,9 +49,8 @@ public final class TunnelModeChildSessionParamsUtils {
                 this.address = ((TunnelModeChildSessionParams.ConfigRequestIpv4Address) config).getAddress();
             } else if (config instanceof TunnelModeChildSessionParams.ConfigRequestIpv6Address) {
                 this.type = 2;
-                Inet6Address address = ((TunnelModeChildSessionParams.ConfigRequestIpv6Address) config).getAddress();
-                this.address = address;
-                if (address != null) {
+                this.address = ((TunnelModeChildSessionParams.ConfigRequestIpv6Address) config).getAddress();
+                if (this.address != null) {
                     prefixLen = ((TunnelModeChildSessionParams.ConfigRequestIpv6Address) config).getPrefixLength();
                 }
             } else if (config instanceof TunnelModeChildSessionParams.ConfigRequestIpv4DnsServer) {
@@ -72,7 +71,7 @@ public final class TunnelModeChildSessionParamsUtils {
             this.ip6PrefixLen = prefixLen;
         }
 
-        public ConfigRequest(PersistableBundle in) {
+        ConfigRequest(PersistableBundle in) {
             Objects.requireNonNull(in, "PersistableBundle was null");
             this.type = in.getInt("type");
             this.ip6PrefixLen = in.getInt(IP6_PREFIX_LEN);
@@ -88,9 +87,8 @@ public final class TunnelModeChildSessionParamsUtils {
             PersistableBundle result = new PersistableBundle();
             result.putInt("type", this.type);
             result.putInt(IP6_PREFIX_LEN, this.ip6PrefixLen);
-            InetAddress inetAddress = this.address;
-            if (inetAddress != null) {
-                result.putString("address", inetAddress.getHostAddress());
+            if (this.address != null) {
+                result.putString("address", this.address.getHostAddress());
             }
             return result;
         }
@@ -98,21 +96,21 @@ public final class TunnelModeChildSessionParamsUtils {
 
     public static PersistableBundle toPersistableBundle(TunnelModeChildSessionParams params) {
         PersistableBundle result = new PersistableBundle();
-        PersistableBundle saProposalBundle = PersistableBundleUtils.fromList(params.getSaProposals(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda3
+        PersistableBundle saProposalBundle = PersistableBundleUtils.fromList(params.getSaProposals(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda1
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return ChildSaProposalUtils.toPersistableBundle((ChildSaProposal) obj);
             }
         });
         result.putPersistableBundle(SA_PROPOSALS_KEY, saProposalBundle);
-        PersistableBundle inTsBundle = PersistableBundleUtils.fromList(params.getInboundTrafficSelectors(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda4
+        PersistableBundle inTsBundle = PersistableBundleUtils.fromList(params.getInboundTrafficSelectors(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda2
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return IkeTrafficSelectorUtils.toPersistableBundle((IkeTrafficSelector) obj);
             }
         });
         result.putPersistableBundle(INBOUND_TS_KEY, inTsBundle);
-        PersistableBundle outTsBundle = PersistableBundleUtils.fromList(params.getOutboundTrafficSelectors(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda4
+        PersistableBundle outTsBundle = PersistableBundleUtils.fromList(params.getOutboundTrafficSelectors(), new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda2
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return IkeTrafficSelectorUtils.toPersistableBundle((IkeTrafficSelector) obj);
@@ -125,7 +123,7 @@ public final class TunnelModeChildSessionParamsUtils {
         for (TunnelModeChildSessionParams.TunnelModeChildConfigRequest req : params.getConfigurationRequests()) {
             reqList.add(new ConfigRequest(req));
         }
-        PersistableBundle configReqListBundle = PersistableBundleUtils.fromList(reqList, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda5
+        PersistableBundle configReqListBundle = PersistableBundleUtils.fromList(reqList, new PersistableBundleUtils.Serializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda3
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Serializer
             public final PersistableBundle toPersistableBundle(Object obj) {
                 return ((TunnelModeChildSessionParamsUtils.ConfigRequest) obj).toPersistableBundle();
@@ -138,7 +136,7 @@ public final class TunnelModeChildSessionParamsUtils {
     private static List<IkeTrafficSelector> getTsFromPersistableBundle(PersistableBundle in, String key) {
         PersistableBundle tsBundle = in.getPersistableBundle(key);
         Objects.requireNonNull(tsBundle, "Value for key " + key + " was null");
-        return PersistableBundleUtils.toList(tsBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda2
+        return PersistableBundleUtils.toList(tsBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda0
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
             public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                 return IkeTrafficSelectorUtils.fromPersistableBundle(persistableBundle);
@@ -151,7 +149,7 @@ public final class TunnelModeChildSessionParamsUtils {
         TunnelModeChildSessionParams.Builder builder = new TunnelModeChildSessionParams.Builder();
         PersistableBundle proposalBundle = in.getPersistableBundle(SA_PROPOSALS_KEY);
         Objects.requireNonNull(proposalBundle, "SA proposal was null");
-        List<ChildSaProposal> proposals = PersistableBundleUtils.toList(proposalBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda0
+        List<ChildSaProposal> proposals = PersistableBundleUtils.toList(proposalBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda4
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
             public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                 return ChildSaProposalUtils.fromPersistableBundle(persistableBundle);
@@ -169,7 +167,7 @@ public final class TunnelModeChildSessionParamsUtils {
         builder.setLifetimeSeconds(in.getInt(HARD_LIFETIME_SEC_KEY), in.getInt(SOFT_LIFETIME_SEC_KEY));
         PersistableBundle configReqListBundle = in.getPersistableBundle(CONFIG_REQUESTS_KEY);
         Objects.requireNonNull(configReqListBundle, "Config request list was null");
-        List<ConfigRequest> reqList = PersistableBundleUtils.toList(configReqListBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda1
+        List<ConfigRequest> reqList = PersistableBundleUtils.toList(configReqListBundle, new PersistableBundleUtils.Deserializer() { // from class: android.net.vcn.persistablebundleutils.TunnelModeChildSessionParamsUtils$$ExternalSyntheticLambda5
             @Override // com.android.server.vcn.repackaged.util.PersistableBundleUtils.Deserializer
             public final Object fromPersistableBundle(PersistableBundle persistableBundle) {
                 return new TunnelModeChildSessionParamsUtils.ConfigRequest(persistableBundle);

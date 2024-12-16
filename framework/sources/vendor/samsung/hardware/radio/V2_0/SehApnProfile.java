@@ -58,17 +58,17 @@ public final class SehApnProfile {
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.apn = _hidl_blob.getString(_hidl_offset + 0);
-        parcel.readEmbeddedBuffer(r4.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
+        parcel.readEmbeddedBuffer(this.apn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 0 + 0, false);
         this.proto = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.proto.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.roamingProto = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.roamingProto.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.user = _hidl_blob.getString(_hidl_offset + 48);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
+        parcel.readEmbeddedBuffer(this.user.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 48 + 0, false);
         this.pw = _hidl_blob.getString(_hidl_offset + 64);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
+        parcel.readEmbeddedBuffer(this.pw.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
         this.auth = _hidl_blob.getString(_hidl_offset + 80);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
+        parcel.readEmbeddedBuffer(this.auth.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

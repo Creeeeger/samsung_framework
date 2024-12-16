@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class EutranRegistrationInfo implements Parcelable {
     public static final Parcelable.Creator<EutranRegistrationInfo> CREATOR = new Parcelable.Creator<EutranRegistrationInfo>() { // from class: android.hardware.radio.network.EutranRegistrationInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EutranRegistrationInfo createFromParcel(Parcel _aidl_source) {
             EutranRegistrationInfo _aidl_out = new EutranRegistrationInfo();
@@ -19,6 +17,7 @@ public class EutranRegistrationInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EutranRegistrationInfo[] newArray(int _aidl_size) {
             return new EutranRegistrationInfo[_aidl_size];
@@ -31,30 +30,10 @@ public class EutranRegistrationInfo implements Parcelable {
     public LteVopsInfo lteVopsInfo;
     public NrIndicators nrIndicators;
 
-    /* loaded from: classes2.dex */
     public @interface AttachResultType {
         public static final byte COMBINED = 2;
         public static final byte EPS_ONLY = 1;
         public static final byte NONE = 0;
-    }
-
-    /* renamed from: android.hardware.radio.network.EutranRegistrationInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EutranRegistrationInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EutranRegistrationInfo createFromParcel(Parcel _aidl_source) {
-            EutranRegistrationInfo _aidl_out = new EutranRegistrationInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EutranRegistrationInfo[] newArray(int _aidl_size) {
-            return new EutranRegistrationInfo[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -134,7 +113,7 @@ public class EutranRegistrationInfo implements Parcelable {
         _aidl_sj.add("nrIndicators: " + Objects.toString(this.nrIndicators));
         _aidl_sj.add("lteAttachResultType: " + ((int) this.lteAttachResultType));
         _aidl_sj.add("extraInfo: " + this.extraInfo);
-        return "android.hardware.radio.network.EutranRegistrationInfo" + _aidl_sj.toString();
+        return "EutranRegistrationInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

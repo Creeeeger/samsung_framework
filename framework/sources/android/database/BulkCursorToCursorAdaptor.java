@@ -94,10 +94,9 @@ public final class BulkCursorToCursorAdaptor extends AbstractWindowedCursor {
     @Override // android.database.AbstractCursor, android.database.Cursor
     public void deactivate() {
         super.deactivate();
-        IBulkCursor iBulkCursor = this.mBulkCursor;
-        if (iBulkCursor != null) {
+        if (this.mBulkCursor != null) {
             try {
-                iBulkCursor.deactivate();
+                this.mBulkCursor.deactivate();
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote process exception when deactivating");
             }
@@ -107,11 +106,10 @@ public final class BulkCursorToCursorAdaptor extends AbstractWindowedCursor {
     @Override // android.database.AbstractCursor, android.database.Cursor, java.io.Closeable, java.lang.AutoCloseable
     public void close() {
         super.close();
-        IBulkCursor iBulkCursor = this.mBulkCursor;
-        if (iBulkCursor != null) {
+        if (this.mBulkCursor != null) {
             try {
                 try {
-                    iBulkCursor.close();
+                    this.mBulkCursor.close();
                 } catch (RemoteException e) {
                     Log.w(TAG, "Remote process exception when closing");
                 }
@@ -125,9 +123,8 @@ public final class BulkCursorToCursorAdaptor extends AbstractWindowedCursor {
     public boolean requery() {
         throwIfCursorIsClosed();
         try {
-            int requery = this.mBulkCursor.requery(getObserver());
-            this.mCount = requery;
-            if (requery != -1) {
+            this.mCount = this.mBulkCursor.requery(getObserver());
+            if (this.mCount != -1) {
                 this.mPos = -1;
                 closeWindow();
                 super.requery();

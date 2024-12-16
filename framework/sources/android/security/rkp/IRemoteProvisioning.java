@@ -13,7 +13,6 @@ public interface IRemoteProvisioning extends IInterface {
 
     void getRegistration(String str, IGetRegistrationCallback iGetRegistrationCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRemoteProvisioning {
         @Override // android.security.rkp.IRemoteProvisioning
         public void getRegistration(String irpcName, IGetRegistrationCallback callback) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IRemoteProvisioning extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRemoteProvisioning {
         static final int TRANSACTION_getRegistration = 1;
 
@@ -68,25 +66,22 @@ public interface IRemoteProvisioning extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRemoteProvisioning.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRemoteProvisioning.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRemoteProvisioning.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IGetRegistrationCallback _arg1 = IGetRegistrationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    getRegistration(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IGetRegistrationCallback _arg1 = IGetRegistrationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            getRegistration(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IRemoteProvisioning {
             private IBinder mRemote;
 

@@ -78,12 +78,11 @@ public final class ProtoInputStream extends ProtoStream {
     }
 
     public int nextField() throws IOException {
-        byte b = this.mState;
-        if ((b & 4) == 4) {
-            this.mState = (byte) (b & (-5));
+        if ((this.mState & 4) == 4) {
+            this.mState = (byte) (this.mState & (-5));
             return this.mFieldNumber;
         }
-        if ((b & 1) == 1) {
+        if ((this.mState & 1) == 1) {
             skip();
             this.mState = (byte) (this.mState & (-2));
         }
@@ -260,12 +259,9 @@ public final class ProtoInputStream extends ProtoStream {
         if (i == this.mExpectedObjectTokenStack.size()) {
             this.mExpectedObjectTokenStack.add(makeToken(0, (fieldId & 2199023255552L) == 2199023255552L, this.mDepth, (int) fieldId, getOffset() + messageSize));
         } else {
-            LongArray longArray = this.mExpectedObjectTokenStack;
-            int i2 = this.mDepth;
-            longArray.set(i2, makeToken(0, (fieldId & 2199023255552L) == 2199023255552L, i2, (int) fieldId, getOffset() + messageSize));
+            this.mExpectedObjectTokenStack.set(this.mDepth, makeToken(0, (fieldId & 2199023255552L) == 2199023255552L, this.mDepth, (int) fieldId, getOffset() + messageSize));
         }
-        int i3 = this.mDepth;
-        if (i3 > 0 && getOffsetFromToken(this.mExpectedObjectTokenStack.get(i3)) > getOffsetFromToken(this.mExpectedObjectTokenStack.get(this.mDepth - 1))) {
+        if (this.mDepth > 0 && getOffsetFromToken(this.mExpectedObjectTokenStack.get(this.mDepth)) > getOffsetFromToken(this.mExpectedObjectTokenStack.get(this.mDepth - 1))) {
             throw new ProtoParseException("Embedded Object (" + token2String(this.mExpectedObjectTokenStack.get(this.mDepth)) + ") ends after of parent Objects's (" + token2String(this.mExpectedObjectTokenStack.get(this.mDepth - 1)) + ") end" + dumpDebugData());
         }
         this.mState = (byte) (this.mState & (-2));
@@ -331,18 +327,14 @@ public final class ProtoInputStream extends ProtoStream {
     private int readFixed32() throws IOException {
         if (this.mOffset + 4 <= this.mEnd) {
             incOffset(4);
-            byte[] bArr = this.mBuffer;
-            int i = this.mOffset;
-            return ((bArr[i - 1] & 255) << 24) | (bArr[i - 4] & 255) | ((bArr[i - 3] & 255) << 8) | ((bArr[i - 2] & 255) << 16);
+            return (this.mBuffer[this.mOffset - 4] & 255) | ((this.mBuffer[this.mOffset - 3] & 255) << 8) | ((this.mBuffer[this.mOffset - 2] & 255) << 16) | ((this.mBuffer[this.mOffset - 1] & 255) << 24);
         }
         int value = 0;
         int shift = 0;
         int bytesLeft = 4;
         while (bytesLeft > 0) {
             fillBuffer();
-            int i2 = this.mEnd;
-            int i3 = this.mOffset;
-            int fragment = i2 - i3 < bytesLeft ? i2 - i3 : bytesLeft;
+            int fragment = this.mEnd - this.mOffset < bytesLeft ? this.mEnd - this.mOffset : bytesLeft;
             if (fragment < 0) {
                 throw new ProtoParseException("Incomplete fixed32 at offset 0x" + Integer.toHexString(getOffset()) + dumpDebugData());
             }
@@ -360,18 +352,14 @@ public final class ProtoInputStream extends ProtoStream {
     private long readFixed64() throws IOException {
         if (this.mOffset + 8 <= this.mEnd) {
             incOffset(8);
-            byte[] bArr = this.mBuffer;
-            int i = this.mOffset;
-            return ((bArr[i - 1] & 255) << 56) | (bArr[i - 8] & 255) | ((bArr[i - 7] & 255) << 8) | ((bArr[i - 6] & 255) << 16) | ((bArr[i - 5] & 255) << 24) | ((bArr[i - 4] & 255) << 32) | ((bArr[i - 3] & 255) << 40) | ((bArr[i - 2] & 255) << 48);
+            return ((this.mBuffer[this.mOffset - 7] & 255) << 8) | (this.mBuffer[this.mOffset - 8] & 255) | ((this.mBuffer[this.mOffset - 6] & 255) << 16) | ((this.mBuffer[this.mOffset - 5] & 255) << 24) | ((this.mBuffer[this.mOffset - 4] & 255) << 32) | ((this.mBuffer[this.mOffset - 3] & 255) << 40) | ((this.mBuffer[this.mOffset - 2] & 255) << 48) | ((this.mBuffer[this.mOffset - 1] & 255) << 56);
         }
         long value = 0;
         int shift = 0;
         int bytesLeft = 8;
         while (bytesLeft > 0) {
             fillBuffer();
-            int i2 = this.mEnd;
-            int i3 = this.mOffset;
-            int fragment = i2 - i3 < bytesLeft ? i2 - i3 : bytesLeft;
+            int fragment = this.mEnd - this.mOffset < bytesLeft ? this.mEnd - this.mOffset : bytesLeft;
             if (fragment < 0) {
                 throw new ProtoParseException("Incomplete fixed64 at offset 0x" + Integer.toHexString(getOffset()) + dumpDebugData());
             }
@@ -389,45 +377,37 @@ public final class ProtoInputStream extends ProtoStream {
     private byte[] readRawBytes(int n) throws IOException {
         byte[] buffer = new byte[n];
         int pos = 0;
-        do {
-            int i = this.mOffset;
-            int i2 = (i + n) - pos;
-            int i3 = this.mEnd;
-            if (i2 > i3) {
-                int fragment = i3 - i;
-                if (fragment > 0) {
-                    System.arraycopy(this.mBuffer, i, buffer, pos, fragment);
-                    incOffset(fragment);
-                    pos += fragment;
-                }
-                fillBuffer();
-            } else {
-                System.arraycopy(this.mBuffer, i, buffer, pos, n - pos);
-                incOffset(n - pos);
-                return buffer;
+        while ((this.mOffset + n) - pos > this.mEnd) {
+            int fragment = this.mEnd - this.mOffset;
+            if (fragment > 0) {
+                System.arraycopy(this.mBuffer, this.mOffset, buffer, pos, fragment);
+                incOffset(fragment);
+                pos += fragment;
             }
-        } while (this.mOffset < this.mEnd);
-        throw new ProtoParseException("Unexpectedly reached end of the InputStream at offset 0x" + Integer.toHexString(this.mEnd) + dumpDebugData());
+            fillBuffer();
+            if (this.mOffset >= this.mEnd) {
+                throw new ProtoParseException("Unexpectedly reached end of the InputStream at offset 0x" + Integer.toHexString(this.mEnd) + dumpDebugData());
+            }
+        }
+        System.arraycopy(this.mBuffer, this.mOffset, buffer, pos, n - pos);
+        incOffset(n - pos);
+        return buffer;
     }
 
     private String readRawString(int n) throws IOException {
         fillBuffer();
-        int i = this.mOffset;
-        int i2 = i + n;
-        int i3 = this.mEnd;
-        if (i2 <= i3) {
-            String value = new String(this.mBuffer, i, n, StandardCharsets.UTF_8);
+        if (this.mOffset + n <= this.mEnd) {
+            String value = new String(this.mBuffer, this.mOffset, n, StandardCharsets.UTF_8);
             incOffset(n);
             return value;
         }
         if (n <= this.mBufferSize) {
-            int stringHead = i3 - i;
-            byte[] bArr = this.mBuffer;
-            System.arraycopy(bArr, i, bArr, 0, stringHead);
+            int stringHead = this.mEnd - this.mOffset;
+            System.arraycopy(this.mBuffer, this.mOffset, this.mBuffer, 0, stringHead);
             this.mEnd = this.mStream.read(this.mBuffer, stringHead, n - stringHead) + stringHead;
             this.mDiscardedBytes += this.mOffset;
             this.mOffset = 0;
-            String value2 = new String(this.mBuffer, 0, n, StandardCharsets.UTF_8);
+            String value2 = new String(this.mBuffer, this.mOffset, n, StandardCharsets.UTF_8);
             incOffset(n);
             return value2;
         }
@@ -435,15 +415,11 @@ public final class ProtoInputStream extends ProtoStream {
     }
 
     private void fillBuffer() throws IOException {
-        InputStream inputStream;
-        int i = this.mOffset;
-        int i2 = this.mEnd;
-        if (i >= i2 && (inputStream = this.mStream) != null) {
-            int i3 = i - i2;
-            this.mOffset = i3;
-            this.mDiscardedBytes += i2;
-            if (i3 >= this.mBufferSize) {
-                int skipped = (int) inputStream.skip((i3 / r1) * r1);
+        if (this.mOffset >= this.mEnd && this.mStream != null) {
+            this.mOffset -= this.mEnd;
+            this.mDiscardedBytes += this.mEnd;
+            if (this.mOffset >= this.mBufferSize) {
+                int skipped = (int) this.mStream.skip((this.mOffset / this.mBufferSize) * this.mBufferSize);
                 this.mDiscardedBytes += skipped;
                 this.mOffset -= skipped;
             }
@@ -452,7 +428,6 @@ public final class ProtoInputStream extends ProtoStream {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:8:0x0013. Please report as an issue. */
     public void skip() throws IOException {
         byte b;
         if ((this.mState & 2) == 2) {

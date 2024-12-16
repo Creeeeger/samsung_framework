@@ -4,7 +4,7 @@ import android.util.proto.ProtoOutputStream;
 import android.util.proto.ProtoUtils;
 import com.android.internal.app.procstats.SparseMappingTable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PssTable extends SparseMappingTable.Table {
     public PssTable(SparseMappingTable tableData) {
         super(tableData);
@@ -85,7 +85,7 @@ public class PssTable extends SparseMappingTable.Table {
         ProtoUtils.toAggStatsProto(proto, 1146756268040L, stats[statsIndex + 7], stats[statsIndex + 8], stats[statsIndex + 9]);
     }
 
-    public long[] getRssMeanAndMax(int key) {
+    long[] getRssMeanAndMax(int key) {
         long[] stats = getArrayForKey(key);
         int statsIndex = SparseMappingTable.getIndexFromKey(key);
         return new long[]{stats[statsIndex + 8], stats[statsIndex + 9]};

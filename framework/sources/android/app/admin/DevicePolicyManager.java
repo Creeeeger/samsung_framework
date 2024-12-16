@@ -5,9 +5,11 @@ import android.accounts.Account;
 import android.annotation.SystemApi;
 import android.app.IServiceConnection;
 import android.app.admin.DevicePolicyManager;
+import android.app.admin.IAuditLogEventsCallback;
 import android.app.admin.PreferentialNetworkServiceConfig;
 import android.app.admin.SecurityLog;
 import android.app.admin.StartInstallingUpdateCallback;
+import android.app.compat.CompatChanges;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +34,7 @@ import android.os.RemoteException;
 import android.os.ServiceSpecificException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.sec.enterprise.auditlog.AuditComponents;
 import android.sec.enterprise.content.SecContentProviderURI;
 import android.security.AttestedKeyPair;
 import android.security.Credentials;
@@ -50,9 +53,11 @@ import android.util.DebugUtils;
 import android.util.Log;
 import android.util.Pair;
 import com.android.internal.R;
+import com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags;
 import com.android.internal.infra.AndroidFuture;
 import com.android.internal.net.NetworkUtilsInternal;
 import com.android.internal.os.BackgroundThread;
+import com.android.internal.os.Zygote;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Preconditions;
 import com.android.internal.util.function.pooled.PooledLambda;
@@ -174,8 +179,12 @@ public class DevicePolicyManager {
     public static final String ADD_ISFINANCED_DEVICE_FLAG = "add-isfinanced-device";
     public static final boolean ADD_ISFINANCED_FEVICE_DEFAULT = true;
     public static final int CODE_DEVICE_COMPROMISED = 20;
+    public static final int CODE_KNOXGUARD_DEVICE_OWNER_BLOCK = 23;
     public static final int CODE_KNOX_SERVICE_KEY_UNAVAILABLE = 21;
     public static final int CODE_RAMPART_DEVICE_ADMIN_BLOCK = 22;
+    public static final int CONTENT_PROTECTION_DISABLED = 1;
+    public static final int CONTENT_PROTECTION_ENABLED = 2;
+    public static final int CONTENT_PROTECTION_NOT_CONTROLLED_BY_POLICY = 0;
     public static final long DEFAULT_STRONG_AUTH_TIMEOUT_MS = 259200000;
     public static final String DELEGATION_APP_RESTRICTIONS = "delegation-app-restrictions";
     public static final String DELEGATION_BLOCK_UNINSTALL = "delegation-block-uninstall";
@@ -377,6 +386,7 @@ public class DevicePolicyManager {
     public static final int ID_TYPE_SERIAL = 2;
     public static final int INSTALLKEY_REQUEST_CREDENTIALS_ACCESS = 1;
     public static final int INSTALLKEY_SET_USER_SELECTABLE = 2;
+    public static final long IS_DEVICE_OWNER_USER_AWARE = 307233716;
     public static final int KEYGUARD_DISABLE_BIOMETRICS = 416;
     public static final int KEYGUARD_DISABLE_FACE = 128;
     public static final int KEYGUARD_DISABLE_FEATURES_ALL = Integer.MAX_VALUE;
@@ -435,6 +445,7 @@ public class DevicePolicyManager {
     public static final int OPERATION_SET_APPLICATION_HIDDEN = 15;
     public static final int OPERATION_SET_APPLICATION_RESTRICTIONS = 16;
     public static final int OPERATION_SET_CAMERA_DISABLED = 31;
+    public static final int OPERATION_SET_CONTENT_PROTECTION_POLICY = 41;
     public static final int OPERATION_SET_FACTORY_RESET_PROTECTION_POLICY = 32;
     public static final int OPERATION_SET_GLOBAL_PRIVATE_DNS = 33;
     public static final int OPERATION_SET_KEEP_UNINSTALLED_PACKAGES = 17;
@@ -459,7 +470,7 @@ public class DevicePolicyManager {
     public static final int OPERATION_SWITCH_USER = 2;
     public static final int OPERATION_UNINSTALL_CA_CERT = 40;
     public static final int OPERATION_WIPE_DATA = 8;
-    public static final int ORG_OWNED_PROFILE_KEYGUARD_FEATURES_PARENT_ONLY = 518;
+    public static final int ORG_OWNED_PROFILE_KEYGUARD_FEATURES_PARENT_ONLY = 519;
     public static final int PASSWORD_COMPLEXITY_HIGH = 327680;
     public static final int PASSWORD_COMPLEXITY_LOW = 65536;
     public static final int PASSWORD_COMPLEXITY_MEDIUM = 196608;
@@ -496,7 +507,8 @@ public class DevicePolicyManager {
     public static final int PRIVATE_DNS_SET_ERROR_FAILURE_SETTING = 2;
     public static final int PRIVATE_DNS_SET_ERROR_HOST_NOT_SERVING = 1;
     public static final int PRIVATE_DNS_SET_NO_ERROR = 0;
-    public static final int PROFILE_KEYGUARD_FEATURES_AFFECT_OWNER = 950;
+    public static final int PROFILE_KEYGUARD_FEATURES_AFFECT_OWNER = 951;
+    public static final String PROPERTY_NON_REQUIRED_APPS_TASK = "persist.sys.knox.non_required_apps_task";
     public static final int PROVISIONING_MODE_FULLY_MANAGED_DEVICE = 1;
     public static final int PROVISIONING_MODE_MANAGED_PROFILE = 2;
     public static final int PROVISIONING_MODE_MANAGED_PROFILE_ON_PERSONAL_DEVICE = 3;
@@ -588,6 +600,9 @@ public class DevicePolicyManager {
     public static final int STATUS_HAS_PAIRED = 8;
 
     @SystemApi
+    public static final int STATUS_HEADLESS_ONLY_SYSTEM_USER = 17;
+
+    @SystemApi
     public static final int STATUS_HEADLESS_SYSTEM_USER_MODE_NOT_SUPPORTED = 16;
 
     @SystemApi
@@ -644,126 +659,106 @@ public class DevicePolicyManager {
     private final boolean mParentInstance;
     private final DevicePolicyResourcesManager mResourcesManager;
     private final IDevicePolicyManager mService;
-    private static String TAG = "DevicePolicyManager";
+    private static String TAG = AuditComponents.DEVICE_POLICY_MANAGER;
     private static final IpcDataCache.Config sDpmCaches = new IpcDataCache.Config(8, "system_server", "DevicePolicyManagerCaches");
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ApplicationExemptionConstants {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface AttestationIdType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface ContentProtectionPolicy {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface CreateAndManageUserFlags {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DeviceOwnerType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DevicePolicyOperation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface InstallUpdateCallbackErrorConstants {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface LockNowFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface LockTaskFeature {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface MtePolicy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NearbyStreamingPolicy {
     }
 
-    /* loaded from: classes.dex */
     public interface OnClearApplicationUserDataListener {
         void onApplicationUserDataCleared(String str, boolean z);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface OperationSafetyReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PasswordComplexity {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PermissionGrantState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PersonalAppsSuspensionReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PrivateDnsMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PrivateDnsModeErrorCodes {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProvisioningConfiguration {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProvisioningPrecondition {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProvisioningTrigger {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface RoleHolderUpdateFailureStrategy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SystemSettingsWhitelist {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UserProvisioningState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface WifiSecurity {
     }
 
@@ -775,8 +770,7 @@ public class DevicePolicyManager {
         this.ALLOW_BLUETOOTH_MODE_VALUE_DISABLE = 0;
         this.ALLOW_BLUETOOTH_MODE_VALUE_HANDSFREE_ONLY = 1;
         this.ALLOW_BLUETOOTH_MODE_VALUE_ALLOW = 2;
-        IpcDataCache.Config config = sDpmCaches;
-        this.mGetKeyGuardDisabledFeaturesCache = new IpcDataCache<>(config.child("getKeyguardDisabledFeatures"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda5
+        this.mGetKeyGuardDisabledFeaturesCache = new IpcDataCache<>(sDpmCaches.child("getKeyguardDisabledFeatures"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda2
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 Integer lambda$new$2;
@@ -784,7 +778,7 @@ public class DevicePolicyManager {
                 return lambda$new$2;
             }
         });
-        this.mHasDeviceOwnerCache = new IpcDataCache<>(config.child("hasDeviceOwner"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda6
+        this.mHasDeviceOwnerCache = new IpcDataCache<>(sDpmCaches.child("hasDeviceOwner"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda3
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 Boolean lambda$new$3;
@@ -792,7 +786,7 @@ public class DevicePolicyManager {
                 return lambda$new$3;
             }
         });
-        this.mGetProfileOwnerOrDeviceOwnerSupervisionComponentCache = new IpcDataCache<>(config.child("getProfileOwnerOrDeviceOwnerSupervisionComponent"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda7
+        this.mGetProfileOwnerOrDeviceOwnerSupervisionComponentCache = new IpcDataCache<>(sDpmCaches.child("getProfileOwnerOrDeviceOwnerSupervisionComponent"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda4
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 ComponentName lambda$new$4;
@@ -800,7 +794,7 @@ public class DevicePolicyManager {
                 return lambda$new$4;
             }
         });
-        this.mIsOrganizationOwnedDeviceWithManagedProfileCache = new IpcDataCache<>(config.child("isOrganizationOwnedDeviceWithManagedProfile"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda8
+        this.mIsOrganizationOwnedDeviceWithManagedProfileCache = new IpcDataCache<>(sDpmCaches.child("isOrganizationOwnedDeviceWithManagedProfile"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda5
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 Object lambda$new$5;
@@ -808,7 +802,7 @@ public class DevicePolicyManager {
                 return lambda$new$5;
             }
         });
-        this.mGetDeviceOwnerOrganizationNameCache = new IpcDataCache<>(config.child("getDeviceOwnerOrganizationName"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda9
+        this.mGetDeviceOwnerOrganizationNameCache = new IpcDataCache<>(sDpmCaches.child("getDeviceOwnerOrganizationName"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda6
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 Object lambda$new$8;
@@ -816,7 +810,7 @@ public class DevicePolicyManager {
                 return lambda$new$8;
             }
         });
-        this.mGetOrganizationNameForUserCache = new IpcDataCache<>(config.child("getOrganizationNameForUser"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda10
+        this.mGetOrganizationNameForUserCache = new IpcDataCache<>(sDpmCaches.child("getOrganizationNameForUser"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda7
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 CharSequence lambda$new$9;
@@ -824,7 +818,7 @@ public class DevicePolicyManager {
                 return lambda$new$9;
             }
         });
-        this.mIsNetworkLoggingEnabledCache = new IpcDataCache<>(config.child("isNetworkLoggingEnabled"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda11
+        this.mIsNetworkLoggingEnabledCache = new IpcDataCache<>(sDpmCaches.child("isNetworkLoggingEnabled"), new IpcDataCache.RemoteCall() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda8
             @Override // android.os.IpcDataCache.RemoteCall
             public final Object apply(Object obj) {
                 Boolean lambda$new$10;
@@ -838,15 +832,15 @@ public class DevicePolicyManager {
         this.mResourcesManager = new DevicePolicyResourcesManager(context, service);
     }
 
-    private final IDevicePolicyManager getService() {
+    private IDevicePolicyManager getService() {
         return this.mService;
     }
 
-    private final boolean isParentInstance() {
+    private boolean isParentInstance() {
         return this.mParentInstance;
     }
 
-    private final Context getContext() {
+    private Context getContext() {
         return this.mContext;
     }
 
@@ -854,7 +848,6 @@ public class DevicePolicyManager {
         return this.mContext.getUserId();
     }
 
-    /* loaded from: classes.dex */
     public static abstract class InstallSystemUpdateCallback {
         public static final int UPDATE_ERROR_BATTERY_LOW = 5;
         public static final int UPDATE_ERROR_FILE_NOT_FOUND = 4;
@@ -872,10 +865,9 @@ public class DevicePolicyManager {
 
     public void setMtePolicy(int policy) {
         throwIfParentInstance("setMtePolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setMtePolicy(policy, this.mContext.getPackageName());
+                this.mService.setMtePolicy(policy, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -884,15 +876,41 @@ public class DevicePolicyManager {
 
     public int getMtePolicy() {
         throwIfParentInstance("setMtePolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getMtePolicy(this.mContext.getPackageName());
+                return this.mService.getMtePolicy(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
         return 0;
+    }
+
+    public static boolean isMtePolicyEnforced() {
+        return Zygote.nativeSupportsMemoryTagging();
+    }
+
+    public void setContentProtectionPolicy(ComponentName admin, int policy) {
+        throwIfParentInstance("setContentProtectionPolicy");
+        if (this.mService != null) {
+            try {
+                this.mService.setContentProtectionPolicy(admin, this.mContext.getPackageName(), policy);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public int getContentProtectionPolicy(ComponentName admin) {
+        throwIfParentInstance("getContentProtectionPolicy");
+        if (this.mService != null) {
+            try {
+                return this.mService.getContentProtectionPolicy(admin, this.mContext.getPackageName());
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return 1;
     }
 
     public static void invalidateBinderCaches() {
@@ -913,12 +931,11 @@ public class DevicePolicyManager {
 
     public boolean isSafeOperation(int reason) {
         throwIfParentInstance("isSafeOperation");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iDevicePolicyManager.isSafeOperation(reason);
+            return this.mService.isSafeOperation(reason);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -926,10 +943,9 @@ public class DevicePolicyManager {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public void acknowledgeNewUserDisclaimer() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.acknowledgeNewUserDisclaimer(this.mContext.getUserId());
+                this.mService.acknowledgeNewUserDisclaimer(this.mContext.getUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -937,10 +953,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isNewUserDisclaimerAcknowledged() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isNewUserDisclaimerAcknowledged(this.mContext.getUserId());
+                return this.mService.isNewUserDisclaimerAcknowledged(this.mContext.getUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -954,10 +969,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isAdminActiveAsUser(ComponentName admin, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isAdminActive(admin, userId);
+                return this.mService.isAdminActive(admin, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -966,10 +980,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isRemovingAdmin(ComponentName admin, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isRemovingAdmin(admin, userId);
+                return this.mService.isRemovingAdmin(admin, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -983,10 +996,9 @@ public class DevicePolicyManager {
     }
 
     public List<ComponentName> getActiveAdminsAsUser(int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getActiveAdmins(userId);
+                return this.mService.getActiveAdmins(userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1000,10 +1012,9 @@ public class DevicePolicyManager {
     }
 
     public boolean packageHasActiveAdmins(String packageName, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.packageHasActiveAdmins(packageName, userId);
+                return this.mService.packageHasActiveAdmins(packageName, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1016,11 +1027,10 @@ public class DevicePolicyManager {
     }
 
     public void removeActiveAdmin(ComponentName admin) {
-        throwIfParentInstance(SecContentProviderURI.ENTERPRISEDEVICEMANAGERPOLICY_REMOVEACTIVEADMIN_METHOD);
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        throwIfParentInstance("removeActiveAdmin");
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.removeActiveAdmin(admin, myUserId());
+                this.mService.removeActiveAdmin(admin, myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1029,10 +1039,9 @@ public class DevicePolicyManager {
 
     public boolean hasGrantedPolicy(ComponentName admin, int usesPolicy) {
         throwIfParentInstance("hasGrantedPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.hasGrantedPolicy(admin, usesPolicy, myUserId());
+                return this.mService.hasGrantedPolicy(admin, usesPolicy, myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1042,10 +1051,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordQuality(ComponentName admin, int quality) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordQuality(admin, quality, this.mParentInstance);
+                this.mService.setPasswordQuality(admin, quality, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1058,10 +1066,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordQuality(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordQuality(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordQuality(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1071,10 +1078,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumLength(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumLength(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumLength(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1087,10 +1093,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumLength(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumLength(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumLength(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1100,10 +1105,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumUpperCase(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumUpperCase(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumUpperCase(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1116,10 +1120,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumUpperCase(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumUpperCase(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumUpperCase(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1129,10 +1132,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumLowerCase(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumLowerCase(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumLowerCase(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1145,10 +1147,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumLowerCase(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumLowerCase(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumLowerCase(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1158,10 +1159,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumLetters(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumLetters(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumLetters(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1174,10 +1174,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumLetters(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumLetters(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumLetters(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1187,10 +1186,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumNumeric(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumNumeric(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumNumeric(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1203,10 +1201,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumNumeric(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumNumeric(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumNumeric(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1216,10 +1213,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumSymbols(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumSymbols(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumSymbols(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1232,10 +1228,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumSymbols(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumSymbols(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumSymbols(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1245,10 +1240,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setPasswordMinimumNonLetter(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordMinimumNonLetter(admin, length, this.mParentInstance);
+                this.mService.setPasswordMinimumNonLetter(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1261,10 +1255,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordMinimumNonLetter(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumNonLetter(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordMinimumNonLetter(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1277,10 +1270,9 @@ public class DevicePolicyManager {
     }
 
     public PasswordMetrics getPasswordMinimumMetrics(int userHandle, boolean deviceWideOnly) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordMinimumMetrics(userHandle, deviceWideOnly);
+                return this.mService.getPasswordMinimumMetrics(userHandle, deviceWideOnly);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1289,10 +1281,9 @@ public class DevicePolicyManager {
     }
 
     public void setPasswordHistoryLength(ComponentName admin, int length) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordHistoryLength(admin, length, this.mParentInstance);
+                this.mService.setPasswordHistoryLength(admin, length, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1300,10 +1291,9 @@ public class DevicePolicyManager {
     }
 
     public void setPasswordExpirationTimeout(ComponentName admin, long timeout) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPasswordExpirationTimeout(admin, this.mContext.getPackageName(), timeout, this.mParentInstance);
+                this.mService.setPasswordExpirationTimeout(admin, this.mContext.getPackageName(), timeout, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1311,10 +1301,9 @@ public class DevicePolicyManager {
     }
 
     public long getPasswordExpirationTimeout(ComponentName admin) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordExpirationTimeout(admin, myUserId(), this.mParentInstance);
+                return this.mService.getPasswordExpirationTimeout(admin, myUserId(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1323,10 +1312,9 @@ public class DevicePolicyManager {
     }
 
     public long getPasswordExpiration(ComponentName admin) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordExpiration(admin, myUserId(), this.mParentInstance);
+                return this.mService.getPasswordExpiration(admin, myUserId(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1339,10 +1327,9 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordHistoryLength(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPasswordHistoryLength(admin, userHandle, this.mParentInstance);
+                return this.mService.getPasswordHistoryLength(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1359,10 +1346,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isActivePasswordSufficient() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isActivePasswordSufficient(this.mContext.getPackageName(), myUserId(), this.mParentInstance);
+                return this.mService.isActivePasswordSufficient(this.mContext.getPackageName(), myUserId(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1374,10 +1360,9 @@ public class DevicePolicyManager {
         if (!this.mParentInstance) {
             throw new SecurityException("only callable on the parent instance");
         }
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isActivePasswordSufficientForDeviceRequirement();
+                return this.mService.isActivePasswordSufficientForDeviceRequirement();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1386,36 +1371,33 @@ public class DevicePolicyManager {
     }
 
     public int getPasswordComplexity() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getPasswordComplexity(this.mParentInstance);
+            return this.mService.getPasswordComplexity(this.mParentInstance);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setRequiredPasswordComplexity(int passwordComplexity) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setRequiredPasswordComplexity(this.mContext.getPackageName(), passwordComplexity, this.mParentInstance);
+            this.mService.setRequiredPasswordComplexity(this.mContext.getPackageName(), passwordComplexity, this.mParentInstance);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public int getRequiredPasswordComplexity() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getRequiredPasswordComplexity(this.mContext.getPackageName(), this.mParentInstance);
+            return this.mService.getRequiredPasswordComplexity(this.mContext.getPackageName(), this.mParentInstance);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1426,12 +1408,11 @@ public class DevicePolicyManager {
     }
 
     public int getAggregatedPasswordComplexityForUser(int userId, boolean deviceWideOnly) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getAggregatedPasswordComplexityForUser(userId, deviceWideOnly);
+            return this.mService.getAggregatedPasswordComplexityForUser(userId, deviceWideOnly);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1439,10 +1420,9 @@ public class DevicePolicyManager {
 
     public boolean isUsingUnifiedPassword(ComponentName admin) {
         throwIfParentInstance("isUsingUnifiedPassword");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isUsingUnifiedPassword(admin);
+                return this.mService.isUsingUnifiedPassword(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1451,10 +1431,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isPasswordSufficientAfterProfileUnification(int userHandle, int profileUser) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isPasswordSufficientAfterProfileUnification(userHandle, profileUser);
+                return this.mService.isPasswordSufficientAfterProfileUnification(userHandle, profileUser);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1467,10 +1446,9 @@ public class DevicePolicyManager {
     }
 
     public int getCurrentFailedPasswordAttempts(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCurrentFailedPasswordAttempts(this.mContext.getPackageName(), userHandle, this.mParentInstance);
+                return this.mService.getCurrentFailedPasswordAttempts(this.mContext.getPackageName(), userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1479,10 +1457,9 @@ public class DevicePolicyManager {
     }
 
     public int getCurrentFailedBiometricAttempts(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCurrentFailedBiometricAttempts(userHandle);
+                return this.mService.getCurrentFailedBiometricAttempts(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1491,10 +1468,9 @@ public class DevicePolicyManager {
     }
 
     public boolean getDoNotAskCredentialsOnBoot() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDoNotAskCredentialsOnBoot();
+                return this.mService.getDoNotAskCredentialsOnBoot();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1503,10 +1479,9 @@ public class DevicePolicyManager {
     }
 
     public void setMaximumFailedPasswordsForWipe(ComponentName admin, int num) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setMaximumFailedPasswordsForWipe(admin, this.mContext.getPackageName(), num, this.mParentInstance);
+                this.mService.setMaximumFailedPasswordsForWipe(admin, this.mContext.getPackageName(), num, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1518,10 +1493,9 @@ public class DevicePolicyManager {
     }
 
     public int getMaximumFailedPasswordsForWipe(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getMaximumFailedPasswordsForWipe(admin, userHandle, this.mParentInstance);
+                return this.mService.getMaximumFailedPasswordsForWipe(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1530,10 +1504,9 @@ public class DevicePolicyManager {
     }
 
     public int getProfileWithMinimumFailedPasswordsForWipe(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getProfileWithMinimumFailedPasswordsForWipe(userHandle, this.mParentInstance);
+                return this.mService.getProfileWithMinimumFailedPasswordsForWipe(userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1544,10 +1517,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean resetPassword(String password, int flags) {
         throwIfParentInstance("resetPassword");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.resetPassword(password, flags);
+                return this.mService.resetPassword(password, flags);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1557,10 +1529,9 @@ public class DevicePolicyManager {
 
     public boolean setResetPasswordToken(ComponentName admin, byte[] token) {
         throwIfParentInstance("setResetPasswordToken");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setResetPasswordToken(admin, this.mContext.getPackageName(), token);
+                return this.mService.setResetPasswordToken(admin, this.mContext.getPackageName(), token);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1570,10 +1541,9 @@ public class DevicePolicyManager {
 
     public boolean clearResetPasswordToken(ComponentName admin) {
         throwIfParentInstance("clearResetPasswordToken");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.clearResetPasswordToken(admin, this.mContext.getPackageName());
+                return this.mService.clearResetPasswordToken(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1583,10 +1553,9 @@ public class DevicePolicyManager {
 
     public boolean isResetPasswordTokenActive(ComponentName admin) {
         throwIfParentInstance("isResetPasswordTokenActive");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isResetPasswordTokenActive(admin, this.mContext.getPackageName());
+                return this.mService.isResetPasswordTokenActive(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1596,10 +1565,9 @@ public class DevicePolicyManager {
 
     public boolean resetPasswordWithToken(ComponentName admin, String password, byte[] token, int flags) {
         throwIfParentInstance("resetPassword");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.resetPasswordWithToken(admin, this.mContext.getPackageName(), password, token, flags);
+                return this.mService.resetPasswordWithToken(admin, this.mContext.getPackageName(), password, token, flags);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1608,10 +1576,9 @@ public class DevicePolicyManager {
     }
 
     public void setMaximumTimeToLock(ComponentName admin, long timeMs) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setMaximumTimeToLock(admin, this.mContext.getPackageName(), timeMs, this.mParentInstance);
+                this.mService.setMaximumTimeToLock(admin, this.mContext.getPackageName(), timeMs, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1623,10 +1590,9 @@ public class DevicePolicyManager {
     }
 
     public long getMaximumTimeToLock(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getMaximumTimeToLock(admin, userHandle, this.mParentInstance);
+                return this.mService.getMaximumTimeToLock(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1635,10 +1601,9 @@ public class DevicePolicyManager {
     }
 
     public void setRequiredStrongAuthTimeout(ComponentName admin, long timeoutMs) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setRequiredStrongAuthTimeout(admin, this.mContext.getPackageName(), timeoutMs, this.mParentInstance);
+                this.mService.setRequiredStrongAuthTimeout(admin, this.mContext.getPackageName(), timeoutMs, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1650,15 +1615,14 @@ public class DevicePolicyManager {
     }
 
     public long getRequiredStrongAuthTimeout(ComponentName admin, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getRequiredStrongAuthTimeout(admin, userId, this.mParentInstance);
+                return this.mService.getRequiredStrongAuthTimeout(admin, userId, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
-        return DEFAULT_STRONG_AUTH_TIMEOUT_MS;
+        return 259200000L;
     }
 
     public void lockNow() {
@@ -1666,10 +1630,9 @@ public class DevicePolicyManager {
     }
 
     public void lockNow(int flags) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.lockNow(flags, this.mContext.getPackageName(), this.mParentInstance);
+                this.mService.lockNow(flags, this.mContext.getPackageName(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1692,10 +1655,9 @@ public class DevicePolicyManager {
     }
 
     private void wipeDataInternal(int flags, String wipeReasonForUser, boolean factoryReset) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.wipeDataWithReason(this.mContext.getPackageName(), flags, wipeReasonForUser, this.mParentInstance, factoryReset);
+                this.mService.wipeDataWithReason(this.mContext.getPackageName(), flags, wipeReasonForUser, this.mParentInstance, factoryReset);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1704,10 +1666,9 @@ public class DevicePolicyManager {
 
     public void setFactoryResetProtectionPolicy(ComponentName admin, FactoryResetProtectionPolicy policy) {
         throwIfParentInstance("setFactoryResetProtectionPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setFactoryResetProtectionPolicy(admin, this.mContext.getPackageName(), policy);
+                this.mService.setFactoryResetProtectionPolicy(admin, this.mContext.getPackageName(), policy);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1716,10 +1677,9 @@ public class DevicePolicyManager {
 
     public FactoryResetProtectionPolicy getFactoryResetProtectionPolicy(ComponentName admin) {
         throwIfParentInstance("getFactoryResetProtectionPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getFactoryResetProtectionPolicy(admin);
+                return this.mService.getFactoryResetProtectionPolicy(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1744,10 +1704,10 @@ public class DevicePolicyManager {
     }
 
     private void executeCallback(AndroidFuture<Boolean> future, final Executor executor, final Consumer<Boolean> callback) {
-        future.whenComplete(new BiConsumer() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda12
+        future.whenComplete(new BiConsumer() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda1
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
-                executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda4
+                executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DevicePolicyManager.lambda$executeCallback$0(r1, r2, r3);
@@ -1757,7 +1717,7 @@ public class DevicePolicyManager {
         });
     }
 
-    public static /* synthetic */ void lambda$executeCallback$0(Throwable error, Consumer callback, Boolean result) {
+    static /* synthetic */ void lambda$executeCallback$0(Throwable error, Consumer callback, Boolean result) {
         long token = Binder.clearCallingIdentity();
         try {
             if (error != null) {
@@ -1822,10 +1782,9 @@ public class DevicePolicyManager {
 
     public void setRecommendedGlobalProxy(ComponentName admin, ProxyInfo proxyInfo) {
         throwIfParentInstance("setRecommendedGlobalProxy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setRecommendedGlobalProxy(admin, proxyInfo);
+                this.mService.setRecommendedGlobalProxy(admin, proxyInfo);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1833,10 +1792,9 @@ public class DevicePolicyManager {
     }
 
     public ComponentName getGlobalProxyAdmin() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getGlobalProxyAdmin(myUserId());
+                return this.mService.getGlobalProxyAdmin(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1847,10 +1805,9 @@ public class DevicePolicyManager {
     @Deprecated
     public int setStorageEncryption(ComponentName admin, boolean encrypt) {
         throwIfParentInstance("setStorageEncryption");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setStorageEncryption(admin, encrypt);
+                return this.mService.setStorageEncryption(admin, encrypt);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1861,10 +1818,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean getStorageEncryption(ComponentName admin) {
         throwIfParentInstance("getStorageEncryption");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getStorageEncryption(admin, myUserId());
+                return this.mService.getStorageEncryption(admin, myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1878,10 +1834,9 @@ public class DevicePolicyManager {
     }
 
     public int getStorageEncryptionStatus(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getStorageEncryptionStatus(this.mContext.getPackageName(), userHandle);
+                return this.mService.getStorageEncryptionStatus(this.mContext.getPackageName(), userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1890,10 +1845,9 @@ public class DevicePolicyManager {
     }
 
     public boolean approveCaCert(String alias, int userHandle, boolean approval) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.approveCaCert(alias, userHandle, approval);
+                return this.mService.approveCaCert(alias, userHandle, approval);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1902,10 +1856,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isCaCertApproved(String alias, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isCaCertApproved(alias, userHandle);
+                return this.mService.isCaCertApproved(alias, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1915,10 +1868,9 @@ public class DevicePolicyManager {
 
     public boolean installCaCert(ComponentName admin, byte[] certBuffer) {
         throwIfParentInstance("installCaCert");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.installCaCert(admin, this.mContext.getPackageName(), certBuffer);
+                return this.mService.installCaCert(admin, this.mContext.getPackageName(), certBuffer);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -1943,10 +1895,9 @@ public class DevicePolicyManager {
     public List<byte[]> getInstalledCaCerts(ComponentName admin) {
         List<byte[]> certs = new ArrayList<>();
         throwIfParentInstance("getInstalledCaCerts");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.enforceCanManageCaCerts(admin, this.mContext.getPackageName());
+                this.mService.enforceCanManageCaCerts(admin, this.mContext.getPackageName());
                 TrustedCertificateStore certStore = new TrustedCertificateStore();
                 for (String alias : certStore.userAliases()) {
                     try {
@@ -1964,10 +1915,9 @@ public class DevicePolicyManager {
 
     public void uninstallAllUserCaCerts(ComponentName admin) {
         throwIfParentInstance("uninstallAllUserCaCerts");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.uninstallCaCerts(admin, this.mContext.getPackageName(), (String[]) new TrustedCertificateStore().userAliases().toArray(new String[0]));
+                this.mService.uninstallCaCerts(admin, this.mContext.getPackageName(), (String[]) new TrustedCertificateStore().userAliases().toArray(new String[0]));
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -1976,10 +1926,9 @@ public class DevicePolicyManager {
 
     public boolean hasCaCertInstalled(ComponentName admin, byte[] certBuffer) {
         throwIfParentInstance("hasCaCertInstalled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.enforceCanManageCaCerts(admin, this.mContext.getPackageName());
+                this.mService.enforceCanManageCaCerts(admin, this.mContext.getPackageName());
                 return getCaCertAlias(certBuffer) != null;
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
@@ -2193,10 +2142,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void setCertInstallerPackage(ComponentName admin, String installerPackage) throws SecurityException {
         throwIfParentInstance("setCertInstallerPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCertInstallerPackage(admin, installerPackage);
+                this.mService.setCertInstallerPackage(admin, installerPackage);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2206,10 +2154,9 @@ public class DevicePolicyManager {
     @Deprecated
     public String getCertInstallerPackage(ComponentName admin) throws SecurityException {
         throwIfParentInstance("getCertInstallerPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCertInstallerPackage(admin);
+                return this.mService.getCertInstallerPackage(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2219,10 +2166,9 @@ public class DevicePolicyManager {
 
     public void setDelegatedScopes(ComponentName admin, String delegatePackage, List<String> scopes) {
         throwIfParentInstance("setDelegatedScopes");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDelegatedScopes(admin, delegatePackage, scopes);
+                this.mService.setDelegatedScopes(admin, delegatePackage, scopes);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2231,10 +2177,9 @@ public class DevicePolicyManager {
 
     public List<String> getDelegatedScopes(ComponentName admin, String delegatedPackage) {
         throwIfParentInstance("getDelegatedScopes");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDelegatedScopes(admin, delegatedPackage);
+                return this.mService.getDelegatedScopes(admin, delegatedPackage);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2244,10 +2189,9 @@ public class DevicePolicyManager {
 
     public List<String> getDelegatePackages(ComponentName admin, String delegationScope) {
         throwIfParentInstance("getDelegatePackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDelegatePackages(admin, delegationScope);
+                return this.mService.getDelegatePackages(admin, delegationScope);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2260,36 +2204,28 @@ public class DevicePolicyManager {
     }
 
     public void setAlwaysOnVpnPackage(ComponentName admin, String vpnPackage, boolean lockdownEnabled, Set<String> lockdownAllowlist) throws PackageManager.NameNotFoundException {
-        ArrayList arrayList;
         throwIfParentInstance("setAlwaysOnVpnPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            if (lockdownAllowlist == null) {
-                arrayList = null;
-            } else {
-                try {
-                    arrayList = new ArrayList(lockdownAllowlist);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                } catch (ServiceSpecificException e2) {
-                    switch (e2.errorCode) {
-                        case 1:
-                            throw new PackageManager.NameNotFoundException(e2.getMessage());
-                        default:
-                            throw new RuntimeException("Unknown error setting always-on VPN: " + e2.errorCode, e2);
-                    }
+        if (this.mService != null) {
+            try {
+                this.mService.setAlwaysOnVpnPackage(admin, vpnPackage, lockdownEnabled, lockdownAllowlist == null ? null : new ArrayList(lockdownAllowlist));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            } catch (ServiceSpecificException e2) {
+                switch (e2.errorCode) {
+                    case 1:
+                        throw new PackageManager.NameNotFoundException(e2.getMessage());
+                    default:
+                        throw new RuntimeException("Unknown error setting always-on VPN: " + e2.errorCode, e2);
                 }
             }
-            iDevicePolicyManager.setAlwaysOnVpnPackage(admin, vpnPackage, lockdownEnabled, arrayList);
         }
     }
 
     public boolean isAlwaysOnVpnLockdownEnabled(ComponentName admin) {
         throwIfParentInstance("isAlwaysOnVpnLockdownEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isAlwaysOnVpnLockdownEnabled(admin);
+                return this.mService.isAlwaysOnVpnLockdownEnabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2299,10 +2235,9 @@ public class DevicePolicyManager {
 
     public boolean isAlwaysOnVpnLockdownEnabled() {
         throwIfParentInstance("isAlwaysOnVpnLockdownEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isAlwaysOnVpnLockdownEnabledForUser(myUserId());
+                return this.mService.isAlwaysOnVpnLockdownEnabledForUser(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2312,12 +2247,11 @@ public class DevicePolicyManager {
 
     public Set<String> getAlwaysOnVpnLockdownWhitelist(ComponentName admin) {
         throwIfParentInstance("getAlwaysOnVpnLockdownWhitelist");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            List<String> allowlist = iDevicePolicyManager.getAlwaysOnVpnLockdownAllowlist(admin);
+            List<String> allowlist = this.mService.getAlwaysOnVpnLockdownAllowlist(admin);
             return allowlist != null ? new HashSet(allowlist) : null;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
@@ -2326,10 +2260,9 @@ public class DevicePolicyManager {
 
     public String getAlwaysOnVpnPackage(ComponentName admin) {
         throwIfParentInstance("getAlwaysOnVpnPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAlwaysOnVpnPackage(admin);
+                return this.mService.getAlwaysOnVpnPackage(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2339,10 +2272,9 @@ public class DevicePolicyManager {
 
     public String getAlwaysOnVpnPackage() {
         throwIfParentInstance("getAlwaysOnVpnPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAlwaysOnVpnPackageForUser(myUserId());
+                return this.mService.getAlwaysOnVpnPackageForUser(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2351,10 +2283,9 @@ public class DevicePolicyManager {
     }
 
     public void setCameraDisabled(ComponentName admin, boolean disabled) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCameraDisabled(admin, this.mContext.getPackageName(), disabled, this.mParentInstance);
+                this.mService.setCameraDisabled(admin, this.mContext.getPackageName(), disabled, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2366,10 +2297,9 @@ public class DevicePolicyManager {
     }
 
     public boolean getCameraDisabled(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCameraDisabled(admin, this.mContext.getPackageName(), userHandle, this.mParentInstance);
+                return this.mService.getCameraDisabled(admin, this.mContext.getPackageName(), userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2379,10 +2309,9 @@ public class DevicePolicyManager {
 
     public boolean requestBugreport(ComponentName admin) {
         throwIfParentInstance("requestBugreport");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.requestBugreport(admin);
+                return this.mService.requestBugreport(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2391,10 +2320,9 @@ public class DevicePolicyManager {
     }
 
     public void setScreenCaptureDisabled(ComponentName admin, boolean disabled) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setScreenCaptureDisabled(admin, this.mContext.getPackageName(), disabled, this.mParentInstance);
+                this.mService.setScreenCaptureDisabled(admin, this.mContext.getPackageName(), disabled, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2406,10 +2334,9 @@ public class DevicePolicyManager {
     }
 
     public boolean getScreenCaptureDisabled(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getScreenCaptureDisabled(admin, userHandle, this.mParentInstance);
+                return this.mService.getScreenCaptureDisabled(admin, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2419,12 +2346,11 @@ public class DevicePolicyManager {
 
     public void setNearbyNotificationStreamingPolicy(int policy) {
         throwIfParentInstance("setNearbyNotificationStreamingPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setNearbyNotificationStreamingPolicy(policy);
+            this.mService.setNearbyNotificationStreamingPolicy(policy);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2436,12 +2362,11 @@ public class DevicePolicyManager {
 
     public int getNearbyNotificationStreamingPolicy(int userId) {
         throwIfParentInstance("getNearbyNotificationStreamingPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getNearbyNotificationStreamingPolicy(userId);
+            return this.mService.getNearbyNotificationStreamingPolicy(userId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -2449,12 +2374,11 @@ public class DevicePolicyManager {
 
     public void setNearbyAppStreamingPolicy(int policy) {
         throwIfParentInstance("setNearbyAppStreamingPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setNearbyAppStreamingPolicy(policy);
+            this.mService.setNearbyAppStreamingPolicy(policy);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2466,12 +2390,11 @@ public class DevicePolicyManager {
 
     public int getNearbyAppStreamingPolicy(int userId) {
         throwIfParentInstance("getNearbyAppStreamingPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getNearbyAppStreamingPolicy(userId);
+            return this.mService.getNearbyAppStreamingPolicy(userId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -2480,10 +2403,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void setAutoTimeRequired(ComponentName admin, boolean required) {
         throwIfParentInstance("setAutoTimeRequired");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setAutoTimeRequired(admin, required);
+                this.mService.setAutoTimeRequired(admin, required);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2493,10 +2415,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean getAutoTimeRequired() {
         throwIfParentInstance("getAutoTimeRequired");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAutoTimeRequired();
+                return this.mService.getAutoTimeRequired();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2506,10 +2427,9 @@ public class DevicePolicyManager {
 
     public void setAutoTimeEnabled(ComponentName admin, boolean enabled) {
         throwIfParentInstance("setAutoTimeEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setAutoTimeEnabled(admin, this.mContext.getPackageName(), enabled);
+                this.mService.setAutoTimeEnabled(admin, this.mContext.getPackageName(), enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2518,10 +2438,9 @@ public class DevicePolicyManager {
 
     public boolean getAutoTimeEnabled(ComponentName admin) {
         throwIfParentInstance("getAutoTimeEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAutoTimeEnabled(admin, this.mContext.getPackageName());
+                return this.mService.getAutoTimeEnabled(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2531,10 +2450,9 @@ public class DevicePolicyManager {
 
     public void setAutoTimeZoneEnabled(ComponentName admin, boolean enabled) {
         throwIfParentInstance("setAutoTimeZone");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setAutoTimeZoneEnabled(admin, this.mContext.getPackageName(), enabled);
+                this.mService.setAutoTimeZoneEnabled(admin, this.mContext.getPackageName(), enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2543,10 +2461,9 @@ public class DevicePolicyManager {
 
     public boolean getAutoTimeZoneEnabled(ComponentName admin) {
         throwIfParentInstance("getAutoTimeZone");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAutoTimeZoneEnabled(admin, this.mContext.getPackageName());
+                return this.mService.getAutoTimeZoneEnabled(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2556,10 +2473,9 @@ public class DevicePolicyManager {
 
     public void setForceEphemeralUsers(ComponentName admin, boolean forceEphemeralUsers) {
         throwIfParentInstance("setForceEphemeralUsers");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setForceEphemeralUsers(admin, forceEphemeralUsers);
+                this.mService.setForceEphemeralUsers(admin, forceEphemeralUsers);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2568,10 +2484,9 @@ public class DevicePolicyManager {
 
     public boolean getForceEphemeralUsers(ComponentName admin) {
         throwIfParentInstance("getForceEphemeralUsers");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getForceEphemeralUsers(admin);
+                return this.mService.getForceEphemeralUsers(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2580,10 +2495,9 @@ public class DevicePolicyManager {
     }
 
     public void setKeyguardDisabledFeatures(ComponentName admin, int which) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setKeyguardDisabledFeatures(admin, this.mContext.getPackageName(), which, this.mParentInstance);
+                this.mService.setKeyguardDisabledFeatures(admin, this.mContext.getPackageName(), which, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2594,6 +2508,7 @@ public class DevicePolicyManager {
         return getKeyguardDisabledFeatures(admin, myUserId());
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     public /* synthetic */ Integer lambda$new$2(Pair query) throws RemoteException {
         return Integer.valueOf(getService().getKeyguardDisabledFeatures((ComponentName) query.first, ((Integer) query.second).intValue(), isParentInstance()));
@@ -2607,10 +2522,9 @@ public class DevicePolicyManager {
     }
 
     public void setActiveAdmin(ComponentName policyReceiver, boolean refreshing, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setActiveAdmin(policyReceiver, refreshing, userHandle);
+                this.mService.setActiveAdmin(policyReceiver, refreshing, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2622,10 +2536,9 @@ public class DevicePolicyManager {
     }
 
     public void getRemoveWarning(ComponentName admin, RemoteCallback result) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.getRemoveWarning(admin, result, myUserId());
+                this.mService.getRemoveWarning(admin, result, myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2633,10 +2546,19 @@ public class DevicePolicyManager {
     }
 
     public void reportPasswordChanged(PasswordMetrics metrics, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportPasswordChanged(metrics, userId);
+                this.mService.reportPasswordChanged(metrics, userId);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public void reportFailedPasswordAttemptWithFailureCount(int userHandle, int count) {
+        if (this.mService != null) {
+            try {
+                this.mService.reportFailedPasswordAttemptWithFailureCount(userHandle, count, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2644,10 +2566,9 @@ public class DevicePolicyManager {
     }
 
     public void reportFailedPasswordAttempt(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportFailedPasswordAttempt(userHandle, this.mParentInstance);
+                this.mService.reportFailedPasswordAttempt(userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2655,10 +2576,9 @@ public class DevicePolicyManager {
     }
 
     public void reportSuccessfulPasswordAttempt(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportSuccessfulPasswordAttempt(userHandle);
+                this.mService.reportSuccessfulPasswordAttempt(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2666,10 +2586,9 @@ public class DevicePolicyManager {
     }
 
     public void reportFailedBiometricAttempt(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportFailedBiometricAttempt(userHandle);
+                this.mService.reportFailedBiometricAttempt(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2677,10 +2596,9 @@ public class DevicePolicyManager {
     }
 
     public void reportSuccessfulBiometricAttempt(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportSuccessfulBiometricAttempt(userHandle);
+                this.mService.reportSuccessfulBiometricAttempt(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2688,10 +2606,9 @@ public class DevicePolicyManager {
     }
 
     public void reportKeyguardDismissed(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportKeyguardDismissed(userHandle);
+                this.mService.reportKeyguardDismissed(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2699,10 +2616,9 @@ public class DevicePolicyManager {
     }
 
     public void reportKeyguardSecured(int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.reportKeyguardSecured(userHandle);
+                this.mService.reportKeyguardSecured(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2710,10 +2626,9 @@ public class DevicePolicyManager {
     }
 
     public boolean setDeviceOwner(ComponentName who, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setDeviceOwner(who, userId, true);
+                return this.mService.setDeviceOwner(who, userId, true);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2722,12 +2637,11 @@ public class DevicePolicyManager {
     }
 
     public boolean setDeviceOwnerOnly(ComponentName who, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iDevicePolicyManager.setDeviceOwner(who, userId, false);
+            return this.mService.setDeviceOwner(who, userId, false);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -2735,6 +2649,9 @@ public class DevicePolicyManager {
 
     public boolean isDeviceOwnerApp(String packageName) {
         throwIfParentInstance("isDeviceOwnerApp");
+        if (Flags.systemServerRoleControllerEnabled() && CompatChanges.isChangeEnabled(IS_DEVICE_OWNER_USER_AWARE)) {
+            return isDeviceOwnerAppOnContextUser(packageName);
+        }
         return isDeviceOwnerAppOnCallingUser(packageName);
     }
 
@@ -2763,11 +2680,28 @@ public class DevicePolicyManager {
         return packageName.equals(deviceOwner.getPackageName());
     }
 
-    private ComponentName getDeviceOwnerComponentInner(boolean callingUserOnly) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+    private boolean isDeviceOwnerAppOnContextUser(String packageName) {
+        if (packageName == null) {
+            return false;
+        }
+        ComponentName deviceOwner = null;
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDeviceOwnerComponent(callingUserOnly);
+                deviceOwner = this.mService.getDeviceOwnerComponentOnUser(myUserId());
+            } catch (RemoteException re) {
+                throw re.rethrowFromSystemServer();
+            }
+        }
+        if (deviceOwner == null) {
+            return false;
+        }
+        return packageName.equals(deviceOwner.getPackageName());
+    }
+
+    private ComponentName getDeviceOwnerComponentInner(boolean callingUserOnly) {
+        if (this.mService != null) {
+            try {
+                return this.mService.getDeviceOwnerComponent(callingUserOnly);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2777,10 +2711,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public UserHandle getDeviceOwnerUser() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                int userId = iDevicePolicyManager.getDeviceOwnerUserId();
+                int userId = this.mService.getDeviceOwnerUserId();
                 if (userId != -10000) {
                     return UserHandle.of(userId);
                 }
@@ -2793,10 +2726,9 @@ public class DevicePolicyManager {
     }
 
     public int getDeviceOwnerUserId() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDeviceOwnerUserId();
+                return this.mService.getDeviceOwnerUserId();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2807,10 +2739,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void clearDeviceOwnerApp(String packageName) {
         throwIfParentInstance("clearDeviceOwnerApp");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.clearDeviceOwner(packageName);
+                this.mService.clearDeviceOwner(packageName);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2827,6 +2758,7 @@ public class DevicePolicyManager {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$new$3(Void query) throws RemoteException {
         return Boolean.valueOf(getService().hasDeviceOwner());
     }
@@ -2839,10 +2771,9 @@ public class DevicePolicyManager {
     @SystemApi
     public String getDeviceOwnerNameOnAnyUser() {
         throwIfParentInstance("getDeviceOwnerNameOnAnyUser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDeviceOwnerName();
+                return this.mService.getDeviceOwnerName();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2852,7 +2783,7 @@ public class DevicePolicyManager {
 
     @SystemApi
     @Deprecated
-    public boolean setActiveProfileOwner(ComponentName admin, @Deprecated String ownerName) throws IllegalArgumentException {
+    public boolean setActiveProfileOwner(ComponentName admin, String ownerName) throws IllegalArgumentException {
         throwIfParentInstance("setActiveProfileOwner");
         if (this.mService == null) {
             return false;
@@ -2869,10 +2800,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void clearProfileOwner(ComponentName admin) {
         throwIfParentInstance("clearProfileOwner");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.clearProfileOwner(admin);
+                this.mService.clearProfileOwner(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2880,10 +2810,9 @@ public class DevicePolicyManager {
     }
 
     public boolean hasUserSetupCompleted() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.hasUserSetupCompleted();
+                return this.mService.hasUserSetupCompleted();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2892,10 +2821,9 @@ public class DevicePolicyManager {
     }
 
     public boolean setProfileOwner(ComponentName admin, int userHandle) throws IllegalArgumentException {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setProfileOwner(admin, userHandle);
+                return this.mService.setProfileOwner(admin, userHandle);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2905,10 +2833,9 @@ public class DevicePolicyManager {
 
     public void setDeviceOwnerLockScreenInfo(ComponentName admin, CharSequence info) {
         throwIfParentInstance("setDeviceOwnerLockScreenInfo");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDeviceOwnerLockScreenInfo(admin, info);
+                this.mService.setDeviceOwnerLockScreenInfo(admin, info);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2917,10 +2844,9 @@ public class DevicePolicyManager {
 
     public CharSequence getDeviceOwnerLockScreenInfo() {
         throwIfParentInstance("getDeviceOwnerLockScreenInfo");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDeviceOwnerLockScreenInfo();
+                return this.mService.getDeviceOwnerLockScreenInfo();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2930,10 +2856,9 @@ public class DevicePolicyManager {
 
     public String[] setPackagesSuspended(ComponentName admin, String[] packageNames, boolean suspended) {
         throwIfParentInstance("setPackagesSuspended");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setPackagesSuspended(admin, this.mContext.getPackageName(), packageNames, suspended);
+                return this.mService.setPackagesSuspended(admin, this.mContext.getPackageName(), packageNames, suspended);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -2943,10 +2868,9 @@ public class DevicePolicyManager {
 
     public boolean isPackageSuspended(ComponentName admin, String packageName) throws PackageManager.NameNotFoundException {
         throwIfParentInstance("isPackageSuspended");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isPackageSuspended(admin, this.mContext.getPackageName(), packageName);
+                return this.mService.isPackageSuspended(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             } catch (IllegalArgumentException ex) {
@@ -2959,10 +2883,9 @@ public class DevicePolicyManager {
 
     public void setProfileEnabled(ComponentName admin) {
         throwIfParentInstance("setProfileEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setProfileEnabled(admin);
+                this.mService.setProfileEnabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2971,10 +2894,9 @@ public class DevicePolicyManager {
 
     public void setProfileName(ComponentName admin, String profileName) {
         throwIfParentInstance("setProfileName");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setProfileName(admin, profileName);
+                this.mService.setProfileName(admin, profileName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -2983,12 +2905,11 @@ public class DevicePolicyManager {
 
     public boolean isProfileOwnerApp(String packageName) {
         throwIfParentInstance("isProfileOwnerApp");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            ComponentName profileOwner = iDevicePolicyManager.getProfileOwnerAsUser(myUserId());
+            ComponentName profileOwner = this.mService.getProfileOwnerAsUser(myUserId());
             if (profileOwner != null) {
                 return profileOwner.getPackageName().equals(packageName);
             }
@@ -3005,10 +2926,9 @@ public class DevicePolicyManager {
     }
 
     public ComponentName getProfileOwnerAsUser(UserHandle user) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getProfileOwnerAsUser(user.getIdentifier());
+                return this.mService.getProfileOwnerAsUser(user.getIdentifier());
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -3017,10 +2937,9 @@ public class DevicePolicyManager {
     }
 
     public ComponentName getProfileOwnerAsUser(int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getProfileOwnerAsUser(userId);
+                return this.mService.getProfileOwnerAsUser(userId);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -3028,6 +2947,7 @@ public class DevicePolicyManager {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ ComponentName lambda$new$4(UserHandle arg) throws RemoteException {
         return getService().getProfileOwnerOrDeviceOwnerSupervisionComponent(arg);
     }
@@ -3051,10 +2971,9 @@ public class DevicePolicyManager {
     }
 
     public String getProfileOwnerName() throws IllegalArgumentException {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getProfileOwnerName(this.mContext.getUserId());
+                return this.mService.getProfileOwnerName(this.mContext.getUserId());
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -3065,10 +2984,9 @@ public class DevicePolicyManager {
     @SystemApi
     public String getProfileOwnerNameAsUser(int userId) throws IllegalArgumentException {
         throwIfParentInstance("getProfileOwnerNameAsUser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getProfileOwnerName(userId);
+                return this.mService.getProfileOwnerName(userId);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -3076,6 +2994,7 @@ public class DevicePolicyManager {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$new$5(Object query) throws RemoteException {
         return Boolean.valueOf(getService().isOrganizationOwnedDeviceWithManagedProfile());
     }
@@ -3089,13 +3008,12 @@ public class DevicePolicyManager {
     }
 
     public boolean hasDeviceIdentifierAccess(String packageName, int pid, int uid) {
-        IDevicePolicyManager iDevicePolicyManager;
         throwIfParentInstance("hasDeviceIdentifierAccess");
-        if (packageName == null || (iDevicePolicyManager = this.mService) == null) {
+        if (packageName == null || this.mService == null) {
             return false;
         }
         try {
-            return iDevicePolicyManager.checkDeviceIdentifierAccess(packageName, pid, uid);
+            return this.mService.checkDeviceIdentifierAccess(packageName, pid, uid);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -3103,10 +3021,9 @@ public class DevicePolicyManager {
 
     public void addPersistentPreferredActivity(ComponentName admin, IntentFilter filter, ComponentName activity) {
         throwIfParentInstance("addPersistentPreferredActivity");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.addPersistentPreferredActivity(admin, this.mContext.getPackageName(), filter, activity);
+                this.mService.addPersistentPreferredActivity(admin, this.mContext.getPackageName(), filter, activity);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3115,10 +3032,9 @@ public class DevicePolicyManager {
 
     public void clearPackagePersistentPreferredActivities(ComponentName admin, String packageName) {
         throwIfParentInstance("clearPackagePersistentPreferredActivities");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.clearPackagePersistentPreferredActivities(admin, this.mContext.getPackageName(), packageName);
+                this.mService.clearPackagePersistentPreferredActivities(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3126,10 +3042,9 @@ public class DevicePolicyManager {
     }
 
     public void setDefaultSmsApplication(ComponentName admin, String packageName) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDefaultSmsApplication(admin, this.mContext.getPackageName(), packageName, this.mParentInstance);
+                this.mService.setDefaultSmsApplication(admin, this.mContext.getPackageName(), packageName, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3138,10 +3053,9 @@ public class DevicePolicyManager {
 
     public void setDefaultDialerApplication(String packageName) {
         throwIfParentInstance("setDefaultDialerApplication");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDefaultDialerApplication(packageName);
+                this.mService.setDefaultDialerApplication(packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3151,10 +3065,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void setApplicationRestrictionsManagingPackage(ComponentName admin, String packageName) throws PackageManager.NameNotFoundException {
         throwIfParentInstance("setApplicationRestrictionsManagingPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                if (!iDevicePolicyManager.setApplicationRestrictionsManagingPackage(admin, packageName)) {
+                if (!this.mService.setApplicationRestrictionsManagingPackage(admin, packageName)) {
                     throw new PackageManager.NameNotFoundException(packageName);
                 }
             } catch (RemoteException e) {
@@ -3166,10 +3079,9 @@ public class DevicePolicyManager {
     @Deprecated
     public String getApplicationRestrictionsManagingPackage(ComponentName admin) {
         throwIfParentInstance("getApplicationRestrictionsManagingPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getApplicationRestrictionsManagingPackage(admin);
+                return this.mService.getApplicationRestrictionsManagingPackage(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3180,10 +3092,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean isCallerApplicationRestrictionsManagingPackage() {
         throwIfParentInstance("isCallerApplicationRestrictionsManagingPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isCallerApplicationRestrictionsManagingPackage(this.mContext.getPackageName());
+                return this.mService.isCallerApplicationRestrictionsManagingPackage(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3192,11 +3103,12 @@ public class DevicePolicyManager {
     }
 
     public void setApplicationRestrictions(ComponentName admin, String packageName, Bundle settings) {
-        throwIfParentInstance("setApplicationRestrictions");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (!android.app.admin.flags.Flags.dmrhSetAppRestrictions()) {
+            throwIfParentInstance("setApplicationRestrictions");
+        }
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setApplicationRestrictions(admin, this.mContext.getPackageName(), packageName, settings);
+                this.mService.setApplicationRestrictions(admin, this.mContext.getPackageName(), packageName, settings, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3204,10 +3116,9 @@ public class DevicePolicyManager {
     }
 
     public void setTrustAgentConfiguration(ComponentName admin, ComponentName target, PersistableBundle configuration) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setTrustAgentConfiguration(admin, this.mContext.getPackageName(), target, configuration, this.mParentInstance);
+                this.mService.setTrustAgentConfiguration(admin, this.mContext.getPackageName(), target, configuration, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3219,10 +3130,9 @@ public class DevicePolicyManager {
     }
 
     public List<PersistableBundle> getTrustAgentConfiguration(ComponentName admin, ComponentName agent, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getTrustAgentConfiguration(admin, agent, userHandle, this.mParentInstance);
+                return this.mService.getTrustAgentConfiguration(admin, agent, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3233,10 +3143,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void setCrossProfileCallerIdDisabled(ComponentName admin, boolean disabled) {
         throwIfParentInstance("setCrossProfileCallerIdDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCrossProfileCallerIdDisabled(admin, disabled);
+                this.mService.setCrossProfileCallerIdDisabled(admin, disabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3246,10 +3155,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean getCrossProfileCallerIdDisabled(ComponentName admin) {
         throwIfParentInstance("getCrossProfileCallerIdDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCrossProfileCallerIdDisabled(admin);
+                return this.mService.getCrossProfileCallerIdDisabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3259,10 +3167,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public boolean getCrossProfileCallerIdDisabled(UserHandle userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCrossProfileCallerIdDisabledForUser(userHandle.getIdentifier());
+                return this.mService.getCrossProfileCallerIdDisabledForUser(userHandle.getIdentifier());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3272,10 +3179,9 @@ public class DevicePolicyManager {
 
     public void setCredentialManagerPolicy(PackagePolicy policy) {
         throwIfParentInstance("setCredentialManagerPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCredentialManagerPolicy(policy);
+                this.mService.setCredentialManagerPolicy(policy);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3284,10 +3190,9 @@ public class DevicePolicyManager {
 
     public PackagePolicy getCredentialManagerPolicy() {
         throwIfParentInstance("getCredentialManagerPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCredentialManagerPolicy(myUserId());
+                return this.mService.getCredentialManagerPolicy(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3297,10 +3202,9 @@ public class DevicePolicyManager {
 
     public void setManagedProfileCallerIdAccessPolicy(PackagePolicy policy) {
         throwIfParentInstance("setManagedProfileCallerIdAccessPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setManagedProfileCallerIdAccessPolicy(policy);
+                this.mService.setManagedProfileCallerIdAccessPolicy(policy);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3309,10 +3213,9 @@ public class DevicePolicyManager {
 
     public PackagePolicy getManagedProfileCallerIdAccessPolicy() {
         throwIfParentInstance("getManagedProfileCallerIdAccessPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getManagedProfileCallerIdAccessPolicy();
+                return this.mService.getManagedProfileCallerIdAccessPolicy();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3326,12 +3229,11 @@ public class DevicePolicyManager {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public boolean hasManagedProfileCallerIdAccess(UserHandle userHandle, String packageName) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return true;
         }
         try {
-            return iDevicePolicyManager.hasManagedProfileCallerIdAccess(userHandle.getIdentifier(), packageName);
+            return this.mService.hasManagedProfileCallerIdAccess(userHandle.getIdentifier(), packageName);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -3339,10 +3241,9 @@ public class DevicePolicyManager {
 
     public void setManagedProfileContactsAccessPolicy(PackagePolicy policy) {
         throwIfParentInstance("setManagedProfileContactsAccessPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setManagedProfileContactsAccessPolicy(policy);
+                this.mService.setManagedProfileContactsAccessPolicy(policy);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3351,12 +3252,11 @@ public class DevicePolicyManager {
 
     public PackagePolicy getManagedProfileContactsAccessPolicy() {
         throwIfParentInstance("getManagedProfileContactsAccessPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iDevicePolicyManager.getManagedProfileContactsAccessPolicy();
+            return this.mService.getManagedProfileContactsAccessPolicy();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -3364,10 +3264,9 @@ public class DevicePolicyManager {
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public boolean hasManagedProfileContactsAccess(UserHandle userHandle, String packageName) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.hasManagedProfileContactsAccess(userHandle.getIdentifier(), packageName);
+                return this.mService.hasManagedProfileContactsAccess(userHandle.getIdentifier(), packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3378,10 +3277,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void setCrossProfileContactsSearchDisabled(ComponentName admin, boolean disabled) {
         throwIfParentInstance("setCrossProfileContactsSearchDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCrossProfileContactsSearchDisabled(admin, disabled);
+                this.mService.setCrossProfileContactsSearchDisabled(admin, disabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3391,10 +3289,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean getCrossProfileContactsSearchDisabled(ComponentName admin) {
         throwIfParentInstance("getCrossProfileContactsSearchDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCrossProfileContactsSearchDisabled(admin);
+                return this.mService.getCrossProfileContactsSearchDisabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3408,10 +3305,9 @@ public class DevicePolicyManager {
 
     @Deprecated
     public boolean getCrossProfileContactsSearchDisabled(UserHandle userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getCrossProfileContactsSearchDisabledForUser(userHandle.getIdentifier());
+                return this.mService.getCrossProfileContactsSearchDisabledForUser(userHandle.getIdentifier());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3420,10 +3316,9 @@ public class DevicePolicyManager {
     }
 
     public void startManagedQuickContact(String actualLookupKey, long actualContactId, boolean isContactIdIgnored, long directoryId, Intent originalIntent) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.startManagedQuickContact(actualLookupKey, actualContactId, isContactIdIgnored, directoryId, originalIntent);
+                this.mService.startManagedQuickContact(actualLookupKey, actualContactId, isContactIdIgnored, directoryId, originalIntent);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3436,10 +3331,9 @@ public class DevicePolicyManager {
 
     public void setBluetoothContactSharingDisabled(ComponentName admin, boolean disabled) {
         throwIfParentInstance("setBluetoothContactSharingDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setBluetoothContactSharingDisabled(admin, disabled);
+                this.mService.setBluetoothContactSharingDisabled(admin, disabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3452,10 +3346,9 @@ public class DevicePolicyManager {
 
     public boolean getBluetoothContactSharingDisabled(ComponentName admin) {
         throwIfParentInstance("getBluetoothContactSharingDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getBluetoothContactSharingDisabled(admin);
+                return this.mService.getBluetoothContactSharingDisabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3465,10 +3358,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public boolean getBluetoothContactSharingDisabled(UserHandle userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getBluetoothContactSharingDisabledForUser(userHandle.getIdentifier());
+                return this.mService.getBluetoothContactSharingDisabledForUser(userHandle.getIdentifier());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3478,10 +3370,9 @@ public class DevicePolicyManager {
 
     public void addCrossProfileIntentFilter(ComponentName admin, IntentFilter filter, int flags) {
         throwIfParentInstance("addCrossProfileIntentFilter");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.addCrossProfileIntentFilter(admin, this.mContext.getPackageName(), filter, flags);
+                this.mService.addCrossProfileIntentFilter(admin, this.mContext.getPackageName(), filter, flags);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3490,10 +3381,9 @@ public class DevicePolicyManager {
 
     public void clearCrossProfileIntentFilters(ComponentName admin) {
         throwIfParentInstance("clearCrossProfileIntentFilters");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.clearCrossProfileIntentFilters(admin, this.mContext.getPackageName());
+                this.mService.clearCrossProfileIntentFilters(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3502,10 +3392,9 @@ public class DevicePolicyManager {
 
     public boolean setPermittedAccessibilityServices(ComponentName admin, List<String> packageNames) {
         throwIfParentInstance("setPermittedAccessibilityServices");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setPermittedAccessibilityServices(admin, packageNames);
+                return this.mService.setPermittedAccessibilityServices(admin, packageNames);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3513,16 +3402,16 @@ public class DevicePolicyManager {
         return false;
     }
 
+    @Deprecated
     public List<String> semGetPermittedAccessibilityServices(int userId) {
         return getPermittedAccessibilityServices(userId);
     }
 
     public List<String> getPermittedAccessibilityServices(ComponentName admin) {
         throwIfParentInstance("getPermittedAccessibilityServices");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedAccessibilityServices(admin);
+                return this.mService.getPermittedAccessibilityServices(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3531,10 +3420,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isAccessibilityServicePermittedByAdmin(ComponentName admin, String packageName, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isAccessibilityServicePermittedByAdmin(admin, packageName, userHandle);
+                return this.mService.isAccessibilityServicePermittedByAdmin(admin, packageName, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3545,10 +3433,9 @@ public class DevicePolicyManager {
     @SystemApi
     public List<String> getPermittedAccessibilityServices(int userId) {
         throwIfParentInstance("getPermittedAccessibilityServices");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedAccessibilityServicesForUser(userId);
+                return this.mService.getPermittedAccessibilityServicesForUser(userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3557,10 +3444,9 @@ public class DevicePolicyManager {
     }
 
     public boolean setPermittedInputMethods(ComponentName admin, List<String> packageNames) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setPermittedInputMethods(admin, this.mContext.getPackageName(), packageNames, this.mParentInstance);
+                return this.mService.setPermittedInputMethods(admin, this.mContext.getPackageName(), packageNames, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3569,10 +3455,9 @@ public class DevicePolicyManager {
     }
 
     public List<String> getPermittedInputMethods(ComponentName admin) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedInputMethods(admin, this.mContext.getPackageName(), this.mParentInstance);
+                return this.mService.getPermittedInputMethods(admin, this.mContext.getPackageName(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3581,10 +3466,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isInputMethodPermittedByAdmin(ComponentName admin, String packageName, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isInputMethodPermittedByAdmin(admin, packageName, userHandle, this.mParentInstance);
+                return this.mService.isInputMethodPermittedByAdmin(admin, packageName, userHandle, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3595,10 +3479,9 @@ public class DevicePolicyManager {
     @SystemApi
     public List<String> getPermittedInputMethodsForCurrentUser() {
         throwIfParentInstance("getPermittedInputMethodsForCurrentUser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedInputMethodsAsUser(UserHandle.myUserId());
+                return this.mService.getPermittedInputMethodsAsUser(UserHandle.myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3608,10 +3491,9 @@ public class DevicePolicyManager {
 
     public List<String> getPermittedInputMethods() {
         throwIfParentInstance("getPermittedInputMethods");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedInputMethodsAsUser(myUserId());
+                return this.mService.getPermittedInputMethodsAsUser(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3621,10 +3503,9 @@ public class DevicePolicyManager {
 
     public boolean setPermittedCrossProfileNotificationListeners(ComponentName admin, List<String> packageList) {
         throwIfParentInstance("setPermittedCrossProfileNotificationListeners");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setPermittedCrossProfileNotificationListeners(admin, packageList);
+                return this.mService.setPermittedCrossProfileNotificationListeners(admin, packageList);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3634,10 +3515,9 @@ public class DevicePolicyManager {
 
     public List<String> getPermittedCrossProfileNotificationListeners(ComponentName admin) {
         throwIfParentInstance("getPermittedCrossProfileNotificationListeners");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPermittedCrossProfileNotificationListeners(admin);
+                return this.mService.getPermittedCrossProfileNotificationListeners(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3646,10 +3526,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isNotificationListenerServicePermitted(String packageName, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isNotificationListenerServicePermitted(packageName, userId);
+                return this.mService.isNotificationListenerServicePermitted(packageName, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3659,10 +3538,9 @@ public class DevicePolicyManager {
 
     public List<String> getKeepUninstalledPackages(ComponentName admin) {
         throwIfParentInstance("getKeepUninstalledPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getKeepUninstalledPackages(admin, this.mContext.getPackageName());
+                return this.mService.getKeepUninstalledPackages(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3672,10 +3550,9 @@ public class DevicePolicyManager {
 
     public void setKeepUninstalledPackages(ComponentName admin, List<String> packageNames) {
         throwIfParentInstance("setKeepUninstalledPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setKeepUninstalledPackages(admin, this.mContext.getPackageName(), packageNames);
+                this.mService.setKeepUninstalledPackages(admin, this.mContext.getPackageName(), packageNames);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3797,11 +3674,12 @@ public class DevicePolicyManager {
     }
 
     public Bundle getApplicationRestrictions(ComponentName admin, String packageName) {
-        throwIfParentInstance("getApplicationRestrictions");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (!android.app.admin.flags.Flags.dmrhSetAppRestrictions()) {
+            throwIfParentInstance("getApplicationRestrictions");
+        }
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getApplicationRestrictions(admin, this.mContext.getPackageName(), packageName);
+                return this.mService.getApplicationRestrictions(admin, this.mContext.getPackageName(), packageName, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3810,10 +3688,9 @@ public class DevicePolicyManager {
     }
 
     public void addUserRestriction(ComponentName admin, String key) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserRestriction(admin, this.mContext.getPackageName(), key, true, this.mParentInstance);
+                this.mService.setUserRestriction(admin, this.mContext.getPackageName(), key, true, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3822,10 +3699,9 @@ public class DevicePolicyManager {
 
     public void addUserRestrictionGlobally(String key) {
         throwIfParentInstance("addUserRestrictionGlobally");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserRestrictionGlobally(this.mContext.getPackageName(), key);
+                this.mService.setUserRestrictionGlobally(this.mContext.getPackageName(), key);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3833,10 +3709,9 @@ public class DevicePolicyManager {
     }
 
     public void clearUserRestriction(ComponentName admin, String key) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserRestriction(admin, this.mContext.getPackageName(), key, false, this.mParentInstance);
+                this.mService.setUserRestriction(admin, this.mContext.getPackageName(), key, false, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3845,10 +3720,9 @@ public class DevicePolicyManager {
 
     public Bundle getUserRestrictions(ComponentName admin) {
         Bundle ret = null;
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ret = iDevicePolicyManager.getUserRestrictions(admin, this.mContext.getPackageName(), this.mParentInstance);
+                ret = this.mService.getUserRestrictions(admin, this.mContext.getPackageName(), this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3859,10 +3733,9 @@ public class DevicePolicyManager {
     public Bundle getUserRestrictionsGlobally() {
         throwIfParentInstance("createAdminSupportIntent");
         Bundle ret = null;
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                ret = iDevicePolicyManager.getUserRestrictionsGlobally(this.mContext.getPackageName());
+                ret = this.mService.getUserRestrictionsGlobally(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3873,10 +3746,9 @@ public class DevicePolicyManager {
     public Intent createAdminSupportIntent(String restriction) {
         throwIfParentInstance("createAdminSupportIntent");
         Intent result = null;
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                result = iDevicePolicyManager.createAdminSupportIntent(restriction);
+                result = this.mService.createAdminSupportIntent(restriction);
                 if (result != null) {
                     result.prepareToEnterProcess(32, this.mContext.getAttributionSource());
                 }
@@ -3888,10 +3760,20 @@ public class DevicePolicyManager {
     }
 
     public Bundle getEnforcingAdminAndUserDetails(int userId, String restriction) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getEnforcingAdminAndUserDetails(userId, restriction);
+                return this.mService.getEnforcingAdminAndUserDetails(userId, restriction);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return null;
+    }
+
+    public Set<EnforcingAdmin> getEnforcingAdminsForRestriction(int userId, String restriction) {
+        if (this.mService != null) {
+            try {
+                return new HashSet(this.mService.getEnforcingAdminsForRestriction(userId, restriction));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3900,10 +3782,9 @@ public class DevicePolicyManager {
     }
 
     public boolean setApplicationHidden(ComponentName admin, String packageName, boolean hidden) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setApplicationHidden(admin, this.mContext.getPackageName(), packageName, hidden, this.mParentInstance);
+                return this.mService.setApplicationHidden(admin, this.mContext.getPackageName(), packageName, hidden, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3912,10 +3793,9 @@ public class DevicePolicyManager {
     }
 
     public boolean isApplicationHidden(ComponentName admin, String packageName) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isApplicationHidden(admin, this.mContext.getPackageName(), packageName, this.mParentInstance);
+                return this.mService.isApplicationHidden(admin, this.mContext.getPackageName(), packageName, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3925,10 +3805,9 @@ public class DevicePolicyManager {
 
     public void enableSystemApp(ComponentName admin, String packageName) {
         throwIfParentInstance("enableSystemApp");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.enableSystemApp(admin, this.mContext.getPackageName(), packageName);
+                this.mService.enableSystemApp(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3937,10 +3816,9 @@ public class DevicePolicyManager {
 
     public int enableSystemApp(ComponentName admin, Intent intent) {
         throwIfParentInstance("enableSystemApp");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.enableSystemAppWithIntent(admin, this.mContext.getPackageName(), intent);
+                return this.mService.enableSystemAppWithIntent(admin, this.mContext.getPackageName(), intent);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3950,10 +3828,9 @@ public class DevicePolicyManager {
 
     public boolean installExistingPackage(ComponentName admin, String packageName) {
         throwIfParentInstance("installExistingPackage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.installExistingPackage(admin, this.mContext.getPackageName(), packageName);
+                return this.mService.installExistingPackage(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3962,10 +3839,9 @@ public class DevicePolicyManager {
     }
 
     public void setAccountManagementDisabled(ComponentName admin, String accountType, boolean disabled) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setAccountManagementDisabled(admin, this.mContext.getPackageName(), accountType, disabled, this.mParentInstance);
+                this.mService.setAccountManagementDisabled(admin, this.mContext.getPackageName(), accountType, disabled, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3981,10 +3857,9 @@ public class DevicePolicyManager {
     }
 
     public String[] getAccountTypesWithManagementDisabledAsUser(int userId, boolean parentInstance) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getAccountTypesWithManagementDisabledAsUser(userId, this.mContext.getPackageName(), parentInstance);
+                return this.mService.getAccountTypesWithManagementDisabledAsUser(userId, this.mContext.getPackageName(), parentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -3995,10 +3870,9 @@ public class DevicePolicyManager {
     @SystemApi
     public void setSecondaryLockscreenEnabled(ComponentName admin, boolean enabled) {
         throwIfParentInstance("setSecondaryLockscreenEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setSecondaryLockscreenEnabled(admin, enabled);
+                this.mService.setSecondaryLockscreenEnabled(admin, enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4008,10 +3882,9 @@ public class DevicePolicyManager {
     @SystemApi
     public boolean isSecondaryLockscreenEnabled(UserHandle userHandle) {
         throwIfParentInstance("isSecondaryLockscreenEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isSecondaryLockscreenEnabled(userHandle);
+                return this.mService.isSecondaryLockscreenEnabled(userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4021,10 +3894,9 @@ public class DevicePolicyManager {
 
     public void setLockTaskPackages(ComponentName admin, String[] packages) throws SecurityException {
         throwIfParentInstance("setLockTaskPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setLockTaskPackages(admin, this.mContext.getPackageName(), packages);
+                this.mService.setLockTaskPackages(admin, this.mContext.getPackageName(), packages);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4033,10 +3905,9 @@ public class DevicePolicyManager {
 
     public String[] getLockTaskPackages(ComponentName admin) {
         throwIfParentInstance("getLockTaskPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getLockTaskPackages(admin, this.mContext.getPackageName());
+                return this.mService.getLockTaskPackages(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4046,10 +3917,9 @@ public class DevicePolicyManager {
 
     public boolean isLockTaskPermitted(String pkg) {
         throwIfParentInstance("isLockTaskPermitted");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isLockTaskPermitted(pkg);
+                return this.mService.isLockTaskPermitted(pkg);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4059,10 +3929,9 @@ public class DevicePolicyManager {
 
     public void setLockTaskFeatures(ComponentName admin, int flags) {
         throwIfParentInstance("setLockTaskFeatures");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setLockTaskFeatures(admin, this.mContext.getPackageName(), flags);
+                this.mService.setLockTaskFeatures(admin, this.mContext.getPackageName(), flags);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4071,10 +3940,9 @@ public class DevicePolicyManager {
 
     public int getLockTaskFeatures(ComponentName admin) {
         throwIfParentInstance("getLockTaskFeatures");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getLockTaskFeatures(admin, this.mContext.getPackageName());
+                return this.mService.getLockTaskFeatures(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4094,7 +3962,7 @@ public class DevicePolicyManager {
 
     public boolean isPreferentialNetworkServiceEnabled() {
         throwIfParentInstance("isPreferentialNetworkServiceEnabled");
-        return getPreferentialNetworkServiceConfigs().stream().anyMatch(new Predicate() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda0
+        return getPreferentialNetworkServiceConfigs().stream().anyMatch(new Predicate() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda9
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isEnabled;
@@ -4106,12 +3974,11 @@ public class DevicePolicyManager {
 
     public void setPreferentialNetworkServiceConfigs(List<PreferentialNetworkServiceConfig> preferentialNetworkServiceConfigs) {
         throwIfParentInstance("setPreferentialNetworkServiceConfigs");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setPreferentialNetworkServiceConfigs(preferentialNetworkServiceConfigs);
+            this.mService.setPreferentialNetworkServiceConfigs(preferentialNetworkServiceConfigs);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -4119,12 +3986,11 @@ public class DevicePolicyManager {
 
     public List<PreferentialNetworkServiceConfig> getPreferentialNetworkServiceConfigs() {
         throwIfParentInstance("getPreferentialNetworkServiceConfigs");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return List.of(PreferentialNetworkServiceConfig.DEFAULT);
         }
         try {
-            return iDevicePolicyManager.getPreferentialNetworkServiceConfigs();
+            return this.mService.getPreferentialNetworkServiceConfigs();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -4132,10 +3998,9 @@ public class DevicePolicyManager {
 
     public void setGlobalSetting(ComponentName admin, String setting, String value) {
         throwIfParentInstance("setGlobalSetting");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setGlobalSetting(admin, setting, value);
+                this.mService.setGlobalSetting(admin, setting, value);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4143,11 +4008,9 @@ public class DevicePolicyManager {
     }
 
     public void setSystemSetting(ComponentName admin, String setting, String value) {
-        throwIfParentInstance("setSystemSetting");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setSystemSetting(admin, setting, value);
+                this.mService.setSystemSetting(admin, setting, value, this.mParentInstance);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4156,10 +4019,9 @@ public class DevicePolicyManager {
 
     public void setConfiguredNetworksLockdownState(ComponentName admin, boolean lockdown) {
         throwIfParentInstance("setConfiguredNetworksLockdownState");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setConfiguredNetworksLockdownState(admin, this.mContext.getPackageName(), lockdown);
+                this.mService.setConfiguredNetworksLockdownState(admin, this.mContext.getPackageName(), lockdown);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4168,10 +4030,9 @@ public class DevicePolicyManager {
 
     public boolean hasLockdownAdminConfiguredNetworks(ComponentName admin) {
         throwIfParentInstance("hasLockdownAdminConfiguredNetworks");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.hasLockdownAdminConfiguredNetworks(admin);
+                return this.mService.hasLockdownAdminConfiguredNetworks(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4181,10 +4042,9 @@ public class DevicePolicyManager {
 
     public boolean setTime(ComponentName admin, long millis) {
         throwIfParentInstance("setTime");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setTime(admin, this.mContext.getPackageName(), millis);
+                return this.mService.setTime(admin, this.mContext.getPackageName(), millis);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4194,10 +4054,9 @@ public class DevicePolicyManager {
 
     public boolean setTimeZone(ComponentName admin, String timeZone) {
         throwIfParentInstance("setTimeZone");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setTimeZone(admin, this.mContext.getPackageName(), timeZone);
+                return this.mService.setTimeZone(admin, this.mContext.getPackageName(), timeZone);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4207,10 +4066,9 @@ public class DevicePolicyManager {
 
     public void setLocationEnabled(ComponentName admin, boolean locationEnabled) {
         throwIfParentInstance("setLocationEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setLocationEnabled(admin, locationEnabled);
+                this.mService.setLocationEnabled(admin, locationEnabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4219,10 +4077,9 @@ public class DevicePolicyManager {
 
     public void setSecureSetting(ComponentName admin, String setting, String value) {
         throwIfParentInstance("setSecureSetting");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setSecureSetting(admin, setting, value);
+                this.mService.setSecureSetting(admin, setting, value);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4231,10 +4088,9 @@ public class DevicePolicyManager {
 
     public void setRestrictionsProvider(ComponentName admin, ComponentName provider) {
         throwIfParentInstance("setRestrictionsProvider");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setRestrictionsProvider(admin, provider);
+                this.mService.setRestrictionsProvider(admin, provider);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4243,10 +4099,9 @@ public class DevicePolicyManager {
 
     public void setMasterVolumeMuted(ComponentName admin, boolean on) {
         throwIfParentInstance("setMasterVolumeMuted");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setMasterVolumeMuted(admin, on);
+                this.mService.setMasterVolumeMuted(admin, on);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4255,10 +4110,9 @@ public class DevicePolicyManager {
 
     public boolean isMasterVolumeMuted(ComponentName admin) {
         throwIfParentInstance("isMasterVolumeMuted");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isMasterVolumeMuted(admin);
+                return this.mService.isMasterVolumeMuted(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4268,10 +4122,9 @@ public class DevicePolicyManager {
 
     public void setUninstallBlocked(ComponentName admin, String packageName, boolean uninstallBlocked) {
         throwIfParentInstance("setUninstallBlocked");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUninstallBlocked(admin, this.mContext.getPackageName(), packageName, uninstallBlocked);
+                this.mService.setUninstallBlocked(admin, this.mContext.getPackageName(), packageName, uninstallBlocked);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4280,10 +4133,9 @@ public class DevicePolicyManager {
 
     public boolean isUninstallBlocked(ComponentName admin, String packageName) {
         throwIfParentInstance("isUninstallBlocked");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isUninstallBlocked(packageName);
+                return this.mService.isUninstallBlocked(packageName);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4293,10 +4145,9 @@ public class DevicePolicyManager {
 
     public boolean addCrossProfileWidgetProvider(ComponentName admin, String packageName) {
         throwIfParentInstance("addCrossProfileWidgetProvider");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.addCrossProfileWidgetProvider(admin, this.mContext.getPackageName(), packageName);
+                return this.mService.addCrossProfileWidgetProvider(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4306,10 +4157,9 @@ public class DevicePolicyManager {
 
     public boolean removeCrossProfileWidgetProvider(ComponentName admin, String packageName) {
         throwIfParentInstance("removeCrossProfileWidgetProvider");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.removeCrossProfileWidgetProvider(admin, this.mContext.getPackageName(), packageName);
+                return this.mService.removeCrossProfileWidgetProvider(admin, this.mContext.getPackageName(), packageName);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4319,10 +4169,9 @@ public class DevicePolicyManager {
 
     public List<String> getCrossProfileWidgetProviders(ComponentName admin) {
         throwIfParentInstance("getCrossProfileWidgetProviders");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                List<String> providers = iDevicePolicyManager.getCrossProfileWidgetProviders(admin, this.mContext.getPackageName());
+                List<String> providers = this.mService.getCrossProfileWidgetProviders(admin, this.mContext.getPackageName());
                 if (providers != null) {
                     return providers;
                 }
@@ -4344,10 +4193,9 @@ public class DevicePolicyManager {
 
     public void setSystemUpdatePolicy(ComponentName admin, SystemUpdatePolicy policy) {
         throwIfParentInstance("setSystemUpdatePolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setSystemUpdatePolicy(admin, this.mContext.getPackageName(), policy);
+                this.mService.setSystemUpdatePolicy(admin, this.mContext.getPackageName(), policy);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4356,10 +4204,9 @@ public class DevicePolicyManager {
 
     public SystemUpdatePolicy getSystemUpdatePolicy() {
         throwIfParentInstance("getSystemUpdatePolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getSystemUpdatePolicy();
+                return this.mService.getSystemUpdatePolicy();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4369,12 +4216,11 @@ public class DevicePolicyManager {
 
     public void clearSystemUpdatePolicyFreezePeriodRecord() {
         throwIfParentInstance("clearSystemUpdatePolicyFreezePeriodRecord");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.clearSystemUpdatePolicyFreezePeriodRecord();
+            this.mService.clearSystemUpdatePolicyFreezePeriodRecord();
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -4414,10 +4260,9 @@ public class DevicePolicyManager {
     @SystemApi
     public void notifyPendingSystemUpdate(long updateReceivedTime) {
         throwIfParentInstance("notifyPendingSystemUpdate");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.notifyPendingSystemUpdate(SystemUpdateInfo.of(updateReceivedTime));
+                this.mService.notifyPendingSystemUpdate(SystemUpdateInfo.of(updateReceivedTime));
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4427,10 +4272,9 @@ public class DevicePolicyManager {
     @SystemApi
     public void notifyPendingSystemUpdate(long updateReceivedTime, boolean isSecurityPatch) {
         throwIfParentInstance("notifyPendingSystemUpdate");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.notifyPendingSystemUpdate(SystemUpdateInfo.of(updateReceivedTime, isSecurityPatch));
+                this.mService.notifyPendingSystemUpdate(SystemUpdateInfo.of(updateReceivedTime, isSecurityPatch));
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4440,7 +4284,7 @@ public class DevicePolicyManager {
     public SystemUpdateInfo getPendingSystemUpdate(ComponentName admin) {
         throwIfParentInstance("getPendingSystemUpdate");
         try {
-            return this.mService.getPendingSystemUpdate(admin);
+            return this.mService.getPendingSystemUpdate(admin, this.mContext.getPackageName());
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -4468,13 +4312,13 @@ public class DevicePolicyManager {
         throwIfParentInstance("setPermissionGrantState");
         try {
             final CompletableFuture<Boolean> result = new CompletableFuture<>();
-            this.mService.setPermissionGrantState(admin, this.mContext.getPackageName(), packageName, permission, grantState, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda1
+            this.mService.setPermissionGrantState(admin, this.mContext.getPackageName(), packageName, permission, grantState, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda10
                 @Override // android.os.RemoteCallback.OnResultListener
                 public final void onResult(Bundle bundle) {
                     result.complete(Boolean.valueOf(b != null));
                 }
             }));
-            BackgroundThread.getHandler().sendMessageDelayed(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda2
+            BackgroundThread.getHandler().sendMessageDelayed(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda11
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((CompletableFuture) obj).complete((Boolean) obj2);
@@ -4544,10 +4388,9 @@ public class DevicePolicyManager {
 
     public void setShortSupportMessage(ComponentName admin, CharSequence message) {
         throwIfParentInstance("setShortSupportMessage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setShortSupportMessage(admin, this.mContext.getPackageName(), message);
+                this.mService.setShortSupportMessage(admin, this.mContext.getPackageName(), message);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4556,10 +4399,9 @@ public class DevicePolicyManager {
 
     public CharSequence getShortSupportMessage(ComponentName admin) {
         throwIfParentInstance("getShortSupportMessage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getShortSupportMessage(admin, this.mContext.getPackageName());
+                return this.mService.getShortSupportMessage(admin, this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4569,10 +4411,9 @@ public class DevicePolicyManager {
 
     public void setLongSupportMessage(ComponentName admin, CharSequence message) {
         throwIfParentInstance("setLongSupportMessage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setLongSupportMessage(admin, message);
+                this.mService.setLongSupportMessage(admin, message);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4581,10 +4422,9 @@ public class DevicePolicyManager {
 
     public CharSequence getLongSupportMessage(ComponentName admin) {
         throwIfParentInstance("getLongSupportMessage");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getLongSupportMessage(admin);
+                return this.mService.getLongSupportMessage(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4593,10 +4433,9 @@ public class DevicePolicyManager {
     }
 
     public CharSequence getShortSupportMessageForUser(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getShortSupportMessageForUser(admin, userHandle);
+                return this.mService.getShortSupportMessageForUser(admin, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4605,10 +4444,9 @@ public class DevicePolicyManager {
     }
 
     public CharSequence getLongSupportMessageForUser(ComponentName admin, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getLongSupportMessageForUser(admin, userHandle);
+                return this.mService.getLongSupportMessageForUser(admin, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4619,7 +4457,12 @@ public class DevicePolicyManager {
     public DevicePolicyManager getParentProfileInstance(ComponentName admin) {
         throwIfParentInstance("getParentProfileInstance");
         try {
-            if (!this.mService.isManagedProfile(admin)) {
+            if (android.app.admin.flags.Flags.dmrhSetAppRestrictions()) {
+                UserManager um = (UserManager) this.mContext.getSystemService(UserManager.class);
+                if (!um.isManagedProfile()) {
+                    throw new SecurityException("The current user does not have a parent profile.");
+                }
+            } else if (!this.mService.isManagedProfile(admin)) {
                 throw new SecurityException("The current user does not have a parent profile.");
             }
             return new DevicePolicyManager(this.mContext, this.mService, true);
@@ -4646,6 +4489,70 @@ public class DevicePolicyManager {
         }
     }
 
+    @SystemApi
+    public void setAuditLogEnabled(boolean enabled) {
+        throwIfParentInstance("setAuditLogEnabled");
+        try {
+            this.mService.setAuditLogEnabled(this.mContext.getPackageName(), enabled);
+        } catch (RemoteException re) {
+            re.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public boolean isAuditLogEnabled() {
+        throwIfParentInstance(SecContentProviderURI.AUDITLOGPOLICY_AUDITLOGENABLED_METHOD);
+        try {
+            return this.mService.isAuditLogEnabled(this.mContext.getPackageName());
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public void setAuditLogEventCallback(Executor executor, Consumer<List<SecurityLog.SecurityEvent>> callback) {
+        throwIfParentInstance("setAuditLogEventCallback");
+        IAuditLogEventsCallback wrappedCallback = new AnonymousClass1(executor, callback);
+        try {
+            this.mService.setAuditLogEventsCallback(this.mContext.getPackageName(), wrappedCallback);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    /* renamed from: android.app.admin.DevicePolicyManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IAuditLogEventsCallback.Stub {
+        final /* synthetic */ Consumer val$callback;
+        final /* synthetic */ Executor val$executor;
+
+        AnonymousClass1(Executor executor, Consumer consumer) {
+            this.val$executor = executor;
+            this.val$callback = consumer;
+        }
+
+        @Override // android.app.admin.IAuditLogEventsCallback
+        public void onNewAuditLogEvents(final List<SecurityLog.SecurityEvent> events) {
+            Executor executor = this.val$executor;
+            final Consumer consumer = this.val$callback;
+            executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$1$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    consumer.accept(events);
+                }
+            });
+        }
+    }
+
+    @SystemApi
+    public void clearAuditLogEventCallback() {
+        throwIfParentInstance("clearAuditLogEventCallback");
+        try {
+            this.mService.setAuditLogEventsCallback(this.mContext.getPackageName(), null);
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
     public List<SecurityLog.SecurityEvent> retrieveSecurityLogs(ComponentName admin) {
         throwIfParentInstance("retrieveSecurityLogs");
         try {
@@ -4660,24 +4567,22 @@ public class DevicePolicyManager {
     }
 
     public long forceNetworkLogs() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return -1L;
         }
         try {
-            return iDevicePolicyManager.forceNetworkLogs();
+            return this.mService.forceNetworkLogs();
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
     }
 
     public long forceSecurityLogs() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0L;
         }
         try {
-            return iDevicePolicyManager.forceSecurityLogs();
+            return this.mService.forceSecurityLogs();
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -4693,10 +4598,9 @@ public class DevicePolicyManager {
 
     public List<String> setMeteredDataDisabledPackages(ComponentName admin, List<String> packageNames) {
         throwIfParentInstance("setMeteredDataDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.setMeteredDataDisabledPackages(admin, packageNames);
+                return this.mService.setMeteredDataDisabledPackages(admin, packageNames);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4706,10 +4610,9 @@ public class DevicePolicyManager {
 
     public List<String> getMeteredDataDisabledPackages(ComponentName admin) {
         throwIfParentInstance("getMeteredDataDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getMeteredDataDisabledPackages(admin);
+                return this.mService.getMeteredDataDisabledPackages(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4719,10 +4622,9 @@ public class DevicePolicyManager {
 
     public boolean isMeteredDataDisabledPackageForUser(ComponentName admin, String packageName, int userId) {
         throwIfParentInstance("getMeteredDataDisabledForUser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isMeteredDataDisabledPackageForUser(admin, packageName, userId);
+                return this.mService.isMeteredDataDisabledPackageForUser(admin, packageName, userId);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -4799,6 +4701,7 @@ public class DevicePolicyManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Object lambda$new$8(Object query) throws RemoteException {
         return getService().getDeviceOwnerOrganizationName();
     }
@@ -4808,6 +4711,7 @@ public class DevicePolicyManager {
         return this.mGetDeviceOwnerOrganizationNameCache.query(null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ CharSequence lambda$new$9(Integer query) throws RemoteException {
         return getService().getOrganizationNameForUser(query.intValue());
     }
@@ -4819,10 +4723,9 @@ public class DevicePolicyManager {
     @SystemApi
     public int getUserProvisioningState() {
         throwIfParentInstance("getUserProvisioningState");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getUserProvisioningState(this.mContext.getUserId());
+                return this.mService.getUserProvisioningState(this.mContext.getUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4831,10 +4734,9 @@ public class DevicePolicyManager {
     }
 
     public void setUserProvisioningState(int state, int userHandle) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserProvisioningState(state, userHandle);
+                this.mService.setUserProvisioningState(state, userHandle);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -4976,6 +4878,7 @@ public class DevicePolicyManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ Boolean lambda$new$10(ComponentName admin) throws RemoteException {
         return Boolean.valueOf(getService().isNetworkLoggingEnabled(admin, getContext().getPackageName()));
     }
@@ -4995,21 +4898,19 @@ public class DevicePolicyManager {
     }
 
     public boolean bindDeviceAdminServiceAsUser(ComponentName admin, Intent serviceIntent, ServiceConnection conn, int flags, UserHandle targetUser) {
-        IServiceConnection sd;
         throwIfParentInstance("bindDeviceAdminServiceAsUser");
         try {
-            Context context = this.mContext;
             try {
-                sd = context.getServiceDispatcher(conn, context.getMainThreadHandler(), Integer.toUnsignedLong(flags));
-            } catch (RemoteException e) {
-                re = e;
-            }
-            try {
-                serviceIntent.prepareToLeaveProcess(this.mContext);
-                return this.mService.bindDeviceAdminServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, Integer.toUnsignedLong(flags), targetUser.getIdentifier());
+                IServiceConnection sd = this.mContext.getServiceDispatcher(conn, this.mContext.getMainThreadHandler(), Integer.toUnsignedLong(flags));
+                try {
+                    serviceIntent.prepareToLeaveProcess(this.mContext);
+                    return this.mService.bindDeviceAdminServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, Integer.toUnsignedLong(flags), targetUser.getIdentifier());
+                } catch (RemoteException e) {
+                    re = e;
+                    throw re.rethrowFromSystemServer();
+                }
             } catch (RemoteException e2) {
                 re = e2;
-                throw re.rethrowFromSystemServer();
             }
         } catch (RemoteException e3) {
             re = e3;
@@ -5017,21 +4918,19 @@ public class DevicePolicyManager {
     }
 
     public boolean bindDeviceAdminServiceAsUser(ComponentName admin, Intent serviceIntent, ServiceConnection conn, Context.BindServiceFlags flags, UserHandle targetUser) {
-        IServiceConnection sd;
         throwIfParentInstance("bindDeviceAdminServiceAsUser");
         try {
-            Context context = this.mContext;
             try {
-                sd = context.getServiceDispatcher(conn, context.getMainThreadHandler(), flags.getValue());
-            } catch (RemoteException e) {
-                re = e;
-            }
-            try {
-                serviceIntent.prepareToLeaveProcess(this.mContext);
-                return this.mService.bindDeviceAdminServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, flags.getValue(), targetUser.getIdentifier());
+                IServiceConnection sd = this.mContext.getServiceDispatcher(conn, this.mContext.getMainThreadHandler(), flags.getValue());
+                try {
+                    serviceIntent.prepareToLeaveProcess(this.mContext);
+                    return this.mService.bindDeviceAdminServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, flags.getValue(), targetUser.getIdentifier());
+                } catch (RemoteException e) {
+                    re = e;
+                    throw re.rethrowFromSystemServer();
+                }
             } catch (RemoteException e2) {
                 re = e2;
-                throw re.rethrowFromSystemServer();
             }
         } catch (RemoteException e3) {
             re = e3;
@@ -5100,19 +4999,18 @@ public class DevicePolicyManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(listener);
         try {
-            this.mService.clearApplicationUserData(admin, packageName, new AnonymousClass1(executor, listener));
+            this.mService.clearApplicationUserData(admin, packageName, new AnonymousClass2(executor, listener));
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
     }
 
-    /* renamed from: android.app.admin.DevicePolicyManager$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends IPackageDataObserver.Stub {
+    /* renamed from: android.app.admin.DevicePolicyManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IPackageDataObserver.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ OnClearApplicationUserDataListener val$listener;
 
-        AnonymousClass1(Executor executor, OnClearApplicationUserDataListener onClearApplicationUserDataListener) {
+        AnonymousClass2(Executor executor, OnClearApplicationUserDataListener onClearApplicationUserDataListener) {
             this.val$executor = executor;
             this.val$listener = onClearApplicationUserDataListener;
         }
@@ -5121,7 +5019,7 @@ public class DevicePolicyManager {
         public void onRemoveCompleted(final String pkg, final boolean succeeded) {
             Executor executor = this.val$executor;
             final OnClearApplicationUserDataListener onClearApplicationUserDataListener = this.val$listener;
-            executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$1$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$2$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     DevicePolicyManager.OnClearApplicationUserDataListener.this.onApplicationUserDataCleared(pkg, succeeded);
@@ -5203,10 +5101,9 @@ public class DevicePolicyManager {
 
     public int addOverrideApn(ComponentName admin, ApnSetting apnSetting) {
         throwIfParentInstance("addOverrideApn");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.addOverrideApn(admin, apnSetting);
+                return this.mService.addOverrideApn(admin, apnSetting);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5216,10 +5113,9 @@ public class DevicePolicyManager {
 
     public boolean updateOverrideApn(ComponentName admin, int apnId, ApnSetting apnSetting) {
         throwIfParentInstance("updateOverrideApn");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.updateOverrideApn(admin, apnId, apnSetting);
+                return this.mService.updateOverrideApn(admin, apnId, apnSetting);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5229,10 +5125,9 @@ public class DevicePolicyManager {
 
     public boolean removeOverrideApn(ComponentName admin, int apnId) {
         throwIfParentInstance("removeOverrideApn");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.removeOverrideApn(admin, apnId);
+                return this.mService.removeOverrideApn(admin, apnId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5242,10 +5137,9 @@ public class DevicePolicyManager {
 
     public List<ApnSetting> getOverrideApns(ComponentName admin) {
         throwIfParentInstance("getOverrideApns");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getOverrideApns(admin);
+                return this.mService.getOverrideApns(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5255,10 +5149,9 @@ public class DevicePolicyManager {
 
     public void setOverrideApnsEnabled(ComponentName admin, boolean enabled) {
         throwIfParentInstance("setOverrideApnEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setOverrideApnsEnabled(admin, enabled);
+                this.mService.setOverrideApnsEnabled(admin, enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5267,10 +5160,9 @@ public class DevicePolicyManager {
 
     public boolean isOverrideApnEnabled(ComponentName admin) {
         throwIfParentInstance("isOverrideApnEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isOverrideApnEnabled(admin);
+                return this.mService.isOverrideApnEnabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5287,39 +5179,13 @@ public class DevicePolicyManager {
         }
     }
 
-    public void rebootMDM(String reason) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.rebootMDM(reason);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with device policy service", e);
-            }
-        }
-    }
-
-    public String getActualDeviceOwnerMdm() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.getActualDeviceOwnerMDM();
-                return null;
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed talking with device policy service", e);
-                return null;
-            }
-        }
-        return null;
-    }
-
     public int setGlobalPrivateDnsModeOpportunistic(ComponentName admin) {
         throwIfParentInstance("setGlobalPrivateDnsModeOpportunistic");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 2;
         }
         try {
-            return iDevicePolicyManager.setGlobalPrivateDns(admin, 2, null);
+            return this.mService.setGlobalPrivateDns(admin, 2, null);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5341,7 +5207,7 @@ public class DevicePolicyManager {
         }
     }
 
-    public void installSystemUpdate(ComponentName admin, Uri updateFilePath, Executor executor, InstallSystemUpdateCallback callback) {
+    public void installSystemUpdate(ComponentName admin, Uri updateFilePath, final Executor executor, final InstallSystemUpdateCallback callback) {
         throwIfParentInstance("installUpdate");
         if (this.mService == null) {
             return;
@@ -5349,15 +5215,7 @@ public class DevicePolicyManager {
         try {
             ParcelFileDescriptor fileDescriptor = this.mContext.getContentResolver().openFileDescriptor(updateFilePath, "r");
             try {
-                this.mService.installUpdateFromFile(admin, this.mContext.getPackageName(), fileDescriptor, new StartInstallingUpdateCallback.Stub() { // from class: android.app.admin.DevicePolicyManager.2
-                    final /* synthetic */ InstallSystemUpdateCallback val$callback;
-                    final /* synthetic */ Executor val$executor;
-
-                    AnonymousClass2(Executor executor2, InstallSystemUpdateCallback callback2) {
-                        executor = executor2;
-                        callback = callback2;
-                    }
-
+                this.mService.installUpdateFromFile(admin, this.mContext.getPackageName(), fileDescriptor, new StartInstallingUpdateCallback.Stub() { // from class: android.app.admin.DevicePolicyManager.3
                     @Override // android.app.admin.StartInstallingUpdateCallback
                     public void onStartInstallingUpdateError(int errorCode, String errorMessage) {
                         DevicePolicyManager.this.executeCallback(errorCode, errorMessage, executor, callback);
@@ -5380,32 +5238,16 @@ public class DevicePolicyManager {
             throw e.rethrowFromSystemServer();
         } catch (FileNotFoundException e2) {
             Log.w(TAG, e2);
-            executeCallback(4, Log.getStackTraceString(e2), executor2, callback2);
+            executeCallback(4, Log.getStackTraceString(e2), executor, callback);
         } catch (IOException e3) {
             Log.w(TAG, e3);
-            executeCallback(1, Log.getStackTraceString(e3), executor2, callback2);
+            executeCallback(1, Log.getStackTraceString(e3), executor, callback);
         }
     }
 
-    /* renamed from: android.app.admin.DevicePolicyManager$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends StartInstallingUpdateCallback.Stub {
-        final /* synthetic */ InstallSystemUpdateCallback val$callback;
-        final /* synthetic */ Executor val$executor;
-
-        AnonymousClass2(Executor executor2, InstallSystemUpdateCallback callback2) {
-            executor = executor2;
-            callback = callback2;
-        }
-
-        @Override // android.app.admin.StartInstallingUpdateCallback
-        public void onStartInstallingUpdateError(int errorCode, String errorMessage) {
-            DevicePolicyManager.this.executeCallback(errorCode, errorMessage, executor, callback);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void executeCallback(final int errorCode, final String errorMessage, Executor executor, final InstallSystemUpdateCallback callback) {
-        executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda3
+        executor.execute(new Runnable() { // from class: android.app.admin.DevicePolicyManager$$ExternalSyntheticLambda12
             @Override // java.lang.Runnable
             public final void run() {
                 DevicePolicyManager.InstallSystemUpdateCallback.this.onInstallUpdateError(errorCode, errorMessage);
@@ -5415,12 +5257,11 @@ public class DevicePolicyManager {
 
     public int getGlobalPrivateDnsMode(ComponentName admin) {
         throwIfParentInstance("setGlobalPrivateDns");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getGlobalPrivateDnsMode(admin);
+            return this.mService.getGlobalPrivateDnsMode(admin);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5428,12 +5269,11 @@ public class DevicePolicyManager {
 
     public String getGlobalPrivateDnsHost(ComponentName admin) {
         throwIfParentInstance("setGlobalPrivateDns");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iDevicePolicyManager.getGlobalPrivateDnsHost(admin);
+            return this.mService.getGlobalPrivateDnsHost(admin);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5450,12 +5290,11 @@ public class DevicePolicyManager {
     }
 
     public void setProfileOwnerOnOrganizationOwnedDevice(ComponentName who, boolean isProfileOwnerOnOrganizationOwnedDevice) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setProfileOwnerOnOrganizationOwnedDevice(who, myUserId(), isProfileOwnerOnOrganizationOwnedDevice);
+            this.mService.setProfileOwnerOnOrganizationOwnedDevice(who, myUserId(), isProfileOwnerOnOrganizationOwnedDevice);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5463,30 +5302,22 @@ public class DevicePolicyManager {
 
     @Deprecated
     public void setCrossProfileCalendarPackages(ComponentName admin, Set<String> packageNames) {
-        ArrayList arrayList;
         throwIfParentInstance("setCrossProfileCalendarPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            if (packageNames == null) {
-                arrayList = null;
-            } else {
-                try {
-                    arrayList = new ArrayList(packageNames);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
+        if (this.mService != null) {
+            try {
+                this.mService.setCrossProfileCalendarPackages(admin, packageNames == null ? null : new ArrayList(packageNames));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
             }
-            iDevicePolicyManager.setCrossProfileCalendarPackages(admin, arrayList);
         }
     }
 
     @Deprecated
     public Set<String> getCrossProfileCalendarPackages(ComponentName admin) {
         throwIfParentInstance("getCrossProfileCalendarPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                List<String> packageNames = iDevicePolicyManager.getCrossProfileCalendarPackages(admin);
+                List<String> packageNames = this.mService.getCrossProfileCalendarPackages(admin);
                 if (packageNames == null) {
                     return null;
                 }
@@ -5500,10 +5331,9 @@ public class DevicePolicyManager {
 
     public boolean isPackageAllowedToAccessCalendar(String packageName) {
         throwIfParentInstance("isPackageAllowedToAccessCalendar");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isPackageAllowedToAccessCalendarForUser(packageName, myUserId());
+                return this.mService.isPackageAllowedToAccessCalendarForUser(packageName, myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5513,10 +5343,9 @@ public class DevicePolicyManager {
 
     public Set<String> getCrossProfileCalendarPackages() {
         throwIfParentInstance("getCrossProfileCalendarPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                List<String> packageNames = iDevicePolicyManager.getCrossProfileCalendarPackagesForUser(myUserId());
+                List<String> packageNames = this.mService.getCrossProfileCalendarPackagesForUser(myUserId());
                 if (packageNames == null) {
                     return null;
                 }
@@ -5530,10 +5359,9 @@ public class DevicePolicyManager {
 
     public void setCrossProfilePackages(ComponentName admin, Set<String> packageNames) {
         throwIfParentInstance("setCrossProfilePackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCrossProfilePackages(admin, new ArrayList(packageNames));
+                this.mService.setCrossProfilePackages(admin, new ArrayList(packageNames));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5579,10 +5407,9 @@ public class DevicePolicyManager {
     @SystemApi
     public boolean isManagedKiosk() {
         throwIfParentInstance("isManagedKiosk");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isManagedKiosk();
+                return this.mService.isManagedKiosk();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5593,10 +5420,9 @@ public class DevicePolicyManager {
     @SystemApi
     public boolean isUnattendedManagedKiosk() {
         throwIfParentInstance("isUnattendedManagedKiosk");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isUnattendedManagedKiosk();
+                return this.mService.isUnattendedManagedKiosk();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5606,10 +5432,9 @@ public class DevicePolicyManager {
 
     public boolean startViewCalendarEventInManagedProfile(long eventId, long start, long end, boolean allDay, int flags) {
         throwIfParentInstance("startViewCalendarEventInManagedProfile");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.startViewCalendarEventInManagedProfile(this.mContext.getPackageName(), eventId, start, end, allDay, flags);
+                return this.mService.startViewCalendarEventInManagedProfile(this.mContext.getPackageName(), eventId, start, end, allDay, flags);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5620,10 +5445,9 @@ public class DevicePolicyManager {
     @SystemApi
     public void setApplicationExemptions(String packageName, Set<Integer> exemptions) throws PackageManager.NameNotFoundException {
         throwIfParentInstance("setApplicationExemptions");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setApplicationExemptions(this.mContext.getPackageName(), packageName, ArrayUtils.convertToIntArray((ArraySet<Integer>) new ArraySet(exemptions)));
+                this.mService.setApplicationExemptions(this.mContext.getPackageName(), packageName, ArrayUtils.convertToIntArray((ArraySet<Integer>) new ArraySet(exemptions)));
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             } catch (ServiceSpecificException e2) {
@@ -5640,12 +5464,11 @@ public class DevicePolicyManager {
     @SystemApi
     public Set<Integer> getApplicationExemptions(String packageName) throws PackageManager.NameNotFoundException {
         throwIfParentInstance("getApplicationExemptions");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return Collections.emptySet();
         }
         try {
-            return intArrayToSet(iDevicePolicyManager.getApplicationExemptions(packageName));
+            return intArrayToSet(this.mService.getApplicationExemptions(packageName));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         } catch (ServiceSpecificException e2) {
@@ -5668,10 +5491,9 @@ public class DevicePolicyManager {
 
     public void setUserControlDisabledPackages(ComponentName admin, List<String> packages) {
         throwIfParentInstance("setUserControlDisabledPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserControlDisabledPackages(admin, this.mContext.getPackageName(), packages);
+                this.mService.setUserControlDisabledPackages(admin, this.mContext.getPackageName(), packages);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5680,10 +5502,9 @@ public class DevicePolicyManager {
 
     public List<String> getUserControlDisabledPackages(ComponentName admin) {
         throwIfParentInstance("getUserControlDisabledPackages");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getUserControlDisabledPackages(admin, this.mContext.getPackageName());
+                return this.mService.getUserControlDisabledPackages(admin, this.mContext.getPackageName());
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5693,10 +5514,9 @@ public class DevicePolicyManager {
 
     public void setCommonCriteriaModeEnabled(ComponentName admin, boolean enabled) {
         throwIfParentInstance("setCommonCriteriaModeEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCommonCriteriaModeEnabled(admin, this.mContext.getPackageName(), enabled);
+                this.mService.setCommonCriteriaModeEnabled(admin, this.mContext.getPackageName(), enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5705,10 +5525,9 @@ public class DevicePolicyManager {
 
     public boolean isCommonCriteriaModeEnabled(ComponentName admin) {
         throwIfParentInstance("isCommonCriteriaModeEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isCommonCriteriaModeEnabled(admin);
+                return this.mService.isCommonCriteriaModeEnabled(admin);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5718,10 +5537,9 @@ public class DevicePolicyManager {
 
     public int getPersonalAppsSuspendedReasons(ComponentName admin) {
         throwIfParentInstance("getPersonalAppsSuspendedReasons");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPersonalAppsSuspendedReasons(admin);
+                return this.mService.getPersonalAppsSuspendedReasons(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5731,10 +5549,9 @@ public class DevicePolicyManager {
 
     public void setPersonalAppsSuspended(ComponentName admin, boolean suspended) {
         throwIfParentInstance("setPersonalAppsSuspended");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setPersonalAppsSuspended(admin, suspended);
+                this.mService.setPersonalAppsSuspended(admin, suspended);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5743,10 +5560,9 @@ public class DevicePolicyManager {
 
     public void setManagedProfileMaximumTimeOff(ComponentName admin, long timeoutMillis) {
         throwIfParentInstance("setManagedProfileMaximumTimeOff");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setManagedProfileMaximumTimeOff(admin, timeoutMillis);
+                this.mService.setManagedProfileMaximumTimeOff(admin, timeoutMillis);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5755,10 +5571,9 @@ public class DevicePolicyManager {
 
     public long getManagedProfileMaximumTimeOff(ComponentName admin) {
         throwIfParentInstance("getManagedProfileMaximumTimeOff");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getManagedProfileMaximumTimeOff(admin);
+                return this.mService.getManagedProfileMaximumTimeOff(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5768,10 +5583,9 @@ public class DevicePolicyManager {
 
     public void acknowledgeDeviceCompliant() {
         throwIfParentInstance("acknowledgeDeviceCompliant");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.acknowledgeDeviceCompliant();
+                this.mService.acknowledgeDeviceCompliant();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5780,10 +5594,9 @@ public class DevicePolicyManager {
 
     public boolean isComplianceAcknowledgementRequired() {
         throwIfParentInstance("isComplianceAcknowledgementRequired");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isComplianceAcknowledgementRequired();
+                return this.mService.isComplianceAcknowledgementRequired();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5792,10 +5605,9 @@ public class DevicePolicyManager {
     }
 
     public boolean canProfileOwnerResetPasswordWhenLocked(int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.canProfileOwnerResetPasswordWhenLocked(userId);
+                return this.mService.canProfileOwnerResetPasswordWhenLocked(userId);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5804,10 +5616,9 @@ public class DevicePolicyManager {
     }
 
     public boolean getSamsungSDcardEncryptionStatus(ComponentName admin) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getSamsungSDcardEncryptionStatus(admin, UserHandle.myUserId());
+                return this.mService.getSamsungSDcardEncryptionStatus(admin, UserHandle.myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return false;
@@ -5817,10 +5628,9 @@ public class DevicePolicyManager {
     }
 
     public void setNextOperationSafety(int operation, int reason) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setNextOperationSafety(operation, reason);
+                this.mService.setNextOperationSafety(operation, reason);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5829,12 +5639,11 @@ public class DevicePolicyManager {
 
     public String getEnrollmentSpecificId() {
         throwIfParentInstance("getEnrollmentSpecificId");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return "";
         }
         try {
-            return iDevicePolicyManager.getEnrollmentSpecificId(this.mContext.getPackageName());
+            return this.mService.getEnrollmentSpecificId(this.mContext.getPackageName());
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5846,24 +5655,22 @@ public class DevicePolicyManager {
     }
 
     public void setOrganizationIdForUser(String packageName, String enterpriseId, int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setOrganizationIdForUser(packageName, enterpriseId, userId);
+            this.mService.setOrganizationIdForUser(packageName, enterpriseId, userId);
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
     }
 
     public void clearOrganizationId() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.clearOrganizationIdForUser(myUserId());
+            this.mService.clearOrganizationIdForUser(myUserId());
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5871,12 +5678,11 @@ public class DevicePolicyManager {
 
     @SystemApi
     public UserHandle createAndProvisionManagedProfile(ManagedProfileProvisioningParams provisioningParams) throws ProvisioningException {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iDevicePolicyManager.createAndProvisionManagedProfile(provisioningParams, this.mContext.getPackageName());
+            return this.mService.createAndProvisionManagedProfile(provisioningParams, this.mContext.getPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         } catch (ServiceSpecificException e2) {
@@ -5887,12 +5693,11 @@ public class DevicePolicyManager {
     @SystemApi
     public void finalizeWorkProfileProvisioning(UserHandle managedProfileUser, Account migratedAccount) {
         Objects.requireNonNull(managedProfileUser, "managedProfileUser can't be null");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("Could not find DevicePolicyManagerService");
         }
         try {
-            iDevicePolicyManager.finalizeWorkProfileProvisioning(managedProfileUser, migratedAccount);
+            this.mService.finalizeWorkProfileProvisioning(managedProfileUser, migratedAccount);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -5904,10 +5709,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public void provisionFullyManagedDevice(FullyManagedDeviceProvisioningParams provisioningParams) throws ProvisioningException {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.provisionFullyManagedDevice(provisioningParams, this.mContext.getPackageName());
+                this.mService.provisionFullyManagedDevice(provisioningParams, this.mContext.getPackageName());
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             } catch (ServiceSpecificException e) {
@@ -5917,10 +5721,9 @@ public class DevicePolicyManager {
     }
 
     public void resetDefaultCrossProfileIntentFilters(int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.resetDefaultCrossProfileIntentFilters(userId);
+                this.mService.resetDefaultCrossProfileIntentFilters(userId);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5929,12 +5732,11 @@ public class DevicePolicyManager {
 
     public boolean canAdminGrantSensorsPermissions() {
         throwIfParentInstance("canAdminGrantSensorsPermissions");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iDevicePolicyManager.canAdminGrantSensorsPermissions();
+            return this.mService.canAdminGrantSensorsPermissions();
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -5942,10 +5744,9 @@ public class DevicePolicyManager {
 
     public void setDeviceOwnerType(ComponentName admin, int deviceOwnerType) {
         throwIfParentInstance("setDeviceOwnerType");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDeviceOwnerType(admin, deviceOwnerType);
+                this.mService.setDeviceOwnerType(admin, deviceOwnerType);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5955,10 +5756,9 @@ public class DevicePolicyManager {
     @Deprecated
     public int getDeviceOwnerType(ComponentName admin) {
         throwIfParentInstance("getDeviceOwnerType");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDeviceOwnerType(admin);
+                return this.mService.getDeviceOwnerType(admin);
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -5972,10 +5772,9 @@ public class DevicePolicyManager {
 
     public void setUsbDataSignalingEnabled(boolean enabled) {
         throwIfParentInstance("setUsbDataSignalingEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUsbDataSignalingEnabled(this.mContext.getPackageName(), enabled);
+                this.mService.setUsbDataSignalingEnabled(this.mContext.getPackageName(), enabled);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -5984,23 +5783,9 @@ public class DevicePolicyManager {
 
     public boolean isUsbDataSignalingEnabled() {
         throwIfParentInstance("isUsbDataSignalingEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isUsbDataSignalingEnabled(this.mContext.getPackageName());
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-        return true;
-    }
-
-    public boolean isUsbDataSignalingEnabledForUser(int userId) {
-        throwIfParentInstance("isUsbDataSignalingEnabledForUser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                return iDevicePolicyManager.isUsbDataSignalingEnabledForUser(userId);
+                return this.mService.isUsbDataSignalingEnabled(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6010,10 +5795,9 @@ public class DevicePolicyManager {
 
     public boolean canUsbDataSignalingBeDisabled() {
         throwIfParentInstance("canUsbDataSignalingBeDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.canUsbDataSignalingBeDisabled();
+                return this.mService.canUsbDataSignalingBeDisabled();
             } catch (RemoteException re) {
                 throw re.rethrowFromSystemServer();
             }
@@ -6022,12 +5806,11 @@ public class DevicePolicyManager {
     }
 
     public List<UserHandle> listForegroundAffiliatedUsers() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return Collections.emptyList();
         }
         try {
-            return iDevicePolicyManager.listForegroundAffiliatedUsers();
+            return this.mService.listForegroundAffiliatedUsers();
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
         }
@@ -6051,10 +5834,9 @@ public class DevicePolicyManager {
 
     public void setMinimumRequiredWifiSecurityLevel(int level) {
         throwIfParentInstance("setMinimumRequiredWifiSecurityLevel");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setMinimumRequiredWifiSecurityLevel(this.mContext.getPackageName(), level);
+                this.mService.setMinimumRequiredWifiSecurityLevel(this.mContext.getPackageName(), level);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6063,12 +5845,11 @@ public class DevicePolicyManager {
 
     public int getMinimumRequiredWifiSecurityLevel() {
         throwIfParentInstance("getMinimumRequiredWifiSecurityLevel");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return 0;
         }
         try {
-            return iDevicePolicyManager.getMinimumRequiredWifiSecurityLevel();
+            return this.mService.getMinimumRequiredWifiSecurityLevel();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -6076,12 +5857,11 @@ public class DevicePolicyManager {
 
     public void setWifiSsidPolicy(WifiSsidPolicy policy) {
         throwIfParentInstance("setWifiSsidPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return;
         }
         try {
-            iDevicePolicyManager.setWifiSsidPolicy(this.mContext.getPackageName(), policy);
+            this.mService.setWifiSsidPolicy(this.mContext.getPackageName(), policy);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -6089,12 +5869,24 @@ public class DevicePolicyManager {
 
     public WifiSsidPolicy getWifiSsidPolicy() {
         throwIfParentInstance("getWifiSsidPolicy");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            return iDevicePolicyManager.getWifiSsidPolicy(this.mContext.getPackageName());
+            return this.mService.getWifiSsidPolicy(this.mContext.getPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi
+    public boolean isDevicePotentiallyStolen() {
+        throwIfParentInstance("isDevicePotentiallyStolen");
+        if (this.mService == null) {
+            return false;
+        }
+        try {
+            return this.mService.isDevicePotentiallyStolen(this.mContext.getPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -6107,10 +5899,9 @@ public class DevicePolicyManager {
     @SystemApi
     public boolean isDpcDownloaded() {
         throwIfParentInstance("isDpcDownloaded");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isDpcDownloaded();
+                return this.mService.isDpcDownloaded();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6121,10 +5912,9 @@ public class DevicePolicyManager {
     @SystemApi
     public void setDpcDownloaded(boolean downloaded) {
         throwIfParentInstance("setDpcDownloaded");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setDpcDownloaded(downloaded);
+                this.mService.setDpcDownloaded(downloaded);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6147,10 +5937,9 @@ public class DevicePolicyManager {
     @SystemApi
     public List<UserHandle> getPolicyManagedProfiles(UserHandle user) {
         Objects.requireNonNull(user);
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getPolicyManagedProfiles(user);
+                return this.mService.getPolicyManagedProfiles(user);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6169,10 +5958,9 @@ public class DevicePolicyManager {
     }
 
     public void resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState();
+                this.mService.resetShouldAllowBypassingDevicePolicyManagementRoleQualificationState();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6180,10 +5968,9 @@ public class DevicePolicyManager {
     }
 
     public void calculateHasIncompatibleAccounts() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.calculateHasIncompatibleAccounts();
+                this.mService.calculateHasIncompatibleAccounts();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6192,10 +5979,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public boolean shouldAllowBypassingDevicePolicyManagementRoleQualification() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.shouldAllowBypassingDevicePolicyManagementRoleQualification();
+                return this.mService.shouldAllowBypassingDevicePolicyManagementRoleQualification();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6205,10 +5991,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public DevicePolicyState getDevicePolicyState() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getDevicePolicyState();
+                return this.mService.getDevicePolicyState();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6216,22 +6001,10 @@ public class DevicePolicyManager {
         return null;
     }
 
-    public void setOverrideKeepProfilesRunning(boolean enabled) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.setOverrideKeepProfilesRunning(enabled);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
     public boolean triggerDevicePolicyEngineMigration(boolean forceMigration) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.triggerDevicePolicyEngineMigration(forceMigration);
+                return this.mService.triggerDevicePolicyEngineMigration(forceMigration);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6241,10 +6014,9 @@ public class DevicePolicyManager {
 
     public boolean isDeviceFinanced() {
         throwIfParentInstance("isDeviceFinanced");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.isDeviceFinanced(this.mContext.getPackageName());
+                return this.mService.isDeviceFinanced(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6254,10 +6026,9 @@ public class DevicePolicyManager {
 
     @SystemApi
     public String getFinancedDeviceKioskRoleHolder() {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.getFinancedDeviceKioskRoleHolder(this.mContext.getPackageName());
+                return this.mService.getFinancedDeviceKioskRoleHolder(this.mContext.getPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6265,13 +6036,87 @@ public class DevicePolicyManager {
         return null;
     }
 
+    public boolean isOnboardingBugreportV2FlagEnabled() {
+        return android.app.admin.flags.Flags.onboardingBugreportV2Enabled();
+    }
+
+    public boolean isOnboardingConsentlessBugreportFlagEnabled() {
+        return android.app.admin.flags.Flags.onboardingConsentlessBugreports();
+    }
+
+    public Set<Integer> getSubscriptionIds() {
+        throwIfParentInstance("getSubscriptionIds");
+        if (this.mService != null) {
+            try {
+                return intArrayToSet(this.mService.getSubscriptionIds(this.mContext.getPackageName()));
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return new HashSet();
+    }
+
+    @SystemApi
+    public void setMaxPolicyStorageLimit(int storageLimit) {
+        if (this.mService != null) {
+            try {
+                this.mService.setMaxPolicyStorageLimit(this.mContext.getPackageName(), storageLimit);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    @SystemApi
+    public int getMaxPolicyStorageLimit() {
+        if (this.mService != null) {
+            try {
+                return this.mService.getMaxPolicyStorageLimit(this.mContext.getPackageName());
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return -1;
+    }
+
+    public void forceSetMaxPolicyStorageLimit(int storageLimit) {
+        if (this.mService != null) {
+            try {
+                this.mService.forceSetMaxPolicyStorageLimit(this.mContext.getPackageName(), storageLimit);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public int getPolicySizeForAdmin(EnforcingAdmin admin) {
+        if (this.mService != null) {
+            try {
+                return this.mService.getPolicySizeForAdmin(this.mContext.getPackageName(), admin);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return -1;
+    }
+
+    public int getHeadlessDeviceOwnerMode() {
+        if (!android.app.admin.flags.Flags.headlessDeviceOwnerProvisioningFixEnabled() || this.mService == null) {
+            return 0;
+        }
+        try {
+            return this.mService.getHeadlessDeviceOwnerMode(this.mContext.getPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     @Deprecated
     public void semSetPasswordQuality(ComponentName admin, int quality) {
         throwIfParentInstance("semSetPasswordQuality");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordQuality(admin, quality);
+                this.mService.semSetPasswordQuality(admin, quality);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6281,10 +6126,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordMinimumLength(ComponentName admin, int length) {
         throwIfParentInstance("semSetPasswordMinimumLength");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordMinimumLength(admin, length);
+                this.mService.semSetPasswordMinimumLength(admin, length);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6294,10 +6138,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordMinimumUpperCase(ComponentName admin, int length) {
         throwIfParentInstance("semSetPasswordMinimumUpperCase");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordMinimumUpperCase(admin, length);
+                this.mService.semSetPasswordMinimumUpperCase(admin, length);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6307,49 +6150,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordMinimumLowerCase(ComponentName admin, int length) {
         throwIfParentInstance("semSetPasswordMinimumLowerCase");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordMinimumLowerCase(admin, length);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    @Deprecated
-    public void semSetPasswordMinimumLetters(ComponentName admin, int length) {
-        throwIfParentInstance("semSetPasswordMinimumLetters");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.semSetPasswordMinimumLetters(admin, length);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    @Deprecated
-    public void semSetPasswordMinimumNumeric(ComponentName admin, int length) {
-        throwIfParentInstance("semSetPasswordMinimumNumeric");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.semSetPasswordMinimumNumeric(admin, length);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    @Deprecated
-    public void semSetPasswordMinimumSymbols(ComponentName admin, int length) {
-        throwIfParentInstance("semSetPasswordMinimumSymbols");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.semSetPasswordMinimumSymbols(admin, length);
+                this.mService.semSetPasswordMinimumLowerCase(admin, length);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6359,10 +6162,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordMinimumNonLetter(ComponentName admin, int length) {
         throwIfParentInstance("semSetPasswordMinimumNonLetter");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordMinimumNonLetter(admin, length);
+                this.mService.semSetPasswordMinimumNonLetter(admin, length);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6372,10 +6174,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordHistoryLength(ComponentName admin, int length) {
         throwIfParentInstance("semSetPasswordHistoryLength");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordHistoryLength(admin, length);
+                this.mService.semSetPasswordHistoryLength(admin, length);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6385,10 +6186,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetPasswordExpirationTimeout(ComponentName admin, long timeout) {
         throwIfParentInstance("semSetPasswordExpirationTimeout");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetPasswordExpirationTimeout(admin, timeout);
+                this.mService.semSetPasswordExpirationTimeout(admin, timeout);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6398,10 +6198,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semIsActivePasswordSufficient() {
         throwIfParentInstance("semIsActivePasswordSufficient");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semIsActivePasswordSufficient(myUserId());
+                return this.mService.semIsActivePasswordSufficient(myUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6412,10 +6211,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetSimplePasswordEnabled(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetSimplePasswordEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetSimplePasswordEnabled(admin, value);
+                this.mService.semSetSimplePasswordEnabled(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6425,10 +6223,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semIsSimplePasswordEnabled(ComponentName admin) {
         throwIfParentInstance("semIsSimplePasswordEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semIsSimplePasswordEnabled(admin, myUserId());
+                return this.mService.semIsSimplePasswordEnabled(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6440,23 +6237,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetKeyguardDisabledFeatures(ComponentName admin, int which) {
         throwIfParentInstance("semSetKeyguardDisabledFeatures");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetKeyguardDisabledFeatures(admin, which);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    @Deprecated
-    public void semSetCameraDisabled(ComponentName admin, boolean disabled) {
-        throwIfParentInstance("semSetCameraDisabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.semSetCameraDisabled(admin, disabled);
+                this.mService.semSetKeyguardDisabledFeatures(admin, which);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6466,10 +6249,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowStorageCard(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowStorageCard");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowStorageCard(admin, value);
+                this.mService.semSetAllowStorageCard(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6479,10 +6261,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowStorageCard(ComponentName admin) {
         throwIfParentInstance("semGetAllowStorageCard");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowStorageCard(admin, myUserId());
+                return this.mService.semGetAllowStorageCard(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6494,10 +6275,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowWifi(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowWifi");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowWifi(admin, value);
+                this.mService.semSetAllowWifi(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6507,10 +6287,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowWifi(ComponentName admin) {
         throwIfParentInstance("semGetAllowWifi");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowWifi(admin, myUserId());
+                return this.mService.semGetAllowWifi(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6522,10 +6301,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowTextMessaging(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowTextMessaging");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowTextMessaging(admin, value);
+                this.mService.semSetAllowTextMessaging(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6535,10 +6313,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowTextMessaging(ComponentName admin) {
         throwIfParentInstance("semGetAllowTextMessaging");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowTextMessaging(admin, myUserId());
+                return this.mService.semGetAllowTextMessaging(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6550,10 +6327,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowPopImapEmail(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowPopImapEmail");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowPopImapEmail(admin, value);
+                this.mService.semSetAllowPopImapEmail(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6563,10 +6339,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowPopImapEmail(ComponentName admin) {
         throwIfParentInstance("semGetAllowPopImapEmail");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowPopImapEmail(admin, myUserId());
+                return this.mService.semGetAllowPopImapEmail(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6578,10 +6353,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowBrowser(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowBrowser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowBrowser(admin, value);
+                this.mService.semSetAllowBrowser(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6591,10 +6365,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowBrowser(ComponentName admin) {
         throwIfParentInstance("semGetAllowBrowser");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowBrowser(admin, myUserId());
+                return this.mService.semGetAllowBrowser(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6606,10 +6379,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowInternetSharing(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowInternetSharing");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowInternetSharing(admin, value);
+                this.mService.semSetAllowInternetSharing(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6619,10 +6391,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowInternetSharing(ComponentName admin) {
         throwIfParentInstance("semGetAllowInternetSharing");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowInternetSharing(admin, myUserId());
+                return this.mService.semGetAllowInternetSharing(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6634,10 +6405,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowBluetoothMode(ComponentName admin, int value) {
         throwIfParentInstance("semSetAllowBluetoothMode");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowBluetoothMode(admin, value);
+                this.mService.semSetAllowBluetoothMode(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6647,10 +6417,9 @@ public class DevicePolicyManager {
     @Deprecated
     public int semGetAllowBluetoothMode(ComponentName admin) {
         throwIfParentInstance("semGetAllowBluetoothMode");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowBluetoothMode(admin, myUserId());
+                return this.mService.semGetAllowBluetoothMode(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return 2;
@@ -6662,10 +6431,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowDesktopSync(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowDesktopSync");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowDesktopSync(admin, value);
+                this.mService.semSetAllowDesktopSync(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6675,10 +6443,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowDesktopSync(ComponentName admin) {
         throwIfParentInstance("semGetAllowDesktopSync");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowDesktopSync(admin, myUserId());
+                return this.mService.semGetAllowDesktopSync(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6690,10 +6457,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetAllowIrda(ComponentName admin, boolean value) {
         throwIfParentInstance("semSetAllowIrda");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetAllowIrda(admin, value);
+                this.mService.semSetAllowIrda(admin, value);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6703,10 +6469,9 @@ public class DevicePolicyManager {
     @Deprecated
     public boolean semGetAllowIrda(ComponentName admin) {
         throwIfParentInstance("semGetAllowIrda");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetAllowIrda(admin, myUserId());
+                return this.mService.semGetAllowIrda(admin, myUserId());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return true;
@@ -6722,10 +6487,9 @@ public class DevicePolicyManager {
     }
 
     public void semSetRequireStorageCardEncryption(ComponentName admin, boolean value, boolean isParent) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetRequireStorageCardEncryption(admin, value, isParent);
+                this.mService.semSetRequireStorageCardEncryption(admin, value, isParent);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6739,10 +6503,9 @@ public class DevicePolicyManager {
     }
 
     public boolean semGetRequireStorageCardEncryption(ComponentName admin, boolean isParent) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                return iDevicePolicyManager.semGetRequireStorageCardEncryption(admin, myUserId(), isParent);
+                return this.mService.semGetRequireStorageCardEncryption(admin, myUserId(), isParent);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
                 return false;
@@ -6754,10 +6517,9 @@ public class DevicePolicyManager {
     @Deprecated
     public void semSetChangeNotificationEnabled(ComponentName admin, boolean notifyChanges) {
         throwIfParentInstance("semSetChangeNotificationEnabled");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.semSetChangeNotificationEnabled(admin, notifyChanges);
+                this.mService.semSetChangeNotificationEnabled(admin, notifyChanges);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with device policy service", e);
             }
@@ -6769,21 +6531,9 @@ public class DevicePolicyManager {
         Log.w(TAG, "semSetAllowThirdPartyAppList - No more support from R OS");
     }
 
-    public String semGetAllowThirdPartyAppList(ComponentName admin) {
-        throwIfParentInstance("semGetAllowThirdPartyAppList");
-        Log.w(TAG, "semGetAllowThirdPartyAppList - No more support from R OS");
-        return "".intern();
-    }
-
     public void semSetBlockPreloadedPackages(ComponentName admin, String value) {
         throwIfParentInstance("semSetBlockPreloadedPackages");
         Log.w(TAG, "semGetAllowThirdPartyAppList - No more support from R OS");
-    }
-
-    public String semGetBlockPreloadedPackages(ComponentName admin) {
-        throwIfParentInstance("semGetBlockPreloadedPackages");
-        Log.w(TAG, "semGetBlockPreloadedPackages - No more support from R OS");
-        return "".intern();
     }
 
     public void semSetAllowUnsignedApp(ComponentName cp, boolean flags) {
@@ -6824,35 +6574,11 @@ public class DevicePolicyManager {
         return getDeviceOwner();
     }
 
-    public void setBluetoothContactSharingEnabledForKnox(int userId, boolean value) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                iDevicePolicyManager.setBluetoothContactSharingEnabledForKnox(userId, value);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-    }
-
-    public boolean getBluetoothContactSharingEnabledForKnox(int userId) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
-            try {
-                return iDevicePolicyManager.getBluetoothContactSharingEnabledForKnox(userId);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-        return false;
-    }
-
     public void addUserRestrictionForKnox(ComponentName admin, String key, int userId) {
         throwIfParentInstance("addUserRestriction");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserRestrictionForKnox(admin, key, true, userId);
+                this.mService.setUserRestrictionForKnox(admin, key, true, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6861,10 +6587,9 @@ public class DevicePolicyManager {
 
     public void clearUserRestrictionForKnox(ComponentName admin, String key, int userId) {
         throwIfParentInstance("clearUserRestriction");
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setUserRestrictionForKnox(admin, key, false, userId);
+                this.mService.setUserRestrictionForKnox(admin, key, false, userId);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -6872,10 +6597,9 @@ public class DevicePolicyManager {
     }
 
     public void setCrossProfileAppToIgnored(int userId, String packageName) {
-        IDevicePolicyManager iDevicePolicyManager = this.mService;
-        if (iDevicePolicyManager != null) {
+        if (this.mService != null) {
             try {
-                iDevicePolicyManager.setCrossProfileAppToIgnored(userId, packageName);
+                this.mService.setCrossProfileAppToIgnored(userId, packageName);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }

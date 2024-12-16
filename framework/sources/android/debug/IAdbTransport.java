@@ -12,7 +12,6 @@ public interface IAdbTransport extends IInterface {
 
     void onAdbEnabled(boolean z, byte b) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAdbTransport {
         @Override // android.debug.IAdbTransport
         public void onAdbEnabled(boolean enabled, byte type) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAdbTransport extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAdbTransport {
         static final int TRANSACTION_onAdbEnabled = 1;
 
@@ -67,26 +65,23 @@ public interface IAdbTransport extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAdbTransport.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAdbTransport.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAdbTransport.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    byte _arg1 = data.readByte();
+                    data.enforceNoDataAvail();
+                    onAdbEnabled(_arg0, _arg1);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            byte _arg1 = data.readByte();
-                            data.enforceNoDataAvail();
-                            onAdbEnabled(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IAdbTransport {
             private IBinder mRemote;
 

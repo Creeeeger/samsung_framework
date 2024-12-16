@@ -1,7 +1,7 @@
 package android.telephony.ims.feature;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Binder;
 import android.os.Bundle;
@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MmTelFeature extends ImsFeature {
 
     @SystemApi
@@ -95,27 +95,22 @@ public class MmTelFeature extends ImsFeature {
     private final IImsMmTelFeature mImsMMTelBinder = new AnonymousClass1();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EpsFallbackReason {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsAudioHandler {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsTrafficDirection {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ImsTrafficType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ProcessCallResult {
     }
 
@@ -128,26 +123,27 @@ public class MmTelFeature extends ImsFeature {
         this.mExecutor = executor;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Executor getExecutor() {
         if (this.mExecutor == null) {
-            this.mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+            this.mExecutor = new PendingIntent$$ExternalSyntheticLambda0();
         }
         return this.mExecutor;
     }
 
-    /* renamed from: android.telephony.ims.feature.MmTelFeature$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IImsMmTelFeature.Stub {
+    /* renamed from: android.telephony.ims.feature.MmTelFeature$1, reason: invalid class name */
+    class AnonymousClass1 extends IImsMmTelFeature.Stub {
         AnonymousClass1() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0(IImsMmTelListener l) {
             MmTelFeature.this.setListener(l);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void setListener(final IImsMmTelListener l) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda25
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda23
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$setListener$0(l);
@@ -155,13 +151,14 @@ public class MmTelFeature extends ImsFeature {
             }, "setListener");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$getFeatureState$1() {
             return Integer.valueOf(MmTelFeature.this.getFeatureState());
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public int getFeatureState() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda22
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda16
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$getFeatureState$1;
@@ -171,13 +168,14 @@ public class MmTelFeature extends ImsFeature {
             }, "getFeatureState")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ ImsCallProfile lambda$createCallProfile$2(int callSessionType, int callType) {
             return MmTelFeature.this.createCallProfile(callSessionType, callType);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public ImsCallProfile createCallProfile(final int callSessionType, final int callType) throws RemoteException {
-            return (ImsCallProfile) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda33
+            return (ImsCallProfile) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda5
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     ImsCallProfile lambda$createCallProfile$2;
@@ -187,13 +185,14 @@ public class MmTelFeature extends ImsFeature {
             }, "createCallProfile");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$changeOfferedRtpHeaderExtensionTypes$3(List types) {
             MmTelFeature.this.changeOfferedRtpHeaderExtensionTypes(new ArraySet(types));
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void changeOfferedRtpHeaderExtensionTypes(final List<RtpHeaderExtensionType> types) throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda34
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda32
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$changeOfferedRtpHeaderExtensionTypes$3(types);
@@ -204,7 +203,7 @@ public class MmTelFeature extends ImsFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public IImsCallSession createCallSession(final ImsCallProfile profile) throws RemoteException, UnsupportedOperationException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            IImsCallSession result = (IImsCallSession) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda7
+            IImsCallSession result = (IImsCallSession) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda26
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     IImsCallSession lambda$createCallSession$4;
@@ -218,6 +217,7 @@ public class MmTelFeature extends ImsFeature {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsCallSession lambda$createCallSession$4(ImsCallProfile profile, AtomicReference exceptionRef) {
             try {
                 return MmTelFeature.this.createCallSessionInterface(profile);
@@ -229,7 +229,7 @@ public class MmTelFeature extends ImsFeature {
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public int shouldProcessCall(final String[] numbers) {
-            Integer result = (Integer) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda9
+            Integer result = (Integer) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda3
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$shouldProcessCall$5;
@@ -243,6 +243,7 @@ public class MmTelFeature extends ImsFeature {
             return 1;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$shouldProcessCall$5(String[] numbers) {
             return Integer.valueOf(MmTelFeature.this.shouldProcessCall(numbers));
         }
@@ -250,7 +251,7 @@ public class MmTelFeature extends ImsFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public IImsUt getUtInterface() throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            IImsUt result = (IImsUt) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda29
+            IImsUt result = (IImsUt) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda15
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     IImsUt lambda$getUtInterface$6;
@@ -264,6 +265,7 @@ public class MmTelFeature extends ImsFeature {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsUt lambda$getUtInterface$6(AtomicReference exceptionRef) {
             try {
                 return MmTelFeature.this.getUtInterface();
@@ -276,7 +278,7 @@ public class MmTelFeature extends ImsFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public IImsEcbm getEcbmInterface() throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            IImsEcbm result = (IImsEcbm) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda23
+            IImsEcbm result = (IImsEcbm) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda8
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     IImsEcbm lambda$getEcbmInterface$7;
@@ -290,6 +292,7 @@ public class MmTelFeature extends ImsFeature {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsEcbm lambda$getEcbmInterface$7(AtomicReference exceptionRef) {
             try {
                 return MmTelFeature.this.getEcbmInterface();
@@ -299,13 +302,14 @@ public class MmTelFeature extends ImsFeature {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setUiTtyMode$8(int uiTtyMode, Message onCompleteMessage) {
             MmTelFeature.this.setUiTtyMode(uiTtyMode, onCompleteMessage);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void setUiTtyMode(final int uiTtyMode, final Message onCompleteMessage) throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda6
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda31
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$setUiTtyMode$8(uiTtyMode, onCompleteMessage);
@@ -316,7 +320,7 @@ public class MmTelFeature extends ImsFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public IImsMultiEndpoint getMultiEndpointInterface() throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            IImsMultiEndpoint result = (IImsMultiEndpoint) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda31
+            IImsMultiEndpoint result = (IImsMultiEndpoint) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda1
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     IImsMultiEndpoint lambda$getMultiEndpointInterface$9;
@@ -330,6 +334,7 @@ public class MmTelFeature extends ImsFeature {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ IImsMultiEndpoint lambda$getMultiEndpointInterface$9(AtomicReference exceptionRef) {
             try {
                 return MmTelFeature.this.getMultiEndpointInterface();
@@ -339,13 +344,14 @@ public class MmTelFeature extends ImsFeature {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCapabilityStatus$10() {
             return Integer.valueOf(MmTelFeature.this.queryCapabilityStatus().mCapabilities);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public int queryCapabilityStatus() {
-            Integer result = (Integer) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda36
+            Integer result = (Integer) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda24
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCapabilityStatus$10;
@@ -359,13 +365,14 @@ public class MmTelFeature extends ImsFeature {
             return 0;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addCapabilityCallback$11(IImsCapabilityCallback c) {
             MmTelFeature.this.addCapabilityCallback(c);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void addCapabilityCallback(final IImsCapabilityCallback c) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda28
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$addCapabilityCallback$11(c);
@@ -373,13 +380,14 @@ public class MmTelFeature extends ImsFeature {
             }, "addCapabilityCallback");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeCapabilityCallback$12(IImsCapabilityCallback c) {
             MmTelFeature.this.removeCapabilityCallback(c);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void removeCapabilityCallback(final IImsCapabilityCallback c) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda11
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda20
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$removeCapabilityCallback$12(c);
@@ -387,13 +395,14 @@ public class MmTelFeature extends ImsFeature {
             }, "removeCapabilityCallback");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$changeCapabilitiesConfiguration$13(CapabilityChangeRequest request, IImsCapabilityCallback c) {
             MmTelFeature.this.requestChangeEnabledCapabilities(request, c);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void changeCapabilitiesConfiguration(final CapabilityChangeRequest request, final IImsCapabilityCallback c) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda10
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda17
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$changeCapabilitiesConfiguration$13(request, c);
@@ -401,13 +410,14 @@ public class MmTelFeature extends ImsFeature {
             }, "changeCapabilitiesConfiguration");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$queryCapabilityConfiguration$14(int capability, int radioTech, IImsCapabilityCallback c) {
             MmTelFeature.this.queryCapabilityConfigurationInternal(capability, radioTech, c);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void queryCapabilityConfiguration(final int capability, final int radioTech, final IImsCapabilityCallback c) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda21
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda19
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$queryCapabilityConfiguration$14(capability, radioTech, c);
@@ -418,14 +428,14 @@ public class MmTelFeature extends ImsFeature {
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void setMediaQualityThreshold(final int sessionType, final MediaThreshold mediaThreshold) {
             if (mediaThreshold != null) {
-                executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda18
+                executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda12
                     @Override // java.lang.Runnable
                     public final void run() {
                         MmTelFeature.AnonymousClass1.this.lambda$setMediaQualityThreshold$15(sessionType, mediaThreshold);
                     }
                 }, "setMediaQualityThreshold");
             } else {
-                executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda19
+                executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda13
                     @Override // java.lang.Runnable
                     public final void run() {
                         MmTelFeature.AnonymousClass1.this.lambda$setMediaQualityThreshold$16(sessionType);
@@ -434,21 +444,24 @@ public class MmTelFeature extends ImsFeature {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setMediaQualityThreshold$15(int sessionType, MediaThreshold mediaThreshold) {
             MmTelFeature.this.setMediaThreshold(sessionType, mediaThreshold);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setMediaQualityThreshold$16(int sessionType) {
             MmTelFeature.this.clearMediaThreshold(sessionType);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ MediaQualityStatus lambda$queryMediaQualityStatus$17(int sessionType) {
             return MmTelFeature.this.queryMediaQualityStatus(sessionType);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public MediaQualityStatus queryMediaQualityStatus(final int sessionType) throws RemoteException {
-            return (MediaQualityStatus) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda8
+            return (MediaQualityStatus) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda35
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     MediaQualityStatus lambda$queryMediaQualityStatus$17;
@@ -458,13 +471,14 @@ public class MmTelFeature extends ImsFeature {
             }, "queryMediaQualityStatus");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setSmsListener$18(IImsSmsListener l) {
             MmTelFeature.this.setSmsListener(l);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void setSmsListener(final IImsSmsListener l) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda26
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda29
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$setSmsListener$18(l);
@@ -472,13 +486,14 @@ public class MmTelFeature extends ImsFeature {
             }, "setSmsListener", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendSms$19(int token, int messageRef, String format, String smsc, boolean retry, byte[] pdu) {
             MmTelFeature.this.sendSms(token, messageRef, format, smsc, retry, pdu);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void sendSms(final int token, final int messageRef, final String format, final String smsc, final boolean retry, final byte[] pdu) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda12
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda22
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$sendSms$19(token, messageRef, format, smsc, retry, pdu);
@@ -486,13 +501,14 @@ public class MmTelFeature extends ImsFeature {
             }, "sendSms", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMemoryAvailable$20(int token) {
             MmTelFeature.this.onMemoryAvailable(token);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void onMemoryAvailable(final int token) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda1
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda18
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$onMemoryAvailable$20(token);
@@ -500,13 +516,14 @@ public class MmTelFeature extends ImsFeature {
             }, "onMemoryAvailable", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$acknowledgeSms$21(int token, int messageRef, int result) {
             MmTelFeature.this.acknowledgeSms(token, messageRef, result);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void acknowledgeSms(final int token, final int messageRef, final int result) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda32
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda21
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$acknowledgeSms$21(token, messageRef, result);
@@ -514,13 +531,14 @@ public class MmTelFeature extends ImsFeature {
             }, "acknowledgeSms", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$acknowledgeSmsWithPdu$22(int token, int messageRef, int result, byte[] pdu) {
             MmTelFeature.this.acknowledgeSms(token, messageRef, result, pdu);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void acknowledgeSmsWithPdu(final int token, final int messageRef, final int result, final byte[] pdu) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda27
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$acknowledgeSmsWithPdu$22(token, messageRef, result, pdu);
@@ -528,13 +546,14 @@ public class MmTelFeature extends ImsFeature {
             }, "acknowledgeSms", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$acknowledgeSmsReport$23(int token, int messageRef, int result) {
             MmTelFeature.this.acknowledgeSmsReport(token, messageRef, result);
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void acknowledgeSmsReport(final int token, final int messageRef, final int result) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda5
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda28
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$acknowledgeSmsReport$23(token, messageRef, result);
@@ -542,13 +561,14 @@ public class MmTelFeature extends ImsFeature {
             }, "acknowledgeSmsReport", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getSmsFormat$24() {
             return MmTelFeature.this.getSmsFormat();
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public String getSmsFormat() {
-            return (String) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda14
+            return (String) executeMethodAsyncForResultNoException(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda27
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     String lambda$getSmsFormat$24;
@@ -558,13 +578,14 @@ public class MmTelFeature extends ImsFeature {
             }, "getSmsFormat", MmTelFeature.this.getImsSmsImpl().getExecutor());
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSmsReady$25() {
             MmTelFeature.this.onSmsReady();
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void onSmsReady() {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda2
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$onSmsReady$25();
@@ -574,7 +595,7 @@ public class MmTelFeature extends ImsFeature {
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void notifySrvccStarted(final ISrvccStartedCallback cb) {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda15
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$notifySrvccStarted$27(cb);
@@ -582,8 +603,9 @@ public class MmTelFeature extends ImsFeature {
             }, "notifySrvccStarted");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifySrvccStarted$27(final ISrvccStartedCallback cb) {
-            MmTelFeature.this.notifySrvccStarted(new Consumer() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda30
+            MmTelFeature.this.notifySrvccStarted(new Consumer() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda25
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     MmTelFeature.AnonymousClass1.lambda$notifySrvccStarted$26(ISrvccStartedCallback.this, (List) obj);
@@ -591,7 +613,7 @@ public class MmTelFeature extends ImsFeature {
             });
         }
 
-        public static /* synthetic */ void lambda$notifySrvccStarted$26(ISrvccStartedCallback cb, List profiles) {
+        static /* synthetic */ void lambda$notifySrvccStarted$26(ISrvccStartedCallback cb, List profiles) {
             try {
                 cb.onSrvccCallNotified(profiles);
             } catch (Exception e) {
@@ -601,7 +623,7 @@ public class MmTelFeature extends ImsFeature {
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void notifySrvccCompleted() {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda13
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$notifySrvccCompleted$28();
@@ -609,13 +631,14 @@ public class MmTelFeature extends ImsFeature {
             }, "notifySrvccCompleted");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifySrvccCompleted$28() {
             MmTelFeature.this.notifySrvccCompleted();
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void notifySrvccFailed() {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda20
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$notifySrvccFailed$29();
@@ -623,13 +646,14 @@ public class MmTelFeature extends ImsFeature {
             }, "notifySrvccFailed");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifySrvccFailed$29() {
             MmTelFeature.this.notifySrvccFailed();
         }
 
         @Override // android.telephony.ims.aidl.IImsMmTelFeature
         public void notifySrvccCanceled() {
-            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda16
+            executeMethodAsyncNoException(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda34
                 @Override // java.lang.Runnable
                 public final void run() {
                     MmTelFeature.AnonymousClass1.this.lambda$notifySrvccCanceled$30();
@@ -637,6 +661,7 @@ public class MmTelFeature extends ImsFeature {
             }, "notifySrvccCanceled");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifySrvccCanceled$30() {
             MmTelFeature.this.notifySrvccCanceled();
         }
@@ -660,7 +685,7 @@ public class MmTelFeature extends ImsFeature {
 
         private void executeMethodAsync(final Runnable r, String errorLogName) throws RemoteException {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda4
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda30
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -674,7 +699,7 @@ public class MmTelFeature extends ImsFeature {
 
         private void executeMethodAsyncNoException(final Runnable r, String errorLogName) {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda24
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda36
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -687,7 +712,7 @@ public class MmTelFeature extends ImsFeature {
 
         private void executeMethodAsyncNoException(final Runnable r, String errorLogName, Executor executor) {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda35
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda33
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -699,7 +724,7 @@ public class MmTelFeature extends ImsFeature {
         }
 
         private <T> T executeMethodAsyncForResult(final Supplier<T> r, String errorLogName) throws RemoteException {
-            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda3
+            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda9
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Object runWithCleanCallingIdentity;
@@ -719,7 +744,7 @@ public class MmTelFeature extends ImsFeature {
         }
 
         private <T> T executeMethodAsyncForResultNoException(final Supplier<T> r, String errorLogName) {
-            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda0
+            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda6
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Object runWithCleanCallingIdentity;
@@ -736,7 +761,7 @@ public class MmTelFeature extends ImsFeature {
         }
 
         private <T> T executeMethodAsyncForResultNoException(final Supplier<T> r, String errorLogName, Executor executor) {
-            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda17
+            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.feature.MmTelFeature$1$$ExternalSyntheticLambda14
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Object runWithCleanCallingIdentity;
@@ -866,12 +891,19 @@ public class MmTelFeature extends ImsFeature {
                 MmTelFeature.this.triggerAutoConfigurationForApp(phoneId);
             }
         }
+
+        @Override // android.telephony.ims.aidl.IImsMmTelFeature
+        public void sendMmsProcType(int phoneId, boolean enable) throws RemoteException {
+            synchronized (MmTelFeature.this.mLock) {
+                MmTelFeature.this.sendMmsProcType(phoneId, enable);
+            }
+        }
     }
 
-    /* loaded from: classes3.dex */
     public static class MmTelCapabilities extends ImsFeature.Capabilities {
         public static final int CAPABILITY_TYPE_CALL_COMPOSER = 16;
-        public static final int CAPABILITY_TYPE_MAX = 17;
+        public static final int CAPABILITY_TYPE_CALL_COMPOSER_BUSINESS_ONLY = 32;
+        public static final int CAPABILITY_TYPE_MAX = 33;
         public static final int CAPABILITY_TYPE_NONE = 0;
         public static final int CAPABILITY_TYPE_SMS = 8;
         public static final int CAPABILITY_TYPE_UT = 4;
@@ -879,7 +911,6 @@ public class MmTelFeature extends ImsFeature {
         public static final int CAPABILITY_TYPE_VOICE = 1;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface MmTelCapability {
         }
 
@@ -917,11 +948,10 @@ public class MmTelFeature extends ImsFeature {
 
         @Override // android.telephony.ims.feature.ImsFeature.Capabilities
         public String toString() {
-            return "MmTel Capabilities - [Voice: " + isCapable(1) + " Video: " + isCapable(2) + " UT: " + isCapable(4) + " SMS: " + isCapable(8) + " CALL_COMPOSER: " + isCapable(16) + NavigationBarInflaterView.SIZE_MOD_END;
+            return "MmTel Capabilities - [Voice: " + isCapable(1) + " Video: " + isCapable(2) + " UT: " + isCapable(4) + " SMS: " + isCapable(8) + " CALL_COMPOSER: " + isCapable(16) + " BUSINESS_COMPOSER_ONLY: " + isCapable(32) + NavigationBarInflaterView.SIZE_MOD_END;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Listener extends IImsMmTelListener.Stub {
         @Override // android.telephony.ims.aidl.IImsMmTelListener
         public IImsCallSessionListener onIncomingCall(IImsCallSession c, String callId, Bundle extras) {
@@ -965,7 +995,6 @@ public class MmTelFeature extends ImsFeature {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ImsTrafficSessionCallbackWrapper {
         public static final int INVALID_TOKEN = -1;
         private static final int MAX_TOKEN = 65536;
@@ -973,10 +1002,6 @@ public class MmTelFeature extends ImsFeature {
         private IImsTrafficSessionCallbackStub mCallback;
         private ImsTrafficSessionCallback mImsTrafficSessionCallback;
         private int mToken;
-
-        /* synthetic */ ImsTrafficSessionCallbackWrapper(ImsTrafficSessionCallback imsTrafficSessionCallback, ImsTrafficSessionCallbackWrapperIA imsTrafficSessionCallbackWrapperIA) {
-            this(imsTrafficSessionCallback);
-        }
 
         private ImsTrafficSessionCallbackWrapper(ImsTrafficSessionCallback callback) {
             this.mCallback = null;
@@ -988,17 +1013,16 @@ public class MmTelFeature extends ImsFeature {
             if (executor == null) {
                 throw new IllegalArgumentException("ImsTrafficSessionCallback Executor must be non-null");
             }
-            IImsTrafficSessionCallbackStub iImsTrafficSessionCallbackStub = this.mCallback;
-            if (iImsTrafficSessionCallbackStub == null) {
+            if (this.mCallback == null) {
                 this.mCallback = new IImsTrafficSessionCallbackStub(this.mImsTrafficSessionCallback, executor);
                 this.mToken = generateToken();
             } else {
-                iImsTrafficSessionCallbackStub.update(executor);
+                this.mCallback.update(executor);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class IImsTrafficSessionCallbackStub extends IImsTrafficSessionCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class IImsTrafficSessionCallbackStub extends IImsTrafficSessionCallback.Stub {
             private Executor mExecutor;
             private WeakReference<ImsTrafficSessionCallback> mImsTrafficSessionCallbackWeakRef;
 
@@ -1017,7 +1041,7 @@ public class MmTelFeature extends ImsFeature {
                 if (callback == null) {
                     return;
                 }
-                Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda2
+                Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda3
                     @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                     public final void runOrThrow() {
                         MmTelFeature.ImsTrafficSessionCallbackWrapper.IImsTrafficSessionCallbackStub.this.lambda$onReady$1(callback);
@@ -1025,6 +1049,7 @@ public class MmTelFeature extends ImsFeature {
                 });
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onReady$1(final ImsTrafficSessionCallback callback) throws Exception {
                 this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
@@ -1040,7 +1065,7 @@ public class MmTelFeature extends ImsFeature {
                 if (callback == null) {
                     return;
                 }
-                Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda0
+                Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda2
                     @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                     public final void runOrThrow() {
                         MmTelFeature.ImsTrafficSessionCallbackWrapper.IImsTrafficSessionCallbackStub.this.lambda$onError$3(callback, info);
@@ -1048,8 +1073,9 @@ public class MmTelFeature extends ImsFeature {
                 });
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onError$3(final ImsTrafficSessionCallback callback, final ConnectionFailureInfo info) throws Exception {
-                this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda3
+                this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.feature.MmTelFeature$ImsTrafficSessionCallbackWrapper$IImsTrafficSessionCallbackStub$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         ImsTrafficSessionCallback.this.onError(info);
@@ -1072,19 +1098,19 @@ public class MmTelFeature extends ImsFeature {
         }
 
         private static int generateToken() {
-            AtomicInteger atomicInteger = sTokenGenerator;
-            int token = atomicInteger.incrementAndGet();
+            int token = sTokenGenerator.incrementAndGet();
             if (token == 65536) {
-                atomicInteger.set(0);
+                sTokenGenerator.set(0);
             }
             return token;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setListener(IImsMmTelListener listener) {
         synchronized (this.mLock) {
             this.mListener = listener;
-            if (listener != null) {
+            if (this.mListener != null) {
                 lambda$initialize$0();
             }
         }
@@ -1381,9 +1407,8 @@ public class MmTelFeature extends ImsFeature {
         ImsSmsImplBase imsSmsImplBase;
         synchronized (this.mLock) {
             if (this.mSmsImpl == null) {
-                ImsSmsImplBase smsImplementation = getSmsImplementation();
-                this.mSmsImpl = smsImplementation;
-                smsImplementation.setDefaultExecutor(this.mExecutor);
+                this.mSmsImpl = getSmsImplementation();
+                this.mSmsImpl.setDefaultExecutor(this.mExecutor);
             }
             imsSmsImplBase = this.mSmsImpl;
         }
@@ -1430,38 +1455,47 @@ public class MmTelFeature extends ImsFeature {
     public void notifySrvccCanceled() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setSmsListener(IImsSmsListener listener) {
         getImsSmsImpl().registerSmsListener(listener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void sendSms(int token, int messageRef, String format, String smsc, boolean isRetry, byte[] pdu) {
         getImsSmsImpl().sendSms(token, messageRef, format, smsc, isRetry, pdu);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onMemoryAvailable(int token) {
         getImsSmsImpl().onMemoryAvailable(token);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void acknowledgeSms(int token, int messageRef, int result) {
         getImsSmsImpl().acknowledgeSms(token, messageRef, result);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void acknowledgeSms(int token, int messageRef, int result, byte[] pdu) {
         getImsSmsImpl().acknowledgeSms(token, messageRef, result, pdu);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void acknowledgeSmsReport(int token, int messageRef, int result) {
         getImsSmsImpl().acknowledgeSmsReport(token, messageRef, result);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onSmsReady() {
         getImsSmsImpl().onReady();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setRetryCount(int token, int retryCount) throws RemoteException {
         getSmsImplementation().setRetryCount(token, retryCount);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setSmsc(String smsc) throws RemoteException {
         getSmsImplementation().setSmsc(smsc);
     }
@@ -1471,6 +1505,7 @@ public class MmTelFeature extends ImsFeature {
         return new ImsSmsImplBase();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public String getSmsFormat() {
         return getImsSmsImpl().getSmsFormat();
     }
@@ -1533,6 +1568,9 @@ public class MmTelFeature extends ImsFeature {
 
     public int getInitialCallNetworkType(int phoneId) throws RemoteException {
         return 0;
+    }
+
+    public void sendMmsProcType(int phoneId, boolean enable) throws RemoteException {
     }
 
     public final void setDefaultExecutor(Executor executor) {

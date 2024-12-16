@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EnhancedAttestationResult implements Parcelable {
     public static final Parcelable.Creator<EnhancedAttestationResult> CREATOR = new Parcelable.Creator<EnhancedAttestationResult>() { // from class: com.samsung.android.knox.tima.attestation.EnhancedAttestationResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnhancedAttestationResult createFromParcel(Parcel source) {
             return new EnhancedAttestationResult(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EnhancedAttestationResult[] newArray(int size) {
             return new EnhancedAttestationResult[size];
@@ -48,32 +47,11 @@ public class EnhancedAttestationResult implements Parcelable {
     private int errorCode;
     private String reason;
 
-    /* synthetic */ EnhancedAttestationResult(Parcel parcel, EnhancedAttestationResultIA enhancedAttestationResultIA) {
-        this(parcel);
-    }
-
     public EnhancedAttestationResult() {
     }
 
     private EnhancedAttestationResult(Parcel in) {
         readFromParcel(in);
-    }
-
-    /* renamed from: com.samsung.android.knox.tima.attestation.EnhancedAttestationResult$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EnhancedAttestationResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnhancedAttestationResult createFromParcel(Parcel source) {
-            return new EnhancedAttestationResult(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EnhancedAttestationResult[] newArray(int size) {
-            return new EnhancedAttestationResult[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -83,15 +61,21 @@ public class EnhancedAttestationResult implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int arg) {
-        dest.writeInt(this.errorCode);
-        dest.writeString(this.reason);
-        dest.writeBundle(this.data);
+        if (dest != null) {
+            dest.writeInt(this.errorCode);
+            dest.writeString(this.reason);
+            dest.writeBundle(this.data);
+        }
     }
 
     private void readFromParcel(Parcel in) {
-        this.errorCode = in.readInt();
-        this.reason = in.readString();
-        this.data = in.readBundle();
+        try {
+            this.errorCode = in.readInt();
+            this.reason = in.readString();
+            this.data = in.readBundle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setErrorCode(int errorCode) {
@@ -106,58 +90,52 @@ public class EnhancedAttestationResult implements Parcelable {
         this.reason = reason;
     }
 
-    public int getError() {
+    int getError() {
         return this.errorCode;
     }
 
-    public String getReason() {
+    String getReason() {
         return this.reason;
     }
 
-    public String getUniqueId() {
-        Bundle bundle = this.data;
-        if (bundle == null) {
+    String getUniqueId() {
+        if (this.data == null) {
             return null;
         }
-        return bundle.getString(DATA_FIELD_UNIQUE_ID);
+        return this.data.getString(DATA_FIELD_UNIQUE_ID);
     }
 
-    public String getUrl() {
-        Bundle bundle = this.data;
-        if (bundle == null) {
+    String getUrl() {
+        if (this.data == null) {
             return null;
         }
-        return bundle.getString(DATA_FIELD_URL);
+        return this.data.getString(DATA_FIELD_URL);
     }
 
-    public String getResponseRawData() {
-        Bundle bundle = this.data;
-        if (bundle == null) {
+    String getResponseRawData() {
+        if (this.data == null) {
             return null;
         }
-        return bundle.getString(DATA_FIELD_SERVER_RESPONSE_RAW_DATA);
+        return this.data.getString(DATA_FIELD_SERVER_RESPONSE_RAW_DATA);
     }
 
-    public byte[] getBlob() {
-        Bundle bundle = this.data;
-        if (bundle == null) {
+    byte[] getBlob() {
+        if (this.data == null) {
             return null;
         }
-        return bundle.getByteArray(DATA_FIELD_BLOB);
+        return this.data.getByteArray(DATA_FIELD_BLOB);
     }
 
-    public String getServerResponseId() {
-        Bundle bundle = this.data;
-        if (bundle == null) {
+    String getServerResponseId() {
+        if (this.data == null) {
             return null;
         }
-        return bundle.getString(DATA_FIELD_SERVER_RESPONSE_ID);
+        return this.data.getString(DATA_FIELD_SERVER_RESPONSE_ID);
     }
 
-    public int getRetryAfterTime() {
+    int getRetryAfterTime() {
         try {
-            String str = this.reason;
-            if (str == null || !str.contains(ERROR_RETRY_AFTER)) {
+            if (this.reason == null || !this.reason.contains(ERROR_RETRY_AFTER)) {
                 return -1;
             }
             int tempTime = Integer.parseInt(this.reason.replace(ERROR_RETRY_AFTER, ""));

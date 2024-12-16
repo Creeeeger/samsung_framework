@@ -9,10 +9,6 @@ public class AccessControlProfile {
     private boolean mUserAuthenticationRequired;
     private long mUserAuthenticationTimeout;
 
-    /* synthetic */ AccessControlProfile(AccessControlProfileIA accessControlProfileIA) {
-        this();
-    }
-
     private AccessControlProfile() {
         this.mAccessControlProfileId = new AccessControlProfileId(0);
         this.mReaderCertificate = null;
@@ -20,30 +16,27 @@ public class AccessControlProfile {
         this.mUserAuthenticationTimeout = 0L;
     }
 
-    public AccessControlProfileId getAccessControlProfileId() {
+    AccessControlProfileId getAccessControlProfileId() {
         return this.mAccessControlProfileId;
     }
 
-    public long getUserAuthenticationTimeout() {
+    long getUserAuthenticationTimeout() {
         return this.mUserAuthenticationTimeout;
     }
 
-    public boolean isUserAuthenticationRequired() {
+    boolean isUserAuthenticationRequired() {
         return this.mUserAuthenticationRequired;
     }
 
-    public X509Certificate getReaderCertificate() {
+    X509Certificate getReaderCertificate() {
         return this.mReaderCertificate;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
-        private AccessControlProfile mProfile;
+        private AccessControlProfile mProfile = new AccessControlProfile();
 
         public Builder(AccessControlProfileId accessControlProfileId) {
-            AccessControlProfile accessControlProfile = new AccessControlProfile();
-            this.mProfile = accessControlProfile;
-            accessControlProfile.mAccessControlProfileId = accessControlProfileId;
+            this.mProfile.mAccessControlProfileId = accessControlProfileId;
         }
 
         public Builder setUserAuthenticationRequired(boolean userAuthenticationRequired) {

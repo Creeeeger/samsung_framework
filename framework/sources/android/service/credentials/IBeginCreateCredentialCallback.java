@@ -18,7 +18,6 @@ public interface IBeginCreateCredentialCallback extends IInterface {
 
     void onSuccess(BeginCreateCredentialResponse beginCreateCredentialResponse) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IBeginCreateCredentialCallback {
         @Override // android.service.credentials.IBeginCreateCredentialCallback
         public void onSuccess(BeginCreateCredentialResponse request) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IBeginCreateCredentialCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IBeginCreateCredentialCallback {
         static final int TRANSACTION_onCancellable = 3;
         static final int TRANSACTION_onFailure = 2;
@@ -87,37 +85,33 @@ public interface IBeginCreateCredentialCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBeginCreateCredentialCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBeginCreateCredentialCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBeginCreateCredentialCallback.DESCRIPTOR);
+                case 1:
+                    BeginCreateCredentialResponse _arg0 = (BeginCreateCredentialResponse) data.readTypedObject(BeginCreateCredentialResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02, _arg1);
+                    return true;
+                case 3:
+                    ICancellationSignal _arg03 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCancellable(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BeginCreateCredentialResponse _arg0 = (BeginCreateCredentialResponse) data.readTypedObject(BeginCreateCredentialResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            CharSequence _arg1 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            ICancellationSignal _arg03 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCancellable(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IBeginCreateCredentialCallback {
+        private static class Proxy implements IBeginCreateCredentialCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

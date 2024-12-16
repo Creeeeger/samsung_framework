@@ -22,7 +22,6 @@ public interface IFillCallback extends IInterface {
 
     void onSuccess(List<Dataset> list, Bundle bundle, boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IFillCallback {
         @Override // android.service.autofill.augmented.IFillCallback
         public void onCancellable(ICancellationSignal cancellation) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IFillCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IFillCallback {
         static final int TRANSACTION_cancel = 4;
         static final int TRANSACTION_isCompleted = 3;
@@ -99,43 +97,40 @@ public interface IFillCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFillCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFillCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFillCallback.DESCRIPTOR);
+                case 1:
+                    ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCancellable(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    List<Dataset> _arg02 = data.createTypedArrayList(Dataset.CREATOR);
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result = isCompleted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    cancel();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCancellable(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            List<Dataset> _arg02 = data.createTypedArrayList(Dataset.CREATOR);
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result = isCompleted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            cancel();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IFillCallback {
+        private static class Proxy implements IFillCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

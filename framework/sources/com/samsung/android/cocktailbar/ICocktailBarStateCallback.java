@@ -12,7 +12,6 @@ public interface ICocktailBarStateCallback extends IInterface {
 
     void onCocktailBarStateChanged(CocktailBarStateInfo cocktailBarStateInfo) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICocktailBarStateCallback {
         @Override // com.samsung.android.cocktailbar.ICocktailBarStateCallback
         public void onCocktailBarStateChanged(CocktailBarStateInfo stateInfo) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICocktailBarStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICocktailBarStateCallback {
         static final int TRANSACTION_onCocktailBarStateChanged = 1;
 
@@ -67,24 +65,21 @@ public interface ICocktailBarStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICocktailBarStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICocktailBarStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICocktailBarStateCallback.DESCRIPTOR);
+                case 1:
+                    CocktailBarStateInfo _arg0 = (CocktailBarStateInfo) data.readTypedObject(CocktailBarStateInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCocktailBarStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CocktailBarStateInfo _arg0 = (CocktailBarStateInfo) data.readTypedObject(CocktailBarStateInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCocktailBarStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICocktailBarStateCallback {
             private IBinder mRemote;
 

@@ -15,11 +15,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.PersistableBundle;
-import android.os.Process;
 import android.os.SystemClock;
-import android.os.UserHandle;
-import android.sec.enterprise.auditlog.AuditEvents;
-import android.sec.enterprise.auditlog.AuditLog;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Pair;
@@ -32,8 +28,10 @@ import java.io.RandomAccessFile;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
@@ -63,6 +61,7 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
     public static final int SEM_MEDIA_RECORDER_INFO_DURATION_IN_PROGRESS = 901;
     public static final int SEM_MEDIA_RECORDER_INFO_FILESIZE_IN_PROGRESS = 900;
     public static final int SEM_MEDIA_RECORDER_INFO_FILESIZE_IN_PROGRESS_KILOBYTE = 902;
+    public static final int SEM_MEDIA_RECORDER_TRACK_INFO_CURRENT_CHUNKS = 906;
     public static final int SEM_MEDIA_RECORDER_TRACK_INFO_STARTED = 905;
     public static final int SEM_VIDEO_FLIP_AXIS_BOTH = 3;
     public static final int SEM_VIDEO_FLIP_AXIS_HORIZONTAL = 2;
@@ -84,37 +83,30 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
     private Surface mSurface;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioEncoderValues {
     }
 
-    /* loaded from: classes2.dex */
     public interface OnErrorListener {
         void onError(MediaRecorder mediaRecorder, int i, int i2);
     }
 
-    /* loaded from: classes2.dex */
     public interface OnInfoListener {
         void onInfo(MediaRecorder mediaRecorder, int i, int i2);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface OutputFormatValues {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Source {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface SystemSource {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VideoEncoderValues {
     }
 
@@ -124,9 +116,7 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
 
     private native void _setOutputFile(FileDescriptor fileDescriptor) throws IllegalStateException, IOException;
 
-    private native void _start() throws IllegalStateException;
-
-    private native void _stop() throws IllegalStateException;
+    private static final native SemPersistentSurface native_createSemPersistentSurface();
 
     private final native void native_enableDeviceCallback(boolean z);
 
@@ -142,7 +132,14 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
 
     private static final native void native_init();
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public static final native void native_releaseSemPersistentSurface(Surface surface);
+
     private native void native_reset();
+
+    private native void native_semCreatePersistentSurfaceTrack(String str, String[] strArr, Object[] objArr, Surface surface);
+
+    private native Surface native_semCreateSurfaceTrack(String str, String[] strArr, Object[] objArr);
 
     private final native boolean native_setInputDevice(int i);
 
@@ -198,6 +195,10 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
     public native void setVideoSize(int i, int i2) throws IllegalStateException;
 
     public native void setVideoSource(int i) throws IllegalStateException;
+
+    public native void start() throws IllegalStateException;
+
+    public native void stop() throws IllegalStateException;
 
     static {
         System.loadLibrary("media_jni");
@@ -267,7 +268,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         this.mSurface = sv;
     }
 
-    /* loaded from: classes2.dex */
     public final class AudioSource {
         private static final int AUDIOSOURCE_OFFSET = 10;
         public static final int AUDIO_SOURCE_INVALID = -1;
@@ -413,7 +413,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         }
     }
 
-    /* loaded from: classes2.dex */
     public final class VideoSource {
         public static final int CAMERA = 1;
         public static final int DEFAULT = 0;
@@ -423,7 +422,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         }
     }
 
-    /* loaded from: classes2.dex */
     public final class OutputFormat {
         public static final int AAC_ADIF = 5;
         public static final int AAC_ADTS = 6;
@@ -443,7 +441,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         }
     }
 
-    /* loaded from: classes2.dex */
     public final class AudioEncoder {
         public static final int AAC = 3;
         public static final int AAC_ELD = 5;
@@ -458,7 +455,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         }
     }
 
-    /* loaded from: classes2.dex */
     public final class VideoEncoder {
         public static final int AV1 = 8;
         public static final int DEFAULT = 0;
@@ -638,40 +634,19 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
                 file.close();
             } finally {
             }
-        } else {
-            FileDescriptor fileDescriptor = this.mFd;
-            if (fileDescriptor != null) {
-                _setOutputFile(fileDescriptor);
-            } else if (this.mFile != null) {
-                file = new RandomAccessFile(this.mFile, "rw");
-                try {
-                    _setOutputFile(file.getFD());
-                } finally {
-                }
-            } else {
-                throw new IOException("No valid output file");
+        } else if (this.mFd != null) {
+            _setOutputFile(this.mFd);
+        } else if (this.mFile != null) {
+            file = new RandomAccessFile(this.mFile, "rw");
+            try {
+                _setOutputFile(file.getFD());
+            } finally {
             }
+        } else {
+            throw new IOException("No valid output file");
         }
         _prepare();
         Log.i(TAG, "prepare elapsed time : " + (SystemClock.uptimeMillis() - startuptimeMillis) + " ms");
-    }
-
-    public void start() throws IllegalStateException {
-        try {
-            AuditLog.logAsUser(5, 5, true, Process.myUid(), getClass().getSimpleName(), AuditEvents.AUDIT_MICROPHONE_ENABLED, UserHandle.getUserId(Process.myUid()));
-        } catch (Exception e) {
-            Log.v(TAG, "could not log to auditlog due to lack of permission");
-        }
-        _start();
-    }
-
-    public void stop() throws IllegalStateException {
-        try {
-            AuditLog.logAsUser(5, 5, true, Process.myUid(), getClass().getSimpleName(), AuditEvents.AUDIT_MICROPHONE_DISABLED, UserHandle.getUserId(Process.myUid()));
-        } catch (Exception e) {
-            Log.v(TAG, "could not log to auditlog due to lack of permission");
-        }
-        _stop();
     }
 
     public void reset() {
@@ -687,9 +662,7 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         this.mOnInfoListener = listener;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private static final int MEDIA_RECORDER_AUDIO_ROUTING_CHANGED = 10000;
         private static final int MEDIA_RECORDER_EVENT_ERROR = 1;
         private static final int MEDIA_RECORDER_EVENT_INFO = 2;
@@ -863,10 +836,9 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
     }
 
     private static void postEventFromNative(Object mediarecorder_ref, int what, int arg1, int arg2, Object obj) {
-        EventHandler eventHandler;
         MediaRecorder mr = (MediaRecorder) ((WeakReference) mediarecorder_ref).get();
-        if (mr != null && (eventHandler = mr.mEventHandler) != null) {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (mr != null && mr.mEventHandler != null) {
+            Message m = mr.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             mr.mEventHandler.sendMessage(m);
         }
     }
@@ -900,7 +872,6 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
         native_finalize();
     }
 
-    /* loaded from: classes2.dex */
     public static final class MetricsConstants {
         public static final String AUDIO_BITRATE = "android.media.mediarecorder.audio-bitrate";
         public static final String AUDIO_CHANNELS = "android.media.mediarecorder.audio-channels";
@@ -1007,6 +978,130 @@ public class MediaRecorder implements AudioRouting, AudioRecordingMonitor, Audio
                 return false;
             default:
                 return true;
+        }
+    }
+
+    public void semSetCameraInfo(String info) {
+        setParameter("param-meta-camera-information=" + info);
+    }
+
+    public static Surface semCreateSemPersistentSurface() {
+        return native_createSemPersistentSurface();
+    }
+
+    static class SemPersistentSurface extends Surface {
+        private long mPersistentObject;
+
+        SemPersistentSurface() {
+        }
+
+        @Override // android.view.Surface
+        public void release() {
+            Log.i(MediaRecorder.TAG, "SemPersistentSurface::release()");
+            MediaRecorder.native_releaseSemPersistentSurface(this);
+            super.release();
+        }
+
+        @Override // android.view.Surface
+        protected void finalize() throws Throwable {
+            Log.i(MediaRecorder.TAG, "SemPersistentSurface::finalize()");
+            MediaRecorder.native_releaseSemPersistentSurface(this);
+            super.finalize();
+        }
+    }
+
+    public void semCreatePersistentSurfaceTrack(String trackMime, MediaFormat format, Surface surface) throws IllegalArgumentException, IllegalStateException {
+        Log.d(TAG, "semCreatePersistentSurfaceTrack");
+        String[] keys = null;
+        Object[] values = null;
+        if (format != null) {
+            Map<String, Object> formatMap = format.getMap();
+            keys = new String[formatMap.size()];
+            values = new Object[formatMap.size()];
+            int i = 0;
+            for (Map.Entry<String, Object> entry : formatMap.entrySet()) {
+                keys[i] = entry.getKey();
+                values[i] = entry.getValue();
+                i++;
+            }
+        }
+        native_semCreatePersistentSurfaceTrack(trackMime, keys, values, surface);
+    }
+
+    public Surface semCreateSurfaceTrack(String trackMime, MediaFormat format) throws IllegalArgumentException, IllegalStateException {
+        Log.d(TAG, "semCreateSurfaceTrack");
+        String[] keys = null;
+        Object[] values = null;
+        if (format != null) {
+            Map<String, Object> formatMap = format.getMap();
+            keys = new String[formatMap.size()];
+            values = new Object[formatMap.size()];
+            int i = 0;
+            for (Map.Entry<String, Object> entry : formatMap.entrySet()) {
+                keys[i] = entry.getKey();
+                values[i] = entry.getValue();
+                i++;
+            }
+        }
+        return native_semCreateSurfaceTrack(trackMime, keys, values);
+    }
+
+    public SemTrack semCreateTrack(String trackMime, MediaFormat format) throws IllegalArgumentException, IllegalStateException {
+        Log.d(TAG, "semCreateTrack");
+        return new SemTrack(this, trackMime, format);
+    }
+
+    public class SemTrack implements AutoCloseable {
+        private String mMime;
+        private long mNativeContext;
+        private MediaRecorder mRecorder;
+
+        private native void nativeWriteSampleData(long j, MediaRecorder mediaRecorder, ByteBuffer byteBuffer, int i, int i2, long j2, int i3);
+
+        private native void native_release();
+
+        private native void native_setup(MediaRecorder mediaRecorder, String[] strArr, Object[] objArr);
+
+        private SemTrack(MediaRecorder recorder, String trackMime, MediaFormat format) {
+            this.mRecorder = recorder;
+            this.mMime = trackMime;
+            String[] keys = null;
+            Object[] values = null;
+            if (format != null) {
+                Map<String, Object> formatMap = format.getMap();
+                keys = new String[formatMap.size()];
+                values = new Object[formatMap.size()];
+                int i = 0;
+                for (Map.Entry<String, Object> entry : formatMap.entrySet()) {
+                    keys[i] = entry.getKey();
+                    values[i] = entry.getValue();
+                    i++;
+                }
+            }
+            native_setup(this.mRecorder, keys, values);
+        }
+
+        public void writeSampleData(ByteBuffer byteBuf, MediaCodec.BufferInfo bufferInfo) {
+            if (bufferInfo.size < 0 || bufferInfo.offset < 0 || bufferInfo.offset + bufferInfo.size > byteBuf.capacity()) {
+                throw new IllegalArgumentException("bufferInfo must specify a valid buffer offset and size");
+            }
+            if (this.mNativeContext == 0) {
+                throw new IllegalStateException("source has been released!");
+            }
+            nativeWriteSampleData(this.mNativeContext, this.mRecorder, byteBuf, bufferInfo.offset, bufferInfo.size, bufferInfo.presentationTimeUs, bufferInfo.flags);
+        }
+
+        protected void finalize() {
+            release();
+        }
+
+        @Override // java.lang.AutoCloseable
+        public void close() {
+            release();
+        }
+
+        public void release() {
+            native_release();
         }
     }
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class MbmsGroupCallSession implements AutoCloseable {
     private static final String LOG_TAG = "MbmsGroupCallSession";
 
@@ -35,9 +35,6 @@ public class MbmsGroupCallSession implements AutoCloseable {
     private int mSubscriptionId;
     private AtomicReference<IMbmsGroupCallService> mService = new AtomicReference<>(null);
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() { // from class: android.telephony.MbmsGroupCallSession.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.IBinder.DeathRecipient
         public void binderDied() {
             MbmsGroupCallSession.sIsInitialized.set(false);
@@ -46,41 +43,21 @@ public class MbmsGroupCallSession implements AutoCloseable {
     };
     private Set<GroupCall> mKnownActiveGroupCalls = new ArraySet();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.telephony.MbmsGroupCallSession$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements IBinder.DeathRecipient {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            MbmsGroupCallSession.sIsInitialized.set(false);
-            MbmsGroupCallSession.this.mInternalCallback.onError(3, "Received death notification");
-        }
-    }
-
     private MbmsGroupCallSession(Context context, Executor executor, int subscriptionId, MbmsGroupCallSessionCallback callback) {
         this.mContext = context;
         this.mSubscriptionId = subscriptionId;
         this.mInternalCallback = new InternalGroupCallSessionCallback(callback, executor);
     }
 
-    public static MbmsGroupCallSession create(Context context, int subscriptionId, Executor executor, MbmsGroupCallSessionCallback callback) {
+    public static MbmsGroupCallSession create(Context context, int subscriptionId, Executor executor, final MbmsGroupCallSessionCallback callback) {
         if (!sIsInitialized.compareAndSet(false, true)) {
             throw new IllegalStateException("Cannot create two instances of MbmsGroupCallSession");
         }
         MbmsGroupCallSession session = new MbmsGroupCallSession(context, executor, subscriptionId, callback);
-        int result = session.bindAndInitialize();
+        final int result = session.bindAndInitialize();
         if (result != 0) {
             sIsInitialized.set(false);
             executor.execute(new Runnable() { // from class: android.telephony.MbmsGroupCallSession.2
-                final /* synthetic */ int val$result;
-
-                AnonymousClass2(int result2) {
-                    result = result2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     MbmsGroupCallSessionCallback.this.onError(result, null);
@@ -89,21 +66,6 @@ public class MbmsGroupCallSession implements AutoCloseable {
             return null;
         }
         return session;
-    }
-
-    /* renamed from: android.telephony.MbmsGroupCallSession$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ int val$result;
-
-        AnonymousClass2(int result2) {
-            result = result2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            MbmsGroupCallSessionCallback.this.onError(result, null);
-        }
     }
 
     public static MbmsGroupCallSession create(Context context, Executor executor, MbmsGroupCallSessionCallback callback) {
@@ -174,65 +136,8 @@ public class MbmsGroupCallSession implements AutoCloseable {
         this.mKnownActiveGroupCalls.remove(service);
     }
 
-    /* renamed from: android.telephony.MbmsGroupCallSession$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements ServiceConnection {
-        AnonymousClass3() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            IMbmsGroupCallService groupCallService = IMbmsGroupCallService.Stub.asInterface(service);
-            try {
-                int result = groupCallService.initialize(MbmsGroupCallSession.this.mInternalCallback, MbmsGroupCallSession.this.mSubscriptionId);
-                if (result == -1) {
-                    MbmsGroupCallSession.this.close();
-                    throw new IllegalStateException("Middleware must not return an unknown error code");
-                }
-                if (result != 0) {
-                    MbmsGroupCallSession.this.mInternalCallback.onError(result, "Error returned during initialization");
-                    MbmsGroupCallSession.sIsInitialized.set(false);
-                    return;
-                }
-                try {
-                    groupCallService.asBinder().linkToDeath(MbmsGroupCallSession.this.mDeathRecipient, 0);
-                    MbmsGroupCallSession.this.mService.set(groupCallService);
-                } catch (RemoteException e) {
-                    MbmsGroupCallSession.this.mInternalCallback.onError(3, "Middleware lost during initialization");
-                    MbmsGroupCallSession.sIsInitialized.set(false);
-                }
-            } catch (RemoteException e2) {
-                Log.e(MbmsGroupCallSession.LOG_TAG, "Service died before initialization");
-                MbmsGroupCallSession.this.mInternalCallback.onError(103, e2.toString());
-                MbmsGroupCallSession.sIsInitialized.set(false);
-            } catch (RuntimeException e3) {
-                Log.e(MbmsGroupCallSession.LOG_TAG, "Runtime exception during initialization");
-                MbmsGroupCallSession.this.mInternalCallback.onError(103, e3.toString());
-                MbmsGroupCallSession.sIsInitialized.set(false);
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName name) {
-            MbmsGroupCallSession.sIsInitialized.set(false);
-            MbmsGroupCallSession.this.mService.set(null);
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onNullBinding(ComponentName name) {
-            Log.w(MbmsGroupCallSession.LOG_TAG, "bindAndInitialize: Remote service returned null");
-            MbmsGroupCallSession.this.mInternalCallback.onError(3, "Middleware service binding returned null");
-            MbmsGroupCallSession.sIsInitialized.set(false);
-            MbmsGroupCallSession.this.mService.set(null);
-            MbmsGroupCallSession.this.mContext.unbindService(this);
-        }
-    }
-
     private int bindAndInitialize() {
-        AnonymousClass3 anonymousClass3 = new ServiceConnection() { // from class: android.telephony.MbmsGroupCallSession.3
-            AnonymousClass3() {
-            }
-
+        this.mServiceConnection = new ServiceConnection() { // from class: android.telephony.MbmsGroupCallSession.3
             @Override // android.content.ServiceConnection
             public void onServiceConnected(ComponentName name, IBinder service) {
                 IMbmsGroupCallService groupCallService = IMbmsGroupCallService.Stub.asInterface(service);
@@ -280,7 +185,6 @@ public class MbmsGroupCallSession implements AutoCloseable {
                 MbmsGroupCallSession.this.mContext.unbindService(this);
             }
         };
-        this.mServiceConnection = anonymousClass3;
-        return MbmsUtils.startBinding(this.mContext, MBMS_GROUP_CALL_SERVICE_ACTION, anonymousClass3);
+        return MbmsUtils.startBinding(this.mContext, MBMS_GROUP_CALL_SERVICE_ACTION, this.mServiceConnection);
     }
 }

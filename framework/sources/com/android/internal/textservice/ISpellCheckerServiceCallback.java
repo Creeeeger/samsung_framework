@@ -11,7 +11,6 @@ import com.android.internal.textservice.ISpellCheckerSession;
 public interface ISpellCheckerServiceCallback extends IInterface {
     void onSessionCreated(ISpellCheckerSession iSpellCheckerSession) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISpellCheckerServiceCallback {
         @Override // com.android.internal.textservice.ISpellCheckerServiceCallback
         public void onSessionCreated(ISpellCheckerSession newSession) throws RemoteException {
@@ -23,7 +22,6 @@ public interface ISpellCheckerServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISpellCheckerServiceCallback {
         public static final String DESCRIPTOR = "com.android.internal.textservice.ISpellCheckerServiceCallback";
         static final int TRANSACTION_onSessionCreated = 1;
@@ -67,26 +65,22 @@ public interface ISpellCheckerServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ISpellCheckerSession _arg0 = ISpellCheckerSession.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSessionCreated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ISpellCheckerSession _arg0 = ISpellCheckerSession.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSessionCreated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISpellCheckerServiceCallback {
+        private static class Proxy implements ISpellCheckerServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
-public final class Protobuf {
+/* loaded from: classes3.dex */
+final class Protobuf {
     private static final Protobuf INSTANCE = new Protobuf();
     private final ConcurrentMap<Class<?>, Schema<?>> schemaCache = new ConcurrentHashMap();
     private final SchemaFactory schemaFactory = new ManifestSchemaFactory();

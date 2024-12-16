@@ -13,7 +13,6 @@ public interface IPrinterDiscoveryObserver extends IInterface {
 
     void onPrintersRemoved(ParceledListSlice parceledListSlice) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPrinterDiscoveryObserver {
         @Override // android.print.IPrinterDiscoveryObserver
         public void onPrintersAdded(ParceledListSlice printers) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IPrinterDiscoveryObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPrinterDiscoveryObserver {
         public static final String DESCRIPTOR = "android.print.IPrinterDiscoveryObserver";
         static final int TRANSACTION_onPrintersAdded = 1;
@@ -76,30 +74,27 @@ public interface IPrinterDiscoveryObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ParceledListSlice _arg0 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintersAdded(_arg0);
+                    return true;
+                case 2:
+                    ParceledListSlice _arg02 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPrintersRemoved(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParceledListSlice _arg0 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintersAdded(_arg0);
-                            return true;
-                        case 2:
-                            ParceledListSlice _arg02 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPrintersRemoved(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPrinterDiscoveryObserver {
+        private static class Proxy implements IPrinterDiscoveryObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

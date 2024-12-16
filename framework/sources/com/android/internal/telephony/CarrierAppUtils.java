@@ -52,29 +52,29 @@ public final class CarrierAppUtils {
         return (ai.flags & 128) != 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:123:0x00fc, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:126:0x00fe, code lost:
     
-        if ((r0.flags & 8388608) == 0) goto L267;
+        if ((r0.flags & 8388608) == 0) goto L59;
      */
-    /* JADX WARN: Removed duplicated region for block: B:133:0x008e A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:28:0x00ca  */
-    /* JADX WARN: Removed duplicated region for block: B:33:0x0200  */
-    /* JADX WARN: Removed duplicated region for block: B:60:0x02a4  */
-    /* JADX WARN: Removed duplicated region for block: B:69:0x02a6  */
-    /* JADX WARN: Removed duplicated region for block: B:85:0x00e9 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:136:0x008e A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00cc  */
+    /* JADX WARN: Removed duplicated region for block: B:33:0x0204  */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x02b0  */
+    /* JADX WARN: Removed duplicated region for block: B:66:0x02b2  */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x00eb A[EXC_TOP_SPLITTER, SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public static void disableCarrierAppsUntilPrivileged(java.lang.String r32, android.telephony.TelephonyManager r33, android.content.ContentResolver r34, int r35, java.util.Set<java.lang.String> r36, java.util.Map<java.lang.String, java.util.List<android.os.CarrierAssociatedAppEntry>> r37, android.content.Context r38) {
         /*
-            Method dump skipped, instructions count: 925
+            Method dump skipped, instructions count: 941
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.CarrierAppUtils.disableCarrierAppsUntilPrivileged(java.lang.String, android.telephony.TelephonyManager, android.content.ContentResolver, int, java.util.Set, java.util.Map, android.content.Context):void");
     }
 
-    public static /* synthetic */ void lambda$disableCarrierAppsUntilPrivileged$0(Boolean isSuccess) {
+    static /* synthetic */ void lambda$disableCarrierAppsUntilPrivileged$0(Boolean isSuccess) {
     }
 
     public static List<ApplicationInfo> getDefaultCarrierApps(TelephonyManager telephonyManager, int userId, Context context) {
@@ -147,8 +147,7 @@ public final class CarrierAppUtils {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static final class AssociatedAppInfo {
+    private static final class AssociatedAppInfo {
         public final int addedInSdk;
         public final ApplicationInfo appInfo;
 

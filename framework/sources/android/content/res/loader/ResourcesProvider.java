@@ -88,7 +88,7 @@ public class ResourcesProvider implements AutoCloseable, Closeable {
         return this.mApkAssets;
     }
 
-    public final void incrementRefCount() {
+    final void incrementRefCount() {
         synchronized (this.mLock) {
             if (!this.mOpen) {
                 throw new IllegalStateException("Operation failed: resources provider is closed");
@@ -97,7 +97,7 @@ public class ResourcesProvider implements AutoCloseable, Closeable {
         }
     }
 
-    public final void decrementRefCount() {
+    final void decrementRefCount() {
         synchronized (this.mLock) {
             this.mOpenCount--;
         }

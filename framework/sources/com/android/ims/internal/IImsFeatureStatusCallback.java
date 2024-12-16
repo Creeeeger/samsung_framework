@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IImsFeatureStatusCallback extends IInterface {
     void notifyImsFeatureStatus(int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IImsFeatureStatusCallback {
         @Override // com.android.ims.internal.IImsFeatureStatusCallback
         public void notifyImsFeatureStatus(int featureStatus) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IImsFeatureStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IImsFeatureStatusCallback {
         public static final String DESCRIPTOR = "com.android.ims.internal.IImsFeatureStatusCallback";
         static final int TRANSACTION_notifyImsFeatureStatus = 1;
@@ -66,26 +64,22 @@ public interface IImsFeatureStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyImsFeatureStatus(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyImsFeatureStatus(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IImsFeatureStatusCallback {
+        private static class Proxy implements IImsFeatureStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

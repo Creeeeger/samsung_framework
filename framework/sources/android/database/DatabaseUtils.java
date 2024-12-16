@@ -2,7 +2,9 @@ package android.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.OperationApplicationException;
+import android.database.sqlite.Flags;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +14,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteProgram;
 import android.database.sqlite.SQLiteStatement;
+import android.hardware.Sensor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.OperationCanceledException;
 import android.os.Parcel;
@@ -26,23 +29,31 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* loaded from: classes.dex */
 public class DatabaseUtils {
     private static final boolean DEBUG = false;
+    private static final int PREFIX_GROUP_NUM = 2;
     public static final int STATEMENT_ABORT = 6;
     public static final int STATEMENT_ATTACH = 3;
     public static final int STATEMENT_BEGIN = 4;
+    public static final int STATEMENT_COMMENT = 102;
     public static final int STATEMENT_COMMIT = 5;
+    public static final int STATEMENT_CREATE = 101;
     public static final int STATEMENT_DDL = 8;
     public static final int STATEMENT_OTHER = 99;
     public static final int STATEMENT_PRAGMA = 7;
     public static final int STATEMENT_SELECT = 1;
     public static final int STATEMENT_UNPREPARED = 9;
     public static final int STATEMENT_UPDATE = 2;
+    public static final int STATEMENT_WITH = 100;
     private static final String TAG = "DatabaseUtils";
     private static final char[] DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', DateFormat.AM_PM, 'b', 'c', DateFormat.DATE, 'e', 'f'};
     private static Collator mColl = null;
+    private static final String PREFIX_REGEX = "(\\s+|--.*?\n|/\\*[\\w\\W]*?\\*/)*(\\w\\w\\w)";
+    private static final Pattern sPrefixPattern = Pattern.compile(PREFIX_REGEX);
 
     public static final void writeExceptionToParcel(Parcel reply, Exception e) {
         int code;
@@ -416,190 +427,68 @@ public class DatabaseUtils {
         return 3;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x002b, code lost:
-    
-        r3 = r6.getType(r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x002f, code lost:
-    
-        switch(r3) {
-            case 0: goto L67;
-            case 1: goto L66;
-            case 2: goto L65;
-            case 3: goto L57;
-            case 4: goto L60;
-            default: goto L57;
-        };
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0032, code lost:
-    
-        r4 = r6.getString(r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0036, code lost:
-    
-        if (r4 == null) goto L68;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0038, code lost:
-    
-        r5 = r8.putString(r4, r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x006b, code lost:
-    
-        if (r5 != false) goto L72;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0071, code lost:
-    
-        r2 = r2 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x006d, code lost:
-    
-        r8.freeLastRow();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0065, code lost:
-    
-        r5 = r8.putNull(r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003d, code lost:
-    
-        r4 = r6.getBlob(r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0041, code lost:
-    
-        if (r4 == null) goto L63;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0043, code lost:
-    
-        r5 = r8.putBlob(r4, r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0048, code lost:
-    
-        r5 = r8.putNull(r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x004e, code lost:
-    
-        r5 = r8.putDouble(r6.getDouble(r2), r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0057, code lost:
-    
-        r5 = r8.putLong(r6.getLong(r2), r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
-    
-        r5 = r8.putNull(r7, r2);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0074, code lost:
-    
-        r7 = r7 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x007a, code lost:
-    
-        if (r6.moveToNext() != false) goto L81;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x007c, code lost:
-    
-        r6.moveToPosition(r0);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x007f, code lost:
-    
-        return;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:5:0x001f, code lost:
-    
-        if (r6.moveToPosition(r7) != false) goto L50;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0025, code lost:
-    
-        if (r8.allocRow() != false) goto L53;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x0028, code lost:
-    
-        r2 = 0;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0029, code lost:
-    
-        if (r2 >= r1) goto L82;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static void cursorFillWindow(android.database.Cursor r6, int r7, android.database.CursorWindow r8) {
-        /*
-            if (r7 < 0) goto L80
-            int r0 = r6.getCount()
-            if (r7 < r0) goto La
-            goto L80
-        La:
-            int r0 = r6.getPosition()
-            int r1 = r6.getColumnCount()
-            r8.clear()
-            r8.setStartPosition(r7)
-            r8.setNumColumns(r1)
-            boolean r2 = r6.moveToPosition(r7)
-            if (r2 == 0) goto L7c
-        L21:
-            boolean r2 = r8.allocRow()
-            if (r2 != 0) goto L28
-            goto L7c
-        L28:
-            r2 = 0
-        L29:
-            if (r2 >= r1) goto L74
-            int r3 = r6.getType(r2)
-            switch(r3) {
-                case 0: goto L60;
-                case 1: goto L57;
-                case 2: goto L4e;
-                case 3: goto L32;
-                case 4: goto L3d;
-                default: goto L32;
+    public static void cursorFillWindow(Cursor cursor, int position, CursorWindow window) {
+        boolean success;
+        if (position < 0 || position >= cursor.getCount()) {
+            return;
+        }
+        int oldPos = cursor.getPosition();
+        int numColumns = cursor.getColumnCount();
+        window.clear();
+        window.setStartPosition(position);
+        window.setNumColumns(numColumns);
+        if (cursor.moveToPosition(position)) {
+            while (true) {
+                if (window.allocRow()) {
+                    int i = 0;
+                    while (true) {
+                        if (i < numColumns) {
+                            int type = cursor.getType(i);
+                            switch (type) {
+                                case 0:
+                                    success = window.putNull(position, i);
+                                    break;
+                                case 1:
+                                    success = window.putLong(cursor.getLong(i), position, i);
+                                    break;
+                                case 2:
+                                    success = window.putDouble(cursor.getDouble(i), position, i);
+                                    break;
+                                case 3:
+                                default:
+                                    String value = cursor.getString(i);
+                                    if (value == null) {
+                                        success = window.putNull(position, i);
+                                        break;
+                                    } else {
+                                        success = window.putString(value, position, i);
+                                        break;
+                                    }
+                                case 4:
+                                    byte[] value2 = cursor.getBlob(i);
+                                    if (value2 == null) {
+                                        success = window.putNull(position, i);
+                                        break;
+                                    } else {
+                                        success = window.putBlob(value2, position, i);
+                                        break;
+                                    }
+                            }
+                            if (success) {
+                                i++;
+                            } else {
+                                window.freeLastRow();
+                            }
+                        } else {
+                            position++;
+                            if (!cursor.moveToNext()) {
+                            }
+                        }
+                    }
+                }
             }
-        L32:
-            java.lang.String r4 = r6.getString(r2)
-            if (r4 == 0) goto L65
-            boolean r5 = r8.putString(r4, r7, r2)
-            goto L69
-        L3d:
-            byte[] r4 = r6.getBlob(r2)
-            if (r4 == 0) goto L48
-            boolean r5 = r8.putBlob(r4, r7, r2)
-            goto L4c
-        L48:
-            boolean r5 = r8.putNull(r7, r2)
-        L4c:
-            goto L6b
-        L4e:
-            double r4 = r6.getDouble(r2)
-            boolean r5 = r8.putDouble(r4, r7, r2)
-            goto L6b
-        L57:
-            long r4 = r6.getLong(r2)
-            boolean r5 = r8.putLong(r4, r7, r2)
-            goto L6b
-        L60:
-            boolean r5 = r8.putNull(r7, r2)
-            goto L6b
-        L65:
-            boolean r5 = r8.putNull(r7, r2)
-        L69:
-        L6b:
-            if (r5 != 0) goto L71
-            r8.freeLastRow()
-            goto L7c
-        L71:
-            int r2 = r2 + 1
-            goto L29
-        L74:
-            int r7 = r7 + 1
-            boolean r2 = r6.moveToNext()
-            if (r2 != 0) goto L21
-        L7c:
-            r6.moveToPosition(r0)
-            return
-        L80:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.database.DatabaseUtils.cursorFillWindow(android.database.Cursor, int, android.database.CursorWindow):void");
+        }
+        cursor.moveToPosition(oldPos);
     }
 
     public static void appendEscapedSQLString(StringBuilder sb, String sqlString) {
@@ -677,10 +566,9 @@ public class DatabaseUtils {
         int j = 0;
         for (int i = 0; i < l; i++) {
             int j2 = j + 1;
-            char[] cArr = DIGITS;
-            out[j] = cArr[(input[i] & 240) >>> 4];
+            out[j] = DIGITS[(input[i] & 240) >>> 4];
             j = j2 + 1;
-            out[j2] = cArr[input[i] & 15];
+            out[j2] = DIGITS[input[i] & 15];
         }
         return out;
     }
@@ -694,9 +582,8 @@ public class DatabaseUtils {
 
     private static byte[] getCollationKeyInBytes(String name) {
         if (mColl == null) {
-            Collator collator = Collator.getInstance();
-            mColl = collator;
-            collator.setStrength(0);
+            mColl = Collator.getInstance();
+            mColl.setStrength(0);
         }
         return mColl.getCollationKey(name).toByteArray();
     }
@@ -950,7 +837,6 @@ public class DatabaseUtils {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public static class InsertHelper {
         public static final int TABLE_INFO_PRAGMA_COLUMNNAME_INDEX = 1;
         public static final int TABLE_INFO_PRAGMA_DEFAULT_INDEX = 4;
@@ -1104,13 +990,12 @@ public class DatabaseUtils {
         }
 
         public long execute() {
-            SQLiteStatement sQLiteStatement = this.mPreparedStatement;
-            if (sQLiteStatement == null) {
+            if (this.mPreparedStatement == null) {
                 throw new IllegalStateException("you must prepare this inserter before calling execute");
             }
             try {
                 try {
-                    return sQLiteStatement.executeInsert();
+                    return this.mPreparedStatement.executeInsert();
                 } catch (SQLException e) {
                     Log.e(DatabaseUtils.TAG, "Error executing InsertHelper with table " + this.mTableName, e);
                     this.mPreparedStatement = null;
@@ -1122,15 +1007,13 @@ public class DatabaseUtils {
         }
 
         public void prepareForInsert() {
-            SQLiteStatement statement = getStatement(false);
-            this.mPreparedStatement = statement;
-            statement.clearBindings();
+            this.mPreparedStatement = getStatement(false);
+            this.mPreparedStatement.clearBindings();
         }
 
         public void prepareForReplace() {
-            SQLiteStatement statement = getStatement(true);
-            this.mPreparedStatement = statement;
-            statement.clearBindings();
+            this.mPreparedStatement = getStatement(true);
+            this.mPreparedStatement.clearBindings();
         }
 
         public long replace(ContentValues values) {
@@ -1138,14 +1021,12 @@ public class DatabaseUtils {
         }
 
         public void close() {
-            SQLiteStatement sQLiteStatement = this.mInsertStatement;
-            if (sQLiteStatement != null) {
-                sQLiteStatement.close();
+            if (this.mInsertStatement != null) {
+                this.mInsertStatement.close();
                 this.mInsertStatement = null;
             }
-            SQLiteStatement sQLiteStatement2 = this.mReplaceStatement;
-            if (sQLiteStatement2 != null) {
-                sQLiteStatement2.close();
+            if (this.mReplaceStatement != null) {
+                this.mReplaceStatement.close();
                 this.mReplaceStatement = null;
             }
             this.mInsertSQL = null;
@@ -1165,42 +1046,266 @@ public class DatabaseUtils {
         db.close();
     }
 
-    public static int getSqlStatementType(String sql) {
+    private static String getSqlStatementPrefixSimple(String sql) {
         String sql2 = sql.trim();
         if (sql2.length() < 3) {
+            return null;
+        }
+        return sql2.substring(0, 3).toUpperCase(Locale.ROOT);
+    }
+
+    private static String getSqlStatementPrefixExtendedRegex(String sql) {
+        Matcher m = sPrefixPattern.matcher(sql);
+        if (m.lookingAt()) {
+            return m.group(2).toUpperCase(Locale.ROOT);
+        }
+        return null;
+    }
+
+    private static int getSqlStatementPrefixOffset(String s) {
+        int limit = s.length() - 2;
+        if (limit < 0) {
+            return -1;
+        }
+        int i = 0;
+        while (i < limit) {
+            char c = s.charAt(i);
+            if (c <= ' ') {
+                i++;
+            } else if (c == '-') {
+                if (s.charAt(i + 1) != '-') {
+                    return i;
+                }
+                int i2 = s.indexOf(10, i + 2);
+                if (i2 < 0) {
+                    return -1;
+                }
+                i = i2 + 1;
+            } else if (c == '/') {
+                if (s.charAt(i + 1) != '*') {
+                    return i;
+                }
+                int i3 = i + 1;
+                do {
+                    int i4 = s.indexOf(42, i3 + 1);
+                    if (i4 < 0) {
+                        return -1;
+                    }
+                    i3 = i4 + 1;
+                } while (s.charAt(i3) != '/');
+                i = i3 + 1;
+            } else {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static String getSqlStatementPrefixExtendedNoRegex(String sql) {
+        int end;
+        int n = getSqlStatementPrefixOffset(sql);
+        if (n < 0 || n > (end = sql.length())) {
+            return null;
+        }
+        int eos = Math.min(n + 3, end);
+        return sql.substring(n, eos).toUpperCase(Locale.ROOT);
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    private static int categorizeStatement(String prefix, String sql) {
+        char c;
+        if (prefix == null) {
             return 99;
         }
-        String prefixSql = sql2.substring(0, 3).toUpperCase(Locale.ROOT);
-        if (prefixSql.equals("SEL")) {
-            return 1;
+        switch (prefix.hashCode()) {
+            case 64905:
+                if (prefix.equals("ALT")) {
+                    c = '\r';
+                    break;
+                }
+                c = 65535;
+                break;
+            case 64948:
+                if (prefix.equals("ANA")) {
+                    c = 14;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 65153:
+                if (prefix.equals("ATT")) {
+                    c = 5;
+                    break;
+                }
+                c = 65535;
+                break;
+            case Sensor.SEM_TYPE_GRIP_SUB /* 65636 */:
+                if (prefix.equals("BEG")) {
+                    c = '\t';
+                    break;
+                }
+                c = 65535;
+                break;
+            case 66913:
+                if (prefix.equals("COM")) {
+                    c = 6;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 66998:
+                if (prefix.equals("CRE")) {
+                    c = 11;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 67563:
+                if (prefix.equals("DEL")) {
+                    c = 4;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 67571:
+                if (prefix.equals("DET")) {
+                    c = 15;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 67969:
+                if (prefix.equals("DRO")) {
+                    c = '\f';
+                    break;
+                }
+                c = 65535;
+                break;
+            case 68795:
+                if (prefix.equals("END")) {
+                    c = 7;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 72654:
+                if (prefix.equals("INS")) {
+                    c = 1;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 79487:
+                if (prefix.equals("PRA")) {
+                    c = '\n';
+                    break;
+                }
+                c = 65535;
+                break;
+            case 81021:
+                if (prefix.equals("REP")) {
+                    c = 3;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 81327:
+                if (prefix.equals("ROL")) {
+                    c = '\b';
+                    break;
+                }
+                c = 65535;
+                break;
+            case 81978:
+                if (prefix.equals("SEL")) {
+                    c = 0;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 84233:
+                if (prefix.equals("UPD")) {
+                    c = 2;
+                    break;
+                }
+                c = 65535;
+                break;
+            case 85954:
+                if (prefix.equals("WIT")) {
+                    c = 16;
+                    break;
+                }
+                c = 65535;
+                break;
+            default:
+                c = 65535;
+                break;
         }
-        if (prefixSql.equals("INS") || prefixSql.equals("UPD") || prefixSql.equals("REP") || prefixSql.equals("DEL")) {
-            return 2;
+        switch (c) {
+            case 0:
+                break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+            case 7:
+                break;
+            case '\b':
+                if (sql.toUpperCase(Locale.ROOT).contains(" TO ")) {
+                }
+                break;
+            case '\t':
+                break;
+            case '\n':
+                break;
+            case 11:
+                break;
+            case '\f':
+            case '\r':
+                break;
+            case 14:
+            case 15:
+                break;
+            case 16:
+                break;
+            default:
+                if (prefix.startsWith("--") || prefix.startsWith(IntentFilter.WILDCARD_PATH)) {
+                }
+                break;
         }
-        if (prefixSql.equals("ATT")) {
-            return 3;
+        return 99;
+    }
+
+    public static int getSqlStatementTypeExtended(String sql) {
+        if (Flags.simpleSqlCommentScanner()) {
+            return categorizeStatement(getSqlStatementPrefixExtendedNoRegex(sql), sql);
         }
-        if (prefixSql.equals("COM") || prefixSql.equals("END")) {
-            return 5;
+        int type = categorizeStatement(getSqlStatementPrefixSimple(sql), sql);
+        if (type == 102) {
+            return categorizeStatement(getSqlStatementPrefixExtendedRegex(sql), sql);
         }
-        if (prefixSql.equals("ROL")) {
-            boolean isRollbackToSavepoint = sql2.toUpperCase(Locale.ROOT).contains(" TO ");
-            if (isRollbackToSavepoint) {
-                Log.w(TAG, "Statement '" + sql2 + "' may not work on API levels 16-27, use ';" + sql2 + "' instead");
+        return type;
+    }
+
+    public static int getSqlStatementType(int extended) {
+        switch (extended) {
+            case 100:
                 return 99;
-            }
-            return 6;
+            case 101:
+                return 8;
+            case 102:
+                return 99;
+            default:
+                return extended;
         }
-        if (prefixSql.equals("BEG")) {
-            return 4;
-        }
-        if (prefixSql.equals("PRA")) {
-            return 7;
-        }
-        if (prefixSql.equals("CRE") || prefixSql.equals("DRO") || prefixSql.equals("ALT")) {
-            return 8;
-        }
-        return (prefixSql.equals("ANA") || prefixSql.equals("DET")) ? 9 : 99;
+    }
+
+    public static int getSqlStatementType(String sql) {
+        return getSqlStatementType(getSqlStatementTypeExtended(sql));
     }
 
     public static String[] appendSelectionArgs(String[] originalValues, String[] newValues) {

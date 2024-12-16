@@ -18,7 +18,6 @@ public interface ISemBiometricSysUiCallback extends IInterface {
 
     void onTouchEvent(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemBiometricSysUiCallback {
         @Override // com.samsung.android.biometrics.ISemBiometricSysUiCallback
         public void onTouchEvent(int sessionId, int event) throws RemoteException {
@@ -42,7 +41,6 @@ public interface ISemBiometricSysUiCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemBiometricSysUiCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onEvent = 4;
@@ -94,48 +92,44 @@ public interface ISemBiometricSysUiCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemBiometricSysUiCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemBiometricSysUiCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemBiometricSysUiCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTouchEvent(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    byte[] _arg22 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSysUiDismissed(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEvent(_arg04, _arg14, _arg23);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTouchEvent(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            byte[] _arg22 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSysUiDismissed(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEvent(_arg04, _arg14, _arg23);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemBiometricSysUiCallback {
+        private static class Proxy implements ISemBiometricSysUiCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

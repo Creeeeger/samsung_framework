@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IKerykeionCallBack extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.infoextraction.IKerykeionCallBack";
 
     void onCompleted(List<SemExtractedInfo> list) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKerykeionCallBack {
         @Override // com.samsung.android.infoextraction.IKerykeionCallBack
         public void onCompleted(List<SemExtractedInfo> results) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IKerykeionCallBack extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKerykeionCallBack {
         static final int TRANSACTION_onCompleted = 1;
 
@@ -68,25 +66,22 @@ public interface IKerykeionCallBack extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKerykeionCallBack.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKerykeionCallBack.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKerykeionCallBack.DESCRIPTOR);
+                case 1:
+                    List<SemExtractedInfo> _arg0 = data.createTypedArrayList(SemExtractedInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCompleted(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SemExtractedInfo> _arg0 = data.createTypedArrayList(SemExtractedInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCompleted(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IKerykeionCallBack {
             private IBinder mRemote;
 

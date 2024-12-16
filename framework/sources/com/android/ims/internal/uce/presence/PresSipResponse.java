@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.presence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class PresSipResponse implements Parcelable {
     public static final Parcelable.Creator<PresSipResponse> CREATOR = new Parcelable.Creator<PresSipResponse>() { // from class: com.android.ims.internal.uce.presence.PresSipResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresSipResponse createFromParcel(Parcel source) {
             return new PresSipResponse(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PresSipResponse[] newArray(int size) {
             return new PresSipResponse[size];
@@ -25,10 +24,6 @@ public class PresSipResponse implements Parcelable {
     private int mRequestId;
     private int mRetryAfter;
     private int mSipResponseCode;
-
-    /* synthetic */ PresSipResponse(Parcel parcel, PresSipResponseIA presSipResponseIA) {
-        this(parcel);
-    }
 
     public PresCmdId getCmdId() {
         return this.mCmdId;
@@ -100,23 +95,6 @@ public class PresSipResponse implements Parcelable {
         dest.writeParcelable(this.mCmdId, flags);
         dest.writeInt(this.mRetryAfter);
         dest.writeString(this.mReasonHeader);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.presence.PresSipResponse$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PresSipResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresSipResponse createFromParcel(Parcel source) {
-            return new PresSipResponse(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PresSipResponse[] newArray(int size) {
-            return new PresSipResponse[size];
-        }
     }
 
     private PresSipResponse(Parcel source) {

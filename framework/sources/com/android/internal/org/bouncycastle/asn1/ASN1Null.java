@@ -5,7 +5,10 @@ import java.io.IOException;
 /* loaded from: classes5.dex */
 public abstract class ASN1Null extends ASN1Primitive {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+    abstract void encode(ASN1OutputStream aSN1OutputStream, boolean z) throws IOException;
+
+    ASN1Null() {
+    }
 
     public static ASN1Null getInstance(Object o) {
         if (o instanceof ASN1Null) {
@@ -29,7 +32,7 @@ public abstract class ASN1Null extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Null)) {
             return false;
         }

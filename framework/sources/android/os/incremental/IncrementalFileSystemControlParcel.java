@@ -8,9 +8,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class IncrementalFileSystemControlParcel implements Parcelable {
     public static final Parcelable.Creator<IncrementalFileSystemControlParcel> CREATOR = new Parcelable.Creator<IncrementalFileSystemControlParcel>() { // from class: android.os.incremental.IncrementalFileSystemControlParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IncrementalFileSystemControlParcel createFromParcel(Parcel _aidl_source) {
             IncrementalFileSystemControlParcel _aidl_out = new IncrementalFileSystemControlParcel();
@@ -18,6 +16,7 @@ public class IncrementalFileSystemControlParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public IncrementalFileSystemControlParcel[] newArray(int _aidl_size) {
             return new IncrementalFileSystemControlParcel[_aidl_size];
@@ -27,25 +26,6 @@ public class IncrementalFileSystemControlParcel implements Parcelable {
     public ParcelFileDescriptor cmd;
     public ParcelFileDescriptor log;
     public ParcelFileDescriptor pendingReads;
-
-    /* renamed from: android.os.incremental.IncrementalFileSystemControlParcel$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<IncrementalFileSystemControlParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IncrementalFileSystemControlParcel createFromParcel(Parcel _aidl_source) {
-            IncrementalFileSystemControlParcel _aidl_out = new IncrementalFileSystemControlParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IncrementalFileSystemControlParcel[] newArray(int _aidl_size) {
-            return new IncrementalFileSystemControlParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

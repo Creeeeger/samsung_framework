@@ -3,12 +3,12 @@ package android.view.animation;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
 import android.view.InflateException;
+import android.view.flags.Flags;
 import com.android.internal.R;
 import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
@@ -19,39 +19,32 @@ public class AnimationUtils {
     private static final int SEQUENTIALLY = 1;
     private static final String TAG = "AnimationUtils";
     private static final int TOGETHER = 0;
+    private static boolean sExpectedPresentationTimeFlagValue = Flags.expectedPresentationTimeReadOnly();
     private static ThreadLocal<AnimationState> sAnimationState = new ThreadLocal<AnimationState>() { // from class: android.view.animation.AnimationUtils.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // java.lang.ThreadLocal
         public AnimationState initialValue() {
             return new AnimationState();
         }
     };
 
-    /* loaded from: classes4.dex */
-    public static class AnimationState {
+    private static class AnimationState {
         boolean animationClockLocked;
         long currentVsyncTimeMillis;
         long lastReportedTimeMillis;
-
-        /* synthetic */ AnimationState(AnimationStateIA animationStateIA) {
-            this();
-        }
+        long mExpectedPresentationTimeNanos;
 
         private AnimationState() {
         }
     }
 
-    /* renamed from: android.view.animation.AnimationUtils$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ThreadLocal<AnimationState> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public AnimationState initialValue() {
-            return new AnimationState();
+    public static void lockAnimationClock(long vsyncMillis, long expectedPresentationTimeNanos) {
+        AnimationState state = sAnimationState.get();
+        state.animationClockLocked = true;
+        state.currentVsyncTimeMillis = vsyncMillis;
+        if (!sExpectedPresentationTimeFlagValue) {
+            state.mExpectedPresentationTimeNanos = expectedPresentationTimeNanos;
         }
     }
 
@@ -72,6 +65,18 @@ public class AnimationUtils {
         }
         state.lastReportedTimeMillis = SystemClock.uptimeMillis();
         return state.lastReportedTimeMillis;
+    }
+
+    public static long getExpectedPresentationTimeNanos() {
+        if (!sExpectedPresentationTimeFlagValue) {
+            return SystemClock.uptimeMillis() * 1000000;
+        }
+        AnimationState state = sAnimationState.get();
+        return state.mExpectedPresentationTimeNanos;
+    }
+
+    public static long getExpectedPresentationTimeMillis() {
+        return getExpectedPresentationTimeNanos() / 1000000;
     }
 
     public static Animation loadAnimation(Context context, int id) throws Resources.NotFoundException {
@@ -121,7 +126,7 @@ public class AnimationUtils {
                         createAnimationFromXml(c, parser, (AnimationSet) anim, attrs);
                     } else if (name.equals("alpha")) {
                         anim = new AlphaAnimation(c, attrs);
-                    } else if (name.equals(BatteryManager.EXTRA_SCALE)) {
+                    } else if (name.equals("scale")) {
                         anim = new ScaleAnimation(c, attrs);
                     } else if (name.equals("rotate")) {
                         anim = new RotateAnimation(c, attrs);

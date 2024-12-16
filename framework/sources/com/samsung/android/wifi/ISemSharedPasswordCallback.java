@@ -16,7 +16,6 @@ public interface ISemSharedPasswordCallback extends IInterface {
 
     void onRejected(String str) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemSharedPasswordCallback {
         @Override // com.samsung.android.wifi.ISemSharedPasswordCallback
         public void onAccepted(String bssid, String password) throws RemoteException {
@@ -36,7 +35,6 @@ public interface ISemSharedPasswordCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemSharedPasswordCallback {
         static final int TRANSACTION_onAccepted = 1;
         static final int TRANSACTION_onAvailable = 3;
@@ -85,37 +83,33 @@ public interface ISemSharedPasswordCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemSharedPasswordCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemSharedPasswordCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemSharedPasswordCallback.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAccepted(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onRejected(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAvailable(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAccepted(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onRejected(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAvailable(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemSharedPasswordCallback {
+        private static class Proxy implements ISemSharedPasswordCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

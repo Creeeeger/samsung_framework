@@ -19,7 +19,7 @@ public class BaseKeyGenerator extends KeyGeneratorSpi {
     protected int keySize;
     protected boolean uninitialised = true;
 
-    public BaseKeyGenerator(String algName, int defaultKeySize, CipherKeyGenerator engine) {
+    protected BaseKeyGenerator(String algName, int defaultKeySize, CipherKeyGenerator engine) {
         this.algName = algName;
         this.defaultKeySize = defaultKeySize;
         this.keySize = defaultKeySize;
@@ -40,7 +40,7 @@ public class BaseKeyGenerator extends KeyGeneratorSpi {
     }
 
     @Override // javax.crypto.KeyGeneratorSpi
-    public void engineInit(int keySize, SecureRandom random) {
+    protected void engineInit(int keySize, SecureRandom random) {
         if (random == null) {
             try {
                 random = CryptoServicesRegistrar.getSecureRandom();

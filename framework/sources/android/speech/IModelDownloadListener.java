@@ -18,7 +18,6 @@ public interface IModelDownloadListener extends IInterface {
 
     void onSuccess() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IModelDownloadListener {
         @Override // android.speech.IModelDownloadListener
         public void onProgress(int completedPercent) throws RemoteException {
@@ -42,7 +41,6 @@ public interface IModelDownloadListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IModelDownloadListener {
         static final int TRANSACTION_onError = 4;
         static final int TRANSACTION_onProgress = 1;
@@ -94,37 +92,33 @@ public interface IModelDownloadListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IModelDownloadListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IModelDownloadListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IModelDownloadListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgress(_arg0);
+                    return true;
+                case 2:
+                    onSuccess();
+                    return true;
+                case 3:
+                    onScheduled();
+                    return true;
+                case 4:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgress(_arg0);
-                            return true;
-                        case 2:
-                            onSuccess();
-                            return true;
-                        case 3:
-                            onScheduled();
-                            return true;
-                        case 4:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IModelDownloadListener {
+        private static class Proxy implements IModelDownloadListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

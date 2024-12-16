@@ -7,25 +7,24 @@ import dalvik.annotation.optimization.FastNative;
 public class PathParser {
     static final String LOGTAG = PathParser.class.getSimpleName();
 
-    /* renamed from: -$$Nest$smnCreateEmptyPathData */
-    static /* bridge */ /* synthetic */ long m4944$$Nest$smnCreateEmptyPathData() {
-        return nCreateEmptyPathData();
-    }
-
     @FastNative
     private static native boolean nCanMorph(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
-    private static native long nCreateEmptyPathData();
+    public static native long nCreateEmptyPathData();
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native long nCreatePathData(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nCreatePathDataFromString(String str, int i);
 
     @FastNative
     private static native void nCreatePathFromPathData(long j, long j2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nFinalize(long j);
 
@@ -34,6 +33,7 @@ public class PathParser {
 
     private static native void nParseStringForPath(long j, String str, int i);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @FastNative
     public static native void nSetPathData(long j, long j2);
 
@@ -54,13 +54,12 @@ public class PathParser {
         return nCanMorph(pathDataFrom.mNativePathData, pathDataTo.mNativePathData);
     }
 
-    /* loaded from: classes4.dex */
     public static class PathData {
         long mNativePathData;
 
         public PathData() {
             this.mNativePathData = 0L;
-            this.mNativePathData = PathParser.m4944$$Nest$smnCreateEmptyPathData();
+            this.mNativePathData = PathParser.nCreateEmptyPathData();
         }
 
         public PathData(PathData data) {
@@ -70,9 +69,8 @@ public class PathParser {
 
         public PathData(String pathString) {
             this.mNativePathData = 0L;
-            long nCreatePathDataFromString = PathParser.nCreatePathDataFromString(pathString, pathString.length());
-            this.mNativePathData = nCreatePathDataFromString;
-            if (nCreatePathDataFromString == 0) {
+            this.mNativePathData = PathParser.nCreatePathDataFromString(pathString, pathString.length());
+            if (this.mNativePathData == 0) {
                 throw new IllegalArgumentException("Invalid pathData: " + pathString);
             }
         }
@@ -86,9 +84,8 @@ public class PathParser {
         }
 
         protected void finalize() throws Throwable {
-            long j = this.mNativePathData;
-            if (j != 0) {
-                PathParser.nFinalize(j);
+            if (this.mNativePathData != 0) {
+                PathParser.nFinalize(this.mNativePathData);
                 this.mNativePathData = 0L;
             }
             super.finalize();

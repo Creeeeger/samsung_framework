@@ -1,93 +1,70 @@
 package com.android.internal.protolog;
 
-import android.util.Slog;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import android.util.ArrayMap;
+import android.util.proto.ProtoInputStream;
+import com.android.internal.protolog.common.ILogger;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.zip.GZIPInputStream;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /* loaded from: classes5.dex */
 public class ProtoLogViewerConfigReader {
-    private static final String TAG = "ProtoLogViewerConfigReader";
-    private Map<Integer, String> mLogMessageMap = null;
+    private Map<Long, String> mLogMessageMap = null;
+    private final ViewerConfigInputStreamProvider mViewerConfigInputStreamProvider;
 
-    public synchronized String getViewerString(int messageHash) {
-        Map<Integer, String> map = this.mLogMessageMap;
-        if (map == null) {
+    public ProtoLogViewerConfigReader(ViewerConfigInputStreamProvider viewerConfigInputStreamProvider) {
+        this.mViewerConfigInputStreamProvider = viewerConfigInputStreamProvider;
+    }
+
+    public synchronized String getViewerString(long messageHash) {
+        if (this.mLogMessageMap == null) {
             return null;
         }
-        return map.get(Integer.valueOf(messageHash));
+        return this.mLogMessageMap.get(Long.valueOf(messageHash));
     }
 
-    public synchronized void loadViewerConfig(PrintWriter pw, String viewerConfigFilename) {
-        try {
-            try {
-                loadViewerConfig(new GZIPInputStream(new FileInputStream(viewerConfigFilename)));
-                logAndPrintln(pw, "Loaded " + this.mLogMessageMap.size() + " log definitions from " + viewerConfigFilename);
-            } catch (IOException e) {
-                logAndPrintln(pw, "Unable to load log definitions: IOException while reading " + viewerConfigFilename + ". " + e);
-            } catch (JSONException e2) {
-                logAndPrintln(pw, "Unable to load log definitions: JSON parsing exception while reading " + viewerConfigFilename + ". " + e2);
-            }
-        } catch (FileNotFoundException e3) {
-            logAndPrintln(pw, "Unable to load log definitions: File " + viewerConfigFilename + " not found." + e3);
-        }
-    }
-
-    public synchronized void loadViewerConfig(InputStream viewerConfigInputStream) throws IOException, JSONException {
+    public synchronized void loadViewerConfig(ILogger logger) {
         if (this.mLogMessageMap != null) {
             return;
         }
-        InputStreamReader config = new InputStreamReader(viewerConfigInputStream);
-        BufferedReader reader = new BufferedReader(config);
-        StringBuilder builder = new StringBuilder();
-        while (true) {
-            String line = reader.readLine();
-            if (line == null) {
-                break;
-            } else {
-                builder.append(line).append('\n');
-            }
-        }
-        reader.close();
-        JSONObject json = new JSONObject(builder.toString());
-        JSONObject messages = json.getJSONObject("messages");
-        this.mLogMessageMap = new TreeMap();
-        Iterator it = messages.keys();
-        while (it.hasNext()) {
-            String key = it.next();
-            try {
-                int hash = Integer.parseInt(key);
-                JSONObject val = messages.getJSONObject(key);
-                String msg = val.getString("message");
-                this.mLogMessageMap.put(Integer.valueOf(hash), msg);
-            } catch (NumberFormatException e) {
-            }
+        try {
+            doLoadViewerConfig();
+            logger.log("Loaded " + this.mLogMessageMap.size() + " log definitions");
+        } catch (IOException e) {
+            logger.log("Unable to load log definitions: IOException while processing viewer config" + e);
         }
     }
 
-    public synchronized int knownViewerStringsNumber() {
-        Map<Integer, String> map = this.mLogMessageMap;
-        if (map == null) {
-            return 0;
-        }
-        return map.size();
+    public synchronized void unloadViewerConfig() {
+        this.mLogMessageMap = null;
     }
 
-    static void logAndPrintln(PrintWriter pw, String msg) {
-        Slog.i(TAG, msg);
-        if (pw != null) {
-            pw.println(msg);
-            pw.flush();
+    private void doLoadViewerConfig() throws IOException {
+        this.mLogMessageMap = new ArrayMap();
+        ProtoInputStream pis = this.mViewerConfigInputStreamProvider.getInputStream();
+        while (pis.nextField() != -1) {
+            if (pis.getFieldNumber() == 1) {
+                long inMessageToken = pis.start(2246267895809L);
+                long messageId = 0;
+                String message = null;
+                while (pis.nextField() != -1) {
+                    switch (pis.getFieldNumber()) {
+                        case 1:
+                            messageId = pis.readLong(1125281431553L);
+                            break;
+                        case 2:
+                            message = pis.readString(1138166333442L);
+                            break;
+                    }
+                }
+                if (messageId == 0) {
+                    throw new IOException("Failed to get message id");
+                }
+                if (message == null) {
+                    throw new IOException("Failed to get message string");
+                }
+                this.mLogMessageMap.put(Long.valueOf(messageId), message);
+                pis.end(inMessageToken);
+            }
         }
     }
 }

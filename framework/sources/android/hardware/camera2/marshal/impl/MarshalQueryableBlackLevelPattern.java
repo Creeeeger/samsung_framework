@@ -6,11 +6,10 @@ import android.hardware.camera2.params.BlackLevelPattern;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableBlackLevelPattern implements MarshalQueryable<BlackLevelPattern> {
     private static final int SIZE = 16;
 
-    /* loaded from: classes.dex */
     private class MarshalerBlackLevelPattern extends Marshaler<BlackLevelPattern> {
         protected MarshalerBlackLevelPattern(TypeReference<BlackLevelPattern> typeReference, int nativeType) {
             super(MarshalQueryableBlackLevelPattern.this, typeReference, nativeType);
@@ -25,6 +24,7 @@ public class MarshalQueryableBlackLevelPattern implements MarshalQueryable<Black
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public BlackLevelPattern unmarshal(ByteBuffer buffer) {
             int[] channelOffsets = new int[4];

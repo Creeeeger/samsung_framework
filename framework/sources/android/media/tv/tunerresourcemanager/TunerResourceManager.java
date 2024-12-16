@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TunerResourceManager {
     public static final int INVALID_OWNER_ID = -1;
     public static final int INVALID_RESOURCE_HANDLE = -1;
@@ -25,13 +25,11 @@ public class TunerResourceManager {
     private static final String TAG = "TunerResourceManager";
     private static final boolean DEBUG = Log.isLoggable(TAG, 3);
 
-    /* loaded from: classes2.dex */
     public static abstract class ResourcesReclaimListener {
         public abstract void onReclaimResources();
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TunerResourceType {
     }
 
@@ -40,9 +38,8 @@ public class TunerResourceManager {
         this.mUserId = userId;
     }
 
-    /* renamed from: android.media.tv.tunerresourcemanager.TunerResourceManager$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IResourcesReclaimListener.Stub {
+    /* renamed from: android.media.tv.tunerresourcemanager.TunerResourceManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IResourcesReclaimListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ ResourcesReclaimListener val$listener;
 

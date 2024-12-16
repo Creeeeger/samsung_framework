@@ -21,14 +21,16 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class StreamConfigurationMap {
     private static final long DURATION_20FPS_NS = 50000000;
     private static final int DURATION_MIN_FRAME = 0;
     private static final int DURATION_STALL = 1;
+    public static final int HAL_DATASPACE_ARBITRARY = 1;
     public static final int HAL_DATASPACE_DEPTH = 4096;
     public static final int HAL_DATASPACE_DYNAMIC_DEPTH = 4098;
     public static final int HAL_DATASPACE_HEIF = 4100;
+    public static final int HAL_DATASPACE_JFIF = 146931712;
     public static final int HAL_DATASPACE_JPEG_R = 4101;
     private static final int HAL_DATASPACE_RANGE_SHIFT = 27;
     private static final int HAL_DATASPACE_STANDARD_SHIFT = 16;
@@ -161,8 +163,7 @@ public final class StreamConfigurationMap {
                 int fmt = config.getFormat();
                 if (config.isOutput()) {
                     i5 = length;
-                    SparseIntArray sparseIntArray = this.mAllOutputFormats;
-                    sparseIntArray.put(fmt, sparseIntArray.get(fmt) + 1);
+                    this.mAllOutputFormats.put(fmt, this.mAllOutputFormats.get(fmt) + 1);
                     long duration = 0;
                     if (this.mListHighResolution) {
                         StreamConfigurationDuration[] streamConfigurationDurationArr = this.mMinFrameDurations;
@@ -298,11 +299,10 @@ public final class StreamConfigurationMap {
     }
 
     public int[] getValidOutputFormatsForInput(int inputFormat) {
-        ReprocessFormatsMap reprocessFormatsMap = this.mInputOutputFormatsMap;
-        if (reprocessFormatsMap == null) {
+        if (this.mInputOutputFormatsMap == null) {
             return new int[0];
         }
-        int[] outputs = reprocessFormatsMap.getOutputs(inputFormat);
+        int[] outputs = this.mInputOutputFormatsMap.getOutputs(inputFormat);
         if (this.mHeicOutputFormats.size() > 0) {
             int[] outputsWithHeic = Arrays.copyOf(outputs, outputs.length + 1);
             outputsWithHeic[outputs.length] = 1212500294;
@@ -517,7 +517,7 @@ public final class StreamConfigurationMap {
         throw new IllegalArgumentException(String.format("format %x is not supported by this stream configuration map", Integer.valueOf(format)));
     }
 
-    public static int checkArgumentFormatInternal(int format) {
+    static int checkArgumentFormatInternal(int format) {
         switch (format) {
             case 33:
             case 34:
@@ -532,7 +532,7 @@ public final class StreamConfigurationMap {
         }
     }
 
-    public static int checkArgumentFormat(int format) {
+    static int checkArgumentFormat(int format) {
         if (!ImageFormat.isPublicFormat(format) && !PixelFormat.isPublicFormat(format)) {
             throw new IllegalArgumentException(String.format("format 0x%x was not defined in either ImageFormat or PixelFormat", Integer.valueOf(format)));
         }
@@ -569,7 +569,7 @@ public final class StreamConfigurationMap {
         }
     }
 
-    public static int[] imageFormatToPublic(int[] formats) {
+    static int[] imageFormatToPublic(int[] formats) {
         if (formats == null) {
             return null;
         }
@@ -579,7 +579,7 @@ public final class StreamConfigurationMap {
         return formats;
     }
 
-    public static int imageFormatToInternal(int format) {
+    static int imageFormatToInternal(int format) {
         switch (format) {
             case 256:
             case 257:
@@ -598,24 +598,30 @@ public final class StreamConfigurationMap {
         }
     }
 
-    public static int imageFormatToDataspace(int format) {
+    static int imageFormatToDataspace(int format) {
         switch (format) {
+            case 32:
+            case 36:
+            case 37:
+            case 38:
+                break;
+            case 35:
+                break;
             case 256:
-                return 146931712;
+                break;
             case 257:
             case 4098:
             case 4099:
             case ImageFormat.DEPTH16 /* 1144402265 */:
-                return 4096;
+                break;
             case 4101:
-                return 4101;
+                break;
             case ImageFormat.HEIC /* 1212500294 */:
-                return 4100;
+                break;
             case ImageFormat.DEPTH_JPEG /* 1768253795 */:
-                return 4098;
-            default:
-                return 0;
+                break;
         }
+        return 146931712;
     }
 
     public static int[] imageFormatToInternal(int[] formats) {

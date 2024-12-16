@@ -11,11 +11,11 @@ public class MediaCasStateException extends IllegalStateException {
         this.mDiagnosticInfo = diagnosticInfo;
     }
 
-    public static void throwExceptionIfNeeded(int err) {
+    static void throwExceptionIfNeeded(int err) {
         throwExceptionIfNeeded(err, null);
     }
 
-    public static void throwExceptionIfNeeded(int err, String msg) {
+    static void throwExceptionIfNeeded(int err, String msg) {
         String diagnosticInfo;
         if (err == 0) {
             return;

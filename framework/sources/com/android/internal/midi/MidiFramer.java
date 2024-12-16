@@ -3,7 +3,7 @@ package com.android.internal.midi;
 import android.media.midi.MidiReceiver;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class MidiFramer extends MidiReceiver {
     public String TAG = "MidiFramer";
     private byte[] mBuffer = new byte[3];
@@ -68,23 +68,20 @@ public class MidiFramer extends MidiReceiver {
             } else if (this.mInSysEx) {
                 continue;
             } else {
-                int i2 = this.mNeeded;
-                if (i2 <= 0) {
+                if (this.mNeeded <= 0) {
                     break;
                 }
                 byte[] bArr = this.mBuffer;
-                int i3 = this.mCount;
-                int i4 = i3 + 1;
-                this.mCount = i4;
-                bArr[i3] = currentByte;
-                int i5 = i2 - 1;
-                this.mNeeded = i5;
-                if (i5 == 0) {
-                    byte b = this.mRunningStatus;
-                    if (b != 0) {
-                        bArr[0] = b;
+                int i2 = this.mCount;
+                this.mCount = i2 + 1;
+                bArr[i2] = currentByte;
+                int i3 = this.mNeeded - 1;
+                this.mNeeded = i3;
+                if (i3 == 0) {
+                    if (this.mRunningStatus != 0) {
+                        this.mBuffer[0] = this.mRunningStatus;
                     }
-                    this.mReceiver.send(bArr, 0, i4, timestamp);
+                    this.mReceiver.send(this.mBuffer, 0, this.mCount, timestamp);
                     this.mNeeded = MidiConstants.getBytesPerMessage(this.mBuffer[0]) - 1;
                     this.mCount = 1;
                 }

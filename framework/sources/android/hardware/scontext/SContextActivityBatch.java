@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextActivityBatch extends SContextEventContext {
     public static final Parcelable.Creator<SContextActivityBatch> CREATOR = new Parcelable.Creator<SContextActivityBatch>() { // from class: android.hardware.scontext.SContextActivityBatch.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityBatch createFromParcel(Parcel in) {
             return new SContextActivityBatch(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextActivityBatch[] newArray(int size) {
             return new SContextActivityBatch[size];
@@ -24,7 +23,7 @@ public class SContextActivityBatch extends SContextEventContext {
     private Bundle mContext;
     private int mMode;
 
-    public SContextActivityBatch() {
+    SContextActivityBatch() {
         this.mContext = new Bundle();
         this.mMode = 0;
     }
@@ -34,21 +33,20 @@ public class SContextActivityBatch extends SContextEventContext {
     }
 
     public long[] getTimeStamp() {
-        int i = this.mMode;
-        if (i == 0) {
+        if (this.mMode == 0) {
             int size = this.mContext.getInt("Count");
             long[] duration = this.mContext.getLongArray("Duration");
             long[] timestamp = new long[size];
-            for (int i2 = 0; i2 < size; i2++) {
-                if (i2 == 0) {
-                    timestamp[i2] = this.mContext.getLong("TimeStamp");
+            for (int i = 0; i < size; i++) {
+                if (i == 0) {
+                    timestamp[i] = this.mContext.getLong("TimeStamp");
                 } else {
-                    timestamp[i2] = timestamp[i2 - 1] + duration[i2 - 1];
+                    timestamp[i] = timestamp[i - 1] + duration[i - 1];
                 }
             }
             return timestamp;
         }
-        if (i != 1) {
+        if (this.mMode != 1) {
             return null;
         }
         return this.mContext.getLongArray("TimeStampArray");
@@ -74,7 +72,7 @@ public class SContextActivityBatch extends SContextEventContext {
     @Override // android.hardware.scontext.SContextEventContext, com.samsung.android.hardware.context.SemContextEventContext
     public void setValues(Bundle context) {
         this.mContext = context;
-        this.mMode = context.getInt("Mode");
+        this.mMode = this.mContext.getInt("Mode");
     }
 
     @Override // com.samsung.android.hardware.context.SemContextEventContext, android.os.Parcelable
@@ -86,22 +84,5 @@ public class SContextActivityBatch extends SContextEventContext {
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
         this.mMode = src.readInt();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextActivityBatch$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextActivityBatch> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityBatch createFromParcel(Parcel in) {
-            return new SContextActivityBatch(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextActivityBatch[] newArray(int size) {
-            return new SContextActivityBatch[size];
-        }
     }
 }

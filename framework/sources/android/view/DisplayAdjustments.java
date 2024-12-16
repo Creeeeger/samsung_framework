@@ -7,29 +7,21 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public class DisplayAdjustments {
     public static final DisplayAdjustments DEFAULT_DISPLAY_ADJUSTMENTS = new DisplayAdjustments();
-    private volatile CompatibilityInfo mCompatInfo;
-    private final Configuration mConfiguration;
+    private volatile CompatibilityInfo mCompatInfo = CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
+    private final Configuration mConfiguration = new Configuration(Configuration.EMPTY);
 
     public DisplayAdjustments() {
-        this.mCompatInfo = CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
-        this.mConfiguration = new Configuration(Configuration.EMPTY);
     }
 
     public DisplayAdjustments(Configuration configuration) {
-        this.mCompatInfo = CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
-        Configuration configuration2 = new Configuration(Configuration.EMPTY);
-        this.mConfiguration = configuration2;
         if (configuration != null) {
-            configuration2.setTo(configuration);
+            this.mConfiguration.setTo(configuration);
         }
     }
 
     public DisplayAdjustments(DisplayAdjustments daj) {
-        this.mCompatInfo = CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO;
-        Configuration configuration = new Configuration(Configuration.EMPTY);
-        this.mConfiguration = configuration;
         setCompatibilityInfo(daj.mCompatInfo);
-        configuration.setTo(daj.getConfiguration());
+        this.mConfiguration.setTo(daj.getConfiguration());
     }
 
     public void setCompatibilityInfo(CompatibilityInfo compatInfo) {

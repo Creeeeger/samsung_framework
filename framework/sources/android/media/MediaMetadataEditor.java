@@ -12,7 +12,7 @@ import android.util.SparseIntArray;
 public abstract class MediaMetadataEditor {
     public static final int BITMAP_KEY_ARTWORK = 100;
     public static final int KEY_EDITABLE_MASK = 536870911;
-    protected static final SparseIntArray METADATA_KEYS_TYPE;
+    protected static final SparseIntArray METADATA_KEYS_TYPE = new SparseIntArray(17);
     protected static final int METADATA_TYPE_BITMAP = 2;
     protected static final int METADATA_TYPE_INVALID = -1;
     protected static final int METADATA_TYPE_LONG = 0;
@@ -30,6 +30,9 @@ public abstract class MediaMetadataEditor {
     protected boolean mArtworkChanged = false;
 
     public abstract void apply();
+
+    protected MediaMetadataEditor() {
+    }
 
     public synchronized void clear() {
         if (this.mApplied) {
@@ -157,66 +160,55 @@ public abstract class MediaMetadataEditor {
     }
 
     public synchronized Bitmap getBitmap(int key, Bitmap defaultValue) throws IllegalArgumentException {
-        Bitmap bitmap;
         if (key != 100) {
             throw new IllegalArgumentException("Invalid type 'Bitmap' for key " + key);
         }
-        bitmap = this.mEditorArtwork;
-        if (bitmap == null) {
-            bitmap = defaultValue;
-        }
-        return bitmap;
+        return this.mEditorArtwork != null ? this.mEditorArtwork : defaultValue;
     }
 
     public synchronized Object getObject(int key, Object defaultValue) throws IllegalArgumentException {
         switch (METADATA_KEYS_TYPE.get(key, -1)) {
             case 0:
-                if (!this.mEditorMetadata.containsKey(String.valueOf(key))) {
-                    return defaultValue;
+                if (this.mEditorMetadata.containsKey(String.valueOf(key))) {
+                    return Long.valueOf(this.mEditorMetadata.getLong(String.valueOf(key)));
                 }
-                return Long.valueOf(this.mEditorMetadata.getLong(String.valueOf(key)));
+                return defaultValue;
             case 1:
-                if (!this.mEditorMetadata.containsKey(String.valueOf(key))) {
-                    return defaultValue;
+                if (this.mEditorMetadata.containsKey(String.valueOf(key))) {
+                    return this.mEditorMetadata.getString(String.valueOf(key));
                 }
-                return this.mEditorMetadata.getString(String.valueOf(key));
+                return defaultValue;
             case 2:
                 if (key == 100) {
-                    Object obj = this.mEditorArtwork;
-                    if (obj == null) {
-                        obj = defaultValue;
-                    }
-                    return obj;
+                    return this.mEditorArtwork != null ? this.mEditorArtwork : defaultValue;
                 }
                 break;
             case 3:
-                if (!this.mEditorMetadata.containsKey(String.valueOf(key))) {
-                    return defaultValue;
+                if (this.mEditorMetadata.containsKey(String.valueOf(key))) {
+                    return this.mEditorMetadata.getParcelable(String.valueOf(key));
                 }
-                return this.mEditorMetadata.getParcelable(String.valueOf(key));
+                return defaultValue;
         }
         throw new IllegalArgumentException("Invalid key " + key);
     }
 
     static {
-        SparseIntArray sparseIntArray = new SparseIntArray(17);
-        METADATA_KEYS_TYPE = sparseIntArray;
-        sparseIntArray.put(0, 0);
-        sparseIntArray.put(14, 0);
-        sparseIntArray.put(9, 0);
-        sparseIntArray.put(8, 0);
-        sparseIntArray.put(1, 1);
-        sparseIntArray.put(13, 1);
-        sparseIntArray.put(7, 1);
-        sparseIntArray.put(2, 1);
-        sparseIntArray.put(3, 1);
-        sparseIntArray.put(15, 1);
-        sparseIntArray.put(4, 1);
-        sparseIntArray.put(5, 1);
-        sparseIntArray.put(6, 1);
-        sparseIntArray.put(11, 1);
-        sparseIntArray.put(100, 2);
-        sparseIntArray.put(101, 3);
-        sparseIntArray.put(268435457, 3);
+        METADATA_KEYS_TYPE.put(0, 0);
+        METADATA_KEYS_TYPE.put(14, 0);
+        METADATA_KEYS_TYPE.put(9, 0);
+        METADATA_KEYS_TYPE.put(8, 0);
+        METADATA_KEYS_TYPE.put(1, 1);
+        METADATA_KEYS_TYPE.put(13, 1);
+        METADATA_KEYS_TYPE.put(7, 1);
+        METADATA_KEYS_TYPE.put(2, 1);
+        METADATA_KEYS_TYPE.put(3, 1);
+        METADATA_KEYS_TYPE.put(15, 1);
+        METADATA_KEYS_TYPE.put(4, 1);
+        METADATA_KEYS_TYPE.put(5, 1);
+        METADATA_KEYS_TYPE.put(6, 1);
+        METADATA_KEYS_TYPE.put(11, 1);
+        METADATA_KEYS_TYPE.put(100, 2);
+        METADATA_KEYS_TYPE.put(101, 3);
+        METADATA_KEYS_TYPE.put(268435457, 3);
     }
 }

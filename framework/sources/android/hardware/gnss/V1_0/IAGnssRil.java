@@ -112,7 +112,6 @@ public interface IAGnssRil extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class SetIDType {
         public static final byte IMSI = 1;
         public static final byte MSISDM = 2;
@@ -150,7 +149,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class NetworkType {
         public static final byte DUN = 4;
         public static final byte HIPRI = 5;
@@ -220,7 +218,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AGnssRefLocationType {
         public static final byte GSM_CELLID = 1;
         public static final byte LTE_CELLID = 4;
@@ -261,7 +258,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AGnssRefLocationCellID {
         public byte type = 0;
         public short mcc = 0;
@@ -352,7 +348,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class AGnssRefLocation {
         public byte type = 0;
         public AGnssRefLocationCellID cellID = new AGnssRefLocationCellID();
@@ -428,7 +423,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IAGnssRil {
         private IHwBinder mRemote;
 
@@ -684,7 +678,6 @@ public interface IAGnssRil extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IAGnssRil {
         @Override // android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -707,7 +700,7 @@ public interface IAGnssRil extends IBase {
 
         @Override // android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-47, 110, 106, 53, -101, -26, -106, 62, -89, 83, -41, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -114, -124, -20, MidiConstants.STATUS_SONG_POSITION, -71, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 82, 9, 121, 56, -109, -116, 77, 54, -41, -92, 126, -94, -30, -82}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-47, 110, 106, 53, -101, -26, -106, 62, -89, 83, -41, 19, -114, -124, -20, MidiConstants.STATUS_SONG_POSITION, -71, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 82, 9, 121, 56, -109, -116, 77, 54, -41, -92, 126, -94, -30, -82}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V1_0.IAGnssRil, android.internal.hidl.base.V1_0.IBase

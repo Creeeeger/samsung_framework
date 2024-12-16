@@ -1,6 +1,6 @@
 package android.text.util;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Rfc822Token {
     private String mAddress;
     private String mComment;
@@ -38,19 +38,16 @@ public class Rfc822Token {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        String str = this.mName;
-        if (str != null && str.length() != 0) {
+        if (this.mName != null && this.mName.length() != 0) {
             sb.append(quoteNameIfNecessary(this.mName));
             sb.append(' ');
         }
-        String str2 = this.mComment;
-        if (str2 != null && str2.length() != 0) {
+        if (this.mComment != null && this.mComment.length() != 0) {
             sb.append('(');
             sb.append(quoteComment(this.mComment));
             sb.append(") ");
         }
-        String str3 = this.mAddress;
-        if (str3 != null && str3.length() != 0) {
+        if (this.mAddress != null && this.mAddress.length() != 0) {
             sb.append('<');
             sb.append(this.mAddress);
             sb.append('>');
@@ -96,14 +93,11 @@ public class Rfc822Token {
     }
 
     public int hashCode() {
-        String str = this.mName;
-        int result = str != null ? (17 * 31) + str.hashCode() : 17;
-        String str2 = this.mAddress;
-        if (str2 != null) {
-            result = (result * 31) + str2.hashCode();
+        int result = this.mName != null ? (17 * 31) + this.mName.hashCode() : 17;
+        if (this.mAddress != null) {
+            result = (result * 31) + this.mAddress.hashCode();
         }
-        String str3 = this.mComment;
-        return str3 != null ? (result * 31) + str3.hashCode() : result;
+        return this.mComment != null ? (result * 31) + this.mComment.hashCode() : result;
     }
 
     private static boolean stringEquals(String a, String b) {

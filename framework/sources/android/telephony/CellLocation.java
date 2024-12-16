@@ -9,7 +9,7 @@ import android.telephony.gsm.GsmCellLocation;
 import com.android.internal.telephony.ITelephony;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class CellLocation {
     public abstract void fillInNotifierBundle(Bundle bundle);
 

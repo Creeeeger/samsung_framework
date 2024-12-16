@@ -13,36 +13,35 @@ public class BaseObj {
     private String mName;
     RenderScript mRS;
 
-    public BaseObj(long id, RenderScript rs) {
+    BaseObj(long id, RenderScript rs) {
         rs.validate();
         this.mRS = rs;
         this.mID = id;
         this.mDestroyed = false;
     }
 
-    public void setID(long id) {
+    void setID(long id) {
         if (this.mID != 0) {
             throw new RSRuntimeException("Internal Error, reset of object ID.");
         }
         this.mID = id;
     }
 
-    public long getID(RenderScript rs) {
+    long getID(RenderScript rs) {
         this.mRS.validate();
         if (this.mDestroyed) {
             throw new RSInvalidStateException("using a destroyed object.");
         }
-        long j = this.mID;
-        if (j == 0) {
+        if (this.mID == 0) {
             throw new RSRuntimeException("Internal error: Object id 0.");
         }
         if (rs != null && rs != this.mRS) {
             throw new RSInvalidStateException("using object with mismatched context.");
         }
-        return j;
+        return this.mID;
     }
 
-    public void checkValid() {
+    void checkValid() {
         if (this.mID == 0) {
             throw new RSIllegalArgumentException("Invalid object.");
         }
@@ -83,11 +82,8 @@ public class BaseObj {
             this.guard.close();
             ReentrantReadWriteLock.ReadLock rlock = this.mRS.mRWLock.readLock();
             rlock.lock();
-            if (this.mRS.isAlive()) {
-                long j = this.mID;
-                if (j != 0) {
-                    this.mRS.nObjDestroy(j);
-                }
+            if (this.mRS.isAlive() && this.mID != 0) {
+                this.mRS.nObjDestroy(this.mID);
             }
             rlock.unlock();
             this.mRS = null;
@@ -95,11 +91,10 @@ public class BaseObj {
         }
     }
 
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.guard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.guard != null) {
+                this.guard.warnIfOpen();
             }
             helpDestroy();
         } finally {
@@ -114,15 +109,13 @@ public class BaseObj {
         helpDestroy();
     }
 
-    public void updateFromNative() {
+    void updateFromNative() {
         this.mRS.validate();
-        RenderScript renderScript = this.mRS;
-        this.mName = renderScript.nGetName(getID(renderScript));
+        this.mName = this.mRS.nGetName(getID(this.mRS));
     }
 
     public int hashCode() {
-        long j = this.mID;
-        return (int) ((j >> 32) ^ (268435455 & j));
+        return (int) ((this.mID & 268435455) ^ (this.mID >> 32));
     }
 
     public boolean equals(Object obj) {

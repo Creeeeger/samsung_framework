@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGetKeyCallback extends IInterface {
     public static final String DESCRIPTOR = "android.security.rkp.IGetKeyCallback";
 
-    /* loaded from: classes3.dex */
     public @interface ErrorCode {
         public static final byte ERROR_PENDING_INTERNET_CONNECTIVITY = 3;
         public static final byte ERROR_PERMANENT = 5;
@@ -24,7 +23,6 @@ public interface IGetKeyCallback extends IInterface {
 
     void onSuccess(RemotelyProvisionedKey remotelyProvisionedKey) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetKeyCallback {
         @Override // android.security.rkp.IGetKeyCallback
         public void onSuccess(RemotelyProvisionedKey key) throws RemoteException {
@@ -44,7 +42,6 @@ public interface IGetKeyCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetKeyCallback {
         static final int TRANSACTION_onCancel = 2;
         static final int TRANSACTION_onError = 3;
@@ -93,34 +90,31 @@ public interface IGetKeyCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGetKeyCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGetKeyCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGetKeyCallback.DESCRIPTOR);
+                case 1:
+                    RemotelyProvisionedKey _arg0 = (RemotelyProvisionedKey) data.readTypedObject(RemotelyProvisionedKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    onCancel();
+                    return true;
+                case 3:
+                    byte _arg02 = data.readByte();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RemotelyProvisionedKey _arg0 = (RemotelyProvisionedKey) data.readTypedObject(RemotelyProvisionedKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            onCancel();
-                            return true;
-                        case 3:
-                            byte _arg02 = data.readByte();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetKeyCallback {
+        private static class Proxy implements IGetKeyCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

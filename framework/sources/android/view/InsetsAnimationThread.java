@@ -14,9 +14,8 @@ public class InsetsAnimationThread extends HandlerThread {
 
     private static void ensureThreadLocked() {
         if (sInstance == null) {
-            InsetsAnimationThread insetsAnimationThread = new InsetsAnimationThread();
-            sInstance = insetsAnimationThread;
-            insetsAnimationThread.start();
+            sInstance = new InsetsAnimationThread();
+            sInstance.start();
             sInstance.getLooper().setTraceTag(8L);
             sHandler = new Handler(sInstance.getLooper());
         }
@@ -24,11 +23,10 @@ public class InsetsAnimationThread extends HandlerThread {
 
     public static void release() {
         synchronized (InsetsAnimationThread.class) {
-            InsetsAnimationThread insetsAnimationThread = sInstance;
-            if (insetsAnimationThread == null) {
+            if (sInstance == null) {
                 return;
             }
-            insetsAnimationThread.getLooper().quitSafely();
+            sInstance.getLooper().quitSafely();
             sInstance = null;
             sHandler = null;
         }

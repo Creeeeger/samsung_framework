@@ -6,14 +6,13 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IAppOpsCallback extends IInterface {
-    void opChanged(int i, int i2, String str) throws RemoteException;
+    void opChanged(int i, int i2, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAppOpsCallback {
         @Override // com.android.internal.app.IAppOpsCallback
-        public void opChanged(int op, int uid, String packageName) throws RemoteException {
+        public void opChanged(int op, int uid, String packageName, String persistentDeviceId) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -22,7 +21,6 @@ public interface IAppOpsCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAppOpsCallback {
         public static final String DESCRIPTOR = "com.android.internal.app.IAppOpsCallback";
         static final int TRANSACTION_opChanged = 1;
@@ -66,28 +64,25 @@ public interface IAppOpsCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    opChanged(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            opChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAppOpsCallback {
+        private static class Proxy implements IAppOpsCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -104,13 +99,14 @@ public interface IAppOpsCallback extends IInterface {
             }
 
             @Override // com.android.internal.app.IAppOpsCallback
-            public void opChanged(int op, int uid, String packageName) throws RemoteException {
+            public void opChanged(int op, int uid, String packageName, String persistentDeviceId) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(op);
                     _data.writeInt(uid);
                     _data.writeString(packageName);
+                    _data.writeString(persistentDeviceId);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {
                     _data.recycle();

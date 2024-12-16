@@ -18,12 +18,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICas extends IBase {
     public static final String kInterfaceName = "android.hardware.cas@1.0::ICas";
 
     @FunctionalInterface
-    /* loaded from: classes.dex */
     public interface openSessionCallback {
         void onValues(int i, ArrayList<Byte> arrayList);
     }
@@ -128,7 +127,6 @@ public interface ICas extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes.dex */
     public static final class Proxy implements ICas {
         private IHwBinder mRemote;
 
@@ -473,7 +471,6 @@ public interface ICas extends IBase {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends HwBinder implements ICas {
         @Override // android.hardware.cas.V1_0.ICas, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -496,7 +493,7 @@ public interface ICas extends IBase {
 
         @Override // android.hardware.cas.V1_0.ICas, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{14, 101, 107, -95, -70, -63, 20, SprAttributeBase.TYPE_ANIMATOR_SET, -95, SprAttributeBase.TYPE_SHADOW, -106, -17, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, 105, -46, 75, 0, 13, -126, 14, -11, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 1, 80, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -7, 115, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 84, -62}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{14, 101, 107, -95, -70, -63, 20, SprAttributeBase.TYPE_ANIMATOR_SET, -95, SprAttributeBase.TYPE_SHADOW, -106, -17, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, 105, -46, 75, 0, 13, -126, 14, -11, 101, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 1, 80, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -7, 115, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 84, -62}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.cas.V1_0.ICas, android.internal.hidl.base.V1_0.IBase
@@ -548,7 +545,7 @@ public interface ICas extends IBase {
         }
 
         @Override // android.os.HwBinder
-        public void onTransact(int _hidl_code, HwParcel _hidl_request, HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
+        public void onTransact(int _hidl_code, HwParcel _hidl_request, final HwParcel _hidl_reply, int _hidl_flags) throws RemoteException {
             switch (_hidl_code) {
                 case 1:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
@@ -561,12 +558,6 @@ public interface ICas extends IBase {
                 case 2:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     openSession(new openSessionCallback() { // from class: android.hardware.cas.V1_0.ICas.Stub.1
-                        final /* synthetic */ HwParcel val$_hidl_reply;
-
-                        AnonymousClass1(HwParcel _hidl_reply2) {
-                            _hidl_reply = _hidl_reply2;
-                        }
-
                         @Override // android.hardware.cas.V1_0.ICas.openSessionCallback
                         public void onValues(int status, ArrayList<Byte> sessionId) {
                             _hidl_reply.writeStatus(0);
@@ -580,35 +571,35 @@ public interface ICas extends IBase {
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     ArrayList<Byte> sessionId = _hidl_request.readInt8Vector();
                     int _hidl_out_status2 = closeSession(sessionId);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status2);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status2);
+                    _hidl_reply.send();
                     return;
                 case 4:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     ArrayList<Byte> sessionId2 = _hidl_request.readInt8Vector();
                     ArrayList<Byte> pvtData2 = _hidl_request.readInt8Vector();
                     int _hidl_out_status3 = setSessionPrivateData(sessionId2, pvtData2);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status3);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status3);
+                    _hidl_reply.send();
                     return;
                 case 5:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     ArrayList<Byte> sessionId3 = _hidl_request.readInt8Vector();
                     ArrayList<Byte> ecm = _hidl_request.readInt8Vector();
                     int _hidl_out_status4 = processEcm(sessionId3, ecm);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status4);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status4);
+                    _hidl_reply.send();
                     return;
                 case 6:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     ArrayList<Byte> emm = _hidl_request.readInt8Vector();
                     int _hidl_out_status5 = processEmm(emm);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status5);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status5);
+                    _hidl_reply.send();
                     return;
                 case 7:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
@@ -616,60 +607,60 @@ public interface ICas extends IBase {
                     int arg = _hidl_request.readInt32();
                     ArrayList<Byte> eventData = _hidl_request.readInt8Vector();
                     int _hidl_out_status6 = sendEvent(event, arg, eventData);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status6);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status6);
+                    _hidl_reply.send();
                     return;
                 case 8:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     String provisionString = _hidl_request.readString();
                     int _hidl_out_status7 = provision(provisionString);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status7);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status7);
+                    _hidl_reply.send();
                     return;
                 case 9:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     int refreshType = _hidl_request.readInt32();
                     ArrayList<Byte> refreshData = _hidl_request.readInt8Vector();
                     int _hidl_out_status8 = refreshEntitlements(refreshType, refreshData);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status8);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status8);
+                    _hidl_reply.send();
                     return;
                 case 10:
                     _hidl_request.enforceInterface(ICas.kInterfaceName);
                     int _hidl_out_status9 = release();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeInt32(_hidl_out_status9);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeInt32(_hidl_out_status9);
+                    _hidl_reply.send();
                     return;
                 case 256067662:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<String> _hidl_out_descriptors = interfaceChain();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeStringVector(_hidl_out_descriptors);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeStringVector(_hidl_out_descriptors);
+                    _hidl_reply.send();
                     return;
                 case 256131655:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     NativeHandle fd = _hidl_request.readNativeHandle();
                     ArrayList<String> options = _hidl_request.readStringVector();
                     debug(fd, options);
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 256136003:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     String _hidl_out_descriptor = interfaceDescriptor();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.writeString(_hidl_out_descriptor);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.writeString(_hidl_out_descriptor);
+                    _hidl_reply.send();
                     return;
                 case 256398152:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ArrayList<byte[]> _hidl_out_hashchain = getHashChain();
-                    _hidl_reply2.writeStatus(0);
+                    _hidl_reply.writeStatus(0);
                     HwBlob _hidl_blob = new HwBlob(16);
                     int _hidl_vec_size = _hidl_out_hashchain.size();
                     _hidl_blob.putInt32(8L, _hidl_vec_size);
@@ -684,8 +675,8 @@ public interface ICas extends IBase {
                         childBlob.putInt8Array(_hidl_array_offset_1, _hidl_array_item_1);
                     }
                     _hidl_blob.putBlob(0L, childBlob);
-                    _hidl_reply2.writeBuffer(_hidl_blob);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeBuffer(_hidl_blob);
+                    _hidl_reply.send();
                     return;
                 case 256462420:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
@@ -697,38 +688,20 @@ public interface ICas extends IBase {
                 case 256921159:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     ping();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_reply.send();
                     return;
                 case 257049926:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     DebugInfo _hidl_out_info = getDebugInfo();
-                    _hidl_reply2.writeStatus(0);
-                    _hidl_out_info.writeToParcel(_hidl_reply2);
-                    _hidl_reply2.send();
+                    _hidl_reply.writeStatus(0);
+                    _hidl_out_info.writeToParcel(_hidl_reply);
+                    _hidl_reply.send();
                     return;
                 case 257120595:
                     _hidl_request.enforceInterface(IBase.kInterfaceName);
                     notifySyspropsChanged();
                     return;
-            }
-        }
-
-        /* renamed from: android.hardware.cas.V1_0.ICas$Stub$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements openSessionCallback {
-            final /* synthetic */ HwParcel val$_hidl_reply;
-
-            AnonymousClass1(HwParcel _hidl_reply2) {
-                _hidl_reply = _hidl_reply2;
-            }
-
-            @Override // android.hardware.cas.V1_0.ICas.openSessionCallback
-            public void onValues(int status, ArrayList<Byte> sessionId) {
-                _hidl_reply.writeStatus(0);
-                _hidl_reply.writeInt32(status);
-                _hidl_reply.writeInt8Vector(sessionId);
-                _hidl_reply.send();
             }
         }
     }

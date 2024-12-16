@@ -17,7 +17,6 @@ public interface ICreateCredentialCallback extends IInterface {
 
     void onResponse(CreateCredentialResponse createCredentialResponse) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICreateCredentialCallback {
         @Override // android.credentials.ICreateCredentialCallback
         public void onPendingIntent(PendingIntent pendingIntent) throws RemoteException {
@@ -37,7 +36,6 @@ public interface ICreateCredentialCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICreateCredentialCallback {
         static final int TRANSACTION_onError = 3;
         static final int TRANSACTION_onPendingIntent = 1;
@@ -86,37 +84,33 @@ public interface ICreateCredentialCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICreateCredentialCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICreateCredentialCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICreateCredentialCallback.DESCRIPTOR);
+                case 1:
+                    PendingIntent _arg0 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPendingIntent(_arg0);
+                    return true;
+                case 2:
+                    CreateCredentialResponse _arg02 = (CreateCredentialResponse) data.readTypedObject(CreateCredentialResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResponse(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg03, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PendingIntent _arg0 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPendingIntent(_arg0);
-                            return true;
-                        case 2:
-                            CreateCredentialResponse _arg02 = (CreateCredentialResponse) data.readTypedObject(CreateCredentialResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResponse(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg03, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICreateCredentialCallback {
+        private static class Proxy implements ICreateCredentialCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -2,6 +2,7 @@ package com.samsung.vekit.Content;
 
 import android.util.Log;
 import com.samsung.vekit.Common.Object.DoodleStroke;
+import com.samsung.vekit.Common.Type.ContentColorType;
 import com.samsung.vekit.Common.Type.ContentType;
 import com.samsung.vekit.Common.VEContext;
 import com.samsung.vekit.Panel.Panel;
@@ -14,13 +15,15 @@ public class Doodle extends Content {
     private Panel capturedImagePanel;
     private String capturedImagePath;
     private int capturedStrokeCount;
+    private boolean hasCapturedMask;
     private ArrayList<DoodleStroke> strokeList;
 
     public Doodle(VEContext context, int id, String name) {
         super(context, ContentType.DOODLE, id, name);
-        this.capturedStrokeCount = 0;
-        this.strokeList = new ArrayList<>();
         this.capturedImagePanel = new Panel();
+        this.capturedStrokeCount = 0;
+        this.hasCapturedMask = true;
+        this.strokeList = new ArrayList<>();
     }
 
     public Doodle setStrokeList(ArrayList<DoodleStroke> strokeList) {
@@ -67,30 +70,6 @@ public class Doodle extends Content {
         return this;
     }
 
-    public Doodle setCapturedImageInfo(String path, int width, int height, int savedStrokeSize) {
-        this.capturedImagePath = path;
-        this.width = width;
-        this.height = height;
-        this.capturedStrokeCount = savedStrokeSize;
-        if (this.context.getLayerGroup() != null) {
-            this.capturedImagePanel = this.context.getLayerGroup().getPanel();
-        }
-        return this;
-    }
-
-    public String getCapturedImagePath() {
-        return this.capturedImagePath;
-    }
-
-    public Doodle setCapturedStrokeCount(int count) {
-        this.capturedStrokeCount = count;
-        return this;
-    }
-
-    public int getCapturedStrokeCount() {
-        return this.capturedStrokeCount;
-    }
-
     @Override // com.samsung.vekit.Content.Content
     public Doodle setWidth(int width) {
         return (Doodle) super.setWidth(width);
@@ -106,12 +85,65 @@ public class Doodle extends Content {
         return (Doodle) super.setDuration(duration);
     }
 
+    public void setCapturedImagePath(String capturedImagePath) {
+        this.capturedImagePath = capturedImagePath;
+    }
+
+    public boolean isHasCapturedMask() {
+        return this.hasCapturedMask;
+    }
+
+    public void setHasCapturedMask(boolean hasCapturedMask) {
+        this.hasCapturedMask = hasCapturedMask;
+    }
+
+    public Doodle setCapturedStrokeCount(int count) {
+        this.capturedStrokeCount = count;
+        return this;
+    }
+
+    public int getCapturedStrokeCount() {
+        return this.capturedStrokeCount;
+    }
+
     public Panel getCapturedImagePanel() {
         return this.capturedImagePanel;
     }
 
     public Doodle setCapturedImagePanel(Panel panel) {
         this.capturedImagePanel = panel;
+        return this;
+    }
+
+    public String getCapturedImagePath() {
+        return this.capturedImagePath;
+    }
+
+    public Doodle setCapturedImageInfo(String path, int width, int height, int savedStrokeSize) {
+        Log.d(this.TAG, "setCapturedImageInfo(Legacy)");
+        this.capturedImagePath = path;
+        this.width = width;
+        this.height = height;
+        this.capturedStrokeCount = savedStrokeSize;
+        this.colorType = ContentColorType.SDR;
+        this.hasCapturedMask = false;
+        if (this.context.getLayerGroup() != null) {
+            this.capturedImagePanel = this.context.getLayerGroup().getPanel();
+        }
+        return this;
+    }
+
+    public Doodle setCapturedImageInfo(String path, int width, int height, int savedStrokeSize, ContentColorType colorType, boolean hasCapturedMask) {
+        Log.d(this.TAG, "setCapturedImageInfo");
+        this.capturedImagePath = path;
+        this.width = width;
+        this.height = height;
+        this.capturedStrokeCount = savedStrokeSize;
+        this.colorType = colorType;
+        this.hasCapturedMask = hasCapturedMask;
+        if (this.context.getLayerGroup() != null) {
+            this.capturedImagePanel = this.context.getLayerGroup().getPanel();
+        }
         return this;
     }
 }

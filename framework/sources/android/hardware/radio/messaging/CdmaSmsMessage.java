@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CdmaSmsMessage implements Parcelable {
     public static final Parcelable.Creator<CdmaSmsMessage> CREATOR = new Parcelable.Creator<CdmaSmsMessage>() { // from class: android.hardware.radio.messaging.CdmaSmsMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsMessage createFromParcel(Parcel _aidl_source) {
             CdmaSmsMessage _aidl_out = new CdmaSmsMessage();
@@ -20,6 +18,7 @@ public class CdmaSmsMessage implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CdmaSmsMessage[] newArray(int _aidl_size) {
             return new CdmaSmsMessage[_aidl_size];
@@ -31,25 +30,6 @@ public class CdmaSmsMessage implements Parcelable {
     public int teleserviceId = 0;
     public boolean isServicePresent = false;
     public int serviceCategory = 0;
-
-    /* renamed from: android.hardware.radio.messaging.CdmaSmsMessage$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CdmaSmsMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsMessage createFromParcel(Parcel _aidl_source) {
-            CdmaSmsMessage _aidl_out = new CdmaSmsMessage();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CdmaSmsMessage[] newArray(int _aidl_size) {
-            return new CdmaSmsMessage[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -148,7 +128,7 @@ public class CdmaSmsMessage implements Parcelable {
         _aidl_sj.add("address: " + Objects.toString(this.address));
         _aidl_sj.add("subAddress: " + Objects.toString(this.subAddress));
         _aidl_sj.add("bearerData: " + Arrays.toString(this.bearerData));
-        return "android.hardware.radio.messaging.CdmaSmsMessage" + _aidl_sj.toString();
+        return "CdmaSmsMessage" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

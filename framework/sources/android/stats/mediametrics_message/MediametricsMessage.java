@@ -3,7 +3,6 @@ package android.stats.mediametrics_message;
 /* loaded from: classes3.dex */
 public final class MediametricsMessage {
 
-    /* loaded from: classes3.dex */
     public final class AudioPolicyData {
         public static final long ACTIVE_DEVICE = 1138166333449L;
         public static final long ACTIVE_PACKAGE = 1138166333447L;
@@ -19,7 +18,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class AudioRecordData {
         public static final long ATTRIBUTES = 1138166333453L;
         public static final long CHANNELS = 1120986464261L;
@@ -41,7 +39,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class AudioThreadData {
         public static final long ACTIVE_MILLIS = 1112396529673L;
         public static final long CHANNEL_MASK = 1112396529678L;
@@ -74,7 +71,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class AudioTrackData {
         public static final long ATTRIBUTES = 1138166333451L;
         public static final long CHANNEL_MASK = 1112396529669L;
@@ -92,12 +88,12 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class CodecData {
         public static final long APP_MAX_INPUT_SIZE = 1120986464322L;
         public static final long ARRAY_MODE = 1120986464319L;
         public static final long BITRATE = 1120986464280L;
         public static final long BITRATE_MODE = 1138166333463L;
+        public static final long CALLER_UID = 1120986464329L;
         public static final long CAPTURE_RATE = 1103806595108L;
         public static final long CHANNEL_COUNT = 1120986464283L;
         public static final long CODEC = 1138166333441L;
@@ -143,6 +139,7 @@ public final class MediametricsMessage {
         public static final long PARSED_COLOR_RANGE = 1120986464313L;
         public static final long PARSED_COLOR_STANDARD = 1120986464312L;
         public static final long PARSED_COLOR_TRANSFER = 1120986464314L;
+        public static final long PIXEL_FORMAT = 1112396529738L;
         public static final long PRIORITY = 1120986464294L;
         public static final long PROFILE = 1120986464266L;
         public static final long QUEUE_INPUT_BUFFER_ERROR = 1120986464277L;
@@ -171,7 +168,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class ExtractorData {
         public static final long ENTRY_POINT = 1159641169924L;
         public static final long FORMAT = 1138166333441L;
@@ -188,7 +184,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class NuPlayerData {
         public static final long AUDIO_CODEC = 1138166333450L;
         public static final long AUDIO_MIME = 1138166333449L;
@@ -215,7 +210,6 @@ public final class MediametricsMessage {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class RecorderData {
         public static final long AUDIO_BITRATE = 1120986464270L;
         public static final long AUDIO_CHANNELS = 1120986464271L;

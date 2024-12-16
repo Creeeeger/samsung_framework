@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ApexSessionParams implements Parcelable {
     public static final Parcelable.Creator<ApexSessionParams> CREATOR = new Parcelable.Creator<ApexSessionParams>() { // from class: android.apex.ApexSessionParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApexSessionParams createFromParcel(Parcel _aidl_source) {
             ApexSessionParams _aidl_out = new ApexSessionParams();
@@ -17,6 +15,7 @@ public class ApexSessionParams implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApexSessionParams[] newArray(int _aidl_size) {
             return new ApexSessionParams[_aidl_size];
@@ -27,25 +26,6 @@ public class ApexSessionParams implements Parcelable {
     public boolean hasRollbackEnabled = false;
     public boolean isRollback = false;
     public int rollbackId = 0;
-
-    /* renamed from: android.apex.ApexSessionParams$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApexSessionParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApexSessionParams createFromParcel(Parcel _aidl_source) {
-            ApexSessionParams _aidl_out = new ApexSessionParams();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApexSessionParams[] newArray(int _aidl_size) {
-            return new ApexSessionParams[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel parcel, int i) {

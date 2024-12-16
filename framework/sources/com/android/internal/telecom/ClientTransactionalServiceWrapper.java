@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.telecom.ClientTransactionalServiceWrapper;
 import com.android.internal.telecom.ICallEventCallback;
+import com.android.server.telecom.flags.Flags;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,8 +61,8 @@ public class ClientTransactionalServiceWrapper {
         return this.mCallEventCallback;
     }
 
-    /* loaded from: classes5.dex */
-    public class ReceiverWrapper implements Consumer<Boolean> {
+    /* JADX INFO: Access modifiers changed from: private */
+    class ReceiverWrapper implements Consumer<Boolean> {
         private final ResultReceiver mRepeaterReceiver;
 
         ReceiverWrapper(ResultReceiver resultReceiver) {
@@ -83,9 +84,8 @@ public class ClientTransactionalServiceWrapper {
         }
     }
 
-    /* renamed from: com.android.internal.telecom.ClientTransactionalServiceWrapper$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends ICallEventCallback.Stub {
+    /* renamed from: com.android.internal.telecom.ClientTransactionalServiceWrapper$1, reason: invalid class name */
+    class AnonymousClass1 extends ICallEventCallback.Stub {
         private static final String ON_ANSWER = "onAnswer";
         private static final String ON_AVAILABLE_CALL_ENDPOINTS = "onAvailableCallEndpointsChanged";
         private static final String ON_CALL_STREAMING_FAILED = "onCallStreamingFailed";
@@ -96,6 +96,7 @@ public class ClientTransactionalServiceWrapper {
         private static final String ON_SET_ACTIVE = "onSetActive";
         private static final String ON_SET_INACTIVE = "onSetInactive";
         private static final String ON_STREAMING_STARTED = "onStreamingStarted";
+        private static final String ON_VIDEO_STATE_CHANGED = "onVideoStateChanged";
 
         AnonymousClass1() {
         }
@@ -105,7 +106,7 @@ public class ClientTransactionalServiceWrapper {
             TransactionalCall call = (TransactionalCall) ClientTransactionalServiceWrapper.this.mCallIdToTransactionalCall.get(callId);
             if (call != null) {
                 final CallControlCallback callback = call.getCallControlCallback();
-                final ReceiverWrapper outcomeReceiverWrapper = new ReceiverWrapper(ackResultReceiver);
+                final ReceiverWrapper outcomeReceiverWrapper = ClientTransactionalServiceWrapper.this.new ReceiverWrapper(ackResultReceiver);
                 long identity = Binder.clearCallingIdentity();
                 try {
                     try {
@@ -124,6 +125,7 @@ public class ClientTransactionalServiceWrapper {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
         public /* synthetic */ void lambda$handleCallEventCallback$0(String action, CallControlCallback callback, ReceiverWrapper outcomeReceiverWrapper, Object[] args, String callId) {
             char c;
@@ -170,22 +172,20 @@ public class ClientTransactionalServiceWrapper {
             switch (c) {
                 case 0:
                     callback.onSetActive(outcomeReceiverWrapper);
-                    return;
+                    break;
                 case 1:
                     callback.onSetInactive(outcomeReceiverWrapper);
-                    return;
+                    break;
                 case 2:
                     callback.onDisconnect((DisconnectCause) args[0], outcomeReceiverWrapper);
                     ClientTransactionalServiceWrapper.this.untrackCall(callId);
-                    return;
+                    break;
                 case 3:
                     callback.onAnswer(((Integer) args[0]).intValue(), outcomeReceiverWrapper);
-                    return;
+                    break;
                 case 4:
                     callback.onCallStreamingStarted(outcomeReceiverWrapper);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -196,7 +196,7 @@ public class ClientTransactionalServiceWrapper {
             if (call != null) {
                 OutcomeReceiver<CallControl, CallException> pendingControl = call.getPendingControl();
                 if (resultCode == 0) {
-                    CallControl control = new CallControl(callId, callControl, ClientTransactionalServiceWrapper.this.mRepository, ClientTransactionalServiceWrapper.this.mPhoneAccountHandle);
+                    CallControl control = new CallControl(callId, callControl);
                     pendingControl.onResult(control);
                     call.setCallControl(control);
                     return;
@@ -245,6 +245,11 @@ public class ClientTransactionalServiceWrapper {
             handleEventCallback(callId, ON_MUTE_STATE_CHANGED, Boolean.valueOf(isMuted));
         }
 
+        @Override // com.android.internal.telecom.ICallEventCallback
+        public void onVideoStateChanged(String callId, int videoState) {
+            handleEventCallback(callId, ON_VIDEO_STATE_CHANGED, Integer.valueOf(videoState));
+        }
+
         public void handleEventCallback(String callId, final String action, final Object arg) {
             Log.d(ClientTransactionalServiceWrapper.TAG, TextUtils.formatSimple("hEC: [%s], callId=[%s]", action, callId));
             TransactionalCall call = (TransactionalCall) ClientTransactionalServiceWrapper.this.mCallIdToTransactionalCall.get(callId);
@@ -266,7 +271,7 @@ public class ClientTransactionalServiceWrapper {
         }
 
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        public static /* synthetic */ void lambda$handleEventCallback$1(String action, CallEventCallback callback, Object arg) {
+        static /* synthetic */ void lambda$handleEventCallback$1(String action, CallEventCallback callback, Object arg) {
             char c;
             switch (action.hashCode()) {
                 case -2134827621:
@@ -278,7 +283,7 @@ public class ClientTransactionalServiceWrapper {
                     break;
                 case -564325214:
                     if (action.equals(ON_CALL_STREAMING_FAILED)) {
-                        c = 3;
+                        c = 4;
                         break;
                     }
                     c = 65535;
@@ -286,6 +291,13 @@ public class ClientTransactionalServiceWrapper {
                 case -103636834:
                     if (action.equals(ON_AVAILABLE_CALL_ENDPOINTS)) {
                         c = 1;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 581203167:
+                    if (action.equals(ON_VIDEO_STATE_CHANGED)) {
+                        c = 3;
                         break;
                     }
                     c = 65535;
@@ -304,18 +316,22 @@ public class ClientTransactionalServiceWrapper {
             switch (c) {
                 case 0:
                     callback.onCallEndpointChanged((CallEndpoint) arg);
-                    return;
+                    break;
                 case 1:
                     callback.onAvailableCallEndpointsChanged((List) arg);
-                    return;
+                    break;
                 case 2:
                     callback.onMuteStateChanged(((Boolean) arg).booleanValue());
-                    return;
+                    break;
                 case 3:
+                    if (Flags.transactionalVideoState()) {
+                        callback.onVideoStateChanged(((Integer) arg).intValue());
+                        break;
+                    }
+                    break;
+                case 4:
                     callback.onCallStreamingFailed(((Integer) arg).intValue());
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 

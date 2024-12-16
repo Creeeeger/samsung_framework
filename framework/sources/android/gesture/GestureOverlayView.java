@@ -65,7 +65,6 @@ public class GestureOverlayView extends FrameLayout {
     private float mX;
     private float mY;
 
-    /* loaded from: classes.dex */
     public interface OnGestureListener {
         void onGesture(GestureOverlayView gestureOverlayView, MotionEvent motionEvent);
 
@@ -76,12 +75,10 @@ public class GestureOverlayView extends FrameLayout {
         void onGestureStarted(GestureOverlayView gestureOverlayView, MotionEvent motionEvent);
     }
 
-    /* loaded from: classes.dex */
     public interface OnGesturePerformedListener {
         void onGesturePerformed(GestureOverlayView gestureOverlayView, Gesture gesture);
     }
 
-    /* loaded from: classes.dex */
     public interface OnGesturingListener {
         void onGesturingEnded(GestureOverlayView gestureOverlayView);
 
@@ -158,9 +155,8 @@ public class GestureOverlayView extends FrameLayout {
         this.mInterpolator = new AccelerateDecelerateInterpolator();
         this.mFadingOut = new FadeOutRunnable();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GestureOverlayView, defStyleAttr, defStyleRes);
-        float f = a.getFloat(1, this.mGestureStrokeWidth);
-        this.mGestureStrokeWidth = f;
-        this.mInvalidateExtraBorder = Math.max(1, ((int) f) - 1);
+        this.mGestureStrokeWidth = a.getFloat(1, this.mGestureStrokeWidth);
+        this.mInvalidateExtraBorder = Math.max(1, ((int) this.mGestureStrokeWidth) - 1);
         this.mCertainGestureColor = a.getColor(2, this.mCertainGestureColor);
         this.mUncertainGestureColor = a.getColor(3, this.mUncertainGestureColor);
         this.mFadeDuration = a.getInt(5, (int) this.mFadeDuration);
@@ -286,7 +282,7 @@ public class GestureOverlayView extends FrameLayout {
         }
         setCurrentColor(this.mCertainGestureColor);
         this.mCurrentGesture = gesture;
-        Path path = gesture.toPath();
+        Path path = this.mCurrentGesture.toPath();
         RectF bounds = new RectF();
         path.computeBounds(bounds, true);
         this.mPath.rewind();
@@ -389,11 +385,11 @@ public class GestureOverlayView extends FrameLayout {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setPaintAlpha(int alpha) {
-        int i = this.mCurrentColor;
-        int baseAlpha = i >>> 24;
+        int baseAlpha = this.mCurrentColor >>> 24;
         int useAlpha = (baseAlpha * (alpha + (alpha >> 7))) >> 8;
-        this.mGesturePaint.setColor(((i << 8) >>> 8) | (useAlpha << 24));
+        this.mGesturePaint.setColor(((this.mCurrentColor << 8) >>> 8) | (useAlpha << 24));
     }
 
     public void clear(boolean animated) {
@@ -410,10 +406,8 @@ public class GestureOverlayView extends FrameLayout {
             this.mFadingAlpha = 1.0f;
             this.mIsFadingOut = true;
             this.mFadingHasStarted = false;
-            long currentAnimationTimeMillis = AnimationUtils.currentAnimationTimeMillis();
-            long j = this.mFadeOffset;
-            this.mFadingStart = currentAnimationTimeMillis + j;
-            postDelayed(this.mFadingOut, j);
+            this.mFadingStart = AnimationUtils.currentAnimationTimeMillis() + this.mFadeOffset;
+            postDelayed(this.mFadingOut, this.mFadeOffset);
             return;
         }
         this.mFadingAlpha = 1.0f;
@@ -471,16 +465,15 @@ public class GestureOverlayView extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancelClearAnimation();
     }
 
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Gesture gesture;
         if (isEnabled()) {
-            boolean cancelDispatch = (this.mIsGesturing || ((gesture = this.mCurrentGesture) != null && gesture.getStrokesCount() > 0 && this.mPreviousWasGesturing)) && this.mInterceptEvents;
+            boolean cancelDispatch = (this.mIsGesturing || (this.mCurrentGesture != null && this.mCurrentGesture.getStrokesCount() > 0 && this.mPreviousWasGesturing)) && this.mInterceptEvents;
             processEvent(event);
             if (cancelDispatch) {
                 event.setAction(3);
@@ -542,11 +535,8 @@ public class GestureOverlayView extends FrameLayout {
             this.mResetGesture = false;
             this.mCurrentGesture = null;
             this.mPath.rewind();
-        } else {
-            Gesture gesture = this.mCurrentGesture;
-            if ((gesture == null || gesture.getStrokesCount() == 0) && this.mHandleGestureActions) {
-                setCurrentColor(this.mUncertainGestureColor);
-            }
+        } else if ((this.mCurrentGesture == null || this.mCurrentGesture.getStrokesCount() == 0) && this.mHandleGestureActions) {
+            setCurrentColor(this.mUncertainGestureColor);
         }
         if (this.mFadingHasStarted) {
             cancelClearAnimation();
@@ -585,9 +575,7 @@ public class GestureOverlayView extends FrameLayout {
         }
         Rect areaToRefresh2 = this.mInvalidRect;
         int border = this.mInvalidateExtraBorder;
-        float f = this.mCurveEndX;
-        float f2 = this.mCurveEndY;
-        areaToRefresh2.set(((int) f) - border, ((int) f2) - border, ((int) f) + border, ((int) f2) + border);
+        areaToRefresh2.set(((int) this.mCurveEndX) - border, ((int) this.mCurveEndY) - border, ((int) this.mCurveEndX) + border, ((int) this.mCurveEndY) + border);
         float cX = (x + previousX) / 2.0f;
         this.mCurveEndX = cX;
         float cY = (y + previousY) / 2.0f;
@@ -598,12 +586,9 @@ public class GestureOverlayView extends FrameLayout {
         this.mX = x;
         this.mY = y;
         this.mStrokeBuffer.add(new GesturePoint(x, y, event.getEventTime()));
-        if (!this.mHandleGestureActions || this.mIsGesturing) {
-            areaToRefresh = areaToRefresh2;
-        } else {
-            float hypot = this.mTotalLength + ((float) Math.hypot(dx, dy));
-            this.mTotalLength = hypot;
-            if (hypot <= this.mGestureStrokeLengthThreshold) {
+        if (this.mHandleGestureActions && !this.mIsGesturing) {
+            this.mTotalLength += (float) Math.hypot(dx, dy);
+            if (this.mTotalLength <= this.mGestureStrokeLengthThreshold) {
                 areaToRefresh = areaToRefresh2;
             } else {
                 OrientedBoundingBox box = GestureUtils.computeOrientedBoundingBox(this.mStrokeBuffer);
@@ -627,6 +612,8 @@ public class GestureOverlayView extends FrameLayout {
                     areaToRefresh = areaToRefresh2;
                 }
             }
+        } else {
+            areaToRefresh = areaToRefresh2;
         }
         ArrayList<OnGestureListener> listeners2 = this.mOnGestureListeners;
         int count2 = listeners2.size();
@@ -638,17 +625,15 @@ public class GestureOverlayView extends FrameLayout {
 
     private void touchUp(MotionEvent event, boolean cancel) {
         this.mIsListeningForGestures = false;
-        Gesture gesture = this.mCurrentGesture;
-        if (gesture != null) {
-            gesture.addStroke(new GestureStroke(this.mStrokeBuffer));
+        if (this.mCurrentGesture != null) {
+            this.mCurrentGesture.addStroke(new GestureStroke(this.mStrokeBuffer));
             if (!cancel) {
                 ArrayList<OnGestureListener> listeners = this.mOnGestureListeners;
                 int count = listeners.size();
                 for (int i = 0; i < count; i++) {
                     listeners.get(i).onGestureEnded(this, event);
                 }
-                boolean z = this.mHandleGestureActions;
-                clear(z && this.mFadeEnabled, z && this.mIsGesturing, false);
+                clear(this.mHandleGestureActions && this.mFadeEnabled, this.mHandleGestureActions && this.mIsGesturing, false);
             } else {
                 cancelGesture(event);
             }
@@ -674,6 +659,7 @@ public class GestureOverlayView extends FrameLayout {
         clear(false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void fireOnGesturePerformed() {
         ArrayList<OnGesturePerformedListener> actionListeners = this.mOnGesturePerformedListeners;
         int count = actionListeners.size();
@@ -682,14 +668,9 @@ public class GestureOverlayView extends FrameLayout {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class FadeOutRunnable implements Runnable {
+    private class FadeOutRunnable implements Runnable {
         boolean fireActionPerformed;
         boolean resetMultipleStrokes;
-
-        /* synthetic */ FadeOutRunnable(GestureOverlayView gestureOverlayView, FadeOutRunnableIA fadeOutRunnableIA) {
-            this();
-        }
 
         private FadeOutRunnable() {
         }
@@ -711,11 +692,9 @@ public class GestureOverlayView extends FrameLayout {
                     GestureOverlayView.this.setPaintAlpha(255);
                 } else {
                     GestureOverlayView.this.mFadingHasStarted = true;
-                    float interpolatedTime = Math.max(0.0f, Math.min(1.0f, ((float) duration) / ((float) GestureOverlayView.this.mFadeDuration)));
-                    GestureOverlayView gestureOverlayView = GestureOverlayView.this;
-                    gestureOverlayView.mFadingAlpha = 1.0f - gestureOverlayView.mInterpolator.getInterpolation(interpolatedTime);
-                    GestureOverlayView gestureOverlayView2 = GestureOverlayView.this;
-                    gestureOverlayView2.setPaintAlpha((int) (gestureOverlayView2.mFadingAlpha * 255.0f));
+                    float interpolatedTime = Math.max(0.0f, Math.min(1.0f, duration / GestureOverlayView.this.mFadeDuration));
+                    GestureOverlayView.this.mFadingAlpha = 1.0f - GestureOverlayView.this.mInterpolator.getInterpolation(interpolatedTime);
+                    GestureOverlayView.this.setPaintAlpha((int) (GestureOverlayView.this.mFadingAlpha * 255.0f));
                     GestureOverlayView.this.postDelayed(this, 16L);
                 }
             } else if (this.resetMultipleStrokes) {

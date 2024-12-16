@@ -4,7 +4,6 @@ import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Preconditions;
 import com.samsung.android.knox.analytics.database.Contract;
 import java.util.Arrays;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class LongArray implements Cloneable {
@@ -40,9 +39,8 @@ public class LongArray implements Cloneable {
 
     public void resize(int newSize) {
         Preconditions.checkArgumentNonnegative(newSize);
-        long[] jArr = this.mValues;
-        if (newSize <= jArr.length) {
-            Arrays.fill(jArr, newSize, jArr.length, 0L);
+        if (newSize <= this.mValues.length) {
+            Arrays.fill(this.mValues, newSize, this.mValues.length, 0L);
         } else {
             ensureCapacity(newSize - this.mSize);
         }
@@ -55,14 +53,11 @@ public class LongArray implements Cloneable {
 
     public void add(int index, long value) {
         ensureCapacity(1);
-        int i = this.mSize;
-        int rightSegment = i - index;
-        int i2 = i + 1;
-        this.mSize = i2;
-        ArrayUtils.checkBounds(i2, index);
+        int rightSegment = this.mSize - index;
+        this.mSize++;
+        ArrayUtils.checkBounds(this.mSize, index);
         if (rightSegment != 0) {
-            long[] jArr = this.mValues;
-            System.arraycopy(jArr, index, jArr, index + 1, rightSegment);
+            System.arraycopy(this.mValues, index, this.mValues, index + 1, rightSegment);
         }
         this.mValues[index] = value;
     }
@@ -90,8 +85,8 @@ public class LongArray implements Cloneable {
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public LongArray m4928clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public LongArray m5212clone() {
         LongArray clone = null;
         try {
             clone = (LongArray) super.clone();
@@ -124,8 +119,7 @@ public class LongArray implements Cloneable {
 
     public void remove(int index) {
         ArrayUtils.checkBounds(this.mSize, index);
-        long[] jArr = this.mValues;
-        System.arraycopy(jArr, index + 1, jArr, index, (this.mSize - index) - 1);
+        System.arraycopy(this.mValues, index + 1, this.mValues, index, (this.mSize - index) - 1);
         this.mSize--;
     }
 

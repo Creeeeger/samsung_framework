@@ -74,7 +74,7 @@ public final class SehAdnRecord {
         this.nameDcs = _hidl_blob.getInt32(_hidl_offset + 16);
         this.nameLength = _hidl_blob.getInt32(_hidl_offset + 20);
         this.number = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         int _hidl_vec_size2 = _hidl_blob.getInt32(_hidl_offset + 40 + 8);
         HwBlob childBlob2 = parcel.readEmbeddedBuffer(_hidl_vec_size2 * 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, true);
         this.gsm8bitEmail.clear();
@@ -84,13 +84,13 @@ public final class SehAdnRecord {
         }
         this.gsm8bitEmailLength = _hidl_blob.getInt32(_hidl_offset + 56);
         this.anr = _hidl_blob.getString(_hidl_offset + 64);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
+        parcel.readEmbeddedBuffer(this.anr.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 64 + 0, false);
         this.anrA = _hidl_blob.getString(_hidl_offset + 80);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
+        parcel.readEmbeddedBuffer(this.anrA.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 80 + 0, false);
         this.anrB = _hidl_blob.getString(_hidl_offset + 96);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
+        parcel.readEmbeddedBuffer(this.anrB.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 96 + 0, false);
         this.anrC = _hidl_blob.getString(_hidl_offset + 112);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 112 + 0, false);
+        parcel.readEmbeddedBuffer(this.anrC.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 112 + 0, false);
         int _hidl_vec_size3 = _hidl_blob.getInt32(_hidl_offset + 128 + 8);
         HwBlob childBlob3 = parcel.readEmbeddedBuffer(_hidl_vec_size3 * 1, _hidl_blob.handle(), _hidl_offset + 128 + 0, true);
         this.sne.clear();

@@ -36,18 +36,17 @@ public class ColorStateList extends ComplexColor implements Parcelable {
     private static final int[][] EMPTY = {new int[0]};
     private static final SparseArray<WeakReference<ColorStateList>> sCache = new SparseArray<>();
     public static final Parcelable.Creator<ColorStateList> CREATOR = new Parcelable.Creator<ColorStateList>() { // from class: android.content.res.ColorStateList.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ColorStateList[] newArray(int size) {
             return new ColorStateList[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ColorStateList createFromParcel(Parcel source) {
             int N = source.readInt();
-            int[][] stateSpecs = new int[N];
+            int[][] stateSpecs = new int[N][];
             for (int i = 0; i < N; i++) {
                 stateSpecs[i] = source.createIntArray();
             }
@@ -66,21 +65,19 @@ public class ColorStateList extends ComplexColor implements Parcelable {
     }
 
     public static ColorStateList valueOf(int color) {
-        SparseArray<WeakReference<ColorStateList>> sparseArray = sCache;
-        synchronized (sparseArray) {
-            int index = sparseArray.indexOfKey(color);
+        synchronized (sCache) {
+            int index = sCache.indexOfKey(color);
             if (index >= 0) {
-                ColorStateList cached = sparseArray.valueAt(index).get();
+                ColorStateList cached = sCache.valueAt(index).get();
                 if (cached != null) {
                     return cached;
                 }
-                sparseArray.removeAt(index);
+                sCache.removeAt(index);
             }
-            int N = sparseArray.size();
+            int N = sCache.size();
             for (int i = N - 1; i >= 0; i--) {
-                SparseArray<WeakReference<ColorStateList>> sparseArray2 = sCache;
-                if (sparseArray2.valueAt(i).refersTo(null)) {
-                    sparseArray2.removeAt(i);
+                if (sCache.valueAt(i).refersTo(null)) {
+                    sCache.removeAt(i);
                 }
             }
             ColorStateList csl = new ColorStateList(EMPTY, new int[]{color});
@@ -120,7 +117,7 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         return createFromXmlInner(r, parser, attrs, theme);
     }
 
-    public static ColorStateList createFromXmlInner(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+    static ColorStateList createFromXmlInner(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
         String name = parser.getName();
         if (!name.equals("selector")) {
             throw new XmlPullParserException(parser.getPositionDescription() + ": invalid color state list tag " + name);
@@ -159,7 +156,7 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         int defaultColor = -65536;
         boolean hasUnresolvedAttrs4 = false;
         int[][] stateSpecList = (int[][]) ArrayUtils.newUnpaddedArray(int[].class, 20);
-        int[][] themeAttrsList = new int[stateSpecList.length];
+        int[][] themeAttrsList = new int[stateSpecList.length][];
         int[] colorList = new int[stateSpecList.length];
         int listSize = 0;
         while (true) {
@@ -238,17 +235,15 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         }
         this.mChangingConfigurations = changingConfigurations;
         this.mDefaultColor = defaultColor;
-        if (!hasUnresolvedAttrs) {
-            this.mThemeAttrs = null;
+        if (hasUnresolvedAttrs) {
+            this.mThemeAttrs = new int[listSize][];
+            System.arraycopy(themeAttrsList, 0, this.mThemeAttrs, 0, listSize);
         } else {
-            int[][] iArr = new int[listSize];
-            this.mThemeAttrs = iArr;
-            System.arraycopy(themeAttrsList, 0, iArr, 0, listSize);
+            this.mThemeAttrs = null;
         }
-        int[] iArr2 = new int[listSize];
-        this.mColors = iArr2;
-        this.mStateSpecs = new int[listSize];
-        System.arraycopy(colorList, 0, iArr2, 0, listSize);
+        this.mColors = new int[listSize];
+        this.mStateSpecs = new int[listSize][];
+        System.arraycopy(colorList, 0, this.mColors, 0, listSize);
         System.arraycopy(stateSpecList, 0, this.mStateSpecs, 0, listSize);
         onColorsChanged();
     }
@@ -323,8 +318,7 @@ public class ColorStateList extends ComplexColor implements Parcelable {
 
     @Override // android.content.res.ComplexColor
     public boolean isStateful() {
-        int[][] iArr = this.mStateSpecs;
-        return iArr.length >= 1 && iArr[0].length > 0;
+        return this.mStateSpecs.length >= 1 && this.mStateSpecs[0].length > 0;
     }
 
     public boolean hasFocusStateSpecified() {
@@ -421,9 +415,7 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         return this.mFactory;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class ColorStateListFactory extends ConstantState<ComplexColor> {
+    private static class ColorStateListFactory extends ConstantState<ComplexColor> {
         private final ColorStateList mSrc;
 
         public ColorStateListFactory(ColorStateList src) {
@@ -436,13 +428,13 @@ public class ColorStateList extends ComplexColor implements Parcelable {
         }
 
         @Override // android.content.res.ConstantState
-        /* renamed from: newInstance */
+        /* renamed from: newInstance, reason: merged with bridge method [inline-methods] */
         public ComplexColor newInstance2() {
             return this.mSrc;
         }
 
         @Override // android.content.res.ConstantState
-        /* renamed from: newInstance */
+        /* renamed from: newInstance, reason: merged with bridge method [inline-methods] */
         public ComplexColor newInstance2(Resources res, Resources.Theme theme) {
             return this.mSrc.obtainForTheme(theme);
         }
@@ -464,28 +456,5 @@ public class ColorStateList extends ComplexColor implements Parcelable {
             dest.writeIntArray(this.mStateSpecs[i]);
         }
         dest.writeIntArray(this.mColors);
-    }
-
-    /* renamed from: android.content.res.ColorStateList$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ColorStateList> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ColorStateList[] newArray(int size) {
-            return new ColorStateList[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ColorStateList createFromParcel(Parcel source) {
-            int N = source.readInt();
-            int[][] stateSpecs = new int[N];
-            for (int i = 0; i < N; i++) {
-                stateSpecs[i] = source.createIntArray();
-            }
-            int[] colors = source.createIntArray();
-            return new ColorStateList(stateSpecs, colors);
-        }
     }
 }

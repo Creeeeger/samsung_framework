@@ -20,11 +20,7 @@ public class ClipDrawable extends DrawableWrapper {
     private ClipState mState;
     private final Rect mTmpRect;
 
-    /* synthetic */ ClipDrawable(ClipState clipState, Resources resources, ClipDrawableIA clipDrawableIA) {
-        this(clipState, resources);
-    }
-
-    public ClipDrawable() {
+    ClipDrawable() {
         this(new ClipState(null, null), null);
     }
 
@@ -82,9 +78,8 @@ public class ClipDrawable extends DrawableWrapper {
         state.mGravity = a.getInt(0, state.mGravity);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         super.onLevelChange(level);
         invalidateSelf();
         return true;
@@ -139,13 +134,11 @@ public class ClipDrawable extends DrawableWrapper {
 
     @Override // android.graphics.drawable.DrawableWrapper
     DrawableWrapper.DrawableWrapperState mutateConstantState() {
-        ClipState clipState = new ClipState(this.mState, null);
-        this.mState = clipState;
-        return clipState;
+        this.mState = new ClipState(this.mState, null);
+        return this.mState;
     }
 
-    /* loaded from: classes.dex */
-    public static final class ClipState extends DrawableWrapper.DrawableWrapperState {
+    static final class ClipState extends DrawableWrapper.DrawableWrapperState {
         int mGravity;
         int mOrientation;
         private int[] mThemeAttrs;

@@ -81,7 +81,7 @@ public enum AudioChannelMask {
         return this.rawName;
     }
 
-    public static AudioChannelMask fromString(String rawString) {
+    static AudioChannelMask fromString(String rawString) {
         for (AudioChannelMask _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

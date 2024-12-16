@@ -2,7 +2,8 @@ package com.samsung.vekit.Item;
 
 import android.util.Log;
 import com.samsung.vekit.Common.Object.Filter;
-import com.samsung.vekit.Common.Object.Tone;
+import com.samsung.vekit.Common.Object.FilterOption;
+import com.samsung.vekit.Common.Object.ToneInfo;
 import com.samsung.vekit.Common.Type.ContentType;
 import com.samsung.vekit.Common.Type.ItemType;
 import com.samsung.vekit.Common.Type.MeshType;
@@ -10,21 +11,21 @@ import com.samsung.vekit.Common.Type.ToneType;
 import com.samsung.vekit.Common.VEContext;
 import com.samsung.vekit.Content.Content;
 import com.samsung.vekit.Layer.Layer;
-import java.util.HashMap;
-import java.util.Objects;
 
 /* loaded from: classes6.dex */
 public class ImageItem extends Item {
     private Filter filter;
     private float filterIntensity;
+    private FilterOption filterOption;
     private float opacity;
-    protected HashMap<Integer, Tone> toneMap;
+    private ToneInfo toneInfo;
 
     public ImageItem(VEContext context, int id, String name) {
         super(context, ItemType.IMAGE, id, name);
         this.filterIntensity = 100.0f;
         this.opacity = 1.0f;
-        initializeTone();
+        this.toneInfo = new ToneInfo();
+        this.filterOption = new FilterOption();
     }
 
     @Override // com.samsung.vekit.Item.Item
@@ -83,11 +84,22 @@ public class ImageItem extends Item {
     }
 
     @Override // com.samsung.vekit.Item.Item
+    public Item setToneIntensity(ToneType type, int intensity) {
+        this.toneInfo.setTone(type, intensity);
+        return this;
+    }
+
+    @Override // com.samsung.vekit.Item.Item
+    public int getToneIntensity(ToneType type) {
+        return (int) this.toneInfo.getTone(type);
+    }
+
+    @Override // com.samsung.vekit.Item.Item
     public float getOpacity() {
         return this.opacity;
     }
 
-    @Override // com.samsung.vekit.Item.Item
+    @Override // com.samsung.vekit.Item.Item, com.samsung.vekit.Common.Object.Element
     public ImageItem setOpacity(float opacity) {
         this.opacity = opacity;
         return this;
@@ -102,20 +114,15 @@ public class ImageItem extends Item {
         return this.meshType;
     }
 
-    public Item setToneIntensity(ToneType type, int intensity) {
-        ((Tone) Objects.requireNonNull(this.toneMap.get(Integer.valueOf(type.ordinal())))).setIntensity(intensity);
-        return this;
-    }
-
-    public int getToneIntensity(ToneType type) {
-        return ((Tone) Objects.requireNonNull(this.toneMap.get(Integer.valueOf(type.ordinal())))).getIntensity();
-    }
-
     private void initializeTone() {
-        this.toneMap = new HashMap<>();
-        ToneType[] values = ToneType.values();
-        for (ToneType type : values) {
-            this.toneMap.put(Integer.valueOf(type.ordinal()), new Tone(type, 0));
-        }
+        this.toneInfo = new ToneInfo();
+    }
+
+    public void setFilterOption(FilterOption filterOption) {
+        this.filterOption = filterOption;
+    }
+
+    public FilterOption getFilterOption() {
+        return this.filterOption;
     }
 }

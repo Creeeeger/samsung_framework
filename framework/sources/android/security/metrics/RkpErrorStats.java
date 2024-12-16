@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class RkpErrorStats implements Parcelable {
     public static final Parcelable.Creator<RkpErrorStats> CREATOR = new Parcelable.Creator<RkpErrorStats>() { // from class: android.security.metrics.RkpErrorStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RkpErrorStats createFromParcel(Parcel _aidl_source) {
             RkpErrorStats _aidl_out = new RkpErrorStats();
@@ -17,6 +15,7 @@ public class RkpErrorStats implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RkpErrorStats[] newArray(int _aidl_size) {
             return new RkpErrorStats[_aidl_size];
@@ -24,25 +23,6 @@ public class RkpErrorStats implements Parcelable {
     };
     public int rkpError;
     public int security_level;
-
-    /* renamed from: android.security.metrics.RkpErrorStats$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RkpErrorStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RkpErrorStats createFromParcel(Parcel _aidl_source) {
-            RkpErrorStats _aidl_out = new RkpErrorStats();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RkpErrorStats[] newArray(int _aidl_size) {
-            return new RkpErrorStats[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

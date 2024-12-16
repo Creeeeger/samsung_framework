@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextDevicePosition extends SContextEventContext {
     public static final Parcelable.Creator<SContextDevicePosition> CREATOR = new Parcelable.Creator<SContextDevicePosition>() { // from class: android.hardware.scontext.SContextDevicePosition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextDevicePosition createFromParcel(Parcel in) {
             return new SContextDevicePosition(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextDevicePosition[] newArray(int size) {
             return new SContextDevicePosition[size];
@@ -23,7 +22,7 @@ public class SContextDevicePosition extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextDevicePosition() {
+    SContextDevicePosition() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextDevicePosition extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextDevicePosition$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextDevicePosition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextDevicePosition createFromParcel(Parcel in) {
-            return new SContextDevicePosition(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextDevicePosition[] newArray(int size) {
-            return new SContextDevicePosition[size];
-        }
     }
 }

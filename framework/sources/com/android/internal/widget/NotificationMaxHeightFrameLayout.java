@@ -30,7 +30,7 @@ public class NotificationMaxHeightFrameLayout extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (View.MeasureSpec.getSize(heightMeasureSpec) > this.mNotificationMaxHeight) {
             int mode = View.MeasureSpec.getMode(heightMeasureSpec);
             heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(this.mNotificationMaxHeight, mode);

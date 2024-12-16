@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractionSessionShowCallback extends IInterface {
     void onFailed() throws RemoteException;
 
     void onShown() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractionSessionShowCallback {
         @Override // com.android.internal.app.IVoiceInteractionSessionShowCallback
         public void onFailed() throws RemoteException {
@@ -28,7 +27,6 @@ public interface IVoiceInteractionSessionShowCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractionSessionShowCallback {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractionSessionShowCallback";
         static final int TRANSACTION_onFailed = 1;
@@ -75,26 +73,23 @@ public interface IVoiceInteractionSessionShowCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onFailed();
+                    return true;
+                case 2:
+                    onShown();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onFailed();
-                            return true;
-                        case 2:
-                            onShown();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractionSessionShowCallback {
+        private static class Proxy implements IVoiceInteractionSessionShowCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

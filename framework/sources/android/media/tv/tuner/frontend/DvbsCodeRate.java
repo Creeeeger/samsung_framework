@@ -3,16 +3,12 @@ package android.media.tv.tuner.frontend;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvbsCodeRate {
     private final int mBitsPer1000Symbol;
     private final long mInnerFec;
     private final boolean mIsLinear;
     private final boolean mIsShortFrames;
-
-    /* synthetic */ DvbsCodeRate(long j, boolean z, boolean z2, int i, DvbsCodeRateIA dvbsCodeRateIA) {
-        this(j, z, z2, i);
-    }
 
     private DvbsCodeRate(long fec, boolean isLinear, boolean isShortFrames, int bitsPer1000Symbol) {
         this.mInnerFec = fec;
@@ -41,16 +37,11 @@ public class DvbsCodeRate {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mBitsPer1000Symbol;
         private long mFec;
         private boolean mIsLinear;
         private boolean mIsShortFrames;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
         }

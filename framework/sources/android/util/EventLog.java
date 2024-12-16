@@ -38,7 +38,6 @@ public class EventLog {
 
     public static native int writeEvent(int i, Object... objArr);
 
-    /* loaded from: classes4.dex */
     public static final class Event {
         private static final byte FLOAT_TYPE = 4;
         private static final int HEADER_SIZE_OFFSET = 2;
@@ -58,9 +57,8 @@ public class EventLog {
         private Exception mLastWtf;
 
         Event(byte[] data) {
-            ByteBuffer wrap = ByteBuffer.wrap(data);
-            this.mBuffer = wrap;
-            wrap.order(ByteOrder.nativeOrder());
+            this.mBuffer = ByteBuffer.wrap(data);
+            this.mBuffer.order(ByteOrder.nativeOrder());
         }
 
         public int getProcessId() {
@@ -99,8 +97,7 @@ public class EventLog {
         public synchronized Object getData() {
             try {
                 int offset = getHeaderSize();
-                ByteBuffer byteBuffer = this.mBuffer;
-                byteBuffer.limit(byteBuffer.getShort(0) + offset);
+                this.mBuffer.limit(this.mBuffer.getShort(0) + offset);
                 if (offset + 4 >= this.mBuffer.limit()) {
                     return null;
                 }
@@ -194,7 +191,7 @@ public class EventLog {
                 if (objects.length > 255) {
                     throw new IllegalArgumentException("Object array too long");
                 }
-                byte[][] bytes2 = new byte[objects.length];
+                byte[][] bytes2 = new byte[objects.length][];
                 int totalLength = 0;
                 for (int i = 0; i < objects.length; i++) {
                     bytes2[i] = encodeObject(objects[i]);
@@ -281,8 +278,7 @@ public class EventLog {
                                     try {
                                         int num = Integer.parseInt(m.group(1));
                                         String name = m.group(2);
-                                        sTagCodes.put(name, Integer.valueOf(num));
-                                        sTagNames.put(Integer.valueOf(num), name);
+                                        registerTagLocked(num, name);
                                     } catch (NumberFormatException e2) {
                                         Log.wtf(TAG, "Error in /system/etc/event-log-tags: " + line, e2);
                                     }
@@ -311,6 +307,21 @@ public class EventLog {
                     }
                 }
             }
+        }
+    }
+
+    private static void registerTagLocked(int num, String name) {
+        sTagCodes.put(name, Integer.valueOf(num));
+        sTagNames.put(Integer.valueOf(num), name);
+    }
+
+    private static synchronized void readTagsFile$ravenwood() {
+        synchronized (EventLog.class) {
+            sTagCodes = new HashMap<>();
+            sTagNames = new HashMap<>();
+            registerTagLocked(524288, "sysui_action");
+            registerTagLocked(com.android.internal.logging.EventLogTags.SYSUI_COUNT, "sysui_count");
+            registerTagLocked(com.android.internal.logging.EventLogTags.SYSUI_HISTOGRAM, "sysui_histogram");
         }
     }
 }

@@ -6,12 +6,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class LegacyVpnInfo implements Parcelable {
     public static final Parcelable.Creator<LegacyVpnInfo> CREATOR = new Parcelable.Creator<LegacyVpnInfo>() { // from class: com.android.internal.net.LegacyVpnInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LegacyVpnInfo createFromParcel(Parcel in) {
             LegacyVpnInfo info = new LegacyVpnInfo();
@@ -21,6 +19,7 @@ public class LegacyVpnInfo implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LegacyVpnInfo[] newArray(int size) {
             return new LegacyVpnInfo[size];
@@ -49,37 +48,13 @@ public class LegacyVpnInfo implements Parcelable {
         out.writeParcelable(this.intent, flags);
     }
 
-    /* renamed from: com.android.internal.net.LegacyVpnInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LegacyVpnInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LegacyVpnInfo createFromParcel(Parcel in) {
-            LegacyVpnInfo info = new LegacyVpnInfo();
-            info.key = in.readString();
-            info.state = in.readInt();
-            info.intent = (PendingIntent) in.readParcelable(null, PendingIntent.class);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LegacyVpnInfo[] newArray(int size) {
-            return new LegacyVpnInfo[size];
-        }
-    }
-
-    /* renamed from: com.android.internal.net.LegacyVpnInfo$2 */
-    /* loaded from: classes4.dex */
+    /* renamed from: com.android.internal.net.LegacyVpnInfo$2, reason: invalid class name */
     static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$android$net$NetworkInfo$DetailedState;
+        static final /* synthetic */ int[] $SwitchMap$android$net$NetworkInfo$DetailedState = new int[NetworkInfo.DetailedState.values().length];
 
         static {
-            int[] iArr = new int[NetworkInfo.DetailedState.values().length];
-            $SwitchMap$android$net$NetworkInfo$DetailedState = iArr;
             try {
-                iArr[NetworkInfo.DetailedState.CONNECTING.ordinal()] = 1;
+                $SwitchMap$android$net$NetworkInfo$DetailedState[NetworkInfo.DetailedState.CONNECTING.ordinal()] = 1;
             } catch (NoSuchFieldError e) {
             }
             try {
@@ -100,16 +75,17 @@ public class LegacyVpnInfo implements Parcelable {
     public static int stateFromNetworkInfo(NetworkInfo.DetailedState state) {
         switch (AnonymousClass2.$SwitchMap$android$net$NetworkInfo$DetailedState[state.ordinal()]) {
             case 1:
-                return 2;
+                break;
             case 2:
-                return 3;
+                break;
             case 3:
-                return 0;
+                break;
             case 4:
-                return 5;
+                break;
             default:
                 Log.w(TAG, "Unhandled state " + state + " ; treating as disconnected");
-                return 0;
+                break;
         }
+        return 0;
     }
 }

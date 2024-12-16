@@ -23,9 +23,6 @@ public abstract class CallDiagnosticService extends Service {
     public static final String SERVICE_INTERFACE = "android.telecom.CallDiagnosticService";
     private ICallDiagnosticServiceAdapter mAdapter;
     private CallDiagnostics.Listener mDiagnosticCallListener = new CallDiagnostics.Listener() { // from class: android.telecom.CallDiagnosticService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.telecom.CallDiagnostics.Listener
         public void onSendDeviceToDeviceMessage(CallDiagnostics callDiagnostics, int message, int value) {
             CallDiagnosticService.this.handleSendDeviceToDeviceMessage(callDiagnostics, message, value);
@@ -45,22 +42,18 @@ public abstract class CallDiagnosticService extends Service {
     private final Map<String, CallDiagnostics> mDiagnosticCallByTelecomCallId = new ArrayMap();
     private final Object mLock = new Object();
 
-    /* renamed from: onBluetoothCallQualityReportReceived */
+    /* renamed from: onBluetoothCallQualityReportReceived, reason: merged with bridge method [inline-methods] */
     public abstract void lambda$handleBluetoothCallQualityReport$4(BluetoothCallQualityReport bluetoothCallQualityReport);
 
     public abstract void onCallAudioStateChanged(CallAudioState callAudioState);
 
     public abstract CallDiagnostics onInitializeCallDiagnostics(Call.Details details);
 
-    /* renamed from: onRemoveCallDiagnostics */
+    /* renamed from: onRemoveCallDiagnostics, reason: merged with bridge method [inline-methods] */
     public abstract void lambda$handleCallRemoved$2(CallDiagnostics callDiagnostics);
 
-    /* loaded from: classes3.dex */
-    public final class CallDiagnosticServiceBinder extends ICallDiagnosticService.Stub {
-        /* synthetic */ CallDiagnosticServiceBinder(CallDiagnosticService callDiagnosticService, CallDiagnosticServiceBinderIA callDiagnosticServiceBinderIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    final class CallDiagnosticServiceBinder extends ICallDiagnosticService.Stub {
         private CallDiagnosticServiceBinder() {
         }
 
@@ -84,6 +77,7 @@ public abstract class CallDiagnosticService extends Service {
             CallDiagnosticService.this.handleCallRemoved(callId);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateCallAudioState$0(CallAudioState callAudioState) {
             CallDiagnosticService.this.onCallAudioStateChanged(callAudioState);
         }
@@ -119,28 +113,6 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
-    /* renamed from: android.telecom.CallDiagnosticService$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements CallDiagnostics.Listener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.telecom.CallDiagnostics.Listener
-        public void onSendDeviceToDeviceMessage(CallDiagnostics callDiagnostics, int message, int value) {
-            CallDiagnosticService.this.handleSendDeviceToDeviceMessage(callDiagnostics, message, value);
-        }
-
-        @Override // android.telecom.CallDiagnostics.Listener
-        public void onDisplayDiagnosticMessage(CallDiagnostics callDiagnostics, int messageId, CharSequence message) {
-            CallDiagnosticService.this.handleDisplayDiagnosticMessage(callDiagnostics, messageId, message);
-        }
-
-        @Override // android.telecom.CallDiagnostics.Listener
-        public void onClearDiagnosticMessage(CallDiagnostics callDiagnostics, int messageId) {
-            CallDiagnosticService.this.handleClearDiagnosticMessage(callDiagnostics, messageId);
-        }
-    }
-
     @Override // android.app.Service
     public IBinder onBind(Intent intent) {
         Log.i(this, "onBind!", new Object[0]);
@@ -151,10 +123,12 @@ public abstract class CallDiagnosticService extends Service {
         return new HandlerExecutor(Handler.createAsync(getMainLooper()));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleSetAdapter(ICallDiagnosticServiceAdapter adapter) {
         this.mAdapter = adapter;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleCallAdded(ParcelableCall parcelableCall) {
         final String telecomCallId = parcelableCall.getId();
         Log.i(this, "handleCallAdded: callId=%s - added", telecomCallId);
@@ -162,7 +136,7 @@ public abstract class CallDiagnosticService extends Service {
         synchronized (this.mLock) {
             this.mCallByTelecomCallId.put(telecomCallId, newCallDetails);
         }
-        getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda2
+        getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
             public final void run() {
                 CallDiagnosticService.this.lambda$handleCallAdded$0(newCallDetails, telecomCallId);
@@ -170,6 +144,7 @@ public abstract class CallDiagnosticService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$handleCallAdded$0(Call.Details newCallDetails, String telecomCallId) {
         CallDiagnostics callDiagnostics = onInitializeCallDiagnostics(newCallDetails);
         if (callDiagnostics == null) {
@@ -182,6 +157,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleCallUpdated(ParcelableCall parcelableCall) {
         String telecomCallId = parcelableCall.getId();
         Log.i(this, "handleCallUpdated: callId=%s - updated", telecomCallId);
@@ -192,7 +168,7 @@ public abstract class CallDiagnosticService extends Service {
                 return;
             }
             this.mCallByTelecomCallId.put(telecomCallId, newCallDetails);
-            getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda0
+            getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     CallDiagnostics.this.handleCallUpdated(newCallDetails);
@@ -201,6 +177,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleCallRemoved(String telecomCallId) {
         final CallDiagnostics callDiagnostics;
         Log.i(this, "handleCallRemoved: callId=%s - removed", telecomCallId);
@@ -215,7 +192,7 @@ public abstract class CallDiagnosticService extends Service {
             }
         }
         if (callDiagnostics != null) {
-            getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda3
+            getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     CallDiagnosticService.this.lambda$handleCallRemoved$2(callDiagnostics);
@@ -224,6 +201,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleReceivedD2DMessage(String callId, final int message, final int value) {
         final CallDiagnostics callDiagnostics;
         Log.i(this, "handleReceivedD2DMessage: callId=%s, msg=%d/%d", callId, Integer.valueOf(message), Integer.valueOf(value));
@@ -240,6 +218,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleCallDisconnected(String callId, DisconnectCause disconnectCause) {
         CallDiagnostics callDiagnostics;
         CharSequence message;
@@ -259,9 +238,10 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleBluetoothCallQualityReport(final BluetoothCallQualityReport qualityReport) {
         Log.i(this, "handleBluetoothCallQualityReport; report=%s", qualityReport);
-        getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda1
+        getExecutor().execute(new Runnable() { // from class: android.telecom.CallDiagnosticService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 CallDiagnosticService.this.lambda$handleBluetoothCallQualityReport$4(qualityReport);
@@ -269,6 +249,7 @@ public abstract class CallDiagnosticService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleCallQualityChanged(String callId, CallQuality callQuality) {
         CallDiagnostics callDiagnostics;
         Log.i(this, "handleCallQualityChanged; call=%s, cq=%s", callId, callQuality);
@@ -280,6 +261,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleSendDeviceToDeviceMessage(CallDiagnostics callDiagnostics, int message, int value) {
         String callId = callDiagnostics.getCallId();
         try {
@@ -290,6 +272,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleDisplayDiagnosticMessage(CallDiagnostics callDiagnostics, int messageId, CharSequence message) {
         String callId = callDiagnostics.getCallId();
         try {
@@ -300,6 +283,7 @@ public abstract class CallDiagnosticService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleClearDiagnosticMessage(CallDiagnostics callDiagnostics, int messageId) {
         String callId = callDiagnostics.getCallId();
         try {

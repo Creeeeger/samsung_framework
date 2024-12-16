@@ -3,10 +3,9 @@ package com.samsung.android.allshare;
 import com.samsung.android.allshare.Device;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class DeviceFinder {
 
-    /* loaded from: classes5.dex */
     public interface IDeviceFinderEventListener {
         void onDeviceAdded(Device.DeviceType deviceType, Device device, ERROR error);
 
@@ -30,4 +29,7 @@ public abstract class DeviceFinder {
     public abstract void setDeviceFinderEventListener(Device.DeviceType deviceType, IDeviceFinderEventListener iDeviceFinderEventListener);
 
     public abstract void unregisterSearchTarget(ArrayList<Device.DeviceType> arrayList);
+
+    protected DeviceFinder() {
+    }
 }

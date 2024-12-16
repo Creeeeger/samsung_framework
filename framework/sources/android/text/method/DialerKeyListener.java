@@ -5,7 +5,7 @@ import android.text.Spannable;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DialerKeyListener extends NumberKeyListener {
     public static final char[] CHARACTERS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*', '+', '-', '(', ')', ',', '/', PhoneNumberUtils.WILD, '.', ' ', ';'};
     private static DialerKeyListener sInstance;
@@ -16,13 +16,11 @@ public class DialerKeyListener extends NumberKeyListener {
     }
 
     public static DialerKeyListener getInstance() {
-        DialerKeyListener dialerKeyListener = sInstance;
-        if (dialerKeyListener != null) {
-            return dialerKeyListener;
+        if (sInstance != null) {
+            return sInstance;
         }
-        DialerKeyListener dialerKeyListener2 = new DialerKeyListener();
-        sInstance = dialerKeyListener2;
-        return dialerKeyListener2;
+        sInstance = new DialerKeyListener();
+        return sInstance;
     }
 
     @Override // android.text.method.KeyListener
@@ -31,7 +29,7 @@ public class DialerKeyListener extends NumberKeyListener {
     }
 
     @Override // android.text.method.NumberKeyListener
-    public int lookup(KeyEvent event, Spannable content) {
+    protected int lookup(KeyEvent event, Spannable content) {
         int meta = getMetaState(content, event);
         int number = event.getNumber();
         if ((meta & 3) == 0 && number != 0) {

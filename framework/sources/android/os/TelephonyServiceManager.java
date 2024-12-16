@@ -2,11 +2,11 @@ package android.os;
 
 import android.content.Context;
 import android.os.ServiceManager;
+import android.telephony.Rlog;
 
 /* loaded from: classes3.dex */
 public class TelephonyServiceManager {
 
-    /* loaded from: classes3.dex */
     public static final class ServiceRegisterer {
         private final String mServiceName;
 
@@ -16,6 +16,9 @@ public class TelephonyServiceManager {
 
         public void register(IBinder service) {
             ServiceManager.addService(this.mServiceName, service);
+            if ("phone".equals(this.mServiceName)) {
+                Rlog.d("TelephonyServiceManager", this.mServiceName + " register finish");
+            }
         }
 
         public IBinder get() {
@@ -35,7 +38,6 @@ public class TelephonyServiceManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ServiceNotFoundException extends ServiceManager.ServiceNotFoundException {
         public ServiceNotFoundException(String name) {
             super(name);

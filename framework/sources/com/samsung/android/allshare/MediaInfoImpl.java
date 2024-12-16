@@ -4,12 +4,12 @@ import android.os.Bundle;
 import com.samsung.android.allshare.media.MediaInfo;
 import com.sec.android.allshare.iface.message.AllShareKey;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 final class MediaInfoImpl extends MediaInfo {
     private Bundle mBundle;
     private long mMediaDuration = -1;
 
-    public MediaInfoImpl(Bundle bundle) {
+    MediaInfoImpl(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;
     }
@@ -17,8 +17,7 @@ final class MediaInfoImpl extends MediaInfo {
     @Override // com.samsung.android.allshare.media.MediaInfo
     public long getDuration() {
         if (this.mMediaDuration == -1) {
-            Bundle bundle = this.mBundle;
-            this.mMediaDuration = bundle != null ? bundle.getLong(AllShareKey.BUNDLE_LONG_DURATION) : -1L;
+            this.mMediaDuration = this.mBundle != null ? this.mBundle.getLong(AllShareKey.BUNDLE_LONG_DURATION) : -1L;
         }
         return this.mMediaDuration;
     }

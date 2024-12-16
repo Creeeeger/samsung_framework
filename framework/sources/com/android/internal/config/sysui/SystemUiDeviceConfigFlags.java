@@ -1,6 +1,6 @@
 package com.android.internal.config.sysui;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class SystemUiDeviceConfigFlags {
     public static final String APPEND_DIRECT_SHARE_ENABLED = "append_direct_share_enabled";
     public static final String APPLY_SHARING_APP_LIMITS_IN_SYSUI = "apply_sharing_app_limits_in_sysui";
@@ -45,10 +45,13 @@ public final class SystemUiDeviceConfigFlags {
     public static final String CLIPBOARD_IGNORE_REMOTE_COPY_SOURCE = "clipboard_ignore_remote_copy_source";
     public static final String CLIPBOARD_OVERLAY_SHOW_ACTIONS = "clipboard_overlay_show_actions";
     public static final String COMBINED_BROADCAST_ENABLED = "combined_broadcast_enabled";
+    public static final String CURSOR_HOVER_STATES_ENABLED = "cursor_hover_states_enabled";
     public static final String DARK_LAUNCH_REMOTE_PREDICTION_SERVICE_ENABLED = "dark_launch_remote_prediction_service_enabled";
     public static final String DEFAULT_QR_CODE_SCANNER = "default_qr_code_scanner";
     public static final String ENABLE_NAS_FEEDBACK = "enable_nas_feedback";
     public static final String ENABLE_SCREENSHOT_NOTIFICATION_SMART_ACTIONS = "enable_screenshot_notification_smart_actions";
+    public static final String GENERATED_PREVIEW_API_MAX_CALLS_PER_INTERVAL = "generated_preview_api_max_calls_per_interval";
+    public static final String GENERATED_PREVIEW_API_RESET_INTERVAL_MS = "generated_preview_api_reset_interval_ms";
     public static final String HASH_SALT_MAX_DAYS = "hash_salt_max_days";
     public static final String HOME_BUTTON_LONG_PRESS_DURATION_MS = "home_button_long_press_duration_ms";
     public static final String IS_NEARBY_SHARE_FIRST_TARGET_IN_RANKED_APP = "is_nearby_share_first_target_in_ranked_app";
@@ -61,9 +64,6 @@ public final class SystemUiDeviceConfigFlags {
     public static final String NAV_BAR_HANDLE_SHOW_OVER_LOCKSCREEN = "nav_bar_handle_show_over_lockscreen";
     public static final String NOTIFICATIONS_ALLOW_FGS_DISMISSAL = "notifications_allow_fgs_dismissal";
     public static final String NOTIFICATIONS_USE_PEOPLE_FILTERING = "notifications_use_people_filtering";
-    public static final String NOTIFY_WAKELOCK = "nms_notify_wakelock";
-    public static final String PERSISTS_WIDGET_PROVIDER_INFO = "persists_widget_provider_info";
-    public static final String PIP_PINCH_RESIZE = "pip_pinch_resize";
     public static final String PIP_STASHING = "pip_stashing";
     public static final String PIP_STASH_MINIMUM_VELOCITY_THRESHOLD = "pip_velocity_threshold";
     public static final String PROPERTY_LOCATION_INDICATORS_ENABLED = "location_indicators_enabled";
@@ -71,7 +71,6 @@ public final class SystemUiDeviceConfigFlags {
     public static final String PROPERTY_LOCATION_INDICATORS_SMALL_ENABLED = "location_indicators_small_enabled";
     public static final String PROPERTY_MEDIA_PROJECTION_INDICATORS_ENABLED = "media_projection_indicators_enabled";
     public static final String PROPERTY_MIC_CAMERA_ENABLED = "camera_mic_icons_enabled";
-    public static final String PROPERTY_PERMISSIONS_HUB_ENABLED = "permissions_hub_2_enabled";
     public static final String SCREENSHOT_CORNER_FLOW = "enable_screenshot_corner_flow";
     public static final String SCREENSHOT_KEYCHORD_DELAY = "screenshot_keychord_delay";
     public static final String SCREENSHOT_NOTIFICATION_QUICK_SHARE_ACTIONS_TIMEOUT_MS = "screenshot_notification_quick_share_actions_timeout_ms";
@@ -94,7 +93,6 @@ public final class SystemUiDeviceConfigFlags {
     public static final String TASK_MANAGER_SHOW_USER_VISIBLE_JOBS = "task_manager_show_user_visible_jobs";
     public static final String USE_BACK_GESTURE_ML_MODEL = "use_back_gesture_ml_model";
     public static final String USE_UNBUNDLED_SHARESHEET = "use_unbundled_sharesheet";
-    public static final String VOLUME_SEPARATE_NOTIFICATION = "volume_separate_notification";
 
     private SystemUiDeviceConfigFlags() {
     }

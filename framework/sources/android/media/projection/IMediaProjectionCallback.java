@@ -14,7 +14,6 @@ public interface IMediaProjectionCallback extends IInterface {
 
     void onStop() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaProjectionCallback {
         @Override // android.media.projection.IMediaProjectionCallback
         public void onStop() throws RemoteException {
@@ -34,7 +33,6 @@ public interface IMediaProjectionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaProjectionCallback {
         public static final String DESCRIPTOR = "android.media.projection.IMediaProjectionCallback";
         static final int TRANSACTION_onCapturedContentResize = 2;
@@ -84,35 +82,31 @@ public interface IMediaProjectionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onStop();
+                    return true;
+                case 2:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCapturedContentResize(_arg0, _arg1);
+                    return true;
+                case 3:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCapturedContentVisibilityChanged(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onStop();
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCapturedContentResize(_arg0, _arg1);
-                            return true;
-                        case 3:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCapturedContentVisibilityChanged(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaProjectionCallback {
+        private static class Proxy implements IMediaProjectionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

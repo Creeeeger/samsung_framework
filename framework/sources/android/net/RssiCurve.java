@@ -9,17 +9,16 @@ import java.util.Objects;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class RssiCurve implements Parcelable {
     public static final Parcelable.Creator<RssiCurve> CREATOR = new Parcelable.Creator<RssiCurve>() { // from class: android.net.RssiCurve.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RssiCurve createFromParcel(Parcel in) {
             return new RssiCurve(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RssiCurve[] newArray(int size) {
             return new RssiCurve[size];
@@ -30,10 +29,6 @@ public class RssiCurve implements Parcelable {
     public final int bucketWidth;
     public final byte[] rssiBuckets;
     public final int start;
-
-    /* synthetic */ RssiCurve(Parcel parcel, RssiCurveIA rssiCurveIA) {
-        this(parcel);
-    }
 
     public RssiCurve(int start, int bucketWidth, byte[] rssiBuckets) {
         this(start, bucketWidth, rssiBuckets, 25);
@@ -53,9 +48,8 @@ public class RssiCurve implements Parcelable {
         this.start = in.readInt();
         this.bucketWidth = in.readInt();
         int bucketCount = in.readInt();
-        byte[] bArr = new byte[bucketCount];
-        this.rssiBuckets = bArr;
-        in.readByteArray(bArr);
+        this.rssiBuckets = new byte[bucketCount];
+        in.readByteArray(this.rssiBuckets);
         this.activeNetworkRssiBoost = in.readInt();
     }
 
@@ -84,11 +78,8 @@ public class RssiCurve implements Parcelable {
         int index = (rssi - this.start) / this.bucketWidth;
         if (index < 0) {
             index = 0;
-        } else {
-            byte[] bArr = this.rssiBuckets;
-            if (index > bArr.length - 1) {
-                index = bArr.length - 1;
-            }
+        } else if (index > this.rssiBuckets.length - 1) {
+            index = this.rssiBuckets.length - 1;
         }
         return this.rssiBuckets[index];
     }
@@ -115,36 +106,13 @@ public class RssiCurve implements Parcelable {
         StringBuilder sb = new StringBuilder();
         sb.append("RssiCurve[start=").append(this.start).append(",bucketWidth=").append(this.bucketWidth).append(",activeNetworkRssiBoost=").append(this.activeNetworkRssiBoost);
         sb.append(",buckets=");
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.rssiBuckets;
-            if (i < bArr.length) {
-                sb.append((int) bArr[i]);
-                if (i < this.rssiBuckets.length - 1) {
-                    sb.append(",");
-                }
-                i++;
-            } else {
-                sb.append(NavigationBarInflaterView.SIZE_MOD_END);
-                return sb.toString();
+        for (int i = 0; i < this.rssiBuckets.length; i++) {
+            sb.append((int) this.rssiBuckets[i]);
+            if (i < this.rssiBuckets.length - 1) {
+                sb.append(",");
             }
         }
-    }
-
-    /* renamed from: android.net.RssiCurve$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RssiCurve> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RssiCurve createFromParcel(Parcel in) {
-            return new RssiCurve(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RssiCurve[] newArray(int size) {
-            return new RssiCurve[size];
-        }
+        sb.append(NavigationBarInflaterView.SIZE_MOD_END);
+        return sb.toString();
     }
 }

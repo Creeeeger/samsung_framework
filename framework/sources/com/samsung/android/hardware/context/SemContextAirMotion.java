@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAirMotion extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextAirMotion> CREATOR = new Parcelable.Creator<SemContextAirMotion>() { // from class: com.samsung.android.hardware.context.SemContextAirMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAirMotion createFromParcel(Parcel in) {
             return new SemContextAirMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAirMotion[] newArray(int size) {
             return new SemContextAirMotion[size];
@@ -27,24 +26,7 @@ public class SemContextAirMotion extends SemContextEventContext {
     public static final int UP = 4;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAirMotion$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAirMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAirMotion createFromParcel(Parcel in) {
-            return new SemContextAirMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAirMotion[] newArray(int size) {
-            return new SemContextAirMotion[size];
-        }
-    }
-
-    public SemContextAirMotion() {
+    SemContextAirMotion() {
         this.mContext = new Bundle();
     }
 

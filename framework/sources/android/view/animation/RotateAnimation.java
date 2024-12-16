@@ -85,9 +85,8 @@ public class RotateAnimation extends Animation {
     }
 
     @Override // android.view.animation.Animation
-    public void applyTransformation(float interpolatedTime, Transformation t) {
-        float f = this.mFromDegrees;
-        float degrees = f + ((this.mToDegrees - f) * interpolatedTime);
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        float degrees = this.mFromDegrees + ((this.mToDegrees - this.mFromDegrees) * interpolatedTime);
         float scale = getScaleFactor();
         if (this.mPivotX == 0.0f && this.mPivotY == 0.0f) {
             t.getMatrix().setRotate(degrees);

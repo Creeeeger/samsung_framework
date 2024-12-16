@@ -21,14 +21,15 @@ import java.util.Set;
 
 /* loaded from: classes2.dex */
 public abstract class DisplayManagerInternal {
+    public static final int HBM_FREEZE_MODE = 2;
+    public static final int NONFREEZING = 0;
+    public static final int NON_HBM_FREEZE_MODE = 1;
     public static final int REFRESH_RATE_LIMIT_HIGH_BRIGHTNESS_MODE = 1;
 
-    /* loaded from: classes2.dex */
     public interface DisplayBrightnessListener {
         void onChanged(float f);
     }
 
-    /* loaded from: classes2.dex */
     public interface DisplayGroupListener {
         void onDisplayGroupAdded(int i);
 
@@ -37,7 +38,16 @@ public abstract class DisplayManagerInternal {
         void onDisplayGroupRemoved(int i);
     }
 
-    /* loaded from: classes2.dex */
+    public interface DisplayOffloader {
+        boolean allowAutoBrightnessInDoze();
+
+        void onBlockingScreenOn(Runnable runnable);
+
+        boolean startOffload();
+
+        void stopOffload();
+    }
+
     public interface DisplayPowerCallbacks {
         void acquireSuspendBlocker(String str);
 
@@ -54,21 +64,19 @@ public abstract class DisplayManagerInternal {
         void releaseSuspendBlocker(String str);
     }
 
-    /* loaded from: classes2.dex */
     public interface DisplayTransactionListener {
         void onDisplayTransaction(SurfaceControl.Transaction transaction);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RefreshRateLimitType {
     }
-
-    public abstract void clearOldDisplayDevice();
 
     public abstract int createSpegVirtualDisplay(String str, int i, IVirtualDisplayCallback iVirtualDisplayCallback);
 
     public abstract int createVirtualDisplay(VirtualDisplayConfig virtualDisplayConfig, IVirtualDisplayCallback iVirtualDisplayCallback, IVirtualDevice iVirtualDevice, DisplayWindowPolicyController displayWindowPolicyController, String str);
+
+    public abstract AmbientLightSensorData getAmbientLightSensorData(int i);
 
     public abstract int[] getBrightnessLearningMaxLimitCount();
 
@@ -116,13 +124,13 @@ public abstract class DisplayManagerInternal {
 
     public abstract void initPowerManagement(DisplayPowerCallbacks displayPowerCallbacks, Handler handler, SensorManager sensorManager);
 
-    public abstract boolean isDualSwitchEnabled();
-
     public abstract boolean isProximitySensorAvailable();
 
     public abstract void onEarlyInteractivityChange(boolean z);
 
     public abstract void onOverlayChanged();
+
+    public abstract void onPresentation(int i, boolean z);
 
     public abstract void performTraversal(SurfaceControl.Transaction transaction, SparseArray<SurfaceControl.Transaction> sparseArray);
 
@@ -131,6 +139,8 @@ public abstract class DisplayManagerInternal {
     public abstract float registerDisplayBrightnessListener(DisplayBrightnessListener displayBrightnessListener);
 
     public abstract void registerDisplayGroupListener(DisplayGroupListener displayGroupListener);
+
+    public abstract DisplayOffloadSession registerDisplayOffloader(int i, DisplayOffloader displayOffloader);
 
     public abstract void registerDisplayStateListener(DisplayStateListener displayStateListener);
 
@@ -148,15 +158,15 @@ public abstract class DisplayManagerInternal {
 
     public abstract void setDisplayScalingDisabled(int i, boolean z);
 
-    public abstract void setDisplayStateLimit(IBinder iBinder, int i);
+    public abstract void setDisplayStateOverride(IBinder iBinder, int i);
 
     public abstract boolean setDisplayedContentSamplingEnabled(int i, boolean z, int i2, int i3);
 
     public abstract void setForceListenProcess(int i);
 
-    public abstract void setWindowManagerMirroring(int i, boolean z);
+    public abstract int setFreezeBrightnessMode(boolean z);
 
-    public abstract void switchOverlay();
+    public abstract void setWindowManagerMirroring(int i, boolean z);
 
     public abstract ScreenCapture.ScreenshotHardwareBuffer systemScreenshot(int i);
 
@@ -168,17 +178,10 @@ public abstract class DisplayManagerInternal {
 
     public abstract void unregisterDisplayTransactionListener(DisplayTransactionListener displayTransactionListener);
 
-    public abstract void updateDesktopDisplayState(boolean z, int i);
-
     public abstract int updateDexDisplayState(boolean z);
-
-    public abstract void updateDualOverlayState();
-
-    public abstract void updateOverlayState();
 
     public abstract ScreenCapture.ScreenshotHardwareBuffer userScreenshot(int i);
 
-    /* loaded from: classes2.dex */
     public static class DisplayPowerRequest {
         public static final int POLICY_BRIGHT = 3;
         public static final int POLICY_DIM = 2;
@@ -195,19 +198,19 @@ public abstract class DisplayManagerInternal {
         public int coverType;
         public float dozeScreenBrightness;
         public int dozeScreenState;
+        public int dozeScreenStateReason;
         public int dualScreenPolicy;
         public boolean earlyWakeUp;
         public boolean forceLcdBacklightOffEnabled;
         public boolean forceSlowChange;
-        public boolean freezeBrightnessMode;
         public boolean hbmBlock;
+        public float hdrMaxBrightness;
         public boolean isOutdoorMode;
         public boolean isPowered;
         public int lastGoToSleepReason;
         public int lastWakeUpReason;
         public boolean lcdFlashMode;
         public boolean lowPowerMode;
-        public boolean mFTAMode;
         public float maxBrightness;
         public float minBrightness;
         public int policy;
@@ -225,6 +228,7 @@ public abstract class DisplayManagerInternal {
             this.autoBrightnessUpperLimit = -1.0f;
             this.maxBrightness = -1.0f;
             this.minBrightness = -1.0f;
+            this.hdrMaxBrightness = -1.0f;
             this.lastGoToSleepReason = 0;
             this.proximityPositiveDebounce = -1;
             this.proximityNegativeDebounce = -1;
@@ -244,6 +248,7 @@ public abstract class DisplayManagerInternal {
             this.blockScreenOn = false;
             this.dozeScreenBrightness = Float.NaN;
             this.dozeScreenState = 0;
+            this.dozeScreenStateReason = 0;
         }
 
         public DisplayPowerRequest(DisplayPowerRequest other) {
@@ -251,6 +256,7 @@ public abstract class DisplayManagerInternal {
             this.autoBrightnessUpperLimit = -1.0f;
             this.maxBrightness = -1.0f;
             this.minBrightness = -1.0f;
+            this.hdrMaxBrightness = -1.0f;
             this.lastGoToSleepReason = 0;
             this.proximityPositiveDebounce = -1;
             this.proximityNegativeDebounce = -1;
@@ -266,8 +272,7 @@ public abstract class DisplayManagerInternal {
         }
 
         public boolean isBrightOrDim() {
-            int i = this.policy;
-            return i == 3 || i == 2;
+            return this.policy == 3 || this.policy == 2;
         }
 
         public void copyFrom(DisplayPowerRequest other) {
@@ -281,18 +286,19 @@ public abstract class DisplayManagerInternal {
             this.boostScreenBrightness = other.boostScreenBrightness;
             this.dozeScreenBrightness = other.dozeScreenBrightness;
             this.dozeScreenState = other.dozeScreenState;
+            this.dozeScreenStateReason = other.dozeScreenStateReason;
             this.autoBrightnessLowerLimit = other.autoBrightnessLowerLimit;
             this.autoBrightnessUpperLimit = other.autoBrightnessUpperLimit;
             this.forceSlowChange = other.forceSlowChange;
             this.maxBrightness = other.maxBrightness;
             this.minBrightness = other.minBrightness;
+            this.hdrMaxBrightness = other.hdrMaxBrightness;
             this.lastGoToSleepReason = other.lastGoToSleepReason;
             this.proximityPositiveDebounce = other.proximityPositiveDebounce;
             this.proximityNegativeDebounce = other.proximityNegativeDebounce;
             this.coverClosed = other.coverClosed;
             this.coverType = other.coverType;
             this.brightnessLimitByCover = other.brightnessLimitByCover;
-            this.mFTAMode = other.mFTAMode;
             this.batteryLevel = other.batteryLevel;
             this.lcdFlashMode = other.lcdFlashMode;
             this.isOutdoorMode = other.isOutdoorMode;
@@ -301,7 +307,6 @@ public abstract class DisplayManagerInternal {
             this.batteryLevelCritical = other.batteryLevelCritical;
             this.isPowered = other.isPowered;
             this.hbmBlock = other.hbmBlock;
-            this.freezeBrightnessMode = other.freezeBrightnessMode;
             this.earlyWakeUp = other.earlyWakeUp;
             this.dualScreenPolicy = other.dualScreenPolicy;
             this.lastWakeUpReason = other.lastWakeUpReason;
@@ -313,7 +318,7 @@ public abstract class DisplayManagerInternal {
         }
 
         public boolean equals(DisplayPowerRequest other) {
-            return other != null && this.policy == other.policy && this.useProximitySensor == other.useProximitySensor && floatEquals(this.screenBrightnessOverride, other.screenBrightnessOverride) && floatEquals(this.screenAutoBrightnessAdjustmentOverride, other.screenAutoBrightnessAdjustmentOverride) && this.screenLowPowerBrightnessFactor == other.screenLowPowerBrightnessFactor && this.blockScreenOn == other.blockScreenOn && this.lowPowerMode == other.lowPowerMode && this.boostScreenBrightness == other.boostScreenBrightness && floatEquals(this.dozeScreenBrightness, other.dozeScreenBrightness) && this.dozeScreenState == other.dozeScreenState && floatEquals(this.autoBrightnessLowerLimit, other.autoBrightnessLowerLimit) && floatEquals(this.autoBrightnessUpperLimit, other.autoBrightnessUpperLimit) && this.forceSlowChange == other.forceSlowChange && floatEquals(this.maxBrightness, other.maxBrightness) && floatEquals(this.minBrightness, other.minBrightness) && this.lastGoToSleepReason == other.lastGoToSleepReason && this.proximityPositiveDebounce == other.proximityPositiveDebounce && this.proximityNegativeDebounce == other.proximityNegativeDebounce && this.coverClosed == other.coverClosed && this.coverType == other.coverType && this.brightnessLimitByCover == other.brightnessLimitByCover && this.mFTAMode == other.mFTAMode && this.batteryLevel == other.batteryLevel && this.lcdFlashMode == other.lcdFlashMode && this.isOutdoorMode == other.isOutdoorMode && this.screenBrightnessScaleFactor == other.screenBrightnessScaleFactor && this.forceLcdBacklightOffEnabled == other.forceLcdBacklightOffEnabled && this.hbmBlock == other.hbmBlock && this.freezeBrightnessMode == other.freezeBrightnessMode && this.batteryLevelCritical == other.batteryLevelCritical && this.isPowered == other.isPowered && this.earlyWakeUp == other.earlyWakeUp && this.dualScreenPolicy == other.dualScreenPolicy && this.lastWakeUpReason == other.lastWakeUpReason && this.screenCurtainEnabled == other.screenCurtainEnabled;
+            return other != null && this.policy == other.policy && this.useProximitySensor == other.useProximitySensor && floatEquals(this.screenBrightnessOverride, other.screenBrightnessOverride) && floatEquals(this.screenAutoBrightnessAdjustmentOverride, other.screenAutoBrightnessAdjustmentOverride) && this.screenLowPowerBrightnessFactor == other.screenLowPowerBrightnessFactor && this.blockScreenOn == other.blockScreenOn && this.lowPowerMode == other.lowPowerMode && this.boostScreenBrightness == other.boostScreenBrightness && floatEquals(this.dozeScreenBrightness, other.dozeScreenBrightness) && this.dozeScreenState == other.dozeScreenState && this.dozeScreenStateReason == other.dozeScreenStateReason && floatEquals(this.autoBrightnessLowerLimit, other.autoBrightnessLowerLimit) && floatEquals(this.autoBrightnessUpperLimit, other.autoBrightnessUpperLimit) && this.forceSlowChange == other.forceSlowChange && floatEquals(this.maxBrightness, other.maxBrightness) && floatEquals(this.minBrightness, other.minBrightness) && floatEquals(this.hdrMaxBrightness, other.hdrMaxBrightness) && this.lastGoToSleepReason == other.lastGoToSleepReason && this.proximityPositiveDebounce == other.proximityPositiveDebounce && this.proximityNegativeDebounce == other.proximityNegativeDebounce && this.coverClosed == other.coverClosed && this.coverType == other.coverType && this.brightnessLimitByCover == other.brightnessLimitByCover && this.batteryLevel == other.batteryLevel && this.lcdFlashMode == other.lcdFlashMode && this.isOutdoorMode == other.isOutdoorMode && this.screenBrightnessScaleFactor == other.screenBrightnessScaleFactor && this.forceLcdBacklightOffEnabled == other.forceLcdBacklightOffEnabled && this.hbmBlock == other.hbmBlock && this.batteryLevelCritical == other.batteryLevelCritical && this.isPowered == other.isPowered && this.earlyWakeUp == other.earlyWakeUp && this.dualScreenPolicy == other.dualScreenPolicy && this.lastWakeUpReason == other.lastWakeUpReason && this.screenCurtainEnabled == other.screenCurtainEnabled;
         }
 
         private boolean floatEquals(float f1, float f2) {
@@ -325,7 +330,7 @@ public abstract class DisplayManagerInternal {
         }
 
         public String toString() {
-            return "policy=" + policyToString(this.policy) + ", useProximitySensor=" + this.useProximitySensor + ", screenBrightnessOverride=" + this.screenBrightnessOverride + ", screenAutoBrightnessAdjustmentOverride=" + this.screenAutoBrightnessAdjustmentOverride + ", screenLowPowerBrightnessFactor=" + this.screenLowPowerBrightnessFactor + ", blockScreenOn=" + this.blockScreenOn + ", lowPowerMode=" + this.lowPowerMode + ", boostScreenBrightness=" + this.boostScreenBrightness + ", dozeScreenBrightness=" + this.dozeScreenBrightness + ", dozeScreenState=" + Display.stateToString(this.dozeScreenState) + ", autoBrightnessLowerLimit=" + this.autoBrightnessLowerLimit + ", autoBrightnessUpperLimit=" + this.autoBrightnessUpperLimit + ", forceSlowChange=" + this.forceSlowChange + ", maxBrightness=" + this.maxBrightness + ", minBrightness=" + this.minBrightness + ", lastGoToSleepReason=" + this.lastGoToSleepReason + ", proximityPositiveDebounce=" + this.proximityPositiveDebounce + ", proximityNegativeDebounce=" + this.proximityNegativeDebounce + ", coverClosed=" + this.coverClosed + ", coverType=" + this.coverType + ", brightnessLimitByCover=" + this.brightnessLimitByCover + ", FTAMode=" + this.mFTAMode + ", batteryLevel = " + this.batteryLevel + ", lcdFlashMode= " + this.lcdFlashMode + ", isOutdoorMode= " + this.isOutdoorMode + ", screenBrightnessScaleFactor=" + this.screenBrightnessScaleFactor + ", forceLcdBacklightOffEnabled=" + this.forceLcdBacklightOffEnabled + ", batteryLevelCritical=" + this.batteryLevelCritical + ", isPowered=" + this.isPowered + ", hbmBlock=" + this.hbmBlock + ", freezeBrightnessMode=" + this.freezeBrightnessMode + ", earlyWakeUp=" + this.earlyWakeUp + ", dualScreenPolicy=" + this.dualScreenPolicy + ", lastWakeUpReason=" + this.lastWakeUpReason + ", screenCurtainEnabled=" + this.screenCurtainEnabled;
+            return "policy=" + policyToString(this.policy) + ", useProximitySensor=" + this.useProximitySensor + ", screenBrightnessOverride=" + this.screenBrightnessOverride + ", screenAutoBrightnessAdjustmentOverride=" + this.screenAutoBrightnessAdjustmentOverride + ", screenLowPowerBrightnessFactor=" + this.screenLowPowerBrightnessFactor + ", blockScreenOn=" + this.blockScreenOn + ", lowPowerMode=" + this.lowPowerMode + ", boostScreenBrightness=" + this.boostScreenBrightness + ", dozeScreenBrightness=" + this.dozeScreenBrightness + ", dozeScreenState=" + Display.stateToString(this.dozeScreenState) + ", dozeScreenStateReason=" + Display.stateReasonToString(this.dozeScreenStateReason) + ", autoBrightnessLowerLimit=" + this.autoBrightnessLowerLimit + ", autoBrightnessUpperLimit=" + this.autoBrightnessUpperLimit + ", forceSlowChange=" + this.forceSlowChange + ", maxBrightness=" + this.maxBrightness + ", minBrightness=" + this.minBrightness + ", hdrMaxBrightness=" + this.hdrMaxBrightness + ", lastGoToSleepReason=" + this.lastGoToSleepReason + ", proximityPositiveDebounce=" + this.proximityPositiveDebounce + ", proximityNegativeDebounce=" + this.proximityNegativeDebounce + ", coverClosed=" + this.coverClosed + ", coverType=" + this.coverType + ", brightnessLimitByCover=" + this.brightnessLimitByCover + ", batteryLevel = " + this.batteryLevel + ", lcdFlashMode= " + this.lcdFlashMode + ", isOutdoorMode= " + this.isOutdoorMode + ", screenBrightnessScaleFactor=" + this.screenBrightnessScaleFactor + ", forceLcdBacklightOffEnabled=" + this.forceLcdBacklightOffEnabled + ", batteryLevelCritical=" + this.batteryLevelCritical + ", isPowered=" + this.isPowered + ", hbmBlock=" + this.hbmBlock + ", earlyWakeUp=" + this.earlyWakeUp + ", dualScreenPolicy=" + this.dualScreenPolicy + ", lastWakeUpReason=" + this.lastWakeUpReason + ", screenCurtainEnabled=" + this.screenCurtainEnabled;
         }
 
         public static String policyToString(int policy) {
@@ -344,7 +349,6 @@ public abstract class DisplayManagerInternal {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class RefreshRateLimitation {
         public SurfaceControl.RefreshRateRange range;
         public int type;
@@ -359,7 +363,44 @@ public abstract class DisplayManagerInternal {
         }
     }
 
-    /* loaded from: classes2.dex */
+    public static final class AmbientLightSensorData {
+        public String sensorName;
+        public String sensorType;
+
+        public AmbientLightSensorData(String name, String type) {
+            this.sensorName = name;
+            this.sensorType = type;
+        }
+
+        public String toString() {
+            return "AmbientLightSensorData(" + this.sensorName + ", " + this.sensorType + NavigationBarInflaterView.KEY_CODE_END;
+        }
+    }
+
+    public interface DisplayOffloadSession {
+        boolean allowAutoBrightnessInDoze();
+
+        boolean blockScreenOn(Runnable runnable);
+
+        float[] getAutoBrightnessLevels(int i);
+
+        float[] getAutoBrightnessLuxLevels(int i);
+
+        float getBrightness();
+
+        float getDozeBrightness();
+
+        boolean isActive();
+
+        void setDozeStateOverride(int i);
+
+        void updateBrightness(float f);
+
+        static boolean isSupportedOffloadState(int displayState) {
+            return Display.isSuspendedState(displayState);
+        }
+    }
+
     public interface DisplayStateListener {
         public static final int TYPE_DEFAULT_DISPLAY = 1;
         public static final int TYPE_EXTRA_BUILT_IN_DISPLAY = 2;

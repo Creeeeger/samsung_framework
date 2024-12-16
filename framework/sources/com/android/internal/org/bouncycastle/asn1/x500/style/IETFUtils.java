@@ -276,7 +276,7 @@ public class IETFUtils {
 
     /* JADX WARN: Code restructure failed: missing block: B:30:0x005c, code lost:
     
-        if (r5 >= r2) goto L68;
+        if (r5 >= r2) goto L30;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.

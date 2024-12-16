@@ -24,14 +24,13 @@ public class WorkSource implements Parcelable {
     int[] mUids;
     static final WorkSource sTmpWorkSource = new WorkSource(0);
     public static final Parcelable.Creator<WorkSource> CREATOR = new Parcelable.Creator<WorkSource>() { // from class: android.os.WorkSource.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WorkSource createFromParcel(Parcel in) {
             return new WorkSource(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WorkSource[] newArray(int size) {
             return new WorkSource[size];
@@ -53,8 +52,7 @@ public class WorkSource implements Parcelable {
         }
         this.mNum = orig.mNum;
         this.mUids = (int[]) orig.mUids.clone();
-        String[] strArr = orig.mNames;
-        this.mNames = strArr != null ? (String[]) strArr.clone() : null;
+        this.mNames = orig.mNames != null ? (String[]) orig.mNames.clone() : null;
         if (orig.mChains != null) {
             this.mChains = new ArrayList<>(orig.mChains.size());
             Iterator<WorkChain> it = orig.mChains.iterator();
@@ -93,16 +91,19 @@ public class WorkSource implements Parcelable {
         this.mNames = in.createStringArray();
         int numChains = in.readInt();
         if (numChains >= 0) {
-            ArrayList<WorkChain> arrayList = new ArrayList<>(numChains);
-            this.mChains = arrayList;
-            in.readParcelableList(arrayList, WorkChain.class.getClassLoader(), WorkChain.class);
-            return;
+            this.mChains = new ArrayList<>(numChains);
+            in.readParcelableList(this.mChains, WorkChain.class.getClassLoader(), WorkChain.class);
+        } else {
+            this.mChains = null;
         }
-        this.mChains = null;
     }
 
     public static boolean isChainedBatteryAttributionEnabled(Context context) {
         return Settings.Global.getInt(context.getContentResolver(), Settings.Global.CHAINED_BATTERY_ATTRIBUTION_ENABLED, 0) == 1;
+    }
+
+    public static boolean isChainedBatteryAttributionEnabled$ravenwood(Context context) {
+        return false;
     }
 
     @SystemApi
@@ -134,9 +135,8 @@ public class WorkSource implements Parcelable {
 
     @SystemApi
     public String getPackageName(int index) {
-        String[] strArr = this.mNames;
-        if (strArr != null) {
-            return strArr[index];
+        if (this.mNames != null) {
+            return this.mNames[index];
         }
         return null;
     }
@@ -147,12 +147,10 @@ public class WorkSource implements Parcelable {
             int destIndex = 1;
             int newNum = this.mNum;
             for (int sourceIndex = 1; sourceIndex < this.mNum; sourceIndex++) {
-                int[] iArr = this.mUids;
-                int i = iArr[sourceIndex];
-                if (i == iArr[sourceIndex - 1]) {
+                if (this.mUids[sourceIndex] == this.mUids[sourceIndex - 1]) {
                     newNum--;
                 } else {
-                    iArr[destIndex] = i;
+                    this.mUids[destIndex] = this.mUids[sourceIndex];
                     destIndex++;
                 }
             }
@@ -162,9 +160,8 @@ public class WorkSource implements Parcelable {
 
     public void clear() {
         this.mNum = 0;
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mChains != null) {
+            this.mChains.clear();
         }
     }
 
@@ -176,12 +173,10 @@ public class WorkSource implements Parcelable {
         if (diff(other)) {
             return false;
         }
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null && !arrayList.isEmpty()) {
-            return this.mChains.equals(other.mChains);
+        if (this.mChains == null || this.mChains.isEmpty()) {
+            return other.mChains == null || other.mChains.isEmpty();
         }
-        ArrayList<WorkChain> arrayList2 = other.mChains;
-        return arrayList2 == null || arrayList2.isEmpty();
+        return this.mChains.equals(other.mChains);
     }
 
     public int hashCode() {
@@ -194,9 +189,8 @@ public class WorkSource implements Parcelable {
                 result = ((result << 4) | (result >>> 28)) ^ this.mNames[i2].hashCode();
             }
         }
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null) {
-            return ((result << 4) | (result >>> 28)) ^ arrayList.hashCode();
+        if (this.mChains != null) {
+            return ((result << 4) | (result >>> 28)) ^ this.mChains.hashCode();
         }
         return result;
     }
@@ -226,32 +220,24 @@ public class WorkSource implements Parcelable {
             clear();
             return;
         }
-        int i = other.mNum;
-        this.mNum = i;
-        int[] iArr = this.mUids;
-        if (iArr.length >= i) {
-            System.arraycopy(other.mUids, 0, iArr, 0, i);
+        this.mNum = other.mNum;
+        if (this.mUids.length >= this.mNum) {
+            System.arraycopy(other.mUids, 0, this.mUids, 0, this.mNum);
         } else {
             this.mUids = (int[]) other.mUids.clone();
         }
-        String[] strArr = other.mNames;
-        if (strArr != null) {
-            String[] strArr2 = this.mNames;
-            if (strArr2 != null) {
-                int length = strArr2.length;
-                int i2 = this.mNum;
-                if (length >= i2) {
-                    System.arraycopy(strArr, 0, strArr2, 0, i2);
-                }
+        if (other.mNames != null) {
+            if (this.mNames != null && this.mNames.length >= this.mNum) {
+                System.arraycopy(other.mNames, 0, this.mNames, 0, this.mNum);
+            } else {
+                this.mNames = (String[]) other.mNames.clone();
             }
-            this.mNames = (String[]) strArr.clone();
         } else {
             this.mNames = null;
         }
         if (other.mChains != null) {
-            ArrayList<WorkChain> arrayList = this.mChains;
-            if (arrayList != null) {
-                arrayList.clear();
+            if (this.mChains != null) {
+                this.mChains.clear();
             } else {
                 this.mChains = new ArrayList<>(other.mChains.size());
             }
@@ -270,9 +256,8 @@ public class WorkSource implements Parcelable {
         }
         this.mUids[0] = uid;
         this.mNames = null;
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mChains != null) {
+            this.mChains.clear();
         }
     }
 
@@ -287,9 +272,8 @@ public class WorkSource implements Parcelable {
         }
         this.mUids[0] = uid;
         this.mNames[0] = name;
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mChains != null) {
+            this.mChains.clear();
         }
     }
 
@@ -299,11 +283,10 @@ public class WorkSource implements Parcelable {
             sNewbWork = null;
             sGoneWork = null;
             updateLocked(other, true, true);
-            WorkSource workSource = sNewbWork;
-            if (workSource == null && sGoneWork == null) {
+            if (sNewbWork == null && sGoneWork == null) {
                 return null;
             }
-            WorkSource[] diffs = {workSource, sGoneWork};
+            WorkSource[] diffs = {sNewbWork, sGoneWork};
             return diffs;
         }
     }
@@ -350,8 +333,7 @@ public class WorkSource implements Parcelable {
     }
 
     public boolean add(int uid) {
-        int i = this.mNum;
-        if (i <= 0) {
+        if (this.mNum <= 0) {
             this.mNames = null;
             insert(0, uid);
             return true;
@@ -359,16 +341,15 @@ public class WorkSource implements Parcelable {
         if (this.mNames != null) {
             throw new IllegalArgumentException("Adding without name to named " + this);
         }
-        int i2 = Arrays.binarySearch(this.mUids, 0, i, uid);
-        if (i2 >= 0) {
+        int i = Arrays.binarySearch(this.mUids, 0, this.mNum, uid);
+        if (i >= 0) {
             return false;
         }
-        insert((-i2) - 1, uid);
+        insert((-i) - 1, uid);
         return true;
     }
 
     public boolean add(int uid, String name) {
-        int i;
         if (this.mNum <= 0) {
             insert(0, uid, name);
             return true;
@@ -376,10 +357,10 @@ public class WorkSource implements Parcelable {
         if (this.mNames == null) {
             throw new IllegalArgumentException("Adding name to unnamed " + this);
         }
-        int i2 = 0;
-        while (i2 < this.mNum && (i = this.mUids[i2]) <= uid) {
-            if (i == uid) {
-                int diff = this.mNames[i2].compareTo(name);
+        int i = 0;
+        while (i < this.mNum && this.mUids[i] <= uid) {
+            if (this.mUids[i] == uid) {
+                int diff = this.mNames[i].compareTo(name);
                 if (diff > 0) {
                     break;
                 }
@@ -387,23 +368,21 @@ public class WorkSource implements Parcelable {
                     return false;
                 }
             }
-            i2++;
+            i++;
         }
-        insert(i2, uid, name);
+        insert(i, uid, name);
         return true;
     }
 
     public boolean remove(WorkSource other) {
         boolean uidRemoved;
-        ArrayList<WorkChain> arrayList;
         if (isEmpty() || other.isEmpty()) {
             return false;
         }
-        String[] strArr = this.mNames;
-        if (strArr == null && other.mNames == null) {
+        if (this.mNames == null && other.mNames == null) {
             uidRemoved = removeUids(other);
         } else {
-            if (strArr == null) {
+            if (this.mNames == null) {
                 throw new IllegalArgumentException("Other " + other + " has names, but target " + this + " does not");
             }
             if (other.mNames == null) {
@@ -412,9 +391,8 @@ public class WorkSource implements Parcelable {
             uidRemoved = removeUidsAndNames(other);
         }
         boolean chainRemoved = false;
-        ArrayList<WorkChain> arrayList2 = other.mChains;
-        if (arrayList2 != null && (arrayList = this.mChains) != null) {
-            chainRemoved = arrayList.removeAll(arrayList2);
+        if (other.mChains != null && this.mChains != null) {
+            chainRemoved = this.mChains.removeAll(other.mChains);
         }
         return uidRemoved || chainRemoved;
     }
@@ -431,8 +409,7 @@ public class WorkSource implements Parcelable {
 
     @SystemApi
     public boolean isEmpty() {
-        ArrayList<WorkChain> arrayList;
-        return this.mNum == 0 && ((arrayList = this.mChains) == null || arrayList.isEmpty());
+        return this.mNum == 0 && (this.mChains == null || this.mChains.isEmpty());
     }
 
     @SystemApi
@@ -441,12 +418,10 @@ public class WorkSource implements Parcelable {
     }
 
     public void transferWorkChains(WorkSource other) {
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList != null) {
-            arrayList.clear();
+        if (this.mChains != null) {
+            this.mChains.clear();
         }
-        ArrayList<WorkChain> arrayList2 = other.mChains;
-        if (arrayList2 == null || arrayList2.isEmpty()) {
+        if (other.mChains == null || other.mChains.isEmpty()) {
             return;
         }
         if (this.mChains == null) {
@@ -512,11 +487,10 @@ public class WorkSource implements Parcelable {
     }
 
     private boolean updateLocked(WorkSource other, boolean set, boolean returnNewbs) {
-        String[] strArr = this.mNames;
-        if (strArr == null && other.mNames == null) {
+        if (this.mNames == null && other.mNames == null) {
             return updateUidsLocked(other, set, returnNewbs);
         }
-        if (this.mNum > 0 && strArr == null) {
+        if (this.mNum > 0 && this.mNames == null) {
             throw new IllegalArgumentException("Other " + other + " has names, but target " + this + " does not");
         }
         if (other.mNum > 0 && other.mNames == null) {
@@ -623,10 +597,9 @@ public class WorkSource implements Parcelable {
         int i1 = 0;
         int i2 = 0;
         while (true) {
-            int i = this.mNum;
-            if (i1 < i || i2 < N2) {
+            if (i1 < this.mNum || i2 < N2) {
                 int diff = -1;
-                if (i1 < i) {
+                if (i1 < this.mNum) {
                     if (i2 < N2) {
                         int compare = compare(other, i1, i2);
                         diff = compare;
@@ -649,10 +622,8 @@ public class WorkSource implements Parcelable {
                             diff = i2 < N2 ? compare(other, i1, i2) : -1;
                         }
                         if (start < i1) {
-                            int[] iArr = this.mUids;
-                            System.arraycopy(iArr, i1, iArr, start, this.mNum - i1);
-                            String[] strArr = this.mNames;
-                            System.arraycopy(strArr, i1, strArr, start, this.mNum - i1);
+                            System.arraycopy(this.mUids, i1, this.mUids, start, this.mNum - i1);
+                            System.arraycopy(this.mNames, i1, this.mNames, start, this.mNum - i1);
                             this.mNum -= i1 - start;
                             i1 = start;
                         }
@@ -676,72 +647,62 @@ public class WorkSource implements Parcelable {
     }
 
     private void insert(int index, int uid) {
-        int[] iArr = this.mUids;
-        if (iArr.length == 0) {
-            int[] iArr2 = new int[4];
-            this.mUids = iArr2;
-            iArr2[0] = uid;
+        if (this.mUids.length == 0) {
+            this.mUids = new int[4];
+            this.mUids[0] = uid;
             this.mNum = 1;
-            return;
-        }
-        int i = this.mNum;
-        if (i >= iArr.length) {
-            int[] newuids = new int[(i * 3) / 2];
-            if (index > 0) {
-                System.arraycopy(iArr, 0, newuids, 0, index);
+        } else {
+            if (this.mNum >= this.mUids.length) {
+                int[] newuids = new int[(this.mNum * 3) / 2];
+                if (index > 0) {
+                    System.arraycopy(this.mUids, 0, newuids, 0, index);
+                }
+                if (index < this.mNum) {
+                    System.arraycopy(this.mUids, index, newuids, index + 1, this.mNum - index);
+                }
+                this.mUids = newuids;
+                this.mUids[index] = uid;
+                this.mNum++;
+                return;
             }
-            int i2 = this.mNum;
-            if (index < i2) {
-                System.arraycopy(this.mUids, index, newuids, index + 1, i2 - index);
+            if (index < this.mNum) {
+                System.arraycopy(this.mUids, index, this.mUids, index + 1, this.mNum - index);
             }
-            this.mUids = newuids;
-            newuids[index] = uid;
+            this.mUids[index] = uid;
             this.mNum++;
-            return;
         }
-        if (index < i) {
-            System.arraycopy(iArr, index, iArr, index + 1, i - index);
-        }
-        this.mUids[index] = uid;
-        this.mNum++;
     }
 
     private void insert(int index, int uid, String name) {
-        int i = this.mNum;
-        if (i == 0) {
-            int[] iArr = new int[4];
-            this.mUids = iArr;
-            iArr[0] = uid;
-            String[] strArr = new String[4];
-            this.mNames = strArr;
-            strArr[0] = name;
+        if (this.mNum == 0) {
+            this.mUids = new int[4];
+            this.mUids[0] = uid;
+            this.mNames = new String[4];
+            this.mNames[0] = name;
             this.mNum = 1;
             return;
         }
-        int[] iArr2 = this.mUids;
-        if (i >= iArr2.length) {
-            int[] newuids = new int[(i * 3) / 2];
-            String[] newnames = new String[(i * 3) / 2];
+        if (this.mNum >= this.mUids.length) {
+            int[] newuids = new int[(this.mNum * 3) / 2];
+            String[] newnames = new String[(this.mNum * 3) / 2];
             if (index > 0) {
-                System.arraycopy(iArr2, 0, newuids, 0, index);
+                System.arraycopy(this.mUids, 0, newuids, 0, index);
                 System.arraycopy(this.mNames, 0, newnames, 0, index);
             }
-            int i2 = this.mNum;
-            if (index < i2) {
-                System.arraycopy(this.mUids, index, newuids, index + 1, i2 - index);
+            if (index < this.mNum) {
+                System.arraycopy(this.mUids, index, newuids, index + 1, this.mNum - index);
                 System.arraycopy(this.mNames, index, newnames, index + 1, this.mNum - index);
             }
             this.mUids = newuids;
             this.mNames = newnames;
-            newuids[index] = uid;
-            newnames[index] = name;
+            this.mUids[index] = uid;
+            this.mNames[index] = name;
             this.mNum++;
             return;
         }
-        if (index < i) {
-            System.arraycopy(iArr2, index, iArr2, index + 1, i - index);
-            String[] strArr2 = this.mNames;
-            System.arraycopy(strArr2, index, strArr2, index + 1, this.mNum - index);
+        if (index < this.mNum) {
+            System.arraycopy(this.mUids, index, this.mUids, index + 1, this.mNum - index);
+            System.arraycopy(this.mNames, index, this.mNames, index + 1, this.mNum - index);
         }
         this.mUids[index] = uid;
         this.mNames[index] = name;
@@ -749,17 +710,15 @@ public class WorkSource implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static final class WorkChain implements Parcelable {
         public static final Parcelable.Creator<WorkChain> CREATOR = new Parcelable.Creator<WorkChain>() { // from class: android.os.WorkSource.WorkChain.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WorkChain createFromParcel(Parcel in) {
                 return new WorkChain(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WorkChain[] newArray(int size) {
                 return new WorkChain[size];
@@ -768,10 +727,6 @@ public class WorkSource implements Parcelable {
         private int mSize;
         private String[] mTags;
         private int[] mUids;
-
-        /* synthetic */ WorkChain(Parcel parcel, WorkChainIA workChainIA) {
-            this(parcel);
-        }
 
         public WorkChain() {
             this.mSize = 0;
@@ -795,11 +750,9 @@ public class WorkSource implements Parcelable {
             if (this.mSize == this.mUids.length) {
                 resizeArrays();
             }
-            int[] iArr = this.mUids;
-            int i = this.mSize;
-            iArr[i] = uid;
-            this.mTags[i] = tag;
-            this.mSize = i + 1;
+            this.mUids[this.mSize] = uid;
+            this.mTags[this.mSize] = tag;
+            this.mSize++;
             return this;
         }
 
@@ -811,24 +764,21 @@ public class WorkSource implements Parcelable {
         }
 
         public String getAttributionTag() {
-            String[] strArr = this.mTags;
-            if (strArr.length > 0) {
-                return strArr[0];
+            if (this.mTags.length > 0) {
+                return this.mTags[0];
             }
             return null;
         }
 
         public int[] getUids() {
-            int i = this.mSize;
-            int[] uids = new int[i];
-            System.arraycopy(this.mUids, 0, uids, 0, i);
+            int[] uids = new int[this.mSize];
+            System.arraycopy(this.mUids, 0, uids, 0, this.mSize);
             return uids;
         }
 
         public String[] getTags() {
-            int i = this.mSize;
-            String[] tags = new String[i];
-            System.arraycopy(this.mTags, 0, tags, 0, i);
+            String[] tags = new String[this.mSize];
+            System.arraycopy(this.mTags, 0, tags, 0, this.mSize);
             return tags;
         }
 
@@ -837,11 +787,10 @@ public class WorkSource implements Parcelable {
         }
 
         private void resizeArrays() {
-            int i = this.mSize;
-            int newSize = i * 2;
+            int newSize = this.mSize * 2;
             int[] uids = new int[newSize];
             String[] tags = new String[newSize];
-            System.arraycopy(this.mUids, 0, uids, 0, i);
+            System.arraycopy(this.mUids, 0, uids, 0, this.mSize);
             System.arraycopy(this.mTags, 0, tags, 0, this.mSize);
             this.mUids = uids;
             this.mTags = tags;
@@ -888,23 +837,6 @@ public class WorkSource implements Parcelable {
             dest.writeIntArray(this.mUids);
             dest.writeStringArray(this.mTags);
         }
-
-        /* renamed from: android.os.WorkSource$WorkChain$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<WorkChain> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public WorkChain createFromParcel(Parcel in) {
-                return new WorkChain(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public WorkChain[] newArray(int size) {
-                return new WorkChain[size];
-            }
-        }
     }
 
     public static ArrayList<WorkChain>[] diffChains(WorkSource oldWs, WorkSource newWs) {
@@ -913,8 +845,7 @@ public class WorkSource implements Parcelable {
         if (oldWs.mChains != null) {
             for (int i = 0; i < oldWs.mChains.size(); i++) {
                 WorkChain wc = oldWs.mChains.get(i);
-                ArrayList<WorkChain> arrayList = newWs.mChains;
-                if (arrayList == null || !arrayList.contains(wc)) {
+                if (newWs.mChains == null || !newWs.mChains.contains(wc)) {
                     if (goneChains == null) {
                         goneChains = new ArrayList<>(oldWs.mChains.size());
                     }
@@ -925,8 +856,7 @@ public class WorkSource implements Parcelable {
         if (newWs.mChains != null) {
             for (int i2 = 0; i2 < newWs.mChains.size(); i2++) {
                 WorkChain wc2 = newWs.mChains.get(i2);
-                ArrayList<WorkChain> arrayList2 = oldWs.mChains;
-                if (arrayList2 == null || !arrayList2.contains(wc2)) {
+                if (oldWs.mChains == null || !oldWs.mChains.contains(wc2)) {
                     if (newChains == null) {
                         newChains = new ArrayList<>(newWs.mChains.size());
                     }
@@ -950,11 +880,10 @@ public class WorkSource implements Parcelable {
         dest.writeInt(this.mNum);
         dest.writeIntArray(this.mUids);
         dest.writeStringArray(this.mNames);
-        ArrayList<WorkChain> arrayList = this.mChains;
-        if (arrayList == null) {
+        if (this.mChains == null) {
             dest.writeInt(-1);
         } else {
-            dest.writeInt(arrayList.size());
+            dest.writeInt(this.mChains.size());
             dest.writeParcelableList(this.mChains, flags);
         }
     }
@@ -996,9 +925,8 @@ public class WorkSource implements Parcelable {
             }
             long contentProto = proto.start(2246267895809L);
             proto.write(1120986464257L, this.mUids[i]);
-            String[] strArr = this.mNames;
-            if (strArr != null) {
-                proto.write(1138166333442L, strArr[i]);
+            if (this.mNames != null) {
+                proto.write(1138166333442L, this.mNames[i]);
             }
             proto.end(contentProto);
             i++;
@@ -1025,22 +953,5 @@ public class WorkSource implements Parcelable {
             }
         }
         proto.end(workSourceToken);
-    }
-
-    /* renamed from: android.os.WorkSource$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WorkSource> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WorkSource createFromParcel(Parcel in) {
-            return new WorkSource(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WorkSource[] newArray(int size) {
-            return new WorkSource[size];
-        }
     }
 }

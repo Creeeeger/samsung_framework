@@ -76,14 +76,14 @@ public final class DataProfileInfo {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.profileId = _hidl_blob.getInt32(_hidl_offset + 0);
         this.apn = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.apn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.protocol = _hidl_blob.getInt32(_hidl_offset + 24);
         this.roamingProtocol = _hidl_blob.getInt32(_hidl_offset + 28);
         this.authType = _hidl_blob.getInt32(_hidl_offset + 32);
         this.user = _hidl_blob.getString(_hidl_offset + 40);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
+        parcel.readEmbeddedBuffer(this.user.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 40 + 0, false);
         this.password = _hidl_blob.getString(_hidl_offset + 56);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 56 + 0, false);
+        parcel.readEmbeddedBuffer(this.password.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 56 + 0, false);
         this.type = _hidl_blob.getInt32(_hidl_offset + 72);
         this.maxConnsTime = _hidl_blob.getInt32(_hidl_offset + 76);
         this.maxConns = _hidl_blob.getInt32(_hidl_offset + 80);

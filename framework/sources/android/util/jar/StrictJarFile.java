@@ -35,10 +35,12 @@ public final class StrictJarFile {
 
     private static native ZipEntry nativeFindEntry(long j, String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native ZipEntry nativeNextEntry(long j);
 
     private static native long nativeOpenJarFile(String str, int i) throws IOException;
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeStartIteration(long j, String str);
 
     public StrictJarFile(String fileName) throws IOException, SecurityException {
@@ -65,10 +67,9 @@ public final class StrictJarFile {
         try {
             if (verify) {
                 HashMap<String, byte[]> metaEntries = getMetaEntries();
-                StrictJarManifest strictJarManifest = new StrictJarManifest(metaEntries.get("META-INF/MANIFEST.MF"), true);
-                this.manifest = strictJarManifest;
-                this.verifier = new StrictJarVerifier(name, strictJarManifest, metaEntries, signatureSchemeRollbackProtectionsEnforced);
-                Set<String> files = strictJarManifest.getEntries().keySet();
+                this.manifest = new StrictJarManifest(metaEntries.get("META-INF/MANIFEST.MF"), true);
+                this.verifier = new StrictJarVerifier(name, this.manifest, metaEntries, signatureSchemeRollbackProtectionsEnforced);
+                Set<String> files = this.manifest.getEntries().keySet();
                 for (String file : files) {
                     if (findEntry(file) == null) {
                         throw new SecurityException("File " + file + " in manifest does not exist");
@@ -144,9 +145,8 @@ public final class StrictJarFile {
 
     public void close() throws IOException {
         if (!this.closed) {
-            CloseGuard closeGuard = this.guard;
-            if (closeGuard != null) {
-                closeGuard.close();
+            if (this.guard != null) {
+                this.guard.close();
             }
             nativeClose(this.nativeHandle);
             IoUtils.closeQuietly(this.fd);
@@ -156,9 +156,8 @@ public final class StrictJarFile {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.guard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.guard != null) {
+                this.guard.warnIfOpen();
             }
             close();
         } finally {
@@ -175,8 +174,7 @@ public final class StrictJarFile {
         return new ZipInflaterInputStream(wrapped, new Inflater(true), bufSize, ze);
     }
 
-    /* loaded from: classes4.dex */
-    public static final class EntryIterator implements Iterator<ZipEntry> {
+    static final class EntryIterator implements Iterator<ZipEntry> {
         private final long iterationHandle;
         private ZipEntry nextEntry;
 
@@ -223,8 +221,7 @@ public final class StrictJarFile {
         return metaEntries;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class JarFileInputStream extends FilterInputStream {
+    static final class JarFileInputStream extends FilterInputStream {
         private long count;
         private boolean done;
         private final StrictJarVerifier.VerifierEntry entry;
@@ -269,9 +266,8 @@ public final class StrictJarFile {
                 int r = super.read(buffer, byteOffset, byteCount);
                 if (r != -1) {
                     int size = r;
-                    long j = this.count;
-                    if (j < size) {
-                        size = (int) j;
+                    if (this.count < size) {
+                        size = (int) this.count;
                     }
                     this.entry.write(buffer, byteOffset, size);
                     this.count -= size;
@@ -303,7 +299,6 @@ public final class StrictJarFile {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ZipInflaterInputStream extends InflaterInputStream {
         private long bytesRead;
         private boolean closed;
@@ -345,7 +340,6 @@ public final class StrictJarFile {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class FDStream extends InputStream {
         private long endOffset;
         private final FileDescriptor fd;
@@ -370,14 +364,12 @@ public final class StrictJarFile {
         @Override // java.io.InputStream
         public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
             synchronized (this.fd) {
-                long j = this.endOffset;
-                long j2 = this.offset;
-                long length = j - j2;
+                long length = this.endOffset - this.offset;
                 if (byteCount > length) {
                     byteCount = (int) length;
                 }
                 try {
-                    Os.lseek(this.fd, j2, OsConstants.SEEK_SET);
+                    Os.lseek(this.fd, this.offset, OsConstants.SEEK_SET);
                     int count = IoBridge.read(this.fd, buffer, byteOffset, byteCount);
                     if (count <= 0) {
                         return -1;
@@ -392,12 +384,10 @@ public final class StrictJarFile {
 
         @Override // java.io.InputStream
         public long skip(long byteCount) throws IOException {
-            long j = this.endOffset;
-            long j2 = this.offset;
-            if (byteCount > j - j2) {
-                byteCount = j - j2;
+            if (byteCount > this.endOffset - this.offset) {
+                byteCount = this.endOffset - this.offset;
             }
-            this.offset = j2 + byteCount;
+            this.offset += byteCount;
             return byteCount;
         }
     }

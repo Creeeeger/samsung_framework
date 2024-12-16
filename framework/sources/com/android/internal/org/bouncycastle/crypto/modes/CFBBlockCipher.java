@@ -38,21 +38,13 @@ public class CFBBlockCipher extends StreamBlockCipher {
         if (params instanceof ParametersWithIV) {
             ParametersWithIV ivParam = (ParametersWithIV) params;
             byte[] iv = ivParam.getIV();
-            int length = iv.length;
-            byte[] bArr = this.IV;
-            if (length < bArr.length) {
-                System.arraycopy(iv, 0, bArr, bArr.length - iv.length, iv.length);
-                int i = 0;
-                while (true) {
-                    byte[] bArr2 = this.IV;
-                    if (i >= bArr2.length - iv.length) {
-                        break;
-                    }
-                    bArr2[i] = 0;
-                    i++;
+            if (iv.length < this.IV.length) {
+                System.arraycopy(iv, 0, this.IV, this.IV.length - iv.length, iv.length);
+                for (int i = 0; i < this.IV.length - iv.length; i++) {
+                    this.IV[i] = 0;
                 }
             } else {
-                System.arraycopy(iv, 0, bArr, 0, bArr.length);
+                System.arraycopy(iv, 0, this.IV, 0, this.IV.length);
             }
             reset();
             if (ivParam.getParameters() != null) {
@@ -81,23 +73,15 @@ public class CFBBlockCipher extends StreamBlockCipher {
         if (this.byteCount == 0) {
             this.cipher.processBlock(this.cfbV, 0, this.cfbOutV, 0);
         }
-        byte[] bArr = this.cfbOutV;
+        byte rv = (byte) (this.cfbOutV[this.byteCount] ^ in);
+        byte[] bArr = this.inBuf;
         int i = this.byteCount;
-        byte rv = (byte) (bArr[i] ^ in);
-        byte[] bArr2 = this.inBuf;
-        int i2 = i + 1;
-        this.byteCount = i2;
-        bArr2[i] = rv;
-        int i3 = this.blockSize;
-        if (i2 == i3) {
+        this.byteCount = i + 1;
+        bArr[i] = rv;
+        if (this.byteCount == this.blockSize) {
             this.byteCount = 0;
-            byte[] bArr3 = this.cfbV;
-            System.arraycopy(bArr3, i3, bArr3, 0, bArr3.length - i3);
-            byte[] bArr4 = this.inBuf;
-            byte[] bArr5 = this.cfbV;
-            int length = bArr5.length;
-            int i4 = this.blockSize;
-            System.arraycopy(bArr4, 0, bArr5, length - i4, i4);
+            System.arraycopy(this.cfbV, this.blockSize, this.cfbV, 0, this.cfbV.length - this.blockSize);
+            System.arraycopy(this.inBuf, 0, this.cfbV, this.cfbV.length - this.blockSize, this.blockSize);
         }
         return rv;
     }
@@ -106,23 +90,15 @@ public class CFBBlockCipher extends StreamBlockCipher {
         if (this.byteCount == 0) {
             this.cipher.processBlock(this.cfbV, 0, this.cfbOutV, 0);
         }
-        byte[] bArr = this.inBuf;
+        this.inBuf[this.byteCount] = in;
+        byte[] bArr = this.cfbOutV;
         int i = this.byteCount;
-        bArr[i] = in;
-        byte[] bArr2 = this.cfbOutV;
-        int i2 = i + 1;
-        this.byteCount = i2;
-        byte rv = (byte) (bArr2[i] ^ in);
-        int i3 = this.blockSize;
-        if (i2 == i3) {
+        this.byteCount = i + 1;
+        byte rv = (byte) (bArr[i] ^ in);
+        if (this.byteCount == this.blockSize) {
             this.byteCount = 0;
-            byte[] bArr3 = this.cfbV;
-            System.arraycopy(bArr3, i3, bArr3, 0, bArr3.length - i3);
-            byte[] bArr4 = this.inBuf;
-            byte[] bArr5 = this.cfbV;
-            int length = bArr5.length;
-            int i4 = this.blockSize;
-            System.arraycopy(bArr4, 0, bArr5, length - i4, i4);
+            System.arraycopy(this.cfbV, this.blockSize, this.cfbV, 0, this.cfbV.length - this.blockSize);
+            System.arraycopy(this.inBuf, 0, this.cfbV, this.cfbV.length - this.blockSize, this.blockSize);
         }
         return rv;
     }
@@ -154,8 +130,7 @@ public class CFBBlockCipher extends StreamBlockCipher {
 
     @Override // com.android.internal.org.bouncycastle.crypto.BlockCipher
     public void reset() {
-        byte[] bArr = this.IV;
-        System.arraycopy(bArr, 0, this.cfbV, 0, bArr.length);
+        System.arraycopy(this.IV, 0, this.cfbV, 0, this.IV.length);
         Arrays.fill(this.inBuf, (byte) 0);
         this.byteCount = 0;
         this.cipher.reset();

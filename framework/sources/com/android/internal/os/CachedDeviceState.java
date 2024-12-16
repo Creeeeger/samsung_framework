@@ -52,7 +52,6 @@ public class CachedDeviceState {
         return new Readonly();
     }
 
-    /* loaded from: classes5.dex */
     public class Readonly {
         public Readonly() {
         }
@@ -68,7 +67,7 @@ public class CachedDeviceState {
         public TimeInStateStopwatch createTimeOnBatteryStopwatch() {
             TimeInStateStopwatch stopwatch;
             synchronized (CachedDeviceState.this.mStopwatchesLock) {
-                stopwatch = new TimeInStateStopwatch();
+                stopwatch = CachedDeviceState.this.new TimeInStateStopwatch();
                 CachedDeviceState.this.mOnBatteryStopwatches.add(stopwatch);
                 if (!CachedDeviceState.this.mCharging) {
                     stopwatch.start();
@@ -78,7 +77,6 @@ public class CachedDeviceState {
         }
     }
 
-    /* loaded from: classes5.dex */
     public class TimeInStateStopwatch implements AutoCloseable {
         private final Object mLock = new Object();
         private long mStartTimeMillis;
@@ -102,6 +100,7 @@ public class CachedDeviceState {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void start() {
             synchronized (this.mLock) {
                 if (!isRunning()) {
@@ -110,6 +109,7 @@ public class CachedDeviceState {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void stop() {
             synchronized (this.mLock) {
                 if (isRunning()) {

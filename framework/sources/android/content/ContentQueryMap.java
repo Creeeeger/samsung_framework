@@ -35,7 +35,7 @@ public class ContentQueryMap extends Observable {
             return;
         }
         this.mKeepUpdated = keepUpdated;
-        if (!keepUpdated) {
+        if (!this.mKeepUpdated) {
             this.mCursor.unregisterContentObserver(this.mContentObserver);
             this.mContentObserver = null;
             return;
@@ -45,10 +45,6 @@ public class ContentQueryMap extends Observable {
         }
         if (this.mContentObserver == null) {
             this.mContentObserver = new ContentObserver(this.mHandlerForUpdateNotifications) { // from class: android.content.ContentQueryMap.1
-                AnonymousClass1(Handler handler) {
-                    super(handler);
-                }
-
                 @Override // android.database.ContentObserver
                 public void onChange(boolean selfChange) {
                     if (ContentQueryMap.this.countObservers() != 0) {
@@ -61,23 +57,6 @@ public class ContentQueryMap extends Observable {
         }
         this.mCursor.registerContentObserver(this.mContentObserver);
         this.mDirty = true;
-    }
-
-    /* renamed from: android.content.ContentQueryMap$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange) {
-            if (ContentQueryMap.this.countObservers() != 0) {
-                ContentQueryMap.this.requery();
-            } else {
-                ContentQueryMap.this.mDirty = true;
-            }
-        }
     }
 
     public synchronized ContentValues getValues(String rowName) {
@@ -102,19 +81,13 @@ public class ContentQueryMap extends Observable {
     }
 
     private synchronized void readCursorIntoCache(Cursor cursor) {
-        Map<String, ContentValues> map = this.mValues;
-        int capacity = map != null ? map.size() : 0;
+        int capacity = this.mValues != null ? this.mValues.size() : 0;
         this.mValues = new HashMap(capacity);
         while (cursor.moveToNext()) {
             ContentValues values = new ContentValues();
-            int i = 0;
-            while (true) {
-                String[] strArr = this.mColumnNames;
-                if (i < strArr.length) {
-                    if (i != this.mKeyColumn) {
-                        values.put(strArr[i], cursor.getString(i));
-                    }
-                    i++;
+            for (int i = 0; i < this.mColumnNames.length; i++) {
+                if (i != this.mKeyColumn) {
+                    values.put(this.mColumnNames[i], cursor.getString(i));
                 }
             }
             this.mValues.put(cursor.getString(this.mKeyColumn), values);

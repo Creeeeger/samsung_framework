@@ -52,9 +52,8 @@ public class DSASigner extends SignatureSpi implements PKCSObjectIdentifiers, X5
         CipherParameters param = DSAUtil.generatePrivateKeyParameter(privateKey);
         DSAParameters dsaParam = ((DSAKeyParameters) param).getParameters();
         checkKey(dsaParam);
-        SecureRandom secureRandom = this.random;
-        if (secureRandom != null) {
-            param = new ParametersWithRandom(param, secureRandom);
+        if (this.random != null) {
+            param = new ParametersWithRandom(param, this.random);
         }
         this.digest.reset();
         this.signer.init(true, param);
@@ -135,28 +134,24 @@ public class DSASigner extends SignatureSpi implements PKCSObjectIdentifiers, X5
         throw new UnsupportedOperationException("engineGetParameter unsupported");
     }
 
-    /* loaded from: classes5.dex */
     public static class stdDSA extends DSASigner {
         public stdDSA() {
             super(AndroidDigestFactory.getSHA1(), new com.android.internal.org.bouncycastle.crypto.signers.DSASigner());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class dsa224 extends DSASigner {
         public dsa224() {
             super(AndroidDigestFactory.getSHA224(), new com.android.internal.org.bouncycastle.crypto.signers.DSASigner());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class dsa256 extends DSASigner {
         public dsa256() {
             super(AndroidDigestFactory.getSHA256(), new com.android.internal.org.bouncycastle.crypto.signers.DSASigner());
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class noneDSA extends DSASigner {
         public noneDSA() {
             super(new NullDigest(), new com.android.internal.org.bouncycastle.crypto.signers.DSASigner());

@@ -9,9 +9,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public abstract class KernelCpuUidBpfMapReader {
     private static final int ERROR_THRESHOLD = 5;
     private static final long FRESHNESS_MS = 500;
-    protected final ReentrantReadWriteLock mLock;
-    protected final ReentrantReadWriteLock.ReadLock mReadLock;
-    protected final ReentrantReadWriteLock.WriteLock mWriteLock;
     private static final KernelCpuUidBpfMapReader FREQ_TIME_READER = new KernelCpuUidFreqTimeBpfMapReader();
     private static final KernelCpuUidBpfMapReader FULL_TIME_READER = new KernelCpuUidFullTimeBpfMapReader();
     private static final KernelCpuUidBpfMapReader ACTIVE_TIME_READER = new KernelCpuUidActiveTimeBpfMapReader();
@@ -20,8 +17,10 @@ public abstract class KernelCpuUidBpfMapReader {
     private int mErrors = 0;
     protected SparseArray<long[]> mData = new SparseArray<>();
     private long mLastReadTime = 0;
+    protected final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
+    protected final ReentrantReadWriteLock.ReadLock mReadLock = this.mLock.readLock();
+    protected final ReentrantReadWriteLock.WriteLock mWriteLock = this.mLock.writeLock();
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidActiveTimeBpfMapReader extends KernelCpuUidBpfMapReader {
         @Override // com.android.internal.os.KernelCpuUidBpfMapReader
         public final native long[] getDataDimensions();
@@ -30,7 +29,6 @@ public abstract class KernelCpuUidBpfMapReader {
         protected final native boolean readBpfData();
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidClusterTimeBpfMapReader extends KernelCpuUidBpfMapReader {
         @Override // com.android.internal.os.KernelCpuUidBpfMapReader
         public final native long[] getDataDimensions();
@@ -39,7 +37,6 @@ public abstract class KernelCpuUidBpfMapReader {
         protected final native boolean readBpfData();
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidFullTimeBpfMapReader extends KernelCpuUidBpfMapReader {
         @Override // com.android.internal.os.KernelCpuUidBpfMapReader
         public final native long[] getDataDimensions();
@@ -52,26 +49,19 @@ public abstract class KernelCpuUidBpfMapReader {
 
     protected abstract boolean readBpfData();
 
-    public KernelCpuUidBpfMapReader() {
-        ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
-        this.mLock = reentrantReadWriteLock;
-        this.mReadLock = reentrantReadWriteLock.readLock();
-        this.mWriteLock = reentrantReadWriteLock.writeLock();
-    }
-
-    public static KernelCpuUidBpfMapReader getFreqTimeReaderInstance() {
+    static KernelCpuUidBpfMapReader getFreqTimeReaderInstance() {
         return FREQ_TIME_READER;
     }
 
-    public static KernelCpuUidBpfMapReader getFullTimeReaderInstance() {
+    static KernelCpuUidBpfMapReader getFullTimeReaderInstance() {
         return FULL_TIME_READER;
     }
 
-    public static KernelCpuUidBpfMapReader getActiveTimeReaderInstance() {
+    static KernelCpuUidBpfMapReader getActiveTimeReaderInstance() {
         return ACTIVE_TIME_READER;
     }
 
-    public static KernelCpuUidBpfMapReader getClusterTimeReaderInstance() {
+    static KernelCpuUidBpfMapReader getClusterTimeReaderInstance() {
         return CLUSTER_TIME_READER;
     }
 
@@ -142,7 +132,6 @@ public abstract class KernelCpuUidBpfMapReader {
         return this.mData.size() > 0 && SystemClock.elapsedRealtime() - this.mLastReadTime < FRESHNESS_MS;
     }
 
-    /* loaded from: classes5.dex */
     public class BpfMapIterator implements AutoCloseable {
         private int mPos;
 
@@ -165,7 +154,6 @@ public abstract class KernelCpuUidBpfMapReader {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class KernelCpuUidFreqTimeBpfMapReader extends KernelCpuUidBpfMapReader {
         private final native boolean removeUidRange(int i, int i2);
 

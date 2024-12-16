@@ -68,33 +68,30 @@ public class ASN1Enumerated extends ASN1Primitive {
     }
 
     public int intValueExact() {
-        byte[] bArr = this.bytes;
-        int length = bArr.length;
-        int i = this.start;
-        int count = length - i;
+        int count = this.bytes.length - this.start;
         if (count > 4) {
             throw new ArithmeticException("ASN.1 Enumerated out of int range");
         }
-        return ASN1Integer.intValue(bArr, i, -1);
+        return ASN1Integer.intValue(this.bytes, this.start, -1);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.bytes.length) + 1 + this.bytes.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 10, this.bytes);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Enumerated)) {
             return false;
         }
@@ -107,7 +104,7 @@ public class ASN1Enumerated extends ASN1Primitive {
         return Arrays.hashCode(this.bytes);
     }
 
-    public static ASN1Enumerated fromOctetString(byte[] enc) {
+    static ASN1Enumerated fromOctetString(byte[] enc) {
         if (enc.length > 1) {
             return new ASN1Enumerated(enc);
         }
@@ -115,12 +112,12 @@ public class ASN1Enumerated extends ASN1Primitive {
             throw new IllegalArgumentException("ENUMERATED has zero length");
         }
         int value = enc[0] & 255;
-        ASN1Enumerated[] aSN1EnumeratedArr = cache;
-        if (value >= aSN1EnumeratedArr.length) {
+        if (value >= cache.length) {
             return new ASN1Enumerated(enc);
         }
-        ASN1Enumerated possibleMatch = aSN1EnumeratedArr[value];
+        ASN1Enumerated possibleMatch = cache[value];
         if (possibleMatch == null) {
+            ASN1Enumerated[] aSN1EnumeratedArr = cache;
             ASN1Enumerated possibleMatch2 = new ASN1Enumerated(enc);
             aSN1EnumeratedArr[value] = possibleMatch2;
             return possibleMatch2;

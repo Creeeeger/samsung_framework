@@ -102,12 +102,10 @@ public class Toolbar extends ViewGroup {
     private TextView mTitleTextView;
     private ToolbarWidgetWrapper mWrapper;
 
-    /* loaded from: classes4.dex */
     public interface OnMenuItemClickListener {
         boolean onMenuItemClick(MenuItem menuItem);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<Toolbar> {
         private int mCollapseContentDescriptionId;
         private int mCollapseIconId;
@@ -181,35 +179,6 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.Toolbar$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements ActionMenuView.OnMenuItemClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.ActionMenuView.OnMenuItemClickListener
-        public boolean onMenuItemClick(MenuItem item) {
-            if (Toolbar.this.mOnMenuItemClickListener != null) {
-                return Toolbar.this.mOnMenuItemClickListener.onMenuItemClick(item);
-            }
-            return false;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.Toolbar$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Toolbar.this.showOverflowMenu();
-        }
-    }
-
     public Toolbar(Context context) {
         this(context, null);
     }
@@ -233,9 +202,6 @@ public class Toolbar extends ViewGroup {
         this.mHiddenViews = new ArrayList<>();
         this.mTempMargins = new int[2];
         this.mMenuViewItemClickListener = new ActionMenuView.OnMenuItemClickListener() { // from class: android.widget.Toolbar.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.ActionMenuView.OnMenuItemClickListener
             public boolean onMenuItemClick(MenuItem item) {
                 if (Toolbar.this.mOnMenuItemClickListener != null) {
@@ -245,9 +211,6 @@ public class Toolbar extends ViewGroup {
             }
         };
         this.mShowOverflowMenuRunnable = new Runnable() { // from class: android.widget.Toolbar.2
-            AnonymousClass2() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 Toolbar.this.showOverflowMenu();
@@ -256,9 +219,6 @@ public class Toolbar extends ViewGroup {
         this.mMaxFontScale = 1.3f;
         this.mCollapseHandler = new Handler(Looper.getMainLooper());
         this.mPerformToCollapse = new Runnable() { // from class: android.widget.Toolbar.3
-            AnonymousClass3() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 Toolbar.this.collapseActionView();
@@ -266,9 +226,8 @@ public class Toolbar extends ViewGroup {
         };
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.parentIsDeviceDefault, outValue, true);
-        boolean z = outValue.data != 0;
-        this.mIsThemeDeviceDefaultFamily = z;
-        this.mIsSetOpenTheme = z && context.getResources().getAssets().getSamsungThemeOverlays().size() > 0;
+        this.mIsThemeDeviceDefaultFamily = outValue.data != 0;
+        this.mIsSetOpenTheme = this.mIsThemeDeviceDefaultFamily && context.getResources().getAssets().getSamsungThemeOverlays().size() > 0;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Toolbar, defStyleAttr, defStyleRes);
         saveAttributeDataForStyleable(context, R.styleable.Toolbar, attrs, a, defStyleAttr, defStyleRes);
         this.mTitleTextAppearance = a.getResourceId(4, 0);
@@ -309,10 +268,9 @@ public class Toolbar extends ViewGroup {
         }
         this.mContentInsetStartWithNavigation = a.getDimensionPixelOffset(25, Integer.MIN_VALUE);
         this.mContentInsetEndWithActions = a.getDimensionPixelOffset(26, Integer.MIN_VALUE);
-        Drawable drawable = a.getDrawable(24);
-        this.mCollapseIcon = drawable;
-        if (this.mIsSetOpenTheme && (drawable instanceof BitmapDrawable)) {
-            ((BitmapDrawable) drawable).setAutoMirrored(true);
+        this.mCollapseIcon = a.getDrawable(24);
+        if (this.mIsSetOpenTheme && (this.mCollapseIcon instanceof BitmapDrawable)) {
+            ((BitmapDrawable) this.mCollapseIcon).setAutoMirrored(true);
         }
         this.mCollapseDescription = a.getText(13);
         CharSequence title = a.getText(1);
@@ -354,17 +312,16 @@ public class Toolbar extends ViewGroup {
         TypedArray ta = context.getTheme().obtainStyledAttributes(new int[]{16843531});
         this.mNavIconResourceId = ta.getResourceId(0, 0);
         ta.recycle();
-        if (this.mNavIconResourceId != 17304523) {
+        if (this.mNavIconResourceId != 17304753) {
             this.mIsCustomNavIcon = true;
         }
         if (this.mIsSetOpenTheme) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.View, defStyleAttr, defStyleRes);
-            int resourceId = typedArray.getResourceId(13, 0);
-            this.mBackgroundResourceId = resourceId;
-            if (resourceId == 17303727) {
+            this.mBackgroundResourceId = typedArray.getResourceId(13, 0);
+            if (this.mBackgroundResourceId == 17303944) {
                 setBackground(context.getDrawable(R.drawable.tw_action_bar_background));
                 this.mBackgroundResourceId = R.drawable.tw_action_bar_background;
-            } else if (resourceId == 17303728) {
+            } else if (this.mBackgroundResourceId == 17303945) {
                 setBackground(context.getDrawable(R.drawable.tw_action_bar_background_dark));
                 this.mBackgroundResourceId = R.drawable.tw_action_bar_background_dark;
             }
@@ -373,8 +330,7 @@ public class Toolbar extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
-        ImageButton imageButton;
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (this.mIsThemeDeviceDefaultFamily) {
             TypedArray ta = getContext().getTheme().obtainStyledAttributes(ATTRS);
@@ -396,15 +352,15 @@ public class Toolbar extends ViewGroup {
             }
             ta3.recycle();
             int width = getContext().getResources().getDimensionPixelSize(R.dimen.sem_toolbar_navigation_button_width);
-            if (width >= 0 && (imageButton = this.mNavButtonView) != null) {
-                imageButton.setMinimumWidth(width);
+            if (width >= 0 && this.mNavButtonView != null) {
+                this.mNavButtonView.setMinimumWidth(width);
             }
             if (!this.mIsCustomNavIcon && this.mNavIconResourceId > 0 && this.mNavButtonView != null) {
                 Drawable icon = getContext().getDrawable(this.mNavIconResourceId);
                 if (this.mIsSetOpenTheme && (icon instanceof BitmapDrawable)) {
                     ((BitmapDrawable) icon).setAutoMirrored(true);
                 } else if (icon != null) {
-                    this.mNavButtonView.lambda$setImageURIAsync$2(icon);
+                    this.mNavButtonView.lambda$setImageURIAsync$0(icon);
                 }
             }
             if (this.mIsSetOpenTheme && this.mBackgroundResourceId != 0) {
@@ -414,7 +370,7 @@ public class Toolbar extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         ViewParent parent = getParent();
         while (parent != null && (parent instanceof ViewGroup)) {
@@ -502,28 +458,23 @@ public class Toolbar extends ViewGroup {
     }
 
     public boolean canShowOverflowMenu() {
-        ActionMenuView actionMenuView;
-        return getVisibility() == 0 && (actionMenuView = this.mMenuView) != null && actionMenuView.isOverflowReserved();
+        return getVisibility() == 0 && this.mMenuView != null && this.mMenuView.isOverflowReserved();
     }
 
     public boolean isOverflowMenuShowing() {
-        ActionMenuView actionMenuView = this.mMenuView;
-        return actionMenuView != null && actionMenuView.isOverflowMenuShowing();
+        return this.mMenuView != null && this.mMenuView.isOverflowMenuShowing();
     }
 
     public boolean isOverflowMenuShowPending() {
-        ActionMenuView actionMenuView = this.mMenuView;
-        return actionMenuView != null && actionMenuView.isOverflowMenuShowPending();
+        return this.mMenuView != null && this.mMenuView.isOverflowMenuShowPending();
     }
 
     public boolean showOverflowMenu() {
-        ActionMenuView actionMenuView = this.mMenuView;
-        return actionMenuView != null && actionMenuView.showOverflowMenu();
+        return this.mMenuView != null && this.mMenuView.showOverflowMenu();
     }
 
     public boolean hideOverflowMenu() {
-        ActionMenuView actionMenuView = this.mMenuView;
-        return actionMenuView != null && actionMenuView.hideOverflowMenu();
+        return this.mMenuView != null && this.mMenuView.hideOverflowMenu();
     }
 
     public void setMenu(MenuBuilder menu, ActionMenuPresenter outerPresenter) {
@@ -558,16 +509,14 @@ public class Toolbar extends ViewGroup {
     }
 
     public void dismissPopupMenus() {
-        ActionMenuView actionMenuView = this.mMenuView;
-        if (actionMenuView != null) {
-            actionMenuView.dismissPopupMenus();
+        if (this.mMenuView != null) {
+            this.mMenuView.dismissPopupMenus();
         }
     }
 
     public boolean isTitleTruncated() {
         Layout titleLayout;
-        TextView textView = this.mTitleTextView;
-        if (textView == null || (titleLayout = textView.getLayout()) == null) {
+        if (this.mTitleTextView == null || (titleLayout = this.mTitleTextView.getLayout()) == null) {
             return false;
         }
         int lineCount = titleLayout.getLineCount();
@@ -585,23 +534,18 @@ public class Toolbar extends ViewGroup {
             if (!isChildOrHidden(this.mLogoView)) {
                 addSystemView(this.mLogoView, true);
             }
-        } else {
-            ImageView imageView = this.mLogoView;
-            if (imageView != null && isChildOrHidden(imageView)) {
-                removeView(this.mLogoView);
-                this.mHiddenViews.remove(this.mLogoView);
-            }
+        } else if (this.mLogoView != null && isChildOrHidden(this.mLogoView)) {
+            removeView(this.mLogoView);
+            this.mHiddenViews.remove(this.mLogoView);
         }
-        ImageView imageView2 = this.mLogoView;
-        if (imageView2 != null) {
-            imageView2.lambda$setImageURIAsync$2(drawable);
+        if (this.mLogoView != null) {
+            this.mLogoView.lambda$setImageURIAsync$0(drawable);
         }
     }
 
     public Drawable getLogo() {
-        ImageView imageView = this.mLogoView;
-        if (imageView != null) {
-            return imageView.getDrawable();
+        if (this.mLogoView != null) {
+            return this.mLogoView.getDrawable();
         }
         return null;
     }
@@ -614,16 +558,14 @@ public class Toolbar extends ViewGroup {
         if (!TextUtils.isEmpty(description)) {
             ensureLogoView();
         }
-        ImageView imageView = this.mLogoView;
-        if (imageView != null) {
-            imageView.setContentDescription(description);
+        if (this.mLogoView != null) {
+            this.mLogoView.setContentDescription(description);
         }
     }
 
     public CharSequence getLogoDescription() {
-        ImageView imageView = this.mLogoView;
-        if (imageView != null) {
-            return imageView.getContentDescription();
+        if (this.mLogoView != null) {
+            return this.mLogoView.getContentDescription();
         }
         return null;
     }
@@ -635,13 +577,11 @@ public class Toolbar extends ViewGroup {
     }
 
     public boolean hasExpandedActionView() {
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        return (expandedActionViewMenuPresenter == null || expandedActionViewMenuPresenter.mCurrentExpandedItem == null) ? false : true;
+        return (this.mExpandedMenuPresenter == null || this.mExpandedMenuPresenter.mCurrentExpandedItem == null) ? false : true;
     }
 
     public void collapseActionView() {
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        MenuItemImpl item = expandedActionViewMenuPresenter == null ? null : expandedActionViewMenuPresenter.mCurrentExpandedItem;
+        MenuItemImpl item = this.mExpandedMenuPresenter == null ? null : this.mExpandedMenuPresenter.mCurrentExpandedItem;
         if (item != null) {
             item.collapseActionView();
         }
@@ -659,32 +599,25 @@ public class Toolbar extends ViewGroup {
         if (!TextUtils.isEmpty(title)) {
             if (this.mTitleTextView == null) {
                 Context context = getContext();
-                TextView textView = new TextView(context);
-                this.mTitleTextView = textView;
-                textView.setSingleLine();
+                this.mTitleTextView = new TextView(context);
+                this.mTitleTextView.setSingleLine();
                 this.mTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
-                int i = this.mTitleTextAppearance;
-                if (i != 0) {
-                    this.mTitleTextView.setTextAppearance(i);
+                if (this.mTitleTextAppearance != 0) {
+                    this.mTitleTextView.setTextAppearance(this.mTitleTextAppearance);
                 }
-                int i2 = this.mTitleTextColor;
-                if (i2 != 0) {
-                    this.mTitleTextView.setTextColor(i2);
+                if (this.mTitleTextColor != 0) {
+                    this.mTitleTextView.setTextColor(this.mTitleTextColor);
                 }
             }
             if (!isChildOrHidden(this.mTitleTextView)) {
                 addSystemView(this.mTitleTextView, true);
             }
-        } else {
-            TextView textView2 = this.mTitleTextView;
-            if (textView2 != null && isChildOrHidden(textView2)) {
-                removeView(this.mTitleTextView);
-                this.mHiddenViews.remove(this.mTitleTextView);
-            }
+        } else if (this.mTitleTextView != null && isChildOrHidden(this.mTitleTextView)) {
+            removeView(this.mTitleTextView);
+            this.mHiddenViews.remove(this.mTitleTextView);
         }
-        TextView textView3 = this.mTitleTextView;
-        if (textView3 != null) {
-            textView3.setText(title);
+        if (this.mTitleTextView != null) {
+            this.mTitleTextView.lambda$setTextAsync$0(title);
         }
         this.mTitleText = title;
     }
@@ -701,72 +634,60 @@ public class Toolbar extends ViewGroup {
         if (!TextUtils.isEmpty(subtitle)) {
             if (this.mSubtitleTextView == null) {
                 Context context = getContext();
-                TextView textView = new TextView(context);
-                this.mSubtitleTextView = textView;
-                textView.setSingleLine();
+                this.mSubtitleTextView = new TextView(context);
+                this.mSubtitleTextView.setSingleLine();
                 this.mSubtitleTextView.setEllipsize(TextUtils.TruncateAt.END);
-                int i = this.mSubtitleTextAppearance;
-                if (i != 0) {
-                    this.mSubtitleTextView.setTextAppearance(i);
+                if (this.mSubtitleTextAppearance != 0) {
+                    this.mSubtitleTextView.setTextAppearance(this.mSubtitleTextAppearance);
                 }
-                int i2 = this.mSubtitleTextColor;
-                if (i2 != 0) {
-                    this.mSubtitleTextView.setTextColor(i2);
+                if (this.mSubtitleTextColor != 0) {
+                    this.mSubtitleTextView.setTextColor(this.mSubtitleTextColor);
                 }
             }
             if (!isChildOrHidden(this.mSubtitleTextView)) {
                 addSystemView(this.mSubtitleTextView, true);
             }
-        } else {
-            TextView textView2 = this.mSubtitleTextView;
-            if (textView2 != null && isChildOrHidden(textView2)) {
-                removeView(this.mSubtitleTextView);
-                this.mHiddenViews.remove(this.mSubtitleTextView);
-            }
+        } else if (this.mSubtitleTextView != null && isChildOrHidden(this.mSubtitleTextView)) {
+            removeView(this.mSubtitleTextView);
+            this.mHiddenViews.remove(this.mSubtitleTextView);
         }
-        TextView textView3 = this.mSubtitleTextView;
-        if (textView3 != null) {
-            textView3.setText(subtitle);
+        if (this.mSubtitleTextView != null) {
+            this.mSubtitleTextView.lambda$setTextAsync$0(subtitle);
         }
         this.mSubtitleText = subtitle;
     }
 
     public void setTitleTextAppearance(Context context, int resId) {
         this.mTitleTextAppearance = resId;
-        TextView textView = this.mTitleTextView;
-        if (textView != null) {
-            textView.setTextAppearance(resId);
+        if (this.mTitleTextView != null) {
+            this.mTitleTextView.setTextAppearance(resId);
         }
     }
 
     public void setSubtitleTextAppearance(Context context, int resId) {
         this.mSubtitleTextAppearance = resId;
-        TextView textView = this.mSubtitleTextView;
-        if (textView != null) {
-            textView.setTextAppearance(resId);
+        if (this.mSubtitleTextView != null) {
+            this.mSubtitleTextView.setTextAppearance(resId);
         }
     }
 
     public void setTitleTextColor(int color) {
         this.mTitleTextColor = color;
-        TextView textView = this.mTitleTextView;
-        if (textView != null) {
-            textView.setTextColor(color);
+        if (this.mTitleTextView != null) {
+            this.mTitleTextView.setTextColor(color);
         }
     }
 
     public void setSubtitleTextColor(int color) {
         this.mSubtitleTextColor = color;
-        TextView textView = this.mSubtitleTextView;
-        if (textView != null) {
-            textView.setTextColor(color);
+        if (this.mSubtitleTextView != null) {
+            this.mSubtitleTextView.setTextColor(color);
         }
     }
 
     public CharSequence getNavigationContentDescription() {
-        ImageButton imageButton = this.mNavButtonView;
-        if (imageButton != null) {
-            return imageButton.getContentDescription();
+        if (this.mNavButtonView != null) {
+            return this.mNavButtonView.getContentDescription();
         }
         return null;
     }
@@ -779,9 +700,8 @@ public class Toolbar extends ViewGroup {
         if (!TextUtils.isEmpty(description)) {
             ensureNavButtonView();
         }
-        ImageButton imageButton = this.mNavButtonView;
-        if (imageButton != null) {
-            imageButton.setContentDescription(description);
+        if (this.mNavButtonView != null) {
+            this.mNavButtonView.setContentDescription(description);
             this.mNavButtonView.semSetHoverPopupType(0);
             this.mNavButtonView.setTooltipText(description);
             setTooltipOffset(this.mNavButtonView);
@@ -793,9 +713,8 @@ public class Toolbar extends ViewGroup {
         ensureNavButtonView();
         switch (event.getAction()) {
             case 9:
-                ImageButton imageButton = this.mNavButtonView;
-                if (imageButton != null) {
-                    imageButton.setTooltipText(getNavigationContentDescription());
+                if (this.mNavButtonView != null) {
+                    this.mNavButtonView.setTooltipText(getNavigationContentDescription());
                 }
                 setTooltipNull(false);
                 break;
@@ -803,9 +722,8 @@ public class Toolbar extends ViewGroup {
                 setTooltipNull(true);
                 break;
         }
-        ImageButton imageButton2 = this.mNavButtonView;
-        if (imageButton2 != null) {
-            setTooltipOffset(imageButton2);
+        if (this.mNavButtonView != null) {
+            setTooltipOffset(this.mNavButtonView);
         }
         return super.dispatchGenericMotionEvent(event);
     }
@@ -833,8 +751,7 @@ public class Toolbar extends ViewGroup {
         int diff = 0;
         int rotate = display.getRotation();
         int navigationBarHeight = (int) res.getDimension(R.dimen.navigation_bar_height);
-        ActionMenuView actionMenuView = this.mMenuView;
-        View toolBar = actionMenuView != null ? (View) actionMenuView.getParent() : null;
+        View toolBar = this.mMenuView != null ? (View) this.mMenuView.getParent() : null;
         if ((toolBar instanceof Toolbar) && toolBar.getWidth() < displayFrame.right - displayFrame.left) {
             diff = (screenPos[0] - windowPos[0]) - displayFrame.left;
         }
@@ -888,8 +805,7 @@ public class Toolbar extends ViewGroup {
     }
 
     public void setNavigationIcon(int resId) {
-        int i = this.mNavIconResourceId;
-        if (i > 0 && i == 17304523 && resId == 17304523) {
+        if (this.mNavIconResourceId > 0 && this.mNavIconResourceId == 17304753 && resId == 17304753) {
             this.mIsCustomNavIcon = false;
         } else {
             this.mIsCustomNavIcon = true;
@@ -906,23 +822,18 @@ public class Toolbar extends ViewGroup {
             if (!isChildOrHidden(this.mNavButtonView)) {
                 addSystemView(this.mNavButtonView, true);
             }
-        } else {
-            ImageButton imageButton = this.mNavButtonView;
-            if (imageButton != null && isChildOrHidden(imageButton)) {
-                removeView(this.mNavButtonView);
-                this.mHiddenViews.remove(this.mNavButtonView);
-            }
+        } else if (this.mNavButtonView != null && isChildOrHidden(this.mNavButtonView)) {
+            removeView(this.mNavButtonView);
+            this.mHiddenViews.remove(this.mNavButtonView);
         }
-        ImageButton imageButton2 = this.mNavButtonView;
-        if (imageButton2 != null) {
-            imageButton2.lambda$setImageURIAsync$2(icon);
+        if (this.mNavButtonView != null) {
+            this.mNavButtonView.lambda$setImageURIAsync$0(icon);
         }
     }
 
     public Drawable getNavigationIcon() {
-        ImageButton imageButton = this.mNavButtonView;
-        if (imageButton != null) {
-            return imageButton.getDrawable();
+        if (this.mNavButtonView != null) {
+            return this.mNavButtonView.getDrawable();
         }
         return null;
     }
@@ -937,9 +848,8 @@ public class Toolbar extends ViewGroup {
     }
 
     public CharSequence getCollapseContentDescription() {
-        ImageButton imageButton = this.mCollapseButtonView;
-        if (imageButton != null) {
-            return imageButton.getContentDescription();
+        if (this.mCollapseButtonView != null) {
+            return this.mCollapseButtonView.getContentDescription();
         }
         return null;
     }
@@ -952,16 +862,14 @@ public class Toolbar extends ViewGroup {
         if (!TextUtils.isEmpty(description)) {
             ensureCollapseButtonView();
         }
-        ImageButton imageButton = this.mCollapseButtonView;
-        if (imageButton != null) {
-            imageButton.setContentDescription(description);
+        if (this.mCollapseButtonView != null) {
+            this.mCollapseButtonView.setContentDescription(description);
         }
     }
 
     public Drawable getCollapseIcon() {
-        ImageButton imageButton = this.mCollapseButtonView;
-        if (imageButton != null) {
-            return imageButton.getDrawable();
+        if (this.mCollapseButtonView != null) {
+            return this.mCollapseButtonView.getDrawable();
         }
         return null;
     }
@@ -973,12 +881,9 @@ public class Toolbar extends ViewGroup {
     public void setCollapseIcon(Drawable icon) {
         if (icon != null) {
             ensureCollapseButtonView();
-            this.mCollapseButtonView.lambda$setImageURIAsync$2(icon);
-        } else {
-            ImageButton imageButton = this.mCollapseButtonView;
-            if (imageButton != null) {
-                imageButton.lambda$setImageURIAsync$2(this.mCollapseIcon);
-            }
+            this.mCollapseButtonView.lambda$setImageURIAsync$0(icon);
+        } else if (this.mCollapseButtonView != null) {
+            this.mCollapseButtonView.lambda$setImageURIAsync$0(this.mCollapseIcon);
         }
     }
 
@@ -1011,9 +916,8 @@ public class Toolbar extends ViewGroup {
 
     private void ensureMenuView() {
         if (this.mMenuView == null) {
-            ActionMenuView actionMenuView = new ActionMenuView(getContext());
-            this.mMenuView = actionMenuView;
-            actionMenuView.setPopupTheme(this.mPopupTheme);
+            this.mMenuView = new ActionMenuView(getContext());
+            this.mMenuView.setPopupTheme(this.mPopupTheme);
             this.mMenuView.setOnMenuItemClickListener(this.mMenuViewItemClickListener);
             this.mMenuView.setMenuCallbacks(this.mActionMenuPresenterCallback, this.mMenuBuilderCallback);
             LayoutParams lp = generateDefaultLayoutParams();
@@ -1041,17 +945,15 @@ public class Toolbar extends ViewGroup {
     }
 
     public int getContentInsetStart() {
-        RtlSpacingHelper rtlSpacingHelper = this.mContentInsets;
-        if (rtlSpacingHelper != null) {
-            return rtlSpacingHelper.getStart();
+        if (this.mContentInsets != null) {
+            return this.mContentInsets.getStart();
         }
         return 0;
     }
 
     public int getContentInsetEnd() {
-        RtlSpacingHelper rtlSpacingHelper = this.mContentInsets;
-        if (rtlSpacingHelper != null) {
-            return rtlSpacingHelper.getEnd();
+        if (this.mContentInsets != null) {
+            return this.mContentInsets.getEnd();
         }
         return 0;
     }
@@ -1062,25 +964,22 @@ public class Toolbar extends ViewGroup {
     }
 
     public int getContentInsetLeft() {
-        RtlSpacingHelper rtlSpacingHelper = this.mContentInsets;
-        if (rtlSpacingHelper != null) {
-            return rtlSpacingHelper.getLeft();
+        if (this.mContentInsets != null) {
+            return this.mContentInsets.getLeft();
         }
         return 0;
     }
 
     public int getContentInsetRight() {
-        RtlSpacingHelper rtlSpacingHelper = this.mContentInsets;
-        if (rtlSpacingHelper != null) {
-            return rtlSpacingHelper.getRight();
+        if (this.mContentInsets != null) {
+            return this.mContentInsets.getRight();
         }
         return 0;
     }
 
     public int getContentInsetStartWithNavigation() {
-        int i = this.mContentInsetStartWithNavigation;
-        if (i != Integer.MIN_VALUE) {
-            return i;
+        if (this.mContentInsetStartWithNavigation != Integer.MIN_VALUE) {
+            return this.mContentInsetStartWithNavigation;
         }
         return getContentInsetStart();
     }
@@ -1098,9 +997,8 @@ public class Toolbar extends ViewGroup {
     }
 
     public int getContentInsetEndWithActions() {
-        int i = this.mContentInsetEndWithActions;
-        if (i != Integer.MIN_VALUE) {
-            return i;
+        if (this.mContentInsetEndWithActions != Integer.MIN_VALUE) {
+            return this.mContentInsetEndWithActions;
         }
         return getContentInsetEnd();
     }
@@ -1126,9 +1024,8 @@ public class Toolbar extends ViewGroup {
 
     public int getCurrentContentInsetEnd() {
         boolean hasActions = false;
-        ActionMenuView actionMenuView = this.mMenuView;
-        if (actionMenuView != null) {
-            MenuBuilder mb = actionMenuView.peekMenu();
+        if (this.mMenuView != null) {
+            MenuBuilder mb = this.mMenuView.peekMenu();
             hasActions = mb != null && mb.hasVisibleItems();
         }
         if (hasActions) {
@@ -1160,34 +1057,18 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.Toolbar$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Toolbar.this.collapseActionView();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void ensureCollapseButtonView() {
         CharSequence descriptionText = getContext().getResources().getString(R.string.action_bar_up_description);
         if (this.mCollapseButtonView == null) {
-            ImageButton imageButton = new ImageButton(getContext(), null, 0, this.mNavButtonStyle);
-            this.mCollapseButtonView = imageButton;
-            imageButton.lambda$setImageURIAsync$2(this.mCollapseIcon);
+            this.mCollapseButtonView = new ImageButton(getContext(), null, 0, this.mNavButtonStyle);
+            this.mCollapseButtonView.lambda$setImageURIAsync$0(this.mCollapseIcon);
             this.mCollapseButtonView.setContentDescription(this.mCollapseDescription);
             LayoutParams lp = generateDefaultLayoutParams();
             lp.gravity = (this.mButtonGravity & 112) | Gravity.START;
             lp.mViewType = 2;
             this.mCollapseButtonView.setLayoutParams(lp);
             this.mCollapseButtonView.setOnClickListener(new View.OnClickListener() { // from class: android.widget.Toolbar.4
-                AnonymousClass4() {
-                }
-
                 @Override // android.view.View.OnClickListener
                 public void onClick(View v) {
                     if (Toolbar.this.mIsThemeDeviceDefaultFamily) {
@@ -1202,26 +1083,6 @@ public class Toolbar extends ViewGroup {
                 }
             });
             this.mCollapseButtonView.setContentDescription(descriptionText);
-        }
-    }
-
-    /* renamed from: android.widget.Toolbar$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements View.OnClickListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            if (Toolbar.this.mIsThemeDeviceDefaultFamily) {
-                InputMethodManager imm = InputMethodManager.peekInstance();
-                if (imm != null && imm.isActive(Toolbar.this.mExpandedActionView)) {
-                    imm.hideSoftInputFromWindow(Toolbar.this.mExpandedActionView.getWindowToken(), 0);
-                }
-                Toolbar.this.mCollapseHandler.postDelayed(Toolbar.this.mPerformToCollapse, 100L);
-                return;
-            }
-            Toolbar.this.collapseActionView();
         }
     }
 
@@ -1244,24 +1105,24 @@ public class Toolbar extends ViewGroup {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         SavedState state = new SavedState(super.onSaveInstanceState());
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        if (expandedActionViewMenuPresenter != null && expandedActionViewMenuPresenter.mCurrentExpandedItem != null) {
+        if (this.mExpandedMenuPresenter != null && this.mExpandedMenuPresenter.mCurrentExpandedItem != null) {
             state.expandedMenuItemId = this.mExpandedMenuPresenter.mCurrentExpandedItem.getItemId();
         }
         state.isOverflowOpen = isOverflowMenuShowing();
         return state;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         MenuItem item;
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        ActionMenuView actionMenuView = this.mMenuView;
-        Menu menu = actionMenuView != null ? actionMenuView.peekMenu() : null;
+        Menu menu = this.mMenuView != null ? this.mMenuView.peekMenu() : null;
         if (ss.expandedMenuItemId != 0 && this.mExpandedMenuPresenter != null && menu != null && (item = menu.findItem(ss.expandedMenuItemId)) != null) {
             item.expandActionView();
         }
@@ -1276,7 +1137,7 @@ public class Toolbar extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeCallbacks(this.mShowOverflowMenuRunnable);
     }
@@ -1300,7 +1161,7 @@ public class Toolbar extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup
-    public void onSetLayoutParams(View child, ViewGroup.LayoutParams lp) {
+    protected void onSetLayoutParams(View child, ViewGroup.LayoutParams lp) {
         if (!checkLayoutParams(lp)) {
             child.setLayoutParams(generateLayoutParams(lp));
         }
@@ -1353,7 +1214,7 @@ public class Toolbar extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int marginStartIndex;
         int marginEndIndex;
         int marginStartIndex2;
@@ -1485,7 +1346,7 @@ public class Toolbar extends ViewGroup {
 
     /* JADX WARN: Code restructure failed: missing block: B:67:0x015e, code lost:
     
-        if (r13.getMeasuredWidth() <= 0) goto L175;
+        if (r13.getMeasuredWidth() <= 0) goto L57;
      */
     /* JADX WARN: Removed duplicated region for block: B:103:0x0196  */
     /* JADX WARN: Removed duplicated region for block: B:104:0x01a7  */
@@ -1497,7 +1358,7 @@ public class Toolbar extends ViewGroup {
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void onLayout(boolean r34, int r35, int r36, int r37, int r38) {
+    protected void onLayout(boolean r34, int r35, int r36, int r37, int r38) {
         /*
             Method dump skipped, instructions count: 872
             To view this dump change 'Code comments level' option to 'DEBUG'
@@ -1644,6 +1505,7 @@ public class Toolbar extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         if (p instanceof LayoutParams) {
@@ -1658,13 +1520,14 @@ public class Toolbar extends ViewGroup {
         return new LayoutParams(p);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(-2, -2);
     }
 
     @Override // android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return super.checkLayoutParams(p) && (p instanceof LayoutParams);
     }
 
@@ -1711,9 +1574,8 @@ public class Toolbar extends ViewGroup {
     public void setMenuCallbacks(MenuPresenter.Callback pcb, MenuBuilder.Callback mcb) {
         this.mActionMenuPresenterCallback = pcb;
         this.mMenuBuilderCallback = mcb;
-        ActionMenuView actionMenuView = this.mMenuView;
-        if (actionMenuView != null) {
-            actionMenuView.setMenuCallbacks(pcb, mcb);
+        if (this.mMenuView != null) {
+            this.mMenuView.setMenuCallbacks(pcb, mcb);
         }
     }
 
@@ -1731,7 +1593,6 @@ public class Toolbar extends ViewGroup {
         return this.mPopupContext;
     }
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends ActionBar.LayoutParams {
         static final int CUSTOM = 0;
         static final int EXPANDED = 2;
@@ -1782,17 +1643,15 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.Toolbar.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel source) {
                 return new SavedState(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -1817,43 +1676,19 @@ public class Toolbar extends ViewGroup {
             parcel.writeInt(this.expandedMenuItemId);
             parcel.writeInt(this.isOverflowOpen ? 1 : 0);
         }
-
-        /* renamed from: android.widget.Toolbar$SavedState$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel source) {
-                return new SavedState(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes4.dex */
-    public class ExpandedActionViewMenuPresenter implements MenuPresenter {
+    private class ExpandedActionViewMenuPresenter implements MenuPresenter {
         MenuItemImpl mCurrentExpandedItem;
         MenuBuilder mMenu;
-
-        /* synthetic */ ExpandedActionViewMenuPresenter(Toolbar toolbar, ExpandedActionViewMenuPresenterIA expandedActionViewMenuPresenterIA) {
-            this();
-        }
 
         private ExpandedActionViewMenuPresenter() {
         }
 
         @Override // com.android.internal.view.menu.MenuPresenter
         public void initForMenu(Context context, MenuBuilder menu) {
-            MenuItemImpl menuItemImpl;
-            MenuBuilder menuBuilder = this.mMenu;
-            if (menuBuilder != null && (menuItemImpl = this.mCurrentExpandedItem) != null) {
-                menuBuilder.collapseItemActionView(menuItemImpl);
+            if (this.mMenu != null && this.mCurrentExpandedItem != null) {
+                this.mMenu.collapseItemActionView(this.mCurrentExpandedItem);
             }
             this.mMenu = menu;
         }
@@ -1867,9 +1702,8 @@ public class Toolbar extends ViewGroup {
         public void updateMenuView(boolean cleared) {
             if (this.mCurrentExpandedItem != null) {
                 boolean found = false;
-                MenuBuilder menuBuilder = this.mMenu;
-                if (menuBuilder != null) {
-                    int count = menuBuilder.size();
+                if (this.mMenu != null) {
+                    int count = this.mMenu.size();
                     int i = 0;
                     while (true) {
                         if (i >= count) {
@@ -1911,22 +1745,17 @@ public class Toolbar extends ViewGroup {
         @Override // com.android.internal.view.menu.MenuPresenter
         public boolean expandItemActionView(MenuBuilder menu, MenuItemImpl item) {
             Toolbar.this.ensureCollapseButtonView();
-            ViewParent parent = Toolbar.this.mCollapseButtonView.getParent();
-            Toolbar toolbar = Toolbar.this;
-            if (parent != toolbar) {
-                toolbar.addView(toolbar.mCollapseButtonView);
+            if (Toolbar.this.mCollapseButtonView.getParent() != Toolbar.this) {
+                Toolbar.this.addView(Toolbar.this.mCollapseButtonView);
             }
             Toolbar.this.mExpandedActionView = item.getActionView();
             this.mCurrentExpandedItem = item;
-            ViewParent parent2 = Toolbar.this.mExpandedActionView.getParent();
-            Toolbar toolbar2 = Toolbar.this;
-            if (parent2 != toolbar2) {
-                LayoutParams lp = toolbar2.generateDefaultLayoutParams();
+            if (Toolbar.this.mExpandedActionView.getParent() != Toolbar.this) {
+                LayoutParams lp = Toolbar.this.generateDefaultLayoutParams();
                 lp.gravity = (Toolbar.this.mButtonGravity & 112) | Gravity.START;
                 lp.mViewType = 2;
                 Toolbar.this.mExpandedActionView.setLayoutParams(lp);
-                Toolbar toolbar3 = Toolbar.this;
-                toolbar3.addView(toolbar3.mExpandedActionView);
+                Toolbar.this.addView(Toolbar.this.mExpandedActionView);
             }
             Toolbar.this.removeChildrenForExpandedActionView();
             Toolbar.this.requestLayout();
@@ -1942,10 +1771,8 @@ public class Toolbar extends ViewGroup {
             if (Toolbar.this.mExpandedActionView instanceof CollapsibleActionView) {
                 ((CollapsibleActionView) Toolbar.this.mExpandedActionView).onActionViewCollapsed();
             }
-            Toolbar toolbar = Toolbar.this;
-            toolbar.removeView(toolbar.mExpandedActionView);
-            Toolbar toolbar2 = Toolbar.this;
-            toolbar2.removeView(toolbar2.mCollapseButtonView);
+            Toolbar.this.removeView(Toolbar.this.mExpandedActionView);
+            Toolbar.this.removeView(Toolbar.this.mCollapseButtonView);
             Toolbar.this.mExpandedActionView = null;
             Toolbar.this.addChildrenForExpandedActionView();
             this.mCurrentExpandedItem = null;

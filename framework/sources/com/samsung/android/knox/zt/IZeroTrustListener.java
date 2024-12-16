@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IZeroTrustListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.zt.IZeroTrustListener";
 
@@ -23,7 +23,6 @@ public interface IZeroTrustListener extends IInterface {
 
     void onEventSimplified(int i, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IZeroTrustListener {
         @Override // com.samsung.android.knox.zt.IZeroTrustListener
         public void onEventSimplified(int event, String data) throws RemoteException {
@@ -43,7 +42,6 @@ public interface IZeroTrustListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IZeroTrustListener {
         static final int TRANSACTION_onEvent = 3;
         static final int TRANSACTION_onEventGeneralized = 2;
@@ -92,51 +90,49 @@ public interface IZeroTrustListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IZeroTrustListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IZeroTrustListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IZeroTrustListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onEventSimplified(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int N = data.readInt();
+                    final Map<String, String> _arg12 = N < 0 ? null : new HashMap<>();
+                    IntStream.range(0, N).forEach(new IntConsumer() { // from class: com.samsung.android.knox.zt.IZeroTrustListener$Stub$$ExternalSyntheticLambda0
+                        @Override // java.util.function.IntConsumer
+                        public final void accept(int i) {
+                            IZeroTrustListener.Stub.lambda$onTransact$0(Parcel.this, _arg12, i);
+                        }
+                    });
+                    data.enforceNoDataAvail();
+                    onEventGeneralized(_arg02, _arg12);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onEvent(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onEventSimplified(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int N = data.readInt();
-                            final Map<String, String> _arg12 = N < 0 ? null : new HashMap<>();
-                            IntStream.range(0, N).forEach(new IntConsumer() { // from class: com.samsung.android.knox.zt.IZeroTrustListener$Stub$$ExternalSyntheticLambda0
-                                @Override // java.util.function.IntConsumer
-                                public final void accept(int i) {
-                                    IZeroTrustListener.Stub.lambda$onTransact$0(Parcel.this, _arg12, i);
-                                }
-                            });
-                            data.enforceNoDataAvail();
-                            onEventGeneralized(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            Bundle _arg13 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onEvent(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel data, Map _arg1, int i) {
             String k = data.readString();
             String v = data.readString();
             _arg1.put(k, v);
         }
 
-        /* loaded from: classes5.dex */
-        private static class Proxy implements IZeroTrustListener {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class Proxy implements IZeroTrustListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -188,7 +184,7 @@ public interface IZeroTrustListener extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$onEventGeneralized$0(Parcel _data, String k, String v) {
+            static /* synthetic */ void lambda$onEventGeneralized$0(Parcel _data, String k, String v) {
                 _data.writeString(k);
                 _data.writeString(v);
             }

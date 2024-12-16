@@ -3,19 +3,18 @@ package com.samsung.android.edge;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class EdgeLightingPolicyInfo implements Parcelable {
     public static final int CATEGORY_BLACK = 2;
     public static final int CATEGORY_WHITE = 1;
     public static final Parcelable.Creator<EdgeLightingPolicyInfo> CREATOR = new Parcelable.Creator<EdgeLightingPolicyInfo>() { // from class: com.samsung.android.edge.EdgeLightingPolicyInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EdgeLightingPolicyInfo createFromParcel(Parcel source) {
             return new EdgeLightingPolicyInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EdgeLightingPolicyInfo[] newArray(int size) {
             return new EdgeLightingPolicyInfo[size];
@@ -58,23 +57,6 @@ public final class EdgeLightingPolicyInfo implements Parcelable {
         dest.writeString(this.packageName);
         dest.writeInt(this.category);
         dest.writeInt(this.range);
-    }
-
-    /* renamed from: com.samsung.android.edge.EdgeLightingPolicyInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EdgeLightingPolicyInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EdgeLightingPolicyInfo createFromParcel(Parcel source) {
-            return new EdgeLightingPolicyInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EdgeLightingPolicyInfo[] newArray(int size) {
-            return new EdgeLightingPolicyInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

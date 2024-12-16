@@ -71,12 +71,29 @@ public class DreamManager {
         }
     }
 
+    public boolean canStartDreaming(boolean isScreenOn) {
+        try {
+            return this.mService.canStartDreaming(isScreenOn);
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+            return false;
+        }
+    }
+
     public boolean isDreaming() {
         try {
             return this.mService.isDreaming();
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
             return false;
+        }
+    }
+
+    public void setDreamIsObscured(boolean isObscured) {
+        try {
+            this.mService.setDreamIsObscured(isObscured);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
         }
     }
 }

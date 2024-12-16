@@ -5,7 +5,6 @@ import android.media.MediaMetrics;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -19,7 +18,6 @@ public final class OptionalTrafficDescriptor {
         this.hidl_o = new Monostate();
     }
 
-    /* loaded from: classes2.dex */
     public static final class hidl_discriminator {
         public static final byte noinit = 0;
         public static final byte value = 1;
@@ -46,12 +44,10 @@ public final class OptionalTrafficDescriptor {
 
     public Monostate noinit() {
         if (this.hidl_d != 0) {
-            Object obj = this.hidl_o;
-            String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+            String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
             throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
         }
-        Object obj2 = this.hidl_o;
-        if (obj2 != null && !Monostate.class.isInstance(obj2)) {
+        if (this.hidl_o != null && !Monostate.class.isInstance(this.hidl_o)) {
             throw new Error("Union is in a corrupted state.");
         }
         return (Monostate) this.hidl_o;
@@ -64,12 +60,10 @@ public final class OptionalTrafficDescriptor {
 
     public TrafficDescriptor value() {
         if (this.hidl_d != 1) {
-            Object obj = this.hidl_o;
-            String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+            String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
             throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
         }
-        Object obj2 = this.hidl_o;
-        if (obj2 != null && !TrafficDescriptor.class.isInstance(obj2)) {
+        if (this.hidl_o != null && !TrafficDescriptor.class.isInstance(this.hidl_o)) {
             throw new Error("Union is in a corrupted state.");
         }
         return (TrafficDescriptor) this.hidl_o;
@@ -136,18 +130,15 @@ public final class OptionalTrafficDescriptor {
     }
 
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
-        byte int8 = _hidl_blob.getInt8(0 + _hidl_offset);
-        this.hidl_d = int8;
-        switch (int8) {
+        this.hidl_d = _hidl_blob.getInt8(0 + _hidl_offset);
+        switch (this.hidl_d) {
             case 0:
-                Monostate monostate = new Monostate();
-                this.hidl_o = monostate;
-                monostate.readEmbeddedFromParcel(parcel, _hidl_blob, 8 + _hidl_offset);
+                this.hidl_o = new Monostate();
+                ((Monostate) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 8 + _hidl_offset);
                 return;
             case 1:
-                TrafficDescriptor trafficDescriptor = new TrafficDescriptor();
-                this.hidl_o = trafficDescriptor;
-                trafficDescriptor.readEmbeddedFromParcel(parcel, _hidl_blob, 8 + _hidl_offset);
+                this.hidl_o = new TrafficDescriptor();
+                ((TrafficDescriptor) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 8 + _hidl_offset);
                 return;
             default:
                 throw new IllegalStateException("Unknown union discriminator (value: " + ((int) this.hidl_d) + ").");

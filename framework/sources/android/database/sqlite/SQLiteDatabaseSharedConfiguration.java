@@ -23,16 +23,14 @@ public final class SQLiteDatabaseSharedConfiguration {
     public SQLiteDatabaseSharedConfiguration(SQLiteDatabaseConfiguration config) {
         this.isSecureDb = (config.openFlags & 512) != 0;
         this.isMediaStoreDb = isMediaStoreDb(config.path);
-        boolean isSingleConnectionWalDb = isSingleConnectionWalDb(config.path);
-        this.useSingleConnectionWal = isSingleConnectionWalDb;
-        if (isSingleConnectionWalDb) {
+        this.useSingleConnectionWal = isSingleConnectionWalDb(config.path);
+        if (this.useSingleConnectionWal) {
             this.useWalModeByDefault = true;
         } else {
             this.useWalModeByDefault = isDefaultWalDb(config.path, config.openFlags);
         }
-        boolean isDefaultDumpCorruptDb = isDefaultDumpCorruptDb(config.path);
-        this.useDumpCorruptByDefault = isDefaultDumpCorruptDb;
-        this.useAssertionLog = isDefaultDumpCorruptDb;
+        this.useDumpCorruptByDefault = isDefaultDumpCorruptDb(config.path);
+        this.useAssertionLog = this.useDumpCorruptByDefault;
     }
 
     private boolean isDefaultWalDb(String path, int openFlags) {

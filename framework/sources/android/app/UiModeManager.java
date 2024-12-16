@@ -8,6 +8,7 @@ import android.app.UiModeManager;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Debug;
+import android.os.IpcDataCache;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
@@ -53,6 +54,10 @@ public class UiModeManager {
 
     @SystemApi
     public static final String EXTRA_PRIORITY = "android.app.extra.PRIORITY";
+    public static final int MODE_ATTENTION_THEME_OVERLAY_DAY = 1002;
+    public static final int MODE_ATTENTION_THEME_OVERLAY_NIGHT = 1001;
+    public static final int MODE_ATTENTION_THEME_OVERLAY_OFF = 1000;
+    public static final int MODE_ATTENTION_THEME_OVERLAY_UNKNOWN = -1;
     public static final int MODE_NIGHT_AUTO = 0;
     public static final int MODE_NIGHT_CUSTOM = 3;
 
@@ -66,6 +71,7 @@ public class UiModeManager {
     public static final int MODE_NIGHT_CUSTOM_TYPE_UNKNOWN = -1;
     public static final int MODE_NIGHT_NO = 1;
     public static final int MODE_NIGHT_YES = 2;
+    private static final String NIGHT_MODE_API = "getNightMode";
 
     @SystemApi
     public static final int PROJECTION_TYPE_ALL = -1;
@@ -82,6 +88,8 @@ public class UiModeManager {
     private static Globals sGlobals;
     private Context mContext;
     private final Object mLock;
+    private final IpcDataCache<Void, Integer> mNightModeCache;
+    private final IpcDataCache.QueryHandler<Void, Integer> mNightModeQuery;
     private final OnProjectionStateChangedListenerResourceManager mOnProjectionStateChangedListenerResourceManager;
     private final Map<OnProjectionStateChangedListener, InnerListener> mProjectionStateListenerMap;
     public static String ACTION_ENTER_CAR_MODE = "android.app.action.ENTER_CAR_MODE";
@@ -93,49 +101,49 @@ public class UiModeManager {
     public static String SEM_ACTION_ENTER_DESKTOP_MODE = "com.samsung.android.desktopmode.action.ENTER_DESKTOP_MODE";
     public static String SEM_ACTION_EXIT_DESKTOP_MODE = "com.samsung.android.desktopmode.action.EXIT_DESKTOP_MODE";
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AttentionModeThemeOverlayReturnType {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AttentionModeThemeOverlayType {
+    }
+
     public interface ContrastChangeListener {
         void onContrastChanged(float f);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DisableCarMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EnableCarMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NightMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NightModeCustomReturnType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NightModeCustomType {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public interface OnProjectionStateChangedListener {
         void onProjectionStateChanged(int i, Set<String> set);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProjectionType {
     }
 
-    /* loaded from: classes.dex */
-    public static class Globals extends IUiModeManagerCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class Globals extends IUiModeManagerCallback.Stub {
         private float mContrast;
         private final IUiModeManager mService;
         private final Object mGlobalsLock = new Object();
@@ -145,13 +153,14 @@ public class UiModeManager {
             this.mContrast = 0.0f;
             this.mService = service;
             try {
-                service.addCallback(this);
-                this.mContrast = service.getContrast();
+                this.mService.addCallback(this);
+                this.mContrast = this.mService.getContrast();
             } catch (RemoteException e) {
                 Log.e(UiModeManager.TAG, "Setup failed: UiModeManagerService is dead", e);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public float getContrast() {
             float f;
             synchronized (this.mGlobalsLock) {
@@ -160,12 +169,14 @@ public class UiModeManager {
             return f;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addContrastChangeListener(ContrastChangeListener listener, Executor executor) {
             synchronized (this.mGlobalsLock) {
                 this.mContrastChangeListeners.put(listener, executor);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeContrastChangeListener(ContrastChangeListener listener) {
             synchronized (this.mGlobalsLock) {
                 this.mContrastChangeListeners.remove(listener);
@@ -195,10 +206,8 @@ public class UiModeManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ContrastUtils {
         public static final float CONTRAST_DEFAULT_VALUE = 0.0f;
-        public static final int CONTRAST_LEVEL_DISABLE = -1;
         public static final int CONTRAST_LEVEL_HIGH = 2;
         public static final int CONTRAST_LEVEL_MEDIUM = 1;
         public static final int CONTRAST_LEVEL_STANDARD = 0;
@@ -206,7 +215,6 @@ public class UiModeManager {
         private static final float CONTRAST_MIN_VALUE = -1.0f;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface ContrastLevel {
         }
 
@@ -218,18 +226,16 @@ public class UiModeManager {
             if (contrast < -1.0f || contrast > 1.0f) {
                 throw new IllegalArgumentException("contrast values should be in [-1, 1]");
             }
-            if (contrast == -1.0f) {
-                return -1;
-            }
             return allContrastLevels().min(Comparator.comparingDouble(new ToDoubleFunction() { // from class: android.app.UiModeManager$ContrastUtils$$ExternalSyntheticLambda1
                 /*  JADX ERROR: JadxRuntimeException in pass: ModVisitor
                     jadx.core.utils.exceptions.JadxRuntimeException: Can't remove SSA var: r0v1 double, still in use, count: 1, list:
                       (r0v1 double) from 0x0008: RETURN (r0v1 double)
-                    	at jadx.core.utils.InsnRemover.removeSsaVar(InsnRemover.java:151)
-                    	at jadx.core.utils.InsnRemover.unbindResult(InsnRemover.java:116)
-                    	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:80)
-                    	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:56)
+                    	at jadx.core.utils.InsnRemover.removeSsaVar(InsnRemover.java:162)
+                    	at jadx.core.utils.InsnRemover.unbindResult(InsnRemover.java:127)
+                    	at jadx.core.utils.InsnRemover.unbindInsn(InsnRemover.java:91)
+                    	at jadx.core.utils.InsnRemover.addAndUnbind(InsnRemover.java:57)
                     	at jadx.core.dex.visitors.ModVisitor.removeStep(ModVisitor.java:452)
+                    	at jadx.core.dex.visitors.ModVisitor.visit(ModVisitor.java:96)
                     */
                 @Override // java.util.function.ToDoubleFunction
                 public final double applyAsDouble(java.lang.Object r3) {
@@ -257,7 +263,7 @@ public class UiModeManager {
             return contrastLevel / 2.0f;
         }
 
-        public static /* synthetic */ boolean lambda$fromContrastLevel$1(int contrastLevel, Integer level) {
+        static /* synthetic */ boolean lambda$fromContrastLevel$1(int contrastLevel, Integer level) {
             return level.intValue() == contrastLevel;
         }
     }
@@ -266,17 +272,23 @@ public class UiModeManager {
         this(null);
     }
 
-    public UiModeManager(Context context) throws ServiceManager.ServiceNotFoundException {
-        Object obj = new Object();
-        this.mLock = obj;
+    UiModeManager(Context context) throws ServiceManager.ServiceNotFoundException {
+        this.mLock = new Object();
         this.mProjectionStateListenerMap = new ArrayMap();
         this.mOnProjectionStateChangedListenerResourceManager = new OnProjectionStateChangedListenerResourceManager();
+        this.mNightModeQuery = new IpcDataCache.QueryHandler<Void, Integer>() { // from class: android.app.UiModeManager.1
+            @Override // android.os.IpcDataCache.QueryHandler, android.app.PropertyInvalidatedCache.QueryHandler
+            public Integer apply(Void query) {
+                return UiModeManager.this.getNightModeFromServer();
+            }
+        };
+        this.mNightModeCache = new IpcDataCache<>(1, "system_server", NIGHT_MODE_API, "NightModeCache", this.mNightModeQuery);
         IUiModeManager service = IUiModeManager.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.UI_MODE_SERVICE));
         this.mContext = context;
         if (service == null) {
             return;
         }
-        synchronized (obj) {
+        synchronized (this.mLock) {
             if (sGlobals == null) {
                 sGlobals = new Globals(service);
             }
@@ -289,12 +301,9 @@ public class UiModeManager {
 
     @SystemApi
     public void enableCarMode(int priority, int flags) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                IUiModeManager iUiModeManager = globals.mService;
-                Context context = this.mContext;
-                iUiModeManager.enableCarMode(flags, priority, context == null ? null : context.getOpPackageName());
+                sGlobals.mService.enableCarMode(flags, priority, this.mContext == null ? null : this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -302,12 +311,9 @@ public class UiModeManager {
     }
 
     public void disableCarMode(int flags) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                IUiModeManager iUiModeManager = globals.mService;
-                Context context = this.mContext;
-                iUiModeManager.disableCarModeByCallingPackage(flags, context == null ? null : context.getOpPackageName());
+                sGlobals.mService.disableCarModeByCallingPackage(flags, this.mContext == null ? null : this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -315,10 +321,9 @@ public class UiModeManager {
     }
 
     public int getCurrentModeType() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.getCurrentModeType();
+                return sGlobals.mService.getCurrentModeType();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -328,10 +333,9 @@ public class UiModeManager {
 
     public void setNightMode(int mode) {
         Slog.i(TAG, "setNightMode : " + mode + ", caller : " + Debug.getCallers(7));
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setNightMode(mode);
+                sGlobals.mService.setNightMode(mode);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -341,10 +345,9 @@ public class UiModeManager {
     @SystemApi
     public void setNightModeCustomType(int nightModeCustomType) {
         Slog.i(TAG, "setNightModeCustomType : " + nightModeCustomType + ", caller : " + Debug.getCallers(7));
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setNightModeCustomType(nightModeCustomType);
+                sGlobals.mService.setNightModeCustomType(nightModeCustomType);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -353,10 +356,30 @@ public class UiModeManager {
 
     @SystemApi
     public int getNightModeCustomType() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.getNightModeCustomType();
+                return sGlobals.mService.getNightModeCustomType();
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+        return -1;
+    }
+
+    public void setAttentionModeThemeOverlay(int attentionModeThemeOverlayType) {
+        if (sGlobals != null) {
+            try {
+                sGlobals.mService.setAttentionModeThemeOverlay(attentionModeThemeOverlayType);
+            } catch (RemoteException e) {
+                throw e.rethrowFromSystemServer();
+            }
+        }
+    }
+
+    public int getAttentionModeThemeOverlay() {
+        if (sGlobals != null) {
+            try {
+                return sGlobals.mService.getAttentionModeThemeOverlay();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -365,21 +388,31 @@ public class UiModeManager {
     }
 
     public void setApplicationNightMode(int mode) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setApplicationNightMode(mode);
+                sGlobals.mService.setApplicationNightMode(mode);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public Integer getNightModeFromServer() {
+        try {
+            if (sGlobals != null) {
+                return Integer.valueOf(sGlobals.mService.getNightMode());
+            }
+            return -1;
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public void setPackageNightMode(String packageName, int mode) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setPackageNightMode(packageName, UserHandle.getCallingUserId(), mode);
+                sGlobals.mService.setPackageNightMode(packageName, UserHandle.getCallingUserId(), mode);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -387,10 +420,9 @@ public class UiModeManager {
     }
 
     public int getPackageNightMode(String packageName) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.getPackageNightMode(packageName, UserHandle.getCallingUserId());
+                return sGlobals.mService.getPackageNightMode(packageName, UserHandle.getCallingUserId());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -399,10 +431,9 @@ public class UiModeManager {
     }
 
     public void setNightPriorityAllowedPackagesFromScpm(List<String> packages) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setNightPriorityAllowedPackagesFromScpm(packages);
+                sGlobals.mService.setNightPriorityAllowedPackagesFromScpm(packages);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -410,10 +441,9 @@ public class UiModeManager {
     }
 
     public List<String> getNightPriorityAllowedPackagesFromScpm() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.getNightPriorityAllowedPackagesFromScpm();
+                return sGlobals.mService.getNightPriorityAllowedPackagesFromScpm();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -421,23 +451,21 @@ public class UiModeManager {
         return null;
     }
 
+    public static void invalidateNightModeCache() {
+        IpcDataCache.invalidateCache("system_server", NIGHT_MODE_API);
+    }
+
     public int getNightMode() {
-        Globals globals = sGlobals;
-        if (globals != null) {
-            try {
-                return globals.mService.getNightMode();
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
+        if (Flags.enableNightModeBinderCache()) {
+            return this.mNightModeCache.query(null).intValue();
         }
-        return -1;
+        return getNightModeFromServer().intValue();
     }
 
     public boolean isUiModeLocked() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.isUiModeLocked();
+                return sGlobals.mService.isUiModeLocked();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -446,10 +474,9 @@ public class UiModeManager {
     }
 
     public boolean isNightModeLocked() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.isNightModeLocked();
+                return sGlobals.mService.isNightModeLocked();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -459,10 +486,9 @@ public class UiModeManager {
 
     @SystemApi
     public boolean setNightModeActivatedForCustomMode(int nightModeCustomType, boolean active) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.setNightModeActivatedForCustomMode(nightModeCustomType, active);
+                return sGlobals.mService.setNightModeActivatedForCustomMode(nightModeCustomType, active);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -471,10 +497,9 @@ public class UiModeManager {
     }
 
     public boolean setNightModeActivated(boolean active) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.setNightModeActivated(active);
+                return sGlobals.mService.setNightModeActivated(active);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -483,10 +508,9 @@ public class UiModeManager {
     }
 
     public LocalTime getCustomNightModeStart() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return LocalTime.ofNanoOfDay(globals.mService.getCustomNightModeStart() * 1000);
+                return LocalTime.ofNanoOfDay(sGlobals.mService.getCustomNightModeStart() * 1000);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -495,10 +519,9 @@ public class UiModeManager {
     }
 
     public void setCustomNightModeStart(LocalTime time) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setCustomNightModeStart(time.toNanoOfDay() / 1000);
+                sGlobals.mService.setCustomNightModeStart(time.toNanoOfDay() / 1000);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -506,10 +529,9 @@ public class UiModeManager {
     }
 
     public LocalTime getCustomNightModeEnd() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return LocalTime.ofNanoOfDay(globals.mService.getCustomNightModeEnd() * 1000);
+                return LocalTime.ofNanoOfDay(sGlobals.mService.getCustomNightModeEnd() * 1000);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -518,10 +540,9 @@ public class UiModeManager {
     }
 
     public void setCustomNightModeEnd(LocalTime time) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                globals.mService.setCustomNightModeEnd(time.toNanoOfDay() / 1000);
+                sGlobals.mService.setCustomNightModeEnd(time.toNanoOfDay() / 1000);
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -530,10 +551,9 @@ public class UiModeManager {
 
     @SystemApi
     public boolean requestProjection(int projectionType) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.requestProjection(new Binder(), projectionType, this.mContext.getOpPackageName());
+                return sGlobals.mService.requestProjection(new Binder(), projectionType, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -543,10 +563,9 @@ public class UiModeManager {
 
     @SystemApi
     public boolean releaseProjection(int projectionType) {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.releaseProjection(projectionType, this.mContext.getOpPackageName());
+                return sGlobals.mService.releaseProjection(projectionType, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -568,10 +587,9 @@ public class UiModeManager {
 
     @SystemApi
     public int getActiveProjectionTypes() {
-        Globals globals = sGlobals;
-        if (globals != null) {
+        if (sGlobals != null) {
             try {
-                return globals.mService.getActiveProjectionTypes();
+                return sGlobals.mService.getActiveProjectionTypes();
             } catch (RemoteException e) {
                 throw e.rethrowFromSystemServer();
             }
@@ -607,10 +625,9 @@ public class UiModeManager {
                 Slog.i(TAG, "Attempted to remove listener that was not added.");
                 return;
             }
-            Globals globals = sGlobals;
-            if (globals != null) {
+            if (sGlobals != null) {
                 try {
-                    globals.mService.removeOnProjectionStateChangedListener(innerListener);
+                    sGlobals.mService.removeOnProjectionStateChangedListener(innerListener);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
@@ -620,13 +637,8 @@ public class UiModeManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class InnerListener extends IOnProjectionStateChangedListener.Stub {
+    private static class InnerListener extends IOnProjectionStateChangedListener.Stub {
         private final WeakReference<OnProjectionStateChangedListenerResourceManager> mResourceManager;
-
-        /* synthetic */ InnerListener(Executor executor, OnProjectionStateChangedListener onProjectionStateChangedListener, OnProjectionStateChangedListenerResourceManager onProjectionStateChangedListenerResourceManager, InnerListenerIA innerListenerIA) {
-            this(executor, onProjectionStateChangedListener, onProjectionStateChangedListenerResourceManager);
-        }
 
         private InnerListener(Executor executor, OnProjectionStateChangedListener outerListener, OnProjectionStateChangedListenerResourceManager resourceManager) {
             resourceManager.put(this, executor, outerListener);
@@ -655,14 +667,9 @@ public class UiModeManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class OnProjectionStateChangedListenerResourceManager {
+    private static class OnProjectionStateChangedListenerResourceManager {
         private final Map<InnerListener, Executor> mExecutorMap;
         private final Map<InnerListener, OnProjectionStateChangedListener> mOuterListenerMap;
-
-        /* synthetic */ OnProjectionStateChangedListenerResourceManager(OnProjectionStateChangedListenerResourceManagerIA onProjectionStateChangedListenerResourceManagerIA) {
-            this();
-        }
 
         private OnProjectionStateChangedListenerResourceManager() {
             this.mOuterListenerMap = new ArrayMap(1);

@@ -11,14 +11,13 @@ import java.util.Objects;
 public final class OverlayInfo implements CriticalOverlayInfo, Parcelable {
     public static final String CATEGORY_THEME = "android.theme";
     public static final Parcelable.Creator<OverlayInfo> CREATOR = new Parcelable.Creator<OverlayInfo>() { // from class: android.content.om.OverlayInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayInfo createFromParcel(Parcel source) {
             return new OverlayInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OverlayInfo[] newArray(int size) {
             return new OverlayInfo[size];
@@ -51,7 +50,6 @@ public final class OverlayInfo implements CriticalOverlayInfo, Parcelable {
     public final int userId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface State {
     }
 
@@ -187,23 +185,6 @@ public final class OverlayInfo implements CriticalOverlayInfo, Parcelable {
         dest.writeBoolean(this.isFabricated);
     }
 
-    /* renamed from: android.content.om.OverlayInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OverlayInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverlayInfo createFromParcel(Parcel source) {
-            return new OverlayInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OverlayInfo[] newArray(int size) {
-            return new OverlayInfo[size];
-        }
-    }
-
     @SystemApi
     public boolean isEnabled() {
         switch (this.state) {
@@ -242,19 +223,7 @@ public final class OverlayInfo implements CriticalOverlayInfo, Parcelable {
 
     public int hashCode() {
         int result = (1 * 31) + this.userId;
-        int result2 = ((result * 31) + this.state) * 31;
-        String str = this.packageName;
-        int result3 = (result2 + (str == null ? 0 : str.hashCode())) * 31;
-        String str2 = this.overlayName;
-        int result4 = (result3 + (str2 == null ? 0 : str2.hashCode())) * 31;
-        String str3 = this.targetPackageName;
-        int result5 = (result4 + (str3 == null ? 0 : str3.hashCode())) * 31;
-        String str4 = this.targetOverlayableName;
-        int result6 = (result5 + (str4 == null ? 0 : str4.hashCode())) * 31;
-        String str5 = this.category;
-        int result7 = (result6 + (str5 == null ? 0 : str5.hashCode())) * 31;
-        String str6 = this.baseCodePath;
-        return result7 + (str6 != null ? str6.hashCode() : 0);
+        return (((((((((((((result * 31) + this.state) * 31) + (this.packageName == null ? 0 : this.packageName.hashCode())) * 31) + (this.overlayName == null ? 0 : this.overlayName.hashCode())) * 31) + (this.targetPackageName == null ? 0 : this.targetPackageName.hashCode())) * 31) + (this.targetOverlayableName == null ? 0 : this.targetOverlayableName.hashCode())) * 31) + (this.category == null ? 0 : this.category.hashCode())) * 31) + (this.baseCodePath != null ? this.baseCodePath.hashCode() : 0);
     }
 
     public boolean equals(Object obj) {

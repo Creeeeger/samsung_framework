@@ -1,10 +1,7 @@
 package android.webkit;
 
 import android.annotation.SystemApi;
-import android.app.ResourcesManager;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import com.android.internal.util.ArrayUtils;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -34,16 +31,13 @@ public abstract class WebSettings {
     public static final int MIXED_CONTENT_NEVER_ALLOW = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface CacheMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ForceDark {
     }
 
-    /* loaded from: classes4.dex */
     public enum LayoutAlgorithm {
         NORMAL,
         SINGLE_COLUMN,
@@ -53,18 +47,15 @@ public abstract class WebSettings {
 
     @Target({ElementType.PARAMETER, ElementType.METHOD})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     private @interface MenuItemFlags {
     }
 
-    /* loaded from: classes4.dex */
     public enum PluginState {
         ON,
         ON_DEMAND,
         OFF
     }
 
-    /* loaded from: classes4.dex */
     public enum RenderPriority {
         NORMAL,
         HIGH,
@@ -95,6 +86,7 @@ public abstract class WebSettings {
 
     public abstract String getCursiveFontFamily();
 
+    @Deprecated
     public abstract boolean getDatabaseEnabled();
 
     @Deprecated
@@ -207,6 +199,7 @@ public abstract class WebSettings {
 
     public abstract void setCursiveFontFamily(String str);
 
+    @Deprecated
     public abstract void setDatabaseEnabled(boolean z);
 
     @Deprecated
@@ -318,7 +311,6 @@ public abstract class WebSettings {
     public abstract boolean supportZoom();
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public enum TextSize {
         SMALLEST(50),
         SMALLER(75),
@@ -333,7 +325,6 @@ public abstract class WebSettings {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum ZoomDensity {
         FAR(150),
         MEDIUM(100),
@@ -404,22 +395,7 @@ public abstract class WebSettings {
     }
 
     public static String getDefaultUserAgent(Context context) {
-        WebViewFactoryProvider webviewFactoryProvider = WebViewFactory.getProvider();
-        addWebViewAssetPath(context);
-        return webviewFactoryProvider.getStatics().getDefaultUserAgent(context);
-    }
-
-    private static void addWebViewAssetPath(Context context) {
-        String[] newAssetPaths = WebViewFactory.getLoadedPackageInfo().applicationInfo.getAllApkPaths();
-        ApplicationInfo appInfo = context.getApplicationInfo();
-        String[] newLibAssets = appInfo.sharedLibraryFiles;
-        for (String newAssetPath : newAssetPaths) {
-            newLibAssets = (String[]) ArrayUtils.appendElement(String.class, newLibAssets, newAssetPath);
-        }
-        if (newLibAssets != appInfo.sharedLibraryFiles) {
-            appInfo.sharedLibraryFiles = newLibAssets;
-            ResourcesManager.getInstance().appendLibAssetsForMainAssetPath(appInfo.getBaseResourcePath(), newAssetPaths);
-        }
+        return WebViewFactory.getProvider().getStatics().getDefaultUserAgent(context);
     }
 
     public void setForceDark(int forceDark) {

@@ -6,9 +6,12 @@ import android.util.SparseArray;
 import android.view.View;
 
 /* loaded from: classes4.dex */
-public class TransitionValuesMaps {
+class TransitionValuesMaps {
     ArrayMap<View, TransitionValues> viewValues = new ArrayMap<>();
     SparseArray<View> idValues = new SparseArray<>();
     LongSparseArray<View> itemIdValues = new LongSparseArray<>();
     ArrayMap<String, View> nameValues = new ArrayMap<>();
+
+    TransitionValuesMaps() {
+    }
 }

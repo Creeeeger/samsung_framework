@@ -4,7 +4,7 @@ import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
 /* loaded from: classes3.dex */
-public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
+class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
     private static final boolean DBG = false;
     private static final int MIN_AUDIO_BUFFER_SIZE = 8192;
     private static final String TAG = "PlaybackSynthesisRequest";
@@ -18,7 +18,7 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
     private final Object mStateLock;
     protected int mStatusCode;
 
-    public PlaybackSynthesisCallback(TextToSpeechService.AudioOutputParams audioParams, AudioPlaybackHandler audioTrackHandler, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger, boolean clientIsUsingV2) {
+    PlaybackSynthesisCallback(TextToSpeechService.AudioOutputParams audioParams, AudioPlaybackHandler audioTrackHandler, TextToSpeechService.UtteranceProgressDispatcher dispatcher, Object callerIdentity, AbstractEventLogger logger, boolean clientIsUsingV2) {
         super(clientIsUsingV2);
         this.mStateLock = new Object();
         this.mItem = null;
@@ -32,7 +32,7 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
     }
 
     @Override // android.speech.tts.AbstractSynthesisCallback
-    public void stop() {
+    void stop() {
         synchronized (this.mStateLock) {
             if (this.mDone) {
                 return;
@@ -88,11 +88,10 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
                 this.mStatusCode = -5;
                 return -1;
             }
-            int i = this.mStatusCode;
-            if (i == -2) {
+            if (this.mStatusCode == -2) {
                 return errorCodeOnStop();
             }
-            if (i != 0) {
+            if (this.mStatusCode != 0) {
                 return -1;
             }
             if (this.mItem != null) {
@@ -112,18 +111,17 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
             throw new IllegalArgumentException("buffer is too large or of zero length (" + length + " bytes)");
         }
         synchronized (this.mStateLock) {
-            SynthesisPlaybackQueueItem item = this.mItem;
-            if (item == null) {
+            if (this.mItem == null) {
                 this.mStatusCode = -5;
                 return -1;
             }
-            int i = this.mStatusCode;
-            if (i != 0) {
+            if (this.mStatusCode != 0) {
                 return -1;
             }
-            if (i == -2) {
+            if (this.mStatusCode == -2) {
                 return errorCodeOnStop();
             }
+            SynthesisPlaybackQueueItem item = this.mItem;
             byte[] bufferCopy = new byte[length];
             System.arraycopy(buffer, offset, bufferCopy, 0, length);
             this.mDispatcher.dispatchOnAudioAvailable(bufferCopy);
@@ -151,18 +149,17 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
                 return errorCodeOnStop();
             }
             this.mDone = true;
-            SynthesisPlaybackQueueItem item = this.mItem;
-            if (item == null) {
+            if (this.mItem == null) {
                 Log.w(TAG, "done() was called before start() call");
-                int i = this.mStatusCode;
-                if (i == 0) {
+                if (this.mStatusCode == 0) {
                     this.mDispatcher.dispatchOnSuccess();
                 } else {
-                    this.mDispatcher.dispatchOnError(i);
+                    this.mDispatcher.dispatchOnError(this.mStatusCode);
                 }
                 this.mLogger.onEngineComplete();
                 return -1;
             }
+            SynthesisPlaybackQueueItem item = this.mItem;
             int statusCode = this.mStatusCode;
             if (statusCode == 0) {
                 item.done();
@@ -191,11 +188,10 @@ public class PlaybackSynthesisCallback extends AbstractSynthesisCallback {
 
     @Override // android.speech.tts.SynthesisCallback
     public void rangeStart(int markerInFrames, int start, int end) {
-        SynthesisPlaybackQueueItem synthesisPlaybackQueueItem = this.mItem;
-        if (synthesisPlaybackQueueItem == null) {
+        if (this.mItem == null) {
             Log.e(TAG, "mItem is null");
         } else {
-            synthesisPlaybackQueueItem.rangeStart(markerInFrames, start, end);
+            this.mItem.rangeStart(markerInFrames, start, end);
         }
     }
 }

@@ -10,7 +10,7 @@ import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SamsungTelecomServiceConnection {
     private static final String SERVICE_ACTION = "com.samsung.android.telecom.ISamsungTelecomService";
     private static final ComponentName SERVICE_COMPONENT = new ComponentName("com.android.server.telecom", "com.samsung.server.telecom.SamsungTelecomService");
@@ -19,34 +19,14 @@ public class SamsungTelecomServiceConnection {
     private final Object mLock;
     private TelecomServiceConnection mTelecomServiceConnection;
 
-    /* loaded from: classes5.dex */
-    public class TelecomServiceConnection implements ServiceConnection {
-        /* synthetic */ TelecomServiceConnection(SamsungTelecomServiceConnection samsungTelecomServiceConnection, TelecomServiceConnectionIA telecomServiceConnectionIA) {
-            this();
-        }
-
+    private class TelecomServiceConnection implements ServiceConnection {
         private TelecomServiceConnection() {
-        }
-
-        /* renamed from: com.samsung.android.telecom.SamsungTelecomServiceConnection$TelecomServiceConnection$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements IBinder.DeathRecipient {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.IBinder.DeathRecipient
-            public void binderDied() {
-                SamsungTelecomServiceConnection.this.connectToSamsungTelecom();
-            }
         }
 
         @Override // android.content.ServiceConnection
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
                 service.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.telecom.SamsungTelecomServiceConnection.TelecomServiceConnection.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // android.os.IBinder.DeathRecipient
                     public void binderDied() {
                         SamsungTelecomServiceConnection.this.connectToSamsungTelecom();
@@ -73,19 +53,17 @@ public class SamsungTelecomServiceConnection {
     public void connectToSamsungTelecom() {
         if (hasSamsungTelecomSystemFeature()) {
             synchronized (this.mLock) {
-                TelecomServiceConnection telecomServiceConnection = this.mTelecomServiceConnection;
-                if (telecomServiceConnection != null) {
-                    this.mContext.unbindService(telecomServiceConnection);
+                if (this.mTelecomServiceConnection != null) {
+                    this.mContext.unbindService(this.mTelecomServiceConnection);
                     this.mTelecomServiceConnection = null;
                 }
-                TelecomServiceConnection telecomServiceConnection2 = new TelecomServiceConnection();
+                TelecomServiceConnection telecomServiceConnection = new TelecomServiceConnection();
                 Intent intent = new Intent(SERVICE_ACTION);
-                ComponentName componentName = SERVICE_COMPONENT;
-                intent.setComponent(componentName);
-                Slog.i(TAG, "connectToSamsungTelecom - Attempting to bind to : " + componentName);
-                if (this.mContext.bindServiceAsUser(intent, telecomServiceConnection2, 67108929, UserHandle.SYSTEM)) {
+                intent.setComponent(SERVICE_COMPONENT);
+                Slog.i(TAG, "connectToSamsungTelecom - Attempting to bind to : " + SERVICE_COMPONENT);
+                if (this.mContext.bindServiceAsUser(intent, telecomServiceConnection, 67108929, UserHandle.SYSTEM)) {
                     Slog.i(TAG, "connectToSamsungTelecom - Succeeded to connect");
-                    this.mTelecomServiceConnection = telecomServiceConnection2;
+                    this.mTelecomServiceConnection = telecomServiceConnection;
                 } else {
                     Slog.i(TAG, "connectToSamsungTelecom - Failed to connect");
                 }

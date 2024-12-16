@@ -7,11 +7,13 @@ import android.graphics.Bitmap;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.MediaHTTPService;
 import android.net.Uri;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemMediaCapture {
     public static final int AUDIO_CAPTURE_OFF = 0;
     public static final int AUDIO_CAPTURE_ON = 1;
@@ -36,6 +38,8 @@ public final class SemMediaCapture {
     public static final int AUDIO_VOLUME_FADE_INOUT = 3;
     public static final int AUDIO_VOLUME_FADE_NONE = 0;
     public static final int AUDIO_VOLUME_FADE_OUT = 2;
+    public static final int CUSTOM_EFFECT_TYPE_BOOMERANG = 3;
+    public static final int CUSTOM_EFFECT_TYPE_COLOR_GRADING = 4;
     public static final int CUSTOM_EFFECT_TYPE_DYNAMIC_VIEWING = 2;
     public static final int CUSTOM_EFFECT_TYPE_NONE = 0;
     public static final int CUSTOM_EFFECT_TYPE_VIDEO_SUPER_RESOLUTION = 1;
@@ -49,7 +53,10 @@ public final class SemMediaCapture {
     public static final int HDR_TO_SDR_CONVERSION_ON = 1;
     private static final String IMEDIA_CAPTURE = "android.media.IMediaCapture";
     public static final int INSTANT_SLOW_MO = 89;
+    private static final int INSTANT_SLOW_MO_HDR10_PLUS = 88;
+    private static final int INSTANT_SLOW_MO_LOG_VIDEO = 87;
     private static final int INVOKE_ID_GET_CAPTURE_PROGRESS = 2;
+    private static final int INVOKE_ID_SET_BOOMERANG_INFO = 3;
     private static final int INVOKE_ID_SET_DYNAMIC_VIEWING_INFO = 1;
     public static final int KEY_PARAMETER_AUDIO_CAPTURE = 1010;
     public static final int KEY_PARAMETER_CUSTOM_EFFECT_TYPE = 1011;
@@ -86,6 +93,8 @@ public final class SemMediaCapture {
     public static final int MEDIA_ERROR_UNSUPPORTED = -1010;
     public static final int MEDIA_FORMAT_GIF = 0;
     public static final int MEDIA_FORMAT_MP4 = 1;
+    public static final int MOTION_PHOTO_BOOMERANG = 80;
+    public static final int MOTION_PHOTO_SLOWMO = 81;
     public static final int NORMAL = 0;
     public static final int PIP = 1;
     public static final int SUGGESTED_EDITS_BOOMERANG = 99;
@@ -113,37 +122,30 @@ public final class SemMediaCapture {
     private boolean mStayAwake;
     private SurfaceHolder mSurfaceHolder;
 
-    /* loaded from: classes5.dex */
     public interface OnDecodingCompletionListener {
         void onDecodingCompletion(SemMediaCapture semMediaCapture);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnDecodingUpdatedListener {
         void onUpdated(SemMediaCapture semMediaCapture, int i);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnErrorListener {
         boolean onError(SemMediaCapture semMediaCapture, int i, int i2);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnPlaybackCompletionListener {
         void onPlaybackCompletion(SemMediaCapture semMediaCapture);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnPreparedListener {
         void onPrepared(SemMediaCapture semMediaCapture);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnRecordingCompletionListener {
         void onRecordingCompletion(SemMediaCapture semMediaCapture);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnRenderingStartedListener {
         void onRenderingStarted(SemMediaCapture semMediaCapture);
     }
@@ -220,8 +222,17 @@ public final class SemMediaCapture {
         _setDataSource(fd, 0L, 576460752303423487L);
     }
 
+    public void setDataSource(FileDescriptor fd, long offset, long length) throws IOException, IllegalStateException, IllegalArgumentException {
+        ParcelFileDescriptor modernFd = FileUtils.convertToModernFd(fd);
+        if (modernFd == null) {
+            _setDataSource(fd, offset, length);
+        } else {
+            _setDataSource(modernFd.getFileDescriptor(), offset, length);
+        }
+    }
+
     public void setDataSource(String path) throws IOException, IllegalStateException, IllegalArgumentException {
-        setDataSource(path, null, null);
+        setDataSource(path, (Map<String, String>) null, (List<HttpCookie>) null);
     }
 
     private void setDataSource(String path, Map<String, String> headers, List<HttpCookie> cookies) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
@@ -374,7 +385,6 @@ public final class SemMediaCapture {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class DynamicViewingConfiguration {
         private int mEndTime;
         private float mSpeedRate;
@@ -425,6 +435,63 @@ public final class SemMediaCapture {
                 request.writeInt(endTime);
                 request.writeFloat(speedRate);
             }
+            invoke(request, reply);
+        } finally {
+            request.recycle();
+            reply.recycle();
+        }
+    }
+
+    public final class BoomerangConfiguration {
+        private int mEndTime;
+        private int mLoopCount;
+        private float mSpeedRate;
+        private int mStartTime;
+
+        public BoomerangConfiguration(int startTimeMs, int endTimeMs, float speedRate, int loopCount) {
+            this.mStartTime = startTimeMs;
+            this.mEndTime = endTimeMs;
+            this.mSpeedRate = speedRate;
+            this.mLoopCount = loopCount;
+        }
+
+        public int getStartTime() {
+            return this.mStartTime;
+        }
+
+        public int getEndTime() {
+            return this.mEndTime;
+        }
+
+        public float getSpeedRate() {
+            return this.mSpeedRate;
+        }
+
+        public int getLoopCount() {
+            return this.mLoopCount;
+        }
+    }
+
+    public void setBoomerangConfiguration(BoomerangConfiguration bmConfig) throws IllegalArgumentException {
+        if (bmConfig == null) {
+            throw new NullPointerException("bmConfig param can not be null.");
+        }
+        int startTime = bmConfig.getStartTime();
+        int endTime = bmConfig.getEndTime();
+        float speedRate = bmConfig.getSpeedRate();
+        int loopCount = bmConfig.getLoopCount();
+        if (startTime < 0 || endTime < 0 || startTime == endTime || speedRate < 1.0f || loopCount < 1) {
+            throw new IllegalArgumentException("BoomerangConfiguration is invalid. bmConfig = " + startTime + ":" + endTime + ":" + speedRate + ":" + loopCount);
+        }
+        Parcel request = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        try {
+            request.writeInterfaceToken(IMEDIA_CAPTURE);
+            request.writeInt(3);
+            request.writeInt(startTime);
+            request.writeInt(endTime);
+            request.writeFloat(speedRate);
+            request.writeInt(loopCount);
             invoke(request, reply);
         } finally {
             request.recycle();
@@ -500,7 +567,6 @@ public final class SemMediaCapture {
         native_finalize();
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class BackgroundMusic {
         protected ArrayList<BGMInfo> mBGMInfos = new ArrayList<>();
 
@@ -544,8 +610,7 @@ public final class SemMediaCapture {
             return bgmInfo;
         }
 
-        /* loaded from: classes5.dex */
-        public class BGMInfo {
+        protected class BGMInfo {
             int durationMs;
             int endTimeMs;
             FileDescriptor fd;
@@ -558,7 +623,6 @@ public final class SemMediaCapture {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class SingleBackgroundMusic extends BackgroundMusic {
         public void set(FileDescriptor fd, int startTime, int endTime) {
             BackgroundMusic.BGMInfo bgmSingle = new BackgroundMusic.BGMInfo();
@@ -571,7 +635,6 @@ public final class SemMediaCapture {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class FragmentedBackgroundMusic extends BackgroundMusic {
         private BackgroundMusic.BGMInfo mFBGMIntro = null;
         private BackgroundMusic.BGMInfo mFBGMOutro = null;
@@ -624,17 +687,15 @@ public final class SemMediaCapture {
         public int addBody(FileDescriptor fd, int startTime, int endTime) {
             BackgroundMusic.BGMInfo bgmInfo = new BackgroundMusic.BGMInfo();
             this.mFBGMBody.add(super.addInfo(bgmInfo, fd, startTime, endTime));
-            int i = this.mBodyCount + 1;
-            this.mBodyCount = i;
-            return i;
+            this.mBodyCount++;
+            return this.mBodyCount;
         }
 
         public int addBody(AssetFileDescriptor afd, int startTime, int endTime) {
             BackgroundMusic.BGMInfo bgmInfo = new BackgroundMusic.BGMInfo();
             this.mFBGMBody.add(super.addInfo(bgmInfo, afd, startTime, endTime));
-            int i = this.mBodyCount + 1;
-            this.mBodyCount = i;
-            return i;
+            this.mBodyCount++;
+            return this.mBodyCount;
         }
 
         public void setOutro(FileDescriptor fd, int startTime, int endTime) {
@@ -696,15 +757,12 @@ public final class SemMediaCapture {
     }
 
     private void updateSurfaceScreenOn() {
-        SurfaceHolder surfaceHolder = this.mSurfaceHolder;
-        if (surfaceHolder != null) {
-            surfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
+        if (this.mSurfaceHolder != null) {
+            this.mSurfaceHolder.setKeepScreenOn(this.mScreenOnWhilePlaying && this.mStayAwake);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EventHandler extends Handler {
+    private class EventHandler extends Handler {
         private SemMediaCapture mMediaCapture;
 
         public EventHandler(SemMediaCapture mc, Looper looper) {
@@ -716,66 +774,64 @@ public final class SemMediaCapture {
         public void handleMessage(Message msg) {
             if (this.mMediaCapture.mNativeContext == 0) {
                 Log.w(SemMediaCapture.TAG, "mediacapture went away with unhandled events");
-                return;
             }
             switch (msg.what) {
                 case 0:
-                    return;
+                    break;
                 case 1:
                     if (SemMediaCapture.this.mOnPreparedListener != null) {
                         SemMediaCapture.this.mOnPreparedListener.onPrepared(this.mMediaCapture);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 5:
                     if (SemMediaCapture.this.mOnDecodingCompletionListener != null) {
                         SemMediaCapture.this.mOnDecodingCompletionListener.onDecodingCompletion(this.mMediaCapture);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 6:
                     if (SemMediaCapture.this.mOnPlaybackCompletionListener != null) {
                         SemMediaCapture.this.mOnPlaybackCompletionListener.onPlaybackCompletion(this.mMediaCapture);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 7:
                     if (SemMediaCapture.this.mOnRecordingCompletionListener != null) {
                         SemMediaCapture.this.mOnRecordingCompletionListener.onRecordingCompletion(this.mMediaCapture);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 8:
                     if (SemMediaCapture.this.mOnRenderingStartedListener != null) {
                         SemMediaCapture.this.mOnRenderingStartedListener.onRenderingStarted(this.mMediaCapture);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 10:
                     if (SemMediaCapture.this.mOnDecodingUpdatedListener != null) {
                         SemMediaCapture.this.mOnDecodingUpdatedListener.onUpdated(this.mMediaCapture, msg.arg1);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 100:
                     Log.e(SemMediaCapture.TAG, "Error (" + msg.arg1 + "," + msg.arg2 + NavigationBarInflaterView.KEY_CODE_END);
                     if (SemMediaCapture.this.mOnErrorListener != null) {
                         SemMediaCapture.this.mOnErrorListener.onError(this.mMediaCapture, msg.arg1, msg.arg2);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 default:
                     Log.e(SemMediaCapture.TAG, "Unknown message type " + msg.what);
-                    return;
+                    break;
             }
         }
     }
 
     private static void postEventFromNative(Object mediacapture_ref, int what, int arg1, int arg2, Object obj) {
-        EventHandler eventHandler;
         SemMediaCapture mc = (SemMediaCapture) ((WeakReference) mediacapture_ref).get();
-        if (mc != null && (eventHandler = mc.mEventHandler) != null) {
-            Message m = eventHandler.obtainMessage(what, arg1, arg2, obj);
+        if (mc != null && mc.mEventHandler != null) {
+            Message m = mc.mEventHandler.obtainMessage(what, arg1, arg2, obj);
             mc.mEventHandler.sendMessage(m);
         }
     }

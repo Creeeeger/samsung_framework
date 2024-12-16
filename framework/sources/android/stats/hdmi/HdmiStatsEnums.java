@@ -12,6 +12,11 @@ public final class HdmiStatsEnums {
     public static final int EXIT = 269;
     public static final int FAIL = 13;
     public static final int FEATURE_ABORT_REASON_UNKNOWN = 0;
+    public static final int HDMI_EARC_STATUS_ARC_PENDING = 3;
+    public static final int HDMI_EARC_STATUS_EARC_CONNECTED = 4;
+    public static final int HDMI_EARC_STATUS_EARC_PENDING = 2;
+    public static final int HDMI_EARC_STATUS_IDLE = 1;
+    public static final int HDMI_EARC_STATUS_UNKNOWN = 0;
     public static final int INCOMING = 3;
     public static final int INPUT_SELECT = 308;
     public static final int INVALID_OPERAND = 13;
@@ -19,6 +24,14 @@ public final class HdmiStatsEnums {
     public static final int LEFT_DOWN = 264;
     public static final int LEFT_UP = 263;
     public static final int LOGICAL_ADDRESS_UNKNOWN = -1;
+    public static final int LOG_REASON_DSM_SETTING_TOGGLED = 2;
+    public static final int LOG_REASON_DSM_UNKNOWN = 0;
+    public static final int LOG_REASON_DSM_WAKE = 1;
+    public static final int LOG_REASON_EARC_STATUS_CHANGED = 2;
+    public static final int LOG_REASON_EARC_STATUS_CHANGED_UNSUPPORTED_PORT = 3;
+    public static final int LOG_REASON_EARC_STATUS_CHANGED_WRONG_STATE = 4;
+    public static final int LOG_REASON_UNKNOWN = 0;
+    public static final int LOG_REASON_WAKE = 1;
     public static final int MESSAGE_DIRECTION_OTHER = 1;
     public static final int MESSAGE_DIRECTION_UNKNOWN = 0;
     public static final int NACK = 11;

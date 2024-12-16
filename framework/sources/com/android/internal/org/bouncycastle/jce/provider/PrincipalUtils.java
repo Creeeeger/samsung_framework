@@ -8,36 +8,35 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes5.dex */
-public class PrincipalUtils {
+class PrincipalUtils {
     PrincipalUtils() {
     }
 
-    public static X500Name getCA(TrustAnchor trustAnchor) {
+    static X500Name getCA(TrustAnchor trustAnchor) {
         return getX500Name(notNull(trustAnchor).getCA());
     }
 
-    public static X500Name getEncodedIssuerPrincipal(Object cert) {
+    static X500Name getEncodedIssuerPrincipal(Object cert) {
         if (cert instanceof X509Certificate) {
             return getIssuerPrincipal((X509Certificate) cert);
         }
         return getX500Name((X500Principal) ((X509AttributeCertificate) cert).getIssuer().getPrincipals()[0]);
     }
 
-    public static X500Name getIssuerPrincipal(X509Certificate certificate) {
+    static X500Name getIssuerPrincipal(X509Certificate certificate) {
         return getX500Name(notNull(certificate).getIssuerX500Principal());
     }
 
-    public static X500Name getIssuerPrincipal(X509CRL crl) {
+    static X500Name getIssuerPrincipal(X509CRL crl) {
         return getX500Name(notNull(crl).getIssuerX500Principal());
     }
 
-    public static X500Name getSubjectPrincipal(X509Certificate certificate) {
+    static X500Name getSubjectPrincipal(X509Certificate certificate) {
         return getX500Name(notNull(certificate).getSubjectX500Principal());
     }
 
-    public static X500Name getX500Name(X500Principal principal) {
+    static X500Name getX500Name(X500Principal principal) {
         X500Name name = X500Name.getInstance(getEncoded(principal));
         return notNull(name);
     }

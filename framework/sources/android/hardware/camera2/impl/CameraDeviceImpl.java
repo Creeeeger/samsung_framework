@@ -1,12 +1,14 @@
 package android.hardware.camera2.impl;
 
 import android.app.admin.PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2;
+import android.app.compat.CompatChanges;
 import android.content.Context;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraExtensionCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraOfflineSession;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
@@ -15,7 +17,6 @@ import android.hardware.camera2.ICameraDeviceCallbacks;
 import android.hardware.camera2.ICameraDeviceUser;
 import android.hardware.camera2.ICameraOfflineSession;
 import android.hardware.camera2.TotalCaptureResult;
-import android.hardware.camera2.impl.CameraOfflineSessionImpl;
 import android.hardware.camera2.params.ExtensionSessionConfiguration;
 import android.hardware.camera2.params.InputConfiguration;
 import android.hardware.camera2.params.MultiResolutionStreamConfigurationMap;
@@ -36,6 +37,7 @@ import android.util.Range;
 import android.util.Size;
 import android.util.SparseArray;
 import android.view.Surface;
+import com.android.internal.camera.flags.Flags;
 import com.android.internal.util.function.pooled.PooledLambda;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -54,13 +56,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecipient {
+    static final long CHECK_PARAMS_IN_IS_SESSION_CONFIGURATION_SUPPORTED = 320741775;
     private static final long NANO_PER_SECOND = 1000000000;
     private static final int REQUEST_ID_NONE = -1;
     private final String TAG;
     private final int mAppTargetSdkVersion;
+    private final CameraDevice.CameraDeviceSetup mCameraDeviceSetup;
     private final String mCameraId;
+    private final CameraManager mCameraManager;
     private final CameraCharacteristics mCharacteristics;
     private final Context mContext;
     private CameraAdvancedExtensionSessionImpl mCurrentAdvancedExtensionSession;
@@ -71,7 +76,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
     private int[] mFailedRepeatingRequestTypes;
     private CameraOfflineSessionImpl mOfflineSessionImpl;
     private ExecutorService mOfflineSwitchService;
-    private final Map<String, CameraCharacteristics> mPhysicalIdsToChars;
+    private Map<String, CameraCharacteristics> mPhysicalIdsToChars;
     private ICameraDeviceUserWrapper mRemoteDevice;
     private int[] mRepeatingRequestTypes;
     private volatile StateCallbackKK mSessionStateCallback;
@@ -94,9 +99,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
     private FrameNumberTracker mFrameNumberTracker = new FrameNumberTracker();
     private int mNextSessionId = 0;
     private final Runnable mCallOnOpened = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -112,9 +114,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
     private final Runnable mCallOnUnconfigured = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.2
-        AnonymousClass2() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -129,9 +128,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
     private final Runnable mCallOnActive = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.3
-        AnonymousClass3() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -146,9 +142,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
     private final Runnable mCallOnBusy = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.4
-        AnonymousClass4() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -164,9 +157,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
     };
     private final Runnable mCallOnClosed = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.5
         private boolean mClosedOnce = false;
-
-        AnonymousClass5() {
-        }
 
         @Override // java.lang.Runnable
         public void run() {
@@ -185,9 +175,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
     private final Runnable mCallOnIdle = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.6
-        AnonymousClass6() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -202,9 +189,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
     private final Runnable mCallOnDisconnected = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.7
-        AnonymousClass7() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
@@ -220,179 +204,92 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
+    private class ClientStateCallback extends CameraDevice.StateCallback {
+        private final Executor mClientExecutor;
+        private final CameraDevice.StateCallback mClientStateCallback;
+
+        private ClientStateCallback(Executor clientExecutor, CameraDevice.StateCallback clientStateCallback) {
+            this.mClientExecutor = clientExecutor;
+            this.mClientStateCallback = clientStateCallback;
         }
 
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
+        @Override // android.hardware.camera2.CameraDevice.StateCallback
+        public void onClosed(final CameraDevice camera) {
+            this.mClientExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.ClientStateCallback.1
+                @Override // java.lang.Runnable
+                public void run() {
+                    ClientStateCallback.this.mClientStateCallback.onClosed(camera);
                 }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onOpened(CameraDeviceImpl.this);
+            });
+        }
+
+        @Override // android.hardware.camera2.CameraDevice.StateCallback
+        public void onOpened(final CameraDevice camera) {
+            this.mClientExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.ClientStateCallback.2
+                @Override // java.lang.Runnable
+                public void run() {
+                    ClientStateCallback.this.mClientStateCallback.onOpened(camera);
                 }
-                CameraDeviceImpl.this.mDeviceCallback.onOpened(CameraDeviceImpl.this);
-            }
+            });
+        }
+
+        @Override // android.hardware.camera2.CameraDevice.StateCallback
+        public void onDisconnected(final CameraDevice camera) {
+            this.mClientExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.ClientStateCallback.3
+                @Override // java.lang.Runnable
+                public void run() {
+                    ClientStateCallback.this.mClientStateCallback.onDisconnected(camera);
+                }
+            });
+        }
+
+        @Override // android.hardware.camera2.CameraDevice.StateCallback
+        public void onError(final CameraDevice camera, final int error) {
+            this.mClientExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.ClientStateCallback.4
+                @Override // java.lang.Runnable
+                public void run() {
+                    ClientStateCallback.this.mClientStateCallback.onError(camera, error);
+                }
+            });
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
-                }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onUnconfigured(CameraDeviceImpl.this);
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
-                }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onActive(CameraDeviceImpl.this);
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 implements Runnable {
-        AnonymousClass4() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
-                }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onBusy(CameraDeviceImpl.this);
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$5 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass5 implements Runnable {
-        private boolean mClosedOnce = false;
-
-        AnonymousClass5() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            StateCallbackKK sessionCallback;
-            if (this.mClosedOnce) {
-                throw new AssertionError("Don't post #onClosed more than once");
-            }
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-            }
-            if (sessionCallback != null) {
-                sessionCallback.onClosed(CameraDeviceImpl.this);
-            }
-            CameraDeviceImpl.this.mDeviceCallback.onClosed(CameraDeviceImpl.this);
-            this.mClosedOnce = true;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$6 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass6 implements Runnable {
-        AnonymousClass6() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
-                }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onIdle(CameraDeviceImpl.this);
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$7 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass7 implements Runnable {
-        AnonymousClass7() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (CameraDeviceImpl.this.mInterfaceLock) {
-                if (CameraDeviceImpl.this.mRemoteDevice == null) {
-                    return;
-                }
-                StateCallbackKK sessionCallback = CameraDeviceImpl.this.mSessionStateCallback;
-                if (sessionCallback != null) {
-                    sessionCallback.onDisconnected(CameraDeviceImpl.this);
-                }
-                CameraDeviceImpl.this.mDeviceCallback.onDisconnected(CameraDeviceImpl.this);
-            }
-        }
-    }
-
-    public CameraDeviceImpl(String cameraId, CameraDevice.StateCallback callback, Executor executor, CameraCharacteristics characteristics, Map<String, CameraCharacteristics> physicalIdsToChars, int appTargetSdkVersion, Context ctx) {
-        if (cameraId == null || callback == null || executor == null || characteristics == null) {
+    public CameraDeviceImpl(String cameraId, CameraDevice.StateCallback callback, Executor executor, CameraCharacteristics characteristics, CameraManager manager, int appTargetSdkVersion, Context ctx, CameraDevice.CameraDeviceSetup cameraDeviceSetup) {
+        if (cameraId == null || callback == null || executor == null || characteristics == null || manager == null) {
             throw new IllegalArgumentException("Null argument given");
         }
         this.mCameraId = cameraId;
-        this.mDeviceCallback = callback;
-        this.mDeviceExecutor = executor;
+        if (Flags.singleThreadExecutor()) {
+            this.mDeviceCallback = new ClientStateCallback(executor, callback);
+            this.mDeviceExecutor = Executors.newSingleThreadExecutor();
+        } else {
+            this.mDeviceCallback = callback;
+            this.mDeviceExecutor = executor;
+        }
         this.mCharacteristics = characteristics;
-        this.mPhysicalIdsToChars = physicalIdsToChars;
+        this.mCameraManager = manager;
         this.mAppTargetSdkVersion = appTargetSdkVersion;
         this.mContext = ctx;
-        String tag = String.format("CameraDevice-JV-%s", cameraId);
+        this.mCameraDeviceSetup = cameraDeviceSetup;
+        String tag = String.format("CameraDevice-JV-%s", this.mCameraId);
         this.TAG = tag.length() > 23 ? tag.substring(0, 23) : tag;
-        Integer partialCount = (Integer) characteristics.get(CameraCharacteristics.REQUEST_PARTIAL_RESULT_COUNT);
+        Integer partialCount = (Integer) this.mCharacteristics.get(CameraCharacteristics.REQUEST_PARTIAL_RESULT_COUNT);
         if (partialCount == null) {
             this.mTotalPartialCount = 1;
         } else {
             this.mTotalPartialCount = partialCount.intValue();
         }
+    }
+
+    private Map<String, CameraCharacteristics> getPhysicalIdToChars() {
+        if (this.mPhysicalIdsToChars == null) {
+            try {
+                this.mPhysicalIdsToChars = this.mCameraManager.getPhysicalIdToCharsMap(this.mCharacteristics);
+            } catch (CameraAccessException e) {
+                Log.e(this.TAG, "Unable to query the physical characteristics map!");
+            }
+        }
+        return this.mPhysicalIdsToChars;
     }
 
     public CameraDeviceCallbacks getCallbacks() {
@@ -445,19 +342,11 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 failureCode = 4;
                 break;
         }
-        int code = failureCode;
-        boolean isError = failureIsError;
+        final int code = failureCode;
+        final boolean isError = failureIsError;
         synchronized (this.mInterfaceLock) {
             this.mInError = true;
             this.mDeviceExecutor.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.8
-                final /* synthetic */ int val$code;
-                final /* synthetic */ boolean val$isError;
-
-                AnonymousClass8(boolean isError2, int code2) {
-                    isError = isError2;
-                    code = code2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     if (isError) {
@@ -467,27 +356,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                     }
                 }
             });
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$8 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass8 implements Runnable {
-        final /* synthetic */ int val$code;
-        final /* synthetic */ boolean val$isError;
-
-        AnonymousClass8(boolean isError2, int code2) {
-            isError = isError2;
-            code = code2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (isError) {
-                CameraDeviceImpl.this.mDeviceCallback.onError(CameraDeviceImpl.this, code);
-            } else {
-                CameraDeviceImpl.this.mDeviceCallback.onDisconnected(CameraDeviceImpl.this);
-            }
         }
     }
 
@@ -599,18 +467,18 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         createCaptureSessionInternal(config.getInputConfiguration(), outputConfigs, config.getStateCallback(), config.getExecutor(), config.getSessionType(), config.getSessionParameters());
     }
 
-    /* JADX WARN: Incorrect condition in loop: B:48:0x0094 */
-    /* JADX WARN: Removed duplicated region for block: B:45:0x007f  */
-    /* JADX WARN: Removed duplicated region for block: B:61:0x00fa A[Catch: all -> 0x0109, TryCatch #2 {all -> 0x0109, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0107, B:15:0x0023, B:17:0x0027, B:18:0x002a, B:20:0x002e, B:21:0x0031, B:23:0x0035, B:24:0x0038, B:26:0x003d, B:27:0x0042, B:29:0x0046, B:32:0x005c, B:37:0x0065, B:46:0x0080, B:47:0x0090, B:49:0x0096, B:57:0x00b0, B:58:0x00bf, B:59:0x00f6, B:61:0x00fa, B:62:0x0100, B:64:0x0103, B:65:0x00de), top: B:3:0x0009 }] */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0103 A[Catch: all -> 0x0109, TryCatch #2 {all -> 0x0109, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0107, B:15:0x0023, B:17:0x0027, B:18:0x002a, B:20:0x002e, B:21:0x0031, B:23:0x0035, B:24:0x0038, B:26:0x003d, B:27:0x0042, B:29:0x0046, B:32:0x005c, B:37:0x0065, B:46:0x0080, B:47:0x0090, B:49:0x0096, B:57:0x00b0, B:58:0x00bf, B:59:0x00f6, B:61:0x00fa, B:62:0x0100, B:64:0x0103, B:65:0x00de), top: B:3:0x0009 }] */
-    /* JADX WARN: Removed duplicated region for block: B:65:0x00de A[Catch: all -> 0x0109, TryCatch #2 {all -> 0x0109, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0107, B:15:0x0023, B:17:0x0027, B:18:0x002a, B:20:0x002e, B:21:0x0031, B:23:0x0035, B:24:0x0038, B:26:0x003d, B:27:0x0042, B:29:0x0046, B:32:0x005c, B:37:0x0065, B:46:0x0080, B:47:0x0090, B:49:0x0096, B:57:0x00b0, B:58:0x00bf, B:59:0x00f6, B:61:0x00fa, B:62:0x0100, B:64:0x0103, B:65:0x00de), top: B:3:0x0009 }] */
+    /* JADX WARN: Incorrect condition in loop: B:48:0x009e */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x0089  */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x0104 A[Catch: all -> 0x0115, TryCatch #1 {all -> 0x0115, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0113, B:15:0x0023, B:17:0x0027, B:18:0x002c, B:20:0x0030, B:21:0x0035, B:23:0x0039, B:24:0x003e, B:26:0x0043, B:27:0x004a, B:29:0x004e, B:32:0x0066, B:37:0x006f, B:46:0x008a, B:47:0x009a, B:49:0x00a0, B:57:0x00ba, B:58:0x00c9, B:59:0x0100, B:61:0x0104, B:62:0x010c, B:64:0x010f, B:65:0x00e8), top: B:3:0x0009 }] */
+    /* JADX WARN: Removed duplicated region for block: B:64:0x010f A[Catch: all -> 0x0115, TryCatch #1 {all -> 0x0115, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0113, B:15:0x0023, B:17:0x0027, B:18:0x002c, B:20:0x0030, B:21:0x0035, B:23:0x0039, B:24:0x003e, B:26:0x0043, B:27:0x004a, B:29:0x004e, B:32:0x0066, B:37:0x006f, B:46:0x008a, B:47:0x009a, B:49:0x00a0, B:57:0x00ba, B:58:0x00c9, B:59:0x0100, B:61:0x0104, B:62:0x010c, B:64:0x010f, B:65:0x00e8), top: B:3:0x0009 }] */
+    /* JADX WARN: Removed duplicated region for block: B:65:0x00e8 A[Catch: all -> 0x0115, TryCatch #1 {all -> 0x0115, blocks: (B:12:0x001b, B:13:0x0022, B:73:0x0113, B:15:0x0023, B:17:0x0027, B:18:0x002c, B:20:0x0030, B:21:0x0035, B:23:0x0039, B:24:0x003e, B:26:0x0043, B:27:0x004a, B:29:0x004e, B:32:0x0066, B:37:0x006f, B:46:0x008a, B:47:0x009a, B:49:0x00a0, B:57:0x00ba, B:58:0x00c9, B:59:0x0100, B:61:0x0104, B:62:0x010c, B:64:0x010f, B:65:0x00e8), top: B:3:0x0009 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     private void createCaptureSessionInternal(android.hardware.camera2.params.InputConfiguration r23, java.util.List<android.hardware.camera2.params.OutputConfiguration> r24, android.hardware.camera2.CameraCaptureSession.StateCallback r25, java.util.concurrent.Executor r26, int r27, android.hardware.camera2.CaptureRequest r28) throws android.hardware.camera2.CameraAccessException {
         /*
-            Method dump skipped, instructions count: 267
+            Method dump skipped, instructions count: 279
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.hardware.camera2.impl.CameraDeviceImpl.createCaptureSessionInternal(android.hardware.camera2.params.InputConfiguration, java.util.List, android.hardware.camera2.CameraCaptureSession$StateCallback, java.util.concurrent.Executor, int, android.hardware.camera2.CaptureRequest):void");
@@ -618,12 +486,13 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
 
     @Override // android.hardware.camera2.CameraDevice
     public boolean isSessionConfigurationSupported(SessionConfiguration sessionConfig) throws CameraAccessException, UnsupportedOperationException, IllegalArgumentException {
-        boolean isSessionConfigurationSupported;
         synchronized (this.mInterfaceLock) {
             checkIfCameraClosedOrInError();
-            isSessionConfigurationSupported = this.mRemoteDevice.isSessionConfigurationSupported(sessionConfig);
+            if (CompatChanges.isChangeEnabled(CHECK_PARAMS_IN_IS_SESSION_CONFIGURATION_SUPPORTED) && Flags.cameraDeviceSetup() && this.mCameraDeviceSetup != null) {
+                return this.mCameraDeviceSetup.isSessionConfigurationSupported(sessionConfig);
+            }
+            return this.mRemoteDevice.isSessionConfigurationSupported(sessionConfig);
         }
-        return isSessionConfigurationSupported;
     }
 
     @Override // android.hardware.camera2.CameraDevice
@@ -640,12 +509,15 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    private void overrideEnableZsl(CameraMetadataNative request, boolean newValue) {
+    public static void disableZslIfNeeded(CameraMetadataNative request, int targetSdkVersion, int templateType) {
+        if (targetSdkVersion >= 26 && templateType == 2) {
+            return;
+        }
         Boolean enableZsl = (Boolean) request.get(CaptureRequest.CONTROL_ENABLE_ZSL);
         if (enableZsl == null) {
             return;
         }
-        request.set((CaptureRequest.Key<CaptureRequest.Key<Boolean>>) CaptureRequest.CONTROL_ENABLE_ZSL, (CaptureRequest.Key<Boolean>) Boolean.valueOf(newValue));
+        request.set((CaptureRequest.Key<CaptureRequest.Key<Boolean>>) CaptureRequest.CONTROL_ENABLE_ZSL, (CaptureRequest.Key<Boolean>) false);
     }
 
     @Override // android.hardware.camera2.CameraDevice
@@ -659,9 +531,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 }
             }
             CameraMetadataNative templatedRequest = this.mRemoteDevice.createDefaultRequest(templateType);
-            if (this.mAppTargetSdkVersion < 26 || templateType != 2) {
-                overrideEnableZsl(templatedRequest, false);
-            }
+            disableZslIfNeeded(templatedRequest, this.mAppTargetSdkVersion, templateType);
             builder = new CaptureRequest.Builder(templatedRequest, false, -1, getId(), physicalCameraIdSet);
         }
         return builder;
@@ -673,9 +543,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         synchronized (this.mInterfaceLock) {
             checkIfCameraClosedOrInError();
             CameraMetadataNative templatedRequest = this.mRemoteDevice.createDefaultRequest(templateType);
-            if (this.mAppTargetSdkVersion < 26 || templateType != 2) {
-                overrideEnableZsl(templatedRequest, false);
-            }
+            disableZslIfNeeded(templatedRequest, this.mAppTargetSdkVersion, templateType);
             builder = new CaptureRequest.Builder(templatedRequest, false, -1, getId(), null);
         }
         return builder;
@@ -774,11 +642,11 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
     }
 
     public CameraOfflineSession switchToOffline(Collection<Surface> offlineOutputs, Executor executor, CameraOfflineSession.CameraOfflineSessionCallback listener) throws CameraAccessException {
-        CameraOfflineSessionImpl cameraOfflineSessionImpl;
+        CameraOfflineSession ret;
         if (offlineOutputs.isEmpty()) {
             throw new IllegalArgumentException("Invalid offline surfaces!");
         }
-        HashSet<Integer> offlineStreamIds = new HashSet<>();
+        final HashSet<Integer> offlineStreamIds = new HashSet<>();
         SparseArray<OutputConfiguration> offlineConfiguredOutputs = new SparseArray<>();
         synchronized (this.mInterfaceLock) {
             checkIfCameraClosedOrInError();
@@ -809,8 +677,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 offlineStreamIds.add(Integer.valueOf(streamId));
             }
             stopRepeating();
-            cameraOfflineSessionImpl = new CameraOfflineSessionImpl(this.mCameraId, this.mCharacteristics, executor, listener, offlineConfiguredOutputs, this.mConfiguredInput, this.mConfiguredOutputs, this.mFrameNumberTracker, this.mCaptureCallbackMap, this.mRequestLastFrameNumbersList);
-            this.mOfflineSessionImpl = cameraOfflineSessionImpl;
+            this.mOfflineSessionImpl = new CameraOfflineSessionImpl(this.mCameraId, this.mCharacteristics, executor, listener, offlineConfiguredOutputs, this.mConfiguredInput, this.mConfiguredOutputs, this.mFrameNumberTracker, this.mCaptureCallbackMap, this.mRequestLastFrameNumbersList);
+            ret = this.mOfflineSessionImpl;
             this.mOfflineSwitchService = Executors.newSingleThreadExecutor();
             this.mConfiguredOutputs.clear();
             this.mConfiguredInput = new AbstractMap.SimpleEntry<>(-1, null);
@@ -822,20 +690,11 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             this.mCurrentSession = null;
         }
         this.mOfflineSwitchService.execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.9
-            final /* synthetic */ HashSet val$offlineStreamIds;
-
-            AnonymousClass9(HashSet offlineStreamIds2) {
-                offlineStreamIds = offlineStreamIds2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 try {
                     try {
-                        ICameraDeviceUserWrapper iCameraDeviceUserWrapper = CameraDeviceImpl.this.mRemoteDevice;
-                        CameraOfflineSessionImpl.CameraDeviceCallbacks callbacks = CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks();
-                        HashSet hashSet = offlineStreamIds;
-                        ICameraOfflineSession remoteOfflineSession = iCameraDeviceUserWrapper.switchToOffline(callbacks, Arrays.stream((Integer[]) hashSet.toArray(new Integer[hashSet.size()])).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray());
+                        ICameraOfflineSession remoteOfflineSession = CameraDeviceImpl.this.mRemoteDevice.switchToOffline(CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks(), Arrays.stream((Integer[]) offlineStreamIds.toArray(new Integer[offlineStreamIds.size()])).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray());
                         CameraDeviceImpl.this.mOfflineSessionImpl.setRemoteSession(remoteOfflineSession);
                     } catch (CameraAccessException e) {
                         CameraDeviceImpl.this.mOfflineSessionImpl.notifyFailedSwitch();
@@ -845,34 +704,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 }
             }
         });
-        return cameraOfflineSessionImpl;
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$9 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass9 implements Runnable {
-        final /* synthetic */ HashSet val$offlineStreamIds;
-
-        AnonymousClass9(HashSet offlineStreamIds2) {
-            offlineStreamIds = offlineStreamIds2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            try {
-                try {
-                    ICameraDeviceUserWrapper iCameraDeviceUserWrapper = CameraDeviceImpl.this.mRemoteDevice;
-                    CameraOfflineSessionImpl.CameraDeviceCallbacks callbacks = CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks();
-                    HashSet hashSet = offlineStreamIds;
-                    ICameraOfflineSession remoteOfflineSession = iCameraDeviceUserWrapper.switchToOffline(callbacks, Arrays.stream((Integer[]) hashSet.toArray(new Integer[hashSet.size()])).mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray());
-                    CameraDeviceImpl.this.mOfflineSessionImpl.setRemoteSession(remoteOfflineSession);
-                } catch (CameraAccessException e) {
-                    CameraDeviceImpl.this.mOfflineSessionImpl.notifyFailedSwitch();
-                }
-            } finally {
-                CameraDeviceImpl.this.mOfflineSessionImpl = null;
-            }
-        }
+        return ret;
     }
 
     public boolean supportsOfflineProcessing(Surface surface) {
@@ -973,23 +805,14 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         return submitCaptureRequest(requests, callback, executor, false);
     }
 
-    public void checkEarlyTriggerSequenceCompleteLocked(int requestId, long lastFrameNumber, int[] repeatingRequestTypes) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void checkEarlyTriggerSequenceCompleteLocked(final int requestId, long lastFrameNumber, int[] repeatingRequestTypes) {
         if (lastFrameNumber == -1) {
             int index = this.mCaptureCallbackMap.indexOfKey(requestId);
-            CaptureCallbackHolder holder = index >= 0 ? this.mCaptureCallbackMap.valueAt(index) : null;
+            final CaptureCallbackHolder holder = index >= 0 ? this.mCaptureCallbackMap.valueAt(index) : null;
             if (holder != null) {
                 this.mCaptureCallbackMap.removeAt(index);
-            }
-            if (holder != null) {
                 Runnable resultDispatch = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.10
-                    final /* synthetic */ CaptureCallbackHolder val$holder;
-                    final /* synthetic */ int val$requestId;
-
-                    AnonymousClass10(int requestId2, CaptureCallbackHolder holder2) {
-                        requestId = requestId2;
-                        holder = holder2;
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         if (!CameraDeviceImpl.this.isClosed()) {
@@ -999,36 +822,17 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 };
                 long ident = Binder.clearCallingIdentity();
                 try {
-                    holder2.getExecutor().execute(resultDispatch);
+                    holder.getExecutor().execute(resultDispatch);
                     return;
                 } finally {
                     Binder.restoreCallingIdentity(ident);
                 }
             }
-            Log.w(this.TAG, String.format("did not register callback to request %d", Integer.valueOf(requestId2)));
+            Log.w(this.TAG, String.format("did not register callback to request %d", Integer.valueOf(requestId)));
             return;
         }
-        this.mRequestLastFrameNumbersList.add(new RequestLastFrameNumbersHolder(requestId2, lastFrameNumber, repeatingRequestTypes));
+        this.mRequestLastFrameNumbersList.add(new RequestLastFrameNumbersHolder(requestId, lastFrameNumber, repeatingRequestTypes));
         checkAndFireSequenceComplete();
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$10 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass10 implements Runnable {
-        final /* synthetic */ CaptureCallbackHolder val$holder;
-        final /* synthetic */ int val$requestId;
-
-        AnonymousClass10(int requestId2, CaptureCallbackHolder holder2) {
-            requestId = requestId2;
-            holder = holder2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (!CameraDeviceImpl.this.isClosed()) {
-                holder.getCallback().onCaptureSequenceAborted(CameraDeviceImpl.this, requestId);
-            }
-        }
     }
 
     private int[] getRequestTypes(CaptureRequest[] requestArray) {
@@ -1055,6 +859,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateTracker(int requestId, long frameNumber, int requestType, CaptureResult result, boolean isPartialResult) {
         if (this.mBatchOutputMap.containsKey(Integer.valueOf(requestId))) {
             int requestCount = this.mBatchOutputMap.get(Integer.valueOf(requestId)).intValue();
@@ -1107,9 +912,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                         this.mCaptureCallbackMap.put(requestInfo.getRequestId(), new CaptureCallbackHolder(callback, requestList, executor2, repeating, this.mNextSessionId - 1));
                     }
                     if (repeating) {
-                        int i = this.mRepeatingRequestId;
-                        if (i != -1) {
-                            checkEarlyTriggerSequenceCompleteLocked(i, requestInfo.getLastFrameNumber(), this.mRepeatingRequestTypes);
+                        if (this.mRepeatingRequestId != -1) {
+                            checkEarlyTriggerSequenceCompleteLocked(this.mRepeatingRequestId, requestInfo.getLastFrameNumber(), this.mRepeatingRequestTypes);
                         }
                         this.mRepeatingRequestId = requestInfo.getRequestId();
                         this.mRepeatingRequestTypes = getRequestTypes(requestArray);
@@ -1146,8 +950,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
     public void stopRepeating() throws CameraAccessException {
         synchronized (this.mInterfaceLock) {
             checkIfCameraClosedOrInError();
-            int requestId = this.mRepeatingRequestId;
-            if (requestId != -1) {
+            if (this.mRepeatingRequestId != -1) {
+                int requestId = this.mRepeatingRequestId;
                 this.mRepeatingRequestId = -1;
                 this.mFailedRepeatingRequestId = -1;
                 int[] requestTypes = this.mRepeatingRequestTypes;
@@ -1184,9 +988,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 return;
             }
             long lastFrameNumber = this.mRemoteDevice.flush();
-            int i = this.mRepeatingRequestId;
-            if (i != -1) {
-                checkEarlyTriggerSequenceCompleteLocked(i, lastFrameNumber, this.mRepeatingRequestTypes);
+            if (this.mRepeatingRequestId != -1) {
+                checkEarlyTriggerSequenceCompleteLocked(this.mRepeatingRequestId, lastFrameNumber, this.mRepeatingRequestTypes);
                 this.mRepeatingRequestId = -1;
                 this.mRepeatingRequestTypes = null;
             }
@@ -1199,32 +1002,26 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             if (this.mClosing.getAndSet(true)) {
                 return;
             }
-            ExecutorService executorService = this.mOfflineSwitchService;
-            if (executorService != null) {
-                executorService.shutdownNow();
+            if (this.mOfflineSwitchService != null) {
+                this.mOfflineSwitchService.shutdownNow();
                 this.mOfflineSwitchService = null;
             }
-            CameraExtensionSessionImpl cameraExtensionSessionImpl = this.mCurrentExtensionSession;
-            if (cameraExtensionSessionImpl != null) {
-                cameraExtensionSessionImpl.commitStats();
+            if (this.mCurrentExtensionSession != null) {
+                this.mCurrentExtensionSession.commitStats();
             }
-            CameraAdvancedExtensionSessionImpl cameraAdvancedExtensionSessionImpl = this.mCurrentAdvancedExtensionSession;
-            if (cameraAdvancedExtensionSessionImpl != null) {
-                cameraAdvancedExtensionSessionImpl.commitStats();
+            if (this.mCurrentAdvancedExtensionSession != null) {
+                this.mCurrentAdvancedExtensionSession.commitStats();
             }
-            ICameraDeviceUserWrapper iCameraDeviceUserWrapper = this.mRemoteDevice;
-            if (iCameraDeviceUserWrapper != null) {
-                iCameraDeviceUserWrapper.disconnect();
+            if (this.mRemoteDevice != null) {
+                this.mRemoteDevice.disconnect();
                 this.mRemoteDevice.unlinkToDeath(this, 0);
             }
-            CameraExtensionSessionImpl cameraExtensionSessionImpl2 = this.mCurrentExtensionSession;
-            if (cameraExtensionSessionImpl2 != null) {
-                cameraExtensionSessionImpl2.release(true);
+            if (this.mCurrentExtensionSession != null) {
+                this.mCurrentExtensionSession.release(true);
                 this.mCurrentExtensionSession = null;
             }
-            CameraAdvancedExtensionSessionImpl cameraAdvancedExtensionSessionImpl2 = this.mCurrentAdvancedExtensionSession;
-            if (cameraAdvancedExtensionSessionImpl2 != null) {
-                cameraAdvancedExtensionSessionImpl2.release(true);
+            if (this.mCurrentAdvancedExtensionSession != null) {
+                this.mCurrentAdvancedExtensionSession.release(true);
                 this.mCurrentAdvancedExtensionSession = null;
             }
             if (this.mRemoteDevice != null || this.mInError) {
@@ -1251,6 +1048,9 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 validFormat = true;
             }
         }
+        if (isRawFormat(inputFormat)) {
+            return true;
+        }
         if (!validFormat) {
             return false;
         }
@@ -1273,7 +1073,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         if (configMap != null && checkInputConfigurationWithStreamConfigurationsAs(inputConfig, configMap)) {
             return true;
         }
-        for (Map.Entry<String, CameraCharacteristics> entry : this.mPhysicalIdsToChars.entrySet()) {
+        for (Map.Entry<String, CameraCharacteristics> entry : getPhysicalIdToChars().entrySet()) {
             StreamConfigurationMap configMap2 = (StreamConfigurationMap) entry.getValue().get(ck);
             if (configMap2 != null && checkInputConfigurationWithStreamConfigurationsAs(inputConfig, configMap2)) {
                 return true;
@@ -1296,6 +1096,9 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                     validFormat = true;
                 }
             }
+            if (Flags.multiResRawReprocessing() && isRawFormat(inputFormat)) {
+                return;
+            }
             if (!validFormat) {
                 throw new IllegalArgumentException("multi-resolution input format " + inputFormat + " is not valid");
             }
@@ -1316,7 +1119,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class StateCallbackKK extends CameraDevice.StateCallback {
         public void onUnconfigured(CameraDevice camera) {
         }
@@ -1337,6 +1139,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void checkAndFireSequenceComplete() {
         long completedFrameNumber;
         long completedFrameNumber2 = this.mFrameNumberTracker.getCompletedFrameNumber();
@@ -1344,8 +1147,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         long completedZslStillFrameNumber = this.mFrameNumberTracker.getCompletedZslStillFrameNumber();
         Iterator<RequestLastFrameNumbersHolder> iter = this.mRequestLastFrameNumbersList.iterator();
         while (iter.hasNext()) {
-            RequestLastFrameNumbersHolder requestLastFrameNumbers = iter.next();
-            int requestId = requestLastFrameNumbers.getRequestId();
+            final RequestLastFrameNumbersHolder requestLastFrameNumbers = iter.next();
+            final int requestId = requestLastFrameNumbers.getRequestId();
             if (this.mRemoteDevice == null) {
                 Log.w(this.TAG, "Camera closed while checking sequences");
                 return;
@@ -1361,19 +1164,9 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 }
                 completedFrameNumber = completedFrameNumber2;
                 int index = this.mCaptureCallbackMap.indexOfKey(requestId);
-                CaptureCallbackHolder holder = index >= 0 ? this.mCaptureCallbackMap.valueAt(index) : null;
+                final CaptureCallbackHolder holder = index >= 0 ? this.mCaptureCallbackMap.valueAt(index) : null;
                 if (holder != null && requestLastFrameNumbers.isSequenceCompleted()) {
                     Runnable resultDispatch = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.11
-                        final /* synthetic */ CaptureCallbackHolder val$holder;
-                        final /* synthetic */ int val$requestId;
-                        final /* synthetic */ RequestLastFrameNumbersHolder val$requestLastFrameNumbers;
-
-                        AnonymousClass11(int requestId2, CaptureCallbackHolder holder2, RequestLastFrameNumbersHolder requestLastFrameNumbers2) {
-                            requestId = requestId2;
-                            holder = holder2;
-                            requestLastFrameNumbers = requestLastFrameNumbers2;
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
                             if (!CameraDeviceImpl.this.isClosed()) {
@@ -1387,7 +1180,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                         th = th;
                     }
                     try {
-                        holder2.getExecutor().execute(resultDispatch);
+                        holder.getExecutor().execute(resultDispatch);
                         Binder.restoreCallingIdentity(ident);
                     } catch (Throwable th2) {
                         th = th2;
@@ -1396,8 +1189,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                     }
                 }
             }
-            if (requestLastFrameNumbers2.isSequenceCompleted() && requestLastFrameNumbers2.isInflightCompleted()) {
-                int index2 = this.mCaptureCallbackMap.indexOfKey(requestId2);
+            if (requestLastFrameNumbers.isSequenceCompleted() && requestLastFrameNumbers.isInflightCompleted()) {
+                int index2 = this.mCaptureCallbackMap.indexOfKey(requestId);
                 if (index2 >= 0) {
                     this.mCaptureCallbackMap.removeAt(index2);
                 }
@@ -1407,27 +1200,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$11 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass11 implements Runnable {
-        final /* synthetic */ CaptureCallbackHolder val$holder;
-        final /* synthetic */ int val$requestId;
-        final /* synthetic */ RequestLastFrameNumbersHolder val$requestLastFrameNumbers;
-
-        AnonymousClass11(int requestId2, CaptureCallbackHolder holder2, RequestLastFrameNumbersHolder requestLastFrameNumbers2) {
-            requestId = requestId2;
-            holder = holder2;
-            requestLastFrameNumbers = requestLastFrameNumbers2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (!CameraDeviceImpl.this.isClosed()) {
-                holder.getCallback().onCaptureSequenceCompleted(CameraDeviceImpl.this, requestId, requestLastFrameNumbers.getLastFrameNumber());
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeCompletedCallbackHolderLocked(long lastCompletedRegularFrameNumber, long lastCompletedReprocessFrameNumber, long lastCompletedZslStillFrameNumber) {
         Iterator<RequestLastFrameNumbersHolder> iter = this.mRequestLastFrameNumbersList.iterator();
         while (iter.hasNext()) {
@@ -1454,15 +1227,13 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:16:0x001a. Please report as an issue. */
     public void onDeviceError(int errorCode, CaptureResultExtras resultExtras) {
         synchronized (this.mInterfaceLock) {
             if (this.mRemoteDevice == null && this.mRemoteDeviceInit) {
                 return;
             }
-            CameraOfflineSessionImpl cameraOfflineSessionImpl = this.mOfflineSessionImpl;
-            if (cameraOfflineSessionImpl != null) {
-                cameraOfflineSessionImpl.getCallbacks().onDeviceError(errorCode, resultExtras);
+            if (this.mOfflineSessionImpl != null) {
+                this.mOfflineSessionImpl.getCallbacks().onDeviceError(errorCode, resultExtras);
                 return;
             }
             switch (errorCode) {
@@ -1511,6 +1282,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyError(int code) {
         if (!isClosed()) {
             this.mDeviceCallback.onError(this, code);
@@ -1521,35 +1293,23 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         long ident;
         int requestId = resultExtras.getRequestId();
         int subsequenceId = resultExtras.getSubsequenceId();
-        long frameNumber = resultExtras.getFrameNumber();
+        final long frameNumber = resultExtras.getFrameNumber();
         String errorPhysicalCameraId = resultExtras.getErrorPhysicalCameraId();
-        CaptureCallbackHolder holder = this.mCaptureCallbackMap.get(requestId);
+        final CaptureCallbackHolder holder = this.mCaptureCallbackMap.get(requestId);
         if (holder == null) {
             Log.e(this.TAG, String.format("Receive capture error on unknown request ID %d", Integer.valueOf(requestId)));
             return;
         }
-        CaptureRequest request = holder.getRequest(subsequenceId);
+        final CaptureRequest request = holder.getRequest(subsequenceId);
         if (errorCode == 5) {
             OutputConfiguration config = this.mConfiguredOutputs.get(resultExtras.getErrorStreamId());
             if (config == null) {
                 Log.v(this.TAG, String.format("Stream %d has been removed. Skipping buffer lost callback", Integer.valueOf(resultExtras.getErrorStreamId())));
                 return;
             }
-            for (Surface surface : config.getSurfaces()) {
+            for (final Surface surface : config.getSurfaces()) {
                 if (request.containsTarget(surface)) {
                     Runnable failureDispatch = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.12
-                        final /* synthetic */ long val$frameNumber;
-                        final /* synthetic */ CaptureCallbackHolder val$holder;
-                        final /* synthetic */ CaptureRequest val$request;
-                        final /* synthetic */ Surface val$surface;
-
-                        AnonymousClass12(CaptureCallbackHolder holder2, CaptureRequest request2, Surface surface2, long frameNumber2) {
-                            holder = holder2;
-                            request = request2;
-                            surface = surface2;
-                            frameNumber = frameNumber2;
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
                             if (!CameraDeviceImpl.this.isClosed()) {
@@ -1559,7 +1319,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                     };
                     ident = Binder.clearCallingIdentity();
                     try {
-                        holder2.getExecutor().execute(failureDispatch);
+                        holder.getExecutor().execute(failureDispatch);
                     } finally {
                     }
                 }
@@ -1568,23 +1328,12 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
         int i = 0;
         boolean mayHaveBuffers = errorCode == 4;
-        CameraCaptureSessionCore cameraCaptureSessionCore = this.mCurrentSession;
-        if (cameraCaptureSessionCore != null && cameraCaptureSessionCore.isAborting()) {
+        if (this.mCurrentSession != null && this.mCurrentSession.isAborting()) {
             i = 1;
         }
         int reason = i;
-        CaptureFailure failure = new CaptureFailure(request2, reason, mayHaveBuffers, requestId, frameNumber2, errorPhysicalCameraId);
+        final CaptureFailure failure = new CaptureFailure(request, reason, mayHaveBuffers, requestId, frameNumber, errorPhysicalCameraId);
         Runnable failureDispatch2 = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.13
-            final /* synthetic */ CaptureFailure val$failure;
-            final /* synthetic */ CaptureCallbackHolder val$holder;
-            final /* synthetic */ CaptureRequest val$request;
-
-            AnonymousClass13(CaptureCallbackHolder holder2, CaptureRequest request2, CaptureFailure failure2) {
-                holder = holder2;
-                request = request2;
-                failure = failure2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (!CameraDeviceImpl.this.isClosed()) {
@@ -1596,63 +1345,19 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             if (this.mBatchOutputMap.containsKey(Integer.valueOf(requestId))) {
                 int i2 = 0;
                 while (i2 < this.mBatchOutputMap.get(Integer.valueOf(requestId)).intValue()) {
-                    this.mFrameNumberTracker.updateTracker(frameNumber2 - (subsequenceId - i2), true, request2.getRequestType());
+                    this.mFrameNumberTracker.updateTracker(frameNumber - (subsequenceId - i2), true, request.getRequestType());
                     i2++;
-                    failure2 = failure2;
+                    failure = failure;
                 }
             } else {
-                this.mFrameNumberTracker.updateTracker(frameNumber2, true, request2.getRequestType());
+                this.mFrameNumberTracker.updateTracker(frameNumber, true, request.getRequestType());
             }
             checkAndFireSequenceComplete();
         }
         ident = Binder.clearCallingIdentity();
         try {
-            holder2.getExecutor().execute(failureDispatch2);
+            holder.getExecutor().execute(failureDispatch2);
         } finally {
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$12 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass12 implements Runnable {
-        final /* synthetic */ long val$frameNumber;
-        final /* synthetic */ CaptureCallbackHolder val$holder;
-        final /* synthetic */ CaptureRequest val$request;
-        final /* synthetic */ Surface val$surface;
-
-        AnonymousClass12(CaptureCallbackHolder holder2, CaptureRequest request2, Surface surface2, long frameNumber2) {
-            holder = holder2;
-            request = request2;
-            surface = surface2;
-            frameNumber = frameNumber2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (!CameraDeviceImpl.this.isClosed()) {
-                holder.getCallback().onCaptureBufferLost(CameraDeviceImpl.this, request, surface, frameNumber);
-            }
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$13 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass13 implements Runnable {
-        final /* synthetic */ CaptureFailure val$failure;
-        final /* synthetic */ CaptureCallbackHolder val$holder;
-        final /* synthetic */ CaptureRequest val$request;
-
-        AnonymousClass13(CaptureCallbackHolder holder2, CaptureRequest request2, CaptureFailure failure2) {
-            holder = holder2;
-            request = request2;
-            failure = failure2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (!CameraDeviceImpl.this.isClosed()) {
-                holder.getCallback().onCaptureFailed(CameraDeviceImpl.this, request, failure);
-            }
         }
     }
 
@@ -1661,9 +1366,8 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             if (this.mRemoteDevice == null) {
                 return;
             }
-            CameraOfflineSessionImpl cameraOfflineSessionImpl = this.mOfflineSessionImpl;
-            if (cameraOfflineSessionImpl != null) {
-                cameraOfflineSessionImpl.getCallbacks().onDeviceIdle();
+            if (this.mOfflineSessionImpl != null) {
+                this.mOfflineSessionImpl.getCallbacks().onDeviceIdle();
                 return;
             }
             removeCompletedCallbackHolderLocked(Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE);
@@ -1681,7 +1385,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    /* loaded from: classes.dex */
     public class CameraDeviceCallbacks extends ICameraDeviceCallbacks.Stub {
         public CameraDeviceCallbacks() {
         }
@@ -1704,8 +1407,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                         CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks().onRepeatingRequestError(lastFrameNumber, repeatingRequestId);
                         return;
                     }
-                    CameraDeviceImpl cameraDeviceImpl = CameraDeviceImpl.this;
-                    cameraDeviceImpl.checkEarlyTriggerSequenceCompleteLocked(cameraDeviceImpl.mRepeatingRequestId, lastFrameNumber, CameraDeviceImpl.this.mRepeatingRequestTypes);
+                    CameraDeviceImpl.this.checkEarlyTriggerSequenceCompleteLocked(CameraDeviceImpl.this.mRepeatingRequestId, lastFrameNumber, CameraDeviceImpl.this.mRepeatingRequestTypes);
                     if (CameraDeviceImpl.this.mRepeatingRequestId == repeatingRequestId) {
                         CameraDeviceImpl.this.mRepeatingRequestId = -1;
                         CameraDeviceImpl.this.mRepeatingRequestTypes = null;
@@ -1714,8 +1416,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                 }
                 if (CameraDeviceImpl.this.mFailedRepeatingRequestId == repeatingRequestId && CameraDeviceImpl.this.mFailedRepeatingRequestTypes != null && CameraDeviceImpl.this.mRemoteDevice != null) {
                     Log.v(CameraDeviceImpl.this.TAG, "Resuming stop of failed repeating request with id: " + CameraDeviceImpl.this.mFailedRepeatingRequestId);
-                    CameraDeviceImpl cameraDeviceImpl2 = CameraDeviceImpl.this;
-                    cameraDeviceImpl2.checkEarlyTriggerSequenceCompleteLocked(cameraDeviceImpl2.mFailedRepeatingRequestId, lastFrameNumber, CameraDeviceImpl.this.mFailedRepeatingRequestTypes);
+                    CameraDeviceImpl.this.checkEarlyTriggerSequenceCompleteLocked(CameraDeviceImpl.this.mFailedRepeatingRequestId, lastFrameNumber, CameraDeviceImpl.this.mFailedRepeatingRequestTypes);
                     CameraDeviceImpl.this.mFailedRepeatingRequestId = -1;
                     CameraDeviceImpl.this.mFailedRepeatingRequestTypes = null;
                 }
@@ -1728,14 +1429,14 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
 
         @Override // android.hardware.camera2.ICameraDeviceCallbacks
-        public void onCaptureStarted(CaptureResultExtras resultExtras, long timestamp) {
+        public void onCaptureStarted(final CaptureResultExtras resultExtras, final long timestamp) {
             int requestId = resultExtras.getRequestId();
-            long frameNumber = resultExtras.getFrameNumber();
+            final long frameNumber = resultExtras.getFrameNumber();
             long lastCompletedRegularFrameNumber = resultExtras.getLastCompletedRegularFrameNumber();
             long lastCompletedReprocessFrameNumber = resultExtras.getLastCompletedReprocessFrameNumber();
             long lastCompletedZslFrameNumber = resultExtras.getLastCompletedZslFrameNumber();
-            boolean hasReadoutTimestamp = resultExtras.hasReadoutTimestamp();
-            long readoutTimestamp = resultExtras.getReadoutTimestamp();
+            final boolean hasReadoutTimestamp = resultExtras.hasReadoutTimestamp();
+            final long readoutTimestamp = resultExtras.getReadoutTimestamp();
             synchronized (CameraDeviceImpl.this.mInterfaceLock) {
                 try {
                     try {
@@ -1744,7 +1445,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                         }
                         if (CameraDeviceImpl.this.mOfflineSessionImpl == null) {
                             CameraDeviceImpl.this.removeCompletedCallbackHolderLocked(lastCompletedRegularFrameNumber, lastCompletedReprocessFrameNumber, lastCompletedZslFrameNumber);
-                            CaptureCallbackHolder holder = (CaptureCallbackHolder) CameraDeviceImpl.this.mCaptureCallbackMap.get(requestId);
+                            final CaptureCallbackHolder holder = (CaptureCallbackHolder) CameraDeviceImpl.this.mCaptureCallbackMap.get(requestId);
                             if (holder == null) {
                                 return;
                             }
@@ -1758,22 +1459,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                             }
                             try {
                                 holder.getExecutor().execute(new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.CameraDeviceCallbacks.1
-                                    final /* synthetic */ long val$frameNumber;
-                                    final /* synthetic */ boolean val$hasReadoutTimestamp;
-                                    final /* synthetic */ CaptureCallbackHolder val$holder;
-                                    final /* synthetic */ long val$readoutTimestamp;
-                                    final /* synthetic */ CaptureResultExtras val$resultExtras;
-                                    final /* synthetic */ long val$timestamp;
-
-                                    AnonymousClass1(CaptureResultExtras resultExtras2, CaptureCallbackHolder holder2, long timestamp2, long frameNumber2, boolean hasReadoutTimestamp2, long readoutTimestamp2) {
-                                        resultExtras = resultExtras2;
-                                        holder = holder2;
-                                        timestamp = timestamp2;
-                                        frameNumber = frameNumber2;
-                                        hasReadoutTimestamp = hasReadoutTimestamp2;
-                                        readoutTimestamp = readoutTimestamp2;
-                                    }
-
                                     @Override // java.lang.Runnable
                                     public void run() {
                                         if (!CameraDeviceImpl.this.isClosed()) {
@@ -1806,7 +1491,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
                             }
                         }
                         try {
-                            CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks().onCaptureStarted(resultExtras2, timestamp2);
+                            CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks().onCaptureStarted(resultExtras, timestamp);
                         } catch (Throwable th3) {
                             th = th3;
                             throw th;
@@ -1820,303 +1505,142 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             }
         }
 
-        /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$CameraDeviceCallbacks$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ long val$frameNumber;
-            final /* synthetic */ boolean val$hasReadoutTimestamp;
-            final /* synthetic */ CaptureCallbackHolder val$holder;
-            final /* synthetic */ long val$readoutTimestamp;
-            final /* synthetic */ CaptureResultExtras val$resultExtras;
-            final /* synthetic */ long val$timestamp;
-
-            AnonymousClass1(CaptureResultExtras resultExtras2, CaptureCallbackHolder holder2, long timestamp2, long frameNumber2, boolean hasReadoutTimestamp2, long readoutTimestamp2) {
-                resultExtras = resultExtras2;
-                holder = holder2;
-                timestamp = timestamp2;
-                frameNumber = frameNumber2;
-                hasReadoutTimestamp = hasReadoutTimestamp2;
-                readoutTimestamp = readoutTimestamp2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (!CameraDeviceImpl.this.isClosed()) {
-                    int subsequenceId = resultExtras.getSubsequenceId();
-                    CaptureRequest request = holder.getRequest(subsequenceId);
-                    if (!holder.hasBatchedOutputs()) {
-                        holder.getCallback().onCaptureStarted(CameraDeviceImpl.this, request, timestamp, frameNumber);
-                        if (hasReadoutTimestamp) {
-                            holder.getCallback().onReadoutStarted(CameraDeviceImpl.this, request, readoutTimestamp, frameNumber);
-                            return;
-                        }
-                        return;
-                    }
-                    Range<Integer> fpsRange = (Range) request.get(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE);
-                    for (int i = 0; i < holder.getRequestCount(); i++) {
-                        holder.getCallback().onCaptureStarted(CameraDeviceImpl.this, holder.getRequest(i), timestamp - (((subsequenceId - i) * 1000000000) / fpsRange.getUpper().intValue()), frameNumber - (subsequenceId - i));
-                        if (hasReadoutTimestamp) {
-                            holder.getCallback().onReadoutStarted(CameraDeviceImpl.this, holder.getRequest(i), readoutTimestamp - (((subsequenceId - i) * 1000000000) / fpsRange.getUpper().intValue()), frameNumber - (subsequenceId - i));
-                        }
-                    }
-                }
-            }
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r14v0, types: [long] */
-        /* JADX WARN: Type inference failed for: r14v1 */
-        /* JADX WARN: Type inference failed for: r14v10 */
-        /* JADX WARN: Type inference failed for: r14v11 */
-        /* JADX WARN: Type inference failed for: r14v12 */
-        /* JADX WARN: Type inference failed for: r14v2 */
-        /* JADX WARN: Type inference failed for: r14v3 */
-        /* JADX WARN: Type inference failed for: r14v4 */
-        /* JADX WARN: Type inference failed for: r14v6 */
-        /* JADX WARN: Type inference failed for: r14v7 */
-        /* JADX WARN: Type inference failed for: r14v9 */
-        /* JADX WARN: Type inference failed for: r1v9, types: [android.hardware.camera2.impl.FrameNumberTracker] */
-        /* JADX WARN: Type inference failed for: r7v3, types: [android.hardware.camera2.CaptureResult] */
         @Override // android.hardware.camera2.ICameraDeviceCallbacks
-        public void onResultReceived(CameraMetadataNative cameraMetadataNative, CaptureResultExtras captureResultExtras, PhysicalCaptureResultInfo[] physicalCaptureResultInfoArr) throws RemoteException {
-            long j;
-            int i;
-            Runnable anonymousClass3;
-            TotalCaptureResult totalCaptureResult;
-            int requestId = captureResultExtras.getRequestId();
-            ?? frameNumber = captureResultExtras.getFrameNumber();
-            Object obj = CameraDeviceImpl.this.mInterfaceLock;
-            synchronized (obj) {
+        public void onResultReceived(CameraMetadataNative result, final CaptureResultExtras resultExtras, PhysicalCaptureResultInfo[] physicalResults) throws RemoteException {
+            Object obj;
+            final CaptureCallbackHolder holder;
+            final TotalCaptureResult resultAsCapture;
+            long frameNumber;
+            int requestId;
+            Runnable resultDispatch;
+            CaptureResult finalResult;
+            int requestId2 = resultExtras.getRequestId();
+            long frameNumber2 = resultExtras.getFrameNumber();
+            Object obj2 = CameraDeviceImpl.this.mInterfaceLock;
+            synchronized (obj2) {
                 try {
                     try {
-                        try {
-                            if (CameraDeviceImpl.this.mRemoteDevice == null) {
+                        if (CameraDeviceImpl.this.mRemoteDevice == null) {
+                            return;
+                        }
+                        if (CameraDeviceImpl.this.mOfflineSessionImpl != null) {
+                            try {
+                                CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks().onResultReceived(result, resultExtras, physicalResults);
                                 return;
+                            } catch (Throwable th) {
+                                th = th;
+                                obj = obj2;
+                                throw th;
                             }
-                            if (CameraDeviceImpl.this.mOfflineSessionImpl != null) {
-                                try {
-                                    CameraDeviceImpl.this.mOfflineSessionImpl.getCallbacks().onResultReceived(cameraMetadataNative, captureResultExtras, physicalCaptureResultInfoArr);
-                                    return;
-                                } catch (Throwable th) {
-                                    th = th;
-                                    frameNumber = obj;
-                                    throw th;
-                                }
-                            }
-                            cameraMetadataNative.set((CameraCharacteristics.Key<CameraCharacteristics.Key<Size>>) CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE, (CameraCharacteristics.Key<Size>) CameraDeviceImpl.this.getCharacteristics().get(CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE));
-                            CaptureCallbackHolder captureCallbackHolder = (CaptureCallbackHolder) CameraDeviceImpl.this.mCaptureCallbackMap.get(requestId);
-                            CaptureRequest request = captureCallbackHolder.getRequest(captureResultExtras.getSubsequenceId());
-                            boolean z = captureResultExtras.getPartialResultCount() < CameraDeviceImpl.this.mTotalPartialCount;
-                            int requestType = request.getRequestType();
-                            if (captureCallbackHolder == null) {
-                                CameraDeviceImpl.this.updateTracker(requestId, frameNumber, requestType, null, z);
-                                return;
-                            }
-                            if (CameraDeviceImpl.this.isClosed()) {
-                                CameraDeviceImpl.this.updateTracker(requestId, frameNumber, requestType, null, z);
-                                return;
-                            }
-                            CameraMetadataNative cameraMetadataNative2 = captureCallbackHolder.hasBatchedOutputs() ? new CameraMetadataNative(cameraMetadataNative) : null;
-                            if (z) {
-                                ?? captureResult = new CaptureResult(CameraDeviceImpl.this.getId(), cameraMetadataNative, request, captureResultExtras);
-                                i = requestId;
-                                j = frameNumber;
-                                anonymousClass3 = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.CameraDeviceCallbacks.2
-                                    final /* synthetic */ CaptureCallbackHolder val$holder;
-                                    final /* synthetic */ CaptureRequest val$request;
-                                    final /* synthetic */ CaptureResult val$resultAsCapture;
-                                    final /* synthetic */ CameraMetadataNative val$resultCopy;
-                                    final /* synthetic */ CaptureResultExtras val$resultExtras;
-
-                                    AnonymousClass2(CaptureCallbackHolder captureCallbackHolder2, CameraMetadataNative cameraMetadataNative22, CaptureResultExtras captureResultExtras2, CaptureRequest request2, CaptureResult captureResult2) {
-                                        captureCallbackHolder = captureCallbackHolder2;
-                                        cameraMetadataNative3 = cameraMetadataNative22;
-                                        captureResultExtras = captureResultExtras2;
-                                        request = request2;
-                                        captureResult = captureResult2;
-                                    }
-
-                                    @Override // java.lang.Runnable
-                                    public void run() {
-                                        if (!CameraDeviceImpl.this.isClosed()) {
-                                            if (captureCallbackHolder.hasBatchedOutputs()) {
-                                                for (int i2 = 0; i2 < captureCallbackHolder.getRequestCount(); i2++) {
-                                                    CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative3);
-                                                    CaptureResult resultInBatch = new CaptureResult(CameraDeviceImpl.this.getId(), resultLocal, captureCallbackHolder.getRequest(i2), captureResultExtras);
-                                                    captureCallbackHolder.getCallback().onCaptureProgressed(CameraDeviceImpl.this, captureCallbackHolder.getRequest(i2), resultInBatch);
-                                                }
-                                                return;
+                        }
+                        result.set((CameraCharacteristics.Key<CameraCharacteristics.Key<Size>>) CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE, (CameraCharacteristics.Key<Size>) CameraDeviceImpl.this.getCharacteristics().get(CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE));
+                        final CaptureCallbackHolder holder2 = (CaptureCallbackHolder) CameraDeviceImpl.this.mCaptureCallbackMap.get(requestId2);
+                        boolean isPartialResult = resultExtras.getPartialResultCount() < CameraDeviceImpl.this.mTotalPartialCount;
+                        if (holder2 == null) {
+                            return;
+                        }
+                        final CaptureRequest request = holder2.getRequest(resultExtras.getSubsequenceId());
+                        int requestType = request.getRequestType();
+                        if (CameraDeviceImpl.this.isClosed()) {
+                            CameraDeviceImpl.this.updateTracker(requestId2, frameNumber2, requestType, null, isPartialResult);
+                            return;
+                        }
+                        CameraMetadataNative resultCopy = holder2.hasBatchedOutputs() ? new CameraMetadataNative(result) : null;
+                        if (isPartialResult) {
+                            final CaptureResult resultAsCapture2 = new CaptureResult(CameraDeviceImpl.this.getId(), result, request, resultExtras);
+                            final CameraMetadataNative cameraMetadataNative = resultCopy;
+                            holder = holder2;
+                            Runnable resultDispatch2 = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.CameraDeviceCallbacks.2
+                                @Override // java.lang.Runnable
+                                public void run() {
+                                    if (!CameraDeviceImpl.this.isClosed()) {
+                                        if (holder2.hasBatchedOutputs()) {
+                                            for (int i = 0; i < holder2.getRequestCount(); i++) {
+                                                CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative);
+                                                CaptureResult resultInBatch = new CaptureResult(CameraDeviceImpl.this.getId(), resultLocal, holder2.getRequest(i), resultExtras);
+                                                holder2.getCallback().onCaptureProgressed(CameraDeviceImpl.this, holder2.getRequest(i), resultInBatch);
                                             }
-                                            captureCallbackHolder.getCallback().onCaptureProgressed(CameraDeviceImpl.this, request, captureResult);
+                                            return;
                                         }
-                                    }
-                                };
-                                totalCaptureResult = captureResult2;
-                                frameNumber = obj;
-                            } else {
-                                List<CaptureResult> popPartialResults = CameraDeviceImpl.this.mFrameNumberTracker.popPartialResults(frameNumber);
-                                if (CameraDeviceImpl.this.mBatchOutputMap.containsKey(Integer.valueOf(requestId))) {
-                                    int intValue = ((Integer) CameraDeviceImpl.this.mBatchOutputMap.get(Integer.valueOf(requestId))).intValue();
-                                    for (int i2 = 1; i2 < intValue; i2++) {
-                                        CameraDeviceImpl.this.mFrameNumberTracker.popPartialResults(frameNumber - (intValue - i2));
+                                        holder2.getCallback().onCaptureProgressed(CameraDeviceImpl.this, request, resultAsCapture2);
                                     }
                                 }
-                                long longValue = ((Long) cameraMetadataNative.get(CaptureResult.SENSOR_TIMESTAMP)).longValue();
-                                Range range = (Range) request2.get(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE);
-                                int subsequenceId = captureResultExtras2.getSubsequenceId();
-                                j = frameNumber;
+                            };
+                            resultDispatch = resultDispatch2;
+                            requestId = requestId2;
+                            frameNumber = frameNumber2;
+                            finalResult = resultAsCapture2;
+                            obj = obj2;
+                        } else {
+                            holder = holder2;
+                            final List<CaptureResult> partialResults = CameraDeviceImpl.this.mFrameNumberTracker.popPartialResults(frameNumber2);
+                            if (CameraDeviceImpl.this.mBatchOutputMap.containsKey(Integer.valueOf(requestId2))) {
+                                int requestCount = ((Integer) CameraDeviceImpl.this.mBatchOutputMap.get(Integer.valueOf(requestId2))).intValue();
+                                for (int i = 1; i < requestCount; i++) {
+                                    CameraDeviceImpl.this.mFrameNumberTracker.popPartialResults(frameNumber2 - (requestCount - i));
+                                }
+                            }
+                            final long sensorTimestamp = ((Long) result.get(CaptureResult.SENSOR_TIMESTAMP)).longValue();
+                            final Range<Integer> fpsRange = (Range) request.get(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE);
+                            final int subsequenceId = resultExtras.getSubsequenceId();
+                            frameNumber = frameNumber2;
+                            try {
+                                resultAsCapture = new TotalCaptureResult(CameraDeviceImpl.this.getId(), result, request, resultExtras, partialResults, holder.getSessionId(), physicalResults);
+                                obj = obj2;
+                            } catch (Throwable th2) {
+                                th = th2;
+                                obj = obj2;
+                            }
+                            try {
+                                final CameraMetadataNative cameraMetadataNative2 = resultCopy;
+                                requestId = requestId2;
                                 try {
-                                    TotalCaptureResult totalCaptureResult2 = new TotalCaptureResult(CameraDeviceImpl.this.getId(), cameraMetadataNative, request2, captureResultExtras2, popPartialResults, captureCallbackHolder2.getSessionId(), physicalCaptureResultInfoArr);
-                                    Object obj2 = obj;
-                                    try {
-                                        i = requestId;
-                                        anonymousClass3 = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.CameraDeviceCallbacks.3
-                                            final /* synthetic */ Range val$fpsRange;
-                                            final /* synthetic */ CaptureCallbackHolder val$holder;
-                                            final /* synthetic */ List val$partialResults;
-                                            final /* synthetic */ CaptureRequest val$request;
-                                            final /* synthetic */ TotalCaptureResult val$resultAsCapture;
-                                            final /* synthetic */ CameraMetadataNative val$resultCopy;
-                                            final /* synthetic */ CaptureResultExtras val$resultExtras;
-                                            final /* synthetic */ long val$sensorTimestamp;
-                                            final /* synthetic */ int val$subsequenceId;
-
-                                            AnonymousClass3(CaptureCallbackHolder captureCallbackHolder2, CameraMetadataNative cameraMetadataNative22, long longValue2, int subsequenceId2, Range range2, CaptureResultExtras captureResultExtras2, List popPartialResults2, CaptureRequest request2, TotalCaptureResult totalCaptureResult22) {
-                                                captureCallbackHolder = captureCallbackHolder2;
-                                                cameraMetadataNative4 = cameraMetadataNative22;
-                                                longValue = longValue2;
-                                                subsequenceId = subsequenceId2;
-                                                range = range2;
-                                                captureResultExtras = captureResultExtras2;
-                                                popPartialResults = popPartialResults2;
-                                                request = request2;
-                                                totalCaptureResult2 = totalCaptureResult22;
-                                            }
-
-                                            @Override // java.lang.Runnable
-                                            public void run() {
-                                                if (!CameraDeviceImpl.this.isClosed()) {
-                                                    if (captureCallbackHolder.hasBatchedOutputs()) {
-                                                        for (int i3 = 0; i3 < captureCallbackHolder.getRequestCount(); i3++) {
-                                                            cameraMetadataNative4.set((CaptureResult.Key<CaptureResult.Key<Long>>) CaptureResult.SENSOR_TIMESTAMP, (CaptureResult.Key<Long>) Long.valueOf(longValue - (((subsequenceId - i3) * 1000000000) / ((Integer) range.getUpper()).intValue())));
-                                                            CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative4);
-                                                            TotalCaptureResult resultInBatch = new TotalCaptureResult(CameraDeviceImpl.this.getId(), resultLocal, captureCallbackHolder.getRequest(i3), captureResultExtras, popPartialResults, captureCallbackHolder.getSessionId(), new PhysicalCaptureResultInfo[0]);
-                                                            captureCallbackHolder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, captureCallbackHolder.getRequest(i3), resultInBatch);
-                                                        }
-                                                        return;
+                                    Runnable resultDispatch3 = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.CameraDeviceCallbacks.3
+                                        @Override // java.lang.Runnable
+                                        public void run() {
+                                            if (!CameraDeviceImpl.this.isClosed()) {
+                                                if (holder.hasBatchedOutputs()) {
+                                                    for (int i2 = 0; i2 < holder.getRequestCount(); i2++) {
+                                                        cameraMetadataNative2.set((CaptureResult.Key<CaptureResult.Key<Long>>) CaptureResult.SENSOR_TIMESTAMP, (CaptureResult.Key<Long>) Long.valueOf(sensorTimestamp - (((subsequenceId - i2) * 1000000000) / ((Integer) fpsRange.getUpper()).intValue())));
+                                                        CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative2);
+                                                        TotalCaptureResult resultInBatch = new TotalCaptureResult(CameraDeviceImpl.this.getId(), resultLocal, holder.getRequest(i2), resultExtras, partialResults, holder.getSessionId(), new PhysicalCaptureResultInfo[0]);
+                                                        holder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, holder.getRequest(i2), resultInBatch);
                                                     }
-                                                    captureCallbackHolder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, request, totalCaptureResult2);
+                                                    return;
                                                 }
+                                                holder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, request, resultAsCapture);
                                             }
-                                        };
-                                        totalCaptureResult = totalCaptureResult22;
-                                        frameNumber = obj2;
-                                    } catch (Throwable th2) {
-                                        th = th2;
-                                        frameNumber = obj2;
-                                        throw th;
-                                    }
+                                        }
+                                    };
+                                    resultDispatch = resultDispatch3;
+                                    finalResult = resultAsCapture;
                                 } catch (Throwable th3) {
                                     th = th3;
-                                    frameNumber = obj;
-                                }
-                            }
-                            long clearCallingIdentity = Binder.clearCallingIdentity();
-                            try {
-                                captureCallbackHolder2.getExecutor().execute(anonymousClass3);
-                                Binder.restoreCallingIdentity(clearCallingIdentity);
-                                CameraDeviceImpl.this.updateTracker(i, j, requestType, totalCaptureResult, z);
-                                if (!z) {
-                                    CameraDeviceImpl.this.checkAndFireSequenceComplete();
+                                    throw th;
                                 }
                             } catch (Throwable th4) {
-                                Binder.restoreCallingIdentity(clearCallingIdentity);
-                                throw th4;
+                                th = th4;
+                                throw th;
+                            }
+                        }
+                        long ident = Binder.clearCallingIdentity();
+                        try {
+                            holder.getExecutor().execute(resultDispatch);
+                            Binder.restoreCallingIdentity(ident);
+                            CameraDeviceImpl.this.updateTracker(requestId, frameNumber, requestType, finalResult, isPartialResult);
+                            if (!isPartialResult) {
+                                CameraDeviceImpl.this.checkAndFireSequenceComplete();
                             }
                         } catch (Throwable th5) {
-                            th = th5;
+                            Binder.restoreCallingIdentity(ident);
+                            throw th5;
                         }
                     } catch (Throwable th6) {
                         th = th6;
-                        frameNumber = obj;
                     }
                 } catch (Throwable th7) {
                     th = th7;
-                }
-            }
-        }
-
-        /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$CameraDeviceCallbacks$2 */
-        /* loaded from: classes.dex */
-        class AnonymousClass2 implements Runnable {
-            final /* synthetic */ CaptureCallbackHolder val$holder;
-            final /* synthetic */ CaptureRequest val$request;
-            final /* synthetic */ CaptureResult val$resultAsCapture;
-            final /* synthetic */ CameraMetadataNative val$resultCopy;
-            final /* synthetic */ CaptureResultExtras val$resultExtras;
-
-            AnonymousClass2(CaptureCallbackHolder captureCallbackHolder2, CameraMetadataNative cameraMetadataNative22, CaptureResultExtras captureResultExtras2, CaptureRequest request2, CaptureResult captureResult2) {
-                captureCallbackHolder = captureCallbackHolder2;
-                cameraMetadataNative3 = cameraMetadataNative22;
-                captureResultExtras = captureResultExtras2;
-                request = request2;
-                captureResult = captureResult2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (!CameraDeviceImpl.this.isClosed()) {
-                    if (captureCallbackHolder.hasBatchedOutputs()) {
-                        for (int i2 = 0; i2 < captureCallbackHolder.getRequestCount(); i2++) {
-                            CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative3);
-                            CaptureResult resultInBatch = new CaptureResult(CameraDeviceImpl.this.getId(), resultLocal, captureCallbackHolder.getRequest(i2), captureResultExtras);
-                            captureCallbackHolder.getCallback().onCaptureProgressed(CameraDeviceImpl.this, captureCallbackHolder.getRequest(i2), resultInBatch);
-                        }
-                        return;
-                    }
-                    captureCallbackHolder.getCallback().onCaptureProgressed(CameraDeviceImpl.this, request, captureResult);
-                }
-            }
-        }
-
-        /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$CameraDeviceCallbacks$3 */
-        /* loaded from: classes.dex */
-        class AnonymousClass3 implements Runnable {
-            final /* synthetic */ Range val$fpsRange;
-            final /* synthetic */ CaptureCallbackHolder val$holder;
-            final /* synthetic */ List val$partialResults;
-            final /* synthetic */ CaptureRequest val$request;
-            final /* synthetic */ TotalCaptureResult val$resultAsCapture;
-            final /* synthetic */ CameraMetadataNative val$resultCopy;
-            final /* synthetic */ CaptureResultExtras val$resultExtras;
-            final /* synthetic */ long val$sensorTimestamp;
-            final /* synthetic */ int val$subsequenceId;
-
-            AnonymousClass3(CaptureCallbackHolder captureCallbackHolder2, CameraMetadataNative cameraMetadataNative22, long longValue2, int subsequenceId2, Range range2, CaptureResultExtras captureResultExtras2, List popPartialResults2, CaptureRequest request2, TotalCaptureResult totalCaptureResult22) {
-                captureCallbackHolder = captureCallbackHolder2;
-                cameraMetadataNative4 = cameraMetadataNative22;
-                longValue = longValue2;
-                subsequenceId = subsequenceId2;
-                range = range2;
-                captureResultExtras = captureResultExtras2;
-                popPartialResults = popPartialResults2;
-                request = request2;
-                totalCaptureResult2 = totalCaptureResult22;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (!CameraDeviceImpl.this.isClosed()) {
-                    if (captureCallbackHolder.hasBatchedOutputs()) {
-                        for (int i3 = 0; i3 < captureCallbackHolder.getRequestCount(); i3++) {
-                            cameraMetadataNative4.set((CaptureResult.Key<CaptureResult.Key<Long>>) CaptureResult.SENSOR_TIMESTAMP, (CaptureResult.Key<Long>) Long.valueOf(longValue - (((subsequenceId - i3) * 1000000000) / ((Integer) range.getUpper()).intValue())));
-                            CameraMetadataNative resultLocal = new CameraMetadataNative(cameraMetadataNative4);
-                            TotalCaptureResult resultInBatch = new TotalCaptureResult(CameraDeviceImpl.this.getId(), resultLocal, captureCallbackHolder.getRequest(i3), captureResultExtras, popPartialResults, captureCallbackHolder.getSessionId(), new PhysicalCaptureResultInfo[0]);
-                            captureCallbackHolder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, captureCallbackHolder.getRequest(i3), resultInBatch);
-                        }
-                        return;
-                    }
-                    captureCallbackHolder.getCallback().onCaptureCompleted(CameraDeviceImpl.this, request, totalCaptureResult2);
+                    obj = obj2;
                 }
             }
         }
@@ -2160,8 +1684,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CameraHandlerExecutor implements Executor {
+    private static class CameraHandlerExecutor implements Executor {
         private final Handler mHandler;
 
         public CameraHandlerExecutor(Handler handler) {
@@ -2197,7 +1720,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         return handler;
     }
 
-    public static <T> Handler checkHandler(Handler handler, T callback) {
+    static <T> Handler checkHandler(Handler handler, T callback) {
         if (callback != null) {
             return checkHandler(handler);
         }
@@ -2213,12 +1736,18 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isClosed() {
         return this.mClosing.get();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public CameraCharacteristics getCharacteristics() {
         return this.mCharacteristics;
+    }
+
+    private boolean isRawFormat(int format) {
+        return format == 36 || format == 37 || format == 38 || format == 32;
     }
 
     @Override // android.os.IBinder.DeathRecipient
@@ -2229,9 +1758,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         }
         this.mInError = true;
         Runnable r = new Runnable() { // from class: android.hardware.camera2.impl.CameraDeviceImpl.14
-            AnonymousClass14() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 if (!CameraDeviceImpl.this.isClosed()) {
@@ -2244,20 +1770,6 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
             this.mDeviceExecutor.execute(r);
         } finally {
             Binder.restoreCallingIdentity(ident);
-        }
-    }
-
-    /* renamed from: android.hardware.camera2.impl.CameraDeviceImpl$14 */
-    /* loaded from: classes.dex */
-    class AnonymousClass14 implements Runnable {
-        AnonymousClass14() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (!CameraDeviceImpl.this.isClosed()) {
-                CameraDeviceImpl.this.mDeviceCallback.onError(CameraDeviceImpl.this, 5);
-            }
         }
     }
 
@@ -2281,7 +1793,7 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
 
     @Override // android.hardware.camera2.CameraDevice
     public void createExtensionSession(ExtensionSessionConfiguration extensionConfiguration) throws CameraAccessException {
-        HashMap<String, CameraCharacteristics> characteristicsMap = new HashMap<>(this.mPhysicalIdsToChars);
+        HashMap<String, CameraCharacteristics> characteristicsMap = new HashMap<>(getPhysicalIdToChars());
         characteristicsMap.put(this.mCameraId, this.mCharacteristics);
         StringBuilder append = new StringBuilder().append(this.TAG).append(" : ");
         int i = this.mNextSessionId;
@@ -2289,24 +1801,24 @@ public class CameraDeviceImpl extends CameraDevice implements IBinder.DeathRecip
         IBinder token = new Binder(append.append(i).toString());
         try {
             try {
-                boolean ret = CameraExtensionCharacteristics.registerClient(this.mContext, token);
+                boolean ret = CameraExtensionCharacteristics.registerClient(this.mContext, token, extensionConfiguration.getExtension(), this.mCameraId, CameraExtensionUtils.getCharacteristicsMapNative(characteristicsMap));
                 if (!ret) {
                     throw new UnsupportedOperationException("Unsupported extension!");
                 }
-                if (CameraExtensionCharacteristics.areAdvancedExtensionsSupported()) {
+                if (CameraExtensionCharacteristics.areAdvancedExtensionsSupported(extensionConfiguration.getExtension())) {
                     this.mCurrentAdvancedExtensionSession = CameraAdvancedExtensionSessionImpl.createCameraAdvancedExtensionSession(this, characteristicsMap, this.mContext, extensionConfiguration, this.mNextSessionId, token);
                 } else {
                     this.mCurrentExtensionSession = CameraExtensionSessionImpl.createCameraExtensionSession(this, characteristicsMap, this.mContext, extensionConfiguration, this.mNextSessionId, token);
                 }
                 if (0 != 0) {
-                    CameraExtensionCharacteristics.unregisterClient(this.mContext, token);
+                    CameraExtensionCharacteristics.unregisterClient(this.mContext, token, extensionConfiguration.getExtension());
                 }
             } catch (RemoteException e) {
                 throw new CameraAccessException(3);
             }
         } catch (Throwable th) {
             if (1 != 0 && token != null) {
-                CameraExtensionCharacteristics.unregisterClient(this.mContext, token);
+                CameraExtensionCharacteristics.unregisterClient(this.mContext, token, extensionConfiguration.getExtension());
             }
             throw th;
         }

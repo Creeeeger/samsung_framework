@@ -1,5 +1,6 @@
 package android.text.format;
 
+import android.app.blob.XmlTags;
 import android.app.compat.CompatChanges;
 import android.content.Context;
 import android.icu.text.DateFormatSymbols;
@@ -17,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DateFormat {
 
     @Deprecated
@@ -77,21 +78,20 @@ public class DateFormat {
 
     public static boolean is24HourLocale(Locale locale) {
         boolean is24Hour;
-        Object obj = sLocaleLock;
-        synchronized (obj) {
-            Locale locale2 = sIs24HourLocale;
-            if (locale2 != null && locale2.equals(locale)) {
+        synchronized (sLocaleLock) {
+            if (sIs24HourLocale != null && sIs24HourLocale.equals(locale)) {
                 return sIs24Hour;
             }
             java.text.DateFormat natural = java.text.DateFormat.getTimeInstance(1, locale);
             if (natural instanceof SimpleDateFormat) {
                 SimpleDateFormat sdf = (SimpleDateFormat) natural;
                 String pattern = sdf.toPattern();
-                is24Hour = hasDesignator(pattern, 'H');
+                boolean is24Hour2 = hasDesignator(pattern, 'H');
+                is24Hour = is24Hour2;
             } else {
                 is24Hour = false;
             }
-            synchronized (obj) {
+            synchronized (sLocaleLock) {
                 sIs24HourLocale = locale;
                 sIs24Hour = is24Hour;
             }
@@ -393,7 +393,7 @@ public class DateFormat {
     }
 
     private static String zeroPad(int inValue, int inMinDigits) {
-        return String.format(Locale.getDefault(), "%0" + inMinDigits + "d", Integer.valueOf(inValue));
+        return String.format(Locale.getDefault(), "%0" + inMinDigits + XmlTags.ATTR_DESCRIPTION, Integer.valueOf(inValue));
     }
 
     public static DateFormatSymbols getIcuDateFormatSymbols(Locale locale) {

@@ -15,14 +15,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class TapAction implements Parcelable {
     public static final Parcelable.Creator<TapAction> CREATOR = new Parcelable.Creator<TapAction>() { // from class: android.app.smartspace.uitemplatedata.TapAction.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TapAction createFromParcel(Parcel in) {
             return new TapAction(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TapAction[] newArray(int size) {
             return new TapAction[size];
@@ -34,10 +33,6 @@ public final class TapAction implements Parcelable {
     private final PendingIntent mPendingIntent;
     private final boolean mShouldShowOnLockscreen;
     private final UserHandle mUserHandle;
-
-    /* synthetic */ TapAction(CharSequence charSequence, Intent intent, PendingIntent pendingIntent, UserHandle userHandle, Bundle bundle, boolean z, TapActionIA tapActionIA) {
-        this(charSequence, intent, pendingIntent, userHandle, bundle, z);
-    }
 
     TapAction(Parcel in) {
         this.mId = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
@@ -96,23 +91,6 @@ public final class TapAction implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.app.smartspace.uitemplatedata.TapAction$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TapAction> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TapAction createFromParcel(Parcel in) {
-            return new TapAction(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TapAction[] newArray(int size) {
-            return new TapAction[size];
-        }
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -133,7 +111,6 @@ public final class TapAction implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private Bundle mExtras;
         private CharSequence mId;

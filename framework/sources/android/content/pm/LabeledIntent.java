@@ -9,14 +9,13 @@ import android.text.TextUtils;
 /* loaded from: classes.dex */
 public class LabeledIntent extends Intent {
     public static final Parcelable.Creator<LabeledIntent> CREATOR = new Parcelable.Creator<LabeledIntent>() { // from class: android.content.pm.LabeledIntent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LabeledIntent createFromParcel(Parcel source) {
             return new LabeledIntent(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LabeledIntent[] newArray(int size) {
             return new LabeledIntent[size];
@@ -74,24 +73,19 @@ public class LabeledIntent extends Intent {
     }
 
     public CharSequence loadLabel(PackageManager pm) {
-        String str;
         CharSequence label;
-        CharSequence charSequence = this.mNonLocalizedLabel;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.mNonLocalizedLabel != null) {
+            return this.mNonLocalizedLabel;
         }
-        int i = this.mLabelRes;
-        if (i == 0 || (str = this.mSourcePackage) == null || (label = pm.getText(str, i, null)) == null) {
+        if (this.mLabelRes == 0 || this.mSourcePackage == null || (label = pm.getText(this.mSourcePackage, this.mLabelRes, null)) == null) {
             return null;
         }
         return label;
     }
 
     public Drawable loadIcon(PackageManager pm) {
-        String str;
         Drawable icon;
-        int i = this.mIcon;
-        if (i == 0 || (str = this.mSourcePackage) == null || (icon = pm.getDrawable(str, i, null)) == null) {
+        if (this.mIcon == 0 || this.mSourcePackage == null || (icon = pm.getDrawable(this.mSourcePackage, this.mIcon, null)) == null) {
             return null;
         }
         return icon;
@@ -117,22 +111,5 @@ public class LabeledIntent extends Intent {
         this.mLabelRes = in.readInt();
         this.mNonLocalizedLabel = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
         this.mIcon = in.readInt();
-    }
-
-    /* renamed from: android.content.pm.LabeledIntent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LabeledIntent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LabeledIntent createFromParcel(Parcel source) {
-            return new LabeledIntent(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LabeledIntent[] newArray(int size) {
-            return new LabeledIntent[size];
-        }
     }
 }

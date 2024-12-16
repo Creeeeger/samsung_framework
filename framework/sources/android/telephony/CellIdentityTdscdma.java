@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityTdscdma extends CellIdentity {
     private static final boolean DBG = false;
     private static final int MAX_CID = 268435455;
@@ -26,15 +26,14 @@ public final class CellIdentityTdscdma extends CellIdentity {
     private final int mUarfcn;
     private static final String TAG = CellIdentityTdscdma.class.getSimpleName();
     public static final Parcelable.Creator<CellIdentityTdscdma> CREATOR = new Parcelable.Creator<CellIdentityTdscdma>() { // from class: android.telephony.CellIdentityTdscdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityTdscdma createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityTdscdma.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityTdscdma[] newArray(int size) {
             return new CellIdentityTdscdma[size];
@@ -55,7 +54,7 @@ public final class CellIdentityTdscdma extends CellIdentity {
     public CellIdentityTdscdma(String mcc, String mnc, int lac, int cid, int cpid, int uarfcn, String alphal, String alphas, Collection<String> additionalPlmns, ClosedSubscriberGroupInfo csgInfo) {
         super(TAG, 5, mcc, mnc, alphal, alphas);
         this.mLac = inRangeOrUnavailable(lac, 0, 65535);
-        this.mCid = inRangeOrUnavailable(cid, 0, MAX_CID);
+        this.mCid = inRangeOrUnavailable(cid, 0, 268435455);
         this.mCpid = inRangeOrUnavailable(cpid, 0, 127);
         this.mUarfcn = inRangeOrUnavailable(uarfcn, 0, 65535);
         this.mAdditionalPlmns = new ArraySet<>(additionalPlmns.size());
@@ -77,7 +76,7 @@ public final class CellIdentityTdscdma extends CellIdentity {
         return new CellIdentityTdscdma(this.mMccStr, this.mMncStr, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, this.mAlphaLong, this.mAlphaShort, this.mAdditionalPlmns, null);
     }
 
-    public CellIdentityTdscdma copy() {
+    CellIdentityTdscdma copy() {
         return new CellIdentityTdscdma(this);
     }
 
@@ -140,15 +139,8 @@ public final class CellIdentityTdscdma extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public GsmCellLocation asCellLocation() {
         GsmCellLocation cl = new GsmCellLocation();
-        int lac = this.mLac;
-        if (lac == Integer.MAX_VALUE) {
-            lac = -1;
-        }
-        int i = this.mCid;
-        if (i == Integer.MAX_VALUE) {
-            i = -1;
-        }
-        int cid = i;
+        int lac = this.mLac != Integer.MAX_VALUE ? this.mLac : -1;
+        int cid = this.mCid != Integer.MAX_VALUE ? this.mCid : -1;
         cl.setLacAndCid(lac, cid);
         cl.setPsc(-1);
         return cl;
@@ -202,25 +194,7 @@ public final class CellIdentityTdscdma extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityTdscdma$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityTdscdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityTdscdma createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityTdscdma.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityTdscdma[] newArray(int size) {
-            return new CellIdentityTdscdma[size];
-        }
-    }
-
-    public static CellIdentityTdscdma createFromParcelBody(Parcel in) {
+    protected static CellIdentityTdscdma createFromParcelBody(Parcel in) {
         return new CellIdentityTdscdma(in);
     }
 }

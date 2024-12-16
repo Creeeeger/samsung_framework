@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IExtendedEthernetManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.net.IExtendedEthernetManager";
 
     IpConfiguration getConfiguration(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IExtendedEthernetManager {
         @Override // com.samsung.android.net.IExtendedEthernetManager
         public IpConfiguration getConfiguration(String iface) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IExtendedEthernetManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IExtendedEthernetManager {
         static final int TRANSACTION_getConfiguration = 1;
 
@@ -69,28 +67,24 @@ public interface IExtendedEthernetManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExtendedEthernetManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExtendedEthernetManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExtendedEthernetManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    IpConfiguration _result = getConfiguration(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            IpConfiguration _result = getConfiguration(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IExtendedEthernetManager {
+        private static class Proxy implements IExtendedEthernetManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,13 +8,12 @@ import android.os.RemoteException;
 import android.telephony.ims.SrvccCall;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ISrvccStartedCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.ISrvccStartedCallback";
 
     void onSrvccCallNotified(List<SrvccCall> list) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISrvccStartedCallback {
         @Override // android.telephony.ims.aidl.ISrvccStartedCallback
         public void onSrvccCallNotified(List<SrvccCall> profiles) throws RemoteException {
@@ -26,7 +25,6 @@ public interface ISrvccStartedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISrvccStartedCallback {
         static final int TRANSACTION_onSrvccCallNotified = 1;
 
@@ -69,26 +67,22 @@ public interface ISrvccStartedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISrvccStartedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISrvccStartedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISrvccStartedCallback.DESCRIPTOR);
+                case 1:
+                    List<SrvccCall> _arg0 = data.createTypedArrayList(SrvccCall.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSrvccCallNotified(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<SrvccCall> _arg0 = data.createTypedArrayList(SrvccCall.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSrvccCallNotified(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISrvccStartedCallback {
+        private static class Proxy implements ISrvccStartedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

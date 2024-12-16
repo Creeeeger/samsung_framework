@@ -1,15 +1,18 @@
 package android.net;
 
+import android.Manifest;
+import android.app.ActivityThread;
 import android.net.INetworkPolicyListener;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import android.telephony.SubscriptionPlan;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkPolicyManager extends IInterface {
     void addUidPolicy(int i, int i2) throws RemoteException;
 
@@ -77,7 +80,6 @@ public interface INetworkPolicyManager extends IInterface {
 
     void unregisterListener(INetworkPolicyListener iNetworkPolicyListener) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkPolicyManager {
         @Override // android.net.INetworkPolicyManager
         public void setUidPolicy(int uid, int policy) throws RemoteException {
@@ -232,7 +234,6 @@ public interface INetworkPolicyManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkPolicyManager {
         public static final String DESCRIPTOR = "android.net.INetworkPolicyManager";
         static final int TRANSACTION_addUidPolicy = 2;
@@ -268,9 +269,19 @@ public interface INetworkPolicyManager extends IInterface {
         static final int TRANSACTION_setWifiMeteredOverride = 16;
         static final int TRANSACTION_snoozeLimit = 10;
         static final int TRANSACTION_unregisterListener = 7;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static INetworkPolicyManager asInterface(IBinder obj) {
@@ -372,244 +383,240 @@ public interface INetworkPolicyManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setUidPolicy(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addUidPolicy(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeUidPolicy(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getUidPolicy(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result2 = getUidsWithPolicy(_arg05);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
+                    return true;
+                case 6:
+                    INetworkPolicyListener _arg06 = INetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerListener(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    INetworkPolicyListener _arg07 = INetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterListener(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    NetworkPolicy[] _arg08 = (NetworkPolicy[]) data.createTypedArray(NetworkPolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setNetworkPolicies(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    NetworkPolicy[] _result3 = getNetworkPolicies(_arg09);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 10:
+                    NetworkTemplate _arg010 = (NetworkTemplate) data.readTypedObject(NetworkTemplate.CREATOR);
+                    data.enforceNoDataAvail();
+                    snoozeLimit(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRestrictBackground(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    boolean _result4 = getRestrictBackground();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 13:
+                    int _result5 = getRestrictBackgroundByCaller();
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 14:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result6 = getRestrictBackgroundStatus(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 15:
+                    boolean _arg013 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setDeviceIdleMode(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    String _arg014 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiMeteredOverride(_arg014, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    Network _arg015 = (Network) data.readTypedObject(Network.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result7 = getMultipathPreference(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 18:
+                    NetworkTemplate _arg016 = (NetworkTemplate) data.readTypedObject(NetworkTemplate.CREATOR);
+                    data.enforceNoDataAvail();
+                    SubscriptionPlan _result8 = getSubscriptionPlan(_arg016);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
+                    return true;
+                case 19:
+                    notifyStatsProviderWarningOrLimitReached();
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg017 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    SubscriptionPlan[] _result9 = getSubscriptionPlans(_arg017, _arg15);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result9, 1);
+                    return true;
+                case 21:
+                    int _arg018 = data.readInt();
+                    SubscriptionPlan[] _arg16 = (SubscriptionPlan[]) data.createTypedArray(SubscriptionPlan.CREATOR);
+                    long _arg2 = data.readLong();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    setSubscriptionPlans(_arg018, _arg16, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result10 = getSubscriptionPlansOwner(_arg019);
+                    reply.writeNoException();
+                    reply.writeString(_result10);
+                    return true;
+                case 23:
+                    int _arg020 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int[] _arg32 = data.createIntArray();
+                    long _arg4 = data.readLong();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    setSubscriptionOverride(_arg020, _arg17, _arg22, _arg32, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    String _arg021 = data.readString();
+                    data.enforceNoDataAvail();
+                    factoryReset(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    int _arg022 = data.readInt();
+                    boolean _arg18 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = isUidNetworkingBlocked(_arg022, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 26:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = isUidRestrictedOnMeteredNetworks(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 27:
+                    int[] _result13 = getAllFirewallRuleMobileData();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result13);
+                    return true;
+                case 28:
+                    int _arg024 = data.readInt();
+                    boolean _arg19 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFirewallRuleMobileData(_arg024, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg025 = data.readInt();
+                    boolean _arg110 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setFirewallRuleWifi(_arg025, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    ClassLoader cl = getClass().getClassLoader();
+                    Map _arg026 = data.readHashMap(cl);
+                    data.enforceNoDataAvail();
+                    setFirewallRuleMobileDataMap(_arg026);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    ClassLoader cl2 = getClass().getClassLoader();
+                    Map _arg027 = data.readHashMap(cl2);
+                    data.enforceNoDataAvail();
+                    setFirewallRuleWifiMap(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = getFirewallRuleMobileData(_arg028);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 33:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = getFirewallRuleWifi(_arg029);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setUidPolicy(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addUidPolicy(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeUidPolicy(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getUidPolicy(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result2 = getUidsWithPolicy(_arg05);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 6:
-                            INetworkPolicyListener _arg06 = INetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerListener(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            INetworkPolicyListener _arg07 = INetworkPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterListener(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            NetworkPolicy[] _arg08 = (NetworkPolicy[]) data.createTypedArray(NetworkPolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setNetworkPolicies(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            NetworkPolicy[] _result3 = getNetworkPolicies(_arg09);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 10:
-                            NetworkTemplate _arg010 = (NetworkTemplate) data.readTypedObject(NetworkTemplate.CREATOR);
-                            data.enforceNoDataAvail();
-                            snoozeLimit(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRestrictBackground(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            boolean _result4 = getRestrictBackground();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 13:
-                            int _result5 = getRestrictBackgroundByCaller();
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 14:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result6 = getRestrictBackgroundStatus(_arg012);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 15:
-                            boolean _arg013 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setDeviceIdleMode(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            String _arg014 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiMeteredOverride(_arg014, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            Network _arg015 = (Network) data.readTypedObject(Network.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result7 = getMultipathPreference(_arg015);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 18:
-                            NetworkTemplate _arg016 = (NetworkTemplate) data.readTypedObject(NetworkTemplate.CREATOR);
-                            data.enforceNoDataAvail();
-                            SubscriptionPlan _result8 = getSubscriptionPlan(_arg016);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 19:
-                            notifyStatsProviderWarningOrLimitReached();
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg017 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            SubscriptionPlan[] _result9 = getSubscriptionPlans(_arg017, _arg15);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result9, 1);
-                            return true;
-                        case 21:
-                            int _arg018 = data.readInt();
-                            SubscriptionPlan[] _arg16 = (SubscriptionPlan[]) data.createTypedArray(SubscriptionPlan.CREATOR);
-                            long _arg2 = data.readLong();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            setSubscriptionPlans(_arg018, _arg16, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result10 = getSubscriptionPlansOwner(_arg019);
-                            reply.writeNoException();
-                            reply.writeString(_result10);
-                            return true;
-                        case 23:
-                            int _arg020 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int[] _arg32 = data.createIntArray();
-                            long _arg4 = data.readLong();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            setSubscriptionOverride(_arg020, _arg17, _arg22, _arg32, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            String _arg021 = data.readString();
-                            data.enforceNoDataAvail();
-                            factoryReset(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            int _arg022 = data.readInt();
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = isUidNetworkingBlocked(_arg022, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 26:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = isUidRestrictedOnMeteredNetworks(_arg023);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 27:
-                            int[] _result13 = getAllFirewallRuleMobileData();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result13);
-                            return true;
-                        case 28:
-                            int _arg024 = data.readInt();
-                            boolean _arg19 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFirewallRuleMobileData(_arg024, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg025 = data.readInt();
-                            boolean _arg110 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFirewallRuleWifi(_arg025, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            ClassLoader cl = getClass().getClassLoader();
-                            Map _arg026 = data.readHashMap(cl);
-                            data.enforceNoDataAvail();
-                            setFirewallRuleMobileDataMap(_arg026);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            ClassLoader cl2 = getClass().getClassLoader();
-                            Map _arg027 = data.readHashMap(cl2);
-                            data.enforceNoDataAvail();
-                            setFirewallRuleWifiMap(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            int _arg028 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = getFirewallRuleMobileData(_arg028);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 33:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = getFirewallRuleWifi(_arg029);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetworkPolicyManager {
+        private static class Proxy implements INetworkPolicyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1161,6 +1168,62 @@ public interface INetworkPolicyManager extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void setUidPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void addUidPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void removeUidPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void getUidPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void getUidsWithPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void setNetworkPolicies_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void getNetworkPolicies_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void snoozeLimit_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void getRestrictBackground_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void getRestrictBackgroundByCaller_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.ACCESS_NETWORK_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void setDeviceIdleMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void setWifiMeteredOverride_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MANAGE_NETWORK_POLICY, getCallingPid(), getCallingUid());
+        }
+
+        protected void factoryReset_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.NETWORK_SETTINGS, getCallingPid(), getCallingUid());
+        }
+
+        protected void isUidRestrictedOnMeteredNetworks_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.OBSERVE_NETWORK_POLICY, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

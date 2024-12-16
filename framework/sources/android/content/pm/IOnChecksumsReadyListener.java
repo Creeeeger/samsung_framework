@@ -13,7 +13,6 @@ public interface IOnChecksumsReadyListener extends IInterface {
 
     void onChecksumsReady(List<ApkChecksum> list) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOnChecksumsReadyListener {
         @Override // android.content.pm.IOnChecksumsReadyListener
         public void onChecksumsReady(List<ApkChecksum> checksums) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IOnChecksumsReadyListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOnChecksumsReadyListener {
         static final int TRANSACTION_onChecksumsReady = 1;
 
@@ -68,25 +66,22 @@ public interface IOnChecksumsReadyListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnChecksumsReadyListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnChecksumsReadyListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnChecksumsReadyListener.DESCRIPTOR);
+                case 1:
+                    List<ApkChecksum> _arg0 = data.createTypedArrayList(ApkChecksum.CREATOR);
+                    data.enforceNoDataAvail();
+                    onChecksumsReady(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<ApkChecksum> _arg0 = data.createTypedArrayList(ApkChecksum.CREATOR);
-                            data.enforceNoDataAvail();
-                            onChecksumsReady(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IOnChecksumsReadyListener {
+        private static class Proxy implements IOnChecksumsReadyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

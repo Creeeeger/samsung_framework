@@ -14,14 +14,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class PictureInPictureSurfaceTransaction implements Parcelable {
     public static final Parcelable.Creator<PictureInPictureSurfaceTransaction> CREATOR = new Parcelable.Creator<PictureInPictureSurfaceTransaction>() { // from class: android.window.PictureInPictureSurfaceTransaction.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureSurfaceTransaction createFromParcel(Parcel in) {
             return new PictureInPictureSurfaceTransaction(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PictureInPictureSurfaceTransaction[] newArray(int size) {
             return new PictureInPictureSurfaceTransaction[size];
@@ -37,20 +36,11 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
     private boolean mShouldDisableCanAffectSystemUiFlags;
     private final Rect mWindowCrop;
 
-    /* synthetic */ PictureInPictureSurfaceTransaction(float f, PointF pointF, float[] fArr, float f2, float f3, float f4, Rect rect, PictureInPictureSurfaceTransactionIA pictureInPictureSurfaceTransactionIA) {
-        this(f, pointF, fArr, f2, f3, f4, rect);
-    }
-
-    /* synthetic */ PictureInPictureSurfaceTransaction(Parcel parcel, PictureInPictureSurfaceTransactionIA pictureInPictureSurfaceTransactionIA) {
-        this(parcel);
-    }
-
     private PictureInPictureSurfaceTransaction(Parcel in) {
         this.mAlpha = in.readFloat();
         this.mPosition = (PointF) in.readTypedObject(PointF.CREATOR);
-        float[] fArr = new float[9];
-        this.mFloat9 = fArr;
-        in.readFloatArray(fArr);
+        this.mFloat9 = new float[9];
+        in.readFloatArray(this.mFloat9);
         this.mRotation = in.readFloat();
         this.mCornerRadius = in.readFloat();
         this.mShadowRadius = in.readFloat();
@@ -62,9 +52,8 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
         this.mAlpha = alpha;
         this.mPosition = position;
         if (float9 == null) {
-            float[] fArr = new float[9];
-            this.mFloat9 = fArr;
-            Matrix.IDENTITY_MATRIX.getValues(fArr);
+            this.mFloat9 = new float[9];
+            Matrix.IDENTITY_MATRIX.getValues(this.mFloat9);
             this.mRotation = 0.0f;
         } else {
             this.mFloat9 = Arrays.copyOf(float9, 9);
@@ -142,44 +131,23 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
     public static void apply(PictureInPictureSurfaceTransaction surfaceTransaction, SurfaceControl surfaceControl, SurfaceControl.Transaction tx) {
         Matrix matrix = surfaceTransaction.getMatrix();
         tx.setMatrix(surfaceControl, matrix, new float[9]);
-        PointF pointF = surfaceTransaction.mPosition;
-        if (pointF != null) {
-            tx.setPosition(surfaceControl, pointF.x, surfaceTransaction.mPosition.y);
+        if (surfaceTransaction.mPosition != null) {
+            tx.setPosition(surfaceControl, surfaceTransaction.mPosition.x, surfaceTransaction.mPosition.y);
         }
-        Rect rect = surfaceTransaction.mWindowCrop;
-        if (rect != null) {
-            tx.setWindowCrop(surfaceControl, rect);
+        if (surfaceTransaction.mWindowCrop != null) {
+            tx.setWindowCrop(surfaceControl, surfaceTransaction.mWindowCrop);
         }
         if (surfaceTransaction.hasCornerRadiusSet()) {
-            tx.setCornerRadius(surfaceControl, CoreRune.MW_PIP_DISABLE_ROUND_CORNER ? 0.0f : surfaceTransaction.mCornerRadius);
+            tx.setCornerRadius(surfaceControl, CoreRune.MW_PIP_DISABLE_ROUNDED_CORNER ? 0.0f : surfaceTransaction.mCornerRadius);
         }
         if (surfaceTransaction.hasShadowRadiusSet()) {
-            tx.setShadowRadius(surfaceControl, CoreRune.MW_PIP_DISABLE_ROUND_CORNER ? 0.0f : surfaceTransaction.mShadowRadius);
+            tx.setShadowRadius(surfaceControl, CoreRune.MW_PIP_DISABLE_ROUNDED_CORNER ? 0.0f : surfaceTransaction.mShadowRadius);
         }
-        float f = surfaceTransaction.mAlpha;
-        if (f != -1.0f) {
-            tx.setAlpha(surfaceControl, f);
-        }
-    }
-
-    /* renamed from: android.window.PictureInPictureSurfaceTransaction$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PictureInPictureSurfaceTransaction> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureSurfaceTransaction createFromParcel(Parcel in) {
-            return new PictureInPictureSurfaceTransaction(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PictureInPictureSurfaceTransaction[] newArray(int size) {
-            return new PictureInPictureSurfaceTransaction[size];
+        if (surfaceTransaction.mAlpha != -1.0f) {
+            tx.setAlpha(surfaceControl, surfaceTransaction.mAlpha);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Builder {
         private float[] mFloat9;
         private PointF mPosition;
@@ -206,12 +174,12 @@ public final class PictureInPictureSurfaceTransaction implements Parcelable {
         }
 
         public Builder setCornerRadius(float cornerRadius) {
-            this.mCornerRadius = CoreRune.MW_PIP_DISABLE_ROUND_CORNER ? 0.0f : cornerRadius;
+            this.mCornerRadius = CoreRune.MW_PIP_DISABLE_ROUNDED_CORNER ? 0.0f : cornerRadius;
             return this;
         }
 
         public Builder setShadowRadius(float shadowRadius) {
-            this.mShadowRadius = CoreRune.MW_PIP_DISABLE_ROUND_CORNER ? 0.0f : shadowRadius;
+            this.mShadowRadius = CoreRune.MW_PIP_DISABLE_ROUNDED_CORNER ? 0.0f : shadowRadius;
             return this;
         }
 

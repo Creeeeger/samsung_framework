@@ -5,13 +5,13 @@ import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 class PackedObjectVector<E> {
     private int mColumns;
     private Object[] mValues = EmptyArray.OBJECT;
     private int mRows = 0;
     private int mRowGapStart = 0;
-    private int mRowGapLength = 0;
+    private int mRowGapLength = this.mRows;
 
     public PackedObjectVector(int columns) {
         this.mColumns = columns;
@@ -66,63 +66,35 @@ class PackedObjectVector<E> {
 
     private void growBuffer() {
         Object[] newvalues = ArrayUtils.newUnpaddedObjectArray(GrowingArrayUtils.growSize(size()) * this.mColumns);
-        int length = newvalues.length;
-        int i = this.mColumns;
-        int newsize = length / i;
-        int i2 = this.mRows;
-        int i3 = this.mRowGapStart;
-        int after = i2 - (this.mRowGapLength + i3);
-        System.arraycopy(this.mValues, 0, newvalues, 0, i * i3);
-        Object[] objArr = this.mValues;
-        int i4 = this.mRows - after;
-        int i5 = this.mColumns;
-        System.arraycopy(objArr, i4 * i5, newvalues, (newsize - after) * i5, i5 * after);
+        int newsize = newvalues.length / this.mColumns;
+        int after = this.mRows - (this.mRowGapStart + this.mRowGapLength);
+        System.arraycopy(this.mValues, 0, newvalues, 0, this.mColumns * this.mRowGapStart);
+        System.arraycopy(this.mValues, (this.mRows - after) * this.mColumns, newvalues, (newsize - after) * this.mColumns, this.mColumns * after);
         this.mRowGapLength += newsize - this.mRows;
         this.mRows = newsize;
         this.mValues = newvalues;
     }
 
     private void moveRowGapTo(int where) {
-        int i = this.mRowGapStart;
-        if (where == i) {
+        if (where == this.mRowGapStart) {
             return;
         }
-        if (where > i) {
-            int i2 = this.mRowGapLength;
-            int moving = (where + i2) - (i + i2);
-            int i3 = i + i2;
-            while (true) {
-                int i4 = this.mRowGapStart;
-                int i5 = this.mRowGapLength;
-                if (i3 >= i4 + i5 + moving) {
-                    break;
+        if (where > this.mRowGapStart) {
+            int moving = (this.mRowGapLength + where) - (this.mRowGapStart + this.mRowGapLength);
+            for (int i = this.mRowGapStart + this.mRowGapLength; i < this.mRowGapStart + this.mRowGapLength + moving; i++) {
+                int destrow = (i - (this.mRowGapStart + this.mRowGapLength)) + this.mRowGapStart;
+                for (int j = 0; j < this.mColumns; j++) {
+                    Object val = this.mValues[(this.mColumns * i) + j];
+                    this.mValues[(this.mColumns * destrow) + j] = val;
                 }
-                int destrow = (i3 - (i5 + i4)) + i4;
-                int j = 0;
-                while (true) {
-                    int i6 = this.mColumns;
-                    if (j < i6) {
-                        Object[] objArr = this.mValues;
-                        Object val = objArr[(i3 * i6) + j];
-                        objArr[(i6 * destrow) + j] = val;
-                        j++;
-                    }
-                }
-                i3++;
             }
         } else {
-            int moving2 = i - where;
-            for (int i7 = (where + moving2) - 1; i7 >= where; i7--) {
-                int destrow2 = (((i7 - where) + this.mRowGapStart) + this.mRowGapLength) - moving2;
-                int j2 = 0;
-                while (true) {
-                    int i8 = this.mColumns;
-                    if (j2 < i8) {
-                        Object[] objArr2 = this.mValues;
-                        Object val2 = objArr2[(i7 * i8) + j2];
-                        objArr2[(i8 * destrow2) + j2] = val2;
-                        j2++;
-                    }
+            int moving2 = this.mRowGapStart - where;
+            for (int i2 = (where + moving2) - 1; i2 >= where; i2--) {
+                int destrow2 = (((i2 - where) + this.mRowGapStart) + this.mRowGapLength) - moving2;
+                for (int j2 = 0; j2 < this.mColumns; j2++) {
+                    Object val2 = this.mValues[(this.mColumns * i2) + j2];
+                    this.mValues[(this.mColumns * destrow2) + j2] = val2;
                 }
             }
         }
@@ -131,18 +103,12 @@ class PackedObjectVector<E> {
 
     public void dump() {
         for (int i = 0; i < this.mRows; i++) {
-            int j = 0;
-            while (true) {
-                int i2 = this.mColumns;
-                if (j < i2) {
-                    Object val = this.mValues[(i2 * i) + j];
-                    int i3 = this.mRowGapStart;
-                    if (i < i3 || i >= i3 + this.mRowGapLength) {
-                        System.out.print(val + " ");
-                    } else {
-                        System.out.print(NavigationBarInflaterView.KEY_CODE_START + val + ") ");
-                    }
-                    j++;
+            for (int j = 0; j < this.mColumns; j++) {
+                Object val = this.mValues[(this.mColumns * i) + j];
+                if (i < this.mRowGapStart || i >= this.mRowGapStart + this.mRowGapLength) {
+                    System.out.print(val + " ");
+                } else {
+                    System.out.print(NavigationBarInflaterView.KEY_CODE_START + val + ") ");
                 }
             }
             System.out.print(" << \n");

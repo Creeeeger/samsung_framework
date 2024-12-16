@@ -4,22 +4,24 @@ import android.annotation.SystemApi;
 import android.content.res.Configuration;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
+import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /* loaded from: classes.dex */
 public final class UsageEvents implements Parcelable {
     public static final Parcelable.Creator<UsageEvents> CREATOR = new Parcelable.Creator<UsageEvents>() { // from class: android.app.usage.UsageEvents.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageEvents createFromParcel(Parcel source) {
             return new UsageEvents(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UsageEvents[] newArray(int size) {
             return new UsageEvents[size];
@@ -33,14 +35,14 @@ public final class UsageEvents implements Parcelable {
     public static final int OBFUSCATE_INSTANT_APPS = 1;
     public static final int OBFUSCATE_NOTIFICATION_EVENTS = 4;
     public static final int SHOW_ALL_EVENT_DATA = 0;
-    private final int mEventCount;
+    private static final String TAG = "UsageEvents";
+    private int mEventCount;
     private List<Event> mEventsToWrite;
     private final boolean mIncludeTaskRoots;
     private int mIndex;
     private Parcel mParcel;
     private String[] mStringPool;
 
-    /* loaded from: classes.dex */
     public static final class Event {
         public static final int ACTIVITY_DESTROYED = 24;
         public static final int ACTIVITY_PAUSED = 2;
@@ -103,6 +105,7 @@ public final class UsageEvents implements Parcelable {
         public String mContentType;
         public int mEventType;
         public int mFlags;
+        public long mInitTimeStamp;
         public int mInstanceId;
         public String mLocusId;
         public String mNotificationChannelId;
@@ -118,10 +121,20 @@ public final class UsageEvents implements Parcelable {
         public int mShortcutIdToken = -1;
         public int mNotificationChannelIdToken = -1;
         public int mLocusIdToken = -1;
+        public PersistableBundle mExtras = null;
+        public UserInteractionEventExtrasToken mUserInteractionExtrasToken = null;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes.dex */
         public @interface EventFlags {
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface EventType {
+        }
+
+        public static class UserInteractionEventExtrasToken {
+            public int mCategoryToken = -1;
+            public int mActionToken = -1;
         }
 
         public Event() {
@@ -130,6 +143,7 @@ public final class UsageEvents implements Parcelable {
         public Event(int type, long timeStamp) {
             this.mEventType = type;
             this.mTimeStamp = timeStamp;
+            this.mInitTimeStamp = timeStamp;
         }
 
         public Event(Event orig) {
@@ -170,6 +184,10 @@ public final class UsageEvents implements Parcelable {
 
         public int getEventType() {
             return this.mEventType;
+        }
+
+        public PersistableBundle getExtras() {
+            return this.mExtras == null ? PersistableBundle.EMPTY : this.mExtras;
         }
 
         public Configuration getConfiguration() {
@@ -213,6 +231,7 @@ public final class UsageEvents implements Parcelable {
             return this.mLocusId;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void copyFrom(Event orig) {
             this.mPackage = orig.mPackage;
             this.mClass = orig.mClass;
@@ -230,6 +249,7 @@ public final class UsageEvents implements Parcelable {
             this.mBucketAndReason = orig.mBucketAndReason;
             this.mNotificationChannelId = orig.mNotificationChannelId;
             this.mLocusId = orig.mLocusId;
+            this.mExtras = orig.mExtras;
         }
     }
 
@@ -237,29 +257,49 @@ public final class UsageEvents implements Parcelable {
         this.mEventsToWrite = null;
         this.mParcel = null;
         this.mIndex = 0;
-        byte[] bytes = in.readBlob();
-        Parcel data = Parcel.obtain();
-        data.unmarshall(bytes, 0, bytes.length);
-        data.setDataPosition(0);
-        int readInt = data.readInt();
-        this.mEventCount = readInt;
-        this.mIndex = data.readInt();
-        if (readInt > 0) {
-            this.mStringPool = data.createStringArray();
-            int listByteLength = data.readInt();
-            int positionInParcel = data.readInt();
-            Parcel obtain = Parcel.obtain();
-            this.mParcel = obtain;
-            obtain.setDataPosition(0);
-            this.mParcel.appendFrom(data, data.dataPosition(), listByteLength);
-            Parcel parcel = this.mParcel;
-            parcel.setDataSize(parcel.dataPosition());
-            this.mParcel.setDataPosition(positionInParcel);
+        if (Flags.useParceledList()) {
+            readUsageEventsFromParcelWithParceledList(in);
+        } else {
+            readUsageEventsFromParcelWithBlob(in);
         }
         this.mIncludeTaskRoots = true;
     }
 
-    public UsageEvents() {
+    private void readUsageEventsFromParcelWithParceledList(Parcel in) {
+        this.mEventCount = in.readInt();
+        this.mIndex = in.readInt();
+        ParcelableUsageEventList slice = (ParcelableUsageEventList) in.readParcelable(getClass().getClassLoader(), ParcelableUsageEventList.class);
+        if (slice != null) {
+            this.mEventsToWrite = slice.getList();
+        } else {
+            this.mEventsToWrite = new ArrayList();
+        }
+        if (this.mEventCount != this.mEventsToWrite.size()) {
+            Log.w(TAG, "Partial usage event list received: " + this.mEventCount + " != " + this.mEventsToWrite.size());
+            this.mEventCount = this.mEventsToWrite.size();
+        }
+    }
+
+    private void readUsageEventsFromParcelWithBlob(Parcel in) {
+        byte[] bytes = in.readBlob();
+        Parcel data = Parcel.obtain();
+        data.unmarshall(bytes, 0, bytes.length);
+        data.setDataPosition(0);
+        this.mEventCount = data.readInt();
+        this.mIndex = data.readInt();
+        if (this.mEventCount > 0) {
+            this.mStringPool = data.createStringArray();
+            int listByteLength = data.readInt();
+            int positionInParcel = data.readInt();
+            this.mParcel = Parcel.obtain();
+            this.mParcel.setDataPosition(0);
+            this.mParcel.appendFrom(data, data.dataPosition(), listByteLength);
+            this.mParcel.setDataSize(this.mParcel.dataPosition());
+            this.mParcel.setDataPosition(positionInParcel);
+        }
+    }
+
+    UsageEvents() {
         this.mEventsToWrite = null;
         this.mParcel = null;
         this.mIndex = 0;
@@ -286,34 +326,38 @@ public final class UsageEvents implements Parcelable {
     }
 
     public boolean getNextEvent(Event eventOut) {
-        Parcel parcel;
         if (eventOut == null) {
             throw new IllegalArgumentException("Given eventOut must not be null");
         }
-        int i = this.mIndex;
-        if (i >= this.mEventCount) {
+        if (this.mIndex >= this.mEventCount) {
             return false;
         }
-        Parcel parcel2 = this.mParcel;
-        if (parcel2 != null) {
-            readEventFromParcel(parcel2, eventOut);
-        } else {
-            eventOut.copyFrom(this.mEventsToWrite.get(i));
+        if (Flags.useParceledList()) {
+            return getNextEventFromParceledList(eventOut);
         }
-        int i2 = this.mIndex + 1;
-        this.mIndex = i2;
-        if (i2 >= this.mEventCount && (parcel = this.mParcel) != null) {
-            parcel.recycle();
+        if (this.mParcel != null) {
+            readEventFromParcel(this.mParcel, eventOut);
+        } else {
+            eventOut.copyFrom(this.mEventsToWrite.get(this.mIndex));
+        }
+        this.mIndex++;
+        if (this.mIndex >= this.mEventCount && this.mParcel != null) {
+            this.mParcel.recycle();
             this.mParcel = null;
         }
         return true;
     }
 
+    private boolean getNextEventFromParceledList(Event eventOut) {
+        eventOut.copyFrom(this.mEventsToWrite.get(this.mIndex));
+        this.mIndex++;
+        return true;
+    }
+
     public void resetToStart() {
         this.mIndex = 0;
-        Parcel parcel = this.mParcel;
-        if (parcel != null) {
-            parcel.setDataPosition(0);
+        if (this.mParcel != null) {
+            this.mParcel.setDataPosition(0);
         }
     }
 
@@ -361,6 +405,15 @@ public final class UsageEvents implements Parcelable {
             case 5:
                 event.mConfiguration.writeToParcel(p, flags);
                 break;
+            case 7:
+                if (event.mExtras != null) {
+                    p.writeInt(1);
+                    p.writePersistableBundle(event.mExtras);
+                    break;
+                } else {
+                    p.writeInt(0);
+                    break;
+                }
             case 8:
                 p.writeString(event.mShortcutId);
                 break;
@@ -417,9 +470,16 @@ public final class UsageEvents implements Parcelable {
         eventOut.mContentAnnotations = null;
         eventOut.mNotificationChannelId = null;
         eventOut.mLocusId = null;
+        eventOut.mExtras = null;
         switch (eventOut.mEventType) {
             case 5:
                 eventOut.mConfiguration = Configuration.CREATOR.createFromParcel(p);
+                break;
+            case 7:
+                if (p.readInt() != 0) {
+                    eventOut.mExtras = p.readPersistableBundle(getClass().getClassLoader());
+                    break;
+                }
                 break;
             case 8:
                 eventOut.mShortcutId = p.readString();
@@ -427,7 +487,7 @@ public final class UsageEvents implements Parcelable {
             case 9:
                 eventOut.mAction = p.readString();
                 eventOut.mContentType = p.readString();
-                eventOut.mContentAnnotations = p.createStringArray();
+                eventOut.mContentAnnotations = p.readStringArray();
                 break;
             case 11:
                 eventOut.mBucketAndReason = p.readInt();
@@ -449,6 +509,20 @@ public final class UsageEvents implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        if (Flags.useParceledList()) {
+            writeUsageEventsToParcelWithParceledList(dest, flags);
+        } else {
+            writeUsageEventsToParcelWithBlob(dest, flags);
+        }
+    }
+
+    private void writeUsageEventsToParcelWithParceledList(Parcel dest, int flags) {
+        dest.writeInt(this.mEventCount);
+        dest.writeInt(this.mIndex);
+        dest.writeParcelable(new ParcelableUsageEventList(this.mEventsToWrite), flags);
+    }
+
+    private void writeUsageEventsToParcelWithBlob(Parcel dest, int flags) {
         Parcel p = Parcel.obtain();
         p.writeInt(this.mEventCount);
         p.writeInt(this.mIndex);
@@ -470,35 +544,14 @@ public final class UsageEvents implements Parcelable {
                 } finally {
                     p.recycle();
                 }
+            } else if (this.mParcel != null) {
+                p.writeInt(this.mParcel.dataSize());
+                p.writeInt(this.mParcel.dataPosition());
+                p.appendFrom(this.mParcel, 0, this.mParcel.dataSize());
             } else {
-                Parcel p2 = this.mParcel;
-                if (p2 != null) {
-                    p.writeInt(p2.dataSize());
-                    p.writeInt(this.mParcel.dataPosition());
-                    Parcel parcel = this.mParcel;
-                    p.appendFrom(parcel, 0, parcel.dataSize());
-                } else {
-                    throw new IllegalStateException("Either mParcel or mEventsToWrite must not be null");
-                }
+                throw new IllegalStateException("Either mParcel or mEventsToWrite must not be null");
             }
         }
         dest.writeBlob(p.marshall());
-    }
-
-    /* renamed from: android.app.usage.UsageEvents$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UsageEvents> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsageEvents createFromParcel(Parcel source) {
-            return new UsageEvents(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UsageEvents[] newArray(int size) {
-            return new UsageEvents[size];
-        }
     }
 }

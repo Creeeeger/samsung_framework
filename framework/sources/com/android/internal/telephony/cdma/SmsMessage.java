@@ -61,7 +61,6 @@ public class SmsMessage extends SmsMessageBase {
     private byte[] mUserDataCtcFota;
     private int status;
 
-    /* loaded from: classes5.dex */
     public static class SubmitPdu extends SmsMessageBase.SubmitPduBase {
     }
 
@@ -178,20 +177,17 @@ public class SmsMessage extends SmsMessageBase {
 
     @Override // com.android.internal.telephony.SmsMessageBase
     public boolean isMWIClearMessage() {
-        BearerData bearerData = this.mBearerData;
-        return bearerData != null && bearerData.numberOfMessages == 0;
+        return this.mBearerData != null && this.mBearerData.numberOfMessages == 0;
     }
 
     @Override // com.android.internal.telephony.SmsMessageBase
     public boolean isMWISetMessage() {
-        BearerData bearerData = this.mBearerData;
-        return bearerData != null && bearerData.numberOfMessages > 0;
+        return this.mBearerData != null && this.mBearerData.numberOfMessages > 0;
     }
 
     @Override // com.android.internal.telephony.SmsMessageBase
     public boolean isMwiDontStore() {
-        BearerData bearerData = this.mBearerData;
-        return bearerData != null && bearerData.numberOfMessages > 0 && this.mBearerData.userData == null;
+        return this.mBearerData != null && this.mBearerData.numberOfMessages > 0 && this.mBearerData.userData == null;
     }
 
     @Override // com.android.internal.telephony.SmsMessageBase
@@ -274,7 +270,6 @@ public class SmsMessage extends SmsMessageBase {
         }
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:8:0x0040. Please report as an issue. */
     private void parsePduFromEfRecord(byte[] pdu) {
         CdmaSmsSubaddress subAddr;
         ByteArrayInputStream bais = new ByteArrayInputStream(pdu);
@@ -284,152 +279,157 @@ public class SmsMessage extends SmsMessageBase {
         CdmaSmsSubaddress subAddr2 = new CdmaSmsSubaddress();
         try {
             env.messageType = dis.readByte();
-            while (dis.available() > 0) {
-                int parameterId = dis.readByte();
-                int parameterLen = dis.readUnsignedByte();
-                byte[] parameterData = new byte[parameterLen];
-                switch (parameterId) {
-                    case 0:
-                        subAddr = subAddr2;
-                        env.teleService = dis.readUnsignedShort();
-                        Rlog.i(LOG_TAG, "teleservice = " + env.teleService);
-                        subAddr2 = subAddr;
-                    case 1:
-                        subAddr = subAddr2;
-                        env.serviceCategory = dis.readUnsignedShort();
-                        subAddr2 = subAddr;
-                    case 2:
-                    case 4:
-                        dis.read(parameterData, 0, parameterLen);
-                        BitwiseInputStream addrBis = new BitwiseInputStream(parameterData);
-                        addr.digitMode = addrBis.read(1);
-                        addr.numberMode = addrBis.read(1);
-                        int numberType = 0;
-                        if (addr.digitMode == 1) {
-                            numberType = addrBis.read(3);
-                            addr.ton = numberType;
-                            if (addr.numberMode == 0) {
-                                addr.numberPlan = addrBis.read(4);
-                            }
-                        }
-                        addr.numberOfDigits = addrBis.read(8);
-                        byte[] data = new byte[addr.numberOfDigits];
-                        if (addr.digitMode == 0) {
-                            int index = 0;
-                            while (true) {
-                                subAddr = subAddr2;
-                                try {
-                                    if (index < addr.numberOfDigits) {
-                                        byte b = (byte) (addrBis.read(4) & 15);
-                                        data[index] = convertDtmfToAscii(b);
-                                        index++;
-                                        subAddr2 = subAddr;
-                                    }
-                                } catch (Exception e) {
-                                    ex = e;
-                                    Rlog.e(LOG_TAG, "parsePduFromEfRecord: conversion from pdu to SmsMessage failed" + ex);
-                                    this.mEnvelope = env;
-                                    this.mPdu = pdu;
-                                    parseSms();
-                                }
-                            }
-                        } else {
-                            subAddr = subAddr2;
-                            if (addr.digitMode != 1) {
-                                Rlog.e(LOG_TAG, "Incorrect Digit mode");
-                            } else if (addr.numberMode == 0) {
-                                int index2 = 0;
-                                while (index2 < addr.numberOfDigits) {
-                                    byte b2 = (byte) (addrBis.read(8) & 255);
-                                    data[index2] = b2;
-                                    index2++;
-                                    parameterLen = parameterLen;
-                                }
-                            } else if (addr.numberMode == 1) {
-                                if (numberType == 2) {
-                                    Rlog.e(LOG_TAG, "TODO: Addr is email id");
-                                } else {
-                                    Rlog.e(LOG_TAG, "TODO: Addr is data network address");
-                                }
-                            } else {
-                                Rlog.e(LOG_TAG, "Addr is of incorrect type");
-                            }
-                        }
-                        addr.origBytes = data;
-                        Rlog.pii(LOG_TAG, "Addr=" + addr.toString());
-                        if (parameterId == 2) {
-                            env.origAddress = addr;
-                            this.mOriginatingAddress = addr;
-                        } else {
-                            env.destAddress = addr;
-                            this.mRecipientAddress = addr;
-                        }
-                        subAddr2 = subAddr;
-                    case 3:
-                    case 5:
-                        dis.read(parameterData, 0, parameterLen);
-                        BitwiseInputStream subAddrBis = new BitwiseInputStream(parameterData);
-                        subAddr2.type = subAddrBis.read(3);
-                        subAddr2.odd = subAddrBis.readByteArray(1)[0];
-                        int subAddrLen = subAddrBis.read(8);
-                        byte[] subdata = new byte[subAddrLen];
-                        int index3 = 0;
-                        while (index3 < subAddrLen) {
-                            int subAddrLen2 = subAddrLen;
-                            byte b3 = (byte) (subAddrBis.read(4) & 255);
-                            subdata[index3] = convertDtmfToAscii(b3);
-                            index3++;
-                            subAddrLen = subAddrLen2;
-                        }
-                        subAddr2.origBytes = subdata;
-                        if (parameterId == 3) {
-                            env.origSubaddress = subAddr2;
-                            subAddr = subAddr2;
-                        } else {
-                            env.destSubaddress = subAddr2;
-                            subAddr = subAddr2;
-                        }
-                        subAddr2 = subAddr;
-                    case 6:
-                        dis.read(parameterData, 0, parameterLen);
-                        BitwiseInputStream replyOptBis = new BitwiseInputStream(parameterData);
-                        env.bearerReply = replyOptBis.read(6);
-                        subAddr = subAddr2;
-                        subAddr2 = subAddr;
-                    case 7:
-                        dis.read(parameterData, 0, parameterLen);
-                        BitwiseInputStream ccBis = new BitwiseInputStream(parameterData);
-                        env.replySeqNo = ccBis.readByteArray(6)[0];
-                        env.errorClass = ccBis.readByteArray(2)[0];
-                        if (env.errorClass == 0) {
-                            subAddr = subAddr2;
-                        } else {
-                            env.causeCode = ccBis.readByteArray(8)[0];
-                            subAddr = subAddr2;
-                        }
-                        subAddr2 = subAddr;
-                    case 8:
-                        try {
-                            dis.read(parameterData, 0, parameterLen);
-                            env.bearerData = parameterData;
-                            subAddr = subAddr2;
-                            subAddr2 = subAddr;
-                        } catch (Exception e2) {
-                            ex = e2;
-                            Rlog.e(LOG_TAG, "parsePduFromEfRecord: conversion from pdu to SmsMessage failed" + ex);
-                            this.mEnvelope = env;
-                            this.mPdu = pdu;
-                            parseSms();
-                        }
-                    default:
-                        throw new Exception("unsupported parameterId (" + parameterId + NavigationBarInflaterView.KEY_CODE_END);
-                }
-            }
-            bais.close();
-            dis.close();
-        } catch (Exception e3) {
-            ex = e3;
+        } catch (Exception e) {
+            ex = e;
         }
+        while (dis.available() > 0) {
+            int parameterId = dis.readByte();
+            int parameterLen = dis.readUnsignedByte();
+            byte[] parameterData = new byte[parameterLen];
+            switch (parameterId) {
+                case 0:
+                    subAddr = subAddr2;
+                    env.teleService = dis.readUnsignedShort();
+                    Rlog.i(LOG_TAG, "teleservice = " + env.teleService);
+                    continue;
+                    subAddr2 = subAddr;
+                case 1:
+                    subAddr = subAddr2;
+                    env.serviceCategory = dis.readUnsignedShort();
+                    continue;
+                    subAddr2 = subAddr;
+                case 2:
+                case 4:
+                    dis.read(parameterData, 0, parameterLen);
+                    BitwiseInputStream addrBis = new BitwiseInputStream(parameterData);
+                    addr.digitMode = addrBis.read(1);
+                    addr.numberMode = addrBis.read(1);
+                    int numberType = 0;
+                    if (addr.digitMode == 1) {
+                        numberType = addrBis.read(3);
+                        addr.ton = numberType;
+                        if (addr.numberMode == 0) {
+                            addr.numberPlan = addrBis.read(4);
+                        }
+                    }
+                    addr.numberOfDigits = addrBis.read(8);
+                    byte[] data = new byte[addr.numberOfDigits];
+                    if (addr.digitMode == 0) {
+                        int index = 0;
+                        while (true) {
+                            subAddr = subAddr2;
+                            try {
+                                if (index < addr.numberOfDigits) {
+                                    byte b = (byte) (addrBis.read(4) & 15);
+                                    data[index] = convertDtmfToAscii(b);
+                                    index++;
+                                    subAddr2 = subAddr;
+                                }
+                            } catch (Exception e2) {
+                                ex = e2;
+                                break;
+                            }
+                        }
+                    } else {
+                        subAddr = subAddr2;
+                        if (addr.digitMode != 1) {
+                            Rlog.e(LOG_TAG, "Incorrect Digit mode");
+                        } else if (addr.numberMode == 0) {
+                            int index2 = 0;
+                            while (index2 < addr.numberOfDigits) {
+                                byte b2 = (byte) (addrBis.read(8) & 255);
+                                data[index2] = b2;
+                                index2++;
+                                parameterLen = parameterLen;
+                            }
+                        } else if (addr.numberMode == 1) {
+                            if (numberType == 2) {
+                                Rlog.e(LOG_TAG, "TODO: Addr is email id");
+                            } else {
+                                Rlog.e(LOG_TAG, "TODO: Addr is data network address");
+                            }
+                        } else {
+                            Rlog.e(LOG_TAG, "Addr is of incorrect type");
+                        }
+                    }
+                    addr.origBytes = data;
+                    Rlog.pii(LOG_TAG, "Addr=" + addr.toString());
+                    if (parameterId == 2) {
+                        env.origAddress = addr;
+                        this.mOriginatingAddress = addr;
+                        continue;
+                    } else {
+                        env.destAddress = addr;
+                        this.mRecipientAddress = addr;
+                    }
+                    subAddr2 = subAddr;
+                case 3:
+                case 5:
+                    dis.read(parameterData, 0, parameterLen);
+                    BitwiseInputStream subAddrBis = new BitwiseInputStream(parameterData);
+                    subAddr2.type = subAddrBis.read(3);
+                    subAddr2.odd = subAddrBis.readByteArray(1)[0];
+                    int subAddrLen = subAddrBis.read(8);
+                    byte[] subdata = new byte[subAddrLen];
+                    int index3 = 0;
+                    while (index3 < subAddrLen) {
+                        int subAddrLen2 = subAddrLen;
+                        byte b3 = (byte) (subAddrBis.read(4) & 255);
+                        subdata[index3] = convertDtmfToAscii(b3);
+                        index3++;
+                        subAddrLen = subAddrLen2;
+                    }
+                    subAddr2.origBytes = subdata;
+                    if (parameterId == 3) {
+                        env.origSubaddress = subAddr2;
+                        subAddr = subAddr2;
+                        continue;
+                    } else {
+                        env.destSubaddress = subAddr2;
+                        subAddr = subAddr2;
+                    }
+                    subAddr2 = subAddr;
+                case 6:
+                    dis.read(parameterData, 0, parameterLen);
+                    BitwiseInputStream replyOptBis = new BitwiseInputStream(parameterData);
+                    env.bearerReply = replyOptBis.read(6);
+                    subAddr = subAddr2;
+                    continue;
+                    subAddr2 = subAddr;
+                case 7:
+                    dis.read(parameterData, 0, parameterLen);
+                    BitwiseInputStream ccBis = new BitwiseInputStream(parameterData);
+                    env.replySeqNo = ccBis.readByteArray(6)[0];
+                    env.errorClass = ccBis.readByteArray(2)[0];
+                    if (env.errorClass == 0) {
+                        subAddr = subAddr2;
+                    } else {
+                        env.causeCode = ccBis.readByteArray(8)[0];
+                        subAddr = subAddr2;
+                        continue;
+                    }
+                    subAddr2 = subAddr;
+                case 8:
+                    try {
+                        dis.read(parameterData, 0, parameterLen);
+                        env.bearerData = parameterData;
+                        subAddr = subAddr2;
+                        continue;
+                        subAddr2 = subAddr;
+                    } catch (Exception e3) {
+                        ex = e3;
+                        break;
+                    }
+                default:
+                    throw new Exception("unsupported parameterId (" + parameterId + NavigationBarInflaterView.KEY_CODE_END);
+            }
+            Rlog.e(LOG_TAG, "parsePduFromEfRecord: conversion from pdu to SmsMessage failed" + ex);
+            this.mEnvelope = env;
+            this.mPdu = pdu;
+            parseSms();
+        }
+        bais.close();
+        dis.close();
         this.mEnvelope = env;
         this.mPdu = pdu;
         parseSms();
@@ -546,9 +546,8 @@ public class SmsMessage extends SmsMessageBase {
                 Rlog.d(LOG_TAG, "DELIVERY_ACK message without msgStatus (" + (this.mUserData == null ? "also missing" : "does have") + " userData).");
                 this.status = 2;
             } else {
-                int i = this.mBearerData.errorClass << 8;
-                this.status = i;
-                this.status = i | this.mBearerData.messageStatus;
+                this.status = this.mBearerData.errorClass << 8;
+                this.status |= this.mBearerData.messageStatus;
             }
         } else if (this.mBearerData.messageType != 1 && this.mBearerData.messageType != 2) {
             throw new RuntimeException("Unsupported message type: " + this.mBearerData.messageType);
@@ -881,9 +880,8 @@ public class SmsMessage extends SmsMessageBase {
 
     @Override // com.android.internal.telephony.SmsMessageBase
     public int getMessageIdentifier() {
-        BearerData bearerData = this.mBearerData;
-        if (bearerData != null) {
-            return bearerData.messageId;
+        if (this.mBearerData != null) {
+            return this.mBearerData.messageId;
         }
         return 0;
     }
@@ -1012,21 +1010,13 @@ public class SmsMessage extends SmsMessageBase {
 
     public void parseCtcFota() {
         this.mIsCtcFota = false;
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.mUserDataCtcFota;
-            if (i < bArr.length) {
-                if (bArr[i] != 1 || bArr[i + 1] != 6) {
-                    i++;
-                } else {
-                    int datalen = bArr.length - i;
-                    byte[] payload = new byte[datalen];
-                    System.arraycopy(bArr, i, payload, 0, datalen);
-                    this.mUserData = payload;
-                    this.mIsCtcFota = true;
-                    return;
-                }
-            } else {
+        for (int i = 0; i < this.mUserDataCtcFota.length; i++) {
+            if (this.mUserDataCtcFota[i] == 1 && this.mUserDataCtcFota[i + 1] == 6) {
+                int datalen = this.mUserDataCtcFota.length - i;
+                byte[] payload = new byte[datalen];
+                System.arraycopy(this.mUserDataCtcFota, i, payload, 0, datalen);
+                this.mUserData = payload;
+                this.mIsCtcFota = true;
                 return;
             }
         }

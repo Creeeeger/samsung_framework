@@ -24,11 +24,6 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
     private final boolean issuingDistributionPointEnabled;
     private final BigInteger maxBaseCRLNumber;
 
-    /* synthetic */ PKIXCRLStoreSelector(Builder builder, PKIXCRLStoreSelectorIA pKIXCRLStoreSelectorIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         private final CRLSelector baseSelector;
         private boolean deltaCRLIndicator = false;
@@ -104,12 +99,11 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
             }
             if (this.issuingDistributionPointEnabled) {
                 byte[] idp = crl.getExtensionValue(Extension.issuingDistributionPoint.getId());
-                byte[] bArr = this.issuingDistributionPoint;
-                if (bArr == null) {
+                if (this.issuingDistributionPoint == null) {
                     if (idp != null) {
                         return false;
                     }
-                } else if (!Arrays.areEqual(idp, bArr)) {
+                } else if (!Arrays.areEqual(idp, this.issuingDistributionPoint)) {
                     return false;
                 }
             }
@@ -141,9 +135,8 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
     }
 
     public X509Certificate getCertificateChecking() {
-        CRLSelector cRLSelector = this.baseSelector;
-        if (cRLSelector instanceof X509CRLSelector) {
-            return ((X509CRLSelector) cRLSelector).getCertificateChecking();
+        if (this.baseSelector instanceof X509CRLSelector) {
+            return ((X509CRLSelector) this.baseSelector).getCertificateChecking();
         }
         return null;
     }
@@ -152,9 +145,7 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
         return certStore.getCRLs(new SelectorClone(selector));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static class SelectorClone extends X509CRLSelector {
+    private static class SelectorClone extends X509CRLSelector {
         private final PKIXCRLStoreSelector selector;
 
         SelectorClone(PKIXCRLStoreSelector selector) {
@@ -171,8 +162,7 @@ public class PKIXCRLStoreSelector<T extends CRL> implements Selector<T> {
 
         @Override // java.security.cert.X509CRLSelector, java.security.cert.CRLSelector
         public boolean match(CRL crl) {
-            PKIXCRLStoreSelector pKIXCRLStoreSelector = this.selector;
-            return pKIXCRLStoreSelector == null ? crl != null : pKIXCRLStoreSelector.match(crl);
+            return this.selector == null ? crl != null : this.selector.match(crl);
         }
     }
 }

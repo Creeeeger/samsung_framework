@@ -59,7 +59,6 @@ public interface IAccessibilityServiceClient extends IInterface {
 
     void unbindInput() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAccessibilityServiceClient {
         @Override // android.accessibilityservice.IAccessibilityServiceClient
         public void init(IAccessibilityServiceConnection connection, int connectionId, IBinder windowToken) throws RemoteException {
@@ -151,7 +150,6 @@ public interface IAccessibilityServiceClient extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAccessibilityServiceClient {
         public static final String DESCRIPTOR = "android.accessibilityservice.IAccessibilityServiceClient";
         static final int TRANSACTION_bindInput = 19;
@@ -255,126 +253,123 @@ public interface IAccessibilityServiceClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IAccessibilityServiceConnection _arg0 = IAccessibilityServiceConnection.Stub.asInterface(data.readStrongBinder());
+                    int _arg1 = data.readInt();
+                    IBinder _arg2 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    init(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    AccessibilityEvent _arg02 = (AccessibilityEvent) data.readTypedObject(AccessibilityEvent.CREATOR);
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAccessibilityEvent(_arg02, _arg12);
+                    return true;
+                case 3:
+                    onInterrupt();
+                    return true;
+                case 4:
+                    AccessibilityGestureEvent _arg03 = (AccessibilityGestureEvent) data.readTypedObject(AccessibilityGestureEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGesture(_arg03);
+                    return true;
+                case 5:
+                    clearAccessibilityCache();
+                    return true;
+                case 6:
+                    KeyEvent _arg04 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onKeyEvent(_arg04, _arg13);
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    Region _arg14 = (Region) data.readTypedObject(Region.CREATOR);
+                    MagnificationConfig _arg22 = (MagnificationConfig) data.readTypedObject(MagnificationConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMagnificationChanged(_arg05, _arg14, _arg22);
+                    return true;
+                case 8:
+                    MotionEvent _arg06 = (MotionEvent) data.readTypedObject(MotionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMotionEvent(_arg06);
+                    return true;
+                case 9:
+                    int _arg07 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTouchStateChanged(_arg07, _arg15);
+                    return true;
+                case 10:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSoftKeyboardShowModeChanged(_arg08);
+                    return true;
+                case 11:
+                    int _arg09 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onPerformGestureResult(_arg09, _arg16);
+                    return true;
+                case 12:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onFingerprintCapturingGesturesChanged(_arg010);
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFingerprintGesture(_arg011);
+                    return true;
+                case 14:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAccessibilityButtonClicked(_arg012);
+                    return true;
+                case 15:
+                    boolean _arg013 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAccessibilityButtonAvailabilityChanged(_arg013);
+                    return true;
+                case 16:
+                    onSystemActionsChanged();
+                    return true;
+                case 17:
+                    IAccessibilityInputMethodSessionCallback _arg014 = IAccessibilityInputMethodSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createImeSession(_arg014);
+                    return true;
+                case 18:
+                    IAccessibilityInputMethodSession _arg015 = IAccessibilityInputMethodSession.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg17 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setImeSessionEnabled(_arg015, _arg17);
+                    return true;
+                case 19:
+                    bindInput();
+                    return true;
+                case 20:
+                    unbindInput();
+                    return true;
+                case 21:
+                    IRemoteAccessibilityInputConnection _arg016 = IRemoteAccessibilityInputConnection.Stub.asInterface(data.readStrongBinder());
+                    EditorInfo _arg18 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
+                    boolean _arg23 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    startInput(_arg016, _arg18, _arg23);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IAccessibilityServiceConnection _arg0 = IAccessibilityServiceConnection.Stub.asInterface(data.readStrongBinder());
-                            int _arg1 = data.readInt();
-                            IBinder _arg2 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            init(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            AccessibilityEvent _arg02 = (AccessibilityEvent) data.readTypedObject(AccessibilityEvent.CREATOR);
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAccessibilityEvent(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            onInterrupt();
-                            return true;
-                        case 4:
-                            AccessibilityGestureEvent _arg03 = (AccessibilityGestureEvent) data.readTypedObject(AccessibilityGestureEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGesture(_arg03);
-                            return true;
-                        case 5:
-                            clearAccessibilityCache();
-                            return true;
-                        case 6:
-                            KeyEvent _arg04 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onKeyEvent(_arg04, _arg13);
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            Region _arg14 = (Region) data.readTypedObject(Region.CREATOR);
-                            MagnificationConfig _arg22 = (MagnificationConfig) data.readTypedObject(MagnificationConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMagnificationChanged(_arg05, _arg14, _arg22);
-                            return true;
-                        case 8:
-                            MotionEvent _arg06 = (MotionEvent) data.readTypedObject(MotionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMotionEvent(_arg06);
-                            return true;
-                        case 9:
-                            int _arg07 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTouchStateChanged(_arg07, _arg15);
-                            return true;
-                        case 10:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSoftKeyboardShowModeChanged(_arg08);
-                            return true;
-                        case 11:
-                            int _arg09 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onPerformGestureResult(_arg09, _arg16);
-                            return true;
-                        case 12:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onFingerprintCapturingGesturesChanged(_arg010);
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFingerprintGesture(_arg011);
-                            return true;
-                        case 14:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAccessibilityButtonClicked(_arg012);
-                            return true;
-                        case 15:
-                            boolean _arg013 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAccessibilityButtonAvailabilityChanged(_arg013);
-                            return true;
-                        case 16:
-                            onSystemActionsChanged();
-                            return true;
-                        case 17:
-                            IAccessibilityInputMethodSessionCallback _arg014 = IAccessibilityInputMethodSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createImeSession(_arg014);
-                            return true;
-                        case 18:
-                            IAccessibilityInputMethodSession _arg015 = IAccessibilityInputMethodSession.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg17 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setImeSessionEnabled(_arg015, _arg17);
-                            return true;
-                        case 19:
-                            bindInput();
-                            return true;
-                        case 20:
-                            unbindInput();
-                            return true;
-                        case 21:
-                            IRemoteAccessibilityInputConnection _arg016 = IRemoteAccessibilityInputConnection.Stub.asInterface(data.readStrongBinder());
-                            EditorInfo _arg18 = (EditorInfo) data.readTypedObject(EditorInfo.CREATOR);
-                            boolean _arg23 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            startInput(_arg016, _arg18, _arg23);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAccessibilityServiceClient {
+        private static class Proxy implements IAccessibilityServiceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

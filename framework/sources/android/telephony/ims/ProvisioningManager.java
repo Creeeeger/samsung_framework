@@ -15,7 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ProvisioningManager {
 
     @SystemApi
@@ -131,23 +131,17 @@ public class ProvisioningManager {
     private int mSubId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StringResultError {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static class Callback {
         private final CallbackBinder mBinder = new CallbackBinder();
 
-        /* loaded from: classes3.dex */
-        public static class CallbackBinder extends IImsConfigCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class CallbackBinder extends IImsConfigCallback.Stub {
             private Executor mExecutor;
             private final Callback mLocalConfigurationCallback;
-
-            /* synthetic */ CallbackBinder(Callback callback, CallbackBinderIA callbackBinderIA) {
-                this(callback);
-            }
 
             private CallbackBinder(Callback localConfigurationCallback) {
                 this.mLocalConfigurationCallback = localConfigurationCallback;
@@ -168,6 +162,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onIntConfigChanged$0(int item, int value) {
                 this.mLocalConfigurationCallback.onProvisioningIntChanged(item, value);
             }
@@ -187,10 +182,12 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onStringConfigChanged$1(int item, String value) {
                 this.mLocalConfigurationCallback.onProvisioningStringChanged(item, value);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -211,7 +208,6 @@ public class ProvisioningManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class FeatureProvisioningCallback {
         private final CallbackBinder mBinder = new CallbackBinder();
 
@@ -219,14 +215,10 @@ public class ProvisioningManager {
 
         public abstract void onRcsFeatureProvisioningChanged(int i, int i2, boolean z);
 
-        /* loaded from: classes3.dex */
-        public static class CallbackBinder extends IFeatureProvisioningCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class CallbackBinder extends IFeatureProvisioningCallback.Stub {
             private Executor mExecutor;
             private final FeatureProvisioningCallback mFeatureProvisioningCallback;
-
-            /* synthetic */ CallbackBinder(FeatureProvisioningCallback featureProvisioningCallback, CallbackBinderIA callbackBinderIA) {
-                this(featureProvisioningCallback);
-            }
 
             private CallbackBinder(FeatureProvisioningCallback featureProvisioningCallback) {
                 this.mFeatureProvisioningCallback = featureProvisioningCallback;
@@ -247,6 +239,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onFeatureProvisioningChanged$0(int capability, int tech, boolean isProvisioned) {
                 this.mFeatureProvisioningCallback.onFeatureProvisioningChanged(capability, tech, isProvisioned);
             }
@@ -266,10 +259,12 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRcsFeatureProvisioningChanged$1(int capability, int tech, boolean isProvisioned) {
                 this.mFeatureProvisioningCallback.onRcsFeatureProvisioningChanged(capability, tech, isProvisioned);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }
@@ -285,18 +280,13 @@ public class ProvisioningManager {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public static class RcsProvisioningCallback {
         private final CallbackBinder mBinder = new CallbackBinder();
 
-        /* loaded from: classes3.dex */
-        public static class CallbackBinder extends IRcsConfigCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class CallbackBinder extends IRcsConfigCallback.Stub {
             private Executor mExecutor;
             private final RcsProvisioningCallback mLocalCallback;
-
-            /* synthetic */ CallbackBinder(RcsProvisioningCallback rcsProvisioningCallback, CallbackBinderIA callbackBinderIA) {
-                this(rcsProvisioningCallback);
-            }
 
             private CallbackBinder(RcsProvisioningCallback localCallback) {
                 this.mLocalCallback = localCallback;
@@ -306,7 +296,7 @@ public class ProvisioningManager {
             public void onConfigurationChanged(final byte[] configXml) {
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda1
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             ProvisioningManager.RcsProvisioningCallback.CallbackBinder.this.lambda$onConfigurationChanged$0(configXml);
@@ -317,6 +307,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationChanged$0(byte[] configXml) {
                 this.mLocalCallback.onConfigurationChanged(configXml);
             }
@@ -325,7 +316,7 @@ public class ProvisioningManager {
             public void onAutoConfigurationErrorReceived(final int errorCode, final String errorString) {
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda2
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda4
                         @Override // java.lang.Runnable
                         public final void run() {
                             ProvisioningManager.RcsProvisioningCallback.CallbackBinder.this.lambda$onAutoConfigurationErrorReceived$1(errorCode, errorString);
@@ -336,6 +327,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onAutoConfigurationErrorReceived$1(int errorCode, String errorString) {
                 this.mLocalCallback.onAutoConfigurationErrorReceived(errorCode, errorString);
             }
@@ -344,7 +336,7 @@ public class ProvisioningManager {
             public void onConfigurationReset() {
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda4
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             ProvisioningManager.RcsProvisioningCallback.CallbackBinder.this.lambda$onConfigurationReset$2();
@@ -355,6 +347,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationReset$2() {
                 this.mLocalCallback.onConfigurationReset();
             }
@@ -363,7 +356,7 @@ public class ProvisioningManager {
             public void onRemoved() {
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda3
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             ProvisioningManager.RcsProvisioningCallback.CallbackBinder.this.lambda$onRemoved$3();
@@ -374,6 +367,7 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onRemoved$3() {
                 this.mLocalCallback.onRemoved();
             }
@@ -382,7 +376,7 @@ public class ProvisioningManager {
             public void onPreProvisioningReceived(final byte[] configXml) {
                 long identity = Binder.clearCallingIdentity();
                 try {
-                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda0
+                    this.mExecutor.execute(new Runnable() { // from class: android.telephony.ims.ProvisioningManager$RcsProvisioningCallback$CallbackBinder$$ExternalSyntheticLambda3
                         @Override // java.lang.Runnable
                         public final void run() {
                             ProvisioningManager.RcsProvisioningCallback.CallbackBinder.this.lambda$onPreProvisioningReceived$4(configXml);
@@ -393,10 +387,12 @@ public class ProvisioningManager {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onPreProvisioningReceived$4(byte[] configXml) {
                 this.mLocalCallback.onPreProvisioningReceived(configXml);
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public void setExecutor(Executor executor) {
                 this.mExecutor = executor;
             }

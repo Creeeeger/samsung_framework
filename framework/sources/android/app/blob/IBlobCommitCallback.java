@@ -12,7 +12,6 @@ public interface IBlobCommitCallback extends IInterface {
 
     void onResult(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBlobCommitCallback {
         @Override // android.app.blob.IBlobCommitCallback
         public void onResult(int result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBlobCommitCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBlobCommitCallback {
         static final int TRANSACTION_onResult = 1;
 
@@ -67,26 +65,22 @@ public interface IBlobCommitCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBlobCommitCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBlobCommitCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBlobCommitCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBlobCommitCallback {
+        private static class Proxy implements IBlobCommitCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

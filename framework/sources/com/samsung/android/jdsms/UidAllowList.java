@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 final class UidAllowList {
     private static final Set<String> mAllowList;
+
+    UidAllowList() {
+    }
 
     static {
         HashSet<String> modifiableSet = new HashSet<>();
@@ -17,7 +20,7 @@ final class UidAllowList {
         mAllowList = Collections.unmodifiableSet(modifiableSet);
     }
 
-    public boolean containsUid(String uidName) {
+    boolean containsUid(String uidName) {
         return mAllowList.contains(uidName);
     }
 }

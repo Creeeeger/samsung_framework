@@ -24,4 +24,8 @@ public class VintfRuntimeInfo {
 
     private VintfRuntimeInfo() {
     }
+
+    static {
+        System.loadLibrary("vintf_jni");
+    }
 }

@@ -18,7 +18,6 @@ public class ToggleButton extends CompoundButton {
     private CharSequence mTextOff;
     private CharSequence mTextOn;
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ToggleButton> {
         private int mDisabledAlphaId;
         private boolean mPropertiesMapped = false;
@@ -75,13 +74,11 @@ public class ToggleButton extends CompoundButton {
     }
 
     private void syncTextState() {
-        CharSequence charSequence;
-        CharSequence charSequence2;
         boolean checked = isChecked();
-        if (checked && (charSequence2 = this.mTextOn) != null) {
-            setText(charSequence2);
-        } else if (!checked && (charSequence = this.mTextOff) != null) {
-            setText(charSequence);
+        if (checked && this.mTextOn != null) {
+            lambda$setTextAsync$0(this.mTextOn);
+        } else if (!checked && this.mTextOff != null) {
+            lambda$setTextAsync$0(this.mTextOff);
         }
     }
 
@@ -108,7 +105,7 @@ public class ToggleButton extends CompoundButton {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         updateReferenceToIndicatorDrawable(getBackground());
     }
@@ -129,11 +126,10 @@ public class ToggleButton extends CompoundButton {
     }
 
     @Override // android.widget.CompoundButton, android.widget.TextView, android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
-        Drawable drawable = this.mIndicatorDrawable;
-        if (drawable != null) {
-            drawable.setAlpha(isEnabled() ? 255 : (int) (this.mDisabledAlpha * 255.0f));
+        if (this.mIndicatorDrawable != null) {
+            this.mIndicatorDrawable.setAlpha(isEnabled() ? 255 : (int) (this.mDisabledAlpha * 255.0f));
         }
     }
 
@@ -144,11 +140,6 @@ public class ToggleButton extends CompoundButton {
 
     @Override // android.widget.CompoundButton
     protected CharSequence getButtonStateDescription() {
-        if (isChecked()) {
-            CharSequence charSequence = this.mTextOn;
-            return charSequence == null ? getResources().getString(R.string.capital_on) : charSequence;
-        }
-        CharSequence charSequence2 = this.mTextOff;
-        return charSequence2 == null ? getResources().getString(R.string.capital_off) : charSequence2;
+        return isChecked() ? this.mTextOn == null ? getResources().getString(R.string.capital_on) : this.mTextOn : this.mTextOff == null ? getResources().getString(R.string.capital_off) : this.mTextOff;
     }
 }

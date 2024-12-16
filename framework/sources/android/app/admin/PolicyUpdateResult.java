@@ -14,7 +14,6 @@ public final class PolicyUpdateResult {
     private final int mResultCode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ResultCode {
     }
 

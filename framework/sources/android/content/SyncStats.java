@@ -7,14 +7,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class SyncStats implements Parcelable {
     public static final Parcelable.Creator<SyncStats> CREATOR = new Parcelable.Creator<SyncStats>() { // from class: android.content.SyncStats.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncStats createFromParcel(Parcel in) {
             return new SyncStats(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SyncStats[] newArray(int size) {
             return new SyncStats[size];
@@ -116,22 +115,5 @@ public class SyncStats implements Parcelable {
         dest.writeLong(this.numDeletes);
         dest.writeLong(this.numEntries);
         dest.writeLong(this.numSkippedEntries);
-    }
-
-    /* renamed from: android.content.SyncStats$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SyncStats> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncStats createFromParcel(Parcel in) {
-            return new SyncStats(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SyncStats[] newArray(int size) {
-            return new SyncStats[size];
-        }
     }
 }

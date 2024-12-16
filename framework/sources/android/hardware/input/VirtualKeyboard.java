@@ -4,6 +4,7 @@ import android.annotation.SystemApi;
 import android.companion.virtual.IVirtualDevice;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 @SystemApi
 /* loaded from: classes2.dex */
@@ -16,12 +17,12 @@ public class VirtualKeyboard extends VirtualInputDevice {
     }
 
     @Override // android.hardware.input.VirtualInputDevice
-    public /* bridge */ /* synthetic */ int getInputDeviceId() {
-        return super.getInputDeviceId();
+    public /* bridge */ /* synthetic */ String toString() {
+        return super.toString();
     }
 
-    public VirtualKeyboard(IVirtualDevice virtualDevice, IBinder token) {
-        super(virtualDevice, token);
+    public VirtualKeyboard(VirtualKeyboardConfig config, IVirtualDevice virtualDevice, IBinder token) {
+        super(config, virtualDevice, token);
         this.mUnsupportedKeyCode = 23;
     }
 
@@ -30,9 +31,16 @@ public class VirtualKeyboard extends VirtualInputDevice {
             if (23 == event.getKeyCode()) {
                 throw new IllegalArgumentException("Unsupported key code " + event.getKeyCode() + " sent to a VirtualKeyboard input device.");
             }
-            this.mVirtualDevice.sendKeyEvent(this.mToken, event);
+            if (!this.mVirtualDevice.sendKeyEvent(this.mToken, event)) {
+                Log.w("VirtualInputDevice", "Failed to send key event to virtual keyboard " + this.mConfig.getInputDeviceName());
+            }
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
+    }
+
+    @Override // android.hardware.input.VirtualInputDevice
+    public int getInputDeviceId() {
+        return super.getInputDeviceId();
     }
 }

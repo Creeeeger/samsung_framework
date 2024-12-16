@@ -61,6 +61,7 @@ public class PowerWhitelistManager {
     public static final int REASON_SYSTEM_ALERT_WINDOW_PERMISSION = 62;
     public static final int REASON_SYSTEM_ALLOW_LISTED = 300;
     public static final int REASON_SYSTEM_UID = 51;
+    public static final int REASON_TILE_ONCLICK = 329;
     public static final int REASON_UID_VISIBLE = 50;
     public static final int REASON_UNKNOWN = 0;
     public static final int REASON_VPN = 309;
@@ -71,17 +72,14 @@ public class PowerWhitelistManager {
     private final IDeviceIdleController mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ReasonCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface TempAllowListType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface WhitelistEvent {
     }
 

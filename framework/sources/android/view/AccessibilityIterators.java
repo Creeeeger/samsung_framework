@@ -8,14 +8,12 @@ import java.util.Locale;
 /* loaded from: classes4.dex */
 public final class AccessibilityIterators {
 
-    /* loaded from: classes4.dex */
     public interface TextSegmentIterator {
         int[] following(int i);
 
         int[] preceding(int i);
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class AbstractTextSegmentIterator implements TextSegmentIterator {
         private final int[] mSegment = new int[2];
         protected String mText;
@@ -24,26 +22,20 @@ public final class AccessibilityIterators {
             this.mText = text;
         }
 
-        public int[] getRange(int start, int end) {
+        protected int[] getRange(int start, int end) {
             if (start < 0 || end < 0 || start == end) {
                 return null;
             }
-            int[] iArr = this.mSegment;
-            iArr[0] = start;
-            iArr[1] = end;
-            return iArr;
+            this.mSegment[0] = start;
+            this.mSegment[1] = end;
+            return this.mSegment;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class CharacterTextSegmentIterator extends AbstractTextSegmentIterator implements ViewRootImpl.ConfigChangedCallback {
+    static class CharacterTextSegmentIterator extends AbstractTextSegmentIterator implements ViewRootImpl.ConfigChangedCallback {
         private static CharacterTextSegmentIterator sInstance;
         protected BreakIterator mImpl;
         private Locale mLocale;
-
-        /* synthetic */ CharacterTextSegmentIterator(Locale locale, CharacterTextSegmentIteratorIA characterTextSegmentIteratorIA) {
-            this(locale);
-        }
 
         public static CharacterTextSegmentIterator getInstance(Locale locale) {
             if (sInstance == null) {
@@ -124,8 +116,7 @@ public final class AccessibilityIterators {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class WordTextSegmentIterator extends CharacterTextSegmentIterator {
+    static class WordTextSegmentIterator extends CharacterTextSegmentIterator {
         private static WordTextSegmentIterator sInstance;
 
         public static WordTextSegmentIterator getInstance(Locale locale) {
@@ -207,8 +198,7 @@ public final class AccessibilityIterators {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ParagraphTextSegmentIterator extends AbstractTextSegmentIterator {
+    static class ParagraphTextSegmentIterator extends AbstractTextSegmentIterator {
         private static ParagraphTextSegmentIterator sInstance;
 
         ParagraphTextSegmentIterator() {

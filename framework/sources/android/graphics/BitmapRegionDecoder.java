@@ -37,10 +37,6 @@ public final class BitmapRegionDecoder {
 
     private static native BitmapRegionDecoder nativeNewInstance(byte[] bArr, int i, int i2);
 
-    private static native BitmapRegionDecoder nativeNewInstanceQMG(long j);
-
-    private static native BitmapRegionDecoder nativeNewInstanceQMG(InputStream inputStream, byte[] bArr);
-
     @Deprecated
     public static BitmapRegionDecoder newInstance(byte[] data, int offset, int length, boolean isShareable) throws IOException {
         return newInstance(data, offset, length);
@@ -73,14 +69,6 @@ public final class BitmapRegionDecoder {
         }
         byte[] tempStorage = new byte[16384];
         return nativeNewInstance(is, tempStorage);
-    }
-
-    public static BitmapRegionDecoder newInstanceQMG(InputStream is, boolean isShareable) throws IOException {
-        if (is instanceof AssetManager.AssetInputStream) {
-            return nativeNewInstanceQMG(((AssetManager.AssetInputStream) is).getNativeAsset());
-        }
-        byte[] tempStorage = new byte[16384];
-        return nativeNewInstanceQMG(is, tempStorage);
     }
 
     @Deprecated

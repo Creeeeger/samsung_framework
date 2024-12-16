@@ -4,24 +4,25 @@ import android.app.ActivityManager;
 import android.app.WindowConfiguration;
 import android.content.ComponentName;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.WindowManager;
 import android.window.TransitionInfo;
+import java.util.Iterator;
 
 /* loaded from: classes4.dex */
 public final class TransitionFilter implements Parcelable {
     public static final int CONTAINER_ORDER_ANY = 0;
     public static final int CONTAINER_ORDER_TOP = 1;
     public static final Parcelable.Creator<TransitionFilter> CREATOR = new Parcelable.Creator<TransitionFilter>() { // from class: android.window.TransitionFilter.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionFilter createFromParcel(Parcel in) {
             return new TransitionFilter(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TransitionFilter[] newArray(int size) {
             return new TransitionFilter[size];
@@ -32,12 +33,7 @@ public final class TransitionFilter implements Parcelable {
     public Requirement[] mRequirements;
     public int[] mTypeSet;
 
-    /* loaded from: classes4.dex */
     public @interface ContainerOrder {
-    }
-
-    /* synthetic */ TransitionFilter(Parcel parcel, TransitionFilterIA transitionFilterIA) {
-        this(parcel);
     }
 
     public TransitionFilter() {
@@ -77,28 +73,19 @@ public final class TransitionFilter implements Parcelable {
                 return false;
             }
         }
-        int flags = info.getFlags();
-        int i2 = this.mFlags;
-        if ((flags & i2) != i2 || (info.getFlags() & this.mNotFlags) != 0) {
+        if ((info.getFlags() & this.mFlags) != this.mFlags || (info.getFlags() & this.mNotFlags) != 0) {
             return false;
         }
         if (this.mRequirements != null) {
-            int i3 = 0;
-            while (true) {
-                Requirement[] requirementArr = this.mRequirements;
-                if (i3 < requirementArr.length) {
-                    boolean matches = requirementArr[i3].matches(info);
-                    if (matches == this.mRequirements[i3].mNot) {
-                        return false;
-                    }
-                    i3++;
-                } else {
-                    return true;
+            for (int i2 = 0; i2 < this.mRequirements.length; i2++) {
+                boolean matches = this.mRequirements[i2].matches(info);
+                if (matches == this.mRequirements[i2].mNot) {
+                    return false;
                 }
             }
-        } else {
             return true;
         }
+        return true;
     }
 
     @Override // android.os.Parcelable
@@ -107,23 +94,6 @@ public final class TransitionFilter implements Parcelable {
         dest.writeInt(this.mFlags);
         dest.writeInt(this.mNotFlags);
         dest.writeTypedArray(this.mRequirements, flags);
-    }
-
-    /* renamed from: android.window.TransitionFilter$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TransitionFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TransitionFilter createFromParcel(Parcel in) {
-            return new TransitionFilter(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TransitionFilter[] newArray(int size) {
-            return new TransitionFilter[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -154,17 +124,15 @@ public final class TransitionFilter implements Parcelable {
         return sb.append("]}").toString();
     }
 
-    /* loaded from: classes4.dex */
     public static final class Requirement implements Parcelable {
         public static final Parcelable.Creator<Requirement> CREATOR = new Parcelable.Creator<Requirement>() { // from class: android.window.TransitionFilter.Requirement.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Requirement createFromParcel(Parcel in) {
                 return new Requirement(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Requirement[] newArray(int size) {
                 return new Requirement[size];
@@ -172,16 +140,13 @@ public final class TransitionFilter implements Parcelable {
         };
         public int mActivityType;
         public int mFlags;
+        public IBinder mLaunchCookie;
         public int[] mModes;
         public boolean mMustBeIndependent;
         public boolean mMustBeTask;
         public boolean mNot;
         public int mOrder;
         public ComponentName mTopActivity;
-
-        /* synthetic */ Requirement(Parcel parcel, RequirementIA requirementIA) {
-            this(parcel);
-        }
 
         public Requirement() {
             this.mActivityType = 0;
@@ -209,21 +174,21 @@ public final class TransitionFilter implements Parcelable {
             this.mMustBeTask = in.readBoolean();
             this.mOrder = in.readInt();
             this.mTopActivity = (ComponentName) in.readTypedObject(ComponentName.CREATOR);
+            this.mLaunchCookie = in.readStrongBinder();
         }
 
         boolean matches(TransitionInfo info) {
             for (int i = info.getChanges().size() - 1; i >= 0; i--) {
                 TransitionInfo.Change change = info.getChanges().get(i);
-                if ((!this.mMustBeIndependent || TransitionInfo.isIndependent(change, info)) && ((this.mOrder != 1 || i <= 0) && ((this.mActivityType == 0 || (change.getTaskInfo() != null && change.getTaskInfo().getActivityType() == this.mActivityType)) && matchesTopActivity(change.getTaskInfo())))) {
+                if ((!this.mMustBeIndependent || TransitionInfo.isIndependent(change, info)) && ((this.mOrder != 1 || i <= 0) && ((this.mActivityType == 0 || (change.getTaskInfo() != null && change.getTaskInfo().getActivityType() == this.mActivityType)) && matchesTopActivity(change.getTaskInfo(), change.getActivityComponent())))) {
                     if (this.mModes != null) {
                         boolean pass = false;
                         int m = 0;
                         while (true) {
-                            int[] iArr = this.mModes;
-                            if (m >= iArr.length) {
+                            if (m >= this.mModes.length) {
                                 break;
                             }
-                            if (iArr[m] != change.getMode()) {
+                            if (this.mModes[m] != change.getMode()) {
                                 m++;
                             } else {
                                 pass = true;
@@ -234,9 +199,7 @@ public final class TransitionFilter implements Parcelable {
                             continue;
                         }
                     }
-                    int flags = change.getFlags();
-                    int i2 = this.mFlags;
-                    if ((flags & i2) == i2 && (!this.mMustBeTask || change.getTaskInfo() != null)) {
+                    if ((change.getFlags() & this.mFlags) == this.mFlags && ((!this.mMustBeTask || change.getTaskInfo() != null) && matchesCookie(change.getTaskInfo()))) {
                         return true;
                     }
                 }
@@ -244,22 +207,41 @@ public final class TransitionFilter implements Parcelable {
             return false;
         }
 
-        private boolean matchesTopActivity(ActivityManager.RunningTaskInfo info) {
+        private boolean matchesTopActivity(ActivityManager.RunningTaskInfo taskInfo, ComponentName activityComponent) {
             if (this.mTopActivity == null) {
+                return true;
+            }
+            if (activityComponent != null) {
+                return this.mTopActivity.equals(activityComponent);
+            }
+            if (taskInfo != null) {
+                return this.mTopActivity.equals(taskInfo.topActivity);
+            }
+            return false;
+        }
+
+        private boolean matchesCookie(ActivityManager.RunningTaskInfo info) {
+            if (this.mLaunchCookie == null) {
                 return true;
             }
             if (info == null) {
                 return false;
             }
-            ComponentName component = info.topActivity;
-            return this.mTopActivity.equals(component);
+            Iterator<IBinder> it = info.launchCookies.iterator();
+            while (it.hasNext()) {
+                IBinder cookie = it.next();
+                if (this.mLaunchCookie.equals(cookie)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         boolean matches(TransitionRequestInfo request) {
             if (this.mActivityType == 0) {
                 return true;
             }
-            return request.getTriggerTask() != null && request.getTriggerTask().getActivityType() == this.mActivityType && matchesTopActivity(request.getTriggerTask());
+            return request.getTriggerTask() != null && request.getTriggerTask().getActivityType() == this.mActivityType && matchesTopActivity(request.getTriggerTask(), null) && matchesCookie(request.getTriggerTask());
         }
 
         @Override // android.os.Parcelable
@@ -272,23 +254,7 @@ public final class TransitionFilter implements Parcelable {
             dest.writeBoolean(this.mMustBeTask);
             dest.writeInt(this.mOrder);
             dest.writeTypedObject(this.mTopActivity, flags);
-        }
-
-        /* renamed from: android.window.TransitionFilter$Requirement$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Requirement> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Requirement createFromParcel(Parcel in) {
-                return new Requirement(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Requirement[] newArray(int size) {
-                return new Requirement[size];
-            }
+            dest.writeStrongBinder(this.mLaunchCookie);
         }
 
         @Override // android.os.Parcelable
@@ -317,11 +283,13 @@ public final class TransitionFilter implements Parcelable {
             out.append(" mustBeTask=" + this.mMustBeTask);
             out.append(" order=" + TransitionFilter.containerOrderToString(this.mOrder));
             out.append(" topActivity=").append(this.mTopActivity);
+            out.append(" launchCookie=").append(this.mLaunchCookie);
             out.append("}");
             return out.toString();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String containerOrderToString(int order) {
         switch (order) {
             case 0:

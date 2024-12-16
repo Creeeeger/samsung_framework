@@ -69,10 +69,9 @@ public class CRLReason extends ASN1Object {
 
     public static CRLReason lookup(int value) {
         Integer idx = Integers.valueOf(value);
-        Hashtable hashtable = table;
-        if (!hashtable.containsKey(idx)) {
-            hashtable.put(idx, new CRLReason(value));
+        if (!table.containsKey(idx)) {
+            table.put(idx, new CRLReason(value));
         }
-        return (CRLReason) hashtable.get(idx);
+        return (CRLReason) table.get(idx);
     }
 }

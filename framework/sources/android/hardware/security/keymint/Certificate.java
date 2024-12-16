@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class Certificate implements Parcelable {
     public static final Parcelable.Creator<Certificate> CREATOR = new Parcelable.Creator<Certificate>() { // from class: android.hardware.security.keymint.Certificate.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Certificate createFromParcel(Parcel _aidl_source) {
             Certificate _aidl_out = new Certificate();
@@ -17,31 +15,13 @@ public class Certificate implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Certificate[] newArray(int _aidl_size) {
             return new Certificate[_aidl_size];
         }
     };
     public byte[] encodedCertificate;
-
-    /* renamed from: android.hardware.security.keymint.Certificate$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Certificate> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Certificate createFromParcel(Parcel _aidl_source) {
-            Certificate _aidl_out = new Certificate();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Certificate[] newArray(int _aidl_size) {
-            return new Certificate[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

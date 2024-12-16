@@ -3,7 +3,6 @@ package android.util;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 import java.util.Objects;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes4.dex */
 public class SparseArray<E> implements Cloneable {
@@ -23,15 +22,14 @@ public class SparseArray<E> implements Cloneable {
             this.mKeys = EmptyArray.INT;
             this.mValues = EmptyArray.OBJECT;
         } else {
-            Object[] newUnpaddedObjectArray = ArrayUtils.newUnpaddedObjectArray(initialCapacity);
-            this.mValues = newUnpaddedObjectArray;
-            this.mKeys = new int[newUnpaddedObjectArray.length];
+            this.mValues = ArrayUtils.newUnpaddedObjectArray(initialCapacity);
+            this.mKeys = new int[this.mValues.length];
         }
         this.mSize = 0;
     }
 
-    /* renamed from: clone */
-    public SparseArray<E> m4950clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SparseArray<E> m5234clone() {
         SparseArray<E> clone = null;
         try {
             clone = (SparseArray) super.clone();
@@ -52,40 +50,28 @@ public class SparseArray<E> implements Cloneable {
     }
 
     public E get(int i, E e) {
-        E e2;
         int binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, i);
-        if (binarySearch < 0 || (e2 = (E) this.mValues[binarySearch]) == DELETED) {
+        if (binarySearch < 0 || this.mValues[binarySearch] == DELETED) {
             return e;
         }
-        return e2;
+        return (E) this.mValues[binarySearch];
     }
 
     public void delete(int key) {
         int i = ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
-        if (i >= 0) {
-            Object[] objArr = this.mValues;
-            Object obj = objArr[i];
-            Object obj2 = DELETED;
-            if (obj != obj2) {
-                objArr[i] = obj2;
-                this.mGarbage = true;
-            }
+        if (i >= 0 && this.mValues[i] != DELETED) {
+            this.mValues[i] = DELETED;
+            this.mGarbage = true;
         }
     }
 
     public E removeReturnOld(int i) {
         int binarySearch = ContainerHelpers.binarySearch(this.mKeys, this.mSize, i);
-        if (binarySearch >= 0) {
-            Object[] objArr = this.mValues;
-            Object obj = objArr[binarySearch];
-            Object obj2 = DELETED;
-            if (obj != obj2) {
-                E e = (E) objArr[binarySearch];
-                objArr[binarySearch] = obj2;
-                this.mGarbage = true;
-                return e;
-            }
-            return null;
+        if (binarySearch >= 0 && this.mValues[binarySearch] != DELETED) {
+            E e = (E) this.mValues[binarySearch];
+            this.mValues[binarySearch] = DELETED;
+            this.mGarbage = true;
+            return e;
         }
         return null;
     }
@@ -98,11 +84,8 @@ public class SparseArray<E> implements Cloneable {
         if (index >= this.mSize && UtilConfig.sThrowExceptionForUpperArrayOutOfBounds) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
-        Object[] objArr = this.mValues;
-        Object obj = objArr[index];
-        Object obj2 = DELETED;
-        if (obj != obj2) {
-            objArr[index] = obj2;
+        if (this.mValues[index] != DELETED) {
+            this.mValues[index] = DELETED;
             this.mGarbage = true;
         }
     }
@@ -145,16 +128,12 @@ public class SparseArray<E> implements Cloneable {
             return;
         }
         int i2 = ~i;
-        int i3 = this.mSize;
-        if (i2 < i3) {
-            Object[] objArr = this.mValues;
-            if (objArr[i2] == DELETED) {
-                this.mKeys[i2] = key;
-                objArr[i2] = value;
-                return;
-            }
+        if (i2 < this.mSize && this.mValues[i2] == DELETED) {
+            this.mKeys[i2] = key;
+            this.mValues[i2] = value;
+            return;
         }
-        if (this.mGarbage && i3 >= this.mKeys.length) {
+        if (this.mGarbage && this.mSize >= this.mKeys.length) {
             gc();
             i2 = ~ContainerHelpers.binarySearch(this.mKeys, this.mSize, key);
         }
@@ -246,12 +225,11 @@ public class SparseArray<E> implements Cloneable {
     }
 
     public void append(int key, E value) {
-        int i = this.mSize;
-        if (i != 0 && key <= this.mKeys[i - 1]) {
+        if (this.mSize != 0 && key <= this.mKeys[this.mSize - 1]) {
             put(key, value);
             return;
         }
-        if (this.mGarbage && i >= this.mKeys.length) {
+        if (this.mGarbage && this.mSize >= this.mKeys.length) {
             gc();
         }
         this.mKeys = GrowingArrayUtils.append(this.mKeys, this.mSize, key);

@@ -84,7 +84,6 @@ public class ArcMotion extends PathMotion {
         float ex;
         float ey;
         float minimumArcDist2;
-        float eDistX;
         float ey2;
         float ex2;
         float newArcDistance2;
@@ -100,11 +99,11 @@ public class ArcMotion extends PathMotion {
         float midDist2 = h2 * 0.25f;
         boolean isMovingUpwards = startY > endY;
         if (deltaY == 0.0f) {
-            eDistX = dx;
+            ex = dx;
             ey = (Math.abs(deltaX) * 0.5f * this.mMinimumHorizontalTangent) + dy;
             minimumArcDist2 = 0.0f;
         } else if (deltaX == 0.0f) {
-            eDistX = (Math.abs(deltaY) * 0.5f * this.mMinimumVerticalTangent) + dx;
+            ex = (Math.abs(deltaY) * 0.5f * this.mMinimumVerticalTangent) + dx;
             ey = dy;
             minimumArcDist2 = 0.0f;
         } else {
@@ -118,31 +117,27 @@ public class ArcMotion extends PathMotion {
                     ey2 = startY + eDistY;
                     ex2 = startX;
                 }
-                float f = this.mMinimumVerticalTangent;
-                float minimumArcDist22 = midDist2 * f * f;
+                float minimumArcDist22 = this.mMinimumVerticalTangent * midDist2 * this.mMinimumVerticalTangent;
                 minimumArcDist2 = minimumArcDist22;
-                eDistX = ex2;
+                ex = ex2;
                 ey = ey2;
             } else {
-                float eDistX2 = h2 / (deltaX * 2.0f);
+                float eDistX = h2 / (deltaX * 2.0f);
                 if (isMovingUpwards) {
-                    ex = startX + eDistX2;
+                    ex = startX + eDistX;
                     ey = startY;
                 } else {
-                    ex = endX - eDistX2;
+                    ex = endX - eDistX;
                     ey = endY;
                 }
-                float f2 = this.mMinimumHorizontalTangent;
-                float minimumArcDist23 = midDist2 * f2 * f2;
+                float minimumArcDist23 = this.mMinimumHorizontalTangent * midDist2 * this.mMinimumHorizontalTangent;
                 minimumArcDist2 = minimumArcDist23;
-                eDistX = ex;
             }
         }
-        float arcDistX = dx - eDistX;
+        float arcDistX = dx - ex;
         float arcDistY = dy - ey;
         float arcDist2 = (arcDistX * arcDistX) + (arcDistY * arcDistY);
-        float f3 = this.mMaximumTangent;
-        float maximumArcDist2 = midDist2 * f3 * f3;
+        float maximumArcDist2 = this.mMaximumTangent * midDist2 * this.mMaximumTangent;
         if (arcDist2 != 0.0f && arcDist2 < minimumArcDist2) {
             float newArcDistance22 = minimumArcDist2;
             newArcDistance2 = newArcDistance22;
@@ -152,13 +147,12 @@ public class ArcMotion extends PathMotion {
             newArcDistance2 = maximumArcDist2;
         }
         if (newArcDistance2 == 0.0f) {
-            ex3 = eDistX;
+            ex3 = ex;
             ey3 = ey;
         } else {
             float ratio2 = newArcDistance2 / arcDist2;
             float ratio = (float) Math.sqrt(ratio2);
-            float ex5 = dx + ((eDistX - dx) * ratio);
-            ex3 = ex5;
+            ex3 = dx + ((ex - dx) * ratio);
             ey3 = dy + ((ey - dy) * ratio);
         }
         float control1X = (startX + ex3) / 2.0f;

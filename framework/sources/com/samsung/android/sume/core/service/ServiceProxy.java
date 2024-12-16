@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Future;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface ServiceProxy {
     public static final String ACTION_START_FOREGROUND = "start-foreground";
     public static final String ACTION_STOP_FOREGROUND = "start-foreground";
@@ -19,12 +19,10 @@ public interface ServiceProxy {
     public static final int OPTION_AS_FOREGROUND = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Action {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Option {
     }
 

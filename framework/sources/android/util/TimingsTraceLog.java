@@ -46,17 +46,15 @@ public class TimingsTraceLog {
     }
 
     private String[] createAndGetStartNamesArray() {
-        int i = this.mMaxNestedCalls;
-        if (i > 0) {
-            return new String[i];
+        if (this.mMaxNestedCalls > 0) {
+            return new String[this.mMaxNestedCalls];
         }
         return null;
     }
 
     private long[] createAndGetStartTimesArray() {
-        int i = this.mMaxNestedCalls;
-        if (i > 0) {
-            return new long[i];
+        if (this.mMaxNestedCalls > 0) {
+            return new long[this.mMaxNestedCalls];
         }
         return null;
     }
@@ -64,31 +62,25 @@ public class TimingsTraceLog {
     public void traceBegin(String name) {
         assertSameThread();
         Trace.traceBegin(this.mTraceTag, name);
-        int i = this.mCurrentLevel;
-        if (i + 1 >= this.mMaxNestedCalls) {
+        if (this.mCurrentLevel + 1 >= this.mMaxNestedCalls) {
             Slog.w(this.mTag, "not tracing duration of '" + name + "' because already reached " + this.mMaxNestedCalls + " levels");
             return;
         }
-        int i2 = i + 1;
-        this.mCurrentLevel = i2;
-        this.mStartNames[i2] = name;
-        this.mStartTimes[i2] = SystemClock.elapsedRealtime();
+        this.mCurrentLevel++;
+        this.mStartNames[this.mCurrentLevel] = name;
+        this.mStartTimes[this.mCurrentLevel] = SystemClock.elapsedRealtime();
     }
 
     public void traceEnd() {
         assertSameThread();
         Trace.traceEnd(this.mTraceTag);
-        int i = this.mCurrentLevel;
-        if (i < 0) {
+        if (this.mCurrentLevel < 0) {
             Slog.w(this.mTag, "traceEnd called more times than traceBegin");
             return;
         }
-        String name = this.mStartNames[i];
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        long[] jArr = this.mStartTimes;
-        int i2 = this.mCurrentLevel;
-        long duration = elapsedRealtime - jArr[i2];
-        this.mCurrentLevel = i2 - 1;
+        String name = this.mStartNames[this.mCurrentLevel];
+        long duration = SystemClock.elapsedRealtime() - this.mStartTimes[this.mCurrentLevel];
+        this.mCurrentLevel--;
         logDuration(name, duration);
     }
 

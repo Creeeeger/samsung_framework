@@ -1,7 +1,7 @@
 package android.text;
 
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class ClipboardManager {
     public abstract CharSequence getText();
 

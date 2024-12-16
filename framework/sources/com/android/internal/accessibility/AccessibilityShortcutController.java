@@ -25,7 +25,9 @@ import android.util.Slog;
 import android.view.ContextThemeWrapper;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.accessibility.A11yLogger;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.Flags;
 import android.widget.Toast;
 import com.android.internal.R;
 import com.android.internal.accessibility.AccessibilityShortcutController;
@@ -43,11 +45,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AccessibilityShortcutController {
+    public static final String LIVE_TRANSCRIBE_CUSTOM_TILE_NAME = "custom(com.google.audio.hearing.visualization.accessibility.scribe/.service.ScribeTileService)";
+    public static final String LIVE_TRANSCRIBE_TILE_NAME = "com.google.audio.hearing.visualization.accessibility.scribe/.service.ScribeTileService";
     public static final String MAGNIFICATION_CONTROLLER_NAME = "com.android.server.accessibility.MagnificationController";
+    public static final String SOUND_NOTIFICATION_CUSTOM_TILE_NAME = "custom(com.google.audio.hearing.visualization.accessibility.scribe/com.google.audio.hearing.visualization.accessibility.dolphin.service.DolphinTileService)";
+    public static final String SOUND_NOTIFICATION_TILE_NAME = "com.google.audio.hearing.visualization.accessibility.scribe/com.google.audio.hearing.visualization.accessibility.dolphin.service.DolphinTileService";
     private static final String TAG = "AccessibilityShortcutController";
     public static final String TALKBACK_SE = "com.samsung.android.accessibility.talkback/com.samsung.android.marvin.talkback.TalkBackService";
     private static Map<ComponentName, FrameworkFeatureInfo> sFrameworkShortcutFeaturesMap;
@@ -65,17 +72,24 @@ public class AccessibilityShortcutController {
     public static final ComponentName ONE_HANDED_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "OneHandedMode");
     public static final ComponentName REDUCE_BRIGHT_COLORS_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "ReduceBrightColors");
     public static final ComponentName FONT_SIZE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "FontSize");
+    public static final ComponentName HIGH_CONTRAST_FONTS_COMPONENT_NAME = new ComponentName("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.HighContrastFontsShortcut");
+    public static final ComponentName COLOR_LENS_COMPONENT_NAME = new ComponentName("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorLensShortcut");
+    public static final ComponentName SOUND_NOTIFICATION_COMPONENT_NAME = new ComponentName(A11yLogger.PACKAGE_NAME_LIVE_TRANSCRIBE, "com.google.audio.hearing.visualization.accessibility.dolphin.ui.visualizer.TimelineActivity");
+    public static final ComponentName LIVE_TRANSCRIBE_COMPONENT_NAME = new ComponentName(A11yLogger.PACKAGE_NAME_LIVE_TRANSCRIBE, "com.google.audio.hearing.visualization.accessibility.scribe.MainActivity");
     public static final ComponentName ACCESSIBILITY_BUTTON_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "AccessibilityButton");
     public static final ComponentName ACCESSIBILITY_HEARING_AIDS_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "HearingAids");
+    public static final ComponentName ACCESSIBILITY_HEARING_AIDS_TILE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "HearingDevicesTile");
     public static final ComponentName COLOR_INVERSION_TILE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "ColorInversionTile");
     public static final ComponentName DALTONIZER_TILE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "ColorCorrectionTile");
     public static final ComponentName ONE_HANDED_TILE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "OneHandedModeTile");
     public static final ComponentName REDUCE_BRIGHT_COLORS_TILE_SERVICE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "ReduceBrightColorsTile");
+    public static final ComponentName FONT_SIZE_TILE_COMPONENT_NAME = new ComponentName("com.android.server.accessibility", "FontSizeTile");
+    public static final ComponentName HIGH_CONTRAST_FONTS_TILE_COMPONENT_NAME = new ComponentName("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.HighContrastFontsShortcutTile");
+    public static final ComponentName COLOR_LENS_TILE_COMPONENT_NAME = new ComponentName("com.android.settings", "com.samsung.android.settings.accessibility.shortcut.ColorLensShortcutTile");
     private static final AudioAttributes VIBRATION_ATTRIBUTES = new AudioAttributes.Builder().setContentType(4).setUsage(11).build();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
-    private @interface DialogStatus {
+    public @interface DialogStatus {
         public static final int NOT_SHOWN = 0;
         public static final int SHOWN = 1;
     }
@@ -101,10 +115,6 @@ public class AccessibilityShortcutController {
         this.mUserId = initialUserId;
         this.mUserSetupCompleteObserver = new UserSetupCompleteObserver(handler, initialUserId);
         ContentObserver co = new ContentObserver(handler) { // from class: com.android.internal.accessibility.AccessibilityShortcutController.1
-            AnonymousClass1(Handler handler2) {
-                super(handler2);
-            }
-
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
                 if (userId == AccessibilityShortcutController.this.mUserId) {
@@ -112,25 +122,10 @@ public class AccessibilityShortcutController {
                 }
             }
         };
-        context.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE), false, co, -1);
-        context.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN), false, co, -1);
-        context.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN), false, co, -1);
+        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE), false, co, -1);
+        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_ON_LOCK_SCREEN), false, co, -1);
+        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN), false, co, -1);
         setCurrentUser(this.mUserId);
-    }
-
-    /* renamed from: com.android.internal.accessibility.AccessibilityShortcutController$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ContentObserver {
-        AnonymousClass1(Handler handler2) {
-            super(handler2);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
-            if (userId == AccessibilityShortcutController.this.mUserId) {
-                AccessibilityShortcutController.this.onSettingsChanged();
-            }
-        }
     }
 
     public void setCurrentUser(int currentUserId) {
@@ -158,6 +153,7 @@ public class AccessibilityShortcutController {
         String shortcutTargetService = Settings.Secure.getStringForUser(cr, Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, userId);
         if (shortcutTargetService == null && AccessibilityUtils.isSetupWizard(this.mContext)) {
             Slog.d(TAG, "Accessibility shortcutTargetService == null");
+            A11yLogger.insertLog(this.mContext, A11yLogger.SA_ACCESSIBILITY_SETUPWIZARD_VOLUME_UP_DOWN);
             Settings.Secure.putStringForUser(cr, Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, TALKBACK_SE, userId);
             shortcutTargetService = TALKBACK_SE;
         }
@@ -175,12 +171,11 @@ public class AccessibilityShortcutController {
             }
         }
         if (shouldShowDialog()) {
-            AlertDialog createShortcutWarningDialog = createShortcutWarningDialog(userId);
-            this.mAlertDialog = createShortcutWarningDialog;
-            if (createShortcutWarningDialog == null) {
+            this.mAlertDialog = createShortcutWarningDialog(userId);
+            if (this.mAlertDialog == null) {
                 return;
             }
-            if (!performTtsPrompt(createShortcutWarningDialog)) {
+            if (!performTtsPrompt(this.mAlertDialog)) {
                 playNotificationTone();
             }
             Window w = this.mAlertDialog.getWindow();
@@ -190,6 +185,9 @@ public class AccessibilityShortcutController {
             this.mAlertDialog.show();
             Settings.Secure.putIntForUser(cr, Settings.Secure.ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, 1, userId);
             return;
+        }
+        if (Flags.restoreA11yShortcutTargetService()) {
+            enableDefaultHardwareShortcut(userId);
         }
         if (shortcutTargetService != null && shortcutTargetService.contains("com.samsung.accessibility/com.samsung.accessibility.shortcut.InteractionControlShortcut") && AccessibilityUtils.isAccessControlEnabled(this.mContext)) {
             Slog.d(TAG, "Interaction Control is activated");
@@ -201,9 +199,11 @@ public class AccessibilityShortcutController {
             AccessibilityUtils.setAccessibilityServiceState(this.mContext, ComponentName.unflattenFromString("com.samsung.accessibility/com.samsung.accessibility.universalswitch.UniversalSwitchService"), false, userId);
             return;
         }
-        AlertDialog alertDialog = this.mAlertDialog;
-        if (alertDialog != null) {
-            alertDialog.dismiss();
+        if (Flags.restoreA11yShortcutTargetService()) {
+            enableDefaultHardwareShortcut(userId);
+        }
+        if (this.mAlertDialog != null) {
+            this.mAlertDialog.dismiss();
             this.mAlertDialog = null;
         }
         showToast();
@@ -248,31 +248,49 @@ public class AccessibilityShortcutController {
     }
 
     private AlertDialog createShortcutWarningDialog(final int userId) {
-        List<AccessibilityTarget> targets = AccessibilityTargetHelper.getTargets(this.mContext, 1);
+        List<AccessibilityTarget> targets = AccessibilityTargetHelper.getTargets(this.mContext, 2);
         if (targets.size() == 0) {
             return null;
         }
-        FrameworkObjectProvider frameworkObjectProvider = this.mFrameworkObjectProvider;
-        AlertDialog alertDialog = frameworkObjectProvider.getAlertDialogBuilder(frameworkObjectProvider.getSystemUiContext()).setTitle(getShortcutWarningTitle(targets)).setMessage(getShortcutWarningMessage(targets)).setCancelable(false).setPositiveButton(R.string.accessibility_shortcut_use, (DialogInterface.OnClickListener) null).setNegativeButton(R.string.accessibility_shortcut_dont_use, new DialogInterface.OnClickListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda0
+        final AccessibilityManager am = this.mFrameworkObjectProvider.getAccessibilityManagerInstance(this.mContext);
+        AlertDialog alertDialog = this.mFrameworkObjectProvider.getAlertDialogBuilder(this.mFrameworkObjectProvider.getSystemUiContext()).setTitle(getShortcutWarningTitle(targets)).setMessage(getShortcutWarningMessage(targets)).setCancelable(false).setPositiveButton(R.string.accessibility_shortcut_use, new DialogInterface.OnClickListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda1
             @Override // android.content.DialogInterface.OnClickListener
             public final void onClick(DialogInterface dialogInterface, int i) {
                 AccessibilityShortcutController.this.lambda$createShortcutWarningDialog$0(userId, dialogInterface, i);
             }
-        }).setOnCancelListener(new DialogInterface.OnCancelListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda1
+        }).setNegativeButton(R.string.accessibility_shortcut_dont_use, new DialogInterface.OnClickListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda2
+            @Override // android.content.DialogInterface.OnClickListener
+            public final void onClick(DialogInterface dialogInterface, int i) {
+                AccessibilityShortcutController.this.lambda$createShortcutWarningDialog$1(userId, am, dialogInterface, i);
+            }
+        }).setOnCancelListener(new DialogInterface.OnCancelListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda3
             @Override // android.content.DialogInterface.OnCancelListener
             public final void onCancel(DialogInterface dialogInterface) {
-                AccessibilityShortcutController.this.lambda$createShortcutWarningDialog$1(userId, dialogInterface);
+                AccessibilityShortcutController.this.lambda$createShortcutWarningDialog$2(userId, dialogInterface);
             }
         }).create();
         return alertDialog;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$createShortcutWarningDialog$0(int userId, DialogInterface d, int which) {
-        Settings.Secure.putStringForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, "", userId);
+        enableDefaultHardwareShortcut(userId);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$createShortcutWarningDialog$1(int userId, AccessibilityManager am, DialogInterface d, int which) {
+        Set<String> targetServices = ShortcutUtils.getShortcutTargetsFromSettings(this.mContext, 2, userId);
+        if (Flags.migrateEnableShortcuts()) {
+            am.enableShortcutsForTargets(false, 2, targetServices, userId);
+        } else {
+            Settings.Secure.putStringForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, "", userId);
+            ShortcutUtils.updateInvisibleToggleAccessibilityServiceEnableState(this.mContext, targetServices, userId);
+        }
         Settings.Secure.putIntForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, 0, userId);
     }
 
-    public /* synthetic */ void lambda$createShortcutWarningDialog$1(int userId, DialogInterface d) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$createShortcutWarningDialog$2(int userId, DialogInterface d) {
         Settings.Secure.putIntForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_DIALOG_SHOWN, 0, userId);
     }
 
@@ -330,10 +348,12 @@ public class AccessibilityShortcutController {
         return accessibilityManager.getEnabledAccessibilityServiceList(-1).contains(serviceInfo);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean hasFeatureLeanback() {
         return this.mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void playNotificationTone() {
         int audioAttributesUsage;
         if (hasFeatureLeanback()) {
@@ -352,6 +372,24 @@ public class AccessibilityShortcutController {
         }
     }
 
+    private void enableDefaultHardwareShortcut(int userId) {
+        AccessibilityManager accessibilityManager = this.mFrameworkObjectProvider.getAccessibilityManagerInstance(this.mContext);
+        String targetServices = Settings.Secure.getStringForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, userId);
+        if (targetServices != null) {
+            return;
+        }
+        String defaultService = this.mContext.getString(R.string.config_defaultAccessibilityService);
+        ComponentName defaultServiceComponent = TextUtils.isEmpty(defaultService) ? null : ComponentName.unflattenFromString(defaultService);
+        if (defaultServiceComponent == null) {
+            return;
+        }
+        if (Flags.migrateEnableShortcuts()) {
+            accessibilityManager.enableShortcutsForTargets(true, 2, Set.of(defaultServiceComponent.flattenToString()), userId);
+        } else {
+            Settings.Secure.putStringForUser(this.mContext.getContentResolver(), Settings.Secure.ACCESSIBILITY_SHORTCUT_TARGET_SERVICE, defaultServiceComponent.flattenToString(), userId);
+        }
+    }
+
     private boolean performTtsPrompt(AlertDialog alertDialog) {
         String serviceName = getShortcutFeatureDescription(false);
         AccessibilityServiceInfo serviceInfo = getInfoForTargetService();
@@ -359,7 +397,7 @@ public class AccessibilityShortcutController {
             return false;
         }
         final TtsPrompt tts = new TtsPrompt(serviceName);
-        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda2
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$$ExternalSyntheticLambda0
             @Override // android.content.DialogInterface.OnDismissListener
             public final void onDismiss(DialogInterface dialogInterface) {
                 AccessibilityShortcutController.TtsPrompt.this.dismiss();
@@ -377,15 +415,15 @@ public class AccessibilityShortcutController {
     }
 
     private ComponentName getShortcutTargetComponentName() {
-        List<String> shortcutTargets = this.mFrameworkObjectProvider.getAccessibilityManagerInstance(this.mContext).getAccessibilityShortcutTargets(1);
+        List<String> shortcutTargets = this.mFrameworkObjectProvider.getAccessibilityManagerInstance(this.mContext).getAccessibilityShortcutTargets(2);
         if (shortcutTargets.size() != 1) {
             return null;
         }
         return ComponentName.unflattenFromString(shortcutTargets.get(0));
     }
 
-    /* loaded from: classes4.dex */
-    public class TtsPrompt implements TextToSpeech.OnInitListener {
+    /* JADX INFO: Access modifiers changed from: private */
+    class TtsPrompt implements TextToSpeech.OnInitListener {
         private static final int RETRY_MILLIS = 1000;
         private boolean mDismiss;
         private final CharSequence mText;
@@ -409,10 +447,11 @@ public class AccessibilityShortcutController {
                 Slog.d(AccessibilityShortcutController.TAG, "Tts init fail, status=" + Integer.toString(status));
                 AccessibilityShortcutController.this.playNotificationTone();
             } else {
-                AccessibilityShortcutController.this.mHandler.sendMessage(PooledLambda.obtainMessage(new AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda0(), this));
+                AccessibilityShortcutController.this.mHandler.sendMessage(PooledLambda.obtainMessage(new AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda1(), this));
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void play() {
             if (this.mDismiss) {
                 return;
@@ -424,6 +463,7 @@ public class AccessibilityShortcutController {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void waitForTtsReady() {
             if (this.mDismiss) {
                 return;
@@ -439,7 +479,7 @@ public class AccessibilityShortcutController {
                     voiceDataInstalled = true;
                 }
                 if (voiceDataInstalled) {
-                    AccessibilityShortcutController.this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda1
+                    AccessibilityShortcutController.this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.internal.accessibility.AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda0
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
                             ((AccessibilityShortcutController.TtsPrompt) obj).play();
@@ -448,19 +488,17 @@ public class AccessibilityShortcutController {
                     return;
                 }
             }
-            int i = this.mRetryCount;
-            if (i == 0) {
+            if (this.mRetryCount == 0) {
                 Slog.d(AccessibilityShortcutController.TAG, "Tts not ready to speak.");
                 AccessibilityShortcutController.this.playNotificationTone();
             } else {
-                this.mRetryCount = i - 1;
-                AccessibilityShortcutController.this.mHandler.sendMessageDelayed(PooledLambda.obtainMessage(new AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda0(), this), 1000L);
+                this.mRetryCount--;
+                AccessibilityShortcutController.this.mHandler.sendMessageDelayed(PooledLambda.obtainMessage(new AccessibilityShortcutController$TtsPrompt$$ExternalSyntheticLambda1(), this), 1000L);
             }
         }
     }
 
-    /* loaded from: classes4.dex */
-    public class UserSetupCompleteObserver extends ContentObserver {
+    private class UserSetupCompleteObserver extends ContentObserver {
         private boolean mIsRegistered;
         private int mUserId;
 
@@ -532,7 +570,6 @@ public class AccessibilityShortcutController {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class FrameworkFeatureInfo {
         private final int mLabelStringResourceId;
         private final String mSettingKey;
@@ -563,21 +600,18 @@ public class AccessibilityShortcutController {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ToggleableFrameworkFeatureInfo extends FrameworkFeatureInfo {
         ToggleableFrameworkFeatureInfo(String settingKey, String settingOnValue, String settingOffValue, int labelStringResourceId) {
             super(settingKey, settingOnValue, settingOffValue, labelStringResourceId);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class LaunchableFrameworkFeatureInfo extends FrameworkFeatureInfo {
         LaunchableFrameworkFeatureInfo(int labelStringResourceId) {
             super(null, null, null, labelStringResourceId);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class FrameworkObjectProvider {
         public AccessibilityManager getAccessibilityManagerInstance(Context context) {
             return AccessibilityManager.getInstance(context);
@@ -594,9 +628,6 @@ public class AccessibilityShortcutController {
         }
 
         public Context getSystemUiContext() {
-            if (AccessibilityUtils.isFoldedLargeCoverScreen()) {
-                return ActivityThread.currentActivityThread().getSystemUiContext(1);
-            }
             return ActivityThread.currentActivityThread().getSystemUiContext();
         }
 

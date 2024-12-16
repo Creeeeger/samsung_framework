@@ -1,13 +1,12 @@
 package com.samsung.android.allshare.extension;
 
-import android.telecom.TelecomManager;
 import com.samsung.android.allshare.DLog;
 import com.samsung.android.share.SemShareConstants;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public class SECVideoCaption {
     private static final String TAG_CLASS = "SECVideoCaption";
     private static String mSubTitleURL;
@@ -19,14 +18,13 @@ public class SECVideoCaption {
         GetSECCaption mGetSubTitleThread = new GetSECCaption(resourceURL);
         mGetSubTitleThread.start();
         try {
-            mGetSubTitleThread.join(TelecomManager.VERY_SHORT_CALL_TIME_MS);
+            mGetSubTitleThread.join(3000L);
         } catch (InterruptedException e) {
             DLog.w_api(TAG_CLASS, "getSubTitleURL : InterruptedException", e);
         }
         return mSubTitleURL;
     }
 
-    /* loaded from: classes5.dex */
     private static class GetSECCaption extends Thread {
         private String mVideoURL;
 

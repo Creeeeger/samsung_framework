@@ -17,7 +17,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.system.OsConstants;
 import android.util.Log;
+import android.view.flags.Flags;
 import dalvik.system.CloseGuard;
+import dalvik.system.VMRuntime;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -26,9 +28,7 @@ public class Surface implements Parcelable {
     public static final int CHANGE_FRAME_RATE_ALWAYS = 1;
     public static final int CHANGE_FRAME_RATE_ONLY_IF_SEAMLESS = 0;
     public static final Parcelable.Creator<Surface> CREATOR = new Parcelable.Creator<Surface>() { // from class: android.view.Surface.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Surface createFromParcel(Parcel source) {
             try {
@@ -41,14 +41,22 @@ public class Surface implements Parcelable {
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Surface[] newArray(int size) {
             return new Surface[size];
         }
     };
+    public static final int FRAME_RATE_CATEGORY_DEFAULT = 0;
+    public static final int FRAME_RATE_CATEGORY_HIGH = 5;
+    public static final int FRAME_RATE_CATEGORY_HIGH_HINT = 4;
+    public static final int FRAME_RATE_CATEGORY_LOW = 2;
+    public static final int FRAME_RATE_CATEGORY_NORMAL = 3;
+    public static final int FRAME_RATE_CATEGORY_NO_PREFERENCE = 1;
     public static final int FRAME_RATE_COMPATIBILITY_DEFAULT = 0;
     public static final int FRAME_RATE_COMPATIBILITY_EXACT = 100;
     public static final int FRAME_RATE_COMPATIBILITY_FIXED_SOURCE = 1;
+    public static final int FRAME_RATE_COMPATIBILITY_GTE = 103;
     public static final int FRAME_RATE_COMPATIBILITY_MIN = 102;
     public static final int FRAME_RATE_COMPATIBILITY_NO_VOTE = 101;
     public static final int ROTATION_0 = 0;
@@ -59,37 +67,38 @@ public class Surface implements Parcelable {
     public static final int SCALING_MODE_NO_SCALE_CROP = 3;
     public static final int SCALING_MODE_SCALE_CROP = 2;
     public static final int SCALING_MODE_SCALE_TO_WINDOW = 1;
+    private static final long SURFACE_NATIVE_ALLOCATION_SIZE_BYTES = 5000;
     private static final String TAG = "Surface";
-    private final Canvas mCanvas;
-    private final CloseGuard mCloseGuard;
     private Matrix mCompatibleMatrix;
     private int mGenerationId;
     private HwuiContext mHwuiContext;
     private boolean mIsAutoRefreshEnabled;
     private boolean mIsSharedBufferModeEnabled;
     private boolean mIsSingleBuffered;
-    final Object mLock;
     private long mLockedObject;
     private String mName;
     long mNativeObject;
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    final Object mLock = new Object();
+    private final Canvas mCanvas = new CompatibleCanvas();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ChangeFrameRateStrategy {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
+    public @interface FrameRateCategory {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface FrameRateCompatibility {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Rotation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface ScalingMode {
     }
 
@@ -137,90 +146,54 @@ public class Surface implements Parcelable {
 
     private static native void nativeWriteToParcel(long j, Parcel parcel);
 
-    /* renamed from: android.view.Surface$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Surface> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Surface createFromParcel(Parcel source) {
-            try {
-                Surface s = new Surface();
-                s.readFromParcel(source);
-                return s;
-            } catch (Exception e) {
-                Log.e(Surface.TAG, "Exception creating surface from parcel", e);
-                return null;
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Surface[] newArray(int size) {
-            return new Surface[size];
-        }
-    }
-
     public Surface() {
-        this.mCloseGuard = CloseGuard.get();
-        this.mLock = new Object();
-        this.mCanvas = new CompatibleCanvas();
+        registerNativeMemoryUsage();
     }
 
     public Surface(SurfaceControl from) {
-        this.mCloseGuard = CloseGuard.get();
-        this.mLock = new Object();
-        this.mCanvas = new CompatibleCanvas();
         copyFrom(from);
+        registerNativeMemoryUsage();
     }
 
     public Surface(SurfaceTexture surfaceTexture) {
-        this.mCloseGuard = CloseGuard.get();
-        Object obj = new Object();
-        this.mLock = obj;
-        this.mCanvas = new CompatibleCanvas();
         if (surfaceTexture == null) {
             throw new IllegalArgumentException("surfaceTexture must not be null");
         }
         this.mIsSingleBuffered = surfaceTexture.isSingleBuffered();
-        synchronized (obj) {
+        synchronized (this.mLock) {
             this.mName = surfaceTexture.toString();
             setNativeObjectLocked(nativeCreateFromSurfaceTexture(surfaceTexture));
         }
+        registerNativeMemoryUsage();
     }
 
     private Surface(long nativeObject) {
-        this.mCloseGuard = CloseGuard.get();
-        Object obj = new Object();
-        this.mLock = obj;
-        this.mCanvas = new CompatibleCanvas();
-        synchronized (obj) {
+        synchronized (this.mLock) {
             setNativeObjectLocked(nativeObject);
         }
+        registerNativeMemoryUsage();
     }
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             release();
         } finally {
             super.finalize();
+            freeNativeMemoryUsage();
         }
     }
 
     public void release() {
         synchronized (this.mLock) {
-            HwuiContext hwuiContext = this.mHwuiContext;
-            if (hwuiContext != null) {
-                hwuiContext.destroy();
+            if (this.mHwuiContext != null) {
+                this.mHwuiContext.destroy();
                 this.mHwuiContext = null;
             }
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeRelease(j);
+            if (this.mNativeObject != 0) {
+                nativeRelease(this.mNativeObject);
                 setNativeObjectLocked(0L);
             }
         }
@@ -228,29 +201,26 @@ public class Surface implements Parcelable {
 
     public void destroy() {
         synchronized (this.mLock) {
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeDestroy(j);
+            if (this.mNativeObject != 0) {
+                nativeDestroy(this.mNativeObject);
             }
             release();
         }
     }
 
     public void hwuiDestroy() {
-        HwuiContext hwuiContext = this.mHwuiContext;
-        if (hwuiContext != null) {
-            hwuiContext.destroy();
+        if (this.mHwuiContext != null) {
+            this.mHwuiContext.destroy();
             this.mHwuiContext = null;
         }
     }
 
     public boolean isValid() {
         synchronized (this.mLock) {
-            long j = this.mNativeObject;
-            if (j == 0) {
+            if (this.mNativeObject == 0) {
                 return false;
             }
-            return nativeIsValid(j);
+            return nativeIsValid(this.mNativeObject);
         }
     }
 
@@ -305,9 +275,8 @@ public class Surface implements Parcelable {
     public void unlockCanvasAndPost(Canvas canvas) {
         synchronized (this.mLock) {
             checkNotReleasedLocked();
-            HwuiContext hwuiContext = this.mHwuiContext;
-            if (hwuiContext != null) {
-                hwuiContext.unlockAndPost(canvas);
+            if (this.mHwuiContext != null) {
+                this.mHwuiContext.unlockAndPost(canvas);
             } else {
                 unlockSwCanvasAndPost(canvas);
             }
@@ -321,12 +290,11 @@ public class Surface implements Parcelable {
         if (this.mNativeObject != this.mLockedObject) {
             Log.w(TAG, "WARNING: Surface's mNativeObject (0x" + Long.toHexString(this.mNativeObject) + ") != mLockedObject (0x" + Long.toHexString(this.mLockedObject) + NavigationBarInflaterView.KEY_CODE_END);
         }
-        long j = this.mLockedObject;
-        if (j == 0) {
+        if (this.mLockedObject == 0) {
             throw new IllegalStateException("Surface was not locked");
         }
         try {
-            nativeUnlockCanvasAndPost(j, canvas);
+            nativeUnlockCanvasAndPost(this.mLockedObject, canvas);
         } finally {
             nativeRelease(this.mLockedObject);
             this.mLockedObject = 0L;
@@ -349,8 +317,7 @@ public class Surface implements Parcelable {
         Canvas lockCanvas;
         synchronized (this.mLock) {
             checkNotReleasedLocked();
-            HwuiContext hwuiContext = this.mHwuiContext;
-            if (hwuiContext != null && !hwuiContext.isWideColorGamut()) {
+            if (this.mHwuiContext != null && !this.mHwuiContext.isWideColorGamut()) {
                 this.mHwuiContext.destroy();
                 this.mHwuiContext = null;
             }
@@ -367,23 +334,21 @@ public class Surface implements Parcelable {
         throw new UnsupportedOperationException();
     }
 
-    public void setCompatibilityTranslator(CompatibilityInfo.Translator translator) {
+    void setCompatibilityTranslator(CompatibilityInfo.Translator translator) {
         if (translator != null) {
             float appScale = translator.applicationScale;
-            Matrix matrix = new Matrix();
-            this.mCompatibleMatrix = matrix;
-            matrix.setScale(appScale, appScale);
+            this.mCompatibleMatrix = new Matrix();
+            this.mCompatibleMatrix.setScale(appScale, appScale);
         }
     }
 
     private void updateNativeObject(long newNativeObject) {
         synchronized (this.mLock) {
-            long j = this.mNativeObject;
-            if (newNativeObject == j) {
+            if (newNativeObject == this.mNativeObject) {
                 return;
             }
-            if (j != 0) {
-                nativeRelease(j);
+            if (this.mNativeObject != 0) {
+                nativeRelease(this.mNativeObject);
             }
             setNativeObjectLocked(newNativeObject);
         }
@@ -423,9 +388,8 @@ public class Surface implements Parcelable {
         }
         long newNativeObject = nativeCreateFromSurfaceControl(surfaceControlPtr);
         synchronized (this.mLock) {
-            long j = this.mNativeObject;
-            if (j != 0) {
-                nativeRelease(j);
+            if (this.mNativeObject != 0) {
+                nativeRelease(this.mNativeObject);
             }
             setNativeObjectLocked(newNativeObject);
         }
@@ -443,9 +407,8 @@ public class Surface implements Parcelable {
                 other.setNativeObjectLocked(0L);
             }
             synchronized (this.mLock) {
-                long j = this.mNativeObject;
-                if (j != 0) {
-                    nativeRelease(j);
+                if (this.mNativeObject != 0) {
+                    nativeRelease(this.mNativeObject);
                 }
                 setNativeObjectLocked(newPtr);
             }
@@ -486,24 +449,22 @@ public class Surface implements Parcelable {
     public String toString() {
         String str;
         synchronized (this.mLock) {
-            str = "Surface(name=" + this.mName + ")/@0x" + Integer.toHexString(System.identityHashCode(this));
+            str = "Surface(name=" + this.mName + " mNativeObject=" + this.mNativeObject + ")/@0x" + Integer.toHexString(System.identityHashCode(this));
         }
         return str;
     }
 
     private void setNativeObjectLocked(long ptr) {
-        long j = this.mNativeObject;
-        if (j != ptr) {
-            if (j == 0 && ptr != 0) {
+        if (this.mNativeObject != ptr) {
+            if (this.mNativeObject == 0 && ptr != 0) {
                 this.mCloseGuard.open("Surface.release");
-            } else if (j != 0 && ptr == 0) {
+            } else if (this.mNativeObject != 0 && ptr == 0) {
                 this.mCloseGuard.close();
             }
             this.mNativeObject = ptr;
             this.mGenerationId++;
-            HwuiContext hwuiContext = this.mHwuiContext;
-            if (hwuiContext != null) {
-                hwuiContext.updateSurface();
+            if (this.mHwuiContext != null) {
+                this.mHwuiContext.updateSurface();
             }
         }
     }
@@ -531,7 +492,7 @@ public class Surface implements Parcelable {
         }
     }
 
-    public void forceScopedDisconnect() {
+    void forceScopedDisconnect() {
         synchronized (this.mLock) {
             checkNotReleasedLocked();
             int err = nativeForceScopedDisconnect(this.mNativeObject);
@@ -594,7 +555,7 @@ public class Surface implements Parcelable {
                 throw new IllegalArgumentException("Invalid argument to Surface.setFrameRate()");
             }
             if (error != 0) {
-                throw new RuntimeException("Failed to set frame rate on Surface. Native error: " + error);
+                Log.e(TAG, "Failed to set frame rate on Surface. Native error: " + error);
             }
         }
     }
@@ -613,7 +574,6 @@ public class Surface implements Parcelable {
         setFrameRate(frameRate, compatibility, 0);
     }
 
-    /* loaded from: classes4.dex */
     public static class OutOfResourcesException extends RuntimeException {
         public OutOfResourcesException() {
         }
@@ -638,14 +598,8 @@ public class Surface implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public final class CompatibleCanvas extends Canvas {
+    private final class CompatibleCanvas extends Canvas {
         private Matrix mOrigMatrix;
-
-        /* synthetic */ CompatibleCanvas(Surface surface, CompatibleCanvasIA compatibleCanvasIA) {
-            this();
-        }
 
         private CompatibleCanvas() {
             this.mOrigMatrix = null;
@@ -653,8 +607,7 @@ public class Surface implements Parcelable {
 
         @Override // android.graphics.Canvas
         public void setMatrix(Matrix matrix) {
-            Matrix matrix2;
-            if (Surface.this.mCompatibleMatrix == null || (matrix2 = this.mOrigMatrix) == null || matrix2.equals(matrix)) {
+            if (Surface.this.mCompatibleMatrix == null || this.mOrigMatrix == null || this.mOrigMatrix.equals(matrix)) {
                 super.setMatrix(matrix);
                 return;
             }
@@ -673,22 +626,18 @@ public class Surface implements Parcelable {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class HwuiContext {
+    private final class HwuiContext {
         private RecordingCanvas mCanvas;
         private HardwareRenderer mHardwareRenderer;
         private final boolean mIsWideColorGamut;
-        private final RenderNode mRenderNode;
+        private final RenderNode mRenderNode = RenderNode.create("HwuiCanvas", null);
 
         HwuiContext(boolean isWideColorGamut) {
-            RenderNode create = RenderNode.create("HwuiCanvas", null);
-            this.mRenderNode = create;
-            create.setClipToBounds(false);
-            create.setForceDarkAllowed(false);
+            this.mRenderNode.setClipToBounds(false);
+            this.mRenderNode.setForceDarkAllowed(false);
             this.mIsWideColorGamut = isWideColorGamut;
-            HardwareRenderer hardwareRenderer = new HardwareRenderer();
-            this.mHardwareRenderer = hardwareRenderer;
-            hardwareRenderer.setContentRoot(create);
+            this.mHardwareRenderer = new HardwareRenderer();
+            this.mHardwareRenderer.setContentRoot(this.mRenderNode);
             this.mHardwareRenderer.setSurface(Surface.this, true);
             this.mHardwareRenderer.setColorMode(isWideColorGamut ? 1 : 0);
             this.mHardwareRenderer.setLightSourceAlpha(0.0f, 0.0f);
@@ -699,9 +648,8 @@ public class Surface implements Parcelable {
             if (this.mCanvas != null) {
                 throw new IllegalStateException("Surface was already locked!");
             }
-            RecordingCanvas beginRecording = this.mRenderNode.beginRecording(width, height);
-            this.mCanvas = beginRecording;
-            return beginRecording;
+            this.mCanvas = this.mRenderNode.beginRecording(width, height);
+            return this.mCanvas;
         }
 
         void unlockAndPost(Canvas canvas) {
@@ -723,6 +671,18 @@ public class Surface implements Parcelable {
 
         boolean isWideColorGamut() {
             return this.mIsWideColorGamut;
+        }
+    }
+
+    private static void registerNativeMemoryUsage() {
+        if (Flags.enableSurfaceNativeAllocRegistrationRo()) {
+            VMRuntime.getRuntime().registerNativeAllocation(5000L);
+        }
+    }
+
+    private static void freeNativeMemoryUsage() {
+        if (Flags.enableSurfaceNativeAllocRegistrationRo()) {
+            VMRuntime.getRuntime().registerNativeFree(5000L);
         }
     }
 }

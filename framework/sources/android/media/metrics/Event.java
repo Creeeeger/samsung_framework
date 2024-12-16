@@ -7,7 +7,7 @@ public abstract class Event {
     Bundle mMetricsBundle;
     final long mTimeSinceCreatedMillis;
 
-    public Event() {
+    Event() {
         this.mMetricsBundle = new Bundle();
         this.mTimeSinceCreatedMillis = -1L;
     }

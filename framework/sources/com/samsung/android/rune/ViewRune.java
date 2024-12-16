@@ -6,9 +6,9 @@ import android.os.SemSystemProperties;
 import android.os.SystemProperties;
 import com.samsung.android.feature.SemFloatingFeature;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ViewRune {
-    public static final boolean APPWIDGET_COMPLICATION;
+    public static final boolean APPWIDGET_COMMONIZATION = true;
     public static final boolean AUTOFILL_SEP = true;
     public static final boolean AUTOFILL_SUPPORT_DUAL_DEX = true;
     public static final boolean BUILD_TYPE_ENG;
@@ -62,7 +62,8 @@ public class ViewRune {
     public static final boolean SUPPORT_DIRECT_WRITING;
     public static final boolean SUPPORT_DIRECT_WRITING_INPUT_CONNECTION = false;
     public static final boolean SUPPORT_EAGLE_EYE;
-    public static final boolean SYSTEM_STB = false;
+    public static final boolean SUPPORT_WRITING_TOOLKIT;
+    public static final boolean SYSTEM_STB = true;
     private static final String TAG = "ViewRune";
     public static final boolean UIMODEMANAGER_NIGHT_MODE = true;
     public static final boolean VIEWCORE_AID = true;
@@ -119,51 +120,44 @@ public class ViewRune {
     public static final boolean COMMON_IS_PRODUCT_DEV = Debug.semIsProductDev();
 
     static {
-        boolean z = false;
-        boolean z2 = Build.VERSION.SEM_PLATFORM_INT >= 110100;
-        COMMON_ONEUI_2_1 = z2;
-        boolean z3 = Build.VERSION.SEM_PLATFORM_INT >= 110500;
-        COMMON_ONEUI_2_5 = z3;
-        boolean z4 = Build.VERSION.SEM_PLATFORM_INT >= 120100;
-        COMMON_ONEUI_3_1 = z4;
+        boolean z;
+        COMMON_ONEUI_2_1 = Build.VERSION.SEM_PLATFORM_INT >= 110100;
+        COMMON_ONEUI_2_5 = Build.VERSION.SEM_PLATFORM_INT >= 110500;
+        COMMON_ONEUI_3_1 = Build.VERSION.SEM_PLATFORM_INT >= 120100;
         COMMON_ONEUI_3_1_1 = Build.VERSION.SEM_PLATFORM_INT >= 120500;
-        boolean z5 = Build.VERSION.SEM_PLATFORM_INT >= 130100;
-        COMMON_ONEUI_4_1 = z5;
+        COMMON_ONEUI_4_1 = Build.VERSION.SEM_PLATFORM_INT >= 130100;
         COMMON_ONEUI_5_1_1 = Build.VERSION.SEM_PLATFORM_INT >= 140500;
-        boolean z6 = Build.VERSION.SEM_PLATFORM_INT >= 150100;
-        ONE_UI_6_1 = z6;
-        String string = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_NAVIGATION_BAR_THEME", "");
-        NAVIBAR_FLOATING_FEATURES = string;
-        NAVIBAR_ENABLED = !string.isEmpty();
-        NAVIBAR_SUPPORT_LIGHT_NAVIGATIONBAR = string.contains("SupportLightNavigationBar");
-        APPWIDGET_COMPLICATION = z6;
-        SHAREVIA_NEARBY_SHARING = z3;
-        SHAREVIA_REMOVE_EXIF = z4;
-        SHAREVIA_CHIP_BUTTON_FOR_NEARBY = z4;
-        SHAREVIA_SUPPORT_SHARE_STAR_CHIP_BUTTON = z4;
-        SHAREVIA_SMART_TIP_REPEAT = z5;
-        SHAREVIA_SUPPORT_SECURE_FOLDER_PRIVATE_SHARE = z5;
-        SHAREVIA_SUPPORT_INCLUDE_ORIGINAL_OPTION_MENU = z5;
+        ONE_UI_6_1 = Build.VERSION.SEM_PLATFORM_INT >= 150100;
+        NAVIBAR_FLOATING_FEATURES = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_NAVIGATION_BAR_THEME", "");
+        NAVIBAR_ENABLED = !NAVIBAR_FLOATING_FEATURES.isEmpty();
+        NAVIBAR_SUPPORT_LIGHT_NAVIGATIONBAR = NAVIBAR_FLOATING_FEATURES.contains("SupportLightNavigationBar");
+        SHAREVIA_NEARBY_SHARING = COMMON_ONEUI_2_5;
+        SHAREVIA_REMOVE_EXIF = COMMON_ONEUI_3_1;
+        SHAREVIA_CHIP_BUTTON_FOR_NEARBY = COMMON_ONEUI_3_1;
+        SHAREVIA_SUPPORT_SHARE_STAR_CHIP_BUTTON = SHAREVIA_CHIP_BUTTON_FOR_NEARBY;
+        SHAREVIA_SMART_TIP_REPEAT = COMMON_ONEUI_4_1;
+        SHAREVIA_SUPPORT_SECURE_FOLDER_PRIVATE_SHARE = COMMON_ONEUI_4_1;
+        SHAREVIA_SUPPORT_INCLUDE_ORIGINAL_OPTION_MENU = COMMON_ONEUI_4_1;
         BUILD_TYPE_ENG = "eng".equals(Build.TYPE);
         SHIP_BUILD = "true".equals(SemSystemProperties.get("ro.product_ship", "false"));
         WIDGET_SSS_TRANSLATE_SUPPORTED = !SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_DISABLE_NATIVE_AI", false);
-        boolean z7 = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_SPEN_VERSION", -1) > 0;
-        WIDGET_PEN_SUPPORTED = z7;
-        WIDGET_MULTIPLE_PEN_TEXT_SUPPORTED = z7;
-        WIDGET_SEARCHVIEW_USE_SVI = z2;
+        WIDGET_PEN_SUPPORTED = SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_FRAMEWORK_CONFIG_SPEN_VERSION", -1) > 0;
+        WIDGET_MULTIPLE_PEN_TEXT_SUPPORTED = WIDGET_PEN_SUPPORTED;
+        WIDGET_SEARCHVIEW_USE_SVI = COMMON_ONEUI_2_1;
         WIDGET_COPYANDPASTE_LOGGING = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_CONTEXTSERVICE_ENABLE_SURVEY_MODE");
         WIDGET_ONEUI_TOAST_SUPPRORT_SUB_DISPLAY = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_LOCKSCREEN_CONFIG_SUBDISPLAY_POLICY").contains("LARGESCREEN");
-        WIDGET_HOVER_POPUP = z7;
+        WIDGET_HOVER_POPUP = WIDGET_PEN_SUPPORTED;
         WIDGET_LABEL_TOAST = true;
         SUPPORT_DIRECT_WRITING = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_SIP_SUPPORT_DIRECT_WRITING_ENABLE");
-        String string2 = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_CAMERA_CONFIG_STRIDE_OCR_VERSION", "");
-        STRIDE_OCR_VERSION = string2;
-        boolean z8 = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_FRAMEWORK_SUPPORT_EAGLE_EYE");
-        EAGLE_EYE_FEATURE = z8;
-        if ((string2.isEmpty() || !string2.equals("None")) && ((!string2.isEmpty() && !string2.equals("None")) || z8)) {
-            z = true;
+        STRIDE_OCR_VERSION = SemFloatingFeature.getInstance().getString("SEC_FLOATING_FEATURE_CAMERA_CONFIG_STRIDE_OCR_VERSION", "");
+        EAGLE_EYE_FEATURE = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_FRAMEWORK_SUPPORT_EAGLE_EYE");
+        if (STRIDE_OCR_VERSION.isEmpty() || !STRIDE_OCR_VERSION.equals("None")) {
+            z = !(STRIDE_OCR_VERSION.isEmpty() || STRIDE_OCR_VERSION.equals("None")) || EAGLE_EYE_FEATURE;
+        } else {
+            z = false;
         }
         SUPPORT_EAGLE_EYE = z;
+        SUPPORT_WRITING_TOOLKIT = !SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_DISABLE_NATIVE_AI", false) && SemFloatingFeature.getInstance().getInt("SEC_FLOATING_FEATURE_COMMON_CONFIG_AI_VERSION", -1) >= 20242;
     }
 
     public static String getFWViewSystemVersion() {

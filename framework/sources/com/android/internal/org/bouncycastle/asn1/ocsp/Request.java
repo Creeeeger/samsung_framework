@@ -52,9 +52,8 @@ public class Request extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.reqCert);
-        Extensions extensions = this.singleRequestExtensions;
-        if (extensions != null) {
-            v.add(new DERTaggedObject(true, 0, extensions));
+        if (this.singleRequestExtensions != null) {
+            v.add(new DERTaggedObject(true, 0, this.singleRequestExtensions));
         }
         return new DERSequence(v);
     }

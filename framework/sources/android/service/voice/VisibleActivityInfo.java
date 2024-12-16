@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class VisibleActivityInfo implements Parcelable {
     public static final Parcelable.Creator<VisibleActivityInfo> CREATOR = new Parcelable.Creator<VisibleActivityInfo>() { // from class: android.service.voice.VisibleActivityInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisibleActivityInfo[] newArray(int size) {
             return new VisibleActivityInfo[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VisibleActivityInfo createFromParcel(Parcel in) {
             return new VisibleActivityInfo(in);
@@ -78,24 +77,7 @@ public final class VisibleActivityInfo implements Parcelable {
         IBinder assistToken = in.readStrongBinder();
         this.mTaskId = taskId;
         this.mAssistToken = assistToken;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) assistToken);
-    }
-
-    /* renamed from: android.service.voice.VisibleActivityInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VisibleActivityInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VisibleActivityInfo[] newArray(int size) {
-            return new VisibleActivityInfo[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VisibleActivityInfo createFromParcel(Parcel in) {
-            return new VisibleActivityInfo(in);
-        }
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mAssistToken);
     }
 
     @Deprecated

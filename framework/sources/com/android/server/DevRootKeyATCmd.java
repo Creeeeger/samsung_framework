@@ -1,10 +1,10 @@
 package com.android.server;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.Log;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import com.samsung.android.graphics.spr.document.attribute.SprAttributeBase;
@@ -43,21 +43,16 @@ public class DevRootKeyATCmd implements IWorkOnAt {
     protected static final String TAG = "DEVROOT#ATCmd(1.0.0)";
     protected static final String VERSION = "1.0.0";
     static int getKeyWaitTime;
-    protected static final boolean isSupportnewSAKatcmd;
+    protected static final boolean isExceptionProduct;
+    protected static final boolean isSupportATCommandV2;
+    protected static final String productName = SystemProperties.get("ro.product.system.name");
     protected boolean isJDMProductNotInHouse = false;
     protected Context mContext;
+    private DeviceIDProvisionManager mDeviceIDProvisionManager;
     private DeviceRootKeyServiceManager mDeviceRootKeyServiceManager;
     private Tlv mTlv;
     private String mTlvKeyBlob;
     private int mTlvKeyBlobCounter;
-
-    private native byte[] generateCertificateSigningRequest(int i, String str, String str2);
-
-    private native int installDeviceBoundCertificate(int i, byte[] bArr);
-
-    private native int installDeviceID(int i, String str, String str2, String str3, String str4, String str5, String str6, String str7, String str8, String str9);
-
-    private native int installDeviceUnboundKey(int i, byte[] bArr);
 
     private native int isExistDRK(int i);
 
@@ -67,10 +62,23 @@ public class DevRootKeyATCmd implements IWorkOnAt {
 
     private native byte[] readKeyInfo(int i);
 
-    private native int validateDeviceKey(int i);
+    protected native byte[] generateCertificateSigningRequest(int i, String str, String str2);
+
+    protected native int installDeviceBoundCertificate(int i, byte[] bArr);
+
+    protected native int installDeviceID(int i, String str, String str2, String str3, String str4, String str5, String str6, String str7, String str8, String str9);
+
+    protected native int installDeviceUnboundKey(int i, byte[] bArr);
+
+    protected native int validateDeviceKey(int i);
 
     static {
-        isSupportnewSAKatcmd = Integer.parseInt(SystemProperties.get("ro.product.first_api_level")) > 33;
+        boolean z = false;
+        isExceptionProduct = productName.contains("a36xq") || productName.contains("gtact5pro");
+        if (Integer.parseInt(SystemProperties.get("ro.product.first_api_level")) >= 35 && !isExceptionProduct) {
+            z = true;
+        }
+        isSupportATCommandV2 = z;
         System.loadLibrary("_nativeJni.dk.samsung");
         getKeyWaitTime = 50;
     }
@@ -79,9 +87,9 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         this.mContext = context;
         initTlvKeyBlob();
         this.mDeviceRootKeyServiceManager = new DeviceRootKeyServiceManager(context.getApplicationContext());
-        DeviceIDProvisionManager deviceIDProvisionManager = new DeviceIDProvisionManager(context.getApplicationContext());
-        if (deviceIDProvisionManager.isAvailable()) {
-            deviceIDProvisionManager.provision();
+        this.mDeviceIDProvisionManager = new DeviceIDProvisionManager(context.getApplicationContext());
+        if (this.mDeviceIDProvisionManager.isAvailable()) {
+            this.mDeviceIDProvisionManager.provisionForFirstBoot();
         }
     }
 
@@ -90,43 +98,21 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         return AT_COMMAND_DEVROOTK;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:202:0x005d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:212:0x005d, code lost:
     
-        if (java.lang.Integer.parseInt(r6[0]) == 1) goto L227;
+        if (java.lang.Integer.parseInt(r6[0]) == 1) goto L16;
      */
-    /* JADX WARN: Failed to find 'out' block for switch in B:19:0x00ac. Please report as an issue. */
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v0, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r2v103, types: [java.lang.StringBuilder] */
-    /* JADX WARN: Type inference failed for: r2v2 */
+    /* JADX WARN: Type inference failed for: r4v0 */
+    /* JADX WARN: Type inference failed for: r4v1 */
+    /* JADX WARN: Type inference failed for: r4v15 */
+    /* JADX WARN: Type inference failed for: r4v2, types: [java.lang.String] */
+    /* JADX WARN: Type inference failed for: r4v3 */
+    /* JADX WARN: Type inference failed for: r4v4 */
+    /* JADX WARN: Type inference failed for: r4v73 */
     /* JADX WARN: Type inference failed for: r7v0, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r7v100 */
-    /* JADX WARN: Type inference failed for: r7v101 */
-    /* JADX WARN: Type inference failed for: r7v102 */
-    /* JADX WARN: Type inference failed for: r7v103 */
-    /* JADX WARN: Type inference failed for: r7v104 */
-    /* JADX WARN: Type inference failed for: r7v105 */
-    /* JADX WARN: Type inference failed for: r7v106 */
-    /* JADX WARN: Type inference failed for: r7v107 */
-    /* JADX WARN: Type inference failed for: r7v108 */
-    /* JADX WARN: Type inference failed for: r7v109 */
-    /* JADX WARN: Type inference failed for: r7v110 */
-    /* JADX WARN: Type inference failed for: r7v111 */
+    /* JADX WARN: Type inference failed for: r7v21 */
     /* JADX WARN: Type inference failed for: r7v3 */
-    /* JADX WARN: Type inference failed for: r7v36 */
-    /* JADX WARN: Type inference failed for: r7v73 */
-    /* JADX WARN: Type inference failed for: r7v74 */
-    /* JADX WARN: Type inference failed for: r7v75 */
-    /* JADX WARN: Type inference failed for: r7v76 */
-    /* JADX WARN: Type inference failed for: r7v77 */
-    /* JADX WARN: Type inference failed for: r7v78 */
-    /* JADX WARN: Type inference failed for: r7v79 */
-    /* JADX WARN: Type inference failed for: r7v80 */
-    /* JADX WARN: Type inference failed for: r7v81 */
-    /* JADX WARN: Type inference failed for: r7v82 */
-    /* JADX WARN: Type inference failed for: r7v83 */
-    /* JADX WARN: Type inference failed for: r7v84 */
-    /* JADX WARN: Type inference failed for: r7v85 */
     /* JADX WARN: Type inference failed for: r7v86 */
     /* JADX WARN: Type inference failed for: r7v87 */
     /* JADX WARN: Type inference failed for: r7v88 */
@@ -135,21 +121,14 @@ public class DevRootKeyATCmd implements IWorkOnAt {
     /* JADX WARN: Type inference failed for: r7v91 */
     /* JADX WARN: Type inference failed for: r7v92 */
     /* JADX WARN: Type inference failed for: r7v93 */
-    /* JADX WARN: Type inference failed for: r7v94 */
-    /* JADX WARN: Type inference failed for: r7v95 */
-    /* JADX WARN: Type inference failed for: r7v96 */
-    /* JADX WARN: Type inference failed for: r7v97 */
-    /* JADX WARN: Type inference failed for: r7v98 */
-    /* JADX WARN: Type inference failed for: r7v99 */
-    /* JADX WARN: Type inference failed for: r8v2, types: [java.lang.StringBuilder] */
     @Override // com.android.server.IWorkOnAt
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public java.lang.String processCmd(java.lang.String r20) {
+    public java.lang.String processCmd(java.lang.String r21) {
         /*
-            Method dump skipped, instructions count: 1954
+            Method dump skipped, instructions count: 2038
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.DevRootKeyATCmd.processCmd(java.lang.String):java.lang.String");
@@ -161,9 +140,8 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         byte[] tlvTestSubjectAlterName = {SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, -122, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 84, 104, 105, 115, 32, 105, 115, 32, 115, 117, 98, 106, 101, 99, 116, 32, SprAttributeBase.TYPE_ANIMATOR_SET, 108, 116, 101, 114, 110, SprAttributeBase.TYPE_ANIMATOR_SET, 116, 105, 118, 101, 32, 110, SprAttributeBase.TYPE_ANIMATOR_SET, 109, 101, 32, 102, 105, 101, 108, 100, 32, 116, 101, 115, 116, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 95};
         byte[] tlbTestHashAlgo = {6, 9, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, -122, 72, -122, -9, 13, 1, 1, 5};
         if (tlv) {
-            Tlv tlv2 = new Tlv();
-            this.mTlv = tlv2;
-            tlv2.setTlv(1, tlvTestExponent);
+            this.mTlv = new Tlv();
+            this.mTlv.setTlv(1, tlvTestExponent);
             this.mTlv.setTlv(5, tlvTestKeyUsage);
             this.mTlv.setTlv(29, tlvTestSubjectAlterName);
             this.mTlv.setTlv(3, tlbTestHashAlgo);
@@ -178,18 +156,17 @@ public class DevRootKeyATCmd implements IWorkOnAt {
     }
 
     public String processTestCmd(int cmd, String subData) {
-        String result;
         if (!"eng".equals(Build.TYPE)) {
             return SecureKeyConst.AT_RESPONSE_UNIMPLEMENTED;
         }
-        DeviceRootKeyServiceManager deviceRootKeyServiceManager = this.mDeviceRootKeyServiceManager;
-        if (deviceRootKeyServiceManager == null) {
+        if (this.mDeviceRootKeyServiceManager == null) {
             return SecureKeyConst.AT_RESPONSE_INSTANCE_ERROR;
         }
+        String result = SecureKeyConst.AT_RESPONSE_FAILED;
         try {
             switch (cmd) {
                 case 90:
-                    if (!deviceRootKeyServiceManager.isAliveDeviceRootKeyService()) {
+                    if (!this.mDeviceRootKeyServiceManager.isAliveDeviceRootKeyService()) {
                         result = SecureKeyConst.AT_RESPONSE_CONN_FAILED;
                         break;
                     } else {
@@ -197,37 +174,33 @@ public class DevRootKeyATCmd implements IWorkOnAt {
                         break;
                     }
                 case 91:
-                    if (isSupportedDrkV2()) {
-                        result = SecureKeyConst.AT_RESPONSE_OK;
+                    if (!isSupportedDrkV2()) {
                         break;
                     } else {
-                        result = SecureKeyConst.AT_RESPONSE_FAILED;
+                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     }
                 case 92:
-                    if (!deviceRootKeyServiceManager.isExistDeviceRootKey(1)) {
-                        result = SecureKeyConst.AT_RESPONSE_FAILED;
+                    if (!this.mDeviceRootKeyServiceManager.isExistDeviceRootKey(1)) {
                         break;
                     } else {
                         result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     }
                 case 93:
-                    String tmpStrResult = deviceRootKeyServiceManager.getDeviceRootKeyUID(1);
-                    if (tmpStrResult == null) {
-                        result = SecureKeyConst.AT_RESPONSE_FAILED;
+                    String tmpStrResult = this.mDeviceRootKeyServiceManager.getDeviceRootKeyUID(1);
+                    if (tmpStrResult != null) {
+                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     } else {
-                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     }
                 case 94:
-                    byte[] tmpResult = deviceRootKeyServiceManager.getDeviceRootKeyCertificate(1);
-                    if (tmpResult == null) {
-                        result = SecureKeyConst.AT_RESPONSE_FAILED;
+                    byte[] tmpResult = this.mDeviceRootKeyServiceManager.getDeviceRootKeyCertificate(1);
+                    if (tmpResult != null) {
+                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     } else {
-                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     }
                 case 95:
@@ -237,12 +210,11 @@ public class DevRootKeyATCmd implements IWorkOnAt {
                     result = generateCertWithTlv(true);
                     break;
                 case 97:
-                    DeviceRootKeyServiceManager.DeviceInfo dInfo = deviceRootKeyServiceManager.getDeviceInfo(14);
-                    if (dInfo == null) {
-                        result = SecureKeyConst.AT_RESPONSE_FAILED;
+                    DeviceRootKeyServiceManager.DeviceInfo dInfo = this.mDeviceRootKeyServiceManager.getDeviceInfo(14);
+                    if (dInfo != null) {
+                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     } else {
-                        result = SecureKeyConst.AT_RESPONSE_OK;
                         break;
                     }
                 default:
@@ -251,12 +223,11 @@ public class DevRootKeyATCmd implements IWorkOnAt {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            String result2 = "NG_FAIL(EXCEPTION_OCCURS) " + e.getMessage();
-            return result2;
+            return "NG_FAIL(EXCEPTION_OCCURS) " + e.getMessage();
         }
     }
 
-    public String[] parsingParam(String cmd) {
+    protected String[] parsingParam(String cmd) {
         try {
             String params = cmd.substring(0, cmd.length());
             String[] result = params.split(",");
@@ -297,9 +268,7 @@ public class DevRootKeyATCmd implements IWorkOnAt {
     }
 
     protected int checkKeyValidity(int keyType) {
-        int ret;
-        int ret2 = 0;
-        "factory".equals(SystemProperties.get("ro.factory.factory_binary"));
+        int ret = 0;
         boolean isSupportIDAttestation = false;
         boolean isSystemFirstApiLevelMoreThanT = Integer.parseInt(SystemProperties.get("ro.product.first_api_level")) >= 33;
         boolean isVendorFirstApiLevelMoreThanT = Integer.parseInt(SystemProperties.get("ro.vendor.build.version.sdk")) >= 33;
@@ -308,34 +277,47 @@ public class DevRootKeyATCmd implements IWorkOnAt {
             isSupportIDAttestation = true;
         }
         if (1 != 0) {
-            if (isSupportIDAttestation && (ret = installDeviceID(keyType)) != 0) {
-                Log.e(TAG, "installDeviceID failed");
+            if (isSupportIDAttestation) {
+                if (keyType == 1) {
+                    ret = this.mDeviceIDProvisionManager.provisionForATCommand(6);
+                } else if (keyType == 4) {
+                    ret = this.mDeviceIDProvisionManager.provisionForATCommand(7);
+                }
+                if (ret != 0) {
+                    Log.e(TAG, "installDeviceID failed");
+                    return ret;
+                }
+            }
+            ret = validateDeviceKey(keyType);
+            if (ret != 0) {
+                Log.e(TAG, "validateDeviceKey failed");
                 return ret;
             }
-            ret2 = validateDeviceKey(keyType);
-            if (ret2 != 0) {
-                Log.e(TAG, "validateDeviceKey failed");
-                return ret2;
-            }
         }
-        if ((keyType == 1 || (keyType == 4 && 1 != 0)) && (ret2 = validateDeviceKeyFromKeystore(keyType, isSupportIDAttestation)) != 0) {
+        if ((keyType == 1 || (keyType == 4 && 1 != 0)) && (ret = validateDeviceKeyFromKeystore(keyType, isSupportIDAttestation)) != 0) {
             Log.e(TAG, "validateDeviceKeyFromKeystore failed");
-            return ret2;
+            return ret;
         }
-        return ret2;
+        return ret;
     }
 
     protected int installDeviceID(int keyType) {
+        String meid;
         TelephonyManager telephonyService = (TelephonyManager) this.mContext.getSystemService("phone");
-        String brand = isPropertyEmptyOrUnknown(Build.BRAND_FOR_ATTESTATION) ? Build.BRAND : Build.BRAND_FOR_ATTESTATION;
-        String device = isPropertyEmptyOrUnknown(Build.DEVICE_FOR_ATTESTATION) ? Build.DEVICE : Build.DEVICE_FOR_ATTESTATION;
-        String produt = isPropertyEmptyOrUnknown(Build.PRODUCT_FOR_ATTESTATION) ? Build.PRODUCT : Build.PRODUCT_FOR_ATTESTATION;
-        String manufacturer = isPropertyEmptyOrUnknown(Build.MANUFACTURER_FOR_ATTESTATION) ? Build.MANUFACTURER : Build.MANUFACTURER_FOR_ATTESTATION;
-        String model = isPropertyEmptyOrUnknown(Build.MODEL_FOR_ATTESTATION) ? Build.MODEL : Build.MODEL_FOR_ATTESTATION;
+        String brand = Build.BRAND_FOR_ATTESTATION;
+        String device = Build.DEVICE_FOR_ATTESTATION;
+        String produt = Build.PRODUCT_FOR_ATTESTATION;
+        String manufacturer = Build.MANUFACTURER_FOR_ATTESTATION;
+        String model = Build.MODEL_FOR_ATTESTATION;
         String serial = Build.getSerial();
         String imei1 = telephonyService.getImei(0);
         String imei2 = telephonyService.getImei(1);
-        String meid = telephonyService.getMeid(0);
+        try {
+            meid = telephonyService.getMeid(0);
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+            meid = null;
+        }
         return installDeviceID(keyType, brand, device, produt, serial, imei1, imei2, meid, manufacturer, model);
     }
 
@@ -352,17 +334,17 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         return false;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:19:0x00be A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, TryCatch #2 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, blocks: (B:92:0x00aa, B:19:0x00be, B:21:0x00c4, B:22:0x00cc, B:23:0x00d3, B:25:0x00d8, B:27:0x00e9, B:30:0x0104, B:31:0x0108), top: B:91:0x00aa }] */
-    /* JADX WARN: Removed duplicated region for block: B:25:0x00d8 A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, LOOP:0: B:23:0x00d3->B:25:0x00d8, LOOP_END, TryCatch #2 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0258, blocks: (B:92:0x00aa, B:19:0x00be, B:21:0x00c4, B:22:0x00cc, B:23:0x00d3, B:25:0x00d8, B:27:0x00e9, B:30:0x0104, B:31:0x0108), top: B:91:0x00aa }] */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00e9 A[EDGE_INSN: B:26:0x00e9->B:27:0x00e9 BREAK  A[LOOP:0: B:23:0x00d3->B:25:0x00d8], SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:87:0x00a1 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:107:0x00b6 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x00d5 A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x00e4, TryCatch #6 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x00e4, blocks: (B:112:0x00bf, B:22:0x00d5, B:24:0x00db), top: B:111:0x00bf }] */
+    /* JADX WARN: Removed duplicated region for block: B:38:0x00f8 A[Catch: IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0275, LOOP:0: B:34:0x00f3->B:38:0x00f8, LOOP_END, TryCatch #9 {IOException | IllegalArgumentException | NullPointerException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | ProviderException | SignatureException | CertPathValidatorException | CertificateException -> 0x0275, blocks: (B:36:0x00f5, B:38:0x00f8, B:40:0x0109, B:43:0x0130, B:44:0x0134), top: B:35:0x00f5 }] */
+    /* JADX WARN: Removed duplicated region for block: B:39:0x0109 A[EDGE_INSN: B:39:0x0109->B:40:0x0109 BREAK  A[LOOP:0: B:34:0x00f3->B:38:0x00f8], SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     protected int validateDeviceKeyFromKeystore(int r30, boolean r31) {
         /*
-            Method dump skipped, instructions count: 632
+            Method dump skipped, instructions count: 665
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.DevRootKeyATCmd.validateDeviceKeyFromKeystore(int, boolean):int");
@@ -434,7 +416,11 @@ public class DevRootKeyATCmd implements IWorkOnAt {
         return false;
     }
 
-    private boolean isPropertyEmptyOrUnknown(String property) {
-        return TextUtils.isEmpty(property) || property.equals("unknown");
+    protected void sendSakUidMsgAppletBindingIntent() {
+        Intent intent = new Intent("com.samsung.android.ese.test.action.REQUEST");
+        intent.putExtra("com.samsung.android.ese.test.extra.ID", 21);
+        intent.putExtra("com.samsung.android.ese.test.extra.CMD", 19);
+        intent.setPackage("com.sem.factoryapp");
+        this.mContext.getApplicationContext().sendBroadcast(intent, "com.samsung.permission.ESE_FACTORY");
     }
 }

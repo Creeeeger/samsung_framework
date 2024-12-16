@@ -17,7 +17,7 @@ public final class BooleanAction extends ControlAction {
         this.mNewState = newState;
     }
 
-    public BooleanAction(Bundle b) {
+    BooleanAction(Bundle b) {
         super(b);
         this.mNewState = b.getBoolean(KEY_NEW_STATE);
     }
@@ -31,9 +31,8 @@ public final class BooleanAction extends ControlAction {
         return 1;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.service.controls.actions.ControlAction
-    public Bundle getDataBundle() {
+    Bundle getDataBundle() {
         Bundle b = super.getDataBundle();
         b.putBoolean(KEY_NEW_STATE, this.mNewState);
         return b;

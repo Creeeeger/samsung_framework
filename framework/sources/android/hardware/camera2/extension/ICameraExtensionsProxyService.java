@@ -10,7 +10,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraExtensionsProxyService extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.ICameraExtensionsProxyService";
 
@@ -30,7 +30,6 @@ public interface ICameraExtensionsProxyService extends IInterface {
 
     void unregisterClient(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraExtensionsProxyService {
         @Override // android.hardware.camera2.extension.ICameraExtensionsProxyService
         public boolean registerClient(IBinder token) throws RemoteException {
@@ -75,7 +74,6 @@ public interface ICameraExtensionsProxyService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraExtensionsProxyService {
         static final int TRANSACTION_advancedExtensionsSupported = 3;
         static final int TRANSACTION_initializeAdvancedExtension = 8;
@@ -139,69 +137,66 @@ public interface ICameraExtensionsProxyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICameraExtensionsProxyService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICameraExtensionsProxyService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICameraExtensionsProxyService.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result = registerClient(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unregisterClient(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result2 = advancedExtensionsSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 4:
+                    IInitializeSessionCallback _arg03 = IInitializeSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    initializeSession(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    releaseSession();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IPreviewExtenderImpl _result3 = initializePreviewExtension(_arg04);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 7:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IImageCaptureExtenderImpl _result4 = initializeImageExtension(_arg05);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IAdvancedExtenderImpl _result5 = initializeAdvancedExtension(_arg06);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            boolean _result = registerClient(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unregisterClient(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result2 = advancedExtensionsSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 4:
-                            IInitializeSessionCallback _arg03 = IInitializeSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            initializeSession(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            releaseSession();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IPreviewExtenderImpl _result3 = initializePreviewExtension(_arg04);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 7:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IImageCaptureExtenderImpl _result4 = initializeImageExtension(_arg05);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IAdvancedExtenderImpl _result5 = initializeAdvancedExtension(_arg06);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraExtensionsProxyService {
+        private static class Proxy implements ICameraExtensionsProxyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

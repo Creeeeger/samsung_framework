@@ -178,17 +178,15 @@ public class ScaleAnimation extends Animation {
     }
 
     @Override // android.view.animation.Animation
-    public void applyTransformation(float interpolatedTime, Transformation t) {
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
         float sx = 1.0f;
         float sy = 1.0f;
         float scale = getScaleFactor();
-        float f = this.mFromX;
-        if (f != 1.0f || this.mToX != 1.0f) {
-            sx = f + ((this.mToX - f) * interpolatedTime);
+        if (this.mFromX != 1.0f || this.mToX != 1.0f) {
+            sx = this.mFromX + ((this.mToX - this.mFromX) * interpolatedTime);
         }
-        float f2 = this.mFromY;
-        if (f2 != 1.0f || this.mToY != 1.0f) {
-            sy = f2 + ((this.mToY - f2) * interpolatedTime);
+        if (this.mFromY != 1.0f || this.mToY != 1.0f) {
+            sy = this.mFromY + ((this.mToY - this.mFromY) * interpolatedTime);
         }
         if (this.mPivotX == 0.0f && this.mPivotY == 0.0f) {
             t.getMatrix().setScale(sx, sy);

@@ -1,12 +1,12 @@
 package com.samsung.android.sume.core.controller;
 
+import android.app.PendingIntent$$ExternalSyntheticLambda2;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.ConditionVariable;
 import android.util.Log;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.buffer.MediaBuffer;
 import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
-import com.samsung.android.sume.core.channel.ChannelRouterBase$$ExternalSyntheticLambda6;
 import com.samsung.android.sume.core.controller.MediaController;
 import com.samsung.android.sume.core.controller.MediaFilterController;
 import com.samsung.android.sume.core.exception.ContentFilterOutException;
@@ -43,16 +43,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MediaFilterController implements MediaController<Response>, MessageConsumer {
     private static final String TAG = Def.tagOf((Class<?>) MediaFilterController.class);
     private MediaController.OnEventListener eventListener;
     private final int id;
     private volatile Graph<MediaFilter> mediaFilterGraph;
-    private final MessageSubscriberImpl messageSubscriber;
     protected AtomicInteger contentId = new AtomicInteger(1);
     private final Map<Integer, ContentsInfo> contentsInfoMap = new HashMap();
     private final ConditionVariable mfControllerSync = new ConditionVariable();
+    private final MessageSubscriberImpl messageSubscriber = new MessageSubscriberImpl();
 
     @Override // com.samsung.android.sume.core.controller.MediaController
     public /* bridge */ /* synthetic */ Response run(List list, List list2) {
@@ -61,44 +61,40 @@ public class MediaFilterController implements MediaController<Response>, Message
 
     public MediaFilterController(int id) {
         this.id = id;
-        MessageSubscriberImpl messageSubscriberImpl = new MessageSubscriberImpl();
-        this.messageSubscriber = messageSubscriberImpl;
-        messageSubscriberImpl.addMessageConsumer(this);
+        this.messageSubscriber.addMessageConsumer(this);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.controller.MediaController
     public Response run(List<MediaBuffer> inBuffers, List<MediaBuffer> outBuffers) {
         long beginTs = System.currentTimeMillis();
-        inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda0
+        inBuffers.forEach(new Consumer() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda2
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterController.this.m8738x3a333949((MediaBuffer) obj);
+                MediaFilterController.this.m9127x3a333949((MediaBuffer) obj);
             }
         });
-        MediaController.OnEventListener onEventListener = this.eventListener;
-        if (onEventListener != null) {
-            onEventListener.onEvent(Event.of(501, new AnonymousClass1(inBuffers, beginTs)));
+        if (this.eventListener != null) {
+            this.eventListener.onEvent(Event.of(501, new AnonymousClass1(inBuffers, beginTs)));
         }
         if (this.mediaFilterGraph == null) {
             this.mfControllerSync.block();
         }
         this.mediaFilterGraph.run(inBuffers, outBuffers);
         long endTs = System.currentTimeMillis();
-        MediaController.OnEventListener onEventListener2 = this.eventListener;
-        if (onEventListener2 != null) {
-            onEventListener2.onEvent((Event) Event.of(502, "timestampMs", Long.valueOf(endTs)).put("id", Integer.valueOf(this.id)));
+        if (this.eventListener != null) {
+            this.eventListener.onEvent((Event) Event.of(502, "timestampMs", Long.valueOf(endTs)).put("id", Integer.valueOf(this.id)));
         }
-        String str = TAG;
-        Log.d(str, "run X: processing total " + (endTs - beginTs) + " ms[#" + outBuffers.size() + NavigationBarInflaterView.SIZE_MOD_END);
+        Log.d(TAG, "run X: processing total " + (endTs - beginTs) + " ms[#" + outBuffers.size() + NavigationBarInflaterView.SIZE_MOD_END);
         if (!outBuffers.isEmpty()) {
             Response response = Response.of(0).setBuffer(outBuffers);
-            List<MediaBuffer> buffers = (List) outBuffers.stream().map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda1
+            List<MediaBuffer> buffers = (List) outBuffers.stream().map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda3
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    return MediaFilterController.this.m8739xb8943d28((MediaBuffer) obj);
+                    return MediaFilterController.this.m9128xb8943d28((MediaBuffer) obj);
                 }
             }).collect(Collectors.toList());
-            Log.d(str, "buffer-list[" + buffers.size() + "]: " + Arrays.toString(buffers.toArray()));
+            Log.d(TAG, "buffer-list[" + buffers.size() + "]: " + Arrays.toString(buffers.toArray()));
             outBuffers.clear();
             outBuffers.addAll(buffers);
             return response;
@@ -107,8 +103,8 @@ public class MediaFilterController implements MediaController<Response>, Message
         return response2;
     }
 
-    /* renamed from: lambda$run$0$com-samsung-android-sume-core-controller-MediaFilterController */
-    public /* synthetic */ void m8738x3a333949(MediaBuffer it) {
+    /* renamed from: lambda$run$0$com-samsung-android-sume-core-controller-MediaFilterController, reason: not valid java name */
+    /* synthetic */ void m9127x3a333949(MediaBuffer it) {
         int id = this.contentId.getAndIncrement();
         it.setExtra(Message.KEY_CONTENTS_ID, Integer.valueOf(id));
         ContentsInfo contentsInfo = new ContentsInfo();
@@ -124,9 +120,8 @@ public class MediaFilterController implements MediaController<Response>, Message
         this.contentsInfoMap.put(Integer.valueOf(id), contentsInfo);
     }
 
-    /* renamed from: com.samsung.android.sume.core.controller.MediaFilterController$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends HashMap<String, Object> {
+    /* renamed from: com.samsung.android.sume.core.controller.MediaFilterController$1, reason: invalid class name */
+    class AnonymousClass1 extends HashMap<String, Object> {
         final /* synthetic */ long val$beginTs;
         final /* synthetic */ List val$inBuffers;
 
@@ -134,7 +129,7 @@ public class MediaFilterController implements MediaController<Response>, Message
             this.val$inBuffers = list;
             this.val$beginTs = j;
             put("id", Integer.valueOf(MediaFilterController.this.id));
-            put("contents-list", list.stream().map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$1$$ExternalSyntheticLambda0
+            put("contents-list", this.val$inBuffers.stream().map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$1$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     Integer valueOf;
@@ -142,23 +137,22 @@ public class MediaFilterController implements MediaController<Response>, Message
                     return valueOf;
                 }
             }).collect(Collectors.toList()));
-            put("timestampMs", Long.valueOf(j));
+            put("timestampMs", Long.valueOf(this.val$beginTs));
         }
     }
 
-    /* renamed from: lambda$run$1$com-samsung-android-sume-core-controller-MediaFilterController */
-    public /* synthetic */ MutableMediaBuffer m8739xb8943d28(MediaBuffer it) {
+    /* renamed from: lambda$run$1$com-samsung-android-sume-core-controller-MediaFilterController, reason: not valid java name */
+    /* synthetic */ MutableMediaBuffer m9128xb8943d28(MediaBuffer it) {
         int contentsId = ((Integer) it.getExtra(Message.KEY_CONTENTS_ID)).intValue();
         ContentsInfo contentsInfo = this.contentsInfoMap.get(Integer.valueOf(contentsId));
         MediaType mediaType = it.getFormat().getMediaType();
-        String str = TAG;
-        Log.d(str, "[#" + contentsId + "]mediaType=" + mediaType + ", contentsInfo= refactoring");
+        Log.d(TAG, "[#" + contentsId + "]mediaType=" + mediaType + ", contentsInfo= refactoring");
         MutableMediaBuffer buf = MediaBuffer.mutableOf(it);
         if (!mediaType.isMetaData() && !mediaType.isScala() && !((Boolean) buf.getExtra("freezed", false)).booleanValue()) {
-            Log.d(str, "convert to original format");
+            Log.d(TAG, "convert to original format");
             ColorFormat colorFormat = buf.getFormat().getColorFormat();
             if (colorFormat != contentsInfo.getOriginalColorFormat()) {
-                Log.d(str, Def.fmtstr("color-format of output(%s) is differ from one of input(%s)", colorFormat.name(), contentsInfo.getOriginalColorFormat().name()));
+                Log.d(TAG, Def.fmtstr("color-format of output(%s) is differ from one of input(%s)", colorFormat.name(), contentsInfo.getOriginalColorFormat().name()));
                 MutableMediaFormat format = MediaFormat.mutableImageOf(new Object[0]);
                 format.setColorFormat(contentsInfo.getOriginalColorFormat());
                 MutableMediaBuffer obuf = MediaBuffer.mutableOf(format);
@@ -167,7 +161,7 @@ public class MediaFilterController implements MediaController<Response>, Message
             }
             DataType dataType = buf.getFormat().getDataType();
             if (dataType != contentsInfo.getOriginalDataType()) {
-                Log.d(str, Def.fmtstr("data-type of output(%s) is differ from one of input(%s)", dataType.name(), contentsInfo.getOriginalDataType().name()));
+                Log.d(TAG, Def.fmtstr("data-type of output(%s) is differ from one of input(%s)", dataType.name(), contentsInfo.getOriginalDataType().name()));
                 MutableMediaFormat format2 = MediaFormat.mutableImageOf(new Object[0]);
                 format2.setDataType(contentsInfo.getOriginalDataType());
                 MutableMediaBuffer obuf2 = MediaBuffer.mutableOf(format2);
@@ -178,26 +172,26 @@ public class MediaFilterController implements MediaController<Response>, Message
         return buf;
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.controller.MediaController
     public Response request(Request request) {
         Response response = Response.of(request);
         switch (request.getCode()) {
             case 901:
-                List<MediaBuffer> inBuffers = (List) Optional.ofNullable(request.getInputBuffer()).map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda2
+                List<MediaBuffer> inBuffers = (List) Optional.ofNullable(request.getInputBuffer()).map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda0
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
-                        return MediaFilterController.this.m8737xbf598303((MediaBuffer) obj);
+                        return MediaFilterController.this.m9126xbf598303((MediaBuffer) obj);
                     }
-                }).orElseGet(new ChannelRouterBase$$ExternalSyntheticLambda6());
-                String str = TAG;
-                Log.d(str, "input-buffers[#" + inBuffers.size() + "]: " + inBuffers);
-                List<MediaBuffer> outBuffers = (List) Optional.ofNullable(request.getOutputBuffer()).map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda3
+                }).orElseGet(new PendingIntent$$ExternalSyntheticLambda2());
+                Log.d(TAG, "input-buffers[#" + inBuffers.size() + "]: " + inBuffers);
+                List<MediaBuffer> outBuffers = (List) Optional.ofNullable(request.getOutputBuffer()).map(new Function() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda1
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return ((MediaBuffer) obj).asList();
                     }
-                }).orElseGet(new ChannelRouterBase$$ExternalSyntheticLambda6());
-                Log.d(str, "output-buffers[#" + outBuffers.size() + "]: " + outBuffers);
+                }).orElseGet(new PendingIntent$$ExternalSyntheticLambda2());
+                Log.d(TAG, "output-buffers[#" + outBuffers.size() + "]: " + outBuffers);
                 try {
                     response.join(run(inBuffers, outBuffers));
                     return response;
@@ -216,31 +210,16 @@ public class MediaFilterController implements MediaController<Response>, Message
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.sume.core.controller.MediaFilterController$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 extends ArrayList<MediaBuffer> {
-        final /* synthetic */ MediaBuffer val$it;
-
-        AnonymousClass2(MediaBuffer mediaBuffer) {
-            this.val$it = mediaBuffer;
-            add(mediaBuffer);
-        }
-    }
-
-    /* renamed from: lambda$request$2$com-samsung-android-sume-core-controller-MediaFilterController */
-    public /* synthetic */ List m8737xbf598303(MediaBuffer it) {
+    /* renamed from: lambda$request$2$com-samsung-android-sume-core-controller-MediaFilterController, reason: not valid java name */
+    /* synthetic */ List m9126xbf598303(final MediaBuffer it) {
         if (((Boolean) it.getExtra("singular-buffer", false)).booleanValue()) {
-            return new ArrayList<MediaBuffer>(it) { // from class: com.samsung.android.sume.core.controller.MediaFilterController.2
-                final /* synthetic */ MediaBuffer val$it;
-
-                AnonymousClass2(MediaBuffer it2) {
-                    this.val$it = it2;
-                    add(it2);
+            return new ArrayList<MediaBuffer>() { // from class: com.samsung.android.sume.core.controller.MediaFilterController.2
+                {
+                    add(it);
                 }
             };
         }
-        return it2.asList();
+        return it.asList();
     }
 
     @Override // com.samsung.android.sume.core.controller.MediaController
@@ -248,9 +227,8 @@ public class MediaFilterController implements MediaController<Response>, Message
         if (this.mediaFilterGraph != null) {
             this.mediaFilterGraph.release();
         }
-        MessageSubscriberImpl messageSubscriberImpl = this.messageSubscriber;
-        if (messageSubscriberImpl != null) {
-            messageSubscriberImpl.release();
+        if (this.messageSubscriber != null) {
+            this.messageSubscriber.release();
         }
     }
 
@@ -272,12 +250,11 @@ public class MediaFilterController implements MediaController<Response>, Message
 
     @Override // com.samsung.android.sume.core.message.MessageConsumer
     public boolean onMessageReceived(final Message message) throws UnsupportedOperationException {
-        String str = TAG;
-        Log.d(str, "onMessageReceived: " + message);
+        Log.d(TAG, "onMessageReceived: " + message);
         Event event = null;
         try {
             if (message.isError()) {
-                Log.d(str, "error occur: " + message.getException());
+                Log.d(TAG, "error occur: " + message.getException());
                 if (message.getException() instanceof ContentFilterOutException) {
                     event = (Event) Event.of(701, (String) Optional.ofNullable(message.getException().getMessage()).orElse("none")).put("id", Integer.valueOf(this.id));
                 }
@@ -297,14 +274,13 @@ public class MediaFilterController implements MediaController<Response>, Message
                     message.put(Message.KEY_DISPLAY_NAME, contentsInfo.getDataOr(Message.KEY_DISPLAY_NAME, ""));
                 }
             }
-            MediaController.OnEventListener onEventListener = this.eventListener;
-            if (onEventListener == null) {
+            if (this.eventListener == null) {
                 return false;
             }
-            onEventListener.onEvent((Event) Optional.ofNullable(event).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda5
+            this.eventListener.onEvent((Event) Optional.ofNullable(event).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$$ExternalSyntheticLambda5
                 @Override // java.util.function.Supplier
                 public final Object get() {
-                    return MediaFilterController.this.m8736xa2e3d127(message);
+                    return MediaFilterController.this.m9125xa2e3d127(message);
                 }
             }));
             return true;
@@ -314,33 +290,33 @@ public class MediaFilterController implements MediaController<Response>, Message
         }
     }
 
-    public static /* synthetic */ boolean lambda$onMessageReceived$3(Message message, Integer it) {
+    static /* synthetic */ boolean lambda$onMessageReceived$3(Message message, Integer it) {
         return it.intValue() == message.getCode();
     }
 
-    /* renamed from: lambda$onMessageReceived$4$com-samsung-android-sume-core-controller-MediaFilterController */
-    public /* synthetic */ Event m8736xa2e3d127(Message message) {
+    /* renamed from: lambda$onMessageReceived$4$com-samsung-android-sume-core-controller-MediaFilterController, reason: not valid java name */
+    /* synthetic */ Event m9125xa2e3d127(Message message) {
         return (Event) Event.of(message).put("id", Integer.valueOf(this.id));
     }
 
-    /* loaded from: classes4.dex */
-    public static final class MessageSubscriberImpl extends MessageSubscriberBase {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class MessageSubscriberImpl extends MessageSubscriberBase {
         private final Thread messageThread;
 
         public MessageSubscriberImpl() {
             super(new BlockingMessageChannel("MediaFilterController"));
-            Thread thread = new Thread(new Runnable() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$MessageSubscriberImpl$$ExternalSyntheticLambda0
+            this.messageThread = new Thread(new Runnable() { // from class: com.samsung.android.sume.core.controller.MediaFilterController$MessageSubscriberImpl$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaFilterController.MessageSubscriberImpl.this.threadEntry();
                 }
             });
-            this.messageThread = thread;
-            thread.start();
+            this.messageThread.start();
             BlockingMessageChannel bmc = (BlockingMessageChannel) getMessageChannel();
-            bmc.setThreadWeakReference(new WeakReference<>(thread));
+            bmc.setThreadWeakReference(new WeakReference<>(this.messageThread));
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void threadEntry() {
             MessageChannel messageChannel = getMessageChannel();
             while (true) {

@@ -4,7 +4,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprFileAttributeNinePatch extends SprFileAttributeBase {
     public float[] xEnd;
     public int xSize;
@@ -36,18 +36,16 @@ public class SprFileAttributeNinePatch extends SprFileAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.fileAttribute.SprFileAttributeBase
     public void fromSPR(SprInputStream in) throws IOException {
-        int readInt = in.readInt();
-        this.xSize = readInt;
-        this.xStart = new float[readInt];
-        this.xEnd = new float[readInt];
+        this.xSize = in.readInt();
+        this.xStart = new float[this.xSize];
+        this.xEnd = new float[this.xSize];
         for (int cnt = 0; cnt < this.xSize; cnt++) {
             this.xStart[cnt] = in.readFloat();
             this.xEnd[cnt] = in.readFloat();
         }
-        int readInt2 = in.readInt();
-        this.ySize = readInt2;
-        this.yStart = new float[readInt2];
-        this.yEnd = new float[readInt2];
+        this.ySize = in.readInt();
+        this.yStart = new float[this.ySize];
+        this.yEnd = new float[this.ySize];
         for (int cnt2 = 0; cnt2 < this.ySize; cnt2++) {
             this.yStart[cnt2] = in.readFloat();
             this.yEnd[cnt2] = in.readFloat();

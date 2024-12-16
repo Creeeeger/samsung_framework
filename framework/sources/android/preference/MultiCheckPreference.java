@@ -23,10 +23,9 @@ public class MultiCheckPreference extends DialogPreference {
     public MultiCheckPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListPreference, defStyleAttr, defStyleRes);
-        CharSequence[] textArray = a.getTextArray(0);
-        this.mEntries = textArray;
-        if (textArray != null) {
-            setEntries(textArray);
+        this.mEntries = a.getTextArray(0);
+        if (this.mEntries != null) {
+            setEntries(this.mEntries);
         }
         setEntryValuesCS(a.getTextArray(1));
         a.recycle();
@@ -94,24 +93,21 @@ public class MultiCheckPreference extends DialogPreference {
     }
 
     public void setValues(boolean[] values) {
-        boolean[] zArr = this.mSetValues;
-        if (zArr != null) {
-            Arrays.fill(zArr, false);
+        if (this.mSetValues != null) {
+            Arrays.fill(this.mSetValues, false);
             Arrays.fill(this.mOrigValues, false);
             if (values != null) {
-                boolean[] zArr2 = this.mSetValues;
-                System.arraycopy(values, 0, zArr2, 0, values.length < zArr2.length ? values.length : zArr2.length);
+                System.arraycopy(values, 0, this.mSetValues, 0, values.length < this.mSetValues.length ? values.length : this.mSetValues.length);
             }
         }
     }
 
     @Override // android.preference.Preference
     public CharSequence getSummary() {
-        String str = this.mSummary;
-        if (str == null) {
+        if (this.mSummary == null) {
             return super.getSummary();
         }
-        return str;
+        return this.mSummary;
     }
 
     @Override // android.preference.Preference
@@ -129,9 +125,8 @@ public class MultiCheckPreference extends DialogPreference {
     }
 
     public int findIndexOfValue(String value) {
-        String[] strArr;
-        if (value != null && (strArr = this.mEntryValues) != null) {
-            for (int i = strArr.length - 1; i >= 0; i--) {
+        if (value != null && this.mEntryValues != null) {
+            for (int i = this.mEntryValues.length - 1; i >= 0; i--) {
                 if (this.mEntryValues[i].equals(value)) {
                     return i;
                 }
@@ -142,17 +137,13 @@ public class MultiCheckPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference
-    public void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         if (this.mEntries == null || this.mEntryValues == null) {
             throw new IllegalStateException("ListPreference requires an entries array and an entryValues array.");
         }
-        boolean[] zArr = this.mSetValues;
-        this.mOrigValues = Arrays.copyOf(zArr, zArr.length);
+        this.mOrigValues = Arrays.copyOf(this.mSetValues, this.mSetValues.length);
         builder.setMultiChoiceItems(this.mEntries, this.mSetValues, new DialogInterface.OnMultiChoiceClickListener() { // from class: android.preference.MultiCheckPreference.1
-            AnonymousClass1() {
-            }
-
             @Override // android.content.DialogInterface.OnMultiChoiceClickListener
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 MultiCheckPreference.this.mSetValues[which] = isChecked;
@@ -160,27 +151,13 @@ public class MultiCheckPreference extends DialogPreference {
         });
     }
 
-    /* renamed from: android.preference.MultiCheckPreference$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements DialogInterface.OnMultiChoiceClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.DialogInterface.OnMultiChoiceClickListener
-        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-            MultiCheckPreference.this.mSetValues[which] = isChecked;
-        }
-    }
-
     @Override // android.preference.DialogPreference
-    public void onDialogClosed(boolean positiveResult) {
+    protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult && callChangeListener(getValues())) {
             return;
         }
-        boolean[] zArr = this.mOrigValues;
-        boolean[] zArr2 = this.mSetValues;
-        System.arraycopy(zArr, 0, zArr2, 0, zArr2.length);
+        System.arraycopy(this.mOrigValues, 0, this.mSetValues, 0, this.mSetValues.length);
     }
 
     @Override // android.preference.Preference
@@ -193,7 +170,7 @@ public class MultiCheckPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         if (isPersistent()) {
             return superState;
@@ -204,7 +181,7 @@ public class MultiCheckPreference extends DialogPreference {
     }
 
     @Override // android.preference.DialogPreference, android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -214,17 +191,15 @@ public class MultiCheckPreference extends DialogPreference {
         setValues(myState.values);
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.MultiCheckPreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -245,23 +220,6 @@ public class MultiCheckPreference extends DialogPreference {
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.MultiCheckPreference$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

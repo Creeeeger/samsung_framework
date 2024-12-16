@@ -10,7 +10,7 @@ import android.telephony.ims.RcsClientConfiguration;
 import android.telephony.ims.aidl.IImsConfigCallback;
 import android.telephony.ims.aidl.IRcsConfigCallback;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsConfig extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsConfig";
 
@@ -54,7 +54,6 @@ public interface IImsConfig extends IInterface {
 
     void updateImsCarrierConfigs(PersistableBundle persistableBundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsConfig {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void addImsConfigCallback(IImsConfigCallback c) throws RemoteException {
@@ -147,7 +146,6 @@ public interface IImsConfig extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsConfig {
         static final int TRANSACTION_addImsConfigCallback = 1;
         static final int TRANSACTION_addRcsConfigCallback = 14;
@@ -247,149 +245,146 @@ public interface IImsConfig extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsConfig.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsConfig.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsConfig.DESCRIPTOR);
+                case 1:
+                    IImsConfigCallback _arg0 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addImsConfigCallback(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IImsConfigCallback _arg02 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeImsConfigCallback(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getConfigInt(_arg03);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result2 = getConfigString(_arg04);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = setConfigInt(_arg05, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result4 = setConfigString(_arg06, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 7:
+                    PersistableBundle _arg07 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateImsCarrierConfigs(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    byte[] _arg08 = data.createByteArray();
+                    boolean _arg13 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyRcsAutoConfigurationReceived(_arg08, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    notifyRcsAutoConfigurationRemoved();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyRcsAutoConfigurationErrorReceived(_arg09, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    byte[] _arg010 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    notifyRcsPreConfigurationReceived(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg011 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyProvisionedIntValueChanged(_arg011, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg012 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyProvisionedStringValueChanged(_arg012, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IRcsConfigCallback _arg013 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addRcsConfigCallback(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    IRcsConfigCallback _arg014 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeRcsConfigCallback(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    triggerRcsReconfiguration();
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result5 = getRcsClientConfiguration(_arg015);
+                    reply.writeNoException();
+                    reply.writeString(_result5);
+                    return true;
+                case 18:
+                    RcsClientConfiguration _arg016 = (RcsClientConfiguration) data.readTypedObject(RcsClientConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    setRcsClientConfiguration(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    int _arg017 = data.readInt();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyIntImsConfigChanged(_arg017, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg018 = data.readInt();
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyStringImsConfigChanged(_arg018, _arg18);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IImsConfigCallback _arg0 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addImsConfigCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IImsConfigCallback _arg02 = IImsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeImsConfigCallback(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getConfigInt(_arg03);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result2 = getConfigString(_arg04);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = setConfigInt(_arg05, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result4 = setConfigString(_arg06, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 7:
-                            PersistableBundle _arg07 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateImsCarrierConfigs(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            byte[] _arg08 = data.createByteArray();
-                            boolean _arg13 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyRcsAutoConfigurationReceived(_arg08, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            notifyRcsAutoConfigurationRemoved();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyRcsAutoConfigurationErrorReceived(_arg09, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            byte[] _arg010 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            notifyRcsPreConfigurationReceived(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg011 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyProvisionedIntValueChanged(_arg011, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg012 = data.readInt();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyProvisionedStringValueChanged(_arg012, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IRcsConfigCallback _arg013 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addRcsConfigCallback(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            IRcsConfigCallback _arg014 = IRcsConfigCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeRcsConfigCallback(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            triggerRcsReconfiguration();
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result5 = getRcsClientConfiguration(_arg015);
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        case 18:
-                            RcsClientConfiguration _arg016 = (RcsClientConfiguration) data.readTypedObject(RcsClientConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            setRcsClientConfiguration(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            int _arg017 = data.readInt();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyIntImsConfigChanged(_arg017, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg018 = data.readInt();
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyStringImsConfigChanged(_arg018, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsConfig {
+        private static class Proxy implements IImsConfig {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

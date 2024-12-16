@@ -12,7 +12,6 @@ public class PackageParserCacheHelper {
     private PackageParserCacheHelper() {
     }
 
-    /* loaded from: classes.dex */
     public static class ReadHelper extends Parcel.ReadWriteHelper {
         private final Parcel mParcel;
         private final ArrayList<String> mStrings = new ArrayList<>();
@@ -49,7 +48,6 @@ public class PackageParserCacheHelper {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class WriteHelper extends Parcel.ReadWriteHelper {
         private final Parcel mParcel;
         private final int mStartPos;
@@ -59,8 +57,8 @@ public class PackageParserCacheHelper {
         public WriteHelper(Parcel p) {
             this.mParcel = p;
             this.mStartPos = p.dataPosition();
-            p.writeInt(0);
-            p.setReadWriteHelper(this);
+            this.mParcel.writeInt(0);
+            this.mParcel.setReadWriteHelper(this);
         }
 
         public void writeString(Parcel p, String s) {
@@ -91,8 +89,7 @@ public class PackageParserCacheHelper {
             this.mParcel.writeStringList(this.mStrings);
             this.mParcel.setDataPosition(this.mStartPos);
             this.mParcel.writeInt(poolPosition);
-            Parcel parcel = this.mParcel;
-            parcel.setDataPosition(parcel.dataSize());
+            this.mParcel.setDataPosition(this.mParcel.dataSize());
         }
     }
 }

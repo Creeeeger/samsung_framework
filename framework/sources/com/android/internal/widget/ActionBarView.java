@@ -89,43 +89,11 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     private boolean mWasHomeEnabled;
     Window.Callback mWindowCallback;
 
-    /* renamed from: com.android.internal.widget.ActionBarView$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            MenuItemImpl item = ActionBarView.this.mExpandedMenuPresenter.mCurrentExpandedItem;
-            if (item != null) {
-                item.collapseActionView();
-            }
-        }
-    }
-
-    /* renamed from: com.android.internal.widget.ActionBarView$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 implements View.OnClickListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            if (ActionBarView.this.mMenuPrepared) {
-                ActionBarView.this.mWindowCallback.onMenuItemSelected(0, ActionBarView.this.mLogoNavItem);
-            }
-        }
-    }
-
     public ActionBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mDisplayOptions = -1;
         this.mDefaultUpDescription = R.string.action_bar_up_description;
-        AnonymousClass1 anonymousClass1 = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.1
-            AnonymousClass1() {
-            }
-
+        this.mExpandedActionViewUpListener = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.1
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 MenuItemImpl item = ActionBarView.this.mExpandedMenuPresenter.mCurrentExpandedItem;
@@ -134,11 +102,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 }
             }
         };
-        this.mExpandedActionViewUpListener = anonymousClass1;
-        AnonymousClass2 anonymousClass2 = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.2
-            AnonymousClass2() {
-            }
-
+        this.mUpClickListener = new View.OnClickListener() { // from class: com.android.internal.widget.ActionBarView.2
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 if (ActionBarView.this.mMenuPrepared) {
@@ -146,7 +110,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 }
             }
         };
-        this.mUpClickListener = anonymousClass2;
         setBackgroundResource(0);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ActionBar, 16843470, 0);
         this.mNavigationMode = a.getInt(7, 0);
@@ -156,13 +119,11 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         this.mIcon = a.getDrawable(0);
         LayoutInflater inflater = LayoutInflater.from(context);
         int homeResId = a.getResourceId(16, R.layout.action_bar_home);
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.action_bar_up_container, (ViewGroup) this, false);
-        this.mUpGoerFive = viewGroup;
-        this.mHomeLayout = (HomeView) inflater.inflate(homeResId, viewGroup, false);
-        HomeView homeView = (HomeView) inflater.inflate(homeResId, this.mUpGoerFive, false);
-        this.mExpandedHomeLayout = homeView;
-        homeView.setShowUp(true);
-        this.mExpandedHomeLayout.setOnClickListener(anonymousClass1);
+        this.mUpGoerFive = (ViewGroup) inflater.inflate(R.layout.action_bar_up_container, (ViewGroup) this, false);
+        this.mHomeLayout = (HomeView) inflater.inflate(homeResId, this.mUpGoerFive, false);
+        this.mExpandedHomeLayout = (HomeView) inflater.inflate(homeResId, this.mUpGoerFive, false);
+        this.mExpandedHomeLayout.setShowUp(true);
+        this.mExpandedHomeLayout.setOnClickListener(this.mExpandedActionViewUpListener);
         this.mExpandedHomeLayout.setContentDescription(getResources().getText(this.mDefaultUpDescription));
         Drawable upBackground = this.mUpGoerFive.getBackground();
         if (upBackground != null) {
@@ -186,7 +147,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         this.mContentHeight = a.getLayoutDimension(4, 0);
         a.recycle();
         this.mLogoNavItem = new ActionMenuItem(context, 0, 16908332, 0, 0, this.mTitle);
-        this.mUpGoerFive.setOnClickListener(anonymousClass2);
+        this.mUpGoerFive.setOnClickListener(this.mUpClickListener);
         this.mUpGoerFive.setClickable(true);
         this.mUpGoerFive.setFocusable(true);
         if (getImportantForAccessibility() == 0) {
@@ -195,29 +156,22 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     }
 
     @Override // com.android.internal.widget.AbsActionBarView, android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         this.mTitleView = null;
         this.mSubtitleView = null;
-        LinearLayout linearLayout = this.mTitleLayout;
-        if (linearLayout != null) {
-            ViewParent parent = linearLayout.getParent();
-            ViewGroup viewGroup = this.mUpGoerFive;
-            if (parent == viewGroup) {
-                viewGroup.removeView(this.mTitleLayout);
-            }
+        if (this.mTitleLayout != null && this.mTitleLayout.getParent() == this.mUpGoerFive) {
+            this.mUpGoerFive.removeView(this.mTitleLayout);
         }
         this.mTitleLayout = null;
         if ((this.mDisplayOptions & 8) != 0) {
             initTitle();
         }
-        int i = this.mHomeDescriptionRes;
-        if (i != 0) {
-            setNavigationContentDescription(i);
+        if (this.mHomeDescriptionRes != 0) {
+            setNavigationContentDescription(this.mHomeDescriptionRes);
         }
-        ScrollingTabContainerView scrollingTabContainerView = this.mTabScrollView;
-        if (scrollingTabContainerView != null && this.mIncludeTabs) {
-            ViewGroup.LayoutParams lp = scrollingTabContainerView.getLayoutParams();
+        if (this.mTabScrollView != null && this.mIncludeTabs) {
+            ViewGroup.LayoutParams lp = this.mTabScrollView.getLayoutParams();
             if (lp != null) {
                 lp.width = -2;
                 lp.height = -1;
@@ -248,9 +202,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // com.android.internal.widget.DecorToolbar
     public void initProgress() {
-        ProgressBar progressBar = new ProgressBar(this.mContext, null, 0, this.mProgressStyle);
-        this.mProgressView = progressBar;
-        progressBar.setId(R.id.progress_horizontal);
+        this.mProgressView = new ProgressBar(this.mContext, null, 0, this.mProgressStyle);
+        this.mProgressView.setId(R.id.progress_horizontal);
         this.mProgressView.setMax(10000);
         this.mProgressView.setVisibility(8);
         addView(this.mProgressView);
@@ -258,9 +211,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // com.android.internal.widget.DecorToolbar
     public void initIndeterminateProgress() {
-        ProgressBar progressBar = new ProgressBar(this.mContext, null, 0, this.mIndeterminateProgressStyle);
-        this.mIndeterminateProgressView = progressBar;
-        progressBar.setId(R.id.progress_circular);
+        this.mIndeterminateProgressView = new ProgressBar(this.mContext, null, 0, this.mIndeterminateProgressStyle);
+        this.mIndeterminateProgressView.setId(R.id.progress_circular);
         this.mIndeterminateProgressView.setVisibility(8);
         addView(this.mIndeterminateProgressView);
     }
@@ -317,15 +269,13 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // com.android.internal.widget.DecorToolbar
     public void setEmbeddedTabView(ScrollingTabContainerView tabs) {
-        ScrollingTabContainerView scrollingTabContainerView = this.mTabScrollView;
-        if (scrollingTabContainerView != null) {
-            removeView(scrollingTabContainerView);
+        if (this.mTabScrollView != null) {
+            removeView(this.mTabScrollView);
         }
         this.mTabScrollView = tabs;
-        boolean z = tabs != null;
-        this.mIncludeTabs = z;
-        if (z && this.mNavigationMode == 2) {
-            addView(tabs);
+        this.mIncludeTabs = tabs != null;
+        if (this.mIncludeTabs && this.mNavigationMode == 2) {
+            addView(this.mTabScrollView);
             ViewGroup.LayoutParams lp = this.mTabScrollView.getLayoutParams();
             lp.width = -2;
             lp.height = -1;
@@ -342,12 +292,11 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     public void setMenu(Menu menu, MenuPresenter.Callback cb) {
         ActionMenuView menuView;
         ViewGroup oldParent;
-        MenuBuilder menuBuilder = this.mOptionsMenu;
-        if (menu == menuBuilder) {
+        if (menu == this.mOptionsMenu) {
             return;
         }
-        if (menuBuilder != null) {
-            menuBuilder.removeMenuPresenter(this.mActionMenuPresenter);
+        if (this.mOptionsMenu != null) {
+            this.mOptionsMenu.removeMenuPresenter(this.mActionMenuPresenter);
             this.mOptionsMenu.removeMenuPresenter(this.mExpandedMenuPresenter);
         }
         MenuBuilder builder = (MenuBuilder) menu;
@@ -407,14 +356,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // com.android.internal.widget.DecorToolbar
     public boolean hasExpandedActionView() {
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        return (expandedActionViewMenuPresenter == null || expandedActionViewMenuPresenter.mCurrentExpandedItem == null) ? false : true;
+        return (this.mExpandedMenuPresenter == null || this.mExpandedMenuPresenter.mCurrentExpandedItem == null) ? false : true;
     }
 
     @Override // com.android.internal.widget.DecorToolbar
     public void collapseActionView() {
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        MenuItemImpl item = expandedActionViewMenuPresenter == null ? null : expandedActionViewMenuPresenter.mCurrentExpandedItem;
+        MenuItemImpl item = this.mExpandedMenuPresenter == null ? null : this.mExpandedMenuPresenter.mCurrentExpandedItem;
         if (item != null) {
             item.collapseActionView();
         }
@@ -423,13 +370,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     @Override // com.android.internal.widget.DecorToolbar
     public void setCustomView(View view) {
         boolean showCustom = (this.mDisplayOptions & 16) != 0;
-        View view2 = this.mCustomNavView;
-        if (view2 != null && showCustom) {
-            removeView(view2);
+        if (this.mCustomNavView != null && showCustom) {
+            removeView(this.mCustomNavView);
         }
         this.mCustomNavView = view;
-        if (view != null && showCustom) {
-            addView(view);
+        if (this.mCustomNavView != null && showCustom) {
+            addView(this.mCustomNavView);
         }
     }
 
@@ -453,15 +399,13 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     private void setTitleImpl(CharSequence title) {
         this.mTitle = title;
-        TextView textView = this.mTitleView;
-        if (textView != null) {
-            textView.setText(title);
+        if (this.mTitleView != null) {
+            this.mTitleView.lambda$setTextAsync$0(title);
             boolean visible = (this.mExpandedActionView != null || (this.mDisplayOptions & 8) == 0 || (TextUtils.isEmpty(this.mTitle) && TextUtils.isEmpty(this.mSubtitle))) ? false : true;
             this.mTitleLayout.setVisibility(visible ? 0 : 8);
         }
-        ActionMenuItem actionMenuItem = this.mLogoNavItem;
-        if (actionMenuItem != null) {
-            actionMenuItem.setTitle(title);
+        if (this.mLogoNavItem != null) {
+            this.mLogoNavItem.setTitle(title);
         }
         updateHomeAccessibility(this.mUpGoerFive.isEnabled());
     }
@@ -474,9 +418,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     @Override // com.android.internal.widget.DecorToolbar
     public void setSubtitle(CharSequence subtitle) {
         this.mSubtitle = subtitle;
-        TextView textView = this.mSubtitleView;
-        if (textView != null) {
-            textView.setText(subtitle);
+        if (this.mSubtitleView != null) {
+            this.mSubtitleView.lambda$setTextAsync$0(subtitle);
             this.mSubtitleView.setVisibility(subtitle != null ? 0 : 8);
             boolean visible = (this.mExpandedActionView != null || (this.mDisplayOptions & 8) == 0 || (TextUtils.isEmpty(this.mTitle) && TextUtils.isEmpty(this.mSubtitle))) ? false : true;
             this.mTitleLayout.setVisibility(visible ? 0 : 8);
@@ -489,6 +432,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         setHomeButtonEnabled(enable, true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setHomeButtonEnabled(boolean enable, boolean recordState) {
         if (recordState) {
             this.mWasHomeEnabled = enable;
@@ -535,9 +479,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // com.android.internal.widget.DecorToolbar
     public void setDisplayOptions(int options) {
-        View view;
-        int i = this.mDisplayOptions;
-        int flagsChanged = i != -1 ? options ^ i : -1;
+        int flagsChanged = this.mDisplayOptions != -1 ? options ^ this.mDisplayOptions : -1;
         this.mDisplayOptions = options;
         if ((flagsChanged & 63) != 0) {
             if ((flagsChanged & 4) != 0) {
@@ -548,13 +490,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 }
             }
             if ((flagsChanged & 1) != 0) {
-                Drawable drawable = this.mLogo;
-                boolean logoVis = (drawable == null || (options & 1) == 0) ? false : true;
-                HomeView homeView = this.mHomeLayout;
-                if (!logoVis) {
-                    drawable = this.mIcon;
-                }
-                homeView.setIcon(drawable);
+                boolean logoVis = (this.mLogo == null || (options & 1) == 0) ? false : true;
+                this.mHomeLayout.setIcon(logoVis ? this.mLogo : this.mIcon);
             }
             if ((flagsChanged & 8) != 0) {
                 if ((options & 8) != 0) {
@@ -569,11 +506,11 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             this.mHomeLayout.setShowIcon(showHome);
             int homeVis = ((showHome || titleUp) && this.mExpandedActionView == null) ? 0 : 8;
             this.mHomeLayout.setVisibility(homeVis);
-            if ((flagsChanged & 16) != 0 && (view = this.mCustomNavView) != null) {
+            if ((flagsChanged & 16) != 0 && this.mCustomNavView != null) {
                 if ((options & 16) != 0) {
-                    addView(view);
+                    addView(this.mCustomNavView);
                 } else {
-                    removeView(view);
+                    removeView(this.mCustomNavView);
                 }
             }
             if (this.mTitleLayout != null && (flagsChanged & 32) != 0) {
@@ -637,16 +574,14 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         if (mode != oldMode) {
             switch (oldMode) {
                 case 1:
-                    LinearLayout linearLayout = this.mListNavLayout;
-                    if (linearLayout != null) {
-                        removeView(linearLayout);
+                    if (this.mListNavLayout != null) {
+                        removeView(this.mListNavLayout);
                         break;
                     }
                     break;
                 case 2:
-                    ScrollingTabContainerView scrollingTabContainerView = this.mTabScrollView;
-                    if (scrollingTabContainerView != null && this.mIncludeTabs) {
-                        removeView(scrollingTabContainerView);
+                    if (this.mTabScrollView != null && this.mIncludeTabs) {
+                        removeView(this.mTabScrollView);
                         break;
                     }
                     break;
@@ -654,26 +589,22 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             switch (mode) {
                 case 1:
                     if (this.mSpinner == null) {
-                        Spinner spinner = new Spinner(this.mContext, null, 16843479);
-                        this.mSpinner = spinner;
-                        spinner.setId(R.id.action_bar_spinner);
+                        this.mSpinner = new Spinner(this.mContext, null, 16843479);
+                        this.mSpinner.setId(R.id.action_bar_spinner);
                         this.mListNavLayout = new LinearLayout(this.mContext, null, 16843508);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -1);
                         params.gravity = 17;
                         this.mListNavLayout.addView(this.mSpinner, params);
                     }
-                    SpinnerAdapter adapter = this.mSpinner.getAdapter();
-                    SpinnerAdapter spinnerAdapter = this.mSpinnerAdapter;
-                    if (adapter != spinnerAdapter) {
-                        this.mSpinner.setAdapter(spinnerAdapter);
+                    if (this.mSpinner.getAdapter() != this.mSpinnerAdapter) {
+                        this.mSpinner.setAdapter(this.mSpinnerAdapter);
                     }
                     this.mSpinner.setOnItemSelectedListener(this.mNavItemSelectedListener);
                     addView(this.mListNavLayout);
                     break;
                 case 2:
-                    ScrollingTabContainerView scrollingTabContainerView2 = this.mTabScrollView;
-                    if (scrollingTabContainerView2 != null && this.mIncludeTabs) {
-                        addView(scrollingTabContainerView2);
+                    if (this.mTabScrollView != null && this.mIncludeTabs) {
+                        addView(this.mTabScrollView);
                         break;
                     }
                     break;
@@ -687,18 +618,16 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     public void setDropdownParams(SpinnerAdapter adapter, AdapterView.OnItemSelectedListener l) {
         this.mSpinnerAdapter = adapter;
         this.mNavItemSelectedListener = l;
-        Spinner spinner = this.mSpinner;
-        if (spinner != null) {
-            spinner.setAdapter(adapter);
+        if (this.mSpinner != null) {
+            this.mSpinner.setAdapter(adapter);
             this.mSpinner.setOnItemSelectedListener(l);
         }
     }
 
     @Override // com.android.internal.widget.DecorToolbar
     public int getDropdownItemCount() {
-        SpinnerAdapter spinnerAdapter = this.mSpinnerAdapter;
-        if (spinnerAdapter != null) {
-            return spinnerAdapter.getCount();
+        if (this.mSpinnerAdapter != null) {
+            return this.mSpinnerAdapter.getCount();
         }
         return 0;
     }
@@ -739,13 +668,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         ViewParent parent;
         super.onFinishInflate();
         this.mUpGoerFive.addView(this.mHomeLayout, 0);
         addView(this.mUpGoerFive);
-        View view = this.mCustomNavView;
-        if (view != null && (this.mDisplayOptions & 16) != 0 && (parent = view.getParent()) != this) {
+        if (this.mCustomNavView != null && (this.mDisplayOptions & 16) != 0 && (parent = this.mCustomNavView.getParent()) != this) {
             if (parent instanceof ViewGroup) {
                 ((ViewGroup) parent).removeView(this.mCustomNavView);
             }
@@ -753,28 +681,24 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initTitle() {
         if (this.mTitleLayout == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.action_bar_title_item, (ViewGroup) this, false);
-            this.mTitleLayout = linearLayout;
-            this.mTitleView = (TextView) linearLayout.findViewById(R.id.action_bar_title);
+            this.mTitleLayout = (LinearLayout) inflater.inflate(R.layout.action_bar_title_item, (ViewGroup) this, false);
+            this.mTitleView = (TextView) this.mTitleLayout.findViewById(R.id.action_bar_title);
             this.mSubtitleView = (TextView) this.mTitleLayout.findViewById(R.id.action_bar_subtitle);
-            int i = this.mTitleStyleRes;
-            if (i != 0) {
-                this.mTitleView.setTextAppearance(i);
+            if (this.mTitleStyleRes != 0) {
+                this.mTitleView.setTextAppearance(this.mTitleStyleRes);
             }
-            CharSequence charSequence = this.mTitle;
-            if (charSequence != null) {
-                this.mTitleView.setText(charSequence);
+            if (this.mTitle != null) {
+                this.mTitleView.lambda$setTextAsync$0(this.mTitle);
             }
-            int i2 = this.mSubtitleStyleRes;
-            if (i2 != 0) {
-                this.mSubtitleView.setTextAppearance(i2);
+            if (this.mSubtitleStyleRes != 0) {
+                this.mSubtitleView.setTextAppearance(this.mSubtitleStyleRes);
             }
-            CharSequence charSequence2 = this.mSubtitle;
-            if (charSequence2 != null) {
-                this.mSubtitleView.setText(charSequence2);
+            if (this.mSubtitle != null) {
+                this.mSubtitleView.lambda$setTextAsync$0(this.mSubtitle);
                 this.mSubtitleView.setVisibility(0);
             }
         }
@@ -798,8 +722,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     @Override // com.android.internal.widget.DecorToolbar
     public boolean isTitleTruncated() {
         Layout titleLayout;
-        TextView textView = this.mTitleView;
-        if (textView == null || (titleLayout = textView.getLayout()) == null) {
+        if (this.mTitleView == null || (titleLayout = this.mTitleView.getLayout()) == null) {
             return false;
         }
         int lineCount = titleLayout.getLineCount();
@@ -811,45 +734,45 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         return false;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:107:0x02ec  */
-    /* JADX WARN: Removed duplicated region for block: B:110:0x02fa  */
-    /* JADX WARN: Removed duplicated region for block: B:122:0x0320  */
-    /* JADX WARN: Removed duplicated region for block: B:131:0x0315  */
-    /* JADX WARN: Removed duplicated region for block: B:143:0x02cf  */
-    /* JADX WARN: Removed duplicated region for block: B:144:0x0218  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x0215  */
-    /* JADX WARN: Removed duplicated region for block: B:78:0x0226  */
+    /* JADX WARN: Removed duplicated region for block: B:107:0x02f0  */
+    /* JADX WARN: Removed duplicated region for block: B:110:0x0300  */
+    /* JADX WARN: Removed duplicated region for block: B:122:0x0326  */
+    /* JADX WARN: Removed duplicated region for block: B:131:0x031b  */
+    /* JADX WARN: Removed duplicated region for block: B:143:0x02d3  */
+    /* JADX WARN: Removed duplicated region for block: B:144:0x021c  */
+    /* JADX WARN: Removed duplicated region for block: B:76:0x0219  */
+    /* JADX WARN: Removed duplicated region for block: B:78:0x022a  */
     @Override // android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void onMeasure(int r33, int r34) {
+    protected void onMeasure(int r33, int r34) {
         /*
-            Method dump skipped, instructions count: 926
+            Method dump skipped, instructions count: 936
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.ActionBarView.onMeasure(int, int):void");
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Removed duplicated region for block: B:112:0x0252  */
-    /* JADX WARN: Removed duplicated region for block: B:113:0x0129  */
-    /* JADX WARN: Removed duplicated region for block: B:31:0x0095  */
-    /* JADX WARN: Removed duplicated region for block: B:40:0x00e7  */
-    /* JADX WARN: Removed duplicated region for block: B:45:0x0107  */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x0126  */
-    /* JADX WARN: Removed duplicated region for block: B:52:0x0137  */
-    /* JADX WARN: Removed duplicated region for block: B:80:0x0258  */
+    /* JADX WARN: Removed duplicated region for block: B:112:0x0256  */
+    /* JADX WARN: Removed duplicated region for block: B:113:0x012d  */
+    /* JADX WARN: Removed duplicated region for block: B:31:0x0097  */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x00e9  */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x0109  */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x012a  */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x013b  */
+    /* JADX WARN: Removed duplicated region for block: B:80:0x025c  */
     /* JADX WARN: Removed duplicated region for block: B:82:? A[RETURN, SYNTHETIC] */
     @Override // android.view.ViewGroup, android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void onLayout(boolean r27, int r28, int r29, int r30, int r31) {
+    protected void onLayout(boolean r27, int r28, int r29, int r30, int r31) {
         /*
-            Method dump skipped, instructions count: 664
+            Method dump skipped, instructions count: 674
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.widget.ActionBarView.onLayout(boolean, int, int, int, int):void");
@@ -872,8 +795,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState state = new SavedState(superState);
-        ExpandedActionViewMenuPresenter expandedActionViewMenuPresenter = this.mExpandedMenuPresenter;
-        if (expandedActionViewMenuPresenter != null && expandedActionViewMenuPresenter.mCurrentExpandedItem != null) {
+        if (this.mExpandedMenuPresenter != null && this.mExpandedMenuPresenter.mCurrentExpandedItem != null) {
             state.expandedMenuItemId = this.mExpandedMenuPresenter.mCurrentExpandedItem.getItemId();
         }
         state.isOverflowOpen = isOverflowMenuShowing();
@@ -882,11 +804,10 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable p) {
-        MenuBuilder menuBuilder;
         MenuItem item;
         SavedState state = (SavedState) p;
         super.onRestoreInstanceState(state.getSuperState());
-        if (state.expandedMenuItemId != 0 && this.mExpandedMenuPresenter != null && (menuBuilder = this.mOptionsMenu) != null && (item = menuBuilder.findItem(state.expandedMenuItemId)) != null) {
+        if (state.expandedMenuItemId != 0 && this.mExpandedMenuPresenter != null && this.mOptionsMenu != null && (item = this.mOptionsMenu.findItem(state.expandedMenuItemId)) != null) {
             item.expandActionView();
         }
         if (state.isOverflowOpen) {
@@ -936,9 +857,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         if (this.mActionMenuPresenter != null) {
             this.mActionMenuPresenter.setCallback(presenterCallback);
         }
-        MenuBuilder menuBuilder = this.mOptionsMenu;
-        if (menuBuilder != null) {
-            menuBuilder.setCallback(menuBuilderCallback);
+        if (this.mOptionsMenu != null) {
+            this.mOptionsMenu.setCallback(menuBuilderCallback);
         }
     }
 
@@ -947,17 +867,15 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         return this.mOptionsMenu;
     }
 
-    /* loaded from: classes5.dex */
-    public static class SavedState extends View.BaseSavedState {
+    static class SavedState extends View.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: com.android.internal.widget.ActionBarView.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -965,10 +883,6 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         };
         int expandedMenuItemId;
         boolean isOverflowOpen;
-
-        /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-            this(parcel);
-        }
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -986,27 +900,9 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             parcel.writeInt(this.expandedMenuItemId);
             parcel.writeInt(this.isOverflowOpen ? 1 : 0);
         }
-
-        /* renamed from: com.android.internal.widget.ActionBarView$SavedState$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        }
     }
 
-    /* loaded from: classes5.dex */
-    public static class HomeView extends FrameLayout {
+    private static class HomeView extends FrameLayout {
         private static final long DEFAULT_TRANSITION_DURATION = 150;
         private Drawable mDefaultUpIndicator;
         private ImageView mIconView;
@@ -1037,7 +933,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
 
         public void setIcon(Drawable icon) {
-            this.mIconView.lambda$setImageURIAsync$2(icon);
+            this.mIconView.lambda$setImageURIAsync$0(icon);
         }
 
         public void setUpIndicator(Drawable d) {
@@ -1058,18 +954,17 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
 
         private void updateUpIndicator() {
-            Drawable drawable = this.mUpIndicator;
-            if (drawable != null) {
-                this.mUpView.lambda$setImageURIAsync$2(drawable);
+            if (this.mUpIndicator != null) {
+                this.mUpView.lambda$setImageURIAsync$0(this.mUpIndicator);
             } else if (this.mUpIndicatorRes != 0) {
-                this.mUpView.lambda$setImageURIAsync$2(getContext().getDrawable(this.mUpIndicatorRes));
+                this.mUpView.lambda$setImageURIAsync$0(getContext().getDrawable(this.mUpIndicatorRes));
             } else {
-                this.mUpView.lambda$setImageURIAsync$2(this.mDefaultUpIndicator);
+                this.mUpView.lambda$setImageURIAsync$0(this.mDefaultUpIndicator);
             }
         }
 
         @Override // android.view.View
-        public void onConfigurationChanged(Configuration newConfig) {
+        protected void onConfigurationChanged(Configuration newConfig) {
             super.onConfigurationChanged(newConfig);
             if (this.mUpIndicatorRes != 0) {
                 updateUpIndicator();
@@ -1097,7 +992,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
 
         @Override // android.view.View
-        public void onFinishInflate() {
+        protected void onFinishInflate() {
             this.mUpView = (ImageView) findViewById(R.id.up);
             this.mIconView = (ImageView) findViewById(16908332);
             this.mDefaultUpIndicator = this.mUpView.getDrawable();
@@ -1115,13 +1010,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
 
         @Override // android.widget.FrameLayout, android.view.View
-        public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             measureChildWithMargins(this.mUpView, widthMeasureSpec, 0, heightMeasureSpec, 0);
             FrameLayout.LayoutParams upLp = (FrameLayout.LayoutParams) this.mUpView.getLayoutParams();
             int upMargins = upLp.leftMargin + upLp.rightMargin;
-            int measuredWidth = this.mUpView.getMeasuredWidth();
-            this.mUpWidth = measuredWidth;
-            this.mStartOffset = measuredWidth + upMargins;
+            this.mUpWidth = this.mUpView.getMeasuredWidth();
+            this.mStartOffset = this.mUpWidth + upMargins;
             int width = this.mUpView.getVisibility() == 8 ? 0 : this.mStartOffset;
             int height = upLp.topMargin + this.mUpView.getMeasuredHeight() + upLp.bottomMargin;
             if (this.mIconView.getVisibility() != 8) {
@@ -1156,7 +1050,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
 
         @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-        public void onLayout(boolean changed, int l, int t, int r, int b) {
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
             int l2;
             int upRight;
             int iconRight;
@@ -1211,24 +1105,17 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class ExpandedActionViewMenuPresenter implements MenuPresenter {
+    private class ExpandedActionViewMenuPresenter implements MenuPresenter {
         MenuItemImpl mCurrentExpandedItem;
         MenuBuilder mMenu;
-
-        /* synthetic */ ExpandedActionViewMenuPresenter(ActionBarView actionBarView, ExpandedActionViewMenuPresenterIA expandedActionViewMenuPresenterIA) {
-            this();
-        }
 
         private ExpandedActionViewMenuPresenter() {
         }
 
         @Override // com.android.internal.view.menu.MenuPresenter
         public void initForMenu(Context context, MenuBuilder menu) {
-            MenuItemImpl menuItemImpl;
-            MenuBuilder menuBuilder = this.mMenu;
-            if (menuBuilder != null && (menuItemImpl = this.mCurrentExpandedItem) != null) {
-                menuBuilder.collapseItemActionView(menuItemImpl);
+            if (this.mMenu != null && this.mCurrentExpandedItem != null) {
+                this.mMenu.collapseItemActionView(this.mCurrentExpandedItem);
             }
             this.mMenu = menu;
         }
@@ -1242,9 +1129,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         public void updateMenuView(boolean cleared) {
             if (this.mCurrentExpandedItem != null) {
                 boolean found = false;
-                MenuBuilder menuBuilder = this.mMenu;
-                if (menuBuilder != null) {
-                    int count = menuBuilder.size();
+                if (this.mMenu != null) {
+                    int count = this.mMenu.size();
                     int i = 0;
                     while (true) {
                         if (i >= count) {
@@ -1288,10 +1174,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             ActionBarView.this.mExpandedActionView = item.getActionView();
             ActionBarView.this.mExpandedHomeLayout.setIcon(ActionBarView.this.mIcon.getConstantState().newDrawable(ActionBarView.this.getResources()));
             this.mCurrentExpandedItem = item;
-            ViewParent parent = ActionBarView.this.mExpandedActionView.getParent();
-            ActionBarView actionBarView = ActionBarView.this;
-            if (parent != actionBarView) {
-                actionBarView.addView(actionBarView.mExpandedActionView);
+            if (ActionBarView.this.mExpandedActionView.getParent() != ActionBarView.this) {
+                ActionBarView.this.addView(ActionBarView.this.mExpandedActionView);
             }
             if (ActionBarView.this.mExpandedHomeLayout.getParent() != ActionBarView.this.mUpGoerFive) {
                 ActionBarView.this.mUpGoerFive.addView(ActionBarView.this.mExpandedHomeLayout);
@@ -1323,8 +1207,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             if (ActionBarView.this.mExpandedActionView instanceof CollapsibleActionView) {
                 ((CollapsibleActionView) ActionBarView.this.mExpandedActionView).onActionViewCollapsed();
             }
-            ActionBarView actionBarView = ActionBarView.this;
-            actionBarView.removeView(actionBarView.mExpandedActionView);
+            ActionBarView.this.removeView(ActionBarView.this.mExpandedActionView);
             ActionBarView.this.mUpGoerFive.removeView(ActionBarView.this.mExpandedHomeLayout);
             ActionBarView.this.mExpandedActionView = null;
             if ((ActionBarView.this.mDisplayOptions & 2) != 0) {
@@ -1348,8 +1231,7 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             }
             ActionBarView.this.mExpandedHomeLayout.setIcon(null);
             this.mCurrentExpandedItem = null;
-            ActionBarView actionBarView2 = ActionBarView.this;
-            actionBarView2.setHomeButtonEnabled(actionBarView2.mWasHomeEnabled);
+            ActionBarView.this.setHomeButtonEnabled(ActionBarView.this.mWasHomeEnabled);
             ActionBarView.this.requestLayout();
             item.setActionViewExpanded(false);
             return true;

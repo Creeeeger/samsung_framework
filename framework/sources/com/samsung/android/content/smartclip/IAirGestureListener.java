@@ -12,7 +12,6 @@ public interface IAirGestureListener extends IInterface {
 
     void onGesture(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IAirGestureListener {
         @Override // com.samsung.android.content.smartclip.IAirGestureListener
         public void onGesture(String gesture) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAirGestureListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IAirGestureListener {
         static final int TRANSACTION_onGesture = 1;
 
@@ -67,26 +65,22 @@ public interface IAirGestureListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAirGestureListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAirGestureListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAirGestureListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGesture(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGesture(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IAirGestureListener {
+        private static class Proxy implements IAirGestureListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

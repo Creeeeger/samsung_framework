@@ -18,11 +18,20 @@ public class ExportInfo {
     private int bitRate = 0;
     private boolean preserveAudio = true;
     private ContentColorType contentColorType = ContentColorType.SDR;
+    private boolean rewriteMode = false;
 
     public ExportInfo(int width, int height, FileDescriptor fd) {
         this.width = width;
         this.height = height;
         this.fd = fd;
+    }
+
+    public boolean getRewriteMode() {
+        return this.rewriteMode;
+    }
+
+    public void setRewriteMode(boolean flag) {
+        this.rewriteMode = flag;
     }
 
     public int getWidth() {

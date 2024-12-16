@@ -9,39 +9,23 @@ public final class Presentations {
     private InlinePresentation mInlineTooltipPresentation;
     private RemoteViews mMenuPresentation;
 
-    /* renamed from: -$$Nest$smdefaultDialogPresentation */
-    static /* bridge */ /* synthetic */ RemoteViews m3599$$Nest$smdefaultDialogPresentation() {
-        return defaultDialogPresentation();
-    }
-
-    /* renamed from: -$$Nest$smdefaultInlinePresentation */
-    static /* bridge */ /* synthetic */ InlinePresentation m3600$$Nest$smdefaultInlinePresentation() {
-        return defaultInlinePresentation();
-    }
-
-    /* renamed from: -$$Nest$smdefaultInlineTooltipPresentation */
-    static /* bridge */ /* synthetic */ InlinePresentation m3601$$Nest$smdefaultInlineTooltipPresentation() {
-        return defaultInlineTooltipPresentation();
-    }
-
-    /* renamed from: -$$Nest$smdefaultMenuPresentation */
-    static /* bridge */ /* synthetic */ RemoteViews m3602$$Nest$smdefaultMenuPresentation() {
-        return defaultMenuPresentation();
-    }
-
-    private static RemoteViews defaultMenuPresentation() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static RemoteViews defaultMenuPresentation() {
         return null;
     }
 
-    private static InlinePresentation defaultInlinePresentation() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static InlinePresentation defaultInlinePresentation() {
         return null;
     }
 
-    private static RemoteViews defaultDialogPresentation() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static RemoteViews defaultDialogPresentation() {
         return null;
     }
 
-    private static InlinePresentation defaultInlineTooltipPresentation() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static InlinePresentation defaultInlineTooltipPresentation() {
         return null;
     }
 
@@ -78,7 +62,6 @@ public final class Presentations {
         return this.mInlineTooltipPresentation;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private long mBuilderFieldsSet = 0;
         private RemoteViews mDialogPresentation;
@@ -116,19 +99,18 @@ public final class Presentations {
 
         public Presentations build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 16;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mMenuPresentation = Presentations.m3602$$Nest$smdefaultMenuPresentation();
+            this.mBuilderFieldsSet |= 16;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mMenuPresentation = Presentations.defaultMenuPresentation();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mInlinePresentation = Presentations.m3600$$Nest$smdefaultInlinePresentation();
+                this.mInlinePresentation = Presentations.defaultInlinePresentation();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mDialogPresentation = Presentations.m3599$$Nest$smdefaultDialogPresentation();
+                this.mDialogPresentation = Presentations.defaultDialogPresentation();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mInlineTooltipPresentation = Presentations.m3601$$Nest$smdefaultInlineTooltipPresentation();
+                this.mInlineTooltipPresentation = Presentations.defaultInlineTooltipPresentation();
             }
             Presentations o = new Presentations(this.mMenuPresentation, this.mInlinePresentation, this.mDialogPresentation, this.mInlineTooltipPresentation);
             return o;

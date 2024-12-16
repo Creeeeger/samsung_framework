@@ -14,7 +14,6 @@ public interface IAttentionCallback extends IInterface {
 
     void onSuccess(int i, long j) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IAttentionCallback {
         @Override // android.service.attention.IAttentionCallback
         public void onSuccess(int result, long timestamp) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IAttentionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IAttentionCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -76,32 +74,28 @@ public interface IAttentionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAttentionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAttentionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAttentionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    long _arg1 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            long _arg1 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IAttentionCallback {
+        private static class Proxy implements IAttentionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class Carrier implements Parcelable {
     public static final Parcelable.Creator<Carrier> CREATOR = new Parcelable.Creator<Carrier>() { // from class: android.hardware.radio.sim.Carrier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Carrier createFromParcel(Parcel _aidl_source) {
             Carrier _aidl_out = new Carrier();
@@ -19,6 +17,7 @@ public class Carrier implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Carrier[] newArray(int _aidl_size) {
             return new Carrier[_aidl_size];
@@ -33,25 +32,6 @@ public class Carrier implements Parcelable {
     public int matchType = 0;
     public String mcc;
     public String mnc;
-
-    /* renamed from: android.hardware.radio.sim.Carrier$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Carrier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Carrier createFromParcel(Parcel _aidl_source) {
-            Carrier _aidl_out = new Carrier();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Carrier[] newArray(int _aidl_size) {
-            return new Carrier[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -130,7 +110,7 @@ public class Carrier implements Parcelable {
         _aidl_sj.add("mnc: " + Objects.toString(this.mnc));
         _aidl_sj.add("matchType: " + this.matchType);
         _aidl_sj.add("matchData: " + Objects.toString(this.matchData));
-        return "android.hardware.radio.sim.Carrier" + _aidl_sj.toString();
+        return "Carrier" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

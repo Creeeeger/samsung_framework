@@ -3,7 +3,7 @@ package com.samsung.android.util;
 import android.media.MediaMetrics;
 import android.os.SystemProperties;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.secutil.Log;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CustomizedTextParser {
     private static final String CSC_XML_FILE_NAME = "unique_text.xml";
     private static final String CSC_XML_FILE_PATH = "/system/csc/";
@@ -47,9 +47,8 @@ public class CustomizedTextParser {
     public static CustomizedTextParser getInstance() {
         synchronized (CustomizedTextParser.class) {
             if (sInstance == null) {
-                CustomizedTextParser customizedTextParser = new CustomizedTextParser();
-                sInstance = customizedTextParser;
-                customizedTextParser.initialize();
+                sInstance = new CustomizedTextParser();
+                sInstance.initialize();
             }
         }
         return sInstance;
@@ -82,8 +81,7 @@ public class CustomizedTextParser {
     }
 
     public String getCustomizedText(String string) {
-        HashMap<String, String> hashMap = this.mRuleMap;
-        if (hashMap == null || hashMap.size() <= 0) {
+        if (this.mRuleMap == null || this.mRuleMap.size() <= 0) {
             Log.e(TAG, "getCustomizedText Rule is empty. mRuleMap=" + this.mRuleMap);
             return string;
         }
@@ -105,12 +103,11 @@ public class CustomizedTextParser {
         DocumentBuilder builder = factory.newDocumentBuilder();
         File fe = new File(fileName);
         if (fe.exists()) {
-            Document parse = builder.parse(fe);
-            this.mDoc = parse;
-            this.mRoot = parse.getDocumentElement();
-            return;
+            this.mDoc = builder.parse(fe);
+            this.mRoot = this.mDoc.getDocumentElement();
+        } else {
+            Log.secE(TAG, "update : XML file doesn't exist");
         }
-        Log.secE(TAG, "update : XML file doesn't exist");
     }
 
     private String getValue(Node node) {
@@ -184,13 +181,8 @@ public class CustomizedTextParser {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static final class CscNodeList implements NodeList {
+    private static final class CscNodeList implements NodeList {
         private ArrayList<Node> children;
-
-        /* synthetic */ CscNodeList(CscNodeListIA cscNodeListIA) {
-            this();
-        }
 
         private CscNodeList() {
             this.children = new ArrayList<>();

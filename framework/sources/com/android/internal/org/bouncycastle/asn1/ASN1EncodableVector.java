@@ -70,28 +70,25 @@ public class ASN1EncodableVector {
         return this.elementCount;
     }
 
-    public ASN1Encodable[] copyElements() {
-        int i = this.elementCount;
-        if (i == 0) {
+    ASN1Encodable[] copyElements() {
+        if (this.elementCount == 0) {
             return EMPTY_ELEMENTS;
         }
-        ASN1Encodable[] copy = new ASN1Encodable[i];
-        System.arraycopy(this.elements, 0, copy, 0, i);
+        ASN1Encodable[] copy = new ASN1Encodable[this.elementCount];
+        System.arraycopy(this.elements, 0, copy, 0, this.elementCount);
         return copy;
     }
 
-    public ASN1Encodable[] takeElements() {
-        int i = this.elementCount;
-        if (i == 0) {
+    ASN1Encodable[] takeElements() {
+        if (this.elementCount == 0) {
             return EMPTY_ELEMENTS;
         }
-        ASN1Encodable[] aSN1EncodableArr = this.elements;
-        if (aSN1EncodableArr.length == i) {
+        if (this.elements.length == this.elementCount) {
             this.copyOnWrite = true;
-            return aSN1EncodableArr;
+            return this.elements;
         }
-        ASN1Encodable[] copy = new ASN1Encodable[i];
-        System.arraycopy(aSN1EncodableArr, 0, copy, 0, i);
+        ASN1Encodable[] copy = new ASN1Encodable[this.elementCount];
+        System.arraycopy(this.elements, 0, copy, 0, this.elementCount);
         return copy;
     }
 
@@ -104,7 +101,7 @@ public class ASN1EncodableVector {
         this.copyOnWrite = false;
     }
 
-    public static ASN1Encodable[] cloneElements(ASN1Encodable[] elements) {
+    static ASN1Encodable[] cloneElements(ASN1Encodable[] elements) {
         return elements.length < 1 ? EMPTY_ELEMENTS : (ASN1Encodable[]) elements.clone();
     }
 }

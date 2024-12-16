@@ -21,7 +21,6 @@ public interface IActivityController extends IInterface {
 
     int systemNotResponding(String str) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IActivityController {
         @Override // android.app.IActivityController
         public boolean activityStarting(Intent intent, String pkg) throws RemoteException {
@@ -59,7 +58,6 @@ public interface IActivityController extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IActivityController {
         public static final String DESCRIPTOR = "android.app.IActivityController";
         static final int TRANSACTION_activityResuming = 2;
@@ -118,72 +116,69 @@ public interface IActivityController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = activityStarting(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = activityResuming(_arg02);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    long _arg4 = data.readLong();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = appCrashed(_arg03, _arg12, _arg2, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    int _arg13 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result4 = appEarlyNotResponding(_arg04, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg14 = data.readInt();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result5 = appNotResponding(_arg05, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result6 = systemNotResponding(_arg06);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = activityStarting(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = activityResuming(_arg02);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            long _arg4 = data.readLong();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = appCrashed(_arg03, _arg12, _arg2, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            int _arg13 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result4 = appEarlyNotResponding(_arg04, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg14 = data.readInt();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result5 = appNotResponding(_arg05, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result6 = systemNotResponding(_arg06);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IActivityController {
+        private static class Proxy implements IActivityController {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

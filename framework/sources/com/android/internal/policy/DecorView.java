@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityThread;
 import android.app.WindowConfiguration;
@@ -21,7 +22,6 @@ import android.graphics.Path;
 import android.graphics.RecordingCanvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,6 +42,7 @@ import android.util.Property;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextThemeWrapper;
+import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.InputQueue;
 import android.view.KeyEvent;
@@ -51,8 +52,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.PendingInsetsController;
+import android.view.RoundedCorners;
 import android.view.SurfaceHolder;
-import android.view.ThreadedRenderer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroupOverlay;
@@ -83,7 +84,6 @@ import com.android.internal.view.menu.ContextMenuBuilder;
 import com.android.internal.view.menu.MenuHelper;
 import com.android.internal.widget.ActionBarContextView;
 import com.android.internal.widget.BackgroundFallback;
-import com.android.internal.widget.DecorCaptionView;
 import com.android.internal.widget.floatingtoolbar.FloatingToolbar;
 import com.samsung.android.app.SemDualAppManager;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
@@ -108,7 +108,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private static final int POP_OVER_ANIM_DELAY_TIME = 100;
     private static final int POP_OVER_BACKGROUND_ANIM_DURATION = 200;
     private static final int POP_OVER_CONTENTS_ANIM_DURATION = 100;
+    private static final float POP_OVER_CORNER_RADIUS = 26.0f;
     private static final int POP_OVER_ELEVATION_IN_DIP = 32;
+    private static final int SCRIM_ALPHA = -872415232;
     private static final int SCRIM_LIGHT = -419430401;
     private static final int SEM_ROUNDED_CORNER_BOTTOM = 12;
     private static final int SEM_ROUNDED_CORNER_LEFT = 5;
@@ -119,14 +121,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private static final boolean SWEEP_OPEN_MENU = false;
     private static final String TAG = "DecorView";
     private static int sKnoxBadgeRightCutout;
-    private final ViewOutlineProvider FREEFORM_OUTLINE_PROVIDER;
     private final FloatProperty<DecorView> POP_OVER_BACKGROUND_ALPHA;
     private final FloatProperty<DecorView> POP_OVER_CONTENT_ALPHA;
     private final ViewOutlineProvider POP_OVER_OUTLINE_PROVIDER;
     private boolean mAllowUpdateElevation;
     private boolean mApplyFloatingHorizontalInsets;
     private boolean mApplyFloatingVerticalInsets;
-    private BackdropFrameRenderer mBackdropFrameRenderer;
     private BackgroundBlurDrawable mBackgroundBlurDrawable;
     private final ViewTreeObserver.OnPreDrawListener mBackgroundBlurOnPreDrawListener;
     private int mBackgroundBlurRadius;
@@ -135,19 +135,19 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private final Rect mBackgroundPadding;
     private final int mBarEnterExitDuration;
     private boolean mCalledDisplayCutoutBackgroundColor;
-    private Drawable mCaptionBackgroundDrawable;
     private ColorDrawable mCaptionBarBackgroundDrawable;
     private boolean mChanging;
     ViewGroup mContentRoot;
     private boolean mCrossWindowBlurEnabled;
     private Consumer<Boolean> mCrossWindowBlurEnabledListener;
-    private DecorCaptionView mDecorCaptionView;
     int mDefaultOpacity;
     private int mDensityForKnoxBadge;
     private float mDensityRatio;
+    private int mDeviceRoundedCornerBottomRadius;
+    private int mDeviceRoundedCornerTopRadius;
     private int mDisplayCutoutBackgroundColor;
     private View mDisplayCutoutBackgroundView;
-    private int mDisplayRotation;
+    private int mDisplayRotationForRoundedCorner;
     private int mDownY;
     private boolean mDrawLegacyNavigationBarBackground;
     private boolean mDrawLegacyNavigationBarBackgroundHandled;
@@ -169,7 +169,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private int mFreeformOutlineColor;
     private boolean mGestureHintEnabled;
     private boolean mGestureNavBarEnabled;
-    private boolean mHasCaption;
     private boolean mHasDisplayCutout;
     private boolean mHasWindowFocusInTask;
     private final Interpolator mHideInterpolator;
@@ -181,7 +180,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private boolean mIsPopOver;
     private boolean mIsPopOverWithoutOutlineEffect;
     private boolean mIsShowNavigationBar;
-    private boolean mKeepCutoutInTentMode;
     private Drawable mKnoxBadge;
     private Runnable mKnoxBadgeDisplayRunnable;
     private Insets mKnoxBadgeInsets;
@@ -193,15 +191,16 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private int mKnoxLayoutLeft;
     private int mKnoxLayoutRight;
     private BackgroundBlurDrawable mLastBackgroundBlurDrawable;
-    private Drawable.Callback mLastBackgroundDrawableCb;
     private Insets mLastBackgroundInsets;
     private int mLastBackgroundResource;
     private int mLastBottomInset;
     private ColorDrawable mLastCaptionBarBackgroundDrawable;
     private int mLastCaptionHeight;
+    private int mLastCaptionType;
     private int mLastDisplayDeviceType;
     private int mLastDockingState;
     private boolean mLastDrawLegacyNavigationBarBackground;
+    private boolean mLastForceConsumingOpaqueCaptionBar;
     private int mLastForceConsumingTypes;
     private boolean mLastHasBottomStableInset;
     private boolean mLastHasLeftStableInset;
@@ -226,6 +225,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private PackageManager mPackageManagerForKnoxBadge;
     private PendingInsetsController mPendingInsetsController;
     private Drawable mPendingWindowBackground;
+    private ValueAnimator mPinnedHeaderAnimator;
     private float mPopOverBackgroundAlpha;
     private int mPopOverBackgroundColor;
     private final Path mPopOverClipOutPath;
@@ -236,10 +236,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     ActionMode mPrimaryActionMode;
     private PopupWindow mPrimaryActionModePopup;
     private ActionBarContextView mPrimaryActionModeView;
-    private Drawable mResizingBackgroundDrawable;
     private Drawable mReverseKnoxBadge;
     private int mRootScrollY;
-    private int mRotation;
+    private int mRotationForRoundedCorner;
     private int mRoundedCornerMode;
     private int mRoundedCornerRadius;
     private int mRoundedCornerRadiusForLetterBox;
@@ -252,10 +251,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private boolean mStayFocus;
     private Rect mTempRect;
     private final Rect mTmpColorViewBounds;
-    private Region mTmpRegion;
-    private Drawable mUserCaptionBackgroundDrawable;
     private int mUserId;
     private boolean mWatchingForMenu;
+    private final WearGestureInterceptionDetector mWearGestureInterceptionDetector;
     private PhoneWindow mWindow;
     private boolean mWindowResizeCallbacksAdded;
     private int mWindowingMode;
@@ -263,9 +261,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     public static final ColorViewAttributes STATUS_BAR_COLOR_VIEW_ATTRIBUTES = new ColorViewAttributes(67108864, 48, 3, 5, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME, 16908335, WindowInsets.Type.statusBars());
     public static final ColorViewAttributes NAVIGATION_BAR_COLOR_VIEW_ATTRIBUTES = new ColorViewAttributes(134217728, 80, 5, 3, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME, 16908336, WindowInsets.Type.navigationBars());
     private static final ViewOutlineProvider PIP_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.1
-        AnonymousClass1() {
-        }
-
         @Override // android.view.ViewOutlineProvider
         public void getOutline(View view, Outline outline) {
             outline.setRect(0, 0, view.getWidth(), view.getHeight());
@@ -273,82 +268,19 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     };
 
-    /* renamed from: com.android.internal.policy.DecorView$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends ViewOutlineProvider {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ViewOutlineProvider
-        public void getOutline(View view, Outline outline) {
-            outline.setRect(0, 0, view.getWidth(), view.getHeight());
-            outline.setAlpha(1.0f);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ boolean lambda$new$0() {
         updateBackgroundBlurCorners();
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.policy.DecorView$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends ViewOutlineProvider {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.ViewOutlineProvider
-        public void getOutline(View view, Outline outline) {
-            Path path = SemViewUtils.getPopOverSmoothRoundedRect(DecorView.this.mContext, view.getWidth(), view.getHeight());
-            outline.setPath(path);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.policy.DecorView$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends FloatProperty<DecorView> {
-        AnonymousClass3(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(DecorView object, float value) {
-            object.setBackgroundAlpha(value);
-        }
-
-        @Override // android.util.Property
-        public Float get(DecorView object) {
-            return Float.valueOf(object.getBackgroundAlpha());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.policy.DecorView$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends FloatProperty<DecorView> {
-        AnonymousClass4(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(DecorView object, float value) {
-            object.setContentAlpha(value);
-        }
-
-        @Override // android.util.Property
-        public Float get(DecorView object) {
-            return Float.valueOf(object.getContentAlpha());
-        }
-    }
-
-    public DecorView(Context context, int featureId, PhoneWindow window, WindowManager.LayoutParams params) {
+    DecorView(Context context, int featureId, PhoneWindow window, WindowManager.LayoutParams params) {
         super(context);
         boolean z;
+        WearGestureInterceptionDetector wearGestureInterceptionDetector;
         WindowConfiguration winConfig;
-        boolean z2;
         int i;
+        boolean z2 = false;
         this.mDensityForKnoxBadge = 0;
         this.mKnoxBadge = null;
         this.mReverseKnoxBadge = null;
@@ -366,7 +298,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mBackgroundPadding = new Rect();
         this.mFramePadding = new Rect();
         this.mFrameOffsets = new Rect();
-        this.mHasCaption = false;
         this.mStatusColorViewState = new ColorViewState(STATUS_BAR_COLOR_VIEW_ATTRIBUTES);
         this.mNavigationColorViewState = new ColorViewState(NAVIGATION_BAR_COLOR_VIEW_ATTRIBUTES);
         this.mBackgroundFallback = new BackgroundFallback();
@@ -380,23 +311,21 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mLastHasLeftStableInset = false;
         this.mLastWindowFlags = 0;
         this.mLastForceConsumingTypes = 0;
+        this.mLastForceConsumingOpaqueCaptionBar = false;
         this.mLastSuppressScrimTypes = 0;
         this.mRootScrollY = 0;
         this.mWindowResizeCallbacksAdded = false;
-        this.mLastBackgroundDrawableCb = null;
-        this.mBackdropFrameRenderer = null;
         this.mLogTag = TAG;
         this.mFloatingInsets = new Rect();
         this.mApplyFloatingVerticalInsets = false;
         this.mApplyFloatingHorizontalInsets = false;
-        Paint paint = new Paint();
-        this.mLegacyNavigationBarBackgroundPaint = paint;
+        this.mLegacyNavigationBarBackgroundPaint = new Paint();
         this.mBackgroundInsets = Insets.NONE;
         this.mLastBackgroundInsets = Insets.NONE;
         this.mPendingInsetsController = new PendingInsetsController();
         this.mOriginalBackgroundBlurRadius = 0;
         this.mBackgroundBlurRadius = 0;
-        this.mBackgroundBlurOnPreDrawListener = new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.policy.DecorView$$ExternalSyntheticLambda0
+        this.mBackgroundBlurOnPreDrawListener = new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.policy.DecorView$$ExternalSyntheticLambda1
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public final boolean onPreDraw() {
                 boolean lambda$new$0;
@@ -406,37 +335,14 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         };
         this.mWindowingMode = 0;
         this.mIsDexEnabled = false;
-        this.mHasDisplayCutout = false;
-        this.mForceRoundedCorner = false;
-        this.mRoundedCornerMode = 0;
-        this.mOverrideRoundedCornerBounds = new Rect();
-        this.mTmpColorViewBounds = new Rect();
-        this.mTmpRegion = new Region();
-        this.mPopOverPaint = new Paint();
-        this.mPopOverFramePaint = new Paint();
-        this.mPopOverClipOutPath = new Path();
-        this.mIsPopOverWithoutOutlineEffect = false;
-        this.mPreventPopOverElevation = false;
-        this.mShowPopOver = true;
-        this.mPopOverBackgroundColor = -1;
-        this.mPopOverBackgroundAlpha = 1.0f;
-        this.mPopOverContentAlpha = 1.0f;
-        this.mKeepCutoutInTentMode = false;
         this.POP_OVER_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.2
-            AnonymousClass2() {
-            }
-
             @Override // android.view.ViewOutlineProvider
             public void getOutline(View view, Outline outline) {
-                Path path = SemViewUtils.getPopOverSmoothRoundedRect(DecorView.this.mContext, view.getWidth(), view.getHeight());
+                Path path = SemViewUtils.getSmoothCornerRectPath(DecorView.this.dpToPixel(DecorView.POP_OVER_CORNER_RADIUS), 0.0f, 0.0f, view.getWidth(), view.getHeight());
                 outline.setPath(path);
             }
         };
         this.POP_OVER_BACKGROUND_ALPHA = new FloatProperty<DecorView>("backgroundAlpha") { // from class: com.android.internal.policy.DecorView.3
-            AnonymousClass3(String name) {
-                super(name);
-            }
-
             @Override // android.util.FloatProperty
             public void setValue(DecorView object, float value) {
                 object.setBackgroundAlpha(value);
@@ -448,10 +354,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
         };
         this.POP_OVER_CONTENT_ALPHA = new FloatProperty<DecorView>("contentAlpha") { // from class: com.android.internal.policy.DecorView.4
-            AnonymousClass4(String name) {
-                super(name);
-            }
-
             @Override // android.util.FloatProperty
             public void setValue(DecorView object, float value) {
                 object.setContentAlpha(value);
@@ -462,24 +364,27 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 return Float.valueOf(object.getContentAlpha());
             }
         };
+        this.mPopOverPaint = new Paint();
+        this.mPopOverFramePaint = new Paint();
+        this.mPopOverClipOutPath = new Path();
+        this.mIsPopOverWithoutOutlineEffect = false;
+        this.mPreventPopOverElevation = false;
+        this.mShowPopOver = true;
+        this.mPopOverBackgroundColor = -1;
+        this.mPopOverBackgroundAlpha = 1.0f;
+        this.mPopOverContentAlpha = 1.0f;
+        this.mHasDisplayCutout = false;
+        this.mForceRoundedCorner = false;
+        this.mRoundedCornerMode = 0;
+        this.mOverrideRoundedCornerBounds = new Rect();
+        this.mTmpColorViewBounds = new Rect();
+        this.mDeviceRoundedCornerTopRadius = -1;
+        this.mDeviceRoundedCornerBottomRadius = -1;
         this.mLastBackgroundResource = 0;
+        this.mLastCaptionType = -1;
         this.mDisplayCutoutBackgroundColor = 0;
         this.mCalledDisplayCutoutBackgroundColor = false;
         this.mForceHideRoundedCorner = false;
-        this.FREEFORM_OUTLINE_PROVIDER = new ViewOutlineProvider() { // from class: com.android.internal.policy.DecorView.12
-            AnonymousClass12() {
-            }
-
-            @Override // android.view.ViewOutlineProvider
-            public void getOutline(View view, Outline outline) {
-                if (DecorView.this.isFreeformMode()) {
-                    int radius = view.getResources().getDimensionPixelSize(R.dimen.sem_decor_outline_radius_freeform);
-                    outline.setPath(SemViewUtils.getSmoothRoundedRect(view.getWidth(), view.getHeight(), 0, 0, radius));
-                } else {
-                    outline.setRect(0, 0, view.getWidth(), view.getHeight());
-                }
-            }
-        };
         this.mFeatureId = featureId;
         this.mShowInterpolator = AnimationUtils.loadInterpolator(context, 17563662);
         this.mHideInterpolator = AnimationUtils.loadInterpolator(context, 17563663);
@@ -493,7 +398,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mSemiTransparentBarColor = context.getResources().getColor(R.color.system_bar_background_semi_transparent, null);
         setWindow(window);
         updateLogTag(params);
-        paint.setColor(this.mWindow.getDeviceDefaultNavigationBarColor());
+        this.mLegacyNavigationBarBackgroundPaint.setColor(this.mWindow.getDeviceDefaultNavigationBarColor());
+        if (WearGestureInterceptionDetector.isEnabled(context)) {
+            wearGestureInterceptionDetector = new WearGestureInterceptionDetector(context, this);
+        } else {
+            wearGestureInterceptionDetector = null;
+        }
+        this.mWearGestureInterceptionDetector = wearGestureInterceptionDetector;
         Resources res = context.getResources();
         if (this.mWindow.mActivityCurrentConfig != null) {
             winConfig = this.mWindow.mActivityCurrentConfig.windowConfiguration;
@@ -501,6 +412,36 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             winConfig = res.getConfiguration().windowConfiguration;
         }
         this.mWindowingMode = winConfig.getWindowingMode();
+        this.mIsShowNavigationBar = res.getBoolean(R.bool.config_showNavigationBar);
+        try {
+            int resId = res.getIdentifier("config_mainBuiltInDisplayCutout", "string", "android");
+            String spec = resId > 0 ? res.getString(resId) : null;
+            if (spec != null && !TextUtils.isEmpty(spec)) {
+                z2 = true;
+            }
+            this.mHasDisplayCutout = z2;
+            if (!this.mHasDisplayCutout) {
+                int subResId = res.getIdentifier("config_subBuiltInDisplayCutout", "string", "android");
+                this.mHasDisplayCutout = !TextUtils.isEmpty(subResId > 0 ? res.getString(subResId) : null);
+            }
+        } catch (Exception e) {
+            Log.w(this.mLogTag, "Can not update hasDisplayCutout. " + e.toString());
+        }
+        this.mRoundedCornerRadius = res.getDimensionPixelSize(R.dimen.sem_rounded_corner_radius);
+        this.mRoundedCornerRadiusForLetterBox = res.getDimensionPixelSize(R.dimen.rounded_corner_radius_for_letterbox);
+        Display display = context.getDisplayNoVerify();
+        if (display == null || display.getDisplayId() != 0) {
+            this.mDeviceRoundedCornerTopRadius = this.mRoundedCornerRadiusForLetterBox;
+            this.mDeviceRoundedCornerBottomRadius = this.mRoundedCornerRadiusForLetterBox;
+        } else {
+            String displayUniqueId = display.getUniqueId();
+            this.mDeviceRoundedCornerTopRadius = RoundedCorners.getRoundedCornerTopRadius(res, displayUniqueId);
+            this.mDeviceRoundedCornerBottomRadius = RoundedCorners.getRoundedCornerBottomRadius(res, displayUniqueId);
+        }
+        this.mMultiWindowRoundedCornerRadius = MultiWindowUtils.getRoundedCornerRadius(context);
+        if (CoreRune.MW_CAPTION_SHELL_DEX) {
+            this.mIsDexEnabled = this.mContext.getResources().getConfiguration().isDesktopModeEnabled();
+        }
         this.mIsPopOver = res.getConfiguration().windowConfiguration.isPopOver();
         this.mLastDisplayDeviceType = res.getConfiguration().semDisplayDeviceType;
         if (winConfig.isPopOverWithoutOutlineEffect()) {
@@ -521,33 +462,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
             Log.i(TAG, "mPopOverBackgroundColor=" + Integer.toHexString(this.mPopOverBackgroundColor));
         }
-        this.mIsDexEnabled = res.getConfiguration().isDesktopModeEnabled();
-        this.mIsShowNavigationBar = res.getBoolean(R.bool.config_showNavigationBar);
-        try {
-            int resId = res.getIdentifier("config_mainBuiltInDisplayCutout", "string", "android");
-            String spec = resId > 0 ? res.getString(resId) : null;
-            if (spec == null || TextUtils.isEmpty(spec)) {
-                z2 = false;
-            } else {
-                z2 = true;
-            }
-            this.mHasDisplayCutout = z2;
-            if (!z2) {
-                int subResId = res.getIdentifier("config_subBuiltInDisplayCutout", "string", "android");
-                this.mHasDisplayCutout = TextUtils.isEmpty(subResId > 0 ? res.getString(subResId) : null) ? false : true;
-            }
-        } catch (Exception e) {
-            Log.w(this.mLogTag, "Can not update hasDisplayCutout. " + e.toString());
-        }
-        this.mRoundedCornerRadius = res.getDimensionPixelSize(R.dimen.sem_rounded_corner_radius);
-        this.mRoundedCornerRadiusForLetterBox = res.getDimensionPixelSize(R.dimen.rounded_corner_radius_for_letterbox);
-        this.mMultiWindowRoundedCornerRadius = MultiWindowUtils.getRoundedCornerRadius(context);
-        if (CoreRune.MW_CAPTION_SHELL_DEX) {
-            this.mIsDexEnabled = this.mContext.getResources().getConfiguration().isDesktopModeEnabled();
+        if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE && !this.mIsDexEnabled) {
+            this.mLastCaptionType = getCaptionType();
         }
     }
 
-    public void setBackgroundFallback(Drawable fallbackDrawable) {
+    void setBackgroundFallback(Drawable fallbackDrawable) {
         this.mBackgroundFallback.setDrawable(fallbackDrawable);
         setWillNotDraw(getBackground() == null && !this.mBackgroundFallback.hasFallback());
     }
@@ -556,36 +476,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return this.mBackgroundFallback.getDrawable();
     }
 
-    public View getStatusBarBackgroundView() {
+    View getStatusBarBackgroundView() {
         return this.mStatusColorViewState.view;
     }
 
-    public View getNavigationBarBackgroundView() {
+    View getNavigationBarBackgroundView() {
         return this.mNavigationColorViewState.view;
-    }
-
-    @Override // android.view.ViewGroup, android.view.View
-    public boolean gatherTransparentRegion(Region region) {
-        boolean statusOpaque = gatherTransparentRegion(this.mStatusColorViewState, region);
-        boolean navOpaque = gatherTransparentRegion(this.mNavigationColorViewState, region);
-        boolean decorOpaque = super.gatherTransparentRegion(region);
-        if (this.mKnoxBadgeViewGroupOverlay != null) {
-            region.op(this.mKnoxBadgeStartX, this.mKnoxBadgeStartY, getWidth(), getHeight(), Region.Op.DIFFERENCE);
-        }
-        if (decorOpaque && isFreeformMode()) {
-            getRoundedCornerRegion(this.mTmpRegion);
-            if (!this.mTmpRegion.isEmpty()) {
-                region.op(this.mTmpRegion, Region.Op.DIFFERENCE);
-            }
-        }
-        return statusOpaque || navOpaque || decorOpaque;
-    }
-
-    boolean gatherTransparentRegion(ColorViewState colorViewState, Region region) {
-        if (colorViewState.view != null && colorViewState.visible && isResizing()) {
-            return colorViewState.view.gatherTransparentRegion(region);
-        }
-        return false;
     }
 
     @Override // android.view.View
@@ -606,11 +502,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                     return true;
                 }
             }
-            if (this.mWindow.mPreparedPanel != null && this.mWindow.mPreparedPanel.isOpen) {
-                PhoneWindow phoneWindow = this.mWindow;
-                if (phoneWindow.performPanelShortcut(phoneWindow.mPreparedPanel, keyCode, event, 0)) {
-                    return true;
-                }
+            if (this.mWindow.mPreparedPanel != null && this.mWindow.mPreparedPanel.isOpen && this.mWindow.performPanelShortcut(this.mWindow.mPreparedPanel, keyCode, event, 0)) {
+                return true;
             }
         }
         if (!this.mWindow.isDestroyed()) {
@@ -626,8 +519,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     @Override // android.view.ViewGroup, android.view.View
     public boolean dispatchKeyShortcutEvent(KeyEvent ev) {
         if (this.mWindow.mPreparedPanel != null) {
-            PhoneWindow phoneWindow = this.mWindow;
-            boolean handled = phoneWindow.performPanelShortcut(phoneWindow.mPreparedPanel, ev.getKeyCode(), ev, 1);
+            boolean handled = this.mWindow.performPanelShortcut(this.mWindow.mPreparedPanel, ev.getKeyCode(), ev, 1);
             if (handled) {
                 if (this.mWindow.mPreparedPanel != null) {
                     this.mWindow.mPreparedPanel.isHandled = true;
@@ -673,10 +565,9 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     public boolean superDispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == 4) {
             int action = event.getAction();
-            ActionMode actionMode = this.mPrimaryActionMode;
-            if (actionMode != null) {
+            if (this.mPrimaryActionMode != null) {
                 if (action == 1) {
-                    actionMode.finish();
+                    this.mPrimaryActionMode.finish();
                 }
                 return true;
             }
@@ -719,22 +610,28 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     @Override // android.view.ViewGroup
     public boolean onInterceptTouchEvent(MotionEvent event) {
         int action = event.getAction();
-        if (this.mHasCaption && isShowingCaption() && action == 0) {
+        if (this.mFeatureId >= 0 && action == 0) {
             int x = (int) event.getX();
             int y = (int) event.getY();
-            if (isOutOfInnerBounds(x, y)) {
-                return true;
-            }
-        }
-        int x2 = this.mFeatureId;
-        if (x2 >= 0 && action == 0) {
-            int x3 = (int) event.getX();
-            int y2 = (int) event.getY();
-            if (isOutOfBounds(x3, y2)) {
+            if (isOutOfBounds(x, y)) {
                 this.mWindow.closePanel(this.mFeatureId);
                 return true;
             }
-            return false;
+        }
+        ViewRootImpl viewRootImpl = getViewRootImpl();
+        if (viewRootImpl != null) {
+            viewRootImpl.getOnBackInvokedDispatcher().onMotionEvent(event);
+            if (viewRootImpl.getOnBackInvokedDispatcher().isBackGestureInProgress()) {
+                return true;
+            }
+        }
+        if (viewRootImpl != null && this.mWearGestureInterceptionDetector != null) {
+            boolean wasIntercepting = this.mWearGestureInterceptionDetector.isIntercepting();
+            boolean intercepting = this.mWearGestureInterceptionDetector.onInterceptTouchEvent(event);
+            if (wasIntercepting != intercepting) {
+                viewRootImpl.updateDecorViewGestureInterception(intercepting);
+            }
+            return intercepting;
         }
         return false;
     }
@@ -744,8 +641,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (!AccessibilityManager.getInstance(this.mContext).isEnabled()) {
             return;
         }
-        int i = this.mFeatureId;
-        if ((i == 0 || i == 6 || i == 2 || i == 5) && getChildCount() == 1) {
+        if ((this.mFeatureId == 0 || this.mFeatureId == 6 || this.mFeatureId == 2 || this.mFeatureId == 5) && getChildCount() == 1) {
             getChildAt(0).sendAccessibilityEvent(eventType);
         } else {
             super.sendAccessibilityEvent(eventType);
@@ -761,6 +657,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return super.dispatchPopulateAccessibilityEventInternal(event);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public boolean setFrame(int l, int t, int r, int b) {
         boolean changed = super.setFrame(l, t, r, b);
@@ -791,27 +688,24 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     /* JADX WARN: Removed duplicated region for block: B:20:0x0086  */
     /* JADX WARN: Removed duplicated region for block: B:33:0x00f6 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x0106  */
-    /* JADX WARN: Removed duplicated region for block: B:39:0x0128  */
-    /* JADX WARN: Removed duplicated region for block: B:42:0x013d  */
-    /* JADX WARN: Removed duplicated region for block: B:51:0x012b  */
-    /* JADX WARN: Removed duplicated region for block: B:53:0x015f  */
-    /* JADX WARN: Removed duplicated region for block: B:56:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x0184  */
+    /* JADX WARN: Removed duplicated region for block: B:58:0x01a9  */
+    /* JADX WARN: Removed duplicated region for block: B:61:? A[RETURN, SYNTHETIC] */
     @Override // android.widget.FrameLayout, android.view.View
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void onMeasure(int r17, int r18) {
+    protected void onMeasure(int r18, int r19) {
         /*
-            Method dump skipped, instructions count: 355
+            Method dump skipped, instructions count: 429
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.onMeasure(int, int):void");
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (this.mApplyFloatingVerticalInsets) {
             offsetTopAndBottom(this.mFloatingInsets.top);
@@ -828,7 +722,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             boolean showPopOver = (this.mWindow.getAttributes().samsungFlags & 2) == 0;
             if (this.mShowPopOver != showPopOver) {
                 this.mShowPopOver = showPopOver;
-                if (showPopOver) {
+                if (this.mShowPopOver) {
                     showPopOver();
                 } else {
                     hidePopOver();
@@ -853,7 +747,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             int width = getWidth();
             int height = getHeight();
             this.mPopOverClipOutPath.reset();
-            this.mPopOverClipOutPath.addPath(SemViewUtils.getPopOverSmoothRoundedRect(this.mContext, width, height));
+            this.mPopOverClipOutPath.addPath(SemViewUtils.getSmoothCornerRectPath(dpToPixel(POP_OVER_CORNER_RADIUS), 0.0f, 0.0f, width, height));
             canvas.clipPath(this.mPopOverClipOutPath);
             this.mPopOverPaint.reset();
             this.mPopOverPaint.setColor(Color.argb(this.mPopOverBackgroundAlpha, Color.red(this.mPopOverBackgroundColor) / 255.0f, Color.green(this.mPopOverBackgroundColor) / 255.0f, Color.blue(this.mPopOverBackgroundColor) / 255.0f));
@@ -862,14 +756,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             canvas.clipOutPath(this.mPopOverClipOutPath);
         }
         super.draw(canvas);
-        Drawable drawable = this.mMenuBackground;
-        if (drawable != null) {
-            drawable.draw(canvas);
+        if (this.mMenuBackground != null) {
+            this.mMenuBackground.draw(canvas);
         }
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         if (this.mPopOverContentAlpha < 1.0f) {
             int saveCount = canvas.getSaveCount();
             int width = getWidth();
@@ -907,7 +800,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
         boolean isPopup = (Float.isNaN(x) || Float.isNaN(y)) ? false : true;
         if (isPopup) {
-            helper = this.mWindow.mContextMenu.showPopup(getContext(), originalView, x, y);
+            helper = this.mWindow.mContextMenu.showPopup(originalView.getContext(), originalView, x, y);
         } else {
             helper = this.mWindow.mContextMenu.showDialog(originalView, originalView.getWindowToken());
         }
@@ -959,9 +852,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 cleanupPrimaryActionMode();
                 this.mPrimaryActionMode = mode;
             } else if (mode.getType() == 1 || mode.getType() == 99) {
-                ActionMode actionMode = this.mFloatingActionMode;
-                if (actionMode != null) {
-                    actionMode.finish();
+                if (this.mFloatingActionMode != null) {
+                    this.mFloatingActionMode.finish();
                 }
                 this.mFloatingActionMode = mode;
             }
@@ -983,38 +875,35 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     }
 
     private void cleanupPrimaryActionMode() {
-        ActionMode actionMode = this.mPrimaryActionMode;
-        if (actionMode != null) {
-            actionMode.finish();
+        if (this.mPrimaryActionMode != null) {
+            this.mPrimaryActionMode.finish();
             this.mPrimaryActionMode = null;
         }
-        ActionBarContextView actionBarContextView = this.mPrimaryActionModeView;
-        if (actionBarContextView != null) {
-            actionBarContextView.killMode();
+        if (this.mPrimaryActionModeView != null) {
+            this.mPrimaryActionModeView.killMode();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cleanupFloatingActionModeViews() {
-        FloatingToolbar floatingToolbar = this.mFloatingToolbar;
-        if (floatingToolbar != null) {
-            floatingToolbar.dismiss();
+        if (this.mFloatingToolbar != null) {
+            this.mFloatingToolbar.dismiss();
             this.mFloatingToolbar = null;
         }
-        View view = this.mFloatingActionModeOriginatingView;
-        if (view != null) {
+        if (this.mFloatingActionModeOriginatingView != null) {
             if (this.mFloatingToolbarPreDrawListener != null) {
-                view.getViewTreeObserver().removeOnPreDrawListener(this.mFloatingToolbarPreDrawListener);
+                this.mFloatingActionModeOriginatingView.getViewTreeObserver().removeOnPreDrawListener(this.mFloatingToolbarPreDrawListener);
                 this.mFloatingToolbarPreDrawListener = null;
             }
             this.mFloatingActionModeOriginatingView = null;
         }
     }
 
-    public void startChanging() {
+    void startChanging() {
         this.mChanging = true;
     }
 
-    public void finishChanging() {
+    void finishChanging() {
         this.mChanging = false;
         drawableChanged();
     }
@@ -1042,14 +931,19 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (this.mOriginalBackgroundDrawable != drawable) {
             this.mOriginalBackgroundDrawable = drawable;
             updateBackgroundDrawable();
-            if (drawable != null) {
-                this.mResizingBackgroundDrawable = enforceNonTranslucentBackground(drawable, this.mWindow.isTranslucent() || this.mWindow.isShowingWallpaper());
-            } else {
-                this.mResizingBackgroundDrawable = getResizingBackgroundDrawable(this.mWindow.mBackgroundDrawable, this.mWindow.mBackgroundFallbackDrawable, this.mWindow.isTranslucent() || this.mWindow.isShowingWallpaper());
+            if (this.mWindow.mEdgeToEdgeEnforced && !this.mWindow.mNavigationBarColorSpecified && (drawable instanceof ColorDrawable)) {
+                int color = ((ColorDrawable) drawable).getColor();
+                boolean lightBar = Color.valueOf(color).luminance() > 0.5f;
+                getWindowInsetsController().setSystemBarsAppearance(lightBar ? 512 : 0, 512);
+                this.mWindow.mNavigationBarColor = color;
+                updateColorViews(null, false);
             }
-            Drawable drawable2 = this.mResizingBackgroundDrawable;
-            if (drawable2 != null) {
-                drawable2.getPadding(this.mBackgroundPadding);
+            if (drawable != null) {
+                drawable.getPadding(this.mBackgroundPadding);
+            } else if (this.mWindow.mBackgroundDrawable != null) {
+                this.mWindow.mBackgroundDrawable.getPadding(this.mBackgroundPadding);
+            } else if (this.mWindow.mBackgroundFallbackDrawable != null) {
+                this.mWindow.mBackgroundFallbackDrawable.getPadding(this.mBackgroundPadding);
             } else {
                 this.mBackgroundPadding.setEmpty();
             }
@@ -1079,9 +973,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     @Override // android.view.View
     public void onWindowSystemUiVisibilityChanged(int visible) {
         updateColorViews(null, true);
-        updateDecorCaptionStatus(getResources().getConfiguration());
-        View view = this.mStatusGuard;
-        if (view != null && view.getVisibility() == 0) {
+        if (this.mStatusGuard != null && this.mStatusGuard.getVisibility() == 0) {
             updateStatusGuardColor();
         }
         try {
@@ -1099,9 +991,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     @Override // android.view.View
     public void onSystemBarAppearanceChanged(int appearance) {
         updateColorViews(null, true);
-        PhoneWindow phoneWindow = this.mWindow;
-        if (phoneWindow != null) {
-            phoneWindow.dispatchOnSystemBarAppearanceChanged(appearance);
+        if (this.mWindow != null) {
+            this.mWindow.dispatchOnSystemBarAppearanceChanged(appearance);
         }
     }
 
@@ -1147,10 +1038,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return isNavBarToRightEdge(bottomInset, rightInset) ? rightInset : isNavBarToLeftEdge(bottomInset, leftInset) ? leftInset : bottomInset;
     }
 
-    public static int getNavBarSizeForBadge(int leftInset, int rightInset, int bottomInset) {
-        return isNavBarToRightEdge(bottomInset, rightInset - sKnoxBadgeRightCutout) ? rightInset : isNavBarToLeftEdge(bottomInset, leftInset) ? leftInset : bottomInset;
-    }
-
     public static void getNavigationBarRect(int canvasWidth, int canvasHeight, Rect systemBarInsets, Rect outRect, float scale) {
         int bottomInset = (int) (systemBarInsets.bottom * scale);
         int leftInset = (int) (systemBarInsets.left * scale);
@@ -1165,41 +1052,33 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:204:0x01ac, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:263:0x01b9, code lost:
     
-        if (r9.getHeight() == r10) goto L349;
+        if (r9.getHeight() != r8) goto L93;
      */
-    /* JADX WARN: Removed duplicated region for block: B:217:0x01db  */
-    /* JADX WARN: Removed duplicated region for block: B:224:0x0216  */
-    /* JADX WARN: Removed duplicated region for block: B:225:0x0225  */
-    /* JADX WARN: Removed duplicated region for block: B:227:0x01df  */
+    /* JADX WARN: Removed duplicated region for block: B:161:0x04cb  */
+    /* JADX WARN: Removed duplicated region for block: B:275:0x01f4  */
+    /* JADX WARN: Removed duplicated region for block: B:282:0x01f8  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public android.view.WindowInsets updateColorViews(android.view.WindowInsets r31, boolean r32) {
+    android.view.WindowInsets updateColorViews(android.view.WindowInsets r35, boolean r36) {
         /*
-            Method dump skipped, instructions count: 1040
+            Method dump skipped, instructions count: 1302
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.updateColorViews(android.view.WindowInsets, boolean):android.view.WindowInsets");
     }
 
-    /* renamed from: com.android.internal.policy.DecorView$5 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass5 extends ColorDrawable {
-        final /* synthetic */ int val$captionHeight;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass5(int color, int i) {
-            super(color);
-            r3 = i;
-        }
-
-        @Override // android.graphics.drawable.Drawable
-        public void setBounds(int left, int top, int right, int bottom) {
-            super.setBounds(left, 0, right, r3);
-        }
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$updateColorViews$1(ViewGroup.MarginLayoutParams lp, int consumedRight, int consumedBottom, int consumedLeft, ValueAnimator animation) {
+        int progress = ((Integer) animation.getAnimatedValue()).intValue();
+        lp.topMargin = progress;
+        lp.rightMargin = consumedRight;
+        lp.bottomMargin = consumedBottom;
+        lp.leftMargin = consumedLeft;
+        this.mContentRoot.setLayoutParams(lp);
     }
 
     private void updateBackgroundDrawable() {
@@ -1215,38 +1094,21 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
         if (destDrawable != null && !this.mBackgroundInsets.equals(Insets.NONE)) {
             destDrawable = new InsetDrawable(destDrawable, this.mBackgroundInsets.left, this.mBackgroundInsets.top, this.mBackgroundInsets.right, this.mBackgroundInsets.bottom) { // from class: com.android.internal.policy.DecorView.6
-                AnonymousClass6(Drawable destDrawable2, int insetLeft, int insetTop, int insetRight, int insetBottom) {
-                    super(destDrawable2, insetLeft, insetTop, insetRight, insetBottom);
-                }
-
                 @Override // android.graphics.drawable.InsetDrawable, android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
                 public boolean getPadding(Rect padding) {
                     return getDrawable().getPadding(padding);
                 }
             };
         }
-        if (CoreRune.MW_CAPTION_SHELL_INSETS && destDrawable2 != null && this.mCaptionBarBackgroundDrawable != null) {
-            destDrawable2 = new LayerDrawable(new Drawable[]{this.mCaptionBarBackgroundDrawable, destDrawable2});
+        if (CoreRune.MW_CAPTION_SHELL_INSETS && destDrawable != null && this.mCaptionBarBackgroundDrawable != null) {
+            destDrawable = new LayerDrawable(new Drawable[]{this.mCaptionBarBackgroundDrawable, destDrawable});
         }
-        super.setBackgroundDrawable(destDrawable2);
+        super.setBackgroundDrawable(destDrawable);
         this.mLastBackgroundInsets = this.mBackgroundInsets;
         this.mLastBackgroundBlurDrawable = this.mBackgroundBlurDrawable;
         this.mLastOriginalBackgroundDrawable = this.mOriginalBackgroundDrawable;
         if (CoreRune.MW_CAPTION_SHELL_INSETS) {
             this.mLastCaptionBarBackgroundDrawable = this.mCaptionBarBackgroundDrawable;
-        }
-    }
-
-    /* renamed from: com.android.internal.policy.DecorView$6 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass6 extends InsetDrawable {
-        AnonymousClass6(Drawable destDrawable2, int insetLeft, int insetTop, int insetRight, int insetBottom) {
-            super(destDrawable2, insetLeft, insetTop, insetRight, insetBottom);
-        }
-
-        @Override // android.graphics.drawable.InsetDrawable, android.graphics.drawable.DrawableWrapper, android.graphics.drawable.Drawable
-        public boolean getPadding(Rect padding) {
-            return getDrawable().getPadding(padding);
         }
     }
 
@@ -1267,26 +1129,24 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (getViewRootImpl() == null) {
             return;
         }
-        int i = (this.mCrossWindowBlurEnabled && this.mWindow.isTranslucent()) ? this.mOriginalBackgroundBlurRadius : 0;
-        this.mBackgroundBlurRadius = i;
-        if (this.mBackgroundBlurDrawable == null && i > 0) {
+        this.mBackgroundBlurRadius = (this.mCrossWindowBlurEnabled && this.mWindow.isTranslucent()) ? this.mOriginalBackgroundBlurRadius : 0;
+        if (this.mBackgroundBlurDrawable == null && this.mBackgroundBlurRadius > 0) {
             this.mBackgroundBlurDrawable = getViewRootImpl().createBackgroundBlurDrawable();
             updateBackgroundDrawable();
         }
-        BackgroundBlurDrawable backgroundBlurDrawable = this.mBackgroundBlurDrawable;
-        if (backgroundBlurDrawable != null) {
-            backgroundBlurDrawable.setBlurRadius(this.mBackgroundBlurRadius);
+        if (this.mBackgroundBlurDrawable != null) {
+            this.mBackgroundBlurDrawable.setBlurRadius(this.mBackgroundBlurRadius);
         }
     }
 
-    public void setBackgroundBlurRadius(int blurRadius) {
+    void setBackgroundBlurRadius(int blurRadius) {
         this.mOriginalBackgroundBlurRadius = blurRadius;
         if (blurRadius > 0) {
             if (this.mCrossWindowBlurEnabledListener == null) {
-                this.mCrossWindowBlurEnabledListener = new Consumer() { // from class: com.android.internal.policy.DecorView$$ExternalSyntheticLambda1
+                this.mCrossWindowBlurEnabledListener = new Consumer() { // from class: com.android.internal.policy.DecorView$$ExternalSyntheticLambda0
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
-                        DecorView.this.lambda$setBackgroundBlurRadius$1((Boolean) obj);
+                        DecorView.this.lambda$setBackgroundBlurRadius$2((Boolean) obj);
                     }
                 };
                 ((WindowManager) getContext().getSystemService(WindowManager.class)).addCrossWindowBlurEnabledListener(this.mCrossWindowBlurEnabledListener);
@@ -1302,7 +1162,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    public /* synthetic */ void lambda$setBackgroundBlurRadius$1(Boolean enabled) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setBackgroundBlurRadius$2(Boolean enabled) {
         this.mCrossWindowBlurEnabled = enabled.booleanValue();
         updateBackgroundBlurRadius();
     }
@@ -1322,32 +1183,36 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return this.mOriginalBackgroundDrawable;
     }
 
-    private boolean isTentModeWithRotation180() {
-        return this.mContext.getDisplayId() == 1 && getConfiguration().windowConfiguration.getRotation() == 2 && this.mKeepCutoutInTentMode;
-    }
-
     private int calculateStatusBarColor(int appearance) {
-        return calculateBarColor(this.mWindow.getAttributes().flags, 67108864, this.mSemiTransparentBarColor, this.mWindow.mStatusBarColor, appearance, 8, this.mWindow.mEnsureStatusBarContrastWhenTransparent && (this.mLastSuppressScrimTypes & WindowInsets.Type.statusBars()) == 0);
+        return calculateBarColor(this.mWindow.getAttributes().flags, 67108864, this.mSemiTransparentBarColor, this.mWindow.mStatusBarColor, appearance, 8, this.mWindow.mEnsureStatusBarContrastWhenTransparent && (this.mLastSuppressScrimTypes & WindowInsets.Type.statusBars()) == 0, false);
     }
 
     private int calculateNavigationBarColor(int appearance) {
-        return calculateBarColor(this.mWindow.getAttributes().flags, 134217728, this.mSemiTransparentBarColor, this.mWindow.mNavigationBarColor, appearance, 16, this.mWindow.mEnsureNavigationBarContrastWhenTransparent && (this.mLastSuppressScrimTypes & WindowInsets.Type.navigationBars()) == 0, this.mWindow.getDeviceDefaultNavigationBarColor());
+        return calculateBarColor(this.mWindow.getAttributes().flags, 134217728, this.mSemiTransparentBarColor, this.mWindow.mNavigationBarColor, appearance, 16, this.mWindow.mEnsureNavigationBarContrastWhenTransparent && (this.mLastSuppressScrimTypes & WindowInsets.Type.navigationBars()) == 0, this.mWindow.mEdgeToEdgeEnforced, this.mWindow.getDeviceDefaultNavigationBarColor());
     }
 
-    public static int calculateBarColor(int flags, int translucentFlag, int semiTransparentBarColor, int barColor, int appearance, int lightAppearanceFlag, boolean scrimTransparent) {
-        return calculateBarColor(flags, translucentFlag, semiTransparentBarColor, barColor, appearance, lightAppearanceFlag, scrimTransparent, -16777216);
+    public static int calculateBarColor(int flags, int translucentFlag, int semiTransparentBarColor, int barColor, int appearance, int lightAppearanceFlag, boolean ensuresContrast, boolean movesBarColorToScrim) {
+        return calculateBarColor(flags, translucentFlag, semiTransparentBarColor, barColor, appearance, lightAppearanceFlag, ensuresContrast, movesBarColorToScrim, -16777216);
     }
 
-    public static int calculateBarColor(int flags, int translucentFlag, int semiTransparentBarColor, int barColor, int appearance, int lightAppearanceFlag, boolean scrimTransparent, int deviceDefaultColor) {
+    public static int calculateBarColor(int flags, int translucentFlag, int semiTransparentBarColor, int barColor, int appearance, int lightAppearanceFlag, boolean ensuresContrast, boolean movesBarColorToScrim, int deviceDefaultColor) {
         if ((flags & translucentFlag) != 0) {
             return semiTransparentBarColor;
         }
         if ((Integer.MIN_VALUE & flags) == 0) {
             return deviceDefaultColor;
         }
-        if (scrimTransparent && Color.alpha(barColor) == 0) {
-            boolean light = (appearance & lightAppearanceFlag) != 0;
-            return light ? SCRIM_LIGHT : semiTransparentBarColor;
+        if (ensuresContrast) {
+            int alpha = Color.alpha(barColor);
+            if (alpha == 0) {
+                boolean light = (appearance & lightAppearanceFlag) != 0;
+                return light ? SCRIM_LIGHT : semiTransparentBarColor;
+            }
+            if (movesBarColorToScrim) {
+                return (16777215 & barColor) | SCRIM_ALPHA;
+            }
+        } else if (movesBarColorToScrim) {
+            return 0;
         }
         return barColor;
     }
@@ -1381,36 +1246,20 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return 0;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x012c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x0122, code lost:
     
-        if (r6.leftMargin != r13) goto L181;
+        if (r6.leftMargin != r13) goto L75;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private void updateColorViewInt(com.android.internal.policy.DecorView.ColorViewState r21, int r22, int r23, int r24, boolean r25, boolean r26, int r27, boolean r28, boolean r29, int r30) {
+    private void updateColorViewInt(final com.android.internal.policy.DecorView.ColorViewState r21, int r22, int r23, int r24, boolean r25, boolean r26, int r27, boolean r28, boolean r29, int r30) {
         /*
-            Method dump skipped, instructions count: 440
+            Method dump skipped, instructions count: 424
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.policy.DecorView.updateColorViewInt(com.android.internal.policy.DecorView$ColorViewState, int, int, int, boolean, boolean, int, boolean, boolean, int):void");
-    }
-
-    /* renamed from: com.android.internal.policy.DecorView$7 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass7 implements Runnable {
-        final /* synthetic */ View val$hideView;
-
-        AnonymousClass7(View view) {
-            r2 = view;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            r2.setAlpha(1.0f);
-            r2.setVisibility(4);
-        }
     }
 
     private static void setColor(View v, int color, int dividerColor, boolean verticalBar, boolean seascape) {
@@ -1447,11 +1296,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         boolean showStatusGuard;
         int i;
         WindowInsets insets2 = insets;
-        ActionBarContextView actionBarContextView = this.mPrimaryActionModeView;
-        if (actionBarContextView == null) {
+        if (this.mPrimaryActionModeView == null) {
             showStatusGuard = false;
             i = 0;
-        } else if (!(actionBarContextView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) {
+        } else if (!(this.mPrimaryActionModeView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) {
             showStatusGuard = false;
             i = 0;
         } else {
@@ -1476,28 +1324,23 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                     mlp.rightMargin = newRightMargin;
                 }
                 if (newTopMargin > 0 && this.mStatusGuard == null) {
-                    View view = new View(this.mContext);
-                    this.mStatusGuard = view;
-                    view.setVisibility(8);
+                    this.mStatusGuard = new View(this.mContext);
+                    this.mStatusGuard.setVisibility(8);
                     FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-1, mlp.topMargin, 51);
                     lp.leftMargin = newGuardLeftMargin;
                     lp.rightMargin = newGuardRightMargin;
                     addView(this.mStatusGuard, indexOfChild(this.mStatusColorViewState.view), lp);
-                } else {
-                    View view2 = this.mStatusGuard;
-                    if (view2 != null) {
-                        FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view2.getLayoutParams();
-                        if (lp2.height != mlp.topMargin || lp2.leftMargin != newGuardLeftMargin || lp2.rightMargin != newGuardRightMargin) {
-                            lp2.height = mlp.topMargin;
-                            lp2.leftMargin = newGuardLeftMargin;
-                            lp2.rightMargin = newGuardRightMargin;
-                            this.mStatusGuard.setLayoutParams(lp2);
-                        }
+                } else if (this.mStatusGuard != null) {
+                    FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) this.mStatusGuard.getLayoutParams();
+                    if (lp2.height != mlp.topMargin || lp2.leftMargin != newGuardLeftMargin || lp2.rightMargin != newGuardRightMargin) {
+                        lp2.height = mlp.topMargin;
+                        lp2.leftMargin = newGuardLeftMargin;
+                        lp2.rightMargin = newGuardRightMargin;
+                        this.mStatusGuard.setLayoutParams(lp2);
                     }
                 }
-                View view3 = this.mStatusGuard;
-                boolean showStatusGuard2 = view3 != null;
-                if (showStatusGuard2 && view3.getVisibility() != 0) {
+                boolean showStatusGuard2 = this.mStatusGuard != null;
+                if (showStatusGuard2 && this.mStatusGuard.getVisibility() != 0) {
                     updateStatusGuardColor();
                 }
                 boolean nonOverlay = (this.mWindow.getLocalFeaturesPrivate() & 1024) == 0;
@@ -1520,9 +1363,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 this.mPrimaryActionModeView.setLayoutParams(mlp);
             }
         }
-        View view4 = this.mStatusGuard;
-        if (view4 != null) {
-            view4.setVisibility(showStatusGuard ? i : 8);
+        if (this.mStatusGuard != null) {
+            this.mStatusGuard.setVisibility(showStatusGuard ? i : 8);
         }
         return insets2;
     }
@@ -1548,12 +1390,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             if (callback != null && callback.isTaskRoot()) {
                 super.setOutlineProvider(PIP_OUTLINE_PROVIDER);
             }
-        } else {
-            ViewOutlineProvider outlineProvider = getOutlineProvider();
-            ViewOutlineProvider viewOutlineProvider = this.mLastOutlineProvider;
-            if (outlineProvider != viewOutlineProvider) {
-                setOutlineProvider(viewOutlineProvider);
-            }
+        } else if (getOutlineProvider() != this.mLastOutlineProvider) {
+            setOutlineProvider(this.mLastOutlineProvider);
         }
         this.mIsInPictureInPictureMode = isInPictureInPictureMode;
     }
@@ -1568,14 +1406,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (this.mChanging) {
             return;
         }
-        Rect framePadding = this.mFramePadding;
-        if (framePadding == null) {
-            framePadding = new Rect();
-        }
-        Rect backgroundPadding = this.mBackgroundPadding;
-        if (backgroundPadding == null) {
-            backgroundPadding = new Rect();
-        }
+        Rect framePadding = this.mFramePadding != null ? this.mFramePadding : new Rect();
+        Rect backgroundPadding = this.mBackgroundPadding != null ? this.mBackgroundPadding : new Rect();
         setPadding(framePadding.left + backgroundPadding.left, framePadding.top + backgroundPadding.top, framePadding.right + backgroundPadding.right, framePadding.bottom + backgroundPadding.bottom);
         requestLayout();
         invalidate();
@@ -1622,12 +1454,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     public void onWindowFocusInTaskChanged(boolean hasWindowFocusInTask) {
         if (this.mHasWindowFocusInTask != hasWindowFocusInTask) {
             this.mHasWindowFocusInTask = hasWindowFocusInTask;
-            boolean hasWindowFocus = hasWindowFocus();
-            boolean hasWindowFocus2 = hasWindowFocus | this.mHasWindowFocusInTask;
-            DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-            if (decorCaptionView != null) {
-                decorCaptionView.dispatchWindowFocusChanged(hasWindowFocus2);
-            }
         }
     }
 
@@ -1655,29 +1481,17 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 cb.onWindowFocusChanged(hasWindowFocus);
             }
         }
-        ActionMode actionMode = this.mPrimaryActionMode;
-        if (actionMode != null) {
-            actionMode.onWindowFocusChanged(hasWindowFocus);
+        if (this.mPrimaryActionMode != null) {
+            this.mPrimaryActionMode.onWindowFocusChanged(hasWindowFocus);
         }
-        ActionMode actionMode2 = this.mFloatingActionMode;
-        if (actionMode2 != null) {
-            actionMode2.onWindowFocusChanged(hasWindowFocus);
+        if (this.mFloatingActionMode != null) {
+            this.mFloatingActionMode.onWindowFocusChanged(hasWindowFocus);
         }
         updateElevation();
     }
 
-    private boolean isActivityHomeOrRecent() {
-        switch (getResources().getConfiguration().windowConfiguration.getActivityType()) {
-            case 2:
-            case 3:
-                return true;
-            default:
-                return false;
-        }
-    }
-
     @Override // android.view.ViewGroup, android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.mUserId = this.mContext.getUserId();
         Context winContext = this.mWindow.getContext();
@@ -1692,7 +1506,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
         this.mIsFullViewShown = z;
         try {
-            if ((this.mIsKeyboardShown || z || this.mIsKnoxActivity) && (SemPersonaManager.isKnoxId(this.mUserId) || SemDualAppManager.isDualAppId(this.mUserId))) {
+            if ((this.mIsKeyboardShown || this.mIsFullViewShown || this.mIsKnoxActivity) && (SemPersonaManager.isKnoxId(this.mUserId) || SemDualAppManager.isDualAppId(this.mUserId))) {
                 setKnoxBadge();
                 setKnoxBadgePosition();
             }
@@ -1709,18 +1523,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (!this.mWindowResizeCallbacksAdded) {
             getViewRootImpl().addWindowCallbacks(this);
             this.mWindowResizeCallbacksAdded = true;
-        } else {
-            BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-            if (backdropFrameRenderer != null) {
-                backdropFrameRenderer.onConfigurationChange();
-            }
         }
         updateBackgroundBlurRadius();
         this.mWindow.onViewRootImplSet(getViewRootImpl());
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Window.Callback cb = this.mWindow.getCallback();
         if (cb != null && this.mFeatureId < 0) {
@@ -1736,9 +1545,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
             this.mPrimaryActionModePopup = null;
         }
-        FloatingToolbar floatingToolbar = this.mFloatingToolbar;
-        if (floatingToolbar != null) {
-            floatingToolbar.dismiss();
+        if (this.mFloatingToolbar != null) {
+            this.mFloatingToolbar.dismiss();
             this.mFloatingToolbar = null;
         }
         removeBackgroundBlurDrawable();
@@ -1746,7 +1554,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (st != null && st.menu != null && this.mFeatureId < 0) {
             st.menu.close();
         }
-        releaseThreadedRenderer();
         if (this.mWindowResizeCallbacksAdded) {
             getViewRootImpl().removeWindowCallbacks(this);
             this.mWindowResizeCallbacksAdded = false;
@@ -1756,8 +1563,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             removeCallbacks(this.mKnoxBadgeDisplayRunnable);
             removeKnoxBadge();
         }
-        int i = this.mLastBackgroundResource;
-        if (i == 17304564 || i == 17304561 || i == 17304562) {
+        if (this.mLastBackgroundResource == 17304794 || this.mLastBackgroundResource == 17304791 || this.mLastBackgroundResource == 17304792) {
             setWindowBackground(null);
         }
     }
@@ -1807,10 +1613,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     @Override // com.android.internal.view.RootViewSurfaceTaker
     public void onRootViewScrollYChanged(int rootScrollY) {
         this.mRootScrollY = rootScrollY;
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        if (decorCaptionView != null) {
-            decorCaptionView.onRootViewScrollYChanged(rootScrollY);
-        }
         updateColorViewTranslations();
     }
 
@@ -1843,8 +1645,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         Context actionBarContext;
         endOnGoingFadeAnimation();
         cleanupPrimaryActionMode();
-        ActionBarContextView actionBarContextView = this.mPrimaryActionModeView;
-        if (actionBarContextView == null || !actionBarContextView.isAttachedToWindow()) {
+        if (this.mPrimaryActionModeView == null || !this.mPrimaryActionModeView.isAttachedToWindow()) {
             if (this.mWindow.isFloating()) {
                 TypedValue outValue = new TypedValue();
                 Resources.Theme baseTheme = this.mContext.getTheme();
@@ -1859,9 +1660,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                     actionBarContext = this.mContext;
                 }
                 this.mPrimaryActionModeView = new ActionBarContextView(actionBarContext);
-                PopupWindow popupWindow = new PopupWindow(actionBarContext, (AttributeSet) null, R.attr.actionModePopupWindowStyle);
-                this.mPrimaryActionModePopup = popupWindow;
-                popupWindow.setWindowLayoutType(2);
+                this.mPrimaryActionModePopup = new PopupWindow(actionBarContext, (AttributeSet) null, R.attr.actionModePopupWindowStyle);
+                this.mPrimaryActionModePopup.setWindowLayoutType(2);
                 this.mPrimaryActionModePopup.setContentView(this.mPrimaryActionModeView);
                 this.mPrimaryActionModePopup.setWidth(-1);
                 actionBarContext.getTheme().resolveAttribute(16843499, outValue, true);
@@ -1869,20 +1669,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 this.mPrimaryActionModeView.setContentHeight(height);
                 this.mPrimaryActionModePopup.setHeight(-2);
                 this.mShowPrimaryActionModePopup = new Runnable() { // from class: com.android.internal.policy.DecorView.8
-                    AnonymousClass8() {
-                    }
-
                     @Override // java.lang.Runnable
                     public void run() {
                         DecorView.this.mPrimaryActionModePopup.showAtLocation(DecorView.this.mPrimaryActionModeView.getApplicationWindowToken(), 55, 0, 0);
                         DecorView.this.endOnGoingFadeAnimation();
                         if (DecorView.this.shouldAnimatePrimaryActionModeView()) {
-                            DecorView decorView = DecorView.this;
-                            decorView.mFadeAnim = ObjectAnimator.ofFloat(decorView.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
+                            DecorView.this.mFadeAnim = ObjectAnimator.ofFloat(DecorView.this.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
                             DecorView.this.mFadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.8.1
-                                AnonymousClass1() {
-                                }
-
                                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                                 public void onAnimationStart(Animator animation) {
                                     DecorView.this.mPrimaryActionModeView.setVisibility(0);
@@ -1900,24 +1693,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                         DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
                         DecorView.this.mPrimaryActionModeView.setVisibility(0);
                     }
-
-                    /* renamed from: com.android.internal.policy.DecorView$8$1 */
-                    /* loaded from: classes5.dex */
-                    class AnonymousClass1 extends AnimatorListenerAdapter {
-                        AnonymousClass1() {
-                        }
-
-                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                        public void onAnimationStart(Animator animation) {
-                            DecorView.this.mPrimaryActionModeView.setVisibility(0);
-                        }
-
-                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                        public void onAnimationEnd(Animator animation) {
-                            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
-                            DecorView.this.mFadeAnim = null;
-                        }
-                    }
                 };
             } else {
                 ViewStub stub = (ViewStub) findViewById(R.id.action_mode_bar_stub);
@@ -1927,90 +1702,31 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 }
             }
         }
-        ActionBarContextView actionBarContextView2 = this.mPrimaryActionModeView;
-        if (actionBarContextView2 == null) {
+        if (this.mPrimaryActionModeView == null) {
             return null;
         }
-        actionBarContextView2.killMode();
+        this.mPrimaryActionModeView.killMode();
         ActionMode mode = new StandaloneActionMode(this.mPrimaryActionModeView.getContext(), this.mPrimaryActionModeView, callback, this.mPrimaryActionModePopup == null);
         return mode;
     }
 
-    /* renamed from: com.android.internal.policy.DecorView$8 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass8 implements Runnable {
-        AnonymousClass8() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            DecorView.this.mPrimaryActionModePopup.showAtLocation(DecorView.this.mPrimaryActionModeView.getApplicationWindowToken(), 55, 0, 0);
-            DecorView.this.endOnGoingFadeAnimation();
-            if (DecorView.this.shouldAnimatePrimaryActionModeView()) {
-                DecorView decorView = DecorView.this;
-                decorView.mFadeAnim = ObjectAnimator.ofFloat(decorView.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
-                DecorView.this.mFadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.8.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                    public void onAnimationStart(Animator animation) {
-                        DecorView.this.mPrimaryActionModeView.setVisibility(0);
-                    }
-
-                    @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                    public void onAnimationEnd(Animator animation) {
-                        DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
-                        DecorView.this.mFadeAnim = null;
-                    }
-                });
-                DecorView.this.mFadeAnim.start();
-                return;
-            }
-            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
-            DecorView.this.mPrimaryActionModeView.setVisibility(0);
-        }
-
-        /* renamed from: com.android.internal.policy.DecorView$8$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 extends AnimatorListenerAdapter {
-            AnonymousClass1() {
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animation) {
-                DecorView.this.mPrimaryActionModeView.setVisibility(0);
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animation) {
-                DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
-                DecorView.this.mFadeAnim = null;
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void endOnGoingFadeAnimation() {
-        ObjectAnimator objectAnimator = this.mFadeAnim;
-        if (objectAnimator != null) {
-            objectAnimator.end();
+        if (this.mFadeAnim != null) {
+            this.mFadeAnim.end();
         }
     }
 
     private void setHandledPrimaryActionMode(ActionMode mode) {
         endOnGoingFadeAnimation();
         this.mPrimaryActionMode = mode;
-        mode.invalidate();
+        this.mPrimaryActionMode.invalidate();
         this.mPrimaryActionModeView.initForMode(this.mPrimaryActionMode);
         if (this.mPrimaryActionModePopup != null) {
             post(this.mShowPrimaryActionModePopup);
         } else if (shouldAnimatePrimaryActionModeView()) {
-            ObjectAnimator ofFloat = ObjectAnimator.ofFloat(this.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
-            this.mFadeAnim = ofFloat;
-            ofFloat.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.9
-                AnonymousClass9() {
-                }
-
+            this.mFadeAnim = ObjectAnimator.ofFloat(this.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 0.0f, 1.0f);
+            this.mFadeAnim.addListener(new AnimatorListenerAdapter() { // from class: com.android.internal.policy.DecorView.9
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     DecorView.this.mPrimaryActionModeView.setVisibility(0);
@@ -2030,101 +1746,42 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mPrimaryActionModeView.sendAccessibilityEvent(32);
     }
 
-    /* renamed from: com.android.internal.policy.DecorView$9 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass9 extends AnimatorListenerAdapter {
-        AnonymousClass9() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            DecorView.this.mPrimaryActionModeView.setVisibility(0);
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            DecorView.this.mPrimaryActionModeView.setAlpha(1.0f);
-            DecorView.this.mFadeAnim = null;
-        }
-    }
-
     boolean shouldAnimatePrimaryActionModeView() {
         return isLaidOut();
     }
 
     private ActionMode createFloatingActionMode(View originatingView, ActionMode.Callback2 callback) {
-        ActionMode actionMode = this.mFloatingActionMode;
-        if (actionMode != null) {
-            actionMode.finish();
+        if (this.mFloatingActionMode != null) {
+            this.mFloatingActionMode.finish();
         }
         cleanupFloatingActionModeViews();
         this.mFloatingToolbar = new FloatingToolbar(this.mWindow);
-        FloatingActionMode mode = new FloatingActionMode(this.mContext, callback, originatingView, this.mFloatingToolbar);
+        final FloatingActionMode mode = new FloatingActionMode(this.mContext, callback, originatingView, this.mFloatingToolbar);
         this.mFloatingActionModeOriginatingView = originatingView;
         this.mFloatingToolbarPreDrawListener = new ViewTreeObserver.OnPreDrawListener() { // from class: com.android.internal.policy.DecorView.10
-            final /* synthetic */ FloatingActionMode val$mode;
-
-            AnonymousClass10(FloatingActionMode mode2) {
-                mode = mode2;
-            }
-
             @Override // android.view.ViewTreeObserver.OnPreDrawListener
             public boolean onPreDraw() {
                 mode.updateViewLocationInWindow();
                 return true;
             }
         };
-        return mode2;
-    }
-
-    /* renamed from: com.android.internal.policy.DecorView$10 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass10 implements ViewTreeObserver.OnPreDrawListener {
-        final /* synthetic */ FloatingActionMode val$mode;
-
-        AnonymousClass10(FloatingActionMode mode2) {
-            mode = mode2;
-        }
-
-        @Override // android.view.ViewTreeObserver.OnPreDrawListener
-        public boolean onPreDraw() {
-            mode.updateViewLocationInWindow();
-            return true;
-        }
+        return mode;
     }
 
     private void setHandledFloatingActionMode(ActionMode mode) {
         this.mFloatingActionMode = mode;
         boolean isDeviceDefaultThemeTextView = false;
-        View view = this.mFloatingActionModeOriginatingView;
-        if (view instanceof TextView) {
-            isDeviceDefaultThemeTextView = ((TextView) view).isThemeDeviceDefault();
+        if (this.mFloatingActionModeOriginatingView instanceof TextView) {
+            isDeviceDefaultThemeTextView = ((TextView) this.mFloatingActionModeOriginatingView).isThemeDeviceDefault();
         }
         boolean isSemTypeFloating = mode.getType() == 99 || isDeviceDefaultThemeTextView;
-        FloatingToolbar floatingToolbar = new FloatingToolbar(this.mWindow, isSemTypeFloating);
-        this.mFloatingToolbar = floatingToolbar;
-        ((FloatingActionMode) this.mFloatingActionMode).setFloatingToolbar(floatingToolbar);
+        this.mFloatingToolbar = new FloatingToolbar(this.mWindow, isSemTypeFloating);
+        ((FloatingActionMode) this.mFloatingActionMode).setFloatingToolbar(this.mFloatingToolbar);
         this.mFloatingActionMode.invalidate();
         this.mFloatingActionModeOriginatingView.getViewTreeObserver().addOnPreDrawListener(this.mFloatingToolbarPreDrawListener);
     }
 
-    void enableCaption(boolean attachedAndVisible) {
-        if (this.mHasCaption != attachedAndVisible) {
-            this.mHasCaption = attachedAndVisible;
-            if (getForeground() != null) {
-                drawableChanged();
-            }
-            notifyCaptionHeightChanged();
-        }
-    }
-
-    public void notifyCaptionHeightChanged() {
-        if (!ViewRootImpl.CAPTION_ON_SHELL || CoreRune.MW_CAPTION_SHELL_BUG_FIX) {
-            getWindowInsetsController().setCaptionInsetsHeight(getCaptionInsetsHeight());
-        }
-    }
-
-    public void setWindow(PhoneWindow phoneWindow) {
+    void setWindow(PhoneWindow phoneWindow) {
         this.mWindow = phoneWindow;
         Context context = getContext();
         if (context instanceof DecorContext) {
@@ -2144,20 +1801,19 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
-        int i;
+    protected void onConfigurationChanged(Configuration newConfig) {
         StateListDrawable statefulWindowBackground;
         int[] states;
         StateListDrawable statefulWindowBackground2;
         int[] states2;
         Drawable newBackground;
+        int i;
         int i2;
         super.onConfigurationChanged(newConfig);
         boolean updateWindowFormat = false;
         int oldDisplayDeviceType = this.mLastDisplayDeviceType;
-        int i3 = newConfig.semDisplayDeviceType;
-        this.mLastDisplayDeviceType = i3;
-        if (i3 != oldDisplayDeviceType) {
+        this.mLastDisplayDeviceType = newConfig.semDisplayDeviceType;
+        if (this.mLastDisplayDeviceType != oldDisplayDeviceType) {
             updateWindowFormat = true;
         }
         WindowConfiguration winConfig = newConfig.windowConfiguration;
@@ -2165,7 +1821,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         if (this.mIsPopOver != isPopPover) {
             this.mIsPopOver = isPopPover;
             updateWindowFormat = true;
-            if (!isPopPover) {
+            if (!this.mIsPopOver) {
                 removePopOverElevation();
             }
         }
@@ -2195,24 +1851,31 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
         }
         updateOutlineProvider();
-        boolean nightMode = (getResources().getConfiguration().uiMode & 48) == 32;
-        Resources resources = this.mContext.getResources();
-        if (nightMode) {
-            i = R.color.sec_decor_caption_color_dark;
-        } else {
-            i = R.color.sec_decor_caption_color_light;
+        boolean updateWindowFormat2 = isFreeformMode();
+        if (updateWindowFormat2) {
+            boolean nightMode = (getResources().getConfiguration().uiMode & 48) == 32;
+            Resources resources = this.mContext.getResources();
+            if (nightMode) {
+                i = R.color.sec_decor_caption_color_dark;
+            } else {
+                i = R.color.sec_decor_caption_color_light;
+            }
+            this.mFreeformOutlineColor = resources.getColor(i);
         }
-        this.mFreeformOutlineColor = resources.getColor(i);
         boolean nightMode2 = CoreRune.MW_CAPTION_SHELL_DEX;
         if (nightMode2) {
             this.mIsDexEnabled = newConfig.isDesktopModeEnabled();
         }
-        updateDecorCaptionStatus(newConfig);
+        updateOutlineProvider();
         initializeElevation();
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(16843607, this.mWindow.mMinWidthMinor, true);
         theme.resolveAttribute(16843606, this.mWindow.mMinWidthMajor, true);
         this.mLastSmallestScreenWidthDp = newConfig.smallestScreenWidthDp;
+        ViewRootImpl viewRootImpl = getViewRootImpl();
+        if (viewRootImpl != null) {
+            viewRootImpl.getOnBackInvokedDispatcher().onConfigurationChanged(newConfig);
+        }
         refreshGestureNavBarSettings();
         try {
             if ((this.mIsKeyboardShown || this.mIsFullViewShown || this.mIsKnoxActivity) && ((SemPersonaManager.isKnoxId(this.mUserId) || SemDualAppManager.isDualAppId(this.mUserId)) && newConfig.densityDpi != this.mDensityForKnoxBadge)) {
@@ -2225,8 +1888,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mWindow.updateDeviceDefaultNavigationBarColor();
         this.mLegacyNavigationBarBackgroundPaint.setColor(this.mWindow.getDeviceDefaultNavigationBarColor());
         this.mWindow.updateDefaultNavigationBarColor();
-        int i4 = this.mLastBackgroundResource;
-        if (i4 == 17304564) {
+        if (this.mLastBackgroundResource == 17304794) {
             Drawable currWindowBackground = getBackground();
             if ((currWindowBackground instanceof StateListDrawable) && (states2 = (statefulWindowBackground2 = (StateListDrawable) currWindowBackground).getState()) != null && states2.length > 0 && (statefulWindowBackground2.getStateDrawable(0) instanceof BitmapDrawable) && (newBackground = getContext().getDrawable(this.mLastBackgroundResource)) != null) {
                 setWindowBackground(newBackground);
@@ -2234,7 +1896,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
             return;
         }
-        if (i4 == 17304561 || i4 == 17304562) {
+        if (this.mLastBackgroundResource == 17304791 || this.mLastBackgroundResource == 17304792) {
             Drawable currWindowBackground2 = getBackground();
             Drawable newBackground2 = null;
             if (currWindowBackground2 instanceof BitmapDrawable) {
@@ -2259,168 +1921,17 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return isFullscreen && ((getWindowSystemUiVisibility() | getSystemUiVisibility()) & 4) != 0;
     }
 
-    private void updateDecorCaptionStatus(Configuration config) {
-        boolean displayWindowDecor = config.windowConfiguration.hasWindowDecorCaption() && !isFillingScreen(config);
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        if (decorCaptionView == null && displayWindowDecor) {
-            LayoutInflater inflater = this.mWindow.getLayoutInflater();
-            DecorCaptionView createDecorCaptionView = createDecorCaptionView(inflater);
-            this.mDecorCaptionView = createDecorCaptionView;
-            if (createDecorCaptionView != null) {
-                if (createDecorCaptionView.getParent() == null) {
-                    addView(this.mDecorCaptionView, 0, new ViewGroup.LayoutParams(-1, -1));
-                }
-                removeView(this.mContentRoot);
-                this.mDecorCaptionView.addView(this.mContentRoot, new ViewGroup.MarginLayoutParams(-1, -1));
-                return;
-            }
-            return;
-        }
-        if (decorCaptionView != null) {
-            decorCaptionView.onConfigurationChanged(displayWindowDecor);
-            enableCaption(displayWindowDecor);
-        }
-    }
-
-    public void onResourcesLoaded(LayoutInflater inflater, int layoutResource) {
+    void onResourcesLoaded(LayoutInflater inflater, int layoutResource) {
         this.mLastOutlineProvider = getOutlineProvider();
         updateOutlineProvider();
-        if (this.mBackdropFrameRenderer != null) {
-            loadBackgroundDrawablesIfNeeded();
-            this.mBackdropFrameRenderer.onResourcesLoaded(this, this.mResizingBackgroundDrawable, this.mCaptionBackgroundDrawable, this.mUserCaptionBackgroundDrawable, getCurrentColor(this.mStatusColorViewState), getCurrentColor(this.mNavigationColorViewState));
-        }
-        this.mDecorCaptionView = createDecorCaptionView(inflater);
         View root = inflater.inflate(layoutResource, (ViewGroup) null);
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        if (decorCaptionView != null) {
-            if (decorCaptionView.getParent() == null) {
-                addView(this.mDecorCaptionView, new ViewGroup.LayoutParams(-1, -1));
-            }
-            this.mDecorCaptionView.addView(root, new ViewGroup.MarginLayoutParams(-1, -1));
-        } else {
-            addView(root, 0, new ViewGroup.LayoutParams(-1, -1));
-        }
+        addView(root, 0, new ViewGroup.LayoutParams(-1, -1));
         this.mContentRoot = (ViewGroup) root;
         initializeElevation();
         this.mLastSmallestScreenWidthDp = getResources().getConfiguration().smallestScreenWidthDp;
     }
 
-    private void loadBackgroundDrawablesIfNeeded() {
-        if (this.mResizingBackgroundDrawable == null) {
-            Drawable resizingBackgroundDrawable = getResizingBackgroundDrawable(this.mWindow.mBackgroundDrawable, this.mWindow.mBackgroundFallbackDrawable, this.mWindow.isTranslucent() || this.mWindow.isShowingWallpaper());
-            this.mResizingBackgroundDrawable = resizingBackgroundDrawable;
-            if (resizingBackgroundDrawable == null) {
-                Log.w(this.mLogTag, "Failed to find background drawable for PhoneWindow=" + this.mWindow);
-            }
-        }
-        if (this.mCaptionBackgroundDrawable == null) {
-            this.mCaptionBackgroundDrawable = getContext().getDrawable(R.drawable.decor_caption_title_focused);
-        }
-        Drawable drawable = this.mResizingBackgroundDrawable;
-        if (drawable != null) {
-            this.mLastBackgroundDrawableCb = drawable.getCallback();
-            this.mResizingBackgroundDrawable.setCallback(null);
-        }
-    }
-
-    private DecorCaptionView createDecorCaptionView(LayoutInflater inflater) {
-        DecorCaptionView decorCaptionView = null;
-        for (int i = getChildCount() - 1; i >= 0 && decorCaptionView == null; i--) {
-            View view = getChildAt(i);
-            if (view instanceof DecorCaptionView) {
-                decorCaptionView = (DecorCaptionView) view;
-                removeViewAt(i);
-            }
-        }
-        WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
-        boolean isApplication = attrs.type == 1 || attrs.type == 2 || attrs.type == 4;
-        WindowConfiguration winConfig = getResources().getConfiguration().windowConfiguration;
-        if (!this.mWindow.isFloating() && isApplication && winConfig.hasWindowDecorCaption() && !ViewRootImpl.CAPTION_ON_SHELL) {
-            if (decorCaptionView == null) {
-                decorCaptionView = inflateDecorCaptionView(inflater);
-            }
-            decorCaptionView.setPhoneWindow(this.mWindow, true);
-        } else {
-            decorCaptionView = null;
-        }
-        enableCaption(decorCaptionView != null);
-        return decorCaptionView;
-    }
-
-    private DecorCaptionView inflateDecorCaptionView(LayoutInflater inflater) {
-        Context context = getContext();
-        LayoutInflater inflater2 = LayoutInflater.from(context);
-        DecorCaptionView view = (DecorCaptionView) inflater2.inflate(R.layout.decor_caption, (ViewGroup) null);
-        setDecorCaptionShade(view);
-        return view;
-    }
-
-    private void setDecorCaptionShade(DecorCaptionView view) {
-        int shade = this.mWindow.getDecorCaptionShade();
-        switch (shade) {
-            case 1:
-                setLightDecorCaptionShade(view);
-                return;
-            case 2:
-                setDarkDecorCaptionShade(view);
-                return;
-            default:
-                if ((getWindowSystemUiVisibility() & 8192) != 0) {
-                    setDarkDecorCaptionShade(view);
-                    return;
-                } else {
-                    setLightDecorCaptionShade(view);
-                    return;
-                }
-        }
-    }
-
-    public void updateDecorCaptionShade() {
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        if (decorCaptionView != null) {
-            setDecorCaptionShade(decorCaptionView);
-        }
-    }
-
-    private void setLightDecorCaptionShade(DecorCaptionView view) {
-        view.findViewById(R.id.maximize_window).setBackgroundResource(R.drawable.decor_maximize_button_light);
-        view.findViewById(R.id.close_window).setBackgroundResource(R.drawable.decor_close_button_light);
-    }
-
-    private void setDarkDecorCaptionShade(DecorCaptionView view) {
-        view.findViewById(R.id.maximize_window).setBackgroundResource(R.drawable.decor_maximize_button_dark);
-        view.findViewById(R.id.close_window).setBackgroundResource(R.drawable.decor_close_button_dark);
-    }
-
-    public static Drawable getResizingBackgroundDrawable(Drawable backgroundDrawable, Drawable fallbackDrawable, boolean windowTranslucent) {
-        if (backgroundDrawable != null) {
-            return enforceNonTranslucentBackground(backgroundDrawable, windowTranslucent);
-        }
-        if (fallbackDrawable != null) {
-            return enforceNonTranslucentBackground(fallbackDrawable, windowTranslucent);
-        }
-        return new ColorDrawable(-16777216);
-    }
-
-    private static Drawable enforceNonTranslucentBackground(Drawable drawable, boolean windowTranslucent) {
-        if (!windowTranslucent && (drawable instanceof ColorDrawable)) {
-            ColorDrawable colorDrawable = (ColorDrawable) drawable;
-            int color = colorDrawable.getColor();
-            if (Color.alpha(color) != 255) {
-                ColorDrawable copy = (ColorDrawable) colorDrawable.getConstantState().newDrawable().mutate();
-                copy.setColor(Color.argb(255, Color.red(color), Color.green(color), Color.blue(color)));
-                return copy;
-            }
-        }
-        return drawable;
-    }
-
-    public void clearContentView() {
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        if (decorCaptionView != null) {
-            decorCaptionView.removeContentView();
-            return;
-        }
+    void clearContentView() {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View v = getChildAt(i);
             if (v != this.mStatusColorViewState.view && v != this.mNavigationColorViewState.view && v != this.mStatusGuard) {
@@ -2431,54 +1942,30 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     @Override // android.view.WindowCallbacks
     public void onWindowSizeIsChanging(Rect newBounds, boolean fullscreen, Rect systemInsets, Rect stableInsets) {
-        BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-        if (backdropFrameRenderer != null) {
-            backdropFrameRenderer.setTargetRect(newBounds, fullscreen, systemInsets);
-        }
     }
 
     @Override // android.view.WindowCallbacks
     public void onWindowDragResizeStart(Rect initialBounds, boolean fullscreen, Rect systemInsets, Rect stableInsets) {
         if (this.mWindow.isDestroyed()) {
-            releaseThreadedRenderer();
             return;
-        }
-        if (this.mBackdropFrameRenderer != null) {
-            return;
-        }
-        ThreadedRenderer renderer = getThreadedRenderer();
-        if (renderer != null && !ViewRootImpl.CAPTION_ON_SHELL) {
-            loadBackgroundDrawablesIfNeeded();
-            WindowInsets rootInsets = getRootWindowInsets();
-            this.mBackdropFrameRenderer = new BackdropFrameRenderer(this, renderer, initialBounds, this.mResizingBackgroundDrawable, this.mCaptionBackgroundDrawable, this.mUserCaptionBackgroundDrawable, getCurrentColor(this.mStatusColorViewState), getCurrentColor(this.mNavigationColorViewState), fullscreen, rootInsets.getInsets(WindowInsets.Type.systemBars()));
-            updateElevation();
-            updateColorViews(null, false);
         }
         getViewRootImpl().requestInvalidateRootRenderNode();
     }
 
     @Override // android.view.WindowCallbacks
     public void onWindowDragResizeEnd() {
-        releaseThreadedRenderer();
         updateColorViews(null, false);
         getViewRootImpl().requestInvalidateRootRenderNode();
     }
 
     @Override // android.view.WindowCallbacks
     public boolean onContentDrawn(int offsetX, int offsetY, int sizeX, int sizeY) {
-        BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-        if (backdropFrameRenderer == null) {
-            return false;
-        }
-        return backdropFrameRenderer.onContentDrawn(offsetX, offsetY, sizeX, sizeY);
+        return false;
     }
 
     @Override // android.view.WindowCallbacks
     public void onRequestDraw(boolean reportNextDraw) {
-        BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-        if (backdropFrameRenderer != null) {
-            backdropFrameRenderer.onRequestDraw(reportNextDraw);
-        } else if (reportNextDraw && isAttachedToWindow()) {
+        if (reportNextDraw && isAttachedToWindow()) {
             getViewRootImpl().reportDrawFinish();
         }
     }
@@ -2487,8 +1974,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     public void onPostDraw(RecordingCanvas canvas) {
         drawLegacyNavigationBarBackground(canvas);
         if ((isActivity() || isFullSize()) && this.mIsPopOver) {
-            PhoneWindow phoneWindow = this.mWindow;
-            if (phoneWindow != null && phoneWindow.isFloating()) {
+            if (this.mWindow != null && this.mWindow.isFloating()) {
                 return;
             }
             this.mPopOverFramePaint.setStyle(Paint.Style.STROKE);
@@ -2501,7 +1987,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             this.mPopOverFramePaint.setStrokeWidth(popOverThickness);
             int width = getWidth();
             int height = getHeight();
-            canvas.drawPath(SemViewUtils.getPopOverSmoothRoundedRect(this.mContext, width, height), this.mPopOverFramePaint);
+            canvas.drawPath(SemViewUtils.getSmoothCornerRectPath(dpToPixel(POP_OVER_CORNER_RADIUS), 0.0f, 0.0f, width, height), this.mPopOverFramePaint);
             return;
         }
         drawFrameIfNeeded(canvas);
@@ -2509,10 +1995,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     private void drawLegacyNavigationBarBackground(RecordingCanvas canvas) {
         View v;
-        boolean z = this.mLastDrawLegacyNavigationBarBackground;
-        boolean z2 = this.mDrawLegacyNavigationBarBackground;
-        if (z != z2) {
-            this.mLastDrawLegacyNavigationBarBackground = z2;
+        if (this.mLastDrawLegacyNavigationBarBackground != this.mDrawLegacyNavigationBarBackground) {
+            this.mLastDrawLegacyNavigationBarBackground = this.mDrawLegacyNavigationBarBackground;
             this.mWindow.updateForceLightNavigationBar();
         }
         if (!this.mDrawLegacyNavigationBarBackground || this.mDrawLegacyNavigationBarBackgroundHandled || (v = this.mNavigationColorViewState.view) == null) {
@@ -2521,48 +2005,20 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         canvas.drawRect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom(), this.mLegacyNavigationBarBackgroundPaint);
     }
 
-    private void releaseThreadedRenderer() {
-        Drawable.Callback callback;
-        Drawable drawable = this.mResizingBackgroundDrawable;
-        if (drawable != null && (callback = this.mLastBackgroundDrawableCb) != null) {
-            drawable.setCallback(callback);
-            this.mLastBackgroundDrawableCb = null;
-        }
-        BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-        if (backdropFrameRenderer != null) {
-            backdropFrameRenderer.releaseRenderer();
-            this.mBackdropFrameRenderer = null;
-            updateElevation();
-        }
-    }
-
-    private boolean isResizing() {
-        return this.mBackdropFrameRenderer != null;
-    }
-
     private void initializeElevation() {
         this.mAllowUpdateElevation = false;
         updateElevation();
     }
 
-    public void updateElevationIfNeeded() {
-        if (this.mIsPopOver) {
-            updateElevation();
-        }
-    }
-
-    public void removePopOverElevation() {
-        if (!isResizing()) {
-            this.mWindow.setElevation(0.0f);
-        } else {
-            setElevation(0.0f);
-        }
+    public boolean isNonFullscreenWindowInFreeform() {
+        return isFreeformMode() && isActivity() && !isFullSize() && this.mWindow.getAttributes().type >= 1 && this.mWindow.getAttributes().type <= 99;
     }
 
     private void updateElevation() {
         int windowingMode = getResources().getConfiguration().windowConfiguration.getWindowingMode();
-        boolean renderShadowsInCompositor = this.mWindow.mRenderShadowsInCompositor && !isPopOverState();
-        if (renderShadowsInCompositor) {
+        boolean renderShadowsInCompositor = this.mWindow.mRenderShadowsInCompositor;
+        boolean forceSetElevation = isPopOverState();
+        if (renderShadowsInCompositor && !forceSetElevation) {
             return;
         }
         float elevation = 0.0f;
@@ -2573,7 +2029,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         } else if (isPopOverState()) {
             elevation = dipToPx(32.0f);
             this.mElevationAdjustedForStack = true;
-        } else if (windowingMode == 5 && !isResizing()) {
+        } else if (windowingMode == 5) {
             float elevation2 = hasWindowFocus() ? 20.0f : 5.0f;
             if (!this.mAllowUpdateElevation) {
                 elevation2 = 20.0f;
@@ -2584,43 +2040,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             this.mElevationAdjustedForStack = false;
         }
         if ((wasAdjustedForStack || this.mElevationAdjustedForStack) && getElevation() != elevation) {
-            if (!isResizing()) {
-                this.mWindow.setElevation(elevation);
-            } else {
-                setElevation(elevation);
-            }
+            this.mWindow.setElevation(elevation);
         }
-    }
-
-    public boolean isShowingCaption() {
-        DecorCaptionView decorCaptionView = this.mDecorCaptionView;
-        return decorCaptionView != null && decorCaptionView.isCaptionShowing();
-    }
-
-    public int getCaptionHeight() {
-        if (isShowingCaption()) {
-            return this.mDecorCaptionView.getCaptionHeight();
-        }
-        return 0;
-    }
-
-    public int getCaptionInsetsHeight() {
-        if (this.mWindow.isOverlayWithDecorCaptionEnabled()) {
-            return getCaptionHeight();
-        }
-        return 0;
     }
 
     private float dipToPx(float dip) {
         return TypedValue.applyDimension(1, dip, getResources().getDisplayMetrics());
-    }
-
-    public void setUserCaptionBackgroundDrawable(Drawable drawable) {
-        this.mUserCaptionBackgroundDrawable = drawable;
-        BackdropFrameRenderer backdropFrameRenderer = this.mBackdropFrameRenderer;
-        if (backdropFrameRenderer != null) {
-            backdropFrameRenderer.setUserCaptionBackgroundDrawable(drawable);
-        }
     }
 
     private static String getTitleSuffix(WindowManager.LayoutParams params) {
@@ -2634,7 +2059,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return split[split.length - 1];
     }
 
-    public void updateLogTag(WindowManager.LayoutParams params) {
+    void updateLogTag(WindowManager.LayoutParams params) {
         this.mLogTag = "DecorView[" + getTitleSuffix(params) + NavigationBarInflaterView.SIZE_MOD_END;
     }
 
@@ -2670,26 +2095,23 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     @Override // android.view.View
     public String toString() {
-        return "DecorView@" + Integer.toHexString(hashCode()) + NavigationBarInflaterView.SIZE_MOD_START + getTitleSuffix(this.mWindow.getAttributes()) + NavigationBarInflaterView.SIZE_MOD_END;
+        return super.toString() + NavigationBarInflaterView.SIZE_MOD_START + getTitleSuffix(this.mWindow.getAttributes()) + NavigationBarInflaterView.SIZE_MOD_END;
     }
 
     private boolean isActivity() {
-        PhoneWindow phoneWindow = this.mWindow;
-        return (phoneWindow == null || phoneWindow.getWindowControllerCallback() == null) ? false : true;
+        return (this.mWindow == null || this.mWindow.getWindowControllerCallback() == null) ? false : true;
     }
 
     private final Configuration getConfiguration() {
-        PhoneWindow phoneWindow = this.mWindow;
-        if (phoneWindow != null && phoneWindow.mActivityCurrentConfig != null) {
+        if (this.mWindow != null && this.mWindow.mActivityCurrentConfig != null) {
             return this.mWindow.mActivityCurrentConfig;
         }
         return getResources().getConfiguration();
     }
 
     public int getWindowingMode() {
-        int i = this.mWindowingMode;
-        if (i != 0) {
-            return i;
+        if (this.mWindowingMode != 0) {
+            return this.mWindowingMode;
         }
         return getConfiguration().windowConfiguration.getWindowingMode();
     }
@@ -2702,14 +2124,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return getWindowingMode() == 1;
     }
 
-    private boolean isImmersiveMode() {
-        int systemUiVis = getSystemUiVisibility() | getWindowSystemUiVisibility();
-        if ((systemUiVis & GLES30.GL_COLOR) != 0 && (systemUiVis & 2) != 0) {
-            return true;
-        }
-        return false;
-    }
-
     public boolean isFreeformMode() {
         return getWindowingMode() == 5;
     }
@@ -2719,133 +2133,134 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     }
 
     public boolean isFullSize() {
-        PhoneWindow phoneWindow = this.mWindow;
-        return phoneWindow != null && phoneWindow.getAttributes().isFullscreen();
+        return this.mWindow != null && this.mWindow.getAttributes().isFullscreen();
+    }
+
+    private boolean isImmersiveMode() {
+        int systemUiVis = getSystemUiVisibility() | getWindowSystemUiVisibility();
+        if ((systemUiVis & GLES30.GL_COLOR) != 0 && (systemUiVis & 2) != 0) {
+            return true;
+        }
+        return false;
     }
 
     private void updateRoundedCornerStateIfNeeded() {
-        boolean needToDrawAboveNavBar;
+        int roundRadius;
         if (this.mWindow.mActivityCurrentConfig == null) {
             return;
         }
-        Context context = this.mContext.getApplicationContext();
-        if (context == null) {
-            context = this.mContext;
-        }
+        WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
+        boolean isFullscreen = attrs.isFullscreen();
         Configuration config = getConfiguration();
-        WindowConfiguration windowConfig = config.windowConfiguration;
-        int windowingMode = getWindowingMode();
-        if (windowConfig.isPopOver()) {
-            super.semSetRoundedCorners(0);
-            this.mOverrideRoundedCornerBounds.setEmpty();
-            return;
-        }
-        boolean z = true;
-        boolean isFlipLargeCoverScreen = this.mContext.getDisplayId() == 1;
-        this.mRotation = config.windowConfiguration.getRotation();
-        this.mDisplayRotation = config.windowConfiguration.getDisplayRotation();
-        boolean show = false;
-        if (windowingMode == 1) {
-            WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
-            boolean isInputMethod = attrs.type == 2011;
-            boolean isFullscreen = attrs.isFullscreen();
-            if (config.orientation == 2 && this.mHasDisplayCutout) {
-                if (isInputMethod || (isFullscreen && (attrs.layoutInDisplayCutoutMode != 1 || isFlipLargeCoverScreen))) {
-                    int corners = 0;
-                    ViewRootImpl viewRootImpl = getViewRootImpl();
-                    if (viewRootImpl != null) {
-                        int i = 4;
-                        boolean hasFullScreen = ((attrs.flags & 1024) == 0 && (attrs.systemUiVisibility & 4) == 0) ? false : true;
-                        int letterboxDirection = viewRootImpl.mRequestedLetterboxDirection;
-                        if ((letterboxDirection & 1) != 0) {
-                            if (!isInputMethod || (isFullscreen && hasFullScreen)) {
-                                i = 5;
-                            }
-                            corners = 0 | i;
-                        }
-                        if ((letterboxDirection & 2) != 0) {
-                            corners |= (!isInputMethod || (isFullscreen && hasFullScreen)) ? 10 : 8;
-                        }
-                        if (isFlipLargeCoverScreen) {
-                            boolean isWallpaper = (attrs.flags & 1048576) != 0;
-                            if (isWallpaper) {
-                                if (letterboxDirection == 0 && attrs.layoutInDisplayCutoutMode == 3 && this.mRotation == 2) {
-                                    corners |= 3;
-                                }
-                            } else {
-                                if ((letterboxDirection & 4) != 0) {
-                                    corners |= 3;
-                                }
-                                if ((letterboxDirection & 8) != 0) {
-                                    corners |= 12;
-                                }
-                            }
-                        }
-                        viewRootImpl.updateAppliedLetterboxDirection(letterboxDirection);
-                    }
-                    if (corners != 0) {
-                        super.semSetRoundedCorners(corners, this.mRoundedCornerRadiusForLetterBox);
-                        super.semSetRoundedCornerColor(corners, -16777216);
-                        show = true;
-                    }
-                }
-            }
-            if (config.orientation == 1 && this.mIsShowNavigationBar && attrs.type != 2037 && !isInputMethod) {
-                if (this.mForceHideRoundedCorner) {
-                    needToDrawAboveNavBar = false;
-                } else if (this.mForceRoundedCorner) {
-                    boolean hasTaskBar = Settings.Global.getInt(context.getContentResolver(), Settings.Global.SEM_TASK_BAR, 0) == 1;
-                    needToDrawAboveNavBar = this.mNavigationColorViewState.visible && !hasTaskBar && (this.mRoundedCornerMode & 12) == 12;
-                } else {
-                    needToDrawAboveNavBar = View.sIsSamsungBasicInteraction && this.mNavigationColorViewState.visible;
-                    if (needToDrawAboveNavBar) {
-                        int defaultViewCount = this.mContentRoot != null ? 1 : 0;
-                        if (defaultViewCount + (this.mStatusColorViewState.view != null ? 1 : 0) + (this.mNavigationColorViewState.view == null ? 0 : 1) < getChildCount() && needToDrawAboveNavBar && this.mNavigationColorViewState.view != null && isChildIntersectsWith(this.mNavigationColorViewState.view)) {
-                            needToDrawAboveNavBar = false;
+        this.mRotationForRoundedCorner = config.windowConfiguration.getRotation();
+        this.mDisplayRotationForRoundedCorner = config.windowConfiguration.getDisplayRotation();
+        boolean applyRoundedCorner = false;
+        if ((!CoreRune.MW_SPLIT_FLEX_PANEL_MODE || !config.windowConfiguration.isFlexPanelEnabled()) && !config.windowConfiguration.isPopOver()) {
+            if (isFullscreenMode() && config.orientation == 2 && this.mHasDisplayCutout && isFullscreen) {
+                ViewRootImpl viewRootImpl = getViewRootImpl();
+                int letterboxDirection = viewRootImpl != null ? viewRootImpl.mRequestedLetterboxDirection : 0;
+                int corners = getRoundedCornersInLandscapeMode(attrs.layoutInDisplayCutoutMode, letterboxDirection);
+                if (corners != 0) {
+                    if ((letterboxDirection & 1) != 0) {
+                        roundRadius = this.mDeviceRoundedCornerTopRadius;
+                    } else {
+                        int roundRadius2 = letterboxDirection & 2;
+                        if (roundRadius2 != 0) {
+                            roundRadius = this.mDeviceRoundedCornerBottomRadius;
+                        } else {
+                            roundRadius = this.mRoundedCornerRadiusForLetterBox;
                         }
                     }
+                    super.semSetRoundedCorners(corners, roundRadius);
+                    super.semSetRoundedCornerColor(corners, -16777216);
+                    applyRoundedCorner = true;
                 }
-                if (needToDrawAboveNavBar && this.mGestureNavBarEnabled && !this.mGestureHintEnabled) {
-                    needToDrawAboveNavBar = false;
-                }
-                if (needToDrawAboveNavBar && isFullscreen && (this.mWindow.getContext() instanceof Activity)) {
-                    needToDrawAboveNavBar = false;
-                }
-                if (needToDrawAboveNavBar) {
+            } else if (isFullscreenMode() && config.orientation == 1 && this.mIsShowNavigationBar && attrs.type != 2037) {
+                applyRoundedCorner = shouldDrawRoundedCornerInPortraitMode(isFullscreen);
+                if (applyRoundedCorner) {
                     super.semSetRoundedCorners(12, this.mRoundedCornerRadius);
                     super.semSetRoundedCornerColor(12, getCurrentColor(this.mNavigationColorViewState));
                 }
-                show = needToDrawAboveNavBar;
+            } else if (isSplitMode() && isFullscreen) {
+                Rect windowBounds = getCurrentBounds(this.mContext);
+                if (CoreRune.MW_MULTI_SPLIT_ROUNDED_CORNER && !this.mWindow.isFloating()) {
+                    updateRoundedCornerForMultiSplit(this.mContext);
+                } else if (!this.mWindow.mIsFloating || (windowBounds.width() <= getWidth() && windowBounds.height() <= getHeight())) {
+                    updateRoundedCornerForSplit(this.mContext);
+                }
+                applyRoundedCorner = true;
+                this.mForceRoundedCorner = false;
+            } else if (isFreeformMode() && isFullscreen) {
+                super.semSetRoundedCorners(15, this.mMultiWindowRoundedCornerRadius);
+                super.semSetRoundedCornerColor(15, this.mFreeformOutlineColor);
+                applyRoundedCorner = true;
             }
-        } else if (shouldDrawRoundedCornerForSplit()) {
-            Rect windowBounds = getCurrentBounds(context);
-            if ((this.mWindow.mIsFloating || !isFullSize()) && (windowBounds.width() > getWidth() || windowBounds.height() > getHeight())) {
-                z = false;
+        }
+        if (applyRoundedCorner) {
+            boolean isInSplitMode = isSplitMode();
+            if ((this.mRotationForRoundedCorner == 0 || this.mRotationForRoundedCorner == 2) && !isInSplitMode) {
+                this.mOverrideRoundedCornerBounds.set(this.mLastLeftInset, this.mLastTopInset, getWidth() - this.mLastRightInset, getHeight() - this.mLastBottomInset);
+                return;
+            } else {
+                this.mOverrideRoundedCornerBounds.set(this.mLastLeftInset, 0, getWidth() - this.mLastRightInset, getHeight());
+                return;
             }
-            boolean shouldUpdateRoundedCorner = z;
-            if (CoreRune.MW_MULTI_SPLIT_ROUNDED_CORNER && !this.mWindow.isFloating()) {
-                updateRoundedCornerForMultiSplit(context);
-            } else if (shouldUpdateRoundedCorner) {
-                updateRoundedCornerForSplit(context);
+        }
+        super.semSetRoundedCorners(0);
+        this.mOverrideRoundedCornerBounds.setEmpty();
+    }
+
+    private int getFlipCoverScreenRoundedCorner(WindowManager.LayoutParams attrs, int letterboxDirection, int rotation) {
+        int corners = 0;
+        if ((attrs.flags & 1048576) != 0) {
+            if (letterboxDirection != 0 || attrs.layoutInDisplayCutoutMode != 3 || rotation != 2) {
+                return 0;
             }
-            show = true;
-            this.mForceRoundedCorner = false;
-        } else if (isFreeformMode()) {
-            super.semSetRoundedCorners(15, this.mMultiWindowRoundedCornerRadius);
-            super.semSetRoundedCornerColor(15, this.mFreeformOutlineColor);
-            show = true;
+            int corners2 = 0 | 3;
+            return corners2;
         }
-        if (!show) {
-            super.semSetRoundedCorners(0);
-            this.mOverrideRoundedCornerBounds.setEmpty();
-            return;
+        if ((letterboxDirection & 4) != 0) {
+            corners = 0 | 3;
         }
-        int i2 = this.mRotation;
-        if ((i2 == 0 || i2 == 2) && !isSplitMode()) {
-            this.mOverrideRoundedCornerBounds.set(this.mLastLeftInset, this.mLastTopInset, getWidth() - this.mLastRightInset, getHeight() - this.mLastBottomInset);
-        } else {
-            this.mOverrideRoundedCornerBounds.set(this.mLastLeftInset, 0, getWidth() - this.mLastRightInset, getHeight());
+        if ((letterboxDirection & 8) != 0) {
+            return corners | 12;
         }
+        return corners;
+    }
+
+    private int getRoundedCornersInLandscapeMode(int cutoutMode, int letterboxDirection) {
+        if (cutoutMode == 1 || letterboxDirection == 0) {
+            return 0;
+        }
+        int corners = 0;
+        if ((letterboxDirection & 1) != 0) {
+            corners = 0 | 5;
+        }
+        if ((letterboxDirection & 2) != 0) {
+            return corners | 10;
+        }
+        return corners;
+    }
+
+    private boolean shouldDrawRoundedCornerInPortraitMode(boolean isFullscreen) {
+        if (this.mGestureNavBarEnabled && !this.mGestureHintEnabled) {
+            return false;
+        }
+        if ((isFullscreen && (this.mWindow.getContext() instanceof Activity)) || this.mForceHideRoundedCorner) {
+            return false;
+        }
+        if (this.mForceRoundedCorner) {
+            boolean hasTaskBar = Settings.Global.getInt(this.mContext.getContentResolver(), Settings.Global.SEM_TASK_BAR, 0) == 1;
+            return this.mNavigationColorViewState.visible && !hasTaskBar && (this.mRoundedCornerMode & 12) == 12;
+        }
+        boolean hasTaskBar2 = View.sIsSamsungBasicInteraction;
+        if (!hasTaskBar2 || !this.mNavigationColorViewState.visible) {
+            return false;
+        }
+        if (this.mContentRoot == null || this.mStatusColorViewState.view == null || this.mNavigationColorViewState.view == null) {
+            return true;
+        }
+        return 3 >= getChildCount() || !isChildIntersectsWith(this.mNavigationColorViewState.view);
     }
 
     @Override // android.view.View
@@ -2857,7 +2272,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     @Override // android.view.View
     public boolean setOverrideRoundedCornerBounds(Rect outRoundedCornerBounds) {
-        if (outRoundedCornerBounds != null && !this.mOverrideRoundedCornerBounds.isEmpty() && this.mRotation == this.mDisplayRotation) {
+        if (outRoundedCornerBounds != null && !this.mOverrideRoundedCornerBounds.isEmpty() && this.mRotationForRoundedCorner == this.mDisplayRotationForRoundedCorner) {
             outRoundedCornerBounds.set(this.mOverrideRoundedCornerBounds);
             return true;
         }
@@ -2878,10 +2293,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     private void refreshGestureNavBarSettings() {
         this.mGestureNavBarEnabled = Settings.Global.getInt(this.mContext.getContentResolver(), Settings.Global.NAVIGATION_BAR_GESTURE_WHILE_HIDDEN, 0) != 0;
         this.mGestureHintEnabled = Settings.Global.getInt(this.mContext.getContentResolver(), Settings.Global.NAVIGATIONBAR_GESTURE_HINT, 1) != 0;
-    }
-
-    private boolean shouldDrawRoundedCornerForSplit() {
-        return isSplitMode() && getStagePosition() != 0;
     }
 
     private void updateRoundedCornerForSplit(Context context) {
@@ -2940,8 +2351,93 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         super.semSetRoundedCornerColor(roundedCorner, MultiWindowUtils.getRoundedCornerColor(context));
     }
 
-    /* loaded from: classes5.dex */
-    public static class ColorViewState {
+    /* JADX INFO: Access modifiers changed from: private */
+    public float dpToPixel(float dp) {
+        return (this.mContext.getResources().getDisplayMetrics().densityDpi / 160.0f) * dp;
+    }
+
+    public void updateElevationIfNeeded() {
+        if (this.mIsPopOver) {
+            updateElevation();
+        }
+    }
+
+    public void removePopOverElevation() {
+        setElevation(0.0f);
+    }
+
+    private boolean isPopOverState() {
+        return this.mIsPopOver && !this.mPreventPopOverElevation && isActivity() && isFullSize();
+    }
+
+    public void preventPopOverElevation() {
+        this.mPreventPopOverElevation = true;
+        setElevation(0.0f);
+    }
+
+    public boolean isDialogInPopOver() {
+        if (!this.mPreventPopOverElevation) {
+            this.mPreventPopOverElevation = getResources().getConfiguration().windowConfiguration.isPopOver() && (this.mIsDexEnabled || isFullscreenMode() || isSplitMode()) && (!isActivity() || (!isFullSize() && isDimBehind()));
+        }
+        return this.mPreventPopOverElevation;
+    }
+
+    private boolean isDimBehind() {
+        WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
+        return (attrs.flags & 2) != 0 && attrs.dimAmount > 0.0f && attrs.dimAmount < 1.0f;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void setBackgroundAlpha(float alpha) {
+        if (this.mPopOverBackgroundAlpha != alpha) {
+            this.mPopOverBackgroundAlpha = alpha;
+            Log.d(TAG, "changed bg alpha=" + alpha);
+            invalidate();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public float getBackgroundAlpha() {
+        return this.mPopOverBackgroundAlpha;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void setContentAlpha(float alpha) {
+        if (this.mPopOverContentAlpha != alpha) {
+            this.mPopOverContentAlpha = alpha;
+            Log.d(TAG, "changed content alpha=" + alpha);
+            invalidate();
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public float getContentAlpha() {
+        return this.mPopOverContentAlpha;
+    }
+
+    private void showPopOver() {
+        ObjectAnimator animBackground = ObjectAnimator.ofFloat(this, this.POP_OVER_BACKGROUND_ALPHA, 1.0f);
+        animBackground.setDuration(200L);
+        ObjectAnimator animContent = ObjectAnimator.ofFloat(this, this.POP_OVER_CONTENT_ALPHA, 1.0f);
+        animContent.setDuration(100L);
+        animContent.setStartDelay(100L);
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.playTogether(animBackground, animContent);
+        animSet.start();
+    }
+
+    private void hidePopOver() {
+        ObjectAnimator animBackground = ObjectAnimator.ofFloat(this, this.POP_OVER_BACKGROUND_ALPHA, 0.2f);
+        animBackground.setDuration(200L);
+        animBackground.setStartDelay(100L);
+        ObjectAnimator animContent = ObjectAnimator.ofFloat(this, this.POP_OVER_CONTENT_ALPHA, 0.0f);
+        animContent.setDuration(100L);
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.playTogether(animContent, animBackground);
+        animSet.start();
+    }
+
+    private static class ColorViewState {
         final ColorViewAttributes attributes;
         int color;
         boolean visible;
@@ -2954,7 +2450,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ColorViewAttributes {
         final int horizontalGravity;
         final int id;
@@ -2963,10 +2458,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         final String transitionName;
         final int translucentFlag;
         final int verticalGravity;
-
-        /* synthetic */ ColorViewAttributes(int i, int i2, int i3, int i4, String str, int i5, int i6, ColorViewAttributesIA colorViewAttributesIA) {
-            this(i, i2, i3, i4, str, i5, i6);
-        }
 
         private ColorViewAttributes(int translucentFlag, int verticalGravity, int horizontalGravity, int seascapeGravity, String transitionName, int id, int insetsType) {
             this.id = id;
@@ -2993,8 +2484,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class ActionModeCallback2Wrapper extends ActionMode.Callback2 {
+    private class ActionModeCallback2Wrapper extends ActionMode.Callback2 {
         private final ActionMode.Callback mWrapped;
 
         public ActionModeCallback2Wrapper(ActionMode.Callback wrapped) {
@@ -3041,21 +2531,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             }
             if (isPrimary) {
                 if (DecorView.this.mPrimaryActionModePopup != null) {
-                    DecorView decorView = DecorView.this;
-                    decorView.removeCallbacks(decorView.mShowPrimaryActionModePopup);
+                    DecorView.this.removeCallbacks(DecorView.this.mShowPrimaryActionModePopup);
                 }
                 if (DecorView.this.mPrimaryActionModeView != null) {
                     DecorView.this.endOnGoingFadeAnimation();
-                    ActionBarContextView lastActionModeView = DecorView.this.mPrimaryActionModeView;
-                    DecorView decorView2 = DecorView.this;
-                    decorView2.mFadeAnim = ObjectAnimator.ofFloat(decorView2.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 1.0f, 0.0f);
+                    final ActionBarContextView lastActionModeView = DecorView.this.mPrimaryActionModeView;
+                    DecorView.this.mFadeAnim = ObjectAnimator.ofFloat(DecorView.this.mPrimaryActionModeView, (Property<ActionBarContextView, Float>) View.ALPHA, 1.0f, 0.0f);
                     DecorView.this.mFadeAnim.addListener(new Animator.AnimatorListener() { // from class: com.android.internal.policy.DecorView.ActionModeCallback2Wrapper.1
-                        final /* synthetic */ ActionBarContextView val$lastActionModeView;
-
-                        AnonymousClass1(ActionBarContextView lastActionModeView2) {
-                            lastActionModeView = lastActionModeView2;
-                        }
-
                         @Override // android.animation.Animator.AnimatorListener
                         public void onAnimationStart(Animator animation) {
                         }
@@ -3100,46 +2582,10 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
             DecorView.this.requestFitSystemWindows();
         }
 
-        /* renamed from: com.android.internal.policy.DecorView$ActionModeCallback2Wrapper$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Animator.AnimatorListener {
-            final /* synthetic */ ActionBarContextView val$lastActionModeView;
-
-            AnonymousClass1(ActionBarContextView lastActionModeView2) {
-                lastActionModeView = lastActionModeView2;
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animation) {
-                if (lastActionModeView == DecorView.this.mPrimaryActionModeView) {
-                    lastActionModeView.setVisibility(8);
-                    if (DecorView.this.mPrimaryActionModePopup != null) {
-                        DecorView.this.mPrimaryActionModePopup.dismiss();
-                    }
-                    lastActionModeView.killMode();
-                    DecorView.this.mFadeAnim = null;
-                    DecorView.this.requestApplyInsets();
-                }
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationRepeat(Animator animation) {
-            }
-        }
-
         @Override // android.view.ActionMode.Callback2
         public void onGetContentRect(ActionMode mode, View view, Rect outRect) {
-            ActionMode.Callback callback = this.mWrapped;
-            if (callback instanceof ActionMode.Callback2) {
-                ((ActionMode.Callback2) callback).onGetContentRect(mode, view, outRect);
+            if (this.mWrapped instanceof ActionMode.Callback2) {
+                ((ActionMode.Callback2) this.mWrapped).onGetContentRect(mode, view, outRect);
             } else {
                 super.onGetContentRect(mode, view, outRect);
             }
@@ -3153,12 +2599,11 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
     }
 
     private void updateDisplayCutoutBackground(WindowInsets insets) {
-        View view;
         if (!this.mCalledDisplayCutoutBackgroundColor && (View.sIsSamsungBasicInteraction || View.sIsDisplayCutoutBackground)) {
             this.mDisplayCutoutBackgroundColor = getCurrentColor(this.mNavigationColorViewState);
         }
-        if (insets == null && (view = this.mDisplayCutoutBackgroundView) != null) {
-            view.setBackgroundColor(this.mDisplayCutoutBackgroundColor);
+        if (insets == null && this.mDisplayCutoutBackgroundView != null) {
+            this.mDisplayCutoutBackgroundView.setBackgroundColor(this.mDisplayCutoutBackgroundColor);
             return;
         }
         WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
@@ -3214,17 +2659,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                     }
                 }
                 if (needBackground && this.mDisplayCutoutBackgroundColor != 0) {
-                    View view2 = this.mDisplayCutoutBackgroundView;
-                    if (view2 != null) {
-                        if (view2.getParent() != this) {
-                            View view3 = new View(getContext());
-                            this.mDisplayCutoutBackgroundView = view3;
-                            addView(view3);
-                        }
-                    } else {
-                        View view4 = new View(getContext());
-                        this.mDisplayCutoutBackgroundView = view4;
-                        addView(view4);
+                    if (this.mDisplayCutoutBackgroundView == null) {
+                        this.mDisplayCutoutBackgroundView = new View(getContext());
+                        addView(this.mDisplayCutoutBackgroundView);
+                    } else if (this.mDisplayCutoutBackgroundView.getParent() != this) {
+                        this.mDisplayCutoutBackgroundView = new View(getContext());
+                        addView(this.mDisplayCutoutBackgroundView);
                     }
                     if (this.mDisplayCutoutBackgroundView.getTag() == null) {
                         this.mDisplayCutoutBackgroundView.setTag("DisplayCutoutBackgroundView");
@@ -3240,8 +2680,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                     this.mDisplayCutoutBackgroundView.requestLayout();
                     return;
                 }
-                View view5 = this.mDisplayCutoutBackgroundView;
-                if (view5 != null && view5.getParent() == this) {
+                if (this.mDisplayCutoutBackgroundView != null && this.mDisplayCutoutBackgroundView.getParent() == this) {
                     removeView(this.mDisplayCutoutBackgroundView);
                     this.mDisplayCutoutBackgroundView = null;
                     return;
@@ -3249,14 +2688,13 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 return;
             }
         }
-        View view6 = this.mDisplayCutoutBackgroundView;
-        if (view6 != null) {
-            removeView(view6);
+        if (this.mDisplayCutoutBackgroundView != null) {
+            removeView(this.mDisplayCutoutBackgroundView);
             this.mDisplayCutoutBackgroundView = null;
         }
     }
 
-    public boolean isDrawLegacyNavigationBarBackground() {
+    boolean isDrawLegacyNavigationBarBackground() {
         return this.mDrawLegacyNavigationBarBackground;
     }
 
@@ -3270,13 +2708,14 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void hideKnoxBadge() {
-        ViewGroupOverlay viewGroupOverlay = this.mKnoxBadgeViewGroupOverlay;
-        if (viewGroupOverlay != null) {
-            viewGroupOverlay.remove(this.mKnoxBadgeView);
+        if (this.mKnoxBadgeViewGroupOverlay != null) {
+            this.mKnoxBadgeViewGroupOverlay.remove(this.mKnoxBadgeView);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void addKnoxBadge() {
         if (this.mKnoxBadgeViewGroupOverlay == null) {
             setKnoxBadge();
@@ -3286,12 +2725,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
 
     private void setBadgeResource() {
         this.mKnoxBadge = this.mPackageManagerForKnoxBadge.getUserBadgeForDensity(new UserHandle(this.mUserId), 0);
-        Drawable customReverseBadgeForCustomContainer = SemPersonaManager.getCustomReverseBadgeForCustomContainer(new UserHandle(this.mUserId), 0, this.mContext);
-        this.mReverseKnoxBadge = customReverseBadgeForCustomContainer;
-        if (customReverseBadgeForCustomContainer == null) {
-            customReverseBadgeForCustomContainer = this.mKnoxBadge;
-        }
-        this.mReverseKnoxBadge = customReverseBadgeForCustomContainer;
+        this.mReverseKnoxBadge = SemPersonaManager.getCustomReverseBadgeForCustomContainer(new UserHandle(this.mUserId), 0, this.mContext);
+        this.mReverseKnoxBadge = this.mReverseKnoxBadge == null ? this.mKnoxBadge : this.mReverseKnoxBadge;
     }
 
     private void setKnoxBadge() {
@@ -3308,6 +2743,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mDensityForKnoxBadge = this.mContext.getResources().getConfiguration().densityDpi;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean shouldHideProfileBadge(boolean isGestureHintOff, boolean taskbarEnabled, int displayType) {
         if (((getParent() instanceof ViewGroup) && this.mKnoxBadgeView != null) || isPopOverState()) {
             return true;
@@ -3326,119 +2762,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return isSplitMode() && MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED;
     }
 
-    /* renamed from: com.android.internal.policy.DecorView$11 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass11 implements Runnable {
-        AnonymousClass11() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            boolean isLargeDisplay = true;
-            boolean gestureNavBarEnabled = Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATION_BAR_GESTURE_WHILE_HIDDEN, 0) != 0;
-            boolean gestureHintState = Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATIONBAR_GESTURE_HINT, 1) != 0;
-            boolean isGestureNavBarInCenter = gestureNavBarEnabled && Settings.Global.getInt(DecorView.this.mContext.getContentResolver(), Settings.Global.NAVIGATIONBAR_GESTURES_DETAIL_TYPE, 0) == 1;
-            boolean isGestureHintOff = gestureNavBarEnabled && !gestureHintState;
-            boolean taskbarEnabled = Settings.Global.getInt(DecorView.this.getContext().getContentResolver(), Settings.Global.SEM_TASK_BAR, 0) == 1;
-            int displayType = DecorView.this.getContext().getResources().getConfiguration().semDisplayDeviceType;
-            if (DecorView.this.shouldHideProfileBadge(isGestureHintOff, taskbarEnabled, displayType)) {
-                DecorView.this.hideKnoxBadge();
-                return;
-            }
-            int rotation = DecorView.this.mWm.getDefaultDisplay().getRotation();
-            boolean isMultiWindow = DecorView.this.getWindowingMode() == 6;
-            boolean isRotation_90 = rotation == 1;
-            boolean isRotation_270 = rotation == 3;
-            if (displayType != 0 && !SemViewUtils.isTablet()) {
-                isLargeDisplay = false;
-            }
-            if (DecorView.this.mIsDexEnabled) {
-                Context candiateContext = DecorView.this.getContext().getApplicationContext();
-                int appDensityDpi = candiateContext.getResources().getConfiguration().densityDpi;
-                int densityDpi = DecorView.this.getContext().getResources().getConfiguration().densityDpi;
-                DecorView.this.mDensityRatio = densityDpi / appDensityDpi;
-            }
-            int badgeW = (int) (DecorView.this.mKnoxBadge.getIntrinsicWidth() * DecorView.this.mDensityRatio);
-            int badgeH = (int) (DecorView.this.mKnoxBadge.getIntrinsicHeight() * DecorView.this.mDensityRatio);
-            int navigation_bar_height = 0;
-            WindowInsets rootInsets = DecorView.this.getRootWindowInsets();
-            if (rootInsets != null) {
-                DecorView.this.mKnoxBadgeInsets = rootInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
-                DisplayCutout cutout = rootInsets.getDisplayCutout();
-                if (cutout != null) {
-                    DecorView.sKnoxBadgeRightCutout = cutout.getSafeInsetRight();
-                }
-            }
-            if (DecorView.this.mKnoxBadgeInsets != null) {
-                navigation_bar_height = DecorView.getNavBarSizeForBadge(DecorView.this.mKnoxBadgeInsets.left, DecorView.this.mKnoxBadgeInsets.right, DecorView.this.mKnoxBadgeInsets.bottom);
-            }
-            DecorView.this.addKnoxBadge();
-            if (isLargeDisplay) {
-                DecorView decorView = DecorView.this;
-                decorView.mKnoxBadgeStartX = decorView.mKnoxLayoutRight - badgeW;
-                DecorView decorView2 = DecorView.this;
-                decorView2.mKnoxBadgeStartY = (decorView2.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
-                if (isRotation_270) {
-                    DecorView.this.mKnoxBadgeStartX -= DecorView.sKnoxBadgeRightCutout;
-                }
-                DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
-            } else {
-                int position = DecorView.this.getResources().getConfiguration().windowConfiguration.getStagePosition();
-                if (isRotation_270) {
-                    if (!isGestureNavBarInCenter) {
-                        DecorView decorView3 = DecorView.this;
-                        decorView3.mKnoxBadgeStartX = decorView3.mKnoxLayoutLeft + navigation_bar_height;
-                        DecorView decorView4 = DecorView.this;
-                        decorView4.mKnoxBadgeStartY = decorView4.mKnoxLayoutBottom - badgeH;
-                    } else {
-                        DecorView decorView5 = DecorView.this;
-                        decorView5.mKnoxBadgeStartX = decorView5.mKnoxLayoutLeft;
-                        DecorView decorView6 = DecorView.this;
-                        decorView6.mKnoxBadgeStartY = (decorView6.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
-                    }
-                    if (isMultiWindow && position == 32) {
-                        DecorView.this.mKnoxBadgeStartX = 0;
-                    }
-                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mReverseKnoxBadge);
-                } else if (isRotation_90) {
-                    if (isGestureNavBarInCenter) {
-                        DecorView decorView7 = DecorView.this;
-                        decorView7.mKnoxBadgeStartX = decorView7.mKnoxLayoutRight - badgeW;
-                        DecorView decorView8 = DecorView.this;
-                        decorView8.mKnoxBadgeStartY = (decorView8.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
-                    } else {
-                        DecorView decorView9 = DecorView.this;
-                        decorView9.mKnoxBadgeStartX = (decorView9.mKnoxLayoutRight - badgeW) - navigation_bar_height;
-                        DecorView decorView10 = DecorView.this;
-                        decorView10.mKnoxBadgeStartY = decorView10.mKnoxLayoutBottom - badgeH;
-                    }
-                    if (isMultiWindow && position == 8) {
-                        DecorView decorView11 = DecorView.this;
-                        decorView11.mKnoxBadgeStartX = decorView11.mKnoxLayoutRight - badgeW;
-                    }
-                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
-                } else {
-                    DecorView decorView12 = DecorView.this;
-                    decorView12.mKnoxBadgeStartX = decorView12.mKnoxLayoutRight - badgeW;
-                    DecorView decorView13 = DecorView.this;
-                    decorView13.mKnoxBadgeStartY = (decorView13.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
-                    DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
-                }
-            }
-            int finishX = DecorView.this.mKnoxBadgeStartX + badgeW;
-            int finishY = DecorView.this.mKnoxBadgeStartY + badgeH;
-            DecorView.this.mKnoxBadgeView.setLeft(DecorView.this.mKnoxBadgeStartX);
-            DecorView.this.mKnoxBadgeView.setTop(DecorView.this.mKnoxBadgeStartY);
-            DecorView.this.mKnoxBadgeView.setRight(finishX);
-            DecorView.this.mKnoxBadgeView.setBottom(finishY);
-        }
-    }
-
     private void setKnoxBadgePosition() {
         this.mKnoxBadgeDisplayRunnable = new Runnable() { // from class: com.android.internal.policy.DecorView.11
-            AnonymousClass11() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 boolean isLargeDisplay = true;
@@ -3456,7 +2781,7 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 boolean isMultiWindow = DecorView.this.getWindowingMode() == 6;
                 boolean isRotation_90 = rotation == 1;
                 boolean isRotation_270 = rotation == 3;
-                if (displayType != 0 && !SemViewUtils.isTablet()) {
+                if (displayType != 0 && !CoreRune.IS_TABLET_DEVICE) {
                     isLargeDisplay = false;
                 }
                 if (DecorView.this.mIsDexEnabled) {
@@ -3481,10 +2806,8 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 }
                 DecorView.this.addKnoxBadge();
                 if (isLargeDisplay) {
-                    DecorView decorView = DecorView.this;
-                    decorView.mKnoxBadgeStartX = decorView.mKnoxLayoutRight - badgeW;
-                    DecorView decorView2 = DecorView.this;
-                    decorView2.mKnoxBadgeStartY = (decorView2.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                    DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutRight - badgeW;
+                    DecorView.this.mKnoxBadgeStartY = (DecorView.this.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
                     if (isRotation_270) {
                         DecorView.this.mKnoxBadgeStartX -= DecorView.sKnoxBadgeRightCutout;
                     }
@@ -3492,43 +2815,32 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 } else {
                     int position = DecorView.this.getResources().getConfiguration().windowConfiguration.getStagePosition();
                     if (isRotation_270) {
-                        if (!isGestureNavBarInCenter) {
-                            DecorView decorView3 = DecorView.this;
-                            decorView3.mKnoxBadgeStartX = decorView3.mKnoxLayoutLeft + navigation_bar_height;
-                            DecorView decorView4 = DecorView.this;
-                            decorView4.mKnoxBadgeStartY = decorView4.mKnoxLayoutBottom - badgeH;
+                        if (isGestureNavBarInCenter) {
+                            DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutLeft;
+                            DecorView.this.mKnoxBadgeStartY = (DecorView.this.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
                         } else {
-                            DecorView decorView5 = DecorView.this;
-                            decorView5.mKnoxBadgeStartX = decorView5.mKnoxLayoutLeft;
-                            DecorView decorView6 = DecorView.this;
-                            decorView6.mKnoxBadgeStartY = (decorView6.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                            DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutLeft + navigation_bar_height;
+                            DecorView.this.mKnoxBadgeStartY = DecorView.this.mKnoxLayoutBottom - badgeH;
                         }
                         if (isMultiWindow && position == 32) {
                             DecorView.this.mKnoxBadgeStartX = 0;
                         }
                         DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mReverseKnoxBadge);
-                    } else if (isRotation_90) {
-                        if (isGestureNavBarInCenter) {
-                            DecorView decorView7 = DecorView.this;
-                            decorView7.mKnoxBadgeStartX = decorView7.mKnoxLayoutRight - badgeW;
-                            DecorView decorView8 = DecorView.this;
-                            decorView8.mKnoxBadgeStartY = (decorView8.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
-                        } else {
-                            DecorView decorView9 = DecorView.this;
-                            decorView9.mKnoxBadgeStartX = (decorView9.mKnoxLayoutRight - badgeW) - navigation_bar_height;
-                            DecorView decorView10 = DecorView.this;
-                            decorView10.mKnoxBadgeStartY = decorView10.mKnoxLayoutBottom - badgeH;
-                        }
-                        if (isMultiWindow && position == 8) {
-                            DecorView decorView11 = DecorView.this;
-                            decorView11.mKnoxBadgeStartX = decorView11.mKnoxLayoutRight - badgeW;
-                        }
+                    } else if (!isRotation_90) {
+                        DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutRight - badgeW;
+                        DecorView.this.mKnoxBadgeStartY = (DecorView.this.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
                         DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
                     } else {
-                        DecorView decorView12 = DecorView.this;
-                        decorView12.mKnoxBadgeStartX = decorView12.mKnoxLayoutRight - badgeW;
-                        DecorView decorView13 = DecorView.this;
-                        decorView13.mKnoxBadgeStartY = (decorView13.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                        if (isGestureNavBarInCenter) {
+                            DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutRight - badgeW;
+                            DecorView.this.mKnoxBadgeStartY = (DecorView.this.mKnoxLayoutBottom - badgeH) - navigation_bar_height;
+                        } else {
+                            DecorView.this.mKnoxBadgeStartX = (DecorView.this.mKnoxLayoutRight - badgeW) - navigation_bar_height;
+                            DecorView.this.mKnoxBadgeStartY = DecorView.this.mKnoxLayoutBottom - badgeH;
+                        }
+                        if (isMultiWindow && position == 8) {
+                            DecorView.this.mKnoxBadgeStartX = DecorView.this.mKnoxLayoutRight - badgeW;
+                        }
                         DecorView.this.mKnoxBadgeView.setBackgroundDrawable(DecorView.this.mKnoxBadge);
                     }
                 }
@@ -3542,81 +2854,96 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         };
     }
 
-    public void hidden_semSetForceHideRoundedCorner(boolean hide) {
-        this.mForceHideRoundedCorner = hide;
-        Log.i(TAG, "hidden_semSetForceHideRoundedCorner() : " + hide);
-        super.semSetRoundedCorners(0);
+    public static int getNavBarSizeForBadge(int leftInset, int rightInset, int bottomInset) {
+        return isNavBarToRightEdge(bottomInset, rightInset - sKnoxBadgeRightCutout) ? rightInset : isNavBarToLeftEdge(bottomInset, leftInset) ? leftInset : bottomInset;
     }
 
-    public boolean isNonFullscreenWindowInFreeform() {
-        return isFreeformMode() && isActivity() && !isFullSize() && this.mWindow.getAttributes().type >= 1 && this.mWindow.getAttributes().type <= 99;
+    public void setLastBackgroundResource(int redId) {
+        this.mLastBackgroundResource = redId;
     }
 
-    private boolean isPopOverState() {
-        return this.mIsPopOver && !this.mPreventPopOverElevation && isActivity() && isFullSize();
+    @Override // android.view.View
+    public int getLastBackgroundResource() {
+        return this.mLastBackgroundResource;
     }
 
-    public void preventPopOverElevation() {
-        this.mPreventPopOverElevation = true;
-        setElevation(0.0f);
-    }
-
-    public boolean isDialogInPopOver() {
-        if (!this.mPreventPopOverElevation) {
-            this.mPreventPopOverElevation = getResources().getConfiguration().windowConfiguration.isPopOver() && (this.mIsDexEnabled || isFullscreenMode() || isSplitMode()) && (!isActivity() || (!isFullSize() && isDimBehind()));
+    private boolean shouldConsumeCaptionBar() {
+        if (this.mLastTopInset > 0 && this.mLastTopInset == this.mLastCaptionHeight && CoreRune.MW_CAPTION_SHELL_DEX && this.mIsDexEnabled && !this.mWindow.isTranslucent()) {
+            return (isFullscreenMode() || isSplitMode()) && !isImmersiveMode();
         }
-        return this.mPreventPopOverElevation;
+        return false;
     }
 
-    private boolean isDimBehind() {
+    public boolean shouldConsumeCaptionInsets(WindowInsets insets) {
+        if (!insets.isForceConsumingOpaqueCaptionBar()) {
+            return false;
+        }
         WindowManager.LayoutParams attrs = this.mWindow.getAttributes();
-        return (attrs.flags & 2) != 0 && attrs.dimAmount > 0.0f && attrs.dimAmount < 1.0f;
+        if (!this.mWindow.getAttributes().isFullscreen() || this.mWindow.mIsFloating) {
+            return attrs.type == 1 || attrs.type == 2 || attrs.type == 4;
+        }
+        return false;
     }
 
-    public void setBackgroundAlpha(float alpha) {
-        if (this.mPopOverBackgroundAlpha != alpha) {
-            this.mPopOverBackgroundAlpha = alpha;
-            Log.d(TAG, "changed bg alpha=" + alpha);
-            invalidate();
+    public void drawFrameIfNeeded(Canvas canvas) {
+        WindowInsetsController insetsController;
+        if (!isFreeformMode() || !isFullSize() || this.mWindow.mIsFloating || (getParent() instanceof ViewGroup)) {
+            return;
+        }
+        if (this.mFrameDrawHelper == null) {
+            this.mFrameDrawHelper = new FrameDrawHelper(this);
+        }
+        this.mFrameDrawHelper.updateResources(isActivity() ? getConfiguration() : null);
+        int captionHeight = this.mLastCaptionHeight;
+        if (CoreRune.MW_CAPTION_SHELL_CUSTOMIZABLE_WINDOW_HEADERS && (insetsController = getWindowInsetsController()) != null && (insetsController.getSystemBarsAppearance() & 128) != 0) {
+            captionHeight = 0;
+        }
+        this.mFrameDrawHelper.drawFrame(canvas, captionHeight);
+    }
+
+    public static float getDensity(View view) {
+        Configuration config = view.getResources().getConfiguration();
+        Context context = view.getContext();
+        float densityDpi = config.densityDpi;
+        if (config.isDesktopModeEnabled()) {
+            densityDpi = 160.0f;
+            SemDesktopModeManager desktopModeManager = (SemDesktopModeManager) context.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
+            if (desktopModeManager != null && desktopModeManager.getDesktopModeState().getDisplayType() == 101) {
+                densityDpi = 280.0f;
+            }
+            Log.i(TAG, "updateDisplayMetrics: isDexEnabled=true, densityDpi=" + densityDpi);
+        }
+        float density = densityDpi / 160.0f;
+        try {
+            ActivityThread.currentActivityThread();
+            String packageName = context.getPackageName();
+            Log.i(TAG, "updateDisplayMetrics: packageName=" + packageName + ", dsf=1.0");
+            if (1.0f != 1.0f) {
+                return Math.round((density * 1.0f) * 10000.0f) / 10000.0f;
+            }
+            return density;
+        } catch (Exception e) {
+            Log.e(TAG, "updateDisplayMetrics: error while getting dsf. e=" + e);
+            return density;
         }
     }
 
-    public float getBackgroundAlpha() {
-        return this.mPopOverBackgroundAlpha;
-    }
-
-    public void setContentAlpha(float alpha) {
-        if (this.mPopOverContentAlpha != alpha) {
-            this.mPopOverContentAlpha = alpha;
-            Log.d(TAG, "changed content alpha=" + alpha);
-            invalidate();
+    public void updateCaptionHeightIfNeeded(WindowInsets insets) {
+        int captionHeight = insets.getInsetsIgnoringVisibility(WindowInsets.Type.captionBar()).top;
+        if (captionHeight != 0) {
+            this.mLastCaptionHeight = captionHeight;
+            requestInvalidateRenderNode("updateCaptionHeightIfNeeded");
         }
     }
 
-    public float getContentAlpha() {
-        return this.mPopOverContentAlpha;
-    }
-
-    private void showPopOver() {
-        ObjectAnimator animBackground = ObjectAnimator.ofFloat(this, this.POP_OVER_BACKGROUND_ALPHA, 1.0f);
-        animBackground.setDuration(200L);
-        ObjectAnimator animContent = ObjectAnimator.ofFloat(this, this.POP_OVER_CONTENT_ALPHA, 1.0f);
-        animContent.setDuration(100L);
-        animContent.setStartDelay(100L);
-        AnimatorSet animSet = new AnimatorSet();
-        animSet.playTogether(animBackground, animContent);
-        animSet.start();
-    }
-
-    private void hidePopOver() {
-        ObjectAnimator animBackground = ObjectAnimator.ofFloat(this, this.POP_OVER_BACKGROUND_ALPHA, 0.2f);
-        animBackground.setDuration(200L);
-        animBackground.setStartDelay(100L);
-        ObjectAnimator animContent = ObjectAnimator.ofFloat(this, this.POP_OVER_CONTENT_ALPHA, 0.0f);
-        animContent.setDuration(100L);
-        AnimatorSet animSet = new AnimatorSet();
-        animSet.playTogether(animContent, animBackground);
-        animSet.start();
+    private void requestInvalidateRenderNode(String msg) {
+        ViewRootImpl viewRootImpl = getViewRootImpl();
+        if (viewRootImpl != null) {
+            viewRootImpl.requestInvalidateRootRenderNode();
+            if (DEBUG_DRAW) {
+                Log.i(TAG, "requestInvalidateRootRenderNode: msg=" + msg);
+            }
+        }
     }
 
     private void updateOutlineProvider() {
@@ -3641,12 +2968,26 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
                 setOutlineProvider(null);
                 requestInvalidateRenderNode("updateOutlineProvider");
                 return;
+            } else {
+                if (getOutlineProvider() != this.mLastOutlineProvider) {
+                    setOutlineProvider(this.mLastOutlineProvider);
+                    return;
+                }
+                return;
             }
-            ViewOutlineProvider outlineProvider = getOutlineProvider();
-            ViewOutlineProvider viewOutlineProvider = this.mLastOutlineProvider;
-            if (outlineProvider != viewOutlineProvider) {
-                setOutlineProvider(viewOutlineProvider);
-            }
+        }
+        if (this.mIsPopOver && getContext().getActivityToken() != null) {
+            setOutlineProvider(this.POP_OVER_OUTLINE_PROVIDER);
+        }
+    }
+
+    private boolean isActivityHomeOrRecent() {
+        switch (getResources().getConfiguration().windowConfiguration.getActivityType()) {
+            case 2:
+            case 3:
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -3658,92 +2999,12 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         this.mStayFocus = false;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.policy.DecorView$12 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass12 extends ViewOutlineProvider {
-        AnonymousClass12() {
-        }
-
-        @Override // android.view.ViewOutlineProvider
-        public void getOutline(View view, Outline outline) {
-            if (DecorView.this.isFreeformMode()) {
-                int radius = view.getResources().getDimensionPixelSize(R.dimen.sem_decor_outline_radius_freeform);
-                outline.setPath(SemViewUtils.getSmoothRoundedRect(view.getWidth(), view.getHeight(), 0, 0, radius));
-            } else {
-                outline.setRect(0, 0, view.getWidth(), view.getHeight());
-            }
-        }
-    }
-
-    private void requestInvalidateRenderNode(String msg) {
-        ViewRootImpl viewRootImpl;
-        if (!isResizing() && (viewRootImpl = getViewRootImpl()) != null) {
-            viewRootImpl.requestInvalidateRootRenderNode();
-            if (DEBUG_DRAW) {
-                Log.i(TAG, "requestInvalidateRootRenderNode: msg=" + msg);
-            }
-        }
-    }
-
-    public void drawFrameIfNeeded(Canvas canvas) {
-        boolean isActivity = isActivity();
-        boolean isFullSizeWindow = isFullSize();
-        if ((!isActivity && !isFullSizeWindow) || (getParent() instanceof ViewGroup)) {
-            return;
-        }
-        boolean isFreeform = isFreeformMode();
-        boolean isResizing = isResizing();
-        if ((this.mWindow.mIsStartingWindow || isFreeform) && !this.mWindow.mIsFloating && !isResizing) {
-            if (this.mIsDexEnabled && isFullscreenMode()) {
-                return;
-            }
-            if (this.mFrameDrawHelper == null) {
-                this.mFrameDrawHelper = new FrameDrawHelper(this);
-            }
-            this.mFrameDrawHelper.updateResources(isActivity() ? getConfiguration() : null);
-            this.mFrameDrawHelper.drawFrame(canvas);
-        }
-    }
-
-    public static float getDensity(View view) {
-        Configuration config = view.getResources().getConfiguration();
-        Context context = view.getContext();
-        float densityDpi = config.densityDpi;
-        if (config.isDesktopModeEnabled()) {
-            densityDpi = 160.0f;
-            SemDesktopModeManager desktopModeManager = (SemDesktopModeManager) context.getSystemService(Context.SEM_DESKTOP_MODE_SERVICE);
-            if (desktopModeManager != null && desktopModeManager.getDesktopModeState().getDisplayType() == 101) {
-                densityDpi = 280.0f;
-            }
-            Log.i(TAG, "updateDisplayMetrics: isDexEnabled=true, densityDpi=" + densityDpi);
-        }
-        float density = densityDpi / 160.0f;
-        try {
-            ActivityThread activityThread = ActivityThread.currentActivityThread();
-            float dssFactor = 1.0f;
-            if (activityThread != null) {
-                dssFactor = activityThread.getDssScale();
-            }
-            String packageName = context.getPackageName();
-            Log.i(TAG, "updateDisplayMetrics: packageName=" + packageName + ", dsf=" + dssFactor);
-            if (dssFactor != 1.0f) {
-                return Math.round((density * dssFactor) * 10000.0f) / 10000.0f;
-            }
-            return density;
-        } catch (Exception e) {
-            Log.e(TAG, "updateDisplayMetrics: error while getting dsf. e=" + e);
-            return density;
-        }
-    }
-
     public void onWindowingModeChanged(int windowingMode, boolean split) {
         this.mWindowingMode = windowingMode;
         boolean updateWindowFormat = false;
         int oldDisplayDeviceType = this.mLastDisplayDeviceType;
-        int i = getResources().getConfiguration().semDisplayDeviceType;
-        this.mLastDisplayDeviceType = i;
-        if (i != oldDisplayDeviceType) {
+        this.mLastDisplayDeviceType = getResources().getConfiguration().semDisplayDeviceType;
+        if (this.mLastDisplayDeviceType != oldDisplayDeviceType) {
             updateWindowFormat = true;
         }
         WindowConfiguration winConfig = getResources().getConfiguration().windowConfiguration;
@@ -3764,28 +3025,6 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         requestInvalidateRenderNode("window_mode_changed");
     }
 
-    public void setLastBackgroundResource(int redId) {
-        this.mLastBackgroundResource = redId;
-    }
-
-    @Override // android.view.View
-    public int getLastBackgroundResource() {
-        return this.mLastBackgroundResource;
-    }
-
-    private boolean shouldConsumeCaptionBar() {
-        int i = this.mLastTopInset;
-        return i > 0 && i == this.mLastCaptionHeight && CoreRune.MW_CAPTION_SHELL_DEX && this.mIsDexEnabled && (isFullscreenMode() || isSplitMode()) && !isImmersiveMode() && getResources().getConfiguration().windowConfiguration.getActivityType() == 1;
-    }
-
-    public void updateCaptionHeightIfNeeded(WindowInsets insets) {
-        int captionHeight = insets.getInsetsIgnoringVisibility(WindowInsets.Type.captionBar()).top;
-        if (captionHeight != 0) {
-            this.mLastCaptionHeight = captionHeight;
-            requestInvalidateRenderNode("updateCaptionHeightIfNeeded");
-        }
-    }
-
     public void onDexTaskDockingChanged(int state) {
         if (this.mLastDockingState != state) {
             this.mLastDockingState = state;
@@ -3797,12 +3036,16 @@ public class DecorView extends FrameLayout implements RootViewSurfaceTaker, Wind
         return this.mLastDockingState;
     }
 
-    @Override // android.view.View
-    public void resetContentCaptureSession() {
-        super.resetContentCaptureSession();
-        Context context = getContext();
-        if (context instanceof DecorContext) {
-            ((DecorContext) context).resetContextCaptureManager();
+    public void hidden_semSetForceHideRoundedCorner(boolean hide) {
+        this.mForceHideRoundedCorner = hide;
+        Log.i(TAG, "hidden_semSetForceHideRoundedCorner() : " + hide);
+        super.semSetRoundedCorners(0);
+    }
+
+    private int getCaptionType() {
+        if (this.mIsDexEnabled) {
+            return 1;
         }
+        return Settings.Global.getInt(this.mContext.getContentResolver(), Settings.Global.FREEFORM_CAPTION_TYPE, 0);
     }
 }

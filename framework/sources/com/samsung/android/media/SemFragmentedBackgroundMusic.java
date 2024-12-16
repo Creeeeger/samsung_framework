@@ -6,7 +6,7 @@ import com.samsung.android.media.SemBackgroundMusic;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemFragmentedBackgroundMusic extends SemBackgroundMusic {
     private static final int BGM_SECTION_TYPE_BODY = 1;
     private static final int BGM_SECTION_TYPE_INTRO = 0;
@@ -59,17 +59,15 @@ public class SemFragmentedBackgroundMusic extends SemBackgroundMusic {
     public int addBody(FileDescriptor fd, int startTime, int endTime) {
         SemBackgroundMusic.BGMInfo bgmInfo = new SemBackgroundMusic.BGMInfo();
         this.mFBGMBody.add(super.addInfo(bgmInfo, fd, startTime, endTime));
-        int i = this.mBodyCount + 1;
-        this.mBodyCount = i;
-        return i;
+        this.mBodyCount++;
+        return this.mBodyCount;
     }
 
     public int addBody(AssetFileDescriptor afd, int startTime, int endTime) {
         SemBackgroundMusic.BGMInfo bgmInfo = new SemBackgroundMusic.BGMInfo();
         this.mFBGMBody.add(super.addInfo(bgmInfo, afd, startTime, endTime));
-        int i = this.mBodyCount + 1;
-        this.mBodyCount = i;
-        return i;
+        this.mBodyCount++;
+        return this.mBodyCount;
     }
 
     public void setOutro(FileDescriptor fd, int startTime, int endTime) {

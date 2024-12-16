@@ -20,21 +20,12 @@ public class SemWifiP2pManager {
     private static final String TAG = "SemWifiP2pManager";
     public static final String TYPE_WIFI_AWARE = "aware";
     public static final String TYPE_WIFI_P2P = "p2p";
+    public static final String WIFI_P2P_CLIENT_IP_UPDATED_ACTION = "com.samsung.android.wifi.p2p.CLIENT_IP_UPDATED";
     public static final String WIFI_P2P_PEER_FOUND_ACTION = "com.samsung.android.wifi.p2p.PEER_FOUND";
-
-    @Deprecated(forRemoval = true, since = "13.5")
-    public static final int WIFI_P2P_STATE_CONNECTED = 3;
-
-    @Deprecated(forRemoval = true, since = "13.5")
-    public static final int WIFI_P2P_STATE_DISABLED = 1;
-
-    @Deprecated(forRemoval = true, since = "13.5")
-    public static final int WIFI_P2P_STATE_ENABLED = 2;
     private final Context mContext;
     private Looper mLooper;
     private final ISemWifiP2pManager mService;
 
-    /* loaded from: classes6.dex */
     public interface ActionListener {
         void onFailure(int i);
 
@@ -44,11 +35,11 @@ public class SemWifiP2pManager {
     public SemWifiP2pManager(Context context, ISemWifiP2pManager service) {
         this.mContext = context;
         this.mService = service;
-        this.mLooper = context.getMainLooper();
+        this.mLooper = this.mContext.getMainLooper();
     }
 
-    /* loaded from: classes6.dex */
-    public class SemWifiP2pCallbackProxy extends ISemWifiP2pCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class SemWifiP2pCallbackProxy extends ISemWifiP2pCallback.Stub {
         private final String mActionTag;
         private final Object mCallback;
         private final Handler mHandler;
@@ -72,6 +63,7 @@ public class SemWifiP2pManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onSuccess$0() {
             ((ActionListener) this.mCallback).onSuccess();
         }
@@ -89,24 +81,15 @@ public class SemWifiP2pManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onFailure$1(int reason) {
             ((ActionListener) this.mCallback).onFailure(reason);
         }
     }
 
-    @Deprecated(forRemoval = true, since = "13.5")
-    public boolean isWifiP2pEnabled() {
-        try {
-            return this.mService.getWifiP2pState() != 1;
-        } catch (RemoteException e) {
-            return false;
-        }
-    }
-
-    @Deprecated(forRemoval = true, since = "13.5")
     public boolean isWifiP2pConnected() {
         try {
-            return this.mService.getWifiP2pState() == 3;
+            return this.mService.isP2pConnected();
         } catch (RemoteException e) {
             return false;
         }
@@ -131,7 +114,7 @@ public class SemWifiP2pManager {
     @Deprecated(forRemoval = true, since = "15.1")
     public void setPreparedAccountPin(String pin, String hexEncData, String hexIv) {
         try {
-            this.mService.setPreparedAccountPin(pin, hexEncData, hexIv, null);
+            this.mService.setPreparedAccountPin(1, pin, hexEncData, hexIv, null, null);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -143,7 +126,22 @@ public class SemWifiP2pManager {
             callbackProxy = new SemWifiP2pCallbackProxy("setPreparedAccountPin", this.mLooper, listener);
         }
         try {
-            this.mService.setPreparedAccountPin(pin, hexEncData, hexIv, callbackProxy);
+            this.mService.setPreparedAccountPin(1, pin, hexEncData, hexIv, null, callbackProxy);
+        } catch (RemoteException e) {
+            if (callbackProxy != null) {
+                callbackProxy.onFailure(0);
+            }
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void setPreparedAccountPin(int type, String pin, String hexEncData, String hexIv, String hashedAccount, ActionListener listener) {
+        SemWifiP2pCallbackProxy callbackProxy = null;
+        if (listener != null) {
+            callbackProxy = new SemWifiP2pCallbackProxy("setPreparedAccountPin", this.mLooper, listener);
+        }
+        try {
+            this.mService.setPreparedAccountPin(type, pin, hexEncData, hexIv, hashedAccount, callbackProxy);
         } catch (RemoteException e) {
             if (callbackProxy != null) {
                 callbackProxy.onFailure(0);
@@ -282,6 +280,14 @@ public class SemWifiP2pManager {
             return this.mService.getP2pFeature();
         } catch (RemoteException e) {
             return 0L;
+        }
+    }
+
+    public void factoryReset() {
+        try {
+            this.mService.factoryReset();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
         }
     }
 }

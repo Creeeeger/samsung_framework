@@ -35,7 +35,6 @@ public interface ISehRadioMessagingResponse extends IInterface {
 
     void writeSmsToSimResponse(SehRadioResponseInfo sehRadioResponseInfo, int i) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioMessagingResponse {
         @Override // vendor.samsung.hardware.radio.messaging.ISehRadioMessagingResponse
         public void sendSmsResponse(SehRadioResponseInfo info, SehSendSmsResult sms) throws RemoteException {
@@ -89,7 +88,6 @@ public interface ISehRadioMessagingResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioMessagingResponse {
         static final int TRANSACTION_getCellBroadcastConfigResponse = 8;
         static final int TRANSACTION_getImsRegistrationStateResponse = 9;
@@ -130,83 +128,81 @@ public interface ISehRadioMessagingResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSendSmsResult _arg1 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSmsResponse(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSendSmsResult _arg12 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendSMSExpectMoreResponse(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSendSmsResult _arg13 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSmsResponse(_arg03, _arg13);
+                    return true;
+                case 4:
+                    SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSendSmsResult _arg14 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendCdmaSmsExpectMoreResponse(_arg04, _arg14);
+                    return true;
+                case 5:
+                    SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehStoredMsgCount _arg15 = (SehStoredMsgCount) data.readTypedObject(SehStoredMsgCount.CREATOR);
+                    data.enforceNoDataAvail();
+                    getStoredMsgCountFromSimResponse(_arg05, _arg15);
+                    return true;
+                case 6:
+                    SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehSimMsgArgs _arg16 = (SehSimMsgArgs) data.readTypedObject(SehSimMsgArgs.CREATOR);
+                    data.enforceNoDataAvail();
+                    readSmsFromSimResponse(_arg06, _arg16);
+                    return true;
+                case 7:
+                    SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    writeSmsToSimResponse(_arg07, _arg17);
+                    return true;
+                case 8:
+                    SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    SehCbConfigArgs _arg18 = (SehCbConfigArgs) data.readTypedObject(SehCbConfigArgs.CREATOR);
+                    data.enforceNoDataAvail();
+                    getCellBroadcastConfigResponse(_arg08, _arg18);
+                    return true;
+                case 9:
+                    SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
+                    int[] _arg19 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    getImsRegistrationStateResponse(_arg09, _arg19);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SehRadioResponseInfo _arg0 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSendSmsResult _arg1 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSmsResponse(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            SehRadioResponseInfo _arg02 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSendSmsResult _arg12 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendSMSExpectMoreResponse(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            SehRadioResponseInfo _arg03 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSendSmsResult _arg13 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSmsResponse(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            SehRadioResponseInfo _arg04 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSendSmsResult _arg14 = (SehSendSmsResult) data.readTypedObject(SehSendSmsResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendCdmaSmsExpectMoreResponse(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            SehRadioResponseInfo _arg05 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehStoredMsgCount _arg15 = (SehStoredMsgCount) data.readTypedObject(SehStoredMsgCount.CREATOR);
-                            data.enforceNoDataAvail();
-                            getStoredMsgCountFromSimResponse(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            SehRadioResponseInfo _arg06 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehSimMsgArgs _arg16 = (SehSimMsgArgs) data.readTypedObject(SehSimMsgArgs.CREATOR);
-                            data.enforceNoDataAvail();
-                            readSmsFromSimResponse(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            SehRadioResponseInfo _arg07 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            writeSmsToSimResponse(_arg07, _arg17);
-                            return true;
-                        case 8:
-                            SehRadioResponseInfo _arg08 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            SehCbConfigArgs _arg18 = (SehCbConfigArgs) data.readTypedObject(SehCbConfigArgs.CREATOR);
-                            data.enforceNoDataAvail();
-                            getCellBroadcastConfigResponse(_arg08, _arg18);
-                            return true;
-                        case 9:
-                            SehRadioResponseInfo _arg09 = (SehRadioResponseInfo) data.readTypedObject(SehRadioResponseInfo.CREATOR);
-                            int[] _arg19 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            getImsRegistrationStateResponse(_arg09, _arg19);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioMessagingResponse {
+        private static class Proxy implements ISehRadioMessagingResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

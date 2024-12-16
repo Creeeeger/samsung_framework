@@ -104,11 +104,9 @@ public class X509V3CertificateGenerator {
     public void setSignatureAlgorithm(String signatureAlgorithm) {
         this.signatureAlgorithm = signatureAlgorithm;
         try {
-            ASN1ObjectIdentifier algorithmOID = X509Util.getAlgorithmOID(signatureAlgorithm);
-            this.sigOID = algorithmOID;
-            AlgorithmIdentifier sigAlgID = X509Util.getSigAlgID(algorithmOID, signatureAlgorithm);
-            this.sigAlgId = sigAlgID;
-            this.tbsGen.setSignature(sigAlgID);
+            this.sigOID = X509Util.getAlgorithmOID(signatureAlgorithm);
+            this.sigAlgId = X509Util.getSigAlgID(this.sigOID, signatureAlgorithm);
+            this.tbsGen.setSignature(this.sigAlgId);
         } catch (Exception e) {
             throw new IllegalArgumentException("Unknown signature type requested: " + signatureAlgorithm);
         }

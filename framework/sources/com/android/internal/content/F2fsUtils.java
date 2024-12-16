@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class F2fsUtils {
     private static final String COMPRESSION_FEATURE = "compression";
     private static final boolean DEBUG_F2FS = false;
@@ -89,12 +89,11 @@ public final class F2fsUtils {
     }
 
     private static boolean isCompressionEnabledOnUserData() {
-        File file = sUserDataFeatures;
-        if (!file.exists() || !file.isFile() || !file.canRead()) {
+        if (!sUserDataFeatures.exists() || !sUserDataFeatures.isFile() || !sUserDataFeatures.canRead()) {
             return false;
         }
         try {
-            List<String> configLines = Files.readAllLines(file.toPath());
+            List<String> configLines = Files.readAllLines(sUserDataFeatures.toPath());
             if (configLines == null || configLines.size() > 1 || TextUtils.isEmpty(configLines.get(0))) {
                 return false;
             }

@@ -17,7 +17,6 @@ public interface IGetRegistrationCallback extends IInterface {
 
     void onSuccess(IRegistration iRegistration) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetRegistrationCallback {
         @Override // android.security.rkp.IGetRegistrationCallback
         public void onSuccess(IRegistration registration) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IGetRegistrationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetRegistrationCallback {
         static final int TRANSACTION_onCancel = 2;
         static final int TRANSACTION_onError = 3;
@@ -86,34 +84,30 @@ public interface IGetRegistrationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGetRegistrationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGetRegistrationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGetRegistrationCallback.DESCRIPTOR);
+                case 1:
+                    IRegistration _arg0 = IRegistration.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
+                    return true;
+                case 2:
+                    onCancel();
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRegistration _arg0 = IRegistration.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        case 2:
-                            onCancel();
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetRegistrationCallback {
+        private static class Proxy implements IGetRegistrationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

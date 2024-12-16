@@ -11,7 +11,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputSessionCallback extends IInterface {
     void onAdBufferConsumed(AdBuffer adBuffer) throws RemoteException;
 
@@ -61,13 +61,16 @@ public interface ITvInputSessionCallback extends IInterface {
 
     void onTuned(Uri uri) throws RemoteException;
 
+    void onTvInputSessionData(String str, Bundle bundle) throws RemoteException;
+
     void onTvMessage(int i, Bundle bundle) throws RemoteException;
 
     void onVideoAvailable() throws RemoteException;
 
+    void onVideoFreezeUpdated(boolean z) throws RemoteException;
+
     void onVideoUnavailable(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputSessionCallback {
         @Override // android.media.tv.ITvInputSessionCallback
         public void onSessionCreated(ITvInputSession session, IBinder hardwareSessionToken) throws RemoteException {
@@ -103,6 +106,10 @@ public interface ITvInputSessionCallback extends IInterface {
 
         @Override // android.media.tv.ITvInputSessionCallback
         public void onVideoUnavailable(int reason) throws RemoteException {
+        }
+
+        @Override // android.media.tv.ITvInputSessionCallback
+        public void onVideoFreezeUpdated(boolean isFrozen) throws RemoteException {
         }
 
         @Override // android.media.tv.ITvInputSessionCallback
@@ -177,41 +184,46 @@ public interface ITvInputSessionCallback extends IInterface {
         public void onTvMessage(int type, Bundle data) throws RemoteException {
         }
 
+        @Override // android.media.tv.ITvInputSessionCallback
+        public void onTvInputSessionData(String type, Bundle data) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputSessionCallback {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputSessionCallback";
-        static final int TRANSACTION_onAdBufferConsumed = 26;
-        static final int TRANSACTION_onAdResponse = 25;
-        static final int TRANSACTION_onAitInfoUpdated = 16;
+        static final int TRANSACTION_onAdBufferConsumed = 27;
+        static final int TRANSACTION_onAdResponse = 26;
+        static final int TRANSACTION_onAitInfoUpdated = 17;
         static final int TRANSACTION_onAudioPresentationSelected = 5;
         static final int TRANSACTION_onAudioPresentationsChanged = 4;
-        static final int TRANSACTION_onAvailableSpeeds = 20;
-        static final int TRANSACTION_onBroadcastInfoResponse = 24;
+        static final int TRANSACTION_onAvailableSpeeds = 21;
+        static final int TRANSACTION_onBroadcastInfoResponse = 25;
         static final int TRANSACTION_onChannelRetuned = 3;
-        static final int TRANSACTION_onContentAllowed = 10;
-        static final int TRANSACTION_onContentBlocked = 11;
-        static final int TRANSACTION_onCueingMessageAvailability = 18;
-        static final int TRANSACTION_onError = 23;
-        static final int TRANSACTION_onLayoutSurface = 12;
-        static final int TRANSACTION_onRecordingStopped = 22;
+        static final int TRANSACTION_onContentAllowed = 11;
+        static final int TRANSACTION_onContentBlocked = 12;
+        static final int TRANSACTION_onCueingMessageAvailability = 19;
+        static final int TRANSACTION_onError = 24;
+        static final int TRANSACTION_onLayoutSurface = 13;
+        static final int TRANSACTION_onRecordingStopped = 23;
         static final int TRANSACTION_onSessionCreated = 1;
         static final int TRANSACTION_onSessionEvent = 2;
-        static final int TRANSACTION_onSignalStrength = 17;
-        static final int TRANSACTION_onTimeShiftCurrentPositionChanged = 15;
-        static final int TRANSACTION_onTimeShiftMode = 19;
-        static final int TRANSACTION_onTimeShiftStartPositionChanged = 14;
-        static final int TRANSACTION_onTimeShiftStatusChanged = 13;
+        static final int TRANSACTION_onSignalStrength = 18;
+        static final int TRANSACTION_onTimeShiftCurrentPositionChanged = 16;
+        static final int TRANSACTION_onTimeShiftMode = 20;
+        static final int TRANSACTION_onTimeShiftStartPositionChanged = 15;
+        static final int TRANSACTION_onTimeShiftStatusChanged = 14;
         static final int TRANSACTION_onTrackSelected = 7;
         static final int TRANSACTION_onTracksChanged = 6;
-        static final int TRANSACTION_onTuned = 21;
-        static final int TRANSACTION_onTvMessage = 27;
+        static final int TRANSACTION_onTuned = 22;
+        static final int TRANSACTION_onTvInputSessionData = 29;
+        static final int TRANSACTION_onTvMessage = 28;
         static final int TRANSACTION_onVideoAvailable = 8;
+        static final int TRANSACTION_onVideoFreezeUpdated = 10;
         static final int TRANSACTION_onVideoUnavailable = 9;
 
         public Stub() {
@@ -255,41 +267,45 @@ public interface ITvInputSessionCallback extends IInterface {
                 case 9:
                     return "onVideoUnavailable";
                 case 10:
-                    return "onContentAllowed";
+                    return "onVideoFreezeUpdated";
                 case 11:
-                    return "onContentBlocked";
+                    return "onContentAllowed";
                 case 12:
-                    return "onLayoutSurface";
+                    return "onContentBlocked";
                 case 13:
-                    return "onTimeShiftStatusChanged";
+                    return "onLayoutSurface";
                 case 14:
-                    return "onTimeShiftStartPositionChanged";
+                    return "onTimeShiftStatusChanged";
                 case 15:
-                    return "onTimeShiftCurrentPositionChanged";
+                    return "onTimeShiftStartPositionChanged";
                 case 16:
-                    return "onAitInfoUpdated";
+                    return "onTimeShiftCurrentPositionChanged";
                 case 17:
-                    return "onSignalStrength";
+                    return "onAitInfoUpdated";
                 case 18:
-                    return "onCueingMessageAvailability";
+                    return "onSignalStrength";
                 case 19:
-                    return "onTimeShiftMode";
+                    return "onCueingMessageAvailability";
                 case 20:
-                    return "onAvailableSpeeds";
+                    return "onTimeShiftMode";
                 case 21:
-                    return "onTuned";
+                    return "onAvailableSpeeds";
                 case 22:
-                    return "onRecordingStopped";
+                    return "onTuned";
                 case 23:
-                    return "onError";
+                    return "onRecordingStopped";
                 case 24:
-                    return "onBroadcastInfoResponse";
+                    return "onError";
                 case 25:
-                    return "onAdResponse";
+                    return "onBroadcastInfoResponse";
                 case 26:
-                    return "onAdBufferConsumed";
+                    return "onAdResponse";
                 case 27:
+                    return "onAdBufferConsumed";
+                case 28:
                     return "onTvMessage";
+                case 29:
+                    return "onTvInputSessionData";
                 default:
                     return null;
             }
@@ -305,160 +321,167 @@ public interface ITvInputSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ITvInputSession _arg0 = ITvInputSession.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onSessionCreated(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    Bundle _arg12 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSessionEvent(_arg02, _arg12);
+                    return true;
+                case 3:
+                    Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onChannelRetuned(_arg03);
+                    return true;
+                case 4:
+                    List<AudioPresentation> _arg04 = data.createTypedArrayList(AudioPresentation.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAudioPresentationsChanged(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAudioPresentationSelected(_arg05, _arg13);
+                    return true;
+                case 6:
+                    List<TvTrackInfo> _arg06 = data.createTypedArrayList(TvTrackInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTracksChanged(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    onTrackSelected(_arg07, _arg14);
+                    return true;
+                case 8:
+                    onVideoAvailable();
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVideoUnavailable(_arg08);
+                    return true;
+                case 10:
+                    boolean _arg09 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onVideoFreezeUpdated(_arg09);
+                    return true;
+                case 11:
+                    onContentAllowed();
+                    return true;
+                case 12:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    onContentBlocked(_arg010);
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    int _arg15 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLayoutSurface(_arg011, _arg15, _arg2, _arg3);
+                    return true;
+                case 14:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTimeShiftStatusChanged(_arg012);
+                    return true;
+                case 15:
+                    long _arg013 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onTimeShiftStartPositionChanged(_arg013);
+                    return true;
+                case 16:
+                    long _arg014 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onTimeShiftCurrentPositionChanged(_arg014);
+                    return true;
+                case 17:
+                    AitInfo _arg015 = (AitInfo) data.readTypedObject(AitInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAitInfoUpdated(_arg015);
+                    return true;
+                case 18:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSignalStrength(_arg016);
+                    return true;
+                case 19:
+                    boolean _arg017 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCueingMessageAvailability(_arg017);
+                    return true;
+                case 20:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onTimeShiftMode(_arg018);
+                    return true;
+                case 21:
+                    float[] _arg019 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    onAvailableSpeeds(_arg019);
+                    return true;
+                case 22:
+                    Uri _arg020 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTuned(_arg020);
+                    return true;
+                case 23:
+                    Uri _arg021 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRecordingStopped(_arg021);
+                    return true;
+                case 24:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg022);
+                    return true;
+                case 25:
+                    BroadcastInfoResponse _arg023 = (BroadcastInfoResponse) data.readTypedObject(BroadcastInfoResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBroadcastInfoResponse(_arg023);
+                    return true;
+                case 26:
+                    AdResponse _arg024 = (AdResponse) data.readTypedObject(AdResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAdResponse(_arg024);
+                    return true;
+                case 27:
+                    AdBuffer _arg025 = (AdBuffer) data.readTypedObject(AdBuffer.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAdBufferConsumed(_arg025);
+                    return true;
+                case 28:
+                    int _arg026 = data.readInt();
+                    Bundle _arg16 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTvMessage(_arg026, _arg16);
+                    return true;
+                case 29:
+                    String _arg027 = data.readString();
+                    Bundle _arg17 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onTvInputSessionData(_arg027, _arg17);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITvInputSession _arg0 = ITvInputSession.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onSessionCreated(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            Bundle _arg12 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSessionEvent(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onChannelRetuned(_arg03);
-                            return true;
-                        case 4:
-                            List<AudioPresentation> _arg04 = data.createTypedArrayList(AudioPresentation.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAudioPresentationsChanged(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAudioPresentationSelected(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            List<TvTrackInfo> _arg06 = data.createTypedArrayList(TvTrackInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTracksChanged(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            onTrackSelected(_arg07, _arg14);
-                            return true;
-                        case 8:
-                            onVideoAvailable();
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVideoUnavailable(_arg08);
-                            return true;
-                        case 10:
-                            onContentAllowed();
-                            return true;
-                        case 11:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            onContentBlocked(_arg09);
-                            return true;
-                        case 12:
-                            int _arg010 = data.readInt();
-                            int _arg15 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLayoutSurface(_arg010, _arg15, _arg2, _arg3);
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTimeShiftStatusChanged(_arg011);
-                            return true;
-                        case 14:
-                            long _arg012 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onTimeShiftStartPositionChanged(_arg012);
-                            return true;
-                        case 15:
-                            long _arg013 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onTimeShiftCurrentPositionChanged(_arg013);
-                            return true;
-                        case 16:
-                            AitInfo _arg014 = (AitInfo) data.readTypedObject(AitInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAitInfoUpdated(_arg014);
-                            return true;
-                        case 17:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSignalStrength(_arg015);
-                            return true;
-                        case 18:
-                            boolean _arg016 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCueingMessageAvailability(_arg016);
-                            return true;
-                        case 19:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onTimeShiftMode(_arg017);
-                            return true;
-                        case 20:
-                            float[] _arg018 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            onAvailableSpeeds(_arg018);
-                            return true;
-                        case 21:
-                            Uri _arg019 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTuned(_arg019);
-                            return true;
-                        case 22:
-                            Uri _arg020 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRecordingStopped(_arg020);
-                            return true;
-                        case 23:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg021);
-                            return true;
-                        case 24:
-                            BroadcastInfoResponse _arg022 = (BroadcastInfoResponse) data.readTypedObject(BroadcastInfoResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBroadcastInfoResponse(_arg022);
-                            return true;
-                        case 25:
-                            AdResponse _arg023 = (AdResponse) data.readTypedObject(AdResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAdResponse(_arg023);
-                            return true;
-                        case 26:
-                            AdBuffer _arg024 = (AdBuffer) data.readTypedObject(AdBuffer.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAdBufferConsumed(_arg024);
-                            return true;
-                        case 27:
-                            int _arg025 = data.readInt();
-                            Bundle _arg16 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onTvMessage(_arg025, _arg16);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ITvInputSessionCallback {
+        private static class Proxy implements ITvInputSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -586,11 +609,23 @@ public interface ITvInputSessionCallback extends IInterface {
             }
 
             @Override // android.media.tv.ITvInputSessionCallback
+            public void onVideoFreezeUpdated(boolean isFrozen) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(isFrozen);
+                    this.mRemote.transact(10, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.tv.ITvInputSessionCallback
             public void onContentAllowed() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(10, _data, null, 1);
+                    this.mRemote.transact(11, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -602,7 +637,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(rating);
-                    this.mRemote.transact(11, _data, null, 1);
+                    this.mRemote.transact(12, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -617,7 +652,7 @@ public interface ITvInputSessionCallback extends IInterface {
                     _data.writeInt(top);
                     _data.writeInt(right);
                     _data.writeInt(bottom);
-                    this.mRemote.transact(12, _data, null, 1);
+                    this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -629,7 +664,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(status);
-                    this.mRemote.transact(13, _data, null, 1);
+                    this.mRemote.transact(14, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -641,7 +676,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(timeMs);
-                    this.mRemote.transact(14, _data, null, 1);
+                    this.mRemote.transact(15, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -653,7 +688,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeLong(timeMs);
-                    this.mRemote.transact(15, _data, null, 1);
+                    this.mRemote.transact(16, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -665,7 +700,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(aitInfo, 0);
-                    this.mRemote.transact(16, _data, null, 1);
+                    this.mRemote.transact(17, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -677,7 +712,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strength);
-                    this.mRemote.transact(17, _data, null, 1);
+                    this.mRemote.transact(18, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -689,7 +724,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(available);
-                    this.mRemote.transact(18, _data, null, 1);
+                    this.mRemote.transact(19, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -701,7 +736,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(19, _data, null, 1);
+                    this.mRemote.transact(20, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -713,7 +748,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloatArray(speeds);
-                    this.mRemote.transact(20, _data, null, 1);
+                    this.mRemote.transact(21, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -725,7 +760,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(channelUri, 0);
-                    this.mRemote.transact(21, _data, null, 1);
+                    this.mRemote.transact(22, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -737,7 +772,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(recordedProgramUri, 0);
-                    this.mRemote.transact(22, _data, null, 1);
+                    this.mRemote.transact(23, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -749,7 +784,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(error);
-                    this.mRemote.transact(23, _data, null, 1);
+                    this.mRemote.transact(24, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -761,7 +796,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(response, 0);
-                    this.mRemote.transact(24, _data, null, 1);
+                    this.mRemote.transact(25, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -773,7 +808,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(response, 0);
-                    this.mRemote.transact(25, _data, null, 1);
+                    this.mRemote.transact(26, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -785,7 +820,7 @@ public interface ITvInputSessionCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(buffer, 0);
-                    this.mRemote.transact(26, _data, null, 1);
+                    this.mRemote.transact(27, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -798,7 +833,20 @@ public interface ITvInputSessionCallback extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(type);
                     _data.writeTypedObject(data, 0);
-                    this.mRemote.transact(27, _data, null, 1);
+                    this.mRemote.transact(28, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.tv.ITvInputSessionCallback
+            public void onTvInputSessionData(String type, Bundle data) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(type);
+                    _data.writeTypedObject(data, 0);
+                    this.mRemote.transact(29, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -807,7 +855,7 @@ public interface ITvInputSessionCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 26;
+            return 28;
         }
     }
 }

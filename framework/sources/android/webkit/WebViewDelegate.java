@@ -22,34 +22,15 @@ import com.android.internal.util.ArrayUtils;
 /* loaded from: classes4.dex */
 public final class WebViewDelegate {
 
-    /* loaded from: classes4.dex */
     public interface OnTraceEnabledChangeListener {
         void onTraceEnabledChange(boolean z);
     }
 
-    /* renamed from: android.webkit.WebViewDelegate$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Runnable {
-        final /* synthetic */ OnTraceEnabledChangeListener val$listener;
-
-        AnonymousClass1(OnTraceEnabledChangeListener onTraceEnabledChangeListener) {
-            listener = onTraceEnabledChangeListener;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            listener.onTraceEnabledChange(WebViewDelegate.this.isTraceTagEnabled());
-        }
+    WebViewDelegate() {
     }
 
-    public void setOnTraceEnabledChangeListener(OnTraceEnabledChangeListener listener) {
+    public void setOnTraceEnabledChangeListener(final OnTraceEnabledChangeListener listener) {
         SystemProperties.addChangeCallback(new Runnable() { // from class: android.webkit.WebViewDelegate.1
-            final /* synthetic */ OnTraceEnabledChangeListener val$listener;
-
-            AnonymousClass1(OnTraceEnabledChangeListener listener2) {
-                listener = listener2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 listener.onTraceEnabledChange(WebViewDelegate.this.isTraceTagEnabled());
@@ -116,6 +97,9 @@ public final class WebViewDelegate {
     }
 
     public void addWebViewAssetPath(Context context) {
+        if (android.content.res.Flags.registerResourcePaths()) {
+            return;
+        }
         String[] newAssetPaths = WebViewFactory.getLoadedPackageInfo().applicationInfo.getAllApkPaths();
         ApplicationInfo appInfo = context.getApplicationInfo();
         String[] newLibAssets = appInfo.sharedLibraryFiles;
@@ -129,6 +113,9 @@ public final class WebViewDelegate {
     }
 
     public boolean isMultiProcessEnabled() {
+        if (Flags.updateServiceV2() || Flags.updateServiceIpcWrapper()) {
+            return true;
+        }
         try {
             return WebViewFactory.getUpdateService().isMultiProcessEnabled();
         } catch (RemoteException e) {

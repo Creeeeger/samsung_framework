@@ -13,7 +13,6 @@ public interface IWindowlessStartingSurfaceCallback extends IInterface {
 
     void onSurfaceAdded(SurfaceControl surfaceControl) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowlessStartingSurfaceCallback {
         @Override // android.window.IWindowlessStartingSurfaceCallback
         public void onSurfaceAdded(SurfaceControl addedSurface) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IWindowlessStartingSurfaceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowlessStartingSurfaceCallback {
         static final int TRANSACTION_onSurfaceAdded = 1;
 
@@ -68,27 +66,23 @@ public interface IWindowlessStartingSurfaceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWindowlessStartingSurfaceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWindowlessStartingSurfaceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWindowlessStartingSurfaceCallback.DESCRIPTOR);
+                case 1:
+                    SurfaceControl _arg0 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSurfaceAdded(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SurfaceControl _arg0 = (SurfaceControl) data.readTypedObject(SurfaceControl.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSurfaceAdded(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowlessStartingSurfaceCallback {
+        private static class Proxy implements IWindowlessStartingSurfaceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

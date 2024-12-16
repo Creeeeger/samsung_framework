@@ -19,6 +19,8 @@ public interface IWebViewUpdateService extends IInterface {
 
     String getCurrentWebViewPackageName() throws RemoteException;
 
+    WebViewProviderInfo getDefaultWebViewPackage() throws RemoteException;
+
     WebViewProviderInfo[] getValidWebViewPackages() throws RemoteException;
 
     boolean isMultiProcessEnabled() throws RemoteException;
@@ -27,7 +29,6 @@ public interface IWebViewUpdateService extends IInterface {
 
     WebViewProviderResponse waitForAndGetProvider() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWebViewUpdateService {
         @Override // android.webkit.IWebViewUpdateService
         public void notifyRelroCreationCompleted() throws RemoteException {
@@ -72,13 +73,17 @@ public interface IWebViewUpdateService extends IInterface {
         public void enableMultiProcess(boolean enable) throws RemoteException {
         }
 
+        @Override // android.webkit.IWebViewUpdateService
+        public WebViewProviderInfo getDefaultWebViewPackage() throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWebViewUpdateService {
         public static final String DESCRIPTOR = "android.webkit.IWebViewUpdateService";
         static final int TRANSACTION_changeProviderAndSetting = 3;
@@ -86,6 +91,7 @@ public interface IWebViewUpdateService extends IInterface {
         static final int TRANSACTION_getAllWebViewPackages = 5;
         static final int TRANSACTION_getCurrentWebViewPackage = 7;
         static final int TRANSACTION_getCurrentWebViewPackageName = 6;
+        static final int TRANSACTION_getDefaultWebViewPackage = 10;
         static final int TRANSACTION_getValidWebViewPackages = 4;
         static final int TRANSACTION_isMultiProcessEnabled = 8;
         static final int TRANSACTION_notifyRelroCreationCompleted = 1;
@@ -131,6 +137,8 @@ public interface IWebViewUpdateService extends IInterface {
                     return "isMultiProcessEnabled";
                 case 9:
                     return "enableMultiProcess";
+                case 10:
+                    return "getDefaultWebViewPackage";
                 default:
                     return null;
             }
@@ -146,68 +154,69 @@ public interface IWebViewUpdateService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    notifyRelroCreationCompleted();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    WebViewProviderResponse _result = waitForAndGetProvider();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 3:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result2 = changeProviderAndSetting(_arg0);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 4:
+                    WebViewProviderInfo[] _result3 = getValidWebViewPackages();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 5:
+                    WebViewProviderInfo[] _result4 = getAllWebViewPackages();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result4, 1);
+                    return true;
+                case 6:
+                    String _result5 = getCurrentWebViewPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result5);
+                    return true;
+                case 7:
+                    PackageInfo _result6 = getCurrentWebViewPackage();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 8:
+                    boolean _result7 = isMultiProcessEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 9:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableMultiProcess(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    WebViewProviderInfo _result8 = getDefaultWebViewPackage();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result8, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            notifyRelroCreationCompleted();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            WebViewProviderResponse _result = waitForAndGetProvider();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result2 = changeProviderAndSetting(_arg0);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 4:
-                            WebViewProviderInfo[] _result3 = getValidWebViewPackages();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 5:
-                            WebViewProviderInfo[] _result4 = getAllWebViewPackages();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result4, 1);
-                            return true;
-                        case 6:
-                            String _result5 = getCurrentWebViewPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        case 7:
-                            PackageInfo _result6 = getCurrentWebViewPackage();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 8:
-                            boolean _result7 = isMultiProcessEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 9:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableMultiProcess(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWebViewUpdateService {
+        private static class Proxy implements IWebViewUpdateService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -364,11 +373,27 @@ public interface IWebViewUpdateService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.webkit.IWebViewUpdateService
+            public WebViewProviderInfo getDefaultWebViewPackage() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(10, _data, _reply, 0);
+                    _reply.readException();
+                    WebViewProviderInfo _result = (WebViewProviderInfo) _reply.readTypedObject(WebViewProviderInfo.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 8;
+            return 9;
         }
     }
 }

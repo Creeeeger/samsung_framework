@@ -51,20 +51,20 @@ public class SelectionActionModeHelper {
     private final TextClassificationHelper mTextClassificationHelper;
     private final TextView mTextView;
 
-    public SelectionActionModeHelper(Editor editor) {
-        Editor editor2 = (Editor) Objects.requireNonNull(editor);
-        this.mEditor = editor2;
-        final TextView textView = editor2.getTextView();
-        this.mTextView = textView;
-        Context context = textView.getContext();
+    SelectionActionModeHelper(Editor editor) {
+        this.mEditor = (Editor) Objects.requireNonNull(editor);
+        this.mTextView = this.mEditor.getTextView();
+        Context context = this.mTextView.getContext();
+        TextView textView = this.mTextView;
         Objects.requireNonNull(textView);
-        this.mTextClassificationHelper = new TextClassificationHelper(context, new SelectionActionModeHelper$$ExternalSyntheticLambda3(textView), getText(textView), 0, 1, textView.getTextLocales());
-        this.mSelectionTracker = new SelectionTracker(textView);
+        this.mTextClassificationHelper = new TextClassificationHelper(context, new SelectionActionModeHelper$$ExternalSyntheticLambda10(textView), getText(this.mTextView), 0, 1, this.mTextView.getTextLocales());
+        this.mSelectionTracker = new SelectionTracker(this.mTextView);
         if (getTextClassificationSettings().isSmartSelectionAnimationEnabled()) {
-            Context context2 = textView.getContext();
+            Context context2 = this.mTextView.getContext();
             int i = editor.getTextView().mHighlightColor;
-            Objects.requireNonNull(textView);
-            this.mSmartSelectSprite = new SmartSelectSprite(context2, i, new Runnable() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda8
+            final TextView textView2 = this.mTextView;
+            Objects.requireNonNull(textView2);
+            this.mSmartSelectSprite = new SmartSelectSprite(context2, i, new Runnable() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable
                 public final void run() {
                     TextView.this.invalidate();
@@ -75,6 +75,7 @@ public class SelectionActionModeHelper {
         this.mSmartSelectSprite = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int[] sortSelectionIndices(int selectionStart, int selectionEnd) {
         if (selectionStart < selectionEnd) {
             return new int[]{selectionStart, selectionEnd};
@@ -82,6 +83,7 @@ public class SelectionActionModeHelper {
         return new int[]{selectionEnd, selectionStart};
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int[] sortSelectionIndicesFromTextView(TextView textView) {
         int selectionStart = textView.getSelectionStart();
         int selectionEnd = textView.getSelectionEnd();
@@ -89,9 +91,9 @@ public class SelectionActionModeHelper {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r4v3, types: [android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda10] */
+    /* JADX WARN: Type inference failed for: r4v3, types: [android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda2] */
     public void startSelectionActionModeAsync(boolean adjustSelection) {
-        SelectionActionModeHelper$$ExternalSyntheticLambda0 selectionActionModeHelper$$ExternalSyntheticLambda0;
+        SelectionActionModeHelper$$ExternalSyntheticLambda3 selectionActionModeHelper$$ExternalSyntheticLambda3;
         Consumer consumer;
         boolean adjustSelection2 = adjustSelection & getTextClassificationSettings().isSmartSelectionEnabled();
         int[] sortedSelectionIndices = sortSelectionIndicesFromTextView(this.mTextView);
@@ -102,8 +104,7 @@ public class SelectionActionModeHelper {
             return;
         }
         resetTextClassificationHelper();
-        SmartSelectSprite smartSelectSprite = this.mSmartSelectSprite;
-        if (smartSelectSprite != null && smartSelectSprite.isAnimationActive()) {
+        if (this.mSmartSelectSprite != null && this.mSmartSelectSprite.isAnimationActive()) {
             this.mSmartSelectSprite.cancelAnimation();
         }
         TextView textView = this.mTextView;
@@ -111,7 +112,7 @@ public class SelectionActionModeHelper {
         if (adjustSelection2) {
             final TextClassificationHelper textClassificationHelper = this.mTextClassificationHelper;
             Objects.requireNonNull(textClassificationHelper);
-            selectionActionModeHelper$$ExternalSyntheticLambda0 = new Supplier() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda10
+            selectionActionModeHelper$$ExternalSyntheticLambda3 = new Supplier() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda2
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     return SelectionActionModeHelper.TextClassificationHelper.this.suggestSelection();
@@ -120,17 +121,17 @@ public class SelectionActionModeHelper {
         } else {
             TextClassificationHelper textClassificationHelper2 = this.mTextClassificationHelper;
             Objects.requireNonNull(textClassificationHelper2);
-            selectionActionModeHelper$$ExternalSyntheticLambda0 = new SelectionActionModeHelper$$ExternalSyntheticLambda0(textClassificationHelper2);
+            selectionActionModeHelper$$ExternalSyntheticLambda3 = new SelectionActionModeHelper$$ExternalSyntheticLambda3(textClassificationHelper2);
         }
         if (this.mSmartSelectSprite != null) {
-            consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda11
+            consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda4
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     SelectionActionModeHelper.this.startSelectionActionModeWithSmartSelectAnimation((SelectionActionModeHelper.SelectionResult) obj);
                 }
             };
         } else {
-            consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda12
+            consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda5
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     SelectionActionModeHelper.this.startSelectionActionMode((SelectionActionModeHelper.SelectionResult) obj);
@@ -139,7 +140,7 @@ public class SelectionActionModeHelper {
         }
         TextClassificationHelper textClassificationHelper3 = this.mTextClassificationHelper;
         Objects.requireNonNull(textClassificationHelper3);
-        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda0, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda2(textClassificationHelper3)).execute(new Void[0]);
+        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda3, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda6(textClassificationHelper3)).execute(new Void[0]);
     }
 
     public void startLinkActionModeAsync(int start, int end) {
@@ -155,8 +156,8 @@ public class SelectionActionModeHelper {
         int timeoutDuration = this.mTextClassificationHelper.getTimeoutDuration();
         TextClassificationHelper textClassificationHelper = this.mTextClassificationHelper;
         Objects.requireNonNull(textClassificationHelper);
-        SelectionActionModeHelper$$ExternalSyntheticLambda0 selectionActionModeHelper$$ExternalSyntheticLambda0 = new SelectionActionModeHelper$$ExternalSyntheticLambda0(textClassificationHelper);
-        Consumer consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda6
+        SelectionActionModeHelper$$ExternalSyntheticLambda3 selectionActionModeHelper$$ExternalSyntheticLambda3 = new SelectionActionModeHelper$$ExternalSyntheticLambda3(textClassificationHelper);
+        Consumer consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda9
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 SelectionActionModeHelper.this.startLinkActionMode((SelectionActionModeHelper.SelectionResult) obj);
@@ -164,7 +165,7 @@ public class SelectionActionModeHelper {
         };
         TextClassificationHelper textClassificationHelper2 = this.mTextClassificationHelper;
         Objects.requireNonNull(textClassificationHelper2);
-        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda0, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda2(textClassificationHelper2)).execute(new Void[0]);
+        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda3, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda6(textClassificationHelper2)).execute(new Void[0]);
     }
 
     public void invalidateActionModeAsync() {
@@ -178,8 +179,8 @@ public class SelectionActionModeHelper {
         int timeoutDuration = this.mTextClassificationHelper.getTimeoutDuration();
         TextClassificationHelper textClassificationHelper = this.mTextClassificationHelper;
         Objects.requireNonNull(textClassificationHelper);
-        SelectionActionModeHelper$$ExternalSyntheticLambda0 selectionActionModeHelper$$ExternalSyntheticLambda0 = new SelectionActionModeHelper$$ExternalSyntheticLambda0(textClassificationHelper);
-        Consumer consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda1
+        SelectionActionModeHelper$$ExternalSyntheticLambda3 selectionActionModeHelper$$ExternalSyntheticLambda3 = new SelectionActionModeHelper$$ExternalSyntheticLambda3(textClassificationHelper);
+        Consumer consumer = new Consumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda7
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 SelectionActionModeHelper.this.invalidateActionMode((SelectionActionModeHelper.SelectionResult) obj);
@@ -187,7 +188,7 @@ public class SelectionActionModeHelper {
         };
         TextClassificationHelper textClassificationHelper2 = this.mTextClassificationHelper;
         Objects.requireNonNull(textClassificationHelper2);
-        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda0, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda2(textClassificationHelper2)).execute(new Void[0]);
+        this.mTextClassificationAsyncTask = new TextClassificationAsyncTask(textView, timeoutDuration, selectionActionModeHelper$$ExternalSyntheticLambda3, consumer, new SelectionActionModeHelper$$ExternalSyntheticLambda6(textClassificationHelper2)).execute(new Void[0]);
     }
 
     public void onSelectionAction(int menuItemId, String actionLabel) {
@@ -224,15 +225,13 @@ public class SelectionActionModeHelper {
     }
 
     public void onDraw(Canvas canvas) {
-        SmartSelectSprite smartSelectSprite;
-        if (isDrawingHighlight() && (smartSelectSprite = this.mSmartSelectSprite) != null) {
-            smartSelectSprite.draw(canvas);
+        if (isDrawingHighlight() && this.mSmartSelectSprite != null) {
+            this.mSmartSelectSprite.draw(canvas);
         }
     }
 
     public boolean isDrawingHighlight() {
-        SmartSelectSprite smartSelectSprite = this.mSmartSelectSprite;
-        return smartSelectSprite != null && smartSelectSprite.isAnimationActive();
+        return this.mSmartSelectSprite != null && this.mSmartSelectSprite.isAnimationActive();
     }
 
     private TextClassificationConstants getTextClassificationSettings() {
@@ -240,9 +239,8 @@ public class SelectionActionModeHelper {
     }
 
     private void cancelAsyncTask() {
-        AsyncTask asyncTask = this.mTextClassificationAsyncTask;
-        if (asyncTask != null) {
-            asyncTask.cancel(true);
+        if (this.mTextClassificationAsyncTask != null) {
+            this.mTextClassificationAsyncTask.cancel(true);
             this.mTextClassificationAsyncTask = null;
         }
         this.mTextClassification = null;
@@ -255,10 +253,12 @@ public class SelectionActionModeHelper {
         return noOpTextClassifier || noSelection || password;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void startLinkActionMode(SelectionResult result) {
         startActionMode(2, result);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void startSelectionActionMode(SelectionResult result) {
         startActionMode(0, result);
     }
@@ -300,8 +300,9 @@ public class SelectionActionModeHelper {
         this.mTextClassificationAsyncTask = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void startSelectionActionModeWithSmartSelectAnimation(final SelectionResult result) {
-        Runnable onAnimationEndCallback = new Runnable() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda9
+        Runnable onAnimationEndCallback = new Runnable() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 SelectionActionModeHelper.this.lambda$startSelectionActionModeWithSmartSelectAnimation$0(result);
@@ -318,10 +319,11 @@ public class SelectionActionModeHelper {
         }
         List<SmartSelectSprite.RectangleWithTextSelectionLayout> selectionRectangles = convertSelectionToRectangles(this.mTextView, result.mStart, result.mEnd);
         PointF touchPoint = new PointF(this.mEditor.getLastUpPositionX(), this.mEditor.getLastUpPositionY());
-        PointF animationStartPoint = movePointInsideNearestRectangle(touchPoint, selectionRectangles, new SelectionActionModeHelper$$ExternalSyntheticLambda5());
+        PointF animationStartPoint = movePointInsideNearestRectangle(touchPoint, selectionRectangles, new SelectionActionModeHelper$$ExternalSyntheticLambda1());
         this.mSmartSelectSprite.startAnimation(animationStartPoint, selectionRectangles, onAnimationEndCallback);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startSelectionActionModeWithSmartSelectAnimation$0(SelectionResult result) {
         SelectionResult startSelectionResult;
         if (result != null && result.mStart >= 0 && result.mEnd <= getText(this.mTextView).length() && result.mStart <= result.mEnd) {
@@ -334,10 +336,10 @@ public class SelectionActionModeHelper {
 
     private List<SmartSelectSprite.RectangleWithTextSelectionLayout> convertSelectionToRectangles(TextView textView, int start, int end) {
         final List<SmartSelectSprite.RectangleWithTextSelectionLayout> result = new ArrayList<>();
-        Layout.SelectionRectangleConsumer consumer = new Layout.SelectionRectangleConsumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda4
+        Layout.SelectionRectangleConsumer consumer = new Layout.SelectionRectangleConsumer() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda12
             @Override // android.text.Layout.SelectionRectangleConsumer
             public final void accept(float f, float f2, float f3, float f4, int i) {
-                SelectionActionModeHelper.mergeRectangleIntoList(result, new RectF(f, f2, f3, f4), new SelectionActionModeHelper$$ExternalSyntheticLambda5(), new Function() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda7
+                SelectionActionModeHelper.mergeRectangleIntoList(result, new RectF(f, f2, f3, f4), new SelectionActionModeHelper$$ExternalSyntheticLambda1(), new Function() { // from class: android.widget.SelectionActionModeHelper$$ExternalSyntheticLambda8
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
                         return SelectionActionModeHelper.lambda$convertSelectionToRectangles$1(i, (RectF) obj);
@@ -348,11 +350,11 @@ public class SelectionActionModeHelper {
         int startTransformed = textView.originalToTransformed(start, 1);
         int endTransformed = textView.originalToTransformed(end, 1);
         textView.getLayout().getSelection(startTransformed, endTransformed, consumer);
-        result.sort(Comparator.comparing(new SelectionActionModeHelper$$ExternalSyntheticLambda5(), SmartSelectSprite.RECTANGLE_COMPARATOR));
+        result.sort(Comparator.comparing(new SelectionActionModeHelper$$ExternalSyntheticLambda1(), SmartSelectSprite.RECTANGLE_COMPARATOR));
         return result;
     }
 
-    public static /* synthetic */ SmartSelectSprite.RectangleWithTextSelectionLayout lambda$convertSelectionToRectangles$1(int textSelectionLayout, RectF r) {
+    static /* synthetic */ SmartSelectSprite.RectangleWithTextSelectionLayout lambda$convertSelectionToRectangles$1(int textSelectionLayout, RectF r) {
         return new SmartSelectSprite.RectangleWithTextSelectionLayout(r, textSelectionLayout);
     }
 
@@ -418,6 +420,7 @@ public class SelectionActionModeHelper {
         return new PointF(bestX, bestY);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void invalidateActionMode(SelectionResult result) {
         cancelSmartSelectAnimation();
         this.mTextClassification = result != null ? result.mClassification : null;
@@ -439,7 +442,7 @@ public class SelectionActionModeHelper {
         TextClassificationHelper textClassificationHelper = this.mTextClassificationHelper;
         TextView textView = this.mTextView;
         Objects.requireNonNull(textView);
-        textClassificationHelper.init(new SelectionActionModeHelper$$ExternalSyntheticLambda3(textView), getText(this.mTextView), selectionStart, selectionEnd, this.mTextView.getTextLocales());
+        textClassificationHelper.init(new SelectionActionModeHelper$$ExternalSyntheticLambda10(textView), getText(this.mTextView), selectionStart, selectionEnd, this.mTextView.getTextLocales());
     }
 
     private void resetTextClassificationHelper() {
@@ -447,14 +450,12 @@ public class SelectionActionModeHelper {
     }
 
     private void cancelSmartSelectAnimation() {
-        SmartSelectSprite smartSelectSprite = this.mSmartSelectSprite;
-        if (smartSelectSprite != null) {
-            smartSelectSprite.cancelAnimation();
+        if (this.mSmartSelectSprite != null) {
+            this.mSmartSelectSprite.cancelAnimation();
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SelectionTracker {
+    private static final class SelectionTracker {
         private boolean mAllowReset;
         private final LogAbandonRunnable mDelayedLogAbandon = new LogAbandonRunnable();
         private SelectionMetricsLogger mLogger;
@@ -493,9 +494,8 @@ public class SelectionActionModeHelper {
         private void onClassifiedSelection(SelectionResult result) {
             if (isSelectionStarted()) {
                 this.mSelectionStart = result.mStart;
-                int i = result.mEnd;
-                this.mSelectionEnd = i;
-                this.mAllowReset = (this.mSelectionStart == this.mOriginalStart && i == this.mOriginalEnd) ? false : true;
+                this.mSelectionEnd = result.mEnd;
+                this.mAllowReset = (this.mSelectionStart == this.mOriginalStart && this.mSelectionEnd == this.mOriginalEnd) ? false : true;
             }
         }
 
@@ -551,18 +551,11 @@ public class SelectionActionModeHelper {
         }
 
         private boolean isSelectionStarted() {
-            int i;
-            int i2 = this.mSelectionStart;
-            return i2 >= 0 && (i = this.mSelectionEnd) >= 0 && i2 != i;
+            return this.mSelectionStart >= 0 && this.mSelectionEnd >= 0 && this.mSelectionStart != this.mSelectionEnd;
         }
 
-        /* loaded from: classes4.dex */
-        public final class LogAbandonRunnable implements Runnable {
+        private final class LogAbandonRunnable implements Runnable {
             private boolean mIsPending;
-
-            /* synthetic */ LogAbandonRunnable(SelectionTracker selectionTracker, LogAbandonRunnableIA logAbandonRunnableIA) {
-                this();
-            }
 
             private LogAbandonRunnable() {
             }
@@ -586,7 +579,7 @@ public class SelectionActionModeHelper {
                 if (this.mIsPending) {
                     SelectionTracker.this.mLogger.logSelectionAction(SelectionTracker.this.mSelectionStart, SelectionTracker.this.mSelectionEnd, 107, null, null);
                     SelectionTracker selectionTracker = SelectionTracker.this;
-                    selectionTracker.mSelectionEnd = -1;
+                    SelectionTracker.this.mSelectionEnd = -1;
                     selectionTracker.mSelectionStart = -1;
                     SelectionTracker.this.mLogger.endTextClassificationSession();
                     this.mIsPending = false;
@@ -595,8 +588,7 @@ public class SelectionActionModeHelper {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SelectionMetricsLogger {
+    private static final class SelectionMetricsLogger {
         private static final String LOG_TAG = "SelectionMetricsLogger";
         private static final Pattern PATTERN_WHITESPACE = Pattern.compile("\\s+");
         private TextClassificationContext mClassificationContext;
@@ -618,8 +610,7 @@ public class SelectionActionModeHelper {
             try {
                 Objects.requireNonNull(text);
                 Preconditions.checkArgumentInRange(index, 0, text.length(), "index");
-                String str = this.mText;
-                if (str == null || !str.contentEquals(text)) {
+                if (this.mText == null || !this.mText.contentEquals(text)) {
                     this.mText = text.toString();
                 }
                 this.mTokenIterator.setText(this.mText);
@@ -687,16 +678,14 @@ public class SelectionActionModeHelper {
         }
 
         private boolean hasActiveClassificationSession() {
-            TextClassifier textClassifier = this.mClassificationSession;
-            return (textClassifier == null || textClassifier.isDestroyed()) ? false : true;
+            return (this.mClassificationSession == null || this.mClassificationSession.isDestroyed()) ? false : true;
         }
 
         private int[] getWordDelta(int start, int end) {
             int[] wordIndices = new int[2];
-            int i = this.mStartIndex;
-            if (start == i) {
+            if (start == this.mStartIndex) {
                 wordIndices[0] = 0;
-            } else if (start < i) {
+            } else if (start < this.mStartIndex) {
                 wordIndices[0] = -countWordsForward(start);
             } else {
                 wordIndices[0] = countWordsBackward(start);
@@ -704,10 +693,9 @@ public class SelectionActionModeHelper {
                     wordIndices[0] = wordIndices[0] - 1;
                 }
             }
-            int i2 = this.mStartIndex;
-            if (end == i2) {
+            if (end == this.mStartIndex) {
                 wordIndices[1] = 0;
-            } else if (end < i2) {
+            } else if (end < this.mStartIndex) {
                 wordIndices[1] = -countWordsForward(end);
             } else {
                 wordIndices[1] = countWordsBackward(end);
@@ -761,14 +749,12 @@ public class SelectionActionModeHelper {
         }
 
         private void maybeReportTranslateEvents() {
-            TextClassifierEvent textClassifierEvent = this.mTranslateViewEvent;
-            if (textClassifierEvent != null) {
-                this.mClassificationSession.onTextClassifierEvent(textClassifierEvent);
+            if (this.mTranslateViewEvent != null) {
+                this.mClassificationSession.onTextClassifierEvent(this.mTranslateViewEvent);
                 this.mTranslateViewEvent = null;
             }
-            TextClassifierEvent textClassifierEvent2 = this.mTranslateClickEvent;
-            if (textClassifierEvent2 != null) {
-                this.mClassificationSession.onTextClassifierEvent(textClassifierEvent2);
+            if (this.mTranslateClickEvent != null) {
+                this.mClassificationSession.onTextClassifierEvent(this.mTranslateClickEvent);
                 this.mTranslateClickEvent = null;
             }
         }
@@ -789,8 +775,8 @@ public class SelectionActionModeHelper {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class TextClassificationAsyncTask extends AsyncTask<Void, Void, SelectionResult> {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class TextClassificationAsyncTask extends AsyncTask<Void, Void, SelectionResult> {
         private final String mOriginalText;
         private final Consumer<SelectionResult> mSelectionResultCallback;
         private final Supplier<SelectionResult> mSelectionResultSupplier;
@@ -800,15 +786,15 @@ public class SelectionActionModeHelper {
 
         TextClassificationAsyncTask(TextView textView, int timeOut, Supplier<SelectionResult> selectionResultSupplier, Consumer<SelectionResult> selectionResultCallback, Supplier<SelectionResult> timeOutResultSupplier) {
             super(textView != null ? textView.getHandler() : null);
-            TextView textView2 = (TextView) Objects.requireNonNull(textView);
-            this.mTextView = textView2;
+            this.mTextView = (TextView) Objects.requireNonNull(textView);
             this.mTimeOutDuration = timeOut;
             this.mSelectionResultSupplier = (Supplier) Objects.requireNonNull(selectionResultSupplier);
             this.mSelectionResultCallback = (Consumer) Objects.requireNonNull(selectionResultCallback);
             this.mTimeOutResultSupplier = (Supplier) Objects.requireNonNull(timeOutResultSupplier);
-            this.mOriginalText = SelectionActionModeHelper.getText(textView2).toString();
+            this.mOriginalText = SelectionActionModeHelper.getText(this.mTextView).toString();
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public SelectionResult doInBackground(Void... params) {
             Runnable onTimeOut = new Runnable() { // from class: android.widget.SelectionActionModeHelper$TextClassificationAsyncTask$$ExternalSyntheticLambda0
@@ -828,11 +814,13 @@ public class SelectionActionModeHelper {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: protected */
         @Override // android.os.AsyncTask
         public void onPostExecute(SelectionResult result) {
             this.mSelectionResultCallback.accept(TextUtils.equals(this.mOriginalText, SelectionActionModeHelper.getText(this.mTextView)) ? result : null);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void onTimeOut() {
             Log.d(SelectionActionModeHelper.LOG_TAG, "Timeout in TextClassificationAsyncTask");
             if (getStatus() == AsyncTask.Status.RUNNING) {
@@ -842,8 +830,8 @@ public class SelectionActionModeHelper {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class TextClassificationHelper {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class TextClassificationHelper {
         private static final int TRIM_DELTA_UPPER_BOUND = 240;
         private final Context mContext;
         private LocaleList mDefaultLocales;
@@ -865,9 +853,8 @@ public class SelectionActionModeHelper {
 
         TextClassificationHelper(Context context, Supplier<TextClassifier> textClassifier, CharSequence text, int selectionStart, int selectionEnd, LocaleList locales) {
             init(textClassifier, text, selectionStart, selectionEnd, locales);
-            Context context2 = (Context) Objects.requireNonNull(context);
-            this.mContext = context2;
-            this.mViewConfiguration = ViewConfiguration.get(context2);
+            this.mContext = (Context) Objects.requireNonNull(context);
+            this.mViewConfiguration = ViewConfiguration.get(this.mContext);
         }
 
         public void init(Supplier<TextClassifier> textClassifier, CharSequence text, int selectionStart, int selectionEnd, LocaleList locales) {
@@ -950,15 +937,13 @@ public class SelectionActionModeHelper {
             this.mTrimStart = Math.max(0, this.mSelectionStart - trimDelta);
             int referenceEnd = Math.min(this.mText.length(), this.mSelectionEnd + trimDelta);
             this.mTrimmedText = this.mText.subSequence(this.mTrimStart, referenceEnd);
-            int i = this.mSelectionStart;
-            int i2 = this.mTrimStart;
-            this.mRelativeStart = i - i2;
-            this.mRelativeEnd = this.mSelectionEnd - i2;
+            this.mRelativeStart = this.mSelectionStart - this.mTrimStart;
+            this.mRelativeEnd = this.mSelectionEnd - this.mTrimStart;
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class SelectionResult {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class SelectionResult {
         private final TextClassification mClassification;
         private final int mEnd;
         private final TextSelection mSelection;
@@ -993,6 +978,7 @@ public class SelectionActionModeHelper {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static CharSequence getText(TextView textView) {
         CharSequence text = textView.getText();
         if (text != null) {

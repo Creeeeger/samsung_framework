@@ -4,7 +4,10 @@ import android.annotation.SystemApi;
 import android.text.TextUtils;
 import java.math.BigInteger;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 /* loaded from: classes3.dex */
@@ -30,6 +33,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
     private final Date mKeyValidityStart;
     private final String mKeystoreAlias;
     private final int mMaxUsageCount;
+    private final Set<String> mMgf1Digests;
     private final int mNamespace;
     private final int mPurposes;
     private final boolean mRandomizedEncryptionRequired;
@@ -49,7 +53,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
     private static final Date DEFAULT_CERT_NOT_BEFORE = new Date(0);
     private static final Date DEFAULT_CERT_NOT_AFTER = new Date(2461449600000L);
 
-    public KeyGenParameterSpec(String keyStoreAlias, int namespace, int keySize, AlgorithmParameterSpec spec, X500Principal certificateSubject, BigInteger certificateSerialNumber, Date certificateNotBefore, Date certificateNotAfter, Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] digests, String[] encryptionPaddings, String[] signaturePaddings, String[] blockModes, boolean randomizedEncryptionRequired, boolean userAuthenticationRequired, int userAuthenticationValidityDurationSeconds, int userAuthenticationType, boolean userPresenceRequired, byte[] attestationChallenge, boolean devicePropertiesAttestationIncluded, int[] attestationIds, boolean uniqueIdIncluded, boolean userAuthenticationValidWhileOnBody, boolean invalidatedByBiometricEnrollment, boolean isStrongBoxBacked, boolean userConfirmationRequired, boolean unlockedDeviceRequired, boolean criticalToDeviceEncryption, int maxUsageCount, String attestKeyAlias, long boundToSecureUserId) {
+    public KeyGenParameterSpec(String keyStoreAlias, int namespace, int keySize, AlgorithmParameterSpec spec, X500Principal certificateSubject, BigInteger certificateSerialNumber, Date certificateNotBefore, Date certificateNotAfter, Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] digests, Set<String> mgf1Digests, String[] encryptionPaddings, String[] signaturePaddings, String[] blockModes, boolean randomizedEncryptionRequired, boolean userAuthenticationRequired, int userAuthenticationValidityDurationSeconds, int userAuthenticationType, boolean userPresenceRequired, byte[] attestationChallenge, boolean devicePropertiesAttestationIncluded, int[] attestationIds, boolean uniqueIdIncluded, boolean userAuthenticationValidWhileOnBody, boolean invalidatedByBiometricEnrollment, boolean isStrongBoxBacked, boolean userConfirmationRequired, boolean unlockedDeviceRequired, boolean criticalToDeviceEncryption, int maxUsageCount, String attestKeyAlias, long boundToSecureUserId) {
         X500Principal certificateSubject2;
         Date certificateNotBefore2;
         Date certificateNotAfter2;
@@ -95,6 +99,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
         this.mKeyValidityForConsumptionEnd = Utils.cloneIfNotNull(keyValidityForConsumptionEnd);
         this.mPurposes = purposes;
         this.mDigests = ArrayUtils.cloneIfNotEmpty(digests);
+        this.mMgf1Digests = mgf1Digests != null ? mgf1Digests : Collections.emptySet();
         this.mEncryptionPaddings = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(encryptionPaddings));
         this.mSignaturePaddings = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(signaturePaddings));
         this.mBlockModes = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(blockModes));
@@ -177,15 +182,25 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
     }
 
     public String[] getDigests() {
-        String[] strArr = this.mDigests;
-        if (strArr == null) {
+        if (this.mDigests == null) {
             throw new IllegalStateException("Digests not specified");
         }
-        return ArrayUtils.cloneIfNotEmpty(strArr);
+        return ArrayUtils.cloneIfNotEmpty(this.mDigests);
     }
 
     public boolean isDigestsSpecified() {
         return this.mDigests != null;
+    }
+
+    public Set<String> getMgf1Digests() {
+        if (this.mMgf1Digests.isEmpty()) {
+            throw new IllegalStateException("Mask generation function (MGF) not specified");
+        }
+        return new HashSet(this.mMgf1Digests);
+    }
+
+    public boolean isMgf1DigestsSpecified() {
+        return !this.mMgf1Digests.isEmpty();
     }
 
     public String[] getEncryptionPaddings() {
@@ -282,7 +297,6 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
         return this.mAttestKeyAlias;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String mAttestKeyAlias;
         private byte[] mAttestationChallenge;
@@ -305,6 +319,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
         private Date mKeyValidityStart;
         private final String mKeystoreAlias;
         private int mMaxUsageCount;
+        private Set<String> mMgf1Digests;
         private int mNamespace;
         private int mPurposes;
         private boolean mRandomizedEncryptionRequired;
@@ -322,6 +337,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
         public Builder(String keystoreAlias, int purposes) {
             this.mNamespace = -1;
             this.mKeySize = -1;
+            this.mMgf1Digests = Collections.emptySet();
             this.mRandomizedEncryptionRequired = true;
             this.mUserAuthenticationValidityDurationSeconds = 0;
             this.mUserAuthenticationType = 2;
@@ -362,6 +378,9 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
             this.mPurposes = sourceSpec.getPurposes();
             if (sourceSpec.isDigestsSpecified()) {
                 this.mDigests = sourceSpec.getDigests();
+            }
+            if (sourceSpec.isMgf1DigestsSpecified()) {
+                this.mMgf1Digests = sourceSpec.getMgf1Digests();
             }
             this.mEncryptionPaddings = sourceSpec.getEncryptionPaddings();
             this.mSignaturePaddings = sourceSpec.getSignaturePaddings();
@@ -470,6 +489,11 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
 
         public Builder setDigests(String... digests) {
             this.mDigests = ArrayUtils.cloneIfNotEmpty(digests);
+            return this;
+        }
+
+        public Builder setMgf1Digests(String... mgf1Digests) {
+            this.mMgf1Digests = Set.of((Object[]) mgf1Digests);
             return this;
         }
 
@@ -593,7 +617,7 @@ public final class KeyGenParameterSpec implements AlgorithmParameterSpec, UserAu
         }
 
         public KeyGenParameterSpec build() {
-            return new KeyGenParameterSpec(this.mKeystoreAlias, this.mNamespace, this.mKeySize, this.mSpec, this.mCertificateSubject, this.mCertificateSerialNumber, this.mCertificateNotBefore, this.mCertificateNotAfter, this.mKeyValidityStart, this.mKeyValidityForOriginationEnd, this.mKeyValidityForConsumptionEnd, this.mPurposes, this.mDigests, this.mEncryptionPaddings, this.mSignaturePaddings, this.mBlockModes, this.mRandomizedEncryptionRequired, this.mUserAuthenticationRequired, this.mUserAuthenticationValidityDurationSeconds, this.mUserAuthenticationType, this.mUserPresenceRequired, this.mAttestationChallenge, this.mDevicePropertiesAttestationIncluded, this.mAttestationIds, this.mUniqueIdIncluded, this.mUserAuthenticationValidWhileOnBody, this.mInvalidatedByBiometricEnrollment, this.mIsStrongBoxBacked, this.mUserConfirmationRequired, this.mUnlockedDeviceRequired, this.mCriticalToDeviceEncryption, this.mMaxUsageCount, this.mAttestKeyAlias, this.mBoundToSecureUserId);
+            return new KeyGenParameterSpec(this.mKeystoreAlias, this.mNamespace, this.mKeySize, this.mSpec, this.mCertificateSubject, this.mCertificateSerialNumber, this.mCertificateNotBefore, this.mCertificateNotAfter, this.mKeyValidityStart, this.mKeyValidityForOriginationEnd, this.mKeyValidityForConsumptionEnd, this.mPurposes, this.mDigests, this.mMgf1Digests, this.mEncryptionPaddings, this.mSignaturePaddings, this.mBlockModes, this.mRandomizedEncryptionRequired, this.mUserAuthenticationRequired, this.mUserAuthenticationValidityDurationSeconds, this.mUserAuthenticationType, this.mUserPresenceRequired, this.mAttestationChallenge, this.mDevicePropertiesAttestationIncluded, this.mAttestationIds, this.mUniqueIdIncluded, this.mUserAuthenticationValidWhileOnBody, this.mInvalidatedByBiometricEnrollment, this.mIsStrongBoxBacked, this.mUserConfirmationRequired, this.mUnlockedDeviceRequired, this.mCriticalToDeviceEncryption, this.mMaxUsageCount, this.mAttestKeyAlias, this.mBoundToSecureUserId);
         }
     }
 }

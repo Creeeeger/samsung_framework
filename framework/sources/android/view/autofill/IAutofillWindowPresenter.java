@@ -15,7 +15,6 @@ public interface IAutofillWindowPresenter extends IInterface {
 
     void show(WindowManager.LayoutParams layoutParams, Rect rect, boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAutofillWindowPresenter {
         @Override // android.view.autofill.IAutofillWindowPresenter
         public void show(WindowManager.LayoutParams p, Rect transitionEpicenter, boolean fitsSystemWindows, int layoutDirection) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IAutofillWindowPresenter extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAutofillWindowPresenter {
         public static final String DESCRIPTOR = "android.view.autofill.IAutofillWindowPresenter";
         static final int TRANSACTION_hide = 2;
@@ -78,34 +76,30 @@ public interface IAutofillWindowPresenter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    WindowManager.LayoutParams _arg0 = (WindowManager.LayoutParams) data.readTypedObject(WindowManager.LayoutParams.CREATOR);
+                    Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    boolean _arg2 = data.readBoolean();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    show(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    Rect _arg02 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    hide(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            WindowManager.LayoutParams _arg0 = (WindowManager.LayoutParams) data.readTypedObject(WindowManager.LayoutParams.CREATOR);
-                            Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            boolean _arg2 = data.readBoolean();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            show(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            Rect _arg02 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            hide(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAutofillWindowPresenter {
+        private static class Proxy implements IAutofillWindowPresenter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

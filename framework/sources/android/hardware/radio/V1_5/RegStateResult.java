@@ -9,7 +9,6 @@ import android.media.MediaMetrics;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -22,12 +21,10 @@ public final class RegStateResult {
     public String registeredPlmn = new String();
     public AccessTechnologySpecificInfo accessTechnologySpecificInfo = new AccessTechnologySpecificInfo();
 
-    /* loaded from: classes2.dex */
     public static final class AccessTechnologySpecificInfo {
         private byte hidl_d = 0;
         private Object hidl_o;
 
-        /* loaded from: classes2.dex */
         public static final class Cdma2000RegistrationInfo {
             public boolean cssSupported = false;
             public int roamingIndicator = 0;
@@ -109,7 +106,6 @@ public final class RegStateResult {
             }
         }
 
-        /* loaded from: classes2.dex */
         public static final class EutranRegistrationInfo {
             public LteVopsInfo lteVopsInfo = new LteVopsInfo();
             public NrIndicators nrIndicators = new NrIndicators();
@@ -190,7 +186,6 @@ public final class RegStateResult {
             this.hidl_o = new Monostate();
         }
 
-        /* loaded from: classes2.dex */
         public static final class hidl_discriminator {
             public static final byte cdmaInfo = 1;
             public static final byte eutranInfo = 2;
@@ -220,12 +215,10 @@ public final class RegStateResult {
 
         public Monostate noinit() {
             if (this.hidl_d != 0) {
-                Object obj = this.hidl_o;
-                String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+                String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
                 throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
             }
-            Object obj2 = this.hidl_o;
-            if (obj2 != null && !Monostate.class.isInstance(obj2)) {
+            if (this.hidl_o != null && !Monostate.class.isInstance(this.hidl_o)) {
                 throw new Error("Union is in a corrupted state.");
             }
             return (Monostate) this.hidl_o;
@@ -238,12 +231,10 @@ public final class RegStateResult {
 
         public Cdma2000RegistrationInfo cdmaInfo() {
             if (this.hidl_d != 1) {
-                Object obj = this.hidl_o;
-                String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+                String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
                 throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
             }
-            Object obj2 = this.hidl_o;
-            if (obj2 != null && !Cdma2000RegistrationInfo.class.isInstance(obj2)) {
+            if (this.hidl_o != null && !Cdma2000RegistrationInfo.class.isInstance(this.hidl_o)) {
                 throw new Error("Union is in a corrupted state.");
             }
             return (Cdma2000RegistrationInfo) this.hidl_o;
@@ -256,12 +247,10 @@ public final class RegStateResult {
 
         public EutranRegistrationInfo eutranInfo() {
             if (this.hidl_d != 2) {
-                Object obj = this.hidl_o;
-                String className = obj != null ? obj.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL;
+                String className = this.hidl_o != null ? this.hidl_o.getClass().getName() : "null";
                 throw new IllegalStateException("Read access to inactive union components is disallowed. Discriminator value is " + ((int) this.hidl_d) + " (corresponding to " + hidl_discriminator.getName(this.hidl_d) + "), and hidl_o is of type " + className + MediaMetrics.SEPARATOR);
             }
-            Object obj2 = this.hidl_o;
-            if (obj2 != null && !EutranRegistrationInfo.class.isInstance(obj2)) {
+            if (this.hidl_o != null && !EutranRegistrationInfo.class.isInstance(this.hidl_o)) {
                 throw new Error("Union is in a corrupted state.");
             }
             return (EutranRegistrationInfo) this.hidl_o;
@@ -332,23 +321,19 @@ public final class RegStateResult {
         }
 
         public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
-            byte int8 = _hidl_blob.getInt8(0 + _hidl_offset);
-            this.hidl_d = int8;
-            switch (int8) {
+            this.hidl_d = _hidl_blob.getInt8(0 + _hidl_offset);
+            switch (this.hidl_d) {
                 case 0:
-                    Monostate monostate = new Monostate();
-                    this.hidl_o = monostate;
-                    monostate.readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
+                    this.hidl_o = new Monostate();
+                    ((Monostate) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
                     return;
                 case 1:
-                    Cdma2000RegistrationInfo cdma2000RegistrationInfo = new Cdma2000RegistrationInfo();
-                    this.hidl_o = cdma2000RegistrationInfo;
-                    cdma2000RegistrationInfo.readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
+                    this.hidl_o = new Cdma2000RegistrationInfo();
+                    ((Cdma2000RegistrationInfo) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
                     return;
                 case 2:
-                    EutranRegistrationInfo eutranRegistrationInfo = new EutranRegistrationInfo();
-                    this.hidl_o = eutranRegistrationInfo;
-                    eutranRegistrationInfo.readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
+                    this.hidl_o = new EutranRegistrationInfo();
+                    ((EutranRegistrationInfo) this.hidl_o).readEmbeddedFromParcel(parcel, _hidl_blob, 4 + _hidl_offset);
                     return;
                 default:
                     throw new IllegalStateException("Unknown union discriminator (value: " + ((int) this.hidl_d) + ").");
@@ -439,7 +424,7 @@ public final class RegStateResult {
         this.reasonForDenial = _hidl_blob.getInt32(_hidl_offset + 8);
         this.cellIdentity.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 16);
         this.registeredPlmn = _hidl_blob.getString(_hidl_offset + 184);
-        parcel.readEmbeddedBuffer(r5.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 184 + 0, false);
+        parcel.readEmbeddedBuffer(this.registeredPlmn.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 184 + 0, false);
         this.accessTechnologySpecificInfo.readEmbeddedFromParcel(parcel, _hidl_blob, _hidl_offset + 200);
     }
 

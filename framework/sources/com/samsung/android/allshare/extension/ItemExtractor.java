@@ -5,19 +5,13 @@ import android.os.Bundle;
 import android.os.Parcel;
 import com.samsung.android.allshare.DLog;
 import com.samsung.android.allshare.Item;
-import com.samsung.android.allshare.extension.impl.SimpleAudioItem;
-import com.samsung.android.allshare.extension.impl.SimpleFolderItem;
-import com.samsung.android.allshare.extension.impl.SimpleImageItem;
-import com.samsung.android.allshare.extension.impl.SimpleVideoItem;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.StringTokenizer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public class ItemExtractor {
     private static final String CLASS_TAG = "ItemExtractor";
 
-    /* loaded from: classes5.dex */
     public static class Seed {
         private static final String DELIMITER = ",@,#,";
         private static final int FIELD_NUMBER = 9;
@@ -30,10 +24,6 @@ public class ItemExtractor {
         private String mProviderId;
         private Uri mSubtitle;
         private String mTitle;
-
-        /* synthetic */ Seed(SeedIA seedIA) {
-            this();
-        }
 
         private Seed() {
             this.mObjectId = "";
@@ -48,11 +38,9 @@ public class ItemExtractor {
         }
 
         public String getSeedString() {
-            Uri uri = this.mSubtitle;
-            String itemUri = SemCapabilities.FEATURE_TAG_NULL;
-            String subtitle = (uri == null || uri.toString() == null || this.mSubtitle.toString().length() <= 0) ? SemCapabilities.FEATURE_TAG_NULL : this.mSubtitle.toString();
-            Uri uri2 = this.mItemUri;
-            if (uri2 != null && uri2.toString() != null && this.mItemUri.toString().length() > 0) {
+            String itemUri = "null";
+            String subtitle = (this.mSubtitle == null || this.mSubtitle.toString() == null || this.mSubtitle.toString().length() <= 0) ? "null" : this.mSubtitle.toString();
+            if (this.mItemUri != null && this.mItemUri.toString() != null && this.mItemUri.toString().length() > 0) {
                 itemUri = this.mItemUri.toString();
             }
             return this.mItemType + DELIMITER + this.mProviderId + DELIMITER + this.mObjectId + DELIMITER + this.mTitle + DELIMITER + subtitle + DELIMITER + this.mDuration + DELIMITER + itemUri + DELIMITER + this.mMimeType + DELIMITER + this.mFileSize;
@@ -115,7 +103,7 @@ public class ItemExtractor {
             String title = st.nextToken();
             String temp = st.nextToken();
             try {
-                if (temp.equals(SemCapabilities.FEATURE_TAG_NULL)) {
+                if (temp.equals("null")) {
                     subtitle2 = null;
                 } else {
                     subtitle2 = Uri.parse(temp);
@@ -131,7 +119,7 @@ public class ItemExtractor {
             }
             String temp2 = st.nextToken();
             try {
-                if (temp2.equals(SemCapabilities.FEATURE_TAG_NULL)) {
+                if (temp2.equals("null")) {
                     itemUri2 = null;
                 } else {
                     itemUri2 = Uri.parse(temp2);
@@ -185,7 +173,7 @@ public class ItemExtractor {
                 int index5 = index4 + 1;
                 String temp = seedMember[index4];
                 try {
-                    if (temp.equals(SemCapabilities.FEATURE_TAG_NULL)) {
+                    if (temp.equals("null")) {
                         subtitle2 = null;
                     } else {
                         subtitle2 = Uri.parse(temp);
@@ -203,7 +191,7 @@ public class ItemExtractor {
                 int index7 = index6 + 1;
                 String temp2 = seedMember[index6];
                 try {
-                    if (temp2.equals(SemCapabilities.FEATURE_TAG_NULL)) {
+                    if (temp2.equals("null")) {
                         itemUri2 = null;
                     } else {
                         itemUri2 = Uri.parse(temp2);
@@ -255,49 +243,23 @@ public class ItemExtractor {
         bundle.putParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM_URI, seed.getItemUri());
         bundle.putString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE, seed.getMimeType());
         bundle.putLong(AllShareKey.BUNDLE_LONG_ITEM_FILE_SIZE, seed.getFileSize());
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$Item$MediaType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case ITEM_AUDIO:
                 bundle.putLong(AllShareKey.BUNDLE_LONG_AUDIO_ITEM_DURATION, seed.getDuration());
-                return new SimpleAudioItem(bundle);
-            case 2:
-                return new SimpleImageItem(bundle);
-            case 3:
+                break;
+            case ITEM_IMAGE:
+                break;
+            case ITEM_VIDEO:
                 bundle.putParcelable(AllShareKey.BUNDLE_PARCELABLE_VIDEO_ITEM_SUBTITLE, seed.getSubtitle());
                 bundle.putLong(AllShareKey.BUNDLE_LONG_VIDEO_ITEM_DURATION, seed.getDuration());
-                return new SimpleVideoItem(bundle);
-            case 4:
-                return new SimpleFolderItem(bundle);
+                break;
+            case ITEM_FOLDER:
+                break;
             default:
                 DLog.w_api(CLASS_TAG, "create : type is " + type);
-                return null;
+                break;
         }
-    }
-
-    /* renamed from: com.samsung.android.allshare.extension.ItemExtractor$1 */
-    /* loaded from: classes5.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
-
-        static {
-            int[] iArr = new int[Item.MediaType.values().length];
-            $SwitchMap$com$samsung$android$allshare$Item$MediaType = iArr;
-            try {
-                iArr[Item.MediaType.ITEM_AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_IMAGE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_VIDEO.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_FOLDER.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
+        return null;
     }
 
     public static Seed extract(Item item) {
@@ -322,16 +284,16 @@ public class ItemExtractor {
         Uri subtitle = null;
         String mime = bundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
         Long filesize = Long.valueOf(bundle.getLong(AllShareKey.BUNDLE_LONG_ITEM_FILE_SIZE));
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$Item$MediaType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case ITEM_AUDIO:
                 long duration2 = bundle.getLong(AllShareKey.BUNDLE_LONG_AUDIO_ITEM_DURATION);
                 duration = duration2;
                 break;
-            case 2:
+            case ITEM_IMAGE:
             default:
                 duration = -1;
                 break;
-            case 3:
+            case ITEM_VIDEO:
                 subtitle = (Uri) bundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_VIDEO_ITEM_SUBTITLE);
                 long duration3 = bundle.getLong(AllShareKey.BUNDLE_LONG_VIDEO_ITEM_DURATION);
                 duration = duration3;
@@ -352,7 +314,7 @@ public class ItemExtractor {
                 if (!objId.contains(",@,#,") && !providerId.contains(",@,#,")) {
                     if (!title.contains(",@,#,")) {
                         Seed seed2 = new Seed();
-                        seed2.mItemType = item.getType().enumToString();
+                        seed2.mItemType = type.toString();
                         seed2.mObjectId = objId;
                         seed2.mProviderId = providerId;
                         seed2.mTitle = title;

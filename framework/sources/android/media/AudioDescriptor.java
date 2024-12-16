@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public class AudioDescriptor implements Parcelable {
     public static final Parcelable.Creator<AudioDescriptor> CREATOR = new Parcelable.Creator<AudioDescriptor>() { // from class: android.media.AudioDescriptor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDescriptor createFromParcel(Parcel p) {
             return new AudioDescriptor(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioDescriptor[] newArray(int size) {
             return new AudioDescriptor[size];
@@ -33,12 +32,7 @@ public class AudioDescriptor implements Parcelable {
     private final int mStandard;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioDescriptorStandard {
-    }
-
-    /* synthetic */ AudioDescriptor(Parcel parcel, AudioDescriptorIA audioDescriptorIA) {
-        this(parcel);
     }
 
     @SystemApi
@@ -82,8 +76,7 @@ public class AudioDescriptor implements Parcelable {
         StringBuilder sb = new StringBuilder("{");
         sb.append("standard=" + this.mStandard);
         sb.append(", encapsulation type=" + this.mEncapsulationType);
-        byte[] bArr = this.mDescriptor;
-        if (bArr != null && bArr.length > 0) {
+        if (this.mDescriptor != null && this.mDescriptor.length > 0) {
             sb.append(", descriptor=").append(Arrays.toString(this.mDescriptor));
         }
         sb.append("}");
@@ -106,22 +99,5 @@ public class AudioDescriptor implements Parcelable {
         this.mStandard = in.readInt();
         this.mEncapsulationType = in.readInt();
         this.mDescriptor = in.createByteArray();
-    }
-
-    /* renamed from: android.media.AudioDescriptor$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioDescriptor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDescriptor createFromParcel(Parcel p) {
-            return new AudioDescriptor(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioDescriptor[] newArray(int size) {
-            return new AudioDescriptor[size];
-        }
     }
 }

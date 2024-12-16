@@ -23,7 +23,6 @@ public interface IExternalStorageService extends IInterface {
 
     void startSession(String str, int i, ParcelFileDescriptor parcelFileDescriptor, String str2, String str3, RemoteCallback remoteCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IExternalStorageService {
         @Override // android.service.storage.IExternalStorageService
         public void startSession(String sessionId, int type, ParcelFileDescriptor deviceFd, String upperPath, String lowerPath, RemoteCallback callback) throws RemoteException {
@@ -51,7 +50,6 @@ public interface IExternalStorageService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IExternalStorageService {
         static final int TRANSACTION_endSession = 2;
         static final int TRANSACTION_freeCache = 4;
@@ -106,58 +104,55 @@ public interface IExternalStorageService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExternalStorageService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExternalStorageService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExternalStorageService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    String _arg3 = data.readString();
+                    String _arg4 = data.readString();
+                    RemoteCallback _arg5 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    startSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    RemoteCallback _arg12 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    endSession(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    StorageVolume _arg13 = (StorageVolume) data.readTypedObject(StorageVolume.CREATOR);
+                    RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyVolumeStateChanged(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg14 = data.readString();
+                    long _arg23 = data.readLong();
+                    RemoteCallback _arg32 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    freeCache(_arg04, _arg14, _arg23, _arg32);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg15 = data.readInt();
+                    int _arg24 = data.readInt();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAnrDelayStarted(_arg05, _arg15, _arg24, _arg33);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            ParcelFileDescriptor _arg2 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            String _arg3 = data.readString();
-                            String _arg4 = data.readString();
-                            RemoteCallback _arg5 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            startSession(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            RemoteCallback _arg12 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            endSession(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            StorageVolume _arg13 = (StorageVolume) data.readTypedObject(StorageVolume.CREATOR);
-                            RemoteCallback _arg22 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyVolumeStateChanged(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg14 = data.readString();
-                            long _arg23 = data.readLong();
-                            RemoteCallback _arg32 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            freeCache(_arg04, _arg14, _arg23, _arg32);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg15 = data.readInt();
-                            int _arg24 = data.readInt();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAnrDelayStarted(_arg05, _arg15, _arg24, _arg33);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IExternalStorageService {
             private IBinder mRemote;
 

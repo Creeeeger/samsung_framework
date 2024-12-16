@@ -21,12 +21,7 @@ class WebViewZygoteInit {
     WebViewZygoteInit() {
     }
 
-    /* loaded from: classes5.dex */
     private static class WebViewZygoteServer extends ZygoteServer {
-        /* synthetic */ WebViewZygoteServer(WebViewZygoteServerIA webViewZygoteServerIA) {
-            this();
-        }
-
         private WebViewZygoteServer() {
         }
 
@@ -36,7 +31,6 @@ class WebViewZygoteInit {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class WebViewZygoteConnection extends ZygoteConnection {
         WebViewZygoteConnection(LocalSocket socket, String abiList) throws IOException {
             super(socket, abiList);

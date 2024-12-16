@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehCsgInfo implements Parcelable {
     public static final Parcelable.Creator<SehCsgInfo> CREATOR = new Parcelable.Creator<SehCsgInfo>() { // from class: vendor.samsung.hardware.radio.network.SehCsgInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehCsgInfo createFromParcel(Parcel _aidl_source) {
             SehCsgInfo _aidl_out = new SehCsgInfo();
@@ -30,25 +27,6 @@ public class SehCsgInfo implements Parcelable {
     public int rat = 0;
     public int category = 0;
     public int signalStrength = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehCsgInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehCsgInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCsgInfo createFromParcel(Parcel _aidl_source) {
-            SehCsgInfo _aidl_out = new SehCsgInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehCsgInfo[] newArray(int _aidl_size) {
-            return new SehCsgInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -147,7 +125,7 @@ public class SehCsgInfo implements Parcelable {
         _aidl_sj.add("rat: " + this.rat);
         _aidl_sj.add("category: " + this.category);
         _aidl_sj.add("signalStrength: " + this.signalStrength);
-        return "vendor.samsung.hardware.radio.network.SehCsgInfo" + _aidl_sj.toString();
+        return "SehCsgInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

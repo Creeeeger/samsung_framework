@@ -20,7 +20,6 @@ public interface ISemDualAppManager extends IInterface {
 
     Bundle updateDualAppData(String str, int i, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemDualAppManager {
         @Override // com.samsung.android.app.ISemDualAppManager
         public List<String> getAllInstalledWhitelistedPackages() throws RemoteException {
@@ -48,7 +47,6 @@ public interface ISemDualAppManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemDualAppManager {
         static final int TRANSACTION_getAllInstalledWhitelistedPackages = 1;
         static final int TRANSACTION_getAllWhitelistedPackages = 3;
@@ -100,47 +98,43 @@ public interface ISemDualAppManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemDualAppManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemDualAppManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemDualAppManager.DESCRIPTOR);
+                case 1:
+                    List<String> _result = getAllInstalledWhitelistedPackages();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isInstalledWhitelistedPackage(_arg0);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String[] _result3 = getAllWhitelistedPackages();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    return true;
+                case 4:
+                    String _arg02 = data.readString();
+                    int _arg1 = data.readInt();
+                    Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result4 = updateDualAppData(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _result = getAllInstalledWhitelistedPackages();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isInstalledWhitelistedPackage(_arg0);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String[] _result3 = getAllWhitelistedPackages();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            return true;
-                        case 4:
-                            String _arg02 = data.readString();
-                            int _arg1 = data.readInt();
-                            Bundle _arg2 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result4 = updateDualAppData(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemDualAppManager {
+        private static class Proxy implements ISemDualAppManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

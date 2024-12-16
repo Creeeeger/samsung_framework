@@ -8,41 +8,19 @@ import java.util.List;
 /* loaded from: classes3.dex */
 public class KeymasterCertificateChain implements Parcelable {
     public static final Parcelable.Creator<KeymasterCertificateChain> CREATOR = new Parcelable.Creator<KeymasterCertificateChain>() { // from class: android.security.keymaster.KeymasterCertificateChain.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeymasterCertificateChain createFromParcel(Parcel in) {
             return new KeymasterCertificateChain(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeymasterCertificateChain[] newArray(int size) {
             return new KeymasterCertificateChain[size];
         }
     };
     private List<byte[]> mCertificates;
-
-    /* synthetic */ KeymasterCertificateChain(Parcel parcel, KeymasterCertificateChainIA keymasterCertificateChainIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.security.keymaster.KeymasterCertificateChain$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeymasterCertificateChain> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeymasterCertificateChain createFromParcel(Parcel in) {
-            return new KeymasterCertificateChain(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeymasterCertificateChain[] newArray(int size) {
-            return new KeymasterCertificateChain[size];
-        }
-    }
 
     public KeymasterCertificateChain() {
         this.mCertificates = null;
@@ -66,12 +44,11 @@ public class KeymasterCertificateChain implements Parcelable {
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
-        List<byte[]> list = this.mCertificates;
-        if (list == null) {
+        if (this.mCertificates == null) {
             out.writeInt(0);
             return;
         }
-        out.writeInt(list.size());
+        out.writeInt(this.mCertificates.size());
         for (byte[] arg : this.mCertificates) {
             out.writeByteArray(arg);
         }

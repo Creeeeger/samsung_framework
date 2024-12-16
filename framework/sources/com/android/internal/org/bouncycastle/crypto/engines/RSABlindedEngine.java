@@ -22,9 +22,8 @@ public class RSABlindedEngine implements AsymmetricBlockCipher {
         this.core.init(forEncryption, param);
         if (param instanceof ParametersWithRandom) {
             ParametersWithRandom rParam = (ParametersWithRandom) param;
-            RSAKeyParameters rSAKeyParameters = (RSAKeyParameters) rParam.getParameters();
-            this.key = rSAKeyParameters;
-            if (rSAKeyParameters instanceof RSAPrivateCrtKeyParameters) {
+            this.key = (RSAKeyParameters) rParam.getParameters();
+            if (this.key instanceof RSAPrivateCrtKeyParameters) {
                 this.random = rParam.getRandom();
                 return;
             } else {
@@ -32,9 +31,8 @@ public class RSABlindedEngine implements AsymmetricBlockCipher {
                 return;
             }
         }
-        RSAKeyParameters rSAKeyParameters2 = (RSAKeyParameters) param;
-        this.key = rSAKeyParameters2;
-        if (rSAKeyParameters2 instanceof RSAPrivateCrtKeyParameters) {
+        this.key = (RSAKeyParameters) param;
+        if (this.key instanceof RSAPrivateCrtKeyParameters) {
             this.random = CryptoServicesRegistrar.getSecureRandom();
         } else {
             this.random = null;
@@ -58,14 +56,12 @@ public class RSABlindedEngine implements AsymmetricBlockCipher {
             throw new IllegalStateException("RSA engine not initialised");
         }
         BigInteger input = this.core.convertInput(in, inOff, inLen);
-        RSAKeyParameters rSAKeyParameters = this.key;
-        if (rSAKeyParameters instanceof RSAPrivateCrtKeyParameters) {
-            RSAPrivateCrtKeyParameters k = (RSAPrivateCrtKeyParameters) rSAKeyParameters;
+        if (this.key instanceof RSAPrivateCrtKeyParameters) {
+            RSAPrivateCrtKeyParameters k = (RSAPrivateCrtKeyParameters) this.key;
             BigInteger e = k.getPublicExponent();
             if (e != null) {
                 BigInteger m = k.getModulus();
-                BigInteger bigInteger = ONE;
-                BigInteger r = BigIntegers.createRandomInRange(bigInteger, m.subtract(bigInteger), this.random);
+                BigInteger r = BigIntegers.createRandomInRange(ONE, m.subtract(ONE), this.random);
                 BigInteger blindedInput = r.modPow(e, m).multiply(input).mod(m);
                 BigInteger blindedResult = this.core.processBlock(blindedInput);
                 BigInteger rInv = BigIntegers.modOddInverse(m, r);

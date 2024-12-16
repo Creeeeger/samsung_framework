@@ -14,7 +14,6 @@ public interface IPrepareGetCredentialCallback extends IInterface {
 
     void onResponse(PrepareGetCredentialResponseInternal prepareGetCredentialResponseInternal) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPrepareGetCredentialCallback {
         @Override // android.credentials.IPrepareGetCredentialCallback
         public void onResponse(PrepareGetCredentialResponseInternal response) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IPrepareGetCredentialCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPrepareGetCredentialCallback {
         static final int TRANSACTION_onError = 2;
         static final int TRANSACTION_onResponse = 1;
@@ -76,32 +74,28 @@ public interface IPrepareGetCredentialCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPrepareGetCredentialCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPrepareGetCredentialCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPrepareGetCredentialCallback.DESCRIPTOR);
+                case 1:
+                    PrepareGetCredentialResponseInternal _arg0 = (PrepareGetCredentialResponseInternal) data.readTypedObject(PrepareGetCredentialResponseInternal.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResponse(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onError(_arg02, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PrepareGetCredentialResponseInternal _arg0 = (PrepareGetCredentialResponseInternal) data.readTypedObject(PrepareGetCredentialResponseInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResponse(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onError(_arg02, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPrepareGetCredentialCallback {
+        private static class Proxy implements IPrepareGetCredentialCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

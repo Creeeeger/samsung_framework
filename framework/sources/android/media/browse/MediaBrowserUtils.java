@@ -1,6 +1,9 @@
 package android.media.browse;
 
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
+import java.util.Collections;
+import java.util.List;
 
 /* loaded from: classes2.dex */
 public class MediaBrowserUtils {
@@ -56,5 +59,25 @@ public class MediaBrowserUtils {
             return true;
         }
         return false;
+    }
+
+    public static List<MediaBrowser.MediaItem> applyPagingOptions(List<MediaBrowser.MediaItem> list, Bundle options) {
+        if (list == null) {
+            return null;
+        }
+        int page = options.getInt(MediaBrowser.EXTRA_PAGE, -1);
+        int pageSize = options.getInt(MediaBrowser.EXTRA_PAGE_SIZE, -1);
+        if (page == -1 && pageSize == -1) {
+            return list;
+        }
+        int fromIndex = pageSize * page;
+        int toIndex = fromIndex + pageSize;
+        if (page < 0 || pageSize < 1 || fromIndex >= list.size()) {
+            return Collections.EMPTY_LIST;
+        }
+        if (toIndex > list.size()) {
+            toIndex = list.size();
+        }
+        return list.subList(fromIndex, toIndex);
     }
 }

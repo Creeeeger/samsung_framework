@@ -7,12 +7,11 @@ import android.filterfw.core.FrameFormat;
 import android.filterfw.core.GenerateFieldPort;
 import android.filterfw.format.ImageFormat;
 import android.graphics.Bitmap;
-import com.samsung.android.content.smartclip.SemSmartClipMetaTagType;
 
 /* loaded from: classes.dex */
 public class BitmapSource extends Filter {
 
-    @GenerateFieldPort(name = SemSmartClipMetaTagType.BITMAP)
+    @GenerateFieldPort(name = "bitmap")
     private Bitmap mBitmap;
     private Frame mImageFrame;
 
@@ -41,9 +40,8 @@ public class BitmapSource extends Filter {
     public void loadImage(FilterContext filterContext) {
         this.mTarget = FrameFormat.readTargetString(this.mTargetString);
         FrameFormat outputFormat = ImageFormat.create(this.mBitmap.getWidth(), this.mBitmap.getHeight(), 3, this.mTarget);
-        Frame newFrame = filterContext.getFrameManager().newFrame(outputFormat);
-        this.mImageFrame = newFrame;
-        newFrame.setBitmap(this.mBitmap);
+        this.mImageFrame = filterContext.getFrameManager().newFrame(outputFormat);
+        this.mImageFrame.setBitmap(this.mBitmap);
         this.mImageFrame.setTimestamp(-1L);
         if (this.mRecycleBitmap) {
             this.mBitmap.recycle();
@@ -53,9 +51,8 @@ public class BitmapSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void fieldPortValueUpdated(String name, FilterContext context) {
-        Frame frame;
-        if ((name.equals(SemSmartClipMetaTagType.BITMAP) || name.equals("target")) && (frame = this.mImageFrame) != null) {
-            frame.release();
+        if ((name.equals("bitmap") || name.equals("target")) && this.mImageFrame != null) {
+            this.mImageFrame.release();
             this.mImageFrame = null;
         }
     }
@@ -73,9 +70,8 @@ public class BitmapSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext env) {
-        Frame frame = this.mImageFrame;
-        if (frame != null) {
-            frame.release();
+        if (this.mImageFrame != null) {
+            this.mImageFrame.release();
             this.mImageFrame = null;
         }
     }

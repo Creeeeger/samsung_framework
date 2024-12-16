@@ -14,7 +14,6 @@ public class UserDictionary {
     private static final int FREQUENCY_MAX = 255;
     private static final int FREQUENCY_MIN = 0;
 
-    /* loaded from: classes3.dex */
     public static class Words implements BaseColumns {
         public static final String APP_ID = "appid";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.google.userword";

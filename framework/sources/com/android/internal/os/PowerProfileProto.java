@@ -43,7 +43,6 @@ public final class PowerProfileProto {
     public static final long WIFI_ON = 1103806595077L;
     public static final long WIFI_SCAN = 1103806595076L;
 
-    /* loaded from: classes5.dex */
     public final class CpuCluster {
         public static final long CLUSTER_POWER = 1103806595074L;
         public static final long CORES = 1120986464259L;

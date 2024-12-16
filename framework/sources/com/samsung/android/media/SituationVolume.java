@@ -1,6 +1,6 @@
 package com.samsung.android.media;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SituationVolume {
     public static final int BOOT_SOUND = 8;
     public static final int BURSTSHOT = 9;

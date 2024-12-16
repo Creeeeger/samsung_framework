@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.SubscriptionPlan;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkPolicyListener extends IInterface {
     void onBlockedReasonChanged(int i, int i2, int i3) throws RemoteException;
 
@@ -23,7 +23,6 @@ public interface INetworkPolicyListener extends IInterface {
 
     void onUidRulesChanged(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkPolicyListener {
         @Override // android.net.INetworkPolicyListener
         public void onUidRulesChanged(int uid, int uidRules) throws RemoteException {
@@ -59,7 +58,6 @@ public interface INetworkPolicyListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkPolicyListener {
         public static final String DESCRIPTOR = "android.net.INetworkPolicyListener";
         static final int TRANSACTION_onBlockedReasonChanged = 7;
@@ -121,64 +119,60 @@ public interface INetworkPolicyListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUidRulesChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String[] _arg02 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    onMeteredIfacesChanged(_arg02);
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRestrictBackgroundChanged(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUidPoliciesChanged(_arg04, _arg12);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int[] _arg3 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onSubscriptionOverride(_arg05, _arg13, _arg2, _arg3);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    SubscriptionPlan[] _arg14 = (SubscriptionPlan[]) data.createTypedArray(SubscriptionPlan.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSubscriptionPlansChanged(_arg06, _arg14);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg15 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBlockedReasonChanged(_arg07, _arg15, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUidRulesChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String[] _arg02 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            onMeteredIfacesChanged(_arg02);
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onRestrictBackgroundChanged(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUidPoliciesChanged(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int[] _arg3 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onSubscriptionOverride(_arg05, _arg13, _arg2, _arg3);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            SubscriptionPlan[] _arg14 = (SubscriptionPlan[]) data.createTypedArray(SubscriptionPlan.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSubscriptionPlansChanged(_arg06, _arg14);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg15 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBlockedReasonChanged(_arg07, _arg15, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetworkPolicyListener {
+        private static class Proxy implements INetworkPolicyListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

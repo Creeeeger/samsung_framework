@@ -8,7 +8,7 @@ import android.util.TimeUtils;
 import java.io.PrintWriter;
 import java.util.function.Predicate;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class UidState {
     private static final String TAG = "ProcessStats";
     private final DurationsTable mDurations;
@@ -26,8 +26,8 @@ public final class UidState {
         this.mDurations = new DurationsTable(processStats.mTableData);
     }
 
-    /* renamed from: clone */
-    public UidState m7226clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public UidState m7634clone() {
         UidState unew = new UidState(this.mStats, this.mUid);
         unew.mDurations.addDurations(this.mDurations);
         unew.mCurCombinedState = this.mCurCombinedState;
@@ -83,11 +83,10 @@ public final class UidState {
     }
 
     public void commitStateTime(long now) {
-        int i = this.mCurCombinedState;
-        if (i != -1) {
+        if (this.mCurCombinedState != -1) {
             long dur = now - this.mStartTime;
             if (dur > 0) {
-                this.mDurations.addDuration(i, dur);
+                this.mDurations.addDuration(this.mCurCombinedState, dur);
             }
             this.mTotalRunningDuration += now - this.mTotalRunningStartTime;
             this.mTotalRunningStartTime = now;
@@ -106,7 +105,7 @@ public final class UidState {
         });
     }
 
-    public static /* synthetic */ boolean lambda$resetSafely$0(ProcessState p) {
+    static /* synthetic */ boolean lambda$resetSafely$0(ProcessState p) {
         return !p.isInUse();
     }
 
@@ -136,7 +135,7 @@ public final class UidState {
         this.mTotalRunningDuration += other.mTotalRunningDuration;
     }
 
-    public void addProcess(ProcessState proc) {
+    void addProcess(ProcessState proc) {
         this.mProcesses.add(proc);
     }
 
@@ -155,9 +154,7 @@ public final class UidState {
     }
 
     public long getTotalRunningDuration(long now) {
-        long j = this.mTotalRunningDuration;
-        long j2 = this.mTotalRunningStartTime;
-        return j + (j2 != 0 ? now - j2 : 0L);
+        return this.mTotalRunningDuration + (this.mTotalRunningStartTime != 0 ? now - this.mTotalRunningStartTime : 0L);
     }
 
     public long getDuration(int state, long now) {
@@ -180,12 +177,12 @@ public final class UidState {
         return states;
     }
 
-    public void writeToParcel(Parcel out, long now) {
+    void writeToParcel(Parcel out, long now) {
         this.mDurations.writeToParcel(out);
         out.writeLong(getTotalRunningDuration(now));
     }
 
-    public boolean readFromParcel(Parcel in) {
+    boolean readFromParcel(Parcel in) {
         if (!this.mDurations.readFromParcel(in)) {
             return false;
         }
@@ -199,7 +196,7 @@ public final class UidState {
         return sb.toString();
     }
 
-    public void dumpState(PrintWriter pw, String prefix, int[] screenStates, int[] memStates, int[] procStates, long now) {
+    void dumpState(PrintWriter pw, String prefix, int[] screenStates, int[] memStates, int[] procStates, long now) {
         int i;
         long time;
         UidState uidState = this;

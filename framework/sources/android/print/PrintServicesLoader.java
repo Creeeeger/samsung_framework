@@ -24,60 +24,43 @@ public class PrintServicesLoader extends Loader<List<PrintServiceInfo>> {
     }
 
     @Override // android.content.Loader
-    public void onForceLoad() {
+    protected void onForceLoad() {
         queueNewResult();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void queueNewResult() {
         Message m = this.mHandler.obtainMessage(0);
         m.obj = this.mPrintManager.getPrintServices(this.mSelectionFlags);
         this.mHandler.sendMessage(m);
     }
 
-    /* renamed from: android.print.PrintServicesLoader$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements PrintManager.PrintServicesChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.print.PrintManager.PrintServicesChangeListener
-        public void onPrintServicesChanged() {
-            PrintServicesLoader.this.queueNewResult();
-        }
-    }
-
     @Override // android.content.Loader
     protected void onStartLoading() {
-        AnonymousClass1 anonymousClass1 = new PrintManager.PrintServicesChangeListener() { // from class: android.print.PrintServicesLoader.1
-            AnonymousClass1() {
-            }
-
+        this.mListener = new PrintManager.PrintServicesChangeListener() { // from class: android.print.PrintServicesLoader.1
             @Override // android.print.PrintManager.PrintServicesChangeListener
             public void onPrintServicesChanged() {
                 PrintServicesLoader.this.queueNewResult();
             }
         };
-        this.mListener = anonymousClass1;
-        this.mPrintManager.addPrintServicesChangeListener(anonymousClass1, null);
+        this.mPrintManager.addPrintServicesChangeListener(this.mListener, null);
         deliverResult(this.mPrintManager.getPrintServices(this.mSelectionFlags));
     }
 
     @Override // android.content.Loader
     protected void onStopLoading() {
-        PrintManager.PrintServicesChangeListener printServicesChangeListener = this.mListener;
-        if (printServicesChangeListener != null) {
-            this.mPrintManager.removePrintServicesChangeListener(printServicesChangeListener);
+        if (this.mListener != null) {
+            this.mPrintManager.removePrintServicesChangeListener(this.mListener);
             this.mListener = null;
         }
         this.mHandler.removeMessages(0);
     }
 
     @Override // android.content.Loader
-    public void onReset() {
+    protected void onReset() {
         onStopLoading();
     }
 
-    /* loaded from: classes3.dex */
     private class MyHandler extends Handler {
         public MyHandler() {
             super(PrintServicesLoader.this.getContext().getMainLooper());

@@ -15,6 +15,7 @@ public final class SemTelephonyProps {
     private SemTelephonyProps() {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     public static Boolean tryParseBoolean(String str) {
         char c;
@@ -56,17 +57,11 @@ public final class SemTelephonyProps {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Integer tryParseInteger(String str) {
         try {
             return Integer.valueOf(str);
@@ -107,6 +102,7 @@ public final class SemTelephonyProps {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String tryParseString(String str) {
         if ("".equals(str)) {
             return null;
@@ -205,7 +201,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> volte_911call() {
         String value = SystemProperties.get("ril.volte.911call");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda19
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -266,7 +262,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> lte_voice_support() {
         String value = SystemProperties.get("ril.ims.ltevoicesupport");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda4
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -282,7 +278,7 @@ public final class SemTelephonyProps {
 
     public static List<String> ss_error_code() {
         String value = SystemProperties.get("ril.ss.errorcode");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda7
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda2
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -321,7 +317,7 @@ public final class SemTelephonyProps {
 
     public static List<String> limited_lte_reject() {
         String value = SystemProperties.get("ril.data.limited_lte_reject");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda20
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -337,7 +333,7 @@ public final class SemTelephonyProps {
 
     public static List<Boolean> sim_mobility() {
         String value = SystemProperties.get("ril.sim.mobility");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda3
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Boolean tryParseBoolean;
@@ -353,7 +349,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> latest_modeltype() {
         String value = SystemProperties.get("persist.radio.latest-modeltype");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda12
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda22
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -369,7 +365,7 @@ public final class SemTelephonyProps {
 
     public static List<String> network_reject_cause() {
         String value = SystemProperties.get("ril.skt.network_regist");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda18
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda3
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -385,7 +381,7 @@ public final class SemTelephonyProps {
 
     public static List<String> network_reg_status() {
         String value = SystemProperties.get("ril.skt.network_regist_status");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda2
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda18
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -401,7 +397,7 @@ public final class SemTelephonyProps {
 
     public static List<String> current_plmn() {
         String value = SystemProperties.get("ril.currentplmn");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda23
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda19
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -417,7 +413,7 @@ public final class SemTelephonyProps {
 
     public static List<String> reject_rat() {
         String value = SystemProperties.get("ril.reject.rat");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda14
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda25
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -433,7 +429,7 @@ public final class SemTelephonyProps {
 
     public static List<String> rejected_plmn() {
         String value = SystemProperties.get("ril.rejectedPlmn");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda5
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda20
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -620,7 +616,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> call_end_cause_param() {
         String value = SystemProperties.get("ril.call_end_cause.param");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda13
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda7
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -654,7 +650,7 @@ public final class SemTelephonyProps {
 
     public static List<String> debug_cdma_support_type() {
         String value = SystemProperties.get("ril.debug.cdmasupporttype");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda11
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda21
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -697,7 +693,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> get_band() {
         String value = SystemProperties.get("ril.get_band");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda15
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda9
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -713,7 +709,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> get_ca_comb() {
         String value = SystemProperties.get("ril.get_ca_comb");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda17
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda23
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -747,7 +743,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> lte_band() {
         String value = SystemProperties.get("ril.lteband");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda24
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda8
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -763,7 +759,7 @@ public final class SemTelephonyProps {
 
     public static List<String> lte_network_type() {
         String value = SystemProperties.get("ril.ltenetworktype");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda21
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda24
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -779,7 +775,7 @@ public final class SemTelephonyProps {
 
     public static List<String> lte_scell_bands() {
         String value = SystemProperties.get("ril.ltescellbands");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda6
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda16
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -813,7 +809,7 @@ public final class SemTelephonyProps {
 
     public static List<String> nr_network_type() {
         String value = SystemProperties.get("ril.nrnetworktype");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda22
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda15
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -834,6 +830,15 @@ public final class SemTelephonyProps {
 
     public static void phone1_mapped_md(String value) {
         SystemProperties.set("ril.phone1.mapped.md", value == null ? "" : value.toString());
+    }
+
+    public static Optional<Integer> preconfig_reset() {
+        String value = SystemProperties.get("persist.radio.preconfig_reset");
+        return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public static void preconfig_reset(Integer value) {
+        SystemProperties.set("persist.radio.preconfig_reset", value == null ? "" : value.toString());
     }
 
     public static Optional<Integer> radio_state() {
@@ -999,7 +1004,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> ril_init_done() {
         String value = SystemProperties.get("ril.init_done");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda25
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda6
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -1015,7 +1020,7 @@ public final class SemTelephonyProps {
 
     public static List<String> band_list() {
         String value = SystemProperties.get("ril.bandList");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda16
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda26
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -1058,7 +1063,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> current_active_phone() {
         String value = SystemProperties.get(TelephonyProperties.CURRENT_ACTIVE_PHONE);
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda26
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda17
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -1074,7 +1079,7 @@ public final class SemTelephonyProps {
 
     public static List<String> operator_alpha() {
         String value = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda0
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda13
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -1090,7 +1095,7 @@ public final class SemTelephonyProps {
 
     public static List<String> operator_numeric() {
         String value = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_NUMERIC);
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda1
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda12
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -1106,7 +1111,7 @@ public final class SemTelephonyProps {
 
     public static List<String> msim_submode() {
         String value = SystemProperties.get("ril.msim.submode");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda9
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda11
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String tryParseString;
@@ -1149,7 +1154,7 @@ public final class SemTelephonyProps {
 
     public static List<Integer> operator_default_network() {
         String value = SystemProperties.get("persist.radio.def_network");
-        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda8
+        return tryParseList(new Function() { // from class: com.samsung.telephony.sysprop.SemTelephonyProps$$ExternalSyntheticLambda14
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Integer tryParseInteger;
@@ -1170,5 +1175,59 @@ public final class SemTelephonyProps {
 
     public static void multisim_standby_active(String value) {
         SystemProperties.set("ril.multisim.standby_active", value == null ? "" : value.toString());
+    }
+
+    public static Optional<Integer> support_satellite() {
+        String value = SystemProperties.get("persist.radio.support.satellite");
+        return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public static void support_satellite(Integer value) {
+        SystemProperties.set("persist.radio.support.satellite", value == null ? "" : value.toString());
+    }
+
+    public static Optional<Integer> tiantong_backoff_state() {
+        String value = SystemProperties.get("ril.tiantong.backoffstate");
+        return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public static void tiantong_backoff_state(Integer value) {
+        SystemProperties.set("ril.tiantong.backoffstate", value == null ? "" : value.toString());
+    }
+
+    public static Optional<Integer> tiantong_phone_id() {
+        String value = SystemProperties.get("ril.tiantong.phone.id");
+        return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public static void tiantong_phone_id(Integer value) {
+        SystemProperties.set("ril.tiantong.phone.id", value == null ? "" : value.toString());
+    }
+
+    public static Optional<Integer> support_expansion_emc() {
+        String value = SystemProperties.get("ril.support.expansionemc");
+        return Optional.ofNullable(tryParseInteger(value));
+    }
+
+    public static void support_expansion_emc(Integer value) {
+        SystemProperties.set("ril.support.expansionemc", value == null ? "" : value.toString());
+    }
+
+    public static Optional<String> satellite_sweep_frequency() {
+        String value = SystemProperties.get("persist.radio.sat.sweepfreq");
+        return Optional.ofNullable(tryParseString(value));
+    }
+
+    public static void satellite_sweep_frequency(String value) {
+        SystemProperties.set("persist.radio.sat.sweepfreq", value == null ? "" : value.toString());
+    }
+
+    public static Optional<String> tiantong_modem_state() {
+        String value = SystemProperties.get("ril.tiantong.modem.state");
+        return Optional.ofNullable(tryParseString(value));
+    }
+
+    public static void tiantong_modem_state(String value) {
+        SystemProperties.set("ril.tiantong.modem.state", value == null ? "" : value.toString());
     }
 }

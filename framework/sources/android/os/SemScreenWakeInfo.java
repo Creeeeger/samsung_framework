@@ -5,14 +5,13 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class SemScreenWakeInfo implements Cloneable, Parcelable {
     public static final Parcelable.Creator<SemScreenWakeInfo> CREATOR = new Parcelable.Creator<SemScreenWakeInfo>() { // from class: android.os.SemScreenWakeInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemScreenWakeInfo createFromParcel(Parcel in) {
             return new SemScreenWakeInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemScreenWakeInfo[] newArray(int size) {
             return new SemScreenWakeInfo[size];
@@ -50,23 +49,6 @@ public class SemScreenWakeInfo implements Cloneable, Parcelable {
         this.count = in.readLong();
     }
 
-    /* renamed from: android.os.SemScreenWakeInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemScreenWakeInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemScreenWakeInfo createFromParcel(Parcel in) {
-            return new SemScreenWakeInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemScreenWakeInfo[] newArray(int size) {
-            return new SemScreenWakeInfo[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -78,8 +60,8 @@ public class SemScreenWakeInfo implements Cloneable, Parcelable {
         parcel.writeLong(this.count);
     }
 
-    /* renamed from: clone */
-    public SemScreenWakeInfo m3198clone() {
+    /* renamed from: clone, reason: merged with bridge method [inline-methods] */
+    public SemScreenWakeInfo m3365clone() {
         try {
             return (SemScreenWakeInfo) super.clone();
         } catch (CloneNotSupportedException e) {

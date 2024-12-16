@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICameraInjectionSession extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.ICameraInjectionSession";
 
     void stopInjection() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICameraInjectionSession {
         @Override // android.hardware.camera2.ICameraInjectionSession
         public void stopInjection() throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICameraInjectionSession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICameraInjectionSession {
         static final int TRANSACTION_stopInjection = 1;
 
@@ -67,23 +65,20 @@ public interface ICameraInjectionSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICameraInjectionSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICameraInjectionSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICameraInjectionSession.DESCRIPTOR);
+                case 1:
+                    stopInjection();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            stopInjection();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICameraInjectionSession {
+        private static class Proxy implements ICameraInjectionSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

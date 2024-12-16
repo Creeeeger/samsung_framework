@@ -1,5 +1,6 @@
 package android.os;
 
+import android.hardware.scontext.SContextConstants;
 import android.os.Parcelable;
 import android.util.IntArray;
 import java.lang.annotation.Retention;
@@ -10,25 +11,27 @@ public final class BatteryUsageStatsQuery implements Parcelable {
     private static final long DEFAULT_MAX_STATS_AGE_MS = 300000;
     public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_HISTORY = 2;
     public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_POWER_MODELS = 4;
+    public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_POWER_STATE = 64;
     public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_PROCESS_STATE_DATA = 8;
+    public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_SCREEN_STATE = 32;
     public static final int FLAG_BATTERY_USAGE_STATS_INCLUDE_VIRTUAL_UIDS = 16;
     public static final int FLAG_BATTERY_USAGE_STATS_POWER_PROFILE_MODEL = 1;
     private final int mFlags;
     private final long mFromTimestamp;
     private final long mMaxStatsAgeMs;
+    private final double mMinConsumedPowerThreshold;
     private final int[] mPowerComponents;
     private final long mToTimestamp;
     private final int[] mUserIds;
     public static final BatteryUsageStatsQuery DEFAULT = new Builder().build();
     public static final Parcelable.Creator<BatteryUsageStatsQuery> CREATOR = new Parcelable.Creator<BatteryUsageStatsQuery>() { // from class: android.os.BatteryUsageStatsQuery.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStatsQuery createFromParcel(Parcel in) {
             return new BatteryUsageStatsQuery(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BatteryUsageStatsQuery[] newArray(int size) {
             return new BatteryUsageStatsQuery[size];
@@ -36,22 +39,14 @@ public final class BatteryUsageStatsQuery implements Parcelable {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BatteryUsageStatsFlags {
-    }
-
-    /* synthetic */ BatteryUsageStatsQuery(Builder builder, BatteryUsageStatsQueryIA batteryUsageStatsQueryIA) {
-        this(builder);
-    }
-
-    /* synthetic */ BatteryUsageStatsQuery(Parcel parcel, BatteryUsageStatsQueryIA batteryUsageStatsQueryIA) {
-        this(parcel);
     }
 
     private BatteryUsageStatsQuery(Builder builder) {
         this.mFlags = builder.mFlags;
         this.mUserIds = builder.mUserIds != null ? builder.mUserIds.toArray() : new int[]{-1};
         this.mMaxStatsAgeMs = builder.mMaxStatsAgeMs;
+        this.mMinConsumedPowerThreshold = builder.mMinConsumedPowerThreshold;
         this.mFromTimestamp = builder.mFromTimestamp;
         this.mToTimestamp = builder.mToTimestamp;
         this.mPowerComponents = builder.mPowerComponents;
@@ -73,12 +68,24 @@ public final class BatteryUsageStatsQuery implements Parcelable {
         return (this.mFlags & 8) != 0;
     }
 
+    public boolean isScreenStateDataNeeded() {
+        return (this.mFlags & 32) != 0;
+    }
+
+    public boolean isPowerStateDataNeeded() {
+        return (this.mFlags & 64) != 0;
+    }
+
     public int[] getPowerComponents() {
         return this.mPowerComponents;
     }
 
     public long getMaxStatsAge() {
         return this.mMaxStatsAgeMs;
+    }
+
+    public double getMinConsumedPowerThreshold() {
+        return this.mMinConsumedPowerThreshold;
     }
 
     public long getFromTimestamp() {
@@ -91,10 +98,10 @@ public final class BatteryUsageStatsQuery implements Parcelable {
 
     private BatteryUsageStatsQuery(Parcel in) {
         this.mFlags = in.readInt();
-        int[] iArr = new int[in.readInt()];
-        this.mUserIds = iArr;
-        in.readIntArray(iArr);
+        this.mUserIds = new int[in.readInt()];
+        in.readIntArray(this.mUserIds);
         this.mMaxStatsAgeMs = in.readLong();
+        this.mMinConsumedPowerThreshold = in.readDouble();
         this.mFromTimestamp = in.readLong();
         this.mToTimestamp = in.readLong();
         this.mPowerComponents = in.createIntArray();
@@ -106,6 +113,7 @@ public final class BatteryUsageStatsQuery implements Parcelable {
         dest.writeInt(this.mUserIds.length);
         dest.writeIntArray(this.mUserIds);
         dest.writeLong(this.mMaxStatsAgeMs);
+        dest.writeDouble(this.mMinConsumedPowerThreshold);
         dest.writeLong(this.mFromTimestamp);
         dest.writeLong(this.mToTimestamp);
         dest.writeIntArray(this.mPowerComponents);
@@ -116,28 +124,11 @@ public final class BatteryUsageStatsQuery implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.os.BatteryUsageStatsQuery$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BatteryUsageStatsQuery> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BatteryUsageStatsQuery createFromParcel(Parcel in) {
-            return new BatteryUsageStatsQuery(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BatteryUsageStatsQuery[] newArray(int size) {
-            return new BatteryUsageStatsQuery[size];
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mFlags;
         private long mFromTimestamp;
         private long mMaxStatsAgeMs = 300000;
+        private double mMinConsumedPowerThreshold = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         private int[] mPowerComponents;
         private long mToTimestamp;
         private IntArray mUserIds;
@@ -184,6 +175,16 @@ public final class BatteryUsageStatsQuery implements Parcelable {
             return this;
         }
 
+        public Builder includeScreenStateData() {
+            this.mFlags |= 32;
+            return this;
+        }
+
+        public Builder includePowerStateData() {
+            this.mFlags |= 64;
+            return this;
+        }
+
         public Builder aggregateSnapshots(long fromTimestamp, long toTimestamp) {
             this.mFromTimestamp = fromTimestamp;
             this.mToTimestamp = toTimestamp;
@@ -192,6 +193,11 @@ public final class BatteryUsageStatsQuery implements Parcelable {
 
         public Builder setMaxStatsAgeMs(long maxStatsAgeMs) {
             this.mMaxStatsAgeMs = maxStatsAgeMs;
+            return this;
+        }
+
+        public Builder setMinConsumedPowerThreshold(double minConsumedPowerThreshold) {
+            this.mMinConsumedPowerThreshold = minConsumedPowerThreshold;
             return this;
         }
     }

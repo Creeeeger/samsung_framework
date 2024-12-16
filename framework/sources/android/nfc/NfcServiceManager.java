@@ -8,7 +8,6 @@ import android.os.ServiceManager;
 /* loaded from: classes3.dex */
 public class NfcServiceManager {
 
-    /* loaded from: classes3.dex */
     public static final class ServiceRegisterer {
         private final String mServiceName;
 
@@ -37,7 +36,6 @@ public class NfcServiceManager {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ServiceNotFoundException extends ServiceManager.ServiceNotFoundException {
         public ServiceNotFoundException(String name) {
             super(name);

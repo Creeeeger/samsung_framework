@@ -4,13 +4,17 @@ import android.content.Context;
 import android.database.CursorWindow;
 import android.hardware.scontext.SContextConstants;
 import android.os.PowerComponents;
+import android.util.IntArray;
 import android.util.Slog;
+import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
 import com.android.internal.accessibility.common.ShortcutConstants;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /* loaded from: classes3.dex */
 public abstract class BatteryConsumer {
@@ -42,6 +46,11 @@ public abstract class BatteryConsumer {
     public static final int POWER_MODEL_ENERGY_CONSUMPTION = 2;
     public static final int POWER_MODEL_POWER_PROFILE = 1;
     public static final int POWER_MODEL_UNDEFINED = 0;
+    public static final int POWER_STATE_ANY = 0;
+    public static final int POWER_STATE_BATTERY = 1;
+    public static final int POWER_STATE_COUNT = 3;
+    public static final int POWER_STATE_OTHER = 2;
+    public static final int POWER_STATE_UNSPECIFIED = 0;
     public static final int PROCESS_STATE_ANY = 0;
     public static final int PROCESS_STATE_BACKGROUND = 2;
     public static final int PROCESS_STATE_CACHED = 4;
@@ -49,48 +58,98 @@ public abstract class BatteryConsumer {
     public static final int PROCESS_STATE_FOREGROUND = 1;
     public static final int PROCESS_STATE_FOREGROUND_SERVICE = 3;
     public static final int PROCESS_STATE_UNSPECIFIED = 0;
-    private static final int[] SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE;
+    public static final int SCREEN_STATE_ANY = 0;
+    public static final int SCREEN_STATE_COUNT = 3;
+    public static final int SCREEN_STATE_ON = 1;
+    public static final int SCREEN_STATE_OTHER = 2;
+    public static final int SCREEN_STATE_UNSPECIFIED = 0;
+    private static final IntArray SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE;
     private static final String TAG = "BatteryConsumer";
     public static final Dimensions UNSPECIFIED_DIMENSIONS;
-    private static final String[] sPowerComponentNames;
+    private static final String[] sPowerComponentNames = new String[19];
+    private static final String[] sPowerStateNames;
     private static final String[] sProcessStateNames;
+    private static final String[] sScreenStateNames;
     protected final BatteryConsumerData mData;
     protected final PowerComponents mPowerComponents;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PowerComponent {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PowerModel {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
+    public @interface PowerState {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ProcessState {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScreenState {
     }
 
     public abstract void dump(PrintWriter printWriter, boolean z);
 
     static {
-        sPowerComponentNames = r0;
-        String[] strArr = {"screen", "cpu", "bluetooth", Context.CAMERA_SERVICE, "audio", "video", "flashlight", "system_services", "mobile_radio", "sensors", "gnss", "wifi", "wakelock", "memory", "phone", "ambient_display", "idle", "reattributed", BatteryManager.EXTRA_POWER_SHARING};
-        sProcessStateNames = r0;
-        String[] strArr2 = {"unspecified", "fg", "bg", "fgs", "cached"};
-        SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE = new int[]{1, 8, 11, 2};
-        UNSPECIFIED_DIMENSIONS = new Dimensions(-1, 0);
+        sPowerComponentNames[0] = "screen";
+        sPowerComponentNames[1] = "cpu";
+        sPowerComponentNames[2] = "bluetooth";
+        sPowerComponentNames[3] = Context.CAMERA_SERVICE;
+        sPowerComponentNames[4] = "audio";
+        sPowerComponentNames[5] = "video";
+        sPowerComponentNames[6] = "flashlight";
+        sPowerComponentNames[7] = "system_services";
+        sPowerComponentNames[8] = "mobile_radio";
+        sPowerComponentNames[9] = "sensors";
+        sPowerComponentNames[10] = "gnss";
+        sPowerComponentNames[11] = "wifi";
+        sPowerComponentNames[12] = "wakelock";
+        sPowerComponentNames[13] = "memory";
+        sPowerComponentNames[14] = "phone";
+        sPowerComponentNames[15] = "ambient_display";
+        sPowerComponentNames[16] = "idle";
+        sPowerComponentNames[17] = "reattributed";
+        sPowerComponentNames[18] = BatteryManager.EXTRA_POWER_SHARING;
+        sProcessStateNames = new String[5];
+        sProcessStateNames[0] = "unspecified";
+        sProcessStateNames[1] = "fg";
+        sProcessStateNames[2] = "bg";
+        sProcessStateNames[3] = "fgs";
+        sProcessStateNames[4] = "cached";
+        int[] supportedPowerComponents = {1, 8, 11, 2, 4, 5, 6, 3, 10};
+        Arrays.sort(supportedPowerComponents);
+        SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE = IntArray.wrap(supportedPowerComponents);
+        sScreenStateNames = new String[3];
+        sScreenStateNames[0] = "unspecified";
+        sScreenStateNames[1] = "on";
+        sScreenStateNames[2] = "off/doze";
+        sPowerStateNames = new String[3];
+        sPowerStateNames[0] = "unspecified";
+        sPowerStateNames[1] = "on battery";
+        sPowerStateNames[2] = "not on battery";
+        UNSPECIFIED_DIMENSIONS = new Dimensions(-1, 0, 0, 0);
     }
 
-    /* loaded from: classes3.dex */
     public static final class Dimensions {
         public final int powerComponent;
+        public final int powerState;
         public final int processState;
+        public final int screenState;
 
         public Dimensions(int powerComponent, int processState) {
+            this(powerComponent, processState, 0, 0);
+        }
+
+        public Dimensions(int powerComponent, int processState, int screenState, int powerState) {
             this.powerComponent = powerComponent;
             this.processState = processState;
+            this.screenState = screenState;
+            this.powerState = powerState;
         }
 
         public String toString() {
@@ -107,6 +166,20 @@ public abstract class BatteryConsumer {
                 sb.append("processState=").append(BatteryConsumer.sProcessStateNames[this.processState]);
                 dimensionSpecified = true;
             }
+            if (this.screenState != 0) {
+                if (dimensionSpecified) {
+                    sb.append(", ");
+                }
+                sb.append("screenState=").append(BatteryConsumer.screenStateToString(this.screenState));
+                dimensionSpecified = true;
+            }
+            if (this.powerState != 0) {
+                if (dimensionSpecified) {
+                    sb.append(", ");
+                }
+                sb.append("powerState=").append(BatteryConsumer.powerStateToString(this.powerState));
+                dimensionSpecified = true;
+            }
             if (!dimensionSpecified) {
                 sb.append("any components and process states");
             }
@@ -114,52 +187,73 @@ public abstract class BatteryConsumer {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Key {
         final int mDurationColumnIndex;
         final int mPowerColumnIndex;
         final int mPowerModelColumnIndex;
         private String mShortString;
         public final int powerComponent;
+        public final int powerState;
         public final int processState;
+        public final int screenState;
 
-        /* synthetic */ Key(int i, int i2, int i3, int i4, int i5, KeyIA keyIA) {
-            this(i, i2, i3, i4, i5);
-        }
-
-        private Key(int powerComponent, int processState, int powerModelColumnIndex, int powerColumnIndex, int durationColumnIndex) {
+        private Key(int powerComponent, int processState, int screenState, int powerState, int powerModelColumnIndex, int powerColumnIndex, int durationColumnIndex) {
             this.powerComponent = powerComponent;
             this.processState = processState;
+            this.screenState = screenState;
+            this.powerState = powerState;
             this.mPowerModelColumnIndex = powerModelColumnIndex;
             this.mPowerColumnIndex = powerColumnIndex;
             this.mDurationColumnIndex = durationColumnIndex;
         }
 
+        boolean matches(int powerComponent, int processState, int screenState, int powerState) {
+            if (powerComponent != -1 && this.powerComponent != powerComponent) {
+                return false;
+            }
+            if (processState != 0 && this.processState != processState) {
+                return false;
+            }
+            if (screenState == 0 || this.screenState == screenState) {
+                return powerState == 0 || this.powerState == powerState;
+            }
+            return false;
+        }
+
         public boolean equals(Object o) {
             Key key = (Key) o;
-            return this.powerComponent == key.powerComponent && this.processState == key.processState;
+            return this.powerComponent == key.powerComponent && this.processState == key.processState && this.screenState == key.screenState && this.powerState == key.powerState;
         }
 
         public int hashCode() {
             int result = this.powerComponent;
-            return (result * 31) + this.processState;
+            return (((((result * 31) + this.processState) * 31) + this.screenState) * 31) + this.powerState;
         }
 
-        public String toShortString() {
-            if (this.mShortString == null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(BatteryConsumer.powerComponentIdToString(this.powerComponent));
-                if (this.processState != 0) {
-                    sb.append(ShortcutConstants.SERVICES_SEPARATOR);
-                    sb.append(BatteryConsumer.processStateToString(this.processState));
-                }
-                this.mShortString = sb.toString();
+        public static String toString(int powerComponent, int processState, int screenState, int powerState) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(BatteryConsumer.powerComponentIdToString(powerComponent));
+            if (processState != 0) {
+                sb.append(ShortcutConstants.SERVICES_SEPARATOR);
+                sb.append(BatteryConsumer.processStateToString(processState));
             }
-            return this.mShortString;
+            if (screenState != 0) {
+                sb.append(":scr-");
+                sb.append(BatteryConsumer.sScreenStateNames[screenState]);
+            }
+            if (powerState != 0) {
+                sb.append(":pwr-");
+                sb.append(BatteryConsumer.sPowerStateNames[powerState]);
+            }
+            return sb.toString();
+        }
+
+        public String toString() {
+            return toString(this.powerComponent, this.processState, this.screenState, this.powerState);
         }
     }
 
-    public BatteryConsumer(BatteryConsumerData data, PowerComponents powerComponents) {
+    protected BatteryConsumer(BatteryConsumerData data, PowerComponents powerComponents) {
         this.mData = data;
         this.mPowerComponents = powerComponents;
     }
@@ -177,20 +271,24 @@ public abstract class BatteryConsumer {
         return this.mPowerComponents.getConsumedPower(dimensions);
     }
 
+    public long getUsageDurationMillis(Dimensions dimensions) {
+        return this.mPowerComponents.getUsageDurationMillis(dimensions);
+    }
+
     public Key[] getKeys(int componentId) {
-        return this.mData.getKeys(componentId);
+        return this.mData.layout.getKeys(componentId);
     }
 
     public Key getKey(int componentId) {
-        return this.mData.getKey(componentId, 0);
+        return this.mData.layout.getKey(componentId, 0, 0, 0);
     }
 
     public Key getKey(int componentId, int processState) {
-        return this.mData.getKey(componentId, processState);
+        return this.mData.layout.getKey(componentId, processState, 0, 0);
     }
 
     public double getConsumedPower(int componentId) {
-        return this.mPowerComponents.getConsumedPower(this.mData.getKeyOrThrow(componentId, 0));
+        return this.mPowerComponents.getConsumedPower(componentId, 0, 0, 0);
     }
 
     public double getConsumedPower(Key key) {
@@ -198,7 +296,7 @@ public abstract class BatteryConsumer {
     }
 
     public int getPowerModel(int componentId) {
-        return this.mPowerComponents.getPowerModel(this.mData.getKeyOrThrow(componentId, 0));
+        return this.mPowerComponents.getPowerModel(this.mData.layout.getKeyOrThrow(componentId, 0, 0, 0));
     }
 
     public int getPowerModel(Key key) {
@@ -262,15 +360,23 @@ public abstract class BatteryConsumer {
         return sProcessStateNames[processState];
     }
 
+    public static String powerStateToString(int powerState) {
+        return sPowerStateNames[powerState];
+    }
+
+    public static String screenStateToString(int screenState) {
+        return sScreenStateNames[screenState];
+    }
+
     public void dump(PrintWriter pw) {
         dump(pw, true);
     }
 
-    public boolean hasStatsProtoData() {
+    boolean hasStatsProtoData() {
         return writeStatsProtoImpl(null, 0L);
     }
 
-    public void writeStatsProto(ProtoOutputStream proto, long fieldId) {
+    void writeStatsProto(ProtoOutputStream proto, long fieldId) {
         writeStatsProtoImpl(proto, fieldId);
     }
 
@@ -289,23 +395,22 @@ public abstract class BatteryConsumer {
         return true;
     }
 
-    public static long convertMahToDeciCoulombs(double powerMah) {
+    static long convertMahToDeciCoulombs(double powerMah) {
         return (long) ((36.0d * powerMah) + 0.5d);
     }
 
-    /* loaded from: classes3.dex */
-    public static class BatteryConsumerData {
+    static class BatteryConsumerData {
         public final BatteryConsumerDataLayout layout;
         private final int mCursorRow;
         private final CursorWindow mCursorWindow;
 
-        public BatteryConsumerData(CursorWindow cursorWindow, int cursorRow, BatteryConsumerDataLayout layout) {
+        BatteryConsumerData(CursorWindow cursorWindow, int cursorRow, BatteryConsumerDataLayout layout) {
             this.mCursorWindow = cursorWindow;
             this.mCursorRow = cursorRow;
             this.layout = layout;
         }
 
-        public static BatteryConsumerData create(CursorWindow cursorWindow, BatteryConsumerDataLayout layout) {
+        static BatteryConsumerData create(CursorWindow cursorWindow, BatteryConsumerDataLayout layout) {
             int cursorRow = cursorWindow.getNumRows();
             if (!cursorWindow.allocRow()) {
                 Slog.e(BatteryConsumer.TAG, "Cannot allocate BatteryConsumerData: too many UIDs: " + cursorRow);
@@ -314,248 +419,246 @@ public abstract class BatteryConsumer {
             return new BatteryConsumerData(cursorWindow, cursorRow, layout);
         }
 
-        public Key[] getKeys(int componentId) {
-            return this.layout.keys[componentId];
+        boolean hasValue(int columnIndex) {
+            return (this.mCursorRow == -1 || this.mCursorWindow.getType(this.mCursorRow, columnIndex) == 0) ? false : true;
         }
 
-        public Key getKeyOrThrow(int componentId, int processState) {
-            Key key = getKey(componentId, processState);
-            if (key != null) {
-                return key;
-            }
-            if (processState == 0) {
-                throw new IllegalArgumentException("Unsupported power component ID: " + componentId);
-            }
-            throw new IllegalArgumentException("Unsupported power component ID: " + componentId + " process state: " + processState);
-        }
-
-        public Key getKey(int componentId, int processState) {
-            if (componentId >= 19) {
-                return null;
-            }
-            if (processState == 0) {
-                return this.layout.keys[componentId][0];
-            }
-            for (Key key : this.layout.keys[componentId]) {
-                if (key.processState == processState) {
-                    return key;
-                }
-            }
-            return null;
-        }
-
-        public void putInt(int columnIndex, int value) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        void putInt(int columnIndex, int value) {
+            if (this.mCursorRow == -1) {
                 return;
             }
-            this.mCursorWindow.putLong(value, i, columnIndex);
+            this.mCursorWindow.putLong(value, this.mCursorRow, columnIndex);
         }
 
-        public int getInt(int columnIndex) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        int getInt(int columnIndex) {
+            if (this.mCursorRow == -1) {
                 return 0;
             }
-            return this.mCursorWindow.getInt(i, columnIndex);
+            return this.mCursorWindow.getInt(this.mCursorRow, columnIndex);
         }
 
-        public void putDouble(int columnIndex, double value) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        void putDouble(int columnIndex, double value) {
+            if (this.mCursorRow == -1) {
                 return;
             }
-            this.mCursorWindow.putDouble(value, i, columnIndex);
+            this.mCursorWindow.putDouble(value, this.mCursorRow, columnIndex);
         }
 
-        public double getDouble(int columnIndex) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        double getDouble(int columnIndex) {
+            if (this.mCursorRow == -1) {
                 return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
             }
-            return this.mCursorWindow.getDouble(i, columnIndex);
+            return this.mCursorWindow.getDouble(this.mCursorRow, columnIndex);
         }
 
-        public void putLong(int columnIndex, long value) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        void putLong(int columnIndex, long value) {
+            if (this.mCursorRow == -1) {
                 return;
             }
-            this.mCursorWindow.putLong(value, i, columnIndex);
+            this.mCursorWindow.putLong(value, this.mCursorRow, columnIndex);
         }
 
-        public long getLong(int columnIndex) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        long getLong(int columnIndex) {
+            if (this.mCursorRow == -1) {
                 return 0L;
             }
-            return this.mCursorWindow.getLong(i, columnIndex);
+            return this.mCursorWindow.getLong(this.mCursorRow, columnIndex);
         }
 
-        public void putString(int columnIndex, String value) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        void putString(int columnIndex, String value) {
+            if (this.mCursorRow == -1) {
                 return;
             }
-            this.mCursorWindow.putString(value, i, columnIndex);
+            this.mCursorWindow.putString(value, this.mCursorRow, columnIndex);
         }
 
-        public String getString(int columnIndex) {
-            int i = this.mCursorRow;
-            if (i == -1) {
+        String getString(int columnIndex) {
+            if (this.mCursorRow == -1) {
                 return null;
             }
-            return this.mCursorWindow.getString(i, columnIndex);
+            return this.mCursorWindow.getString(this.mCursorRow, columnIndex);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class BatteryConsumerDataLayout {
+    static class BatteryConsumerDataLayout {
         private static final Key[] KEY_ARRAY = new Key[0];
+        public static final int POWER_MODEL_NOT_INCLUDED = -1;
         public final int columnCount;
         public final int customPowerComponentCount;
         public final String[] customPowerComponentNames;
         public final int firstCustomConsumedPowerColumn;
         public final int firstCustomUsageDurationColumn;
-        public final Key[][] keys;
+        public final SparseArray<Key> indexedKeys;
+        public final Key[] keys;
+        private Key[][] mPerComponentKeys;
         public final boolean powerModelsIncluded;
+        public final boolean powerStateDataIncluded;
         public final boolean processStateDataIncluded;
-        public final Key[][] processStateKeys;
+        public final boolean screenStateDataIncluded;
         public final int totalConsumedPowerColumnIndex;
 
-        /* synthetic */ BatteryConsumerDataLayout(int i, String[] strArr, boolean z, boolean z2, BatteryConsumerDataLayoutIA batteryConsumerDataLayoutIA) {
-            this(i, strArr, z, z2);
-        }
-
-        private BatteryConsumerDataLayout(int firstColumn, String[] customPowerComponentNames, boolean powerModelsIncluded, boolean includeProcessStateData) {
-            int columnIndex;
+        private BatteryConsumerDataLayout(int firstColumn, String[] customPowerComponentNames, boolean powerModelsIncluded, boolean includeProcessStateData, boolean includeScreenState, boolean includePowerState) {
+            int powerState;
             int i;
-            int columnIndex2;
-            int i2;
-            int processState;
             this.customPowerComponentNames = customPowerComponentNames;
             this.customPowerComponentCount = customPowerComponentNames.length;
             this.powerModelsIncluded = powerModelsIncluded;
             this.processStateDataIncluded = includeProcessStateData;
-            int columnIndex3 = firstColumn + 1;
+            this.screenStateDataIncluded = includeScreenState;
+            this.powerStateDataIncluded = includePowerState;
+            int columnIndex = firstColumn + 1;
             this.totalConsumedPowerColumnIndex = firstColumn;
-            int i3 = 19;
-            this.keys = new Key[19];
-            ArrayList<Key> perComponentKeys = new ArrayList<>();
-            int componentId = 0;
+            ArrayList<Key> keyList = new ArrayList<>();
+            int screenState = 0;
             while (true) {
-                if (componentId >= i3) {
+                int i2 = 3;
+                if (screenState >= 3) {
                     break;
                 }
-                perComponentKeys.clear();
-                if (powerModelsIncluded) {
-                    i = columnIndex3;
-                    columnIndex = columnIndex3 + 1;
-                } else {
-                    columnIndex = columnIndex3;
-                    i = -1;
-                }
-                int columnIndex4 = columnIndex + 1;
-                columnIndex3 = columnIndex4 + 1;
-                perComponentKeys.add(new Key(componentId, 0, i, columnIndex, columnIndex4));
-                if (includeProcessStateData) {
-                    boolean isSupported = false;
-                    int[] iArr = BatteryConsumer.SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE;
-                    int length = iArr.length;
-                    int i4 = 0;
-                    while (true) {
-                        if (i4 >= length) {
-                            break;
-                        }
-                        int id = iArr[i4];
-                        if (id != componentId) {
-                            i4++;
+                if (includeScreenState || screenState == 0) {
+                    int powerState2 = 0;
+                    while (powerState2 < i2) {
+                        if (!includePowerState && powerState2 != 0) {
+                            powerState = powerState2;
+                            i = i2;
                         } else {
-                            isSupported = true;
-                            break;
-                        }
-                    }
-                    if (isSupported) {
-                        int processState2 = 0;
-                        for (int i5 = 5; processState2 < i5; i5 = 5) {
-                            if (processState2 == 0) {
-                                processState = processState2;
-                            } else {
-                                if (powerModelsIncluded) {
-                                    i2 = columnIndex3;
-                                    columnIndex2 = columnIndex3 + 1;
-                                } else {
-                                    columnIndex2 = columnIndex3;
-                                    i2 = -1;
-                                }
-                                int columnIndex5 = columnIndex2 + 1;
-                                processState = processState2;
-                                perComponentKeys.add(new Key(componentId, processState2, i2, columnIndex2, columnIndex5));
-                                columnIndex3 = columnIndex5 + 1;
+                            int componentId = 0;
+                            int columnIndex2 = columnIndex;
+                            while (componentId < 19) {
+                                int i3 = componentId;
+                                int componentId2 = componentId;
+                                int componentId3 = screenState;
+                                columnIndex2 = addKeys(keyList, powerModelsIncluded, includeProcessStateData, i3, componentId3, powerState2, columnIndex2);
+                                componentId = componentId2 + 1;
+                                i2 = i2;
                             }
-                            processState2 = processState + 1;
+                            powerState = powerState2;
+                            i = i2;
+                            columnIndex = columnIndex2;
                         }
+                        powerState2 = powerState + 1;
+                        i2 = i;
                     }
                 }
-                this.keys[componentId] = (Key[]) perComponentKeys.toArray(KEY_ARRAY);
-                componentId++;
-                i3 = 19;
+                screenState++;
             }
-            if (includeProcessStateData) {
-                this.processStateKeys = new Key[5];
-                ArrayList<Key> perProcStateKeys = new ArrayList<>();
-                for (int processState3 = 0; processState3 < 5; processState3++) {
-                    if (processState3 != 0) {
-                        perProcStateKeys.clear();
-                        for (int i6 = 0; i6 < this.keys.length; i6++) {
-                            int j = 0;
-                            while (true) {
-                                Key[] keyArr = this.keys[i6];
-                                if (j < keyArr.length) {
-                                    if (keyArr[j].processState == processState3) {
-                                        perProcStateKeys.add(this.keys[i6][j]);
-                                    }
-                                    j++;
-                                }
-                            }
-                        }
-                        this.processStateKeys[processState3] = (Key[]) perProcStateKeys.toArray(KEY_ARRAY);
-                    }
-                }
-            } else {
-                this.processStateKeys = null;
+            this.firstCustomConsumedPowerColumn = columnIndex;
+            int columnIndex3 = columnIndex + this.customPowerComponentCount;
+            this.firstCustomUsageDurationColumn = columnIndex3;
+            this.columnCount = columnIndex3 + this.customPowerComponentCount;
+            this.keys = (Key[]) keyList.toArray(KEY_ARRAY);
+            this.indexedKeys = new SparseArray<>(this.keys.length);
+            for (int i4 = 0; i4 < this.keys.length; i4++) {
+                Key key = this.keys[i4];
+                int index = keyIndex(key.powerComponent, key.processState, key.screenState, key.powerState);
+                this.indexedKeys.put(index, key);
             }
-            this.firstCustomConsumedPowerColumn = columnIndex3;
-            int i7 = this.customPowerComponentCount;
-            int columnIndex6 = columnIndex3 + i7;
-            this.firstCustomUsageDurationColumn = columnIndex6;
-            this.columnCount = columnIndex6 + i7;
         }
-    }
 
-    public static BatteryConsumerDataLayout createBatteryConsumerDataLayout(String[] customPowerComponentNames, boolean includePowerModels, boolean includeProcessStateData) {
-        int columnCount = Math.max(1, 3);
-        return new BatteryConsumerDataLayout(Math.max(Math.max(columnCount, 5), 2), customPowerComponentNames, includePowerModels, includeProcessStateData);
-    }
+        private int addKeys(List<Key> keys, boolean powerModelsIncluded, boolean includeProcessStateData, int componentId, int screenState, int powerState, int columnIndex) {
+            int columnIndex2;
+            int i;
+            int columnIndex3;
+            int i2;
+            if (powerModelsIncluded) {
+                i = columnIndex;
+                columnIndex2 = columnIndex + 1;
+            } else {
+                columnIndex2 = columnIndex;
+                i = -1;
+            }
+            int columnIndex4 = columnIndex2 + 1;
+            int columnIndex5 = columnIndex4 + 1;
+            keys.add(new Key(componentId, 0, screenState, powerState, i, columnIndex2, columnIndex4));
+            if (includeProcessStateData) {
+                boolean isSupported = BatteryConsumer.SUPPORTED_POWER_COMPONENTS_PER_PROCESS_STATE.binarySearch(componentId) >= 0;
+                if (isSupported) {
+                    int columnIndex6 = columnIndex5;
+                    for (int columnIndex7 = 0; columnIndex7 < 5; columnIndex7++) {
+                        if (columnIndex7 != 0) {
+                            if (powerModelsIncluded) {
+                                i2 = columnIndex6;
+                                columnIndex3 = columnIndex6 + 1;
+                            } else {
+                                columnIndex3 = columnIndex6;
+                                i2 = -1;
+                            }
+                            int columnIndex8 = columnIndex3 + 1;
+                            keys.add(new Key(componentId, columnIndex7, screenState, powerState, i2, columnIndex3, columnIndex8));
+                            columnIndex6 = columnIndex8 + 1;
+                        }
+                    }
+                    int processState = columnIndex6;
+                    return processState;
+                }
+                return columnIndex5;
+            }
+            return columnIndex5;
+        }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* loaded from: classes3.dex */
-    public static abstract class BaseBuilder<T extends BaseBuilder<?>> {
-        protected final BatteryConsumerData mData;
-        protected final PowerComponents.Builder mPowerComponentsBuilder;
+        Key getKey(int componentId, int processState, int screenState, int powerState) {
+            return this.indexedKeys.get(keyIndex(componentId, processState, screenState, powerState));
+        }
 
-        public BaseBuilder(BatteryConsumerData data, int consumerType) {
-            this.mData = data;
-            data.putLong(0, consumerType);
-            this.mPowerComponentsBuilder = new PowerComponents.Builder(data);
+        Key getKeyOrThrow(int componentId, int processState, int screenState, int powerState) {
+            Key key = getKey(componentId, processState, screenState, powerState);
+            if (key == null) {
+                throw new IllegalArgumentException("Unsupported power component ID: " + Key.toString(componentId, processState, screenState, powerState));
+            }
+            return key;
         }
 
         public Key[] getKeys(int componentId) {
-            return this.mData.getKeys(componentId);
+            Key[] componentKeys;
+            synchronized (this) {
+                if (this.mPerComponentKeys == null) {
+                    this.mPerComponentKeys = new Key[19][];
+                }
+                componentKeys = this.mPerComponentKeys[componentId];
+                if (componentKeys == null) {
+                    ArrayList<Key> out = new ArrayList<>();
+                    for (Key key : this.keys) {
+                        if (key.powerComponent == componentId) {
+                            out.add(key);
+                        }
+                    }
+                    componentKeys = (Key[]) out.toArray(new Key[out.size()]);
+                    this.mPerComponentKeys[componentId] = componentKeys;
+                }
+            }
+            return componentKeys;
+        }
+
+        private int keyIndex(int componentId, int processState, int screenState, int powerState) {
+            return (componentId << 7) | (processState << 4) | (screenState << 2) | powerState;
+        }
+    }
+
+    static BatteryConsumerDataLayout createBatteryConsumerDataLayout(String[] customPowerComponentNames, boolean includePowerModels, boolean includeProcessStateData, boolean includeScreenStateData, boolean includePowerStateData) {
+        int columnCount = Math.max(1, 3);
+        return new BatteryConsumerDataLayout(Math.max(Math.max(columnCount, 6), 2), customPowerComponentNames, includePowerModels, includeProcessStateData, includeScreenStateData, includePowerStateData);
+    }
+
+    protected static abstract class BaseBuilder<T extends BaseBuilder<?>> {
+        protected final BatteryConsumerData mData;
+        protected final PowerComponents.Builder mPowerComponentsBuilder;
+
+        public BaseBuilder(BatteryConsumerData data, int consumerType, double minConsumedPowerThreshold) {
+            this.mData = data;
+            data.putLong(0, consumerType);
+            this.mPowerComponentsBuilder = new PowerComponents.Builder(data, minConsumedPowerThreshold);
+        }
+
+        public Key[] getKeys(int componentId) {
+            return this.mData.layout.getKeys(componentId);
         }
 
         public Key getKey(int componentId, int processState) {
-            return this.mData.getKey(componentId, processState);
+            return this.mData.layout.getKey(componentId, processState, 0, 0);
+        }
+
+        public Key getKey(int componentId, int processState, int screenState, int powerState) {
+            return this.mData.layout.getKey(componentId, processState, screenState, powerState);
         }
 
         public T setConsumedPower(int componentId, double componentPower) {
@@ -569,14 +672,32 @@ public abstract class BatteryConsumer {
         }
 
         /* JADX WARN: Multi-variable type inference failed */
+        public T addConsumedPower(int componentId, double componentPower, int powerModel) {
+            this.mPowerComponentsBuilder.addConsumedPower(getKey(componentId, 0), componentPower, powerModel);
+            return this;
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
         public T setConsumedPower(Key key, double componentPower, int powerModel) {
             this.mPowerComponentsBuilder.setConsumedPower(key, componentPower, powerModel);
             return this;
         }
 
         /* JADX WARN: Multi-variable type inference failed */
+        public T addConsumedPower(Key key, double componentPower, int powerModel) {
+            this.mPowerComponentsBuilder.addConsumedPower(key, componentPower, powerModel);
+            return this;
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
         public T setConsumedPowerForCustomComponent(int componentId, double componentPower) {
             this.mPowerComponentsBuilder.setConsumedPowerForCustomComponent(componentId, componentPower);
+            return this;
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        public T addConsumedPowerForCustomComponent(int componentId, double componentPower) {
+            this.mPowerComponentsBuilder.addConsumedPowerForCustomComponent(componentId, componentPower);
             return this;
         }
 

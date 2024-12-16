@@ -12,7 +12,6 @@ public interface ICancelSessionCallback extends IInterface {
 
     void onComplete(int i, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICancelSessionCallback {
         @Override // com.android.internal.telephony.euicc.ICancelSessionCallback
         public void onComplete(int resultCode, byte[] response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ICancelSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICancelSessionCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,27 +65,23 @@ public interface ICancelSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICancelSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICancelSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICancelSessionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ICancelSessionCallback {
+        private static class Proxy implements ICancelSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

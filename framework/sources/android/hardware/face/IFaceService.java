@@ -2,6 +2,7 @@ package android.hardware.face;
 
 import android.Manifest;
 import android.app.ActivityThread;
+import android.hardware.biometrics.AuthenticationStateListener;
 import android.hardware.biometrics.IBiometricSensorReceiver;
 import android.hardware.biometrics.IBiometricServiceLockoutResetCallback;
 import android.hardware.biometrics.IBiometricStateListener;
@@ -44,7 +45,7 @@ public interface IFaceService extends IInterface {
 
     byte[] dumpSensorServiceStateProto(int i, boolean z) throws RemoteException;
 
-    long enroll(int i, IBinder iBinder, byte[] bArr, IFaceServiceReceiver iFaceServiceReceiver, String str, int[] iArr, Surface surface, boolean z) throws RemoteException;
+    long enroll(int i, IBinder iBinder, byte[] bArr, IFaceServiceReceiver iFaceServiceReceiver, String str, int[] iArr, Surface surface, boolean z, FaceEnrollOptions faceEnrollOptions) throws RemoteException;
 
     long enrollRemotely(int i, IBinder iBinder, byte[] bArr, IFaceServiceReceiver iFaceServiceReceiver, String str, int[] iArr) throws RemoteException;
 
@@ -70,7 +71,9 @@ public interface IFaceService extends IInterface {
 
     void prepareForAuthentication(boolean z, IBinder iBinder, long j, IBiometricSensorReceiver iBiometricSensorReceiver, FaceAuthenticateOptions faceAuthenticateOptions, long j2, int i, boolean z2) throws RemoteException;
 
-    void registerAuthenticators(List<FaceSensorPropertiesInternal> list) throws RemoteException;
+    void registerAuthenticationStateListener(AuthenticationStateListener authenticationStateListener) throws RemoteException;
+
+    void registerAuthenticators(FaceSensorConfigurations faceSensorConfigurations) throws RemoteException;
 
     void registerBiometricStateListener(IBiometricStateListener iBiometricStateListener) throws RemoteException;
 
@@ -120,7 +123,8 @@ public interface IFaceService extends IInterface {
 
     void startPreparedClient(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
+    void unregisterAuthenticationStateListener(AuthenticationStateListener authenticationStateListener) throws RemoteException;
+
     public static class Default implements IFaceService {
         @Override // android.hardware.face.IFaceService
         public ITestSession createTestSession(int sensorId, ITestSessionCallback callback, String opPackageName) throws RemoteException {
@@ -173,7 +177,7 @@ public interface IFaceService extends IInterface {
         }
 
         @Override // android.hardware.face.IFaceService
-        public long enroll(int userId, IBinder token, byte[] hardwareAuthToken, IFaceServiceReceiver receiver, String opPackageName, int[] disabledFeatures, Surface previewSurface, boolean debugConsent) throws RemoteException {
+        public long enroll(int userId, IBinder token, byte[] hardwareAuthToken, IFaceServiceReceiver receiver, String opPackageName, int[] disabledFeatures, Surface previewSurface, boolean debugConsent, FaceEnrollOptions options) throws RemoteException {
             return 0L;
         }
 
@@ -248,11 +252,19 @@ public interface IFaceService extends IInterface {
         }
 
         @Override // android.hardware.face.IFaceService
-        public void registerAuthenticators(List<FaceSensorPropertiesInternal> hidlSensors) throws RemoteException {
+        public void registerAuthenticators(FaceSensorConfigurations faceSensorConfigurations) throws RemoteException {
         }
 
         @Override // android.hardware.face.IFaceService
         public void addAuthenticatorsRegisteredCallback(IFaceAuthenticatorsRegisteredCallback callback) throws RemoteException {
+        }
+
+        @Override // android.hardware.face.IFaceService
+        public void registerAuthenticationStateListener(AuthenticationStateListener listener) throws RemoteException {
+        }
+
+        @Override // android.hardware.face.IFaceService
+        public void unregisterAuthenticationStateListener(AuthenticationStateListener listener) throws RemoteException {
         }
 
         @Override // android.hardware.face.IFaceService
@@ -343,7 +355,6 @@ public interface IFaceService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFaceService {
         static final int TRANSACTION_addAuthenticatorsRegisteredCallback = 30;
         static final int TRANSACTION_addLockoutResetCallback = 26;
@@ -368,31 +379,33 @@ public interface IFaceService extends IInterface {
         static final int TRANSACTION_invalidateAuthenticatorId = 23;
         static final int TRANSACTION_isHardwareDetected = 18;
         static final int TRANSACTION_prepareForAuthentication = 7;
+        static final int TRANSACTION_registerAuthenticationStateListener = 31;
         static final int TRANSACTION_registerAuthenticators = 29;
-        static final int TRANSACTION_registerBiometricStateListener = 31;
+        static final int TRANSACTION_registerBiometricStateListener = 33;
         static final int TRANSACTION_remove = 15;
         static final int TRANSACTION_removeAll = 16;
         static final int TRANSACTION_resetLockout = 25;
         static final int TRANSACTION_revokeChallenge = 20;
-        static final int TRANSACTION_scheduleWatchdog = 32;
-        static final int TRANSACTION_semAuthenticate = 33;
-        static final int TRANSACTION_semAuthenticateExt = 34;
-        static final int TRANSACTION_semGetInfo = 40;
-        static final int TRANSACTION_semGetRemainingLockoutTime = 47;
-        static final int TRANSACTION_semGetSecurityLevel = 45;
-        static final int TRANSACTION_semIsEnrollSession = 35;
-        static final int TRANSACTION_semIsFrameworkHandleLockout = 46;
-        static final int TRANSACTION_semIsSessionClose = 44;
-        static final int TRANSACTION_semPauseAuth = 38;
-        static final int TRANSACTION_semPauseEnroll = 36;
-        static final int TRANSACTION_semResetAuthenticationTimeout = 41;
-        static final int TRANSACTION_semResumeAuth = 39;
-        static final int TRANSACTION_semResumeEnroll = 37;
-        static final int TRANSACTION_semSessionClose = 43;
-        static final int TRANSACTION_semSessionOpen = 42;
-        static final int TRANSACTION_semShouldRemoveTemplate = 48;
+        static final int TRANSACTION_scheduleWatchdog = 34;
+        static final int TRANSACTION_semAuthenticate = 35;
+        static final int TRANSACTION_semAuthenticateExt = 36;
+        static final int TRANSACTION_semGetInfo = 42;
+        static final int TRANSACTION_semGetRemainingLockoutTime = 49;
+        static final int TRANSACTION_semGetSecurityLevel = 47;
+        static final int TRANSACTION_semIsEnrollSession = 37;
+        static final int TRANSACTION_semIsFrameworkHandleLockout = 48;
+        static final int TRANSACTION_semIsSessionClose = 46;
+        static final int TRANSACTION_semPauseAuth = 40;
+        static final int TRANSACTION_semPauseEnroll = 38;
+        static final int TRANSACTION_semResetAuthenticationTimeout = 43;
+        static final int TRANSACTION_semResumeAuth = 41;
+        static final int TRANSACTION_semResumeEnroll = 39;
+        static final int TRANSACTION_semSessionClose = 45;
+        static final int TRANSACTION_semSessionOpen = 44;
+        static final int TRANSACTION_semShouldRemoveTemplate = 50;
         static final int TRANSACTION_setFeature = 27;
         static final int TRANSACTION_startPreparedClient = 8;
+        static final int TRANSACTION_unregisterAuthenticationStateListener = 32;
         private final PermissionEnforcer mEnforcer;
 
         public Stub(PermissionEnforcer enforcer) {
@@ -487,40 +500,44 @@ public interface IFaceService extends IInterface {
                 case 30:
                     return "addAuthenticatorsRegisteredCallback";
                 case 31:
-                    return "registerBiometricStateListener";
+                    return "registerAuthenticationStateListener";
                 case 32:
-                    return "scheduleWatchdog";
+                    return "unregisterAuthenticationStateListener";
                 case 33:
-                    return "semAuthenticate";
+                    return "registerBiometricStateListener";
                 case 34:
-                    return "semAuthenticateExt";
+                    return "scheduleWatchdog";
                 case 35:
-                    return "semIsEnrollSession";
+                    return "semAuthenticate";
                 case 36:
-                    return "semPauseEnroll";
+                    return "semAuthenticateExt";
                 case 37:
-                    return "semResumeEnroll";
+                    return "semIsEnrollSession";
                 case 38:
-                    return "semPauseAuth";
+                    return "semPauseEnroll";
                 case 39:
-                    return "semResumeAuth";
+                    return "semResumeEnroll";
                 case 40:
-                    return "semGetInfo";
+                    return "semPauseAuth";
                 case 41:
-                    return "semResetAuthenticationTimeout";
+                    return "semResumeAuth";
                 case 42:
-                    return "semSessionOpen";
+                    return "semGetInfo";
                 case 43:
-                    return "semSessionClose";
+                    return "semResetAuthenticationTimeout";
                 case 44:
-                    return "semIsSessionClose";
+                    return "semSessionOpen";
                 case 45:
-                    return "semGetSecurityLevel";
+                    return "semSessionClose";
                 case 46:
-                    return "semIsFrameworkHandleLockout";
+                    return "semIsSessionClose";
                 case 47:
-                    return "semGetRemainingLockoutTime";
+                    return "semGetSecurityLevel";
                 case 48:
+                    return "semIsFrameworkHandleLockout";
+                case 49:
+                    return "semGetRemainingLockoutTime";
+                case 50:
                     return "semShouldRemoveTemplate";
                 default:
                     return null;
@@ -537,393 +554,402 @@ public interface IFaceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFaceService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFaceService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFaceService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    ITestSessionCallback _arg1 = ITestSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    ITestSession _result = createTestSession(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    byte[] _result2 = dumpSensorServiceStateProto(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<FaceSensorPropertiesInternal> _result3 = getSensorPropertiesInternal(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    FaceSensorPropertiesInternal _result4 = getSensorProperties(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    long _arg14 = data.readLong();
+                    IFaceServiceReceiver _arg22 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    FaceAuthenticateOptions _arg3 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result5 = authenticate(_arg05, _arg14, _arg22, _arg3);
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 6:
+                    IBinder _arg06 = data.readStrongBinder();
+                    IFaceServiceReceiver _arg15 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    FaceAuthenticateOptions _arg23 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result6 = detectFace(_arg06, _arg15, _arg23);
+                    reply.writeNoException();
+                    reply.writeLong(_result6);
+                    return true;
+                case 7:
+                    boolean _arg07 = data.readBoolean();
+                    IBinder _arg16 = data.readStrongBinder();
+                    long _arg24 = data.readLong();
+                    IBiometricSensorReceiver _arg32 = IBiometricSensorReceiver.Stub.asInterface(data.readStrongBinder());
+                    FaceAuthenticateOptions _arg4 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
+                    long _arg5 = data.readLong();
+                    int _arg6 = data.readInt();
+                    boolean _arg7 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    prepareForAuthentication(_arg07, _arg16, _arg24, _arg32, _arg4, _arg5, _arg6, _arg7);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startPreparedClient(_arg08, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    IBinder _arg09 = data.readStrongBinder();
+                    String _arg18 = data.readString();
+                    long _arg25 = data.readLong();
+                    data.enforceNoDataAvail();
+                    cancelAuthentication(_arg09, _arg18, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IBinder _arg010 = data.readStrongBinder();
+                    String _arg19 = data.readString();
+                    long _arg26 = data.readLong();
+                    data.enforceNoDataAvail();
+                    cancelFaceDetect(_arg010, _arg19, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    IBinder _arg110 = data.readStrongBinder();
+                    String _arg27 = data.readString();
+                    long _arg33 = data.readLong();
+                    data.enforceNoDataAvail();
+                    cancelAuthenticationFromService(_arg011, _arg110, _arg27, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    IBinder _arg111 = data.readStrongBinder();
+                    byte[] _arg28 = data.createByteArray();
+                    IFaceServiceReceiver _arg34 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg42 = data.readString();
+                    int[] _arg52 = data.createIntArray();
+                    Surface _arg62 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    boolean _arg72 = data.readBoolean();
+                    FaceEnrollOptions _arg8 = (FaceEnrollOptions) data.readTypedObject(FaceEnrollOptions.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result7 = enroll(_arg012, _arg111, _arg28, _arg34, _arg42, _arg52, _arg62, _arg72, _arg8);
+                    reply.writeNoException();
+                    reply.writeLong(_result7);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    IBinder _arg112 = data.readStrongBinder();
+                    byte[] _arg29 = data.createByteArray();
+                    IFaceServiceReceiver _arg35 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg43 = data.readString();
+                    int[] _arg53 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    long _result8 = enrollRemotely(_arg013, _arg112, _arg29, _arg35, _arg43, _arg53);
+                    reply.writeNoException();
+                    reply.writeLong(_result8);
+                    return true;
+                case 14:
+                    IBinder _arg014 = data.readStrongBinder();
+                    long _arg113 = data.readLong();
+                    data.enforceNoDataAvail();
+                    cancelEnrollment(_arg014, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    IBinder _arg015 = data.readStrongBinder();
+                    int _arg114 = data.readInt();
+                    int _arg210 = data.readInt();
+                    IFaceServiceReceiver _arg36 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg44 = data.readString();
+                    data.enforceNoDataAvail();
+                    remove(_arg015, _arg114, _arg210, _arg36, _arg44);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    IBinder _arg016 = data.readStrongBinder();
+                    int _arg115 = data.readInt();
+                    IFaceServiceReceiver _arg211 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg37 = data.readString();
+                    data.enforceNoDataAvail();
+                    removeAll(_arg016, _arg115, _arg211, _arg37);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    int _arg116 = data.readInt();
+                    String _arg212 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<Face> _result9 = getEnrolledFaces(_arg017, _arg116, _arg212);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    String _arg117 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = isHardwareDetected(_arg018, _arg117);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 19:
+                    IBinder _arg019 = data.readStrongBinder();
+                    int _arg118 = data.readInt();
+                    int _arg213 = data.readInt();
+                    IFaceServiceReceiver _arg38 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg45 = data.readString();
+                    data.enforceNoDataAvail();
+                    generateChallenge(_arg019, _arg118, _arg213, _arg38, _arg45);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    IBinder _arg020 = data.readStrongBinder();
+                    int _arg119 = data.readInt();
+                    int _arg214 = data.readInt();
+                    String _arg39 = data.readString();
+                    long _arg46 = data.readLong();
+                    data.enforceNoDataAvail();
+                    revokeChallenge(_arg020, _arg119, _arg214, _arg39, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    int _arg021 = data.readInt();
+                    int _arg120 = data.readInt();
+                    String _arg215 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = hasEnrolledFaces(_arg021, _arg120, _arg215);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    int _arg121 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = getLockoutModeForUser(_arg022, _arg121);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 23:
+                    int _arg023 = data.readInt();
+                    int _arg122 = data.readInt();
+                    IInvalidationCallback _arg216 = IInvalidationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    invalidateAuthenticatorId(_arg023, _arg122, _arg216);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    int _arg123 = data.readInt();
+                    data.enforceNoDataAvail();
+                    long _result13 = getAuthenticatorId(_arg024, _arg123);
+                    reply.writeNoException();
+                    reply.writeLong(_result13);
+                    return true;
+                case 25:
+                    IBinder _arg025 = data.readStrongBinder();
+                    int _arg124 = data.readInt();
+                    int _arg217 = data.readInt();
+                    byte[] _arg310 = data.createByteArray();
+                    String _arg47 = data.readString();
+                    data.enforceNoDataAvail();
+                    resetLockout(_arg025, _arg124, _arg217, _arg310, _arg47);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    IBiometricServiceLockoutResetCallback _arg026 = IBiometricServiceLockoutResetCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg125 = data.readString();
+                    data.enforceNoDataAvail();
+                    addLockoutResetCallback(_arg026, _arg125);
+                    reply.writeNoException();
+                    return true;
+                case 27:
+                    IBinder _arg027 = data.readStrongBinder();
+                    int _arg126 = data.readInt();
+                    int _arg218 = data.readInt();
+                    boolean _arg311 = data.readBoolean();
+                    byte[] _arg48 = data.createByteArray();
+                    IFaceServiceReceiver _arg54 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg63 = data.readString();
+                    data.enforceNoDataAvail();
+                    setFeature(_arg027, _arg126, _arg218, _arg311, _arg48, _arg54, _arg63);
+                    reply.writeNoException();
+                    return true;
+                case 28:
+                    IBinder _arg028 = data.readStrongBinder();
+                    int _arg127 = data.readInt();
+                    int _arg219 = data.readInt();
+                    IFaceServiceReceiver _arg312 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    String _arg49 = data.readString();
+                    data.enforceNoDataAvail();
+                    getFeature(_arg028, _arg127, _arg219, _arg312, _arg49);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    FaceSensorConfigurations _arg029 = (FaceSensorConfigurations) data.readTypedObject(FaceSensorConfigurations.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerAuthenticators(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    IFaceAuthenticatorsRegisteredCallback _arg030 = IFaceAuthenticatorsRegisteredCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addAuthenticatorsRegisteredCallback(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 31:
+                    AuthenticationStateListener _arg031 = AuthenticationStateListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerAuthenticationStateListener(_arg031);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    AuthenticationStateListener _arg032 = AuthenticationStateListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAuthenticationStateListener(_arg032);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    IBiometricStateListener _arg033 = IBiometricStateListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerBiometricStateListener(_arg033);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    scheduleWatchdog();
+                    return true;
+                case 35:
+                    IBinder _arg034 = data.readStrongBinder();
+                    long _arg128 = data.readLong();
+                    IFaceServiceReceiver _arg220 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    FaceAuthenticateOptions _arg313 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
+                    Bundle _arg410 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    byte[] _arg55 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    long _result14 = semAuthenticate(_arg034, _arg128, _arg220, _arg313, _arg410, _arg55);
+                    reply.writeNoException();
+                    reply.writeLong(_result14);
+                    return true;
+                case 36:
+                    IBinder _arg035 = data.readStrongBinder();
+                    long _arg129 = data.readLong();
+                    IFaceServiceReceiver _arg221 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
+                    FaceAuthenticateOptions _arg314 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
+                    Surface _arg411 = (Surface) data.readTypedObject(Surface.CREATOR);
+                    byte[] _arg56 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    long _result15 = semAuthenticateExt(_arg035, _arg129, _arg221, _arg314, _arg411, _arg56);
+                    reply.writeNoException();
+                    reply.writeLong(_result15);
+                    return true;
+                case 37:
+                    boolean _result16 = semIsEnrollSession();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 38:
+                    semPauseEnroll();
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    semResumeEnroll();
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    semPauseAuth();
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    semResumeAuth();
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg036 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result17 = semGetInfo(_arg036);
+                    reply.writeNoException();
+                    reply.writeString(_result17);
+                    return true;
+                case 43:
+                    boolean _result18 = semResetAuthenticationTimeout();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 44:
+                    semSessionOpen();
+                    reply.writeNoException();
+                    return true;
+                case 45:
+                    semSessionClose();
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    boolean _result19 = semIsSessionClose();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 47:
+                    boolean _arg037 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result20 = semGetSecurityLevel(_arg037);
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 48:
+                    boolean _result21 = semIsFrameworkHandleLockout();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 49:
+                    int _arg038 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result22 = semGetRemainingLockoutTime(_arg038);
+                    reply.writeNoException();
+                    reply.writeInt(_result22);
+                    return true;
+                case 50:
+                    boolean _result23 = semShouldRemoveTemplate();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result23);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            ITestSessionCallback _arg1 = ITestSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            ITestSession _result = createTestSession(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            byte[] _result2 = dumpSensorServiceStateProto(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<FaceSensorPropertiesInternal> _result3 = getSensorPropertiesInternal(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            FaceSensorPropertiesInternal _result4 = getSensorProperties(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            long _arg14 = data.readLong();
-                            IFaceServiceReceiver _arg22 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            FaceAuthenticateOptions _arg3 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result5 = authenticate(_arg05, _arg14, _arg22, _arg3);
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 6:
-                            IBinder _arg06 = data.readStrongBinder();
-                            IFaceServiceReceiver _arg15 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            FaceAuthenticateOptions _arg23 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result6 = detectFace(_arg06, _arg15, _arg23);
-                            reply.writeNoException();
-                            reply.writeLong(_result6);
-                            return true;
-                        case 7:
-                            boolean _arg07 = data.readBoolean();
-                            IBinder _arg16 = data.readStrongBinder();
-                            long _arg24 = data.readLong();
-                            IBiometricSensorReceiver _arg32 = IBiometricSensorReceiver.Stub.asInterface(data.readStrongBinder());
-                            FaceAuthenticateOptions _arg4 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
-                            long _arg5 = data.readLong();
-                            int _arg6 = data.readInt();
-                            boolean _arg7 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            prepareForAuthentication(_arg07, _arg16, _arg24, _arg32, _arg4, _arg5, _arg6, _arg7);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startPreparedClient(_arg08, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            IBinder _arg09 = data.readStrongBinder();
-                            String _arg18 = data.readString();
-                            long _arg25 = data.readLong();
-                            data.enforceNoDataAvail();
-                            cancelAuthentication(_arg09, _arg18, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IBinder _arg010 = data.readStrongBinder();
-                            String _arg19 = data.readString();
-                            long _arg26 = data.readLong();
-                            data.enforceNoDataAvail();
-                            cancelFaceDetect(_arg010, _arg19, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            IBinder _arg110 = data.readStrongBinder();
-                            String _arg27 = data.readString();
-                            long _arg33 = data.readLong();
-                            data.enforceNoDataAvail();
-                            cancelAuthenticationFromService(_arg011, _arg110, _arg27, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            IBinder _arg111 = data.readStrongBinder();
-                            byte[] _arg28 = data.createByteArray();
-                            IFaceServiceReceiver _arg34 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg42 = data.readString();
-                            int[] _arg52 = data.createIntArray();
-                            Surface _arg62 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            boolean _arg72 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            long _result7 = enroll(_arg012, _arg111, _arg28, _arg34, _arg42, _arg52, _arg62, _arg72);
-                            reply.writeNoException();
-                            reply.writeLong(_result7);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            IBinder _arg112 = data.readStrongBinder();
-                            byte[] _arg29 = data.createByteArray();
-                            IFaceServiceReceiver _arg35 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg43 = data.readString();
-                            int[] _arg53 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            long _result8 = enrollRemotely(_arg013, _arg112, _arg29, _arg35, _arg43, _arg53);
-                            reply.writeNoException();
-                            reply.writeLong(_result8);
-                            return true;
-                        case 14:
-                            IBinder _arg014 = data.readStrongBinder();
-                            long _arg113 = data.readLong();
-                            data.enforceNoDataAvail();
-                            cancelEnrollment(_arg014, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            IBinder _arg015 = data.readStrongBinder();
-                            int _arg114 = data.readInt();
-                            int _arg210 = data.readInt();
-                            IFaceServiceReceiver _arg36 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg44 = data.readString();
-                            data.enforceNoDataAvail();
-                            remove(_arg015, _arg114, _arg210, _arg36, _arg44);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            IBinder _arg016 = data.readStrongBinder();
-                            int _arg115 = data.readInt();
-                            IFaceServiceReceiver _arg211 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg37 = data.readString();
-                            data.enforceNoDataAvail();
-                            removeAll(_arg016, _arg115, _arg211, _arg37);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            int _arg116 = data.readInt();
-                            String _arg212 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<Face> _result9 = getEnrolledFaces(_arg017, _arg116, _arg212);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            String _arg117 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = isHardwareDetected(_arg018, _arg117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 19:
-                            IBinder _arg019 = data.readStrongBinder();
-                            int _arg118 = data.readInt();
-                            int _arg213 = data.readInt();
-                            IFaceServiceReceiver _arg38 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg45 = data.readString();
-                            data.enforceNoDataAvail();
-                            generateChallenge(_arg019, _arg118, _arg213, _arg38, _arg45);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            IBinder _arg020 = data.readStrongBinder();
-                            int _arg119 = data.readInt();
-                            int _arg214 = data.readInt();
-                            String _arg39 = data.readString();
-                            long _arg46 = data.readLong();
-                            data.enforceNoDataAvail();
-                            revokeChallenge(_arg020, _arg119, _arg214, _arg39, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            int _arg021 = data.readInt();
-                            int _arg120 = data.readInt();
-                            String _arg215 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = hasEnrolledFaces(_arg021, _arg120, _arg215);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            int _arg121 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = getLockoutModeForUser(_arg022, _arg121);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 23:
-                            int _arg023 = data.readInt();
-                            int _arg122 = data.readInt();
-                            IInvalidationCallback _arg216 = IInvalidationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            invalidateAuthenticatorId(_arg023, _arg122, _arg216);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            int _arg123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            long _result13 = getAuthenticatorId(_arg024, _arg123);
-                            reply.writeNoException();
-                            reply.writeLong(_result13);
-                            return true;
-                        case 25:
-                            IBinder _arg025 = data.readStrongBinder();
-                            int _arg124 = data.readInt();
-                            int _arg217 = data.readInt();
-                            byte[] _arg310 = data.createByteArray();
-                            String _arg47 = data.readString();
-                            data.enforceNoDataAvail();
-                            resetLockout(_arg025, _arg124, _arg217, _arg310, _arg47);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            IBiometricServiceLockoutResetCallback _arg026 = IBiometricServiceLockoutResetCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg125 = data.readString();
-                            data.enforceNoDataAvail();
-                            addLockoutResetCallback(_arg026, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 27:
-                            IBinder _arg027 = data.readStrongBinder();
-                            int _arg126 = data.readInt();
-                            int _arg218 = data.readInt();
-                            boolean _arg311 = data.readBoolean();
-                            byte[] _arg48 = data.createByteArray();
-                            IFaceServiceReceiver _arg54 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg63 = data.readString();
-                            data.enforceNoDataAvail();
-                            setFeature(_arg027, _arg126, _arg218, _arg311, _arg48, _arg54, _arg63);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            IBinder _arg028 = data.readStrongBinder();
-                            int _arg127 = data.readInt();
-                            int _arg219 = data.readInt();
-                            IFaceServiceReceiver _arg312 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            String _arg49 = data.readString();
-                            data.enforceNoDataAvail();
-                            getFeature(_arg028, _arg127, _arg219, _arg312, _arg49);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            List<FaceSensorPropertiesInternal> _arg029 = data.createTypedArrayList(FaceSensorPropertiesInternal.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerAuthenticators(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            IFaceAuthenticatorsRegisteredCallback _arg030 = IFaceAuthenticatorsRegisteredCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addAuthenticatorsRegisteredCallback(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            IBiometricStateListener _arg031 = IBiometricStateListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerBiometricStateListener(_arg031);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            scheduleWatchdog();
-                            reply.writeNoException();
-                            return true;
-                        case 33:
-                            IBinder _arg032 = data.readStrongBinder();
-                            long _arg128 = data.readLong();
-                            IFaceServiceReceiver _arg220 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            FaceAuthenticateOptions _arg313 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
-                            Bundle _arg410 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            byte[] _arg55 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            long _result14 = semAuthenticate(_arg032, _arg128, _arg220, _arg313, _arg410, _arg55);
-                            reply.writeNoException();
-                            reply.writeLong(_result14);
-                            return true;
-                        case 34:
-                            IBinder _arg033 = data.readStrongBinder();
-                            long _arg129 = data.readLong();
-                            IFaceServiceReceiver _arg221 = IFaceServiceReceiver.Stub.asInterface(data.readStrongBinder());
-                            FaceAuthenticateOptions _arg314 = (FaceAuthenticateOptions) data.readTypedObject(FaceAuthenticateOptions.CREATOR);
-                            Surface _arg411 = (Surface) data.readTypedObject(Surface.CREATOR);
-                            byte[] _arg56 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            long _result15 = semAuthenticateExt(_arg033, _arg129, _arg221, _arg314, _arg411, _arg56);
-                            reply.writeNoException();
-                            reply.writeLong(_result15);
-                            return true;
-                        case 35:
-                            boolean _result16 = semIsEnrollSession();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 36:
-                            semPauseEnroll();
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            semResumeEnroll();
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            semPauseAuth();
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            semResumeAuth();
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg034 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result17 = semGetInfo(_arg034);
-                            reply.writeNoException();
-                            reply.writeString(_result17);
-                            return true;
-                        case 41:
-                            boolean _result18 = semResetAuthenticationTimeout();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 42:
-                            semSessionOpen();
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            semSessionClose();
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            boolean _result19 = semIsSessionClose();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 45:
-                            boolean _arg035 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result20 = semGetSecurityLevel(_arg035);
-                            reply.writeNoException();
-                            reply.writeInt(_result20);
-                            return true;
-                        case 46:
-                            boolean _result21 = semIsFrameworkHandleLockout();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 47:
-                            int _arg036 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result22 = semGetRemainingLockoutTime(_arg036);
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 48:
-                            boolean _result23 = semShouldRemoveTemplate();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result23);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFaceService {
+        private static class Proxy implements IFaceService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1141,7 +1167,7 @@ public interface IFaceService extends IInterface {
             }
 
             @Override // android.hardware.face.IFaceService
-            public long enroll(int userId, IBinder token, byte[] hardwareAuthToken, IFaceServiceReceiver receiver, String opPackageName, int[] disabledFeatures, Surface previewSurface, boolean debugConsent) throws RemoteException {
+            public long enroll(int userId, IBinder token, byte[] hardwareAuthToken, IFaceServiceReceiver receiver, String opPackageName, int[] disabledFeatures, Surface previewSurface, boolean debugConsent, FaceEnrollOptions options) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -1154,6 +1180,7 @@ public interface IFaceService extends IInterface {
                     _data.writeIntArray(disabledFeatures);
                     _data.writeTypedObject(previewSurface, 0);
                     _data.writeBoolean(debugConsent);
+                    _data.writeTypedObject(options, 0);
                     this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
@@ -1462,12 +1489,12 @@ public interface IFaceService extends IInterface {
             }
 
             @Override // android.hardware.face.IFaceService
-            public void registerAuthenticators(List<FaceSensorPropertiesInternal> hidlSensors) throws RemoteException {
+            public void registerAuthenticators(FaceSensorConfigurations faceSensorConfigurations) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    _data.writeTypedList(hidlSensors, 0);
+                    _data.writeTypedObject(faceSensorConfigurations, 0);
                     this.mRemote.transact(29, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -1492,7 +1519,7 @@ public interface IFaceService extends IInterface {
             }
 
             @Override // android.hardware.face.IFaceService
-            public void registerBiometricStateListener(IBiometricStateListener listener) throws RemoteException {
+            public void registerAuthenticationStateListener(AuthenticationStateListener listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -1507,15 +1534,42 @@ public interface IFaceService extends IInterface {
             }
 
             @Override // android.hardware.face.IFaceService
-            public void scheduleWatchdog() throws RemoteException {
+            public void unregisterAuthenticationStateListener(AuthenticationStateListener listener) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
                     this.mRemote.transact(32, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.face.IFaceService
+            public void registerBiometricStateListener(IBiometricStateListener listener) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
+                    _data.writeStrongInterface(listener);
+                    this.mRemote.transact(33, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.face.IFaceService
+            public void scheduleWatchdog() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
+                    this.mRemote.transact(34, _data, null, 1);
+                } finally {
                     _data.recycle();
                 }
             }
@@ -1532,7 +1586,7 @@ public interface IFaceService extends IInterface {
                     _data.writeTypedObject(options, 0);
                     _data.writeTypedObject(bundle, 0);
                     _data.writeByteArray(fidoRequestData);
-                    this.mRemote.transact(33, _data, _reply, 0);
+                    this.mRemote.transact(35, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -1554,7 +1608,7 @@ public interface IFaceService extends IInterface {
                     _data.writeTypedObject(options, 0);
                     _data.writeTypedObject(previewSurface, 0);
                     _data.writeByteArray(fidoRequestData);
-                    this.mRemote.transact(34, _data, _reply, 0);
+                    this.mRemote.transact(36, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -1570,7 +1624,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(35, _data, _reply, 0);
+                    this.mRemote.transact(37, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1586,7 +1640,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(36, _data, _reply, 0);
+                    this.mRemote.transact(38, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1600,7 +1654,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(37, _data, _reply, 0);
+                    this.mRemote.transact(39, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1614,7 +1668,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(38, _data, _reply, 0);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1628,7 +1682,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(39, _data, _reply, 0);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1643,7 +1697,7 @@ public interface IFaceService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
                     _data.writeInt(type);
-                    this.mRemote.transact(40, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -1659,7 +1713,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(41, _data, _reply, 0);
+                    this.mRemote.transact(43, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1675,7 +1729,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(42, _data, _reply, 0);
+                    this.mRemote.transact(44, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1689,7 +1743,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(43, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1703,7 +1757,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(44, _data, _reply, 0);
+                    this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1720,7 +1774,7 @@ public interface IFaceService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
                     _data.writeBoolean(isKeyguard);
-                    this.mRemote.transact(45, _data, _reply, 0);
+                    this.mRemote.transact(47, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1736,7 +1790,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(46, _data, _reply, 0);
+                    this.mRemote.transact(48, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1753,7 +1807,7 @@ public interface IFaceService extends IInterface {
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
                     _data.writeInt(userId);
-                    this.mRemote.transact(47, _data, _reply, 0);
+                    this.mRemote.transact(49, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1769,7 +1823,7 @@ public interface IFaceService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(IFaceService.DESCRIPTOR);
-                    this.mRemote.transact(48, _data, _reply, 0);
+                    this.mRemote.transact(50, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1896,6 +1950,14 @@ public interface IFaceService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
         }
 
+        protected void registerAuthenticationStateListener_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
+        }
+
+        protected void unregisterAuthenticationStateListener_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
+        }
+
         protected void scheduleWatchdog_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.USE_BIOMETRIC_INTERNAL, getCallingPid(), getCallingUid());
         }
@@ -1958,7 +2020,7 @@ public interface IFaceService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 47;
+            return 49;
         }
     }
 }

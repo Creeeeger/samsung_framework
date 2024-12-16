@@ -19,7 +19,6 @@ public interface IUserSwitchObserver extends IInterface {
 
     void onUserSwitching(int i, IRemoteCallback iRemoteCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUserSwitchObserver {
         @Override // android.app.IUserSwitchObserver
         public void onBeforeUserSwitching(int newUserId) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IUserSwitchObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUserSwitchObserver {
         public static final String DESCRIPTOR = "android.app.IUserSwitchObserver";
         static final int TRANSACTION_onBeforeUserSwitching = 1;
@@ -103,46 +101,43 @@ public interface IUserSwitchObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBeforeUserSwitching(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    IRemoteCallback _arg1 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onUserSwitching(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUserSwitchComplete(_arg03);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onForegroundProfileSwitch(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onLockedBootComplete(_arg05);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBeforeUserSwitching(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            IRemoteCallback _arg1 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onUserSwitching(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUserSwitchComplete(_arg03);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onForegroundProfileSwitch(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onLockedBootComplete(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUserSwitchObserver {
+        private static class Proxy implements IUserSwitchObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

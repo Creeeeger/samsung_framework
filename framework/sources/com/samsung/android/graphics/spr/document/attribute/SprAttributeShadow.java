@@ -4,7 +4,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAttributeShadow extends SprAttributeBase {
     public float dx;
     public float dy;
@@ -67,8 +67,8 @@ public class SprAttributeShadow extends SprAttributeBase {
 
     @Override // com.samsung.android.graphics.spr.document.attribute.SprAttributeBase
     /* renamed from: clone */
-    public SprAttributeShadow mo8412clone() throws CloneNotSupportedException {
-        SprAttributeShadow attribute = (SprAttributeShadow) super.mo8412clone();
+    public SprAttributeShadow mo8813clone() throws CloneNotSupportedException {
+        SprAttributeShadow attribute = (SprAttributeShadow) super.mo8813clone();
         attribute.radius = this.radius;
         attribute.dx = this.dx;
         attribute.dy = this.dy;

@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemExclusiveTaskManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.ISemExclusiveTaskManager";
 
     List<String> getExclusiveTaskList(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemExclusiveTaskManager {
         @Override // com.samsung.android.sepunion.ISemExclusiveTaskManager
         public List<String> getExclusiveTaskList(String taskName) throws RemoteException {
@@ -26,7 +25,6 @@ public interface ISemExclusiveTaskManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemExclusiveTaskManager {
         static final int TRANSACTION_getExclusiveTaskList = 1;
 
@@ -69,27 +67,24 @@ public interface ISemExclusiveTaskManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemExclusiveTaskManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemExclusiveTaskManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemExclusiveTaskManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result = getExclusiveTaskList(_arg0);
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result = getExclusiveTaskList(_arg0);
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemExclusiveTaskManager {
+        private static class Proxy implements ISemExclusiveTaskManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

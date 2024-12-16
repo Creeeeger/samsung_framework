@@ -28,7 +28,7 @@ public class AlertDialogLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!tryOnMeasure(widthMeasureSpec, heightMeasureSpec)) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
@@ -45,17 +45,17 @@ public class AlertDialogLayout extends LinearLayout {
             if (child.getVisibility() != 8) {
                 int id = child.getId();
                 switch (id) {
-                    case R.id.buttonPanel /* 16908859 */:
+                    case R.id.buttonPanel /* 16908865 */:
                         buttonPanel = child;
                         break;
-                    case R.id.contentPanel /* 16908921 */:
-                    case R.id.customPanel /* 16908963 */:
+                    case R.id.contentPanel /* 16908925 */:
+                    case R.id.customPanel /* 16908970 */:
                         if (middlePanel != null) {
                             return false;
                         }
                         middlePanel = child;
                         break;
-                    case R.id.topPanel /* 16909916 */:
+                    case R.id.topPanel /* 16909930 */:
                         topPanel = child;
                         break;
                     default:
@@ -174,7 +174,7 @@ public class AlertDialogLayout extends LinearLayout {
     }
 
     @Override // android.widget.LinearLayout, android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int childTop;
         int i;
         int layoutGravity;

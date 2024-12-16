@@ -4,7 +4,7 @@ import android.util.Log;
 import com.samsung.android.motionphoto.core.MPClientEventHandler;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MPRecorder {
     private static final String TAG;
     private MPRecorderListener mListener;
@@ -35,9 +35,8 @@ public class MPRecorder {
     public MPRecorder(MPRecorderListener listener) {
         this.mListener = listener;
         String packageName = getClass().getName();
-        int native_setup = native_setup(listener, packageName);
-        this.mToken = native_setup;
-        listener.setToken(native_setup);
+        this.mToken = native_setup(listener, packageName);
+        listener.setToken(this.mToken);
     }
 
     public void release() {
@@ -117,16 +116,14 @@ public class MPRecorder {
     }
 
     public void setErrorListener(MPClientEventHandler.OnErrorListener errorListener) {
-        MPRecorderListener mPRecorderListener = this.mListener;
-        if (mPRecorderListener != null) {
-            mPRecorderListener.setOnErrorListener(errorListener);
+        if (this.mListener != null) {
+            this.mListener.setOnErrorListener(errorListener);
         }
     }
 
     public void setInfoListener(MPClientEventHandler.OnInfoListener infoListener) {
-        MPRecorderListener mPRecorderListener = this.mListener;
-        if (mPRecorderListener != null) {
-            mPRecorderListener.setOnInfoListener(infoListener);
+        if (this.mListener != null) {
+            this.mListener.setOnInfoListener(infoListener);
         }
     }
 

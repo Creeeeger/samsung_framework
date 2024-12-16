@@ -28,7 +28,6 @@ public interface IIncidentCompanion extends IInterface {
 
     void sendReportReadyBroadcast(String str, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncidentCompanion {
         @Override // android.os.IIncidentCompanion
         public void authorizeReport(int callingUid, String callingPackage, String receiverClass, String reportId, int flags, IIncidentAuthListener callback) throws RemoteException {
@@ -79,7 +78,6 @@ public interface IIncidentCompanion extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncidentCompanion {
         static final int TRANSACTION_approveReport = 5;
         static final int TRANSACTION_authorizeReport = 1;
@@ -149,90 +147,86 @@ public interface IIncidentCompanion extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIncidentCompanion.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIncidentCompanion.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIncidentCompanion.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    int _arg4 = data.readInt();
+                    IIncidentAuthListener _arg5 = IIncidentAuthListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    authorizeReport(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+                    return true;
+                case 2:
+                    IIncidentAuthListener _arg02 = IIncidentAuthListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    cancelAuthorization(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendReportReadyBroadcast(_arg03, _arg12);
+                    return true;
+                case 4:
+                    List<String> _result = getPendingReports();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    approveReport(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    denyReport(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<String> _result2 = getIncidentReportList(_arg06, _arg13);
+                    reply.writeNoException();
+                    reply.writeStringList(_result2);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    IncidentManager.IncidentReport _result3 = getIncidentReport(_arg07, _arg14, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    String _arg15 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    deleteIncidentReports(_arg08, _arg15, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    deleteAllIncidentReports(_arg09);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            int _arg4 = data.readInt();
-                            IIncidentAuthListener _arg5 = IIncidentAuthListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            authorizeReport(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
-                            return true;
-                        case 2:
-                            IIncidentAuthListener _arg02 = IIncidentAuthListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            cancelAuthorization(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendReportReadyBroadcast(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            List<String> _result = getPendingReports();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            approveReport(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            denyReport(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<String> _result2 = getIncidentReportList(_arg06, _arg13);
-                            reply.writeNoException();
-                            reply.writeStringList(_result2);
-                            return true;
-                        case 8:
-                            String _arg07 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            IncidentManager.IncidentReport _result3 = getIncidentReport(_arg07, _arg14, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 9:
-                            String _arg08 = data.readString();
-                            String _arg15 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            deleteIncidentReports(_arg08, _arg15, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            deleteAllIncidentReports(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncidentCompanion {
+        private static class Proxy implements IIncidentCompanion {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

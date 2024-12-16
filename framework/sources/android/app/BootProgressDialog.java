@@ -18,7 +18,7 @@ public class BootProgressDialog extends ProgressDialog {
     }
 
     @Override // android.app.ProgressDialog, android.app.AlertDialog, android.app.Dialog
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View decor = getWindow().getDecorView();
         View v = decor.findViewById(R.id.progress_animation);
@@ -29,7 +29,7 @@ public class BootProgressDialog extends ProgressDialog {
         }
         TextView t = (TextView) decor.findViewById(R.id.text_optimizing_apps);
         if (t != null) {
-            t.setText(this.mContext.getString(R.string.boot_progress_dialog_optimizing_apps_ing));
+            t.lambda$setTextAsync$0(this.mContext.getString(R.string.boot_progress_dialog_optimizing_apps_ing));
         }
         View v2 = decor.findViewById(R.id.body);
         if (v2 != null) {

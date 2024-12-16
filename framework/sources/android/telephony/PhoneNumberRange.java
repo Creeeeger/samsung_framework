@@ -9,17 +9,16 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class PhoneNumberRange implements Parcelable {
     public static final Parcelable.Creator<PhoneNumberRange> CREATOR = new Parcelable.Creator<PhoneNumberRange>() { // from class: android.telephony.PhoneNumberRange.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneNumberRange createFromParcel(Parcel in) {
             return new PhoneNumberRange(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneNumberRange[] newArray(int size) {
             return new PhoneNumberRange[size];
@@ -29,27 +28,6 @@ public final class PhoneNumberRange implements Parcelable {
     private final String mLowerBound;
     private final String mPrefix;
     private final String mUpperBound;
-
-    /* synthetic */ PhoneNumberRange(Parcel parcel, PhoneNumberRangeIA phoneNumberRangeIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.telephony.PhoneNumberRange$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhoneNumberRange> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneNumberRange createFromParcel(Parcel in) {
-            return new PhoneNumberRange(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneNumberRange[] newArray(int size) {
-            return new PhoneNumberRange[size];
-        }
-    }
 
     public PhoneNumberRange(String countryCode, String prefix, String lowerBound, String upperBound) {
         validateLowerAndUpperBounds(lowerBound, upperBound);

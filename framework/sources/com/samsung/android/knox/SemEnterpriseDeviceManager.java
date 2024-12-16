@@ -6,7 +6,7 @@ import android.os.RemoteException;
 import android.sec.enterprise.EnterpriseDeviceManager;
 import android.sec.enterprise.IEDMProxy;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEnterpriseDeviceManager {
     private static String TAG = "SemEnterpriseDeviceManager";
     private static SemEnterpriseDeviceManager mSemEnterpriseDeviceManager = null;
@@ -31,6 +31,19 @@ public class SemEnterpriseDeviceManager {
             if (lService != null) {
                 String pn = packageName != null ? packageName : new String();
                 return lService.getApplicationRestrictions(pn, 0);
+            }
+            return new Bundle();
+        } catch (RemoteException re) {
+            throw re.rethrowFromSystemServer();
+        }
+    }
+
+    public Bundle getApplicationRestrictions(String packageName, int userId) {
+        try {
+            IEDMProxy lService = EnterpriseDeviceManager.EDMProxyServiceHelper.getService();
+            if (lService != null) {
+                String pn = packageName != null ? packageName : new String();
+                return lService.getApplicationRestrictions(pn, userId);
             }
             return new Bundle();
         } catch (RemoteException re) {

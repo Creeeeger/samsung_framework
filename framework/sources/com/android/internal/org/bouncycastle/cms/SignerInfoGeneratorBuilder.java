@@ -57,9 +57,8 @@ public class SignerInfoGeneratorBuilder {
         if (this.directSignature) {
             return new SignerInfoGenerator(sigId, contentSigner, this.digestProvider, this.sigEncAlgFinder, true);
         }
-        CMSAttributeTableGenerator cMSAttributeTableGenerator = this.signedGen;
-        if (cMSAttributeTableGenerator != null || this.unsignedGen != null) {
-            if (cMSAttributeTableGenerator == null) {
+        if (this.signedGen != null || this.unsignedGen != null) {
+            if (this.signedGen == null) {
                 this.signedGen = new DefaultSignedAttributeTableGenerator();
             }
             return new SignerInfoGenerator(sigId, contentSigner, this.digestProvider, this.sigEncAlgFinder, this.signedGen, this.unsignedGen);

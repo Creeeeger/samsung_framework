@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface ISoundTriggerHwGlobalCallback extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$soundtrigger3$ISoundTriggerHwGlobalCallback".replace('$', '.');
-    public static final String HASH = "7d8d63478cd50e766d2072140c8aa3457f9fb585";
-    public static final int VERSION = 1;
+    public static final String HASH = "6b24e60ad261e3ff56106efd86ce6aa7ef5621b0";
+    public static final int VERSION = 2;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -18,7 +18,6 @@ public interface ISoundTriggerHwGlobalCallback extends IInterface {
 
     void onResourcesAvailable() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISoundTriggerHwGlobalCallback {
         @Override // android.hardware.soundtrigger3.ISoundTriggerHwGlobalCallback
         public void onResourcesAvailable() throws RemoteException {
@@ -40,7 +39,6 @@ public interface ISoundTriggerHwGlobalCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerHwGlobalCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -73,33 +71,30 @@ public interface ISoundTriggerHwGlobalCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            onResourcesAvailable();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    onResourcesAvailable();
+                    reply.writeNoException();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISoundTriggerHwGlobalCallback {
+        private static class Proxy implements ISoundTriggerHwGlobalCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

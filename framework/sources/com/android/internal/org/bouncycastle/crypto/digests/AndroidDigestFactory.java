@@ -21,10 +21,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getMD5() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getMD5();
+                return CONSCRYPT.getMD5();
             } catch (Exception e) {
             }
         }
@@ -32,10 +31,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getSHA1() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getSHA1();
+                return CONSCRYPT.getSHA1();
             } catch (Exception e) {
             }
         }
@@ -43,10 +41,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getSHA224() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getSHA224();
+                return CONSCRYPT.getSHA224();
             } catch (Exception e) {
             }
         }
@@ -54,10 +51,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getSHA256() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getSHA256();
+                return CONSCRYPT.getSHA256();
             } catch (Exception e) {
             }
         }
@@ -65,10 +61,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getSHA384() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getSHA384();
+                return CONSCRYPT.getSHA384();
             } catch (Exception e) {
             }
         }
@@ -76,10 +71,9 @@ public final class AndroidDigestFactory {
     }
 
     public static Digest getSHA512() {
-        AndroidDigestFactoryInterface androidDigestFactoryInterface = CONSCRYPT;
-        if (androidDigestFactoryInterface != null) {
+        if (CONSCRYPT != null) {
             try {
-                return androidDigestFactoryInterface.getSHA512();
+                return CONSCRYPT.getSHA512();
             } catch (Exception e) {
             }
         }

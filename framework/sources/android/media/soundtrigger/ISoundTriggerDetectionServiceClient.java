@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface ISoundTriggerDetectionServiceClient extends IInterface {
     void onOpFinished(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISoundTriggerDetectionServiceClient {
         @Override // android.media.soundtrigger.ISoundTriggerDetectionServiceClient
         public void onOpFinished(int opId) throws RemoteException {
@@ -22,7 +21,6 @@ public interface ISoundTriggerDetectionServiceClient extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISoundTriggerDetectionServiceClient {
         public static final String DESCRIPTOR = "android.media.soundtrigger.ISoundTriggerDetectionServiceClient";
         static final int TRANSACTION_onOpFinished = 1;
@@ -66,26 +64,22 @@ public interface ISoundTriggerDetectionServiceClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onOpFinished(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onOpFinished(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISoundTriggerDetectionServiceClient {
+        private static class Proxy implements ISoundTriggerDetectionServiceClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

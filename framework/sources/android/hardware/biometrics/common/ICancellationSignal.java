@@ -6,11 +6,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ICancellationSignal extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$biometrics$common$ICancellationSignal".replace('$', '.');
-    public static final String HASH = "a9ebb97f5abea1dc6800b69d821ef61944e80e65";
-    public static final int VERSION = 3;
+    public static final String HASH = "8a6cd86630181a4df6f20056259ec200ffe39209";
+    public static final int VERSION = 4;
 
     void cancel() throws RemoteException;
 
@@ -18,7 +18,6 @@ public interface ICancellationSignal extends IInterface {
 
     int getInterfaceVersion() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ICancellationSignal {
         @Override // android.hardware.biometrics.common.ICancellationSignal
         public void cancel() throws RemoteException {
@@ -40,7 +39,6 @@ public interface ICancellationSignal extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ICancellationSignal {
         static final int TRANSACTION_cancel = 1;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -91,32 +89,29 @@ public interface ICancellationSignal extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
-            switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
-                    return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            cancel();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
             }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (code) {
+                case 1:
+                    cancel();
+                    break;
+            }
+            return true;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ICancellationSignal {
+        private static class Proxy implements ICancellationSignal {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

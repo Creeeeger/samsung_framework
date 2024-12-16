@@ -14,7 +14,6 @@ public interface IMediaRouterClient extends IInterface {
 
     void onStateChanged() throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaRouterClient {
         @Override // android.media.IMediaRouterClient
         public void onStateChanged() throws RemoteException {
@@ -34,7 +33,6 @@ public interface IMediaRouterClient extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaRouterClient {
         public static final String DESCRIPTOR = "android.media.IMediaRouterClient";
         static final int TRANSACTION_onGroupRouteSelected = 3;
@@ -84,32 +82,28 @@ public interface IMediaRouterClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onStateChanged();
+                    return true;
+                case 2:
+                    onRestoreRoute();
+                    return true;
+                case 3:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGroupRouteSelected(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onStateChanged();
-                            return true;
-                        case 2:
-                            onRestoreRoute();
-                            return true;
-                        case 3:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGroupRouteSelected(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaRouterClient {
+        private static class Proxy implements IMediaRouterClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

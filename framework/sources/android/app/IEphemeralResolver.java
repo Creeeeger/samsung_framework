@@ -13,7 +13,6 @@ public interface IEphemeralResolver extends IInterface {
 
     void getEphemeralResolveInfoList(IRemoteCallback iRemoteCallback, int[] iArr, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IEphemeralResolver {
         @Override // android.app.IEphemeralResolver
         public void getEphemeralResolveInfoList(IRemoteCallback callback, int[] digestPrefix, int sequence) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IEphemeralResolver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IEphemeralResolver {
         public static final String DESCRIPTOR = "android.app.IEphemeralResolver";
         static final int TRANSACTION_getEphemeralIntentFilterList = 2;
@@ -76,33 +74,30 @@ public interface IEphemeralResolver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IRemoteCallback _arg0 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    int[] _arg1 = data.createIntArray();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getEphemeralResolveInfoList(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    IRemoteCallback _arg02 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getEphemeralIntentFilterList(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRemoteCallback _arg0 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            int[] _arg1 = data.createIntArray();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getEphemeralResolveInfoList(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            IRemoteCallback _arg02 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getEphemeralIntentFilterList(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IEphemeralResolver {
             private IBinder mRemote;
 

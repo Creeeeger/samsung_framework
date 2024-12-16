@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class AuthenticatorSpec implements Parcelable {
     public static final Parcelable.Creator<AuthenticatorSpec> CREATOR = new Parcelable.Creator<AuthenticatorSpec>() { // from class: android.system.keystore2.AuthenticatorSpec.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticatorSpec createFromParcel(Parcel _aidl_source) {
             AuthenticatorSpec _aidl_out = new AuthenticatorSpec();
@@ -17,6 +15,7 @@ public class AuthenticatorSpec implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthenticatorSpec[] newArray(int _aidl_size) {
             return new AuthenticatorSpec[_aidl_size];
@@ -24,25 +23,6 @@ public class AuthenticatorSpec implements Parcelable {
     };
     public int authenticatorType = 0;
     public long authenticatorId = 0;
-
-    /* renamed from: android.system.keystore2.AuthenticatorSpec$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AuthenticatorSpec> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthenticatorSpec createFromParcel(Parcel _aidl_source) {
-            AuthenticatorSpec _aidl_out = new AuthenticatorSpec();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthenticatorSpec[] newArray(int _aidl_size) {
-            return new AuthenticatorSpec[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

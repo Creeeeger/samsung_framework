@@ -56,7 +56,6 @@ public interface IIrisDaemon extends IInterface {
 
     int setPreviewTarget(IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIrisDaemon {
         @Override // com.samsung.android.camera.iris.IIrisDaemon
         public int authenticate(long sessionId, int groupId, byte[] fidoRequestData) throws RemoteException {
@@ -170,7 +169,6 @@ public interface IIrisDaemon extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIrisDaemon {
         static final int TRANSACTION_authenticate = 1;
         static final int TRANSACTION_cancelAuthentication = 2;
@@ -277,175 +275,172 @@ public interface IIrisDaemon extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIrisDaemon.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIrisDaemon.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIrisDaemon.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    byte[] _arg22 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result = authenticate(_arg0, _arg1, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _result2 = cancelAuthentication();
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    byte[] _arg02 = data.createByteArray();
+                    int _arg12 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = enroll(_arg02, _arg12, _arg23);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _result4 = cancelEnrollment();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    long _result5 = preEnroll();
+                    reply.writeNoException();
+                    reply.writeLong(_result5);
+                    return true;
+                case 6:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result6 = remove(_arg03, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 7:
+                    long _result7 = getAuthenticatorId();
+                    reply.writeNoException();
+                    reply.writeLong(_result7);
+                    return true;
+                case 8:
+                    int _arg04 = data.readInt();
+                    byte[] _arg14 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result8 = setActiveGroup(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    long _result9 = openHal();
+                    reply.writeNoException();
+                    reply.writeLong(_result9);
+                    return true;
+                case 10:
+                    int _result10 = closeHal();
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 11:
+                    IIrisDaemonCallback _arg05 = IIrisDaemonCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    init(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _result11 = postEnroll();
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 13:
+                    int _arg06 = data.readInt();
+                    byte[] _arg15 = data.createByteArray();
+                    int _arg2_length = data.readInt();
+                    if (_arg2_length < 0) {
+                        _arg2 = null;
+                    } else {
+                        _arg2 = new byte[_arg2_length];
+                    }
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = request(_arg06, _arg15, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    reply.writeByteArray(_arg2);
+                    return true;
+                case 14:
+                    ParcelFileDescriptor _arg07 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg16 = data.readInt();
+                    int _arg24 = data.readInt();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    processIRImage(_arg07, _arg16, _arg24, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg08 = data.readString();
+                    String _arg17 = data.readString();
+                    String _arg25 = data.readString();
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendIRProperty(_arg08, _arg17, _arg25, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _result13 = enumerate();
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 17:
+                    int _result14 = cancelEnumeration();
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 18:
+                    ParcelFileDescriptor _arg09 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    int _arg18 = data.readInt();
+                    int _arg26 = data.readInt();
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    processFrontImage(_arg09, _arg18, _arg26, _arg34);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    IBinder _arg010 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result15 = setPreviewTarget(_arg010);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 20:
+                    int _arg011 = data.readInt();
+                    int _arg19 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IBinder _result16 = createInputSurface(_arg011, _arg19, _arg27);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result16);
+                    return true;
+                case 21:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result17 = release(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result17);
+                    return true;
+                case 22:
+                    int _result18 = releasePreviewSurface();
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            byte[] _arg22 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result = authenticate(_arg0, _arg1, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _result2 = cancelAuthentication();
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            byte[] _arg02 = data.createByteArray();
-                            int _arg12 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = enroll(_arg02, _arg12, _arg23);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _result4 = cancelEnrollment();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            long _result5 = preEnroll();
-                            reply.writeNoException();
-                            reply.writeLong(_result5);
-                            return true;
-                        case 6:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result6 = remove(_arg03, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 7:
-                            long _result7 = getAuthenticatorId();
-                            reply.writeNoException();
-                            reply.writeLong(_result7);
-                            return true;
-                        case 8:
-                            int _arg04 = data.readInt();
-                            byte[] _arg14 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result8 = setActiveGroup(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            long _result9 = openHal();
-                            reply.writeNoException();
-                            reply.writeLong(_result9);
-                            return true;
-                        case 10:
-                            int _result10 = closeHal();
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 11:
-                            IIrisDaemonCallback _arg05 = IIrisDaemonCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            init(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _result11 = postEnroll();
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 13:
-                            int _arg06 = data.readInt();
-                            byte[] _arg15 = data.createByteArray();
-                            int _arg2_length = data.readInt();
-                            if (_arg2_length < 0) {
-                                _arg2 = null;
-                            } else {
-                                _arg2 = new byte[_arg2_length];
-                            }
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = request(_arg06, _arg15, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            reply.writeByteArray(_arg2);
-                            return true;
-                        case 14:
-                            ParcelFileDescriptor _arg07 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg16 = data.readInt();
-                            int _arg24 = data.readInt();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            processIRImage(_arg07, _arg16, _arg24, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            String _arg08 = data.readString();
-                            String _arg17 = data.readString();
-                            String _arg25 = data.readString();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendIRProperty(_arg08, _arg17, _arg25, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _result13 = enumerate();
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 17:
-                            int _result14 = cancelEnumeration();
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 18:
-                            ParcelFileDescriptor _arg09 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            int _arg18 = data.readInt();
-                            int _arg26 = data.readInt();
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            processFrontImage(_arg09, _arg18, _arg26, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            IBinder _arg010 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result15 = setPreviewTarget(_arg010);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 20:
-                            int _arg011 = data.readInt();
-                            int _arg19 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IBinder _result16 = createInputSurface(_arg011, _arg19, _arg27);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result16);
-                            return true;
-                        case 21:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result17 = release(_arg012);
-                            reply.writeNoException();
-                            reply.writeInt(_result17);
-                            return true;
-                        case 22:
-                            int _result18 = releasePreviewSurface();
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IIrisDaemon {
             private IBinder mRemote;
 

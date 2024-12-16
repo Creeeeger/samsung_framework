@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class OsAppId implements Parcelable {
     public static final Parcelable.Creator<OsAppId> CREATOR = new Parcelable.Creator<OsAppId>() { // from class: android.hardware.radio.data.OsAppId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OsAppId createFromParcel(Parcel _aidl_source) {
             OsAppId _aidl_out = new OsAppId();
@@ -19,31 +17,13 @@ public class OsAppId implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OsAppId[] newArray(int _aidl_size) {
             return new OsAppId[_aidl_size];
         }
     };
     public byte[] osAppId;
-
-    /* renamed from: android.hardware.radio.data.OsAppId$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OsAppId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OsAppId createFromParcel(Parcel _aidl_source) {
-            OsAppId _aidl_out = new OsAppId();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OsAppId[] newArray(int _aidl_size) {
-            return new OsAppId[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -92,7 +72,7 @@ public class OsAppId implements Parcelable {
     public String toString() {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("osAppId: " + Arrays.toString(this.osAppId));
-        return "android.hardware.radio.data.OsAppId" + _aidl_sj.toString();
+        return "OsAppId" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

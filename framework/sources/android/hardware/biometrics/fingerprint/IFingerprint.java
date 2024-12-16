@@ -8,11 +8,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IFingerprint extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$biometrics$fingerprint$IFingerprint".replace('$', '.');
-    public static final String HASH = "637371b53fb7faf9bd43aa51b72c23852d6e6d96";
-    public static final int VERSION = 3;
+    public static final String HASH = "41a730a7a6b5aa9cebebce70ee5b5e509b0af6fb";
+    public static final int VERSION = 4;
 
     ISession createSession(int i, int i2, ISessionCallback iSessionCallback) throws RemoteException;
 
@@ -22,7 +22,6 @@ public interface IFingerprint extends IInterface {
 
     SensorProps[] getSensorProps() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IFingerprint {
         @Override // android.hardware.biometrics.fingerprint.IFingerprint
         public SensorProps[] getSensorProps() throws RemoteException {
@@ -50,7 +49,6 @@ public interface IFingerprint extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IFingerprint {
         static final int TRANSACTION_createSession = 2;
         static final int TRANSACTION_getInterfaceHash = 16777214;
@@ -104,41 +102,40 @@ public interface IFingerprint extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    SensorProps[] _result = getSensorProps();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeTypedArray(_result, 1);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    ISessionCallback _arg2 = ISessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    ISession _result2 = createSession(_arg0, _arg1, _arg2);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                    reply.writeStrongInterface(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SensorProps[] _result = getSensorProps();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            ISessionCallback _arg2 = ISessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            ISession _result2 = createSession(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IFingerprint {
             private IBinder mRemote;
             private int mCachedVersion = -1;

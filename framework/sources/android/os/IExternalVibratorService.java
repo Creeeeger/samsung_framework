@@ -3,24 +3,17 @@ package android.os;
 /* loaded from: classes3.dex */
 public interface IExternalVibratorService extends IInterface {
     public static final String DESCRIPTOR = "android.os.IExternalVibratorService";
-    public static final int SCALE_HIGH = 1;
-    public static final int SCALE_LOW = -1;
-    public static final int SCALE_MUTE = -100;
-    public static final int SCALE_NONE = 0;
-    public static final int SCALE_VERY_HIGH = 2;
-    public static final int SCALE_VERY_LOW = -2;
 
-    int onExternalVibrationStart(ExternalVibration externalVibration) throws RemoteException;
+    ExternalVibrationScale onExternalVibrationStart(ExternalVibration externalVibration) throws RemoteException;
 
     void onExternalVibrationStop(ExternalVibration externalVibration) throws RemoteException;
 
     boolean shouldIgnoreExternalVibrationLocked(int i, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IExternalVibratorService {
         @Override // android.os.IExternalVibratorService
-        public int onExternalVibrationStart(ExternalVibration vib) throws RemoteException {
-            return 0;
+        public ExternalVibrationScale onExternalVibrationStart(ExternalVibration vib) throws RemoteException {
+            return null;
         }
 
         @Override // android.os.IExternalVibratorService
@@ -38,7 +31,6 @@ public interface IExternalVibratorService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IExternalVibratorService {
         static final int TRANSACTION_onExternalVibrationStart = 1;
         static final int TRANSACTION_onExternalVibrationStop = 2;
@@ -87,42 +79,39 @@ public interface IExternalVibratorService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IExternalVibratorService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IExternalVibratorService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IExternalVibratorService.DESCRIPTOR);
+                case 1:
+                    ExternalVibration _arg0 = (ExternalVibration) data.readTypedObject(ExternalVibration.CREATOR);
+                    data.enforceNoDataAvail();
+                    ExternalVibrationScale _result = onExternalVibrationStart(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ExternalVibration _arg02 = (ExternalVibration) data.readTypedObject(ExternalVibration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onExternalVibrationStop(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = shouldIgnoreExternalVibrationLocked(_arg03, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ExternalVibration _arg0 = (ExternalVibration) data.readTypedObject(ExternalVibration.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result = onExternalVibrationStart(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            ExternalVibration _arg02 = (ExternalVibration) data.readTypedObject(ExternalVibration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onExternalVibrationStop(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = shouldIgnoreExternalVibrationLocked(_arg03, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IExternalVibratorService {
             private IBinder mRemote;
 
@@ -140,7 +129,7 @@ public interface IExternalVibratorService extends IInterface {
             }
 
             @Override // android.os.IExternalVibratorService
-            public int onExternalVibrationStart(ExternalVibration vib) throws RemoteException {
+            public ExternalVibrationScale onExternalVibrationStart(ExternalVibration vib) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -148,7 +137,7 @@ public interface IExternalVibratorService extends IInterface {
                     _data.writeTypedObject(vib, 0);
                     this.mRemote.transact(1, _data, _reply, 0);
                     _reply.readException();
-                    int _result = _reply.readInt();
+                    ExternalVibrationScale _result = (ExternalVibrationScale) _reply.readTypedObject(ExternalVibrationScale.CREATOR);
                     return _result;
                 } finally {
                     _reply.recycle();

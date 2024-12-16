@@ -17,7 +17,7 @@ public abstract class SQLiteTraceExporter implements AutoCloseable {
         open(configuration);
     }
 
-    public void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
+    void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
         for (SQLiteTrace.TraceOperation operation : operations) {
             writeOperation(operation);
         }

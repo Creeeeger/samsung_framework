@@ -17,14 +17,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class RemoteInput implements Parcelable {
     public static final Parcelable.Creator<RemoteInput> CREATOR = new Parcelable.Creator<RemoteInput>() { // from class: android.app.RemoteInput.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteInput createFromParcel(Parcel in) {
             return new RemoteInput(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RemoteInput[] newArray(int size) {
             return new RemoteInput[size];
@@ -50,21 +49,11 @@ public final class RemoteInput implements Parcelable {
     private final String mResultKey;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EditChoicesBeforeSending {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Source {
-    }
-
-    /* synthetic */ RemoteInput(Parcel parcel, RemoteInputIA remoteInputIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ RemoteInput(String str, CharSequence charSequence, CharSequence[] charSequenceArr, int i, int i2, Bundle bundle, ArraySet arraySet, RemoteInputIA remoteInputIA) {
-        this(str, charSequence, charSequenceArr, i, i2, bundle, arraySet);
     }
 
     private RemoteInput(String resultKey, CharSequence label, CharSequence[] choices, int flags, int editChoicesBeforeSending, Bundle extras, ArraySet<String> allowedDataTypes) {
@@ -112,7 +101,6 @@ public final class RemoteInput implements Parcelable {
         return this.mExtras;
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private CharSequence[] mChoices;
         private CharSequence mLabel;
@@ -227,7 +215,7 @@ public final class RemoteInput implements Parcelable {
         if (clipDataIntent == null) {
             return null;
         }
-        return (Bundle) clipDataIntent.getExtras().getParcelable(EXTRA_RESULTS_DATA, Bundle.class);
+        return (Bundle) clipDataIntent.getParcelableExtra(EXTRA_RESULTS_DATA, Bundle.class);
     }
 
     public static void addResultsToIntent(RemoteInput[] remoteInputs, Intent intent, Bundle results) {
@@ -304,23 +292,6 @@ public final class RemoteInput implements Parcelable {
         out.writeInt(this.mEditChoicesBeforeSending);
         out.writeBundle(this.mExtras);
         out.writeArraySet(this.mAllowedDataTypes);
-    }
-
-    /* renamed from: android.app.RemoteInput$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RemoteInput> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteInput createFromParcel(Parcel in) {
-            return new RemoteInput(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RemoteInput[] newArray(int size) {
-            return new RemoteInput[size];
-        }
     }
 
     private static Intent getClipDataIntentFromIntent(Intent intent) {

@@ -12,7 +12,6 @@ public interface IDeviceIdleControllerAdapter extends IInterface {
 
     void exemptAppTemporarilyForEvent(String str, long j, int i, String str2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDeviceIdleControllerAdapter {
         @Override // com.android.internal.telecom.IDeviceIdleControllerAdapter
         public void exemptAppTemporarilyForEvent(String packageName, long duration, int userHandle, String reason) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDeviceIdleControllerAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDeviceIdleControllerAdapter {
         static final int TRANSACTION_exemptAppTemporarilyForEvent = 1;
 
@@ -67,30 +65,26 @@ public interface IDeviceIdleControllerAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceIdleControllerAdapter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceIdleControllerAdapter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceIdleControllerAdapter.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    exemptAppTemporarilyForEvent(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            exemptAppTemporarilyForEvent(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDeviceIdleControllerAdapter {
+        private static class Proxy implements IDeviceIdleControllerAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

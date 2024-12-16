@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public abstract class SinglePressAction implements Action {
     private final Drawable mIcon;
     private final int mIconResId;
@@ -45,9 +45,8 @@ public abstract class SinglePressAction implements Action {
 
     @Override // com.android.internal.globalactions.Action
     public CharSequence getLabelForAccessibility(Context context) {
-        CharSequence charSequence = this.mMessage;
-        if (charSequence != null) {
-            return charSequence;
+        if (this.mMessage != null) {
+            return this.mMessage;
         }
         return context.getString(this.mMessageResId);
     }
@@ -61,27 +60,22 @@ public abstract class SinglePressAction implements Action {
         String status = getStatus();
         if (statusView != null) {
             if (!TextUtils.isEmpty(status)) {
-                statusView.setText(status);
+                statusView.lambda$setTextAsync$0(status);
             } else {
                 statusView.setVisibility(8);
             }
         }
         if (icon != null) {
-            Drawable drawable = this.mIcon;
-            if (drawable != null) {
-                icon.lambda$setImageURIAsync$2(drawable);
+            if (this.mIcon != null) {
+                icon.lambda$setImageURIAsync$0(this.mIcon);
                 icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                int i = this.mIconResId;
-                if (i != 0) {
-                    icon.lambda$setImageURIAsync$2(context.getDrawable(i));
-                }
+            } else if (this.mIconResId != 0) {
+                icon.lambda$setImageURIAsync$0(context.getDrawable(this.mIconResId));
             }
         }
         if (messageView != null) {
-            CharSequence charSequence = this.mMessage;
-            if (charSequence != null) {
-                messageView.setText(charSequence);
+            if (this.mMessage != null) {
+                messageView.lambda$setTextAsync$0(this.mMessage);
             } else {
                 messageView.setText(this.mMessageResId);
             }

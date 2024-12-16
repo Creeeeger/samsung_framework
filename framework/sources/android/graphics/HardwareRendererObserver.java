@@ -11,7 +11,6 @@ public final class HardwareRendererObserver {
     private final OnFrameMetricsAvailableListener mListener;
     private VirtualRefBasePtr mNativePtr;
 
-    /* loaded from: classes.dex */
     public interface OnFrameMetricsAvailableListener {
         void onFrameMetricsAvailable(int i);
     }
@@ -33,7 +32,7 @@ public final class HardwareRendererObserver {
         this.mNativePtr = new VirtualRefBasePtr(nCreateObserver(new WeakReference(this), waitForPresentTime));
     }
 
-    public long getNativeInstance() {
+    long getNativeInstance() {
         return this.mNativePtr.get();
     }
 
@@ -46,6 +45,7 @@ public final class HardwareRendererObserver {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$notifyDataAvailable$0() {
         boolean hasMoreData = true;
         while (hasMoreData) {

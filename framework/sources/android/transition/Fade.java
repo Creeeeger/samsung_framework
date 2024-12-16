@@ -40,7 +40,7 @@ public class Fade extends Visibility {
         transitionValues.values.put(PROPNAME_TRANSITION_ALPHA, Float.valueOf(transitionValues.view.getTransitionAlpha()));
     }
 
-    private Animator createAnimation(View view, float startAlpha, float endAlpha) {
+    private Animator createAnimation(final View view, float startAlpha, float endAlpha) {
         if (startAlpha == endAlpha) {
             return null;
         }
@@ -52,12 +52,6 @@ public class Fade extends Visibility {
         FadeAnimatorListener listener = new FadeAnimatorListener(view);
         anim.addListener(listener);
         addListener(new TransitionListenerAdapter() { // from class: android.transition.Fade.1
-            final /* synthetic */ View val$view;
-
-            AnonymousClass1(View view2) {
-                view = view2;
-            }
-
             @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
             public void onTransitionEnd(Transition transition) {
                 view.setTransitionAlpha(1.0f);
@@ -65,22 +59,6 @@ public class Fade extends Visibility {
             }
         });
         return anim;
-    }
-
-    /* renamed from: android.transition.Fade$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends TransitionListenerAdapter {
-        final /* synthetic */ View val$view;
-
-        AnonymousClass1(View view2) {
-            view = view2;
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionEnd(Transition transition) {
-            view.setTransitionAlpha(1.0f);
-            transition.removeListener(this);
-        }
     }
 
     @Override // android.transition.Visibility
@@ -111,8 +89,7 @@ public class Fade extends Visibility {
         return startAlpha;
     }
 
-    /* loaded from: classes4.dex */
-    public static class FadeAnimatorListener extends AnimatorListenerAdapter {
+    private static class FadeAnimatorListener extends AnimatorListenerAdapter {
         private boolean mLayerTypeChanged = false;
         private final View mView;
 

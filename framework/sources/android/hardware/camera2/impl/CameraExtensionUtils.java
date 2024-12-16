@@ -4,23 +4,24 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.params.OutputConfiguration;
 import android.hardware.camera2.utils.SurfaceUtils;
 import android.os.Handler;
+import android.util.IntArray;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
+import com.android.internal.camera.flags.Flags;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class CameraExtensionUtils {
     public static final int JPEG_DEFAULT_QUALITY = 100;
     public static final int JPEG_DEFAULT_ROTATION = 0;
-    public static final int[] SUPPORTED_CAPTURE_OUTPUT_FORMATS = {35, 256};
+    public static final int[] SUPPORTED_CAPTURE_OUTPUT_FORMATS = {35, 256, 4101};
     private static final String TAG = "CameraExtensionUtils";
 
-    /* loaded from: classes.dex */
     public static class SurfaceInfo {
         public int mWidth = 0;
         public int mHeight = 0;
@@ -28,7 +29,6 @@ public final class CameraExtensionUtils {
         public long mUsage = 0;
     }
 
-    /* loaded from: classes.dex */
     public static final class HandlerExecutor implements Executor {
         private final Handler mHandler;
 
@@ -59,6 +59,10 @@ public final class CameraExtensionUtils {
             surfaceInfo.mFormat = 256;
             return surfaceInfo;
         }
+        if (nativeFormat == 33 && dataspace == 4101) {
+            surfaceInfo.mFormat = 4101;
+            return surfaceInfo;
+        }
         return surfaceInfo;
     }
 
@@ -67,12 +71,19 @@ public final class CameraExtensionUtils {
             return null;
         }
         SurfaceInfo surfaceInfo = querySurface(outputConfig.getSurface());
+        if (Flags.extension10Bit()) {
+            Size postviewSize = new Size(surfaceInfo.mWidth, surfaceInfo.mHeight);
+            if (supportedPostviewSizes.get(Integer.valueOf(surfaceInfo.mFormat)).contains(postviewSize)) {
+                return outputConfig.getSurface();
+            }
+            throw new IllegalArgumentException("Postview size not supported!");
+        }
         if (surfaceInfo.mFormat == captureFormat) {
             if (!supportedPostviewSizes.containsKey(Integer.valueOf(captureFormat))) {
                 return null;
             }
-            Size postviewSize = new Size(surfaceInfo.mWidth, surfaceInfo.mHeight);
-            if (supportedPostviewSizes.get(Integer.valueOf(surfaceInfo.mFormat)).contains(postviewSize)) {
+            Size postviewSize2 = new Size(surfaceInfo.mWidth, surfaceInfo.mHeight);
+            if (supportedPostviewSizes.get(Integer.valueOf(surfaceInfo.mFormat)).contains(postviewSize2)) {
                 return outputConfig.getSurface();
             }
             throw new IllegalArgumentException("Postview size not supported!");
@@ -81,9 +92,14 @@ public final class CameraExtensionUtils {
     }
 
     public static Surface getBurstCaptureSurface(List<OutputConfiguration> outputConfigs, HashMap<Integer, List<Size>> supportedCaptureSizes) {
+        IntArray supportedCaptureOutputFormats = new IntArray(SUPPORTED_CAPTURE_OUTPUT_FORMATS.length);
+        supportedCaptureOutputFormats.addAll(SUPPORTED_CAPTURE_OUTPUT_FORMATS);
+        if (Flags.extension10Bit()) {
+            supportedCaptureOutputFormats.add(54);
+        }
         for (OutputConfiguration config : outputConfigs) {
             SurfaceInfo surfaceInfo = querySurface(config.getSurface());
-            for (int supportedFormat : SUPPORTED_CAPTURE_OUTPUT_FORMATS) {
+            for (int supportedFormat : supportedCaptureOutputFormats.toArray()) {
                 if (surfaceInfo.mFormat == supportedFormat) {
                     Size captureSize = new Size(surfaceInfo.mWidth, surfaceInfo.mHeight);
                     if (supportedCaptureSizes.containsKey(Integer.valueOf(supportedFormat))) {

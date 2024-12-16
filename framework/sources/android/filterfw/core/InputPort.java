@@ -24,16 +24,14 @@ public abstract class InputPort extends FilterPort {
     @Override // android.filterfw.core.FilterPort
     public void open() {
         super.open();
-        OutputPort outputPort = this.mSourcePort;
-        if (outputPort != null && !outputPort.isOpen()) {
+        if (this.mSourcePort != null && !this.mSourcePort.isOpen()) {
             this.mSourcePort.open();
         }
     }
 
     @Override // android.filterfw.core.FilterPort
     public void close() {
-        OutputPort outputPort = this.mSourcePort;
-        if (outputPort != null && outputPort.isOpen()) {
+        if (this.mSourcePort != null && this.mSourcePort.isOpen()) {
             this.mSourcePort.close();
         }
         super.close();
@@ -44,16 +42,14 @@ public abstract class InputPort extends FilterPort {
     }
 
     public Filter getSourceFilter() {
-        OutputPort outputPort = this.mSourcePort;
-        if (outputPort == null) {
+        if (this.mSourcePort == null) {
             return null;
         }
-        return outputPort.getFilter();
+        return this.mSourcePort.getFilter();
     }
 
     public FrameFormat getSourceFormat() {
-        OutputPort outputPort = this.mSourcePort;
-        return outputPort != null ? outputPort.getPortFormat() : getPortFormat();
+        return this.mSourcePort != null ? this.mSourcePort.getPortFormat() : getPortFormat();
     }
 
     public Object getTarget() {

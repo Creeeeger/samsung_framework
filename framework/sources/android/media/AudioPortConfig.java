@@ -13,7 +13,7 @@ public class AudioPortConfig {
     final AudioPort mPort;
     private final int mSamplingRate;
 
-    public AudioPortConfig(AudioPort port, int samplingRate, int channelMask, int format, AudioGainConfig gain) {
+    AudioPortConfig(AudioPort port, int samplingRate, int channelMask, int format, AudioGainConfig gain) {
         this.mPort = port;
         this.mSamplingRate = samplingRate;
         this.mChannelMask = channelMask;

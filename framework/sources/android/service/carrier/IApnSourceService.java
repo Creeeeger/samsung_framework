@@ -13,7 +13,6 @@ public interface IApnSourceService extends IInterface {
 
     ContentValues[] getApns(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IApnSourceService {
         @Override // android.service.carrier.IApnSourceService
         public ContentValues[] getApns(int subId) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IApnSourceService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IApnSourceService {
         static final int TRANSACTION_getApns = 1;
 
@@ -69,26 +67,23 @@ public interface IApnSourceService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IApnSourceService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IApnSourceService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IApnSourceService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ContentValues[] _result = getApns(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ContentValues[] _result = getApns(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IApnSourceService {
             private IBinder mRemote;
 

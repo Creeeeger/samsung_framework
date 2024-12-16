@@ -10,9 +10,7 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class DevicePolicyDrawableResource implements Parcelable {
     public static final Parcelable.Creator<DevicePolicyDrawableResource> CREATOR = new Parcelable.Creator<DevicePolicyDrawableResource>() { // from class: android.app.admin.DevicePolicyDrawableResource.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DevicePolicyDrawableResource createFromParcel(Parcel in) {
             String drawableId = in.readString();
@@ -23,6 +21,7 @@ public final class DevicePolicyDrawableResource implements Parcelable {
             return new DevicePolicyDrawableResource(drawableId, drawableStyle, drawableSource, resourceIdInCallingPackage, resource);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DevicePolicyDrawableResource[] newArray(int size) {
             return new DevicePolicyDrawableResource[size];
@@ -33,10 +32,6 @@ public final class DevicePolicyDrawableResource implements Parcelable {
     private final String mDrawableStyle;
     private ParcelableResource mResource;
     private final int mResourceIdInCallingPackage;
-
-    /* synthetic */ DevicePolicyDrawableResource(String str, String str2, String str3, int i, ParcelableResource parcelableResource, DevicePolicyDrawableResourceIA devicePolicyDrawableResourceIA) {
-        this(str, str2, str3, i, parcelableResource);
-    }
 
     public DevicePolicyDrawableResource(Context context, String drawableId, String drawableStyle, String drawableSource, int resourceIdInCallingPackage) {
         this(drawableId, drawableStyle, drawableSource, resourceIdInCallingPackage, new ParcelableResource(context, resourceIdInCallingPackage, 1));
@@ -108,27 +103,5 @@ public final class DevicePolicyDrawableResource implements Parcelable {
         dest.writeString(this.mDrawableSource);
         dest.writeInt(this.mResourceIdInCallingPackage);
         dest.writeTypedObject(this.mResource, flags);
-    }
-
-    /* renamed from: android.app.admin.DevicePolicyDrawableResource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DevicePolicyDrawableResource> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DevicePolicyDrawableResource createFromParcel(Parcel in) {
-            String drawableId = in.readString();
-            String drawableStyle = in.readString();
-            String drawableSource = in.readString();
-            int resourceIdInCallingPackage = in.readInt();
-            ParcelableResource resource = (ParcelableResource) in.readTypedObject(ParcelableResource.CREATOR);
-            return new DevicePolicyDrawableResource(drawableId, drawableStyle, drawableSource, resourceIdInCallingPackage, resource);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DevicePolicyDrawableResource[] newArray(int size) {
-            return new DevicePolicyDrawableResource[size];
-        }
     }
 }

@@ -16,7 +16,6 @@ public interface IRecognitionServiceManager extends IInterface {
 
     void setTemporaryComponent(ComponentName componentName) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecognitionServiceManager {
         @Override // android.speech.IRecognitionServiceManager
         public void createSession(ComponentName componentName, IBinder clientToken, boolean onDevice, IRecognitionServiceManagerCallback callback) throws RemoteException {
@@ -32,7 +31,6 @@ public interface IRecognitionServiceManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecognitionServiceManager {
         static final int TRANSACTION_createSession = 1;
         static final int TRANSACTION_setTemporaryComponent = 2;
@@ -78,34 +76,30 @@ public interface IRecognitionServiceManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRecognitionServiceManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRecognitionServiceManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRecognitionServiceManager.DESCRIPTOR);
+                case 1:
+                    ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    boolean _arg2 = data.readBoolean();
+                    IRecognitionServiceManagerCallback _arg3 = IRecognitionServiceManagerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createSession(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    setTemporaryComponent(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ComponentName _arg0 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            boolean _arg2 = data.readBoolean();
-                            IRecognitionServiceManagerCallback _arg3 = IRecognitionServiceManagerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createSession(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            setTemporaryComponent(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecognitionServiceManager {
+        private static class Proxy implements IRecognitionServiceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

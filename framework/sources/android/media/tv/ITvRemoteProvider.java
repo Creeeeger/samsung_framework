@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvRemoteProvider extends IInterface {
     void onInputBridgeConnected(IBinder iBinder) throws RemoteException;
 
     void setRemoteServiceInputSink(ITvRemoteServiceInput iTvRemoteServiceInput) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvRemoteProvider {
         @Override // android.media.tv.ITvRemoteProvider
         public void setRemoteServiceInputSink(ITvRemoteServiceInput tvServiceInput) throws RemoteException {
@@ -29,7 +28,6 @@ public interface ITvRemoteProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvRemoteProvider {
         public static final String DESCRIPTOR = "android.media.tv.ITvRemoteProvider";
         static final int TRANSACTION_onInputBridgeConnected = 2;
@@ -76,30 +74,27 @@ public interface ITvRemoteProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    ITvRemoteServiceInput _arg02 = ITvRemoteServiceInput.Stub.asInterface(_arg0);
+                    data.enforceNoDataAvail();
+                    setRemoteServiceInputSink(_arg02);
+                    return true;
+                case 2:
+                    IBinder _arg03 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onInputBridgeConnected(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            ITvRemoteServiceInput _arg02 = ITvRemoteServiceInput.Stub.asInterface(_arg0);
-                            data.enforceNoDataAvail();
-                            setRemoteServiceInputSink(_arg02);
-                            return true;
-                        case 2:
-                            IBinder _arg03 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onInputBridgeConnected(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ITvRemoteProvider {
             private IBinder mRemote;
 

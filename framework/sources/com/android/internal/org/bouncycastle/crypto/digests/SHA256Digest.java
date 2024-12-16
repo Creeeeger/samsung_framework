@@ -2,7 +2,6 @@ package com.android.internal.org.bouncycastle.crypto.digests;
 
 import com.android.internal.org.bouncycastle.util.Memoable;
 import com.android.internal.org.bouncycastle.util.Pack;
-import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 
 /* loaded from: classes5.dex */
 public class SHA256Digest extends GeneralDigest implements EncodableDigest {
@@ -40,8 +39,7 @@ public class SHA256Digest extends GeneralDigest implements EncodableDigest {
         this.H6 = t.H6;
         this.H7 = t.H7;
         this.H8 = t.H8;
-        int[] iArr = t.X;
-        System.arraycopy(iArr, 0, this.X, 0, iArr.length);
+        System.arraycopy(t.X, 0, this.X, 0, t.X.length);
         this.xOff = t.xOff;
     }
 
@@ -74,17 +72,14 @@ public class SHA256Digest extends GeneralDigest implements EncodableDigest {
 
     @Override // com.android.internal.org.bouncycastle.crypto.digests.GeneralDigest
     protected void processWord(byte[] in, int inOff) {
-        int n = in[inOff] << SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT;
+        int n = in[inOff] << 24;
         int inOff2 = inOff + 1;
         int n2 = n | ((in[inOff2] & 255) << 16);
         int inOff3 = inOff2 + 1;
-        int n3 = n2 | ((in[inOff3] & 255) << 8) | (in[inOff3 + 1] & 255);
-        int[] iArr = this.X;
-        int i = this.xOff;
-        iArr[i] = n3;
-        int i2 = i + 1;
-        this.xOff = i2;
-        if (i2 == 16) {
+        this.X[this.xOff] = n2 | ((in[inOff3] & 255) << 8) | (in[inOff3 + 1] & 255);
+        int i = this.xOff + 1;
+        this.xOff = i;
+        if (i == 16) {
             processBlock();
         }
     }
@@ -94,9 +89,8 @@ public class SHA256Digest extends GeneralDigest implements EncodableDigest {
         if (this.xOff > 14) {
             processBlock();
         }
-        int[] iArr = this.X;
-        iArr[14] = (int) (bitLength >>> 32);
-        iArr[15] = (int) ((-1) & bitLength);
+        this.X[14] = (int) (bitLength >>> 32);
+        this.X[15] = (int) ((-1) & bitLength);
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.Digest
@@ -126,25 +120,15 @@ public class SHA256Digest extends GeneralDigest implements EncodableDigest {
         this.H7 = 528734635;
         this.H8 = 1541459225;
         this.xOff = 0;
-        int i = 0;
-        while (true) {
-            int[] iArr = this.X;
-            if (i != iArr.length) {
-                iArr[i] = 0;
-                i++;
-            } else {
-                return;
-            }
+        for (int i = 0; i != this.X.length; i++) {
+            this.X[i] = 0;
         }
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.digests.GeneralDigest
     protected void processBlock() {
         for (int t = 16; t <= 63; t++) {
-            int[] iArr = this.X;
-            int Theta1 = Theta1(iArr[t - 2]);
-            int[] iArr2 = this.X;
-            iArr[t] = Theta1 + iArr2[t - 7] + Theta0(iArr2[t - 15]) + this.X[t - 16];
+            this.X[t] = Theta1(this.X[t - 2]) + this.X[t - 7] + Theta0(this.X[t - 15]) + this.X[t - 16];
         }
         int a = this.H1;
         int b = this.H2;
@@ -156,37 +140,35 @@ public class SHA256Digest extends GeneralDigest implements EncodableDigest {
         int h = this.H8;
         int t2 = 0;
         for (int i = 0; i < 8; i++) {
-            int Sum1 = Sum1(e) + Ch(e, f, g);
-            int[] iArr3 = K;
-            int h2 = h + Sum1 + iArr3[t2] + this.X[t2];
+            int h2 = h + Sum1(e) + Ch(e, f, g) + K[t2] + this.X[t2];
             int d2 = d + h2;
             int h3 = h2 + Sum0(a) + Maj(a, b, c);
             int t3 = t2 + 1;
-            int g2 = g + Sum1(d2) + Ch(d2, e, f) + iArr3[t3] + this.X[t3];
+            int g2 = g + Sum1(d2) + Ch(d2, e, f) + K[t3] + this.X[t3];
             int c2 = c + g2;
             int g3 = g2 + Sum0(h3) + Maj(h3, a, b);
             int t4 = t3 + 1;
-            int f2 = f + Sum1(c2) + Ch(c2, d2, e) + iArr3[t4] + this.X[t4];
+            int f2 = f + Sum1(c2) + Ch(c2, d2, e) + K[t4] + this.X[t4];
             int b2 = b + f2;
             int f3 = f2 + Sum0(g3) + Maj(g3, h3, a);
             int t5 = t4 + 1;
-            int e2 = e + Sum1(b2) + Ch(b2, c2, d2) + iArr3[t5] + this.X[t5];
+            int e2 = e + Sum1(b2) + Ch(b2, c2, d2) + K[t5] + this.X[t5];
             int a2 = a + e2;
             int e3 = e2 + Sum0(f3) + Maj(f3, g3, h3);
             int t6 = t5 + 1;
-            int d3 = d2 + Sum1(a2) + Ch(a2, b2, c2) + iArr3[t6] + this.X[t6];
+            int d3 = d2 + Sum1(a2) + Ch(a2, b2, c2) + K[t6] + this.X[t6];
             h = h3 + d3;
             d = d3 + Sum0(e3) + Maj(e3, f3, g3);
             int t7 = t6 + 1;
-            int c3 = c2 + Sum1(h) + Ch(h, a2, b2) + iArr3[t7] + this.X[t7];
+            int c3 = c2 + Sum1(h) + Ch(h, a2, b2) + K[t7] + this.X[t7];
             g = g3 + c3;
             c = c3 + Sum0(d) + Maj(d, e3, f3);
             int t8 = t7 + 1;
-            int b3 = b2 + Sum1(g) + Ch(g, h, a2) + iArr3[t8] + this.X[t8];
+            int b3 = b2 + Sum1(g) + Ch(g, h, a2) + K[t8] + this.X[t8];
             f = f3 + b3;
             b = b3 + Sum0(c) + Maj(c, d, e3);
             int t9 = t8 + 1;
-            int a3 = a2 + Sum1(f) + Ch(f, g, h) + iArr3[t9] + this.X[t9];
+            int a3 = a2 + Sum1(f) + Ch(f, g, h) + K[t9] + this.X[t9];
             e = e3 + a3;
             a = a3 + Sum0(b) + Maj(b, c, d);
             t2 = t9 + 1;

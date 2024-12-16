@@ -1,6 +1,7 @@
 package android.app.admin;
 
 import android.annotation.SystemApi;
+import android.app.admin.flags.Flags;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,14 +17,13 @@ public final class PackagePermissionPolicyKey extends PolicyKey {
     private static final String ATTR_PACKAGE_NAME = "package-name";
     private static final String ATTR_PERMISSION_NAME = "permission-name";
     public static final Parcelable.Creator<PackagePermissionPolicyKey> CREATOR = new Parcelable.Creator<PackagePermissionPolicyKey>() { // from class: android.app.admin.PackagePermissionPolicyKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePermissionPolicyKey createFromParcel(Parcel source) {
             return new PackagePermissionPolicyKey(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PackagePermissionPolicyKey[] newArray(int size) {
             return new PackagePermissionPolicyKey[size];
@@ -32,12 +32,12 @@ public final class PackagePermissionPolicyKey extends PolicyKey {
     private final String mPackageName;
     private final String mPermissionName;
 
-    /* synthetic */ PackagePermissionPolicyKey(Parcel parcel, PackagePermissionPolicyKeyIA packagePermissionPolicyKeyIA) {
-        this(parcel);
-    }
-
     public PackagePermissionPolicyKey(String identifier, String packageName, String permissionName) {
         super(identifier);
+        if (Flags.devicePolicySizeTrackingInternalBugFixEnabled()) {
+            PolicySizeVerifier.enforceMaxPackageNameLength(packageName);
+            PolicySizeVerifier.enforceMaxStringLength(permissionName, "permissionName");
+        }
         this.mPackageName = (String) Objects.requireNonNull(packageName);
         this.mPermissionName = (String) Objects.requireNonNull(permissionName);
     }
@@ -120,22 +120,5 @@ public final class PackagePermissionPolicyKey extends PolicyKey {
         dest.writeString(getIdentifier());
         dest.writeString(this.mPackageName);
         dest.writeString(this.mPermissionName);
-    }
-
-    /* renamed from: android.app.admin.PackagePermissionPolicyKey$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PackagePermissionPolicyKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePermissionPolicyKey createFromParcel(Parcel source) {
-            return new PackagePermissionPolicyKey(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PackagePermissionPolicyKey[] newArray(int size) {
-            return new PackagePermissionPolicyKey[size];
-        }
     }
 }

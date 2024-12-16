@@ -24,7 +24,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ImgpDecorateFilter extends DecorateFilter {
     private static final String TAG = Def.tagOf((Class<?>) ImgpDecorateFilter.class);
     private MediaFilter postFilter;
@@ -32,7 +32,7 @@ public class ImgpDecorateFilter extends DecorateFilter {
     private MediaFilter preFilter;
     private ImgpDescriptor preImgpDescriptor;
 
-    public ImgpDecorateFilter(MediaFilter filter) {
+    ImgpDecorateFilter(MediaFilter filter) {
         super(filter);
     }
 
@@ -60,8 +60,7 @@ public class ImgpDecorateFilter extends DecorateFilter {
 
     @Override // com.samsung.android.sume.core.filter.DecorateFilter, com.samsung.android.sume.core.functional.Operator
     public MutableMediaBuffer run(final MediaBuffer ibuf, final MutableMediaBuffer obuf) {
-        String str = TAG;
-        Log.d(str, "run: pre=" + this.preImgpDescriptor + ", post=" + this.postImgpDescriptor);
+        Log.d(TAG, "run: pre=" + this.preImgpDescriptor + ", post=" + this.postImgpDescriptor);
         SplitType splitType = (SplitType) Optional.ofNullable(this.preImgpDescriptor).map(new Function() { // from class: com.samsung.android.sume.core.filter.ImgpDecorateFilter$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
@@ -140,11 +139,8 @@ public class ImgpDecorateFilter extends DecorateFilter {
             MediaBuffer buffer = MediaBuffer.groupOf(input.asRef().copy(), obuf.asList());
             buffer.setFlags(2);
             obuf.put(buffer);
-        } else {
-            MediaFilter mediaFilter = this.postFilter;
-            if (mediaFilter != null) {
-                mediaFilter.run(obuf.reset(), obuf);
-            }
+        } else if (this.postFilter != null) {
+            this.postFilter.run(obuf.reset(), obuf);
         }
         boolean keepFilterDataType = Stream.of((Object[]) new MFDescriptor[]{getDescriptor(), this.postImgpDescriptor}).anyMatch(new Predicate() { // from class: com.samsung.android.sume.core.filter.ImgpDecorateFilter$$ExternalSyntheticLambda7
             @Override // java.util.function.Predicate
@@ -155,7 +151,7 @@ public class ImgpDecorateFilter extends DecorateFilter {
             }
         });
         if (!keepFilterDataType) {
-            Log.d(str, "convert output data-type to one of input");
+            Log.d(TAG, "convert output data-type to one of input");
             obuf.put((MediaBuffer) UniImgp.ofCvtData().run(obuf.get(), MediaBuffer.mutableOf(MediaFormat.imageOf(orgFormat.getDataType()))));
         }
         obuf.addExtra(obuf.getExtra());
@@ -163,25 +159,25 @@ public class ImgpDecorateFilter extends DecorateFilter {
         if (ibuf != input) {
             input.release();
         }
-        Log.d(str, "ret: obuf=" + obuf);
+        Log.d(TAG, "ret: obuf=" + obuf);
         return obuf;
     }
 
-    public static /* synthetic */ boolean lambda$run$1(MutableMediaBuffer output, int it) {
+    static /* synthetic */ boolean lambda$run$1(MutableMediaBuffer output, int it) {
         return it == ((Integer) output.getExtra("force-rotate")).intValue();
     }
 
-    public static /* synthetic */ DataType lambda$run$2(MutableMediaBuffer output, MutableMediaFormat it) {
+    static /* synthetic */ DataType lambda$run$2(MutableMediaBuffer output, MutableMediaFormat it) {
         DataType dataType = it.getDataType();
         return dataType == DataType.NONE ? output.getFormat().getDataType() : dataType;
     }
 
-    public static /* synthetic */ ColorFormat lambda$run$3(MutableMediaBuffer output, MutableMediaFormat it) {
+    static /* synthetic */ ColorFormat lambda$run$3(MutableMediaBuffer output, MutableMediaFormat it) {
         ColorFormat cf = it.getColorFormat();
         return cf == ColorFormat.NONE ? output.getFormat().getColorFormat() : cf;
     }
 
-    public static /* synthetic */ void lambda$run$4(float scaleY, float scaleX, MediaBuffer e) {
+    static /* synthetic */ void lambda$run$4(float scaleY, float scaleX, MediaBuffer e) {
         if (e.containsAllExtra("roi-on-block", "roi-on-image")) {
             Rect roiOnBlock = (Rect) e.getExtra("roi-on-block");
             roiOnBlock.top = (int) (roiOnBlock.top * scaleY);

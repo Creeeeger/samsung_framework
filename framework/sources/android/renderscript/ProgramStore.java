@@ -13,7 +13,6 @@ public class ProgramStore extends BaseObj {
     boolean mDepthMask;
     boolean mDither;
 
-    /* loaded from: classes3.dex */
     public enum DepthFunc {
         ALWAYS(0),
         LESS(1),
@@ -30,7 +29,6 @@ public class ProgramStore extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public enum BlendSrcFunc {
         ZERO(0),
         ONE(1),
@@ -49,7 +47,6 @@ public class ProgramStore extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public enum BlendDstFunc {
         ZERO(0),
         ONE(1),
@@ -155,7 +152,6 @@ public class ProgramStore extends BaseObj {
         return rs.mProgramStore_BLEND_ALPHA_DEPTH_NO_DEPTH;
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         boolean mDither;
         RenderScript mRS;

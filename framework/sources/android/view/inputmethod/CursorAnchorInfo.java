@@ -16,14 +16,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class CursorAnchorInfo implements Parcelable {
     public static final Parcelable.Creator<CursorAnchorInfo> CREATOR = new Parcelable.Creator<CursorAnchorInfo>() { // from class: android.view.inputmethod.CursorAnchorInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorAnchorInfo createFromParcel(Parcel source) {
             return new CursorAnchorInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CursorAnchorInfo[] newArray(int size) {
             return new CursorAnchorInfo[size];
@@ -107,27 +106,21 @@ public final class CursorAnchorInfo implements Parcelable {
         if (hashCode() != that.hashCode() || this.mSelectionStart != that.mSelectionStart || this.mSelectionEnd != that.mSelectionEnd || this.mInsertionMarkerFlags != that.mInsertionMarkerFlags || !areSameFloatImpl(this.mInsertionMarkerHorizontal, that.mInsertionMarkerHorizontal) || !areSameFloatImpl(this.mInsertionMarkerTop, that.mInsertionMarkerTop) || !areSameFloatImpl(this.mInsertionMarkerBaseline, that.mInsertionMarkerBaseline) || !areSameFloatImpl(this.mInsertionMarkerBottom, that.mInsertionMarkerBottom) || !Objects.equals(this.mCharacterBoundsArray, that.mCharacterBoundsArray) || !Objects.equals(this.mEditorBoundsInfo, that.mEditorBoundsInfo) || !Arrays.equals(this.mVisibleLineBounds, that.mVisibleLineBounds) || this.mComposingTextStart != that.mComposingTextStart || !Objects.equals(this.mComposingText, that.mComposingText) || this.mMatrixValues.length != that.mMatrixValues.length) {
             return false;
         }
-        int i = 0;
-        while (true) {
-            float[] fArr = this.mMatrixValues;
-            if (i >= fArr.length) {
-                if (!Objects.equals(this.mTextAppearanceInfo, that.mTextAppearanceInfo)) {
-                    return false;
-                }
-                return true;
-            }
-            if (fArr[i] != that.mMatrixValues[i]) {
+        for (int i = 0; i < this.mMatrixValues.length; i++) {
+            if (this.mMatrixValues[i] != that.mMatrixValues[i]) {
                 return false;
             }
-            i++;
         }
+        if (!Objects.equals(this.mTextAppearanceInfo, that.mTextAppearanceInfo)) {
+            return false;
+        }
+        return true;
     }
 
     public String toString() {
         return "CursorAnchorInfo{mHashCode=" + this.mHashCode + " mSelection=" + this.mSelectionStart + "," + this.mSelectionEnd + " mComposingTextStart=" + this.mComposingTextStart + " mComposingText=" + ((Object) this.mComposingText) + " mInsertionMarkerFlags=" + this.mInsertionMarkerFlags + " mInsertionMarkerHorizontal=" + this.mInsertionMarkerHorizontal + " mInsertionMarkerTop=" + this.mInsertionMarkerTop + " mInsertionMarkerBaseline=" + this.mInsertionMarkerBaseline + " mInsertionMarkerBottom=" + this.mInsertionMarkerBottom + " mCharacterBoundsArray=" + this.mCharacterBoundsArray + " mEditorBoundsInfo=" + this.mEditorBoundsInfo + " mVisibleLineBounds=" + getVisibleLineBounds() + " mMatrix=" + Arrays.toString(this.mMatrixValues) + " mTextAppearanceInfo=" + this.mTextAppearanceInfo + "}";
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private static final int LINE_BOUNDS_INITIAL_SIZE = 4;
         private int mSelectionStart = -1;
@@ -203,25 +196,25 @@ public final class CursorAnchorInfo implements Parcelable {
         }
 
         public Builder addVisibleLineBounds(float left, float top, float right, float bottom) {
-            float[] fArr = this.mVisibleLineBounds;
-            int length = fArr.length;
-            int i = this.mVisibleLineBoundsCount;
-            if (length <= i + 4) {
-                this.mVisibleLineBounds = Arrays.copyOf(fArr, (i + 4) * 2);
+            if (this.mVisibleLineBounds.length <= this.mVisibleLineBoundsCount + 4) {
+                this.mVisibleLineBounds = Arrays.copyOf(this.mVisibleLineBounds, (this.mVisibleLineBoundsCount + 4) * 2);
             }
+            float[] fArr = this.mVisibleLineBounds;
+            int i = this.mVisibleLineBoundsCount;
+            this.mVisibleLineBoundsCount = i + 1;
+            fArr[i] = left;
             float[] fArr2 = this.mVisibleLineBounds;
             int i2 = this.mVisibleLineBoundsCount;
-            int i3 = i2 + 1;
-            this.mVisibleLineBoundsCount = i3;
-            fArr2[i2] = left;
-            int i4 = i3 + 1;
-            this.mVisibleLineBoundsCount = i4;
-            fArr2[i3] = top;
-            int i5 = i4 + 1;
-            this.mVisibleLineBoundsCount = i5;
-            fArr2[i4] = right;
-            this.mVisibleLineBoundsCount = i5 + 1;
-            fArr2[i5] = bottom;
+            this.mVisibleLineBoundsCount = i2 + 1;
+            fArr2[i2] = top;
+            float[] fArr3 = this.mVisibleLineBounds;
+            int i3 = this.mVisibleLineBoundsCount;
+            this.mVisibleLineBoundsCount = i3 + 1;
+            fArr3[i3] = right;
+            float[] fArr4 = this.mVisibleLineBounds;
+            int i4 = this.mVisibleLineBoundsCount;
+            this.mVisibleLineBoundsCount = i4 + 1;
+            fArr4[i4] = bottom;
             return this;
         }
 
@@ -232,8 +225,7 @@ public final class CursorAnchorInfo implements Parcelable {
 
         public CursorAnchorInfo build() {
             if (!this.mMatrixInitialized) {
-                SparseRectFArray.SparseRectFArrayBuilder sparseRectFArrayBuilder = this.mCharacterBoundsArrayBuilder;
-                boolean hasCharacterBounds = (sparseRectFArrayBuilder == null || sparseRectFArrayBuilder.isEmpty()) ? false : true;
+                boolean hasCharacterBounds = (this.mCharacterBoundsArrayBuilder == null || this.mCharacterBoundsArrayBuilder.isEmpty()) ? false : true;
                 boolean hasVisibleLineBounds = this.mVisibleLineBounds != null && this.mVisibleLineBoundsCount > 0;
                 if (hasCharacterBounds || hasVisibleLineBounds || !Float.isNaN(this.mInsertionMarkerHorizontal) || !Float.isNaN(this.mInsertionMarkerTop) || !Float.isNaN(this.mInsertionMarkerBaseline) || !Float.isNaN(this.mInsertionMarkerBottom)) {
                     throw new IllegalArgumentException("Coordinate transformation matrix is required when positional parameters are specified.");
@@ -253,9 +245,8 @@ public final class CursorAnchorInfo implements Parcelable {
             this.mInsertionMarkerBaseline = Float.NaN;
             this.mInsertionMarkerBottom = Float.NaN;
             this.mMatrixInitialized = false;
-            SparseRectFArray.SparseRectFArrayBuilder sparseRectFArrayBuilder = this.mCharacterBoundsArrayBuilder;
-            if (sparseRectFArrayBuilder != null) {
-                sparseRectFArrayBuilder.reset();
+            if (this.mCharacterBoundsArrayBuilder != null) {
+                this.mCharacterBoundsArrayBuilder.reset();
             }
             this.mEditorBoundsInfo = null;
             clearVisibleLineBounds();
@@ -263,6 +254,7 @@ public final class CursorAnchorInfo implements Parcelable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static CursorAnchorInfo create(Builder builder) {
         SparseRectFArray characterBoundsArray;
         if (builder.mCharacterBoundsArrayBuilder != null) {
@@ -294,8 +286,8 @@ public final class CursorAnchorInfo implements Parcelable {
         this.mMatrixValues = matrixValues;
         this.mVisibleLineBounds = visibleLineBounds;
         this.mTextAppearanceInfo = textAppearanceInfo;
-        int hashCode = Objects.hashCode(composingText);
-        this.mHashCode = (hashCode * 31) + Arrays.hashCode(matrixValues);
+        int hashCode = Objects.hashCode(this.mComposingText);
+        this.mHashCode = (hashCode * 31) + Arrays.hashCode(this.mMatrixValues);
     }
 
     public static CursorAnchorInfo createForAdditionalParentMatrix(CursorAnchorInfo original, Matrix parentMatrix) {
@@ -351,19 +343,17 @@ public final class CursorAnchorInfo implements Parcelable {
     }
 
     public RectF getCharacterBounds(int index) {
-        SparseRectFArray sparseRectFArray = this.mCharacterBoundsArray;
-        if (sparseRectFArray == null) {
+        if (this.mCharacterBoundsArray == null) {
             return null;
         }
-        return sparseRectFArray.get(index);
+        return this.mCharacterBoundsArray.get(index);
     }
 
     public int getCharacterBoundsFlags(int index) {
-        SparseRectFArray sparseRectFArray = this.mCharacterBoundsArray;
-        if (sparseRectFArray == null) {
+        if (this.mCharacterBoundsArray == null) {
             return 0;
         }
-        return sparseRectFArray.getFlags(index, 0);
+        return this.mCharacterBoundsArray.getFlags(index, 0);
     }
 
     public List<RectF> getVisibleLineBounds() {
@@ -373,11 +363,10 @@ public final class CursorAnchorInfo implements Parcelable {
         List<RectF> result = new ArrayList<>(this.mVisibleLineBounds.length / 4);
         int index = 0;
         while (index < this.mVisibleLineBounds.length) {
-            float[] fArr = this.mVisibleLineBounds;
             int index2 = index + 1;
             int index3 = index2 + 1;
             int index4 = index3 + 1;
-            RectF rectF = new RectF(fArr[index], fArr[index2], fArr[index3], fArr[index4]);
+            RectF rectF = new RectF(this.mVisibleLineBounds[index], this.mVisibleLineBounds[index2], this.mVisibleLineBounds[index3], this.mVisibleLineBounds[index4]);
             result.add(rectF);
             index = index4 + 1;
         }
@@ -396,23 +385,6 @@ public final class CursorAnchorInfo implements Parcelable {
         Matrix matrix = new Matrix();
         matrix.setValues(this.mMatrixValues);
         return matrix;
-    }
-
-    /* renamed from: android.view.inputmethod.CursorAnchorInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CursorAnchorInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CursorAnchorInfo createFromParcel(Parcel source) {
-            return new CursorAnchorInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CursorAnchorInfo[] newArray(int size) {
-            return new CursorAnchorInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

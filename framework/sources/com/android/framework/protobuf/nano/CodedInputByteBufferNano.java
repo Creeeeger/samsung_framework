@@ -3,7 +3,7 @@ package com.android.framework.protobuf.nano;
 import com.samsung.android.graphics.spr.document.animator.SprAnimatorBase;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class CodedInputByteBufferNano {
     private static final int DEFAULT_RECURSION_LIMIT = 64;
     private static final int DEFAULT_SIZE_LIMIT = 67108864;
@@ -31,12 +31,11 @@ public final class CodedInputByteBufferNano {
             this.lastTag = 0;
             return 0;
         }
-        int readRawVarint32 = readRawVarint32();
-        this.lastTag = readRawVarint32;
-        if (readRawVarint32 == 0) {
+        this.lastTag = readRawVarint32();
+        if (this.lastTag == 0) {
             throw InvalidProtocolBufferNanoException.invalidTag();
         }
-        return readRawVarint32;
+        return this.lastTag;
     }
 
     public void checkLastTagWas(int value) throws InvalidProtocolBufferNanoException {
@@ -114,10 +113,8 @@ public final class CodedInputByteBufferNano {
 
     public String readString() throws IOException {
         int size = readRawVarint32();
-        int i = this.bufferSize;
-        int i2 = this.bufferPos;
-        if (size <= i - i2 && size > 0) {
-            String result = new String(this.buffer, i2, size, InternalNano.UTF_8);
+        if (size <= this.bufferSize - this.bufferPos && size > 0) {
+            String result = new String(this.buffer, this.bufferPos, size, InternalNano.UTF_8);
             this.bufferPos += size;
             return result;
         }
@@ -125,11 +122,10 @@ public final class CodedInputByteBufferNano {
     }
 
     public void readGroup(MessageNano msg, int fieldNumber) throws IOException {
-        int i = this.recursionDepth;
-        if (i >= this.recursionLimit) {
+        if (this.recursionDepth >= this.recursionLimit) {
             throw InvalidProtocolBufferNanoException.recursionLimitExceeded();
         }
-        this.recursionDepth = i + 1;
+        this.recursionDepth++;
         msg.mergeFrom(this);
         checkLastTagWas(WireFormatNano.makeTag(fieldNumber, 4));
         this.recursionDepth--;
@@ -150,11 +146,9 @@ public final class CodedInputByteBufferNano {
 
     public byte[] readBytes() throws IOException {
         int size = readRawVarint32();
-        int i = this.bufferSize;
-        int i2 = this.bufferPos;
-        if (size <= i - i2 && size > 0) {
+        if (size <= this.bufferSize - this.bufferPos && size > 0) {
             byte[] result = new byte[size];
-            System.arraycopy(this.buffer, i2, result, 0, size);
+            System.arraycopy(this.buffer, this.bufferPos, result, 0, size);
             this.bufferPos += size;
             return result;
         }
@@ -206,7 +200,7 @@ public final class CodedInputByteBufferNano {
         int result3 = result2 | ((tmp3 & Byte.MAX_VALUE) << 14);
         byte tmp4 = readRawByte();
         if (tmp4 >= 0) {
-            return result3 | (tmp4 << SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT);
+            return result3 | (tmp4 << 21);
         }
         int result4 = result3 | ((tmp4 & Byte.MAX_VALUE) << 21);
         byte tmp5 = readRawByte();
@@ -305,17 +299,14 @@ public final class CodedInputByteBufferNano {
     }
 
     private void recomputeBufferSizeAfterLimit() {
-        int i = this.bufferSize + this.bufferSizeAfterLimit;
-        this.bufferSize = i;
+        this.bufferSize += this.bufferSizeAfterLimit;
         int bufferEnd = this.bufferSize;
-        int i2 = this.currentLimit;
-        if (bufferEnd > i2) {
-            int i3 = bufferEnd - i2;
-            this.bufferSizeAfterLimit = i3;
-            this.bufferSize = i - i3;
-            return;
+        if (bufferEnd > this.currentLimit) {
+            this.bufferSizeAfterLimit = bufferEnd - this.currentLimit;
+            this.bufferSize -= this.bufferSizeAfterLimit;
+        } else {
+            this.bufferSizeAfterLimit = 0;
         }
-        this.bufferSizeAfterLimit = 0;
     }
 
     public void popLimit(int oldLimit) {
@@ -324,12 +315,11 @@ public final class CodedInputByteBufferNano {
     }
 
     public int getBytesUntilLimit() {
-        int i = this.currentLimit;
-        if (i == Integer.MAX_VALUE) {
+        if (this.currentLimit == Integer.MAX_VALUE) {
             return -1;
         }
         int currentAbsolutePosition = this.bufferPos;
-        return i - currentAbsolutePosition;
+        return this.currentLimit - currentAbsolutePosition;
     }
 
     public boolean isAtEnd() {
@@ -351,23 +341,21 @@ public final class CodedInputByteBufferNano {
     }
 
     public void rewindToPosition(int position) {
-        int i = this.bufferPos;
-        int i2 = this.bufferStart;
-        if (position > i - i2) {
+        if (position > this.bufferPos - this.bufferStart) {
             throw new IllegalArgumentException("Position " + position + " is beyond current " + (this.bufferPos - this.bufferStart));
         }
         if (position < 0) {
             throw new IllegalArgumentException("Bad position " + position);
         }
-        this.bufferPos = i2 + position;
+        this.bufferPos = this.bufferStart + position;
     }
 
     public byte readRawByte() throws IOException {
-        int i = this.bufferPos;
-        if (i == this.bufferSize) {
+        if (this.bufferPos == this.bufferSize) {
             throw InvalidProtocolBufferNanoException.truncatedMessage();
         }
         byte[] bArr = this.buffer;
+        int i = this.bufferPos;
         this.bufferPos = i + 1;
         return bArr[i];
     }
@@ -376,16 +364,13 @@ public final class CodedInputByteBufferNano {
         if (size < 0) {
             throw InvalidProtocolBufferNanoException.negativeSize();
         }
-        int i = this.bufferPos;
-        int i2 = i + size;
-        int i3 = this.currentLimit;
-        if (i2 > i3) {
-            skipRawBytes(i3 - i);
+        if (this.bufferPos + size > this.currentLimit) {
+            skipRawBytes(this.currentLimit - this.bufferPos);
             throw InvalidProtocolBufferNanoException.truncatedMessage();
         }
-        if (size <= this.bufferSize - i) {
+        if (size <= this.bufferSize - this.bufferPos) {
             byte[] bytes = new byte[size];
-            System.arraycopy(this.buffer, i, bytes, 0, size);
+            System.arraycopy(this.buffer, this.bufferPos, bytes, 0, size);
             this.bufferPos += size;
             return bytes;
         }
@@ -396,21 +381,18 @@ public final class CodedInputByteBufferNano {
         if (size < 0) {
             throw InvalidProtocolBufferNanoException.negativeSize();
         }
-        int i = this.bufferPos;
-        int i2 = i + size;
-        int i3 = this.currentLimit;
-        if (i2 > i3) {
-            skipRawBytes(i3 - i);
+        if (this.bufferPos + size > this.currentLimit) {
+            skipRawBytes(this.currentLimit - this.bufferPos);
             throw InvalidProtocolBufferNanoException.truncatedMessage();
         }
-        if (size <= this.bufferSize - i) {
-            this.bufferPos = i + size;
+        if (size <= this.bufferSize - this.bufferPos) {
+            this.bufferPos += size;
             return;
         }
         throw InvalidProtocolBufferNanoException.truncatedMessage();
     }
 
-    public Object readPrimitiveField(int type) throws IOException {
+    Object readPrimitiveField(int type) throws IOException {
         switch (type) {
             case 1:
                 return Double.valueOf(readDouble());

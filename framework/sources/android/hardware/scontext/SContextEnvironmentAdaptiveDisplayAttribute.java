@@ -30,8 +30,7 @@ public class SContextEnvironmentAdaptiveDisplayAttribute extends SContextAttribu
             Log.e(TAG, "The color threshold value is wrong.");
             return false;
         }
-        int i = this.mDuration;
-        if (i < 0 || i > 255) {
+        if (this.mDuration < 0 || this.mDuration > 255) {
             Log.e(TAG, "The duration value is wrong.");
             return false;
         }

@@ -24,8 +24,7 @@ public final class MediaDescrambler implements AutoCloseable {
     private boolean mIsAidlHal;
     private long mNativeContext;
 
-    /* loaded from: classes2.dex */
-    public interface DescramblerWrapper {
+    private interface DescramblerWrapper {
         IHwBinder asBinder();
 
         int descramble(ByteBuffer byteBuffer, ByteBuffer byteBuffer2, MediaCodec.CryptoInfo cryptoInfo) throws RemoteException;
@@ -37,15 +36,17 @@ public final class MediaDescrambler implements AutoCloseable {
         void setMediaCasSession(byte[] bArr) throws RemoteException;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final native int native_descramble(byte b, byte b2, int i, int[] iArr, int[] iArr2, ByteBuffer byteBuffer, int i2, int i3, ByteBuffer byteBuffer2, int i4, int i5) throws RemoteException;
 
     private static final native void native_init();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_release();
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final native void native_setup(IHwBinder iHwBinder);
 
-    /* loaded from: classes2.dex */
     private class AidlDescrambler implements DescramblerWrapper {
         IDescrambler mAidlDescrambler;
 
@@ -83,7 +84,6 @@ public final class MediaDescrambler implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes2.dex */
     private class HidlDescrambler implements DescramblerWrapper {
         IDescramblerBase mHidlDescrambler;
 
@@ -145,6 +145,7 @@ public final class MediaDescrambler implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final void cleanupAndRethrowIllegalState() {
         this.mIDescrambler = null;
         throw new IllegalStateException();
@@ -156,11 +157,12 @@ public final class MediaDescrambler implements AutoCloseable {
                 if (MediaCas.getService() != null) {
                     this.mIDescrambler = new AidlDescrambler(MediaCas.getService().createDescrambler(CA_system_id));
                     this.mIsAidlHal = true;
-                } else if (MediaCas.getServiceHidl() != null) {
+                } else {
+                    if (MediaCas.getServiceHidl() == null) {
+                        throw new Exception("No CAS service found!");
+                    }
                     this.mIDescrambler = new HidlDescrambler(MediaCas.getServiceHidl().createDescrambler(CA_system_id));
                     this.mIsAidlHal = false;
-                } else {
-                    throw new Exception("No CAS service found!");
                 }
                 if (this.mIDescrambler == null) {
                     throw new MediaCasException.UnsupportedCasException("Unsupported CA_system_id " + CA_system_id);
@@ -168,13 +170,15 @@ public final class MediaDescrambler implements AutoCloseable {
             } catch (Exception e) {
                 Log.e(TAG, "Failed to create descrambler: " + e);
                 this.mIDescrambler = null;
-                throw new MediaCasException.UnsupportedCasException("Unsupported CA_system_id " + CA_system_id);
+                if (this.mIDescrambler == null) {
+                    throw new MediaCasException.UnsupportedCasException("Unsupported CA_system_id " + CA_system_id);
+                }
             }
         } catch (Throwable th) {
-            if (this.mIDescrambler == null) {
-                throw new MediaCasException.UnsupportedCasException("Unsupported CA_system_id " + CA_system_id);
+            if (this.mIDescrambler != null) {
+                throw th;
             }
-            throw th;
+            throw new MediaCasException.UnsupportedCasException("Unsupported CA_system_id " + CA_system_id);
         }
     }
 
@@ -182,7 +186,7 @@ public final class MediaDescrambler implements AutoCloseable {
         return this.mIsAidlHal;
     }
 
-    public IHwBinder getBinder() {
+    IHwBinder getBinder() {
         validateInternalStates();
         return this.mIDescrambler.asBinder();
     }
@@ -236,10 +240,9 @@ public final class MediaDescrambler implements AutoCloseable {
 
     @Override // java.lang.AutoCloseable
     public void close() {
-        DescramblerWrapper descramblerWrapper = this.mIDescrambler;
-        if (descramblerWrapper != null) {
+        if (this.mIDescrambler != null) {
             try {
-                descramblerWrapper.release();
+                this.mIDescrambler.release();
             } catch (RemoteException e) {
             } catch (Throwable th) {
                 this.mIDescrambler = null;

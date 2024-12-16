@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.IBinder;
 import com.samsung.android.sepunion.IOneHandService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class OneHandServiceManager {
     private static final String TAG = OneHandServiceManager.class.getSimpleName();
     private Context mContext;

@@ -3,17 +3,16 @@ package com.android.ims.internal.uce.common;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class UceLong implements Parcelable {
     public static final Parcelable.Creator<UceLong> CREATOR = new Parcelable.Creator<UceLong>() { // from class: com.android.ims.internal.uce.common.UceLong.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UceLong createFromParcel(Parcel source) {
             return new UceLong(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UceLong[] newArray(int size) {
             return new UceLong[size];
@@ -21,10 +20,6 @@ public class UceLong implements Parcelable {
     };
     private int mClientId;
     private long mUceLong;
-
-    /* synthetic */ UceLong(Parcel parcel, UceLongIA uceLongIA) {
-        this(parcel);
-    }
 
     public UceLong() {
         this.mClientId = 1001;
@@ -63,23 +58,6 @@ public class UceLong implements Parcelable {
     private void writeToParcel(Parcel out) {
         out.writeLong(this.mUceLong);
         out.writeInt(this.mClientId);
-    }
-
-    /* renamed from: com.android.ims.internal.uce.common.UceLong$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UceLong> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UceLong createFromParcel(Parcel source) {
-            return new UceLong(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UceLong[] newArray(int size) {
-            return new UceLong[size];
-        }
     }
 
     private UceLong(Parcel source) {

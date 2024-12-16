@@ -20,7 +20,6 @@ public interface ISpenGestureHoverListener extends IInterface {
 
     void onHoverStay(int i, int i2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISpenGestureHoverListener {
         @Override // com.samsung.android.content.smartclip.ISpenGestureHoverListener
         public void onHoverEnter() throws RemoteException {
@@ -48,7 +47,6 @@ public interface ISpenGestureHoverListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISpenGestureHoverListener {
         static final int TRANSACTION_onBackPressed = 4;
         static final int TRANSACTION_onHoverEnter = 1;
@@ -103,39 +101,35 @@ public interface ISpenGestureHoverListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpenGestureHoverListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpenGestureHoverListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpenGestureHoverListener.DESCRIPTOR);
+                case 1:
+                    onHoverEnter();
+                    return true;
+                case 2:
+                    onHoverExit();
+                    return true;
+                case 3:
+                    onHoverExitTowardBack();
+                    return true;
+                case 4:
+                    onBackPressed();
+                    return true;
+                case 5:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onHoverStay(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onHoverEnter();
-                            return true;
-                        case 2:
-                            onHoverExit();
-                            return true;
-                        case 3:
-                            onHoverExitTowardBack();
-                            return true;
-                        case 4:
-                            onBackPressed();
-                            return true;
-                        case 5:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onHoverStay(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISpenGestureHoverListener {
+        private static class Proxy implements ISpenGestureHoverListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

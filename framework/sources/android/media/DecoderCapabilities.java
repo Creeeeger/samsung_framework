@@ -6,12 +6,10 @@ import java.util.List;
 /* loaded from: classes2.dex */
 public class DecoderCapabilities {
 
-    /* loaded from: classes2.dex */
     public enum AudioDecoder {
         AUDIO_DECODER_WMA
     }
 
-    /* loaded from: classes2.dex */
     public enum VideoDecoder {
         VIDEO_DECODER_WMV
     }

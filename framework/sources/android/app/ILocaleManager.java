@@ -21,7 +21,6 @@ public interface ILocaleManager extends IInterface {
 
     void setOverrideLocaleConfig(String str, int i, LocaleConfig localeConfig) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ILocaleManager {
         @Override // android.app.ILocaleManager
         public void setApplicationLocales(String packageName, int userId, LocaleList locales, boolean fromDelegate) throws RemoteException {
@@ -52,7 +51,6 @@ public interface ILocaleManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ILocaleManager {
         static final int TRANSACTION_getApplicationLocales = 2;
         static final int TRANSACTION_getOverrideLocaleConfig = 5;
@@ -107,59 +105,55 @@ public interface ILocaleManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILocaleManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILocaleManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILocaleManager.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    LocaleList _arg2 = (LocaleList) data.readTypedObject(LocaleList.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setApplicationLocales(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    LocaleList _result = getApplicationLocales(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 3:
+                    LocaleList _result2 = getSystemLocales();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    String _arg03 = data.readString();
+                    int _arg13 = data.readInt();
+                    LocaleConfig _arg22 = (LocaleConfig) data.readTypedObject(LocaleConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    setOverrideLocaleConfig(_arg03, _arg13, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    LocaleConfig _result3 = getOverrideLocaleConfig(_arg04, _arg14);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            LocaleList _arg2 = (LocaleList) data.readTypedObject(LocaleList.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setApplicationLocales(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            LocaleList _result = getApplicationLocales(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 3:
-                            LocaleList _result2 = getSystemLocales();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            String _arg03 = data.readString();
-                            int _arg13 = data.readInt();
-                            LocaleConfig _arg22 = (LocaleConfig) data.readTypedObject(LocaleConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            setOverrideLocaleConfig(_arg03, _arg13, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            LocaleConfig _result3 = getOverrideLocaleConfig(_arg04, _arg14);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ILocaleManager {
+        private static class Proxy implements ILocaleManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

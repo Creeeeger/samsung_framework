@@ -4,7 +4,6 @@ package android.drm;
 /* loaded from: classes.dex */
 public class DrmStore {
 
-    /* loaded from: classes.dex */
     public interface ConstraintsColumns {
         public static final String EXTENDED_METADATA = "extended_metadata";
         public static final String LICENSE_AVAILABLE_TIME = "license_available_time";
@@ -20,7 +19,6 @@ public class DrmStore {
         public static final String SEM_LICENSE_ORIGINAL_INTERVAL = "license_original_interval";
     }
 
-    /* loaded from: classes.dex */
     public static class DrmObjectType {
         public static final int CONTENT = 1;
         public static final int RIGHTS_OBJECT = 2;
@@ -28,7 +26,6 @@ public class DrmStore {
         public static final int UNKNOWN = 0;
     }
 
-    /* loaded from: classes.dex */
     public static class RightsStatus {
         public static final int RIGHTS_EXPIRED = 2;
         public static final int RIGHTS_INVALID = 1;
@@ -36,7 +33,6 @@ public class DrmStore {
         public static final int RIGHTS_VALID = 0;
     }
 
-    /* loaded from: classes.dex */
     public static class SemDrmFileType {
 
         @Deprecated
@@ -53,7 +49,6 @@ public class DrmStore {
         public static final int DRM2_TYPE_UNDEFINE = -1;
     }
 
-    /* loaded from: classes.dex */
     public static class SemDrmPermissionType {
 
         @Deprecated
@@ -78,7 +73,6 @@ public class DrmStore {
         public static final int DRM_PERMISSION_PRINT = 8;
     }
 
-    /* loaded from: classes.dex */
     public static class SemDrmVersionType {
 
         @Deprecated
@@ -94,7 +88,6 @@ public class DrmStore {
         public static final int UNDEFINE_FORMAT = 0;
     }
 
-    /* loaded from: classes.dex */
     public static class SemLicenseCategory {
 
         @Deprecated
@@ -125,7 +118,6 @@ public class DrmStore {
         public static final int DRM2_UNLIMITED = 0;
     }
 
-    /* loaded from: classes.dex */
     public static class SemPlayReadyLicenseCategory {
 
         @Deprecated
@@ -162,7 +154,6 @@ public class DrmStore {
         public static final int DRM_LICENSE_STATE_UNTIL = 4;
     }
 
-    /* loaded from: classes.dex */
     public static class Playback {
         public static final int PAUSE = 2;
         public static final int RESUME = 3;
@@ -182,7 +173,6 @@ public class DrmStore {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class Action {
         public static final int DEFAULT = 0;
         public static final int DISPLAY = 7;
@@ -196,7 +186,7 @@ public class DrmStore {
         public static final int SEM_COLLABORATIVE_PLAY = 8;
         public static final int TRANSFER = 3;
 
-        public static boolean isValid(int action) {
+        static boolean isValid(int action) {
             switch (action) {
                 case 0:
                 case 1:

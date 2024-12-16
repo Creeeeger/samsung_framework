@@ -15,7 +15,6 @@ public interface IOnClipboardEventListener extends IInterface {
 
     void onUpdateFilter(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IOnClipboardEventListener {
         @Override // com.samsung.android.content.clipboard.IOnClipboardEventListener
         public void onClipboardEvent(int event, SemClipData data) throws RemoteException {
@@ -31,7 +30,6 @@ public interface IOnClipboardEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IOnClipboardEventListener {
         static final int TRANSACTION_onClipboardEvent = 1;
         static final int TRANSACTION_onUpdateFilter = 2;
@@ -77,32 +75,28 @@ public interface IOnClipboardEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnClipboardEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnClipboardEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnClipboardEventListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    SemClipData _arg1 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
+                    data.enforceNoDataAvail();
+                    onClipboardEvent(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUpdateFilter(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            SemClipData _arg1 = (SemClipData) data.readTypedObject(SemClipData.CREATOR);
-                            data.enforceNoDataAvail();
-                            onClipboardEvent(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUpdateFilter(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IOnClipboardEventListener {
+        private static class Proxy implements IOnClipboardEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

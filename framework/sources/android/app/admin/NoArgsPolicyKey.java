@@ -9,23 +9,18 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class NoArgsPolicyKey extends PolicyKey {
     public static final Parcelable.Creator<NoArgsPolicyKey> CREATOR = new Parcelable.Creator<NoArgsPolicyKey>() { // from class: android.app.admin.NoArgsPolicyKey.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NoArgsPolicyKey createFromParcel(Parcel source) {
             return new NoArgsPolicyKey(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NoArgsPolicyKey[] newArray(int size) {
             return new NoArgsPolicyKey[size];
         }
     };
-
-    /* synthetic */ NoArgsPolicyKey(Parcel parcel, NoArgsPolicyKeyIA noArgsPolicyKeyIA) {
-        this(parcel);
-    }
 
     public NoArgsPolicyKey(String identifier) {
         super(identifier);
@@ -48,23 +43,6 @@ public final class NoArgsPolicyKey extends PolicyKey {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(getIdentifier());
-    }
-
-    /* renamed from: android.app.admin.NoArgsPolicyKey$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NoArgsPolicyKey> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NoArgsPolicyKey createFromParcel(Parcel source) {
-            return new NoArgsPolicyKey(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NoArgsPolicyKey[] newArray(int size) {
-            return new NoArgsPolicyKey[size];
-        }
     }
 
     public String toString() {

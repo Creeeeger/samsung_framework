@@ -17,7 +17,7 @@ import com.android.ims.internal.IImsCallSessionListener;
 import com.android.ims.internal.IImsVideoCallProvider;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsCallSessionImplBase extends IImsCallSession.Stub {
     @Override // com.android.ims.internal.IImsCallSession
     public final void setListener(IImsCallSessionListener listener) throws RemoteException {
@@ -188,7 +188,6 @@ public class ImsCallSessionImplBase extends IImsCallSession.Stub {
     public void callSessionNotifyAnbr(int mediaType, int direction, int bitsPerSecond) {
     }
 
-    /* loaded from: classes3.dex */
     private class ImsCallSessionListenerConverter extends IImsCallSessionListener.Stub {
         private final android.telephony.ims.aidl.IImsCallSessionListener mNewListener;
 

@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextGyroTemperature extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextGyroTemperature> CREATOR = new Parcelable.Creator<SemContextGyroTemperature>() { // from class: com.samsung.android.hardware.context.SemContextGyroTemperature.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextGyroTemperature createFromParcel(Parcel in) {
             return new SemContextGyroTemperature(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextGyroTemperature[] newArray(int size) {
             return new SemContextGyroTemperature[size];
@@ -22,24 +21,7 @@ public class SemContextGyroTemperature extends SemContextEventContext {
     };
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextGyroTemperature$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextGyroTemperature> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextGyroTemperature createFromParcel(Parcel in) {
-            return new SemContextGyroTemperature(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextGyroTemperature[] newArray(int size) {
-            return new SemContextGyroTemperature[size];
-        }
-    }
-
-    public SemContextGyroTemperature() {
+    SemContextGyroTemperature() {
         this.mContext = new Bundle();
     }
 

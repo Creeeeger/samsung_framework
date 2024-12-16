@@ -9,13 +9,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IStartActivityInterceptListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.remoteappmode.IStartActivityInterceptListener";
 
     void onStartActivityIntercepted(Intent intent, Bundle bundle, ActivityInfo activityInfo, int i, boolean z, int i2, int i3, int i4) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IStartActivityInterceptListener {
         @Override // com.samsung.android.remoteappmode.IStartActivityInterceptListener
         public void onStartActivityIntercepted(Intent intent, Bundle activityOptionsBundle, ActivityInfo activityInfo, int interceptedDisplayId, boolean isVisibleTask, int runningTaskId, int runningTaskDisplayId, int interceptReason) throws RemoteException {
@@ -27,7 +26,6 @@ public interface IStartActivityInterceptListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IStartActivityInterceptListener {
         static final int TRANSACTION_onStartActivityIntercepted = 1;
 
@@ -70,33 +68,29 @@ public interface IStartActivityInterceptListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStartActivityInterceptListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStartActivityInterceptListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStartActivityInterceptListener.DESCRIPTOR);
+                case 1:
+                    Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
+                    Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    ActivityInfo _arg2 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
+                    int _arg3 = data.readInt();
+                    boolean _arg4 = data.readBoolean();
+                    int _arg5 = data.readInt();
+                    int _arg6 = data.readInt();
+                    int _arg7 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStartActivityIntercepted(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Intent _arg0 = (Intent) data.readTypedObject(Intent.CREATOR);
-                            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            ActivityInfo _arg2 = (ActivityInfo) data.readTypedObject(ActivityInfo.CREATOR);
-                            int _arg3 = data.readInt();
-                            boolean _arg4 = data.readBoolean();
-                            int _arg5 = data.readInt();
-                            int _arg6 = data.readInt();
-                            int _arg7 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStartActivityIntercepted(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IStartActivityInterceptListener {
+        private static class Proxy implements IStartActivityInterceptListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

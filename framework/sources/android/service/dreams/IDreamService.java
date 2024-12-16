@@ -11,11 +11,12 @@ import android.os.RemoteException;
 public interface IDreamService extends IInterface {
     void attach(IBinder iBinder, boolean z, boolean z2, IRemoteCallback iRemoteCallback) throws RemoteException;
 
+    void comeToFront() throws RemoteException;
+
     void detach() throws RemoteException;
 
     void wakeUp() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IDreamService {
         @Override // android.service.dreams.IDreamService
         public void attach(IBinder windowToken, boolean canDoze, boolean isPreviewMode, IRemoteCallback started) throws RemoteException {
@@ -29,16 +30,20 @@ public interface IDreamService extends IInterface {
         public void wakeUp() throws RemoteException {
         }
 
+        @Override // android.service.dreams.IDreamService
+        public void comeToFront() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IDreamService {
         public static final String DESCRIPTOR = "android.service.dreams.IDreamService";
         static final int TRANSACTION_attach = 1;
+        static final int TRANSACTION_comeToFront = 4;
         static final int TRANSACTION_detach = 2;
         static final int TRANSACTION_wakeUp = 3;
 
@@ -70,6 +75,8 @@ public interface IDreamService extends IInterface {
                     return "detach";
                 case 3:
                     return "wakeUp";
+                case 4:
+                    return "comeToFront";
                 default:
                     return null;
             }
@@ -85,33 +92,33 @@ public interface IDreamService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    boolean _arg1 = data.readBoolean();
+                    boolean _arg2 = data.readBoolean();
+                    IRemoteCallback _arg3 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    attach(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    detach();
+                    return true;
+                case 3:
+                    wakeUp();
+                    return true;
+                case 4:
+                    comeToFront();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            boolean _arg1 = data.readBoolean();
-                            boolean _arg2 = data.readBoolean();
-                            IRemoteCallback _arg3 = IRemoteCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            attach(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            detach();
-                            return true;
-                        case 3:
-                            wakeUp();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IDreamService {
             private IBinder mRemote;
 
@@ -164,11 +171,22 @@ public interface IDreamService extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.service.dreams.IDreamService
+            public void comeToFront() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(4, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 2;
+            return 3;
         }
     }
 }

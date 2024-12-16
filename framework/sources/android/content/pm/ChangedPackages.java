@@ -7,14 +7,13 @@ import java.util.List;
 /* loaded from: classes.dex */
 public final class ChangedPackages implements Parcelable {
     public static final Parcelable.Creator<ChangedPackages> CREATOR = new Parcelable.Creator<ChangedPackages>() { // from class: android.content.pm.ChangedPackages.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ChangedPackages createFromParcel(Parcel in) {
             return new ChangedPackages(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ChangedPackages[] newArray(int size) {
             return new ChangedPackages[size];
@@ -50,22 +49,5 @@ public final class ChangedPackages implements Parcelable {
 
     public List<String> getPackageNames() {
         return this.mPackageNames;
-    }
-
-    /* renamed from: android.content.pm.ChangedPackages$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ChangedPackages> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ChangedPackages createFromParcel(Parcel in) {
-            return new ChangedPackages(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ChangedPackages[] newArray(int size) {
-            return new ChangedPackages[size];
-        }
     }
 }

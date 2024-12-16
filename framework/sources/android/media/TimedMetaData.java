@@ -8,7 +8,7 @@ public final class TimedMetaData {
     private byte[] mMetaData;
     private long mTimestampUs;
 
-    public static TimedMetaData createTimedMetaDataFromParcel(Parcel parcel) {
+    static TimedMetaData createTimedMetaDataFromParcel(Parcel parcel) {
         return new TimedMetaData(parcel);
     }
 
@@ -40,9 +40,8 @@ public final class TimedMetaData {
             return false;
         }
         this.mTimestampUs = parcel.readLong();
-        byte[] bArr = new byte[parcel.readInt()];
-        this.mMetaData = bArr;
-        parcel.readByteArray(bArr);
+        this.mMetaData = new byte[parcel.readInt()];
+        parcel.readByteArray(this.mMetaData);
         return true;
     }
 }

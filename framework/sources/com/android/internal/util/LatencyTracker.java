@@ -3,6 +3,7 @@ package com.android.internal.util;
 import android.Manifest;
 import android.app.ActivityThread;
 import android.content.Context;
+import android.media.MediaMetrics;
 import android.os.Build;
 import android.os.SystemClock;
 import android.os.Trace;
@@ -11,7 +12,6 @@ import android.text.TextUtils;
 import android.util.EventLog;
 import android.util.Log;
 import android.util.SparseArray;
-import com.android.internal.location.GpsNetInitiatedHandler;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.util.LatencyTracker;
 import java.lang.annotation.Annotation;
@@ -23,14 +23,19 @@ import java.util.concurrent.TimeUnit;
 
 /* loaded from: classes5.dex */
 public class LatencyTracker {
+    public static final int ACTION_BACK_SYSTEM_ANIMATION = 25;
     public static final int ACTION_CHECK_CREDENTIAL = 3;
     public static final int ACTION_CHECK_CREDENTIAL_UNLOCKED = 4;
     public static final int ACTION_EXPAND_PANEL = 0;
     public static final int ACTION_FACE_WAKE_AND_UNLOCK = 7;
     public static final int ACTION_FINGERPRINT_WAKE_AND_UNLOCK = 2;
     public static final int ACTION_FOLD_TO_AOD = 18;
+    public static final int ACTION_KEYGUARD_FPS_UNLOCK_TO_HOME = 24;
     public static final int ACTION_LOAD_SHARE_SHEET = 16;
     public static final int ACTION_LOCKSCREEN_UNLOCK = 11;
+    public static final int ACTION_NOTIFICATIONS_HIDDEN_FOR_MEASURE = 26;
+    public static final int ACTION_NOTIFICATIONS_HIDDEN_FOR_MEASURE_WITH_SHADE_OPEN = 27;
+    public static final int ACTION_NOTIFICATION_BIG_PICTURE_LOADED = 23;
     public static final int ACTION_REQUEST_IME_HIDDEN = 21;
     public static final int ACTION_REQUEST_IME_SHOWN = 20;
     public static final int ACTION_ROTATE_SCREEN = 6;
@@ -52,8 +57,8 @@ public class LatencyTracker {
     private static final String SETTINGS_SAMPLING_INTERVAL_KEY = "sampling_interval";
     private static final String TAG = "LatencyTracker";
     private static final boolean DEFAULT_ENABLED = Build.IS_DEBUGGABLE;
-    private static final int[] ACTIONS_ALL = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
-    public static final int[] STATSD_ACTION = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+    private static final int[] ACTIONS_ALL = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
+    public static final int[] STATSD_ACTION = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31};
     private final Object mLock = new Object();
     private final SparseArray<Session> mSessions = new SparseArray<>();
     private final SparseArray<ActionProperties> mActionPropertiesMap = new SparseArray<>();
@@ -65,21 +70,17 @@ public class LatencyTracker {
     private boolean mEnabled = DEFAULT_ENABLED;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface Action {
     }
 
-    /* loaded from: classes5.dex */
-    public static final class SLatencyTrackerHolder {
-        private static final LatencyTracker sLatencyTracker;
+    private static final class SLatencyTrackerHolder {
+        private static final LatencyTracker sLatencyTracker = new LatencyTracker();
 
         private SLatencyTrackerHolder() {
         }
 
         static {
-            LatencyTracker latencyTracker = new LatencyTracker();
-            sLatencyTracker = latencyTracker;
-            latencyTracker.startListeningForLatencyTrackerConfigChanges();
+            sLatencyTracker.startListeningForLatencyTrackerConfigChanges();
         }
     }
 
@@ -87,14 +88,25 @@ public class LatencyTracker {
         return SLatencyTrackerHolder.sLatencyTracker;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateProperties(DeviceConfig.Properties properties) {
         synchronized (this.mLock) {
             int samplingInterval = properties.getInt("sampling_interval", 5);
+            boolean wasEnabled = this.mEnabled;
             this.mEnabled = properties.getBoolean("enabled", DEFAULT_ENABLED);
-            for (int action : ACTIONS_ALL) {
+            if (wasEnabled != this.mEnabled) {
+                Log.d(TAG, "Latency tracker " + (this.mEnabled ? "enabled" : "disabled") + MediaMetrics.SEPARATOR);
+            }
+            int[] iArr = ACTIONS_ALL;
+            int length = iArr.length;
+            int i = 0;
+            while (i < length) {
+                int action = iArr[i];
                 String actionName = getNameOfAction(STATSD_ACTION[action]).toLowerCase(Locale.ROOT);
                 int legacyActionTraceThreshold = properties.getInt(actionName.toUpperCase(Locale.ROOT) + "", -1);
                 this.mActionPropertiesMap.put(action, new ActionProperties(action, properties.getBoolean(actionName + "_enable", this.mEnabled), properties.getInt(actionName + "_sample_interval", samplingInterval), properties.getInt(actionName + "_trace_threshold", legacyActionTraceThreshold)));
+                i++;
+                samplingInterval = samplingInterval;
             }
             onDeviceConfigPropertiesUpdated(this.mActionPropertiesMap);
         }
@@ -113,6 +125,7 @@ public class LatencyTracker {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startListeningForLatencyTrackerConfigChanges$0(Context context) {
         try {
             updateProperties(DeviceConfig.getProperties("latency_tracker", new String[0]));
@@ -176,11 +189,25 @@ public class LatencyTracker {
                 return "ACTION_REQUEST_IME_HIDDEN";
             case 23:
                 return "ACTION_SMARTSPACE_DOORBELL";
+            case 24:
+            case 25:
+            case 26:
             default:
                 throw new IllegalArgumentException("Invalid action");
+            case 27:
+                return "ACTION_NOTIFICATION_BIG_PICTURE_LOADED";
+            case 28:
+                return "ACTION_KEYGUARD_FPS_UNLOCK_TO_HOME";
+            case 29:
+                return "ACTION_BACK_SYSTEM_ANIMATION";
+            case 30:
+                return "ACTION_NOTIFICATIONS_HIDDEN_FOR_MEASURE";
+            case 31:
+                return "ACTION_NOTIFICATIONS_HIDDEN_FOR_MEASURE_WITH_SHADE_OPEN";
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String getTraceNameOfAction(int action, String tag) {
         if (TextUtils.isEmpty(tag)) {
             return "L<" + getNameOfAction(STATSD_ACTION[action]) + ">";
@@ -256,7 +283,7 @@ public class LatencyTracker {
         }
     }
 
-    /* renamed from: onActionCancel */
+    /* renamed from: onActionCancel, reason: merged with bridge method [inline-methods] */
     public void lambda$onActionStart$1(int action) {
         synchronized (this.mLock) {
             Session session = this.mSessions.get(action);
@@ -299,8 +326,7 @@ public class LatencyTracker {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class Session {
+    static class Session {
         private final int mAction;
         private final String mName;
         private final String mTag;
@@ -312,10 +338,10 @@ public class LatencyTracker {
             String str;
             this.mAction = action;
             this.mTag = tag;
-            if (TextUtils.isEmpty(tag)) {
-                str = LatencyTracker.getNameOfAction(LatencyTracker.STATSD_ACTION[action]);
+            if (TextUtils.isEmpty(this.mTag)) {
+                str = LatencyTracker.getNameOfAction(LatencyTracker.STATSD_ACTION[this.mAction]);
             } else {
-                str = LatencyTracker.getNameOfAction(LatencyTracker.STATSD_ACTION[action]) + "::" + tag;
+                str = LatencyTracker.getNameOfAction(LatencyTracker.STATSD_ACTION[this.mAction]) + "::" + this.mTag;
             }
             this.mName = str;
         }
@@ -340,8 +366,9 @@ public class LatencyTracker {
             BackgroundThread.getHandler().postDelayed(this.mTimeoutRunnable, TimeUnit.SECONDS.toMillis(15L));
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$begin$0(Runnable timeoutAction) {
-            Trace.instantForTrack(4096L, traceName(), GpsNetInitiatedHandler.NI_INTENT_KEY_TIMEOUT);
+            Trace.instantForTrack(4096L, traceName(), "timeout");
             timeoutAction.run();
         }
 
@@ -364,7 +391,6 @@ public class LatencyTracker {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ActionProperties {
         static final String ENABLE_SUFFIX = "_enable";
         static final String LEGACY_TRACE_THRESHOLD_SUFFIX = "";
@@ -377,7 +403,7 @@ public class LatencyTracker {
 
         public ActionProperties(int action, boolean enabled, int samplingInterval, int traceThreshold) {
             this.mAction = action;
-            AnnotationValidations.validate((Class<? extends Annotation>) Action.class, (Annotation) null, action);
+            AnnotationValidations.validate((Class<? extends Annotation>) Action.class, (Annotation) null, this.mAction);
             this.mEnabled = enabled;
             this.mSamplingInterval = samplingInterval;
             this.mTraceThreshold = traceThreshold;
@@ -434,16 +460,11 @@ public class LatencyTracker {
         FrameworkStatsLog.write(event.logCode, event.statsdAction, event.durationMillis);
     }
 
-    /* loaded from: classes5.dex */
     public static class FrameworkStatsLogEvent {
         public final int action;
         public final int durationMillis;
         public final int logCode;
         public final int statsdAction;
-
-        /* synthetic */ FrameworkStatsLogEvent(int i, int i2, int i3, int i4, FrameworkStatsLogEventIA frameworkStatsLogEventIA) {
-            this(i, i2, i3, i4);
-        }
 
         private FrameworkStatsLogEvent(int action, int logCode, int statsdAction, int durationMillis) {
             this.action = action;

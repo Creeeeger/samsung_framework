@@ -25,7 +25,7 @@ public class FieldPacker {
         this.mAlignment = new BitSet();
     }
 
-    public static FieldPacker createFromArray(Object[] args) {
+    static FieldPacker createFromArray(Object[] args) {
         FieldPacker fp = new FieldPacker(RenderScript.sPointerSize * 8);
         for (Object arg : args) {
             fp.addSafely(arg);
@@ -38,38 +38,26 @@ public class FieldPacker {
         if (v <= 0 || ((v - 1) & v) != 0) {
             throw new RSIllegalArgumentException("argument must be a non-negative non-zero power of 2: " + v);
         }
-        while (true) {
+        while ((this.mPos & (v - 1)) != 0) {
+            this.mAlignment.flip(this.mPos);
+            byte[] bArr = this.mData;
             int i = this.mPos;
-            if (((v - 1) & i) != 0) {
-                this.mAlignment.flip(i);
-                byte[] bArr = this.mData;
-                int i2 = this.mPos;
-                this.mPos = i2 + 1;
-                bArr[i2] = 0;
-            } else {
-                return;
-            }
+            this.mPos = i + 1;
+            bArr[i] = 0;
         }
     }
 
     public void subalign(int v) {
-        int i;
         if (((v - 1) & v) != 0) {
             throw new RSIllegalArgumentException("argument must be a non-negative non-zero power of 2: " + v);
         }
-        while (true) {
-            i = this.mPos;
-            if (((v - 1) & i) == 0) {
-                break;
-            } else {
-                this.mPos = i - 1;
-            }
+        while ((this.mPos & (v - 1)) != 0) {
+            this.mPos--;
         }
-        if (i > 0) {
+        if (this.mPos > 0) {
             while (this.mAlignment.get(this.mPos - 1)) {
-                int i2 = this.mPos - 1;
-                this.mPos = i2;
-                this.mAlignment.flip(i2);
+                this.mPos--;
+                this.mAlignment.flip(this.mPos);
             }
         }
     }
@@ -112,11 +100,12 @@ public class FieldPacker {
         align(2);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
         this.mPos = i2 + 1;
-        bArr[i2] = (byte) (v >> 8);
+        bArr2[i2] = (byte) (v >> 8);
     }
 
     public short subI16() {
@@ -125,26 +114,30 @@ public class FieldPacker {
         int i = this.mPos - 1;
         this.mPos = i;
         short v = (short) ((bArr[i] & 255) << 8);
-        int i2 = i - 1;
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos - 1;
         this.mPos = i2;
-        return (short) (((short) (bArr[i2] & 255)) | v);
+        return (short) (((short) (bArr2[i2] & 255)) | v);
     }
 
     public void addI32(int v) {
         align(4);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
-        int i3 = i2 + 1;
-        this.mPos = i3;
-        bArr[i2] = (byte) ((v >> 8) & 255);
-        int i4 = i3 + 1;
-        this.mPos = i4;
-        bArr[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
+        this.mPos = i2 + 1;
+        bArr2[i2] = (byte) ((v >> 8) & 255);
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos;
+        this.mPos = i3 + 1;
+        bArr3[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos;
         this.mPos = i4 + 1;
-        bArr[i4] = (byte) ((v >> 24) & 255);
+        bArr4[i4] = (byte) ((v >> 24) & 255);
     }
 
     public int subI32() {
@@ -153,44 +146,54 @@ public class FieldPacker {
         int i = this.mPos - 1;
         this.mPos = i;
         int v = (bArr[i] & 255) << 24;
-        int i2 = i - 1;
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos - 1;
         this.mPos = i2;
-        int v2 = v | ((bArr[i2] & 255) << 16);
-        int i3 = i2 - 1;
+        int v2 = v | ((bArr2[i2] & 255) << 16);
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos - 1;
         this.mPos = i3;
-        int v3 = v2 | ((bArr[i3] & 255) << 8);
-        int i4 = i3 - 1;
+        int v3 = v2 | ((bArr3[i3] & 255) << 8);
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos - 1;
         this.mPos = i4;
-        return v3 | (bArr[i4] & 255);
+        return v3 | (bArr4[i4] & 255);
     }
 
     public void addI64(long v) {
         align(8);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
-        int i3 = i2 + 1;
-        this.mPos = i3;
-        bArr[i2] = (byte) ((v >> 8) & 255);
-        int i4 = i3 + 1;
-        this.mPos = i4;
-        bArr[i3] = (byte) ((v >> 16) & 255);
-        int i5 = i4 + 1;
-        this.mPos = i5;
-        bArr[i4] = (byte) ((v >> 24) & 255);
-        int i6 = i5 + 1;
-        this.mPos = i6;
-        bArr[i5] = (byte) ((v >> 32) & 255);
-        int i7 = i6 + 1;
-        this.mPos = i7;
-        bArr[i6] = (byte) ((v >> 40) & 255);
-        int i8 = i7 + 1;
-        this.mPos = i8;
-        bArr[i7] = (byte) ((v >> 48) & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
+        this.mPos = i2 + 1;
+        bArr2[i2] = (byte) ((v >> 8) & 255);
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos;
+        this.mPos = i3 + 1;
+        bArr3[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos;
+        this.mPos = i4 + 1;
+        bArr4[i4] = (byte) ((v >> 24) & 255);
+        byte[] bArr5 = this.mData;
+        int i5 = this.mPos;
+        this.mPos = i5 + 1;
+        bArr5[i5] = (byte) ((v >> 32) & 255);
+        byte[] bArr6 = this.mData;
+        int i6 = this.mPos;
+        this.mPos = i6 + 1;
+        bArr6[i6] = (byte) ((v >> 40) & 255);
+        byte[] bArr7 = this.mData;
+        int i7 = this.mPos;
+        this.mPos = i7 + 1;
+        bArr7[i7] = (byte) ((v >> 48) & 255);
+        byte[] bArr8 = this.mData;
+        int i8 = this.mPos;
         this.mPos = i8 + 1;
-        bArr[i8] = (byte) ((v >> 56) & 255);
+        bArr8[i8] = (byte) ((v >> 56) & 255);
     }
 
     public long subI64() {
@@ -200,33 +203,41 @@ public class FieldPacker {
         this.mPos = i;
         byte x = bArr[i];
         long v = 0 | ((x & 255) << 56);
-        int i2 = i - 1;
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos - 1;
         this.mPos = i2;
-        byte x2 = bArr[i2];
+        byte x2 = bArr2[i2];
         long v2 = v | ((x2 & 255) << 48);
-        int i3 = i2 - 1;
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos - 1;
         this.mPos = i3;
-        byte x3 = bArr[i3];
+        byte x3 = bArr3[i3];
         long v3 = v2 | ((x3 & 255) << 40);
-        int i4 = i3 - 1;
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos - 1;
         this.mPos = i4;
-        byte x4 = bArr[i4];
+        byte x4 = bArr4[i4];
         long v4 = v3 | ((x4 & 255) << 32);
-        int i5 = i4 - 1;
+        byte[] bArr5 = this.mData;
+        int i5 = this.mPos - 1;
         this.mPos = i5;
-        byte x5 = bArr[i5];
+        byte x5 = bArr5[i5];
         long v5 = v4 | ((x5 & 255) << 24);
-        int i6 = i5 - 1;
+        byte[] bArr6 = this.mData;
+        int i6 = this.mPos - 1;
         this.mPos = i6;
-        byte x6 = bArr[i6];
+        byte x6 = bArr6[i6];
         long v6 = v5 | ((x6 & 255) << 16);
-        int i7 = i6 - 1;
+        byte[] bArr7 = this.mData;
+        int i7 = this.mPos - 1;
         this.mPos = i7;
-        byte x7 = bArr[i7];
-        int i8 = i7 - 1;
+        byte x7 = bArr7[i7];
+        long v7 = v6 | ((x7 & 255) << 8);
+        byte[] bArr8 = this.mData;
+        int i8 = this.mPos - 1;
         this.mPos = i8;
-        byte x8 = bArr[i8];
-        return v6 | ((x7 & 255) << 8) | (x8 & 255);
+        byte x8 = bArr8[i8];
+        return v7 | (x8 & 255);
     }
 
     public void addU8(short v) {
@@ -248,11 +259,12 @@ public class FieldPacker {
         align(2);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
         this.mPos = i2 + 1;
-        bArr[i2] = (byte) (v >> 8);
+        bArr2[i2] = (byte) (v >> 8);
     }
 
     public void addU32(long v) {
@@ -263,17 +275,20 @@ public class FieldPacker {
         align(4);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
-        int i3 = i2 + 1;
-        this.mPos = i3;
-        bArr[i2] = (byte) ((v >> 8) & 255);
-        int i4 = i3 + 1;
-        this.mPos = i4;
-        bArr[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
+        this.mPos = i2 + 1;
+        bArr2[i2] = (byte) ((v >> 8) & 255);
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos;
+        this.mPos = i3 + 1;
+        bArr3[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos;
         this.mPos = i4 + 1;
-        bArr[i4] = (byte) (255 & (v >> 24));
+        bArr4[i4] = (byte) (255 & (v >> 24));
     }
 
     public void addU64(long v) {
@@ -284,29 +299,36 @@ public class FieldPacker {
         align(8);
         byte[] bArr = this.mData;
         int i = this.mPos;
-        int i2 = i + 1;
-        this.mPos = i2;
+        this.mPos = i + 1;
         bArr[i] = (byte) (v & 255);
-        int i3 = i2 + 1;
-        this.mPos = i3;
-        bArr[i2] = (byte) ((v >> 8) & 255);
-        int i4 = i3 + 1;
-        this.mPos = i4;
-        bArr[i3] = (byte) ((v >> 16) & 255);
-        int i5 = i4 + 1;
-        this.mPos = i5;
-        bArr[i4] = (byte) ((v >> 24) & 255);
-        int i6 = i5 + 1;
-        this.mPos = i6;
-        bArr[i5] = (byte) ((v >> 32) & 255);
-        int i7 = i6 + 1;
-        this.mPos = i7;
-        bArr[i6] = (byte) ((v >> 40) & 255);
-        int i8 = i7 + 1;
-        this.mPos = i8;
-        bArr[i7] = (byte) ((v >> 48) & 255);
+        byte[] bArr2 = this.mData;
+        int i2 = this.mPos;
+        this.mPos = i2 + 1;
+        bArr2[i2] = (byte) ((v >> 8) & 255);
+        byte[] bArr3 = this.mData;
+        int i3 = this.mPos;
+        this.mPos = i3 + 1;
+        bArr3[i3] = (byte) ((v >> 16) & 255);
+        byte[] bArr4 = this.mData;
+        int i4 = this.mPos;
+        this.mPos = i4 + 1;
+        bArr4[i4] = (byte) ((v >> 24) & 255);
+        byte[] bArr5 = this.mData;
+        int i5 = this.mPos;
+        this.mPos = i5 + 1;
+        bArr5[i5] = (byte) ((v >> 32) & 255);
+        byte[] bArr6 = this.mData;
+        int i6 = this.mPos;
+        this.mPos = i6 + 1;
+        bArr6[i6] = (byte) ((v >> 40) & 255);
+        byte[] bArr7 = this.mData;
+        int i7 = this.mPos;
+        this.mPos = i7 + 1;
+        bArr7[i7] = (byte) ((v >> 48) & 255);
+        byte[] bArr8 = this.mData;
+        int i8 = this.mPos;
         this.mPos = i8 + 1;
-        bArr[i8] = (byte) ((v >> 56) & 255);
+        bArr8[i8] = (byte) ((v >> 56) & 255);
     }
 
     public void addF32(float v) {

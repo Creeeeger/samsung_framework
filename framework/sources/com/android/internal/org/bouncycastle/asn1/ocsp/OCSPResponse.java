@@ -51,9 +51,8 @@ public class OCSPResponse extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
         v.add(this.responseStatus);
-        ResponseBytes responseBytes = this.responseBytes;
-        if (responseBytes != null) {
-            v.add(new DERTaggedObject(true, 0, responseBytes));
+        if (this.responseBytes != null) {
+            v.add(new DERTaggedObject(true, 0, this.responseBytes));
         }
         return new DERSequence(v);
     }

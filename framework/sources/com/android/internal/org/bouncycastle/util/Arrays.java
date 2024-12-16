@@ -504,7 +504,7 @@ public final class Arrays {
         if (data == null) {
             return null;
         }
-        byte[][] copy = new byte[data.length];
+        byte[][] copy = new byte[data.length][];
         for (int i = 0; i != copy.length; i++) {
             copy[i] = clone(data[i]);
         }
@@ -515,7 +515,7 @@ public final class Arrays {
         if (data == null) {
             return null;
         }
-        byte[][][] copy = new byte[data.length][];
+        byte[][][] copy = new byte[data.length][][];
         for (int i = 0; i != copy.length; i++) {
             copy[i] = clone(data[i]);
         }
@@ -830,7 +830,6 @@ public final class Arrays {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Iterator<T> implements java.util.Iterator<T> {
         private final T[] dataArray;
         private int position = 0;
@@ -846,11 +845,11 @@ public final class Arrays {
 
         @Override // java.util.Iterator
         public T next() {
-            int i = this.position;
-            T[] tArr = this.dataArray;
-            if (i == tArr.length) {
+            if (this.position == this.dataArray.length) {
                 throw new NoSuchElementException("Out of elements: " + this.position);
             }
+            T[] tArr = this.dataArray;
+            int i = this.position;
             this.position = i + 1;
             return tArr[i];
         }

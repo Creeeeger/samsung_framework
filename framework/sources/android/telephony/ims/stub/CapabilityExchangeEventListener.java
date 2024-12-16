@@ -8,10 +8,9 @@ import android.telephony.ims.SipDetails;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface CapabilityExchangeEventListener {
 
-    /* loaded from: classes3.dex */
     public interface OptionsRequestCallback {
         void onRespondToCapabilityRequest(RcsContactUceCapability rcsContactUceCapability, boolean z);
 

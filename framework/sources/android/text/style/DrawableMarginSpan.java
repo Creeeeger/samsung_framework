@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Layout;
 import android.text.Spanned;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DrawableMarginSpan implements LeadingMarginSpan, LineHeightSpan {
     private static final int STANDARD_PAD_WIDTH = 0;
     private final Drawable mDrawable;

@@ -34,11 +34,11 @@ public class Region {
         return this.isFrcOn;
     }
 
-    public void setStartTime(int starTime) {
+    public void setStartTime(long starTime) {
         this.startTime = starTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
@@ -48,5 +48,15 @@ public class Region {
 
     public void setFrcOn(boolean isFrcOn) {
         this.isFrcOn = isFrcOn;
+    }
+
+    @Deprecated
+    public void setStartTime(int starTime) {
+        this.startTime = starTime;
+    }
+
+    @Deprecated
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
     }
 }

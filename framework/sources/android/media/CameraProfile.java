@@ -39,12 +39,11 @@ public class CameraProfile {
         if (quality < 0 || quality > 2) {
             throw new IllegalArgumentException("Unsupported quality level: " + quality);
         }
-        HashMap<Integer, int[]> hashMap = sCache;
-        synchronized (hashMap) {
-            int[] levels = hashMap.get(Integer.valueOf(cameraId));
+        synchronized (sCache) {
+            int[] levels = sCache.get(Integer.valueOf(cameraId));
             if (levels == null) {
                 levels = getImageEncodingQualityLevels(cameraId);
-                hashMap.put(Integer.valueOf(cameraId), levels);
+                sCache.put(Integer.valueOf(cameraId), levels);
             }
             i = levels[quality];
         }

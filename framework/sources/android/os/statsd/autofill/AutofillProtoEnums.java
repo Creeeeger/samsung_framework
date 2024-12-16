@@ -33,6 +33,7 @@ public final class AutofillProtoEnums {
     public static final int NO_SAVE_REASON_NONE = 1;
     public static final int NO_SAVE_REASON_NO_SAVE_INFO = 2;
     public static final int NO_SAVE_REASON_NO_VALUE_CHANGED = 5;
+    public static final int NO_SAVE_REASON_SCREEN_HAS_CREDMAN_FIELD = 10;
     public static final int NO_SAVE_REASON_SESSION_DESTROYED = 9;
     public static final int NO_SAVE_REASON_UNKNOWN = 0;
     public static final int NO_SAVE_REASON_WITH_DELAY_SAVE_FLAG = 3;
@@ -48,11 +49,16 @@ public final class AutofillProtoEnums {
     public static final int RESPONSE_STATUS_SESSION_DESTROYED = 5;
     public static final int RESPONSE_STATUS_SUCCESS = 2;
     public static final int RESPONSE_STATUS_TIMEOUT = 4;
+    public static final int RESPONSE_STATUS_TRANSACTION_TOO_LARGE = 6;
     public static final int RESPONSE_STATUS_UNKNOWN = 0;
     public static final int SAVE_UI_SHOWN_REASON_OPTIONAL_ID_CHANGE = 2;
     public static final int SAVE_UI_SHOWN_REASON_REQUIRED_ID_CHANGE = 1;
     public static final int SAVE_UI_SHOWN_REASON_TRIGGER_ID_SET = 3;
     public static final int SAVE_UI_SHOWN_REASON_UNKNOWN = 0;
+    public static final int STATUS_CANCELLED = 3;
+    public static final int STATUS_FAIL = 2;
+    public static final int STATUS_SUCCESS = 1;
+    public static final int STATUS_UNKNOWN = 0;
     public static final int TRIGGER_REASON_EXPLICITLY_REQUESTED = 1;
     public static final int TRIGGER_REASON_NORMAL_TRIGGER = 4;
     public static final int TRIGGER_REASON_PRE_TRIGGER = 3;

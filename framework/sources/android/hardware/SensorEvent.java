@@ -8,7 +8,7 @@ public class SensorEvent {
     public long timestamp;
     public final float[] values;
 
-    public SensorEvent(int valueSize) {
+    SensorEvent(int valueSize) {
         this.values = new float[valueSize];
     }
 

@@ -12,7 +12,6 @@ public interface ISpatializerHeadToSoundStagePoseCallback extends IInterface {
 
     void dispatchPoseChanged(float[] fArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializerHeadToSoundStagePoseCallback {
         @Override // android.media.ISpatializerHeadToSoundStagePoseCallback
         public void dispatchPoseChanged(float[] pose) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISpatializerHeadToSoundStagePoseCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializerHeadToSoundStagePoseCallback {
         static final int TRANSACTION_dispatchPoseChanged = 1;
 
@@ -67,25 +65,22 @@ public interface ISpatializerHeadToSoundStagePoseCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpatializerHeadToSoundStagePoseCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializerHeadToSoundStagePoseCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpatializerHeadToSoundStagePoseCallback.DESCRIPTOR);
+                case 1:
+                    float[] _arg0 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    dispatchPoseChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            float[] _arg0 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            dispatchPoseChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializerHeadToSoundStagePoseCallback {
+        private static class Proxy implements ISpatializerHeadToSoundStagePoseCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

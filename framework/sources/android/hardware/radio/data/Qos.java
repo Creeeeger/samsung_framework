@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class Qos implements Parcelable {
     public static final Parcelable.Creator<Qos> CREATOR = new Parcelable.Creator<Qos>() { // from class: android.hardware.radio.data.Qos.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Qos createFromParcel(Parcel _aidl_source) {
             return new Qos(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Qos[] newArray(int _aidl_size) {
             return new Qos[_aidl_size];
@@ -27,15 +26,10 @@ public final class Qos implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int eps = 1;
         public static final int noinit = 0;
         public static final int nr = 2;
-    }
-
-    /* synthetic */ Qos(Parcel parcel, QosIA qosIA) {
-        this(parcel);
     }
 
     public Qos() {
@@ -100,38 +94,19 @@ public final class Qos implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.radio.data.Qos$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Qos> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Qos createFromParcel(Parcel _aidl_source) {
-            return new Qos(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Qos[] newArray(int _aidl_size) {
-            return new Qos[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeBoolean(getNoinit());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getEps(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getNr(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -179,11 +154,11 @@ public final class Qos implements Parcelable {
     public String toString() {
         switch (this._tag) {
             case 0:
-                return "android.hardware.radio.data.Qos.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
+                return "Qos.noinit(" + getNoinit() + NavigationBarInflaterView.KEY_CODE_END;
             case 1:
-                return "android.hardware.radio.data.Qos.eps(" + Objects.toString(getEps()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "Qos.eps(" + Objects.toString(getEps()) + NavigationBarInflaterView.KEY_CODE_END;
             case 2:
-                return "android.hardware.radio.data.Qos.nr(" + Objects.toString(getNr()) + NavigationBarInflaterView.KEY_CODE_END;
+                return "Qos.nr(" + Objects.toString(getNr()) + NavigationBarInflaterView.KEY_CODE_END;
             default:
                 throw new IllegalStateException("unknown field: " + this._tag);
         }

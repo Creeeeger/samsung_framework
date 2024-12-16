@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import java.util.Arrays;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class ImsSuppServiceNotification implements Parcelable {
     public static final Parcelable.Creator<ImsSuppServiceNotification> CREATOR = new Parcelable.Creator<ImsSuppServiceNotification>() { // from class: android.telephony.ims.ImsSuppServiceNotification.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSuppServiceNotification createFromParcel(Parcel in) {
             return new ImsSuppServiceNotification(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImsSuppServiceNotification[] newArray(int size) {
             return new ImsSuppServiceNotification[size];
@@ -65,22 +64,5 @@ public final class ImsSuppServiceNotification implements Parcelable {
         out.writeInt(this.type);
         out.writeString(this.number);
         out.writeStringArray(this.history);
-    }
-
-    /* renamed from: android.telephony.ims.ImsSuppServiceNotification$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImsSuppServiceNotification> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSuppServiceNotification createFromParcel(Parcel in) {
-            return new ImsSuppServiceNotification(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImsSuppServiceNotification[] newArray(int size) {
-            return new ImsSuppServiceNotification[size];
-        }
     }
 }

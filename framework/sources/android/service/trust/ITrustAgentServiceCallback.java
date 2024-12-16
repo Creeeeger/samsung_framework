@@ -30,7 +30,6 @@ public interface ITrustAgentServiceCallback extends IInterface {
 
     void unlockUserWithToken(long j, byte[] bArr, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITrustAgentServiceCallback {
         @Override // android.service.trust.ITrustAgentServiceCallback
         public void grantTrust(CharSequence message, long durationMs, int flags, AndroidFuture resultCallback) throws RemoteException {
@@ -78,7 +77,6 @@ public interface ITrustAgentServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITrustAgentServiceCallback {
         public static final String DESCRIPTOR = "android.service.trust.ITrustAgentServiceCallback";
         static final int TRANSACTION_addEscrowToken = 6;
@@ -149,76 +147,72 @@ public interface ITrustAgentServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    CharSequence _arg0 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    long _arg1 = data.readLong();
+                    int _arg2 = data.readInt();
+                    AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    grantTrust(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    revokeTrust();
+                    return true;
+                case 3:
+                    lockUser();
+                    return true;
+                case 4:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setManagingTrust(_arg02);
+                    return true;
+                case 5:
+                    boolean _arg03 = data.readBoolean();
+                    IBinder _arg12 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onConfigureCompleted(_arg03, _arg12);
+                    return true;
+                case 6:
+                    byte[] _arg04 = data.createByteArray();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addEscrowToken(_arg04, _arg13);
+                    return true;
+                case 7:
+                    long _arg05 = data.readLong();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    isEscrowTokenActive(_arg05, _arg14);
+                    return true;
+                case 8:
+                    long _arg06 = data.readLong();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeEscrowToken(_arg06, _arg15);
+                    return true;
+                case 9:
+                    long _arg07 = data.readLong();
+                    byte[] _arg16 = data.createByteArray();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unlockUserWithToken(_arg07, _arg16, _arg22);
+                    return true;
+                case 10:
+                    CharSequence _arg08 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    showKeyguardErrorMessage(_arg08);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            CharSequence _arg0 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            long _arg1 = data.readLong();
-                            int _arg2 = data.readInt();
-                            AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            grantTrust(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            revokeTrust();
-                            return true;
-                        case 3:
-                            lockUser();
-                            return true;
-                        case 4:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setManagingTrust(_arg02);
-                            return true;
-                        case 5:
-                            boolean _arg03 = data.readBoolean();
-                            IBinder _arg12 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onConfigureCompleted(_arg03, _arg12);
-                            return true;
-                        case 6:
-                            byte[] _arg04 = data.createByteArray();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addEscrowToken(_arg04, _arg13);
-                            return true;
-                        case 7:
-                            long _arg05 = data.readLong();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            isEscrowTokenActive(_arg05, _arg14);
-                            return true;
-                        case 8:
-                            long _arg06 = data.readLong();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeEscrowToken(_arg06, _arg15);
-                            return true;
-                        case 9:
-                            long _arg07 = data.readLong();
-                            byte[] _arg16 = data.createByteArray();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unlockUserWithToken(_arg07, _arg16, _arg22);
-                            return true;
-                        case 10:
-                            CharSequence _arg08 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            showKeyguardErrorMessage(_arg08);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ITrustAgentServiceCallback {
+        private static class Proxy implements ITrustAgentServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -13,10 +13,11 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
-import android.os.SystemProperties;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.sysfwutil.Slog;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,7 +91,6 @@ public class UsbManager {
 
     @SystemApi
     public static final long FUNCTION_MTP = 4;
-    private static final Map<String, Long> FUNCTION_NAME_TO_CODE;
 
     @SystemApi
     public static final long FUNCTION_NCM = 1024;
@@ -250,69 +250,62 @@ public class UsbManager {
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static final int USB_HAL_V2_0 = 20;
     public static final String USB_HOST_CONNECTED = "host_connected";
-    private static final AtomicInteger sUsbOperationCount;
     private final Context mContext;
     private ArrayMap<DisplayPortAltModeInfoListener, Executor> mDisplayPortListeners;
     private final Object mDisplayPortListenersLock = new Object();
     private DisplayPortAltModeInfoDispatchingListener mDisplayPortServiceListener;
     private final IUsbManager mService;
+    private static final Map<String, Long> FUNCTION_NAME_TO_CODE = new HashMap();
+    private static final AtomicInteger sUsbOperationCount = new AtomicInteger();
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public interface DisplayPortAltModeInfoListener {
         void onDisplayPortAltModeInfoChanged(String str, DisplayPortAltModeInfo displayPortAltModeInfo);
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface UsbFunctionMode {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface UsbGadgetHalVersion {
     }
 
-    /* loaded from: classes2.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface UsbHalVersion {
     }
 
     static {
-        HashMap hashMap = new HashMap();
-        FUNCTION_NAME_TO_CODE = hashMap;
-        sUsbOperationCount = new AtomicInteger();
-        hashMap.put(USB_FUNCTION_MTP, 4L);
-        hashMap.put(USB_FUNCTION_PTP, 16L);
-        hashMap.put(USB_FUNCTION_RNDIS, 32L);
-        hashMap.put("midi", 8L);
-        hashMap.put("accessory", 2L);
-        hashMap.put(USB_FUNCTION_AUDIO_SOURCE, 64L);
-        hashMap.put("adb", 1L);
-        hashMap.put(USB_FUNCTION_NCM, 1024L);
-        hashMap.put(USB_FUNCTION_UVC, 128L);
-        hashMap.put(USB_FUNCTION_DIAG, 2048L);
-        hashMap.put(USB_FUNCTION_ACM, 4096L);
-        hashMap.put("dm", 8192L);
-        hashMap.put(USB_FUNCTION_DM1, 1048576L);
-        hashMap.put(USB_FUNCTION_SERIAL_CDEV, 16384L);
-        hashMap.put(USB_FUNCTION_DPL, 32768L);
-        hashMap.put(USB_FUNCTION_UTS, 65536L);
-        hashMap.put(USB_FUNCTION_RMNET, 131072L);
-        hashMap.put(USB_FUNCTION_SEC_CHARGING, 262144L);
-        hashMap.put(USB_FUNCTION_MASS_STORAGE, 524288L);
-        hashMap.put(USB_FUNCTION_CONN_GADGET, 4194304L);
-        hashMap.put(USB_FUNCTION_DIAG_MDM, 8388608L);
-        hashMap.put(USB_FUNCTION_QDSS, 16777216L);
-        hashMap.put(USB_FUNCTION_QDSS_MDM, 33554432L);
-        hashMap.put(USB_FUNCTION_MBIM, 67108864L);
-        hashMap.put(USB_FUNCTION_SHUTDOWN, 134217728L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_MTP, 4L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_PTP, 16L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_RNDIS, 32L);
+        FUNCTION_NAME_TO_CODE.put("midi", 8L);
+        FUNCTION_NAME_TO_CODE.put("accessory", 2L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_AUDIO_SOURCE, 64L);
+        FUNCTION_NAME_TO_CODE.put("adb", 1L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_NCM, 1024L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_UVC, 128L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_DIAG, 2048L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_ACM, 4096L);
+        FUNCTION_NAME_TO_CODE.put("dm", 8192L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_DM1, 1048576L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_SERIAL_CDEV, 16384L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_DPL, 32768L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_UTS, 65536L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_RMNET, 131072L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_SEC_CHARGING, 262144L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_MASS_STORAGE, 524288L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_CONN_GADGET, 4194304L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_DIAG_MDM, 8388608L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_QDSS, 16777216L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_QDSS_MDM, 33554432L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_MBIM, 67108864L);
+        FUNCTION_NAME_TO_CODE.put(USB_FUNCTION_SHUTDOWN, 134217728L);
         DEFAULT_MODES = new int[]{2, 4, 6, 0, 1};
     }
 
-    /* loaded from: classes2.dex */
-    public class DisplayPortAltModeInfoDispatchingListener extends IDisplayPortAltModeInfoListener.Stub {
-        /* synthetic */ DisplayPortAltModeInfoDispatchingListener(UsbManager usbManager, DisplayPortAltModeInfoDispatchingListenerIA displayPortAltModeInfoDispatchingListenerIA) {
-            this();
-        }
-
+    /* JADX INFO: Access modifiers changed from: private */
+    class DisplayPortAltModeInfoDispatchingListener extends IDisplayPortAltModeInfoListener.Stub {
         private DisplayPortAltModeInfoDispatchingListener() {
         }
 
@@ -385,12 +378,11 @@ public class UsbManager {
     }
 
     public UsbAccessory[] getAccessoryList() {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return null;
         }
         try {
-            UsbAccessory accessory = iUsbManager.getCurrentAccessory();
+            UsbAccessory accessory = this.mService.getCurrentAccessory();
             if (accessory == null) {
                 return null;
             }
@@ -417,48 +409,44 @@ public class UsbManager {
     }
 
     public boolean hasPermission(UsbDevice device) {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iUsbManager.hasDevicePermission(device, this.mContext.getPackageName());
+            return this.mService.hasDevicePermission(device, this.mContext.getPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public boolean hasPermission(UsbDevice device, String packageName, int pid, int uid) {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iUsbManager.hasDevicePermissionWithIdentity(device, packageName, pid, uid);
+            return this.mService.hasDevicePermissionWithIdentity(device, packageName, pid, uid);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public boolean hasPermission(UsbAccessory accessory) {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iUsbManager.hasAccessoryPermission(accessory);
+            return this.mService.hasAccessoryPermission(accessory);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public boolean hasPermission(UsbAccessory accessory, int pid, int uid) {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            return iUsbManager.hasAccessoryPermissionWithIdentity(accessory, pid, uid);
+            return this.mService.hasAccessoryPermissionWithIdentity(accessory, pid, uid);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -615,7 +603,7 @@ public class UsbManager {
 
     @SystemApi
     public static boolean isUvcSupportEnabled() {
-        return SystemProperties.getBoolean("ro.usb.uvc.enabled", false);
+        return false;
     }
 
     public boolean enableUsbDataSignal(boolean enable) {
@@ -652,12 +640,11 @@ public class UsbManager {
 
     @SystemApi
     public List<UsbPort> getPorts() {
-        IUsbManager iUsbManager = this.mService;
-        if (iUsbManager == null) {
+        if (this.mService == null) {
             return Collections.emptyList();
         }
         try {
-            List<ParcelableUsbPort> parcelablePorts = iUsbManager.getPorts();
+            List<ParcelableUsbPort> parcelablePorts = this.mService.getPorts();
             if (parcelablePorts == null) {
                 return Collections.emptyList();
             }
@@ -672,7 +659,7 @@ public class UsbManager {
         }
     }
 
-    public UsbPortStatus getPortStatus(UsbPort port) {
+    UsbPortStatus getPortStatus(UsbPort port) {
         try {
             return this.mService.getPortStatus(port.getId());
         } catch (RemoteException e) {
@@ -680,7 +667,15 @@ public class UsbManager {
         }
     }
 
-    public void setPortRoles(UsbPort port, int powerRole, int dataRole) {
+    boolean isModeChangeSupported(UsbPort port) {
+        try {
+            return this.mService.isModeChangeSupported(port.getId());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    void setPortRoles(UsbPort port, int powerRole, int dataRole) {
         Log.d(TAG, "setPortRoles: portId=" + port.getId() + " powerRole=" + powerRole + " dataRole=" + dataRole);
         Log.d(TAG, "setPortRoles Package:" + this.mContext.getPackageName());
         try {
@@ -690,7 +685,7 @@ public class UsbManager {
         }
     }
 
-    public void enableContaminantDetection(UsbPort port, boolean enable) {
+    void enableContaminantDetection(UsbPort port, boolean enable) {
         try {
             this.mService.enableContaminantDetection(port.getId(), enable);
         } catch (RemoteException e) {
@@ -698,7 +693,7 @@ public class UsbManager {
         }
     }
 
-    public void enableLimitPowerTransfer(UsbPort port, boolean limit, int operationId, IUsbOperationInternal callback) {
+    void enableLimitPowerTransfer(UsbPort port, boolean limit, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableLimitPowerTransfer:port must not be null. opId:" + operationId);
         try {
             this.mService.enableLimitPowerTransfer(port.getId(), limit, operationId, callback);
@@ -713,7 +708,7 @@ public class UsbManager {
         }
     }
 
-    public void resetUsbPort(UsbPort port, int operationId, IUsbOperationInternal callback) {
+    void resetUsbPort(UsbPort port, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "resetUsbPort: port must not be null. opId:" + operationId);
         try {
             this.mService.resetUsbPort(port.getId(), operationId, callback);
@@ -728,7 +723,7 @@ public class UsbManager {
         }
     }
 
-    public boolean enableUsbData(UsbPort port, boolean enable, int operationId, IUsbOperationInternal callback) {
+    boolean enableUsbData(UsbPort port, boolean enable, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableUsbData: port must not be null. opId:" + operationId);
         try {
             return this.mService.enableUsbData(port.getId(), enable, operationId, callback);
@@ -743,7 +738,7 @@ public class UsbManager {
         }
     }
 
-    public void enableUsbDataWhileDocked(UsbPort port, int operationId, IUsbOperationInternal callback) {
+    void enableUsbDataWhileDocked(UsbPort port, int operationId, IUsbOperationInternal callback) {
         Objects.requireNonNull(port, "enableUsbDataWhileDocked: port must not be null. opId:" + operationId);
         try {
             this.mService.enableUsbDataWhileDocked(port.getId(), operationId, callback);
@@ -790,11 +785,10 @@ public class UsbManager {
     }
 
     private void unregisterDisplayPortAltModeEventsLocked() {
-        DisplayPortAltModeInfoDispatchingListener displayPortAltModeInfoDispatchingListener = this.mDisplayPortServiceListener;
-        if (displayPortAltModeInfoDispatchingListener != null) {
+        if (this.mDisplayPortServiceListener != null) {
             try {
                 try {
-                    this.mService.unregisterForDisplayPortEvents(displayPortAltModeInfoDispatchingListener);
+                    this.mService.unregisterForDisplayPortEvents(this.mDisplayPortServiceListener);
                 } catch (RemoteException e) {
                     throw e.rethrowFromSystemServer();
                 }
@@ -807,11 +801,10 @@ public class UsbManager {
     @SystemApi
     public void unregisterDisplayPortAltModeInfoListener(DisplayPortAltModeInfoListener listener) {
         synchronized (this.mDisplayPortListenersLock) {
-            ArrayMap<DisplayPortAltModeInfoListener, Executor> arrayMap = this.mDisplayPortListeners;
-            if (arrayMap == null) {
+            if (this.mDisplayPortListeners == null) {
                 return;
             }
-            arrayMap.remove(listener);
+            this.mDisplayPortListeners.remove(listener);
             if (this.mDisplayPortListeners.isEmpty()) {
                 unregisterDisplayPortAltModeEventsLocked();
             }
@@ -919,9 +912,8 @@ public class UsbManager {
         }
         long ret = 0;
         for (String function : functions.split(",")) {
-            Map<String, Long> map = FUNCTION_NAME_TO_CODE;
-            if (map.containsKey(function)) {
-                ret |= map.get(function).longValue();
+            if (FUNCTION_NAME_TO_CODE.containsKey(function)) {
+                ret |= FUNCTION_NAME_TO_CODE.get(function).longValue();
             } else if (function.length() > 0) {
                 Log.d(TAG, "usbFunctionsFromString: Invalid usb functions=" + functions);
                 return 0L;
@@ -976,29 +968,8 @@ public class UsbManager {
 
     public static int usbSpeedToBandwidth(int speed) {
         switch (speed) {
-            case 0:
-                return 2;
-            case 1:
-                return 12;
-            case 2:
-                return 480;
-            case 3:
-                return 5120;
-            case 4:
-                return 10240;
-            case 5:
-                return 20480;
-            case 6:
-                return 10240;
-            case 7:
-                return 20480;
-            case 8:
-                return 20480;
-            case 9:
-                return USB_DATA_TRANSFER_RATE_40G;
-            default:
-                return -1;
         }
+        return 20480;
     }
 
     public static String usbGadgetHalVersionToString(int version) {

@@ -6,14 +6,13 @@ import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface Shape extends Serializable, Parcelable, Copyable<Shape>, Comparable<Shape> {
     public static final int TYPE_NHWC = 2;
     public static final int TYPE_NONE = 0;
     public static final int TYPE_NWHC = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface Type {
     }
 

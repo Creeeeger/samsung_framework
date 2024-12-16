@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IRcsConfigCallback extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IRcsConfigCallback";
 
@@ -20,7 +20,6 @@ public interface IRcsConfigCallback extends IInterface {
 
     void onRemoved() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRcsConfigCallback {
         @Override // android.telephony.ims.aidl.IRcsConfigCallback
         public void onConfigurationChanged(byte[] config) throws RemoteException {
@@ -48,7 +47,6 @@ public interface IRcsConfigCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRcsConfigCallback {
         static final int TRANSACTION_onAutoConfigurationErrorReceived = 2;
         static final int TRANSACTION_onConfigurationChanged = 1;
@@ -103,42 +101,39 @@ public interface IRcsConfigCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRcsConfigCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRcsConfigCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRcsConfigCallback.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onConfigurationChanged(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onAutoConfigurationErrorReceived(_arg02, _arg1);
+                    return true;
+                case 3:
+                    onConfigurationReset();
+                    return true;
+                case 4:
+                    onRemoved();
+                    return true;
+                case 5:
+                    byte[] _arg03 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onPreProvisioningReceived(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onConfigurationChanged(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onAutoConfigurationErrorReceived(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            onConfigurationReset();
-                            return true;
-                        case 4:
-                            onRemoved();
-                            return true;
-                        case 5:
-                            byte[] _arg03 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onPreProvisioningReceived(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRcsConfigCallback {
+        private static class Proxy implements IRcsConfigCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

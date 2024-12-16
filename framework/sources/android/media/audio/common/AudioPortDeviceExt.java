@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioPortDeviceExt implements Parcelable {
     public static final Parcelable.Creator<AudioPortDeviceExt> CREATOR = new Parcelable.Creator<AudioPortDeviceExt>() { // from class: android.media.audio.common.AudioPortDeviceExt.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortDeviceExt createFromParcel(Parcel _aidl_source) {
             AudioPortDeviceExt _aidl_out = new AudioPortDeviceExt();
@@ -20,6 +18,7 @@ public class AudioPortDeviceExt implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioPortDeviceExt[] newArray(int _aidl_size) {
             return new AudioPortDeviceExt[_aidl_size];
@@ -31,25 +30,6 @@ public class AudioPortDeviceExt implements Parcelable {
     public int flags = 0;
     public int encapsulationModes = 0;
     public int encapsulationMetadataTypes = 0;
-
-    /* renamed from: android.media.audio.common.AudioPortDeviceExt$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioPortDeviceExt> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortDeviceExt createFromParcel(Parcel _aidl_source) {
-            AudioPortDeviceExt _aidl_out = new AudioPortDeviceExt();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioPortDeviceExt[] newArray(int _aidl_size) {
-            return new AudioPortDeviceExt[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -138,7 +118,7 @@ public class AudioPortDeviceExt implements Parcelable {
         _aidl_sj.add("encodedFormats: " + Arrays.toString(this.encodedFormats));
         _aidl_sj.add("encapsulationModes: " + this.encapsulationModes);
         _aidl_sj.add("encapsulationMetadataTypes: " + this.encapsulationMetadataTypes);
-        return "android.media.audio.common.AudioPortDeviceExt" + _aidl_sj.toString();
+        return "AudioPortDeviceExt" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

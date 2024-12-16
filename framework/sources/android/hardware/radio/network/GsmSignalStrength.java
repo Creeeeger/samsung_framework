@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class GsmSignalStrength implements Parcelable {
     public static final Parcelable.Creator<GsmSignalStrength> CREATOR = new Parcelable.Creator<GsmSignalStrength>() { // from class: android.hardware.radio.network.GsmSignalStrength.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GsmSignalStrength createFromParcel(Parcel _aidl_source) {
             GsmSignalStrength _aidl_out = new GsmSignalStrength();
@@ -18,6 +16,7 @@ public class GsmSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GsmSignalStrength[] newArray(int _aidl_size) {
             return new GsmSignalStrength[_aidl_size];
@@ -26,25 +25,6 @@ public class GsmSignalStrength implements Parcelable {
     public int signalStrength = 0;
     public int bitErrorRate = 0;
     public int timingAdvance = 0;
-
-    /* renamed from: android.hardware.radio.network.GsmSignalStrength$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GsmSignalStrength> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GsmSignalStrength createFromParcel(Parcel _aidl_source) {
-            GsmSignalStrength _aidl_out = new GsmSignalStrength();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GsmSignalStrength[] newArray(int _aidl_size) {
-            return new GsmSignalStrength[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -113,7 +93,7 @@ public class GsmSignalStrength implements Parcelable {
         _aidl_sj.add("signalStrength: " + this.signalStrength);
         _aidl_sj.add("bitErrorRate: " + this.bitErrorRate);
         _aidl_sj.add("timingAdvance: " + this.timingAdvance);
-        return "android.hardware.radio.network.GsmSignalStrength" + _aidl_sj.toString();
+        return "GsmSignalStrength" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

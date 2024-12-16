@@ -17,9 +17,9 @@ public class DESEngine implements BlockCipher {
     private int[] workingKey = null;
     private static final short[] bytebit = {128, 64, 32, 16, 8, 4, 2, 1};
     private static final int[] bigbyte = {8388608, 4194304, 2097152, 1048576, 524288, 262144, 131072, 65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1};
-    private static final byte[] pc1 = {56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 40, 32, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, 16, 8, 0, 57, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, 41, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, 17, 9, 1, 58, 50, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, 10, 2, 59, 51, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, 35, 62, 54, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 38, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, 14, 6, 61, 53, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 37, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, 13, 5, 60, 52, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, 20, 12, 4, 27, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 11, 3};
-    private static final byte[] totrot = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, 27, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN};
-    private static final byte[] pc2 = {13, 16, 10, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, 0, 4, 2, 27, 14, 5, 20, 9, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, 11, 3, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEIN, 7, 15, 6, SprAnimatorBase.INTERPOLATOR_TYPE_EXPOEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, 12, 1, 40, 51, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 54, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 50, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 32, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 38, 55, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 52, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 41, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, 35, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN};
+    private static final byte[] pc1 = {56, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 40, 32, 24, 16, 8, 0, 57, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, 41, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 25, 17, 9, 1, 58, 50, SprAnimatorBase.INTERPOLATOR_TYPE_SINEIN33, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEIN, 26, 18, 10, 2, 59, 51, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, 35, 62, 54, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 38, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, 22, 14, 6, 61, 53, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 37, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 21, 13, 5, 60, 52, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, 20, 12, 4, 27, 19, 11, 3};
+    private static final byte[] totrot = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN};
+    private static final byte[] pc2 = {13, 16, 10, 23, 0, 4, 2, 27, 14, 5, 20, 9, 22, 18, 11, 3, 25, 7, 15, 6, 26, 19, 12, 1, 40, 51, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, 54, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, SprAnimatorBase.INTERPOLATOR_TYPE_SINEEASEINOUT, 50, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, 32, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT33, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT90, 38, 55, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEINOUT, 52, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, 41, SprAnimatorBase.INTERPOLATOR_TYPE_SINEOUT33, 35, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEIN, SprAnimatorBase.INTERPOLATOR_TYPE_QUARTEASEIN};
     private static final int[] SP1 = {16843776, 0, 65536, 16843780, 16842756, 66564, 4, 65536, 1024, 16843776, 16843780, 1024, 16778244, 16842756, 16777216, 4, 1028, 16778240, 16778240, 66560, 66560, 16842752, 16842752, 16778244, 65540, 16777220, 16777220, 65540, 0, 1028, 66564, 16777216, 65536, 16843780, 4, 16842752, 16843776, 16777216, 16777216, 1024, 16842756, 65536, 66560, 16777220, 1024, 4, 16778244, 66564, 16843780, 65540, 16842752, 16778244, 16777220, 1028, 66564, 16843776, 1028, 16778240, 16778240, 0, 65540, 66560, 0, 16842756};
     private static final int[] SP2 = {-2146402272, -2147450880, 32768, 1081376, 1048576, 32, -2146435040, -2147450848, -2147483616, -2146402272, -2146402304, Integer.MIN_VALUE, -2147450880, 1048576, 32, -2146435040, 1081344, 1048608, -2147450848, 0, Integer.MIN_VALUE, 32768, 1081376, AudioSystem.DEVICE_IN_BUS, 1048608, -2147483616, 0, 1081344, 32800, -2146402304, AudioSystem.DEVICE_IN_BUS, 32800, 0, 1081376, -2146435040, 1048576, -2147450848, AudioSystem.DEVICE_IN_BUS, -2146402304, 32768, AudioSystem.DEVICE_IN_BUS, -2147450880, 32, -2146402272, 1081376, 32, 32768, Integer.MIN_VALUE, 32800, -2146402304, 1048576, -2147483616, 1048608, -2147450848, -2147483616, 1048608, 1081344, 0, -2147450880, 32800, Integer.MIN_VALUE, -2146435040, -2146402272, 1081344};
     private static final int[] SP3 = {520, 134349312, 0, 134348808, 134218240, 0, 131592, 134218240, 131080, 134217736, 134217736, 131072, 134349320, 131080, 134348800, 520, 134217728, 8, 134349312, 512, 131584, 134348800, 134348808, 131592, 134218248, 131584, 131072, 134218248, 8, 134349320, 512, 134217728, 134349312, 134217728, 131080, 520, 131072, 134349312, 134218240, 0, 512, 131080, 134349320, 134218240, 134217736, 512, 0, 134348808, 134218248, 131072, 134217728, 134349320, 8, 131592, 131584, 134217736, 134348800, 134218248, 520, 134348800, 131592, 8, 134348808, 131584};
@@ -53,8 +53,7 @@ public class DESEngine implements BlockCipher {
 
     @Override // com.android.internal.org.bouncycastle.crypto.BlockCipher
     public int processBlock(byte[] in, int inOff, byte[] out, int outOff) {
-        int[] iArr = this.workingKey;
-        if (iArr == null) {
+        if (this.workingKey == null) {
             throw new IllegalStateException("DES engine not initialised");
         }
         if (inOff + 8 > in.length) {
@@ -63,7 +62,7 @@ public class DESEngine implements BlockCipher {
         if (outOff + 8 > out.length) {
             throw new OutputLengthException("output buffer too short");
         }
-        desFunc(iArr, in, inOff, out, outOff);
+        desFunc(this.workingKey, in, inOff, out, outOff);
         return 8;
     }
 
@@ -71,7 +70,7 @@ public class DESEngine implements BlockCipher {
     public void reset() {
     }
 
-    public int[] generateWorkingKey(boolean encrypting, byte[] key) {
+    protected int[] generateWorkingKey(boolean encrypting, byte[] key) {
         int m;
         int[] newKey = new int[32];
         boolean[] pc1m = new boolean[56];
@@ -116,11 +115,10 @@ public class DESEngine implements BlockCipher {
                 }
             }
             for (int j4 = 0; j4 < 24; j4++) {
-                byte[] bArr = pc2;
-                if (pcr[bArr[j4]]) {
+                if (pcr[pc2[j4]]) {
                     newKey[m] = newKey[m] | bigbyte[j4];
                 }
-                if (pcr[bArr[j4 + 24]]) {
+                if (pcr[pc2[j4 + 24]]) {
                     newKey[n] = newKey[n] | bigbyte[j4];
                 }
             }
@@ -134,7 +132,7 @@ public class DESEngine implements BlockCipher {
         return newKey;
     }
 
-    public void desFunc(int[] wKey, byte[] in, int inOff, byte[] out, int outOff) {
+    protected void desFunc(int[] wKey, byte[] in, int inOff, byte[] out, int outOff) {
         int left = Pack.bigEndianToInt(in, inOff);
         int right = Pack.bigEndianToInt(in, inOff + 4);
         int work = ((left >>> 4) ^ right) & 252645135;
@@ -156,29 +154,15 @@ public class DESEngine implements BlockCipher {
         int left7 = (left6 << 1) | (left6 >>> 31);
         for (int round = 0; round < 8; round++) {
             int work6 = ((right7 << 28) | (right7 >>> 4)) ^ wKey[(round * 4) + 0];
-            int[] iArr = SP7;
-            int fval = iArr[work6 & 63];
-            int[] iArr2 = SP5;
-            int fval2 = fval | iArr2[(work6 >>> 8) & 63];
-            int[] iArr3 = SP3;
-            int fval3 = fval2 | iArr3[(work6 >>> 16) & 63];
-            int[] iArr4 = SP1;
-            int fval4 = fval3 | iArr4[(work6 >>> 24) & 63];
+            int fval = SP7[work6 & 63];
+            int fval2 = fval | SP5[(work6 >>> 8) & 63] | SP3[(work6 >>> 16) & 63] | SP1[(work6 >>> 24) & 63];
             int work7 = right7 ^ wKey[(round * 4) + 1];
-            int[] iArr5 = SP8;
-            int fval5 = fval4 | iArr5[work7 & 63];
-            int[] iArr6 = SP6;
-            int fval6 = fval5 | iArr6[(work7 >>> 8) & 63];
-            int[] iArr7 = SP4;
-            int fval7 = fval6 | iArr7[(work7 >>> 16) & 63];
-            int[] iArr8 = SP2;
-            left7 ^= fval7 | iArr8[(work7 >>> 24) & 63];
+            left7 ^= (((fval2 | SP8[work7 & 63]) | SP6[(work7 >>> 8) & 63]) | SP4[(work7 >>> 16) & 63]) | SP2[(work7 >>> 24) & 63];
             int work8 = ((left7 << 28) | (left7 >>> 4)) ^ wKey[(round * 4) + 2];
-            int fval8 = iArr[work8 & 63];
-            int fval9 = work8 >>> 8;
-            int fval10 = fval8 | iArr2[fval9 & 63] | iArr3[(work8 >>> 16) & 63] | iArr4[(work8 >>> 24) & 63];
+            int fval3 = SP7[work8 & 63];
+            int fval4 = fval3 | SP5[(work8 >>> 8) & 63] | SP3[(work8 >>> 16) & 63] | SP1[(work8 >>> 24) & 63];
             int work9 = left7 ^ wKey[(round * 4) + 3];
-            right7 ^= (((fval10 | iArr5[work9 & 63]) | iArr6[(work9 >>> 8) & 63]) | iArr7[(work9 >>> 16) & 63]) | iArr8[(work9 >>> 24) & 63];
+            right7 ^= (((fval4 | SP8[work9 & 63]) | SP6[(work9 >>> 8) & 63]) | SP4[(work9 >>> 16) & 63]) | SP2[(work9 >>> 24) & 63];
         }
         int round2 = right7 << 31;
         int right8 = round2 | (right7 >>> 1);

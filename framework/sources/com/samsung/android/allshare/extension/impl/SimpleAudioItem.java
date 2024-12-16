@@ -1,6 +1,5 @@
 package com.samsung.android.allshare.extension.impl;
 
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -10,9 +9,8 @@ import com.samsung.android.allshare.Subtitle;
 import com.sec.android.allshare.iface.IBundleHolder;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
-import java.util.Date;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public class SimpleAudioItem extends Item implements IBundleHolder {
     private Bundle mBundle;
 
@@ -22,34 +20,21 @@ public class SimpleAudioItem extends Item implements IBundleHolder {
     }
 
     @Override // com.samsung.android.allshare.Item
-    public Date getDate() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
     public long getDuration() {
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return -1L;
         }
-        return bundle.getLong(AllShareKey.BUNDLE_LONG_AUDIO_ITEM_DURATION);
+        return this.mBundle.getLong(AllShareKey.BUNDLE_LONG_AUDIO_ITEM_DURATION);
     }
 
     @Override // com.samsung.android.allshare.Item
     public String getTitle() {
-        Bundle bundle = this.mBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TITLE);
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Item.MediaType getType() {
-        return Item.MediaType.ITEM_AUDIO;
+        return this.mBundle == null ? "" : this.mBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TITLE);
     }
 
     @Override // com.samsung.android.allshare.Item
     public Uri getURI() {
-        Bundle bundle = this.mBundle;
-        return (Uri) (bundle == null ? null : bundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM_URI));
+        return (Uri) (this.mBundle == null ? null : this.mBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM_URI));
     }
 
     @Override // android.os.Parcelable
@@ -83,16 +68,6 @@ public class SimpleAudioItem extends Item implements IBundleHolder {
     }
 
     @Override // com.samsung.android.allshare.Item
-    public Location getLocation() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public String getResolution() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
     public Uri getSubtitle() {
         return null;
     }
@@ -114,32 +89,19 @@ public class SimpleAudioItem extends Item implements IBundleHolder {
 
     @Override // com.samsung.android.allshare.Item
     public long getFileSize() {
-        Bundle bundle = this.mBundle;
-        if (bundle == null) {
+        if (this.mBundle == null) {
             return -1L;
         }
-        return bundle.getLong(AllShareKey.BUNDLE_LONG_ITEM_FILE_SIZE);
+        return this.mBundle.getLong(AllShareKey.BUNDLE_LONG_ITEM_FILE_SIZE);
     }
 
     @Override // com.samsung.android.allshare.Item
     public String getMimetype() {
-        Bundle bundle = this.mBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
+        return this.mBundle == null ? "" : this.mBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
     }
 
     @Override // com.samsung.android.allshare.Item
     public Item.ContentBuildType getContentBuildType() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public Item.WebContentBuilder.DeliveryMode getWebContentDeliveryMode() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    @Deprecated
-    public Item.WebContentBuilder.PlayMode getWebContentPlayMode() {
         throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
     }
 
@@ -155,11 +117,6 @@ public class SimpleAudioItem extends Item implements IBundleHolder {
 
     @Override // com.samsung.android.allshare.Item
     public int getBitrate() {
-        throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
-    }
-
-    @Override // com.samsung.android.allshare.Item
-    public ArrayList<Item.Resource> getResourceList() {
         throw new IllegalAccessError("SimpleAudioItem doesn't support this method.");
     }
 

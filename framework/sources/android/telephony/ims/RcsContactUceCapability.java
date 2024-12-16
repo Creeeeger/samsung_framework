@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -15,19 +14,18 @@ import java.util.List;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RcsContactUceCapability implements Parcelable {
     public static final int CAPABILITY_MECHANISM_OPTIONS = 2;
     public static final int CAPABILITY_MECHANISM_PRESENCE = 1;
     public static final Parcelable.Creator<RcsContactUceCapability> CREATOR = new Parcelable.Creator<RcsContactUceCapability>() { // from class: android.telephony.ims.RcsContactUceCapability.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsContactUceCapability createFromParcel(Parcel in) {
             return new RcsContactUceCapability(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RcsContactUceCapability[] newArray(int size) {
             return new RcsContactUceCapability[size];
@@ -48,29 +46,17 @@ public final class RcsContactUceCapability implements Parcelable {
     private int mSourceType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CapabilityMechanism {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface RequestResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SourceType {
     }
 
-    /* synthetic */ RcsContactUceCapability(Uri uri, int i, int i2, RcsContactUceCapabilityIA rcsContactUceCapabilityIA) {
-        this(uri, i, i2);
-    }
-
-    /* synthetic */ RcsContactUceCapability(Parcel parcel, RcsContactUceCapabilityIA rcsContactUceCapabilityIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class OptionsBuilder {
         private final RcsContactUceCapability mCapabilities;
 
@@ -102,14 +88,12 @@ public final class RcsContactUceCapability implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class PresenceBuilder {
         private final RcsContactUceCapability mCapabilities;
 
         public PresenceBuilder(Uri contact, int sourceType, int requestResult) {
-            RcsContactUceCapability rcsContactUceCapability = new RcsContactUceCapability(contact, 1, sourceType);
-            this.mCapabilities = rcsContactUceCapability;
-            rcsContactUceCapability.mRequestResult = requestResult;
+            this.mCapabilities = new RcsContactUceCapability(contact, 1, sourceType);
+            this.mCapabilities.mRequestResult = requestResult;
         }
 
         public PresenceBuilder addCapabilityTuple(RcsContactPresenceTuple tuple) {
@@ -141,19 +125,17 @@ public final class RcsContactUceCapability implements Parcelable {
     }
 
     private RcsContactUceCapability(Parcel in) {
-        HashSet hashSet = new HashSet();
-        this.mFeatureTags = hashSet;
-        ArrayList arrayList = new ArrayList();
-        this.mPresenceTuples = arrayList;
+        this.mFeatureTags = new HashSet();
+        this.mPresenceTuples = new ArrayList();
         this.mContactUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
         this.mCapabilityMechanism = in.readInt();
         this.mSourceType = in.readInt();
         this.mRequestResult = in.readInt();
         this.mEntityUri = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
-        ArrayList arrayList2 = new ArrayList();
-        in.readStringList(arrayList2);
-        hashSet.addAll(arrayList2);
-        in.readParcelableList(arrayList, RcsContactPresenceTuple.class.getClassLoader(), RcsContactPresenceTuple.class);
+        List<String> featureTagList = new ArrayList<>();
+        in.readStringList(featureTagList);
+        this.mFeatureTags.addAll(featureTagList);
+        in.readParcelableList(this.mPresenceTuples, RcsContactPresenceTuple.class.getClassLoader(), RcsContactPresenceTuple.class);
     }
 
     @Override // android.os.Parcelable
@@ -170,23 +152,6 @@ public final class RcsContactUceCapability implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.ims.RcsContactUceCapability$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RcsContactUceCapability> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsContactUceCapability createFromParcel(Parcel in) {
-            return new RcsContactUceCapability(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RcsContactUceCapability[] newArray(int size) {
-            return new RcsContactUceCapability[size];
-        }
     }
 
     public int getCapabilityMechanism() {
@@ -237,22 +202,19 @@ public final class RcsContactUceCapability implements Parcelable {
 
     public String toString() {
         StringBuilder builder = new StringBuilder("RcsContactUceCapability");
-        int i = this.mCapabilityMechanism;
-        if (i == 1) {
+        if (this.mCapabilityMechanism == 1) {
             builder.append("(presence) {");
-        } else if (i == 2) {
+        } else if (this.mCapabilityMechanism == 2) {
             builder.append("(options) {");
         } else {
             builder.append("(?) {");
         }
-        boolean z = Build.IS_ENG;
-        Object obj = SemCapabilities.FEATURE_TAG_NULL;
-        if (z) {
+        if (Build.IS_ENG) {
             builder.append("uri=");
             builder.append(this.mContactUri);
         } else {
             builder.append("uri (isNull)=");
-            builder.append(this.mContactUri != null ? "XXX" : SemCapabilities.FEATURE_TAG_NULL);
+            builder.append(this.mContactUri != null ? "XXX" : "null");
         }
         builder.append(", sourceType=");
         builder.append(this.mSourceType);
@@ -260,21 +222,16 @@ public final class RcsContactUceCapability implements Parcelable {
         builder.append(this.mRequestResult);
         if (Build.IS_ENG) {
             builder.append("entity uri=");
-            Uri uri = this.mEntityUri;
-            if (uri != null) {
-                obj = uri;
-            }
-            builder.append(obj);
+            builder.append(this.mEntityUri != null ? this.mEntityUri : "null");
         } else {
             builder.append("entity uri (isNull)=");
-            builder.append(this.mEntityUri == null ? SemCapabilities.FEATURE_TAG_NULL : "XXX");
+            builder.append(this.mEntityUri == null ? "null" : "XXX");
         }
-        int i2 = this.mCapabilityMechanism;
-        if (i2 == 1) {
+        if (this.mCapabilityMechanism == 1) {
             builder.append(", presenceTuples={");
             builder.append(this.mPresenceTuples);
             builder.append("}");
-        } else if (i2 == 2) {
+        } else if (this.mCapabilityMechanism == 2) {
             builder.append(", featureTags={");
             builder.append(this.mFeatureTags);
             builder.append("}");

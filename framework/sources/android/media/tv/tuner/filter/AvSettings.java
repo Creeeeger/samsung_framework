@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class AvSettings extends Settings {
     public static final int AUDIO_STREAM_TYPE_AAC = 6;
     public static final int AUDIO_STREAM_TYPE_AAC_ADTS = 16;
@@ -48,17 +48,11 @@ public class AvSettings extends Settings {
     private int mVideoStreamType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AudioStreamType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VideoStreamType {
-    }
-
-    /* synthetic */ AvSettings(int i, boolean z, boolean z2, int i2, int i3, boolean z3, AvSettingsIA avSettingsIA) {
-        this(i, z, z2, i2, i3, z3);
     }
 
     /* JADX WARN: Illegal instructions before constructor call */
@@ -109,7 +103,6 @@ public class AvSettings extends Settings {
         return new Builder(mainType, isAudio);
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mAudioStreamType;
         private final boolean mIsAudio;
@@ -117,10 +110,6 @@ public class AvSettings extends Settings {
         private final int mMainType;
         boolean mUseSecureMemory;
         private int mVideoStreamType;
-
-        /* synthetic */ Builder(int i, boolean z, BuilderIA builderIA) {
-            this(i, z);
-        }
 
         private Builder(int mainType, boolean isAudio) {
             this.mIsPassthrough = false;

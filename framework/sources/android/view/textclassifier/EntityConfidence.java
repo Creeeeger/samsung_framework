@@ -11,16 +11,15 @@ import java.util.Map;
 import java.util.Objects;
 
 /* loaded from: classes4.dex */
-public final class EntityConfidence implements Parcelable {
+final class EntityConfidence implements Parcelable {
     public static final Parcelable.Creator<EntityConfidence> CREATOR = new Parcelable.Creator<EntityConfidence>() { // from class: android.view.textclassifier.EntityConfidence.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EntityConfidence createFromParcel(Parcel in) {
             return new EntityConfidence(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EntityConfidence[] newArray(int size) {
             return new EntityConfidence[size];
@@ -29,31 +28,24 @@ public final class EntityConfidence implements Parcelable {
     private final ArrayMap<String, Float> mEntityConfidence;
     private final ArrayList<String> mSortedEntities;
 
-    /* synthetic */ EntityConfidence(Parcel parcel, EntityConfidenceIA entityConfidenceIA) {
-        this(parcel);
-    }
-
     EntityConfidence() {
         this.mEntityConfidence = new ArrayMap<>();
         this.mSortedEntities = new ArrayList<>();
     }
 
     EntityConfidence(EntityConfidence source) {
-        ArrayMap<String, Float> arrayMap = new ArrayMap<>();
-        this.mEntityConfidence = arrayMap;
-        ArrayList<String> arrayList = new ArrayList<>();
-        this.mSortedEntities = arrayList;
-        Objects.requireNonNull(source);
-        arrayMap.putAll((ArrayMap<? extends String, ? extends Float>) source.mEntityConfidence);
-        arrayList.addAll(source.mSortedEntities);
-    }
-
-    public EntityConfidence(Map<String, Float> source) {
-        ArrayMap<String, Float> arrayMap = new ArrayMap<>();
-        this.mEntityConfidence = arrayMap;
+        this.mEntityConfidence = new ArrayMap<>();
         this.mSortedEntities = new ArrayList<>();
         Objects.requireNonNull(source);
-        arrayMap.ensureCapacity(source.size());
+        this.mEntityConfidence.putAll((ArrayMap<? extends String, ? extends Float>) source.mEntityConfidence);
+        this.mSortedEntities.addAll(source.mSortedEntities);
+    }
+
+    EntityConfidence(Map<String, Float> source) {
+        this.mEntityConfidence = new ArrayMap<>();
+        this.mSortedEntities = new ArrayList<>();
+        Objects.requireNonNull(source);
+        this.mEntityConfidence.ensureCapacity(source.size());
         for (Map.Entry<String, Float> it : source.entrySet()) {
             if (it.getValue().floatValue() > 0.0f) {
                 this.mEntityConfidence.put(it.getKey(), Float.valueOf(Math.min(1.0f, it.getValue().floatValue())));
@@ -95,29 +87,11 @@ public final class EntityConfidence implements Parcelable {
         }
     }
 
-    /* renamed from: android.view.textclassifier.EntityConfidence$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EntityConfidence> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EntityConfidence createFromParcel(Parcel in) {
-            return new EntityConfidence(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EntityConfidence[] newArray(int size) {
-            return new EntityConfidence[size];
-        }
-    }
-
     private EntityConfidence(Parcel in) {
-        ArrayMap<String, Float> arrayMap = new ArrayMap<>();
-        this.mEntityConfidence = arrayMap;
+        this.mEntityConfidence = new ArrayMap<>();
         this.mSortedEntities = new ArrayList<>();
         int numEntities = in.readInt();
-        arrayMap.ensureCapacity(numEntities);
+        this.mEntityConfidence.ensureCapacity(numEntities);
         for (int i = 0; i < numEntities; i++) {
             this.mEntityConfidence.put(in.readString(), Float.valueOf(in.readFloat()));
         }
@@ -138,6 +112,7 @@ public final class EntityConfidence implements Parcelable {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$resetSortedEntitiesFromMap$0(String e1, String e2) {
         float score1 = this.mEntityConfidence.get(e1).floatValue();
         float score2 = this.mEntityConfidence.get(e2).floatValue();

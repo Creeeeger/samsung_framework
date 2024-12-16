@@ -6,7 +6,6 @@ public interface IThermalStatusListener extends IInterface {
 
     void onStatusChange(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IThermalStatusListener {
         @Override // android.os.IThermalStatusListener
         public void onStatusChange(int status) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IThermalStatusListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IThermalStatusListener {
         static final int TRANSACTION_onStatusChange = 1;
 
@@ -61,25 +59,22 @@ public interface IThermalStatusListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IThermalStatusListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IThermalStatusListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IThermalStatusListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusChange(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusChange(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IThermalStatusListener {
+        private static class Proxy implements IThermalStatusListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

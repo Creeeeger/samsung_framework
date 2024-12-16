@@ -4,7 +4,6 @@ package android.graphics;
 public class PathDashPathEffect extends PathEffect {
     private static native long nativeCreate(long j, float f, float f2, int i);
 
-    /* loaded from: classes.dex */
     public enum Style {
         TRANSLATE(0),
         ROTATE(1),

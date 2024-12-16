@@ -63,9 +63,9 @@ public final class AppStatus {
         this.appState = _hidl_blob.getInt32(_hidl_offset + 4);
         this.persoSubstate = _hidl_blob.getInt32(_hidl_offset + 8);
         this.aidPtr = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.aidPtr.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
         this.appLabelPtr = _hidl_blob.getString(_hidl_offset + 32);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
+        parcel.readEmbeddedBuffer(this.appLabelPtr.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 32 + 0, false);
         this.pin1Replaced = _hidl_blob.getInt32(_hidl_offset + 48);
         this.pin1 = _hidl_blob.getInt32(_hidl_offset + 52);
         this.pin2 = _hidl_blob.getInt32(_hidl_offset + 56);

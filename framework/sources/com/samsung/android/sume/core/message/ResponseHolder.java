@@ -5,7 +5,7 @@ import com.samsung.android.sume.core.functional.PlaceHolder;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class ResponseHolder implements PlaceHolder<Response> {
     private final ConditionVariable cv = new ConditionVariable();
     private final int requestCode;
@@ -32,12 +32,12 @@ public class ResponseHolder implements PlaceHolder<Response> {
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public void put(Response response) {
         this.response = response;
-        WeakReference<Request> weakReference = this.weakRequest;
-        if (weakReference != null && weakReference.get() != null && response.replyTo == null) {
+        if (this.weakRequest != null && this.weakRequest.get() != null && response.replyTo == null) {
             response.replyTo = this.weakRequest.get().replyTo;
         }
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.functional.PlaceHolder
     public Response reset() {
         Response ret = this.response;

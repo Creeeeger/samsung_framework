@@ -11,8 +11,9 @@ import android.service.voice.HotwordDetectionServiceFailure;
 import android.service.voice.HotwordRejectedResult;
 import android.service.voice.SoundTriggerFailure;
 import android.service.voice.VisualQueryDetectionServiceFailure;
+import com.android.internal.infra.AndroidFuture;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IHotwordRecognitionStatusCallback extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.app.IHotwordRecognitionStatusCallback";
 
@@ -21,6 +22,10 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
     void onHotwordDetectionServiceFailure(HotwordDetectionServiceFailure hotwordDetectionServiceFailure) throws RemoteException;
 
     void onKeyphraseDetected(SoundTrigger.KeyphraseRecognitionEvent keyphraseRecognitionEvent, HotwordDetectedResult hotwordDetectedResult) throws RemoteException;
+
+    void onKeyphraseDetectedFromExternalSource(HotwordDetectedResult hotwordDetectedResult) throws RemoteException;
+
+    void onOpenFile(String str, AndroidFuture androidFuture) throws RemoteException;
 
     void onProcessRestarted() throws RemoteException;
 
@@ -38,10 +43,13 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
 
     void onVisualQueryDetectionServiceFailure(VisualQueryDetectionServiceFailure visualQueryDetectionServiceFailure) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IHotwordRecognitionStatusCallback {
         @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
         public void onKeyphraseDetected(SoundTrigger.KeyphraseRecognitionEvent recognitionEvent, HotwordDetectedResult result) throws RemoteException {
+        }
+
+        @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
+        public void onKeyphraseDetectedFromExternalSource(HotwordDetectedResult result) throws RemoteException {
         }
 
         @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
@@ -84,25 +92,30 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
         public void onProcessRestarted() throws RemoteException {
         }
 
+        @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
+        public void onOpenFile(String filename, AndroidFuture future) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IHotwordRecognitionStatusCallback {
-        static final int TRANSACTION_onGenericSoundTriggerDetected = 2;
-        static final int TRANSACTION_onHotwordDetectionServiceFailure = 4;
+        static final int TRANSACTION_onGenericSoundTriggerDetected = 3;
+        static final int TRANSACTION_onHotwordDetectionServiceFailure = 5;
         static final int TRANSACTION_onKeyphraseDetected = 1;
-        static final int TRANSACTION_onProcessRestarted = 11;
-        static final int TRANSACTION_onRecognitionPaused = 8;
-        static final int TRANSACTION_onRecognitionResumed = 9;
-        static final int TRANSACTION_onRejected = 3;
-        static final int TRANSACTION_onSoundTriggerFailure = 6;
-        static final int TRANSACTION_onStatusReported = 10;
-        static final int TRANSACTION_onUnknownFailure = 7;
-        static final int TRANSACTION_onVisualQueryDetectionServiceFailure = 5;
+        static final int TRANSACTION_onKeyphraseDetectedFromExternalSource = 2;
+        static final int TRANSACTION_onOpenFile = 13;
+        static final int TRANSACTION_onProcessRestarted = 12;
+        static final int TRANSACTION_onRecognitionPaused = 9;
+        static final int TRANSACTION_onRecognitionResumed = 10;
+        static final int TRANSACTION_onRejected = 4;
+        static final int TRANSACTION_onSoundTriggerFailure = 7;
+        static final int TRANSACTION_onStatusReported = 11;
+        static final int TRANSACTION_onUnknownFailure = 8;
+        static final int TRANSACTION_onVisualQueryDetectionServiceFailure = 6;
 
         public Stub() {
             attachInterface(this, IHotwordRecognitionStatusCallback.DESCRIPTOR);
@@ -129,25 +142,29 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 case 1:
                     return "onKeyphraseDetected";
                 case 2:
-                    return "onGenericSoundTriggerDetected";
+                    return "onKeyphraseDetectedFromExternalSource";
                 case 3:
-                    return "onRejected";
+                    return "onGenericSoundTriggerDetected";
                 case 4:
-                    return "onHotwordDetectionServiceFailure";
+                    return "onRejected";
                 case 5:
-                    return "onVisualQueryDetectionServiceFailure";
+                    return "onHotwordDetectionServiceFailure";
                 case 6:
-                    return "onSoundTriggerFailure";
+                    return "onVisualQueryDetectionServiceFailure";
                 case 7:
-                    return "onUnknownFailure";
+                    return "onSoundTriggerFailure";
                 case 8:
-                    return "onRecognitionPaused";
+                    return "onUnknownFailure";
                 case 9:
-                    return "onRecognitionResumed";
+                    return "onRecognitionPaused";
                 case 10:
-                    return "onStatusReported";
+                    return "onRecognitionResumed";
                 case 11:
+                    return "onStatusReported";
+                case 12:
                     return "onProcessRestarted";
+                case 13:
+                    return "onOpenFile";
                 default:
                     return null;
             }
@@ -163,71 +180,78 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IHotwordRecognitionStatusCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IHotwordRecognitionStatusCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IHotwordRecognitionStatusCallback.DESCRIPTOR);
+                case 1:
+                    SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
+                    HotwordDetectedResult _arg1 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKeyphraseDetected(_arg0, _arg1);
+                    return true;
+                case 2:
+                    HotwordDetectedResult _arg02 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onKeyphraseDetectedFromExternalSource(_arg02);
+                    return true;
+                case 3:
+                    SoundTrigger.GenericRecognitionEvent _arg03 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onGenericSoundTriggerDetected(_arg03);
+                    return true;
+                case 4:
+                    HotwordRejectedResult _arg04 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onRejected(_arg04);
+                    return true;
+                case 5:
+                    HotwordDetectionServiceFailure _arg05 = (HotwordDetectionServiceFailure) data.readTypedObject(HotwordDetectionServiceFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHotwordDetectionServiceFailure(_arg05);
+                    return true;
+                case 6:
+                    VisualQueryDetectionServiceFailure _arg06 = (VisualQueryDetectionServiceFailure) data.readTypedObject(VisualQueryDetectionServiceFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onVisualQueryDetectionServiceFailure(_arg06);
+                    return true;
+                case 7:
+                    SoundTriggerFailure _arg07 = (SoundTriggerFailure) data.readTypedObject(SoundTriggerFailure.CREATOR);
+                    data.enforceNoDataAvail();
+                    onSoundTriggerFailure(_arg07);
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    onUnknownFailure(_arg08);
+                    return true;
+                case 9:
+                    onRecognitionPaused();
+                    return true;
+                case 10:
+                    onRecognitionResumed();
+                    return true;
+                case 11:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusReported(_arg09);
+                    return true;
+                case 12:
+                    onProcessRestarted();
+                    return true;
+                case 13:
+                    String _arg010 = data.readString();
+                    AndroidFuture _arg12 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    onOpenFile(_arg010, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SoundTrigger.KeyphraseRecognitionEvent _arg0 = (SoundTrigger.KeyphraseRecognitionEvent) data.readTypedObject(SoundTrigger.KeyphraseRecognitionEvent.CREATOR);
-                            HotwordDetectedResult _arg1 = (HotwordDetectedResult) data.readTypedObject(HotwordDetectedResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onKeyphraseDetected(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            SoundTrigger.GenericRecognitionEvent _arg02 = (SoundTrigger.GenericRecognitionEvent) data.readTypedObject(SoundTrigger.GenericRecognitionEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onGenericSoundTriggerDetected(_arg02);
-                            return true;
-                        case 3:
-                            HotwordRejectedResult _arg03 = (HotwordRejectedResult) data.readTypedObject(HotwordRejectedResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onRejected(_arg03);
-                            return true;
-                        case 4:
-                            HotwordDetectionServiceFailure _arg04 = (HotwordDetectionServiceFailure) data.readTypedObject(HotwordDetectionServiceFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHotwordDetectionServiceFailure(_arg04);
-                            return true;
-                        case 5:
-                            VisualQueryDetectionServiceFailure _arg05 = (VisualQueryDetectionServiceFailure) data.readTypedObject(VisualQueryDetectionServiceFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onVisualQueryDetectionServiceFailure(_arg05);
-                            return true;
-                        case 6:
-                            SoundTriggerFailure _arg06 = (SoundTriggerFailure) data.readTypedObject(SoundTriggerFailure.CREATOR);
-                            data.enforceNoDataAvail();
-                            onSoundTriggerFailure(_arg06);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            data.enforceNoDataAvail();
-                            onUnknownFailure(_arg07);
-                            return true;
-                        case 8:
-                            onRecognitionPaused();
-                            return true;
-                        case 9:
-                            onRecognitionResumed();
-                            return true;
-                        case 10:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusReported(_arg08);
-                            return true;
-                        case 11:
-                            onProcessRestarted();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IHotwordRecognitionStatusCallback {
+        private static class Proxy implements IHotwordRecognitionStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -257,12 +281,24 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
             }
 
             @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
+            public void onKeyphraseDetectedFromExternalSource(HotwordDetectedResult result) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
+                    _data.writeTypedObject(result, 0);
+                    this.mRemote.transact(2, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
             public void onGenericSoundTriggerDetected(SoundTrigger.GenericRecognitionEvent recognitionEvent) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeTypedObject(recognitionEvent, 0);
-                    this.mRemote.transact(2, _data, null, 1);
+                    this.mRemote.transact(3, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -274,7 +310,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeTypedObject(result, 0);
-                    this.mRemote.transact(3, _data, null, 1);
+                    this.mRemote.transact(4, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -286,7 +322,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeTypedObject(hotwordDetectionServiceFailure, 0);
-                    this.mRemote.transact(4, _data, null, 1);
+                    this.mRemote.transact(5, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -298,7 +334,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeTypedObject(visualQueryDetectionServiceFailure, 0);
-                    this.mRemote.transact(5, _data, null, 1);
+                    this.mRemote.transact(6, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -310,7 +346,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeTypedObject(soundTriggerFailure, 0);
-                    this.mRemote.transact(6, _data, null, 1);
+                    this.mRemote.transact(7, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -322,7 +358,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeString(errorMessage);
-                    this.mRemote.transact(7, _data, null, 1);
+                    this.mRemote.transact(8, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -333,7 +369,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
-                    this.mRemote.transact(8, _data, null, 1);
+                    this.mRemote.transact(9, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -344,7 +380,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
-                    this.mRemote.transact(9, _data, null, 1);
+                    this.mRemote.transact(10, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -356,7 +392,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
                     _data.writeInt(status);
-                    this.mRemote.transact(10, _data, null, 1);
+                    this.mRemote.transact(11, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -367,7 +403,20 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
-                    this.mRemote.transact(11, _data, null, 1);
+                    this.mRemote.transact(12, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.app.IHotwordRecognitionStatusCallback
+            public void onOpenFile(String filename, AndroidFuture future) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IHotwordRecognitionStatusCallback.DESCRIPTOR);
+                    _data.writeString(filename);
+                    _data.writeTypedObject(future, 0);
+                    this.mRemote.transact(13, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -376,7 +425,7 @@ public interface IHotwordRecognitionStatusCallback extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 10;
+            return 12;
         }
     }
 }

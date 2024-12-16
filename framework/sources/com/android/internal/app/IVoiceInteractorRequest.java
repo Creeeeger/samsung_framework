@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IVoiceInteractorRequest extends IInterface {
     void cancel() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IVoiceInteractorRequest {
         @Override // com.android.internal.app.IVoiceInteractorRequest
         public void cancel() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IVoiceInteractorRequest extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IVoiceInteractorRequest {
         public static final String DESCRIPTOR = "com.android.internal.app.IVoiceInteractorRequest";
         static final int TRANSACTION_cancel = 1;
@@ -66,24 +64,21 @@ public interface IVoiceInteractorRequest extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    cancel();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            cancel();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IVoiceInteractorRequest {
+        private static class Proxy implements IVoiceInteractorRequest {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,53 +9,24 @@ import java.util.List;
 
 /* loaded from: classes3.dex */
 public class KeymasterArguments implements Parcelable {
-    public static final Parcelable.Creator<KeymasterArguments> CREATOR;
     public static final long UINT32_MAX_VALUE = 4294967295L;
     private static final long UINT32_RANGE = 4294967296L;
-    public static final BigInteger UINT64_MAX_VALUE;
-    private static final BigInteger UINT64_RANGE;
     private List<KeymasterArgument> mArguments;
-
-    /* synthetic */ KeymasterArguments(Parcel parcel, KeymasterArgumentsIA keymasterArgumentsIA) {
-        this(parcel);
-    }
-
-    static {
-        BigInteger shiftLeft = BigInteger.ONE.shiftLeft(64);
-        UINT64_RANGE = shiftLeft;
-        UINT64_MAX_VALUE = shiftLeft.subtract(BigInteger.ONE);
-        CREATOR = new Parcelable.Creator<KeymasterArguments>() { // from class: android.security.keymaster.KeymasterArguments.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public KeymasterArguments createFromParcel(Parcel in) {
-                return new KeymasterArguments(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public KeymasterArguments[] newArray(int size) {
-                return new KeymasterArguments[size];
-            }
-        };
-    }
-
-    /* renamed from: android.security.keymaster.KeymasterArguments$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeymasterArguments> {
-        AnonymousClass1() {
-        }
-
+    private static final BigInteger UINT64_RANGE = BigInteger.ONE.shiftLeft(64);
+    public static final BigInteger UINT64_MAX_VALUE = UINT64_RANGE.subtract(BigInteger.ONE);
+    public static final Parcelable.Creator<KeymasterArguments> CREATOR = new Parcelable.Creator<KeymasterArguments>() { // from class: android.security.keymaster.KeymasterArguments.1
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeymasterArguments createFromParcel(Parcel in) {
             return new KeymasterArguments(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeymasterArguments[] newArray(int size) {
             return new KeymasterArguments[size];
         }
-    }
+    };
 
     public KeymasterArguments() {
         this.mArguments = new ArrayList();

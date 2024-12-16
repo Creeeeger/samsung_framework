@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /* loaded from: classes2.dex */
-public class InlineSuggestionSessionController {
+class InlineSuggestionSessionController {
     private static final String TAG = "InlineSuggestionSessionController";
     private final Supplier<IBinder> mHostInputTokenSupplier;
     private AutofillId mImeClientFieldId;
@@ -28,20 +28,18 @@ public class InlineSuggestionSessionController {
     private final Consumer<InlineSuggestionsResponse> mResponseConsumer;
     private InlineSuggestionSession mSession;
 
-    public InlineSuggestionSessionController(Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer) {
+    InlineSuggestionSessionController(Function<Bundle, InlineSuggestionsRequest> requestSupplier, Supplier<IBinder> hostInputTokenSupplier, Consumer<InlineSuggestionsResponse> responseConsumer) {
         this.mRequestSupplier = requestSupplier;
         this.mHostInputTokenSupplier = hostInputTokenSupplier;
         this.mResponseConsumer = responseConsumer;
     }
 
-    public void onMakeInlineSuggestionsRequest(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback) {
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null) {
-            inlineSuggestionSession.invalidate();
+    void onMakeInlineSuggestionsRequest(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback callback) {
+        if (this.mSession != null) {
+            this.mSession.invalidate();
         }
-        InlineSuggestionSession inlineSuggestionSession2 = new InlineSuggestionSession(requestInfo, callback, this.mRequestSupplier, this.mHostInputTokenSupplier, this.mResponseConsumer, this, this.mMainThreadHandler);
-        this.mSession = inlineSuggestionSession2;
-        if (this.mImeInputStarted && match(inlineSuggestionSession2.getRequestInfo())) {
+        this.mSession = new InlineSuggestionSession(requestInfo, callback, this.mRequestSupplier, this.mHostInputTokenSupplier, this.mResponseConsumer, this, this.mMainThreadHandler);
+        if (this.mImeInputStarted && match(this.mSession.getRequestInfo())) {
             this.mSession.makeInlineSuggestionRequestUncheck();
             if (this.mImeInputViewStarted) {
                 try {
@@ -53,16 +51,15 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    public void notifyOnStartInput(String imeClientPackageName, AutofillId imeFieldId) {
+    void notifyOnStartInput(String imeClientPackageName, AutofillId imeFieldId) {
         if (imeClientPackageName == null || imeFieldId == null) {
             return;
         }
         this.mImeInputStarted = true;
         this.mImeClientPackageName = imeClientPackageName;
         this.mImeClientFieldId = imeFieldId;
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null) {
-            inlineSuggestionSession.consumeInlineSuggestionsResponse(InlineSuggestionSession.EMPTY_RESPONSE);
+        if (this.mSession != null) {
+            this.mSession.consumeInlineSuggestionsResponse(InlineSuggestionSession.EMPTY_RESPONSE);
             if (!this.mSession.isCallbackInvoked() && match(this.mSession.getRequestInfo())) {
                 this.mSession.makeInlineSuggestionRequestUncheck();
             } else if (this.mSession.shouldSendImeStatus()) {
@@ -75,9 +72,8 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    public void notifyOnShowInputRequested(boolean requestResult) {
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null && inlineSuggestionSession.shouldSendImeStatus()) {
+    void notifyOnShowInputRequested(boolean requestResult) {
+        if (this.mSession != null && this.mSession.shouldSendImeStatus()) {
             try {
                 this.mSession.getRequestCallback().onInputMethodShowInputRequested(requestResult);
             } catch (RemoteException e) {
@@ -86,10 +82,9 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    public void notifyOnStartInputView() {
+    void notifyOnStartInputView() {
         this.mImeInputViewStarted = true;
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null && inlineSuggestionSession.shouldSendImeStatus()) {
+        if (this.mSession != null && this.mSession.shouldSendImeStatus()) {
             try {
                 this.mSession.getRequestCallback().onInputMethodStartInputView();
             } catch (RemoteException e) {
@@ -98,10 +93,9 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    public void notifyOnFinishInputView() {
+    void notifyOnFinishInputView() {
         this.mImeInputViewStarted = false;
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null && inlineSuggestionSession.shouldSendImeStatus()) {
+        if (this.mSession != null && this.mSession.shouldSendImeStatus()) {
             try {
                 this.mSession.getRequestCallback().onInputMethodFinishInputView();
             } catch (RemoteException e) {
@@ -110,13 +104,12 @@ public class InlineSuggestionSessionController {
         }
     }
 
-    public void notifyOnFinishInput() {
+    void notifyOnFinishInput() {
         this.mImeClientPackageName = null;
         this.mImeClientFieldId = null;
         this.mImeInputViewStarted = false;
         this.mImeInputStarted = false;
-        InlineSuggestionSession inlineSuggestionSession = this.mSession;
-        if (inlineSuggestionSession != null && inlineSuggestionSession.shouldSendImeStatus()) {
+        if (this.mSession != null && this.mSession.shouldSendImeStatus()) {
             try {
                 this.mSession.getRequestCallback().onInputMethodFinishInput();
             } catch (RemoteException e) {
@@ -129,7 +122,7 @@ public class InlineSuggestionSessionController {
         return match(requestInfo, this.mImeClientPackageName, this.mImeClientFieldId);
     }
 
-    public boolean match(AutofillId autofillId) {
+    boolean match(AutofillId autofillId) {
         return match(autofillId, this.mImeClientFieldId);
     }
 

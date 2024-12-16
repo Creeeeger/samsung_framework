@@ -14,17 +14,10 @@ public class AuthenticatedSafe extends ASN1Object {
     private AuthenticatedSafe(ASN1Sequence seq) {
         this.isBer = true;
         this.info = new ContentInfo[seq.size()];
-        int i = 0;
-        while (true) {
-            ContentInfo[] contentInfoArr = this.info;
-            if (i != contentInfoArr.length) {
-                contentInfoArr[i] = ContentInfo.getInstance(seq.getObjectAt(i));
-                i++;
-            } else {
-                this.isBer = seq instanceof BERSequence;
-                return;
-            }
+        for (int i = 0; i != this.info.length; i++) {
+            this.info[i] = ContentInfo.getInstance(seq.getObjectAt(i));
         }
+        this.isBer = seq instanceof BERSequence;
     }
 
     public static AuthenticatedSafe getInstance(Object o) {

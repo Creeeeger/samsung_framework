@@ -6,7 +6,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import com.android.internal.util.Preconditions;
 import java.util.Arrays;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class TonemapCurve {
     public static final int CHANNEL_BLUE = 2;
     public static final int CHANNEL_GREEN = 1;
@@ -112,10 +112,9 @@ public final class TonemapCurve {
         if (this.mHashCalculated) {
             return this.mHashCode;
         }
-        int hashCodeGeneric = HashCodeHelpers.hashCodeGeneric(this.mRed, this.mGreen, this.mBlue);
-        this.mHashCode = hashCodeGeneric;
+        this.mHashCode = HashCodeHelpers.hashCodeGeneric(this.mRed, this.mGreen, this.mBlue);
         this.mHashCalculated = true;
-        return hashCodeGeneric;
+        return this.mHashCode;
     }
 
     public String toString() {

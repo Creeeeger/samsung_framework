@@ -27,17 +27,16 @@ public final class SpellCheckerInfo implements Parcelable {
     private final int mLabel;
     private final ResolveInfo mService;
     private final String mSettingsActivityName;
-    private final ArrayList<SpellCheckerSubtype> mSubtypes;
+    private final ArrayList<SpellCheckerSubtype> mSubtypes = new ArrayList<>();
     private static final String TAG = SpellCheckerInfo.class.getSimpleName();
     public static final Parcelable.Creator<SpellCheckerInfo> CREATOR = new Parcelable.Creator<SpellCheckerInfo>() { // from class: android.view.textservice.SpellCheckerInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SpellCheckerInfo createFromParcel(Parcel source) {
             return new SpellCheckerInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SpellCheckerInfo[] newArray(int size) {
             return new SpellCheckerInfo[size];
@@ -48,7 +47,6 @@ public final class SpellCheckerInfo implements Parcelable {
         int type;
         int i;
         Resources res;
-        this.mSubtypes = new ArrayList<>();
         this.mService = service;
         ServiceInfo si = service.serviceInfo;
         this.mId = new ComponentName(si.packageName, si.name).flattenToShortString();
@@ -113,13 +111,11 @@ public final class SpellCheckerInfo implements Parcelable {
     }
 
     public SpellCheckerInfo(Parcel source) {
-        ArrayList<SpellCheckerSubtype> arrayList = new ArrayList<>();
-        this.mSubtypes = arrayList;
         this.mLabel = source.readInt();
         this.mId = source.readString();
         this.mSettingsActivityName = source.readString();
         this.mService = ResolveInfo.CREATOR.createFromParcel(source);
-        source.readTypedList(arrayList, SpellCheckerSubtype.CREATOR);
+        source.readTypedList(this.mSubtypes, SpellCheckerSubtype.CREATOR);
     }
 
     public String getId() {
@@ -141,23 +137,6 @@ public final class SpellCheckerInfo implements Parcelable {
         dest.writeString(this.mSettingsActivityName);
         this.mService.writeToParcel(dest, flags);
         dest.writeTypedList(this.mSubtypes);
-    }
-
-    /* renamed from: android.view.textservice.SpellCheckerInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SpellCheckerInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SpellCheckerInfo createFromParcel(Parcel source) {
-            return new SpellCheckerInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SpellCheckerInfo[] newArray(int size) {
-            return new SpellCheckerInfo[size];
-        }
     }
 
     public CharSequence loadLabel(PackageManager pm) {

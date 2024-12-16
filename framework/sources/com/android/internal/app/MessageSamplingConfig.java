@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.android.internal.util.AnnotationValidations;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class MessageSamplingConfig implements Parcelable {
     public static final Parcelable.Creator<MessageSamplingConfig> CREATOR = new Parcelable.Creator<MessageSamplingConfig>() { // from class: com.android.internal.app.MessageSamplingConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MessageSamplingConfig[] newArray(int size) {
             return new MessageSamplingConfig[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MessageSamplingConfig createFromParcel(Parcel in) {
             return new MessageSamplingConfig(in);
@@ -27,11 +26,11 @@ public final class MessageSamplingConfig implements Parcelable {
 
     public MessageSamplingConfig(int sampledOpCode, int acceptableLeftDistance, long expirationTimeSinceBootMillis) {
         this.mSampledOpCode = sampledOpCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, sampledOpCode, "from", -1L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mSampledOpCode, "from", -1L, "to", 148L);
         this.mAcceptableLeftDistance = acceptableLeftDistance;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, acceptableLeftDistance, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mAcceptableLeftDistance, "from", 0L, "to", 148L);
         this.mExpirationTimeSinceBootMillis = expirationTimeSinceBootMillis;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, expirationTimeSinceBootMillis, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mExpirationTimeSinceBootMillis, "from", 0L);
     }
 
     public int getSampledOpCode() {
@@ -63,28 +62,11 @@ public final class MessageSamplingConfig implements Parcelable {
         int acceptableLeftDistance = in.readInt();
         long expirationTimeSinceBootMillis = in.readLong();
         this.mSampledOpCode = sampledOpCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, sampledOpCode, "from", -1L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mSampledOpCode, "from", -1L, "to", 148L);
         this.mAcceptableLeftDistance = acceptableLeftDistance;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, acceptableLeftDistance, "from", 0L, "to", 135L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mAcceptableLeftDistance, "from", 0L, "to", 148L);
         this.mExpirationTimeSinceBootMillis = expirationTimeSinceBootMillis;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, expirationTimeSinceBootMillis, "from", 0L);
-    }
-
-    /* renamed from: com.android.internal.app.MessageSamplingConfig$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MessageSamplingConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MessageSamplingConfig[] newArray(int size) {
-            return new MessageSamplingConfig[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MessageSamplingConfig createFromParcel(Parcel in) {
-            return new MessageSamplingConfig(in);
-        }
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mExpirationTimeSinceBootMillis, "from", 0L);
     }
 
     @Deprecated

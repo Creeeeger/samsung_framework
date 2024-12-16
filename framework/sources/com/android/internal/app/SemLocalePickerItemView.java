@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.android.internal.R;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class SemLocalePickerItemView extends LinearLayout {
     public static final int LOCALE_PICKER_TYPE_HEADER = 0;
     public static final int LOCALE_PICKER_TYPE_ITEM = 1;

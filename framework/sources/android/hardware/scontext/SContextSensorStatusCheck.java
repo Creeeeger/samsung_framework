@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextSensorStatusCheck extends SContextEventContext {
     public static final Parcelable.Creator<SContextSensorStatusCheck> CREATOR = new Parcelable.Creator<SContextSensorStatusCheck>() { // from class: android.hardware.scontext.SContextSensorStatusCheck.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSensorStatusCheck createFromParcel(Parcel in) {
             return new SContextSensorStatusCheck(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextSensorStatusCheck[] newArray(int size) {
             return new SContextSensorStatusCheck[size];
@@ -23,7 +22,7 @@ public class SContextSensorStatusCheck extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextSensorStatusCheck() {
+    SContextSensorStatusCheck() {
         this.mContext = new Bundle();
     }
 
@@ -59,22 +58,5 @@ public class SContextSensorStatusCheck extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextSensorStatusCheck$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextSensorStatusCheck> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSensorStatusCheck createFromParcel(Parcel in) {
-            return new SContextSensorStatusCheck(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextSensorStatusCheck[] newArray(int size) {
-            return new SContextSensorStatusCheck[size];
-        }
     }
 }

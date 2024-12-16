@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public abstract class NetworkService extends Service {
     private static final int NETWORK_SERVICE_CREATE_NETWORK_SERVICE_PROVIDER = 1;
     private static final int NETWORK_SERVICE_GET_REGISTRATION_INFO = 4;
@@ -25,15 +25,14 @@ public abstract class NetworkService extends Service {
     private static final int NETWORK_SERVICE_REMOVE_NETWORK_SERVICE_PROVIDER = 2;
     private static final int NETWORK_SERVICE_UNREGISTER_FOR_INFO_CHANGE = 6;
     public static final String SERVICE_INTERFACE = "android.telephony.NetworkService";
-    private final String TAG;
-    public final INetworkServiceWrapper mBinder;
     private final NetworkServiceHandler mHandler;
-    private final HandlerThread mHandlerThread;
-    private final SparseArray<NetworkServiceProvider> mServiceMap;
+    private final String TAG = NetworkService.class.getSimpleName();
+    private final SparseArray<NetworkServiceProvider> mServiceMap = new SparseArray<>();
+    public final INetworkServiceWrapper mBinder = new INetworkServiceWrapper();
+    private final HandlerThread mHandlerThread = new HandlerThread(this.TAG);
 
     public abstract NetworkServiceProvider onCreateNetworkServiceProvider(int i);
 
-    /* loaded from: classes3.dex */
     public abstract class NetworkServiceProvider implements AutoCloseable {
         private final List<INetworkServiceCallback> mNetworkRegistrationInfoChangedCallbacks = new ArrayList();
         private final int mSlotIndex;
@@ -57,18 +56,21 @@ public abstract class NetworkService extends Service {
             NetworkService.this.mHandler.obtainMessage(7, this.mSlotIndex, 0, null).sendToTarget();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void registerForInfoChanged(INetworkServiceCallback callback) {
             synchronized (this.mNetworkRegistrationInfoChangedCallbacks) {
                 this.mNetworkRegistrationInfoChangedCallbacks.add(callback);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void unregisterForInfoChanged(INetworkServiceCallback callback) {
             synchronized (this.mNetworkRegistrationInfoChangedCallbacks) {
                 this.mNetworkRegistrationInfoChangedCallbacks.remove(callback);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void notifyInfoChangedToCallbacks() {
             for (INetworkServiceCallback callback : this.mNetworkRegistrationInfoChangedCallbacks) {
                 try {
@@ -79,7 +81,6 @@ public abstract class NetworkService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
     private class NetworkServiceHandler extends Handler {
         NetworkServiceHandler(Looper looper) {
             super(looper);
@@ -94,16 +95,16 @@ public abstract class NetworkService extends Service {
                 case 1:
                     if (serviceProvider == null) {
                         NetworkService.this.mServiceMap.put(slotIndex, NetworkService.this.onCreateNetworkServiceProvider(slotIndex));
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 2:
                     if (serviceProvider != null) {
                         serviceProvider.close();
                         NetworkService.this.mServiceMap.remove(slotIndex);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     for (int i = 0; i < NetworkService.this.mServiceMap.size(); i++) {
                         NetworkServiceProvider serviceProvider2 = (NetworkServiceProvider) NetworkService.this.mServiceMap.get(i);
@@ -112,47 +113,39 @@ public abstract class NetworkService extends Service {
                         }
                     }
                     NetworkService.this.mServiceMap.clear();
-                    return;
+                    break;
                 case 4:
                     if (serviceProvider != null) {
                         int domainId = message.arg2;
                         serviceProvider.requestNetworkRegistrationInfo(domainId, new NetworkServiceCallback(callback));
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 5:
                     if (serviceProvider != null) {
                         serviceProvider.registerForInfoChanged(callback);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 6:
                     if (serviceProvider != null) {
                         serviceProvider.unregisterForInfoChanged(callback);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 7:
                     if (serviceProvider != null) {
                         serviceProvider.notifyInfoChangedToCallbacks();
-                        return;
+                        break;
                     }
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
     public NetworkService() {
-        String simpleName = NetworkService.class.getSimpleName();
-        this.TAG = simpleName;
-        this.mServiceMap = new SparseArray<>();
-        this.mBinder = new INetworkServiceWrapper();
-        HandlerThread handlerThread = new HandlerThread(simpleName);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new NetworkServiceHandler(handlerThread.getLooper());
+        this.mHandlerThread.start();
+        this.mHandler = new NetworkServiceHandler(this.mHandlerThread.getLooper());
         log("network service created");
     }
 
@@ -177,12 +170,7 @@ public abstract class NetworkService extends Service {
         super.onDestroy();
     }
 
-    /* loaded from: classes3.dex */
     private class INetworkServiceWrapper extends INetworkService.Stub {
-        /* synthetic */ INetworkServiceWrapper(NetworkService networkService, INetworkServiceWrapperIA iNetworkServiceWrapperIA) {
-            this();
-        }
-
         private INetworkServiceWrapper() {
         }
 

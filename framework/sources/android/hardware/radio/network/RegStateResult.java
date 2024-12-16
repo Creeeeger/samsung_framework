@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RegStateResult implements Parcelable {
     public static final Parcelable.Creator<RegStateResult> CREATOR = new Parcelable.Creator<RegStateResult>() { // from class: android.hardware.radio.network.RegStateResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RegStateResult createFromParcel(Parcel _aidl_source) {
             RegStateResult _aidl_out = new RegStateResult();
@@ -20,6 +18,7 @@ public class RegStateResult implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RegStateResult[] newArray(int _aidl_size) {
             return new RegStateResult[_aidl_size];
@@ -31,25 +30,6 @@ public class RegStateResult implements Parcelable {
     public int reasonForDenial;
     public int regState;
     public String registeredPlmn;
-
-    /* renamed from: android.hardware.radio.network.RegStateResult$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RegStateResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RegStateResult createFromParcel(Parcel _aidl_source) {
-            RegStateResult _aidl_out = new RegStateResult();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RegStateResult[] newArray(int _aidl_size) {
-            return new RegStateResult[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -148,7 +128,7 @@ public class RegStateResult implements Parcelable {
         _aidl_sj.add("cellIdentity: " + Objects.toString(this.cellIdentity));
         _aidl_sj.add("registeredPlmn: " + Objects.toString(this.registeredPlmn));
         _aidl_sj.add("accessTechnologySpecificInfo: " + Objects.toString(this.accessTechnologySpecificInfo));
-        return "android.hardware.radio.network.RegStateResult" + _aidl_sj.toString();
+        return "RegStateResult" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

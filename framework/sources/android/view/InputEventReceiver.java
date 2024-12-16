@@ -19,16 +19,11 @@ public abstract class InputEventReceiver {
     private static final String TAG = "InputEventReceiver";
     private static final String TAG_DOT = "InputEventReceiver_DOT";
     private Choreographer mChoreographer;
-    private final CloseGuard mCloseGuard;
     private InputChannel mInputChannel;
     private MessageQueue mMessageQueue;
     private long mReceiverPtr;
-    private final SparseIntArray mSeqMap;
-
-    /* loaded from: classes4.dex */
-    public interface Factory {
-        InputEventReceiver createInputEventReceiver(InputChannel inputChannel, Looper looper);
-    }
+    private final CloseGuard mCloseGuard = CloseGuard.get();
+    private final SparseIntArray mSeqMap = new SparseIntArray();
 
     private static native boolean nativeConsumeBatchedInputEvents(long j, long j2);
 
@@ -40,24 +35,25 @@ public abstract class InputEventReceiver {
 
     private static native long nativeInit(WeakReference<InputEventReceiver> weakReference, InputChannel inputChannel, MessageQueue messageQueue);
 
+    private static native boolean nativeProbablyHasInput(long j);
+
     private static native void nativeReportTimeline(long j, int i, long j2, long j3);
 
     private static native void nativeSetImprovementEvent(long j, boolean z, float f, float f2);
 
     public InputEventReceiver(InputChannel inputChannel, Looper looper) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mSeqMap = new SparseIntArray();
-        if (inputChannel == null) {
-            throw new IllegalArgumentException("inputChannel must not be null");
+        synchronized (this) {
+            if (inputChannel == null) {
+                throw new IllegalArgumentException("inputChannel must not be null");
+            }
+            if (looper == null) {
+                throw new IllegalArgumentException("looper must not be null");
+            }
+            this.mInputChannel = inputChannel;
+            this.mMessageQueue = looper.getQueue();
+            this.mReceiverPtr = nativeInit(new WeakReference(this), this.mInputChannel, this.mMessageQueue);
+            this.mCloseGuard.open("InputEventReceiver.dispose");
         }
-        if (looper == null) {
-            throw new IllegalArgumentException("looper must not be null");
-        }
-        this.mInputChannel = inputChannel;
-        this.mMessageQueue = looper.getQueue();
-        this.mReceiverPtr = nativeInit(new WeakReference(this), this.mInputChannel, this.mMessageQueue);
-        closeGuard.open("InputEventReceiver.dispose");
     }
 
     protected void finalize() throws Throwable {
@@ -68,27 +64,33 @@ public abstract class InputEventReceiver {
         }
     }
 
+    public boolean probablyHasInput() {
+        synchronized (this) {
+            if (this.mReceiverPtr == 0) {
+                return false;
+            }
+            return nativeProbablyHasInput(this.mReceiverPtr);
+        }
+    }
+
     public void dispose() {
         dispose(false);
     }
 
     private void dispose(boolean finalized) {
         synchronized (this) {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
+            if (this.mCloseGuard != null) {
                 if (finalized) {
-                    closeGuard.warnIfOpen();
+                    this.mCloseGuard.warnIfOpen();
                 }
                 this.mCloseGuard.close();
             }
-            long j = this.mReceiverPtr;
-            if (j != 0) {
-                nativeDispose(j);
+            if (this.mReceiverPtr != 0) {
+                nativeDispose(this.mReceiverPtr);
                 this.mReceiverPtr = 0L;
             }
-            InputChannel inputChannel = this.mInputChannel;
-            if (inputChannel != null) {
-                inputChannel.dispose();
+            if (this.mInputChannel != null) {
+                this.mInputChannel.dispose();
                 this.mInputChannel = null;
             }
             this.mMessageQueue = null;
@@ -146,19 +148,20 @@ public abstract class InputEventReceiver {
     }
 
     public final void reportTimeline(int inputEventId, long gpuCompletedTime, long presentTime) {
-        Trace.traceBegin(4L, "reportTimeline");
-        nativeReportTimeline(this.mReceiverPtr, inputEventId, gpuCompletedTime, presentTime);
-        Trace.traceEnd(4L);
+        synchronized (this) {
+            Trace.traceBegin(4L, "reportTimeline");
+            nativeReportTimeline(this.mReceiverPtr, inputEventId, gpuCompletedTime, presentTime);
+            Trace.traceEnd(4L);
+        }
     }
 
     public final boolean consumeBatchedInputEvents(long frameTimeNanos) {
         synchronized (this) {
-            long j = this.mReceiverPtr;
-            if (j == 0) {
+            if (this.mReceiverPtr == 0) {
                 Log.w(TAG, "Attempted to consume batched input events but the input event receiver has already been disposed.");
                 return false;
             }
-            return nativeConsumeBatchedInputEvents(j, frameTimeNanos);
+            return nativeConsumeBatchedInputEvents(this.mReceiverPtr, frameTimeNanos);
         }
     }
 
@@ -167,8 +170,7 @@ public abstract class InputEventReceiver {
         if (this.mChoreographer == null) {
             this.mChoreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
         }
-        Choreographer choreographer = this.mChoreographer;
-        if (choreographer != null && (slopMetrics = choreographer.getMetrics()) != null) {
+        if (this.mChoreographer != null && (slopMetrics = this.mChoreographer.getMetrics()) != null) {
             return TypedValue.applyDimension(1, 8.0f, slopMetrics);
         }
         return -1.0f;
@@ -180,9 +182,9 @@ public abstract class InputEventReceiver {
             if (this.mChoreographer == null) {
                 this.mChoreographer = Looper.myLooper() != null ? Choreographer.getInstance() : null;
             }
-            Choreographer choreographer = this.mChoreographer;
-            if (choreographer != null) {
-                Objects.requireNonNull(choreographer);
+            if (this.mChoreographer != null) {
+                Choreographer choreographer = this.mChoreographer;
+                Objects.requireNonNull(this.mChoreographer);
                 choreographer.scheduleVsyncSS(1);
             }
         } catch (Exception e) {
@@ -191,16 +193,30 @@ public abstract class InputEventReceiver {
     }
 
     public IBinder getToken() {
-        InputChannel inputChannel = this.mInputChannel;
-        if (inputChannel == null) {
+        if (this.mInputChannel == null) {
             return null;
         }
-        return inputChannel.getToken();
+        return this.mInputChannel.getToken();
+    }
+
+    private String getShortDescription(InputEvent event) {
+        if (event instanceof MotionEvent) {
+            MotionEvent motion = (MotionEvent) event;
+            return "MotionEvent " + MotionEvent.actionToString(motion.getAction()) + " deviceId=" + motion.getDeviceId() + " source=0x" + Integer.toHexString(motion.getSource()) + " historySize=" + motion.getHistorySize();
+        }
+        if (event instanceof KeyEvent) {
+            KeyEvent key = (KeyEvent) event;
+            return "KeyEvent " + KeyEvent.actionToString(key.getAction()) + " deviceId=" + key.getDeviceId();
+        }
+        Log.wtf(TAG, "Illegal InputEvent type: " + event);
+        return "InputEvent";
     }
 
     private void dispatchInputEvent(int seq, InputEvent event) {
+        Trace.traceBegin(4L, "dispatchInputEvent " + getShortDescription(event));
         this.mSeqMap.put(event.getSequenceNumber(), seq);
         onInputEvent(event);
+        Trace.traceEnd(4L);
     }
 
     public void dump(String prefix, PrintWriter writer) {

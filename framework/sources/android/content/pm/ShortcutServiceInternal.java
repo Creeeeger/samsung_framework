@@ -16,7 +16,6 @@ import java.util.List;
 /* loaded from: classes.dex */
 public abstract class ShortcutServiceInternal {
 
-    /* loaded from: classes.dex */
     public interface ShortcutChangeListener {
         void onShortcutChanged(String str, int i);
     }
@@ -24,6 +23,8 @@ public abstract class ShortcutServiceInternal {
     public abstract void addListener(ShortcutChangeListener shortcutChangeListener);
 
     public abstract void addShortcutChangeCallback(LauncherApps.ShortcutChangeCallback shortcutChangeCallback);
+
+    public abstract boolean areShortcutsSupportedOnHomeScreen(int i);
 
     public abstract void cacheShortcuts(int i, String str, String str2, List<String> list, int i2, int i3);
 
@@ -66,7 +67,4 @@ public abstract class ShortcutServiceInternal {
     public abstract void setShortcutHostPackage(String str, String str2, int i);
 
     public abstract void uncacheShortcuts(int i, String str, String str2, List<String> list, int i2, int i3);
-
-    public void shutdown() {
-    }
 }

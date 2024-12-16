@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextEvent implements Parcelable {
     static final Parcelable.Creator<SemContextEvent> CREATOR = new Parcelable.Creator<SemContextEvent>() { // from class: com.samsung.android.hardware.context.SemContextEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEvent createFromParcel(Parcel in) {
             return new SemContextEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEvent[] newArray(int size) {
             return new SemContextEvent[size];
@@ -25,27 +24,12 @@ public class SemContextEvent implements Parcelable {
     private SemContextEventContext mEventContext;
     public SemContext semContext;
     public long timestamp;
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextEvent$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextEvent createFromParcel(Parcel in) {
-            return new SemContextEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextEvent[] newArray(int size) {
-            return new SemContextEvent[size];
-        }
-    }
+    private int version;
 
     public SemContextEvent() {
         this.semContext = new SemContext();
         this.timestamp = 0L;
+        this.version = 0;
     }
 
     public SemContextEvent(Parcel src) {
@@ -244,241 +228,191 @@ public class SemContextEvent implements Parcelable {
         return (SemContextSlocationArDistance) this.mEventContext;
     }
 
+    public void setServiceVersion(int ver) {
+        this.version = ver;
+    }
+
+    public int getServiceVersion() {
+        return this.version;
+    }
+
     public void setContextEvent(int event, Bundle context) {
         this.semContext.setType(event);
         this.timestamp = System.nanoTime();
         this.context = context;
         switch (event) {
             case 1:
-                SemContextApproach semContextApproach = new SemContextApproach();
-                this.mEventContext = semContextApproach;
-                semContextApproach.setValues(context);
-                return;
+                this.mEventContext = new SemContextApproach();
+                this.mEventContext.setValues(context);
+                break;
             case 2:
-                SemContextPedometer semContextPedometer = new SemContextPedometer();
-                this.mEventContext = semContextPedometer;
-                semContextPedometer.setValues(context);
-                return;
+                this.mEventContext = new SemContextPedometer();
+                this.mEventContext.setValues(context);
+                break;
             case 3:
-                SemContextStepCountAlert semContextStepCountAlert = new SemContextStepCountAlert();
-                this.mEventContext = semContextStepCountAlert;
-                semContextStepCountAlert.setValues(context);
-                return;
-            case 4:
-            case 8:
-            case 9:
-            case 10:
-            case 23:
-            case 29:
-            case 31:
-            case 37:
-            case 38:
-            case 40:
-            case 45:
-            case 48:
-            case 53:
-            default:
-                return;
+                this.mEventContext = new SemContextStepCountAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 5:
-                SemContextMovement semContextMovement = new SemContextMovement();
-                this.mEventContext = semContextMovement;
-                semContextMovement.setValues(context);
-                return;
+                this.mEventContext = new SemContextMovement();
+                this.mEventContext.setValues(context);
+                break;
             case 6:
-                SemContextAutoRotation semContextAutoRotation = new SemContextAutoRotation();
-                this.mEventContext = semContextAutoRotation;
-                semContextAutoRotation.setValues(context);
-                return;
+                this.mEventContext = new SemContextAutoRotation();
+                this.mEventContext.setValues(context);
+                break;
             case 7:
-                SemContextAirMotion semContextAirMotion = new SemContextAirMotion();
-                this.mEventContext = semContextAirMotion;
-                semContextAirMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextAirMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 11:
-                SemContextCallPose semContextCallPose = new SemContextCallPose();
-                this.mEventContext = semContextCallPose;
-                semContextCallPose.setValues(context);
-                return;
+                this.mEventContext = new SemContextCallPose();
+                this.mEventContext.setValues(context);
+                break;
             case 12:
-                SemContextShakeMotion semContextShakeMotion = new SemContextShakeMotion();
-                this.mEventContext = semContextShakeMotion;
-                semContextShakeMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextShakeMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 13:
-                SemContextFlipCoverAction semContextFlipCoverAction = new SemContextFlipCoverAction();
-                this.mEventContext = semContextFlipCoverAction;
-                semContextFlipCoverAction.setValues(context);
-                return;
+                this.mEventContext = new SemContextFlipCoverAction();
+                this.mEventContext.setValues(context);
+                break;
             case 14:
-                SemContextGyroTemperature semContextGyroTemperature = new SemContextGyroTemperature();
-                this.mEventContext = semContextGyroTemperature;
-                semContextGyroTemperature.setValues(context);
-                return;
+                this.mEventContext = new SemContextGyroTemperature();
+                this.mEventContext.setValues(context);
+                break;
             case 15:
-                SemContextPutDownMotion semContextPutDownMotion = new SemContextPutDownMotion();
-                this.mEventContext = semContextPutDownMotion;
-                semContextPutDownMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextPutDownMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 16:
-                SemContextWakeUpVoice semContextWakeUpVoice = new SemContextWakeUpVoice();
-                this.mEventContext = semContextWakeUpVoice;
-                semContextWakeUpVoice.setValues(context);
-                return;
+                this.mEventContext = new SemContextWakeUpVoice();
+                this.mEventContext.setValues(context);
+                break;
             case 17:
-                SemContextBounceShortMotion semContextBounceShortMotion = new SemContextBounceShortMotion();
-                this.mEventContext = semContextBounceShortMotion;
-                semContextBounceShortMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextBounceShortMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 18:
-                SemContextBounceLongMotion semContextBounceLongMotion = new SemContextBounceLongMotion();
-                this.mEventContext = semContextBounceLongMotion;
-                semContextBounceLongMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextBounceLongMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 19:
-                SemContextWristUpMotion semContextWristUpMotion = new SemContextWristUpMotion();
-                this.mEventContext = semContextWristUpMotion;
-                semContextWristUpMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextWristUpMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 20:
-                SemContextFlatMotion semContextFlatMotion = new SemContextFlatMotion();
-                this.mEventContext = semContextFlatMotion;
-                semContextFlatMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextFlatMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 21:
-                SemContextMovementAlert semContextMovementAlert = new SemContextMovementAlert();
-                this.mEventContext = semContextMovementAlert;
-                semContextMovementAlert.setValues(context);
-                return;
+                this.mEventContext = new SemContextMovementAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 22:
-                SemContextDevicePosition semContextDevicePosition = new SemContextDevicePosition();
-                this.mEventContext = semContextDevicePosition;
-                semContextDevicePosition.setValues(context);
-                return;
+                this.mEventContext = new SemContextDevicePosition();
+                this.mEventContext.setValues(context);
+                break;
             case 24:
-                SemContextActivityLocationLogging semContextActivityLocationLogging = new SemContextActivityLocationLogging();
-                this.mEventContext = semContextActivityLocationLogging;
-                semContextActivityLocationLogging.setValues(context);
-                return;
+                this.mEventContext = new SemContextActivityLocationLogging();
+                this.mEventContext.setValues(context);
+                break;
             case 25:
-                SemContextActivityTracker semContextActivityTracker = new SemContextActivityTracker();
-                this.mEventContext = semContextActivityTracker;
-                semContextActivityTracker.setValues(context);
-                return;
+                this.mEventContext = new SemContextActivityTracker();
+                this.mEventContext.setValues(context);
+                break;
             case 26:
-                SemContextActivityBatch semContextActivityBatch = new SemContextActivityBatch();
-                this.mEventContext = semContextActivityBatch;
-                semContextActivityBatch.setValues(context);
-                return;
+                this.mEventContext = new SemContextActivityBatch();
+                this.mEventContext.setValues(context);
+                break;
             case 27:
-                SemContextActivityNotification semContextActivityNotification = new SemContextActivityNotification();
-                this.mEventContext = semContextActivityNotification;
-                semContextActivityNotification.setValues(context);
-                return;
+                this.mEventContext = new SemContextActivityNotification();
+                this.mEventContext.setValues(context);
+                break;
             case 28:
-                SemContextSpecificPoseAlert semContextSpecificPoseAlert = new SemContextSpecificPoseAlert();
-                this.mEventContext = semContextSpecificPoseAlert;
-                semContextSpecificPoseAlert.setValues(context);
-                return;
+                this.mEventContext = new SemContextSpecificPoseAlert();
+                this.mEventContext.setValues(context);
+                break;
             case 30:
-                SemContextActivityNotificationForLocation semContextActivityNotificationForLocation = new SemContextActivityNotificationForLocation();
-                this.mEventContext = semContextActivityNotificationForLocation;
-                semContextActivityNotificationForLocation.setValues(context);
-                return;
+                this.mEventContext = new SemContextActivityNotificationForLocation();
+                this.mEventContext.setValues(context);
+                break;
             case 32:
-                SemContextCallMotion semContextCallMotion = new SemContextCallMotion();
-                this.mEventContext = semContextCallMotion;
-                semContextCallMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextCallMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 33:
-                SemContextStepLevelMonitor semContextStepLevelMonitor = new SemContextStepLevelMonitor();
-                this.mEventContext = semContextStepLevelMonitor;
-                semContextStepLevelMonitor.setValues(context);
-                return;
+                this.mEventContext = new SemContextStepLevelMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 34:
-                SemContextActiveTimeMonitor semContextActiveTimeMonitor = new SemContextActiveTimeMonitor();
-                this.mEventContext = semContextActiveTimeMonitor;
-                semContextActiveTimeMonitor.setValues(context);
-                return;
+                this.mEventContext = new SemContextActiveTimeMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 35:
-                SemContextSedentaryTimer semContextSedentaryTimer = new SemContextSedentaryTimer();
-                this.mEventContext = semContextSedentaryTimer;
-                semContextSedentaryTimer.setValues(context);
-                return;
+                this.mEventContext = new SemContextSedentaryTimer();
+                this.mEventContext.setValues(context);
+                break;
             case 36:
-                SemContextFlatMotionForTableMode semContextFlatMotionForTableMode = new SemContextFlatMotionForTableMode();
-                this.mEventContext = semContextFlatMotionForTableMode;
-                semContextFlatMotionForTableMode.setValues(context);
-                return;
+                this.mEventContext = new SemContextFlatMotionForTableMode();
+                this.mEventContext.setValues(context);
+                break;
             case 39:
-                SemContextAutoBrightness semContextAutoBrightness = new SemContextAutoBrightness();
-                this.mEventContext = semContextAutoBrightness;
-                semContextAutoBrightness.setValues(context);
-                return;
+                this.mEventContext = new SemContextAutoBrightness();
+                this.mEventContext.setValues(context);
+                break;
             case 41:
-                SemContextAbnormalPressure semContextAbnormalPressure = new SemContextAbnormalPressure();
-                this.mEventContext = semContextAbnormalPressure;
-                semContextAbnormalPressure.setValues(context);
-                return;
+                this.mEventContext = new SemContextAbnormalPressure();
+                this.mEventContext.setValues(context);
+                break;
             case 42:
-                SemContextPhoneStatusMonitor semContextPhoneStatusMonitor = new SemContextPhoneStatusMonitor();
-                this.mEventContext = semContextPhoneStatusMonitor;
-                semContextPhoneStatusMonitor.setValues(context);
-                return;
+                this.mEventContext = new SemContextPhoneStatusMonitor();
+                this.mEventContext.setValues(context);
+                break;
             case 43:
-                SemContextHallSensor semContextHallSensor = new SemContextHallSensor();
-                this.mEventContext = semContextHallSensor;
-                semContextHallSensor.setValues(context);
-                return;
+                this.mEventContext = new SemContextHallSensor();
+                this.mEventContext.setValues(context);
+                break;
             case 44:
-                SemContextEnvironmentAdaptiveDisplay semContextEnvironmentAdaptiveDisplay = new SemContextEnvironmentAdaptiveDisplay();
-                this.mEventContext = semContextEnvironmentAdaptiveDisplay;
-                semContextEnvironmentAdaptiveDisplay.setValues(context);
-                return;
+                this.mEventContext = new SemContextEnvironmentAdaptiveDisplay();
+                this.mEventContext.setValues(context);
+                break;
             case 46:
-                SemContextWirelessChargingDetection semContextWirelessChargingDetection = new SemContextWirelessChargingDetection();
-                this.mEventContext = semContextWirelessChargingDetection;
-                semContextWirelessChargingDetection.setValues(context);
-                return;
+                this.mEventContext = new SemContextWirelessChargingDetection();
+                this.mEventContext.setValues(context);
+                break;
             case 47:
-                SemContextLocationCore semContextLocationCore = new SemContextLocationCore();
-                this.mEventContext = semContextLocationCore;
-                semContextLocationCore.setValues(context);
-                return;
+                this.mEventContext = new SemContextLocationCore();
+                this.mEventContext.setValues(context);
+                break;
             case 49:
-                SemContextFlipMotion semContextFlipMotion = new SemContextFlipMotion();
-                this.mEventContext = semContextFlipMotion;
-                semContextFlipMotion.setValues(context);
-                return;
+                this.mEventContext = new SemContextFlipMotion();
+                this.mEventContext.setValues(context);
+                break;
             case 50:
-                SemContextAnyMotionDetector semContextAnyMotionDetector = new SemContextAnyMotionDetector();
-                this.mEventContext = semContextAnyMotionDetector;
-                semContextAnyMotionDetector.setValues(context);
-                return;
+                this.mEventContext = new SemContextAnyMotionDetector();
+                this.mEventContext.setValues(context);
+                break;
             case 51:
-                SemContextCarryingDetection semContextCarryingDetection = new SemContextCarryingDetection();
-                this.mEventContext = semContextCarryingDetection;
-                semContextCarryingDetection.setValues(context);
-                return;
+                this.mEventContext = new SemContextCarryingDetection();
+                this.mEventContext.setValues(context);
+                break;
             case 52:
-                SemContextSensorStatusCheck semContextSensorStatusCheck = new SemContextSensorStatusCheck();
-                this.mEventContext = semContextSensorStatusCheck;
-                semContextSensorStatusCheck.setValues(context);
-                return;
+                this.mEventContext = new SemContextSensorStatusCheck();
+                this.mEventContext.setValues(context);
+                break;
             case 54:
-                SemContextDeviceActivityDetector semContextDeviceActivityDetector = new SemContextDeviceActivityDetector();
-                this.mEventContext = semContextDeviceActivityDetector;
-                semContextDeviceActivityDetector.setValues(context);
-                return;
+                this.mEventContext = new SemContextDeviceActivityDetector();
+                this.mEventContext.setValues(context);
+                break;
             case 55:
-                SemContextFreeFallDetection semContextFreeFallDetection = new SemContextFreeFallDetection();
-                this.mEventContext = semContextFreeFallDetection;
-                semContextFreeFallDetection.setValues(context);
-                return;
+                this.mEventContext = new SemContextFreeFallDetection();
+                this.mEventContext.setValues(context);
+                break;
             case 56:
-                SemContextSlocationArDistance semContextSlocationArDistance = new SemContextSlocationArDistance();
-                this.mEventContext = semContextSlocationArDistance;
-                semContextSlocationArDistance.setValues(context);
-                return;
+                this.mEventContext = new SemContextSlocationArDistance();
+                this.mEventContext.setValues(context);
+                break;
         }
     }
 
@@ -493,6 +427,7 @@ public class SemContextEvent implements Parcelable {
         dest.writeParcelable(this.semContext, flags);
         dest.writeParcelable(this.mEventContext, flags);
         dest.writeBundle(this.context);
+        dest.writeInt(this.version);
     }
 
     private void readFromParcel(Parcel src) {
@@ -500,5 +435,6 @@ public class SemContextEvent implements Parcelable {
         this.semContext = (SemContext) src.readParcelable(SemContext.class.getClassLoader());
         this.mEventContext = (SemContextEventContext) src.readParcelable(SemContextEventContext.class.getClassLoader());
         this.context = src.readBundle(getClass().getClassLoader());
+        this.version = src.readInt();
     }
 }

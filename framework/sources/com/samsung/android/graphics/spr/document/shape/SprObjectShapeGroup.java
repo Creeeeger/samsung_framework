@@ -15,7 +15,7 @@ import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprObjectShapeGroup extends SprObjectBase {
     private static final String TAG = "SPRObjectShapeGroup";
     private boolean mIsInitialized;
@@ -52,7 +52,7 @@ public class SprObjectShapeGroup extends SprObjectBase {
     }
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         super.finalize();
         this.mObjectList.clear();
         this.mIsInitialized = false;
@@ -219,13 +219,13 @@ public class SprObjectShapeGroup extends SprObjectBase {
 
     @Override // com.samsung.android.graphics.spr.document.shape.SprObjectBase
     /* renamed from: clone */
-    public SprObjectShapeGroup mo8415clone() throws CloneNotSupportedException {
-        SprObjectShapeGroup object = (SprObjectShapeGroup) super.mo8415clone();
+    public SprObjectShapeGroup mo8816clone() throws CloneNotSupportedException {
+        SprObjectShapeGroup object = (SprObjectShapeGroup) super.mo8816clone();
         object.mObjectList = new ArrayList<>();
         Iterator<SprObjectBase> it = this.mObjectList.iterator();
         while (it.hasNext()) {
             SprObjectBase child = it.next();
-            object.mObjectList.add(child.mo8415clone());
+            object.mObjectList.add(child.mo8816clone());
         }
         return object;
     }

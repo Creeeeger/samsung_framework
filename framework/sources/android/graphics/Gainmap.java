@@ -7,9 +7,7 @@ import libcore.util.NativeAllocationRegistry;
 /* loaded from: classes.dex */
 public final class Gainmap implements Parcelable {
     public static final Parcelable.Creator<Gainmap> CREATOR = new Parcelable.Creator<Gainmap>() { // from class: android.graphics.Gainmap.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Gainmap createFromParcel(Parcel in) {
             Gainmap gm = new Gainmap((Bitmap) in.readTypedObject(Bitmap.CREATOR));
@@ -17,6 +15,7 @@ public final class Gainmap implements Parcelable {
             return gm;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Gainmap[] newArray(int size) {
             return new Gainmap[size];
@@ -24,11 +23,6 @@ public final class Gainmap implements Parcelable {
     };
     private Bitmap mGainmapContents;
     final long mNativePtr;
-
-    /* renamed from: -$$Nest$smnGetFinalizer */
-    static /* bridge */ /* synthetic */ long m1106$$Nest$smnGetFinalizer() {
-        return nGetFinalizer();
-    }
 
     private static native long nCreateCopy(long j);
 
@@ -42,7 +36,8 @@ public final class Gainmap implements Parcelable {
 
     private static native void nGetEpsilonSdr(long j, float[] fArr);
 
-    private static native long nGetFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetFinalizer();
 
     private static native void nGetGamma(long j, float[] fArr);
 
@@ -50,6 +45,7 @@ public final class Gainmap implements Parcelable {
 
     private static native void nGetRatioMin(long j, float[] fArr);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nReadGainmapFromParcel(long j, Parcel parcel);
 
     private static native void nSetBitmap(long j, Bitmap bitmap);
@@ -70,10 +66,8 @@ public final class Gainmap implements Parcelable {
 
     private static native void nWriteGainmapToParcel(long j, Parcel parcel);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Gainmap.class.getClassLoader(), Gainmap.m1106$$Nest$smnGetFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(Gainmap.class.getClassLoader(), Gainmap.nGetFinalizer());
 
         private NoImagePreloadHolder() {
         }
@@ -192,24 +186,5 @@ public final class Gainmap implements Parcelable {
         }
         dest.writeTypedObject(this.mGainmapContents, flags);
         nWriteGainmapToParcel(this.mNativePtr, dest);
-    }
-
-    /* renamed from: android.graphics.Gainmap$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Gainmap> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Gainmap createFromParcel(Parcel in) {
-            Gainmap gm = new Gainmap((Bitmap) in.readTypedObject(Bitmap.CREATOR));
-            Gainmap.nReadGainmapFromParcel(gm.mNativePtr, in);
-            return gm;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Gainmap[] newArray(int size) {
-            return new Gainmap[size];
-        }
     }
 }

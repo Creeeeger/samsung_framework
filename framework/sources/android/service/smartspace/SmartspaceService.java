@@ -44,15 +44,14 @@ public abstract class SmartspaceService extends Service {
 
     public abstract void onRequestSmartspaceUpdate(SmartspaceSessionId smartspaceSessionId);
 
-    /* renamed from: android.service.smartspace.SmartspaceService$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.smartspace.SmartspaceService$1, reason: invalid class name */
     class AnonymousClass1 extends ISmartspaceService.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.service.smartspace.ISmartspaceService
         public void onCreateSmartspaceSession(SmartspaceConfig smartspaceConfig, SmartspaceSessionId sessionId) {
-            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda3
+            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda2
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((SmartspaceService) obj).doCreateSmartspaceSession((SmartspaceConfig) obj2, (SmartspaceSessionId) obj3);
@@ -62,7 +61,7 @@ public abstract class SmartspaceService extends Service {
 
         @Override // android.service.smartspace.ISmartspaceService
         public void notifySmartspaceEvent(SmartspaceSessionId sessionId, SmartspaceTargetEvent event) {
-            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda5
+            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda4
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((SmartspaceService) obj).notifySmartspaceEvent((SmartspaceSessionId) obj2, (SmartspaceTargetEvent) obj3);
@@ -82,7 +81,7 @@ public abstract class SmartspaceService extends Service {
 
         @Override // android.service.smartspace.ISmartspaceService
         public void registerSmartspaceUpdates(SmartspaceSessionId sessionId, ISmartspaceCallback callback) {
-            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda4
+            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((SmartspaceService) obj).doRegisterSmartspaceUpdates((SmartspaceSessionId) obj2, (ISmartspaceCallback) obj3);
@@ -92,7 +91,7 @@ public abstract class SmartspaceService extends Service {
 
         @Override // android.service.smartspace.ISmartspaceService
         public void unregisterSmartspaceUpdates(SmartspaceSessionId sessionId, ISmartspaceCallback callback) {
-            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda0
+            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda3
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
                     ((SmartspaceService) obj).doUnregisterSmartspaceUpdates((SmartspaceSessionId) obj2, (ISmartspaceCallback) obj3);
@@ -102,7 +101,7 @@ public abstract class SmartspaceService extends Service {
 
         @Override // android.service.smartspace.ISmartspaceService
         public void onDestroySmartspaceSession(SmartspaceSessionId sessionId) {
-            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda2
+            SmartspaceService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.smartspace.SmartspaceService$1$$ExternalSyntheticLambda5
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((SmartspaceService) obj).doDestroy((SmartspaceSessionId) obj2);
@@ -126,11 +125,13 @@ public abstract class SmartspaceService extends Service {
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doCreateSmartspaceSession(SmartspaceConfig config, SmartspaceSessionId sessionId) {
         this.mSessionCallbacks.put(sessionId, new ArrayList<>());
         onCreateSmartspaceSession(config, sessionId);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doRegisterSmartspaceUpdates(SmartspaceSessionId sessionId, ISmartspaceCallback callback) {
         final ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -148,8 +149,9 @@ public abstract class SmartspaceService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$doRegisterSmartspaceUpdates$1(final ArrayList callbacks, final CallbackWrapper callbackWrapper) {
-        this.mHandler.post(new Runnable() { // from class: android.service.smartspace.SmartspaceService$$ExternalSyntheticLambda2
+        this.mHandler.post(new Runnable() { // from class: android.service.smartspace.SmartspaceService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 SmartspaceService.this.lambda$doRegisterSmartspaceUpdates$0(callbacks, callbackWrapper);
@@ -157,6 +159,7 @@ public abstract class SmartspaceService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doUnregisterSmartspaceUpdates(SmartspaceSessionId sessionId, ISmartspaceCallback callback) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks == null) {
@@ -167,6 +170,7 @@ public abstract class SmartspaceService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doRequestPredictionUpdate(SmartspaceSessionId sessionId) {
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.get(sessionId);
         if (callbacks != null && !callbacks.isEmpty()) {
@@ -183,7 +187,8 @@ public abstract class SmartspaceService extends Service {
         return null;
     }
 
-    /* renamed from: removeCallbackWrapper */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: removeCallbackWrapper, reason: merged with bridge method [inline-methods] */
     public void lambda$doRegisterSmartspaceUpdates$0(ArrayList<CallbackWrapper> callbacks, CallbackWrapper wrapper) {
         if (callbacks == null || wrapper == null) {
             return;
@@ -192,11 +197,12 @@ public abstract class SmartspaceService extends Service {
         wrapper.destroy();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doDestroy(SmartspaceSessionId sessionId) {
         super.onDestroy();
         ArrayList<CallbackWrapper> callbacks = this.mSessionCallbacks.remove(sessionId);
         if (callbacks != null) {
-            callbacks.forEach(new Consumer() { // from class: android.service.smartspace.SmartspaceService$$ExternalSyntheticLambda0
+            callbacks.forEach(new Consumer() { // from class: android.service.smartspace.SmartspaceService$$ExternalSyntheticLambda2
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ((SmartspaceService.CallbackWrapper) obj).destroy();
@@ -215,17 +221,17 @@ public abstract class SmartspaceService extends Service {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class CallbackWrapper implements Consumer<List<SmartspaceTarget>>, IBinder.DeathRecipient {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class CallbackWrapper implements Consumer<List<SmartspaceTarget>>, IBinder.DeathRecipient {
         private ISmartspaceCallback mCallback;
         private final Consumer<CallbackWrapper> mOnBinderDied;
 
         CallbackWrapper(ISmartspaceCallback callback, Consumer<CallbackWrapper> onBinderDied) {
             this.mCallback = callback;
             this.mOnBinderDied = onBinderDied;
-            if (onBinderDied != null) {
+            if (this.mOnBinderDied != null) {
                 try {
-                    callback.asBinder().linkToDeath(this, 0);
+                    this.mCallback.asBinder().linkToDeath(this, 0);
                 } catch (RemoteException e) {
                     Slog.e(SmartspaceService.TAG, "Failed to link to death: " + e);
                 }
@@ -233,20 +239,18 @@ public abstract class SmartspaceService extends Service {
         }
 
         public boolean isCallback(ISmartspaceCallback callback) {
-            ISmartspaceCallback iSmartspaceCallback = this.mCallback;
-            if (iSmartspaceCallback == null) {
+            if (this.mCallback == null) {
                 Slog.e(SmartspaceService.TAG, "Callback is null, likely the binder has died.");
                 return false;
             }
-            return iSmartspaceCallback.asBinder().equals(callback.asBinder());
+            return this.mCallback.asBinder().equals(callback.asBinder());
         }
 
         @Override // java.util.function.Consumer
         public void accept(List<SmartspaceTarget> smartspaceTargets) {
             try {
-                ISmartspaceCallback iSmartspaceCallback = this.mCallback;
-                if (iSmartspaceCallback != null) {
-                    iSmartspaceCallback.onResult(new ParceledListSlice(smartspaceTargets));
+                if (this.mCallback != null) {
+                    this.mCallback.onResult(new ParceledListSlice(smartspaceTargets));
                 }
             } catch (RemoteException e) {
                 Slog.e(SmartspaceService.TAG, "Error sending result:" + e);
@@ -254,9 +258,8 @@ public abstract class SmartspaceService extends Service {
         }
 
         public void destroy() {
-            ISmartspaceCallback iSmartspaceCallback = this.mCallback;
-            if (iSmartspaceCallback != null && this.mOnBinderDied != null) {
-                iSmartspaceCallback.asBinder().unlinkToDeath(this, 0);
+            if (this.mCallback != null && this.mOnBinderDied != null) {
+                this.mCallback.asBinder().unlinkToDeath(this, 0);
             }
         }
 
@@ -264,9 +267,8 @@ public abstract class SmartspaceService extends Service {
         public void binderDied() {
             destroy();
             this.mCallback = null;
-            Consumer<CallbackWrapper> consumer = this.mOnBinderDied;
-            if (consumer != null) {
-                consumer.accept(this);
+            if (this.mOnBinderDied != null) {
+                this.mOnBinderDied.accept(this);
             }
         }
     }

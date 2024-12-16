@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class Atsc3FrontendSettings extends FrontendSettings {
     public static final int BANDWIDTH_AUTO = 1;
     public static final int BANDWIDTH_BANDWIDTH_6MHZ = 2;
@@ -54,37 +54,27 @@ public class Atsc3FrontendSettings extends FrontendSettings {
     private final Atsc3PlpSettings[] mPlpSettings;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Bandwidth {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface CodeRate {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface DemodOutputFormat {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Fec {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Modulation {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface TimeInterleaveMode {
-    }
-
-    /* synthetic */ Atsc3FrontendSettings(long j, int i, int i2, Atsc3PlpSettings[] atsc3PlpSettingsArr, Atsc3FrontendSettingsIA atsc3FrontendSettingsIA) {
-        this(j, i, i2, atsc3PlpSettingsArr);
     }
 
     private Atsc3FrontendSettings(long frequency, int bandwidth, int demodOutputFormat, Atsc3PlpSettings[] plpSettings) {
@@ -110,16 +100,11 @@ public class Atsc3FrontendSettings extends FrontendSettings {
         return new Builder();
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mBandwidth;
         private int mDemodOutputFormat;
         private long mFrequency;
         private Atsc3PlpSettings[] mPlpSettings;
-
-        /* synthetic */ Builder(BuilderIA builderIA) {
-            this();
-        }
 
         private Builder() {
             this.mFrequency = 0L;

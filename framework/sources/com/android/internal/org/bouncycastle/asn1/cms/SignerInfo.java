@@ -117,15 +117,13 @@ public class SignerInfo extends ASN1Object {
         v.add(this.version);
         v.add(this.sid);
         v.add(this.digAlgorithm);
-        ASN1Set aSN1Set = this.authenticatedAttributes;
-        if (aSN1Set != null) {
-            v.add(new DERTaggedObject(false, 0, aSN1Set));
+        if (this.authenticatedAttributes != null) {
+            v.add(new DERTaggedObject(false, 0, this.authenticatedAttributes));
         }
         v.add(this.digEncryptionAlgorithm);
         v.add(this.encryptedDigest);
-        ASN1Set aSN1Set2 = this.unauthenticatedAttributes;
-        if (aSN1Set2 != null) {
-            v.add(new DERTaggedObject(false, 1, aSN1Set2));
+        if (this.unauthenticatedAttributes != null) {
+            v.add(new DERTaggedObject(false, 1, this.unauthenticatedAttributes));
         }
         return new DERSequence(v);
     }

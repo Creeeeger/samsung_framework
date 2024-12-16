@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class SurfaceUtils {
     private static final int BAD_VALUE = -OsConstants.EINVAL;
     private static final int BGRA_8888 = 5;

@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes3.dex */
-public final class ContentCaptureServiceInfo {
+public class ContentCaptureServiceInfo {
     private static final String TAG = ContentCaptureServiceInfo.class.getSimpleName();
     private static final String XML_TAG_SERVICE = "content-capture-service";
     private final ServiceInfo mServiceInfo;

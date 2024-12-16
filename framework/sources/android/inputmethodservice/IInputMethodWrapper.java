@@ -10,6 +10,7 @@ import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.InputChannel;
 import android.view.MotionEvent;
+import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.ImeTracker;
 import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodSession;
 import android.view.inputmethod.InputMethodSubtype;
 import com.android.internal.inputmethod.CancellationGroup;
+import com.android.internal.inputmethod.IConnectionlessHandwritingCallback;
 import com.android.internal.inputmethod.IInlineSuggestionsRequestCallback;
 import com.android.internal.inputmethod.IInputMethod;
 import com.android.internal.inputmethod.IInputMethodSession;
@@ -36,8 +38,10 @@ import java.util.concurrent.TimeUnit;
 class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Callback {
     private static final int DO_CAN_START_STYLUS_HANDWRITING = 100;
     private static final int DO_CHANGE_INPUTMETHOD_SUBTYPE = 80;
+    private static final int DO_COMMIT_HANDWRITING_DELEGATION_TEXT_IF_AVAILABLE = 170;
     private static final int DO_CREATE_INLINE_SUGGESTIONS_REQUEST = 90;
     private static final int DO_CREATE_SESSION = 40;
+    private static final int DO_DISCARD_HANDWRITING_DELEGATION_TEXT = 180;
     private static final int DO_DUMP = 1;
     private static final int DO_FINISH_STYLUS_HANDWRITING = 130;
     private static final int DO_HIDE_SOFT_INPUT = 70;
@@ -63,7 +67,6 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
     final WeakReference<InputMethodServiceInternal> mTarget;
     final int mTargetSdkVersion;
 
-    /* loaded from: classes2.dex */
     static final class InputMethodSessionCallbackWrapper implements InputMethod.SessionCallback {
         final IInputMethodSessionCallback mCb;
         final InputChannel mChannel;
@@ -82,9 +85,8 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
                     IInputMethodSessionWrapper wrap = new IInputMethodSessionWrapper(this.mContext, session, this.mChannel);
                     this.mCb.sessionCreated(wrap);
                 } else {
-                    InputChannel inputChannel = this.mChannel;
-                    if (inputChannel != null) {
-                        inputChannel.dispose();
+                    if (this.mChannel != null) {
+                        this.mChannel.dispose();
                     }
                     this.mCb.sessionCreated(null);
                 }
@@ -93,11 +95,10 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
         }
     }
 
-    public IInputMethodWrapper(InputMethodServiceInternal imsInternal, InputMethod inputMethod) {
+    IInputMethodWrapper(InputMethodServiceInternal imsInternal, InputMethod inputMethod) {
         this.mTarget = new WeakReference<>(imsInternal);
-        Context applicationContext = imsInternal.getContext().getApplicationContext();
-        this.mContext = applicationContext;
-        this.mCaller = new HandlerCaller(applicationContext, null, this, true);
+        this.mContext = imsInternal.getContext().getApplicationContext();
+        this.mCaller = new HandlerCaller(this.mContext, null, this, true);
         this.mInputMethod = new WeakReference<>(inputMethod);
         this.mTargetSdkVersion = imsInternal.getContext().getApplicationInfo().targetSdkVersion;
     }
@@ -208,17 +209,18 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
                 args6.recycle();
                 return;
             case 100:
-                if (isValid(inputMethod, target, "DO_CAN_START_STYLUS_HANDWRITING")) {
-                    inputMethod.canStartStylusHandwriting(msg.arg1);
-                    return;
-                }
-                return;
-            case 110:
                 SomeArgs args7 = (SomeArgs) msg.obj;
-                if (isValid(inputMethod, target, "DO_START_STYLUS_HANDWRITING")) {
-                    inputMethod.startStylusHandwriting(msg.arg1, (InputChannel) args7.arg1, (List) args7.arg2);
+                if (isValid(inputMethod, target, "DO_CAN_START_STYLUS_HANDWRITING")) {
+                    inputMethod.canStartStylusHandwriting(msg.arg1, (IConnectionlessHandwritingCallback) args7.arg1, (CursorAnchorInfo) args7.arg2, msg.arg2 != 0);
                 }
                 args7.recycle();
+                return;
+            case 110:
+                SomeArgs args8 = (SomeArgs) msg.obj;
+                if (isValid(inputMethod, target, "DO_START_STYLUS_HANDWRITING")) {
+                    inputMethod.startStylusHandwriting(msg.arg1, (InputChannel) args8.arg1, (List) args8.arg2);
+                }
+                args8.recycle();
                 return;
             case 120:
                 if (isValid(inputMethod, target, "DO_INIT_INK_WINDOW")) {
@@ -247,6 +249,18 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
             case 160:
                 if (isValid(inputMethod, target, "DO_SET_STYLUS_WINDOW_IDLE_TIMEOUT")) {
                     inputMethod.setStylusWindowIdleTimeoutForTest(((Long) msg.obj).longValue());
+                    return;
+                }
+                return;
+            case 170:
+                if (isValid(inputMethod, target, "DO_COMMIT_HANDWRITING_DELEGATION_TEXT_IF_AVAILABLE")) {
+                    inputMethod.commitHandwritingDelegationTextIfAvailable();
+                    return;
+                }
+                return;
+            case 180:
+                if (isValid(inputMethod, target, "DO_DISCARD_HANDWRITING_DELEGATION_TEXT")) {
+                    inputMethod.discardHandwritingDelegationText();
                     return;
                 }
                 return;
@@ -285,14 +299,12 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void initializeInternal(IInputMethod.InitParams params) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(10, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(10, params));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void onCreateInlineSuggestionsRequest(InlineSuggestionsRequestInfo requestInfo, IInlineSuggestionsRequestCallback cb) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(90, requestInfo, cb));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(90, requestInfo, cb));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
@@ -303,21 +315,18 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
         this.mCancellationGroup = new CancellationGroup();
         InputConnection ic = new RemoteInputConnection(this.mTarget, IRemoteInputConnection.Stub.asInterface(binding.getConnectionToken()), this.mCancellationGroup);
         InputBinding nu = new InputBinding(ic, binding);
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(20, nu));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(20, nu));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void unbindInput() {
-        CancellationGroup cancellationGroup = this.mCancellationGroup;
-        if (cancellationGroup != null) {
-            cancellationGroup.cancelAll();
+        if (this.mCancellationGroup != null) {
+            this.mCancellationGroup.cancelAll();
             this.mCancellationGroup = null;
         } else {
             Log.e(TAG, "unbindInput must be paired with bindInput.");
         }
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(30));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(30));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
@@ -328,20 +337,17 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
         }
         params.editorInfo.makeCompatible(this.mTargetSdkVersion);
         InputConnection ic = params.remoteInputConnection == null ? null : new RemoteInputConnection(this.mTarget, params.remoteInputConnection, this.mCancellationGroup);
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(32, ic, params));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(32, ic, params));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void onNavButtonFlagsChanged(int navButtonFlags) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(35, navButtonFlags));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(35, navButtonFlags));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void createSession(InputChannel channel, IInputMethodSessionCallback callback) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageOO(40, channel, callback));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageOO(40, channel, callback));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
@@ -351,8 +357,7 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
             if (ls == null) {
                 Log.w(TAG, "Session is already finished: " + session);
             } else {
-                HandlerCaller handlerCaller = this.mCaller;
-                handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageIO(45, enabled ? 1 : 0, ls));
+                this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIO(45, enabled ? 1 : 0, ls));
             }
         } catch (ClassCastException e) {
             Log.w(TAG, "Incoming session not of correct type: " + session, e);
@@ -362,63 +367,63 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
     @Override // com.android.internal.inputmethod.IInputMethod
     public void showSoftInput(IBinder showInputToken, ImeTracker.Token statsToken, int flags, ResultReceiver resultReceiver) {
         ImeTracker.forLogging().onProgress(statsToken, 11);
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageIOOO(60, flags, showInputToken, resultReceiver, statsToken));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIOOO(60, flags, showInputToken, resultReceiver, statsToken));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void hideSoftInput(IBinder hideInputToken, ImeTracker.Token statsToken, int flags, ResultReceiver resultReceiver) {
         ImeTracker.forLogging().onProgress(statsToken, 11);
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageIOOO(70, flags, hideInputToken, resultReceiver, statsToken));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIOOO(70, flags, hideInputToken, resultReceiver, statsToken));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void changeInputMethodSubtype(InputMethodSubtype subtype) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(80, subtype));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(80, subtype));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
-    public void canStartStylusHandwriting(int requestId) throws RemoteException {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(100, requestId));
+    public void canStartStylusHandwriting(int i, IConnectionlessHandwritingCallback iConnectionlessHandwritingCallback, CursorAnchorInfo cursorAnchorInfo, boolean z) throws RemoteException {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIIOO(100, i, z ? 1 : 0, iConnectionlessHandwritingCallback, cursorAnchorInfo));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void updateEditorToolType(int toolType) throws RemoteException {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(140, toolType));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(140, toolType));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void startStylusHandwriting(int requestId, InputChannel channel, List<MotionEvent> stylusEvents) throws RemoteException {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageIOO(110, requestId, channel, stylusEvents));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageIOO(110, requestId, channel, stylusEvents));
+    }
+
+    @Override // com.android.internal.inputmethod.IInputMethod
+    public void commitHandwritingDelegationTextIfAvailable() {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(170));
+    }
+
+    @Override // com.android.internal.inputmethod.IInputMethod
+    public void discardHandwritingDelegationText() {
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(180));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void initInkWindow() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(120));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(120));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void finishStylusHandwriting() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(130));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(130));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void removeStylusHandwritingWindow() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessage(150));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessage(150));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void setStylusWindowIdleTimeoutForTest(long timeout) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageO(160, Long.valueOf(timeout)));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageO(160, Long.valueOf(timeout)));
     }
 
     private static boolean isValid(InputMethod inputMethod, InputMethodServiceInternal target, String msg) {
@@ -431,13 +436,11 @@ class IInputMethodWrapper extends IInputMethod.Stub implements HandlerCaller.Cal
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void minimizeSoftInput(int height) {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(200, height));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(200, height));
     }
 
     @Override // com.android.internal.inputmethod.IInputMethod
     public void undoMinimizeSoftInput() {
-        HandlerCaller handlerCaller = this.mCaller;
-        handlerCaller.executeOrSendMessage(handlerCaller.obtainMessageI(210, 0));
+        this.mCaller.executeOrSendMessage(this.mCaller.obtainMessageI(210, 0));
     }
 }

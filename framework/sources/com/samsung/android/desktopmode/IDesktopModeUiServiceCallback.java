@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDesktopModeUiServiceCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.desktopmode.IDesktopModeUiServiceCallback";
 
@@ -20,7 +20,6 @@ public interface IDesktopModeUiServiceCallback extends IInterface {
 
     void onShow() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDesktopModeUiServiceCallback {
         @Override // com.samsung.android.desktopmode.IDesktopModeUiServiceCallback
         public void onClickButtonPositive() throws RemoteException {
@@ -48,7 +47,6 @@ public interface IDesktopModeUiServiceCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDesktopModeUiServiceCallback {
         static final int TRANSACTION_onAnimationComplete = 5;
         static final int TRANSACTION_onClickButtonNegative = 2;
@@ -103,36 +101,32 @@ public interface IDesktopModeUiServiceCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDesktopModeUiServiceCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDesktopModeUiServiceCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDesktopModeUiServiceCallback.DESCRIPTOR);
+                case 1:
+                    onClickButtonPositive();
+                    return true;
+                case 2:
+                    onClickButtonNegative();
+                    return true;
+                case 3:
+                    onShow();
+                    return true;
+                case 4:
+                    onDismiss();
+                    return true;
+                case 5:
+                    onAnimationComplete();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onClickButtonPositive();
-                            return true;
-                        case 2:
-                            onClickButtonNegative();
-                            return true;
-                        case 3:
-                            onShow();
-                            return true;
-                        case 4:
-                            onDismiss();
-                            return true;
-                        case 5:
-                            onAnimationComplete();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDesktopModeUiServiceCallback {
+        private static class Proxy implements IDesktopModeUiServiceCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

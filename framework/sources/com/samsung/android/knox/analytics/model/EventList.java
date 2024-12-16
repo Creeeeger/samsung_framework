@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class EventList extends JSONArray {
     private int mTotalEventsCount;
 

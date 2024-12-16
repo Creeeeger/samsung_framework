@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricStateListener extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricStateListener";
 
@@ -16,7 +16,6 @@ public interface IBiometricStateListener extends IInterface {
 
     void onStateChanged(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricStateListener {
         @Override // android.hardware.biometrics.IBiometricStateListener
         public void onStateChanged(int newState) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IBiometricStateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricStateListener {
         static final int TRANSACTION_onBiometricAction = 2;
         static final int TRANSACTION_onEnrollmentsChanged = 3;
@@ -85,38 +83,34 @@ public interface IBiometricStateListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricStateListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricStateListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricStateListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStateChanged(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onBiometricAction(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg1 = data.readInt();
+                    boolean _arg2 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onEnrollmentsChanged(_arg03, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStateChanged(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onBiometricAction(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg1 = data.readInt();
-                            boolean _arg2 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onEnrollmentsChanged(_arg03, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBiometricStateListener {
+        private static class Proxy implements IBiometricStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

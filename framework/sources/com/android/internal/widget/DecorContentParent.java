@@ -27,6 +27,8 @@ public interface DecorContentParent {
 
     boolean isOverflowMenuShowing();
 
+    void notifyContentChanged();
+
     void restoreToolbarHierarchyState(SparseArray<Parcelable> sparseArray);
 
     void saveToolbarHierarchyState(SparseArray<Parcelable> sparseArray);

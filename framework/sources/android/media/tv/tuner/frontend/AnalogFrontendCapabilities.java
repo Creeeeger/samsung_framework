@@ -3,7 +3,7 @@ package android.media.tv.tuner.frontend;
 import android.annotation.SystemApi;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class AnalogFrontendCapabilities extends FrontendCapabilities {
     private final int mSifStandardCap;
     private final int mTypeCap;

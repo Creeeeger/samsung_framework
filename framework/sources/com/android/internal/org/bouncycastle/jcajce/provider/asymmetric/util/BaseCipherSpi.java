@@ -35,6 +35,9 @@ public abstract class BaseCipherSpi extends CipherSpi {
     protected AlgorithmParameters engineParams = null;
     protected Wrapper wrapEngine = null;
 
+    protected BaseCipherSpi() {
+    }
+
     @Override // javax.crypto.CipherSpi
     protected int engineGetBlockSize() {
         return 0;
@@ -81,11 +84,10 @@ public abstract class BaseCipherSpi extends CipherSpi {
             throw new InvalidKeyException("Cannot wrap key, null encoding.");
         }
         try {
-            Wrapper wrapper = this.wrapEngine;
-            if (wrapper == null) {
+            if (this.wrapEngine == null) {
                 return engineDoFinal(encoded, 0, encoded.length);
             }
-            return wrapper.wrap(encoded, 0, encoded.length);
+            return this.wrapEngine.wrap(encoded, 0, encoded.length);
         } catch (BadPaddingException e) {
             throw new IllegalBlockSizeException(e.getMessage());
         }
@@ -95,11 +97,10 @@ public abstract class BaseCipherSpi extends CipherSpi {
     protected Key engineUnwrap(byte[] wrappedKey, String wrappedKeyAlgorithm, int wrappedKeyType) throws InvalidKeyException {
         byte[] encoded;
         try {
-            Wrapper wrapper = this.wrapEngine;
-            if (wrapper == null) {
+            if (this.wrapEngine == null) {
                 encoded = engineDoFinal(wrappedKey, 0, wrappedKey.length);
             } else {
-                encoded = wrapper.unwrap(wrappedKey, 0, wrappedKey.length);
+                encoded = this.wrapEngine.unwrap(wrappedKey, 0, wrappedKey.length);
             }
             if (wrappedKeyType == 3) {
                 return new SecretKeySpec(encoded, wrappedKeyAlgorithm);
@@ -136,14 +137,6 @@ public abstract class BaseCipherSpi extends CipherSpi {
             throw new InvalidKeyException(e5.getMessage());
         } catch (BadPaddingException e6) {
             throw new InvalidKeyException("unable to unwrap") { // from class: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseCipherSpi.1
-                final /* synthetic */ BadPaddingException val$e;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(String arg0, BadPaddingException e62) {
-                    super(arg0);
-                    e6 = e62;
-                }
-
                 @Override // java.lang.Throwable
                 public synchronized Throwable getCause() {
                     return e6;
@@ -154,24 +147,6 @@ public abstract class BaseCipherSpi extends CipherSpi {
         }
     }
 
-    /* renamed from: com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseCipherSpi$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends InvalidKeyException {
-        final /* synthetic */ BadPaddingException val$e;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(String arg0, BadPaddingException e62) {
-            super(arg0);
-            e6 = e62;
-        }
-
-        @Override // java.lang.Throwable
-        public synchronized Throwable getCause() {
-            return e6;
-        }
-    }
-
-    /* loaded from: classes5.dex */
     protected static final class ErasableOutputStream extends ByteArrayOutputStream {
         public byte[] getBuf() {
             return this.buf;

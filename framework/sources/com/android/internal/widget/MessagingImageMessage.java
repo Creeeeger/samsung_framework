@@ -52,11 +52,10 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         this.mState = new MessagingMessageState(this);
         this.mPath = new Path();
         this.mMinImageHeight = context.getResources().getDimensionPixelSize(R.dimen.messaging_image_min_size);
-        int dimensionPixelSize = context.getResources().getDimensionPixelSize(R.dimen.messaging_image_max_height);
-        this.mMaxImageHeight = dimensionPixelSize;
+        this.mMaxImageHeight = context.getResources().getDimensionPixelSize(R.dimen.messaging_image_max_height);
         this.mImageRounding = context.getResources().getDimensionPixelSize(R.dimen.messaging_image_rounding);
         this.mExtraSpacing = context.getResources().getDimensionPixelSize(R.dimen.messaging_image_extra_spacing);
-        setMaxHeight(dimensionPixelSize);
+        setMaxHeight(this.mMaxImageHeight);
         this.mIsolatedSize = getResources().getDimensionPixelSize(R.dimen.messaging_avatar_size);
     }
 
@@ -66,12 +65,11 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
     }
 
     @Override // com.android.internal.widget.MessagingMessage
-    public boolean setMessage(Notification.MessagingStyle.Message message) {
-        super.setMessage(message);
+    public boolean setMessage(Notification.MessagingStyle.Message message, boolean usePrecomputedText) {
+        super.setMessage(message, usePrecomputedText);
         try {
             Uri uri = message.getDataUri();
-            ImageResolver imageResolver = this.mImageResolver;
-            Drawable drawable = imageResolver != null ? imageResolver.loadImage(uri) : LocalImageResolver.resolveImage(uri, getContext());
+            Drawable drawable = this.mImageResolver != null ? this.mImageResolver.loadImage(uri) : LocalImageResolver.resolveImage(uri, getContext());
             if (drawable == null) {
                 return false;
             }
@@ -81,9 +79,11 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
                 return false;
             }
             this.mDrawable = drawable;
-            this.mAspectRatio = drawable.getIntrinsicWidth() / intrinsicHeight;
-            lambda$setImageURIAsync$2(drawable);
-            setContentDescription(message.getText());
+            this.mAspectRatio = this.mDrawable.getIntrinsicWidth() / intrinsicHeight;
+            if (!usePrecomputedText) {
+                finalizeInflate();
+                return true;
+            }
             return true;
         } catch (IOException | SecurityException e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         }
     }
 
-    public static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, ImageResolver resolver) {
+    static MessagingMessage createMessage(IMessagingLayout layout, Notification.MessagingStyle.Message m, ImageResolver resolver, boolean usePrecomputedText) {
         MessagingLinearLayout messagingLinearLayout = layout.getMessagingLinearLayout();
         MessagingImageMessage createdMessage = sInstancePool.acquire();
         if (createdMessage == null) {
@@ -99,12 +99,18 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
             createdMessage.addOnLayoutChangeListener(MessagingLayout.MESSAGING_PROPERTY_ANIMATOR);
         }
         createdMessage.setImageResolver(resolver);
-        boolean created = createdMessage.setMessage(m);
-        if (!created) {
+        boolean populated = createdMessage.setMessage(m, false);
+        if (!populated) {
             createdMessage.recycle();
-            return MessagingTextMessage.createMessage(layout, m);
+            return MessagingTextMessage.createMessage(layout, m, usePrecomputedText);
         }
         return createdMessage;
+    }
+
+    @Override // com.android.internal.widget.MessagingMessage
+    public void finalizeInflate() {
+        lambda$setImageURIAsync$0(this.mDrawable);
+        setContentDescription(getMessage().getText());
     }
 
     private void setImageResolver(ImageResolver resolver) {
@@ -112,7 +118,7 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (this.mDrawable == null) {
             Log.e(TAG, "onDraw() after recycle()!");
             return;
@@ -133,17 +139,18 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
         int bottom = getActualHeight();
         this.mPath.reset();
         int width = right - 0;
-        int i = this.mImageRounding;
-        float roundnessX = Math.min(width / 2, i);
-        float roundnessY = Math.min((bottom - 0) / 2, i);
-        this.mPath.moveTo(0, 0 + roundnessY);
-        this.mPath.quadTo(0, 0, 0 + roundnessX, 0);
-        this.mPath.lineTo(right - roundnessX, 0);
-        this.mPath.quadTo(right, 0, right, 0 + roundnessY);
-        this.mPath.lineTo(right, bottom - roundnessY);
-        this.mPath.quadTo(right, bottom, right - roundnessX, bottom);
-        this.mPath.lineTo(0 + roundnessX, bottom);
-        this.mPath.quadTo(0, bottom, 0, bottom - roundnessY);
+        float roundnessX = this.mImageRounding;
+        float roundnessY = this.mImageRounding;
+        float roundnessX2 = Math.min(width / 2, roundnessX);
+        float roundnessY2 = Math.min((bottom - 0) / 2, roundnessY);
+        this.mPath.moveTo(0, 0 + roundnessY2);
+        this.mPath.quadTo(0, 0, 0 + roundnessX2, 0);
+        this.mPath.lineTo(right - roundnessX2, 0);
+        this.mPath.quadTo(right, 0, right, 0 + roundnessY2);
+        this.mPath.lineTo(right, bottom - roundnessY2);
+        this.mPath.quadTo(right, bottom, right - roundnessX2, bottom);
+        this.mPath.lineTo(0 + roundnessX2, bottom);
+        this.mPath.quadTo(0, bottom, 0, bottom - roundnessY2);
         this.mPath.close();
         return this.mPath;
     }
@@ -185,7 +192,7 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
     }
 
     @Override // android.widget.ImageView, android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (this.mDrawable == null) {
             Log.e(TAG, "onMeasure() after recycle()!");
@@ -202,7 +209,7 @@ public class MessagingImageMessage extends ImageView implements MessagingMessage
     }
 
     @Override // android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         setActualWidth(getWidth());
         setActualHeight(getHeight());

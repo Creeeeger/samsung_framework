@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import com.samsung.android.knox.dar.ddar.securesession.SecureClient;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class IProxyAgentService {
     private static final String TAG = "IProxyAgentService::Abstract";
     protected SecureClient mSecureClientForInAPI;

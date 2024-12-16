@@ -18,9 +18,6 @@ public class RevocableFileDescriptor {
     private static final boolean DEBUG = true;
     private static final String TAG = "RevocableFileDescriptor";
     private final ProxyFileDescriptorCallback mCallback = new ProxyFileDescriptorCallback() { // from class: android.os.RevocableFileDescriptor.1
-        AnonymousClass1() {
-        }
-
         private void checkRevoked() throws ErrnoException {
             if (RevocableFileDescriptor.this.mRevoked) {
                 throw new ErrnoException(RevocableFileDescriptor.TAG, OsConstants.EPERM);
@@ -98,9 +95,22 @@ public class RevocableFileDescriptor {
         init(context, fd);
     }
 
+    public RevocableFileDescriptor(Context context, FileDescriptor fd, Handler handler) throws IOException {
+        init(context, fd, handler);
+    }
+
     public void init(Context context, FileDescriptor fd) throws IOException {
+        init(context, fd, null);
+    }
+
+    public void init(Context context, FileDescriptor fd, Handler handler) throws IOException {
         this.mInner = fd;
-        this.mOuter = ((StorageManager) context.getSystemService(StorageManager.class)).openProxyFileDescriptor(805306368, this.mCallback);
+        StorageManager sm = (StorageManager) context.getSystemService(StorageManager.class);
+        if (handler != null) {
+            this.mOuter = sm.openProxyFileDescriptor(805306368, this.mCallback, handler);
+        } else {
+            this.mOuter = sm.openProxyFileDescriptor(805306368, this.mCallback);
+        }
     }
 
     public ParcelFileDescriptor getRevocableFileDescriptor() {
@@ -118,69 +128,5 @@ public class RevocableFileDescriptor {
 
     public boolean isRevoked() {
         return this.mRevoked;
-    }
-
-    /* renamed from: android.os.RevocableFileDescriptor$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 extends ProxyFileDescriptorCallback {
-        AnonymousClass1() {
-        }
-
-        private void checkRevoked() throws ErrnoException {
-            if (RevocableFileDescriptor.this.mRevoked) {
-                throw new ErrnoException(RevocableFileDescriptor.TAG, OsConstants.EPERM);
-            }
-        }
-
-        @Override // android.os.ProxyFileDescriptorCallback
-        public long onGetSize() throws ErrnoException {
-            checkRevoked();
-            return Os.fstat(RevocableFileDescriptor.this.mInner).st_size;
-        }
-
-        @Override // android.os.ProxyFileDescriptorCallback
-        public int onRead(long offset, int size, byte[] data) throws ErrnoException {
-            checkRevoked();
-            int n = 0;
-            while (n < size) {
-                try {
-                    return n + Os.pread(RevocableFileDescriptor.this.mInner, data, n, size - n, offset + n);
-                } catch (InterruptedIOException e) {
-                    n += e.bytesTransferred;
-                }
-            }
-            return n;
-        }
-
-        @Override // android.os.ProxyFileDescriptorCallback
-        public int onWrite(long offset, int size, byte[] data) throws ErrnoException {
-            checkRevoked();
-            int n = 0;
-            while (n < size) {
-                try {
-                    return n + Os.pwrite(RevocableFileDescriptor.this.mInner, data, n, size - n, offset + n);
-                } catch (InterruptedIOException e) {
-                    n += e.bytesTransferred;
-                }
-            }
-            return n;
-        }
-
-        @Override // android.os.ProxyFileDescriptorCallback
-        public void onFsync() throws ErrnoException {
-            Slog.v(RevocableFileDescriptor.TAG, "onFsync()");
-            checkRevoked();
-            Os.fsync(RevocableFileDescriptor.this.mInner);
-        }
-
-        @Override // android.os.ProxyFileDescriptorCallback
-        public void onRelease() {
-            Slog.v(RevocableFileDescriptor.TAG, "onRelease()");
-            RevocableFileDescriptor.this.mRevoked = true;
-            IoUtils.closeQuietly(RevocableFileDescriptor.this.mInner);
-            if (RevocableFileDescriptor.this.mOnCloseListener != null) {
-                RevocableFileDescriptor.this.mOnCloseListener.onClose(null);
-            }
-        }
     }
 }

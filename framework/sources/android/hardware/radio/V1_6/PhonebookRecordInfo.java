@@ -58,9 +58,9 @@ public final class PhonebookRecordInfo {
     public final void readEmbeddedFromParcel(HwParcel parcel, HwBlob _hidl_blob, long _hidl_offset) {
         this.recordId = _hidl_blob.getInt32(_hidl_offset + 0);
         this.name = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.name.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
         this.number = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.number.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 40 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 16, _hidl_blob.handle(), _hidl_offset + 40 + 0, true);
         this.emails.clear();

@@ -1,8 +1,8 @@
 package android.util;
 
-import android.hardware.camera2.utils.HashCodeHelpers;
 import com.android.internal.util.Preconditions;
 import java.lang.Comparable;
+import java.util.Objects;
 
 /* loaded from: classes4.dex */
 public final class Range<T extends Comparable<? super T>> {
@@ -129,6 +129,6 @@ public final class Range<T extends Comparable<? super T>> {
     }
 
     public int hashCode() {
-        return HashCodeHelpers.hashCodeGeneric(this.mLower, this.mUpper);
+        return Objects.hash(this.mLower, this.mUpper);
     }
 }

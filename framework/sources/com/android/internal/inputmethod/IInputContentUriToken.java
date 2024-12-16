@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInputContentUriToken extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInputContentUriToken";
 
@@ -14,7 +14,6 @@ public interface IInputContentUriToken extends IInterface {
 
     void take() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputContentUriToken {
         @Override // com.android.internal.inputmethod.IInputContentUriToken
         public void take() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInputContentUriToken extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputContentUriToken {
         static final int TRANSACTION_release = 2;
         static final int TRANSACTION_take = 1;
@@ -76,29 +74,25 @@ public interface IInputContentUriToken extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputContentUriToken.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputContentUriToken.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputContentUriToken.DESCRIPTOR);
+                case 1:
+                    take();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    release();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            take();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            release();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputContentUriToken {
+        private static class Proxy implements IInputContentUriToken {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

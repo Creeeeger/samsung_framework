@@ -5,7 +5,6 @@ import android.util.IntArray;
 /* loaded from: classes2.dex */
 public abstract class AudioManagerInternal {
 
-    /* loaded from: classes2.dex */
     public interface RingerModeDelegate {
         boolean canVolumeDownEnterSilent();
 

@@ -43,9 +43,8 @@ public class RoundRectShape extends RectShape {
             return;
         }
         float radius = 0.0f;
-        float[] fArr = this.mOuterRadii;
-        if (fArr != null) {
-            radius = fArr[0];
+        if (this.mOuterRadii != null) {
+            radius = this.mOuterRadii[0];
             for (int i = 1; i < 8; i++) {
                 if (this.mOuterRadii[i] != radius) {
                     outline.setPath(this.mPath);
@@ -58,23 +57,20 @@ public class RoundRectShape extends RectShape {
     }
 
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape
-    public void onResize(float w, float h) {
+    protected void onResize(float w, float h) {
         super.onResize(w, h);
         RectF r = rect();
         this.mPath.reset();
-        float[] fArr = this.mOuterRadii;
-        if (fArr != null) {
-            this.mPath.addRoundRect(r, fArr, Path.Direction.CW);
+        if (this.mOuterRadii != null) {
+            this.mPath.addRoundRect(r, this.mOuterRadii, Path.Direction.CW);
         } else {
             this.mPath.addRect(r, Path.Direction.CW);
         }
-        RectF rectF = this.mInnerRect;
-        if (rectF != null) {
-            rectF.set(r.left + this.mInset.left, r.top + this.mInset.top, r.right - this.mInset.right, r.bottom - this.mInset.bottom);
+        if (this.mInnerRect != null) {
+            this.mInnerRect.set(r.left + this.mInset.left, r.top + this.mInset.top, r.right - this.mInset.right, r.bottom - this.mInset.bottom);
             if (this.mInnerRect.width() < w && this.mInnerRect.height() < h) {
-                float[] fArr2 = this.mInnerRadii;
-                if (fArr2 != null) {
-                    this.mPath.addRoundRect(this.mInnerRect, fArr2, Path.Direction.CCW);
+                if (this.mInnerRadii != null) {
+                    this.mPath.addRoundRect(this.mInnerRect, this.mInnerRadii, Path.Direction.CCW);
                 } else {
                     this.mPath.addRect(this.mInnerRect, Path.Direction.CCW);
                 }
@@ -84,12 +80,10 @@ public class RoundRectShape extends RectShape {
 
     @Override // android.graphics.drawable.shapes.RectShape, android.graphics.drawable.shapes.Shape
     /* renamed from: clone */
-    public RoundRectShape mo1293clone() throws CloneNotSupportedException {
-        RoundRectShape shape = (RoundRectShape) super.mo1293clone();
-        float[] fArr = this.mOuterRadii;
-        shape.mOuterRadii = fArr != null ? (float[]) fArr.clone() : null;
-        float[] fArr2 = this.mInnerRadii;
-        shape.mInnerRadii = fArr2 != null ? (float[]) fArr2.clone() : null;
+    public RoundRectShape mo1387clone() throws CloneNotSupportedException {
+        RoundRectShape shape = (RoundRectShape) super.mo1387clone();
+        shape.mOuterRadii = this.mOuterRadii != null ? (float[]) this.mOuterRadii.clone() : null;
+        shape.mInnerRadii = this.mInnerRadii != null ? (float[]) this.mInnerRadii.clone() : null;
         shape.mInset = new RectF(this.mInset);
         shape.mInnerRect = new RectF(this.mInnerRect);
         shape.mPath = new Path(this.mPath);

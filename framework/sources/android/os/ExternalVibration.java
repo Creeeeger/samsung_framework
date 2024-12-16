@@ -1,5 +1,6 @@
 package android.os;
 
+import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.AudioAttributes;
 import android.os.IBinder;
 import android.os.IExternalVibrationController;
@@ -7,18 +8,19 @@ import android.os.Parcelable;
 import android.os.VibrationAttributes;
 import android.util.Slog;
 import com.android.internal.util.Preconditions;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 /* loaded from: classes3.dex */
 public class ExternalVibration implements Parcelable {
     public static final Parcelable.Creator<ExternalVibration> CREATOR = new Parcelable.Creator<ExternalVibration>() { // from class: android.os.ExternalVibration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalVibration createFromParcel(Parcel in) {
             return new ExternalVibration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ExternalVibration[] newArray(int size) {
             return new ExternalVibration[size];
@@ -30,10 +32,6 @@ public class ExternalVibration implements Parcelable {
     private String mPkg;
     private IBinder mToken;
     private int mUid;
-
-    /* synthetic */ ExternalVibration(Parcel parcel, ExternalVibrationIA externalVibrationIA) {
-        this(parcel);
-    }
 
     public ExternalVibration(int uid, String pkg, AudioAttributes attrs, IExternalVibrationController controller) {
         this(uid, pkg, attrs, controller, new Binder());
@@ -57,10 +55,12 @@ public class ExternalVibration implements Parcelable {
         int contentType = in.readInt();
         int capturePreset = in.readInt();
         int flags = in.readInt();
-        String tags = in.readString();
-        String virtualVibSoundTag = tags.contains("VIRTUAL_VIB_SOUND") ? "VIRTUAL_VIB_SOUND" : "";
+        HashSet<String> tags = new HashSet<>();
+        for (String tag : in.readString().split(NavigationBarInflaterView.GRAVITY_SEPARATOR)) {
+            tags.add(tag);
+        }
         AudioAttributes.Builder builder = new AudioAttributes.Builder();
-        return builder.setUsage(usage).setContentType(contentType).setCapturePreset(capturePreset).setFlags(flags).semAddAudioTag(virtualVibSoundTag).build();
+        return builder.setUsage(usage).setContentType(contentType).setCapturePreset(capturePreset).setFlags(flags).addTags(tags).build();
     }
 
     public int getUid() {
@@ -107,11 +107,16 @@ public class ExternalVibration implements Parcelable {
         try {
             this.mToken.linkToDeath(recipient, 0);
         } catch (RemoteException e) {
+            Slog.wtf(TAG, "Failed to link to token death: " + this, e);
         }
     }
 
     public void unlinkToDeath(IBinder.DeathRecipient recipient) {
-        this.mToken.unlinkToDeath(recipient, 0);
+        try {
+            this.mToken.unlinkToDeath(recipient, 0);
+        } catch (NoSuchElementException e) {
+            Slog.wtf(TAG, "Failed to unlink to token death", e);
+        }
     }
 
     public boolean equals(Object o) {
@@ -130,12 +135,12 @@ public class ExternalVibration implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(this.mUid);
         out.writeString(this.mPkg);
-        writeAudioAttributes(this.mAttrs, out, flags);
+        writeAudioAttributes(this.mAttrs, out);
         out.writeStrongBinder(this.mController.asBinder());
         out.writeStrongBinder(this.mToken);
     }
 
-    private static void writeAudioAttributes(AudioAttributes attrs, Parcel out, int flags) {
+    private static void writeAudioAttributes(AudioAttributes attrs, Parcel out) {
         out.writeInt(attrs.getUsage());
         out.writeInt(attrs.getContentType());
         out.writeInt(attrs.getCapturePreset());
@@ -146,23 +151,6 @@ public class ExternalVibration implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.os.ExternalVibration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ExternalVibration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalVibration createFromParcel(Parcel in) {
-            return new ExternalVibration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ExternalVibration[] newArray(int size) {
-            return new ExternalVibration[size];
-        }
     }
 
     public boolean isRepeating() {

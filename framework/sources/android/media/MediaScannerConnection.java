@@ -24,9 +24,6 @@ public class MediaScannerConnection implements ServiceConnection {
 
     @Deprecated
     private final IMediaScannerListener.Stub mListener = new IMediaScannerListener.Stub() { // from class: android.media.MediaScannerConnection.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.IMediaScannerListener
         public void scanCompleted(String path, Uri uri) {
         }
@@ -36,25 +33,12 @@ public class MediaScannerConnection implements ServiceConnection {
     @Deprecated
     private IMediaScannerService mService;
 
-    /* loaded from: classes2.dex */
     public interface MediaScannerConnectionClient extends OnScanCompletedListener {
         void onMediaScannerConnected();
     }
 
-    /* loaded from: classes2.dex */
     public interface OnScanCompletedListener {
         void onScanCompleted(String str, Uri uri);
-    }
-
-    /* renamed from: android.media.MediaScannerConnection$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends IMediaScannerListener.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.IMediaScannerListener
-        public void scanCompleted(String path, Uri uri) {
-        }
     }
 
     public MediaScannerConnection(Context context, MediaScannerConnectionClient client) {
@@ -66,9 +50,8 @@ public class MediaScannerConnection implements ServiceConnection {
         synchronized (this) {
             if (this.mProvider == null) {
                 this.mProvider = this.mContext.getContentResolver().acquireContentProviderClient("media");
-                MediaScannerConnectionClient mediaScannerConnectionClient = this.mClient;
-                if (mediaScannerConnectionClient != null) {
-                    mediaScannerConnectionClient.onMediaScannerConnected();
+                if (this.mClient != null) {
+                    this.mClient.onMediaScannerConnected();
                 }
             }
         }
@@ -76,9 +59,8 @@ public class MediaScannerConnection implements ServiceConnection {
 
     public void disconnect() {
         synchronized (this) {
-            ContentProviderClient contentProviderClient = this.mProvider;
-            if (contentProviderClient != null) {
-                contentProviderClient.close();
+            if (this.mProvider != null) {
+                this.mProvider.close();
                 this.mProvider = null;
             }
         }
@@ -93,7 +75,7 @@ public class MediaScannerConnection implements ServiceConnection {
             if (this.mProvider == null) {
                 throw new IllegalStateException("not connected to MediaScannerService");
             }
-            BackgroundThread.getExecutor().execute(new Runnable() { // from class: android.media.MediaScannerConnection$$ExternalSyntheticLambda1
+            BackgroundThread.getExecutor().execute(new Runnable() { // from class: android.media.MediaScannerConnection$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     MediaScannerConnection.this.lambda$scanFile$0(path);
@@ -102,13 +84,14 @@ public class MediaScannerConnection implements ServiceConnection {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$scanFile$0(String path) {
         Uri uri = scanFileQuietly(this.mProvider, new File(path));
         runCallBack(this.mContext, this.mClient, path, uri);
     }
 
     public static void scanFile(final Context context, final String[] paths, String[] mimeTypes, final OnScanCompletedListener callback) {
-        BackgroundThread.getExecutor().execute(new Runnable() { // from class: android.media.MediaScannerConnection$$ExternalSyntheticLambda0
+        BackgroundThread.getExecutor().execute(new Runnable() { // from class: android.media.MediaScannerConnection$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 MediaScannerConnection.lambda$scanFile$1(Context.this, paths, callback);
@@ -116,7 +99,7 @@ public class MediaScannerConnection implements ServiceConnection {
         });
     }
 
-    public static /* synthetic */ void lambda$scanFile$1(Context context, String[] paths, OnScanCompletedListener callback) {
+    static /* synthetic */ void lambda$scanFile$1(Context context, String[] paths, OnScanCompletedListener callback) {
         ContentProviderClient client = context.getContentResolver().acquireContentProviderClient("media");
         try {
             for (String path : paths) {
@@ -164,7 +147,6 @@ public class MediaScannerConnection implements ServiceConnection {
     }
 
     @Deprecated
-    /* loaded from: classes2.dex */
     static class ClientProxy implements MediaScannerConnectionClient {
         final OnScanCompletedListener mClient;
         MediaScannerConnection mConnection;

@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehVendorConfiguration implements Parcelable {
     public static final Parcelable.Creator<SehVendorConfiguration> CREATOR = new Parcelable.Creator<SehVendorConfiguration>() { // from class: vendor.samsung.hardware.radio.network.SehVendorConfiguration.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehVendorConfiguration createFromParcel(Parcel _aidl_source) {
             SehVendorConfiguration _aidl_out = new SehVendorConfiguration();
@@ -26,25 +23,6 @@ public class SehVendorConfiguration implements Parcelable {
     };
     public String name;
     public String value;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehVendorConfiguration$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehVendorConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehVendorConfiguration createFromParcel(Parcel _aidl_source) {
-            SehVendorConfiguration _aidl_out = new SehVendorConfiguration();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehVendorConfiguration[] newArray(int _aidl_size) {
-            return new SehVendorConfiguration[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +81,7 @@ public class SehVendorConfiguration implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("name: " + Objects.toString(this.name));
         _aidl_sj.add("value: " + Objects.toString(this.value));
-        return "vendor.samsung.hardware.radio.network.SehVendorConfiguration" + _aidl_sj.toString();
+        return "SehVendorConfiguration" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

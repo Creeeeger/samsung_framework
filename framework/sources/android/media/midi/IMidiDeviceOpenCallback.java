@@ -11,7 +11,6 @@ import android.os.RemoteException;
 public interface IMidiDeviceOpenCallback extends IInterface {
     void onDeviceOpened(IMidiDeviceServer iMidiDeviceServer, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMidiDeviceOpenCallback {
         @Override // android.media.midi.IMidiDeviceOpenCallback
         public void onDeviceOpened(IMidiDeviceServer server, IBinder token) throws RemoteException {
@@ -23,7 +22,6 @@ public interface IMidiDeviceOpenCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMidiDeviceOpenCallback {
         public static final String DESCRIPTOR = "android.media.midi.IMidiDeviceOpenCallback";
         static final int TRANSACTION_onDeviceOpened = 1;
@@ -67,27 +65,23 @@ public interface IMidiDeviceOpenCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IMidiDeviceServer _arg0 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    onDeviceOpened(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IMidiDeviceServer _arg0 = IMidiDeviceServer.Stub.asInterface(data.readStrongBinder());
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            onDeviceOpened(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMidiDeviceOpenCallback {
+        private static class Proxy implements IMidiDeviceOpenCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -6,14 +6,12 @@ import android.util.MathUtils;
 /* loaded from: classes3.dex */
 public class ParcelableParcel implements Parcelable {
     public static final Parcelable.ClassLoaderCreator<ParcelableParcel> CREATOR = new Parcelable.ClassLoaderCreator<ParcelableParcel>() { // from class: android.os.ParcelableParcel.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public ParcelableParcel createFromParcel(Parcel in) {
             return new ParcelableParcel(in, null);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.ClassLoaderCreator
         public ParcelableParcel createFromParcel(Parcel in, ClassLoader loader) {
             return new ParcelableParcel(in, loader);
@@ -25,16 +23,13 @@ public class ParcelableParcel implements Parcelable {
         }
     };
     final ClassLoader mClassLoader;
-    final Parcel mParcel;
+    final Parcel mParcel = Parcel.obtain();
 
     public ParcelableParcel(ClassLoader loader) {
-        this.mParcel = Parcel.obtain();
         this.mClassLoader = loader;
     }
 
     public ParcelableParcel(Parcel src, ClassLoader loader) {
-        Parcel obtain = Parcel.obtain();
-        this.mParcel = obtain;
         this.mClassLoader = loader;
         int size = src.readInt();
         if (size < 0) {
@@ -42,7 +37,7 @@ public class ParcelableParcel implements Parcelable {
         }
         int pos = src.dataPosition();
         src.setDataPosition(MathUtils.addOrThrow(pos, size));
-        obtain.appendFrom(src, pos, size);
+        this.mParcel.appendFrom(src, pos, size);
     }
 
     public Parcel getParcel() {
@@ -62,29 +57,6 @@ public class ParcelableParcel implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mParcel.dataSize());
-        Parcel parcel = this.mParcel;
-        dest.appendFrom(parcel, 0, parcel.dataSize());
-    }
-
-    /* renamed from: android.os.ParcelableParcel$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.ClassLoaderCreator<ParcelableParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableParcel createFromParcel(Parcel in) {
-            return new ParcelableParcel(in, null);
-        }
-
-        @Override // android.os.Parcelable.ClassLoaderCreator
-        public ParcelableParcel createFromParcel(Parcel in, ClassLoader loader) {
-            return new ParcelableParcel(in, loader);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelableParcel[] newArray(int size) {
-            return new ParcelableParcel[size];
-        }
+        dest.appendFrom(this.mParcel, 0, this.mParcel.dataSize());
     }
 }

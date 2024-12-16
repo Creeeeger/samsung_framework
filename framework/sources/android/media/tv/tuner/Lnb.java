@@ -1,6 +1,8 @@
 package android.media.tv.tuner;
 
 import android.annotation.SystemApi;
+import android.media.tv.tunerresourcemanager.TunerResourceManager;
+import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
@@ -9,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class Lnb implements AutoCloseable {
     public static final int EVENT_TYPE_DISEQC_RX_OVERFLOW = 0;
     public static final int EVENT_TYPE_DISEQC_RX_PARITY_ERROR = 2;
@@ -18,7 +20,6 @@ public class Lnb implements AutoCloseable {
     public static final int POSITION_A = 1;
     public static final int POSITION_B = 2;
     public static final int POSITION_UNDEFINED = 0;
-    private static final String TAG = "Lnb";
     public static final int TONE_CONTINUOUS = 1;
     public static final int TONE_NONE = 0;
     public static final int VOLTAGE_11V = 2;
@@ -30,30 +31,30 @@ public class Lnb implements AutoCloseable {
     public static final int VOLTAGE_19V = 8;
     public static final int VOLTAGE_5V = 1;
     public static final int VOLTAGE_NONE = 0;
+    int mClientId;
     private long mNativeContext;
     Tuner mOwner;
+    TunerResourceManager mTunerResourceManager;
+    private static final String TAG = "Lnb";
+    private static final boolean DEBUG = Log.isLoggable(TAG, 3);
     Map<LnbCallback, Executor> mCallbackMap = new HashMap();
     private final Object mCallbackLock = new Object();
     private Boolean mIsClosed = false;
     private final Object mLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface EventType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Position {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Tone {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Voltage {
     }
 
@@ -70,13 +71,17 @@ public class Lnb implements AutoCloseable {
     private Lnb() {
     }
 
-    public void setCallbackAndOwner(Tuner tuner, Executor executor, LnbCallback callback) {
+    void setCallbackAndOwner(Tuner tuner, Executor executor, LnbCallback callback) {
         synchronized (this.mCallbackLock) {
             if (callback != null && executor != null) {
                 addCallback(executor, callback);
             }
         }
         setOwner(tuner);
+        if (this.mOwner != null) {
+            this.mTunerResourceManager = this.mOwner.getTunerResourceManager();
+            this.mClientId = this.mOwner.getClientId();
+        }
     }
 
     public void addCallback(Executor executor, LnbCallback callback) {
@@ -96,10 +101,12 @@ public class Lnb implements AutoCloseable {
         return result;
     }
 
-    public void setOwner(Tuner newOwner) {
+    void setOwner(Tuner newOwner) {
         Objects.requireNonNull(newOwner, "newOwner must not be null");
         synchronized (this.mLock) {
             this.mOwner = newOwner;
+            this.mTunerResourceManager = newOwner.getTunerResourceManager();
+            this.mClientId = newOwner.getClientId();
         }
     }
 
@@ -108,7 +115,7 @@ public class Lnb implements AutoCloseable {
             for (final LnbCallback callback : this.mCallbackMap.keySet()) {
                 Executor executor = this.mCallbackMap.get(callback);
                 if (callback != null && executor != null) {
-                    executor.execute(new Runnable() { // from class: android.media.tv.tuner.Lnb$$ExternalSyntheticLambda1
+                    executor.execute(new Runnable() { // from class: android.media.tv.tuner.Lnb$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             Lnb.this.lambda$onEvent$0(callback, eventType);
@@ -119,6 +126,7 @@ public class Lnb implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onEvent$0(LnbCallback callback, int eventType) {
         synchronized (this.mCallbackLock) {
             if (callback != null) {
@@ -132,7 +140,7 @@ public class Lnb implements AutoCloseable {
             for (final LnbCallback callback : this.mCallbackMap.keySet()) {
                 Executor executor = this.mCallbackMap.get(callback);
                 if (callback != null && executor != null) {
-                    executor.execute(new Runnable() { // from class: android.media.tv.tuner.Lnb$$ExternalSyntheticLambda0
+                    executor.execute(new Runnable() { // from class: android.media.tv.tuner.Lnb$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             Lnb.this.lambda$onDiseqcMessage$1(callback, diseqcMessage);
@@ -143,6 +151,7 @@ public class Lnb implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onDiseqcMessage$1(LnbCallback callback, byte[] diseqcMessage) {
         synchronized (this.mCallbackLock) {
             if (callback != null) {
@@ -157,6 +166,25 @@ public class Lnb implements AutoCloseable {
             booleanValue = this.mIsClosed.booleanValue();
         }
         return booleanValue;
+    }
+
+    void closeInternal() {
+        synchronized (this.mLock) {
+            if (this.mIsClosed.booleanValue()) {
+                return;
+            }
+            int res = nativeClose();
+            if (res != 0) {
+                TunerUtils.throwExceptionForResult(res, "Failed to close LNB");
+            } else {
+                this.mIsClosed = true;
+                if (this.mOwner != null) {
+                    this.mOwner.releaseLnb();
+                    this.mOwner = null;
+                }
+                this.mCallbackMap.clear();
+            }
+        }
     }
 
     public int setVoltage(int voltage) {
@@ -197,22 +225,24 @@ public class Lnb implements AutoCloseable {
 
     @Override // java.lang.AutoCloseable
     public void close() {
-        synchronized (this.mLock) {
-            if (this.mIsClosed.booleanValue()) {
-                return;
-            }
-            int res = nativeClose();
-            if (res != 0) {
-                TunerUtils.throwExceptionForResult(res, "Failed to close LNB");
-            } else {
-                this.mIsClosed = true;
-                Tuner tuner = this.mOwner;
-                if (tuner != null) {
-                    tuner.releaseLnb();
-                    this.mOwner = null;
-                }
-                this.mCallbackMap.clear();
-            }
+        acquireTRMSLock("close()");
+        try {
+            closeInternal();
+        } finally {
+            releaseTRMSLock();
         }
+    }
+
+    private void acquireTRMSLock(String functionNameForLog) {
+        if (DEBUG) {
+            Log.d(TAG, "ATTEMPT:acquireLock() in " + functionNameForLog + "for clientId:" + this.mClientId);
+        }
+        if (!this.mTunerResourceManager.acquireLock(this.mClientId)) {
+            Log.e(TAG, "FAILED:acquireLock() in " + functionNameForLog + " for clientId:" + this.mClientId + " - this can cause deadlock between Tuner API calls and onReclaimResources()");
+        }
+    }
+
+    private void releaseTRMSLock() {
+        this.mTunerResourceManager.releaseLock(this.mClientId);
     }
 }

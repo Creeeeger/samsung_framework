@@ -37,12 +37,10 @@ public final class BatteryStatsManager {
     private final IBatteryStats mBatteryStats;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface WifiState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface WifiSupplState {
     }
 
@@ -229,9 +227,11 @@ public final class BatteryStatsManager {
         }
     }
 
+    @Deprecated
     public void reportBluetoothOn(int uid, int reason, String packageName) {
     }
 
+    @Deprecated
     public void reportBluetoothOff(int uid, int reason, String packageName) {
     }
 

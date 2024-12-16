@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehEncodedUssd implements Parcelable {
     public static final Parcelable.Creator<SehEncodedUssd> CREATOR = new Parcelable.Creator<SehEncodedUssd>() { // from class: vendor.samsung.hardware.radio.network.SehEncodedUssd.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehEncodedUssd createFromParcel(Parcel _aidl_source) {
             SehEncodedUssd _aidl_out = new SehEncodedUssd();
@@ -27,25 +24,6 @@ public class SehEncodedUssd implements Parcelable {
     public byte[] encodedUssd;
     public int ussdLength = 0;
     public int dcsCode = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehEncodedUssd$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehEncodedUssd> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehEncodedUssd createFromParcel(Parcel _aidl_source) {
-            SehEncodedUssd _aidl_out = new SehEncodedUssd();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehEncodedUssd[] newArray(int _aidl_size) {
-            return new SehEncodedUssd[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +92,7 @@ public class SehEncodedUssd implements Parcelable {
         _aidl_sj.add("encodedUssd: " + Arrays.toString(this.encodedUssd));
         _aidl_sj.add("ussdLength: " + this.ussdLength);
         _aidl_sj.add("dcsCode: " + this.dcsCode);
-        return "vendor.samsung.hardware.radio.network.SehEncodedUssd" + _aidl_sj.toString();
+        return "SehEncodedUssd" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

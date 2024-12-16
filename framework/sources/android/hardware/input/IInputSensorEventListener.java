@@ -14,7 +14,6 @@ public interface IInputSensorEventListener extends IInterface {
 
     void onInputSensorChanged(int i, int i2, int i3, long j, float[] fArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IInputSensorEventListener {
         @Override // android.hardware.input.IInputSensorEventListener
         public void onInputSensorChanged(int deviceId, int sensorId, int accuracy, long timestamp, float[] values) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInputSensorEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IInputSensorEventListener {
         static final int TRANSACTION_onInputSensorAccuracyChanged = 2;
         static final int TRANSACTION_onInputSensorChanged = 1;
@@ -76,37 +74,33 @@ public interface IInputSensorEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputSensorEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputSensorEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputSensorEventListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    long _arg3 = data.readLong();
+                    float[] _arg4 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    onInputSensorChanged(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInputSensorAccuracyChanged(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            long _arg3 = data.readLong();
-                            float[] _arg4 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            onInputSensorChanged(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInputSensorAccuracyChanged(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IInputSensorEventListener {
+        private static class Proxy implements IInputSensorEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

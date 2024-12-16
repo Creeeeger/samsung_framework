@@ -1,27 +1,25 @@
 package android.os;
 
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /* loaded from: classes3.dex */
 public abstract class UEventObserver {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final String TAG = "UEventObserver";
     private static UEventThread sThread;
 
-    /* renamed from: -$$Nest$smnativeWaitForNextEvent */
-    static /* bridge */ /* synthetic */ String m3252$$Nest$smnativeWaitForNextEvent() {
-        return nativeWaitForNextEvent();
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAddMatch(String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeRemoveMatch(String str);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeSetup();
 
-    private static native String nativeWaitForNextEvent();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native String nativeWaitForNextEvent();
 
     public abstract void onUEvent(UEvent uEvent);
 
@@ -37,9 +35,8 @@ public abstract class UEventObserver {
         UEventThread uEventThread;
         synchronized (UEventObserver.class) {
             if (sThread == null) {
-                UEventThread uEventThread2 = new UEventThread();
-                sThread = uEventThread2;
-                uEventThread2.start();
+                sThread = new UEventThread();
+                sThread.start();
             }
             uEventThread = sThread;
         }
@@ -69,7 +66,6 @@ public abstract class UEventObserver {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class UEvent {
         private final HashMap<String, String> mMap = new HashMap<>();
 
@@ -104,8 +100,7 @@ public abstract class UEventObserver {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class UEventThread extends Thread {
+    private static final class UEventThread extends Thread {
         private final ArrayList<Object> mKeysAndObservers;
         private final ArrayList<UEventObserver> mTempObserversToSignal;
 
@@ -119,9 +114,8 @@ public abstract class UEventObserver {
         public void run() {
             UEventObserver.nativeSetup();
             while (true) {
-                String message = UEventObserver.m3252$$Nest$smnativeWaitForNextEvent();
+                String message = UEventObserver.nativeWaitForNextEvent();
                 if (message != null) {
-                    Log.d(UEventObserver.TAG, message);
                     sendEvent(message);
                 }
             }

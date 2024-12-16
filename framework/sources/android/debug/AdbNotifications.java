@@ -21,11 +21,11 @@ public final class AdbNotifications {
         PendingIntent pIntent;
         Resources resources = context.getResources();
         if (transportType == 0) {
-            titleId = 17039759;
-            messageId = 17039758;
+            titleId = 17039769;
+            messageId = 17039768;
         } else if (transportType == 1) {
-            titleId = 17039762;
-            messageId = 17039761;
+            titleId = 17039772;
+            messageId = 17039771;
         } else {
             throw new IllegalArgumentException("createNotification called with unknown transport type=" + ((int) transportType));
         }

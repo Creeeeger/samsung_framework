@@ -12,7 +12,7 @@ import android.os.RemoteException;
 import android.text.FontConfig;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IFontManager extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.graphics.fonts.IFontManager";
 
@@ -20,7 +20,6 @@ public interface IFontManager extends IInterface {
 
     int updateFontFamily(List<FontUpdateRequest> list, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IFontManager {
         @Override // com.android.internal.graphics.fonts.IFontManager
         public FontConfig getFontConfig() throws RemoteException {
@@ -38,7 +37,6 @@ public interface IFontManager extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IFontManager {
         static final int TRANSACTION_getFontConfig = 1;
         static final int TRANSACTION_updateFontFamily = 2;
@@ -94,34 +92,30 @@ public interface IFontManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFontManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFontManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFontManager.DESCRIPTOR);
+                case 1:
+                    FontConfig _result = getFontConfig();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    List<FontUpdateRequest> _arg0 = data.createTypedArrayList(FontUpdateRequest.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = updateFontFamily(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            FontConfig _result = getFontConfig();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            List<FontUpdateRequest> _arg0 = data.createTypedArrayList(FontUpdateRequest.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = updateFontFamily(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IFontManager {
+        private static class Proxy implements IFontManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

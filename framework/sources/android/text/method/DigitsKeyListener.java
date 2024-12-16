@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DigitsKeyListener extends NumberKeyListener {
     private static final int DECIMAL = 2;
     private static final String DEFAULT_DECIMAL_POINT_CHARS = ".";
@@ -166,14 +166,13 @@ public class DigitsKeyListener extends NumberKeyListener {
     public static DigitsKeyListener getInstance(Locale locale, boolean z, boolean z2) {
         int i = (z2 ? 2 : 0) | (z ? 1 : 0);
         synchronized (sLocaleCacheLock) {
-            HashMap<Locale, DigitsKeyListener[]> hashMap = sLocaleInstanceCache;
-            DigitsKeyListener[] digitsKeyListenerArr = hashMap.get(locale);
+            DigitsKeyListener[] digitsKeyListenerArr = sLocaleInstanceCache.get(locale);
             if (digitsKeyListenerArr != null && digitsKeyListenerArr[i] != null) {
                 return digitsKeyListenerArr[i];
             }
             if (digitsKeyListenerArr == null) {
                 digitsKeyListenerArr = new DigitsKeyListener[4];
-                hashMap.put(locale, digitsKeyListenerArr);
+                sLocaleInstanceCache.put(locale, digitsKeyListenerArr);
             }
             DigitsKeyListener digitsKeyListener = new DigitsKeyListener(locale, z, z2);
             digitsKeyListenerArr[i] = digitsKeyListener;
@@ -184,11 +183,10 @@ public class DigitsKeyListener extends NumberKeyListener {
     public static DigitsKeyListener getInstance(String accepted) {
         DigitsKeyListener result;
         synchronized (sStringCacheLock) {
-            HashMap<String, DigitsKeyListener> hashMap = sStringInstanceCache;
-            result = hashMap.get(accepted);
+            result = sStringInstanceCache.get(accepted);
             if (result == null) {
                 result = new DigitsKeyListener(accepted);
-                hashMap.put(accepted, result);
+                sStringInstanceCache.put(accepted, result);
             }
         }
         return result;

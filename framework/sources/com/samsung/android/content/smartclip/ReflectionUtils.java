@@ -1,5 +1,6 @@
 package com.samsung.android.content.smartclip;
 
+import android.app.slice.SliceItem;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.MediaMetrics;
 import android.util.Log;
@@ -93,7 +94,7 @@ class ReflectionUtils {
     }
 
     protected static boolean isPrimitiveDataType(String dataType) {
-        return dataType.equals("short") || dataType.equals("int") || dataType.equals("long") || dataType.equals("char") || dataType.equals("byte") || dataType.equals(SemRemoteViewsValueAnimation.VALUE_TYPE_FLOAT) || dataType.equals("double") || dataType.equals("boolean");
+        return dataType.equals("short") || dataType.equals("int") || dataType.equals(SliceItem.FORMAT_LONG) || dataType.equals("char") || dataType.equals("byte") || dataType.equals(SemRemoteViewsValueAnimation.VALUE_TYPE_FLOAT) || dataType.equals("double") || dataType.equals("boolean");
     }
 
     protected static int findObjFromArrayList(ArrayList<Object> arrayList, Object objToFind) {

@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class InlinePresentation implements Parcelable {
     public static final Parcelable.Creator<InlinePresentation> CREATOR = new Parcelable.Creator<InlinePresentation>() { // from class: android.service.autofill.InlinePresentation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlinePresentation[] newArray(int size) {
             return new InlinePresentation[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InlinePresentation createFromParcel(Parcel in) {
             return new InlinePresentation(in);
@@ -40,9 +39,9 @@ public final class InlinePresentation implements Parcelable {
 
     public InlinePresentation(Slice slice, InlinePresentationSpec inlinePresentationSpec, boolean pinned) {
         this.mSlice = slice;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) slice);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSlice);
         this.mInlinePresentationSpec = inlinePresentationSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpec);
         this.mPinned = pinned;
     }
 
@@ -100,27 +99,10 @@ public final class InlinePresentation implements Parcelable {
         Slice slice = (Slice) in.readTypedObject(Slice.CREATOR);
         InlinePresentationSpec inlinePresentationSpec = (InlinePresentationSpec) in.readTypedObject(InlinePresentationSpec.CREATOR);
         this.mSlice = slice;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) slice);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mSlice);
         this.mInlinePresentationSpec = inlinePresentationSpec;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) inlinePresentationSpec);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mInlinePresentationSpec);
         this.mPinned = pinned;
-    }
-
-    /* renamed from: android.service.autofill.InlinePresentation$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InlinePresentation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlinePresentation[] newArray(int size) {
-            return new InlinePresentation[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InlinePresentation createFromParcel(Parcel in) {
-            return new InlinePresentation(in);
-        }
     }
 
     @Deprecated

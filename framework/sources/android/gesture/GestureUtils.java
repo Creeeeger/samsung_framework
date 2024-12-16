@@ -16,7 +16,7 @@ public final class GestureUtils {
     private GestureUtils() {
     }
 
-    public static void closeStream(Closeable stream) {
+    static void closeStream(Closeable stream) {
         if (stream != null) {
             try {
                 stream.close();
@@ -287,7 +287,7 @@ public final class GestureUtils {
         return vector;
     }
 
-    public static float[] computeCentroid(float[] points) {
+    static float[] computeCentroid(float[] points) {
         float centerX = 0.0f;
         float centerY = 0.0f;
         int count = points.length;
@@ -358,7 +358,7 @@ public final class GestureUtils {
         return ((float) Math.hypot(dx, dy)) / totalLen;
     }
 
-    public static float squaredEuclideanDistance(float[] vector1, float[] vector2) {
+    static float squaredEuclideanDistance(float[] vector1, float[] vector2) {
         float squaredDistance = 0.0f;
         int size = vector1.length;
         for (int i = 0; i < size; i++) {
@@ -377,7 +377,7 @@ public final class GestureUtils {
         return (float) Math.acos(sum);
     }
 
-    public static float minimumCosineDistance(float[] vector1, float[] vector2, int numOrientations) {
+    static float minimumCosineDistance(float[] vector1, float[] vector2, int numOrientations) {
         int len = vector1.length;
         float a = 0.0f;
         float b = 0.0f;
@@ -480,7 +480,7 @@ public final class GestureUtils {
         return targetVector;
     }
 
-    public static float[] rotate(float[] points, float angle) {
+    static float[] rotate(float[] points, float angle) {
         float cos = (float) Math.cos(angle);
         float sin = (float) Math.sin(angle);
         int size = points.length;
@@ -493,7 +493,7 @@ public final class GestureUtils {
         return points;
     }
 
-    public static float[] translate(float[] points, float dx, float dy) {
+    static float[] translate(float[] points, float dx, float dy) {
         int size = points.length;
         for (int i = 0; i < size; i += 2) {
             points[i] = points[i] + dx;
@@ -503,7 +503,7 @@ public final class GestureUtils {
         return points;
     }
 
-    public static float[] scale(float[] points, float sx, float sy) {
+    static float[] scale(float[] points, float sx, float sy) {
         int size = points.length;
         for (int i = 0; i < size; i += 2) {
             points[i] = points[i] * sx;

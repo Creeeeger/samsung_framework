@@ -44,9 +44,8 @@ public class Picture {
     }
 
     public void close() {
-        long j = this.mNativePicture;
-        if (j != 0) {
-            nativeDestructor(j);
+        if (this.mNativePicture != 0) {
+            nativeDestructor(this.mNativePicture);
             this.mNativePicture = 0L;
         }
     }
@@ -71,17 +70,15 @@ public class Picture {
             throw new IllegalStateException("Picture already recording, must call #endRecording()");
         }
         long ni = nativeBeginRecording(this.mNativePicture, width, height);
-        PictureCanvas pictureCanvas = new PictureCanvas(this, ni);
-        this.mRecordingCanvas = pictureCanvas;
+        this.mRecordingCanvas = new PictureCanvas(this, ni);
         this.mRequiresHwAcceleration = false;
-        return pictureCanvas;
+        return this.mRecordingCanvas;
     }
 
     public void endRecording() {
         verifyValid();
-        PictureCanvas pictureCanvas = this.mRecordingCanvas;
-        if (pictureCanvas != null) {
-            this.mRequiresHwAcceleration = pictureCanvas.mUsesHwFeature;
+        if (this.mRecordingCanvas != null) {
+            this.mRequiresHwAcceleration = this.mRecordingCanvas.mUsesHwFeature;
             this.mRecordingCanvas = null;
             nativeEndRecording(this.mNativePicture);
         }
@@ -129,8 +126,7 @@ public class Picture {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class PictureCanvas extends Canvas {
+    private static class PictureCanvas extends Canvas {
         private final Picture mPicture;
         boolean mUsesHwFeature;
 
@@ -154,7 +150,7 @@ public class Picture {
         }
 
         @Override // android.graphics.BaseCanvas
-        public boolean onHwFeatureInSwMode() {
+        protected boolean onHwFeatureInSwMode() {
             this.mUsesHwFeature = true;
             return false;
         }

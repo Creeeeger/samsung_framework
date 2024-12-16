@@ -11,8 +11,8 @@ public final class Streams {
 
     public static void drain(InputStream inStr) throws IOException {
         byte[] bs = new byte[BUFFER_SIZE];
-        do {
-        } while (inStr.read(bs, 0, bs.length) >= 0);
+        while (inStr.read(bs, 0, bs.length) >= 0) {
+        }
     }
 
     public static byte[] readAll(InputStream inStr) throws IOException {

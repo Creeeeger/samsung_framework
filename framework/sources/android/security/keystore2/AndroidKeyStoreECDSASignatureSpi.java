@@ -19,7 +19,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
     private int mGroupSizeBits = -1;
     private final int mKeymasterDigest;
 
-    /* loaded from: classes3.dex */
     public static final class NONE extends AndroidKeyStoreECDSASignatureSpi {
         public NONE() {
             super(0);
@@ -31,20 +30,15 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
 
         @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
-        public KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
+        protected KeyStoreCryptoOperationStreamer createMainDataStreamer(KeyStoreOperation operation) {
             return new TruncateToFieldSizeMessageStreamer(super.createMainDataStreamer(operation), getGroupSizeBits());
         }
 
-        /* loaded from: classes3.dex */
         private static class TruncateToFieldSizeMessageStreamer implements KeyStoreCryptoOperationStreamer {
             private long mConsumedInputSizeBytes;
             private final KeyStoreCryptoOperationStreamer mDelegate;
             private final int mGroupSizeBits;
             private final ByteArrayOutputStream mInputBuffer;
-
-            /* synthetic */ TruncateToFieldSizeMessageStreamer(KeyStoreCryptoOperationStreamer keyStoreCryptoOperationStreamer, int i, TruncateToFieldSizeMessageStreamerIA truncateToFieldSizeMessageStreamerIA) {
-                this(keyStoreCryptoOperationStreamer, i);
-            }
 
             private TruncateToFieldSizeMessageStreamer(KeyStoreCryptoOperationStreamer delegate, int groupSizeBits) {
                 this.mInputBuffer = new ByteArrayOutputStream();
@@ -84,7 +78,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Ed25519 extends AndroidKeyStoreECDSASignatureSpi {
         public Ed25519() {
             super(0);
@@ -96,7 +89,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SHA1 extends AndroidKeyStoreECDSASignatureSpi {
         public SHA1() {
             super(2);
@@ -108,7 +100,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SHA224 extends AndroidKeyStoreECDSASignatureSpi {
         public SHA224() {
             super(3);
@@ -120,7 +111,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SHA256 extends AndroidKeyStoreECDSASignatureSpi {
         public SHA256() {
             super(4);
@@ -132,7 +122,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SHA384 extends AndroidKeyStoreECDSASignatureSpi {
         public SHA384() {
             super(5);
@@ -144,7 +133,6 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class SHA512 extends AndroidKeyStoreECDSASignatureSpi {
         public SHA512() {
             super(6);
@@ -161,10 +149,9 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
-    public final void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
-        Set<String> set = ACCEPTED_SIGNING_SCHEMES;
-        if (!set.contains(key.getAlgorithm().toLowerCase())) {
-            throw new InvalidKeyException("Unsupported key algorithm: " + key.getAlgorithm() + ". Only" + Arrays.toString(set.stream().toArray()) + " supported");
+    protected final void initKey(AndroidKeyStoreKey key) throws InvalidKeyException {
+        if (!ACCEPTED_SIGNING_SCHEMES.contains(key.getAlgorithm().toLowerCase())) {
+            throw new InvalidKeyException("Unsupported key algorithm: " + key.getAlgorithm() + ". Only " + Arrays.toString(ACCEPTED_SIGNING_SCHEMES.stream().toArray()) + " supported");
         }
         long keySizeBits = -1;
         Authorization[] authorizations = key.getAuthorizations();
@@ -196,13 +183,13 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
-    public final void resetAll() {
+    protected final void resetAll() {
         this.mGroupSizeBits = -1;
         super.resetAll();
     }
 
     @Override // android.security.keystore2.AndroidKeyStoreSignatureSpiBase
-    public final void resetWhilePreservingInitState() {
+    protected final void resetWhilePreservingInitState() {
         super.resetWhilePreservingInitState();
     }
 
@@ -218,10 +205,9 @@ abstract class AndroidKeyStoreECDSASignatureSpi extends AndroidKeyStoreSignature
     }
 
     protected final int getGroupSizeBits() {
-        int i = this.mGroupSizeBits;
-        if (i == -1) {
+        if (this.mGroupSizeBits == -1) {
             throw new IllegalStateException("Not initialized");
         }
-        return i;
+        return this.mGroupSizeBits;
     }
 }

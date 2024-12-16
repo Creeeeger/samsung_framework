@@ -41,28 +41,23 @@ public abstract class ActionBar {
     public static final int NAVIGATION_MODE_TABS = 2;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DisplayOptions {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NavigationMode {
     }
 
-    /* loaded from: classes.dex */
     public interface OnMenuVisibilityListener {
         void onMenuVisibilityChanged(boolean z);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface OnNavigationListener {
         boolean onNavigationItemSelected(int i, long j);
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public static abstract class Tab {
         public static final int INVALID_POSITION = -1;
 
@@ -102,7 +97,6 @@ public abstract class ActionBar {
     }
 
     @Deprecated
-    /* loaded from: classes.dex */
     public interface TabListener {
         void onTabReselected(Tab tab, FragmentTransaction fragmentTransaction);
 
@@ -223,13 +217,11 @@ public abstract class ActionBar {
 
     public abstract void show();
 
-    /* loaded from: classes.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
 
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT, mapping = {@ViewDebug.IntToString(from = -1, to = KeyProperties.DIGEST_NONE), @ViewDebug.IntToString(from = 0, to = KeyProperties.DIGEST_NONE), @ViewDebug.IntToString(from = 48, to = "TOP"), @ViewDebug.IntToString(from = 80, to = "BOTTOM"), @ViewDebug.IntToString(from = 3, to = "LEFT"), @ViewDebug.IntToString(from = 5, to = "RIGHT"), @ViewDebug.IntToString(from = Gravity.START, to = "START"), @ViewDebug.IntToString(from = Gravity.END, to = "END"), @ViewDebug.IntToString(from = 16, to = "CENTER_VERTICAL"), @ViewDebug.IntToString(from = 112, to = "FILL_VERTICAL"), @ViewDebug.IntToString(from = 1, to = "CENTER_HORIZONTAL"), @ViewDebug.IntToString(from = 7, to = "FILL_HORIZONTAL"), @ViewDebug.IntToString(from = 17, to = "CENTER"), @ViewDebug.IntToString(from = 119, to = "FILL")})
         public int gravity;
 
-        /* loaded from: classes.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_gravityId;
             private boolean mPropertiesMapped = false;
@@ -285,7 +277,7 @@ public abstract class ActionBar {
         }
 
         @Override // android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
             encoder.addProperty("gravity", this.gravity);
         }

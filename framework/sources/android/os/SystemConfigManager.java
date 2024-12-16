@@ -3,6 +3,8 @@ package android.os;
 import android.annotation.SystemApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.SignedPackage;
+import android.content.pm.SignedPackageParcel;
 import android.os.ISystemConfig;
 import android.util.ArraySet;
 import android.util.Log;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SystemApi
 /* loaded from: classes3.dex */
@@ -68,6 +71,34 @@ public class SystemConfigManager {
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
             return Collections.emptyList();
+        }
+    }
+
+    public List<String> getPreventUserDisablePackages() {
+        try {
+            return this.mInterface.getPreventUserDisablePackages();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public Set<SignedPackage> getEnhancedConfirmationTrustedPackages() {
+        try {
+            List<SignedPackageParcel> parcels = this.mInterface.getEnhancedConfirmationTrustedPackages();
+            return (Set) parcels.stream().map(new SystemConfigManager$$ExternalSyntheticLambda0()).collect(Collectors.toSet());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
+    public Set<SignedPackage> getEnhancedConfirmationTrustedInstallers() {
+        try {
+            List<SignedPackageParcel> parcels = this.mInterface.getEnhancedConfirmationTrustedInstallers();
+            return (Set) parcels.stream().map(new SystemConfigManager$$ExternalSyntheticLambda0()).collect(Collectors.toSet());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
         }
     }
 }

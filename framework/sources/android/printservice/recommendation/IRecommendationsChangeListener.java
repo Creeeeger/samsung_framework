@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IRecommendationsChangeListener extends IInterface {
     void onRecommendationsChanged() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRecommendationsChangeListener {
         @Override // android.printservice.recommendation.IRecommendationsChangeListener
         public void onRecommendationsChanged() throws RemoteException {
@@ -22,7 +21,6 @@ public interface IRecommendationsChangeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRecommendationsChangeListener {
         public static final String DESCRIPTOR = "android.printservice.recommendation.IRecommendationsChangeListener";
         static final int TRANSACTION_onRecommendationsChanged = 1;
@@ -66,23 +64,20 @@ public interface IRecommendationsChangeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onRecommendationsChanged();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onRecommendationsChanged();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRecommendationsChangeListener {
+        private static class Proxy implements IRecommendationsChangeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

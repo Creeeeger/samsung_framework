@@ -20,7 +20,6 @@ public interface IMemorySaverBackupRestoreObserver extends IInterface {
 
     void onTimeout() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IMemorySaverBackupRestoreObserver {
         @Override // android.app.backup.IMemorySaverBackupRestoreObserver
         public void onStartBackup(String packageName) throws RemoteException {
@@ -48,7 +47,6 @@ public interface IMemorySaverBackupRestoreObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IMemorySaverBackupRestoreObserver {
         static final int TRANSACTION_onBackupCompleted = 2;
         static final int TRANSACTION_onRestoreCompleted = 4;
@@ -103,45 +101,42 @@ public interface IMemorySaverBackupRestoreObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMemorySaverBackupRestoreObserver.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMemorySaverBackupRestoreObserver.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMemorySaverBackupRestoreObserver.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onStartBackup(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onBackupCompleted(_arg02, _arg1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    onRestoreStart(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRestoreCompleted(_arg04, _arg12);
+                    return true;
+                case 5:
+                    onTimeout();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onStartBackup(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onBackupCompleted(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            onRestoreStart(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onRestoreCompleted(_arg04, _arg12);
-                            return true;
-                        case 5:
-                            onTimeout();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IMemorySaverBackupRestoreObserver {
+        private static class Proxy implements IMemorySaverBackupRestoreObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -7,9 +7,6 @@ import android.os.Parcelable;
 /* loaded from: classes6.dex */
 public class SehRrcStateInfo implements Parcelable {
     public static final Parcelable.Creator<SehRrcStateInfo> CREATOR = new Parcelable.Creator<SehRrcStateInfo>() { // from class: vendor.samsung.hardware.radio.data.SehRrcStateInfo.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehRrcStateInfo createFromParcel(Parcel _aidl_source) {
             SehRrcStateInfo _aidl_out = new SehRrcStateInfo();
@@ -24,25 +21,6 @@ public class SehRrcStateInfo implements Parcelable {
     };
     public byte rat = 0;
     public int state = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.data.SehRrcStateInfo$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehRrcStateInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehRrcStateInfo createFromParcel(Parcel _aidl_source) {
-            SehRrcStateInfo _aidl_out = new SehRrcStateInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehRrcStateInfo[] newArray(int _aidl_size) {
-            return new SehRrcStateInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

@@ -10,8 +10,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioDataResponse extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$data$IRadioDataResponse".replace('$', '.');
-    public static final String HASH = "cb458326b02e0e87143f24118543e8cc7d6a9e8e";
-    public static final int VERSION = 2;
+    public static final String HASH = "cd8913a3f9d39f1cc0a5fcf9e90257be94ec38df";
+    public static final int VERSION = 3;
 
     void acknowledgeRequest(int i) throws RemoteException;
 
@@ -47,7 +47,6 @@ public interface IRadioDataResponse extends IInterface {
 
     void stopKeepaliveResponse(RadioResponseInfo radioResponseInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioDataResponse {
         @Override // android.hardware.radio.data.IRadioDataResponse
         public void acknowledgeRequest(int serial) throws RemoteException {
@@ -125,7 +124,6 @@ public interface IRadioDataResponse extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioDataResponse {
         static final int TRANSACTION_acknowledgeRequest = 1;
         static final int TRANSACTION_allocatePduSessionIdResponse = 2;
@@ -172,109 +170,107 @@ public interface IRadioDataResponse extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acknowledgeRequest(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    allocatePduSessionIdResponse(_arg02, _arg1);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    cancelHandoverResponse(_arg03);
+                    return true;
+                case 4:
+                    RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    deactivateDataCallResponse(_arg04);
+                    return true;
+                case 5:
+                    RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    SetupDataCallResult[] _arg12 = (SetupDataCallResult[]) data.createTypedArray(SetupDataCallResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    getDataCallListResponse(_arg05, _arg12);
+                    return true;
+                case 6:
+                    RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    SlicingConfig _arg13 = (SlicingConfig) data.readTypedObject(SlicingConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    getSlicingConfigResponse(_arg06, _arg13);
+                    return true;
+                case 7:
+                    RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    releasePduSessionIdResponse(_arg07);
+                    return true;
+                case 8:
+                    RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataAllowedResponse(_arg08);
+                    return true;
+                case 9:
+                    RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataProfileResponse(_arg09);
+                    return true;
+                case 10:
+                    RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setDataThrottlingResponse(_arg010);
+                    return true;
+                case 11:
+                    RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    setInitialAttachApnResponse(_arg011);
+                    return true;
+                case 12:
+                    RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    SetupDataCallResult _arg14 = (SetupDataCallResult) data.readTypedObject(SetupDataCallResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    setupDataCallResponse(_arg012, _arg14);
+                    return true;
+                case 13:
+                    RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    startHandoverResponse(_arg013);
+                    return true;
+                case 14:
+                    RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    KeepaliveStatus _arg15 = (KeepaliveStatus) data.readTypedObject(KeepaliveStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    startKeepaliveResponse(_arg014, _arg15);
+                    return true;
+                case 15:
+                    RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    stopKeepaliveResponse(_arg015);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acknowledgeRequest(_arg0);
-                            return true;
-                        case 2:
-                            RadioResponseInfo _arg02 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            allocatePduSessionIdResponse(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            RadioResponseInfo _arg03 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            cancelHandoverResponse(_arg03);
-                            return true;
-                        case 4:
-                            RadioResponseInfo _arg04 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            deactivateDataCallResponse(_arg04);
-                            return true;
-                        case 5:
-                            RadioResponseInfo _arg05 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            SetupDataCallResult[] _arg12 = (SetupDataCallResult[]) data.createTypedArray(SetupDataCallResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            getDataCallListResponse(_arg05, _arg12);
-                            return true;
-                        case 6:
-                            RadioResponseInfo _arg06 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            SlicingConfig _arg13 = (SlicingConfig) data.readTypedObject(SlicingConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            getSlicingConfigResponse(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            RadioResponseInfo _arg07 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            releasePduSessionIdResponse(_arg07);
-                            return true;
-                        case 8:
-                            RadioResponseInfo _arg08 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataAllowedResponse(_arg08);
-                            return true;
-                        case 9:
-                            RadioResponseInfo _arg09 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataProfileResponse(_arg09);
-                            return true;
-                        case 10:
-                            RadioResponseInfo _arg010 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setDataThrottlingResponse(_arg010);
-                            return true;
-                        case 11:
-                            RadioResponseInfo _arg011 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            setInitialAttachApnResponse(_arg011);
-                            return true;
-                        case 12:
-                            RadioResponseInfo _arg012 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            SetupDataCallResult _arg14 = (SetupDataCallResult) data.readTypedObject(SetupDataCallResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            setupDataCallResponse(_arg012, _arg14);
-                            return true;
-                        case 13:
-                            RadioResponseInfo _arg013 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            startHandoverResponse(_arg013);
-                            return true;
-                        case 14:
-                            RadioResponseInfo _arg014 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            KeepaliveStatus _arg15 = (KeepaliveStatus) data.readTypedObject(KeepaliveStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            startKeepaliveResponse(_arg014, _arg15);
-                            return true;
-                        case 15:
-                            RadioResponseInfo _arg015 = (RadioResponseInfo) data.readTypedObject(RadioResponseInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            stopKeepaliveResponse(_arg015);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioDataResponse {
+        private static class Proxy implements IRadioDataResponse {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

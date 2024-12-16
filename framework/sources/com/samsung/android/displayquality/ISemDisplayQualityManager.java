@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ISemDisplayQualityManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.displayquality.ISemDisplayQualityManager";
 
@@ -14,7 +14,6 @@ public interface ISemDisplayQualityManager extends IInterface {
 
     void setAdaptiveSync(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemDisplayQualityManager {
         @Override // com.samsung.android.displayquality.ISemDisplayQualityManager
         public void enhanceDisplayOutdoorVisibilityByLux(int lux) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISemDisplayQualityManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemDisplayQualityManager {
         static final int TRANSACTION_enhanceDisplayOutdoorVisibilityByLux = 1;
         static final int TRANSACTION_setAdaptiveSync = 2;
@@ -76,33 +74,29 @@ public interface ISemDisplayQualityManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemDisplayQualityManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemDisplayQualityManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemDisplayQualityManager.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    enhanceDisplayOutdoorVisibilityByLux(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setAdaptiveSync(_arg02);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            enhanceDisplayOutdoorVisibilityByLux(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAdaptiveSync(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemDisplayQualityManager {
+        private static class Proxy implements ISemDisplayQualityManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextSensorStatusCheck extends SemContextEventContext {
     public static final int ACC_DATA_DEFAULT = 40000;
     public static final int ACC_DATA_OFFSET = 2;
     public static final int ACC_DATA_STUCK = 1;
     public static final Parcelable.Creator<SemContextSensorStatusCheck> CREATOR = new Parcelable.Creator<SemContextSensorStatusCheck>() { // from class: com.samsung.android.hardware.context.SemContextSensorStatusCheck.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSensorStatusCheck createFromParcel(Parcel in) {
             return new SemContextSensorStatusCheck(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextSensorStatusCheck[] newArray(int size) {
             return new SemContextSensorStatusCheck[size];
@@ -27,24 +26,7 @@ public class SemContextSensorStatusCheck extends SemContextEventContext {
     public static final int SENSOR_DATA_NORMAL = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextSensorStatusCheck$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextSensorStatusCheck> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSensorStatusCheck createFromParcel(Parcel in) {
-            return new SemContextSensorStatusCheck(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextSensorStatusCheck[] newArray(int size) {
-            return new SemContextSensorStatusCheck[size];
-        }
-    }
-
-    public SemContextSensorStatusCheck() {
+    SemContextSensorStatusCheck() {
         this.mContext = new Bundle();
     }
 

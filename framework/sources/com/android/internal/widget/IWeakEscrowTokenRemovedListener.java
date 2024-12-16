@@ -12,7 +12,6 @@ public interface IWeakEscrowTokenRemovedListener extends IInterface {
 
     void onWeakEscrowTokenRemoved(long j, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IWeakEscrowTokenRemovedListener {
         @Override // com.android.internal.widget.IWeakEscrowTokenRemovedListener
         public void onWeakEscrowTokenRemoved(long handle, int userId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IWeakEscrowTokenRemovedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IWeakEscrowTokenRemovedListener {
         static final int TRANSACTION_onWeakEscrowTokenRemoved = 1;
 
@@ -67,26 +65,23 @@ public interface IWeakEscrowTokenRemovedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IWeakEscrowTokenRemovedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IWeakEscrowTokenRemovedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWeakEscrowTokenRemovedListener.DESCRIPTOR);
+                case 1:
+                    long _arg0 = data.readLong();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onWeakEscrowTokenRemoved(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onWeakEscrowTokenRemoved(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IWeakEscrowTokenRemovedListener {
+        private static class Proxy implements IWeakEscrowTokenRemovedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

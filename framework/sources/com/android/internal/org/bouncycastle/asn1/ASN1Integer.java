@@ -48,7 +48,7 @@ public class ASN1Integer extends ASN1Primitive {
         this(bytes, true);
     }
 
-    public ASN1Integer(byte[] bytes, boolean clone) {
+    ASN1Integer(byte[] bytes, boolean clone) {
         if (isMalformed(bytes)) {
             throw new IllegalArgumentException("malformed integer");
         }
@@ -69,50 +69,41 @@ public class ASN1Integer extends ASN1Primitive {
     }
 
     public int intPositiveValueExact() {
-        byte[] bArr = this.bytes;
-        int length = bArr.length;
-        int i = this.start;
-        int count = length - i;
-        if (count > 4 || (count == 4 && (bArr[i] & 128) != 0)) {
+        int count = this.bytes.length - this.start;
+        if (count > 4 || (count == 4 && (this.bytes[this.start] & 128) != 0)) {
             throw new ArithmeticException("ASN.1 Integer out of positive int range");
         }
-        return intValue(bArr, i, 255);
+        return intValue(this.bytes, this.start, 255);
     }
 
     public int intValueExact() {
-        byte[] bArr = this.bytes;
-        int length = bArr.length;
-        int i = this.start;
-        int count = length - i;
+        int count = this.bytes.length - this.start;
         if (count > 4) {
             throw new ArithmeticException("ASN.1 Integer out of int range");
         }
-        return intValue(bArr, i, -1);
+        return intValue(this.bytes, this.start, -1);
     }
 
     public long longValueExact() {
-        byte[] bArr = this.bytes;
-        int length = bArr.length;
-        int i = this.start;
-        int count = length - i;
+        int count = this.bytes.length - this.start;
         if (count > 8) {
             throw new ArithmeticException("ASN.1 Integer out of long range");
         }
-        return longValue(bArr, i, -1);
+        return longValue(this.bytes, this.start, -1);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         return StreamUtil.calculateBodyLength(this.bytes.length) + 1 + this.bytes.length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 2, this.bytes);
     }
 
@@ -122,7 +113,7 @@ public class ASN1Integer extends ASN1Primitive {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1Integer)) {
             return false;
         }
@@ -134,7 +125,7 @@ public class ASN1Integer extends ASN1Primitive {
         return getValue().toString();
     }
 
-    public static int intValue(byte[] bytes, int start, int signExt) {
+    static int intValue(byte[] bytes, int start, int signExt) {
         int length = bytes.length;
         int pos = Math.max(start, length - 4);
         int val = bytes[pos] & signExt;
@@ -162,7 +153,7 @@ public class ASN1Integer extends ASN1Primitive {
         }
     }
 
-    public static boolean isMalformed(byte[] bytes) {
+    static boolean isMalformed(byte[] bytes) {
         switch (bytes.length) {
             case 0:
                 return true;
@@ -173,7 +164,7 @@ public class ASN1Integer extends ASN1Primitive {
         }
     }
 
-    public static int signBytesToSkip(byte[] bytes) {
+    static int signBytesToSkip(byte[] bytes) {
         int pos = 0;
         int last = bytes.length - 1;
         while (pos < last && bytes[pos] == (bytes[pos + 1] >> 7)) {

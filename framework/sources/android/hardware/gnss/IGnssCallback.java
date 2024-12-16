@@ -29,7 +29,6 @@ public interface IGnssCallback extends IInterface {
     public static final String HASH = "fc957f1d3d261d065ff5e5415f2d21caa79c310f";
     public static final int VERSION = 2;
 
-    /* loaded from: classes2.dex */
     public @interface GnssStatusValue {
         public static final int ENGINE_OFF = 4;
         public static final int ENGINE_ON = 3;
@@ -38,7 +37,6 @@ public interface IGnssCallback extends IInterface {
         public static final int SESSION_END = 2;
     }
 
-    /* loaded from: classes2.dex */
     public @interface GnssSvFlags {
         public static final int HAS_ALMANAC_DATA = 2;
         public static final int HAS_CARRIER_FREQUENCY = 8;
@@ -71,7 +69,6 @@ public interface IGnssCallback extends IInterface {
 
     void gnssSvStatusCb(GnssSvInfo[] gnssSvInfoArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssCallback {
         @Override // android.hardware.gnss.IGnssCallback
         public void gnssSetCapabilitiesCb(int capabilities) throws RemoteException {
@@ -129,7 +126,6 @@ public interface IGnssCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -207,85 +203,83 @@ public interface IGnssCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssSetCapabilitiesCb(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    gnssStatusCb(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    GnssSvInfo[] _arg03 = (GnssSvInfo[]) data.createTypedArray(GnssSvInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssSvStatusCb(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    GnssLocation _arg04 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssLocationCb(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    long _arg05 = data.readLong();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    gnssNmeaCb(_arg05, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    gnssAcquireWakelockCb();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    gnssReleaseWakelockCb();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    GnssSystemInfo _arg06 = (GnssSystemInfo) data.readTypedObject(GnssSystemInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    gnssSetSystemInfoCb(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    gnssRequestTimeCb();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    boolean _arg07 = data.readBoolean();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    gnssRequestLocationCb(_arg07, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssSetCapabilitiesCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            gnssStatusCb(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            GnssSvInfo[] _arg03 = (GnssSvInfo[]) data.createTypedArray(GnssSvInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssSvStatusCb(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            GnssLocation _arg04 = (GnssLocation) data.readTypedObject(GnssLocation.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssLocationCb(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            long _arg05 = data.readLong();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            gnssNmeaCb(_arg05, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            gnssAcquireWakelockCb();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            gnssReleaseWakelockCb();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            GnssSystemInfo _arg06 = (GnssSystemInfo) data.readTypedObject(GnssSystemInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            gnssSetSystemInfoCb(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            gnssRequestTimeCb();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            boolean _arg07 = data.readBoolean();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            gnssRequestLocationCb(_arg07, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssCallback {
+        private static class Proxy implements IGnssCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -528,12 +522,9 @@ public interface IGnssCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class GnssSvInfo implements Parcelable {
         public static final Parcelable.Creator<GnssSvInfo> CREATOR = new Parcelable.Creator<GnssSvInfo>() { // from class: android.hardware.gnss.IGnssCallback.GnssSvInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSvInfo createFromParcel(Parcel _aidl_source) {
                 GnssSvInfo _aidl_out = new GnssSvInfo();
@@ -541,6 +532,7 @@ public interface IGnssCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSvInfo[] newArray(int _aidl_size) {
                 return new GnssSvInfo[_aidl_size];
@@ -554,25 +546,6 @@ public interface IGnssCallback extends IInterface {
         public float azimuthDegrees = 0.0f;
         public long carrierFrequencyHz = 0;
         public int svFlag = 0;
-
-        /* renamed from: android.hardware.gnss.IGnssCallback$GnssSvInfo$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GnssSvInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssSvInfo createFromParcel(Parcel _aidl_source) {
-                GnssSvInfo _aidl_out = new GnssSvInfo();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssSvInfo[] newArray(int _aidl_size) {
-                return new GnssSvInfo[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {
@@ -687,12 +660,9 @@ public interface IGnssCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class GnssSystemInfo implements Parcelable {
         public static final Parcelable.Creator<GnssSystemInfo> CREATOR = new Parcelable.Creator<GnssSystemInfo>() { // from class: android.hardware.gnss.IGnssCallback.GnssSystemInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSystemInfo createFromParcel(Parcel _aidl_source) {
                 GnssSystemInfo _aidl_out = new GnssSystemInfo();
@@ -700,6 +670,7 @@ public interface IGnssCallback extends IInterface {
                 return _aidl_out;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public GnssSystemInfo[] newArray(int _aidl_size) {
                 return new GnssSystemInfo[_aidl_size];
@@ -707,25 +678,6 @@ public interface IGnssCallback extends IInterface {
         };
         public String name;
         public int yearOfHw = 0;
-
-        /* renamed from: android.hardware.gnss.IGnssCallback$GnssSystemInfo$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<GnssSystemInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssSystemInfo createFromParcel(Parcel _aidl_source) {
-                GnssSystemInfo _aidl_out = new GnssSystemInfo();
-                _aidl_out.readFromParcel(_aidl_source);
-                return _aidl_out;
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public GnssSystemInfo[] newArray(int _aidl_size) {
-                return new GnssSystemInfo[_aidl_size];
-            }
-        }
 
         @Override // android.os.Parcelable
         public final int getStability() {

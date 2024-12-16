@@ -33,8 +33,7 @@ public final class ContentCaptureHelper {
     }
 
     public static void setLoggingLevel(int level) {
-        String str = TAG;
-        Log.i(str, "Setting logging level to " + getLoggingLevelAsString(level));
+        Log.i(TAG, "Setting logging level to " + getLoggingLevelAsString(level));
         sDebug = false;
         sVerbose = false;
         switch (level) {
@@ -46,7 +45,7 @@ public final class ContentCaptureHelper {
                 sVerbose = true;
                 break;
             default:
-                Log.w(str, "setLoggingLevel(): invalud level: " + level);
+                Log.w(TAG, "setLoggingLevel(): invalud level: " + level);
                 return;
         }
         sDebug = true;

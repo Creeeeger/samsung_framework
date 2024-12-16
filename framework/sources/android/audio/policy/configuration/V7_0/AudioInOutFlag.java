@@ -37,7 +37,7 @@ public enum AudioInOutFlag {
         return this.rawName;
     }
 
-    public static AudioInOutFlag fromString(String rawString) {
+    static AudioInOutFlag fromString(String rawString) {
         for (AudioInOutFlag _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

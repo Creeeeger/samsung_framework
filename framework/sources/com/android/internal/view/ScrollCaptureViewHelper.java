@@ -19,7 +19,6 @@ public interface ScrollCaptureViewHelper<V extends View> {
 
     void onScrollRequested(V v, Rect rect, Rect rect2, CancellationSignal cancellationSignal, Consumer<ScrollResult> consumer);
 
-    /* loaded from: classes5.dex */
     public static class ScrollResult {
         public Rect availableArea;
         public Rect requestedArea;

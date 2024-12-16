@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEngmodeService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IEngmodeService";
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEngmodeService {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface IEngmodeService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEngmodeService {
         public Stub() {
             attachInterface(this, IEngmodeService.DESCRIPTOR);
@@ -51,16 +49,13 @@ public interface IEngmodeService extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEngmodeService.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IEngmodeService.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IEngmodeService {
             private IBinder mRemote;
 

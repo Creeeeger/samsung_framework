@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.os.Trace;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,7 @@ public class NotificationTopLineView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onFinishInflate() {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         this.mAppName = findViewById(R.id.app_name_text);
         this.mTitle = findViewById(16908310);
@@ -79,8 +80,9 @@ public class NotificationTopLineView extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int givenHeight;
+        Trace.beginSection("NotificationTopLineView#onMeasure");
         int givenWidth = View.MeasureSpec.getSize(widthMeasureSpec);
         int givenHeight2 = View.MeasureSpec.getSize(heightMeasureSpec);
         boolean wrapHeight = View.MeasureSpec.getMode(heightMeasureSpec) == Integer.MIN_VALUE;
@@ -125,10 +127,11 @@ public class NotificationTopLineView extends ViewGroup {
             this.mOverflowAdjuster.resetForOverflow(overFlow, heightSpec).adjust(this.mAppName, null, this.mChildMinWidth).adjust(this.mHeaderText, this.mHeaderTextDivider, this.mChildMinWidth).adjust(this.mSecondaryHeaderText, this.mSecondaryHeaderTextDivider, 0).adjust(this.mTitle, null, this.mChildMinWidth).adjust(this.mHeaderText, this.mHeaderTextDivider, 0).adjust(this.mTitle, null, 0).finish();
         }
         setMeasuredDimension(givenWidth, wrapHeight ? maxChildHeight : givenHeight3);
+        Trace.endSection();
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int childCount;
         int childTop;
         boolean isRtl = getLayoutDirection() == 1;
@@ -136,12 +139,10 @@ public class NotificationTopLineView extends ViewGroup {
         int start = getPaddingStart();
         int ownHeight = b - t;
         int childSpace = (ownHeight - this.mPaddingTop) - this.mPaddingBottom;
-        int i = this.mPaddingTop;
-        int i2 = this.mMaxAscent;
-        int baselineY = i + ((childSpace - (this.mMaxDescent + i2)) / 2) + i2;
-        int i3 = 0;
-        for (int childCount2 = getChildCount(); i3 < childCount2; childCount2 = childCount) {
-            View child = getChildAt(i3);
+        int baselineY = this.mPaddingTop + ((childSpace - (this.mMaxAscent + this.mMaxDescent)) / 2) + this.mMaxAscent;
+        int i = 0;
+        for (int childCount2 = getChildCount(); i < childCount2; childCount2 = childCount) {
+            View child = getChildAt(i);
             if (child.getVisibility() == 8) {
                 childCount = childCount2;
             } else {
@@ -203,7 +204,7 @@ public class NotificationTopLineView extends ViewGroup {
                     start = start3;
                 }
             }
-            i3++;
+            i++;
         }
         updateTouchListener();
     }
@@ -224,7 +225,7 @@ public class NotificationTopLineView extends ViewGroup {
 
     public void setFeedbackOnClickListener(View.OnClickListener l) {
         this.mFeedbackListener = l;
-        this.mFeedbackIcon.setOnClickListener(l);
+        this.mFeedbackIcon.setOnClickListener(this.mFeedbackListener);
         updateTouchListener();
     }
 
@@ -243,8 +244,7 @@ public class NotificationTopLineView extends ViewGroup {
         setPaddingRelative(paddingStart, getPaddingTop(), getPaddingEnd(), getPaddingBottom());
     }
 
-    /* loaded from: classes4.dex */
-    public class HeaderTouchListener implements View.OnTouchListener {
+    private class HeaderTouchListener implements View.OnTouchListener {
         private float mDownX;
         private float mDownY;
         private Rect mFeedbackRect;
@@ -305,6 +305,7 @@ public class NotificationTopLineView extends ViewGroup {
             return this.mTrackGesture;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean onTouchUp(float upX, float upY, float downX, float downY) {
             if (NotificationTopLineView.this.mFeedbackIcon.isVisibleToUser()) {
                 if (this.mFeedbackRect.contains((int) upX, (int) upY) || this.mFeedbackRect.contains((int) downX, (int) downY)) {
@@ -316,11 +317,13 @@ public class NotificationTopLineView extends ViewGroup {
             return false;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isInside(float x, float y) {
             return this.mFeedbackRect.contains((int) x, (int) y);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public View getFirstChildNotGone() {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -350,16 +353,10 @@ public class NotificationTopLineView extends ViewGroup {
         return this.mTouchListener.onTouchUp(upX, upY, downX, downY);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public final class OverflowAdjuster {
+    private final class OverflowAdjuster {
         private int mHeightSpec;
         private int mOverflow;
         private View mRegrowView;
-
-        /* synthetic */ OverflowAdjuster(NotificationTopLineView notificationTopLineView, OverflowAdjusterIA overflowAdjusterIA) {
-            this();
-        }
 
         private OverflowAdjuster() {
         }
@@ -372,8 +369,6 @@ public class NotificationTopLineView extends ViewGroup {
         }
 
         OverflowAdjuster adjust(View targetView, View targetDivider, int minimumWidth) {
-            View view;
-            View view2;
             if (this.mOverflow <= 0 || targetView == null || targetView.getVisibility() == 8) {
                 return this;
             }
@@ -382,7 +377,7 @@ public class NotificationTopLineView extends ViewGroup {
                 return this;
             }
             int newSize = Math.max(minimumWidth, oldWidth - this.mOverflow);
-            if (minimumWidth == 0 && newSize < NotificationTopLineView.this.mChildHideWidth && (view2 = this.mRegrowView) != null && view2 != targetView) {
+            if (minimumWidth == 0 && newSize < NotificationTopLineView.this.mChildHideWidth && this.mRegrowView != null && this.mRegrowView != targetView) {
                 newSize = 0;
             }
             int childWidthSpec = View.MeasureSpec.makeMeasureSpec(newSize, Integer.MIN_VALUE);
@@ -400,8 +395,8 @@ public class NotificationTopLineView extends ViewGroup {
                 }
             }
             int oldDividerWidth2 = this.mOverflow;
-            if (oldDividerWidth2 < 0 && (view = this.mRegrowView) != null) {
-                int regrowCurrentSize = view.getMeasuredWidth();
+            if (oldDividerWidth2 < 0 && this.mRegrowView != null) {
+                int regrowCurrentSize = this.mRegrowView.getMeasuredWidth();
                 int maxSize = regrowCurrentSize - this.mOverflow;
                 int regrowWidthSpec = View.MeasureSpec.makeMeasureSpec(maxSize, Integer.MIN_VALUE);
                 this.mRegrowView.measure(regrowWidthSpec, this.mHeightSpec);

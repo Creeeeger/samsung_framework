@@ -11,7 +11,7 @@ import android.os.UserManager;
 import com.samsung.android.knox.SemPersonaManager;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class UserManagerHelper {
     private static final String TAG = "[KnoxAnalytics] " + UserManagerHelper.class.getSimpleName();
     private static final int USER_TYPE_APP_SEPARATION = 11;
@@ -135,11 +135,10 @@ public class UserManagerHelper {
     }
 
     public int getUserType(int userId) {
-        String str = TAG;
-        Log.d(str, "getUserType(" + userId + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "getUserType(" + userId + NavigationBarInflaterView.KEY_CODE_END);
         UserInfo ui = getUserInfo(userId);
         if (ui == null) {
-            Log.e(str, "getUserType(): UserInfo is null!");
+            Log.e(TAG, "getUserType(): UserInfo is null!");
             return -1;
         }
         if (ui.isSecureFolder()) {
@@ -175,9 +174,8 @@ public class UserManagerHelper {
 
     private IDevicePolicyManager getDevicePolicyManagerService() {
         if (this.mDevicePolicyManagerService == null) {
-            IDevicePolicyManager iDevicePolicyManager = (IDevicePolicyManager) ServiceManager.getService(Context.DEVICE_POLICY_SERVICE);
-            this.mDevicePolicyManagerService = iDevicePolicyManager;
-            if (iDevicePolicyManager == null) {
+            this.mDevicePolicyManagerService = (IDevicePolicyManager) ServiceManager.getService(Context.DEVICE_POLICY_SERVICE);
+            if (this.mDevicePolicyManagerService == null) {
                 Log.e(TAG, "getDevicePolicyManagerService(): could not get DevicePolicyManager!");
             }
         }

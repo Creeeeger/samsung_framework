@@ -12,7 +12,6 @@ public interface IUsbSerialReader extends IInterface {
 
     String getSerial(String str) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IUsbSerialReader {
         @Override // android.hardware.usb.IUsbSerialReader
         public String getSerial(String packageName) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IUsbSerialReader extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IUsbSerialReader {
         static final int TRANSACTION_getSerial = 1;
 
@@ -68,28 +66,24 @@ public interface IUsbSerialReader extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUsbSerialReader.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUsbSerialReader.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUsbSerialReader.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result = getSerial(_arg0);
+                    reply.writeNoException();
+                    reply.writeString(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result = getSerial(_arg0);
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IUsbSerialReader {
+        private static class Proxy implements IUsbSerialReader {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

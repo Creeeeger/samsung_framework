@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class OverlayScanner {
     private final ArrayMap<String, ParsedOverlayInfo> mParsedOverlayInfos = new ArrayMap<>();
     private final List<Pair<String, File>> mExcludedOverlayPackages = new ArrayList();
 
-    /* loaded from: classes4.dex */
     public static class ParsedOverlayInfo {
         public final boolean isStatic;
         public final String packageName;
@@ -45,8 +44,7 @@ public class OverlayScanner {
         }
 
         public File getOriginalPartitionPath() {
-            File file = this.preInstalledApexPath;
-            return file != null ? file : this.path;
+            return this.preInstalledApexPath != null ? this.preInstalledApexPath : this.path;
         }
     }
 
@@ -54,11 +52,11 @@ public class OverlayScanner {
         return this.mParsedOverlayInfos.get(packageName);
     }
 
-    public final Collection<ParsedOverlayInfo> getAllParsedInfos() {
+    final Collection<ParsedOverlayInfo> getAllParsedInfos() {
         return this.mParsedOverlayInfos.values();
     }
 
-    public final boolean isExcludedOverlayPackage(String packageName, OverlayConfigParser.OverlayPartition overlayPartition) {
+    final boolean isExcludedOverlayPackage(String packageName, OverlayConfigParser.OverlayPartition overlayPartition) {
         for (int i = 0; i < this.mExcludedOverlayPackages.size(); i++) {
             Pair<String, File> pair = this.mExcludedOverlayPackages.get(i);
             if (pair.first.equals(packageName) && overlayPartition.containsOverlay(pair.second)) {

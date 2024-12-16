@@ -15,7 +15,7 @@ public final class AudioCapture {
     private final Object mLock = new Object();
     private int mRecordingState = 1;
 
-    public void setAudioRecord(AudioRecord audioRecord) {
+    void setAudioRecord(AudioRecord audioRecord) {
         Log.d(TAG, "set AudioRecord with " + audioRecord);
         synchronized (this.mLock) {
             if (audioRecord != null) {
@@ -29,23 +29,21 @@ public final class AudioCapture {
                     audioRecord.stop();
                 }
             }
-            AudioRecord audioRecord2 = this.mAudioRecord;
-            if (audioRecord2 != null) {
-                audioRecord2.release();
+            if (this.mAudioRecord != null) {
+                this.mAudioRecord.release();
             }
             this.mAudioRecord = audioRecord;
         }
     }
 
-    public AudioCapture(AudioFormat audioFormat) {
+    AudioCapture(AudioFormat audioFormat) {
         this.mAudioFormat = audioFormat;
     }
 
-    public void close() {
+    void close() {
         synchronized (this.mLock) {
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null) {
-                audioRecord.release();
+            if (this.mAudioRecord != null) {
+                this.mAudioRecord.release();
                 this.mAudioRecord = null;
             }
         }
@@ -62,9 +60,8 @@ public final class AudioCapture {
     public int read(byte[] audioData, int offsetInBytes, int sizeInBytes, int readMode) {
         int sizeRead;
         synchronized (this.mLock) {
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null) {
-                sizeRead = audioRecord.read(audioData, offsetInBytes, sizeInBytes, readMode);
+            if (this.mAudioRecord != null) {
+                sizeRead = this.mAudioRecord.read(audioData, offsetInBytes, sizeInBytes, readMode);
             } else {
                 sizeRead = 0;
             }
@@ -79,9 +76,8 @@ public final class AudioCapture {
     public int read(ByteBuffer audioBuffer, int sizeInBytes, int readMode) {
         int sizeRead;
         synchronized (this.mLock) {
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null) {
-                sizeRead = audioRecord.read(audioBuffer, sizeInBytes, readMode);
+            if (this.mAudioRecord != null) {
+                sizeRead = this.mAudioRecord.read(audioBuffer, sizeInBytes, readMode);
             } else {
                 sizeRead = 0;
             }
@@ -92,9 +88,8 @@ public final class AudioCapture {
     public int read(float[] audioData, int offsetInFloats, int sizeInFloats, int readMode) {
         int sizeRead;
         synchronized (this.mLock) {
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null) {
-                sizeRead = audioRecord.read(audioData, offsetInFloats, sizeInFloats, readMode);
+            if (this.mAudioRecord != null) {
+                sizeRead = this.mAudioRecord.read(audioData, offsetInFloats, sizeInFloats, readMode);
             } else {
                 sizeRead = 0;
             }
@@ -109,9 +104,8 @@ public final class AudioCapture {
     public int read(short[] audioData, int offsetInShorts, int sizeInShorts, int readMode) {
         int sizeRead;
         synchronized (this.mLock) {
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null) {
-                sizeRead = audioRecord.read(audioData, offsetInShorts, sizeInShorts, readMode);
+            if (this.mAudioRecord != null) {
+                sizeRead = this.mAudioRecord.read(audioData, offsetInShorts, sizeInShorts, readMode);
             } else {
                 sizeRead = 0;
             }
@@ -122,8 +116,7 @@ public final class AudioCapture {
     public void startRecording() {
         synchronized (this.mLock) {
             this.mRecordingState = 3;
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null && audioRecord.getRecordingState() != 3) {
+            if (this.mAudioRecord != null && this.mAudioRecord.getRecordingState() != 3) {
                 this.mAudioRecord.startRecording();
             }
         }
@@ -132,8 +125,7 @@ public final class AudioCapture {
     public void stop() {
         synchronized (this.mLock) {
             this.mRecordingState = 1;
-            AudioRecord audioRecord = this.mAudioRecord;
-            if (audioRecord != null && audioRecord.getRecordingState() != 1) {
+            if (this.mAudioRecord != null && this.mAudioRecord.getRecordingState() != 1) {
                 this.mAudioRecord.stop();
             }
         }

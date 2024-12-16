@@ -6,7 +6,6 @@ public final class CountQuotaTrackerProto {
     public static final long COUNT_LIMIT = 2246267895810L;
     public static final long UPTC_STATS = 2246267895811L;
 
-    /* loaded from: classes4.dex */
     public final class CountLimit {
         public static final long CATEGORY = 1146756268033L;
         public static final long LIMIT = 1120986464258L;
@@ -16,7 +15,6 @@ public final class CountQuotaTrackerProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class Event {
         public static final long TIMESTAMP_ELAPSED = 1112396529665L;
 
@@ -24,7 +22,6 @@ public final class CountQuotaTrackerProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class ExecutionStats {
         public static final long COUNT_IN_WINDOW = 1120986464260L;
         public static final long COUNT_LIMIT = 1120986464259L;
@@ -36,7 +33,6 @@ public final class CountQuotaTrackerProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class UptcStats {
         public static final long EVENTS = 2246267895811L;
         public static final long EXECUTION_STATS = 2246267895812L;

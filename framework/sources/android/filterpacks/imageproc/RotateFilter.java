@@ -70,10 +70,9 @@ public class RotateFilter extends Filter {
         }
         if (inputFormat.getWidth() != this.mWidth || inputFormat.getHeight() != this.mHeight) {
             this.mWidth = inputFormat.getWidth();
-            int height = inputFormat.getHeight();
-            this.mHeight = height;
+            this.mHeight = inputFormat.getHeight();
             this.mOutputWidth = this.mWidth;
-            this.mOutputHeight = height;
+            this.mOutputHeight = this.mHeight;
             updateParameters();
         }
         FrameFormat outputFormat = ImageFormat.create(this.mOutputWidth, this.mOutputHeight, 3, 3);
@@ -85,18 +84,19 @@ public class RotateFilter extends Filter {
 
     private void updateParameters() {
         float cosTheta;
-        float sinTheta;
-        int i = this.mAngle;
-        if (i % 90 == 0) {
-            if (i % 180 == 0) {
+        if (this.mAngle % 90 == 0) {
+            if (this.mAngle % 180 == 0) {
                 cosTheta = 0.0f;
-                sinTheta = i % 360 == 0 ? 1.0f : -1.0f;
+                if (this.mAngle % 360 == 0) {
+                    sinTheta = 1.0f;
+                }
             } else {
-                float sinTheta2 = (i + 90) % 360 != 0 ? 1.0f : -1.0f;
+                sinTheta = (this.mAngle + 90) % 360 != 0 ? 1.0f : -1.0f;
                 this.mOutputWidth = this.mHeight;
                 this.mOutputHeight = this.mWidth;
-                cosTheta = sinTheta2;
+                float f = sinTheta;
                 sinTheta = 0.0f;
+                cosTheta = f;
             }
             Point x0 = new Point(((-sinTheta) + cosTheta + 1.0f) * 0.5f, (((-cosTheta) - sinTheta) + 1.0f) * 0.5f);
             Point x1 = new Point((sinTheta + cosTheta + 1.0f) * 0.5f, ((cosTheta - sinTheta) + 1.0f) * 0.5f);

@@ -32,13 +32,12 @@ public final class WindowMetrics {
     }
 
     public WindowInsets getWindowInsets() {
-        WindowInsets windowInsets = this.mWindowInsets;
-        if (windowInsets != null) {
-            return windowInsets;
+        if (this.mWindowInsets != null) {
+            return this.mWindowInsets;
         }
-        WindowInsets windowInsets2 = this.mWindowInsetsSupplier.get();
-        this.mWindowInsets = windowInsets2;
-        return windowInsets2;
+        WindowInsets windowInsets = this.mWindowInsetsSupplier.get();
+        this.mWindowInsets = windowInsets;
+        return windowInsets;
     }
 
     public float getDensity() {

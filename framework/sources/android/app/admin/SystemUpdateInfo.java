@@ -18,14 +18,13 @@ public final class SystemUpdateInfo implements Parcelable {
     private static final String ATTR_RECEIVED_TIME = "received-time";
     private static final String ATTR_SECURITY_PATCH_STATE = "security-patch-state";
     public static final Parcelable.Creator<SystemUpdateInfo> CREATOR = new Parcelable.Creator<SystemUpdateInfo>() { // from class: android.app.admin.SystemUpdateInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SystemUpdateInfo createFromParcel(Parcel in) {
             return new SystemUpdateInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SystemUpdateInfo[] newArray(int size) {
             return new SystemUpdateInfo[size];
@@ -39,12 +38,7 @@ public final class SystemUpdateInfo implements Parcelable {
     private final int mSecurityPatchState;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface SecurityPatchState {
-    }
-
-    /* synthetic */ SystemUpdateInfo(Parcel parcel, SystemUpdateInfoIA systemUpdateInfoIA) {
-        this(parcel);
     }
 
     private SystemUpdateInfo(long receivedTime, int securityPatchState) {
@@ -77,23 +71,6 @@ public final class SystemUpdateInfo implements Parcelable {
 
     public int getSecurityPatchState() {
         return this.mSecurityPatchState;
-    }
-
-    /* renamed from: android.app.admin.SystemUpdateInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SystemUpdateInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SystemUpdateInfo createFromParcel(Parcel in) {
-            return new SystemUpdateInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SystemUpdateInfo[] newArray(int size) {
-            return new SystemUpdateInfo[size];
-        }
     }
 
     public void writeToXml(TypedXmlSerializer out, String tag) throws IOException {

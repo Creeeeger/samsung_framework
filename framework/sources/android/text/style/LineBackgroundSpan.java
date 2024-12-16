@@ -5,11 +5,10 @@ import android.graphics.Paint;
 import android.os.Parcel;
 import android.text.ParcelableSpan;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface LineBackgroundSpan extends ParagraphStyle {
     void drawBackground(Canvas canvas, Paint paint, int i, int i2, int i3, int i4, int i5, CharSequence charSequence, int i6, int i7, int i8);
 
-    /* loaded from: classes3.dex */
     public static class Standard implements LineBackgroundSpan, ParcelableSpan {
         private final int mColor;
 

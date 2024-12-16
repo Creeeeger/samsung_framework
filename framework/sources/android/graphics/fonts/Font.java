@@ -32,8 +32,6 @@ import libcore.util.NativeAllocationRegistry;
 
 /* loaded from: classes.dex */
 public final class Font {
-    private static final NativeAllocationRegistry BUFFER_REGISTRY = NativeAllocationRegistry.createMalloced(ByteBuffer.class.getClassLoader(), nGetReleaseNativeFont());
-    private static final NativeAllocationRegistry FONT_REGISTRY = NativeAllocationRegistry.createMalloced(Font.class.getClassLoader(), nGetReleaseNativeFont());
     private static final int NOT_SPECIFIED = -1;
     private static final int STYLE_ITALIC = 1;
     private static final int STYLE_NORMAL = 0;
@@ -83,8 +81,9 @@ public final class Font {
     @CriticalNative
     private static native int nGetPackedStyle(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     @CriticalNative
-    private static native long nGetReleaseNativeFont();
+    public static native long nGetReleaseNativeFont();
 
     @CriticalNative
     private static native int nGetSourceId(long j);
@@ -92,7 +91,14 @@ public final class Font {
     @FastNative
     private static native ByteBuffer nNewByteBuffer(long j);
 
-    /* loaded from: classes.dex */
+    private static class NoImagePreloadHolder {
+        private static final NativeAllocationRegistry BUFFER_REGISTRY = NativeAllocationRegistry.createMalloced(ByteBuffer.class.getClassLoader(), Font.nGetReleaseNativeFont());
+        private static final NativeAllocationRegistry FONT_REGISTRY = NativeAllocationRegistry.createMalloced(Font.class.getClassLoader(), Font.nGetReleaseNativeFont());
+
+        private NoImagePreloadHolder() {
+        }
+    }
+
     public static final class Builder {
         private FontVariationAxis[] mAxes;
         private ByteBuffer mBuffer;
@@ -370,30 +376,26 @@ public final class Font {
                 }
             }
             this.mWeight = Math.max(1, Math.min(1000, this.mWeight));
-            int i = this.mItalic;
-            boolean z = i == 1;
-            boolean z2 = i == 1;
+            boolean z = this.mItalic == 1;
+            boolean z2 = this.mItalic == 1;
             long nInitBuilder = nInitBuilder();
-            FontVariationAxis[] fontVariationAxisArr = this.mAxes;
-            if (fontVariationAxisArr != null) {
-                for (FontVariationAxis fontVariationAxis : fontVariationAxisArr) {
+            if (this.mAxes != null) {
+                for (FontVariationAxis fontVariationAxis : this.mAxes) {
                     nAddAxis(nInitBuilder, fontVariationAxis.getOpenTypeTagValue(), fontVariationAxis.getStyleValue());
                 }
             }
             ByteBuffer asReadOnlyBuffer = this.mBuffer.asReadOnlyBuffer();
-            File file = this.mFile;
-            String absolutePath = file == null ? "" : file.getAbsolutePath();
-            Font font = this.mFont;
-            if (font == null) {
+            String absolutePath = this.mFile == null ? "" : this.mFile.getAbsolutePath();
+            if (this.mFont == null) {
                 return new Font(nBuild(nInitBuilder, asReadOnlyBuffer, absolutePath, this.mLocaleList, this.mWeight, z, this.mTtcIndex));
             }
-            return new Font(nClone(font.getNativePtr(), nInitBuilder, this.mWeight, z, this.mTtcIndex));
+            return new Font(nClone(this.mFont.getNativePtr(), nInitBuilder, this.mWeight, z, this.mTtcIndex));
         }
     }
 
     public Font(long nativePtr) {
         this.mNativePtr = nativePtr;
-        FONT_REGISTRY.registerNativeAllocation(this, nativePtr);
+        NoImagePreloadHolder.FONT_REGISTRY.registerNativeAllocation(this, this.mNativePtr);
     }
 
     public ByteBuffer getBuffer() {
@@ -402,7 +404,7 @@ public final class Font {
             if (this.mBuffer == null) {
                 long ref = nCloneFont(this.mNativePtr);
                 ByteBuffer fromNative = nNewByteBuffer(this.mNativePtr);
-                BUFFER_REGISTRY.registerNativeAllocation(fromNative, ref);
+                NoImagePreloadHolder.BUFFER_REGISTRY.registerNativeAllocation(fromNative, ref);
                 this.mBuffer = fromNative.asReadOnlyBuffer();
             }
             byteBuffer = this.mBuffer;

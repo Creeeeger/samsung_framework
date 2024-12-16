@@ -15,7 +15,7 @@ import com.android.internal.util.Preconditions;
 import java.util.concurrent.Executor;
 
 /* loaded from: classes2.dex */
-public final class InputDeviceVibrator extends Vibrator {
+final class InputDeviceVibrator extends Vibrator {
     private static final String TAG = "InputDeviceVibrator";
     private final int mDeviceId;
     private final VibratorInfo mVibratorInfo;
@@ -23,13 +23,13 @@ public final class InputDeviceVibrator extends Vibrator {
     private final InputManagerGlobal mGlobal = InputManagerGlobal.getInstance();
     private final Binder mToken = new Binder();
 
-    public InputDeviceVibrator(int deviceId, int vibratorId) {
+    InputDeviceVibrator(int deviceId, int vibratorId) {
         this.mDeviceId = deviceId;
         this.mVibratorInfo = new VibratorInfo.Builder(vibratorId).setCapabilities(4L).setSupportedEffects(new int[0]).setSupportedBraking(new int[0]).build();
     }
 
-    /* loaded from: classes2.dex */
-    public class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class OnVibratorStateChangedListenerDelegate extends IVibratorStateListener.Stub {
         private final Executor mExecutor;
         private final Vibrator.OnVibratorStateChangedListener mListener;
 
@@ -38,6 +38,7 @@ public final class InputDeviceVibrator extends Vibrator {
             this.mListener = listener;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVibrating$0(boolean isVibrating) {
             this.mListener.onVibratorStateChanged(isVibrating);
         }

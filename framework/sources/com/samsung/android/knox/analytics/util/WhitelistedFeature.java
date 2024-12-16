@@ -1,17 +1,16 @@
 package com.samsung.android.knox.analytics.util;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class WhitelistedFeature {
     private EnableApi mEnableApi;
     private String mFeature;
 
-    /* loaded from: classes5.dex */
     public enum EnableApi {
         ALL,
         GET
     }
 
-    public WhitelistedFeature(String feature, Integer enableType) {
+    WhitelistedFeature(String feature, Integer enableType) {
         this.mFeature = feature;
         this.mEnableApi = fromEnableType(enableType);
     }

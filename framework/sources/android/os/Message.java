@@ -27,9 +27,7 @@ public final class Message implements Parcelable {
     private static int sPoolSize = 0;
     private static boolean gCheckRecycle = true;
     public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() { // from class: android.os.Message.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Message createFromParcel(Parcel source) {
             Message msg = Message.obtain();
@@ -37,6 +35,7 @@ public final class Message implements Parcelable {
             return msg;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Message[] newArray(int size) {
             return new Message[size];
@@ -47,8 +46,8 @@ public final class Message implements Parcelable {
 
     public static Message obtain() {
         synchronized (sPoolSync) {
-            Message m = sPool;
-            if (m != null) {
+            if (sPool != null) {
+                Message m = sPool;
                 sPool = m.next;
                 m.next = null;
                 m.flags = 0;
@@ -139,7 +138,7 @@ public final class Message implements Parcelable {
         }
     }
 
-    public void recycleUnchecked() {
+    void recycleUnchecked() {
         this.flags = 1;
         this.what = 0;
         this.arg1 = 0;
@@ -153,11 +152,10 @@ public final class Message implements Parcelable {
         this.callback = null;
         this.data = null;
         synchronized (sPoolSync) {
-            int i = sPoolSize;
-            if (i < 50) {
+            if (sPoolSize < 50) {
                 this.next = sPool;
                 sPool = this;
-                sPoolSize = i + 1;
+                sPoolSize++;
             }
         }
     }
@@ -171,9 +169,8 @@ public final class Message implements Parcelable {
         this.replyTo = o.replyTo;
         this.sendingUid = o.sendingUid;
         this.workSourceUid = o.workSourceUid;
-        Bundle bundle = o.data;
-        if (bundle != null) {
-            this.data = (Bundle) bundle.clone();
+        if (o.data != null) {
+            this.data = (Bundle) o.data.clone();
         } else {
             this.data = null;
         }
@@ -236,11 +233,11 @@ public final class Message implements Parcelable {
         }
     }
 
-    public boolean isInUse() {
+    boolean isInUse() {
         return (this.flags & 1) == 1;
     }
 
-    public void markInUse() {
+    void markInUse() {
         this.flags |= 1;
     }
 
@@ -248,7 +245,7 @@ public final class Message implements Parcelable {
         return toString(SystemClock.uptimeMillis());
     }
 
-    public String toString(long now) {
+    String toString(long now) {
         StringBuilder b = new StringBuilder();
         b.append("{ when=");
         TimeUtils.formatDuration(this.when - now, b);
@@ -282,52 +279,29 @@ public final class Message implements Parcelable {
         return b.toString();
     }
 
-    public void dumpDebug(ProtoOutputStream proto, long fieldId) {
+    void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long messageToken = proto.start(fieldId);
         proto.write(1112396529665L, this.when);
         if (this.target != null) {
-            Runnable runnable = this.callback;
-            if (runnable != null) {
-                proto.write(1138166333442L, runnable.getClass().getName());
+            if (this.callback != null) {
+                proto.write(1138166333442L, this.callback.getClass().getName());
             } else {
                 proto.write(1120986464259L, this.what);
             }
-            int i = this.arg1;
-            if (i != 0) {
-                proto.write(1120986464260L, i);
+            if (this.arg1 != 0) {
+                proto.write(1120986464260L, this.arg1);
             }
-            int i2 = this.arg2;
-            if (i2 != 0) {
-                proto.write(1120986464261L, i2);
+            if (this.arg2 != 0) {
+                proto.write(1120986464261L, this.arg2);
             }
-            Object obj = this.obj;
-            if (obj != null) {
-                proto.write(1138166333446L, obj.toString());
+            if (this.obj != null) {
+                proto.write(1138166333446L, this.obj.toString());
             }
             proto.write(1138166333447L, this.target.getClass().getName());
         } else {
             proto.write(1120986464264L, this.arg1);
         }
         proto.end(messageToken);
-    }
-
-    /* renamed from: android.os.Message$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Message> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Message createFromParcel(Parcel source) {
-            Message msg = Message.obtain();
-            msg.readFromParcel(source);
-            return msg;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Message[] newArray(int size) {
-            return new Message[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -343,10 +317,9 @@ public final class Message implements Parcelable {
         dest.writeInt(this.what);
         dest.writeInt(this.arg1);
         dest.writeInt(this.arg2);
-        Object obj = this.obj;
-        if (obj != null) {
+        if (this.obj != null) {
             try {
-                Parcelable p = (Parcelable) obj;
+                Parcelable p = (Parcelable) this.obj;
                 dest.writeInt(1);
                 dest.writeParcelable(p, flags);
             } catch (ClassCastException e) {
@@ -362,6 +335,7 @@ public final class Message implements Parcelable {
         dest.writeInt(this.workSourceUid);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void readFromParcel(Parcel source) {
         this.what = source.readInt();
         this.arg1 = source.readInt();

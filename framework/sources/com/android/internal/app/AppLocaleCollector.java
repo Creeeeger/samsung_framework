@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollectorBase {
     private static final boolean ENABLED = true;
     private static final String PROP_APP_LANGUAGE_SUGGESTION = "android.app.language.suggestion.enhanced";
@@ -57,7 +57,7 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
                     map.put(localeInfo.getId(), localeInfo);
                 }
             }
-            map.forEach(new BiConsumer() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda2
+            map.forEach(new BiConsumer() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda0
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     result.add((LocaleStore.LocaleInfo) obj2);
@@ -77,7 +77,7 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         if (activeImeLocales == null) {
             return Set.of();
         }
-        return (Set) activeImeLocales.stream().filter(new Predicate() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda0
+        return (Set) activeImeLocales.stream().filter(new Predicate() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda3
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return AppLocaleCollector.lambda$getActiveImeLocales$1((LocaleStore.LocaleInfo) obj);
@@ -85,7 +85,7 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         }).collect(Collectors.toSet());
     }
 
-    public static /* synthetic */ boolean lambda$getActiveImeLocales$1(LocaleStore.LocaleInfo info) {
+    static /* synthetic */ boolean lambda$getActiveImeLocales$1(LocaleStore.LocaleInfo info) {
         return info.getLocale().getCountry().length() > 0;
     }
 
@@ -121,16 +121,15 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         }).collect(Collectors.toSet());
     }
 
-    public static /* synthetic */ boolean lambda$getSystemCurrentLocales$2(LocaleStore.LocaleInfo info) {
+    static /* synthetic */ boolean lambda$getSystemCurrentLocales$2(LocaleStore.LocaleInfo info) {
         return info.getLocale().getCountry().length() > 0;
     }
 
     @Override // com.android.internal.app.LocalePickerWithRegion.LocaleCollectorBase
     public HashSet<String> getIgnoredLocaleList(boolean translatedOnly) {
         final HashSet<String> langTagsToIgnore = new HashSet<>();
-        LocaleStore.LocaleInfo localeInfo = this.mAppCurrentLocale;
-        if (localeInfo != null) {
-            langTagsToIgnore.add(localeInfo.getLocale().toLanguageTag());
+        if (this.mAppCurrentLocale != null) {
+            langTagsToIgnore.add(this.mAppCurrentLocale.getLocale().toLanguageTag());
         }
         if (SystemProperties.getBoolean(PROP_APP_LANGUAGE_SUGGESTION, true)) {
             this.mAllAppActiveLocales.forEach(new Consumer() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda4
@@ -169,18 +168,17 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
         Set<LocaleStore.LocaleInfo> appLocaleList = new HashSet<>();
         boolean shouldShowList = result.mLocaleStatus == AppLocaleStore.AppLocaleResult.LocaleStatus.GET_SUPPORTED_LANGUAGE_FROM_LOCAL_CONFIG || result.mLocaleStatus == AppLocaleStore.AppLocaleResult.LocaleStatus.GET_SUPPORTED_LANGUAGE_FROM_ASSET;
         Set<LocaleStore.LocaleInfo> systemLocaleList = isForCountryMode ? getSystemSupportedLocale(langTagsToIgnore, parent, translatedOnly) : getSystemSupportedLocale(langTagsToIgnore, null, translatedOnly);
-        LocaleStore.LocaleInfo localeInfo = this.mAppCurrentLocale;
-        if (localeInfo != null && !isForCountryMode) {
-            appLocaleList.add(localeInfo);
+        if (this.mAppCurrentLocale != null && !isForCountryMode) {
+            appLocaleList.add(this.mAppCurrentLocale);
         }
         if (!isForCountryMode) {
             Set<LocaleStore.LocaleInfo> localeInfoSet = filterSupportedLocales(getSystemCurrentLocales(), result.mAppSupportedLocales);
-            for (LocaleStore.LocaleInfo localeInfo2 : localeInfoSet) {
-                boolean isCurrentLocale = this.mAppCurrentLocale != null && localeInfo2.getLocale().equals(this.mAppCurrentLocale.getLocale());
-                boolean existsInApp = addSystemSuggestionFlag(localeInfo2, this.mAllAppActiveLocales);
-                boolean existsInIme = addSystemSuggestionFlag(localeInfo2, this.mImeLocales);
+            for (LocaleStore.LocaleInfo localeInfo : localeInfoSet) {
+                boolean isCurrentLocale = this.mAppCurrentLocale != null && localeInfo.getLocale().equals(this.mAppCurrentLocale.getLocale());
+                boolean existsInApp = addSystemSuggestionFlag(localeInfo, this.mAllAppActiveLocales);
+                boolean existsInIme = addSystemSuggestionFlag(localeInfo, this.mImeLocales);
                 if (!isCurrentLocale && !existsInApp && !existsInIme) {
-                    appLocaleList.add(localeInfo2);
+                    appLocaleList.add(localeInfo);
                 }
             }
         }
@@ -218,7 +216,7 @@ public class AppLocaleCollector implements LocalePickerWithRegion.LocaleCollecto
     }
 
     private Set<LocaleStore.LocaleInfo> getSuggestedLocales(Set<LocaleStore.LocaleInfo> localeSet) {
-        return (Set) localeSet.stream().filter(new Predicate() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda3
+        return (Set) localeSet.stream().filter(new Predicate() { // from class: com.android.internal.app.AppLocaleCollector$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 boolean isSuggested;

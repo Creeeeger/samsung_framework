@@ -43,7 +43,7 @@ public final class Capability extends MessageNano {
     }
 
     @Override // com.android.framework.protobuf.nano.MessageNano
-    public int computeSerializedSize() {
+    protected int computeSerializedSize() {
         int size = super.computeSerializedSize();
         if (!this.name.equals("")) {
             return size + CodedOutputByteBufferNano.computeStringSize(1, this.name);

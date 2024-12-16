@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.CaptioningManager;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ClosedCaptionRenderer.java */
 /* loaded from: classes2.dex */
-public abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleTrack.RenderingWidget {
+abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleTrack.RenderingWidget {
     private static final CaptioningManager.CaptionStyle DEFAULT_CAPTION_STYLE = CaptioningManager.CaptionStyle.DEFAULT;
     protected CaptioningManager.CaptionStyle mCaptionStyle;
     private final CaptioningManager.CaptioningChangeListener mCaptioningListener;
@@ -19,10 +18,8 @@ public abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleT
     protected SubtitleTrack.RenderingWidget.OnChangedListener mListener;
     private final CaptioningManager mManager;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: ClosedCaptionRenderer.java */
-    /* loaded from: classes2.dex */
-    public interface ClosedCaptionLayout {
+    interface ClosedCaptionLayout {
         void setCaptionStyle(CaptioningManager.CaptionStyle captionStyle);
 
         void setFontScale(float f);
@@ -45,9 +42,6 @@ public abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleT
     public ClosedCaptionWidget(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.mCaptioningListener = new CaptioningManager.CaptioningChangeListener() { // from class: android.media.ClosedCaptionWidget.1
-            AnonymousClass1() {
-            }
-
             @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
             public void onUserStyleChanged(CaptioningManager.CaptionStyle userStyle) {
                 ClosedCaptionWidget.this.mCaptionStyle = ClosedCaptionWidget.DEFAULT_CAPTION_STYLE.applyStyle(userStyle);
@@ -60,13 +54,11 @@ public abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleT
             }
         };
         setLayerType(1, null);
-        CaptioningManager captioningManager = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
-        this.mManager = captioningManager;
-        this.mCaptionStyle = DEFAULT_CAPTION_STYLE.applyStyle(captioningManager.getUserStyle());
-        ClosedCaptionLayout createCaptionLayout = createCaptionLayout(context);
-        this.mClosedCaptionLayout = createCaptionLayout;
-        createCaptionLayout.setCaptionStyle(this.mCaptionStyle);
-        this.mClosedCaptionLayout.setFontScale(captioningManager.getFontScale());
+        this.mManager = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
+        this.mCaptionStyle = DEFAULT_CAPTION_STYLE.applyStyle(this.mManager.getUserStyle());
+        this.mClosedCaptionLayout = createCaptionLayout(context);
+        this.mClosedCaptionLayout.setCaptionStyle(this.mCaptionStyle);
+        this.mClosedCaptionLayout.setFontScale(this.mManager.getFontScale());
         addView((ViewGroup) this.mClosedCaptionLayout, -1, -1);
         requestLayout();
     }
@@ -107,34 +99,14 @@ public abstract class ClosedCaptionWidget extends ViewGroup implements SubtitleT
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         ((ViewGroup) this.mClosedCaptionLayout).measure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         ((ViewGroup) this.mClosedCaptionLayout).layout(l, t, r, b);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* compiled from: ClosedCaptionRenderer.java */
-    /* renamed from: android.media.ClosedCaptionWidget$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends CaptioningManager.CaptioningChangeListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
-        public void onUserStyleChanged(CaptioningManager.CaptionStyle userStyle) {
-            ClosedCaptionWidget.this.mCaptionStyle = ClosedCaptionWidget.DEFAULT_CAPTION_STYLE.applyStyle(userStyle);
-            ClosedCaptionWidget.this.mClosedCaptionLayout.setCaptionStyle(ClosedCaptionWidget.this.mCaptionStyle);
-        }
-
-        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
-        public void onFontScaleChanged(float fontScale) {
-            ClosedCaptionWidget.this.mClosedCaptionLayout.setFontScale(fontScale);
-        }
     }
 
     private void manageChangeListener() {

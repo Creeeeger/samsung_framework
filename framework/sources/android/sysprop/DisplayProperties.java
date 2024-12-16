@@ -56,15 +56,8 @@ public final class DisplayProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -237,5 +230,14 @@ public final class DisplayProperties {
 
     public static void debug_layout(Boolean value) {
         SystemProperties.set("debug.layout", value == null ? "" : value.toString());
+    }
+
+    public static Optional<String> debug_vri_package() {
+        String value = SystemProperties.get("persist.debug.vri_package");
+        return Optional.ofNullable(tryParseString(value));
+    }
+
+    public static void debug_vri_package(String value) {
+        SystemProperties.set("persist.debug.vri_package", value == null ? "" : value.toString());
     }
 }

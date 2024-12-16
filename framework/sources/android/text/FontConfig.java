@@ -3,6 +3,7 @@ package android.text;
 import android.annotation.SystemApi;
 import android.graphics.fonts.FontStyle;
 import android.graphics.fonts.FontVariationAxis;
+import android.icu.util.ULocale;
 import android.os.LocaleList;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,15 +14,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class FontConfig implements Parcelable {
     public static final Parcelable.Creator<FontConfig> CREATOR = new Parcelable.Creator<FontConfig>() { // from class: android.text.FontConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FontConfig createFromParcel(Parcel source) {
             ArrayList arrayList = new ArrayList();
@@ -32,9 +32,10 @@ public final class FontConfig implements Parcelable {
             source.readTypedList(arrayList3, NamedFamilyList.CREATOR);
             long lastModifiedDate = source.readLong();
             int configVersion = source.readInt();
-            return new FontConfig(arrayList, arrayList2, arrayList3, lastModifiedDate, configVersion);
+            return new FontConfig(arrayList, arrayList2, arrayList3, Collections.emptyList(), lastModifiedDate, configVersion);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FontConfig[] newArray(int size) {
             return new FontConfig[size];
@@ -44,18 +45,20 @@ public final class FontConfig implements Parcelable {
     private final int mConfigVersion;
     private final List<FontFamily> mFamilies;
     private final long mLastModifiedTimeMillis;
+    private final List<Customization.LocaleFallback> mLocaleFallbackCustomizations;
     private final List<NamedFamilyList> mNamedFamilyLists;
 
-    public FontConfig(List<FontFamily> families, List<Alias> aliases, List<NamedFamilyList> namedFamilyLists, long lastModifiedTimeMillis, int configVersion) {
+    public FontConfig(List<FontFamily> families, List<Alias> aliases, List<NamedFamilyList> namedFamilyLists, List<Customization.LocaleFallback> localeFallbackCustomizations, long lastModifiedTimeMillis, int configVersion) {
         this.mFamilies = families;
         this.mAliases = aliases;
         this.mNamedFamilyLists = namedFamilyLists;
+        this.mLocaleFallbackCustomizations = localeFallbackCustomizations;
         this.mLastModifiedTimeMillis = lastModifiedTimeMillis;
         this.mConfigVersion = configVersion;
     }
 
     public FontConfig(List<FontFamily> families, List<Alias> aliases, long lastModifiedTimeMillis, int configVersion) {
-        this(families, aliases, Collections.emptyList(), lastModifiedTimeMillis, configVersion);
+        this(families, aliases, Collections.emptyList(), Collections.emptyList(), lastModifiedTimeMillis, configVersion);
     }
 
     public List<FontFamily> getFontFamilies() {
@@ -68,6 +71,10 @@ public final class FontConfig implements Parcelable {
 
     public List<NamedFamilyList> getNamedFamilyLists() {
         return this.mNamedFamilyLists;
+    }
+
+    public List<Customization.LocaleFallback> getLocaleFallbackCustomizations() {
+        return this.mLocaleFallbackCustomizations;
     }
 
     public long getLastModifiedTimeMillis() {
@@ -97,31 +104,6 @@ public final class FontConfig implements Parcelable {
         dest.writeInt(this.mConfigVersion);
     }
 
-    /* renamed from: android.text.FontConfig$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FontConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FontConfig createFromParcel(Parcel source) {
-            ArrayList arrayList = new ArrayList();
-            source.readTypedList(arrayList, FontFamily.CREATOR);
-            ArrayList arrayList2 = new ArrayList();
-            source.readTypedList(arrayList2, Alias.CREATOR);
-            ArrayList arrayList3 = new ArrayList();
-            source.readTypedList(arrayList3, NamedFamilyList.CREATOR);
-            long lastModifiedDate = source.readLong();
-            int configVersion = source.readInt();
-            return new FontConfig(arrayList, arrayList2, arrayList3, lastModifiedDate, configVersion);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FontConfig[] newArray(int size) {
-            return new FontConfig[size];
-        }
-    }
-
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -144,12 +126,9 @@ public final class FontConfig implements Parcelable {
         return "FontConfig{mFamilies=" + this.mFamilies + ", mAliases=" + this.mAliases + ", mLastModifiedTimeMillis=" + this.mLastModifiedTimeMillis + ", mConfigVersion=" + this.mConfigVersion + '}';
     }
 
-    /* loaded from: classes3.dex */
     public static final class Font implements Parcelable {
         public static final Parcelable.Creator<Font> CREATOR = new Parcelable.Creator<Font>() { // from class: android.text.FontConfig.Font.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Font createFromParcel(Parcel source) {
                 File path = new File(source.readString8());
@@ -161,14 +140,19 @@ public final class FontConfig implements Parcelable {
                 int index = source.readInt();
                 String varSettings = source.readString8();
                 String fallback = source.readString8();
-                return new Font(path, originalPath, postScriptName, new FontStyle(weight, slant), index, varSettings, fallback);
+                int varTypeAxes = source.readInt();
+                return new Font(path, originalPath, postScriptName, new FontStyle(weight, slant), index, varSettings, fallback, varTypeAxes);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Font[] newArray(int size) {
                 return new Font[size];
             }
         };
+        public static final int VAR_TYPE_AXES_ITAL = 2;
+        public static final int VAR_TYPE_AXES_NONE = 0;
+        public static final int VAR_TYPE_AXES_WGHT = 1;
         private final File mFile;
         private final String mFontFamilyName;
         private final String mFontVariationSettings;
@@ -176,8 +160,13 @@ public final class FontConfig implements Parcelable {
         private final File mOriginalFile;
         private final String mPostScriptName;
         private final FontStyle mStyle;
+        private final int mVarTypeAxes;
 
-        public Font(File file, File originalFile, String postScriptName, FontStyle style, int index, String fontVariationSettings, String fontFamilyName) {
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface VarTypeAxes {
+        }
+
+        public Font(File file, File originalFile, String postScriptName, FontStyle style, int index, String fontVariationSettings, String fontFamilyName, int varTypeAxes) {
             this.mFile = file;
             this.mOriginalFile = originalFile;
             this.mPostScriptName = postScriptName;
@@ -185,6 +174,7 @@ public final class FontConfig implements Parcelable {
             this.mIndex = index;
             this.mFontVariationSettings = fontVariationSettings;
             this.mFontFamilyName = fontFamilyName;
+            this.mVarTypeAxes = varTypeAxes;
         }
 
         @Override // android.os.Parcelable
@@ -195,40 +185,14 @@ public final class FontConfig implements Parcelable {
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString8(this.mFile.getAbsolutePath());
-            File file = this.mOriginalFile;
-            dest.writeString8(file == null ? null : file.getAbsolutePath());
+            dest.writeString8(this.mOriginalFile == null ? null : this.mOriginalFile.getAbsolutePath());
             dest.writeString8(this.mPostScriptName);
             dest.writeInt(this.mStyle.getWeight());
             dest.writeInt(this.mStyle.getSlant());
             dest.writeInt(this.mIndex);
             dest.writeString8(this.mFontVariationSettings);
             dest.writeString8(this.mFontFamilyName);
-        }
-
-        /* renamed from: android.text.FontConfig$Font$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Font> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Font createFromParcel(Parcel source) {
-                File path = new File(source.readString8());
-                String originalPathStr = source.readString8();
-                File originalPath = originalPathStr == null ? null : new File(originalPathStr);
-                String postScriptName = source.readString8();
-                int weight = source.readInt();
-                int slant = source.readInt();
-                int index = source.readInt();
-                String varSettings = source.readString8();
-                String fallback = source.readString8();
-                return new Font(path, originalPath, postScriptName, new FontStyle(weight, slant), index, varSettings, fallback);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Font[] newArray(int size) {
-                return new Font[size];
-            }
+            dest.writeInt(this.mVarTypeAxes);
         }
 
         public File getFile() {
@@ -259,6 +223,10 @@ public final class FontConfig implements Parcelable {
             return this.mPostScriptName;
         }
 
+        public int getVarTypeAxes() {
+            return this.mVarTypeAxes;
+        }
+
         @Deprecated
         public FontVariationAxis[] getAxes() {
             return FontVariationAxis.fromFontVariationSettings(this.mFontVariationSettings);
@@ -282,27 +250,24 @@ public final class FontConfig implements Parcelable {
                 return false;
             }
             Font font = (Font) o;
-            if (this.mIndex == font.mIndex && Objects.equals(this.mFile, font.mFile) && Objects.equals(this.mOriginalFile, font.mOriginalFile) && Objects.equals(this.mStyle, font.mStyle) && Objects.equals(this.mFontVariationSettings, font.mFontVariationSettings) && Objects.equals(this.mFontFamilyName, font.mFontFamilyName)) {
+            if (this.mIndex == font.mIndex && Objects.equals(this.mFile, font.mFile) && Objects.equals(this.mOriginalFile, font.mOriginalFile) && Objects.equals(this.mStyle, font.mStyle) && Objects.equals(this.mFontVariationSettings, font.mFontVariationSettings) && Objects.equals(this.mFontFamilyName, font.mFontFamilyName) && this.mVarTypeAxes == font.mVarTypeAxes) {
                 return true;
             }
             return false;
         }
 
         public int hashCode() {
-            return Objects.hash(this.mFile, this.mOriginalFile, this.mStyle, Integer.valueOf(this.mIndex), this.mFontVariationSettings, this.mFontFamilyName);
+            return Objects.hash(this.mFile, this.mOriginalFile, this.mStyle, Integer.valueOf(this.mIndex), this.mFontVariationSettings, this.mFontFamilyName, Integer.valueOf(this.mVarTypeAxes));
         }
 
         public String toString() {
-            return "Font{mFile=" + this.mFile + ", mOriginalFile=" + this.mOriginalFile + ", mStyle=" + this.mStyle + ", mIndex=" + this.mIndex + ", mFontVariationSettings='" + this.mFontVariationSettings + DateFormat.QUOTE + ", mFontFamilyName='" + this.mFontFamilyName + DateFormat.QUOTE + '}';
+            return "Font{mFile=" + this.mFile + ", mOriginalFile=" + this.mOriginalFile + ", mStyle=" + this.mStyle + ", mIndex=" + this.mIndex + ", mFontVariationSettings='" + this.mFontVariationSettings + DateFormat.QUOTE + ", mFontFamilyName='" + this.mFontFamilyName + DateFormat.QUOTE + ", mVarTypeAxes='" + this.mVarTypeAxes + DateFormat.QUOTE + '}';
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Alias implements Parcelable {
         public static final Parcelable.Creator<Alias> CREATOR = new Parcelable.Creator<Alias>() { // from class: android.text.FontConfig.Alias.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Alias createFromParcel(Parcel source) {
                 String alias = source.readString8();
@@ -311,6 +276,7 @@ public final class FontConfig implements Parcelable {
                 return new Alias(alias, referName, weight);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public Alias[] newArray(int size) {
                 return new Alias[size];
@@ -350,26 +316,6 @@ public final class FontConfig implements Parcelable {
             dest.writeInt(this.mWeight);
         }
 
-        /* renamed from: android.text.FontConfig$Alias$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<Alias> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Alias createFromParcel(Parcel source) {
-                String alias = source.readString8();
-                String referName = source.readString8();
-                int weight = source.readInt();
-                return new Alias(alias, referName, weight);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public Alias[] newArray(int size) {
-                return new Alias[size];
-            }
-        }
-
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -393,12 +339,9 @@ public final class FontConfig implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class FontFamily implements Parcelable {
         public static final Parcelable.Creator<FontFamily> CREATOR = new Parcelable.Creator<FontFamily>() { // from class: android.text.FontConfig.FontFamily.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FontFamily createFromParcel(Parcel source) {
                 ArrayList arrayList = new ArrayList();
@@ -408,6 +351,7 @@ public final class FontConfig implements Parcelable {
                 return new FontFamily(arrayList, LocaleList.forLanguageTags(langTags), variant);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public FontFamily[] newArray(int size) {
                 return new FontFamily[size];
@@ -421,7 +365,6 @@ public final class FontConfig implements Parcelable {
         private final int mVariant;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes3.dex */
         public @interface Variant {
         }
 
@@ -460,27 +403,6 @@ public final class FontConfig implements Parcelable {
             dest.writeInt(this.mVariant);
         }
 
-        /* renamed from: android.text.FontConfig$FontFamily$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<FontFamily> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public FontFamily createFromParcel(Parcel source) {
-                ArrayList arrayList = new ArrayList();
-                source.readTypedList(arrayList, Font.CREATOR);
-                String langTags = source.readString8();
-                int variant = source.readInt();
-                return new FontFamily(arrayList, LocaleList.forLanguageTags(langTags), variant);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public FontFamily[] newArray(int size) {
-                return new FontFamily[size];
-            }
-        }
-
         @Deprecated
         public Font[] getFonts() {
             return (Font[]) this.mFonts.toArray(new Font[0]);
@@ -514,12 +436,9 @@ public final class FontConfig implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class NamedFamilyList implements Parcelable {
         public static final Parcelable.Creator<NamedFamilyList> CREATOR = new Parcelable.Creator<NamedFamilyList>() { // from class: android.text.FontConfig.NamedFamilyList.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NamedFamilyList createFromParcel(Parcel source) {
                 ArrayList arrayList = new ArrayList();
@@ -528,6 +447,7 @@ public final class FontConfig implements Parcelable {
                 return new NamedFamilyList(arrayList, name);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public NamedFamilyList[] newArray(int size) {
                 return new NamedFamilyList[size];
@@ -542,9 +462,8 @@ public final class FontConfig implements Parcelable {
         }
 
         public NamedFamilyList(FontFamily family) {
-            ArrayList arrayList = new ArrayList();
-            this.mFamilies = arrayList;
-            arrayList.add(family);
+            this.mFamilies = new ArrayList();
+            this.mFamilies.add(family);
             this.mName = family.getName();
         }
 
@@ -565,26 +484,6 @@ public final class FontConfig implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeTypedList(this.mFamilies, flags);
             dest.writeString8(this.mName);
-        }
-
-        /* renamed from: android.text.FontConfig$NamedFamilyList$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<NamedFamilyList> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NamedFamilyList createFromParcel(Parcel source) {
-                ArrayList arrayList = new ArrayList();
-                source.readTypedList(arrayList, FontFamily.CREATOR);
-                String name = source.readString8();
-                return new NamedFamilyList(arrayList, name);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public NamedFamilyList[] newArray(int size) {
-                return new NamedFamilyList[size];
-            }
         }
 
         public boolean equals(Object o) {
@@ -608,5 +507,59 @@ public final class FontConfig implements Parcelable {
         public String toString() {
             return "NamedFamilyList{mFamilies=" + this.mFamilies + ", mName='" + this.mName + DateFormat.QUOTE + '}';
         }
+    }
+
+    public static class Customization {
+        private Customization() {
+        }
+
+        public static class LocaleFallback {
+            public static final int OPERATION_APPEND = 1;
+            public static final int OPERATION_PREPEND = 0;
+            public static final int OPERATION_REPLACE = 2;
+            private final FontFamily mFamily;
+            private final Locale mLocale;
+            private final int mOperation;
+            private final String mScript;
+
+            @Retention(RetentionPolicy.SOURCE)
+            public @interface Operation {
+            }
+
+            public LocaleFallback(Locale locale, int operation, FontFamily family) {
+                this.mLocale = locale;
+                this.mOperation = operation;
+                this.mFamily = family;
+                this.mScript = FontConfig.resolveScript(locale);
+            }
+
+            public Locale getLocale() {
+                return this.mLocale;
+            }
+
+            public int getOperation() {
+                return this.mOperation;
+            }
+
+            public FontFamily getFamily() {
+                return this.mFamily;
+            }
+
+            public String getScript() {
+                return this.mScript;
+            }
+
+            public String toString() {
+                return "LocaleFallback{mLocale=" + this.mLocale + ", mOperation=" + this.mOperation + ", mFamily=" + this.mFamily + '}';
+            }
+        }
+    }
+
+    public static String resolveScript(Locale locale) {
+        String script = locale.getScript();
+        if (script != null && !script.isEmpty()) {
+            return script;
+        }
+        return ULocale.addLikelySubtags(ULocale.forLocale(locale)).getScript();
     }
 }

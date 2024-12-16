@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkManagementEventObserver extends IInterface {
     void addressRemoved(String str, LinkAddress linkAddress) throws RemoteException;
 
@@ -30,7 +30,6 @@ public interface INetworkManagementEventObserver extends IInterface {
 
     void routeUpdated(RouteInfo routeInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkManagementEventObserver {
         @Override // android.net.INetworkManagementEventObserver
         public void interfaceStatusChanged(String iface, boolean up) throws RemoteException {
@@ -61,7 +60,7 @@ public interface INetworkManagementEventObserver extends IInterface {
         }
 
         @Override // android.net.INetworkManagementEventObserver
-        public void interfaceClassDataActivityChanged(int transportType, boolean active, long tsNanos, int uid) throws RemoteException {
+        public void interfaceClassDataActivityChanged(int label, boolean active, long tsNanos, int uid) throws RemoteException {
         }
 
         @Override // android.net.INetworkManagementEventObserver
@@ -82,7 +81,6 @@ public interface INetworkManagementEventObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkManagementEventObserver {
         public static final String DESCRIPTOR = "android.net.INetworkManagementEventObserver";
         static final int TRANSACTION_addressRemoved = 6;
@@ -156,86 +154,82 @@ public interface INetworkManagementEventObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    interfaceStatusChanged(_arg0, _arg1);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    interfaceLinkStateChanged(_arg02, _arg12);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    interfaceAdded(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    interfaceRemoved(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    LinkAddress _arg13 = (LinkAddress) data.readTypedObject(LinkAddress.CREATOR);
+                    data.enforceNoDataAvail();
+                    addressUpdated(_arg05, _arg13);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    LinkAddress _arg14 = (LinkAddress) data.readTypedObject(LinkAddress.CREATOR);
+                    data.enforceNoDataAvail();
+                    addressRemoved(_arg06, _arg14);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    limitReached(_arg07, _arg15);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    boolean _arg16 = data.readBoolean();
+                    long _arg2 = data.readLong();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    interfaceClassDataActivityChanged(_arg08, _arg16, _arg2, _arg3);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    long _arg17 = data.readLong();
+                    String[] _arg22 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    interfaceDnsServerInfo(_arg09, _arg17, _arg22);
+                    return true;
+                case 10:
+                    RouteInfo _arg010 = (RouteInfo) data.readTypedObject(RouteInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    routeUpdated(_arg010);
+                    return true;
+                case 11:
+                    RouteInfo _arg011 = (RouteInfo) data.readTypedObject(RouteInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    routeRemoved(_arg011);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            interfaceStatusChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            interfaceLinkStateChanged(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            interfaceAdded(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            interfaceRemoved(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            LinkAddress _arg13 = (LinkAddress) data.readTypedObject(LinkAddress.CREATOR);
-                            data.enforceNoDataAvail();
-                            addressUpdated(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            LinkAddress _arg14 = (LinkAddress) data.readTypedObject(LinkAddress.CREATOR);
-                            data.enforceNoDataAvail();
-                            addressRemoved(_arg06, _arg14);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            limitReached(_arg07, _arg15);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            boolean _arg16 = data.readBoolean();
-                            long _arg2 = data.readLong();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            interfaceClassDataActivityChanged(_arg08, _arg16, _arg2, _arg3);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            long _arg17 = data.readLong();
-                            String[] _arg22 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            interfaceDnsServerInfo(_arg09, _arg17, _arg22);
-                            return true;
-                        case 10:
-                            RouteInfo _arg010 = (RouteInfo) data.readTypedObject(RouteInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            routeUpdated(_arg010);
-                            return true;
-                        case 11:
-                            RouteInfo _arg011 = (RouteInfo) data.readTypedObject(RouteInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            routeRemoved(_arg011);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INetworkManagementEventObserver {
+        private static class Proxy implements INetworkManagementEventObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -341,11 +335,11 @@ public interface INetworkManagementEventObserver extends IInterface {
             }
 
             @Override // android.net.INetworkManagementEventObserver
-            public void interfaceClassDataActivityChanged(int transportType, boolean active, long tsNanos, int uid) throws RemoteException {
+            public void interfaceClassDataActivityChanged(int label, boolean active, long tsNanos, int uid) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeInt(transportType);
+                    _data.writeInt(label);
                     _data.writeBoolean(active);
                     _data.writeLong(tsNanos);
                     _data.writeInt(uid);

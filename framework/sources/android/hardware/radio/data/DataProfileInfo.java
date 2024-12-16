@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class DataProfileInfo implements Parcelable {
     public static final Parcelable.Creator<DataProfileInfo> CREATOR = new Parcelable.Creator<DataProfileInfo>() { // from class: android.hardware.radio.data.DataProfileInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfileInfo createFromParcel(Parcel _aidl_source) {
             DataProfileInfo _aidl_out = new DataProfileInfo();
@@ -19,6 +17,7 @@ public class DataProfileInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DataProfileInfo[] newArray(int _aidl_size) {
             return new DataProfileInfo[_aidl_size];
@@ -31,6 +30,9 @@ public class DataProfileInfo implements Parcelable {
     public static final int ID_INVALID = -1;
     public static final int ID_OEM_BASE = 1000;
     public static final int ID_TETHERED = 1;
+    public static final int INFRASTRUCTURE_CELLULAR = 1;
+    public static final int INFRASTRUCTURE_SATELLITE = 2;
+    public static final int INFRASTRUCTURE_UNKNOWN = 0;
     public static final int TYPE_3GPP = 1;
     public static final int TYPE_3GPP2 = 2;
     public static final int TYPE_COMMON = 0;
@@ -54,25 +56,7 @@ public class DataProfileInfo implements Parcelable {
     public boolean preferred = false;
     public boolean persistent = false;
     public boolean alwaysOn = false;
-
-    /* renamed from: android.hardware.radio.data.DataProfileInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DataProfileInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataProfileInfo createFromParcel(Parcel _aidl_source) {
-            DataProfileInfo _aidl_out = new DataProfileInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DataProfileInfo[] newArray(int _aidl_size) {
-            return new DataProfileInfo[_aidl_size];
-        }
-    }
+    public int infrastructureBitmap = 0;
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,6 +87,7 @@ public class DataProfileInfo implements Parcelable {
         _aidl_parcel.writeBoolean(this.persistent);
         _aidl_parcel.writeBoolean(this.alwaysOn);
         _aidl_parcel.writeTypedObject(this.trafficDescriptor, _aidl_flag);
+        _aidl_parcel.writeInt(this.infrastructureBitmap);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
         _aidl_parcel.writeInt(_aidl_end_pos - _aidl_start_pos);
@@ -273,8 +258,16 @@ public class DataProfileInfo implements Parcelable {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.trafficDescriptor = (TrafficDescriptor) _aidl_parcel.readTypedObject(TrafficDescriptor.CREATOR);
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
             } else {
-                this.trafficDescriptor = (TrafficDescriptor) _aidl_parcel.readTypedObject(TrafficDescriptor.CREATOR);
+                this.infrastructureBitmap = _aidl_parcel.readInt();
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
@@ -311,7 +304,8 @@ public class DataProfileInfo implements Parcelable {
         _aidl_sj.add("persistent: " + this.persistent);
         _aidl_sj.add("alwaysOn: " + this.alwaysOn);
         _aidl_sj.add("trafficDescriptor: " + Objects.toString(this.trafficDescriptor));
-        return "android.hardware.radio.data.DataProfileInfo" + _aidl_sj.toString();
+        _aidl_sj.add("infrastructureBitmap: " + this.infrastructureBitmap);
+        return "DataProfileInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

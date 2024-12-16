@@ -8,7 +8,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Process;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEdgeManager {
     public static final int DISABLE_EDGE_LIGHTING = 1;
     public static final int DISABLE_NONE_EDGE_LIGHTING = 0;
@@ -365,9 +364,7 @@ public class SemEdgeManager {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public class EdgeLightingCallbackDelegate extends IEdgeLightingCallback.Stub {
+    private class EdgeLightingCallbackDelegate extends IEdgeLightingCallback.Stub {
         private static final int MSG_EDGE_LIGHTING_START = 0;
         private static final int MSG_EDGE_LIGHTING_STARTED = 2;
         private static final int MSG_EDGE_LIGHTING_STOP = 1;
@@ -381,14 +378,6 @@ public class SemEdgeManager {
             this.mCallback = callback;
             this.mListener = null;
             this.mHandler = new Handler(SemEdgeManager.this.mContext.getMainLooper()) { // from class: com.samsung.android.edge.SemEdgeManager.EdgeLightingCallbackDelegate.1
-                final /* synthetic */ SemEdgeManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass1(Looper looper, SemEdgeManager semEdgeManager) {
-                    super(looper);
-                    r3 = semEdgeManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (EdgeLightingCallbackDelegate.this.mCallback != null) {
@@ -398,119 +387,38 @@ public class SemEdgeManager {
                                 String pn = param.getString("packageName");
                                 SemEdgeLightingInfo info = (SemEdgeLightingInfo) param.getParcelable(DocumentsContract.EXTRA_INFO);
                                 EdgeLightingCallbackDelegate.this.mCallback.onStartEdgeLighting(pn, info, msg.arg1);
-                                return;
+                                break;
                             case 1:
                                 String pkg = (String) msg.obj;
                                 EdgeLightingCallbackDelegate.this.mCallback.onStopEdgeLighting(pkg, msg.arg1);
-                                return;
-                            case 2:
-                            case 3:
-                            default:
-                                return;
+                                break;
                             case 4:
                                 EdgeLightingCallbackDelegate.this.mCallback.onScreenChanged(msg.arg1 == 1);
-                                return;
+                                break;
                         }
                     }
                 }
             };
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.edge.SemEdgeManager$EdgeLightingCallbackDelegate$1 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass1 extends Handler {
-            final /* synthetic */ SemEdgeManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Looper looper, SemEdgeManager semEdgeManager) {
-                super(looper);
-                r3 = semEdgeManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                if (EdgeLightingCallbackDelegate.this.mCallback != null) {
-                    switch (msg.what) {
-                        case 0:
-                            Bundle param = (Bundle) msg.obj;
-                            String pn = param.getString("packageName");
-                            SemEdgeLightingInfo info = (SemEdgeLightingInfo) param.getParcelable(DocumentsContract.EXTRA_INFO);
-                            EdgeLightingCallbackDelegate.this.mCallback.onStartEdgeLighting(pn, info, msg.arg1);
-                            return;
-                        case 1:
-                            String pkg = (String) msg.obj;
-                            EdgeLightingCallbackDelegate.this.mCallback.onStopEdgeLighting(pkg, msg.arg1);
-                            return;
-                        case 2:
-                        case 3:
-                        default:
-                            return;
-                        case 4:
-                            EdgeLightingCallbackDelegate.this.mCallback.onScreenChanged(msg.arg1 == 1);
-                            return;
-                    }
-                }
-            }
         }
 
         EdgeLightingCallbackDelegate(OnEdgeLightingListener listener) {
             this.mCallback = null;
             this.mListener = listener;
             this.mHandler = new Handler(SemEdgeManager.this.mContext.getMainLooper()) { // from class: com.samsung.android.edge.SemEdgeManager.EdgeLightingCallbackDelegate.2
-                final /* synthetic */ SemEdgeManager val$this$0;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                AnonymousClass2(Looper looper, SemEdgeManager semEdgeManager) {
-                    super(looper);
-                    r3 = semEdgeManager;
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message msg) {
                     if (EdgeLightingCallbackDelegate.this.mListener != null) {
                         switch (msg.what) {
                             case 2:
                                 EdgeLightingCallbackDelegate.this.mListener.onEdgeLightingStarted();
-                                return;
+                                break;
                             case 3:
                                 EdgeLightingCallbackDelegate.this.mListener.onEdgeLightingStopped();
-                                return;
-                            default:
-                                return;
+                                break;
                         }
                     }
                 }
             };
-        }
-
-        /* JADX INFO: Access modifiers changed from: package-private */
-        /* renamed from: com.samsung.android.edge.SemEdgeManager$EdgeLightingCallbackDelegate$2 */
-        /* loaded from: classes5.dex */
-        public class AnonymousClass2 extends Handler {
-            final /* synthetic */ SemEdgeManager val$this$0;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass2(Looper looper, SemEdgeManager semEdgeManager) {
-                super(looper);
-                r3 = semEdgeManager;
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message msg) {
-                if (EdgeLightingCallbackDelegate.this.mListener != null) {
-                    switch (msg.what) {
-                        case 2:
-                            EdgeLightingCallbackDelegate.this.mListener.onEdgeLightingStarted();
-                            return;
-                        case 3:
-                            EdgeLightingCallbackDelegate.this.mListener.onEdgeLightingStopped();
-                            return;
-                        default:
-                            return;
-                    }
-                }
-            }
         }
 
         OnEdgeLightingCallback getCallback() {

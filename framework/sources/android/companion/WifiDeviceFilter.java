@@ -37,7 +37,7 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
         this.mNamePattern = namePattern;
         this.mBssid = bssid;
         this.mBssidMask = bssidMask;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) bssidMask);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBssidMask);
     }
 
     public Pattern getNamePattern() {
@@ -72,20 +72,18 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
     }
 
     static {
-        Parcelling<Pattern> parcelling = Parcelling.Cache.get(Parcelling.BuiltIn.ForPattern.class);
-        sParcellingForNamePattern = parcelling;
-        if (parcelling == null) {
+        sParcellingForNamePattern = Parcelling.Cache.get(Parcelling.BuiltIn.ForPattern.class);
+        if (sParcellingForNamePattern == null) {
             sParcellingForNamePattern = Parcelling.Cache.put(new Parcelling.BuiltIn.ForPattern());
         }
         CREATOR = new Parcelable.Creator<WifiDeviceFilter>() { // from class: android.companion.WifiDeviceFilter.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WifiDeviceFilter[] newArray(int size) {
                 return new WifiDeviceFilter[size];
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public WifiDeviceFilter createFromParcel(Parcel in) {
                 return new WifiDeviceFilter(in);
@@ -101,9 +99,8 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
         }
         dest.writeByte(flg);
         sParcellingForNamePattern.parcel(this.mNamePattern, dest, flags);
-        MacAddress macAddress = this.mBssid;
-        if (macAddress != null) {
-            dest.writeTypedObject(macAddress, flags);
+        if (this.mBssid != null) {
+            dest.writeTypedObject(this.mBssid, flags);
         }
         dest.writeTypedObject(this.mBssidMask, flags);
     }
@@ -121,27 +118,9 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
         this.mNamePattern = namePattern;
         this.mBssid = bssid;
         this.mBssidMask = bssidMask;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) bssidMask);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mBssidMask);
     }
 
-    /* renamed from: android.companion.WifiDeviceFilter$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WifiDeviceFilter> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiDeviceFilter[] newArray(int size) {
-            return new WifiDeviceFilter[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiDeviceFilter createFromParcel(Parcel in) {
-            return new WifiDeviceFilter(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
         private MacAddress mBssid;
         private MacAddress mBssidMask;
@@ -171,15 +150,14 @@ public final class WifiDeviceFilter implements DeviceFilter<ScanResult> {
 
         public WifiDeviceFilter build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 8;
-            this.mBuilderFieldsSet = j;
-            if ((1 & j) == 0) {
+            this.mBuilderFieldsSet |= 8;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
                 this.mNamePattern = null;
             }
-            if ((2 & j) == 0) {
+            if ((this.mBuilderFieldsSet & 2) == 0) {
                 this.mBssid = null;
             }
-            if ((j & 4) == 0) {
+            if ((this.mBuilderFieldsSet & 4) == 0) {
                 this.mBssidMask = MacAddress.BROADCAST_ADDRESS;
             }
             return new WifiDeviceFilter(this.mNamePattern, this.mBssid, this.mBssidMask);

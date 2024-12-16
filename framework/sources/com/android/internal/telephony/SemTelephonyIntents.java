@@ -35,19 +35,20 @@ public class SemTelephonyIntents {
     public static final String SEM_ACTION_CURRENT_TTY_MODE_CHANGED_2 = "com.samsung.android.telecom.action.CURRENT_TTY_MODE_CHANGED_2";
     public static final String SEM_ACTION_DEVICE_CONFIG_UPDATED = "com.samsung.nsds.action.DEVICE_CONFIG_UPDATED";
     public static final String SEM_ACTION_DRX_BACK_TO_DEFAULT = "com.samsung.intent.action.ACTION_DRX_BACK_TO_DEFAULT";
-    public static final String SEM_ACTION_ELEVATOR_MODE_START = "com.samsung.android.intent.action.elevator_mode_start";
     public static final String SEM_ACTION_ICON_UW_DSQ_CHANGED = "com.samsung.telephony.event.EVENT_ICON_UW_DSQ_CHANGED";
     public static final String SEM_ACTION_IMEI_STATE_CHANGED = "com.samsung.intent.action.IMEI_STATE_CHANGED";
     public static final String SEM_ACTION_MANUAL_SET_TIME = "com.samsung.android.intent.action.MANUAL_SET_TIME";
     public static final String SEM_ACTION_MOCK_CELL = "com.samsung.intent.action.ACTION_MOCK_CELL";
     public static final String SEM_ACTION_NETWORK_REJECT_INDI = "com.samsung.android.app.telephonyui.action.REJECT_FOR_TRANSFER";
     public static final String SEM_ACTION_OPEN_NET_SETTINGS = "com.samsung.android.app.telephonyui.action.OPEN_NET_SETTINGS";
+    public static final String SEM_ACTION_SATELLITE_MODE_CHANGED = "com.samsung.intent.action.SATELLITE_MODE_CHANGED";
     public static final String SEM_ACTION_TPLMN_BARRING = "com.samsung.intent.action.tplmn_barring";
     public static final String SEM_ACTION_TTY_PREFERRED_MODE_CHANGED_2 = "com.samsung.android.telecom.action.TTY_PREFERRED_MODE_CHANGED_2";
     public static final String SEM_ACTION_UNSOL_RESPONSE_OEM_HOOK_RAW = "android.intent.action.ACTION_UNSOL_RESPONSE_OEM_HOOK_RAW";
     public static final String SEM_INTENT_CS_DIAGNOSIS = "com.samsung.android.mobiledoctor.GETAPMDATAFILES";
     public static final String SEM_PROVIDER_DATA_ACTIVITY_CHANGE = "com.verizon.provider.DATA_ACTIVITY_CHANGE";
     public static final String SHOW_DATA_SMS_RECEIVED_ACTION = "com.kt.show.manger.action.SHOW_DATA_SMS_RECEIVED";
+    public static final String TMOUS_DIAGANDROID_BINARYPUSHDATA = "diagandroid.phone.BinaryPushData";
     public static final String WAP_PUSH_DM_NOTI_RECEIVED_ACTION = "com.samsung.provider.Telephony.WAP_PUSH_DM_NOTI_RECEIVED";
     public static final String WAP_PUSH_DS_NOTI_RECEIVED_ACTION = "com.samsung.provider.Telephony.WAP_PUSH_DS_NOTI_RECEIVED";
 }

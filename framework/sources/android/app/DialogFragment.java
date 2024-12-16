@@ -34,7 +34,7 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
 
     public void setStyle(int style, int theme) {
         this.mStyle = style;
-        if (style == 2 || style == 3) {
+        if (this.mStyle == 2 || this.mStyle == 3) {
             this.mTheme = R.style.Theme_DeviceDefault_Dialog_NoFrame;
         }
         if (theme != 0) {
@@ -63,9 +63,8 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
         this.mShownByMe = true;
         transaction.add(this, tag);
         this.mViewDestroyed = false;
-        int commit = transaction.commit();
-        this.mBackStackId = commit;
-        return commit;
+        this.mBackStackId = transaction.commit();
+        return this.mBackStackId;
     }
 
     public void dismiss() {
@@ -82,9 +81,8 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
         }
         this.mDismissed = true;
         this.mShownByMe = false;
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
-            dialog.dismiss();
+        if (this.mDialog != null) {
+            this.mDialog.dismiss();
             this.mDialog = null;
         }
         this.mViewDestroyed = true;
@@ -112,9 +110,8 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
 
     public void setCancelable(boolean cancelable) {
         this.mCancelable = cancelable;
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
-            dialog.setCancelable(cancelable);
+        if (this.mDialog != null) {
+            this.mDialog.setCancelable(cancelable);
         }
     }
 
@@ -164,19 +161,17 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
         if (!this.mShowsDialog) {
             return super.onGetLayoutInflater(savedInstanceState);
         }
-        Dialog onCreateDialog = onCreateDialog(savedInstanceState);
-        this.mDialog = onCreateDialog;
+        this.mDialog = onCreateDialog(savedInstanceState);
         switch (this.mStyle) {
             case 3:
-                onCreateDialog.getWindow().addFlags(24);
+                this.mDialog.getWindow().addFlags(24);
             case 1:
             case 2:
                 this.mDialog.requestWindowFeature(1);
                 break;
         }
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
-            return (LayoutInflater) dialog.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (this.mDialog != null) {
+            return (LayoutInflater) this.mDialog.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         return (LayoutInflater) this.mHost.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -226,10 +221,9 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
     @Override // android.app.Fragment
     public void onStart() {
         super.onStart();
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
+        if (this.mDialog != null) {
             this.mViewDestroyed = false;
-            dialog.show();
+            this.mDialog.show();
         }
     }
 
@@ -237,48 +231,40 @@ public class DialogFragment extends Fragment implements DialogInterface.OnCancel
     public void onSaveInstanceState(Bundle outState) {
         Bundle dialogState;
         super.onSaveInstanceState(outState);
-        Dialog dialog = this.mDialog;
-        if (dialog != null && (dialogState = dialog.onSaveInstanceState()) != null) {
+        if (this.mDialog != null && (dialogState = this.mDialog.onSaveInstanceState()) != null) {
             outState.putBundle(SAVED_DIALOG_STATE_TAG, dialogState);
         }
-        int i = this.mStyle;
-        if (i != 0) {
-            outState.putInt(SAVED_STYLE, i);
+        if (this.mStyle != 0) {
+            outState.putInt(SAVED_STYLE, this.mStyle);
         }
-        int i2 = this.mTheme;
-        if (i2 != 0) {
-            outState.putInt(SAVED_THEME, i2);
+        if (this.mTheme != 0) {
+            outState.putInt(SAVED_THEME, this.mTheme);
         }
-        boolean z = this.mCancelable;
-        if (!z) {
-            outState.putBoolean(SAVED_CANCELABLE, z);
+        if (!this.mCancelable) {
+            outState.putBoolean(SAVED_CANCELABLE, this.mCancelable);
         }
-        boolean z2 = this.mShowsDialog;
-        if (!z2) {
-            outState.putBoolean(SAVED_SHOWS_DIALOG, z2);
+        if (!this.mShowsDialog) {
+            outState.putBoolean(SAVED_SHOWS_DIALOG, this.mShowsDialog);
         }
-        int i3 = this.mBackStackId;
-        if (i3 != -1) {
-            outState.putInt(SAVED_BACK_STACK_ID, i3);
+        if (this.mBackStackId != -1) {
+            outState.putInt(SAVED_BACK_STACK_ID, this.mBackStackId);
         }
     }
 
     @Override // android.app.Fragment
     public void onStop() {
         super.onStop();
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
-            dialog.hide();
+        if (this.mDialog != null) {
+            this.mDialog.hide();
         }
     }
 
     @Override // android.app.Fragment
     public void onDestroyView() {
         super.onDestroyView();
-        Dialog dialog = this.mDialog;
-        if (dialog != null) {
+        if (this.mDialog != null) {
             this.mViewDestroyed = true;
-            dialog.dismiss();
+            this.mDialog.dismiss();
             this.mDialog = null;
         }
     }

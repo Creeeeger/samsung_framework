@@ -5,7 +5,7 @@ import android.animation.Keyframes;
 import java.util.List;
 
 /* loaded from: classes.dex */
-public class IntKeyframeSet extends KeyframeSet implements Keyframes.IntKeyframes {
+class IntKeyframeSet extends KeyframeSet implements Keyframes.IntKeyframes {
     public IntKeyframeSet(Keyframe.IntKeyframe... keyframes) {
         super(keyframes);
     }
@@ -17,12 +17,12 @@ public class IntKeyframeSet extends KeyframeSet implements Keyframes.IntKeyframe
 
     @Override // android.animation.KeyframeSet
     /* renamed from: clone */
-    public IntKeyframeSet mo64clone() {
+    public IntKeyframeSet mo84clone() {
         List<Keyframe> keyframes = this.mKeyframes;
         int numKeyframes = this.mKeyframes.size();
         Keyframe.IntKeyframe[] newKeyframes = new Keyframe.IntKeyframe[numKeyframes];
         for (int i = 0; i < numKeyframes; i++) {
-            newKeyframes[i] = (Keyframe.IntKeyframe) keyframes.get(i).mo65clone();
+            newKeyframes[i] = (Keyframe.IntKeyframe) keyframes.get(i).mo85clone();
         }
         IntKeyframeSet newSet = new IntKeyframeSet(newKeyframes);
         return newSet;

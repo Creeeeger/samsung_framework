@@ -12,7 +12,6 @@ public interface IStreamingCallAdapter extends IInterface {
 
     void setStreamingState(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IStreamingCallAdapter {
         @Override // com.android.internal.telecom.IStreamingCallAdapter
         public void setStreamingState(int state) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IStreamingCallAdapter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IStreamingCallAdapter {
         static final int TRANSACTION_setStreamingState = 1;
 
@@ -67,26 +65,22 @@ public interface IStreamingCallAdapter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStreamingCallAdapter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStreamingCallAdapter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStreamingCallAdapter.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setStreamingState(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setStreamingState(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IStreamingCallAdapter {
+        private static class Proxy implements IStreamingCallAdapter {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

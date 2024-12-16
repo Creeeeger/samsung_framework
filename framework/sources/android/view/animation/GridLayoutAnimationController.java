@@ -26,7 +26,6 @@ public class GridLayoutAnimationController extends LayoutAnimationController {
     private int mDirectionPriority;
     private float mRowDelay;
 
-    /* loaded from: classes4.dex */
     public static class AnimationParameters extends LayoutAnimationController.AnimationParameters {
         public int column;
         public int columnsCount;
@@ -107,27 +106,27 @@ public class GridLayoutAnimationController extends LayoutAnimationController {
         int rowsCount = params.rowsCount;
         int columnsCount = params.columnsCount;
         long duration = this.mAnimation.getDuration();
-        float columnDelay = this.mColumnDelay * ((float) duration);
-        float rowDelay = this.mRowDelay * ((float) duration);
+        float columnDelay = this.mColumnDelay * duration;
+        float rowDelay = this.mRowDelay * duration;
         if (this.mInterpolator == null) {
             this.mInterpolator = new LinearInterpolator();
         }
         switch (this.mDirectionPriority) {
             case 1:
-                viewDelay = (row * rowDelay) + (column * rowsCount * rowDelay);
+                viewDelay = (long) ((row * rowDelay) + (column * rowsCount * rowDelay));
                 totalDelay = (rowsCount * rowDelay) + (columnsCount * rowsCount * rowDelay);
                 break;
             case 2:
-                viewDelay = (column * columnDelay) + (row * columnsCount * columnDelay);
+                viewDelay = (long) ((column * columnDelay) + (row * columnsCount * columnDelay));
                 totalDelay = (columnsCount * columnDelay) + (rowsCount * columnsCount * columnDelay);
                 break;
             default:
-                viewDelay = (column * columnDelay) + (row * rowDelay);
+                viewDelay = (long) ((column * columnDelay) + (row * rowDelay));
                 totalDelay = (columnsCount * columnDelay) + (rowsCount * rowDelay);
                 break;
         }
-        float normalizedDelay = ((float) viewDelay) / totalDelay;
-        return this.mInterpolator.getInterpolation(normalizedDelay) * totalDelay;
+        float normalizedDelay = viewDelay / totalDelay;
+        return (long) (this.mInterpolator.getInterpolation(normalizedDelay) * totalDelay);
     }
 
     private int getTransformedColumnIndex(AnimationParameters params) {

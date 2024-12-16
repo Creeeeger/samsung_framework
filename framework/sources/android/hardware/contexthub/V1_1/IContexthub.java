@@ -107,7 +107,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_0.IContexthu
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IContexthub {
         private IHwBinder mRemote;
 
@@ -439,7 +438,6 @@ public interface IContexthub extends android.hardware.contexthub.V1_0.IContexthu
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IContexthub {
         @Override // android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -462,7 +460,7 @@ public interface IContexthub extends android.hardware.contexthub.V1_0.IContexthu
 
         @Override // android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-125, 81, -52, 1, -18, -44, MidiConstants.STATUS_PROGRAM_CHANGE, -76, 72, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -107, 114, -75, -57, -35, -3, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEOUT, -121, 77, -114, -37, 81, -42, 118, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 52, -127, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEIN, -4, -111, -35, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT}, new byte[]{MidiConstants.STATUS_PITCH_BEND, 66, 82, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -86, 75, 95, Byte.MAX_VALUE, -44, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -95, -101, -51, -83, -71, 60, 121, -95, MidiConstants.STATUS_CONTROL_CHANGE, 76, 9, -17, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -104, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -93, -88, -108, 16, 50, MidiConstants.STATUS_SONG_SELECT, -11}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-125, 81, -52, 1, -18, -44, MidiConstants.STATUS_PROGRAM_CHANGE, -76, 72, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -107, 114, -75, -57, -35, -3, 23, -121, 77, -114, -37, 81, -42, 118, SprAnimatorBase.INTERPOLATOR_TYPE_QUADEASEOUT, 52, -127, 22, -4, -111, -35, 24}, new byte[]{MidiConstants.STATUS_PITCH_BEND, 66, 82, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -86, 75, 95, Byte.MAX_VALUE, -44, MidiConstants.STATUS_POLYPHONIC_AFTERTOUCH, -95, -101, -51, -83, -71, 60, 121, -95, MidiConstants.STATUS_CONTROL_CHANGE, 76, 9, -17, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT50, -104, 19, -93, -88, -108, 16, 50, MidiConstants.STATUS_SONG_SELECT, -11}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.contexthub.V1_1.IContexthub, android.hardware.contexthub.V1_0.IContexthub, android.internal.hidl.base.V1_0.IBase

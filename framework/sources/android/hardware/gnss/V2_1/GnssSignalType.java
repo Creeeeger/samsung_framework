@@ -59,7 +59,7 @@ public final class GnssSignalType {
         this.constellation = _hidl_blob.getInt8(_hidl_offset + 0);
         this.carrierFrequencyHz = _hidl_blob.getDouble(_hidl_offset + 8);
         this.codeType = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.codeType.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

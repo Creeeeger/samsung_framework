@@ -53,27 +53,22 @@ public final class UsbPort {
     private final UsbManager mUsbManager;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AltModeType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface EnableLimitPowerTransferStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface EnableUsbDataStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface EnableUsbDataWhileDockedStatus {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     @interface ResetUsbPortStatus {
     }
 
@@ -116,6 +111,10 @@ public final class UsbPort {
 
     public UsbPortStatus getStatus() {
         return this.mUsbManager.getPortStatus(this);
+    }
+
+    public boolean isModeChangeSupported() {
+        return this.mUsbManager.isModeChangeSupported(this);
     }
 
     public boolean supportsComplianceWarnings() {
@@ -369,6 +368,21 @@ public final class UsbPort {
                         break;
                     case 4:
                         complianceWarningString.append("missing rp, ");
+                        break;
+                    case 5:
+                        complianceWarningString.append("input power limited, ");
+                        break;
+                    case 6:
+                        complianceWarningString.append("missing data lines, ");
+                        break;
+                    case 7:
+                        complianceWarningString.append("enumeration fail, ");
+                        break;
+                    case 8:
+                        complianceWarningString.append("flaky connection, ");
+                        break;
+                    case 9:
+                        complianceWarningString.append("unreliable io, ");
                         break;
                     default:
                         complianceWarningString.append(String.format("Unknown(%d), ", Integer.valueOf(warning)));

@@ -65,14 +65,13 @@ public class ShortcutBackupHelper extends BlobBackupHelper {
             case 0:
                 try {
                     getShortcutService().applyRestore(payload, this.mUserId);
-                    return;
+                    break;
                 } catch (Exception e) {
                     Slog.wtf(TAG, "Restore failed", e);
-                    return;
                 }
             default:
                 Slog.w(TAG, "Unknown key: " + key);
-                return;
+                break;
         }
     }
 }

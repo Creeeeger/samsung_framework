@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 /* loaded from: classes3.dex */
@@ -19,14 +20,13 @@ public final class LocaleList implements Parcelable {
     private static final Locale[] sEmptyList = new Locale[0];
     private static final LocaleList sEmptyLocaleList = new LocaleList(new Locale[0]);
     public static final Parcelable.Creator<LocaleList> CREATOR = new Parcelable.Creator<LocaleList>() { // from class: android.os.LocaleList.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocaleList createFromParcel(Parcel source) {
             return LocaleList.forLanguageTags(source.readString8());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocaleList[] newArray(int size) {
             return new LocaleList[size];
@@ -42,13 +42,10 @@ public final class LocaleList implements Parcelable {
     private static Locale sLastDefaultLocale = null;
 
     public Locale get(int index) {
-        if (index >= 0) {
-            Locale[] localeArr = this.mList;
-            if (index < localeArr.length) {
-                return localeArr[index];
-            }
+        if (index < 0 || index >= this.mList.length) {
+            return null;
         }
-        return null;
+        return this.mList[index];
     }
 
     public boolean isEmpty() {
@@ -60,19 +57,12 @@ public final class LocaleList implements Parcelable {
     }
 
     public int indexOf(Locale locale) {
-        int i = 0;
-        while (true) {
-            Locale[] localeArr = this.mList;
-            if (i < localeArr.length) {
-                if (!localeArr[i].equals(locale)) {
-                    i++;
-                } else {
-                    return i;
-                }
-            } else {
-                return -1;
+        for (int i = 0; i < this.mList.length; i++) {
+            if (this.mList[i].equals(locale)) {
+                return i;
             }
         }
+        return -1;
     }
 
     public boolean equals(Object other) {
@@ -86,50 +76,33 @@ public final class LocaleList implements Parcelable {
         if (this.mList.length != otherList.length) {
             return false;
         }
-        int i = 0;
-        while (true) {
-            Locale[] localeArr = this.mList;
-            if (i >= localeArr.length) {
-                return true;
-            }
-            if (!localeArr[i].equals(otherList[i])) {
+        for (int i = 0; i < this.mList.length; i++) {
+            if (!this.mList[i].equals(otherList[i])) {
                 return false;
             }
-            i++;
         }
+        return true;
     }
 
     public int hashCode() {
         int result = 1;
-        int i = 0;
-        while (true) {
-            Locale[] localeArr = this.mList;
-            if (i < localeArr.length) {
-                result = (result * 31) + localeArr[i].hashCode();
-                i++;
-            } else {
-                return result;
-            }
+        for (int i = 0; i < this.mList.length; i++) {
+            result = (result * 31) + this.mList[i].hashCode();
         }
+        return result;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(NavigationBarInflaterView.SIZE_MOD_START);
-        int i = 0;
-        while (true) {
-            Locale[] localeArr = this.mList;
-            if (i < localeArr.length) {
-                sb.append(localeArr[i]);
-                if (i < this.mList.length - 1) {
-                    sb.append(',');
-                }
-                i++;
-            } else {
-                sb.append(NavigationBarInflaterView.SIZE_MOD_END);
-                return sb.toString();
+        for (int i = 0; i < this.mList.length; i++) {
+            sb.append(this.mList[i]);
+            if (i < this.mList.length - 1) {
+                sb.append(',');
             }
         }
+        sb.append(NavigationBarInflaterView.SIZE_MOD_END);
+        return sb.toString();
     }
 
     @Override // android.os.Parcelable
@@ -144,6 +117,27 @@ public final class LocaleList implements Parcelable {
 
     public String toLanguageTags() {
         return this.mStringRepresentation;
+    }
+
+    public Locale[] getIntersection(LocaleList other) {
+        List<Locale> intersection = new ArrayList<>();
+        for (Locale l1 : this.mList) {
+            Locale[] localeArr = other.mList;
+            int length = localeArr.length;
+            int i = 0;
+            while (true) {
+                if (i < length) {
+                    Locale l2 = localeArr[i];
+                    if (!matchesLanguageAndScript(l2, l1)) {
+                        i++;
+                    } else {
+                        intersection.add(l1);
+                        break;
+                    }
+                }
+            }
+        }
+        return (Locale[]) intersection.toArray(new Locale[0]);
     }
 
     public LocaleList(Locale... list) {
@@ -219,23 +213,6 @@ public final class LocaleList implements Parcelable {
         this.mStringRepresentation = sb.toString();
     }
 
-    /* renamed from: android.os.LocaleList$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LocaleList> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocaleList createFromParcel(Parcel source) {
-            return LocaleList.forLanguageTags(source.readString8());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocaleList[] newArray(int size) {
-            return new LocaleList[size];
-        }
-    }
-
     public static LocaleList getEmptyLocaleList() {
         return sEmptyLocaleList;
     }
@@ -289,27 +266,19 @@ public final class LocaleList implements Parcelable {
     }
 
     private int findFirstMatchIndex(Locale supportedLocale) {
-        int idx = 0;
-        while (true) {
-            Locale[] localeArr = this.mList;
-            if (idx < localeArr.length) {
-                if (!matchesLanguageAndScript(supportedLocale, localeArr[idx])) {
-                    idx++;
-                } else {
-                    return idx;
-                }
-            } else {
-                return Integer.MAX_VALUE;
+        for (int idx = 0; idx < this.mList.length; idx++) {
+            if (matchesLanguageAndScript(supportedLocale, this.mList[idx])) {
+                return idx;
             }
         }
+        return Integer.MAX_VALUE;
     }
 
     private int computeFirstMatchIndex(Collection<String> supportedLocales, boolean assumeEnglishIsSupported) {
-        Locale[] localeArr = this.mList;
-        if (localeArr.length == 1) {
+        if (this.mList.length == 1) {
             return 0;
         }
-        if (localeArr.length == 0) {
+        if (this.mList.length == 0) {
             return -1;
         }
         int bestIndex = Integer.MAX_VALUE;
@@ -386,13 +355,11 @@ public final class LocaleList implements Parcelable {
         synchronized (sLock) {
             if (!defaultLocale.equals(sLastDefaultLocale)) {
                 sLastDefaultLocale = defaultLocale;
-                LocaleList localeList = sDefaultLocaleList;
-                if (localeList != null && defaultLocale.equals(localeList.get(0))) {
+                if (sDefaultLocaleList != null && defaultLocale.equals(sDefaultLocaleList.get(0))) {
                     return sDefaultLocaleList;
                 }
-                LocaleList localeList2 = new LocaleList(defaultLocale, sLastExplicitlySetLocaleList);
-                sDefaultLocaleList = localeList2;
-                sDefaultAdjustedLocaleList = localeList2;
+                sDefaultLocaleList = new LocaleList(defaultLocale, sLastExplicitlySetLocaleList);
+                sDefaultAdjustedLocaleList = sDefaultLocaleList;
             }
             return sDefaultLocaleList;
         }
@@ -419,15 +386,14 @@ public final class LocaleList implements Parcelable {
             throw new IllegalArgumentException("locales is empty");
         }
         synchronized (sLock) {
-            Locale locale = locales.get(localeIndex);
-            sLastDefaultLocale = locale;
-            Locale.setDefault(locale);
+            sLastDefaultLocale = locales.get(localeIndex);
+            Locale.setDefault(sLastDefaultLocale);
             sLastExplicitlySetLocaleList = locales;
             sDefaultLocaleList = locales;
             if (localeIndex == 0) {
-                sDefaultAdjustedLocaleList = locales;
+                sDefaultAdjustedLocaleList = sDefaultLocaleList;
             } else {
-                sDefaultAdjustedLocaleList = new LocaleList(sLastDefaultLocale, locales);
+                sDefaultAdjustedLocaleList = new LocaleList(sLastDefaultLocale, sDefaultLocaleList);
             }
         }
     }

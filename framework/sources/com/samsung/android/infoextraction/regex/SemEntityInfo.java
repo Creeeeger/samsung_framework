@@ -3,7 +3,7 @@ package com.samsung.android.infoextraction.regex;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEntityInfo {
     private ArrayList<String> dateInfo = new ArrayList<>();
     private ArrayList<String> timeInfo = new ArrayList<>();
@@ -13,7 +13,6 @@ public class SemEntityInfo {
     private ArrayList<String> dateMillisInfo = new ArrayList<>();
     private ArrayList<String> timeMillisInfo = new ArrayList<>();
 
-    /* loaded from: classes5.dex */
     public class Type {
 
         @Deprecated(forRemoval = true, since = "15.0")
@@ -67,27 +66,25 @@ public class SemEntityInfo {
         switch (type) {
             case 1:
                 this.dateInfo.add(data);
-                return;
+                break;
             case 2:
                 this.dateMillisInfo.add(data);
-                return;
+                break;
             case 3:
                 this.timeInfo.add(data);
-                return;
+                break;
             case 4:
                 this.timeMillisInfo.add(data);
-                return;
+                break;
             case 5:
                 this.phoneNumInfo.add(data);
-                return;
+                break;
             case 6:
                 this.emailAddressInfo.add(data);
-                return;
+                break;
             case 7:
                 this.urlInfo.add(data);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

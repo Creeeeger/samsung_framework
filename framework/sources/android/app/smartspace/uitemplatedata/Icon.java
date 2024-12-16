@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class Icon implements Parcelable {
     public static final Parcelable.Creator<Icon> CREATOR = new Parcelable.Creator<Icon>() { // from class: android.app.smartspace.uitemplatedata.Icon.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Icon createFromParcel(Parcel in) {
             return new Icon(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Icon[] newArray(int size) {
             return new Icon[size];
@@ -27,10 +26,6 @@ public final class Icon implements Parcelable {
     private final CharSequence mContentDescription;
     private final android.graphics.drawable.Icon mIcon;
     private final boolean mShouldTint;
-
-    /* synthetic */ Icon(android.graphics.drawable.Icon icon, CharSequence charSequence, boolean z, IconIA iconIA) {
-        this(icon, charSequence, z);
-    }
 
     Icon(Parcel in) {
         this.mIcon = (android.graphics.drawable.Icon) in.readTypedObject(android.graphics.drawable.Icon.CREATOR);
@@ -54,23 +49,6 @@ public final class Icon implements Parcelable {
 
     public boolean shouldTint() {
         return this.mShouldTint;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.Icon$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Icon> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Icon createFromParcel(Parcel in) {
-            return new Icon(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Icon[] newArray(int size) {
-            return new Icon[size];
-        }
     }
 
     public boolean equals(Object o) {
@@ -105,7 +83,6 @@ public final class Icon implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder {
         private CharSequence mContentDescription;
         private android.graphics.drawable.Icon mIcon;

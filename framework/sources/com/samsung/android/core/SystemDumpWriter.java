@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SystemDumpWriter implements AutoCloseable {
     private static final String FILE_DUMPSYS = "log/dumpsys_";
     private static final int MAX_COUNT_SAVED = 3;
@@ -95,8 +95,7 @@ public class SystemDumpWriter implements AutoCloseable {
     public void close() throws Exception {
         long creationStartTime = SystemClock.uptimeMillis();
         try {
-            File file = this.mOutputFile;
-            FileOutputStream out = new FileOutputStream(file, file.exists());
+            FileOutputStream out = new FileOutputStream(this.mOutputFile, this.mOutputFile.exists());
             try {
                 Iterator<String> it = this.mDumpRequests.iterator();
                 while (it.hasNext()) {
@@ -120,6 +119,7 @@ public class SystemDumpWriter implements AutoCloseable {
             try {
                 writer.requestDump(Context.WINDOW_SERVICE);
                 writer.requestDump("activity");
+                writer.requestDump(Context.DISPLAY_SERVICE);
                 writer.requestDump("input");
                 writer.requestDump("SurfaceFlinger");
                 writer.close();

@@ -6,7 +6,7 @@ public abstract class StreamBlockCipher implements BlockCipher, StreamCipher {
 
     protected abstract byte calculateByte(byte b);
 
-    public StreamBlockCipher(BlockCipher cipher) {
+    protected StreamBlockCipher(BlockCipher cipher) {
         this.cipher = cipher;
     }
 

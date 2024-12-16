@@ -7,17 +7,16 @@ import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.types.ShapeType;
 import java.util.Arrays;
 
-/* loaded from: classes4.dex */
-public class StapleMutableShape implements MutableShape {
+/* loaded from: classes6.dex */
+class StapleMutableShape implements MutableShape {
     public static final Parcelable.Creator<StapleMutableShape> CREATOR = new Parcelable.Creator<StapleMutableShape>() { // from class: com.samsung.android.sume.core.format.StapleMutableShape.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StapleMutableShape createFromParcel(Parcel in) {
             return new StapleMutableShape(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StapleMutableShape[] newArray(int size) {
             return new StapleMutableShape[size];
@@ -27,10 +26,6 @@ public class StapleMutableShape implements MutableShape {
     private int channels;
     private int cols;
     private int rows;
-
-    /* synthetic */ StapleMutableShape(Parcel x0, AnonymousClass1 x1) {
-        this(x0);
-    }
 
     public StapleMutableShape() {
         this.batch = -1;
@@ -78,6 +73,7 @@ public class StapleMutableShape implements MutableShape {
         dest.writeInt(this.channels);
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.samsung.android.sume.core.format.Copyable
     public Shape copy() {
         try {
@@ -89,7 +85,7 @@ public class StapleMutableShape implements MutableShape {
     }
 
     @Override // com.samsung.android.sume.core.format.Copyable
-    /* renamed from: deepCopy */
+    /* renamed from: deepCopy, reason: merged with bridge method [inline-methods] */
     public Shape deepCopy2() {
         return new StapleMutableShape(this.batch, this.rows, this.cols, this.channels);
     }
@@ -105,23 +101,6 @@ public class StapleMutableShape implements MutableShape {
         int[] arr1 = {this.batch, this.rows, this.cols, this.channels};
         int[] arr2 = {other.getBatch(), other.getRows(), other.getCols(), other.getChannels()};
         return Arrays.equals(arr1, arr2);
-    }
-
-    /* renamed from: com.samsung.android.sume.core.format.StapleMutableShape$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StapleMutableShape> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StapleMutableShape createFromParcel(Parcel in) {
-            return new StapleMutableShape(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StapleMutableShape[] newArray(int size) {
-            return new StapleMutableShape[size];
-        }
     }
 
     @Override // com.samsung.android.sume.core.format.Shape

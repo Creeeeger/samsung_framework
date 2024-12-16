@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import vendor.samsung.hardware.thermal.V1_0.SehTempStatus;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemDeviceHealthManager {
     public static final String ACTION_THERMAL_THROTTLING_DELTA_CHANGED = "com.sec.android.sdhms.action.THERMAL_THROTTLING_DELTA_CHANGED";
     public static final int DRAIN_TYPE_AMBIENT_DISPLAY = 3;
@@ -188,14 +188,10 @@ public class SemDeviceHealthManager {
     private synchronized ISamsungDeviceHealthManager getService() {
         IBinder binder;
         if (this.mService == null && (binder = ServiceManager.getService("sdhms")) != null) {
-            ISamsungDeviceHealthManager asInterface = ISamsungDeviceHealthManager.Stub.asInterface(binder);
-            this.mService = asInterface;
-            if (asInterface != null) {
+            this.mService = ISamsungDeviceHealthManager.Stub.asInterface(binder);
+            if (this.mService != null) {
                 try {
                     binder.linkToDeath(new IBinder.DeathRecipient() { // from class: com.samsung.android.sdhms.SemDeviceHealthManager.1
-                        AnonymousClass1() {
-                        }
-
                         @Override // android.os.IBinder.DeathRecipient
                         public void binderDied() {
                             SemDeviceHealthManager.this.mService = null;
@@ -207,17 +203,5 @@ public class SemDeviceHealthManager {
             }
         }
         return this.mService;
-    }
-
-    /* renamed from: com.samsung.android.sdhms.SemDeviceHealthManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements IBinder.DeathRecipient {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            SemDeviceHealthManager.this.mService = null;
-        }
     }
 }

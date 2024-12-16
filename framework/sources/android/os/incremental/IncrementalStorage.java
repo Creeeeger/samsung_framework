@@ -149,9 +149,7 @@ public final class IncrementalStorage {
     public void moveFile(String sourcepath, String destpath) throws IOException {
         int res;
         try {
-            IIncrementalService iIncrementalService = this.mService;
-            int i = this.mId;
-            res = iIncrementalService.makeLink(i, sourcepath, i, destpath);
+            res = this.mService.makeLink(this.mId, sourcepath, this.mId, destpath);
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }

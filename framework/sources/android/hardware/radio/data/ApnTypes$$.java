@@ -2,19 +2,18 @@ package android.hardware.radio.data;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.security.keystore.KeyProperties;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.reflect.Array;
 import java.util.StringJoiner;
 
 /* loaded from: classes2.dex */
 public interface ApnTypes$$ {
     static String toString(int _aidl_v) {
-        return _aidl_v == 0 ? KeyProperties.DIGEST_NONE : _aidl_v == 1 ? "DEFAULT" : _aidl_v == 2 ? "MMS" : _aidl_v == 4 ? "SUPL" : _aidl_v == 8 ? "DUN" : _aidl_v == 16 ? "HIPRI" : _aidl_v == 32 ? "FOTA" : _aidl_v == 64 ? "IMS" : _aidl_v == 128 ? "CBS" : _aidl_v == 256 ? "IA" : _aidl_v == 512 ? "EMERGENCY" : _aidl_v == 1024 ? "MCX" : _aidl_v == 2048 ? "XCAP" : _aidl_v == 4096 ? "VSIM" : _aidl_v == 8192 ? "BIP" : _aidl_v == 16384 ? "ENTERPRISE" : Integer.toString(_aidl_v);
+        return _aidl_v == 0 ? KeyProperties.DIGEST_NONE : _aidl_v == 1 ? "DEFAULT" : _aidl_v == 2 ? "MMS" : _aidl_v == 4 ? "SUPL" : _aidl_v == 8 ? "DUN" : _aidl_v == 16 ? "HIPRI" : _aidl_v == 32 ? "FOTA" : _aidl_v == 64 ? "IMS" : _aidl_v == 128 ? "CBS" : _aidl_v == 256 ? "IA" : _aidl_v == 512 ? "EMERGENCY" : _aidl_v == 1024 ? "MCX" : _aidl_v == 2048 ? "XCAP" : _aidl_v == 4096 ? "VSIM" : _aidl_v == 8192 ? "BIP" : _aidl_v == 16384 ? "ENTERPRISE" : _aidl_v == 32768 ? "RCS" : Integer.toString(_aidl_v);
     }
 
     static String arrayToString(Object _aidl_v) {
         if (_aidl_v == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         Class<?> _aidl_cls = _aidl_v.getClass();
         if (!_aidl_cls.isArray()) {

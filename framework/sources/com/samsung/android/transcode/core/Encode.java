@@ -2,12 +2,11 @@ package com.samsung.android.transcode.core;
 
 import android.media.MediaCodec;
 import android.media.MediaMuxer;
-import android.media.audiofx.SemDolbyAudioEffect;
 import com.samsung.android.transcode.util.LogS;
 import java.io.File;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public abstract class Encode {
     protected static final int INVALID_OUTPUT_BIT_RATE = -1;
     private static final long ONE_BILLION = 1000000000;
@@ -16,7 +15,7 @@ public abstract class Encode {
     protected static final int ORIENTATION_270 = 270;
     protected static final int ORIENTATION_90 = 90;
     protected static final int SUPER_SLOW_SPEED_CANCEL = 9;
-    private static final String VERSION = "4.59";
+    private static final String VERSION = "4.67";
     protected EncodeEventListener mEncodeEventListener;
     protected EncodeProgressListener mEncodeProgressListener;
     protected int mFramesSkipInterval;
@@ -40,7 +39,7 @@ public abstract class Encode {
     protected int mOutputAudioChannelCount = 2;
     protected int mOutputAudioBitRate = 128000;
     protected int mOutputAudioAACProfile = 2;
-    protected int mOutputAudioSampleRateHZ = SemDolbyAudioEffect.SAMPLE_RATE_44100;
+    protected int mOutputAudioSampleRateHZ = 44100;
     protected boolean mOutputAudioMute = false;
     protected int mVideoTrackIndex = -1;
     protected int mAudioTrackIndex = -1;
@@ -57,11 +56,11 @@ public abstract class Encode {
     protected int mSourceFrameRate = 30;
     protected boolean mConvert = false;
     protected int mHDRType = 0;
+    protected boolean mIsHLG = false;
     protected boolean mSMConvert = false;
     protected boolean mSMEncode = false;
     protected int mProgress = 0;
 
-    /* loaded from: classes5.dex */
     public static final class CodecType {
         public static final int AUDIO_CODEC_AAC = 2;
         public static final int AUDIO_CODEC_AMR = 1;
@@ -70,7 +69,6 @@ public abstract class Encode {
         public static final int VIDEO_CODEC_H265 = 5;
     }
 
-    /* loaded from: classes5.dex */
     public static final class ConfigType {
         public static final int AudioCodec = 2;
         public static final int AudioMute = 7;
@@ -81,14 +79,12 @@ public abstract class Encode {
         public static final int VideoCodec = 1;
     }
 
-    /* loaded from: classes5.dex */
     public interface EncodeEventListener {
         void onCompleted();
 
         void onStarted();
     }
 
-    /* loaded from: classes5.dex */
     public interface EncodeProgressListener {
         void onCompleted();
 
@@ -114,6 +110,7 @@ public abstract class Encode {
     public abstract void stop();
 
     public void setupAndExecuteEncode() throws IOException {
+        prepareListener();
         if (this.mSMConvert) {
             LogS.d("TranscodeLib", "starting encoder preparation  - SlowMo");
             prepareForRewrite();
@@ -122,7 +119,6 @@ public abstract class Encode {
             prepare();
         }
         LogS.d("TranscodeLib", "encoder preparation done.");
-        prepareListener();
         this.mCodecError = false;
         if (this.mSMConvert) {
             startSMRewriting();
@@ -142,47 +138,43 @@ public abstract class Encode {
             File file = new File(this.mOutputFilePath);
             long size = file.length();
             LogS.d("TranscodeLib", "generated output file size : " + size);
-            if (!this.mSMConvert && !this.mConvert && !this.mUserStop) {
-                long j = this.mOutputMaxSizeKB;
-                if (j != -1 && size / 1024.0d > j && (this instanceof EncodeVideo)) {
-                    if (!file.delete()) {
-                        LogS.e("TranscodeLib", "Could not clean up file: " + file.getAbsolutePath());
-                    }
-                    this.mSizeFraction = (((this.mSizeFraction * ((float) this.mOutputMaxSizeKB)) * 1024.0f) / ((float) size)) - 0.05f;
-                    LogS.d("TranscodeLib", "file size(" + size + ") exceeded the expected(" + (this.mOutputMaxSizeKB * 1024) + ") size limit. new fraction :" + this.mSizeFraction);
-                    this.mOutputVideoBitRate = -1;
-                    this.mSkipFrames = true;
-                    int i = this.mFramesSkipInterval;
-                    if (i < 2) {
-                        this.mFramesSkipInterval = 2;
+            if (!this.mSMConvert && !this.mConvert && !this.mUserStop && this.mOutputMaxSizeKB != -1 && size / 1024.0d > this.mOutputMaxSizeKB && (this instanceof EncodeVideo)) {
+                if (!file.delete()) {
+                    LogS.e("TranscodeLib", "Could not clean up file: " + file.getAbsolutePath());
+                }
+                this.mSizeFraction = (((this.mSizeFraction * this.mOutputMaxSizeKB) * 1024.0f) / size) - 0.05f;
+                LogS.d("TranscodeLib", "file size(" + size + ") exceeded the expected(" + (this.mOutputMaxSizeKB * 1024) + ") size limit. new fraction :" + this.mSizeFraction);
+                this.mOutputVideoBitRate = -1;
+                this.mSkipFrames = true;
+                if (this.mFramesSkipInterval < 2) {
+                    this.mFramesSkipInterval = 2;
+                } else {
+                    this.mFramesSkipInterval *= 2;
+                }
+                if (this.mOutputWidth == 176) {
+                    this.mOutputWidth = 128;
+                    this.mOutputHeight = 96;
+                }
+                try {
+                    LogS.d("TranscodeLib", "2nd time starting encoder preparation");
+                    this.m2ndTimeEncoding = true;
+                    prepare();
+                    LogS.d("TranscodeLib", "2nd time encoder preparation done.");
+                    this.mMuxer = new MediaMuxer(this.mOutputFilePath, this.mOutputFormat);
+                    this.mMuxerStarted = false;
+                    this.mVideoTrackIndex = -1;
+                    this.mAudioTrackIndex = -1;
+                    LogS.d("TranscodeLib", "2nd time starting to encode");
+                    if (this.mSMEncode) {
+                        startSMEncoding();
                     } else {
-                        this.mFramesSkipInterval = i * 2;
+                        startEncoding();
                     }
-                    if (this.mOutputWidth == 176) {
-                        this.mOutputWidth = 128;
-                        this.mOutputHeight = 96;
-                    }
-                    try {
-                        LogS.d("TranscodeLib", "2nd time starting encoder preparation");
-                        this.m2ndTimeEncoding = true;
-                        prepare();
-                        LogS.d("TranscodeLib", "2nd time encoder preparation done.");
-                        this.mMuxer = new MediaMuxer(this.mOutputFilePath, this.mOutputFormat);
-                        this.mMuxerStarted = false;
-                        this.mVideoTrackIndex = -1;
-                        this.mAudioTrackIndex = -1;
-                        LogS.d("TranscodeLib", "2nd time starting to encode");
-                        if (this.mSMEncode) {
-                            startSMEncoding();
-                        } else {
-                            startEncoding();
-                        }
-                        LogS.d("TranscodeLib", "2nd time encoding finished.");
-                        release();
-                        LogS.e("TranscodeLib", "2nd generated output size : " + new File(this.mOutputFilePath).length());
-                        this.m2ndTimeEncoding = false;
-                    } finally {
-                    }
+                    LogS.d("TranscodeLib", "2nd time encoding finished.");
+                    release();
+                    LogS.e("TranscodeLib", "2nd generated output size : " + new File(this.mOutputFilePath).length());
+                    this.m2ndTimeEncoding = false;
+                } finally {
                 }
             }
             releaseListener();
@@ -229,13 +221,11 @@ public abstract class Encode {
         this.mAudioTrackIndex = -1;
         this.mProgress = 0;
         LogS.d("TranscodeLib", "starting to encode");
-        EncodeEventListener encodeEventListener = this.mEncodeEventListener;
-        if (encodeEventListener != null) {
-            encodeEventListener.onStarted();
+        if (this.mEncodeEventListener != null) {
+            this.mEncodeEventListener.onStarted();
         }
-        EncodeProgressListener encodeProgressListener = this.mEncodeProgressListener;
-        if (encodeProgressListener != null) {
-            encodeProgressListener.onStarted();
+        if (this.mEncodeProgressListener != null) {
+            this.mEncodeProgressListener.onStarted();
         }
     }
 
@@ -261,20 +251,23 @@ public abstract class Encode {
     }
 
     private void printVersionInfo() {
-        LogS.e("TranscodeLib", "Transcode Framework v.4.59");
+        LogS.e("TranscodeLib", "Transcode Framework v.4.67");
     }
 
     public static String getLibraryVersion() {
-        LogS.e("TranscodeLib", "getLibraryVersion  : Transcode Framework v.4.59");
+        LogS.e("TranscodeLib", "getLibraryVersion  : Transcode Framework v.4.67");
         return VERSION;
     }
 
-    public boolean isHDR10() {
-        int i = this.mHDRType;
-        return i == 1 || i == 2;
+    protected boolean isHDR10() {
+        return this.mHDRType == 1 || this.mHDRType == 2;
     }
 
-    public boolean isHDR10Plus() {
+    protected boolean isHDR10Plus() {
         return this.mHDRType == 2;
+    }
+
+    protected boolean isHLG() {
+        return this.mIsHLG;
     }
 }

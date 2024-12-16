@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CaptureCallbackHolder {
     private final CaptureCallback mCallback;
     private final Executor mExecutor;
@@ -16,7 +16,7 @@ public class CaptureCallbackHolder {
     private final List<CaptureRequest> mRequestList;
     private final int mSessionId;
 
-    public CaptureCallbackHolder(CaptureCallback callback, List<CaptureRequest> requestList, Executor executor, boolean repeating, int sessionId) {
+    CaptureCallbackHolder(CaptureCallback callback, List<CaptureRequest> requestList, Executor executor, boolean repeating, int sessionId) {
         if (callback == null || executor == null) {
             throw new UnsupportedOperationException("Must have a valid handler and a valid callback");
         }

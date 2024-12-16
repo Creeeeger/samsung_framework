@@ -16,9 +16,7 @@ import java.util.regex.Pattern;
 /* loaded from: classes3.dex */
 public final class ImageTransformation extends InternalTransformation implements Transformation, Parcelable {
     public static final Parcelable.Creator<ImageTransformation> CREATOR = new Parcelable.Creator<ImageTransformation>() { // from class: android.service.autofill.ImageTransformation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImageTransformation createFromParcel(Parcel parcel) {
             Builder builder;
@@ -44,6 +42,7 @@ public final class ImageTransformation extends InternalTransformation implements
             return builder2.build();
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ImageTransformation[] newArray(int size) {
             return new ImageTransformation[size];
@@ -52,10 +51,6 @@ public final class ImageTransformation extends InternalTransformation implements
     private static final String TAG = "ImageTransformation";
     private final AutofillId mId;
     private final ArrayList<Option> mOptions;
-
-    /* synthetic */ ImageTransformation(Builder builder, ImageTransformationIA imageTransformationIA) {
-        this(builder);
-    }
 
     private ImageTransformation(Builder builder) {
         this.mId = builder.mId;
@@ -95,7 +90,6 @@ public final class ImageTransformation extends InternalTransformation implements
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder {
         private boolean mDestroyed;
         private final AutofillId mId;
@@ -151,7 +145,7 @@ public final class ImageTransformation extends InternalTransformation implements
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r1v0, types: [java.util.regex.Pattern[], java.io.Serializable] */
+    /* JADX WARN: Type inference failed for: r1v0, types: [java.io.Serializable, java.util.regex.Pattern[]] */
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mId, flags);
@@ -170,45 +164,7 @@ public final class ImageTransformation extends InternalTransformation implements
         parcel.writeCharSequenceArray(contentDescriptions);
     }
 
-    /* renamed from: android.service.autofill.ImageTransformation$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ImageTransformation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImageTransformation createFromParcel(Parcel parcel) {
-            Builder builder;
-            AutofillId id = (AutofillId) parcel.readParcelable(null, AutofillId.class);
-            Pattern[] regexs = (Pattern[]) parcel.readSerializable();
-            int[] resIds = parcel.createIntArray();
-            CharSequence[] contentDescriptions = parcel.readCharSequenceArray();
-            CharSequence contentDescription = contentDescriptions[0];
-            if (contentDescription != null) {
-                builder = new Builder(id, regexs[0], resIds[0], contentDescription);
-            } else {
-                builder = new Builder(id, regexs[0], resIds[0]);
-            }
-            Builder builder2 = builder;
-            int size = regexs.length;
-            for (int i = 1; i < size; i++) {
-                if (contentDescriptions[i] != null) {
-                    builder2.addOption(regexs[i], resIds[i], contentDescriptions[i]);
-                } else {
-                    builder2.addOption(regexs[i], resIds[i]);
-                }
-            }
-            return builder2.build();
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ImageTransformation[] newArray(int size) {
-            return new ImageTransformation[size];
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public static final class Option {
+    private static final class Option {
         public final CharSequence contentDescription;
         public final Pattern pattern;
         public final int resId;

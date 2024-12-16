@@ -9,12 +9,12 @@ public class BERGenerator extends ASN1Generator {
     private int _tagNo;
     private boolean _tagged;
 
-    public BERGenerator(OutputStream out) {
+    protected BERGenerator(OutputStream out) {
         super(out);
         this._tagged = false;
     }
 
-    public BERGenerator(OutputStream out, int tagNo, boolean isExplicit) {
+    protected BERGenerator(OutputStream out, int tagNo, boolean isExplicit) {
         super(out);
         this._tagged = false;
         this._tagged = true;
@@ -32,7 +32,7 @@ public class BERGenerator extends ASN1Generator {
         this._out.write(128);
     }
 
-    public void writeBERHeader(int tag) throws IOException {
+    protected void writeBERHeader(int tag) throws IOException {
         if (this._tagged) {
             int tagNum = this._tagNo | 128;
             if (this._isExplicit) {
@@ -50,7 +50,7 @@ public class BERGenerator extends ASN1Generator {
         writeHdr(tag);
     }
 
-    public void writeBEREnd() throws IOException {
+    protected void writeBEREnd() throws IOException {
         this._out.write(0);
         this._out.write(0);
         if (this._tagged && this._isExplicit) {

@@ -13,7 +13,6 @@ public interface INearbyMediaDevicesUpdateCallback extends IInterface {
 
     void onDevicesUpdated(List<NearbyDevice> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INearbyMediaDevicesUpdateCallback {
         @Override // android.media.INearbyMediaDevicesUpdateCallback
         public void onDevicesUpdated(List<NearbyDevice> nearbyDevices) throws RemoteException {
@@ -25,7 +24,6 @@ public interface INearbyMediaDevicesUpdateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INearbyMediaDevicesUpdateCallback {
         static final int TRANSACTION_onDevicesUpdated = 1;
 
@@ -68,26 +66,22 @@ public interface INearbyMediaDevicesUpdateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(INearbyMediaDevicesUpdateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(INearbyMediaDevicesUpdateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(INearbyMediaDevicesUpdateCallback.DESCRIPTOR);
+                case 1:
+                    List<NearbyDevice> _arg0 = data.createTypedArrayList(NearbyDevice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDevicesUpdated(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<NearbyDevice> _arg0 = data.createTypedArrayList(NearbyDevice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDevicesUpdated(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements INearbyMediaDevicesUpdateCallback {
+        private static class Proxy implements INearbyMediaDevicesUpdateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

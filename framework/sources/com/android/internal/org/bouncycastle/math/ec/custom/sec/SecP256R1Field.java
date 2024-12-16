@@ -38,11 +38,8 @@ public class SecP256R1Field {
 
     public static int[] fromBigInteger(BigInteger x) {
         int[] z = Nat256.fromBigInteger(x);
-        if (z[7] == -1) {
-            int[] iArr = P;
-            if (Nat256.gte(z, iArr)) {
-                Nat256.subFrom(iArr, z);
-            }
+        if (z[7] == -1 && Nat256.gte(z, P)) {
+            Nat256.subFrom(P, z);
         }
         return z;
     }
@@ -84,8 +81,7 @@ public class SecP256R1Field {
 
     public static void negate(int[] x, int[] z) {
         if (isZero(x) != 0) {
-            int[] iArr = P;
-            Nat256.sub(iArr, iArr, z);
+            Nat256.sub(P, P, z);
         } else {
             Nat256.sub(P, x, z);
         }

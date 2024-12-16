@@ -1,7 +1,7 @@
 package android.telephony.ims.stub;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.os.RemoteException;
 import android.telephony.ims.stub.ImsEcbmImplBase;
 import android.util.Log;
@@ -15,23 +15,22 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsEcbmImplBase {
     private static final String TAG = "ImsEcbmImplBase";
     private IImsEcbmListener mListener;
     private final Object mLock = new Object();
-    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda0();
     private final IImsEcbm mImsEcbm = new AnonymousClass1();
 
-    /* renamed from: android.telephony.ims.stub.ImsEcbmImplBase$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IImsEcbm.Stub {
+    /* renamed from: android.telephony.ims.stub.ImsEcbmImplBase$1, reason: invalid class name */
+    class AnonymousClass1 extends IImsEcbm.Stub {
         AnonymousClass1() {
         }
 
         @Override // com.android.ims.internal.IImsEcbm
         public void setListener(final IImsEcbmListener listener) {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsEcbmImplBase$1$$ExternalSyntheticLambda1
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsEcbmImplBase$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsEcbmImplBase.AnonymousClass1.this.lambda$setListener$0(listener);
@@ -39,6 +38,7 @@ public class ImsEcbmImplBase {
             }, "setListener");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$0(IImsEcbmListener listener) {
             if (ImsEcbmImplBase.this.mListener != null && !ImsEcbmImplBase.this.mListener.asBinder().isBinderAlive()) {
                 Log.w(ImsEcbmImplBase.TAG, "setListener: discarding dead Binder");
@@ -57,6 +57,7 @@ public class ImsEcbmImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$exitEmergencyCallbackMode$1() {
             ImsEcbmImplBase.this.exitEmergencyCallbackMode();
         }
@@ -73,7 +74,7 @@ public class ImsEcbmImplBase {
 
         private void executeMethodAsync(final Runnable r, String errorLogName) {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsEcbmImplBase$1$$ExternalSyntheticLambda2
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsEcbmImplBase$1$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);

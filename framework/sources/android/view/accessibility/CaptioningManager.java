@@ -31,16 +31,12 @@ public class CaptioningManager {
     private final Resources mResources;
     private final ArrayList<CaptioningChangeListener> mListeners = new ArrayList<>();
     private final Runnable mStyleChangedRunnable = new Runnable() { // from class: android.view.accessibility.CaptioningManager.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             CaptioningManager.this.notifyUserStyleChanged();
         }
     };
 
-    /* loaded from: classes4.dex */
     public interface SystemAudioCaptioningAccessing {
         boolean isSystemAudioCaptioningUiEnabled(int i);
 
@@ -52,7 +48,7 @@ public class CaptioningManager {
     public CaptioningManager(Context context) {
         this.mContext = context;
         this.mContentResolver = context.getContentResolver();
-        this.mAccessibilityManager = (AccessibilityManager) context.getSystemService(AccessibilityManager.class);
+        this.mAccessibilityManager = (AccessibilityManager) this.mContext.getSystemService(AccessibilityManager.class);
         Handler handler = new Handler(context.getMainLooper());
         this.mContentObserver = new MyContentObserver(handler);
         this.mResources = context.getResources();
@@ -106,22 +102,19 @@ public class CaptioningManager {
 
     @SystemApi
     public final void setSystemAudioCaptioningEnabled(boolean isEnabled) {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        if (accessibilityManager != null) {
-            accessibilityManager.setSystemAudioCaptioningEnabled(isEnabled, this.mContext.getUserId());
+        if (this.mAccessibilityManager != null) {
+            this.mAccessibilityManager.setSystemAudioCaptioningEnabled(isEnabled, this.mContext.getUserId());
         }
     }
 
     public final boolean isSystemAudioCaptioningUiEnabled() {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        return accessibilityManager != null && accessibilityManager.isSystemAudioCaptioningUiEnabled(this.mContext.getUserId());
+        return this.mAccessibilityManager != null && this.mAccessibilityManager.isSystemAudioCaptioningUiEnabled(this.mContext.getUserId());
     }
 
     @SystemApi
     public final void setSystemAudioCaptioningUiEnabled(boolean isEnabled) {
-        AccessibilityManager accessibilityManager = this.mAccessibilityManager;
-        if (accessibilityManager != null) {
-            accessibilityManager.setSystemAudioCaptioningUiEnabled(isEnabled, this.mContext.getUserId());
+        if (this.mAccessibilityManager != null) {
+            this.mAccessibilityManager.setSystemAudioCaptioningUiEnabled(isEnabled, this.mContext.getUserId());
         }
     }
 
@@ -169,6 +162,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyEnabledChanged() {
         boolean enabled = isEnabled();
         synchronized (this.mListeners) {
@@ -180,6 +174,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyUserStyleChanged() {
         CaptionStyle userStyle = getUserStyle();
         synchronized (this.mListeners) {
@@ -191,6 +186,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyLocaleChanged() {
         Locale locale = getLocale();
         synchronized (this.mListeners) {
@@ -202,6 +198,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyFontScaleChanged() {
         float fontScale = getFontScale();
         synchronized (this.mListeners) {
@@ -213,6 +210,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifySystemAudioCaptionChanged() {
         boolean enabled = isSystemAudioCaptioningEnabled();
         synchronized (this.mListeners) {
@@ -224,6 +222,7 @@ public class CaptioningManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifySystemAudioCaptionUiChanged() {
         boolean enabled = isSystemAudioCaptioningUiEnabled();
         synchronized (this.mListeners) {
@@ -235,9 +234,7 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public class MyContentObserver extends ContentObserver {
+    private class MyContentObserver extends ContentObserver {
         private final Handler mHandler;
 
         public MyContentObserver(Handler handler) {
@@ -272,38 +269,16 @@ public class CaptioningManager {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.accessibility.CaptioningManager$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            CaptioningManager.this.notifyUserStyleChanged();
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class CaptionStyle {
-        private static final CaptionStyle BLACK_ON_WHITE;
         private static final int COLOR_NONE_OPAQUE = 255;
         public static final int COLOR_UNSPECIFIED = 16777215;
-        public static final CaptionStyle DEFAULT;
-        private static final CaptionStyle DEFAULT_CUSTOM;
         public static final int EDGE_TYPE_DEPRESSED = 4;
         public static final int EDGE_TYPE_DROP_SHADOW = 2;
         public static final int EDGE_TYPE_NONE = 0;
         public static final int EDGE_TYPE_OUTLINE = 1;
         public static final int EDGE_TYPE_RAISED = 3;
         public static final int EDGE_TYPE_UNSPECIFIED = -1;
-        public static final CaptionStyle[] PRESETS;
         public static final int PRESET_CUSTOM = -1;
-        private static final CaptionStyle UNSPECIFIED;
-        private static final CaptionStyle WHITE_ON_BLACK;
-        private static final CaptionStyle YELLOW_ON_BLACK;
-        private static final CaptionStyle YELLOW_ON_BLUE;
         public final int backgroundColor;
         public final int edgeColor;
         public final int edgeType;
@@ -316,23 +291,26 @@ public class CaptioningManager {
         private Typeface mParsedTypeface;
         public final String mRawTypeface;
         public final int windowColor;
+        private static final CaptionStyle WHITE_ON_BLACK = new CaptionStyle(-1, -16777216, 0, -16777216, 255, null);
+        private static final CaptionStyle BLACK_ON_WHITE = new CaptionStyle(-16777216, -1, 0, -16777216, 255, null);
+        private static final CaptionStyle YELLOW_ON_BLACK = new CaptionStyle(-256, -16777216, 0, -16777216, 255, null);
+        private static final CaptionStyle YELLOW_ON_BLUE = new CaptionStyle(-256, -16776961, 0, -16777216, 255, null);
+        private static final CaptionStyle UNSPECIFIED = new CaptionStyle(16777215, 16777215, -1, 16777215, 16777215, null);
+        public static final CaptionStyle[] PRESETS = {WHITE_ON_BLACK, BLACK_ON_WHITE, YELLOW_ON_BLACK, YELLOW_ON_BLUE, UNSPECIFIED};
+        private static final CaptionStyle DEFAULT_CUSTOM = WHITE_ON_BLACK;
+        public static final CaptionStyle DEFAULT = WHITE_ON_BLACK;
 
         private CaptionStyle(int foregroundColor, int backgroundColor, int edgeType, int edgeColor, int windowColor, String rawTypeface) {
-            boolean hasColor = hasColor(foregroundColor);
-            this.mHasForegroundColor = hasColor;
-            boolean hasColor2 = hasColor(backgroundColor);
-            this.mHasBackgroundColor = hasColor2;
-            boolean z = edgeType != -1;
-            this.mHasEdgeType = z;
-            boolean hasColor3 = hasColor(edgeColor);
-            this.mHasEdgeColor = hasColor3;
-            boolean hasColor4 = hasColor(windowColor);
-            this.mHasWindowColor = hasColor4;
-            this.foregroundColor = hasColor ? foregroundColor : -1;
-            this.backgroundColor = hasColor2 ? backgroundColor : -16777216;
-            this.edgeType = z ? edgeType : 0;
-            this.edgeColor = hasColor3 ? edgeColor : -16777216;
-            this.windowColor = hasColor4 ? windowColor : 255;
+            this.mHasForegroundColor = hasColor(foregroundColor);
+            this.mHasBackgroundColor = hasColor(backgroundColor);
+            this.mHasEdgeType = edgeType != -1;
+            this.mHasEdgeColor = hasColor(edgeColor);
+            this.mHasWindowColor = hasColor(windowColor);
+            this.foregroundColor = this.mHasForegroundColor ? foregroundColor : -1;
+            this.backgroundColor = this.mHasBackgroundColor ? backgroundColor : -16777216;
+            this.edgeType = this.mHasEdgeType ? edgeType : 0;
+            this.edgeColor = this.mHasEdgeColor ? edgeColor : -16777216;
+            this.windowColor = this.mHasWindowColor ? windowColor : 255;
             this.mRawTypeface = rawTypeface;
         }
 
@@ -346,11 +324,7 @@ public class CaptioningManager {
             int newEdgeType = overlay.hasEdgeType() ? overlay.edgeType : this.edgeType;
             int newEdgeColor = overlay.hasEdgeColor() ? overlay.edgeColor : this.edgeColor;
             int newWindowColor = overlay.hasWindowColor() ? overlay.windowColor : this.windowColor;
-            String str = overlay.mRawTypeface;
-            if (str == null) {
-                str = this.mRawTypeface;
-            }
-            String newRawTypeface = str;
+            String newRawTypeface = overlay.mRawTypeface != null ? overlay.mRawTypeface : this.mRawTypeface;
             return new CaptionStyle(newForegroundColor, newBackgroundColor, newEdgeType, newEdgeColor, newWindowColor, newRawTypeface);
         }
 
@@ -397,25 +371,8 @@ public class CaptioningManager {
             }
             return new CaptionStyle(foregroundColor, backgroundColor, edgeType, edgeColor, windowColor, rawTypeface);
         }
-
-        static {
-            CaptionStyle captionStyle = new CaptionStyle(-1, -16777216, 0, -16777216, 255, null);
-            WHITE_ON_BLACK = captionStyle;
-            CaptionStyle captionStyle2 = new CaptionStyle(-16777216, -1, 0, -16777216, 255, null);
-            BLACK_ON_WHITE = captionStyle2;
-            CaptionStyle captionStyle3 = new CaptionStyle(-256, -16777216, 0, -16777216, 255, null);
-            YELLOW_ON_BLACK = captionStyle3;
-            CaptionStyle captionStyle4 = new CaptionStyle(-256, -16776961, 0, -16777216, 255, null);
-            YELLOW_ON_BLUE = captionStyle4;
-            CaptionStyle captionStyle5 = new CaptionStyle(16777215, 16777215, -1, 16777215, 16777215, null);
-            UNSPECIFIED = captionStyle5;
-            PRESETS = new CaptionStyle[]{captionStyle, captionStyle2, captionStyle3, captionStyle4, captionStyle5};
-            DEFAULT_CUSTOM = captionStyle;
-            DEFAULT = captionStyle;
-        }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class CaptioningChangeListener {
         public void onEnabledChanged(boolean enabled) {
         }

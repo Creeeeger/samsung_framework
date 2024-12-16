@@ -17,7 +17,6 @@ public final class Outline {
     public float mRadius = RADIUS_UNDEFINED;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Mode {
     }
 
@@ -29,9 +28,8 @@ public final class Outline {
     }
 
     public void setEmpty() {
-        Path path = this.mPath;
-        if (path != null) {
-            path.rewind();
+        if (this.mPath != null) {
+            this.mPath.rewind();
         }
         this.mMode = 0;
         this.mRect.setEmpty();
@@ -113,11 +111,10 @@ public final class Outline {
             setRoundRect(left, top, right, bottom, (bottom - top) / 2.0f);
             return;
         }
-        Path path = this.mPath;
-        if (path == null) {
+        if (this.mPath == null) {
             this.mPath = new Path();
         } else {
-            path.rewind();
+            this.mPath.rewind();
         }
         this.mMode = 2;
         this.mPath.addOval(left, top, right, bottom, Path.Direction.CW);
@@ -149,10 +146,9 @@ public final class Outline {
     }
 
     public void offset(int dx, int dy) {
-        int i = this.mMode;
-        if (i == 1) {
+        if (this.mMode == 1) {
             this.mRect.offset(dx, dy);
-        } else if (i == 2) {
+        } else if (this.mMode == 2) {
             this.mPath.offset(dx, dy);
         }
     }

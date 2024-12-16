@@ -17,7 +17,6 @@ public interface IInlineContentProvider extends IInterface {
 
     void requestSurfacePackage() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IInlineContentProvider {
         @Override // com.android.internal.view.inline.IInlineContentProvider
         public void provideContent(int width, int height, IInlineContentCallback callback) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IInlineContentProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IInlineContentProvider {
         static final int TRANSACTION_onSurfacePackageReleased = 3;
         static final int TRANSACTION_provideContent = 1;
@@ -86,34 +84,30 @@ public interface IInlineContentProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInlineContentProvider.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInlineContentProvider.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInlineContentProvider.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    IInlineContentCallback _arg2 = IInlineContentCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    provideContent(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    requestSurfacePackage();
+                    return true;
+                case 3:
+                    onSurfacePackageReleased();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            IInlineContentCallback _arg2 = IInlineContentCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            provideContent(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            requestSurfacePackage();
-                            return true;
-                        case 3:
-                            onSurfacePackageReleased();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IInlineContentProvider {
+        private static class Proxy implements IInlineContentProvider {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

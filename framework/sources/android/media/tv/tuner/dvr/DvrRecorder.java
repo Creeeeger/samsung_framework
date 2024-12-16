@@ -11,7 +11,7 @@ import com.android.internal.util.FrameworkStatsLog;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class DvrRecorder implements AutoCloseable {
     private static final String TAG = "TvTunerRecord";
     private static int sInstantId = 0;
@@ -49,9 +49,8 @@ public class DvrRecorder implements AutoCloseable {
 
     private DvrRecorder() {
         this.mSegmentId = 0;
-        int i = sInstantId;
-        this.mSegmentId = (65535 & i) << 16;
-        sInstantId = i + 1;
+        this.mSegmentId = (sInstantId & 65535) << 16;
+        sInstantId++;
     }
 
     public void setListener(Executor executor, OnRecordStatusChangedListener listener) {
@@ -66,9 +65,8 @@ public class DvrRecorder implements AutoCloseable {
             this.mOverflow++;
         }
         synchronized (this.mListenerLock) {
-            Executor executor = this.mExecutor;
-            if (executor != null && this.mListener != null) {
-                executor.execute(new Runnable() { // from class: android.media.tv.tuner.dvr.DvrRecorder$$ExternalSyntheticLambda0
+            if (this.mExecutor != null && this.mListener != null) {
+                this.mExecutor.execute(new Runnable() { // from class: android.media.tv.tuner.dvr.DvrRecorder$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DvrRecorder.this.lambda$onRecordStatusChanged$0(status);
@@ -78,11 +76,11 @@ public class DvrRecorder implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onRecordStatusChanged$0(int status) {
         synchronized (this.mListenerLock) {
-            OnRecordStatusChangedListener onRecordStatusChangedListener = this.mListener;
-            if (onRecordStatusChangedListener != null) {
-                onRecordStatusChangedListener.onRecordStatusChanged(status);
+            if (this.mListener != null) {
+                this.mListener.onRecordStatusChanged(status);
             }
         }
     }
@@ -108,8 +106,7 @@ public class DvrRecorder implements AutoCloseable {
 
     public int start() {
         int result;
-        int i = this.mSegmentId;
-        this.mSegmentId = (((i & 65535) + 1) & 65535) | ((-65536) & i);
+        this.mSegmentId = (this.mSegmentId & (-65536)) | (((this.mSegmentId & 65535) + 1) & 65535);
         this.mOverflow = 0;
         Log.d(TAG, "Write Stats Log for Record.");
         FrameworkStatsLog.write(279, this.mUserId, 2, 1, this.mSegmentId, 0);

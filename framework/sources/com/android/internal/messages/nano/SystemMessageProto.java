@@ -4,14 +4,13 @@ import com.android.framework.protobuf.nano.CodedInputByteBufferNano;
 import com.android.framework.protobuf.nano.InternalNano;
 import com.android.framework.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.android.framework.protobuf.nano.MessageNano;
-import com.android.framework.protobuf.nano.WireFormatNano;
 import java.io.IOException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface SystemMessageProto {
 
-    /* loaded from: classes4.dex */
     public static final class SystemMessage extends MessageNano {
+        public static final int NOTE_A11Y_FLOATING_MENU_HIDDEN = 1009;
         public static final int NOTE_A11Y_VIEW_AND_CONTROL_ACCESS = 1005;
         public static final int NOTE_A11Y_WINDOW_MAGNIFICATION_FEATURE = 1004;
         public static final int NOTE_ABUSIVE_BG_APPS_BASE = 203105544;
@@ -41,13 +40,14 @@ public interface SystemMessageProto {
         public static final int NOTE_FOREGROUND_SERVICES = 40;
         public static final int NOTE_FOREGROUND_SERVICE_BG_LAUNCH = 61;
         public static final int NOTE_GLOBAL_SCREENSHOT = 1;
+        public static final int NOTE_GLOBAL_SCREENSHOT_EXTERNAL_DISPLAY = 1008;
         public static final int NOTE_GUEST_SESSION = 70;
         public static final int NOTE_HEAVY_WEIGHT_NOTIFICATION = 11;
         public static final int NOTE_HIDDEN_NOTIFICATIONS = 5;
         public static final int NOTE_HIGH_TEMP = 4;
         public static final int NOTE_ID_WIFI_SIM_REQUIRED = 60;
         public static final int NOTE_INSTANT_APPS = 7;
-        public static final int NOTE_LOCAL_BROADCAST = 1008;
+        public static final int NOTE_LOCAL_BROADCAST = 1012;
         public static final int NOTE_LOCATION_CHANGED = 59;
         public static final int NOTE_LOGOUT_USER = 1011;
         public static final int NOTE_LOW_FILENODE = 104;
@@ -75,11 +75,12 @@ public interface SystemMessageProto {
         public static final int NOTE_POWER_LOW = 3;
         public static final int NOTE_PROFILE_WIPED = 1001;
         public static final int NOTE_REBOOT_SDCARD_BADREMOVED_HASAPK = 105;
-        public static final int NOTE_REMOTE_BROADCAST = 1009;
+        public static final int NOTE_REMOTE_BROADCAST = 1013;
         public static final int NOTE_REMOTE_BUGREPORT = 678432343;
         public static final int NOTE_REMOVE_GUEST = 1010;
         public static final int NOTE_RETAIL_RESET = 24;
         public static final int NOTE_REVIEW_NOTIFICATION_PERMISSIONS = 71;
+        public static final int NOTE_SCREEN_LOCK_RESTRICTED_USB = 125;
         public static final int NOTE_SDCARD_ERROR_DETECT = 103;
         public static final int NOTE_SD_CARD_READONLY = 119;
         public static final int NOTE_SELECT_INPUT_METHOD = 8;
@@ -161,17 +162,38 @@ public interface SystemMessageProto {
             return this;
         }
 
+        /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+            jadx.core.utils.exceptions.JadxRuntimeException: Failed to find switch 'out' block (already processed)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.calcSwitchOut(SwitchRegionMaker.java:202)
+            	at jadx.core.dex.visitors.regions.maker.SwitchRegionMaker.process(SwitchRegionMaker.java:61)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:115)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.LoopRegionMaker.process(LoopRegionMaker.java:103)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.traverse(RegionMaker.java:92)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeRegion(RegionMaker.java:69)
+            	at jadx.core.dex.visitors.regions.maker.RegionMaker.makeMthRegion(RegionMaker.java:49)
+            	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:25)
+            */
         @Override // com.android.framework.protobuf.nano.MessageNano
-        public SystemMessage mergeFrom(CodedInputByteBufferNano input) throws IOException {
-            int tag;
-            do {
-                tag = input.readTag();
-                switch (tag) {
-                    case 0:
-                        return this;
+        public com.android.internal.messages.nano.SystemMessageProto.SystemMessage mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano r3) throws java.io.IOException {
+            /*
+                r2 = this;
+            L1:
+                int r0 = r3.readTag()
+                switch(r0) {
+                    case 0: goto Lf;
+                    default: goto L8;
                 }
-            } while (WireFormatNano.parseUnknownField(input, tag));
-            return this;
+            L8:
+                boolean r1 = com.android.framework.protobuf.nano.WireFormatNano.parseUnknownField(r3, r0)
+                if (r1 != 0) goto L10
+                return r2
+            Lf:
+                return r2
+            L10:
+                goto L1
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.internal.messages.nano.SystemMessageProto.SystemMessage.mergeFrom(com.android.framework.protobuf.nano.CodedInputByteBufferNano):com.android.internal.messages.nano.SystemMessageProto$SystemMessage");
         }
 
         public static SystemMessage parseFrom(byte[] data) throws InvalidProtocolBufferNanoException {

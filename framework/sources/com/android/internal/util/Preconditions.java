@@ -321,4 +321,11 @@ public class Preconditions {
         }
         return value;
     }
+
+    public static <T> T requireNonNullViaRavenwoodRule(T t) {
+        if (t == null) {
+            throw new IllegalStateException("This operation requires that a RavenwoodRule be configured to accurately define the expected test environment");
+        }
+        return t;
+    }
 }

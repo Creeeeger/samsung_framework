@@ -16,48 +16,29 @@ public class ListActivity extends Activity {
     private Handler mHandler = new Handler();
     private boolean mFinishedStart = false;
     private Runnable mRequestFocus = new Runnable() { // from class: android.app.ListActivity.1
-        AnonymousClass1() {
-        }
-
         @Override // java.lang.Runnable
         public void run() {
             ListActivity.this.mList.focusableViewAvailable(ListActivity.this.mList);
         }
     };
     private AdapterView.OnItemClickListener mOnClickListener = new AdapterView.OnItemClickListener() { // from class: android.app.ListActivity.2
-        AnonymousClass2() {
-        }
-
         @Override // android.widget.AdapterView.OnItemClickListener
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             ListActivity.this.onListItemClick((ListView) parent, v, position, id);
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.ListActivity$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ListActivity.this.mList.focusableViewAvailable(ListActivity.this.mList);
-        }
-    }
-
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    protected void onListItemClick(ListView l, View v, int position, long id) {
     }
 
     @Override // android.app.Activity
-    public void onRestoreInstanceState(Bundle state) {
+    protected void onRestoreInstanceState(Bundle state) {
         ensureList();
         super.onRestoreInstanceState(state);
     }
 
     @Override // android.app.Activity
-    public void onDestroy() {
+    protected void onDestroy() {
         this.mHandler.removeCallbacks(this.mRequestFocus);
         super.onDestroy();
     }
@@ -66,13 +47,12 @@ public class ListActivity extends Activity {
     public void onContentChanged() {
         super.onContentChanged();
         View emptyView = findViewById(16908292);
-        ListView listView = (ListView) findViewById(16908298);
-        this.mList = listView;
-        if (listView == null) {
+        this.mList = (ListView) findViewById(16908298);
+        if (this.mList == null) {
             throw new RuntimeException("Your content must have a ListView whose id attribute is 'android.R.id.list'");
         }
         if (emptyView != null) {
-            listView.setEmptyView(emptyView);
+            this.mList.setEmptyView(emptyView);
         }
         this.mList.setOnItemClickListener(this.mOnClickListener);
         if (this.mFinishedStart) {
@@ -116,18 +96,5 @@ public class ListActivity extends Activity {
             return;
         }
         setContentView(R.layout.list_content_simple);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.app.ListActivity$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 implements AdapterView.OnItemClickListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemClickListener
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            ListActivity.this.onListItemClick((ListView) parent, v, position, id);
-        }
     }
 }

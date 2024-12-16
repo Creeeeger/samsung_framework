@@ -20,15 +20,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class OperatorWrapper extends OpPriorityComputable implements Operator {
     private static final String TAG = Def.tagOf((Class<?>) OperatorWrapper.class);
     private static final Map<ImgpType, MediaFormatUpdater> formatUpdaterMap = new AnonymousClass1();
     protected MediaFormatUpdater formatUpdater;
     protected Operator processor;
 
-    /* renamed from: com.samsung.android.sume.core.functional.OperatorWrapper$1 */
-    /* loaded from: classes4.dex */
+    /* renamed from: com.samsung.android.sume.core.functional.OperatorWrapper$1, reason: invalid class name */
     class AnonymousClass1 extends HashMap<ImgpType, MediaFormatUpdater> {
         AnonymousClass1() {
             put(ImgpType.RESIZE, new MediaFormatUpdater() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$1$$ExternalSyntheticLambda0
@@ -75,7 +74,7 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
             });
         }
 
-        public static /* synthetic */ void lambda$new$2(MediaFormat ifmt, MutableMediaFormat ofmt) {
+        static /* synthetic */ void lambda$new$2(MediaFormat ifmt, MutableMediaFormat ofmt) {
             Integer orientation = (Integer) ifmt.get("rotation-degrees");
             if (orientation != null) {
                 if (orientation.intValue() == 90 || orientation.intValue() == 270) {
@@ -86,14 +85,14 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
             }
         }
 
-        public static /* synthetic */ void lambda$new$3(MediaFormat ifmt, MutableMediaFormat ofmt) {
+        static /* synthetic */ void lambda$new$3(MediaFormat ifmt, MutableMediaFormat ofmt) {
             if (ifmt.getColorFormat().getChannels() != ofmt.getColorFormat().getChannels()) {
                 ofmt.setDataType(DataType.of(ofmt.getDataType().depth(), ifmt.getColorFormat().getChannels()));
             }
             ofmt.setColorFormat(ifmt.getColorFormat());
         }
 
-        public static /* synthetic */ void lambda$new$5(MediaFormat ifmt, MutableMediaFormat ofmt) {
+        static /* synthetic */ void lambda$new$5(MediaFormat ifmt, MutableMediaFormat ofmt) {
             int dim = ((Integer) Optional.ofNullable(ifmt.getShape()).map(new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$1$$ExternalSyntheticLambda7
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
@@ -121,11 +120,11 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
         });
     }
 
-    public static /* synthetic */ void lambda$new$0(MediaFormat ifmt, MutableMediaFormat ofmt) {
+    static /* synthetic */ void lambda$new$0(MediaFormat ifmt, MutableMediaFormat ofmt) {
     }
 
-    public static /* synthetic */ MediaFormatUpdater lambda$new$1() {
-        return new MediaFormatUpdater() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda4
+    static /* synthetic */ MediaFormatUpdater lambda$new$1() {
+        return new MediaFormatUpdater() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.MediaFormatUpdater
             public final void update(MediaFormat mediaFormat, MutableMediaFormat mutableMediaFormat) {
                 OperatorWrapper.lambda$new$0(mediaFormat, mutableMediaFormat);
@@ -140,7 +139,7 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
 
     public static Operator of(final Enum<?> type, Operator processor) {
         if (processor instanceof OperatorChain) {
-            return new OperatorChain(type, (List) ((OperatorChain) processor).stream().map(new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda3
+            return new OperatorChain(type, (List) ((OperatorChain) processor).stream().map(new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda2
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
                     return OperatorWrapper.lambda$of$2(type, (Operator) obj);
@@ -150,12 +149,12 @@ public class OperatorWrapper extends OpPriorityComputable implements Operator {
         return new OperatorWrapper(type, processor);
     }
 
-    public static /* synthetic */ OperatorWrapper lambda$of$2(Enum type, Operator e) {
+    static /* synthetic */ OperatorWrapper lambda$of$2(Enum type, Operator e) {
         return new OperatorWrapper(type, e);
     }
 
     public static Operator of(Map<Enum<?>, Operator> map) {
-        return new OperatorMap((Map) map.entrySet().stream().collect(Collectors.toMap(new OperatorWrapper$$ExternalSyntheticLambda1(), new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda2
+        return new OperatorMap((Map) map.entrySet().stream().collect(Collectors.toMap(new OperatorWrapper$$ExternalSyntheticLambda3(), new Function() { // from class: com.samsung.android.sume.core.functional.OperatorWrapper$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 Operator of;

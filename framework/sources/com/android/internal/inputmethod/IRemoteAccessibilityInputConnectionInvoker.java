@@ -7,7 +7,7 @@ import android.view.inputmethod.TextAttribute;
 import com.android.internal.infra.AndroidFuture;
 import java.util.Objects;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 final class IRemoteAccessibilityInputConnectionInvoker {
     private final IRemoteAccessibilityInputConnection mConnection;
     private final int mSessionId;

@@ -9,12 +9,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class VcnUnderlyingNetworkTemplate {
     static final int DEFAULT_METERED_MATCH_CRITERIA = 0;
     public static final int DEFAULT_MIN_BANDWIDTH_KBPS = 0;
     public static final int MATCH_ANY = 0;
-    private static final SparseArray<String> MATCH_CRITERIA_TO_STRING_MAP;
+    private static final SparseArray<String> MATCH_CRITERIA_TO_STRING_MAP = new SparseArray<>();
     public static final int MATCH_FORBIDDEN = 2;
     public static final int MATCH_REQUIRED = 1;
     static final String METERED_MATCH_KEY = "mMeteredMatchCriteria";
@@ -33,7 +33,6 @@ public abstract class VcnUnderlyingNetworkTemplate {
     private final int mNetworkPriorityType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface MatchCriteria {
     }
 
@@ -42,14 +41,12 @@ public abstract class VcnUnderlyingNetworkTemplate {
     public abstract Map<Integer, Integer> getCapabilitiesMatchCriteria();
 
     static {
-        SparseArray<String> sparseArray = new SparseArray<>();
-        MATCH_CRITERIA_TO_STRING_MAP = sparseArray;
-        sparseArray.put(0, "MATCH_ANY");
-        sparseArray.put(1, "MATCH_REQUIRED");
-        sparseArray.put(2, "MATCH_FORBIDDEN");
+        MATCH_CRITERIA_TO_STRING_MAP.put(0, "MATCH_ANY");
+        MATCH_CRITERIA_TO_STRING_MAP.put(1, "MATCH_REQUIRED");
+        MATCH_CRITERIA_TO_STRING_MAP.put(2, "MATCH_FORBIDDEN");
     }
 
-    public VcnUnderlyingNetworkTemplate(int networkPriorityType, int meteredMatchCriteria, int minEntryUpstreamBandwidthKbps, int minExitUpstreamBandwidthKbps, int minEntryDownstreamBandwidthKbps, int minExitDownstreamBandwidthKbps) {
+    VcnUnderlyingNetworkTemplate(int networkPriorityType, int meteredMatchCriteria, int minEntryUpstreamBandwidthKbps, int minExitUpstreamBandwidthKbps, int minEntryDownstreamBandwidthKbps, int minExitDownstreamBandwidthKbps) {
         this.mNetworkPriorityType = networkPriorityType;
         this.mMeteredMatchCriteria = meteredMatchCriteria;
         this.mMinEntryUpstreamBandwidthKbps = minEntryUpstreamBandwidthKbps;
@@ -58,17 +55,17 @@ public abstract class VcnUnderlyingNetworkTemplate {
         this.mMinExitDownstreamBandwidthKbps = minExitDownstreamBandwidthKbps;
     }
 
-    public static void validateMatchCriteria(int matchCriteria, String matchingCapability) {
+    static void validateMatchCriteria(int matchCriteria, String matchingCapability) {
         Preconditions.checkArgument(MATCH_CRITERIA_TO_STRING_MAP.contains(matchCriteria), "Invalid matching criteria: " + matchCriteria + " for " + matchingCapability);
     }
 
-    public static void validateMinBandwidthKbps(int minEntryBandwidth, int minExitBandwidth) {
+    static void validateMinBandwidthKbps(int minEntryBandwidth, int minExitBandwidth) {
         Preconditions.checkArgument(minEntryBandwidth >= 0, "Invalid minEntryBandwidth, must be >= 0");
         Preconditions.checkArgument(minExitBandwidth >= 0, "Invalid minExitBandwidth, must be >= 0");
         Preconditions.checkArgument(minEntryBandwidth >= minExitBandwidth, "Minimum entry bandwidth must be >= exit bandwidth");
     }
 
-    public void validate() {
+    protected void validate() {
         validateMatchCriteria(this.mMeteredMatchCriteria, METERED_MATCH_KEY);
         validateMinBandwidthKbps(this.mMinEntryUpstreamBandwidthKbps, this.mMinExitUpstreamBandwidthKbps);
         validateMinBandwidthKbps(this.mMinEntryDownstreamBandwidthKbps, this.mMinExitDownstreamBandwidthKbps);
@@ -87,7 +84,7 @@ public abstract class VcnUnderlyingNetworkTemplate {
         }
     }
 
-    public PersistableBundle toPersistableBundle() {
+    PersistableBundle toPersistableBundle() {
         PersistableBundle result = new PersistableBundle();
         result.putInt(NETWORK_PRIORITY_TYPE_KEY, this.mNetworkPriorityType);
         result.putInt(METERED_MATCH_KEY, this.mMeteredMatchCriteria);
@@ -114,7 +111,7 @@ public abstract class VcnUnderlyingNetworkTemplate {
         return toStringMap.get(key, "Invalid value " + key);
     }
 
-    public static String getMatchCriteriaString(int matchCriteria) {
+    static String getMatchCriteriaString(int matchCriteria) {
         return getNameString(MATCH_CRITERIA_TO_STRING_MAP, matchCriteria);
     }
 

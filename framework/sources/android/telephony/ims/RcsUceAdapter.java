@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class RcsUceAdapter {
 
     @Deprecated
@@ -133,28 +133,23 @@ public class RcsUceAdapter {
     private final int mSubId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ErrorCode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface PublishState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
     @Deprecated
-    /* loaded from: classes3.dex */
     public @interface RcsImsCapabilityFlag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StackPublishTriggerType {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface OnPublishStateChangedListener {
         @Deprecated
         void onPublishStateChange(int i);
@@ -164,12 +159,11 @@ public class RcsUceAdapter {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class PublishStateCallbackAdapter {
         private final PublishStateBinder mBinder;
 
-        /* loaded from: classes3.dex */
-        public static class PublishStateBinder extends IRcsUcePublishStateCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class PublishStateBinder extends IRcsUcePublishStateCallback.Stub {
             private final Executor mExecutor;
             private final OnPublishStateChangedListener mPublishStateChangeListener;
 
@@ -196,6 +190,7 @@ public class RcsUceAdapter {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onPublishUpdated$0(PublishAttributes attributes) {
                 this.mPublishStateChangeListener.onPublishStateChange(attributes);
             }
@@ -211,7 +206,6 @@ public class RcsUceAdapter {
     }
 
     @SystemApi
-    /* loaded from: classes3.dex */
     public interface CapabilitiesCallback {
         void onCapabilitiesReceived(List<RcsContactUceCapability> list);
 
@@ -230,7 +224,7 @@ public class RcsUceAdapter {
         }
     }
 
-    public RcsUceAdapter(Context context, int subId) {
+    RcsUceAdapter(Context context, int subId) {
         this.mContext = context;
         this.mSubId = subId;
     }
@@ -262,8 +256,7 @@ public class RcsUceAdapter {
         }
     }
 
-    /* renamed from: android.telephony.ims.RcsUceAdapter$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.RcsUceAdapter$1, reason: invalid class name */
     class AnonymousClass1 extends IRcsUceControllerCallback.Stub {
         final /* synthetic */ CapabilitiesCallback val$c;
         final /* synthetic */ Executor val$executor;
@@ -279,7 +272,7 @@ public class RcsUceAdapter {
             try {
                 Executor executor = this.val$executor;
                 final CapabilitiesCallback capabilitiesCallback = this.val$c;
-                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$1$$ExternalSyntheticLambda2
+                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$1$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         RcsUceAdapter.CapabilitiesCallback.this.onCapabilitiesReceived(contactCapabilities);
@@ -296,7 +289,7 @@ public class RcsUceAdapter {
             try {
                 Executor executor = this.val$executor;
                 final CapabilitiesCallback capabilitiesCallback = this.val$c;
-                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$1$$ExternalSyntheticLambda1
+                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$1$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         RcsUceAdapter.CapabilitiesCallback.this.onComplete(details);
@@ -352,8 +345,7 @@ public class RcsUceAdapter {
         }
     }
 
-    /* renamed from: android.telephony.ims.RcsUceAdapter$2 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.telephony.ims.RcsUceAdapter$2, reason: invalid class name */
     class AnonymousClass2 extends IRcsUceControllerCallback.Stub {
         final /* synthetic */ CapabilitiesCallback val$c;
         final /* synthetic */ Executor val$executor;
@@ -369,7 +361,7 @@ public class RcsUceAdapter {
             try {
                 Executor executor = this.val$executor;
                 final CapabilitiesCallback capabilitiesCallback = this.val$c;
-                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda1
+                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda2
                     @Override // java.lang.Runnable
                     public final void run() {
                         RcsUceAdapter.CapabilitiesCallback.this.onCapabilitiesReceived(contactCapabilities);
@@ -386,7 +378,7 @@ public class RcsUceAdapter {
             try {
                 Executor executor = this.val$executor;
                 final CapabilitiesCallback capabilitiesCallback = this.val$c;
-                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda0
+                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         RcsUceAdapter.CapabilitiesCallback.this.onComplete(details);
@@ -403,7 +395,7 @@ public class RcsUceAdapter {
             try {
                 Executor executor = this.val$executor;
                 final CapabilitiesCallback capabilitiesCallback = this.val$c;
-                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda2
+                executor.execute(new Runnable() { // from class: android.telephony.ims.RcsUceAdapter$2$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         RcsUceAdapter.CapabilitiesCallback.this.onError(errorCode, retryAfterMilliseconds, details);

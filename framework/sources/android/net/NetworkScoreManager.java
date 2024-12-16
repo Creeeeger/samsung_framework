@@ -17,7 +17,7 @@ import java.util.concurrent.Executor;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkScoreManager {
 
     @Deprecated
@@ -49,7 +49,6 @@ public class NetworkScoreManager {
     private final INetworkScoreService mService = INetworkScoreService.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.NETWORK_SCORE_SERVICE));
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static abstract class NetworkScoreCallback {
         public abstract void onScoresInvalidated();
 
@@ -57,12 +56,10 @@ public class NetworkScoreManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface RecommendationsEnabledSetting {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ScoreUpdateFilter {
     }
 
@@ -161,8 +158,8 @@ public class NetworkScoreManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class NetworkScoreCallbackProxy extends INetworkScoreCache.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    class NetworkScoreCallbackProxy extends INetworkScoreCache.Stub {
         private final NetworkScoreCallback mCallback;
         private final Executor mExecutor;
 
@@ -175,7 +172,7 @@ public class NetworkScoreManager {
         public void updateScores(final List<ScoredNetwork> networks) {
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.NetworkScoreManager$NetworkScoreCallbackProxy$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.net.NetworkScoreManager$NetworkScoreCallbackProxy$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         NetworkScoreManager.NetworkScoreCallbackProxy.this.lambda$updateScores$0(networks);
@@ -186,6 +183,7 @@ public class NetworkScoreManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateScores$0(List networks) {
             this.mCallback.onScoresUpdated(networks);
         }
@@ -194,7 +192,7 @@ public class NetworkScoreManager {
         public void clearScores() {
             long token = Binder.clearCallingIdentity();
             try {
-                this.mExecutor.execute(new Runnable() { // from class: android.net.NetworkScoreManager$NetworkScoreCallbackProxy$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.net.NetworkScoreManager$NetworkScoreCallbackProxy$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         NetworkScoreManager.NetworkScoreCallbackProxy.this.lambda$clearScores$1();
@@ -205,6 +203,7 @@ public class NetworkScoreManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$clearScores$1() {
             this.mCallback.onScoresInvalidated();
         }

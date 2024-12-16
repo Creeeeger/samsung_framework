@@ -8,7 +8,7 @@ import android.os.UserHandle;
 import com.android.internal.app.chooser.DisplayResolveInfo;
 import com.android.internal.app.chooser.MultiDisplayResolveInfo;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ChooserStackedAppDialogFragment extends ChooserTargetActionsDialogFragment implements DialogInterface.OnClickListener {
     static final String MULTI_DRI_KEY = "multi_dri_key";
     static final String WHICH_KEY = "which_key";
@@ -17,9 +17,8 @@ public class ChooserStackedAppDialogFragment extends ChooserTargetActionsDialogF
 
     @Override // com.android.internal.app.ChooserTargetActionsDialogFragment
     void setStateFromBundle(Bundle b) {
-        MultiDisplayResolveInfo multiDisplayResolveInfo = (MultiDisplayResolveInfo) b.get(MULTI_DRI_KEY);
-        this.mMultiDisplayResolveInfo = multiDisplayResolveInfo;
-        this.mTargetInfos = multiDisplayResolveInfo.getTargets();
+        this.mMultiDisplayResolveInfo = (MultiDisplayResolveInfo) b.get(MULTI_DRI_KEY);
+        this.mTargetInfos = this.mMultiDisplayResolveInfo.getTargets();
         this.mUserHandle = (UserHandle) b.get("user_handle");
         this.mParentWhich = b.getInt(WHICH_KEY);
     }

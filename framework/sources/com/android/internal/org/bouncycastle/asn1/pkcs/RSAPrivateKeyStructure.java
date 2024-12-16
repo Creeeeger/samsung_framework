@@ -120,9 +120,8 @@ public class RSAPrivateKeyStructure extends ASN1Object {
         v.add(new ASN1Integer(getExponent1()));
         v.add(new ASN1Integer(getExponent2()));
         v.add(new ASN1Integer(getCoefficient()));
-        ASN1Sequence aSN1Sequence = this.otherPrimeInfos;
-        if (aSN1Sequence != null) {
-            v.add(aSN1Sequence);
+        if (this.otherPrimeInfos != null) {
+            v.add(this.otherPrimeInfos);
         }
         return new DERSequence(v);
     }

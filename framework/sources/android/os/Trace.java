@@ -57,14 +57,17 @@ public final class Trace {
     @FastNative
     private static native void nativeAsyncTraceForTrackEnd(long j, String str, int i);
 
-    @CriticalNative
-    private static native long nativeGetEnabledTags();
-
     @FastNative
     private static native void nativeInstant(long j, String str);
 
     @FastNative
     private static native void nativeInstantForTrack(long j, String str, String str2);
+
+    @CriticalNative
+    private static native boolean nativeIsTagEnabled(long j);
+
+    @FastNative
+    private static native void nativeRegisterWithPerfetto();
 
     private static native void nativeSetAppTracingAllowed(boolean z);
 
@@ -79,13 +82,22 @@ public final class Trace {
     @FastNative
     private static native void nativeTraceEnd(long j);
 
+    private static boolean nativeIsTagEnabled$ravenwood(long traceTag) {
+        return false;
+    }
+
+    private static void nativeSetAppTracingAllowed$ravenwood(boolean allowed) {
+    }
+
+    private static void nativeSetTracingEnabled$ravenwood(boolean allowed) {
+    }
+
     private Trace() {
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
     public static boolean isTagEnabled(long traceTag) {
-        long tags = nativeGetEnabledTags();
-        return (tags & traceTag) != 0;
+        return nativeIsTagEnabled(traceTag);
     }
 
     @SystemApi(client = SystemApi.Client.MODULE_LIBRARIES)
@@ -187,5 +199,9 @@ public final class Trace {
         if (isTagEnabled(4096L)) {
             nativeTraceCounter(4096L, counterName, counterValue);
         }
+    }
+
+    public static void registerWithPerfetto() {
+        nativeRegisterWithPerfetto();
     }
 }

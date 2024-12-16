@@ -19,9 +19,8 @@ public class PKCS5S2ParametersGenerator extends PBEParametersGenerator {
     }
 
     public PKCS5S2ParametersGenerator(Digest digest) {
-        HMac hMac = new HMac(digest);
-        this.hMac = hMac;
-        this.state = new byte[hMac.getMacSize()];
+        this.hMac = new HMac(digest);
+        this.state = new byte[this.hMac.getMacSize()];
     }
 
     private void F(byte[] S, int c, byte[] iBuf, byte[] out, int outOff) {
@@ -33,21 +32,13 @@ public class PKCS5S2ParametersGenerator extends PBEParametersGenerator {
         }
         this.hMac.update(iBuf, 0, iBuf.length);
         this.hMac.doFinal(this.state, 0);
-        byte[] bArr = this.state;
-        System.arraycopy(bArr, 0, out, outOff, bArr.length);
+        System.arraycopy(this.state, 0, out, outOff, this.state.length);
         for (int count = 1; count < c; count++) {
-            Mac mac = this.hMac;
-            byte[] bArr2 = this.state;
-            mac.update(bArr2, 0, bArr2.length);
+            this.hMac.update(this.state, 0, this.state.length);
             this.hMac.doFinal(this.state, 0);
-            int j = 0;
-            while (true) {
-                byte[] bArr3 = this.state;
-                if (j != bArr3.length) {
-                    int i = outOff + j;
-                    out[i] = (byte) (bArr3[j] ^ out[i]);
-                    j++;
-                }
+            for (int j = 0; j != this.state.length; j++) {
+                int i = outOff + j;
+                out[i] = (byte) (out[i] ^ this.state[j]);
             }
         }
     }

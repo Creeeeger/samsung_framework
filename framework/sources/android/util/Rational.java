@@ -101,8 +101,7 @@ public final class Rational extends Number implements Comparable<Rational> {
     }
 
     public int hashCode() {
-        int i = this.mNumerator;
-        int numeratorFlipped = (i >>> 16) | (i << 16);
+        int numeratorFlipped = (this.mNumerator << 16) | (this.mNumerator >>> 16);
         return this.mDenominator ^ numeratorFlipped;
     }
 
@@ -192,22 +191,17 @@ public final class Rational extends Number implements Comparable<Rational> {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        int i = this.mNumerator;
-        if (i == 0) {
-            int i2 = this.mDenominator;
-            if (i2 == 1 || i2 == 0) {
-                return;
+        if (this.mNumerator == 0) {
+            if (this.mDenominator == 1 || this.mDenominator == 0) {
             } else {
                 throw new InvalidObjectException("Rational must be deserialized from a reduced form for zero values");
             }
-        }
-        int i3 = this.mDenominator;
-        if (i3 == 0) {
-            if (i == 1 || i == -1) {
+        } else if (this.mDenominator == 0) {
+            if (this.mNumerator == 1 || this.mNumerator == -1) {
             } else {
                 throw new InvalidObjectException("Rational must be deserialized from a reduced form for infinity values");
             }
-        } else if (gcd(i, i3) > 1) {
+        } else if (gcd(this.mNumerator, this.mDenominator) > 1) {
             throw new InvalidObjectException("Rational must be deserialized from a reduced form for finite values");
         }
     }

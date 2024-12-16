@@ -28,7 +28,7 @@ public final class ExpandedMenuView extends ListView implements MenuBuilder.Item
     }
 
     @Override // android.widget.ListView, android.widget.AbsListView, android.widget.AdapterView, android.view.ViewGroup, android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         setChildrenDrawingCacheEnabled(false);
     }

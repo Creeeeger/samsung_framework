@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhraseRecognitionEvent implements Parcelable {
     public static final Parcelable.Creator<PhraseRecognitionEvent> CREATOR = new Parcelable.Creator<PhraseRecognitionEvent>() { // from class: android.media.soundtrigger.PhraseRecognitionEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhraseRecognitionEvent createFromParcel(Parcel _aidl_source) {
             PhraseRecognitionEvent _aidl_out = new PhraseRecognitionEvent();
@@ -20,6 +18,7 @@ public class PhraseRecognitionEvent implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhraseRecognitionEvent[] newArray(int _aidl_size) {
             return new PhraseRecognitionEvent[_aidl_size];
@@ -27,25 +26,6 @@ public class PhraseRecognitionEvent implements Parcelable {
     };
     public RecognitionEvent common;
     public PhraseRecognitionExtra[] phraseExtras;
-
-    /* renamed from: android.media.soundtrigger.PhraseRecognitionEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhraseRecognitionEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhraseRecognitionEvent createFromParcel(Parcel _aidl_source) {
-            PhraseRecognitionEvent _aidl_out = new PhraseRecognitionEvent();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhraseRecognitionEvent[] newArray(int _aidl_size) {
-            return new PhraseRecognitionEvent[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -104,7 +84,7 @@ public class PhraseRecognitionEvent implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("common: " + Objects.toString(this.common));
         _aidl_sj.add("phraseExtras: " + Arrays.toString(this.phraseExtras));
-        return "android.media.soundtrigger.PhraseRecognitionEvent" + _aidl_sj.toString();
+        return "PhraseRecognitionEvent" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

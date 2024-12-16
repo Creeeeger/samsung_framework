@@ -8,7 +8,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import com.samsung.android.media.fmradio.internal.IFMPlayer;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemFmPlayer {
     public static final int AUDIO_MODE_MONO = 8;
     public static final int AUDIO_MODE_STEREO = 9;
@@ -482,8 +482,6 @@ public class SemFmPlayer {
 
     protected void finalize() throws Throwable {
         super.finalize();
-        this.mAudioManager = null;
-        this.mPlayer = null;
     }
 
     public void setTunningParameter(String parameterName, int value) throws SemFmPlayerException {

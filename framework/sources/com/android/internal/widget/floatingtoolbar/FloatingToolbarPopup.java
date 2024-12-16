@@ -5,7 +5,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.selectiontoolbar.SelectionToolbarManager;
 import android.widget.PopupWindow;
 import java.util.List;
 
@@ -40,10 +39,6 @@ public interface FloatingToolbarPopup {
     void show(List<MenuItem> list, MenuItem.OnMenuItemClickListener onMenuItemClickListener, Rect rect);
 
     static FloatingToolbarPopup createInstance(Context context, View parent, boolean isSemTypeFloating) {
-        boolean enabled = SelectionToolbarManager.isRemoteSelectionToolbarEnabled(context);
-        if (enabled) {
-            return new RemoteFloatingToolbarPopup(context, parent);
-        }
         return new LocalFloatingToolbarPopup(context, parent, isSemTypeFloating);
     }
 }

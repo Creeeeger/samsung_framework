@@ -14,7 +14,6 @@ public interface IKeyguardDismissCallback extends IInterface {
 
     void onDismissSucceeded() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardDismissCallback {
         @Override // com.android.internal.policy.IKeyguardDismissCallback
         public void onDismissError() throws RemoteException {
@@ -34,7 +33,6 @@ public interface IKeyguardDismissCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardDismissCallback {
         public static final String DESCRIPTOR = "com.android.internal.policy.IKeyguardDismissCallback";
         static final int TRANSACTION_onDismissCancelled = 3;
@@ -84,30 +82,26 @@ public interface IKeyguardDismissCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onDismissError();
+                    return true;
+                case 2:
+                    onDismissSucceeded();
+                    return true;
+                case 3:
+                    onDismissCancelled();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onDismissError();
-                            return true;
-                        case 2:
-                            onDismissSucceeded();
-                            return true;
-                        case 3:
-                            onDismissCancelled();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyguardDismissCallback {
+        private static class Proxy implements IKeyguardDismissCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

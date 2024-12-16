@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class NNFWFilter implements MediaFilter {
     private static final String TAG = Def.tagOf((Class<?>) NNFWFilter.class);
     protected NNFWDescriptor descriptor;
@@ -75,9 +75,8 @@ public abstract class NNFWFilter implements MediaFilter {
         }
         long triggerTs = System.currentTimeMillis();
         try {
-            ExecuteDelegator executeDelegator = this.executeDelegator;
-            if (executeDelegator != null) {
-                executeDelegator.execute(ibuf, obuf, new BiBufferProcessor() { // from class: com.samsung.android.sume.core.filter.NNFWFilter$$ExternalSyntheticLambda1
+            if (this.executeDelegator != null) {
+                this.executeDelegator.execute(ibuf, obuf, new BiBufferProcessor() { // from class: com.samsung.android.sume.core.filter.NNFWFilter$$ExternalSyntheticLambda1
                     @Override // com.samsung.android.sume.core.functional.BiBufferProcessor
                     public final void process(MediaBuffer mediaBuffer, MediaBuffer mediaBuffer2) {
                         NNFWFilter.this.runAdapter(mediaBuffer, mediaBuffer2);

@@ -9,7 +9,7 @@ import android.os.RemoteException;
 import android.view.ThreadedRenderer;
 import com.samsung.android.globalactions.presentation.viewmodel.DefaultActionNames;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IKerykeion extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.infoextraction.IKerykeion";
 
@@ -29,7 +29,6 @@ public interface IKerykeion extends IInterface {
 
     void training(String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKerykeion {
         @Override // com.samsung.android.infoextraction.IKerykeion
         public void start(int key, KerykeionRequest kRequest, Rect rect) throws RemoteException {
@@ -69,7 +68,6 @@ public interface IKerykeion extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKerykeion {
         static final int TRANSACTION_addResultRule = 8;
         static final int TRANSACTION_dismiss = 6;
@@ -133,68 +131,65 @@ public interface IKerykeion extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKerykeion.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKerykeion.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKerykeion.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    KerykeionRequest _arg1 = (KerykeionRequest) data.readTypedObject(KerykeionRequest.CREATOR);
+                    Rect _arg2 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    start(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stop(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    restart();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    IBinder _arg12 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    setInfoExtractionListener(_arg03, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    Rect _arg13 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    show(_arg04, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    dismiss();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    training(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg06 = data.readInt();
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    addResultRule(_arg06, _arg14);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            KerykeionRequest _arg1 = (KerykeionRequest) data.readTypedObject(KerykeionRequest.CREATOR);
-                            Rect _arg2 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            start(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            stop(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            restart();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            IBinder _arg12 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            setInfoExtractionListener(_arg03, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            Rect _arg13 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            show(_arg04, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            dismiss();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            training(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg06 = data.readInt();
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            addResultRule(_arg06, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IKerykeion {
             private IBinder mRemote;
 

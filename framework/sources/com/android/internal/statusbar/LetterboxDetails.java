@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes5.dex */
 public class LetterboxDetails implements Parcelable {
     public static final Parcelable.Creator<LetterboxDetails> CREATOR = new Parcelable.Creator<LetterboxDetails>() { // from class: com.android.internal.statusbar.LetterboxDetails.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LetterboxDetails[] newArray(int size) {
             return new LetterboxDetails[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LetterboxDetails createFromParcel(Parcel in) {
             return new LetterboxDetails(in);
@@ -47,9 +46,9 @@ public class LetterboxDetails implements Parcelable {
 
     public LetterboxDetails(Rect letterboxInnerBounds, Rect letterboxFullBounds, int appAppearance) {
         this.mLetterboxInnerBounds = letterboxInnerBounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) letterboxInnerBounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLetterboxInnerBounds);
         this.mLetterboxFullBounds = letterboxFullBounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) letterboxFullBounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLetterboxFullBounds);
         this.mAppAppearance = appAppearance;
     }
 
@@ -93,27 +92,10 @@ public class LetterboxDetails implements Parcelable {
         Rect letterboxFullBounds = (Rect) in.readTypedObject(Rect.CREATOR);
         int appAppearance = in.readInt();
         this.mLetterboxInnerBounds = letterboxInnerBounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) letterboxInnerBounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLetterboxInnerBounds);
         this.mLetterboxFullBounds = letterboxFullBounds;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) letterboxFullBounds);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mLetterboxFullBounds);
         this.mAppAppearance = appAppearance;
-    }
-
-    /* renamed from: com.android.internal.statusbar.LetterboxDetails$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LetterboxDetails> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LetterboxDetails[] newArray(int size) {
-            return new LetterboxDetails[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LetterboxDetails createFromParcel(Parcel in) {
-            return new LetterboxDetails(in);
-        }
     }
 
     @Deprecated

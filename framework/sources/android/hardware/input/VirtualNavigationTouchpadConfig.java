@@ -10,14 +10,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class VirtualNavigationTouchpadConfig extends VirtualInputDeviceConfig implements Parcelable {
     public static final Parcelable.Creator<VirtualNavigationTouchpadConfig> CREATOR = new Parcelable.Creator<VirtualNavigationTouchpadConfig>() { // from class: android.hardware.input.VirtualNavigationTouchpadConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualNavigationTouchpadConfig createFromParcel(Parcel in) {
             return new VirtualNavigationTouchpadConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualNavigationTouchpadConfig[] newArray(int size) {
             return new VirtualNavigationTouchpadConfig[size];
@@ -25,14 +24,6 @@ public final class VirtualNavigationTouchpadConfig extends VirtualInputDeviceCon
     };
     private final int mHeight;
     private final int mWidth;
-
-    /* synthetic */ VirtualNavigationTouchpadConfig(Builder builder, VirtualNavigationTouchpadConfigIA virtualNavigationTouchpadConfigIA) {
-        this(builder);
-    }
-
-    /* synthetic */ VirtualNavigationTouchpadConfig(Parcel parcel, VirtualNavigationTouchpadConfigIA virtualNavigationTouchpadConfigIA) {
-        this(parcel);
-    }
 
     private VirtualNavigationTouchpadConfig(Builder builder) {
         super(builder);
@@ -66,24 +57,11 @@ public final class VirtualNavigationTouchpadConfig extends VirtualInputDeviceCon
         dest.writeInt(this.mWidth);
     }
 
-    /* renamed from: android.hardware.input.VirtualNavigationTouchpadConfig$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualNavigationTouchpadConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualNavigationTouchpadConfig createFromParcel(Parcel in) {
-            return new VirtualNavigationTouchpadConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualNavigationTouchpadConfig[] newArray(int size) {
-            return new VirtualNavigationTouchpadConfig[size];
-        }
+    @Override // android.hardware.input.VirtualInputDeviceConfig
+    String additionalFieldsToString() {
+        return " width=" + this.mWidth + " height=" + this.mHeight;
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder extends VirtualInputDeviceConfig.Builder<Builder> {
         private final int mHeight;
         private final int mWidth;

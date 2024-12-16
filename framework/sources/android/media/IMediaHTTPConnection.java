@@ -21,7 +21,6 @@ public interface IMediaHTTPConnection extends IInterface {
 
     int readAt(long j, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaHTTPConnection {
         @Override // android.media.IMediaHTTPConnection
         public IBinder connect(String uri, String headers) throws RemoteException {
@@ -58,7 +57,6 @@ public interface IMediaHTTPConnection extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaHTTPConnection {
         public static final String DESCRIPTOR = "android.media.IMediaHTTPConnection";
         static final int TRANSACTION_connect = 1;
@@ -117,56 +115,52 @@ public interface IMediaHTTPConnection extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result = connect(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result);
+                    return true;
+                case 2:
+                    disconnect();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    long _arg02 = data.readLong();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = readAt(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 4:
+                    long _result3 = getSize();
+                    reply.writeNoException();
+                    reply.writeLong(_result3);
+                    return true;
+                case 5:
+                    String _result4 = getMIMEType();
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 6:
+                    String _result5 = getUri();
+                    reply.writeNoException();
+                    reply.writeString(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result = connect(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result);
-                            return true;
-                        case 2:
-                            disconnect();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            long _arg02 = data.readLong();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = readAt(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 4:
-                            long _result3 = getSize();
-                            reply.writeNoException();
-                            reply.writeLong(_result3);
-                            return true;
-                        case 5:
-                            String _result4 = getMIMEType();
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 6:
-                            String _result5 = getUri();
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMediaHTTPConnection {
+        private static class Proxy implements IMediaHTTPConnection {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

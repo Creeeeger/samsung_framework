@@ -7,13 +7,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.database.ContentObserver;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.inputmethodservice.AbstractInputMethodService;
@@ -26,6 +24,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.SystemClock;
 import android.os.SystemProperties;
@@ -33,14 +32,13 @@ import android.os.Trace;
 import android.provider.Settings;
 import android.text.Layout;
 import android.text.Spannable;
+import android.text.TextUtils;
 import android.text.method.MovementMethod;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.util.Xml;
 import android.util.proto.ProtoOutputStream;
-import android.view.BatchedInputEventReceiver;
-import android.view.Choreographer;
 import android.view.InputChannel;
 import android.view.InputEvent;
 import android.view.InputEventReceiver;
@@ -77,7 +75,9 @@ import android.widget.TextView;
 import android.window.CompatOnBackInvokedCallback;
 import android.window.ImeOnBackInvokedDispatcher;
 import android.window.WindowMetricsHelper;
+import com.android.input.flags.Flags;
 import com.android.internal.R;
+import com.android.internal.inputmethod.IConnectionlessHandwritingCallback;
 import com.android.internal.inputmethod.IInlineSuggestionsRequestCallback;
 import com.android.internal.inputmethod.IInputContentUriToken;
 import com.android.internal.inputmethod.IInputMethod;
@@ -87,6 +87,7 @@ import com.android.internal.inputmethod.InlineSuggestionsRequestInfo;
 import com.android.internal.inputmethod.InputMethodPrivilegedOperations;
 import com.android.internal.inputmethod.InputMethodPrivilegedOperationsRegistry;
 import com.android.internal.util.RingBuffer;
+import com.samsung.android.rune.ViewRune;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -117,12 +118,14 @@ public class InputMethodService extends AbstractInputMethodService {
     public static final int BACK_DISPOSITION_WILL_NOT_DISMISS = 1;
     static final boolean DEBUG = false;
     public static final long DISALLOW_INPUT_METHOD_INTERFACE_OVERRIDE = 148086656;
+    public static final boolean ENABLE_HIDE_IME_CAPTION_BAR = true;
     public static final long FINISH_INPUT_NO_FALLBACK_CONNECTION = 156215187;
     public static final int IME_ACTIVE = 1;
     public static final int IME_INVISIBLE = 4;
     public static final int IME_VISIBLE = 2;
     public static final int IME_VISIBLE_IMPERCEPTIBLE = 8;
     private static final int MAX_EVENTS_BUFFER = 500;
+    private static final boolean MINIMIZED_IME_INSET_ANIM = SystemProperties.getBoolean("persist.wm.enable.minimized_ime.anim", false);
     static final int MOVEMENT_DOWN = -1;
     static final int MOVEMENT_UP = -2;
     private static final String PROP_CAN_RENDER_GESTURAL_NAV_BUTTONS = "persist.sys.ime.can_render_gestural_nav_buttons";
@@ -135,6 +138,7 @@ public class InputMethodService extends AbstractInputMethodService {
     FrameLayout mCandidatesFrame;
     boolean mCandidatesViewStarted;
     int mCandidatesVisibility;
+    private IConnectionlessHandwritingCallback mConnectionlessHandwritingCallback;
     CompletionInfo[] mCurCompletions;
     private IBinder mCurHideInputToken;
     private IBinder mCurShowInputToken;
@@ -154,8 +158,8 @@ public class InputMethodService extends AbstractInputMethodService {
     boolean mFullscreenApplied;
     ViewGroup mFullscreenArea;
     private Handler mHandler;
+    private CharSequence mHandwritingDelegationText;
     private InputEventReceiver mHandwritingEventReceiver;
-    private boolean mHideNavBarForKeyboard;
     private ImeOnBackInvokedDispatcher mImeDispatcher;
     private Runnable mImeSurfaceRemoverRunnable;
     InputMethodManager mImm;
@@ -171,7 +175,7 @@ public class InputMethodService extends AbstractInputMethodService {
     boolean mInputStarted;
     View mInputView;
     boolean mInputViewStarted;
-    private boolean mIsAutomotive;
+    private boolean mIsConnectionlessHandwritingForDelegation;
     boolean mIsFullscreen;
     boolean mIsInputViewShown;
     private boolean mIsLastWindowVisible;
@@ -195,13 +199,14 @@ public class InputMethodService extends AbstractInputMethodService {
     SoftInputWindow mWindow;
     boolean mWindowVisible;
     private boolean mBackCallbackRegistered = false;
-    private final CompatOnBackInvokedCallback mCompatBackCallback = new CompatOnBackInvokedCallback() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda4
+    private final CompatOnBackInvokedCallback mCompatBackCallback = new CompatOnBackInvokedCallback() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda2
         @Override // android.window.CompatOnBackInvokedCallback, android.window.OnBackInvokedCallback
         public final void onBackInvoked() {
             InputMethodService.this.compatHandleBack();
         }
     };
     private long mStylusHwSessionsTimeout = 10000;
+    private boolean mUsingCtrlShiftShortcut = false;
     private InputMethodPrivilegedOperations mPrivOps = new InputMethodPrivilegedOperations();
     private final NavigationBarController mNavigationBarController = new NavigationBarController(this);
     int mTheme = 0;
@@ -211,25 +216,23 @@ public class InputMethodService extends AbstractInputMethodService {
     private OptionalInt mHandwritingRequestId = OptionalInt.empty();
     private ImsConfigurationTracker mConfigTracker = new ImsConfigurationTracker();
     boolean minimized = false;
-    boolean needSetlayout = false;
+    boolean needSetLayout = false;
+    int mMinimizedHeight = 0;
     private int mCurrentNightMode = 0;
     private int mCurrentOrientation = 1;
-    final ViewTreeObserver.OnComputeInternalInsetsListener mInsetsComputer = new ViewTreeObserver.OnComputeInternalInsetsListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda5
+    final ViewTreeObserver.OnComputeInternalInsetsListener mInsetsComputer = new ViewTreeObserver.OnComputeInternalInsetsListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda3
         @Override // android.view.ViewTreeObserver.OnComputeInternalInsetsListener
         public final void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo internalInsetsInfo) {
             InputMethodService.this.lambda$new$0(internalInsetsInfo);
         }
     };
-    final View.OnClickListener mActionClickListener = new View.OnClickListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda6
+    final View.OnClickListener mActionClickListener = new View.OnClickListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda4
         @Override // android.view.View.OnClickListener
         public final void onClick(View view) {
             InputMethodService.this.lambda$new$1(view);
         }
     };
     private final ImeTracing.ServiceDumper mDumper = new ImeTracing.ServiceDumper() { // from class: android.inputmethodservice.InputMethodService.2
-        AnonymousClass2() {
-        }
-
         @Override // com.android.internal.inputmethod.ImeTracing.ServiceDumper
         public void dumpToProto(ProtoOutputStream proto, byte[] icProto) {
             long token = proto.start(1146756268035L);
@@ -268,7 +271,6 @@ public class InputMethodService extends AbstractInputMethodService {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface BackDispositionMode {
     }
 
@@ -276,8 +278,10 @@ public class InputMethodService extends AbstractInputMethodService {
         return SystemProperties.getBoolean(PROP_CAN_RENDER_GESTURAL_NAV_BUTTONS, false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(ViewTreeObserver.InternalInsetsInfo info) {
         onComputeInsets(this.mTmpInsets);
+        this.mNavigationBarController.updateInsets(this.mTmpInsets);
         if (!this.mViewsCreated) {
             this.mTmpInsets.visibleTopInsets = 0;
         }
@@ -296,12 +300,18 @@ public class InputMethodService extends AbstractInputMethodService {
             info.touchableRegion.set(this.mTmpInsets.touchableRegion);
             info.setTouchableInsets(this.mTmpInsets.touchableInsets);
         }
+        if (MINIMIZED_IME_INSET_ANIM) {
+            info.minimizedInsets.top = this.mMinimizedHeight;
+            info.contentInsets.top += this.mMinimizedHeight;
+            info.visibleInsets.top += this.mMinimizedHeight;
+        }
         this.mNavigationBarController.updateTouchableInsets(this.mTmpInsets, info);
         if (this.mInputFrame != null) {
             setImeExclusionRect(this.mTmpInsets.visibleTopInsets);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$1(View v) {
         EditorInfo ei = getCurrentInputEditorInfo();
         InputConnection ic = getCurrentInputConnection();
@@ -314,8 +324,8 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
-    /* loaded from: classes2.dex */
     public class InputMethodImpl extends AbstractInputMethodService.AbstractInputMethodImpl {
+        private boolean mSimultaneousStylusAndTouchEnabled;
         private boolean mSystemCallingHideSoftInput;
         private boolean mSystemCallingShowSoftInput;
 
@@ -410,26 +420,32 @@ public class InputMethodService extends AbstractInputMethodService {
             this.mSystemCallingHideSoftInput = true;
             InputMethodService.this.mCurHideInputToken = hideInputToken;
             InputMethodService.this.mCurStatsToken = statsToken;
-            hideSoftInput(flags, resultReceiver);
-            InputMethodService.this.mCurStatsToken = null;
-            InputMethodService.this.mCurHideInputToken = null;
-            this.mSystemCallingHideSoftInput = false;
+            try {
+                hideSoftInput(flags, resultReceiver);
+            } finally {
+                InputMethodService.this.mCurHideInputToken = null;
+                this.mSystemCallingHideSoftInput = false;
+            }
         }
 
         @Override // android.view.inputmethod.InputMethod
         public void hideSoftInput(int flags, ResultReceiver resultReceiver) {
-            ImeTracker.forLogging().onProgress(InputMethodService.this.mCurStatsToken, 14);
             Log.i(InputMethod.TAG, "hideSoftInput(): flags=" + flags);
+            int i = 0;
+            ImeTracker.Token statsToken = InputMethodService.this.mCurStatsToken != null ? InputMethodService.this.mCurStatsToken : InputMethodService.this.createStatsToken(false, 41, ImeTracker.isFromUser(InputMethodService.this.mRootView));
+            InputMethodService.this.mCurStatsToken = null;
             if (InputMethodService.this.getApplicationInfo().targetSdkVersion >= 30 && !this.mSystemCallingHideSoftInput) {
                 Log.e(InputMethod.TAG, "IME shouldn't call hideSoftInput on itself. Use requestHideSelf(int) itself");
+                ImeTracker.forLogging().onFailed(statsToken, 14);
                 return;
             }
+            ImeTracker.forLogging().onProgress(statsToken, 14);
+            Trace.traceBegin(32L, "IMS.hideSoftInput");
             ImeTracing.getInstance().triggerServiceDump("InputMethodService.InputMethodImpl#hideSoftInput", InputMethodService.this.mDumper, null);
             boolean wasVisible = InputMethodService.this.isInputViewShown();
-            Trace.traceBegin(32L, "IMS.hideSoftInput");
-            int i = 0;
             InputMethodService.this.mShowInputFlags = 0;
             InputMethodService.this.mShowInputRequested = false;
+            InputMethodService.this.mCurStatsToken = statsToken;
             InputMethodService.this.hideWindow();
             boolean isVisible = InputMethodService.this.isInputViewShown();
             boolean visibilityChanged = isVisible != wasVisible;
@@ -445,14 +461,13 @@ public class InputMethodService extends AbstractInputMethodService {
         }
 
         @Override // android.view.inputmethod.InputMethod
-        public void showSoftInputWithToken(int i, ResultReceiver resultReceiver, IBinder iBinder, ImeTracker.Token token) {
+        public void showSoftInputWithToken(int flags, ResultReceiver resultReceiver, IBinder showInputToken, ImeTracker.Token statsToken) {
             this.mSystemCallingShowSoftInput = true;
-            InputMethodService.this.mCurShowInputToken = iBinder;
-            InputMethodService.this.mCurStatsToken = token;
+            InputMethodService.this.mCurShowInputToken = showInputToken;
+            InputMethodService.this.mCurStatsToken = statsToken;
             try {
-                showSoftInput(i, resultReceiver);
+                showSoftInput(flags, resultReceiver);
             } finally {
-                InputMethodService.this.mCurStatsToken = null;
                 InputMethodService.this.mCurShowInputToken = null;
                 this.mSystemCallingShowSoftInput = false;
             }
@@ -460,29 +475,32 @@ public class InputMethodService extends AbstractInputMethodService {
 
         @Override // android.view.inputmethod.InputMethod
         public void showSoftInput(int flags, ResultReceiver resultReceiver) {
-            ImeTracker.forLogging().onProgress(InputMethodService.this.mCurStatsToken, 13);
             Log.i(InputMethod.TAG, "showSoftInput(): flags=" + flags);
+            int i = 1;
+            ImeTracker.Token statsToken = InputMethodService.this.mCurStatsToken != null ? InputMethodService.this.mCurStatsToken : InputMethodService.this.createStatsToken(true, 40, ImeTracker.isFromUser(InputMethodService.this.mRootView));
+            InputMethodService.this.mCurStatsToken = null;
             if (InputMethodService.this.getApplicationInfo().targetSdkVersion >= 30 && !this.mSystemCallingShowSoftInput) {
-                Log.e(InputMethod.TAG, " IME shouldn't call showSoftInput on itself. Use requestShowSelf(int) itself");
+                Log.e(InputMethod.TAG, "IME shouldn't call showSoftInput on itself. Use requestShowSelf(int) itself");
+                ImeTracker.forLogging().onFailed(statsToken, 13);
                 return;
             }
+            ImeTracker.forLogging().onProgress(statsToken, 13);
             Trace.traceBegin(32L, "IMS.showSoftInput");
             ImeTracing.getInstance().triggerServiceDump("InputMethodService.InputMethodImpl#showSoftInput", InputMethodService.this.mDumper, null);
             boolean wasVisible = InputMethodService.this.isInputViewShown();
-            if (InputMethodService.this.needSetlayout || InputMethodService.this.minimized) {
+            if (InputMethodService.this.needSetLayout || InputMethodService.this.minimized) {
                 InputMethodService.this.mWindow.getWindow().setLayout(-1, -2);
                 unMinimizeSoftInput();
-                InputMethodService.this.needSetlayout = false;
+                InputMethodService.this.needSetLayout = false;
             }
-            int i = 1;
             if (InputMethodService.this.dispatchOnShowInputRequested(flags, false)) {
-                ImeTracker.forLogging().onProgress(InputMethodService.this.mCurStatsToken, 15);
+                ImeTracker.forLogging().onProgress(statsToken, 15);
+                InputMethodService.this.mCurStatsToken = statsToken;
                 InputMethodService.this.showWindow(true);
             } else {
-                ImeTracker.forLogging().onFailed(InputMethodService.this.mCurStatsToken, 15);
+                ImeTracker.forLogging().onFailed(statsToken, 15);
             }
-            InputMethodService inputMethodService = InputMethodService.this;
-            inputMethodService.setImeWindowStatus(inputMethodService.mapToImeWindowStatus(), InputMethodService.this.mBackDisposition);
+            InputMethodService.this.setImeWindowStatus(InputMethodService.this.mapToImeWindowStatus(), InputMethodService.this.mBackDisposition);
             boolean isVisible = InputMethodService.this.isInputViewShown();
             boolean visibilityChanged = isVisible != wasVisible;
             if (resultReceiver != null) {
@@ -499,11 +517,11 @@ public class InputMethodService extends AbstractInputMethodService {
 
         @Override // android.view.inputmethod.InputMethod
         public void updateEditorToolType(int toolType) {
-            InputMethodService.this.onUpdateEditorToolType(toolType);
+            InputMethodService.this.updateEditorToolTypeInternal(toolType);
         }
 
         @Override // android.view.inputmethod.InputMethod
-        public void canStartStylusHandwriting(int requestId) {
+        public void canStartStylusHandwriting(int requestId, IConnectionlessHandwritingCallback connectionlessCallback, CursorAnchorInfo cursorAnchorInfo, boolean isConnectionlessForDelegation) {
             if (InputMethodService.this.mHandwritingRequestId.isPresent()) {
                 Log.d(InputMethod.TAG, "There is an ongoing Handwriting session. ignoring.");
                 return;
@@ -520,6 +538,23 @@ public class InputMethodService extends AbstractInputMethodService {
                 InputMethodService.this.onPrepareStylusHandwriting();
             }
             InputMethodService.this.mOnPreparedStylusHwCalled = false;
+            if (connectionlessCallback != null) {
+                if (InputMethodService.this.onStartConnectionlessStylusHandwriting(1, cursorAnchorInfo)) {
+                    InputMethodService.this.mConnectionlessHandwritingCallback = connectionlessCallback;
+                    InputMethodService.this.mIsConnectionlessHandwritingForDelegation = isConnectionlessForDelegation;
+                    InputMethodService.this.cancelStylusWindowIdleTimeout();
+                    InputMethodService.this.mPrivOps.onStylusHandwritingReady(requestId, Process.myPid());
+                    return;
+                }
+                Log.i(InputMethod.TAG, "IME is not ready or doesn't currently support connectionless handwriting");
+                try {
+                    connectionlessCallback.onError(1);
+                    return;
+                } catch (RemoteException e) {
+                    Log.e(InputMethod.TAG, "Couldn't send connectionless handwriting error result", e);
+                    return;
+                }
+            }
             if (InputMethodService.this.onStartStylusHandwriting()) {
                 InputMethodService.this.cancelStylusWindowIdleTimeout();
                 InputMethodService.this.mPrivOps.onStylusHandwritingReady(requestId, Process.myPid());
@@ -538,31 +573,58 @@ public class InputMethodService extends AbstractInputMethodService {
             InputMethodService.this.mHandwritingRequestId = OptionalInt.of(requestId);
             InputMethodService.this.mShowInputRequested = false;
             InputMethodService.this.mInkWindow.show();
-            final InputMethodService inputMethodService = InputMethodService.this;
+            this.mSimultaneousStylusAndTouchEnabled = Flags.enableMultiDeviceInput();
             stylusEvents.forEach(new Consumer() { // from class: android.inputmethodservice.InputMethodService$InputMethodImpl$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    InputMethodService.this.onStylusHandwritingMotionEvent((MotionEvent) obj);
+                    InputMethodService.InputMethodImpl.this.deliverStylusHandwritingMotionEvent((MotionEvent) obj);
                 }
             });
-            InputMethodService.this.mHandwritingEventReceiver = new BatchedInputEventReceiver.SimpleBatchedInputEventReceiver(channel, Looper.getMainLooper(), Choreographer.getInstance(), new BatchedInputEventReceiver.SimpleBatchedInputEventReceiver.InputEventListener() { // from class: android.inputmethodservice.InputMethodService$InputMethodImpl$$ExternalSyntheticLambda1
-                @Override // android.view.BatchedInputEventReceiver.SimpleBatchedInputEventReceiver.InputEventListener
-                public final boolean onInputEvent(InputEvent inputEvent) {
-                    boolean lambda$startStylusHandwriting$0;
-                    lambda$startStylusHandwriting$0 = InputMethodService.InputMethodImpl.this.lambda$startStylusHandwriting$0(inputEvent);
-                    return lambda$startStylusHandwriting$0;
+            InputMethodService.this.mHandwritingEventReceiver = new InputEventReceiver(channel, Looper.getMainLooper()) { // from class: android.inputmethodservice.InputMethodService.InputMethodImpl.1
+                @Override // android.view.InputEventReceiver
+                public void onInputEvent(InputEvent event) {
+                    boolean handled = false;
+                    try {
+                        if (event instanceof MotionEvent) {
+                            MotionEvent motionEvent = (MotionEvent) event;
+                            if (motionEvent.isStylusPointer()) {
+                                InputMethodImpl.this.deliverStylusHandwritingMotionEvent(motionEvent);
+                                InputMethodService.this.scheduleHandwritingSessionTimeout();
+                                handled = true;
+                            }
+                        }
+                    } finally {
+                        finishInputEvent(event, handled);
+                    }
                 }
-            });
+            };
             InputMethodService.this.scheduleHandwritingSessionTimeout();
         }
 
-        public /* synthetic */ boolean lambda$startStylusHandwriting$0(InputEvent event) {
-            if (!(event instanceof MotionEvent)) {
-                return false;
+        /* JADX INFO: Access modifiers changed from: private */
+        public void deliverStylusHandwritingMotionEvent(MotionEvent motionEvent) {
+            InputMethodService.this.onStylusHandwritingMotionEvent(motionEvent);
+            if (!this.mSimultaneousStylusAndTouchEnabled) {
             }
-            InputMethodService.this.onStylusHandwritingMotionEvent((MotionEvent) event);
-            InputMethodService.this.scheduleHandwritingSessionTimeout();
-            return true;
+            switch (motionEvent.getAction()) {
+                case 0:
+                    InputMethodService.this.mPrivOps.setHandwritingSurfaceNotTouchable(false);
+                    break;
+                case 1:
+                case 3:
+                    InputMethodService.this.mPrivOps.setHandwritingSurfaceNotTouchable(true);
+                    break;
+            }
+        }
+
+        @Override // android.view.inputmethod.InputMethod
+        public void commitHandwritingDelegationTextIfAvailable() {
+            InputMethodService.this.commitHandwritingDelegationTextIfAvailable();
+        }
+
+        @Override // android.view.inputmethod.InputMethod
+        public void discardHandwritingDelegationText() {
+            InputMethodService.this.discardHandwritingDelegationText();
         }
 
         @Override // android.view.inputmethod.InputMethod
@@ -627,6 +689,10 @@ public class InputMethodService extends AbstractInputMethodService {
             InputMethodService.this.mWindow.setMinimizeFlag(InputMethodService.this.minimized);
             Log.v(InputMethod.TAG, "height is " + height2);
             InputMethodService.this.doMinimizeSoftInput(height2);
+            if (InputMethodService.MINIMIZED_IME_INSET_ANIM) {
+                InputMethodService.this.mMinimizedHeight = InputMethodService.this.setMinimizeSoftInputInsets();
+                Log.d(InputMethod.TAG, "minimizeSoftInput: set mMinimizedHeight=" + InputMethodService.this.mMinimizedHeight);
+            }
         }
 
         @Override // android.view.inputmethod.InputMethod
@@ -635,7 +701,7 @@ public class InputMethodService extends AbstractInputMethodService {
                 InputMethodService.this.minimized = false;
                 InputMethodService.this.mWindow.setMinimizeFlag(InputMethodService.this.minimized);
             }
-            InputMethodService.this.undoMinimizeSoftInput();
+            InputMethodService.this.undoMinimizeSoftInputWrapper();
         }
     }
 
@@ -647,11 +713,11 @@ public class InputMethodService extends AbstractInputMethodService {
         return false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public IBinder getHostInputToken() {
         ViewRootImpl viewRoot = null;
-        View view = this.mRootView;
-        if (view != null) {
-            viewRoot = view.getViewRootImpl();
+        if (this.mRootView != null) {
+            viewRoot = this.mRootView.getViewRootImpl();
         }
         if (viewRoot == null) {
             return null;
@@ -659,6 +725,7 @@ public class InputMethodService extends AbstractInputMethodService {
         return viewRoot.getInputToken();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleImeSurfaceRemoval() {
         if (this.mShowInputRequested || this.mWindowVisible || this.mWindow == null || this.mImeSurfaceRemoverRunnable != null) {
             Log.i(TAG, "scheduleImeSurfaceRemoval: canceled, mShowInputRequested=" + this.mShowInputRequested + ", mWindowVisible=" + this.mWindowVisible + ", IsmWindowNull=" + (this.mWindow == null) + ", IsmImeSurfaceRemoverRunnableNotNull=" + (this.mImeSurfaceRemoverRunnable != null));
@@ -671,24 +738,23 @@ public class InputMethodService extends AbstractInputMethodService {
             lambda$scheduleImeSurfaceRemoval$2();
             return;
         }
-        Runnable runnable = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda1
+        this.mImeSurfaceRemoverRunnable = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda7
             @Override // java.lang.Runnable
             public final void run() {
                 InputMethodService.this.lambda$scheduleImeSurfaceRemoval$2();
             }
         };
-        this.mImeSurfaceRemoverRunnable = runnable;
-        this.mHandler.postDelayed(runnable, TIMEOUT_SURFACE_REMOVAL_MILLIS);
+        this.mHandler.postDelayed(this.mImeSurfaceRemoverRunnable, TIMEOUT_SURFACE_REMOVAL_MILLIS);
         Log.i(TAG, "scheduleImeSurfaceRemoval: removeImeSurface is posted.");
     }
 
-    /* renamed from: removeImeSurface */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: removeImeSurface, reason: merged with bridge method [inline-methods] */
     public void lambda$scheduleImeSurfaceRemoval$2() {
         Log.i(TAG, "removeImeSurface");
         cancelImeSurfaceRemoval();
-        SoftInputWindow softInputWindow = this.mWindow;
-        if (softInputWindow != null) {
-            softInputWindow.hide();
+        if (this.mWindow != null) {
+            this.mWindow.hide();
         }
     }
 
@@ -700,6 +766,7 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mImeSurfaceRemoverRunnable = null;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setImeWindowStatus(int visibilityFlags, int backDisposition) {
         this.mPrivOps.setImeWindowStatusAsync(visibilityFlags, backDisposition);
     }
@@ -713,7 +780,14 @@ public class InputMethodService extends AbstractInputMethodService {
         rootView.setSystemGestureExclusionRects(exclusionRects);
     }
 
-    /* loaded from: classes2.dex */
+    /* JADX INFO: Access modifiers changed from: private */
+    public void updateEditorToolTypeInternal(int toolType) {
+        if (android.view.inputmethod.Flags.useHandwritingListenerForTooltype() && this.mInputEditorInfo != null) {
+            this.mInputEditorInfo.setInitialToolType(toolType);
+        }
+        onUpdateEditorToolType(toolType);
+    }
+
     public class InputMethodSessionImpl extends AbstractInputMethodService.AbstractInputMethodSessionImpl {
         public InputMethodSessionImpl() {
             super();
@@ -759,7 +833,7 @@ public class InputMethodService extends AbstractInputMethodService {
             }
             if (InputMethodService.this.minimized) {
                 InputMethodService.this.mWindow.getWindow().setLayout(-1, -2);
-                InputMethodService.this.undoMinimizeSoftInput();
+                InputMethodService.this.undoMinimizeSoftInputWrapper();
                 InputMethodService.this.minimized = false;
                 InputMethodService.this.mWindow.setMinimizeFlag(InputMethodService.this.minimized);
             }
@@ -779,7 +853,11 @@ public class InputMethodService extends AbstractInputMethodService {
             if (!isEnabled()) {
                 return;
             }
-            InputMethodService.this.onAppPrivateCommand(action, data);
+            if (ViewRune.SUPPORT_WRITING_TOOLKIT && SemInputMethodManagerUtils.ACTION_SHOW_TOOLKIT_HBD.equals(action)) {
+                InputMethodService.this.switchInputMethod(SemInputMethodManagerUtils.METHOD_ID_TOOLKIT_HONEYBOARD);
+            } else {
+                InputMethodService.this.onAppPrivateCommand(action, data);
+            }
         }
 
         @Override // android.view.inputmethod.InputMethodSession
@@ -815,7 +893,6 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Insets {
         public static final int TOUCHABLE_INSETS_CONTENT = 1;
         public static final int TOUCHABLE_INSETS_FRAME = 0;
@@ -826,6 +903,7 @@ public class InputMethodService extends AbstractInputMethodService {
         public final Region touchableRegion = new Region();
         public int visibleTopInsets;
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void dumpDebug(ProtoOutputStream proto, long fieldId) {
             long token = proto.start(fieldId);
             proto.write(1120986464257L, this.contentTopInsets);
@@ -836,14 +914,12 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class SettingsObserver extends ContentObserver {
+    private static final class SettingsObserver extends ContentObserver {
         static SemDesktopModeManagerWrapper sDesktopModeManagerWrapper;
         private final InputMethodService mService;
         private int mShowImeWithHardKeyboard;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         private @interface ShowImeWithHardKeyboardType {
             public static final int FALSE = 1;
             public static final int TRUE = 2;
@@ -859,9 +935,8 @@ public class InputMethodService extends AbstractInputMethodService {
         public static SettingsObserver createAndRegister(InputMethodService service) {
             SettingsObserver observer = new SettingsObserver(service);
             service.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD), false, observer);
-            SemDesktopModeManagerWrapper semDesktopModeManagerWrapper = new SemDesktopModeManagerWrapper(service);
-            sDesktopModeManagerWrapper = semDesktopModeManagerWrapper;
-            if (semDesktopModeManagerWrapper.shouldRegisterContentObserver(service)) {
+            sDesktopModeManagerWrapper = new SemDesktopModeManagerWrapper(service);
+            if (sDesktopModeManagerWrapper.shouldRegisterContentObserver(service)) {
                 service.getContentResolver().registerContentObserver(SemDesktopModeManagerWrapper.getDexKeyboardSettingsUri(), false, observer);
             }
             return observer;
@@ -871,6 +946,7 @@ public class InputMethodService extends AbstractInputMethodService {
             this.mService.getContentResolver().unregisterContentObserver(this);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean shouldShowImeWithHardKeyboard() {
             if (this.mShowImeWithHardKeyboard == 0) {
                 this.mShowImeWithHardKeyboard = Settings.Secure.getInt(this.mService.getContentResolver(), Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD, 0) != 0 ? 2 : 1;
@@ -936,34 +1012,23 @@ public class InputMethodService extends AbstractInputMethodService {
 
     @Override // android.app.Service
     public void onCreate() {
-        Log.i(TAG, "onCreate");
+        Log.i(TAG, "onCreate: pkg=" + getPackageName());
         if (methodIsOverridden("onCreateInputMethodSessionInterface", new Class[0]) && CompatChanges.isChangeEnabled(DISALLOW_INPUT_METHOD_INTERFACE_OVERRIDE)) {
             throw new LinkageError("InputMethodService#onCreateInputMethodSessionInterface() can no longer be overridden!");
         }
         Trace.traceBegin(32L, "IMS.onCreate");
-        int selectSystemTheme = Resources.selectSystemTheme(this.mTheme, getApplicationInfo().targetSdkVersion, 16973908, 16973951, 16974142, 16974142);
-        this.mTheme = selectSystemTheme;
-        super.setTheme(selectSystemTheme);
+        this.mTheme = Resources.selectSystemTheme(this.mTheme, getApplicationInfo().targetSdkVersion, 16973908, 16973951, 16974142, 16974142);
+        super.setTheme(this.mTheme);
         super.onCreate();
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        SettingsObserver createAndRegister = SettingsObserver.createAndRegister(this);
-        this.mSettingsObserver = createAndRegister;
-        createAndRegister.shouldShowImeWithHardKeyboard();
-        this.mHideNavBarForKeyboard = getApplicationContext().getResources().getBoolean(R.bool.config_hideNavBarForKeyboard);
+        this.mSettingsObserver = SettingsObserver.createAndRegister(this);
+        this.mSettingsObserver.shouldShowImeWithHardKeyboard();
+        boolean hideNavBarForKeyboard = getApplicationContext().getResources().getBoolean(R.bool.config_hideNavBarForKeyboard);
         initConfigurationTracker();
-        if (SemImsUtils.isHoneyboard(getPackageName())) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("display_id", this.mImm.getCurTokenDisplayId());
-            onAppPrivateCommand("DISPLAY_ID", bundle);
-        }
-        Context createDisplayContextAndSetTheme = SemImsUtils.createDisplayContextAndSetTheme(this, this.mTheme, this.mImm);
-        this.mTargetDisplayContext = createDisplayContextAndSetTheme;
-        this.mInflater = (LayoutInflater) createDisplayContextAndSetTheme.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Trace.traceBegin(32L, "IMS.initSoftInputWindow");
-        SoftInputWindow softInputWindow = new SoftInputWindow(this.mTargetDisplayContext, this.mTheme, this.mDispatcherState);
-        this.mWindow = softInputWindow;
+        sendDisplayIdForDex();
+        handleSipDualView();
         if (this.mImeDispatcher != null) {
-            softInputWindow.getOnBackInvokedDispatcher().setImeOnBackInvokedDispatcher(this.mImeDispatcher);
+            this.mWindow.getOnBackInvokedDispatcher().setImeOnBackInvokedDispatcher(this.mImeDispatcher);
         }
         this.mNavigationBarController.onSoftInputWindowCreated(this.mWindow);
         Window window = this.mWindow.getWindow();
@@ -976,11 +1041,10 @@ public class InputMethodService extends AbstractInputMethodService {
         lp.setFitInsetsTypes(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
         lp.setFitInsetsSides(WindowInsets.Side.all() & (-9));
         lp.receiveInsetsIgnoringZOrder = true;
-        lp.setFitInsetsIgnoringVisibility(true);
-        lp.preferredMinDisplayRefreshRate = 60.0f;
+        handleSepKeyboardLayoutParams(lp);
         window.setAttributes(lp);
         window.setFlags(-2147483384, -2147483382);
-        if (this.mHideNavBarForKeyboard) {
+        if (hideNavBarForKeyboard) {
             window.setDecorFitsSystemWindows(false);
         }
         initViews();
@@ -1003,7 +1067,7 @@ public class InputMethodService extends AbstractInputMethodService {
                 InputMethodService.this.onInlineSuggestionsResponse((InlineSuggestionsResponse) obj);
             }
         });
-        undoMinimizeSoftInput();
+        undoMinimizeSoftInputWrapper();
         Configuration currentConfig = getResources().getConfiguration();
         this.mCurrentNightMode = currentConfig.uiMode & 48;
         this.mCurrentOrientation = currentConfig.orientation;
@@ -1061,9 +1125,8 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mShowInputRequested = false;
         this.mShowInputFlags = 0;
         this.mThemeAttrs = obtainStyledAttributes(android.R.styleable.InputMethodService);
-        View inflate = this.mInflater.inflate(R.layout.input_method, (ViewGroup) null);
-        this.mRootView = inflate;
-        this.mWindow.setContentView(inflate);
+        this.mRootView = this.mInflater.inflate(R.layout.input_method, (ViewGroup) null);
+        this.mWindow.setContentView(this.mRootView);
         this.mRootView.getViewTreeObserver().addOnComputeInternalInsetsListener(this.mInsetsComputer);
         this.mFullscreenArea = (ViewGroup) this.mRootView.findViewById(R.id.fullscreenArea);
         this.mExtractViewHidden = false;
@@ -1078,9 +1141,8 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mInputView = null;
         this.mIsInputViewShown = false;
         this.mExtractFrame.setVisibility(8);
-        int candidatesHiddenVisibility = getCandidatesHiddenVisibility();
-        this.mCandidatesVisibility = candidatesHiddenVisibility;
-        this.mCandidatesFrame.setVisibility(candidatesHiddenVisibility);
+        this.mCandidatesVisibility = getCandidatesHiddenVisibility();
+        this.mCandidatesFrame.setVisibility(this.mCandidatesVisibility);
         this.mInputFrame.setVisibility(8);
         this.mNavigationBarController.onViewInitialized();
         Trace.traceEnd(32L);
@@ -1096,14 +1158,12 @@ public class InputMethodService extends AbstractInputMethodService {
         doFinishInput();
         this.mNavigationBarController.onDestroy();
         this.mWindow.dismissForDestroyIfNecessary();
-        SettingsObserver settingsObserver = this.mSettingsObserver;
-        if (settingsObserver != null) {
-            settingsObserver.unregister();
+        if (this.mSettingsObserver != null) {
+            this.mSettingsObserver.unregister();
             this.mSettingsObserver = null;
         }
-        IBinder iBinder = this.mToken;
-        if (iBinder != null) {
-            InputMethodPrivilegedOperationsRegistry.remove(iBinder);
+        if (this.mToken != null) {
+            InputMethodPrivilegedOperationsRegistry.remove(this.mToken);
         }
         this.mImeDispatcher = null;
     }
@@ -1111,7 +1171,7 @@ public class InputMethodService extends AbstractInputMethodService {
     @Override // android.window.WindowProviderService, android.app.Service, android.content.ComponentCallbacks
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        this.mConfigTracker.onConfigurationChanged(newConfig, new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda2
+        this.mConfigTracker.onConfigurationChanged(newConfig, new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda5
             @Override // java.lang.Runnable
             public final void run() {
                 InputMethodService.this.resetStateForNewConfiguration();
@@ -1128,6 +1188,7 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void resetStateForNewConfiguration() {
         Trace.traceBegin(32L, "IMS.resetStateForNewConfiguration");
         boolean visible = this.mDecorViewVisible;
@@ -1144,18 +1205,18 @@ public class InputMethodService extends AbstractInputMethodService {
         if (visible) {
             if (showingInput) {
                 if (dispatchOnShowInputRequested(showFlags, true)) {
-                    showWindow(true);
+                    showWindowWithToken(true, 44);
                     if (completions != null) {
                         this.mCurCompletions = completions;
                         onDisplayCompletions(completions);
                     }
                 } else {
-                    hideWindow();
+                    hideWindowWithToken(44);
                 }
             } else if (this.mCandidatesVisibility == 0) {
-                showWindow(false);
+                showWindowWithToken(false, 44);
             } else {
-                hideWindow();
+                hideWindowWithToken(44);
             }
             boolean showing = onEvaluateInputViewShown();
             setImeWindowStatus((showing ? 2 : 0) | 1, this.mBackDisposition);
@@ -1236,6 +1297,7 @@ public class InputMethodService extends AbstractInputMethodService {
         return this.mInputEditorInfo;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void reportFullscreenMode() {
         this.mPrivOps.reportFullscreenModeAsync(this.mIsFullscreen);
     }
@@ -1263,9 +1325,9 @@ public class InputMethodService extends AbstractInputMethodService {
             }
             if (this.minimized) {
                 this.minimized = false;
-                this.mWindow.setMinimizeFlag(false);
+                this.mWindow.setMinimizeFlag(this.minimized);
             }
-            undoMinimizeSoftInput();
+            undoMinimizeSoftInputWrapper();
             ((ViewGroup) this.mFullscreenArea.getParent()).updateViewLayout(this.mFullscreenArea, lp);
             if (isFullscreen) {
                 if (this.mExtractView == null && (v = onCreateExtractTextView()) != null) {
@@ -1285,8 +1347,8 @@ public class InputMethodService extends AbstractInputMethodService {
     public void onConfigureWindow(Window win, boolean isFullscreen, boolean isCandidatesOnly) {
         int currentHeight = this.mWindow.getWindow().getAttributes().height;
         int newHeight = isFullscreen ? -1 : -2;
-        if (this.mIsInputViewShown && currentHeight != newHeight && !this.needSetlayout) {
-            undoMinimizeSoftInput();
+        if (this.mIsInputViewShown && currentHeight != newHeight && !this.needSetLayout) {
+            undoMinimizeSoftInputWrapper();
             try {
                 this.mWindow.getWindow().setLayout(-1, newHeight);
             } catch (IllegalArgumentException e) {
@@ -1306,14 +1368,12 @@ public class InputMethodService extends AbstractInputMethodService {
         if (config.orientation != 2) {
             return false;
         }
-        EditorInfo editorInfo = this.mInputEditorInfo;
-        if (editorInfo != null && (editorInfo.imeOptions & 268435456) != 0) {
+        if (this.mInputEditorInfo != null && (this.mInputEditorInfo.imeOptions & 268435456) != 0) {
             return false;
         }
         boolean ignoreImeInternalFlagAppWindowPortrait = false;
-        EditorInfo editorInfo2 = this.mInputEditorInfo;
-        if (editorInfo2 != null && editorInfo2.privateImeOptions != null) {
-            ignoreImeInternalFlagAppWindowPortrait = Arrays.stream(this.mInputEditorInfo.privateImeOptions.split(NavigationBarInflaterView.GRAVITY_SEPARATOR)).anyMatch(new Predicate() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda0
+        if (this.mInputEditorInfo != null && this.mInputEditorInfo.privateImeOptions != null) {
+            ignoreImeInternalFlagAppWindowPortrait = Arrays.stream(this.mInputEditorInfo.privateImeOptions.split(NavigationBarInflaterView.GRAVITY_SEPARATOR)).anyMatch(new Predicate() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda6
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
                     boolean equals;
@@ -1322,8 +1382,7 @@ public class InputMethodService extends AbstractInputMethodService {
                 }
             });
         }
-        EditorInfo editorInfo3 = this.mInputEditorInfo;
-        if (editorInfo3 == null || (((editorInfo3.imeOptions & 33554432) == 0 && (this.mInputEditorInfo.internalImeOptions & 1) == 0) || ignoreImeInternalFlagAppWindowPortrait)) {
+        if (this.mInputEditorInfo == null || (((this.mInputEditorInfo.imeOptions & 33554432) == 0 && (this.mInputEditorInfo.internalImeOptions & 1) == 0) || ignoreImeInternalFlagAppWindowPortrait)) {
             return true;
         }
         Log.i(TAG, "onEvaluateFullscreenMode: false, noFullScreen=" + ((33554432 & this.mInputEditorInfo.imeOptions) != 0) + ", internalImeOptions=" + this.mInputEditorInfo.internalImeOptions);
@@ -1369,16 +1428,7 @@ public class InputMethodService extends AbstractInputMethodService {
             View decor = getWindow().getWindow().getDecorView();
             loc[1] = decor.getHeight();
         }
-        int paddingBottom = 0;
-        if (SemImsUtils.isMockIme(getPackageName())) {
-            int navigationBarHeight = SemImsUtils.getNavigationBarHeight(getResources());
-            if (loc[1] > 0 && loc[1] <= navigationBarHeight && this.mInputFrame.getVisibility() == 0) {
-                Log.i(TAG, "onComputeInsets: a navibar height padding is applied.");
-                FrameLayout frameLayout = this.mInputFrame;
-                frameLayout.setPadding(frameLayout.getPaddingLeft(), this.mInputFrame.getPaddingTop(), this.mInputFrame.getPaddingRight(), navigationBarHeight);
-                paddingBottom = navigationBarHeight;
-            }
-        }
+        int paddingBottom = getPaddingBottom(loc);
         if (isFullscreenMode()) {
             View decor2 = getWindow().getWindow().getDecorView();
             outInsets.contentTopInsets = decor2.getHeight();
@@ -1450,12 +1500,13 @@ public class InputMethodService extends AbstractInputMethodService {
 
     public void setCandidatesViewShown(boolean shown) {
         updateCandidatesVisibility(shown);
-        if (!this.mShowInputRequested && this.mDecorViewVisible != shown) {
-            if (shown) {
-                showWindow(false);
-            } else {
-                hideWindow();
-            }
+        if (this.mShowInputRequested || this.mDecorViewVisible == shown) {
+            return;
+        }
+        if (shown) {
+            showWindowWithToken(false, 45);
+        } else {
+            hideWindowWithToken(45);
         }
     }
 
@@ -1495,26 +1546,14 @@ public class InputMethodService extends AbstractInputMethodService {
 
     public void setExtractView(View view) {
         this.mExtractFrame.removeAllViews();
-        int extractSideMargin = SemImsUtils.getExtractSideMargin();
-        if (extractSideMargin <= 0) {
-            this.mExtractFrame.addView(view, new FrameLayout.LayoutParams(-1, -1));
-        } else {
-            this.mExtractFrame.addView(view, SemImsUtils.getLayoutParamsExtractSideMargin(extractSideMargin));
-        }
+        this.mExtractFrame.addView(view, new FrameLayout.LayoutParams(-1, -1));
         this.mExtractView = view;
         if (view != null) {
-            ExtractEditText extractEditText = (ExtractEditText) view.findViewById(16908325);
-            this.mExtractEditText = extractEditText;
-            extractEditText.setIME(this);
-            int topBottomPadding = SemImsUtils.getPixel(getResources(), 5);
-            int startEndPadding = SemImsUtils.getPixel(getResources(), 8);
-            this.mExtractEditText.setPaddingRelative(startEndPadding, topBottomPadding, startEndPadding, topBottomPadding);
-            View findViewById = view.findViewById(16908377);
-            this.mExtractAction = findViewById;
-            if (findViewById != null) {
-                ViewGroup viewGroup = (ViewGroup) view.findViewById(16908378);
-                this.mExtractAccessories = viewGroup;
-                viewGroup.setBackgroundColor(-1);
+            this.mExtractEditText = (ExtractEditText) view.findViewById(16908325);
+            this.mExtractEditText.setIME(this);
+            this.mExtractAction = view.findViewById(16908377);
+            if (this.mExtractAction != null) {
+                this.mExtractAccessories = (ViewGroup) view.findViewById(16908378);
             }
             startExtractingText(false);
             return;
@@ -1558,8 +1597,8 @@ public class InputMethodService extends AbstractInputMethodService {
         if (this.minimized) {
             Log.e(TAG, "hideWindow set minimized false");
             this.minimized = false;
-            this.needSetlayout = true;
-            this.mWindow.setMinimizeFlag(false);
+            this.needSetLayout = true;
+            this.mWindow.setMinimizeFlag(this.minimized);
         }
         if (!finishingInput && (ic = getCurrentInputConnection()) != null) {
             ic.finishComposingText();
@@ -1583,18 +1622,20 @@ public class InputMethodService extends AbstractInputMethodService {
         return false;
     }
 
+    public boolean onStartConnectionlessStylusHandwriting(int inputType, CursorAnchorInfo cursorAnchorInfo) {
+        return false;
+    }
+
     public void onStylusHandwritingMotionEvent(MotionEvent motionEvent) {
-        InkWindow inkWindow = this.mInkWindow;
-        if (inkWindow != null && inkWindow.isInkViewVisible()) {
+        if (this.mInkWindow != null && this.mInkWindow.isInkViewVisible()) {
             this.mInkWindow.dispatchHandwritingEvent(motionEvent);
         } else {
             if (this.mPendingEvents == null) {
                 this.mPendingEvents = new RingBuffer<>(MotionEvent.class, 500);
             }
             this.mPendingEvents.append(motionEvent);
-            InkWindow inkWindow2 = this.mInkWindow;
-            if (inkWindow2 != null) {
-                inkWindow2.setInkViewVisibilityListener(new InkWindow.InkVisibilityListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda7
+            if (this.mInkWindow != null) {
+                this.mInkWindow.setInkViewVisibilityListener(new InkWindow.InkVisibilityListener() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda1
                     @Override // android.inputmethodservice.InkWindow.InkVisibilityListener
                     public final void onInkViewVisible() {
                         InputMethodService.this.lambda$onStylusHandwritingMotionEvent$4();
@@ -1607,15 +1648,14 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onStylusHandwritingMotionEvent$4() {
-        RingBuffer<MotionEvent> ringBuffer = this.mPendingEvents;
-        if (ringBuffer != null && !ringBuffer.isEmpty()) {
+        if (this.mPendingEvents != null && !this.mPendingEvents.isEmpty()) {
             for (MotionEvent event : this.mPendingEvents.toArray()) {
-                InkWindow inkWindow = this.mInkWindow;
-                if (inkWindow == null) {
+                if (this.mInkWindow == null) {
                     break;
                 }
-                inkWindow.dispatchHandwritingEvent(event);
+                this.mInkWindow.dispatchHandwritingEvent(event);
             }
             this.mPendingEvents.clear();
         }
@@ -1629,13 +1669,11 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     public final void finishStylusHandwriting() {
-        Runnable runnable;
         if (this.mInkWindow == null || !this.mHandwritingRequestId.isPresent()) {
             return;
         }
-        Handler handler = this.mHandler;
-        if (handler != null && (runnable = this.mFinishHwRunnable) != null) {
-            handler.removeCallbacks(runnable);
+        if (this.mHandler != null && this.mFinishHwRunnable != null) {
+            this.mHandler.removeCallbacks(this.mFinishHwRunnable);
         }
         this.mFinishHwRunnable = null;
         int requestId = this.mHandwritingRequestId.getAsInt();
@@ -1643,11 +1681,55 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mHandwritingEventReceiver.dispose();
         this.mHandwritingEventReceiver = null;
         this.mInkWindow.hide(false);
+        if (this.mConnectionlessHandwritingCallback != null) {
+            Log.i(TAG, "Connectionless handwriting session did not complete successfully");
+            try {
+                this.mConnectionlessHandwritingCallback.onError(2);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Couldn't send connectionless handwriting error result", e);
+            }
+            this.mConnectionlessHandwritingCallback = null;
+        }
+        this.mIsConnectionlessHandwritingForDelegation = false;
         this.mPrivOps.resetStylusHandwriting(requestId);
         this.mOnPreparedStylusHwCalled = false;
         onFinishStylusHandwriting();
     }
 
+    public final void finishConnectionlessStylusHandwriting(CharSequence text) {
+        if (this.mConnectionlessHandwritingCallback != null) {
+            try {
+                if (!TextUtils.isEmpty(text)) {
+                    this.mConnectionlessHandwritingCallback.onResult(text);
+                    if (this.mIsConnectionlessHandwritingForDelegation) {
+                        this.mHandwritingDelegationText = text;
+                    }
+                } else {
+                    this.mConnectionlessHandwritingCallback.onError(0);
+                }
+            } catch (RemoteException e) {
+                Log.e(TAG, "Couldn't send connectionless handwriting result", e);
+            }
+            this.mConnectionlessHandwritingCallback = null;
+        }
+        finishStylusHandwriting();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void commitHandwritingDelegationTextIfAvailable() {
+        InputConnection ic;
+        if (!TextUtils.isEmpty(this.mHandwritingDelegationText) && (ic = getCurrentInputConnection()) != null) {
+            ic.commitText(this.mHandwritingDelegationText, 1);
+        }
+        this.mHandwritingDelegationText = null;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public void discardHandwritingDelegationText() {
+        this.mHandwritingDelegationText = null;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void finishAndRemoveStylusHandwritingWindow() {
         cancelStylusWindowIdleTimeout();
         this.mOnPreparedStylusHwCalled = false;
@@ -1662,29 +1744,26 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelStylusWindowIdleTimeout() {
-        Handler handler;
-        Runnable runnable = this.mStylusWindowIdleTimeoutRunnable;
-        if (runnable != null && (handler = this.mHandler) != null) {
-            handler.removeCallbacks(runnable);
+        if (this.mStylusWindowIdleTimeoutRunnable != null && this.mHandler != null) {
+            this.mHandler.removeCallbacks(this.mStylusWindowIdleTimeoutRunnable);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleStylusWindowIdleTimeout() {
         if (this.mHandler == null) {
             return;
         }
         cancelStylusWindowIdleTimeout();
-        long timeout = this.mStylusWindowIdleTimeoutForTest;
-        if (timeout <= 0) {
-            timeout = 300000;
-        }
+        long timeout = this.mStylusWindowIdleTimeoutForTest > 0 ? this.mStylusWindowIdleTimeoutForTest : 300000L;
         this.mHandler.postDelayed(getStylusWindowIdleTimeoutRunnable(), timeout);
     }
 
     private Runnable getStylusWindowIdleTimeoutRunnable() {
         if (this.mStylusWindowIdleTimeoutRunnable == null) {
-            this.mStylusWindowIdleTimeoutRunnable = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda3
+            this.mStylusWindowIdleTimeoutRunnable = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     InputMethodService.this.lambda$getStylusWindowIdleTimeoutRunnable$5();
@@ -1694,6 +1773,7 @@ public class InputMethodService extends AbstractInputMethodService {
         return this.mStylusWindowIdleTimeoutRunnable;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getStylusWindowIdleTimeoutRunnable$5() {
         finishAndRemoveStylusHandwritingWindow();
         this.mStylusWindowIdleTimeoutRunnable = null;
@@ -1720,43 +1800,41 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     private Runnable getFinishHandwritingRunnable() {
-        Runnable runnable = this.mFinishHwRunnable;
-        if (runnable != null) {
-            return runnable;
+        if (this.mFinishHwRunnable != null) {
+            return this.mFinishHwRunnable;
         }
-        Runnable runnable2 = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda8
+        Runnable runnable = new Runnable() { // from class: android.inputmethodservice.InputMethodService$$ExternalSyntheticLambda8
             @Override // java.lang.Runnable
             public final void run() {
                 InputMethodService.this.lambda$getFinishHandwritingRunnable$6();
             }
         };
-        this.mFinishHwRunnable = runnable2;
-        return runnable2;
+        this.mFinishHwRunnable = runnable;
+        return runnable;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getFinishHandwritingRunnable$6() {
-        Handler handler = this.mHandler;
-        if (handler != null) {
-            handler.removeCallbacks(this.mFinishHwRunnable);
+        if (this.mHandler != null) {
+            this.mHandler.removeCallbacks(this.mFinishHwRunnable);
         }
         Log.d(TAG, "Stylus handwriting idle timed-out. calling finishStylusHandwriting()");
         this.mFinishHwRunnable = null;
         finishStylusHandwriting();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleHandwritingSessionTimeout() {
         if (this.mHandler == null) {
             this.mHandler = new Handler(getMainLooper());
         }
-        Runnable runnable = this.mFinishHwRunnable;
-        if (runnable != null) {
-            this.mHandler.removeCallbacks(runnable);
+        if (this.mFinishHwRunnable != null) {
+            this.mHandler.removeCallbacks(this.mFinishHwRunnable);
         }
         this.mHandler.postDelayed(getFinishHandwritingRunnable(), this.mStylusHwSessionsTimeout);
     }
 
     public boolean onShowInputRequested(int flags, boolean configChange) {
-        EditorInfo editorInfo;
         if (!onEvaluateInputViewShown()) {
             Log.i(TAG, "onShowInputRequested: false, reason: onEvaluateInputViewShown false");
             return false;
@@ -1771,7 +1849,7 @@ public class InputMethodService extends AbstractInputMethodService {
                 return false;
             }
             Configuration config = getResources().getConfiguration();
-            if (config.keyboard == 3 && (editorInfo = this.mInputEditorInfo) != null && editorInfo.inputType == 0) {
+            if (config.keyboard == 3 && this.mInputEditorInfo != null && this.mInputEditorInfo.inputType == 0) {
                 Log.i(TAG, "onShowInputRequested: false, reason: inputType null, config.keyboard=" + config.keyboard);
                 return false;
             }
@@ -1779,6 +1857,7 @@ public class InputMethodService extends AbstractInputMethodService {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean dispatchOnShowInputRequested(int flags, boolean configChange) {
         boolean result = onShowInputRequested(flags, configChange);
         this.mInlineSuggestionSessionController.notifyOnShowInputRequested(result);
@@ -1790,17 +1869,26 @@ public class InputMethodService extends AbstractInputMethodService {
         return result;
     }
 
+    private void showWindowWithToken(boolean showInput, int reason) {
+        this.mCurStatsToken = createStatsToken(true, reason, ImeTracker.isFromUser(this.mRootView));
+        showWindow(showInput);
+    }
+
     public void showWindow(boolean z) {
         int i;
+        ImeTracker.Token createStatsToken = this.mCurStatsToken != null ? this.mCurStatsToken : createStatsToken(true, 42, ImeTracker.isFromUser(this.mRootView));
+        this.mCurStatsToken = null;
         if (this.mInShowWindow) {
             Log.w(TAG, "Re-entrance in to showWindow");
+            ImeTracker.forLogging().onCancelled(createStatsToken, 44);
             return;
         }
+        ImeTracker.forLogging().onProgress(createStatsToken, 44);
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#showWindow", this.mDumper, null);
         Trace.traceBegin(32L, "IMS.showWindow");
-        boolean z2 = this.mDecorViewVisible;
-        this.mDecorViewWasVisible = z2;
+        this.mDecorViewWasVisible = this.mDecorViewVisible;
         this.mInShowWindow = true;
+        boolean z2 = this.mDecorViewVisible;
         if (isInputViewShown()) {
             i = !this.mWindowVisible ? 4 : 2;
         } else {
@@ -1820,24 +1908,30 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mWindowVisible = true;
         this.mWindow.show();
         this.mDecorViewWasVisible = true;
-        applyVisibilityInInsetsConsumerIfNecessary(true);
+        applyVisibilityInInsetsConsumerIfNecessary(true, createStatsToken);
         cancelImeSurfaceRemoval();
         this.mInShowWindow = false;
         Trace.traceEnd(32L);
-        registerCompatOnBackInvokedCallback();
+        registerDefaultOnBackInvokedCallback();
     }
 
-    private void registerCompatOnBackInvokedCallback() {
+    private void registerDefaultOnBackInvokedCallback() {
         if (this.mBackCallbackRegistered) {
             Log.d(TAG, "registerCompatOnBackInvokedCallback return because registered : " + this.mBackCallbackRegistered);
-        } else if (this.mWindow != null) {
+            return;
+        }
+        if (this.mWindow != null) {
             Log.d(TAG, "registerCompatOnBackInvokedCallback : " + this.mCompatBackCallback);
-            this.mWindow.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(0, this.mCompatBackCallback);
+            if (getApplicationInfo().isOnBackInvokedCallbackEnabled() && android.view.inputmethod.Flags.predictiveBackIme()) {
+                this.mWindow.getOnBackInvokedDispatcher().registerSystemOnBackInvokedCallback(this.mCompatBackCallback);
+            } else {
+                this.mWindow.getOnBackInvokedDispatcher().registerOnBackInvokedCallback(0, this.mCompatBackCallback);
+            }
             this.mBackCallbackRegistered = true;
         }
     }
 
-    private void unregisterCompatOnBackInvokedCallback() {
+    private void unregisterDefaultOnBackInvokedCallback() {
         if (!this.mBackCallbackRegistered) {
             Log.d(TAG, "unregisterCompatOnBackInvokedCallback return because registered : " + this.mBackCallbackRegistered);
         } else if (this.mWindow != null) {
@@ -1874,8 +1968,7 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     private void startViews(boolean doShowInput) {
-        boolean z = this.mShowInputRequested;
-        if ((z && this.mInputViewStarted) || (!z && this.mCandidatesViewStarted)) {
+        if ((this.mShowInputRequested && this.mInputViewStarted) || (!this.mShowInputRequested && this.mCandidatesViewStarted)) {
             Log.i(TAG, "startViews: mShowInputRequested=" + this.mShowInputRequested + ", mInputViewStarted=" + this.mInputViewStarted + ", mCandidatesViewStarted= " + this.mCandidatesViewStarted);
         }
         if (this.mShowInputRequested) {
@@ -1893,10 +1986,9 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
-    private void applyVisibilityInInsetsConsumerIfNecessary(boolean setVisible) {
+    private void applyVisibilityInInsetsConsumerIfNecessary(boolean setVisible, ImeTracker.Token statsToken) {
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#applyVisibilityInInsetsConsumerIfNecessary", this.mDumper, null);
-        ImeTracker.forLogging().onProgress(this.mCurStatsToken, 16);
-        this.mPrivOps.applyImeVisibilityAsync(setVisible ? this.mCurShowInputToken : this.mCurHideInputToken, setVisible, this.mCurStatsToken);
+        this.mPrivOps.applyImeVisibilityAsync(setVisible ? this.mCurShowInputToken : this.mCurHideInputToken, setVisible, statsToken);
     }
 
     private void finishViews(boolean finishingInput) {
@@ -1910,16 +2002,24 @@ public class InputMethodService extends AbstractInputMethodService {
         this.mCandidatesViewStarted = false;
     }
 
+    private void hideWindowWithToken(int reason) {
+        boolean isFromUser = ImeTracker.isFromUser(this.mRootView) || reason == 29;
+        this.mCurStatsToken = createStatsToken(false, reason, isFromUser);
+        hideWindow();
+    }
+
     public void hideWindow() {
+        ImeTracker.Token statsToken = this.mCurStatsToken != null ? this.mCurStatsToken : createStatsToken(false, 43, ImeTracker.isFromUser(this.mRootView));
+        this.mCurStatsToken = null;
+        ImeTracker.forLogging().onProgress(statsToken, 45);
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#hideWindow", this.mDumper, null);
         setImeWindowStatus(0, this.mBackDisposition);
-        applyVisibilityInInsetsConsumerIfNecessary(false);
+        applyVisibilityInInsetsConsumerIfNecessary(false, statsToken);
         this.mWindowVisible = false;
         finishViews(false);
         if (this.mDecorViewVisible) {
-            View view = this.mInputView;
-            if (view != null) {
-                view.dispatchWindowVisibilityChanged(8);
+            if (this.mInputView != null) {
+                this.mInputView.dispatchWindowVisibilityChanged(8);
             }
             this.mDecorViewVisible = false;
             onWindowHidden();
@@ -1927,7 +2027,7 @@ public class InputMethodService extends AbstractInputMethodService {
         }
         this.mLastWasInFullscreenMode = this.mIsFullscreen;
         updateFullscreenMode();
-        unregisterCompatOnBackInvokedCallback();
+        unregisterDefaultOnBackInvokedCallback();
         sendInputViewShownState(false);
         this.mIsPressBtnSIPOnOff = false;
     }
@@ -1960,11 +2060,11 @@ public class InputMethodService extends AbstractInputMethodService {
         if (!this.mOnPreparedStylusHwCalled) {
             finishStylusHandwriting();
         }
-        unregisterCompatOnBackInvokedCallback();
+        unregisterDefaultOnBackInvokedCallback();
     }
 
     void doStartInput(InputConnection ic, EditorInfo editorInfo, boolean restarting) {
-        if (!restarting && this.mInputStarted) {
+        if (!restarting && this.mInputStarted && !useWritingToolkit()) {
             doFinishInput();
         }
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#doStartInput", this.mDumper, null);
@@ -2001,18 +2101,16 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     public void onUpdateExtractedText(int token, ExtractedText text) {
-        ExtractEditText extractEditText;
-        if (this.mExtractedToken == token && text != null && (extractEditText = this.mExtractEditText) != null) {
+        if (this.mExtractedToken == token && text != null && this.mExtractEditText != null) {
             this.mExtractedText = text;
-            extractEditText.setExtractedText(text);
+            this.mExtractEditText.setExtractedText(text);
         }
     }
 
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
-        ExtractedText extractedText;
         ExtractEditText eet = this.mExtractEditText;
-        if (eet != null && isFullscreenMode() && (extractedText = this.mExtractedText) != null) {
-            int off = extractedText.startOffset;
+        if (eet != null && isFullscreenMode() && this.mExtractedText != null) {
+            int off = this.mExtractedText.startOffset;
             eet.startInternalChanges();
             int newSelStart2 = newSelStart - off;
             int newSelEnd2 = newSelEnd - off;
@@ -2051,13 +2149,20 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     private void requestHideSelf(int flags, int reason) {
+        boolean isFromUser = ImeTracker.isFromUser(this.mRootView) || reason == 29;
+        ImeTracker.Token statsToken = createStatsToken(false, reason, isFromUser);
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#requestHideSelf", this.mDumper, null);
-        this.mPrivOps.hideMySoftInput(flags, reason);
+        this.mPrivOps.hideMySoftInput(statsToken, flags, reason);
     }
 
     public final void requestShowSelf(int flags) {
+        requestShowSelf(flags, 3);
+    }
+
+    private void requestShowSelf(int flags, int reason) {
+        ImeTracker.Token statsToken = createStatsToken(true, reason, ImeTracker.isFromUser(this.mRootView));
         ImeTracing.getInstance().triggerServiceDump("InputMethodService#requestShowSelf", this.mDumper, null);
-        this.mPrivOps.showMySoftInput(flags);
+        this.mPrivOps.showMySoftInput(statsToken, flags, reason);
     }
 
     private boolean handleBack(boolean doIt) {
@@ -2076,7 +2181,7 @@ public class InputMethodService extends AbstractInputMethodService {
                 setCandidatesViewShown(false);
             }
         } else if (doIt) {
-            hideWindow();
+            hideWindowWithToken(29);
         }
         return true;
     }
@@ -2090,7 +2195,10 @@ public class InputMethodService extends AbstractInputMethodService {
 
     @Override // android.view.KeyEvent.Callback
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == 4) {
+        if (android.view.inputmethod.Flags.useHandwritingListenerForTooltype()) {
+            updateEditorToolTypeInternal(0);
+        }
+        if (keyCode == 4) {
             ExtractEditText eet = getExtractEditTextIfVisible();
             if (eet != null && eet.handleBackInTextActionModeIfNeeded(event)) {
                 return true;
@@ -2100,6 +2208,21 @@ public class InputMethodService extends AbstractInputMethodService {
             }
             event.startTracking();
             return true;
+        }
+        if (keyCode == 62 && KeyEvent.metaStateHasModifiers(event.getMetaState() & (-194), 4096) && this.mDecorViewVisible && this.mWindowVisible) {
+            int direction = (event.getMetaState() & 193) == 0 ? 1 : -1;
+            this.mPrivOps.switchKeyboardLayoutAsync(direction);
+            event.startTracking();
+            return true;
+        }
+        if (android.view.inputmethod.Flags.ctrlShiftShortcut()) {
+            if (keyCode == 59 || keyCode == 60) {
+                this.mUsingCtrlShiftShortcut = KeyEvent.metaStateHasModifiers(event.getMetaState() & (-194), 4096);
+            } else if (keyCode == 113 || keyCode == 114) {
+                this.mUsingCtrlShiftShortcut = KeyEvent.metaStateHasModifiers(event.getMetaState() & (-28673), 1);
+            } else {
+                this.mUsingCtrlShiftShortcut = false;
+            }
         }
         return doMovementKey(keyCode, event, -1);
     }
@@ -2116,7 +2239,20 @@ public class InputMethodService extends AbstractInputMethodService {
 
     @Override // android.view.KeyEvent.Callback
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == 4) {
+        if (android.view.inputmethod.Flags.ctrlShiftShortcut()) {
+            if (keyCode == 59 || keyCode == 60 || keyCode == 113 || keyCode == 114) {
+                if (this.mUsingCtrlShiftShortcut && event.hasNoModifiers()) {
+                    this.mUsingCtrlShiftShortcut = false;
+                    if (this.mDecorViewVisible && this.mWindowVisible) {
+                        switchToNextInputMethod(false);
+                        return true;
+                    }
+                }
+            } else {
+                this.mUsingCtrlShiftShortcut = false;
+            }
+        }
+        if (keyCode == 4) {
             ExtractEditText eet = getExtractEditTextIfVisible();
             if (eet != null && eet.handleBackInTextActionModeIfNeeded(event)) {
                 return true;
@@ -2125,6 +2261,8 @@ public class InputMethodService extends AbstractInputMethodService {
                 return handleBack(true);
             }
             Log.w(TAG, "onKeyUp: event.isTracking=" + event.isTracking() + ", event.isCanceled=" + event.isCanceled());
+        } else if (keyCode == 62 && event.isTracking() && !event.isCanceled()) {
+            return true;
         }
         return doMovementKey(keyCode, event, -2);
     }
@@ -2142,11 +2280,12 @@ public class InputMethodService extends AbstractInputMethodService {
     public void onAppPrivateCommand(String action, Bundle data) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onToggleSoftInput(int showFlags, int hideFlags) {
         if (isInputViewShown()) {
             requestHideSelf(hideFlags, 30);
         } else {
-            requestShowSelf(showFlags);
+            requestShowSelf(showFlags, 53);
         }
     }
 
@@ -2205,13 +2344,8 @@ public class InputMethodService extends AbstractInputMethodService {
                 }
             }
             switch (keyCode) {
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                    return true;
             }
+            return true;
         }
         return false;
     }
@@ -2246,20 +2380,21 @@ public class InputMethodService extends AbstractInputMethodService {
             case '\n':
                 if (!sendDefaultEditorAction(true)) {
                     sendDownUpKeyEvents(66);
-                    return;
+                    break;
                 }
-                return;
+                break;
             default:
                 if (charCode >= '0' && charCode <= '9') {
                     sendDownUpKeyEvents((charCode - '0') + 7);
-                    return;
+                    break;
+                } else {
+                    InputConnection ic = getCurrentInputConnection();
+                    if (ic != null) {
+                        ic.commitText(String.valueOf(charCode), 1);
+                        break;
+                    }
                 }
-                InputConnection ic = getCurrentInputConnection();
-                if (ic != null) {
-                    ic.commitText(String.valueOf(charCode), 1);
-                    return;
-                }
-                return;
+                break;
         }
     }
 
@@ -2301,15 +2436,13 @@ public class InputMethodService extends AbstractInputMethodService {
     }
 
     public void onExtractedTextClicked() {
-        ExtractEditText extractEditText = this.mExtractEditText;
-        if (extractEditText != null && extractEditText.hasVerticalScrollBar()) {
+        if (this.mExtractEditText != null && this.mExtractEditText.hasVerticalScrollBar()) {
             setCandidatesViewShown(false);
         }
     }
 
     public void onExtractedCursorMovement(int dx, int dy) {
-        ExtractEditText extractEditText = this.mExtractEditText;
-        if (extractEditText != null && dy != 0 && extractEditText.hasVerticalScrollBar()) {
+        if (this.mExtractEditText != null && dy != 0 && this.mExtractEditText.hasVerticalScrollBar()) {
             setCandidatesViewShown(false);
         }
     }
@@ -2382,19 +2515,18 @@ public class InputMethodService extends AbstractInputMethodService {
         boolean hasAction = z;
         if (hasAction) {
             this.mExtractAccessories.setVisibility(0);
-            View view = this.mExtractAction;
-            if (view != null) {
-                if (view instanceof ImageButton) {
-                    ((ImageButton) view).setImageResource(getIconForImeAction(ei.imeOptions));
+            if (this.mExtractAction != null) {
+                if (this.mExtractAction instanceof ImageButton) {
+                    ((ImageButton) this.mExtractAction).setImageResource(getIconForImeAction(ei.imeOptions));
                     if (ei.actionLabel != null) {
                         this.mExtractAction.setContentDescription(ei.actionLabel);
                     } else {
                         this.mExtractAction.setContentDescription(getTextForImeAction(ei.imeOptions));
                     }
                 } else if (ei.actionLabel != null) {
-                    ((TextView) this.mExtractAction).setText(ei.actionLabel);
+                    ((TextView) this.mExtractAction).lambda$setTextAsync$0(ei.actionLabel);
                 } else {
-                    ((TextView) this.mExtractAction).setText(getTextForImeAction(ei.imeOptions));
+                    ((TextView) this.mExtractAction).lambda$setTextAsync$0(getTextForImeAction(ei.imeOptions));
                 }
                 this.mExtractAction.setOnClickListener(this.mActionClickListener);
                 return;
@@ -2402,14 +2534,13 @@ public class InputMethodService extends AbstractInputMethodService {
             return;
         }
         this.mExtractAccessories.setVisibility(8);
-        View view2 = this.mExtractAction;
-        if (view2 != null) {
-            view2.setOnClickListener(null);
+        if (this.mExtractAction != null) {
+            this.mExtractAction.setOnClickListener(null);
         }
     }
 
     public void onExtractingInputChanged(EditorInfo ei) {
-        if (ei.inputType == 0) {
+        if (!useWritingToolkit() && ei.inputType == 0) {
             requestHideSelf(2, 31);
         }
     }
@@ -2424,9 +2555,8 @@ public class InputMethodService extends AbstractInputMethodService {
             req.hintMaxLines = 10;
             req.hintMaxChars = 10000;
             InputConnection ic = getCurrentInputConnection();
-            ExtractedText extractedText = ic == null ? null : ic.getExtractedText(req, 1);
-            this.mExtractedText = extractedText;
-            if (extractedText == null || ic == null) {
+            this.mExtractedText = ic == null ? null : ic.getExtractedText(req, 1);
+            if (this.mExtractedText == null || ic == null) {
                 Log.e(TAG, "Unexpected null in startExtractingText : mExtractedText = " + this.mExtractedText + ", input connection = " + ic);
             }
             EditorInfo ei = getCurrentInputEditorInfo();
@@ -2440,28 +2570,13 @@ public class InputMethodService extends AbstractInputMethodService {
                 }
                 eet.setInputType(inputType);
                 eet.setHint(ei.hintText);
-                eet.setTextColor(ColorStateList.valueOf(Color.rgb(0, 0, 0)));
-                eet.setBackgroundColor(-1);
-                if (ei.privateImeOptions != null) {
-                    String[] tmpImeOptions = ei.privateImeOptions.split("#");
-                    if (tmpImeOptions.length == 2 && ("AppName=Memo".equals(tmpImeOptions[0]) || "AppName=Diary".equals(tmpImeOptions[0]))) {
-                        String[] tmpColor = tmpImeOptions[1].split("=");
-                        if (tmpColor.length == 2 && "Color".equals(tmpColor[0])) {
-                            tmpColor[1] = tmpColor[1].toLowerCase().replaceAll("0x", "");
-                            try {
-                                int color = (int) Long.parseLong(tmpColor[1], 16);
-                                eet.setBackgroundColor(color);
-                            } catch (NumberFormatException e) {
-                            }
-                        }
-                    }
-                }
+                changeBgColorIfNeeded(eet, ei);
                 if (this.mExtractedText != null) {
                     eet.setEnabled(true);
                     eet.setExtractedText(this.mExtractedText);
                 } else {
                     eet.setEnabled(false);
-                    eet.setText("");
+                    eet.lambda$setTextAsync$0("");
                 }
                 if (inputChanged) {
                     onExtractingInputChanged(ei);
@@ -2472,6 +2587,7 @@ public class InputMethodService extends AbstractInputMethodService {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dispatchOnCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
         synchronized (this.mLock) {
             this.mNotifyUserActionSent = false;
@@ -2488,68 +2604,13 @@ public class InputMethodService extends AbstractInputMethodService {
         return 0;
     }
 
-    /* renamed from: android.inputmethodservice.InputMethodService$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements InputMethodServiceInternal {
-        AnonymousClass1() {
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public Context getContext() {
-            return InputMethodService.this;
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public void exposeContent(InputContentInfo inputContentInfo, InputConnection inputConnection) {
-            if (inputConnection == null || InputMethodService.this.getCurrentInputConnection() != inputConnection) {
-                return;
-            }
-            exposeContentInternal(inputContentInfo, InputMethodService.this.getCurrentInputEditorInfo());
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public void notifyUserActionIfNecessary() {
-            synchronized (InputMethodService.this.mLock) {
-                if (InputMethodService.this.mNotifyUserActionSent) {
-                    return;
-                }
-                InputMethodService.this.mPrivOps.notifyUserActionAsync();
-                InputMethodService.this.mNotifyUserActionSent = true;
-            }
-        }
-
-        private void exposeContentInternal(InputContentInfo inputContentInfo, EditorInfo editorInfo) {
-            Uri contentUri = inputContentInfo.getContentUri();
-            IInputContentUriToken uriToken = InputMethodService.this.mPrivOps.createInputContentUriToken(contentUri, editorInfo.packageName);
-            if (uriToken == null) {
-                Log.e(InputMethodService.TAG, "createInputContentAccessToken failed. contentUri=" + contentUri.toString() + " packageName=" + editorInfo.packageName);
-            } else {
-                inputContentInfo.setUriToken(uriToken);
-            }
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
-            InputMethodService.this.dump(fd, fout, args);
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public void triggerServiceDump(String where, byte[] icProto) {
-            ImeTracing.getInstance().triggerServiceDump(where, InputMethodService.this.mDumper, icProto);
-        }
-
-        @Override // android.inputmethodservice.InputMethodServiceInternal
-        public boolean isServiceDestroyed() {
-            return InputMethodService.this.mDestroyed;
-        }
+    public final boolean isImeNavigationBarShownForTesting() {
+        return this.mNavigationBarController.isShown();
     }
 
     @Override // android.inputmethodservice.AbstractInputMethodService
     final InputMethodServiceInternal createInputMethodServiceInternal() {
         return new InputMethodServiceInternal() { // from class: android.inputmethodservice.InputMethodService.1
-            AnonymousClass1() {
-            }
-
             @Override // android.inputmethodservice.InputMethodServiceInternal
             public Context getContext() {
                 return InputMethodService.this;
@@ -2601,14 +2662,17 @@ public class InputMethodService extends AbstractInputMethodService {
         };
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int mapToImeWindowStatus() {
         return (isInputViewShown() ? 2 : 0) | 1;
     }
 
-    private boolean isAutomotive() {
-        return getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE);
+    /* JADX INFO: Access modifiers changed from: private */
+    public ImeTracker.Token createStatsToken(boolean show, int reason, boolean isFromUser) {
+        return ImeTracker.forLogging().onStart(show ? 1 : 2, 7, reason, isFromUser);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.inputmethodservice.AbstractInputMethodService, android.app.Service
     public void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
         Printer p = new PrintWriterPrinter(fout);
@@ -2638,60 +2702,18 @@ public class InputMethodService extends AbstractInputMethodService {
         }
         p.println("  mExtractedToken=" + this.mExtractedToken);
         p.println("  mIsInputViewShown=" + this.mIsInputViewShown + " mStatusIcon=" + this.mStatusIcon);
-        p.println("Last computed insets:");
-        p.println("  contentTopInsets=" + this.mTmpInsets.contentTopInsets + " visibleTopInsets=" + this.mTmpInsets.visibleTopInsets + " touchableInsets=" + this.mTmpInsets.touchableInsets + " touchableRegion=" + this.mTmpInsets.touchableRegion);
-        p.println(" mSettingsObserver=" + this.mSettingsObserver);
-        p.println(" mNavigationBarController=" + this.mNavigationBarController.toDebugString());
+        p.println("  Last computed insets:");
+        p.println("    contentTopInsets=" + this.mTmpInsets.contentTopInsets + " visibleTopInsets=" + this.mTmpInsets.visibleTopInsets + " touchableInsets=" + this.mTmpInsets.touchableInsets + " touchableRegion=" + this.mTmpInsets.touchableRegion);
+        p.println("  mSettingsObserver=" + this.mSettingsObserver);
+        p.println("  mNavigationBarController=" + this.mNavigationBarController.toDebugString());
         this.mSettingsObserver.dumpDexMode(p);
     }
 
-    /* renamed from: android.inputmethodservice.InputMethodService$2 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass2 implements ImeTracing.ServiceDumper {
-        AnonymousClass2() {
-        }
-
-        @Override // com.android.internal.inputmethod.ImeTracing.ServiceDumper
-        public void dumpToProto(ProtoOutputStream proto, byte[] icProto) {
-            long token = proto.start(1146756268035L);
-            InputMethodService.this.mWindow.dumpDebug(proto, 1146756268033L);
-            proto.write(1133871366146L, InputMethodService.this.mViewsCreated);
-            proto.write(1133871366147L, InputMethodService.this.mDecorViewVisible);
-            proto.write(1133871366148L, InputMethodService.this.mDecorViewWasVisible);
-            proto.write(1133871366149L, InputMethodService.this.mWindowVisible);
-            proto.write(1133871366150L, InputMethodService.this.mInShowWindow);
-            proto.write(1138166333447L, InputMethodService.this.getResources().getConfiguration().toString());
-            proto.write(1138166333448L, Objects.toString(InputMethodService.this.mToken));
-            proto.write(1138166333449L, Objects.toString(InputMethodService.this.mInputBinding));
-            proto.write(1133871366154L, InputMethodService.this.mInputStarted);
-            proto.write(1133871366155L, InputMethodService.this.mInputViewStarted);
-            proto.write(1133871366156L, InputMethodService.this.mCandidatesViewStarted);
-            if (InputMethodService.this.mInputEditorInfo != null) {
-                InputMethodService.this.mInputEditorInfo.dumpDebug(proto, 1146756268045L);
-            }
-            proto.write(1133871366158L, InputMethodService.this.mShowInputRequested);
-            proto.write(1133871366159L, InputMethodService.this.mLastShowInputRequested);
-            proto.write(1120986464274L, InputMethodService.this.mShowInputFlags);
-            proto.write(1120986464275L, InputMethodService.this.mCandidatesVisibility);
-            proto.write(1133871366164L, InputMethodService.this.mFullscreenApplied);
-            proto.write(1133871366165L, InputMethodService.this.mIsFullscreen);
-            proto.write(1133871366166L, InputMethodService.this.mExtractViewHidden);
-            proto.write(1120986464279L, InputMethodService.this.mExtractedToken);
-            proto.write(1133871366168L, InputMethodService.this.mIsInputViewShown);
-            proto.write(1120986464281L, InputMethodService.this.mStatusIcon);
-            InputMethodService.this.mTmpInsets.dumpDebug(proto, 1146756268058L);
-            proto.write(1138166333467L, Objects.toString(InputMethodService.this.mSettingsObserver));
-            if (icProto != null) {
-                proto.write(1146756268060L, icProto);
-            }
-            proto.end(token);
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void compatHandleBack() {
         if (!this.mDecorViewVisible) {
             Log.e(TAG, "Back callback invoked on a hidden IME. Removing the callback...");
-            unregisterCompatOnBackInvokedCallback();
+            unregisterDefaultOnBackInvokedCallback();
             return;
         }
         KeyEvent downEvent = createBackKeyEvent(0, false);
@@ -2706,6 +2728,60 @@ public class InputMethodService extends AbstractInputMethodService {
             return getClass().getMethod(methodName, parameterTypes).getDeclaringClass() != InputMethodService.class;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Method must exist.", e);
+        }
+    }
+
+    private void sendDisplayIdForDex() {
+        if (SemImsUtils.isHoneyboard(getPackageName())) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("display_id", this.mImm.getCurTokenDisplayId());
+            onAppPrivateCommand("DISPLAY_ID", bundle);
+        }
+    }
+
+    private void handleSipDualView() {
+        this.mTargetDisplayContext = SemImsUtils.createDisplayContextAndSetTheme(this, this.mTheme, this.mImm);
+        this.mInflater = (LayoutInflater) this.mTargetDisplayContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Trace.traceBegin(32L, "IMS.initSoftInputWindow");
+        this.mWindow = new SoftInputWindow(this.mTargetDisplayContext, this.mTheme, this.mDispatcherState);
+    }
+
+    private static void handleSepKeyboardLayoutParams(WindowManager.LayoutParams lp) {
+        lp.setFitInsetsIgnoringVisibility(true);
+        if (SemImsRune.supportPreferredMinDisplayRefreshRate) {
+            lp.preferredMinDisplayRefreshRate = 60.0f;
+        }
+    }
+
+    private int getPaddingBottom(int[] loc) {
+        if (SemImsUtils.isMockIme(getPackageName())) {
+            int navigationBarHeight = SemImsUtils.getNavigationBarHeight(getResources());
+            if (loc[1] > 0 && loc[1] <= navigationBarHeight && this.mInputFrame.getVisibility() == 0) {
+                Log.i(TAG, "onComputeInsets: a navibar height padding is applied.");
+                this.mInputFrame.setPadding(this.mInputFrame.getPaddingLeft(), this.mInputFrame.getPaddingTop(), this.mInputFrame.getPaddingRight(), navigationBarHeight);
+                return navigationBarHeight;
+            }
+            return 0;
+        }
+        return 0;
+    }
+
+    private static void changeBgColorIfNeeded(ExtractEditText eet, EditorInfo ei) {
+        if (ei.privateImeOptions != null) {
+            String[] tmpImeOptions = ei.privateImeOptions.split("#");
+            if (tmpImeOptions.length == 2) {
+                if ("AppName=Memo".equals(tmpImeOptions[0]) || "AppName=Diary".equals(tmpImeOptions[0])) {
+                    String[] tmpColor = tmpImeOptions[1].split("=");
+                    if (tmpColor.length == 2 && "Color".equals(tmpColor[0])) {
+                        tmpColor[1] = tmpColor[1].toLowerCase().replaceAll("0x", "");
+                        try {
+                            int color = (int) Long.parseLong(tmpColor[1], 16);
+                            eet.setBackgroundColor(color);
+                        } catch (NumberFormatException e) {
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -2724,6 +2800,23 @@ public class InputMethodService extends AbstractInputMethodService {
     public void doMinimizeSoftInput(int height) {
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public void undoMinimizeSoftInputWrapper() {
+        undoMinimizeSoftInput();
+        if (MINIMIZED_IME_INSET_ANIM) {
+            this.mMinimizedHeight = 0;
+            Log.d(TAG, "undoMinimizeSoftInputWrapper: reset minimizedHeight=" + this.mMinimizedHeight);
+        }
+    }
+
     public void undoMinimizeSoftInput() {
+    }
+
+    public int setMinimizeSoftInputInsets() {
+        return 0;
+    }
+
+    private boolean useWritingToolkit() {
+        return ViewRune.SUPPORT_WRITING_TOOLKIT && SemInputMethodManagerUtils.CLASS_NAME_TOOLKIT_HONEYBOARD.equals(getClass().getName());
     }
 }

@@ -5,7 +5,7 @@ import com.samsung.android.sume.core.buffer.MutableMediaBuffer;
 import com.samsung.android.sume.core.descriptor.SequentialDescriptor;
 import com.samsung.android.sume.core.filter.MediaFilter;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SimpleConveyorFilter extends SequentialFilter {
     public SimpleConveyorFilter(SequentialDescriptor sequentialDescriptor) {
         super(sequentialDescriptor);

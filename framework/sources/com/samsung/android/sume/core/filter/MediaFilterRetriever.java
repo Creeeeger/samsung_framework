@@ -8,19 +8,17 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public final class MediaFilterRetriever {
     private static final String TAG = Def.tagOf((Class<?>) MediaFilterRetriever.class);
     private final Map<Predictor, PredicateHandler> predictorMap = new HashMap();
 
     @FunctionalInterface
-    /* loaded from: classes4.dex */
     public interface PredicateHandler {
         void onPredicate(MediaFilter mediaFilter, MediaFilter mediaFilter2);
     }
 
     @FunctionalInterface
-    /* loaded from: classes4.dex */
     public interface Predictor {
         boolean predicate(MediaFilter mediaFilter);
     }
@@ -48,7 +46,7 @@ public final class MediaFilterRetriever {
         }
     }
 
-    public static /* synthetic */ void lambda$retrieve$0(DecorateFilter decorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
+    static /* synthetic */ void lambda$retrieve$0(DecorateFilter decorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(decorateFilter)) {
             predicateHandler.onPredicate(decorateFilter, parent);
         }
@@ -73,7 +71,7 @@ public final class MediaFilterRetriever {
         }
     }
 
-    public static /* synthetic */ void lambda$retrieve$1(ImgpDecorateFilter imgpDecorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
+    static /* synthetic */ void lambda$retrieve$1(ImgpDecorateFilter imgpDecorateFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(imgpDecorateFilter)) {
             predicateHandler.onPredicate(imgpDecorateFilter, parent);
         }
@@ -81,22 +79,22 @@ public final class MediaFilterRetriever {
 
     public void retrieve(final MediaFilterGroup filterGroup, MediaFilter parent) {
         Log.d(TAG, "retrieve MediaFilterGroup: " + filterGroup);
-        filterGroup.stream().forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda2
+        filterGroup.stream().forEach(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                MediaFilterRetriever.this.m8751xba46685a(filterGroup, (MediaFilter) obj);
+                MediaFilterRetriever.this.m9139xba46685a(filterGroup, (MediaFilter) obj);
             }
         });
     }
 
-    /* renamed from: lambda$retrieve$2$com-samsung-android-sume-core-filter-MediaFilterRetriever */
-    public /* synthetic */ void m8751xba46685a(MediaFilterGroup filterGroup, MediaFilter it) {
+    /* renamed from: lambda$retrieve$2$com-samsung-android-sume-core-filter-MediaFilterRetriever, reason: not valid java name */
+    /* synthetic */ void m9139xba46685a(MediaFilterGroup filterGroup, MediaFilter it) {
         it.accept(this, filterGroup);
     }
 
     public void retrieve(final MediaFilterPlaceHolder mediaFilterPlaceHolder, final MediaFilter parent) {
         Log.d(TAG, "retrieve MediaFilterPlaceHolder: " + mediaFilterPlaceHolder);
-        this.predictorMap.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda3
+        this.predictorMap.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda1
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
                 MediaFilterRetriever.lambda$retrieve$3(MediaFilterPlaceHolder.this, parent, (MediaFilterRetriever.Predictor) obj, (MediaFilterRetriever.PredicateHandler) obj2);
@@ -104,7 +102,7 @@ public final class MediaFilterRetriever {
         });
     }
 
-    public static /* synthetic */ void lambda$retrieve$3(MediaFilterPlaceHolder mediaFilterPlaceHolder, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
+    static /* synthetic */ void lambda$retrieve$3(MediaFilterPlaceHolder mediaFilterPlaceHolder, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(mediaFilterPlaceHolder)) {
             predicateHandler.onPredicate(mediaFilterPlaceHolder, parent);
         }
@@ -125,7 +123,7 @@ public final class MediaFilterRetriever {
             retrieve((MediaFilterPlaceHolder) mediaFilter, parent);
         } else {
             Log.d(TAG, "retrieve MediaFilter: " + mediaFilter);
-            this.predictorMap.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda1
+            this.predictorMap.forEach(new BiConsumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterRetriever$$ExternalSyntheticLambda2
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     MediaFilterRetriever.lambda$retrieve$4(MediaFilter.this, parent, (MediaFilterRetriever.Predictor) obj, (MediaFilterRetriever.PredicateHandler) obj2);
@@ -134,7 +132,7 @@ public final class MediaFilterRetriever {
         }
     }
 
-    public static /* synthetic */ void lambda$retrieve$4(MediaFilter mediaFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
+    static /* synthetic */ void lambda$retrieve$4(MediaFilter mediaFilter, MediaFilter parent, Predictor predictor, PredicateHandler predicateHandler) {
         if (predictor.predicate(mediaFilter)) {
             predicateHandler.onPredicate(mediaFilter, parent);
         }

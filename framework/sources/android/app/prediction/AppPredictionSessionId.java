@@ -9,14 +9,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AppPredictionSessionId implements Parcelable {
     public static final Parcelable.Creator<AppPredictionSessionId> CREATOR = new Parcelable.Creator<AppPredictionSessionId>() { // from class: android.app.prediction.AppPredictionSessionId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppPredictionSessionId createFromParcel(Parcel parcel) {
             return new AppPredictionSessionId(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppPredictionSessionId[] newArray(int size) {
             return new AppPredictionSessionId[size];
@@ -24,10 +23,6 @@ public final class AppPredictionSessionId implements Parcelable {
     };
     private final String mId;
     private final int mUserId;
-
-    /* synthetic */ AppPredictionSessionId(Parcel parcel, AppPredictionSessionIdIA appPredictionSessionIdIA) {
-        this(parcel);
-    }
 
     public AppPredictionSessionId(String id, int userId) {
         this.mId = id;
@@ -68,22 +63,5 @@ public final class AppPredictionSessionId implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mId);
         dest.writeInt(this.mUserId);
-    }
-
-    /* renamed from: android.app.prediction.AppPredictionSessionId$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppPredictionSessionId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppPredictionSessionId createFromParcel(Parcel parcel) {
-            return new AppPredictionSessionId(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppPredictionSessionId[] newArray(int size) {
-            return new AppPredictionSessionId[size];
-        }
     }
 }

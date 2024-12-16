@@ -13,7 +13,6 @@ public interface IGetAllProfilesCallback extends IInterface {
 
     void onComplete(int i, EuiccProfileInfo[] euiccProfileInfoArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGetAllProfilesCallback {
         @Override // com.android.internal.telephony.euicc.IGetAllProfilesCallback
         public void onComplete(int resultCode, EuiccProfileInfo[] profiles) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IGetAllProfilesCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGetAllProfilesCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -68,27 +66,23 @@ public interface IGetAllProfilesCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGetAllProfilesCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGetAllProfilesCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGetAllProfilesCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    EuiccProfileInfo[] _arg1 = (EuiccProfileInfo[]) data.createTypedArray(EuiccProfileInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            EuiccProfileInfo[] _arg1 = (EuiccProfileInfo[]) data.createTypedArray(EuiccProfileInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGetAllProfilesCallback {
+        private static class Proxy implements IGetAllProfilesCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -42,6 +42,8 @@ public interface ISessionManager extends IInterface {
 
     void dispatchVolumeKeyEventToSessionAsSystemService(String str, String str2, KeyEvent keyEvent, MediaSession.Token token) throws RemoteException;
 
+    void expireTempEngagedSessions() throws RemoteException;
+
     MediaSession.Token getMediaKeyEventSession(String str) throws RemoteException;
 
     String getMediaKeyEventSessionPackageName(String str) throws RemoteException;
@@ -80,7 +82,6 @@ public interface ISessionManager extends IInterface {
 
     void unregisterRemoteSessionCallback(IRemoteSessionCallback iRemoteSessionCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISessionManager {
         @Override // android.media.session.ISessionManager
         public ISession createSession(String packageName, ISessionCallback sessionCb, String tag, Bundle sessionInfo, int userId) throws RemoteException {
@@ -208,13 +209,16 @@ public interface ISessionManager extends IInterface {
         public void setSessionPolicies(MediaSession.Token token, int policies) throws RemoteException {
         }
 
+        @Override // android.media.session.ISessionManager
+        public void expireTempEngagedSessions() throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISessionManager {
         public static final String DESCRIPTOR = "android.media.session.ISessionManager";
         static final int TRANSACTION_addOnMediaKeyEventDispatchedListener = 17;
@@ -227,6 +231,7 @@ public interface ISessionManager extends IInterface {
         static final int TRANSACTION_dispatchMediaKeyEventToSessionAsSystemService = 6;
         static final int TRANSACTION_dispatchVolumeKeyEvent = 7;
         static final int TRANSACTION_dispatchVolumeKeyEventToSessionAsSystemService = 8;
+        static final int TRANSACTION_expireTempEngagedSessions = 30;
         static final int TRANSACTION_getMediaKeyEventSession = 3;
         static final int TRANSACTION_getMediaKeyEventSessionPackageName = 4;
         static final int TRANSACTION_getSessionPolicies = 28;
@@ -327,6 +332,8 @@ public interface ISessionManager extends IInterface {
                     return "getSessionPolicies";
                 case 29:
                     return "setSessionPolicies";
+                case 30:
+                    return "expireTempEngagedSessions";
                 default:
                     return null;
             }
@@ -342,231 +349,232 @@ public interface ISessionManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    ISessionCallback _arg1 = ISessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg2 = data.readString();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ISession _result = createSession(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 2:
+                    ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<MediaSession.Token> _result2 = getSessions(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    MediaSession.Token _result3 = getMediaKeyEventSession(_arg03);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result4 = getMediaKeyEventSessionPackageName(_arg04);
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    boolean _arg13 = data.readBoolean();
+                    KeyEvent _arg22 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    boolean _arg32 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchMediaKeyEvent(_arg05, _arg13, _arg22, _arg32);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    KeyEvent _arg14 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    MediaSession.Token _arg23 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = dispatchMediaKeyEventToSessionAsSystemService(_arg06, _arg14, _arg23);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    String _arg15 = data.readString();
+                    boolean _arg24 = data.readBoolean();
+                    KeyEvent _arg33 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    int _arg42 = data.readInt();
+                    boolean _arg5 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    dispatchVolumeKeyEvent(_arg07, _arg15, _arg24, _arg33, _arg42, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    String _arg16 = data.readString();
+                    KeyEvent _arg25 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    MediaSession.Token _arg34 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchVolumeKeyEventToSessionAsSystemService(_arg08, _arg16, _arg25, _arg34);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    String _arg17 = data.readString();
+                    int _arg26 = data.readInt();
+                    int _arg35 = data.readInt();
+                    int _arg43 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchAdjustVolume(_arg09, _arg17, _arg26, _arg35, _arg43);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    IActiveSessionsListener _arg010 = IActiveSessionsListener.Stub.asInterface(data.readStrongBinder());
+                    ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addSessionsListener(_arg010, _arg18, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    IActiveSessionsListener _arg011 = IActiveSessionsListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeSessionsListener(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    ISession2TokensListener _arg012 = ISession2TokensListener.Stub.asInterface(data.readStrongBinder());
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    addSession2TokensListener(_arg012, _arg19);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    ISession2TokensListener _arg013 = ISession2TokensListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeSession2TokensListener(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    IRemoteSessionCallback _arg014 = IRemoteSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerRemoteSessionCallback(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    IRemoteSessionCallback _arg015 = IRemoteSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterRemoteSessionCallback(_arg015);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    boolean _result6 = isGlobalPriorityActive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 17:
+                    IOnMediaKeyEventDispatchedListener _arg016 = IOnMediaKeyEventDispatchedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addOnMediaKeyEventDispatchedListener(_arg016);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    IOnMediaKeyEventDispatchedListener _arg017 = IOnMediaKeyEventDispatchedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeOnMediaKeyEventDispatchedListener(_arg017);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    IOnMediaKeyEventSessionChangedListener _arg018 = IOnMediaKeyEventSessionChangedListener.Stub.asInterface(data.readStrongBinder());
+                    String _arg110 = data.readString();
+                    data.enforceNoDataAvail();
+                    addOnMediaKeyEventSessionChangedListener(_arg018, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    IOnMediaKeyEventSessionChangedListener _arg019 = IOnMediaKeyEventSessionChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeOnMediaKeyEventSessionChangedListener(_arg019);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    IOnVolumeKeyLongPressListener _arg020 = IOnVolumeKeyLongPressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setOnVolumeKeyLongPressListener(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    IOnMediaKeyListener _arg021 = IOnMediaKeyListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setOnMediaKeyListener(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    String _arg022 = data.readString();
+                    int _arg111 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = isTrusted(_arg022, _arg111, _arg28);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 24:
+                    String _arg023 = data.readString();
+                    data.enforceNoDataAvail();
+                    setCustomMediaKeyDispatcher(_arg023);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    String _arg024 = data.readString();
+                    data.enforceNoDataAvail();
+                    setCustomMediaSessionPolicyProvider(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 26:
+                    String _arg025 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = hasCustomMediaKeyDispatcher(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 27:
+                    String _arg026 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result9 = hasCustomMediaSessionPolicyProvider(_arg026);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result9);
+                    return true;
+                case 28:
+                    MediaSession.Token _arg027 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result10 = getSessionPolicies(_arg027);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 29:
+                    MediaSession.Token _arg028 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSessionPolicies(_arg028, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    expireTempEngagedSessions();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            ISessionCallback _arg1 = ISessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg2 = data.readString();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ISession _result = createSession(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 2:
-                            ComponentName _arg02 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<MediaSession.Token> _result2 = getSessions(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            MediaSession.Token _result3 = getMediaKeyEventSession(_arg03);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result4 = getMediaKeyEventSessionPackageName(_arg04);
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            boolean _arg13 = data.readBoolean();
-                            KeyEvent _arg22 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            boolean _arg32 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchMediaKeyEvent(_arg05, _arg13, _arg22, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            KeyEvent _arg14 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            MediaSession.Token _arg23 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = dispatchMediaKeyEventToSessionAsSystemService(_arg06, _arg14, _arg23);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            String _arg15 = data.readString();
-                            boolean _arg24 = data.readBoolean();
-                            KeyEvent _arg33 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            int _arg42 = data.readInt();
-                            boolean _arg5 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            dispatchVolumeKeyEvent(_arg07, _arg15, _arg24, _arg33, _arg42, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            String _arg16 = data.readString();
-                            KeyEvent _arg25 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            MediaSession.Token _arg34 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchVolumeKeyEventToSessionAsSystemService(_arg08, _arg16, _arg25, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg17 = data.readString();
-                            int _arg26 = data.readInt();
-                            int _arg35 = data.readInt();
-                            int _arg43 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchAdjustVolume(_arg09, _arg17, _arg26, _arg35, _arg43);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            IActiveSessionsListener _arg010 = IActiveSessionsListener.Stub.asInterface(data.readStrongBinder());
-                            ComponentName _arg18 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addSessionsListener(_arg010, _arg18, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            IActiveSessionsListener _arg011 = IActiveSessionsListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeSessionsListener(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            ISession2TokensListener _arg012 = ISession2TokensListener.Stub.asInterface(data.readStrongBinder());
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            addSession2TokensListener(_arg012, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            ISession2TokensListener _arg013 = ISession2TokensListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeSession2TokensListener(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            IRemoteSessionCallback _arg014 = IRemoteSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerRemoteSessionCallback(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            IRemoteSessionCallback _arg015 = IRemoteSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterRemoteSessionCallback(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            boolean _result6 = isGlobalPriorityActive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 17:
-                            IOnMediaKeyEventDispatchedListener _arg016 = IOnMediaKeyEventDispatchedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addOnMediaKeyEventDispatchedListener(_arg016);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            IOnMediaKeyEventDispatchedListener _arg017 = IOnMediaKeyEventDispatchedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeOnMediaKeyEventDispatchedListener(_arg017);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            IOnMediaKeyEventSessionChangedListener _arg018 = IOnMediaKeyEventSessionChangedListener.Stub.asInterface(data.readStrongBinder());
-                            String _arg110 = data.readString();
-                            data.enforceNoDataAvail();
-                            addOnMediaKeyEventSessionChangedListener(_arg018, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            IOnMediaKeyEventSessionChangedListener _arg019 = IOnMediaKeyEventSessionChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeOnMediaKeyEventSessionChangedListener(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            IOnVolumeKeyLongPressListener _arg020 = IOnVolumeKeyLongPressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setOnVolumeKeyLongPressListener(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            IOnMediaKeyListener _arg021 = IOnMediaKeyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setOnMediaKeyListener(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            String _arg022 = data.readString();
-                            int _arg111 = data.readInt();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = isTrusted(_arg022, _arg111, _arg28);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 24:
-                            String _arg023 = data.readString();
-                            data.enforceNoDataAvail();
-                            setCustomMediaKeyDispatcher(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            String _arg024 = data.readString();
-                            data.enforceNoDataAvail();
-                            setCustomMediaSessionPolicyProvider(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg025 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = hasCustomMediaKeyDispatcher(_arg025);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 27:
-                            String _arg026 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result9 = hasCustomMediaSessionPolicyProvider(_arg026);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result9);
-                            return true;
-                        case 28:
-                            MediaSession.Token _arg027 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result10 = getSessionPolicies(_arg027);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 29:
-                            MediaSession.Token _arg028 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSessionPolicies(_arg028, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISessionManager {
+        private static class Proxy implements ISessionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1064,11 +1072,25 @@ public interface ISessionManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.media.session.ISessionManager
+            public void expireTempEngagedSessions() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(30, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 28;
+            return 29;
         }
     }
 }

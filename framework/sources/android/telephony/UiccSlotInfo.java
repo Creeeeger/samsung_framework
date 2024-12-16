@@ -13,21 +13,20 @@ import java.util.List;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class UiccSlotInfo implements Parcelable {
     public static final int CARD_STATE_INFO_ABSENT = 1;
     public static final int CARD_STATE_INFO_ERROR = 3;
     public static final int CARD_STATE_INFO_PRESENT = 2;
     public static final int CARD_STATE_INFO_RESTRICTED = 4;
     public static final Parcelable.Creator<UiccSlotInfo> CREATOR = new Parcelable.Creator<UiccSlotInfo>() { // from class: android.telephony.UiccSlotInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccSlotInfo createFromParcel(Parcel in) {
             return new UiccSlotInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UiccSlotInfo[] newArray(int size) {
             return new UiccSlotInfo[size];
@@ -44,29 +43,7 @@ public class UiccSlotInfo implements Parcelable {
     private final List<UiccPortInfo> mPortList;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CardStateInfo {
-    }
-
-    /* synthetic */ UiccSlotInfo(Parcel parcel, UiccSlotInfoIA uiccSlotInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.telephony.UiccSlotInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UiccSlotInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccSlotInfo createFromParcel(Parcel in) {
-            return new UiccSlotInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UiccSlotInfo[] newArray(int size) {
-            return new UiccSlotInfo[size];
-        }
     }
 
     private UiccSlotInfo(Parcel in) {
@@ -78,9 +55,8 @@ public class UiccSlotInfo implements Parcelable {
         this.mLogicalSlotIdx = in.readInt();
         this.mIsExtendedApduSupported = in.readBoolean();
         this.mIsRemovable = in.readBoolean();
-        ArrayList arrayList = new ArrayList();
-        this.mPortList = arrayList;
-        in.readTypedList(arrayList, UiccPortInfo.CREATOR);
+        this.mPortList = new ArrayList();
+        in.readTypedList(this.mPortList, UiccPortInfo.CREATOR);
         this.mLogicalSlotAccessRestricted = in.readBoolean();
     }
 

@@ -1,6 +1,6 @@
 package android.telephony;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SemTelephonyConstants {
     public static final int ASSISTED_DIAL_FROM_CONTACT_LIST = 1;
     public static final int ASSISTED_DIAL_FROM_DIAL_PAD = 2;
@@ -42,31 +42,29 @@ public class SemTelephonyConstants {
     public static final String SEM_EXTRA_VIDEO_CRT_IS_ALERTING = "com.samsung.telephony.extra.VIDEO_CRT_IS_ALERTING";
     public static final String SEM_EXTRA_VIDEO_CRT_MT = "com.samsung.telephony.extra.VIDEO_CRT_MT";
 
-    /* loaded from: classes3.dex */
     public interface EmergencyNumberSource {
         public static final int EMERGENCY_NUMBER_SOURCE_AOSP_MAX = 32;
         public static final int EMERGENCY_NUMBER_SOURCE_HIGH_PRIORITY = 256;
         public static final int EMERGENCY_NUMBER_SOURCE_OVER_DATABASE = 128;
     }
 
-    /* loaded from: classes3.dex */
     public interface ImsCallProfile {
         public static final int CMC_TYPE_PD = 1;
         public static final int CMC_TYPE_SD = 2;
+        public static final String EMERGENCY_CALL_RAT_IWLAN = "VoWIFI";
+        public static final String EMERGENCY_CALL_RAT_LTE = "VoLTE";
+        public static final String EMERGENCY_CALL_RAT_NR = "VoLTE";
         public static final String EXTRA_FEATURE_CAPABILITY = "feature_caps";
     }
 
-    /* loaded from: classes3.dex */
     public interface ImsReasonInfo {
 
-        /* loaded from: classes3.dex */
         public interface Code {
             public static final int CODE_OEM_CMC_END_BY_REGULAR_CALL_RELEASE = 4005;
             public static final int CODE_OEM_CMC_PD_PULL = 4003;
             public static final int CODE_OEM_CMC_REJECT_E911_NOT_ALLOWED_ON_SD = 4007;
         }
 
-        /* loaded from: classes3.dex */
         public interface ExtraCode {
             public static final int EXTRA_CODE_CMC_END_BY_REGULAR_CALL_RELEASE = 6009;
             public static final int EXTRA_CODE_SIP_USER_REJECTED = 603;
@@ -75,16 +73,13 @@ public class SemTelephonyConstants {
         }
     }
 
-    /* loaded from: classes3.dex */
     public interface Telecom {
 
-        /* loaded from: classes3.dex */
         public interface Connection {
             public static final String SEM_EVENT_CALL_CMC_SECONDARY_DEVICE_PULL = "com.samsung.telecom.event.CALL_SECONDARY_DEVICE_PULL";
         }
     }
 
-    /* loaded from: classes3.dex */
     public interface TelephonyManager {
         public static final String SEM_CALL_EXTRA_CALL_FORWARDING_NUMBER_PRESENTATION = "com.samsung.telephony.extra.CALL_FORWARDING_PRESENTATION";
         public static final String SEM_CALL_EXTRA_IS_TWO_PHONE_MODE = "com.samsung.telephony.extra.IS_TWO_PHONE_MODE";

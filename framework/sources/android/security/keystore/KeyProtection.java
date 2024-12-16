@@ -1,7 +1,10 @@
 package android.security.keystore;
 
 import java.security.KeyStore;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /* loaded from: classes3.dex */
 public final class KeyProtection implements KeyStore.ProtectionParameter, UserAuthArgs {
@@ -16,6 +19,7 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
     private final Date mKeyValidityForOriginationEnd;
     private final Date mKeyValidityStart;
     private final int mMaxUsageCount;
+    private final Set<String> mMgf1Digests;
     private final int mPurposes;
     private final boolean mRandomizedEncryptionRequired;
     private final boolean mRollbackResistant;
@@ -28,11 +32,7 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
     private final boolean mUserConfirmationRequired;
     private final boolean mUserPresenceRequred;
 
-    /* synthetic */ KeyProtection(Date date, Date date2, Date date3, int i, String[] strArr, String[] strArr2, String[] strArr3, String[] strArr4, boolean z, boolean z2, int i2, int i3, boolean z3, boolean z4, boolean z5, long j, boolean z6, boolean z7, boolean z8, boolean z9, int i4, boolean z10, KeyProtectionIA keyProtectionIA) {
-        this(date, date2, date3, i, strArr, strArr2, strArr3, strArr4, z, z2, i2, i3, z3, z4, z5, j, z6, z7, z8, z9, i4, z10);
-    }
-
-    private KeyProtection(Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] encryptionPaddings, String[] signaturePaddings, String[] digests, String[] blockModes, boolean randomizedEncryptionRequired, boolean userAuthenticationRequired, int userAuthenticationType, int userAuthenticationValidityDurationSeconds, boolean userPresenceRequred, boolean userAuthenticationValidWhileOnBody, boolean invalidatedByBiometricEnrollment, long boundToSecureUserId, boolean criticalToDeviceEncryption, boolean userConfirmationRequired, boolean unlockedDeviceRequired, boolean isStrongBoxBacked, int maxUsageCount, boolean rollbackResistant) {
+    private KeyProtection(Date keyValidityStart, Date keyValidityForOriginationEnd, Date keyValidityForConsumptionEnd, int purposes, String[] encryptionPaddings, String[] signaturePaddings, String[] digests, Set<String> mgf1Digests, String[] blockModes, boolean randomizedEncryptionRequired, boolean userAuthenticationRequired, int userAuthenticationType, int userAuthenticationValidityDurationSeconds, boolean userPresenceRequred, boolean userAuthenticationValidWhileOnBody, boolean invalidatedByBiometricEnrollment, long boundToSecureUserId, boolean criticalToDeviceEncryption, boolean userConfirmationRequired, boolean unlockedDeviceRequired, boolean isStrongBoxBacked, int maxUsageCount, boolean rollbackResistant) {
         this.mKeyValidityStart = Utils.cloneIfNotNull(keyValidityStart);
         this.mKeyValidityForOriginationEnd = Utils.cloneIfNotNull(keyValidityForOriginationEnd);
         this.mKeyValidityForConsumptionEnd = Utils.cloneIfNotNull(keyValidityForConsumptionEnd);
@@ -40,6 +40,7 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
         this.mEncryptionPaddings = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(encryptionPaddings));
         this.mSignaturePaddings = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(signaturePaddings));
         this.mDigests = ArrayUtils.cloneIfNotEmpty(digests);
+        this.mMgf1Digests = mgf1Digests;
         this.mBlockModes = ArrayUtils.cloneIfNotEmpty(ArrayUtils.nullToEmpty(blockModes));
         this.mRandomizedEncryptionRequired = randomizedEncryptionRequired;
         this.mUserAuthenticationRequired = userAuthenticationRequired;
@@ -82,15 +83,25 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
     }
 
     public String[] getDigests() {
-        String[] strArr = this.mDigests;
-        if (strArr == null) {
+        if (this.mDigests == null) {
             throw new IllegalStateException("Digests not specified");
         }
-        return ArrayUtils.cloneIfNotEmpty(strArr);
+        return ArrayUtils.cloneIfNotEmpty(this.mDigests);
     }
 
     public boolean isDigestsSpecified() {
         return this.mDigests != null;
+    }
+
+    public Set<String> getMgf1Digests() {
+        if (this.mMgf1Digests.isEmpty()) {
+            throw new IllegalStateException("Mask generation function (MGF) not specified");
+        }
+        return new HashSet(this.mMgf1Digests);
+    }
+
+    public boolean isMgf1DigestsSpecified() {
+        return !this.mMgf1Digests.isEmpty();
     }
 
     public String[] getBlockModes() {
@@ -162,7 +173,6 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
         return this.mRollbackResistant;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private String[] mBlockModes;
         private String[] mDigests;
@@ -175,6 +185,7 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
         private boolean mUserAuthenticationRequired;
         private boolean mUserAuthenticationValidWhileOnBody;
         private boolean mUserConfirmationRequired;
+        private Set<String> mMgf1Digests = Collections.emptySet();
         private boolean mRandomizedEncryptionRequired = true;
         private int mUserAuthenticationValidityDurationSeconds = 0;
         private int mUserAuthenticationType = 2;
@@ -225,6 +236,11 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
 
         public Builder setDigests(String... digests) {
             this.mDigests = ArrayUtils.cloneIfNotEmpty(digests);
+            return this;
+        }
+
+        public Builder setMgf1Digests(String... mgf1Digests) {
+            this.mMgf1Digests = Set.of((Object[]) mgf1Digests);
             return this;
         }
 
@@ -317,7 +333,7 @@ public final class KeyProtection implements KeyStore.ProtectionParameter, UserAu
         }
 
         public KeyProtection build() {
-            return new KeyProtection(this.mKeyValidityStart, this.mKeyValidityForOriginationEnd, this.mKeyValidityForConsumptionEnd, this.mPurposes, this.mEncryptionPaddings, this.mSignaturePaddings, this.mDigests, this.mBlockModes, this.mRandomizedEncryptionRequired, this.mUserAuthenticationRequired, this.mUserAuthenticationType, this.mUserAuthenticationValidityDurationSeconds, this.mUserPresenceRequired, this.mUserAuthenticationValidWhileOnBody, this.mInvalidatedByBiometricEnrollment, this.mBoundToSecureUserId, this.mCriticalToDeviceEncryption, this.mUserConfirmationRequired, this.mUnlockedDeviceRequired, this.mIsStrongBoxBacked, this.mMaxUsageCount, this.mRollbackResistant);
+            return new KeyProtection(this.mKeyValidityStart, this.mKeyValidityForOriginationEnd, this.mKeyValidityForConsumptionEnd, this.mPurposes, this.mEncryptionPaddings, this.mSignaturePaddings, this.mDigests, this.mMgf1Digests, this.mBlockModes, this.mRandomizedEncryptionRequired, this.mUserAuthenticationRequired, this.mUserAuthenticationType, this.mUserAuthenticationValidityDurationSeconds, this.mUserPresenceRequired, this.mUserAuthenticationValidWhileOnBody, this.mInvalidatedByBiometricEnrollment, this.mBoundToSecureUserId, this.mCriticalToDeviceEncryption, this.mUserConfirmationRequired, this.mUnlockedDeviceRequired, this.mIsStrongBoxBacked, this.mMaxUsageCount, this.mRollbackResistant);
         }
     }
 }

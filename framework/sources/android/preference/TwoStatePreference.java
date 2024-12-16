@@ -36,7 +36,7 @@ public abstract class TwoStatePreference extends Preference {
     }
 
     @Override // android.preference.Preference
-    public void onClick() {
+    protected void onClick() {
         super.onClick();
         boolean newValue = !isChecked();
         if (callChangeListener(Boolean.valueOf(newValue))) {
@@ -115,21 +115,21 @@ public abstract class TwoStatePreference extends Preference {
         setChecked(restoreValue ? getPersistedBoolean(this.mChecked) : ((Boolean) defaultValue).booleanValue());
     }
 
-    public void syncSummaryView(View view) {
+    void syncSummaryView(View view) {
         TextView summaryView = (TextView) view.findViewById(16908304);
         if (summaryView != null) {
             boolean useDefaultSummary = true;
             if (this.mChecked && !TextUtils.isEmpty(this.mSummaryOn)) {
-                summaryView.setText(this.mSummaryOn);
+                summaryView.lambda$setTextAsync$0(this.mSummaryOn);
                 useDefaultSummary = false;
             } else if (!this.mChecked && !TextUtils.isEmpty(this.mSummaryOff)) {
-                summaryView.setText(this.mSummaryOff);
+                summaryView.lambda$setTextAsync$0(this.mSummaryOff);
                 useDefaultSummary = false;
             }
             if (useDefaultSummary) {
                 CharSequence summary = getSummary();
                 if (!TextUtils.isEmpty(summary)) {
-                    summaryView.setText(summary);
+                    summaryView.lambda$setTextAsync$0(summary);
                     useDefaultSummary = false;
                 }
             }
@@ -144,7 +144,7 @@ public abstract class TwoStatePreference extends Preference {
     }
 
     @Override // android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         if (isPersistent()) {
             return superState;
@@ -155,7 +155,7 @@ public abstract class TwoStatePreference extends Preference {
     }
 
     @Override // android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -165,17 +165,15 @@ public abstract class TwoStatePreference extends Preference {
         setChecked(myState.checked);
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.TwoStatePreference.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -196,23 +194,6 @@ public abstract class TwoStatePreference extends Preference {
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.TwoStatePreference$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 }

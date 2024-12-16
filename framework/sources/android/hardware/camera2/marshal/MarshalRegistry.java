@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalRegistry {
     private static final Object sMarshalLock = new Object();
     private static final List<MarshalQueryable<?>> sRegisteredMarshalQueryables = new ArrayList();
@@ -24,11 +24,10 @@ public class MarshalRegistry {
             MarshalToken<?> marshalToken = new MarshalToken<>(typeToken, nativeType);
             marshaler = (Marshaler) sMarshalerMap.get(marshalToken);
             if (marshaler == null) {
-                List<MarshalQueryable<?>> list = sRegisteredMarshalQueryables;
-                if (list.size() == 0) {
+                if (sRegisteredMarshalQueryables.size() == 0) {
                     throw new AssertionError("No available query marshalers registered");
                 }
-                Iterator<MarshalQueryable<?>> it = list.iterator();
+                Iterator<MarshalQueryable<?>> it = sRegisteredMarshalQueryables.iterator();
                 while (true) {
                     if (!it.hasNext()) {
                         break;
@@ -48,9 +47,7 @@ public class MarshalRegistry {
         return marshaler;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class MarshalToken<T> {
+    private static class MarshalToken<T> {
         private final int hash;
         final int nativeType;
         final TypeReference<T> typeReference;

@@ -25,14 +25,13 @@ public final class AttributionSource implements Parcelable {
     private static final String DESCRIPTOR = "android.content.AttributionSource";
     private static final Binder sDefaultToken = new Binder(DESCRIPTOR);
     public static final Parcelable.Creator<AttributionSource> CREATOR = new Parcelable.Creator<AttributionSource>() { // from class: android.content.AttributionSource.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttributionSource[] newArray(int size) {
             return new AttributionSource[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AttributionSource createFromParcel(Parcel in) {
             return new AttributionSource(in);
@@ -43,40 +42,44 @@ public final class AttributionSource implements Parcelable {
         this(uid, -1, packageName, attributionTag, sDefaultToken);
     }
 
+    public AttributionSource(int uid, String packageName, String attributionTag, int virtualDeviceId) {
+        this(uid, -1, packageName, attributionTag, sDefaultToken, null, virtualDeviceId, null);
+    }
+
     public AttributionSource(int uid, int pid, String packageName, String attributionTag) {
         this(uid, pid, packageName, attributionTag, sDefaultToken);
     }
 
     public AttributionSource(int uid, String packageName, String attributionTag, IBinder token) {
-        this(uid, -1, packageName, attributionTag, token, null, null);
+        this(uid, -1, packageName, attributionTag, token, null, 0, null);
     }
 
     public AttributionSource(int uid, int pid, String packageName, String attributionTag, IBinder token) {
-        this(uid, pid, packageName, attributionTag, token, null, null);
+        this(uid, pid, packageName, attributionTag, token, null, 0, null);
     }
 
     public AttributionSource(int uid, String packageName, String attributionTag, Set<String> renouncedPermissions, AttributionSource next) {
-        this(uid, -1, packageName, attributionTag, sDefaultToken, renouncedPermissions != null ? (String[]) renouncedPermissions.toArray(new String[0]) : null, next);
+        this(uid, -1, packageName, attributionTag, sDefaultToken, renouncedPermissions != null ? (String[]) renouncedPermissions.toArray(new String[0]) : null, 0, next);
     }
 
     public AttributionSource(AttributionSource current, AttributionSource next) {
-        this(current.getUid(), current.getPid(), current.getPackageName(), current.getAttributionTag(), current.getToken(), current.mAttributionSourceState.renouncedPermissions, next);
+        this(current.getUid(), current.getPid(), current.getPackageName(), current.getAttributionTag(), current.getToken(), current.mAttributionSourceState.renouncedPermissions, current.getDeviceId(), next);
     }
 
-    public AttributionSource(int uid, int pid, String packageName, String attributionTag, String[] renouncedPermissions, AttributionSource next) {
-        this(uid, pid, packageName, attributionTag, sDefaultToken, renouncedPermissions, next);
+    public AttributionSource(int uid, int pid, String packageName, String attributionTag, String[] renouncedPermissions, int deviceId, AttributionSource next) {
+        this(uid, pid, packageName, attributionTag, sDefaultToken, renouncedPermissions, deviceId, next);
     }
 
-    public AttributionSource(int uid, int pid, String packageName, String attributionTag, IBinder token, String[] renouncedPermissions, AttributionSource next) {
-        AttributionSourceState attributionSourceState = new AttributionSourceState();
-        this.mAttributionSourceState = attributionSourceState;
-        attributionSourceState.uid = uid;
-        attributionSourceState.pid = pid;
-        attributionSourceState.token = token;
-        attributionSourceState.packageName = packageName;
-        attributionSourceState.attributionTag = attributionTag;
-        attributionSourceState.renouncedPermissions = renouncedPermissions;
-        attributionSourceState.next = next != null ? new AttributionSourceState[]{next.mAttributionSourceState} : new AttributionSourceState[0];
+    public AttributionSource(int uid, int pid, String packageName, String attributionTag, IBinder token, String[] renouncedPermissions, int deviceId, AttributionSource next) {
+        this.mAttributionSourceState = new AttributionSourceState();
+        this.mAttributionSourceState.uid = uid;
+        this.mAttributionSourceState.pid = pid;
+        this.mAttributionSourceState.token = token;
+        this.mAttributionSourceState.packageName = packageName;
+        this.mAttributionSourceState.attributionTag = attributionTag;
+        this.mAttributionSourceState.renouncedPermissions = renouncedPermissions;
+        this.mAttributionSourceState.deviceId = deviceId;
+        this.mAttributionSourceState.next = next != null ? new AttributionSourceState[]{next.mAttributionSourceState} : new AttributionSourceState[0];
     }
 
     AttributionSource(Parcel in) {
@@ -97,15 +100,15 @@ public final class AttributionSource implements Parcelable {
     }
 
     public AttributionSource withNextAttributionSource(AttributionSource next) {
-        return new AttributionSource(getUid(), getPid(), getPackageName(), getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, next);
+        return new AttributionSource(getUid(), getPid(), getPackageName(), getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, getDeviceId(), next);
     }
 
     public AttributionSource withPackageName(String packageName) {
-        return new AttributionSource(getUid(), getPid(), packageName, getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, getNext());
+        return new AttributionSource(getUid(), getPid(), packageName, getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, getDeviceId(), getNext());
     }
 
     public AttributionSource withToken(IBinder token) {
-        return new AttributionSource(getUid(), getPid(), getPackageName(), getAttributionTag(), token, this.mAttributionSourceState.renouncedPermissions, getNext());
+        return new AttributionSource(getUid(), getPid(), getPackageName(), getAttributionTag(), token, this.mAttributionSourceState.renouncedPermissions, getDeviceId(), getNext());
     }
 
     public AttributionSource withDefaultToken() {
@@ -113,7 +116,11 @@ public final class AttributionSource implements Parcelable {
     }
 
     public AttributionSource withPid(int pid) {
-        return new AttributionSource(getUid(), pid, getPackageName(), getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, getNext());
+        return new AttributionSource(getUid(), pid, getPackageName(), getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, getDeviceId(), getNext());
+    }
+
+    public AttributionSource withDeviceId(int deviceId) {
+        return new AttributionSource(getUid(), getPid(), getPackageName(), getAttributionTag(), getToken(), this.mAttributionSourceState.renouncedPermissions, deviceId, getNext());
     }
 
     public AttributionSourceState asState() {
@@ -134,25 +141,22 @@ public final class AttributionSource implements Parcelable {
             uid = 1000;
         }
         try {
-            return new Builder(uid).setPid(Process.myPid()).setPackageName(AppGlobals.getPackageManager().getPackagesForUid(uid)[0]).build();
+            return new Builder(uid).setPid(Process.myPid()).setDeviceId(0).setPackageName(AppGlobals.getPackageManager().getPackagesForUid(uid)[0]).build();
         } catch (Exception e) {
             throw new IllegalStateException("Failed to resolve AttributionSource");
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ScopedParcelState implements AutoCloseable {
-        private final Parcel mParcel;
+        private final Parcel mParcel = Parcel.obtain();
 
         public Parcel getParcel() {
             return this.mParcel;
         }
 
         public ScopedParcelState(AttributionSource attributionSource) {
-            Parcel obtain = Parcel.obtain();
-            this.mParcel = obtain;
-            attributionSource.writeToParcel(obtain, 0);
-            obtain.setDataPosition(0);
+            attributionSource.writeToParcel(this.mParcel, 0);
+            this.mParcel.setDataPosition(0);
         }
 
         @Override // java.lang.AutoCloseable
@@ -194,7 +198,7 @@ public final class AttributionSource implements Parcelable {
 
     public String toString() {
         boolean z = Build.IS_DEBUGGABLE;
-        return "AttributionSource { uid = " + this.mAttributionSourceState.uid + ", packageName = " + this.mAttributionSourceState.packageName + ", attributionTag = " + this.mAttributionSourceState.attributionTag + ", token = " + this.mAttributionSourceState.token + ", next = " + ((this.mAttributionSourceState.next == null || this.mAttributionSourceState.next.length <= 0) ? null : this.mAttributionSourceState.next[0]) + " }";
+        return "AttributionSource { uid = " + this.mAttributionSourceState.uid + ", packageName = " + this.mAttributionSourceState.packageName + ", attributionTag = " + this.mAttributionSourceState.attributionTag + ", token = " + this.mAttributionSourceState.token + ", deviceId = " + this.mAttributionSourceState.deviceId + ", next = " + ((this.mAttributionSourceState.next == null || this.mAttributionSourceState.next.length <= 0) ? null : new AttributionSource(this.mAttributionSourceState.next[0]).toString()) + " }";
     }
 
     public int getNextUid() {
@@ -223,6 +227,13 @@ public final class AttributionSource implements Parcelable {
             return this.mAttributionSourceState.next[0].token;
         }
         return null;
+    }
+
+    public int getNextDeviceId() {
+        if (this.mAttributionSourceState.next == null || this.mAttributionSourceState.next.length <= 0) {
+            return 0;
+        }
+        return this.mAttributionSourceState.next[0].deviceId;
     }
 
     public boolean isTrusted(Context context) {
@@ -255,6 +266,10 @@ public final class AttributionSource implements Parcelable {
 
     public String getAttributionTag() {
         return this.mAttributionSourceState.attributionTag;
+    }
+
+    public int getDeviceId() {
+        return this.mAttributionSourceState.deviceId;
     }
 
     public IBinder getToken() {
@@ -300,48 +315,24 @@ public final class AttributionSource implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.content.AttributionSource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AttributionSource> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttributionSource[] newArray(int size) {
-            return new AttributionSource[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AttributionSource createFromParcel(Parcel in) {
-            return new AttributionSource(in);
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static final class Builder {
-        private final AttributionSourceState mAttributionSourceState;
-        private long mBuilderFieldsSet;
+        private final AttributionSourceState mAttributionSourceState = new AttributionSourceState();
+        private long mBuilderFieldsSet = 0;
 
         public Builder(int uid) {
-            AttributionSourceState attributionSourceState = new AttributionSourceState();
-            this.mAttributionSourceState = attributionSourceState;
-            this.mBuilderFieldsSet = 0L;
-            attributionSourceState.uid = uid;
+            this.mAttributionSourceState.uid = uid;
         }
 
         public Builder(AttributionSource current) {
-            AttributionSourceState attributionSourceState = new AttributionSourceState();
-            this.mAttributionSourceState = attributionSourceState;
-            this.mBuilderFieldsSet = 0L;
             if (current == null) {
                 throw new IllegalArgumentException("current AttributionSource can not be null");
             }
-            attributionSourceState.uid = current.getUid();
-            attributionSourceState.pid = current.getPid();
-            attributionSourceState.packageName = current.getPackageName();
-            attributionSourceState.attributionTag = current.getAttributionTag();
-            attributionSourceState.token = current.getToken();
-            attributionSourceState.renouncedPermissions = current.mAttributionSourceState.renouncedPermissions;
+            this.mAttributionSourceState.uid = current.getUid();
+            this.mAttributionSourceState.pid = current.getPid();
+            this.mAttributionSourceState.packageName = current.getPackageName();
+            this.mAttributionSourceState.attributionTag = current.getAttributionTag();
+            this.mAttributionSourceState.token = current.getToken();
+            this.mAttributionSourceState.renouncedPermissions = current.mAttributionSourceState.renouncedPermissions;
         }
 
         public Builder setPid(int value) {
@@ -373,19 +364,34 @@ public final class AttributionSource implements Parcelable {
             return this;
         }
 
+        public Builder setDeviceId(int deviceId) {
+            checkNotUsed();
+            this.mBuilderFieldsSet |= 18;
+            this.mAttributionSourceState.deviceId = deviceId;
+            return this;
+        }
+
         public Builder setNext(AttributionSource value) {
             checkNotUsed();
             this.mBuilderFieldsSet |= 32;
-            AttributionSourceState attributionSourceState = this.mAttributionSourceState;
-            attributionSourceState.next = value != null ? new AttributionSourceState[]{value.mAttributionSourceState} : attributionSourceState.next;
+            this.mAttributionSourceState.next = value != null ? new AttributionSourceState[]{value.mAttributionSourceState} : this.mAttributionSourceState.next;
+            return this;
+        }
+
+        public Builder setNextAttributionSource(AttributionSource value) {
+            checkNotUsed();
+            if (value == null) {
+                throw new IllegalArgumentException("Null AttributionSource not permitted.");
+            }
+            this.mBuilderFieldsSet |= 32;
+            this.mAttributionSourceState.next = new AttributionSourceState[]{value.mAttributionSourceState};
             return this;
         }
 
         public AttributionSource build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 64;
-            this.mBuilderFieldsSet = j;
-            if ((j & 2) == 0) {
+            this.mBuilderFieldsSet |= 64;
+            if ((this.mBuilderFieldsSet & 2) == 0) {
                 this.mAttributionSourceState.pid = -1;
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
@@ -396,6 +402,9 @@ public final class AttributionSource implements Parcelable {
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
                 this.mAttributionSourceState.renouncedPermissions = null;
+            }
+            if ((this.mBuilderFieldsSet & 18) == 0) {
+                this.mAttributionSourceState.deviceId = 0;
             }
             if ((this.mBuilderFieldsSet & 32) == 0) {
                 this.mAttributionSourceState.next = null;

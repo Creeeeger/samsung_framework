@@ -17,7 +17,6 @@ public interface ICallRedirectionService extends IInterface {
 
     void placeCall(ICallRedirectionAdapter iCallRedirectionAdapter, Uri uri, PhoneAccountHandle phoneAccountHandle, boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICallRedirectionService {
         @Override // com.android.internal.telecom.ICallRedirectionService
         public void placeCall(ICallRedirectionAdapter adapter, Uri handle, PhoneAccountHandle initialPhoneAccount, boolean allowInteractiveResponse) throws RemoteException {
@@ -33,7 +32,6 @@ public interface ICallRedirectionService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICallRedirectionService {
         static final int TRANSACTION_notifyTimeout = 2;
         static final int TRANSACTION_placeCall = 1;
@@ -79,30 +77,27 @@ public interface ICallRedirectionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICallRedirectionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICallRedirectionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICallRedirectionService.DESCRIPTOR);
+                case 1:
+                    ICallRedirectionAdapter _arg0 = ICallRedirectionAdapter.Stub.asInterface(data.readStrongBinder());
+                    Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    PhoneAccountHandle _arg2 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    placeCall(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    notifyTimeout();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICallRedirectionAdapter _arg0 = ICallRedirectionAdapter.Stub.asInterface(data.readStrongBinder());
-                            Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            PhoneAccountHandle _arg2 = (PhoneAccountHandle) data.readTypedObject(PhoneAccountHandle.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            placeCall(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            notifyTimeout();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICallRedirectionService {
             private IBinder mRemote;
 

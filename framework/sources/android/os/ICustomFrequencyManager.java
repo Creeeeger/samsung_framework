@@ -39,6 +39,8 @@ public interface ICustomFrequencyManager extends IInterface {
 
     int[] getSupportedFrequency(int i, int i2) throws RemoteException;
 
+    boolean isGameByGraphic(int i) throws RemoteException;
+
     void mpdUpdate(int i) throws RemoteException;
 
     String readFile(String str, char c) throws RemoteException;
@@ -83,7 +85,6 @@ public interface ICustomFrequencyManager extends IInterface {
 
     void writeSysfs(int i, String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICustomFrequencyManager {
         @Override // android.os.ICustomFrequencyManager
         public void requestMpParameterUpdate(String command) throws RemoteException {
@@ -240,13 +241,17 @@ public interface ICustomFrequencyManager extends IInterface {
         public void sendTid(int pid, int tid, int type) throws RemoteException {
         }
 
+        @Override // android.os.ICustomFrequencyManager
+        public boolean isGameByGraphic(int pid) throws RemoteException {
+            return false;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICustomFrequencyManager {
         static final int TRANSACTION_acquire = 101;
         static final int TRANSACTION_addDvfsLockAllowedUid = 84;
@@ -261,6 +266,7 @@ public interface ICustomFrequencyManager extends IInterface {
         static final int TRANSACTION_getProcessCpuUsage = 82;
         static final int TRANSACTION_getSsrmStatus = 50;
         static final int TRANSACTION_getSupportedFrequency = 103;
+        static final int TRANSACTION_isGameByGraphic = 115;
         static final int TRANSACTION_mpdUpdate = 15;
         static final int TRANSACTION_readFile = 83;
         static final int TRANSACTION_readSysfs = 107;
@@ -376,6 +382,8 @@ public interface ICustomFrequencyManager extends IInterface {
                     return "getPreloadList";
                 case 114:
                     return "sendTid";
+                case 115:
+                    return "isGameByGraphic";
                 default:
                     return null;
             }
@@ -391,254 +399,258 @@ public interface ICustomFrequencyManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICustomFrequencyManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICustomFrequencyManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICustomFrequencyManager.DESCRIPTOR);
+                case 13:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestMpParameterUpdate(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg02 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestCPUUpdate(_arg02, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    mpdUpdate(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    String _arg04 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendCommandToSSRM(_arg04, _arg12);
+                    return true;
+                case 50:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getSsrmStatus(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 51:
+                    String _arg06 = data.readString();
+                    int _arg13 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float[] _result2 = supportVRTemperaturesInformation(_arg06, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result2);
+                    return true;
+                case 64:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = getBatteryRemainingUsageTime(_arg07);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 73:
+                    boolean _arg08 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGamePowerSaving(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 74:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setGameFps(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    int _result4 = getGameThrottlingLevel();
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 76:
+                    boolean _arg010 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGameTurboMode(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 77:
+                    String _arg011 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    setGameTouchParam(_arg011, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    unsetGameTouchParam();
+                    reply.writeNoException();
+                    return true;
+                case 82:
+                    int[] _arg012 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    CpuTrackerInfo _result5 = getProcessCpuUsage(_arg012);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
+                    return true;
+                case 83:
+                    String _arg013 = data.readString();
+                    char _arg15 = (char) data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result6 = readFile(_arg013, _arg15);
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 84:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result7 = addDvfsLockAllowedUid(_arg014);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 85:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = removeDvfsLockAllowedUid(_arg015);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 87:
+                    int _arg016 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg23 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendDrawingTid(_arg016, _arg16, _arg23);
+                    return true;
+                case 88:
+                    int _arg017 = data.readInt();
+                    boolean _arg17 = data.readBoolean();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = requestFreezeSlowdown(_arg017, _arg17, _arg24);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 89:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setFrozenTime(_arg018);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    int _arg019 = data.readInt();
+                    int _arg18 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    requestGpis(_arg019, _arg18, _arg25);
+                    return true;
+                case 101:
+                    int _arg020 = data.readInt();
+                    int _arg19 = data.readInt();
+                    String _arg26 = data.readString();
+                    int _arg3 = data.readInt();
+                    int[] _arg4 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    acquire(_arg020, _arg19, _arg26, _arg3, _arg4);
+                    return true;
+                case 102:
+                    int _arg021 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    release(_arg021, _arg110);
+                    return true;
+                case 103:
+                    int _arg022 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int[] _result10 = getSupportedFrequency(_arg022, _arg111);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result10);
+                    return true;
+                case 104:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = checkHintExist(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 105:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = checkResourceExist(_arg024);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 106:
+                    int _arg025 = data.readInt();
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    writeSysfs(_arg025, _arg112);
+                    return true;
+                case 107:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result13 = readSysfs(_arg026);
+                    reply.writeNoException();
+                    reply.writeString(_result13);
+                    return true;
+                case 108:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = checkSysfsIdExist(_arg027);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 109:
+                    String _arg028 = data.readString();
+                    int _arg113 = data.readInt();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    restrictApp(_arg028, _arg113, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 110:
+                    disableGpisHint();
+                    reply.writeNoException();
+                    return true;
+                case 111:
+                    boolean _arg029 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGpisHint(_arg029);
+                    reply.writeNoException();
+                    return true;
+                case 112:
+                    boolean _arg030 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableInteractionHint(_arg030);
+                    reply.writeNoException();
+                    return true;
+                case 113:
+                    List<String> _result15 = getPreloadList();
+                    reply.writeNoException();
+                    reply.writeStringList(_result15);
+                    return true;
+                case 114:
+                    int _arg031 = data.readInt();
+                    int _arg114 = data.readInt();
+                    int _arg28 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTid(_arg031, _arg114, _arg28);
+                    return true;
+                case 115:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result16 = isGameByGraphic(_arg032);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
                     return true;
                 default:
-                    switch (code) {
-                        case 13:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestMpParameterUpdate(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg02 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestCPUUpdate(_arg02, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            mpdUpdate(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            String _arg04 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendCommandToSSRM(_arg04, _arg12);
-                            return true;
-                        case 50:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getSsrmStatus(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 51:
-                            String _arg06 = data.readString();
-                            int _arg13 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float[] _result2 = supportVRTemperaturesInformation(_arg06, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result2);
-                            return true;
-                        case 64:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = getBatteryRemainingUsageTime(_arg07);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 73:
-                            boolean _arg08 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGamePowerSaving(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 74:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setGameFps(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            int _result4 = getGameThrottlingLevel();
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 76:
-                            boolean _arg010 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGameTurboMode(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            String _arg011 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            setGameTouchParam(_arg011, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            unsetGameTouchParam();
-                            reply.writeNoException();
-                            return true;
-                        case 82:
-                            int[] _arg012 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            CpuTrackerInfo _result5 = getProcessCpuUsage(_arg012);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 83:
-                            String _arg013 = data.readString();
-                            char _arg15 = (char) data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result6 = readFile(_arg013, _arg15);
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 84:
-                            int _arg014 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = addDvfsLockAllowedUid(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 85:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = removeDvfsLockAllowedUid(_arg015);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        case 87:
-                            int _arg016 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg23 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendDrawingTid(_arg016, _arg16, _arg23);
-                            return true;
-                        case 88:
-                            int _arg017 = data.readInt();
-                            boolean _arg17 = data.readBoolean();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = requestFreezeSlowdown(_arg017, _arg17, _arg24);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 89:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setFrozenTime(_arg018);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            int _arg019 = data.readInt();
-                            int _arg18 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            requestGpis(_arg019, _arg18, _arg25);
-                            return true;
-                        case 101:
-                            int _arg020 = data.readInt();
-                            int _arg19 = data.readInt();
-                            String _arg26 = data.readString();
-                            int _arg3 = data.readInt();
-                            int[] _arg4 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            acquire(_arg020, _arg19, _arg26, _arg3, _arg4);
-                            return true;
-                        case 102:
-                            int _arg021 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            release(_arg021, _arg110);
-                            return true;
-                        case 103:
-                            int _arg022 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int[] _result10 = getSupportedFrequency(_arg022, _arg111);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result10);
-                            return true;
-                        case 104:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = checkHintExist(_arg023);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 105:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result12 = checkResourceExist(_arg024);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 106:
-                            int _arg025 = data.readInt();
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            writeSysfs(_arg025, _arg112);
-                            return true;
-                        case 107:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result13 = readSysfs(_arg026);
-                            reply.writeNoException();
-                            reply.writeString(_result13);
-                            return true;
-                        case 108:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = checkSysfsIdExist(_arg027);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 109:
-                            String _arg028 = data.readString();
-                            int _arg113 = data.readInt();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restrictApp(_arg028, _arg113, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 110:
-                            disableGpisHint();
-                            reply.writeNoException();
-                            return true;
-                        case 111:
-                            boolean _arg029 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGpisHint(_arg029);
-                            reply.writeNoException();
-                            return true;
-                        case 112:
-                            boolean _arg030 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableInteractionHint(_arg030);
-                            reply.writeNoException();
-                            return true;
-                        case 113:
-                            List<String> _result15 = getPreloadList();
-                            reply.writeNoException();
-                            reply.writeStringList(_result15);
-                            return true;
-                        case 114:
-                            int _arg031 = data.readInt();
-                            int _arg114 = data.readInt();
-                            int _arg28 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTid(_arg031, _arg114, _arg28);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ICustomFrequencyManager {
+        private static class Proxy implements ICustomFrequencyManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1207,11 +1219,28 @@ public interface ICustomFrequencyManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.os.ICustomFrequencyManager
+            public boolean isGameByGraphic(int pid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ICustomFrequencyManager.DESCRIPTOR);
+                    _data.writeInt(pid);
+                    this.mRemote.transact(115, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 113;
+            return 114;
         }
     }
 }

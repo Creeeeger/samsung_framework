@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.RemoteException;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.CountDownLatch;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class ResolverListController {
     private static final boolean DEBUG = false;
     private static final String TAG = "ResolverListController";
@@ -57,9 +56,7 @@ public class ResolverListController {
     }
 
     public ResolveInfo getLastChosen() throws RemoteException {
-        IPackageManager packageManager = AppGlobals.getPackageManager();
-        Intent intent = this.mTargetIntent;
-        return packageManager.getLastChosenActivity(intent, intent.resolveTypeIfNeeded(this.mContext.getContentResolver()), 65536);
+        return AppGlobals.getPackageManager().getLastChosenActivity(this.mTargetIntent, this.mTargetIntent.resolveTypeIfNeeded(this.mContext.getContentResolver()), 65536);
     }
 
     public void setLastChosen(Intent intent, IntentFilter filter, int match) throws RemoteException {
@@ -177,8 +174,7 @@ public class ResolverListController {
         return listToReturn;
     }
 
-    /* loaded from: classes4.dex */
-    public class ComputeCallback implements AbstractResolverComparator.AfterCompute {
+    private class ComputeCallback implements AbstractResolverComparator.AfterCompute {
         private CountDownLatch mFinishComputeSignal;
 
         public ComputeCallback(CountDownLatch finishComputeSignal) {
@@ -262,6 +258,7 @@ public class ResolverListController {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ int lambda$topK$0(ResolverActivity.ResolvedComponentInfo o1, ResolverActivity.ResolvedComponentInfo o2) {
         return -this.mResolverComparator.compare(o1, o2);
     }

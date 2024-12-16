@@ -1,7 +1,7 @@
 package com.android.framework.protobuf;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class NewInstanceSchemas {
     private static final NewInstanceSchema FULL_SCHEMA = loadSchemaForFullRuntime();
     private static final NewInstanceSchema LITE_SCHEMA = new NewInstanceSchemaLite();
@@ -9,11 +9,11 @@ final class NewInstanceSchemas {
     NewInstanceSchemas() {
     }
 
-    public static NewInstanceSchema full() {
+    static NewInstanceSchema full() {
         return FULL_SCHEMA;
     }
 
-    public static NewInstanceSchema lite() {
+    static NewInstanceSchema lite() {
         return LITE_SCHEMA;
     }
 

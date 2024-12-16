@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class OperatorChain extends OpPriorityComputable implements Operator {
     private static final String TAG = Def.tagOf((Class<?>) OperatorChain.class);
     List<Operator> processors;
@@ -34,7 +34,7 @@ public class OperatorChain extends OpPriorityComputable implements Operator {
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ Stream lambda$new$0(Operator e) {
+    static /* synthetic */ Stream lambda$new$0(Operator e) {
         return e instanceof OperatorChain ? ((OperatorChain) e).stream() : Stream.of(e);
     }
 
@@ -49,7 +49,7 @@ public class OperatorChain extends OpPriorityComputable implements Operator {
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ Stream lambda$new$1(Operator e) {
+    static /* synthetic */ Stream lambda$new$1(Operator e) {
         return e instanceof OperatorChain ? ((OperatorChain) e).stream() : Stream.of(e);
     }
 

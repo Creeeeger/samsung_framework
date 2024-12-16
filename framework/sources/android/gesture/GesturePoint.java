@@ -15,7 +15,7 @@ public class GesturePoint {
         this.timestamp = t;
     }
 
-    public static GesturePoint deserialize(DataInputStream in) throws IOException {
+    static GesturePoint deserialize(DataInputStream in) throws IOException {
         float x = in.readFloat();
         float y = in.readFloat();
         long timeStamp = in.readLong();

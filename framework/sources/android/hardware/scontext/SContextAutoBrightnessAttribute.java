@@ -13,7 +13,7 @@ public class SContextAutoBrightnessAttribute extends SContextAttribute {
     private static int MODE_DEVICE_MODE = 0;
     private static int MODE_CONFIGURATION = 1;
 
-    public SContextAutoBrightnessAttribute() {
+    SContextAutoBrightnessAttribute() {
         this.mLuminanceTable = null;
         this.mDeviceMode = 0;
         this.mMode = -1;
@@ -40,16 +40,14 @@ public class SContextAutoBrightnessAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mMode;
-        if (i == MODE_DEVICE_MODE) {
-            int i2 = this.mDeviceMode;
-            if (i2 < 0 || i2 > 2) {
+        if (this.mMode == MODE_DEVICE_MODE) {
+            if (this.mDeviceMode < 0 || this.mDeviceMode > 2) {
                 Log.e(TAG, "The device mode is wrong.");
                 return false;
             }
             return true;
         }
-        if (i == MODE_CONFIGURATION && this.mLuminanceTable == null) {
+        if (this.mMode == MODE_CONFIGURATION && this.mLuminanceTable == null) {
             Log.e(TAG, "The luminance configration data is null.");
             return false;
         }
@@ -59,10 +57,9 @@ public class SContextAutoBrightnessAttribute extends SContextAttribute {
     private void setAttribute() {
         Bundle attribute = new Bundle();
         attribute.putInt("mode", this.mMode);
-        int i = this.mMode;
-        if (i == MODE_CONFIGURATION) {
+        if (this.mMode == MODE_CONFIGURATION) {
             attribute.putByteArray("luminance_config_data", this.mLuminanceTable);
-        } else if (i == MODE_DEVICE_MODE) {
+        } else if (this.mMode == MODE_DEVICE_MODE) {
             attribute.putInt("device_mode", this.mDeviceMode);
         }
         super.setAttribute(39, attribute);

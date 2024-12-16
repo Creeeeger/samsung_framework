@@ -2,6 +2,7 @@ package android.view;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Trace;
 
 /* loaded from: classes4.dex */
 public class BatchedInputEventReceiver extends InputEventReceiver {
@@ -11,26 +12,11 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
     private Choreographer mChoreographer;
     private final Runnable mConsumeBatchedInputEvents;
     private final Handler mHandler;
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.BatchedInputEventReceiver$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            BatchedInputEventReceiver.this.consumeBatchedInputEvents(-1L);
-        }
-    }
+    private final String mTag;
 
     public BatchedInputEventReceiver(InputChannel inputChannel, Looper looper, Choreographer choreographer) {
         super(inputChannel, looper);
         this.mConsumeBatchedInputEvents = new Runnable() { // from class: android.view.BatchedInputEventReceiver.1
-            AnonymousClass1() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 BatchedInputEventReceiver.this.consumeBatchedInputEvents(-1L);
@@ -39,6 +25,9 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
         this.mBatchedInputRunnable = new BatchedInputRunnable();
         this.mChoreographer = choreographer;
         this.mBatchingEnabled = true;
+        this.mTag = inputChannel.getName();
+        traceBoolVariable("mBatchingEnabled", this.mBatchingEnabled);
+        traceBoolVariable("mBatchedInputScheduled", this.mBatchedInputScheduled);
         this.mHandler = new Handler(looper);
     }
 
@@ -63,6 +52,7 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
             return;
         }
         this.mBatchingEnabled = batchingEnabled;
+        traceBoolVariable("mBatchingEnabled", this.mBatchingEnabled);
         this.mHandler.removeCallbacks(this.mConsumeBatchedInputEvents);
         if (!batchingEnabled) {
             unscheduleBatchedInput();
@@ -73,6 +63,7 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
     protected void doConsumeBatchedInput(long frameTimeNanos) {
         if (this.mBatchedInputScheduled) {
             this.mBatchedInputScheduled = false;
+            traceBoolVariable("mBatchedInputScheduled", this.mBatchedInputScheduled);
             if (consumeBatchedInputEvents(frameTimeNanos) && frameTimeNanos != -1) {
                 scheduleBatchedInput();
             }
@@ -82,6 +73,7 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
     private void scheduleBatchedInput() {
         if (!this.mBatchedInputScheduled) {
             this.mBatchedInputScheduled = true;
+            traceBoolVariable("mBatchedInputScheduled", this.mBatchedInputScheduled);
             this.mChoreographer.postCallback(0, this.mBatchedInputRunnable, null);
         }
     }
@@ -89,31 +81,33 @@ public class BatchedInputEventReceiver extends InputEventReceiver {
     private void unscheduleBatchedInput() {
         if (this.mBatchedInputScheduled) {
             this.mBatchedInputScheduled = false;
+            traceBoolVariable("mBatchedInputScheduled", this.mBatchedInputScheduled);
             this.mChoreographer.removeCallbacks(0, this.mBatchedInputRunnable, null);
         }
     }
 
-    /* loaded from: classes4.dex */
-    public final class BatchedInputRunnable implements Runnable {
-        /* synthetic */ BatchedInputRunnable(BatchedInputEventReceiver batchedInputEventReceiver, BatchedInputRunnableIA batchedInputRunnableIA) {
-            this();
-        }
+    private void traceBoolVariable(String str, boolean z) {
+        Trace.traceCounter(4L, str, z ? 1 : 0);
+    }
 
+    private final class BatchedInputRunnable implements Runnable {
         private BatchedInputRunnable() {
         }
 
         @Override // java.lang.Runnable
         public void run() {
-            BatchedInputEventReceiver batchedInputEventReceiver = BatchedInputEventReceiver.this;
-            batchedInputEventReceiver.doConsumeBatchedInput(batchedInputEventReceiver.mChoreographer.getFrameTimeNanos());
+            try {
+                Trace.traceBegin(4L, BatchedInputEventReceiver.this.mTag);
+                BatchedInputEventReceiver.this.doConsumeBatchedInput(BatchedInputEventReceiver.this.mChoreographer.getFrameTimeNanos());
+            } finally {
+                Trace.traceEnd(4L);
+            }
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SimpleBatchedInputEventReceiver extends BatchedInputEventReceiver {
         protected InputEventListener mListener;
 
-        /* loaded from: classes4.dex */
         public interface InputEventListener {
             boolean onInputEvent(InputEvent inputEvent);
         }

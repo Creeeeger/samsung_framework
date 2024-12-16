@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public final class AppLaunchEstimateInfo implements Parcelable {
     public static final Parcelable.Creator<AppLaunchEstimateInfo> CREATOR = new Parcelable.Creator<AppLaunchEstimateInfo>() { // from class: android.app.usage.AppLaunchEstimateInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppLaunchEstimateInfo createFromParcel(Parcel source) {
             return new AppLaunchEstimateInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AppLaunchEstimateInfo[] newArray(int size) {
             return new AppLaunchEstimateInfo[size];
@@ -21,10 +20,6 @@ public final class AppLaunchEstimateInfo implements Parcelable {
     };
     public final long estimatedLaunchTime;
     public final String packageName;
-
-    /* synthetic */ AppLaunchEstimateInfo(Parcel parcel, AppLaunchEstimateInfoIA appLaunchEstimateInfoIA) {
-        this(parcel);
-    }
 
     private AppLaunchEstimateInfo(Parcel in) {
         this.packageName = in.readString();
@@ -45,22 +40,5 @@ public final class AppLaunchEstimateInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.packageName);
         dest.writeLong(this.estimatedLaunchTime);
-    }
-
-    /* renamed from: android.app.usage.AppLaunchEstimateInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AppLaunchEstimateInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppLaunchEstimateInfo createFromParcel(Parcel source) {
-            return new AppLaunchEstimateInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AppLaunchEstimateInfo[] newArray(int size) {
-            return new AppLaunchEstimateInfo[size];
-        }
     }
 }

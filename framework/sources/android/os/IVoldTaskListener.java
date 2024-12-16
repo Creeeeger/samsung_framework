@@ -6,7 +6,6 @@ public interface IVoldTaskListener extends IInterface {
 
     void onStatus(int i, PersistableBundle persistableBundle) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IVoldTaskListener {
         @Override // android.os.IVoldTaskListener
         public void onStatus(int status, PersistableBundle extras) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IVoldTaskListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IVoldTaskListener {
         public static final String DESCRIPTOR = "android.os.IVoldTaskListener";
         static final int TRANSACTION_onFinished = 2;
@@ -69,33 +67,29 @@ public interface IVoldTaskListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    PersistableBundle _arg1 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onStatus(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    PersistableBundle _arg12 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onFinished(_arg02, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            PersistableBundle _arg1 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onStatus(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            PersistableBundle _arg12 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onFinished(_arg02, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IVoldTaskListener {
+        private static class Proxy implements IVoldTaskListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

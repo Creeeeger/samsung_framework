@@ -1,7 +1,6 @@
 package com.android.net.module.util;
 
 import android.telecom.Logging.Session;
-import com.samsung.android.ims.options.SemCapabilities;
 
 /* loaded from: classes5.dex */
 public class NetworkIdentityUtils {
@@ -9,7 +8,7 @@ public class NetworkIdentityUtils {
         if (subscriberId != null) {
             return subscriberId.substring(0, Math.min(6, subscriberId.length())) + Session.TRUNCATE_STRING;
         }
-        return SemCapabilities.FEATURE_TAG_NULL;
+        return "null";
     }
 
     public static String[] scrubSubscriberIds(String[] subscriberIds) {

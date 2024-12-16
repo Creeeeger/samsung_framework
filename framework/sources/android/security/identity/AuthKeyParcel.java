@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class AuthKeyParcel implements Parcelable {
     public static final Parcelable.Creator<AuthKeyParcel> CREATOR = new Parcelable.Creator<AuthKeyParcel>() { // from class: android.security.identity.AuthKeyParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthKeyParcel createFromParcel(Parcel _aidl_source) {
             AuthKeyParcel _aidl_out = new AuthKeyParcel();
@@ -17,31 +15,13 @@ public class AuthKeyParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AuthKeyParcel[] newArray(int _aidl_size) {
             return new AuthKeyParcel[_aidl_size];
         }
     };
     public byte[] x509cert;
-
-    /* renamed from: android.security.identity.AuthKeyParcel$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AuthKeyParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthKeyParcel createFromParcel(Parcel _aidl_source) {
-            AuthKeyParcel _aidl_out = new AuthKeyParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AuthKeyParcel[] newArray(int _aidl_size) {
-            return new AuthKeyParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

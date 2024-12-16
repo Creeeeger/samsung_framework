@@ -5,7 +5,7 @@ import com.android.internal.util.TokenBucket;
 import java.util.BitSet;
 import java.util.StringJoiner;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkMetrics {
     private static final int CONNECT_LATENCY_MAXIMUM_RECORDS = 20000;
     private static final int INITIAL_DNS_BATCH_SIZE = 100;
@@ -65,7 +65,6 @@ public class NetworkMetrics {
         this.pendingSummary.sentAckTimeDiffenceMs.count(sentAckDiffMs);
     }
 
-    /* loaded from: classes2.dex */
     public static class Summary {
         public final int netId;
         public final long transports;
@@ -106,8 +105,7 @@ public class NetworkMetrics {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class Metrics {
+    static class Metrics {
         public int count;
         public double max = Double.MIN_VALUE;
         public double sum;

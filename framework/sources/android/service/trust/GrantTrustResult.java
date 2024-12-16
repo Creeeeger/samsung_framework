@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class GrantTrustResult implements Parcelable {
     public static final Parcelable.Creator<GrantTrustResult> CREATOR = new Parcelable.Creator<GrantTrustResult>() { // from class: android.service.trust.GrantTrustResult.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GrantTrustResult[] newArray(int size) {
             return new GrantTrustResult[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public GrantTrustResult createFromParcel(Parcel in) {
             return new GrantTrustResult(in);
@@ -29,7 +28,6 @@ public final class GrantTrustResult implements Parcelable {
     private int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Status {
     }
 
@@ -46,7 +44,7 @@ public final class GrantTrustResult implements Parcelable {
 
     public GrantTrustResult(int status) {
         this.mStatus = status;
-        if (status != 0 && status != 1) {
+        if (this.mStatus != 0 && this.mStatus != 1) {
             throw new IllegalArgumentException("status was " + this.mStatus + " but must be one of: STATUS_UNKNOWN(0), STATUS_UNLOCKED_BY_GRANT(1" + NavigationBarInflaterView.KEY_CODE_END);
         }
     }
@@ -68,25 +66,8 @@ public final class GrantTrustResult implements Parcelable {
     GrantTrustResult(Parcel in) {
         int status = in.readInt();
         this.mStatus = status;
-        if (status != 0 && status != 1) {
+        if (this.mStatus != 0 && this.mStatus != 1) {
             throw new IllegalArgumentException("status was " + this.mStatus + " but must be one of: STATUS_UNKNOWN(0), STATUS_UNLOCKED_BY_GRANT(1" + NavigationBarInflaterView.KEY_CODE_END);
-        }
-    }
-
-    /* renamed from: android.service.trust.GrantTrustResult$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<GrantTrustResult> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GrantTrustResult[] newArray(int size) {
-            return new GrantTrustResult[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public GrantTrustResult createFromParcel(Parcel in) {
-            return new GrantTrustResult(in);
         }
     }
 

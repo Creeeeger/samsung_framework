@@ -3,17 +3,16 @@ package com.samsung.android.ims;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImsRegistrationError implements Parcelable {
     public static final Parcelable.Creator<SemImsRegistrationError> CREATOR = new Parcelable.Creator<SemImsRegistrationError>() { // from class: com.samsung.android.ims.SemImsRegistrationError.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsRegistrationError createFromParcel(Parcel in) {
             return new SemImsRegistrationError(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemImsRegistrationError[] newArray(int size) {
             return new SemImsRegistrationError[size];
@@ -23,10 +22,6 @@ public class SemImsRegistrationError implements Parcelable {
     private int mDetailedDeregiReason;
     private int mSipErrorCode;
     private String mSipErrorReason;
-
-    /* synthetic */ SemImsRegistrationError(Parcel parcel, SemImsRegistrationErrorIA semImsRegistrationErrorIA) {
-        this(parcel);
-    }
 
     public SemImsRegistrationError() {
         this.mSipErrorCode = 0;
@@ -80,22 +75,5 @@ public class SemImsRegistrationError implements Parcelable {
         this.mSipErrorReason = in.readString();
         this.mDetailedDeregiReason = in.readInt();
         this.mDeregistrationReason = in.readInt();
-    }
-
-    /* renamed from: com.samsung.android.ims.SemImsRegistrationError$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemImsRegistrationError> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsRegistrationError createFromParcel(Parcel in) {
-            return new SemImsRegistrationError(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemImsRegistrationError[] newArray(int size) {
-            return new SemImsRegistrationError[size];
-        }
     }
 }

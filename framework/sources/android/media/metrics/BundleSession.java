@@ -15,9 +15,9 @@ public final class BundleSession implements AutoCloseable {
     public BundleSession(String id, MediaMetricsManager manager) {
         this.mId = id;
         this.mManager = manager;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) id);
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) manager);
-        this.mLogSessionId = new LogSessionId(id);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mId);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mManager);
+        this.mLogSessionId = new LogSessionId(this.mId);
     }
 
     public void reportBundleMetrics(PersistableBundle metrics) {

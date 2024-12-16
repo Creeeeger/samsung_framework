@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGetDownloadableSubscriptionMetadataCallback extends IInterface {
     void onComplete(GetDownloadableSubscriptionMetadataResult getDownloadableSubscriptionMetadataResult) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetDownloadableSubscriptionMetadataCallback {
         @Override // android.service.euicc.IGetDownloadableSubscriptionMetadataCallback
         public void onComplete(GetDownloadableSubscriptionMetadataResult result) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IGetDownloadableSubscriptionMetadataCallback extends IInterface
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetDownloadableSubscriptionMetadataCallback {
         public static final String DESCRIPTOR = "android.service.euicc.IGetDownloadableSubscriptionMetadataCallback";
         static final int TRANSACTION_onComplete = 1;
@@ -66,25 +64,22 @@ public interface IGetDownloadableSubscriptionMetadataCallback extends IInterface
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    GetDownloadableSubscriptionMetadataResult _arg0 = (GetDownloadableSubscriptionMetadataResult) data.readTypedObject(GetDownloadableSubscriptionMetadataResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            GetDownloadableSubscriptionMetadataResult _arg0 = (GetDownloadableSubscriptionMetadataResult) data.readTypedObject(GetDownloadableSubscriptionMetadataResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetDownloadableSubscriptionMetadataCallback {
+        private static class Proxy implements IGetDownloadableSubscriptionMetadataCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

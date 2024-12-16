@@ -4,14 +4,14 @@ import android.annotation.SystemApi;
 import android.media.tv.tuner.TunerUtils;
 
 @SystemApi
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class SectionSettings extends Settings {
     final int mBitWidthOfLengthField;
     final boolean mCrcEnabled;
     final boolean mIsRaw;
     final boolean mIsRepeat;
 
-    public SectionSettings(int mainType, boolean crcEnabled, boolean isRepeat, boolean isRaw, int bitWidthOfLengthField) {
+    SectionSettings(int mainType, boolean crcEnabled, boolean isRepeat, boolean isRaw, int bitWidthOfLengthField) {
         super(TunerUtils.getFilterSubtype(mainType, 1));
         this.mCrcEnabled = crcEnabled;
         this.mIsRepeat = isRepeat;
@@ -35,7 +35,6 @@ public abstract class SectionSettings extends Settings {
         return this.mBitWidthOfLengthField;
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Builder<T extends Builder<T>> {
         int mBitWidthOfLengthField;
         boolean mCrcEnabled;
@@ -45,7 +44,7 @@ public abstract class SectionSettings extends Settings {
 
         abstract T self();
 
-        public Builder(int mainType) {
+        Builder(int mainType) {
             this.mMainType = mainType;
         }
 

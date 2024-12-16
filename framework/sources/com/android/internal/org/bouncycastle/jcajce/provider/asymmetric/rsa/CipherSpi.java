@@ -121,9 +121,8 @@ public class CipherSpi extends BaseCipherSpi {
     protected AlgorithmParameters engineGetParameters() {
         if (this.engineParams == null && this.paramSpec != null) {
             try {
-                AlgorithmParameters createAlgorithmParameters = this.helper.createAlgorithmParameters("OAEP");
-                this.engineParams = createAlgorithmParameters;
-                createAlgorithmParameters.init(this.paramSpec);
+                this.engineParams = this.helper.createAlgorithmParameters("OAEP");
+                this.engineParams.init(this.paramSpec);
             } catch (Exception e) {
                 throw new RuntimeException(e.toString());
             }
@@ -358,7 +357,6 @@ public class CipherSpi extends BaseCipherSpi {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class NoPadding extends CipherSpi {
         public NoPadding() {
             super(new RSABlindedEngine());

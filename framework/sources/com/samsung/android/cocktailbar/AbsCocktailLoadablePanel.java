@@ -20,7 +20,6 @@ public abstract class AbsCocktailLoadablePanel {
     private CocktailLoadablePanelListener mListener;
     private OnCocktailClickHandler mOnCocktailClickHandler;
 
-    /* loaded from: classes5.dex */
     public interface CocktailLoadablePanelListener {
         void sendOptions(Bundle bundle);
     }
@@ -29,7 +28,6 @@ public abstract class AbsCocktailLoadablePanel {
 
     public abstract void onClosePanel();
 
-    /* loaded from: classes5.dex */
     public static class OnCocktailClickHandler {
         public boolean onClickHandler(View view, PendingIntent pendingIntent) {
             try {

@@ -4,10 +4,9 @@ import android.util.Pair;
 import com.android.internal.graphics.cam.Cam;
 import java.util.List;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* compiled from: ColorScheme.java */
-/* loaded from: classes5.dex */
-public interface Hue {
+/* loaded from: classes6.dex */
+interface Hue {
     double get(Cam cam);
 
     /* JADX WARN: Multi-variable type inference failed */

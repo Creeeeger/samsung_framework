@@ -53,7 +53,6 @@ public interface IContextHubService extends IInterface {
 
     void unloadNanoAppFromHub(int i, IContextHubTransactionCallback iContextHubTransactionCallback, long j) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IContextHubService {
         @Override // android.hardware.location.IContextHubService
         public int registerCallback(IContextHubCallback callback) throws RemoteException {
@@ -146,7 +145,6 @@ public interface IContextHubService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IContextHubService {
         public static final String DESCRIPTOR = "android.hardware.location.IContextHubService";
         static final int TRANSACTION_createClient = 9;
@@ -251,156 +249,153 @@ public interface IContextHubService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IContextHubCallback _arg0 = IContextHubCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result = registerCallback(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int[] _result2 = getContextHubHandles();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result2);
+                    return true;
+                case 3:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ContextHubInfo _result3 = getContextHubInfo(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    NanoApp _arg1 = (NanoApp) data.readTypedObject(NanoApp.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result4 = loadNanoApp(_arg03, _arg1);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 5:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = unloadNanoApp(_arg04);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    NanoAppInstanceInfo _result6 = getNanoAppInstanceInfo(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 7:
+                    int _arg06 = data.readInt();
+                    NanoAppFilter _arg12 = (NanoAppFilter) data.readTypedObject(NanoAppFilter.CREATOR);
+                    data.enforceNoDataAvail();
+                    int[] _result7 = findNanoAppOnHub(_arg06, _arg12);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result7);
+                    return true;
+                case 8:
+                    int _arg07 = data.readInt();
+                    int _arg13 = data.readInt();
+                    ContextHubMessage _arg2 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result8 = sendMessage(_arg07, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 9:
+                    int _arg08 = data.readInt();
+                    IContextHubClientCallback _arg14 = IContextHubClientCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg22 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    IContextHubClient _result9 = createClient(_arg08, _arg14, _arg22, _arg3);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result9);
+                    return true;
+                case 10:
+                    int _arg09 = data.readInt();
+                    PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    long _arg23 = data.readLong();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    IContextHubClient _result10 = createPendingIntentClient(_arg09, _arg15, _arg23, _arg32);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result10);
+                    return true;
+                case 11:
+                    List<ContextHubInfo> _result11 = getContextHubs();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result11, 1);
+                    return true;
+                case 12:
+                    int _arg010 = data.readInt();
+                    IContextHubTransactionCallback _arg16 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    NanoAppBinary _arg24 = (NanoAppBinary) data.readTypedObject(NanoAppBinary.CREATOR);
+                    data.enforceNoDataAvail();
+                    loadNanoAppOnHub(_arg010, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg011 = data.readInt();
+                    IContextHubTransactionCallback _arg17 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg25 = data.readLong();
+                    data.enforceNoDataAvail();
+                    unloadNanoAppFromHub(_arg011, _arg17, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    int _arg012 = data.readInt();
+                    IContextHubTransactionCallback _arg18 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg26 = data.readLong();
+                    data.enforceNoDataAvail();
+                    enableNanoApp(_arg012, _arg18, _arg26);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg013 = data.readInt();
+                    IContextHubTransactionCallback _arg19 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    long _arg27 = data.readLong();
+                    data.enforceNoDataAvail();
+                    disableNanoApp(_arg013, _arg19, _arg27);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    int _arg014 = data.readInt();
+                    IContextHubTransactionCallback _arg110 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    queryNanoApps(_arg014, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    ContextHubInfo _arg015 = (ContextHubInfo) data.readTypedObject(ContextHubInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    long[] _result12 = getPreloadedNanoAppIds(_arg015);
+                    reply.writeNoException();
+                    reply.writeLongArray(_result12);
+                    return true;
+                case 18:
+                    boolean _arg016 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = setTestMode(_arg016);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IContextHubCallback _arg0 = IContextHubCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result = registerCallback(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int[] _result2 = getContextHubHandles();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 3:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ContextHubInfo _result3 = getContextHubInfo(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            NanoApp _arg1 = (NanoApp) data.readTypedObject(NanoApp.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result4 = loadNanoApp(_arg03, _arg1);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 5:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = unloadNanoApp(_arg04);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            NanoAppInstanceInfo _result6 = getNanoAppInstanceInfo(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result6, 1);
-                            return true;
-                        case 7:
-                            int _arg06 = data.readInt();
-                            NanoAppFilter _arg12 = (NanoAppFilter) data.readTypedObject(NanoAppFilter.CREATOR);
-                            data.enforceNoDataAvail();
-                            int[] _result7 = findNanoAppOnHub(_arg06, _arg12);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result7);
-                            return true;
-                        case 8:
-                            int _arg07 = data.readInt();
-                            int _arg13 = data.readInt();
-                            ContextHubMessage _arg2 = (ContextHubMessage) data.readTypedObject(ContextHubMessage.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result8 = sendMessage(_arg07, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 9:
-                            int _arg08 = data.readInt();
-                            IContextHubClientCallback _arg14 = IContextHubClientCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg22 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            IContextHubClient _result9 = createClient(_arg08, _arg14, _arg22, _arg3);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result9);
-                            return true;
-                        case 10:
-                            int _arg09 = data.readInt();
-                            PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            long _arg23 = data.readLong();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            IContextHubClient _result10 = createPendingIntentClient(_arg09, _arg15, _arg23, _arg32);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result10);
-                            return true;
-                        case 11:
-                            List<ContextHubInfo> _result11 = getContextHubs();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result11, 1);
-                            return true;
-                        case 12:
-                            int _arg010 = data.readInt();
-                            IContextHubTransactionCallback _arg16 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            NanoAppBinary _arg24 = (NanoAppBinary) data.readTypedObject(NanoAppBinary.CREATOR);
-                            data.enforceNoDataAvail();
-                            loadNanoAppOnHub(_arg010, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg011 = data.readInt();
-                            IContextHubTransactionCallback _arg17 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg25 = data.readLong();
-                            data.enforceNoDataAvail();
-                            unloadNanoAppFromHub(_arg011, _arg17, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            int _arg012 = data.readInt();
-                            IContextHubTransactionCallback _arg18 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg26 = data.readLong();
-                            data.enforceNoDataAvail();
-                            enableNanoApp(_arg012, _arg18, _arg26);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg013 = data.readInt();
-                            IContextHubTransactionCallback _arg19 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            long _arg27 = data.readLong();
-                            data.enforceNoDataAvail();
-                            disableNanoApp(_arg013, _arg19, _arg27);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            int _arg014 = data.readInt();
-                            IContextHubTransactionCallback _arg110 = IContextHubTransactionCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            queryNanoApps(_arg014, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            ContextHubInfo _arg015 = (ContextHubInfo) data.readTypedObject(ContextHubInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            long[] _result12 = getPreloadedNanoAppIds(_arg015);
-                            reply.writeNoException();
-                            reply.writeLongArray(_result12);
-                            return true;
-                        case 18:
-                            boolean _arg016 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = setTestMode(_arg016);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IContextHubService {
+        private static class Proxy implements IContextHubService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -5,26 +5,25 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /* loaded from: classes5.dex */
-public class IndefiniteLengthInputStream extends LimitedInputStream {
+class IndefiniteLengthInputStream extends LimitedInputStream {
     private int _b1;
     private int _b2;
     private boolean _eofOn00;
     private boolean _eofReached;
 
-    public IndefiniteLengthInputStream(InputStream in, int limit) throws IOException {
+    IndefiniteLengthInputStream(InputStream in, int limit) throws IOException {
         super(in, limit);
         this._eofReached = false;
         this._eofOn00 = true;
         this._b1 = in.read();
-        int read = in.read();
-        this._b2 = read;
-        if (read < 0) {
+        this._b2 = in.read();
+        if (this._b2 < 0) {
             throw new EOFException();
         }
         checkForEof();
     }
 
-    public void setEofOn00(boolean eofOn00) {
+    void setEofOn00(boolean eofOn00) {
         this._eofOn00 = eofOn00;
         checkForEof();
     }
@@ -52,9 +51,8 @@ public class IndefiniteLengthInputStream extends LimitedInputStream {
         b[off] = (byte) this._b1;
         b[off + 1] = (byte) this._b2;
         this._b1 = this._in.read();
-        int read = this._in.read();
-        this._b2 = read;
-        if (read < 0) {
+        this._b2 = this._in.read();
+        if (this._b2 < 0) {
             throw new EOFException();
         }
         return numRead + 2;

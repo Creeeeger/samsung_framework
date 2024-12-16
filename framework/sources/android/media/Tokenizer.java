@@ -4,7 +4,7 @@ import android.util.Log;
 
 /* compiled from: WebVttRenderer.java */
 /* loaded from: classes2.dex */
-public class Tokenizer {
+class Tokenizer {
     private static final String TAG = "Tokenizer";
     private int mHandledLen;
     private String mLine;
@@ -14,8 +14,7 @@ public class Tokenizer {
     private TokenizerPhase mTagTokenizer = new TagTokenizer();
 
     /* compiled from: WebVttRenderer.java */
-    /* loaded from: classes2.dex */
-    public interface OnTokenListener {
+    interface OnTokenListener {
         void onData(String str);
 
         void onEnd(String str);
@@ -28,17 +27,14 @@ public class Tokenizer {
     }
 
     /* compiled from: WebVttRenderer.java */
-    /* loaded from: classes2.dex */
-    public interface TokenizerPhase {
+    interface TokenizerPhase {
         TokenizerPhase start();
 
         void tokenize();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
-    /* loaded from: classes2.dex */
-    public class DataTokenizer implements TokenizerPhase {
+    class DataTokenizer implements TokenizerPhase {
         private StringBuilder mData;
 
         DataTokenizer() {
@@ -75,24 +71,20 @@ public class Tokenizer {
                     }
                 } else if (Tokenizer.this.mLine.charAt(pos) == '<') {
                     end = pos;
-                    Tokenizer tokenizer = Tokenizer.this;
-                    tokenizer.mPhase = tokenizer.mTagTokenizer.start();
+                    Tokenizer.this.mPhase = Tokenizer.this.mTagTokenizer.start();
                     break;
                 }
                 pos++;
             }
             this.mData.append(Tokenizer.this.mLine.substring(Tokenizer.this.mHandledLen, end));
             Tokenizer.this.mListener.onData(this.mData.toString());
-            StringBuilder sb = this.mData;
-            sb.delete(0, sb.length());
+            this.mData.delete(0, this.mData.length());
             Tokenizer.this.mHandledLen = end;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     /* compiled from: WebVttRenderer.java */
-    /* loaded from: classes2.dex */
-    public class TagTokenizer implements TokenizerPhase {
+    class TagTokenizer implements TokenizerPhase {
         private String mAnnotation;
         private boolean mAtAnnotation;
         private String mName;
@@ -131,8 +123,7 @@ public class Tokenizer {
             this.mAtAnnotation = true;
             if (Tokenizer.this.mHandledLen < Tokenizer.this.mLine.length() && Tokenizer.this.mLine.charAt(Tokenizer.this.mHandledLen) == '>') {
                 yield_tag();
-                Tokenizer tokenizer = Tokenizer.this;
-                tokenizer.mPhase = tokenizer.mDataTokenizer.start();
+                Tokenizer.this.mPhase = Tokenizer.this.mDataTokenizer.start();
                 Tokenizer.this.mHandledLen++;
             }
         }
@@ -152,14 +143,12 @@ public class Tokenizer {
                     return;
                 }
             }
-            String replaceAll = this.mAnnotation.replaceAll("\\s+", " ");
-            this.mAnnotation = replaceAll;
-            if (replaceAll.startsWith(" ")) {
+            this.mAnnotation = this.mAnnotation.replaceAll("\\s+", " ");
+            if (this.mAnnotation.startsWith(" ")) {
                 this.mAnnotation = this.mAnnotation.substring(1);
             }
             if (this.mAnnotation.endsWith(" ")) {
-                String str = this.mAnnotation;
-                this.mAnnotation = str.substring(0, str.length() - 1);
+                this.mAnnotation = this.mAnnotation.substring(0, this.mAnnotation.length() - 1);
             }
             String[] classes = null;
             int dotAt = this.mName.indexOf(46);
@@ -171,16 +160,16 @@ public class Tokenizer {
         }
     }
 
-    public Tokenizer(OnTokenListener listener) {
+    Tokenizer(OnTokenListener listener) {
         reset();
         this.mListener = listener;
     }
 
-    public void reset() {
+    void reset() {
         this.mPhase = this.mDataTokenizer.start();
     }
 
-    public void tokenize(String s) {
+    void tokenize(String s) {
         this.mHandledLen = 0;
         this.mLine = s;
         while (this.mHandledLen < this.mLine.length()) {

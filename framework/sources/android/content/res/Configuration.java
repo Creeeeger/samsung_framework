@@ -2,6 +2,7 @@ package android.content.res;
 
 import android.app.WindowConfiguration;
 import android.app.slice.Slice;
+import android.app.slice.SliceItem;
 import android.content.ConfigurationProto;
 import android.hardware.Camera;
 import android.os.Build;
@@ -13,7 +14,6 @@ import android.util.DisplayMetrics;
 import android.util.proto.ProtoOutputStream;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.util.XmlUtils;
-import com.samsung.android.rune.CoreRune;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -47,12 +47,12 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     public static final int DEX_COMPAT_UI_UNDEFINED = 0;
     public static final int DEX_COMPAT_UNDEFINED = 0;
     public static final int DEX_MODE_DUAL = 2;
-    public static final int DEX_MODE_EXTENSION = 4;
     public static final int DEX_MODE_NEXT_GEN = 3;
     public static final int DEX_MODE_NONE = 0;
     public static final int DEX_MODE_STANDALONE = 1;
     public static final int DEX_MODE_UNDEFINED = -1;
     public static final int DISPLAY_DEVICE_TYPE_DUAL = 4;
+    public static final int DISPLAY_DEVICE_TYPE_HDMI = 1;
     public static final int DISPLAY_DEVICE_TYPE_SUB_DUAL = 6;
     public static final int DISPLAY_DEVICE_TYPE_SUB_TENT = 7;
     public static final int DISPLAY_DEVICE_TYPE_UNDEFINED = -1;
@@ -61,6 +61,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     public static final int GRAMMATICAL_GENDER_MASCULINE = 3;
     public static final int GRAMMATICAL_GENDER_NEUTRAL = 1;
     public static final int GRAMMATICAL_GENDER_NOT_SPECIFIED = 0;
+    public static final int GRAMMATICAL_GENDER_UNDEFINED = -1;
     public static final int HARDKEYBOARDHIDDEN_NO = 1;
     public static final int HARDKEYBOARDHIDDEN_UNDEFINED = 0;
     public static final int HARDKEYBOARDHIDDEN_YES = 2;
@@ -236,39 +237,32 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     public final WindowConfiguration windowConfiguration;
     public static final Configuration EMPTY = new Configuration();
     public static final Parcelable.Creator<Configuration> CREATOR = new Parcelable.Creator<Configuration>() { // from class: android.content.res.Configuration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Configuration createFromParcel(Parcel source) {
             return new Configuration(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Configuration[] newArray(int size) {
             return new Configuration[size];
         }
     };
 
-    /* loaded from: classes.dex */
     public @interface DexMode {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface GrammaticalGender {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NativeConfig {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Orientation {
-    }
-
-    /* synthetic */ Configuration(Parcel parcel, ConfigurationIA configurationIA) {
-        this(parcel);
     }
 
     public static int resetScreenLayout(int curLayout) {
@@ -414,8 +408,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     private void fixUpLocaleList() {
-        Locale locale;
-        if ((this.locale == null && !this.mLocaleList.isEmpty()) || ((locale = this.locale) != null && !locale.equals(this.mLocaleList.get(0)))) {
+        if ((this.locale == null && !this.mLocaleList.isEmpty()) || (this.locale != null && !this.locale.equals(this.mLocaleList.get(0)))) {
             this.mLocaleList = this.locale == null ? LocaleList.getEmptyLocaleList() : new LocaleList(this.locale);
         }
     }
@@ -424,10 +417,9 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         this.fontScale = o.fontScale;
         this.mcc = o.mcc;
         this.mnc = o.mnc;
-        Locale locale = o.locale;
-        if (locale == null) {
+        if (o.locale == null) {
             this.locale = null;
-        } else if (!locale.equals(this.locale)) {
+        } else if (!o.locale.equals(this.locale)) {
             this.locale = (Locale) o.locale.clone();
         }
         o.fixUpLocaleList();
@@ -473,16 +465,14 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         sb.append("{");
         sb.append(this.fontScale);
         sb.append(" ");
-        int i = this.mcc;
-        if (i != 0) {
-            sb.append(i);
+        if (this.mcc != 0) {
+            sb.append(this.mcc);
             sb.append("mcc");
         } else {
             sb.append("?mcc");
         }
-        int i2 = this.mnc;
-        if (i2 != 65535) {
-            sb.append(i2);
+        if (this.mnc != 65535) {
+            sb.append(this.mnc);
             sb.append("mnc");
         } else {
             sb.append("?mnc");
@@ -494,12 +484,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         } else {
             sb.append(" ?localeList");
         }
-        int i3 = this.mGrammaticalGender;
-        if (i3 != 0) {
-            switch (i3) {
-                case 0:
-                    sb.append(" ?grgend");
-                    break;
+        if (this.mGrammaticalGender > 0) {
+            switch (this.mGrammaticalGender) {
                 case 1:
                     sb.append(" neuter");
                     break;
@@ -508,6 +494,9 @@ public final class Configuration implements Parcelable, Comparable<Configuration
                     break;
                 case 3:
                     sb.append(" masculine");
+                    break;
+                default:
+                    sb.append(" ?grgend");
                     break;
             }
         }
@@ -832,9 +821,6 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             case 3:
                 sb.append(" dm/nextgen");
                 break;
-            case 4:
-                sb.append(" dm/extension");
-                break;
         }
         switch (this.dexCompatEnabled) {
             case 0:
@@ -868,36 +854,34 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     public void dumpDebug(ProtoOutputStream protoOutputStream, long fieldId, boolean persisted, boolean critical) {
-        WindowConfiguration windowConfiguration;
         long token = protoOutputStream.start(fieldId);
         if (!critical) {
             protoOutputStream.write(1108101562369L, this.fontScale);
             protoOutputStream.write(1155346202626L, this.mcc);
             protoOutputStream.write(1155346202627L, this.mnc);
-            LocaleList localeList = this.mLocaleList;
-            if (localeList != null) {
-                protoOutputStream.write(1138166333460L, localeList.toLanguageTags());
+            if (this.mLocaleList != null) {
+                protoOutputStream.write(1138166333460L, this.mLocaleList.toLanguageTags());
             }
             protoOutputStream.write(1155346202629L, this.screenLayout);
             protoOutputStream.write(1155346202630L, this.colorMode);
             protoOutputStream.write(1155346202631L, this.touchscreen);
             protoOutputStream.write(1155346202632L, this.keyboard);
             protoOutputStream.write(ConfigurationProto.KEYBOARD_HIDDEN, this.keyboardHidden);
-            protoOutputStream.write(ConfigurationProto.HARD_KEYBOARD_HIDDEN, this.hardKeyboardHidden);
+            protoOutputStream.write(1155346202634L, this.hardKeyboardHidden);
             protoOutputStream.write(ConfigurationProto.NAVIGATION, this.navigation);
             protoOutputStream.write(ConfigurationProto.NAVIGATION_HIDDEN, this.navigationHidden);
             protoOutputStream.write(ConfigurationProto.UI_MODE, this.uiMode);
             protoOutputStream.write(ConfigurationProto.SMALLEST_SCREEN_WIDTH_DP, this.smallestScreenWidthDp);
             protoOutputStream.write(ConfigurationProto.DENSITY_DPI, this.densityDpi);
-            if (!persisted && (windowConfiguration = this.windowConfiguration) != null) {
-                windowConfiguration.dumpDebug(protoOutputStream, 1146756268051L);
+            if (!persisted && this.windowConfiguration != null) {
+                this.windowConfiguration.dumpDebug(protoOutputStream, 1146756268051L);
             }
             protoOutputStream.write(ConfigurationProto.FONT_WEIGHT_ADJUSTMENT, this.fontWeightAdjustment);
         }
-        protoOutputStream.write(ConfigurationProto.ORIENTATION, this.orientation);
+        protoOutputStream.write(1155346202637L, this.orientation);
         protoOutputStream.write(ConfigurationProto.SCREEN_WIDTH_DP, this.screenWidthDp);
         protoOutputStream.write(ConfigurationProto.SCREEN_HEIGHT_DP, this.screenHeightDp);
-        protoOutputStream.write(ConfigurationProto.GRAMMATICAL_GENDER, this.mGrammaticalGender);
+        protoOutputStream.write(1155346202646L, this.mGrammaticalGender);
         protoOutputStream.end(token);
     }
 
@@ -909,18 +893,16 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         dumpDebug(protoOutputStream, fieldId, false, critical);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:80:0x01b0. Please report as an issue. */
-    /* JADX WARN: Failed to find 'out' block for switch in B:9:0x002a. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:103:0x036b A[Catch: IllformedLocaleException -> 0x0396, all -> 0x03c9, TRY_ENTER, TryCatch #9 {IllformedLocaleException -> 0x0396, blocks: (B:103:0x036b, B:111:0x0392), top: B:101:0x0369 }] */
-    /* JADX WARN: Removed duplicated region for block: B:111:0x0392 A[Catch: IllformedLocaleException -> 0x0396, all -> 0x03c9, TRY_LEAVE, TryCatch #9 {IllformedLocaleException -> 0x0396, blocks: (B:103:0x036b, B:111:0x0392), top: B:101:0x0369 }] */
-    /* JADX WARN: Removed duplicated region for block: B:22:0x0448  */
+    /* JADX WARN: Removed duplicated region for block: B:103:0x034d A[Catch: IllformedLocaleException -> 0x0378, all -> 0x03ab, TRY_ENTER, TryCatch #5 {all -> 0x03ab, blocks: (B:97:0x0324, B:99:0x0327, B:103:0x034d, B:105:0x03aa, B:111:0x0374, B:113:0x037d, B:148:0x023f, B:150:0x0252, B:153:0x025d, B:156:0x0277, B:161:0x02c7, B:166:0x027d), top: B:147:0x023f }] */
+    /* JADX WARN: Removed duplicated region for block: B:111:0x0374 A[Catch: IllformedLocaleException -> 0x0378, all -> 0x03ab, TRY_LEAVE, TryCatch #5 {all -> 0x03ab, blocks: (B:97:0x0324, B:99:0x0327, B:103:0x034d, B:105:0x03aa, B:111:0x0374, B:113:0x037d, B:148:0x023f, B:150:0x0252, B:153:0x025d, B:156:0x0277, B:161:0x02c7, B:166:0x027d), top: B:147:0x023f }] */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0430  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public void readFromProto(android.util.proto.ProtoInputStream r27, long r28) throws java.io.IOException {
         /*
-            Method dump skipped, instructions count: 1180
+            Method dump skipped, instructions count: 1156
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.content.res.Configuration.readFromProto(android.util.proto.ProtoInputStream, long):void");
@@ -995,7 +977,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         this.seq = 0;
         this.windowConfiguration.setToDefaults();
         this.fontWeightAdjustment = Integer.MAX_VALUE;
-        this.mGrammaticalGender = 0;
+        this.mGrammaticalGender = -1;
         this.rilSetLocale = false;
         this.FlipFont = 0;
         this.boldFont = -1;
@@ -1024,22 +1006,18 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     public int updateFrom(Configuration delta, boolean publicOnly) {
-        int i;
         int changed = 0;
-        float f = delta.fontScale;
-        if (f > 0.0f && this.fontScale != f) {
+        if (delta.fontScale > 0.0f && this.fontScale != delta.fontScale) {
             changed = 0 | 1073741824;
-            this.fontScale = f;
+            this.fontScale = delta.fontScale;
         }
-        int i2 = delta.mcc;
-        if (i2 != 0 && this.mcc != i2) {
+        if (delta.mcc != 0 && this.mcc != delta.mcc) {
             changed |= 1;
-            this.mcc = i2;
+            this.mcc = delta.mcc;
         }
-        int i3 = delta.mnc;
-        if (i3 != 0 && this.mnc != i3) {
+        if (delta.mnc != 0 && this.mnc != delta.mnc) {
             changed |= 2;
-            this.mnc = i3;
+            this.mnc = delta.mnc;
         }
         fixUpLocaleList();
         delta.fixUpLocaleList();
@@ -1047,222 +1025,160 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             changed |= 4;
             this.mLocaleList = delta.mLocaleList;
             if (!delta.locale.equals(this.locale)) {
-                Locale locale = (Locale) delta.locale.clone();
-                this.locale = locale;
+                this.locale = (Locale) delta.locale.clone();
                 changed |= 8192;
-                setLayoutDirection(locale);
+                setLayoutDirection(this.locale);
             }
         }
         int deltaScreenLayoutDir = delta.screenLayout & 192;
-        if (deltaScreenLayoutDir != 0) {
-            int i4 = this.screenLayout;
-            if (deltaScreenLayoutDir != (i4 & 192)) {
-                this.screenLayout = (i4 & (-193)) | deltaScreenLayoutDir;
-                changed |= 8192;
-            }
+        if (deltaScreenLayoutDir != 0 && deltaScreenLayoutDir != (this.screenLayout & 192)) {
+            this.screenLayout = (this.screenLayout & (-193)) | deltaScreenLayoutDir;
+            changed |= 8192;
         }
         if (delta.userSetLocale && (!this.userSetLocale || (changed & 4) != 0)) {
             changed |= 4;
             this.userSetLocale = true;
         }
-        int i5 = delta.touchscreen;
-        if (i5 != 0 && this.touchscreen != i5) {
+        if (delta.touchscreen != 0 && this.touchscreen != delta.touchscreen) {
             changed |= 8;
-            this.touchscreen = i5;
+            this.touchscreen = delta.touchscreen;
         }
-        int i6 = delta.keyboard;
-        if (i6 != 0 && this.keyboard != i6) {
+        if (delta.keyboard != 0 && this.keyboard != delta.keyboard) {
             changed |= 16;
-            this.keyboard = i6;
+            this.keyboard = delta.keyboard;
         }
-        int i7 = delta.keyboardHidden;
-        if (i7 != 0 && this.keyboardHidden != i7) {
+        if (delta.keyboardHidden != 0 && this.keyboardHidden != delta.keyboardHidden) {
             changed |= 32;
-            this.keyboardHidden = i7;
+            this.keyboardHidden = delta.keyboardHidden;
         }
-        int i8 = delta.hardKeyboardHidden;
-        if (i8 != 0 && this.hardKeyboardHidden != i8) {
+        if (delta.hardKeyboardHidden != 0 && this.hardKeyboardHidden != delta.hardKeyboardHidden) {
             changed |= 32;
-            this.hardKeyboardHidden = i8;
+            this.hardKeyboardHidden = delta.hardKeyboardHidden;
         }
-        int i9 = delta.navigation;
-        if (i9 != 0 && this.navigation != i9) {
+        if (delta.navigation != 0 && this.navigation != delta.navigation) {
             changed |= 64;
-            this.navigation = i9;
+            this.navigation = delta.navigation;
         }
-        int i10 = delta.navigationHidden;
-        if (i10 != 0 && this.navigationHidden != i10) {
+        if (delta.navigationHidden != 0 && this.navigationHidden != delta.navigationHidden) {
             changed |= 32;
-            this.navigationHidden = i10;
+            this.navigationHidden = delta.navigationHidden;
         }
-        int i11 = delta.orientation;
-        if (i11 != 0 && this.orientation != i11) {
+        if (delta.orientation != 0 && this.orientation != delta.orientation) {
             changed |= 128;
-            this.orientation = i11;
+            this.orientation = delta.orientation;
         }
-        int i12 = delta.screenLayout;
-        if ((i12 & 15) != 0) {
-            int i13 = i12 & 15;
-            int i14 = this.screenLayout;
-            if (i13 != (i14 & 15)) {
-                changed |= 256;
-                this.screenLayout = (i12 & 15) | (i14 & (-16));
-            }
-        }
-        int i15 = delta.screenLayout;
-        if ((i15 & 48) != 0) {
-            int i16 = i15 & 48;
-            int i17 = this.screenLayout;
-            if (i16 != (i17 & 48)) {
-                changed |= 256;
-                this.screenLayout = (i15 & 48) | (i17 & (-49));
-            }
-        }
-        int i18 = delta.screenLayout;
-        if ((i18 & 768) != 0) {
-            int i19 = i18 & 768;
-            int i20 = this.screenLayout;
-            if (i19 != (i20 & 768)) {
-                changed |= 256;
-                this.screenLayout = (i18 & 768) | (i20 & (-769));
-            }
-        }
-        int i21 = delta.screenLayout;
-        int i22 = i21 & 268435456;
-        int i23 = this.screenLayout;
-        if (i22 != (i23 & 268435456) && i21 != 0) {
+        if ((delta.screenLayout & 15) != 0 && (delta.screenLayout & 15) != (this.screenLayout & 15)) {
             changed |= 256;
-            this.screenLayout = (i21 & 268435456) | ((-268435457) & i23);
+            this.screenLayout = (this.screenLayout & (-16)) | (delta.screenLayout & 15);
         }
-        int i24 = delta.colorMode;
-        if ((i24 & 3) != 0) {
-            int i25 = i24 & 3;
-            int i26 = this.colorMode;
-            if (i25 != (i26 & 3)) {
-                changed |= 16384;
-                this.colorMode = (i24 & 3) | (i26 & (-4));
-            }
+        if ((delta.screenLayout & 48) != 0 && (delta.screenLayout & 48) != (this.screenLayout & 48)) {
+            changed |= 256;
+            this.screenLayout = (this.screenLayout & (-49)) | (delta.screenLayout & 48);
         }
-        int i27 = delta.colorMode;
-        if ((i27 & 12) != 0) {
-            int i28 = i27 & 12;
-            int i29 = this.colorMode;
-            if (i28 != (i29 & 12)) {
-                changed |= 16384;
-                this.colorMode = (i27 & 12) | (i29 & (-13));
-            }
+        if ((delta.screenLayout & 768) != 0 && (delta.screenLayout & 768) != (this.screenLayout & 768)) {
+            changed |= 256;
+            this.screenLayout = (this.screenLayout & (-769)) | (delta.screenLayout & 768);
         }
-        int i30 = delta.uiMode;
-        if (i30 != 0 && (i = this.uiMode) != i30) {
+        if ((delta.screenLayout & 268435456) != (this.screenLayout & 268435456) && delta.screenLayout != 0) {
+            changed |= 256;
+            this.screenLayout = (this.screenLayout & (-268435457)) | (delta.screenLayout & 268435456);
+        }
+        if ((delta.colorMode & 3) != 0 && (delta.colorMode & 3) != (this.colorMode & 3)) {
+            changed |= 16384;
+            this.colorMode = (this.colorMode & (-4)) | (delta.colorMode & 3);
+        }
+        if ((delta.colorMode & 12) != 0 && (delta.colorMode & 12) != (this.colorMode & 12)) {
+            changed |= 16384;
+            this.colorMode = (this.colorMode & (-13)) | (delta.colorMode & 12);
+        }
+        if (delta.uiMode != 0 && this.uiMode != delta.uiMode) {
             changed |= 512;
-            if ((i30 & 15) != 0) {
-                this.uiMode = (i30 & 15) | (i & (-16));
+            if ((delta.uiMode & 15) != 0) {
+                this.uiMode = (this.uiMode & (-16)) | (delta.uiMode & 15);
             }
-            int i31 = delta.uiMode;
-            if ((i31 & 48) != 0) {
-                this.uiMode = (i31 & 48) | (this.uiMode & (-49));
+            if ((delta.uiMode & 48) != 0) {
+                this.uiMode = (this.uiMode & (-49)) | (delta.uiMode & 48);
             }
         }
-        int i32 = delta.screenWidthDp;
-        if (i32 != 0 && this.screenWidthDp != i32) {
+        if (delta.screenWidthDp != 0 && this.screenWidthDp != delta.screenWidthDp) {
             changed |= 1024;
-            this.screenWidthDp = i32;
+            this.screenWidthDp = delta.screenWidthDp;
         }
-        int i33 = delta.screenHeightDp;
-        if (i33 != 0 && this.screenHeightDp != i33) {
+        if (delta.screenHeightDp != 0 && this.screenHeightDp != delta.screenHeightDp) {
             changed |= 1024;
-            this.screenHeightDp = i33;
+            this.screenHeightDp = delta.screenHeightDp;
         }
-        int i34 = delta.smallestScreenWidthDp;
-        if (i34 != 0 && this.smallestScreenWidthDp != i34) {
+        if (delta.smallestScreenWidthDp != 0 && this.smallestScreenWidthDp != delta.smallestScreenWidthDp) {
             changed |= 2048;
-            this.smallestScreenWidthDp = i34;
+            this.smallestScreenWidthDp = delta.smallestScreenWidthDp;
         }
-        int i35 = delta.densityDpi;
-        if (i35 != 0 && this.densityDpi != i35) {
+        if (delta.densityDpi != 0 && this.densityDpi != delta.densityDpi) {
             changed |= 4096;
-            this.densityDpi = i35;
+            this.densityDpi = delta.densityDpi;
         }
-        int i36 = delta.compatScreenWidthDp;
-        if (i36 != 0) {
-            this.compatScreenWidthDp = i36;
+        if (delta.compatScreenWidthDp != 0) {
+            this.compatScreenWidthDp = delta.compatScreenWidthDp;
         }
-        int i37 = delta.compatScreenHeightDp;
-        if (i37 != 0) {
-            this.compatScreenHeightDp = i37;
+        if (delta.compatScreenHeightDp != 0) {
+            this.compatScreenHeightDp = delta.compatScreenHeightDp;
         }
-        int i38 = delta.compatSmallestScreenWidthDp;
-        if (i38 != 0) {
-            this.compatSmallestScreenWidthDp = i38;
+        if (delta.compatSmallestScreenWidthDp != 0) {
+            this.compatSmallestScreenWidthDp = delta.compatSmallestScreenWidthDp;
         }
-        int i39 = delta.assetsSeq;
-        if (i39 != 0 && i39 != this.assetsSeq) {
+        if (delta.assetsSeq != 0 && delta.assetsSeq != this.assetsSeq) {
             changed |= Integer.MIN_VALUE;
-            this.assetsSeq = i39;
+            this.assetsSeq = delta.assetsSeq;
         }
-        int i40 = delta.seq;
-        if (i40 != 0) {
-            this.seq = i40;
+        if (delta.seq != 0) {
+            this.seq = delta.seq;
         }
-        if ((!CoreRune.MT_SUPPORT_COMPAT_SANDBOX || !publicOnly) && this.windowConfiguration.updateFrom(delta.windowConfiguration) != 0) {
+        if (!publicOnly && this.windowConfiguration.updateFrom(delta.windowConfiguration) != 0) {
             changed |= 536870912;
         }
-        int i41 = delta.fontWeightAdjustment;
-        if (i41 != Integer.MAX_VALUE && i41 != this.fontWeightAdjustment) {
+        if (delta.fontWeightAdjustment != Integer.MAX_VALUE && delta.fontWeightAdjustment != this.fontWeightAdjustment) {
             changed |= 268435456;
-            this.fontWeightAdjustment = i41;
+            this.fontWeightAdjustment = delta.fontWeightAdjustment;
         }
-        int i42 = delta.mGrammaticalGender;
-        if (i42 != this.mGrammaticalGender) {
+        if (delta.mGrammaticalGender != -1 && delta.mGrammaticalGender != this.mGrammaticalGender) {
             changed |= 32768;
-            this.mGrammaticalGender = i42;
+            this.mGrammaticalGender = delta.mGrammaticalGender;
         }
-        int i43 = delta.FlipFont;
-        if (i43 > 0 && this.FlipFont != i43) {
+        if (delta.FlipFont > 0 && this.FlipFont != delta.FlipFont) {
             changed |= 268435456;
-            this.FlipFont = i43;
+            this.FlipFont = delta.FlipFont;
         }
-        int i44 = delta.boldFont;
-        if (i44 != -1 && this.boldFont != i44) {
+        if (delta.boldFont != -1 && this.boldFont != delta.boldFont) {
             changed |= 16777216;
-            this.boldFont = i44;
+            this.boldFont = delta.boldFont;
         }
-        int i45 = delta.semButtonShapeEnabled;
-        if (i45 != -1 && this.semButtonShapeEnabled != i45) {
+        if (delta.semButtonShapeEnabled != -1 && this.semButtonShapeEnabled != delta.semButtonShapeEnabled) {
             changed |= 2097152;
-            this.semButtonShapeEnabled = i45;
+            this.semButtonShapeEnabled = delta.semButtonShapeEnabled;
         }
-        float f2 = delta.semCursorThicknessScale;
-        if (f2 > 0.0f && this.semCursorThicknessScale != f2) {
+        if (delta.semCursorThicknessScale > 0.0f && this.semCursorThicknessScale != delta.semCursorThicknessScale) {
             changed |= 8388608;
-            this.semCursorThicknessScale = f2;
+            this.semCursorThicknessScale = delta.semCursorThicknessScale;
         }
-        int i46 = delta.nightDim;
-        if (i46 != -1 && this.nightDim != i46) {
+        if (delta.nightDim != -1 && this.nightDim != delta.nightDim) {
             changed |= 4194304;
-            this.nightDim = i46;
+            this.nightDim = delta.nightDim;
         }
-        int i47 = delta.semDesktopModeEnabled;
-        if (i47 != -1 && this.semDesktopModeEnabled != i47) {
-            this.semDesktopModeEnabled = i47;
+        if (delta.semDesktopModeEnabled != -1 && this.semDesktopModeEnabled != delta.semDesktopModeEnabled) {
+            this.semDesktopModeEnabled = delta.semDesktopModeEnabled;
         }
-        int i48 = delta.dexMode;
-        if (i48 != -1 && this.dexMode != i48) {
+        if (delta.dexMode != -1 && this.dexMode != delta.dexMode) {
             changed |= 1048576;
-            this.dexMode = i48;
+            this.dexMode = delta.dexMode;
         }
-        int i49 = delta.dexCompatEnabled;
-        if (i49 != 0 && this.dexCompatEnabled != i49) {
-            this.dexCompatEnabled = i49;
+        if (delta.dexCompatEnabled != 0 && this.dexCompatEnabled != delta.dexCompatEnabled) {
+            this.dexCompatEnabled = delta.dexCompatEnabled;
         }
-        int i50 = delta.dexCompatUiMode;
-        if (i50 != 0 && this.dexCompatUiMode != i50) {
-            this.dexCompatUiMode = i50;
+        if (delta.dexCompatUiMode != 0 && this.dexCompatUiMode != delta.dexCompatUiMode) {
+            this.dexCompatUiMode = delta.dexCompatUiMode;
         }
-        int i51 = delta.themeSeq;
-        if (i51 > 0 && this.themeSeq != i51) {
+        if (delta.themeSeq > 0 && this.themeSeq != delta.themeSeq) {
             int changed2 = changed | 65536;
-            this.themeSeq = i51;
+            this.themeSeq = delta.themeSeq;
             return changed2;
         }
         return changed;
@@ -1279,9 +1195,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             this.mnc = delta.mnc;
         }
         if ((mask & 4) != 0) {
-            LocaleList localeList = delta.mLocaleList;
-            this.mLocaleList = localeList;
-            if (!localeList.isEmpty() && !delta.locale.equals(this.locale)) {
+            this.mLocaleList = delta.mLocaleList;
+            if (!this.mLocaleList.isEmpty() && !delta.locale.equals(this.locale)) {
                 this.locale = (Locale) delta.locale.clone();
             }
         }
@@ -1385,8 +1300,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         if ((compareUndefined || !delta.mLocaleList.isEmpty()) && !this.mLocaleList.equals(delta.mLocaleList)) {
             changed = changed | 4 | 8192;
         }
-        int i = delta.screenLayout;
-        int deltaScreenLayoutDir = i & 192;
+        int deltaScreenLayoutDir = delta.screenLayout & 192;
         if ((compareUndefined || deltaScreenLayoutDir != 0) && deltaScreenLayoutDir != (this.screenLayout & 192)) {
             changed |= 8192;
         }
@@ -1411,7 +1325,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         if ((compareUndefined || delta.orientation != 0) && this.orientation != delta.orientation) {
             changed |= 128;
         }
-        if ((compareUndefined || getScreenLayoutNoDirection(i) != 0) && getScreenLayoutNoDirection(this.screenLayout) != getScreenLayoutNoDirection(delta.screenLayout)) {
+        if ((compareUndefined || getScreenLayoutNoDirection(delta.screenLayout) != 0) && getScreenLayoutNoDirection(this.screenLayout) != getScreenLayoutNoDirection(delta.screenLayout)) {
             changed |= 256;
         }
         if ((compareUndefined || (delta.colorMode & 12) != 0) && (this.colorMode & 12) != (delta.colorMode & 12)) {
@@ -1444,31 +1358,28 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         if ((compareUndefined || delta.fontWeightAdjustment != Integer.MAX_VALUE) && this.fontWeightAdjustment != delta.fontWeightAdjustment) {
             changed |= 268435456;
         }
-        if (this.mGrammaticalGender != delta.mGrammaticalGender) {
+        if ((compareUndefined || delta.mGrammaticalGender != -1) && this.mGrammaticalGender != delta.mGrammaticalGender) {
             changed |= 32768;
         }
-        int i2 = delta.FlipFont;
-        if (i2 > 0 && this.FlipFont != i2) {
+        if (delta.FlipFont > 0 && this.FlipFont != delta.FlipFont) {
             changed |= 268435456;
         }
-        int i3 = delta.boldFont;
-        if (i3 != -1 && this.boldFont != i3) {
+        if (delta.boldFont != -1 && this.boldFont != delta.boldFont) {
             changed |= 16777216;
         }
-        int i4 = delta.semButtonShapeEnabled;
-        if (i4 != -1 && this.semButtonShapeEnabled != i4) {
+        if (delta.semButtonShapeEnabled != -1 && this.semButtonShapeEnabled != delta.semButtonShapeEnabled) {
             changed |= 2097152;
         }
-        float f = delta.semCursorThicknessScale;
-        if (f > 0.0f && this.semCursorThicknessScale != f) {
+        if (delta.semCursorThicknessScale > 0.0f && this.semCursorThicknessScale != delta.semCursorThicknessScale) {
             changed |= 8388608;
         }
-        int i5 = delta.dexMode;
-        if (i5 != -1 && this.dexMode != i5) {
+        if (delta.dexMode != -1 && this.dexMode != delta.dexMode) {
             changed |= 1048576;
         }
-        int i6 = delta.themeSeq;
-        if (i6 > 0 && this.themeSeq != i6) {
+        if (delta.nightDim != -1 && this.nightDim != delta.nightDim) {
+            changed |= 4194304;
+        }
+        if (delta.themeSeq > 0 && this.themeSeq != delta.themeSeq) {
             return changed | 65536;
         }
         return changed;
@@ -1479,16 +1390,21 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     public boolean isOtherSeqNewer(Configuration other) {
-        int i;
         if (other == null) {
             return false;
         }
-        int i2 = other.seq;
-        if (i2 == 0 || (i = this.seq) == 0) {
+        if (other.seq == 0 || this.seq == 0) {
             return true;
         }
-        int diff = i2 - i;
-        return Math.abs(diff) > 268435456 ? diff < 0 : diff > 0;
+        int diff = other.seq - this.seq;
+        if (Math.abs(diff) > 268435456) {
+            return diff < 0;
+        }
+        int themeDiff = other.themeSeq - this.themeSeq;
+        if (themeDiff > 65536) {
+            return false;
+        }
+        return diff > 0 || themeDiff > 0;
     }
 
     @Override // android.os.Parcelable
@@ -1547,9 +1463,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         this.fontScale = source.readFloat();
         this.mcc = source.readInt();
         this.mnc = source.readInt();
-        LocaleList localeList = (LocaleList) source.readTypedObject(LocaleList.CREATOR);
-        this.mLocaleList = localeList;
-        this.locale = localeList.get(0);
+        this.mLocaleList = (LocaleList) source.readTypedObject(LocaleList.CREATOR);
+        this.locale = this.mLocaleList.get(0);
         int localeSetFrom = source.readInt();
         this.userSetLocale = (localeSetFrom & 1) != 0;
         this.rilSetLocale = (localeSetFrom & 2) != 0;
@@ -1586,23 +1501,6 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         this.dexCompatEnabled = source.readInt();
         this.dexCompatUiMode = source.readInt();
         this.themeSeq = source.readInt();
-    }
-
-    /* renamed from: android.content.res.Configuration$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Configuration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Configuration createFromParcel(Parcel source) {
-            return new Configuration(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Configuration[] newArray(int size) {
-            return new Configuration[size];
-        }
     }
 
     private Configuration(Parcel source) {
@@ -1835,6 +1733,13 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     public int getGrammaticalGender() {
+        if (this.mGrammaticalGender == -1) {
+            return 0;
+        }
+        return this.mGrammaticalGender;
+    }
+
+    public int getGrammaticalGenderRaw() {
         return this.mGrammaticalGender;
     }
 
@@ -1848,11 +1753,9 @@ public final class Configuration implements Parcelable, Comparable<Configuration
     }
 
     public void setLocales(LocaleList locales) {
-        LocaleList emptyLocaleList = locales == null ? LocaleList.getEmptyLocaleList() : locales;
-        this.mLocaleList = emptyLocaleList;
-        Locale locale = emptyLocaleList.get(0);
-        this.locale = locale;
-        setLayoutDirection(locale);
+        this.mLocaleList = locales == null ? LocaleList.getEmptyLocaleList() : locales;
+        this.locale = this.mLocaleList.get(0);
+        setLayoutDirection(this.locale);
     }
 
     public void setLocale(Locale loc) {
@@ -1994,7 +1897,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
                 parts.add("notlong");
                 break;
             case 32:
-                parts.add("long");
+                parts.add(SliceItem.FORMAT_LONG);
                 break;
         }
         switch (config.screenLayout & 768) {
@@ -2162,20 +2065,14 @@ public final class Configuration implements Parcelable, Comparable<Configuration
 
     public static Configuration generateDelta(Configuration base, Configuration change) {
         Configuration delta = new Configuration();
-        float f = base.fontScale;
-        float f2 = change.fontScale;
-        if (f != f2) {
-            delta.fontScale = f2;
+        if (base.fontScale != change.fontScale) {
+            delta.fontScale = change.fontScale;
         }
-        int i = base.mcc;
-        int i2 = change.mcc;
-        if (i != i2) {
-            delta.mcc = i2;
+        if (base.mcc != change.mcc) {
+            delta.mcc = change.mcc;
         }
-        int i3 = base.mnc;
-        int i4 = change.mnc;
-        if (i3 != i4) {
-            delta.mnc = i4;
+        if (base.mnc != change.mnc) {
+            delta.mnc = change.mnc;
         }
         base.fixUpLocaleList();
         change.fixUpLocaleList();
@@ -2183,158 +2080,98 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             delta.mLocaleList = change.mLocaleList;
             delta.locale = change.locale;
         }
-        int i5 = base.mGrammaticalGender;
-        int i6 = change.mGrammaticalGender;
-        if (i5 != i6) {
-            delta.mGrammaticalGender = i6;
+        if (base.mGrammaticalGender != change.mGrammaticalGender) {
+            delta.mGrammaticalGender = change.mGrammaticalGender;
         }
-        int i7 = base.touchscreen;
-        int i8 = change.touchscreen;
-        if (i7 != i8) {
-            delta.touchscreen = i8;
+        if (base.touchscreen != change.touchscreen) {
+            delta.touchscreen = change.touchscreen;
         }
-        int i9 = base.keyboard;
-        int i10 = change.keyboard;
-        if (i9 != i10) {
-            delta.keyboard = i10;
+        if (base.keyboard != change.keyboard) {
+            delta.keyboard = change.keyboard;
         }
-        int i11 = base.keyboardHidden;
-        int i12 = change.keyboardHidden;
-        if (i11 != i12) {
-            delta.keyboardHidden = i12;
+        if (base.keyboardHidden != change.keyboardHidden) {
+            delta.keyboardHidden = change.keyboardHidden;
         }
-        int i13 = base.navigation;
-        int i14 = change.navigation;
-        if (i13 != i14) {
-            delta.navigation = i14;
+        if (base.navigation != change.navigation) {
+            delta.navigation = change.navigation;
         }
-        int i15 = base.navigationHidden;
-        int i16 = change.navigationHidden;
-        if (i15 != i16) {
-            delta.navigationHidden = i16;
+        if (base.navigationHidden != change.navigationHidden) {
+            delta.navigationHidden = change.navigationHidden;
         }
-        int i17 = base.orientation;
-        int i18 = change.orientation;
-        if (i17 != i18) {
-            delta.orientation = i18;
+        if (base.orientation != change.orientation) {
+            delta.orientation = change.orientation;
         }
-        int i19 = base.screenLayout & 15;
-        int i20 = change.screenLayout;
-        if (i19 != (i20 & 15)) {
-            delta.screenLayout |= i20 & 15;
+        if ((base.screenLayout & 15) != (change.screenLayout & 15)) {
+            delta.screenLayout |= change.screenLayout & 15;
         }
-        int i21 = base.screenLayout & 192;
-        int i22 = change.screenLayout;
-        if (i21 != (i22 & 192)) {
-            delta.screenLayout |= i22 & 192;
+        if ((base.screenLayout & 192) != (change.screenLayout & 192)) {
+            delta.screenLayout |= change.screenLayout & 192;
         }
-        int i23 = base.screenLayout & 48;
-        int i24 = change.screenLayout;
-        if (i23 != (i24 & 48)) {
-            delta.screenLayout |= i24 & 48;
+        if ((base.screenLayout & 48) != (change.screenLayout & 48)) {
+            delta.screenLayout |= change.screenLayout & 48;
         }
-        int i25 = base.screenLayout & 768;
-        int i26 = change.screenLayout;
-        if (i25 != (i26 & 768)) {
-            delta.screenLayout |= i26 & 768;
+        if ((base.screenLayout & 768) != (change.screenLayout & 768)) {
+            delta.screenLayout |= change.screenLayout & 768;
         }
-        int i27 = base.colorMode & 3;
-        int i28 = change.colorMode;
-        if (i27 != (i28 & 3)) {
-            delta.colorMode |= i28 & 3;
+        if ((base.colorMode & 3) != (change.colorMode & 3)) {
+            delta.colorMode |= change.colorMode & 3;
         }
-        int i29 = base.colorMode & 12;
-        int i30 = change.colorMode;
-        if (i29 != (i30 & 12)) {
-            delta.colorMode |= i30 & 12;
+        if ((base.colorMode & 12) != (change.colorMode & 12)) {
+            delta.colorMode |= change.colorMode & 12;
         }
-        int i31 = base.uiMode & 15;
-        int i32 = change.uiMode;
-        if (i31 != (i32 & 15)) {
-            delta.uiMode |= i32 & 15;
+        if ((base.uiMode & 15) != (change.uiMode & 15)) {
+            delta.uiMode |= change.uiMode & 15;
         }
-        int i33 = base.uiMode & 48;
-        int i34 = change.uiMode;
-        if (i33 != (i34 & 48)) {
-            delta.uiMode |= i34 & 48;
+        if ((base.uiMode & 48) != (change.uiMode & 48)) {
+            delta.uiMode |= change.uiMode & 48;
         }
-        int i35 = base.screenWidthDp;
-        int i36 = change.screenWidthDp;
-        if (i35 != i36) {
-            delta.screenWidthDp = i36;
+        if (base.screenWidthDp != change.screenWidthDp) {
+            delta.screenWidthDp = change.screenWidthDp;
         }
-        int i37 = base.screenHeightDp;
-        int i38 = change.screenHeightDp;
-        if (i37 != i38) {
-            delta.screenHeightDp = i38;
+        if (base.screenHeightDp != change.screenHeightDp) {
+            delta.screenHeightDp = change.screenHeightDp;
         }
-        int i39 = base.smallestScreenWidthDp;
-        int i40 = change.smallestScreenWidthDp;
-        if (i39 != i40) {
-            delta.smallestScreenWidthDp = i40;
+        if (base.smallestScreenWidthDp != change.smallestScreenWidthDp) {
+            delta.smallestScreenWidthDp = change.smallestScreenWidthDp;
         }
-        int i41 = base.densityDpi;
-        int i42 = change.densityDpi;
-        if (i41 != i42) {
-            delta.densityDpi = i42;
+        if (base.densityDpi != change.densityDpi) {
+            delta.densityDpi = change.densityDpi;
         }
-        int i43 = base.assetsSeq;
-        int i44 = change.assetsSeq;
-        if (i43 != i44) {
-            delta.assetsSeq = i44;
+        if (base.assetsSeq != change.assetsSeq) {
+            delta.assetsSeq = change.assetsSeq;
         }
         if (!base.windowConfiguration.equals(change.windowConfiguration)) {
             delta.windowConfiguration.setTo(change.windowConfiguration);
         }
-        int i45 = base.fontWeightAdjustment;
-        int i46 = change.fontWeightAdjustment;
-        if (i45 != i46) {
-            delta.fontWeightAdjustment = i46;
+        if (base.fontWeightAdjustment != change.fontWeightAdjustment) {
+            delta.fontWeightAdjustment = change.fontWeightAdjustment;
         }
-        int i47 = base.boldFont;
-        int i48 = change.boldFont;
-        if (i47 != i48) {
-            delta.boldFont = i48;
+        if (base.boldFont != change.boldFont) {
+            delta.boldFont = change.boldFont;
         }
-        int i49 = base.semButtonShapeEnabled;
-        int i50 = change.semButtonShapeEnabled;
-        if (i49 != i50) {
-            delta.semButtonShapeEnabled = i50;
+        if (base.semButtonShapeEnabled != change.semButtonShapeEnabled) {
+            delta.semButtonShapeEnabled = change.semButtonShapeEnabled;
         }
-        float f3 = base.semCursorThicknessScale;
-        float f4 = change.semCursorThicknessScale;
-        if (f3 != f4) {
-            delta.semCursorThicknessScale = f4;
+        if (base.semCursorThicknessScale != change.semCursorThicknessScale) {
+            delta.semCursorThicknessScale = change.semCursorThicknessScale;
         }
-        int i51 = base.nightDim;
-        int i52 = change.nightDim;
-        if (i51 != i52) {
-            delta.nightDim = i52;
+        if (base.nightDim != change.nightDim) {
+            delta.nightDim = change.nightDim;
         }
-        int i53 = base.semDesktopModeEnabled;
-        int i54 = change.semDesktopModeEnabled;
-        if (i53 != i54) {
-            delta.semDesktopModeEnabled = i54;
+        if (base.semDesktopModeEnabled != change.semDesktopModeEnabled) {
+            delta.semDesktopModeEnabled = change.semDesktopModeEnabled;
         }
-        int i55 = base.dexMode;
-        int i56 = change.dexMode;
-        if (i55 != i56) {
-            delta.dexMode = i56;
+        if (base.dexMode != change.dexMode) {
+            delta.dexMode = change.dexMode;
         }
-        int i57 = base.dexCompatEnabled;
-        int i58 = change.dexCompatEnabled;
-        if (i57 != i58) {
-            delta.dexCompatEnabled = i58;
+        if (base.dexCompatEnabled != change.dexCompatEnabled) {
+            delta.dexCompatEnabled = change.dexCompatEnabled;
         }
-        int i59 = base.dexCompatUiMode;
-        int i60 = change.dexCompatUiMode;
-        if (i59 != i60) {
-            delta.dexCompatUiMode = i60;
+        if (base.dexCompatUiMode != change.dexCompatUiMode) {
+            delta.dexCompatUiMode = change.dexCompatUiMode;
         }
-        int i61 = base.themeSeq;
-        int i62 = change.themeSeq;
-        if (i61 != i62) {
-            delta.themeSeq = i62;
+        if (base.themeSeq != change.themeSeq) {
+            delta.themeSeq = change.themeSeq;
         }
         return delta;
     }
@@ -2344,9 +2181,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         configOut.mcc = XmlUtils.readIntAttribute(parser, "mcc", 0);
         configOut.mnc = XmlUtils.readIntAttribute(parser, "mnc", 0);
         String localesStr = XmlUtils.readStringAttribute(parser, XML_ATTR_LOCALES);
-        LocaleList forLanguageTags = LocaleList.forLanguageTags(localesStr);
-        configOut.mLocaleList = forLanguageTags;
-        configOut.locale = forLanguageTags.get(0);
+        configOut.mLocaleList = LocaleList.forLanguageTags(localesStr);
+        configOut.locale = configOut.mLocaleList.get(0);
         configOut.touchscreen = XmlUtils.readIntAttribute(parser, XML_ATTR_TOUCHSCREEN, 0);
         configOut.keyboard = XmlUtils.readIntAttribute(parser, "key", 0);
         configOut.keyboardHidden = XmlUtils.readIntAttribute(parser, XML_ATTR_KEYBOARD_HIDDEN, 0);
@@ -2362,44 +2198,28 @@ public final class Configuration implements Parcelable, Comparable<Configuration
         configOut.smallestScreenWidthDp = XmlUtils.readIntAttribute(parser, XML_ATTR_SMALLEST_WIDTH, 0);
         configOut.densityDpi = XmlUtils.readIntAttribute(parser, XML_ATTR_DENSITY, 0);
         configOut.fontWeightAdjustment = XmlUtils.readIntAttribute(parser, XML_ATTR_FONT_WEIGHT_ADJUSTMENT, Integer.MAX_VALUE);
-        configOut.mGrammaticalGender = XmlUtils.readIntAttribute(parser, XML_ATTR_GRAMMATICAL_GENDER, 0);
+        configOut.mGrammaticalGender = XmlUtils.readIntAttribute(parser, XML_ATTR_GRAMMATICAL_GENDER, -1);
     }
 
     public boolean isDexMode() {
-        int i = this.dexMode;
-        return i == 2 || i == 1;
-    }
-
-    public boolean isNewDexMode() {
-        int i = this.dexMode;
-        return i == 3 || i == 4;
+        return this.dexMode == 2 || this.dexMode == 1;
     }
 
     public boolean isDesktopModeEnabled() {
         return this.semDesktopModeEnabled == 1;
     }
 
-    private int hidden_semDesktopModeEnabled() {
-        return this.semDesktopModeEnabled;
-    }
-
-    private static final int hidden_SEM_DESKTOP_MODE_ENABLED() {
-        return 1;
-    }
-
-    public static boolean needToUpdateOverlays(int configChanges) {
-        return (65536 & configChanges) != 0;
+    public boolean isNewDexMode() {
+        return this.dexMode == 3;
     }
 
     public int updateFromDexCompatTaskConfig(Configuration delta) {
         int changed = updateFromScreenConfiguration(delta);
-        int i = delta.dexCompatEnabled;
-        if (i != 0 && this.dexCompatEnabled != i) {
-            this.dexCompatEnabled = i;
+        if (delta.dexCompatEnabled != 0 && this.dexCompatEnabled != delta.dexCompatEnabled) {
+            this.dexCompatEnabled = delta.dexCompatEnabled;
         }
-        int i2 = delta.dexCompatUiMode;
-        if (i2 != 0 && this.dexCompatUiMode != i2) {
-            this.dexCompatUiMode = i2;
+        if (delta.dexCompatUiMode != 0 && this.dexCompatUiMode != delta.dexCompatUiMode) {
+            this.dexCompatUiMode = delta.dexCompatUiMode;
         }
         if (this.windowConfiguration.updateFrom(delta.windowConfiguration) != 0) {
             return changed | 536870912;
@@ -2415,35 +2235,38 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             changed = 0 | 256;
             this.screenLayout = (this.screenLayout & 192) | deltaScreenLayoutNoDir;
         }
-        int i = delta.orientation;
-        if (i != 0 && this.orientation != i) {
+        if (delta.orientation != 0 && this.orientation != delta.orientation) {
             changed |= 128;
-            this.orientation = i;
+            this.orientation = delta.orientation;
         }
-        int i2 = delta.screenWidthDp;
-        if (i2 != 0 && this.screenWidthDp != i2) {
+        if (delta.screenWidthDp != 0 && this.screenWidthDp != delta.screenWidthDp) {
             changed |= 1024;
-            this.screenWidthDp = i2;
+            this.screenWidthDp = delta.screenWidthDp;
         }
-        int i3 = delta.screenHeightDp;
-        if (i3 != 0 && this.screenHeightDp != i3) {
+        if (delta.screenHeightDp != 0 && this.screenHeightDp != delta.screenHeightDp) {
             changed |= 1024;
-            this.screenHeightDp = i3;
+            this.screenHeightDp = delta.screenHeightDp;
         }
-        int i4 = delta.smallestScreenWidthDp;
-        if (i4 != 0 && this.smallestScreenWidthDp != i4) {
+        if (delta.smallestScreenWidthDp != 0 && this.smallestScreenWidthDp != delta.smallestScreenWidthDp) {
             int changed2 = changed | 2048;
-            this.smallestScreenWidthDp = i4;
+            this.smallestScreenWidthDp = delta.smallestScreenWidthDp;
             return changed2;
         }
         return changed;
     }
 
     public void overrideUndefinedFrom(Configuration delta) {
-        int i;
-        if (this.dexCompatEnabled == 0 && (i = delta.dexCompatEnabled) == 1) {
-            this.dexCompatEnabled = i;
+        if (this.dexCompatEnabled == 0 && delta.dexCompatEnabled == 1) {
+            this.dexCompatEnabled = delta.dexCompatEnabled;
         }
         this.windowConfiguration.overrideUndefinedFrom(delta.windowConfiguration);
+    }
+
+    private int hidden_semDesktopModeEnabled() {
+        return this.semDesktopModeEnabled;
+    }
+
+    private static final int hidden_SEM_DESKTOP_MODE_ENABLED() {
+        return 1;
     }
 }

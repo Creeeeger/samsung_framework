@@ -8,7 +8,7 @@ public final class KernelCpuBpfTracking {
 
     private static native int[] getFreqsClustersInternal();
 
-    public static native long[] getFreqsInternal();
+    static native long[] getFreqsInternal();
 
     public static native boolean isSupported();
 

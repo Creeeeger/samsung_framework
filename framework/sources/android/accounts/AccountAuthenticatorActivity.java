@@ -15,24 +15,21 @@ public class AccountAuthenticatorActivity extends Activity {
     }
 
     @Override // android.app.Activity
-    public void onCreate(Bundle icicle) {
+    protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        AccountAuthenticatorResponse accountAuthenticatorResponse = (AccountAuthenticatorResponse) getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, AccountAuthenticatorResponse.class);
-        this.mAccountAuthenticatorResponse = accountAuthenticatorResponse;
-        if (accountAuthenticatorResponse != null) {
-            accountAuthenticatorResponse.onRequestContinued();
+        this.mAccountAuthenticatorResponse = (AccountAuthenticatorResponse) getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, AccountAuthenticatorResponse.class);
+        if (this.mAccountAuthenticatorResponse != null) {
+            this.mAccountAuthenticatorResponse.onRequestContinued();
         }
     }
 
     @Override // android.app.Activity
     public void finish() {
-        AccountAuthenticatorResponse accountAuthenticatorResponse = this.mAccountAuthenticatorResponse;
-        if (accountAuthenticatorResponse != null) {
-            Bundle bundle = this.mResultBundle;
-            if (bundle != null) {
-                accountAuthenticatorResponse.onResult(bundle);
+        if (this.mAccountAuthenticatorResponse != null) {
+            if (this.mResultBundle != null) {
+                this.mAccountAuthenticatorResponse.onResult(this.mResultBundle);
             } else {
-                accountAuthenticatorResponse.onError(4, CompanionDeviceManager.REASON_CANCELED);
+                this.mAccountAuthenticatorResponse.onError(4, CompanionDeviceManager.REASON_CANCELED);
             }
             this.mAccountAuthenticatorResponse = null;
         }

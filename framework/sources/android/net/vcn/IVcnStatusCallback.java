@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface IVcnStatusCallback extends IInterface {
     public static final String DESCRIPTOR = "android.net.vcn.IVcnStatusCallback";
 
@@ -14,7 +14,6 @@ public interface IVcnStatusCallback extends IInterface {
 
     void onVcnStatusChanged(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVcnStatusCallback {
         @Override // android.net.vcn.IVcnStatusCallback
         public void onVcnStatusChanged(int statusCode) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IVcnStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVcnStatusCallback {
         static final int TRANSACTION_onGatewayConnectionError = 2;
         static final int TRANSACTION_onVcnStatusChanged = 1;
@@ -76,34 +74,30 @@ public interface IVcnStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IVcnStatusCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IVcnStatusCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IVcnStatusCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onVcnStatusChanged(_arg0);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    onGatewayConnectionError(_arg02, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onVcnStatusChanged(_arg0);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            onGatewayConnectionError(_arg02, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IVcnStatusCallback {
+        private static class Proxy implements IVcnStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

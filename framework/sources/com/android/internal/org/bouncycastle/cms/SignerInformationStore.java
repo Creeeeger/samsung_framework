@@ -15,9 +15,8 @@ public class SignerInformationStore implements Iterable<SignerInformation> {
 
     public SignerInformationStore(SignerInformation signerInfo) {
         this.all = new ArrayList();
-        ArrayList arrayList = new ArrayList(1);
-        this.all = arrayList;
-        arrayList.add(signerInfo);
+        this.all = new ArrayList(1);
+        this.all.add(signerInfo);
         SignerId sid = signerInfo.getSID();
         this.table.put(sid, this.all);
     }

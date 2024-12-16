@@ -5,36 +5,19 @@ import android.util.Log;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class CloseableLock implements AutoCloseable {
     private static final boolean VERBOSE = false;
+    private final String TAG;
+    private volatile boolean mClosed;
     private final Condition mCondition;
+    private boolean mExclusive;
     private final ReentrantLock mLock;
     private final ThreadLocal<Integer> mLockCount;
     private final String mName;
-    private final String TAG = "CloseableLock";
-    private volatile boolean mClosed = false;
-    private boolean mExclusive = false;
-    private int mSharedLocks = 0;
+    private int mSharedLocks;
 
-    /* renamed from: android.hardware.camera2.utils.CloseableLock$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 extends ThreadLocal<Integer> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.ThreadLocal
-        public Integer initialValue() {
-            return 0;
-        }
-    }
-
-    /* loaded from: classes.dex */
     public class ScopedLock implements AutoCloseable {
-        /* synthetic */ ScopedLock(CloseableLock closeableLock, ScopedLockIA scopedLockIA) {
-            this();
-        }
-
         private ScopedLock() {
         }
 
@@ -45,13 +28,15 @@ public class CloseableLock implements AutoCloseable {
     }
 
     public CloseableLock() {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.mLock = reentrantLock;
-        this.mCondition = reentrantLock.newCondition();
+        this.TAG = "CloseableLock";
+        this.mClosed = false;
+        this.mExclusive = false;
+        this.mSharedLocks = 0;
+        this.mLock = new ReentrantLock();
+        this.mCondition = this.mLock.newCondition();
         this.mLockCount = new ThreadLocal<Integer>() { // from class: android.hardware.camera2.utils.CloseableLock.1
-            AnonymousClass1() {
-            }
-
+            /* JADX INFO: Access modifiers changed from: protected */
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.lang.ThreadLocal
             public Integer initialValue() {
                 return 0;
@@ -61,13 +46,15 @@ public class CloseableLock implements AutoCloseable {
     }
 
     public CloseableLock(String name) {
-        ReentrantLock reentrantLock = new ReentrantLock();
-        this.mLock = reentrantLock;
-        this.mCondition = reentrantLock.newCondition();
+        this.TAG = "CloseableLock";
+        this.mClosed = false;
+        this.mExclusive = false;
+        this.mSharedLocks = 0;
+        this.mLock = new ReentrantLock();
+        this.mCondition = this.mLock.newCondition();
         this.mLockCount = new ThreadLocal<Integer>() { // from class: android.hardware.camera2.utils.CloseableLock.1
-            AnonymousClass1() {
-            }
-
+            /* JADX INFO: Access modifiers changed from: protected */
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.lang.ThreadLocal
             public Integer initialValue() {
                 return 0;

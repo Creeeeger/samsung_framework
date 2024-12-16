@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class MapFieldLite<K, V> extends LinkedHashMap<K, V> {
-    private static final MapFieldLite<?, ?> EMPTY_MAP_FIELD;
+    private static final MapFieldLite<?, ?> EMPTY_MAP_FIELD = new MapFieldLite<>();
     private boolean isMutable;
 
     private MapFieldLite() {
@@ -22,9 +22,7 @@ public final class MapFieldLite<K, V> extends LinkedHashMap<K, V> {
     }
 
     static {
-        MapFieldLite<?, ?> mapFieldLite = new MapFieldLite<>();
-        EMPTY_MAP_FIELD = mapFieldLite;
-        mapFieldLite.makeImmutable();
+        EMPTY_MAP_FIELD.makeImmutable();
     }
 
     public static <K, V> MapFieldLite<K, V> emptyMapField() {

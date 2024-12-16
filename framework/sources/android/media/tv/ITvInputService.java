@@ -12,7 +12,7 @@ import android.os.RemoteException;
 import android.view.InputChannel;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface ITvInputService extends IInterface {
     void createRecordingSession(ITvInputSessionCallback iTvInputSessionCallback, String str, String str2) throws RemoteException;
 
@@ -38,7 +38,6 @@ public interface ITvInputService extends IInterface {
 
     void unregisterCallback(ITvInputServiceCallback iTvInputServiceCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ITvInputService {
         @Override // android.media.tv.ITvInputService
         public void registerCallback(ITvInputServiceCallback callback) throws RemoteException {
@@ -97,7 +96,6 @@ public interface ITvInputService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ITvInputService {
         public static final String DESCRIPTOR = "android.media.tv.ITvInputService";
         static final int TRANSACTION_createRecordingSession = 4;
@@ -174,89 +172,86 @@ public interface ITvInputService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    ITvInputServiceCallback _arg0 = ITvInputServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCallback(_arg0);
+                    return true;
+                case 2:
+                    ITvInputServiceCallback _arg02 = ITvInputServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCallback(_arg02);
+                    return true;
+                case 3:
+                    InputChannel _arg03 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
+                    ITvInputSessionCallback _arg1 = ITvInputSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    AttributionSource _arg4 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
+                    data.enforceNoDataAvail();
+                    createSession(_arg03, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 4:
+                    ITvInputSessionCallback _arg04 = ITvInputSessionCallback.Stub.asInterface(data.readStrongBinder());
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    createRecordingSession(_arg04, _arg12, _arg22);
+                    return true;
+                case 5:
+                    List<String> _result = getAvailableExtensionInterfaceNames();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    IBinder _result2 = getExtensionInterface(_arg05);
+                    reply.writeNoException();
+                    reply.writeStrongBinder(_result2);
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result3 = getExtensionInterfacePermission(_arg06);
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 8:
+                    TvInputHardwareInfo _arg07 = (TvInputHardwareInfo) data.readTypedObject(TvInputHardwareInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyHardwareAdded(_arg07);
+                    return true;
+                case 9:
+                    TvInputHardwareInfo _arg08 = (TvInputHardwareInfo) data.readTypedObject(TvInputHardwareInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyHardwareRemoved(_arg08);
+                    return true;
+                case 10:
+                    HdmiDeviceInfo _arg09 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyHdmiDeviceAdded(_arg09);
+                    return true;
+                case 11:
+                    HdmiDeviceInfo _arg010 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyHdmiDeviceRemoved(_arg010);
+                    return true;
+                case 12:
+                    HdmiDeviceInfo _arg011 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    notifyHdmiDeviceUpdated(_arg011);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ITvInputServiceCallback _arg0 = ITvInputServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCallback(_arg0);
-                            return true;
-                        case 2:
-                            ITvInputServiceCallback _arg02 = ITvInputServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCallback(_arg02);
-                            return true;
-                        case 3:
-                            InputChannel _arg03 = (InputChannel) data.readTypedObject(InputChannel.CREATOR);
-                            ITvInputSessionCallback _arg1 = ITvInputSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            AttributionSource _arg4 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
-                            data.enforceNoDataAvail();
-                            createSession(_arg03, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 4:
-                            ITvInputSessionCallback _arg04 = ITvInputSessionCallback.Stub.asInterface(data.readStrongBinder());
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            createRecordingSession(_arg04, _arg12, _arg22);
-                            return true;
-                        case 5:
-                            List<String> _result = getAvailableExtensionInterfaceNames();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            IBinder _result2 = getExtensionInterface(_arg05);
-                            reply.writeNoException();
-                            reply.writeStrongBinder(_result2);
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result3 = getExtensionInterfacePermission(_arg06);
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 8:
-                            TvInputHardwareInfo _arg07 = (TvInputHardwareInfo) data.readTypedObject(TvInputHardwareInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyHardwareAdded(_arg07);
-                            return true;
-                        case 9:
-                            TvInputHardwareInfo _arg08 = (TvInputHardwareInfo) data.readTypedObject(TvInputHardwareInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyHardwareRemoved(_arg08);
-                            return true;
-                        case 10:
-                            HdmiDeviceInfo _arg09 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyHdmiDeviceAdded(_arg09);
-                            return true;
-                        case 11:
-                            HdmiDeviceInfo _arg010 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyHdmiDeviceRemoved(_arg010);
-                            return true;
-                        case 12:
-                            HdmiDeviceInfo _arg011 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            notifyHdmiDeviceUpdated(_arg011);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements ITvInputService {
             private IBinder mRemote;
 

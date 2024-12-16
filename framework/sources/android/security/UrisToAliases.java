@@ -15,9 +15,7 @@ import org.xmlpull.v1.XmlSerializer;
 /* loaded from: classes3.dex */
 public final class UrisToAliases implements Parcelable {
     public static final Parcelable.Creator<UrisToAliases> CREATOR = new Parcelable.Creator<UrisToAliases>() { // from class: android.security.UrisToAliases.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrisToAliases createFromParcel(Parcel in) {
             Map<Uri, String> urisToAliases = new HashMap<>();
@@ -25,6 +23,7 @@ public final class UrisToAliases implements Parcelable {
             return new UrisToAliases(urisToAliases);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public UrisToAliases[] newArray(int size) {
             return new UrisToAliases[size];
@@ -35,35 +34,12 @@ public final class UrisToAliases implements Parcelable {
     private static final String KEY_AUTHENTICATION_POLICY_URI_TO_ALIAS = "authentication_policy_uri_to_alias";
     private final Map<Uri, String> mUrisToAliases;
 
-    /* synthetic */ UrisToAliases(Map map, UrisToAliasesIA urisToAliasesIA) {
-        this(map);
-    }
-
     public UrisToAliases() {
         this.mUrisToAliases = new HashMap();
     }
 
     private UrisToAliases(Map<Uri, String> urisToAliases) {
         this.mUrisToAliases = urisToAliases;
-    }
-
-    /* renamed from: android.security.UrisToAliases$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<UrisToAliases> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrisToAliases createFromParcel(Parcel in) {
-            Map<Uri, String> urisToAliases = new HashMap<>();
-            in.readMap(urisToAliases, String.class.getClassLoader());
-            return new UrisToAliases(urisToAliases);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UrisToAliases[] newArray(int size) {
-            return new UrisToAliases[size];
-        }
     }
 
     public Map<Uri, String> getUrisToAliases() {

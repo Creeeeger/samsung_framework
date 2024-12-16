@@ -27,9 +27,8 @@ public class DrmOutputStream extends OutputStream {
         this.mClient = client;
         this.mPfd = pfd;
         this.mFd = pfd.getFileDescriptor();
-        int openConvertSession = client.openConvertSession(mimeType);
-        this.mSessionId = openConvertSession;
-        if (openConvertSession == -1) {
+        this.mSessionId = this.mClient.openConvertSession(mimeType);
+        if (this.mSessionId == -1) {
             throw new UnknownServiceException("Failed to open DRM session for " + mimeType);
         }
     }

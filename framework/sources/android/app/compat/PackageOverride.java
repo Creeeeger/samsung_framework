@@ -17,12 +17,7 @@ public final class PackageOverride {
     private final long mMinVersionCode;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface EvaluatedOverride {
-    }
-
-    /* synthetic */ PackageOverride(long j, long j2, boolean z, PackageOverrideIA packageOverrideIA) {
-        this(j, j2, z);
     }
 
     private PackageOverride(long minVersionCode, long maxVersionCode, boolean enabled) {
@@ -86,14 +81,12 @@ public final class PackageOverride {
     }
 
     public String toString() {
-        long j = this.mMinVersionCode;
-        if (j == Long.MIN_VALUE && this.mMaxVersionCode == Long.MAX_VALUE) {
+        if (this.mMinVersionCode == Long.MIN_VALUE && this.mMaxVersionCode == Long.MAX_VALUE) {
             return Boolean.toString(this.mEnabled);
         }
-        return String.format("[%d,%d,%b]", Long.valueOf(j), Long.valueOf(this.mMaxVersionCode), Boolean.valueOf(this.mEnabled));
+        return String.format("[%d,%d,%b]", Long.valueOf(this.mMinVersionCode), Long.valueOf(this.mMaxVersionCode), Boolean.valueOf(this.mEnabled));
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
         private boolean mEnabled;
         private long mMinVersionCode = Long.MIN_VALUE;
@@ -115,12 +108,10 @@ public final class PackageOverride {
         }
 
         public PackageOverride build() {
-            long j = this.mMinVersionCode;
-            long j2 = this.mMaxVersionCode;
-            if (j > j2) {
+            if (this.mMinVersionCode > this.mMaxVersionCode) {
                 throw new IllegalArgumentException("minVersionCode must not be larger than maxVersionCode");
             }
-            return new PackageOverride(j, j2, this.mEnabled);
+            return new PackageOverride(this.mMinVersionCode, this.mMaxVersionCode, this.mEnabled);
         }
     }
 }

@@ -3,18 +3,17 @@ package android.media.tv;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class CommandResponse extends BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<CommandResponse> CREATOR = new Parcelable.Creator<CommandResponse>() { // from class: android.media.tv.CommandResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CommandResponse createFromParcel(Parcel source) {
             source.readInt();
             return CommandResponse.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CommandResponse[] newArray(int size) {
             return new CommandResponse[size];
@@ -26,25 +25,7 @@ public final class CommandResponse extends BroadcastInfoResponse implements Parc
     private final String mResponse;
     private final String mResponseType;
 
-    /* renamed from: android.media.tv.CommandResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CommandResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CommandResponse createFromParcel(Parcel source) {
-            source.readInt();
-            return CommandResponse.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CommandResponse[] newArray(int size) {
-            return new CommandResponse[size];
-        }
-    }
-
-    public static CommandResponse createFromParcelBody(Parcel in) {
+    static CommandResponse createFromParcelBody(Parcel in) {
         return new CommandResponse(in);
     }
 

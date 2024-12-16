@@ -5,11 +5,9 @@ import com.android.internal.org.bouncycastle.crypto.CipherParameters;
 import com.android.internal.org.bouncycastle.crypto.DataLengthException;
 import com.android.internal.org.bouncycastle.crypto.InvalidCipherTextException;
 import com.android.internal.org.bouncycastle.crypto.Mac;
-import com.android.internal.org.bouncycastle.crypto.OutputLengthException;
 import com.android.internal.org.bouncycastle.crypto.macs.CBCBlockCipherMac;
 import com.android.internal.org.bouncycastle.crypto.params.AEADParameters;
 import com.android.internal.org.bouncycastle.crypto.params.ParametersWithIV;
-import com.android.internal.org.bouncycastle.util.Arrays;
 import java.io.ByteArrayOutputStream;
 
 /* loaded from: classes5.dex */
@@ -27,10 +25,9 @@ public class CCMBlockCipher implements AEADBlockCipher {
 
     public CCMBlockCipher(BlockCipher c) {
         this.cipher = c;
-        int blockSize = c.getBlockSize();
-        this.blockSize = blockSize;
-        this.macBlock = new byte[blockSize];
-        if (blockSize != 16) {
+        this.blockSize = c.getBlockSize();
+        this.macBlock = new byte[this.blockSize];
+        if (this.blockSize != 16) {
             throw new IllegalArgumentException("cipher required with a block size of 16.");
         }
     }
@@ -62,8 +59,7 @@ public class CCMBlockCipher implements AEADBlockCipher {
         if (cipherParameters != null) {
             this.keyParam = cipherParameters;
         }
-        byte[] bArr = this.nonce;
-        if (bArr == null || bArr.length < 7 || bArr.length > 13) {
+        if (this.nonce == null || this.nonce.length < 7 || this.nonce.length > 13) {
             throw new IllegalArgumentException("nonce must have length from 7 to 13 octets");
         }
         reset();
@@ -131,11 +127,10 @@ public class CCMBlockCipher implements AEADBlockCipher {
         if (this.forEncryption) {
             return this.macSize + totalData;
         }
-        int i = this.macSize;
-        if (totalData < i) {
+        if (totalData < this.macSize) {
             return 0;
         }
-        return totalData - i;
+        return totalData - this.macSize;
     }
 
     public byte[] processPacket(byte[] in, int inOff, int inLen) throws IllegalStateException, InvalidCipherTextException {
@@ -143,108 +138,26 @@ public class CCMBlockCipher implements AEADBlockCipher {
         if (this.forEncryption) {
             output = new byte[this.macSize + inLen];
         } else {
-            int i = this.macSize;
-            if (inLen < i) {
+            if (inLen < this.macSize) {
                 throw new InvalidCipherTextException("data too short");
             }
-            output = new byte[inLen - i];
+            output = new byte[inLen - this.macSize];
         }
         processPacket(in, inOff, inLen, output, 0);
         return output;
     }
 
-    public int processPacket(byte[] in, int inOff, int inLen, byte[] output, int outOff) throws IllegalStateException, InvalidCipherTextException, DataLengthException {
-        int outputLen;
-        int i;
-        int i2;
-        if (this.keyParam == null) {
-            throw new IllegalStateException("CCM cipher unitialized.");
-        }
-        byte[] bArr = this.nonce;
-        int q = 15 - bArr.length;
-        if (q < 4) {
-            int limitLen = 1 << (q * 8);
-            if (inLen >= limitLen) {
-                throw new IllegalStateException("CCM packet too large for choice of q.");
-            }
-        }
-        int limitLen2 = this.blockSize;
-        byte[] iv = new byte[limitLen2];
-        iv[0] = (byte) ((q - 1) & 7);
-        System.arraycopy(bArr, 0, iv, 1, bArr.length);
-        BlockCipher ctrCipher = new SICBlockCipher(this.cipher);
-        ctrCipher.init(this.forEncryption, new ParametersWithIV(this.keyParam, iv));
-        int inIndex = inOff;
-        int outIndex = outOff;
-        if (!this.forEncryption) {
-            int n = this.macSize;
-            if (inLen < n) {
-                throw new InvalidCipherTextException("data too short");
-            }
-            outputLen = inLen - n;
-            if (output.length >= outputLen + outOff) {
-                byte b = 0;
-                System.arraycopy(in, inOff + outputLen, this.macBlock, 0, n);
-                byte[] bArr2 = this.macBlock;
-                ctrCipher.processBlock(bArr2, 0, bArr2, 0);
-                int i3 = this.macSize;
-                while (true) {
-                    byte[] bArr3 = this.macBlock;
-                    if (i3 == bArr3.length) {
-                        break;
-                    }
-                    bArr3[i3] = b;
-                    i3++;
-                    b = 0;
-                }
-                while (true) {
-                    int i4 = inOff + outputLen;
-                    i = this.blockSize;
-                    if (inIndex >= i4 - i) {
-                        break;
-                    }
-                    ctrCipher.processBlock(in, inIndex, output, outIndex);
-                    int i5 = this.blockSize;
-                    outIndex += i5;
-                    inIndex += i5;
-                }
-                byte[] block = new byte[i];
-                System.arraycopy(in, inIndex, block, 0, outputLen - (inIndex - inOff));
-                ctrCipher.processBlock(block, 0, block, 0);
-                System.arraycopy(block, 0, output, outIndex, outputLen - (inIndex - inOff));
-                byte[] calculatedMacBlock = new byte[this.blockSize];
-                calculateMac(output, outOff, outputLen, calculatedMacBlock);
-                if (!Arrays.constantTimeAreEqual(this.macBlock, calculatedMacBlock)) {
-                    throw new InvalidCipherTextException("mac check in CCM failed");
-                }
-            } else {
-                throw new OutputLengthException("Output buffer too short.");
-            }
-        } else {
-            outputLen = this.macSize + inLen;
-            if (output.length < outputLen + outOff) {
-                throw new OutputLengthException("Output buffer too short.");
-            }
-            calculateMac(in, inOff, inLen, this.macBlock);
-            byte[] encMac = new byte[this.blockSize];
-            ctrCipher.processBlock(this.macBlock, 0, encMac, 0);
-            while (true) {
-                i2 = this.blockSize;
-                if (inIndex >= (inOff + inLen) - i2) {
-                    break;
-                }
-                ctrCipher.processBlock(in, inIndex, output, outIndex);
-                int i6 = this.blockSize;
-                outIndex += i6;
-                inIndex += i6;
-            }
-            byte[] block2 = new byte[i2];
-            System.arraycopy(in, inIndex, block2, 0, (inLen + inOff) - inIndex);
-            ctrCipher.processBlock(block2, 0, block2, 0);
-            System.arraycopy(block2, 0, output, outIndex, (inLen + inOff) - inIndex);
-            System.arraycopy(encMac, 0, output, outOff + inLen, this.macSize);
-        }
-        return outputLen;
+    /* JADX WARN: Incorrect condition in loop: B:33:0x00df */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public int processPacket(byte[] r19, int r20, int r21, byte[] r22, int r23) throws java.lang.IllegalStateException, com.android.internal.org.bouncycastle.crypto.InvalidCipherTextException, com.android.internal.org.bouncycastle.crypto.DataLengthException {
+        /*
+            Method dump skipped, instructions count: 304
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.internal.org.bouncycastle.crypto.modes.CCMBlockCipher.processPacket(byte[], int, int, byte[], int):int");
     }
 
     private int calculateMac(byte[] data, int dataOff, int dataLen, byte[] macBlock) {
@@ -256,10 +169,8 @@ public class CCMBlockCipher implements AEADBlockCipher {
             b0[0] = (byte) (b0[0] | 64);
         }
         b0[0] = (byte) (b0[0] | ((((cMac.getMacSize() - 2) / 2) & 7) << 3));
-        byte b = b0[0];
-        byte[] bArr = this.nonce;
-        b0[0] = (byte) (b | (((15 - bArr.length) - 1) & 7));
-        System.arraycopy(bArr, 0, b0, 1, bArr.length);
+        b0[0] = (byte) (b0[0] | (((15 - this.nonce.length) - 1) & 7));
+        System.arraycopy(this.nonce, 0, b0, 1, this.nonce.length);
         int q = dataLen;
         int count = 1;
         while (q > 0) {
@@ -283,9 +194,8 @@ public class CCMBlockCipher implements AEADBlockCipher {
                 cMac.update((byte) textLength);
                 extra = 6;
             }
-            byte[] bArr2 = this.initialAssociatedText;
-            if (bArr2 != null) {
-                cMac.update(bArr2, 0, bArr2.length);
+            if (this.initialAssociatedText != null) {
+                cMac.update(this.initialAssociatedText, 0, this.initialAssociatedText.length);
             }
             if (this.associatedText.size() > 0) {
                 cMac.update(this.associatedText.getBuffer(), 0, this.associatedText.size());
@@ -309,17 +219,14 @@ public class CCMBlockCipher implements AEADBlockCipher {
     }
 
     private int getAssociatedTextLength() {
-        int size = this.associatedText.size();
-        byte[] bArr = this.initialAssociatedText;
-        return size + (bArr == null ? 0 : bArr.length);
+        return this.associatedText.size() + (this.initialAssociatedText == null ? 0 : this.initialAssociatedText.length);
     }
 
     private boolean hasAssociatedText() {
         return getAssociatedTextLength() > 0;
     }
 
-    /* loaded from: classes5.dex */
-    public class ExposedByteArrayOutputStream extends ByteArrayOutputStream {
+    private class ExposedByteArrayOutputStream extends ByteArrayOutputStream {
         public ExposedByteArrayOutputStream() {
         }
 

@@ -12,7 +12,6 @@ public interface IGameModeListener extends IInterface {
 
     void onGameModeChanged(String str, int i, int i2, int i3) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IGameModeListener {
         @Override // android.app.IGameModeListener
         public void onGameModeChanged(String packageName, int gameModeFrom, int gameModeTo, int userId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IGameModeListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IGameModeListener {
         static final int TRANSACTION_onGameModeChanged = 1;
 
@@ -67,30 +65,26 @@ public interface IGameModeListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameModeListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameModeListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameModeListener.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onGameModeChanged(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onGameModeChanged(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IGameModeListener {
+        private static class Proxy implements IGameModeListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -56,15 +56,8 @@ public final class NfcProperties {
                 break;
         }
         switch (c) {
-            case 0:
-            case 1:
-                return Boolean.TRUE;
-            case 2:
-            case 3:
-                return Boolean.FALSE;
-            default:
-                return null;
         }
+        return null;
     }
 
     private static Integer tryParseInteger(String str) {
@@ -212,7 +205,6 @@ public final class NfcProperties {
         SystemProperties.set("persist.nfc.debug_enabled", value == null ? "" : value.toString());
     }
 
-    /* loaded from: classes3.dex */
     public enum snoop_log_mode_values {
         FULL("full"),
         FILTERED("filtered");
@@ -253,5 +245,14 @@ public final class NfcProperties {
             value = SystemProperties.get("nfc.dta.skipNdefRead");
         }
         return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static Optional<Boolean> initialized() {
+        String value = SystemProperties.get("nfc.initialized");
+        return Optional.ofNullable(tryParseBoolean(value));
+    }
+
+    public static void initialized(Boolean value) {
+        SystemProperties.set("nfc.initialized", value == null ? "" : value.toString());
     }
 }

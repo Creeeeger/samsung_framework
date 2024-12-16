@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IFMEventListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.media.fmradio.internal.IFMEventListener";
 
@@ -46,7 +46,6 @@ public interface IFMEventListener extends IInterface {
 
     void onVolumeLocked() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IFMEventListener {
         @Override // com.samsung.android.media.fmradio.internal.IFMEventListener
         public void onRadioEnabled() throws RemoteException {
@@ -126,7 +125,6 @@ public interface IFMEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IFMEventListener {
         static final int TRANSACTION_onAlternateFrequencyReceived = 15;
         static final int TRANSACTION_onAlternateFrequencyStarted = 14;
@@ -222,115 +220,111 @@ public interface IFMEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IFMEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IFMEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IFMEventListener.DESCRIPTOR);
+                case 1:
+                    onRadioEnabled();
+                    return true;
+                case 2:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRadioDisabled(_arg03);
+                    return true;
+                case 3:
+                    long _arg04 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onChannelFound(_arg04);
+                    return true;
+                case 4:
+                    onScanStarted();
+                    return true;
+                case 5:
+                    int _arg0_length = data.readInt();
+                    if (_arg0_length < 0) {
+                        _arg0 = null;
+                    } else {
+                        _arg0 = new long[_arg0_length];
+                    }
+                    data.enforceNoDataAvail();
+                    onScanStopped(_arg0);
+                    reply.writeNoException();
+                    reply.writeLongArray(_arg0);
+                    return true;
+                case 6:
+                    int _arg0_length2 = data.readInt();
+                    if (_arg0_length2 < 0) {
+                        _arg02 = null;
+                    } else {
+                        _arg02 = new long[_arg0_length2];
+                    }
+                    data.enforceNoDataAvail();
+                    onScanFinished(_arg02);
+                    reply.writeNoException();
+                    reply.writeLongArray(_arg02);
+                    return true;
+                case 7:
+                    long _arg05 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onTuned(_arg05);
+                    return true;
+                case 8:
+                    onHeadsetConnected();
+                    return true;
+                case 9:
+                    onHeadsetDisconnected();
+                    return true;
+                case 10:
+                    long _arg06 = data.readLong();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    data.enforceNoDataAvail();
+                    onRadioDataSystemReceived(_arg06, _arg1, _arg2);
+                    return true;
+                case 11:
+                    int _arg07 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRadioTextPlusReceived(_arg07, _arg12, _arg22, _arg3, _arg4, _arg5);
+                    return true;
+                case 12:
+                    onRadioDataSystemEnabled();
+                    return true;
+                case 13:
+                    onRadioDataSystemDisabled();
+                    return true;
+                case 14:
+                    onAlternateFrequencyStarted();
+                    return true;
+                case 15:
+                    long _arg08 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAlternateFrequencyReceived(_arg08);
+                    return true;
+                case 16:
+                    onVolumeLocked();
+                    return true;
+                case 17:
+                    onRecordingFinished();
+                    return true;
+                case 18:
+                    int _arg09 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onProgrammeIdentificationExtendedCountryCodesReceived(_arg09, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onRadioEnabled();
-                            return true;
-                        case 2:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRadioDisabled(_arg03);
-                            return true;
-                        case 3:
-                            long _arg04 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onChannelFound(_arg04);
-                            return true;
-                        case 4:
-                            onScanStarted();
-                            return true;
-                        case 5:
-                            int _arg0_length = data.readInt();
-                            if (_arg0_length < 0) {
-                                _arg0 = null;
-                            } else {
-                                _arg0 = new long[_arg0_length];
-                            }
-                            data.enforceNoDataAvail();
-                            onScanStopped(_arg0);
-                            reply.writeNoException();
-                            reply.writeLongArray(_arg0);
-                            return true;
-                        case 6:
-                            int _arg0_length2 = data.readInt();
-                            if (_arg0_length2 < 0) {
-                                _arg02 = null;
-                            } else {
-                                _arg02 = new long[_arg0_length2];
-                            }
-                            data.enforceNoDataAvail();
-                            onScanFinished(_arg02);
-                            reply.writeNoException();
-                            reply.writeLongArray(_arg02);
-                            return true;
-                        case 7:
-                            long _arg05 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onTuned(_arg05);
-                            return true;
-                        case 8:
-                            onHeadsetConnected();
-                            return true;
-                        case 9:
-                            onHeadsetDisconnected();
-                            return true;
-                        case 10:
-                            long _arg06 = data.readLong();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            data.enforceNoDataAvail();
-                            onRadioDataSystemReceived(_arg06, _arg1, _arg2);
-                            return true;
-                        case 11:
-                            int _arg07 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRadioTextPlusReceived(_arg07, _arg12, _arg22, _arg3, _arg4, _arg5);
-                            return true;
-                        case 12:
-                            onRadioDataSystemEnabled();
-                            return true;
-                        case 13:
-                            onRadioDataSystemDisabled();
-                            return true;
-                        case 14:
-                            onAlternateFrequencyStarted();
-                            return true;
-                        case 15:
-                            long _arg08 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAlternateFrequencyReceived(_arg08);
-                            return true;
-                        case 16:
-                            onVolumeLocked();
-                            return true;
-                        case 17:
-                            onRecordingFinished();
-                            return true;
-                        case 18:
-                            int _arg09 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onProgrammeIdentificationExtendedCountryCodesReceived(_arg09, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IFMEventListener {
+        private static class Proxy implements IFMEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

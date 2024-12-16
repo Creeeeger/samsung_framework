@@ -24,9 +24,7 @@ public class RootElement extends Element {
         return this.handler;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public class Handler extends DefaultHandler {
+    class Handler extends DefaultHandler {
         Locator locator;
         int depth = -1;
         Element current = null;
@@ -80,9 +78,8 @@ public class RootElement extends Element {
 
         @Override // org.xml.sax.helpers.DefaultHandler, org.xml.sax.ContentHandler
         public void characters(char[] buffer, int start, int length) throws SAXException {
-            StringBuilder sb = this.bodyBuilder;
-            if (sb != null) {
-                sb.append(buffer, start, length);
+            if (this.bodyBuilder != null) {
+                this.bodyBuilder.append(buffer, start, length);
             }
         }
 
@@ -94,9 +91,8 @@ public class RootElement extends Element {
                 if (current.endElementListener != null) {
                     current.endElementListener.end();
                 }
-                StringBuilder sb = this.bodyBuilder;
-                if (sb != null) {
-                    String body = sb.toString();
+                if (this.bodyBuilder != null) {
+                    String body = this.bodyBuilder.toString();
                     this.bodyBuilder = null;
                     current.endTextElementListener.end(body);
                 }

@@ -41,7 +41,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         this(layers, (LayerState) null);
     }
 
-    public LayerDrawable(Drawable[] layers, LayerState state) {
+    LayerDrawable(Drawable[] layers, LayerState state) {
         this(state, (Resources) null);
         if (layers == null) {
             throw new IllegalArgumentException("layers must be non-null");
@@ -64,17 +64,16 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public LayerDrawable() {
+    LayerDrawable() {
         this((LayerState) null, (Resources) null);
     }
 
-    public LayerDrawable(LayerState state, Resources res) {
+    LayerDrawable(LayerState state, Resources res) {
         this.mTmpRect = new Rect();
         this.mTmpOutRect = new Rect();
         this.mTmpContainer = new Rect();
-        LayerState createConstantState = createConstantState(state, res);
-        this.mLayerState = createConstantState;
-        if (createConstantState.mNumChildren > 0) {
+        this.mLayerState = createConstantState(state, res);
+        if (this.mLayerState.mNumChildren > 0) {
             ensurePadding();
             refreshPadding();
         }
@@ -297,7 +296,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return i;
     }
 
-    public ChildDrawable addLayer(Drawable dr, int[] themeAttrs, int id, int left, int top, int right, int bottom) {
+    ChildDrawable addLayer(Drawable dr, int[] themeAttrs, int id, int left, int top, int right, int bottom) {
         ChildDrawable childDrawable = createLayer(dr);
         childDrawable.mId = id;
         childDrawable.mThemeAttrs = themeAttrs;
@@ -716,19 +715,17 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
                 dr.setHotspotBounds(left, top, right, bottom);
             }
         }
-        Rect rect = this.mHotspotBounds;
-        if (rect == null) {
+        if (this.mHotspotBounds == null) {
             this.mHotspotBounds = new Rect(left, top, right, bottom);
         } else {
-            rect.set(left, top, right, bottom);
+            this.mHotspotBounds.set(left, top, right, bottom);
         }
     }
 
     @Override // android.graphics.drawable.Drawable
     public void getHotspotBounds(Rect outRect) {
-        Rect rect = this.mHotspotBounds;
-        if (rect != null) {
-            outRect.set(rect);
+        if (this.mHotspotBounds != null) {
+            outRect.set(this.mHotspotBounds);
         } else {
             super.getHotspotBounds(outRect);
         }
@@ -882,7 +879,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         boolean changed = false;
         ChildDrawable[] array = this.mLayerState.mChildren;
         int N = this.mLayerState.mNumChildren;
@@ -900,7 +897,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         boolean changed = false;
         ChildDrawable[] array = this.mLayerState.mChildren;
         int N = this.mLayerState.mNumChildren;
@@ -918,7 +915,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         updateLayerBounds(bounds);
     }
 
@@ -1109,10 +1106,9 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return false;
     }
 
-    public void ensurePadding() {
+    void ensurePadding() {
         int N = this.mLayerState.mNumChildren;
-        int[] iArr = this.mPaddingL;
-        if (iArr != null && iArr.length >= N) {
+        if (this.mPaddingL != null && this.mPaddingL.length >= N) {
             return;
         }
         this.mPaddingL = new int[N];
@@ -1121,7 +1117,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         this.mPaddingB = new int[N];
     }
 
-    public void refreshPadding() {
+    void refreshPadding() {
         int N = this.mLayerState.mNumChildren;
         ChildDrawable[] array = this.mLayerState.mChildren;
         for (int i = 0; i < N; i++) {
@@ -1141,9 +1137,8 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
     @Override // android.graphics.drawable.Drawable
     public Drawable mutate() {
         if (!this.mMutated && super.mutate() == this) {
-            LayerState createConstantState = createConstantState(this.mLayerState, null);
-            this.mLayerState = createConstantState;
-            ChildDrawable[] array = createConstantState.mChildren;
+            this.mLayerState = createConstantState(this.mLayerState, null);
+            ChildDrawable[] array = this.mLayerState.mChildren;
             int N = this.mLayerState.mNumChildren;
             for (int i = 0; i < N; i++) {
                 Drawable dr = array[i].mDrawable;
@@ -1185,8 +1180,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         return changed;
     }
 
-    /* loaded from: classes.dex */
-    public static class ChildDrawable {
+    static class ChildDrawable {
         public int mDensity;
         public Drawable mDrawable;
         public int mGravity;
@@ -1251,17 +1245,14 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
             this.mHeight = orig.mHeight;
             this.mGravity = orig.mGravity;
             this.mId = orig.mId;
-            int resolveDensity = Drawable.resolveDensity(res, orig.mDensity);
-            this.mDensity = resolveDensity;
-            int i = orig.mDensity;
-            if (i != resolveDensity) {
-                applyDensityScaling(i, resolveDensity);
+            this.mDensity = Drawable.resolveDensity(res, orig.mDensity);
+            if (orig.mDensity != this.mDensity) {
+                applyDensityScaling(orig.mDensity, this.mDensity);
             }
         }
 
         public boolean canApplyTheme() {
-            Drawable drawable;
-            return this.mThemeAttrs != null || ((drawable = this.mDrawable) != null && drawable.canApplyTheme());
+            return this.mThemeAttrs != null || (this.mDrawable != null && this.mDrawable.canApplyTheme());
         }
 
         public final void setDensity(int targetDensity) {
@@ -1277,27 +1268,22 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
             this.mInsetT = Drawable.scaleFromDensity(this.mInsetT, sourceDensity, targetDensity, false);
             this.mInsetR = Drawable.scaleFromDensity(this.mInsetR, sourceDensity, targetDensity, false);
             this.mInsetB = Drawable.scaleFromDensity(this.mInsetB, sourceDensity, targetDensity, false);
-            int i = this.mInsetS;
-            if (i != Integer.MIN_VALUE) {
-                this.mInsetS = Drawable.scaleFromDensity(i, sourceDensity, targetDensity, false);
+            if (this.mInsetS != Integer.MIN_VALUE) {
+                this.mInsetS = Drawable.scaleFromDensity(this.mInsetS, sourceDensity, targetDensity, false);
             }
-            int i2 = this.mInsetE;
-            if (i2 != Integer.MIN_VALUE) {
-                this.mInsetE = Drawable.scaleFromDensity(i2, sourceDensity, targetDensity, false);
+            if (this.mInsetE != Integer.MIN_VALUE) {
+                this.mInsetE = Drawable.scaleFromDensity(this.mInsetE, sourceDensity, targetDensity, false);
             }
-            int i3 = this.mWidth;
-            if (i3 > 0) {
-                this.mWidth = Drawable.scaleFromDensity(i3, sourceDensity, targetDensity, true);
+            if (this.mWidth > 0) {
+                this.mWidth = Drawable.scaleFromDensity(this.mWidth, sourceDensity, targetDensity, true);
             }
-            int i4 = this.mHeight;
-            if (i4 > 0) {
-                this.mHeight = Drawable.scaleFromDensity(i4, sourceDensity, targetDensity, true);
+            if (this.mHeight > 0) {
+                this.mHeight = Drawable.scaleFromDensity(this.mHeight, sourceDensity, targetDensity, true);
             }
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class LayerState extends Drawable.ConstantState {
+    static class LayerState extends Drawable.ConstantState {
         private boolean mAutoMirrored;
         int mChangingConfigurations;
         private boolean mCheckedOpacity;
@@ -1318,7 +1304,7 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
         int mPaddingTop;
         private int[] mThemeAttrs;
 
-        public LayerState(LayerState orig, LayerDrawable owner, Resources res) {
+        LayerState(LayerState orig, LayerDrawable owner, Resources res) {
             this.mPaddingTop = -1;
             this.mPaddingBottom = -1;
             this.mPaddingLeft = -1;
@@ -1354,10 +1340,8 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
                 this.mPaddingStart = orig.mPaddingStart;
                 this.mPaddingEnd = orig.mPaddingEnd;
                 this.mOpacityOverride = orig.mOpacityOverride;
-                int i2 = orig.mDensity;
-                int i3 = this.mDensity;
-                if (i2 != i3) {
-                    applyDensityScaling(i2, i3);
+                if (orig.mDensity != this.mDensity) {
+                    applyDensityScaling(orig.mDensity, this.mDensity);
                     return;
                 }
                 return;
@@ -1374,34 +1358,28 @@ public class LayerDrawable extends Drawable implements Drawable.Callback {
             }
         }
 
-        public void onDensityChanged(int sourceDensity, int targetDensity) {
+        protected void onDensityChanged(int sourceDensity, int targetDensity) {
             applyDensityScaling(sourceDensity, targetDensity);
         }
 
         private void applyDensityScaling(int sourceDensity, int targetDensity) {
-            int i = this.mPaddingLeft;
-            if (i > 0) {
-                this.mPaddingLeft = Drawable.scaleFromDensity(i, sourceDensity, targetDensity, false);
+            if (this.mPaddingLeft > 0) {
+                this.mPaddingLeft = Drawable.scaleFromDensity(this.mPaddingLeft, sourceDensity, targetDensity, false);
             }
-            int i2 = this.mPaddingTop;
-            if (i2 > 0) {
-                this.mPaddingTop = Drawable.scaleFromDensity(i2, sourceDensity, targetDensity, false);
+            if (this.mPaddingTop > 0) {
+                this.mPaddingTop = Drawable.scaleFromDensity(this.mPaddingTop, sourceDensity, targetDensity, false);
             }
-            int i3 = this.mPaddingRight;
-            if (i3 > 0) {
-                this.mPaddingRight = Drawable.scaleFromDensity(i3, sourceDensity, targetDensity, false);
+            if (this.mPaddingRight > 0) {
+                this.mPaddingRight = Drawable.scaleFromDensity(this.mPaddingRight, sourceDensity, targetDensity, false);
             }
-            int i4 = this.mPaddingBottom;
-            if (i4 > 0) {
-                this.mPaddingBottom = Drawable.scaleFromDensity(i4, sourceDensity, targetDensity, false);
+            if (this.mPaddingBottom > 0) {
+                this.mPaddingBottom = Drawable.scaleFromDensity(this.mPaddingBottom, sourceDensity, targetDensity, false);
             }
-            int i5 = this.mPaddingStart;
-            if (i5 > 0) {
-                this.mPaddingStart = Drawable.scaleFromDensity(i5, sourceDensity, targetDensity, false);
+            if (this.mPaddingStart > 0) {
+                this.mPaddingStart = Drawable.scaleFromDensity(this.mPaddingStart, sourceDensity, targetDensity, false);
             }
-            int i6 = this.mPaddingEnd;
-            if (i6 > 0) {
-                this.mPaddingEnd = Drawable.scaleFromDensity(i6, sourceDensity, targetDensity, false);
+            if (this.mPaddingEnd > 0) {
+                this.mPaddingEnd = Drawable.scaleFromDensity(this.mPaddingEnd, sourceDensity, targetDensity, false);
             }
         }
 

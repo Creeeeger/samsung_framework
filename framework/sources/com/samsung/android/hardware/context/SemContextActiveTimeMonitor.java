@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextActiveTimeMonitor extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextActiveTimeMonitor> CREATOR = new Parcelable.Creator<SemContextActiveTimeMonitor>() { // from class: com.samsung.android.hardware.context.SemContextActiveTimeMonitor.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActiveTimeMonitor createFromParcel(Parcel in) {
             return new SemContextActiveTimeMonitor(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextActiveTimeMonitor[] newArray(int size) {
             return new SemContextActiveTimeMonitor[size];
@@ -22,24 +21,7 @@ public class SemContextActiveTimeMonitor extends SemContextEventContext {
     };
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextActiveTimeMonitor$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextActiveTimeMonitor> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActiveTimeMonitor createFromParcel(Parcel in) {
-            return new SemContextActiveTimeMonitor(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextActiveTimeMonitor[] newArray(int size) {
-            return new SemContextActiveTimeMonitor[size];
-        }
-    }
-
-    public SemContextActiveTimeMonitor() {
+    SemContextActiveTimeMonitor() {
         this.mContext = new Bundle();
     }
 

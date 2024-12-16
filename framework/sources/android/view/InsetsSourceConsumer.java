@@ -1,13 +1,13 @@
 package android.view;
 
-import android.graphics.Insets;
-import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.proto.ProtoOutputStream;
 import android.view.SurfaceControl;
-import android.view.SyncRtSurfaceTransactionApplier;
 import android.view.WindowInsets;
+import android.view.inputmethod.Flags;
 import android.view.inputmethod.ImeTracker;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,7 +33,6 @@ public class InsetsSourceConsumer {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface ShowResult {
         public static final int IME_SHOW_DELAYED = 1;
         public static final int IME_SHOW_FAILED = 2;
@@ -51,16 +50,18 @@ public class InsetsSourceConsumer {
     public boolean setControl(InsetsSourceControl control, int[] showTypes, int[] hideTypes) {
         boolean serverVisible = false;
         if (Objects.equals(this.mSourceControl, control)) {
-            InsetsSourceControl insetsSourceControl = this.mSourceControl;
-            if (insetsSourceControl != null && insetsSourceControl != control) {
-                insetsSourceControl.release(new InsetsAnimationThreadControlRunner$$ExternalSyntheticLambda0());
+            if (this.mSourceControl != null && this.mSourceControl != control) {
+                this.mSourceControl.release(new InsetsController$$ExternalSyntheticLambda8());
                 this.mSourceControl = control;
             }
             return false;
         }
         InsetsSourceControl lastControl = this.mSourceControl;
         this.mSourceControl = control;
-        if (control == null) {
+        if (control != null && InsetsController.DEBUG) {
+            Log.d(TAG, String.format("setControl -> %s on %s", WindowInsets.Type.toString(control.getType()), this.mController.getHost().getRootViewTitle()));
+        }
+        if (this.mSourceControl == null) {
             this.mController.notifyControlRevoked(this);
             InsetsSource localSource = this.mState.peekSource(this.mId);
             InsetsSource serverSource = this.mController.getLastDispatchedState().peekSource(this.mId);
@@ -79,6 +80,9 @@ public class InsetsSourceConsumer {
             SurfaceControl oldLeash = lastControl != null ? lastControl.getLeash() : null;
             SurfaceControl newLeash = control.getLeash();
             if (newLeash != null && ((oldLeash == null || !newLeash.isSameSurface(oldLeash)) && requestedVisible != control.isInitiallyVisible())) {
+                if (InsetsController.DEBUG) {
+                    Log.d(TAG, String.format("Gaining leash in %s, requestedVisible: %b", this.mController.getHost().getRootViewTitle(), Boolean.valueOf(requestedVisible)));
+                }
                 if (requestedVisible) {
                     showTypes[0] = showTypes[0] | this.mType;
                 } else {
@@ -88,11 +92,8 @@ public class InsetsSourceConsumer {
                 if (applyLocalVisibilityOverride()) {
                     this.mController.notifyVisibilityChanged();
                 }
-                if (this.mController.getAnimationType(this.mType) == -1 || (lastControl != null && lastControl.getInsetsHint().equals(Insets.NONE) && !lastControl.getInsetsHint().equals(control.getInsetsHint()))) {
+                if (this.mController.getAnimationType(this.mType) == -1) {
                     applyRequestedVisibilityToControl();
-                }
-                if (isVisibleAndHasLeashButNoAnimation() && lastControl != null && !lastControl.getSurfacePosition().equals(this.mSourceControl.getSurfacePosition()) && !this.mSourceControl.getSkipEnsuringControlPosition()) {
-                    ensureControlPosition();
                 }
                 if (!requestedVisible && lastControl == null) {
                     removeSurface();
@@ -100,7 +101,7 @@ public class InsetsSourceConsumer {
             }
         }
         if (lastControl != null) {
-            lastControl.release(new InsetsAnimationThreadControlRunner$$ExternalSyntheticLambda0());
+            lastControl.release(new InsetsController$$ExternalSyntheticLambda8());
         }
         return true;
     }
@@ -109,27 +110,24 @@ public class InsetsSourceConsumer {
         return this.mSourceControl;
     }
 
-    public boolean isRequestedVisibleAwaitingControl() {
+    protected boolean isRequestedVisibleAwaitingControl() {
         return (this.mController.getRequestedVisibleTypes() & this.mType) != 0;
     }
 
-    public int getId() {
+    int getId() {
         return this.mId;
     }
 
-    public void setId(int id) {
+    void setId(int id) {
         this.mId = id;
     }
 
-    public int getType() {
+    int getType() {
         return this.mType;
     }
 
     public boolean onAnimationStateChanged(boolean running) {
         boolean cancelledForNewAnimation;
-        if (!running && isVisibleAndHasLeashButNoAnimation()) {
-            ensureControlPosition();
-        }
         boolean insetsChanged = false;
         if (!running && this.mPendingFrame != null) {
             InsetsSource source = this.mState.peekSource(this.mId);
@@ -143,7 +141,9 @@ public class InsetsSourceConsumer {
         }
         boolean showRequested = isShowRequested();
         int i = 2;
-        if (!running && showRequested) {
+        if (Flags.refactorInsetsController()) {
+            cancelledForNewAnimation = (this.mController.getCancelledForNewAnimationTypes() & this.mType) != 0;
+        } else if (!running && showRequested) {
             cancelledForNewAnimation = this.mAnimationState == 2;
         } else {
             cancelledForNewAnimation = this.mAnimationState == 1;
@@ -162,7 +162,7 @@ public class InsetsSourceConsumer {
         return insetsChanged;
     }
 
-    public boolean isShowRequested() {
+    protected boolean isShowRequested() {
         return (this.mController.getRequestedVisibleTypes() & getType()) != 0;
     }
 
@@ -175,7 +175,7 @@ public class InsetsSourceConsumer {
         this.mHasWindowFocus = false;
     }
 
-    public boolean hasViewFocusWhenWindowFocusGain() {
+    boolean hasViewFocusWhenWindowFocusGain() {
         return this.mHasViewFocusWhenWindowFocusGain;
     }
 
@@ -185,8 +185,32 @@ public class InsetsSourceConsumer {
             return false;
         }
         boolean requestedVisible = (this.mController.getRequestedVisibleTypes() & this.mType) != 0;
-        if (this.mSourceControl == null || source.isVisible() == requestedVisible) {
+        if (Flags.refactorInsetsController()) {
+            if (this.mSourceControl == null) {
+                if (InsetsController.DEBUG) {
+                    Log.d(TAG, TextUtils.formatSimple("applyLocalVisibilityOverride: No control in %s for type %s, requestedVisible=%s", this.mController.getHost().getRootViewTitle(), WindowInsets.Type.toString(this.mType), Boolean.valueOf(requestedVisible)));
+                }
+                return false;
+            }
+            if (this.mId != InsetsSource.ID_IME_CAPTION_BAR && this.mSourceControl.getLeash() == null) {
+                if (InsetsController.DEBUG) {
+                    Log.d(TAG, TextUtils.formatSimple("applyLocalVisibilityOverride: Set the source visibility to false, as there is no leash yet for type %s in %s", WindowInsets.Type.toString(this.mType), this.mController.getHost().getRootViewTitle()));
+                }
+                boolean wasVisible = source.isVisible();
+                source.setVisible(false);
+                return wasVisible;
+            }
+        } else if (this.mSourceControl == null) {
+            if (InsetsController.DEBUG) {
+                Log.d(TAG, "applyLocalVisibilityOverride: No control in " + this.mController.getHost().getRootViewTitle() + " requestedVisible=" + requestedVisible);
+            }
             return false;
+        }
+        if (source.isVisible() == requestedVisible) {
+            return false;
+        }
+        if (InsetsController.DEBUG) {
+            Log.d(TAG, String.format("applyLocalVisibilityOverride: %s requestedVisible: %b", this.mController.getHost().getRootViewTitle(), Boolean.valueOf(requestedVisible)));
         }
         source.setVisible(requestedVisible);
         return true;
@@ -196,23 +220,23 @@ public class InsetsSourceConsumer {
         return 0;
     }
 
-    public void requestHide(boolean fromController, ImeTracker.Token statsToken) {
+    void requestHide(boolean fromController, ImeTracker.Token statsToken) {
     }
 
     public void onPerceptible(boolean perceptible) {
+        IBinder window;
+        if (Flags.refactorInsetsController() && this.mType == WindowInsets.Type.ime() && (window = this.mController.getHost().getWindowToken()) != null) {
+            this.mController.getHost().getInputMethodManager().reportPerceptible(window, perceptible);
+        }
     }
 
     public void removeSurface() {
     }
 
     public void updateSource(InsetsSource newSource, int animationType) {
-        updateSource(newSource, animationType, false);
-    }
-
-    public void updateSource(InsetsSource newSource, int animationType, boolean displayFrameChanged) {
         InsetsSource source = this.mState.peekSource(this.mId);
         Rect rect = null;
-        if (source == null || animationType == -1 || source.getFrame().equals(newSource.getFrame()) || displayFrameChanged) {
+        if (source == null || animationType == -1 || source.getFrame().equals(newSource.getFrame())) {
             this.mPendingFrame = null;
             this.mPendingVisibleFrame = null;
             this.mState.addSource(newSource);
@@ -227,11 +251,13 @@ public class InsetsSourceConsumer {
         newSource2.setFrame(source.getFrame());
         newSource2.setVisibleFrame(source.getVisibleFrame());
         this.mState.addSource(newSource2);
+        if (InsetsController.DEBUG) {
+            Log.d(TAG, "updateSource: " + newSource2);
+        }
     }
 
     private void applyRequestedVisibilityToControl() {
-        InsetsSourceControl insetsSourceControl = this.mSourceControl;
-        if (insetsSourceControl == null || insetsSourceControl.getLeash() == null || !this.mSourceControl.getLeash().isValid()) {
+        if (this.mSourceControl == null || this.mSourceControl.getLeash() == null) {
             return;
         }
         boolean requestedVisible = (this.mController.getRequestedVisibleTypes() & this.mType) != 0;
@@ -261,36 +287,21 @@ public class InsetsSourceConsumer {
         }
     }
 
-    public void dumpDebug(ProtoOutputStream proto, long fieldId) {
+    void dumpDebug(ProtoOutputStream proto, long fieldId) {
         long token = proto.start(fieldId);
-        proto.write(1138166333441L, WindowInsets.Type.toString(this.mType));
         proto.write(1133871366146L, this.mHasWindowFocus);
         proto.write(1133871366147L, isShowRequested());
-        InsetsSourceControl insetsSourceControl = this.mSourceControl;
-        if (insetsSourceControl != null) {
-            insetsSourceControl.dumpDebug(proto, 1146756268036L);
+        if (this.mSourceControl != null) {
+            this.mSourceControl.dumpDebug(proto, 1146756268036L);
         }
-        Rect rect = this.mPendingFrame;
-        if (rect != null) {
-            rect.dumpDebug(proto, 1146756268037L);
+        if (this.mPendingFrame != null) {
+            this.mPendingFrame.dumpDebug(proto, 1146756268037L);
         }
-        Rect rect2 = this.mPendingVisibleFrame;
-        if (rect2 != null) {
-            rect2.dumpDebug(proto, 1146756268038L);
+        if (this.mPendingVisibleFrame != null) {
+            this.mPendingVisibleFrame.dumpDebug(proto, 1146756268038L);
         }
         proto.write(1120986464263L, this.mAnimationState);
+        proto.write(1120986464264L, this.mType);
         proto.end(token);
-    }
-
-    private boolean isVisibleAndHasLeashButNoAnimation() {
-        InsetsSourceControl insetsSourceControl;
-        boolean requestedVisible = (this.mController.getRequestedVisibleTypes() & this.mType) != 0;
-        return requestedVisible && (insetsSourceControl = this.mSourceControl) != null && insetsSourceControl.getLeash() != null && this.mSourceControl.getLeash().isValid() && this.mController.getAnimationType(getType()) == -1;
-    }
-
-    private void ensureControlPosition() {
-        Matrix matrix = new Matrix();
-        matrix.setTranslate(this.mSourceControl.getSurfacePosition().x, this.mSourceControl.getSurfacePosition().y);
-        this.mController.applySurfaceParams(true, new SyncRtSurfaceTransactionApplier.SurfaceParams.Builder(this.mSourceControl.getLeash()).withMatrix(matrix).build());
     }
 }

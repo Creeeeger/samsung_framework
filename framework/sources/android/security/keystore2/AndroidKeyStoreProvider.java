@@ -1,5 +1,6 @@
 package android.security.keystore2;
 
+import android.os.Process;
 import android.os.SystemProperties;
 import android.security.KeyStore2;
 import android.security.KeyStoreException;
@@ -11,6 +12,7 @@ import android.system.keystore2.Authorization;
 import android.system.keystore2.KeyDescriptor;
 import android.system.keystore2.KeyEntryResponse;
 import android.system.keystore2.KeyMetadata;
+import android.util.Log;
 import com.android.internal.org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.security.Key;
 import java.security.KeyPair;
@@ -24,6 +26,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
 import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 
@@ -33,18 +36,32 @@ public class AndroidKeyStoreProvider extends Provider {
     private static final String ED25519_OID = "1.3.101.112";
     private static final String PACKAGE_NAME = "android.security.keystore2";
     private static final String PROVIDER_NAME = "AndroidKeyStore";
+    private static final String TAG = "AndroidKeyStoreProvider";
     private static final String X25519_ALIAS = "XDH";
 
     public AndroidKeyStoreProvider() {
         super("AndroidKeyStore", 1.0d, "Android KeyStore security provider");
         boolean supports3DES = "true".equals(SystemProperties.get(DESEDE_SYSTEM_PROPERTY));
+        if ("CN".equals(SystemProperties.get("ro.csc.countryiso_code")) && "system_server".equals(Process.myProcessName()) && !"FINISH".equals(SystemProperties.get("persist.sys.setupwizard"))) {
+            try {
+                Log.i(TAG, "original rkp_hostname : " + SystemProperties.get("remote_provisioning.hostname"));
+                SystemProperties.set("remote_provisioning.hostname", "");
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to set remote_provisioning.hostname : " + e.getClass().getSimpleName(), e);
+            }
+            if ("".equals(SystemProperties.get("remote_provisioning.hostname"))) {
+                Log.i(TAG, "remote_provisioning.hostname is empty. setting complete!");
+            }
+        }
         put("KeyStore.AndroidKeyStore", "android.security.keystore2.AndroidKeyStoreSpi");
         put("KeyPairGenerator.EC", "android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$EC");
         put("KeyPairGenerator.RSA", "android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$RSA");
         put("KeyPairGenerator.XDH", "android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$XDH");
+        put("KeyPairGenerator.ED25519", "android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$ED25519");
         putKeyFactoryImpl(KeyProperties.KEY_ALGORITHM_EC);
         putKeyFactoryImpl("RSA");
         putKeyFactoryImpl("XDH");
+        putKeyFactoryImpl("ED25519");
         put("KeyGenerator.AES", "android.security.keystore2.AndroidKeyStoreKeyGeneratorSpi$AES");
         put("KeyGenerator.HmacSHA1", "android.security.keystore2.AndroidKeyStoreKeyGeneratorSpi$HmacSHA1");
         put("KeyGenerator.HmacSHA224", "android.security.keystore2.AndroidKeyStoreKeyGeneratorSpi$HmacSHA224");
@@ -111,6 +128,8 @@ public class AndroidKeyStoreProvider extends Provider {
             spi = ((Mac) cryptoPrimitive).getCurrentSpi();
         } else if (cryptoPrimitive instanceof Cipher) {
             spi = ((Cipher) cryptoPrimitive).getCurrentSpi();
+        } else if (cryptoPrimitive instanceof KeyAgreement) {
+            spi = ((KeyAgreement) cryptoPrimitive).getCurrentSpi();
         } else {
             throw new IllegalArgumentException("Unsupported crypto primitive: " + cryptoPrimitive + ". Supported: Signature, Mac, Cipher");
         }
@@ -123,7 +142,7 @@ public class AndroidKeyStoreProvider extends Provider {
         return ((KeyStoreCryptoOperation) spi).getOperationHandle();
     }
 
-    public static AndroidKeyStorePublicKey makeAndroidKeyStorePublicKeyFromKeyEntryResponse(KeyDescriptor descriptor, KeyMetadata metadata, KeyStoreSecurityLevel iSecurityLevel, int algorithm) throws UnrecoverableKeyException {
+    static AndroidKeyStorePublicKey makeAndroidKeyStorePublicKeyFromKeyEntryResponse(KeyDescriptor descriptor, KeyMetadata metadata, KeyStoreSecurityLevel iSecurityLevel, int algorithm) throws UnrecoverableKeyException {
         if (metadata.certificate == null) {
             throw new UnrecoverableKeyException("Failed to obtain X.509 form of public key. Keystore has no public certificate stored.");
         }

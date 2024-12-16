@@ -7,9 +7,12 @@ import android.util.Log;
 import android.view.InputChannel;
 import android.view.MotionEvent;
 import android.view.inputmethod.ImeTracker;
+import com.android.internal.inputmethod.IConnectionlessHandwritingCallback;
 import com.android.internal.inputmethod.IInlineSuggestionsRequestCallback;
 import com.android.internal.inputmethod.IInputMethod;
 import com.android.internal.inputmethod.InlineSuggestionsRequestInfo;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 /* loaded from: classes4.dex */
@@ -17,12 +20,17 @@ public interface InputMethod {
     public static final String SERVICE_INTERFACE = "android.view.InputMethod";
     public static final String SERVICE_META_DATA = "android.view.im";
     public static final int SHOW_EXPLICIT = 1;
+
+    @Deprecated
     public static final int SHOW_FORCED = 2;
     public static final String TAG = "InputMethod";
 
-    /* loaded from: classes4.dex */
     public interface SessionCallback {
         void sessionCreated(InputMethodSession inputMethodSession);
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ShowFlags {
     }
 
     void attachToken(IBinder iBinder);
@@ -78,13 +86,19 @@ public interface InputMethod {
         hideSoftInput(flags, resultReceiver);
     }
 
-    default void canStartStylusHandwriting(int requestId) {
+    default void canStartStylusHandwriting(int requestId, IConnectionlessHandwritingCallback connectionlessCallback, CursorAnchorInfo cursorAnchorInfo, boolean isConnectionlessForDelegation) {
     }
 
     default void updateEditorToolType(int toolType) {
     }
 
     default void startStylusHandwriting(int requestId, InputChannel channel, List<MotionEvent> events) {
+    }
+
+    default void commitHandwritingDelegationTextIfAvailable() {
+    }
+
+    default void discardHandwritingDelegationText() {
     }
 
     default void initInkWindow() {

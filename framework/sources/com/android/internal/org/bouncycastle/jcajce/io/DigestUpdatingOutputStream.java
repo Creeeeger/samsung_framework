@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 class DigestUpdatingOutputStream extends OutputStream {
     private MessageDigest digest;
 
-    public DigestUpdatingOutputStream(MessageDigest digest) {
+    DigestUpdatingOutputStream(MessageDigest digest) {
         this.digest = digest;
     }
 

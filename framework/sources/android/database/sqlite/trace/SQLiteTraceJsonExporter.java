@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteUtils;
 import android.database.sqlite.trace.SQLiteTrace;
 import android.util.JsonWriter;
 import android.widget.SemRemoteViewsValueAnimation;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -24,9 +23,8 @@ public class SQLiteTraceJsonExporter extends SQLiteTraceExporter {
     @Override // android.database.sqlite.trace.SQLiteTraceExporter
     void open(SQLiteTrace.TraceConfiguration configuration) throws IOException {
         this.mFileOutputStream = new FileOutputStream(configuration.traceFilePath);
-        JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(this.mFileOutputStream));
-        this.mWriter = jsonWriter;
-        jsonWriter.beginObject();
+        this.mWriter = new JsonWriter(new OutputStreamWriter(this.mFileOutputStream));
+        this.mWriter.beginObject();
         this.mWriter.name("dbname").value(configuration.databaseName);
         this.mWriter.name("dbpath").value(configuration.databaseFilePath);
         this.mWriter.name("operations");
@@ -34,7 +32,7 @@ public class SQLiteTraceJsonExporter extends SQLiteTraceExporter {
     }
 
     @Override // android.database.sqlite.trace.SQLiteTraceExporter
-    public void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
+    void writeOperations(List<SQLiteTrace.TraceOperation> operations) throws IOException {
         for (SQLiteTrace.TraceOperation operation : operations) {
             writeOperation(operation);
         }
@@ -71,7 +69,7 @@ public class SQLiteTraceJsonExporter extends SQLiteTraceExporter {
                 this.mWriter.beginObject();
                 switch (DatabaseUtils.getTypeOfObject(arg)) {
                     case 0:
-                        this.mWriter.name("type").value(SemCapabilities.FEATURE_TAG_NULL);
+                        this.mWriter.name("type").value("null");
                         break;
                     case 1:
                         this.mWriter.name("type").value("int");

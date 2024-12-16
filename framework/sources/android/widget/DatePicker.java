@@ -34,8 +34,7 @@ public class DatePicker extends FrameLayout {
     private final DatePickerDelegate mDelegate;
     private final int mMode;
 
-    /* loaded from: classes4.dex */
-    public interface DatePickerDelegate {
+    interface DatePickerDelegate {
         void autofill(AutofillValue autofillValue);
 
         boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent accessibilityEvent);
@@ -94,21 +93,17 @@ public class DatePicker extends FrameLayout {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface DatePickerMode {
     }
 
-    /* loaded from: classes4.dex */
     public interface OnDateChangedListener {
         void onDateChanged(DatePicker datePicker, int i, int i2, int i3);
     }
 
-    /* loaded from: classes4.dex */
     public interface ValidationCallback {
         void onValidationChanged(boolean z);
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<DatePicker> {
         private int mCalendarViewShownId;
         private int mDatePickerModeId;
@@ -203,6 +198,7 @@ public class DatePicker extends FrameLayout {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(Context context, DatePicker v, int y, int m, int d) {
         AutofillManager afm = (AutofillManager) context.getSystemService(AutofillManager.class);
         if (afm != null) {
@@ -297,7 +293,7 @@ public class DatePicker extends FrameLayout {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         this.mDelegate.onConfigurationChanged(newConfig);
     }
@@ -339,16 +335,18 @@ public class DatePicker extends FrameLayout {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         dispatchThawSelfOnly(container);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         return this.mDelegate.onSaveInstanceState(superState);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.View
     public void onRestoreInstanceState(Parcelable state) {
         View.BaseSavedState ss = (View.BaseSavedState) state;
@@ -356,9 +354,7 @@ public class DatePicker extends FrameLayout {
         this.mDelegate.onRestoreInstanceState(ss);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public static abstract class AbstractDatePickerDelegate implements DatePickerDelegate {
+    static abstract class AbstractDatePickerDelegate implements DatePickerDelegate {
         protected OnDateChangedListener mAutoFillChangeListener;
         private long mAutofilledValue;
         protected Context mContext;
@@ -374,7 +370,7 @@ public class DatePicker extends FrameLayout {
             setCurrentLocale(Locale.getDefault());
         }
 
-        public void setCurrentLocale(Locale locale) {
+        protected void setCurrentLocale(Locale locale) {
             if (!locale.equals(this.mCurrentLocale)) {
                 this.mCurrentLocale = locale;
                 onLocaleChanged(locale);
@@ -411,21 +407,22 @@ public class DatePicker extends FrameLayout {
 
         @Override // android.widget.DatePicker.DatePickerDelegate
         public final AutofillValue getAutofillValue() {
-            long time = this.mAutofilledValue;
-            if (time == 0) {
+            long time;
+            if (this.mAutofilledValue != 0) {
+                time = this.mAutofilledValue;
+            } else {
                 time = this.mCurrentDate.getTimeInMillis();
             }
             return AutofillValue.forDate(time);
         }
 
-        public void resetAutofilledValue() {
+        protected void resetAutofilledValue() {
             this.mAutofilledValue = 0L;
         }
 
         protected void onValidationChanged(boolean valid) {
-            ValidationCallback validationCallback = this.mValidationCallback;
-            if (validationCallback != null) {
-                validationCallback.onValidationChanged(valid);
+            if (this.mValidationCallback != null) {
+                this.mValidationCallback.onValidationChanged(valid);
             }
         }
 
@@ -437,21 +434,19 @@ public class DatePicker extends FrameLayout {
             event.getText().add(getFormattedCurrentDate());
         }
 
-        public String getFormattedCurrentDate() {
+        protected String getFormattedCurrentDate() {
             return DateUtils.formatDateTime(this.mContext, this.mCurrentDate.getTimeInMillis(), 22);
         }
 
-        /* loaded from: classes4.dex */
-        public static class SavedState extends View.BaseSavedState {
+        static class SavedState extends View.BaseSavedState {
             public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.widget.DatePicker.AbstractDatePickerDelegate.SavedState.1
-                AnonymousClass1() {
-                }
-
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public SavedState createFromParcel(Parcel in) {
                     return new SavedState(in);
                 }
 
+                /* JADX WARN: Can't rename method to resolve collision */
                 @Override // android.os.Parcelable.Creator
                 public SavedState[] newArray(int size) {
                     return new SavedState[size];
@@ -465,10 +460,6 @@ public class DatePicker extends FrameLayout {
             private final int mSelectedDay;
             private final int mSelectedMonth;
             private final int mSelectedYear;
-
-            /* synthetic */ SavedState(Parcel parcel, SavedStateIA savedStateIA) {
-                this(parcel);
-            }
 
             public SavedState(Parcelable superState, int year, int month, int day, long minDate, long maxDate) {
                 this(superState, year, month, day, minDate, maxDate, 0, 0, 0);
@@ -541,23 +532,6 @@ public class DatePicker extends FrameLayout {
 
             public int getListPositionOffset() {
                 return this.mListPositionOffset;
-            }
-
-            /* renamed from: android.widget.DatePicker$AbstractDatePickerDelegate$SavedState$1 */
-            /* loaded from: classes4.dex */
-            class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-                AnonymousClass1() {
-                }
-
-                @Override // android.os.Parcelable.Creator
-                public SavedState createFromParcel(Parcel in) {
-                    return new SavedState(in);
-                }
-
-                @Override // android.os.Parcelable.Creator
-                public SavedState[] newArray(int size) {
-                    return new SavedState[size];
-                }
             }
         }
     }

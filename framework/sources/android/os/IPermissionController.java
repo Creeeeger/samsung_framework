@@ -12,7 +12,6 @@ public interface IPermissionController extends IInterface {
 
     int noteOp(String str, int i, String str2) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPermissionController {
         @Override // android.os.IPermissionController
         public boolean checkPermission(String permission, int pid, int uid) throws RemoteException {
@@ -45,7 +44,6 @@ public interface IPermissionController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPermissionController {
         public static final String DESCRIPTOR = "android.os.IPermissionController";
         static final int TRANSACTION_checkPermission = 1;
@@ -101,59 +99,56 @@ public interface IPermissionController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result = checkPermission(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg22 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result2 = noteOp(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result3 = getPackagesForUid(_arg03);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result3);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = isRuntimePermission(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = getPackageUid(_arg05, _arg13);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result = checkPermission(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg22 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result2 = noteOp(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result3 = getPackagesForUid(_arg03);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result3);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isRuntimePermission(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = getPackageUid(_arg05, _arg13);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IPermissionController {
             private IBinder mRemote;
 

@@ -8,9 +8,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes4.dex */
-public class SystemLocaleCollector implements LocalePickerWithRegion.LocaleCollectorBase {
+/* loaded from: classes5.dex */
+class SystemLocaleCollector implements LocalePickerWithRegion.LocaleCollectorBase {
     private final Context mContext;
     private LocaleList mExplicitLocales;
 
@@ -18,7 +17,7 @@ public class SystemLocaleCollector implements LocalePickerWithRegion.LocaleColle
         this(context, null);
     }
 
-    public SystemLocaleCollector(Context context, LocaleList explicitLocales) {
+    SystemLocaleCollector(Context context, LocaleList explicitLocales) {
         this.mContext = context;
         this.mExplicitLocales = explicitLocales;
     }

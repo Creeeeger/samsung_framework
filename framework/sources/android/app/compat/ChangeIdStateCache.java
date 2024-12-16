@@ -28,7 +28,7 @@ public final class ChangeIdStateCache extends PropertyInvalidatedCache<ChangeIdS
         }
     }
 
-    public IPlatformCompat getPlatformCompatService() {
+    IPlatformCompat getPlatformCompatService() {
         IPlatformCompat platformCompat = this.mPlatformCompat;
         if (platformCompat == null) {
             synchronized (this) {

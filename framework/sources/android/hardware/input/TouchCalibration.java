@@ -13,36 +13,18 @@ public class TouchCalibration implements Parcelable {
     private final float mYXMix;
     public static final TouchCalibration IDENTITY = new TouchCalibration();
     public static final Parcelable.Creator<TouchCalibration> CREATOR = new Parcelable.Creator<TouchCalibration>() { // from class: android.hardware.input.TouchCalibration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TouchCalibration createFromParcel(Parcel in) {
             return new TouchCalibration(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TouchCalibration[] newArray(int size) {
             return new TouchCalibration[size];
         }
     };
-
-    /* renamed from: android.hardware.input.TouchCalibration$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TouchCalibration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TouchCalibration createFromParcel(Parcel in) {
-            return new TouchCalibration(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TouchCalibration[] newArray(int size) {
-            return new TouchCalibration[size];
-        }
-    }
 
     public TouchCalibration() {
         this(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);

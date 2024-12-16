@@ -9,7 +9,7 @@ public class BufferedBlockCipher {
     protected boolean partialBlockOkay;
     protected boolean pgpCFB;
 
-    public BufferedBlockCipher() {
+    protected BufferedBlockCipher() {
     }
 
     public BufferedBlockCipher(BlockCipher cipher) {
@@ -19,9 +19,8 @@ public class BufferedBlockCipher {
         this.bufOff = 0;
         String name = cipher.getAlgorithmName();
         int idx = name.indexOf(47) + 1;
-        boolean z2 = idx > 0 && name.startsWith("PGP", idx);
-        this.pgpCFB = z2;
-        if (z2 || (cipher instanceof StreamCipher)) {
+        this.pgpCFB = idx > 0 && name.startsWith("PGP", idx);
+        if (this.pgpCFB || (cipher instanceof StreamCipher)) {
             this.partialBlockOkay = true;
             return;
         }
@@ -67,13 +66,12 @@ public class BufferedBlockCipher {
     public int processByte(byte in, byte[] out, int outOff) throws DataLengthException, IllegalStateException {
         byte[] bArr = this.buf;
         int i = this.bufOff;
-        int i2 = i + 1;
-        this.bufOff = i2;
+        this.bufOff = i + 1;
         bArr[i] = in;
-        if (i2 != bArr.length) {
+        if (this.bufOff != this.buf.length) {
             return 0;
         }
-        int resultLen = this.cipher.processBlock(bArr, 0, out, outOff);
+        int resultLen = this.cipher.processBlock(this.buf, 0, out, outOff);
         this.bufOff = 0;
         return resultLen;
     }
@@ -88,12 +86,9 @@ public class BufferedBlockCipher {
             throw new OutputLengthException("output buffer too short");
         }
         int resultLen = 0;
-        byte[] bArr = this.buf;
-        int length2 = bArr.length;
-        int i = this.bufOff;
-        int gapLen = length2 - i;
+        int gapLen = this.buf.length - this.bufOff;
         if (len > gapLen) {
-            System.arraycopy(in, inOff, bArr, i, gapLen);
+            System.arraycopy(in, inOff, this.buf, this.bufOff, gapLen);
             resultLen = 0 + this.cipher.processBlock(this.buf, 0, out, outOff);
             this.bufOff = 0;
             len -= gapLen;
@@ -105,11 +100,9 @@ public class BufferedBlockCipher {
             }
         }
         System.arraycopy(in, inOff, this.buf, this.bufOff, len);
-        int i2 = this.bufOff + len;
-        this.bufOff = i2;
-        byte[] bArr2 = this.buf;
-        if (i2 == bArr2.length) {
-            int resultLen2 = resultLen + this.cipher.processBlock(bArr2, 0, out, outOff + resultLen);
+        this.bufOff += len;
+        if (this.bufOff == this.buf.length) {
+            int resultLen2 = resultLen + this.cipher.processBlock(this.buf, 0, out, outOff + resultLen);
             this.bufOff = 0;
             return resultLen2;
         }
@@ -119,17 +112,14 @@ public class BufferedBlockCipher {
     public int doFinal(byte[] out, int outOff) throws DataLengthException, IllegalStateException, InvalidCipherTextException {
         int resultLen = 0;
         try {
-            int i = this.bufOff;
-            if (outOff + i > out.length) {
+            if (this.bufOff + outOff > out.length) {
                 throw new OutputLengthException("output buffer too short for doFinal()");
             }
-            if (i != 0) {
+            if (this.bufOff != 0) {
                 if (!this.partialBlockOkay) {
                     throw new DataLengthException("data not block size aligned");
                 }
-                BlockCipher blockCipher = this.cipher;
-                byte[] bArr = this.buf;
-                blockCipher.processBlock(bArr, 0, bArr, 0);
+                this.cipher.processBlock(this.buf, 0, this.buf, 0);
                 resultLen = this.bufOff;
                 this.bufOff = 0;
                 System.arraycopy(this.buf, 0, out, outOff, resultLen);
@@ -141,17 +131,10 @@ public class BufferedBlockCipher {
     }
 
     public void reset() {
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.buf;
-            if (i < bArr.length) {
-                bArr[i] = 0;
-                i++;
-            } else {
-                this.bufOff = 0;
-                this.cipher.reset();
-                return;
-            }
+        for (int i = 0; i < this.buf.length; i++) {
+            this.buf[i] = 0;
         }
+        this.bufOff = 0;
+        this.cipher.reset();
     }
 }

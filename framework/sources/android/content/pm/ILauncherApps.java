@@ -42,11 +42,19 @@ public interface ILauncherApps extends IInterface {
 
     ParceledListSlice getAllSessions(String str) throws RemoteException;
 
+    IntentSender getAppMarketActivityIntent(String str, String str2, UserHandle userHandle) throws RemoteException;
+
     LauncherApps.AppUsageLimit getAppUsageLimit(String str, String str2, UserHandle userHandle) throws RemoteException;
 
     ApplicationInfo getApplicationInfo(String str, String str2, int i, UserHandle userHandle) throws RemoteException;
 
     ParceledListSlice getLauncherActivities(String str, String str2, UserHandle userHandle) throws RemoteException;
+
+    LauncherUserInfo getLauncherUserInfo(UserHandle userHandle) throws RemoteException;
+
+    List<String> getPreInstalledSystemPackages(UserHandle userHandle) throws RemoteException;
+
+    IntentSender getPrivateSpaceSettingsIntent() throws RemoteException;
 
     ParceledListSlice getShortcutConfigActivities(String str, String str2, UserHandle userHandle) throws RemoteException;
 
@@ -66,6 +74,8 @@ public interface ILauncherApps extends IInterface {
 
     Bundle getSuspendedPackageLauncherExtras(String str, UserHandle userHandle) throws RemoteException;
 
+    List<UserHandle> getUserProfiles() throws RemoteException;
+
     boolean hasShortcutHostPermission(String str) throws RemoteException;
 
     boolean isActivityEnabled(String str, ComponentName componentName, UserHandle userHandle) throws RemoteException;
@@ -84,6 +94,10 @@ public interface ILauncherApps extends IInterface {
 
     LauncherActivityInfoInternal resolveLauncherActivityInternal(String str, ComponentName componentName, UserHandle userHandle) throws RemoteException;
 
+    void saveViewCaptureData() throws RemoteException;
+
+    void setArchiveCompatibilityOptions(boolean z, boolean z2) throws RemoteException;
+
     boolean shouldHideFromSuggestions(String str, UserHandle userHandle) throws RemoteException;
 
     void showAppDetailsAsUser(IApplicationThread iApplicationThread, String str, String str2, ComponentName componentName, Rect rect, Bundle bundle, UserHandle userHandle) throws RemoteException;
@@ -100,7 +114,6 @@ public interface ILauncherApps extends IInterface {
 
     void unregisterShortcutChangeCallback(String str, IShortcutChangeCallback iShortcutChangeCallback) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ILauncherApps {
         @Override // android.content.pm.ILauncherApps
         public void addOnAppsChangedListener(String callingPackage, IOnAppsChangedListener listener) throws RemoteException {
@@ -130,6 +143,26 @@ public interface ILauncherApps extends IInterface {
 
         @Override // android.content.pm.ILauncherApps
         public PendingIntent getActivityLaunchIntent(String callingPackage, ComponentName component, UserHandle user) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public LauncherUserInfo getLauncherUserInfo(UserHandle user) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public List<String> getPreInstalledSystemPackages(UserHandle user) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public IntentSender getAppMarketActivityIntent(String callingPackage, String packageName, UserHandle user) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public IntentSender getPrivateSpaceSettingsIntent() throws RemoteException {
             return null;
         }
 
@@ -259,6 +292,19 @@ public interface ILauncherApps extends IInterface {
         }
 
         @Override // android.content.pm.ILauncherApps
+        public void setArchiveCompatibilityOptions(boolean enableIconOverlay, boolean enableUnarchivalConfirmation) throws RemoteException {
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public List<UserHandle> getUserProfiles() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.content.pm.ILauncherApps
+        public void saveViewCaptureData() throws RemoteException {
+        }
+
+        @Override // android.content.pm.ILauncherApps
         public void changePackageIcon(String packageName, int userId) throws RemoteException {
         }
 
@@ -268,44 +314,50 @@ public interface ILauncherApps extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ILauncherApps {
         public static final String DESCRIPTOR = "android.content.pm.ILauncherApps";
         static final int TRANSACTION_addOnAppsChangedListener = 1;
-        static final int TRANSACTION_cacheShortcuts = 29;
-        static final int TRANSACTION_changePackageIcon = 35;
+        static final int TRANSACTION_cacheShortcuts = 33;
+        static final int TRANSACTION_changePackageIcon = 42;
         static final int TRANSACTION_getActivityLaunchIntent = 7;
-        static final int TRANSACTION_getActivityOverrides = 32;
-        static final int TRANSACTION_getAllSessions = 26;
-        static final int TRANSACTION_getAppUsageLimit = 13;
-        static final int TRANSACTION_getApplicationInfo = 12;
+        static final int TRANSACTION_getActivityOverrides = 36;
+        static final int TRANSACTION_getAllSessions = 30;
+        static final int TRANSACTION_getAppMarketActivityIntent = 10;
+        static final int TRANSACTION_getAppUsageLimit = 17;
+        static final int TRANSACTION_getApplicationInfo = 16;
         static final int TRANSACTION_getLauncherActivities = 3;
-        static final int TRANSACTION_getShortcutConfigActivities = 22;
-        static final int TRANSACTION_getShortcutConfigActivityIntent = 23;
-        static final int TRANSACTION_getShortcutIconFd = 19;
-        static final int TRANSACTION_getShortcutIconResId = 18;
-        static final int TRANSACTION_getShortcutIconUri = 31;
-        static final int TRANSACTION_getShortcutIntent = 24;
-        static final int TRANSACTION_getShortcuts = 14;
-        static final int TRANSACTION_getShortcutsAsync = 15;
-        static final int TRANSACTION_getSuspendedPackageLauncherExtras = 10;
-        static final int TRANSACTION_hasShortcutHostPermission = 20;
-        static final int TRANSACTION_isActivityEnabled = 11;
-        static final int TRANSACTION_isPackageEnabled = 9;
-        static final int TRANSACTION_pinShortcuts = 16;
-        static final int TRANSACTION_registerDumpCallback = 33;
-        static final int TRANSACTION_registerPackageInstallerCallback = 25;
-        static final int TRANSACTION_registerShortcutChangeCallback = 27;
+        static final int TRANSACTION_getLauncherUserInfo = 8;
+        static final int TRANSACTION_getPreInstalledSystemPackages = 9;
+        static final int TRANSACTION_getPrivateSpaceSettingsIntent = 11;
+        static final int TRANSACTION_getShortcutConfigActivities = 26;
+        static final int TRANSACTION_getShortcutConfigActivityIntent = 27;
+        static final int TRANSACTION_getShortcutIconFd = 23;
+        static final int TRANSACTION_getShortcutIconResId = 22;
+        static final int TRANSACTION_getShortcutIconUri = 35;
+        static final int TRANSACTION_getShortcutIntent = 28;
+        static final int TRANSACTION_getShortcuts = 18;
+        static final int TRANSACTION_getShortcutsAsync = 19;
+        static final int TRANSACTION_getSuspendedPackageLauncherExtras = 14;
+        static final int TRANSACTION_getUserProfiles = 40;
+        static final int TRANSACTION_hasShortcutHostPermission = 24;
+        static final int TRANSACTION_isActivityEnabled = 15;
+        static final int TRANSACTION_isPackageEnabled = 13;
+        static final int TRANSACTION_pinShortcuts = 20;
+        static final int TRANSACTION_registerDumpCallback = 37;
+        static final int TRANSACTION_registerPackageInstallerCallback = 29;
+        static final int TRANSACTION_registerShortcutChangeCallback = 31;
         static final int TRANSACTION_removeOnAppsChangedListener = 2;
         static final int TRANSACTION_resolveLauncherActivityInternal = 4;
-        static final int TRANSACTION_shouldHideFromSuggestions = 21;
-        static final int TRANSACTION_showAppDetailsAsUser = 8;
+        static final int TRANSACTION_saveViewCaptureData = 41;
+        static final int TRANSACTION_setArchiveCompatibilityOptions = 39;
+        static final int TRANSACTION_shouldHideFromSuggestions = 25;
+        static final int TRANSACTION_showAppDetailsAsUser = 12;
         static final int TRANSACTION_startActivityAsUser = 6;
         static final int TRANSACTION_startSessionDetailsActivityAsUser = 5;
-        static final int TRANSACTION_startShortcut = 17;
-        static final int TRANSACTION_unRegisterDumpCallback = 34;
-        static final int TRANSACTION_uncacheShortcuts = 30;
-        static final int TRANSACTION_unregisterShortcutChangeCallback = 28;
+        static final int TRANSACTION_startShortcut = 21;
+        static final int TRANSACTION_unRegisterDumpCallback = 38;
+        static final int TRANSACTION_uncacheShortcuts = 34;
+        static final int TRANSACTION_unregisterShortcutChangeCallback = 32;
 
         public Stub() {
             attachInterface(this, DESCRIPTOR);
@@ -344,60 +396,74 @@ public interface ILauncherApps extends IInterface {
                 case 7:
                     return "getActivityLaunchIntent";
                 case 8:
-                    return "showAppDetailsAsUser";
+                    return "getLauncherUserInfo";
                 case 9:
-                    return "isPackageEnabled";
+                    return "getPreInstalledSystemPackages";
                 case 10:
-                    return "getSuspendedPackageLauncherExtras";
+                    return "getAppMarketActivityIntent";
                 case 11:
-                    return "isActivityEnabled";
+                    return "getPrivateSpaceSettingsIntent";
                 case 12:
-                    return "getApplicationInfo";
+                    return "showAppDetailsAsUser";
                 case 13:
-                    return "getAppUsageLimit";
+                    return "isPackageEnabled";
                 case 14:
-                    return "getShortcuts";
+                    return "getSuspendedPackageLauncherExtras";
                 case 15:
-                    return "getShortcutsAsync";
+                    return "isActivityEnabled";
                 case 16:
-                    return "pinShortcuts";
+                    return "getApplicationInfo";
                 case 17:
-                    return "startShortcut";
+                    return "getAppUsageLimit";
                 case 18:
-                    return "getShortcutIconResId";
+                    return "getShortcuts";
                 case 19:
-                    return "getShortcutIconFd";
+                    return "getShortcutsAsync";
                 case 20:
-                    return "hasShortcutHostPermission";
+                    return "pinShortcuts";
                 case 21:
-                    return "shouldHideFromSuggestions";
+                    return "startShortcut";
                 case 22:
-                    return "getShortcutConfigActivities";
+                    return "getShortcutIconResId";
                 case 23:
-                    return "getShortcutConfigActivityIntent";
+                    return "getShortcutIconFd";
                 case 24:
-                    return "getShortcutIntent";
+                    return "hasShortcutHostPermission";
                 case 25:
-                    return "registerPackageInstallerCallback";
+                    return "shouldHideFromSuggestions";
                 case 26:
-                    return "getAllSessions";
+                    return "getShortcutConfigActivities";
                 case 27:
-                    return "registerShortcutChangeCallback";
+                    return "getShortcutConfigActivityIntent";
                 case 28:
-                    return "unregisterShortcutChangeCallback";
+                    return "getShortcutIntent";
                 case 29:
-                    return "cacheShortcuts";
+                    return "registerPackageInstallerCallback";
                 case 30:
-                    return "uncacheShortcuts";
+                    return "getAllSessions";
                 case 31:
-                    return "getShortcutIconUri";
+                    return "registerShortcutChangeCallback";
                 case 32:
-                    return "getActivityOverrides";
+                    return "unregisterShortcutChangeCallback";
                 case 33:
-                    return "registerDumpCallback";
+                    return "cacheShortcuts";
                 case 34:
-                    return "unRegisterDumpCallback";
+                    return "uncacheShortcuts";
                 case 35:
+                    return "getShortcutIconUri";
+                case 36:
+                    return "getActivityOverrides";
+                case 37:
+                    return "registerDumpCallback";
+                case 38:
+                    return "unRegisterDumpCallback";
+                case 39:
+                    return "setArchiveCompatibilityOptions";
+                case 40:
+                    return "getUserProfiles";
+                case 41:
+                    return "saveViewCaptureData";
+                case 42:
                     return "changePackageIcon";
                 default:
                     return null;
@@ -414,347 +480,388 @@ public interface ILauncherApps extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    IOnAppsChangedListener _arg1 = IOnAppsChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addOnAppsChangedListener(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IOnAppsChangedListener _arg02 = IOnAppsChangedListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeOnAppsChangedListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    String _arg12 = data.readString();
+                    UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result = getLauncherActivities(_arg03, _arg12, _arg2);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    ComponentName _arg13 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg22 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    LauncherActivityInfoInternal _result2 = resolveLauncherActivityInternal(_arg04, _arg13, _arg22);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 5:
+                    IApplicationThread _arg05 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg14 = data.readString();
+                    String _arg23 = data.readString();
+                    PackageInstaller.SessionInfo _arg3 = (PackageInstaller.SessionInfo) data.readTypedObject(PackageInstaller.SessionInfo.CREATOR);
+                    Rect _arg4 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    UserHandle _arg6 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startSessionDetailsActivityAsUser(_arg05, _arg14, _arg23, _arg3, _arg4, _arg5, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IApplicationThread _arg06 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg15 = data.readString();
+                    String _arg24 = data.readString();
+                    ComponentName _arg32 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Rect _arg42 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    UserHandle _arg62 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startActivityAsUser(_arg06, _arg15, _arg24, _arg32, _arg42, _arg52, _arg62);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    ComponentName _arg16 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg25 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    PendingIntent _result3 = getActivityLaunchIntent(_arg07, _arg16, _arg25);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 8:
+                    UserHandle _arg08 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    LauncherUserInfo _result4 = getLauncherUserInfo(_arg08);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
+                    return true;
+                case 9:
+                    UserHandle _arg09 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<String> _result5 = getPreInstalledSystemPackages(_arg09);
+                    reply.writeNoException();
+                    reply.writeStringList(_result5);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    String _arg17 = data.readString();
+                    UserHandle _arg26 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IntentSender _result6 = getAppMarketActivityIntent(_arg010, _arg17, _arg26);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result6, 1);
+                    return true;
+                case 11:
+                    IntentSender _result7 = getPrivateSpaceSettingsIntent();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
+                    return true;
+                case 12:
+                    IApplicationThread _arg011 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
+                    String _arg18 = data.readString();
+                    String _arg27 = data.readString();
+                    ComponentName _arg33 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    Rect _arg43 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Bundle _arg53 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    UserHandle _arg63 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    showAppDetailsAsUser(_arg011, _arg18, _arg27, _arg33, _arg43, _arg53, _arg63);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg012 = data.readString();
+                    String _arg19 = data.readString();
+                    UserHandle _arg28 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result8 = isPackageEnabled(_arg012, _arg19, _arg28);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
+                    return true;
+                case 14:
+                    String _arg013 = data.readString();
+                    UserHandle _arg110 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result9 = getSuspendedPackageLauncherExtras(_arg013, _arg110);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result9, 1);
+                    return true;
+                case 15:
+                    String _arg014 = data.readString();
+                    ComponentName _arg111 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg29 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result10 = isActivityEnabled(_arg014, _arg111, _arg29);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 16:
+                    String _arg015 = data.readString();
+                    String _arg112 = data.readString();
+                    int _arg210 = data.readInt();
+                    UserHandle _arg34 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ApplicationInfo _result11 = getApplicationInfo(_arg015, _arg112, _arg210, _arg34);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result11, 1);
+                    return true;
+                case 17:
+                    String _arg016 = data.readString();
+                    String _arg113 = data.readString();
+                    UserHandle _arg211 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    LauncherApps.AppUsageLimit _result12 = getAppUsageLimit(_arg016, _arg113, _arg211);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result12, 1);
+                    return true;
+                case 18:
+                    String _arg017 = data.readString();
+                    ShortcutQueryWrapper _arg114 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
+                    UserHandle _arg212 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result13 = getShortcuts(_arg017, _arg114, _arg212);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result13, 1);
+                    return true;
+                case 19:
+                    String _arg018 = data.readString();
+                    ShortcutQueryWrapper _arg115 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
+                    UserHandle _arg213 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    AndroidFuture<List<ShortcutInfo>> _arg35 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    getShortcutsAsync(_arg018, _arg115, _arg213, _arg35);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    String _arg019 = data.readString();
+                    String _arg116 = data.readString();
+                    List<String> _arg214 = data.createStringArrayList();
+                    UserHandle _arg36 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    pinShortcuts(_arg019, _arg116, _arg214, _arg36);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    String _arg020 = data.readString();
+                    String _arg117 = data.readString();
+                    String _arg215 = data.readString();
+                    String _arg37 = data.readString();
+                    Rect _arg44 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    Bundle _arg54 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg64 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = startShortcut(_arg020, _arg117, _arg215, _arg37, _arg44, _arg54, _arg64);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 22:
+                    String _arg021 = data.readString();
+                    String _arg118 = data.readString();
+                    String _arg216 = data.readString();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result15 = getShortcutIconResId(_arg021, _arg118, _arg216, _arg38);
+                    reply.writeNoException();
+                    reply.writeInt(_result15);
+                    return true;
+                case 23:
+                    String _arg022 = data.readString();
+                    String _arg119 = data.readString();
+                    String _arg217 = data.readString();
+                    int _arg39 = data.readInt();
+                    data.enforceNoDataAvail();
+                    ParcelFileDescriptor _result16 = getShortcutIconFd(_arg022, _arg119, _arg217, _arg39);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result16, 1);
+                    return true;
+                case 24:
+                    String _arg023 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result17 = hasShortcutHostPermission(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 25:
+                    String _arg024 = data.readString();
+                    UserHandle _arg120 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result18 = shouldHideFromSuggestions(_arg024, _arg120);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 26:
+                    String _arg025 = data.readString();
+                    String _arg121 = data.readString();
+                    UserHandle _arg218 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result19 = getShortcutConfigActivities(_arg025, _arg121, _arg218);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    return true;
+                case 27:
+                    String _arg026 = data.readString();
+                    ComponentName _arg122 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    UserHandle _arg219 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    IntentSender _result20 = getShortcutConfigActivityIntent(_arg026, _arg122, _arg219);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result20, 1);
+                    return true;
+                case 28:
+                    String _arg027 = data.readString();
+                    String _arg123 = data.readString();
+                    String _arg220 = data.readString();
+                    Bundle _arg310 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    UserHandle _arg45 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    data.enforceNoDataAvail();
+                    PendingIntent _result21 = getShortcutIntent(_arg027, _arg123, _arg220, _arg310, _arg45);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result21, 1);
+                    return true;
+                case 29:
+                    String _arg028 = data.readString();
+                    IPackageInstallerCallback _arg124 = IPackageInstallerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerPackageInstallerCallback(_arg028, _arg124);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    String _arg029 = data.readString();
+                    data.enforceNoDataAvail();
+                    ParceledListSlice _result22 = getAllSessions(_arg029);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result22, 1);
+                    return true;
+                case 31:
+                    String _arg030 = data.readString();
+                    ShortcutQueryWrapper _arg125 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
+                    IShortcutChangeCallback _arg221 = IShortcutChangeCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerShortcutChangeCallback(_arg030, _arg125, _arg221);
+                    reply.writeNoException();
+                    return true;
+                case 32:
+                    String _arg031 = data.readString();
+                    IShortcutChangeCallback _arg126 = IShortcutChangeCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterShortcutChangeCallback(_arg031, _arg126);
+                    reply.writeNoException();
+                    return true;
+                case 33:
+                    String _arg032 = data.readString();
+                    String _arg127 = data.readString();
+                    List<String> _arg222 = data.createStringArrayList();
+                    UserHandle _arg311 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    int _arg46 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cacheShortcuts(_arg032, _arg127, _arg222, _arg311, _arg46);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    String _arg033 = data.readString();
+                    String _arg128 = data.readString();
+                    List<String> _arg223 = data.createStringArrayList();
+                    UserHandle _arg312 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
+                    int _arg47 = data.readInt();
+                    data.enforceNoDataAvail();
+                    uncacheShortcuts(_arg033, _arg128, _arg223, _arg312, _arg47);
+                    reply.writeNoException();
+                    return true;
+                case 35:
+                    String _arg034 = data.readString();
+                    String _arg129 = data.readString();
+                    String _arg224 = data.readString();
+                    int _arg313 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result23 = getShortcutIconUri(_arg034, _arg129, _arg224, _arg313);
+                    reply.writeNoException();
+                    reply.writeString(_result23);
+                    return true;
+                case 36:
+                    String _arg035 = data.readString();
+                    int _arg130 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Map<String, LauncherActivityInfoInternal> _result24 = getActivityOverrides(_arg035, _arg130);
+                    reply.writeNoException();
+                    if (_result24 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result24.size());
+                        _result24.forEach(new BiConsumer() { // from class: android.content.pm.ILauncherApps$Stub$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                ILauncherApps.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (LauncherActivityInfoInternal) obj2);
+                            }
+                        });
+                    }
+                    return true;
+                case 37:
+                    IDumpCallback _arg036 = IDumpCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerDumpCallback(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    IDumpCallback _arg037 = IDumpCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unRegisterDumpCallback(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    boolean _arg038 = data.readBoolean();
+                    boolean _arg131 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setArchiveCompatibilityOptions(_arg038, _arg131);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    List<UserHandle> _result25 = getUserProfiles();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result25, 1);
+                    return true;
+                case 41:
+                    saveViewCaptureData();
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    String _arg039 = data.readString();
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    changePackageIcon(_arg039, _arg132);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            IOnAppsChangedListener _arg1 = IOnAppsChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addOnAppsChangedListener(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IOnAppsChangedListener _arg02 = IOnAppsChangedListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeOnAppsChangedListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            String _arg12 = data.readString();
-                            UserHandle _arg2 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result = getLauncherActivities(_arg03, _arg12, _arg2);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            ComponentName _arg13 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg22 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            LauncherActivityInfoInternal _result2 = resolveLauncherActivityInternal(_arg04, _arg13, _arg22);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 5:
-                            IApplicationThread _arg05 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg14 = data.readString();
-                            String _arg23 = data.readString();
-                            PackageInstaller.SessionInfo _arg3 = (PackageInstaller.SessionInfo) data.readTypedObject(PackageInstaller.SessionInfo.CREATOR);
-                            Rect _arg4 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Bundle _arg5 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            UserHandle _arg6 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startSessionDetailsActivityAsUser(_arg05, _arg14, _arg23, _arg3, _arg4, _arg5, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IApplicationThread _arg06 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg15 = data.readString();
-                            String _arg24 = data.readString();
-                            ComponentName _arg32 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Rect _arg42 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Bundle _arg52 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            UserHandle _arg62 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startActivityAsUser(_arg06, _arg15, _arg24, _arg32, _arg42, _arg52, _arg62);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            ComponentName _arg16 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg25 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            PendingIntent _result3 = getActivityLaunchIntent(_arg07, _arg16, _arg25);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 8:
-                            IApplicationThread _arg08 = IApplicationThread.Stub.asInterface(data.readStrongBinder());
-                            String _arg17 = data.readString();
-                            String _arg26 = data.readString();
-                            ComponentName _arg33 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            Rect _arg43 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Bundle _arg53 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            UserHandle _arg63 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            showAppDetailsAsUser(_arg08, _arg17, _arg26, _arg33, _arg43, _arg53, _arg63);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg18 = data.readString();
-                            UserHandle _arg27 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isPackageEnabled(_arg09, _arg18, _arg27);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            UserHandle _arg19 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result5 = getSuspendedPackageLauncherExtras(_arg010, _arg19);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        case 11:
-                            String _arg011 = data.readString();
-                            ComponentName _arg110 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg28 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result6 = isActivityEnabled(_arg011, _arg110, _arg28);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 12:
-                            String _arg012 = data.readString();
-                            String _arg111 = data.readString();
-                            int _arg29 = data.readInt();
-                            UserHandle _arg34 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ApplicationInfo _result7 = getApplicationInfo(_arg012, _arg111, _arg29, _arg34);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result7, 1);
-                            return true;
-                        case 13:
-                            String _arg013 = data.readString();
-                            String _arg112 = data.readString();
-                            UserHandle _arg210 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            LauncherApps.AppUsageLimit _result8 = getAppUsageLimit(_arg013, _arg112, _arg210);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result8, 1);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            ShortcutQueryWrapper _arg113 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
-                            UserHandle _arg211 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result9 = getShortcuts(_arg014, _arg113, _arg211);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result9, 1);
-                            return true;
-                        case 15:
-                            String _arg015 = data.readString();
-                            ShortcutQueryWrapper _arg114 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
-                            UserHandle _arg212 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            AndroidFuture<List<ShortcutInfo>> _arg35 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            getShortcutsAsync(_arg015, _arg114, _arg212, _arg35);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            String _arg115 = data.readString();
-                            List<String> _arg213 = data.createStringArrayList();
-                            UserHandle _arg36 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            pinShortcuts(_arg016, _arg115, _arg213, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            String _arg017 = data.readString();
-                            String _arg116 = data.readString();
-                            String _arg214 = data.readString();
-                            String _arg37 = data.readString();
-                            Rect _arg44 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            Bundle _arg54 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg64 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = startShortcut(_arg017, _arg116, _arg214, _arg37, _arg44, _arg54, _arg64);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 18:
-                            String _arg018 = data.readString();
-                            String _arg117 = data.readString();
-                            String _arg215 = data.readString();
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = getShortcutIconResId(_arg018, _arg117, _arg215, _arg38);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 19:
-                            String _arg019 = data.readString();
-                            String _arg118 = data.readString();
-                            String _arg216 = data.readString();
-                            int _arg39 = data.readInt();
-                            data.enforceNoDataAvail();
-                            ParcelFileDescriptor _result12 = getShortcutIconFd(_arg019, _arg118, _arg216, _arg39);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result12, 1);
-                            return true;
-                        case 20:
-                            String _arg020 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = hasShortcutHostPermission(_arg020);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 21:
-                            String _arg021 = data.readString();
-                            UserHandle _arg119 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result14 = shouldHideFromSuggestions(_arg021, _arg119);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 22:
-                            String _arg022 = data.readString();
-                            String _arg120 = data.readString();
-                            UserHandle _arg217 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result15 = getShortcutConfigActivities(_arg022, _arg120, _arg217);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 23:
-                            String _arg023 = data.readString();
-                            ComponentName _arg121 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            UserHandle _arg218 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            IntentSender _result16 = getShortcutConfigActivityIntent(_arg023, _arg121, _arg218);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result16, 1);
-                            return true;
-                        case 24:
-                            String _arg024 = data.readString();
-                            String _arg122 = data.readString();
-                            String _arg219 = data.readString();
-                            Bundle _arg310 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            UserHandle _arg45 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            data.enforceNoDataAvail();
-                            PendingIntent _result17 = getShortcutIntent(_arg024, _arg122, _arg219, _arg310, _arg45);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result17, 1);
-                            return true;
-                        case 25:
-                            String _arg025 = data.readString();
-                            IPackageInstallerCallback _arg123 = IPackageInstallerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPackageInstallerCallback(_arg025, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        case 26:
-                            String _arg026 = data.readString();
-                            data.enforceNoDataAvail();
-                            ParceledListSlice _result18 = getAllSessions(_arg026);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result18, 1);
-                            return true;
-                        case 27:
-                            String _arg027 = data.readString();
-                            ShortcutQueryWrapper _arg124 = (ShortcutQueryWrapper) data.readTypedObject(ShortcutQueryWrapper.CREATOR);
-                            IShortcutChangeCallback _arg220 = IShortcutChangeCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerShortcutChangeCallback(_arg027, _arg124, _arg220);
-                            reply.writeNoException();
-                            return true;
-                        case 28:
-                            String _arg028 = data.readString();
-                            IShortcutChangeCallback _arg125 = IShortcutChangeCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterShortcutChangeCallback(_arg028, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            String _arg029 = data.readString();
-                            String _arg126 = data.readString();
-                            List<String> _arg221 = data.createStringArrayList();
-                            UserHandle _arg311 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            int _arg46 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cacheShortcuts(_arg029, _arg126, _arg221, _arg311, _arg46);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            String _arg030 = data.readString();
-                            String _arg127 = data.readString();
-                            List<String> _arg222 = data.createStringArrayList();
-                            UserHandle _arg312 = (UserHandle) data.readTypedObject(UserHandle.CREATOR);
-                            int _arg47 = data.readInt();
-                            data.enforceNoDataAvail();
-                            uncacheShortcuts(_arg030, _arg127, _arg222, _arg312, _arg47);
-                            reply.writeNoException();
-                            return true;
-                        case 31:
-                            String _arg031 = data.readString();
-                            String _arg128 = data.readString();
-                            String _arg223 = data.readString();
-                            int _arg313 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result19 = getShortcutIconUri(_arg031, _arg128, _arg223, _arg313);
-                            reply.writeNoException();
-                            reply.writeString(_result19);
-                            return true;
-                        case 32:
-                            String _arg032 = data.readString();
-                            int _arg129 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Map<String, LauncherActivityInfoInternal> _result20 = getActivityOverrides(_arg032, _arg129);
-                            reply.writeNoException();
-                            if (_result20 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result20.size());
-                                _result20.forEach(new BiConsumer() { // from class: android.content.pm.ILauncherApps$Stub$$ExternalSyntheticLambda0
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        ILauncherApps.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (LauncherActivityInfoInternal) obj2);
-                                    }
-                                });
-                            }
-                            return true;
-                        case 33:
-                            IDumpCallback _arg033 = IDumpCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerDumpCallback(_arg033);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            IDumpCallback _arg034 = IDumpCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unRegisterDumpCallback(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 35:
-                            String _arg035 = data.readString();
-                            int _arg130 = data.readInt();
-                            data.enforceNoDataAvail();
-                            changePackageIcon(_arg035, _arg130);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, LauncherActivityInfoInternal v) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, LauncherActivityInfoInternal v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ILauncherApps {
+        static class Proxy implements ILauncherApps {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -901,6 +1008,75 @@ public interface ILauncherApps extends IInterface {
             }
 
             @Override // android.content.pm.ILauncherApps
+            public LauncherUserInfo getLauncherUserInfo(UserHandle user) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(user, 0);
+                    this.mRemote.transact(8, _data, _reply, 0);
+                    _reply.readException();
+                    LauncherUserInfo _result = (LauncherUserInfo) _reply.readTypedObject(LauncherUserInfo.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public List<String> getPreInstalledSystemPackages(UserHandle user) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(user, 0);
+                    this.mRemote.transact(9, _data, _reply, 0);
+                    _reply.readException();
+                    List<String> _result = _reply.createStringArrayList();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public IntentSender getAppMarketActivityIntent(String callingPackage, String packageName, UserHandle user) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callingPackage);
+                    _data.writeString(packageName);
+                    _data.writeTypedObject(user, 0);
+                    this.mRemote.transact(10, _data, _reply, 0);
+                    _reply.readException();
+                    IntentSender _result = (IntentSender) _reply.readTypedObject(IntentSender.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public IntentSender getPrivateSpaceSettingsIntent() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(11, _data, _reply, 0);
+                    _reply.readException();
+                    IntentSender _result = (IntentSender) _reply.readTypedObject(IntentSender.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
             public void showAppDetailsAsUser(IApplicationThread caller, String callingPackage, String callingFeatureId, ComponentName component, Rect sourceBounds, Bundle opts, UserHandle user) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
@@ -913,7 +1089,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeTypedObject(sourceBounds, 0);
                     _data.writeTypedObject(opts, 0);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(8, _data, _reply, 0);
+                    this.mRemote.transact(12, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -930,7 +1106,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(packageName);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(9, _data, _reply, 0);
+                    this.mRemote.transact(13, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -948,7 +1124,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(10, _data, _reply, 0);
+                    this.mRemote.transact(14, _data, _reply, 0);
                     _reply.readException();
                     Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
                     return _result;
@@ -967,7 +1143,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(component, 0);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(11, _data, _reply, 0);
+                    this.mRemote.transact(15, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -987,7 +1163,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(packageName);
                     _data.writeInt(flags);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(12, _data, _reply, 0);
+                    this.mRemote.transact(16, _data, _reply, 0);
                     _reply.readException();
                     ApplicationInfo _result = (ApplicationInfo) _reply.readTypedObject(ApplicationInfo.CREATOR);
                     return _result;
@@ -1006,7 +1182,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(packageName);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(13, _data, _reply, 0);
+                    this.mRemote.transact(17, _data, _reply, 0);
                     _reply.readException();
                     LauncherApps.AppUsageLimit _result = (LauncherApps.AppUsageLimit) _reply.readTypedObject(LauncherApps.AppUsageLimit.CREATOR);
                     return _result;
@@ -1025,7 +1201,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(query, 0);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(14, _data, _reply, 0);
+                    this.mRemote.transact(18, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -1045,7 +1221,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeTypedObject(query, 0);
                     _data.writeTypedObject(user, 0);
                     _data.writeTypedObject(cb, 0);
-                    this.mRemote.transact(15, _data, _reply, 0);
+                    this.mRemote.transact(19, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1063,7 +1239,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(packageName);
                     _data.writeStringList(shortcutIds);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(16, _data, _reply, 0);
+                    this.mRemote.transact(20, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1084,7 +1260,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeTypedObject(sourceBounds, 0);
                     _data.writeTypedObject(startActivityOptions, 0);
                     _data.writeInt(userId);
-                    this.mRemote.transact(17, _data, _reply, 0);
+                    this.mRemote.transact(21, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1104,7 +1280,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(id);
                     _data.writeInt(userId);
-                    this.mRemote.transact(18, _data, _reply, 0);
+                    this.mRemote.transact(22, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -1124,7 +1300,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(id);
                     _data.writeInt(userId);
-                    this.mRemote.transact(19, _data, _reply, 0);
+                    this.mRemote.transact(23, _data, _reply, 0);
                     _reply.readException();
                     ParcelFileDescriptor _result = (ParcelFileDescriptor) _reply.readTypedObject(ParcelFileDescriptor.CREATOR);
                     return _result;
@@ -1141,7 +1317,7 @@ public interface ILauncherApps extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(20, _data, _reply, 0);
+                    this.mRemote.transact(24, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1159,7 +1335,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(21, _data, _reply, 0);
+                    this.mRemote.transact(25, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -1178,7 +1354,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(packageName);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(22, _data, _reply, 0);
+                    this.mRemote.transact(26, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -1197,7 +1373,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(component, 0);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(23, _data, _reply, 0);
+                    this.mRemote.transact(27, _data, _reply, 0);
                     _reply.readException();
                     IntentSender _result = (IntentSender) _reply.readTypedObject(IntentSender.CREATOR);
                     return _result;
@@ -1218,7 +1394,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(shortcutId);
                     _data.writeTypedObject(opts, 0);
                     _data.writeTypedObject(user, 0);
-                    this.mRemote.transact(24, _data, _reply, 0);
+                    this.mRemote.transact(28, _data, _reply, 0);
                     _reply.readException();
                     PendingIntent _result = (PendingIntent) _reply.readTypedObject(PendingIntent.CREATOR);
                     return _result;
@@ -1236,7 +1412,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(25, _data, _reply, 0);
+                    this.mRemote.transact(29, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1251,7 +1427,7 @@ public interface ILauncherApps extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(26, _data, _reply, 0);
+                    this.mRemote.transact(30, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -1270,7 +1446,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeTypedObject(query, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(27, _data, _reply, 0);
+                    this.mRemote.transact(31, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1286,7 +1462,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(28, _data, _reply, 0);
+                    this.mRemote.transact(32, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1305,7 +1481,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeStringList(shortcutIds);
                     _data.writeTypedObject(user, 0);
                     _data.writeInt(cacheFlags);
-                    this.mRemote.transact(29, _data, _reply, 0);
+                    this.mRemote.transact(33, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1324,7 +1500,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeStringList(shortcutIds);
                     _data.writeTypedObject(user, 0);
                     _data.writeInt(cacheFlags);
-                    this.mRemote.transact(30, _data, _reply, 0);
+                    this.mRemote.transact(34, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1342,7 +1518,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeString(packageName);
                     _data.writeString(shortcutId);
                     _data.writeInt(userId);
-                    this.mRemote.transact(31, _data, _reply, 0);
+                    this.mRemote.transact(35, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -1360,7 +1536,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(callingPackage);
                     _data.writeInt(userId);
-                    this.mRemote.transact(32, _data, _reply, 0);
+                    this.mRemote.transact(36, _data, _reply, 0);
                     _reply.readException();
                     int N = _reply.readInt();
                     final Map<String, LauncherActivityInfoInternal> _result = N < 0 ? null : new HashMap<>();
@@ -1377,7 +1553,7 @@ public interface ILauncherApps extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$getActivityOverrides$0(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$getActivityOverrides$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 LauncherActivityInfoInternal v = (LauncherActivityInfoInternal) _reply.readTypedObject(LauncherActivityInfoInternal.CREATOR);
                 _result.put(k, v);
@@ -1390,7 +1566,7 @@ public interface ILauncherApps extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(33, _data, _reply, 0);
+                    this.mRemote.transact(37, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1405,7 +1581,53 @@ public interface ILauncherApps extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(34, _data, _reply, 0);
+                    this.mRemote.transact(38, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public void setArchiveCompatibilityOptions(boolean enableIconOverlay, boolean enableUnarchivalConfirmation) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(enableIconOverlay);
+                    _data.writeBoolean(enableUnarchivalConfirmation);
+                    this.mRemote.transact(39, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public List<UserHandle> getUserProfiles() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(40, _data, _reply, 0);
+                    _reply.readException();
+                    List<UserHandle> _result = _reply.createTypedArrayList(UserHandle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.ILauncherApps
+            public void saveViewCaptureData() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1421,7 +1643,7 @@ public interface ILauncherApps extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeInt(userId);
-                    this.mRemote.transact(35, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -1432,7 +1654,7 @@ public interface ILauncherApps extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 34;
+            return 41;
         }
     }
 }

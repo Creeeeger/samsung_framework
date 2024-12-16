@@ -7,7 +7,7 @@ import com.samsung.android.location.ISLocationManager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SLocationLoader {
     private static final String CLASS_SLocationService = "com.samsung.android.location.SLocationService";
     private static final String METHOD_systemReady = "systemReady";

@@ -15,6 +15,7 @@ public @interface ApnTypes {
     public static final int MCX = 1024;
     public static final int MMS = 2;
     public static final int NONE = 0;
+    public static final int RCS = 32768;
     public static final int SUPL = 4;
     public static final int VSIM = 4096;
     public static final int XCAP = 2048;

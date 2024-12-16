@@ -12,7 +12,6 @@ public interface IInputDeviceBatteryListener extends IInterface {
 
     void onBatteryStateChanged(IInputDeviceBatteryState iInputDeviceBatteryState) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IInputDeviceBatteryListener {
         @Override // android.hardware.input.IInputDeviceBatteryListener
         public void onBatteryStateChanged(IInputDeviceBatteryState batteryState) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IInputDeviceBatteryListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IInputDeviceBatteryListener {
         static final int TRANSACTION_onBatteryStateChanged = 1;
 
@@ -67,26 +65,22 @@ public interface IInputDeviceBatteryListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputDeviceBatteryListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputDeviceBatteryListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputDeviceBatteryListener.DESCRIPTOR);
+                case 1:
+                    IInputDeviceBatteryState _arg0 = (IInputDeviceBatteryState) data.readTypedObject(IInputDeviceBatteryState.CREATOR);
+                    data.enforceNoDataAvail();
+                    onBatteryStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IInputDeviceBatteryState _arg0 = (IInputDeviceBatteryState) data.readTypedObject(IInputDeviceBatteryState.CREATOR);
-                            data.enforceNoDataAvail();
-                            onBatteryStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IInputDeviceBatteryListener {
+        private static class Proxy implements IInputDeviceBatteryListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

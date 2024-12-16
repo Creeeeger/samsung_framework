@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class GraphEdge {
     public static int INVALID_ID = -1;
     private final BufferChannel bufferChannel;
@@ -58,7 +58,7 @@ public class GraphEdge {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ String lambda$getBeginNode$0(Pair it) {
+    static /* synthetic */ String lambda$getBeginNode$0(Pair it) {
         return (String) it.first;
     }
 
@@ -72,7 +72,7 @@ public class GraphEdge {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public static /* synthetic */ String lambda$getEndNode$1(Pair it) {
+    static /* synthetic */ String lambda$getEndNode$1(Pair it) {
         return (String) it.second;
     }
 

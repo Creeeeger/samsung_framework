@@ -6,7 +6,7 @@ import java.io.IOException;
 public class DLSetParser implements ASN1SetParser {
     private ASN1StreamParser _parser;
 
-    public DLSetParser(ASN1StreamParser parser) {
+    DLSetParser(ASN1StreamParser parser) {
         this._parser = parser;
     }
 

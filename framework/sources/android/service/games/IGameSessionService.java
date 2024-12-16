@@ -14,7 +14,6 @@ public interface IGameSessionService extends IInterface {
 
     void create(IGameSessionController iGameSessionController, CreateGameSessionRequest createGameSessionRequest, GameSessionViewHostConfiguration gameSessionViewHostConfiguration, AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGameSessionService {
         @Override // android.service.games.IGameSessionService
         public void create(IGameSessionController gameSessionController, CreateGameSessionRequest createGameSessionRequest, GameSessionViewHostConfiguration gameSessionViewHostConfiguration, AndroidFuture createGameSessionResultFuture) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IGameSessionService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGameSessionService {
         static final int TRANSACTION_create = 1;
 
@@ -69,27 +67,24 @@ public interface IGameSessionService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameSessionService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameSessionService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameSessionService.DESCRIPTOR);
+                case 1:
+                    IGameSessionController _arg0 = IGameSessionController.Stub.asInterface(data.readStrongBinder());
+                    CreateGameSessionRequest _arg1 = (CreateGameSessionRequest) data.readTypedObject(CreateGameSessionRequest.CREATOR);
+                    GameSessionViewHostConfiguration _arg2 = (GameSessionViewHostConfiguration) data.readTypedObject(GameSessionViewHostConfiguration.CREATOR);
+                    AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    create(_arg0, _arg1, _arg2, _arg3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGameSessionController _arg0 = IGameSessionController.Stub.asInterface(data.readStrongBinder());
-                            CreateGameSessionRequest _arg1 = (CreateGameSessionRequest) data.readTypedObject(CreateGameSessionRequest.CREATOR);
-                            GameSessionViewHostConfiguration _arg2 = (GameSessionViewHostConfiguration) data.readTypedObject(GameSessionViewHostConfiguration.CREATOR);
-                            AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            create(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IGameSessionService {
             private IBinder mRemote;
 

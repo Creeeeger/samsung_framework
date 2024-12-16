@@ -9,17 +9,16 @@ import java.util.Objects;
 import java.util.TreeSet;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class MediaThreshold implements Parcelable {
     public static final Parcelable.Creator<MediaThreshold> CREATOR = new Parcelable.Creator<MediaThreshold>() { // from class: android.telephony.ims.MediaThreshold.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaThreshold createFromParcel(Parcel in) {
             return new MediaThreshold(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MediaThreshold[] newArray(int size) {
             return new MediaThreshold[size];
@@ -28,14 +27,6 @@ public final class MediaThreshold implements Parcelable {
     private final long[] mRtpInactivityTimeMillis;
     private final int[] mRtpJitter;
     private final int[] mRtpPacketLossRate;
-
-    /* synthetic */ MediaThreshold(Parcel parcel, MediaThresholdIA mediaThresholdIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ MediaThreshold(int[] iArr, int[] iArr2, long[] jArr, MediaThresholdIA mediaThresholdIA) {
-        this(iArr, iArr2, jArr);
-    }
 
     @SystemApi
     public int[] getThresholdsRtpPacketLossRate() {
@@ -67,23 +58,6 @@ public final class MediaThreshold implements Parcelable {
         dest.writeIntArray(this.mRtpPacketLossRate);
         dest.writeIntArray(this.mRtpJitter);
         dest.writeLongArray(this.mRtpInactivityTimeMillis);
-    }
-
-    /* renamed from: android.telephony.ims.MediaThreshold$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MediaThreshold> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaThreshold createFromParcel(Parcel in) {
-            return new MediaThreshold(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MediaThreshold[] newArray(int size) {
-            return new MediaThreshold[size];
-        }
     }
 
     public static boolean isValidRtpPacketLossRate(int packetLossRate) {
@@ -139,7 +113,6 @@ public final class MediaThreshold implements Parcelable {
         return sb.toString();
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int[] mRtpPacketLossRate = null;
         private int[] mRtpJitter = null;
@@ -218,21 +191,9 @@ public final class MediaThreshold implements Parcelable {
         }
 
         public MediaThreshold build() {
-            int[] iArr = this.mRtpPacketLossRate;
-            if (iArr == null) {
-                iArr = new int[0];
-            }
-            this.mRtpPacketLossRate = iArr;
-            int[] iArr2 = this.mRtpJitter;
-            if (iArr2 == null) {
-                iArr2 = new int[0];
-            }
-            this.mRtpJitter = iArr2;
-            long[] jArr = this.mRtpInactivityTimeMillis;
-            if (jArr == null) {
-                jArr = new long[0];
-            }
-            this.mRtpInactivityTimeMillis = jArr;
+            this.mRtpPacketLossRate = this.mRtpPacketLossRate != null ? this.mRtpPacketLossRate : new int[0];
+            this.mRtpJitter = this.mRtpJitter != null ? this.mRtpJitter : new int[0];
+            this.mRtpInactivityTimeMillis = this.mRtpInactivityTimeMillis != null ? this.mRtpInactivityTimeMillis : new long[0];
             return new MediaThreshold(this.mRtpPacketLossRate, this.mRtpJitter, this.mRtpInactivityTimeMillis);
         }
     }

@@ -3,7 +3,6 @@ package com.samsung.android.media.photoremaster;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.util.Pair;
 import com.samsung.android.media.photoremaster.SemPhotoRemaster;
@@ -21,28 +20,23 @@ import java.util.function.Predicate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemPhotoRemaster {
     private static final int END_TO_END = 0;
     private static final int ENHANCE_AND_SAVE = 2;
     private static final int FIND_ENHANCEMENT_TYPE = 1;
+    private static final int RUN_O3DP_ENGINE = 2;
     private static final String TAG = "PhotoRemaster";
     private static final Object mStopLock = new Object();
     private final Builder mBuilder;
     private ClientRemasterDirector mServiceClient;
 
-    /* loaded from: classes5.dex */
     public interface ProgressUpdateListener {
         void onUpdateMetadata(String str);
 
         void onUpdateProgress(double d, int i, int i2);
     }
 
-    /* synthetic */ SemPhotoRemaster(Builder builder, SemPhotoRemasterIA semPhotoRemasterIA) {
-        this(builder);
-    }
-
-    /* loaded from: classes5.dex */
     public static class Builder {
         public static final int ID_AMOUNT_REMASTER_IMAGES = 1006;
         public static final int ID_ENHANCEMENT_STRENGTH = 1012;
@@ -68,17 +62,15 @@ public class SemPhotoRemaster {
         private boolean mRequestFocusRoi = false;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface setLongParamaterIds {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface setStringParameterIds {
         }
 
         private Builder(Uri inputUri) {
-            LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+            LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
             LogUtil.d(TAG, "Input file: " + inputUri);
             this.mInputUri = inputUri;
             setInputPathName(inputUri.getPath());
@@ -86,7 +78,7 @@ public class SemPhotoRemaster {
         }
 
         private Builder(Bitmap inputImage) {
-            LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+            LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
             LogUtil.d(TAG, "Input is bitmap");
             this.mInputUri = null;
             this.mInputPathName = null;
@@ -146,6 +138,7 @@ public class SemPhotoRemaster {
             this.mInputPathName = pathName;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void updateInputPath(Context context) {
             if (this.mInputUri == null) {
                 return;
@@ -158,7 +151,7 @@ public class SemPhotoRemaster {
                 } else {
                     int column_index = cursor.getColumnIndexOrThrow("_data");
                     cursor.moveToFirst();
-                    LogUtil.i(TAG, "InputPath is replaced as content provider.");
+                    LogUtil.i(TAG, "InputPath is replaced with content provider");
                     this.mInputPathName = cursor.getString(column_index);
                     LogUtil.d(TAG, "mInputPathName is updated as " + this.mInputPathName);
                 }
@@ -179,12 +172,12 @@ public class SemPhotoRemaster {
     }
 
     private SemPhotoRemaster(Builder builder) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         this.mBuilder = builder;
     }
 
     private void setParameters(Context context) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         if (this.mBuilder.mBitmap != null) {
             this.mServiceClient.setBitmapParam(1014, this.mBuilder.mBitmap);
         } else {
@@ -208,7 +201,7 @@ public class SemPhotoRemaster {
             this.mServiceClient.setProgressUpdateListener(new IDirector.ProgressUpdateListener() { // from class: com.samsung.android.media.photoremaster.SemPhotoRemaster.1
                 private final ProgressUpdateListener mListener;
 
-                AnonymousClass1() {
+                {
                     this.mListener = SemPhotoRemaster.this.mBuilder.mListener;
                 }
 
@@ -225,28 +218,8 @@ public class SemPhotoRemaster {
         }
     }
 
-    /* renamed from: com.samsung.android.media.photoremaster.SemPhotoRemaster$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements IDirector.ProgressUpdateListener {
-        private final ProgressUpdateListener mListener;
-
-        AnonymousClass1() {
-            this.mListener = SemPhotoRemaster.this.mBuilder.mListener;
-        }
-
-        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
-        public void onUpdateProgress(double percent, int currentImageIndex, int totalImageCount) {
-            this.mListener.onUpdateProgress(percent, currentImageIndex, totalImageCount);
-        }
-
-        @Override // com.samsung.android.photoremaster.IDirector.ProgressUpdateListener
-        public void onUpdateMetadata(String metadata) {
-            this.mListener.onUpdateMetadata(metadata);
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public enum ResultParam {
+    /* JADX INFO: Access modifiers changed from: private */
+    enum ResultParam {
         PATH_INPUT(1002, ParamDataType.STRING, false),
         PATH_RESULT(1003, ParamDataType.STRING, false),
         ANALYZED_FULL(2101, ParamDataType.STRING, false),
@@ -265,8 +238,8 @@ public class SemPhotoRemaster {
         public final int ID;
         private final boolean ONDEMAND;
 
-        /* loaded from: classes5.dex */
-        public enum ParamDataType {
+        /* JADX INFO: Access modifiers changed from: private */
+        enum ParamDataType {
             STRING,
             LONG,
             EXCEPTIONAL
@@ -279,7 +252,6 @@ public class SemPhotoRemaster {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class Result {
         public static final int ID_ANALYZED_FULL = 2101;
         public static final int ID_ENHANCE_TYPE = 2102;
@@ -295,12 +267,7 @@ public class SemPhotoRemaster {
         private final JSONObject mResultJson;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface getParameterIds {
-        }
-
-        /* synthetic */ Result(Bitmap bitmap, ResultIA resultIA) {
-            this(bitmap);
         }
 
         private Result(Bitmap remasteredBitmap) {
@@ -312,16 +279,25 @@ public class SemPhotoRemaster {
             try {
                 return this.mResultJson.getString(String.valueOf(id));
             } catch (JSONException e) {
-                LogUtil.e(TAG, "No such id:" + id);
+                if (e.getMessage() != null) {
+                    LogUtil.e(TAG, e.getMessage());
+                    return null;
+                }
+                LogUtil.e(TAG, "Failed to get string from mResultJson", e);
                 return null;
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setParameter(int id, String val) {
             try {
                 this.mResultJson.put(String.valueOf(id), val);
             } catch (JSONException e) {
-                LogUtil.e(TAG, new Throwable().getStackTrace()[0].getMethodName() + NavigationBarInflaterView.KEY_CODE_START + id + ", " + val + NavigationBarInflaterView.KEY_CODE_END);
+                if (e.getMessage() != null) {
+                    LogUtil.e(TAG, e.getMessage());
+                } else {
+                    LogUtil.e(TAG, "Failed to get string from mResultJson", e);
+                }
                 throw new RuntimeException(e);
             }
         }
@@ -332,7 +308,7 @@ public class SemPhotoRemaster {
     }
 
     private Result getParameters() {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         final Result result = new Result(this.mBuilder.mBitmap == null ? null : this.mServiceClient.getBitmapParam(ResultParam.OUTPUT_BITMAP.ID));
         String remasteredPathName = this.mServiceClient.getStringParam(1003);
         if (this.mBuilder.mRequestFocusRoi && remasteredPathName != null) {
@@ -373,28 +349,30 @@ public class SemPhotoRemaster {
         return result;
     }
 
-    public static /* synthetic */ boolean lambda$getParameters$0(ResultParam param) {
+    static /* synthetic */ boolean lambda$getParameters$0(ResultParam param) {
         return param.DATA_TYPE == ResultParam.ParamDataType.STRING;
     }
 
-    public static /* synthetic */ boolean lambda$getParameters$1(ResultParam param) {
+    static /* synthetic */ boolean lambda$getParameters$1(ResultParam param) {
         return !param.ONDEMAND;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getParameters$2(Result result, ResultParam param) {
         String paramData = this.mServiceClient.getStringParam(param.ID);
         LogUtil.d(TAG, "getStringParam(" + param.ID + ") : " + paramData);
         result.setParameter(param.ID, paramData);
     }
 
-    public static /* synthetic */ boolean lambda$getParameters$3(ResultParam param) {
+    static /* synthetic */ boolean lambda$getParameters$3(ResultParam param) {
         return param.DATA_TYPE == ResultParam.ParamDataType.LONG;
     }
 
-    public static /* synthetic */ boolean lambda$getParameters$4(ResultParam param) {
+    static /* synthetic */ boolean lambda$getParameters$4(ResultParam param) {
         return !param.ONDEMAND;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$getParameters$5(Result result, ResultParam param) {
         String paramData = String.valueOf(this.mServiceClient.getLongParam(param.ID));
         LogUtil.d(TAG, "getLongParam(" + param.ID + ") : " + paramData);
@@ -402,10 +380,9 @@ public class SemPhotoRemaster {
     }
 
     private Result doRemaster(int processMode, List<Integer> enhanceModes, Context context) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         synchronized (SemPhotoRemaster.class) {
-            Object obj = mStopLock;
-            synchronized (obj) {
+            synchronized (mStopLock) {
                 if (this.mServiceClient != null) {
                     LogUtil.e(TAG, "Error mServiceClient is not null at begin of doRemaster");
                 }
@@ -426,7 +403,7 @@ public class SemPhotoRemaster {
                 if (processingSuccess) {
                     LogUtil.d(TAG, "Raw Result: " + result.mResultJson);
                 }
-                synchronized (obj) {
+                synchronized (mStopLock) {
                     this.mServiceClient.deinit();
                     this.mServiceClient = null;
                 }
@@ -436,34 +413,33 @@ public class SemPhotoRemaster {
     }
 
     public boolean stop() {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         synchronized (mStopLock) {
-            ClientRemasterDirector clientRemasterDirector = this.mServiceClient;
-            if (clientRemasterDirector == null) {
+            if (this.mServiceClient == null) {
                 LogUtil.i(TAG, "Service is already stopped.");
                 return true;
             }
-            clientRemasterDirector.stop();
+            this.mServiceClient.stop();
             return true;
         }
     }
 
     public Result findEnhancementType(Context context) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         List<Integer> enhanceModes = new ArrayList<>();
         enhanceModes.add(-1);
         return doRemaster(1, enhanceModes, context);
     }
 
     public Result remaster(Context context) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         List<Integer> enhanceModes = new ArrayList<>();
         enhanceModes.add(0);
         return doRemaster(0, enhanceModes, context);
     }
 
     public Result remaster(List<Integer> enhanceTypes, Context context) {
-        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called!");
+        LogUtil.i(TAG, new Throwable().getStackTrace()[0].getMethodName() + " is called");
         return doRemaster(2, enhanceTypes, context);
     }
 }

@@ -49,29 +49,43 @@ public abstract class RegisteredServicesCache<V> {
     private static final String TAG = "PackageManager";
     private final String mAttributesName;
     public final Context mContext;
-    private final BroadcastReceiver mExternalReceiver;
     private Handler mHandler;
     private final String mInterfaceName;
     private RegisteredServicesCacheListener<V> mListener;
     private final String mMetaDataName;
-    private final BroadcastReceiver mPackageReceiver;
     private final XmlSerializerAndParser<V> mSerializerAndParser;
-    private final BroadcastReceiver mUserRemovedReceiver;
     protected final Object mServicesLock = new Object();
     private final SparseArray<UserServices<V>> mUserServices = new SparseArray<>(2);
+    private final BroadcastReceiver mPackageReceiver = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.1
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
+            if (uid != -1) {
+                RegisteredServicesCache.this.handlePackageEvent(intent, UserHandle.getUserId(uid));
+            }
+        }
+    };
+    private final BroadcastReceiver mExternalReceiver = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.2
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            RegisteredServicesCache.this.handlePackageEvent(intent, 0);
+        }
+    };
+    private final BroadcastReceiver mUserRemovedReceiver = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.3
+        @Override // android.content.BroadcastReceiver
+        public void onReceive(Context context, Intent intent) {
+            int userId = intent.getIntExtra("android.intent.extra.user_handle", -1);
+            RegisteredServicesCache.this.onUserRemoved(userId);
+        }
+    };
 
     public abstract V parseServiceAttributes(Resources resources, String str, AttributeSet attributeSet);
 
-    /* loaded from: classes.dex */
-    public static class UserServices<V> {
+    private static class UserServices<V> {
         boolean mBindInstantServiceAllowed;
         boolean mPersistentServicesFileDidNotExist;
         final Map<V, Integer> persistentServices;
         Map<V, ServiceInfo<V>> services;
-
-        /* synthetic */ UserServices(UserServicesIA userServicesIA) {
-            this();
-        }
 
         private UserServices() {
             this.persistentServices = Maps.newHashMap();
@@ -112,40 +126,6 @@ public abstract class RegisteredServicesCache<V> {
     }
 
     public RegisteredServicesCache(Context context, String interfaceName, String metaDataName, String attributeName, XmlSerializerAndParser<V> serializerAndParser) {
-        AnonymousClass1 anonymousClass1 = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.1
-            AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
-                if (uid != -1) {
-                    RegisteredServicesCache.this.handlePackageEvent(intent, UserHandle.getUserId(uid));
-                }
-            }
-        };
-        this.mPackageReceiver = anonymousClass1;
-        AnonymousClass2 anonymousClass2 = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.2
-            AnonymousClass2() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                RegisteredServicesCache.this.handlePackageEvent(intent, 0);
-            }
-        };
-        this.mExternalReceiver = anonymousClass2;
-        AnonymousClass3 anonymousClass3 = new BroadcastReceiver() { // from class: android.content.pm.RegisteredServicesCache.3
-            AnonymousClass3() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                int userId = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                RegisteredServicesCache.this.onUserRemoved(userId);
-            }
-        };
-        this.mUserRemovedReceiver = anonymousClass3;
         this.mContext = context;
         this.mInterfaceName = interfaceName;
         this.mMetaDataName = metaDataName;
@@ -162,22 +142,23 @@ public abstract class RegisteredServicesCache<V> {
             intentFilter.setPriority(1000);
         }
         Handler handler = BackgroundThread.getHandler();
-        context.registerReceiverAsUser(anonymousClass1, UserHandle.ALL, intentFilter, null, handler);
+        this.mContext.registerReceiverAsUser(this.mPackageReceiver, UserHandle.ALL, intentFilter, null, handler);
         IntentFilter sdFilter = new IntentFilter();
         sdFilter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
         sdFilter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         if (isCore) {
             sdFilter.setPriority(1000);
         }
-        context.registerReceiver(anonymousClass2, sdFilter, null, handler);
+        this.mContext.registerReceiver(this.mExternalReceiver, sdFilter, null, handler);
         IntentFilter userFilter = new IntentFilter();
         userFilter.addAction("android.intent.action.USER_REMOVED");
         if (isCore) {
             userFilter.setPriority(1000);
         }
-        context.registerReceiver(anonymousClass3, userFilter, null, handler);
+        this.mContext.registerReceiver(this.mUserRemovedReceiver, userFilter, null, handler);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handlePackageEvent(Intent intent, int userId) {
         String action = intent.getAction();
         boolean isRemoval = "android.intent.action.PACKAGE_REMOVED".equals(action) || Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE.equals(action);
@@ -193,49 +174,6 @@ public abstract class RegisteredServicesCache<V> {
                 }
             }
             generateServicesMap(uids, userId);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.content.pm.RegisteredServicesCache$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
-            int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
-            if (uid != -1) {
-                RegisteredServicesCache.this.handlePackageEvent(intent, UserHandle.getUserId(uid));
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.content.pm.RegisteredServicesCache$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends BroadcastReceiver {
-        AnonymousClass2() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
-            RegisteredServicesCache.this.handlePackageEvent(intent, 0);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.content.pm.RegisteredServicesCache$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends BroadcastReceiver {
-        AnonymousClass3() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
-            int userId = intent.getIntExtra("android.intent.extra.user_handle", -1);
-            RegisteredServicesCache.this.onUserRemoved(userId);
         }
     }
 
@@ -298,7 +236,7 @@ public abstract class RegisteredServicesCache<V> {
         });
     }
 
-    public static /* synthetic */ void lambda$notifyListener$0(RegisteredServicesCacheListener listener2, Object type, int userId, boolean removed) {
+    static /* synthetic */ void lambda$notifyListener$0(RegisteredServicesCacheListener listener2, Object type, int userId, boolean removed) {
         try {
             listener2.onServiceChanged(type, userId, removed);
         } catch (Throwable th) {
@@ -306,7 +244,6 @@ public abstract class RegisteredServicesCache<V> {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class ServiceInfo<V> {
         public final ComponentInfo componentInfo;
         public final ComponentName componentName;
@@ -501,7 +438,7 @@ public abstract class RegisteredServicesCache<V> {
         }
     }
 
-    public void onServicesChangedLocked(int userId) {
+    protected void onServicesChangedLocked(int userId) {
     }
 
     private boolean containsUid(int[] changedUids, int uid) {
@@ -608,31 +545,32 @@ public abstract class RegisteredServicesCache<V> {
         boolean oldFileExists = oldFile.getBaseFile().exists();
         if (oldFileExists) {
             File marker = new File(syncDir, this.mInterfaceName + ".xml.migrated");
-            if (!marker.exists()) {
-                InputStream is = null;
+            if (marker.exists()) {
+                return;
+            }
+            InputStream is = null;
+            try {
                 try {
-                    try {
-                        is = oldFile.openRead();
-                        this.mUserServices.clear();
-                        readPersistentServicesLocked(is);
-                    } catch (Exception e) {
-                        Log.w(TAG, "Error reading persistent services, starting from scratch", e);
-                    }
-                    try {
-                        for (UserInfo user : getUsers()) {
-                            UserServices<V> userServices = this.mUserServices.get(user.id);
-                            if (userServices != null) {
-                                writePersistentServicesLocked(userServices, user.id);
-                            }
-                        }
-                        marker.createNewFile();
-                    } catch (Exception e2) {
-                        Log.w(TAG, "Migration failed", e2);
-                    }
+                    is = oldFile.openRead();
                     this.mUserServices.clear();
-                } finally {
-                    IoUtils.closeQuietly(is);
+                    readPersistentServicesLocked(is);
+                } catch (Exception e) {
+                    Log.w(TAG, "Error reading persistent services, starting from scratch", e);
                 }
+                try {
+                    for (UserInfo user : getUsers()) {
+                        UserServices<V> userServices = this.mUserServices.get(user.id);
+                        if (userServices != null) {
+                            writePersistentServicesLocked(userServices, user.id);
+                        }
+                    }
+                    marker.createNewFile();
+                } catch (Exception e2) {
+                    Log.w(TAG, "Migration failed", e2);
+                }
+                this.mUserServices.clear();
+            } finally {
+                IoUtils.closeQuietly(is);
             }
         }
     }
@@ -666,7 +604,7 @@ public abstract class RegisteredServicesCache<V> {
         }
     }
 
-    public void onUserRemoved(int userId) {
+    protected void onUserRemoved(int userId) {
         synchronized (this.mServicesLock) {
             this.mUserServices.remove(userId);
         }
@@ -696,5 +634,11 @@ public abstract class RegisteredServicesCache<V> {
 
     protected Map<V, Integer> getPersistentServices(int userId) {
         return findOrCreateUserLocked(userId).persistentServices;
+    }
+
+    public void unregisterReceivers() {
+        this.mContext.unregisterReceiver(this.mPackageReceiver);
+        this.mContext.unregisterReceiver(this.mExternalReceiver);
+        this.mContext.unregisterReceiver(this.mUserRemovedReceiver);
     }
 }

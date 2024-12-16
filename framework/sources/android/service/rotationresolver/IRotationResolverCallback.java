@@ -17,7 +17,6 @@ public interface IRotationResolverCallback extends IInterface {
 
     void onSuccess(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IRotationResolverCallback {
         @Override // android.service.rotationresolver.IRotationResolverCallback
         public void onCancellable(ICancellationSignal cancellation) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IRotationResolverCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IRotationResolverCallback {
         static final int TRANSACTION_onCancellable = 1;
         static final int TRANSACTION_onFailure = 3;
@@ -86,36 +84,32 @@ public interface IRotationResolverCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IRotationResolverCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IRotationResolverCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IRotationResolverCallback.DESCRIPTOR);
+                case 1:
+                    ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onCancellable(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFailure(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ICancellationSignal _arg0 = ICancellationSignal.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onCancellable(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFailure(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IRotationResolverCallback {
+        private static class Proxy implements IRotationResolverCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

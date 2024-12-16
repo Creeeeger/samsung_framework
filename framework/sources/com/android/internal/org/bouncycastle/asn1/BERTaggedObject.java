@@ -18,12 +18,12 @@ public class BERTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return this.explicit || this.obj.toASN1Primitive().isConstructed();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         ASN1Primitive primitive = this.obj.toASN1Primitive();
         int length = primitive.encodedLength();
         if (this.explicit) {
@@ -33,7 +33,7 @@ public class BERTaggedObject extends ASN1TaggedObject {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         Enumeration e;
         out.writeTag(withTag, 160, this.tagNo);
         out.write(128);

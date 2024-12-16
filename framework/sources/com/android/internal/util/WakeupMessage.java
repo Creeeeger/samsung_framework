@@ -76,11 +76,10 @@ public class WakeupMessage implements AlarmManager.OnAlarmListener {
             this.mScheduled = false;
         }
         if (stillScheduled) {
-            Runnable runnable = this.mRunnable;
-            if (runnable == null) {
+            if (this.mRunnable == null) {
                 msg = this.mHandler.obtainMessage(this.mCmd, this.mArg1, this.mArg2, this.mObj);
             } else {
-                msg = Message.obtain(this.mHandler, runnable);
+                msg = Message.obtain(this.mHandler, this.mRunnable);
             }
             this.mHandler.dispatchMessage(msg);
             msg.recycle();

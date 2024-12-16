@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import android.util.Log;
 
 @Deprecated(forRemoval = true, since = "13.0")
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextAutoRotationAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextAutoRotationAttribute> CREATOR = new Parcelable.Creator<SemContextAutoRotationAttribute>() { // from class: com.samsung.android.hardware.context.SemContextAutoRotationAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotationAttribute createFromParcel(Parcel in) {
             return new SemContextAutoRotationAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextAutoRotationAttribute[] newArray(int size) {
             return new SemContextAutoRotationAttribute[size];
@@ -25,24 +24,7 @@ public class SemContextAutoRotationAttribute extends SemContextAttribute {
     private static final String TAG = "SemContextAutoRotationAttribute";
     private int mDeviceType;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextAutoRotationAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextAutoRotationAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoRotationAttribute createFromParcel(Parcel in) {
-            return new SemContextAutoRotationAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextAutoRotationAttribute[] newArray(int size) {
-            return new SemContextAutoRotationAttribute[size];
-        }
-    }
-
-    public SemContextAutoRotationAttribute() {
+    SemContextAutoRotationAttribute() {
         this.mDeviceType = 0;
         setAttribute();
     }
@@ -60,8 +42,7 @@ public class SemContextAutoRotationAttribute extends SemContextAttribute {
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mDeviceType;
-        if (i != 0 && i != 2 && i != 4) {
+        if (this.mDeviceType != 0 && this.mDeviceType != 2 && this.mDeviceType != 4) {
             Log.e(TAG, "The device type is wrong.");
             return false;
         }

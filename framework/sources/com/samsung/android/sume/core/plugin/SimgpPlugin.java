@@ -1,7 +1,6 @@
 package com.samsung.android.sume.core.plugin;
 
 import android.media.MediaFormat;
-import android.os.BatteryManager;
 import android.util.Log;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.buffer.MediaBuffer;
@@ -17,7 +16,7 @@ import java.nio.ByteBuffer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class SimgpPlugin implements Plugin<ImgpPlugin> {
     private static final String TAG = Def.tagOf((Class<?>) SimgpPlugin.class);
 
@@ -31,13 +30,14 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         System.loadLibrary("sume_mediabuffer_jni.media.samsung");
     }
 
-    /* renamed from: resize */
-    public MutableMediaBuffer m8815xd2768214(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: resize, reason: merged with bridge method [inline-methods] */
+    public MutableMediaBuffer m9203xd2768214(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp resize: " + ibuf);
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
-            if (obuf.getFormat().contains(BatteryManager.EXTRA_SCALE)) {
-                float scale = ((Float) obuf.getFormat().get(BatteryManager.EXTRA_SCALE)).floatValue();
+            if (obuf.getFormat().contains("scale")) {
+                float scale = ((Float) obuf.getFormat().get("scale")).floatValue();
                 outputFormat.setCols((int) (ibuf.getCols() * scale));
                 outputFormat.setRows((int) (ibuf.getRows() * scale));
             } else {
@@ -60,8 +60,9 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         }
     }
 
-    /* renamed from: cvtColor */
-    public MutableMediaBuffer m8817xb5c9ce52(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: cvtColor, reason: merged with bridge method [inline-methods] */
+    public MutableMediaBuffer m9205xb5c9ce52(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp cvtColor: " + ibuf + " => " + obuf.getFormat());
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
@@ -82,13 +83,14 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         }
     }
 
-    /* renamed from: rotate */
-    public MutableMediaBuffer m8816xc4202833(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: rotate, reason: merged with bridge method [inline-methods] */
+    public MutableMediaBuffer m9204xc4202833(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         Log.d(TAG, "try to simgp rotate: " + ibuf);
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    public static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
+    static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
         return new ImgpDescriptor(ImgpPlugin.Type.SIMGP);
     }
 
@@ -103,19 +105,19 @@ public class SimgpPlugin implements Plugin<ImgpPlugin> {
         fixture.setImgProcessor(ImgpType.RESIZE, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8815xd2768214(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m9203xd2768214(mediaBuffer, mutableMediaBuffer);
             }
         });
         fixture.setImgProcessor(ImgpType.ROTATE, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda2
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8816xc4202833(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m9204xc4202833(mediaBuffer, mutableMediaBuffer);
             }
         });
         fixture.setImgProcessor(ImgpType.CVT_COLOR, new Operator() { // from class: com.samsung.android.sume.core.plugin.SimgpPlugin$$ExternalSyntheticLambda3
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
-                return SimgpPlugin.this.m8817xb5c9ce52(mediaBuffer, mutableMediaBuffer);
+                return SimgpPlugin.this.m9205xb5c9ce52(mediaBuffer, mutableMediaBuffer);
             }
         });
     }

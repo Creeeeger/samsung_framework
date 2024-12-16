@@ -24,33 +24,26 @@ public class SubtitleController {
     private SubtitleTrack mSelectedTrack;
     private MediaTimeProvider mTimeProvider;
     private final Handler.Callback mCallback = new Handler.Callback() { // from class: android.media.SubtitleController.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Handler.Callback
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     SubtitleController.this.doShow();
-                    return true;
+                    break;
                 case 2:
                     SubtitleController.this.doHide();
-                    return true;
+                    break;
                 case 3:
                     SubtitleController.this.doSelectTrack((SubtitleTrack) msg.obj);
-                    return true;
+                    break;
                 case 4:
                     SubtitleController.this.doSelectDefaultTrack();
-                    return true;
-                default:
-                    return false;
+                    break;
             }
+            return true;
         }
     };
     private CaptioningManager.CaptioningChangeListener mCaptioningChangeListener = new CaptioningManager.CaptioningChangeListener() { // from class: android.media.SubtitleController.2
-        AnonymousClass2() {
-        }
-
         @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
         public void onEnabledChanged(boolean enabled) {
             SubtitleController.this.selectDefaultTrack();
@@ -67,69 +60,20 @@ public class SubtitleController {
     private boolean mShowing = false;
     private Vector<SubtitleTrack> mTracks = new Vector<>();
 
-    /* loaded from: classes2.dex */
     public interface Anchor {
         Looper getSubtitleLooper();
 
         void setSubtitleWidget(SubtitleTrack.RenderingWidget renderingWidget);
     }
 
-    /* loaded from: classes2.dex */
     public interface Listener {
         void onSubtitleTrackSelected(SubtitleTrack subtitleTrack);
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Renderer {
         public abstract SubtitleTrack createTrack(MediaFormat mediaFormat);
 
         public abstract boolean supports(MediaFormat mediaFormat);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.SubtitleController$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements Handler.Callback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Handler.Callback
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    SubtitleController.this.doShow();
-                    return true;
-                case 2:
-                    SubtitleController.this.doHide();
-                    return true;
-                case 3:
-                    SubtitleController.this.doSelectTrack((SubtitleTrack) msg.obj);
-                    return true;
-                case 4:
-                    SubtitleController.this.doSelectDefaultTrack();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.SubtitleController$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends CaptioningManager.CaptioningChangeListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
-        public void onEnabledChanged(boolean enabled) {
-            SubtitleController.this.selectDefaultTrack();
-        }
-
-        @Override // android.view.accessibility.CaptioningManager.CaptioningChangeListener
-        public void onLocaleChanged(Locale locale) {
-            SubtitleController.this.selectDefaultTrack();
-        }
     }
 
     public SubtitleController(Context context, MediaTimeProvider timeProvider, Listener listener) {
@@ -157,11 +101,10 @@ public class SubtitleController {
     }
 
     private SubtitleTrack.RenderingWidget getRenderingWidget() {
-        SubtitleTrack subtitleTrack = this.mSelectedTrack;
-        if (subtitleTrack == null) {
+        if (this.mSelectedTrack == null) {
             return null;
         }
-        return subtitleTrack.getRenderingWidget();
+        return this.mSelectedTrack.getRenderingWidget();
     }
 
     public boolean selectTrack(SubtitleTrack track) {
@@ -172,29 +115,26 @@ public class SubtitleController {
         return true;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doSelectTrack(SubtitleTrack track) {
         this.mTrackIsExplicit = true;
-        SubtitleTrack subtitleTrack = this.mSelectedTrack;
-        if (subtitleTrack == track) {
+        if (this.mSelectedTrack == track) {
             return;
         }
-        if (subtitleTrack != null) {
-            subtitleTrack.hide();
+        if (this.mSelectedTrack != null) {
+            this.mSelectedTrack.hide();
             this.mSelectedTrack.setTimeProvider(null);
         }
         this.mSelectedTrack = track;
-        Anchor anchor = this.mAnchor;
-        if (anchor != null) {
-            anchor.setSubtitleWidget(getRenderingWidget());
+        if (this.mAnchor != null) {
+            this.mAnchor.setSubtitleWidget(getRenderingWidget());
         }
-        SubtitleTrack subtitleTrack2 = this.mSelectedTrack;
-        if (subtitleTrack2 != null) {
-            subtitleTrack2.setTimeProvider(this.mTimeProvider);
+        if (this.mSelectedTrack != null) {
+            this.mSelectedTrack.setTimeProvider(this.mTimeProvider);
             this.mSelectedTrack.show();
         }
-        Listener listener = this.mListener;
-        if (listener != null) {
-            listener.onSubtitleTrackSelected(track);
+        if (this.mListener != null) {
+            this.mListener.onSubtitleTrackSelected(track);
         }
     }
 
@@ -220,17 +160,14 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(4));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doSelectDefaultTrack() {
-        SubtitleTrack subtitleTrack;
         if (this.mTrackIsExplicit) {
             if (!this.mVisibilityIsExplicit) {
-                if (this.mCaptioningManager.isEnabled() || ((subtitleTrack = this.mSelectedTrack) != null && subtitleTrack.getFormat().getInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, 0) != 0)) {
+                if (this.mCaptioningManager.isEnabled() || (this.mSelectedTrack != null && this.mSelectedTrack.getFormat().getInteger(MediaFormat.KEY_IS_FORCED_SUBTITLE, 0) != 0)) {
                     show();
-                } else {
-                    SubtitleTrack subtitleTrack2 = this.mSelectedTrack;
-                    if (subtitleTrack2 != null && subtitleTrack2.getTrackType() == 4) {
-                        hide();
-                    }
+                } else if (this.mSelectedTrack != null && this.mSelectedTrack.getTrackType() == 4) {
+                    hide();
                 }
                 this.mVisibilityIsExplicit = false;
                 return;
@@ -291,12 +228,12 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(1));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doShow() {
         this.mShowing = true;
         this.mVisibilityIsExplicit = true;
-        SubtitleTrack subtitleTrack = this.mSelectedTrack;
-        if (subtitleTrack != null) {
-            subtitleTrack.show();
+        if (this.mSelectedTrack != null) {
+            this.mSelectedTrack.show();
         }
     }
 
@@ -304,11 +241,11 @@ public class SubtitleController {
         processOnAnchor(this.mHandler.obtainMessage(2));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doHide() {
         this.mVisibilityIsExplicit = true;
-        SubtitleTrack subtitleTrack = this.mSelectedTrack;
-        if (subtitleTrack != null) {
-            subtitleTrack.hide();
+        if (this.mSelectedTrack != null) {
+            this.mSelectedTrack.hide();
         }
         this.mShowing = false;
     }
@@ -335,17 +272,16 @@ public class SubtitleController {
     }
 
     public void setAnchor(Anchor anchor) {
-        Anchor anchor2 = this.mAnchor;
-        if (anchor2 == anchor) {
+        if (this.mAnchor == anchor) {
             return;
         }
-        if (anchor2 != null) {
+        if (this.mAnchor != null) {
             checkAnchorLooper();
             this.mAnchor.setSubtitleWidget(null);
         }
         this.mAnchor = anchor;
         this.mHandler = null;
-        if (anchor != null) {
+        if (this.mAnchor != null) {
             this.mHandler = new Handler(this.mAnchor.getSubtitleLooper(), this.mCallback);
             checkAnchorLooper();
             this.mAnchor.setSubtitleWidget(getRenderingWidget());

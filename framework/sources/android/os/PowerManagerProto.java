@@ -7,7 +7,6 @@ public final class PowerManagerProto {
     public static final int USER_ACTIVITY_EVENT_OTHER = 0;
     public static final int USER_ACTIVITY_EVENT_TOUCH = 2;
 
-    /* loaded from: classes3.dex */
     public final class WakeLock {
         public static final long HELD = 1133871366147L;
         public static final long INTERNAL_COUNT = 1120986464260L;

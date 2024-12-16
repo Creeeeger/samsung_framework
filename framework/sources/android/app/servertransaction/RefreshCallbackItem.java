@@ -9,14 +9,13 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class RefreshCallbackItem extends ActivityTransactionItem {
     public static final Parcelable.Creator<RefreshCallbackItem> CREATOR = new Parcelable.Creator<RefreshCallbackItem>() { // from class: android.app.servertransaction.RefreshCallbackItem.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RefreshCallbackItem createFromParcel(Parcel in) {
             return new RefreshCallbackItem(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RefreshCallbackItem[] newArray(int size) {
             return new RefreshCallbackItem[size];
@@ -24,17 +23,13 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
     };
     private int mPostExecutionState;
 
-    /* synthetic */ RefreshCallbackItem(Parcel parcel, RefreshCallbackItemIA refreshCallbackItemIA) {
-        this(parcel);
-    }
-
     @Override // android.app.servertransaction.ActivityTransactionItem
     public void execute(ClientTransactionHandler client, ActivityThread.ActivityClientRecord r, PendingTransactionActions pendingActions) {
     }
 
     @Override // android.app.servertransaction.BaseClientRequest
-    public void postExecute(ClientTransactionHandler client, IBinder token, PendingTransactionActions pendingActions) {
-        ActivityThread.ActivityClientRecord r = getActivityClientRecord(client, token);
+    public void postExecute(ClientTransactionHandler client, PendingTransactionActions pendingActions) {
+        ActivityThread.ActivityClientRecord r = getActivityClientRecord(client);
         client.reportRefresh(r);
     }
 
@@ -44,16 +39,17 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
     }
 
     @Override // android.app.servertransaction.ClientTransactionItem
-    public boolean shouldHaveDefinedPreExecutionState() {
+    boolean shouldHaveDefinedPreExecutionState() {
         return false;
     }
 
-    @Override // android.app.servertransaction.ObjectPoolItem
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.app.servertransaction.ObjectPoolItem
     public void recycle() {
+        super.recycle();
         ObjectPool.recycle(this);
     }
 
-    public static RefreshCallbackItem obtain(int postExecutionState) {
+    public static RefreshCallbackItem obtain(IBinder activityToken, int postExecutionState) {
         if (postExecutionState != 5 && postExecutionState != 4) {
             throw new IllegalArgumentException("Only ON_STOP or ON_PAUSE are allowed as a post execution state for RefreshCallbackItem but got " + postExecutionState);
         }
@@ -61,6 +57,7 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
         if (instance == null) {
             instance = new RefreshCallbackItem();
         }
+        instance.setActivityToken(activityToken);
         instance.mPostExecutionState = postExecutionState;
         return instance;
     }
@@ -68,52 +65,37 @@ public class RefreshCallbackItem extends ActivityTransactionItem {
     private RefreshCallbackItem() {
     }
 
-    @Override // android.os.Parcelable
+    @Override // android.app.servertransaction.ActivityTransactionItem, android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeInt(this.mPostExecutionState);
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!super.equals(o)) {
             return false;
         }
         RefreshCallbackItem other = (RefreshCallbackItem) o;
-        if (this.mPostExecutionState == other.mPostExecutionState) {
-            return true;
-        }
-        return false;
+        return this.mPostExecutionState == other.mPostExecutionState;
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public int hashCode() {
-        int result = (17 * 31) + this.mPostExecutionState;
-        return result;
+        int result = (17 * 31) + super.hashCode();
+        return (result * 31) + this.mPostExecutionState;
     }
 
+    @Override // android.app.servertransaction.ActivityTransactionItem
     public String toString() {
-        return "RefreshCallbackItem{mPostExecutionState=" + this.mPostExecutionState + "}";
+        return "RefreshCallbackItem{" + super.toString() + ",mPostExecutionState=" + this.mPostExecutionState + "}";
     }
 
     private RefreshCallbackItem(Parcel in) {
+        super(in);
         this.mPostExecutionState = in.readInt();
-    }
-
-    /* renamed from: android.app.servertransaction.RefreshCallbackItem$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RefreshCallbackItem> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RefreshCallbackItem createFromParcel(Parcel in) {
-            return new RefreshCallbackItem(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RefreshCallbackItem[] newArray(int size) {
-            return new RefreshCallbackItem[size];
-        }
     }
 }

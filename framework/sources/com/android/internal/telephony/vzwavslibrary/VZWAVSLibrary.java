@@ -13,32 +13,22 @@ import java.util.Locale;
 
 /* loaded from: classes5.dex */
 public class VZWAVSLibrary {
-    private static final String AVS_AUTHORITY_MVS = "com.verizon.vzwavs.mvs.provider";
-    private static final String AVS_AUTHORITY_STD = "com.verizon.vzwavs.provider";
-    private static final AvsInstance[] AVS_INSTANCES;
+    private static final String URI_TEMPLATE = "content://%s/apis";
     private static final String CERT_FP_MVS = "A1:F6:F0:8B:5D:91:99:55:DD:51:DA:94:88:38:87:14:29:B1:E9:36";
     private static final String CERT_FP_MVS_BYOD = "03:FE:29:EF:A0:6C:0B:D8:64:3A:A1:A7:C3:EC:91:A1:A6:57:00:E6";
+    private static final List<String> MVS_CERTS = Arrays.asList(CERT_FP_MVS, CERT_FP_MVS_BYOD);
     private static final String CERT_FP_STANDALONE = "0B:A7:6D:BD:55:0A:4C:76:68:BD:7C:85:60:C1:2D:AF:95:14:CC:02";
-    private static final Locale EN;
-    private static final List<String> MVS_CERTS;
-    private static final List<String> STANDALONE_CERTS;
-    private static final String URI_TEMPLATE = "content://%s/apis";
+    private static final List<String> STANDALONE_CERTS = Collections.singletonList(CERT_FP_STANDALONE);
+    private static final Locale EN = Locale.ENGLISH;
+    private static final String AVS_AUTHORITY_MVS = "com.verizon.vzwavs.mvs.provider";
+    private static final String AVS_AUTHORITY_STD = "com.verizon.vzwavs.provider";
+    private static final AvsInstance[] AVS_INSTANCES = {new AvsInstance("MvsAvs", AVS_AUTHORITY_MVS, MVS_CERTS, new String[0]), new AvsInstance("StandaloneAvs", AVS_AUTHORITY_STD, STANDALONE_CERTS, new String[0])};
 
-    /* loaded from: classes5.dex */
-    public enum AvsResult {
+    private enum AvsResult {
         GRANTED,
         DENIED,
         NOT_FOUND,
         NOT_PERMITTED
-    }
-
-    static {
-        List<String> asList = Arrays.asList(CERT_FP_MVS, CERT_FP_MVS_BYOD);
-        MVS_CERTS = asList;
-        List<String> singletonList = Collections.singletonList(CERT_FP_STANDALONE);
-        STANDALONE_CERTS = singletonList;
-        EN = Locale.ENGLISH;
-        AVS_INSTANCES = new AvsInstance[]{new AvsInstance("MvsAvs", AVS_AUTHORITY_MVS, asList, new String[0]), new AvsInstance("StandaloneAvs", AVS_AUTHORITY_STD, singletonList, new String[0])};
     }
 
     public static boolean isPackageAuthorized(Context context, String packageName, String api) {
@@ -47,44 +37,17 @@ public class VZWAVSLibrary {
         }
         for (AvsInstance avs : AVS_INSTANCES) {
             AvsResult res = queryAvsInstance(context, packageName, api, avs);
-            switch (AnonymousClass1.$SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult[res.ordinal()]) {
-                case 1:
-                case 2:
-                default:
-                case 3:
+            switch (res) {
+                case GRANTED:
                     return true;
-                case 4:
+                case DENIED:
                     return false;
+                case NOT_FOUND:
+                case NOT_PERMITTED:
+                default:
             }
         }
         return false;
-    }
-
-    /* renamed from: com.android.internal.telephony.vzwavslibrary.VZWAVSLibrary$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult;
-
-        static {
-            int[] iArr = new int[AvsResult.values().length];
-            $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult = iArr;
-            try {
-                iArr[AvsResult.NOT_FOUND.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult[AvsResult.NOT_PERMITTED.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult[AvsResult.GRANTED.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$android$internal$telephony$vzwavslibrary$VZWAVSLibrary$AvsResult[AvsResult.DENIED.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
     }
 
     private static AvsResult queryAvsInstance(Context context, String callingPackageName, String api, AvsInstance avsInstance) {
@@ -158,8 +121,7 @@ public class VZWAVSLibrary {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class AvsInstance {
+    private static class AvsInstance {
         final String authority;
         final Uri contentProviderUri;
         final List<String> fingerprints;

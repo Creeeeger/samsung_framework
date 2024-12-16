@@ -31,19 +31,16 @@ public final class SmartspaceSession implements AutoCloseable {
     private final AtomicBoolean mIsClosed = new AtomicBoolean(false);
     private final ArrayMap<OnTargetsAvailableListener, CallbackWrapper> mRegisteredCallbacks = new ArrayMap<>();
 
-    /* loaded from: classes.dex */
     public interface OnTargetsAvailableListener {
         void onTargetsAvailable(List<SmartspaceTarget> list);
     }
 
-    public SmartspaceSession(Context context, SmartspaceConfig smartspaceConfig) {
+    SmartspaceSession(Context context, SmartspaceConfig smartspaceConfig) {
         IBinder b = ServiceManager.getService(Context.SMARTSPACE_SERVICE);
-        ISmartspaceManager asInterface = ISmartspaceManager.Stub.asInterface(b);
-        this.mInterface = asInterface;
-        SmartspaceSessionId smartspaceSessionId = new SmartspaceSessionId(context.getPackageName() + ":" + UUID.randomUUID().toString(), context.getUser());
-        this.mSessionId = smartspaceSessionId;
+        this.mInterface = ISmartspaceManager.Stub.asInterface(b);
+        this.mSessionId = new SmartspaceSessionId(context.getPackageName() + ":" + UUID.randomUUID().toString(), context.getUser());
         try {
-            asInterface.createSmartspaceSession(smartspaceConfig, smartspaceSessionId, getToken());
+            this.mInterface.createSmartspaceSession(smartspaceConfig, this.mSessionId, getToken());
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to create Smartspace session", e);
             e.rethrowFromSystemServer();
@@ -132,9 +129,8 @@ public final class SmartspaceSession implements AutoCloseable {
 
     protected void finalize() {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
             if (!this.mIsClosed.get()) {
                 destroy();
@@ -164,8 +160,7 @@ public final class SmartspaceSession implements AutoCloseable {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class CallbackWrapper extends ISmartspaceCallback.Stub {
+    static class CallbackWrapper extends ISmartspaceCallback.Stub {
         private final Consumer<List<SmartspaceTarget>> mCallback;
         private final Executor mExecutor;
 
@@ -189,13 +184,13 @@ public final class SmartspaceSession implements AutoCloseable {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onResult$0(ParceledListSlice result) {
             this.mCallback.accept(result.getList());
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class Token {
+    private static class Token {
         static final IBinder sBinder = new Binder(SmartspaceSession.TAG);
 
         private Token() {

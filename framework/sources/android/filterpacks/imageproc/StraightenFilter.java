@@ -85,26 +85,14 @@ public class StraightenFilter extends Filter {
     private void updateParameters() {
         float cosTheta = (float) Math.cos(this.mAngle * DEGREE_TO_RADIAN);
         float sinTheta = (float) Math.sin(this.mAngle * DEGREE_TO_RADIAN);
-        float f = this.mMaxAngle;
-        if (f <= 0.0f) {
+        if (this.mMaxAngle <= 0.0f) {
             throw new RuntimeException("Max angle is out of range (0-180).");
         }
-        if (f > 90.0f) {
-            f = 90.0f;
-        }
-        this.mMaxAngle = f;
-        int i = this.mWidth;
-        int i2 = this.mHeight;
-        Point p0 = new Point(((-cosTheta) * i) + (i2 * sinTheta), ((-sinTheta) * i) - (i2 * cosTheta));
-        int i3 = this.mWidth;
-        int i4 = this.mHeight;
-        Point p1 = new Point((i3 * cosTheta) + (i4 * sinTheta), (i3 * sinTheta) - (i4 * cosTheta));
-        int i5 = this.mWidth;
-        int i6 = this.mHeight;
-        Point p2 = new Point(((-cosTheta) * i5) - (i6 * sinTheta), ((-sinTheta) * i5) + (i6 * cosTheta));
-        int i7 = this.mWidth;
-        int i8 = this.mHeight;
-        Point p3 = new Point((i7 * cosTheta) - (i8 * sinTheta), (i7 * sinTheta) + (i8 * cosTheta));
+        this.mMaxAngle = this.mMaxAngle <= 90.0f ? this.mMaxAngle : 90.0f;
+        Point p0 = new Point(((-cosTheta) * this.mWidth) + (this.mHeight * sinTheta), ((-sinTheta) * this.mWidth) - (this.mHeight * cosTheta));
+        Point p1 = new Point((this.mWidth * cosTheta) + (this.mHeight * sinTheta), (this.mWidth * sinTheta) - (this.mHeight * cosTheta));
+        Point p2 = new Point(((-cosTheta) * this.mWidth) - (this.mHeight * sinTheta), ((-sinTheta) * this.mWidth) + (this.mHeight * cosTheta));
+        Point p3 = new Point((this.mWidth * cosTheta) - (this.mHeight * sinTheta), (this.mWidth * sinTheta) + (this.mHeight * cosTheta));
         float maxWidth = Math.max(Math.abs(p0.x), Math.abs(p1.x));
         float maxHeight = Math.max(Math.abs(p0.y), Math.abs(p1.y));
         float scale = Math.min(this.mWidth / maxWidth, this.mHeight / maxHeight) * 0.5f;

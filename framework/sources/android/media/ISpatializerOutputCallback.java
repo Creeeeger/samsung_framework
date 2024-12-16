@@ -12,7 +12,6 @@ public interface ISpatializerOutputCallback extends IInterface {
 
     void dispatchSpatializerOutputChanged(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements ISpatializerOutputCallback {
         @Override // android.media.ISpatializerOutputCallback
         public void dispatchSpatializerOutputChanged(int output) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISpatializerOutputCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements ISpatializerOutputCallback {
         static final int TRANSACTION_dispatchSpatializerOutputChanged = 1;
 
@@ -67,25 +65,22 @@ public interface ISpatializerOutputCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISpatializerOutputCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISpatializerOutputCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISpatializerOutputCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchSpatializerOutputChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchSpatializerOutputChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements ISpatializerOutputCallback {
+        private static class Proxy implements ISpatializerOutputCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

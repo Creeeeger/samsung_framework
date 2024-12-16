@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class LteSignalStrength implements Parcelable {
     public static final Parcelable.Creator<LteSignalStrength> CREATOR = new Parcelable.Creator<LteSignalStrength>() { // from class: android.hardware.radio.network.LteSignalStrength.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LteSignalStrength createFromParcel(Parcel _aidl_source) {
             LteSignalStrength _aidl_out = new LteSignalStrength();
@@ -18,6 +16,7 @@ public class LteSignalStrength implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LteSignalStrength[] newArray(int _aidl_size) {
             return new LteSignalStrength[_aidl_size];
@@ -30,25 +29,6 @@ public class LteSignalStrength implements Parcelable {
     public int cqi = 0;
     public int timingAdvance = 0;
     public int cqiTableIndex = 0;
-
-    /* renamed from: android.hardware.radio.network.LteSignalStrength$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LteSignalStrength> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LteSignalStrength createFromParcel(Parcel _aidl_source) {
-            LteSignalStrength _aidl_out = new LteSignalStrength();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LteSignalStrength[] newArray(int _aidl_size) {
-            return new LteSignalStrength[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -157,7 +137,7 @@ public class LteSignalStrength implements Parcelable {
         _aidl_sj.add("cqi: " + this.cqi);
         _aidl_sj.add("timingAdvance: " + this.timingAdvance);
         _aidl_sj.add("cqiTableIndex: " + this.cqiTableIndex);
-        return "android.hardware.radio.network.LteSignalStrength" + _aidl_sj.toString();
+        return "LteSignalStrength" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

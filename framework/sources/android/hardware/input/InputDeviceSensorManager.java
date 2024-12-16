@@ -9,7 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.TriggerEventListener;
 import android.hardware.input.IInputSensorEventListener;
-import android.hardware.input.InputManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -20,38 +19,30 @@ import android.os.RemoteException;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.InputDevice;
-import com.android.internal.os.SomeArgs;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /* loaded from: classes2.dex */
-public class InputDeviceSensorManager implements InputManager.InputDeviceListener {
+public class InputDeviceSensorManager {
     private static final boolean DEBUG = false;
     private static final int MSG_SENSOR_ACCURACY_CHANGED = 1;
     private static final int MSG_SENSOR_CHANGED = 2;
     private static final String TAG = "InputDeviceSensorManager";
-    private InputManagerGlobal mGlobal;
+    private final InputManagerGlobal mGlobal;
     private InputSensorEventListener mInputServiceSensorListener;
-    private final Handler mSensorHandler;
-    private final HandlerThread mSensorThread;
+    private HandlerThread mSensorThread;
     private final Map<Integer, List<Sensor>> mSensors = new HashMap();
     private final Object mInputSensorLock = new Object();
     private final ArrayList<InputSensorEventListenerDelegate> mInputSensorEventListeners = new ArrayList<>();
 
     public InputDeviceSensorManager(InputManagerGlobal inputManagerGlobal) {
         this.mGlobal = inputManagerGlobal;
-        HandlerThread handlerThread = new HandlerThread("SensorThread");
-        this.mSensorThread = handlerThread;
-        handlerThread.start();
-        Handler handler = new Handler(handlerThread.getLooper());
-        this.mSensorHandler = handler;
-        this.mGlobal.registerInputDeviceListener(this, handler);
         initializeSensors();
     }
 
-    public SensorManager getSensorManager(int deviceId) {
+    SensorManager getSensorManager(int deviceId) {
         return new InputSensorManager(deviceId);
     }
 
@@ -63,7 +54,6 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    @Override // android.hardware.input.InputManager.InputDeviceListener
     public void onInputDeviceAdded(int deviceId) {
         synchronized (this.mInputSensorLock) {
             if (!this.mSensors.containsKey(Integer.valueOf(deviceId))) {
@@ -74,14 +64,12 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    @Override // android.hardware.input.InputManager.InputDeviceListener
     public void onInputDeviceRemoved(int deviceId) {
         synchronized (this.mInputSensorLock) {
             this.mSensors.remove(Integer.valueOf(deviceId));
         }
     }
 
-    @Override // android.hardware.input.InputManager.InputDeviceListener
     public void onInputDeviceChanged(int deviceId) {
         synchronized (this.mInputSensorLock) {
             this.mSensors.remove(Integer.valueOf(deviceId));
@@ -89,11 +77,9 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean sensorEquals(Sensor lhs, Sensor rhs) {
-        if (lhs.getType() == rhs.getType() && lhs.getId() == rhs.getId()) {
-            return true;
-        }
-        return false;
+        return lhs.getType() == rhs.getType() && lhs.getId() == rhs.getId();
     }
 
     private void populateSensorsForInputDeviceLocked(int deviceId, InputSensorInfo[] sensorInfos) {
@@ -134,9 +120,14 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         return Integer.MIN_VALUE;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInputSensorChanged(int deviceId, int sensorType, int accuracy, long timestamp, float[] values) {
         synchronized (this.mInputSensorLock) {
             Sensor sensor = getInputDeviceSensorLocked(deviceId, sensorType);
+            if (sensor == null) {
+                Slog.wtf(TAG, "onInputSensorChanged: Got sensor update for device " + deviceId + " but the sensor was not found.");
+                return;
+            }
             for (int i = 0; i < this.mInputSensorEventListeners.size(); i++) {
                 InputSensorEventListenerDelegate listener = this.mInputSensorEventListeners.get(i);
                 if (listener.hasSensorRegistered(deviceId, sensorType)) {
@@ -155,6 +146,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onInputSensorAccuracyChanged(int deviceId, int sensorType, int accuracy) {
         synchronized (this.mInputSensorLock) {
             for (int i = 0; i < this.mInputSensorEventListeners.size(); i++) {
@@ -166,12 +158,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class InputSensorEventListener extends IInputSensorEventListener.Stub {
-        /* synthetic */ InputSensorEventListener(InputDeviceSensorManager inputDeviceSensorManager, InputSensorEventListenerIA inputSensorEventListenerIA) {
-            this();
-        }
-
+    private final class InputSensorEventListener extends IInputSensorEventListener.Stub {
         private InputSensorEventListener() {
         }
 
@@ -186,21 +173,16 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static final class InputSensorEventListenerDelegate extends Handler {
-        private final int mDelayUs;
+    private static final class InputSensorEventListenerDelegate extends Handler {
         private final SensorEventListener mListener;
-        private final int mMaxBatchReportLatencyUs;
         private final SparseArray<SensorEvent> mSensorEvents;
-        private List<Sensor> mSensors;
+        private final List<Sensor> mSensors;
 
-        InputSensorEventListenerDelegate(SensorEventListener listener, Sensor sensor, int delayUs, int maxBatchReportLatencyUs, Handler handler) {
-            super(handler != null ? handler.getLooper() : Looper.myLooper());
+        InputSensorEventListenerDelegate(SensorEventListener listener, Sensor sensor, Looper looper) {
+            super(looper);
             this.mSensors = new ArrayList();
             this.mSensorEvents = new SparseArray<>();
             this.mListener = listener;
-            this.mDelayUs = delayUs;
-            this.mMaxBatchReportLatencyUs = maxBatchReportLatencyUs;
             addSensor(sensor);
         }
 
@@ -216,6 +198,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
             if (sensor == null) {
                 this.mSensors.clear();
                 this.mSensorEvents.clear();
+                return;
             }
             for (Sensor s : this.mSensors) {
                 if (InputDeviceSensorManager.sensorEquals(s, sensor)) {
@@ -251,17 +234,16 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
             return this.mListener;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public SensorEvent getSensorEvent(Sensor sensor) {
             return this.mSensorEvents.get(sensor.getType());
         }
 
         public void sendSensorChanged(SensorEvent event) {
-            SomeArgs.obtain();
             obtainMessage(2, event).sendToTarget();
         }
 
         public void sendSensorAccuracyChanged(int deviceId, int sensorType, int accuracy) {
-            SomeArgs.obtain();
             obtainMessage(1, deviceId, sensorType, Integer.valueOf(accuracy)).sendToTarget();
         }
 
@@ -277,17 +259,16 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
                             this.mListener.onAccuracyChanged(sensor, accuracy);
                         }
                     }
-                    return;
+                    break;
                 case 2:
                     SensorEvent event = (SensorEvent) msg.obj;
                     this.mListener.onSensorChanged(event);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public Sensor getSensorForInputDevice(int deviceId, int type) {
         synchronized (this.mInputSensorLock) {
             for (Map.Entry<Integer, List<Sensor>> entry : this.mSensors.entrySet()) {
@@ -301,6 +282,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public List<Sensor> getFullSensorListForDevice(int deviceId) {
         List<Sensor> sensors = new ArrayList<>();
         synchronized (this.mInputSensorLock) {
@@ -315,6 +297,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         return sensors;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean registerListenerInternal(SensorEventListener listener, Sensor sensor, int delayUs, int maxBatchReportLatencyUs, Handler handler) {
         if (listener == null) {
             Slog.e(TAG, "listener is null");
@@ -332,10 +315,14 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
             Slog.e(TAG, "maxBatchReportLatencyUs and delayUs should be non-negative");
             return false;
         }
-        if (getSensorForInputDevice(sensor.getId(), sensor.getType()) != null) {
-            synchronized (this.mInputSensorLock) {
+        synchronized (this.mInputSensorLock) {
+            if (getSensorForInputDevice(sensor.getId(), sensor.getType()) != null) {
                 int deviceId = sensor.getId();
-                InputDevice inputDevice = InputDevice.getDevice(deviceId);
+                InputDevice inputDevice = this.mGlobal.getInputDevice(deviceId);
+                if (inputDevice == null) {
+                    Slog.e(TAG, "input device not found for sensor " + sensor.getId());
+                    return false;
+                }
                 if (!inputDevice.hasSensor()) {
                     Slog.e(TAG, "The device doesn't have the sensor:" + sensor);
                     return false;
@@ -345,19 +332,16 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
                     return false;
                 }
             }
-        }
-        synchronized (this.mInputSensorLock) {
             if (this.mInputServiceSensorListener == null) {
-                InputSensorEventListener inputSensorEventListener = new InputSensorEventListener();
-                this.mInputServiceSensorListener = inputSensorEventListener;
-                if (!this.mGlobal.registerSensorListener(inputSensorEventListener)) {
+                this.mInputServiceSensorListener = new InputSensorEventListener();
+                if (!this.mGlobal.registerSensorListener(this.mInputServiceSensorListener)) {
                     Slog.e(TAG, "Failed registering the sensor listener");
                     return false;
                 }
             }
             int idx = findSensorEventListenerLocked(listener);
             if (idx < 0) {
-                InputSensorEventListenerDelegate d = new InputSensorEventListenerDelegate(listener, sensor, delayUs, maxBatchReportLatencyUs, handler == null ? this.mSensorHandler : handler);
+                InputSensorEventListenerDelegate d = new InputSensorEventListenerDelegate(listener, sensor, getLooperForListenerLocked(handler));
                 this.mInputSensorEventListeners.add(d);
             } else {
                 this.mInputSensorEventListeners.get(idx).addSensor(sensor);
@@ -366,6 +350,18 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
+    private Looper getLooperForListenerLocked(Handler requestedHandler) {
+        if (requestedHandler != null) {
+            return requestedHandler.getLooper();
+        }
+        if (this.mSensorThread == null) {
+            this.mSensorThread = new HandlerThread("SensorThread");
+            this.mSensorThread.start();
+        }
+        return this.mSensorThread.getLooper();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void unregisterListenerInternal(SensorEventListener listener, Sensor sensor) {
         if (listener == null) {
             throw new IllegalArgumentException("listener must not be null");
@@ -379,7 +375,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
                 if (delegate.isEmpty()) {
                     this.mInputSensorEventListeners.remove(idx);
                 }
-                if (this.mInputServiceSensorListener != null && this.mInputSensorEventListeners.size() == 0) {
+                if (this.mInputServiceSensorListener != null && this.mInputSensorEventListeners.isEmpty()) {
                     this.mGlobal.unregisterSensorListener(this.mInputServiceSensorListener);
                     this.mInputServiceSensorListener = null;
                 }
@@ -410,7 +406,8 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    private boolean flush(SensorEventListener listener) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public boolean flushInternal(SensorEventListener listener) {
         synchronized (this.mInputSensorLock) {
             int idx = findSensorEventListenerLocked(listener);
             if (idx < 0) {
@@ -426,7 +423,6 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
     }
 
-    /* loaded from: classes2.dex */
     public class InputSensorManager extends SensorManager {
         final int mId;
 
@@ -440,7 +436,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
 
         @Override // android.hardware.SensorManager
-        public List<Sensor> getFullSensorList() {
+        protected List<Sensor> getFullSensorList() {
             return InputDeviceSensorManager.this.getFullSensorListForDevice(this.mId);
         }
 
@@ -461,7 +457,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
 
         @Override // android.hardware.SensorManager
         protected boolean flushImpl(SensorEventListener listener) {
-            return flush(listener);
+            return InputDeviceSensorManager.this.flushInternal(listener);
         }
 
         @Override // android.hardware.SensorManager
@@ -474,7 +470,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
 
         @Override // android.hardware.SensorManager
-        public int configureDirectChannelImpl(SensorDirectChannel channel, Sensor s, int rate) {
+        protected int configureDirectChannelImpl(SensorDirectChannel channel, Sensor s, int rate) {
             return 0;
         }
 
@@ -497,7 +493,7 @@ public class InputDeviceSensorManager implements InputManager.InputDeviceListene
         }
 
         @Override // android.hardware.SensorManager
-        protected boolean initDataInjectionImpl(boolean enable) {
+        protected boolean initDataInjectionImpl(boolean enable, int mode) {
             return false;
         }
 

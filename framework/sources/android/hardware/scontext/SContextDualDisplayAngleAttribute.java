@@ -26,17 +26,15 @@ public class SContextDualDisplayAngleAttribute extends SContextAttribute {
 
     @Override // android.hardware.scontext.SContextAttribute, com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mOnAngle;
-        if (i < 0 || i > 360) {
+        if (this.mOnAngle < 0 || this.mOnAngle > 360) {
             Log.d(TAG, "Value of onAngle is wrong!!");
             return false;
         }
-        int i2 = this.mOffAngle;
-        if (i2 < 0 || i2 > 360) {
+        if (this.mOffAngle < 0 || this.mOffAngle > 360) {
             Log.d(TAG, "Value of offAngle is wrong!!");
             return false;
         }
-        if (i > i2) {
+        if (this.mOnAngle > this.mOffAngle) {
             Log.d(TAG, "onAngle is above offAngle!!");
             return false;
         }

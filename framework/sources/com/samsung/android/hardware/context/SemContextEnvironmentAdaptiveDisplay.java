@@ -5,17 +5,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextEnvironmentAdaptiveDisplay extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay> CREATOR = new Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay>() { // from class: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplay.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplay createFromParcel(Parcel in) {
             return new SemContextEnvironmentAdaptiveDisplay(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextEnvironmentAdaptiveDisplay[] newArray(int size) {
             return new SemContextEnvironmentAdaptiveDisplay[size];
@@ -23,24 +22,7 @@ public class SemContextEnvironmentAdaptiveDisplay extends SemContextEventContext
     };
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextEnvironmentAdaptiveDisplay$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextEnvironmentAdaptiveDisplay> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextEnvironmentAdaptiveDisplay createFromParcel(Parcel in) {
-            return new SemContextEnvironmentAdaptiveDisplay(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextEnvironmentAdaptiveDisplay[] newArray(int size) {
-            return new SemContextEnvironmentAdaptiveDisplay[size];
-        }
-    }
-
-    public SemContextEnvironmentAdaptiveDisplay() {
+    SemContextEnvironmentAdaptiveDisplay() {
         this.mContext = new Bundle();
     }
 

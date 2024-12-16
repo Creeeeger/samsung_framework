@@ -8,7 +8,7 @@ import android.util.Log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class Rlog {
     private static final boolean USER_BUILD = Build.IS_USER;
 

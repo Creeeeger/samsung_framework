@@ -36,14 +36,12 @@ public class ObjectSource extends Filter {
     @Override // android.filterfw.core.Filter
     public void process(FilterContext context) {
         if (this.mFrame == null) {
-            Object obj = this.mObject;
-            if (obj == null) {
+            if (this.mObject == null) {
                 throw new NullPointerException("ObjectSource producing frame with no object set!");
             }
-            FrameFormat outputFormat = ObjectFormat.fromObject(obj, 1);
-            Frame newFrame = context.getFrameManager().newFrame(outputFormat);
-            this.mFrame = newFrame;
-            newFrame.setObjectValue(this.mObject);
+            FrameFormat outputFormat = ObjectFormat.fromObject(this.mObject, 1);
+            this.mFrame = context.getFrameManager().newFrame(outputFormat);
+            this.mFrame.setObjectValue(this.mObject);
             this.mFrame.setTimestamp(-1L);
         }
         pushOutput("frame", this.mFrame);
@@ -59,9 +57,8 @@ public class ObjectSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void fieldPortValueUpdated(String name, FilterContext context) {
-        Frame frame;
-        if (name.equals("object") && (frame = this.mFrame) != null) {
-            frame.release();
+        if (name.equals("object") && this.mFrame != null) {
+            this.mFrame.release();
             this.mFrame = null;
         }
     }

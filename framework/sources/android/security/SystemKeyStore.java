@@ -2,6 +2,7 @@ package android.security;
 
 import android.os.Environment;
 import android.os.FileUtils;
+import android.os.StrictMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class SystemKeyStore {
     }
 
     public byte[] generateNewKey(int numBits, String algName, String keyName) throws NoSuchAlgorithmException {
+        StrictMode.noteDiskWrite();
         File keyFile = getKeyFile(keyName);
         if (keyFile.exists()) {
             throw new IllegalArgumentException();
@@ -72,6 +74,7 @@ public class SystemKeyStore {
     }
 
     private File getKeyFile(String keyName) {
+        StrictMode.noteDiskWrite();
         File sysKeystoreDir = new File(Environment.getDataDirectory(), SYSTEM_KEYSTORE_DIRECTORY);
         File keyFile = new File(sysKeystoreDir, keyName + KEY_FILE_EXTENSION);
         return keyFile;
@@ -82,6 +85,7 @@ public class SystemKeyStore {
     }
 
     public byte[] retrieveKey(String keyName) throws IOException {
+        StrictMode.noteDiskRead();
         File keyFile = getKeyFile(keyName);
         if (!keyFile.exists()) {
             return null;
@@ -90,6 +94,7 @@ public class SystemKeyStore {
     }
 
     public void deleteKey(String keyName) {
+        StrictMode.noteDiskWrite();
         File keyFile = getKeyFile(keyName);
         if (!keyFile.exists()) {
             throw new IllegalArgumentException();

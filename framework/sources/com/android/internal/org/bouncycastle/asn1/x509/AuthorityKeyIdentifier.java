@@ -14,7 +14,6 @@ import com.android.internal.org.bouncycastle.asn1.DERTaggedObject;
 import com.android.internal.org.bouncycastle.crypto.Digest;
 import com.android.internal.org.bouncycastle.crypto.digests.AndroidDigestFactory;
 import com.android.internal.org.bouncycastle.util.encoders.Hex;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.math.BigInteger;
 import java.util.Enumeration;
 
@@ -42,7 +41,7 @@ public class AuthorityKeyIdentifier extends ASN1Object {
         return getInstance(Extensions.getExtensionParsedValue(extensions, Extension.authorityKeyIdentifier));
     }
 
-    public AuthorityKeyIdentifier(ASN1Sequence seq) {
+    protected AuthorityKeyIdentifier(ASN1Sequence seq) {
         this.keyidentifier = null;
         this.certissuer = null;
         this.certserno = null;
@@ -110,9 +109,8 @@ public class AuthorityKeyIdentifier extends ASN1Object {
     }
 
     public byte[] getKeyIdentifier() {
-        ASN1OctetString aSN1OctetString = this.keyidentifier;
-        if (aSN1OctetString != null) {
-            return aSN1OctetString.getOctets();
+        if (this.keyidentifier != null) {
+            return this.keyidentifier.getOctets();
         }
         return null;
     }
@@ -122,9 +120,8 @@ public class AuthorityKeyIdentifier extends ASN1Object {
     }
 
     public BigInteger getAuthorityCertSerialNumber() {
-        ASN1Integer aSN1Integer = this.certserno;
-        if (aSN1Integer != null) {
-            return aSN1Integer.getValue();
+        if (this.certserno != null) {
+            return this.certserno.getValue();
         }
         return null;
     }
@@ -132,24 +129,20 @@ public class AuthorityKeyIdentifier extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
-        ASN1OctetString aSN1OctetString = this.keyidentifier;
-        if (aSN1OctetString != null) {
-            v.add(new DERTaggedObject(false, 0, aSN1OctetString));
+        if (this.keyidentifier != null) {
+            v.add(new DERTaggedObject(false, 0, this.keyidentifier));
         }
-        GeneralNames generalNames = this.certissuer;
-        if (generalNames != null) {
-            v.add(new DERTaggedObject(false, 1, generalNames));
+        if (this.certissuer != null) {
+            v.add(new DERTaggedObject(false, 1, this.certissuer));
         }
-        ASN1Integer aSN1Integer = this.certserno;
-        if (aSN1Integer != null) {
-            v.add(new DERTaggedObject(false, 2, aSN1Integer));
+        if (this.certserno != null) {
+            v.add(new DERTaggedObject(false, 2, this.certserno));
         }
         return new DERSequence(v);
     }
 
     public String toString() {
-        ASN1OctetString aSN1OctetString = this.keyidentifier;
-        String keyID = aSN1OctetString != null ? Hex.toHexString(aSN1OctetString.getOctets()) : SemCapabilities.FEATURE_TAG_NULL;
+        String keyID = this.keyidentifier != null ? Hex.toHexString(this.keyidentifier.getOctets()) : "null";
         return "AuthorityKeyIdentifier: KeyID(" + keyID + NavigationBarInflaterView.KEY_CODE_END;
     }
 }

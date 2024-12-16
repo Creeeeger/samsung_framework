@@ -14,21 +14,14 @@ import com.samsung.android.sdk.sfe.font.FontManager;
 import com.samsung.android.sdk.sfe.util.SFError;
 import java.io.File;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SFText {
     private static final String TAG = "SFText";
-    private boolean firstInitializedFlag;
-    private CharSequence mCharSequense;
-    private Context mContext;
+    private final Context mContext;
     private String mFlipFont;
     private String mFontFamily;
     private FontManager mFontManager;
-    private int mHeight;
-    private Layout mLayout;
-    private String mText;
-    private int mWidth;
     private TextView owner;
-    private String mFontPath = null;
     private boolean isBoldStyle = false;
     private boolean isItalicStyle = false;
     private boolean isSetFontFromAsset = false;
@@ -37,6 +30,7 @@ public class SFText {
     private Paint mPaint = null;
     private int mHandle = -1;
     private boolean hasEffect = false;
+    private boolean firstInitializedFlag = true;
 
     private native int SFText_AddInnerShadowTextEffect(float f, float f2, float f3, int i, float f4);
 
@@ -52,11 +46,7 @@ public class SFText {
 
     private native int[] SFText_GetDrawingBitmapSize();
 
-    private native int SFText_GetEffectBottomOffset();
-
     private native int SFText_GetEffectLeftOffset();
-
-    private native int SFText_GetEffectRightOffset();
 
     private native int SFText_GetEffectTopOffset();
 
@@ -70,8 +60,6 @@ public class SFText {
 
     private native boolean SFText_SetFontFamilyName(String str);
 
-    private native boolean SFText_SetFontWeight(int i);
-
     private native boolean SFText_SetLayout(Layout layout);
 
     private native boolean SFText_SetLine(int i);
@@ -83,9 +71,7 @@ public class SFText {
     private native void SFText_finalize();
 
     public SFText(Context context) {
-        this.firstInitializedFlag = true;
         this.mContext = context;
-        this.firstInitializedFlag = true;
     }
 
     private void init() {
@@ -96,16 +82,15 @@ public class SFText {
         if (!SFEffect.isInitialized()) {
             return;
         }
-        FontManager fontManager = SFEffect.getFontManager();
-        this.mFontManager = fontManager;
-        this.mFlipFont = fontManager.getFlipFontPath(this.mContext);
+        this.mFontManager = SFEffect.getFontManager();
+        this.mFlipFont = this.mFontManager.getFlipFontPath(this.mContext);
         this.firstInitializedFlag = false;
         if (this.mPaint == null) {
             this.mPaint = new Paint();
         }
     }
 
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         if (!SFEffect.isInitialized()) {
             return;
         }
@@ -127,13 +112,9 @@ public class SFText {
         }
         Log.d(TAG, "render() - Start!");
         try {
-            this.mWidth = this.owner.getWidth();
-            this.mHeight = this.owner.getHeight();
-            Layout layout = this.owner.getLayout();
-            this.mLayout = layout;
-            CharSequence text = layout.getText();
-            this.mCharSequense = text;
-            this.mText = text.toString();
+            int mWidth = this.owner.getWidth();
+            int mHeight = this.owner.getHeight();
+            Layout mLayout = this.owner.getLayout();
             Typeface typeface = this.owner.getTypeface();
             if (typeface != null) {
                 this.isBoldStyle = typeface.isBold();
@@ -143,15 +124,15 @@ public class SFText {
                 this.isItalicStyle = false;
             }
             getFontPath();
-            if (this.mLayout == null) {
+            if (mLayout == null) {
                 Log.e(TAG, "Can not render text effect - layout is null");
                 return false;
             }
-            if (this.mWidth > 0 && this.mHeight > 0) {
+            if (mWidth > 0 && mHeight > 0) {
                 setSFTextPaint(this.owner.getPaint());
                 setSFTextLine(this.mLines);
                 setSFTextView(this.owner);
-                setSFTextLayout(this.mLayout);
+                setSFTextLayout(mLayout);
                 int[] buffer = renderTextEffect();
                 int[] nativeSize = getDrawingBitmapSize();
                 int renderWidth = nativeSize[0];
@@ -177,29 +158,25 @@ public class SFText {
     }
 
     private void setSFTextPaint(Paint paint) {
-        boolean rnt = SFText_SetPaint(paint);
-        if (!rnt) {
+        if (!SFText_SetPaint(paint)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private void setSFTextLine(int line) {
-        boolean rnt = SFText_SetLine(line);
-        if (!rnt) {
+        if (!SFText_SetLine(line)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private void setSFTextLayout(Layout layout) {
-        boolean rnt = SFText_SetLayout(layout);
-        if (!rnt) {
+        if (!SFText_SetLayout(layout)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private void setSFTextView(TextView v) {
-        boolean rnt = SFText_SetView(v);
-        if (!rnt) {
+        if (!SFText_SetView(v)) {
             throwUncheckedException(SFError.getError());
         }
     }
@@ -208,31 +185,28 @@ public class SFText {
         if (this.isSetFontFromAsset || this.isSetFontFromFile) {
             return;
         }
-        String str = this.mFontFamily;
-        if (str == null || str.isEmpty()) {
+        if (this.mFontFamily == null || this.mFontFamily.isEmpty()) {
             this.mFontFamily = Typeface.DEFAULT_FAMILY;
         }
         String fontName = this.mFontManager.getSystemFontName(this.mFontFamily, this.isBoldStyle, this.isItalicStyle);
         if (fontName == null) {
             Log.w(TAG, "System not support fontFamily = '" + this.mFontFamily + "' , change to default fontFamily");
             this.mFontFamily = Typeface.DEFAULT_FAMILY;
-            fontName = this.mFontManager.getSystemFontName(Typeface.DEFAULT_FAMILY, this.isBoldStyle, this.isItalicStyle);
+            fontName = this.mFontManager.getSystemFontName(this.mFontFamily, this.isBoldStyle, this.isItalicStyle);
             if (fontName == null) {
                 Log.e(TAG, "System not support default fontFamily = '" + this.mFontFamily);
                 return;
             }
         }
-        this.mFontPath = fontName;
-        if (fontName.indexOf(SystemFonts.SYSTEM_FONT_DIR) != 0) {
-            this.mFontPath = SystemFonts.SYSTEM_FONT_DIR + fontName;
+        String mFontPath = fontName;
+        if (mFontPath.indexOf(SystemFonts.SYSTEM_FONT_DIR) != 0) {
+            mFontPath = SystemFonts.SYSTEM_FONT_DIR + fontName;
         }
-        String str2 = this.mFlipFont;
-        if (str2 != null) {
-            this.mFontPath = str2;
+        if (this.mFlipFont != null) {
+            mFontPath = this.mFlipFont;
         }
-        setSFFontFile(this.mFontPath);
+        setSFFontFile(mFontPath);
         setSFFontFamilyName(this.mFontFamily);
-        setSFFontWeight(600);
     }
 
     public void setOwnerView(TextView v) {
@@ -346,36 +320,19 @@ public class SFText {
     }
 
     private void setSFFontFile(String filePath) {
-        boolean rnt = SFText_SetFont(filePath);
-        if (!rnt) {
+        if (!SFText_SetFont(filePath)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private void setSFFontFamilyName(String familyName) {
-        boolean rnt = SFText_SetFontFamilyName(familyName);
-        if (!rnt) {
-            throwUncheckedException(SFError.getError());
-        }
-    }
-
-    private void setSFFontWeight(int weight) {
-        boolean rnt = SFText_SetFontWeight(weight);
-        if (!rnt) {
-            throwUncheckedException(SFError.getError());
-        }
-    }
-
-    private void setSFFontFile(String filePath, byte[] buf) {
-        boolean rnt = SFText_SetFont2(filePath, buf);
-        if (!rnt) {
+        if (!SFText_SetFontFamilyName(familyName)) {
             throwUncheckedException(SFError.getError());
         }
     }
 
     private void setSFFontFile(AssetManager assetManager, String filePath) {
-        boolean rnt = SFText_SetFont3(assetManager, filePath);
-        if (!rnt) {
+        if (!SFText_SetFont3(assetManager, filePath)) {
             throwUncheckedException(SFError.getError());
         }
     }
@@ -390,13 +347,5 @@ public class SFText {
 
     private int getEffectTopOffset() {
         return SFText_GetEffectTopOffset();
-    }
-
-    private int getEffectRightOffset() {
-        return SFText_GetEffectRightOffset();
-    }
-
-    private int getEffectBottomOffset() {
-        return SFText_GetEffectBottomOffset();
     }
 }

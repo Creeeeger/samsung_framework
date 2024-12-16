@@ -3,6 +3,8 @@ package android.security.keystore2;
 import android.app.AppGlobals;
 import android.hardware.security.keymint.KeyParameter;
 import android.os.Build;
+import android.os.StrictMode;
+import android.security.Flags;
 import android.security.KeyPairGeneratorSpec;
 import android.security.KeyStore2;
 import android.security.KeyStoreException;
@@ -47,19 +49,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import libcore.util.EmptyArray;
 
 /* loaded from: classes3.dex */
 public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGeneratorSpi {
-    private static final String CURVE_ED_25519;
-    private static final String CURVE_X_25519;
+    private static final int ALGORITHM_ED25519 = 1204;
+    private static final int ALGORITHM_XDH = 1203;
     private static final int EC_DEFAULT_KEY_SIZE = 256;
     private static final int RSA_DEFAULT_KEY_SIZE = 2048;
     private static final int RSA_MAX_KEY_SIZE = 8192;
     private static final int RSA_MIN_KEY_SIZE = 512;
-    private static final List<String> SUPPORTED_EC_CURVE_NAMES;
-    private static final Map<String, Integer> SUPPORTED_EC_CURVE_NAME_TO_SIZE;
-    private static final List<Integer> SUPPORTED_EC_CURVE_SIZES;
     private static final String TAG = "AndroidKeyStoreKeyPairGeneratorSpi";
     private KeyDescriptor mAttestKeyDescriptor;
     private String mEcCurveName;
@@ -72,60 +70,59 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
     private int[] mKeymasterBlockModes;
     private int[] mKeymasterDigests;
     private int[] mKeymasterEncryptionPaddings;
+    private int[] mKeymasterMgf1Digests;
     private int[] mKeymasterPurposes;
     private int[] mKeymasterSignaturePaddings;
     private final int mOriginalKeymasterAlgorithm;
     private Long mRSAPublicExponent;
     private SecureRandom mRng;
     private KeyGenParameterSpec mSpec;
+    private static final Map<String, Integer> SUPPORTED_EC_CURVE_NAME_TO_SIZE = new HashMap();
+    private static final List<String> SUPPORTED_EC_CURVE_NAMES = new ArrayList();
+    private static final List<Integer> SUPPORTED_EC_CURVE_SIZES = new ArrayList();
+    private static final String CURVE_X_25519 = NamedParameterSpec.X25519.getName();
+    private static final String CURVE_ED_25519 = NamedParameterSpec.ED25519.getName();
 
-    /* loaded from: classes3.dex */
     public static class RSA extends AndroidKeyStoreKeyPairGeneratorSpi {
         public RSA() {
             super(1);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class EC extends AndroidKeyStoreKeyPairGeneratorSpi {
         public EC() {
             super(3);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class XDH extends AndroidKeyStoreKeyPairGeneratorSpi {
         public XDH() {
-            super(3);
+            super(1203);
+        }
+    }
+
+    public static class ED25519 extends AndroidKeyStoreKeyPairGeneratorSpi {
+        public ED25519() {
+            super(1204);
         }
     }
 
     static {
-        HashMap hashMap = new HashMap();
-        SUPPORTED_EC_CURVE_NAME_TO_SIZE = hashMap;
-        ArrayList arrayList = new ArrayList();
-        SUPPORTED_EC_CURVE_NAMES = arrayList;
-        ArrayList arrayList2 = new ArrayList();
-        SUPPORTED_EC_CURVE_SIZES = arrayList2;
-        String name = NamedParameterSpec.X25519.getName();
-        CURVE_X_25519 = name;
-        String name2 = NamedParameterSpec.ED25519.getName();
-        CURVE_ED_25519 = name2;
-        hashMap.put("p-224", 224);
-        hashMap.put("secp224r1", 224);
-        hashMap.put("p-256", 256);
-        hashMap.put("secp256r1", 256);
-        hashMap.put("prime256v1", 256);
-        hashMap.put(name.toLowerCase(Locale.US), 256);
-        hashMap.put(name2.toLowerCase(Locale.US), 256);
-        hashMap.put("p-384", 384);
-        hashMap.put("secp384r1", 384);
-        hashMap.put("p-521", 521);
-        hashMap.put("secp521r1", 521);
-        arrayList.addAll(hashMap.keySet());
-        Collections.sort(arrayList);
-        arrayList2.addAll(new HashSet(hashMap.values()));
-        Collections.sort(arrayList2);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("p-224", 224);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("secp224r1", 224);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("p-256", 256);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("secp256r1", 256);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("prime256v1", 256);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put(CURVE_X_25519.toLowerCase(Locale.US), 256);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put(CURVE_ED_25519.toLowerCase(Locale.US), 256);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("p-384", 384);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("secp384r1", 384);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("p-521", 521);
+        SUPPORTED_EC_CURVE_NAME_TO_SIZE.put("secp521r1", 521);
+        SUPPORTED_EC_CURVE_NAMES.addAll(SUPPORTED_EC_CURVE_NAME_TO_SIZE.keySet());
+        Collections.sort(SUPPORTED_EC_CURVE_NAMES);
+        SUPPORTED_EC_CURVE_SIZES.addAll(new HashSet(SUPPORTED_EC_CURVE_NAME_TO_SIZE.values()));
+        Collections.sort(SUPPORTED_EC_CURVE_SIZES);
     }
 
     protected AndroidKeyStoreKeyPairGeneratorSpi(int keymasterAlgorithm) {
@@ -155,86 +152,22 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         throw new IllegalArgumentException(KeyGenParameterSpec.class.getName() + " or " + KeyPairGeneratorSpec.class.getName() + " required to initialize this KeyPairGenerator");
     }
 
+    /* JADX WARN: Removed duplicated region for block: B:13:0x001e A[Catch: all -> 0x022e, TryCatch #2 {all -> 0x022e, blocks: (B:5:0x0009, B:7:0x000f, B:10:0x0016, B:11:0x001a, B:13:0x001e, B:14:0x0034, B:16:0x0052, B:17:0x0058, B:23:0x006b, B:25:0x0096, B:27:0x009c, B:29:0x00a2, B:31:0x00ab, B:33:0x00ae, B:34:0x00e0, B:36:0x00e1, B:38:0x00f2, B:39:0x0101, B:41:0x0107, B:42:0x0118, B:44:0x011e, B:47:0x013d, B:48:0x0148, B:54:0x0131, B:55:0x00fd, B:19:0x016c, B:20:0x0173, B:57:0x0166, B:58:0x016b, B:59:0x0022, B:61:0x0026, B:63:0x0029, B:67:0x0175, B:68:0x017a, B:69:0x017b, B:71:0x017f, B:73:0x0192, B:76:0x01a3, B:77:0x01bf, B:78:0x01c0, B:79:0x01ec, B:80:0x01ed, B:81:0x022d, B:83:0x0230, B:84:0x025c), top: B:2:0x0006, inners: #0, #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:16:0x0052 A[Catch: all -> 0x022e, TryCatch #2 {all -> 0x022e, blocks: (B:5:0x0009, B:7:0x000f, B:10:0x0016, B:11:0x001a, B:13:0x001e, B:14:0x0034, B:16:0x0052, B:17:0x0058, B:23:0x006b, B:25:0x0096, B:27:0x009c, B:29:0x00a2, B:31:0x00ab, B:33:0x00ae, B:34:0x00e0, B:36:0x00e1, B:38:0x00f2, B:39:0x0101, B:41:0x0107, B:42:0x0118, B:44:0x011e, B:47:0x013d, B:48:0x0148, B:54:0x0131, B:55:0x00fd, B:19:0x016c, B:20:0x0173, B:57:0x0166, B:58:0x016b, B:59:0x0022, B:61:0x0026, B:63:0x0029, B:67:0x0175, B:68:0x017a, B:69:0x017b, B:71:0x017f, B:73:0x0192, B:76:0x01a3, B:77:0x01bf, B:78:0x01c0, B:79:0x01ec, B:80:0x01ed, B:81:0x022d, B:83:0x0230, B:84:0x025c), top: B:2:0x0006, inners: #0, #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x016c A[Catch: all -> 0x022e, TryCatch #2 {all -> 0x022e, blocks: (B:5:0x0009, B:7:0x000f, B:10:0x0016, B:11:0x001a, B:13:0x001e, B:14:0x0034, B:16:0x0052, B:17:0x0058, B:23:0x006b, B:25:0x0096, B:27:0x009c, B:29:0x00a2, B:31:0x00ab, B:33:0x00ae, B:34:0x00e0, B:36:0x00e1, B:38:0x00f2, B:39:0x0101, B:41:0x0107, B:42:0x0118, B:44:0x011e, B:47:0x013d, B:48:0x0148, B:54:0x0131, B:55:0x00fd, B:19:0x016c, B:20:0x0173, B:57:0x0166, B:58:0x016b, B:59:0x0022, B:61:0x0026, B:63:0x0029, B:67:0x0175, B:68:0x017a, B:69:0x017b, B:71:0x017f, B:73:0x0192, B:76:0x01a3, B:77:0x01bf, B:78:0x01c0, B:79:0x01ec, B:80:0x01ed, B:81:0x022d, B:83:0x0230, B:84:0x025c), top: B:2:0x0006, inners: #0, #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x006b A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:59:0x0022 A[Catch: all -> 0x022e, TryCatch #2 {all -> 0x022e, blocks: (B:5:0x0009, B:7:0x000f, B:10:0x0016, B:11:0x001a, B:13:0x001e, B:14:0x0034, B:16:0x0052, B:17:0x0058, B:23:0x006b, B:25:0x0096, B:27:0x009c, B:29:0x00a2, B:31:0x00ab, B:33:0x00ae, B:34:0x00e0, B:36:0x00e1, B:38:0x00f2, B:39:0x0101, B:41:0x0107, B:42:0x0118, B:44:0x011e, B:47:0x013d, B:48:0x0148, B:54:0x0131, B:55:0x00fd, B:19:0x016c, B:20:0x0173, B:57:0x0166, B:58:0x016b, B:59:0x0022, B:61:0x0026, B:63:0x0029, B:67:0x0175, B:68:0x017a, B:69:0x017b, B:71:0x017f, B:73:0x0192, B:76:0x01a3, B:77:0x01bf, B:78:0x01c0, B:79:0x01ec, B:80:0x01ed, B:81:0x022d, B:83:0x0230, B:84:0x025c), top: B:2:0x0006, inners: #0, #1 }] */
     @Override // java.security.KeyPairGeneratorSpi
-    public void initialize(AlgorithmParameterSpec params, SecureRandom random) throws InvalidAlgorithmParameterException {
-        KeyGenParameterSpec spec;
-        resetAll();
-        try {
-            if (params == null) {
-                throw new InvalidAlgorithmParameterException("Must supply params of type " + KeyGenParameterSpec.class.getName() + " or " + KeyPairGeneratorSpec.class.getName());
-            }
-            int keymasterAlgorithm = this.mOriginalKeymasterAlgorithm;
-            if (params instanceof KeyGenParameterSpec) {
-                spec = (KeyGenParameterSpec) params;
-            } else if (params instanceof KeyPairGeneratorSpec) {
-                KeyPairGeneratorSpec legacySpec = (KeyPairGeneratorSpec) params;
-                try {
-                    keymasterAlgorithm = getKeymasterAlgorithmFromLegacy(keymasterAlgorithm, legacySpec);
-                    KeyGenParameterSpec spec2 = buildKeyGenParameterSpecFromLegacy(legacySpec, keymasterAlgorithm);
-                    spec = spec2;
-                } catch (IllegalArgumentException | NullPointerException e) {
-                    throw new InvalidAlgorithmParameterException(e);
-                }
-            } else {
-                if (params instanceof NamedParameterSpec) {
-                    NamedParameterSpec namedSpec = (NamedParameterSpec) params;
-                    if (!namedSpec.getName().equalsIgnoreCase(NamedParameterSpec.X25519.getName()) && !namedSpec.getName().equalsIgnoreCase(NamedParameterSpec.ED25519.getName())) {
-                        throw new InvalidAlgorithmParameterException("Unsupported algorithm specified via NamedParameterSpec: " + namedSpec.getName());
-                    }
-                    throw new IllegalArgumentException("This KeyPairGenerator cannot be initialized using NamedParameterSpec. use " + KeyGenParameterSpec.class.getName() + " or " + KeyPairGeneratorSpec.class.getName());
-                }
-                throw new InvalidAlgorithmParameterException("Unsupported params class: " + params.getClass().getName() + ". Supported: " + KeyGenParameterSpec.class.getName() + ", " + KeyPairGeneratorSpec.class.getName());
-            }
-            this.mEntryAlias = spec.getKeystoreAlias();
-            this.mEntryNamespace = spec.getNamespace();
-            this.mSpec = spec;
-            this.mKeymasterAlgorithm = keymasterAlgorithm;
-            this.mKeySizeBits = spec.getKeySize();
-            initAlgorithmSpecificParameters();
-            if (this.mKeySizeBits == -1) {
-                this.mKeySizeBits = getDefaultKeySize(keymasterAlgorithm);
-            }
-            checkValidKeySize(keymasterAlgorithm, this.mKeySizeBits, this.mSpec.isStrongBoxBacked(), this.mEcCurveName);
-            if (spec.getKeystoreAlias() == null) {
-                throw new InvalidAlgorithmParameterException("KeyStore entry alias not provided");
-            }
-            try {
-                String jcaKeyAlgorithm = KeyProperties.KeyAlgorithm.fromKeymasterAsymmetricKeyAlgorithm(keymasterAlgorithm);
-                this.mKeymasterPurposes = KeyProperties.Purpose.allToKeymaster(spec.getPurposes());
-                this.mKeymasterBlockModes = KeyProperties.BlockMode.allToKeymaster(spec.getBlockModes());
-                this.mKeymasterEncryptionPaddings = KeyProperties.EncryptionPadding.allToKeymaster(spec.getEncryptionPaddings());
-                if ((spec.getPurposes() & 1) != 0 && spec.isRandomizedEncryptionRequired()) {
-                    for (int keymasterPadding : this.mKeymasterEncryptionPaddings) {
-                        if (!KeymasterUtils.isKeymasterPaddingSchemeIndCpaCompatibleWithAsymmetricCrypto(keymasterPadding)) {
-                            throw new InvalidAlgorithmParameterException("Randomized encryption (IND-CPA) required but may be violated by padding scheme: " + KeyProperties.EncryptionPadding.fromKeymaster(keymasterPadding) + ". See " + KeyGenParameterSpec.class.getName() + " documentation.");
-                        }
-                    }
-                }
-                this.mKeymasterSignaturePaddings = KeyProperties.SignaturePadding.allToKeymaster(spec.getSignaturePaddings());
-                if (spec.isDigestsSpecified()) {
-                    this.mKeymasterDigests = KeyProperties.Digest.allToKeymaster(spec.getDigests());
-                } else {
-                    this.mKeymasterDigests = EmptyArray.INT;
-                }
-                KeyStore2ParameterUtils.addUserAuthArgs(new ArrayList(), this.mSpec);
-                this.mJcaKeyAlgorithm = jcaKeyAlgorithm;
-                this.mRng = random;
-                this.mKeyStore = KeyStore2.getInstance();
-                this.mAttestKeyDescriptor = buildAndCheckAttestKeyDescriptor(spec);
-                checkAttestKeyPurpose(spec);
-                checkCorrectKeyPurposeForCurve(spec);
-                if (1 == 0) {
-                    resetAll();
-                }
-            } catch (IllegalArgumentException | IllegalStateException e2) {
-                throw new InvalidAlgorithmParameterException(e2);
-            }
-        } catch (Throwable th) {
-            if (0 == 0) {
-                resetAll();
-            }
-            throw th;
-        }
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void initialize(java.security.spec.AlgorithmParameterSpec r12, java.security.SecureRandom r13) throws java.security.InvalidAlgorithmParameterException {
+        /*
+            Method dump skipped, instructions count: 611
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi.initialize(java.security.spec.AlgorithmParameterSpec, java.security.SecureRandom):void");
     }
 
     private void checkAttestKeyPurpose(KeyGenParameterSpec spec) throws InvalidAlgorithmParameterException {
@@ -293,7 +226,7 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
     }
 
     private void checkAttestKeyPurpose(Authorization[] keyAuths) throws InvalidAlgorithmParameterException {
-        Predicate<Authorization> isAttestKeyPurpose = new Predicate() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda1
+        Predicate<Authorization> isAttestKeyPurpose = new Predicate() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return AndroidKeyStoreKeyPairGeneratorSpi.lambda$checkAttestKeyPurpose$0((Authorization) obj);
@@ -304,7 +237,7 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         }
     }
 
-    public static /* synthetic */ boolean lambda$checkAttestKeyPurpose$0(Authorization x) {
+    static /* synthetic */ boolean lambda$checkAttestKeyPurpose$0(Authorization x) {
         return x.keyParameter.tag == 536870913 && x.keyParameter.value.getKeyPurpose() == 7;
     }
 
@@ -373,6 +306,7 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         this.mKeymasterEncryptionPaddings = null;
         this.mKeymasterSignaturePaddings = null;
         this.mKeymasterDigests = null;
+        this.mKeymasterMgf1Digests = null;
         this.mKeySizeBits = 0;
         this.mSpec = null;
         this.mRSAPublicExponent = null;
@@ -388,10 +322,9 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 BigInteger publicExponent = null;
                 if (algSpecificSpec instanceof RSAKeyGenParameterSpec) {
                     RSAKeyGenParameterSpec rsaSpec = (RSAKeyGenParameterSpec) algSpecificSpec;
-                    int i = this.mKeySizeBits;
-                    if (i == -1) {
+                    if (this.mKeySizeBits == -1) {
                         this.mKeySizeBits = rsaSpec.getKeysize();
-                    } else if (i != rsaSpec.getKeysize()) {
+                    } else if (this.mKeySizeBits != rsaSpec.getKeysize()) {
                         throw new InvalidAlgorithmParameterException("RSA key size must match  between " + this.mSpec + " and " + algSpecificSpec + ": " + this.mKeySizeBits + " vs " + rsaSpec.getKeysize());
                     }
                     publicExponent = rsaSpec.getPublicExponent();
@@ -415,18 +348,22 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
             case 3:
                 if (algSpecificSpec instanceof ECGenParameterSpec) {
                     ECGenParameterSpec ecSpec = (ECGenParameterSpec) algSpecificSpec;
-                    String name = ecSpec.getName();
-                    this.mEcCurveName = name;
-                    Integer ecSpecKeySizeBits = SUPPORTED_EC_CURVE_NAME_TO_SIZE.get(name.toLowerCase(Locale.US));
+                    this.mEcCurveName = ecSpec.getName();
+                    if (this.mOriginalKeymasterAlgorithm == 1203 && !this.mEcCurveName.equalsIgnoreCase("x25519")) {
+                        throw new InvalidAlgorithmParameterException("XDH algorithm only supports x25519 curve.");
+                    }
+                    if (this.mOriginalKeymasterAlgorithm == 1204 && !this.mEcCurveName.equalsIgnoreCase("ed25519")) {
+                        throw new InvalidAlgorithmParameterException("Ed25519 algorithm only supports ed25519 curve.");
+                    }
+                    Integer ecSpecKeySizeBits = SUPPORTED_EC_CURVE_NAME_TO_SIZE.get(this.mEcCurveName.toLowerCase(Locale.US));
                     if (ecSpecKeySizeBits == null) {
                         throw new InvalidAlgorithmParameterException("Unsupported EC curve name: " + this.mEcCurveName + ". Supported: " + SUPPORTED_EC_CURVE_NAMES);
                     }
-                    int i2 = this.mKeySizeBits;
-                    if (i2 == -1) {
+                    if (this.mKeySizeBits == -1) {
                         this.mKeySizeBits = ecSpecKeySizeBits.intValue();
                         return;
                     } else {
-                        if (i2 != ecSpecKeySizeBits.intValue()) {
+                        if (this.mKeySizeBits != ecSpecKeySizeBits.intValue()) {
                             throw new InvalidAlgorithmParameterException("EC key size must match  between " + this.mSpec + " and " + algSpecificSpec + ": " + this.mKeySizeBits + " vs " + ecSpecKeySizeBits);
                         }
                         return;
@@ -441,13 +378,13 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
 
     @Override // java.security.KeyPairGeneratorSpi
     public KeyPair generateKeyPair() {
-        KeyGenParameterSpec keyGenParameterSpec;
         int securityLevel;
         int flags;
-        if (this.mKeyStore == null || (keyGenParameterSpec = this.mSpec) == null) {
+        StrictMode.noteSlowCall("generateKeyPair");
+        if (this.mKeyStore == null || this.mSpec == null) {
             throw new IllegalStateException("Not initialized");
         }
-        if (keyGenParameterSpec.isStrongBoxBacked()) {
+        if (this.mSpec.isStrongBoxBacked()) {
             securityLevel = 2;
         } else {
             securityLevel = 1;
@@ -466,23 +403,21 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         boolean success = false;
         try {
             try {
-                try {
-                    KeyStoreSecurityLevel iSecurityLevel = this.mKeyStore.getSecurityLevel(securityLevel);
-                    KeyMetadata metadata = iSecurityLevel.generateKey(descriptor, this.mAttestKeyDescriptor, constructKeyGenerationArguments(), flags, additionalEntropy);
-                    AndroidKeyStorePublicKey publicKey = AndroidKeyStoreProvider.makeAndroidKeyStorePublicKeyFromKeyEntryResponse(descriptor, metadata, iSecurityLevel, this.mKeymasterAlgorithm);
-                    success = true;
-                    return new KeyPair(publicKey, publicKey.getPrivateKey());
-                } catch (KeyStoreException e) {
-                    switch (e.getErrorCode()) {
-                        case -68:
-                            throw new StrongBoxUnavailableException("Failed to generated key pair.", e);
-                        default:
-                            ProviderException p = new ProviderException("Failed to generate key pair.", e);
-                            if ((this.mSpec.getPurposes() & 32) != 0) {
-                                throw new SecureKeyImportUnavailableException(p);
-                            }
-                            throw p;
-                    }
+                KeyStoreSecurityLevel iSecurityLevel = this.mKeyStore.getSecurityLevel(securityLevel);
+                KeyMetadata metadata = iSecurityLevel.generateKey(descriptor, this.mAttestKeyDescriptor, constructKeyGenerationArguments(), flags, additionalEntropy);
+                AndroidKeyStorePublicKey publicKey = AndroidKeyStoreProvider.makeAndroidKeyStorePublicKeyFromKeyEntryResponse(descriptor, metadata, iSecurityLevel, this.mKeymasterAlgorithm);
+                success = true;
+                return new KeyPair(publicKey, publicKey.getPrivateKey());
+            } catch (KeyStoreException e) {
+                switch (e.getErrorCode()) {
+                    case -68:
+                        throw new StrongBoxUnavailableException("Failed to generated key pair.", e);
+                    default:
+                        ProviderException p = new ProviderException("Failed to generate key pair.", e);
+                        if ((this.mSpec.getPurposes() & 32) != 0) {
+                            throw new SecureKeyImportUnavailableException(p);
+                        }
+                        throw p;
                 }
             } catch (DeviceIdAttestationException | IllegalArgumentException | InvalidAlgorithmParameterException | UnrecoverableKeyException e2) {
                 throw new ProviderException("Failed to construct key object from newly generated key pair.", e2);
@@ -570,31 +505,31 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         if (this.mKeymasterAlgorithm == 3) {
             params.add(KeyStore2ParameterUtils.makeEnum(268435466, keySizeAndNameToEcCurve(this.mKeySizeBits, this.mEcCurveName)));
         }
-        ArrayUtils.forEach(this.mKeymasterPurposes, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda2
+        ArrayUtils.forEach(this.mKeymasterPurposes, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda3
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 params.add(KeyStore2ParameterUtils.makeEnum(536870913, ((Integer) obj).intValue()));
             }
         });
-        ArrayUtils.forEach(this.mKeymasterBlockModes, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda3
+        ArrayUtils.forEach(this.mKeymasterBlockModes, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda4
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 params.add(KeyStore2ParameterUtils.makeEnum(536870916, ((Integer) obj).intValue()));
             }
         });
-        ArrayUtils.forEach(this.mKeymasterEncryptionPaddings, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda4
+        ArrayUtils.forEach(this.mKeymasterEncryptionPaddings, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda5
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                AndroidKeyStoreKeyPairGeneratorSpi.this.lambda$constructKeyGenerationArguments$4(params, (Integer) obj);
+                AndroidKeyStoreKeyPairGeneratorSpi.this.lambda$constructKeyGenerationArguments$5(params, (Integer) obj);
             }
         });
-        ArrayUtils.forEach(this.mKeymasterSignaturePaddings, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda5
+        ArrayUtils.forEach(this.mKeymasterSignaturePaddings, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda6
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 params.add(KeyStore2ParameterUtils.makeEnum(536870918, ((Integer) obj).intValue()));
             }
         });
-        ArrayUtils.forEach(this.mKeymasterDigests, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda6
+        ArrayUtils.forEach(this.mKeymasterDigests, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda7
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 params.add(KeyStore2ParameterUtils.makeEnum(536870917, ((Integer) obj).intValue()));
@@ -633,7 +568,8 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
         return params;
     }
 
-    public /* synthetic */ void lambda$constructKeyGenerationArguments$4(final List params, Integer padding) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$constructKeyGenerationArguments$5(final List params, Integer padding) {
         int securityLevel;
         params.add(KeyStore2ParameterUtils.makeEnum(536870918, padding.intValue()));
         if (this.mSpec.isStrongBoxBacked()) {
@@ -642,22 +578,37 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
             securityLevel = 1;
         }
         if (padding.intValue() == 2 && KeymasterUtils.isKeyMintDevice(securityLevel)) {
-            final boolean[] hasDefaultMgf1DigestBeenAdded = {false};
-            ArrayUtils.forEach(this.mKeymasterDigests, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda0
+            ArrayUtils.forEach(this.mKeymasterMgf1Digests, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    AndroidKeyStoreKeyPairGeneratorSpi.lambda$constructKeyGenerationArguments$3(params, hasDefaultMgf1DigestBeenAdded, (Integer) obj);
+                    params.add(KeyStore2ParameterUtils.makeEnum(536871115, ((Integer) obj).intValue()));
                 }
             });
-            if (!hasDefaultMgf1DigestBeenAdded[0]) {
-                params.add(KeyStore2ParameterUtils.makeEnum(536871115, KeyProperties.Digest.toKeymaster("SHA-1")));
+            if (!getMgf1DigestSetterFlag()) {
+                final int defaultMgf1Digest = KeyProperties.Digest.toKeymaster("SHA-1");
+                ArrayUtils.forEach(this.mKeymasterDigests, new Consumer() { // from class: android.security.keystore2.AndroidKeyStoreKeyPairGeneratorSpi$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        AndroidKeyStoreKeyPairGeneratorSpi.lambda$constructKeyGenerationArguments$4(defaultMgf1Digest, params, (Integer) obj);
+                    }
+                });
             }
         }
     }
 
-    public static /* synthetic */ void lambda$constructKeyGenerationArguments$3(List params, boolean[] hasDefaultMgf1DigestBeenAdded, Integer digest) {
-        params.add(KeyStore2ParameterUtils.makeEnum(536871115, digest.intValue()));
-        hasDefaultMgf1DigestBeenAdded[0] = hasDefaultMgf1DigestBeenAdded[0] | digest.equals(Integer.valueOf(KeyProperties.Digest.toKeymaster("SHA-1")));
+    static /* synthetic */ void lambda$constructKeyGenerationArguments$4(int defaultMgf1Digest, List params, Integer digest) {
+        if (digest.intValue() != defaultMgf1Digest) {
+            params.add(KeyStore2ParameterUtils.makeEnum(536871115, digest.intValue()));
+        }
+    }
+
+    private static boolean getMgf1DigestSetterFlag() {
+        try {
+            return Flags.mgf1DigestSetterV2();
+        } catch (SecurityException e) {
+            Log.w(TAG, "Cannot read MGF1 Digest setter flag value", e);
+            return false;
+        }
     }
 
     private void addAlgorithmSpecificParameters(List<KeyParameter> params) {
@@ -702,9 +653,8 @@ public abstract class AndroidKeyStoreKeyPairGeneratorSpi extends KeyPairGenerato
                 if (isStrongBoxBacked && isCurve25519(mEcCurveName)) {
                     throw new InvalidAlgorithmParameterException("Unsupported StrongBox EC: " + mEcCurveName);
                 }
-                List<Integer> list = SUPPORTED_EC_CURVE_SIZES;
-                if (!list.contains(Integer.valueOf(keySize))) {
-                    throw new InvalidAlgorithmParameterException("Unsupported EC key size: " + keySize + " bits. Supported: " + list);
+                if (!SUPPORTED_EC_CURVE_SIZES.contains(Integer.valueOf(keySize))) {
+                    throw new InvalidAlgorithmParameterException("Unsupported EC key size: " + keySize + " bits. Supported: " + SUPPORTED_EC_CURVE_SIZES);
                 }
                 return;
         }

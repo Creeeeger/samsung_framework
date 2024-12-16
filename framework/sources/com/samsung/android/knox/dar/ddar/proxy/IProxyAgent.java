@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IProxyAgent extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.dar.ddar.proxy.IProxyAgent";
 
@@ -19,7 +19,6 @@ public interface IProxyAgent extends IInterface {
 
     boolean terminateSecureSession(int i, String str, String str2) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IProxyAgent {
         @Override // com.samsung.android.knox.dar.ddar.proxy.IProxyAgent
         public Bundle onMessage(int callingUid, String svcName, String msgName, Bundle args) throws RemoteException {
@@ -46,7 +45,6 @@ public interface IProxyAgent extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IProxyAgent {
         static final int TRANSACTION_initializeSecureSession = 2;
         static final int TRANSACTION_onAgentReconnected = 4;
@@ -98,52 +96,49 @@ public interface IProxyAgent extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProxyAgent.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProxyAgent.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProxyAgent.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    String _arg2 = data.readString();
+                    Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result = onMessage(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    String _arg22 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result2 = initializeSecureSession(_arg02, _arg12, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = terminateSecureSession(_arg03, _arg13, _arg23);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    onAgentReconnected();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            String _arg2 = data.readString();
-                            Bundle _arg3 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result = onMessage(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            String _arg22 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result2 = initializeSecureSession(_arg02, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = terminateSecureSession(_arg03, _arg13, _arg23);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            onAgentReconnected();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IProxyAgent {
             private IBinder mRemote;
 

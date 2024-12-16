@@ -4,7 +4,6 @@ package android.os;
 public final class KernelWakeSourcesProto {
     public static final long WAKEUP_SOURCES = 2246267895809L;
 
-    /* loaded from: classes3.dex */
     public final class WakeupSource {
         public static final long ACTIVE_COUNT = 1120986464258L;
         public static final long ACTIVE_SINCE = 1112396529670L;

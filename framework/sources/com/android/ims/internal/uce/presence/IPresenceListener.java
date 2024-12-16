@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.android.ims.internal.uce.common.StatusCode;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IPresenceListener extends IInterface {
     void capInfoReceived(String str, PresTupleInfo[] presTupleInfoArr) throws RemoteException;
 
@@ -27,7 +27,6 @@ public interface IPresenceListener extends IInterface {
 
     void unpublishMessageSent() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IPresenceListener {
         @Override // com.android.ims.internal.uce.presence.IPresenceListener
         public void getVersionCb(String version) throws RemoteException {
@@ -71,7 +70,6 @@ public interface IPresenceListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IPresenceListener {
         public static final String DESCRIPTOR = "com.android.ims.internal.uce.presence.IPresenceListener";
         static final int TRANSACTION_capInfoReceived = 7;
@@ -139,75 +137,71 @@ public interface IPresenceListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    getVersionCb(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    StatusCode _arg02 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
+                    data.enforceNoDataAvail();
+                    serviceAvailable(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    StatusCode _arg03 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
+                    data.enforceNoDataAvail();
+                    serviceUnAvailable(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    PresPublishTriggerType _arg04 = (PresPublishTriggerType) data.readTypedObject(PresPublishTriggerType.CREATOR);
+                    data.enforceNoDataAvail();
+                    publishTriggering(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    PresCmdStatus _arg05 = (PresCmdStatus) data.readTypedObject(PresCmdStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    cmdStatus(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    PresSipResponse _arg06 = (PresSipResponse) data.readTypedObject(PresSipResponse.CREATOR);
+                    data.enforceNoDataAvail();
+                    sipResponseReceived(_arg06);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    PresTupleInfo[] _arg1 = (PresTupleInfo[]) data.createTypedArray(PresTupleInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    capInfoReceived(_arg07, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    PresRlmiInfo _arg08 = (PresRlmiInfo) data.readTypedObject(PresRlmiInfo.CREATOR);
+                    PresResInfo[] _arg12 = (PresResInfo[]) data.createTypedArray(PresResInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    listCapInfoReceived(_arg08, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    unpublishMessageSent();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            getVersionCb(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            StatusCode _arg02 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
-                            data.enforceNoDataAvail();
-                            serviceAvailable(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            StatusCode _arg03 = (StatusCode) data.readTypedObject(StatusCode.CREATOR);
-                            data.enforceNoDataAvail();
-                            serviceUnAvailable(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            PresPublishTriggerType _arg04 = (PresPublishTriggerType) data.readTypedObject(PresPublishTriggerType.CREATOR);
-                            data.enforceNoDataAvail();
-                            publishTriggering(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            PresCmdStatus _arg05 = (PresCmdStatus) data.readTypedObject(PresCmdStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            cmdStatus(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            PresSipResponse _arg06 = (PresSipResponse) data.readTypedObject(PresSipResponse.CREATOR);
-                            data.enforceNoDataAvail();
-                            sipResponseReceived(_arg06);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            PresTupleInfo[] _arg1 = (PresTupleInfo[]) data.createTypedArray(PresTupleInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            capInfoReceived(_arg07, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            PresRlmiInfo _arg08 = (PresRlmiInfo) data.readTypedObject(PresRlmiInfo.CREATOR);
-                            PresResInfo[] _arg12 = (PresResInfo[]) data.createTypedArray(PresResInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            listCapInfoReceived(_arg08, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            unpublishMessageSent();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IPresenceListener {
+        private static class Proxy implements IPresenceListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

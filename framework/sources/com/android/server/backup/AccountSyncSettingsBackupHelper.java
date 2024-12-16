@@ -4,7 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
-import android.app.backup.BackupHelper;
+import android.app.backup.BackupHelperWithLogger;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncAdapterType;
@@ -35,7 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /* loaded from: classes5.dex */
-public class AccountSyncSettingsBackupHelper implements BackupHelper {
+public class AccountSyncSettingsBackupHelper extends BackupHelperWithLogger {
     private static final boolean DEBUG = false;
     private static final String JSON_FORMAT_ENCODING = "UTF-8";
     private static final String JSON_FORMAT_HEADER_KEY = "account_data";
@@ -60,15 +60,15 @@ public class AccountSyncSettingsBackupHelper implements BackupHelper {
 
     public AccountSyncSettingsBackupHelper(Context context, int userId) {
         this.mContext = context;
-        this.mAccountManager = AccountManager.get(context);
+        this.mAccountManager = AccountManager.get(this.mContext);
         this.mUserId = userId;
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void performBackup(ParcelFileDescriptor oldState, BackupDataOutput output, ParcelFileDescriptor newState) {
         try {
             JSONObject dataJSON = serializeAccountSyncSettingsToJSON(this.mUserId);
-            byte[] dataBytes = dataJSON.toString().getBytes(JSON_FORMAT_ENCODING);
+            byte[] dataBytes = dataJSON.toString().getBytes("UTF-8");
             byte[] oldMd5Checksum = readOldMd5Checksum(oldState);
             byte[] newMd5Checksum = generateMd5Checksum(dataBytes);
             if (Arrays.equals(oldMd5Checksum, newMd5Checksum)) {
@@ -178,12 +178,12 @@ public class AccountSyncSettingsBackupHelper implements BackupHelper {
         return md5.digest(data);
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void restoreEntity(BackupDataInputStream data) {
         byte[] dataBytes = new byte[data.size()];
         try {
             data.read(dataBytes);
-            String dataString = new String(dataBytes, JSON_FORMAT_ENCODING);
+            String dataString = new String(dataBytes, "UTF-8");
             JSONObject dataJSON = new JSONObject(dataString);
             boolean masterSyncEnabled = dataJSON.getBoolean(KEY_MASTER_SYNC_ENABLED);
             JSONArray accountJSONArray = dataJSON.getJSONArray("accounts");
@@ -301,7 +301,7 @@ public class AccountSyncSettingsBackupHelper implements BackupHelper {
         }
     }
 
-    @Override // android.app.backup.BackupHelper
+    @Override // android.app.backup.BackupHelperWithLogger, android.app.backup.BackupHelper
     public void writeNewStateDescription(ParcelFileDescriptor newState) {
     }
 

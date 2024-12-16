@@ -5,12 +5,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.Surface;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class OutputSurface implements Parcelable {
     public static final Parcelable.Creator<OutputSurface> CREATOR = new Parcelable.Creator<OutputSurface>() { // from class: android.hardware.camera2.extension.OutputSurface.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OutputSurface createFromParcel(Parcel _aidl_source) {
             OutputSurface _aidl_out = new OutputSurface();
@@ -18,33 +16,17 @@ public class OutputSurface implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OutputSurface[] newArray(int _aidl_size) {
             return new OutputSurface[_aidl_size];
         }
     };
-    public int imageFormat = 0;
     public Size size;
     public Surface surface;
-
-    /* renamed from: android.hardware.camera2.extension.OutputSurface$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OutputSurface> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OutputSurface createFromParcel(Parcel _aidl_source) {
-            OutputSurface _aidl_out = new OutputSurface();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OutputSurface[] newArray(int _aidl_size) {
-            return new OutputSurface[_aidl_size];
-        }
-    }
+    public int imageFormat = 0;
+    public long dynamicRangeProfile = 0;
+    public int colorSpace = 0;
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -53,6 +35,8 @@ public class OutputSurface implements Parcelable {
         _aidl_parcel.writeTypedObject(this.surface, _aidl_flag);
         _aidl_parcel.writeTypedObject(this.size, _aidl_flag);
         _aidl_parcel.writeInt(this.imageFormat);
+        _aidl_parcel.writeLong(this.dynamicRangeProfile);
+        _aidl_parcel.writeInt(this.colorSpace);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
         _aidl_parcel.writeInt(_aidl_end_pos - _aidl_start_pos);
@@ -87,8 +71,24 @@ public class OutputSurface implements Parcelable {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.imageFormat = _aidl_parcel.readInt();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.dynamicRangeProfile = _aidl_parcel.readLong();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
             } else {
-                this.imageFormat = _aidl_parcel.readInt();
+                this.colorSpace = _aidl_parcel.readInt();
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }

@@ -9,9 +9,7 @@ import android.widget.RemoteViews;
 /* loaded from: classes5.dex */
 public class Cocktail implements Parcelable {
     public static final Parcelable.Creator<Cocktail> CREATOR = new Parcelable.Creator<Cocktail>() { // from class: com.samsung.android.cocktailbar.Cocktail.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cocktail createFromParcel(Parcel in) {
             Cocktail data = new Cocktail();
@@ -19,6 +17,7 @@ public class Cocktail implements Parcelable {
             return data;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Cocktail[] newArray(int size) {
             return new Cocktail[size];
@@ -105,9 +104,8 @@ public class Cocktail implements Parcelable {
     }
 
     public ComponentName getProvider() {
-        CocktailProviderInfo cocktailProviderInfo = this.mProviderInfo;
-        if (cocktailProviderInfo != null) {
-            return cocktailProviderInfo.provider;
+        if (this.mProviderInfo != null) {
+            return this.mProviderInfo.provider;
         }
         return null;
     }
@@ -142,25 +140,22 @@ public class Cocktail implements Parcelable {
     }
 
     public void updateCocktailInfo(CocktailInfo cocktailInfo) {
-        CocktailInfo cocktailInfo2 = this.mCocktailInfo;
-        if (cocktailInfo2 == null || cocktailInfo == null) {
+        if (this.mCocktailInfo == null || cocktailInfo == null) {
             this.mCocktailInfo = cocktailInfo;
         } else {
-            cocktailInfo2.mergeInfo(cocktailInfo);
+            this.mCocktailInfo.mergeInfo(cocktailInfo);
         }
     }
 
     public void updateCocktailContentView(RemoteViews contentView, boolean isPartialUpdate) {
-        CocktailInfo cocktailInfo = this.mCocktailInfo;
-        if (cocktailInfo != null) {
-            cocktailInfo.updateContentView(contentView, isPartialUpdate);
+        if (this.mCocktailInfo != null) {
+            this.mCocktailInfo.updateContentView(contentView, isPartialUpdate);
         }
     }
 
     public void updateCocktailHelpView(RemoteViews helpView, boolean isPartialUpdate) {
-        CocktailInfo cocktailInfo = this.mCocktailInfo;
-        if (cocktailInfo != null) {
-            cocktailInfo.updateHelpView(helpView, isPartialUpdate);
+        if (this.mCocktailInfo != null) {
+            this.mCocktailInfo.updateHelpView(helpView, isPartialUpdate);
         }
     }
 
@@ -170,13 +165,8 @@ public class Cocktail implements Parcelable {
 
     public static String getUpdateIntentName(int version) {
         switch (version) {
-            case 1:
-                return CocktailBarManager.ACTION_COCKTAIL_UPDATE;
-            case 2:
-                return CocktailBarManager.ACTION_COCKTAIL_UPDATE_V2;
-            default:
-                return CocktailBarManager.ACTION_COCKTAIL_UPDATE;
         }
+        return CocktailBarManager.ACTION_COCKTAIL_UPDATE;
     }
 
     public String dump() {
@@ -184,9 +174,8 @@ public class Cocktail implements Parcelable {
         if (this.mBroadcast != null) {
             dumpResult = dumpResult + " has broadcast";
         }
-        CocktailInfo cocktailInfo = this.mCocktailInfo;
-        if (cocktailInfo != null) {
-            String cocktailInfoDump = cocktailInfo.dump();
+        if (this.mCocktailInfo != null) {
+            String cocktailInfoDump = this.mCocktailInfo.dump();
             dumpResult = dumpResult + " " + cocktailInfoDump;
         }
         return dumpResult + " ]";
@@ -228,24 +217,5 @@ public class Cocktail implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.samsung.android.cocktailbar.Cocktail$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Cocktail> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cocktail createFromParcel(Parcel in) {
-            Cocktail data = new Cocktail();
-            data.readFromParcel(in);
-            return data;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Cocktail[] newArray(int size) {
-            return new Cocktail[size];
-        }
     }
 }

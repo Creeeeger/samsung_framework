@@ -20,7 +20,6 @@ public final class ScriptGroup extends BaseObj {
     IO[] mOutputs;
     private Future[] mOutputs2;
 
-    /* loaded from: classes3.dex */
     static class IO {
         Allocation mAllocation;
         Script.KernelID mKID;
@@ -30,8 +29,7 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class ConnectLine {
+    static class ConnectLine {
         Type mAllocationType;
         Script.KernelID mFrom;
         Script.FieldID mToF;
@@ -50,8 +48,7 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class Node {
+    static class Node {
         int dagNumber;
         Node mNext;
         Script mScript;
@@ -64,7 +61,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Closure extends BaseObj {
         private static final String TAG = "Closure";
         private Object[] mArgs;
@@ -154,14 +150,13 @@ public final class ScriptGroup extends BaseObj {
         @Override // android.renderscript.BaseObj
         public void destroy() {
             super.destroy();
-            Allocation allocation = this.mReturnValue;
-            if (allocation != null) {
-                allocation.destroy();
+            if (this.mReturnValue != null) {
+                this.mReturnValue.destroy();
             }
         }
 
         @Override // android.renderscript.BaseObj
-        public void finalize() throws Throwable {
+        protected void finalize() throws Throwable {
             this.mReturnValue = null;
             super.finalize();
         }
@@ -232,8 +227,7 @@ public final class ScriptGroup extends BaseObj {
             this.mRS.nClosureSetGlobal(getID(this.mRS), fieldID.getID(this.mRS), vs.value, vs.size);
         }
 
-        /* loaded from: classes3.dex */
-        public static final class ValueAndSize {
+        private static final class ValueAndSize {
             public int size;
             public long value;
 
@@ -267,7 +261,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Future {
         Closure mClosure;
         Script.FieldID mFieldID;
@@ -292,7 +285,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Input {
         Object mValue;
         List<Pair<Closure, Script.FieldID>> mFieldID = new ArrayList();
@@ -366,9 +358,9 @@ public final class ScriptGroup extends BaseObj {
             unbound.set(obj);
         }
         this.mRS.nScriptGroup2Execute(getID(this.mRS));
-        Future[] futureArr = this.mOutputs2;
-        Object[] outputObjs = new Object[futureArr.length];
+        Object[] outputObjs = new Object[this.mOutputs2.length];
         int i2 = 0;
+        Future[] futureArr = this.mOutputs2;
         int length = futureArr.length;
         int i3 = 0;
         while (i3 < length) {
@@ -385,46 +377,31 @@ public final class ScriptGroup extends BaseObj {
     }
 
     public void setInput(Script.KernelID s, Allocation a) {
-        int ct = 0;
-        while (true) {
-            IO[] ioArr = this.mInputs;
-            if (ct < ioArr.length) {
-                if (ioArr[ct].mKID != s) {
-                    ct++;
-                } else {
-                    this.mInputs[ct].mAllocation = a;
-                    this.mRS.nScriptGroupSetInput(getID(this.mRS), s.getID(this.mRS), this.mRS.safeID(a));
-                    return;
-                }
-            } else {
-                throw new RSIllegalArgumentException("Script not found");
+        for (int ct = 0; ct < this.mInputs.length; ct++) {
+            if (this.mInputs[ct].mKID == s) {
+                this.mInputs[ct].mAllocation = a;
+                this.mRS.nScriptGroupSetInput(getID(this.mRS), s.getID(this.mRS), this.mRS.safeID(a));
+                return;
             }
         }
+        throw new RSIllegalArgumentException("Script not found");
     }
 
     public void setOutput(Script.KernelID s, Allocation a) {
-        int ct = 0;
-        while (true) {
-            IO[] ioArr = this.mOutputs;
-            if (ct < ioArr.length) {
-                if (ioArr[ct].mKID != s) {
-                    ct++;
-                } else {
-                    this.mOutputs[ct].mAllocation = a;
-                    this.mRS.nScriptGroupSetOutput(getID(this.mRS), s.getID(this.mRS), this.mRS.safeID(a));
-                    return;
-                }
-            } else {
-                throw new RSIllegalArgumentException("Script not found");
+        for (int ct = 0; ct < this.mOutputs.length; ct++) {
+            if (this.mOutputs[ct].mKID == s) {
+                this.mOutputs[ct].mAllocation = a;
+                this.mRS.nScriptGroupSetOutput(getID(this.mRS), s.getID(this.mRS), this.mRS.safeID(a));
+                return;
             }
         }
+        throw new RSIllegalArgumentException("Script not found");
     }
 
     public void execute() {
         this.mRS.nScriptGroupExecute(getID(this.mRS));
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private int mKernelCount;
         private RenderScript mRS;
@@ -649,7 +626,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Binding {
         private final Script.FieldID mField;
         private final Object mValue;
@@ -668,7 +644,6 @@ public final class ScriptGroup extends BaseObj {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder2 {
         private static final String TAG = "ScriptGroup.Builder2";
         List<Closure> mClosures = new ArrayList();
@@ -746,9 +721,8 @@ public final class ScriptGroup extends BaseObj {
     @Override // android.renderscript.BaseObj
     public void destroy() {
         super.destroy();
-        List<Closure> list = this.mClosures;
-        if (list != null) {
-            for (Closure c : list) {
+        if (this.mClosures != null) {
+            for (Closure c : this.mClosures) {
                 c.destroy();
             }
         }

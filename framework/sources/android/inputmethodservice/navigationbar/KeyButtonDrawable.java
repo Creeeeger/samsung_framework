@@ -17,12 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 
 /* loaded from: classes2.dex */
-public final class KeyButtonDrawable extends Drawable {
+final class KeyButtonDrawable extends Drawable {
     public static final FloatProperty<KeyButtonDrawable> KEY_DRAWABLE_ROTATE = new FloatProperty<KeyButtonDrawable>("KeyButtonRotation") { // from class: android.inputmethodservice.navigationbar.KeyButtonDrawable.1
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(KeyButtonDrawable drawable, float degree) {
             drawable.setRotation(degree);
@@ -34,10 +30,6 @@ public final class KeyButtonDrawable extends Drawable {
         }
     };
     public static final FloatProperty<KeyButtonDrawable> KEY_DRAWABLE_TRANSLATE_Y = new FloatProperty<KeyButtonDrawable>("KeyButtonTranslateY") { // from class: android.inputmethodservice.navigationbar.KeyButtonDrawable.2
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(KeyButtonDrawable drawable, float y) {
             drawable.setTranslationY(y);
@@ -54,69 +46,6 @@ public final class KeyButtonDrawable extends Drawable {
     private final Paint mShadowPaint;
     private final ShadowDrawableState mState;
 
-    /* synthetic */ KeyButtonDrawable(Drawable drawable, ShadowDrawableState shadowDrawableState, KeyButtonDrawableIA keyButtonDrawableIA) {
-        this(drawable, shadowDrawableState);
-    }
-
-    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonDrawable$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 extends FloatProperty<KeyButtonDrawable> {
-        AnonymousClass1(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(KeyButtonDrawable drawable, float degree) {
-            drawable.setRotation(degree);
-        }
-
-        @Override // android.util.Property
-        public Float get(KeyButtonDrawable drawable) {
-            return Float.valueOf(drawable.getRotation());
-        }
-    }
-
-    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonDrawable$2 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass2 extends FloatProperty<KeyButtonDrawable> {
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(KeyButtonDrawable drawable, float y) {
-            drawable.setTranslationY(y);
-        }
-
-        @Override // android.util.Property
-        public Float get(KeyButtonDrawable drawable) {
-            return Float.valueOf(drawable.getTranslationY());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonDrawable$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 implements Drawable.Callback {
-        AnonymousClass3() {
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void invalidateDrawable(Drawable who) {
-            KeyButtonDrawable.this.invalidateSelf();
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void scheduleDrawable(Drawable who, Runnable what, long when) {
-            KeyButtonDrawable.this.scheduleSelf(what, when);
-        }
-
-        @Override // android.graphics.drawable.Drawable.Callback
-        public void unscheduleDrawable(Drawable who, Runnable what) {
-            KeyButtonDrawable.this.unscheduleSelf(what);
-        }
-    }
-
     KeyButtonDrawable(Drawable d, int lightColor, int darkColor, boolean horizontalFlip, Color ovalBackgroundColor) {
         this(d, new ShadowDrawableState(lightColor, darkColor, d instanceof AnimatedVectorDrawable, horizontalFlip, ovalBackgroundColor));
     }
@@ -124,10 +53,7 @@ public final class KeyButtonDrawable extends Drawable {
     private KeyButtonDrawable(Drawable d, ShadowDrawableState state) {
         this.mIconPaint = new Paint(3);
         this.mShadowPaint = new Paint(3);
-        AnonymousClass3 anonymousClass3 = new Drawable.Callback() { // from class: android.inputmethodservice.navigationbar.KeyButtonDrawable.3
-            AnonymousClass3() {
-            }
-
+        this.mAnimatedDrawableCallback = new Drawable.Callback() { // from class: android.inputmethodservice.navigationbar.KeyButtonDrawable.3
             @Override // android.graphics.drawable.Drawable.Callback
             public void invalidateDrawable(Drawable who) {
                 KeyButtonDrawable.this.invalidateSelf();
@@ -143,18 +69,16 @@ public final class KeyButtonDrawable extends Drawable {
                 KeyButtonDrawable.this.unscheduleSelf(what);
             }
         };
-        this.mAnimatedDrawableCallback = anonymousClass3;
         this.mState = state;
         if (d != null) {
-            state.mBaseHeight = d.getIntrinsicHeight();
-            state.mBaseWidth = d.getIntrinsicWidth();
-            state.mChangingConfigurations = d.getChangingConfigurations();
-            state.mChildState = d.getConstantState();
+            this.mState.mBaseHeight = d.getIntrinsicHeight();
+            this.mState.mBaseWidth = d.getIntrinsicWidth();
+            this.mState.mChangingConfigurations = d.getChangingConfigurations();
+            this.mState.mChildState = d.getConstantState();
         }
         if (canAnimate()) {
-            AnimatedVectorDrawable animatedVectorDrawable = (AnimatedVectorDrawable) state.mChildState.newDrawable().mutate();
-            this.mAnimatedDrawable = animatedVectorDrawable;
-            animatedVectorDrawable.setCallback(anonymousClass3);
+            this.mAnimatedDrawable = (AnimatedVectorDrawable) this.mState.mChildState.newDrawable().mutate();
+            this.mAnimatedDrawable.setCallback(this.mAnimatedDrawableCallback);
             setDrawableBounds(this.mAnimatedDrawable);
         }
     }
@@ -216,9 +140,8 @@ public final class KeyButtonDrawable extends Drawable {
     @Override // android.graphics.drawable.Drawable
     public void jumpToCurrentState() {
         super.jumpToCurrentState();
-        AnimatedVectorDrawable animatedVectorDrawable = this.mAnimatedDrawable;
-        if (animatedVectorDrawable != null) {
-            animatedVectorDrawable.jumpToCurrentState();
+        if (this.mAnimatedDrawable != null) {
+            this.mAnimatedDrawable.jumpToCurrentState();
         }
     }
 
@@ -284,23 +207,20 @@ public final class KeyButtonDrawable extends Drawable {
     }
 
     public void startAnimation() {
-        AnimatedVectorDrawable animatedVectorDrawable = this.mAnimatedDrawable;
-        if (animatedVectorDrawable != null) {
-            animatedVectorDrawable.start();
+        if (this.mAnimatedDrawable != null) {
+            this.mAnimatedDrawable.start();
         }
     }
 
     public void resetAnimation() {
-        AnimatedVectorDrawable animatedVectorDrawable = this.mAnimatedDrawable;
-        if (animatedVectorDrawable != null) {
-            animatedVectorDrawable.reset();
+        if (this.mAnimatedDrawable != null) {
+            this.mAnimatedDrawable.reset();
         }
     }
 
     public void clearAnimationCallbacks() {
-        AnimatedVectorDrawable animatedVectorDrawable = this.mAnimatedDrawable;
-        if (animatedVectorDrawable != null) {
-            animatedVectorDrawable.clearAnimationCallbacks();
+        if (this.mAnimatedDrawable != null) {
+            this.mAnimatedDrawable.clearAnimationCallbacks();
         }
     }
 
@@ -310,9 +230,8 @@ public final class KeyButtonDrawable extends Drawable {
         if (bounds.isEmpty()) {
             return;
         }
-        AnimatedVectorDrawable animatedVectorDrawable = this.mAnimatedDrawable;
-        if (animatedVectorDrawable != null) {
-            animatedVectorDrawable.draw(canvas);
+        if (this.mAnimatedDrawable != null) {
+            this.mAnimatedDrawable.draw(canvas);
             return;
         }
         boolean hwBitmapChanged = this.mState.mIsHardwareBitmap != canvas.isHardwareAccelerated();
@@ -343,11 +262,11 @@ public final class KeyButtonDrawable extends Drawable {
         return this.mState.canApplyTheme();
     }
 
-    public int getDrawableBackgroundColor() {
+    int getDrawableBackgroundColor() {
         return this.mState.mOvalBackgroundColor.toArgb();
     }
 
-    public boolean hasOvalBg() {
+    boolean hasOvalBg() {
         return this.mState.mOvalBackgroundColor != null;
     }
 
@@ -411,8 +330,7 @@ public final class KeyButtonDrawable extends Drawable {
         d.setBounds(offsetX, offsetY, getIntrinsicWidth() - offsetX, getIntrinsicHeight() - offsetY);
     }
 
-    /* loaded from: classes2.dex */
-    public static class ShadowDrawableState extends Drawable.ConstantState {
+    private static class ShadowDrawableState extends Drawable.ConstantState {
         int mAlpha = 255;
         int mBaseHeight;
         int mBaseWidth;

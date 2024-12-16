@@ -7,13 +7,12 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.ims.stub.ImsFeatureConfiguration;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsServiceControllerListener extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsServiceControllerListener";
 
     void onUpdateSupportedImsFeatures(ImsFeatureConfiguration imsFeatureConfiguration) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsServiceControllerListener {
         @Override // android.telephony.ims.aidl.IImsServiceControllerListener
         public void onUpdateSupportedImsFeatures(ImsFeatureConfiguration c) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IImsServiceControllerListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsServiceControllerListener {
         static final int TRANSACTION_onUpdateSupportedImsFeatures = 1;
 
@@ -68,26 +66,22 @@ public interface IImsServiceControllerListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsServiceControllerListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsServiceControllerListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsServiceControllerListener.DESCRIPTOR);
+                case 1:
+                    ImsFeatureConfiguration _arg0 = (ImsFeatureConfiguration) data.readTypedObject(ImsFeatureConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    onUpdateSupportedImsFeatures(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ImsFeatureConfiguration _arg0 = (ImsFeatureConfiguration) data.readTypedObject(ImsFeatureConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            onUpdateSupportedImsFeatures(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsServiceControllerListener {
+        private static class Proxy implements IImsServiceControllerListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

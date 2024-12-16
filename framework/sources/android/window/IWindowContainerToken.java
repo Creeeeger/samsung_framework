@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IWindowContainerToken extends IInterface {
     public static final String DESCRIPTOR = "android.window.IWindowContainerToken";
 
-    /* loaded from: classes4.dex */
     public static class Default implements IWindowContainerToken {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -18,7 +17,6 @@ public interface IWindowContainerToken extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IWindowContainerToken {
         public Stub() {
             attachInterface(this, IWindowContainerToken.DESCRIPTOR);
@@ -51,18 +49,14 @@ public interface IWindowContainerToken extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IWindowContainerToken.DESCRIPTOR);
-                    return true;
-                default:
-                    return super.onTransact(code, data, reply, flags);
+            if (code == 1598968902) {
+                reply.writeString(IWindowContainerToken.DESCRIPTOR);
+                return true;
             }
+            return super.onTransact(code, data, reply, flags);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IWindowContainerToken {
+        private static class Proxy implements IWindowContainerToken {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

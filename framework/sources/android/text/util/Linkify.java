@@ -1,11 +1,8 @@
 package android.text.util;
 
-import android.app.ActivityThread;
 import android.content.Context;
-import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.MediaMetrics;
 import android.telephony.PhoneNumberUtils;
-import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -16,8 +13,6 @@ import android.util.Log;
 import android.util.Patterns;
 import android.webkit.WebView;
 import android.widget.TextView;
-import com.android.i18n.phonenumbers.PhoneNumberMatch;
-import com.android.i18n.phonenumbers.PhoneNumberUtil;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class Linkify {
 
     @Deprecated
@@ -66,9 +61,6 @@ public class Linkify {
     public static final int SEM_WEB_URLS_KOR = 8192;
     public static final int WEB_URLS = 1;
     public static final MatchFilter sUrlMatchFilter = new MatchFilter() { // from class: android.text.util.Linkify.1
-        AnonymousClass1() {
-        }
-
         @Override // android.text.util.Linkify.MatchFilter
         public final boolean acceptMatch(CharSequence s, int start, int end) {
             if (start == 0 || s.charAt(start - 1) != '@') {
@@ -78,9 +70,6 @@ public class Linkify {
         }
     };
     public static final MatchFilter sPhoneNumberMatchFilter = new MatchFilter() { // from class: android.text.util.Linkify.2
-        AnonymousClass2() {
-        }
-
         @Override // android.text.util.Linkify.MatchFilter
         public final boolean acceptMatch(CharSequence s, int start, int end) {
             int digitCount = 0;
@@ -93,9 +82,6 @@ public class Linkify {
         }
     };
     public static final TransformFilter sPhoneNumberTransformFilter = new TransformFilter() { // from class: android.text.util.Linkify.3
-        AnonymousClass3() {
-        }
-
         @Override // android.text.util.Linkify.TransformFilter
         public final String transformUrl(Matcher match, String url) {
             return Patterns.digitsAndPlusOnly(match);
@@ -109,63 +95,15 @@ public class Linkify {
     };
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface LinkifyMask {
     }
 
-    /* loaded from: classes3.dex */
     public interface MatchFilter {
         boolean acceptMatch(CharSequence charSequence, int i, int i2);
     }
 
-    /* loaded from: classes3.dex */
     public interface TransformFilter {
         String transformUrl(Matcher matcher, String str);
-    }
-
-    /* renamed from: android.text.util.Linkify$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements MatchFilter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.text.util.Linkify.MatchFilter
-        public final boolean acceptMatch(CharSequence s, int start, int end) {
-            if (start == 0 || s.charAt(start - 1) != '@') {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    /* renamed from: android.text.util.Linkify$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements MatchFilter {
-        AnonymousClass2() {
-        }
-
-        @Override // android.text.util.Linkify.MatchFilter
-        public final boolean acceptMatch(CharSequence s, int start, int end) {
-            int digitCount = 0;
-            for (int i = start; i < end; i++) {
-                if (Character.isDigit(s.charAt(i)) && (digitCount = digitCount + 1) >= 5) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    /* renamed from: android.text.util.Linkify$3 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass3 implements TransformFilter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.text.util.Linkify.TransformFilter
-        public final String transformUrl(Matcher match, String url) {
-            return Patterns.digitsAndPlusOnly(match);
-        }
     }
 
     public static final boolean addLinks(Spannable text, int mask) {
@@ -356,7 +294,7 @@ public class Linkify {
             return false;
         }
         addLinkMovementMethod(text);
-        text.setText(s);
+        text.lambda$setTextAsync$0(s);
         return true;
     }
 
@@ -379,7 +317,7 @@ public class Linkify {
         SpannableString spannable = SpannableString.valueOf(text.getText());
         boolean linksAdded = addLinks(spannable, pattern, defaultScheme, schemes, matchFilter, transformFilter);
         if (linksAdded) {
-            text.setText(spannable);
+            text.lambda$setTextAsync$0(spannable);
             addLinkMovementMethod(text);
         }
     }
@@ -480,26 +418,112 @@ public class Linkify {
         }
     }
 
-    private static void gatherTelLinks(ArrayList<LinkSpec> links, Spannable s, Context context) {
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        Context ctx = context != null ? context : ActivityThread.currentApplication();
-        String regionCode = ctx != null ? ((TelephonyManager) ctx.getSystemService(TelephonyManager.class)).getSimCountryIso().toUpperCase(Locale.US) : Locale.getDefault().getCountry();
-        Iterable<PhoneNumberMatch> matches = phoneUtil.findNumbers(s.toString(), regionCode, PhoneNumberUtil.Leniency.POSSIBLE, Long.MAX_VALUE);
-        for (PhoneNumberMatch match : matches) {
-            LinkSpec spec = new LinkSpec();
-            spec.url = WebView.SCHEME_TEL + PhoneNumberUtils.normalizeNumber(match.rawString());
-            spec.start = match.start();
-            spec.end = match.end();
-            String rawString = match.rawString();
-            if ((rawString.charAt(0) == '[' && !rawString.contains(NavigationBarInflaterView.SIZE_MOD_END)) || (rawString.charAt(0) == '(' && !rawString.contains(NavigationBarInflaterView.KEY_CODE_END))) {
-                spec.start++;
-            } else if (rawString.charAt(0) == '+' && rawString.charAt(1) == '+') {
-                spec.start++;
-            }
-            if (!"KR".equals(regionCode) || needToAddLink(s.toString(), match.rawString(), spec.start, spec.end)) {
-                links.add(spec);
-            }
-        }
+    /* JADX WARN: Removed duplicated region for block: B:12:0x004d  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    private static void gatherTelLinks(java.util.ArrayList<android.text.util.LinkSpec> r12, android.text.Spannable r13, android.content.Context r14) {
+        /*
+            com.android.i18n.phonenumbers.PhoneNumberUtil r6 = com.android.i18n.phonenumbers.PhoneNumberUtil.getInstance()
+            if (r14 == 0) goto L8
+            r0 = r14
+            goto Lc
+        L8:
+            android.app.Application r0 = android.app.ActivityThread.currentApplication()
+        Lc:
+            r7 = r0
+            java.util.Locale r0 = java.util.Locale.getDefault()
+            java.lang.String r0 = r0.getCountry()
+            if (r7 == 0) goto L31
+            java.lang.Class<android.telephony.TelephonyManager> r1 = android.telephony.TelephonyManager.class
+            java.lang.Object r1 = r7.getSystemService(r1)
+            android.telephony.TelephonyManager r1 = (android.telephony.TelephonyManager) r1
+            java.lang.String r1 = r1.getSimCountryIso()
+            boolean r2 = android.text.TextUtils.isEmpty(r1)
+            if (r2 != 0) goto L31
+            java.util.Locale r2 = java.util.Locale.US
+            java.lang.String r0 = r1.toUpperCase(r2)
+            r8 = r0
+            goto L32
+        L31:
+            r8 = r0
+        L32:
+            java.lang.String r1 = r13.toString()
+            com.android.i18n.phonenumbers.PhoneNumberUtil$Leniency r3 = com.android.i18n.phonenumbers.PhoneNumberUtil.Leniency.POSSIBLE
+            r4 = 9223372036854775807(0x7fffffffffffffff, double:NaN)
+            r0 = r6
+            r2 = r8
+            java.lang.Iterable r0 = r0.findNumbers(r1, r2, r3, r4)
+            java.util.Iterator r1 = r0.iterator()
+        L47:
+            boolean r2 = r1.hasNext()
+            if (r2 == 0) goto Le2
+            java.lang.Object r2 = r1.next()
+            com.android.i18n.phonenumbers.PhoneNumberMatch r2 = (com.android.i18n.phonenumbers.PhoneNumberMatch) r2
+            android.text.util.LinkSpec r3 = new android.text.util.LinkSpec
+            r3.<init>()
+            java.lang.StringBuilder r4 = new java.lang.StringBuilder
+            r4.<init>()
+            java.lang.String r5 = "tel:"
+            java.lang.StringBuilder r4 = r4.append(r5)
+            java.lang.String r5 = r2.rawString()
+            java.lang.String r5 = android.telephony.PhoneNumberUtils.normalizeNumber(r5)
+            java.lang.StringBuilder r4 = r4.append(r5)
+            java.lang.String r4 = r4.toString()
+            r3.url = r4
+            int r4 = r2.start()
+            r3.start = r4
+            int r4 = r2.end()
+            r3.end = r4
+            java.lang.String r4 = r2.rawString()
+            r5 = 0
+            char r9 = r4.charAt(r5)
+            r10 = 91
+            r11 = 1
+            if (r9 != r10) goto L98
+            java.lang.String r9 = "]"
+            boolean r9 = r4.contains(r9)
+            if (r9 == 0) goto La8
+        L98:
+            char r9 = r4.charAt(r5)
+            r10 = 40
+            if (r9 != r10) goto Lae
+            java.lang.String r9 = ")"
+            boolean r9 = r4.contains(r9)
+            if (r9 != 0) goto Lae
+        La8:
+            int r5 = r3.start
+            int r5 = r5 + r11
+            r3.start = r5
+            goto Lc1
+        Lae:
+            char r5 = r4.charAt(r5)
+            r9 = 43
+            if (r5 != r9) goto Lc1
+            char r5 = r4.charAt(r11)
+            if (r5 != r9) goto Lc1
+            int r5 = r3.start
+            int r5 = r5 + r11
+            r3.start = r5
+        Lc1:
+            java.lang.String r5 = "KR"
+            boolean r5 = r5.equals(r8)
+            if (r5 == 0) goto Ldd
+            java.lang.String r5 = r13.toString()
+            java.lang.String r9 = r2.rawString()
+            int r10 = r3.start
+            int r11 = r3.end
+            boolean r5 = needToAddLink(r5, r9, r10, r11)
+            if (r5 != 0) goto Ldd
+            goto L47
+        Ldd:
+            r12.add(r3)
+            goto L47
+        Le2:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.text.util.Linkify.gatherTelLinks(java.util.ArrayList, android.text.Spannable, android.content.Context):void");
     }
 
     private static final void gatherMapLinks(ArrayList<LinkSpec> links, Spannable s) {
@@ -531,29 +555,8 @@ public class Linkify {
         }
     }
 
-    /* renamed from: android.text.util.Linkify$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements Comparator<LinkSpec> {
-        AnonymousClass4() {
-        }
-
-        @Override // java.util.Comparator
-        public final int compare(LinkSpec a, LinkSpec b) {
-            if (a.start < b.start) {
-                return -1;
-            }
-            if (a.start <= b.start && a.end >= b.end) {
-                return a.end > b.end ? -1 : 0;
-            }
-            return 1;
-        }
-    }
-
     private static final void pruneOverlaps(ArrayList<LinkSpec> links) {
         Comparator<LinkSpec> c = new Comparator<LinkSpec>() { // from class: android.text.util.Linkify.4
-            AnonymousClass4() {
-            }
-
             @Override // java.util.Comparator
             public final int compare(LinkSpec a, LinkSpec b) {
                 if (a.start < b.start) {
@@ -589,7 +592,7 @@ public class Linkify {
         }
     }
 
-    public static /* synthetic */ URLSpan lambda$static$0(String string) {
+    static /* synthetic */ URLSpan lambda$static$0(String string) {
         return new URLSpan(string);
     }
 

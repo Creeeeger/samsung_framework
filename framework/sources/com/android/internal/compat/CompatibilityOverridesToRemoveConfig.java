@@ -5,27 +5,22 @@ import android.os.Parcelable;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class CompatibilityOverridesToRemoveConfig implements Parcelable {
     public static final Parcelable.Creator<CompatibilityOverridesToRemoveConfig> CREATOR = new Parcelable.Creator<CompatibilityOverridesToRemoveConfig>() { // from class: com.android.internal.compat.CompatibilityOverridesToRemoveConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesToRemoveConfig createFromParcel(Parcel in) {
             return new CompatibilityOverridesToRemoveConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityOverridesToRemoveConfig[] newArray(int size) {
             return new CompatibilityOverridesToRemoveConfig[size];
         }
     };
     public final Set<Long> changeIds;
-
-    /* synthetic */ CompatibilityOverridesToRemoveConfig(Parcel parcel, CompatibilityOverridesToRemoveConfigIA compatibilityOverridesToRemoveConfigIA) {
-        this(parcel);
-    }
 
     public CompatibilityOverridesToRemoveConfig(Set<Long> changeIds) {
         this.changeIds = changeIds;
@@ -49,23 +44,6 @@ public final class CompatibilityOverridesToRemoveConfig implements Parcelable {
         dest.writeInt(this.changeIds.size());
         for (Long changeId : this.changeIds) {
             dest.writeLong(changeId.longValue());
-        }
-    }
-
-    /* renamed from: com.android.internal.compat.CompatibilityOverridesToRemoveConfig$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompatibilityOverridesToRemoveConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityOverridesToRemoveConfig createFromParcel(Parcel in) {
-            return new CompatibilityOverridesToRemoveConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityOverridesToRemoveConfig[] newArray(int size) {
-            return new CompatibilityOverridesToRemoveConfig[size];
         }
     }
 }

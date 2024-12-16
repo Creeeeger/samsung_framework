@@ -14,7 +14,6 @@ public interface ITransientNotificationCallback extends IInterface {
 
     void onToastShown() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITransientNotificationCallback {
         @Override // android.app.ITransientNotificationCallback
         public void onToastShown() throws RemoteException {
@@ -30,7 +29,6 @@ public interface ITransientNotificationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITransientNotificationCallback {
         static final int TRANSACTION_onToastHidden = 2;
         static final int TRANSACTION_onToastShown = 1;
@@ -76,27 +74,23 @@ public interface ITransientNotificationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITransientNotificationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITransientNotificationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITransientNotificationCallback.DESCRIPTOR);
+                case 1:
+                    onToastShown();
+                    return true;
+                case 2:
+                    onToastHidden();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onToastShown();
-                            return true;
-                        case 2:
-                            onToastHidden();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITransientNotificationCallback {
+        private static class Proxy implements ITransientNotificationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

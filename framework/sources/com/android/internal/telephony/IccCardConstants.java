@@ -21,7 +21,6 @@ public class IccCardConstants {
     public static final String INTENT_VALUE_LOCKED_ON_PUK = "PUK";
     public static final String INTENT_VALUE_LOCKED_PERSO = "PERSO";
 
-    /* loaded from: classes5.dex */
     public enum State {
         UNKNOWN,
         ABSENT,

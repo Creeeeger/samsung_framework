@@ -5,12 +5,10 @@ import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public abstract class BroadcastInfoResponse implements Parcelable {
     public static final Parcelable.Creator<BroadcastInfoResponse> CREATOR = new Parcelable.Creator<BroadcastInfoResponse>() { // from class: android.media.tv.BroadcastInfoResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BroadcastInfoResponse createFromParcel(Parcel source) {
             int type = source.readInt();
@@ -31,11 +29,14 @@ public abstract class BroadcastInfoResponse implements Parcelable {
                     return CommandResponse.createFromParcelBody(source);
                 case 8:
                     return TimelineResponse.createFromParcelBody(source);
+                case 9:
+                    return SignalingDataResponse.createFromParcelBody(source);
                 default:
                     throw new IllegalStateException("Unexpected broadcast info response type (value " + type + ") in parcel.");
             }
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BroadcastInfoResponse[] newArray(int size) {
             return new BroadcastInfoResponse[size];
@@ -50,55 +51,17 @@ public abstract class BroadcastInfoResponse implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ResponseResult {
     }
 
-    /* renamed from: android.media.tv.BroadcastInfoResponse$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BroadcastInfoResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BroadcastInfoResponse createFromParcel(Parcel source) {
-            int type = source.readInt();
-            switch (type) {
-                case 1:
-                    return TsResponse.createFromParcelBody(source);
-                case 2:
-                    return TableResponse.createFromParcelBody(source);
-                case 3:
-                    return SectionResponse.createFromParcelBody(source);
-                case 4:
-                    return PesResponse.createFromParcelBody(source);
-                case 5:
-                    return StreamEventResponse.createFromParcelBody(source);
-                case 6:
-                    return DsmccResponse.createFromParcelBody(source);
-                case 7:
-                    return CommandResponse.createFromParcelBody(source);
-                case 8:
-                    return TimelineResponse.createFromParcelBody(source);
-                default:
-                    throw new IllegalStateException("Unexpected broadcast info response type (value " + type + ") in parcel.");
-            }
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BroadcastInfoResponse[] newArray(int size) {
-            return new BroadcastInfoResponse[size];
-        }
-    }
-
-    public BroadcastInfoResponse(int type, int requestId, int sequence, int responseResult) {
+    BroadcastInfoResponse(int type, int requestId, int sequence, int responseResult) {
         this.mType = type;
         this.mRequestId = requestId;
         this.mSequence = sequence;
         this.mResponseResult = responseResult;
     }
 
-    public BroadcastInfoResponse(int type, Parcel source) {
+    BroadcastInfoResponse(int type, Parcel source) {
         this.mType = type;
         this.mRequestId = source.readInt();
         this.mSequence = source.readInt();

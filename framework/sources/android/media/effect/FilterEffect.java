@@ -11,7 +11,7 @@ public abstract class FilterEffect extends Effect {
     protected EffectContext mEffectContext;
     private String mName;
 
-    public FilterEffect(EffectContext context, String name) {
+    protected FilterEffect(EffectContext context, String name) {
         this.mEffectContext = context;
         this.mName = name;
     }
@@ -21,20 +21,20 @@ public abstract class FilterEffect extends Effect {
         return this.mName;
     }
 
-    public void beginGLEffect() {
+    protected void beginGLEffect() {
         this.mEffectContext.assertValidGLState();
         this.mEffectContext.saveGLState();
     }
 
-    public void endGLEffect() {
+    protected void endGLEffect() {
         this.mEffectContext.restoreGLState();
     }
 
-    public FilterContext getFilterContext() {
+    protected FilterContext getFilterContext() {
         return this.mEffectContext.mFilterContext;
     }
 
-    public Frame frameFromTexture(int texId, int width, int height) {
+    protected Frame frameFromTexture(int texId, int width, int height) {
         FrameManager manager = getFilterContext().getFrameManager();
         FrameFormat format = ImageFormat.create(width, height, 3, 3);
         Frame frame = manager.newBoundFrame(format, 100, texId);

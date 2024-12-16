@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class PlaybackErrorEvent extends Event implements Parcelable {
     public static final Parcelable.Creator<PlaybackErrorEvent> CREATOR = new Parcelable.Creator<PlaybackErrorEvent>() { // from class: android.media.metrics.PlaybackErrorEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackErrorEvent[] newArray(int size) {
             return new PlaybackErrorEvent[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PlaybackErrorEvent createFromParcel(Parcel in) {
             return new PlaybackErrorEvent(in);
@@ -65,16 +64,7 @@ public final class PlaybackErrorEvent extends Event implements Parcelable {
     private final long mTimeSinceCreatedMillis;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ErrorCode {
-    }
-
-    /* synthetic */ PlaybackErrorEvent(Parcel parcel, PlaybackErrorEventIA playbackErrorEventIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ PlaybackErrorEvent(String str, int i, int i2, long j, Bundle bundle, PlaybackErrorEventIA playbackErrorEventIA) {
-        this(str, i, i2, j, bundle);
     }
 
     private PlaybackErrorEvent(String exceptionStack, int errorCode, int subErrorCode, long timeSinceCreatedMillis, Bundle extras) {
@@ -133,9 +123,8 @@ public final class PlaybackErrorEvent extends Event implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         byte flg = this.mExceptionStack != null ? (byte) (0 | 1) : (byte) 0;
         dest.writeByte(flg);
-        String str = this.mExceptionStack;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mExceptionStack != null) {
+            dest.writeString(this.mExceptionStack);
         }
         dest.writeInt(this.mErrorCode);
         dest.writeInt(this.mSubErrorCode);
@@ -162,24 +151,6 @@ public final class PlaybackErrorEvent extends Event implements Parcelable {
         this.mMetricsBundle = extras;
     }
 
-    /* renamed from: android.media.metrics.PlaybackErrorEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PlaybackErrorEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PlaybackErrorEvent[] newArray(int size) {
-            return new PlaybackErrorEvent[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PlaybackErrorEvent createFromParcel(Parcel in) {
-            return new PlaybackErrorEvent(in);
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private Exception mException;
         private int mSubErrorCode;

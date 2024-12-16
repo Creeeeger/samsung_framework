@@ -40,9 +40,8 @@ public class XmlConfigSource implements ConfigSource {
     public XmlConfigSource(Context context, int resourceId, ApplicationInfo info) {
         this.mContext = context;
         this.mResourceId = resourceId;
-        ApplicationInfo applicationInfo = new ApplicationInfo(info);
-        this.mApplicationInfo = applicationInfo;
-        this.mDebugBuild = (applicationInfo.flags & 2) != 0;
+        this.mApplicationInfo = new ApplicationInfo(info);
+        this.mDebugBuild = (this.mApplicationInfo.flags & 2) != 0;
     }
 
     @Override // android.security.net.config.ConfigSource
@@ -168,6 +167,10 @@ public class XmlConfigSource implements ConfigSource {
         return new Domain(domain, includeSubdomains);
     }
 
+    private boolean parseCertificateTransparency(XmlResourceParser parser) throws IOException, XmlPullParserException, ParserException {
+        return parser.getAttributeBooleanValue(null, "enabled", false);
+    }
+
     private CertificatesEntryRef parseCertificatesEntry(XmlResourceParser parser, boolean defaultOverridePins) throws IOException, XmlPullParserException, ParserException {
         CertificateSource source;
         boolean overridePins = parser.getAttributeBooleanValue(null, "overridePins", defaultOverridePins);
@@ -206,28 +209,22 @@ public class XmlConfigSource implements ConfigSource {
     }
 
     private List<Pair<NetworkSecurityConfig.Builder, Set<Domain>>> parseConfigEntry(XmlResourceParser parser, Set<String> seenDomains, NetworkSecurityConfig.Builder parentBuilder, int configType) throws IOException, XmlPullParserException, ParserException {
-        XmlConfigSource xmlConfigSource = this;
         List<Pair<NetworkSecurityConfig.Builder, Set<Domain>>> builders = new ArrayList<>();
         NetworkSecurityConfig.Builder builder = new NetworkSecurityConfig.Builder();
         builder.setParent(parentBuilder);
         Set<Domain> domains = new ArraySet<>();
         boolean seenPinSet = false;
         boolean seenTrustAnchors = false;
-        boolean z = false;
         boolean defaultOverridePins = configType == 2;
-        parser.getName();
         int outerDepth = parser.getDepth();
         builders.add(new Pair<>(builder, domains));
-        int i = 0;
-        while (i < parser.getAttributeCount()) {
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
             String name = parser.getAttributeName(i);
             if ("hstsEnforced".equals(name)) {
-                builder.setHstsEnforced(parser.getAttributeBooleanValue(i, z));
+                builder.setHstsEnforced(parser.getAttributeBooleanValue(i, false));
             } else if ("cleartextTrafficPermitted".equals(name)) {
                 builder.setCleartextTrafficPermitted(parser.getAttributeBooleanValue(i, true));
             }
-            i++;
-            z = false;
         }
         while (XmlUtils.nextElementWithin(parser, outerDepth)) {
             String tagName = parser.getName();
@@ -241,7 +238,7 @@ public class XmlConfigSource implements ConfigSource {
                 if (seenTrustAnchors) {
                     throw new ParserException(parser, "Multiple trust-anchor elements not allowed");
                 }
-                builder.addCertificatesEntryRefs(xmlConfigSource.parseTrustAnchors(parser, defaultOverridePins));
+                builder.addCertificatesEntryRefs(parseTrustAnchors(parser, defaultOverridePins));
                 seenTrustAnchors = true;
             } else if ("pin-set".equals(tagName)) {
                 if (configType != 1) {
@@ -252,15 +249,20 @@ public class XmlConfigSource implements ConfigSource {
                 }
                 builder.setPinSet(parsePinSet(parser));
                 seenPinSet = true;
-            } else if (!"domain-config".equals(tagName)) {
-                XmlUtils.skipCurrentTag(parser);
-            } else {
-                if (configType != 1) {
+            } else if ("domain-config".equals(tagName)) {
+                if (configType == 1) {
+                    builders.addAll(parseConfigEntry(parser, seenDomains, builder, configType));
+                } else {
                     throw new ParserException(parser, "Nested domain-config not allowed in " + getConfigString(configType));
                 }
-                builders.addAll(xmlConfigSource.parseConfigEntry(parser, seenDomains, builder, configType));
+            } else if ("certificateTransparency".equals(tagName)) {
+                if (configType != 0 && configType != 1) {
+                    throw new ParserException(parser, "certificateTransparency not allowed in " + getConfigString(configType));
+                }
+                builder.setCertificateTransparencyVerificationRequired(parseCertificateTransparency(parser));
+            } else {
+                XmlUtils.skipCurrentTag(parser);
             }
-            xmlConfigSource = this;
         }
         if (configType == 1 && domains.isEmpty()) {
             throw new ParserException(parser, "No domain elements in domain-config");
@@ -383,7 +385,6 @@ public class XmlConfigSource implements ConfigSource {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class ParserException extends Exception {
         public ParserException(XmlPullParser parser, String message, Throwable cause) {
             super(message + " at: " + parser.getPositionDescription(), cause);

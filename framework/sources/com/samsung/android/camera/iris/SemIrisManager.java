@@ -147,9 +147,6 @@ public class SemIrisManager {
     private IBinder mToken = new Binder();
     private long mAuthBegin = 0;
     private IIrisServiceReceiver mServiceReceiver = new IIrisServiceReceiver.Stub() { // from class: com.samsung.android.camera.iris.SemIrisManager.4
-        AnonymousClass4() {
-        }
-
         @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
         public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) {
             SemIrisManager.this.mHandler.obtainMessage(100, remaining, 0, new Iris(null, groupId, irisId, deviceId)).sendToTarget();
@@ -187,12 +184,7 @@ public class SemIrisManager {
         }
     };
 
-    /* loaded from: classes5.dex */
-    public class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
-        /* synthetic */ OnEnrollCancelListener(SemIrisManager semIrisManager, OnEnrollCancelListenerIA onEnrollCancelListenerIA) {
-            this();
-        }
-
+    private class OnEnrollCancelListener implements CancellationSignal.OnCancelListener {
         private OnEnrollCancelListener() {
         }
 
@@ -202,8 +194,7 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
+    private class OnAuthenticationCancelListener implements CancellationSignal.OnCancelListener {
         private CryptoObject mCrypto;
 
         public OnAuthenticationCancelListener(CryptoObject crypto) {
@@ -216,7 +207,6 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static final class CryptoObject {
         private final Object mCrypto;
         private final byte[] mFidoRequestData;
@@ -238,33 +228,29 @@ public class SemIrisManager {
         }
 
         public Signature getSignature() {
-            Object obj = this.mCrypto;
-            if (obj instanceof Signature) {
-                return (Signature) obj;
+            if (this.mCrypto instanceof Signature) {
+                return (Signature) this.mCrypto;
             }
             return null;
         }
 
         public Cipher getCipher() {
-            Object obj = this.mCrypto;
-            if (obj instanceof Cipher) {
-                return (Cipher) obj;
+            if (this.mCrypto instanceof Cipher) {
+                return (Cipher) this.mCrypto;
             }
             return null;
         }
 
         public Mac getMac() {
-            Object obj = this.mCrypto;
-            if (obj instanceof Mac) {
-                return (Mac) obj;
+            if (this.mCrypto instanceof Mac) {
+                return (Mac) this.mCrypto;
             }
             return null;
         }
 
         public long getOpId() {
-            Object obj = this.mCrypto;
-            if (obj != null) {
-                return AndroidKeyStoreProvider.getKeyStoreOperationHandle(obj);
+            if (this.mCrypto != null) {
+                return AndroidKeyStoreProvider.getKeyStoreOperationHandle(this.mCrypto);
             }
             return 0L;
         }
@@ -277,12 +263,12 @@ public class SemIrisManager {
             return this.mFidoResultData;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setFidoResultData(byte[] fidoResultData) {
             this.mFidoResultData = fidoResultData;
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class AuthenticationResult {
         private CryptoObject mCryptoObject;
         private Iris mIris;
@@ -301,7 +287,6 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AuthenticationCallback {
         public void onAuthenticationError(int errorCode, CharSequence errString) {
         }
@@ -322,7 +307,6 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class EnrollmentCallback {
         public void onEnrollmentError(int errMsgId, CharSequence errString) {
         }
@@ -337,7 +321,6 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class RemovalCallback {
         public void onRemovalError(Iris ir, int errMsgId, CharSequence errString) {
         }
@@ -346,13 +329,11 @@ public class SemIrisManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class RequestCallback {
         public void onRequested(int msgId) {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class LockoutResetCallback {
         public void onLockoutReset() {
         }
@@ -420,7 +401,8 @@ public class SemIrisManager {
         }
     }
 
-    public void checkAuthViewWindowToken(CryptoObject crypto, CancellationSignal cancel, int flags, AuthenticationCallback callback, Handler handler, int userId, Bundle attr, View irisView, long sessionId, byte[] fidoRequestData) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void checkAuthViewWindowToken(final CryptoObject crypto, final CancellationSignal cancel, final int flags, final AuthenticationCallback callback, final Handler handler, final int userId, final Bundle attr, final View irisView, final long sessionId, final byte[] fidoRequestData) {
         AuthenticationCallback authenticationCallback;
         if (this.mGetterHandler == null) {
             this.mGetterHandler = new GetterHandler(Looper.getMainLooper());
@@ -437,30 +419,6 @@ public class SemIrisManager {
                 return;
             }
             this.mGetterHandler.postGetterCallback(new Runnable() { // from class: com.samsung.android.camera.iris.SemIrisManager.1
-                final /* synthetic */ Bundle val$attr;
-                final /* synthetic */ AuthenticationCallback val$callback;
-                final /* synthetic */ CancellationSignal val$cancel;
-                final /* synthetic */ CryptoObject val$crypto;
-                final /* synthetic */ byte[] val$fidoRequestData;
-                final /* synthetic */ int val$flags;
-                final /* synthetic */ Handler val$handler;
-                final /* synthetic */ View val$irisView;
-                final /* synthetic */ long val$sessionId;
-                final /* synthetic */ int val$userId;
-
-                AnonymousClass1(CryptoObject crypto2, CancellationSignal cancel2, int flags2, AuthenticationCallback callback2, Handler handler2, int userId2, Bundle attr2, View irisView2, long sessionId2, byte[] fidoRequestData2) {
-                    crypto = crypto2;
-                    cancel = cancel2;
-                    flags = flags2;
-                    callback = callback2;
-                    handler = handler2;
-                    userId = userId2;
-                    attr = attr2;
-                    irisView = irisView2;
-                    sessionId = sessionId2;
-                    fidoRequestData = fidoRequestData2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SemIrisManager.this.checkAuthViewWindowToken(crypto, cancel, flags, callback, handler, userId, attr, irisView, sessionId, fidoRequestData);
@@ -470,24 +428,24 @@ public class SemIrisManager {
         }
         this.mGetterHandler.removeAllGetterCallbacks();
         try {
-            IBinder mWindowToken = irisView2.getWindowToken();
+            IBinder mWindowToken = irisView.getWindowToken();
             int[] position = new int[2];
             try {
-                irisView2.getLocationInWindow(position);
+                irisView.getLocationInWindow(position);
                 if (this.mToken == null) {
                     Log.e(TAG, "mToken null");
                 }
                 Size mAuthViewSize = getMinimumIrisViewSize();
-                if (irisView2.getWidth() >= mAuthViewSize.getWidth()) {
-                    if (irisView2.getHeight() >= mAuthViewSize.getHeight()) {
-                        authenticationCallback = callback2;
-                        this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), sessionId2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2, fidoRequestData2);
+                if (irisView.getWidth() >= mAuthViewSize.getWidth()) {
+                    if (irisView.getHeight() >= mAuthViewSize.getHeight()) {
+                        authenticationCallback = callback;
+                        this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), sessionId, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr, fidoRequestData);
                     }
                 }
-                authenticationCallback = callback2;
+                authenticationCallback = callback;
                 if (authenticationCallback != null) {
                     try {
-                        Log.e(TAG, "Invalid irisView size. IrisView's proper size:" + mAuthViewSize.getWidth() + "x" + mAuthViewSize.getHeight() + ", but app's size:" + irisView2.getWidth() + "x" + irisView2.getHeight());
+                        Log.e(TAG, "Invalid irisView size. IrisView's proper size:" + mAuthViewSize.getWidth() + "x" + mAuthViewSize.getHeight() + ", but app's size:" + irisView.getWidth() + "x" + irisView.getHeight());
                     } catch (RemoteException e) {
                         Log.w(TAG, "Remote exception while authenticating");
                         if (authenticationCallback != null) {
@@ -497,55 +455,17 @@ public class SemIrisManager {
                         return;
                     }
                 }
-                this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), sessionId2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2, fidoRequestData2);
+                this.mService.authenticate(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), sessionId, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr, fidoRequestData);
             } catch (RemoteException e2) {
-                authenticationCallback = callback2;
+                authenticationCallback = callback;
             }
         } catch (RemoteException e3) {
-            authenticationCallback = callback2;
+            authenticationCallback = callback;
         }
     }
 
-    /* renamed from: com.samsung.android.camera.iris.SemIrisManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ Bundle val$attr;
-        final /* synthetic */ AuthenticationCallback val$callback;
-        final /* synthetic */ CancellationSignal val$cancel;
-        final /* synthetic */ CryptoObject val$crypto;
-        final /* synthetic */ byte[] val$fidoRequestData;
-        final /* synthetic */ int val$flags;
-        final /* synthetic */ Handler val$handler;
-        final /* synthetic */ View val$irisView;
-        final /* synthetic */ long val$sessionId;
-        final /* synthetic */ int val$userId;
-
-        AnonymousClass1(CryptoObject crypto2, CancellationSignal cancel2, int flags2, AuthenticationCallback callback2, Handler handler2, int userId2, Bundle attr2, View irisView2, long sessionId2, byte[] fidoRequestData2) {
-            crypto = crypto2;
-            cancel = cancel2;
-            flags = flags2;
-            callback = callback2;
-            handler = handler2;
-            userId = userId2;
-            attr = attr2;
-            irisView = irisView2;
-            sessionId = sessionId2;
-            fidoRequestData = fidoRequestData2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SemIrisManager.this.checkAuthViewWindowToken(crypto, cancel, flags, callback, handler, userId, attr, irisView, sessionId, fidoRequestData);
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public static class GetterHandler extends Handler {
+    static class GetterHandler extends Handler {
         private static final int IMAGE_GETTER_CALLBACK = 1;
-
-        /* synthetic */ GetterHandler(Looper looper, GetterHandlerIA getterHandlerIA) {
-            this(looper);
-        }
 
         public GetterHandler(Context context) {
             super(context.getMainLooper());
@@ -560,9 +480,7 @@ public class SemIrisManager {
             switch (message.what) {
                 case 1:
                     ((Runnable) message.obj).run();
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -642,7 +560,8 @@ public class SemIrisManager {
         }
     }
 
-    public void checkEnrollViewWindowToken(byte[] token, CancellationSignal cancel, int flags, int userId, EnrollmentCallback callback, Bundle attr, View irisView) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void checkEnrollViewWindowToken(final byte[] token, final CancellationSignal cancel, final int flags, final int userId, final EnrollmentCallback callback, final Bundle attr, final View irisView) {
         Log.v(TAG, "checkEnrollViewWindowToken");
         if (this.mGetterHandler == null) {
             this.mGetterHandler = new GetterHandler(Looper.getMainLooper());
@@ -650,24 +569,6 @@ public class SemIrisManager {
         if (irisView.getWindowToken() == null) {
             Log.v(TAG, "check, irisView.getWindowToken() is null");
             this.mGetterHandler.postGetterCallback(new Runnable() { // from class: com.samsung.android.camera.iris.SemIrisManager.2
-                final /* synthetic */ Bundle val$attr;
-                final /* synthetic */ EnrollmentCallback val$callback;
-                final /* synthetic */ CancellationSignal val$cancel;
-                final /* synthetic */ int val$flags;
-                final /* synthetic */ View val$irisView;
-                final /* synthetic */ byte[] val$token;
-                final /* synthetic */ int val$userId;
-
-                AnonymousClass2(byte[] token2, CancellationSignal cancel2, int flags2, int userId2, EnrollmentCallback callback2, Bundle attr2, View irisView2) {
-                    token = token2;
-                    cancel = cancel2;
-                    flags = flags2;
-                    userId = userId2;
-                    callback = callback2;
-                    attr = attr2;
-                    irisView = irisView2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     SemIrisManager.this.checkEnrollViewWindowToken(token, cancel, flags, userId, callback, attr, irisView);
@@ -677,59 +578,31 @@ public class SemIrisManager {
         }
         this.mGetterHandler.removeAllGetterCallbacks();
         try {
-            IBinder mWindowToken = irisView2.getWindowToken();
+            IBinder mWindowToken = irisView.getWindowToken();
             int[] position = new int[2];
             try {
-                irisView2.getLocationInWindow(position);
+                irisView.getLocationInWindow(position);
                 if (this.mToken == null) {
                     Log.v(TAG, "mToken null");
                 }
-                Log.v(TAG, "check, irisView.Width=" + irisView2.getWidth() + "irisView.Height=" + irisView2.getHeight());
-                this.mService.enroll(this.mToken, mWindowToken, position[0], position[1], irisView2.getWidth(), irisView2.getHeight(), token2, userId2, this.mServiceReceiver, flags2, this.mContext.getOpPackageName(), attr2);
+                Log.v(TAG, "check, irisView.Width=" + irisView.getWidth() + "irisView.Height=" + irisView.getHeight());
+                this.mService.enroll(this.mToken, mWindowToken, position[0], position[1], irisView.getWidth(), irisView.getHeight(), token, userId, this.mServiceReceiver, flags, this.mContext.getOpPackageName(), attr);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception in enroll");
-                if (callback2 != null) {
-                    callback2.onEnrollmentError(1, getErrorString(1));
+                if (callback != null) {
+                    callback.onEnrollmentError(1, getErrorString(1));
                 }
             }
         } catch (RemoteException e2) {
         }
     }
 
-    /* renamed from: com.samsung.android.camera.iris.SemIrisManager$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ Bundle val$attr;
-        final /* synthetic */ EnrollmentCallback val$callback;
-        final /* synthetic */ CancellationSignal val$cancel;
-        final /* synthetic */ int val$flags;
-        final /* synthetic */ View val$irisView;
-        final /* synthetic */ byte[] val$token;
-        final /* synthetic */ int val$userId;
-
-        AnonymousClass2(byte[] token2, CancellationSignal cancel2, int flags2, int userId2, EnrollmentCallback callback2, Bundle attr2, View irisView2) {
-            token = token2;
-            cancel = cancel2;
-            flags = flags2;
-            userId = userId2;
-            callback = callback2;
-            attr = attr2;
-            irisView = irisView2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            SemIrisManager.this.checkEnrollViewWindowToken(token, cancel, flags, userId, callback, attr, irisView);
-        }
-    }
-
     public long preEnroll() {
-        IIrisService iIrisService;
-        if (!ensureServiceConnected() || (iIrisService = this.mService) == null) {
+        if (!ensureServiceConnected() || this.mService == null) {
             return 0L;
         }
         try {
-            long result = iIrisService.preEnroll(this.mToken);
+            long result = this.mService.preEnroll(this.mToken);
             return result;
         } catch (RemoteException e) {
             Log.w(TAG, "Remote exception in enroll");
@@ -738,12 +611,11 @@ public class SemIrisManager {
     }
 
     public int postEnroll() {
-        IIrisService iIrisService;
-        if (!ensureServiceConnected() || (iIrisService = this.mService) == null) {
+        if (!ensureServiceConnected() || this.mService == null) {
             return 0;
         }
         try {
-            int result = iIrisService.postEnroll(this.mToken);
+            int result = this.mService.postEnroll(this.mToken);
             return result;
         } catch (RemoteException e) {
             Log.w(TAG, "Remote exception in post enroll");
@@ -752,10 +624,9 @@ public class SemIrisManager {
     }
 
     public void setActiveUser(int userId) {
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                iIrisService.setActiveUser(userId);
+                this.mService.setActiveUser(userId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception in setActiveUser");
             }
@@ -763,12 +634,11 @@ public class SemIrisManager {
     }
 
     public void remove(Iris ir, int userId, RemovalCallback callback) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
                 this.mRemovalCallback = callback;
                 this.mRemovalIris = ir;
-                iIrisService.remove(this.mToken, ir.getIrisId(), ir.getGroupId(), userId, this.mServiceReceiver);
+                this.mService.remove(this.mToken, ir.getIrisId(), ir.getGroupId(), userId, this.mServiceReceiver);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception in remove");
                 if (callback != null) {
@@ -779,12 +649,11 @@ public class SemIrisManager {
     }
 
     public void remove(Iris ir, RemovalCallback callback) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
                 this.mRemovalCallback = callback;
                 this.mRemovalIris = ir;
-                iIrisService.remove(this.mToken, ir.getIrisId(), ir.getGroupId(), getCurrentUserId(), this.mServiceReceiver);
+                this.mService.remove(this.mToken, ir.getIrisId(), ir.getGroupId(), getCurrentUserId(), this.mServiceReceiver);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception in remove");
                 if (callback != null) {
@@ -798,10 +667,9 @@ public class SemIrisManager {
         if (!ensureServiceConnected()) {
             return;
         }
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                iIrisService.rename(irId, userId, newName);
+                this.mService.rename(irId, userId, newName);
                 return;
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in rename()");
@@ -812,10 +680,9 @@ public class SemIrisManager {
     }
 
     public List<Iris> getEnrolledIrises(int userId) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                return iIrisService.getEnrolledIrises(userId, this.mContext.getOpPackageName());
+                return this.mService.getEnrolledIrises(userId, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getEnrolledIrises");
             }
@@ -828,10 +695,9 @@ public class SemIrisManager {
     }
 
     public boolean hasEnrolledIrises() {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                return iIrisService.hasEnrolledIrises(UserHandle.myUserId(), this.mContext.getOpPackageName());
+                return this.mService.hasEnrolledIrises(UserHandle.myUserId(), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getEnrolledIrises");
             }
@@ -840,10 +706,9 @@ public class SemIrisManager {
     }
 
     public boolean hasDisabledIris() {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                return iIrisService.hasDisabledIris(UserHandle.myUserId(), this.mContext.getOpPackageName());
+                return this.mService.hasDisabledIris(UserHandle.myUserId(), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getEnrolledFaces");
             }
@@ -852,10 +717,9 @@ public class SemIrisManager {
     }
 
     public boolean hasEnrolledIrises(int userId) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                return iIrisService.hasEnrolledIrises(userId, this.mContext.getOpPackageName());
+                return this.mService.hasEnrolledIrises(userId, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getEnrolledIrises, userId : " + userId);
             }
@@ -865,9 +729,8 @@ public class SemIrisManager {
 
     public boolean isHardwareDetected() {
         Log.w(TAG, "isIrisHardwareDetected()");
-        Context context = this.mContext;
-        if (context != null) {
-            return context.getPackageManager().hasSystemFeature(SYSTEM_FEATURE_IRIS);
+        if (this.mContext != null) {
+            return this.mContext.getPackageManager().hasSystemFeature(SYSTEM_FEATURE_IRIS);
         }
         return false;
     }
@@ -889,10 +752,9 @@ public class SemIrisManager {
     }
 
     public void setIrisViewType(int irisViewType) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                iIrisService.setIrisViewType(UserHandle.myUserId(), this.mContext.getOpPackageName(), irisViewType);
+                this.mService.setIrisViewType(UserHandle.myUserId(), this.mContext.getOpPackageName(), irisViewType);
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in setIrisViewType");
             }
@@ -900,13 +762,12 @@ public class SemIrisManager {
     }
 
     public void enableIRImageCallback(boolean enabled) {
-        IIrisService iIrisService;
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
                 if (enabled) {
-                    iIrisService.enableIRImageCallback(UserHandle.myUserId(), this.mContext.getOpPackageName(), 6);
+                    this.mService.enableIRImageCallback(UserHandle.myUserId(), this.mContext.getOpPackageName(), 6);
                 } else {
-                    iIrisService.enableIRImageCallback(UserHandle.myUserId(), this.mContext.getOpPackageName(), 7);
+                    this.mService.enableIRImageCallback(UserHandle.myUserId(), this.mContext.getOpPackageName(), 7);
                 }
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in enableIRImageCallback");
@@ -921,10 +782,9 @@ public class SemIrisManager {
         SparseArray localSparseArray = new SparseArray();
         List<Iris> irisList = null;
         int index = 1;
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                irisList = iIrisService.getEnrolledIrises(UserHandle.myUserId(), this.mContext.getOpPackageName());
+                irisList = this.mService.getEnrolledIrises(UserHandle.myUserId(), this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getEnrolledIrises");
             }
@@ -940,24 +800,39 @@ public class SemIrisManager {
     }
 
     public int request(int cmd, byte[] inputBuf, byte[] outputBuf, int inParam, RequestCallback callback) {
+        byte[] inputBuf2;
+        byte[] outputBuf2;
         if (!ensureServiceConnected()) {
             return 0;
         }
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
-            if (inputBuf == null) {
+        if (this.mService != null) {
+            if (inputBuf != null) {
+                inputBuf2 = inputBuf;
+            } else {
                 try {
-                    inputBuf = new byte[0];
+                    inputBuf2 = new byte[0];
                 } catch (RemoteException e) {
                     Log.v(TAG, "Remote exception in request()");
                     return -2;
                 }
             }
-            if (outputBuf == null) {
-                outputBuf = new byte[0];
+            if (outputBuf != null) {
+                outputBuf2 = outputBuf;
+            } else {
+                try {
+                    outputBuf2 = new byte[0];
+                } catch (RemoteException e2) {
+                    Log.v(TAG, "Remote exception in request()");
+                    return -2;
+                }
             }
-            this.mRequestCallback = callback;
-            return iIrisService.request(this.mToken, cmd, inputBuf, outputBuf, inParam, getCurrentUserId(), this.mServiceReceiver);
+            try {
+                this.mRequestCallback = callback;
+                return this.mService.request(this.mToken, cmd, inputBuf2, outputBuf2, inParam, getCurrentUserId(), this.mServiceReceiver);
+            } catch (RemoteException e3) {
+                Log.v(TAG, "Remote exception in request()");
+                return -2;
+            }
         }
         Log.w(TAG, "request(): Service not connected!");
         return -2;
@@ -990,10 +865,9 @@ public class SemIrisManager {
         }
         byte[] outBuf = new byte[256];
         int size = 0;
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                size = iIrisService.request(this.mToken, 7, packageName.getBytes(), outBuf, irisId, UserHandle.myUserId(), this.mServiceReceiver);
+                size = this.mService.request(this.mToken, 7, packageName.getBytes(), outBuf, irisId, UserHandle.myUserId(), this.mServiceReceiver);
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in request()");
             }
@@ -1059,10 +933,9 @@ public class SemIrisManager {
         if (!ensureServiceConnected()) {
             return 0L;
         }
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                return iIrisService.getAuthenticatorId(this.mContext.getOpPackageName());
+                return this.mService.getAuthenticatorId(this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in getAuthenticatorId()");
             }
@@ -1076,10 +949,9 @@ public class SemIrisManager {
         if (!ensureServiceConnected()) {
             return;
         }
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                iIrisService.resetTimeout(token);
+                this.mService.resetTimeout(token);
                 return;
             } catch (RemoteException e) {
                 Log.v(TAG, "Remote exception in resetTimeout()");
@@ -1089,33 +961,19 @@ public class SemIrisManager {
         Log.w(TAG, "resetTimeout(): Service not connected!");
     }
 
-    public void addLockoutResetCallback(LockoutResetCallback callback) {
+    public void addLockoutResetCallback(final LockoutResetCallback callback) {
         if (!ensureServiceConnected()) {
             return;
         }
         if (this.mService != null) {
             try {
-                PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
+                final PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
                 this.mService.addLockoutResetCallback(new IIrisServiceLockoutResetCallback.Stub() { // from class: com.samsung.android.camera.iris.SemIrisManager.3
-                    final /* synthetic */ LockoutResetCallback val$callback;
-                    final /* synthetic */ PowerManager val$powerManager;
-
-                    AnonymousClass3(PowerManager powerManager2, LockoutResetCallback callback2) {
-                        powerManager = powerManager2;
-                        callback = callback2;
-                    }
-
                     @Override // com.samsung.android.camera.iris.IIrisServiceLockoutResetCallback
                     public void onLockoutReset(long deviceId) throws RemoteException {
-                        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(1, "lockoutResetCallback");
+                        final PowerManager.WakeLock wakeLock = powerManager.newWakeLock(1, "lockoutResetCallback");
                         wakeLock.acquire();
                         SemIrisManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.camera.iris.SemIrisManager.3.1
-                            final /* synthetic */ PowerManager.WakeLock val$wakeLock;
-
-                            AnonymousClass1(PowerManager.WakeLock wakeLock2) {
-                                wakeLock = wakeLock2;
-                            }
-
                             @Override // java.lang.Runnable
                             public void run() {
                                 try {
@@ -1125,25 +983,6 @@ public class SemIrisManager {
                                 }
                             }
                         });
-                    }
-
-                    /* renamed from: com.samsung.android.camera.iris.SemIrisManager$3$1 */
-                    /* loaded from: classes5.dex */
-                    class AnonymousClass1 implements Runnable {
-                        final /* synthetic */ PowerManager.WakeLock val$wakeLock;
-
-                        AnonymousClass1(PowerManager.WakeLock wakeLock2) {
-                            wakeLock = wakeLock2;
-                        }
-
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            try {
-                                callback.onLockoutReset();
-                            } finally {
-                                wakeLock.release();
-                            }
-                        }
                     }
                 });
                 return;
@@ -1155,70 +994,7 @@ public class SemIrisManager {
         Log.w(TAG, "addLockoutResetCallback(): Service not connected!");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.camera.iris.SemIrisManager$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends IIrisServiceLockoutResetCallback.Stub {
-        final /* synthetic */ LockoutResetCallback val$callback;
-        final /* synthetic */ PowerManager val$powerManager;
-
-        AnonymousClass3(PowerManager powerManager2, LockoutResetCallback callback2) {
-            powerManager = powerManager2;
-            callback = callback2;
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceLockoutResetCallback
-        public void onLockoutReset(long deviceId) throws RemoteException {
-            PowerManager.WakeLock wakeLock2 = powerManager.newWakeLock(1, "lockoutResetCallback");
-            wakeLock2.acquire();
-            SemIrisManager.this.mHandler.post(new Runnable() { // from class: com.samsung.android.camera.iris.SemIrisManager.3.1
-                final /* synthetic */ PowerManager.WakeLock val$wakeLock;
-
-                AnonymousClass1(PowerManager.WakeLock wakeLock22) {
-                    wakeLock = wakeLock22;
-                }
-
-                @Override // java.lang.Runnable
-                public void run() {
-                    try {
-                        callback.onLockoutReset();
-                    } finally {
-                        wakeLock.release();
-                    }
-                }
-            });
-        }
-
-        /* renamed from: com.samsung.android.camera.iris.SemIrisManager$3$1 */
-        /* loaded from: classes5.dex */
-        class AnonymousClass1 implements Runnable {
-            final /* synthetic */ PowerManager.WakeLock val$wakeLock;
-
-            AnonymousClass1(PowerManager.WakeLock wakeLock22) {
-                wakeLock = wakeLock22;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    callback.onLockoutReset();
-                } finally {
-                    wakeLock.release();
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes5.dex */
-    public class MyHandler extends Handler {
-        /* synthetic */ MyHandler(SemIrisManager semIrisManager, Context context, MyHandlerIA myHandlerIA) {
-            this(context);
-        }
-
-        /* synthetic */ MyHandler(SemIrisManager semIrisManager, Looper looper, MyHandlerIA myHandlerIA) {
-            this(looper);
-        }
-
+    private class MyHandler extends Handler {
         private MyHandler(Context context) {
             super(context.getMainLooper());
         }
@@ -1232,30 +1008,28 @@ public class SemIrisManager {
             switch (msg.what) {
                 case 100:
                     sendEnrollResult((Iris) msg.obj, msg.arg1);
-                    return;
+                    break;
                 case 101:
                     sendAcquiredResult(((Long) msg.obj).longValue(), msg.arg1);
-                    return;
+                    break;
                 case 102:
                     sendAuthenticatedSucceeded((Iris) msg.obj);
-                    return;
+                    break;
                 case 103:
                     sendAuthenticatedFailed();
-                    return;
+                    break;
                 case 104:
                     sendErrorResult(((Long) msg.obj).longValue(), msg.arg1);
-                    return;
+                    break;
                 case 105:
                     sendRemovedResult(((Long) msg.obj).longValue(), msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 106:
                     sendIRImage((byte[]) msg.obj, msg.arg1, msg.arg2);
-                    return;
+                    break;
                 case 107:
                     sendAuthenticatedSucceededFidoResultData((byte[]) msg.obj);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
 
@@ -1334,10 +1108,7 @@ public class SemIrisManager {
             }
             if (SemIrisManager.this.mEnrollmentCallback != null) {
                 SemIrisManager.this.mEnrollmentCallback.onEnrollmentHelp(acquireInfo, msg);
-            } else {
-                if (SemIrisManager.this.mAuthenticationCallback == null || msg == null) {
-                    return;
-                }
+            } else if (SemIrisManager.this.mAuthenticationCallback != null) {
                 SemIrisManager.this.mAuthenticationCallback.onAuthenticationHelp(acquireInfo, msg);
             }
         }
@@ -1346,7 +1117,7 @@ public class SemIrisManager {
     public SemIrisManager(Context context, IIrisService service) {
         this.mContext = context;
         this.mService = service;
-        if (service == null) {
+        if (this.mService == null) {
             Log.v(TAG, "SemIrisManagerService was null");
         }
         this.mHandler = new MyHandler(context);
@@ -1362,30 +1133,31 @@ public class SemIrisManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelEnrollment() {
-        IIrisService iIrisService;
         Log.e(TAG, "cancelEnrollment");
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                iIrisService.cancelEnrollment(this.mToken);
+                this.mService.cancelEnrollment(this.mToken);
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception while canceling enrollment");
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void cancelAuthentication(CryptoObject cryptoObject) {
-        IIrisService iIrisService;
         Log.e(TAG, "cancelAuthentication");
-        if (ensureServiceConnected() && (iIrisService = this.mService) != null) {
+        if (ensureServiceConnected() && this.mService != null) {
             try {
-                iIrisService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName());
+                this.mService.cancelAuthentication(this.mToken, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 Log.w(TAG, "Remote exception while canceling authentication");
             }
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public String getErrorString(int errMsg) {
         Resources mRes;
         PackageManager mPm = this.mContext.getPackageManager();
@@ -1452,6 +1224,7 @@ public class SemIrisManager {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public String getAcquiredString(int acquireInfo) {
         Resources mRes;
         PackageManager mPm = this.mContext.getPackageManager();
@@ -1468,66 +1241,21 @@ public class SemIrisManager {
         try {
             switch (acquireInfo) {
                 case 3:
-                    return mRes.getString(mRes.getIdentifier("iris_acquired_move_closer", "string", "com.samsung.android.server.iris"));
+                    break;
                 case 4:
-                    return mRes.getString(mRes.getIdentifier("iris_acquired_move_farther", "string", "com.samsung.android.server.iris"));
+                    break;
                 case 9:
-                    return mRes.getString(mRes.getIdentifier("iris_acquired_open_wider", "string", "com.samsung.android.server.iris"));
+                    break;
                 case 11:
-                    return mRes.getString(mRes.getIdentifier("iris_acquired_move_somewhere_darker", "string", "com.samsung.android.server.iris"));
+                    break;
                 case 12:
-                    return mRes.getString(mRes.getIdentifier("iris_acquired_change_your_position", "string", "com.samsung.android.server.iris"));
-                default:
-                    return null;
+                    break;
             }
         } catch (Resources.NotFoundException e2) {
             Log.d(TAG, "getAcquiredString, NotFoundException = " + e2);
             return null;
         }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.camera.iris.SemIrisManager$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends IIrisServiceReceiver.Stub {
-        AnonymousClass4() {
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onEnrollResult(long deviceId, int irisId, int groupId, int remaining) {
-            SemIrisManager.this.mHandler.obtainMessage(100, remaining, 0, new Iris(null, groupId, irisId, deviceId)).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onAcquired(long deviceId, int acquireInfo) {
-            SemIrisManager.this.mHandler.obtainMessage(101, acquireInfo, 0, Long.valueOf(deviceId)).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onAuthenticationSucceeded(long deviceId, Iris ir, byte[] fidoResultData) {
-            SemIrisManager.this.mHandler.obtainMessage(107, fidoResultData).sendToTarget();
-            SemIrisManager.this.mHandler.obtainMessage(102, ir).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onAuthenticationFailed(long deviceId) {
-            SemIrisManager.this.mHandler.obtainMessage(103).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onError(long deviceId, int error) {
-            SemIrisManager.this.mHandler.obtainMessage(104, error, 0, Long.valueOf(deviceId)).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onRemoved(long deviceId, int irisId, int groupId) {
-            SemIrisManager.this.mHandler.obtainMessage(105, irisId, groupId, Long.valueOf(deviceId)).sendToTarget();
-        }
-
-        @Override // com.samsung.android.camera.iris.IIrisServiceReceiver
-        public void onIRImage(long deviceId, byte[] irisImage, int width, int height) {
-            SemIrisManager.this.mHandler.obtainMessage(106, width, height, irisImage).sendToTarget();
-        }
+        return null;
     }
 
     public static synchronized SemIrisManager getSemIrisManager(Context context) {
@@ -1554,10 +1282,9 @@ public class SemIrisManager {
     }
 
     private synchronized boolean ensureServiceConnected() {
-        IIrisService iIrisService = this.mService;
-        if (iIrisService != null) {
+        if (this.mService != null) {
             try {
-                iIrisService.isHardwareDetected(0L, this.mContext.getOpPackageName());
+                this.mService.isHardwareDetected(0L, this.mContext.getOpPackageName());
             } catch (RemoteException e) {
                 if (e instanceof DeadObjectException) {
                     this.mService = null;
@@ -1583,9 +1310,8 @@ public class SemIrisManager {
 
     private void waitForService() {
         for (int count = 1; count <= 20; count++) {
-            IIrisService asInterface = IIrisService.Stub.asInterface(ServiceManager.getService("samsung.iris"));
-            this.mService = asInterface;
-            if (asInterface != null) {
+            this.mService = IIrisService.Stub.asInterface(ServiceManager.getService("samsung.iris"));
+            if (this.mService != null) {
                 Log.v(TAG, "Service connected!");
                 return;
             }

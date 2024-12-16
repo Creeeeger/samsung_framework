@@ -7,11 +7,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ISessionCallback extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$biometrics$fingerprint$ISessionCallback".replace('$', '.');
-    public static final String HASH = "637371b53fb7faf9bd43aa51b72c23852d6e6d96";
-    public static final int VERSION = 3;
+    public static final String HASH = "41a730a7a6b5aa9cebebce70ee5b5e509b0af6fb";
+    public static final int VERSION = 4;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -49,7 +49,6 @@ public interface ISessionCallback extends IInterface {
 
     void onSessionClosed() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISessionCallback {
         @Override // android.hardware.biometrics.fingerprint.ISessionCallback
         public void onChallengeGenerated(long challenge) throws RemoteException {
@@ -131,7 +130,6 @@ public interface ISessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISessionCallback {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -227,119 +225,117 @@ public interface ISessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onChallengeGenerated(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    long _arg02 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onChallengeRevoked(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    byte _arg03 = data.readByte();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onAcquired(_arg03, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    byte _arg04 = data.readByte();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onError(_arg04, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onEnrollmentProgress(_arg05, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    HardwareAuthToken _arg14 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAuthenticationSucceeded(_arg06, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    onAuthenticationFailed();
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    long _arg07 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onLockoutTimed(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    onLockoutPermanent();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    onLockoutCleared();
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    onInteractionDetected();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int[] _arg08 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onEnrollmentsEnumerated(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int[] _arg09 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    onEnrollmentsRemoved(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    long _arg010 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAuthenticatorIdRetrieved(_arg010);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    long _arg011 = data.readLong();
+                    data.enforceNoDataAvail();
+                    onAuthenticatorIdInvalidated(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    onSessionClosed();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onChallengeGenerated(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            long _arg02 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onChallengeRevoked(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            byte _arg03 = data.readByte();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onAcquired(_arg03, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            byte _arg04 = data.readByte();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onError(_arg04, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onEnrollmentProgress(_arg05, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            HardwareAuthToken _arg14 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAuthenticationSucceeded(_arg06, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            onAuthenticationFailed();
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            long _arg07 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onLockoutTimed(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            onLockoutPermanent();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            onLockoutCleared();
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            onInteractionDetected();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int[] _arg08 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onEnrollmentsEnumerated(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int[] _arg09 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            onEnrollmentsRemoved(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            long _arg010 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAuthenticatorIdRetrieved(_arg010);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            long _arg011 = data.readLong();
-                            data.enforceNoDataAvail();
-                            onAuthenticatorIdInvalidated(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            onSessionClosed();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISessionCallback {
+        private static class Proxy implements ISessionCallback {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -12,7 +12,6 @@ public interface ISurfaceSyncGroupCompletedListener extends IInterface {
 
     void onSurfaceSyncGroupComplete() throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements ISurfaceSyncGroupCompletedListener {
         @Override // android.window.ISurfaceSyncGroupCompletedListener
         public void onSurfaceSyncGroupComplete() throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISurfaceSyncGroupCompletedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements ISurfaceSyncGroupCompletedListener {
         static final int TRANSACTION_onSurfaceSyncGroupComplete = 1;
 
@@ -67,23 +65,20 @@ public interface ISurfaceSyncGroupCompletedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISurfaceSyncGroupCompletedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISurfaceSyncGroupCompletedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISurfaceSyncGroupCompletedListener.DESCRIPTOR);
+                case 1:
+                    onSurfaceSyncGroupComplete();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSurfaceSyncGroupComplete();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements ISurfaceSyncGroupCompletedListener {
+        private static class Proxy implements ISurfaceSyncGroupCompletedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

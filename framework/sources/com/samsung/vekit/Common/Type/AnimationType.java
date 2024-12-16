@@ -7,5 +7,10 @@ public enum AnimationType {
     FILTER,
     TONE,
     TRANSITION,
-    ALPHA
+    ALPHA,
+    CLIP,
+    WAVE,
+    SCALE,
+    ROTATE,
+    TRANSLATE
 }

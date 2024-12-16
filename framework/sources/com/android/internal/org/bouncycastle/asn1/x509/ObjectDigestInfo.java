@@ -77,9 +77,8 @@ public class ObjectDigestInfo extends ASN1Object {
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(4);
         v.add(this.digestedObjectType);
-        ASN1ObjectIdentifier aSN1ObjectIdentifier = this.otherObjectTypeID;
-        if (aSN1ObjectIdentifier != null) {
-            v.add(aSN1ObjectIdentifier);
+        if (this.otherObjectTypeID != null) {
+            v.add(this.otherObjectTypeID);
         }
         v.add(this.digestAlgorithm);
         v.add(this.objectDigest);

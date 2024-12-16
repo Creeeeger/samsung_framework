@@ -9,7 +9,6 @@ import java.util.Random;
 /* loaded from: classes5.dex */
 public abstract class ECFieldElement implements ECConstants {
 
-    /* loaded from: classes5.dex */
     public static abstract class AbstractFp extends ECFieldElement {
     }
 
@@ -85,13 +84,12 @@ public abstract class ECFieldElement implements ECConstants {
         return BigIntegers.asUnsignedByteArray((getFieldSize() + 7) / 8, toBigInteger());
     }
 
-    /* loaded from: classes5.dex */
     public static class Fp extends AbstractFp {
         BigInteger q;
         BigInteger r;
         BigInteger x;
 
-        public static BigInteger calculateResidue(BigInteger p) {
+        static BigInteger calculateResidue(BigInteger p) {
             int bitLength = p.bitLength();
             if (bitLength >= 96) {
                 BigInteger firstWord = p.shiftRight(bitLength - 64);
@@ -107,7 +105,7 @@ public abstract class ECFieldElement implements ECConstants {
             this(q, calculateResidue(q), x);
         }
 
-        public Fp(BigInteger q, BigInteger r, BigInteger x) {
+        Fp(BigInteger q, BigInteger r, BigInteger x) {
             if (x == null || x.signum() < 0 || x.compareTo(q) >= 0) {
                 throw new IllegalArgumentException("x value invalid in Fp field element");
             }
@@ -188,19 +186,12 @@ public abstract class ECFieldElement implements ECConstants {
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement negate() {
-            if (this.x.signum() == 0) {
-                return this;
-            }
-            BigInteger bigInteger = this.q;
-            return new Fp(bigInteger, this.r, bigInteger.subtract(this.x));
+            return this.x.signum() == 0 ? this : new Fp(this.q, this.r, this.q.subtract(this.x));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement square() {
-            BigInteger bigInteger = this.q;
-            BigInteger bigInteger2 = this.r;
-            BigInteger bigInteger3 = this.x;
-            return new Fp(bigInteger, bigInteger2, modMult(bigInteger3, bigInteger3));
+            return new Fp(this.q, this.r, modMult(this.x, this.x));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
@@ -238,8 +229,7 @@ public abstract class ECFieldElement implements ECConstants {
             }
             if (this.q.testBit(1)) {
                 BigInteger e = this.q.shiftRight(2).add(ECConstants.ONE);
-                BigInteger bigInteger = this.q;
-                return checkSqrt(new Fp(bigInteger, this.r, this.x.modPow(e, bigInteger)));
+                return checkSqrt(new Fp(this.q, this.r, this.x.modPow(e, this.q)));
             }
             BigInteger e2 = this.q;
             if (e2.testBit(2)) {
@@ -409,7 +399,6 @@ public abstract class ECFieldElement implements ECConstants {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class AbstractF2m extends ECFieldElement {
         public ECFieldElement halfTrace() {
             int m = getFieldSize();
@@ -458,7 +447,6 @@ public abstract class ECFieldElement implements ECConstants {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class F2m extends AbstractF2m {
         public static final int GNB = 1;
         public static final int PPB = 3;
@@ -489,7 +477,7 @@ public abstract class ECFieldElement implements ECConstants {
             this.x = new LongArray(x);
         }
 
-        public F2m(int m, int[] ks, LongArray x) {
+        F2m(int m, int[] ks, LongArray x) {
             this.m = m;
             this.representation = ks.length == 1 ? 2 : 3;
             this.ks = ks;
@@ -551,9 +539,7 @@ public abstract class ECFieldElement implements ECConstants {
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement multiply(ECFieldElement b) {
-            int i = this.m;
-            int[] iArr = this.ks;
-            return new F2m(i, iArr, this.x.modMultiply(((F2m) b).x, i, iArr));
+            return new F2m(this.m, this.ks, this.x.modMultiply(((F2m) b).x, this.m, this.ks));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
@@ -590,9 +576,7 @@ public abstract class ECFieldElement implements ECConstants {
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement square() {
-            int i = this.m;
-            int[] iArr = this.ks;
-            return new F2m(i, iArr, this.x.modSquare(i, iArr));
+            return new F2m(this.m, this.ks, this.x.modSquare(this.m, this.ks));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
@@ -617,19 +601,12 @@ public abstract class ECFieldElement implements ECConstants {
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement squarePow(int pow) {
-            if (pow < 1) {
-                return this;
-            }
-            int i = this.m;
-            int[] iArr = this.ks;
-            return new F2m(i, iArr, this.x.modSquareN(pow, i, iArr));
+            return pow < 1 ? this : new F2m(this.m, this.ks, this.x.modSquareN(pow, this.m, this.ks));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
         public ECFieldElement invert() {
-            int i = this.m;
-            int[] iArr = this.ks;
-            return new F2m(i, iArr, this.x.modInverse(i, iArr));
+            return new F2m(this.m, this.ks, this.x.modInverse(this.m, this.ks));
         }
 
         @Override // com.android.internal.org.bouncycastle.math.ec.ECFieldElement
@@ -650,17 +627,15 @@ public abstract class ECFieldElement implements ECConstants {
         }
 
         public int getK2() {
-            int[] iArr = this.ks;
-            if (iArr.length >= 2) {
-                return iArr[1];
+            if (this.ks.length >= 2) {
+                return this.ks[1];
             }
             return 0;
         }
 
         public int getK3() {
-            int[] iArr = this.ks;
-            if (iArr.length >= 3) {
-                return iArr[2];
+            if (this.ks.length >= 3) {
+                return this.ks[2];
             }
             return 0;
         }

@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IInvalidationCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IInvalidationCallback";
 
     void onCompleted() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IInvalidationCallback {
         @Override // android.hardware.biometrics.IInvalidationCallback
         public void onCompleted() throws RemoteException {
@@ -24,7 +23,6 @@ public interface IInvalidationCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IInvalidationCallback {
         static final int TRANSACTION_onCompleted = 1;
 
@@ -67,25 +65,21 @@ public interface IInvalidationCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInvalidationCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInvalidationCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInvalidationCallback.DESCRIPTOR);
+                case 1:
+                    onCompleted();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onCompleted();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IInvalidationCallback {
+        private static class Proxy implements IInvalidationCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class MediaFilterTracer extends DecorateFilter {
     private static final String TAG = Def.tagOf((Class<?>) MediaFilterTracer.class);
     private int contentId;
@@ -106,7 +106,7 @@ public class MediaFilterTracer extends DecorateFilter {
                     this.messageHandlers.add(new Consumer() { // from class: com.samsung.android.sume.core.filter.MediaFilterTracer$$ExternalSyntheticLambda0
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
-                            MediaFilterTracer.this.m8752x3bc8565(message, (Message) obj);
+                            MediaFilterTracer.this.m9140x3bc8565(message, (Message) obj);
                         }
                     });
                     break;
@@ -138,8 +138,8 @@ public class MediaFilterTracer extends DecorateFilter {
         message.post();
     }
 
-    /* renamed from: lambda$makeReport$0$com-samsung-android-sume-core-filter-MediaFilterTracer */
-    public /* synthetic */ void m8752x3bc8565(Message message, Message msg) {
+    /* renamed from: lambda$makeReport$0$com-samsung-android-sume-core-filter-MediaFilterTracer, reason: not valid java name */
+    /* synthetic */ void m9140x3bc8565(Message message, Message msg) {
         msg.put(Message.KEY_CONTENTS_ID, message.get(Message.KEY_CONTENTS_ID, Integer.valueOf(this.contentId)));
     }
 
@@ -174,9 +174,8 @@ public class MediaFilterTracer extends DecorateFilter {
             case 7:
                 this.contentId = ((Integer) message.get(Message.KEY_CONTENTS_ID, -1)).intValue();
                 this.numBlocks = ((Integer) message.get(Message.KEY_WHOLE_FRAMES, -1)).intValue();
-                return false;
-            default:
-                return false;
+                break;
         }
+        return false;
     }
 }

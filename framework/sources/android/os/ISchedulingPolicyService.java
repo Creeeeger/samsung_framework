@@ -6,7 +6,6 @@ public interface ISchedulingPolicyService extends IInterface {
 
     int requestPriority(int i, int i2, int i3, boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISchedulingPolicyService {
         @Override // android.os.ISchedulingPolicyService
         public int requestPriority(int pid, int tid, int prio, boolean isForApp) throws RemoteException {
@@ -24,7 +23,6 @@ public interface ISchedulingPolicyService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISchedulingPolicyService {
         public static final String DESCRIPTOR = "android.os.ISchedulingPolicyService";
         static final int TRANSACTION_requestCpusetBoost = 2;
@@ -71,37 +69,34 @@ public interface ISchedulingPolicyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result = requestPriority(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    IBinder _arg12 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result2 = requestCpusetBoost(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result = requestPriority(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            IBinder _arg12 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result2 = requestCpusetBoost(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISchedulingPolicyService {
             private IBinder mRemote;
 

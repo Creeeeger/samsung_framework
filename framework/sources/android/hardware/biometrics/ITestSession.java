@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ITestSession extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.ITestSession";
 
@@ -33,7 +33,6 @@ public interface ITestSession extends IInterface {
 
     void startEnroll(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITestSession {
         @Override // android.hardware.biometrics.ITestSession
         public void setTestHalEnabled(boolean enableTestHal) throws RemoteException {
@@ -81,7 +80,6 @@ public interface ITestSession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITestSession {
         static final int TRANSACTION_acceptAuthentication = 4;
         static final int TRANSACTION_cleanupInternalState = 8;
@@ -161,85 +159,81 @@ public interface ITestSession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITestSession.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITestSession.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITestSession.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTestHalEnabled(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startEnroll(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    finishEnroll(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    acceptAuthentication(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    rejectAuthentication(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyAcquired(_arg06, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyError(_arg07, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cleanupInternalState(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyVendorAcquired(_arg09, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    notifyVendorError(_arg010, _arg14);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setTestHalEnabled(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startEnroll(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            finishEnroll(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            acceptAuthentication(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            rejectAuthentication(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyAcquired(_arg06, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyError(_arg07, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cleanupInternalState(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyVendorAcquired(_arg09, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            notifyVendorError(_arg010, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITestSession {
+        private static class Proxy implements ITestSession {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -11,14 +11,13 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes.dex */
 public class ServiceInfo extends ComponentInfo implements Parcelable {
     public static final Parcelable.Creator<ServiceInfo> CREATOR = new Parcelable.Creator<ServiceInfo>() { // from class: android.content.pm.ServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceInfo createFromParcel(Parcel source) {
             return new ServiceInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ServiceInfo[] newArray(int size) {
             return new ServiceInfo[size];
@@ -29,6 +28,7 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
     public static final int FLAG_ISOLATED_PROCESS = 2;
     public static final int FLAG_SINGLE_USER = 1073741824;
     public static final int FLAG_STOP_WITH_TASK = 1;
+    public static final int FLAG_SYSTEM_USER_ONLY = 536870912;
     public static final int FLAG_USE_APP_ZYGOTE = 8;
     public static final int FLAG_VISIBLE_TO_INSTANT_APP = 1048576;
     public static final int FOREGROUND_SERVICE_TYPES_MAX_INDEX = 30;
@@ -40,6 +40,7 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
     public static final int FOREGROUND_SERVICE_TYPE_LOCATION = 8;
     public static final int FOREGROUND_SERVICE_TYPE_MANIFEST = -1;
     public static final int FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK = 2;
+    public static final int FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING = 8192;
     public static final int FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION = 32;
     public static final int FOREGROUND_SERVICE_TYPE_MICROPHONE = 128;
 
@@ -55,12 +56,7 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
     public String permission;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ForegroundServiceType {
-    }
-
-    /* synthetic */ ServiceInfo(Parcel parcel, ServiceInfoIA serviceInfoIA) {
-        this(parcel);
     }
 
     public ServiceInfo() {
@@ -83,7 +79,7 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
         dump(pw, prefix, 3);
     }
 
-    public void dump(Printer pw, String prefix, int dumpFlags) {
+    void dump(Printer pw, String prefix, int dumpFlags) {
         super.dumpFront(pw, prefix);
         pw.println(prefix + "permission=" + this.permission);
         pw.println(prefix + "flags=0x" + Integer.toHexString(this.flags));
@@ -97,7 +93,7 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
     public static String foregroundServiceTypeToLabel(int type) {
         switch (type) {
             case -1:
-                return PackageParser.TAG_MANIFEST;
+                return "manifest";
             case 0:
                 return "none";
             case 1:
@@ -126,6 +122,8 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
                 return "shortService";
             case 4096:
                 return "fileManagement";
+            case 8192:
+                return "mediaProcessing";
             case 1073741824:
                 return "specialUse";
             default:
@@ -144,23 +142,6 @@ public class ServiceInfo extends ComponentInfo implements Parcelable {
         dest.writeString8(this.permission);
         dest.writeInt(this.flags);
         dest.writeInt(this.mForegroundServiceType);
-    }
-
-    /* renamed from: android.content.pm.ServiceInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceInfo createFromParcel(Parcel source) {
-            return new ServiceInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ServiceInfo[] newArray(int size) {
-            return new ServiceInfo[size];
-        }
     }
 
     private ServiceInfo(Parcel source) {

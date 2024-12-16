@@ -10,14 +10,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class AccessibilityWindowAttributes implements Parcelable {
     public static final Parcelable.Creator<AccessibilityWindowAttributes> CREATOR = new Parcelable.Creator<AccessibilityWindowAttributes>() { // from class: android.view.accessibility.AccessibilityWindowAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityWindowAttributes createFromParcel(Parcel in) {
             return new AccessibilityWindowAttributes(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityWindowAttributes[] newArray(int size) {
             return new AccessibilityWindowAttributes[size];
@@ -25,10 +24,6 @@ public final class AccessibilityWindowAttributes implements Parcelable {
     };
     private final LocaleList mLocales;
     private final CharSequence mWindowTitle;
-
-    /* synthetic */ AccessibilityWindowAttributes(Parcel parcel, AccessibilityWindowAttributesIA accessibilityWindowAttributesIA) {
-        this(parcel);
-    }
 
     public AccessibilityWindowAttributes(WindowManager.LayoutParams layoutParams, LocaleList locales) {
         this.mWindowTitle = populateWindowTitle(layoutParams);
@@ -79,23 +74,6 @@ public final class AccessibilityWindowAttributes implements Parcelable {
 
     public int hashCode() {
         return Objects.hash(this.mWindowTitle, this.mLocales);
-    }
-
-    /* renamed from: android.view.accessibility.AccessibilityWindowAttributes$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityWindowAttributes> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityWindowAttributes createFromParcel(Parcel in) {
-            return new AccessibilityWindowAttributes(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityWindowAttributes[] newArray(int size) {
-            return new AccessibilityWindowAttributes[size];
-        }
     }
 
     @Override // android.os.Parcelable

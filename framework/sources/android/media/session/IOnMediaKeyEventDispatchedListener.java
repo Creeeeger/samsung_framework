@@ -14,7 +14,6 @@ public interface IOnMediaKeyEventDispatchedListener extends IInterface {
 
     void onMediaKeyEventDispatched(KeyEvent keyEvent, String str, MediaSession.Token token) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IOnMediaKeyEventDispatchedListener {
         @Override // android.media.session.IOnMediaKeyEventDispatchedListener
         public void onMediaKeyEventDispatched(KeyEvent event, String packageName, MediaSession.Token sessionToken) throws RemoteException {
@@ -26,7 +25,6 @@ public interface IOnMediaKeyEventDispatchedListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IOnMediaKeyEventDispatchedListener {
         static final int TRANSACTION_onMediaKeyEventDispatched = 1;
 
@@ -69,28 +67,24 @@ public interface IOnMediaKeyEventDispatchedListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IOnMediaKeyEventDispatchedListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IOnMediaKeyEventDispatchedListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IOnMediaKeyEventDispatchedListener.DESCRIPTOR);
+                case 1:
+                    KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+                    String _arg1 = data.readString();
+                    MediaSession.Token _arg2 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMediaKeyEventDispatched(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            String _arg1 = data.readString();
-                            MediaSession.Token _arg2 = (MediaSession.Token) data.readTypedObject(MediaSession.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMediaKeyEventDispatched(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IOnMediaKeyEventDispatchedListener {
+        private static class Proxy implements IOnMediaKeyEventDispatchedListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

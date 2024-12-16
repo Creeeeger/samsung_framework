@@ -9,19 +9,18 @@ import com.android.internal.util.MessageUtils;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class DhcpErrorEvent implements IpConnectivityLog.Event {
     public static final int BOOTP_TOO_SHORT = 67174400;
     public static final int BUFFER_UNDERFLOW = 83951616;
     public static final Parcelable.Creator<DhcpErrorEvent> CREATOR = new Parcelable.Creator<DhcpErrorEvent>() { // from class: android.net.metrics.DhcpErrorEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DhcpErrorEvent createFromParcel(Parcel in) {
             return new DhcpErrorEvent(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DhcpErrorEvent[] newArray(int size) {
             return new DhcpErrorEvent[size];
@@ -53,10 +52,6 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
     public static final int RECEIVE_ERROR = 84017152;
     public final int errorCode;
 
-    /* synthetic */ DhcpErrorEvent(Parcel parcel, DhcpErrorEventIA dhcpErrorEventIA) {
-        this(parcel);
-    }
-
     public DhcpErrorEvent(int errorCode) {
         this.errorCode = errorCode;
     }
@@ -75,23 +70,6 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
         return 0;
     }
 
-    /* renamed from: android.net.metrics.DhcpErrorEvent$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DhcpErrorEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DhcpErrorEvent createFromParcel(Parcel in) {
-            return new DhcpErrorEvent(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DhcpErrorEvent[] newArray(int size) {
-            return new DhcpErrorEvent[size];
-        }
-    }
-
     public static int errorCodeWithOption(int errorCode, int option) {
         return ((-65536) & errorCode) | (option & 255);
     }
@@ -100,7 +78,6 @@ public final class DhcpErrorEvent implements IpConnectivityLog.Event {
         return String.format("DhcpErrorEvent(%s)", Decoder.constants.get(this.errorCode));
     }
 
-    /* loaded from: classes2.dex */
     static final class Decoder {
         static final SparseArray<String> constants = MessageUtils.findMessageNames(new Class[]{DhcpErrorEvent.class}, new String[]{"L2_", "L3_", "L4_", "BOOTP_", "DHCP_", "BUFFER_", "RECEIVE_", "PARSING_"});
 

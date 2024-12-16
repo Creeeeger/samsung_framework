@@ -2,6 +2,8 @@ package android.util;
 
 import android.content.res.FontScaleConverter;
 import android.os.SystemProperties;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /* loaded from: classes4.dex */
 public class DisplayMetrics {
@@ -14,6 +16,7 @@ public class DisplayMetrics {
     public static final int DENSITY_300 = 300;
     public static final int DENSITY_340 = 340;
     public static final int DENSITY_360 = 360;
+    public static final int DENSITY_390 = 390;
     public static final int DENSITY_400 = 400;
     public static final int DENSITY_420 = 420;
     public static final int DENSITY_440 = 440;
@@ -52,6 +55,10 @@ public class DisplayMetrics {
     public float xdpi;
     public float ydpi;
 
+    @Retention(RetentionPolicy.SOURCE)
+    @interface DensityDpi {
+    }
+
     public void setTo(DisplayMetrics o) {
         if (this == o) {
             return;
@@ -76,22 +83,18 @@ public class DisplayMetrics {
     public void setToDefaults() {
         this.widthPixels = 0;
         this.heightPixels = 0;
-        int i = DENSITY_DEVICE;
-        float f = i / 160.0f;
-        this.density = f;
-        this.densityDpi = i;
-        this.scaledDensity = f;
-        float f2 = i;
-        this.xdpi = f2;
-        float f3 = i;
-        this.ydpi = f3;
-        this.noncompatWidthPixels = 0;
-        this.noncompatHeightPixels = 0;
-        this.noncompatDensity = f;
-        this.noncompatDensityDpi = i;
-        this.noncompatScaledDensity = f;
-        this.noncompatXdpi = f2;
-        this.noncompatYdpi = f3;
+        this.density = DENSITY_DEVICE / 160.0f;
+        this.densityDpi = DENSITY_DEVICE;
+        this.scaledDensity = this.density;
+        this.xdpi = DENSITY_DEVICE;
+        this.ydpi = DENSITY_DEVICE;
+        this.noncompatWidthPixels = this.widthPixels;
+        this.noncompatHeightPixels = this.heightPixels;
+        this.noncompatDensity = this.density;
+        this.noncompatDensityDpi = this.densityDpi;
+        this.noncompatScaledDensity = this.scaledDensity;
+        this.noncompatXdpi = this.xdpi;
+        this.noncompatYdpi = this.ydpi;
         this.fontScaleConverter = null;
     }
 

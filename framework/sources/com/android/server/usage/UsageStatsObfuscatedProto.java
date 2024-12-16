@@ -14,7 +14,6 @@ public final class UsageStatsObfuscatedProto {
     public static final long TOTAL_TIME_SERVICE_USED_MS = 1112396529673L;
     public static final long TOTAL_TIME_VISIBLE_MS = 1112396529675L;
 
-    /* loaded from: classes5.dex */
     public final class ChooserAction {
         public static final long ACTION_TOKEN = 1120986464257L;
         public static final long COUNTS = 2246267895810L;
@@ -22,7 +21,6 @@ public final class UsageStatsObfuscatedProto {
         public ChooserAction() {
         }
 
-        /* loaded from: classes5.dex */
         public final class CategoryCount {
             public static final long CATEGORY_TOKEN = 1120986464257L;
             public static final long COUNT = 1120986464258L;

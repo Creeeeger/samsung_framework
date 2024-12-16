@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class SubCardTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<SubCardTemplateData> CREATOR = new Parcelable.Creator<SubCardTemplateData>() { // from class: android.app.smartspace.uitemplatedata.SubCardTemplateData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubCardTemplateData createFromParcel(Parcel in) {
             return new SubCardTemplateData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SubCardTemplateData[] newArray(int size) {
             return new SubCardTemplateData[size];
@@ -27,10 +26,6 @@ public final class SubCardTemplateData extends BaseTemplateData {
     private final TapAction mSubCardAction;
     private final Icon mSubCardIcon;
     private final Text mSubCardText;
-
-    /* synthetic */ SubCardTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, Icon icon, Text text, TapAction tapAction, SubCardTemplateDataIA subCardTemplateDataIA) {
-        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, icon, text, tapAction);
-    }
 
     SubCardTemplateData(Parcel in) {
         super(in);
@@ -56,23 +51,6 @@ public final class SubCardTemplateData extends BaseTemplateData {
 
     public TapAction getSubCardAction() {
         return this.mSubCardAction;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.SubCardTemplateData$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SubCardTemplateData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubCardTemplateData createFromParcel(Parcel in) {
-            return new SubCardTemplateData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SubCardTemplateData[] newArray(int size) {
-            return new SubCardTemplateData[size];
-        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable
@@ -111,7 +89,6 @@ public final class SubCardTemplateData extends BaseTemplateData {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder extends BaseTemplateData.Builder {
         private TapAction mSubCardAction;
         private final Icon mSubCardIcon;

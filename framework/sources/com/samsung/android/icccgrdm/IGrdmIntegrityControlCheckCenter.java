@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IGrdmIntegrityControlCheckCenter extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.icccgrdm.IGrdmIntegrityControlCheckCenter";
 
     byte[] grdmSetAttestationData(byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGrdmIntegrityControlCheckCenter {
         @Override // com.samsung.android.icccgrdm.IGrdmIntegrityControlCheckCenter
         public byte[] grdmSetAttestationData(byte[] blob) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IGrdmIntegrityControlCheckCenter extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGrdmIntegrityControlCheckCenter {
         static final int TRANSACTION_grdmSetAttestationData = 1;
 
@@ -68,26 +66,23 @@ public interface IGrdmIntegrityControlCheckCenter extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGrdmIntegrityControlCheckCenter.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGrdmIntegrityControlCheckCenter.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGrdmIntegrityControlCheckCenter.DESCRIPTOR);
+                case 1:
+                    byte[] _arg0 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result = grdmSetAttestationData(_arg0);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            byte[] _arg0 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result = grdmSetAttestationData(_arg0);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IGrdmIntegrityControlCheckCenter {
             private IBinder mRemote;
 

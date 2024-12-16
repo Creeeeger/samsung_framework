@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 public final class InternalNano {
     public static final int TYPE_BOOL = 8;
     public static final int TYPE_BYTES = 12;
@@ -365,7 +365,7 @@ public final class InternalNano {
 
     public static void cloneUnknownFieldData(ExtendableMessageNano original, ExtendableMessageNano cloned) {
         if (original.unknownFieldData != null) {
-            cloned.unknownFieldData = original.unknownFieldData.m7006clone();
+            cloned.unknownFieldData = original.unknownFieldData.m7419clone();
         }
     }
 }

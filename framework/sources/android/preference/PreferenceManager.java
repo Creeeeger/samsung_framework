@@ -46,25 +46,21 @@ public class PreferenceManager {
     private int mStorage = 0;
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnActivityDestroyListener {
         void onActivityDestroy();
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnActivityResultListener {
         boolean onActivityResult(int i, int i2, Intent intent);
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnActivityStopListener {
         void onActivityStop();
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnPreferenceTreeClickListener {
         boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference);
     }
@@ -84,11 +80,11 @@ public class PreferenceManager {
         setSharedPreferencesName(getDefaultSharedPreferencesName(context));
     }
 
-    public void setFragment(PreferenceFragment fragment) {
+    void setFragment(PreferenceFragment fragment) {
         this.mFragment = fragment;
     }
 
-    public PreferenceFragment getFragment() {
+    PreferenceFragment getFragment() {
         return this.mFragment;
     }
 
@@ -104,7 +100,7 @@ public class PreferenceManager {
         return this.mContext.getPackageManager().queryIntentActivities(queryIntent, 128);
     }
 
-    public PreferenceScreen inflateFromIntent(Intent queryIntent, PreferenceScreen rootPreferences) {
+    PreferenceScreen inflateFromIntent(Intent queryIntent, PreferenceScreen rootPreferences) {
         List<ResolveInfo> activities = queryIntentActivities(queryIntent);
         HashSet<String> inflatedRes = new HashSet<>();
         for (int i = activities.size() - 1; i >= 0; i--) {
@@ -145,7 +141,7 @@ public class PreferenceManager {
         return preferenceScreen;
     }
 
-    public long getNextId() {
+    long getNextId() {
         long j;
         synchronized (this) {
             j = this.mNextId;
@@ -237,11 +233,11 @@ public class PreferenceManager {
         return 0;
     }
 
-    public PreferenceScreen getPreferenceScreen() {
+    PreferenceScreen getPreferenceScreen() {
         return this.mPreferenceScreen;
     }
 
-    public boolean setPreferences(PreferenceScreen preferenceScreen) {
+    boolean setPreferences(PreferenceScreen preferenceScreen) {
         if (preferenceScreen != this.mPreferenceScreen) {
             this.mPreferenceScreen = preferenceScreen;
             return true;
@@ -250,11 +246,10 @@ public class PreferenceManager {
     }
 
     public Preference findPreference(CharSequence key) {
-        PreferenceScreen preferenceScreen = this.mPreferenceScreen;
-        if (preferenceScreen == null) {
+        if (this.mPreferenceScreen == null) {
             return null;
         }
-        return preferenceScreen.findPreference(key);
+        return this.mPreferenceScreen.findPreference(key);
     }
 
     public static void setDefaultValues(Context context, int resId, boolean readAgain) {
@@ -277,7 +272,7 @@ public class PreferenceManager {
         }
     }
 
-    public SharedPreferences.Editor getEditor() {
+    SharedPreferences.Editor getEditor() {
         if (this.mPreferenceDataStore != null) {
             return null;
         }
@@ -290,15 +285,14 @@ public class PreferenceManager {
         return getSharedPreferences().edit();
     }
 
-    public boolean shouldCommit() {
+    boolean shouldCommit() {
         return !this.mNoCommit;
     }
 
     private void setNoCommit(boolean noCommit) {
-        SharedPreferences.Editor editor;
-        if (!noCommit && (editor = this.mEditor) != null) {
+        if (!noCommit && this.mEditor != null) {
             try {
-                editor.apply();
+                this.mEditor.apply();
             } catch (AbstractMethodError e) {
                 this.mEditor.commit();
             }
@@ -306,7 +300,7 @@ public class PreferenceManager {
         this.mNoCommit = noCommit;
     }
 
-    public Activity getActivity() {
+    Activity getActivity() {
         return this.mActivity;
     }
 
@@ -314,7 +308,7 @@ public class PreferenceManager {
         return this.mContext;
     }
 
-    public void registerOnActivityResultListener(OnActivityResultListener listener) {
+    void registerOnActivityResultListener(OnActivityResultListener listener) {
         synchronized (this) {
             if (this.mActivityResultListeners == null) {
                 this.mActivityResultListeners = new ArrayList();
@@ -327,14 +321,13 @@ public class PreferenceManager {
 
     void unregisterOnActivityResultListener(OnActivityResultListener listener) {
         synchronized (this) {
-            List<OnActivityResultListener> list = this.mActivityResultListeners;
-            if (list != null) {
-                list.remove(listener);
+            if (this.mActivityResultListeners != null) {
+                this.mActivityResultListeners.remove(listener);
             }
         }
     }
 
-    public void dispatchActivityResult(int requestCode, int resultCode, Intent data) {
+    void dispatchActivityResult(int requestCode, int resultCode, Intent data) {
         synchronized (this) {
             if (this.mActivityResultListeners == null) {
                 return;
@@ -359,14 +352,13 @@ public class PreferenceManager {
 
     public void unregisterOnActivityStopListener(OnActivityStopListener listener) {
         synchronized (this) {
-            List<OnActivityStopListener> list = this.mActivityStopListeners;
-            if (list != null) {
-                list.remove(listener);
+            if (this.mActivityStopListeners != null) {
+                this.mActivityStopListeners.remove(listener);
             }
         }
     }
 
-    public void dispatchActivityStop() {
+    void dispatchActivityStop() {
         synchronized (this) {
             if (this.mActivityStopListeners == null) {
                 return;
@@ -379,7 +371,7 @@ public class PreferenceManager {
         }
     }
 
-    public void registerOnActivityDestroyListener(OnActivityDestroyListener listener) {
+    void registerOnActivityDestroyListener(OnActivityDestroyListener listener) {
         synchronized (this) {
             if (this.mActivityDestroyListeners == null) {
                 this.mActivityDestroyListeners = new ArrayList();
@@ -390,16 +382,15 @@ public class PreferenceManager {
         }
     }
 
-    public void unregisterOnActivityDestroyListener(OnActivityDestroyListener listener) {
+    void unregisterOnActivityDestroyListener(OnActivityDestroyListener listener) {
         synchronized (this) {
-            List<OnActivityDestroyListener> list = this.mActivityDestroyListeners;
-            if (list != null) {
-                list.remove(listener);
+            if (this.mActivityDestroyListeners != null) {
+                this.mActivityDestroyListeners.remove(listener);
             }
         }
     }
 
-    public void dispatchActivityDestroy() {
+    void dispatchActivityDestroy() {
         List<OnActivityDestroyListener> list = null;
         synchronized (this) {
             if (this.mActivityDestroyListeners != null) {
@@ -415,7 +406,7 @@ public class PreferenceManager {
         dismissAllScreens();
     }
 
-    public int getNextRequestCode() {
+    int getNextRequestCode() {
         int i;
         synchronized (this) {
             i = this.mNextRequestCode;
@@ -424,7 +415,7 @@ public class PreferenceManager {
         return i;
     }
 
-    public void addPreferencesScreen(DialogInterface screen) {
+    void addPreferencesScreen(DialogInterface screen) {
         synchronized (this) {
             if (this.mPreferencesScreens == null) {
                 this.mPreferencesScreens = new ArrayList();
@@ -433,17 +424,16 @@ public class PreferenceManager {
         }
     }
 
-    public void removePreferencesScreen(DialogInterface screen) {
+    void removePreferencesScreen(DialogInterface screen) {
         synchronized (this) {
-            List<DialogInterface> list = this.mPreferencesScreens;
-            if (list == null) {
+            if (this.mPreferencesScreens == null) {
                 return;
             }
-            list.remove(screen);
+            this.mPreferencesScreens.remove(screen);
         }
     }
 
-    public void dispatchNewIntent(Intent intent) {
+    void dispatchNewIntent(Intent intent) {
         dismissAllScreens();
     }
 
@@ -460,11 +450,11 @@ public class PreferenceManager {
         }
     }
 
-    public void setOnPreferenceTreeClickListener(OnPreferenceTreeClickListener listener) {
+    void setOnPreferenceTreeClickListener(OnPreferenceTreeClickListener listener) {
         this.mOnPreferenceTreeClickListener = listener;
     }
 
-    public OnPreferenceTreeClickListener getOnPreferenceTreeClickListener() {
+    OnPreferenceTreeClickListener getOnPreferenceTreeClickListener() {
         return this.mOnPreferenceTreeClickListener;
     }
 }

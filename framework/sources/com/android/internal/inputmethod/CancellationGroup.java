@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class CancellationGroup {
     private final Object mLock = new Object();
     private ArrayList<CompletableFuture<?>> mFutureList = null;
     private boolean mCanceled = false;
 
-    public boolean tryRegisterFutureOrCancelImmediately(CompletableFuture<?> future) {
+    boolean tryRegisterFutureOrCancelImmediately(CompletableFuture<?> future) {
         synchronized (this.mLock) {
             if (this.mCanceled) {
                 future.cancel(false);
@@ -24,11 +24,10 @@ public final class CancellationGroup {
         }
     }
 
-    public void unregisterFuture(CompletableFuture<?> future) {
+    void unregisterFuture(CompletableFuture<?> future) {
         synchronized (this.mLock) {
-            ArrayList<CompletableFuture<?>> arrayList = this.mFutureList;
-            if (arrayList != null) {
-                arrayList.remove(future);
+            if (this.mFutureList != null) {
+                this.mFutureList.remove(future);
             }
         }
     }
@@ -37,9 +36,8 @@ public final class CancellationGroup {
         synchronized (this.mLock) {
             if (!this.mCanceled) {
                 this.mCanceled = true;
-                ArrayList<CompletableFuture<?>> arrayList = this.mFutureList;
-                if (arrayList != null) {
-                    arrayList.forEach(new Consumer() { // from class: com.android.internal.inputmethod.CancellationGroup$$ExternalSyntheticLambda0
+                if (this.mFutureList != null) {
+                    this.mFutureList.forEach(new Consumer() { // from class: com.android.internal.inputmethod.CancellationGroup$$ExternalSyntheticLambda0
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
                             ((CompletableFuture) obj).cancel(false);

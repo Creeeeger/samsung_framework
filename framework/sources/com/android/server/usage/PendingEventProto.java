@@ -4,6 +4,7 @@ package com.android.server.usage;
 public final class PendingEventProto {
     public static final long CLASS_NAME = 1138166333442L;
     public static final long CONFIG = 1146756268038L;
+    public static final long EXTRAS = 1151051235342L;
     public static final long FLAGS = 1120986464260L;
     public static final long INSTANCE_ID = 1120986464266L;
     public static final long LOCUS_ID = 1138166333453L;

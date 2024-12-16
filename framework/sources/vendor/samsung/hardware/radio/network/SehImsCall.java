@@ -9,9 +9,6 @@ import java.util.StringJoiner;
 /* loaded from: classes6.dex */
 public class SehImsCall implements Parcelable {
     public static final Parcelable.Creator<SehImsCall> CREATOR = new Parcelable.Creator<SehImsCall>() { // from class: vendor.samsung.hardware.radio.network.SehImsCall.1
-        AnonymousClass1() {
-        }
-
         @Override // android.os.Parcelable.Creator
         public SehImsCall createFromParcel(Parcel _aidl_source) {
             SehImsCall _aidl_out = new SehImsCall();
@@ -29,25 +26,6 @@ public class SehImsCall implements Parcelable {
     public int type = 0;
     public int isMt = 0;
     public int isMpty = 0;
-
-    /* renamed from: vendor.samsung.hardware.radio.network.SehImsCall$1 */
-    /* loaded from: classes6.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SehImsCall> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehImsCall createFromParcel(Parcel _aidl_source) {
-            SehImsCall _aidl_out = new SehImsCall();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SehImsCall[] newArray(int _aidl_size) {
-            return new SehImsCall[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -136,7 +114,7 @@ public class SehImsCall implements Parcelable {
         _aidl_sj.add("isMt: " + this.isMt);
         _aidl_sj.add("isMpty: " + this.isMpty);
         _aidl_sj.add("number: " + Objects.toString(this.number));
-        return "vendor.samsung.hardware.radio.network.SehImsCall" + _aidl_sj.toString();
+        return "SehImsCall" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

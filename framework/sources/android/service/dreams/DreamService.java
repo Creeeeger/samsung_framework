@@ -1,8 +1,8 @@
 package android.service.dreams;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityOptions;
-import android.app.ActivityTaskManager;
+import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Binder;
@@ -25,11 +24,10 @@ import android.service.dreams.DreamService;
 import android.service.dreams.IDreamManager;
 import android.service.dreams.IDreamOverlayCallback;
 import android.service.dreams.IDreamService;
-import android.util.AttributeSet;
+import android.service.dreams.utils.DreamAccessibility;
 import android.util.Log;
 import android.util.MathUtils;
 import android.util.Slog;
-import android.util.Xml;
 import android.view.ActionMode;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -46,81 +44,203 @@ import android.view.accessibility.AccessibilityEvent;
 import com.android.internal.R;
 import com.android.internal.util.DumpUtils;
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
-import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes3.dex */
 public class DreamService extends Service implements Window.Callback {
-    private static final boolean DEBUG;
     public static final boolean DEFAULT_SHOW_COMPLICATIONS = false;
+    public static final int DREAM_CATEGORY_DEFAULT = 0;
+    public static final int DREAM_CATEGORY_HOME_PANEL = 2;
+    public static final int DREAM_CATEGORY_LOW_LIGHT = 1;
     public static final String DREAM_META_DATA = "android.service.dream";
     private static final String DREAM_META_DATA_ROOT_TAG = "dream";
     public static final String DREAM_SERVICE = "dreams";
-    public static final String EXTRA_DREAM_OVERLAY_COMPONENT = "android.service.dream.DreamService.dream_overlay_component";
+    static final String EXTRA_DREAM_OVERLAY_COMPONENT = "android.service.dream.DreamService.dream_overlay_component";
     public static final String SERVICE_INTERFACE = "android.service.dreams.DreamService";
-    private static final String TAG;
     private Activity mActivity;
     private boolean mCanDoze;
+    private boolean mDebug;
     private Runnable mDispatchAfterOnAttachedToWindow;
+    private volatile int mDozeScreenBrightness;
+    private int mDozeScreenMode;
+    private volatile int mDozeScreenState;
+    private volatile int mDozeScreenStateReason;
     private boolean mDozing;
+    private DreamAccessibility mDreamAccessibility;
     private ComponentName mDreamComponent;
+    private final IDreamManager mDreamManager;
     private DreamServiceWrapper mDreamServiceWrapper;
     private IBinder mDreamToken;
     private boolean mFinished;
     private boolean mFullscreen;
+    private final Handler mHandler;
+    private final Injector mInjector;
     private boolean mInteractive;
+    private IDreamOverlayCallback mOverlayCallback;
     private DreamOverlayConnectionHandler mOverlayConnection;
+    private boolean mPreviewMode;
+    private boolean mRedirectWake;
+    private boolean mScreenBright;
     private boolean mShouldShowComplications;
     private boolean mShouldWaitForTransitionToAodUi;
     private boolean mStarted;
+    private final String mTag;
+    private Integer mTrackingConfirmKey;
     private boolean mWaking;
     private Window mWindow;
     private boolean mWindowless;
-    private final String mTag = TAG + NavigationBarInflaterView.SIZE_MOD_START + getClass().getSimpleName() + NavigationBarInflaterView.SIZE_MOD_END;
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private boolean mScreenBright = true;
-    private int mDozeScreenState = 0;
-    private int mDozeScreenBrightness = -1;
-    private int mDozeScreenMode = 0;
-    private boolean mDebug = false;
-    private final IDreamOverlayCallback mOverlayCallback = new AnonymousClass1();
-    private final IDreamManager mDreamManager = IDreamManager.Stub.asInterface(ServiceManager.getService(DREAM_SERVICE));
+    private static final String TAG = DreamService.class.getSimpleName();
+    private static final boolean DEBUG = Log.isLoggable(TAG, 3);
 
-    static {
-        String simpleName = DreamService.class.getSimpleName();
-        TAG = simpleName;
-        DEBUG = Log.isLoggable(simpleName, 3);
+    @Retention(RetentionPolicy.SOURCE)
+    @interface DreamCategory {
     }
 
-    /* renamed from: android.service.dreams.DreamService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IDreamOverlayCallback.Stub {
-        AnonymousClass1() {
+    public interface Injector {
+        DreamOverlayConnectionHandler createOverlayConnection(ComponentName componentName);
+
+        ComponentName getDreamActivityComponent();
+
+        ComponentName getDreamComponent();
+
+        IDreamManager getDreamManager();
+
+        String getDreamPackageName();
+
+        Handler getHandler();
+
+        PackageManager getPackageManager();
+
+        Resources getResources();
+
+        ServiceInfo getServiceInfo();
+
+        void init(Context context);
+    }
+
+    private static final class DefaultInjector implements Injector {
+        private Class<?> mClassName;
+        private Context mContext;
+
+        private DefaultInjector() {
         }
 
-        public /* synthetic */ void lambda$onExitRequested$0() {
-            DreamService.this.finish();
+        @Override // android.service.dreams.DreamService.Injector
+        public void init(Context context) {
+            this.mContext = context;
+            this.mClassName = context.getClass();
         }
 
-        @Override // android.service.dreams.IDreamOverlayCallback
-        public void onExitRequested() {
-            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DreamService.AnonymousClass1.this.lambda$onExitRequested$0();
-                }
-            });
+        @Override // android.service.dreams.DreamService.Injector
+        public DreamOverlayConnectionHandler createOverlayConnection(ComponentName overlayComponent) {
+            Resources resources = this.mContext.getResources();
+            return new DreamOverlayConnectionHandler(this.mContext, Looper.getMainLooper(), new Intent().setComponent(overlayComponent), resources.getInteger(R.integer.config_minDreamOverlayDurationMs), resources.getInteger(R.integer.config_dreamOverlayMaxReconnectAttempts), resources.getInteger(R.integer.config_dreamOverlayReconnectTimeoutMs));
         }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public ComponentName getDreamActivityComponent() {
+            return new ComponentName(this.mContext, (Class<?>) DreamActivity.class);
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public ComponentName getDreamComponent() {
+            return new ComponentName(this.mContext, this.mClassName);
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public String getDreamPackageName() {
+            return this.mContext.getApplicationContext().getPackageName();
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public IDreamManager getDreamManager() {
+            return IDreamManager.Stub.asInterface(ServiceManager.getService(DreamService.DREAM_SERVICE));
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public ServiceInfo getServiceInfo() {
+            return DreamService.fetchServiceInfo(this.mContext, getDreamComponent());
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public Handler getHandler() {
+            return new Handler(Looper.getMainLooper());
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public PackageManager getPackageManager() {
+            return this.mContext.getPackageManager();
+        }
+
+        @Override // android.service.dreams.DreamService.Injector
+        public Resources getResources() {
+            return this.mContext.getResources();
+        }
+    }
+
+    public DreamService() {
+        this(new DefaultInjector());
+    }
+
+    public DreamService(Injector injector) {
+        this.mTag = TAG + NavigationBarInflaterView.SIZE_MOD_START + getClass().getSimpleName() + NavigationBarInflaterView.SIZE_MOD_END;
+        this.mScreenBright = true;
+        this.mDozeScreenState = 0;
+        this.mDozeScreenStateReason = 0;
+        this.mDozeScreenBrightness = -1;
+        this.mDozeScreenMode = 0;
+        this.mDebug = false;
+        this.mTrackingConfirmKey = null;
+        this.mInjector = injector;
+        this.mInjector.init(this);
+        this.mDreamManager = this.mInjector.getDreamManager();
+        this.mHandler = this.mInjector.getHandler();
     }
 
     public void setDebug(boolean dbg) {
         this.mDebug = dbg;
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // android.view.Window.Callback
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (Flags.dreamHandlesConfirmKeys()) {
+            if (this.mInteractive && this.mWindow.superDispatchKeyEvent(event)) {
+                return true;
+            }
+            if (KeyEvent.isConfirmKey(event.getKeyCode())) {
+                switch (event.getAction()) {
+                    case 0:
+                        if (this.mTrackingConfirmKey != null) {
+                            return true;
+                        }
+                        this.mTrackingConfirmKey = Integer.valueOf(event.getKeyCode());
+                        return true;
+                    case 1:
+                        if (this.mTrackingConfirmKey == null || this.mTrackingConfirmKey.intValue() != event.getKeyCode()) {
+                            return true;
+                        }
+                        this.mTrackingConfirmKey = null;
+                        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KeyguardManager.class);
+                        if (!keyguardManager.isKeyguardLocked()) {
+                            wakeUp();
+                            return true;
+                        }
+                        keyguardManager.requestDismissKeyguard(getActivity(), new KeyguardManager.KeyguardDismissCallback() { // from class: android.service.dreams.DreamService.1
+                            @Override // android.app.KeyguardManager.KeyguardDismissCallback
+                            public void onDismissError() {
+                                Log.e(DreamService.TAG, "Could not dismiss keyguard on confirm key");
+                            }
+                        });
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+        }
         if (!this.mInteractive) {
             if (this.mDebug) {
                 Slog.v(this.mTag, "Waking up on keyEvent");
@@ -269,15 +389,18 @@ public class DreamService extends Service implements Window.Callback {
     }
 
     public WindowManager getWindowManager() {
-        Window window = this.mWindow;
-        if (window != null) {
-            return window.getWindowManager();
+        if (this.mWindow != null) {
+            return this.mWindow.getWindowManager();
         }
         return null;
     }
 
     public Window getWindow() {
         return this.mWindow;
+    }
+
+    public Activity getActivity() {
+        return this.mActivity;
     }
 
     public void setContentView(int layoutResID) {
@@ -310,6 +433,7 @@ public class DreamService extends Service implements Window.Callback {
 
     public void setInteractive(boolean interactive) {
         this.mInteractive = interactive;
+        updateAccessibilityMessage();
     }
 
     public boolean isInteractive() {
@@ -319,7 +443,7 @@ public class DreamService extends Service implements Window.Callback {
     public void setFullscreen(boolean fullscreen) {
         if (this.mFullscreen != fullscreen) {
             this.mFullscreen = fullscreen;
-            applyWindowFlags(fullscreen ? 1024 : 0, 1024);
+            applyWindowFlags(this.mFullscreen ? 1024 : 0, 1024);
         }
     }
 
@@ -328,9 +452,9 @@ public class DreamService extends Service implements Window.Callback {
     }
 
     public void setScreenBright(boolean screenBright) {
-        if (this.mScreenBright != screenBright) {
+        if (this.mScreenBright != screenBright && !this.mPreviewMode) {
             this.mScreenBright = screenBright;
-            applyWindowFlags(screenBright ? 128 : 0, 128);
+            applyWindowFlags(this.mScreenBright ? 128 : 0, 128);
         }
     }
 
@@ -358,12 +482,11 @@ public class DreamService extends Service implements Window.Callback {
     }
 
     private void updateDoze() {
-        IBinder iBinder = this.mDreamToken;
-        if (iBinder == null) {
+        if (this.mDreamToken == null) {
             Slog.w(this.mTag, "Updating doze without a dream token.");
         } else if (this.mDozing) {
             try {
-                this.mDreamManager.semStartDozing(iBinder, this.mDozeScreenState, this.mDozeScreenBrightness, this.mDozeScreenMode, this.mShouldWaitForTransitionToAodUi);
+                this.mDreamManager.semStartDozing(this.mDreamToken, this.mDozeScreenState, this.mDozeScreenStateReason, this.mDozeScreenBrightness, this.mDozeScreenMode, this.mShouldWaitForTransitionToAodUi);
             } catch (RemoteException e) {
             }
         }
@@ -388,8 +511,13 @@ public class DreamService extends Service implements Window.Callback {
     }
 
     public void setDozeScreenState(int state) {
+        setDozeScreenState(state, 0);
+    }
+
+    public void setDozeScreenState(int state, int reason) {
         if (this.mDozeScreenState != state) {
             this.mDozeScreenState = state;
+            this.mDozeScreenStateReason = reason;
             updateDoze();
         }
     }
@@ -397,6 +525,15 @@ public class DreamService extends Service implements Window.Callback {
     public void setDozeScreenState(int state, boolean shouldWaitForTransitionToAodUi) {
         if (this.mDozeScreenState != state || this.mShouldWaitForTransitionToAodUi != shouldWaitForTransitionToAodUi) {
             this.mDozeScreenState = state;
+            this.mShouldWaitForTransitionToAodUi = shouldWaitForTransitionToAodUi;
+            updateDoze();
+        }
+    }
+
+    public void setDozeScreenState(int state, int reason, boolean shouldWaitForTransitionToAodUi) {
+        if (this.mDozeScreenState != state || this.mShouldWaitForTransitionToAodUi != shouldWaitForTransitionToAodUi) {
+            this.mDozeScreenState = state;
+            this.mDozeScreenStateReason = reason;
             this.mShouldWaitForTransitionToAodUi = shouldWaitForTransitionToAodUi;
             updateDoze();
         }
@@ -436,10 +573,36 @@ public class DreamService extends Service implements Window.Callback {
         if (this.mDebug) {
             Slog.v(this.mTag, "onCreate()");
         }
-        ComponentName componentName = new ComponentName(this, getClass());
-        this.mDreamComponent = componentName;
-        this.mShouldShowComplications = fetchShouldShowComplications(this, fetchServiceInfo(this, componentName));
+        this.mDreamComponent = this.mInjector.getDreamComponent();
+        this.mShouldShowComplications = fetchShouldShowComplications(this.mInjector.getPackageManager(), this.mInjector.getServiceInfo());
+        this.mOverlayCallback = new AnonymousClass2();
         super.onCreate();
+    }
+
+    /* renamed from: android.service.dreams.DreamService$2, reason: invalid class name */
+    class AnonymousClass2 extends IDreamOverlayCallback.Stub {
+        AnonymousClass2() {
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onExitRequested$0() {
+            DreamService.this.finish();
+        }
+
+        @Override // android.service.dreams.IDreamOverlayCallback
+        public void onExitRequested() {
+            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$2$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DreamService.AnonymousClass2.this.lambda$onExitRequested$0();
+                }
+            });
+        }
+
+        @Override // android.service.dreams.IDreamOverlayCallback
+        public void onRedirectWake(boolean redirect) {
+            DreamService.this.mRedirectWake = redirect;
+        }
     }
 
     public void onDreamingStarted() {
@@ -455,9 +618,8 @@ public class DreamService extends Service implements Window.Callback {
     }
 
     public void onWakeUp() {
-        DreamOverlayConnectionHandler dreamOverlayConnectionHandler = this.mOverlayConnection;
-        if (dreamOverlayConnectionHandler != null) {
-            dreamOverlayConnectionHandler.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda2
+        if (this.mOverlayConnection != null) {
+            this.mOverlayConnection.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda2
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     DreamService.this.lambda$onWakeUp$0((IDreamOverlayClient) obj);
@@ -468,6 +630,7 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$onWakeUp$0(IDreamOverlayClient overlay) {
         try {
             try {
@@ -488,11 +651,8 @@ public class DreamService extends Service implements Window.Callback {
         this.mDreamServiceWrapper = new DreamServiceWrapper();
         ComponentName overlayComponent = (ComponentName) intent.getParcelableExtra(EXTRA_DREAM_OVERLAY_COMPONENT, ComponentName.class);
         if (!this.mWindowless && overlayComponent != null) {
-            Resources resources = getResources();
-            Intent overlayIntent = new Intent().setComponent(overlayComponent);
-            DreamOverlayConnectionHandler dreamOverlayConnectionHandler = new DreamOverlayConnectionHandler(this, Looper.getMainLooper(), overlayIntent, resources.getInteger(R.integer.config_minDreamOverlayDurationMs), resources.getInteger(R.integer.config_dreamOverlayMaxReconnectAttempts), resources.getInteger(R.integer.config_dreamOverlayReconnectTimeoutMs));
-            this.mOverlayConnection = dreamOverlayConnectionHandler;
-            if (!dreamOverlayConnectionHandler.bind()) {
+            this.mOverlayConnection = this.mInjector.createOverlayConnection(overlayComponent);
+            if (!this.mOverlayConnection.bind()) {
                 this.mOverlayConnection = null;
             }
         }
@@ -501,24 +661,21 @@ public class DreamService extends Service implements Window.Callback {
 
     @Override // android.app.Service
     public boolean onUnbind(Intent intent) {
-        DreamOverlayConnectionHandler dreamOverlayConnectionHandler = this.mOverlayConnection;
-        if (dreamOverlayConnectionHandler != null) {
-            dreamOverlayConnectionHandler.unbind();
+        if (this.mOverlayConnection != null) {
+            this.mOverlayConnection.unbind();
             this.mOverlayConnection = null;
         }
         return super.onUnbind(intent);
     }
 
     public final void finish() {
-        DreamOverlayConnectionHandler dreamOverlayConnectionHandler = this.mOverlayConnection;
-        if (dreamOverlayConnectionHandler != null) {
-            dreamOverlayConnectionHandler.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda3
+        if (this.mOverlayConnection != null) {
+            this.mOverlayConnection.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     DreamService.this.lambda$finish$1((IDreamOverlayClient) obj);
                 }
             });
-            return;
         }
         if (this.mDebug) {
             Slog.v(this.mTag, "finish(): mFinished=" + this.mFinished);
@@ -533,10 +690,9 @@ public class DreamService extends Service implements Window.Callback {
                 return;
             }
             this.mFinished = true;
-            IBinder iBinder = this.mDreamToken;
-            if (iBinder != null) {
+            if (this.mDreamToken != null) {
                 try {
-                    this.mDreamManager.finishSelf(iBinder, true);
+                    this.mDreamManager.finishSelf(this.mDreamToken, true);
                 } catch (RemoteException e) {
                 }
             } else {
@@ -548,12 +704,12 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$finish$1(IDreamOverlayClient overlay) {
         try {
             overlay.endDream();
             this.mOverlayConnection.unbind();
             this.mOverlayConnection = null;
-            finish();
         } catch (RemoteException e) {
             Log.e(this.mTag, "could not inform overlay of dream end:" + e);
         }
@@ -563,15 +719,47 @@ public class DreamService extends Service implements Window.Callback {
         wakeUp(false);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public void comeToFront() {
+        this.mOverlayConnection.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda3
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                DreamService.this.lambda$comeToFront$2((IDreamOverlayClient) obj);
+            }
+        });
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$comeToFront$2(IDreamOverlayClient overlay) {
+        try {
+            overlay.comeToFront();
+        } catch (RemoteException e) {
+            Log.e(this.mTag, "could not tell overlay to come to front:" + e);
+        }
+    }
+
+    public boolean getRedirectWake() {
+        return this.mOverlayConnection != null && this.mRedirectWake;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void wakeUp(boolean fromSystem) {
         if (this.mDebug) {
             Slog.v(this.mTag, "wakeUp(): fromSystem=" + fromSystem + ", mWaking=" + this.mWaking + ", mFinished=" + this.mFinished);
         }
+        if (!fromSystem && getRedirectWake()) {
+            this.mOverlayConnection.addConsumer(new Consumer() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda1
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    DreamService.this.lambda$wakeUp$3((IDreamOverlayClient) obj);
+                }
+            });
+            return;
+        }
         if (!this.mWaking && !this.mFinished) {
             this.mWaking = true;
-            Activity activity = this.mActivity;
-            if (activity != null) {
-                activity.convertToTranslucent((Activity.TranslucentConversionListener) null, (ActivityOptions) null);
+            if (this.mActivity != null) {
+                this.mActivity.convertToTranslucent(null, null);
             }
             onWakeUp();
             if (!fromSystem && !this.mFinished) {
@@ -587,28 +775,49 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$wakeUp$3(IDreamOverlayClient overlay) {
+        try {
+            overlay.onWakeRequested();
+        } catch (RemoteException e) {
+            Log.e(this.mTag, "could not inform overlay of dream wakeup:" + e);
+        }
+    }
+
     @Override // android.app.Service
     public void onDestroy() {
         if (this.mDebug) {
             Slog.v(this.mTag, "onDestroy()");
         }
         detach();
+        this.mOverlayCallback = null;
         super.onDestroy();
     }
 
     public static DreamMetadata getDreamMetadata(Context context, ServiceInfo serviceInfo) {
+        return getDreamMetadata(context.getPackageManager(), serviceInfo);
+    }
+
+    public static DreamMetadata getDreamMetadata(PackageManager packageManager, ServiceInfo serviceInfo) {
         if (serviceInfo == null) {
             return null;
         }
-        PackageManager pm = context.getPackageManager();
-        TypedArray rawMetadata = readMetadata(pm, serviceInfo);
+        TypedArray rawMetadata = packageManager.extractPackageItemInfoAttributes(serviceInfo, DREAM_META_DATA, "dream", R.styleable.Dream);
         if (rawMetadata != null) {
             try {
-                DreamMetadata dreamMetadata = new DreamMetadata(convertToComponentName(rawMetadata.getString(0), serviceInfo), rawMetadata.getDrawable(1), rawMetadata.getBoolean(2, false));
-                if (rawMetadata != null) {
-                    rawMetadata.close();
+                try {
+                    DreamMetadata dreamMetadata = new DreamMetadata(convertToComponentName(rawMetadata.getString(0), serviceInfo), rawMetadata.getDrawable(1), rawMetadata.getBoolean(2, false), rawMetadata.getInt(3, 0));
+                    if (rawMetadata != null) {
+                        rawMetadata.close();
+                    }
+                    return dreamMetadata;
+                } catch (Exception exception) {
+                    Log.e(TAG, "Failed to create read metadata", exception);
+                    if (rawMetadata != null) {
+                        rawMetadata.close();
+                    }
+                    return null;
                 }
-                return dreamMetadata;
             } catch (Throwable th) {
                 if (rawMetadata != null) {
                     try {
@@ -624,62 +833,6 @@ public class DreamService extends Service implements Window.Callback {
             rawMetadata.close();
         }
         return null;
-    }
-
-    private static TypedArray readMetadata(PackageManager pm, ServiceInfo serviceInfo) {
-        int type;
-        if (serviceInfo == null || serviceInfo.metaData == null) {
-            return null;
-        }
-        try {
-            XmlResourceParser parser = serviceInfo.loadXmlMetaData(pm, DREAM_META_DATA);
-            try {
-                if (parser == null) {
-                    if (DEBUG) {
-                        Log.w(TAG, "No android.service.dream metadata");
-                    }
-                    if (parser != null) {
-                        parser.close();
-                    }
-                    return null;
-                }
-                AttributeSet attrs = Xml.asAttributeSet(parser);
-                do {
-                    type = parser.next();
-                    if (type == 1) {
-                        break;
-                    }
-                } while (type != 2);
-                if (parser.getName().equals("dream")) {
-                    TypedArray obtainAttributes = pm.getResourcesForApplication(serviceInfo.applicationInfo).obtainAttributes(attrs, R.styleable.Dream);
-                    if (parser != null) {
-                        parser.close();
-                    }
-                    return obtainAttributes;
-                }
-                if (DEBUG) {
-                    Log.w(TAG, "Metadata does not start with dream tag");
-                }
-                if (parser != null) {
-                    parser.close();
-                }
-                return null;
-            } catch (Throwable th) {
-                if (parser != null) {
-                    try {
-                        parser.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        } catch (PackageManager.NameNotFoundException | IOException | XmlPullParserException e) {
-            if (DEBUG) {
-                Log.e(TAG, "Error parsing: " + serviceInfo.packageName, e);
-            }
-            return null;
-        }
     }
 
     private static ComponentName convertToComponentName(String flattenedString, ServiceInfo serviceInfo) {
@@ -700,6 +853,7 @@ public class DreamService extends Service implements Window.Callback {
         return cn;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void detach() {
         if (this.mStarted) {
             if (this.mDebug) {
@@ -708,8 +862,7 @@ public class DreamService extends Service implements Window.Callback {
             this.mStarted = false;
             onDreamingStopped();
         }
-        Activity activity = this.mActivity;
-        if (activity != null && !activity.isFinishing()) {
+        if (this.mActivity != null && !this.mActivity.isFinishing()) {
             this.mActivity.finishAndRemoveTask();
         } else {
             finish();
@@ -718,6 +871,7 @@ public class DreamService extends Service implements Window.Callback {
         this.mCanDoze = false;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void attach(IBinder dreamToken, boolean canDoze, boolean isPreviewMode, final IRemoteCallback started) {
         if (this.mDreamToken != null) {
             Slog.e(this.mTag, "attach() called when dream with token=" + this.mDreamToken + " already attached");
@@ -734,28 +888,30 @@ public class DreamService extends Service implements Window.Callback {
         }
         this.mDreamToken = dreamToken;
         this.mCanDoze = canDoze;
-        if (this.mWindowless && !canDoze) {
-            throw new IllegalStateException("Only doze dreams can be windowless");
+        this.mPreviewMode = isPreviewMode;
+        if (this.mPreviewMode) {
+            this.mScreenBright = false;
         }
-        Runnable runnable = new Runnable() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda0
+        if (this.mWindowless && !this.mCanDoze && !isCallerSystemUi()) {
+            throw new IllegalStateException("Only doze or SystemUI dreams can be windowless.");
+        }
+        this.mDispatchAfterOnAttachedToWindow = new Runnable() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda4
             @Override // java.lang.Runnable
             public final void run() {
-                DreamService.this.lambda$attach$2(started);
+                DreamService.this.lambda$attach$4(started);
             }
         };
-        this.mDispatchAfterOnAttachedToWindow = runnable;
         if (!this.mWindowless) {
-            Intent i = new Intent(this, (Class<?>) DreamActivity.class);
-            i.setPackage(getApplicationContext().getPackageName());
+            Intent i = new Intent();
+            i.setComponent(this.mInjector.getDreamActivityComponent());
+            i.setPackage(this.mInjector.getDreamPackageName());
             i.setFlags(268697600);
-            i.putExtra("binder", new DreamActivityCallbacks(this.mDreamToken));
-            ServiceInfo serviceInfo = fetchServiceInfo(this, new ComponentName(this, getClass()));
-            i.putExtra("title", fetchDreamLabel(this, serviceInfo, isPreviewMode));
+            DreamActivity.setCallback(i, new DreamActivityCallbacks(this.mDreamToken));
+            ServiceInfo serviceInfo = this.mInjector.getServiceInfo();
+            CharSequence title = fetchDreamLabel(this.mInjector.getPackageManager(), this.mInjector.getResources(), serviceInfo, isPreviewMode);
+            DreamActivity.setTitle(i, title);
             try {
-                if (!ActivityTaskManager.getService().startDreamActivity(i)) {
-                    detach();
-                    return;
-                }
+                this.mDreamManager.startDreamActivity(i);
                 return;
             } catch (RemoteException e2) {
                 Log.w(this.mTag, "Could not connect to activity task manager to start dream activity");
@@ -767,10 +923,11 @@ public class DreamService extends Service implements Window.Callback {
                 return;
             }
         }
-        runnable.run();
+        this.mDispatchAfterOnAttachedToWindow.run();
     }
 
-    public /* synthetic */ void lambda$attach$2(IRemoteCallback started) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$attach$4(IRemoteCallback started) {
         if (this.mWindow != null || this.mWindowless) {
             this.mStarted = true;
             try {
@@ -791,9 +948,10 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onWindowCreated(Window w) {
         this.mWindow = w;
-        w.setCallback(this);
+        this.mWindow.setCallback(this);
         this.mWindow.requestFeature(1);
         WindowManager.LayoutParams lp = this.mWindow.getAttributes();
         lp.flags |= (this.mFullscreen ? 1024 : 0) | 21561601 | (this.mScreenBright ? 128 : 0);
@@ -802,31 +960,32 @@ public class DreamService extends Service implements Window.Callback {
         this.mWindow.clearFlags(Integer.MIN_VALUE);
         this.mWindow.getDecorView().getWindowInsetsController().hide(WindowInsets.Type.systemBars());
         this.mWindow.setDecorFitsSystemWindows(false);
-        this.mWindow.getDecorView().addOnAttachStateChangeListener(new AnonymousClass2());
+        updateAccessibilityMessage();
+        this.mWindow.getDecorView().addOnAttachStateChangeListener(new AnonymousClass3());
     }
 
-    /* renamed from: android.service.dreams.DreamService$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements View.OnAttachStateChangeListener {
+    /* renamed from: android.service.dreams.DreamService$3, reason: invalid class name */
+    class AnonymousClass3 implements View.OnAttachStateChangeListener {
         private Consumer<IDreamOverlayClient> mDreamStartOverlayConsumer;
 
-        AnonymousClass2() {
+        AnonymousClass3() {
         }
 
         @Override // android.view.View.OnAttachStateChangeListener
         public void onViewAttachedToWindow(View v) {
             DreamService.this.mDispatchAfterOnAttachedToWindow.run();
             if (DreamService.this.mOverlayConnection != null) {
-                this.mDreamStartOverlayConsumer = new Consumer() { // from class: android.service.dreams.DreamService$2$$ExternalSyntheticLambda0
+                this.mDreamStartOverlayConsumer = new Consumer() { // from class: android.service.dreams.DreamService$3$$ExternalSyntheticLambda0
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
-                        DreamService.AnonymousClass2.this.lambda$onViewAttachedToWindow$0((IDreamOverlayClient) obj);
+                        DreamService.AnonymousClass3.this.lambda$onViewAttachedToWindow$0((IDreamOverlayClient) obj);
                     }
                 };
                 DreamService.this.mOverlayConnection.addConsumer(this.mDreamStartOverlayConsumer);
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onViewAttachedToWindow$0(IDreamOverlayClient overlay) {
             if (DreamService.this.mWindow == null) {
                 Slog.d(DreamService.TAG, "mWindow is null");
@@ -852,46 +1011,59 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
+    private void updateAccessibilityMessage() {
+        if (this.mWindow == null) {
+            return;
+        }
+        if (this.mDreamAccessibility == null) {
+            View rootView = this.mWindow.getDecorView();
+            this.mDreamAccessibility = new DreamAccessibility(this, rootView);
+        }
+        this.mDreamAccessibility.updateAccessibilityConfiguration(Boolean.valueOf(isInteractive()));
+    }
+
     private boolean getWindowFlagValue(int flag, boolean defaultValue) {
-        Window window = this.mWindow;
-        return window == null ? defaultValue : (window.getAttributes().flags & flag) != 0;
+        return this.mWindow == null ? defaultValue : (this.mWindow.getAttributes().flags & flag) != 0;
     }
 
     private void applyWindowFlags(int flags, int mask) {
-        Window window = this.mWindow;
-        if (window != null) {
-            WindowManager.LayoutParams lp = window.getAttributes();
+        if (this.mWindow != null) {
+            WindowManager.LayoutParams lp = this.mWindow.getAttributes();
             lp.flags = applyFlags(lp.flags, flags, mask);
             this.mWindow.setAttributes(lp);
             this.mWindow.getWindowManager().updateViewLayout(this.mWindow.getDecorView(), lp);
         }
     }
 
+    private boolean isCallerSystemUi() {
+        return checkCallingOrSelfPermission(Manifest.permission.STATUS_BAR_SERVICE) == 0;
+    }
+
     private int applyFlags(int oldFlags, int flags, int mask) {
         return ((~mask) & oldFlags) | (flags & mask);
     }
 
-    private static boolean fetchShouldShowComplications(Context context, ServiceInfo serviceInfo) {
-        DreamMetadata metadata = getDreamMetadata(context, serviceInfo);
+    private static boolean fetchShouldShowComplications(PackageManager packageManager, ServiceInfo serviceInfo) {
+        DreamMetadata metadata = getDreamMetadata(packageManager, serviceInfo);
         if (metadata != null) {
             return metadata.showComplications;
         }
         return false;
     }
 
-    private static CharSequence fetchDreamLabel(Context context, ServiceInfo serviceInfo, boolean isPreviewMode) {
+    private static CharSequence fetchDreamLabel(PackageManager pm, Resources resources, ServiceInfo serviceInfo, boolean isPreviewMode) {
         if (serviceInfo == null) {
             return null;
         }
-        PackageManager pm = context.getPackageManager();
         CharSequence dreamLabel = serviceInfo.loadLabel(pm);
         if (!isPreviewMode || dreamLabel == null) {
             return dreamLabel;
         }
-        return context.getResources().getString(R.string.dream_preview_title, dreamLabel);
+        return resources.getString(R.string.dream_preview_title, dreamLabel);
     }
 
-    private static ServiceInfo fetchServiceInfo(Context context, ComponentName componentName) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static ServiceInfo fetchServiceInfo(Context context, ComponentName componentName) {
         PackageManager pm = context.getPackageManager();
         try {
             return pm.getServiceInfo(componentName, PackageManager.ComponentInfoFlags.of(128L));
@@ -904,16 +1076,18 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
-    public /* synthetic */ void lambda$dump$3(FileDescriptor fd, String[] args, PrintWriter pw1, String prefix) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$dump$5(FileDescriptor fd, String[] args, PrintWriter pw1, String prefix) {
         dumpOnHandler(fd, pw1, args);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.app.Service
     public void dump(final FileDescriptor fd, PrintWriter pw, final String[] args) {
-        DumpUtils.dumpAsync(this.mHandler, new DumpUtils.Dump() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda1
+        DumpUtils.dumpAsync(this.mHandler, new DumpUtils.Dump() { // from class: android.service.dreams.DreamService$$ExternalSyntheticLambda5
             @Override // com.android.internal.util.DumpUtils.Dump
             public final void dump(PrintWriter printWriter, String str) {
-                DreamService.this.lambda$dump$3(fd, args, printWriter, str);
+                DreamService.this.lambda$dump$5(fd, args, printWriter, str);
             }
         }, pw, "", 1000L);
     }
@@ -955,14 +1129,13 @@ public class DreamService extends Service implements Window.Callback {
         return MathUtils.constrain(value, 0, 255);
     }
 
-    /* loaded from: classes3.dex */
-    public final class DreamServiceWrapper extends IDreamService.Stub {
+    final class DreamServiceWrapper extends IDreamService.Stub {
         DreamServiceWrapper() {
         }
 
         @Override // android.service.dreams.IDreamService
         public void attach(final IBinder dreamToken, final boolean canDoze, final boolean isPreviewMode, final IRemoteCallback started) {
-            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$DreamServiceWrapper$$ExternalSyntheticLambda2
+            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$DreamServiceWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     DreamService.DreamServiceWrapper.this.lambda$attach$0(dreamToken, canDoze, isPreviewMode, started);
@@ -970,6 +1143,7 @@ public class DreamService extends Service implements Window.Callback {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$attach$0(IBinder dreamToken, boolean canDoze, boolean isPreviewMode, IRemoteCallback started) {
             DreamService.this.attach(dreamToken, canDoze, isPreviewMode, started);
         }
@@ -986,22 +1160,37 @@ public class DreamService extends Service implements Window.Callback {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$wakeUp$1() {
             DreamService.this.wakeUp(true);
         }
 
         @Override // android.service.dreams.IDreamService
         public void wakeUp() {
-            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$DreamServiceWrapper$$ExternalSyntheticLambda0
+            DreamService.this.mHandler.post(new Runnable() { // from class: android.service.dreams.DreamService$DreamServiceWrapper$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     DreamService.DreamServiceWrapper.this.lambda$wakeUp$1();
                 }
             });
         }
+
+        @Override // android.service.dreams.IDreamService
+        public void comeToFront() {
+            if (!Flags.dreamHandlesBeingObscured()) {
+                return;
+            }
+            Handler handler = DreamService.this.mHandler;
+            final DreamService dreamService = DreamService.this;
+            handler.post(new Runnable() { // from class: android.service.dreams.DreamService$DreamServiceWrapper$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DreamService.this.comeToFront();
+                }
+            });
+        }
     }
 
-    /* loaded from: classes3.dex */
     public final class DreamActivityCallbacks extends Binder {
         private final IBinder mActivityDreamToken;
 
@@ -1037,16 +1226,25 @@ public class DreamService extends Service implements Window.Callback {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static final class DreamMetadata {
+        public final int dreamCategory;
         public final Drawable previewImage;
         public final ComponentName settingsActivity;
         public final boolean showComplications;
 
-        DreamMetadata(ComponentName settingsActivity, Drawable previewImage, boolean showComplications) {
+        public DreamMetadata(ComponentName settingsActivity, Drawable previewImage, boolean showComplications, int dreamCategory) {
             this.settingsActivity = settingsActivity;
             this.previewImage = previewImage;
             this.showComplications = showComplications;
+            if (com.android.internal.hidden_from_bootclasspath.android.service.controls.flags.Flags.homePanelDream()) {
+                this.dreamCategory = dreamCategory;
+            } else {
+                this.dreamCategory = 0;
+            }
         }
+    }
+
+    public static void setDreamOverlayComponent(Intent intent, ComponentName component) {
+        intent.putExtra(EXTRA_DREAM_OVERLAY_COMPONENT, component);
     }
 }

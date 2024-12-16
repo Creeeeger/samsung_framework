@@ -89,7 +89,6 @@ public final class PeopleManager {
         }
     }
 
-    /* loaded from: classes.dex */
     public interface ConversationListener {
         default void onConversationUpdate(ConversationChannel conversation) {
         }
@@ -124,8 +123,8 @@ public final class PeopleManager {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class ConversationListenerProxy extends IConversationListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class ConversationListenerProxy extends IConversationListener.Stub {
         private final Executor mExecutor;
         private final ConversationListener mListener;
 
@@ -136,11 +135,10 @@ public final class PeopleManager {
 
         @Override // android.app.people.IConversationListener
         public void onConversationUpdate(final ConversationChannel conversation) {
-            Executor executor;
-            if (this.mListener == null || (executor = this.mExecutor) == null) {
+            if (this.mListener == null || this.mExecutor == null) {
                 Slog.e(PeopleManager.LOG_TAG, "Binder is dead");
             } else {
-                executor.execute(new Runnable() { // from class: android.app.people.PeopleManager$ConversationListenerProxy$$ExternalSyntheticLambda0
+                this.mExecutor.execute(new Runnable() { // from class: android.app.people.PeopleManager$ConversationListenerProxy$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         PeopleManager.ConversationListenerProxy.this.lambda$onConversationUpdate$0(conversation);
@@ -149,6 +147,7 @@ public final class PeopleManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onConversationUpdate$0(ConversationChannel conversation) {
             this.mListener.onConversationUpdate(conversation);
         }

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -24,13 +23,11 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3.0f;
     private static final String TAG = KeyButtonView.class.getSimpleName();
     private AudioManager mAudioManager;
-    private final Runnable mCheckLongPress;
     private int mCode;
     private float mDarkIntensity;
     private long mDownTime;
     private boolean mGestureAborted;
     private boolean mHasOvalBg;
-    boolean mLongClicked;
     private View.OnClickListener mOnClickListener;
     private final Paint mOvalBgPaint;
     private final boolean mPlaySounds;
@@ -39,55 +36,12 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
     private int mTouchDownY;
     private boolean mTracking;
 
-    /* renamed from: android.inputmethodservice.navigationbar.KeyButtonView$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (KeyButtonView.this.isPressed()) {
-                if (KeyButtonView.this.isLongClickable()) {
-                    KeyButtonView.this.performLongClick();
-                    KeyButtonView.this.mLongClicked = true;
-                } else {
-                    if (KeyButtonView.this.mCode != 0) {
-                        KeyButtonView.this.sendEvent(0, 128);
-                        KeyButtonView.this.sendAccessibilityEvent(2);
-                    }
-                    KeyButtonView.this.mLongClicked = true;
-                }
-            }
-        }
-    }
-
     public KeyButtonView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mOvalBgPaint = new Paint(3);
         this.mHasOvalBg = false;
-        this.mCheckLongPress = new Runnable() { // from class: android.inputmethodservice.navigationbar.KeyButtonView.1
-            AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (KeyButtonView.this.isPressed()) {
-                    if (KeyButtonView.this.isLongClickable()) {
-                        KeyButtonView.this.performLongClick();
-                        KeyButtonView.this.mLongClicked = true;
-                    } else {
-                        if (KeyButtonView.this.mCode != 0) {
-                            KeyButtonView.this.sendEvent(0, 128);
-                            KeyButtonView.this.sendAccessibilityEvent(2);
-                        }
-                        KeyButtonView.this.mLongClicked = true;
-                    }
-                }
-            }
-        };
         switch (getId()) {
-            case R.id.input_method_nav_back /* 16909178 */:
+            case R.id.input_method_nav_back /* 16909180 */:
                 this.mCode = 4;
                 break;
             default:
@@ -97,9 +51,8 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
         this.mPlaySounds = true;
         setClickable(true);
         this.mAudioManager = (AudioManager) context.getSystemService(AudioManager.class);
-        KeyButtonRipple keyButtonRipple = new KeyButtonRipple(context, this, R.dimen.input_method_nav_key_button_ripple_max_width);
-        this.mRipple = keyButtonRipple;
-        setBackground(keyButtonRipple);
+        this.mRipple = new KeyButtonRipple(context, this, R.dimen.input_method_nav_key_button_ripple_max_width);
+        setBackground(this.mRipple);
         setWillNotDraw(false);
         forceHasOverlappingRendering(false);
     }
@@ -131,7 +84,7 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
     }
 
     @Override // android.view.View
-    public void onWindowVisibilityChanged(int visibility) {
+    protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility != 0) {
             jumpDrawablesToCurrentState();
@@ -158,87 +111,148 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
         return super.performAccessibilityActionInternal(action, arguments);
     }
 
-    @Override // android.view.View
-    public boolean onTouchEvent(MotionEvent ev) {
-        View.OnClickListener onClickListener;
-        int action = ev.getAction();
-        if (action == 0) {
-            this.mGestureAborted = false;
-        }
-        if (this.mGestureAborted) {
-            setPressed(false);
-            return false;
-        }
-        switch (action) {
-            case 0:
-                this.mDownTime = SystemClock.uptimeMillis();
-                this.mLongClicked = false;
-                setPressed(true);
-                this.mTouchDownX = (int) ev.getRawX();
-                this.mTouchDownY = (int) ev.getRawY();
-                if (this.mCode != 0) {
-                    sendEvent(0, 0, this.mDownTime);
-                } else {
-                    performHapticFeedback(1);
-                }
-                playSoundEffect(0);
-                removeCallbacks(this.mCheckLongPress);
-                postDelayed(this.mCheckLongPress, ViewConfiguration.getLongPressTimeout());
-                break;
-            case 1:
-                boolean doIt = isPressed() && !this.mLongClicked;
-                setPressed(false);
-                boolean doHapticFeedback = SystemClock.uptimeMillis() - this.mDownTime > 150;
-                if (doHapticFeedback && !this.mLongClicked) {
-                    performHapticFeedback(8);
-                }
-                if (this.mCode != 0) {
-                    if (doIt) {
-                        sendEvent(1, this.mTracking ? 512 : 0);
-                        this.mTracking = false;
-                        sendAccessibilityEvent(1);
-                    } else {
-                        sendEvent(1, 32);
-                    }
-                } else if (doIt && (onClickListener = this.mOnClickListener) != null) {
-                    onClickListener.onClick(this);
-                    sendAccessibilityEvent(1);
-                }
-                removeCallbacks(this.mCheckLongPress);
-                break;
-            case 2:
-                int x = (int) ev.getRawX();
-                int y = (int) ev.getRawY();
-                float slop = getQuickStepTouchSlopPx(getContext());
-                if (Math.abs(x - this.mTouchDownX) > slop || Math.abs(y - this.mTouchDownY) > slop) {
-                    setPressed(false);
-                    removeCallbacks(this.mCheckLongPress);
-                    break;
-                }
-                break;
-            case 3:
-                setPressed(false);
-                if (this.mCode != 0) {
-                    sendEvent(1, 32);
-                }
-                removeCallbacks(this.mCheckLongPress);
-                break;
-        }
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00c7, code lost:
+    
         return true;
+     */
+    @Override // android.view.View
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public boolean onTouchEvent(android.view.MotionEvent r11) {
+        /*
+            r10 = this;
+            r0 = 0
+            int r1 = r11.getAction()
+            r2 = 0
+            if (r1 != 0) goto La
+            r10.mGestureAborted = r2
+        La:
+            boolean r3 = r10.mGestureAborted
+            if (r3 == 0) goto L12
+            r10.setPressed(r2)
+            return r2
+        L12:
+            r3 = 32
+            r4 = 1
+            switch(r1) {
+                case 0: goto L9f;
+                case 1: goto L57;
+                case 2: goto L26;
+                case 3: goto L1a;
+                default: goto L18;
+            }
+        L18:
+            goto Lc7
+        L1a:
+            r10.setPressed(r2)
+            int r2 = r10.mCode
+            if (r2 == 0) goto Lc7
+            r10.sendEvent(r4, r3)
+            goto Lc7
+        L26:
+            float r3 = r11.getRawX()
+            int r3 = (int) r3
+            float r5 = r11.getRawY()
+            int r5 = (int) r5
+            android.content.Context r6 = r10.getContext()
+            float r6 = getQuickStepTouchSlopPx(r6)
+            int r7 = r10.mTouchDownX
+            int r7 = r3 - r7
+            int r7 = java.lang.Math.abs(r7)
+            float r7 = (float) r7
+            int r7 = (r7 > r6 ? 1 : (r7 == r6 ? 0 : -1))
+            if (r7 > 0) goto L52
+            int r7 = r10.mTouchDownY
+            int r7 = r5 - r7
+            int r7 = java.lang.Math.abs(r7)
+            float r7 = (float) r7
+            int r7 = (r7 > r6 ? 1 : (r7 == r6 ? 0 : -1))
+            if (r7 <= 0) goto Lc7
+        L52:
+            r10.setPressed(r2)
+            goto Lc7
+        L57:
+            boolean r5 = r10.isPressed()
+            r10.setPressed(r2)
+            long r6 = android.os.SystemClock.uptimeMillis()
+            long r8 = r10.mDownTime
+            long r6 = r6 - r8
+            r8 = 150(0x96, double:7.4E-322)
+            int r6 = (r6 > r8 ? 1 : (r6 == r8 ? 0 : -1))
+            if (r6 <= 0) goto L6d
+            r6 = r4
+            goto L6e
+        L6d:
+            r6 = r2
+        L6e:
+            if (r6 == 0) goto L75
+            r7 = 8
+            r10.performHapticFeedback(r7)
+        L75:
+            int r7 = r10.mCode
+            if (r7 == 0) goto L90
+            if (r5 == 0) goto L8c
+            boolean r3 = r10.mTracking
+            if (r3 == 0) goto L82
+            r3 = 512(0x200, float:7.175E-43)
+            goto L83
+        L82:
+            r3 = r2
+        L83:
+            r10.sendEvent(r4, r3)
+            r10.mTracking = r2
+            r10.sendAccessibilityEvent(r4)
+            goto Lc7
+        L8c:
+            r10.sendEvent(r4, r3)
+            goto Lc7
+        L90:
+            if (r5 == 0) goto Lc7
+            android.view.View$OnClickListener r2 = r10.mOnClickListener
+            if (r2 == 0) goto Lc7
+            android.view.View$OnClickListener r2 = r10.mOnClickListener
+            r2.onClick(r10)
+            r10.sendAccessibilityEvent(r4)
+            goto Lc7
+        L9f:
+            long r5 = android.os.SystemClock.uptimeMillis()
+            r10.mDownTime = r5
+            r10.setPressed(r4)
+            float r3 = r11.getRawX()
+            int r3 = (int) r3
+            r10.mTouchDownX = r3
+            float r3 = r11.getRawY()
+            int r3 = (int) r3
+            r10.mTouchDownY = r3
+            int r3 = r10.mCode
+            if (r3 == 0) goto Lc0
+            long r5 = r10.mDownTime
+            r10.sendEvent(r2, r2, r5)
+            goto Lc3
+        Lc0:
+            r10.performHapticFeedback(r4)
+        Lc3:
+            r10.playSoundEffect(r2)
+        Lc7:
+            return r4
+        */
+        throw new UnsupportedOperationException("Method not decompiled: android.inputmethodservice.navigationbar.KeyButtonView.onTouchEvent(android.view.MotionEvent):boolean");
     }
 
     @Override // android.widget.ImageView, android.inputmethodservice.navigationbar.ButtonInterface
     /* renamed from: setImageDrawable */
-    public void lambda$setImageURIAsync$2(Drawable drawable) {
-        super.lambda$setImageURIAsync$2(drawable);
+    public void lambda$setImageURIAsync$0(Drawable drawable) {
+        super.lambda$setImageURIAsync$0(drawable);
         if (drawable == null) {
             return;
         }
         KeyButtonDrawable keyButtonDrawable = (KeyButtonDrawable) drawable;
         keyButtonDrawable.setDarkIntensity(this.mDarkIntensity);
-        boolean hasOvalBg = keyButtonDrawable.hasOvalBg();
-        this.mHasOvalBg = hasOvalBg;
-        if (hasOvalBg) {
+        this.mHasOvalBg = keyButtonDrawable.hasOvalBg();
+        if (this.mHasOvalBg) {
             this.mOvalBgPaint.setColor(keyButtonDrawable.getDrawableBackgroundColor());
         }
         this.mRipple.setType(keyButtonDrawable.hasOvalBg() ? KeyButtonRipple.Type.OVAL : KeyButtonRipple.Type.ROUNDED_RECT);
@@ -251,15 +265,13 @@ public class KeyButtonView extends ImageView implements ButtonInterface {
         }
     }
 
-    public void sendEvent(int action, int flags) {
+    private void sendEvent(int action, int flags) {
         sendEvent(action, flags, SystemClock.uptimeMillis());
     }
 
     private void sendEvent(int action, int flags, long when) {
         boolean handled;
         InputConnection ic;
-        if (this.mCode == 4) {
-        }
         if (this.mContext instanceof InputMethodService) {
             int repeatCount = (flags & 128) != 0 ? 1 : 0;
             KeyEvent ev = new KeyEvent(this.mDownTime, when, action, this.mCode, repeatCount, 0, -1, 0, flags | 2 | 64, 257);

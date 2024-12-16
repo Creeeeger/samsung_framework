@@ -18,12 +18,7 @@ class AppZygoteInit {
     AppZygoteInit() {
     }
 
-    /* loaded from: classes5.dex */
     private static class AppZygoteServer extends ZygoteServer {
-        /* synthetic */ AppZygoteServer(AppZygoteServerIA appZygoteServerIA) {
-            this();
-        }
-
         private AppZygoteServer() {
         }
 
@@ -33,7 +28,6 @@ class AppZygoteInit {
         }
     }
 
-    /* loaded from: classes5.dex */
     private static class AppZygoteConnection extends ZygoteConnection {
         AppZygoteConnection(LocalSocket socket, String abiList) throws IOException {
             super(socket, abiList);

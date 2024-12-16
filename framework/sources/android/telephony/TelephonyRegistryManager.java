@@ -1,5 +1,6 @@
 package android.telephony;
 
+import android.annotation.SystemApi;
 import android.compat.Compatibility;
 import android.content.Context;
 import android.media.AudioPort$$ExternalSyntheticLambda0;
@@ -14,6 +15,9 @@ import android.telephony.TelephonyRegistryManager;
 import android.telephony.emergency.EmergencyNumber;
 import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.MediaQualityStatus;
+import android.telephony.satellite.NtnSignalStrength;
+import android.telephony.satellite.SemSatelliteServiceState;
+import android.telephony.satellite.SemSatelliteSignalStrength;
 import android.util.ArraySet;
 import android.util.Log;
 import com.android.internal.listeners.ListenerExecutor;
@@ -33,7 +37,8 @@ import java.util.concurrent.Executor;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
-/* loaded from: classes3.dex */
+@SystemApi
+/* loaded from: classes4.dex */
 public class TelephonyRegistryManager {
     private static final long LISTEN_CODE_CHANGE = 147600208;
     public static final int SIM_ACTIVATION_TYPE_DATA = 1;
@@ -67,9 +72,8 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyRegistryManager$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IOnSubscriptionsChangedListener.Stub {
+    /* renamed from: android.telephony.TelephonyRegistryManager$1, reason: invalid class name */
+    class AnonymousClass1 extends IOnSubscriptionsChangedListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ SubscriptionManager.OnSubscriptionsChangedListener val$listener;
 
@@ -122,9 +126,8 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyRegistryManager$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends IOnSubscriptionsChangedListener.Stub {
+    /* renamed from: android.telephony.TelephonyRegistryManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IOnSubscriptionsChangedListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ SubscriptionManager.OnOpportunisticSubscriptionsChangedListener val$listener;
 
@@ -171,7 +174,7 @@ public class TelephonyRegistryManager {
             throw new IllegalStateException("telephony service is null.");
         }
         try {
-            eventsList = getEventsFromBitmask(events).stream().mapToInt(new ToIntFunction() { // from class: android.telephony.TelephonyRegistryManager$$ExternalSyntheticLambda1
+            eventsList = getEventsFromBitmask(events).stream().mapToInt(new ToIntFunction() { // from class: android.telephony.TelephonyRegistryManager$$ExternalSyntheticLambda2
                 @Override // java.util.function.ToIntFunction
                 public final int applyAsInt(Object obj) {
                     int intValue;
@@ -236,6 +239,7 @@ public class TelephonyRegistryManager {
         }
     }
 
+    @SystemApi
     public void notifyCallStateChangedForAllSubscriptions(int state, String incomingNumber) {
         try {
             sRegistry.notifyCallStateForAllSubs(state, incomingNumber);
@@ -300,6 +304,14 @@ public class TelephonyRegistryManager {
         }
     }
 
+    public void notifyDataActivityChanged(int slotIndex, int subId, int dataActivityType) {
+        try {
+            sRegistry.notifyDataActivityForSubscriberWithSlot(slotIndex, subId, dataActivityType);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
     public void notifyDataConnectionForSubscriber(int slotIndex, int subId, PreciseDataConnectionState preciseState) {
         try {
             sRegistry.notifyDataConnectionForSubscriber(slotIndex, subId, preciseState);
@@ -332,9 +344,10 @@ public class TelephonyRegistryManager {
         }
     }
 
-    public void notifyOutgoingEmergencyCall(int phoneId, int subId, EmergencyNumber emergencyNumber) {
+    @SystemApi
+    public void notifyOutgoingEmergencyCall(int simSlotIndex, int subscriptionId, EmergencyNumber emergencyNumber) {
         try {
-            sRegistry.notifyOutgoingEmergencyCall(phoneId, subId, emergencyNumber);
+            sRegistry.notifyOutgoingEmergencyCall(simSlotIndex, subscriptionId, emergencyNumber);
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
         }
@@ -500,9 +513,64 @@ public class TelephonyRegistryManager {
         }
     }
 
+    public void notifySimultaneousCellularCallingSubscriptionsChanged(Set<Integer> subIds) {
+        try {
+            sRegistry.notifySimultaneousCellularCallingSubscriptionsChanged(subIds.stream().mapToInt(new ToIntFunction() { // from class: android.telephony.TelephonyRegistryManager$$ExternalSyntheticLambda1
+                @Override // java.util.function.ToIntFunction
+                public final int applyAsInt(Object obj) {
+                    int intValue;
+                    intValue = ((Integer) obj).intValue();
+                    return intValue;
+                }
+            }).toArray());
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
     public void notifyCarrierRoamingNtnModeChanged(int subId, boolean active) {
         try {
             sRegistry.notifyCarrierRoamingNtnModeChanged(subId, active);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public void notifyCarrierRoamingNtnEligibleStateChanged(int subId, boolean eligible) {
+        try {
+            sRegistry.notifyCarrierRoamingNtnEligibleStateChanged(subId, eligible);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public void notifyCarrierRoamingNtnAvailableServicesChanged(int subId, int[] availableServices) {
+        try {
+            sRegistry.notifyCarrierRoamingNtnAvailableServicesChanged(subId, availableServices);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public final void notifyCarrierRoamingNtnSignalStrengthChanged(int subId, NtnSignalStrength ntnSignalStrength) {
+        try {
+            sRegistry.notifyCarrierRoamingNtnSignalStrengthChanged(subId, ntnSignalStrength);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public void notifySemSatelliteServiceStateChanged(int phoneId, int subId, SemSatelliteServiceState serviceState) {
+        try {
+            sRegistry.notifySemSatelliteServiceStateChanged(phoneId, subId, serviceState);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    public void notifySemSatelliteSignalStrengthChanged(int phoneId, int subId, SemSatelliteSignalStrength signalStrength) {
+        try {
+            sRegistry.notifySemSatelliteSignalStrengthChanged(phoneId, subId, signalStrength);
         } catch (RemoteException ex) {
             throw ex.rethrowFromSystemServer();
         }
@@ -611,6 +679,19 @@ public class TelephonyRegistryManager {
         }
         if (telephonyCallback instanceof TelephonyCallback.EmergencyCallbackModeListener) {
             eventList.add(40);
+        }
+        if (telephonyCallback instanceof TelephonyCallback.SimultaneousCellularCallingSupportListener) {
+            eventList.add(41);
+        }
+        if (telephonyCallback instanceof TelephonyCallback.CarrierRoamingNtnModeListener) {
+            eventList.add(42);
+            eventList.add(43);
+            eventList.add(44);
+            eventList.add(45);
+        }
+        if (telephonyCallback instanceof TelephonyCallback.SemSatelliteStateListener) {
+            eventList.add(10000);
+            eventList.add(10001);
         }
         return eventList;
     }
@@ -732,8 +813,8 @@ public class TelephonyRegistryManager {
         listenFromCallback(false, false, subId, pkgName, attributionTag, callback, new int[0], notifyNow);
     }
 
-    /* loaded from: classes3.dex */
-    public static class CarrierPrivilegesCallbackWrapper extends ICarrierPrivilegesCallback.Stub implements ListenerExecutor {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class CarrierPrivilegesCallbackWrapper extends ICarrierPrivilegesCallback.Stub implements ListenerExecutor {
         private final WeakReference<TelephonyManager.CarrierPrivilegesCallback> mCallback;
         private final Executor mExecutor;
 
@@ -746,7 +827,7 @@ public class TelephonyRegistryManager {
         public void onCarrierPrivilegesChanged(List<String> privilegedPackageNames, int[] privilegedUids) {
             final Set<String> privilegedPkgNamesSet = Set.copyOf(privilegedPackageNames);
             final Set<Integer> privilegedUidsSet = (Set) Arrays.stream(privilegedUids).boxed().collect(Collectors.toSet());
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.TelephonyRegistryManager$CarrierPrivilegesCallbackWrapper$$ExternalSyntheticLambda0
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.TelephonyRegistryManager$CarrierPrivilegesCallbackWrapper$$ExternalSyntheticLambda4
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
                     TelephonyRegistryManager.CarrierPrivilegesCallbackWrapper.this.lambda$onCarrierPrivilegesChanged$1(privilegedPkgNamesSet, privilegedUidsSet);
@@ -754,6 +835,7 @@ public class TelephonyRegistryManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierPrivilegesChanged$1(final Set privilegedPkgNamesSet, final Set privilegedUidsSet) throws Exception {
             Executor executor = this.mExecutor;
             WeakReference<TelephonyManager.CarrierPrivilegesCallback> weakReference = this.mCallback;
@@ -768,7 +850,7 @@ public class TelephonyRegistryManager {
 
         @Override // com.android.internal.telephony.ICarrierPrivilegesCallback
         public void onCarrierServiceChanged(final String packageName, final int uid) {
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.TelephonyRegistryManager$CarrierPrivilegesCallbackWrapper$$ExternalSyntheticLambda4
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.telephony.TelephonyRegistryManager$CarrierPrivilegesCallbackWrapper$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
                     TelephonyRegistryManager.CarrierPrivilegesCallbackWrapper.this.lambda$onCarrierServiceChanged$3(packageName, uid);
@@ -776,6 +858,7 @@ public class TelephonyRegistryManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onCarrierServiceChanged$3(final String packageName, final int uid) throws Exception {
             Executor executor = this.mExecutor;
             WeakReference<TelephonyManager.CarrierPrivilegesCallback> weakReference = this.mCallback;
@@ -793,15 +876,14 @@ public class TelephonyRegistryManager {
         if (callback == null || executor == null) {
             throw new IllegalArgumentException("callback and executor must be non-null");
         }
-        WeakHashMap<TelephonyManager.CarrierPrivilegesCallback, WeakReference<CarrierPrivilegesCallbackWrapper>> weakHashMap = sCarrierPrivilegeCallbacks;
-        synchronized (weakHashMap) {
-            WeakReference<CarrierPrivilegesCallbackWrapper> existing = weakHashMap.get(callback);
+        synchronized (sCarrierPrivilegeCallbacks) {
+            WeakReference<CarrierPrivilegesCallbackWrapper> existing = sCarrierPrivilegeCallbacks.get(callback);
             if (existing != null && existing.get() != null) {
                 Log.d(TAG, "addCarrierPrivilegesCallback: callback already registered");
                 return;
             }
             CarrierPrivilegesCallbackWrapper wrapper = new CarrierPrivilegesCallbackWrapper(callback, executor);
-            weakHashMap.put(callback, new WeakReference<>(wrapper));
+            sCarrierPrivilegeCallbacks.put(callback, new WeakReference<>(wrapper));
             try {
                 sRegistry.addCarrierPrivilegesCallback(logicalSlotIndex, wrapper, this.mContext.getOpPackageName(), this.mContext.getAttributionTag());
             } catch (RemoteException e) {
@@ -814,9 +896,8 @@ public class TelephonyRegistryManager {
         if (callback == null) {
             throw new IllegalArgumentException("listener must be non-null");
         }
-        WeakHashMap<TelephonyManager.CarrierPrivilegesCallback, WeakReference<CarrierPrivilegesCallbackWrapper>> weakHashMap = sCarrierPrivilegeCallbacks;
-        synchronized (weakHashMap) {
-            WeakReference<CarrierPrivilegesCallbackWrapper> ref = weakHashMap.remove(callback);
+        synchronized (sCarrierPrivilegeCallbacks) {
+            WeakReference<CarrierPrivilegesCallbackWrapper> ref = sCarrierPrivilegeCallbacks.remove(callback);
             if (ref == null) {
                 return;
             }
@@ -869,9 +950,8 @@ public class TelephonyRegistryManager {
         }
     }
 
-    /* renamed from: android.telephony.TelephonyRegistryManager$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 extends ICarrierConfigChangeListener.Stub {
+    /* renamed from: android.telephony.TelephonyRegistryManager$3, reason: invalid class name */
+    class AnonymousClass3 extends ICarrierConfigChangeListener.Stub {
         final /* synthetic */ Executor val$executor;
         final /* synthetic */ CarrierConfigManager.CarrierConfigChangeListener val$listener;
 

@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import java.util.Objects;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class PreciseCallState implements Parcelable {
     public static final Parcelable.Creator<PreciseCallState> CREATOR = new Parcelable.Creator<PreciseCallState>() { // from class: android.telephony.PreciseCallState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PreciseCallState createFromParcel(Parcel in) {
             return new PreciseCallState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PreciseCallState[] newArray(int size) {
             return new PreciseCallState[size];
@@ -38,10 +37,6 @@ public final class PreciseCallState implements Parcelable {
     private int mForegroundCallState;
     private int mPreciseDisconnectCause;
     private int mRingingCallState;
-
-    /* synthetic */ PreciseCallState(Parcel parcel, PreciseCallStateIA preciseCallStateIA) {
-        this(parcel);
-    }
 
     @SystemApi
     public PreciseCallState(int ringingCall, int foregroundCall, int backgroundCall, int disconnectCause, int preciseDisconnectCause) {
@@ -110,23 +105,6 @@ public final class PreciseCallState implements Parcelable {
         out.writeInt(this.mBackgroundCallState);
         out.writeInt(this.mDisconnectCause);
         out.writeInt(this.mPreciseDisconnectCause);
-    }
-
-    /* renamed from: android.telephony.PreciseCallState$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PreciseCallState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PreciseCallState createFromParcel(Parcel in) {
-            return new PreciseCallState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PreciseCallState[] newArray(int size) {
-            return new PreciseCallState[size];
-        }
     }
 
     public int hashCode() {

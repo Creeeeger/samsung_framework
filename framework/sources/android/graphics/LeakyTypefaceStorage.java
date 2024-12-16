@@ -15,16 +15,13 @@ public class LeakyTypefaceStorage {
         int id;
         parcel.writeInt(Process.myPid());
         synchronized (sLock) {
-            ArrayMap<Typeface, Integer> arrayMap = sTypefaceMap;
-            Integer i = arrayMap.get(typeface);
+            Integer i = sTypefaceMap.get(typeface);
             if (i != null) {
                 id = i.intValue();
             } else {
-                ArrayList<Typeface> arrayList = sStorage;
-                int id2 = arrayList.size();
-                arrayList.add(typeface);
-                arrayMap.put(typeface, Integer.valueOf(id2));
-                id = id2;
+                id = sStorage.size();
+                sStorage.add(typeface);
+                sTypefaceMap.put(typeface, Integer.valueOf(id));
             }
             parcel.writeInt(id);
         }

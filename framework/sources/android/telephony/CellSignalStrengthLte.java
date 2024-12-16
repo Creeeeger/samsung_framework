@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellSignalStrengthLte extends CellSignalStrength implements Parcelable {
     private static final boolean DBG = false;
     private static final String LOG_TAG = "CellSignalStrengthLte";
@@ -34,32 +34,26 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
     private static final int[] sRssnrThresholds = {-3, 1, 5, 13};
     private static final CellSignalStrengthLte sInvalid = new CellSignalStrengthLte();
     public static final Parcelable.Creator<CellSignalStrengthLte> CREATOR = new Parcelable.Creator<CellSignalStrengthLte>() { // from class: android.telephony.CellSignalStrengthLte.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthLte createFromParcel(Parcel in) {
             return new CellSignalStrengthLte(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellSignalStrengthLte[] newArray(int size) {
             return new CellSignalStrengthLte[size];
         }
     };
 
-    /* synthetic */ CellSignalStrengthLte(Parcel parcel, CellSignalStrengthLteIA cellSignalStrengthLteIA) {
-        this(parcel);
-    }
-
     public CellSignalStrengthLte() {
         setDefaultValues();
     }
 
     public CellSignalStrengthLte(int rssi, int rsrp, int rsrq, int rssnr, int cqiTableIndex, int cqi, int timingAdvance) {
-        int inRangeOrUnavailable = inRangeOrUnavailable(rssi, -113, -51);
-        this.mRssi = inRangeOrUnavailable;
-        this.mSignalStrength = inRangeOrUnavailable;
+        this.mRssi = inRangeOrUnavailable(rssi, -113, -51);
+        this.mSignalStrength = this.mRssi;
         this.mRsrp = inRangeOrUnavailable(rsrp, -140, -43);
         this.mRsrq = inRangeOrUnavailable(rsrq, -34, 3);
         this.mRssnr = inRangeOrUnavailable(rssnr, -20, 30);
@@ -176,22 +170,32 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
         if (isLevelForParameter(4)) {
             rssnrLevel = updateLevelWithMeasure(this.mRssnr, rssnrThresholds);
         }
-        int min = Math.min(Math.min(rsrpLevel, rsrqLevel), rssnrLevel);
-        this.mLevel = min;
-        if (min == Integer.MAX_VALUE) {
-            int i = this.mRssi;
-            if (i > -51) {
+        this.mLevel = Math.min(Math.min(rsrpLevel, rsrqLevel), rssnrLevel);
+        if (this.mLevel == Integer.MAX_VALUE) {
+            if (this.mRssi > -51) {
                 rssiLevel = 0;
-            } else if (i >= -89) {
-                rssiLevel = 4;
-            } else if (i >= -97) {
-                rssiLevel = 3;
-            } else if (i >= -103) {
-                rssiLevel = 2;
-            } else if (i >= -113) {
-                rssiLevel = 1;
             } else {
-                rssiLevel = 0;
+                int rssiLevel2 = this.mRssi;
+                if (rssiLevel2 >= -89) {
+                    rssiLevel = 4;
+                } else {
+                    int rssiLevel3 = this.mRssi;
+                    if (rssiLevel3 >= -97) {
+                        rssiLevel = 3;
+                    } else {
+                        int rssiLevel4 = this.mRssi;
+                        if (rssiLevel4 >= -103) {
+                            rssiLevel = 2;
+                        } else {
+                            int rssiLevel5 = this.mRssi;
+                            if (rssiLevel5 >= -113) {
+                                rssiLevel = 1;
+                            } else {
+                                rssiLevel = 0;
+                            }
+                        }
+                    }
+                }
             }
             this.mLevel = rssiLevel;
         }
@@ -301,9 +305,8 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
     }
 
     private CellSignalStrengthLte(Parcel in) {
-        int readInt = in.readInt();
-        this.mRssi = readInt;
-        this.mSignalStrength = readInt;
+        this.mRssi = in.readInt();
+        this.mSignalStrength = this.mRssi;
         this.mRsrp = in.readInt();
         this.mRsrq = in.readInt();
         this.mRssnr = in.readInt();
@@ -316,23 +319,6 @@ public final class CellSignalStrengthLte extends CellSignalStrength implements P
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.telephony.CellSignalStrengthLte$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellSignalStrengthLte> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthLte createFromParcel(Parcel in) {
-            return new CellSignalStrengthLte(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellSignalStrengthLte[] newArray(int size) {
-            return new CellSignalStrengthLte[size];
-        }
     }
 
     private static void log(String s) {

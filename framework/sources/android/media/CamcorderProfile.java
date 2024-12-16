@@ -65,7 +65,6 @@ public class CamcorderProfile {
     public int videoFrameWidth;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Quality {
     }
 

@@ -22,7 +22,6 @@ public interface IFullBackupRestoreObserver extends IInterface {
 
     void onTimeout() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IFullBackupRestoreObserver {
         @Override // android.app.backup.IFullBackupRestoreObserver
         public void onStartBackup() throws RemoteException {
@@ -58,7 +57,6 @@ public interface IFullBackupRestoreObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IFullBackupRestoreObserver {
         public static final String DESCRIPTOR = "android.app.backup.IFullBackupRestoreObserver";
         static final int TRANSACTION_onBackupPackage = 2;
@@ -120,45 +118,42 @@ public interface IFullBackupRestoreObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    onStartBackup();
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    onBackupPackage(_arg0);
+                    return true;
+                case 3:
+                    onEndBackup();
+                    return true;
+                case 4:
+                    onStartRestore();
+                    return true;
+                case 5:
+                    String _arg02 = data.readString();
+                    data.enforceNoDataAvail();
+                    onRestorePackage(_arg02);
+                    return true;
+                case 6:
+                    onEndRestore();
+                    return true;
+                case 7:
+                    onTimeout();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onStartBackup();
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            onBackupPackage(_arg0);
-                            return true;
-                        case 3:
-                            onEndBackup();
-                            return true;
-                        case 4:
-                            onStartRestore();
-                            return true;
-                        case 5:
-                            String _arg02 = data.readString();
-                            data.enforceNoDataAvail();
-                            onRestorePackage(_arg02);
-                            return true;
-                        case 6:
-                            onEndRestore();
-                            return true;
-                        case 7:
-                            onTimeout();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IFullBackupRestoreObserver {
+        private static class Proxy implements IFullBackupRestoreObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class SimPortInfo implements Parcelable {
     public static final Parcelable.Creator<SimPortInfo> CREATOR = new Parcelable.Creator<SimPortInfo>() { // from class: android.hardware.radio.config.SimPortInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SimPortInfo createFromParcel(Parcel _aidl_source) {
             SimPortInfo _aidl_out = new SimPortInfo();
@@ -19,6 +17,7 @@ public class SimPortInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SimPortInfo[] newArray(int _aidl_size) {
             return new SimPortInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class SimPortInfo implements Parcelable {
     public String iccId;
     public int logicalSlotId = 0;
     public boolean portActive = false;
-
-    /* renamed from: android.hardware.radio.config.SimPortInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SimPortInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SimPortInfo createFromParcel(Parcel _aidl_source) {
-            SimPortInfo _aidl_out = new SimPortInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SimPortInfo[] newArray(int _aidl_size) {
-            return new SimPortInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class SimPortInfo implements Parcelable {
         _aidl_sj.add("iccId: " + Objects.toString(this.iccId));
         _aidl_sj.add("logicalSlotId: " + this.logicalSlotId);
         _aidl_sj.add("portActive: " + this.portActive);
-        return "android.hardware.radio.config.SimPortInfo" + _aidl_sj.toString();
+        return "SimPortInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

@@ -13,7 +13,6 @@ public interface IMediaScannerService extends IInterface {
 
     void scanFile(String str, String str2) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMediaScannerService {
         @Override // android.media.IMediaScannerService
         public void requestScanFile(String path, String mimeType, IMediaScannerListener listener) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IMediaScannerService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMediaScannerService {
         public static final String DESCRIPTOR = "android.media.IMediaScannerService";
         static final int TRANSACTION_requestScanFile = 1;
@@ -76,34 +74,31 @@ public interface IMediaScannerService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    String _arg1 = data.readString();
+                    IMediaScannerListener _arg2 = IMediaScannerListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestScanFile(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    scanFile(_arg02, _arg12);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            String _arg1 = data.readString();
-                            IMediaScannerListener _arg2 = IMediaScannerListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            requestScanFile(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            scanFile(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IMediaScannerService {
             private IBinder mRemote;
 

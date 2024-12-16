@@ -14,7 +14,7 @@ import android.hardware.scontext.SContextConstants;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class IUXColorUtils {
     public static final float COLOR8_TO_NORMALIZED = 0.003921569f;
     static final float GRAYSCALE_THRESHOLD_BRIGHTNESS = 0.25f;
@@ -621,52 +621,8 @@ public class IUXColorUtils {
         return new float[]{inverseHue, hsv[1], hsv[2]};
     }
 
-    /* renamed from: com.samsung.android.wallpaper.legibilitycolors.utils.IUXColorUtils$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends ShapeDrawable.ShaderFactory {
-        final /* synthetic */ float val$angle;
-        final /* synthetic */ int val$colorA;
-        final /* synthetic */ int val$colorB;
-        final /* synthetic */ int val$gradient_hegith;
-        final /* synthetic */ int val$gradient_width;
-
-        AnonymousClass1(int i, int i2, int i3, float f, int i4) {
-            gradient_hegith = i;
-            colorA = i2;
-            colorB = i3;
-            angle = f;
-            gradient_width = i4;
-        }
-
-        @Override // android.graphics.drawable.ShapeDrawable.ShaderFactory
-        public Shader resize(int width, int height) {
-            LinearGradient lg = new LinearGradient(0.0f, 0.0f, 0.0f, gradient_hegith, new int[]{colorA, colorB}, new float[]{0.0f, 1.0f}, Shader.TileMode.MIRROR);
-            Matrix rotMat = new Matrix();
-            rotMat.setRotate(angle, gradient_width * 0.5f, gradient_hegith * 0.5f);
-            Matrix transMat = new Matrix();
-            Matrix resultMat = new Matrix();
-            resultMat.setConcat(rotMat, transMat);
-            lg.setLocalMatrix(resultMat);
-            return lg;
-        }
-    }
-
-    Bitmap getGradation(int colorA, int colorB, int gradient_width, int gradient_hegith, float angle) {
+    Bitmap getGradation(final int colorA, final int colorB, final int gradient_width, final int gradient_hegith, final float angle) {
         ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() { // from class: com.samsung.android.wallpaper.legibilitycolors.utils.IUXColorUtils.1
-            final /* synthetic */ float val$angle;
-            final /* synthetic */ int val$colorA;
-            final /* synthetic */ int val$colorB;
-            final /* synthetic */ int val$gradient_hegith;
-            final /* synthetic */ int val$gradient_width;
-
-            AnonymousClass1(int gradient_hegith2, int colorA2, int colorB2, float angle2, int gradient_width2) {
-                gradient_hegith = gradient_hegith2;
-                colorA = colorA2;
-                colorB = colorB2;
-                angle = angle2;
-                gradient_width = gradient_width2;
-            }
-
             @Override // android.graphics.drawable.ShapeDrawable.ShaderFactory
             public Shader resize(int width, int height) {
                 LinearGradient lg = new LinearGradient(0.0f, 0.0f, 0.0f, gradient_hegith, new int[]{colorA, colorB}, new float[]{0.0f, 1.0f}, Shader.TileMode.MIRROR);
@@ -682,7 +638,7 @@ public class IUXColorUtils {
         PaintDrawable gradationDrawable = new PaintDrawable();
         gradationDrawable.setShape(new RectShape());
         gradationDrawable.setShaderFactory(sf);
-        Bitmap gradientBitmap = Bitmap.createBitmap(gradient_width2, gradient_hegith2, Bitmap.Config.ARGB_8888);
+        Bitmap gradientBitmap = Bitmap.createBitmap(gradient_width, gradient_hegith, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(gradientBitmap);
         gradationDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         gradationDrawable.draw(canvas);

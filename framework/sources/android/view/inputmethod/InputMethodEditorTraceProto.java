@@ -3,7 +3,6 @@ package android.view.inputmethod;
 /* loaded from: classes4.dex */
 public final class InputMethodEditorTraceProto {
 
-    /* loaded from: classes4.dex */
     public final class InputMethodClientsTraceFileProto {
         public static final long ENTRY = 2246267895810L;
         public static final int INVALID = 0;
@@ -16,7 +15,6 @@ public final class InputMethodEditorTraceProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InputMethodClientsTraceProto {
         public static final long CLIENT = 1146756268035L;
         public static final long ELAPSED_REALTIME_NANOS = 1125281431553L;
@@ -25,7 +23,6 @@ public final class InputMethodEditorTraceProto {
         public InputMethodClientsTraceProto() {
         }
 
-        /* loaded from: classes4.dex */
         public final class ClientSideProto {
             public static final long DISPLAY_ID = 1120986464257L;
             public static final long EDITOR_INFO = 1146756268038L;
@@ -42,7 +39,6 @@ public final class InputMethodEditorTraceProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InputMethodServiceTraceFileProto {
         public static final long ENTRY = 2246267895810L;
         public static final int INVALID = 0;
@@ -55,7 +51,6 @@ public final class InputMethodEditorTraceProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InputMethodServiceTraceProto {
         public static final long ELAPSED_REALTIME_NANOS = 1125281431553L;
         public static final long INPUT_METHOD_SERVICE = 1146756268035L;
@@ -65,7 +60,6 @@ public final class InputMethodEditorTraceProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InputMethodManagerServiceTraceFileProto {
         public static final long ENTRY = 2246267895810L;
         public static final int INVALID = 0;
@@ -78,7 +72,6 @@ public final class InputMethodEditorTraceProto {
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InputMethodManagerServiceTraceProto {
         public static final long ELAPSED_REALTIME_NANOS = 1125281431553L;
         public static final long INPUT_METHOD_MANAGER_SERVICE = 1146756268035L;

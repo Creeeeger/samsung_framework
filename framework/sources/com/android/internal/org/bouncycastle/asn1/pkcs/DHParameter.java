@@ -55,11 +55,10 @@ public class DHParameter extends ASN1Object {
     }
 
     public BigInteger getL() {
-        ASN1Integer aSN1Integer = this.l;
-        if (aSN1Integer == null) {
+        if (this.l == null) {
             return null;
         }
-        return aSN1Integer.getPositiveValue();
+        return this.l.getPositiveValue();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable

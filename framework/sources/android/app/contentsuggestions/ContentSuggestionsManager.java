@@ -22,12 +22,10 @@ public final class ContentSuggestionsManager {
     private final IContentSuggestionsManager mService;
     private final int mUser;
 
-    /* loaded from: classes.dex */
     public interface ClassificationsCallback {
         void onContentClassificationsAvailable(int i, List<ContentClassification> list);
     }
 
-    /* loaded from: classes.dex */
     public interface SelectionsCallback {
         void onContentSelectionsAvailable(int i, List<ContentSelection> list);
     }
@@ -38,65 +36,60 @@ public final class ContentSuggestionsManager {
     }
 
     public void provideContextImage(Bitmap bitmap, Bundle imageContextRequestExtras) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "provideContextImage called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.provideContextBitmap(this.mUser, bitmap, imageContextRequestExtras);
+            this.mService.provideContextBitmap(this.mUser, bitmap, imageContextRequestExtras);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void provideContextImage(int taskId, Bundle imageContextRequestExtras) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "provideContextImage called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.provideContextImage(this.mUser, taskId, imageContextRequestExtras);
+            this.mService.provideContextImage(this.mUser, taskId, imageContextRequestExtras);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void suggestContentSelections(SelectionsRequest request, Executor callbackExecutor, SelectionsCallback callback) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "suggestContentSelections called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.suggestContentSelections(this.mUser, request, new SelectionsCallbackWrapper(callback, callbackExecutor));
+            this.mService.suggestContentSelections(this.mUser, request, new SelectionsCallbackWrapper(callback, callbackExecutor));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void classifyContentSelections(ClassificationsRequest request, Executor callbackExecutor, ClassificationsCallback callback) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "classifyContentSelections called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.classifyContentSelections(this.mUser, request, new ClassificationsCallbackWrapper(callback, callbackExecutor));
+            this.mService.classifyContentSelections(this.mUser, request, new ClassificationsCallbackWrapper(callback, callbackExecutor));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void notifyInteraction(String requestId, Bundle interaction) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "notifyInteraction called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.notifyInteraction(this.mUser, requestId, interaction);
+            this.mService.notifyInteraction(this.mUser, requestId, interaction);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -118,46 +111,43 @@ public final class ContentSuggestionsManager {
     }
 
     public void resetTemporaryService(int userId) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "resetTemporaryService called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.resetTemporaryService(userId);
+            this.mService.resetTemporaryService(userId);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setTemporaryService(int userId, String serviceName, int duration) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setTemporaryService called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.setTemporaryService(userId, serviceName, duration);
+            this.mService.setTemporaryService(userId, serviceName, duration);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
     public void setDefaultServiceEnabled(int userId, boolean enabled) {
-        IContentSuggestionsManager iContentSuggestionsManager = this.mService;
-        if (iContentSuggestionsManager == null) {
+        if (this.mService == null) {
             Log.e(TAG, "setDefaultServiceEnabled called, but no ContentSuggestionsManager configured");
             return;
         }
         try {
-            iContentSuggestionsManager.setDefaultServiceEnabled(userId, enabled);
+            this.mService.setDefaultServiceEnabled(userId, enabled);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
     }
 
-    /* loaded from: classes.dex */
-    public static class SelectionsCallbackWrapper extends ISelectionsCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class SelectionsCallbackWrapper extends ISelectionsCallback.Stub {
         private final SelectionsCallback mCallback;
         private final Executor mExecutor;
 
@@ -181,13 +171,14 @@ public final class ContentSuggestionsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onContentSelectionsAvailable$0(int statusCode, List selections) {
             this.mCallback.onContentSelectionsAvailable(statusCode, selections);
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class ClassificationsCallbackWrapper extends IClassificationsCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static final class ClassificationsCallbackWrapper extends IClassificationsCallback.Stub {
         private final ClassificationsCallback mCallback;
         private final Executor mExecutor;
 
@@ -211,6 +202,7 @@ public final class ContentSuggestionsManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onContentClassificationsAvailable$0(int statusCode, List classifications) {
             this.mCallback.onContentClassificationsAvailable(statusCode, classifications);
         }

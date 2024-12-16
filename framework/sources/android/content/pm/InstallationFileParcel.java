@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class InstallationFileParcel implements Parcelable {
     public static final Parcelable.Creator<InstallationFileParcel> CREATOR = new Parcelable.Creator<InstallationFileParcel>() { // from class: android.content.pm.InstallationFileParcel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallationFileParcel createFromParcel(Parcel _aidl_source) {
             InstallationFileParcel _aidl_out = new InstallationFileParcel();
@@ -17,6 +15,7 @@ public class InstallationFileParcel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public InstallationFileParcel[] newArray(int _aidl_size) {
             return new InstallationFileParcel[_aidl_size];
@@ -27,25 +26,6 @@ public class InstallationFileParcel implements Parcelable {
     public byte[] signature;
     public int location = -1;
     public long size = 0;
-
-    /* renamed from: android.content.pm.InstallationFileParcel$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<InstallationFileParcel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallationFileParcel createFromParcel(Parcel _aidl_source) {
-            InstallationFileParcel _aidl_out = new InstallationFileParcel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public InstallationFileParcel[] newArray(int _aidl_size) {
-            return new InstallationFileParcel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

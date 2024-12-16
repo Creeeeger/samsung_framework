@@ -44,7 +44,6 @@ public interface ISehRadioSim extends IInterface {
 
     void supplyNetworkDepersonalization(int i, String str, int i2) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioSim {
         @Override // vendor.samsung.hardware.radio.sim.ISehRadioSim
         public void getIccCardStatus(int serial) throws RemoteException {
@@ -114,7 +113,6 @@ public interface ISehRadioSim extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioSim {
         static final int TRANSACTION_accessPhonebookEntry = 11;
         static final int TRANSACTION_changeIccPersonalization = 9;
@@ -159,110 +157,109 @@ public interface ISehRadioSim extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getIccCardStatus(_arg0);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    supplyNetworkDepersonalization(_arg02, _arg1, _arg2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPhonebookStorageInfo(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getUsimPhonebookCapability(_arg04);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSimOnOff(_arg05, _arg13);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSimInitEvent(_arg06);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getSimLockInfo(_arg07, _arg14, _arg22);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    supplyIccPersonalization(_arg08, _arg15);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    String _arg16 = data.readString();
+                    String _arg23 = data.readString();
+                    data.enforceNoDataAvail();
+                    changeIccPersonalization(_arg09, _arg16, _arg23);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg17 = data.readInt();
+                    int _arg24 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getPhonebookEntry(_arg010, _arg17, _arg24);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg18 = data.readInt();
+                    int _arg25 = data.readInt();
+                    int _arg3 = data.readInt();
+                    SehAdnRecord _arg4 = (SehAdnRecord) data.readTypedObject(SehAdnRecord.CREATOR);
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    accessPhonebookEntry(_arg011, _arg18, _arg25, _arg3, _arg4, _arg5);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    getAtr(_arg012);
+                    return true;
+                case 13:
+                    ISehRadioSimResponse _arg013 = ISehRadioSimResponse.Stub.asInterface(data.readStrongBinder());
+                    ISehRadioSimIndication _arg19 = ISehRadioSimIndication.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setResponseFunctions(_arg013, _arg19);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getIccCardStatus(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            supplyNetworkDepersonalization(_arg02, _arg1, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPhonebookStorageInfo(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getUsimPhonebookCapability(_arg04);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSimOnOff(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSimInitEvent(_arg06);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getSimLockInfo(_arg07, _arg14, _arg22);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            supplyIccPersonalization(_arg08, _arg15);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            String _arg16 = data.readString();
-                            String _arg23 = data.readString();
-                            data.enforceNoDataAvail();
-                            changeIccPersonalization(_arg09, _arg16, _arg23);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg24 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getPhonebookEntry(_arg010, _arg17, _arg24);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg18 = data.readInt();
-                            int _arg25 = data.readInt();
-                            int _arg3 = data.readInt();
-                            SehAdnRecord _arg4 = (SehAdnRecord) data.readTypedObject(SehAdnRecord.CREATOR);
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            accessPhonebookEntry(_arg011, _arg18, _arg25, _arg3, _arg4, _arg5);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            data.enforceNoDataAvail();
-                            getAtr(_arg012);
-                            return true;
-                        case 13:
-                            ISehRadioSimResponse _arg013 = ISehRadioSimResponse.Stub.asInterface(data.readStrongBinder());
-                            ISehRadioSimIndication _arg19 = ISehRadioSimIndication.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setResponseFunctions(_arg013, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes6.dex */
         private static class Proxy implements ISehRadioSim {
             private IBinder mRemote;
             private int mCachedVersion = -1;

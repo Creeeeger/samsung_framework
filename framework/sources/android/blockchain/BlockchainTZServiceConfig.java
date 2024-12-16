@@ -19,25 +19,19 @@ public class BlockchainTZServiceConfig implements Parcelable {
     public Map<Integer, TAConfig> mTAConfigs;
     private static final boolean bQC = Build.BOARD.matches("(?i)(msm[a-z0-9]*)|(sdm[a-z0-9]*)");
     public static final Parcelable.Creator<BlockchainTZServiceConfig> CREATOR = new Parcelable.Creator<BlockchainTZServiceConfig>() { // from class: android.blockchain.BlockchainTZServiceConfig.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlockchainTZServiceConfig createFromParcel(Parcel in) {
             return new BlockchainTZServiceConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BlockchainTZServiceConfig[] newArray(int size) {
             return new BlockchainTZServiceConfig[size];
         }
     };
 
-    /* synthetic */ BlockchainTZServiceConfig(Parcel parcel, BlockchainTZServiceConfigIA blockchainTZServiceConfigIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes.dex */
     public static class TAConfig {
         public int maxRecvRespSize;
         public int maxSendCmdSize;
@@ -62,14 +56,6 @@ public class BlockchainTZServiceConfig implements Parcelable {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.blockchain.BlockchainTZServiceConfig$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IBlockchainClient.Stub {
-        AnonymousClass1() {
-        }
-    }
-
     public void addTAConfig(int taId, TAConfig config) {
         this.mTAConfigs.put(Integer.valueOf(taId), config);
     }
@@ -84,33 +70,12 @@ public class BlockchainTZServiceConfig implements Parcelable {
 
     public BlockchainTZServiceConfig() {
         this.mClient = new IBlockchainClient.Stub() { // from class: android.blockchain.BlockchainTZServiceConfig.1
-            AnonymousClass1() {
-            }
         };
         this.mTAConfigs = new HashMap();
     }
 
-    /* renamed from: android.blockchain.BlockchainTZServiceConfig$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 implements Parcelable.Creator<BlockchainTZServiceConfig> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BlockchainTZServiceConfig createFromParcel(Parcel in) {
-            return new BlockchainTZServiceConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BlockchainTZServiceConfig[] newArray(int size) {
-            return new BlockchainTZServiceConfig[size];
-        }
-    }
-
     private BlockchainTZServiceConfig(Parcel in) {
         this.mClient = new IBlockchainClient.Stub() { // from class: android.blockchain.BlockchainTZServiceConfig.1
-            AnonymousClass1() {
-            }
         };
         this.mTAConfigs = new HashMap();
         readFromParcel(in);

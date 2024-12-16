@@ -1,7 +1,7 @@
 package android.text.format;
 
 import android.app.AlarmManager;
-import android.app.job.JobInfo;
+import android.app.blob.XmlTags;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class DateUtils {
 
     @Deprecated
@@ -180,8 +180,7 @@ public class DateUtils {
     private static void initFormatStringsLocked() {
         Resources r = Resources.getSystem();
         Configuration cfg = r.getConfiguration();
-        Configuration configuration = sLastConfig;
-        if (configuration == null || !configuration.equals(cfg)) {
+        if (sLastConfig == null || !sLastConfig.equals(cfg)) {
             sLastConfig = cfg;
             sElapsedFormatMMSS = r.getString(R.string.elapsed_time_short_format_mm_ss);
             sElapsedFormatHMMSS = r.getString(R.string.elapsed_time_short_format_h_mm_ss);
@@ -216,11 +215,52 @@ public class DateUtils {
             return formatter.format(new Measure(Integer.valueOf(hours), MeasureUnit.HOUR));
         }
         if (millis >= 60000) {
-            int minutes = (int) ((JobInfo.DEFAULT_INITIAL_BACKOFF_MILLIS + millis) / 60000);
+            int minutes = (int) ((30000 + millis) / 60000);
             return formatter.format(new Measure(Integer.valueOf(minutes), MeasureUnit.MINUTE));
         }
         int seconds = (int) ((500 + millis) / 1000);
         return formatter.format(new Measure(Integer.valueOf(seconds), MeasureUnit.SECOND));
+    }
+
+    public static String semFormatElapsedTime(StringBuilder recycle, long elapsedMilliSeconds, boolean showZeroHour, int millisCount) {
+        String baseFormat;
+        long hours = 0;
+        long minutes = 0;
+        long milliSeconds = (long) ((elapsedMilliSeconds / Math.pow(10.0d, 3 - millisCount)) % Math.pow(10.0d, millisCount));
+        long elapsedSeconds = elapsedMilliSeconds / 1000;
+        if (elapsedSeconds >= 3600) {
+            hours = elapsedSeconds / 3600;
+            elapsedSeconds -= 3600 * hours;
+        }
+        if (elapsedSeconds >= 60) {
+            minutes = elapsedSeconds / 60;
+            elapsedSeconds -= 60 * minutes;
+        }
+        long seconds = elapsedSeconds;
+        StringBuilder sb = recycle;
+        if (sb == null) {
+            sb = new StringBuilder(12);
+        } else {
+            sb.setLength(0);
+        }
+        java.util.Formatter f = new java.util.Formatter(sb, Locale.getDefault());
+        initFormatStrings();
+        if (!showZeroHour && hours <= 0) {
+            String baseFormat2 = sElapsedFormatMMSS;
+            if (millisCount <= 0) {
+                return f.format(baseFormat2, Long.valueOf(minutes), Long.valueOf(seconds)).toString();
+            }
+            return f.format(baseFormat2 + ".%3$0" + millisCount + XmlTags.ATTR_DESCRIPTION, Long.valueOf(minutes), Long.valueOf(seconds), Long.valueOf(milliSeconds)).toString();
+        }
+        if (showZeroHour) {
+            baseFormat = sElapsedFormatHMMSS.replace("%1$d", "%1$02d");
+        } else {
+            baseFormat = sElapsedFormatHMMSS;
+        }
+        if (millisCount > 0) {
+            return f.format(baseFormat + ".%4$0" + millisCount + XmlTags.ATTR_DESCRIPTION, Long.valueOf(hours), Long.valueOf(minutes), Long.valueOf(seconds), Long.valueOf(milliSeconds)).toString();
+        }
+        return f.format(baseFormat, Long.valueOf(hours), Long.valueOf(minutes), Long.valueOf(seconds)).toString();
     }
 
     public static String formatElapsedTime(long elapsedSeconds) {
@@ -329,7 +369,7 @@ public class DateUtils {
                 flags = R.string.preposition_for_date;
             } else {
                 result = formatDateRange(c, millis, millis, 65552);
-                flags = 17042329;
+                flags = 17042471;
             }
             if (withPreposition) {
                 Resources res = c.getResources();

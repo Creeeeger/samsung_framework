@@ -188,9 +188,8 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
 
     @Override // android.widget.CursorFilter.CursorFilterClient
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        FilterQueryProvider filterQueryProvider = this.mFilterQueryProvider;
-        if (filterQueryProvider != null) {
-            return filterQueryProvider.runQuery(constraint);
+        if (this.mFilterQueryProvider != null) {
+            return this.mFilterQueryProvider.runQuery(constraint);
         }
         return this.mGroupCursorHelper.getCursor();
     }
@@ -221,8 +220,7 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
         return this.mGroupCursorHelper.getCursor();
     }
 
-    /* loaded from: classes4.dex */
-    public class MyCursorHelper {
+    class MyCursorHelper {
         private MyContentObserver mContentObserver;
         private Cursor mCursor;
         private MyDataSetObserver mDataSetObserver;
@@ -247,24 +245,21 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
         }
 
         int getCount() {
-            Cursor cursor;
-            if (this.mDataValid && (cursor = this.mCursor) != null) {
-                return cursor.getCount();
+            if (this.mDataValid && this.mCursor != null) {
+                return this.mCursor.getCount();
             }
             return 0;
         }
 
         long getId(int position) {
-            Cursor cursor;
-            if (this.mDataValid && (cursor = this.mCursor) != null && cursor.moveToPosition(position)) {
+            if (this.mDataValid && this.mCursor != null && this.mCursor.moveToPosition(position)) {
                 return this.mCursor.getLong(this.mRowIDColumn);
             }
             return 0L;
         }
 
         Cursor moveTo(int position) {
-            Cursor cursor;
-            if (this.mDataValid && (cursor = this.mCursor) != null && cursor.moveToPosition(position)) {
+            if (this.mDataValid && this.mCursor != null && this.mCursor.moveToPosition(position)) {
                 return this.mCursor;
             }
             return null;
@@ -290,11 +285,10 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
         }
 
         void deactivate() {
-            Cursor cursor = this.mCursor;
-            if (cursor == null) {
+            if (this.mCursor == null) {
                 return;
             }
-            cursor.unregisterContentObserver(this.mContentObserver);
+            this.mCursor.unregisterContentObserver(this.mContentObserver);
             this.mCursor.unregisterDataSetObserver(this.mDataSetObserver);
             this.mCursor.close();
             this.mCursor = null;
@@ -304,8 +298,7 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
             return this.mDataValid && this.mCursor != null;
         }
 
-        /* loaded from: classes4.dex */
-        public class MyContentObserver extends ContentObserver {
+        private class MyContentObserver extends ContentObserver {
             public MyContentObserver() {
                 super(CursorTreeAdapter.this.mHandler);
             }
@@ -318,18 +311,12 @@ public abstract class CursorTreeAdapter extends BaseExpandableListAdapter implem
             @Override // android.database.ContentObserver
             public void onChange(boolean selfChange) {
                 if (CursorTreeAdapter.this.mAutoRequery && MyCursorHelper.this.mCursor != null && !MyCursorHelper.this.mCursor.isClosed()) {
-                    MyCursorHelper myCursorHelper = MyCursorHelper.this;
-                    myCursorHelper.mDataValid = myCursorHelper.mCursor.requery();
+                    MyCursorHelper.this.mDataValid = MyCursorHelper.this.mCursor.requery();
                 }
             }
         }
 
-        /* loaded from: classes4.dex */
-        public class MyDataSetObserver extends DataSetObserver {
-            /* synthetic */ MyDataSetObserver(MyCursorHelper myCursorHelper, MyDataSetObserverIA myDataSetObserverIA) {
-                this();
-            }
-
+        private class MyDataSetObserver extends DataSetObserver {
             private MyDataSetObserver() {
             }
 

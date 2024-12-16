@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes.dex */
 public class ApexStagedEvent implements Parcelable {
     public static final Parcelable.Creator<ApexStagedEvent> CREATOR = new Parcelable.Creator<ApexStagedEvent>() { // from class: android.content.pm.ApexStagedEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApexStagedEvent createFromParcel(Parcel _aidl_source) {
             ApexStagedEvent _aidl_out = new ApexStagedEvent();
@@ -17,31 +15,13 @@ public class ApexStagedEvent implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ApexStagedEvent[] newArray(int _aidl_size) {
             return new ApexStagedEvent[_aidl_size];
         }
     };
     public String[] stagedApexModuleNames;
-
-    /* renamed from: android.content.pm.ApexStagedEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ApexStagedEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApexStagedEvent createFromParcel(Parcel _aidl_source) {
-            ApexStagedEvent _aidl_out = new ApexStagedEvent();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ApexStagedEvent[] newArray(int _aidl_size) {
-            return new ApexStagedEvent[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

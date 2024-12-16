@@ -85,7 +85,7 @@ public abstract class AbstractWindowedCursor extends AbstractCursor {
     }
 
     @Override // android.database.AbstractCursor
-    public void checkPosition() {
+    protected void checkPosition() {
         super.checkPosition();
         if (this.mWindow == null) {
             throw new StaleDataException("Attempting to access a closed CursorWindow.Most probable cause: cursor is deactivated prior to calling this method.");
@@ -108,25 +108,23 @@ public abstract class AbstractWindowedCursor extends AbstractCursor {
         return this.mWindow != null;
     }
 
-    public void closeWindow() {
-        CursorWindow cursorWindow = this.mWindow;
-        if (cursorWindow != null) {
-            cursorWindow.close();
+    protected void closeWindow() {
+        if (this.mWindow != null) {
+            this.mWindow.close();
             this.mWindow = null;
         }
     }
 
     protected void clearOrCreateWindow(String name) {
-        CursorWindow cursorWindow = this.mWindow;
-        if (cursorWindow == null) {
+        if (this.mWindow == null) {
             this.mWindow = new CursorWindow(name);
         } else {
-            cursorWindow.clear();
+            this.mWindow.clear();
         }
     }
 
     @Override // android.database.AbstractCursor
-    public void onDeactivateOrClose() {
+    protected void onDeactivateOrClose() {
         super.onDeactivateOrClose();
         closeWindow();
     }

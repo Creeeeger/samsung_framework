@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsCallSessionListener {
     private static final String TAG = "ImsCallSessionListener";
     private Executor mExecutor = null;
@@ -124,9 +124,8 @@ public class ImsCallSessionListener {
     public void callSessionMergeStarted(ImsCallSessionImplBase newSession, ImsCallProfile profile) {
         if (newSession != null) {
             try {
-                Executor executor = this.mExecutor;
-                if (executor != null) {
-                    newSession.setDefaultExecutor(executor);
+                if (this.mExecutor != null) {
+                    newSession.setDefaultExecutor(this.mExecutor);
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
@@ -147,9 +146,8 @@ public class ImsCallSessionListener {
     public void callSessionMergeComplete(ImsCallSessionImplBase newSession) {
         if (newSession != null) {
             try {
-                Executor executor = this.mExecutor;
-                if (executor != null) {
-                    newSession.setDefaultExecutor(executor);
+                if (this.mExecutor != null) {
+                    newSession.setDefaultExecutor(this.mExecutor);
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
@@ -202,9 +200,8 @@ public class ImsCallSessionListener {
     public void callSessionConferenceExtended(ImsCallSessionImplBase newSession, ImsCallProfile profile) {
         if (newSession != null) {
             try {
-                Executor executor = this.mExecutor;
-                if (executor != null) {
-                    newSession.setDefaultExecutor(executor);
+                if (this.mExecutor != null) {
+                    newSession.setDefaultExecutor(this.mExecutor);
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();
@@ -233,9 +230,8 @@ public class ImsCallSessionListener {
     public void callSessionConferenceExtendReceived(ImsCallSessionImplBase newSession, ImsCallProfile profile) {
         if (newSession != null) {
             try {
-                Executor executor = this.mExecutor;
-                if (executor != null) {
-                    newSession.setDefaultExecutor(executor);
+                if (this.mExecutor != null) {
+                    newSession.setDefaultExecutor(this.mExecutor);
                 }
             } catch (RemoteException e) {
                 e.rethrowFromSystemServer();

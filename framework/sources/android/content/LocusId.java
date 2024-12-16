@@ -9,14 +9,13 @@ import java.io.PrintWriter;
 /* loaded from: classes.dex */
 public final class LocusId implements Parcelable {
     public static final Parcelable.Creator<LocusId> CREATOR = new Parcelable.Creator<LocusId>() { // from class: android.content.LocusId.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocusId createFromParcel(Parcel parcel) {
             return new LocusId(parcel.readString());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LocusId[] newArray(int size) {
             return new LocusId[size];
@@ -33,9 +32,7 @@ public final class LocusId implements Parcelable {
     }
 
     public int hashCode() {
-        int i = 1 * 31;
-        String str = this.mId;
-        int result = i + (str == null ? 0 : str.hashCode());
+        int result = (1 * 31) + (this.mId == null ? 0 : this.mId.hashCode());
         return result;
     }
 
@@ -47,12 +44,11 @@ public final class LocusId implements Parcelable {
             return false;
         }
         LocusId other = (LocusId) obj;
-        String str = this.mId;
-        if (str == null) {
+        if (this.mId == null) {
             if (other.mId != null) {
                 return false;
             }
-        } else if (!str.equals(other.mId)) {
+        } else if (!this.mId.equals(other.mId)) {
             return false;
         }
         return true;
@@ -80,22 +76,5 @@ public final class LocusId implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(this.mId);
-    }
-
-    /* renamed from: android.content.LocusId$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LocusId> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocusId createFromParcel(Parcel parcel) {
-            return new LocusId(parcel.readString());
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocusId[] newArray(int size) {
-            return new LocusId[size];
-        }
     }
 }

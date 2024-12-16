@@ -227,7 +227,7 @@ public interface PooledLambda {
     static <A, B, C, D, E, F, G, H, I, J, K, L> Message obtainMessage(DodecConsumer<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? super I, ? super J, ? super K, ? super L> function, A arg1, B arg2, C arg3, D arg4, E arg5, F arg6, G arg7, H arg8, I arg9, J arg10, K arg11, L arg12) {
         Message callback;
         synchronized (Message.sPoolSync) {
-            PooledRunnable callback2 = (PooledRunnable) PooledLambdaImpl.acquire(PooledLambdaImpl.sMessageCallbacksPool, function, 11, 0, 1, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+            PooledRunnable callback2 = (PooledRunnable) PooledLambdaImpl.acquire(PooledLambdaImpl.sMessageCallbacksPool, function, 12, 0, 1, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
             callback = Message.obtain().setCallback(callback2.recycleOnUse());
         }
         return callback;

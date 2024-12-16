@@ -8,7 +8,6 @@ public class JsResult {
     private boolean mResult;
 
     @SystemApi
-    /* loaded from: classes4.dex */
     public interface ResultReceiver {
         void onJsResultComplete(JsResult jsResult);
     }

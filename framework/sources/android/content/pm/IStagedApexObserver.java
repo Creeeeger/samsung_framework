@@ -8,11 +8,10 @@ import android.os.RemoteException;
 
 /* loaded from: classes.dex */
 public interface IStagedApexObserver extends IInterface {
-    public static final String DESCRIPTOR = "android$content$pm$IStagedApexObserver".replace('$', '.');
+    public static final String DESCRIPTOR = "android.content.pm.IStagedApexObserver";
 
     void onApexStaged(ApexStagedEvent apexStagedEvent) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IStagedApexObserver {
         @Override // android.content.pm.IStagedApexObserver
         public void onApexStaged(ApexStagedEvent event) throws RemoteException {
@@ -24,19 +23,18 @@ public interface IStagedApexObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IStagedApexObserver {
         static final int TRANSACTION_onApexStaged = 1;
 
         public Stub() {
-            attachInterface(this, DESCRIPTOR);
+            attachInterface(this, IStagedApexObserver.DESCRIPTOR);
         }
 
         public static IStagedApexObserver asInterface(IBinder obj) {
             if (obj == null) {
                 return null;
             }
-            IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
+            IInterface iin = obj.queryLocalInterface(IStagedApexObserver.DESCRIPTOR);
             if (iin != null && (iin instanceof IStagedApexObserver)) {
                 return (IStagedApexObserver) iin;
             }
@@ -50,30 +48,25 @@ public interface IStagedApexObserver extends IInterface {
 
         @Override // android.os.Binder
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            String descriptor = DESCRIPTOR;
             if (code >= 1 && code <= 16777215) {
-                data.enforceInterface(descriptor);
+                data.enforceInterface(IStagedApexObserver.DESCRIPTOR);
+            }
+            if (code == 1598968902) {
+                reply.writeString(IStagedApexObserver.DESCRIPTOR);
+                return true;
             }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 1:
+                    ApexStagedEvent _arg0 = (ApexStagedEvent) data.readTypedObject(ApexStagedEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onApexStaged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ApexStagedEvent _arg0 = (ApexStagedEvent) data.readTypedObject(ApexStagedEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onApexStaged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IStagedApexObserver {
+        private static class Proxy implements IStagedApexObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -86,14 +79,14 @@ public interface IStagedApexObserver extends IInterface {
             }
 
             public String getInterfaceDescriptor() {
-                return DESCRIPTOR;
+                return IStagedApexObserver.DESCRIPTOR;
             }
 
             @Override // android.content.pm.IStagedApexObserver
             public void onApexStaged(ApexStagedEvent event) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInterfaceToken(IStagedApexObserver.DESCRIPTOR);
                     _data.writeTypedObject(event, 0);
                     this.mRemote.transact(1, _data, null, 1);
                 } finally {

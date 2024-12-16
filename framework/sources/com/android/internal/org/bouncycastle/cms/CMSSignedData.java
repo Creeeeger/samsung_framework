@@ -66,17 +66,11 @@ public class CMSSignedData implements Encodable {
         this(CMSUtils.readContentInfo(sigData));
     }
 
-    public CMSSignedData(CMSProcessable signedContent, ContentInfo sigData) throws CMSException {
+    public CMSSignedData(final CMSProcessable signedContent, ContentInfo sigData) throws CMSException {
         if (signedContent instanceof CMSTypedData) {
             this.signedContent = (CMSTypedData) signedContent;
         } else {
             this.signedContent = new CMSTypedData() { // from class: com.android.internal.org.bouncycastle.cms.CMSSignedData.1
-                final /* synthetic */ CMSProcessable val$signedContent;
-
-                AnonymousClass1(CMSProcessable signedContent2) {
-                    signedContent = signedContent2;
-                }
-
                 @Override // com.android.internal.org.bouncycastle.cms.CMSTypedData
                 public ASN1ObjectIdentifier getContentType() {
                     return CMSSignedData.this.signedData.getEncapContentInfo().getContentType();
@@ -97,32 +91,6 @@ public class CMSSignedData implements Encodable {
         this.signedData = getSignedData();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.cms.CMSSignedData$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements CMSTypedData {
-        final /* synthetic */ CMSProcessable val$signedContent;
-
-        AnonymousClass1(CMSProcessable signedContent2) {
-            signedContent = signedContent2;
-        }
-
-        @Override // com.android.internal.org.bouncycastle.cms.CMSTypedData
-        public ASN1ObjectIdentifier getContentType() {
-            return CMSSignedData.this.signedData.getEncapContentInfo().getContentType();
-        }
-
-        @Override // com.android.internal.org.bouncycastle.cms.CMSProcessable
-        public void write(OutputStream out) throws IOException, CMSException {
-            signedContent.write(out);
-        }
-
-        @Override // com.android.internal.org.bouncycastle.cms.CMSProcessable
-        public Object getContent() {
-            return signedContent.getContent();
-        }
-    }
-
     public CMSSignedData(Map hashes, ContentInfo sigData) throws CMSException {
         this.hashes = hashes;
         this.contentInfo = sigData;
@@ -131,9 +99,8 @@ public class CMSSignedData implements Encodable {
 
     public CMSSignedData(ContentInfo sigData) throws CMSException {
         this.contentInfo = sigData;
-        SignedData signedData = getSignedData();
-        this.signedData = signedData;
-        ASN1Encodable content = signedData.getEncapContentInfo().getContent();
+        this.signedData = getSignedData();
+        ASN1Encodable content = this.signedData.getEncapContentInfo().getContent();
         if (content != null) {
             if (content instanceof ASN1OctetString) {
                 this.signedContent = new CMSProcessableByteArray(this.signedData.getEncapContentInfo().getContentType(), ((ASN1OctetString) content).getOctets());
@@ -169,11 +136,10 @@ public class CMSSignedData implements Encodable {
             for (int i = 0; i != s.size(); i++) {
                 SignerInfo info = SignerInfo.getInstance(s.getObjectAt(i));
                 ASN1ObjectIdentifier contentType = this.signedData.getEncapContentInfo().getContentType();
-                Map map2 = this.hashes;
-                if (map2 == null) {
+                if (this.hashes == null) {
                     signerInfos.add(new SignerInformation(info, contentType, this.signedContent, null));
                 } else {
-                    Object obj = map2.keySet().iterator().next();
+                    Object obj = this.hashes.keySet().iterator().next();
                     if (obj instanceof String) {
                         map = this.hashes;
                         algorithm = info.getDigestAlgorithm().getAlgorithm().getId();

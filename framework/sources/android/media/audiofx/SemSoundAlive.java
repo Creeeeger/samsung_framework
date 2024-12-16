@@ -42,12 +42,10 @@ public class SemSoundAlive extends AudioEffect {
     private final Object mParamListenerLock;
     private String[] mPresetNames;
 
-    /* loaded from: classes2.dex */
     public interface OnErrorListener {
         void onError();
     }
 
-    /* loaded from: classes2.dex */
     public interface OnParameterChangeListener {
         void onParameterChange(SemSoundAlive semSoundAlive, int i, int i2, int i3, int i4);
     }
@@ -65,10 +63,9 @@ public class SemSoundAlive extends AudioEffect {
             Log.w(TAG, "WARNING: attaching an SemSoundAlive to global output mix is deprecated!");
         }
         getNumberOfBands();
-        int numberOfPresets = getNumberOfPresets();
-        this.mNumPresets = numberOfPresets;
-        if (numberOfPresets != 0) {
-            this.mPresetNames = new String[numberOfPresets];
+        this.mNumPresets = getNumberOfPresets();
+        if (this.mNumPresets != 0) {
+            this.mPresetNames = new String[this.mNumPresets];
             byte[] value = new byte[32];
             int[] param = new int[2];
             param[0] = 8;
@@ -85,16 +82,14 @@ public class SemSoundAlive extends AudioEffect {
     }
 
     public short getNumberOfBands() throws IllegalArgumentException {
-        short s = this.mNumBands;
-        if (s != 0) {
-            return s;
+        if (this.mNumBands != 0) {
+            return this.mNumBands;
         }
         int[] param = {0};
         short[] result = new short[1];
         checkStatus(getParameter(param, result));
-        short s2 = result[0];
-        this.mNumBands = s2;
-        return s2;
+        this.mNumBands = result[0];
+        return this.mNumBands;
     }
 
     public short[] getBandLevelRange() {
@@ -212,12 +207,7 @@ public class SemSoundAlive extends AudioEffect {
         return Rune.SEC_AUDIO_NUM_OF_SPEAKER;
     }
 
-    /* loaded from: classes2.dex */
     private class BaseParameterListener implements AudioEffect.OnParameterChangeListener {
-        /* synthetic */ BaseParameterListener(SemSoundAlive semSoundAlive, BaseParameterListenerIA baseParameterListenerIA) {
-            this();
-        }
-
         private BaseParameterListener() {
         }
 
@@ -259,19 +249,13 @@ public class SemSoundAlive extends AudioEffect {
         synchronized (this.mParamListenerLock) {
             if (this.mParamListener == null) {
                 this.mParamListener = listener;
-                BaseParameterListener baseParameterListener = new BaseParameterListener();
-                this.mBaseParamListener = baseParameterListener;
-                super.setParameterListener(baseParameterListener);
+                this.mBaseParamListener = new BaseParameterListener();
+                super.setParameterListener(this.mBaseParamListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     private class BaseErrorListener implements AudioEffect.OnErrorListener {
-        /* synthetic */ BaseErrorListener(SemSoundAlive semSoundAlive, BaseErrorListenerIA baseErrorListenerIA) {
-            this();
-        }
-
         private BaseErrorListener() {
         }
 
@@ -293,14 +277,12 @@ public class SemSoundAlive extends AudioEffect {
         synchronized (this.mErrorListenerLock) {
             if (this.mErrorListener == null) {
                 this.mErrorListener = listener;
-                BaseErrorListener baseErrorListener = new BaseErrorListener();
-                this.mBaseErrorListener = baseErrorListener;
-                super.setErrorListener(baseErrorListener);
+                this.mBaseErrorListener = new BaseErrorListener();
+                super.setErrorListener(this.mBaseErrorListener);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class Settings {
         public short[] bandLevels;
         public short curPreset;
@@ -334,18 +316,16 @@ public class SemSoundAlive extends AudioEffect {
                     throw new IllegalArgumentException("invalid key name: " + key3);
                 }
                 this.numBands = Short.parseShort(st.nextToken());
-                int countTokens = st.countTokens();
-                int i = this.numBands;
-                if (countTokens != i * 2) {
+                if (st.countTokens() != this.numBands * 2) {
                     throw new IllegalArgumentException("settings: " + settings);
                 }
-                this.bandLevels = new short[i];
-                for (int i2 = 0; i2 < this.numBands; i2++) {
+                this.bandLevels = new short[this.numBands];
+                for (int i = 0; i < this.numBands; i++) {
                     String key4 = st.nextToken();
-                    if (!("band" + (i2 + 1) + "Level").equals(key4)) {
+                    if (!("band" + (i + 1) + "Level").equals(key4)) {
                         throw new IllegalArgumentException("invalid key name: " + key4);
                     }
-                    this.bandLevels[i2] = Short.parseShort(st.nextToken());
+                    this.bandLevels[i] = Short.parseShort(st.nextToken());
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("invalid value for key: " + key);

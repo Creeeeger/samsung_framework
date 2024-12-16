@@ -77,7 +77,7 @@ public class CachingIconView extends ImageView {
         }
     }
 
-    private Drawable loadSizeRestrictedIcon(Icon icon) {
+    Drawable loadSizeRestrictedIcon(Icon icon) {
         return LocalImageResolver.resolveImage(icon, getContext(), this.mMaxDrawableWidth, this.mMaxDrawableHeight);
     }
 
@@ -86,7 +86,7 @@ public class CachingIconView extends ImageView {
         resetCache();
         final Drawable drawable = loadSizeRestrictedIcon(icon);
         if (drawable != null) {
-            return new Runnable() { // from class: com.android.internal.widget.CachingIconView$$ExternalSyntheticLambda1
+            return new Runnable() { // from class: com.android.internal.widget.CachingIconView$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
                     CachingIconView.this.lambda$setImageIconAsync$0(drawable);
@@ -155,7 +155,7 @@ public class CachingIconView extends ImageView {
         if (drawable == null) {
             return super.setImageURIAsync(uri);
         }
-        return new Runnable() { // from class: com.android.internal.widget.CachingIconView$$ExternalSyntheticLambda2
+        return new Runnable() { // from class: com.android.internal.widget.CachingIconView$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 CachingIconView.this.lambda$setImageURIAsync$2(drawable);
@@ -180,7 +180,7 @@ public class CachingIconView extends ImageView {
     }
 
     @Override // android.view.View
-    public void onConfigurationChanged(Configuration newConfig) {
+    protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         resetCache();
     }
@@ -206,9 +206,8 @@ public class CachingIconView extends ImageView {
         boolean isCached;
         if (resId != 0) {
             try {
-                int i = this.mLastResId;
-                if (i != 0) {
-                    isCached = resId == i && this.mLastPackage == null;
+                if (this.mLastResId != 0) {
+                    isCached = resId == this.mLastResId && this.mLastPackage == null;
                     this.mLastPackage = null;
                     this.mLastResId = resId;
                 }
@@ -243,9 +242,8 @@ public class CachingIconView extends ImageView {
             this.mForceHidden = forceHidden;
             this.mWillBeForceHidden = false;
             updateVisibility();
-            Consumer<Boolean> consumer = this.mOnForceHiddenChangedListener;
-            if (consumer != null) {
-                consumer.accept(Boolean.valueOf(forceHidden));
+            if (this.mOnForceHiddenChangedListener != null) {
+                this.mOnForceHiddenChangedListener.accept(Boolean.valueOf(forceHidden));
             }
         }
     }
@@ -258,13 +256,9 @@ public class CachingIconView extends ImageView {
     }
 
     private void updateVisibility() {
-        int visibility = this.mDesiredVisibility;
-        if (visibility == 0 && this.mForceHidden) {
-            visibility = 4;
-        }
-        Consumer<Integer> consumer = this.mOnVisibilityChangedListener;
-        if (consumer != null) {
-            consumer.accept(Integer.valueOf(visibility));
+        int visibility = (this.mDesiredVisibility == 0 && this.mForceHidden) ? 4 : this.mDesiredVisibility;
+        if (this.mOnVisibilityChangedListener != null) {
+            this.mOnVisibilityChangedListener.accept(Integer.valueOf(visibility));
         }
         super.setVisibility(visibility);
     }

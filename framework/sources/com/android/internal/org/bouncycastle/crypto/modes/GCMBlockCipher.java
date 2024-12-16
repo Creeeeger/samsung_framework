@@ -72,7 +72,6 @@ public class GCMBlockCipher implements AEADBlockCipher {
     public void init(boolean forEncryption, CipherParameters params) throws IllegalArgumentException {
         byte[] newNonce;
         KeyParameter keyParam;
-        byte[] bArr;
         this.forEncryption = forEncryption;
         this.macBlock = null;
         this.initialised = true;
@@ -100,12 +99,11 @@ public class GCMBlockCipher implements AEADBlockCipher {
         if (newNonce == null || newNonce.length < 1) {
             throw new IllegalArgumentException("IV must be at least 1 byte");
         }
-        if (forEncryption && (bArr = this.nonce) != null && Arrays.areEqual(bArr, newNonce)) {
+        if (forEncryption && this.nonce != null && Arrays.areEqual(this.nonce, newNonce)) {
             if (keyParam == null) {
                 throw new IllegalArgumentException("cannot reuse nonce for GCM encryption");
             }
-            byte[] bArr2 = this.lastKey;
-            if (bArr2 != null && Arrays.areEqual(bArr2, keyParam.getKey())) {
+            if (this.lastKey != null && Arrays.areEqual(this.lastKey, keyParam.getKey())) {
                 throw new IllegalArgumentException("cannot reuse nonce for GCM encryption");
             }
         }
@@ -115,22 +113,19 @@ public class GCMBlockCipher implements AEADBlockCipher {
         }
         if (keyParam != null) {
             this.cipher.init(true, keyParam);
-            byte[] bArr3 = new byte[16];
-            this.H = bArr3;
-            this.cipher.processBlock(bArr3, 0, bArr3, 0);
+            this.H = new byte[16];
+            this.cipher.processBlock(this.H, 0, this.H, 0);
             this.multiplier.init(this.H);
             this.exp = null;
         } else if (this.H == null) {
             throw new IllegalArgumentException("Key must be specified in initial init");
         }
-        byte[] bArr4 = new byte[16];
-        this.J0 = bArr4;
-        byte[] bArr5 = this.nonce;
-        if (bArr5.length == 12) {
-            System.arraycopy(bArr5, 0, bArr4, 0, bArr5.length);
+        this.J0 = new byte[16];
+        if (this.nonce.length == 12) {
+            System.arraycopy(this.nonce, 0, this.J0, 0, this.nonce.length);
             this.J0[15] = 1;
         } else {
-            gHASH(bArr4, bArr5, bArr5.length);
+            gHASH(this.J0, this.nonce, this.nonce.length);
             byte[] X = new byte[16];
             Pack.longToBigEndian(this.nonce.length * 8, X, 8);
             gHASHBlock(this.J0, X);
@@ -146,19 +141,17 @@ public class GCMBlockCipher implements AEADBlockCipher {
         this.blocksRemaining = -2;
         this.bufOff = 0;
         this.totalLength = 0L;
-        byte[] bArr6 = this.initialAssociatedText;
-        if (bArr6 != null) {
-            processAADBytes(bArr6, 0, bArr6.length);
+        if (this.initialAssociatedText != null) {
+            processAADBytes(this.initialAssociatedText, 0, this.initialAssociatedText.length);
         }
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.modes.AEADCipher
     public byte[] getMac() {
-        byte[] bArr = this.macBlock;
-        if (bArr == null) {
+        if (this.macBlock == null) {
             return new byte[this.macSize];
         }
-        return Arrays.clone(bArr);
+        return Arrays.clone(this.macBlock);
     }
 
     @Override // com.android.internal.org.bouncycastle.crypto.modes.AEADCipher
@@ -167,11 +160,10 @@ public class GCMBlockCipher implements AEADBlockCipher {
         if (this.forEncryption) {
             return this.macSize + totalData;
         }
-        int i = this.macSize;
-        if (totalData < i) {
+        if (totalData < this.macSize) {
             return 0;
         }
-        return totalData - i;
+        return totalData - this.macSize;
     }
 
     private long getTotalInputSizeAfterNewInput(int newInputLen) {
@@ -182,11 +174,10 @@ public class GCMBlockCipher implements AEADBlockCipher {
     public int getUpdateOutputSize(int len) {
         int totalData = this.bufOff + len;
         if (!this.forEncryption) {
-            int i = this.macSize;
-            if (totalData < i) {
+            if (totalData < this.macSize) {
                 return 0;
             }
-            totalData -= i;
+            totalData -= this.macSize;
         }
         return totalData - (totalData % 16);
     }
@@ -197,13 +188,11 @@ public class GCMBlockCipher implements AEADBlockCipher {
         if (getTotalInputSizeAfterNewInput(1) > MAX_INPUT_SIZE) {
             throw new DataLengthException("Input exceeded 68719476704 bytes");
         }
-        byte[] bArr = this.atBlock;
-        int i = this.atBlockPos;
-        bArr[i] = in;
-        int i2 = i + 1;
-        this.atBlockPos = i2;
-        if (i2 == 16) {
-            gHASHBlock(this.S_at, bArr);
+        this.atBlock[this.atBlockPos] = in;
+        int i = this.atBlockPos + 1;
+        this.atBlockPos = i;
+        if (i == 16) {
+            gHASHBlock(this.S_at, this.atBlock);
             this.atBlockPos = 0;
             this.atLength += 16;
         }
@@ -216,13 +205,11 @@ public class GCMBlockCipher implements AEADBlockCipher {
             throw new DataLengthException("Input exceeded 68719476704 bytes");
         }
         for (int i = 0; i < len; i++) {
-            byte[] bArr = this.atBlock;
-            int i2 = this.atBlockPos;
-            bArr[i2] = in[inOff + i];
-            int i3 = i2 + 1;
-            this.atBlockPos = i3;
-            if (i3 == 16) {
-                gHASHBlock(this.S_at, bArr);
+            this.atBlock[this.atBlockPos] = in[inOff + i];
+            int i2 = this.atBlockPos + 1;
+            this.atBlockPos = i2;
+            if (i2 == 16) {
+                gHASHBlock(this.S_at, this.atBlock);
                 this.atBlockPos = 0;
                 this.atLength += 16;
             }
@@ -234,9 +221,8 @@ public class GCMBlockCipher implements AEADBlockCipher {
             System.arraycopy(this.S_at, 0, this.S_atPre, 0, 16);
             this.atLengthPre = this.atLength;
         }
-        int i = this.atBlockPos;
-        if (i > 0) {
-            gHASHPartial(this.S_atPre, this.atBlock, 0, i);
+        if (this.atBlockPos > 0) {
+            gHASHPartial(this.S_atPre, this.atBlock, 0, this.atBlockPos);
             this.atLengthPre += this.atBlockPos;
         }
         if (this.atLengthPre > 0) {
@@ -250,20 +236,17 @@ public class GCMBlockCipher implements AEADBlockCipher {
         if (getTotalInputSizeAfterNewInput(1) > MAX_INPUT_SIZE) {
             throw new DataLengthException("Input exceeded 68719476704 bytes");
         }
-        byte[] bArr = this.bufBlock;
-        int i = this.bufOff;
-        bArr[i] = in;
-        int i2 = i + 1;
-        this.bufOff = i2;
-        if (i2 != bArr.length) {
+        this.bufBlock[this.bufOff] = in;
+        int i = this.bufOff + 1;
+        this.bufOff = i;
+        if (i != this.bufBlock.length) {
             return 0;
         }
-        processBlock(bArr, 0, out, outOff);
+        processBlock(this.bufBlock, 0, out, outOff);
         if (this.forEncryption) {
             this.bufOff = 0;
         } else {
-            byte[] bArr2 = this.bufBlock;
-            System.arraycopy(bArr2, 16, bArr2, 0, this.macSize);
+            System.arraycopy(this.bufBlock, 16, this.bufBlock, 0, this.macSize);
             this.bufOff = this.macSize;
         }
         return 16;
@@ -286,16 +269,14 @@ public class GCMBlockCipher implements AEADBlockCipher {
                         break;
                     }
                     len--;
-                    byte[] bArr = this.bufBlock;
-                    int i = this.bufOff;
                     int inOff2 = inOff + 1;
-                    bArr[i] = in[inOff];
-                    int i2 = i + 1;
-                    this.bufOff = i2;
-                    if (i2 != 16) {
+                    this.bufBlock[this.bufOff] = in[inOff];
+                    int i = this.bufOff + 1;
+                    this.bufOff = i;
+                    if (i != 16) {
                         inOff = inOff2;
                     } else {
-                        processBlock(bArr, 0, out, outOff);
+                        processBlock(this.bufBlock, 0, out, outOff);
                         this.bufOff = 0;
                         resultLen = 0 + 16;
                         inOff = inOff2;
@@ -314,16 +295,13 @@ public class GCMBlockCipher implements AEADBlockCipher {
                 this.bufOff = len;
             }
         } else {
-            for (int i3 = 0; i3 < len; i3++) {
-                byte[] bArr2 = this.bufBlock;
-                int i4 = this.bufOff;
-                bArr2[i4] = in[inOff + i3];
-                int i5 = i4 + 1;
-                this.bufOff = i5;
-                if (i5 == bArr2.length) {
-                    processBlock(bArr2, 0, out, outOff + resultLen);
-                    byte[] bArr3 = this.bufBlock;
-                    System.arraycopy(bArr3, 16, bArr3, 0, this.macSize);
+            for (int i2 = 0; i2 < len; i2++) {
+                this.bufBlock[this.bufOff] = in[inOff + i2];
+                int i3 = this.bufOff + 1;
+                this.bufOff = i3;
+                if (i3 == this.bufBlock.length) {
+                    processBlock(this.bufBlock, 0, out, outOff + resultLen);
+                    System.arraycopy(this.bufBlock, 16, this.bufBlock, 0, this.macSize);
                     this.bufOff = this.macSize;
                     resultLen += 16;
                 }
@@ -344,11 +322,10 @@ public class GCMBlockCipher implements AEADBlockCipher {
                 throw new OutputLengthException("Output buffer too short");
             }
         } else {
-            int i = this.macSize;
-            if (extra < i) {
+            if (extra < this.macSize) {
                 throw new InvalidCipherTextException("data too short");
             }
-            extra -= i;
+            extra -= this.macSize;
             if (out.length - outOff < extra) {
                 throw new OutputLengthException("Output buffer too short");
             }
@@ -356,13 +333,10 @@ public class GCMBlockCipher implements AEADBlockCipher {
         if (extra > 0) {
             processPartial(this.bufBlock, 0, extra, out, outOff);
         }
-        long j = this.atLength;
-        int i2 = this.atBlockPos;
-        long j2 = j + i2;
-        this.atLength = j2;
-        if (j2 > this.atLengthPre) {
-            if (i2 > 0) {
-                gHASHPartial(this.S_at, this.atBlock, 0, i2);
+        this.atLength += this.atBlockPos;
+        if (this.atLength > this.atLengthPre) {
+            if (this.atBlockPos > 0) {
+                gHASHPartial(this.S_at, this.atBlock, 0, this.atBlockPos);
             }
             if (this.atLengthPre > 0) {
                 GCMUtil.xor(this.S_at, this.S_atPre);
@@ -370,9 +344,8 @@ public class GCMBlockCipher implements AEADBlockCipher {
             long c = ((this.totalLength * 8) + 127) >>> 7;
             byte[] H_c = new byte[16];
             if (this.exp == null) {
-                BasicGCMExponentiator basicGCMExponentiator = new BasicGCMExponentiator();
-                this.exp = basicGCMExponentiator;
-                basicGCMExponentiator.init(this.H);
+                this.exp = new BasicGCMExponentiator();
+                this.exp.init(this.H);
             }
             this.exp.exponentiateX(c, H_c);
             GCMUtil.multiply(this.S_at, H_c);
@@ -386,17 +359,14 @@ public class GCMBlockCipher implements AEADBlockCipher {
         this.cipher.processBlock(this.J0, 0, tag, 0);
         GCMUtil.xor(tag, this.S);
         int resultLen = extra;
-        int i3 = this.macSize;
-        byte[] bArr = new byte[i3];
-        this.macBlock = bArr;
-        System.arraycopy(tag, 0, bArr, 0, i3);
+        this.macBlock = new byte[this.macSize];
+        System.arraycopy(tag, 0, this.macBlock, 0, this.macSize);
         if (this.forEncryption) {
             System.arraycopy(this.macBlock, 0, out, this.bufOff + outOff, this.macSize);
             resultLen += this.macSize;
         } else {
-            int i4 = this.macSize;
-            byte[] msgMac = new byte[i4];
-            System.arraycopy(this.bufBlock, extra, msgMac, 0, i4);
+            byte[] msgMac = new byte[this.macSize];
+            System.arraycopy(this.bufBlock, extra, msgMac, 0, this.macSize);
             if (!Arrays.constantTimeAreEqual(this.macBlock, msgMac)) {
                 throw new InvalidCipherTextException("mac check in GCM failed");
             }
@@ -423,20 +393,16 @@ public class GCMBlockCipher implements AEADBlockCipher {
         this.blocksRemaining = -2;
         this.bufOff = 0;
         this.totalLength = 0L;
-        byte[] bArr = this.bufBlock;
-        if (bArr != null) {
-            Arrays.fill(bArr, (byte) 0);
+        if (this.bufBlock != null) {
+            Arrays.fill(this.bufBlock, (byte) 0);
         }
         if (clearMac) {
             this.macBlock = null;
         }
         if (this.forEncryption) {
             this.initialised = false;
-            return;
-        }
-        byte[] bArr2 = this.initialAssociatedText;
-        if (bArr2 != null) {
-            processAADBytes(bArr2, 0, bArr2.length);
+        } else if (this.initialAssociatedText != null) {
+            processAADBytes(this.initialAssociatedText, 0, this.initialAssociatedText.length);
         }
     }
 
@@ -497,20 +463,18 @@ public class GCMBlockCipher implements AEADBlockCipher {
     }
 
     private void getNextCTRBlock(byte[] block) {
-        int i = this.blocksRemaining;
-        if (i == 0) {
+        if (this.blocksRemaining == 0) {
             throw new IllegalStateException("Attempt to process too many blocks");
         }
-        this.blocksRemaining = i - 1;
-        byte[] bArr = this.counter;
-        int c = 1 + (bArr[15] & 255);
-        bArr[15] = (byte) c;
-        int c2 = (c >>> 8) + (bArr[14] & 255);
-        bArr[14] = (byte) c2;
-        int c3 = (c2 >>> 8) + (bArr[13] & 255);
-        bArr[13] = (byte) c3;
-        bArr[12] = (byte) ((c3 >>> 8) + (bArr[12] & 255));
-        this.cipher.processBlock(bArr, 0, block, 0);
+        this.blocksRemaining--;
+        int c = 1 + (this.counter[15] & 255);
+        this.counter[15] = (byte) c;
+        int c2 = (c >>> 8) + (this.counter[14] & 255);
+        this.counter[14] = (byte) c2;
+        int c3 = (c2 >>> 8) + (this.counter[13] & 255);
+        this.counter[13] = (byte) c3;
+        this.counter[12] = (byte) ((c3 >>> 8) + (this.counter[12] & 255));
+        this.cipher.processBlock(this.counter, 0, block, 0);
     }
 
     private void checkStatus() {

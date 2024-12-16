@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPackageDeleteObserver extends IInterface {
     void packageDeleted(String str, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageDeleteObserver {
         @Override // android.content.pm.IPackageDeleteObserver
         public void packageDeleted(String packageName, int returnCode) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPackageDeleteObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageDeleteObserver {
         public static final String DESCRIPTOR = "android.content.pm.IPackageDeleteObserver";
         static final int TRANSACTION_packageDeleted = 1;
@@ -66,26 +64,23 @@ public interface IPackageDeleteObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    packageDeleted(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            packageDeleted(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageDeleteObserver {
+        private static class Proxy implements IPackageDeleteObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

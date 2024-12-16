@@ -23,7 +23,7 @@ import java.lang.reflect.Array;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class InsertModeTransformationMethod implements TransformationMethod, TextWatcher {
     private int mEnd;
     private final TransformationMethod mOldTransformationMethod;
@@ -63,9 +63,8 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
     @Override // android.text.method.TransformationMethod
     public CharSequence getTransformation(CharSequence source, View view) {
         CharSequence charSequence;
-        TransformationMethod transformationMethod = this.mOldTransformationMethod;
-        if (transformationMethod != null) {
-            charSequence = transformationMethod.getTransformation(source, view);
+        if (this.mOldTransformationMethod != null) {
+            charSequence = this.mOldTransformationMethod.getTransformation(source, view);
             if (source instanceof Spannable) {
                 Spannable spannable = (Spannable) source;
                 spannable.setSpan(this.mOldTransformationMethod, 0, spannable.length(), 18);
@@ -79,9 +78,8 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
 
     @Override // android.text.method.TransformationMethod
     public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
-        TransformationMethod transformationMethod = this.mOldTransformationMethod;
-        if (transformationMethod != null) {
-            transformationMethod.onFocusChanged(view, sourceText, focused, direction, previouslyFocusedRect);
+        if (this.mOldTransformationMethod != null) {
+            this.mOldTransformationMethod.onFocusChanged(view, sourceText, focused, direction, previouslyFocusedRect);
         }
     }
 
@@ -91,22 +89,20 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
 
     @Override // android.text.TextWatcher
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        int i = this.mEnd;
-        if (start > i) {
+        if (start > this.mEnd) {
             return;
         }
         int diff = count - before;
-        int i2 = this.mStart;
-        if (start < i2) {
-            if (start + before <= i2) {
-                this.mStart = i2 + diff;
+        if (start < this.mStart) {
+            if (start + before <= this.mStart) {
+                this.mStart += diff;
             } else {
                 this.mStart = start;
             }
         }
-        if (start + before <= i) {
-            this.mEnd = i + diff;
-        } else if (start < i) {
+        if (start + before <= this.mEnd) {
+            this.mEnd += diff;
+        } else if (start < this.mEnd) {
             this.mEnd = start + count;
         }
     }
@@ -115,7 +111,6 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
     public void afterTextChanged(Editable s) {
     }
 
-    /* loaded from: classes3.dex */
     public class TransformedText implements OffsetMapping, Spanned {
         private final CharSequence mOriginal;
         private final CharSequence mPlaceholder;
@@ -245,10 +240,11 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
             return (T[]) ArrayUtils.concat(cls, objArr, objArr2);
         }
 
-        public static /* synthetic */ Object[] lambda$getSpans$0(Class type, int size) {
+        static /* synthetic */ Object[] lambda$getSpans$0(Class type, int size) {
             return (Object[]) Array.newInstance((Class<?>) type, size);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ boolean lambda$getSpans$1(int start, int end, Object span) {
             return InsertModeTransformationMethod.intersect(getSpanStart(span), getSpanEnd(span), start, end);
         }
@@ -257,15 +253,13 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         public int getSpanStart(Object tag) {
             int index;
             int index2;
-            Spanned spanned = this.mSpannedOriginal;
-            if (spanned != null && (index2 = spanned.getSpanStart(tag)) >= 0) {
+            if (this.mSpannedOriginal != null && (index2 = this.mSpannedOriginal.getSpanStart(tag)) >= 0) {
                 if (index2 < InsertModeTransformationMethod.this.mEnd || (index2 == InsertModeTransformationMethod.this.mEnd && this.mSpannedOriginal.getSpanEnd(tag) == index2)) {
                     return index2;
                 }
                 return this.mPlaceholder.length() + index2;
             }
-            Spanned spanned2 = this.mSpannedPlaceholder;
-            if (spanned2 != null && (index = spanned2.getSpanStart(tag)) >= 0) {
+            if (this.mSpannedPlaceholder != null && (index = this.mSpannedPlaceholder.getSpanStart(tag)) >= 0) {
                 return InsertModeTransformationMethod.this.mEnd + index;
             }
             return -1;
@@ -275,15 +269,13 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         public int getSpanEnd(Object tag) {
             int index;
             int index2;
-            Spanned spanned = this.mSpannedOriginal;
-            if (spanned != null && (index2 = spanned.getSpanEnd(tag)) >= 0) {
+            if (this.mSpannedOriginal != null && (index2 = this.mSpannedOriginal.getSpanEnd(tag)) >= 0) {
                 if (index2 <= InsertModeTransformationMethod.this.mEnd) {
                     return index2;
                 }
                 return this.mPlaceholder.length() + index2;
             }
-            Spanned spanned2 = this.mSpannedPlaceholder;
-            if (spanned2 != null && (index = spanned2.getSpanEnd(tag)) >= 0) {
+            if (this.mSpannedPlaceholder != null && (index = this.mSpannedPlaceholder.getSpanEnd(tag)) >= 0) {
                 return InsertModeTransformationMethod.this.mEnd + index;
             }
             return -1;
@@ -292,13 +284,11 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         @Override // android.text.Spanned
         public int getSpanFlags(Object tag) {
             int flags;
-            Spanned spanned = this.mSpannedOriginal;
-            if (spanned != null && (flags = spanned.getSpanFlags(tag)) != 0) {
+            if (this.mSpannedOriginal != null && (flags = this.mSpannedOriginal.getSpanFlags(tag)) != 0) {
                 return flags;
             }
-            Spanned spanned2 = this.mSpannedPlaceholder;
-            if (spanned2 != null) {
-                return spanned2.getSpanFlags(tag);
+            if (this.mSpannedPlaceholder != null) {
+                return this.mSpannedPlaceholder.getSpanFlags(tag);
             }
             return 0;
         }
@@ -331,7 +321,6 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class SingleLinePlaceholderSpan extends ReplacementSpan {
         private final int mWidth;
 
@@ -349,6 +338,7 @@ public class InsertModeTransformationMethod implements TransformationMethod, Tex
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean intersect(int s1, int e1, int s2, int e2) {
         if (s1 > e2 || e1 < s2) {
             return false;

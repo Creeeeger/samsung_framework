@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
-import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -138,12 +137,10 @@ public class SemTipPopup {
     private static Interpolator INTERPOLATOR_ELASTIC_50 = null;
     private static Interpolator INTERPOLATOR_ELASTIC_CUSTOM = null;
 
-    /* loaded from: classes6.dex */
     public interface OnDismissListener {
         void onDismiss();
     }
 
-    /* loaded from: classes6.dex */
     public interface OnStateChangeListener {
         void onStateChanged(int i);
     }
@@ -172,52 +169,44 @@ public class SemTipPopup {
         if (mode < 0 || mode > 1) {
             throw new IllegalArgumentException("Invalid SmartTip mode : " + mode + " ,mode can either be 0 (MODE_NORMAL) or 1 (MODE_TRANSLUCENT)");
         }
-        Context context = parentView.getContext();
-        this.mContext = context;
-        Resources resources = context.getResources();
-        this.mResources = resources;
+        this.mContext = parentView.getContext();
+        this.mResources = this.mContext.getResources();
         this.mParentView = parentView;
-        this.mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        this.mDisplayMetrics = resources.getDisplayMetrics();
+        this.mWindowManager = (WindowManager) this.mContext.getSystemService(Context.WINDOW_SERVICE);
+        this.mDisplayMetrics = this.mResources.getDisplayMetrics();
         debugLog("mDisplayMetrics = " + this.mDisplayMetrics);
         this.mState = 1;
         this.mType = 0;
         this.mMode = mode;
-        TypedArray a = context.obtainStyledAttributes((AttributeSet) null, R.styleable.SemTipPopup);
+        TypedArray a = this.mContext.obtainStyledAttributes((AttributeSet) null, R.styleable.SemTipPopup);
         this.mBackgroundColor = a.getColor(0, -16777216);
         a.recycle();
         initInterpolator();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(this.mContext);
         this.mBubbleView = inflater.inflate(R.layout.sem_tip_popup_bubble, (ViewGroup) null);
-        View inflate = inflater.inflate(R.layout.sem_tip_popup_balloon, (ViewGroup) null);
-        this.mBalloonView = inflate;
+        this.mBalloonView = inflater.inflate(R.layout.sem_tip_popup_balloon, (ViewGroup) null);
         initBubblePopup(mode);
         initBalloonPopup(mode);
-        TextView textView = (TextView) inflate.findViewById(R.id.sem_tip_popup_message);
-        this.mMessageView = textView;
-        Button button = (Button) inflate.findViewById(R.id.sem_tip_popup_action);
-        this.mActionView = button;
-        textView.setVisibility(8);
-        button.setVisibility(8);
+        this.mMessageView = (TextView) this.mBalloonView.findViewById(R.id.sem_tip_popup_message);
+        this.mActionView = (Button) this.mBalloonView.findViewById(R.id.sem_tip_popup_action);
+        this.mMessageView.setVisibility(8);
+        this.mActionView.setVisibility(8);
         this.mArrowPositionX = -1;
         this.mArrowPositionY = -1;
         this.mArrowDirection = -1;
         this.mBalloonX = -1;
-        if (mode == 1) {
-            textView.setTextColor(resources.getColor(R.color.sem_tip_popup_text_color_translucent, null));
-            button.setTextColor(resources.getColor(R.color.sem_tip_popup_text_color_translucent, null));
+        if (this.mMode == 1) {
+            this.mMessageView.setTextColor(this.mResources.getColor(R.color.sem_tip_popup_text_color_translucent, null));
+            this.mActionView.setTextColor(this.mResources.getColor(R.color.sem_tip_popup_text_color_translucent, null));
         }
-        this.mScaleMargin = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_scale_margin);
-        this.mSideMargin = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_side_margin);
-        this.mArrowHeight = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_arrow_height);
-        this.mArrowWidth = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_arrow_width);
-        this.mHorizontalTextMargin = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_message_margin_horizontal);
-        this.mVerticalTextMargin = resources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_message_margin_vertical);
+        this.mScaleMargin = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_scale_margin);
+        this.mSideMargin = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_side_margin);
+        this.mArrowHeight = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_arrow_height);
+        this.mArrowWidth = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_arrow_width);
+        this.mHorizontalTextMargin = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_message_margin_horizontal);
+        this.mVerticalTextMargin = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_balloon_message_margin_vertical);
         this.mDisplayFrame = new Rect();
         this.mBubblePopup.setOnDismissListener(new PopupWindow.OnDismissListener() { // from class: com.samsung.android.widget.SemTipPopup.1
-            AnonymousClass1() {
-            }
-
             @Override // android.widget.PopupWindow.OnDismissListener
             public void onDismiss() {
                 if (SemTipPopup.this.mState == 1) {
@@ -235,9 +224,6 @@ public class SemTipPopup {
             }
         });
         this.mBalloonPopup.setOnDismissListener(new PopupWindow.OnDismissListener() { // from class: com.samsung.android.widget.SemTipPopup.2
-            AnonymousClass2() {
-            }
-
             @Override // android.widget.PopupWindow.OnDismissListener
             public void onDismiss() {
                 SemTipPopup.this.mState = 0;
@@ -253,77 +239,13 @@ public class SemTipPopup {
                 }
             }
         });
-        inflate.setAccessibilityDelegate(new View.AccessibilityDelegate() { // from class: com.samsung.android.widget.SemTipPopup.3
-            AnonymousClass3() {
-            }
-
+        this.mBalloonView.setAccessibilityDelegate(new View.AccessibilityDelegate() { // from class: com.samsung.android.widget.SemTipPopup.3
             @Override // android.view.View.AccessibilityDelegate
             public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
                 super.onInitializeAccessibilityNodeInfo(host, info);
-                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(16, SemTipPopup.this.mContext.getString(R.string.close)));
+                info.addAction(new AccessibilityNodeInfo.AccessibilityAction(16, SemTipPopup.this.mContext.getString(R.string.smart_tip_action_click_hint_text)));
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemTipPopup$1 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass1 implements PopupWindow.OnDismissListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.PopupWindow.OnDismissListener
-        public void onDismiss() {
-            if (SemTipPopup.this.mState == 1) {
-                SemTipPopup.this.mState = 0;
-                if (SemTipPopup.this.mOnStateChangeListener != null) {
-                    SemTipPopup.this.mOnStateChangeListener.onStateChanged(SemTipPopup.this.mState);
-                    SemTipPopup.this.debugLog("mIsShowing : " + SemTipPopup.this.isShowing());
-                }
-                if (SemTipPopup.mHandler != null) {
-                    SemTipPopup.mHandler.removeCallbacksAndMessages(null);
-                    SemTipPopup.mHandler = null;
-                }
-                SemTipPopup.this.debugLog("onDismiss - BubblePopup");
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemTipPopup$2 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass2 implements PopupWindow.OnDismissListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.PopupWindow.OnDismissListener
-        public void onDismiss() {
-            SemTipPopup.this.mState = 0;
-            if (SemTipPopup.this.mOnStateChangeListener != null) {
-                SemTipPopup.this.mOnStateChangeListener.onStateChanged(SemTipPopup.this.mState);
-                SemTipPopup.this.debugLog("mIsShowing : " + SemTipPopup.this.isShowing());
-            }
-            SemTipPopup.this.debugLog("onDismiss - BalloonPopup");
-            SemTipPopup.this.dismissBubble(false);
-            if (SemTipPopup.mHandler != null) {
-                SemTipPopup.mHandler.removeCallbacksAndMessages(null);
-                SemTipPopup.mHandler = null;
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.widget.SemTipPopup$3 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass3 extends View.AccessibilityDelegate {
-        AnonymousClass3() {
-        }
-
-        @Override // android.view.View.AccessibilityDelegate
-        public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
-            super.onInitializeAccessibilityNodeInfo(host, info);
-            info.addAction(new AccessibilityNodeInfo.AccessibilityAction(16, SemTipPopup.this.mContext.getString(R.string.close)));
-        }
     }
 
     private void initInterpolator() {
@@ -347,7 +269,7 @@ public class SemTipPopup {
         if (mode == 1) {
             this.mBubbleBackground.setImageResource(R.drawable.sem_tip_popup_hint_background_translucent);
             this.mBubbleBackground.setImageTintList(null);
-            if (isRTL() && !getLocale().equals("iw_IL")) {
+            if (isRTL() && isMirroringSupportedInRTL()) {
                 this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_translucent_rtl);
             } else {
                 this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_translucent);
@@ -359,9 +281,8 @@ public class SemTipPopup {
             this.mBubbleWidth = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_bubble_width);
             this.mBubbleHeight = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_bubble_height);
         }
-        TipWindowBubble tipWindowBubble = new TipWindowBubble(this.mBubbleView, this.mBubbleWidth, this.mBubbleHeight, false);
-        this.mBubblePopup = tipWindowBubble;
-        tipWindowBubble.setTouchable(true);
+        this.mBubblePopup = new TipWindowBubble(this.mBubbleView, this.mBubbleWidth, this.mBubbleHeight, false);
+        this.mBubblePopup.setTouchable(true);
         this.mBubblePopup.setOutsideTouchable(true);
         this.mBubblePopup.setAttachedInDecor(false);
     }
@@ -382,16 +303,12 @@ public class SemTipPopup {
         }
         this.mBalloonBubble.setVisibility(0);
         this.mBalloonPanel.setVisibility(8);
-        TipWindowBalloon tipWindowBalloon = new TipWindowBalloon(this.mBalloonView, this.mBalloonWidth, this.mBalloonHeight, true);
-        this.mBalloonPopup = tipWindowBalloon;
-        tipWindowBalloon.setFocusable(true);
+        this.mBalloonPopup = new TipWindowBalloon(this.mBalloonView, this.mBalloonWidth, this.mBalloonHeight, true);
+        this.mBalloonPopup.setFocusable(true);
         this.mBalloonPopup.setTouchable(true);
         this.mBalloonPopup.setOutsideTouchable(true);
         this.mBalloonPopup.setAttachedInDecor(false);
         this.mBalloonPopup.setTouchInterceptor(new View.OnTouchListener() { // from class: com.samsung.android.widget.SemTipPopup.4
-            AnonymousClass4() {
-            }
-
             @Override // android.view.View.OnTouchListener
             public boolean onTouch(View v, MotionEvent event) {
                 if (SemTipPopup.this.mNeedToCallParentViewsOnClick && SemTipPopup.this.mParentView.hasOnClickListeners() && (event.getAction() == 0 || event.getAction() == 4)) {
@@ -408,29 +325,6 @@ public class SemTipPopup {
                 return false;
             }
         });
-    }
-
-    /* renamed from: com.samsung.android.widget.SemTipPopup$4 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass4 implements View.OnTouchListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View v, MotionEvent event) {
-            if (SemTipPopup.this.mNeedToCallParentViewsOnClick && SemTipPopup.this.mParentView.hasOnClickListeners() && (event.getAction() == 0 || event.getAction() == 4)) {
-                Rect parentViewBounds = new Rect();
-                int[] outLocation = new int[2];
-                SemTipPopup.this.mParentView.getLocationOnScreen(outLocation);
-                parentViewBounds.set(outLocation[0], outLocation[1], outLocation[0] + SemTipPopup.this.mParentView.getWidth(), outLocation[1] + SemTipPopup.this.mParentView.getHeight());
-                boolean isTouchContainedInParentView = parentViewBounds.contains((int) event.getRawX(), (int) event.getRawY());
-                if (isTouchContainedInParentView) {
-                    SemTipPopup.this.debugLog("callOnClick for parent view");
-                    SemTipPopup.this.mParentView.callOnClick();
-                }
-            }
-            return false;
-        }
     }
 
     public void show(int direction) {
@@ -466,37 +360,31 @@ public class SemTipPopup {
     public boolean isShowing() {
         boolean isBubbleShowing = false;
         boolean isBalloonShowing = false;
-        TipWindow tipWindow = this.mBubblePopup;
-        if (tipWindow != null) {
-            isBubbleShowing = tipWindow.isShowing();
+        if (this.mBubblePopup != null) {
+            isBubbleShowing = this.mBubblePopup.isShowing();
         }
-        TipWindow tipWindow2 = this.mBalloonPopup;
-        if (tipWindow2 != null) {
-            isBalloonShowing = tipWindow2.isShowing();
+        if (this.mBalloonPopup != null) {
+            isBalloonShowing = this.mBalloonPopup.isShowing();
         }
         return isBubbleShowing || isBalloonShowing;
     }
 
     public void dismiss(boolean withAnimation) {
-        TipWindow tipWindow = this.mBubblePopup;
-        if (tipWindow != null) {
-            tipWindow.setUseDismissAnimation(withAnimation);
+        if (this.mBubblePopup != null) {
+            this.mBubblePopup.setUseDismissAnimation(withAnimation);
             debugLog("mBubblePopup.mIsDismissing = " + this.mBubblePopup.mIsDismissing);
             this.mBubblePopup.dismiss();
         }
-        TipWindow tipWindow2 = this.mBalloonPopup;
-        if (tipWindow2 != null) {
-            tipWindow2.setUseDismissAnimation(withAnimation);
+        if (this.mBalloonPopup != null) {
+            this.mBalloonPopup.setUseDismissAnimation(withAnimation);
             debugLog("mBalloonPopup.mIsDismissing = " + this.mBalloonPopup.mIsDismissing);
             this.mBalloonPopup.dismiss();
         }
-        OnDismissListener onDismissListener = this.mOnDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mOnDismissListener != null) {
+            this.mOnDismissListener.onDismiss();
         }
-        Handler handler = mHandler;
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
     }
@@ -528,11 +416,11 @@ public class SemTipPopup {
     }
 
     public void update(int direction, boolean resetHintTimer) {
-        TipWindow tipWindow;
-        TipWindow tipWindow2;
         if (!isShowing() || this.mParentView == null) {
             return;
         }
+        this.mDisplayMetrics = this.mResources.getDisplayMetrics();
+        debugLog("update - mDisplayMetrics = " + this.mDisplayMetrics);
         setInternal();
         this.mBalloonX = -1;
         this.mBalloonY = -1;
@@ -549,9 +437,8 @@ public class SemTipPopup {
         calculatePopupPosition();
         setBubblePanel();
         setBalloonPanel();
-        int i = this.mState;
-        if (i == 1 && (tipWindow2 = this.mBubblePopup) != null) {
-            tipWindow2.update(this.mBubblePopupX, this.mBubblePopupY, tipWindow2.getWidth(), this.mBubblePopup.getHeight());
+        if (this.mState == 1 && this.mBubblePopup != null) {
+            this.mBubblePopup.update(this.mBubblePopupX, this.mBubblePopupY, this.mBubblePopup.getWidth(), this.mBubblePopup.getHeight());
             if (resetHintTimer) {
                 debugLog("Timer Reset!");
                 scheduleTimeout();
@@ -559,8 +446,8 @@ public class SemTipPopup {
             }
             return;
         }
-        if (i == 2 && (tipWindow = this.mBalloonPopup) != null) {
-            tipWindow.update(this.mBalloonPopupX, this.mBalloonPopupY, tipWindow.getWidth(), this.mBalloonPopup.getHeight());
+        if (this.mState == 2 && this.mBalloonPopup != null) {
+            this.mBalloonPopup.update(this.mBalloonPopupX, this.mBalloonPopupY, this.mBalloonPopup.getWidth(), this.mBalloonPopup.getHeight());
         }
     }
 
@@ -600,53 +487,21 @@ public class SemTipPopup {
         debugLog("clipping enabled : " + enabled);
     }
 
-    /* renamed from: com.samsung.android.widget.SemTipPopup$5 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass5 extends Handler {
-        AnonymousClass5(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case 0:
-                    SemTipPopup.this.dismissBubble(true);
-                    return;
-                case 1:
-                    SemTipPopup.this.dismissBubble(false);
-                    return;
-                case 2:
-                    SemTipPopup.this.animateScaleUp();
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
     private void setInternal() {
-        CharSequence charSequence;
         if (mHandler == null) {
             mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.widget.SemTipPopup.5
-                AnonymousClass5(Looper looper) {
-                    super(looper);
-                }
-
                 @Override // android.os.Handler
                 public void handleMessage(Message message) {
                     switch (message.what) {
                         case 0:
                             SemTipPopup.this.dismissBubble(true);
-                            return;
+                            break;
                         case 1:
                             SemTipPopup.this.dismissBubble(false);
-                            return;
+                            break;
                         case 2:
                             SemTipPopup.this.animateScaleUp();
-                            return;
-                        default:
-                            return;
+                            break;
                     }
                 }
             };
@@ -661,7 +516,7 @@ public class SemTipPopup {
             this.mMessageView.setTextSize(0, (float) Math.floor(Math.ceil(messageTextSize / currentFontScale) * 1.2f));
             this.mActionView.setTextSize(0, (float) Math.floor(Math.ceil(actionTextSize / currentFontScale) * 1.2f));
         }
-        this.mMessageView.setText(this.mMessageText);
+        this.mMessageView.lambda$setTextAsync$0(this.mMessageText);
         if (TextUtils.isEmpty(this.mActionText) || this.mActionClickListener == null) {
             this.mActionView.setVisibility(8);
             this.mActionView.setOnClickListener(null);
@@ -669,11 +524,8 @@ public class SemTipPopup {
         } else {
             this.mActionView.setVisibility(0);
             this.mActionView.semSetButtonShapeEnabled(true, this.mBackgroundColor);
-            this.mActionView.setText(this.mActionText);
+            this.mActionView.lambda$setTextAsync$0(this.mActionText);
             this.mActionView.setOnClickListener(new View.OnClickListener() { // from class: com.samsung.android.widget.SemTipPopup.6
-                AnonymousClass6() {
-                }
-
                 @Override // android.view.View.OnClickListener
                 public void onClick(View view) {
                     if (SemTipPopup.this.mActionClickListener != null) {
@@ -684,64 +536,40 @@ public class SemTipPopup {
             });
             this.mType = 1;
         }
-        ImageView imageView = this.mBubbleIcon;
-        if (imageView != null && (charSequence = this.mHintDescription) != null) {
-            imageView.setContentDescription(charSequence);
+        if (this.mBubbleIcon != null && this.mHintDescription != null) {
+            this.mBubbleIcon.setContentDescription(this.mHintDescription);
         }
         if (this.mMode == 1 || this.mBubbleIcon == null || this.mBubbleBackground == null || this.mBalloonBubble == null || this.mBalloonBg1 == null || this.mBalloonBg2 == null) {
             return;
         }
-        Integer num = this.mMessageTextColor;
-        if (num != null) {
-            this.mMessageView.setTextColor(num.intValue());
+        if (this.mMessageTextColor != null) {
+            this.mMessageView.setTextColor(this.mMessageTextColor.intValue());
         }
-        Integer num2 = this.mActionTextColor;
-        if (num2 != null) {
-            this.mActionView.setTextColor(num2.intValue());
+        if (this.mActionTextColor != null) {
+            this.mActionView.setTextColor(this.mActionTextColor.intValue());
         }
         this.mBubbleBackground.setColorFilter(this.mBackgroundColor);
         this.mBalloonBubbleHint.setColorFilter(this.mBackgroundColor);
         this.mBalloonBg1.setBackgroundTintList(ColorStateList.valueOf(this.mBackgroundColor));
         this.mBalloonBg2.setBackgroundTintList(ColorStateList.valueOf(this.mBackgroundColor));
-        Integer num3 = this.mBorderColor;
-        if (num3 != null) {
-            this.mBubbleIcon.setColorFilter(num3.intValue());
+        if (this.mBorderColor != null) {
+            this.mBubbleIcon.setColorFilter(this.mBorderColor.intValue());
             this.mBalloonBubbleIcon.setColorFilter(this.mBorderColor.intValue());
-        }
-    }
-
-    /* renamed from: com.samsung.android.widget.SemTipPopup$6 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass6 implements View.OnClickListener {
-        AnonymousClass6() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View view) {
-            if (SemTipPopup.this.mActionClickListener != null) {
-                SemTipPopup.this.mActionClickListener.onClick(view);
-            }
-            SemTipPopup.this.dismiss(true);
         }
     }
 
     private void showInternal() {
         if (this.mState != 2) {
             this.mState = 1;
-            OnStateChangeListener onStateChangeListener = this.mOnStateChangeListener;
-            if (onStateChangeListener != null) {
-                onStateChangeListener.onStateChanged(1);
+            if (this.mOnStateChangeListener != null) {
+                this.mOnStateChangeListener.onStateChanged(this.mState);
                 debugLog("mIsShowing : " + isShowing());
             }
-            TipWindow tipWindow = this.mBubblePopup;
-            if (tipWindow != null) {
-                tipWindow.showAtLocation(this.mParentView, 0, this.mBubblePopupX, this.mBubblePopupY);
+            if (this.mBubblePopup != null) {
+                this.mBubblePopup.showAtLocation(this.mParentView, 0, this.mBubblePopupX, this.mBubblePopupY);
                 animateViewIn();
             }
             this.mBubbleView.setOnTouchListener(new View.OnTouchListener() { // from class: com.samsung.android.widget.SemTipPopup.7
-                AnonymousClass7() {
-                }
-
                 @Override // android.view.View.OnTouchListener
                 public boolean onTouch(View v, MotionEvent event) {
                     SemTipPopup.this.mState = 2;
@@ -763,20 +591,15 @@ public class SemTipPopup {
             this.mBalloonBubble.setVisibility(8);
             this.mBalloonPanel.setVisibility(0);
             this.mMessageView.setVisibility(0);
-            OnStateChangeListener onStateChangeListener2 = this.mOnStateChangeListener;
-            if (onStateChangeListener2 != null) {
-                onStateChangeListener2.onStateChanged(this.mState);
+            if (this.mOnStateChangeListener != null) {
+                this.mOnStateChangeListener.onStateChanged(this.mState);
             }
-            TipWindow tipWindow2 = this.mBalloonPopup;
-            if (tipWindow2 != null) {
-                tipWindow2.showAtLocation(this.mParentView, 0, this.mBalloonPopupX, this.mBalloonPopupY);
+            if (this.mBalloonPopup != null) {
+                this.mBalloonPopup.showAtLocation(this.mParentView, 0, this.mBalloonPopupX, this.mBalloonPopupY);
             }
             animateBaloonScaleUp();
         }
         this.mBalloonView.setOnTouchListener(new View.OnTouchListener() { // from class: com.samsung.android.widget.SemTipPopup.8
-            AnonymousClass8() {
-            }
-
             @Override // android.view.View.OnTouchListener
             public boolean onTouch(View v, MotionEvent event) {
                 if (SemTipPopup.this.mType == 0) {
@@ -786,46 +609,6 @@ public class SemTipPopup {
                 return false;
             }
         });
-    }
-
-    /* renamed from: com.samsung.android.widget.SemTipPopup$7 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass7 implements View.OnTouchListener {
-        AnonymousClass7() {
-        }
-
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View v, MotionEvent event) {
-            SemTipPopup.this.mState = 2;
-            if (SemTipPopup.this.mOnStateChangeListener != null) {
-                SemTipPopup.this.mOnStateChangeListener.onStateChanged(SemTipPopup.this.mState);
-            }
-            if (SemTipPopup.this.mBalloonPopup != null) {
-                SemTipPopup.this.mBalloonPopup.showAtLocation(SemTipPopup.this.mParentView, 0, SemTipPopup.this.mBalloonPopupX, SemTipPopup.this.mBalloonPopupY);
-            }
-            if (SemTipPopup.mHandler != null) {
-                SemTipPopup.mHandler.removeMessages(0);
-                SemTipPopup.mHandler.sendMessageDelayed(Message.obtain(SemTipPopup.mHandler, 1), 10L);
-                SemTipPopup.mHandler.sendMessageDelayed(Message.obtain(SemTipPopup.mHandler, 2), 20L);
-            }
-            return false;
-        }
-    }
-
-    /* renamed from: com.samsung.android.widget.SemTipPopup$8 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass8 implements View.OnTouchListener {
-        AnonymousClass8() {
-        }
-
-        @Override // android.view.View.OnTouchListener
-        public boolean onTouch(View v, MotionEvent event) {
-            if (SemTipPopup.this.mType == 0) {
-                SemTipPopup.this.dismiss(true);
-                return false;
-            }
-            return false;
-        }
     }
 
     private void setBubblePanel() {
@@ -839,15 +622,13 @@ public class SemTipPopup {
         }
         switch (this.mArrowDirection) {
             case 0:
-                this.mBubblePopup.setPivot(r1.getWidth(), this.mBubblePopup.getHeight());
+                this.mBubblePopup.setPivot(this.mBubblePopup.getWidth(), this.mBubblePopup.getHeight());
                 paramBubblePanel.gravity = 85;
-                int i = this.mBubbleX;
-                int i2 = this.mScaleMargin;
-                this.mBubblePopupX = i - (i2 * 2);
-                this.mBubblePopupY = this.mBubbleY - (i2 * 2);
+                this.mBubblePopupX = this.mBubbleX - (this.mScaleMargin * 2);
+                this.mBubblePopupY = this.mBubbleY - (this.mScaleMargin * 2);
                 if (this.mMode == 0) {
                     this.mBubbleBackground.setImageResource(R.drawable.sem_tip_popup_hint_background_03);
-                    if (isRTL() && !getLocale().equals("iw_IL")) {
+                    if (isRTL() && isMirroringSupportedInRTL()) {
                         this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_rtl);
                         break;
                     } else {
@@ -858,14 +639,15 @@ public class SemTipPopup {
                     this.mBubbleBackground.setRotationX(180.0f);
                     break;
                 }
+                break;
             case 1:
-                this.mBubblePopup.setPivot(0.0f, r1.getHeight());
+                this.mBubblePopup.setPivot(0.0f, this.mBubblePopup.getHeight());
                 paramBubblePanel.gravity = 83;
                 this.mBubblePopupX = this.mBubbleX;
                 this.mBubblePopupY = this.mBubbleY - (this.mScaleMargin * 2);
                 if (this.mMode == 0) {
                     this.mBubbleBackground.setImageResource(R.drawable.sem_tip_popup_hint_background_04);
-                    if (isRTL() && !getLocale().equals("iw_IL")) {
+                    if (isRTL() && isMirroringSupportedInRTL()) {
                         this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_rtl);
                         break;
                     } else {
@@ -878,13 +660,13 @@ public class SemTipPopup {
                 }
                 break;
             case 2:
-                this.mBubblePopup.setPivot(r1.getWidth(), 0.0f);
+                this.mBubblePopup.setPivot(this.mBubblePopup.getWidth(), 0.0f);
                 paramBubblePanel.gravity = 53;
                 this.mBubblePopupX = this.mBubbleX - (this.mScaleMargin * 2);
                 this.mBubblePopupY = this.mBubbleY;
                 if (this.mMode == 0) {
                     this.mBubbleBackground.setImageResource(R.drawable.sem_tip_popup_hint_background_01);
-                    if (isRTL() && !getLocale().equals("iw_IL")) {
+                    if (isRTL() && isMirroringSupportedInRTL()) {
                         this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_rtl);
                         break;
                     } else {
@@ -900,7 +682,7 @@ public class SemTipPopup {
                 this.mBubblePopupY = this.mBubbleY;
                 if (this.mMode == 0) {
                     this.mBubbleBackground.setImageResource(R.drawable.sem_tip_popup_hint_background_02);
-                    if (isRTL() && !getLocale().equals("iw_IL")) {
+                    if (isRTL() && isMirroringSupportedInRTL()) {
                         this.mBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_rtl);
                         break;
                     } else {
@@ -926,14 +708,10 @@ public class SemTipPopup {
         float f2;
         if (this.mBalloonPopup != null) {
             debugLog("setBalloonPanel()");
-            int i = this.mBubbleX;
-            int i2 = this.mBalloonX;
-            int leftMargin = i - i2;
-            int rightMargin = (i2 + this.mBalloonWidth) - i;
-            int i3 = this.mBubbleY;
-            int i4 = this.mBalloonY;
-            int topMargin = i3 - i4;
-            int bottomMargin = (i4 + this.mBalloonHeight) - (i3 + this.mBubbleHeight);
+            int leftMargin = this.mBubbleX - this.mBalloonX;
+            int rightMargin = (this.mBalloonX + this.mBalloonWidth) - this.mBubbleX;
+            int topMargin = this.mBubbleY - this.mBalloonY;
+            int bottomMargin = (this.mBalloonY + this.mBalloonHeight) - (this.mBubbleY + this.mBubbleHeight);
             DisplayMetrics realMetrics = new DisplayMetrics();
             this.mWindowManager.getDefaultDisplay().getRealMetrics(realMetrics);
             int scaleFactor2 = (int) Math.ceil(realMetrics.density);
@@ -950,7 +728,7 @@ public class SemTipPopup {
             if (this.mMode == 1) {
                 this.mBalloonBubbleHint.setImageResource(R.drawable.sem_tip_popup_hint_background_translucent);
                 this.mBalloonBubbleHint.setImageTintList(null);
-                if (isRTL() && !getLocale().equals("iw_IL")) {
+                if (isRTL() && isMirroringSupportedInRTL()) {
                     this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_translucent_rtl);
                 } else {
                     this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon_translucent);
@@ -967,10 +745,7 @@ public class SemTipPopup {
             }
             switch (this.mArrowDirection) {
                 case 0:
-                    TipWindow tipWindow = this.mBalloonPopup;
-                    int i5 = this.mArrowPositionX - this.mBalloonX;
-                    int i6 = this.mScaleMargin;
-                    tipWindow.setPivot(i5 + i6, this.mBalloonHeight + i6);
+                    this.mBalloonPopup.setPivot((this.mArrowPositionX - this.mBalloonX) + this.mScaleMargin, this.mBalloonHeight + this.mScaleMargin);
                     if (this.mMode == 0) {
                         this.mBalloonBubbleHint.setImageResource(R.drawable.sem_tip_popup_hint_background_03);
                         this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon);
@@ -984,26 +759,21 @@ public class SemTipPopup {
                     paramBalloonBg2.gravity = 85;
                     paramBalloonBg1.gravity = 85;
                     paramBalloonBubble.gravity = 85;
-                    int i7 = this.mBubbleWidth;
-                    if (rightMargin - i7 < minBackgroundWidth) {
+                    if (rightMargin - this.mBubbleWidth < minBackgroundWidth) {
                         int scaledLeftMargin = this.mBalloonWidth - minBackgroundWidth;
                         paramBalloonBg1.setMargins(0, 0, minBackgroundWidth, 0);
                         paramBalloonBg2.setMargins(scaledLeftMargin - scaleFactor, 0, 0, 0);
                         debugLog("Right Margin is less then minimum background width!");
                         debugLog("updated !! leftMargin[" + scaledLeftMargin + "],  rightMargin[" + minBackgroundWidth + NavigationBarInflaterView.SIZE_MOD_END);
                     } else {
-                        paramBalloonBg1.setMargins(0, 0, rightMargin - i7, 0);
+                        paramBalloonBg1.setMargins(0, 0, rightMargin - this.mBubbleWidth, 0);
                         paramBalloonBg2.setMargins((this.mBubbleWidth + leftMargin) - scaleFactor, 0, 0, 0);
                     }
-                    int i8 = this.mVerticalTextMargin;
                     paramBalloonContent = paramBalloonContent2;
-                    paramBalloonContent.setMargins(horizontalContentMargin, i8, horizontalContentMargin, (this.mArrowHeight + i8) - verticalButtonPadding);
+                    paramBalloonContent.setMargins(horizontalContentMargin, this.mVerticalTextMargin, horizontalContentMargin, (this.mArrowHeight + this.mVerticalTextMargin) - verticalButtonPadding);
                     break;
                 case 1:
-                    TipWindow tipWindow2 = this.mBalloonPopup;
-                    int i9 = this.mArrowPositionX - this.mBalloonX;
-                    int i10 = this.mScaleMargin;
-                    tipWindow2.setPivot(i9 + i10, this.mBalloonHeight + i10);
+                    this.mBalloonPopup.setPivot((this.mArrowPositionX - this.mBalloonX) + this.mScaleMargin, this.mBalloonHeight + this.mScaleMargin);
                     if (this.mMode == 0) {
                         this.mBalloonBubbleHint.setImageResource(R.drawable.sem_tip_popup_hint_background_04);
                         this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon);
@@ -1027,14 +797,11 @@ public class SemTipPopup {
                         paramBalloonBg1.setMargins(leftMargin, 0, 0, 0);
                         paramBalloonBg2.setMargins(0, 0, rightMargin - scaleFactor, 0);
                     }
-                    int i11 = this.mVerticalTextMargin;
                     paramBalloonContent = paramBalloonContent2;
-                    paramBalloonContent.setMargins(horizontalContentMargin, i11, horizontalContentMargin, (this.mArrowHeight + i11) - verticalButtonPadding);
+                    paramBalloonContent.setMargins(horizontalContentMargin, this.mVerticalTextMargin, horizontalContentMargin, (this.mArrowHeight + this.mVerticalTextMargin) - verticalButtonPadding);
                     break;
                 case 2:
-                    TipWindow tipWindow3 = this.mBalloonPopup;
-                    int i12 = this.mArrowPositionX - this.mBalloonX;
-                    tipWindow3.setPivot(i12 + r5, this.mScaleMargin);
+                    this.mBalloonPopup.setPivot((this.mArrowPositionX - this.mBalloonX) + this.mScaleMargin, this.mScaleMargin);
                     if (this.mMode == 0) {
                         this.mBalloonBubbleHint.setImageResource(R.drawable.sem_tip_popup_hint_background_01);
                         this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon);
@@ -1044,15 +811,11 @@ public class SemTipPopup {
                     paramBalloonBubble.gravity = 53;
                     paramBalloonBg1.setMargins(0, 0, rightMargin - this.mBubbleWidth, 0);
                     paramBalloonBg2.setMargins((this.mBubbleWidth + leftMargin) - scaleFactor, 0, 0, 0);
-                    int i13 = this.mArrowHeight;
-                    int i14 = this.mVerticalTextMargin;
-                    paramBalloonContent2.setMargins(horizontalContentMargin, i13 + i14, horizontalContentMargin, i14 - verticalButtonPadding);
+                    paramBalloonContent2.setMargins(horizontalContentMargin, this.mArrowHeight + this.mVerticalTextMargin, horizontalContentMargin, this.mVerticalTextMargin - verticalButtonPadding);
                     paramBalloonContent = paramBalloonContent2;
                     break;
                 case 3:
-                    TipWindow tipWindow4 = this.mBalloonPopup;
-                    int i15 = this.mArrowPositionX - this.mBalloonX;
-                    tipWindow4.setPivot(i15 + r9, this.mScaleMargin);
+                    this.mBalloonPopup.setPivot((this.mArrowPositionX - this.mBalloonX) + this.mScaleMargin, this.mScaleMargin);
                     if (this.mMode == 0) {
                         this.mBalloonBubbleHint.setImageResource(R.drawable.sem_tip_popup_hint_background_02);
                         this.mBalloonBubbleIcon.setImageResource(R.drawable.sem_tip_popup_hint_icon);
@@ -1066,23 +829,18 @@ public class SemTipPopup {
                     paramBalloonBubble.gravity = 51;
                     paramBalloonBg1.setMargins(leftMargin, 0, 0, 0);
                     paramBalloonBg2.setMargins(0, 0, rightMargin - scaleFactor, 0);
-                    int i16 = this.mArrowHeight;
-                    int i17 = this.mVerticalTextMargin;
-                    paramBalloonContent2.setMargins(horizontalContentMargin, i16 + i17, horizontalContentMargin, i17 - verticalButtonPadding);
+                    paramBalloonContent2.setMargins(horizontalContentMargin, this.mArrowHeight + this.mVerticalTextMargin, horizontalContentMargin, this.mVerticalTextMargin - verticalButtonPadding);
                     paramBalloonContent = paramBalloonContent2;
                     break;
                 default:
                     paramBalloonContent = paramBalloonContent2;
                     break;
             }
-            int i18 = this.mScaleMargin;
-            paramBalloonBubble.setMargins(leftMargin + i18, topMargin + i18, (rightMargin - this.mBubbleWidth) + i18, bottomMargin + i18);
+            paramBalloonBubble.setMargins(this.mScaleMargin + leftMargin, topMargin + this.mScaleMargin, (rightMargin - this.mBubbleWidth) + this.mScaleMargin, bottomMargin + this.mScaleMargin);
             int balloonPanelMargin = this.mScaleMargin;
             paramBalloonPanel.setMargins(balloonPanelMargin, balloonPanelMargin, balloonPanelMargin, balloonPanelMargin);
-            int i19 = this.mBalloonX;
-            int i20 = this.mScaleMargin;
-            this.mBalloonPopupX = i19 - i20;
-            this.mBalloonPopupY = this.mBalloonY - i20;
+            this.mBalloonPopupX = this.mBalloonX - this.mScaleMargin;
+            this.mBalloonPopupY = this.mBalloonY - this.mScaleMargin;
             this.mBalloonBubble.setLayoutParams(paramBalloonBubble);
             this.mBalloonPanel.setLayoutParams(paramBalloonPanel);
             this.mBalloonBg1.setLayoutParams(paramBalloonBg1);
@@ -1094,10 +852,9 @@ public class SemTipPopup {
     }
 
     private void calculateArrowDirection(int arrowX, int arrowY) {
-        View view = this.mParentView;
-        if (view != null && this.mIsDefaultPosition) {
+        if (this.mParentView != null && this.mIsDefaultPosition) {
             int[] location = new int[2];
-            view.getLocationInWindow(location);
+            this.mParentView.getLocationInWindow(location);
             int parentY = location[1] + (this.mParentView.getHeight() / 2);
             if (arrowX * 2 <= this.mDisplayMetrics.widthPixels) {
                 if (arrowY <= parentY) {
@@ -1123,14 +880,13 @@ public class SemTipPopup {
     }
 
     private void calculateArrowPosition() {
-        View view = this.mParentView;
-        if (view == null) {
+        if (this.mParentView == null) {
             this.mArrowPositionX = 0;
             this.mArrowPositionY = 0;
             return;
         }
         int[] location = new int[2];
-        view.getLocationInWindow(location);
+        this.mParentView.getLocationInWindow(location);
         debugLog("calculateArrowPosition anchor location : " + location[0] + ", " + location[1]);
         int x = location[0] + (this.mParentView.getWidth() / 2);
         int y = location[1] + (this.mParentView.getHeight() / 2);
@@ -1182,16 +938,14 @@ public class SemTipPopup {
             this.mInitialmMessageViewWidth = this.mMessageView.getMeasuredWidth();
             this.mIsMessageViewMeasured = true;
         }
-        int i = this.mInitialmMessageViewWidth;
-        int i2 = this.mHorizontalTextMargin;
-        int balloonWidth = i + (i2 * 2);
+        int balloonWidth = this.mInitialmMessageViewWidth + (this.mHorizontalTextMargin * 2);
         if (balloonWidth < balloonMinWidth) {
             balloonWidth = balloonMinWidth;
         } else if (balloonWidth > balloonMaxWidth) {
             balloonWidth = balloonMaxWidth;
         }
         this.mBalloonWidth = balloonWidth;
-        this.mMessageView.setWidth(balloonWidth - (i2 * 2));
+        this.mMessageView.setWidth(this.mBalloonWidth - (this.mHorizontalTextMargin * 2));
         this.mMessageView.measure(0, 0);
         this.mBalloonHeight = this.mMessageView.getMeasuredHeight() + (this.mVerticalTextMargin * 2) + this.mArrowHeight;
         if (this.mType == 1) {
@@ -1206,15 +960,13 @@ public class SemTipPopup {
     private void calculatePopupPosition() {
         getDisplayFrame(this.mDisplayFrame);
         if (this.mBalloonX < 0) {
-            int i = this.mArrowDirection;
-            if (i == 3 || i == 1) {
+            if (this.mArrowDirection == 3 || this.mArrowDirection == 1) {
                 this.mBalloonX = (this.mArrowPositionX + this.mArrowWidth) - (this.mBalloonWidth / 2);
             } else {
                 this.mBalloonX = (this.mArrowPositionX - this.mArrowWidth) - (this.mBalloonWidth / 2);
             }
         }
-        int i2 = this.mArrowDirection;
-        if (i2 == 3 || i2 == 1) {
+        if (this.mArrowDirection == 3 || this.mArrowDirection == 1) {
             if (this.mArrowPositionX < this.mDisplayFrame.left + this.mSideMargin + this.mHorizontalTextMargin) {
                 debugLog("Target position is too far to the left!");
                 this.mArrowPositionX = this.mDisplayFrame.left + this.mSideMargin + this.mHorizontalTextMargin;
@@ -1236,20 +988,12 @@ public class SemTipPopup {
             if (windowLocation[0] < 0) {
                 windowWidthInDexMode += windowLocation[0];
             }
-            int i3 = this.mBalloonX;
-            int i4 = this.mDisplayFrame.left;
-            int i5 = this.mSideMargin;
-            if (i3 < i4 + i5) {
+            if (this.mBalloonX < this.mDisplayFrame.left + this.mSideMargin) {
                 this.mBalloonX = this.mDisplayFrame.left + this.mSideMargin;
-            } else {
-                int i6 = this.mBalloonX;
-                int i7 = this.mBalloonWidth;
-                if (i6 + i7 > windowWidthInDexMode - i5) {
-                    int i8 = (windowWidthInDexMode - i5) - i7;
-                    this.mBalloonX = i8;
-                    if (windowLocation[0] < 0) {
-                        this.mBalloonX = i8 - windowLocation[0];
-                    }
+            } else if (this.mBalloonX + this.mBalloonWidth > windowWidthInDexMode - this.mSideMargin) {
+                this.mBalloonX = (windowWidthInDexMode - this.mSideMargin) - this.mBalloonWidth;
+                if (windowLocation[0] < 0) {
+                    this.mBalloonX -= windowLocation[0];
                 }
             }
         } else if (this.mBalloonX < this.mDisplayFrame.left + this.mSideMargin) {
@@ -1260,51 +1004,45 @@ public class SemTipPopup {
         switch (this.mArrowDirection) {
             case 0:
                 this.mBubbleX = this.mArrowPositionX - this.mBubbleWidth;
-                int i9 = this.mArrowPositionY;
-                this.mBubbleY = i9 - this.mBubbleHeight;
-                this.mBalloonY = i9 - this.mBalloonHeight;
+                this.mBubbleY = this.mArrowPositionY - this.mBubbleHeight;
+                this.mBalloonY = this.mArrowPositionY - this.mBalloonHeight;
                 break;
             case 1:
                 this.mBubbleX = this.mArrowPositionX;
-                int i10 = this.mArrowPositionY;
-                this.mBubbleY = i10 - this.mBubbleHeight;
-                this.mBalloonY = i10 - this.mBalloonHeight;
+                this.mBubbleY = this.mArrowPositionY - this.mBubbleHeight;
+                this.mBalloonY = this.mArrowPositionY - this.mBalloonHeight;
                 break;
             case 2:
                 this.mBubbleX = this.mArrowPositionX - this.mBubbleWidth;
-                int i11 = this.mArrowPositionY;
-                this.mBubbleY = i11;
-                this.mBalloonY = i11;
+                this.mBubbleY = this.mArrowPositionY;
+                this.mBalloonY = this.mArrowPositionY;
                 break;
             case 3:
                 this.mBubbleX = this.mArrowPositionX;
-                int i12 = this.mArrowPositionY;
-                this.mBubbleY = i12;
-                this.mBalloonY = i12;
+                this.mBubbleY = this.mArrowPositionY;
+                this.mBalloonY = this.mArrowPositionY;
                 break;
         }
         debugLog("QuestionPopup : " + this.mBubbleX + ", " + this.mBubbleY + ", " + this.mBubbleWidth + ", " + this.mBubbleHeight);
         debugLog("BalloonPopup : " + this.mBalloonX + ", " + this.mBalloonY + ", " + this.mBalloonWidth + ", " + this.mBalloonHeight);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void dismissBubble(boolean withAnimation) {
-        TipWindow tipWindow = this.mBubblePopup;
-        if (tipWindow != null) {
-            tipWindow.setUseDismissAnimation(withAnimation);
+        if (this.mBubblePopup != null) {
+            this.mBubblePopup.setUseDismissAnimation(withAnimation);
             this.mBubblePopup.dismiss();
         }
-        OnDismissListener onDismissListener = this.mOnDismissListener;
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss();
+        if (this.mOnDismissListener != null) {
+            this.mOnDismissListener.onDismiss();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void scheduleTimeout() {
-        Handler handler = mHandler;
-        if (handler != null) {
-            handler.removeMessages(0);
-            Handler handler2 = mHandler;
-            handler2.sendMessageDelayed(Message.obtain(handler2, 0), 7100L);
+        if (mHandler != null) {
+            mHandler.removeMessages(0);
+            mHandler.sendMessageDelayed(Message.obtain(mHandler, 0), 7100L);
         }
     }
 
@@ -1333,9 +1071,6 @@ public class SemTipPopup {
         animScale.setInterpolator(INTERPOLATOR_ELASTIC_50);
         animScale.setDuration(500L);
         animScale.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.9
-            AnonymousClass9() {
-            }
-
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
             }
@@ -1353,27 +1088,7 @@ public class SemTipPopup {
         this.mBubbleView.startAnimation(animScale);
     }
 
-    /* renamed from: com.samsung.android.widget.SemTipPopup$9 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass9 implements Animation.AnimationListener {
-        AnonymousClass9() {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            SemTipPopup.this.scheduleTimeout();
-            SemTipPopup.this.animateBounce();
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void animateBounce() {
         float pivotX = 0.0f;
         float pivotY = 0.0f;
@@ -1395,7 +1110,7 @@ public class SemTipPopup {
                 pivotY = 0.0f;
                 break;
         }
-        AnimationSet animationSet = new AnimationSet(false);
+        final AnimationSet animationSet = new AnimationSet(false);
         float f = pivotX;
         float f2 = pivotY;
         Animation anim1 = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, 0, f, 0, f2);
@@ -1407,11 +1122,6 @@ public class SemTipPopup {
         anim2.setInterpolator(INTERPOLATOR_SINE_IN_OUT_33);
         anim2.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.10
             int count = 0;
-            final /* synthetic */ AnimationSet val$animationSet;
-
-            AnonymousClass10(AnimationSet animationSet2) {
-                animationSet = animationSet2;
-            }
 
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
@@ -1428,38 +1138,13 @@ public class SemTipPopup {
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        animationSet2.addAnimation(anim1);
-        animationSet2.addAnimation(anim2);
-        animationSet2.setStartOffset(TelecomManager.VERY_SHORT_CALL_TIME_MS);
-        this.mBubbleView.startAnimation(animationSet2);
+        animationSet.addAnimation(anim1);
+        animationSet.addAnimation(anim2);
+        animationSet.setStartOffset(3000L);
+        this.mBubbleView.startAnimation(animationSet);
     }
 
-    /* renamed from: com.samsung.android.widget.SemTipPopup$10 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass10 implements Animation.AnimationListener {
-        int count = 0;
-        final /* synthetic */ AnimationSet val$animationSet;
-
-        AnonymousClass10(AnimationSet animationSet2) {
-            animationSet = animationSet2;
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-            this.count++;
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            SemTipPopup.this.debugLog("repeat count " + this.count);
-            SemTipPopup.this.mBubbleView.startAnimation(animationSet);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void animateScaleUp() {
         float deltaHintY = 0.0f;
         float pivotHintX = 0.0f;
@@ -1500,9 +1185,6 @@ public class SemTipPopup {
         animationBubble.addAnimation(animationBubbleScale);
         animationBubble.addAnimation(animationBubbleAlpha);
         animationBubble.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.11
-            AnonymousClass11() {
-            }
-
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
                 SemTipPopup.this.mBalloonPanel.setVisibility(0);
@@ -1521,37 +1203,15 @@ public class SemTipPopup {
         animateBaloonScaleUp();
     }
 
-    /* renamed from: com.samsung.android.widget.SemTipPopup$11 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass11 implements Animation.AnimationListener {
-        AnonymousClass11() {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-            SemTipPopup.this.mBalloonPanel.setVisibility(0);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            SemTipPopup.this.mBalloonBubble.setVisibility(8);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
     private void animateBaloonScaleUp() {
         float pivotPanelX = 0.0f;
         float pivotPanelY = 0.0f;
         int questionHeight = this.mResources.getDimensionPixelSize(R.dimen.sem_tip_popup_bubble_height);
-        int i = this.mBalloonHeight;
-        float panelScale = questionHeight / i;
+        float panelScale = questionHeight / this.mBalloonHeight;
         switch (this.mArrowDirection) {
             case 1:
                 pivotPanelX = this.mArrowPositionX - this.mBalloonX;
-                pivotPanelY = i;
+                pivotPanelY = this.mBalloonHeight;
                 break;
             case 2:
                 pivotPanelX = this.mArrowPositionX - this.mBalloonX;
@@ -1577,9 +1237,6 @@ public class SemTipPopup {
         animationText.setStartOffset(333L);
         animationText.setDuration(167L);
         animationText.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.12
-            AnonymousClass12() {
-            }
-
             @Override // android.view.animation.Animation.AnimationListener
             public void onAnimationStart(Animation animation) {
                 SemTipPopup.this.mMessageView.setVisibility(0);
@@ -1598,30 +1255,8 @@ public class SemTipPopup {
         this.mActionView.startAnimation(animationText);
     }
 
-    /* renamed from: com.samsung.android.widget.SemTipPopup$12 */
-    /* loaded from: classes6.dex */
-    public class AnonymousClass12 implements Animation.AnimationListener {
-        AnonymousClass12() {
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationStart(Animation animation) {
-            SemTipPopup.this.mMessageView.setVisibility(0);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationEnd(Animation animation) {
-            SemTipPopup.this.dismissBubble(false);
-        }
-
-        @Override // android.view.animation.Animation.AnimationListener
-        public void onAnimationRepeat(Animation animation) {
-        }
-    }
-
     private boolean isNavigationbarHide() {
-        Context context = this.mContext;
-        return context != null && Settings.Global.getInt(context.getContentResolver(), "navigationbar_hide_bar_enabled", 0) == 1;
+        return this.mContext != null && Settings.Global.getInt(this.mContext.getContentResolver(), "navigationbar_hide_bar_enabled", 0) == 1;
     }
 
     private int getNavagationbarHeight() {
@@ -1738,16 +1373,11 @@ public class SemTipPopup {
         this.mOnDismissListener = onDismissListener;
     }
 
-    /* loaded from: classes6.dex */
-    public static class TipWindow extends PopupWindow {
+    private static class TipWindow extends PopupWindow {
         protected boolean mIsDismissing;
         private boolean mIsUsingDismissAnimation;
         protected float mPivotX;
         protected float mPivotY;
-
-        /* synthetic */ TipWindow(View view, int i, int i2, boolean z, TipWindowIA tipWindowIA) {
-            this(view, i, i2, z);
-        }
 
         private TipWindow(View contentView, int width, int height, boolean focusable) {
             super(contentView, width, height, focusable);
@@ -1757,10 +1387,12 @@ public class SemTipPopup {
             this.mPivotY = 0.0f;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setUseDismissAnimation(boolean useAnimation) {
             this.mIsUsingDismissAnimation = useAnimation;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setPivot(float pivotX, float pivotY) {
             this.mPivotX = pivotX;
             this.mPivotY = pivotY;
@@ -1783,12 +1415,7 @@ public class SemTipPopup {
         }
     }
 
-    /* loaded from: classes6.dex */
-    public static class TipWindowBubble extends TipWindow {
-        /* synthetic */ TipWindowBubble(View view, int i, int i2, boolean z, TipWindowBubbleIA tipWindowBubbleIA) {
-            this(view, i, i2, z);
-        }
-
+    private static class TipWindowBubble extends TipWindow {
         private TipWindowBubble(View contentView, int width, int height, boolean focusable) {
             super(contentView, width, height, focusable);
         }
@@ -1805,9 +1432,6 @@ public class SemTipPopup {
             animationSet.addAnimation(animScale);
             animationSet.addAnimation(animAlpha);
             animationSet.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.TipWindowBubble.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.view.animation.Animation.AnimationListener
                 public void onAnimationStart(Animation animation) {
                     TipWindowBubble.this.mIsDismissing = true;
@@ -1824,35 +1448,9 @@ public class SemTipPopup {
             });
             getContentView().startAnimation(animationSet);
         }
-
-        /* renamed from: com.samsung.android.widget.SemTipPopup$TipWindowBubble$1 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass1 implements Animation.AnimationListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationStart(Animation animation) {
-                TipWindowBubble.this.mIsDismissing = true;
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationEnd(Animation animation) {
-                TipWindowBubble.this.dismissFinal();
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationRepeat(Animation animation) {
-            }
-        }
     }
 
-    /* loaded from: classes6.dex */
-    public static class TipWindowBalloon extends TipWindow {
-        /* synthetic */ TipWindowBalloon(View view, int i, int i2, boolean z, TipWindowBalloonIA tipWindowBalloonIA) {
-            this(view, i, i2, z);
-        }
-
+    private static class TipWindowBalloon extends TipWindow {
         private TipWindowBalloon(View contentView, int width, int height, boolean focusable) {
             super(contentView, width, height, focusable);
         }
@@ -1870,9 +1468,6 @@ public class SemTipPopup {
             animationSet.addAnimation(animAlpha);
             animationSet.addAnimation(animScale);
             animationSet.setAnimationListener(new Animation.AnimationListener() { // from class: com.samsung.android.widget.SemTipPopup.TipWindowBalloon.1
-                AnonymousClass1() {
-                }
-
                 @Override // android.view.animation.Animation.AnimationListener
                 public void onAnimationStart(Animation animation) {
                     TipWindowBalloon.this.mIsDismissing = true;
@@ -1890,27 +1485,6 @@ public class SemTipPopup {
             bubbleView.startAnimation(animationSet);
             messageView.startAnimation(animAlpha);
         }
-
-        /* renamed from: com.samsung.android.widget.SemTipPopup$TipWindowBalloon$1 */
-        /* loaded from: classes6.dex */
-        class AnonymousClass1 implements Animation.AnimationListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationStart(Animation animation) {
-                TipWindowBalloon.this.mIsDismissing = true;
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationEnd(Animation animation) {
-                TipWindowBalloon.this.dismissFinal();
-            }
-
-            @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationRepeat(Animation animation) {
-            }
-        }
     }
 
     private boolean isRTL() {
@@ -1921,6 +1495,11 @@ public class SemTipPopup {
         return this.mContext.getResources().getConfiguration().getLocales().get(0).toString();
     }
 
+    private boolean isMirroringSupportedInRTL() {
+        return (getLocale().equals("iw_IL") || getLocale().equals("he_IL")) ? false : true;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
     public void debugLog(String msg) {
         Log.d(TAG, " #### " + msg);
     }

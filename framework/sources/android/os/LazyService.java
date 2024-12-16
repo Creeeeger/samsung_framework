@@ -96,7 +96,6 @@ public class LazyService extends ILazyService.Stub {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class DefaultServiceCreator implements IServiceCreator {
         private Constructor mConstructor;
 

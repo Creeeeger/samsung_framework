@@ -1,5 +1,6 @@
 package android.graphics;
 
+import android.animation.Animator;
 import android.graphics.animation.RenderNodeAnimator;
 import android.view.NativeVectorDrawableAnimator;
 import com.android.internal.util.ArrayUtils;
@@ -18,23 +19,16 @@ public final class RenderNode {
     private RecordingCanvas mCurrentRecordingCanvas;
     public final long mNativeRenderNode;
 
-    /* loaded from: classes.dex */
     public interface AnimationHost {
         boolean isAttached();
 
-        void registerAnimatingRenderNode(RenderNode renderNode);
+        void registerAnimatingRenderNode(RenderNode renderNode, Animator animator);
 
         void registerVectorDrawableAnimator(NativeVectorDrawableAnimator nativeVectorDrawableAnimator);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface UsageHint {
-    }
-
-    /* renamed from: -$$Nest$smnGetNativeFinalizer */
-    static /* bridge */ /* synthetic */ long m1147$$Nest$smnGetNativeFinalizer() {
-        return nGetNativeFinalizer();
     }
 
     private static native void nAddAnimator(long j, long j2);
@@ -92,7 +86,8 @@ public final class RenderNode {
     @CriticalNative
     private static native int nGetLeft(long j);
 
-    private static native long nGetNativeFinalizer();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native long nGetNativeFinalizer();
 
     @CriticalNative
     private static native float nGetPivotX(long j);
@@ -185,7 +180,7 @@ public final class RenderNode {
     private static native boolean nSetAnimationMatrix(long j, long j2);
 
     @CriticalNative
-    private static native void nSetBlurRadius(long j, int i);
+    private static native boolean nSetBackdropRenderEffect(long j, long j2);
 
     @CriticalNative
     private static native boolean nSetBottom(long j, int i);
@@ -298,10 +293,8 @@ public final class RenderNode {
     @CriticalNative
     private static native boolean nStretch(long j, float f, float f2, float f3, float f4);
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class NoImagePreloadHolder {
-        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RenderNode.class.getClassLoader(), RenderNode.m1147$$Nest$smnGetNativeFinalizer());
+    private static class NoImagePreloadHolder {
+        public static final NativeAllocationRegistry sRegistry = NativeAllocationRegistry.createMalloced(RenderNode.class.getClassLoader(), RenderNode.nGetNativeFinalizer());
 
         private NoImagePreloadHolder() {
         }
@@ -312,15 +305,14 @@ public final class RenderNode {
     }
 
     private RenderNode(String name, AnimationHost animationHost) {
-        long nCreate = nCreate(name);
-        this.mNativeRenderNode = nCreate;
-        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, nCreate);
+        this.mNativeRenderNode = nCreate(name);
+        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativeRenderNode);
         this.mAnimationHost = animationHost;
     }
 
     private RenderNode(long nativePtr) {
         this.mNativeRenderNode = nativePtr;
-        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, nativePtr);
+        NoImagePreloadHolder.sRegistry.registerNativeAllocation(this, this.mNativeRenderNode);
         this.mAnimationHost = null;
     }
 
@@ -332,16 +324,28 @@ public final class RenderNode {
         return new RenderNode(nativePtr);
     }
 
-    /* loaded from: classes.dex */
     public interface PositionUpdateListener {
         void positionChanged(long j, int i, int i2, int i3, int i4);
 
         void positionLost(long j);
 
+        default void positionChanged(long frameNumber, int left, int top, int right, int bottom, int clipLeft, int clipTop, int clipRight, int clipBottom) {
+            positionChanged(frameNumber, left, top, right, bottom);
+        }
+
         static boolean callPositionChanged(WeakReference<PositionUpdateListener> weakListener, long frameNumber, int left, int top, int right, int bottom) {
             PositionUpdateListener listener = weakListener.get();
             if (listener != null) {
                 listener.positionChanged(frameNumber, left, top, right, bottom);
+                return true;
+            }
+            return false;
+        }
+
+        static boolean callPositionChanged2(WeakReference<PositionUpdateListener> weakListener, long frameNumber, int left, int top, int right, int bottom, int clipLeft, int clipTop, int clipRight, int clipBottom) {
+            PositionUpdateListener listener = weakListener.get();
+            if (listener != null) {
+                listener.positionChanged(frameNumber, left, top, right, bottom, clipLeft, clipTop, clipRight, clipBottom);
                 return true;
             }
             return false;
@@ -369,8 +373,7 @@ public final class RenderNode {
         }
     }
 
-    /* loaded from: classes.dex */
-    public static final class CompositePositionUpdateListener implements PositionUpdateListener {
+    private static final class CompositePositionUpdateListener implements PositionUpdateListener {
         private static final PositionUpdateListener[] sEmpty = new PositionUpdateListener[0];
         private final PositionUpdateListener[] mListeners;
 
@@ -390,6 +393,13 @@ public final class RenderNode {
         public void positionChanged(long frameNumber, int left, int top, int right, int bottom) {
             for (PositionUpdateListener pul : this.mListeners) {
                 pul.positionChanged(frameNumber, left, top, right, bottom);
+            }
+        }
+
+        @Override // android.graphics.RenderNode.PositionUpdateListener
+        public void positionChanged(long frameNumber, int left, int top, int right, int bottom, int clipLeft, int clipTop, int clipRight, int clipBottom) {
+            for (PositionUpdateListener pul : this.mListeners) {
+                pul.positionChanged(frameNumber, left, top, right, bottom, clipLeft, clipTop, clipRight, clipBottom);
             }
         }
 
@@ -433,9 +443,8 @@ public final class RenderNode {
         if (this.mCurrentRecordingCanvas != null) {
             throw new IllegalStateException("Recording currently in progress - missing #endRecording() call?");
         }
-        RecordingCanvas obtain = RecordingCanvas.obtain(this, width, height);
-        this.mCurrentRecordingCanvas = obtain;
-        return obtain;
+        this.mCurrentRecordingCanvas = RecordingCanvas.obtain(this, width, height);
+        return this.mCurrentRecordingCanvas;
     }
 
     public RecordingCanvas beginRecording() {
@@ -523,8 +532,8 @@ public final class RenderNode {
         return nSetProjectBackwards(this.mNativeRenderNode, shouldProject);
     }
 
-    public boolean setProjectionReceiver(boolean shouldRecieve) {
-        return nSetProjectionReceiver(this.mNativeRenderNode, shouldRecieve);
+    public boolean setProjectionReceiver(boolean shouldReceive) {
+        return nSetProjectionReceiver(this.mNativeRenderNode, shouldReceive);
     }
 
     public boolean setOutline(Outline outline) {
@@ -617,6 +626,10 @@ public final class RenderNode {
 
     public boolean setRenderEffect(RenderEffect renderEffect) {
         return nSetRenderEffect(this.mNativeRenderNode, renderEffect != null ? renderEffect.getNativeInstance() : 0L);
+    }
+
+    public boolean setBackdropRenderEffect(RenderEffect renderEffect) {
+        return nSetBackdropRenderEffect(this.mNativeRenderNode, renderEffect != null ? renderEffect.getNativeInstance() : 0L);
     }
 
     public float getAlpha() {
@@ -830,21 +843,16 @@ public final class RenderNode {
         nSetIsTextureView(this.mNativeRenderNode);
     }
 
-    public void setBlurRadius(int radius) {
-        nSetBlurRadius(this.mNativeRenderNode, radius);
-    }
-
     public void addAnimator(RenderNodeAnimator animator) {
         if (!isAttached()) {
             throw new IllegalStateException("Cannot start this animator on a detached view!");
         }
         nAddAnimator(this.mNativeRenderNode, animator.getNativeAnimator());
-        this.mAnimationHost.registerAnimatingRenderNode(this);
+        this.mAnimationHost.registerAnimatingRenderNode(this, animator);
     }
 
     public boolean isAttached() {
-        AnimationHost animationHost = this.mAnimationHost;
-        return animationHost != null && animationHost.isAttached();
+        return this.mAnimationHost != null && this.mAnimationHost.isAttached();
     }
 
     public void registerVectorDrawableAnimator(NativeVectorDrawableAnimator animatorSet) {

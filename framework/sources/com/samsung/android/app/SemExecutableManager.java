@@ -26,7 +26,6 @@ import android.os.UserManager;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
 import com.samsung.android.app.ISemExecuteManager;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.sepunion.SemUnionManager;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -82,7 +81,7 @@ public class SemExecutableManager {
             SemUnionManager um = (SemUnionManager) this.mContext.getSystemService(Context.SEP_UNION_SERVICE);
             IBinder b = um.getSemSystemService("execute");
             mService = ISemExecuteManager.Stub.asInterface(b);
-            Log.d(TAG, "getService: retry to get service impl " + mService + b);
+            Log.i(TAG, "getService: retry to get service impl " + mService + b);
         }
         return mService;
     }
@@ -101,9 +100,7 @@ public class SemExecutableManager {
 
     public List<ShortcutInfo> getShortcuts(ShortcutQuery query, UserHandle user) {
         logErrorForInvalidProfileAccess(user);
-        StringBuilder append = new StringBuilder().append("getShortcuts: ").append(mService).append(" ");
-        Context context = this.mContext;
-        Log.d(TAG, append.append(context != null ? context.getPackageName() : SemCapabilities.FEATURE_TAG_NULL).append(query).toString());
+        Log.d(TAG, "getShortcuts: " + mService + " " + (this.mContext != null ? this.mContext.getPackageName() : "null") + query);
         if (getService() == null) {
             Log.d(TAG, "getShortcuts: can not get service impl ");
             return null;
@@ -122,9 +119,7 @@ public class SemExecutableManager {
 
     public List<ShortcutInfo> getShortcuts(String queryTargetLauncherPackage, ShortcutQuery query, UserHandle user) {
         logErrorForInvalidProfileAccess(user);
-        StringBuilder append = new StringBuilder().append("getShortcuts: ").append(mService).append(" ");
-        Context context = this.mContext;
-        Log.d(TAG, append.append(context != null ? context.getPackageName() : SemCapabilities.FEATURE_TAG_NULL).append(query).toString());
+        Log.d(TAG, "getShortcuts: " + mService + " " + (this.mContext != null ? this.mContext.getPackageName() : "null") + query);
         if (getService() == null) {
             Log.d(TAG, "getShortcuts: can not get service impl ");
             return null;
@@ -282,11 +277,6 @@ public class SemExecutableManager {
         Preconditions.checkNotNull(packageName, "packageName");
         Preconditions.checkNotNull(packageName, "user");
         logErrorForInvalidProfileAccess(user);
-        String queryTargetPackage = getDefaultLauncherPackage();
-        if (queryTargetPackage == null) {
-            this.mContext.getPackageName();
-            Log.d(TAG, "getShortcuts: can not launcher name ");
-        }
         try {
             ApplicationInfo ai = mService.getApplicationInfo(this.mContext.getPackageName(), packageName, flags, user);
             if (ai == null) {
@@ -328,7 +318,6 @@ public class SemExecutableManager {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ShortcutQuery {
 
         @Deprecated
@@ -354,7 +343,6 @@ public class SemExecutableManager {
         List<String> mShortcutIds;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes5.dex */
         public @interface QueryFlags {
         }
 

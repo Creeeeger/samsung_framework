@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import org.json.JSONException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 class DatabaseCryptoAdapter {
     private static final String TAG = "[KnoxAnalytics] " + DatabaseCryptoAdapter.class.getSimpleName();
     private final CryptoHandler mCryptoHandler;
@@ -59,15 +59,14 @@ class DatabaseCryptoAdapter {
     }
 
     public Bundle performCompressedEventsTransaction(Bundle extras) {
-        String str = TAG;
-        Log.d(str, "performCompressedEventsTransaction()");
+        Log.d(TAG, "performCompressedEventsTransaction()");
         if (extras == null || extras.isEmpty()) {
-            Log.d(str, "performCompressedEventsTransaction(): Null argument. Aborting");
+            Log.d(TAG, "performCompressedEventsTransaction(): Null argument. Aborting");
             return null;
         }
         ContentValues cv = (ContentValues) extras.getParcelable(Contract.CompressedEvents.Keys.CV);
         if (cv == null || cv.size() <= 0) {
-            Log.d(str, "performCompressedEventsTransaction(): Null argument. Aborting");
+            Log.d(TAG, "performCompressedEventsTransaction(): Null argument. Aborting");
             return null;
         }
         byte[] encriptedContent = this.mCryptoHandler.encryptBlob(cv.getAsByteArray("content"));
@@ -91,12 +90,11 @@ class DatabaseCryptoAdapter {
     }
 
     public long addBulkEvents(Bundle extra) {
-        String str = TAG;
-        Log.d(str, "addBulkEvents()");
+        Log.d(TAG, "addBulkEvents()");
         long id = extra.getLong("id");
         List<String> eventList = extra.getStringArrayList(Contract.Events.Extra.EVENTS_LIST);
         if (eventList == null || eventList.isEmpty()) {
-            Log.d(str, "addBulkEvents(): eventList is invalid");
+            Log.d(TAG, "addBulkEvents(): eventList is invalid");
             return -1L;
         }
         byte[] encEvents = this.mCryptoHandler.encryptBulk(eventList);
@@ -139,15 +137,14 @@ class DatabaseCryptoAdapter {
     }
 
     private Cursor createMergedCursor(Integer requestedSize) {
-        String str = TAG;
-        Log.d(str, "createMergedCursor(" + requestedSize + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "createMergedCursor(" + requestedSize + NavigationBarInflaterView.KEY_CODE_END);
         if (requestedSize == null) {
             return createCursorWithAllEvents();
         }
         int compressedChunkLimit = checkCompressedChunksLimit(requestedSize.intValue());
         int compressedEventsCount = getTotalCompressedEvents(compressedChunkLimit);
         int numberOfPlainEvents = getTotalPlainEvents(requestedSize.intValue(), compressedEventsCount);
-        Log.d(str, "createCursorWith: " + compressedEventsCount + " compressed events and " + numberOfPlainEvents + " plain events");
+        Log.d(TAG, "createCursorWith: " + compressedEventsCount + " compressed events and " + numberOfPlainEvents + " plain events");
         if (numberOfPlainEvents == 0) {
             return createCursorOnlyWithCompressedEvents(compressedChunkLimit);
         }
@@ -252,8 +249,7 @@ class DatabaseCryptoAdapter {
     }
 
     private long deleteMergedChunk(long size, long numberOfEvents) {
-        String str = TAG;
-        Log.d(str, "deleteMergedChunk(" + size + ", " + numberOfEvents + NavigationBarInflaterView.KEY_CODE_END);
+        Log.d(TAG, "deleteMergedChunk(" + size + ", " + numberOfEvents + NavigationBarInflaterView.KEY_CODE_END);
         long compressedChunkCountValue = this.mDbHelper.getCompressedEventCountValue();
         if (compressedChunkCountValue <= 0) {
             return this.mDbHelper.deleteEventChunk(size, 1);
@@ -267,9 +263,9 @@ class DatabaseCryptoAdapter {
                 return size;
             }
             long totalDeleted = size - remaining;
-            return totalDeleted + this.mDbHelper.deleteEventChunk(remaining, 1);
+            return this.mDbHelper.deleteEventChunk(remaining, 1) + totalDeleted;
         }
-        Log.e(str, "deleteMergedChunk(): Some error occurred when deleting.");
+        Log.e(TAG, "deleteMergedChunk(): Some error occurred when deleting.");
         return 0L;
     }
 
@@ -415,10 +411,9 @@ class DatabaseCryptoAdapter {
     }
 
     public Cursor getCompressedEvents(Integer limit) {
-        String str = TAG;
-        Log.d(str, "getCompressedEvents()");
+        Log.d(TAG, "getCompressedEvents()");
         if (this.mDbHelper.getCompressedEventCountValue() <= 0) {
-            Log.d(str, "There is no compressed data to be queried");
+            Log.d(TAG, "There is no compressed data to be queried");
             return null;
         }
         List<ZipResult> zips = new ArrayList<>();

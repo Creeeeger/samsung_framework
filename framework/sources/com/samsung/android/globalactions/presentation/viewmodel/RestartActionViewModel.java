@@ -17,7 +17,7 @@ import com.samsung.android.globalactions.util.ToastController;
 import com.samsung.android.globalactions.util.UsageStatsWrapper;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class RestartActionViewModel implements ActionViewModel {
     private final ConditionChecker mConditionChecker;
     private String mExtraInfo;
@@ -63,6 +63,7 @@ public class RestartActionViewModel implements ActionViewModel {
     public void onPress() {
         boolean needSecureConfirm;
         int res;
+        int res2;
         List<ActionInteractionStrategy> strategies = this.mFeatureFactory.createActionInteractionStrategies(this.mInfo.getName());
         for (ActionInteractionStrategy strategy : strategies) {
             if (strategy.onPressRestartAction()) {
@@ -78,9 +79,18 @@ public class RestartActionViewModel implements ActionViewModel {
         }
         if (this.mConditionChecker.isEnabled(SystemConditions.IS_FMM_LOCKED)) {
             if (this.mConditionChecker.isEnabled(SystemConditions.IS_TABLET_DEVICE)) {
-                res = R.string.globalactions_unable_restart_msg_fmm_tablet;
+                res2 = R.string.globalactions_unable_restart_msg_fmm_tablet;
             } else {
-                res = R.string.globalactions_unable_restart_msg_fmm;
+                res2 = R.string.globalactions_unable_restart_msg_fmm;
+            }
+            this.mToastController.showToast(this.mResourcesWrapper.getString(res2), 1);
+            return;
+        }
+        if (this.mConditionChecker.isEnabled(SystemConditions.IS_SIM_LOCK)) {
+            if (this.mConditionChecker.isEnabled(SystemConditions.IS_TABLET_DEVICE)) {
+                res = R.string.globalactions_unable_restart_msg_sim_card_locked_tablet;
+            } else {
+                res = R.string.globalactions_unable_restart_msg_sim_card_locked;
             }
             this.mToastController.showToast(this.mResourcesWrapper.getString(res), 1);
             return;
@@ -157,8 +167,7 @@ public class RestartActionViewModel implements ActionViewModel {
         this.mIsSIMLocked = this.mConditionChecker.isEnabled(SystemConditions.IS_SIM_LOCK);
         this.mIsSecureKeyguard = this.mConditionChecker.isEnabled(SystemConditions.IS_SECURE_KEYGUARD);
         this.mIsLockNetworkAndSecurity = this.mConditionChecker.isEnabled(SystemConditions.IS_LOCK_NETWORK_AND_SECURITY);
-        boolean isEnabled = this.mConditionChecker.isEnabled(SystemConditions.IS_ENCRYPTION_STATUS_ACTIVE);
-        this.mIsEncyptionStatusActive = isEnabled;
-        return !this.mIsRMMLocked && !this.mIsSIMLocked && this.mIsSecureKeyguard && this.mIsLockNetworkAndSecurity && isEnabled;
+        this.mIsEncyptionStatusActive = this.mConditionChecker.isEnabled(SystemConditions.IS_ENCRYPTION_STATUS_ACTIVE);
+        return !this.mIsRMMLocked && !this.mIsSIMLocked && this.mIsSecureKeyguard && this.mIsLockNetworkAndSecurity && this.mIsEncyptionStatusActive;
     }
 }

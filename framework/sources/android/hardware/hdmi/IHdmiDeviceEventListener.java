@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IHdmiDeviceEventListener extends IInterface {
     void onStatusChanged(HdmiDeviceInfo hdmiDeviceInfo, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IHdmiDeviceEventListener {
         @Override // android.hardware.hdmi.IHdmiDeviceEventListener
         public void onStatusChanged(HdmiDeviceInfo deviceInfo, int status) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IHdmiDeviceEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IHdmiDeviceEventListener {
         public static final String DESCRIPTOR = "android.hardware.hdmi.IHdmiDeviceEventListener";
         static final int TRANSACTION_onStatusChanged = 1;
@@ -66,26 +64,23 @@ public interface IHdmiDeviceEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    HdmiDeviceInfo _arg0 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStatusChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            HdmiDeviceInfo _arg0 = (HdmiDeviceInfo) data.readTypedObject(HdmiDeviceInfo.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStatusChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IHdmiDeviceEventListener {
+        private static class Proxy implements IHdmiDeviceEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

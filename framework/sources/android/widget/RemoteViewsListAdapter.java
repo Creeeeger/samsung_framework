@@ -42,18 +42,15 @@ public class RemoteViewsListAdapter extends BaseAdapter {
                 this.mViewTypes.add(Integer.valueOf(rv.getLayoutId()));
             }
         }
-        int size = this.mViewTypes.size();
-        int i = this.mViewTypeCount;
-        if (size > i || i < 1) {
+        if (this.mViewTypes.size() > this.mViewTypeCount || this.mViewTypeCount < 1) {
             throw new RuntimeException("Invalid view type count -- view type count must be >= 1and must be as large as the total number of distinct view types");
         }
     }
 
     @Override // android.widget.Adapter
     public int getCount() {
-        ArrayList<RemoteViews> arrayList = this.mRemoteViewsList;
-        if (arrayList != null) {
-            return arrayList.size();
+        if (this.mRemoteViewsList != null) {
+            return this.mRemoteViewsList.size();
         }
         return 0;
     }

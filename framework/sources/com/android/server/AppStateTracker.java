@@ -4,7 +4,6 @@ package com.android.server;
 public interface AppStateTracker {
     public static final String TAG = "AppStateTracker";
 
-    /* loaded from: classes5.dex */
     public interface BackgroundRestrictedAppListener {
         void updateBackgroundRestrictedForUidPackage(int i, String str, boolean z);
     }

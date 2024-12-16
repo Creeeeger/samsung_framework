@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class VcnManager {
     public static final int VCN_ERROR_CODE_CONFIG_ERROR = 1;
     public static final int VCN_ERROR_CODE_INTERNAL_ERROR = 0;
@@ -36,23 +36,25 @@ public class VcnManager {
     private static final String TAG = VcnManager.class.getSimpleName();
     public static final String VCN_NETWORK_SELECTION_WIFI_ENTRY_RSSI_THRESHOLD_KEY = "vcn_network_selection_wifi_entry_rssi_threshold";
     public static final String VCN_NETWORK_SELECTION_WIFI_EXIT_RSSI_THRESHOLD_KEY = "vcn_network_selection_wifi_exit_rssi_threshold";
+    public static final String VCN_NETWORK_SELECTION_POLL_IPSEC_STATE_INTERVAL_SECONDS_KEY = "vcn_network_selection_poll_ipsec_state_interval_seconds";
+    public static final String VCN_NETWORK_SELECTION_IPSEC_PACKET_LOSS_PERCENT_THRESHOLD_KEY = "vcn_network_selection_ipsec_packet_loss_percent_threshold";
+    public static final String VCN_NETWORK_SELECTION_MAX_SEQ_NUM_INCREASE_PER_SECOND_KEY = "vcn_network_selection_max_seq_num_increase_per_second";
+    public static final String VCN_NETWORK_SELECTION_PENALTY_TIMEOUT_MINUTES_LIST_KEY = "vcn_network_selection_penalty_timeout_minutes_list";
     public static final String VCN_RESTRICTED_TRANSPORTS_INT_ARRAY_KEY = "vcn_restricted_transports";
+    public static final String VCN_SAFE_MODE_TIMEOUT_SECONDS_KEY = "vcn_safe_mode_timeout_seconds_key";
     public static final String VCN_TUNNEL_AGGREGATION_SA_COUNT_MAX_KEY = "vcn_tunnel_aggregation_sa_count_max";
-    public static final String[] VCN_RELATED_CARRIER_CONFIG_KEYS = {VCN_NETWORK_SELECTION_WIFI_ENTRY_RSSI_THRESHOLD_KEY, VCN_NETWORK_SELECTION_WIFI_EXIT_RSSI_THRESHOLD_KEY, VCN_RESTRICTED_TRANSPORTS_INT_ARRAY_KEY, VCN_TUNNEL_AGGREGATION_SA_COUNT_MAX_KEY};
+    public static final String[] VCN_RELATED_CARRIER_CONFIG_KEYS = {VCN_NETWORK_SELECTION_WIFI_ENTRY_RSSI_THRESHOLD_KEY, VCN_NETWORK_SELECTION_WIFI_EXIT_RSSI_THRESHOLD_KEY, VCN_NETWORK_SELECTION_POLL_IPSEC_STATE_INTERVAL_SECONDS_KEY, VCN_NETWORK_SELECTION_IPSEC_PACKET_LOSS_PERCENT_THRESHOLD_KEY, VCN_NETWORK_SELECTION_MAX_SEQ_NUM_INCREASE_PER_SECOND_KEY, VCN_NETWORK_SELECTION_PENALTY_TIMEOUT_MINUTES_LIST_KEY, VCN_RESTRICTED_TRANSPORTS_INT_ARRAY_KEY, VCN_SAFE_MODE_TIMEOUT_SECONDS_KEY, VCN_TUNNEL_AGGREGATION_SA_COUNT_MAX_KEY};
     private static final Map<VcnNetworkPolicyChangeListener, VcnUnderlyingNetworkPolicyListenerBinder> REGISTERED_POLICY_LISTENERS = new ConcurrentHashMap();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcnErrorCode {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public interface VcnNetworkPolicyChangeListener {
         void onPolicyChanged();
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class VcnStatusCallback {
         private VcnStatusCallbackBinder mCbBinder;
 
@@ -62,11 +64,9 @@ public class VcnManager {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface VcnStatusCode {
     }
 
-    /* loaded from: classes2.dex */
     public interface VcnUnderlyingNetworkPolicyListener extends VcnNetworkPolicyChangeListener {
     }
 
@@ -202,14 +202,10 @@ public class VcnManager {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public static class VcnUnderlyingNetworkPolicyListenerBinder extends IVcnUnderlyingNetworkPolicyListener.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class VcnUnderlyingNetworkPolicyListenerBinder extends IVcnUnderlyingNetworkPolicyListener.Stub {
         private final Executor mExecutor;
         private final VcnNetworkPolicyChangeListener mListener;
-
-        /* synthetic */ VcnUnderlyingNetworkPolicyListenerBinder(Executor executor, VcnNetworkPolicyChangeListener vcnNetworkPolicyChangeListener, VcnUnderlyingNetworkPolicyListenerBinderIA vcnUnderlyingNetworkPolicyListenerBinderIA) {
-            this(executor, vcnNetworkPolicyChangeListener);
-        }
 
         private VcnUnderlyingNetworkPolicyListenerBinder(Executor executor, VcnNetworkPolicyChangeListener listener) {
             this.mExecutor = executor;
@@ -226,10 +222,12 @@ public class VcnManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPolicyChanged$0() {
             this.mListener.onPolicyChanged();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onPolicyChanged$1() throws Exception {
             this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnUnderlyingNetworkPolicyListenerBinder$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
@@ -240,7 +238,6 @@ public class VcnManager {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class VcnStatusCallbackBinder extends IVcnStatusCallback.Stub {
         private final VcnStatusCallback mCallback;
         private final Executor mExecutor;
@@ -260,12 +257,14 @@ public class VcnManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVcnStatusChanged$0(int statusCode) {
             this.mCallback.onStatusChanged(statusCode);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onVcnStatusChanged$1(final int statusCode) throws Exception {
-            this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda0
+            this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
                     VcnManager.VcnStatusCallbackBinder.this.lambda$onVcnStatusChanged$0(statusCode);
@@ -276,7 +275,7 @@ public class VcnManager {
         @Override // android.net.vcn.IVcnStatusCallback
         public void onGatewayConnectionError(final String gatewayConnectionName, final int errorCode, String exceptionClass, String exceptionMessage) {
             final Throwable cause = createThrowableByClassName(exceptionClass, exceptionMessage);
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda3
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda1
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
                     VcnManager.VcnStatusCallbackBinder.this.lambda$onGatewayConnectionError$3(gatewayConnectionName, errorCode, cause);
@@ -284,8 +283,9 @@ public class VcnManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGatewayConnectionError$3(final String gatewayConnectionName, final int errorCode, final Throwable cause) throws Exception {
-            this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda1
+            this.mExecutor.execute(new Runnable() { // from class: android.net.vcn.VcnManager$VcnStatusCallbackBinder$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     VcnManager.VcnStatusCallbackBinder.this.lambda$onGatewayConnectionError$2(gatewayConnectionName, errorCode, cause);
@@ -293,6 +293,7 @@ public class VcnManager {
             });
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onGatewayConnectionError$2(String gatewayConnectionName, int errorCode, Throwable cause) {
             this.mCallback.onGatewayConnectionError(gatewayConnectionName, errorCode, cause);
         }

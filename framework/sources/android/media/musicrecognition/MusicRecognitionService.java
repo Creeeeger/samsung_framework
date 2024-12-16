@@ -24,25 +24,16 @@ public abstract class MusicRecognitionService extends Service {
     private static final String TAG = MusicRecognitionService.class.getSimpleName();
     private Handler mHandler;
     private final IMusicRecognitionService mServiceInterface = new IMusicRecognitionService.Stub() { // from class: android.media.musicrecognition.MusicRecognitionService.1
-        AnonymousClass1() {
-        }
-
         @Override // android.media.musicrecognition.IMusicRecognitionService
-        public void onAudioStreamStarted(ParcelFileDescriptor fd, AudioFormat audioFormat, IMusicRecognitionServiceCallback callback) {
+        public void onAudioStreamStarted(ParcelFileDescriptor fd, AudioFormat audioFormat, final IMusicRecognitionServiceCallback callback) {
             Handler handler = MusicRecognitionService.this.mHandler;
             final MusicRecognitionService musicRecognitionService = MusicRecognitionService.this;
             handler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.musicrecognition.MusicRecognitionService$1$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.function.TriConsumer
                 public final void accept(Object obj, Object obj2, Object obj3) {
-                    MusicRecognitionService.this.onRecognize((ParcelFileDescriptor) obj, (AudioFormat) obj2, (MusicRecognitionService.AnonymousClass1.C00041) obj3);
+                    MusicRecognitionService.this.onRecognize((ParcelFileDescriptor) obj, (AudioFormat) obj2, (MusicRecognitionService.AnonymousClass1.C00051) obj3);
                 }
             }, fd, audioFormat, new Callback() { // from class: android.media.musicrecognition.MusicRecognitionService.1.1
-                final /* synthetic */ IMusicRecognitionServiceCallback val$callback;
-
-                C00041(IMusicRecognitionServiceCallback callback2) {
-                    callback = callback2;
-                }
-
                 @Override // android.media.musicrecognition.MusicRecognitionService.Callback
                 public void onRecognitionSucceeded(MediaMetadata result, Bundle extras) {
                     try {
@@ -61,34 +52,6 @@ public abstract class MusicRecognitionService extends Service {
                     }
                 }
             }));
-        }
-
-        /* renamed from: android.media.musicrecognition.MusicRecognitionService$1$1 */
-        /* loaded from: classes2.dex */
-        class C00041 implements Callback {
-            final /* synthetic */ IMusicRecognitionServiceCallback val$callback;
-
-            C00041(IMusicRecognitionServiceCallback callback2) {
-                callback = callback2;
-            }
-
-            @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-            public void onRecognitionSucceeded(MediaMetadata result, Bundle extras) {
-                try {
-                    callback.onRecognitionSucceeded(result, extras);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-            public void onRecognitionFailed(int failureCode) {
-                try {
-                    callback.onRecognitionFailed(failureCode);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
         }
 
         @Override // android.media.musicrecognition.IMusicRecognitionService
@@ -98,7 +61,6 @@ public abstract class MusicRecognitionService extends Service {
         }
     };
 
-    /* loaded from: classes2.dex */
     public interface Callback {
         void onRecognitionFailed(int i);
 
@@ -106,84 +68,6 @@ public abstract class MusicRecognitionService extends Service {
     }
 
     public abstract void onRecognize(ParcelFileDescriptor parcelFileDescriptor, AudioFormat audioFormat, Callback callback);
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.musicrecognition.MusicRecognitionService$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IMusicRecognitionService.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.musicrecognition.IMusicRecognitionService
-        public void onAudioStreamStarted(ParcelFileDescriptor fd, AudioFormat audioFormat, IMusicRecognitionServiceCallback callback2) {
-            Handler handler = MusicRecognitionService.this.mHandler;
-            final MusicRecognitionService musicRecognitionService = MusicRecognitionService.this;
-            handler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: android.media.musicrecognition.MusicRecognitionService$1$$ExternalSyntheticLambda0
-                @Override // com.android.internal.util.function.TriConsumer
-                public final void accept(Object obj, Object obj2, Object obj3) {
-                    MusicRecognitionService.this.onRecognize((ParcelFileDescriptor) obj, (AudioFormat) obj2, (MusicRecognitionService.AnonymousClass1.C00041) obj3);
-                }
-            }, fd, audioFormat, new Callback() { // from class: android.media.musicrecognition.MusicRecognitionService.1.1
-                final /* synthetic */ IMusicRecognitionServiceCallback val$callback;
-
-                C00041(IMusicRecognitionServiceCallback callback22) {
-                    callback = callback22;
-                }
-
-                @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-                public void onRecognitionSucceeded(MediaMetadata result, Bundle extras) {
-                    try {
-                        callback.onRecognitionSucceeded(result, extras);
-                    } catch (RemoteException e) {
-                        throw e.rethrowFromSystemServer();
-                    }
-                }
-
-                @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-                public void onRecognitionFailed(int failureCode) {
-                    try {
-                        callback.onRecognitionFailed(failureCode);
-                    } catch (RemoteException e) {
-                        throw e.rethrowFromSystemServer();
-                    }
-                }
-            }));
-        }
-
-        /* renamed from: android.media.musicrecognition.MusicRecognitionService$1$1 */
-        /* loaded from: classes2.dex */
-        class C00041 implements Callback {
-            final /* synthetic */ IMusicRecognitionServiceCallback val$callback;
-
-            C00041(IMusicRecognitionServiceCallback callback22) {
-                callback = callback22;
-            }
-
-            @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-            public void onRecognitionSucceeded(MediaMetadata result, Bundle extras) {
-                try {
-                    callback.onRecognitionSucceeded(result, extras);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-
-            @Override // android.media.musicrecognition.MusicRecognitionService.Callback
-            public void onRecognitionFailed(int failureCode) {
-                try {
-                    callback.onRecognitionFailed(failureCode);
-                } catch (RemoteException e) {
-                    throw e.rethrowFromSystemServer();
-                }
-            }
-        }
-
-        @Override // android.media.musicrecognition.IMusicRecognitionService
-        public void getAttributionTag(IMusicRecognitionAttributionTagCallback callback) throws RemoteException {
-            String tag = MusicRecognitionService.this.getAttributionTag();
-            callback.onAttributionTag(tag);
-        }
-    }
 
     @Override // android.app.Service
     public void onCreate() {

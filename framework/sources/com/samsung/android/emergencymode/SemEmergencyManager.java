@@ -8,19 +8,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.telecom.PhoneAccount;
 import com.samsung.android.emergencymode.IEmergencyManager;
 import com.samsung.android.feature.SemFloatingFeature;
-import com.samsung.android.rune.CoreRune;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEmergencyManager {
     private static boolean EMERGENCY_FEATURES_SUPPORTED = false;
     private static final boolean SERVICE_DBG = false;
@@ -34,9 +31,6 @@ public class SemEmergencyManager {
     private Context mContext;
     private final Handler mHandler;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.samsung.android.emergencymode.SemEmergencyManager.1
-        AnonymousClass1() {
-        }
-
         @Override // android.content.BroadcastReceiver
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -76,6 +70,7 @@ public class SemEmergencyManager {
     private static boolean printBootAnimFlag = true;
     private static final Object mLock = new Object();
 
+    @Deprecated
     public static SemEmergencyManager getInstance(Context context) {
         SemEmergencyManager semEmergencyManager;
         if (context == null) {
@@ -147,10 +142,9 @@ public class SemEmergencyManager {
             return;
         }
         try {
-            IEmergencyManager iEmergencyManager = mService;
-            if (iEmergencyManager == null) {
+            if (mService == null) {
                 mService = IEmergencyManager.Stub.asInterface(ServiceManager.getService(SemEmergencyConstants.SERVICE_NAME));
-            } else if (!iEmergencyManager.asBinder().isBinderAlive()) {
+            } else if (!mService.asBinder().isBinderAlive()) {
                 Elog.d(TAG, "mService is not valid so retieve the service again.");
                 mService = IEmergencyManager.Stub.asInterface(ServiceManager.getService(SemEmergencyConstants.SERVICE_NAME));
             }
@@ -163,7 +157,7 @@ public class SemEmergencyManager {
         mSupport_UPSM = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_ULTRA_POWER_SAVING");
         mSupport_EM = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_SAFETYCARE");
         mSupport_BCM = false;
-        EMERGENCY_FEATURES_SUPPORTED = CoreRune.EM_SUPPORTED || mSupport_BCM;
+        EMERGENCY_FEATURES_SUPPORTED = mSupport_BCM;
         mIsLoadedFeatures = true;
     }
 
@@ -172,47 +166,6 @@ public class SemEmergencyManager {
             loadFloatingFeatures();
         }
         return EMERGENCY_FEATURES_SUPPORTED;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.emergencymode.SemEmergencyManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action == null) {
-                return;
-            }
-            Elog.d(SemEmergencyManager.TAG, "onReceive : " + intent);
-            if (action.equals(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER) || action.equals(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER_OLD)) {
-                boolean enabled = intent.getBooleanExtra("enabled", false);
-                int flag = intent.getIntExtra(SemEmergencyConstants.EXTRA_EMERGENCY_START_SERVICE_FLAG, -1);
-                boolean skipdialog = intent.getBooleanExtra(SemEmergencyConstants.EXTRA_EMERGENCY_START_SERVICE_SKIPDIALOG, false);
-                if (flag != -1) {
-                    if ((flag == 2048 && !SemEmergencyManager.mSupport_BCM) || ((flag == 512 || flag == 1024) && !SemEmergencyManager.mSupport_UPSM)) {
-                        Elog.d(SemEmergencyManager.TAG, "onReceive : trying to ON BCM|UPSM while BCM|UPMS not supported in this model. Flag = " + flag);
-                        return;
-                    } else {
-                        SemEmergencyManager.this.triggerEmergencyMode(enabled, flag, skipdialog, intent);
-                        return;
-                    }
-                }
-                return;
-            }
-            if (action.equals("com.nttdocomo.android.epsmodecontrol.action.CHANGE_MODE")) {
-                boolean enabled2 = (SemEmergencyManager.isEmergencyMode(SemEmergencyManager.this.mContext) || SemEmergencyManager.isMinimalBatteryUseMode(SemEmergencyManager.this.mContext)) ? false : true;
-                int flag2 = 16;
-                int mode = SemEmergencyManager.this.getModeType();
-                if (mode == 3 || mode == 1) {
-                    flag2 = 512;
-                }
-                SemEmergencyManager.this.triggerEmergencyMode(enabled2, flag2, false, intent);
-            }
-        }
     }
 
     public void readyEmergencyMode() {
@@ -289,6 +242,7 @@ public class SemEmergencyManager {
         this.mContext.unregisterReceiver(this.mReceiver);
     }
 
+    @Deprecated
     public static boolean isEmergencyMode(Context context) {
         if (!mIsLoadedFeatures) {
             loadFloatingFeatures();
@@ -333,13 +287,7 @@ public class SemEmergencyManager {
         return mSupport_BCM && Settings.System.getInt(context.getContentResolver(), "battery_conserving_mode", 0) == 1;
     }
 
-    public static boolean isEmergencyModeSupported() {
-        if (!mIsLoadedFeatures) {
-            loadFloatingFeatures();
-        }
-        return mSupport_EM;
-    }
-
+    @Deprecated
     public static boolean isUltraPowerSavingModeSupported() {
         if (!mIsLoadedFeatures) {
             loadFloatingFeatures();
@@ -367,11 +315,6 @@ public class SemEmergencyManager {
         return mSupport_BCM;
     }
 
-    public static boolean isGrayScreenSupported() {
-        Elog.d(TAG, "[Temporary Change]support MDNIE [true]  AMOLED display [true]  isGrayScreenSupported [" + ((1 == 0 || 1 == 0) ? false : true) + NavigationBarInflaterView.SIZE_MOD_END);
-        return (1 == 0 || 1 == 0) ? false : true;
-    }
-
     public boolean isEmergencyMode() {
         if (!EMERGENCY_FEATURES_SUPPORTED) {
             return false;
@@ -384,35 +327,14 @@ public class SemEmergencyManager {
             return -1;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return -1;
         }
         try {
-            return iEmergencyManager.getEmergencyState();
+            return mService.getEmergencyState();
         } catch (Exception e) {
             Elog.d(TAG, "getEmergencyState failed e : " + e);
             return -1;
-        }
-    }
-
-    public boolean checkValidPackage(String pkgName, String actName, int allowFlag) {
-        if (!EMERGENCY_FEATURES_SUPPORTED) {
-            return false;
-        }
-        if (!isEmergencyMode(this.mContext)) {
-            return true;
-        }
-        ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
-            return true;
-        }
-        try {
-            return iEmergencyManager.checkValidPackage(pkgName, actName, allowFlag);
-        } catch (Exception e) {
-            Elog.d(TAG, "checkValidPackage failed e : " + e);
-            return true;
         }
     }
 
@@ -424,12 +346,11 @@ public class SemEmergencyManager {
             return true;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return true;
         }
         try {
-            return iEmergencyManager.checkValidIntentAction(pkgName, actName);
+            return mService.checkValidIntentAction(pkgName, actName);
         } catch (Exception e) {
             Elog.d(TAG, "checkValidIntentAction failed e : " + e);
             return true;
@@ -441,12 +362,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.checkInvalidProcess(pkgName);
+            return mService.checkInvalidProcess(pkgName);
         } catch (Exception e) {
             Elog.d(TAG, "checkInvalidProcess failed e : " + e);
             return false;
@@ -458,12 +378,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.checkInvalidBroadcast(pkgName, action);
+            return mService.checkInvalidBroadcast(pkgName, action);
         } catch (Exception e) {
             Elog.d(TAG, "checkInvalidBroadcast failed e : " + e);
             return false;
@@ -475,12 +394,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.needMobileDataBlock();
+            return mService.needMobileDataBlock();
         } catch (Exception e) {
             Elog.d(TAG, "needMobileDataBlock failed e : " + e);
             return false;
@@ -492,12 +410,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.isScreenOn();
+            return mService.isScreenOn();
         } catch (Exception e) {
             Elog.d(TAG, "isScreenOn failed e : " + e);
             return false;
@@ -509,12 +426,11 @@ public class SemEmergencyManager {
             return;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return;
         }
         try {
-            iEmergencyManager.setUserPackageBlocked(enabled);
+            mService.setUserPackageBlocked(enabled);
         } catch (Exception e) {
             Elog.d(TAG, "setUserPackageBlocked failed e : " + e);
         }
@@ -525,12 +441,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.isUserPackageBlocked();
+            return mService.isUserPackageBlocked();
         } catch (Exception e) {
             Elog.d(TAG, "isUserPackageBlocked failed e : " + e);
             return false;
@@ -542,12 +457,11 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.isModifying();
+            return mService.isModifying();
         } catch (Exception e) {
             Elog.d(TAG, "isModifying failed e : " + e);
             return false;
@@ -587,12 +501,14 @@ public class SemEmergencyManager {
         return result;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void triggerEmergencyMode(boolean enabled, int flag, boolean skipdialog, Intent forwardedIntent) {
         ensureServiceConnected();
         startService(SemEmergencyConstants.EMERGENCY_START_SERVICE_BY_ORDER, enabled, flag, skipdialog, forwardedIntent);
         Elog.d(TAG, "req trigger, start Service");
     }
 
+    @Deprecated
     public boolean checkModeType(int type) {
         if (type == 3 || type == 1) {
             return isMinimalBatteryUseMode(this.mContext);
@@ -601,59 +517,14 @@ public class SemEmergencyManager {
             return false;
         }
         ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
+        if (mService == null) {
             return false;
         }
         try {
-            return iEmergencyManager.checkModeType(type);
+            return mService.checkModeType(type);
         } catch (Exception e) {
             Elog.d(TAG, "checkModeType failed e : " + e);
             return false;
-        }
-    }
-
-    public void setLocationProviderEnabled(boolean enable) {
-        if (!EMERGENCY_FEATURES_SUPPORTED) {
-            return;
-        }
-        ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
-            return;
-        }
-        try {
-            iEmergencyManager.setLocationProviderEnabled(enable);
-        } catch (Exception e) {
-            Elog.d(TAG, "setLocationProviderEnabled failed e : " + e);
-        }
-    }
-
-    public boolean addAppToLauncher(String pkgName, boolean enabled) {
-        ensureServiceConnected();
-        IEmergencyManager iEmergencyManager = mService;
-        if (iEmergencyManager == null) {
-            return false;
-        }
-        try {
-            return iEmergencyManager.addAppToLauncher(pkgName, enabled);
-        } catch (Exception e) {
-            Elog.d(TAG, "addAppToLauncher failed e : " + e);
-            return false;
-        }
-    }
-
-    public int makePrivilegedCall(String number) {
-        try {
-            Uri callUri = Uri.fromParts(PhoneAccount.SCHEME_TEL, number, null);
-            Intent callIntent = new Intent(Intent.ACTION_CALL_PRIVILEGED, callUri);
-            callIntent.setFlags(268435456);
-            this.mContext.startActivity(callIntent);
-            Elog.d(TAG, "req call, success.");
-            return 1;
-        } catch (Exception e) {
-            Elog.d(TAG, "req call, unknown Err : " + e);
-            return -9;
         }
     }
 

@@ -34,9 +34,8 @@ public class ForceShowNavBarSettingsObserver extends ContentObserver {
 
     @Override // android.database.ContentObserver
     public void onChange(boolean selfChange, Collection<Uri> uris, int flags, int userId) {
-        Runnable runnable;
-        if (userId == ActivityManager.getCurrentUser() && (runnable = this.mOnChangeRunnable) != null) {
-            runnable.run();
+        if (userId == ActivityManager.getCurrentUser() && this.mOnChangeRunnable != null) {
+            this.mOnChangeRunnable.run();
         }
     }
 

@@ -1,8 +1,11 @@
 package android.os;
 
+import java.util.concurrent.Executor;
+
 /* loaded from: classes3.dex */
 public class HandlerThread extends Thread {
-    private Handler mHandler;
+    private volatile Executor mExecutor;
+    private volatile Handler mHandler;
     Looper mLooper;
     int mPriority;
     int mTid;
@@ -11,12 +14,21 @@ public class HandlerThread extends Thread {
         super(name);
         this.mTid = -1;
         this.mPriority = 0;
+        onCreated();
     }
 
     public HandlerThread(String name, int priority) {
         super(name);
         this.mTid = -1;
         this.mPriority = priority;
+        onCreated();
+    }
+
+    protected void onCreated() {
+    }
+
+    protected void onCreated$ravenwood() {
+        setDaemon(true);
     }
 
     protected void onLooperPrepared() {
@@ -61,6 +73,13 @@ public class HandlerThread extends Thread {
             this.mHandler = new Handler(getLooper());
         }
         return this.mHandler;
+    }
+
+    public Executor getThreadExecutor() {
+        if (this.mExecutor == null) {
+            this.mExecutor = new HandlerExecutor(getThreadHandler());
+        }
+        return this.mExecutor;
     }
 
     public boolean quit() {

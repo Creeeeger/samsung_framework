@@ -99,8 +99,7 @@ public class OverlayManager {
     }
 
     public void commit(OverlayManagerTransaction transaction) {
-        IOverlayManager iOverlayManager;
-        if (transaction.isSelfTargeting() || (iOverlayManager = this.mService) == null || iOverlayManager.asBinder() == null) {
+        if (transaction.isSelfTargeting() || this.mService == null || this.mService.asBinder() == null) {
             try {
                 commitSelfTarget(transaction);
                 return;

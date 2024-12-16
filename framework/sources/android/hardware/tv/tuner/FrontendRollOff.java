@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendRollOff implements Parcelable {
     public static final Parcelable.Creator<FrontendRollOff> CREATOR = new Parcelable.Creator<FrontendRollOff>() { // from class: android.hardware.tv.tuner.FrontendRollOff.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendRollOff createFromParcel(Parcel _aidl_source) {
             return new FrontendRollOff(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendRollOff[] newArray(int _aidl_size) {
             return new FrontendRollOff[_aidl_size];
@@ -25,15 +24,10 @@ public final class FrontendRollOff implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int dvbs = 0;
         public static final int isdbs = 1;
         public static final int isdbs3 = 2;
-    }
-
-    /* synthetic */ FrontendRollOff(Parcel parcel, FrontendRollOffIA frontendRollOffIA) {
-        this(parcel);
     }
 
     public FrontendRollOff() {
@@ -98,38 +92,19 @@ public final class FrontendRollOff implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendRollOff$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendRollOff> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendRollOff createFromParcel(Parcel _aidl_source) {
-            return new FrontendRollOff(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendRollOff[] newArray(int _aidl_size) {
-            return new FrontendRollOff[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeInt(getDvbs());
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeInt(getIsdbs());
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeInt(getIsdbs3());
-                return;
-            default:
-                return;
+                break;
         }
     }
 

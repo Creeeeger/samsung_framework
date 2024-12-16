@@ -2,6 +2,7 @@ package android.companion.virtual;
 
 import android.annotation.SystemApi;
 import android.companion.virtual.VirtualDeviceParams;
+import android.companion.virtual.flags.Flags;
 import android.companion.virtual.sensor.IVirtualSensorCallback;
 import android.companion.virtual.sensor.VirtualSensor;
 import android.companion.virtual.sensor.VirtualSensorCallback;
@@ -16,6 +17,7 @@ import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import java.io.PrintWriter;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,17 +35,20 @@ import java.util.concurrent.TimeUnit;
 @SystemApi
 /* loaded from: classes.dex */
 public final class VirtualDeviceParams implements Parcelable {
+
+    @Deprecated
     public static final int ACTIVITY_POLICY_DEFAULT_ALLOWED = 0;
+
+    @Deprecated
     public static final int ACTIVITY_POLICY_DEFAULT_BLOCKED = 1;
     public static final Parcelable.Creator<VirtualDeviceParams> CREATOR = new Parcelable.Creator<VirtualDeviceParams>() { // from class: android.companion.virtual.VirtualDeviceParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualDeviceParams createFromParcel(Parcel in) {
             return new VirtualDeviceParams(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VirtualDeviceParams[] newArray(int size) {
             return new VirtualDeviceParams[size];
@@ -53,20 +58,27 @@ public final class VirtualDeviceParams implements Parcelable {
     public static final int DEVICE_POLICY_DEFAULT = 0;
     public static final int LOCK_STATE_ALWAYS_UNLOCKED = 1;
     public static final int LOCK_STATE_DEFAULT = 0;
+
+    @Deprecated
     public static final int NAVIGATION_POLICY_DEFAULT_ALLOWED = 0;
+
+    @Deprecated
     public static final int NAVIGATION_POLICY_DEFAULT_BLOCKED = 1;
+    public static final int POLICY_TYPE_ACTIVITY = 3;
     public static final int POLICY_TYPE_AUDIO = 1;
+    public static final int POLICY_TYPE_CAMERA = 5;
+    public static final int POLICY_TYPE_CLIPBOARD = 4;
     public static final int POLICY_TYPE_RECENTS = 2;
     public static final int POLICY_TYPE_SENSORS = 0;
-    private final ArraySet<ComponentName> mAllowedActivities;
-    private final ArraySet<ComponentName> mAllowedCrossTaskNavigations;
+    private final ArraySet<ComponentName> mActivityPolicyExemptions;
     private final int mAudioPlaybackSessionId;
     private final int mAudioRecordingSessionId;
-    private final ArraySet<ComponentName> mBlockedActivities;
-    private final ArraySet<ComponentName> mBlockedCrossTaskNavigations;
+    private final ArraySet<ComponentName> mCrossTaskNavigationExemptions;
     private final int mDefaultActivityPolicy;
     private final int mDefaultNavigationPolicy;
     private final SparseIntArray mDevicePolicies;
+    private final ComponentName mHomeComponent;
+    private final ComponentName mInputMethodComponent;
     private final int mLockState;
     private final String mName;
     private final ArraySet<UserHandle> mUsersWithMatchingAccounts;
@@ -75,53 +87,45 @@ public final class VirtualDeviceParams implements Parcelable {
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ActivityPolicy {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface DevicePolicy {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
+    public @interface DynamicPolicyType {
+    }
+
+    @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface LockState {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface NavigationPolicy {
     }
 
     @Target({ElementType.TYPE_PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface PolicyType {
     }
 
-    /* synthetic */ VirtualDeviceParams(int i, Set set, Set set2, Set set3, int i2, Set set4, Set set5, int i3, String str, SparseIntArray sparseIntArray, List list, IVirtualSensorCallback iVirtualSensorCallback, int i4, int i5, VirtualDeviceParamsIA virtualDeviceParamsIA) {
-        this(i, set, set2, set3, i2, set4, set5, i3, str, sparseIntArray, list, iVirtualSensorCallback, i4, i5);
-    }
-
-    /* synthetic */ VirtualDeviceParams(Parcel parcel, VirtualDeviceParamsIA virtualDeviceParamsIA) {
-        this(parcel);
-    }
-
-    private VirtualDeviceParams(int lockState, Set<UserHandle> usersWithMatchingAccounts, Set<ComponentName> allowedCrossTaskNavigations, Set<ComponentName> blockedCrossTaskNavigations, int defaultNavigationPolicy, Set<ComponentName> allowedActivities, Set<ComponentName> blockedActivities, int defaultActivityPolicy, String name, SparseIntArray devicePolicies, List<VirtualSensorConfig> virtualSensorConfigs, IVirtualSensorCallback virtualSensorCallback, int audioPlaybackSessionId, int audioRecordingSessionId) {
+    private VirtualDeviceParams(int lockState, Set<UserHandle> usersWithMatchingAccounts, int defaultNavigationPolicy, Set<ComponentName> crossTaskNavigationExemptions, int defaultActivityPolicy, Set<ComponentName> activityPolicyExemptions, String name, SparseIntArray devicePolicies, ComponentName homeComponent, ComponentName inputMethodComponent, List<VirtualSensorConfig> virtualSensorConfigs, IVirtualSensorCallback virtualSensorCallback, int audioPlaybackSessionId, int audioRecordingSessionId) {
         this.mLockState = lockState;
         this.mUsersWithMatchingAccounts = new ArraySet<>((Collection) Objects.requireNonNull(usersWithMatchingAccounts));
-        this.mAllowedCrossTaskNavigations = new ArraySet<>((Collection) Objects.requireNonNull(allowedCrossTaskNavigations));
-        this.mBlockedCrossTaskNavigations = new ArraySet<>((Collection) Objects.requireNonNull(blockedCrossTaskNavigations));
         this.mDefaultNavigationPolicy = defaultNavigationPolicy;
-        this.mAllowedActivities = new ArraySet<>((Collection) Objects.requireNonNull(allowedActivities));
-        this.mBlockedActivities = new ArraySet<>((Collection) Objects.requireNonNull(blockedActivities));
+        this.mCrossTaskNavigationExemptions = new ArraySet<>((Collection) Objects.requireNonNull(crossTaskNavigationExemptions));
         this.mDefaultActivityPolicy = defaultActivityPolicy;
+        this.mActivityPolicyExemptions = new ArraySet<>((Collection) Objects.requireNonNull(activityPolicyExemptions));
         this.mName = name;
         this.mDevicePolicies = (SparseIntArray) Objects.requireNonNull(devicePolicies);
+        this.mHomeComponent = homeComponent;
+        this.mInputMethodComponent = inputMethodComponent;
         this.mVirtualSensorConfigs = (List) Objects.requireNonNull(virtualSensorConfigs);
         this.mVirtualSensorCallback = virtualSensorCallback;
         this.mAudioPlaybackSessionId = audioPlaybackSessionId;
@@ -131,50 +135,75 @@ public final class VirtualDeviceParams implements Parcelable {
     private VirtualDeviceParams(Parcel parcel) {
         this.mLockState = parcel.readInt();
         this.mUsersWithMatchingAccounts = parcel.readArraySet(null);
-        this.mAllowedCrossTaskNavigations = parcel.readArraySet(null);
-        this.mBlockedCrossTaskNavigations = parcel.readArraySet(null);
         this.mDefaultNavigationPolicy = parcel.readInt();
-        this.mAllowedActivities = parcel.readArraySet(null);
-        this.mBlockedActivities = parcel.readArraySet(null);
+        this.mCrossTaskNavigationExemptions = parcel.readArraySet(null);
         this.mDefaultActivityPolicy = parcel.readInt();
+        this.mActivityPolicyExemptions = parcel.readArraySet(null);
         this.mName = parcel.readString8();
         this.mDevicePolicies = parcel.readSparseIntArray();
-        ArrayList arrayList = new ArrayList();
-        this.mVirtualSensorConfigs = arrayList;
-        parcel.readTypedList(arrayList, VirtualSensorConfig.CREATOR);
+        this.mVirtualSensorConfigs = new ArrayList();
+        parcel.readTypedList(this.mVirtualSensorConfigs, VirtualSensorConfig.CREATOR);
         this.mVirtualSensorCallback = IVirtualSensorCallback.Stub.asInterface(parcel.readStrongBinder());
         this.mAudioPlaybackSessionId = parcel.readInt();
         this.mAudioRecordingSessionId = parcel.readInt();
+        this.mHomeComponent = (ComponentName) parcel.readTypedObject(ComponentName.CREATOR);
+        this.mInputMethodComponent = (ComponentName) parcel.readTypedObject(ComponentName.CREATOR);
     }
 
     public int getLockState() {
         return this.mLockState;
     }
 
+    public ComponentName getHomeComponent() {
+        return this.mHomeComponent;
+    }
+
+    public ComponentName getInputMethodComponent() {
+        return this.mInputMethodComponent;
+    }
+
     public Set<UserHandle> getUsersWithMatchingAccounts() {
         return Collections.unmodifiableSet(this.mUsersWithMatchingAccounts);
     }
 
+    @Deprecated
     public Set<ComponentName> getAllowedCrossTaskNavigations() {
-        return Collections.unmodifiableSet(this.mAllowedCrossTaskNavigations);
+        if (this.mDefaultNavigationPolicy == 0) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.mCrossTaskNavigationExemptions);
     }
 
+    @Deprecated
     public Set<ComponentName> getBlockedCrossTaskNavigations() {
-        return Collections.unmodifiableSet(this.mBlockedCrossTaskNavigations);
+        if (this.mDefaultNavigationPolicy == 1) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.mCrossTaskNavigationExemptions);
     }
 
+    @Deprecated
     public int getDefaultNavigationPolicy() {
         return this.mDefaultNavigationPolicy;
     }
 
+    @Deprecated
     public Set<ComponentName> getAllowedActivities() {
-        return Collections.unmodifiableSet(this.mAllowedActivities);
+        if (this.mDefaultActivityPolicy == 0) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.mActivityPolicyExemptions);
     }
 
+    @Deprecated
     public Set<ComponentName> getBlockedActivities() {
-        return Collections.unmodifiableSet(this.mBlockedActivities);
+        if (this.mDefaultActivityPolicy == 1) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(this.mActivityPolicyExemptions);
     }
 
+    @Deprecated
     public int getDefaultActivityPolicy() {
         return this.mDefaultActivityPolicy;
     }
@@ -185,6 +214,10 @@ public final class VirtualDeviceParams implements Parcelable {
 
     public int getDevicePolicy(int policyType) {
         return this.mDevicePolicies.get(policyType, 0);
+    }
+
+    public SparseIntArray getDevicePolicies() {
+        return this.mDevicePolicies;
     }
 
     public List<VirtualSensorConfig> getVirtualSensorConfigs() {
@@ -212,19 +245,18 @@ public final class VirtualDeviceParams implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mLockState);
         dest.writeArraySet(this.mUsersWithMatchingAccounts);
-        dest.writeArraySet(this.mAllowedCrossTaskNavigations);
-        dest.writeArraySet(this.mBlockedCrossTaskNavigations);
         dest.writeInt(this.mDefaultNavigationPolicy);
-        dest.writeArraySet(this.mAllowedActivities);
-        dest.writeArraySet(this.mBlockedActivities);
+        dest.writeArraySet(this.mCrossTaskNavigationExemptions);
         dest.writeInt(this.mDefaultActivityPolicy);
+        dest.writeArraySet(this.mActivityPolicyExemptions);
         dest.writeString8(this.mName);
         dest.writeSparseIntArray(this.mDevicePolicies);
         dest.writeTypedList(this.mVirtualSensorConfigs);
-        IVirtualSensorCallback iVirtualSensorCallback = this.mVirtualSensorCallback;
-        dest.writeStrongBinder(iVirtualSensorCallback != null ? iVirtualSensorCallback.asBinder() : null);
+        dest.writeStrongBinder(this.mVirtualSensorCallback != null ? this.mVirtualSensorCallback.asBinder() : null);
         dest.writeInt(this.mAudioPlaybackSessionId);
         dest.writeInt(this.mAudioRecordingSessionId);
+        dest.writeTypedObject(this.mHomeComponent, flags);
+        dest.writeTypedObject(this.mInputMethodComponent, flags);
     }
 
     public boolean equals(Object o) {
@@ -245,11 +277,11 @@ public final class VirtualDeviceParams implements Parcelable {
             }
         }
         int i2 = this.mLockState;
-        return i2 == that.mLockState && this.mUsersWithMatchingAccounts.equals(that.mUsersWithMatchingAccounts) && Objects.equals(this.mAllowedCrossTaskNavigations, that.mAllowedCrossTaskNavigations) && Objects.equals(this.mBlockedCrossTaskNavigations, that.mBlockedCrossTaskNavigations) && this.mDefaultNavigationPolicy == that.mDefaultNavigationPolicy && Objects.equals(this.mAllowedActivities, that.mAllowedActivities) && Objects.equals(this.mBlockedActivities, that.mBlockedActivities) && this.mDefaultActivityPolicy == that.mDefaultActivityPolicy && Objects.equals(this.mName, that.mName) && this.mAudioPlaybackSessionId == that.mAudioPlaybackSessionId && this.mAudioRecordingSessionId == that.mAudioRecordingSessionId;
+        return i2 == that.mLockState && this.mUsersWithMatchingAccounts.equals(that.mUsersWithMatchingAccounts) && Objects.equals(this.mCrossTaskNavigationExemptions, that.mCrossTaskNavigationExemptions) && this.mDefaultNavigationPolicy == that.mDefaultNavigationPolicy && Objects.equals(this.mActivityPolicyExemptions, that.mActivityPolicyExemptions) && this.mDefaultActivityPolicy == that.mDefaultActivityPolicy && Objects.equals(this.mName, that.mName) && Objects.equals(this.mHomeComponent, that.mHomeComponent) && Objects.equals(this.mInputMethodComponent, that.mInputMethodComponent) && this.mAudioPlaybackSessionId == that.mAudioPlaybackSessionId && this.mAudioRecordingSessionId == that.mAudioRecordingSessionId;
     }
 
     public int hashCode() {
-        int hashCode = Objects.hash(Integer.valueOf(this.mLockState), this.mUsersWithMatchingAccounts, this.mAllowedCrossTaskNavigations, this.mBlockedCrossTaskNavigations, Integer.valueOf(this.mDefaultNavigationPolicy), this.mAllowedActivities, this.mBlockedActivities, Integer.valueOf(this.mDefaultActivityPolicy), this.mName, this.mDevicePolicies, Integer.valueOf(this.mAudioPlaybackSessionId), Integer.valueOf(this.mAudioRecordingSessionId));
+        int hashCode = Objects.hash(Integer.valueOf(this.mLockState), this.mUsersWithMatchingAccounts, this.mCrossTaskNavigationExemptions, Integer.valueOf(this.mDefaultNavigationPolicy), this.mActivityPolicyExemptions, Integer.valueOf(this.mDefaultActivityPolicy), this.mName, this.mDevicePolicies, this.mHomeComponent, this.mInputMethodComponent, Integer.valueOf(this.mAudioPlaybackSessionId), Integer.valueOf(this.mAudioRecordingSessionId));
         for (int i = 0; i < this.mDevicePolicies.size(); i++) {
             hashCode = (((hashCode * 31) + this.mDevicePolicies.keyAt(i)) * 31) + this.mDevicePolicies.valueAt(i);
         }
@@ -257,28 +289,28 @@ public final class VirtualDeviceParams implements Parcelable {
     }
 
     public String toString() {
-        return "VirtualDeviceParams( mLockState=" + this.mLockState + " mUsersWithMatchingAccounts=" + this.mUsersWithMatchingAccounts + " mAllowedCrossTaskNavigations=" + this.mAllowedCrossTaskNavigations + " mBlockedCrossTaskNavigations=" + this.mBlockedCrossTaskNavigations + " mDefaultNavigationPolicy=" + this.mDefaultNavigationPolicy + " mAllowedActivities=" + this.mAllowedActivities + " mBlockedActivities=" + this.mBlockedActivities + " mDefaultActivityPolicy=" + this.mDefaultActivityPolicy + " mName=" + this.mName + " mDevicePolicies=" + this.mDevicePolicies + " mAudioPlaybackSessionId=" + this.mAudioPlaybackSessionId + " mAudioRecordingSessionId=" + this.mAudioRecordingSessionId + NavigationBarInflaterView.KEY_CODE_END;
+        return "VirtualDeviceParams( mLockState=" + this.mLockState + " mUsersWithMatchingAccounts=" + this.mUsersWithMatchingAccounts + " mDefaultNavigationPolicy=" + this.mDefaultNavigationPolicy + " mCrossTaskNavigationExemptions=" + this.mCrossTaskNavigationExemptions + " mDefaultActivityPolicy=" + this.mDefaultActivityPolicy + " mActivityPolicyExemptions=" + this.mActivityPolicyExemptions + " mName=" + this.mName + " mDevicePolicies=" + this.mDevicePolicies + " mHomeComponent=" + this.mHomeComponent + " mInputMethodComponent=" + this.mInputMethodComponent + " mAudioPlaybackSessionId=" + this.mAudioPlaybackSessionId + " mAudioRecordingSessionId=" + this.mAudioRecordingSessionId + NavigationBarInflaterView.KEY_CODE_END;
     }
 
-    /* renamed from: android.companion.virtual.VirtualDeviceParams$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VirtualDeviceParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualDeviceParams createFromParcel(Parcel in) {
-            return new VirtualDeviceParams(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VirtualDeviceParams[] newArray(int size) {
-            return new VirtualDeviceParams[size];
-        }
+    public void dump(PrintWriter pw, String prefix) {
+        pw.println(prefix + "mName=" + this.mName);
+        pw.println(prefix + "mLockState=" + this.mLockState);
+        pw.println(prefix + "mUsersWithMatchingAccounts=" + this.mUsersWithMatchingAccounts);
+        pw.println(prefix + "mDefaultNavigationPolicy=" + this.mDefaultNavigationPolicy);
+        pw.println(prefix + "mCrossTaskNavigationExemptions=" + this.mCrossTaskNavigationExemptions);
+        pw.println(prefix + "mDefaultActivityPolicy=" + this.mDefaultActivityPolicy);
+        pw.println(prefix + "mActivityPolicyExemptions=" + this.mActivityPolicyExemptions);
+        pw.println(prefix + "mDevicePolicies=" + this.mDevicePolicies);
+        pw.println(prefix + "mVirtualSensorConfigs=" + this.mVirtualSensorConfigs);
+        pw.println(prefix + "mHomeComponent=" + this.mHomeComponent);
+        pw.println(prefix + "mInputMethodComponent=" + this.mInputMethodComponent);
+        pw.println(prefix + "mAudioPlaybackSessionId=" + this.mAudioPlaybackSessionId);
+        pw.println(prefix + "mAudioRecordingSessionId=" + this.mAudioRecordingSessionId);
     }
 
-    /* loaded from: classes.dex */
     public static final class Builder {
+        private ComponentName mHomeComponent;
+        private ComponentName mInputMethodComponent;
         private String mName;
         private VirtualSensorCallback mVirtualSensorCallback;
         private Executor mVirtualSensorCallbackExecutor;
@@ -286,21 +318,19 @@ public final class VirtualDeviceParams implements Parcelable {
         private Executor mVirtualSensorDirectChannelCallbackExecutor;
         private int mLockState = 0;
         private Set<UserHandle> mUsersWithMatchingAccounts = Collections.emptySet();
-        private Set<ComponentName> mAllowedCrossTaskNavigations = Collections.emptySet();
-        private Set<ComponentName> mBlockedCrossTaskNavigations = Collections.emptySet();
+        private Set<ComponentName> mCrossTaskNavigationExemptions = Collections.emptySet();
         private int mDefaultNavigationPolicy = 0;
         private boolean mDefaultNavigationPolicyConfigured = false;
-        private Set<ComponentName> mBlockedActivities = Collections.emptySet();
-        private Set<ComponentName> mAllowedActivities = Collections.emptySet();
+        private Set<ComponentName> mActivityPolicyExemptions = Collections.emptySet();
         private int mDefaultActivityPolicy = 0;
         private boolean mDefaultActivityPolicyConfigured = false;
-        private SparseIntArray mDevicePolicies = new SparseIntArray();
+        private final SparseIntArray mDevicePolicies = new SparseIntArray();
         private int mAudioPlaybackSessionId = 0;
         private int mAudioRecordingSessionId = 0;
-        private List<VirtualSensorConfig> mVirtualSensorConfigs = new ArrayList();
+        private final List<VirtualSensorConfig> mVirtualSensorConfigs = new ArrayList();
 
-        /* loaded from: classes.dex */
-        public static class VirtualSensorCallbackDelegate extends IVirtualSensorCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        static class VirtualSensorCallbackDelegate extends IVirtualSensorCallback.Stub {
             private final VirtualSensorCallback mCallback;
             private final VirtualSensorDirectChannelCallback mDirectChannelCallback;
             private final Executor mDirectChannelExecutor;
@@ -317,7 +347,7 @@ public final class VirtualDeviceParams implements Parcelable {
             public void onConfigurationChanged(final VirtualSensor sensor, final boolean enabled, int samplingPeriodMicros, int batchReportLatencyMicros) {
                 final Duration samplingPeriod = Duration.ofNanos(TimeUnit.MICROSECONDS.toNanos(samplingPeriodMicros));
                 final Duration batchReportingLatency = Duration.ofNanos(TimeUnit.MICROSECONDS.toNanos(batchReportLatencyMicros));
-                this.mExecutor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda1
+                this.mExecutor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda3
                     @Override // java.lang.Runnable
                     public final void run() {
                         VirtualDeviceParams.Builder.VirtualSensorCallbackDelegate.this.lambda$onConfigurationChanged$0(sensor, enabled, samplingPeriod, batchReportingLatency);
@@ -325,15 +355,15 @@ public final class VirtualDeviceParams implements Parcelable {
                 });
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onConfigurationChanged$0(VirtualSensor sensor, boolean enabled, Duration samplingPeriod, Duration batchReportingLatency) {
                 this.mCallback.onConfigurationChanged(sensor, enabled, samplingPeriod, batchReportingLatency);
             }
 
             @Override // android.companion.virtual.sensor.IVirtualSensorCallback
             public void onDirectChannelCreated(final int channelHandle, final SharedMemory sharedMemory) {
-                Executor executor;
-                if (this.mDirectChannelCallback != null && (executor = this.mDirectChannelExecutor) != null) {
-                    executor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda2
+                if (this.mDirectChannelCallback != null && this.mDirectChannelExecutor != null) {
+                    this.mDirectChannelExecutor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
                             VirtualDeviceParams.Builder.VirtualSensorCallbackDelegate.this.lambda$onDirectChannelCreated$1(channelHandle, sharedMemory);
@@ -342,15 +372,15 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelCreated$1(int channelHandle, SharedMemory sharedMemory) {
                 this.mDirectChannelCallback.onDirectChannelCreated(channelHandle, sharedMemory);
             }
 
             @Override // android.companion.virtual.sensor.IVirtualSensorCallback
             public void onDirectChannelDestroyed(final int channelHandle) {
-                Executor executor;
-                if (this.mDirectChannelCallback != null && (executor = this.mDirectChannelExecutor) != null) {
-                    executor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda3
+                if (this.mDirectChannelCallback != null && this.mDirectChannelExecutor != null) {
+                    this.mDirectChannelExecutor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda1
                         @Override // java.lang.Runnable
                         public final void run() {
                             VirtualDeviceParams.Builder.VirtualSensorCallbackDelegate.this.lambda$onDirectChannelDestroyed$2(channelHandle);
@@ -359,15 +389,15 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelDestroyed$2(int channelHandle) {
                 this.mDirectChannelCallback.onDirectChannelDestroyed(channelHandle);
             }
 
             @Override // android.companion.virtual.sensor.IVirtualSensorCallback
             public void onDirectChannelConfigured(final int channelHandle, final VirtualSensor sensor, final int rateLevel, final int reportToken) {
-                Executor executor;
-                if (this.mDirectChannelCallback != null && (executor = this.mDirectChannelExecutor) != null) {
-                    executor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda0
+                if (this.mDirectChannelCallback != null && this.mDirectChannelExecutor != null) {
+                    this.mDirectChannelExecutor.execute(new Runnable() { // from class: android.companion.virtual.VirtualDeviceParams$Builder$VirtualSensorCallbackDelegate$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
                             VirtualDeviceParams.Builder.VirtualSensorCallbackDelegate.this.lambda$onDirectChannelConfigured$3(channelHandle, sensor, rateLevel, reportToken);
@@ -376,6 +406,7 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onDirectChannelConfigured$3(int channelHandle, VirtualSensor sensor, int rateLevel, int reportToken) {
                 this.mDirectChannelCallback.onDirectChannelConfigured(channelHandle, sensor, rateLevel, reportToken);
             }
@@ -386,48 +417,62 @@ public final class VirtualDeviceParams implements Parcelable {
             return this;
         }
 
+        public Builder setHomeComponent(ComponentName homeComponent) {
+            this.mHomeComponent = homeComponent;
+            return this;
+        }
+
+        public Builder setInputMethodComponent(ComponentName inputMethodComponent) {
+            this.mInputMethodComponent = inputMethodComponent;
+            return this;
+        }
+
         public Builder setUsersWithMatchingAccounts(Set<UserHandle> usersWithMatchingAccounts) {
             this.mUsersWithMatchingAccounts = (Set) Objects.requireNonNull(usersWithMatchingAccounts);
             return this;
         }
 
+        @Deprecated
         public Builder setAllowedCrossTaskNavigations(Set<ComponentName> allowedCrossTaskNavigations) {
             if (this.mDefaultNavigationPolicyConfigured && this.mDefaultNavigationPolicy != 1) {
-                throw new IllegalArgumentException("Allowed cross task navigation and blocked task navigation cannot  both be set.");
+                throw new IllegalArgumentException("Allowed cross task navigations and blocked cross task navigations cannot  both be set.");
             }
             this.mDefaultNavigationPolicy = 1;
             this.mDefaultNavigationPolicyConfigured = true;
-            this.mAllowedCrossTaskNavigations = (Set) Objects.requireNonNull(allowedCrossTaskNavigations);
+            this.mCrossTaskNavigationExemptions = (Set) Objects.requireNonNull(allowedCrossTaskNavigations);
             return this;
         }
 
+        @Deprecated
         public Builder setBlockedCrossTaskNavigations(Set<ComponentName> blockedCrossTaskNavigations) {
             if (this.mDefaultNavigationPolicyConfigured && this.mDefaultNavigationPolicy != 0) {
                 throw new IllegalArgumentException("Allowed cross task navigation and blocked task navigation cannot  be set.");
             }
             this.mDefaultNavigationPolicy = 0;
             this.mDefaultNavigationPolicyConfigured = true;
-            this.mBlockedCrossTaskNavigations = (Set) Objects.requireNonNull(blockedCrossTaskNavigations);
+            this.mCrossTaskNavigationExemptions = (Set) Objects.requireNonNull(blockedCrossTaskNavigations);
             return this;
         }
 
+        @Deprecated
         public Builder setAllowedActivities(Set<ComponentName> allowedActivities) {
             if (this.mDefaultActivityPolicyConfigured && this.mDefaultActivityPolicy != 1) {
                 throw new IllegalArgumentException("Allowed activities and Blocked activities cannot both be set.");
             }
             this.mDefaultActivityPolicy = 1;
             this.mDefaultActivityPolicyConfigured = true;
-            this.mAllowedActivities = (Set) Objects.requireNonNull(allowedActivities);
+            this.mActivityPolicyExemptions = (Set) Objects.requireNonNull(allowedActivities);
             return this;
         }
 
+        @Deprecated
         public Builder setBlockedActivities(Set<ComponentName> blockedActivities) {
             if (this.mDefaultActivityPolicyConfigured && this.mDefaultActivityPolicy != 0) {
                 throw new IllegalArgumentException("Allowed activities and Blocked activities cannot both be set.");
             }
             this.mDefaultActivityPolicy = 0;
             this.mDefaultActivityPolicyConfigured = true;
-            this.mBlockedActivities = (Set) Objects.requireNonNull(blockedActivities);
+            this.mActivityPolicyExemptions = (Set) Objects.requireNonNull(blockedActivities);
             return this;
         }
 
@@ -496,6 +541,32 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
                 virtualSensorCallbackDelegate = new VirtualSensorCallbackDelegate(this.mVirtualSensorCallbackExecutor, this.mVirtualSensorCallback, this.mVirtualSensorDirectChannelCallbackExecutor, this.mVirtualSensorDirectChannelCallback);
             }
+            if (Flags.dynamicPolicy()) {
+                switch (this.mDevicePolicies.get(3, -1)) {
+                    case 0:
+                        if (this.mDefaultActivityPolicyConfigured && this.mDefaultActivityPolicy == 1) {
+                            throw new IllegalArgumentException("DEVICE_POLICY_DEFAULT is explicitly configured for POLICY_TYPE_ACTIVITY, which is exclusive with setAllowedActivities.");
+                        }
+                        break;
+                    case 1:
+                        if (this.mDefaultActivityPolicyConfigured && this.mDefaultActivityPolicy == 0) {
+                            throw new IllegalArgumentException("DEVICE_POLICY_CUSTOM is explicitly configured for POLICY_TYPE_ACTIVITY, which is exclusive with setBlockedActivities.");
+                        }
+                        break;
+                    default:
+                        if (this.mDefaultActivityPolicyConfigured && this.mDefaultActivityPolicy == 1) {
+                            this.mDevicePolicies.put(3, 1);
+                            break;
+                        }
+                        break;
+                }
+            }
+            if (!Flags.crossDeviceClipboard()) {
+                this.mDevicePolicies.delete(4);
+            }
+            if (!Flags.virtualCamera()) {
+                this.mDevicePolicies.delete(5);
+            }
             if ((this.mAudioPlaybackSessionId != 0 || this.mAudioRecordingSessionId != 0) && this.mDevicePolicies.get(1, 0) != 1) {
                 throw new IllegalArgumentException("DEVICE_POLICY_CUSTOM for POLICY_TYPE_AUDIO is required for configuration of device-specific audio session ids.");
             }
@@ -508,7 +579,7 @@ public final class VirtualDeviceParams implements Parcelable {
                 }
                 sensorNameByType.put(config.getType(), sensorNames);
             }
-            return new VirtualDeviceParams(this.mLockState, this.mUsersWithMatchingAccounts, this.mAllowedCrossTaskNavigations, this.mBlockedCrossTaskNavigations, this.mDefaultNavigationPolicy, this.mAllowedActivities, this.mBlockedActivities, this.mDefaultActivityPolicy, this.mName, this.mDevicePolicies, this.mVirtualSensorConfigs, virtualSensorCallbackDelegate, this.mAudioPlaybackSessionId, this.mAudioRecordingSessionId);
+            return new VirtualDeviceParams(this.mLockState, this.mUsersWithMatchingAccounts, this.mDefaultNavigationPolicy, this.mCrossTaskNavigationExemptions, this.mDefaultActivityPolicy, this.mActivityPolicyExemptions, this.mName, this.mDevicePolicies, this.mHomeComponent, this.mInputMethodComponent, this.mVirtualSensorConfigs, virtualSensorCallbackDelegate, this.mAudioPlaybackSessionId, this.mAudioRecordingSessionId);
         }
     }
 }

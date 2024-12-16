@@ -4,7 +4,7 @@ import android.hardware.camera2.utils.HashCodeHelpers;
 import android.util.Size;
 import com.android.internal.util.Preconditions;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class StreamConfigurationDuration {
     private final long mDurationNs;
     private final int mFormat;
@@ -56,10 +56,6 @@ public final class StreamConfigurationDuration {
     }
 
     public int hashCode() {
-        int i = this.mFormat;
-        int i2 = this.mWidth;
-        int i3 = this.mHeight;
-        long j = this.mDurationNs;
-        return HashCodeHelpers.hashCode(i, i2, i3, (int) j, (int) (j >>> 32));
+        return HashCodeHelpers.hashCode(this.mFormat, this.mWidth, this.mHeight, (int) this.mDurationNs, (int) (this.mDurationNs >>> 32));
     }
 }

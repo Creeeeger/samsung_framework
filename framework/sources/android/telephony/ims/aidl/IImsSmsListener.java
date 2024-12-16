@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IImsSmsListener extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ims.aidl.IImsSmsListener";
 
@@ -22,7 +22,6 @@ public interface IImsSmsListener extends IInterface {
 
     void onSmsStatusReportReceived(int i, String str, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IImsSmsListener {
         @Override // android.telephony.ims.aidl.IImsSmsListener
         public void onSendSmsResult(int token, int messageRef, int status, int reason, int networkErrorCode) throws RemoteException {
@@ -54,7 +53,6 @@ public interface IImsSmsListener extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IImsSmsListener {
         static final int TRANSACTION_onMemoryAvailableResult = 6;
         static final int TRANSACTION_onReceiveSmsDeliveryReportAck = 5;
@@ -112,67 +110,63 @@ public interface IImsSmsListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IImsSmsListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IImsSmsListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IImsSmsListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSendSmsResult(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    byte[] _arg22 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSmsStatusReportReceived(_arg02, _arg12, _arg22);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    byte[] _arg23 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    onSmsReceived(_arg03, _arg13, _arg23);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    int _arg24 = data.readInt();
+                    int _arg32 = data.readInt();
+                    int _arg42 = data.readInt();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSendSmsResponse(_arg04, _arg14, _arg24, _arg32, _arg42, _arg5);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg15 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onReceiveSmsDeliveryReportAck(_arg05, _arg15);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg16 = data.readInt();
+                    int _arg25 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onMemoryAvailableResult(_arg06, _arg16, _arg25);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSendSmsResult(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            byte[] _arg22 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSmsStatusReportReceived(_arg02, _arg12, _arg22);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            byte[] _arg23 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            onSmsReceived(_arg03, _arg13, _arg23);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            int _arg24 = data.readInt();
-                            int _arg32 = data.readInt();
-                            int _arg42 = data.readInt();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSendSmsResponse(_arg04, _arg14, _arg24, _arg32, _arg42, _arg5);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg15 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onReceiveSmsDeliveryReportAck(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg25 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onMemoryAvailableResult(_arg06, _arg16, _arg25);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IImsSmsListener {
+        private static class Proxy implements IImsSmsListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

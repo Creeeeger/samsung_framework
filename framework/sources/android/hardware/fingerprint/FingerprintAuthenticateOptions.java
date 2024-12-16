@@ -2,6 +2,7 @@ package android.hardware.fingerprint;
 
 import android.annotation.NonNull;
 import android.hardware.biometrics.AuthenticateOptions;
+import android.hardware.biometrics.common.AuthenticateReason;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.android.internal.util.AnnotationValidations;
@@ -11,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class FingerprintAuthenticateOptions implements AuthenticateOptions, Parcelable {
     public static final Parcelable.Creator<FingerprintAuthenticateOptions> CREATOR = new Parcelable.Creator<FingerprintAuthenticateOptions>() { // from class: android.hardware.fingerprint.FingerprintAuthenticateOptions.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintAuthenticateOptions[] newArray(int size) {
             return new FingerprintAuthenticateOptions[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FingerprintAuthenticateOptions createFromParcel(Parcel in) {
             return new FingerprintAuthenticateOptions(in);
@@ -27,73 +27,58 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
     private String mAttributionTag;
     private final int mDisplayState;
     private final boolean mIgnoreEnrollmentState;
+    private boolean mIsMandatoryBiometrics;
     private String mOpPackageName;
     private int mSensorId;
     private final int mUserId;
+    private AuthenticateReason.Vendor mVendorReason;
 
-    /* renamed from: -$$Nest$smdefaultAttributionTag */
-    static /* bridge */ /* synthetic */ String m1692$$Nest$smdefaultAttributionTag() {
-        return defaultAttributionTag();
-    }
-
-    /* renamed from: -$$Nest$smdefaultDisplayState */
-    static /* bridge */ /* synthetic */ int m1693$$Nest$smdefaultDisplayState() {
-        return defaultDisplayState();
-    }
-
-    /* renamed from: -$$Nest$smdefaultIgnoreEnrollmentState */
-    static /* bridge */ /* synthetic */ boolean m1694$$Nest$smdefaultIgnoreEnrollmentState() {
-        return defaultIgnoreEnrollmentState();
-    }
-
-    /* renamed from: -$$Nest$smdefaultOpPackageName */
-    static /* bridge */ /* synthetic */ String m1695$$Nest$smdefaultOpPackageName() {
-        return defaultOpPackageName();
-    }
-
-    /* renamed from: -$$Nest$smdefaultSensorId */
-    static /* bridge */ /* synthetic */ int m1696$$Nest$smdefaultSensorId() {
-        return defaultSensorId();
-    }
-
-    /* renamed from: -$$Nest$smdefaultUserId */
-    static /* bridge */ /* synthetic */ int m1697$$Nest$smdefaultUserId() {
-        return defaultUserId();
-    }
-
-    private static int defaultUserId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultUserId() {
         return 0;
     }
 
-    private static int defaultSensorId() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultSensorId() {
         return -1;
     }
 
-    private static boolean defaultIgnoreEnrollmentState() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static boolean defaultIgnoreEnrollmentState() {
         return false;
     }
 
-    private static int defaultDisplayState() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static int defaultDisplayState() {
         return 0;
     }
 
-    private static String defaultOpPackageName() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String defaultOpPackageName() {
         return "";
     }
 
-    private static String defaultAttributionTag() {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String defaultAttributionTag() {
         return null;
     }
 
-    FingerprintAuthenticateOptions(int userId, int sensorId, boolean ignoreEnrollmentState, int displayState, String opPackageName, String attributionTag) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public static AuthenticateReason.Vendor defaultVendorReason() {
+        return null;
+    }
+
+    FingerprintAuthenticateOptions(int userId, int sensorId, boolean ignoreEnrollmentState, int displayState, String opPackageName, String attributionTag, AuthenticateReason.Vendor vendorReason, boolean isMandatoryBiometrics) {
         this.mUserId = userId;
         this.mSensorId = sensorId;
         this.mIgnoreEnrollmentState = ignoreEnrollmentState;
         this.mDisplayState = displayState;
-        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, displayState);
+        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, this.mDisplayState);
         this.mOpPackageName = opPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
         this.mAttributionTag = attributionTag;
+        this.mVendorReason = vendorReason;
+        this.mIsMandatoryBiometrics = isMandatoryBiometrics;
     }
 
     @Override // android.hardware.biometrics.AuthenticateOptions
@@ -125,6 +110,15 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
         return this.mAttributionTag;
     }
 
+    public AuthenticateReason.Vendor getVendorReason() {
+        return this.mVendorReason;
+    }
+
+    @Override // android.hardware.biometrics.AuthenticateOptions
+    public boolean isMandatoryBiometrics() {
+        return this.mIsMandatoryBiometrics;
+    }
+
     public FingerprintAuthenticateOptions setSensorId(int value) {
         this.mSensorId = value;
         return this;
@@ -132,12 +126,22 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
 
     public FingerprintAuthenticateOptions setOpPackageName(String value) {
         this.mOpPackageName = value;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) value);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
         return this;
     }
 
     public FingerprintAuthenticateOptions setAttributionTag(String value) {
         this.mAttributionTag = value;
+        return this;
+    }
+
+    public FingerprintAuthenticateOptions setVendorReason(AuthenticateReason.Vendor value) {
+        this.mVendorReason = value;
+        return this;
+    }
+
+    public FingerprintAuthenticateOptions setIsMandatoryBiometrics(boolean value) {
+        this.mIsMandatoryBiometrics = value;
         return this;
     }
 
@@ -149,7 +153,7 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
             return false;
         }
         FingerprintAuthenticateOptions that = (FingerprintAuthenticateOptions) o;
-        if (this.mUserId == that.mUserId && this.mSensorId == that.mSensorId && this.mIgnoreEnrollmentState == that.mIgnoreEnrollmentState && this.mDisplayState == that.mDisplayState && Objects.equals(this.mOpPackageName, that.mOpPackageName) && Objects.equals(this.mAttributionTag, that.mAttributionTag)) {
+        if (this.mUserId == that.mUserId && this.mSensorId == that.mSensorId && this.mIgnoreEnrollmentState == that.mIgnoreEnrollmentState && this.mDisplayState == that.mDisplayState && Objects.equals(this.mOpPackageName, that.mOpPackageName) && Objects.equals(this.mAttributionTag, that.mAttributionTag) && Objects.equals(this.mVendorReason, that.mVendorReason) && this.mIsMandatoryBiometrics == that.mIsMandatoryBiometrics) {
             return true;
         }
         return false;
@@ -157,23 +161,31 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
 
     public int hashCode() {
         int _hash = (1 * 31) + this.mUserId;
-        return (((((((((_hash * 31) + this.mSensorId) * 31) + Boolean.hashCode(this.mIgnoreEnrollmentState)) * 31) + this.mDisplayState) * 31) + Objects.hashCode(this.mOpPackageName)) * 31) + Objects.hashCode(this.mAttributionTag);
+        return (((((((((((((_hash * 31) + this.mSensorId) * 31) + Boolean.hashCode(this.mIgnoreEnrollmentState)) * 31) + this.mDisplayState) * 31) + Objects.hashCode(this.mOpPackageName)) * 31) + Objects.hashCode(this.mAttributionTag)) * 31) + Objects.hashCode(this.mVendorReason)) * 31) + Boolean.hashCode(this.mIsMandatoryBiometrics);
     }
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
-        byte flg = this.mIgnoreEnrollmentState ? (byte) (0 | 4) : (byte) 0;
-        if (this.mAttributionTag != null) {
-            flg = (byte) (flg | 32);
+        int flg = this.mIgnoreEnrollmentState ? 0 | 4 : 0;
+        if (this.mIsMandatoryBiometrics) {
+            flg |= 128;
         }
-        dest.writeByte(flg);
+        if (this.mAttributionTag != null) {
+            flg |= 32;
+        }
+        if (this.mVendorReason != null) {
+            flg |= 64;
+        }
+        dest.writeInt(flg);
         dest.writeInt(this.mUserId);
         dest.writeInt(this.mSensorId);
         dest.writeInt(this.mDisplayState);
         dest.writeString(this.mOpPackageName);
-        String str = this.mAttributionTag;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mAttributionTag != null) {
+            dest.writeString(this.mAttributionTag);
+        }
+        if (this.mVendorReason != null) {
+            dest.writeTypedObject(this.mVendorReason, flags);
         }
     }
 
@@ -183,49 +195,37 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
     }
 
     FingerprintAuthenticateOptions(Parcel in) {
-        byte flg = in.readByte();
+        int flg = in.readInt();
         boolean ignoreEnrollmentState = (flg & 4) != 0;
+        boolean isMandatoryBiometrics = (flg & 128) != 0;
         int userId = in.readInt();
         int sensorId = in.readInt();
         int displayState = in.readInt();
         String opPackageName = in.readString();
         String attributionTag = (flg & 32) == 0 ? null : in.readString();
+        AuthenticateReason.Vendor vendorReason = (flg & 64) == 0 ? null : (AuthenticateReason.Vendor) in.readTypedObject(AuthenticateReason.Vendor.CREATOR);
         this.mUserId = userId;
         this.mSensorId = sensorId;
         this.mIgnoreEnrollmentState = ignoreEnrollmentState;
         this.mDisplayState = displayState;
-        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, displayState);
+        AnnotationValidations.validate((Class<? extends Annotation>) AuthenticateOptions.DisplayState.class, (Annotation) null, this.mDisplayState);
         this.mOpPackageName = opPackageName;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) opPackageName);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mOpPackageName);
         this.mAttributionTag = attributionTag;
+        this.mVendorReason = vendorReason;
+        this.mIsMandatoryBiometrics = isMandatoryBiometrics;
     }
 
-    /* renamed from: android.hardware.fingerprint.FingerprintAuthenticateOptions$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FingerprintAuthenticateOptions> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FingerprintAuthenticateOptions[] newArray(int size) {
-            return new FingerprintAuthenticateOptions[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FingerprintAuthenticateOptions createFromParcel(Parcel in) {
-            return new FingerprintAuthenticateOptions(in);
-        }
-    }
-
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private String mAttributionTag;
         private long mBuilderFieldsSet = 0;
         private int mDisplayState;
         private boolean mIgnoreEnrollmentState;
+        private boolean mIsMandatoryBiometrics;
         private String mOpPackageName;
         private int mSensorId;
         private int mUserId;
+        private AuthenticateReason.Vendor mVendorReason;
 
         public Builder setUserId(int value) {
             checkNotUsed();
@@ -269,34 +269,50 @@ public final class FingerprintAuthenticateOptions implements AuthenticateOptions
             return this;
         }
 
+        public Builder setVendorReason(AuthenticateReason.Vendor value) {
+            checkNotUsed();
+            this.mBuilderFieldsSet |= 64;
+            this.mVendorReason = value;
+            return this;
+        }
+
+        public Builder setIsMandatoryBiometrics(boolean value) {
+            checkNotUsed();
+            this.mBuilderFieldsSet |= 128;
+            this.mIsMandatoryBiometrics = value;
+            return this;
+        }
+
         public FingerprintAuthenticateOptions build() {
             checkNotUsed();
-            long j = this.mBuilderFieldsSet | 64;
-            this.mBuilderFieldsSet = j;
-            if ((j & 1) == 0) {
-                this.mUserId = FingerprintAuthenticateOptions.m1697$$Nest$smdefaultUserId();
+            this.mBuilderFieldsSet |= 256;
+            if ((this.mBuilderFieldsSet & 1) == 0) {
+                this.mUserId = FingerprintAuthenticateOptions.defaultUserId();
             }
             if ((this.mBuilderFieldsSet & 2) == 0) {
-                this.mSensorId = FingerprintAuthenticateOptions.m1696$$Nest$smdefaultSensorId();
+                this.mSensorId = FingerprintAuthenticateOptions.defaultSensorId();
             }
             if ((this.mBuilderFieldsSet & 4) == 0) {
-                this.mIgnoreEnrollmentState = FingerprintAuthenticateOptions.m1694$$Nest$smdefaultIgnoreEnrollmentState();
+                this.mIgnoreEnrollmentState = FingerprintAuthenticateOptions.defaultIgnoreEnrollmentState();
             }
             if ((this.mBuilderFieldsSet & 8) == 0) {
-                this.mDisplayState = FingerprintAuthenticateOptions.m1693$$Nest$smdefaultDisplayState();
+                this.mDisplayState = FingerprintAuthenticateOptions.defaultDisplayState();
             }
             if ((this.mBuilderFieldsSet & 16) == 0) {
-                this.mOpPackageName = FingerprintAuthenticateOptions.m1695$$Nest$smdefaultOpPackageName();
+                this.mOpPackageName = FingerprintAuthenticateOptions.defaultOpPackageName();
             }
             if ((this.mBuilderFieldsSet & 32) == 0) {
-                this.mAttributionTag = FingerprintAuthenticateOptions.m1692$$Nest$smdefaultAttributionTag();
+                this.mAttributionTag = FingerprintAuthenticateOptions.defaultAttributionTag();
             }
-            FingerprintAuthenticateOptions o = new FingerprintAuthenticateOptions(this.mUserId, this.mSensorId, this.mIgnoreEnrollmentState, this.mDisplayState, this.mOpPackageName, this.mAttributionTag);
+            if ((this.mBuilderFieldsSet & 64) == 0) {
+                this.mVendorReason = FingerprintAuthenticateOptions.defaultVendorReason();
+            }
+            FingerprintAuthenticateOptions o = new FingerprintAuthenticateOptions(this.mUserId, this.mSensorId, this.mIgnoreEnrollmentState, this.mDisplayState, this.mOpPackageName, this.mAttributionTag, this.mVendorReason, this.mIsMandatoryBiometrics);
             return o;
         }
 
         private void checkNotUsed() {
-            if ((this.mBuilderFieldsSet & 64) != 0) {
+            if ((this.mBuilderFieldsSet & 256) != 0) {
                 throw new IllegalStateException("This Builder should not be reused. Use a new Builder instance instead");
             }
         }

@@ -28,24 +28,22 @@ public class BackgroundStartPrivileges {
     }
 
     public BackgroundStartPrivileges merge(BackgroundStartPrivileges other) {
-        BackgroundStartPrivileges backgroundStartPrivileges = NONE;
-        if (other == backgroundStartPrivileges || other == null) {
+        if (other == NONE || other == null) {
             return this;
         }
-        if (this == backgroundStartPrivileges) {
+        if (this == NONE) {
             return other;
         }
         boolean allowsBackgroundActivityStarts = allowsBackgroundActivityStarts() || other.allowsBackgroundActivityStarts();
         boolean allowsBackgroundFgsStarts = allowsBackgroundFgsStarts() || other.allowsBackgroundFgsStarts();
-        IBinder iBinder = this.mOriginatingToken;
-        if (iBinder == other.mOriginatingToken) {
+        if (this.mOriginatingToken == other.mOriginatingToken) {
             if (this.mAllowsBackgroundActivityStarts == allowsBackgroundActivityStarts && this.mAllowsBackgroundForegroundServiceStarts == allowsBackgroundFgsStarts) {
                 return this;
             }
             if (other.mAllowsBackgroundActivityStarts == allowsBackgroundActivityStarts && other.mAllowsBackgroundForegroundServiceStarts == allowsBackgroundFgsStarts) {
                 return other;
             }
-            return new BackgroundStartPrivileges(allowsBackgroundActivityStarts, allowsBackgroundFgsStarts, iBinder);
+            return new BackgroundStartPrivileges(allowsBackgroundActivityStarts, allowsBackgroundFgsStarts, this.mOriginatingToken);
         }
         if (allowsBackgroundActivityStarts) {
             return ALLOW_BAL;
@@ -53,7 +51,7 @@ public class BackgroundStartPrivileges {
         if (allowsBackgroundFgsStarts) {
             return ALLOW_FGS;
         }
-        return backgroundStartPrivileges;
+        return NONE;
     }
 
     public static BackgroundStartPrivileges merge(List<BackgroundStartPrivileges> list) {
@@ -95,6 +93,15 @@ public class BackgroundStartPrivileges {
     }
 
     public String toString() {
+        if (this == ALLOW_BAL) {
+            return "BSP.ALLOW_BAL";
+        }
+        if (this == ALLOW_FGS) {
+            return "BSP.ALLOW_FGS";
+        }
+        if (this == NONE) {
+            return "BSP.NONE";
+        }
         return "BackgroundStartPrivileges[allowsBackgroundActivityStarts=" + this.mAllowsBackgroundActivityStarts + ", allowsBackgroundForegroundServiceStarts=" + this.mAllowsBackgroundForegroundServiceStarts + ", originatingToken=" + this.mOriginatingToken + ']';
     }
 }

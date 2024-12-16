@@ -22,7 +22,7 @@ public class SyncActivityTooManyDeletes extends Activity implements AdapterView.
     private String mProvider;
 
     @Override // android.app.Activity
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -41,7 +41,7 @@ public class SyncActivityTooManyDeletes extends Activity implements AdapterView.
         listView.setOnItemClickListener(this);
         TextView textView = new TextView(this);
         CharSequence tooManyDeletesDescFormat = getResources().getText(R.string.sync_too_many_deletes_desc);
-        textView.setText(String.format(tooManyDeletesDescFormat.toString(), Long.valueOf(this.mNumDeletes), this.mProvider, this.mAccount.name));
+        textView.lambda$setTextAsync$0(String.format(tooManyDeletesDescFormat.toString(), Long.valueOf(this.mNumDeletes), this.mProvider, this.mAccount.name));
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(1);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2, 0.0f);

@@ -106,7 +106,6 @@ public interface IGnssAntennaInfo extends IBase {
         return getService("default");
     }
 
-    /* loaded from: classes2.dex */
     public static final class GnssAntennaInfoStatus {
         public static final int ERROR_ALREADY_INIT = -100;
         public static final int ERROR_GENERIC = -101;
@@ -144,7 +143,6 @@ public interface IGnssAntennaInfo extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Proxy implements IGnssAntennaInfo {
         private IHwBinder mRemote;
 
@@ -346,7 +344,6 @@ public interface IGnssAntennaInfo extends IBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends HwBinder implements IGnssAntennaInfo {
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfo, android.internal.hidl.base.V1_0.IBase, android.os.IHwInterface
         public IHwBinder asBinder() {
@@ -369,7 +366,7 @@ public interface IGnssAntennaInfo extends IBase {
 
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfo, android.internal.hidl.base.V1_0.IBase
         public final ArrayList<byte[]> getHashChain() {
-            return new ArrayList<>(Arrays.asList(new byte[]{-70, 90, -57, SprAnimatorBase.INTERPOLATOR_TYPE_CIRCEASEINOUT, -78, -90, 86, -36, 7, -56, 58, -76, -89, -94, -62, MidiConstants.STATUS_SONG_SELECT, -66, -31, -69, -53, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, -117, -113, -6, -101, 103, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 59, 91, 7, 40}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, SprAnimatorBase.INTERPOLATOR_TYPE_CUBICEASEIN, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, SprAnimatorBase.INTERPOLATOR_TYPE_ELASTICEASEINOUT, -54, 76}));
+            return new ArrayList<>(Arrays.asList(new byte[]{-70, 90, -57, 18, -78, -90, 86, -36, 7, -56, 58, -76, -89, -94, -62, MidiConstants.STATUS_SONG_SELECT, -66, -31, -69, -53, 117, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT70, -117, -113, -6, -101, 103, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT80, 59, 91, 7, 40}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, MidiConstants.STATUS_CHANNEL_PRESSURE, SprAnimatorBase.INTERPOLATOR_TYPE_SINEINOUT60, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, MidiConstants.STATUS_SONG_SELECT, -51, 105, 87, 19, -109, SprAnimatorBase.INTERPOLATOR_TYPE_QUINTEASEINOUT, -72, 59, 24, -54, 76}));
         }
 
         @Override // android.hardware.gnss.V2_1.IGnssAntennaInfo, android.internal.hidl.base.V1_0.IBase

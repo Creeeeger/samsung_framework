@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IAndroidFuture extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.infra.IAndroidFuture";
 
     void complete(AndroidFuture androidFuture) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAndroidFuture {
         @Override // com.android.internal.infra.IAndroidFuture
         public void complete(AndroidFuture resultContainer) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAndroidFuture extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAndroidFuture {
         static final int TRANSACTION_complete = 1;
 
@@ -67,26 +65,22 @@ public interface IAndroidFuture extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAndroidFuture.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAndroidFuture.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAndroidFuture.DESCRIPTOR);
+                case 1:
+                    AndroidFuture _arg0 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    complete(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AndroidFuture _arg0 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            complete(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAndroidFuture {
+        private static class Proxy implements IAndroidFuture {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

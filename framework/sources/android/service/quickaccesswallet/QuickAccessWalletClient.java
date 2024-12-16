@@ -10,19 +10,16 @@ import java.util.concurrent.Executor;
 /* loaded from: classes3.dex */
 public interface QuickAccessWalletClient extends Closeable {
 
-    /* loaded from: classes3.dex */
     public interface OnWalletCardsRetrievedCallback {
         void onWalletCardRetrievalError(GetWalletCardsError getWalletCardsError);
 
         void onWalletCardsRetrieved(GetWalletCardsResponse getWalletCardsResponse);
     }
 
-    /* loaded from: classes3.dex */
     public interface WalletPendingIntentCallback {
         void onWalletPendingIntentRetrieved(PendingIntent pendingIntent);
     }
 
-    /* loaded from: classes3.dex */
     public interface WalletServiceEventListener {
         void onWalletServiceEvent(WalletServiceEvent walletServiceEvent);
     }

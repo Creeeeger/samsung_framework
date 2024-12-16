@@ -85,7 +85,7 @@ public final class GeofenceHardwareRequest {
         return this.mSourceTechnologies;
     }
 
-    public int getType() {
+    int getType() {
         return this.mType;
     }
 }

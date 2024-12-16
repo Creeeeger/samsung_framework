@@ -39,7 +39,6 @@ public final class UiTranslationManager {
     private final ITranslationManager mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface UiTranslationState {
     }
 
@@ -148,8 +147,8 @@ public final class UiTranslationManager {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class UiTranslationStateRemoteCallback extends IRemoteCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class UiTranslationStateRemoteCallback extends IRemoteCallback.Stub {
         private final UiTranslationStateCallback mCallback;
         private final Executor mExecutor;
         private ULocale mSourceLocale;
@@ -160,8 +159,9 @@ public final class UiTranslationManager {
             this.mCallback = callback;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$sendResult$1(final Bundle bundle) throws Exception {
-            this.mExecutor.execute(new Runnable() { // from class: android.view.translation.UiTranslationManager$UiTranslationStateRemoteCallback$$ExternalSyntheticLambda0
+            this.mExecutor.execute(new Runnable() { // from class: android.view.translation.UiTranslationManager$UiTranslationStateRemoteCallback$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     UiTranslationManager.UiTranslationStateRemoteCallback.this.lambda$sendResult$0(bundle);
@@ -171,7 +171,7 @@ public final class UiTranslationManager {
 
         @Override // android.os.IRemoteCallback
         public void sendResult(final Bundle bundle) {
-            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.UiTranslationManager$UiTranslationStateRemoteCallback$$ExternalSyntheticLambda1
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: android.view.translation.UiTranslationManager$UiTranslationStateRemoteCallback$$ExternalSyntheticLambda0
                 @Override // com.android.internal.util.FunctionalUtils.ThrowingRunnable
                 public final void runOrThrow() {
                     UiTranslationManager.UiTranslationStateRemoteCallback.this.lambda$sendResult$1(bundle);
@@ -179,29 +179,29 @@ public final class UiTranslationManager {
             });
         }
 
-        /* renamed from: onStateChange */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: onStateChange, reason: merged with bridge method [inline-methods] */
         public void lambda$sendResult$0(Bundle bundle) {
             int state = bundle.getInt("state");
             String packageName = bundle.getString("package_name");
             switch (state) {
                 case 0:
                     this.mSourceLocale = (ULocale) bundle.getSerializable(UiTranslationManager.EXTRA_SOURCE_LOCALE, ULocale.class);
-                    ULocale uLocale = (ULocale) bundle.getSerializable(UiTranslationManager.EXTRA_TARGET_LOCALE, ULocale.class);
-                    this.mTargetLocale = uLocale;
-                    this.mCallback.onStarted(this.mSourceLocale, uLocale, packageName);
-                    return;
+                    this.mTargetLocale = (ULocale) bundle.getSerializable(UiTranslationManager.EXTRA_TARGET_LOCALE, ULocale.class);
+                    this.mCallback.onStarted(this.mSourceLocale, this.mTargetLocale, packageName);
+                    break;
                 case 1:
                     this.mCallback.onPaused(packageName);
-                    return;
+                    break;
                 case 2:
                     this.mCallback.onResumed(this.mSourceLocale, this.mTargetLocale, packageName);
-                    return;
+                    break;
                 case 3:
                     this.mCallback.onFinished(packageName);
-                    return;
+                    break;
                 default:
                     Log.wtf(UiTranslationManager.TAG, "Unexpected translation state:" + state);
-                    return;
+                    break;
             }
         }
     }

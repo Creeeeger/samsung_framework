@@ -41,9 +41,9 @@ public abstract class PlayerBase {
     private float mPanMultiplierR = 1.0f;
     private float mVolMultiplier = 1.0f;
 
-    public abstract int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation);
+    abstract int playerApplyVolumeShaper(VolumeShaper.Configuration configuration, VolumeShaper.Operation operation);
 
-    public abstract VolumeShaper.State playerGetVolumeShaperState(int i);
+    abstract VolumeShaper.State playerGetVolumeShaperState(int i);
 
     abstract void playerPause();
 
@@ -55,7 +55,7 @@ public abstract class PlayerBase {
 
     abstract void playerStop();
 
-    public PlayerBase(AudioAttributes attr, int implType) {
+    PlayerBase(AudioAttributes attr, int implType) {
         if (attr == null) {
             throw new IllegalArgumentException("Illegal null AudioAttributes");
         }
@@ -72,7 +72,7 @@ public abstract class PlayerBase {
         return i;
     }
 
-    public void baseRegisterPlayer(int sessionId) {
+    protected void baseRegisterPlayer(int sessionId) {
         try {
             this.mPlayerIId = getService().trackPlayer(new PlayerIdCard(this.mImplType, this.mAttributes, new IPlayerWrapper(this), sessionId));
         } catch (RemoteException e) {
@@ -80,7 +80,7 @@ public abstract class PlayerBase {
         }
     }
 
-    public void baseUpdateAudioAttributes(AudioAttributes attr) {
+    void baseUpdateAudioAttributes(AudioAttributes attr) {
         if (attr == null) {
             throw new IllegalArgumentException("Illegal null AudioAttributes");
         }
@@ -94,7 +94,7 @@ public abstract class PlayerBase {
         }
     }
 
-    public void baseUpdateSessionId(int sessionId) {
+    void baseUpdateSessionId(int sessionId) {
         try {
             getService().playerSessionId(this.mPlayerIId, sessionId);
         } catch (RemoteException e) {
@@ -102,7 +102,7 @@ public abstract class PlayerBase {
         }
     }
 
-    public void baseUpdateDeviceId(AudioDeviceInfo deviceInfo) {
+    void baseUpdateDeviceId(AudioDeviceInfo deviceInfo) {
         int piid;
         int deviceId = 0;
         if (deviceInfo != null) {
@@ -133,17 +133,17 @@ public abstract class PlayerBase {
         }
     }
 
-    public void baseStart(int deviceId) {
+    void baseStart(int deviceId) {
         updateState(2, deviceId);
     }
 
-    public void baseSetStartDelayMs(int delayMs) {
+    void baseSetStartDelayMs(int delayMs) {
         synchronized (this.mLock) {
             this.mStartDelayMs = Math.max(delayMs, 0);
         }
     }
 
-    public int getStartDelayMs() {
+    protected int getStartDelayMs() {
         int i;
         synchronized (this.mLock) {
             i = this.mStartDelayMs;
@@ -151,11 +151,11 @@ public abstract class PlayerBase {
         return i;
     }
 
-    public void basePause() {
+    void basePause() {
         updateState(3, 0);
     }
 
-    public void baseStop() {
+    void baseStop() {
         updateState(4, 0);
     }
 
@@ -177,9 +177,8 @@ public abstract class PlayerBase {
         float finalLeftVol;
         float finalRightVol;
         synchronized (this.mLock) {
-            float f = this.mVolMultiplier;
-            finalLeftVol = this.mLeftVolume * f * this.mPanMultiplierL;
-            finalRightVol = f * this.mRightVolume * this.mPanMultiplierR;
+            finalLeftVol = this.mVolMultiplier * this.mLeftVolume * this.mPanMultiplierL;
+            finalRightVol = this.mVolMultiplier * this.mRightVolume * this.mPanMultiplierR;
         }
         playerSetVolume(false, finalLeftVol, finalRightVol);
     }
@@ -191,7 +190,7 @@ public abstract class PlayerBase {
         updatePlayerVolume();
     }
 
-    public void baseSetVolume(float leftVolume, float rightVolume) {
+    void baseSetVolume(float leftVolume, float rightVolume) {
         synchronized (this.mLock) {
             this.mLeftVolume = leftVolume;
             this.mRightVolume = rightVolume;
@@ -199,14 +198,14 @@ public abstract class PlayerBase {
         updatePlayerVolume();
     }
 
-    public int baseSetAuxEffectSendLevel(float level) {
+    int baseSetAuxEffectSendLevel(float level) {
         synchronized (this.mLock) {
             this.mAuxEffectSendLevel = level;
         }
         return playerSetAuxEffectSendLevel(false, level);
     }
 
-    public void baseRelease() {
+    void baseRelease() {
         boolean releasePlayer = false;
         synchronized (this.mLock) {
             if (this.mState != 0) {
@@ -222,32 +221,27 @@ public abstract class PlayerBase {
             }
         }
         try {
-            IAppOpsService iAppOpsService = this.mAppOps;
-            if (iAppOpsService != null) {
-                iAppOpsService.stopWatchingMode(this.mAppOpsCallback);
+            if (this.mAppOps != null) {
+                this.mAppOps.stopWatchingMode(this.mAppOpsCallback);
             }
         } catch (Exception e2) {
         }
     }
 
     private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 
     public void setStartDelayMs(int delayMs) {
         baseSetStartDelayMs(delayMs);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes2.dex */
-    public static class IPlayerWrapper extends IPlayer.Stub {
+    private static class IPlayerWrapper extends IPlayer.Stub {
         private final WeakReference<PlayerBase> mWeakPB;
 
         public IPlayerWrapper(PlayerBase pb) {
@@ -311,19 +305,17 @@ public abstract class PlayerBase {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static class PlayerIdCard implements Parcelable {
         public static final int AUDIO_ATTRIBUTES_DEFINED = 1;
         public static final int AUDIO_ATTRIBUTES_NONE = 0;
         public static final Parcelable.Creator<PlayerIdCard> CREATOR = new Parcelable.Creator<PlayerIdCard>() { // from class: android.media.PlayerBase.PlayerIdCard.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PlayerIdCard createFromParcel(Parcel p) {
                 return new PlayerIdCard(p);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public PlayerIdCard[] newArray(int size) {
                 return new PlayerIdCard[size];
@@ -333,10 +325,6 @@ public abstract class PlayerBase {
         public final IPlayer mIPlayer;
         public final int mPlayerType;
         public final int mSessionId;
-
-        /* synthetic */ PlayerIdCard(Parcel parcel, PlayerIdCardIA playerIdCardIA) {
-            this(parcel);
-        }
 
         PlayerIdCard(int type, AudioAttributes attr, IPlayer iplayer, int sessionId) {
             this.mPlayerType = type;
@@ -358,26 +346,8 @@ public abstract class PlayerBase {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.mPlayerType);
             this.mAttributes.writeToParcel(dest, 0);
-            IPlayer iPlayer = this.mIPlayer;
-            dest.writeStrongBinder(iPlayer == null ? null : iPlayer.asBinder());
+            dest.writeStrongBinder(this.mIPlayer == null ? null : this.mIPlayer.asBinder());
             dest.writeInt(this.mSessionId);
-        }
-
-        /* renamed from: android.media.PlayerBase$PlayerIdCard$1 */
-        /* loaded from: classes2.dex */
-        class AnonymousClass1 implements Parcelable.Creator<PlayerIdCard> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PlayerIdCard createFromParcel(Parcel p) {
-                return new PlayerIdCard(p);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public PlayerIdCard[] newArray(int size) {
-                return new PlayerIdCard[size];
-            }
         }
 
         private PlayerIdCard(Parcel in) {
@@ -411,11 +381,11 @@ public abstract class PlayerBase {
         Log.w(className, "See the documentation of " + opName + " for what to use instead with android.media.AudioAttributes to qualify your playback use case");
     }
 
-    public String getCurrentOpPackageName() {
+    protected String getCurrentOpPackageName() {
         return TextUtils.emptyIfNull(ActivityThread.currentOpPackageName());
     }
 
-    public static int resolvePlaybackSessionId(Context context, int requestedSessionId) {
+    protected static int resolvePlaybackSessionId(Context context, int requestedSessionId) {
         int deviceId;
         VirtualDeviceManager vdm;
         if (requestedSessionId != 0) {

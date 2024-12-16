@@ -3,7 +3,7 @@ package android.text;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class SpanSet<E> {
     private final Class<? extends E> classType;
     int numberOfSpans = 0;
@@ -12,15 +12,14 @@ public class SpanSet<E> {
     int[] spanStarts;
     E[] spans;
 
-    public SpanSet(Class<? extends E> type) {
+    SpanSet(Class<? extends E> type) {
         this.classType = type;
     }
 
     public void init(Spanned spanned, int i, int i2) {
-        E[] eArr;
         Object[] spans = spanned.getSpans(i, i2, this.classType);
         int length = spans.length;
-        if (length > 0 && ((eArr = this.spans) == null || eArr.length < length)) {
+        if (length > 0 && (this.spans == null || this.spans.length < length)) {
             this.spans = (E[]) ((Object[]) Array.newInstance(this.classType, length));
             this.spanStarts = new int[length];
             this.spanEnds = new int[length];
@@ -33,18 +32,15 @@ public class SpanSet<E> {
             int spanEnd = spanned.getSpanEnd(obj);
             if (spanStart != spanEnd) {
                 int spanFlags = spanned.getSpanFlags(obj);
-                Object[] objArr = (E[]) this.spans;
-                int i4 = this.numberOfSpans;
-                objArr[i4] = obj;
-                this.spanStarts[i4] = spanStart;
-                this.spanEnds[i4] = spanEnd;
-                this.spanFlags[i4] = spanFlags;
-                this.numberOfSpans = i4 + 1;
+                ((E[]) this.spans)[this.numberOfSpans] = obj;
+                this.spanStarts[this.numberOfSpans] = spanStart;
+                this.spanEnds[this.numberOfSpans] = spanEnd;
+                this.spanFlags[this.numberOfSpans] = spanFlags;
+                this.numberOfSpans++;
             }
         }
-        int i5 = this.numberOfSpans;
-        if (i5 < i3) {
-            Arrays.fill(this.spans, i5, i3, (Object) null);
+        if (this.numberOfSpans < i3) {
+            Arrays.fill(this.spans, this.numberOfSpans, i3, (Object) null);
         }
     }
 
@@ -57,7 +53,7 @@ public class SpanSet<E> {
         return false;
     }
 
-    public int getNextTransition(int start, int limit) {
+    int getNextTransition(int start, int limit) {
         for (int i = 0; i < this.numberOfSpans; i++) {
             int spanStart = this.spanStarts[i];
             int spanEnd = this.spanEnds[i];
@@ -72,9 +68,8 @@ public class SpanSet<E> {
     }
 
     public void recycle() {
-        E[] eArr = this.spans;
-        if (eArr != null) {
-            Arrays.fill(eArr, 0, this.numberOfSpans, (Object) null);
+        if (this.spans != null) {
+            Arrays.fill(this.spans, 0, this.numberOfSpans, (Object) null);
         }
     }
 }

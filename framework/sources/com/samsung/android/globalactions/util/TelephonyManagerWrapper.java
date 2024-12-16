@@ -5,15 +5,14 @@ import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import com.android.internal.telephony.TelephonyProperties;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TelephonyManagerWrapper {
     private final boolean mHasTelephonyRadio;
     private final TelephonyManager mTelephonyManager;
 
     public TelephonyManagerWrapper(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService("phone");
-        this.mTelephonyManager = telephonyManager;
-        this.mHasTelephonyRadio = telephonyManager.isVoiceCapable();
+        this.mTelephonyManager = (TelephonyManager) context.getSystemService("phone");
+        this.mHasTelephonyRadio = this.mTelephonyManager.isVoiceCapable();
     }
 
     public boolean hasTelephonyRadio() {
@@ -25,9 +24,8 @@ public class TelephonyManagerWrapper {
     }
 
     public boolean hasAnySim() {
-        TelephonyManager telephonyManager = this.mTelephonyManager;
-        if (telephonyManager != null) {
-            int simCount = telephonyManager.getActiveModemCount();
+        if (this.mTelephonyManager != null) {
+            int simCount = this.mTelephonyManager.getActiveModemCount();
             for (int i = 0; i < simCount; i++) {
                 int state = this.mTelephonyManager.getSimState(i);
                 if (state != 1 && state != 0) {

@@ -19,7 +19,7 @@ public class RollbackManagerFrameworkInitializer {
         });
     }
 
-    public static /* synthetic */ RollbackManager lambda$initialize$0(Context context, IBinder b) {
+    static /* synthetic */ RollbackManager lambda$initialize$0(Context context, IBinder b) {
         return new RollbackManager(context, IRollbackManager.Stub.asInterface(b));
     }
 }

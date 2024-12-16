@@ -15,6 +15,7 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.Flags;
 import com.android.internal.R;
 import com.android.internal.compat.IPlatformCompat;
 import java.lang.annotation.Retention;
@@ -27,6 +28,8 @@ import java.util.List;
 public class AccessibilityServiceInfo implements Parcelable {
     public static final int CAPABILITY_CAN_CONTROL_MAGNIFICATION = 16;
     public static final int CAPABILITY_CAN_PERFORM_GESTURES = 32;
+
+    @Deprecated
     public static final int CAPABILITY_CAN_REQUEST_ENHANCED_WEB_ACCESSIBILITY = 4;
     public static final int CAPABILITY_CAN_REQUEST_FILTER_KEY_EVENTS = 8;
     public static final int CAPABILITY_CAN_REQUEST_FINGERPRINT_GESTURES = 64;
@@ -34,9 +37,7 @@ public class AccessibilityServiceInfo implements Parcelable {
     public static final int CAPABILITY_CAN_RETRIEVE_WINDOW_CONTENT = 1;
     public static final int CAPABILITY_CAN_TAKE_SCREENSHOT = 128;
     public static final Parcelable.Creator<AccessibilityServiceInfo> CREATOR = new Parcelable.Creator<AccessibilityServiceInfo>() { // from class: android.accessibilityservice.AccessibilityServiceInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityServiceInfo createFromParcel(Parcel parcel) {
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
@@ -44,6 +45,7 @@ public class AccessibilityServiceInfo implements Parcelable {
             return info;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityServiceInfo[] newArray(int size) {
             return new AccessibilityServiceInfo[size];
@@ -64,6 +66,8 @@ public class AccessibilityServiceInfo implements Parcelable {
     public static final int FLAG_REPORT_VIEW_IDS = 16;
     public static final int FLAG_REQUEST_2_FINGER_PASSTHROUGH = 8192;
     public static final int FLAG_REQUEST_ACCESSIBILITY_BUTTON = 256;
+
+    @Deprecated
     public static final int FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY = 8;
     public static final int FLAG_REQUEST_FILTER_KEY_EVENTS = 32;
     public static final int FLAG_REQUEST_FINGERPRINT_GESTURES = 512;
@@ -84,6 +88,7 @@ public class AccessibilityServiceInfo implements Parcelable {
     private int mCapabilities;
     private ComponentName mComponentName;
     private int mDescriptionResId;
+    private final DynamicPropertyDefaults mDynamicPropertyDefaults;
     private int mHtmlDescriptionRes;
     private int mInteractiveUiTimeout;
     private int mIntroResId;
@@ -92,6 +97,7 @@ public class AccessibilityServiceInfo implements Parcelable {
     private int mNonInteractiveUiTimeout;
     private String mNonLocalizedDescription;
     private String mNonLocalizedSummary;
+    private int mObservedMotionEventSources;
     private ResolveInfo mResolveInfo;
     private String mSettingsActivityName;
     private int mSummaryResId;
@@ -100,37 +106,83 @@ public class AccessibilityServiceInfo implements Parcelable {
     public String[] packageNames;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface FeedbackType {
     }
 
-    /* loaded from: classes.dex */
+    @Retention(RetentionPolicy.SOURCE)
     public @interface MotionEventSources {
+    }
+
+    private static class DynamicPropertyDefaults {
+        private final int mEventTypesDefault;
+        private final int mFeedbackTypeDefault;
+        private final int mFlagsDefault;
+        private final int mInteractiveUiTimeoutDefault;
+        private final int mMotionEventSourcesDefault;
+        private final int mNonInteractiveUiTimeoutDefault;
+        private final long mNotificationTimeoutDefault;
+        private final int mObservedMotionEventSourcesDefault;
+        private final List<String> mPackageNamesDefault;
+
+        DynamicPropertyDefaults(AccessibilityServiceInfo info) {
+            this.mEventTypesDefault = info.eventTypes;
+            if (info.packageNames != null) {
+                this.mPackageNamesDefault = List.of((Object[]) info.packageNames);
+            } else {
+                this.mPackageNamesDefault = null;
+            }
+            this.mFeedbackTypeDefault = info.feedbackType;
+            this.mNotificationTimeoutDefault = info.notificationTimeout;
+            this.mNonInteractiveUiTimeoutDefault = info.mNonInteractiveUiTimeout;
+            this.mInteractiveUiTimeoutDefault = info.mInteractiveUiTimeout;
+            this.mFlagsDefault = info.flags;
+            this.mMotionEventSourcesDefault = info.mMotionEventSources;
+            this.mObservedMotionEventSourcesDefault = info.mObservedMotionEventSources;
+        }
     }
 
     public AccessibilityServiceInfo() {
         this.mIsAccessibilityTool = false;
         this.mMotionEventSources = 0;
+        this.mObservedMotionEventSources = 0;
+        this.mDynamicPropertyDefaults = new DynamicPropertyDefaults(this);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:37:0x0200  */
+    /* JADX WARN: Removed duplicated region for block: B:37:0x0214  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public AccessibilityServiceInfo(android.content.pm.ResolveInfo r20, android.content.Context r21) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
         /*
-            Method dump skipped, instructions count: 516
+            Method dump skipped, instructions count: 543
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.accessibilityservice.AccessibilityServiceInfo.<init>(android.content.pm.ResolveInfo, android.content.Context):void");
     }
 
+    public void resetDynamicallyConfigurableProperties() {
+        this.eventTypes = this.mDynamicPropertyDefaults.mEventTypesDefault;
+        if (this.mDynamicPropertyDefaults.mPackageNamesDefault == null) {
+            this.packageNames = null;
+        } else {
+            this.packageNames = (String[]) this.mDynamicPropertyDefaults.mPackageNamesDefault.toArray(new String[0]);
+        }
+        this.feedbackType = this.mDynamicPropertyDefaults.mFeedbackTypeDefault;
+        this.notificationTimeout = this.mDynamicPropertyDefaults.mNotificationTimeoutDefault;
+        this.mNonInteractiveUiTimeout = this.mDynamicPropertyDefaults.mNonInteractiveUiTimeoutDefault;
+        this.mInteractiveUiTimeout = this.mDynamicPropertyDefaults.mInteractiveUiTimeoutDefault;
+        this.flags = this.mDynamicPropertyDefaults.mFlagsDefault;
+        this.mMotionEventSources = this.mDynamicPropertyDefaults.mMotionEventSourcesDefault;
+        if (Flags.motionEventObserving()) {
+            this.mObservedMotionEventSources = this.mDynamicPropertyDefaults.mObservedMotionEventSourcesDefault;
+        }
+    }
+
     public void updateDynamicallyConfigurableProperties(IPlatformCompat platformCompat, AccessibilityServiceInfo other) {
         if (isRequestAccessibilityButtonChangeEnabled(platformCompat)) {
-            int i = other.flags & (-257);
-            other.flags = i;
-            other.flags = i | (this.flags & 256);
+            other.flags &= -257;
+            other.flags |= this.flags & 256;
         }
         this.eventTypes = other.eventTypes;
         this.packageNames = other.packageNames;
@@ -140,16 +192,18 @@ public class AccessibilityServiceInfo implements Parcelable {
         this.mInteractiveUiTimeout = other.mInteractiveUiTimeout;
         this.flags = other.flags;
         this.mMotionEventSources = other.mMotionEventSources;
+        if (Flags.motionEventObserving()) {
+            setObservedMotionEventSources(other.mObservedMotionEventSources);
+        }
     }
 
     private boolean isRequestAccessibilityButtonChangeEnabled(IPlatformCompat platformCompat) {
-        ResolveInfo resolveInfo = this.mResolveInfo;
-        if (resolveInfo == null) {
+        if (this.mResolveInfo == null) {
             return true;
         }
         if (platformCompat != null) {
             try {
-                return platformCompat.isChangeEnabled(REQUEST_ACCESSIBILITY_BUTTON_CHANGE, resolveInfo.serviceInfo.applicationInfo);
+                return platformCompat.isChangeEnabled(REQUEST_ACCESSIBILITY_BUTTON_CHANGE, this.mResolveInfo.serviceInfo.applicationInfo);
             } catch (RemoteException e) {
             }
         }
@@ -169,11 +223,10 @@ public class AccessibilityServiceInfo implements Parcelable {
     }
 
     public String getId() {
-        ComponentName componentName = this.mComponentName;
-        if (componentName == null) {
+        if (this.mComponentName == null) {
             return null;
         }
-        return componentName.flattenToShortString();
+        return this.mComponentName.flattenToShortString();
     }
 
     public ResolveInfo getResolveInfo() {
@@ -217,6 +270,19 @@ public class AccessibilityServiceInfo implements Parcelable {
 
     public void setMotionEventSources(int motionEventSources) {
         this.mMotionEventSources = motionEventSources;
+        this.mObservedMotionEventSources = 0;
+    }
+
+    public void setObservedMotionEventSources(int observedMotionEventSources) {
+        if (((~this.mMotionEventSources) & observedMotionEventSources) != 0) {
+            String message = String.format("Requested motion event sources for listening = 0x%x but requested motion event sources for observing = 0x%x.", Integer.valueOf(this.mMotionEventSources), Integer.valueOf(observedMotionEventSources));
+            throw new IllegalArgumentException(message);
+        }
+        this.mObservedMotionEventSources = observedMotionEventSources;
+    }
+
+    public int getObservedMotionEventSources() {
+        return this.mObservedMotionEventSources;
     }
 
     public CharSequence loadSummary(PackageManager packageManager) {
@@ -337,8 +403,10 @@ public class AccessibilityServiceInfo implements Parcelable {
         parcel.writeString(this.mTileServiceName);
         parcel.writeInt(this.mIntroResId);
         parcel.writeInt(this.mMotionEventSources);
+        parcel.writeInt(this.mObservedMotionEventSources);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void initFromParcel(Parcel parcel) {
         this.eventTypes = parcel.readInt();
         this.packageNames = parcel.readStringArray();
@@ -362,11 +430,11 @@ public class AccessibilityServiceInfo implements Parcelable {
         this.mTileServiceName = parcel.readString();
         this.mIntroResId = parcel.readInt();
         this.mMotionEventSources = parcel.readInt();
+        setObservedMotionEventSources(parcel.readInt());
     }
 
     public int hashCode() {
-        ComponentName componentName = this.mComponentName;
-        return (componentName == null ? 0 : componentName.hashCode()) + 31;
+        return (this.mComponentName == null ? 0 : this.mComponentName.hashCode()) + 31;
     }
 
     public boolean equals(Object obj) {
@@ -377,12 +445,11 @@ public class AccessibilityServiceInfo implements Parcelable {
             return false;
         }
         AccessibilityServiceInfo other = (AccessibilityServiceInfo) obj;
-        ComponentName componentName = this.mComponentName;
-        if (componentName == null) {
+        if (this.mComponentName == null) {
             if (other.mComponentName != null) {
                 return false;
             }
-        } else if (!componentName.equals(other.mComponentName)) {
+        } else if (!this.mComponentName.equals(other.mComponentName)) {
             return false;
         }
         return true;
@@ -633,9 +700,8 @@ public class AccessibilityServiceInfo implements Parcelable {
 
     private static SparseArray<CapabilityInfo> getCapabilityInfoSparseArray(Context context) {
         if (sAvailableCapabilityInfos == null) {
-            SparseArray<CapabilityInfo> sparseArray = new SparseArray<>();
-            sAvailableCapabilityInfos = sparseArray;
-            sparseArray.put(1, new CapabilityInfo(1, R.string.capability_title_canRetrieveWindowContent, R.string.capability_desc_canRetrieveWindowContent));
+            sAvailableCapabilityInfos = new SparseArray<>();
+            sAvailableCapabilityInfos.put(1, new CapabilityInfo(1, R.string.capability_title_canRetrieveWindowContent, R.string.capability_desc_canRetrieveWindowContent));
             sAvailableCapabilityInfos.put(2, new CapabilityInfo(2, R.string.capability_title_canRequestTouchExploration, R.string.capability_desc_canRequestTouchExploration));
             sAvailableCapabilityInfos.put(8, new CapabilityInfo(8, R.string.capability_title_canRequestFilterKeyEvents, R.string.capability_desc_canRequestFilterKeyEvents));
             sAvailableCapabilityInfos.put(16, new CapabilityInfo(16, R.string.capability_title_canControlMagnification, R.string.capability_desc_canControlMagnification));
@@ -652,7 +718,6 @@ public class AccessibilityServiceInfo implements Parcelable {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) && ((FingerprintManager) context.getSystemService(FingerprintManager.class)).isHardwareDetected();
     }
 
-    /* loaded from: classes.dex */
     public static final class CapabilityInfo {
         public final int capability;
         public final int descResId;
@@ -665,7 +730,6 @@ public class AccessibilityServiceInfo implements Parcelable {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class SemCapabilityInfo {
         private final String description;
         private final String title;
@@ -681,25 +745,6 @@ public class AccessibilityServiceInfo implements Parcelable {
         public SemCapabilityInfo(String title, String description) {
             this.title = title;
             this.description = description;
-        }
-    }
-
-    /* renamed from: android.accessibilityservice.AccessibilityServiceInfo$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityServiceInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityServiceInfo createFromParcel(Parcel parcel) {
-            AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-            info.initFromParcel(parcel);
-            return info;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityServiceInfo[] newArray(int size) {
-            return new AccessibilityServiceInfo[size];
         }
     }
 }

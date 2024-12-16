@@ -7,24 +7,22 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Telephony;
 import android.telephony.CbGeoUtils;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SmsCbMessage implements Parcelable {
     public static final Parcelable.Creator<SmsCbMessage> CREATOR = new Parcelable.Creator<SmsCbMessage>() { // from class: android.telephony.SmsCbMessage.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbMessage createFromParcel(Parcel in) {
             return new SmsCbMessage(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SmsCbMessage[] newArray(int size) {
             return new SmsCbMessage[size];
@@ -60,17 +58,14 @@ public final class SmsCbMessage implements Parcelable {
     private final int mSubId;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface GeographicalScope {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface MessageFormat {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface MessagePriority {
     }
 
@@ -152,28 +147,10 @@ public final class SmsCbMessage implements Parcelable {
             dest.writeInt(48);
         }
         dest.writeLong(this.mReceivedTimeMillis);
-        List<CbGeoUtils.Geometry> list = this.mGeometries;
-        dest.writeString(list != null ? CbGeoUtils.encodeGeometriesToString(list) : null);
+        dest.writeString(this.mGeometries != null ? CbGeoUtils.encodeGeometriesToString(this.mGeometries) : null);
         dest.writeInt(this.mMaximumWaitTimeSec);
         dest.writeInt(this.mSlotIndex);
         dest.writeInt(this.mSubId);
-    }
-
-    /* renamed from: android.telephony.SmsCbMessage$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SmsCbMessage> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmsCbMessage createFromParcel(Parcel in) {
-            return new SmsCbMessage(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SmsCbMessage[] newArray(int size) {
-            return new SmsCbMessage[size];
-        }
     }
 
     public int getGeographicalScope() {
@@ -206,11 +183,10 @@ public final class SmsCbMessage implements Parcelable {
 
     @SystemApi
     public List<CbGeoUtils.Geometry> getGeometries() {
-        List<CbGeoUtils.Geometry> list = this.mGeometries;
-        if (list == null) {
+        if (this.mGeometries == null) {
             return new ArrayList();
         }
-        return list;
+        return this.mGeometries;
     }
 
     public int getMaximumWaitingDuration() {
@@ -258,9 +234,7 @@ public final class SmsCbMessage implements Parcelable {
     }
 
     public String toString() {
-        StringBuilder append = new StringBuilder().append("SmsCbMessage{geographicalScope=").append(this.mGeographicalScope).append(", serialNumber=").append(this.mSerialNumber).append(", location=").append(this.mLocation).append(", serviceCategory=").append(this.mServiceCategory).append(", language=").append(this.mLanguage).append(", body=").append(this.mBody).append(", priority=").append(this.mPriority).append(this.mEtwsWarningInfo != null ? ", " + this.mEtwsWarningInfo.toString() : "").append(this.mCmasWarningInfo != null ? ", " + this.mCmasWarningInfo.toString() : "").append(", maximumWaitingTime=").append(this.mMaximumWaitTimeSec).append(", received time=").append(this.mReceivedTimeMillis).append(", slotIndex = ").append(this.mSlotIndex).append(", geo=");
-        List<CbGeoUtils.Geometry> list = this.mGeometries;
-        return append.append(list != null ? CbGeoUtils.encodeGeometriesToString(list) : SemCapabilities.FEATURE_TAG_NULL).append('}').toString();
+        return "SmsCbMessage{geographicalScope=" + this.mGeographicalScope + ", serialNumber=" + this.mSerialNumber + ", location=" + this.mLocation + ", serviceCategory=" + this.mServiceCategory + ", language=" + this.mLanguage + ", body=" + this.mBody + ", priority=" + this.mPriority + (this.mEtwsWarningInfo != null ? ", " + this.mEtwsWarningInfo.toString() : "") + (this.mCmasWarningInfo != null ? ", " + this.mCmasWarningInfo.toString() : "") + ", maximumWaitingTime=" + this.mMaximumWaitTimeSec + ", received time=" + this.mReceivedTimeMillis + ", slotIndex = " + this.mSlotIndex + ", geo=" + (this.mGeometries != null ? CbGeoUtils.encodeGeometriesToString(this.mGeometries) : "null") + '}';
     }
 
     @Override // android.os.Parcelable
@@ -304,9 +278,8 @@ public final class SmsCbMessage implements Parcelable {
             cv.put(Telephony.CellBroadcasts.CMAS_CERTAINTY, Integer.valueOf(cmasInfo.getCertainty()));
         }
         cv.put(Telephony.CellBroadcasts.RECEIVED_TIME, Long.valueOf(this.mReceivedTimeMillis));
-        List<CbGeoUtils.Geometry> list = this.mGeometries;
-        if (list != null) {
-            cv.put(Telephony.CellBroadcasts.GEOMETRIES, CbGeoUtils.encodeGeometriesToString(list));
+        if (this.mGeometries != null) {
+            cv.put(Telephony.CellBroadcasts.GEOMETRIES, CbGeoUtils.encodeGeometriesToString(this.mGeometries));
         } else {
             cv.put(Telephony.CellBroadcasts.GEOMETRIES, (String) null);
         }
@@ -414,15 +387,14 @@ public final class SmsCbMessage implements Parcelable {
     }
 
     public boolean needGeoFencingCheck() {
-        List<CbGeoUtils.Geometry> list;
-        return (this.mMaximumWaitTimeSec <= 0 || (list = this.mGeometries) == null || list.isEmpty()) ? false : true;
+        return (this.mMaximumWaitTimeSec <= 0 || this.mGeometries == null || this.mGeometries.isEmpty()) ? false : true;
     }
 
     public int getCmasCategory() {
         try {
             return this.mCmasWarningInfo.getCategory();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasCategory");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasCategory");
             return 0;
         }
     }
@@ -431,7 +403,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getResponseType();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasResponseType");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasResponseType");
             return 0;
         }
     }
@@ -440,7 +412,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getSeverity();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasSeverity");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasSeverity");
             return 0;
         }
     }
@@ -449,7 +421,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getUrgency();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasUrgency");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasUrgency");
             return 0;
         }
     }
@@ -458,7 +430,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getCertainty();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasCertainty");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasCertainty");
             return 0;
         }
     }
@@ -467,7 +439,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getMessageID();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasMessageID");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasMessageID");
             return 0;
         }
     }
@@ -476,7 +448,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getAlertHandling();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasAlertHandling");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasAlertHandling");
             return 0;
         }
     }
@@ -485,7 +457,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getMsgExpires();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasMsgExpires");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasMsgExpires");
             return 0L;
         }
     }
@@ -494,7 +466,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getCMASRecordTypeFirstExists();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasRecordTypeFirstExists");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasRecordTypeFirstExists");
             return false;
         }
     }
@@ -503,7 +475,7 @@ public final class SmsCbMessage implements Parcelable {
         try {
             return this.mCmasWarningInfo.getCMASRecordTypeSecondExists();
         } catch (NullPointerException e) {
-            Rlog.e(LOG_TAG, "Null pointer exception in getCmasRecordTypeSecondExists");
+            com.android.telephony.Rlog.e(LOG_TAG, "Null pointer exception in getCmasRecordTypeSecondExists");
             return false;
         }
     }

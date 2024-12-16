@@ -12,7 +12,6 @@ public interface IPreferredMixerAttributesDispatcher extends IInterface {
 
     void dispatchPrefMixerAttributesChanged(AudioAttributes audioAttributes, int i, AudioMixerAttributes audioMixerAttributes) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IPreferredMixerAttributesDispatcher {
         @Override // android.media.IPreferredMixerAttributesDispatcher
         public void dispatchPrefMixerAttributesChanged(AudioAttributes attributes, int deviceId, AudioMixerAttributes mixerAttributes) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IPreferredMixerAttributesDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IPreferredMixerAttributesDispatcher {
         static final int TRANSACTION_dispatchPrefMixerAttributesChanged = 1;
 
@@ -67,27 +65,24 @@ public interface IPreferredMixerAttributesDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IPreferredMixerAttributesDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IPreferredMixerAttributesDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IPreferredMixerAttributesDispatcher.DESCRIPTOR);
+                case 1:
+                    AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    int _arg1 = data.readInt();
+                    AudioMixerAttributes _arg2 = (AudioMixerAttributes) data.readTypedObject(AudioMixerAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchPrefMixerAttributesChanged(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            int _arg1 = data.readInt();
-                            AudioMixerAttributes _arg2 = (AudioMixerAttributes) data.readTypedObject(AudioMixerAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchPrefMixerAttributesChanged(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IPreferredMixerAttributesDispatcher {
+        private static class Proxy implements IPreferredMixerAttributesDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -8,9 +8,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class LinkCapacityEstimate implements Parcelable {
     public static final Parcelable.Creator<LinkCapacityEstimate> CREATOR = new Parcelable.Creator<LinkCapacityEstimate>() { // from class: android.hardware.radio.network.LinkCapacityEstimate.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LinkCapacityEstimate createFromParcel(Parcel _aidl_source) {
             LinkCapacityEstimate _aidl_out = new LinkCapacityEstimate();
@@ -18,6 +16,7 @@ public class LinkCapacityEstimate implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public LinkCapacityEstimate[] newArray(int _aidl_size) {
             return new LinkCapacityEstimate[_aidl_size];
@@ -27,25 +26,6 @@ public class LinkCapacityEstimate implements Parcelable {
     public int uplinkCapacityKbps = 0;
     public int secondaryDownlinkCapacityKbps = 0;
     public int secondaryUplinkCapacityKbps = 0;
-
-    /* renamed from: android.hardware.radio.network.LinkCapacityEstimate$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<LinkCapacityEstimate> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LinkCapacityEstimate createFromParcel(Parcel _aidl_source) {
-            LinkCapacityEstimate _aidl_out = new LinkCapacityEstimate();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LinkCapacityEstimate[] newArray(int _aidl_size) {
-            return new LinkCapacityEstimate[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -124,7 +104,7 @@ public class LinkCapacityEstimate implements Parcelable {
         _aidl_sj.add("uplinkCapacityKbps: " + this.uplinkCapacityKbps);
         _aidl_sj.add("secondaryDownlinkCapacityKbps: " + this.secondaryDownlinkCapacityKbps);
         _aidl_sj.add("secondaryUplinkCapacityKbps: " + this.secondaryUplinkCapacityKbps);
-        return "android.hardware.radio.network.LinkCapacityEstimate" + _aidl_sj.toString();
+        return "LinkCapacityEstimate" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

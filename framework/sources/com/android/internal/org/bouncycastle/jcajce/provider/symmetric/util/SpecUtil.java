@@ -8,7 +8,7 @@ class SpecUtil {
     SpecUtil() {
     }
 
-    public static AlgorithmParameterSpec extractSpec(AlgorithmParameters params, Class[] availableSpecs) {
+    static AlgorithmParameterSpec extractSpec(AlgorithmParameters params, Class[] availableSpecs) {
         try {
             return params.getParameterSpec(AlgorithmParameterSpec.class);
         } catch (Exception e) {

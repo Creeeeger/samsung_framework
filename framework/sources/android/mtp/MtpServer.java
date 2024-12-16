@@ -7,7 +7,7 @@ import java.io.FileDescriptor;
 import java.util.Random;
 import libcore.util.HexEncoding;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MtpServer implements Runnable {
     private static final int sID_LEN_BYTES = 16;
     private static final int sID_LEN_STR = 32;
@@ -40,13 +40,11 @@ public class MtpServer implements Runnable {
 
     public MtpServer(MtpDatabase database, FileDescriptor controlFd, boolean usePtp, Runnable onTerminate, String deviceInfoManufacturer, String deviceInfoModel, String deviceInfoDeviceVersion) {
         String strRandomId;
-        MtpDatabase mtpDatabase = (MtpDatabase) Preconditions.checkNotNull(database);
-        this.mDatabase = mtpDatabase;
+        this.mDatabase = (MtpDatabase) Preconditions.checkNotNull(database);
         this.mOnTerminate = (Runnable) Preconditions.checkNotNull(onTerminate);
-        Context context = mtpDatabase.getContext();
-        this.mContext = context;
+        this.mContext = this.mDatabase.getContext();
         String strRandomId2 = null;
-        SharedPreferences sharedPref = context.getSharedPreferences("mtp-cfg", 0);
+        SharedPreferences sharedPref = this.mContext.getSharedPreferences("mtp-cfg", 0);
         if (sharedPref.contains("mtp-id") && (strRandomId2 = sharedPref.getString("mtp-id", null)) != null) {
             if (strRandomId2.length() != 32) {
                 strRandomId2 = null;

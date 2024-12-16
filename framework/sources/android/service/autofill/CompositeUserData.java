@@ -12,9 +12,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class CompositeUserData implements FieldClassificationUserData, Parcelable {
     public static final Parcelable.Creator<CompositeUserData> CREATOR = new Parcelable.Creator<CompositeUserData>() { // from class: android.service.autofill.CompositeUserData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompositeUserData createFromParcel(Parcel parcel) {
             UserData genericUserData = (UserData) parcel.readParcelable(null, UserData.class);
@@ -22,6 +20,7 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
             return new CompositeUserData(genericUserData, packageUserData);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompositeUserData[] newArray(int size) {
             return new CompositeUserData[size];
@@ -35,16 +34,16 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
     public CompositeUserData(UserData genericUserData, UserData packageUserData) {
         this.mGenericUserData = genericUserData;
         this.mPackageUserData = packageUserData;
-        String[] packageCategoryIds = packageUserData.getCategoryIds();
-        String[] packageValues = packageUserData.getValues();
+        String[] packageCategoryIds = this.mPackageUserData.getCategoryIds();
+        String[] packageValues = this.mPackageUserData.getValues();
         ArrayList<String> categoryIds = new ArrayList<>(packageCategoryIds.length);
         ArrayList<String> values = new ArrayList<>(packageValues.length);
         Collections.addAll(categoryIds, packageCategoryIds);
         Collections.addAll(values, packageValues);
-        if (genericUserData != null) {
-            String[] genericCategoryIds = genericUserData.getCategoryIds();
-            String[] genericValues = genericUserData.getValues();
-            int size = genericUserData.getCategoryIds().length;
+        if (this.mGenericUserData != null) {
+            String[] genericCategoryIds = this.mGenericUserData.getCategoryIds();
+            String[] genericValues = this.mGenericUserData.getValues();
+            int size = this.mGenericUserData.getCategoryIds().length;
             for (int i = 0; i < size; i++) {
                 if (!categoryIds.contains(genericCategoryIds[i])) {
                     categoryIds.add(genericCategoryIds[i]);
@@ -52,12 +51,10 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
                 }
             }
         }
-        String[] strArr = new String[categoryIds.size()];
-        this.mCategories = strArr;
-        categoryIds.toArray(strArr);
-        String[] strArr2 = new String[values.size()];
-        this.mValues = strArr2;
-        values.toArray(strArr2);
+        this.mCategories = new String[categoryIds.size()];
+        categoryIds.toArray(this.mCategories);
+        this.mValues = new String[values.size()];
+        values.toArray(this.mValues);
     }
 
     @Override // android.service.autofill.FieldClassificationUserData
@@ -66,11 +63,10 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
         if (packageDefaultAlgo != null) {
             return packageDefaultAlgo;
         }
-        UserData userData = this.mGenericUserData;
-        if (userData == null) {
+        if (this.mGenericUserData == null) {
             return null;
         }
-        return userData.getFieldClassificationAlgorithm();
+        return this.mGenericUserData.getFieldClassificationAlgorithm();
     }
 
     @Override // android.service.autofill.FieldClassificationUserData
@@ -79,11 +75,10 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
         if (packageDefaultArgs != null) {
             return packageDefaultArgs;
         }
-        UserData userData = this.mGenericUserData;
-        if (userData == null) {
+        if (this.mGenericUserData == null) {
             return null;
         }
-        return userData.getDefaultFieldClassificationArgs();
+        return this.mGenericUserData.getDefaultFieldClassificationArgs();
     }
 
     @Override // android.service.autofill.FieldClassificationUserData
@@ -99,8 +94,7 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
     @Override // android.service.autofill.FieldClassificationUserData
     public ArrayMap<String, String> getFieldClassificationAlgorithms() {
         ArrayMap<String, String> packageAlgos = this.mPackageUserData.getFieldClassificationAlgorithms();
-        UserData userData = this.mGenericUserData;
-        ArrayMap<String, String> genericAlgos = userData == null ? null : userData.getFieldClassificationAlgorithms();
+        ArrayMap<String, String> genericAlgos = this.mGenericUserData == null ? null : this.mGenericUserData.getFieldClassificationAlgorithms();
         ArrayMap<String, String> categoryAlgorithms = null;
         if (packageAlgos != null || genericAlgos != null) {
             categoryAlgorithms = new ArrayMap<>();
@@ -117,8 +111,7 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
     @Override // android.service.autofill.FieldClassificationUserData
     public ArrayMap<String, Bundle> getFieldClassificationArgs() {
         ArrayMap<String, Bundle> packageArgs = this.mPackageUserData.getFieldClassificationArgs();
-        UserData userData = this.mGenericUserData;
-        ArrayMap<String, Bundle> genericArgs = userData == null ? null : userData.getFieldClassificationArgs();
+        ArrayMap<String, Bundle> genericArgs = this.mGenericUserData == null ? null : this.mGenericUserData.getFieldClassificationArgs();
         ArrayMap<String, Bundle> categoryArgs = null;
         if (packageArgs != null || genericArgs != null) {
             categoryArgs = new ArrayMap<>();
@@ -159,24 +152,5 @@ public final class CompositeUserData implements FieldClassificationUserData, Par
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(this.mGenericUserData, 0);
         parcel.writeParcelable(this.mPackageUserData, 0);
-    }
-
-    /* renamed from: android.service.autofill.CompositeUserData$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompositeUserData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompositeUserData createFromParcel(Parcel parcel) {
-            UserData genericUserData = (UserData) parcel.readParcelable(null, UserData.class);
-            UserData packageUserData = (UserData) parcel.readParcelable(null, UserData.class);
-            return new CompositeUserData(genericUserData, packageUserData);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompositeUserData[] newArray(int size) {
-            return new CompositeUserData[size];
-        }
     }
 }

@@ -1,13 +1,13 @@
 package com.samsung.android.sume.core.format;
 
-import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda12;
+import com.samsung.android.sume.core.buffer.MutableMediaBuffer$$ExternalSyntheticLambda3;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
-public class StapleUpdatableMediaFormat extends StapleMediaFormat implements UpdatableMediaFormat {
+/* loaded from: classes6.dex */
+class StapleUpdatableMediaFormat extends StapleMediaFormat implements UpdatableMediaFormat {
     protected int flags;
     MutableMediaFormat source;
     BiConsumer<MediaFormat, MutableMediaFormat> updater;
@@ -49,9 +49,8 @@ public class StapleUpdatableMediaFormat extends StapleMediaFormat implements Upd
 
     @Override // com.samsung.android.sume.core.format.UpdatableMediaFormat
     public MediaFormat update() {
-        BiConsumer<MediaFormat, MutableMediaFormat> biConsumer = this.updater;
-        if (biConsumer != null) {
-            biConsumer.accept(this, this.source);
+        if (this.updater != null) {
+            this.updater.accept(this, this.source);
         }
         return this.source.toMediaFormat();
     }
@@ -65,72 +64,72 @@ public class StapleUpdatableMediaFormat extends StapleMediaFormat implements Upd
     }
 
     private int[] getCroppedRect() {
-        return (int[]) Optional.ofNullable((int[]) get("crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda4
+        return (int[]) Optional.ofNullable((int[]) get("crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return StapleUpdatableMediaFormat.this.m8780x7e198b7e((int[]) obj);
-            }
-        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda5
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                return StapleUpdatableMediaFormat.this.m8782x19987b80();
-            }
-        });
-    }
-
-    /* renamed from: lambda$getCroppedRect$0$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ int[] m8780x7e198b7e(int[] e) {
-        return new int[]{e[0], e[1], coerceAtMostCols(e[0], e[2]), coerceAtMostRows(e[1], e[3])};
-    }
-
-    /* renamed from: lambda$getCroppedRect$1$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ int[] m8781xcbd9037f(int[] e) {
-        return new int[]{Math.max(0, (this.source.getCols() - e[0]) >> 1), Math.max(0, (this.source.getRows() - e[1]) >> 1), Math.min(e[0], this.source.getCols()), Math.min(e[1], this.source.getRows())};
-    }
-
-    /* renamed from: lambda$getCroppedRect$2$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ int[] m8782x19987b80() {
-        return (int[]) Optional.ofNullable((int[]) get("center-crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda3
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return StapleUpdatableMediaFormat.this.m8781xcbd9037f((int[]) obj);
-            }
-        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
-    }
-
-    @Override // com.samsung.android.sume.core.format.UpdatableMediaFormat
-    public Shape getCroppedShape() {
-        return (Shape) Optional.ofNullable((int[]) get("crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda1
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return StapleUpdatableMediaFormat.this.m8783x3e8178f2((int[]) obj);
+                return StapleUpdatableMediaFormat.this.m9168x7e198b7e((int[]) obj);
             }
         }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
-                return StapleUpdatableMediaFormat.this.m8785xda0068f4();
+                return StapleUpdatableMediaFormat.this.m9170x19987b80();
             }
         });
     }
 
-    /* renamed from: lambda$getCroppedShape$3$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ Shape m8783x3e8178f2(int[] e) {
+    /* renamed from: lambda$getCroppedRect$0$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ int[] m9168x7e198b7e(int[] e) {
+        return new int[]{e[0], e[1], coerceAtMostCols(e[0], e[2]), coerceAtMostRows(e[1], e[3])};
+    }
+
+    /* renamed from: lambda$getCroppedRect$1$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ int[] m9169xcbd9037f(int[] e) {
+        return new int[]{Math.max(0, (this.source.getCols() - e[0]) >> 1), Math.max(0, (this.source.getRows() - e[1]) >> 1), Math.min(e[0], this.source.getCols()), Math.min(e[1], this.source.getRows())};
+    }
+
+    /* renamed from: lambda$getCroppedRect$2$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ int[] m9170x19987b80() {
+        return (int[]) Optional.ofNullable((int[]) get("center-crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda3
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return StapleUpdatableMediaFormat.this.m9169xcbd9037f((int[]) obj);
+            }
+        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
+    }
+
+    @Override // com.samsung.android.sume.core.format.UpdatableMediaFormat
+    public Shape getCroppedShape() {
+        return (Shape) Optional.ofNullable((int[]) get("crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda4
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return StapleUpdatableMediaFormat.this.m9171x3e8178f2((int[]) obj);
+            }
+        }).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda5
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                return StapleUpdatableMediaFormat.this.m9173xda0068f4();
+            }
+        });
+    }
+
+    /* renamed from: lambda$getCroppedShape$3$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ Shape m9171x3e8178f2(int[] e) {
         return Shape.of(this.source.getBatch(), coerceAtMostRows(e[1], e[3]), coerceAtMostCols(e[0], e[2]), this.source.getChannels());
     }
 
-    /* renamed from: lambda$getCroppedShape$4$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ Shape m8784x8c40f0f3(int[] e) {
+    /* renamed from: lambda$getCroppedShape$4$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ Shape m9172x8c40f0f3(int[] e) {
         return Shape.of(this.source.getBatch(), Math.min(e[1], this.source.getRows()), Math.min(e[0], this.source.getCols()), this.source.getChannels());
     }
 
-    /* renamed from: lambda$getCroppedShape$5$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat */
-    public /* synthetic */ Shape m8785xda0068f4() {
+    /* renamed from: lambda$getCroppedShape$5$com-samsung-android-sume-core-format-StapleUpdatableMediaFormat, reason: not valid java name */
+    /* synthetic */ Shape m9173xda0068f4() {
         return (Shape) Optional.ofNullable((int[]) get("center-crop")).map(new Function() { // from class: com.samsung.android.sume.core.format.StapleUpdatableMediaFormat$$ExternalSyntheticLambda0
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
-                return StapleUpdatableMediaFormat.this.m8784x8c40f0f3((int[]) obj);
+                return StapleUpdatableMediaFormat.this.m9172x8c40f0f3((int[]) obj);
             }
-        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda12());
+        }).orElseThrow(new MutableMediaBuffer$$ExternalSyntheticLambda3());
     }
 
     @Override // com.samsung.android.sume.core.format.StapleMediaFormat

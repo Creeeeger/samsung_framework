@@ -5,7 +5,7 @@ import android.renderscript.Program;
 @Deprecated
 /* loaded from: classes3.dex */
 public class ProgramVertex extends Program {
-    public ProgramVertex(long id, RenderScript rs) {
+    ProgramVertex(long id, RenderScript rs) {
         super(id, rs);
     }
 
@@ -23,7 +23,6 @@ public class ProgramVertex extends Program {
         return this.mInputs[slot];
     }
 
-    /* loaded from: classes3.dex */
     public static class Builder extends Program.BaseProgramBuilder {
         public Builder(RenderScript rs) {
             super(rs);

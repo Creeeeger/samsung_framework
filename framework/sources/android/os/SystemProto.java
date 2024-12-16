@@ -29,7 +29,6 @@ public final class SystemProto {
     public static final long WIFI_STATE = 2246267895833L;
     public static final long WIFI_SUPPLICANT_STATE = 2246267895834L;
 
-    /* loaded from: classes3.dex */
     public final class Battery {
         public static final long BATTERY_REALTIME_MS = 1112396529669L;
         public static final long BATTERY_UPTIME_MS = 1112396529670L;
@@ -48,7 +47,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BatteryDischarge {
         public static final long LOWER_BOUND_SINCE_CHARGE = 1120986464257L;
         public static final long SCREEN_DOZE_SINCE_CHARGE = 1120986464261L;
@@ -65,7 +63,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class BatteryLevelStep {
         public static final long DISPLAY_STATE = 1159641169923L;
         public static final int DS_DOZE = 3;
@@ -89,7 +86,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class DataConnection {
         public static final long IS_NONE = 1133871366146L;
         public static final long NAME = 1159641169921L;
@@ -99,7 +95,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class GlobalNetwork {
         public static final long BT_BYTES_RX = 1112396529673L;
         public static final long BT_BYTES_TX = 1112396529674L;
@@ -116,7 +111,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class GlobalWifi {
         public static final long ON_DURATION_MS = 1112396529665L;
         public static final long RUNNING_DURATION_MS = 1112396529666L;
@@ -125,7 +119,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class KernelWakelock {
         public static final long NAME = 1138166333441L;
         public static final long TOTAL = 1146756268034L;
@@ -134,7 +127,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class Misc {
         public static final long BATTERY_SAVER_MODE_ENABLED_DURATION_MS = 1112396529674L;
         public static final long DEEP_DOZE_COUNT = 1120986464269L;
@@ -162,7 +154,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class PhoneSignalStrength {
         public static final long NAME = 1159641169921L;
         public static final long TOTAL = 1146756268034L;
@@ -171,7 +162,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class PowerUseItem {
         public static final int AMBIENT_DISPLAY = 13;
         public static final int BLUETOOTH = 5;
@@ -198,7 +188,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class PowerUseSummary {
         public static final long BATTERY_CAPACITY_MAH = 1103806595073L;
         public static final long COMPUTED_POWER_MAH = 1103806595074L;
@@ -209,7 +198,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class ResourcePowerManager {
         public static final long NAME = 1138166333441L;
         public static final long SCREEN_OFF = 1146756268035L;
@@ -219,7 +207,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class ScreenBrightness {
         public static final int BRIGHT = 4;
         public static final int DARK = 0;
@@ -233,7 +220,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WakeupReason {
         public static final long NAME = 1138166333441L;
         public static final long TOTAL = 1146756268034L;
@@ -242,7 +228,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WifiMulticastWakelockTotal {
         public static final long COUNT = 1120986464258L;
         public static final long DURATION_MS = 1112396529665L;
@@ -251,7 +236,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WifiSignalStrength {
         public static final int GOOD = 3;
         public static final int GREAT = 4;
@@ -265,7 +249,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WifiState {
         public static final long NAME = 1159641169921L;
         public static final int OFF = 0;
@@ -282,7 +265,6 @@ public final class SystemProto {
         }
     }
 
-    /* loaded from: classes3.dex */
     public final class WifiSupplicantState {
         public static final int ASSOCIATED = 7;
         public static final int ASSOCIATING = 6;

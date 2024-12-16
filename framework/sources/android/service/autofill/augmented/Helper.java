@@ -11,7 +11,7 @@ public final class Helper {
 
     public static void logResponse(int type, String servicePackageName, ComponentName componentName, int mSessionId, long durationMs) {
         ComponentName sanitizedComponentName = new ComponentName(componentName.getPackageName(), "");
-        LogMaker log = new LogMaker(MetricsProto.MetricsEvent.AUTOFILL_AUGMENTED_RESPONSE).setType(type).setComponentName(sanitizedComponentName).addTaggedData(MetricsProto.MetricsEvent.FIELD_AUTOFILL_SESSION_ID, Integer.valueOf(mSessionId)).addTaggedData(MetricsProto.MetricsEvent.FIELD_AUTOFILL_SERVICE, servicePackageName).addTaggedData(MetricsProto.MetricsEvent.FIELD_AUTOFILL_DURATION, Long.valueOf(durationMs));
+        LogMaker log = new LogMaker(MetricsProto.MetricsEvent.AUTOFILL_AUGMENTED_RESPONSE).setType(type).setComponentName(sanitizedComponentName).addTaggedData(MetricsProto.MetricsEvent.FIELD_AUTOFILL_SESSION_ID, Integer.valueOf(mSessionId)).addTaggedData(908, servicePackageName).addTaggedData(MetricsProto.MetricsEvent.FIELD_AUTOFILL_DURATION, Long.valueOf(durationMs));
         sMetricsLogger.write(log);
     }
 

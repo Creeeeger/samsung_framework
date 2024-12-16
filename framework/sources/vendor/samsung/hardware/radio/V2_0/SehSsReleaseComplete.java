@@ -61,7 +61,7 @@ public final class SehSsReleaseComplete {
         this.params = _hidl_blob.getInt32(_hidl_offset + 8);
         this.status = _hidl_blob.getInt32(_hidl_offset + 12);
         this.data = _hidl_blob.getString(_hidl_offset + 16);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
+        parcel.readEmbeddedBuffer(this.data.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 16 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

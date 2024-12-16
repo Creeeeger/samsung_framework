@@ -5,8 +5,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ContainerStateReceiver;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContainerState {
+    private static final int CONTAINER_MODE_LAUNCHER = 1;
+    private static final int CONTAINER_MODE_PERSONAL = 0;
     private static String TAG = "SemContainerState";
     private static boolean DEBUG = false;
     public static String ACTION_CONTAINER_STATE_RECEIVER = "com.samsung.android.knox.ACTION_CONTAINER_STATE_RECEIVER";
@@ -15,17 +17,12 @@ public class SemContainerState {
     private LockListener mLockListener = null;
     private EventListener mEventListener = null;
 
-    /* loaded from: classes5.dex */
     public interface EventListener {
-        public static final int CONTAINER_MODE_LAUNCHER = 1;
-        public static final int CONTAINER_MODE_PERSONAL = 0;
-
         void onContainerModeChanged(Context context, int i, int i2);
 
         void onLockScreenVisivilityChanged(Context context, int i, boolean z);
     }
 
-    /* loaded from: classes5.dex */
     public interface LockListener {
         void onAdminLocked(Context context, int i);
 
@@ -40,7 +37,6 @@ public class SemContainerState {
         void onUserUnlocked(Context context, int i);
     }
 
-    /* loaded from: classes5.dex */
     public interface StateListener {
         void onContainerCreated(Context context, int i);
 
@@ -53,12 +49,7 @@ public class SemContainerState {
         void onContainerStopped(Context context, int i);
     }
 
-    /* loaded from: classes5.dex */
     private class StateReceiver extends ContainerStateReceiver {
-        /* synthetic */ StateReceiver(SemContainerState semContainerState, StateReceiverIA stateReceiverIA) {
-            this();
-        }
-
         private StateReceiver() {
         }
 
@@ -179,9 +170,8 @@ public class SemContainerState {
         this.mLockListener = lockListener;
         this.mStateListener = stateListener;
         this.mEventListener = eventListener;
-        StateReceiver stateReceiver = new StateReceiver();
-        this.mReceiver = stateReceiver;
-        context.registerReceiver(stateReceiver, intentFilter);
+        this.mReceiver = new StateReceiver();
+        context.registerReceiver(this.mReceiver, intentFilter);
     }
 
     public void unregister(Context context) {

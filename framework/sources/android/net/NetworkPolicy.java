@@ -3,7 +3,6 @@ package android.net;
 import android.net.NetworkTemplate;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.telecom.TelecomManager;
 import android.util.BackupUtils;
 import android.util.Log;
 import android.util.Range;
@@ -19,7 +18,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
     public static final int CYCLE_NONE = -1;
     private static final long DEFAULT_MTU = 1500;
@@ -46,23 +45,18 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
     public long warningBytes;
     private static final String TAG = NetworkPolicy.class.getSimpleName();
     public static final Parcelable.Creator<NetworkPolicy> CREATOR = new Parcelable.Creator<NetworkPolicy>() { // from class: android.net.NetworkPolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkPolicy createFromParcel(Parcel in) {
             return new NetworkPolicy(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NetworkPolicy[] newArray(int size) {
             return new NetworkPolicy[size];
         }
     };
-
-    /* synthetic */ NetworkPolicy(Parcel parcel, NetworkPolicyIA networkPolicyIA) {
-        this(parcel);
-    }
 
     public static RecurrenceRule buildRule(int cycleDay, ZoneId cycleTimezone) {
         if (cycleDay != -1) {
@@ -153,14 +147,11 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
     }
 
     public boolean isOverWarning(long totalBytes) {
-        long j = this.warningBytes;
-        return j != -1 && totalBytes >= j;
+        return this.warningBytes != -1 && totalBytes >= this.warningBytes;
     }
 
     public boolean isOverLimit(long totalBytes) {
-        long totalBytes2 = totalBytes + TelecomManager.VERY_SHORT_CALL_TIME_MS;
-        long j = this.limitBytes;
-        return j != -1 && totalBytes2 >= j;
+        return this.limitBytes != -1 && totalBytes + 3000 >= this.limitBytes;
     }
 
     public void clearSnooze() {
@@ -175,15 +166,10 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
 
     @Override // java.lang.Comparable
     public int compareTo(NetworkPolicy another) {
-        if (another == null) {
+        if (another == null || another.limitBytes == -1) {
             return -1;
         }
-        long j = another.limitBytes;
-        if (j == -1) {
-            return -1;
-        }
-        long j2 = this.limitBytes;
-        if (j2 == -1 || j < j2) {
+        if (this.limitBytes == -1 || another.limitBytes < this.limitBytes) {
             return 1;
         }
         return 0;
@@ -203,23 +189,6 @@ public class NetworkPolicy implements Parcelable, Comparable<NetworkPolicy> {
 
     public String toString() {
         return "NetworkPolicy{template=" + this.template + " cycleRule=" + this.cycleRule + " warningBytes=" + this.warningBytes + " limitBytes=" + this.limitBytes + " lastWarningSnooze=" + this.lastWarningSnooze + " lastLimitSnooze=" + this.lastLimitSnooze + " lastRapidSnooze=" + this.lastRapidSnooze + " metered=" + this.metered + " inferred=" + this.inferred + "}";
-    }
-
-    /* renamed from: android.net.NetworkPolicy$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NetworkPolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkPolicy createFromParcel(Parcel in) {
-            return new NetworkPolicy(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NetworkPolicy[] newArray(int size) {
-            return new NetworkPolicy[size];
-        }
     }
 
     public byte[] getBytesForBackup() throws IOException {

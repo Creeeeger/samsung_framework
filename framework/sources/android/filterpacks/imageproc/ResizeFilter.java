@@ -49,8 +49,7 @@ public class ResizeFilter extends Filter {
     }
 
     protected void createProgram(FilterContext context, FrameFormat format) {
-        FrameFormat frameFormat = this.mLastFormat;
-        if (frameFormat == null || frameFormat.getTarget() != format.getTarget()) {
+        if (this.mLastFormat == null || this.mLastFormat.getTarget() != format.getTarget()) {
             this.mLastFormat = format;
             switch (format.getTarget()) {
                 case 2:

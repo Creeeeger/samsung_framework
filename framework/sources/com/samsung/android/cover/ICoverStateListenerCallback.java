@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface ICoverStateListenerCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.cover.ICoverStateListenerCallback";
 
@@ -16,7 +16,6 @@ public interface ICoverStateListenerCallback extends IInterface {
 
     void onCoverSwitchStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ICoverStateListenerCallback {
         @Override // com.samsung.android.cover.ICoverStateListenerCallback
         public void onCoverSwitchStateChanged(boolean switchState) throws RemoteException {
@@ -37,7 +36,6 @@ public interface ICoverStateListenerCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ICoverStateListenerCallback {
         static final int TRANSACTION_getListenerInfo = 3;
         static final int TRANSACTION_onCoverAttachStateChanged = 2;
@@ -86,34 +84,31 @@ public interface ICoverStateListenerCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICoverStateListenerCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICoverStateListenerCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICoverStateListenerCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCoverSwitchStateChanged(_arg0);
+                    return true;
+                case 2:
+                    boolean _arg02 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onCoverAttachStateChanged(_arg02);
+                    return true;
+                case 3:
+                    String _result = getListenerInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCoverSwitchStateChanged(_arg0);
-                            return true;
-                        case 2:
-                            boolean _arg02 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onCoverAttachStateChanged(_arg02);
-                            return true;
-                        case 3:
-                            String _result = getListenerInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements ICoverStateListenerCallback {
             private IBinder mRemote;
 

@@ -9,7 +9,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IEdgeManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.edge.IEdgeManager";
 
@@ -43,7 +43,6 @@ public interface IEdgeManager extends IInterface {
 
     void updateEdgeLightingPolicy(String str, EdgeLightingPolicy edgeLightingPolicy) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IEdgeManager {
         @Override // com.samsung.android.edge.IEdgeManager
         public void bindEdgeLightingService(IBinder binder, int condition, ComponentName component) throws RemoteException {
@@ -114,7 +113,6 @@ public interface IEdgeManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IEdgeManager {
         static final int TRANSACTION_bindEdgeLightingService = 1;
         static final int TRANSACTION_cancelNotification = 14;
@@ -199,133 +197,130 @@ public interface IEdgeManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEdgeManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEdgeManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEdgeManager.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    int _arg1 = data.readInt();
+                    ComponentName _arg2 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    bindEdgeLightingService(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    unbindEdgeLightingService(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    List<String> _arg13 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    updateEdgeLightingPackageList(_arg03, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    EdgeLightingPolicy _arg14 = (EdgeLightingPolicy) data.readTypedObject(EdgeLightingPolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateEdgeLightingPolicy(_arg04, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    ComponentName _arg15 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    registerEdgeLightingListener(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    IBinder _arg06 = data.readStrongBinder();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterEdgeLightingListener(_arg06, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg07 = data.readString();
+                    SemEdgeLightingInfo _arg17 = (SemEdgeLightingInfo) data.readTypedObject(SemEdgeLightingInfo.CREATOR);
+                    IBinder _arg22 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    startEdgeLighting(_arg07, _arg17, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    IBinder _arg18 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    stopEdgeLighting(_arg08, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _result = getEdgeLightingState();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 10:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = isEdgeLightingNotificationAllowed(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 11:
+                    int _arg010 = data.readInt();
+                    String _arg19 = data.readString();
+                    IBinder _arg23 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    disable(_arg010, _arg19, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    String _arg011 = data.readString();
+                    boolean _arg110 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    disableEdgeLightingNotification(_arg011, _arg110);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    String _arg012 = data.readString();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isPackageEnabled(_arg012, _arg111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 14:
+                    String _arg013 = data.readString();
+                    String _arg112 = data.readString();
+                    int _arg24 = data.readInt();
+                    int _arg3 = data.readInt();
+                    String _arg4 = data.readString();
+                    data.enforceNoDataAvail();
+                    cancelNotification(_arg013, _arg112, _arg24, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    String _arg014 = data.readString();
+                    String _arg113 = data.readString();
+                    int _arg25 = data.readInt();
+                    int _arg32 = data.readInt();
+                    String _arg42 = data.readString();
+                    String _arg5 = data.readString();
+                    data.enforceNoDataAvail();
+                    cancelNotificationByGroupKey(_arg014, _arg113, _arg25, _arg32, _arg42, _arg5);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            int _arg1 = data.readInt();
-                            ComponentName _arg2 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            bindEdgeLightingService(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            unbindEdgeLightingService(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            List<String> _arg13 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            updateEdgeLightingPackageList(_arg03, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            EdgeLightingPolicy _arg14 = (EdgeLightingPolicy) data.readTypedObject(EdgeLightingPolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateEdgeLightingPolicy(_arg04, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            ComponentName _arg15 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            registerEdgeLightingListener(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            IBinder _arg06 = data.readStrongBinder();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterEdgeLightingListener(_arg06, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg07 = data.readString();
-                            SemEdgeLightingInfo _arg17 = (SemEdgeLightingInfo) data.readTypedObject(SemEdgeLightingInfo.CREATOR);
-                            IBinder _arg22 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            startEdgeLighting(_arg07, _arg17, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            IBinder _arg18 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            stopEdgeLighting(_arg08, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _result = getEdgeLightingState();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 10:
-                            String _arg09 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = isEdgeLightingNotificationAllowed(_arg09);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 11:
-                            int _arg010 = data.readInt();
-                            String _arg19 = data.readString();
-                            IBinder _arg23 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            disable(_arg010, _arg19, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            String _arg011 = data.readString();
-                            boolean _arg110 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            disableEdgeLightingNotification(_arg011, _arg110);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            String _arg012 = data.readString();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = isPackageEnabled(_arg012, _arg111);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 14:
-                            String _arg013 = data.readString();
-                            String _arg112 = data.readString();
-                            int _arg24 = data.readInt();
-                            int _arg3 = data.readInt();
-                            String _arg4 = data.readString();
-                            data.enforceNoDataAvail();
-                            cancelNotification(_arg013, _arg112, _arg24, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            String _arg014 = data.readString();
-                            String _arg113 = data.readString();
-                            int _arg25 = data.readInt();
-                            int _arg32 = data.readInt();
-                            String _arg42 = data.readString();
-                            String _arg5 = data.readString();
-                            data.enforceNoDataAvail();
-                            cancelNotificationByGroupKey(_arg014, _arg113, _arg25, _arg32, _arg42, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
         private static class Proxy implements IEdgeManager {
             private IBinder mRemote;
 

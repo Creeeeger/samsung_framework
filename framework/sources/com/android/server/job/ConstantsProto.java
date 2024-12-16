@@ -26,7 +26,6 @@ public final class ConstantsProto {
     public static final long SCREEN_OFF_JOB_CONCURRENCY_INCREASE_DELAY_MS = 1120986464284L;
     public static final long TIME_CONTROLLER = 1146756268057L;
 
-    /* loaded from: classes5.dex */
     public final class QuotaController {
         public static final long ACTIVE_WINDOW_SIZE_MS = 1112396529667L;
         public static final long ALLOWED_TIME_PER_PERIOD_MS = 1112396529665L;
@@ -66,7 +65,6 @@ public final class ConstantsProto {
         }
     }
 
-    /* loaded from: classes5.dex */
     public final class TimeController {
         public TimeController() {
         }

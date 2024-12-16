@@ -9,7 +9,7 @@ import android.telephony.ims.SipDelegateImsConfiguration;
 import java.util.Set;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface DelegateConnectionStateCallback {
     void onConfigurationChanged(SipDelegateConfiguration sipDelegateConfiguration);
 

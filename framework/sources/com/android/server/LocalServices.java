@@ -11,27 +11,30 @@ public final class LocalServices {
 
     public static <T> T getService(Class<T> cls) {
         T t;
-        ArrayMap<Class<?>, Object> arrayMap = sLocalServiceObjects;
-        synchronized (arrayMap) {
-            t = (T) arrayMap.get(cls);
+        synchronized (sLocalServiceObjects) {
+            t = (T) sLocalServiceObjects.get(cls);
         }
         return t;
     }
 
     public static <T> void addService(Class<T> type, T service) {
-        ArrayMap<Class<?>, Object> arrayMap = sLocalServiceObjects;
-        synchronized (arrayMap) {
-            if (arrayMap.containsKey(type)) {
+        synchronized (sLocalServiceObjects) {
+            if (sLocalServiceObjects.containsKey(type)) {
                 throw new IllegalStateException("Overriding service registration");
             }
-            arrayMap.put(type, service);
+            sLocalServiceObjects.put(type, service);
         }
     }
 
     public static <T> void removeServiceForTest(Class<T> type) {
-        ArrayMap<Class<?>, Object> arrayMap = sLocalServiceObjects;
-        synchronized (arrayMap) {
-            arrayMap.remove(type);
+        synchronized (sLocalServiceObjects) {
+            sLocalServiceObjects.remove(type);
+        }
+    }
+
+    public static void removeAllServicesForTest() {
+        synchronized (sLocalServiceObjects) {
+            sLocalServiceObjects.clear();
         }
     }
 }

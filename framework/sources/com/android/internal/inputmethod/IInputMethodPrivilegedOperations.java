@@ -10,7 +10,7 @@ import android.view.inputmethod.ImeTracker;
 import android.view.inputmethod.InputMethodSubtype;
 import com.android.internal.infra.AndroidFuture;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface IInputMethodPrivilegedOperations extends IInterface {
     public static final String DESCRIPTOR = "com.android.internal.inputmethod.IInputMethodPrivilegedOperations";
 
@@ -18,7 +18,7 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
 
     void createInputContentUriToken(Uri uri, String str, AndroidFuture androidFuture) throws RemoteException;
 
-    void hideMySoftInput(int i, int i2, AndroidFuture androidFuture) throws RemoteException;
+    void hideMySoftInput(ImeTracker.Token token, int i, int i2, AndroidFuture androidFuture) throws RemoteException;
 
     void notifyUserActionAsync() throws RemoteException;
 
@@ -30,6 +30,8 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
 
     void resetStylusHandwriting(int i) throws RemoteException;
 
+    void setHandwritingSurfaceNotTouchable(boolean z) throws RemoteException;
+
     void setImeWindowStatusAsync(int i, int i2) throws RemoteException;
 
     void setInputMethod(String str, AndroidFuture androidFuture) throws RemoteException;
@@ -38,7 +40,9 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
 
     void shouldOfferSwitchingToNextInputMethod(AndroidFuture androidFuture) throws RemoteException;
 
-    void showMySoftInput(int i, AndroidFuture androidFuture) throws RemoteException;
+    void showMySoftInput(ImeTracker.Token token, int i, int i2, AndroidFuture androidFuture) throws RemoteException;
+
+    void switchKeyboardLayoutAsync(int i) throws RemoteException;
 
     void switchToNextInputMethod(boolean z, AndroidFuture androidFuture) throws RemoteException;
 
@@ -46,7 +50,6 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
 
     void updateStatusIconAsync(String str, int i) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IInputMethodPrivilegedOperations {
         @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
         public void setImeWindowStatusAsync(int vis, int backDisposition) throws RemoteException {
@@ -73,11 +76,11 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
-        public void hideMySoftInput(int flags, int reason, AndroidFuture future) throws RemoteException {
+        public void hideMySoftInput(ImeTracker.Token statsToken, int flags, int reason, AndroidFuture future) throws RemoteException {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
-        public void showMySoftInput(int flags, AndroidFuture future) throws RemoteException {
+        public void showMySoftInput(ImeTracker.Token statsToken, int flags, int reason, AndroidFuture future) throws RemoteException {
         }
 
         @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
@@ -112,13 +115,20 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
         public void resetStylusHandwriting(int requestId) throws RemoteException {
         }
 
+        @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
+        public void switchKeyboardLayoutAsync(int direction) throws RemoteException {
+        }
+
+        @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
+        public void setHandwritingSurfaceNotTouchable(boolean notTouchable) throws RemoteException {
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IInputMethodPrivilegedOperations {
         static final int TRANSACTION_applyImeVisibilityAsync = 14;
         static final int TRANSACTION_createInputContentUriToken = 3;
@@ -128,11 +138,13 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
         static final int TRANSACTION_reportFullscreenModeAsync = 4;
         static final int TRANSACTION_reportStartInputAsync = 2;
         static final int TRANSACTION_resetStylusHandwriting = 16;
+        static final int TRANSACTION_setHandwritingSurfaceNotTouchable = 18;
         static final int TRANSACTION_setImeWindowStatusAsync = 1;
         static final int TRANSACTION_setInputMethod = 5;
         static final int TRANSACTION_setInputMethodAndSubtype = 6;
         static final int TRANSACTION_shouldOfferSwitchingToNextInputMethod = 12;
         static final int TRANSACTION_showMySoftInput = 8;
+        static final int TRANSACTION_switchKeyboardLayoutAsync = 17;
         static final int TRANSACTION_switchToNextInputMethod = 11;
         static final int TRANSACTION_switchToPreviousInputMethod = 10;
         static final int TRANSACTION_updateStatusIconAsync = 9;
@@ -191,6 +203,10 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
                     return "onStylusHandwritingReady";
                 case 16:
                     return "resetStylusHandwriting";
+                case 17:
+                    return "switchKeyboardLayoutAsync";
+                case 18:
+                    return "setHandwritingSurfaceNotTouchable";
                 default:
                     return null;
             }
@@ -206,113 +222,122 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInputMethodPrivilegedOperations.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setImeWindowStatusAsync(_arg0, _arg1);
+                    return true;
+                case 2:
+                    IBinder _arg02 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    reportStartInputAsync(_arg02);
+                    return true;
+                case 3:
+                    Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg12 = data.readString();
+                    AndroidFuture _arg2 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    createInputContentUriToken(_arg03, _arg12, _arg2);
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    reportFullscreenModeAsync(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    AndroidFuture _arg13 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    setInputMethod(_arg05, _arg13);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    InputMethodSubtype _arg14 = (InputMethodSubtype) data.readTypedObject(InputMethodSubtype.CREATOR);
+                    AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    setInputMethodAndSubtype(_arg06, _arg14, _arg22);
+                    return true;
+                case 7:
+                    ImeTracker.Token _arg07 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg15 = data.readInt();
+                    int _arg23 = data.readInt();
+                    AndroidFuture _arg3 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    hideMySoftInput(_arg07, _arg15, _arg23, _arg3);
+                    return true;
+                case 8:
+                    ImeTracker.Token _arg08 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    int _arg16 = data.readInt();
+                    int _arg24 = data.readInt();
+                    AndroidFuture _arg32 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    showMySoftInput(_arg08, _arg16, _arg24, _arg32);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    int _arg17 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateStatusIconAsync(_arg09, _arg17);
+                    return true;
+                case 10:
+                    AndroidFuture _arg010 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    switchToPreviousInputMethod(_arg010);
+                    return true;
+                case 11:
+                    boolean _arg011 = data.readBoolean();
+                    AndroidFuture _arg18 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    switchToNextInputMethod(_arg011, _arg18);
+                    return true;
+                case 12:
+                    AndroidFuture _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
+                    data.enforceNoDataAvail();
+                    shouldOfferSwitchingToNextInputMethod(_arg012);
+                    return true;
+                case 13:
+                    notifyUserActionAsync();
+                    return true;
+                case 14:
+                    IBinder _arg013 = data.readStrongBinder();
+                    boolean _arg19 = data.readBoolean();
+                    ImeTracker.Token _arg25 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
+                    data.enforceNoDataAvail();
+                    applyImeVisibilityAsync(_arg013, _arg19, _arg25);
+                    return true;
+                case 15:
+                    int _arg014 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStylusHandwritingReady(_arg014, _arg110);
+                    return true;
+                case 16:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetStylusHandwriting(_arg015);
+                    return true;
+                case 17:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    switchKeyboardLayoutAsync(_arg016);
+                    return true;
+                case 18:
+                    boolean _arg017 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHandwritingSurfaceNotTouchable(_arg017);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setImeWindowStatusAsync(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            IBinder _arg02 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            reportStartInputAsync(_arg02);
-                            return true;
-                        case 3:
-                            Uri _arg03 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg12 = data.readString();
-                            AndroidFuture _arg2 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            createInputContentUriToken(_arg03, _arg12, _arg2);
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            reportFullscreenModeAsync(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            AndroidFuture _arg13 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            setInputMethod(_arg05, _arg13);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            InputMethodSubtype _arg14 = (InputMethodSubtype) data.readTypedObject(InputMethodSubtype.CREATOR);
-                            AndroidFuture _arg22 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            setInputMethodAndSubtype(_arg06, _arg14, _arg22);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            int _arg15 = data.readInt();
-                            AndroidFuture _arg23 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            hideMySoftInput(_arg07, _arg15, _arg23);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            AndroidFuture _arg16 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            showMySoftInput(_arg08, _arg16);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            int _arg17 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateStatusIconAsync(_arg09, _arg17);
-                            return true;
-                        case 10:
-                            AndroidFuture _arg010 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            switchToPreviousInputMethod(_arg010);
-                            return true;
-                        case 11:
-                            boolean _arg011 = data.readBoolean();
-                            AndroidFuture _arg18 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            switchToNextInputMethod(_arg011, _arg18);
-                            return true;
-                        case 12:
-                            AndroidFuture _arg012 = (AndroidFuture) data.readTypedObject(AndroidFuture.CREATOR);
-                            data.enforceNoDataAvail();
-                            shouldOfferSwitchingToNextInputMethod(_arg012);
-                            return true;
-                        case 13:
-                            notifyUserActionAsync();
-                            return true;
-                        case 14:
-                            IBinder _arg013 = data.readStrongBinder();
-                            boolean _arg19 = data.readBoolean();
-                            ImeTracker.Token _arg24 = (ImeTracker.Token) data.readTypedObject(ImeTracker.Token.CREATOR);
-                            data.enforceNoDataAvail();
-                            applyImeVisibilityAsync(_arg013, _arg19, _arg24);
-                            return true;
-                        case 15:
-                            int _arg014 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStylusHandwritingReady(_arg014, _arg110);
-                            return true;
-                        case 16:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetStylusHandwriting(_arg015);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IInputMethodPrivilegedOperations {
+        private static class Proxy implements IInputMethodPrivilegedOperations {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -407,10 +432,11 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
-            public void hideMySoftInput(int flags, int reason, AndroidFuture future) throws RemoteException {
+            public void hideMySoftInput(ImeTracker.Token statsToken, int flags, int reason, AndroidFuture future) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                    _data.writeTypedObject(statsToken, 0);
                     _data.writeInt(flags);
                     _data.writeInt(reason);
                     _data.writeTypedObject(future, 0);
@@ -421,11 +447,13 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
             }
 
             @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
-            public void showMySoftInput(int flags, AndroidFuture future) throws RemoteException {
+            public void showMySoftInput(ImeTracker.Token statsToken, int flags, int reason, AndroidFuture future) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                    _data.writeTypedObject(statsToken, 0);
                     _data.writeInt(flags);
+                    _data.writeInt(reason);
                     _data.writeTypedObject(future, 0);
                     this.mRemote.transact(8, _data, null, 1);
                 } finally {
@@ -532,11 +560,35 @@ public interface IInputMethodPrivilegedOperations extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
+            public void switchKeyboardLayoutAsync(int direction) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                    _data.writeInt(direction);
+                    this.mRemote.transact(17, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.android.internal.inputmethod.IInputMethodPrivilegedOperations
+            public void setHandwritingSurfaceNotTouchable(boolean notTouchable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(IInputMethodPrivilegedOperations.DESCRIPTOR);
+                    _data.writeBoolean(notTouchable);
+                    this.mRemote.transact(18, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 15;
+            return 17;
         }
     }
 }

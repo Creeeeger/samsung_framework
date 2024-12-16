@@ -2,12 +2,12 @@ package android.opengl;
 
 import android.app.blob.XmlTags;
 import android.content.Context;
-import android.drm.DrmInfoRequest;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.provider.CallLog;
 import android.provider.Telephony;
 import com.samsung.android.emergencymode.SemEmergencyConstants;
 import com.samsung.android.knox.analytics.database.Contract;
+import com.samsung.android.knox.zt.internal.KnoxZtInternalConst;
 import com.samsung.android.wallpaperbackup.GenerateXML;
 import java.io.IOException;
 import java.io.Writer;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import javax.microedition.khronos.opengles.GL;
 
 /* loaded from: classes3.dex */
-public class GLLogWrapper extends GLWrapperBase {
+class GLLogWrapper extends GLWrapperBase {
     private static final int FORMAT_FIXED = 2;
     private static final int FORMAT_FLOAT = 1;
     private static final int FORMAT_INT = 0;
@@ -137,15 +137,13 @@ public class GLLogWrapper extends GLWrapperBase {
         switch (format) {
             case 0:
                 buf.append(value);
-                return;
+                break;
             case 1:
                 buf.append(Float.intBitsToFloat(value));
-                return;
+                break;
             case 2:
                 buf.append(value / 65536.0f);
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -576,19 +574,8 @@ public class GLLogWrapper extends GLWrapperBase {
 
     private int getFogParamCount(int pname) {
         switch (pname) {
-            case 2914:
-                return 1;
-            case 2915:
-                return 1;
-            case 2916:
-                return 1;
-            case 2917:
-                return 1;
-            case 2918:
-                return 4;
-            default:
-                return 0;
         }
+        return 1;
     }
 
     private String getBeginMode(int mode) {
@@ -812,20 +799,19 @@ public class GLLogWrapper extends GLWrapperBase {
     private int getMaterialParamCount(int pname) {
         switch (pname) {
             case 4608:
-                return 4;
+                break;
             case 4609:
-                return 4;
+                break;
             case 4610:
-                return 4;
+                break;
             case 5632:
-                return 4;
+                break;
             case 5633:
-                return 1;
+                break;
             case 5634:
-                return 4;
-            default:
-                return 0;
+                break;
         }
+        return 4;
     }
 
     private String getLightName(int light) {
@@ -864,29 +850,8 @@ public class GLLogWrapper extends GLWrapperBase {
 
     private int getLightParamCount(int pname) {
         switch (pname) {
-            case 4608:
-                return 4;
-            case 4609:
-                return 4;
-            case 4610:
-                return 4;
-            case 4611:
-                return 4;
-            case 4612:
-                return 3;
-            case 4613:
-                return 1;
-            case 4614:
-                return 1;
-            case 4615:
-                return 1;
-            case 4616:
-                return 1;
-            case 4617:
-                return 1;
-            default:
-                return 0;
         }
+        return 1;
     }
 
     private String getLightModelPName(int pname) {
@@ -928,6 +893,7 @@ public class GLLogWrapper extends GLWrapperBase {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public ByteBuffer toByteBuffer(int byteCount, Buffer input) {
         ByteBuffer result;
         boolean convertWholeBuffer = byteCount < 0;
@@ -1179,9 +1145,8 @@ public class GLLogWrapper extends GLWrapperBase {
     }
 
     private void startLogIndices() {
-        StringBuilder sb = new StringBuilder();
-        this.mStringBuilder = sb;
-        sb.append("\n");
+        this.mStringBuilder = new StringBuilder();
+        this.mStringBuilder.append("\n");
         bindArrays();
     }
 
@@ -1615,7 +1580,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glFogfv(int pname, float[] params, int offset) {
         begin("glFogfv");
         arg("pname", getFogPName(pname));
-        arg("params", getFogParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getFogParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glFogfv(pname, params, offset);
@@ -1626,7 +1591,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glFogfv(int pname, FloatBuffer params) {
         begin("glFogfv");
         arg("pname", getFogPName(pname));
-        arg("params", getFogParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getFogParamCount(pname), params);
         end();
         this.mgl.glFogfv(pname, params);
         checkError();
@@ -1646,7 +1611,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glFogxv(int pname, int[] params, int offset) {
         begin("glFogxv");
         arg("pname", getFogPName(pname));
-        arg("params", getFogParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getFogParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glFogxv(pname, params, offset);
@@ -1657,7 +1622,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glFogxv(int pname, IntBuffer params) {
         begin("glFogxv");
         arg("pname", getFogPName(pname));
-        arg("params", getFogParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getFogParamCount(pname), params);
         end();
         this.mgl.glFogxv(pname, params);
         checkError();
@@ -1733,7 +1698,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetIntegerv(int pname, int[] params, int offset) {
         begin("glGetIntegerv");
         arg("pname", getIntegerStateName(pname));
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         this.mgl.glGetIntegerv(pname, params, offset);
         returns(toString(getIntegerStateSize(pname), getIntegerStateFormat(pname), params, offset));
@@ -1744,7 +1709,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetIntegerv(int pname, IntBuffer params) {
         begin("glGetIntegerv");
         arg("pname", getIntegerStateName(pname));
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         this.mgl.glGetIntegerv(pname, params);
         returns(toString(getIntegerStateSize(pname), getIntegerStateFormat(pname), params));
         checkError();
@@ -1784,7 +1749,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glLightModelfv(int pname, float[] params, int offset) {
         begin("glLightModelfv");
         arg("pname", getLightModelPName(pname));
-        arg("params", getLightModelParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightModelParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glLightModelfv(pname, params, offset);
@@ -1795,7 +1760,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glLightModelfv(int pname, FloatBuffer params) {
         begin("glLightModelfv");
         arg("pname", getLightModelPName(pname));
-        arg("params", getLightModelParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightModelParamCount(pname), params);
         end();
         this.mgl.glLightModelfv(pname, params);
         checkError();
@@ -1815,7 +1780,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glLightModelxv(int pname, int[] params, int offset) {
         begin("glLightModelxv");
         arg("pname", getLightModelPName(pname));
-        arg("params", getLightModelParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightModelParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glLightModelxv(pname, params, offset);
@@ -1826,7 +1791,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glLightModelxv(int pname, IntBuffer params) {
         begin("glLightModelfv");
         arg("pname", getLightModelPName(pname));
-        arg("params", getLightModelParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightModelParamCount(pname), params);
         end();
         this.mgl.glLightModelxv(pname, params);
         checkError();
@@ -1848,7 +1813,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glLightfv");
         arg("light", getLightName(light));
         arg("pname", getLightPName(pname));
-        arg("params", getLightParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glLightfv(light, pname, params, offset);
@@ -1860,7 +1825,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glLightfv");
         arg("light", getLightName(light));
         arg("pname", getLightPName(pname));
-        arg("params", getLightParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightParamCount(pname), params);
         end();
         this.mgl.glLightfv(light, pname, params);
         checkError();
@@ -1882,7 +1847,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glLightxv");
         arg("light", getLightName(light));
         arg("pname", getLightPName(pname));
-        arg("params", getLightParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glLightxv(light, pname, params, offset);
@@ -1894,7 +1859,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glLightxv");
         arg("light", getLightName(light));
         arg("pname", getLightPName(pname));
-        arg("params", getLightParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getLightParamCount(pname), params);
         end();
         this.mgl.glLightxv(light, pname, params);
         checkError();
@@ -1989,7 +1954,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glMaterialfv");
         arg(Context.FACE_SERVICE, getFaceName(face));
         arg("pname", getMaterialPName(pname));
-        arg("params", getMaterialParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getMaterialParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glMaterialfv(face, pname, params, offset);
@@ -2001,7 +1966,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glMaterialfv");
         arg(Context.FACE_SERVICE, getFaceName(face));
         arg("pname", getMaterialPName(pname));
-        arg("params", getMaterialParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getMaterialParamCount(pname), params);
         end();
         this.mgl.glMaterialfv(face, pname, params);
         checkError();
@@ -2023,7 +1988,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glMaterialxv");
         arg(Context.FACE_SERVICE, getFaceName(face));
         arg("pname", getMaterialPName(pname));
-        arg("params", getMaterialParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getMaterialParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glMaterialxv(face, pname, params, offset);
@@ -2035,7 +2000,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glMaterialxv");
         arg(Context.FACE_SERVICE, getFaceName(face));
         arg("pname", getMaterialPName(pname));
-        arg("params", getMaterialParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getMaterialParamCount(pname), params);
         end();
         this.mgl.glMaterialxv(face, pname, params);
         checkError();
@@ -2365,7 +2330,7 @@ public class GLLogWrapper extends GLWrapperBase {
     @Override // javax.microedition.khronos.opengles.GL10, javax.microedition.khronos.opengles.GL11ExtensionPack
     public void glStencilOp(int fail, int zfail, int zpass) {
         begin("glStencilOp");
-        arg(DrmInfoRequest.SEM_FAIL, fail);
+        arg("fail", fail);
         arg("zfail", zfail);
         arg("zpass", zpass);
         end();
@@ -2399,7 +2364,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnvfv");
         arg("target", getTextureEnvTarget(target));
         arg("pname", getTextureEnvPName(pname));
-        arg("params", getTextureEnvParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getTextureEnvParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glTexEnvfv(target, pname, params, offset);
@@ -2411,7 +2376,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnvfv");
         arg("target", getTextureEnvTarget(target));
         arg("pname", getTextureEnvPName(pname));
-        arg("params", getTextureEnvParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getTextureEnvParamCount(pname), params);
         end();
         this.mgl.glTexEnvfv(target, pname, params);
         checkError();
@@ -2433,7 +2398,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnvxv");
         arg("target", getTextureEnvTarget(target));
         arg("pname", getTextureEnvPName(pname));
-        arg("params", getTextureEnvParamCount(pname), params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getTextureEnvParamCount(pname), params, offset);
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl.glTexEnvxv(target, pname, params, offset);
@@ -2445,7 +2410,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnvxv");
         arg("target", getTextureEnvTarget(target));
         arg("pname", getTextureEnvPName(pname));
-        arg("params", getTextureEnvParamCount(pname), params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, getTextureEnvParamCount(pname), params);
         end();
         this.mgl.glTexEnvxv(target, pname, params);
         checkError();
@@ -2495,7 +2460,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameteriv");
         arg("target", getTextureTarget(target));
         arg("pname", getTexturePName(pname));
-        arg("params", 4, params, offset);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, 4, params, offset);
         end();
         this.mgl11.glTexParameteriv(target, pname, params, offset);
         checkError();
@@ -2506,7 +2471,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameteriv");
         arg("target", getTextureTarget(target));
         arg("pname", getTexturePName(pname));
-        arg("params", 4, params);
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, 4, params);
         end();
         this.mgl11.glTexParameteriv(target, pname, params);
         checkError();
@@ -2861,7 +2826,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetBooleanv(int pname, boolean[] params, int offset) {
         begin("glGetBooleanv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetBooleanv(pname, params, offset);
@@ -2872,7 +2837,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetBooleanv(int pname, IntBuffer params) {
         begin("glGetBooleanv");
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetBooleanv(pname, params);
         checkError();
@@ -2883,7 +2848,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetBufferParameteriv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetBufferParameteriv(target, pname, params, offset);
@@ -2895,7 +2860,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetBufferParameteriv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetBufferParameteriv(target, pname, params);
         checkError();
@@ -2946,7 +2911,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetFixedv(int pname, int[] params, int offset) {
         begin("glGetFixedv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetFixedv(pname, params, offset);
@@ -2956,7 +2921,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetFixedv(int pname, IntBuffer params) {
         begin("glGetFixedv");
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetFixedv(pname, params);
         checkError();
@@ -2966,7 +2931,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetFloatv(int pname, float[] params, int offset) {
         begin("glGetFloatv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetFloatv(pname, params, offset);
@@ -2976,7 +2941,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetFloatv(int pname, FloatBuffer params) {
         begin("glGetFloatv");
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetFloatv(pname, params);
         checkError();
@@ -2987,7 +2952,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetLightfv");
         arg("light", light);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetLightfv(light, pname, params, offset);
@@ -2999,7 +2964,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetLightfv");
         arg("light", light);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetLightfv(light, pname, params);
         checkError();
@@ -3010,7 +2975,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetLightxv");
         arg("light", light);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetLightxv(light, pname, params, offset);
@@ -3022,7 +2987,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetLightxv");
         arg("light", light);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetLightxv(light, pname, params);
         checkError();
@@ -3033,7 +2998,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetMaterialfv");
         arg(Context.FACE_SERVICE, face);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetMaterialfv(face, pname, params, offset);
@@ -3045,7 +3010,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetMaterialfv");
         arg(Context.FACE_SERVICE, face);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetMaterialfv(face, pname, params);
         checkError();
@@ -3056,7 +3021,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetMaterialxv");
         arg(Context.FACE_SERVICE, face);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetMaterialxv(face, pname, params, offset);
@@ -3068,7 +3033,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetMaterialxv");
         arg(Context.FACE_SERVICE, face);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetMaterialxv(face, pname, params);
         checkError();
@@ -3079,7 +3044,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexEnviv");
         arg("env", env);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetTexEnviv(env, pname, params, offset);
@@ -3091,7 +3056,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexEnviv");
         arg("env", env);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetTexEnviv(env, pname, params);
         checkError();
@@ -3102,7 +3067,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexEnviv");
         arg("env", env);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetTexEnviv(env, pname, params, offset);
@@ -3114,7 +3079,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexEnviv");
         arg("env", env);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetTexEnvxv(env, pname, params);
         checkError();
@@ -3125,7 +3090,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameterfv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetTexParameterfv(target, pname, params, offset);
@@ -3137,7 +3102,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameterfv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetTexParameterfv(target, pname, params);
         checkError();
@@ -3148,7 +3113,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameteriv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetTexEnviv(target, pname, params, offset);
@@ -3160,7 +3125,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameteriv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetTexParameteriv(target, pname, params);
         checkError();
@@ -3171,7 +3136,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameterxv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glGetTexParameterxv(target, pname, params, offset);
@@ -3183,7 +3148,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexParameterxv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glGetTexParameterxv(target, pname, params);
         checkError();
@@ -3233,7 +3198,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glPointParameterfv(int pname, float[] params, int offset) {
         begin("glPointParameterfv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glPointParameterfv(pname, params, offset);
@@ -3244,7 +3209,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glPointParameterfv(int pname, FloatBuffer params) {
         begin("glPointParameterfv");
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glPointParameterfv(pname, params);
         checkError();
@@ -3264,7 +3229,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glPointParameterxv(int pname, int[] params, int offset) {
         begin("glPointParameterxv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glPointParameterxv(pname, params, offset);
@@ -3275,7 +3240,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glPointParameterxv(int pname, IntBuffer params) {
         begin("glPointParameterxv");
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glPointParameterxv(pname, params);
         checkError();
@@ -3286,7 +3251,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glPointSizePointerOES");
         arg("type", type);
         arg("stride", stride);
-        arg("params", pointer.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, pointer.toString());
         end();
         this.mgl11.glPointSizePointerOES(type, stride, pointer);
         checkError();
@@ -3308,7 +3273,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnviv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glTexEnviv(target, pname, params, offset);
@@ -3320,7 +3285,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexEnviv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glTexEnviv(target, pname, params);
         checkError();
@@ -3331,7 +3296,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameterfv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glTexParameterfv(target, pname, params, offset);
@@ -3343,7 +3308,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameterfv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glTexParameterfv(target, pname, params);
         checkError();
@@ -3365,7 +3330,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameterxv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11.glTexParameterxv(target, pname, params, offset);
@@ -3377,7 +3342,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexParameterxv");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11.glTexParameterxv(target, pname, params);
         checkError();
@@ -3411,7 +3376,7 @@ public class GLLogWrapper extends GLWrapperBase {
     public void glGetPointerv(int pname, Buffer[] params) {
         begin("glGetPointerv");
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         end();
         this.mgl11.glGetPointerv(pname, params);
         checkError();
@@ -3693,7 +3658,7 @@ public class GLLogWrapper extends GLWrapperBase {
         arg("target", target);
         arg("attachment", attachment);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glGetFramebufferAttachmentParameterivOES(target, attachment, pname, params, offset);
@@ -3706,7 +3671,7 @@ public class GLLogWrapper extends GLWrapperBase {
         arg("target", target);
         arg("attachment", attachment);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glGetFramebufferAttachmentParameterivOES(target, attachment, pname, params);
         checkError();
@@ -3717,7 +3682,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetRenderbufferParameterivOES");
         arg("target", target);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glGetRenderbufferParameterivOES(target, pname, params, offset);
@@ -3729,7 +3694,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetRenderbufferParameterivOES");
         arg("target", target);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glGetRenderbufferParameterivOES(target, pname, params);
         checkError();
@@ -3740,7 +3705,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGenfv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glGetTexGenfv(coord, pname, params, offset);
@@ -3752,7 +3717,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGenfv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glGetTexGenfv(coord, pname, params);
         checkError();
@@ -3763,7 +3728,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGeniv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glGetTexGeniv(coord, pname, params, offset);
@@ -3775,7 +3740,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGeniv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glGetTexGeniv(coord, pname, params);
         checkError();
@@ -3786,7 +3751,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGenxv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glGetTexGenxv(coord, pname, params, offset);
@@ -3798,7 +3763,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glGetTexGenxv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glGetTexGenxv(coord, pname, params);
         checkError();
@@ -3852,7 +3817,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGenfv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glTexGenfv(coord, pname, params, offset);
@@ -3864,7 +3829,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGenfv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glTexGenfv(coord, pname, params);
         checkError();
@@ -3886,7 +3851,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGeniv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glTexGeniv(coord, pname, params, offset);
@@ -3898,7 +3863,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGeniv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glTexGeniv(coord, pname, params);
         checkError();
@@ -3920,7 +3885,7 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGenxv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", Arrays.toString(params));
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, Arrays.toString(params));
         arg(CallLog.Calls.OFFSET_PARAM_KEY, offset);
         end();
         this.mgl11ExtensionPack.glTexGenxv(coord, pname, params, offset);
@@ -3932,14 +3897,13 @@ public class GLLogWrapper extends GLWrapperBase {
         begin("glTexGenxv");
         arg("coord", coord);
         arg("pname", pname);
-        arg("params", params.toString());
+        arg(KnoxZtInternalConst.Event.LogKeys.PARAMS, params.toString());
         end();
         this.mgl11ExtensionPack.glTexGenxv(coord, pname, params);
         checkError();
     }
 
-    /* loaded from: classes3.dex */
-    public class PointerInfo {
+    private class PointerInfo {
         public Buffer mPointer;
         public int mSize;
         public int mStride;
@@ -3959,28 +3923,25 @@ public class GLLogWrapper extends GLWrapperBase {
         public int sizeof(int type) {
             switch (type) {
                 case 5120:
-                    return 1;
+                    break;
                 case 5121:
-                    return 1;
+                    break;
                 case 5122:
-                    return 2;
+                    break;
                 case 5126:
-                    return 4;
+                    break;
                 case 5132:
-                    return 4;
-                default:
-                    return 0;
+                    break;
             }
+            return 4;
         }
 
         public int getStride() {
-            int i = this.mStride;
-            return i > 0 ? i : sizeof(this.mType) * this.mSize;
+            return this.mStride > 0 ? this.mStride : sizeof(this.mType) * this.mSize;
         }
 
         public void bindByteBuffer() {
-            Buffer buffer = this.mPointer;
-            this.mTempByteBuffer = buffer == null ? null : GLLogWrapper.this.toByteBuffer(-1, buffer);
+            this.mTempByteBuffer = this.mPointer == null ? null : GLLogWrapper.this.toByteBuffer(-1, this.mPointer);
         }
 
         public void unbindByteBuffer() {

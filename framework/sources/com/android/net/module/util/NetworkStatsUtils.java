@@ -61,16 +61,8 @@ public class NetworkStatsUtils {
 
     private static int convertBucketState(int networkStatsSet) {
         switch (networkStatsSet) {
-            case -1:
-                return -1;
-            case 0:
-            default:
-                return 0;
-            case 1:
-                return 0;
-            case 2:
-                return 1;
         }
+        return 0;
     }
 
     private static int convertBucketTag(int tag) {
@@ -84,43 +76,19 @@ public class NetworkStatsUtils {
 
     private static int convertBucketMetered(int metered) {
         switch (metered) {
-            case -1:
-                return -1;
-            case 0:
-            default:
-                return 0;
-            case 1:
-                return 0;
-            case 2:
-                return 1;
         }
+        return 0;
     }
 
     private static int convertBucketRoaming(int roaming) {
         switch (roaming) {
-            case -1:
-                return -1;
-            case 0:
-            default:
-                return 0;
-            case 1:
-                return 0;
-            case 2:
-                return 1;
         }
+        return 0;
     }
 
     private static int convertBucketDefaultNetworkStatus(int defaultNetworkStatus) {
         switch (defaultNetworkStatus) {
-            case -1:
-                return -1;
-            case 0:
-            default:
-                return 0;
-            case 1:
-                return 0;
-            case 2:
-                return 1;
         }
+        return 0;
     }
 }

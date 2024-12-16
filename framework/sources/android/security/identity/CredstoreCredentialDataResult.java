@@ -11,7 +11,7 @@ class CredstoreCredentialDataResult extends CredentialDataResult {
     CredstoreEntries mIssuerSignedEntries;
     ResultData mIssuerSignedResult;
 
-    public CredstoreCredentialDataResult(ResultData deviceSignedResult, ResultData issuerSignedResult) {
+    CredstoreCredentialDataResult(ResultData deviceSignedResult, ResultData issuerSignedResult) {
         this.mDeviceSignedResult = deviceSignedResult;
         this.mIssuerSignedResult = issuerSignedResult;
         this.mDeviceSignedEntries = new CredstoreEntries(deviceSignedResult);
@@ -48,9 +48,7 @@ class CredstoreCredentialDataResult extends CredentialDataResult {
         return this.mIssuerSignedEntries;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public static class CredstoreEntries implements CredentialDataResult.Entries {
+    static class CredstoreEntries implements CredentialDataResult.Entries {
         ResultData mResultData;
 
         CredstoreEntries(ResultData resultData) {

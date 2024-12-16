@@ -5,17 +5,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextHallSensorAttribute extends SemContextAttribute {
     public static final Parcelable.Creator<SemContextHallSensorAttribute> CREATOR = new Parcelable.Creator<SemContextHallSensorAttribute>() { // from class: com.samsung.android.hardware.context.SemContextHallSensorAttribute.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensorAttribute createFromParcel(Parcel in) {
             return new SemContextHallSensorAttribute(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextHallSensorAttribute[] newArray(int size) {
             return new SemContextHallSensorAttribute[size];
@@ -23,23 +22,6 @@ public class SemContextHallSensorAttribute extends SemContextAttribute {
     };
     private static final String TAG = "SemContextHallSensorAttribute";
     private int mDisplayStatus;
-
-    /* renamed from: com.samsung.android.hardware.context.SemContextHallSensorAttribute$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextHallSensorAttribute> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextHallSensorAttribute createFromParcel(Parcel in) {
-            return new SemContextHallSensorAttribute(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextHallSensorAttribute[] newArray(int size) {
-            return new SemContextHallSensorAttribute[size];
-        }
-    }
 
     SemContextHallSensorAttribute() {
         this.mDisplayStatus = 0;
@@ -60,8 +42,7 @@ public class SemContextHallSensorAttribute extends SemContextAttribute {
 
     @Override // com.samsung.android.hardware.context.SemContextAttribute
     public boolean checkAttribute() {
-        int i = this.mDisplayStatus;
-        if (i < 0 || i > 4) {
+        if (this.mDisplayStatus < 0 || this.mDisplayStatus > 4) {
             Log.e(TAG, "The display status is wrong.");
             return false;
         }

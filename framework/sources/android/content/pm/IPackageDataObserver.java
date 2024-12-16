@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPackageDataObserver extends IInterface {
     void onRemoveCompleted(String str, boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IPackageDataObserver {
         @Override // android.content.pm.IPackageDataObserver
         public void onRemoveCompleted(String packageName, boolean succeeded) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPackageDataObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IPackageDataObserver {
         public static final String DESCRIPTOR = "android.content.pm.IPackageDataObserver";
         static final int TRANSACTION_onRemoveCompleted = 1;
@@ -66,26 +64,23 @@ public interface IPackageDataObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onRemoveCompleted(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onRemoveCompleted(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IPackageDataObserver {
+        private static class Proxy implements IPackageDataObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

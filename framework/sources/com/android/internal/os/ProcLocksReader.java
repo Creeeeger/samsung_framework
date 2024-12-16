@@ -11,7 +11,6 @@ public class ProcLocksReader {
     private IntArray mPids;
     private ProcFileReader mReader;
 
-    /* loaded from: classes5.dex */
     public interface ProcLocksReaderCallback {
         void onBlockingFileLock(IntArray intArray);
     }
@@ -30,11 +29,10 @@ public class ProcLocksReader {
 
     public void handleBlockingFileLocks(ProcLocksReaderCallback callback) throws IOException {
         long last = -1;
-        ProcFileReader procFileReader = this.mReader;
-        if (procFileReader == null) {
+        if (this.mReader == null) {
             this.mReader = new ProcFileReader(new FileInputStream(this.mPath));
         } else {
-            procFileReader.rewind();
+            this.mReader.rewind();
         }
         this.mPids.clear();
         while (this.mReader.hasMoreData()) {

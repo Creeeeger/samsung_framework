@@ -14,17 +14,16 @@ import java.net.InetSocketAddress;
 
 @SystemApi
 @Deprecated
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class SipDelegateImsConfiguration implements Parcelable {
     public static final Parcelable.Creator<SipDelegateImsConfiguration> CREATOR = new Parcelable.Creator<SipDelegateImsConfiguration>() { // from class: android.telephony.ims.SipDelegateImsConfiguration.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateImsConfiguration createFromParcel(Parcel source) {
             return new SipDelegateImsConfiguration(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SipDelegateImsConfiguration[] newArray(int size) {
             return new SipDelegateImsConfiguration[size];
@@ -74,29 +73,17 @@ public final class SipDelegateImsConfiguration implements Parcelable {
     private final long mVersion;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface BooleanConfigKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface IntConfigKey {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StringConfigKey {
     }
 
-    /* synthetic */ SipDelegateImsConfiguration(long j, PersistableBundle persistableBundle, SipDelegateImsConfigurationIA sipDelegateImsConfigurationIA) {
-        this(j, persistableBundle);
-    }
-
-    /* synthetic */ SipDelegateImsConfiguration(Parcel parcel, SipDelegateImsConfigurationIA sipDelegateImsConfigurationIA) {
-        this(parcel);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private final PersistableBundle mBundle;
         private final long mVersion;
@@ -180,23 +167,6 @@ public final class SipDelegateImsConfiguration implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.mVersion);
         dest.writePersistableBundle(this.mBundle);
-    }
-
-    /* renamed from: android.telephony.ims.SipDelegateImsConfiguration$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SipDelegateImsConfiguration> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDelegateImsConfiguration createFromParcel(Parcel source) {
-            return new SipDelegateImsConfiguration(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SipDelegateImsConfiguration[] newArray(int size) {
-            return new SipDelegateImsConfiguration[size];
-        }
     }
 
     public SipDelegateConfiguration toNewConfig() {

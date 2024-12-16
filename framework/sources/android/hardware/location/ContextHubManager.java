@@ -3,18 +3,17 @@ package android.hardware.location;
 import android.annotation.SystemApi;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
+import android.chre.flags.Flags;
 import android.content.Context;
 import android.hardware.location.ContextHubManager;
 import android.hardware.location.ContextHubTransaction;
 import android.hardware.location.IContextHubCallback;
 import android.hardware.location.IContextHubClientCallback;
-import android.hardware.location.IContextHubService;
 import android.hardware.location.IContextHubTransactionCallback;
 import android.os.Handler;
 import android.os.HandlerExecutor;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.util.Log;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -45,7 +44,7 @@ public final class ContextHubManager {
     private static final String TAG = "ContextHubManager";
     private Callback mCallback;
     private Handler mCallbackHandler;
-    private final IContextHubCallback.Stub mClientCallback;
+    private final IContextHubCallback.Stub mClientCallback = new AnonymousClass3();
 
     @Deprecated
     private ICallback mLocalCallback;
@@ -53,23 +52,19 @@ public final class ContextHubManager {
     private final IContextHubService mService;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface AuthorizationState {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Event {
     }
 
     @Deprecated
-    /* loaded from: classes2.dex */
     public interface ICallback {
         void onMessageReceipt(int i, int i2, ContextHubMessage contextHubMessage);
     }
 
     @Deprecated
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public abstract void onMessageReceipt(int i, int i2, ContextHubMessage contextHubMessage);
 
@@ -148,77 +143,8 @@ public final class ContextHubManager {
         }
     }
 
-    /* renamed from: android.hardware.location.ContextHubManager$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IContextHubTransactionCallback.Stub {
-        final /* synthetic */ ContextHubTransaction val$transaction;
-
-        AnonymousClass1(ContextHubTransaction contextHubTransaction) {
-            transaction = contextHubTransaction;
-        }
-
-        @Override // android.hardware.location.IContextHubTransactionCallback
-        public void onQueryResponse(int result, List<NanoAppState> nanoappList) {
-            Log.e(ContextHubManager.TAG, "Received a query callback on a non-query request");
-            transaction.setResponse(new ContextHubTransaction.Response(7, null));
-        }
-
-        @Override // android.hardware.location.IContextHubTransactionCallback
-        public void onTransactionComplete(int result) {
-            transaction.setResponse(new ContextHubTransaction.Response(result, null));
-        }
-    }
-
-    private IContextHubTransactionCallback createTransactionCallback(ContextHubTransaction<Void> transaction) {
+    private IContextHubTransactionCallback createQueryCallback(final ContextHubTransaction<List<NanoAppState>> transaction) {
         return new IContextHubTransactionCallback.Stub() { // from class: android.hardware.location.ContextHubManager.1
-            final /* synthetic */ ContextHubTransaction val$transaction;
-
-            AnonymousClass1(ContextHubTransaction transaction2) {
-                transaction = transaction2;
-            }
-
-            @Override // android.hardware.location.IContextHubTransactionCallback
-            public void onQueryResponse(int result, List<NanoAppState> nanoappList) {
-                Log.e(ContextHubManager.TAG, "Received a query callback on a non-query request");
-                transaction.setResponse(new ContextHubTransaction.Response(7, null));
-            }
-
-            @Override // android.hardware.location.IContextHubTransactionCallback
-            public void onTransactionComplete(int result) {
-                transaction.setResponse(new ContextHubTransaction.Response(result, null));
-            }
-        };
-    }
-
-    /* renamed from: android.hardware.location.ContextHubManager$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IContextHubTransactionCallback.Stub {
-        final /* synthetic */ ContextHubTransaction val$transaction;
-
-        AnonymousClass2(ContextHubTransaction contextHubTransaction) {
-            transaction = contextHubTransaction;
-        }
-
-        @Override // android.hardware.location.IContextHubTransactionCallback
-        public void onQueryResponse(int result, List<NanoAppState> nanoappList) {
-            transaction.setResponse(new ContextHubTransaction.Response(result, nanoappList));
-        }
-
-        @Override // android.hardware.location.IContextHubTransactionCallback
-        public void onTransactionComplete(int result) {
-            Log.e(ContextHubManager.TAG, "Received a non-query callback on a query request");
-            transaction.setResponse(new ContextHubTransaction.Response(7, null));
-        }
-    }
-
-    private IContextHubTransactionCallback createQueryCallback(ContextHubTransaction<List<NanoAppState>> transaction) {
-        return new IContextHubTransactionCallback.Stub() { // from class: android.hardware.location.ContextHubManager.2
-            final /* synthetic */ ContextHubTransaction val$transaction;
-
-            AnonymousClass2(ContextHubTransaction transaction2) {
-                transaction = transaction2;
-            }
-
             @Override // android.hardware.location.IContextHubTransactionCallback
             public void onQueryResponse(int result, List<NanoAppState> nanoappList) {
                 transaction.setResponse(new ContextHubTransaction.Response(result, nanoappList));
@@ -236,7 +162,7 @@ public final class ContextHubManager {
         Objects.requireNonNull(hubInfo, "ContextHubInfo cannot be null");
         Objects.requireNonNull(appBinary, "NanoAppBinary cannot be null");
         ContextHubTransaction<Void> transaction = new ContextHubTransaction<>(0);
-        IContextHubTransactionCallback callback = createTransactionCallback(transaction);
+        IContextHubTransactionCallback callback = ContextHubTransactionHelper.createTransactionCallback(transaction);
         try {
             this.mService.loadNanoAppOnHub(hubInfo.getId(), callback, appBinary);
             return transaction;
@@ -248,7 +174,7 @@ public final class ContextHubManager {
     public ContextHubTransaction<Void> unloadNanoApp(ContextHubInfo hubInfo, long nanoAppId) {
         Objects.requireNonNull(hubInfo, "ContextHubInfo cannot be null");
         ContextHubTransaction<Void> transaction = new ContextHubTransaction<>(1);
-        IContextHubTransactionCallback callback = createTransactionCallback(transaction);
+        IContextHubTransactionCallback callback = ContextHubTransactionHelper.createTransactionCallback(transaction);
         try {
             this.mService.unloadNanoAppFromHub(hubInfo.getId(), callback, nanoAppId);
             return transaction;
@@ -260,7 +186,7 @@ public final class ContextHubManager {
     public ContextHubTransaction<Void> enableNanoApp(ContextHubInfo hubInfo, long nanoAppId) {
         Objects.requireNonNull(hubInfo, "ContextHubInfo cannot be null");
         ContextHubTransaction<Void> transaction = new ContextHubTransaction<>(2);
-        IContextHubTransactionCallback callback = createTransactionCallback(transaction);
+        IContextHubTransactionCallback callback = ContextHubTransactionHelper.createTransactionCallback(transaction);
         try {
             this.mService.enableNanoApp(hubInfo.getId(), callback, nanoAppId);
             return transaction;
@@ -272,7 +198,7 @@ public final class ContextHubManager {
     public ContextHubTransaction<Void> disableNanoApp(ContextHubInfo hubInfo, long nanoAppId) {
         Objects.requireNonNull(hubInfo, "ContextHubInfo cannot be null");
         ContextHubTransaction<Void> transaction = new ContextHubTransaction<>(3);
-        IContextHubTransactionCallback callback = createTransactionCallback(transaction);
+        IContextHubTransactionCallback callback = ContextHubTransactionHelper.createTransactionCallback(transaction);
         try {
             this.mService.disableNanoApp(hubInfo.getId(), callback, nanoAppId);
             return transaction;
@@ -321,14 +247,13 @@ public final class ContextHubManager {
         }
     }
 
-    /* renamed from: android.hardware.location.ContextHubManager$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 extends IContextHubClientCallback.Stub {
+    /* renamed from: android.hardware.location.ContextHubManager$2, reason: invalid class name */
+    class AnonymousClass2 extends IContextHubClientCallback.Stub {
         final /* synthetic */ ContextHubClientCallback val$callback;
         final /* synthetic */ ContextHubClient val$client;
         final /* synthetic */ Executor val$executor;
 
-        AnonymousClass3(Executor executor, ContextHubClientCallback contextHubClientCallback, ContextHubClient contextHubClient) {
+        AnonymousClass2(Executor executor, ContextHubClientCallback contextHubClientCallback, ContextHubClient contextHubClient) {
             this.val$executor = executor;
             this.val$callback = contextHubClientCallback;
             this.val$client = contextHubClient;
@@ -339,17 +264,21 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda5
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda3
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onMessageFromNanoApp$0(ContextHubClientCallback.this, contextHubClient, message);
+                    ContextHubManager.AnonymousClass2.lambda$onMessageFromNanoApp$0(ContextHubClientCallback.this, contextHubClient, message);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onMessageFromNanoApp$0(ContextHubClientCallback callback, ContextHubClient client, NanoAppMessage message) {
+        static /* synthetic */ void lambda$onMessageFromNanoApp$0(ContextHubClientCallback callback, ContextHubClient client, NanoAppMessage message) {
             callback.onMessageFromNanoApp(client, message);
-            client.callbackFinished();
+            if (Flags.reliableMessage() && Flags.reliableMessageImplementation() && message.isReliable()) {
+                client.reliableMessageCallbackFinished(message.getMessageSequenceNumber(), (byte) 0);
+            } else {
+                client.callbackFinished();
+            }
         }
 
         @Override // android.hardware.location.IContextHubClientCallback
@@ -357,15 +286,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onHubReset$1(ContextHubClientCallback.this, contextHubClient);
+                    ContextHubManager.AnonymousClass2.lambda$onHubReset$1(ContextHubClientCallback.this, contextHubClient);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onHubReset$1(ContextHubClientCallback callback, ContextHubClient client) {
+        static /* synthetic */ void lambda$onHubReset$1(ContextHubClientCallback callback, ContextHubClient client) {
             callback.onHubReset(client);
             client.callbackFinished();
         }
@@ -375,15 +304,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda4
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onNanoAppAborted$2(ContextHubClientCallback.this, contextHubClient, nanoAppId, abortCode);
+                    ContextHubManager.AnonymousClass2.lambda$onNanoAppAborted$2(ContextHubClientCallback.this, contextHubClient, nanoAppId, abortCode);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onNanoAppAborted$2(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId, int abortCode) {
+        static /* synthetic */ void lambda$onNanoAppAborted$2(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId, int abortCode) {
             callback.onNanoAppAborted(client, nanoAppId, abortCode);
             client.callbackFinished();
         }
@@ -393,15 +322,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda7
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onNanoAppLoaded$3(ContextHubClientCallback.this, contextHubClient, nanoAppId);
+                    ContextHubManager.AnonymousClass2.lambda$onNanoAppLoaded$3(ContextHubClientCallback.this, contextHubClient, nanoAppId);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onNanoAppLoaded$3(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
+        static /* synthetic */ void lambda$onNanoAppLoaded$3(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
             callback.onNanoAppLoaded(client, nanoAppId);
             client.callbackFinished();
         }
@@ -411,15 +340,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda1
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onNanoAppUnloaded$4(ContextHubClientCallback.this, contextHubClient, nanoAppId);
+                    ContextHubManager.AnonymousClass2.lambda$onNanoAppUnloaded$4(ContextHubClientCallback.this, contextHubClient, nanoAppId);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onNanoAppUnloaded$4(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
+        static /* synthetic */ void lambda$onNanoAppUnloaded$4(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
             callback.onNanoAppUnloaded(client, nanoAppId);
             client.callbackFinished();
         }
@@ -429,15 +358,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda3
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onNanoAppEnabled$5(ContextHubClientCallback.this, contextHubClient, nanoAppId);
+                    ContextHubManager.AnonymousClass2.lambda$onNanoAppEnabled$5(ContextHubClientCallback.this, contextHubClient, nanoAppId);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onNanoAppEnabled$5(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
+        static /* synthetic */ void lambda$onNanoAppEnabled$5(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
             callback.onNanoAppEnabled(client, nanoAppId);
             client.callbackFinished();
         }
@@ -447,15 +376,15 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda2
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onNanoAppDisabled$6(ContextHubClientCallback.this, contextHubClient, nanoAppId);
+                    ContextHubManager.AnonymousClass2.lambda$onNanoAppDisabled$6(ContextHubClientCallback.this, contextHubClient, nanoAppId);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onNanoAppDisabled$6(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
+        static /* synthetic */ void lambda$onNanoAppDisabled$6(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId) {
             callback.onNanoAppDisabled(client, nanoAppId);
             client.callbackFinished();
         }
@@ -465,22 +394,22 @@ public final class ContextHubManager {
             Executor executor = this.val$executor;
             final ContextHubClientCallback contextHubClientCallback = this.val$callback;
             final ContextHubClient contextHubClient = this.val$client;
-            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda6
+            executor.execute(new Runnable() { // from class: android.hardware.location.ContextHubManager$2$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
-                    ContextHubManager.AnonymousClass3.lambda$onClientAuthorizationChanged$7(ContextHubClientCallback.this, contextHubClient, nanoAppId, authorization);
+                    ContextHubManager.AnonymousClass2.lambda$onClientAuthorizationChanged$7(ContextHubClientCallback.this, contextHubClient, nanoAppId, authorization);
                 }
             });
         }
 
-        public static /* synthetic */ void lambda$onClientAuthorizationChanged$7(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId, int authorization) {
+        static /* synthetic */ void lambda$onClientAuthorizationChanged$7(ContextHubClientCallback callback, ContextHubClient client, long nanoAppId, int authorization) {
             callback.onClientAuthorizationChanged(client, nanoAppId, authorization);
             client.callbackFinished();
         }
     }
 
     private IContextHubClientCallback createClientCallback(ContextHubClient client, ContextHubClientCallback callback, Executor executor) {
-        return new AnonymousClass3(executor, callback, client);
+        return new AnonymousClass2(executor, callback, client);
     }
 
     public ContextHubClient createClient(Context context, ContextHubInfo hubInfo, Executor executor, ContextHubClientCallback callback) {
@@ -589,27 +518,26 @@ public final class ContextHubManager {
         return 0;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public synchronized void invokeOnMessageReceiptCallback(int hubId, int nanoAppId, ContextHubMessage message) {
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onMessageReceipt(hubId, nanoAppId, message);
+        if (this.mCallback != null) {
+            this.mCallback.onMessageReceipt(hubId, nanoAppId, message);
         }
     }
 
-    /* renamed from: android.hardware.location.ContextHubManager$4 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass4 extends IContextHubCallback.Stub {
-        AnonymousClass4() {
+    /* renamed from: android.hardware.location.ContextHubManager$3, reason: invalid class name */
+    class AnonymousClass3 extends IContextHubCallback.Stub {
+        AnonymousClass3() {
         }
 
         @Override // android.hardware.location.IContextHubCallback
         public void onMessageReceipt(final int hubId, final int nanoAppId, final ContextHubMessage message) {
             synchronized (ContextHubManager.this) {
                 if (ContextHubManager.this.mCallback != null) {
-                    ContextHubManager.this.mCallbackHandler.post(new Runnable() { // from class: android.hardware.location.ContextHubManager$4$$ExternalSyntheticLambda0
+                    ContextHubManager.this.mCallbackHandler.post(new Runnable() { // from class: android.hardware.location.ContextHubManager$3$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
-                            ContextHubManager.AnonymousClass4.this.lambda$onMessageReceipt$0(hubId, nanoAppId, message);
+                            ContextHubManager.AnonymousClass3.this.lambda$onMessageReceipt$0(hubId, nanoAppId, message);
                         }
                     });
                 } else if (ContextHubManager.this.mLocalCallback != null) {
@@ -618,19 +546,19 @@ public final class ContextHubManager {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onMessageReceipt$0(int hubId, int nanoAppId, ContextHubMessage message) {
             ContextHubManager.this.invokeOnMessageReceiptCallback(hubId, nanoAppId, message);
         }
     }
 
-    public ContextHubManager(Context context, Looper mainLooper) throws ServiceManager.ServiceNotFoundException {
-        AnonymousClass4 anonymousClass4 = new AnonymousClass4();
-        this.mClientCallback = anonymousClass4;
+    public ContextHubManager(IContextHubService service, Looper mainLooper) {
+        Objects.requireNonNull(service, "service cannot be null");
+        Objects.requireNonNull(mainLooper, "mainLooper cannot be null");
+        this.mService = service;
         this.mMainLooper = mainLooper;
-        IContextHubService asInterface = IContextHubService.Stub.asInterface(ServiceManager.getServiceOrThrow(Context.CONTEXTHUB_SERVICE));
-        this.mService = asInterface;
         try {
-            asInterface.registerCallback(anonymousClass4);
+            this.mService.registerCallback(this.mClientCallback);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

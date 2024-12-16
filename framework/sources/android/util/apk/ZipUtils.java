@@ -20,7 +20,7 @@ abstract class ZipUtils {
     private ZipUtils() {
     }
 
-    public static Pair<ByteBuffer, Long> findZipEndOfCentralDirectoryRecord(RandomAccessFile zip) throws IOException {
+    static Pair<ByteBuffer, Long> findZipEndOfCentralDirectoryRecord(RandomAccessFile zip) throws IOException {
         long fileSize = zip.getChannel().size();
         if (fileSize < 22) {
             return null;

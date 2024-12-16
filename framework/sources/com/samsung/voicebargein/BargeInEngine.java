@@ -17,10 +17,9 @@ public class BargeInEngine {
 
     public static int init() {
         try {
-            String str = TAG;
-            Log.i(str, "Trying to load libVoiceCommandEngine.so");
+            Log.i(TAG, "Trying to load libVoiceCommandEngine.so");
             System.loadLibrary("VoiceCommandEngine");
-            Log.i(str, "Loading libVoiceCommandEngine.so");
+            Log.i(TAG, "Loading libVoiceCommandEngine.so");
             return 0;
         } catch (Exception e) {
             Log.e(TAG, "WARNING: Could not load libVoiceCommandEngine.so");

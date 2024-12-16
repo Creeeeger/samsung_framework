@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
+import android.content.AttributionSource;
 import android.media.IAudioDeviceVolumeDispatcher;
 import android.media.IAudioFocusDispatcher;
 import android.media.IAudioModeDispatcher;
@@ -13,6 +14,7 @@ import android.media.ICapturePresetDevicesRoleDispatcher;
 import android.media.ICommunicationDeviceDispatcher;
 import android.media.IDeviceVolumeBehaviorDispatcher;
 import android.media.IDevicesForAttributesCallback;
+import android.media.ILoudnessCodecUpdatesDispatcher;
 import android.media.IMuteAwaitConnectionCallback;
 import android.media.IPlaybackConfigDispatcher;
 import android.media.IPreferredMixerAttributesDispatcher;
@@ -28,6 +30,7 @@ import android.media.IStrategyPreferredDevicesDispatcher;
 import android.media.IStreamAliasingDispatcher;
 import android.media.IVolumeController;
 import android.media.PlayerBase;
+import android.media.audiopolicy.AudioMixingRule;
 import android.media.audiopolicy.IAudioPolicyCallback;
 import android.media.projection.IMediaProjection;
 import android.net.Uri;
@@ -51,6 +54,8 @@ public interface IAudioService extends IInterface {
 
     void addAssistantServicesUids(int[] iArr) throws RemoteException;
 
+    void addLoudnessCodecInfo(int i, int i2, LoudnessCodecInfo loudnessCodecInfo) throws RemoteException;
+
     int addMixForPolicy(android.media.audiopolicy.AudioPolicyConfig audioPolicyConfig, IAudioPolicyCallback iAudioPolicyCallback) throws RemoteException;
 
     void addOnDevicesForAttributesChangedListener(AudioAttributes audioAttributes, IDevicesForAttributesCallback iDevicesForAttributesCallback) throws RemoteException;
@@ -65,7 +70,11 @@ public interface IAudioService extends IInterface {
 
     void adjustStreamVolumeWithAttribution(int i, int i2, int i3, String str, String str2) throws RemoteException;
 
+    void adjustSuggestedStreamVolume(int i, int i2, int i3) throws RemoteException;
+
     void adjustSuggestedStreamVolumeForUid(int i, int i2, int i3, String str, int i4, int i5, UserHandle userHandle, int i6) throws RemoteException;
+
+    void adjustVolume(int i, int i2) throws RemoteException;
 
     void adjustVolumeGroupVolume(int i, int i2, int i3, String str) throws RemoteException;
 
@@ -74,6 +83,8 @@ public interface IAudioService extends IInterface {
     boolean canBeSpatialized(AudioAttributes audioAttributes, AudioFormat audioFormat) throws RemoteException;
 
     void cancelMuteAwaitConnection(AudioDeviceAttributes audioDeviceAttributes) throws RemoteException;
+
+    int clearFadeManagerConfigurationForFocusLoss() throws RemoteException;
 
     int clearPreferredDevicesForCapturePreset(int i) throws RemoteException;
 
@@ -84,6 +95,12 @@ public interface IAudioService extends IInterface {
     void dismissVolumePanel() throws RemoteException;
 
     int dispatchFocusChange(AudioFocusInfo audioFocusInfo, int i, IAudioPolicyCallback iAudioPolicyCallback) throws RemoteException;
+
+    int dispatchFocusChangeWithFade(AudioFocusInfo audioFocusInfo, int i, IAudioPolicyCallback iAudioPolicyCallback, List<AudioFocusInfo> list, FadeManagerConfiguration fadeManagerConfiguration) throws RemoteException;
+
+    boolean enterAudioFocusFreezeForTest(IBinder iBinder, int[] iArr) throws RemoteException;
+
+    boolean exitAudioFocusFreezeForTest(IBinder iBinder) throws RemoteException;
 
     void forceComputeCsdOnAllDevices(boolean z) throws RemoteException;
 
@@ -121,6 +138,10 @@ public interface IAudioService extends IInterface {
 
     int[] getAvailableCommunicationDeviceIds() throws RemoteException;
 
+    int getBluetoothAudioDeviceCategory(String str) throws RemoteException;
+
+    int getBluetoothAudioDeviceCategory_legacy(String str, boolean z) throws RemoteException;
+
     int getCommunicationDevice() throws RemoteException;
 
     float getCsd() throws RemoteException;
@@ -149,15 +170,23 @@ public interface IAudioService extends IInterface {
 
     List<String> getExcludedRingtoneTitles(int i) throws RemoteException;
 
+    FadeManagerConfiguration getFadeManagerConfigurationForFocusLoss() throws RemoteException;
+
     long getFadeOutDurationOnFocusLossMillis(AudioAttributes audioAttributes) throws RemoteException;
 
     int getFineVolume(int i, int i2) throws RemoteException;
 
     float[] getFloatVolumeTable() throws RemoteException;
 
+    List getFocusDuckedUidsForTest() throws RemoteException;
+
+    long getFocusFadeOutDurationForTest() throws RemoteException;
+
     int getFocusRampTimeMs(int i, AudioAttributes audioAttributes) throws RemoteException;
 
     List<AudioFocusInfo> getFocusStack() throws RemoteException;
+
+    long getFocusUnmuteDelayAfterFadeOutForTest() throws RemoteException;
 
     AudioHalVersionInfo getHalVersion() throws RemoteException;
 
@@ -166,6 +195,8 @@ public interface IAudioService extends IInterface {
     int getLastAudibleStreamVolume(int i) throws RemoteException;
 
     int getLastAudibleVolumeForVolumeGroup(int i) throws RemoteException;
+
+    PersistableBundle getLoudnessParams(LoudnessCodecInfo loudnessCodecInfo) throws RemoteException;
 
     long getMaxAdditionalOutputDeviceDelay(AudioDeviceAttributes audioDeviceAttributes) throws RemoteException;
 
@@ -196,6 +227,8 @@ public interface IAudioService extends IInterface {
     int getPrevRingerMode() throws RemoteException;
 
     int getRadioOutputPath() throws RemoteException;
+
+    List<android.media.audiopolicy.AudioMix> getRegisteredPolicyMixes() throws RemoteException;
 
     int getRemainingMuteIntervalMs() throws RemoteException;
 
@@ -265,6 +298,8 @@ public interface IAudioService extends IInterface {
 
     boolean isBluetoothA2dpOn() throws RemoteException;
 
+    boolean isBluetoothAudioDeviceCategoryFixed(String str) throws RemoteException;
+
     boolean isBluetoothScoOn() throws RemoteException;
 
     boolean isBluetoothVariableLatencyEnabled() throws RemoteException;
@@ -272,6 +307,10 @@ public interface IAudioService extends IInterface {
     boolean isCallScreeningModeSupported() throws RemoteException;
 
     boolean isCameraSoundForced() throws RemoteException;
+
+    boolean isCsdAsAFeatureAvailable() throws RemoteException;
+
+    boolean isCsdAsAFeatureEnabled() throws RemoteException;
 
     boolean isCsdEnabled() throws RemoteException;
 
@@ -313,6 +352,8 @@ public interface IAudioService extends IInterface {
 
     boolean isStreamAffectedByRingerMode(int i) throws RemoteException;
 
+    boolean isStreamMutableByUi(int i) throws RemoteException;
+
     boolean isStreamMute(int i) throws RemoteException;
 
     boolean isSurroundFormatEnabled(int i) throws RemoteException;
@@ -334,8 +375,6 @@ public interface IAudioService extends IInterface {
     void lowerVolumeToRs1(String str) throws RemoteException;
 
     void muteAwaitConnection(int[] iArr, AudioDeviceAttributes audioDeviceAttributes, long j) throws RemoteException;
-
-    void nativeEvent(String str, String str2, int i) throws RemoteException;
 
     void notifySafetyVolumeDialogVisible(IVolumeController iVolumeController, boolean z) throws RemoteException;
 
@@ -361,7 +400,7 @@ public interface IAudioService extends IInterface {
 
     void recorderEvent(int i, int i2) throws RemoteException;
 
-    String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig audioPolicyConfig, IAudioPolicyCallback iAudioPolicyCallback, boolean z, boolean z2, boolean z3, boolean z4, IMediaProjection iMediaProjection) throws RemoteException;
+    String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig audioPolicyConfig, IAudioPolicyCallback iAudioPolicyCallback, boolean z, boolean z2, boolean z3, boolean z4, IMediaProjection iMediaProjection, AttributionSource attributionSource) throws RemoteException;
 
     void registerAudioServerStateDispatcher(IAudioServerStateDispatcher iAudioServerStateDispatcher) throws RemoteException;
 
@@ -374,6 +413,8 @@ public interface IAudioService extends IInterface {
     void registerDeviceVolumeDispatcherForAbsoluteVolume(boolean z, IAudioDeviceVolumeDispatcher iAudioDeviceVolumeDispatcher, String str, AudioDeviceAttributes audioDeviceAttributes, List<VolumeInfo> list, boolean z2, int i) throws RemoteException;
 
     void registerHeadToSoundstagePoseCallback(ISpatializerHeadToSoundStagePoseCallback iSpatializerHeadToSoundStagePoseCallback) throws RemoteException;
+
+    void registerLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher iLoudnessCodecUpdatesDispatcher) throws RemoteException;
 
     void registerModeDispatcher(IAudioModeDispatcher iAudioModeDispatcher) throws RemoteException;
 
@@ -410,6 +451,8 @@ public interface IAudioService extends IInterface {
     void removeAssistantServicesUids(int[] iArr) throws RemoteException;
 
     int removeDeviceAsNonDefaultForStrategy(int i, AudioDeviceAttributes audioDeviceAttributes) throws RemoteException;
+
+    void removeLoudnessCodecInfo(int i, LoudnessCodecInfo loudnessCodecInfo) throws RemoteException;
 
     int removeMixForPolicy(android.media.audiopolicy.AudioPolicyConfig audioPolicyConfig, IAudioPolicyCallback iAudioPolicyCallback) throws RemoteException;
 
@@ -453,6 +496,10 @@ public interface IAudioService extends IInterface {
 
     void setBluetoothA2dpOn(boolean z) throws RemoteException;
 
+    boolean setBluetoothAudioDeviceCategory(String str, int i) throws RemoteException;
+
+    void setBluetoothAudioDeviceCategory_legacy(String str, boolean z, int i) throws RemoteException;
+
     void setBluetoothScoOn(boolean z) throws RemoteException;
 
     void setBluetoothVariableLatencyEnabled(boolean z) throws RemoteException;
@@ -462,6 +509,8 @@ public interface IAudioService extends IInterface {
     boolean setCommunicationDevice(IBinder iBinder, int i) throws RemoteException;
 
     void setCsd(float f) throws RemoteException;
+
+    void setCsdAsAFeatureEnabled(boolean z) throws RemoteException;
 
     void setDesiredHeadTrackingMode(int i) throws RemoteException;
 
@@ -474,6 +523,8 @@ public interface IAudioService extends IInterface {
     void setDeviceVolumeBehavior(AudioDeviceAttributes audioDeviceAttributes, int i, String str) throws RemoteException;
 
     boolean setEncodedSurroundMode(int i) throws RemoteException;
+
+    int setFadeManagerConfigurationForFocusLoss(FadeManagerConfiguration fadeManagerConfiguration) throws RemoteException;
 
     void setFineVolume(int i, int i2, int i3, int i4, String str) throws RemoteException;
 
@@ -571,6 +622,8 @@ public interface IAudioService extends IInterface {
 
     void setWiredDeviceConnectionState(AudioDeviceAttributes audioDeviceAttributes, int i, String str) throws RemoteException;
 
+    boolean shouldNotificationSoundPlay(AudioAttributes audioAttributes) throws RemoteException;
+
     boolean shouldShowRingtoneVolume() throws RemoteException;
 
     boolean shouldVibrate(int i) throws RemoteException;
@@ -579,9 +632,13 @@ public interface IAudioService extends IInterface {
 
     void startBluetoothScoVirtualCall(IBinder iBinder) throws RemoteException;
 
+    void startLoudnessCodecUpdates(int i) throws RemoteException;
+
     AudioRoutesInfo startWatchingRoutes(IAudioRoutesObserver iAudioRoutesObserver) throws RemoteException;
 
     void stopBluetoothSco(IBinder iBinder) throws RemoteException;
+
+    void stopLoudnessCodecUpdates(int i) throws RemoteException;
 
     boolean supportsBluetoothVariableLatency() throws RemoteException;
 
@@ -605,6 +662,8 @@ public interface IAudioService extends IInterface {
 
     void unregisterHeadToSoundstagePoseCallback(ISpatializerHeadToSoundStagePoseCallback iSpatializerHeadToSoundStagePoseCallback) throws RemoteException;
 
+    void unregisterLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher iLoudnessCodecUpdatesDispatcher) throws RemoteException;
+
     void unregisterModeDispatcher(IAudioModeDispatcher iAudioModeDispatcher) throws RemoteException;
 
     void unregisterPlaybackCallback(IPlaybackConfigDispatcher iPlaybackConfigDispatcher) throws RemoteException;
@@ -623,7 +682,8 @@ public interface IAudioService extends IInterface {
 
     void unregisterStrategyPreferredDevicesDispatcher(IStrategyPreferredDevicesDispatcher iStrategyPreferredDevicesDispatcher) throws RemoteException;
 
-    /* loaded from: classes2.dex */
+    int updateMixingRulesForPolicy(android.media.audiopolicy.AudioMix[] audioMixArr, AudioMixingRule[] audioMixingRuleArr, IAudioPolicyCallback iAudioPolicyCallback) throws RemoteException;
+
     public static class Default implements IAudioService {
         @Override // android.media.IAudioService
         public int trackPlayer(PlayerBase.PlayerIdCard pic) throws RemoteException {
@@ -1047,6 +1107,11 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
+        public boolean isStreamMutableByUi(int streamType) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
         public void disableSafeMediaVolume(String callingPackage) throws RemoteException {
         }
 
@@ -1086,6 +1151,44 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
+        public boolean isCsdAsAFeatureAvailable() throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean isCsdAsAFeatureEnabled() throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
+        public void setCsdAsAFeatureEnabled(boolean csdToggleValue) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void setBluetoothAudioDeviceCategory_legacy(String address, boolean isBle, int deviceCategory) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public int getBluetoothAudioDeviceCategory_legacy(String address, boolean isBle) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean setBluetoothAudioDeviceCategory(String address, int deviceCategory) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
+        public int getBluetoothAudioDeviceCategory(String address) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean isBluetoothAudioDeviceCategoryFixed(String address) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
         public int setHdmiSystemAudioSupported(boolean on) throws RemoteException {
             return 0;
         }
@@ -1096,12 +1199,17 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
-        public String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig policyConfig, IAudioPolicyCallback pcb, boolean hasFocusListener, boolean isFocusPolicy, boolean isTestFocusPolicy, boolean isVolumeController, IMediaProjection projection) throws RemoteException {
+        public String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig policyConfig, IAudioPolicyCallback pcb, boolean hasFocusListener, boolean isFocusPolicy, boolean isTestFocusPolicy, boolean isVolumeController, IMediaProjection projection, AttributionSource attributionSource) throws RemoteException {
             return null;
         }
 
         @Override // android.media.IAudioService
         public void unregisterAudioPolicyAsync(IAudioPolicyCallback pcb) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public List<android.media.audiopolicy.AudioMix> getRegisteredPolicyMixes() throws RemoteException {
+            return null;
         }
 
         @Override // android.media.IAudioService
@@ -1115,6 +1223,11 @@ public interface IAudioService extends IInterface {
 
         @Override // android.media.IAudioService
         public int removeMixForPolicy(android.media.audiopolicy.AudioPolicyConfig policyConfig, IAudioPolicyCallback pcb) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public int updateMixingRulesForPolicy(android.media.audiopolicy.AudioMix[] mixesToUpdate, AudioMixingRule[] updatedMixingRules, IAudioPolicyCallback pcb) throws RemoteException {
             return 0;
         }
 
@@ -1165,6 +1278,11 @@ public interface IAudioService extends IInterface {
 
         @Override // android.media.IAudioService
         public int dispatchFocusChange(AudioFocusInfo afi, int focusChange, IAudioPolicyCallback pcb) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public int dispatchFocusChangeWithFade(AudioFocusInfo afi, int focusChange, IAudioPolicyCallback pcb, List<AudioFocusInfo> otherActiveAfis, FadeManagerConfiguration transientFadeMgrConfig) throws RemoteException {
             return 0;
         }
 
@@ -1350,6 +1468,14 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
+        public void adjustVolume(int direction, int flags) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void adjustSuggestedStreamVolume(int direction, int suggestedStreamType, int flags) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
         public boolean isMusicActive(boolean remotely) throws RemoteException {
             return false;
         }
@@ -1428,6 +1554,31 @@ public interface IAudioService extends IInterface {
         @Override // android.media.IAudioService
         public long getFadeOutDurationOnFocusLossMillis(AudioAttributes aa) throws RemoteException {
             return 0L;
+        }
+
+        @Override // android.media.IAudioService
+        public List getFocusDuckedUidsForTest() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.media.IAudioService
+        public long getFocusFadeOutDurationForTest() throws RemoteException {
+            return 0L;
+        }
+
+        @Override // android.media.IAudioService
+        public long getFocusUnmuteDelayAfterFadeOutForTest() throws RemoteException {
+            return 0L;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean enterAudioFocusFreezeForTest(IBinder cb, int[] uids) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean exitAudioFocusFreezeForTest(IBinder cb) throws RemoteException {
+            return false;
         }
 
         @Override // android.media.IAudioService
@@ -1689,6 +1840,55 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
+        public void registerLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher dispatcher) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void unregisterLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher dispatcher) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void startLoudnessCodecUpdates(int sessionId) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void stopLoudnessCodecUpdates(int sessionId) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void addLoudnessCodecInfo(int sessionId, int mediaCodecHash, LoudnessCodecInfo codecInfo) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public void removeLoudnessCodecInfo(int sessionId, LoudnessCodecInfo codecInfo) throws RemoteException {
+        }
+
+        @Override // android.media.IAudioService
+        public PersistableBundle getLoudnessParams(LoudnessCodecInfo codecInfo) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.media.IAudioService
+        public int setFadeManagerConfigurationForFocusLoss(FadeManagerConfiguration fmcForFocusLoss) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public int clearFadeManagerConfigurationForFocusLoss() throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.media.IAudioService
+        public FadeManagerConfiguration getFadeManagerConfigurationForFocusLoss() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.media.IAudioService
+        public boolean shouldNotificationSoundPlay(AudioAttributes aa) throws RemoteException {
+            return false;
+        }
+
+        @Override // android.media.IAudioService
         public void setAudioServiceConfig(String keyValuePairs) throws RemoteException {
         }
 
@@ -1914,10 +2114,6 @@ public interface IAudioService extends IInterface {
         }
 
         @Override // android.media.IAudioService
-        public void nativeEvent(String action, String key, int value) throws RemoteException {
-        }
-
-        @Override // android.media.IAudioService
         public int getModeInternal() throws RemoteException {
             return 0;
         }
@@ -1942,301 +2138,330 @@ public interface IAudioService extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioService {
         public static final String DESCRIPTOR = "android.media.IAudioService";
         static final int TRANSACTION_abandonAudioFocus = 71;
-        static final int TRANSACTION_abandonAudioFocusForTest = 176;
-        static final int TRANSACTION_addAssistantServicesUids = 222;
-        static final int TRANSACTION_addMixForPolicy = 108;
-        static final int TRANSACTION_addOnDevicesForAttributesChangedListener = 141;
-        static final int TRANSACTION_addPackage = 254;
-        static final int TRANSACTION_addSpatializerCompatibleAudioDevice = 198;
+        static final int TRANSACTION_abandonAudioFocusForTest = 190;
+        static final int TRANSACTION_addAssistantServicesUids = 241;
+        static final int TRANSACTION_addLoudnessCodecInfo = 259;
+        static final int TRANSACTION_addMixForPolicy = 118;
+        static final int TRANSACTION_addOnDevicesForAttributesChangedListener = 153;
+        static final int TRANSACTION_addPackage = 284;
+        static final int TRANSACTION_addSpatializerCompatibleAudioDevice = 217;
         static final int TRANSACTION_adjustStreamVolume = 10;
-        static final int TRANSACTION_adjustStreamVolumeForUid = 158;
+        static final int TRANSACTION_adjustStreamVolumeForUid = 170;
         static final int TRANSACTION_adjustStreamVolumeWithAttribution = 11;
-        static final int TRANSACTION_adjustSuggestedStreamVolumeForUid = 159;
+        static final int TRANSACTION_adjustSuggestedStreamVolume = 174;
+        static final int TRANSACTION_adjustSuggestedStreamVolumeForUid = 171;
+        static final int TRANSACTION_adjustVolume = 173;
         static final int TRANSACTION_adjustVolumeGroupVolume = 31;
-        static final int TRANSACTION_areNavigationRepeatSoundEffectsEnabled = 168;
-        static final int TRANSACTION_canBeSpatialized = 190;
-        static final int TRANSACTION_cancelMuteAwaitConnection = 215;
-        static final int TRANSACTION_clearPreferredDevicesForCapturePreset = 154;
-        static final int TRANSACTION_clearPreferredMixerAttributes = 230;
-        static final int TRANSACTION_disableSafeMediaVolume = 94;
-        static final int TRANSACTION_dismissVolumePanel = 272;
-        static final int TRANSACTION_dispatchFocusChange = 120;
-        static final int TRANSACTION_forceComputeCsdOnAllDevices = 101;
+        static final int TRANSACTION_areNavigationRepeatSoundEffectsEnabled = 182;
+        static final int TRANSACTION_canBeSpatialized = 209;
+        static final int TRANSACTION_cancelMuteAwaitConnection = 234;
+        static final int TRANSACTION_clearFadeManagerConfigurationForFocusLoss = 263;
+        static final int TRANSACTION_clearPreferredDevicesForCapturePreset = 166;
+        static final int TRANSACTION_clearPreferredMixerAttributes = 249;
+        static final int TRANSACTION_disableSafeMediaVolume = 95;
+        static final int TRANSACTION_dismissVolumePanel = 302;
+        static final int TRANSACTION_dispatchFocusChange = 131;
+        static final int TRANSACTION_dispatchFocusChangeWithFade = 132;
+        static final int TRANSACTION_enterAudioFocusFreezeForTest = 195;
+        static final int TRANSACTION_exitAudioFocusFreezeForTest = 196;
+        static final int TRANSACTION_forceComputeCsdOnAllDevices = 102;
         static final int TRANSACTION_forceRemoteSubmixFullVolume = 18;
-        static final int TRANSACTION_forceUseFrameworkMel = 100;
+        static final int TRANSACTION_forceUseFrameworkMel = 101;
         static final int TRANSACTION_forceVolumeControlStream = 77;
-        static final int TRANSACTION_getA2dpDeviceVolume = 276;
-        static final int TRANSACTION_getActiveAssistantServiceUids = 226;
-        static final int TRANSACTION_getActivePlaybackConfigurations = 118;
-        static final int TRANSACTION_getActiveRecordingConfigurations = 115;
-        static final int TRANSACTION_getActualHeadTrackingMode = 203;
-        static final int TRANSACTION_getAdditionalOutputDeviceDelay = 173;
-        static final int TRANSACTION_getAllowedCapturePolicy = 144;
-        static final int TRANSACTION_getAppDevice = 242;
-        static final int TRANSACTION_getAppVolume = 244;
-        static final int TRANSACTION_getAssistantServicesUids = 225;
+        static final int TRANSACTION_getA2dpDeviceVolume = 306;
+        static final int TRANSACTION_getActiveAssistantServiceUids = 245;
+        static final int TRANSACTION_getActivePlaybackConfigurations = 129;
+        static final int TRANSACTION_getActiveRecordingConfigurations = 126;
+        static final int TRANSACTION_getActualHeadTrackingMode = 222;
+        static final int TRANSACTION_getAdditionalOutputDeviceDelay = 187;
+        static final int TRANSACTION_getAllowedCapturePolicy = 156;
+        static final int TRANSACTION_getAppDevice = 272;
+        static final int TRANSACTION_getAppVolume = 274;
+        static final int TRANSACTION_getAssistantServicesUids = 244;
         static final int TRANSACTION_getAudioProductStrategies = 35;
-        static final int TRANSACTION_getAudioServiceConfig = 237;
+        static final int TRANSACTION_getAudioServiceConfig = 267;
         static final int TRANSACTION_getAudioVolumeGroups = 24;
-        static final int TRANSACTION_getAvailableCommunicationDeviceIds = 163;
-        static final int TRANSACTION_getCommunicationDevice = 165;
-        static final int TRANSACTION_getCsd = 98;
+        static final int TRANSACTION_getAvailableCommunicationDeviceIds = 177;
+        static final int TRANSACTION_getBluetoothAudioDeviceCategory = 110;
+        static final int TRANSACTION_getBluetoothAudioDeviceCategory_legacy = 108;
+        static final int TRANSACTION_getCommunicationDevice = 179;
+        static final int TRANSACTION_getCsd = 99;
         static final int TRANSACTION_getCurrentAudioFocus = 73;
-        static final int TRANSACTION_getCurrentAudioFocusPackageName = 273;
-        static final int TRANSACTION_getDefaultVolumeInfo = 212;
-        static final int TRANSACTION_getDesiredHeadTrackingMode = 201;
-        static final int TRANSACTION_getDeviceMaskForStream = 162;
+        static final int TRANSACTION_getCurrentAudioFocusPackageName = 303;
+        static final int TRANSACTION_getDefaultVolumeInfo = 231;
+        static final int TRANSACTION_getDesiredHeadTrackingMode = 220;
+        static final int TRANSACTION_getDeviceMaskForStream = 176;
         static final int TRANSACTION_getDeviceVolume = 15;
-        static final int TRANSACTION_getDeviceVolumeBehavior = 151;
-        static final int TRANSACTION_getDevicesForAttributes = 139;
-        static final int TRANSACTION_getDevicesForAttributesUnprotected = 140;
-        static final int TRANSACTION_getEarProtectLimit = 289;
+        static final int TRANSACTION_getDeviceVolumeBehavior = 163;
+        static final int TRANSACTION_getDevicesForAttributes = 151;
+        static final int TRANSACTION_getDevicesForAttributesUnprotected = 152;
+        static final int TRANSACTION_getEarProtectLimit = 318;
         static final int TRANSACTION_getEncodedSurroundMode = 61;
-        static final int TRANSACTION_getExcludedRingtoneTitles = 283;
-        static final int TRANSACTION_getFadeOutDurationOnFocusLossMillis = 177;
-        static final int TRANSACTION_getFineVolume = 259;
-        static final int TRANSACTION_getFloatVolumeTable = 277;
-        static final int TRANSACTION_getFocusRampTimeMs = 119;
-        static final int TRANSACTION_getFocusStack = 220;
-        static final int TRANSACTION_getHalVersion = 228;
+        static final int TRANSACTION_getExcludedRingtoneTitles = 313;
+        static final int TRANSACTION_getFadeManagerConfigurationForFocusLoss = 264;
+        static final int TRANSACTION_getFadeOutDurationOnFocusLossMillis = 191;
+        static final int TRANSACTION_getFineVolume = 289;
+        static final int TRANSACTION_getFloatVolumeTable = 307;
+        static final int TRANSACTION_getFocusDuckedUidsForTest = 192;
+        static final int TRANSACTION_getFocusFadeOutDurationForTest = 193;
+        static final int TRANSACTION_getFocusRampTimeMs = 130;
+        static final int TRANSACTION_getFocusStack = 239;
+        static final int TRANSACTION_getFocusUnmuteDelayAfterFadeOutForTest = 194;
+        static final int TRANSACTION_getHalVersion = 247;
         static final int TRANSACTION_getIndependentStreamTypes = 81;
         static final int TRANSACTION_getLastAudibleStreamVolume = 32;
         static final int TRANSACTION_getLastAudibleVolumeForVolumeGroup = 29;
-        static final int TRANSACTION_getMaxAdditionalOutputDeviceDelay = 174;
-        static final int TRANSACTION_getMediaVolumeSteps = 269;
-        static final int TRANSACTION_getMicModeType = 288;
+        static final int TRANSACTION_getLoudnessParams = 261;
+        static final int TRANSACTION_getMaxAdditionalOutputDeviceDelay = 188;
+        static final int TRANSACTION_getMediaVolumeSteps = 299;
+        static final int TRANSACTION_getMicModeType = 317;
         static final int TRANSACTION_getMode = 50;
-        static final int TRANSACTION_getModeInternal = 286;
-        static final int TRANSACTION_getMuteInterval = 264;
-        static final int TRANSACTION_getMutingExpectedDevice = 216;
-        static final int TRANSACTION_getNonDefaultDevicesForStrategy = 138;
-        static final int TRANSACTION_getOutputRs2UpperBound = 96;
-        static final int TRANSACTION_getPinAppInfo = 251;
-        static final int TRANSACTION_getPinDevice = 252;
-        static final int TRANSACTION_getPreferredDevicesForCapturePreset = 155;
-        static final int TRANSACTION_getPreferredDevicesForStrategy = 135;
-        static final int TRANSACTION_getPrevRingerMode = 266;
-        static final int TRANSACTION_getRadioOutputPath = 271;
-        static final int TRANSACTION_getRemainingMuteIntervalMs = 265;
+        static final int TRANSACTION_getModeInternal = 315;
+        static final int TRANSACTION_getMuteInterval = 294;
+        static final int TRANSACTION_getMutingExpectedDevice = 235;
+        static final int TRANSACTION_getNonDefaultDevicesForStrategy = 150;
+        static final int TRANSACTION_getOutputRs2UpperBound = 97;
+        static final int TRANSACTION_getPinAppInfo = 281;
+        static final int TRANSACTION_getPinDevice = 282;
+        static final int TRANSACTION_getPreferredDevicesForCapturePreset = 167;
+        static final int TRANSACTION_getPreferredDevicesForStrategy = 147;
+        static final int TRANSACTION_getPrevRingerMode = 296;
+        static final int TRANSACTION_getRadioOutputPath = 301;
+        static final int TRANSACTION_getRegisteredPolicyMixes = 116;
+        static final int TRANSACTION_getRemainingMuteIntervalMs = 295;
         static final int TRANSACTION_getReportedSurroundFormats = 57;
         static final int TRANSACTION_getRingerModeExternal = 43;
         static final int TRANSACTION_getRingerModeInternal = 44;
         static final int TRANSACTION_getRingtonePlayer = 79;
-        static final int TRANSACTION_getSelectedAppList = 253;
-        static final int TRANSACTION_getSpatializerCompatibleAudioDevices = 197;
-        static final int TRANSACTION_getSpatializerImmersiveAudioLevel = 180;
-        static final int TRANSACTION_getSpatializerOutput = 208;
-        static final int TRANSACTION_getSpatializerParameter = 207;
+        static final int TRANSACTION_getSelectedAppList = 283;
+        static final int TRANSACTION_getSpatializerCompatibleAudioDevices = 216;
+        static final int TRANSACTION_getSpatializerImmersiveAudioLevel = 199;
+        static final int TRANSACTION_getSpatializerOutput = 227;
+        static final int TRANSACTION_getSpatializerParameter = 226;
         static final int TRANSACTION_getStreamMaxVolume = 23;
         static final int TRANSACTION_getStreamMinVolume = 22;
         static final int TRANSACTION_getStreamTypeAlias = 82;
         static final int TRANSACTION_getStreamVolume = 21;
-        static final int TRANSACTION_getStreamVolumeForDevice = 250;
-        static final int TRANSACTION_getSupportedHeadTrackingModes = 202;
+        static final int TRANSACTION_getStreamVolumeForDevice = 280;
+        static final int TRANSACTION_getSupportedHeadTrackingModes = 221;
         static final int TRANSACTION_getSupportedSystemUsages = 34;
         static final int TRANSACTION_getSurroundFormats = 56;
         static final int TRANSACTION_getUiSoundsStreamType = 80;
-        static final int TRANSACTION_getUidForDevice = 240;
+        static final int TRANSACTION_getUidForDevice = 270;
         static final int TRANSACTION_getVibrateSetting = 47;
         static final int TRANSACTION_getVolumeController = 90;
         static final int TRANSACTION_getVolumeGroupMaxVolumeIndex = 27;
         static final int TRANSACTION_getVolumeGroupMinVolumeIndex = 28;
         static final int TRANSACTION_getVolumeGroupVolumeIndex = 26;
-        static final int TRANSACTION_handleBluetoothActiveDeviceChanged = 122;
+        static final int TRANSACTION_handleBluetoothActiveDeviceChanged = 134;
         static final int TRANSACTION_handleVolumeKey = 16;
-        static final int TRANSACTION_hasHapticChannels = 131;
-        static final int TRANSACTION_hasHeadTracker = 184;
-        static final int TRANSACTION_hasRegisteredDynamicPolicy = 112;
-        static final int TRANSACTION_isAlreadyInDB = 256;
-        static final int TRANSACTION_isAppMute = 246;
-        static final int TRANSACTION_isAudioServerRunning = 126;
+        static final int TRANSACTION_hasHapticChannels = 143;
+        static final int TRANSACTION_hasHeadTracker = 203;
+        static final int TRANSACTION_hasRegisteredDynamicPolicy = 123;
+        static final int TRANSACTION_isAlreadyInDB = 286;
+        static final int TRANSACTION_isAppMute = 276;
+        static final int TRANSACTION_isAudioServerRunning = 138;
         static final int TRANSACTION_isBluetoothA2dpOn = 69;
+        static final int TRANSACTION_isBluetoothAudioDeviceCategoryFixed = 111;
         static final int TRANSACTION_isBluetoothScoOn = 67;
-        static final int TRANSACTION_isBluetoothVariableLatencyEnabled = 235;
-        static final int TRANSACTION_isCallScreeningModeSupported = 132;
+        static final int TRANSACTION_isBluetoothVariableLatencyEnabled = 254;
+        static final int TRANSACTION_isCallScreeningModeSupported = 144;
         static final int TRANSACTION_isCameraSoundForced = 88;
-        static final int TRANSACTION_isCsdEnabled = 102;
-        static final int TRANSACTION_isForceSpeakerOn = 261;
-        static final int TRANSACTION_isHdmiSystemAudioSupported = 104;
-        static final int TRANSACTION_isHeadTrackerAvailable = 187;
-        static final int TRANSACTION_isHeadTrackerEnabled = 186;
-        static final int TRANSACTION_isHomeSoundEffectEnabled = 170;
+        static final int TRANSACTION_isCsdAsAFeatureAvailable = 104;
+        static final int TRANSACTION_isCsdAsAFeatureEnabled = 105;
+        static final int TRANSACTION_isCsdEnabled = 103;
+        static final int TRANSACTION_isForceSpeakerOn = 291;
+        static final int TRANSACTION_isHdmiSystemAudioSupported = 113;
+        static final int TRANSACTION_isHeadTrackerAvailable = 206;
+        static final int TRANSACTION_isHeadTrackerEnabled = 205;
+        static final int TRANSACTION_isHomeSoundEffectEnabled = 184;
         static final int TRANSACTION_isHotwordStreamSupported = 38;
-        static final int TRANSACTION_isInAllowedList = 257;
+        static final int TRANSACTION_isInAllowedList = 287;
         static final int TRANSACTION_isMasterMute = 19;
         static final int TRANSACTION_isMicrophoneMuted = 36;
-        static final int TRANSACTION_isMultiSoundOn = 248;
-        static final int TRANSACTION_isMusicActive = 161;
-        static final int TRANSACTION_isPstnCallAudioInterceptable = 213;
-        static final int TRANSACTION_isSafeMediaVolumeStateActive = 282;
-        static final int TRANSACTION_isSpatializerAvailable = 182;
-        static final int TRANSACTION_isSpatializerAvailableForDevice = 183;
-        static final int TRANSACTION_isSpatializerEnabled = 181;
+        static final int TRANSACTION_isMultiSoundOn = 278;
+        static final int TRANSACTION_isMusicActive = 175;
+        static final int TRANSACTION_isPstnCallAudioInterceptable = 232;
+        static final int TRANSACTION_isSafeMediaVolumeStateActive = 312;
+        static final int TRANSACTION_isSpatializerAvailable = 201;
+        static final int TRANSACTION_isSpatializerAvailableForDevice = 202;
+        static final int TRANSACTION_isSpatializerEnabled = 200;
         static final int TRANSACTION_isSpeakerphoneOn = 63;
         static final int TRANSACTION_isStreamAffectedByMute = 93;
         static final int TRANSACTION_isStreamAffectedByRingerMode = 92;
+        static final int TRANSACTION_isStreamMutableByUi = 94;
         static final int TRANSACTION_isStreamMute = 17;
         static final int TRANSACTION_isSurroundFormatEnabled = 59;
         static final int TRANSACTION_isUltrasoundSupported = 37;
-        static final int TRANSACTION_isUsingAudio = 274;
+        static final int TRANSACTION_isUsingAudio = 304;
         static final int TRANSACTION_isValidRingerMode = 45;
         static final int TRANSACTION_isVolumeControlUsingVolumeGroups = 83;
-        static final int TRANSACTION_isVolumeFixed = 211;
+        static final int TRANSACTION_isVolumeFixed = 230;
         static final int TRANSACTION_isVolumeGroupMuted = 30;
         static final int TRANSACTION_loadSoundEffects = 53;
-        static final int TRANSACTION_lowerVolumeToRs1 = 95;
-        static final int TRANSACTION_muteAwaitConnection = 214;
-        static final int TRANSACTION_nativeEvent = 285;
-        static final int TRANSACTION_notifySafetyVolumeDialogVisible = 284;
+        static final int TRANSACTION_lowerVolumeToRs1 = 96;
+        static final int TRANSACTION_muteAwaitConnection = 233;
+        static final int TRANSACTION_notifySafetyVolumeDialogVisible = 314;
         static final int TRANSACTION_notifyVolumeControllerVisible = 91;
         static final int TRANSACTION_playSoundEffect = 51;
         static final int TRANSACTION_playSoundEffectVolume = 52;
         static final int TRANSACTION_playerAttributes = 2;
         static final int TRANSACTION_playerEvent = 3;
-        static final int TRANSACTION_playerHasOpPlayAudio = 121;
+        static final int TRANSACTION_playerHasOpPlayAudio = 133;
         static final int TRANSACTION_playerSessionId = 8;
         static final int TRANSACTION_portEvent = 9;
-        static final int TRANSACTION_recenterHeadTracker = 205;
-        static final int TRANSACTION_recordRingtoneChanger = 279;
+        static final int TRANSACTION_recenterHeadTracker = 224;
+        static final int TRANSACTION_recordRingtoneChanger = 309;
         static final int TRANSACTION_recorderEvent = 6;
-        static final int TRANSACTION_registerAudioPolicy = 105;
-        static final int TRANSACTION_registerAudioServerStateDispatcher = 124;
-        static final int TRANSACTION_registerCapturePresetDevicesRoleDispatcher = 156;
-        static final int TRANSACTION_registerCommunicationDeviceDispatcher = 166;
-        static final int TRANSACTION_registerDeviceVolumeBehaviorDispatcher = 219;
-        static final int TRANSACTION_registerDeviceVolumeDispatcherForAbsoluteVolume = 227;
-        static final int TRANSACTION_registerHeadToSoundstagePoseCallback = 195;
-        static final int TRANSACTION_registerModeDispatcher = 178;
-        static final int TRANSACTION_registerMuteAwaitConnectionDispatcher = 217;
-        static final int TRANSACTION_registerPlaybackCallback = 116;
-        static final int TRANSACTION_registerPlaybackCallbackWithPackage = 280;
-        static final int TRANSACTION_registerPreferredMixerAttributesDispatcher = 231;
-        static final int TRANSACTION_registerRecordingCallback = 113;
-        static final int TRANSACTION_registerSpatializerCallback = 191;
-        static final int TRANSACTION_registerSpatializerHeadTrackerAvailableCallback = 188;
-        static final int TRANSACTION_registerSpatializerHeadTrackingCallback = 193;
-        static final int TRANSACTION_registerSpatializerOutputCallback = 209;
-        static final int TRANSACTION_registerStrategyNonDefaultDevicesDispatcher = 147;
-        static final int TRANSACTION_registerStrategyPreferredDevicesDispatcher = 145;
+        static final int TRANSACTION_registerAudioPolicy = 114;
+        static final int TRANSACTION_registerAudioServerStateDispatcher = 136;
+        static final int TRANSACTION_registerCapturePresetDevicesRoleDispatcher = 168;
+        static final int TRANSACTION_registerCommunicationDeviceDispatcher = 180;
+        static final int TRANSACTION_registerDeviceVolumeBehaviorDispatcher = 238;
+        static final int TRANSACTION_registerDeviceVolumeDispatcherForAbsoluteVolume = 246;
+        static final int TRANSACTION_registerHeadToSoundstagePoseCallback = 214;
+        static final int TRANSACTION_registerLoudnessCodecUpdatesDispatcher = 255;
+        static final int TRANSACTION_registerModeDispatcher = 197;
+        static final int TRANSACTION_registerMuteAwaitConnectionDispatcher = 236;
+        static final int TRANSACTION_registerPlaybackCallback = 127;
+        static final int TRANSACTION_registerPlaybackCallbackWithPackage = 310;
+        static final int TRANSACTION_registerPreferredMixerAttributesDispatcher = 250;
+        static final int TRANSACTION_registerRecordingCallback = 124;
+        static final int TRANSACTION_registerSpatializerCallback = 210;
+        static final int TRANSACTION_registerSpatializerHeadTrackerAvailableCallback = 207;
+        static final int TRANSACTION_registerSpatializerHeadTrackingCallback = 212;
+        static final int TRANSACTION_registerSpatializerOutputCallback = 228;
+        static final int TRANSACTION_registerStrategyNonDefaultDevicesDispatcher = 159;
+        static final int TRANSACTION_registerStrategyPreferredDevicesDispatcher = 157;
         static final int TRANSACTION_registerStreamAliasingDispatcher = 84;
         static final int TRANSACTION_releasePlayer = 4;
         static final int TRANSACTION_releaseRecorder = 7;
         static final int TRANSACTION_reloadAudioSettings = 55;
-        static final int TRANSACTION_removeAssistantServicesUids = 223;
-        static final int TRANSACTION_removeDeviceAsNonDefaultForStrategy = 137;
-        static final int TRANSACTION_removeMixForPolicy = 109;
-        static final int TRANSACTION_removeOnDevicesForAttributesChangedListener = 142;
-        static final int TRANSACTION_removePackageForName = 255;
-        static final int TRANSACTION_removePreferredDevicesForStrategy = 134;
-        static final int TRANSACTION_removeSpatializerCompatibleAudioDevice = 199;
-        static final int TRANSACTION_removeUidDeviceAffinity = 128;
-        static final int TRANSACTION_removeUserIdDeviceAffinity = 130;
+        static final int TRANSACTION_removeAssistantServicesUids = 242;
+        static final int TRANSACTION_removeDeviceAsNonDefaultForStrategy = 149;
+        static final int TRANSACTION_removeLoudnessCodecInfo = 260;
+        static final int TRANSACTION_removeMixForPolicy = 119;
+        static final int TRANSACTION_removeOnDevicesForAttributesChangedListener = 154;
+        static final int TRANSACTION_removePackageForName = 285;
+        static final int TRANSACTION_removePreferredDevicesForStrategy = 146;
+        static final int TRANSACTION_removeSpatializerCompatibleAudioDevice = 218;
+        static final int TRANSACTION_removeUidDeviceAffinity = 140;
+        static final int TRANSACTION_removeUserIdDeviceAffinity = 142;
         static final int TRANSACTION_requestAudioFocus = 70;
-        static final int TRANSACTION_requestAudioFocusForTest = 175;
-        static final int TRANSACTION_secGetActiveStreamType = 239;
-        static final int TRANSACTION_sendFocusLoss = 221;
-        static final int TRANSACTION_setA2dpDeviceVolume = 275;
+        static final int TRANSACTION_requestAudioFocusForTest = 189;
+        static final int TRANSACTION_secGetActiveStreamType = 269;
+        static final int TRANSACTION_sendFocusLoss = 240;
+        static final int TRANSACTION_setA2dpDeviceVolume = 305;
         static final int TRANSACTION_setA2dpSuspended = 65;
-        static final int TRANSACTION_setActiveAssistantServiceUids = 224;
-        static final int TRANSACTION_setAdditionalOutputDeviceDelay = 172;
-        static final int TRANSACTION_setAllowedCapturePolicy = 143;
-        static final int TRANSACTION_setAppDevice = 241;
-        static final int TRANSACTION_setAppMute = 245;
-        static final int TRANSACTION_setAppVolume = 243;
-        static final int TRANSACTION_setAudioServiceConfig = 236;
+        static final int TRANSACTION_setActiveAssistantServiceUids = 243;
+        static final int TRANSACTION_setAdditionalOutputDeviceDelay = 186;
+        static final int TRANSACTION_setAllowedCapturePolicy = 155;
+        static final int TRANSACTION_setAppDevice = 271;
+        static final int TRANSACTION_setAppMute = 275;
+        static final int TRANSACTION_setAppVolume = 273;
+        static final int TRANSACTION_setAudioServiceConfig = 266;
         static final int TRANSACTION_setBluetoothA2dpOn = 68;
+        static final int TRANSACTION_setBluetoothAudioDeviceCategory = 109;
+        static final int TRANSACTION_setBluetoothAudioDeviceCategory_legacy = 107;
         static final int TRANSACTION_setBluetoothScoOn = 64;
-        static final int TRANSACTION_setBluetoothVariableLatencyEnabled = 234;
-        static final int TRANSACTION_setBtOffloadEnable = 281;
-        static final int TRANSACTION_setCommunicationDevice = 164;
-        static final int TRANSACTION_setCsd = 99;
-        static final int TRANSACTION_setDesiredHeadTrackingMode = 200;
-        static final int TRANSACTION_setDeviceAsNonDefaultForStrategy = 136;
-        static final int TRANSACTION_setDeviceToForceByUser = 262;
+        static final int TRANSACTION_setBluetoothVariableLatencyEnabled = 253;
+        static final int TRANSACTION_setBtOffloadEnable = 311;
+        static final int TRANSACTION_setCommunicationDevice = 178;
+        static final int TRANSACTION_setCsd = 100;
+        static final int TRANSACTION_setCsdAsAFeatureEnabled = 106;
+        static final int TRANSACTION_setDesiredHeadTrackingMode = 219;
+        static final int TRANSACTION_setDeviceAsNonDefaultForStrategy = 148;
+        static final int TRANSACTION_setDeviceToForceByUser = 292;
         static final int TRANSACTION_setDeviceVolume = 14;
-        static final int TRANSACTION_setDeviceVolumeBehavior = 150;
+        static final int TRANSACTION_setDeviceVolumeBehavior = 162;
         static final int TRANSACTION_setEncodedSurroundMode = 60;
-        static final int TRANSACTION_setFineVolume = 258;
-        static final int TRANSACTION_setFocusPropertiesForPolicy = 110;
-        static final int TRANSACTION_setFocusRequestResultFromExtPolicy = 123;
-        static final int TRANSACTION_setForceSpeakerOn = 260;
-        static final int TRANSACTION_setHdmiSystemAudioSupported = 103;
-        static final int TRANSACTION_setHeadTrackerEnabled = 185;
-        static final int TRANSACTION_setHomeSoundEffectEnabled = 171;
+        static final int TRANSACTION_setFadeManagerConfigurationForFocusLoss = 262;
+        static final int TRANSACTION_setFineVolume = 288;
+        static final int TRANSACTION_setFocusPropertiesForPolicy = 121;
+        static final int TRANSACTION_setFocusRequestResultFromExtPolicy = 135;
+        static final int TRANSACTION_setForceSpeakerOn = 290;
+        static final int TRANSACTION_setHdmiSystemAudioSupported = 112;
+        static final int TRANSACTION_setHeadTrackerEnabled = 204;
+        static final int TRANSACTION_setHomeSoundEffectEnabled = 185;
         static final int TRANSACTION_setLeAudioSuspended = 66;
         static final int TRANSACTION_setMasterMute = 20;
-        static final int TRANSACTION_setMediaVolumeSteps = 268;
-        static final int TRANSACTION_setMicInputControlMode = 287;
+        static final int TRANSACTION_setMediaVolumeSteps = 298;
+        static final int TRANSACTION_setMicInputControlMode = 316;
         static final int TRANSACTION_setMicrophoneMute = 39;
         static final int TRANSACTION_setMicrophoneMuteFromSwitch = 40;
         static final int TRANSACTION_setMode = 49;
-        static final int TRANSACTION_setMultiAudioFocusEnabled = 152;
-        static final int TRANSACTION_setMultiSoundOn = 247;
-        static final int TRANSACTION_setMuteInterval = 263;
-        static final int TRANSACTION_setNavigationRepeatSoundEffectsEnabled = 169;
+        static final int TRANSACTION_setMultiAudioFocusEnabled = 164;
+        static final int TRANSACTION_setMultiSoundOn = 277;
+        static final int TRANSACTION_setMuteInterval = 293;
+        static final int TRANSACTION_setNavigationRepeatSoundEffectsEnabled = 183;
         static final int TRANSACTION_setNotifAliasRingForTest = 85;
-        static final int TRANSACTION_setOutputRs2UpperBound = 97;
-        static final int TRANSACTION_setPreferredDevicesForCapturePreset = 153;
-        static final int TRANSACTION_setPreferredDevicesForStrategy = 133;
-        static final int TRANSACTION_setPreferredMixerAttributes = 229;
-        static final int TRANSACTION_setRadioOutputPath = 270;
-        static final int TRANSACTION_setRemoteMic = 278;
+        static final int TRANSACTION_setOutputRs2UpperBound = 98;
+        static final int TRANSACTION_setPreferredDevicesForCapturePreset = 165;
+        static final int TRANSACTION_setPreferredDevicesForStrategy = 145;
+        static final int TRANSACTION_setPreferredMixerAttributes = 248;
+        static final int TRANSACTION_setRadioOutputPath = 300;
+        static final int TRANSACTION_setRemoteMic = 308;
         static final int TRANSACTION_setRingerModeExternal = 41;
         static final int TRANSACTION_setRingerModeInternal = 42;
         static final int TRANSACTION_setRingtonePlayer = 78;
-        static final int TRANSACTION_setRttEnabled = 149;
-        static final int TRANSACTION_setSoundSettingEventBroadcastIntent = 267;
-        static final int TRANSACTION_setSpatializerEnabled = 189;
-        static final int TRANSACTION_setSpatializerGlobalTransform = 204;
-        static final int TRANSACTION_setSpatializerParameter = 206;
+        static final int TRANSACTION_setRttEnabled = 161;
+        static final int TRANSACTION_setSoundSettingEventBroadcastIntent = 297;
+        static final int TRANSACTION_setSpatializerEnabled = 208;
+        static final int TRANSACTION_setSpatializerGlobalTransform = 223;
+        static final int TRANSACTION_setSpatializerParameter = 225;
         static final int TRANSACTION_setSpeakerphoneOn = 62;
         static final int TRANSACTION_setStreamVolume = 12;
-        static final int TRANSACTION_setStreamVolumeForDeviceWithAttribution = 249;
-        static final int TRANSACTION_setStreamVolumeForUid = 160;
+        static final int TRANSACTION_setStreamVolumeForDeviceWithAttribution = 279;
+        static final int TRANSACTION_setStreamVolumeForUid = 172;
         static final int TRANSACTION_setStreamVolumeWithAttribution = 13;
         static final int TRANSACTION_setSupportedSystemUsages = 33;
         static final int TRANSACTION_setSurroundFormatEnabled = 58;
-        static final int TRANSACTION_setTestDeviceConnectionState = 218;
-        static final int TRANSACTION_setUidDeviceAffinity = 127;
-        static final int TRANSACTION_setUserIdDeviceAffinity = 129;
+        static final int TRANSACTION_setTestDeviceConnectionState = 237;
+        static final int TRANSACTION_setUidDeviceAffinity = 139;
+        static final int TRANSACTION_setUserIdDeviceAffinity = 141;
         static final int TRANSACTION_setVibrateSetting = 46;
         static final int TRANSACTION_setVolumeController = 89;
         static final int TRANSACTION_setVolumeGroupVolumeIndex = 25;
-        static final int TRANSACTION_setVolumePolicy = 111;
+        static final int TRANSACTION_setVolumePolicy = 122;
         static final int TRANSACTION_setWiredDeviceConnectionState = 86;
-        static final int TRANSACTION_shouldShowRingtoneVolume = 238;
+        static final int TRANSACTION_shouldNotificationSoundPlay = 265;
+        static final int TRANSACTION_shouldShowRingtoneVolume = 268;
         static final int TRANSACTION_shouldVibrate = 48;
         static final int TRANSACTION_startBluetoothSco = 74;
         static final int TRANSACTION_startBluetoothScoVirtualCall = 75;
+        static final int TRANSACTION_startLoudnessCodecUpdates = 257;
         static final int TRANSACTION_startWatchingRoutes = 87;
         static final int TRANSACTION_stopBluetoothSco = 76;
-        static final int TRANSACTION_supportsBluetoothVariableLatency = 233;
+        static final int TRANSACTION_stopLoudnessCodecUpdates = 258;
+        static final int TRANSACTION_supportsBluetoothVariableLatency = 252;
         static final int TRANSACTION_trackPlayer = 1;
         static final int TRANSACTION_trackRecorder = 5;
         static final int TRANSACTION_unloadSoundEffects = 54;
         static final int TRANSACTION_unregisterAudioFocusClient = 72;
-        static final int TRANSACTION_unregisterAudioPolicy = 107;
-        static final int TRANSACTION_unregisterAudioPolicyAsync = 106;
-        static final int TRANSACTION_unregisterAudioServerStateDispatcher = 125;
-        static final int TRANSACTION_unregisterCapturePresetDevicesRoleDispatcher = 157;
-        static final int TRANSACTION_unregisterCommunicationDeviceDispatcher = 167;
-        static final int TRANSACTION_unregisterHeadToSoundstagePoseCallback = 196;
-        static final int TRANSACTION_unregisterModeDispatcher = 179;
-        static final int TRANSACTION_unregisterPlaybackCallback = 117;
-        static final int TRANSACTION_unregisterPreferredMixerAttributesDispatcher = 232;
-        static final int TRANSACTION_unregisterRecordingCallback = 114;
-        static final int TRANSACTION_unregisterSpatializerCallback = 192;
-        static final int TRANSACTION_unregisterSpatializerHeadTrackingCallback = 194;
-        static final int TRANSACTION_unregisterSpatializerOutputCallback = 210;
-        static final int TRANSACTION_unregisterStrategyNonDefaultDevicesDispatcher = 148;
-        static final int TRANSACTION_unregisterStrategyPreferredDevicesDispatcher = 146;
+        static final int TRANSACTION_unregisterAudioPolicy = 117;
+        static final int TRANSACTION_unregisterAudioPolicyAsync = 115;
+        static final int TRANSACTION_unregisterAudioServerStateDispatcher = 137;
+        static final int TRANSACTION_unregisterCapturePresetDevicesRoleDispatcher = 169;
+        static final int TRANSACTION_unregisterCommunicationDeviceDispatcher = 181;
+        static final int TRANSACTION_unregisterHeadToSoundstagePoseCallback = 215;
+        static final int TRANSACTION_unregisterLoudnessCodecUpdatesDispatcher = 256;
+        static final int TRANSACTION_unregisterModeDispatcher = 198;
+        static final int TRANSACTION_unregisterPlaybackCallback = 128;
+        static final int TRANSACTION_unregisterPreferredMixerAttributesDispatcher = 251;
+        static final int TRANSACTION_unregisterRecordingCallback = 125;
+        static final int TRANSACTION_unregisterSpatializerCallback = 211;
+        static final int TRANSACTION_unregisterSpatializerHeadTrackingCallback = 213;
+        static final int TRANSACTION_unregisterSpatializerOutputCallback = 229;
+        static final int TRANSACTION_unregisterStrategyNonDefaultDevicesDispatcher = 160;
+        static final int TRANSACTION_unregisterStrategyPreferredDevicesDispatcher = 158;
+        static final int TRANSACTION_updateMixingRulesForPolicy = 120;
         private final PermissionEnforcer mEnforcer;
         static final String[] PERMISSIONS_setDeviceVolume = {Manifest.permission.MODIFY_AUDIO_ROUTING, Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED};
         static final String[] PERMISSIONS_getDeviceVolume = {Manifest.permission.MODIFY_AUDIO_ROUTING, Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED};
+        static final String[] PERMISSIONS_getAudioVolumeGroups = {Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, Manifest.permission.MODIFY_AUDIO_ROUTING};
         static final String[] PERMISSIONS_setVolumeGroupVolumeIndex = {Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, Manifest.permission.MODIFY_AUDIO_ROUTING};
         static final String[] PERMISSIONS_getVolumeGroupVolumeIndex = {Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, Manifest.permission.MODIFY_AUDIO_ROUTING};
         static final String[] PERMISSIONS_getVolumeGroupMaxVolumeIndex = {Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, Manifest.permission.MODIFY_AUDIO_ROUTING};
@@ -2462,396 +2687,454 @@ public interface IAudioService extends IInterface {
                 case 93:
                     return "isStreamAffectedByMute";
                 case 94:
-                    return "disableSafeMediaVolume";
+                    return "isStreamMutableByUi";
                 case 95:
-                    return "lowerVolumeToRs1";
+                    return "disableSafeMediaVolume";
                 case 96:
-                    return "getOutputRs2UpperBound";
+                    return "lowerVolumeToRs1";
                 case 97:
-                    return "setOutputRs2UpperBound";
+                    return "getOutputRs2UpperBound";
                 case 98:
-                    return "getCsd";
+                    return "setOutputRs2UpperBound";
                 case 99:
-                    return "setCsd";
+                    return "getCsd";
                 case 100:
-                    return "forceUseFrameworkMel";
+                    return "setCsd";
                 case 101:
-                    return "forceComputeCsdOnAllDevices";
+                    return "forceUseFrameworkMel";
                 case 102:
-                    return "isCsdEnabled";
+                    return "forceComputeCsdOnAllDevices";
                 case 103:
-                    return "setHdmiSystemAudioSupported";
+                    return "isCsdEnabled";
                 case 104:
-                    return "isHdmiSystemAudioSupported";
+                    return "isCsdAsAFeatureAvailable";
                 case 105:
-                    return "registerAudioPolicy";
+                    return "isCsdAsAFeatureEnabled";
                 case 106:
-                    return "unregisterAudioPolicyAsync";
+                    return "setCsdAsAFeatureEnabled";
                 case 107:
-                    return "unregisterAudioPolicy";
+                    return "setBluetoothAudioDeviceCategory_legacy";
                 case 108:
-                    return "addMixForPolicy";
+                    return "getBluetoothAudioDeviceCategory_legacy";
                 case 109:
-                    return "removeMixForPolicy";
+                    return "setBluetoothAudioDeviceCategory";
                 case 110:
-                    return "setFocusPropertiesForPolicy";
+                    return "getBluetoothAudioDeviceCategory";
                 case 111:
-                    return "setVolumePolicy";
+                    return "isBluetoothAudioDeviceCategoryFixed";
                 case 112:
-                    return "hasRegisteredDynamicPolicy";
+                    return "setHdmiSystemAudioSupported";
                 case 113:
-                    return "registerRecordingCallback";
+                    return "isHdmiSystemAudioSupported";
                 case 114:
-                    return "unregisterRecordingCallback";
+                    return "registerAudioPolicy";
                 case 115:
-                    return "getActiveRecordingConfigurations";
+                    return "unregisterAudioPolicyAsync";
                 case 116:
-                    return "registerPlaybackCallback";
+                    return "getRegisteredPolicyMixes";
                 case 117:
-                    return "unregisterPlaybackCallback";
+                    return "unregisterAudioPolicy";
                 case 118:
-                    return "getActivePlaybackConfigurations";
+                    return "addMixForPolicy";
                 case 119:
-                    return "getFocusRampTimeMs";
+                    return "removeMixForPolicy";
                 case 120:
-                    return "dispatchFocusChange";
+                    return "updateMixingRulesForPolicy";
                 case 121:
-                    return "playerHasOpPlayAudio";
+                    return "setFocusPropertiesForPolicy";
                 case 122:
-                    return "handleBluetoothActiveDeviceChanged";
+                    return "setVolumePolicy";
                 case 123:
-                    return "setFocusRequestResultFromExtPolicy";
+                    return "hasRegisteredDynamicPolicy";
                 case 124:
-                    return "registerAudioServerStateDispatcher";
+                    return "registerRecordingCallback";
                 case 125:
-                    return "unregisterAudioServerStateDispatcher";
+                    return "unregisterRecordingCallback";
                 case 126:
-                    return "isAudioServerRunning";
+                    return "getActiveRecordingConfigurations";
                 case 127:
-                    return "setUidDeviceAffinity";
+                    return "registerPlaybackCallback";
                 case 128:
-                    return "removeUidDeviceAffinity";
+                    return "unregisterPlaybackCallback";
                 case 129:
-                    return "setUserIdDeviceAffinity";
+                    return "getActivePlaybackConfigurations";
                 case 130:
-                    return "removeUserIdDeviceAffinity";
+                    return "getFocusRampTimeMs";
                 case 131:
-                    return "hasHapticChannels";
+                    return "dispatchFocusChange";
                 case 132:
-                    return "isCallScreeningModeSupported";
+                    return "dispatchFocusChangeWithFade";
                 case 133:
-                    return "setPreferredDevicesForStrategy";
+                    return "playerHasOpPlayAudio";
                 case 134:
-                    return "removePreferredDevicesForStrategy";
+                    return "handleBluetoothActiveDeviceChanged";
                 case 135:
-                    return "getPreferredDevicesForStrategy";
+                    return "setFocusRequestResultFromExtPolicy";
                 case 136:
-                    return "setDeviceAsNonDefaultForStrategy";
+                    return "registerAudioServerStateDispatcher";
                 case 137:
-                    return "removeDeviceAsNonDefaultForStrategy";
+                    return "unregisterAudioServerStateDispatcher";
                 case 138:
-                    return "getNonDefaultDevicesForStrategy";
+                    return "isAudioServerRunning";
                 case 139:
-                    return "getDevicesForAttributes";
+                    return "setUidDeviceAffinity";
                 case 140:
-                    return "getDevicesForAttributesUnprotected";
+                    return "removeUidDeviceAffinity";
                 case 141:
-                    return "addOnDevicesForAttributesChangedListener";
+                    return "setUserIdDeviceAffinity";
                 case 142:
-                    return "removeOnDevicesForAttributesChangedListener";
+                    return "removeUserIdDeviceAffinity";
                 case 143:
-                    return "setAllowedCapturePolicy";
+                    return "hasHapticChannels";
                 case 144:
-                    return "getAllowedCapturePolicy";
+                    return "isCallScreeningModeSupported";
                 case 145:
-                    return "registerStrategyPreferredDevicesDispatcher";
+                    return "setPreferredDevicesForStrategy";
                 case 146:
-                    return "unregisterStrategyPreferredDevicesDispatcher";
+                    return "removePreferredDevicesForStrategy";
                 case 147:
-                    return "registerStrategyNonDefaultDevicesDispatcher";
+                    return "getPreferredDevicesForStrategy";
                 case 148:
-                    return "unregisterStrategyNonDefaultDevicesDispatcher";
+                    return "setDeviceAsNonDefaultForStrategy";
                 case 149:
-                    return "setRttEnabled";
+                    return "removeDeviceAsNonDefaultForStrategy";
                 case 150:
-                    return "setDeviceVolumeBehavior";
+                    return "getNonDefaultDevicesForStrategy";
                 case 151:
-                    return "getDeviceVolumeBehavior";
+                    return "getDevicesForAttributes";
                 case 152:
-                    return "setMultiAudioFocusEnabled";
+                    return "getDevicesForAttributesUnprotected";
                 case 153:
-                    return "setPreferredDevicesForCapturePreset";
+                    return "addOnDevicesForAttributesChangedListener";
                 case 154:
-                    return "clearPreferredDevicesForCapturePreset";
+                    return "removeOnDevicesForAttributesChangedListener";
                 case 155:
-                    return "getPreferredDevicesForCapturePreset";
+                    return "setAllowedCapturePolicy";
                 case 156:
-                    return "registerCapturePresetDevicesRoleDispatcher";
+                    return "getAllowedCapturePolicy";
                 case 157:
-                    return "unregisterCapturePresetDevicesRoleDispatcher";
+                    return "registerStrategyPreferredDevicesDispatcher";
                 case 158:
-                    return "adjustStreamVolumeForUid";
+                    return "unregisterStrategyPreferredDevicesDispatcher";
                 case 159:
-                    return "adjustSuggestedStreamVolumeForUid";
+                    return "registerStrategyNonDefaultDevicesDispatcher";
                 case 160:
-                    return "setStreamVolumeForUid";
+                    return "unregisterStrategyNonDefaultDevicesDispatcher";
                 case 161:
-                    return "isMusicActive";
+                    return "setRttEnabled";
                 case 162:
-                    return "getDeviceMaskForStream";
+                    return "setDeviceVolumeBehavior";
                 case 163:
-                    return "getAvailableCommunicationDeviceIds";
+                    return "getDeviceVolumeBehavior";
                 case 164:
-                    return "setCommunicationDevice";
+                    return "setMultiAudioFocusEnabled";
                 case 165:
-                    return "getCommunicationDevice";
+                    return "setPreferredDevicesForCapturePreset";
                 case 166:
-                    return "registerCommunicationDeviceDispatcher";
+                    return "clearPreferredDevicesForCapturePreset";
                 case 167:
-                    return "unregisterCommunicationDeviceDispatcher";
+                    return "getPreferredDevicesForCapturePreset";
                 case 168:
-                    return "areNavigationRepeatSoundEffectsEnabled";
+                    return "registerCapturePresetDevicesRoleDispatcher";
                 case 169:
-                    return "setNavigationRepeatSoundEffectsEnabled";
+                    return "unregisterCapturePresetDevicesRoleDispatcher";
                 case 170:
-                    return "isHomeSoundEffectEnabled";
+                    return "adjustStreamVolumeForUid";
                 case 171:
-                    return "setHomeSoundEffectEnabled";
+                    return "adjustSuggestedStreamVolumeForUid";
                 case 172:
-                    return "setAdditionalOutputDeviceDelay";
+                    return "setStreamVolumeForUid";
                 case 173:
-                    return "getAdditionalOutputDeviceDelay";
+                    return "adjustVolume";
                 case 174:
-                    return "getMaxAdditionalOutputDeviceDelay";
+                    return "adjustSuggestedStreamVolume";
                 case 175:
-                    return "requestAudioFocusForTest";
+                    return "isMusicActive";
                 case 176:
-                    return "abandonAudioFocusForTest";
+                    return "getDeviceMaskForStream";
                 case 177:
-                    return "getFadeOutDurationOnFocusLossMillis";
+                    return "getAvailableCommunicationDeviceIds";
                 case 178:
-                    return "registerModeDispatcher";
+                    return "setCommunicationDevice";
                 case 179:
-                    return "unregisterModeDispatcher";
+                    return "getCommunicationDevice";
                 case 180:
-                    return "getSpatializerImmersiveAudioLevel";
+                    return "registerCommunicationDeviceDispatcher";
                 case 181:
-                    return "isSpatializerEnabled";
+                    return "unregisterCommunicationDeviceDispatcher";
                 case 182:
-                    return "isSpatializerAvailable";
+                    return "areNavigationRepeatSoundEffectsEnabled";
                 case 183:
-                    return "isSpatializerAvailableForDevice";
+                    return "setNavigationRepeatSoundEffectsEnabled";
                 case 184:
-                    return "hasHeadTracker";
+                    return "isHomeSoundEffectEnabled";
                 case 185:
-                    return "setHeadTrackerEnabled";
+                    return "setHomeSoundEffectEnabled";
                 case 186:
-                    return "isHeadTrackerEnabled";
+                    return "setAdditionalOutputDeviceDelay";
                 case 187:
-                    return "isHeadTrackerAvailable";
+                    return "getAdditionalOutputDeviceDelay";
                 case 188:
-                    return "registerSpatializerHeadTrackerAvailableCallback";
+                    return "getMaxAdditionalOutputDeviceDelay";
                 case 189:
-                    return "setSpatializerEnabled";
+                    return "requestAudioFocusForTest";
                 case 190:
-                    return "canBeSpatialized";
+                    return "abandonAudioFocusForTest";
                 case 191:
-                    return "registerSpatializerCallback";
+                    return "getFadeOutDurationOnFocusLossMillis";
                 case 192:
-                    return "unregisterSpatializerCallback";
+                    return "getFocusDuckedUidsForTest";
                 case 193:
-                    return "registerSpatializerHeadTrackingCallback";
+                    return "getFocusFadeOutDurationForTest";
                 case 194:
-                    return "unregisterSpatializerHeadTrackingCallback";
+                    return "getFocusUnmuteDelayAfterFadeOutForTest";
                 case 195:
-                    return "registerHeadToSoundstagePoseCallback";
+                    return "enterAudioFocusFreezeForTest";
                 case 196:
-                    return "unregisterHeadToSoundstagePoseCallback";
+                    return "exitAudioFocusFreezeForTest";
                 case 197:
-                    return "getSpatializerCompatibleAudioDevices";
+                    return "registerModeDispatcher";
                 case 198:
-                    return "addSpatializerCompatibleAudioDevice";
+                    return "unregisterModeDispatcher";
                 case 199:
-                    return "removeSpatializerCompatibleAudioDevice";
+                    return "getSpatializerImmersiveAudioLevel";
                 case 200:
-                    return "setDesiredHeadTrackingMode";
+                    return "isSpatializerEnabled";
                 case 201:
-                    return "getDesiredHeadTrackingMode";
+                    return "isSpatializerAvailable";
                 case 202:
-                    return "getSupportedHeadTrackingModes";
+                    return "isSpatializerAvailableForDevice";
                 case 203:
-                    return "getActualHeadTrackingMode";
+                    return "hasHeadTracker";
                 case 204:
-                    return "setSpatializerGlobalTransform";
+                    return "setHeadTrackerEnabled";
                 case 205:
-                    return "recenterHeadTracker";
+                    return "isHeadTrackerEnabled";
                 case 206:
-                    return "setSpatializerParameter";
+                    return "isHeadTrackerAvailable";
                 case 207:
-                    return "getSpatializerParameter";
+                    return "registerSpatializerHeadTrackerAvailableCallback";
                 case 208:
-                    return "getSpatializerOutput";
+                    return "setSpatializerEnabled";
                 case 209:
-                    return "registerSpatializerOutputCallback";
+                    return "canBeSpatialized";
                 case 210:
-                    return "unregisterSpatializerOutputCallback";
+                    return "registerSpatializerCallback";
                 case 211:
-                    return "isVolumeFixed";
+                    return "unregisterSpatializerCallback";
                 case 212:
-                    return "getDefaultVolumeInfo";
+                    return "registerSpatializerHeadTrackingCallback";
                 case 213:
-                    return "isPstnCallAudioInterceptable";
+                    return "unregisterSpatializerHeadTrackingCallback";
                 case 214:
-                    return "muteAwaitConnection";
+                    return "registerHeadToSoundstagePoseCallback";
                 case 215:
-                    return "cancelMuteAwaitConnection";
+                    return "unregisterHeadToSoundstagePoseCallback";
                 case 216:
-                    return "getMutingExpectedDevice";
+                    return "getSpatializerCompatibleAudioDevices";
                 case 217:
-                    return "registerMuteAwaitConnectionDispatcher";
+                    return "addSpatializerCompatibleAudioDevice";
                 case 218:
-                    return "setTestDeviceConnectionState";
+                    return "removeSpatializerCompatibleAudioDevice";
                 case 219:
-                    return "registerDeviceVolumeBehaviorDispatcher";
+                    return "setDesiredHeadTrackingMode";
                 case 220:
-                    return "getFocusStack";
+                    return "getDesiredHeadTrackingMode";
                 case 221:
-                    return "sendFocusLoss";
+                    return "getSupportedHeadTrackingModes";
                 case 222:
-                    return "addAssistantServicesUids";
+                    return "getActualHeadTrackingMode";
                 case 223:
-                    return "removeAssistantServicesUids";
+                    return "setSpatializerGlobalTransform";
                 case 224:
-                    return "setActiveAssistantServiceUids";
+                    return "recenterHeadTracker";
                 case 225:
-                    return "getAssistantServicesUids";
+                    return "setSpatializerParameter";
                 case 226:
-                    return "getActiveAssistantServiceUids";
+                    return "getSpatializerParameter";
                 case 227:
-                    return "registerDeviceVolumeDispatcherForAbsoluteVolume";
+                    return "getSpatializerOutput";
                 case 228:
-                    return "getHalVersion";
+                    return "registerSpatializerOutputCallback";
                 case 229:
-                    return "setPreferredMixerAttributes";
+                    return "unregisterSpatializerOutputCallback";
                 case 230:
-                    return "clearPreferredMixerAttributes";
+                    return "isVolumeFixed";
                 case 231:
-                    return "registerPreferredMixerAttributesDispatcher";
+                    return "getDefaultVolumeInfo";
                 case 232:
-                    return "unregisterPreferredMixerAttributesDispatcher";
+                    return "isPstnCallAudioInterceptable";
                 case 233:
-                    return "supportsBluetoothVariableLatency";
+                    return "muteAwaitConnection";
                 case 234:
-                    return "setBluetoothVariableLatencyEnabled";
+                    return "cancelMuteAwaitConnection";
                 case 235:
-                    return "isBluetoothVariableLatencyEnabled";
+                    return "getMutingExpectedDevice";
                 case 236:
-                    return "setAudioServiceConfig";
+                    return "registerMuteAwaitConnectionDispatcher";
                 case 237:
-                    return "getAudioServiceConfig";
+                    return "setTestDeviceConnectionState";
                 case 238:
-                    return "shouldShowRingtoneVolume";
+                    return "registerDeviceVolumeBehaviorDispatcher";
                 case 239:
-                    return "secGetActiveStreamType";
+                    return "getFocusStack";
                 case 240:
-                    return "getUidForDevice";
+                    return "sendFocusLoss";
                 case 241:
-                    return "setAppDevice";
+                    return "addAssistantServicesUids";
                 case 242:
-                    return "getAppDevice";
+                    return "removeAssistantServicesUids";
                 case 243:
-                    return "setAppVolume";
+                    return "setActiveAssistantServiceUids";
                 case 244:
-                    return "getAppVolume";
+                    return "getAssistantServicesUids";
                 case 245:
-                    return "setAppMute";
+                    return "getActiveAssistantServiceUids";
                 case 246:
-                    return "isAppMute";
+                    return "registerDeviceVolumeDispatcherForAbsoluteVolume";
                 case 247:
-                    return "setMultiSoundOn";
+                    return "getHalVersion";
                 case 248:
-                    return "isMultiSoundOn";
+                    return "setPreferredMixerAttributes";
                 case 249:
-                    return "setStreamVolumeForDeviceWithAttribution";
+                    return "clearPreferredMixerAttributes";
                 case 250:
-                    return "getStreamVolumeForDevice";
+                    return "registerPreferredMixerAttributesDispatcher";
                 case 251:
-                    return "getPinAppInfo";
+                    return "unregisterPreferredMixerAttributesDispatcher";
                 case 252:
-                    return "getPinDevice";
+                    return "supportsBluetoothVariableLatency";
                 case 253:
-                    return "getSelectedAppList";
+                    return "setBluetoothVariableLatencyEnabled";
                 case 254:
-                    return "addPackage";
+                    return "isBluetoothVariableLatencyEnabled";
                 case 255:
-                    return "removePackageForName";
+                    return "registerLoudnessCodecUpdatesDispatcher";
                 case 256:
-                    return "isAlreadyInDB";
+                    return "unregisterLoudnessCodecUpdatesDispatcher";
                 case 257:
-                    return "isInAllowedList";
+                    return "startLoudnessCodecUpdates";
                 case 258:
-                    return "setFineVolume";
+                    return "stopLoudnessCodecUpdates";
                 case 259:
-                    return "getFineVolume";
+                    return "addLoudnessCodecInfo";
                 case 260:
-                    return "setForceSpeakerOn";
+                    return "removeLoudnessCodecInfo";
                 case 261:
-                    return "isForceSpeakerOn";
+                    return "getLoudnessParams";
                 case 262:
-                    return "setDeviceToForceByUser";
+                    return "setFadeManagerConfigurationForFocusLoss";
                 case 263:
-                    return "setMuteInterval";
+                    return "clearFadeManagerConfigurationForFocusLoss";
                 case 264:
-                    return "getMuteInterval";
+                    return "getFadeManagerConfigurationForFocusLoss";
                 case 265:
-                    return "getRemainingMuteIntervalMs";
+                    return "shouldNotificationSoundPlay";
                 case 266:
-                    return "getPrevRingerMode";
+                    return "setAudioServiceConfig";
                 case 267:
-                    return "setSoundSettingEventBroadcastIntent";
+                    return "getAudioServiceConfig";
                 case 268:
-                    return "setMediaVolumeSteps";
+                    return "shouldShowRingtoneVolume";
                 case 269:
-                    return "getMediaVolumeSteps";
+                    return "secGetActiveStreamType";
                 case 270:
-                    return "setRadioOutputPath";
+                    return "getUidForDevice";
                 case 271:
-                    return "getRadioOutputPath";
+                    return "setAppDevice";
                 case 272:
-                    return "dismissVolumePanel";
+                    return "getAppDevice";
                 case 273:
-                    return "getCurrentAudioFocusPackageName";
+                    return "setAppVolume";
                 case 274:
-                    return "isUsingAudio";
+                    return "getAppVolume";
                 case 275:
-                    return "setA2dpDeviceVolume";
+                    return "setAppMute";
                 case 276:
-                    return "getA2dpDeviceVolume";
+                    return "isAppMute";
                 case 277:
-                    return "getFloatVolumeTable";
+                    return "setMultiSoundOn";
                 case 278:
-                    return "setRemoteMic";
+                    return "isMultiSoundOn";
                 case 279:
-                    return "recordRingtoneChanger";
+                    return "setStreamVolumeForDeviceWithAttribution";
                 case 280:
-                    return "registerPlaybackCallbackWithPackage";
+                    return "getStreamVolumeForDevice";
                 case 281:
-                    return "setBtOffloadEnable";
+                    return "getPinAppInfo";
                 case 282:
-                    return "isSafeMediaVolumeStateActive";
+                    return "getPinDevice";
                 case 283:
-                    return "getExcludedRingtoneTitles";
+                    return "getSelectedAppList";
                 case 284:
-                    return "notifySafetyVolumeDialogVisible";
+                    return "addPackage";
                 case 285:
-                    return "nativeEvent";
+                    return "removePackageForName";
                 case 286:
-                    return "getModeInternal";
+                    return "isAlreadyInDB";
                 case 287:
-                    return "setMicInputControlMode";
+                    return "isInAllowedList";
                 case 288:
-                    return "getMicModeType";
+                    return "setFineVolume";
                 case 289:
+                    return "getFineVolume";
+                case 290:
+                    return "setForceSpeakerOn";
+                case 291:
+                    return "isForceSpeakerOn";
+                case 292:
+                    return "setDeviceToForceByUser";
+                case 293:
+                    return "setMuteInterval";
+                case 294:
+                    return "getMuteInterval";
+                case 295:
+                    return "getRemainingMuteIntervalMs";
+                case 296:
+                    return "getPrevRingerMode";
+                case 297:
+                    return "setSoundSettingEventBroadcastIntent";
+                case 298:
+                    return "setMediaVolumeSteps";
+                case 299:
+                    return "getMediaVolumeSteps";
+                case 300:
+                    return "setRadioOutputPath";
+                case 301:
+                    return "getRadioOutputPath";
+                case 302:
+                    return "dismissVolumePanel";
+                case 303:
+                    return "getCurrentAudioFocusPackageName";
+                case 304:
+                    return "isUsingAudio";
+                case 305:
+                    return "setA2dpDeviceVolume";
+                case 306:
+                    return "getA2dpDeviceVolume";
+                case 307:
+                    return "getFloatVolumeTable";
+                case 308:
+                    return "setRemoteMic";
+                case 309:
+                    return "recordRingtoneChanger";
+                case 310:
+                    return "registerPlaybackCallbackWithPackage";
+                case 311:
+                    return "setBtOffloadEnable";
+                case 312:
+                    return "isSafeMediaVolumeStateActive";
+                case 313:
+                    return "getExcludedRingtoneTitles";
+                case 314:
+                    return "notifySafetyVolumeDialogVisible";
+                case 315:
+                    return "getModeInternal";
+                case 316:
+                    return "setMicInputControlMode";
+                case 317:
+                    return "getMicModeType";
+                case 318:
                     return "getEarProtectLimit";
                 default:
                     return null;
@@ -2868,1769 +3151,1762 @@ public interface IAudioService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    PlayerBase.PlayerIdCard _arg0 = (PlayerBase.PlayerIdCard) data.readTypedObject(PlayerBase.PlayerIdCard.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result = trackPlayer(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    AudioAttributes _arg1 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    playerAttributes(_arg02, _arg1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    playerEvent(_arg03, _arg12, _arg2);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    releasePlayer(_arg04);
+                    return true;
+                case 5:
+                    IBinder _arg05 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    int _result2 = trackRecorder(_arg05);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    recorderEvent(_arg06, _arg13);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    releaseRecorder(_arg07);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    playerSessionId(_arg08, _arg14);
+                    return true;
+                case 9:
+                    return onTransact$portEvent$(data, reply);
+                case 10:
+                    return onTransact$adjustStreamVolume$(data, reply);
+                case 11:
+                    return onTransact$adjustStreamVolumeWithAttribution$(data, reply);
+                case 12:
+                    return onTransact$setStreamVolume$(data, reply);
+                case 13:
+                    return onTransact$setStreamVolumeWithAttribution$(data, reply);
+                case 14:
+                    return onTransact$setDeviceVolume$(data, reply);
+                case 15:
+                    return onTransact$getDeviceVolume$(data, reply);
+                case 16:
+                    return onTransact$handleVolumeKey$(data, reply);
+                case 17:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = isStreamMute(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 18:
+                    boolean _arg010 = data.readBoolean();
+                    IBinder _arg15 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    forceRemoteSubmixFullVolume(_arg010, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    boolean _result4 = isMasterMute();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 20:
+                    return onTransact$setMasterMute$(data, reply);
+                case 21:
+                    int _arg011 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = getStreamVolume(_arg011);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 22:
+                    int _arg012 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result6 = getStreamMinVolume(_arg012);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 23:
+                    int _arg013 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result7 = getStreamMaxVolume(_arg013);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 24:
+                    List<android.media.audiopolicy.AudioVolumeGroup> _result8 = getAudioVolumeGroups();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
+                    return true;
+                case 25:
+                    return onTransact$setVolumeGroupVolumeIndex$(data, reply);
+                case 26:
+                    int _arg014 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result9 = getVolumeGroupVolumeIndex(_arg014);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 27:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result10 = getVolumeGroupMaxVolumeIndex(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 28:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result11 = getVolumeGroupMinVolumeIndex(_arg016);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 29:
+                    int _arg017 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result12 = getLastAudibleVolumeForVolumeGroup(_arg017);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 30:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = isVolumeGroupMuted(_arg018);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 31:
+                    return onTransact$adjustVolumeGroupVolume$(data, reply);
+                case 32:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = getLastAudibleStreamVolume(_arg019);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 33:
+                    int[] _arg020 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    setSupportedSystemUsages(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 34:
+                    int[] _result15 = getSupportedSystemUsages();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result15);
+                    return true;
+                case 35:
+                    List<android.media.audiopolicy.AudioProductStrategy> _result16 = getAudioProductStrategies();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result16, 1);
+                    return true;
+                case 36:
+                    boolean _result17 = isMicrophoneMuted();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 37:
+                    boolean _result18 = isUltrasoundSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 38:
+                    boolean _arg021 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result19 = isHotwordStreamSupported(_arg021);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 39:
+                    return onTransact$setMicrophoneMute$(data, reply);
+                case 40:
+                    boolean _arg022 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMicrophoneMuteFromSwitch(_arg022);
+                    return true;
+                case 41:
+                    int _arg023 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    setRingerModeExternal(_arg023, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg024 = data.readInt();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    setRingerModeInternal(_arg024, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 43:
+                    int _result20 = getRingerModeExternal();
+                    reply.writeNoException();
+                    reply.writeInt(_result20);
+                    return true;
+                case 44:
+                    int _result21 = getRingerModeInternal();
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 45:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result22 = isValidRingerMode(_arg025);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 46:
+                    int _arg026 = data.readInt();
+                    int _arg18 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVibrateSetting(_arg026, _arg18);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result23 = getVibrateSetting(_arg027);
+                    reply.writeNoException();
+                    reply.writeInt(_result23);
+                    return true;
+                case 48:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result24 = shouldVibrate(_arg028);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result24);
+                    return true;
+                case 49:
+                    return onTransact$setMode$(data, reply);
+                case 50:
+                    int _result25 = getMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result25);
+                    return true;
+                case 51:
+                    int _arg029 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    playSoundEffect(_arg029, _arg19);
+                    return true;
+                case 52:
+                    int _arg030 = data.readInt();
+                    float _arg110 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    playSoundEffectVolume(_arg030, _arg110);
+                    return true;
+                case 53:
+                    boolean _result26 = loadSoundEffects();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result26);
+                    return true;
+                case 54:
+                    unloadSoundEffects();
+                    return true;
+                case 55:
+                    reloadAudioSettings();
+                    return true;
+                case 56:
+                    Map _result27 = getSurroundFormats();
+                    reply.writeNoException();
+                    reply.writeMap(_result27);
+                    return true;
+                case 57:
+                    List _result28 = getReportedSurroundFormats();
+                    reply.writeNoException();
+                    reply.writeList(_result28);
+                    return true;
+                case 58:
+                    int _arg031 = data.readInt();
+                    boolean _arg111 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result29 = setSurroundFormatEnabled(_arg031, _arg111);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 59:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result30 = isSurroundFormatEnabled(_arg032);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 60:
+                    int _arg033 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result31 = setEncodedSurroundMode(_arg033);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result31);
+                    return true;
+                case 61:
+                    int _arg034 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result32 = getEncodedSurroundMode(_arg034);
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    return true;
+                case 62:
+                    IBinder _arg035 = data.readStrongBinder();
+                    boolean _arg112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSpeakerphoneOn(_arg035, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 63:
+                    boolean _result33 = isSpeakerphoneOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result33);
+                    return true;
+                case 64:
+                    boolean _arg036 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBluetoothScoOn(_arg036);
+                    reply.writeNoException();
+                    return true;
+                case 65:
+                    boolean _arg037 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setA2dpSuspended(_arg037);
+                    reply.writeNoException();
+                    return true;
+                case 66:
+                    boolean _arg038 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setLeAudioSuspended(_arg038);
+                    reply.writeNoException();
+                    return true;
+                case 67:
+                    boolean _result34 = isBluetoothScoOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result34);
+                    return true;
+                case 68:
+                    boolean _arg039 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBluetoothA2dpOn(_arg039);
+                    reply.writeNoException();
+                    return true;
+                case 69:
+                    boolean _result35 = isBluetoothA2dpOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result35);
+                    return true;
+                case 70:
+                    return onTransact$requestAudioFocus$(data, reply);
+                case 71:
+                    return onTransact$abandonAudioFocus$(data, reply);
+                case 72:
+                    String _arg040 = data.readString();
+                    data.enforceNoDataAvail();
+                    unregisterAudioFocusClient(_arg040);
+                    reply.writeNoException();
+                    return true;
+                case 73:
+                    int _result36 = getCurrentAudioFocus();
+                    reply.writeNoException();
+                    reply.writeInt(_result36);
+                    return true;
+                case 74:
+                    IBinder _arg041 = data.readStrongBinder();
+                    int _arg113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startBluetoothSco(_arg041, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 75:
+                    IBinder _arg042 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    startBluetoothScoVirtualCall(_arg042);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    IBinder _arg043 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    stopBluetoothSco(_arg043);
+                    reply.writeNoException();
+                    return true;
+                case 77:
+                    int _arg044 = data.readInt();
+                    IBinder _arg114 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    forceVolumeControlStream(_arg044, _arg114);
+                    reply.writeNoException();
+                    return true;
+                case 78:
+                    IRingtonePlayer _arg045 = IRingtonePlayer.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setRingtonePlayer(_arg045);
+                    reply.writeNoException();
+                    return true;
+                case 79:
+                    IRingtonePlayer _result37 = getRingtonePlayer();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result37);
+                    return true;
+                case 80:
+                    int _result38 = getUiSoundsStreamType();
+                    reply.writeNoException();
+                    reply.writeInt(_result38);
+                    return true;
+                case 81:
+                    List _result39 = getIndependentStreamTypes();
+                    reply.writeNoException();
+                    reply.writeList(_result39);
+                    return true;
+                case 82:
+                    int _arg046 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result40 = getStreamTypeAlias(_arg046);
+                    reply.writeNoException();
+                    reply.writeInt(_result40);
+                    return true;
+                case 83:
+                    boolean _result41 = isVolumeControlUsingVolumeGroups();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result41);
+                    return true;
+                case 84:
+                    IStreamAliasingDispatcher _arg047 = IStreamAliasingDispatcher.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg115 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    registerStreamAliasingDispatcher(_arg047, _arg115);
+                    reply.writeNoException();
+                    return true;
+                case 85:
+                    boolean _arg048 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNotifAliasRingForTest(_arg048);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    return onTransact$setWiredDeviceConnectionState$(data, reply);
+                case 87:
+                    IAudioRoutesObserver _arg049 = IAudioRoutesObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    AudioRoutesInfo _result42 = startWatchingRoutes(_arg049);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result42, 1);
+                    return true;
+                case 88:
+                    boolean _result43 = isCameraSoundForced();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result43);
+                    return true;
+                case 89:
+                    IVolumeController _arg050 = IVolumeController.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setVolumeController(_arg050);
+                    reply.writeNoException();
+                    return true;
+                case 90:
+                    IVolumeController _result44 = getVolumeController();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result44);
+                    return true;
+                case 91:
+                    IVolumeController _arg051 = IVolumeController.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg116 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifyVolumeControllerVisible(_arg051, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 92:
+                    int _arg052 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result45 = isStreamAffectedByRingerMode(_arg052);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result45);
+                    return true;
+                case 93:
+                    int _arg053 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result46 = isStreamAffectedByMute(_arg053);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result46);
+                    return true;
+                case 94:
+                    int _arg054 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result47 = isStreamMutableByUi(_arg054);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result47);
+                    return true;
+                case 95:
+                    String _arg055 = data.readString();
+                    data.enforceNoDataAvail();
+                    disableSafeMediaVolume(_arg055);
+                    reply.writeNoException();
+                    return true;
+                case 96:
+                    String _arg056 = data.readString();
+                    data.enforceNoDataAvail();
+                    lowerVolumeToRs1(_arg056);
+                    return true;
+                case 97:
+                    float _result48 = getOutputRs2UpperBound();
+                    reply.writeNoException();
+                    reply.writeFloat(_result48);
+                    return true;
+                case 98:
+                    float _arg057 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setOutputRs2UpperBound(_arg057);
+                    return true;
+                case 99:
+                    float _result49 = getCsd();
+                    reply.writeNoException();
+                    reply.writeFloat(_result49);
+                    return true;
+                case 100:
+                    float _arg058 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    setCsd(_arg058);
+                    return true;
+                case 101:
+                    boolean _arg059 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    forceUseFrameworkMel(_arg059);
+                    return true;
+                case 102:
+                    boolean _arg060 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    forceComputeCsdOnAllDevices(_arg060);
+                    return true;
+                case 103:
+                    boolean _result50 = isCsdEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result50);
+                    return true;
+                case 104:
+                    boolean _result51 = isCsdAsAFeatureAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result51);
+                    return true;
+                case 105:
+                    boolean _result52 = isCsdAsAFeatureEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result52);
+                    return true;
+                case 106:
+                    boolean _arg061 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setCsdAsAFeatureEnabled(_arg061);
+                    return true;
+                case 107:
+                    return onTransact$setBluetoothAudioDeviceCategory_legacy$(data, reply);
+                case 108:
+                    String _arg062 = data.readString();
+                    boolean _arg117 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result53 = getBluetoothAudioDeviceCategory_legacy(_arg062, _arg117);
+                    reply.writeNoException();
+                    reply.writeInt(_result53);
+                    return true;
+                case 109:
+                    String _arg063 = data.readString();
+                    int _arg118 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result54 = setBluetoothAudioDeviceCategory(_arg063, _arg118);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result54);
+                    return true;
+                case 110:
+                    String _arg064 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result55 = getBluetoothAudioDeviceCategory(_arg064);
+                    reply.writeNoException();
+                    reply.writeInt(_result55);
+                    return true;
+                case 111:
+                    String _arg065 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result56 = isBluetoothAudioDeviceCategoryFixed(_arg065);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result56);
+                    return true;
+                case 112:
+                    boolean _arg066 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result57 = setHdmiSystemAudioSupported(_arg066);
+                    reply.writeNoException();
+                    reply.writeInt(_result57);
+                    return true;
+                case 113:
+                    boolean _result58 = isHdmiSystemAudioSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result58);
+                    return true;
+                case 114:
+                    return onTransact$registerAudioPolicy$(data, reply);
+                case 115:
+                    IAudioPolicyCallback _arg067 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAudioPolicyAsync(_arg067);
+                    return true;
+                case 116:
+                    List<android.media.audiopolicy.AudioMix> _result59 = getRegisteredPolicyMixes();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result59, 1);
+                    return true;
+                case 117:
+                    IAudioPolicyCallback _arg068 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAudioPolicy(_arg068);
+                    reply.writeNoException();
+                    return true;
+                case 118:
+                    android.media.audiopolicy.AudioPolicyConfig _arg069 = (android.media.audiopolicy.AudioPolicyConfig) data.readTypedObject(android.media.audiopolicy.AudioPolicyConfig.CREATOR);
+                    IAudioPolicyCallback _arg119 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result60 = addMixForPolicy(_arg069, _arg119);
+                    reply.writeNoException();
+                    reply.writeInt(_result60);
+                    return true;
+                case 119:
+                    android.media.audiopolicy.AudioPolicyConfig _arg070 = (android.media.audiopolicy.AudioPolicyConfig) data.readTypedObject(android.media.audiopolicy.AudioPolicyConfig.CREATOR);
+                    IAudioPolicyCallback _arg120 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result61 = removeMixForPolicy(_arg070, _arg120);
+                    reply.writeNoException();
+                    reply.writeInt(_result61);
+                    return true;
+                case 120:
+                    return onTransact$updateMixingRulesForPolicy$(data, reply);
+                case 121:
+                    int _arg071 = data.readInt();
+                    IAudioPolicyCallback _arg121 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    int _result62 = setFocusPropertiesForPolicy(_arg071, _arg121);
+                    reply.writeNoException();
+                    reply.writeInt(_result62);
+                    return true;
+                case 122:
+                    VolumePolicy _arg072 = (VolumePolicy) data.readTypedObject(VolumePolicy.CREATOR);
+                    data.enforceNoDataAvail();
+                    setVolumePolicy(_arg072);
+                    reply.writeNoException();
+                    return true;
+                case 123:
+                    boolean _result63 = hasRegisteredDynamicPolicy();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result63);
+                    return true;
+                case 124:
+                    IRecordingConfigDispatcher _arg073 = IRecordingConfigDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerRecordingCallback(_arg073);
+                    reply.writeNoException();
+                    return true;
+                case 125:
+                    IRecordingConfigDispatcher _arg074 = IRecordingConfigDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterRecordingCallback(_arg074);
+                    return true;
+                case 126:
+                    List<AudioRecordingConfiguration> _result64 = getActiveRecordingConfigurations();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result64, 1);
+                    return true;
+                case 127:
+                    IPlaybackConfigDispatcher _arg075 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerPlaybackCallback(_arg075);
+                    reply.writeNoException();
+                    return true;
+                case 128:
+                    IPlaybackConfigDispatcher _arg076 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPlaybackCallback(_arg076);
+                    return true;
+                case 129:
+                    List<AudioPlaybackConfiguration> _result65 = getActivePlaybackConfigurations();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result65, 1);
+                    return true;
+                case 130:
+                    int _arg077 = data.readInt();
+                    AudioAttributes _arg122 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result66 = getFocusRampTimeMs(_arg077, _arg122);
+                    reply.writeNoException();
+                    reply.writeInt(_result66);
+                    return true;
+                case 131:
+                    return onTransact$dispatchFocusChange$(data, reply);
+                case 132:
+                    return onTransact$dispatchFocusChangeWithFade$(data, reply);
+                case 133:
+                    int _arg078 = data.readInt();
+                    boolean _arg123 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    playerHasOpPlayAudio(_arg078, _arg123);
+                    return true;
+                case 134:
+                    return onTransact$handleBluetoothActiveDeviceChanged$(data, reply);
+                case 135:
+                    return onTransact$setFocusRequestResultFromExtPolicy$(data, reply);
+                case 136:
+                    IAudioServerStateDispatcher _arg079 = IAudioServerStateDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerAudioServerStateDispatcher(_arg079);
+                    reply.writeNoException();
+                    return true;
+                case 137:
+                    IAudioServerStateDispatcher _arg080 = IAudioServerStateDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterAudioServerStateDispatcher(_arg080);
+                    return true;
+                case 138:
+                    boolean _result67 = isAudioServerRunning();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result67);
+                    return true;
+                case 139:
+                    return onTransact$setUidDeviceAffinity$(data, reply);
+                case 140:
+                    IAudioPolicyCallback _arg081 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result68 = removeUidDeviceAffinity(_arg081, _arg124);
+                    reply.writeNoException();
+                    reply.writeInt(_result68);
+                    return true;
+                case 141:
+                    return onTransact$setUserIdDeviceAffinity$(data, reply);
+                case 142:
+                    IAudioPolicyCallback _arg082 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    int _arg125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result69 = removeUserIdDeviceAffinity(_arg082, _arg125);
+                    reply.writeNoException();
+                    reply.writeInt(_result69);
+                    return true;
+                case 143:
+                    Uri _arg083 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result70 = hasHapticChannels(_arg083);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result70);
+                    return true;
+                case 144:
+                    boolean _result71 = isCallScreeningModeSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result71);
+                    return true;
+                case 145:
+                    int _arg084 = data.readInt();
+                    List<AudioDeviceAttributes> _arg126 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result72 = setPreferredDevicesForStrategy(_arg084, _arg126);
+                    reply.writeNoException();
+                    reply.writeInt(_result72);
+                    return true;
+                case 146:
+                    int _arg085 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result73 = removePreferredDevicesForStrategy(_arg085);
+                    reply.writeNoException();
+                    reply.writeInt(_result73);
+                    return true;
+                case 147:
+                    int _arg086 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<AudioDeviceAttributes> _result74 = getPreferredDevicesForStrategy(_arg086);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result74, 1);
+                    return true;
+                case 148:
+                    int _arg087 = data.readInt();
+                    AudioDeviceAttributes _arg127 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result75 = setDeviceAsNonDefaultForStrategy(_arg087, _arg127);
+                    reply.writeNoException();
+                    reply.writeInt(_result75);
+                    return true;
+                case 149:
+                    int _arg088 = data.readInt();
+                    AudioDeviceAttributes _arg128 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result76 = removeDeviceAsNonDefaultForStrategy(_arg088, _arg128);
+                    reply.writeNoException();
+                    reply.writeInt(_result76);
+                    return true;
+                case 150:
+                    int _arg089 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<AudioDeviceAttributes> _result77 = getNonDefaultDevicesForStrategy(_arg089);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result77, 1);
+                    return true;
+                case 151:
+                    AudioAttributes _arg090 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<AudioDeviceAttributes> _result78 = getDevicesForAttributes(_arg090);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result78, 1);
+                    return true;
+                case 152:
+                    AudioAttributes _arg091 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<AudioDeviceAttributes> _result79 = getDevicesForAttributesUnprotected(_arg091);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result79, 1);
+                    return true;
+                case 153:
+                    AudioAttributes _arg092 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    IDevicesForAttributesCallback _arg129 = IDevicesForAttributesCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addOnDevicesForAttributesChangedListener(_arg092, _arg129);
+                    reply.writeNoException();
+                    return true;
+                case 154:
+                    IDevicesForAttributesCallback _arg093 = IDevicesForAttributesCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeOnDevicesForAttributesChangedListener(_arg093);
+                    return true;
+                case 155:
+                    int _arg094 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result80 = setAllowedCapturePolicy(_arg094);
+                    reply.writeNoException();
+                    reply.writeInt(_result80);
+                    return true;
+                case 156:
+                    int _result81 = getAllowedCapturePolicy();
+                    reply.writeNoException();
+                    reply.writeInt(_result81);
+                    return true;
+                case 157:
+                    IStrategyPreferredDevicesDispatcher _arg095 = IStrategyPreferredDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerStrategyPreferredDevicesDispatcher(_arg095);
+                    reply.writeNoException();
+                    return true;
+                case 158:
+                    IStrategyPreferredDevicesDispatcher _arg096 = IStrategyPreferredDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterStrategyPreferredDevicesDispatcher(_arg096);
+                    return true;
+                case 159:
+                    IStrategyNonDefaultDevicesDispatcher _arg097 = IStrategyNonDefaultDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerStrategyNonDefaultDevicesDispatcher(_arg097);
+                    reply.writeNoException();
+                    return true;
+                case 160:
+                    IStrategyNonDefaultDevicesDispatcher _arg098 = IStrategyNonDefaultDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterStrategyNonDefaultDevicesDispatcher(_arg098);
+                    return true;
+                case 161:
+                    boolean _arg099 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRttEnabled(_arg099);
+                    return true;
+                case 162:
+                    return onTransact$setDeviceVolumeBehavior$(data, reply);
+                case 163:
+                    AudioDeviceAttributes _arg0100 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result82 = getDeviceVolumeBehavior(_arg0100);
+                    reply.writeNoException();
+                    reply.writeInt(_result82);
+                    return true;
+                case 164:
+                    boolean _arg0101 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMultiAudioFocusEnabled(_arg0101);
+                    return true;
+                case 165:
+                    int _arg0102 = data.readInt();
+                    List<AudioDeviceAttributes> _arg130 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result83 = setPreferredDevicesForCapturePreset(_arg0102, _arg130);
+                    reply.writeNoException();
+                    reply.writeInt(_result83);
+                    return true;
+                case 166:
+                    int _arg0103 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result84 = clearPreferredDevicesForCapturePreset(_arg0103);
+                    reply.writeNoException();
+                    reply.writeInt(_result84);
+                    return true;
+                case 167:
+                    int _arg0104 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<AudioDeviceAttributes> _result85 = getPreferredDevicesForCapturePreset(_arg0104);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result85, 1);
+                    return true;
+                case 168:
+                    ICapturePresetDevicesRoleDispatcher _arg0105 = ICapturePresetDevicesRoleDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCapturePresetDevicesRoleDispatcher(_arg0105);
+                    reply.writeNoException();
+                    return true;
+                case 169:
+                    ICapturePresetDevicesRoleDispatcher _arg0106 = ICapturePresetDevicesRoleDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCapturePresetDevicesRoleDispatcher(_arg0106);
+                    return true;
+                case 170:
+                    return onTransact$adjustStreamVolumeForUid$(data, reply);
+                case 171:
+                    return onTransact$adjustSuggestedStreamVolumeForUid$(data, reply);
+                case 172:
+                    return onTransact$setStreamVolumeForUid$(data, reply);
+                case 173:
+                    int _arg0107 = data.readInt();
+                    int _arg131 = data.readInt();
+                    data.enforceNoDataAvail();
+                    adjustVolume(_arg0107, _arg131);
+                    return true;
+                case 174:
+                    return onTransact$adjustSuggestedStreamVolume$(data, reply);
+                case 175:
+                    boolean _arg0108 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result86 = isMusicActive(_arg0108);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result86);
+                    return true;
+                case 176:
+                    int _arg0109 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result87 = getDeviceMaskForStream(_arg0109);
+                    reply.writeNoException();
+                    reply.writeInt(_result87);
+                    return true;
+                case 177:
+                    int[] _result88 = getAvailableCommunicationDeviceIds();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result88);
+                    return true;
+                case 178:
+                    IBinder _arg0110 = data.readStrongBinder();
+                    int _arg132 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result89 = setCommunicationDevice(_arg0110, _arg132);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result89);
+                    return true;
+                case 179:
+                    int _result90 = getCommunicationDevice();
+                    reply.writeNoException();
+                    reply.writeInt(_result90);
+                    return true;
+                case 180:
+                    ICommunicationDeviceDispatcher _arg0111 = ICommunicationDeviceDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerCommunicationDeviceDispatcher(_arg0111);
+                    reply.writeNoException();
+                    return true;
+                case 181:
+                    ICommunicationDeviceDispatcher _arg0112 = ICommunicationDeviceDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterCommunicationDeviceDispatcher(_arg0112);
+                    return true;
+                case 182:
+                    boolean _result91 = areNavigationRepeatSoundEffectsEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result91);
+                    return true;
+                case 183:
+                    boolean _arg0113 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setNavigationRepeatSoundEffectsEnabled(_arg0113);
+                    return true;
+                case 184:
+                    boolean _result92 = isHomeSoundEffectEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result92);
+                    return true;
+                case 185:
+                    boolean _arg0114 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setHomeSoundEffectEnabled(_arg0114);
+                    return true;
+                case 186:
+                    AudioDeviceAttributes _arg0115 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    long _arg133 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result93 = setAdditionalOutputDeviceDelay(_arg0115, _arg133);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result93);
+                    return true;
+                case 187:
+                    AudioDeviceAttributes _arg0116 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result94 = getAdditionalOutputDeviceDelay(_arg0116);
+                    reply.writeNoException();
+                    reply.writeLong(_result94);
+                    return true;
+                case 188:
+                    AudioDeviceAttributes _arg0117 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result95 = getMaxAdditionalOutputDeviceDelay(_arg0117);
+                    reply.writeNoException();
+                    reply.writeLong(_result95);
+                    return true;
+                case 189:
+                    return onTransact$requestAudioFocusForTest$(data, reply);
+                case 190:
+                    return onTransact$abandonAudioFocusForTest$(data, reply);
+                case 191:
+                    AudioAttributes _arg0118 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    long _result96 = getFadeOutDurationOnFocusLossMillis(_arg0118);
+                    reply.writeNoException();
+                    reply.writeLong(_result96);
+                    return true;
+                case 192:
+                    List _result97 = getFocusDuckedUidsForTest();
+                    reply.writeNoException();
+                    reply.writeList(_result97);
+                    return true;
+                case 193:
+                    long _result98 = getFocusFadeOutDurationForTest();
+                    reply.writeNoException();
+                    reply.writeLong(_result98);
+                    return true;
+                case 194:
+                    long _result99 = getFocusUnmuteDelayAfterFadeOutForTest();
+                    reply.writeNoException();
+                    reply.writeLong(_result99);
+                    return true;
+                case 195:
+                    IBinder _arg0119 = data.readStrongBinder();
+                    int[] _arg134 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    boolean _result100 = enterAudioFocusFreezeForTest(_arg0119, _arg134);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result100);
+                    return true;
+                case 196:
+                    IBinder _arg0120 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    boolean _result101 = exitAudioFocusFreezeForTest(_arg0120);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result101);
+                    return true;
+                case 197:
+                    IAudioModeDispatcher _arg0121 = IAudioModeDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerModeDispatcher(_arg0121);
+                    reply.writeNoException();
+                    return true;
+                case 198:
+                    IAudioModeDispatcher _arg0122 = IAudioModeDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterModeDispatcher(_arg0122);
+                    return true;
+                case 199:
+                    int _result102 = getSpatializerImmersiveAudioLevel();
+                    reply.writeNoException();
+                    reply.writeInt(_result102);
+                    return true;
+                case 200:
+                    boolean _result103 = isSpatializerEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result103);
+                    return true;
+                case 201:
+                    boolean _result104 = isSpatializerAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result104);
+                    return true;
+                case 202:
+                    AudioDeviceAttributes _arg0123 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result105 = isSpatializerAvailableForDevice(_arg0123);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result105);
+                    return true;
+                case 203:
+                    AudioDeviceAttributes _arg0124 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result106 = hasHeadTracker(_arg0124);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result106);
+                    return true;
+                case 204:
+                    boolean _arg0125 = data.readBoolean();
+                    AudioDeviceAttributes _arg135 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    setHeadTrackerEnabled(_arg0125, _arg135);
+                    reply.writeNoException();
+                    return true;
+                case 205:
+                    AudioDeviceAttributes _arg0126 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result107 = isHeadTrackerEnabled(_arg0126);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result107);
+                    return true;
+                case 206:
+                    boolean _result108 = isHeadTrackerAvailable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result108);
+                    return true;
+                case 207:
+                    ISpatializerHeadTrackerAvailableCallback _arg0127 = ISpatializerHeadTrackerAvailableCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg136 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    registerSpatializerHeadTrackerAvailableCallback(_arg0127, _arg136);
+                    reply.writeNoException();
+                    return true;
+                case 208:
+                    boolean _arg0128 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSpatializerEnabled(_arg0128);
+                    reply.writeNoException();
+                    return true;
+                case 209:
+                    AudioAttributes _arg0129 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    AudioFormat _arg137 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result109 = canBeSpatialized(_arg0129, _arg137);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result109);
+                    return true;
+                case 210:
+                    ISpatializerCallback _arg0130 = ISpatializerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerSpatializerCallback(_arg0130);
+                    reply.writeNoException();
+                    return true;
+                case 211:
+                    ISpatializerCallback _arg0131 = ISpatializerCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterSpatializerCallback(_arg0131);
+                    reply.writeNoException();
+                    return true;
+                case 212:
+                    ISpatializerHeadTrackingModeCallback _arg0132 = ISpatializerHeadTrackingModeCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerSpatializerHeadTrackingCallback(_arg0132);
+                    reply.writeNoException();
+                    return true;
+                case 213:
+                    ISpatializerHeadTrackingModeCallback _arg0133 = ISpatializerHeadTrackingModeCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterSpatializerHeadTrackingCallback(_arg0133);
+                    reply.writeNoException();
+                    return true;
+                case 214:
+                    ISpatializerHeadToSoundStagePoseCallback _arg0134 = ISpatializerHeadToSoundStagePoseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerHeadToSoundstagePoseCallback(_arg0134);
+                    reply.writeNoException();
+                    return true;
+                case 215:
+                    ISpatializerHeadToSoundStagePoseCallback _arg0135 = ISpatializerHeadToSoundStagePoseCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterHeadToSoundstagePoseCallback(_arg0135);
+                    reply.writeNoException();
+                    return true;
+                case 216:
+                    List<AudioDeviceAttributes> _result110 = getSpatializerCompatibleAudioDevices();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result110, 1);
+                    return true;
+                case 217:
+                    AudioDeviceAttributes _arg0136 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    addSpatializerCompatibleAudioDevice(_arg0136);
+                    reply.writeNoException();
+                    return true;
+                case 218:
+                    AudioDeviceAttributes _arg0137 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeSpatializerCompatibleAudioDevice(_arg0137);
+                    reply.writeNoException();
+                    return true;
+                case 219:
+                    int _arg0138 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDesiredHeadTrackingMode(_arg0138);
+                    reply.writeNoException();
+                    return true;
+                case 220:
+                    int _result111 = getDesiredHeadTrackingMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result111);
+                    return true;
+                case 221:
+                    int[] _result112 = getSupportedHeadTrackingModes();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result112);
+                    return true;
+                case 222:
+                    int _result113 = getActualHeadTrackingMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result113);
+                    return true;
+                case 223:
+                    float[] _arg0139 = data.createFloatArray();
+                    data.enforceNoDataAvail();
+                    setSpatializerGlobalTransform(_arg0139);
+                    return true;
+                case 224:
+                    recenterHeadTracker();
+                    return true;
+                case 225:
+                    int _arg0140 = data.readInt();
+                    byte[] _arg138 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    setSpatializerParameter(_arg0140, _arg138);
+                    reply.writeNoException();
+                    return true;
+                case 226:
+                    int _arg0141 = data.readInt();
+                    byte[] _arg139 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    getSpatializerParameter(_arg0141, _arg139);
+                    reply.writeNoException();
+                    reply.writeByteArray(_arg139);
+                    return true;
+                case 227:
+                    int _result114 = getSpatializerOutput();
+                    reply.writeNoException();
+                    reply.writeInt(_result114);
+                    return true;
+                case 228:
+                    ISpatializerOutputCallback _arg0142 = ISpatializerOutputCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerSpatializerOutputCallback(_arg0142);
+                    reply.writeNoException();
+                    return true;
+                case 229:
+                    ISpatializerOutputCallback _arg0143 = ISpatializerOutputCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterSpatializerOutputCallback(_arg0143);
+                    reply.writeNoException();
+                    return true;
+                case 230:
+                    boolean _result115 = isVolumeFixed();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result115);
+                    return true;
+                case 231:
+                    VolumeInfo _result116 = getDefaultVolumeInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result116, 1);
+                    return true;
+                case 232:
+                    boolean _result117 = isPstnCallAudioInterceptable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result117);
+                    return true;
+                case 233:
+                    return onTransact$muteAwaitConnection$(data, reply);
+                case 234:
+                    AudioDeviceAttributes _arg0144 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    cancelMuteAwaitConnection(_arg0144);
+                    return true;
+                case 235:
+                    AudioDeviceAttributes _result118 = getMutingExpectedDevice();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result118, 1);
+                    return true;
+                case 236:
+                    IMuteAwaitConnectionCallback _arg0145 = IMuteAwaitConnectionCallback.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg140 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    registerMuteAwaitConnectionDispatcher(_arg0145, _arg140);
+                    reply.writeNoException();
+                    return true;
+                case 237:
+                    AudioDeviceAttributes _arg0146 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+                    boolean _arg141 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTestDeviceConnectionState(_arg0146, _arg141);
+                    reply.writeNoException();
+                    return true;
+                case 238:
+                    boolean _arg0147 = data.readBoolean();
+                    IDeviceVolumeBehaviorDispatcher _arg142 = IDeviceVolumeBehaviorDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerDeviceVolumeBehaviorDispatcher(_arg0147, _arg142);
+                    reply.writeNoException();
+                    return true;
+                case 239:
+                    List<AudioFocusInfo> _result119 = getFocusStack();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result119, 1);
+                    return true;
+                case 240:
+                    AudioFocusInfo _arg0148 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+                    IAudioPolicyCallback _arg143 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result120 = sendFocusLoss(_arg0148, _arg143);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result120);
+                    return true;
+                case 241:
+                    int[] _arg0149 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    addAssistantServicesUids(_arg0149);
+                    reply.writeNoException();
+                    return true;
+                case 242:
+                    int[] _arg0150 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    removeAssistantServicesUids(_arg0150);
+                    reply.writeNoException();
+                    return true;
+                case 243:
+                    int[] _arg0151 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    setActiveAssistantServiceUids(_arg0151);
+                    reply.writeNoException();
+                    return true;
+                case 244:
+                    int[] _result121 = getAssistantServicesUids();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result121);
+                    return true;
+                case 245:
+                    int[] _result122 = getActiveAssistantServiceUids();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result122);
+                    return true;
+                case 246:
+                    return onTransact$registerDeviceVolumeDispatcherForAbsoluteVolume$(data, reply);
+                case 247:
+                    AudioHalVersionInfo _result123 = getHalVersion();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result123, 1);
+                    return true;
+                case 248:
+                    return onTransact$setPreferredMixerAttributes$(data, reply);
+                case 249:
+                    AudioAttributes _arg0152 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    int _arg144 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result124 = clearPreferredMixerAttributes(_arg0152, _arg144);
+                    reply.writeNoException();
+                    reply.writeInt(_result124);
+                    return true;
+                case 250:
+                    IPreferredMixerAttributesDispatcher _arg0153 = IPreferredMixerAttributesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerPreferredMixerAttributesDispatcher(_arg0153);
+                    reply.writeNoException();
+                    return true;
+                case 251:
+                    IPreferredMixerAttributesDispatcher _arg0154 = IPreferredMixerAttributesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPreferredMixerAttributesDispatcher(_arg0154);
+                    return true;
+                case 252:
+                    boolean _result125 = supportsBluetoothVariableLatency();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result125);
+                    return true;
+                case 253:
+                    boolean _arg0155 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setBluetoothVariableLatencyEnabled(_arg0155);
+                    reply.writeNoException();
+                    return true;
+                case 254:
+                    boolean _result126 = isBluetoothVariableLatencyEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result126);
+                    return true;
+                case 255:
+                    ILoudnessCodecUpdatesDispatcher _arg0156 = ILoudnessCodecUpdatesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    registerLoudnessCodecUpdatesDispatcher(_arg0156);
+                    reply.writeNoException();
+                    return true;
+                case 256:
+                    ILoudnessCodecUpdatesDispatcher _arg0157 = ILoudnessCodecUpdatesDispatcher.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterLoudnessCodecUpdatesDispatcher(_arg0157);
+                    reply.writeNoException();
+                    return true;
+                case 257:
+                    int _arg0158 = data.readInt();
+                    data.enforceNoDataAvail();
+                    startLoudnessCodecUpdates(_arg0158);
+                    return true;
+                case 258:
+                    int _arg0159 = data.readInt();
+                    data.enforceNoDataAvail();
+                    stopLoudnessCodecUpdates(_arg0159);
+                    return true;
+                case 259:
+                    return onTransact$addLoudnessCodecInfo$(data, reply);
+                case 260:
+                    int _arg0160 = data.readInt();
+                    LoudnessCodecInfo _arg145 = (LoudnessCodecInfo) data.readTypedObject(LoudnessCodecInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    removeLoudnessCodecInfo(_arg0160, _arg145);
+                    return true;
+                case 261:
+                    LoudnessCodecInfo _arg0161 = (LoudnessCodecInfo) data.readTypedObject(LoudnessCodecInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    PersistableBundle _result127 = getLoudnessParams(_arg0161);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result127, 1);
+                    return true;
+                case 262:
+                    FadeManagerConfiguration _arg0162 = (FadeManagerConfiguration) data.readTypedObject(FadeManagerConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    int _result128 = setFadeManagerConfigurationForFocusLoss(_arg0162);
+                    reply.writeNoException();
+                    reply.writeInt(_result128);
+                    return true;
+                case 263:
+                    int _result129 = clearFadeManagerConfigurationForFocusLoss();
+                    reply.writeNoException();
+                    reply.writeInt(_result129);
+                    return true;
+                case 264:
+                    FadeManagerConfiguration _result130 = getFadeManagerConfigurationForFocusLoss();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result130, 1);
+                    return true;
+                case 265:
+                    AudioAttributes _arg0163 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result131 = shouldNotificationSoundPlay(_arg0163);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result131);
+                    return true;
+                case 266:
+                    String _arg0164 = data.readString();
+                    data.enforceNoDataAvail();
+                    setAudioServiceConfig(_arg0164);
+                    reply.writeNoException();
+                    return true;
+                case 267:
+                    String _arg0165 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result132 = getAudioServiceConfig(_arg0165);
+                    reply.writeNoException();
+                    reply.writeString(_result132);
+                    return true;
+                case 268:
+                    boolean _result133 = shouldShowRingtoneVolume();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result133);
+                    return true;
+                case 269:
+                    int _arg0166 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result134 = secGetActiveStreamType(_arg0166);
+                    reply.writeNoException();
+                    reply.writeInt(_result134);
+                    return true;
+                case 270:
+                    int _arg0167 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result135 = getUidForDevice(_arg0167);
+                    reply.writeNoException();
+                    reply.writeInt(_result135);
+                    return true;
+                case 271:
+                    return onTransact$setAppDevice$(data, reply);
+                case 272:
+                    int _arg0168 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result136 = getAppDevice(_arg0168);
+                    reply.writeNoException();
+                    reply.writeInt(_result136);
+                    return true;
+                case 273:
+                    return onTransact$setAppVolume$(data, reply);
+                case 274:
+                    int _arg0169 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result137 = getAppVolume(_arg0169);
+                    reply.writeNoException();
+                    reply.writeInt(_result137);
+                    return true;
+                case 275:
+                    return onTransact$setAppMute$(data, reply);
+                case 276:
+                    int _arg0170 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result138 = isAppMute(_arg0170);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result138);
+                    return true;
+                case 277:
+                    boolean _arg0171 = data.readBoolean();
+                    boolean _arg146 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMultiSoundOn(_arg0171, _arg146);
+                    reply.writeNoException();
+                    return true;
+                case 278:
+                    boolean _result139 = isMultiSoundOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result139);
+                    return true;
+                case 279:
+                    return onTransact$setStreamVolumeForDeviceWithAttribution$(data, reply);
+                case 280:
+                    int _arg0172 = data.readInt();
+                    int _arg147 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result140 = getStreamVolumeForDevice(_arg0172, _arg147);
+                    reply.writeNoException();
+                    reply.writeInt(_result140);
+                    return true;
+                case 281:
+                    int _arg0173 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result141 = getPinAppInfo(_arg0173);
+                    reply.writeNoException();
+                    reply.writeString(_result141);
+                    return true;
+                case 282:
+                    int _result142 = getPinDevice();
+                    reply.writeNoException();
+                    reply.writeInt(_result142);
+                    return true;
+                case 283:
+                    String[] _result143 = getSelectedAppList();
+                    reply.writeNoException();
+                    reply.writeStringArray(_result143);
+                    return true;
+                case 284:
+                    int _arg0174 = data.readInt();
+                    String _arg148 = data.readString();
+                    data.enforceNoDataAvail();
+                    addPackage(_arg0174, _arg148);
+                    reply.writeNoException();
+                    return true;
+                case 285:
+                    String _arg0175 = data.readString();
+                    data.enforceNoDataAvail();
+                    removePackageForName(_arg0175);
+                    reply.writeNoException();
+                    return true;
+                case 286:
+                    String _arg0176 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result144 = isAlreadyInDB(_arg0176);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result144);
+                    return true;
+                case 287:
+                    String _arg0177 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result145 = isInAllowedList(_arg0177);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result145);
+                    return true;
+                case 288:
+                    return onTransact$setFineVolume$(data, reply);
+                case 289:
+                    int _arg0178 = data.readInt();
+                    int _arg149 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result146 = getFineVolume(_arg0178, _arg149);
+                    reply.writeNoException();
+                    reply.writeInt(_result146);
+                    return true;
+                case 290:
+                    boolean _arg0179 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setForceSpeakerOn(_arg0179);
+                    reply.writeNoException();
+                    return true;
+                case 291:
+                    boolean _result147 = isForceSpeakerOn();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result147);
+                    return true;
+                case 292:
+                    return onTransact$setDeviceToForceByUser$(data, reply);
+                case 293:
+                    int _arg0180 = data.readInt();
+                    String _arg150 = data.readString();
+                    data.enforceNoDataAvail();
+                    setMuteInterval(_arg0180, _arg150);
+                    reply.writeNoException();
+                    return true;
+                case 294:
+                    int _result148 = getMuteInterval();
+                    reply.writeNoException();
+                    reply.writeInt(_result148);
+                    return true;
+                case 295:
+                    int _result149 = getRemainingMuteIntervalMs();
+                    reply.writeNoException();
+                    reply.writeInt(_result149);
+                    return true;
+                case 296:
+                    int _result150 = getPrevRingerMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result150);
+                    return true;
+                case 297:
+                    int _arg0181 = data.readInt();
+                    PendingIntent _arg151 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSoundSettingEventBroadcastIntent(_arg0181, _arg151);
+                    return true;
+                case 298:
+                    int[] _arg0182 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    boolean _result151 = setMediaVolumeSteps(_arg0182);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result151);
+                    return true;
+                case 299:
+                    int[] _result152 = getMediaVolumeSteps();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result152);
+                    return true;
+                case 300:
+                    int _arg0183 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRadioOutputPath(_arg0183);
+                    reply.writeNoException();
+                    return true;
+                case 301:
+                    int _result153 = getRadioOutputPath();
+                    reply.writeNoException();
+                    reply.writeInt(_result153);
+                    return true;
+                case 302:
+                    dismissVolumePanel();
+                    reply.writeNoException();
+                    return true;
+                case 303:
+                    String _result154 = getCurrentAudioFocusPackageName();
+                    reply.writeNoException();
+                    reply.writeString(_result154);
+                    return true;
+                case 304:
+                    int _arg0184 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result155 = isUsingAudio(_arg0184);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result155);
+                    return true;
+                case 305:
+                    return onTransact$setA2dpDeviceVolume$(data, reply);
+                case 306:
+                    BluetoothDevice _arg0185 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
+                    int _arg152 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result156 = getA2dpDeviceVolume(_arg0185, _arg152);
+                    reply.writeNoException();
+                    reply.writeInt(_result156);
+                    return true;
+                case 307:
+                    float[] _result157 = getFloatVolumeTable();
+                    reply.writeNoException();
+                    reply.writeFloatArray(_result157);
+                    return true;
+                case 308:
+                    boolean _arg0186 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setRemoteMic(_arg0186);
+                    reply.writeNoException();
+                    return true;
+                case 309:
+                    String _arg0187 = data.readString();
+                    data.enforceNoDataAvail();
+                    recordRingtoneChanger(_arg0187);
+                    return true;
+                case 310:
+                    IPlaybackConfigDispatcher _arg0188 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
+                    String _arg153 = data.readString();
+                    data.enforceNoDataAvail();
+                    registerPlaybackCallbackWithPackage(_arg0188, _arg153);
+                    reply.writeNoException();
+                    return true;
+                case 311:
+                    int _arg0189 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setBtOffloadEnable(_arg0189);
+                    reply.writeNoException();
+                    return true;
+                case 312:
+                    boolean _result158 = isSafeMediaVolumeStateActive();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result158);
+                    return true;
+                case 313:
+                    int _arg0190 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result159 = getExcludedRingtoneTitles(_arg0190);
+                    reply.writeNoException();
+                    reply.writeStringList(_result159);
+                    return true;
+                case 314:
+                    IVolumeController _arg0191 = IVolumeController.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg154 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    notifySafetyVolumeDialogVisible(_arg0191, _arg154);
+                    return true;
+                case 315:
+                    int _result160 = getModeInternal();
+                    reply.writeNoException();
+                    reply.writeInt(_result160);
+                    return true;
+                case 316:
+                    int _arg0192 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMicInputControlMode(_arg0192);
+                    reply.writeNoException();
+                    return true;
+                case 317:
+                    int _result161 = getMicModeType();
+                    reply.writeNoException();
+                    reply.writeInt(_result161);
+                    return true;
+                case 318:
+                    int _result162 = getEarProtectLimit();
+                    reply.writeNoException();
+                    reply.writeInt(_result162);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PlayerBase.PlayerIdCard _arg0 = (PlayerBase.PlayerIdCard) data.readTypedObject(PlayerBase.PlayerIdCard.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result = trackPlayer(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            AudioAttributes _arg1 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            playerAttributes(_arg02, _arg1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            playerEvent(_arg03, _arg12, _arg2);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            releasePlayer(_arg04);
-                            return true;
-                        case 5:
-                            IBinder _arg05 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            int _result2 = trackRecorder(_arg05);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            recorderEvent(_arg06, _arg13);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            releaseRecorder(_arg07);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            playerSessionId(_arg08, _arg14);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            int _arg15 = data.readInt();
-                            PersistableBundle _arg22 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            portEvent(_arg09, _arg15, _arg22);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg16 = data.readInt();
-                            int _arg23 = data.readInt();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            adjustStreamVolume(_arg010, _arg16, _arg23, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            return onTransact$adjustStreamVolumeWithAttribution$(data, reply);
-                        case 12:
-                            int _arg011 = data.readInt();
-                            int _arg17 = data.readInt();
-                            int _arg24 = data.readInt();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            setStreamVolume(_arg011, _arg17, _arg24, _arg32);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            return onTransact$setStreamVolumeWithAttribution$(data, reply);
-                        case 14:
-                            VolumeInfo _arg012 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
-                            AudioDeviceAttributes _arg18 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            String _arg25 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDeviceVolume(_arg012, _arg18, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            VolumeInfo _arg013 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
-                            AudioDeviceAttributes _arg19 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            String _arg26 = data.readString();
-                            data.enforceNoDataAvail();
-                            VolumeInfo _result3 = getDeviceVolume(_arg013, _arg19, _arg26);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 16:
-                            KeyEvent _arg014 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
-                            boolean _arg110 = data.readBoolean();
-                            String _arg27 = data.readString();
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            handleVolumeKey(_arg014, _arg110, _arg27, _arg33);
-                            return true;
-                        case 17:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = isStreamMute(_arg015);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 18:
-                            boolean _arg016 = data.readBoolean();
-                            IBinder _arg111 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            forceRemoteSubmixFullVolume(_arg016, _arg111);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            boolean _result5 = isMasterMute();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 20:
-                            return onTransact$setMasterMute$(data, reply);
-                        case 21:
-                            int _arg017 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result6 = getStreamVolume(_arg017);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 22:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result7 = getStreamMinVolume(_arg018);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 23:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result8 = getStreamMaxVolume(_arg019);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 24:
-                            List<android.media.audiopolicy.AudioVolumeGroup> _result9 = getAudioVolumeGroups();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 25:
-                            return onTransact$setVolumeGroupVolumeIndex$(data, reply);
-                        case 26:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result10 = getVolumeGroupVolumeIndex(_arg020);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 27:
-                            int _arg021 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result11 = getVolumeGroupMaxVolumeIndex(_arg021);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 28:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result12 = getVolumeGroupMinVolumeIndex(_arg022);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 29:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result13 = getLastAudibleVolumeForVolumeGroup(_arg023);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 30:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = isVolumeGroupMuted(_arg024);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 31:
-                            int _arg025 = data.readInt();
-                            int _arg112 = data.readInt();
-                            int _arg28 = data.readInt();
-                            String _arg34 = data.readString();
-                            data.enforceNoDataAvail();
-                            adjustVolumeGroupVolume(_arg025, _arg112, _arg28, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 32:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result15 = getLastAudibleStreamVolume(_arg026);
-                            reply.writeNoException();
-                            reply.writeInt(_result15);
-                            return true;
-                        case 33:
-                            int[] _arg027 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setSupportedSystemUsages(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            int[] _result16 = getSupportedSystemUsages();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result16);
-                            return true;
-                        case 35:
-                            List<android.media.audiopolicy.AudioProductStrategy> _result17 = getAudioProductStrategies();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result17, 1);
-                            return true;
-                        case 36:
-                            boolean _result18 = isMicrophoneMuted();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 37:
-                            boolean _result19 = isUltrasoundSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 38:
-                            boolean _arg028 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result20 = isHotwordStreamSupported(_arg028);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 39:
-                            boolean _arg029 = data.readBoolean();
-                            String _arg113 = data.readString();
-                            int _arg29 = data.readInt();
-                            String _arg35 = data.readString();
-                            data.enforceNoDataAvail();
-                            setMicrophoneMute(_arg029, _arg113, _arg29, _arg35);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            boolean _arg030 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMicrophoneMuteFromSwitch(_arg030);
-                            return true;
-                        case 41:
-                            int _arg031 = data.readInt();
-                            String _arg114 = data.readString();
-                            data.enforceNoDataAvail();
-                            setRingerModeExternal(_arg031, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg032 = data.readInt();
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            setRingerModeInternal(_arg032, _arg115);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _result21 = getRingerModeExternal();
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 44:
-                            int _result22 = getRingerModeInternal();
-                            reply.writeNoException();
-                            reply.writeInt(_result22);
-                            return true;
-                        case 45:
-                            int _arg033 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result23 = isValidRingerMode(_arg033);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result23);
-                            return true;
-                        case 46:
-                            int _arg034 = data.readInt();
-                            int _arg116 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVibrateSetting(_arg034, _arg116);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _arg035 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result24 = getVibrateSetting(_arg035);
-                            reply.writeNoException();
-                            reply.writeInt(_result24);
-                            return true;
-                        case 48:
-                            int _arg036 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result25 = shouldVibrate(_arg036);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 49:
-                            int _arg037 = data.readInt();
-                            IBinder _arg117 = data.readStrongBinder();
-                            String _arg210 = data.readString();
-                            data.enforceNoDataAvail();
-                            setMode(_arg037, _arg117, _arg210);
-                            reply.writeNoException();
-                            return true;
-                        case 50:
-                            int _result26 = getMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result26);
-                            return true;
-                        case 51:
-                            int _arg038 = data.readInt();
-                            int _arg118 = data.readInt();
-                            data.enforceNoDataAvail();
-                            playSoundEffect(_arg038, _arg118);
-                            return true;
-                        case 52:
-                            int _arg039 = data.readInt();
-                            float _arg119 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            playSoundEffectVolume(_arg039, _arg119);
-                            return true;
-                        case 53:
-                            boolean _result27 = loadSoundEffects();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 54:
-                            unloadSoundEffects();
-                            return true;
-                        case 55:
-                            reloadAudioSettings();
-                            return true;
-                        case 56:
-                            Map _result28 = getSurroundFormats();
-                            reply.writeNoException();
-                            reply.writeMap(_result28);
-                            return true;
-                        case 57:
-                            List _result29 = getReportedSurroundFormats();
-                            reply.writeNoException();
-                            reply.writeList(_result29);
-                            return true;
-                        case 58:
-                            int _arg040 = data.readInt();
-                            boolean _arg120 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result30 = setSurroundFormatEnabled(_arg040, _arg120);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result30);
-                            return true;
-                        case 59:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result31 = isSurroundFormatEnabled(_arg041);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result31);
-                            return true;
-                        case 60:
-                            int _arg042 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result32 = setEncodedSurroundMode(_arg042);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result32);
-                            return true;
-                        case 61:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result33 = getEncodedSurroundMode(_arg043);
-                            reply.writeNoException();
-                            reply.writeInt(_result33);
-                            return true;
-                        case 62:
-                            IBinder _arg044 = data.readStrongBinder();
-                            boolean _arg121 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSpeakerphoneOn(_arg044, _arg121);
-                            reply.writeNoException();
-                            return true;
-                        case 63:
-                            boolean _result34 = isSpeakerphoneOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result34);
-                            return true;
-                        case 64:
-                            boolean _arg045 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBluetoothScoOn(_arg045);
-                            reply.writeNoException();
-                            return true;
-                        case 65:
-                            boolean _arg046 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setA2dpSuspended(_arg046);
-                            reply.writeNoException();
-                            return true;
-                        case 66:
-                            boolean _arg047 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setLeAudioSuspended(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        case 67:
-                            boolean _result35 = isBluetoothScoOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 68:
-                            boolean _arg048 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBluetoothA2dpOn(_arg048);
-                            reply.writeNoException();
-                            return true;
-                        case 69:
-                            boolean _result36 = isBluetoothA2dpOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result36);
-                            return true;
-                        case 70:
-                            return onTransact$requestAudioFocus$(data, reply);
-                        case 71:
-                            IAudioFocusDispatcher _arg049 = IAudioFocusDispatcher.Stub.asInterface(data.readStrongBinder());
-                            String _arg122 = data.readString();
-                            AudioAttributes _arg211 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            String _arg36 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result37 = abandonAudioFocus(_arg049, _arg122, _arg211, _arg36);
-                            reply.writeNoException();
-                            reply.writeInt(_result37);
-                            return true;
-                        case 72:
-                            String _arg050 = data.readString();
-                            data.enforceNoDataAvail();
-                            unregisterAudioFocusClient(_arg050);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            int _result38 = getCurrentAudioFocus();
-                            reply.writeNoException();
-                            reply.writeInt(_result38);
-                            return true;
-                        case 74:
-                            IBinder _arg051 = data.readStrongBinder();
-                            int _arg123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            startBluetoothSco(_arg051, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        case 75:
-                            IBinder _arg052 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            startBluetoothScoVirtualCall(_arg052);
-                            reply.writeNoException();
-                            return true;
-                        case 76:
-                            IBinder _arg053 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            stopBluetoothSco(_arg053);
-                            reply.writeNoException();
-                            return true;
-                        case 77:
-                            int _arg054 = data.readInt();
-                            IBinder _arg124 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            forceVolumeControlStream(_arg054, _arg124);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            IRingtonePlayer _arg055 = IRingtonePlayer.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setRingtonePlayer(_arg055);
-                            reply.writeNoException();
-                            return true;
-                        case 79:
-                            IRingtonePlayer _result39 = getRingtonePlayer();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result39);
-                            return true;
-                        case 80:
-                            int _result40 = getUiSoundsStreamType();
-                            reply.writeNoException();
-                            reply.writeInt(_result40);
-                            return true;
-                        case 81:
-                            List _result41 = getIndependentStreamTypes();
-                            reply.writeNoException();
-                            reply.writeList(_result41);
-                            return true;
-                        case 82:
-                            int _arg056 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result42 = getStreamTypeAlias(_arg056);
-                            reply.writeNoException();
-                            reply.writeInt(_result42);
-                            return true;
-                        case 83:
-                            boolean _result43 = isVolumeControlUsingVolumeGroups();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 84:
-                            IStreamAliasingDispatcher _arg057 = IStreamAliasingDispatcher.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg125 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            registerStreamAliasingDispatcher(_arg057, _arg125);
-                            reply.writeNoException();
-                            return true;
-                        case 85:
-                            boolean _arg058 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNotifAliasRingForTest(_arg058);
-                            reply.writeNoException();
-                            return true;
-                        case 86:
-                            AudioDeviceAttributes _arg059 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            int _arg126 = data.readInt();
-                            String _arg212 = data.readString();
-                            data.enforceNoDataAvail();
-                            setWiredDeviceConnectionState(_arg059, _arg126, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 87:
-                            IAudioRoutesObserver _arg060 = IAudioRoutesObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            AudioRoutesInfo _result44 = startWatchingRoutes(_arg060);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result44, 1);
-                            return true;
-                        case 88:
-                            boolean _result45 = isCameraSoundForced();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result45);
-                            return true;
-                        case 89:
-                            IVolumeController _arg061 = IVolumeController.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setVolumeController(_arg061);
-                            reply.writeNoException();
-                            return true;
-                        case 90:
-                            IVolumeController _result46 = getVolumeController();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result46);
-                            return true;
-                        case 91:
-                            IVolumeController _arg062 = IVolumeController.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg127 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifyVolumeControllerVisible(_arg062, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 92:
-                            int _arg063 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result47 = isStreamAffectedByRingerMode(_arg063);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result47);
-                            return true;
-                        case 93:
-                            int _arg064 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = isStreamAffectedByMute(_arg064);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 94:
-                            String _arg065 = data.readString();
-                            data.enforceNoDataAvail();
-                            disableSafeMediaVolume(_arg065);
-                            reply.writeNoException();
-                            return true;
-                        case 95:
-                            String _arg066 = data.readString();
-                            data.enforceNoDataAvail();
-                            lowerVolumeToRs1(_arg066);
-                            reply.writeNoException();
-                            return true;
-                        case 96:
-                            float _result49 = getOutputRs2UpperBound();
-                            reply.writeNoException();
-                            reply.writeFloat(_result49);
-                            return true;
-                        case 97:
-                            float _arg067 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setOutputRs2UpperBound(_arg067);
-                            return true;
-                        case 98:
-                            float _result50 = getCsd();
-                            reply.writeNoException();
-                            reply.writeFloat(_result50);
-                            return true;
-                        case 99:
-                            float _arg068 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            setCsd(_arg068);
-                            return true;
-                        case 100:
-                            boolean _arg069 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            forceUseFrameworkMel(_arg069);
-                            return true;
-                        case 101:
-                            boolean _arg070 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            forceComputeCsdOnAllDevices(_arg070);
-                            return true;
-                        case 102:
-                            boolean _result51 = isCsdEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result51);
-                            return true;
-                        case 103:
-                            boolean _arg071 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result52 = setHdmiSystemAudioSupported(_arg071);
-                            reply.writeNoException();
-                            reply.writeInt(_result52);
-                            return true;
-                        case 104:
-                            boolean _result53 = isHdmiSystemAudioSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result53);
-                            return true;
-                        case 105:
-                            return onTransact$registerAudioPolicy$(data, reply);
-                        case 106:
-                            IAudioPolicyCallback _arg072 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterAudioPolicyAsync(_arg072);
-                            return true;
-                        case 107:
-                            IAudioPolicyCallback _arg073 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterAudioPolicy(_arg073);
-                            reply.writeNoException();
-                            return true;
-                        case 108:
-                            android.media.audiopolicy.AudioPolicyConfig _arg074 = (android.media.audiopolicy.AudioPolicyConfig) data.readTypedObject(android.media.audiopolicy.AudioPolicyConfig.CREATOR);
-                            IAudioPolicyCallback _arg128 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result54 = addMixForPolicy(_arg074, _arg128);
-                            reply.writeNoException();
-                            reply.writeInt(_result54);
-                            return true;
-                        case 109:
-                            android.media.audiopolicy.AudioPolicyConfig _arg075 = (android.media.audiopolicy.AudioPolicyConfig) data.readTypedObject(android.media.audiopolicy.AudioPolicyConfig.CREATOR);
-                            IAudioPolicyCallback _arg129 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result55 = removeMixForPolicy(_arg075, _arg129);
-                            reply.writeNoException();
-                            reply.writeInt(_result55);
-                            return true;
-                        case 110:
-                            int _arg076 = data.readInt();
-                            IAudioPolicyCallback _arg130 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result56 = setFocusPropertiesForPolicy(_arg076, _arg130);
-                            reply.writeNoException();
-                            reply.writeInt(_result56);
-                            return true;
-                        case 111:
-                            VolumePolicy _arg077 = (VolumePolicy) data.readTypedObject(VolumePolicy.CREATOR);
-                            data.enforceNoDataAvail();
-                            setVolumePolicy(_arg077);
-                            reply.writeNoException();
-                            return true;
-                        case 112:
-                            boolean _result57 = hasRegisteredDynamicPolicy();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result57);
-                            return true;
-                        case 113:
-                            IRecordingConfigDispatcher _arg078 = IRecordingConfigDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerRecordingCallback(_arg078);
-                            reply.writeNoException();
-                            return true;
-                        case 114:
-                            IRecordingConfigDispatcher _arg079 = IRecordingConfigDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterRecordingCallback(_arg079);
-                            return true;
-                        case 115:
-                            List<AudioRecordingConfiguration> _result58 = getActiveRecordingConfigurations();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result58, 1);
-                            return true;
-                        case 116:
-                            IPlaybackConfigDispatcher _arg080 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPlaybackCallback(_arg080);
-                            reply.writeNoException();
-                            return true;
-                        case 117:
-                            IPlaybackConfigDispatcher _arg081 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterPlaybackCallback(_arg081);
-                            return true;
-                        case 118:
-                            List<AudioPlaybackConfiguration> _result59 = getActivePlaybackConfigurations();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result59, 1);
-                            return true;
-                        case 119:
-                            int _arg082 = data.readInt();
-                            AudioAttributes _arg131 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result60 = getFocusRampTimeMs(_arg082, _arg131);
-                            reply.writeNoException();
-                            reply.writeInt(_result60);
-                            return true;
-                        case 120:
-                            AudioFocusInfo _arg083 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            int _arg132 = data.readInt();
-                            IAudioPolicyCallback _arg213 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            int _result61 = dispatchFocusChange(_arg083, _arg132, _arg213);
-                            reply.writeNoException();
-                            reply.writeInt(_result61);
-                            return true;
-                        case 121:
-                            int _arg084 = data.readInt();
-                            boolean _arg133 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            playerHasOpPlayAudio(_arg084, _arg133);
-                            return true;
-                        case 122:
-                            BluetoothDevice _arg085 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
-                            BluetoothDevice _arg134 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
-                            BluetoothProfileConnectionInfo _arg214 = (BluetoothProfileConnectionInfo) data.readTypedObject(BluetoothProfileConnectionInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleBluetoothActiveDeviceChanged(_arg085, _arg134, _arg214);
-                            reply.writeNoException();
-                            return true;
-                        case 123:
-                            AudioFocusInfo _arg086 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            int _arg135 = data.readInt();
-                            IAudioPolicyCallback _arg215 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setFocusRequestResultFromExtPolicy(_arg086, _arg135, _arg215);
-                            return true;
-                        case 124:
-                            IAudioServerStateDispatcher _arg087 = IAudioServerStateDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerAudioServerStateDispatcher(_arg087);
-                            reply.writeNoException();
-                            return true;
-                        case 125:
-                            IAudioServerStateDispatcher _arg088 = IAudioServerStateDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterAudioServerStateDispatcher(_arg088);
-                            return true;
-                        case 126:
-                            boolean _result62 = isAudioServerRunning();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result62);
-                            return true;
-                        case 127:
-                            IAudioPolicyCallback _arg089 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg136 = data.readInt();
-                            int[] _arg216 = data.createIntArray();
-                            String[] _arg37 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            int _result63 = setUidDeviceAffinity(_arg089, _arg136, _arg216, _arg37);
-                            reply.writeNoException();
-                            reply.writeInt(_result63);
-                            return true;
-                        case 128:
-                            IAudioPolicyCallback _arg090 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg137 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result64 = removeUidDeviceAffinity(_arg090, _arg137);
-                            reply.writeNoException();
-                            reply.writeInt(_result64);
-                            return true;
-                        case 129:
-                            IAudioPolicyCallback _arg091 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg138 = data.readInt();
-                            int[] _arg217 = data.createIntArray();
-                            String[] _arg38 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            int _result65 = setUserIdDeviceAffinity(_arg091, _arg138, _arg217, _arg38);
-                            reply.writeNoException();
-                            reply.writeInt(_result65);
-                            return true;
-                        case 130:
-                            IAudioPolicyCallback _arg092 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            int _arg139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result66 = removeUserIdDeviceAffinity(_arg092, _arg139);
-                            reply.writeNoException();
-                            reply.writeInt(_result66);
-                            return true;
-                        case 131:
-                            Uri _arg093 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result67 = hasHapticChannels(_arg093);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result67);
-                            return true;
-                        case 132:
-                            boolean _result68 = isCallScreeningModeSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result68);
-                            return true;
-                        case 133:
-                            int _arg094 = data.readInt();
-                            List<AudioDeviceAttributes> _arg140 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result69 = setPreferredDevicesForStrategy(_arg094, _arg140);
-                            reply.writeNoException();
-                            reply.writeInt(_result69);
-                            return true;
-                        case 134:
-                            int _arg095 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result70 = removePreferredDevicesForStrategy(_arg095);
-                            reply.writeNoException();
-                            reply.writeInt(_result70);
-                            return true;
-                        case 135:
-                            int _arg096 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<AudioDeviceAttributes> _result71 = getPreferredDevicesForStrategy(_arg096);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result71, 1);
-                            return true;
-                        case 136:
-                            int _arg097 = data.readInt();
-                            AudioDeviceAttributes _arg141 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result72 = setDeviceAsNonDefaultForStrategy(_arg097, _arg141);
-                            reply.writeNoException();
-                            reply.writeInt(_result72);
-                            return true;
-                        case 137:
-                            int _arg098 = data.readInt();
-                            AudioDeviceAttributes _arg142 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result73 = removeDeviceAsNonDefaultForStrategy(_arg098, _arg142);
-                            reply.writeNoException();
-                            reply.writeInt(_result73);
-                            return true;
-                        case 138:
-                            int _arg099 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<AudioDeviceAttributes> _result74 = getNonDefaultDevicesForStrategy(_arg099);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result74, 1);
-                            return true;
-                        case 139:
-                            AudioAttributes _arg0100 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<AudioDeviceAttributes> _result75 = getDevicesForAttributes(_arg0100);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result75, 1);
-                            return true;
-                        case 140:
-                            AudioAttributes _arg0101 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<AudioDeviceAttributes> _result76 = getDevicesForAttributesUnprotected(_arg0101);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result76, 1);
-                            return true;
-                        case 141:
-                            AudioAttributes _arg0102 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            IDevicesForAttributesCallback _arg143 = IDevicesForAttributesCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addOnDevicesForAttributesChangedListener(_arg0102, _arg143);
-                            reply.writeNoException();
-                            return true;
-                        case 142:
-                            IDevicesForAttributesCallback _arg0103 = IDevicesForAttributesCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeOnDevicesForAttributesChangedListener(_arg0103);
-                            return true;
-                        case 143:
-                            int _arg0104 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result77 = setAllowedCapturePolicy(_arg0104);
-                            reply.writeNoException();
-                            reply.writeInt(_result77);
-                            return true;
-                        case 144:
-                            int _result78 = getAllowedCapturePolicy();
-                            reply.writeNoException();
-                            reply.writeInt(_result78);
-                            return true;
-                        case 145:
-                            IStrategyPreferredDevicesDispatcher _arg0105 = IStrategyPreferredDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerStrategyPreferredDevicesDispatcher(_arg0105);
-                            reply.writeNoException();
-                            return true;
-                        case 146:
-                            IStrategyPreferredDevicesDispatcher _arg0106 = IStrategyPreferredDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterStrategyPreferredDevicesDispatcher(_arg0106);
-                            return true;
-                        case 147:
-                            IStrategyNonDefaultDevicesDispatcher _arg0107 = IStrategyNonDefaultDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerStrategyNonDefaultDevicesDispatcher(_arg0107);
-                            reply.writeNoException();
-                            return true;
-                        case 148:
-                            IStrategyNonDefaultDevicesDispatcher _arg0108 = IStrategyNonDefaultDevicesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterStrategyNonDefaultDevicesDispatcher(_arg0108);
-                            return true;
-                        case 149:
-                            boolean _arg0109 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRttEnabled(_arg0109);
-                            return true;
-                        case 150:
-                            AudioDeviceAttributes _arg0110 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            int _arg144 = data.readInt();
-                            String _arg218 = data.readString();
-                            data.enforceNoDataAvail();
-                            setDeviceVolumeBehavior(_arg0110, _arg144, _arg218);
-                            reply.writeNoException();
-                            return true;
-                        case 151:
-                            AudioDeviceAttributes _arg0111 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result79 = getDeviceVolumeBehavior(_arg0111);
-                            reply.writeNoException();
-                            reply.writeInt(_result79);
-                            return true;
-                        case 152:
-                            boolean _arg0112 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMultiAudioFocusEnabled(_arg0112);
-                            return true;
-                        case 153:
-                            int _arg0113 = data.readInt();
-                            List<AudioDeviceAttributes> _arg145 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result80 = setPreferredDevicesForCapturePreset(_arg0113, _arg145);
-                            reply.writeNoException();
-                            reply.writeInt(_result80);
-                            return true;
-                        case 154:
-                            int _arg0114 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result81 = clearPreferredDevicesForCapturePreset(_arg0114);
-                            reply.writeNoException();
-                            reply.writeInt(_result81);
-                            return true;
-                        case 155:
-                            int _arg0115 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<AudioDeviceAttributes> _result82 = getPreferredDevicesForCapturePreset(_arg0115);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result82, 1);
-                            return true;
-                        case 156:
-                            ICapturePresetDevicesRoleDispatcher _arg0116 = ICapturePresetDevicesRoleDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCapturePresetDevicesRoleDispatcher(_arg0116);
-                            reply.writeNoException();
-                            return true;
-                        case 157:
-                            ICapturePresetDevicesRoleDispatcher _arg0117 = ICapturePresetDevicesRoleDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCapturePresetDevicesRoleDispatcher(_arg0117);
-                            return true;
-                        case 158:
-                            return onTransact$adjustStreamVolumeForUid$(data, reply);
-                        case 159:
-                            return onTransact$adjustSuggestedStreamVolumeForUid$(data, reply);
-                        case 160:
-                            return onTransact$setStreamVolumeForUid$(data, reply);
-                        case 161:
-                            boolean _arg0118 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result83 = isMusicActive(_arg0118);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result83);
-                            return true;
-                        case 162:
-                            int _arg0119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result84 = getDeviceMaskForStream(_arg0119);
-                            reply.writeNoException();
-                            reply.writeInt(_result84);
-                            return true;
-                        case 163:
-                            int[] _result85 = getAvailableCommunicationDeviceIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result85);
-                            return true;
-                        case 164:
-                            IBinder _arg0120 = data.readStrongBinder();
-                            int _arg146 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result86 = setCommunicationDevice(_arg0120, _arg146);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result86);
-                            return true;
-                        case 165:
-                            int _result87 = getCommunicationDevice();
-                            reply.writeNoException();
-                            reply.writeInt(_result87);
-                            return true;
-                        case 166:
-                            ICommunicationDeviceDispatcher _arg0121 = ICommunicationDeviceDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerCommunicationDeviceDispatcher(_arg0121);
-                            reply.writeNoException();
-                            return true;
-                        case 167:
-                            ICommunicationDeviceDispatcher _arg0122 = ICommunicationDeviceDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterCommunicationDeviceDispatcher(_arg0122);
-                            return true;
-                        case 168:
-                            boolean _result88 = areNavigationRepeatSoundEffectsEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result88);
-                            return true;
-                        case 169:
-                            boolean _arg0123 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setNavigationRepeatSoundEffectsEnabled(_arg0123);
-                            return true;
-                        case 170:
-                            boolean _result89 = isHomeSoundEffectEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result89);
-                            return true;
-                        case 171:
-                            boolean _arg0124 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setHomeSoundEffectEnabled(_arg0124);
-                            return true;
-                        case 172:
-                            AudioDeviceAttributes _arg0125 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            long _arg147 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result90 = setAdditionalOutputDeviceDelay(_arg0125, _arg147);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result90);
-                            return true;
-                        case 173:
-                            AudioDeviceAttributes _arg0126 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result91 = getAdditionalOutputDeviceDelay(_arg0126);
-                            reply.writeNoException();
-                            reply.writeLong(_result91);
-                            return true;
-                        case 174:
-                            AudioDeviceAttributes _arg0127 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result92 = getMaxAdditionalOutputDeviceDelay(_arg0127);
-                            reply.writeNoException();
-                            reply.writeLong(_result92);
-                            return true;
-                        case 175:
-                            return onTransact$requestAudioFocusForTest$(data, reply);
-                        case 176:
-                            IAudioFocusDispatcher _arg0128 = IAudioFocusDispatcher.Stub.asInterface(data.readStrongBinder());
-                            String _arg148 = data.readString();
-                            AudioAttributes _arg219 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            String _arg39 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result93 = abandonAudioFocusForTest(_arg0128, _arg148, _arg219, _arg39);
-                            reply.writeNoException();
-                            reply.writeInt(_result93);
-                            return true;
-                        case 177:
-                            AudioAttributes _arg0129 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            long _result94 = getFadeOutDurationOnFocusLossMillis(_arg0129);
-                            reply.writeNoException();
-                            reply.writeLong(_result94);
-                            return true;
-                        case 178:
-                            IAudioModeDispatcher _arg0130 = IAudioModeDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerModeDispatcher(_arg0130);
-                            reply.writeNoException();
-                            return true;
-                        case 179:
-                            IAudioModeDispatcher _arg0131 = IAudioModeDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterModeDispatcher(_arg0131);
-                            return true;
-                        case 180:
-                            int _result95 = getSpatializerImmersiveAudioLevel();
-                            reply.writeNoException();
-                            reply.writeInt(_result95);
-                            return true;
-                        case 181:
-                            boolean _result96 = isSpatializerEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result96);
-                            return true;
-                        case 182:
-                            boolean _result97 = isSpatializerAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result97);
-                            return true;
-                        case 183:
-                            AudioDeviceAttributes _arg0132 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result98 = isSpatializerAvailableForDevice(_arg0132);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result98);
-                            return true;
-                        case 184:
-                            AudioDeviceAttributes _arg0133 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result99 = hasHeadTracker(_arg0133);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result99);
-                            return true;
-                        case 185:
-                            boolean _arg0134 = data.readBoolean();
-                            AudioDeviceAttributes _arg149 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            setHeadTrackerEnabled(_arg0134, _arg149);
-                            reply.writeNoException();
-                            return true;
-                        case 186:
-                            AudioDeviceAttributes _arg0135 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result100 = isHeadTrackerEnabled(_arg0135);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result100);
-                            return true;
-                        case 187:
-                            boolean _result101 = isHeadTrackerAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result101);
-                            return true;
-                        case 188:
-                            ISpatializerHeadTrackerAvailableCallback _arg0136 = ISpatializerHeadTrackerAvailableCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg150 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            registerSpatializerHeadTrackerAvailableCallback(_arg0136, _arg150);
-                            reply.writeNoException();
-                            return true;
-                        case 189:
-                            boolean _arg0137 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSpatializerEnabled(_arg0137);
-                            reply.writeNoException();
-                            return true;
-                        case 190:
-                            AudioAttributes _arg0138 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            AudioFormat _arg151 = (AudioFormat) data.readTypedObject(AudioFormat.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result102 = canBeSpatialized(_arg0138, _arg151);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result102);
-                            return true;
-                        case 191:
-                            ISpatializerCallback _arg0139 = ISpatializerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerSpatializerCallback(_arg0139);
-                            reply.writeNoException();
-                            return true;
-                        case 192:
-                            ISpatializerCallback _arg0140 = ISpatializerCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterSpatializerCallback(_arg0140);
-                            reply.writeNoException();
-                            return true;
-                        case 193:
-                            ISpatializerHeadTrackingModeCallback _arg0141 = ISpatializerHeadTrackingModeCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerSpatializerHeadTrackingCallback(_arg0141);
-                            reply.writeNoException();
-                            return true;
-                        case 194:
-                            ISpatializerHeadTrackingModeCallback _arg0142 = ISpatializerHeadTrackingModeCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterSpatializerHeadTrackingCallback(_arg0142);
-                            reply.writeNoException();
-                            return true;
-                        case 195:
-                            ISpatializerHeadToSoundStagePoseCallback _arg0143 = ISpatializerHeadToSoundStagePoseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerHeadToSoundstagePoseCallback(_arg0143);
-                            reply.writeNoException();
-                            return true;
-                        case 196:
-                            ISpatializerHeadToSoundStagePoseCallback _arg0144 = ISpatializerHeadToSoundStagePoseCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterHeadToSoundstagePoseCallback(_arg0144);
-                            reply.writeNoException();
-                            return true;
-                        case 197:
-                            List<AudioDeviceAttributes> _result103 = getSpatializerCompatibleAudioDevices();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result103, 1);
-                            return true;
-                        case 198:
-                            AudioDeviceAttributes _arg0145 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            addSpatializerCompatibleAudioDevice(_arg0145);
-                            reply.writeNoException();
-                            return true;
-                        case 199:
-                            AudioDeviceAttributes _arg0146 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            removeSpatializerCompatibleAudioDevice(_arg0146);
-                            reply.writeNoException();
-                            return true;
-                        case 200:
-                            int _arg0147 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDesiredHeadTrackingMode(_arg0147);
-                            reply.writeNoException();
-                            return true;
-                        case 201:
-                            int _result104 = getDesiredHeadTrackingMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result104);
-                            return true;
-                        case 202:
-                            int[] _result105 = getSupportedHeadTrackingModes();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result105);
-                            return true;
-                        case 203:
-                            int _result106 = getActualHeadTrackingMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result106);
-                            return true;
-                        case 204:
-                            float[] _arg0148 = data.createFloatArray();
-                            data.enforceNoDataAvail();
-                            setSpatializerGlobalTransform(_arg0148);
-                            return true;
-                        case 205:
-                            recenterHeadTracker();
-                            return true;
-                        case 206:
-                            int _arg0149 = data.readInt();
-                            byte[] _arg152 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            setSpatializerParameter(_arg0149, _arg152);
-                            reply.writeNoException();
-                            return true;
-                        case 207:
-                            int _arg0150 = data.readInt();
-                            byte[] _arg153 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            getSpatializerParameter(_arg0150, _arg153);
-                            reply.writeNoException();
-                            reply.writeByteArray(_arg153);
-                            return true;
-                        case 208:
-                            int _result107 = getSpatializerOutput();
-                            reply.writeNoException();
-                            reply.writeInt(_result107);
-                            return true;
-                        case 209:
-                            ISpatializerOutputCallback _arg0151 = ISpatializerOutputCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerSpatializerOutputCallback(_arg0151);
-                            reply.writeNoException();
-                            return true;
-                        case 210:
-                            ISpatializerOutputCallback _arg0152 = ISpatializerOutputCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterSpatializerOutputCallback(_arg0152);
-                            reply.writeNoException();
-                            return true;
-                        case 211:
-                            boolean _result108 = isVolumeFixed();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result108);
-                            return true;
-                        case 212:
-                            VolumeInfo _result109 = getDefaultVolumeInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result109, 1);
-                            return true;
-                        case 213:
-                            boolean _result110 = isPstnCallAudioInterceptable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result110);
-                            return true;
-                        case 214:
-                            int[] _arg0153 = data.createIntArray();
-                            AudioDeviceAttributes _arg154 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            long _arg220 = data.readLong();
-                            data.enforceNoDataAvail();
-                            muteAwaitConnection(_arg0153, _arg154, _arg220);
-                            return true;
-                        case 215:
-                            AudioDeviceAttributes _arg0154 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            cancelMuteAwaitConnection(_arg0154);
-                            return true;
-                        case 216:
-                            AudioDeviceAttributes _result111 = getMutingExpectedDevice();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result111, 1);
-                            return true;
-                        case 217:
-                            IMuteAwaitConnectionCallback _arg0155 = IMuteAwaitConnectionCallback.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg155 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            registerMuteAwaitConnectionDispatcher(_arg0155, _arg155);
-                            reply.writeNoException();
-                            return true;
-                        case 218:
-                            AudioDeviceAttributes _arg0156 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
-                            boolean _arg156 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setTestDeviceConnectionState(_arg0156, _arg156);
-                            reply.writeNoException();
-                            return true;
-                        case 219:
-                            boolean _arg0157 = data.readBoolean();
-                            IDeviceVolumeBehaviorDispatcher _arg157 = IDeviceVolumeBehaviorDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerDeviceVolumeBehaviorDispatcher(_arg0157, _arg157);
-                            reply.writeNoException();
-                            return true;
-                        case 220:
-                            List<AudioFocusInfo> _result112 = getFocusStack();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result112, 1);
-                            return true;
-                        case 221:
-                            AudioFocusInfo _arg0158 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
-                            IAudioPolicyCallback _arg158 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result113 = sendFocusLoss(_arg0158, _arg158);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result113);
-                            return true;
-                        case 222:
-                            int[] _arg0159 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            addAssistantServicesUids(_arg0159);
-                            reply.writeNoException();
-                            return true;
-                        case 223:
-                            int[] _arg0160 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            removeAssistantServicesUids(_arg0160);
-                            reply.writeNoException();
-                            return true;
-                        case 224:
-                            int[] _arg0161 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            setActiveAssistantServiceUids(_arg0161);
-                            reply.writeNoException();
-                            return true;
-                        case 225:
-                            int[] _result114 = getAssistantServicesUids();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result114);
-                            return true;
-                        case 226:
-                            int[] _result115 = getActiveAssistantServiceUids();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result115);
-                            return true;
-                        case 227:
-                            return onTransact$registerDeviceVolumeDispatcherForAbsoluteVolume$(data, reply);
-                        case 228:
-                            AudioHalVersionInfo _result116 = getHalVersion();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result116, 1);
-                            return true;
-                        case 229:
-                            AudioAttributes _arg0162 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            int _arg159 = data.readInt();
-                            AudioMixerAttributes _arg221 = (AudioMixerAttributes) data.readTypedObject(AudioMixerAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            int _result117 = setPreferredMixerAttributes(_arg0162, _arg159, _arg221);
-                            reply.writeNoException();
-                            reply.writeInt(_result117);
-                            return true;
-                        case 230:
-                            AudioAttributes _arg0163 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
-                            int _arg160 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result118 = clearPreferredMixerAttributes(_arg0163, _arg160);
-                            reply.writeNoException();
-                            reply.writeInt(_result118);
-                            return true;
-                        case 231:
-                            IPreferredMixerAttributesDispatcher _arg0164 = IPreferredMixerAttributesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPreferredMixerAttributesDispatcher(_arg0164);
-                            reply.writeNoException();
-                            return true;
-                        case 232:
-                            IPreferredMixerAttributesDispatcher _arg0165 = IPreferredMixerAttributesDispatcher.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterPreferredMixerAttributesDispatcher(_arg0165);
-                            return true;
-                        case 233:
-                            boolean _result119 = supportsBluetoothVariableLatency();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result119);
-                            return true;
-                        case 234:
-                            boolean _arg0166 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setBluetoothVariableLatencyEnabled(_arg0166);
-                            reply.writeNoException();
-                            return true;
-                        case 235:
-                            boolean _result120 = isBluetoothVariableLatencyEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result120);
-                            return true;
-                        case 236:
-                            String _arg0167 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAudioServiceConfig(_arg0167);
-                            reply.writeNoException();
-                            return true;
-                        case 237:
-                            String _arg0168 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result121 = getAudioServiceConfig(_arg0168);
-                            reply.writeNoException();
-                            reply.writeString(_result121);
-                            return true;
-                        case 238:
-                            boolean _result122 = shouldShowRingtoneVolume();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result122);
-                            return true;
-                        case 239:
-                            int _arg0169 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result123 = secGetActiveStreamType(_arg0169);
-                            reply.writeNoException();
-                            reply.writeInt(_result123);
-                            return true;
-                        case 240:
-                            int _arg0170 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result124 = getUidForDevice(_arg0170);
-                            reply.writeNoException();
-                            reply.writeInt(_result124);
-                            return true;
-                        case 241:
-                            int _arg0171 = data.readInt();
-                            int _arg161 = data.readInt();
-                            boolean _arg222 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setAppDevice(_arg0171, _arg161, _arg222);
-                            reply.writeNoException();
-                            return true;
-                        case 242:
-                            int _arg0172 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result125 = getAppDevice(_arg0172);
-                            reply.writeNoException();
-                            reply.writeInt(_result125);
-                            return true;
-                        case 243:
-                            int _arg0173 = data.readInt();
-                            int _arg162 = data.readInt();
-                            String _arg223 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAppVolume(_arg0173, _arg162, _arg223);
-                            reply.writeNoException();
-                            return true;
-                        case 244:
-                            int _arg0174 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result126 = getAppVolume(_arg0174);
-                            reply.writeNoException();
-                            reply.writeInt(_result126);
-                            return true;
-                        case 245:
-                            int _arg0175 = data.readInt();
-                            boolean _arg163 = data.readBoolean();
-                            String _arg224 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAppMute(_arg0175, _arg163, _arg224);
-                            reply.writeNoException();
-                            return true;
-                        case 246:
-                            int _arg0176 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result127 = isAppMute(_arg0176);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result127);
-                            return true;
-                        case 247:
-                            boolean _arg0177 = data.readBoolean();
-                            boolean _arg164 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMultiSoundOn(_arg0177, _arg164);
-                            reply.writeNoException();
-                            return true;
-                        case 248:
-                            boolean _result128 = isMultiSoundOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result128);
-                            return true;
-                        case 249:
-                            return onTransact$setStreamVolumeForDeviceWithAttribution$(data, reply);
-                        case 250:
-                            int _arg0178 = data.readInt();
-                            int _arg165 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result129 = getStreamVolumeForDevice(_arg0178, _arg165);
-                            reply.writeNoException();
-                            reply.writeInt(_result129);
-                            return true;
-                        case 251:
-                            int _arg0179 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result130 = getPinAppInfo(_arg0179);
-                            reply.writeNoException();
-                            reply.writeString(_result130);
-                            return true;
-                        case 252:
-                            int _result131 = getPinDevice();
-                            reply.writeNoException();
-                            reply.writeInt(_result131);
-                            return true;
-                        case 253:
-                            String[] _result132 = getSelectedAppList();
-                            reply.writeNoException();
-                            reply.writeStringArray(_result132);
-                            return true;
-                        case 254:
-                            int _arg0180 = data.readInt();
-                            String _arg166 = data.readString();
-                            data.enforceNoDataAvail();
-                            addPackage(_arg0180, _arg166);
-                            reply.writeNoException();
-                            return true;
-                        case 255:
-                            String _arg0181 = data.readString();
-                            data.enforceNoDataAvail();
-                            removePackageForName(_arg0181);
-                            reply.writeNoException();
-                            return true;
-                        case 256:
-                            String _arg0182 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result133 = isAlreadyInDB(_arg0182);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result133);
-                            return true;
-                        case 257:
-                            String _arg0183 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result134 = isInAllowedList(_arg0183);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result134);
-                            return true;
-                        case 258:
-                            return onTransact$setFineVolume$(data, reply);
-                        case 259:
-                            int _arg0184 = data.readInt();
-                            int _arg167 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result135 = getFineVolume(_arg0184, _arg167);
-                            reply.writeNoException();
-                            reply.writeInt(_result135);
-                            return true;
-                        case 260:
-                            boolean _arg0185 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setForceSpeakerOn(_arg0185);
-                            reply.writeNoException();
-                            return true;
-                        case 261:
-                            boolean _result136 = isForceSpeakerOn();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result136);
-                            return true;
-                        case 262:
-                            int _arg0186 = data.readInt();
-                            String _arg168 = data.readString();
-                            boolean _arg225 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result137 = setDeviceToForceByUser(_arg0186, _arg168, _arg225);
-                            reply.writeNoException();
-                            reply.writeInt(_result137);
-                            return true;
-                        case 263:
-                            int _arg0187 = data.readInt();
-                            String _arg169 = data.readString();
-                            data.enforceNoDataAvail();
-                            setMuteInterval(_arg0187, _arg169);
-                            reply.writeNoException();
-                            return true;
-                        case 264:
-                            int _result138 = getMuteInterval();
-                            reply.writeNoException();
-                            reply.writeInt(_result138);
-                            return true;
-                        case 265:
-                            int _result139 = getRemainingMuteIntervalMs();
-                            reply.writeNoException();
-                            reply.writeInt(_result139);
-                            return true;
-                        case 266:
-                            int _result140 = getPrevRingerMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result140);
-                            return true;
-                        case 267:
-                            int _arg0188 = data.readInt();
-                            PendingIntent _arg170 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSoundSettingEventBroadcastIntent(_arg0188, _arg170);
-                            return true;
-                        case 268:
-                            int[] _arg0189 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            boolean _result141 = setMediaVolumeSteps(_arg0189);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result141);
-                            return true;
-                        case 269:
-                            int[] _result142 = getMediaVolumeSteps();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result142);
-                            return true;
-                        case 270:
-                            int _arg0190 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRadioOutputPath(_arg0190);
-                            reply.writeNoException();
-                            return true;
-                        case 271:
-                            int _result143 = getRadioOutputPath();
-                            reply.writeNoException();
-                            reply.writeInt(_result143);
-                            return true;
-                        case 272:
-                            dismissVolumePanel();
-                            reply.writeNoException();
-                            return true;
-                        case 273:
-                            String _result144 = getCurrentAudioFocusPackageName();
-                            reply.writeNoException();
-                            reply.writeString(_result144);
-                            return true;
-                        case 274:
-                            int _arg0191 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result145 = isUsingAudio(_arg0191);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result145);
-                            return true;
-                        case 275:
-                            return onTransact$setA2dpDeviceVolume$(data, reply);
-                        case 276:
-                            BluetoothDevice _arg0192 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
-                            int _arg171 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result146 = getA2dpDeviceVolume(_arg0192, _arg171);
-                            reply.writeNoException();
-                            reply.writeInt(_result146);
-                            return true;
-                        case 277:
-                            float[] _result147 = getFloatVolumeTable();
-                            reply.writeNoException();
-                            reply.writeFloatArray(_result147);
-                            return true;
-                        case 278:
-                            boolean _arg0193 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setRemoteMic(_arg0193);
-                            reply.writeNoException();
-                            return true;
-                        case 279:
-                            String _arg0194 = data.readString();
-                            data.enforceNoDataAvail();
-                            recordRingtoneChanger(_arg0194);
-                            return true;
-                        case 280:
-                            IPlaybackConfigDispatcher _arg0195 = IPlaybackConfigDispatcher.Stub.asInterface(data.readStrongBinder());
-                            String _arg172 = data.readString();
-                            data.enforceNoDataAvail();
-                            registerPlaybackCallbackWithPackage(_arg0195, _arg172);
-                            reply.writeNoException();
-                            return true;
-                        case 281:
-                            int _arg0196 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setBtOffloadEnable(_arg0196);
-                            reply.writeNoException();
-                            return true;
-                        case 282:
-                            boolean _result148 = isSafeMediaVolumeStateActive();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result148);
-                            return true;
-                        case 283:
-                            int _arg0197 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result149 = getExcludedRingtoneTitles(_arg0197);
-                            reply.writeNoException();
-                            reply.writeStringList(_result149);
-                            return true;
-                        case 284:
-                            IVolumeController _arg0198 = IVolumeController.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg173 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            notifySafetyVolumeDialogVisible(_arg0198, _arg173);
-                            return true;
-                        case 285:
-                            String _arg0199 = data.readString();
-                            String _arg174 = data.readString();
-                            int _arg226 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nativeEvent(_arg0199, _arg174, _arg226);
-                            reply.writeNoException();
-                            return true;
-                        case 286:
-                            int _result150 = getModeInternal();
-                            reply.writeNoException();
-                            reply.writeInt(_result150);
-                            return true;
-                        case 287:
-                            int _arg0200 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMicInputControlMode(_arg0200);
-                            reply.writeNoException();
-                            return true;
-                        case 288:
-                            int _result151 = getMicModeType();
-                            reply.writeNoException();
-                            reply.writeInt(_result151);
-                            return true;
-                        case 289:
-                            int _result152 = getEarProtectLimit();
-                            reply.writeNoException();
-                            reply.writeInt(_result152);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioService {
+        private static class Proxy implements IAudioService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -6150,14 +6426,16 @@ public interface IAudioService extends IInterface {
             }
 
             @Override // android.media.IAudioService
-            public void disableSafeMediaVolume(String callingPackage) throws RemoteException {
+            public boolean isStreamMutableByUi(int streamType) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(callingPackage);
+                    _data.writeInt(streamType);
                     this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -6165,7 +6443,7 @@ public interface IAudioService extends IInterface {
             }
 
             @Override // android.media.IAudioService
-            public void lowerVolumeToRs1(String callingPackage) throws RemoteException {
+            public void disableSafeMediaVolume(String callingPackage) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -6180,12 +6458,24 @@ public interface IAudioService extends IInterface {
             }
 
             @Override // android.media.IAudioService
+            public void lowerVolumeToRs1(String callingPackage) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(callingPackage);
+                    this.mRemote.transact(96, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
             public float getOutputRs2UpperBound() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
                     _reply.readException();
                     float _result = _reply.readFloat();
                     return _result;
@@ -6201,7 +6491,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloat(rs2Value);
-                    this.mRemote.transact(97, _data, null, 1);
+                    this.mRemote.transact(98, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6213,7 +6503,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                     float _result = _reply.readFloat();
                     return _result;
@@ -6229,7 +6519,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloat(csd);
-                    this.mRemote.transact(99, _data, null, 1);
+                    this.mRemote.transact(100, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6241,7 +6531,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(useFrameworkMel);
-                    this.mRemote.transact(100, _data, null, 1);
+                    this.mRemote.transact(101, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6253,7 +6543,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(computeCsdOnAllDevices);
-                    this.mRemote.transact(101, _data, null, 1);
+                    this.mRemote.transact(102, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6265,7 +6555,135 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean isCsdAsAFeatureAvailable() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(104, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean isCsdAsAFeatureEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(105, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void setCsdAsAFeatureEnabled(boolean csdToggleValue) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeBoolean(csdToggleValue);
+                    this.mRemote.transact(106, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void setBluetoothAudioDeviceCategory_legacy(String address, boolean isBle, int deviceCategory) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(address);
+                    _data.writeBoolean(isBle);
+                    _data.writeInt(deviceCategory);
+                    this.mRemote.transact(107, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int getBluetoothAudioDeviceCategory_legacy(String address, boolean isBle) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(address);
+                    _data.writeBoolean(isBle);
+                    this.mRemote.transact(108, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean setBluetoothAudioDeviceCategory(String address, int deviceCategory) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(address);
+                    _data.writeInt(deviceCategory);
+                    this.mRemote.transact(109, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int getBluetoothAudioDeviceCategory(String address) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(address);
+                    this.mRemote.transact(110, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean isBluetoothAudioDeviceCategoryFixed(String address) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeString(address);
+                    this.mRemote.transact(111, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6282,7 +6700,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(on);
-                    this.mRemote.transact(103, _data, _reply, 0);
+                    this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6298,7 +6716,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(104, _data, _reply, 0);
+                    this.mRemote.transact(113, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6309,7 +6727,7 @@ public interface IAudioService extends IInterface {
             }
 
             @Override // android.media.IAudioService
-            public String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig policyConfig, IAudioPolicyCallback pcb, boolean hasFocusListener, boolean isFocusPolicy, boolean isTestFocusPolicy, boolean isVolumeController, IMediaProjection projection) throws RemoteException {
+            public String registerAudioPolicy(android.media.audiopolicy.AudioPolicyConfig policyConfig, IAudioPolicyCallback pcb, boolean hasFocusListener, boolean isFocusPolicy, boolean isTestFocusPolicy, boolean isVolumeController, IMediaProjection projection, AttributionSource attributionSource) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -6321,7 +6739,8 @@ public interface IAudioService extends IInterface {
                     _data.writeBoolean(isTestFocusPolicy);
                     _data.writeBoolean(isVolumeController);
                     _data.writeStrongInterface(projection);
-                    this.mRemote.transact(105, _data, _reply, 0);
+                    _data.writeTypedObject(attributionSource, 0);
+                    this.mRemote.transact(114, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6337,8 +6756,24 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(106, _data, null, 1);
+                    this.mRemote.transact(115, _data, null, 1);
                 } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public List<android.media.audiopolicy.AudioMix> getRegisteredPolicyMixes() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(116, _data, _reply, 0);
+                    _reply.readException();
+                    List<android.media.audiopolicy.AudioMix> _result = _reply.createTypedArrayList(android.media.audiopolicy.AudioMix.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -6350,7 +6785,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(107, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6366,7 +6801,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policyConfig, 0);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(108, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6384,7 +6819,26 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policyConfig, 0);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int updateMixingRulesForPolicy(android.media.audiopolicy.AudioMix[] mixesToUpdate, AudioMixingRule[] updatedMixingRules, IAudioPolicyCallback pcb) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedArray(mixesToUpdate, 0);
+                    _data.writeTypedArray(updatedMixingRules, 0);
+                    _data.writeStrongInterface(pcb);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6402,7 +6856,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(duckingBehavior);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(110, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6419,7 +6873,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(policy, 0);
-                    this.mRemote.transact(111, _data, _reply, 0);
+                    this.mRemote.transact(122, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6433,7 +6887,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(112, _data, _reply, 0);
+                    this.mRemote.transact(123, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6450,7 +6904,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(rcdb);
-                    this.mRemote.transact(113, _data, _reply, 0);
+                    this.mRemote.transact(124, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6464,7 +6918,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(rcdb);
-                    this.mRemote.transact(114, _data, null, 1);
+                    this.mRemote.transact(125, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6476,7 +6930,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(115, _data, _reply, 0);
+                    this.mRemote.transact(126, _data, _reply, 0);
                     _reply.readException();
                     List<AudioRecordingConfiguration> _result = _reply.createTypedArrayList(AudioRecordingConfiguration.CREATOR);
                     return _result;
@@ -6493,7 +6947,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcdb);
-                    this.mRemote.transact(116, _data, _reply, 0);
+                    this.mRemote.transact(127, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6507,7 +6961,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcdb);
-                    this.mRemote.transact(117, _data, null, 1);
+                    this.mRemote.transact(128, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6519,7 +6973,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(129, _data, _reply, 0);
                     _reply.readException();
                     List<AudioPlaybackConfiguration> _result = _reply.createTypedArrayList(AudioPlaybackConfiguration.CREATOR);
                     return _result;
@@ -6537,7 +6991,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(focusGain);
                     _data.writeTypedObject(attr, 0);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(130, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6556,7 +7010,28 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedObject(afi, 0);
                     _data.writeInt(focusChange);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int dispatchFocusChangeWithFade(AudioFocusInfo afi, int focusChange, IAudioPolicyCallback pcb, List<AudioFocusInfo> otherActiveAfis, FadeManagerConfiguration transientFadeMgrConfig) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(afi, 0);
+                    _data.writeInt(focusChange);
+                    _data.writeStrongInterface(pcb);
+                    _data.writeTypedList(otherActiveAfis, 0);
+                    _data.writeTypedObject(transientFadeMgrConfig, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6573,7 +7048,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(piid);
                     _data.writeBoolean(hasOpPlayAudio);
-                    this.mRemote.transact(121, _data, null, 1);
+                    this.mRemote.transact(133, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6588,7 +7063,7 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedObject(newDevice, 0);
                     _data.writeTypedObject(previousDevice, 0);
                     _data.writeTypedObject(info, 0);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6604,7 +7079,7 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedObject(afi, 0);
                     _data.writeInt(requestResult);
                     _data.writeStrongInterface(pcb);
-                    this.mRemote.transact(123, _data, null, 1);
+                    this.mRemote.transact(135, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6617,7 +7092,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(asd);
-                    this.mRemote.transact(124, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6631,7 +7106,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(asd);
-                    this.mRemote.transact(125, _data, null, 1);
+                    this.mRemote.transact(137, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6643,7 +7118,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(126, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6663,7 +7138,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(uid);
                     _data.writeIntArray(deviceTypes);
                     _data.writeStringArray(deviceAddresses);
-                    this.mRemote.transact(127, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6681,7 +7156,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcb);
                     _data.writeInt(uid);
-                    this.mRemote.transact(128, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6701,7 +7176,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(userId);
                     _data.writeIntArray(deviceTypes);
                     _data.writeStringArray(deviceAddresses);
-                    this.mRemote.transact(129, _data, _reply, 0);
+                    this.mRemote.transact(141, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6719,7 +7194,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcb);
                     _data.writeInt(userId);
-                    this.mRemote.transact(130, _data, _reply, 0);
+                    this.mRemote.transact(142, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6736,7 +7211,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(uri, 0);
-                    this.mRemote.transact(131, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6752,7 +7227,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6770,7 +7245,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
                     _data.writeTypedList(devices, 0);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(145, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6787,7 +7262,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6804,7 +7279,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -6822,7 +7297,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6840,7 +7315,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6857,7 +7332,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(strategy);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -6874,7 +7349,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(attributes, 0);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -6891,7 +7366,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(attributes, 0);
-                    this.mRemote.transact(140, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -6909,7 +7384,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(attributes, 0);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(141, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6923,7 +7398,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(142, _data, null, 1);
+                    this.mRemote.transact(154, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6936,7 +7411,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(capturePolicy);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(155, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6952,7 +7427,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(156, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6969,7 +7444,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(157, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6983,7 +7458,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(146, _data, null, 1);
+                    this.mRemote.transact(158, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -6996,7 +7471,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(159, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7010,7 +7485,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(148, _data, null, 1);
+                    this.mRemote.transact(160, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7022,7 +7497,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(rttEnabled);
-                    this.mRemote.transact(149, _data, null, 1);
+                    this.mRemote.transact(161, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7037,7 +7512,7 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedObject(device, 0);
                     _data.writeInt(deviceVolumeBehavior);
                     _data.writeString(pkgName);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(162, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7052,7 +7527,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(163, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7068,7 +7543,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(152, _data, null, 1);
+                    this.mRemote.transact(164, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7082,7 +7557,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(capturePreset);
                     _data.writeTypedList(devices, 0);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(165, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7099,7 +7574,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(capturePreset);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(166, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7116,7 +7591,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(capturePreset);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -7133,7 +7608,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7147,7 +7622,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(157, _data, null, 1);
+                    this.mRemote.transact(169, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7166,7 +7641,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(pid);
                     _data.writeTypedObject(userHandle, 0);
                     _data.writeInt(targetSdkVersion);
-                    this.mRemote.transact(158, _data, null, 1);
+                    this.mRemote.transact(170, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7185,7 +7660,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(pid);
                     _data.writeTypedObject(userHandle, 0);
                     _data.writeInt(targetSdkVersion);
-                    this.mRemote.transact(159, _data, null, 1);
+                    this.mRemote.transact(171, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7204,7 +7679,34 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(pid);
                     _data.writeTypedObject(userHandle, 0);
                     _data.writeInt(targetSdkVersion);
-                    this.mRemote.transact(160, _data, null, 1);
+                    this.mRemote.transact(172, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void adjustVolume(int direction, int flags) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(direction);
+                    _data.writeInt(flags);
+                    this.mRemote.transact(173, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void adjustSuggestedStreamVolume(int direction, int suggestedStreamType, int flags) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(direction);
+                    _data.writeInt(suggestedStreamType);
+                    _data.writeInt(flags);
+                    this.mRemote.transact(174, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7217,7 +7719,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(remotely);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7234,7 +7736,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(streamType);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7250,7 +7752,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -7268,7 +7770,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongBinder(cb);
                     _data.writeInt(portId);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7284,7 +7786,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7301,7 +7803,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7315,7 +7817,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(167, _data, null, 1);
+                    this.mRemote.transact(181, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7327,7 +7829,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7343,7 +7845,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(169, _data, null, 1);
+                    this.mRemote.transact(183, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7355,7 +7857,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7371,7 +7873,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(171, _data, null, 1);
+                    this.mRemote.transact(185, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7385,7 +7887,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
                     _data.writeLong(delayMillis);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7402,7 +7904,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -7419,7 +7921,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -7444,7 +7946,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(flags);
                     _data.writeInt(uid);
                     _data.writeInt(sdk);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7464,7 +7966,7 @@ public interface IAudioService extends IInterface {
                     _data.writeString(clientId);
                     _data.writeTypedObject(aa, 0);
                     _data.writeString(callingPackageName);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7481,9 +7983,93 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(aa, 0);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public List getFocusDuckedUidsForTest() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(192, _data, _reply, 0);
+                    _reply.readException();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _result = _reply.readArrayList(cl);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public long getFocusFadeOutDurationForTest() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(193, _data, _reply, 0);
+                    _reply.readException();
+                    long _result = _reply.readLong();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public long getFocusUnmuteDelayAfterFadeOutForTest() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(194, _data, _reply, 0);
+                    _reply.readException();
+                    long _result = _reply.readLong();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean enterAudioFocusFreezeForTest(IBinder cb, int[] uids) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(cb);
+                    _data.writeIntArray(uids);
+                    this.mRemote.transact(195, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean exitAudioFocusFreezeForTest(IBinder cb) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongBinder(cb);
+                    this.mRemote.transact(196, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
                     return _result;
                 } finally {
                     _reply.recycle();
@@ -7498,7 +8084,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7512,7 +8098,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(179, _data, null, 1);
+                    this.mRemote.transact(198, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7524,7 +8110,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7540,7 +8126,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7556,7 +8142,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7573,7 +8159,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(202, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7590,7 +8176,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(184, _data, _reply, 0);
+                    this.mRemote.transact(203, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7608,7 +8194,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(185, _data, _reply, 0);
+                    this.mRemote.transact(204, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7623,7 +8209,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7639,7 +8225,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7657,7 +8243,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
                     _data.writeBoolean(register);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7672,7 +8258,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(189, _data, _reply, 0);
+                    this.mRemote.transact(208, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7688,7 +8274,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(aa, 0);
                     _data.writeTypedObject(af, 0);
-                    this.mRemote.transact(190, _data, _reply, 0);
+                    this.mRemote.transact(209, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7705,7 +8291,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7720,7 +8306,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(192, _data, _reply, 0);
+                    this.mRemote.transact(211, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7735,7 +8321,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(212, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7750,7 +8336,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(194, _data, _reply, 0);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7765,7 +8351,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(195, _data, _reply, 0);
+                    this.mRemote.transact(214, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7780,7 +8366,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(215, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7794,7 +8380,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(197, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                     List<AudioDeviceAttributes> _result = _reply.createTypedArrayList(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -7811,7 +8397,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(ada, 0);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(217, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7826,7 +8412,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(ada, 0);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(218, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7841,7 +8427,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(219, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7855,7 +8441,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(201, _data, _reply, 0);
+                    this.mRemote.transact(220, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7871,7 +8457,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(202, _data, _reply, 0);
+                    this.mRemote.transact(221, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -7887,7 +8473,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(203, _data, _reply, 0);
+                    this.mRemote.transact(222, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7903,7 +8489,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeFloatArray(transform);
-                    this.mRemote.transact(204, _data, null, 1);
+                    this.mRemote.transact(223, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7914,7 +8500,7 @@ public interface IAudioService extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(205, _data, null, 1);
+                    this.mRemote.transact(224, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7928,7 +8514,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeByteArray(value);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(225, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7944,7 +8530,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(key);
                     _data.writeByteArray(value);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(226, _data, _reply, 0);
                     _reply.readException();
                     _reply.readByteArray(value);
                 } finally {
@@ -7959,7 +8545,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(227, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7976,7 +8562,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(209, _data, _reply, 0);
+                    this.mRemote.transact(228, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7991,7 +8577,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(229, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8005,7 +8591,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(230, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8021,7 +8607,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(212, _data, _reply, 0);
+                    this.mRemote.transact(231, _data, _reply, 0);
                     _reply.readException();
                     VolumeInfo _result = (VolumeInfo) _reply.readTypedObject(VolumeInfo.CREATOR);
                     return _result;
@@ -8037,7 +8623,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(213, _data, _reply, 0);
+                    this.mRemote.transact(232, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8055,7 +8641,7 @@ public interface IAudioService extends IInterface {
                     _data.writeIntArray(usagesToMute);
                     _data.writeTypedObject(dev, 0);
                     _data.writeLong(timeOutMs);
-                    this.mRemote.transact(214, _data, null, 1);
+                    this.mRemote.transact(233, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8067,7 +8653,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(dev, 0);
-                    this.mRemote.transact(215, _data, null, 1);
+                    this.mRemote.transact(234, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8079,7 +8665,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(216, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                     AudioDeviceAttributes _result = (AudioDeviceAttributes) _reply.readTypedObject(AudioDeviceAttributes.CREATOR);
                     return _result;
@@ -8097,7 +8683,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(cb);
                     _data.writeBoolean(register);
-                    this.mRemote.transact(217, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8113,7 +8699,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
                     _data.writeBoolean(connected);
-                    this.mRemote.transact(218, _data, _reply, 0);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8129,7 +8715,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(register);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8143,7 +8729,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(220, _data, _reply, 0);
+                    this.mRemote.transact(239, _data, _reply, 0);
                     _reply.readException();
                     List<AudioFocusInfo> _result = _reply.createTypedArrayList(AudioFocusInfo.CREATOR);
                     return _result;
@@ -8161,7 +8747,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(focusLoser, 0);
                     _data.writeStrongInterface(apcb);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(240, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8178,7 +8764,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(assistantUID);
-                    this.mRemote.transact(222, _data, _reply, 0);
+                    this.mRemote.transact(241, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8193,7 +8779,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(assistantUID);
-                    this.mRemote.transact(223, _data, _reply, 0);
+                    this.mRemote.transact(242, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8208,7 +8794,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(activeUids);
-                    this.mRemote.transact(224, _data, _reply, 0);
+                    this.mRemote.transact(243, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8222,7 +8808,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(225, _data, _reply, 0);
+                    this.mRemote.transact(244, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8238,7 +8824,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(226, _data, _reply, 0);
+                    this.mRemote.transact(245, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8261,7 +8847,7 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedList(volumes, 0);
                     _data.writeBoolean(handlesvolumeAdjustment);
                     _data.writeInt(volumeBehavior);
-                    this.mRemote.transact(227, _data, _reply, 0);
+                    this.mRemote.transact(246, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8275,7 +8861,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(228, _data, _reply, 0);
+                    this.mRemote.transact(247, _data, _reply, 0);
                     _reply.readException();
                     AudioHalVersionInfo _result = (AudioHalVersionInfo) _reply.readTypedObject(AudioHalVersionInfo.CREATOR);
                     return _result;
@@ -8294,7 +8880,7 @@ public interface IAudioService extends IInterface {
                     _data.writeTypedObject(aa, 0);
                     _data.writeInt(portId);
                     _data.writeTypedObject(mixerAttributes, 0);
-                    this.mRemote.transact(229, _data, _reply, 0);
+                    this.mRemote.transact(248, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8312,7 +8898,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(aa, 0);
                     _data.writeInt(portId);
-                    this.mRemote.transact(230, _data, _reply, 0);
+                    this.mRemote.transact(249, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8329,7 +8915,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(231, _data, _reply, 0);
+                    this.mRemote.transact(250, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8343,7 +8929,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(dispatcher);
-                    this.mRemote.transact(232, _data, null, 1);
+                    this.mRemote.transact(251, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8355,7 +8941,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(252, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8372,7 +8958,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(enabled);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(253, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8386,7 +8972,171 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(235, _data, _reply, 0);
+                    this.mRemote.transact(254, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void registerLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher dispatcher) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(dispatcher);
+                    this.mRemote.transact(255, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void unregisterLoudnessCodecUpdatesDispatcher(ILoudnessCodecUpdatesDispatcher dispatcher) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeStrongInterface(dispatcher);
+                    this.mRemote.transact(256, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void startLoudnessCodecUpdates(int sessionId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(sessionId);
+                    this.mRemote.transact(257, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void stopLoudnessCodecUpdates(int sessionId) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(sessionId);
+                    this.mRemote.transact(258, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void addLoudnessCodecInfo(int sessionId, int mediaCodecHash, LoudnessCodecInfo codecInfo) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(sessionId);
+                    _data.writeInt(mediaCodecHash);
+                    _data.writeTypedObject(codecInfo, 0);
+                    this.mRemote.transact(259, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public void removeLoudnessCodecInfo(int sessionId, LoudnessCodecInfo codecInfo) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeInt(sessionId);
+                    _data.writeTypedObject(codecInfo, 0);
+                    this.mRemote.transact(260, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public PersistableBundle getLoudnessParams(LoudnessCodecInfo codecInfo) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(codecInfo, 0);
+                    this.mRemote.transact(261, _data, _reply, 0);
+                    _reply.readException();
+                    PersistableBundle _result = (PersistableBundle) _reply.readTypedObject(PersistableBundle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int setFadeManagerConfigurationForFocusLoss(FadeManagerConfiguration fmcForFocusLoss) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(fmcForFocusLoss, 0);
+                    this.mRemote.transact(262, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public int clearFadeManagerConfigurationForFocusLoss() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(263, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public FadeManagerConfiguration getFadeManagerConfigurationForFocusLoss() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(264, _data, _reply, 0);
+                    _reply.readException();
+                    FadeManagerConfiguration _result = (FadeManagerConfiguration) _reply.readTypedObject(FadeManagerConfiguration.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.media.IAudioService
+            public boolean shouldNotificationSoundPlay(AudioAttributes aa) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
+                    _data.writeTypedObject(aa, 0);
+                    this.mRemote.transact(265, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8403,7 +9153,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(keyValuePairs);
-                    this.mRemote.transact(236, _data, _reply, 0);
+                    this.mRemote.transact(266, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8418,7 +9168,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(keys);
-                    this.mRemote.transact(237, _data, _reply, 0);
+                    this.mRemote.transact(267, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8434,7 +9184,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(238, _data, _reply, 0);
+                    this.mRemote.transact(268, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8451,7 +9201,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(suggestedStreamType);
-                    this.mRemote.transact(239, _data, _reply, 0);
+                    this.mRemote.transact(269, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8468,7 +9218,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(device);
-                    this.mRemote.transact(240, _data, _reply, 0);
+                    this.mRemote.transact(270, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8487,7 +9237,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(uid);
                     _data.writeInt(device);
                     _data.writeBoolean(shouldShowNotification);
-                    this.mRemote.transact(241, _data, _reply, 0);
+                    this.mRemote.transact(271, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8502,7 +9252,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(242, _data, _reply, 0);
+                    this.mRemote.transact(272, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8521,7 +9271,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(uid);
                     _data.writeInt(ratio);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(243, _data, _reply, 0);
+                    this.mRemote.transact(273, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8536,7 +9286,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(244, _data, _reply, 0);
+                    this.mRemote.transact(274, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8555,7 +9305,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(uid);
                     _data.writeBoolean(shouldMute);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(245, _data, _reply, 0);
+                    this.mRemote.transact(275, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8570,7 +9320,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(246, _data, _reply, 0);
+                    this.mRemote.transact(276, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8588,7 +9338,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(on);
                     _data.writeBoolean(shouldShowNotification);
-                    this.mRemote.transact(247, _data, _reply, 0);
+                    this.mRemote.transact(277, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8602,7 +9352,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(248, _data, _reply, 0);
+                    this.mRemote.transact(278, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8624,7 +9374,7 @@ public interface IAudioService extends IInterface {
                     _data.writeString(callingPackage);
                     _data.writeString(attributionTag);
                     _data.writeInt(device);
-                    this.mRemote.transact(249, _data, _reply, 0);
+                    this.mRemote.transact(279, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8640,7 +9390,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(streamType);
                     _data.writeInt(device);
-                    this.mRemote.transact(250, _data, _reply, 0);
+                    this.mRemote.transact(280, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8657,7 +9407,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(device);
-                    this.mRemote.transact(251, _data, _reply, 0);
+                    this.mRemote.transact(281, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8673,7 +9423,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(252, _data, _reply, 0);
+                    this.mRemote.transact(282, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8689,7 +9439,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(253, _data, _reply, 0);
+                    this.mRemote.transact(283, _data, _reply, 0);
                     _reply.readException();
                     String[] _result = _reply.createStringArray();
                     return _result;
@@ -8707,7 +9457,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
                     _data.writeString(packageName);
-                    this.mRemote.transact(254, _data, _reply, 0);
+                    this.mRemote.transact(284, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8722,7 +9472,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(255, _data, _reply, 0);
+                    this.mRemote.transact(285, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8737,7 +9487,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(256, _data, _reply, 0);
+                    this.mRemote.transact(286, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8754,7 +9504,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(257, _data, _reply, 0);
+                    this.mRemote.transact(287, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8775,7 +9525,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(flags);
                     _data.writeInt(device);
                     _data.writeString(callingPackage);
-                    this.mRemote.transact(258, _data, _reply, 0);
+                    this.mRemote.transact(288, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8791,7 +9541,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(streamType);
                     _data.writeInt(device);
-                    this.mRemote.transact(259, _data, _reply, 0);
+                    this.mRemote.transact(289, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8808,7 +9558,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(on);
-                    this.mRemote.transact(260, _data, _reply, 0);
+                    this.mRemote.transact(290, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8822,7 +9572,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(261, _data, _reply, 0);
+                    this.mRemote.transact(291, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8841,7 +9591,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(device);
                     _data.writeString(address);
                     _data.writeBoolean(force);
-                    this.mRemote.transact(262, _data, _reply, 0);
+                    this.mRemote.transact(292, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8859,7 +9609,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(interval);
                     _data.writeString(caller);
-                    this.mRemote.transact(263, _data, _reply, 0);
+                    this.mRemote.transact(293, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8873,7 +9623,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(264, _data, _reply, 0);
+                    this.mRemote.transact(294, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8889,7 +9639,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(265, _data, _reply, 0);
+                    this.mRemote.transact(295, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8905,7 +9655,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(266, _data, _reply, 0);
+                    this.mRemote.transact(296, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8922,7 +9672,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(type);
                     _data.writeTypedObject(broadcastIntent, 0);
-                    this.mRemote.transact(267, _data, null, 1);
+                    this.mRemote.transact(297, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8935,7 +9685,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeIntArray(volumeSteps);
-                    this.mRemote.transact(268, _data, _reply, 0);
+                    this.mRemote.transact(298, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8951,7 +9701,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(269, _data, _reply, 0);
+                    this.mRemote.transact(299, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8968,7 +9718,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(path);
-                    this.mRemote.transact(270, _data, _reply, 0);
+                    this.mRemote.transact(300, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8982,7 +9732,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(271, _data, _reply, 0);
+                    this.mRemote.transact(301, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8998,7 +9748,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(272, _data, _reply, 0);
+                    this.mRemote.transact(302, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9012,7 +9762,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(273, _data, _reply, 0);
+                    this.mRemote.transact(303, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9029,7 +9779,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(uid);
-                    this.mRemote.transact(274, _data, _reply, 0);
+                    this.mRemote.transact(304, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9050,7 +9800,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInt(index);
                     _data.writeInt(flags);
                     _data.writeString(caller);
-                    this.mRemote.transact(275, _data, _reply, 0);
+                    this.mRemote.transact(305, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9066,7 +9816,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeTypedObject(device, 0);
                     _data.writeInt(streamType);
-                    this.mRemote.transact(276, _data, _reply, 0);
+                    this.mRemote.transact(306, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9082,7 +9832,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(277, _data, _reply, 0);
+                    this.mRemote.transact(307, _data, _reply, 0);
                     _reply.readException();
                     float[] _result = _reply.createFloatArray();
                     return _result;
@@ -9099,7 +9849,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeBoolean(on);
-                    this.mRemote.transact(278, _data, _reply, 0);
+                    this.mRemote.transact(308, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9113,7 +9863,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeString(log);
-                    this.mRemote.transact(279, _data, null, 1);
+                    this.mRemote.transact(309, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -9127,7 +9877,7 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(pcdb);
                     _data.writeString(packageName);
-                    this.mRemote.transact(280, _data, _reply, 0);
+                    this.mRemote.transact(310, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9142,7 +9892,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(state);
-                    this.mRemote.transact(281, _data, _reply, 0);
+                    this.mRemote.transact(311, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9156,7 +9906,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(282, _data, _reply, 0);
+                    this.mRemote.transact(312, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9173,7 +9923,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(type);
-                    this.mRemote.transact(283, _data, _reply, 0);
+                    this.mRemote.transact(313, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9190,25 +9940,8 @@ public interface IAudioService extends IInterface {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeStrongInterface(controller);
                     _data.writeBoolean(visible);
-                    this.mRemote.transact(284, _data, null, 1);
+                    this.mRemote.transact(314, _data, null, 1);
                 } finally {
-                    _data.recycle();
-                }
-            }
-
-            @Override // android.media.IAudioService
-            public void nativeEvent(String action, String key, int value) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    _data.writeString(action);
-                    _data.writeString(key);
-                    _data.writeInt(value);
-                    this.mRemote.transact(285, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -9219,7 +9952,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(286, _data, _reply, 0);
+                    this.mRemote.transact(315, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9236,7 +9969,7 @@ public interface IAudioService extends IInterface {
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(287, _data, _reply, 0);
+                    this.mRemote.transact(316, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9250,7 +9983,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(288, _data, _reply, 0);
+                    this.mRemote.transact(317, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9266,7 +9999,7 @@ public interface IAudioService extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(289, _data, _reply, 0);
+                    this.mRemote.transact(318, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9277,6 +10010,26 @@ public interface IAudioService extends IInterface {
             }
         }
 
+        private boolean onTransact$portEvent$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            PersistableBundle _arg2 = (PersistableBundle) data.readTypedObject(PersistableBundle.CREATOR);
+            data.enforceNoDataAvail();
+            portEvent(_arg0, _arg1, _arg2);
+            return true;
+        }
+
+        private boolean onTransact$adjustStreamVolume$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            adjustStreamVolume(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            return true;
+        }
+
         private boolean onTransact$adjustStreamVolumeWithAttribution$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
@@ -9285,6 +10038,17 @@ public interface IAudioService extends IInterface {
             String _arg4 = data.readString();
             data.enforceNoDataAvail();
             adjustStreamVolumeWithAttribution(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setStreamVolume$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            setStreamVolume(_arg0, _arg1, _arg2, _arg3);
             reply.writeNoException();
             return true;
         }
@@ -9301,12 +10065,43 @@ public interface IAudioService extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setDeviceVolume$(Parcel data, Parcel reply) throws RemoteException {
+            VolumeInfo _arg0 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
+            AudioDeviceAttributes _arg1 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setDeviceVolume(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
         protected void setDeviceVolume_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermissionAnyOf(PERMISSIONS_setDeviceVolume, getCallingPid(), getCallingUid());
         }
 
+        private boolean onTransact$getDeviceVolume$(Parcel data, Parcel reply) throws RemoteException {
+            VolumeInfo _arg0 = (VolumeInfo) data.readTypedObject(VolumeInfo.CREATOR);
+            AudioDeviceAttributes _arg1 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            VolumeInfo _result = getDeviceVolume(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
         protected void getDeviceVolume_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermissionAnyOf(PERMISSIONS_getDeviceVolume, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$handleVolumeKey$(Parcel data, Parcel reply) throws RemoteException {
+            KeyEvent _arg0 = (KeyEvent) data.readTypedObject(KeyEvent.CREATOR);
+            boolean _arg1 = data.readBoolean();
+            String _arg2 = data.readString();
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            handleVolumeKey(_arg0, _arg1, _arg2, _arg3);
+            return true;
         }
 
         private boolean onTransact$setMasterMute$(Parcel data, Parcel reply) throws RemoteException {
@@ -9326,7 +10121,7 @@ public interface IAudioService extends IInterface {
         }
 
         protected void getAudioVolumeGroups_enforcePermission() throws SecurityException {
-            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
+            this.mEnforcer.enforcePermissionAnyOf(PERMISSIONS_getAudioVolumeGroups, getCallingPid(), getCallingUid());
         }
 
         private boolean onTransact$setVolumeGroupVolumeIndex$(Parcel data, Parcel reply) throws RemoteException {
@@ -9361,6 +10156,17 @@ public interface IAudioService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
         }
 
+        private boolean onTransact$adjustVolumeGroupVolume$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            adjustVolumeGroupVolume(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            return true;
+        }
+
         protected void getLastAudibleStreamVolume_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
         }
@@ -9383,6 +10189,31 @@ public interface IAudioService extends IInterface {
 
         protected void isHotwordStreamSupported_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.CAPTURE_AUDIO_HOTWORD, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setMicrophoneMute$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            String _arg1 = data.readString();
+            int _arg2 = data.readInt();
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            setMicrophoneMute(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setMode$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            IBinder _arg1 = data.readStrongBinder();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setMode(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        protected void setEncodedSurroundMode_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.WRITE_SETTINGS, getCallingPid(), getCallingUid());
         }
 
         protected void setA2dpSuspended_enforcePermission() throws SecurityException {
@@ -9411,6 +10242,22 @@ public interface IAudioService extends IInterface {
             return true;
         }
 
+        private boolean onTransact$abandonAudioFocus$(Parcel data, Parcel reply) throws RemoteException {
+            IAudioFocusDispatcher _arg0 = IAudioFocusDispatcher.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            AudioAttributes _arg2 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            int _result = abandonAudioFocus(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        protected void setRingtonePlayer_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.REMOTE_AUDIO_PLAYBACK, getCallingPid(), getCallingUid());
+        }
+
         protected void getIndependentStreamTypes_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
         }
@@ -9429,6 +10276,16 @@ public interface IAudioService extends IInterface {
 
         protected void setNotifAliasRingForTest_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setWiredDeviceConnectionState$(Parcel data, Parcel reply) throws RemoteException {
+            AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+            int _arg1 = data.readInt();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setWiredDeviceConnectionState(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
         }
 
         protected void setWiredDeviceConnectionState_enforcePermission() throws SecurityException {
@@ -9463,6 +10320,47 @@ public interface IAudioService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
         }
 
+        protected void isCsdAsAFeatureAvailable_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void isCsdAsAFeatureEnabled_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void setCsdAsAFeatureEnabled_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setBluetoothAudioDeviceCategory_legacy$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            int _arg2 = data.readInt();
+            data.enforceNoDataAvail();
+            setBluetoothAudioDeviceCategory_legacy(_arg0, _arg1, _arg2);
+            return true;
+        }
+
+        protected void setBluetoothAudioDeviceCategory_legacy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void getBluetoothAudioDeviceCategory_legacy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void setBluetoothAudioDeviceCategory_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void getBluetoothAudioDeviceCategory_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void isBluetoothAudioDeviceCategoryFixed_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
         private boolean onTransact$registerAudioPolicy$(Parcel data, Parcel reply) throws RemoteException {
             android.media.audiopolicy.AudioPolicyConfig _arg0 = (android.media.audiopolicy.AudioPolicyConfig) data.readTypedObject(android.media.audiopolicy.AudioPolicyConfig.CREATOR);
             IAudioPolicyCallback _arg1 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
@@ -9471,10 +10369,101 @@ public interface IAudioService extends IInterface {
             boolean _arg4 = data.readBoolean();
             boolean _arg5 = data.readBoolean();
             IMediaProjection _arg6 = IMediaProjection.Stub.asInterface(data.readStrongBinder());
+            AttributionSource _arg7 = (AttributionSource) data.readTypedObject(AttributionSource.CREATOR);
             data.enforceNoDataAvail();
-            String _result = registerAudioPolicy(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
+            String _result = registerAudioPolicy(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7);
             reply.writeNoException();
             reply.writeString(_result);
+            return true;
+        }
+
+        private boolean onTransact$updateMixingRulesForPolicy$(Parcel data, Parcel reply) throws RemoteException {
+            android.media.audiopolicy.AudioMix[] _arg0 = (android.media.audiopolicy.AudioMix[]) data.createTypedArray(android.media.audiopolicy.AudioMix.CREATOR);
+            AudioMixingRule[] _arg1 = (AudioMixingRule[]) data.createTypedArray(AudioMixingRule.CREATOR);
+            IAudioPolicyCallback _arg2 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            int _result = updateMixingRulesForPolicy(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        protected void updateMixingRulesForPolicy_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$dispatchFocusChange$(Parcel data, Parcel reply) throws RemoteException {
+            AudioFocusInfo _arg0 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+            int _arg1 = data.readInt();
+            IAudioPolicyCallback _arg2 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            int _result = dispatchFocusChange(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$dispatchFocusChangeWithFade$(Parcel data, Parcel reply) throws RemoteException {
+            AudioFocusInfo _arg0 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+            int _arg1 = data.readInt();
+            IAudioPolicyCallback _arg2 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            List<AudioFocusInfo> _arg3 = data.createTypedArrayList(AudioFocusInfo.CREATOR);
+            FadeManagerConfiguration _arg4 = (FadeManagerConfiguration) data.readTypedObject(FadeManagerConfiguration.CREATOR);
+            data.enforceNoDataAvail();
+            int _result = dispatchFocusChangeWithFade(_arg0, _arg1, _arg2, _arg3, _arg4);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        protected void dispatchFocusChangeWithFade_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$handleBluetoothActiveDeviceChanged$(Parcel data, Parcel reply) throws RemoteException {
+            BluetoothDevice _arg0 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
+            BluetoothDevice _arg1 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
+            BluetoothProfileConnectionInfo _arg2 = (BluetoothProfileConnectionInfo) data.readTypedObject(BluetoothProfileConnectionInfo.CREATOR);
+            data.enforceNoDataAvail();
+            handleBluetoothActiveDeviceChanged(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        protected void handleBluetoothActiveDeviceChanged_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.BLUETOOTH_STACK, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setFocusRequestResultFromExtPolicy$(Parcel data, Parcel reply) throws RemoteException {
+            AudioFocusInfo _arg0 = (AudioFocusInfo) data.readTypedObject(AudioFocusInfo.CREATOR);
+            int _arg1 = data.readInt();
+            IAudioPolicyCallback _arg2 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            setFocusRequestResultFromExtPolicy(_arg0, _arg1, _arg2);
+            return true;
+        }
+
+        private boolean onTransact$setUidDeviceAffinity$(Parcel data, Parcel reply) throws RemoteException {
+            IAudioPolicyCallback _arg0 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            int _arg1 = data.readInt();
+            int[] _arg2 = data.createIntArray();
+            String[] _arg3 = data.createStringArray();
+            data.enforceNoDataAvail();
+            int _result = setUidDeviceAffinity(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$setUserIdDeviceAffinity$(Parcel data, Parcel reply) throws RemoteException {
+            IAudioPolicyCallback _arg0 = IAudioPolicyCallback.Stub.asInterface(data.readStrongBinder());
+            int _arg1 = data.readInt();
+            int[] _arg2 = data.createIntArray();
+            String[] _arg3 = data.createStringArray();
+            data.enforceNoDataAvail();
+            int _result = setUserIdDeviceAffinity(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            reply.writeInt(_result);
             return true;
         }
 
@@ -9500,6 +10489,16 @@ public interface IAudioService extends IInterface {
 
         protected void getNonDefaultDevicesForStrategy_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setDeviceVolumeBehavior$(Parcel data, Parcel reply) throws RemoteException {
+            AudioDeviceAttributes _arg0 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+            int _arg1 = data.readInt();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setDeviceVolumeBehavior(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
         }
 
         protected void setDeviceVolumeBehavior_enforcePermission() throws SecurityException {
@@ -9564,6 +10563,15 @@ public interface IAudioService extends IInterface {
             return true;
         }
 
+        private boolean onTransact$adjustSuggestedStreamVolume$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            data.enforceNoDataAvail();
+            adjustSuggestedStreamVolume(_arg0, _arg1, _arg2);
+            return true;
+        }
+
         private boolean onTransact$requestAudioFocusForTest$(Parcel data, Parcel reply) throws RemoteException {
             AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
             int _arg1 = data.readInt();
@@ -9579,6 +10587,38 @@ public interface IAudioService extends IInterface {
             reply.writeNoException();
             reply.writeInt(_result);
             return true;
+        }
+
+        private boolean onTransact$abandonAudioFocusForTest$(Parcel data, Parcel reply) throws RemoteException {
+            IAudioFocusDispatcher _arg0 = IAudioFocusDispatcher.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            AudioAttributes _arg2 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+            String _arg3 = data.readString();
+            data.enforceNoDataAvail();
+            int _result = abandonAudioFocusForTest(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        protected void getFocusDuckedUidsForTest_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getFocusFadeOutDurationForTest_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void getFocusUnmuteDelayAfterFadeOutForTest_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
+        }
+
+        protected void enterAudioFocusFreezeForTest_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void exitAudioFocusFreezeForTest_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
         }
 
         protected void isSpatializerAvailableForDevice_enforcePermission() throws SecurityException {
@@ -9677,6 +10717,15 @@ public interface IAudioService extends IInterface {
             this.mEnforcer.enforcePermission(Manifest.permission.CALL_AUDIO_INTERCEPTION, getCallingPid(), getCallingUid());
         }
 
+        private boolean onTransact$muteAwaitConnection$(Parcel data, Parcel reply) throws RemoteException {
+            int[] _arg0 = data.createIntArray();
+            AudioDeviceAttributes _arg1 = (AudioDeviceAttributes) data.readTypedObject(AudioDeviceAttributes.CREATOR);
+            long _arg2 = data.readLong();
+            data.enforceNoDataAvail();
+            muteAwaitConnection(_arg0, _arg1, _arg2);
+            return true;
+        }
+
         protected void getMutingExpectedDevice_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
         }
@@ -9723,6 +10772,17 @@ public interface IAudioService extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setPreferredMixerAttributes$(Parcel data, Parcel reply) throws RemoteException {
+            AudioAttributes _arg0 = (AudioAttributes) data.readTypedObject(AudioAttributes.CREATOR);
+            int _arg1 = data.readInt();
+            AudioMixerAttributes _arg2 = (AudioMixerAttributes) data.readTypedObject(AudioMixerAttributes.CREATOR);
+            data.enforceNoDataAvail();
+            int _result = setPreferredMixerAttributes(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         protected void supportsBluetoothVariableLatency_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
         }
@@ -9733,6 +10793,61 @@ public interface IAudioService extends IInterface {
 
         protected void isBluetoothVariableLatencyEnabled_enforcePermission() throws SecurityException {
             this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_ROUTING, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$addLoudnessCodecInfo$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            LoudnessCodecInfo _arg2 = (LoudnessCodecInfo) data.readTypedObject(LoudnessCodecInfo.CREATOR);
+            data.enforceNoDataAvail();
+            addLoudnessCodecInfo(_arg0, _arg1, _arg2);
+            return true;
+        }
+
+        protected void setFadeManagerConfigurationForFocusLoss_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void clearFadeManagerConfigurationForFocusLoss_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void getFadeManagerConfigurationForFocusLoss_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.MODIFY_AUDIO_SETTINGS_PRIVILEGED, getCallingPid(), getCallingUid());
+        }
+
+        protected void shouldNotificationSoundPlay_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.QUERY_AUDIO_STATE, getCallingPid(), getCallingUid());
+        }
+
+        private boolean onTransact$setAppDevice$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            boolean _arg2 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setAppDevice(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setAppVolume$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setAppVolume(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setAppMute$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            setAppMute(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
         }
 
         private boolean onTransact$setStreamVolumeForDeviceWithAttribution$(Parcel data, Parcel reply) throws RemoteException {
@@ -9760,6 +10875,17 @@ public interface IAudioService extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setDeviceToForceByUser$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            boolean _arg2 = data.readBoolean();
+            data.enforceNoDataAvail();
+            int _result = setDeviceToForceByUser(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         private boolean onTransact$setA2dpDeviceVolume$(Parcel data, Parcel reply) throws RemoteException {
             BluetoothDevice _arg0 = (BluetoothDevice) data.readTypedObject(BluetoothDevice.CREATOR);
             int _arg1 = data.readInt();
@@ -9774,7 +10900,7 @@ public interface IAudioService extends IInterface {
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 288;
+            return 317;
         }
     }
 }

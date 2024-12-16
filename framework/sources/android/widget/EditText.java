@@ -1,5 +1,6 @@
 package android.widget;
 
+import android.app.compat.CompatChanges;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -20,6 +21,7 @@ public class EditText extends TextView {
     private static final int ID_BOLD = 16908379;
     private static final int ID_ITALIC = 16908380;
     private static final int ID_UNDERLINE = 16908381;
+    public static final long LINE_HEIGHT_FOR_LOCALE = 303326708;
     private boolean mStyleShortcutsEnabled;
 
     public EditText(Context context) {
@@ -36,17 +38,32 @@ public class EditText extends TextView {
 
     public EditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        int n;
+        int i;
         this.mStyleShortcutsEnabled = false;
         Resources.Theme theme = context.getTheme();
-        TypedArray a = theme.obtainStyledAttributes(attrs, R.styleable.EditText, defStyleAttr, defStyleRes);
-        int n = a.getIndexCount();
-        for (int i = 0; i < n; i++) {
-            int attr = a.getIndex(i);
+        TypedArray tvArray = theme.obtainStyledAttributes(attrs, R.styleable.EditText, defStyleAttr, defStyleRes);
+        try {
+            n = tvArray.getIndexCount();
+        } finally {
+        }
+        for (i = 0; i < n; i++) {
+            int attr = tvArray.getIndex(i);
             switch (attr) {
                 case 0:
-                    this.mStyleShortcutsEnabled = a.getBoolean(attr, false);
-                    break;
+                    this.mStyleShortcutsEnabled = tvArray.getBoolean(attr, false);
+                    continue;
+                default:
+                    continue;
             }
+        }
+        tvArray.recycle();
+        tvArray = theme.obtainStyledAttributes(attrs, R.styleable.TextView, defStyleAttr, defStyleRes);
+        try {
+            boolean hasUseLocalePreferredLineHeightForMinimumInt = tvArray.hasValue(102);
+            boolean useLocalePreferredLineHeightForMinimumInt = hasUseLocalePreferredLineHeightForMinimumInt ? tvArray.getBoolean(102, false) : false;
+            setLocalePreferredLineHeightForMinimumUsed(hasUseLocalePreferredLineHeightForMinimumInt ? useLocalePreferredLineHeightForMinimumInt : CompatChanges.isChangeEnabled(LINE_HEIGHT_FOR_LOCALE));
+        } finally {
         }
     }
 

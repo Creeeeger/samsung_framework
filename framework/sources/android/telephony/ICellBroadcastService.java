@@ -10,7 +10,7 @@ import android.telephony.cdma.CdmaSmsCbProgramData;
 import android.text.TextUtils;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface ICellBroadcastService extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.ICellBroadcastService";
 
@@ -22,7 +22,6 @@ public interface ICellBroadcastService extends IInterface {
 
     void handleGsmCellBroadcastSms(int i, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICellBroadcastService {
         @Override // android.telephony.ICellBroadcastService
         public void handleGsmCellBroadcastSms(int slotId, byte[] message) throws RemoteException {
@@ -47,7 +46,6 @@ public interface ICellBroadcastService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICellBroadcastService {
         static final int TRANSACTION_getCellBroadcastAreaInfo = 4;
         static final int TRANSACTION_handleCdmaCellBroadcastSms = 2;
@@ -99,52 +97,49 @@ public interface ICellBroadcastService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICellBroadcastService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICellBroadcastService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICellBroadcastService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    byte[] _arg1 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    handleGsmCellBroadcastSms(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    byte[] _arg12 = data.createByteArray();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    handleCdmaCellBroadcastSms(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    List<CdmaSmsCbProgramData> _arg13 = data.createTypedArrayList(CdmaSmsCbProgramData.CREATOR);
+                    String _arg22 = data.readString();
+                    RemoteCallback _arg3 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
+                    data.enforceNoDataAvail();
+                    handleCdmaScpMessage(_arg03, _arg13, _arg22, _arg3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    data.enforceNoDataAvail();
+                    CharSequence _result = getCellBroadcastAreaInfo(_arg04);
+                    reply.writeNoException();
+                    if (_result != null) {
+                        reply.writeInt(1);
+                        TextUtils.writeToParcel(_result, reply, 1);
+                    } else {
+                        reply.writeInt(0);
+                    }
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            byte[] _arg1 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            handleGsmCellBroadcastSms(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            byte[] _arg12 = data.createByteArray();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            handleCdmaCellBroadcastSms(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            List<CdmaSmsCbProgramData> _arg13 = data.createTypedArrayList(CdmaSmsCbProgramData.CREATOR);
-                            String _arg22 = data.readString();
-                            RemoteCallback _arg3 = (RemoteCallback) data.readTypedObject(RemoteCallback.CREATOR);
-                            data.enforceNoDataAvail();
-                            handleCdmaScpMessage(_arg03, _arg13, _arg22, _arg3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            data.enforceNoDataAvail();
-                            CharSequence _result = getCellBroadcastAreaInfo(_arg04);
-                            reply.writeNoException();
-                            if (_result != null) {
-                                reply.writeInt(1);
-                                TextUtils.writeToParcel(_result, reply, 1);
-                            } else {
-                                reply.writeInt(0);
-                            }
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ICellBroadcastService {
             private IBinder mRemote;
 

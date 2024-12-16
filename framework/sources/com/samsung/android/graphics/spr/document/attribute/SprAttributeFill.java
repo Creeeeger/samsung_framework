@@ -4,7 +4,7 @@ import com.samsung.android.graphics.spr.document.SprInputStream;
 import com.samsung.android.graphics.spr.document.attribute.impl.SprGradientBase;
 import java.io.IOException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SprAttributeFill extends SprAttributeColor {
     public SprAttributeFill() {
         super((byte) 32);

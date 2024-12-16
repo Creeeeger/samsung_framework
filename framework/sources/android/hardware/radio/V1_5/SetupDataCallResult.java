@@ -72,7 +72,7 @@ public final class SetupDataCallResult {
         this.active = _hidl_blob.getInt32(_hidl_offset + 12);
         this.type = _hidl_blob.getInt32(_hidl_offset + 16);
         this.ifname = _hidl_blob.getString(_hidl_offset + 24);
-        parcel.readEmbeddedBuffer(r8.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
+        parcel.readEmbeddedBuffer(this.ifname.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 24 + 0, false);
         int _hidl_vec_size = _hidl_blob.getInt32(_hidl_offset + 40 + 8);
         HwBlob childBlob = parcel.readEmbeddedBuffer(_hidl_vec_size * 40, _hidl_blob.handle(), _hidl_offset + 40 + 0, true);
         this.addresses.clear();

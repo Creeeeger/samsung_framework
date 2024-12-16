@@ -12,7 +12,6 @@ public interface IControlsActionCallback extends IInterface {
 
     void accept(IBinder iBinder, String str, int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IControlsActionCallback {
         @Override // android.service.controls.IControlsActionCallback
         public void accept(IBinder token, String controlId, int response) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IControlsActionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IControlsActionCallback {
         static final int TRANSACTION_accept = 1;
 
@@ -67,28 +65,24 @@ public interface IControlsActionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IControlsActionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IControlsActionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IControlsActionCallback.DESCRIPTOR);
+                case 1:
+                    IBinder _arg0 = data.readStrongBinder();
+                    String _arg1 = data.readString();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    accept(_arg0, _arg1, _arg2);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IBinder _arg0 = data.readStrongBinder();
-                            String _arg1 = data.readString();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            accept(_arg0, _arg1, _arg2);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IControlsActionCallback {
+        private static class Proxy implements IControlsActionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

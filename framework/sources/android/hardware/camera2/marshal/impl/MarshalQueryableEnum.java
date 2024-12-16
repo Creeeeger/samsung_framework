@@ -9,7 +9,7 @@ import java.lang.Enum;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable<T> {
     private static final boolean DEBUG = false;
     private static final int UINT8_MASK = 255;
@@ -18,7 +18,6 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
     private static final String TAG = MarshalQueryableEnum.class.getSimpleName();
     private static final HashMap<Class<? extends Enum>, int[]> sEnumValues = new HashMap<>();
 
-    /* loaded from: classes.dex */
     private class MarshalerEnum extends Marshaler<T> {
         private final Class<T> mClass;
 
@@ -96,6 +95,7 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
         sEnumValues.put(enumType, values);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends Enum<T>> int getEnumValue(T enumValue) {
         int[] values = sEnumValues.get(enumValue.getClass());
         int ordinal = enumValue.ordinal();
@@ -105,6 +105,7 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
         return ordinal;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static <T extends Enum<T>> T getEnumFromValue(Class<T> enumType, int value) {
         int ordinal;
         int[] registeredValues = sEnumValues.get(enumType);
@@ -127,11 +128,7 @@ public class MarshalQueryableEnum<T extends Enum<T>> implements MarshalQueryable
         }
         T[] values = enumType.getEnumConstants();
         if (ordinal < 0 || ordinal >= values.length) {
-            Object[] objArr = new Object[3];
-            objArr[0] = Integer.valueOf(value);
-            objArr[1] = enumType;
-            objArr[2] = Boolean.valueOf(registeredValues != null);
-            throw new IllegalArgumentException(String.format("Argument 'value' (%d) was not a valid enum value for type %s (registered? %b)", objArr));
+            throw new IllegalArgumentException(String.format("Argument 'value' (%d) was not a valid enum value for type %s (registered? %b)", Integer.valueOf(value), enumType, Boolean.valueOf(registeredValues != null)));
         }
         return values[ordinal];
     }

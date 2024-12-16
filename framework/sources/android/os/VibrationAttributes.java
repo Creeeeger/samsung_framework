@@ -14,23 +14,25 @@ import java.util.Set;
 
 /* loaded from: classes3.dex */
 public final class VibrationAttributes implements Parcelable {
+    public static final int CATEGORY_KEYBOARD = 1;
+    public static final int CATEGORY_UNKNOWN = 0;
     public static final Parcelable.Creator<VibrationAttributes> CREATOR = new Parcelable.Creator<VibrationAttributes>() { // from class: android.os.VibrationAttributes.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibrationAttributes createFromParcel(Parcel p) {
             return new VibrationAttributes(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VibrationAttributes[] newArray(int size) {
             return new VibrationAttributes[size];
         }
     };
-    public static final int FLAG_ALL_SUPPORTED = 15;
+    public static final int FLAG_ALL_SUPPORTED = 31;
     public static final int FLAG_BYPASS_INTERRUPTION_POLICY = 1;
     public static final int FLAG_BYPASS_USER_VIBRATION_INTENSITY_OFF = 2;
+    public static final int FLAG_BYPASS_USER_VIBRATION_INTENSITY_SCALE = 16;
     public static final int FLAG_INVALIDATE_SETTINGS_CACHE = 4;
     public static final int FLAG_PIPELINED_EFFECT = 8;
     public static final int FLATTEN_TAGS = 1;
@@ -51,6 +53,7 @@ public final class VibrationAttributes implements Parcelable {
     public static final int USAGE_RINGTONE = 33;
     public static final int USAGE_TOUCH = 18;
     public static final int USAGE_UNKNOWN = 0;
+    private final int mCategory;
     private final int mFlags;
     private String mFormattedTags;
     private final int mOriginalAudioUsage;
@@ -58,36 +61,30 @@ public final class VibrationAttributes implements Parcelable {
     private final int mUsage;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
+    public @interface Category {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Flag {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Usage {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface UsageClass {
-    }
-
-    /* synthetic */ VibrationAttributes(int i, int i2, int i3, VibrationAttributesIA vibrationAttributesIA) {
-        this(i, i2, i3);
-    }
-
-    /* synthetic */ VibrationAttributes(Parcel parcel, VibrationAttributesIA vibrationAttributesIA) {
-        this(parcel);
     }
 
     public static VibrationAttributes createForUsage(int usage) {
         return new Builder().setUsage(usage).build();
     }
 
-    private VibrationAttributes(int usage, int audioUsage, int flags) {
+    private VibrationAttributes(int usage, int audioUsage, int flags, int category) {
         this.mUsage = usage;
         this.mOriginalAudioUsage = audioUsage;
-        this.mFlags = flags & 15;
+        this.mFlags = flags & 31;
+        this.mCategory = category;
     }
 
     public int getUsageClass() {
@@ -98,8 +95,16 @@ public final class VibrationAttributes implements Parcelable {
         return this.mUsage;
     }
 
+    public int getOriginalAudioUsage() {
+        return this.mOriginalAudioUsage;
+    }
+
     public int getFlags() {
         return this.mFlags;
+    }
+
+    public int getCategory() {
+        return this.mCategory;
     }
 
     public boolean isFlagSet(int flag) {
@@ -107,9 +112,8 @@ public final class VibrationAttributes implements Parcelable {
     }
 
     public int getAudioUsage() {
-        int i = this.mOriginalAudioUsage;
-        if (i != 0) {
-            return i;
+        if (this.mOriginalAudioUsage != 0) {
+            return this.mOriginalAudioUsage;
         }
         switch (this.mUsage) {
             case 17:
@@ -141,6 +145,7 @@ public final class VibrationAttributes implements Parcelable {
         dest.writeInt(this.mUsage);
         dest.writeInt(this.mOriginalAudioUsage);
         dest.writeInt(this.mFlags);
+        dest.writeInt(this.mCategory);
         dest.writeInt(flags & 1);
         if ((flags & 1) == 0) {
             String[] tagsArray = new String[this.mTags.size()];
@@ -155,36 +160,19 @@ public final class VibrationAttributes implements Parcelable {
         this.mUsage = src.readInt();
         this.mOriginalAudioUsage = src.readInt();
         this.mFlags = src.readInt();
+        this.mCategory = src.readInt();
         boolean hasFlattenedTags = (src.readInt() & 1) == 1;
         this.mTags = new HashSet<>();
         if (hasFlattenedTags) {
-            String readString = src.readString();
-            this.mFormattedTags = readString;
-            this.mTags.add(readString);
-        } else {
-            String[] tagsArray = src.readStringArray();
-            for (int i = tagsArray.length - 1; i >= 0; i--) {
-                this.mTags.add(tagsArray[i]);
-            }
-            this.mFormattedTags = TextUtils.join(NavigationBarInflaterView.GRAVITY_SEPARATOR, this.mTags);
+            this.mFormattedTags = src.readString();
+            this.mTags.add(this.mFormattedTags);
+            return;
         }
-    }
-
-    /* renamed from: android.os.VibrationAttributes$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VibrationAttributes> {
-        AnonymousClass1() {
+        String[] tagsArray = src.readStringArray();
+        for (int i = tagsArray.length - 1; i >= 0; i--) {
+            this.mTags.add(tagsArray[i]);
         }
-
-        @Override // android.os.Parcelable.Creator
-        public VibrationAttributes createFromParcel(Parcel p) {
-            return new VibrationAttributes(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VibrationAttributes[] newArray(int size) {
-            return new VibrationAttributes[size];
-        }
+        this.mFormattedTags = TextUtils.join(NavigationBarInflaterView.GRAVITY_SEPARATOR, this.mTags);
     }
 
     public boolean equals(Object o) {
@@ -195,18 +183,18 @@ public final class VibrationAttributes implements Parcelable {
             return false;
         }
         VibrationAttributes rhs = (VibrationAttributes) o;
-        if (this.mUsage == rhs.mUsage && this.mOriginalAudioUsage == rhs.mOriginalAudioUsage && this.mFlags == rhs.mFlags && this.mFormattedTags.equals(rhs.mFormattedTags)) {
+        if (this.mUsage == rhs.mUsage && this.mOriginalAudioUsage == rhs.mOriginalAudioUsage && this.mFlags == rhs.mFlags && this.mCategory == rhs.mCategory && this.mFormattedTags.equals(rhs.mFormattedTags)) {
             return true;
         }
         return false;
     }
 
     public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mUsage), Integer.valueOf(this.mOriginalAudioUsage), Integer.valueOf(this.mFlags), this.mFormattedTags);
+        return Objects.hash(Integer.valueOf(this.mUsage), Integer.valueOf(this.mOriginalAudioUsage), Integer.valueOf(this.mFlags), Integer.valueOf(this.mCategory), this.mFormattedTags);
     }
 
     public String toString() {
-        return "VibrationAttributes: Usage=" + usageToString() + " Audio Usage= " + AudioAttributes.usageToString(this.mOriginalAudioUsage) + " tags=" + this.mFormattedTags + " Flags=" + this.mFlags;
+        return "VibrationAttributes{mUsage=" + usageToString() + ", mAudioUsage= " + AudioAttributes.usageToString(this.mOriginalAudioUsage) + ", mCategory=" + categoryToString() + ", mFlags=" + this.mFlags + ", tags=" + this.mFormattedTags + '}';
     }
 
     public String usageToString() {
@@ -240,8 +228,23 @@ public final class VibrationAttributes implements Parcelable {
         }
     }
 
-    /* loaded from: classes3.dex */
+    public String categoryToString() {
+        return categoryToString(this.mCategory);
+    }
+
+    public static String categoryToString(int category) {
+        switch (category) {
+            case 0:
+                return "UNKNOWN";
+            case 1:
+                return "KEYBOARD";
+            default:
+                return "unknown category " + category;
+        }
+    }
+
     public static final class Builder {
+        private int mCategory;
         private int mFlags;
         private int mOriginalAudioUsage;
         private HashSet<String> mTags;
@@ -251,6 +254,7 @@ public final class VibrationAttributes implements Parcelable {
             this.mUsage = 0;
             this.mOriginalAudioUsage = 0;
             this.mFlags = 0;
+            this.mCategory = 0;
             this.mTags = new HashSet<>();
         }
 
@@ -258,11 +262,13 @@ public final class VibrationAttributes implements Parcelable {
             this.mUsage = 0;
             this.mOriginalAudioUsage = 0;
             this.mFlags = 0;
+            this.mCategory = 0;
             this.mTags = new HashSet<>();
             if (vib != null) {
                 this.mUsage = vib.mUsage;
                 this.mOriginalAudioUsage = vib.mOriginalAudioUsage;
                 this.mFlags = vib.mFlags;
+                this.mCategory = vib.mCategory;
                 this.mTags = (HashSet) vib.mTags.clone();
             }
         }
@@ -271,9 +277,13 @@ public final class VibrationAttributes implements Parcelable {
             this.mUsage = 0;
             this.mOriginalAudioUsage = 0;
             this.mFlags = 0;
+            this.mCategory = 0;
             this.mTags = new HashSet<>();
             setUsage(audio);
             setFlags(audio);
+            for (String tag : audio.getTags()) {
+                semAddTag(tag);
+            }
         }
 
         private void setUsage(AudioAttributes audio) {
@@ -282,36 +292,36 @@ public final class VibrationAttributes implements Parcelable {
                 case 1:
                 case 14:
                     this.mUsage = 19;
-                    return;
+                    break;
                 case 2:
                 case 3:
                 case 12:
                 case 16:
                     this.mUsage = 65;
-                    return;
+                    break;
                 case 4:
                     this.mUsage = 17;
-                    return;
+                    break;
                 case 5:
                 case 7:
                 case 8:
                 case 9:
                 case 10:
                     this.mUsage = 49;
-                    return;
+                    break;
                 case 6:
                     this.mUsage = 33;
-                    return;
+                    break;
                 case 11:
                     this.mUsage = 66;
-                    return;
+                    break;
                 case 13:
                     this.mUsage = 18;
-                    return;
+                    break;
                 case 15:
                 default:
                     this.mUsage = 0;
-                    return;
+                    break;
             }
         }
 
@@ -325,7 +335,7 @@ public final class VibrationAttributes implements Parcelable {
         }
 
         public VibrationAttributes build() {
-            VibrationAttributes ans = new VibrationAttributes(this.mUsage, this.mOriginalAudioUsage, this.mFlags);
+            VibrationAttributes ans = new VibrationAttributes(this.mUsage, this.mOriginalAudioUsage, this.mFlags, this.mCategory);
             ans.mTags = (HashSet) this.mTags.clone();
             ans.mFormattedTags = TextUtils.join(NavigationBarInflaterView.GRAVITY_SEPARATOR, this.mTags);
             return ans;
@@ -337,14 +347,19 @@ public final class VibrationAttributes implements Parcelable {
             return this;
         }
 
+        public Builder setCategory(int category) {
+            this.mCategory = category;
+            return this;
+        }
+
         public Builder setFlags(int flags, int mask) {
-            int mask2 = mask & 15;
+            int mask2 = mask & 31;
             this.mFlags = (this.mFlags & (~mask2)) | (flags & mask2);
             return this;
         }
 
         public Builder setFlags(int flags) {
-            return setFlags(flags, 15);
+            return setFlags(flags, 31);
         }
 
         public Builder semAddTag(String tag) {

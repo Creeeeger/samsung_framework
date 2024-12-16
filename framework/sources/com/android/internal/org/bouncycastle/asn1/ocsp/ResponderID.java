@@ -44,28 +44,25 @@ public class ResponderID extends ASN1Object implements ASN1Choice {
     }
 
     public byte[] getKeyHash() {
-        ASN1Encodable aSN1Encodable = this.value;
-        if (aSN1Encodable instanceof ASN1OctetString) {
-            ASN1OctetString octetString = (ASN1OctetString) aSN1Encodable;
+        if (this.value instanceof ASN1OctetString) {
+            ASN1OctetString octetString = (ASN1OctetString) this.value;
             return octetString.getOctets();
         }
         return null;
     }
 
     public X500Name getName() {
-        ASN1Encodable aSN1Encodable = this.value;
-        if (aSN1Encodable instanceof ASN1OctetString) {
+        if (this.value instanceof ASN1OctetString) {
             return null;
         }
-        return X500Name.getInstance(aSN1Encodable);
+        return X500Name.getInstance(this.value);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
-        ASN1Encodable aSN1Encodable = this.value;
-        if (aSN1Encodable instanceof ASN1OctetString) {
-            return new DERTaggedObject(true, 2, aSN1Encodable);
+        if (this.value instanceof ASN1OctetString) {
+            return new DERTaggedObject(true, 2, this.value);
         }
-        return new DERTaggedObject(true, 1, aSN1Encodable);
+        return new DERTaggedObject(true, 1, this.value);
     }
 }

@@ -18,7 +18,7 @@ import android.view.animation.PathInterpolator;
 import java.util.ArrayList;
 
 /* loaded from: classes.dex */
-public class RippleForeground extends RippleComponent {
+class RippleForeground extends RippleComponent {
     private static final int OPACITY_ENTER_DURATION = 75;
     private static final int OPACITY_EXIT_DURATION = 150;
     private static final int OPACITY_HOLD_DURATION = 225;
@@ -50,10 +50,6 @@ public class RippleForeground extends RippleComponent {
     private static final TimeInterpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     private static final TimeInterpolator DECELERATE_INTERPOLATOR = new PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f);
     private static final FloatProperty<RippleForeground> TWEEN_RADIUS = new FloatProperty<RippleForeground>("tweenRadius") { // from class: android.graphics.drawable.RippleForeground.2
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(RippleForeground object, float value) {
             object.mTweenRadius = value;
@@ -66,10 +62,6 @@ public class RippleForeground extends RippleComponent {
         }
     };
     private static final FloatProperty<RippleForeground> TWEEN_ORIGIN = new FloatProperty<RippleForeground>("tweenOrigin") { // from class: android.graphics.drawable.RippleForeground.3
-        AnonymousClass3(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(RippleForeground object, float value) {
             object.mTweenX = value;
@@ -83,10 +75,6 @@ public class RippleForeground extends RippleComponent {
         }
     };
     private static final FloatProperty<RippleForeground> OPACITY = new FloatProperty<RippleForeground>("opacity") { // from class: android.graphics.drawable.RippleForeground.4
-        AnonymousClass4(String name) {
-            super(name);
-        }
-
         @Override // android.util.FloatProperty
         public void setValue(RippleForeground object, float value) {
             object.mOpacity = value;
@@ -112,9 +100,6 @@ public class RippleForeground extends RippleComponent {
         this.mRunningSwAnimators = new ArrayList<>();
         this.mStartRadius = 0.0f;
         this.mAnimationListener = new AnimatorListenerAdapter() { // from class: android.graphics.drawable.RippleForeground.1
-            AnonymousClass1() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animator) {
                 RippleForeground.this.mHasFinishedExit = true;
@@ -163,6 +148,7 @@ public class RippleForeground extends RippleComponent {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void pruneHwFinished() {
         if (!this.mRunningHwAnimators.isEmpty()) {
             for (int i = this.mRunningHwAnimators.size() - 1; i >= 0; i--) {
@@ -173,6 +159,7 @@ public class RippleForeground extends RippleComponent {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void pruneSwFinished() {
         if (!this.mRunningSwAnimators.isEmpty()) {
             for (int i = this.mRunningSwAnimators.size() - 1; i >= 0; i--) {
@@ -186,10 +173,9 @@ public class RippleForeground extends RippleComponent {
     private void drawHardware(RecordingCanvas c, Paint p) {
         startPending(c);
         pruneHwFinished();
-        CanvasProperty<Paint> canvasProperty = this.mPropPaint;
-        if (canvasProperty != null) {
+        if (this.mPropPaint != null) {
             this.mUsingProperties = true;
-            c.drawCircle(this.mPropX, this.mPropY, this.mPropRadius, canvasProperty);
+            c.drawCircle(this.mPropX, this.mPropY, this.mPropRadius, this.mPropPaint);
         } else {
             this.mUsingProperties = false;
             drawSoftware(c, p);
@@ -229,13 +215,12 @@ public class RippleForeground extends RippleComponent {
         this.mRunningSwAnimators.clear();
         ObjectAnimator tweenRadius = ObjectAnimator.ofFloat(this, TWEEN_RADIUS, 1.0f);
         tweenRadius.setDuration(225L);
-        TimeInterpolator timeInterpolator = DECELERATE_INTERPOLATOR;
-        tweenRadius.setInterpolator(timeInterpolator);
+        tweenRadius.setInterpolator(DECELERATE_INTERPOLATOR);
         tweenRadius.start();
         this.mRunningSwAnimators.add(tweenRadius);
         ObjectAnimator tweenOrigin = ObjectAnimator.ofFloat(this, TWEEN_ORIGIN, 1.0f);
         tweenOrigin.setDuration(225L);
-        tweenOrigin.setInterpolator(timeInterpolator);
+        tweenOrigin.setInterpolator(DECELERATE_INTERPOLATOR);
         tweenOrigin.start();
         this.mRunningSwAnimators.add(tweenOrigin);
         ObjectAnimator opacity = ObjectAnimator.ofFloat(this, OPACITY, 1.0f);
@@ -266,16 +251,15 @@ public class RippleForeground extends RippleComponent {
         this.mPropPaint = CanvasProperty.createPaint(paint);
         RenderNodeAnimator radius = new RenderNodeAnimator(this.mPropRadius, this.mTargetRadius);
         radius.setDuration(225L);
-        TimeInterpolator timeInterpolator = DECELERATE_INTERPOLATOR;
-        radius.setInterpolator(timeInterpolator);
+        radius.setInterpolator(DECELERATE_INTERPOLATOR);
         this.mPendingHwAnimators.add(radius);
         RenderNodeAnimator x = new RenderNodeAnimator(this.mPropX, this.mTargetX);
         x.setDuration(225L);
-        x.setInterpolator(timeInterpolator);
+        x.setInterpolator(DECELERATE_INTERPOLATOR);
         this.mPendingHwAnimators.add(x);
         RenderNodeAnimator y = new RenderNodeAnimator(this.mPropY, this.mTargetY);
         y.setDuration(225L);
-        y.setInterpolator(timeInterpolator);
+        y.setInterpolator(DECELERATE_INTERPOLATOR);
         this.mPendingHwAnimators.add(y);
         RenderNodeAnimator opacity = new RenderNodeAnimator(this.mPropPaint, 1, paint.getAlpha());
         opacity.setDuration(75L);
@@ -360,36 +344,20 @@ public class RippleForeground extends RippleComponent {
         this.mRunningHwAnimators.clear();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onAnimationPropertyChanged() {
         if (!this.mUsingProperties) {
             invalidateSelf();
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void clearHwProps() {
         this.mPropPaint = null;
         this.mPropRadius = null;
         this.mPropX = null;
         this.mPropY = null;
         this.mUsingProperties = false;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.graphics.drawable.RippleForeground$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animator) {
-            RippleForeground.this.mHasFinishedExit = true;
-            RippleForeground.this.pruneHwFinished();
-            RippleForeground.this.pruneSwFinished();
-            if (RippleForeground.this.mRunningHwAnimators.isEmpty()) {
-                RippleForeground.this.clearHwProps();
-            }
-        }
     }
 
     private void switchToUiThreadAnimation() {
@@ -401,63 +369,5 @@ public class RippleForeground extends RippleComponent {
         this.mRunningHwAnimators.clear();
         clearHwProps();
         invalidateSelf();
-    }
-
-    /* renamed from: android.graphics.drawable.RippleForeground$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 extends FloatProperty<RippleForeground> {
-        AnonymousClass2(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(RippleForeground object, float value) {
-            object.mTweenRadius = value;
-            object.onAnimationPropertyChanged();
-        }
-
-        @Override // android.util.Property
-        public Float get(RippleForeground object) {
-            return Float.valueOf(object.mTweenRadius);
-        }
-    }
-
-    /* renamed from: android.graphics.drawable.RippleForeground$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 extends FloatProperty<RippleForeground> {
-        AnonymousClass3(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(RippleForeground object, float value) {
-            object.mTweenX = value;
-            object.mTweenY = value;
-            object.onAnimationPropertyChanged();
-        }
-
-        @Override // android.util.Property
-        public Float get(RippleForeground object) {
-            return Float.valueOf(object.mTweenX);
-        }
-    }
-
-    /* renamed from: android.graphics.drawable.RippleForeground$4 */
-    /* loaded from: classes.dex */
-    class AnonymousClass4 extends FloatProperty<RippleForeground> {
-        AnonymousClass4(String name) {
-            super(name);
-        }
-
-        @Override // android.util.FloatProperty
-        public void setValue(RippleForeground object, float value) {
-            object.mOpacity = value;
-            object.onAnimationPropertyChanged();
-        }
-
-        @Override // android.util.Property
-        public Float get(RippleForeground object) {
-            return Float.valueOf(object.mOpacity);
-        }
     }
 }

@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class BeginCreateCredentialResponse implements Parcelable {
     public static final Parcelable.Creator<BeginCreateCredentialResponse> CREATOR = new Parcelable.Creator<BeginCreateCredentialResponse>() { // from class: android.service.credentials.BeginCreateCredentialResponse.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginCreateCredentialResponse createFromParcel(Parcel in) {
             return new BeginCreateCredentialResponse(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public BeginCreateCredentialResponse[] newArray(int size) {
             return new BeginCreateCredentialResponse[size];
@@ -28,10 +27,6 @@ public final class BeginCreateCredentialResponse implements Parcelable {
     };
     private final ParceledListSlice<CreateEntry> mCreateEntries;
     private final RemoteEntry mRemoteCreateEntry;
-
-    /* synthetic */ BeginCreateCredentialResponse(Parcel parcel, BeginCreateCredentialResponseIA beginCreateCredentialResponseIA) {
-        this(parcel);
-    }
 
     public BeginCreateCredentialResponse() {
         this((ParceledListSlice<CreateEntry>) new ParceledListSlice(new ArrayList()), (RemoteEntry) null);
@@ -53,26 +48,9 @@ public final class BeginCreateCredentialResponse implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.service.credentials.BeginCreateCredentialResponse$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<BeginCreateCredentialResponse> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginCreateCredentialResponse createFromParcel(Parcel in) {
-            return new BeginCreateCredentialResponse(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public BeginCreateCredentialResponse[] newArray(int size) {
-            return new BeginCreateCredentialResponse[size];
-        }
-    }
-
     BeginCreateCredentialResponse(ParceledListSlice<CreateEntry> createEntries, RemoteEntry remoteCreateEntry) {
         this.mCreateEntries = createEntries;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) createEntries);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mCreateEntries);
         this.mRemoteCreateEntry = remoteCreateEntry;
     }
 
@@ -84,7 +62,6 @@ public final class BeginCreateCredentialResponse implements Parcelable {
         return this.mRemoteCreateEntry;
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private List<CreateEntry> mCreateEntries = new ArrayList();
         private RemoteEntry mRemoteCreateEntry;

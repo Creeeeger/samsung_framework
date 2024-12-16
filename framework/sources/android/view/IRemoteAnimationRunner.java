@@ -13,7 +13,6 @@ public interface IRemoteAnimationRunner extends IInterface {
 
     void onAnimationStart(int i, RemoteAnimationTarget[] remoteAnimationTargetArr, RemoteAnimationTarget[] remoteAnimationTargetArr2, RemoteAnimationTarget[] remoteAnimationTargetArr3, IRemoteAnimationFinishedCallback iRemoteAnimationFinishedCallback) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IRemoteAnimationRunner {
         @Override // android.view.IRemoteAnimationRunner
         public void onAnimationStart(int transit, RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps, IRemoteAnimationFinishedCallback finishedCallback) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IRemoteAnimationRunner extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IRemoteAnimationRunner {
         public static final String DESCRIPTOR = "android.view.IRemoteAnimationRunner";
         static final int TRANSACTION_onAnimationCancelled = 2;
@@ -76,32 +74,29 @@ public interface IRemoteAnimationRunner extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    RemoteAnimationTarget[] _arg1 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
+                    RemoteAnimationTarget[] _arg2 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
+                    RemoteAnimationTarget[] _arg3 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
+                    IRemoteAnimationFinishedCallback _arg4 = IRemoteAnimationFinishedCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onAnimationStart(_arg0, _arg1, _arg2, _arg3, _arg4);
+                    return true;
+                case 2:
+                    onAnimationCancelled();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            RemoteAnimationTarget[] _arg1 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
-                            RemoteAnimationTarget[] _arg2 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
-                            RemoteAnimationTarget[] _arg3 = (RemoteAnimationTarget[]) data.createTypedArray(RemoteAnimationTarget.CREATOR);
-                            IRemoteAnimationFinishedCallback _arg4 = IRemoteAnimationFinishedCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onAnimationStart(_arg0, _arg1, _arg2, _arg3, _arg4);
-                            return true;
-                        case 2:
-                            onAnimationCancelled();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IRemoteAnimationRunner {
+        private static class Proxy implements IRemoteAnimationRunner {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

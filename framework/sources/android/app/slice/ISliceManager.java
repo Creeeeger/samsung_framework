@@ -31,7 +31,6 @@ public interface ISliceManager extends IInterface {
 
     void unpinSlice(String str, Uri uri, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISliceManager {
         @Override // android.app.slice.ISliceManager
         public void pinSlice(String pkg, Uri uri, SliceSpec[] specs, IBinder token) throws RemoteException {
@@ -88,7 +87,6 @@ public interface ISliceManager extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISliceManager {
         public static final String DESCRIPTOR = "android.app.slice.ISliceManager";
         static final int TRANSACTION_applyRestore = 7;
@@ -162,110 +160,106 @@ public interface ISliceManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    SliceSpec[] _arg2 = (SliceSpec[]) data.createTypedArray(SliceSpec.CREATOR);
+                    IBinder _arg3 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    pinSlice(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    Uri _arg12 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    IBinder _arg22 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    unpinSlice(_arg02, _arg12, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = hasSliceAccess(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    Uri _arg04 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg13 = data.readString();
+                    data.enforceNoDataAvail();
+                    SliceSpec[] _result2 = getPinnedSpecs(_arg04, _arg13);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result2, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    Uri[] _result3 = getPinnedSlices(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result3, 1);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result4 = getBackupPayload(_arg06);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result4);
+                    return true;
+                case 7:
+                    byte[] _arg07 = data.createByteArray();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    applyRestore(_arg07, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    String _arg08 = data.readString();
+                    String _arg15 = data.readString();
+                    Uri _arg23 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    grantSlicePermission(_arg08, _arg15, _arg23);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    String _arg16 = data.readString();
+                    Uri _arg24 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    data.enforceNoDataAvail();
+                    revokeSlicePermission(_arg09, _arg16, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    Uri _arg010 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg17 = data.readString();
+                    int _arg25 = data.readInt();
+                    int _arg32 = data.readInt();
+                    String[] _arg4 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    int _result5 = checkSlicePermission(_arg010, _arg17, _arg25, _arg32, _arg4);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 11:
+                    Uri _arg011 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg18 = data.readString();
+                    String _arg26 = data.readString();
+                    boolean _arg33 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    grantPermissionFromUser(_arg011, _arg18, _arg26, _arg33);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            Uri _arg1 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            SliceSpec[] _arg2 = (SliceSpec[]) data.createTypedArray(SliceSpec.CREATOR);
-                            IBinder _arg3 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            pinSlice(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            Uri _arg12 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            IBinder _arg22 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            unpinSlice(_arg02, _arg12, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = hasSliceAccess(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            Uri _arg04 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg13 = data.readString();
-                            data.enforceNoDataAvail();
-                            SliceSpec[] _result2 = getPinnedSpecs(_arg04, _arg13);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result2, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            Uri[] _result3 = getPinnedSlices(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result3, 1);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result4 = getBackupPayload(_arg06);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result4);
-                            return true;
-                        case 7:
-                            byte[] _arg07 = data.createByteArray();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            applyRestore(_arg07, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            String _arg08 = data.readString();
-                            String _arg15 = data.readString();
-                            Uri _arg23 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            grantSlicePermission(_arg08, _arg15, _arg23);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            String _arg16 = data.readString();
-                            Uri _arg24 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            data.enforceNoDataAvail();
-                            revokeSlicePermission(_arg09, _arg16, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            Uri _arg010 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg17 = data.readString();
-                            int _arg25 = data.readInt();
-                            int _arg32 = data.readInt();
-                            String[] _arg4 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            int _result5 = checkSlicePermission(_arg010, _arg17, _arg25, _arg32, _arg4);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 11:
-                            Uri _arg011 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg18 = data.readString();
-                            String _arg26 = data.readString();
-                            boolean _arg33 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            grantPermissionFromUser(_arg011, _arg18, _arg26, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISliceManager {
+        private static class Proxy implements ISliceManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

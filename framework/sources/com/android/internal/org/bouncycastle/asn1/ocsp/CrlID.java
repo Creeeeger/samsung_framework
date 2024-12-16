@@ -63,17 +63,14 @@ public class CrlID extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
-        DERIA5String dERIA5String = this.crlUrl;
-        if (dERIA5String != null) {
-            v.add(new DERTaggedObject(true, 0, dERIA5String));
+        if (this.crlUrl != null) {
+            v.add(new DERTaggedObject(true, 0, this.crlUrl));
         }
-        ASN1Integer aSN1Integer = this.crlNum;
-        if (aSN1Integer != null) {
-            v.add(new DERTaggedObject(true, 1, aSN1Integer));
+        if (this.crlNum != null) {
+            v.add(new DERTaggedObject(true, 1, this.crlNum));
         }
-        ASN1GeneralizedTime aSN1GeneralizedTime = this.crlTime;
-        if (aSN1GeneralizedTime != null) {
-            v.add(new DERTaggedObject(true, 2, aSN1GeneralizedTime));
+        if (this.crlTime != null) {
+            v.add(new DERTaggedObject(true, 2, this.crlTime));
         }
         return new DERSequence(v);
     }

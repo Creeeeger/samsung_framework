@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.SparseIntArray;
 import android.view.KeyCharacterMap;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.TimeUnit;
 
 /* loaded from: classes4.dex */
@@ -54,7 +56,6 @@ public class KeyEvent extends InputEvent implements Parcelable {
     public static final int KEYCODE_8 = 15;
     public static final int KEYCODE_9 = 16;
     public static final int KEYCODE_A = 29;
-    public static final int KEYCODE_AI_HOT = 1104;
     public static final int KEYCODE_ALL_APPS = 284;
     public static final int KEYCODE_ALT_LEFT = 57;
     public static final int KEYCODE_ALT_RIGHT = 58;
@@ -145,6 +146,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     public static final int KEYCODE_DVR = 173;
     public static final int KEYCODE_E = 33;
     public static final int KEYCODE_EISU = 212;
+    public static final int KEYCODE_EMOJI_PICKER = 317;
     public static final int KEYCODE_END = 1035;
     public static final int KEYCODE_ENDCALL = 6;
     public static final int KEYCODE_ENTER = 66;
@@ -289,6 +291,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     public static final int KEYCODE_RIGHT_BRACKET = 72;
     public static final int KEYCODE_RO = 217;
     public static final int KEYCODE_S = 47;
+    public static final int KEYCODE_SCREENSHOT = 318;
     public static final int KEYCODE_SCROLL_LOCK = 116;
     public static final int KEYCODE_SEARCH = 84;
     public static final int KEYCODE_SEMICOLON = 74;
@@ -392,7 +395,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     public static final int KEYCODE_ZOOM_IN = 168;
     public static final int KEYCODE_ZOOM_OUT = 169;
     private static final String LABEL_PREFIX = "KEYCODE_";
-    public static final int LAST_KEYCODE = 316;
+    public static final int LAST_KEYCODE = 318;
 
     @Deprecated
     public static final int MAX_KEYCODE = 84;
@@ -428,7 +431,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     public static final int META_SYM_ON = 4;
     private static final int META_SYNTHETIC_MASK = 3840;
     private static final int SAMSUNG_INPUTKEYCODE = 1000;
-    private static final int SAMSUNG_LAST_KEYCODE = 1104;
+    private static final int SAMSUNG_LAST_KEYCODE = 1103;
     private static final int SAMSUNG_START_KEYCODE = 1000;
     public static final int SEM_FLAG_IGNORE_FAKE_FOCUS = 67108864;
     public static final int SEM_FLAG_SKIP_IME_STAGE = 33554432;
@@ -474,22 +477,24 @@ public class KeyEvent extends InputEvent implements Parcelable {
     private static final String[] META_SYMBOLIC_NAMES = {"META_SHIFT_ON", "META_ALT_ON", "META_SYM_ON", "META_FUNCTION_ON", "META_ALT_LEFT_ON", "META_ALT_RIGHT_ON", "META_SHIFT_LEFT_ON", "META_SHIFT_RIGHT_ON", "META_CAP_LOCKED", "META_ALT_LOCKED", "META_SYM_LOCKED", "0x00000800", "META_CTRL_ON", "META_CTRL_LEFT_ON", "META_CTRL_RIGHT_ON", "0x00008000", "META_META_ON", "META_META_LEFT_ON", "META_META_RIGHT_ON", "0x00080000", "META_CAPS_LOCK_ON", "META_NUM_LOCK_ON", "META_SCROLL_LOCK_ON", "0x00800000", "0x01000000", "0x02000000", "0x04000000", "0x08000000", "0x10000000", "0x20000000", "0x40000000", "0x80000000"};
     private static final Object gRecyclerLock = new Object();
     public static final Parcelable.Creator<KeyEvent> CREATOR = new Parcelable.Creator<KeyEvent>() { // from class: android.view.KeyEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyEvent createFromParcel(Parcel in) {
             in.readInt();
             return KeyEvent.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyEvent[] newArray(int size) {
             return new KeyEvent[size];
         }
     };
 
-    /* loaded from: classes4.dex */
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Action {
+    }
+
     public interface Callback {
         boolean onKeyDown(int i, KeyEvent keyEvent);
 
@@ -500,6 +505,14 @@ public class KeyEvent extends InputEvent implements Parcelable {
         boolean onKeyUp(int i, KeyEvent keyEvent);
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @interface Flag {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @interface MetaState {
+    }
+
     private static native int nativeKeyCodeFromString(String str);
 
     private static native String nativeKeyCodeToString(int i);
@@ -507,7 +520,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     private static native int nativeNextId();
 
     public static int getMaxKeyCode() {
-        return 316;
+        return 318;
     }
 
     public static int getSamsungStartKeyCode() {
@@ -515,7 +528,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     }
 
     public static int getSamsungLastKeyCode() {
-        return 1104;
+        return 1103;
     }
 
     public static int getDeadChar(int accent, int c) {
@@ -586,34 +599,8 @@ public class KeyEvent extends InputEvent implements Parcelable {
         this(time, time, 2, 0, 0, 0, deviceId, 0, flags, 257, characters);
     }
 
-    /* JADX WARN: Illegal instructions before constructor call */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public KeyEvent(android.view.KeyEvent r10) {
-        /*
-            r9 = this;
-            int r2 = r10.mId
-            long r3 = r10.mEventTime
-            int r5 = r10.mAction
-            int r6 = r10.mRepeatCount
-            byte[] r0 = r10.mHmac
-            if (r0 != 0) goto Le
-            r0 = 0
-            goto L14
-        Le:
-            java.lang.Object r0 = r0.clone()
-            byte[] r0 = (byte[]) r0
-        L14:
-            r7 = r0
-            java.lang.String r8 = r10.mCharacters
-            r0 = r9
-            r1 = r10
-            r0.<init>(r1, r2, r3, r5, r6, r7, r8)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.view.KeyEvent.<init>(android.view.KeyEvent):void");
+    public KeyEvent(KeyEvent origEvent) {
+        this(origEvent, origEvent.mId, origEvent.mEventTime, origEvent.mAction, origEvent.mRepeatCount, origEvent.mHmac == null ? null : (byte[]) origEvent.mHmac.clone(), origEvent.mCharacters);
     }
 
     @Deprecated
@@ -694,8 +681,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
         ev.mFlags = other.mFlags;
         ev.mSource = other.mSource;
         ev.mDisplayId = other.mDisplayId;
-        byte[] bArr = other.mHmac;
-        ev.mHmac = bArr == null ? null : (byte[]) bArr.clone();
+        ev.mHmac = other.mHmac == null ? null : (byte[]) other.mHmac.clone();
         ev.mCharacters = other.mCharacters;
         return ev;
     }
@@ -710,9 +696,8 @@ public class KeyEvent extends InputEvent implements Parcelable {
         super.recycle();
         this.mCharacters = null;
         synchronized (gRecyclerLock) {
-            int i = gRecyclerUsed;
-            if (i < 10) {
-                gRecyclerUsed = i + 1;
+            if (gRecyclerUsed < 10) {
+                gRecyclerUsed++;
                 this.mNext = gRecyclerTop;
                 gRecyclerTop = this;
             }
@@ -882,6 +867,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
             case 220:
             case 221:
             case 222:
+            case 264:
             case 280:
             case 281:
             case 282:
@@ -903,18 +889,18 @@ public class KeyEvent extends InputEvent implements Parcelable {
             case 26:
             case 1049:
             case 1083:
-                return true;
+                break;
             case 27:
             case 82:
             case 224:
             case 225:
+            case 264:
             case 265:
             case 266:
             case 267:
-                return true;
-            default:
-                return false;
+                break;
         }
+        return true;
     }
 
     public static final boolean isMetaKey(int keyCode) {
@@ -1282,7 +1268,6 @@ public class KeyEvent extends InputEvent implements Parcelable {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class DispatcherState {
         SparseIntArray mActiveLongPresses = new SparseIntArray();
         int mDownKeyCode;
@@ -1389,7 +1374,7 @@ public class KeyEvent extends InputEvent implements Parcelable {
     }
 
     private static boolean keyCodeIsValid(int keyCode) {
-        return ((keyCode >= 0 && keyCode <= 316) || (keyCode >= 1000 && keyCode <= 1104)) && keyCode != 1001;
+        return ((keyCode >= 0 && keyCode <= 318) || (keyCode >= 1000 && keyCode <= 1103)) && keyCode != 1001;
     }
 
     public static String metaStateToString(int metaState) {
@@ -1416,24 +1401,6 @@ public class KeyEvent extends InputEvent implements Parcelable {
             i++;
         }
         return result.toString();
-    }
-
-    /* renamed from: android.view.KeyEvent$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyEvent createFromParcel(Parcel in) {
-            in.readInt();
-            return KeyEvent.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyEvent[] newArray(int size) {
-            return new KeyEvent[size];
-        }
     }
 
     public static KeyEvent createFromParcelBody(Parcel in) {

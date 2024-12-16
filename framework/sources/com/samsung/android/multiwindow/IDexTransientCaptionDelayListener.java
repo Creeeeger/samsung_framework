@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDexTransientCaptionDelayListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IDexTransientCaptionDelayListener";
 
     void onDelayChanged(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDexTransientCaptionDelayListener {
         @Override // com.samsung.android.multiwindow.IDexTransientCaptionDelayListener
         public void onDelayChanged(int delay) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IDexTransientCaptionDelayListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDexTransientCaptionDelayListener {
         static final int TRANSACTION_onDelayChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IDexTransientCaptionDelayListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDexTransientCaptionDelayListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDexTransientCaptionDelayListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDexTransientCaptionDelayListener.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onDelayChanged(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onDelayChanged(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDexTransientCaptionDelayListener {
+        private static class Proxy implements IDexTransientCaptionDelayListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

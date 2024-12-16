@@ -61,7 +61,7 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         this.time = Strings.toByteArray(dateF.format(time));
     }
 
-    public ASN1GeneralizedTime(byte[] bytes) {
+    ASN1GeneralizedTime(byte[] bytes) {
         if (bytes.length < 4) {
             throw new IllegalArgumentException("GeneralizedTime string too short");
         }
@@ -200,64 +200,55 @@ public class ASN1GeneralizedTime extends ASN1Primitive {
         return DateUtil.epochAdjust(dateF.parse(d));
     }
 
-    public boolean hasFractionalSeconds() {
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.time;
-            if (i != bArr.length) {
-                if (bArr[i] != 46 || i != 14) {
-                    i++;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
+    protected boolean hasFractionalSeconds() {
+        for (int i = 0; i != this.time.length; i++) {
+            if (this.time[i] == 46 && i == 14) {
+                return true;
             }
         }
+        return false;
     }
 
-    public boolean hasSeconds() {
+    protected boolean hasSeconds() {
         return isDigit(12) && isDigit(13);
     }
 
-    public boolean hasMinutes() {
+    protected boolean hasMinutes() {
         return isDigit(10) && isDigit(11);
     }
 
     private boolean isDigit(int pos) {
-        byte b;
-        byte[] bArr = this.time;
-        return bArr.length > pos && (b = bArr[pos]) >= 48 && b <= 57;
+        return this.time.length > pos && this.time[pos] >= 48 && this.time[pos] <= 57;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean isConstructed() {
+    boolean isConstructed() {
         return false;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() {
+    int encodedLength() {
         int length = this.time.length;
         return StreamUtil.calculateBodyLength(length) + 1 + length;
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncoded(withTag, 24, this.time);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDERObject() {
+    ASN1Primitive toDERObject() {
         return new DERGeneralizedTime(this.time);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public ASN1Primitive toDLObject() {
+    ASN1Primitive toDLObject() {
         return new DERGeneralizedTime(this.time);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public boolean asn1Equals(ASN1Primitive o) {
+    boolean asn1Equals(ASN1Primitive o) {
         if (!(o instanceof ASN1GeneralizedTime)) {
             return false;
         }

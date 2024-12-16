@@ -1,6 +1,6 @@
 package com.samsung.android.photoremasterservice;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ServiceReturnKey {
     public static final String BITMAP = "ret_bitmap";
     public static final String BOOLEAN = "ret_boolean";

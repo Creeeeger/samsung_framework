@@ -13,9 +13,8 @@ import com.samsung.android.rune.CoreRune;
 /* loaded from: classes4.dex */
 public class WindowOrganizer {
     private static final Singleton<IWindowOrganizerController> IWindowOrganizerControllerSingleton = new Singleton<IWindowOrganizerController>() { // from class: android.window.WindowOrganizer.1
-        AnonymousClass1() {
-        }
-
+        /* JADX INFO: Access modifiers changed from: protected */
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.util.Singleton
         public IWindowOrganizerController create() {
             try {
@@ -39,7 +38,7 @@ public class WindowOrganizer {
 
     public int applySyncTransaction(WindowContainerTransaction t, WindowContainerTransactionCallback callback) {
         try {
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
+            if (CoreRune.FW_SHELL_TRANSITION_LOG) {
                 Log.i(TAG, "applySyncTransaction, hasCallback=" + (callback != null) + ", t=" + t + ", caller=" + Debug.getCallers(3));
             }
             return getWindowOrganizerController().applySyncTransaction(t, callback.mInterface);
@@ -50,7 +49,7 @@ public class WindowOrganizer {
 
     public IBinder startNewTransition(int type, WindowContainerTransaction t) {
         try {
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
+            if (CoreRune.FW_SHELL_TRANSITION_LOG) {
                 Log.i(TAG, "startNewTransition, type=" + type + ", t=" + t + ", caller=" + Debug.getCallers(5));
             }
             return getWindowOrganizerController().startNewTransition(type, t);
@@ -67,9 +66,17 @@ public class WindowOrganizer {
         }
     }
 
-    public int finishTransition(IBinder transitionToken, WindowContainerTransaction t, WindowContainerTransactionCallback callback) {
+    public void finishTransition(IBinder transitionToken, WindowContainerTransaction t) {
         try {
-            return getWindowOrganizerController().finishTransition(transitionToken, t, callback != null ? callback.mInterface : null);
+            getWindowOrganizerController().finishTransition(transitionToken, t);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    public void finishAllTransitions(IBinder transitionToken, WindowContainerTransaction t, WindowContainerTransaction allTransitionInfo) {
+        try {
+            getWindowOrganizerController().finishAllTransitions(transitionToken, t, allTransitionInfo);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -91,6 +98,14 @@ public class WindowOrganizer {
         }
     }
 
+    public void unregisterTransitionPlayer(ITransitionPlayer player) {
+        try {
+            getWindowOrganizerController().unregisterTransitionPlayer(player);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
     public static ITransitionMetricsReporter getTransitionMetricsReporter() {
         try {
             return getWindowOrganizerController().getTransitionMetricsReporter();
@@ -105,7 +120,7 @@ public class WindowOrganizer {
             if (wmApplyToken == null) {
                 return false;
             }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
+            if (CoreRune.FW_SHELL_TRANSITION_LOG) {
                 Log.i(TAG, "shareTransactionQueue, caller=" + Debug.getCallers(3));
             }
             SurfaceControl.Transaction.setDefaultApplyToken(wmApplyToken);
@@ -115,23 +130,7 @@ public class WindowOrganizer {
         }
     }
 
-    public static IWindowOrganizerController getWindowOrganizerController() {
+    static IWindowOrganizerController getWindowOrganizerController() {
         return IWindowOrganizerControllerSingleton.get();
-    }
-
-    /* renamed from: android.window.WindowOrganizer$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends Singleton<IWindowOrganizerController> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.util.Singleton
-        public IWindowOrganizerController create() {
-            try {
-                return ActivityTaskManager.getService().getWindowOrganizerController();
-            } catch (RemoteException e) {
-                return null;
-            }
-        }
     }
 }

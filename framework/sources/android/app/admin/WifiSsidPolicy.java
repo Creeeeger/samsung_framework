@@ -12,14 +12,13 @@ import java.util.Set;
 /* loaded from: classes.dex */
 public final class WifiSsidPolicy implements Parcelable {
     public static final Parcelable.Creator<WifiSsidPolicy> CREATOR = new Parcelable.Creator<WifiSsidPolicy>() { // from class: android.app.admin.WifiSsidPolicy.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiSsidPolicy createFromParcel(Parcel source) {
             return new WifiSsidPolicy(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public WifiSsidPolicy[] newArray(int size) {
             return new WifiSsidPolicy[size];
@@ -31,12 +30,7 @@ public final class WifiSsidPolicy implements Parcelable {
     private ArraySet<WifiSsid> mSsids;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface WifiSsidPolicyType {
-    }
-
-    /* synthetic */ WifiSsidPolicy(Parcel parcel, WifiSsidPolicyIA wifiSsidPolicyIA) {
-        this(parcel);
     }
 
     public WifiSsidPolicy(int policyType, Set<WifiSsid> ssids) {
@@ -61,23 +55,6 @@ public final class WifiSsidPolicy implements Parcelable {
 
     public int getPolicyType() {
         return this.mPolicyType;
-    }
-
-    /* renamed from: android.app.admin.WifiSsidPolicy$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<WifiSsidPolicy> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiSsidPolicy createFromParcel(Parcel source) {
-            return new WifiSsidPolicy(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public WifiSsidPolicy[] newArray(int size) {
-            return new WifiSsidPolicy[size];
-        }
     }
 
     @Override // android.os.Parcelable

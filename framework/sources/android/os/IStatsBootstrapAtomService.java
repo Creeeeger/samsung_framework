@@ -6,7 +6,6 @@ public interface IStatsBootstrapAtomService extends IInterface {
 
     void reportBootstrapAtom(StatsBootstrapAtom statsBootstrapAtom) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStatsBootstrapAtomService {
         @Override // android.os.IStatsBootstrapAtomService
         public void reportBootstrapAtom(StatsBootstrapAtom atom) throws RemoteException {
@@ -18,7 +17,6 @@ public interface IStatsBootstrapAtomService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStatsBootstrapAtomService {
         static final int TRANSACTION_reportBootstrapAtom = 1;
 
@@ -61,24 +59,21 @@ public interface IStatsBootstrapAtomService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStatsBootstrapAtomService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStatsBootstrapAtomService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStatsBootstrapAtomService.DESCRIPTOR);
+                case 1:
+                    StatsBootstrapAtom _arg0 = (StatsBootstrapAtom) data.readTypedObject(StatsBootstrapAtom.CREATOR);
+                    data.enforceNoDataAvail();
+                    reportBootstrapAtom(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            StatsBootstrapAtom _arg0 = (StatsBootstrapAtom) data.readTypedObject(StatsBootstrapAtom.CREATOR);
-                            data.enforceNoDataAvail();
-                            reportBootstrapAtom(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IStatsBootstrapAtomService {
             private IBinder mRemote;
 

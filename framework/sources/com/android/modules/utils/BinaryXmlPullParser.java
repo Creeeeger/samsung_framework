@@ -28,9 +28,8 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         if (encoding != null && !StandardCharsets.UTF_8.name().equalsIgnoreCase(encoding)) {
             throw new UnsupportedOperationException();
         }
-        FastDataInput fastDataInput = this.mIn;
-        if (fastDataInput != null) {
-            fastDataInput.release();
+        if (this.mIn != null) {
+            this.mIn.release();
             this.mIn = null;
         }
         this.mIn = obtainFastDataInput(is);
@@ -40,14 +39,8 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         this.mCurrentText = null;
         this.mAttributeCount = 0;
         this.mAttributes = new Attribute[8];
-        int i = 0;
-        while (true) {
-            Attribute[] attributeArr = this.mAttributes;
-            if (i >= attributeArr.length) {
-                break;
-            }
-            attributeArr[i] = new Attribute();
-            i++;
+        for (int i = 0; i < this.mAttributes.length; i++) {
+            this.mAttributes[i] = new Attribute();
         }
         try {
             byte[] magic = new byte[4];
@@ -83,8 +76,7 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
                     return token;
                 case 4:
                     consumeAdditionalText();
-                    String str = this.mCurrentText;
-                    if (str != null && str.length() != 0) {
+                    if (this.mCurrentText != null && this.mCurrentText.length() != 0) {
                         return 4;
                     }
                     break;
@@ -114,34 +106,16 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         return token;
     }
 
-    /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
-        jadx.core.utils.exceptions.JadxRuntimeException: Failed to find switch 'out' block (already processed)
-        	at jadx.core.dex.visitors.regions.RegionMaker.calcSwitchOut(RegionMaker.java:923)
-        	at jadx.core.dex.visitors.regions.RegionMaker.processSwitch(RegionMaker.java:797)
-        	at jadx.core.dex.visitors.regions.RegionMaker.traverse(RegionMaker.java:157)
-        	at jadx.core.dex.visitors.regions.RegionMaker.makeRegion(RegionMaker.java:91)
-        	at jadx.core.dex.visitors.regions.RegionMaker.makeEndlessLoop(RegionMaker.java:411)
-        	at jadx.core.dex.visitors.regions.RegionMaker.processLoop(RegionMaker.java:201)
-        	at jadx.core.dex.visitors.regions.RegionMaker.traverse(RegionMaker.java:135)
-        	at jadx.core.dex.visitors.regions.RegionMaker.makeRegion(RegionMaker.java:91)
-        	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:52)
-        */
-    private int peekNextExternalToken() throws java.io.IOException, org.xmlpull.v1.XmlPullParserException {
-        /*
-            r1 = this;
-        L1:
-            int r0 = r1.peekNextToken()
-            switch(r0) {
-                case 15: goto L9;
-                default: goto L8;
+    private int peekNextExternalToken() throws IOException, XmlPullParserException {
+        while (true) {
+            int token = peekNextToken();
+            switch (token) {
+                case 15:
+                    consumeToken();
+                default:
+                    return token;
             }
-        L8:
-            return r0
-        L9:
-            r1.consumeToken()
-            goto L1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.modules.utils.BinaryXmlPullParser.peekNextExternalToken():int");
+        }
     }
 
     private int peekNextToken() throws IOException {
@@ -199,9 +173,8 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
                 }
                 return;
             case 6:
-                String readUTF = this.mIn.readUTF();
-                this.mCurrentName = readUTF;
-                this.mCurrentText = resolveEntity(readUTF);
+                this.mCurrentName = this.mIn.readUTF();
+                this.mCurrentText = resolveEntity(this.mCurrentName);
                 if (this.mAttributeCount > 0) {
                     resetAttributes();
                     return;
@@ -413,20 +386,18 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
     }
 
     private Attribute obtainAttribute() {
-        int i = this.mAttributeCount;
-        Attribute[] attributeArr = this.mAttributes;
-        if (i == attributeArr.length) {
-            int before = attributeArr.length;
+        if (this.mAttributeCount == this.mAttributes.length) {
+            int before = this.mAttributes.length;
             int after = (before >> 1) + before;
-            this.mAttributes = (Attribute[]) Arrays.copyOf(attributeArr, after);
-            for (int i2 = before; i2 < after; i2++) {
-                this.mAttributes[i2] = new Attribute();
+            this.mAttributes = (Attribute[]) Arrays.copyOf(this.mAttributes, after);
+            for (int i = before; i < after; i++) {
+                this.mAttributes[i] = new Attribute();
             }
         }
-        Attribute[] attributeArr2 = this.mAttributes;
-        int i3 = this.mAttributeCount;
-        this.mAttributeCount = i3 + 1;
-        return attributeArr2[i3];
+        Attribute[] attributeArr = this.mAttributes;
+        int i2 = this.mAttributeCount;
+        this.mAttributeCount = i2 + 1;
+        return attributeArr[i2];
     }
 
     private void resetAttributes() {
@@ -679,8 +650,7 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         throw new IllegalArgumentException("Namespaces are not supported");
     }
 
-    /* loaded from: classes5.dex */
-    public static class Attribute {
+    private static class Attribute {
         public String name;
         public int type;
         public byte[] valueBytes;
@@ -689,10 +659,6 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         public int valueInt;
         public long valueLong;
         public String valueString;
-
-        /* synthetic */ Attribute(AttributeIA attributeIA) {
-            this();
-        }
 
         private Attribute() {
         }
@@ -913,10 +879,9 @@ public class BinaryXmlPullParser implements TypedXmlPullParser {
         int bufIndex = 0;
         for (byte b : value) {
             int bufIndex2 = bufIndex + 1;
-            char[] cArr = HEX_DIGITS;
-            buf[bufIndex] = cArr[(b >>> 4) & 15];
+            buf[bufIndex] = HEX_DIGITS[(b >>> 4) & 15];
             bufIndex = bufIndex2 + 1;
-            buf[bufIndex2] = cArr[b & 15];
+            buf[bufIndex2] = HEX_DIGITS[b & 15];
         }
         return new String(buf);
     }

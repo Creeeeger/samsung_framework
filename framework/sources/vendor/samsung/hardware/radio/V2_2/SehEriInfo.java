@@ -59,7 +59,7 @@ public final class SehEriInfo {
         this.iconIndex = _hidl_blob.getInt8(_hidl_offset + 1);
         this.iconMode = _hidl_blob.getInt8(_hidl_offset + 2);
         this.eriText = _hidl_blob.getString(_hidl_offset + 8);
-        parcel.readEmbeddedBuffer(r6.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
+        parcel.readEmbeddedBuffer(this.eriText.getBytes().length + 1, _hidl_blob.handle(), _hidl_offset + 8 + 0, false);
     }
 
     public final void writeToParcel(HwParcel parcel) {

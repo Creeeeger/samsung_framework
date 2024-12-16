@@ -31,9 +31,11 @@ public abstract class NtpTrustedTime implements TrustedTime {
     private static final String TAG = "NtpTrustedTime";
     private static final String URI_SCHEME_NTP = "ntp";
     private static NtpTrustedTime sSingleton;
-    private URI mLastSuccessfulNtpServerUri;
+    private volatile URI mLastSuccessfulNtpServerUri;
     private NtpConfig mNtpConfigForTests;
     private volatile TimeResult mTimeResult;
+    private final Object mRefreshLock = new Object();
+    private final Object mConfigLock = new Object();
 
     public abstract Network getDefaultNetwork();
 
@@ -43,7 +45,6 @@ public abstract class NtpTrustedTime implements TrustedTime {
 
     public abstract TimeResult queryNtpServer(Network network, URI uri, java.time.Duration duration);
 
-    /* loaded from: classes4.dex */
     public static final class NtpConfig {
         private final List<URI> mServerUris;
         private final java.time.Duration mTimeout;
@@ -82,7 +83,6 @@ public abstract class NtpTrustedTime implements TrustedTime {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class TimeResult {
         private final long mElapsedRealtimeMillis;
         private final InetSocketAddress mNtpServerSocketAddress;
@@ -156,14 +156,14 @@ public abstract class NtpTrustedTime implements TrustedTime {
     }
 
     public void setServerConfigForTests(NtpConfig ntpConfig) {
-        synchronized (this) {
+        synchronized (this.mConfigLock) {
             this.mNtpConfigForTests = ntpConfig;
         }
     }
 
     @Override // android.util.TrustedTime
     public boolean forceRefresh() {
-        synchronized (this) {
+        synchronized (this.mRefreshLock) {
             Network network = getDefaultNetwork();
             if (network == null) {
                 Log.d(TAG, "forceRefresh: no network available");
@@ -176,7 +176,7 @@ public abstract class NtpTrustedTime implements TrustedTime {
     public boolean forceRefresh(Network network) {
         boolean forceRefreshLocked;
         Objects.requireNonNull(network);
-        synchronized (this) {
+        synchronized (this.mRefreshLock) {
             forceRefreshLocked = forceRefreshLocked(network);
         }
         return forceRefreshLocked;
@@ -220,11 +220,12 @@ public abstract class NtpTrustedTime implements TrustedTime {
     }
 
     private NtpConfig getNtpConfig() {
-        NtpConfig ntpConfig = this.mNtpConfigForTests;
-        if (ntpConfig != null) {
-            return ntpConfig;
+        synchronized (this.mConfigLock) {
+            if (this.mNtpConfigForTests != null) {
+                return this.mNtpConfigForTests;
+            }
+            return getNtpConfigInternal();
         }
-        return getNtpConfigInternal();
     }
 
     @Override // android.util.TrustedTime
@@ -278,13 +279,13 @@ public abstract class NtpTrustedTime implements TrustedTime {
     }
 
     public void setCachedTimeResult(TimeResult timeResult) {
-        synchronized (this) {
+        synchronized (this.mRefreshLock) {
             this.mTimeResult = timeResult;
         }
     }
 
     public void clearCachedTimeResult() {
-        synchronized (this) {
+        synchronized (this.mRefreshLock) {
             this.mTimeResult = null;
         }
     }
@@ -325,6 +326,7 @@ public abstract class NtpTrustedTime implements TrustedTime {
         return uris;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static URI validateNtpServerUri(URI uri) throws URISyntaxException {
         if (!uri.isAbsolute()) {
             throw new URISyntaxException(uri.toString(), "Relative URI not supported");
@@ -340,25 +342,21 @@ public abstract class NtpTrustedTime implements TrustedTime {
     }
 
     public void dump(PrintWriter pw) {
-        synchronized (this) {
+        synchronized (this.mConfigLock) {
             pw.println("getNtpConfig()=" + getNtpConfig());
             pw.println("mNtpConfigForTests=" + this.mNtpConfigForTests);
-            pw.println("mLastSuccessfulNtpServerUri=" + this.mLastSuccessfulNtpServerUri);
-            pw.println("mTimeResult=" + this.mTimeResult);
-            if (this.mTimeResult != null) {
-                pw.println("mTimeResult.getAgeMillis()=" + java.time.Duration.ofMillis(this.mTimeResult.getAgeMillis()));
-            }
+        }
+        pw.println("mLastSuccessfulNtpServerUri=" + this.mLastSuccessfulNtpServerUri);
+        TimeResult timeResult = this.mTimeResult;
+        pw.println("mTimeResult=" + timeResult);
+        if (timeResult != null) {
+            pw.println("mTimeResult.getAgeMillis()=" + java.time.Duration.ofMillis(timeResult.getAgeMillis()));
         }
     }
 
-    /* loaded from: classes4.dex */
     private static final class NtpTrustedTimeImpl extends NtpTrustedTime {
         private ConnectivityManager mConnectivityManager;
         private final Context mContext;
-
-        /* synthetic */ NtpTrustedTimeImpl(Context context, NtpTrustedTimeImplIA ntpTrustedTimeImplIA) {
-            this(context);
-        }
 
         private NtpTrustedTimeImpl(Context context) {
             this.mContext = (Context) Objects.requireNonNull(context);

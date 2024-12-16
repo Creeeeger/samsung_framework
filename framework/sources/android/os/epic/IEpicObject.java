@@ -26,7 +26,6 @@ public interface IEpicObject extends IInterface {
 
     boolean release_lock_conditional(String str) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IEpicObject {
         @Override // android.os.epic.IEpicObject
         public boolean acquire_lock() throws RemoteException {
@@ -74,7 +73,6 @@ public interface IEpicObject extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IEpicObject {
         static final int TRANSACTION_acquire_lock = 1;
         static final int TRANSACTION_acquire_lock_conditional = 5;
@@ -138,75 +136,71 @@ public interface IEpicObject extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IEpicObject.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IEpicObject.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IEpicObject.DESCRIPTOR);
+                case 1:
+                    boolean _result = acquire_lock();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    boolean _result2 = release_lock();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = acquire_lock_option(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int[] _arg02 = data.createIntArray();
+                    int[] _arg12 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = acquire_lock_option_multi(_arg02, _arg12);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = acquire_lock_conditional(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 6:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = release_lock_conditional(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 7:
+                    String _arg05 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = perf_hint(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 8:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result8 = hint_release(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result8);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = acquire_lock();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            boolean _result2 = release_lock();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = acquire_lock_option(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int[] _arg02 = data.createIntArray();
-                            int[] _arg12 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = acquire_lock_option_multi(_arg02, _arg12);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = acquire_lock_conditional(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 6:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = release_lock_conditional(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 7:
-                            String _arg05 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = perf_hint(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 8:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result8 = hint_release(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result8);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IEpicObject {
+        private static class Proxy implements IEpicObject {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

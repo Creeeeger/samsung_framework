@@ -15,9 +15,7 @@ import java.util.Objects;
 /* loaded from: classes3.dex */
 public final class TimeZoneProviderSuggestion implements Parcelable {
     public static final Parcelable.Creator<TimeZoneProviderSuggestion> CREATOR = new Parcelable.Creator<TimeZoneProviderSuggestion>() { // from class: android.service.timezone.TimeZoneProviderSuggestion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderSuggestion createFromParcel(Parcel in) {
             ArrayList<String> timeZoneIds = in.readArrayList(null, String.class);
@@ -25,6 +23,7 @@ public final class TimeZoneProviderSuggestion implements Parcelable {
             return new TimeZoneProviderSuggestion(timeZoneIds, elapsedRealtimeMillis);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TimeZoneProviderSuggestion[] newArray(int size) {
             return new TimeZoneProviderSuggestion[size];
@@ -32,10 +31,6 @@ public final class TimeZoneProviderSuggestion implements Parcelable {
     };
     private final long mElapsedRealtimeMillis;
     private final List<String> mTimeZoneIds;
-
-    /* synthetic */ TimeZoneProviderSuggestion(List list, long j, TimeZoneProviderSuggestionIA timeZoneProviderSuggestionIA) {
-        this(list, j);
-    }
 
     private TimeZoneProviderSuggestion(List<String> timeZoneIds, long elapsedRealtimeMillis) {
         this.mTimeZoneIds = immutableList(timeZoneIds);
@@ -52,25 +47,6 @@ public final class TimeZoneProviderSuggestion implements Parcelable {
 
     public String toString() {
         return "TimeZoneProviderSuggestion{mTimeZoneIds=" + this.mTimeZoneIds + ", mElapsedRealtimeMillis=" + this.mElapsedRealtimeMillis + NavigationBarInflaterView.KEY_CODE_START + Duration.ofMillis(this.mElapsedRealtimeMillis) + NavigationBarInflaterView.KEY_CODE_END + '}';
-    }
-
-    /* renamed from: android.service.timezone.TimeZoneProviderSuggestion$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TimeZoneProviderSuggestion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderSuggestion createFromParcel(Parcel in) {
-            ArrayList<String> timeZoneIds = in.readArrayList(null, String.class);
-            long elapsedRealtimeMillis = in.readLong();
-            return new TimeZoneProviderSuggestion(timeZoneIds, elapsedRealtimeMillis);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TimeZoneProviderSuggestion[] newArray(int size) {
-            return new TimeZoneProviderSuggestion[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -112,7 +88,6 @@ public final class TimeZoneProviderSuggestion implements Parcelable {
         return Objects.hash(this.mTimeZoneIds, Long.valueOf(this.mElapsedRealtimeMillis));
     }
 
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private List<String> mTimeZoneIds = Collections.emptyList();
         private long mElapsedRealtimeMillis = SystemClock.elapsedRealtime();

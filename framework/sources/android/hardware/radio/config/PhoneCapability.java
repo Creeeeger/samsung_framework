@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhoneCapability implements Parcelable {
     public static final Parcelable.Creator<PhoneCapability> CREATOR = new Parcelable.Creator<PhoneCapability>() { // from class: android.hardware.radio.config.PhoneCapability.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneCapability createFromParcel(Parcel _aidl_source) {
             PhoneCapability _aidl_out = new PhoneCapability();
@@ -19,34 +17,18 @@ public class PhoneCapability implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhoneCapability[] newArray(int _aidl_size) {
             return new PhoneCapability[_aidl_size];
         }
     };
+    public static final byte UNKNOWN = -1;
     public byte[] logicalModemIds;
     public byte maxActiveData = 0;
     public byte maxActiveInternetData = 0;
     public boolean isInternetLingeringSupported = false;
-
-    /* renamed from: android.hardware.radio.config.PhoneCapability$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhoneCapability> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneCapability createFromParcel(Parcel _aidl_source) {
-            PhoneCapability _aidl_out = new PhoneCapability();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhoneCapability[] newArray(int _aidl_size) {
-            return new PhoneCapability[_aidl_size];
-        }
-    }
+    public byte maxActiveVoice = -1;
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -61,6 +43,7 @@ public class PhoneCapability implements Parcelable {
         _aidl_parcel.writeByte(this.maxActiveInternetData);
         _aidl_parcel.writeBoolean(this.isInternetLingeringSupported);
         _aidl_parcel.writeByteArray(this.logicalModemIds);
+        _aidl_parcel.writeByte(this.maxActiveVoice);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
         _aidl_parcel.writeInt(_aidl_end_pos - _aidl_start_pos);
@@ -103,8 +86,16 @@ public class PhoneCapability implements Parcelable {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
                 _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.logicalModemIds = _aidl_parcel.createByteArray();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
             } else {
-                this.logicalModemIds = _aidl_parcel.createByteArray();
+                this.maxActiveVoice = _aidl_parcel.readByte();
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
@@ -125,7 +116,8 @@ public class PhoneCapability implements Parcelable {
         _aidl_sj.add("maxActiveInternetData: " + ((int) this.maxActiveInternetData));
         _aidl_sj.add("isInternetLingeringSupported: " + this.isInternetLingeringSupported);
         _aidl_sj.add("logicalModemIds: " + Arrays.toString(this.logicalModemIds));
-        return "android.hardware.radio.config.PhoneCapability" + _aidl_sj.toString();
+        _aidl_sj.add("maxActiveVoice: " + ((int) this.maxActiveVoice));
+        return "PhoneCapability" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

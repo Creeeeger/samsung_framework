@@ -6,35 +6,31 @@ import com.samsung.android.sume.core.format.MediaFormat;
 import com.samsung.android.sume.core.format.MutableMediaFormat;
 import com.samsung.android.sume.core.format.UpdatableMediaFormat;
 
-/* loaded from: classes4.dex */
-public abstract class MediaBufferAllocator {
+/* loaded from: classes6.dex */
+abstract class MediaBufferAllocator {
     private static final String TAG = Def.tagOf((Class<?>) MediaBufferAllocator.class);
     protected Align align;
     protected MediaFormat format;
 
-    /* loaded from: classes4.dex */
-    public static final class Nothing {
-    }
+    abstract MediaBuffer allocate();
 
-    public abstract MediaBuffer allocate();
+    abstract MediaBuffer allocate(Align align);
 
-    public abstract MediaBuffer allocate(Align align);
+    abstract MediaBuffer allocateShared();
 
-    public abstract MediaBuffer allocateShared();
+    abstract <T> MediaBuffer wrap(T t);
 
-    public abstract <T> MediaBuffer wrap(T t);
-
-    public MediaBufferAllocator(MediaFormat format) {
+    protected MediaBufferAllocator(MediaFormat format) {
         this.format = format;
         this.align = new Align(format.getCols() * format.getChannels(), format.getRows());
     }
 
-    public MediaBufferAllocator(MediaFormat format, Align align) {
+    protected MediaBufferAllocator(MediaFormat format, Align align) {
         this.format = format;
         this.align = align;
     }
 
-    public static MediaBufferAllocator of(MediaFormat format) {
+    static MediaBufferAllocator of(MediaFormat format) {
         if (format instanceof MutableMediaFormat) {
             Log.w(TAG, "mutable format converted as immutable");
             format = ((MutableMediaFormat) format).toMediaFormat();
@@ -47,7 +43,7 @@ public abstract class MediaBufferAllocator {
         return new StapleBufferAllocator(fmt, align);
     }
 
-    public static MediaBufferAllocator of(MediaFormat format, Align align) {
+    static MediaBufferAllocator of(MediaFormat format, Align align) {
         if (format instanceof MutableMediaFormat) {
             Log.w(TAG, "mutable format converted as immutable");
             format = ((MutableMediaFormat) format).toMediaFormat();
@@ -57,5 +53,10 @@ public abstract class MediaBufferAllocator {
             align.adjustAlign();
         }
         return new StapleBufferAllocator(format, align);
+    }
+
+    protected static final class Nothing {
+        protected Nothing() {
+        }
     }
 }

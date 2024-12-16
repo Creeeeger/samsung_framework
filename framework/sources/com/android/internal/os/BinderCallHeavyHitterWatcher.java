@@ -30,12 +30,10 @@ public final class BinderCallHeavyHitterWatcher {
     private ArraySet<Integer> mCachedCandidateSet = new ArraySet<>();
     private final Object mLock = new Object();
 
-    /* loaded from: classes5.dex */
     public interface BinderCallHeavyHitterListener {
         void onHeavyHit(List<HeavyHitterContainer> list, int i, float f, long j);
     }
 
-    /* loaded from: classes5.dex */
     public static final class HeavyHitterContainer {
         public Class mClass;
         public int mCode;
@@ -146,14 +144,8 @@ public final class BinderCallHeavyHitterWatcher {
     private void initCachedCandidateContainersLocked(int capacity) {
         if (capacity > 0) {
             this.mCachedCandidateContainers = new HeavyHitterContainer[capacity];
-            int i = 0;
-            while (true) {
-                HeavyHitterContainer[] heavyHitterContainerArr = this.mCachedCandidateContainers;
-                if (i >= heavyHitterContainerArr.length) {
-                    break;
-                }
-                heavyHitterContainerArr[i] = new HeavyHitterContainer();
-                i++;
+            for (int i = 0; i < this.mCachedCandidateContainers.length; i++) {
+                this.mCachedCandidateContainers[i] = new HeavyHitterContainer();
             }
         } else {
             this.mCachedCandidateContainers = null;
@@ -188,17 +180,15 @@ public final class BinderCallHeavyHitterWatcher {
                         }
                         int hashCode = HeavyHitterContainer.hashCode(callerUid, clazz, code);
                         sketch.add(Integer.valueOf(hashCode));
-                        int i = this.mCurrentInputSize + 1;
-                        this.mCurrentInputSize = i;
-                        int i2 = this.mInputSize;
-                        if (i == i2) {
+                        this.mCurrentInputSize++;
+                        if (this.mCurrentInputSize == this.mInputSize) {
                             sketch.getCandidates(this.mCachedCandidateList);
                             this.mCachedCandidateSet.addAll(this.mCachedCandidateList);
                             this.mCachedCandidateList.clear();
                         } else {
-                            if (i > i2) {
+                            if (this.mCurrentInputSize > this.mInputSize) {
                                 try {
-                                    if (i < this.mTotalInputSize) {
+                                    if (this.mCurrentInputSize < this.mTotalInputSize) {
                                         if (this.mCachedCandidateSet.contains(Integer.valueOf(hashCode))) {
                                             int index = this.mHeavyHitterCandiates.indexOfKey(hashCode);
                                             if (index < 0) {
@@ -220,14 +210,14 @@ public final class BinderCallHeavyHitterWatcher {
                                     throw th;
                                 }
                             }
-                            if (i == this.mTotalInputSize) {
+                            if (this.mCurrentInputSize == this.mTotalInputSize) {
                                 if (this.mListener != null && (result = sketch.getTopHeavyHitters(0, this.mCachedCandidateList, this.mCachedCandidateFrequencies)) != null && (size = result.size()) > 0) {
                                     ArrayList<HeavyHitterContainer> hitters = new ArrayList<>();
-                                    for (int i3 = 0; i3 < size; i3++) {
-                                        HeavyHitterContainer container2 = this.mHeavyHitterCandiates.get(result.get(i3).intValue());
+                                    for (int i = 0; i < size; i++) {
+                                        HeavyHitterContainer container2 = this.mHeavyHitterCandiates.get(result.get(i).intValue());
                                         if (container2 != null) {
                                             HeavyHitterContainer cont = new HeavyHitterContainer(container2);
-                                            cont.mFrequency = this.mCachedCandidateFrequencies.get(i3).floatValue();
+                                            cont.mFrequency = this.mCachedCandidateFrequencies.get(i).floatValue();
                                             hitters.add(cont);
                                         }
                                     }
@@ -249,6 +239,7 @@ public final class BinderCallHeavyHitterWatcher {
                 }
             } catch (Throwable th4) {
                 th = th4;
+                throw th;
             }
         }
     }

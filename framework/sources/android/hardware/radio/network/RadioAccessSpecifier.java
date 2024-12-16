@@ -11,9 +11,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class RadioAccessSpecifier implements Parcelable {
     public static final Parcelable.Creator<RadioAccessSpecifier> CREATOR = new Parcelable.Creator<RadioAccessSpecifier>() { // from class: android.hardware.radio.network.RadioAccessSpecifier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier createFromParcel(Parcel _aidl_source) {
             RadioAccessSpecifier _aidl_out = new RadioAccessSpecifier();
@@ -21,6 +19,7 @@ public class RadioAccessSpecifier implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier[] newArray(int _aidl_size) {
             return new RadioAccessSpecifier[_aidl_size];
@@ -29,25 +28,6 @@ public class RadioAccessSpecifier implements Parcelable {
     public int accessNetwork;
     public RadioAccessSpecifierBands bands;
     public int[] channels;
-
-    /* renamed from: android.hardware.radio.network.RadioAccessSpecifier$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RadioAccessSpecifier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessSpecifier createFromParcel(Parcel _aidl_source) {
-            RadioAccessSpecifier _aidl_out = new RadioAccessSpecifier();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessSpecifier[] newArray(int _aidl_size) {
-            return new RadioAccessSpecifier[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -116,7 +96,7 @@ public class RadioAccessSpecifier implements Parcelable {
         _aidl_sj.add("accessNetwork: " + AccessNetwork$$.toString(this.accessNetwork));
         _aidl_sj.add("bands: " + Objects.toString(this.bands));
         _aidl_sj.add("channels: " + Arrays.toString(this.channels));
-        return "android.hardware.radio.network.RadioAccessSpecifier" + _aidl_sj.toString();
+        return "RadioAccessSpecifier" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

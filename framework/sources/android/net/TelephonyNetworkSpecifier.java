@@ -4,18 +4,17 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TelephonyNetworkSpecifier extends NetworkSpecifier implements Parcelable {
     public static final Parcelable.Creator<TelephonyNetworkSpecifier> CREATOR = new Parcelable.Creator<TelephonyNetworkSpecifier>() { // from class: android.net.TelephonyNetworkSpecifier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyNetworkSpecifier createFromParcel(Parcel in) {
             int subId = in.readInt();
             return new TelephonyNetworkSpecifier(subId);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TelephonyNetworkSpecifier[] newArray(int size) {
             return new TelephonyNetworkSpecifier[size];
@@ -29,24 +28,6 @@ public final class TelephonyNetworkSpecifier extends NetworkSpecifier implements
 
     public TelephonyNetworkSpecifier(int subId) {
         this.mSubId = subId;
-    }
-
-    /* renamed from: android.net.TelephonyNetworkSpecifier$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TelephonyNetworkSpecifier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyNetworkSpecifier createFromParcel(Parcel in) {
-            int subId = in.readInt();
-            return new TelephonyNetworkSpecifier(subId);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TelephonyNetworkSpecifier[] newArray(int size) {
-            return new TelephonyNetworkSpecifier[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -83,7 +64,6 @@ public final class TelephonyNetworkSpecifier extends NetworkSpecifier implements
         return equals(other) || (other instanceof MatchAllNetworkSpecifier);
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private static final int SENTINEL_SUB_ID = Integer.MIN_VALUE;
         private int mSubId = Integer.MIN_VALUE;

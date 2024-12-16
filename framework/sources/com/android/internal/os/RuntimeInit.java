@@ -19,9 +19,11 @@ import android.os.Trace;
 import android.util.Log;
 import android.util.Slog;
 import com.android.internal.logging.AndroidConfig;
+import com.samsung.android.rune.CoreRune;
 import com.samsung.isrb.IsrbHooks;
 import dalvik.system.RuntimeHooks;
 import dalvik.system.VMRuntime;
+import java.io.PrintStream;
 import java.lang.Thread;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,8 +44,9 @@ public class RuntimeInit {
     private static int mCrashCount;
     private static volatile boolean mCrashing = false;
     private static volatile ApplicationWtfHandler sDefaultApplicationWtfHandler;
+    public static PrintStream sErr$ravenwood;
+    public static PrintStream sOut$ravenwood;
 
-    /* loaded from: classes5.dex */
     public interface ApplicationWtfHandler {
         boolean handleApplicationWtf(IBinder iBinder, String str, boolean z, ApplicationErrorReport.ParcelableCrashInfo parcelableCrashInfo, int i);
     }
@@ -52,10 +55,12 @@ public class RuntimeInit {
 
     private static final native void nativeSetExitWithoutCleanup(boolean z);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int Clog_e(String tag, String msg, Throwable tr) {
         return Log.printlns(4, 6, tag, msg, tr);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static int Mlog_i(String tag, String msg, Throwable tr) {
         return Log.printlns(0, 4, tag, msg, tr);
     }
@@ -70,13 +75,8 @@ public class RuntimeInit {
         Clog_e(TAG, message.toString(), e);
     }
 
-    /* loaded from: classes5.dex */
-    public static class LoggingHandler implements Thread.UncaughtExceptionHandler {
+    private static class LoggingHandler implements Thread.UncaughtExceptionHandler {
         public volatile boolean mTriggered;
-
-        /* synthetic */ LoggingHandler(LoggingHandlerIA loggingHandlerIA) {
-            this();
-        }
 
         private LoggingHandler() {
             this.mTriggered = false;
@@ -98,8 +98,7 @@ public class RuntimeInit {
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class KillApplicationHandler implements Thread.UncaughtExceptionHandler {
+    private static class KillApplicationHandler implements Thread.UncaughtExceptionHandler {
         private final LoggingHandler mLoggingHandler;
 
         public KillApplicationHandler(LoggingHandler loggingHandler) {
@@ -108,9 +107,6 @@ public class RuntimeInit {
 
         @Override // java.lang.Thread.UncaughtExceptionHandler
         public void uncaughtException(Thread t, Throwable e) {
-            String reason;
-            String extraInfo;
-            StringBuilder sb;
             try {
                 ensureLogging(t, e);
             } catch (Throwable t2) {
@@ -121,28 +117,7 @@ public class RuntimeInit {
                         } catch (Throwable th) {
                         }
                     }
-                    if (SystemProperties.getInt(RuntimeInit.SYSPROP_SYSTEMSERVER_PID, 0) == Process.myPid()) {
-                        reason = Debug.PLATFORM_EXCEPTION;
-                        extraInfo = t.getName();
-                        String silentResetInfo = getSilentResetInfo(e);
-                        if (!silentResetInfo.isEmpty()) {
-                            reason = Debug.PLATFORM_SILENT_RESET;
-                            extraInfo = silentResetInfo;
-                        }
-                        sb = new StringBuilder();
-                    }
                 } finally {
-                    if (SystemProperties.getInt(RuntimeInit.SYSPROP_SYSTEMSERVER_PID, 0) == Process.myPid()) {
-                        String reason2 = Debug.PLATFORM_EXCEPTION;
-                        String extraInfo2 = t.getName();
-                        String silentResetInfo2 = getSilentResetInfo(e);
-                        if (!silentResetInfo2.isEmpty()) {
-                            reason2 = Debug.PLATFORM_SILENT_RESET;
-                            extraInfo2 = silentResetInfo2;
-                        }
-                        RuntimeInit.Mlog_i(RuntimeInit.TAG, "!@*** saveResetReason with reason = " + reason2, null);
-                        Debug.saveResetReason(reason2, extraInfo2);
-                    }
                     Process.killProcess(Process.myPid());
                     System.exit(10);
                 }
@@ -154,31 +129,32 @@ public class RuntimeInit {
             if (ActivityThread.currentActivityThread() != null) {
                 ActivityThread.currentActivityThread().stopProfiling();
             }
-            ActivityManager.getService().handleApplicationCrash(RuntimeInit.mApplicationObject, new ApplicationErrorReport.ParcelableCrashInfo(e));
             if (SystemProperties.getInt(RuntimeInit.SYSPROP_SYSTEMSERVER_PID, 0) == Process.myPid()) {
-                reason = Debug.PLATFORM_EXCEPTION;
-                extraInfo = t.getName();
-                String silentResetInfo3 = getSilentResetInfo(e);
-                if (!silentResetInfo3.isEmpty()) {
+                String reason = Debug.PLATFORM_EXCEPTION;
+                String extraInfo = t.getName();
+                String silentResetInfo = getSilentResetInfo(e);
+                if (!silentResetInfo.isEmpty()) {
                     reason = Debug.PLATFORM_SILENT_RESET;
-                    extraInfo = silentResetInfo3;
+                    extraInfo = silentResetInfo;
                 }
-                sb = new StringBuilder();
-                RuntimeInit.Mlog_i(RuntimeInit.TAG, sb.append("!@*** saveResetReason with reason = ").append(reason).toString(), null);
+                RuntimeInit.Mlog_i(RuntimeInit.TAG, "!@*** saveResetReason with reason = " + reason, null);
                 Debug.saveResetReason(reason, extraInfo);
             }
-            Process.killProcess(Process.myPid());
-            System.exit(10);
+            ActivityManager.getService().handleApplicationCrash(RuntimeInit.mApplicationObject, new ApplicationErrorReport.ParcelableCrashInfo(e));
         }
 
         private String getSilentResetInfo(Throwable e) {
-            if (e.getMessage().isEmpty()) {
+            String message = e.getMessage();
+            if (message == null || message.isEmpty()) {
                 return "";
             }
-            if (PowerManager.SILENT_RESET_EXCEPTION_MSG.equals(e.getMessage())) {
+            if (PowerManager.SILENT_RESET_EXCEPTION_MSG.equals(message)) {
                 return Debug.EXTRA_INFO_BY_DEVICECARE;
             }
-            return (e.getMessage().contains("HeapFull") && SystemProperties.get("ro.boot.debug_level").equals("0x4f4c")) ? Debug.EXTRA_INFO_BY_HEAPFULL : "";
+            if (!message.contains("HeapFull") || !CoreRune.IS_DEBUG_LEVEL_LOW) {
+                return "";
+            }
+            return Debug.EXTRA_INFO_BY_HEAPFULL;
         }
 
         private void ensureLogging(Thread t, Throwable e) {
@@ -201,7 +177,7 @@ public class RuntimeInit {
         });
     }
 
-    public static final void commonInit() {
+    protected static final void commonInit() {
         LoggingHandler loggingHandler = new LoggingHandler();
         RuntimeHooks.setUncaughtExceptionPreHandler(loggingHandler);
         Thread.setDefaultUncaughtExceptionHandler(new KillApplicationHandler(loggingHandler));
@@ -245,7 +221,7 @@ public class RuntimeInit {
         return result.toString();
     }
 
-    public static Runnable findStaticMain(String className, String[] argv, ClassLoader classLoader) {
+    protected static Runnable findStaticMain(String className, String[] argv, ClassLoader classLoader) {
         try {
             Class<?> cl = Class.forName(className, true, classLoader);
             try {
@@ -274,7 +250,7 @@ public class RuntimeInit {
         nativeFinishInit();
     }
 
-    public static Runnable applicationInit(int targetSdkVersion, long[] disabledCompatChanges, String[] argv, ClassLoader classLoader) {
+    protected static Runnable applicationInit(int targetSdkVersion, long[] disabledCompatChanges, String[] argv, ClassLoader classLoader) {
         nativeSetExitWithoutCleanup(true);
         VMRuntime.getRuntime().setTargetSdkVersion(targetSdkVersion);
         VMRuntime.getRuntime().setDisabledCompatChanges(disabledCompatChanges);
@@ -288,6 +264,17 @@ public class RuntimeInit {
         System.setOut(new AndroidPrintStream(4, "System.out"));
         System.err.close();
         System.setErr(new AndroidPrintStream(5, "System.err"));
+    }
+
+    public static void redirectLogStreams$ravenwood() {
+        if (sOut$ravenwood == null) {
+            sOut$ravenwood = System.out;
+            System.setOut(new AndroidPrintStream(4, "System.out"));
+        }
+        if (sErr$ravenwood == null) {
+            sErr$ravenwood = System.err;
+            System.setErr(new AndroidPrintStream(5, "System.err"));
+        }
     }
 
     public static void wtf(String tag, Throwable t, boolean system) {
@@ -316,6 +303,9 @@ public class RuntimeInit {
         }
     }
 
+    public static void wtf$ravenwood(String tag, Throwable t, boolean system) {
+    }
+
     public static void setDefaultApplicationWtfHandler(ApplicationWtfHandler handler) {
         sDefaultApplicationWtfHandler = handler;
     }
@@ -332,13 +322,11 @@ public class RuntimeInit {
         DdmRegister.registerHandlers();
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes5.dex */
-    public static class Arguments {
+    static class Arguments {
         String[] startArgs;
         String startClass;
 
-        public Arguments(String[] args) throws IllegalArgumentException {
+        Arguments(String[] args) throws IllegalArgumentException {
             parseArgs(args);
         }
 
@@ -363,14 +351,12 @@ public class RuntimeInit {
             }
             int curArg2 = curArg + 1;
             this.startClass = args[curArg];
-            String[] strArr = new String[args.length - curArg2];
-            this.startArgs = strArr;
-            System.arraycopy(args, curArg2, strArr, 0, strArr.length);
+            this.startArgs = new String[args.length - curArg2];
+            System.arraycopy(args, curArg2, this.startArgs, 0, this.startArgs.length);
         }
     }
 
-    /* loaded from: classes5.dex */
-    public static class MethodAndArgsCaller implements Runnable {
+    static class MethodAndArgsCaller implements Runnable {
         private final String[] mArgs;
         private final Method mMethod;
 

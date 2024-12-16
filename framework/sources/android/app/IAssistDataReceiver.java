@@ -14,7 +14,6 @@ public interface IAssistDataReceiver extends IInterface {
 
     void onHandleAssistScreenshot(Bitmap bitmap) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAssistDataReceiver {
         @Override // android.app.IAssistDataReceiver
         public void onHandleAssistData(Bundle resultData) throws RemoteException {
@@ -30,7 +29,6 @@ public interface IAssistDataReceiver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAssistDataReceiver {
         public static final String DESCRIPTOR = "android.app.IAssistDataReceiver";
         static final int TRANSACTION_onHandleAssistData = 1;
@@ -77,30 +75,27 @@ public interface IAssistDataReceiver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHandleAssistData(_arg0);
+                    return true;
+                case 2:
+                    Bitmap _arg02 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
+                    data.enforceNoDataAvail();
+                    onHandleAssistScreenshot(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Bundle _arg0 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHandleAssistData(_arg0);
-                            return true;
-                        case 2:
-                            Bitmap _arg02 = (Bitmap) data.readTypedObject(Bitmap.CREATOR);
-                            data.enforceNoDataAvail();
-                            onHandleAssistScreenshot(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAssistDataReceiver {
+        private static class Proxy implements IAssistDataReceiver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

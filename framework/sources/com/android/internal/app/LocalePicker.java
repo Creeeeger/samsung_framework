@@ -30,19 +30,17 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class LocalePicker extends ListFragment {
     private static final boolean DEBUG = false;
     private static final String TAG = "LocalePicker";
     private static final String[] pseudoLocales = {"en-XA", "ar-XB"};
     LocaleSelectionListener mListener;
 
-    /* loaded from: classes4.dex */
     public interface LocaleSelectionListener {
         void onLocaleSelected(Locale locale);
     }
 
-    /* loaded from: classes4.dex */
     public static class LocaleInfo implements Comparable<LocaleInfo> {
         static final Collator sCollator = Collator.getInstance();
         String label;
@@ -133,23 +131,11 @@ public class LocalePicker extends ListFragment {
         return constructAdapter(context, R.layout.locale_picker_item, R.id.locale);
     }
 
-    public static ArrayAdapter<LocaleInfo> constructAdapter(Context context, int layoutId, int fieldId) {
+    public static ArrayAdapter<LocaleInfo> constructAdapter(Context context, final int layoutId, final int fieldId) {
         boolean isInDeveloperMode = Settings.Global.getInt(context.getContentResolver(), "development_settings_enabled", 0) != 0;
         List<LocaleInfo> localeInfos = getAllAssetLocales(context, isInDeveloperMode);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         return new ArrayAdapter<LocaleInfo>(context, layoutId, fieldId, localeInfos) { // from class: com.android.internal.app.LocalePicker.1
-            final /* synthetic */ int val$fieldId;
-            final /* synthetic */ LayoutInflater val$inflater;
-            final /* synthetic */ int val$layoutId;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            AnonymousClass1(Context context2, int layoutId2, int fieldId2, List localeInfos2, LayoutInflater inflater2, int layoutId22, int fieldId22) {
-                super(context2, layoutId22, fieldId22, localeInfos2);
-                inflater = inflater2;
-                layoutId = layoutId22;
-                fieldId = fieldId22;
-            }
-
             @Override // android.widget.ArrayAdapter, android.widget.Adapter
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view;
@@ -163,45 +149,11 @@ public class LocalePicker extends ListFragment {
                     text = (TextView) view.getTag();
                 }
                 LocaleInfo item = getItem(position);
-                text.setText(item.toString());
+                text.lambda$setTextAsync$0(item.toString());
                 text.setTextLocale(item.getLocale());
                 return view;
             }
         };
-    }
-
-    /* renamed from: com.android.internal.app.LocalePicker$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends ArrayAdapter<LocaleInfo> {
-        final /* synthetic */ int val$fieldId;
-        final /* synthetic */ LayoutInflater val$inflater;
-        final /* synthetic */ int val$layoutId;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        AnonymousClass1(Context context2, int layoutId22, int fieldId22, List localeInfos2, LayoutInflater inflater2, int layoutId222, int fieldId222) {
-            super(context2, layoutId222, fieldId222, localeInfos2);
-            inflater = inflater2;
-            layoutId = layoutId222;
-            fieldId = fieldId222;
-        }
-
-        @Override // android.widget.ArrayAdapter, android.widget.Adapter
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-            TextView text;
-            if (convertView == null) {
-                view = inflater.inflate(layoutId, parent, false);
-                text = (TextView) view.findViewById(fieldId);
-                view.setTag(text);
-            } else {
-                view = convertView;
-                text = (TextView) view.getTag();
-            }
-            LocaleInfo item = getItem(position);
-            text.setText(item.toString());
-            text.setTextLocale(item.getLocale());
-            return view;
-        }
     }
 
     private static String toTitleCase(String s) {
@@ -284,7 +236,7 @@ public class LocalePicker extends ListFragment {
 
     public static LocaleList getLocales() {
         try {
-            return ActivityManager.getService().getGlobalConfiguration().getLocales();
+            return ActivityManager.getService().getConfiguration().getLocales();
         } catch (RemoteException e) {
             return LocaleList.getDefault();
         }

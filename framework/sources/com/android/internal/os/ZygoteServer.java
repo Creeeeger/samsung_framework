@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.function.ToIntFunction;
 
 /* loaded from: classes5.dex */
-public class ZygoteServer {
+class ZygoteServer {
     static final /* synthetic */ boolean $assertionsDisabled = false;
     private static final int INVALID_TIMESTAMP = -1;
     public static final String TAG = "ZygoteServer";
@@ -40,14 +40,13 @@ public class ZygoteServer {
     private final boolean mUsapPoolSupported;
     private LocalServerSocket mZygoteSocket;
 
-    /* loaded from: classes5.dex */
-    public enum UsapPoolRefillAction {
+    private enum UsapPoolRefillAction {
         DELAYED,
         IMMEDIATE,
         NONE
     }
 
-    public ZygoteServer() {
+    ZygoteServer() {
         this.mUsapPoolEnabled = false;
         this.mUsapPoolSizeMax = 0;
         this.mUsapPoolSizeMin = 0;
@@ -61,7 +60,7 @@ public class ZygoteServer {
         this.mUsapPoolSupported = false;
     }
 
-    public ZygoteServer(boolean isPrimaryZygote) {
+    ZygoteServer(boolean isPrimaryZygote) {
         this.mUsapPoolEnabled = false;
         this.mUsapPoolSizeMax = 0;
         this.mUsapPoolSizeMin = 0;
@@ -81,7 +80,7 @@ public class ZygoteServer {
         fetchUsapPoolPolicyProps();
     }
 
-    public void setForkChild() {
+    void setForkChild() {
         this.mIsForkChild = true;
     }
 
@@ -89,7 +88,7 @@ public class ZygoteServer {
         return this.mUsapPoolEnabled;
     }
 
-    public void registerServerSocketAtAbstractName(String socketName) {
+    void registerServerSocketAtAbstractName(String socketName) {
         if (this.mZygoteSocket == null) {
             try {
                 this.mZygoteSocket = new LocalServerSocket(socketName);
@@ -112,11 +111,10 @@ public class ZygoteServer {
         return new ZygoteConnection(socket, abiList);
     }
 
-    public void closeServerSocket() {
+    void closeServerSocket() {
         try {
-            LocalServerSocket localServerSocket = this.mZygoteSocket;
-            if (localServerSocket != null) {
-                FileDescriptor fd = localServerSocket.getFileDescriptor();
+            if (this.mZygoteSocket != null) {
+                FileDescriptor fd = this.mZygoteSocket.getFileDescriptor();
                 this.mZygoteSocket.close();
                 if (fd != null && this.mCloseSocketFd) {
                     Os.close(fd);
@@ -130,7 +128,7 @@ public class ZygoteServer {
         this.mZygoteSocket = null;
     }
 
-    public FileDescriptor getZygoteSocketFileDescriptor() {
+    FileDescriptor getZygoteSocketFileDescriptor() {
         return this.mZygoteSocket.getFileDescriptor();
     }
 
@@ -144,7 +142,7 @@ public class ZygoteServer {
                 Log.w(TAG, "The max size of the USAP pool must be greater than the minimum size.  Restoring default values.");
                 this.mUsapPoolSizeMax = 3;
                 this.mUsapPoolSizeMin = 1;
-                this.mUsapPoolRefillThreshold = 3 / 2;
+                this.mUsapPoolRefillThreshold = this.mUsapPoolSizeMax / 2;
             }
         }
     }
@@ -165,7 +163,7 @@ public class ZygoteServer {
         }
     }
 
-    public Runnable fillUsapPool(int[] sessionSocketRawFDs, boolean isPriorityRefill) {
+    Runnable fillUsapPool(int[] sessionSocketRawFDs, boolean isPriorityRefill) {
         int numUsapsToSpawn;
         Runnable caller;
         Trace.traceBegin(64L, "Zygote:FillUsapPool");
@@ -193,7 +191,7 @@ public class ZygoteServer {
         return caller;
     }
 
-    public Runnable setUsapPoolStatus(boolean newStatus, LocalSocket sessionSocket) {
+    Runnable setUsapPoolStatus(boolean newStatus, LocalSocket sessionSocket) {
         if (!this.mUsapPoolSupported) {
             Log.w(TAG, "Attempting to enable a USAP pool for a Zygote that doesn't support it.");
             return null;
@@ -215,7 +213,7 @@ public class ZygoteServer {
         this.mUsapPoolRefillTriggerTimestamp = -1L;
     }
 
-    public Runnable runSelectLoop(String abiList) {
+    Runnable runSelectLoop(String abiList) {
         StructPollfd[] pollFDs;
         int[] usapPipeFDs;
         int pollIndex;
@@ -272,13 +270,15 @@ public class ZygoteServer {
                 pollTimeoutMs = -1;
             } else {
                 long elapsedTimeMs = System.currentTimeMillis() - this.mUsapPoolRefillTriggerTimestamp;
-                int pollTimeoutMs2 = this.mUsapPoolRefillDelayMs;
-                if (elapsedTimeMs >= pollTimeoutMs2) {
+                if (elapsedTimeMs >= this.mUsapPoolRefillDelayMs) {
                     this.mUsapPoolRefillTriggerTimestamp = j;
                     this.mUsapPoolRefillAction = UsapPoolRefillAction.DELAYED;
                     pollTimeoutMs = 0;
+                } else if (elapsedTimeMs <= 0) {
+                    pollTimeoutMs = this.mUsapPoolRefillDelayMs;
                 } else {
-                    pollTimeoutMs = elapsedTimeMs <= 0 ? this.mUsapPoolRefillDelayMs : (int) (pollTimeoutMs2 - elapsedTimeMs);
+                    int pollTimeoutMs2 = this.mUsapPoolRefillDelayMs;
+                    pollTimeoutMs = (int) (pollTimeoutMs2 - elapsedTimeMs);
                 }
             }
             try {

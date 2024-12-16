@@ -13,7 +13,7 @@ public final class Channel implements java.nio.channels.Channel {
     private final SEService mService;
     private Session mSession;
 
-    public Channel(SEService service, Session session, ISecureElementChannel channel) {
+    Channel(SEService service, Session session, ISecureElementChannel channel) {
         if (service == null || session == null || channel == null) {
             throw new IllegalArgumentException("Parameters cannot be null");
         }

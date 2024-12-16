@@ -22,7 +22,6 @@ public interface IRemoteDisplayProvider extends IInterface {
 
     void setVolume(String str, int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRemoteDisplayProvider {
         @Override // android.media.IRemoteDisplayProvider
         public void setCallback(IRemoteDisplayCallback callback) throws RemoteException {
@@ -54,7 +53,6 @@ public interface IRemoteDisplayProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRemoteDisplayProvider {
         public static final String DESCRIPTOR = "android.media.IRemoteDisplayProvider";
         static final int TRANSACTION_adjustVolume = 6;
@@ -113,51 +111,48 @@ public interface IRemoteDisplayProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IRemoteDisplayCallback _arg0 = IRemoteDisplayCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDiscoveryMode(_arg02);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    connect(_arg03);
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    disconnect(_arg04);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setVolume(_arg05, _arg1);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    adjustVolume(_arg06, _arg12);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IRemoteDisplayCallback _arg0 = IRemoteDisplayCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDiscoveryMode(_arg02);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            connect(_arg03);
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            disconnect(_arg04);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setVolume(_arg05, _arg1);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            adjustVolume(_arg06, _arg12);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IRemoteDisplayProvider {
             private IBinder mRemote;
 

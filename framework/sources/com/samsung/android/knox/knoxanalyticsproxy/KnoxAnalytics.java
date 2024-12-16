@@ -7,7 +7,7 @@ import android.os.ServiceManager;
 import android.util.Log;
 import com.samsung.android.knox.knoxanalyticsproxy.IKnoxAnalyticsProxy;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class KnoxAnalytics {
     public static final String KNOXANALYTICS_PROXY_SERVICE = "knox_analytics_proxy";
     private static IKnoxAnalyticsProxy mService;
@@ -15,12 +15,11 @@ public class KnoxAnalytics {
     private static final boolean DEBUG = !SemSystemProperties.getBoolean("ro.product_ship", true);
 
     public static void log(KnoxAnalyticsData event) {
-        boolean z = DEBUG;
-        if (z) {
+        if (DEBUG) {
             Log.d(TAG, event.toString());
         }
         if (!getService()) {
-            if (z) {
+            if (DEBUG) {
                 Log.d(TAG, "log(): service not running!");
                 return;
             }

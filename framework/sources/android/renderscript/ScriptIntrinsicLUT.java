@@ -17,11 +17,10 @@ public final class ScriptIntrinsicLUT extends ScriptIntrinsic {
         this.mDirty = true;
         this.mTables = Allocation.createSized(rs, Element.U8(rs), 1024);
         for (int ct = 0; ct < 256; ct++) {
-            byte[] bArr = this.mCache;
-            bArr[ct] = (byte) ct;
-            bArr[ct + 256] = (byte) ct;
-            bArr[ct + 512] = (byte) ct;
-            bArr[ct + 768] = (byte) ct;
+            this.mCache[ct] = (byte) ct;
+            this.mCache[ct + 256] = (byte) ct;
+            this.mCache[ct + 512] = (byte) ct;
+            this.mCache[ct + 768] = (byte) ct;
         }
         setVar(0, this.mTables);
     }

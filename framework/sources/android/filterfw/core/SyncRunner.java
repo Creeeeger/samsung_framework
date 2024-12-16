@@ -25,9 +25,8 @@ public class SyncRunner extends GraphRunner {
         this.mWakeExecutor = new ScheduledThreadPoolExecutor(1);
         this.mWakeCondition = new ConditionVariable();
         this.mTimer = null;
-        boolean isLoggable = Log.isLoggable(TAG, 2);
-        this.mLogVerbose = isLoggable;
-        if (isLoggable) {
+        this.mLogVerbose = Log.isLoggable(TAG, 2);
+        if (this.mLogVerbose) {
             Log.v(TAG, "Initializing SyncRunner");
         }
         if (Scheduler.class.isAssignableFrom(schedulerClass)) {
@@ -37,7 +36,7 @@ public class SyncRunner extends GraphRunner {
                 this.mFilterContext = context;
                 this.mFilterContext.addGraph(graph);
                 this.mTimer = new StopWatchMap();
-                if (isLoggable) {
+                if (this.mLogVerbose) {
                     Log.v(TAG, "Setting up filters");
                 }
                 graph.setupFilters();
@@ -59,9 +58,8 @@ public class SyncRunner extends GraphRunner {
 
     @Override // android.filterfw.core.GraphRunner
     public FilterGraph getGraph() {
-        Scheduler scheduler = this.mScheduler;
-        if (scheduler != null) {
-            return scheduler.getGraph();
+        if (this.mScheduler != null) {
+            return this.mScheduler.getGraph();
         }
         return null;
     }
@@ -137,7 +135,7 @@ public class SyncRunner extends GraphRunner {
         return null;
     }
 
-    public void waitUntilWake() {
+    protected void waitUntilWake() {
         this.mWakeCondition.block();
     }
 
@@ -157,18 +155,10 @@ public class SyncRunner extends GraphRunner {
         }
     }
 
-    protected void scheduleFilterWake(Filter filter, int delay) {
+    protected void scheduleFilterWake(final Filter filter, int delay) {
         this.mWakeCondition.close();
-        ConditionVariable conditionToWake = this.mWakeCondition;
+        final ConditionVariable conditionToWake = this.mWakeCondition;
         this.mWakeExecutor.schedule(new Runnable() { // from class: android.filterfw.core.SyncRunner.1
-            final /* synthetic */ ConditionVariable val$conditionToWake;
-            final /* synthetic */ Filter val$filterToSchedule;
-
-            AnonymousClass1(Filter filter2, ConditionVariable conditionToWake2) {
-                filter = filter2;
-                conditionToWake = conditionToWake2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 filter.unsetStatus(4);
@@ -177,25 +167,7 @@ public class SyncRunner extends GraphRunner {
         }, delay, TimeUnit.MILLISECONDS);
     }
 
-    /* renamed from: android.filterfw.core.SyncRunner$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ ConditionVariable val$conditionToWake;
-        final /* synthetic */ Filter val$filterToSchedule;
-
-        AnonymousClass1(Filter filter2, ConditionVariable conditionToWake2) {
-            filter = filter2;
-            conditionToWake = conditionToWake2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            filter.unsetStatus(4);
-            conditionToWake.open();
-        }
-    }
-
-    public int determinePostRunState() {
+    protected int determinePostRunState() {
         for (Filter filter : this.mScheduler.getGraph().getFilters()) {
             if (filter.isOpen()) {
                 return filter.getStatus() == 4 ? 3 : 4;
@@ -204,7 +176,7 @@ public class SyncRunner extends GraphRunner {
         return 2;
     }
 
-    public boolean performStep() {
+    boolean performStep() {
         if (this.mLogVerbose) {
             Log.v(TAG, "Performing one step.");
         }
@@ -218,7 +190,7 @@ public class SyncRunner extends GraphRunner {
         return false;
     }
 
-    public void assertReadyToStep() {
+    void assertReadyToStep() {
         if (this.mScheduler == null) {
             throw new RuntimeException("Attempting to run schedule with no scheduler in place!");
         }

@@ -12,20 +12,18 @@ import android.widget.Toast;
 import com.android.internal.R;
 import com.android.internal.telephony.util.TelephonyUtils;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class LocationAccessPolicy {
     private static final boolean DBG = false;
     public static final int MAX_SDK_FOR_ANY_ENFORCEMENT = 10000;
     private static final String TAG = "LocationAccessPolicy";
 
-    /* loaded from: classes3.dex */
     public enum LocationPermissionResult {
         ALLOWED,
         DENIED_SOFT,
         DENIED_HARD
     }
 
-    /* loaded from: classes3.dex */
     public static class LocationPermissionQuery {
         public final String callingFeatureId;
         public final String callingPackage;
@@ -35,10 +33,6 @@ public final class LocationAccessPolicy {
         public final String method;
         public final int minSdkVersionForCoarse;
         public final int minSdkVersionForFine;
-
-        /* synthetic */ LocationPermissionQuery(String str, String str2, int i, int i2, int i3, int i4, boolean z, String str3, LocationPermissionQueryIA locationPermissionQueryIA) {
-            this(str, str2, i, i2, i3, i4, z, str3);
-        }
 
         private LocationPermissionQuery(String callingPackage, String callingFeatureId, int callingUid, int callingPid, int minSdkVersionForCoarse, int minSdkVersionForFine, boolean logAsInfo, String method) {
             this.callingPackage = callingPackage;
@@ -51,7 +45,6 @@ public final class LocationAccessPolicy {
             this.method = method;
         }
 
-        /* loaded from: classes3.dex */
         public static class Builder {
             private String mCallingFeatureId;
             private String mCallingPackage;
@@ -109,20 +102,16 @@ public final class LocationAccessPolicy {
             }
 
             public LocationPermissionQuery build() {
-                int i;
-                int i2 = this.mMinSdkVersionForCoarse;
-                if (i2 < 0 || (i = this.mMinSdkVersionForFine) < 0) {
+                if (this.mMinSdkVersionForCoarse < 0 || this.mMinSdkVersionForFine < 0) {
                     throw new IllegalArgumentException("Must specify min sdk versions for enforcement for both coarse and fine permissions");
                 }
-                if (i > 1 && i2 > 1 && this.mMinSdkVersionForEnforcement != Math.min(i2, i)) {
+                if (this.mMinSdkVersionForFine > 1 && this.mMinSdkVersionForCoarse > 1 && this.mMinSdkVersionForEnforcement != Math.min(this.mMinSdkVersionForCoarse, this.mMinSdkVersionForFine)) {
                     throw new IllegalArgumentException("setMinSdkVersionForEnforcement must be called.");
                 }
-                int i3 = this.mMinSdkVersionForFine;
-                int i4 = this.mMinSdkVersionForCoarse;
-                if (i3 < i4) {
+                if (this.mMinSdkVersionForFine < this.mMinSdkVersionForCoarse) {
                     throw new IllegalArgumentException("Since fine location permission includes access to coarse location, the min sdk level for enforcement of the fine location permission must not be less than the min sdk level for enforcement of the coarse location permission.");
                 }
-                return new LocationPermissionQuery(this.mCallingPackage, this.mCallingFeatureId, this.mCallingUid, this.mCallingPid, i4, i3, this.mLogAsInfo, this.mMethod);
+                return new LocationPermissionQuery(this.mCallingPackage, this.mCallingFeatureId, this.mCallingUid, this.mCallingPid, this.mMinSdkVersionForCoarse, this.mMinSdkVersionForFine, this.mLogAsInfo, this.mMethod);
             }
         }
     }

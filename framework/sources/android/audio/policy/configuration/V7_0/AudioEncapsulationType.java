@@ -15,7 +15,7 @@ public enum AudioEncapsulationType {
         return this.rawName;
     }
 
-    public static AudioEncapsulationType fromString(String rawString) {
+    static AudioEncapsulationType fromString(String rawString) {
         for (AudioEncapsulationType _f : values()) {
             if (_f.getRawName().equals(rawString)) {
                 return _f;

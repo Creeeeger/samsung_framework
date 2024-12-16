@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface BiometricAuthenticator {
     public static final int TYPE_ANY_BIOMETRIC = 270;
     public static final int TYPE_CREDENTIAL = 1;
@@ -15,11 +15,9 @@ public interface BiometricAuthenticator {
     public static final int TYPE_NONE = 0;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Modality {
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Identifier implements Parcelable {
         private int mBiometricId;
         private long mDeviceId;
@@ -55,7 +53,6 @@ public interface BiometricAuthenticator {
         }
     }
 
-    /* loaded from: classes.dex */
     public static class AuthenticationResult {
         private int mAuthenticationType;
         private CryptoObject mCryptoObject;
@@ -89,7 +86,6 @@ public interface BiometricAuthenticator {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class AuthenticationCallback {
         public void onAuthenticationError(int errorCode, CharSequence errString) {
         }

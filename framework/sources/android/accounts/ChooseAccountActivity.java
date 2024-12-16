@@ -53,42 +53,20 @@ public class ChooseAccountActivity extends Activity {
         }
         getAuthDescriptions();
         AccountInfo[] mAccountInfos = new AccountInfo[this.mAccounts.length];
-        int i = 0;
-        while (true) {
-            Parcelable[] parcelableArr = this.mAccounts;
-            if (i < parcelableArr.length) {
-                mAccountInfos[i] = new AccountInfo(((Account) parcelableArr[i]).name, getDrawableForType(((Account) this.mAccounts[i]).type));
-                i++;
-            } else {
-                setContentView(R.layout.choose_account);
-                ListView list = (ListView) findViewById(16908298);
-                list.setAdapter((ListAdapter) new AccountArrayAdapter(this, 17367043, mAccountInfos));
-                list.setChoiceMode(1);
-                list.setTextFilterEnabled(true);
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseAccountActivity.1
-                    AnonymousClass1() {
-                    }
-
-                    @Override // android.widget.AdapterView.OnItemClickListener
-                    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                        ChooseAccountActivity.this.onListItemClick((ListView) parent, v, position, id);
-                    }
-                });
-                return;
+        for (int i = 0; i < this.mAccounts.length; i++) {
+            mAccountInfos[i] = new AccountInfo(((Account) this.mAccounts[i]).name, getDrawableForType(((Account) this.mAccounts[i]).type));
+        }
+        setContentView(R.layout.choose_account);
+        ListView list = (ListView) findViewById(16908298);
+        list.setAdapter((ListAdapter) new AccountArrayAdapter(this, 17367043, mAccountInfos));
+        list.setChoiceMode(1);
+        list.setTextFilterEnabled(true);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // from class: android.accounts.ChooseAccountActivity.1
+            @Override // android.widget.AdapterView.OnItemClickListener
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                ChooseAccountActivity.this.onListItemClick((ListView) parent, v, position, id);
             }
-        }
-    }
-
-    /* renamed from: android.accounts.ChooseAccountActivity$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements AdapterView.OnItemClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.widget.AdapterView.OnItemClickListener
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            ChooseAccountActivity.this.onListItemClick((ListView) parent, v, position, id);
-        }
+        });
     }
 
     private void getAuthDescriptions() {
@@ -138,21 +116,17 @@ public class ChooseAccountActivity extends Activity {
 
     @Override // android.app.Activity
     public void finish() {
-        AccountManagerResponse accountManagerResponse = this.mAccountManagerResponse;
-        if (accountManagerResponse != null) {
-            Bundle bundle = this.mResult;
-            if (bundle != null) {
-                accountManagerResponse.onResult(bundle);
+        if (this.mAccountManagerResponse != null) {
+            if (this.mResult != null) {
+                this.mAccountManagerResponse.onResult(this.mResult);
             } else {
-                accountManagerResponse.onError(4, CompanionDeviceManager.REASON_CANCELED);
+                this.mAccountManagerResponse.onError(4, CompanionDeviceManager.REASON_CANCELED);
             }
         }
         super.finish();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class AccountInfo {
+    private static class AccountInfo {
         final Drawable drawable;
         final String name;
 
@@ -162,20 +136,14 @@ public class ChooseAccountActivity extends Activity {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class ViewHolder {
         ImageView icon;
         TextView text;
-
-        /* synthetic */ ViewHolder(ViewHolderIA viewHolderIA) {
-            this();
-        }
 
         private ViewHolder() {
         }
     }
 
-    /* loaded from: classes.dex */
     private static class AccountArrayAdapter extends ArrayAdapter<AccountInfo> {
         private AccountInfo[] mInfos;
         private LayoutInflater mLayoutInflater;
@@ -198,8 +166,8 @@ public class ChooseAccountActivity extends Activity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.text.setText(this.mInfos[position].name);
-            holder.icon.lambda$setImageURIAsync$2(this.mInfos[position].drawable);
+            holder.text.lambda$setTextAsync$0(this.mInfos[position].name);
+            holder.icon.lambda$setImageURIAsync$0(this.mInfos[position].drawable);
             return convertView;
         }
     }

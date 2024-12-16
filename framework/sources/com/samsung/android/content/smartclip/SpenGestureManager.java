@@ -15,17 +15,13 @@ import com.samsung.android.content.smartclip.ISpenGestureService;
 import com.samsung.android.util.SemLog;
 import java.io.FileDescriptor;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /* loaded from: classes5.dex */
 public class SpenGestureManager {
     private static String TAG = "SpenGestureManager";
-    private Context mContext;
     private ISpenGestureService mService = null;
 
     public SpenGestureManager(Context context) {
-        this.mContext = null;
-        this.mContext = context;
         getService();
     }
 
@@ -40,9 +36,8 @@ public class SpenGestureManager {
 
     private synchronized ISpenGestureService getService() {
         if (this.mService == null) {
-            ISpenGestureService asInterface = ISpenGestureService.Stub.asInterface(ServiceManager.getService(Context.SEM_SPEN_GESTURE_SERVICE));
-            this.mService = asInterface;
-            if (asInterface == null) {
+            this.mService = ISpenGestureService.Stub.asInterface(ServiceManager.getService(Context.SEM_SPEN_GESTURE_SERVICE));
+            if (this.mService == null) {
                 SemLog.w("SpenGestureManager", "warning: no SpenGestureManager");
             }
         }
@@ -419,21 +414,7 @@ public class SpenGestureManager {
     }
 
     public InputConnection getCurrentInputConnection() {
-        IRemoteInputConnection inputConnection = null;
-        try {
-            ISpenGestureService svc = getService();
-            if (svc != null) {
-                inputConnection = svc.getCurrentInputContext();
-                svc.getCurrentMissingMethodFlags();
-            }
-            if (inputConnection == null) {
-                return null;
-            }
-            new AtomicBoolean(false);
-            return null;
-        } catch (RemoteException ex) {
-            throw new RuntimeException(ex);
-        }
+        return null;
     }
 
     public EditorInfo getEditorInfo() {

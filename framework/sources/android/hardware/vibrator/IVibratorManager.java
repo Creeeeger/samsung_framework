@@ -38,7 +38,6 @@ public interface IVibratorManager extends IInterface {
 
     void triggerSynced(IVibratorCallback iVibratorCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IVibratorManager {
         @Override // android.hardware.vibrator.IVibratorManager
         public int getCapabilities() throws RemoteException {
@@ -83,7 +82,6 @@ public interface IVibratorManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IVibratorManager {
         static final int TRANSACTION_cancelSynced = 6;
         static final int TRANSACTION_getCapabilities = 1;
@@ -121,60 +119,59 @@ public interface IVibratorManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    int _result = getCapabilities();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                    reply.writeInt(_result);
                     return true;
-                case 16777215:
+                case 2:
+                    int[] _result2 = getVibratorIds();
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                    reply.writeIntArray(_result2);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    IVibrator _result3 = getVibrator(_arg0);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 4:
+                    int[] _arg02 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    prepareSynced(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    IVibratorCallback _arg03 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    triggerSynced(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    cancelSynced();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _result = getCapabilities();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            int[] _result2 = getVibratorIds();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result2);
-                            return true;
-                        case 3:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            IVibrator _result3 = getVibrator(_arg0);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 4:
-                            int[] _arg02 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            prepareSynced(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            IVibratorCallback _arg03 = IVibratorCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            triggerSynced(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            cancelSynced();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements IVibratorManager {
             private IBinder mRemote;
             private int mCachedVersion = -1;

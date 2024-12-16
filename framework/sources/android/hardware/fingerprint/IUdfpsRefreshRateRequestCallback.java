@@ -16,7 +16,6 @@ public interface IUdfpsRefreshRateRequestCallback extends IInterface {
 
     void onRequestEnabled(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IUdfpsRefreshRateRequestCallback {
         @Override // android.hardware.fingerprint.IUdfpsRefreshRateRequestCallback
         public void onRequestEnabled(int displayId) throws RemoteException {
@@ -36,7 +35,6 @@ public interface IUdfpsRefreshRateRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IUdfpsRefreshRateRequestCallback {
         static final int TRANSACTION_onAuthenticationPossible = 3;
         static final int TRANSACTION_onRequestDisabled = 2;
@@ -85,37 +83,33 @@ public interface IUdfpsRefreshRateRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IUdfpsRefreshRateRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IUdfpsRefreshRateRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IUdfpsRefreshRateRequestCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRequestEnabled(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onRequestDisabled(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAuthenticationPossible(_arg03, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRequestEnabled(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onRequestDisabled(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAuthenticationPossible(_arg03, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IUdfpsRefreshRateRequestCallback {
+        private static class Proxy implements IUdfpsRefreshRateRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

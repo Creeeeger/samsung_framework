@@ -13,18 +13,16 @@ import android.os.UserHandle;
 /* loaded from: classes5.dex */
 public abstract class PackageChangeReceiver extends BroadcastReceiver {
     private static HandlerThread sHandlerThread;
-    static final IntentFilter sPackageIntentFilter;
+    static final IntentFilter sPackageIntentFilter = new IntentFilter();
     Context mRegisteredContext;
 
     static {
-        IntentFilter intentFilter = new IntentFilter();
-        sPackageIntentFilter = intentFilter;
-        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
-        intentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        intentFilter.addAction(Intent.ACTION_QUERY_PACKAGE_RESTART);
-        intentFilter.addAction(Intent.ACTION_PACKAGE_RESTARTED);
-        intentFilter.addDataScheme("package");
+        sPackageIntentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+        sPackageIntentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+        sPackageIntentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        sPackageIntentFilter.addAction(Intent.ACTION_QUERY_PACKAGE_RESTART);
+        sPackageIntentFilter.addAction(Intent.ACTION_PACKAGE_RESTARTED);
+        sPackageIntentFilter.addDataScheme("package");
     }
 
     public void register(Context context, Looper thread, UserHandle user) {
@@ -32,17 +30,15 @@ public abstract class PackageChangeReceiver extends BroadcastReceiver {
             throw new IllegalStateException("Already registered");
         }
         Handler handler = new Handler(thread == null ? getStaticLooper() : thread);
-        Context createContextAsUser = user == null ? context : context.createContextAsUser(user, 0);
-        this.mRegisteredContext = createContextAsUser;
-        createContextAsUser.registerReceiver(this, sPackageIntentFilter, null, handler);
+        this.mRegisteredContext = user == null ? context : context.createContextAsUser(user, 0);
+        this.mRegisteredContext.registerReceiver(this, sPackageIntentFilter, null, handler);
     }
 
     public void unregister() {
-        Context context = this.mRegisteredContext;
-        if (context == null) {
+        if (this.mRegisteredContext == null) {
             throw new IllegalStateException("Not registered");
         }
-        context.unregisterReceiver(this);
+        this.mRegisteredContext.unregisterReceiver(this);
         this.mRegisteredContext = null;
     }
 
@@ -50,9 +46,8 @@ public abstract class PackageChangeReceiver extends BroadcastReceiver {
         Looper looper;
         synchronized (PackageChangeReceiver.class) {
             if (sHandlerThread == null) {
-                HandlerThread handlerThread = new HandlerThread(PackageChangeReceiver.class.getSimpleName());
-                sHandlerThread = handlerThread;
-                handlerThread.start();
+                sHandlerThread = new HandlerThread(PackageChangeReceiver.class.getSimpleName());
+                sHandlerThread.start();
             }
             looper = sHandlerThread.getLooper();
         }

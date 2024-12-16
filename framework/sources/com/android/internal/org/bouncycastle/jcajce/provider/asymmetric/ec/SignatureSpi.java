@@ -45,42 +45,36 @@ public class SignatureSpi extends DSABase {
         return null;
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSA extends SignatureSpi {
         public ecDSA() {
             super(AndroidDigestFactory.getSHA1(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSAnone extends SignatureSpi {
         public ecDSAnone() {
             super(new NullDigest(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSA224 extends SignatureSpi {
         public ecDSA224() {
             super(AndroidDigestFactory.getSHA224(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSA256 extends SignatureSpi {
         public ecDSA256() {
             super(AndroidDigestFactory.getSHA256(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSA384 extends SignatureSpi {
         public ecDSA384() {
             super(AndroidDigestFactory.getSHA384(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);
         }
     }
 
-    /* loaded from: classes5.dex */
     public static class ecDSA512 extends SignatureSpi {
         public ecDSA512() {
             super(AndroidDigestFactory.getSHA512(), new ECDSASigner(), StandardDSAEncoding.INSTANCE);

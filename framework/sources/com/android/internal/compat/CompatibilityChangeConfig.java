@@ -6,27 +6,22 @@ import android.os.Parcelable;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class CompatibilityChangeConfig implements Parcelable {
     public static final Parcelable.Creator<CompatibilityChangeConfig> CREATOR = new Parcelable.Creator<CompatibilityChangeConfig>() { // from class: com.android.internal.compat.CompatibilityChangeConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityChangeConfig createFromParcel(Parcel in) {
             return new CompatibilityChangeConfig(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatibilityChangeConfig[] newArray(int size) {
             return new CompatibilityChangeConfig[size];
         }
     };
     private final Compatibility.ChangeConfig mChangeConfig;
-
-    /* synthetic */ CompatibilityChangeConfig(Parcel parcel, CompatibilityChangeConfigIA compatibilityChangeConfigIA) {
-        this(parcel);
-    }
 
     public CompatibilityChangeConfig(Compatibility.ChangeConfig changeConfig) {
         this.mChangeConfig = changeConfig;
@@ -77,22 +72,5 @@ public final class CompatibilityChangeConfig implements Parcelable {
         long[] disabled = this.mChangeConfig.getDisabledChangesArray();
         dest.writeLongArray(enabled);
         dest.writeLongArray(disabled);
-    }
-
-    /* renamed from: com.android.internal.compat.CompatibilityChangeConfig$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompatibilityChangeConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityChangeConfig createFromParcel(Parcel in) {
-            return new CompatibilityChangeConfig(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatibilityChangeConfig[] newArray(int size) {
-            return new CompatibilityChangeConfig[size];
-        }
     }
 }

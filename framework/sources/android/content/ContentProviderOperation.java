@@ -1,26 +1,29 @@
 package android.content;
 
+import android.database.Cursor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SparseArray;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 /* loaded from: classes.dex */
 public class ContentProviderOperation implements Parcelable {
     public static final Parcelable.Creator<ContentProviderOperation> CREATOR = new Parcelable.Creator<ContentProviderOperation>() { // from class: android.content.ContentProviderOperation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentProviderOperation createFromParcel(Parcel source) {
             return new ContentProviderOperation(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ContentProviderOperation[] newArray(int size) {
             return new ContentProviderOperation[size];
@@ -44,14 +47,6 @@ public class ContentProviderOperation implements Parcelable {
     private final ArrayMap<String, Object> mValues;
     private final boolean mYieldAllowed;
 
-    /* synthetic */ ContentProviderOperation(Builder builder, ContentProviderOperationIA contentProviderOperationIA) {
-        this(builder);
-    }
-
-    /* synthetic */ ContentProviderOperation(Parcel parcel, ContentProviderOperationIA contentProviderOperationIA) {
-        this(parcel);
-    }
-
     private ContentProviderOperation(Builder builder) {
         this.mType = builder.mType;
         this.mUri = builder.mUri;
@@ -73,17 +68,15 @@ public class ContentProviderOperation implements Parcelable {
         this.mArg = source.readInt() != 0 ? source.readString8() : null;
         int valuesSize = source.readInt();
         if (valuesSize != -1) {
-            ArrayMap<String, Object> arrayMap = new ArrayMap<>(valuesSize);
-            this.mValues = arrayMap;
-            source.readArrayMap(arrayMap, null);
+            this.mValues = new ArrayMap<>(valuesSize);
+            source.readArrayMap(this.mValues, null);
         } else {
             this.mValues = null;
         }
         int extrasSize = source.readInt();
         if (extrasSize != -1) {
-            ArrayMap<String, Object> arrayMap2 = new ArrayMap<>(extrasSize);
-            this.mExtras = arrayMap2;
-            source.readArrayMap(arrayMap2, null);
+            this.mExtras = new ArrayMap<>(extrasSize);
+            source.readArrayMap(this.mExtras, null);
         } else {
             this.mExtras = null;
         }
@@ -124,16 +117,14 @@ public class ContentProviderOperation implements Parcelable {
         } else {
             parcel.writeInt(0);
         }
-        ArrayMap<String, Object> arrayMap = this.mValues;
-        if (arrayMap != null) {
-            parcel.writeInt(arrayMap.size());
+        if (this.mValues != null) {
+            parcel.writeInt(this.mValues.size());
             parcel.writeArrayMap(this.mValues);
         } else {
             parcel.writeInt(-1);
         }
-        ArrayMap<String, Object> arrayMap2 = this.mExtras;
-        if (arrayMap2 != null) {
-            parcel.writeInt(arrayMap2.size());
+        if (this.mExtras != null) {
+            parcel.writeInt(this.mExtras.size());
             parcel.writeArrayMap(this.mExtras);
         } else {
             parcel.writeInt(-1);
@@ -212,8 +203,7 @@ public class ContentProviderOperation implements Parcelable {
     }
 
     public boolean isWriteOperation() {
-        int i = this.mType;
-        return i == 3 || i == 1 || i == 2;
+        return this.mType == 3 || this.mType == 1 || this.mType == 2;
     }
 
     public boolean isReadOperation() {
@@ -231,54 +221,75 @@ public class ContentProviderOperation implements Parcelable {
         return applyInternal(provider, backRefs, numBackRefs);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d7, code lost:
-    
-        if (r2 != null) goto L120;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x00dd, code lost:
-    
-        if (r3.moveToNext() == false) goto L150;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x00df, code lost:
-    
-        r5 = 0;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x00e1, code lost:
-    
-        if (r5 >= r2.length) goto L151;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x00e3, code lost:
-    
-        r6 = r3.getString(r5);
-        r7 = r0.getAsString(r2[r5]);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x00f1, code lost:
-    
-        if (android.text.TextUtils.equals(r6, r7) == false) goto L149;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x00f3, code lost:
-    
-        r5 = r5 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x0124, code lost:
-    
-        throw new android.content.OperationApplicationException("Found value " + r6 + " when expected " + r7 + " for column " + r2[r5]);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0126, code lost:
-    
-        r3.close();
-        r2 = r4;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private android.content.ContentProviderResult applyInternal(android.content.ContentProvider r12, android.content.ContentProviderResult[] r13, int r14) throws android.content.OperationApplicationException {
-        /*
-            Method dump skipped, instructions count: 385
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: android.content.ContentProviderOperation.applyInternal(android.content.ContentProvider, android.content.ContentProviderResult[], int):android.content.ContentProviderResult");
+    private ContentProviderResult applyInternal(ContentProvider provider, ContentProviderResult[] backRefs, int numBackRefs) throws OperationApplicationException {
+        int numRows;
+        ContentValues values = resolveValueBackReferences(backRefs, numBackRefs);
+        Bundle extras = resolveExtrasBackReferences(backRefs, numBackRefs);
+        if (this.mSelection != null) {
+            extras = extras != null ? extras : new Bundle();
+            extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, this.mSelection);
+        }
+        if (this.mSelectionArgs != null) {
+            extras = extras != null ? extras : new Bundle();
+            extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, resolveSelectionArgsBackReferences(backRefs, numBackRefs));
+        }
+        if (this.mType == 1) {
+            Uri newUri = provider.insert(this.mUri, values, extras);
+            if (newUri != null) {
+                return new ContentProviderResult(newUri);
+            }
+            throw new OperationApplicationException("Insert into " + this.mUri + " returned no result");
+        }
+        if (this.mType == 5) {
+            Bundle res = provider.call(this.mUri.getAuthority(), this.mMethod, this.mArg, extras);
+            return new ContentProviderResult(res);
+        }
+        if (this.mType == 3) {
+            numRows = provider.delete(this.mUri, extras);
+        } else {
+            int numRows2 = this.mType;
+            if (numRows2 == 2) {
+                numRows = provider.update(this.mUri, values, extras);
+            } else {
+                int numRows3 = this.mType;
+                if (numRows3 == 4) {
+                    String[] projection = null;
+                    if (values != null) {
+                        ArrayList<String> projectionList = new ArrayList<>();
+                        for (Map.Entry<String, Object> entry : values.valueSet()) {
+                            projectionList.add(entry.getKey());
+                        }
+                        projection = (String[]) projectionList.toArray(new String[projectionList.size()]);
+                    }
+                    Cursor cursor = provider.query(this.mUri, projection, extras, null);
+                    try {
+                        int numRows4 = cursor.getCount();
+                        if (projection != null) {
+                            while (cursor.moveToNext()) {
+                                for (int i = 0; i < projection.length; i++) {
+                                    String cursorValue = cursor.getString(i);
+                                    String expectedValue = values.getAsString(projection[i]);
+                                    if (!TextUtils.equals(cursorValue, expectedValue)) {
+                                        throw new OperationApplicationException("Found value " + cursorValue + " when expected " + expectedValue + " for column " + projection[i]);
+                                    }
+                                }
+                            }
+                        }
+                        cursor.close();
+                        numRows = numRows4;
+                    } catch (Throwable th) {
+                        cursor.close();
+                        throw th;
+                    }
+                } else {
+                    throw new IllegalStateException("bad type, " + this.mType);
+                }
+            }
+        }
+        if (this.mExpectedCount != null && this.mExpectedCount.intValue() != numRows) {
+            throw new OperationApplicationException("Expected " + this.mExpectedCount + " rows but actual " + numRows);
+        }
+        return new ContentProviderResult(numRows);
     }
 
     public ContentValues resolveValueBackReferences(ContentProviderResult[] backRefs, int numBackRefs) {
@@ -391,34 +402,15 @@ public class ContentProviderOperation implements Parcelable {
         return 0;
     }
 
-    /* renamed from: android.content.ContentProviderOperation$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ContentProviderOperation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentProviderOperation createFromParcel(Parcel source) {
-            return new ContentProviderOperation(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ContentProviderOperation[] newArray(int size) {
-            return new ContentProviderOperation[size];
-        }
-    }
-
-    /* loaded from: classes.dex */
     public static class BackReference implements Parcelable {
         public static final Parcelable.Creator<BackReference> CREATOR = new Parcelable.Creator<BackReference>() { // from class: android.content.ContentProviderOperation.BackReference.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BackReference createFromParcel(Parcel source) {
                 return new BackReference(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public BackReference[] newArray(int size) {
                 return new BackReference[size];
@@ -426,10 +418,6 @@ public class ContentProviderOperation implements Parcelable {
         };
         private final int fromIndex;
         private final String fromKey;
-
-        /* synthetic */ BackReference(int i, String str, BackReferenceIA backReferenceIA) {
-            this(i, str);
-        }
 
         private BackReference(int fromIndex, String fromKey) {
             this.fromIndex = fromIndex;
@@ -446,12 +434,11 @@ public class ContentProviderOperation implements Parcelable {
         }
 
         public Object resolve(ContentProviderResult[] backRefs, int numBackRefs) {
-            int i = this.fromIndex;
-            if (i >= numBackRefs) {
+            if (this.fromIndex >= numBackRefs) {
                 Log.e(ContentProviderOperation.TAG, toString());
                 throw new ArrayIndexOutOfBoundsException("asked for back ref " + this.fromIndex + " but there are only " + numBackRefs + " back refs");
             }
-            ContentProviderResult backRef = backRefs[i];
+            ContentProviderResult backRef = backRefs[this.fromIndex];
             if (backRef.extras != null) {
                 Object backRefValue = backRef.extras.get(this.fromKey);
                 return backRefValue;
@@ -480,26 +467,8 @@ public class ContentProviderOperation implements Parcelable {
         public int describeContents() {
             return 0;
         }
-
-        /* renamed from: android.content.ContentProviderOperation$BackReference$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<BackReference> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BackReference createFromParcel(Parcel source) {
-                return new BackReference(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public BackReference[] newArray(int size) {
-                return new BackReference[size];
-            }
-        }
     }
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private final String mArg;
         private boolean mExceptionAllowed;
@@ -513,14 +482,6 @@ public class ContentProviderOperation implements Parcelable {
         private ArrayMap<String, Object> mValues;
         private boolean mYieldAllowed;
 
-        /* synthetic */ Builder(int i, Uri uri, BuilderIA builderIA) {
-            this(i, uri);
-        }
-
-        /* synthetic */ Builder(int i, Uri uri, String str, String str2, BuilderIA builderIA) {
-            this(i, uri, str, str2);
-        }
-
         private Builder(int type, Uri uri) {
             this(type, uri, null, null);
         }
@@ -533,12 +494,10 @@ public class ContentProviderOperation implements Parcelable {
         }
 
         public ContentProviderOperation build() {
-            ArrayMap<String, Object> arrayMap;
-            ArrayMap<String, Object> arrayMap2;
-            if (this.mType == 2 && ((arrayMap2 = this.mValues) == null || arrayMap2.isEmpty())) {
+            if (this.mType == 2 && (this.mValues == null || this.mValues.isEmpty())) {
                 throw new IllegalArgumentException("Empty values");
             }
-            if (this.mType == 4 && (((arrayMap = this.mValues) == null || arrayMap.isEmpty()) && this.mExpectedCount == null)) {
+            if (this.mType == 4 && ((this.mValues == null || this.mValues.isEmpty()) && this.mExpectedCount == null)) {
                 throw new IllegalArgumentException("Empty values");
             }
             return new ContentProviderOperation(this);
@@ -608,18 +567,18 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withValueBackReferences(ContentValues backReferences) {
+        public Builder withValueBackReferences(ContentValues contentValues) {
             assertValuesAllowed();
-            ArrayMap<String, Object> rawValues = backReferences.getValues();
-            for (int i = 0; i < rawValues.size(); i++) {
-                setValue(rawValues.keyAt(i), new BackReference(((Integer) rawValues.valueAt(i)).intValue(), null));
+            ArrayMap<String, Object> values = contentValues.getValues();
+            for (int i = 0; i < values.size(); i++) {
+                setValue(values.keyAt(i), new BackReference(((Integer) values.valueAt(i)).intValue(), null));
             }
             return this;
         }
 
-        public Builder withValueBackReference(String key, int fromIndex) {
+        public Builder withValueBackReference(String str, int i) {
             assertValuesAllowed();
-            setValue(key, new BackReference(fromIndex, null));
+            setValue(str, new BackReference(i, null));
             return this;
         }
 
@@ -644,9 +603,9 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withExtraBackReference(String key, int fromIndex) {
+        public Builder withExtraBackReference(String str, int i) {
             assertExtrasAllowed();
-            setExtra(key, new BackReference(fromIndex, null));
+            setExtra(str, new BackReference(i, null));
             return this;
         }
 
@@ -668,9 +627,9 @@ public class ContentProviderOperation implements Parcelable {
             return this;
         }
 
-        public Builder withSelectionBackReference(int index, int fromIndex) {
+        public Builder withSelectionBackReference(int i, int i2) {
             assertSelectionAllowed();
-            setSelectionArg(index, new BackReference(fromIndex, null));
+            setSelectionArg(i, new BackReference(i2, null));
             return this;
         }
 
@@ -681,8 +640,7 @@ public class ContentProviderOperation implements Parcelable {
         }
 
         public Builder withExpectedCount(int count) {
-            int i = this.mType;
-            if (i != 2 && i != 3 && i != 4) {
+            if (this.mType != 2 && this.mType != 3 && this.mType != 4) {
                 throw new IllegalArgumentException("only updates, deletes, and asserts can have expected counts");
             }
             this.mExpectedCount = Integer.valueOf(count);

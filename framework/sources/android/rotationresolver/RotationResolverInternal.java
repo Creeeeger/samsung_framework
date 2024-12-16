@@ -5,7 +5,6 @@ import android.os.CancellationSignal;
 /* loaded from: classes3.dex */
 public abstract class RotationResolverInternal {
 
-    /* loaded from: classes3.dex */
     public interface RotationResolverCallbackInternal {
         void onFailure(int i);
 

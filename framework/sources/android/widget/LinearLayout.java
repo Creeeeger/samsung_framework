@@ -77,16 +77,13 @@ public class LinearLayout extends ViewGroup {
     private float mWeightSum;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface DividerMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface OrientationMode {
     }
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams extends ViewGroup.MarginLayoutParams {
 
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT, mapping = {@ViewDebug.IntToString(from = -1, to = KeyProperties.DIGEST_NONE), @ViewDebug.IntToString(from = 0, to = KeyProperties.DIGEST_NONE), @ViewDebug.IntToString(from = 48, to = "TOP"), @ViewDebug.IntToString(from = 80, to = "BOTTOM"), @ViewDebug.IntToString(from = 3, to = "LEFT"), @ViewDebug.IntToString(from = 5, to = "RIGHT"), @ViewDebug.IntToString(from = Gravity.START, to = "START"), @ViewDebug.IntToString(from = Gravity.END, to = "END"), @ViewDebug.IntToString(from = 16, to = "CENTER_VERTICAL"), @ViewDebug.IntToString(from = 112, to = "FILL_VERTICAL"), @ViewDebug.IntToString(from = 1, to = "CENTER_HORIZONTAL"), @ViewDebug.IntToString(from = 7, to = "FILL_HORIZONTAL"), @ViewDebug.IntToString(from = 17, to = "CENTER"), @ViewDebug.IntToString(from = 119, to = "FILL")})
@@ -95,7 +92,6 @@ public class LinearLayout extends ViewGroup {
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT)
         public float weight;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_gravityId;
             private int mLayout_weightId;
@@ -162,14 +158,13 @@ public class LinearLayout extends ViewGroup {
         }
 
         @Override // android.view.ViewGroup.MarginLayoutParams, android.view.ViewGroup.LayoutParams
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
             encoder.addProperty("layout:weight", this.weight);
             encoder.addProperty("layout:gravity", this.gravity);
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LinearLayout> {
         private int mBaselineAlignedChildIndexId;
         private int mBaselineAlignedId;
@@ -328,7 +323,7 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         if (this.mDivider == null) {
             return;
         }
@@ -447,12 +442,10 @@ public class LinearLayout extends ViewGroup {
         if (this.mBaselineAlignedChildIndex < 0) {
             return super.getBaseline();
         }
-        int childCount = getChildCount();
-        int i = this.mBaselineAlignedChildIndex;
-        if (childCount <= i) {
+        if (getChildCount() <= this.mBaselineAlignedChildIndex) {
             throw new RuntimeException("mBaselineAlignedChildIndex of LinearLayout set to an index that is out of bounds.");
         }
-        View child = getChildAt(i);
+        View child = getChildAt(this.mBaselineAlignedChildIndex);
         int childBaseline = child.getBaseline();
         if (childBaseline == -1) {
             if (this.mBaselineAlignedChildIndex == 0) {
@@ -505,7 +498,7 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override // android.view.View
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (this.mOrientation == 1) {
             measureVertical(widthMeasureSpec, heightMeasureSpec);
         } else {
@@ -513,7 +506,7 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    public boolean hasDividerBeforeChildAt(int childIndex) {
+    protected boolean hasDividerBeforeChildAt(int childIndex) {
         if (this.mShowDividers == 0) {
             return false;
         }
@@ -552,19 +545,19 @@ public class LinearLayout extends ViewGroup {
         return true;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:124:0x0469  */
-    /* JADX WARN: Removed duplicated region for block: B:126:0x046f  */
-    /* JADX WARN: Removed duplicated region for block: B:158:0x03dd  */
-    /* JADX WARN: Removed duplicated region for block: B:168:0x03e0  */
+    /* JADX WARN: Removed duplicated region for block: B:124:0x046b  */
+    /* JADX WARN: Removed duplicated region for block: B:126:0x0471  */
+    /* JADX WARN: Removed duplicated region for block: B:158:0x03df  */
+    /* JADX WARN: Removed duplicated region for block: B:168:0x03e2  */
     /* JADX WARN: Removed duplicated region for block: B:48:0x0190  */
     /* JADX WARN: Removed duplicated region for block: B:54:0x019c  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void measureVertical(int r42, int r43) {
+    void measureVertical(int r42, int r43) {
         /*
-            Method dump skipped, instructions count: 1138
+            Method dump skipped, instructions count: 1140
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.widget.LinearLayout.measureVertical(int, int):void");
@@ -586,17 +579,17 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:148:0x0681  */
-    /* JADX WARN: Removed duplicated region for block: B:151:0x0687  */
-    /* JADX WARN: Removed duplicated region for block: B:197:0x0588  */
-    /* JADX WARN: Removed duplicated region for block: B:207:0x05c0  */
+    /* JADX WARN: Removed duplicated region for block: B:148:0x0683  */
+    /* JADX WARN: Removed duplicated region for block: B:151:0x0689  */
+    /* JADX WARN: Removed duplicated region for block: B:197:0x058a  */
+    /* JADX WARN: Removed duplicated region for block: B:207:0x05c2  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void measureHorizontal(int r51, int r52) {
+    void measureHorizontal(int r51, int r52) {
         /*
-            Method dump skipped, instructions count: 1674
+            Method dump skipped, instructions count: 1676
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.widget.LinearLayout.measureHorizontal(int, int):void");
@@ -626,7 +619,7 @@ public class LinearLayout extends ViewGroup {
         return 0;
     }
 
-    public void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
+    void measureChildBeforeLayout(View child, int childIndex, int widthMeasureSpec, int totalWidth, int heightMeasureSpec, int totalHeight) {
         measureChildWithMargins(child, widthMeasureSpec, totalWidth, heightMeasureSpec, totalHeight);
     }
 
@@ -639,7 +632,7 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (this.mOrientation == 1) {
             layoutVertical(l, t, r, b);
         } else {
@@ -647,7 +640,7 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    public void layoutVertical(int left, int top, int right, int bottom) {
+    void layoutVertical(int left, int top, int right, int bottom) {
         int childTop;
         int paddingLeft;
         int gravity;
@@ -657,9 +650,8 @@ public class LinearLayout extends ViewGroup {
         int childRight = width - this.mPaddingRight;
         int childSpace = (width - paddingLeft2) - this.mPaddingRight;
         int count = getVirtualChildCount();
-        int i = this.mGravity;
-        int majorGravity = i & 112;
-        int minorGravity = i & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
+        int majorGravity = this.mGravity & 112;
+        int minorGravity = this.mGravity & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
         switch (majorGravity) {
             case 16:
                 int childTop2 = this.mPaddingTop;
@@ -673,11 +665,11 @@ public class LinearLayout extends ViewGroup {
                 childTop = this.mPaddingTop;
                 break;
         }
-        int i2 = 0;
-        while (i2 < count) {
-            View child = getVirtualChildAt(i2);
+        int i = 0;
+        while (i < count) {
+            View child = getVirtualChildAt(i);
             if (child == null) {
-                childTop += measureNullChild(i2);
+                childTop += measureNullChild(i);
                 paddingLeft = paddingLeft2;
             } else if (child.getVisibility() == 8) {
                 paddingLeft = paddingLeft2;
@@ -706,7 +698,7 @@ public class LinearLayout extends ViewGroup {
                         childLeft = lp.leftMargin + paddingLeft2;
                         break;
                 }
-                if (hasDividerBeforeChildAt(i2)) {
+                if (hasDividerBeforeChildAt(i)) {
                     childTop += this.mDividerHeight;
                 }
                 int childTop4 = childTop + lp.topMargin;
@@ -714,10 +706,10 @@ public class LinearLayout extends ViewGroup {
                 paddingLeft = paddingLeft2;
                 setChildFrame(child, childLeft, childTop4 + childTop5, childWidth, childHeight);
                 int childTop6 = childTop4 + childHeight + lp.bottomMargin + getNextLocationOffset(child);
-                i2 += getChildrenSkipCount(child, i2);
+                i += getChildrenSkipCount(child, i);
                 childTop = childTop6;
             }
-            i2++;
+            i++;
             paddingLeft2 = paddingLeft;
         }
     }
@@ -733,21 +725,21 @@ public class LinearLayout extends ViewGroup {
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:23:0x00b8  */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00c3  */
-    /* JADX WARN: Removed duplicated region for block: B:28:0x0101  */
-    /* JADX WARN: Removed duplicated region for block: B:33:0x010b  */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x00c8  */
-    /* JADX WARN: Removed duplicated region for block: B:40:0x00e1  */
-    /* JADX WARN: Removed duplicated region for block: B:44:0x00f1  */
-    /* JADX WARN: Removed duplicated region for block: B:45:0x00bc  */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x00ba  */
+    /* JADX WARN: Removed duplicated region for block: B:26:0x00c5  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x0103  */
+    /* JADX WARN: Removed duplicated region for block: B:33:0x010d  */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x00ca  */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x00e3  */
+    /* JADX WARN: Removed duplicated region for block: B:44:0x00f3  */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x00be  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void layoutHorizontal(int r34, int r35, int r36, int r37) {
+    void layoutHorizontal(int r34, int r35, int r36, int r37) {
         /*
-            Method dump skipped, instructions count: 388
+            Method dump skipped, instructions count: 390
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: android.widget.LinearLayout.layoutHorizontal(int, int, int, int):void");
@@ -789,9 +781,8 @@ public class LinearLayout extends ViewGroup {
     @RemotableViewMethod
     public void setHorizontalGravity(int horizontalGravity) {
         int gravity = horizontalGravity & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK;
-        int i = this.mGravity;
-        if ((8388615 & i) != gravity) {
-            this.mGravity = ((-8388616) & i) | gravity;
+        if ((8388615 & this.mGravity) != gravity) {
+            this.mGravity = (this.mGravity & (-8388616)) | gravity;
             requestLayout();
         }
     }
@@ -799,9 +790,8 @@ public class LinearLayout extends ViewGroup {
     @RemotableViewMethod
     public void setVerticalGravity(int verticalGravity) {
         int gravity = verticalGravity & 112;
-        int i = this.mGravity;
-        if ((i & 112) != gravity) {
-            this.mGravity = (i & (-113)) | gravity;
+        if ((this.mGravity & 112) != gravity) {
+            this.mGravity = (this.mGravity & (-113)) | gravity;
             requestLayout();
         }
     }
@@ -811,18 +801,19 @@ public class LinearLayout extends ViewGroup {
         return new LayoutParams(getContext(), attrs);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateDefaultLayoutParams() {
-        int i = this.mOrientation;
-        if (i == 0) {
+        if (this.mOrientation == 0) {
             return new LayoutParams(-2, -2);
         }
-        if (i == 1) {
+        if (this.mOrientation == 1) {
             return new LayoutParams(-1, -2);
         }
         return null;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.view.ViewGroup
     public LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
         if (sPreserveMarginParamsInLayoutParamConversion) {
@@ -837,7 +828,7 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup
-    public boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
     }
 
@@ -847,7 +838,7 @@ public class LinearLayout extends ViewGroup {
     }
 
     @Override // android.view.ViewGroup, android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("layout:baselineAligned", this.mBaselineAligned);
         encoder.addProperty("layout:baselineAlignedChildIndex", this.mBaselineAlignedChildIndex);

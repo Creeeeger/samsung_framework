@@ -5,12 +5,10 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MappableFile implements Parcelable {
     public static final Parcelable.Creator<MappableFile> CREATOR = new Parcelable.Creator<MappableFile>() { // from class: android.hardware.common.MappableFile.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MappableFile createFromParcel(Parcel _aidl_source) {
             MappableFile _aidl_out = new MappableFile();
@@ -18,6 +16,7 @@ public class MappableFile implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MappableFile[] newArray(int _aidl_size) {
             return new MappableFile[_aidl_size];
@@ -27,25 +26,6 @@ public class MappableFile implements Parcelable {
     public long length = 0;
     public int prot = 0;
     public long offset = 0;
-
-    /* renamed from: android.hardware.common.MappableFile$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MappableFile> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MappableFile createFromParcel(Parcel _aidl_source) {
-            MappableFile _aidl_out = new MappableFile();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MappableFile[] newArray(int _aidl_size) {
-            return new MappableFile[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

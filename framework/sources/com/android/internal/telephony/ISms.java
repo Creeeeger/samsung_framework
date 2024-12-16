@@ -110,7 +110,6 @@ public interface ISms extends IInterface {
 
     boolean updateMessageOnIccEfForSubscriber(int i, String str, int i2, int i3, byte[] bArr) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISms {
         @Override // com.android.internal.telephony.ISms
         public List<SmsRawData> getAllMessagesFromIccEfForSubscriber(int subId, String callingPkg) throws RemoteException {
@@ -341,7 +340,6 @@ public interface ISms extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISms {
         public static final String DESCRIPTOR = "com.android.internal.telephony.ISms";
         static final int TRANSACTION_checkSmsShortCodeDestination = 30;
@@ -529,511 +527,508 @@ public interface ISms extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    List<SmsRawData> _result = getAllMessagesFromIccEfForSubscriber(_arg0, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result, 1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    int _arg2 = data.readInt();
+                    int _arg3 = data.readInt();
+                    byte[] _arg4 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = updateMessageOnIccEfForSubscriber(_arg02, _arg12, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    String _arg13 = data.readString();
+                    int _arg22 = data.readInt();
+                    byte[] _arg32 = data.createByteArray();
+                    byte[] _arg42 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = copyMessageToIccEfForSubscriber(_arg03, _arg13, _arg22, _arg32, _arg42);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg23 = data.readString();
+                    String _arg33 = data.readString();
+                    String _arg43 = data.readString();
+                    int _arg5 = data.readInt();
+                    byte[] _arg6 = data.createByteArray();
+                    PendingIntent _arg7 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg8 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendDataForSubscriber(_arg04, _arg14, _arg23, _arg33, _arg43, _arg5, _arg6, _arg7, _arg8);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    String _arg15 = data.readString();
+                    String _arg24 = data.readString();
+                    String _arg34 = data.readString();
+                    String _arg44 = data.readString();
+                    String _arg52 = data.readString();
+                    PendingIntent _arg62 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg72 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    boolean _arg82 = data.readBoolean();
+                    long _arg9 = data.readLong();
+                    data.enforceNoDataAvail();
+                    sendTextForSubscriber(_arg05, _arg15, _arg24, _arg34, _arg44, _arg52, _arg62, _arg72, _arg82, _arg9);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg16 = data.readString();
+                    String _arg25 = data.readString();
+                    String _arg35 = data.readString();
+                    String _arg45 = data.readString();
+                    String _arg53 = data.readString();
+                    PendingIntent _arg63 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg73 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    boolean _arg83 = data.readBoolean();
+                    int _arg92 = data.readInt();
+                    boolean _arg10 = data.readBoolean();
+                    int _arg11 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTextForSubscriberWithOptions(_arg06, _arg16, _arg25, _arg35, _arg45, _arg53, _arg63, _arg73, _arg83, _arg92, _arg10, _arg11);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    byte[] _arg17 = data.createByteArray();
+                    String _arg26 = data.readString();
+                    PendingIntent _arg36 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    injectSmsPduForSubscriber(_arg07, _arg17, _arg26, _arg36);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg18 = data.readString();
+                    String _arg27 = data.readString();
+                    String _arg37 = data.readString();
+                    String _arg46 = data.readString();
+                    List<String> _arg54 = data.createStringArrayList();
+                    List<PendingIntent> _arg64 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    List<PendingIntent> _arg74 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    boolean _arg84 = data.readBoolean();
+                    long _arg93 = data.readLong();
+                    data.enforceNoDataAvail();
+                    sendMultipartTextForSubscriber(_arg08, _arg18, _arg27, _arg37, _arg46, _arg54, _arg64, _arg74, _arg84, _arg93);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    String _arg19 = data.readString();
+                    String _arg28 = data.readString();
+                    String _arg38 = data.readString();
+                    String _arg47 = data.readString();
+                    List<String> _arg55 = data.createStringArrayList();
+                    List<PendingIntent> _arg65 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    List<PendingIntent> _arg75 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    boolean _arg85 = data.readBoolean();
+                    int _arg94 = data.readInt();
+                    boolean _arg102 = data.readBoolean();
+                    int _arg112 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendMultipartTextForSubscriberWithOptions(_arg09, _arg19, _arg28, _arg38, _arg47, _arg55, _arg65, _arg75, _arg85, _arg94, _arg102, _arg112);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg110 = data.readInt();
+                    int _arg29 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = enableCellBroadcastForSubscriber(_arg010, _arg110, _arg29);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg111 = data.readInt();
+                    int _arg210 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result5 = disableCellBroadcastForSubscriber(_arg011, _arg111, _arg210);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg113 = data.readInt();
+                    int _arg211 = data.readInt();
+                    int _arg39 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result6 = enableCellBroadcastRangeForSubscriber(_arg012, _arg113, _arg211, _arg39);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    int _arg114 = data.readInt();
+                    int _arg212 = data.readInt();
+                    int _arg310 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = disableCellBroadcastRangeForSubscriber(_arg013, _arg114, _arg212, _arg310);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 14:
+                    String _arg014 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = getPremiumSmsPermission(_arg014);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    String _arg115 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result9 = getPremiumSmsPermissionForSubscriber(_arg015, _arg115);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 16:
+                    String _arg016 = data.readString();
+                    int _arg116 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPremiumSmsPermission(_arg016, _arg116);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    String _arg117 = data.readString();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPremiumSmsPermissionForSubscriber(_arg017, _arg117, _arg213);
+                    reply.writeNoException();
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result10 = isImsSmsSupportedForSubscriber(_arg018);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result10);
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result11 = isSmsSimPickActivityNeeded(_arg019);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 20:
+                    int _result12 = getPreferredSmsSubscription();
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 21:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result13 = getImsSmsFormatForSubscriber(_arg020);
+                    reply.writeNoException();
+                    reply.writeString(_result13);
+                    return true;
+                case 22:
+                    boolean _result14 = isSMSPromptEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 23:
+                    int _arg021 = data.readInt();
+                    String _arg118 = data.readString();
+                    String _arg214 = data.readString();
+                    Uri _arg311 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg48 = data.readString();
+                    PendingIntent _arg56 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg66 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendStoredText(_arg021, _arg118, _arg214, _arg311, _arg48, _arg56, _arg66);
+                    reply.writeNoException();
+                    return true;
+                case 24:
+                    int _arg022 = data.readInt();
+                    String _arg119 = data.readString();
+                    String _arg215 = data.readString();
+                    Uri _arg312 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    String _arg49 = data.readString();
+                    List<PendingIntent> _arg57 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    List<PendingIntent> _arg67 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendStoredMultipartText(_arg022, _arg119, _arg215, _arg312, _arg49, _arg57, _arg67);
+                    reply.writeNoException();
+                    return true;
+                case 25:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result15 = getCarrierConfigValuesForSubscriber(_arg023);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    String _arg120 = data.readString();
+                    PendingIntent _arg216 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result16 = createAppSpecificSmsToken(_arg024, _arg120, _arg216);
+                    reply.writeNoException();
+                    reply.writeString(_result16);
+                    return true;
+                case 27:
+                    int _arg025 = data.readInt();
+                    String _arg121 = data.readString();
+                    String _arg217 = data.readString();
+                    PendingIntent _arg313 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    String _result17 = createAppSpecificSmsTokenWithPackageInfo(_arg025, _arg121, _arg217, _arg313);
+                    reply.writeNoException();
+                    reply.writeString(_result17);
+                    return true;
+                case 28:
+                    int _arg026 = data.readInt();
+                    boolean _arg122 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setStorageMonitorMemoryStatusOverride(_arg026, _arg122);
+                    reply.writeNoException();
+                    return true;
+                case 29:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearStorageMonitorMemoryStatusOverride(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 30:
+                    int _arg028 = data.readInt();
+                    String _arg123 = data.readString();
+                    String _arg218 = data.readString();
+                    String _arg314 = data.readString();
+                    String _arg410 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result18 = checkSmsShortCodeDestination(_arg028, _arg123, _arg218, _arg314, _arg410);
+                    reply.writeNoException();
+                    reply.writeInt(_result18);
+                    return true;
+                case 31:
+                    int _arg029 = data.readInt();
+                    String _arg124 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result19 = getSmscAddressFromIccEfForSubscriber(_arg029, _arg124);
+                    reply.writeNoException();
+                    reply.writeString(_result19);
+                    return true;
+                case 32:
+                    String _arg030 = data.readString();
+                    int _arg125 = data.readInt();
+                    String _arg219 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result20 = setSmscAddressOnIccEfForSubscriber(_arg030, _arg125, _arg219);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 33:
+                    int _arg031 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result21 = getSmsCapacityOnIccForSubscriber(_arg031);
+                    reply.writeNoException();
+                    reply.writeInt(_result21);
+                    return true;
+                case 34:
+                    int _arg032 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result22 = resetAllCellBroadcastRanges(_arg032);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result22);
+                    return true;
+                case 35:
+                    String _arg033 = data.readString();
+                    data.enforceNoDataAvail();
+                    long _result23 = getWapMessageSize(_arg033);
+                    reply.writeNoException();
+                    reply.writeLong(_result23);
+                    return true;
+                case 36:
+                    int _arg034 = data.readInt();
+                    data.enforceNoDataAvail();
+                    byte[] _result24 = getCbSettingsForSubscriber(_arg034);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result24);
+                    return true;
+                case 37:
+                    int _arg035 = data.readInt();
+                    String _arg126 = data.readString();
+                    String _arg220 = data.readString();
+                    String _arg315 = data.readString();
+                    String _arg411 = data.readString();
+                    PendingIntent _arg58 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg68 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg76 = data.readString();
+                    int _arg86 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTextwithCBPForSubscriber(_arg035, _arg126, _arg220, _arg315, _arg411, _arg58, _arg68, _arg76, _arg86);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    int _arg036 = data.readInt();
+                    String _arg127 = data.readString();
+                    String _arg221 = data.readString();
+                    String _arg316 = data.readString();
+                    String _arg412 = data.readString();
+                    PendingIntent _arg59 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg69 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    boolean _arg77 = data.readBoolean();
+                    int _arg87 = data.readInt();
+                    int _arg95 = data.readInt();
+                    int _arg103 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTextwithOptionsForSubscriber(_arg036, _arg127, _arg221, _arg316, _arg412, _arg59, _arg69, _arg77, _arg87, _arg95, _arg103);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    int _arg037 = data.readInt();
+                    String _arg128 = data.readString();
+                    String _arg222 = data.readString();
+                    String _arg317 = data.readString();
+                    String _arg413 = data.readString();
+                    PendingIntent _arg510 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg610 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    boolean _arg78 = data.readBoolean();
+                    int _arg88 = data.readInt();
+                    int _arg96 = data.readInt();
+                    int _arg104 = data.readInt();
+                    int _arg1110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTextwithOptionsReadconfirmForSubscriber(_arg037, _arg128, _arg222, _arg317, _arg413, _arg510, _arg610, _arg78, _arg88, _arg96, _arg104, _arg1110);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    int _arg038 = data.readInt();
+                    String _arg129 = data.readString();
+                    String _arg223 = data.readString();
+                    String _arg318 = data.readString();
+                    List<String> _arg414 = data.createStringArrayList();
+                    List<PendingIntent> _arg511 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    List<PendingIntent> _arg611 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    String _arg79 = data.readString();
+                    int _arg89 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendMultipartTextwithCBPForSubscriber(_arg038, _arg129, _arg223, _arg318, _arg414, _arg511, _arg611, _arg79, _arg89);
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    int _arg039 = data.readInt();
+                    String _arg130 = data.readString();
+                    String _arg224 = data.readString();
+                    String _arg319 = data.readString();
+                    List<String> _arg415 = data.createStringArrayList();
+                    List<PendingIntent> _arg512 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    List<PendingIntent> _arg612 = data.createTypedArrayList(PendingIntent.CREATOR);
+                    boolean _arg710 = data.readBoolean();
+                    int _arg810 = data.readInt();
+                    int _arg97 = data.readInt();
+                    int _arg105 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendMultipartTextwithOptionsForSubscriber(_arg039, _arg130, _arg224, _arg319, _arg415, _arg512, _arg612, _arg710, _arg810, _arg97, _arg105);
+                    reply.writeNoException();
+                    return true;
+                case 42:
+                    int _arg040 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result25 = getSMSPAvailableForSubscriber(_arg040);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result25);
+                    return true;
+                case 43:
+                    int _arg041 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result26 = getMnoNameForSubscriber(_arg041);
+                    reply.writeNoException();
+                    reply.writeString(_result26);
+                    return true;
+                case 44:
+                    int _arg042 = data.readInt();
+                    String _arg131 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result27 = getSmsSettingForSubscriber(_arg042, _arg131);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result27);
+                    return true;
+                case 45:
+                    int _arg043 = data.readInt();
+                    String _arg132 = data.readString();
+                    String _arg225 = data.readString();
+                    String _arg320 = data.readString();
+                    int _arg416 = data.readInt();
+                    int _arg513 = data.readInt();
+                    byte[] _arg613 = data.createByteArray();
+                    PendingIntent _arg711 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg811 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    sendDatawithOrigPortForSubscriber(_arg043, _arg132, _arg225, _arg320, _arg416, _arg513, _arg613, _arg711, _arg811);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg044 = data.readInt();
+                    String _arg133 = data.readString();
+                    String _arg226 = data.readString();
+                    String _arg321 = data.readString();
+                    String _arg417 = data.readString();
+                    data.enforceNoDataAvail();
+                    sendOTADomesticForSubscriber(_arg044, _arg133, _arg226, _arg321, _arg417);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _arg045 = data.readInt();
+                    String _arg134 = data.readString();
+                    String _arg227 = data.readString();
+                    String _arg322 = data.readString();
+                    byte[] _arg418 = data.createByteArray();
+                    PendingIntent _arg514 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg614 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    int _arg712 = data.readInt();
+                    int _arg812 = data.readInt();
+                    data.enforceNoDataAvail();
+                    sendTextNSRIForSubscriber(_arg045, _arg134, _arg227, _arg322, _arg418, _arg514, _arg614, _arg712, _arg812);
+                    reply.writeNoException();
+                    return true;
+                case 48:
+                    int _arg046 = data.readInt();
+                    String _arg135 = data.readString();
+                    String _arg228 = data.readString();
+                    String _arg323 = data.readString();
+                    String _arg419 = data.readString();
+                    PendingIntent _arg515 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    PendingIntent _arg615 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    boolean _arg713 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    sendTextAutoLoginForSubscriber(_arg046, _arg135, _arg228, _arg323, _arg419, _arg515, _arg615, _arg713);
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    int _arg047 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetSimFullStatusForSubscriber(_arg047);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            List<SmsRawData> _result = getAllMessagesFromIccEfForSubscriber(_arg0, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result, 1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            int _arg2 = data.readInt();
-                            int _arg3 = data.readInt();
-                            byte[] _arg4 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = updateMessageOnIccEfForSubscriber(_arg02, _arg12, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            String _arg13 = data.readString();
-                            int _arg22 = data.readInt();
-                            byte[] _arg32 = data.createByteArray();
-                            byte[] _arg42 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = copyMessageToIccEfForSubscriber(_arg03, _arg13, _arg22, _arg32, _arg42);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg23 = data.readString();
-                            String _arg33 = data.readString();
-                            String _arg43 = data.readString();
-                            int _arg5 = data.readInt();
-                            byte[] _arg6 = data.createByteArray();
-                            PendingIntent _arg7 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg8 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendDataForSubscriber(_arg04, _arg14, _arg23, _arg33, _arg43, _arg5, _arg6, _arg7, _arg8);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            String _arg15 = data.readString();
-                            String _arg24 = data.readString();
-                            String _arg34 = data.readString();
-                            String _arg44 = data.readString();
-                            String _arg52 = data.readString();
-                            PendingIntent _arg62 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg72 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            boolean _arg82 = data.readBoolean();
-                            long _arg9 = data.readLong();
-                            data.enforceNoDataAvail();
-                            sendTextForSubscriber(_arg05, _arg15, _arg24, _arg34, _arg44, _arg52, _arg62, _arg72, _arg82, _arg9);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg16 = data.readString();
-                            String _arg25 = data.readString();
-                            String _arg35 = data.readString();
-                            String _arg45 = data.readString();
-                            String _arg53 = data.readString();
-                            PendingIntent _arg63 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg73 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            boolean _arg83 = data.readBoolean();
-                            int _arg92 = data.readInt();
-                            boolean _arg10 = data.readBoolean();
-                            int _arg11 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTextForSubscriberWithOptions(_arg06, _arg16, _arg25, _arg35, _arg45, _arg53, _arg63, _arg73, _arg83, _arg92, _arg10, _arg11);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            byte[] _arg17 = data.createByteArray();
-                            String _arg26 = data.readString();
-                            PendingIntent _arg36 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            injectSmsPduForSubscriber(_arg07, _arg17, _arg26, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg18 = data.readString();
-                            String _arg27 = data.readString();
-                            String _arg37 = data.readString();
-                            String _arg46 = data.readString();
-                            List<String> _arg54 = data.createStringArrayList();
-                            List<PendingIntent> _arg64 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            List<PendingIntent> _arg74 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            boolean _arg84 = data.readBoolean();
-                            long _arg93 = data.readLong();
-                            data.enforceNoDataAvail();
-                            sendMultipartTextForSubscriber(_arg08, _arg18, _arg27, _arg37, _arg46, _arg54, _arg64, _arg74, _arg84, _arg93);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            String _arg19 = data.readString();
-                            String _arg28 = data.readString();
-                            String _arg38 = data.readString();
-                            String _arg47 = data.readString();
-                            List<String> _arg55 = data.createStringArrayList();
-                            List<PendingIntent> _arg65 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            List<PendingIntent> _arg75 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            boolean _arg85 = data.readBoolean();
-                            int _arg94 = data.readInt();
-                            boolean _arg102 = data.readBoolean();
-                            int _arg112 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendMultipartTextForSubscriberWithOptions(_arg09, _arg19, _arg28, _arg38, _arg47, _arg55, _arg65, _arg75, _arg85, _arg94, _arg102, _arg112);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg110 = data.readInt();
-                            int _arg29 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = enableCellBroadcastForSubscriber(_arg010, _arg110, _arg29);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg111 = data.readInt();
-                            int _arg210 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result5 = disableCellBroadcastForSubscriber(_arg011, _arg111, _arg210);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            int _arg113 = data.readInt();
-                            int _arg211 = data.readInt();
-                            int _arg39 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result6 = enableCellBroadcastRangeForSubscriber(_arg012, _arg113, _arg211, _arg39);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            int _arg114 = data.readInt();
-                            int _arg212 = data.readInt();
-                            int _arg310 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = disableCellBroadcastRangeForSubscriber(_arg013, _arg114, _arg212, _arg310);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 14:
-                            String _arg014 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = getPremiumSmsPermission(_arg014);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result9 = getPremiumSmsPermissionForSubscriber(_arg015, _arg115);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 16:
-                            String _arg016 = data.readString();
-                            int _arg116 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPremiumSmsPermission(_arg016, _arg116);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            String _arg117 = data.readString();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPremiumSmsPermissionForSubscriber(_arg017, _arg117, _arg213);
-                            reply.writeNoException();
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result10 = isImsSmsSupportedForSubscriber(_arg018);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result10);
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = isSmsSimPickActivityNeeded(_arg019);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 20:
-                            int _result12 = getPreferredSmsSubscription();
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 21:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result13 = getImsSmsFormatForSubscriber(_arg020);
-                            reply.writeNoException();
-                            reply.writeString(_result13);
-                            return true;
-                        case 22:
-                            boolean _result14 = isSMSPromptEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 23:
-                            int _arg021 = data.readInt();
-                            String _arg118 = data.readString();
-                            String _arg214 = data.readString();
-                            Uri _arg311 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg48 = data.readString();
-                            PendingIntent _arg56 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg66 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendStoredText(_arg021, _arg118, _arg214, _arg311, _arg48, _arg56, _arg66);
-                            reply.writeNoException();
-                            return true;
-                        case 24:
-                            int _arg022 = data.readInt();
-                            String _arg119 = data.readString();
-                            String _arg215 = data.readString();
-                            Uri _arg312 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            String _arg49 = data.readString();
-                            List<PendingIntent> _arg57 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            List<PendingIntent> _arg67 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendStoredMultipartText(_arg022, _arg119, _arg215, _arg312, _arg49, _arg57, _arg67);
-                            reply.writeNoException();
-                            return true;
-                        case 25:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result15 = getCarrierConfigValuesForSubscriber(_arg023);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 26:
-                            int _arg024 = data.readInt();
-                            String _arg120 = data.readString();
-                            PendingIntent _arg216 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result16 = createAppSpecificSmsToken(_arg024, _arg120, _arg216);
-                            reply.writeNoException();
-                            reply.writeString(_result16);
-                            return true;
-                        case 27:
-                            int _arg025 = data.readInt();
-                            String _arg121 = data.readString();
-                            String _arg217 = data.readString();
-                            PendingIntent _arg313 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            String _result17 = createAppSpecificSmsTokenWithPackageInfo(_arg025, _arg121, _arg217, _arg313);
-                            reply.writeNoException();
-                            reply.writeString(_result17);
-                            return true;
-                        case 28:
-                            int _arg026 = data.readInt();
-                            boolean _arg122 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setStorageMonitorMemoryStatusOverride(_arg026, _arg122);
-                            reply.writeNoException();
-                            return true;
-                        case 29:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearStorageMonitorMemoryStatusOverride(_arg027);
-                            reply.writeNoException();
-                            return true;
-                        case 30:
-                            int _arg028 = data.readInt();
-                            String _arg123 = data.readString();
-                            String _arg218 = data.readString();
-                            String _arg314 = data.readString();
-                            String _arg410 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result18 = checkSmsShortCodeDestination(_arg028, _arg123, _arg218, _arg314, _arg410);
-                            reply.writeNoException();
-                            reply.writeInt(_result18);
-                            return true;
-                        case 31:
-                            int _arg029 = data.readInt();
-                            String _arg124 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result19 = getSmscAddressFromIccEfForSubscriber(_arg029, _arg124);
-                            reply.writeNoException();
-                            reply.writeString(_result19);
-                            return true;
-                        case 32:
-                            String _arg030 = data.readString();
-                            int _arg125 = data.readInt();
-                            String _arg219 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result20 = setSmscAddressOnIccEfForSubscriber(_arg030, _arg125, _arg219);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 33:
-                            int _arg031 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result21 = getSmsCapacityOnIccForSubscriber(_arg031);
-                            reply.writeNoException();
-                            reply.writeInt(_result21);
-                            return true;
-                        case 34:
-                            int _arg032 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result22 = resetAllCellBroadcastRanges(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result22);
-                            return true;
-                        case 35:
-                            String _arg033 = data.readString();
-                            data.enforceNoDataAvail();
-                            long _result23 = getWapMessageSize(_arg033);
-                            reply.writeNoException();
-                            reply.writeLong(_result23);
-                            return true;
-                        case 36:
-                            int _arg034 = data.readInt();
-                            data.enforceNoDataAvail();
-                            byte[] _result24 = getCbSettingsForSubscriber(_arg034);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result24);
-                            return true;
-                        case 37:
-                            int _arg035 = data.readInt();
-                            String _arg126 = data.readString();
-                            String _arg220 = data.readString();
-                            String _arg315 = data.readString();
-                            String _arg411 = data.readString();
-                            PendingIntent _arg58 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg68 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg76 = data.readString();
-                            int _arg86 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTextwithCBPForSubscriber(_arg035, _arg126, _arg220, _arg315, _arg411, _arg58, _arg68, _arg76, _arg86);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            int _arg036 = data.readInt();
-                            String _arg127 = data.readString();
-                            String _arg221 = data.readString();
-                            String _arg316 = data.readString();
-                            String _arg412 = data.readString();
-                            PendingIntent _arg59 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg69 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            boolean _arg77 = data.readBoolean();
-                            int _arg87 = data.readInt();
-                            int _arg95 = data.readInt();
-                            int _arg103 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTextwithOptionsForSubscriber(_arg036, _arg127, _arg221, _arg316, _arg412, _arg59, _arg69, _arg77, _arg87, _arg95, _arg103);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            int _arg037 = data.readInt();
-                            String _arg128 = data.readString();
-                            String _arg222 = data.readString();
-                            String _arg317 = data.readString();
-                            String _arg413 = data.readString();
-                            PendingIntent _arg510 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg610 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            boolean _arg78 = data.readBoolean();
-                            int _arg88 = data.readInt();
-                            int _arg96 = data.readInt();
-                            int _arg104 = data.readInt();
-                            int _arg1110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTextwithOptionsReadconfirmForSubscriber(_arg037, _arg128, _arg222, _arg317, _arg413, _arg510, _arg610, _arg78, _arg88, _arg96, _arg104, _arg1110);
-                            reply.writeNoException();
-                            return true;
-                        case 40:
-                            int _arg038 = data.readInt();
-                            String _arg129 = data.readString();
-                            String _arg223 = data.readString();
-                            String _arg318 = data.readString();
-                            List<String> _arg414 = data.createStringArrayList();
-                            List<PendingIntent> _arg511 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            List<PendingIntent> _arg611 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            String _arg79 = data.readString();
-                            int _arg89 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendMultipartTextwithCBPForSubscriber(_arg038, _arg129, _arg223, _arg318, _arg414, _arg511, _arg611, _arg79, _arg89);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _arg039 = data.readInt();
-                            String _arg130 = data.readString();
-                            String _arg224 = data.readString();
-                            String _arg319 = data.readString();
-                            List<String> _arg415 = data.createStringArrayList();
-                            List<PendingIntent> _arg512 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            List<PendingIntent> _arg612 = data.createTypedArrayList(PendingIntent.CREATOR);
-                            boolean _arg710 = data.readBoolean();
-                            int _arg810 = data.readInt();
-                            int _arg97 = data.readInt();
-                            int _arg105 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendMultipartTextwithOptionsForSubscriber(_arg039, _arg130, _arg224, _arg319, _arg415, _arg512, _arg612, _arg710, _arg810, _arg97, _arg105);
-                            reply.writeNoException();
-                            return true;
-                        case 42:
-                            int _arg040 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result25 = getSMSPAvailableForSubscriber(_arg040);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result25);
-                            return true;
-                        case 43:
-                            int _arg041 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result26 = getMnoNameForSubscriber(_arg041);
-                            reply.writeNoException();
-                            reply.writeString(_result26);
-                            return true;
-                        case 44:
-                            int _arg042 = data.readInt();
-                            String _arg131 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result27 = getSmsSettingForSubscriber(_arg042, _arg131);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 45:
-                            int _arg043 = data.readInt();
-                            String _arg132 = data.readString();
-                            String _arg225 = data.readString();
-                            String _arg320 = data.readString();
-                            int _arg416 = data.readInt();
-                            int _arg513 = data.readInt();
-                            byte[] _arg613 = data.createByteArray();
-                            PendingIntent _arg711 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg811 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            sendDatawithOrigPortForSubscriber(_arg043, _arg132, _arg225, _arg320, _arg416, _arg513, _arg613, _arg711, _arg811);
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg044 = data.readInt();
-                            String _arg133 = data.readString();
-                            String _arg226 = data.readString();
-                            String _arg321 = data.readString();
-                            String _arg417 = data.readString();
-                            data.enforceNoDataAvail();
-                            sendOTADomesticForSubscriber(_arg044, _arg133, _arg226, _arg321, _arg417);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _arg045 = data.readInt();
-                            String _arg134 = data.readString();
-                            String _arg227 = data.readString();
-                            String _arg322 = data.readString();
-                            byte[] _arg418 = data.createByteArray();
-                            PendingIntent _arg514 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg614 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            int _arg712 = data.readInt();
-                            int _arg812 = data.readInt();
-                            data.enforceNoDataAvail();
-                            sendTextNSRIForSubscriber(_arg045, _arg134, _arg227, _arg322, _arg418, _arg514, _arg614, _arg712, _arg812);
-                            reply.writeNoException();
-                            return true;
-                        case 48:
-                            int _arg046 = data.readInt();
-                            String _arg135 = data.readString();
-                            String _arg228 = data.readString();
-                            String _arg323 = data.readString();
-                            String _arg419 = data.readString();
-                            PendingIntent _arg515 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            PendingIntent _arg615 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            boolean _arg713 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            sendTextAutoLoginForSubscriber(_arg046, _arg135, _arg228, _arg323, _arg419, _arg515, _arg615, _arg713);
-                            reply.writeNoException();
-                            return true;
-                        case 49:
-                            int _arg047 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetSimFullStatusForSubscriber(_arg047);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISms {
+        private static class Proxy implements ISms {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

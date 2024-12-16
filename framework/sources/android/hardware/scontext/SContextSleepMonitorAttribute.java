@@ -11,7 +11,7 @@ public class SContextSleepMonitorAttribute extends SContextAttribute {
     private int mSamplingInterval;
     private int mSensibility;
 
-    public SContextSleepMonitorAttribute() {
+    SContextSleepMonitorAttribute() {
         this.mSensibility = 80;
         this.mSamplingInterval = 100;
         setAttribute();

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class FrameNumberTracker {
     private static final String TAG = "FrameNumberTracker";
     private long[] mCompletedFrameNumber = new long[3];
@@ -28,14 +28,15 @@ public class FrameNumberTracker {
     }
 
     private void update() {
+        Boolean removeError;
         Iterator<Map.Entry<Long, Integer>> iter = this.mFutureErrorMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<Long, Integer> pair = iter.next();
             long errorFrameNumber = pair.getKey().longValue();
             int requestType = pair.getValue().intValue();
-            Boolean removeError = false;
+            Boolean removeError2 = false;
             if (errorFrameNumber == this.mCompletedFrameNumber[requestType] + 1) {
-                removeError = true;
+                removeError2 = true;
             }
             if (this.mPendingFrameNumbers[requestType].isEmpty()) {
                 int i = 1;
@@ -48,15 +49,33 @@ public class FrameNumberTracker {
                         i++;
                     } else {
                         this.mPendingFrameNumbersWithOtherType[otherType].remove();
-                        removeError = true;
+                        removeError2 = true;
                         break;
                     }
                 }
+                if (removeError2.booleanValue()) {
+                    removeError = removeError2;
+                } else {
+                    int otherType1 = (requestType + 1) % 3;
+                    int otherType2 = (requestType + 2) % 3;
+                    if (!this.mPendingFrameNumbersWithOtherType[otherType1].isEmpty()) {
+                        removeError = removeError2;
+                    } else if (this.mPendingFrameNumbersWithOtherType[otherType2].isEmpty()) {
+                        removeError = removeError2;
+                        long errorGapNumber = Math.max(this.mCompletedFrameNumber[otherType1], this.mCompletedFrameNumber[otherType2]) + 1;
+                        if (errorGapNumber > this.mCompletedFrameNumber[requestType] + 1 && errorGapNumber == errorFrameNumber) {
+                            removeError2 = true;
+                        }
+                    } else {
+                        removeError = removeError2;
+                    }
+                }
+                removeError2 = removeError;
             } else if (errorFrameNumber == this.mPendingFrameNumbers[requestType].element().longValue()) {
                 this.mPendingFrameNumbers[requestType].remove();
-                removeError = true;
+                removeError2 = true;
             }
-            if (removeError.booleanValue()) {
+            if (removeError2.booleanValue()) {
                 this.mCompletedFrameNumber[requestType] = errorFrameNumber;
                 this.mPartialResults.remove(Long.valueOf(errorFrameNumber));
                 iter.remove();
@@ -113,13 +132,12 @@ public class FrameNumberTracker {
         LinkedList<Long> srcList;
         LinkedList<Long> dstList;
         int index;
-        long[] jArr = this.mCompletedFrameNumber;
-        if (frameNumber <= jArr[requestType]) {
+        if (frameNumber <= this.mCompletedFrameNumber[requestType]) {
             throw new IllegalArgumentException("frame number " + frameNumber + " is a repeat");
         }
         int otherType1 = (requestType + 1) % 3;
         int otherType2 = (requestType + 2) % 3;
-        long maxOtherFrameNumberSeen = Math.max(jArr[otherType1], jArr[otherType2]);
+        long maxOtherFrameNumberSeen = Math.max(this.mCompletedFrameNumber[otherType1], this.mCompletedFrameNumber[otherType2]);
         if (frameNumber < maxOtherFrameNumberSeen) {
             if (!this.mPendingFrameNumbers[requestType].isEmpty()) {
                 Long pendingFrameNumberSameType = this.mPendingFrameNumbers[requestType].element();

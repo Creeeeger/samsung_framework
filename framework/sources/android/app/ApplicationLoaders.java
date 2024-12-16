@@ -28,15 +28,15 @@ public class ApplicationLoaders {
         return gApplicationLoaders;
     }
 
-    public ClassLoader getClassLoader(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName) {
+    ClassLoader getClassLoader(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName) {
         return getClassLoaderWithSharedLibraries(zip, targetSdkVersion, isBundled, librarySearchPath, libraryPermittedPath, parent, classLoaderName, null, null, null);
     }
 
-    public ClassLoader getClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<String> nativeSharedLibraries, List<ClassLoader> sharedLibrariesLoadedAfterApp) {
+    ClassLoader getClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<String> nativeSharedLibraries, List<ClassLoader> sharedLibrariesLoadedAfterApp) {
         return getClassLoader(zip, targetSdkVersion, isBundled, librarySearchPath, libraryPermittedPath, parent, zip, classLoaderName, sharedLibraries, nativeSharedLibraries, sharedLibrariesLoadedAfterApp);
     }
 
-    public ClassLoader getSharedLibraryClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<ClassLoader> sharedLibrariesAfter) {
+    ClassLoader getSharedLibraryClassLoaderWithSharedLibraries(String zip, int targetSdkVersion, boolean isBundled, String librarySearchPath, String libraryPermittedPath, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries, List<ClassLoader> sharedLibrariesAfter) {
         ClassLoader loader = getCachedNonBootclasspathSystemLib(zip, parent, classLoaderName, sharedLibraries);
         if (loader != null) {
             return loader;
@@ -144,8 +144,7 @@ public class ApplicationLoaders {
 
     public ClassLoader getCachedNonBootclasspathSystemLib(String zip, ClassLoader parent, String classLoaderName, List<ClassLoader> sharedLibraries) {
         CachedClassLoader cached;
-        Map<String, CachedClassLoader> map = this.mSystemLibsCacheMap;
-        if (map == null || parent != null || classLoaderName != null || (cached = map.get(zip)) == null) {
+        if (this.mSystemLibsCacheMap == null || parent != null || classLoaderName != null || (cached = this.mSystemLibsCacheMap.get(zip)) == null) {
             return null;
         }
         if (!sharedLibrariesEquals(sharedLibraries, cached.sharedLibraries)) {
@@ -160,7 +159,7 @@ public class ApplicationLoaders {
         return getClassLoader(packagePath, Build.VERSION.SDK_INT, false, libsPath, null, null, cacheKey, null, null, null, null);
     }
 
-    public void addPath(ClassLoader classLoader, String dexPath) {
+    void addPath(ClassLoader classLoader, String dexPath) {
         if (!(classLoader instanceof PathClassLoader)) {
             throw new IllegalStateException("class loader is not a PathClassLoader");
         }
@@ -168,7 +167,7 @@ public class ApplicationLoaders {
         baseDexClassLoader.addDexPath(dexPath);
     }
 
-    public void addNative(ClassLoader classLoader, Collection<String> libPaths) {
+    void addNative(ClassLoader classLoader, Collection<String> libPaths) {
         if (!(classLoader instanceof PathClassLoader)) {
             throw new IllegalStateException("class loader is not a PathClassLoader");
         }
@@ -176,14 +175,9 @@ public class ApplicationLoaders {
         baseDexClassLoader.addNativePath(libPaths);
     }
 
-    /* loaded from: classes.dex */
-    public static class CachedClassLoader {
+    private static class CachedClassLoader {
         ClassLoader loader;
         List<ClassLoader> sharedLibraries;
-
-        /* synthetic */ CachedClassLoader(CachedClassLoaderIA cachedClassLoaderIA) {
-            this();
-        }
 
         private CachedClassLoader() {
         }

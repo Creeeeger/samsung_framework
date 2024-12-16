@@ -65,13 +65,11 @@ public class NameConstraints extends ASN1Object {
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(2);
-        GeneralSubtree[] generalSubtreeArr = this.permitted;
-        if (generalSubtreeArr != null) {
-            v.add(new DERTaggedObject(false, 0, new DERSequence(generalSubtreeArr)));
+        if (this.permitted != null) {
+            v.add(new DERTaggedObject(false, 0, new DERSequence(this.permitted)));
         }
-        GeneralSubtree[] generalSubtreeArr2 = this.excluded;
-        if (generalSubtreeArr2 != null) {
-            v.add(new DERTaggedObject(false, 1, new DERSequence(generalSubtreeArr2)));
+        if (this.excluded != null) {
+            v.add(new DERTaggedObject(false, 1, new DERSequence(this.excluded)));
         }
         return new DERSequence(v);
     }

@@ -50,7 +50,6 @@ public abstract class Drawable {
     private boolean mSetBlendModeInvoked = false;
     private boolean mSetTintModeInvoked = false;
 
-    /* loaded from: classes.dex */
     public interface Callback {
         void invalidateDrawable(Drawable drawable);
 
@@ -131,9 +130,8 @@ public abstract class Drawable {
     }
 
     public Callback getCallback() {
-        WeakReference<Callback> weakReference = this.mCallback;
-        if (weakReference != null) {
-            return weakReference.get();
+        if (this.mCallback != null) {
+            return this.mCallback.get();
         }
         return null;
     }
@@ -326,15 +324,15 @@ public abstract class Drawable {
         return null;
     }
 
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         return false;
     }
 
-    public boolean onLevelChange(int level) {
+    protected boolean onLevelChange(int level) {
         return false;
     }
 
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
     }
 
     public int getIntrinsicWidth() {
@@ -402,7 +400,7 @@ public abstract class Drawable {
 
     /* JADX WARN: Code restructure failed: missing block: B:45:0x001b, code lost:
     
-        if (r13.endsWith(".spr") == false) goto L79;
+        if (r13.endsWith(".spr") == false) goto L32;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -536,7 +534,7 @@ public abstract class Drawable {
         }
     }
 
-    public static /* synthetic */ void lambda$getBitmapDrawable$1(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
+    static /* synthetic */ void lambda$getBitmapDrawable$1(ImageDecoder decoder, ImageDecoder.ImageInfo info, ImageDecoder.Source src) {
         decoder.setAllocator(1);
         decoder.setOnPartialImageListener(new ImageDecoder.OnPartialImageListener() { // from class: android.graphics.drawable.Drawable$$ExternalSyntheticLambda1
             @Override // android.graphics.ImageDecoder.OnPartialImageListener
@@ -546,7 +544,7 @@ public abstract class Drawable {
         });
     }
 
-    public static /* synthetic */ boolean lambda$getBitmapDrawable$0(ImageDecoder.DecodeException e) {
+    static /* synthetic */ boolean lambda$getBitmapDrawable$0(ImageDecoder.DecodeException e) {
         return e.getError() == 2;
     }
 
@@ -585,7 +583,7 @@ public abstract class Drawable {
         return createFromXmlInnerForDensity(r, parser, attrs, 0, theme);
     }
 
-    public static Drawable createFromXmlInnerForDensity(Resources r, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
+    static Drawable createFromXmlInnerForDensity(Resources r, XmlPullParser parser, AttributeSet attrs, int density, Resources.Theme theme) throws XmlPullParserException, IOException {
         return r.getDrawableInflater().inflateFromXmlForDensity(parser.getName(), parser, attrs, density, theme);
     }
 
@@ -625,15 +623,14 @@ public abstract class Drawable {
         a.recycle();
     }
 
-    public void inflateWithAttributes(Resources r, XmlPullParser parser, TypedArray attrs, int visibleAttr) throws XmlPullParserException, IOException {
+    void inflateWithAttributes(Resources r, XmlPullParser parser, TypedArray attrs, int visibleAttr) throws XmlPullParserException, IOException {
         this.mVisible = attrs.getBoolean(visibleAttr, this.mVisible);
     }
 
-    public final void setSrcDensityOverride(int density) {
+    final void setSrcDensityOverride(int density) {
         this.mSrcDensityOverride = density;
     }
 
-    /* loaded from: classes.dex */
     public static abstract class ConstantState {
         public abstract int getChangingConfigurations();
 
@@ -663,7 +660,7 @@ public abstract class Drawable {
         return new BitmapDrawable(res, bm);
     }
 
-    public PorterDuffColorFilter updateTintFilter(PorterDuffColorFilter tintFilter, ColorStateList tint, PorterDuff.Mode tintMode) {
+    PorterDuffColorFilter updateTintFilter(PorterDuffColorFilter tintFilter, ColorStateList tint, PorterDuff.Mode tintMode) {
         if (tint == null || tintMode == null) {
             return null;
         }
@@ -674,7 +671,7 @@ public abstract class Drawable {
         return tintFilter;
     }
 
-    public BlendModeColorFilter updateBlendModeFilter(BlendModeColorFilter blendFilter, ColorStateList tint, BlendMode blendMode) {
+    BlendModeColorFilter updateBlendModeFilter(BlendModeColorFilter blendFilter, ColorStateList tint, BlendMode blendMode) {
         if (tint == null || blendMode == null) {
             return null;
         }
@@ -685,18 +682,18 @@ public abstract class Drawable {
         return blendFilter;
     }
 
-    public static TypedArray obtainAttributes(Resources res, Resources.Theme theme, AttributeSet set, int[] attrs) {
+    protected static TypedArray obtainAttributes(Resources res, Resources.Theme theme, AttributeSet set, int[] attrs) {
         if (theme == null) {
             return res.obtainAttributes(set, attrs);
         }
         return theme.obtainStyledAttributes(set, attrs, 0, 0);
     }
 
-    public static float scaleFromDensity(float pixels, int sourceDensity, int targetDensity) {
+    static float scaleFromDensity(float pixels, int sourceDensity, int targetDensity) {
         return (targetDensity * pixels) / sourceDensity;
     }
 
-    public static int scaleFromDensity(int pixels, int sourceDensity, int targetDensity, boolean isSize) {
+    static int scaleFromDensity(int pixels, int sourceDensity, int targetDensity, boolean isSize) {
         if (pixels == 0 || sourceDensity == targetDensity) {
             return pixels;
         }
@@ -714,7 +711,7 @@ public abstract class Drawable {
         return -1;
     }
 
-    public static int resolveDensity(Resources r, int parentDensity) {
+    static int resolveDensity(Resources r, int parentDensity) {
         int densityDpi = r == null ? parentDensity : r.getDisplayMetrics().densityDpi;
         if (densityDpi == 0) {
             return 160;
@@ -722,7 +719,7 @@ public abstract class Drawable {
         return densityDpi;
     }
 
-    public static void rethrowAsRuntimeException(Exception cause) throws RuntimeException {
+    static void rethrowAsRuntimeException(Exception cause) throws RuntimeException {
         RuntimeException e = new RuntimeException(cause);
         e.setStackTrace(new StackTraceElement[0]);
         throw e;

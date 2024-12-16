@@ -155,14 +155,13 @@ public final class AudioFormat implements Parcelable {
     public static final int SAMPLE_RATE_HZ_MIN = AudioSystem.SAMPLE_RATE_HZ_MIN;
     public static final int SAMPLE_RATE_HZ_MAX = AudioSystem.SAMPLE_RATE_HZ_MAX;
     public static final Parcelable.Creator<AudioFormat> CREATOR = new Parcelable.Creator<AudioFormat>() { // from class: android.media.AudioFormat.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFormat createFromParcel(Parcel p) {
             return new AudioFormat(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioFormat[] newArray(int size) {
             return new AudioFormat[size];
@@ -171,26 +170,19 @@ public final class AudioFormat implements Parcelable {
     public static final int[] SURROUND_SOUND_ENCODING = {5, 6, 7, 8, 10, 14, 17, 18, 19, 23, 24, 25, 26, 27, 28, 29, 30};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ChannelOut {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Encoding {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
+    public @interface EncodingCanBeInvalid {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SurroundSoundEncoding {
-    }
-
-    /* synthetic */ AudioFormat(int i, int i2, int i3, int i4, int i5, AudioFormatIA audioFormatIA) {
-        this(i, i2, i3, i4, i5);
-    }
-
-    /* synthetic */ AudioFormat(Parcel parcel, AudioFormatIA audioFormatIA) {
-        this(parcel);
     }
 
     public static String toLogFriendlyEncoding(int enc) {
@@ -509,8 +501,7 @@ public final class AudioFormat implements Parcelable {
 
     private AudioFormat(int propertySetMask, int encoding, int sampleRate, int channelMask, int channelIndexMask) {
         this.mPropertySetMask = propertySetMask;
-        int i = (propertySetMask & 1) != 0 ? encoding : 0;
-        this.mEncoding = i;
+        this.mEncoding = (propertySetMask & 1) != 0 ? encoding : 0;
         this.mSampleRate = (propertySetMask & 2) != 0 ? sampleRate : 0;
         this.mChannelMask = (propertySetMask & 4) != 0 ? channelMask : 0;
         this.mChannelIndexMask = (propertySetMask & 8) != 0 ? channelIndexMask : 0;
@@ -524,7 +515,7 @@ public final class AudioFormat implements Parcelable {
         this.mChannelCount = channelCount;
         int frameSizeInBytes = 1;
         try {
-            frameSizeInBytes = getBytesPerSample(i) * channelCount;
+            frameSizeInBytes = getBytesPerSample(this.mEncoding) * channelCount;
         } catch (IllegalArgumentException e) {
         }
         this.mFrameSizeInBytes = frameSizeInBytes != 0 ? frameSizeInBytes : 1;
@@ -562,7 +553,6 @@ public final class AudioFormat implements Parcelable {
         return String.format("%dch %dHz %s", Integer.valueOf(this.mChannelCount), Integer.valueOf(this.mSampleRate), toLogFriendlyEncoding(this.mEncoding));
     }
 
-    /* loaded from: classes2.dex */
     public static class Builder {
         private int mChannelIndexMask;
         private int mChannelMask;
@@ -685,12 +675,11 @@ public final class AudioFormat implements Parcelable {
             return false;
         }
         AudioFormat that = (AudioFormat) o;
-        int i = this.mPropertySetMask;
-        if (i != that.mPropertySetMask) {
+        if (this.mPropertySetMask == that.mPropertySetMask) {
+            if (((this.mPropertySetMask & 1) == 0 || this.mEncoding == that.mEncoding) && (((this.mPropertySetMask & 2) == 0 || this.mSampleRate == that.mSampleRate) && (((this.mPropertySetMask & 4) == 0 || this.mChannelMask == that.mChannelMask) && ((this.mPropertySetMask & 8) == 0 || this.mChannelIndexMask == that.mChannelIndexMask)))) {
+                return true;
+            }
             return false;
-        }
-        if (((i & 1) == 0 || this.mEncoding == that.mEncoding) && (((i & 2) == 0 || this.mSampleRate == that.mSampleRate) && (((i & 4) == 0 || this.mChannelMask == that.mChannelMask) && ((i & 8) == 0 || this.mChannelIndexMask == that.mChannelIndexMask)))) {
-            return true;
         }
         return false;
     }
@@ -715,23 +704,6 @@ public final class AudioFormat implements Parcelable {
 
     private AudioFormat(Parcel in) {
         this(in.readInt(), in.readInt(), in.readInt(), in.readInt(), in.readInt());
-    }
-
-    /* renamed from: android.media.AudioFormat$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioFormat> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioFormat createFromParcel(Parcel p) {
-            return new AudioFormat(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioFormat[] newArray(int size) {
-            return new AudioFormat[size];
-        }
     }
 
     public String toString() {

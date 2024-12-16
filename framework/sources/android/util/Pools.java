@@ -3,7 +3,6 @@ package android.util;
 /* loaded from: classes4.dex */
 public final class Pools {
 
-    /* loaded from: classes4.dex */
     public interface Pool<T> {
         T acquire();
 
@@ -13,7 +12,6 @@ public final class Pools {
     private Pools() {
     }
 
-    /* loaded from: classes4.dex */
     public static class SimplePool<T> implements Pool<T> {
         private final Object[] mPool;
         private int mPoolSize;
@@ -27,15 +25,13 @@ public final class Pools {
 
         @Override // android.util.Pools.Pool
         public T acquire() {
-            int i = this.mPoolSize;
-            if (i <= 0) {
+            if (this.mPoolSize <= 0) {
                 return null;
             }
-            int i2 = i - 1;
-            Object[] objArr = this.mPool;
-            T t = (T) objArr[i2];
-            objArr[i2] = null;
-            this.mPoolSize = i - 1;
+            int i = this.mPoolSize - 1;
+            T t = (T) this.mPool[i];
+            this.mPool[i] = null;
+            this.mPoolSize--;
             return t;
         }
 
@@ -44,11 +40,9 @@ public final class Pools {
             if (isInPool(instance)) {
                 throw new IllegalStateException("Already in the pool!");
             }
-            int i = this.mPoolSize;
-            Object[] objArr = this.mPool;
-            if (i < objArr.length) {
-                objArr[i] = instance;
-                this.mPoolSize = i + 1;
+            if (this.mPoolSize < this.mPool.length) {
+                this.mPool[this.mPoolSize] = instance;
+                this.mPoolSize++;
                 return true;
             }
             return false;
@@ -64,7 +58,6 @@ public final class Pools {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class SynchronizedPool<T> extends SimplePool<T> {
         private final Object mLock;
 

@@ -11,7 +11,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDeviceInfoManager extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.sepunion.IDeviceInfoManager";
 
@@ -37,7 +37,6 @@ public interface IDeviceInfoManager extends IInterface {
 
     void unregisterPendingIntentForUriAsUser(Uri uri, PendingIntent pendingIntent, String str, int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDeviceInfoManager {
         @Override // com.samsung.android.sepunion.IDeviceInfoManager
         public void registerPendingIntentForUriAsUser(Uri uri, PendingIntent intent, String callingPackage, int userId) throws RemoteException {
@@ -90,7 +89,6 @@ public interface IDeviceInfoManager extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDeviceInfoManager {
         static final int TRANSACTION_clearPendingIntentAsUser = 10;
         static final int TRANSACTION_getNumPendingIntentAsUser = 11;
@@ -163,112 +161,108 @@ public interface IDeviceInfoManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDeviceInfoManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDeviceInfoManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDeviceInfoManager.DESCRIPTOR);
+                case 1:
+                    Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    PendingIntent _arg1 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg2 = data.readString();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPendingIntentForUriAsUser(_arg0, _arg1, _arg2, _arg3);
+                    return true;
+                case 2:
+                    IntentFilter _arg02 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    PendingIntent _arg12 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg22 = data.readString();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPendingIntentForIntentAsUser(_arg02, _arg12, _arg22, _arg32);
+                    return true;
+                case 3:
+                    IntentFilter _arg03 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    PendingIntent _arg13 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg23 = data.readString();
+                    int _arg33 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPendingIntentForIntentForAllUsers(_arg03, _arg13, _arg23, _arg33);
+                    return true;
+                case 4:
+                    IntentFilter _arg04 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    PendingIntent _arg14 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    int _arg24 = data.readInt();
+                    List<String> _arg34 = data.createStringArrayList();
+                    String _arg4 = data.readString();
+                    int _arg5 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPendingIntent(_arg04, _arg14, _arg24, _arg34, _arg4, _arg5);
+                    return true;
+                case 5:
+                    IntentFilter _arg05 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg25 = data.readString();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterPendingIntent(_arg05, _arg15, _arg25, _arg35);
+                    return true;
+                case 6:
+                    String _arg06 = data.readString();
+                    PendingIntent _arg16 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg36 = data.readString();
+                    int _arg42 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerPendingIntentForCustomEventAsUser(_arg06, _arg16, _arg26, _arg36, _arg42);
+                    return true;
+                case 7:
+                    Uri _arg07 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    PendingIntent _arg17 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg27 = data.readString();
+                    int _arg37 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterPendingIntentForUriAsUser(_arg07, _arg17, _arg27, _arg37);
+                    return true;
+                case 8:
+                    IntentFilter _arg08 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
+                    PendingIntent _arg18 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    String _arg28 = data.readString();
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterPendingIntentForIntentAsUser(_arg08, _arg18, _arg28, _arg38);
+                    return true;
+                case 9:
+                    String _arg09 = data.readString();
+                    PendingIntent _arg19 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg39 = data.readString();
+                    int _arg43 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterPendingIntentForCustomEventAsUser(_arg09, _arg19, _arg29, _arg39, _arg43);
+                    return true;
+                case 10:
+                    String _arg010 = data.readString();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    clearPendingIntentAsUser(_arg010, _arg110);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    String _arg111 = data.readString();
+                    int _arg210 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result = getNumPendingIntentAsUser(_arg011, _arg111, _arg210);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            Uri _arg0 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            PendingIntent _arg1 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg2 = data.readString();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerPendingIntentForUriAsUser(_arg0, _arg1, _arg2, _arg3);
-                            return true;
-                        case 2:
-                            IntentFilter _arg02 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            PendingIntent _arg12 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg22 = data.readString();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerPendingIntentForIntentAsUser(_arg02, _arg12, _arg22, _arg32);
-                            return true;
-                        case 3:
-                            IntentFilter _arg03 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            PendingIntent _arg13 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg23 = data.readString();
-                            int _arg33 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerPendingIntentForIntentForAllUsers(_arg03, _arg13, _arg23, _arg33);
-                            return true;
-                        case 4:
-                            IntentFilter _arg04 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            PendingIntent _arg14 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            int _arg24 = data.readInt();
-                            List<String> _arg34 = data.createStringArrayList();
-                            String _arg4 = data.readString();
-                            int _arg5 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerPendingIntent(_arg04, _arg14, _arg24, _arg34, _arg4, _arg5);
-                            return true;
-                        case 5:
-                            IntentFilter _arg05 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            PendingIntent _arg15 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg25 = data.readString();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterPendingIntent(_arg05, _arg15, _arg25, _arg35);
-                            return true;
-                        case 6:
-                            String _arg06 = data.readString();
-                            PendingIntent _arg16 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            Bundle _arg26 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg36 = data.readString();
-                            int _arg42 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerPendingIntentForCustomEventAsUser(_arg06, _arg16, _arg26, _arg36, _arg42);
-                            return true;
-                        case 7:
-                            Uri _arg07 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            PendingIntent _arg17 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg27 = data.readString();
-                            int _arg37 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterPendingIntentForUriAsUser(_arg07, _arg17, _arg27, _arg37);
-                            return true;
-                        case 8:
-                            IntentFilter _arg08 = (IntentFilter) data.readTypedObject(IntentFilter.CREATOR);
-                            PendingIntent _arg18 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            String _arg28 = data.readString();
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterPendingIntentForIntentAsUser(_arg08, _arg18, _arg28, _arg38);
-                            return true;
-                        case 9:
-                            String _arg09 = data.readString();
-                            PendingIntent _arg19 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            Bundle _arg29 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg39 = data.readString();
-                            int _arg43 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterPendingIntentForCustomEventAsUser(_arg09, _arg19, _arg29, _arg39, _arg43);
-                            return true;
-                        case 10:
-                            String _arg010 = data.readString();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            clearPendingIntentAsUser(_arg010, _arg110);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            String _arg111 = data.readString();
-                            int _arg210 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result = getNumPendingIntentAsUser(_arg011, _arg111, _arg210);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDeviceInfoManager {
+        private static class Proxy implements IDeviceInfoManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

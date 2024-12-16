@@ -4,6 +4,7 @@ package android.service.notification;
 public final class DNDPolicyProto {
     public static final long ALARMS = 1159641169927L;
     public static final long ALLOW_CALLS_FROM = 1159641169937L;
+    public static final long ALLOW_CHANNELS = 1159641169940L;
     public static final long ALLOW_CONVERSATIONS_FROM = 1159641169939L;
     public static final long ALLOW_MESSAGES_FROM = 1159641169938L;
     public static final long AMBIENT = 1159641169935L;

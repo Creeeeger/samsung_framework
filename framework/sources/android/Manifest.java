@@ -5,9 +5,9 @@ import android.annotation.SystemApi;
 /* loaded from: classes.dex */
 public final class Manifest {
 
-    /* loaded from: classes.dex */
     public static final class permission {
         public static final String ACCEPT_HANDOVER = "android.permission.ACCEPT_HANDOVER";
+        public static final String ACCESSIBILITY_MOTION_EVENT_OBSERVING = "android.permission.ACCESSIBILITY_MOTION_EVENT_OBSERVING";
 
         @SystemApi
         public static final String ACCESS_AMBIENT_CONTEXT_EVENT = "android.permission.ACCESS_AMBIENT_CONTEXT_EVENT";
@@ -32,6 +32,9 @@ public final class Manifest {
         public static final String ACCESS_CONTENT_PROVIDERS_EXTERNALLY = "android.permission.ACCESS_CONTENT_PROVIDERS_EXTERNALLY";
 
         @SystemApi
+        public static final String ACCESS_CONTEXTUAL_SEARCH = "android.permission.ACCESS_CONTEXTUAL_SEARCH";
+
+        @SystemApi
         public static final String ACCESS_CONTEXT_HUB = "android.permission.ACCESS_CONTEXT_HUB";
 
         @SystemApi
@@ -45,6 +48,10 @@ public final class Manifest {
         @SystemApi
         public static final String ACCESS_FPS_COUNTER = "android.permission.ACCESS_FPS_COUNTER";
         public static final String ACCESS_GPU_SERVICE = "android.permission.ACCESS_GPU_SERVICE";
+        public static final String ACCESS_HIDDEN_PROFILES = "android.permission.ACCESS_HIDDEN_PROFILES";
+
+        @SystemApi
+        public static final String ACCESS_HIDDEN_PROFILES_FULL = "android.permission.ACCESS_HIDDEN_PROFILES_FULL";
         public static final String ACCESS_IMS_CALL_SERVICE = "android.permission.ACCESS_IMS_CALL_SERVICE";
         public static final String ACCESS_INPUT_FLINGER = "android.permission.ACCESS_INPUT_FLINGER";
 
@@ -52,6 +59,9 @@ public final class Manifest {
         public static final String ACCESS_INSTANT_APPS = "android.permission.ACCESS_INSTANT_APPS";
         public static final String ACCESS_KEYGUARD_SECURE_STORAGE = "android.permission.ACCESS_KEYGUARD_SECURE_STORAGE";
         public static final String ACCESS_KEY_CUSTOMIZE_INFO = "com.samsung.android.permisson.ACCESS_KEY_CUSTOMIZE_INFO";
+
+        @SystemApi
+        public static final String ACCESS_LAST_KNOWN_CELL_ID = "android.permission.ACCESS_LAST_KNOWN_CELL_ID";
         public static final String ACCESS_LOCATION_EXTRA_COMMANDS = "android.permission.ACCESS_LOCATION_EXTRA_COMMANDS";
 
         @SystemApi
@@ -75,6 +85,7 @@ public final class Manifest {
         @SystemApi
         public static final String ACCESS_NOTIFICATIONS = "android.permission.ACCESS_NOTIFICATIONS";
         public static final String ACCESS_NOTIFICATION_POLICY = "android.permission.ACCESS_NOTIFICATION_POLICY";
+        public static final String ACCESS_OMA_DRM = "com.oma.drm.permission.ACCESS_OMA_DRM";
 
         @SystemApi
         public static final String ACCESS_PDB_STATE = "android.permission.ACCESS_PDB_STATE";
@@ -89,6 +100,9 @@ public final class Manifest {
 
         @SystemApi
         public static final String ACCESS_SHORTCUTS = "android.permission.ACCESS_SHORTCUTS";
+
+        @SystemApi
+        public static final String ACCESS_SMARTSPACE = "android.permission.ACCESS_SMARTSPACE";
 
         @SystemApi
         public static final String ACCESS_SURFACE_FLINGER = "android.permission.ACCESS_SURFACE_FLINGER";
@@ -154,6 +168,9 @@ public final class Manifest {
         public static final String ALLOW_SLIPPERY_TOUCHES = "android.permission.ALLOW_SLIPPERY_TOUCHES";
 
         @SystemApi
+        public static final String ALWAYS_UPDATE_WALLPAPER = "android.permission.ALWAYS_UPDATE_WALLPAPER";
+
+        @SystemApi
         public static final String AMBIENT_WALLPAPER = "android.permission.AMBIENT_WALLPAPER";
         public static final String ANSWER_PHONE_CALLS = "android.permission.ANSWER_PHONE_CALLS";
         public static final String API_ACCESS = "com.verizon.ptt.API_ACCESS";
@@ -186,6 +203,7 @@ public final class Manifest {
         @SystemApi
         public static final String BIND_AMBIENT_CONTEXT_DETECTION_SERVICE = "android.permission.BIND_AMBIENT_CONTEXT_DETECTION_SERVICE";
         public static final String BIND_APPWIDGET = "android.permission.BIND_APPWIDGET";
+        public static final String BIND_APP_FUNCTION_SERVICE = "android.permission.BIND_APP_FUNCTION_SERVICE";
 
         @SystemApi
         public static final String BIND_ATTENTION_SERVICE = "android.permission.BIND_ATTENTION_SERVICE";
@@ -240,6 +258,9 @@ public final class Manifest {
         public static final String BIND_DISPLAY_HASHING_SERVICE = "android.permission.BIND_DISPLAY_HASHING_SERVICE";
 
         @SystemApi
+        public static final String BIND_DOMAIN_SELECTION_SERVICE = "android.permission.BIND_DOMAIN_SELECTION_SERVICE";
+
+        @SystemApi
         public static final String BIND_DOMAIN_VERIFICATION_AGENT = "android.permission.BIND_DOMAIN_VERIFICATION_AGENT";
         public static final String BIND_DREAM_SERVICE = "android.permission.BIND_DREAM_SERVICE";
 
@@ -282,6 +303,12 @@ public final class Manifest {
         @SystemApi
         public static final String BIND_NOTIFICATION_ASSISTANT_SERVICE = "android.permission.BIND_NOTIFICATION_ASSISTANT_SERVICE";
         public static final String BIND_NOTIFICATION_LISTENER_SERVICE = "android.permission.BIND_NOTIFICATION_LISTENER_SERVICE";
+
+        @SystemApi
+        public static final String BIND_ON_DEVICE_INTELLIGENCE_SERVICE = "android.permission.BIND_ON_DEVICE_INTELLIGENCE_SERVICE";
+
+        @SystemApi
+        public static final String BIND_ON_DEVICE_SANDBOXED_INFERENCE_SERVICE = "android.permission.BIND_ON_DEVICE_SANDBOXED_INFERENCE_SERVICE";
         public static final String BIND_PACKAGE_VERIFIER = "android.permission.BIND_PACKAGE_VERIFIER";
 
         @SystemApi
@@ -304,6 +331,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String BIND_RESUME_ON_REBOOT_SERVICE = "android.permission.BIND_RESUME_ON_REBOOT_SERVICE";
+        public static final String BIND_RKP_SERVICE = "android.permission.BIND_RKP_SERVICE";
 
         @SystemApi
         public static final String BIND_ROTATION_RESOLVER_SERVICE = "android.permission.BIND_ROTATION_RESOLVER_SERVICE";
@@ -349,6 +377,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String BIND_TRUST_AGENT = "android.permission.BIND_TRUST_AGENT";
+        public static final String BIND_TV_AD_SERVICE = "android.permission.BIND_TV_AD_SERVICE";
         public static final String BIND_TV_INPUT = "android.permission.BIND_TV_INPUT";
         public static final String BIND_TV_INTERACTIVE_APP = "android.permission.BIND_TV_INTERACTIVE_APP";
 
@@ -374,7 +403,6 @@ public final class Manifest {
         public static final String BLUETOOTH_ADMIN = "android.permission.BLUETOOTH_ADMIN";
         public static final String BLUETOOTH_ADVERTISE = "android.permission.BLUETOOTH_ADVERTISE";
         public static final String BLUETOOTH_CONNECT = "android.permission.BLUETOOTH_CONNECT";
-        public static final String BLUETOOTH_DEBUG = "com.sec.permission.BLUETOOTH_DEBUG";
 
         @SystemApi
         public static final String BLUETOOTH_MAP = "android.permission.BLUETOOTH_MAP";
@@ -394,7 +422,6 @@ public final class Manifest {
 
         @SystemApi
         public static final String BROADCAST_CLOSE_SYSTEM_DIALOGS = "android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS";
-        public static final String BROADCAST_GEN_AI_RECLAIM_TRIGGER = "com.samsung.android.permission.BROADCAST_GEN_AI_RECLAIM_TRIGGER";
 
         @SystemApi
         @Deprecated
@@ -422,10 +449,16 @@ public final class Manifest {
 
         @SystemApi
         public static final String CAMERA_DISABLE_TRANSMIT_LED = "android.permission.CAMERA_DISABLE_TRANSMIT_LED";
+
+        @SystemApi
+        public static final String CAMERA_HEADLESS_SYSTEM_USER = "android.permission.CAMERA_HEADLESS_SYSTEM_USER";
         public static final String CAMERA_INJECT_EXTERNAL_CAMERA = "android.permission.CAMERA_INJECT_EXTERNAL_CAMERA";
 
         @SystemApi
         public static final String CAMERA_OPEN_CLOSE_LISTENER = "android.permission.CAMERA_OPEN_CLOSE_LISTENER";
+
+        @SystemApi
+        public static final String CAMERA_PRIVACY_ALLOWLIST = "android.permission.CAMERA_PRIVACY_ALLOWLIST";
         public static final String CAMERA_SEND_SYSTEM_EVENTS = "android.permission.CAMERA_SEND_SYSTEM_EVENTS";
         public static final String CAPTURE = "com.samsung.permission.CAPTURE";
 
@@ -489,6 +522,9 @@ public final class Manifest {
         @SystemApi
         public static final String CONFIGURE_DISPLAY_BRIGHTNESS = "android.permission.CONFIGURE_DISPLAY_BRIGHTNESS";
         public static final String CONFIGURE_DISPLAY_COLOR_MODE = "android.permission.CONFIGURE_DISPLAY_COLOR_MODE";
+
+        @SystemApi
+        public static final String CONFIGURE_FACTORY_RESET_PROTECTION = "android.permission.CONFIGURE_FACTORY_RESET_PROTECTION";
 
         @SystemApi
         public static final String CONFIGURE_INTERACT_ACROSS_PROFILES = "android.permission.CONFIGURE_INTERACT_ACROSS_PROFILES";
@@ -561,6 +597,7 @@ public final class Manifest {
         public static final String DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA = "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA";
         public static final String DELIVER_COMPANION_MESSAGES = "android.permission.DELIVER_COMPANION_MESSAGES";
         public static final String DETECT_SCREEN_CAPTURE = "android.permission.DETECT_SCREEN_CAPTURE";
+        public static final String DETECT_SCREEN_RECORDING = "android.permission.DETECT_SCREEN_RECORDING";
 
         @SystemApi
         public static final String DEVICE_POWER = "android.permission.DEVICE_POWER";
@@ -581,14 +618,29 @@ public final class Manifest {
         @SystemApi
         public static final String DOMAIN_VERIFICATION_AGENT = "android.permission.DOMAIN_VERIFICATION_AGENT";
         public static final String DOUBLE_CLICK = "com.samsung.android.permisson.DOUBLE_CLICK";
+
+        @SystemApi
+        public static final String DO_ACTIVE_LAUNCH = "com.samsung.android.permission.DO_ACTIVE_LAUNCH";
         public static final String DUMP = "android.permission.DUMP";
         public static final String DVB_DEVICE = "android.permission.DVB_DEVICE";
+
+        @SystemApi
+        public static final String EMBED_ANY_APP_IN_UNTRUSTED_MODE = "android.permission.EMBED_ANY_APP_IN_UNTRUSTED_MODE";
+
+        @SystemApi
+        public static final String EMERGENCY_INSTALL_PACKAGES = "android.permission.EMERGENCY_INSTALL_PACKAGES";
         public static final String ENABLE_TEST_HARNESS_MODE = "android.permission.ENABLE_TEST_HARNESS_MODE";
         public static final String ENFORCE_UPDATE_OWNERSHIP = "android.permission.ENFORCE_UPDATE_OWNERSHIP";
 
         @SystemApi
         public static final String ENTER_CAR_MODE_PRIORITIZED = "android.permission.ENTER_CAR_MODE_PRIORITIZED";
         public static final String EXECUTE_APP_ACTION = "android.permission.EXECUTE_APP_ACTION";
+
+        @SystemApi
+        public static final String EXECUTE_APP_FUNCTIONS = "android.permission.EXECUTE_APP_FUNCTIONS";
+
+        @SystemApi
+        public static final String EXECUTE_APP_FUNCTIONS_TRUSTED = "android.permission.EXECUTE_APP_FUNCTIONS_TRUSTED";
 
         @SystemApi
         public static final String EXEMPT_FROM_AUDIO_RECORD_RESTRICTIONS = "android.permission.EXEMPT_FROM_AUDIO_RECORD_RESTRICTIONS";
@@ -614,6 +666,7 @@ public final class Manifest {
         public static final String FOREGROUND_SERVICE_HEALTH = "android.permission.FOREGROUND_SERVICE_HEALTH";
         public static final String FOREGROUND_SERVICE_LOCATION = "android.permission.FOREGROUND_SERVICE_LOCATION";
         public static final String FOREGROUND_SERVICE_MEDIA_PLAYBACK = "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK";
+        public static final String FOREGROUND_SERVICE_MEDIA_PROCESSING = "android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING";
         public static final String FOREGROUND_SERVICE_MEDIA_PROJECTION = "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION";
         public static final String FOREGROUND_SERVICE_MICROPHONE = "android.permission.FOREGROUND_SERVICE_MICROPHONE";
         public static final String FOREGROUND_SERVICE_PHONE_CALL = "android.permission.FOREGROUND_SERVICE_PHONE_CALL";
@@ -623,6 +676,7 @@ public final class Manifest {
         public static final String FOTA = "com.sec.android.fotaclient.permission.FOTA";
         public static final String FRAME_STATS = "android.permission.FRAME_STATS";
         public static final String FREEZE_SCREEN = "android.permission.FREEZE_SCREEN";
+        public static final String FREEZE_TASK_DISPLAY_AREA = "com.samsung.android.permission.FREEZE_TASK_DISPLAY_AREA";
         public static final String GET_ACCOUNTS = "android.permission.GET_ACCOUNTS";
         public static final String GET_ACCOUNTS_PRIVILEGED = "android.permission.GET_ACCOUNTS_PRIVILEGED";
         public static final String GET_ANY_PROVIDER_TYPE = "android.permission.GET_ANY_PROVIDER_TYPE";
@@ -633,6 +687,12 @@ public final class Manifest {
 
         @SystemApi
         public static final String GET_APP_OPS_STATS = "android.permission.GET_APP_OPS_STATS";
+
+        @SystemApi
+        public static final String GET_BACKGROUND_INSTALLED_PACKAGES = "android.permission.GET_BACKGROUND_INSTALLED_PACKAGES";
+
+        @SystemApi
+        public static final String GET_BINDING_UID_IMPORTANCE = "android.permission.GET_BINDING_UID_IMPORTANCE";
         public static final String GET_DETAILED_TASKS = "android.permission.GET_DETAILED_TASKS";
 
         @SystemApi
@@ -684,6 +744,7 @@ public final class Manifest {
         public static final String HIDE_OVERLAY_WINDOWS = "android.permission.HIDE_OVERLAY_WINDOWS";
         public static final String HIGH_SAMPLING_RATE_SENSORS = "android.permission.HIGH_SAMPLING_RATE_SENSORS";
         public static final String HQM_NOTIFICATION_PERMISSION = "com.samsung.permission.HQM_NOTIFICATION_PERMISSION";
+        public static final String HW_RESOURCE_SHARE = "com.samsung.android.permission.HW_RESOURCE_SHARE";
 
         @SystemApi
         public static final String INJECT_EVENTS = "android.permission.INJECT_EVENTS";
@@ -737,6 +798,8 @@ public final class Manifest {
         public static final String KEEP_UNINSTALLED_PACKAGES = "android.permission.KEEP_UNINSTALLED_PACKAGES";
         public static final String KEYGUARD_SERVICE = "com.sec.knox.permission.KEYGUARD_SERVICE";
         public static final String KEYGUARD_STATE_UPDATE = "com.samsung.android.desktopmode.permission.KEYGUARD_STATE_UPDATE";
+
+        @SystemApi
         public static final String KEYPHRASE_ENROLLMENT_APPLICATION = "android.permission.KEYPHRASE_ENROLLMENT_APPLICATION";
 
         @SystemApi
@@ -750,14 +813,17 @@ public final class Manifest {
         public static final String KNOX_ADVANCED_RESTRICTION = "com.samsung.android.knox.permission.KNOX_ADVANCED_RESTRICTION";
         public static final String KNOX_ADVANCED_SECURITY = "com.samsung.android.knox.permission.KNOX_ADVANCED_SECURITY";
         public static final String KNOX_ANALYTICS_INTERNAL = "com.samsung.android.knox.permission.KNOX_ANALYTICS_INTERNAL";
+        public static final String KNOX_API_ACCESS_GRANT = "com.samsung.android.knox.permission.KNOX_API_ACCESS_GRANT";
         public static final String KNOX_APN = "com.samsung.android.knox.permission.KNOX_APN";
         public static final String KNOX_APP_MGMT = "com.samsung.android.knox.permission.KNOX_APP_MGMT";
         public static final String KNOX_APP_PERMISSION_MGMT = "com.samsung.android.knox.permission.KNOX_APP_PERMISSION_MGMT";
         public static final String KNOX_APP_SEPARATION = "com.samsung.android.knox.permission.KNOX_APP_SEPARATION";
+        public static final String KNOX_APP_SEPARATION_STANDALONE = "com.samsung.android.knox.permission.KNOX_APP_SEPARATION_STANDALONE";
 
         @Deprecated
         public static final String KNOX_ATTESTATION = "com.sec.enterprise.knox.permission.KNOX_ATTESTATION";
         public static final String KNOX_AUDIT_LOG = "com.samsung.android.knox.permission.KNOX_AUDIT_LOG";
+        public static final String KNOX_AUTHORIZATION = "com.samsung.android.knox.permission.KNOX_AUTHORIZATION";
         public static final String KNOX_AUTH_MGMT = "com.samsung.android.knox.permission.KNOX_AUTH_MGMT";
         public static final String KNOX_BLUETOOTH = "com.samsung.android.knox.permission.KNOX_BLUETOOTH";
         public static final String KNOX_BLUETOOTH_SECUREMODE = "com.samsung.android.knox.permission.KNOX_BLUETOOTH_SECUREMODE";
@@ -837,6 +903,7 @@ public final class Manifest {
 
         @Deprecated
         public static final String KNOX_RCP_SYNC_MGMT = "com.sec.enterprise.knox.permission.KNOX_RCP_SYNC_MGMT";
+        public static final String KNOX_RC_API_ACCESS_GRANT = "com.samsung.android.knox.permission.KNOX_RC_API_ACCESS_GRANT";
         public static final String KNOX_RECEIVE_BLOCKED_SMS_MMS_INTERNAL = "com.samsung.android.knox.permission.KNOX_RECEIVE_BLOCKED_SMS_MMS_INTERNAL";
         public static final String KNOX_REFRESH_CREDENTIAL_UI_INTERNAL = "com.samsung.android.knox.permission.KNOX_REFRESH_CREDENTIAL_UI_INTERNAL";
         public static final String KNOX_REMOTE_CONTROL = "com.samsung.android.knox.permission.KNOX_REMOTE_CONTROL";
@@ -847,7 +914,6 @@ public final class Manifest {
         public static final String KNOX_SEAMS_SEPOLICY = "com.sec.enterprise.knox.permission.KNOX_SEAMS_SEPOLICY";
         public static final String KNOX_SEAMS_SEPOLICY_INTERNAL = "com.samsung.android.knox.permission.KNOX_SEAMS_SEPOLICY_INTERNAL";
         public static final String KNOX_SECURITY = "com.samsung.android.knox.permission.KNOX_SECURITY";
-        public static final String KNOX_SENSITIVE_DATA_PROTECTION = "com.samsung.android.knox.permission.KNOX_SENSITIVE_DATA_PROTECTION";
         public static final String KNOX_SET_PROXY_CREDENTIAL_INTERNAL = "com.samsung.android.knox.permission.KNOX_SET_PROXY_CREDENTIAL_INTERNAL";
         public static final String KNOX_SILENT_ACTIVATION_INTERNAL = "com.samsung.android.knox.permission.KNOX_SILENT_ACTIVATION_INTERNAL";
         public static final String KNOX_SIM_RESTRICTION = "com.samsung.android.knox.permission.KNOX_SIM_RESTRICTION";
@@ -859,6 +925,7 @@ public final class Manifest {
         public static final String KNOX_TIMA_KEYSTORE_PER_APP = "com.samsung.android.knox.permission.KNOX_TIMA_KEYSTORE_PER_APP";
         public static final String KNOX_UCM_BIND_PLUGIN_SERVICE = "com.samsung.android.knox.permission.KNOX_UCM_BIND_PLUGIN_SERVICE";
         public static final String KNOX_UCM_ESE_MGMT = "com.samsung.android.knox.permission.KNOX_UCM_ESE_MGMT";
+        public static final String KNOX_UCM_INTERNAL = "com.samsung.android.knox.permission.KNOX_UCM_INTERNAL";
         public static final String KNOX_UCM_MGMT = "com.samsung.android.knox.permission.KNOX_UCM_MGMT";
         public static final String KNOX_UCM_OTHER_MGMT = "com.samsung.android.knox.permission.KNOX_UCM_OTHER_MGMT";
         public static final String KNOX_UCM_PLUGIN_SERVICE = "com.samsung.android.knox.permission.KNOX_UCM_PLUGIN_SERVICE";
@@ -869,6 +936,7 @@ public final class Manifest {
         public static final String KNOX_VPN_INTERNAL = "com.samsung.android.knox.permission.KNOX_VPN_INTERNAL";
         public static final String KNOX_VPN_SOLUTION = "com.samsung.android.knox.permission.KNOX_VPN_SOLUTION";
         public static final String KNOX_WIFI = "com.samsung.android.knox.permission.KNOX_WIFI";
+        public static final String KNOX_ZT_SECURITY_LOG_INTERNAL = "com.samsung.android.knox.permission.KNOX_ZT_SECURITY_LOG_INTERNAL";
         public static final String KPM_OPERATION_REQUEST_INFORM_ACTION_INTERNAL = "com.samsung.android.knox.permission.KPM_OPERATION_REQUEST_INFORM_ACTION_INTERNAL";
         public static final String LAUNCH_CAPTURE_CONTENT_ACTIVITY_FOR_NOTE = "android.permission.LAUNCH_CAPTURE_CONTENT_ACTIVITY_FOR_NOTE";
         public static final String LAUNCH_CREDENTIAL_SELECTOR = "android.permission.LAUNCH_CREDENTIAL_SELECTOR";
@@ -876,6 +944,9 @@ public final class Manifest {
         @SystemApi
         public static final String LAUNCH_DEVICE_MANAGER_SETUP = "android.permission.LAUNCH_DEVICE_MANAGER_SETUP";
         public static final String LAUNCH_MULTI_PANE_SETTINGS_DEEP_LINK = "android.permission.LAUNCH_MULTI_PANE_SETTINGS_DEEP_LINK";
+
+        @SystemApi
+        public static final String LAUNCH_PERMISSION_SETTINGS = "android.permission.LAUNCH_PERMISSION_SETTINGS";
         public static final String LAUNCH_SOFTWARE_UPDATE = "com.samsung.permission.LAUNCH_SOFTWARE_UPDATE";
         public static final String LAUNCH_TRUST_AGENT_SETTINGS = "android.permission.LAUNCH_TRUST_AGENT_SETTINGS";
         public static final String LID_STATE = "com.samsung.android.permission.LID_STATE";
@@ -983,15 +1054,22 @@ public final class Manifest {
         public static final String MANAGE_DEVICE_POLICY_APP_EXEMPTIONS = "android.permission.MANAGE_DEVICE_POLICY_APP_EXEMPTIONS";
         public static final String MANAGE_DEVICE_POLICY_APP_RESTRICTIONS = "android.permission.MANAGE_DEVICE_POLICY_APP_RESTRICTIONS";
         public static final String MANAGE_DEVICE_POLICY_APP_USER_DATA = "android.permission.MANAGE_DEVICE_POLICY_APP_USER_DATA";
+        public static final String MANAGE_DEVICE_POLICY_ASSIST_CONTENT = "android.permission.MANAGE_DEVICE_POLICY_ASSIST_CONTENT";
         public static final String MANAGE_DEVICE_POLICY_AUDIO_OUTPUT = "android.permission.MANAGE_DEVICE_POLICY_AUDIO_OUTPUT";
+
+        @SystemApi
+        public static final String MANAGE_DEVICE_POLICY_AUDIT_LOGGING = "android.permission.MANAGE_DEVICE_POLICY_AUDIT_LOGGING";
         public static final String MANAGE_DEVICE_POLICY_AUTOFILL = "android.permission.MANAGE_DEVICE_POLICY_AUTOFILL";
         public static final String MANAGE_DEVICE_POLICY_BACKUP_SERVICE = "android.permission.MANAGE_DEVICE_POLICY_BACKUP_SERVICE";
+        public static final String MANAGE_DEVICE_POLICY_BLOCK_UNINSTALL = "android.permission.MANAGE_DEVICE_POLICY_BLOCK_UNINSTALL";
         public static final String MANAGE_DEVICE_POLICY_BLUETOOTH = "android.permission.MANAGE_DEVICE_POLICY_BLUETOOTH";
         public static final String MANAGE_DEVICE_POLICY_BUGREPORT = "android.permission.MANAGE_DEVICE_POLICY_BUGREPORT";
         public static final String MANAGE_DEVICE_POLICY_CALLS = "android.permission.MANAGE_DEVICE_POLICY_CALLS";
         public static final String MANAGE_DEVICE_POLICY_CAMERA = "android.permission.MANAGE_DEVICE_POLICY_CAMERA";
+        public static final String MANAGE_DEVICE_POLICY_CAMERA_TOGGLE = "android.permission.MANAGE_DEVICE_POLICY_CAMERA_TOGGLE";
         public static final String MANAGE_DEVICE_POLICY_CERTIFICATES = "android.permission.MANAGE_DEVICE_POLICY_CERTIFICATES";
         public static final String MANAGE_DEVICE_POLICY_COMMON_CRITERIA_MODE = "android.permission.MANAGE_DEVICE_POLICY_COMMON_CRITERIA_MODE";
+        public static final String MANAGE_DEVICE_POLICY_CONTENT_PROTECTION = "android.permission.MANAGE_DEVICE_POLICY_CONTENT_PROTECTION";
         public static final String MANAGE_DEVICE_POLICY_DEBUGGING_FEATURES = "android.permission.MANAGE_DEVICE_POLICY_DEBUGGING_FEATURES";
         public static final String MANAGE_DEVICE_POLICY_DEFAULT_SMS = "android.permission.MANAGE_DEVICE_POLICY_DEFAULT_SMS";
         public static final String MANAGE_DEVICE_POLICY_DEVICE_IDENTIFIERS = "android.permission.MANAGE_DEVICE_POLICY_DEVICE_IDENTIFIERS";
@@ -1007,8 +1085,10 @@ public final class Manifest {
         public static final String MANAGE_DEVICE_POLICY_LOCK = "android.permission.MANAGE_DEVICE_POLICY_LOCK";
         public static final String MANAGE_DEVICE_POLICY_LOCK_CREDENTIALS = "android.permission.MANAGE_DEVICE_POLICY_LOCK_CREDENTIALS";
         public static final String MANAGE_DEVICE_POLICY_LOCK_TASK = "android.permission.MANAGE_DEVICE_POLICY_LOCK_TASK";
+        public static final String MANAGE_DEVICE_POLICY_MANAGED_SUBSCRIPTIONS = "android.permission.MANAGE_DEVICE_POLICY_MANAGED_SUBSCRIPTIONS";
         public static final String MANAGE_DEVICE_POLICY_METERED_DATA = "android.permission.MANAGE_DEVICE_POLICY_METERED_DATA";
         public static final String MANAGE_DEVICE_POLICY_MICROPHONE = "android.permission.MANAGE_DEVICE_POLICY_MICROPHONE";
+        public static final String MANAGE_DEVICE_POLICY_MICROPHONE_TOGGLE = "android.permission.MANAGE_DEVICE_POLICY_MICROPHONE_TOGGLE";
         public static final String MANAGE_DEVICE_POLICY_MOBILE_NETWORK = "android.permission.MANAGE_DEVICE_POLICY_MOBILE_NETWORK";
         public static final String MANAGE_DEVICE_POLICY_MODIFY_USERS = "android.permission.MANAGE_DEVICE_POLICY_MODIFY_USERS";
         public static final String MANAGE_DEVICE_POLICY_MTE = "android.permission.MANAGE_DEVICE_POLICY_MTE";
@@ -1035,11 +1115,13 @@ public final class Manifest {
         public static final String MANAGE_DEVICE_POLICY_SETTINGS = "android.permission.MANAGE_DEVICE_POLICY_SETTINGS";
         public static final String MANAGE_DEVICE_POLICY_SMS = "android.permission.MANAGE_DEVICE_POLICY_SMS";
         public static final String MANAGE_DEVICE_POLICY_STATUS_BAR = "android.permission.MANAGE_DEVICE_POLICY_STATUS_BAR";
+        public static final String MANAGE_DEVICE_POLICY_STORAGE_LIMIT = "android.permission.MANAGE_DEVICE_POLICY_STORAGE_LIMIT";
         public static final String MANAGE_DEVICE_POLICY_SUPPORT_MESSAGE = "android.permission.MANAGE_DEVICE_POLICY_SUPPORT_MESSAGE";
         public static final String MANAGE_DEVICE_POLICY_SUSPEND_PERSONAL_APPS = "android.permission.MANAGE_DEVICE_POLICY_SUSPEND_PERSONAL_APPS";
         public static final String MANAGE_DEVICE_POLICY_SYSTEM_APPS = "android.permission.MANAGE_DEVICE_POLICY_SYSTEM_APPS";
         public static final String MANAGE_DEVICE_POLICY_SYSTEM_DIALOGS = "android.permission.MANAGE_DEVICE_POLICY_SYSTEM_DIALOGS";
         public static final String MANAGE_DEVICE_POLICY_SYSTEM_UPDATES = "android.permission.MANAGE_DEVICE_POLICY_SYSTEM_UPDATES";
+        public static final String MANAGE_DEVICE_POLICY_THREAD_NETWORK = "android.permission.MANAGE_DEVICE_POLICY_THREAD_NETWORK";
         public static final String MANAGE_DEVICE_POLICY_TIME = "android.permission.MANAGE_DEVICE_POLICY_TIME";
         public static final String MANAGE_DEVICE_POLICY_USB_DATA_SIGNALLING = "android.permission.MANAGE_DEVICE_POLICY_USB_DATA_SIGNALLING";
         public static final String MANAGE_DEVICE_POLICY_USB_FILE_TRANSFER = "android.permission.MANAGE_DEVICE_POLICY_USB_FILE_TRANSFER";
@@ -1049,8 +1131,12 @@ public final class Manifest {
         public static final String MANAGE_DEVICE_POLICY_WIFI = "android.permission.MANAGE_DEVICE_POLICY_WIFI";
         public static final String MANAGE_DEVICE_POLICY_WINDOWS = "android.permission.MANAGE_DEVICE_POLICY_WINDOWS";
         public static final String MANAGE_DEVICE_POLICY_WIPE_DATA = "android.permission.MANAGE_DEVICE_POLICY_WIPE_DATA";
+        public static final String MANAGE_DISPLAYS = "android.permission.MANAGE_DISPLAYS";
         public static final String MANAGE_DOCUMENTS = "android.permission.MANAGE_DOCUMENTS";
         public static final String MANAGE_DYNAMIC_SYSTEM = "android.permission.MANAGE_DYNAMIC_SYSTEM";
+
+        @SystemApi
+        public static final String MANAGE_ENHANCED_CONFIRMATION_STATES = "android.permission.MANAGE_ENHANCED_CONFIRMATION_STATES";
 
         @SystemApi
         public static final String MANAGE_ETHERNET_NETWORKS = "android.permission.MANAGE_ETHERNET_NETWORKS";
@@ -1094,6 +1180,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String MANAGE_PROFILE_AND_DEVICE_OWNERS = "android.permission.MANAGE_PROFILE_AND_DEVICE_OWNERS";
+        public static final String MANAGE_REMOTE_AUTH = "android.permission.MANAGE_REMOTE_AUTH";
 
         @SystemApi
         public static final String MANAGE_ROLE_HOLDERS = "android.permission.MANAGE_ROLE_HOLDERS";
@@ -1149,6 +1236,8 @@ public final class Manifest {
 
         @SystemApi
         public static final String MANAGE_USER_OEM_UNLOCK_STATE = "android.permission.MANAGE_USER_OEM_UNLOCK_STATE";
+
+        @SystemApi
         public static final String MANAGE_VOICE_KEYPHRASES = "android.permission.MANAGE_VOICE_KEYPHRASES";
 
         @SystemApi
@@ -1178,6 +1267,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String MEDIA_RESOURCE_OVERRIDE_PID = "android.permission.MEDIA_RESOURCE_OVERRIDE_PID";
+        public static final String MEDIA_ROUTING_CONTROL = "android.permission.MEDIA_ROUTING_CONTROL";
 
         @SystemApi
         public static final String MIGRATE_HEALTH_CONNECT_DATA = "android.permission.MIGRATE_HEALTH_CONNECT_DATA";
@@ -1225,6 +1315,7 @@ public final class Manifest {
         public static final String MONITOR_DEVICE_CONFIG_ACCESS = "android.permission.MONITOR_DEVICE_CONFIG_ACCESS";
         public static final String MONITOR_INPUT = "android.permission.MONITOR_INPUT";
         public static final String MONITOR_KEYBOARD_BACKLIGHT = "android.permission.MONITOR_KEYBOARD_BACKLIGHT";
+        public static final String MONITOR_STICKY_MODIFIER_STATE = "android.permission.MONITOR_STICKY_MODIFIER_STATE";
         public static final String MOUNT_FORMAT_FILESYSTEMS = "android.permission.MOUNT_FORMAT_FILESYSTEMS";
         public static final String MOUNT_UNMOUNT_FILESYSTEMS = "android.permission.MOUNT_UNMOUNT_FILESYSTEMS";
 
@@ -1305,6 +1396,9 @@ public final class Manifest {
         @SystemApi
         public static final String OVERRIDE_COMPAT_CHANGE_CONFIG_ON_RELEASE_BUILD = "android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG_ON_RELEASE_BUILD";
         public static final String OVERRIDE_DISPLAY_MODE_REQUESTS = "android.permission.OVERRIDE_DISPLAY_MODE_REQUESTS";
+
+        @SystemApi
+        public static final String OVERRIDE_SYSTEM_KEY_BEHAVIOR_IN_FOCUSED_WINDOW = "android.permission.OVERRIDE_SYSTEM_KEY_BEHAVIOR_IN_FOCUSED_WINDOW";
         public static final String OVERRIDE_WIFI_CONFIG = "android.permission.OVERRIDE_WIFI_CONFIG";
         public static final String PACKAGE_ROLLBACK_AGENT = "android.permission.PACKAGE_ROLLBACK_AGENT";
         public static final String PACKAGE_USAGE_STATS = "android.permission.PACKAGE_USAGE_STATS";
@@ -1338,6 +1432,9 @@ public final class Manifest {
         @SystemApi
         public static final String POWER_SAVER = "android.permission.POWER_SAVER";
 
+        @SystemApi
+        public static final String PREPARE_FACTORY_RESET = "android.permission.PREPARE_FACTORY_RESET";
+
         @Deprecated
         public static final String PROCESS_OUTGOING_CALLS = "android.permission.PROCESS_OUTGOING_CALLS";
         public static final String PROVIDER = "com.sec.android.diagmonagent.permission.PROVIDER";
@@ -1356,7 +1453,9 @@ public final class Manifest {
         @SystemApi
         public static final String PROVISION_DEMO_DEVICE = "android.permission.PROVISION_DEMO_DEVICE";
         public static final String PROVISION_HOTSPOT_TRIGGER = "com.samsung.unifiedtp.permission.PROVISION_HOTSPOT_TRIGGER";
-        public static final String PUSH = "com.sec.android.fota.permission.PUSH";
+
+        @SystemApi
+        public static final String QUARANTINE_APPS = "android.permission.QUARANTINE_APPS";
 
         @SystemApi
         public static final String QUERY_ADMIN_POLICY = "android.permission.QUERY_ADMIN_POLICY";
@@ -1365,6 +1464,9 @@ public final class Manifest {
 
         @SystemApi
         public static final String QUERY_CLONED_APPS = "android.permission.QUERY_CLONED_APPS";
+
+        @SystemApi
+        public static final String QUERY_DEVICE_STOLEN_STATE = "android.permission.QUERY_DEVICE_STOLEN_STATE";
         public static final String QUERY_DO_NOT_ASK_CREDENTIALS_ON_BOOT = "android.permission.QUERY_DO_NOT_ASK_CREDENTIALS_ON_BOOT";
 
         @SystemApi
@@ -1384,6 +1486,8 @@ public final class Manifest {
         public static final String READ_APP_SPECIFIC_LOCALES = "android.permission.READ_APP_SPECIFIC_LOCALES";
         public static final String READ_ASSISTANT_APP_SEARCH_DATA = "android.permission.READ_ASSISTANT_APP_SEARCH_DATA";
         public static final String READ_BASIC_PHONE_STATE = "android.permission.READ_BASIC_PHONE_STATE";
+
+        @SystemApi
         public static final String READ_BLOCKED_NUMBERS = "android.permission.READ_BLOCKED_NUMBERS";
         public static final String READ_CALENDAR = "android.permission.READ_CALENDAR";
         public static final String READ_CALL_LOG = "android.permission.READ_CALL_LOG";
@@ -1409,6 +1513,7 @@ public final class Manifest {
         @SystemApi
         public static final String READ_DREAM_STATE = "android.permission.READ_DREAM_STATE";
         public static final String READ_DREAM_SUPPRESSION = "android.permission.READ_DREAM_SUPPRESSION";
+        public static final String READ_DROPBOX_DATA = "android.permission.READ_DROPBOX_DATA";
         public static final String READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE";
         public static final String READ_FRAME_BUFFER = "android.permission.READ_FRAME_BUFFER";
         public static final String READ_FRAME_BUFFER_IGNORE_POLICY = "com.samsung.android.permission.READ_FRAME_BUFFER_IGNORE_POLICY";
@@ -1420,6 +1525,8 @@ public final class Manifest {
 
         @Deprecated
         public static final String READ_INPUT_STATE = "android.permission.READ_INPUT_STATE";
+
+        @SystemApi
         public static final String READ_INSTALLED_SESSION_PATHS = "android.permission.READ_INSTALLED_SESSION_PATHS";
 
         @SystemApi
@@ -1472,8 +1579,12 @@ public final class Manifest {
         public static final String READ_SEARCH_INDEXABLES = "android.permission.READ_SEARCH_INDEXABLES";
         public static final String READ_SMS = "android.permission.READ_SMS";
         public static final String READ_SOCIAL_STREAM = "android.permission.READ_SOCIAL_STREAM";
+        public static final String READ_SSDID = "com.samsung.android.permission.READ_SSDID";
         public static final String READ_SYNC_SETTINGS = "android.permission.READ_SYNC_SETTINGS";
         public static final String READ_SYNC_STATS = "android.permission.READ_SYNC_STATS";
+
+        @SystemApi
+        public static final String READ_SYSTEM_GRAMMATICAL_GENDER = "android.permission.READ_SYSTEM_GRAMMATICAL_GENDER";
 
         @SystemApi
         public static final String READ_SYSTEM_UPDATE_INFO = "android.permission.READ_SYSTEM_UPDATE_INFO";
@@ -1509,6 +1620,12 @@ public final class Manifest {
         public static final String RECEIVE_EMERGENCY_BROADCAST = "android.permission.RECEIVE_EMERGENCY_BROADCAST";
         public static final String RECEIVE_MEDIA_RESOURCE_USAGE = "android.permission.RECEIVE_MEDIA_RESOURCE_USAGE";
         public static final String RECEIVE_MMS = "android.permission.RECEIVE_MMS";
+
+        @SystemApi
+        public static final String RECEIVE_SANDBOX_TRIGGER_AUDIO = "android.permission.RECEIVE_SANDBOX_TRIGGER_AUDIO";
+
+        @SystemApi
+        public static final String RECEIVE_SENSITIVE_NOTIFICATIONS = "android.permission.RECEIVE_SENSITIVE_NOTIFICATIONS";
         public static final String RECEIVE_SMS = "android.permission.RECEIVE_SMS";
         public static final String RECEIVE_STK_COMMANDS = "android.permission.RECEIVE_STK_COMMANDS";
         public static final String RECEIVE_WAP_PUSH = "android.permission.RECEIVE_WAP_PUSH";
@@ -1519,6 +1636,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String RECORD_BACKGROUND_AUDIO = "android.permission.RECORD_BACKGROUND_AUDIO";
+        public static final String RECORD_SENSITIVE_CONTENT = "android.permission.RECORD_SENSITIVE_CONTENT";
 
         @SystemApi
         public static final String RECOVERY = "android.permission.RECOVERY";
@@ -1532,6 +1650,9 @@ public final class Manifest {
         @SystemApi
         public static final String REGISTER_CONNECTION_MANAGER = "android.permission.REGISTER_CONNECTION_MANAGER";
         public static final String REGISTER_MEDIA_RESOURCE_OBSERVER = "android.permission.REGISTER_MEDIA_RESOURCE_OBSERVER";
+
+        @SystemApi
+        public static final String REGISTER_NSD_OFFLOAD_ENGINE = "android.permission.REGISTER_NSD_OFFLOAD_ENGINE";
 
         @SystemApi
         public static final String REGISTER_SIM_SUBSCRIPTION = "android.permission.REGISTER_SIM_SUBSCRIPTION";
@@ -1554,6 +1675,9 @@ public final class Manifest {
         @SystemApi
         public static final String RENOUNCE_PERMISSIONS = "android.permission.RENOUNCE_PERMISSIONS";
         public static final String REORDER_TASKS = "android.permission.REORDER_TASKS";
+
+        @SystemApi
+        public static final String REPORT_USAGE_STATS = "android.permission.REPORT_USAGE_STATS";
         public static final String REQUEST_AUTHNR_SERVICE = "com.samsung.android.permission.REQUEST_AUTHNR_SERVICE";
         public static final String REQUEST_COMPANION_PROFILE_APP_STREAMING = "android.permission.REQUEST_COMPANION_PROFILE_APP_STREAMING";
         public static final String REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION = "android.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION";
@@ -1577,9 +1701,11 @@ public final class Manifest {
         @SystemApi
         public static final String REQUEST_NOTIFICATION_ASSISTANT_SERVICE = "android.permission.REQUEST_NOTIFICATION_ASSISTANT_SERVICE";
         public static final String REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE = "android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE";
+        public static final String REQUEST_OBSERVE_DEVICE_UUID_PRESENCE = "android.permission.REQUEST_OBSERVE_DEVICE_UUID_PRESENCE";
         public static final String REQUEST_PASSWORD_COMPLEXITY = "android.permission.REQUEST_PASSWORD_COMPLEXITY";
         public static final String REQUEST_PROCESS_FIDO = "com.samsung.android.permission.REQUEST_PROCESS_FIDO";
         public static final String REQUEST_UNIQUE_ID_ATTESTATION = "android.permission.REQUEST_UNIQUE_ID_ATTESTATION";
+        public static final String RESERVED_FOR_TESTING_SIGNATURE = "android.permission.RESERVED_FOR_TESTING_SIGNATURE";
         public static final String RESET_APP_ERRORS = "android.permission.RESET_APP_ERRORS";
         public static final String RESET_FACE_LOCKOUT = "com.samsung.android.bio.face.permission.RESET_FACE_LOCKOUT";
         public static final String RESET_FINGERPRINT_LOCKOUT = "android.permission.RESET_FINGERPRINT_LOCKOUT";
@@ -1600,6 +1726,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String RESTRICTED_VR_ACCESS = "android.permission.RESTRICTED_VR_ACCESS";
+        public static final String RESTRICT_DISPLAY_MODES = "android.permission.RESTRICT_DISPLAY_MODES";
 
         @SystemApi
         public static final String RETRIEVE_WINDOW_CONTENT = "android.permission.RETRIEVE_WINDOW_CONTENT";
@@ -1634,11 +1761,10 @@ public final class Manifest {
         @SystemApi
         @Deprecated
         public static final String SCORE_NETWORKS = "android.permission.SCORE_NETWORKS";
-        public static final String SCREEN_ROTATION_ANIMATION_STARTED = "com.samsung.android.permisson.SCREEN_ROTATION_ANIMATION_STARTED";
+        public static final String SCREEN_TIMEOUT_OVERRIDE = "android.permission.SCREEN_TIMEOUT_OVERRIDE";
 
         @SystemApi
         public static final String SECURE_ELEMENT_PRIVILEGED_OPERATION = "android.permission.SECURE_ELEMENT_PRIVILEGED_OPERATION";
-        public static final String SEM_ACCESS_WIFI_SECURED_INFO = "com.samsung.permission.SEM_ACCESS_WIFI_SECURED_INFO";
         public static final String SEM_ADAPTIVE_BRIGHTNESS = "com.samsung.adaptivebrightnessgo.permission.SEM_ADAPTIVE_BRIGHTNESS";
         public static final String SEM_APP_RESTRICTION = "com.samsung.android.permission.SEM_APP_RESTRICTION";
         public static final String SEM_AUTO_BIND_NOTIFICATION_LISTENER_SERVICE = "com.samsung.android.permission.SEM_AUTO_BIND_NOTIFICATION_LISTENER_SERVICE";
@@ -1646,7 +1772,6 @@ public final class Manifest {
         public static final String SEM_BATTERY_INFO_PROVIDER = "com.samsung.android.permission.SEM_BATTERY_INFO_PROVIDER";
         public static final String SEM_CMC_PUSH = "com.samsung.android.mdecservice.nms.SEM_CMC_PUSH";
         public static final String SEM_CONTROL_DISPLAY_COLOR_TRANSFORMS = "com.samsung.android.permission.SEM_CONTROL_DISPLAY_COLOR_TRANSFORMS";
-        public static final String SEM_GLOBAL_SEARCH = "com.samsung.android.permission.SEM_GLOBAL_SEARCH";
         public static final String SEM_MEDIA_CONTENTS = "com.samsung.android.permission.SEM_MEDIA_CONTENTS";
         public static final String SEM_SET_DEVICE_BLOCK = "com.samsung.android.permission.SEM_SET_DEVICE_BLOCK";
         public static final String SEM_UPDATE_NOTIFICATION_CHANNELS = "com.samsung.android.permission.SEM_UPDATE_NOTIFICATION_CHANNELS";
@@ -1678,12 +1803,16 @@ public final class Manifest {
         public static final String SERIAL_PORT = "android.permission.SERIAL_PORT";
 
         @SystemApi
+        public static final String SETUP_FSVERITY = "android.permission.SETUP_FSVERITY";
+
+        @SystemApi
         public static final String SET_ACTIVITY_WATCHER = "android.permission.SET_ACTIVITY_WATCHER";
         public static final String SET_ALARM = "com.android.alarm.permission.SET_ALARM";
         public static final String SET_ALWAYS_FINISH = "android.permission.SET_ALWAYS_FINISH";
         public static final String SET_AND_VERIFY_LOCKSCREEN_CREDENTIALS = "android.permission.SET_AND_VERIFY_LOCKSCREEN_CREDENTIALS";
         public static final String SET_ANIMATION_SCALE = "android.permission.SET_ANIMATION_SCALE";
         public static final String SET_APP_SPECIFIC_LOCALECONFIG = "android.permission.SET_APP_SPECIFIC_LOCALECONFIG";
+        public static final String SET_BIOMETRIC_DIALOG_ADVANCED = "android.permission.SET_BIOMETRIC_DIALOG_ADVANCED";
 
         @SystemApi
         public static final String SET_CLIP_SOURCE = "android.permission.SET_CLIP_SOURCE";
@@ -1721,6 +1850,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String SET_SYSTEM_AUDIO_CAPTION = "android.permission.SET_SYSTEM_AUDIO_CAPTION";
+        public static final String SET_THEME_OVERLAY_CONTROLLER_READY = "android.permission.SET_THEME_OVERLAY_CONTROLLER_READY";
         public static final String SET_TIME = "android.permission.SET_TIME";
         public static final String SET_TIME_ZONE = "android.permission.SET_TIME_ZONE";
         public static final String SET_UNRESTRICTED_GESTURE_EXCLUSION = "android.permission.SET_UNRESTRICTED_GESTURE_EXCLUSION";
@@ -1738,6 +1868,9 @@ public final class Manifest {
         @SystemApi
         public static final String SET_WALLPAPER_DIM_AMOUNT = "android.permission.SET_WALLPAPER_DIM_AMOUNT";
         public static final String SET_WALLPAPER_HINTS = "android.permission.SET_WALLPAPER_HINTS";
+
+        @SystemApi
+        public static final String SHOW_CUSTOMIZED_RESOLVER = "android.permission.SHOW_CUSTOMIZED_RESOLVER";
 
         @SystemApi
         public static final String SHOW_KEYGUARD_MESSAGE = "android.permission.SHOW_KEYGUARD_MESSAGE";
@@ -1768,6 +1901,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String START_ACTIVITIES_FROM_BACKGROUND = "android.permission.START_ACTIVITIES_FROM_BACKGROUND";
+        public static final String START_ACTIVITIES_FROM_SDK_SANDBOX = "android.permission.START_ACTIVITIES_FROM_SDK_SANDBOX";
         public static final String START_ACTIVITY_AS_CALLER = "android.permission.START_ACTIVITY_AS_CALLER";
         public static final String START_ANY_ACTIVITY = "android.permission.START_ANY_ACTIVITY";
 
@@ -1813,6 +1947,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String SUSPEND_APPS = "android.permission.SUSPEND_APPS";
+        public static final String SYNC_FLAGS = "android.permission.SYNC_FLAGS";
         public static final String SYSTEM_ALERT_WINDOW = "android.permission.SYSTEM_ALERT_WINDOW";
 
         @SystemApi
@@ -1829,6 +1964,10 @@ public final class Manifest {
 
         @SystemApi
         public static final String TETHER_PRIVILEGED = "android.permission.TETHER_PRIVILEGED";
+
+        @SystemApi
+        public static final String THREAD_NETWORK_PRIVILEGED = "android.permission.THREAD_NETWORK_PRIVILEGED";
+        public static final String THREAD_NETWORK_TESTING = "android.permission.THREAD_NETWORK_TESTING";
 
         @SystemApi
         public static final String TIS_EXTENSION_INTERFACE = "android.permission.TIS_EXTENSION_INTERFACE";
@@ -1890,6 +2029,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String USE_COLORIZED_NOTIFICATIONS = "android.permission.USE_COLORIZED_NOTIFICATIONS";
+        public static final String USE_COMPANION_TRANSPORTS = "android.permission.USE_COMPANION_TRANSPORTS";
         public static final String USE_CREDENTIALS = "android.permission.USE_CREDENTIALS";
 
         @Deprecated
@@ -1907,6 +2047,10 @@ public final class Manifest {
         public static final String USE_MULTI_CONTROL_MANAGER = "com.sec.android.permission.USE_MULTI_CONTROL_MANAGER";
 
         @SystemApi
+        public static final String USE_ON_DEVICE_INTELLIGENCE = "android.permission.USE_ON_DEVICE_INTELLIGENCE";
+        public static final String USE_REMOTE_AUTH = "android.permission.USE_REMOTE_AUTH";
+
+        @SystemApi
         public static final String USE_RESERVED_DISK = "android.permission.USE_RESERVED_DISK";
         public static final String USE_SIP = "android.permission.USE_SIP";
         public static final String USE_SYSTEM_DATA_LOADERS = "com.android.permission.USE_SYSTEM_DATA_LOADERS";
@@ -1918,6 +2062,7 @@ public final class Manifest {
         public static final String VERIFY_ATTESTATION = "android.permission.VERIFY_ATTESTATION";
         public static final String VIBRATE = "android.permission.VIBRATE";
         public static final String VIBRATE_ALWAYS_ON = "android.permission.VIBRATE_ALWAYS_ON";
+        public static final String VIBRATE_SYSTEM_CONSTANTS = "android.permission.VIBRATE_SYSTEM_CONSTANTS";
         public static final String VIEW_INSTANT_APPS = "android.permission.VIEW_INSTANT_APPS";
         public static final String VIRTUAL_INPUT_DEVICE = "android.permission.VIRTUAL_INPUT_DEVICE";
         public static final String WAKEUP_SURFACE_FLINGER = "android.permission.WAKEUP_SURFACE_FLINGER";
@@ -1948,9 +2093,14 @@ public final class Manifest {
         @SystemApi
         public static final String WRITE_ALLOWLISTED_DEVICE_CONFIG = "android.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG";
         public static final String WRITE_APN_SETTINGS = "android.permission.WRITE_APN_SETTINGS";
+
+        @SystemApi
         public static final String WRITE_BLOCKED_NUMBERS = "android.permission.WRITE_BLOCKED_NUMBERS";
         public static final String WRITE_CALENDAR = "android.permission.WRITE_CALENDAR";
         public static final String WRITE_CALL_LOG = "android.permission.WRITE_CALL_LOG";
+
+        @Deprecated
+        public static final String WRITE_CAPTURED_URL = "com.samsung.android.permission.WRITE_CAPTURED_URL";
         public static final String WRITE_CONTACTS = "android.permission.WRITE_CONTACTS";
         public static final String WRITE_DATABASES = "com.samsung.android.fota.permission.WRITE_DATABASES";
 
@@ -1963,6 +2113,7 @@ public final class Manifest {
         @SystemApi
         public static final String WRITE_EMBEDDED_SUBSCRIPTIONS = "android.permission.WRITE_EMBEDDED_SUBSCRIPTIONS";
         public static final String WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
+        public static final String WRITE_FLAGS = "android.permission.WRITE_FLAGS";
         public static final String WRITE_GSERVICES = "android.permission.WRITE_GSERVICES";
         public static final String WRITE_HISTORY_BOOKMARKS = "com.android.browser.permission.WRITE_HISTORY_BOOKMARKS";
 
@@ -1986,14 +2137,17 @@ public final class Manifest {
         public static final String WRITE_SYNC_SETTINGS = "android.permission.WRITE_SYNC_SETTINGS";
         public static final String WRITE_TRAFFIC_STATS = "com.tmobile.oem.echolocate.system.provider.trafficstats.TrafficStatsContentProvider.WRITE_TRAFFIC_STATS";
         public static final String WRITE_USER_DICTIONARY = "android.permission.WRITE_USER_DICTIONARY";
+
+        @SystemApi
+        public static final String WRITE_VERIFICATION_STATE_E2EE_CONTACT_KEYS = "android.permission.WRITE_VERIFICATION_STATE_E2EE_CONTACT_KEYS";
         public static final String WRITE_VOICEMAIL = "com.android.voicemail.permission.WRITE_VOICEMAIL";
         public static final String preconfig = "com.sec.permission.preconfig";
+        public static final String receiveBinaryData = "diagandroid.phone.receiveBinaryData";
         public static final String receiveDetailedApplicationState = "diagandroid.app.receiveDetailedApplicationState";
         public static final String receiveDetailedCallState = "diagandroid.phone.receiveDetailedCallState";
         public static final String receivePDPContextState = "diagandroid.data.receivePDPContextState";
     }
 
-    /* loaded from: classes.dex */
     public static final class permission_group {
         public static final String ACTIVITY_RECOGNITION = "android.permission-group.ACTIVITY_RECOGNITION";
         public static final String CALENDAR = "android.permission-group.CALENDAR";
@@ -2013,6 +2167,7 @@ public final class Manifest {
 
         @SystemApi
         public static final String UNDEFINED = "android.permission-group.UNDEFINED";
+        public static final String api_access_control_group = "com.samsung.android.knox.api-access-control-group";
         public static final String mdm = "com.sec.enterprise.permission-group.mdm";
     }
 }

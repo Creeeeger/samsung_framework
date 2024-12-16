@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextFlatMotionForTableMode extends SContextEventContext {
     public static final Parcelable.Creator<SContextFlatMotionForTableMode> CREATOR = new Parcelable.Creator<SContextFlatMotionForTableMode>() { // from class: android.hardware.scontext.SContextFlatMotionForTableMode.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextFlatMotionForTableMode createFromParcel(Parcel in) {
             return new SContextFlatMotionForTableMode(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextFlatMotionForTableMode[] newArray(int size) {
             return new SContextFlatMotionForTableMode[size];
@@ -23,7 +22,7 @@ public class SContextFlatMotionForTableMode extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextFlatMotionForTableMode() {
+    SContextFlatMotionForTableMode() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextFlatMotionForTableMode extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextFlatMotionForTableMode$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextFlatMotionForTableMode> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextFlatMotionForTableMode createFromParcel(Parcel in) {
-            return new SContextFlatMotionForTableMode(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextFlatMotionForTableMode[] newArray(int size) {
-            return new SContextFlatMotionForTableMode[size];
-        }
     }
 }

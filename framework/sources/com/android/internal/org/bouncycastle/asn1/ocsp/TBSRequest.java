@@ -96,14 +96,12 @@ public class TBSRequest extends ASN1Object {
         if (!this.version.equals((ASN1Primitive) V1) || this.versionSet) {
             v.add(new DERTaggedObject(true, 0, this.version));
         }
-        GeneralName generalName = this.requestorName;
-        if (generalName != null) {
-            v.add(new DERTaggedObject(true, 1, generalName));
+        if (this.requestorName != null) {
+            v.add(new DERTaggedObject(true, 1, this.requestorName));
         }
         v.add(this.requestList);
-        Extensions extensions = this.requestExtensions;
-        if (extensions != null) {
-            v.add(new DERTaggedObject(true, 2, extensions));
+        if (this.requestExtensions != null) {
+            v.add(new DERTaggedObject(true, 2, this.requestExtensions));
         }
         return new DERSequence(v);
     }

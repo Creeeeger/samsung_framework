@@ -3,6 +3,8 @@ package com.android.internal.content.om;
 import android.content.pm.PackagePartitions;
 import android.os.Build;
 import android.os.FileUtils;
+import android.os.SystemProperties;
+import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.Xml;
@@ -20,7 +22,7 @@ import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public final class OverlayConfigParser {
     private static final String CONFIG_DEFAULT_FILENAME = "config/config.xml";
     private static final String CONFIG_DIRECTORY = "config";
@@ -28,10 +30,11 @@ public final class OverlayConfigParser {
     static final boolean DEFAULT_MUTABILITY = true;
     private static final int MAXIMUM_MERGE_DEPTH = 5;
 
-    OverlayConfigParser() {
+    @FunctionalInterface
+    public interface SysPropWrapper {
+        String get(String str);
     }
 
-    /* loaded from: classes4.dex */
     public static class ParsedConfigFile {
         public final int line;
         public final String path;
@@ -58,7 +61,6 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class ParsedConfiguration {
         public final boolean enabled;
         public final boolean mutable;
@@ -67,7 +69,7 @@ public final class OverlayConfigParser {
         public final OverlayScanner.ParsedOverlayInfo parsedInfo;
         public final String policy;
 
-        public ParsedConfiguration(String packageName, boolean enabled, boolean mutable, String policy, OverlayScanner.ParsedOverlayInfo parsedInfo, ParsedConfigFile parsedConfigFile) {
+        ParsedConfiguration(String packageName, boolean enabled, boolean mutable, String policy, OverlayScanner.ParsedOverlayInfo parsedInfo, ParsedConfigFile parsedConfigFile) {
             this.packageName = packageName;
             this.enabled = enabled;
             this.mutable = mutable;
@@ -81,7 +83,6 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class OverlayPartition extends PackagePartitions.SystemPartition {
         static final String POLICY_ODM = "odm";
         static final String POLICY_OEM = "oem";
@@ -96,7 +97,7 @@ public final class OverlayConfigParser {
             this.policy = policyForPartition(partition);
         }
 
-        public OverlayPartition(File folder, PackagePartitions.SystemPartition original) {
+        OverlayPartition(File folder, PackagePartitions.SystemPartition original) {
             super(folder, original);
             this.policy = policyForPartition(original);
         }
@@ -120,17 +121,12 @@ public final class OverlayConfigParser {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ParsingContext {
+    private static class ParsingContext {
         private final ArraySet<String> mConfiguredOverlays;
         private boolean mFoundMutableOverlay;
         private int mMergeDepth;
         private final ArrayList<ParsedConfiguration> mOrderedConfigurations;
         private final OverlayPartition mPartition;
-
-        /* synthetic */ ParsingContext(OverlayPartition overlayPartition, ParsingContextIA parsingContextIA) {
-            this(overlayPartition);
-        }
 
         private ParsingContext(OverlayPartition partition) {
             this.mOrderedConfigurations = new ArrayList<>();
@@ -139,7 +135,7 @@ public final class OverlayConfigParser {
         }
     }
 
-    public static ArrayList<ParsedConfiguration> getConfigurations(OverlayPartition partition, OverlayScanner scanner, Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos, List<String> activeApexes) {
+    static ArrayList<ParsedConfiguration> getConfigurations(OverlayPartition partition, OverlayScanner scanner, Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos, List<String> activeApexes) {
         if (scanner != null) {
             if (partition.getOverlayFolder() != null) {
                 scanner.scanDir(partition.getOverlayFolder());
@@ -160,6 +156,7 @@ public final class OverlayConfigParser {
         return parsingContext.mOrderedConfigurations;
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     private static void readConfigFile(File configFile, OverlayScanner scanner, Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos, ParsingContext parsingContext) {
         char c;
         try {
@@ -178,15 +175,19 @@ public final class OverlayConfigParser {
                                     c = 1;
                                     break;
                                 }
+                                c = 65535;
                                 break;
                             case 103785528:
                                 if (name.equals("merge")) {
                                     c = 0;
                                     break;
                                 }
+                                c = 65535;
+                                break;
+                            default:
+                                c = 65535;
                                 break;
                         }
-                        c = 65535;
                         switch (c) {
                             case 0:
                                 parseMerge(configFile, parser, scanner, packageManagerOverlayInfos, parsingContext);
@@ -210,32 +211,78 @@ public final class OverlayConfigParser {
         }
     }
 
+    public static String expandProperty(String configPath, SysPropWrapper sysPropWrapper) {
+        if (configPath == null) {
+            return null;
+        }
+        int propStartPos = configPath.indexOf("${");
+        if (propStartPos == -1) {
+            return configPath;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(configPath.substring(0, propStartPos));
+        int propEndPos = configPath.indexOf("}", propStartPos);
+        if (propEndPos != -1) {
+            if (configPath.indexOf("${", propStartPos + 2) != -1) {
+                throw new IllegalStateException("Only a single property supported in path: " + configPath);
+            }
+            String propertyName = configPath.substring(propStartPos + 2, propEndPos);
+            if (!propertyName.startsWith("ro.")) {
+                throw new IllegalStateException("Only read only properties can be used when merging RRO config files: " + propertyName);
+            }
+            String propertyValue = sysPropWrapper.get(propertyName);
+            if (TextUtils.isEmpty(propertyValue)) {
+                throw new IllegalStateException("Property is empty or doesn't exist: " + propertyName);
+            }
+            Log.d("OverlayConfig", String.format("Using property in overlay config path: \"%s\"", propertyName));
+            sb.append(propertyValue);
+            int propEndPos2 = propEndPos + 1;
+            if (propEndPos2 < configPath.length()) {
+                sb.append(configPath.substring(propEndPos2));
+            }
+            return sb.toString();
+        }
+        throw new IllegalStateException("Malformed property, unmatched braces, in: " + configPath);
+    }
+
     private static void parseMerge(File configFile, XmlPullParser parser, OverlayScanner scanner, Map<String, OverlayScanner.ParsedOverlayInfo> packageManagerOverlayInfos, ParsingContext parsingContext) {
-        String path = parser.getAttributeValue(null, "path");
-        if (path == null) {
-            throw new IllegalStateException(String.format("<merge> without path in %s at %s" + configFile, parser.getPositionDescription()));
-        }
-        if (path.startsWith("/")) {
-            throw new IllegalStateException(String.format("Path %s must be relative to the directory containing overlay configurations  files in %s at %s ", path, configFile, parser.getPositionDescription()));
-        }
-        int i = parsingContext.mMergeDepth;
-        parsingContext.mMergeDepth = i + 1;
-        if (i == 5) {
-            throw new IllegalStateException(String.format("Maximum <merge> depth exceeded in %s at %s", configFile, parser.getPositionDescription()));
-        }
         try {
-            File configDirectory = new File(parsingContext.mPartition.getOverlayFolder(), CONFIG_DIRECTORY).getCanonicalFile();
-            File includedConfigFile = new File(configDirectory, path).getCanonicalFile();
-            if (!includedConfigFile.exists()) {
-                throw new IllegalStateException(String.format("Merged configuration file %s does not exist in %s at %s", path, configFile, parser.getPositionDescription()));
+            SysPropWrapper sysPropWrapper = new SysPropWrapper() { // from class: com.android.internal.content.om.OverlayConfigParser$$ExternalSyntheticLambda0
+                @Override // com.android.internal.content.om.OverlayConfigParser.SysPropWrapper
+                public final String get(String str) {
+                    String str2;
+                    str2 = SystemProperties.get(str, "");
+                    return str2;
+                }
+            };
+            String path = expandProperty(parser.getAttributeValue(null, "path"), sysPropWrapper);
+            if (path == null) {
+                throw new IllegalStateException(String.format("<merge> without path in %s at %s", configFile, parser.getPositionDescription()));
             }
-            if (!FileUtils.contains(configDirectory, includedConfigFile)) {
-                throw new IllegalStateException(String.format("Merged file %s outside of configuration directory in %s at %s", includedConfigFile.getAbsolutePath(), includedConfigFile, parser.getPositionDescription()));
+            if (path.startsWith("/")) {
+                throw new IllegalStateException(String.format("Path %s must be relative to the directory containing overlay configurations  files in %s at %s ", path, configFile, parser.getPositionDescription()));
             }
-            readConfigFile(includedConfigFile, scanner, packageManagerOverlayInfos, parsingContext);
-            parsingContext.mMergeDepth--;
-        } catch (IOException e) {
-            throw new IllegalStateException(String.format("Couldn't find or open merged configuration file %s in %s at %s", path, configFile, parser.getPositionDescription()), e);
+            int i = parsingContext.mMergeDepth;
+            parsingContext.mMergeDepth = i + 1;
+            if (i == 5) {
+                throw new IllegalStateException(String.format("Maximum <merge> depth exceeded in %s at %s", configFile, parser.getPositionDescription()));
+            }
+            try {
+                File configDirectory = new File(parsingContext.mPartition.getOverlayFolder(), CONFIG_DIRECTORY).getCanonicalFile();
+                File includedConfigFile = new File(configDirectory, path).getCanonicalFile();
+                if (!includedConfigFile.exists()) {
+                    throw new IllegalStateException(String.format("Merged configuration file %s does not exist in %s at %s", path, configFile, parser.getPositionDescription()));
+                }
+                if (!FileUtils.contains(configDirectory, includedConfigFile)) {
+                    throw new IllegalStateException(String.format("Merged file %s outside of configuration directory in %s at %s", includedConfigFile.getAbsolutePath(), includedConfigFile, parser.getPositionDescription()));
+                }
+                readConfigFile(includedConfigFile, scanner, packageManagerOverlayInfos, parsingContext);
+                parsingContext.mMergeDepth--;
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("Couldn't find or open merged configuration file %s in %s at %s", path, configFile, parser.getPositionDescription()), e);
+            }
+        } catch (IllegalStateException e2) {
+            throw new IllegalStateException(String.format("<merge> path expand error in %s at %s", configFile, parser.getPositionDescription()), e2);
         }
     }
 

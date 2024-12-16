@@ -3,17 +3,16 @@ package com.samsung.android.core;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class CompatChangeablePackageInfo implements Parcelable {
     public static final Parcelable.Creator<CompatChangeablePackageInfo> CREATOR = new Parcelable.Creator<CompatChangeablePackageInfo>() { // from class: com.samsung.android.core.CompatChangeablePackageInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatChangeablePackageInfo createFromParcel(Parcel in) {
             return new CompatChangeablePackageInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CompatChangeablePackageInfo[] newArray(int size) {
             return new CompatChangeablePackageInfo[size];
@@ -24,25 +23,23 @@ public class CompatChangeablePackageInfo implements Parcelable {
     final boolean mIsActivityEmbeddingSplitsEnabled;
     final boolean mIsMinAspectRatioOverrideDisallowed;
     final boolean mIsOrientationOverrideDisallowed;
+    final boolean mIsResizeableActivityOverrideDisallowed;
     final String mPackageName;
     final int mUid;
 
-    /* synthetic */ CompatChangeablePackageInfo(String str, int i, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, CompatChangeablePackageInfoIA compatChangeablePackageInfoIA) {
-        this(str, i, z, z2, z3, z4, z5);
-    }
-
-    private CompatChangeablePackageInfo(String packageName, int uid, boolean hasLauncherActivity, boolean hasGameCategory, boolean isOrientationOverrideDisallowed, boolean isMinAspectRatioOverrideDisallowed, boolean isActivityEmbeddingSplitsEnabled) {
+    private CompatChangeablePackageInfo(String packageName, int uid, boolean hasLauncherActivity, boolean hasGameCategory, boolean isResizeableActivityOverrideDisallowed, boolean isOrientationOverrideDisallowed, boolean isMinAspectRatioOverrideDisallowed, boolean isActivityEmbeddingSplitsEnabled) {
         this.mPackageName = packageName != null ? packageName : "";
         this.mUid = uid;
         this.mHasLauncherActivity = hasLauncherActivity;
         this.mHasGameCategory = hasGameCategory;
+        this.mIsResizeableActivityOverrideDisallowed = isResizeableActivityOverrideDisallowed;
         this.mIsOrientationOverrideDisallowed = isOrientationOverrideDisallowed;
         this.mIsMinAspectRatioOverrideDisallowed = isMinAspectRatioOverrideDisallowed;
         this.mIsActivityEmbeddingSplitsEnabled = isActivityEmbeddingSplitsEnabled;
     }
 
     public CompatChangeablePackageInfo(Parcel in) {
-        this(in.readString(), in.readInt(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean());
+        this(in.readString(), in.readInt(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean(), in.readBoolean());
     }
 
     @Override // android.os.Parcelable
@@ -51,26 +48,10 @@ public class CompatChangeablePackageInfo implements Parcelable {
         dest.writeInt(this.mUid);
         dest.writeBoolean(this.mHasLauncherActivity);
         dest.writeBoolean(this.mHasGameCategory);
+        dest.writeBoolean(this.mIsResizeableActivityOverrideDisallowed);
         dest.writeBoolean(this.mIsOrientationOverrideDisallowed);
         dest.writeBoolean(this.mIsMinAspectRatioOverrideDisallowed);
         dest.writeBoolean(this.mIsActivityEmbeddingSplitsEnabled);
-    }
-
-    /* renamed from: com.samsung.android.core.CompatChangeablePackageInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CompatChangeablePackageInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatChangeablePackageInfo createFromParcel(Parcel in) {
-            return new CompatChangeablePackageInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CompatChangeablePackageInfo[] newArray(int size) {
-            return new CompatChangeablePackageInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -78,13 +59,13 @@ public class CompatChangeablePackageInfo implements Parcelable {
         return 0;
     }
 
-    /* loaded from: classes5.dex */
     public static class Builder {
         boolean mHasGameCategory;
         boolean mHasLauncherActivity;
         boolean mIsActivityEmbeddingSplitsEnabled;
         boolean mIsMinAspectRatioOverrideDisallowed;
         boolean mIsOrientationOverrideDisallowed;
+        boolean mIsResizeableActivityOverrideDisallowed;
         String mPackageName;
         int mUid = -1;
 
@@ -108,6 +89,11 @@ public class CompatChangeablePackageInfo implements Parcelable {
             return this;
         }
 
+        public Builder setIsResizeableActivityOverrideDisallowed(boolean isResizeableActivityOverrideDisallowed) {
+            this.mIsResizeableActivityOverrideDisallowed = isResizeableActivityOverrideDisallowed;
+            return this;
+        }
+
         public Builder setIsOrientationOverrideDisallowed(boolean isOrientationOverrideDisallowed) {
             this.mIsOrientationOverrideDisallowed = isOrientationOverrideDisallowed;
             return this;
@@ -124,7 +110,7 @@ public class CompatChangeablePackageInfo implements Parcelable {
         }
 
         public CompatChangeablePackageInfo build() {
-            return new CompatChangeablePackageInfo(this.mPackageName, this.mUid, this.mHasLauncherActivity, this.mHasGameCategory, this.mIsOrientationOverrideDisallowed, this.mIsMinAspectRatioOverrideDisallowed, this.mIsActivityEmbeddingSplitsEnabled);
+            return new CompatChangeablePackageInfo(this.mPackageName, this.mUid, this.mHasLauncherActivity, this.mHasGameCategory, this.mIsResizeableActivityOverrideDisallowed, this.mIsOrientationOverrideDisallowed, this.mIsMinAspectRatioOverrideDisallowed, this.mIsActivityEmbeddingSplitsEnabled);
         }
     }
 }

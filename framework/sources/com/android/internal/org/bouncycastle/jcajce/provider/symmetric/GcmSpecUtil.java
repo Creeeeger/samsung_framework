@@ -21,8 +21,7 @@ class GcmSpecUtil {
     }
 
     static boolean isGcmSpec(AlgorithmParameterSpec paramSpec) {
-        Class cls = gcmSpecClass;
-        return cls != null && cls.isInstance(paramSpec);
+        return gcmSpecClass != null && gcmSpecClass.isInstance(paramSpec);
     }
 
     static boolean isGcmSpec(Class paramSpecClass) {
@@ -43,9 +42,8 @@ class GcmSpecUtil {
 
     static GCMParameters extractGcmParameters(AlgorithmParameterSpec paramSpec) throws InvalidParameterSpecException {
         try {
-            Class cls = gcmSpecClass;
-            Method tLen = cls.getDeclaredMethod("getTLen", new Class[0]);
-            Method iv = cls.getDeclaredMethod("getIV", new Class[0]);
+            Method tLen = gcmSpecClass.getDeclaredMethod("getTLen", new Class[0]);
+            Method iv = gcmSpecClass.getDeclaredMethod("getIV", new Class[0]);
             return new GCMParameters((byte[]) iv.invoke(paramSpec, new Object[0]), ((Integer) tLen.invoke(paramSpec, new Object[0])).intValue() / 8);
         } catch (Exception e) {
             throw new InvalidParameterSpecException("Cannot process GCMParameterSpec");

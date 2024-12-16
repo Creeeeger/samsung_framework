@@ -18,7 +18,6 @@ import java.util.List;
 /* loaded from: classes4.dex */
 public final class UpdatableDriverProto {
 
-    /* loaded from: classes4.dex */
     public interface DenylistOrBuilder extends MessageLiteOrBuilder {
         String getPackageNames(int i);
 
@@ -33,7 +32,6 @@ public final class UpdatableDriverProto {
         boolean hasVersionCode();
     }
 
-    /* loaded from: classes4.dex */
     public interface DenylistsOrBuilder extends MessageLiteOrBuilder {
         Denylist getDenylists(int i);
 
@@ -48,7 +46,6 @@ public final class UpdatableDriverProto {
     public static void registerAllExtensions(ExtensionRegistryLite registry) {
     }
 
-    /* loaded from: classes4.dex */
     public static final class Denylist extends GeneratedMessageLite<Denylist, Builder> implements DenylistOrBuilder {
         private static final Denylist DEFAULT_INSTANCE;
         public static final int PACKAGE_NAMES_FIELD_NUMBER = 2;
@@ -71,11 +68,13 @@ public final class UpdatableDriverProto {
             return this.versionCode_;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setVersionCode(long value) {
             this.bitField0_ |= 1;
             this.versionCode_ = value;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void clearVersionCode() {
             this.bitField0_ &= -2;
             this.versionCode_ = 0L;
@@ -108,27 +107,32 @@ public final class UpdatableDriverProto {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setPackageNames(int index, String value) {
             value.getClass();
             ensurePackageNamesIsMutable();
             this.packageNames_.set(index, value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addPackageNames(String value) {
             value.getClass();
             ensurePackageNamesIsMutable();
             this.packageNames_.add(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addAllPackageNames(Iterable<String> values) {
             ensurePackageNamesIsMutable();
             AbstractMessageLite.addAll((Iterable) values, (List) this.packageNames_);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void clearPackageNames() {
             this.packageNames_ = GeneratedMessageLite.emptyProtobufList();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addPackageNamesBytes(ByteString value) {
             ensurePackageNamesIsMutable();
             this.packageNames_.add(value.toStringUtf8());
@@ -190,12 +194,7 @@ public final class UpdatableDriverProto {
             return DEFAULT_INSTANCE.createBuilder(prototype);
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder extends GeneratedMessageLite.Builder<Denylist, Builder> implements DenylistOrBuilder {
-            /* synthetic */ Builder(AnonymousClass1 x0) {
-                this();
-            }
-
             private Builder() {
                 super(Denylist.DEFAULT_INSTANCE);
             }
@@ -275,17 +274,17 @@ public final class UpdatableDriverProto {
 
         @Override // com.android.framework.protobuf.GeneratedMessageLite
         protected final Object dynamicMethod(GeneratedMessageLite.MethodToInvoke method, Object arg0, Object arg1) {
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[method.ordinal()]) {
-                case 1:
+            switch (method) {
+                case NEW_MUTABLE_INSTANCE:
                     return new Denylist();
-                case 2:
-                    return new Builder(null);
-                case 3:
+                case NEW_BUILDER:
+                    return new Builder();
+                case BUILD_MESSAGE_INFO:
                     Object[] objects = {"bitField0_", "versionCode_", "packageNames_"};
                     return newMessageInfo(DEFAULT_INSTANCE, "\u0001\u0002\u0000\u0001\u0001\u0002\u0002\u0000\u0001\u0000\u0001ဂ\u0000\u0002\u001a", objects);
-                case 4:
+                case GET_DEFAULT_INSTANCE:
                     return DEFAULT_INSTANCE;
-                case 5:
+                case GET_PARSER:
                     Parser<Denylist> parser = PARSER;
                     if (parser == null) {
                         synchronized (Denylist.class) {
@@ -297,9 +296,9 @@ public final class UpdatableDriverProto {
                         }
                     }
                     return parser;
-                case 6:
+                case GET_MEMOIZED_IS_INITIALIZED:
                     return (byte) 1;
-                case 7:
+                case SET_MEMOIZED_IS_INITIALIZED:
                     return null;
                 default:
                     throw new UnsupportedOperationException();
@@ -321,46 +320,6 @@ public final class UpdatableDriverProto {
         }
     }
 
-    /* renamed from: android.updatabledriver.UpdatableDriverProto$1 */
-    /* loaded from: classes4.dex */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke;
-
-        static {
-            int[] iArr = new int[GeneratedMessageLite.MethodToInvoke.values().length];
-            $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke = iArr;
-            try {
-                iArr[GeneratedMessageLite.MethodToInvoke.NEW_MUTABLE_INSTANCE.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.NEW_BUILDER.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.BUILD_MESSAGE_INFO.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.GET_DEFAULT_INSTANCE.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.GET_PARSER.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.GET_MEMOIZED_IS_INITIALIZED.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[GeneratedMessageLite.MethodToInvoke.SET_MEMOIZED_IS_INITIALIZED.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static final class Denylists extends GeneratedMessageLite<Denylists, Builder> implements DenylistsOrBuilder {
         private static final Denylists DEFAULT_INSTANCE;
         public static final int DENYLISTS_FIELD_NUMBER = 1;
@@ -400,33 +359,39 @@ public final class UpdatableDriverProto {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void setDenylists(int index, Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.set(index, value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDenylists(Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.add(value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addDenylists(int index, Denylist value) {
             value.getClass();
             ensureDenylistsIsMutable();
             this.denylists_.add(index, value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void addAllDenylists(Iterable<? extends Denylist> values) {
             ensureDenylistsIsMutable();
             AbstractMessageLite.addAll((Iterable) values, (List) this.denylists_);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void clearDenylists() {
             this.denylists_ = emptyProtobufList();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void removeDenylists(int index) {
             ensureDenylistsIsMutable();
             this.denylists_.remove(index);
@@ -488,12 +453,7 @@ public final class UpdatableDriverProto {
             return DEFAULT_INSTANCE.createBuilder(prototype);
         }
 
-        /* loaded from: classes4.dex */
         public static final class Builder extends GeneratedMessageLite.Builder<Denylists, Builder> implements DenylistsOrBuilder {
-            /* synthetic */ Builder(AnonymousClass1 x0) {
-                this();
-            }
-
             private Builder() {
                 super(Denylists.DEFAULT_INSTANCE);
             }
@@ -570,17 +530,17 @@ public final class UpdatableDriverProto {
 
         @Override // com.android.framework.protobuf.GeneratedMessageLite
         protected final Object dynamicMethod(GeneratedMessageLite.MethodToInvoke method, Object arg0, Object arg1) {
-            switch (AnonymousClass1.$SwitchMap$com$google$protobuf$GeneratedMessageLite$MethodToInvoke[method.ordinal()]) {
-                case 1:
+            switch (method) {
+                case NEW_MUTABLE_INSTANCE:
                     return new Denylists();
-                case 2:
-                    return new Builder(null);
-                case 3:
+                case NEW_BUILDER:
+                    return new Builder();
+                case BUILD_MESSAGE_INFO:
                     Object[] objects = {"denylists_", Denylist.class};
                     return newMessageInfo(DEFAULT_INSTANCE, "\u0001\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0001\u0000\u0001\u001b", objects);
-                case 4:
+                case GET_DEFAULT_INSTANCE:
                     return DEFAULT_INSTANCE;
-                case 5:
+                case GET_PARSER:
                     Parser<Denylists> parser = PARSER;
                     if (parser == null) {
                         synchronized (Denylists.class) {
@@ -592,9 +552,9 @@ public final class UpdatableDriverProto {
                         }
                     }
                     return parser;
-                case 6:
+                case GET_MEMOIZED_IS_INITIALIZED:
                     return (byte) 1;
-                case 7:
+                case SET_MEMOIZED_IS_INITIALIZED:
                     return null;
                 default:
                     throw new UnsupportedOperationException();

@@ -6,7 +6,6 @@ public interface ISemHcmManager extends IInterface {
 
     boolean getHcmEnable() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISemHcmManager {
         @Override // android.os.ISemHcmManager
         public boolean getHcmEnable() throws RemoteException {
@@ -19,7 +18,6 @@ public interface ISemHcmManager extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISemHcmManager {
         static final int TRANSACTION_getHcmEnable = 1;
 
@@ -62,26 +60,22 @@ public interface ISemHcmManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemHcmManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemHcmManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemHcmManager.DESCRIPTOR);
+                case 1:
+                    boolean _result = getHcmEnable();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _result = getHcmEnable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements ISemHcmManager {
+        private static class Proxy implements ISemHcmManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

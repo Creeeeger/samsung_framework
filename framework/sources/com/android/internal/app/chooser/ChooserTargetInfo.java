@@ -3,7 +3,7 @@ package com.android.internal.app.chooser;
 import android.service.chooser.ChooserTarget;
 import android.text.TextUtils;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public interface ChooserTargetInfo extends TargetInfo {
     ChooserTarget getChooserTarget();
 

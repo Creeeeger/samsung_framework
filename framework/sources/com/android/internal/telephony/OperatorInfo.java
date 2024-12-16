@@ -7,15 +7,14 @@ import android.provider.Telephony;
 /* loaded from: classes5.dex */
 public class OperatorInfo implements Parcelable {
     public static final Parcelable.Creator<OperatorInfo> CREATOR = new Parcelable.Creator<OperatorInfo>() { // from class: com.android.internal.telephony.OperatorInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperatorInfo createFromParcel(Parcel in) {
             OperatorInfo opInfo = new OperatorInfo(in.readString(), in.readString(), in.readString(), (State) in.readSerializable(State.class.getClassLoader(), State.class), in.readInt());
             return opInfo;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public OperatorInfo[] newArray(int size) {
             return new OperatorInfo[size];
@@ -27,7 +26,6 @@ public class OperatorInfo implements Parcelable {
     private int mRan;
     private State mState;
 
-    /* loaded from: classes5.dex */
     public enum State {
         UNKNOWN,
         AVAILABLE,
@@ -114,23 +112,5 @@ public class OperatorInfo implements Parcelable {
         dest.writeString(this.mOperatorNumeric);
         dest.writeSerializable(this.mState);
         dest.writeInt(this.mRan);
-    }
-
-    /* renamed from: com.android.internal.telephony.OperatorInfo$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<OperatorInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperatorInfo createFromParcel(Parcel in) {
-            OperatorInfo opInfo = new OperatorInfo(in.readString(), in.readString(), in.readString(), (State) in.readSerializable(State.class.getClassLoader(), State.class), in.readInt());
-            return opInfo;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public OperatorInfo[] newArray(int size) {
-            return new OperatorInfo[size];
-        }
     }
 }

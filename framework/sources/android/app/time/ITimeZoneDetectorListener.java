@@ -12,7 +12,6 @@ public interface ITimeZoneDetectorListener extends IInterface {
 
     void onChange() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITimeZoneDetectorListener {
         @Override // android.app.time.ITimeZoneDetectorListener
         public void onChange() throws RemoteException {
@@ -24,7 +23,6 @@ public interface ITimeZoneDetectorListener extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITimeZoneDetectorListener {
         static final int TRANSACTION_onChange = 1;
 
@@ -67,24 +65,20 @@ public interface ITimeZoneDetectorListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITimeZoneDetectorListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITimeZoneDetectorListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITimeZoneDetectorListener.DESCRIPTOR);
+                case 1:
+                    onChange();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onChange();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITimeZoneDetectorListener {
+        private static class Proxy implements ITimeZoneDetectorListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

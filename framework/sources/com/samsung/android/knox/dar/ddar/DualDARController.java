@@ -10,7 +10,7 @@ import com.samsung.android.knox.dar.ddar.fsm.State;
 import com.samsung.android.knox.dar.ddar.proxy.KnoxProxyManager;
 import com.samsung.android.knox.dar.ddar.securesession.Wiper;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class DualDARController {
     private static final boolean DEBUG = false;
     public static final String DUALDAR_AGENT = "KNOXCORE_PROXY_AGENT";
@@ -41,7 +41,7 @@ public class DualDARController {
         Bundle params = new Bundle();
         boolean result = false;
         params.putInt("user_id", 0);
-        Bundle response = processCommand(DualDarConstants.ON_DEVICE_OWNER_PROVISIONING, params);
+        Bundle response = processCommand("ON_DEVICE_OWNER_PROVISIONING", params);
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             result = true;
         }
@@ -53,7 +53,7 @@ public class DualDARController {
         Log.d(TAG, "handleWorkspaceCreation");
         Bundle params = new Bundle();
         params.putInt("user_id", userId);
-        Bundle response = processCommand(DualDarConstants.ON_WORKSPACE_CREATION, params);
+        Bundle response = processCommand("ON_WORKSPACE_CREATION", params);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false);
         if (!ret) {
             Log.e(TAG, "handleWorkspaceCreation failed");
@@ -67,7 +67,7 @@ public class DualDARController {
         Log.d(TAG, "handleBeforeUnlockUser");
         Bundle params = new Bundle();
         params.putInt("user_id", userId);
-        Bundle response = processCommand(DualDarConstants.ON_BEFORE_UNLOCK_USER, params);
+        Bundle response = processCommand("ON_BEFORE_UNLOCK_USER", params);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false);
         if (!ret) {
             Log.e(TAG, "handleBeforeUnlockUser failed");
@@ -92,18 +92,18 @@ public class DualDARController {
             if (SemPersonaManager.isDualDARNativeCrypto(userId) && (encryptedSavedCred = StreamCipher.encryptStream(savedCredential)) != null) {
                 savedCredential = encryptedSavedCred;
             }
-            request.putByteArray(DualDarConstants.EXISTING_PASSWORD, savedCredential);
+            request.putByteArray("EXISTING_PASSWORD", savedCredential);
         }
         request.putInt("user_id", userId);
         if (credential != null) {
             if (SemPersonaManager.isDualDARNativeCrypto(userId) && (encryptedCred = StreamCipher.encryptStream(credential)) != null) {
                 credential = encryptedCred;
             }
-            request.putByteArray(DualDarConstants.NEW_PASSWORD, credential);
+            request.putByteArray("NEW_PASSWORD", credential);
         }
-        Bundle response = processCommand(DualDarConstants.ON_PASSWORD2_CHANGE, request);
-        Wiper.wipe(request.getByteArray(DualDarConstants.EXISTING_PASSWORD));
-        Wiper.wipe(request.getByteArray(DualDarConstants.NEW_PASSWORD));
+        Bundle response = processCommand("ON_PASSWORD2_CHANGE", request);
+        Wiper.wipe(request.getByteArray("EXISTING_PASSWORD"));
+        Wiper.wipe(request.getByteArray("NEW_PASSWORD"));
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false);
         if (!ret) {
             Log.e(TAG, "Authentication Change Failure by dual dar client");
@@ -116,8 +116,8 @@ public class DualDARController {
     public boolean onPassword1Change(int userId, boolean isCredential) {
         Log.d(TAG, "onPassword1Change");
         Bundle request = new Bundle();
-        request.putBoolean(DualDarConstants.NEW_PASSWORD, isCredential);
-        Bundle response = processCommand(DualDarConstants.ON_PASSWORD1_CHANGE, request);
+        request.putBoolean("NEW_PASSWORD", isCredential);
+        Bundle response = processCommand("ON_PASSWORD1_CHANGE", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false);
         if (!ret) {
             Log.e(TAG, "Failed to handle user 0 password change");
@@ -135,12 +135,12 @@ public class DualDARController {
             if (SemPersonaManager.isDualDARNativeCrypto(userId) && (encryptedCred = StreamCipher.encryptStream(credential)) != null) {
                 credential = encryptedCred;
             }
-            request.putByteArray(DualDarConstants.EXISTING_PASSWORD, credential);
+            request.putByteArray("EXISTING_PASSWORD", credential);
         }
         request.putInt("user_id", userId);
-        Bundle response = processCommand(DualDarConstants.ON_PASSWORD2_AUTH, request);
+        Bundle response = processCommand("ON_PASSWORD2_AUTH", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false);
-        Wiper.wipe(request.getByteArray(DualDarConstants.EXISTING_PASSWORD));
+        Wiper.wipe(request.getByteArray("EXISTING_PASSWORD"));
         if (!ret) {
             Log.e(TAG, "Authentication Failure by dual dar client");
             return false;
@@ -153,8 +153,8 @@ public class DualDARController {
         Log.d(TAG, "fetchOuterLayerKey()");
         Bundle request = new Bundle();
         request.putInt("user_id", userId);
-        Bundle response = processCommand(DualDarConstants.FETCH_OUTERLAYER_KEY, request);
-        byte[] key = response != null ? response.getByteArray(DualDarConstants.OUTER_LAYER_SECRET) : null;
+        Bundle response = processCommand("FETCH_OUTERLAYER_KEY", request);
+        byte[] key = response != null ? response.getByteArray("OUTER_LAYER_SECRET") : null;
         if (key == null) {
             Log.e(TAG, "fetchOuterLayerKey failed");
             return null;
@@ -167,7 +167,7 @@ public class DualDARController {
         Log.d(TAG, "onUserStopped()");
         Bundle request = new Bundle();
         request.putInt("user_id", userId);
-        Bundle response = processCommandAsync(DualDarConstants.ON_USER_STOPPED, request);
+        Bundle response = processCommandAsync("ON_USER_STOPPED", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE);
         if (!ret) {
             Log.e(TAG, "handling onUserStopped failed by KnoxCore");
@@ -179,7 +179,7 @@ public class DualDARController {
         Log.d(TAG, "onUserStart()");
         Bundle request = new Bundle();
         request.putInt("user_id", userId);
-        Bundle response = processCommandAsync(DualDarConstants.ON_USER_START, request);
+        Bundle response = processCommandAsync("ON_USER_START", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE);
         if (!ret) {
             Log.e(TAG, "handling onUserStart failed by KnoxCore");
@@ -191,7 +191,7 @@ public class DualDARController {
         Log.d(TAG, "isReady()");
         Bundle request = new Bundle();
         request.putInt("user_id", userId);
-        Bundle response = processCommand(DualDarConstants.IS_READY, request);
+        Bundle response = processCommand("IS_READY", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE);
         if (!ret) {
             Log.e(TAG, "handling isReady failed by KnoxCore");
@@ -203,7 +203,7 @@ public class DualDARController {
         Log.d(TAG, "onUserRemoved()");
         Bundle request = new Bundle();
         request.putInt("user_id", userId);
-        Bundle response = processCommandAsync(DualDarConstants.ON_USER_REMOVED, request);
+        Bundle response = processCommandAsync("ON_USER_REMOVED", request);
         boolean ret = response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE);
         if (!ret) {
             Log.e(TAG, "handling onUserRemoved failed by KnoxCore");
@@ -214,10 +214,10 @@ public class DualDARController {
     public boolean onDualDarStateChanged(State prevState, State currentState, Event event, int dualDarUserId) {
         Bundle request = new Bundle();
         request.putInt("user_id", dualDarUserId);
-        request.putString(DualDarConstants.PREVIOUS_STATE, prevState.name());
-        request.putString(DualDarConstants.CURRENT_STATE, currentState.name());
-        request.putString(DualDarConstants.ON_EVENT, event.name());
-        Bundle response = processCommandAsync(DualDarConstants.ON_DDAR_STATE_CHANGED, request);
+        request.putString("PREVIOUS_STATE", prevState.name());
+        request.putString("CURRENT_STATE", currentState.name());
+        request.putString("ON_EVENT", event.name());
+        Bundle response = processCommandAsync("ON_DDAR_STATE_CHANGED", request);
         boolean ret = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             ret = true;
@@ -232,12 +232,12 @@ public class DualDARController {
         Bundle request = new Bundle();
         request.putInt("user_id", dualDarUserId);
         if (password != null) {
-            request.putByteArray(DualDarConstants.EXISTING_PASSWORD, password);
+            request.putByteArray("EXISTING_PASSWORD", password);
         }
-        request.putLong(DualDarConstants.RESET_PASSWORD_TOKEN_HANDLE, tokenHandle);
-        request.putByteArray(DualDarConstants.RESET_PASSWORD_TOKEN, token);
-        Bundle response = processCommand(DualDarConstants.SET_RESET_PASSWORD_TOKEN, request);
-        Wiper.wipe(request.getByteArray(DualDarConstants.EXISTING_PASSWORD));
+        request.putLong("RESET_PASSWORD_TOKEN_HANDLE", tokenHandle);
+        request.putByteArray("RESET_PASSWORD_TOKEN", token);
+        Bundle response = processCommand("SET_RESET_PASSWORD_TOKEN", request);
+        Wiper.wipe(request.getByteArray("EXISTING_PASSWORD"));
         boolean ret = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             ret = true;
@@ -251,8 +251,8 @@ public class DualDARController {
     public void clearResetPasswordToken(int dualDarUserId, long tokenHandle) {
         Bundle request = new Bundle();
         request.putInt("user_id", dualDarUserId);
-        request.putLong(DualDarConstants.RESET_PASSWORD_TOKEN_HANDLE, tokenHandle);
-        Bundle response = processCommand(DualDarConstants.CLEAR_RESET_PASSWORD_TOKEN, request);
+        request.putLong("RESET_PASSWORD_TOKEN_HANDLE", tokenHandle);
+        Bundle response = processCommand("CLEAR_RESET_PASSWORD_TOKEN", request);
         boolean ret = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             ret = true;
@@ -266,12 +266,12 @@ public class DualDARController {
         Bundle request = new Bundle();
         request.putInt("user_id", dualDarUserId);
         if (newPassword != null && newPassword.length > 0) {
-            request.putByteArray(DualDarConstants.NEW_PASSWORD, newPassword);
+            request.putByteArray("NEW_PASSWORD", newPassword);
         }
-        request.putLong(DualDarConstants.RESET_PASSWORD_TOKEN_HANDLE, tokenHandle);
-        request.putByteArray(DualDarConstants.RESET_PASSWORD_TOKEN, token);
-        Bundle response = processCommand(DualDarConstants.RESET_PASSWORD_WITH_TOKEN, request);
-        Wiper.wipe(request.getByteArray(DualDarConstants.NEW_PASSWORD));
+        request.putLong("RESET_PASSWORD_TOKEN_HANDLE", tokenHandle);
+        request.putByteArray("RESET_PASSWORD_TOKEN", token);
+        Bundle response = processCommand("RESET_PASSWORD_WITH_TOKEN", request);
+        Wiper.wipe(request.getByteArray("NEW_PASSWORD"));
         boolean ret = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             ret = true;
@@ -285,8 +285,8 @@ public class DualDARController {
     public boolean isResetPasswordSupported(int dualDarUserId) {
         Bundle request = new Bundle();
         request.putInt("user_id", dualDarUserId);
-        request.putInt(DualDarConstants.FEATURE, 1000);
-        Bundle response = processCommand(DualDarConstants.IS_SUPPORTED, request);
+        request.putInt("FEATURE", 1000);
+        Bundle response = processCommand("IS_SUPPORTED", request);
         boolean ret = false;
         if (response != null && response.getBoolean(DualDarConstants.DUAL_DAR_RESPONSE, false)) {
             ret = true;

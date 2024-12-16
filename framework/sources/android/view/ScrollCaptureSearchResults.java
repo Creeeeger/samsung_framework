@@ -17,7 +17,7 @@ public final class ScrollCaptureSearchResults {
     private static final int AFTER = 1;
     private static final int BEFORE = -1;
     private static final int EQUAL = 0;
-    static final Comparator<ScrollCaptureTarget> PRIORITY_ORDER = new Comparator() { // from class: android.view.ScrollCaptureSearchResults$$ExternalSyntheticLambda1
+    static final Comparator<ScrollCaptureTarget> PRIORITY_ORDER = new Comparator() { // from class: android.view.ScrollCaptureSearchResults$$ExternalSyntheticLambda0
         @Override // java.util.Comparator
         public final int compare(Object obj, Object obj2) {
             return ScrollCaptureSearchResults.lambda$static$1((ScrollCaptureTarget) obj, (ScrollCaptureTarget) obj2);
@@ -40,7 +40,7 @@ public final class ScrollCaptureSearchResults {
         this.mComplete = false;
         final ScrollCaptureCallback callback = target.getCallback();
         final Consumer<Rect> consumer = new SearchRequest(target);
-        this.mExecutor.execute(new Runnable() { // from class: android.view.ScrollCaptureSearchResults$$ExternalSyntheticLambda0
+        this.mExecutor.execute(new Runnable() { // from class: android.view.ScrollCaptureSearchResults$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 ScrollCaptureSearchResults.this.lambda$addTarget$0(callback, consumer);
@@ -48,6 +48,7 @@ public final class ScrollCaptureSearchResults {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$addTarget$0(ScrollCaptureCallback callback, Consumer consumer) {
         callback.onScrollCaptureSearch(this.mCancel, consumer);
     }
@@ -75,12 +76,12 @@ public final class ScrollCaptureSearchResults {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void signalComplete() {
         this.mComplete = true;
         this.mTargets.sort(PRIORITY_ORDER);
-        Runnable runnable = this.mOnCompleteListener;
-        if (runnable != null) {
-            runnable.run();
+        if (this.mOnCompleteListener != null) {
+            this.mOnCompleteListener.run();
             this.mOnCompleteListener = null;
         }
     }
@@ -97,8 +98,8 @@ public final class ScrollCaptureSearchResults {
         return target;
     }
 
-    /* loaded from: classes4.dex */
-    public class SearchRequest implements Consumer<Rect> {
+    /* JADX INFO: Access modifiers changed from: private */
+    class SearchRequest implements Consumer<Rect> {
         private ScrollCaptureTarget mTarget;
 
         SearchRequest(ScrollCaptureTarget target) {
@@ -118,7 +119,8 @@ public final class ScrollCaptureSearchResults {
             });
         }
 
-        /* renamed from: consume */
+        /* JADX INFO: Access modifiers changed from: private */
+        /* renamed from: consume, reason: merged with bridge method [inline-methods] */
         public void lambda$accept$0(Rect scrollBounds) {
             if (this.mTarget == null || ScrollCaptureSearchResults.this.mCancel.isCanceled()) {
                 return;
@@ -135,7 +137,7 @@ public final class ScrollCaptureSearchResults {
         }
     }
 
-    public static /* synthetic */ int lambda$static$1(ScrollCaptureTarget a, ScrollCaptureTarget b) {
+    static /* synthetic */ int lambda$static$1(ScrollCaptureTarget a, ScrollCaptureTarget b) {
         if (a == null && b == null) {
             return 0;
         }
@@ -172,6 +174,7 @@ public final class ScrollCaptureSearchResults {
         return r.width() * r.height();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static boolean nullOrEmpty(Rect r) {
         return r == null || r.isEmpty();
     }
@@ -191,7 +194,7 @@ public final class ScrollCaptureSearchResults {
         return otherParent == view;
     }
 
-    public void dump(IndentingPrintWriter writer) {
+    void dump(IndentingPrintWriter writer) {
         writer.println("results:");
         writer.increaseIndent();
         writer.println("complete: " + isComplete());

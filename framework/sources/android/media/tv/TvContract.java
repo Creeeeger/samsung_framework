@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvContract {
 
     @SystemApi
@@ -90,12 +90,10 @@ public final class TvContract {
     @SystemApi
     public static final int RESULT_OK = 0;
 
-    /* loaded from: classes2.dex */
     public interface BaseTvColumns extends BaseColumns {
         public static final String COLUMN_PACKAGE_NAME = "package_name";
     }
 
-    /* loaded from: classes2.dex */
     interface PreviewProgramColumns {
         public static final int ASPECT_RATIO_16_9 = 0;
         public static final int ASPECT_RATIO_1_1 = 3;
@@ -149,27 +147,22 @@ public final class TvContract {
         public static final int TYPE_TV_SERIES = 1;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface AspectRatio {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface Availability {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface InteractionType {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface Type {
         }
     }
 
-    /* loaded from: classes2.dex */
     interface ProgramColumns {
         public static final String COLUMN_AUDIO_LANGUAGE = "audio_language";
         public static final String COLUMN_CANONICAL_GENRE = "canonical_genre";
@@ -201,7 +194,6 @@ public final class TvContract {
         public static final int REVIEW_RATING_STYLE_THUMBS_UP_DOWN = 1;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface ReviewRatingStyle {
         }
     }
@@ -346,14 +338,17 @@ public final class TvContract {
     private TvContract() {
     }
 
-    /* loaded from: classes2.dex */
     public static final class Channels implements BaseTvColumns {
+        public static final int BROADCAST_VISIBILITY_TYPE_INVISIBLE = 2;
+        public static final int BROADCAST_VISIBILITY_TYPE_NUMERIC_SELECTABLE_ONLY = 1;
+        public static final int BROADCAST_VISIBILITY_TYPE_VISIBLE = 0;
         public static final String COLUMN_APP_LINK_COLOR = "app_link_color";
         public static final String COLUMN_APP_LINK_ICON_URI = "app_link_icon_uri";
         public static final String COLUMN_APP_LINK_INTENT_URI = "app_link_intent_uri";
         public static final String COLUMN_APP_LINK_POSTER_ART_URI = "app_link_poster_art_uri";
         public static final String COLUMN_APP_LINK_TEXT = "app_link_text";
         public static final String COLUMN_BROADCAST_GENRE = "broadcast_genre";
+        public static final String COLUMN_BROADCAST_VISIBILITY_TYPE = "broadcast_visibility_type";
         public static final String COLUMN_BROWSABLE = "browsable";
         public static final String COLUMN_CHANNEL_LIST_ID = "channel_list_id";
         public static final String COLUMN_DESCRIPTION = "description";
@@ -383,7 +378,6 @@ public final class TvContract {
         public static final String COLUMN_VIDEO_RESOLUTION = "video_resolution";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/channel";
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/channel";
-        public static final Uri CONTENT_URI = Uri.parse("content://android.media.tv/channel");
         public static final String SERVICE_TYPE_AUDIO = "SERVICE_TYPE_AUDIO";
         public static final String SERVICE_TYPE_AUDIO_VIDEO = "SERVICE_TYPE_AUDIO_VIDEO";
         public static final String SERVICE_TYPE_OTHER = "SERVICE_TYPE_OTHER";
@@ -425,45 +419,44 @@ public final class TvContract {
         public static final String VIDEO_FORMAT_576I = "VIDEO_FORMAT_576I";
         public static final String VIDEO_FORMAT_576P = "VIDEO_FORMAT_576P";
         public static final String VIDEO_FORMAT_720P = "VIDEO_FORMAT_720P";
-        private static final Map<String, String> VIDEO_FORMAT_TO_RESOLUTION_MAP;
         public static final String VIDEO_RESOLUTION_ED = "VIDEO_RESOLUTION_ED";
         public static final String VIDEO_RESOLUTION_FHD = "VIDEO_RESOLUTION_FHD";
         public static final String VIDEO_RESOLUTION_HD = "VIDEO_RESOLUTION_HD";
         public static final String VIDEO_RESOLUTION_SD = "VIDEO_RESOLUTION_SD";
         public static final String VIDEO_RESOLUTION_UHD = "VIDEO_RESOLUTION_UHD";
+        public static final Uri CONTENT_URI = Uri.parse("content://android.media.tv/channel");
+        private static final Map<String, String> VIDEO_FORMAT_TO_RESOLUTION_MAP = new HashMap();
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
+        public @interface BroadcastVisibilityType {
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
         public @interface ServiceType {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface Type {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface VideoFormat {
         }
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface VideoResolution {
         }
 
         static {
-            HashMap hashMap = new HashMap();
-            VIDEO_FORMAT_TO_RESOLUTION_MAP = hashMap;
-            hashMap.put(VIDEO_FORMAT_480I, VIDEO_RESOLUTION_SD);
-            hashMap.put(VIDEO_FORMAT_480P, VIDEO_RESOLUTION_ED);
-            hashMap.put(VIDEO_FORMAT_576I, VIDEO_RESOLUTION_SD);
-            hashMap.put(VIDEO_FORMAT_576P, VIDEO_RESOLUTION_ED);
-            hashMap.put(VIDEO_FORMAT_720P, VIDEO_RESOLUTION_HD);
-            hashMap.put(VIDEO_FORMAT_1080I, VIDEO_RESOLUTION_HD);
-            hashMap.put(VIDEO_FORMAT_1080P, VIDEO_RESOLUTION_FHD);
-            hashMap.put(VIDEO_FORMAT_2160P, VIDEO_RESOLUTION_UHD);
-            hashMap.put(VIDEO_FORMAT_4320P, VIDEO_RESOLUTION_UHD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_480I, VIDEO_RESOLUTION_SD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_480P, VIDEO_RESOLUTION_ED);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_576I, VIDEO_RESOLUTION_SD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_576P, VIDEO_RESOLUTION_ED);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_720P, VIDEO_RESOLUTION_HD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_1080I, VIDEO_RESOLUTION_HD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_1080P, VIDEO_RESOLUTION_FHD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_2160P, VIDEO_RESOLUTION_UHD);
+            VIDEO_FORMAT_TO_RESOLUTION_MAP.put(VIDEO_FORMAT_4320P, VIDEO_RESOLUTION_UHD);
         }
 
         public static final String getVideoResolution(String videoFormat) {
@@ -473,7 +466,6 @@ public final class TvContract {
         private Channels() {
         }
 
-        /* loaded from: classes2.dex */
         public static final class Logo {
             public static final String CONTENT_DIRECTORY = "logo";
 
@@ -482,7 +474,6 @@ public final class TvContract {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class Programs implements BaseTvColumns, ProgramColumns {
         public static final String COLUMN_BROADCAST_GENRE = "broadcast_genre";
         public static final String COLUMN_CHANNEL_ID = "channel_id";
@@ -507,11 +498,10 @@ public final class TvContract {
         private Programs() {
         }
 
-        /* loaded from: classes2.dex */
         public static final class Genres {
             public static final String ANIMAL_WILDLIFE = "ANIMAL_WILDLIFE";
             public static final String ARTS = "ARTS";
-            private static final ArraySet<String> CANONICAL_GENRES;
+            private static final ArraySet<String> CANONICAL_GENRES = new ArraySet<>();
             public static final String COMEDY = "COMEDY";
             private static final char COMMA = ',';
             private static final String DELIMITER = ",";
@@ -533,30 +523,27 @@ public final class TvContract {
             public static final String TRAVEL = "TRAVEL";
 
             @Retention(RetentionPolicy.SOURCE)
-            /* loaded from: classes2.dex */
             public @interface Genre {
             }
 
             static {
-                ArraySet<String> arraySet = new ArraySet<>();
-                CANONICAL_GENRES = arraySet;
-                arraySet.add(FAMILY_KIDS);
-                arraySet.add(SPORTS);
-                arraySet.add(SHOPPING);
-                arraySet.add(MOVIES);
-                arraySet.add(COMEDY);
-                arraySet.add(TRAVEL);
-                arraySet.add(DRAMA);
-                arraySet.add(EDUCATION);
-                arraySet.add(ANIMAL_WILDLIFE);
-                arraySet.add(NEWS);
-                arraySet.add(GAMING);
-                arraySet.add(ARTS);
-                arraySet.add(ENTERTAINMENT);
-                arraySet.add(LIFE_STYLE);
-                arraySet.add("MUSIC");
-                arraySet.add(PREMIER);
-                arraySet.add(TECH_SCIENCE);
+                CANONICAL_GENRES.add(FAMILY_KIDS);
+                CANONICAL_GENRES.add(SPORTS);
+                CANONICAL_GENRES.add(SHOPPING);
+                CANONICAL_GENRES.add(MOVIES);
+                CANONICAL_GENRES.add(COMEDY);
+                CANONICAL_GENRES.add(TRAVEL);
+                CANONICAL_GENRES.add(DRAMA);
+                CANONICAL_GENRES.add(EDUCATION);
+                CANONICAL_GENRES.add(ANIMAL_WILDLIFE);
+                CANONICAL_GENRES.add(NEWS);
+                CANONICAL_GENRES.add(GAMING);
+                CANONICAL_GENRES.add(ARTS);
+                CANONICAL_GENRES.add(ENTERTAINMENT);
+                CANONICAL_GENRES.add(LIFE_STYLE);
+                CANONICAL_GENRES.add("MUSIC");
+                CANONICAL_GENRES.add(PREMIER);
+                CANONICAL_GENRES.add(TECH_SCIENCE);
                 EMPTY_STRING_ARRAY = new String[0];
             }
 
@@ -641,7 +628,6 @@ public final class TvContract {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class RecordedPrograms implements BaseTvColumns, ProgramColumns {
         public static final String COLUMN_BROADCAST_GENRE = "broadcast_genre";
         public static final String COLUMN_CHANNEL_ID = "channel_id";
@@ -662,7 +648,6 @@ public final class TvContract {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class PreviewPrograms implements BaseTvColumns, ProgramColumns, PreviewProgramColumns {
         public static final String COLUMN_CHANNEL_ID = "channel_id";
         public static final String COLUMN_WEIGHT = "weight";
@@ -674,7 +659,6 @@ public final class TvContract {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static final class WatchNextPrograms implements BaseTvColumns, ProgramColumns, PreviewProgramColumns {
         public static final String COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS = "last_engagement_time_utc_millis";
         public static final String COLUMN_WATCH_NEXT_TYPE = "watch_next_type";
@@ -687,7 +671,6 @@ public final class TvContract {
         public static final int WATCH_NEXT_TYPE_WATCHLIST = 3;
 
         @Retention(RetentionPolicy.SOURCE)
-        /* loaded from: classes2.dex */
         public @interface WatchNextType {
         }
 
@@ -696,7 +679,6 @@ public final class TvContract {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class WatchedPrograms implements BaseTvColumns {
         public static final String COLUMN_CHANNEL_ID = "channel_id";
         public static final String COLUMN_DESCRIPTION = "description";

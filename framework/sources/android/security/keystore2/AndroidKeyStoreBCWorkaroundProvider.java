@@ -5,16 +5,15 @@ import android.security.keystore.KeyProperties;
 import com.samsung.android.security.mdf.MdfUtils;
 import java.security.Provider;
 
-/* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes3.dex */
-public class AndroidKeyStoreBCWorkaroundProvider extends Provider {
+class AndroidKeyStoreBCWorkaroundProvider extends Provider {
     private static final String DESEDE_SYSTEM_PROPERTY = "ro.hardware.keystore_desede";
     private static final String KEYSTORE_PRIVATE_KEY_CLASS_NAME = "android.security.keystore2.AndroidKeyStorePrivateKey";
     private static final String KEYSTORE_PUBLIC_KEY_CLASS_NAME = "android.security.keystore2.AndroidKeyStorePublicKey";
     private static final String KEYSTORE_SECRET_KEY_CLASS_NAME = "android.security.keystore2.AndroidKeyStoreSecretKey";
     private static final String PACKAGE_NAME = "android.security.keystore2";
 
-    public AndroidKeyStoreBCWorkaroundProvider() {
+    AndroidKeyStoreBCWorkaroundProvider() {
         super("AndroidKeyStoreBCWorkaround", 1.0d, "Android KeyStore security provider to work around Bouncy Castle");
         putMacImpl(KeyProperties.KEY_ALGORITHM_HMAC_SHA1, "android.security.keystore2.AndroidKeyStoreHmacSpi$HmacSHA1");
         put("Alg.Alias.Mac.1.2.840.113549.2.7", KeyProperties.KEY_ALGORITHM_HMAC_SHA1);

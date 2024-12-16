@@ -5,19 +5,17 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MPClientEventHandler extends Handler {
     private static final String TAG = MPClientEventHandler.class.getSimpleName();
     private OnErrorListener mOnErrorListener;
     private OnInfoListener mOnInfoListener;
     private int mToken;
 
-    /* loaded from: classes5.dex */
     public interface OnErrorListener {
         void onError(int i, int i2, int i3, Object obj);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnInfoListener {
         void onInfo(int i, int i2, int i3, Object obj);
     }
@@ -36,28 +34,25 @@ public class MPClientEventHandler extends Handler {
 
     @Override // android.os.Handler
     public void handleMessage(Message msg) {
-        String str = TAG;
-        Log.d(str, String.format("handleMessage: what=%d, arg1=%d, arg2=%d", Integer.valueOf(msg.what), Integer.valueOf(msg.arg1), Integer.valueOf(msg.arg2)));
-        Log.d(str, "infolistener: " + this.mOnInfoListener);
-        Log.d(str, "errorlistener: " + this.mOnErrorListener);
+        Log.d(TAG, String.format("handleMessage: what=%d, arg1=%d, arg2=%d", Integer.valueOf(msg.what), Integer.valueOf(msg.arg1), Integer.valueOf(msg.arg2)));
+        Log.d(TAG, "infolistener: " + this.mOnInfoListener);
+        Log.d(TAG, "errorlistener: " + this.mOnErrorListener);
         switch (msg.what) {
             case 3001:
-                OnInfoListener onInfoListener = this.mOnInfoListener;
-                if (onInfoListener != null) {
-                    onInfoListener.onInfo(msg.arg1, msg.arg2, this.mToken, msg.obj);
-                    return;
+                if (this.mOnInfoListener != null) {
+                    this.mOnInfoListener.onInfo(msg.arg1, msg.arg2, this.mToken, msg.obj);
+                    break;
                 }
-                return;
+                break;
             case 3002:
-                OnErrorListener onErrorListener = this.mOnErrorListener;
-                if (onErrorListener != null) {
-                    onErrorListener.onError(msg.arg1, msg.arg2, this.mToken, msg.obj);
-                    return;
+                if (this.mOnErrorListener != null) {
+                    this.mOnErrorListener.onError(msg.arg1, msg.arg2, this.mToken, msg.obj);
+                    break;
                 }
-                return;
+                break;
             default:
-                Log.e(str, "Unknown message type" + msg.what);
-                return;
+                Log.e(TAG, "Unknown message type" + msg.what);
+                break;
         }
     }
 

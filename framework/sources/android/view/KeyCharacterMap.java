@@ -56,14 +56,13 @@ public class KeyCharacterMap implements Parcelable {
     public static final int PREDICTIVE = 2;
     public static final int SPECIAL_FUNCTION = 5;
     public static final int VIRTUAL_KEYBOARD = -1;
-    private static final SparseIntArray sAccentToCombining;
-    private static final SparseIntArray sCombiningToAccent;
     private static final StringBuilder sDeadKeyBuilder;
     private static final SparseIntArray sDeadKeyCache;
     private long mPtr;
+    private static final SparseIntArray sCombiningToAccent = new SparseIntArray();
+    private static final SparseIntArray sAccentToCombining = new SparseIntArray();
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public static class KeyData {
         public static final int META_LENGTH = 4;
         public char displayLabel;
@@ -71,9 +70,7 @@ public class KeyCharacterMap implements Parcelable {
         public char number;
     }
 
-    /* synthetic */ KeyCharacterMap(Parcel parcel, KeyCharacterMapIA keyCharacterMapIA) {
-        this(parcel);
-    }
+    private static native void nativeApplyOverlay(long j, String str, String str2);
 
     private static native void nativeDispose(long j);
 
@@ -89,6 +86,8 @@ public class KeyCharacterMap implements Parcelable {
 
     private static native int nativeGetKeyboardType(long j);
 
+    private static native int nativeGetMappedKey(long j, int i);
+
     private static native char nativeGetMatch(long j, int i, char[] cArr, int i2);
 
     private static native char nativeGetNumber(long j, int i);
@@ -100,10 +99,6 @@ public class KeyCharacterMap implements Parcelable {
     private static native void nativeWriteToParcel(long j, Parcel parcel);
 
     static {
-        SparseIntArray sparseIntArray = new SparseIntArray();
-        sCombiningToAccent = sparseIntArray;
-        SparseIntArray sparseIntArray2 = new SparseIntArray();
-        sAccentToCombining = sparseIntArray2;
         addCombining(768, 715);
         addCombining(769, 180);
         addCombining(770, 710);
@@ -127,16 +122,16 @@ public class KeyCharacterMap implements Parcelable {
         addCombining(MetricsProto.MetricsEvent.PROVISIONING_TERMS_ACTIVITY_TIME_MS, 716);
         addCombining(817, 717);
         addCombining(821, 45);
-        sparseIntArray.append(MetricsProto.MetricsEvent.NOTIFICATION_SNOOZED_CRITERIA, 715);
-        sparseIntArray.append(MetricsProto.MetricsEvent.FIELD_CONTEXT, 180);
-        sparseIntArray.append(MetricsProto.MetricsEvent.WIFI_NETWORK_RECOMMENDATION_SAVED_NETWORK_EVALUATOR, ACCENT_COMMA_ABOVE);
-        sparseIntArray.append(781, 39);
-        sparseIntArray.append(782, 34);
-        sparseIntArray2.append(96, 768);
-        sparseIntArray2.append(94, 770);
-        sparseIntArray2.append(126, 771);
-        sparseIntArray2.append(39, 769);
-        sparseIntArray2.append(34, 776);
+        sCombiningToAccent.append(832, 715);
+        sCombiningToAccent.append(833, 180);
+        sCombiningToAccent.append(835, ACCENT_COMMA_ABOVE);
+        sCombiningToAccent.append(781, 39);
+        sCombiningToAccent.append(782, 34);
+        sAccentToCombining.append(96, 768);
+        sAccentToCombining.append(94, 770);
+        sAccentToCombining.append(126, 771);
+        sAccentToCombining.append(39, 769);
+        sAccentToCombining.append(34, 776);
         sDeadKeyCache = new SparseIntArray();
         sDeadKeyBuilder = new StringBuilder();
         addDeadKey(45, 68, 272);
@@ -147,21 +142,20 @@ public class KeyCharacterMap implements Parcelable {
         addDeadKey(45, 79, 216);
         addDeadKey(45, 84, 358);
         addDeadKey(45, 100, 273);
-        addDeadKey(45, 103, MetricsProto.MetricsEvent.ACTION_SUPPORT_DAIL_TOLLFREE);
+        addDeadKey(45, 103, 485);
         addDeadKey(45, 104, 295);
         addDeadKey(45, 105, MetricsProto.MetricsEvent.PROVISIONING_ENTRY_POINT_QR_CODE);
         addDeadKey(45, 108, 322);
         addDeadKey(45, 111, 248);
         addDeadKey(45, 116, 359);
         CREATOR = new Parcelable.Creator<KeyCharacterMap>() { // from class: android.view.KeyCharacterMap.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public KeyCharacterMap createFromParcel(Parcel in) {
                 return new KeyCharacterMap(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public KeyCharacterMap[] newArray(int size) {
                 return new KeyCharacterMap[size];
@@ -183,30 +177,12 @@ public class KeyCharacterMap implements Parcelable {
         sDeadKeyCache.put(combination, result);
     }
 
-    /* renamed from: android.view.KeyCharacterMap$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyCharacterMap> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCharacterMap createFromParcel(Parcel in) {
-            return new KeyCharacterMap(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyCharacterMap[] newArray(int size) {
-            return new KeyCharacterMap[size];
-        }
-    }
-
     private KeyCharacterMap(Parcel in) {
         if (in == null) {
             throw new IllegalArgumentException("parcel must not be null");
         }
-        long nativeReadFromParcel = nativeReadFromParcel(in);
-        this.mPtr = nativeReadFromParcel;
-        if (nativeReadFromParcel == 0) {
+        this.mPtr = nativeReadFromParcel(in);
+        if (this.mPtr == 0) {
             throw new RuntimeException("Could not read KeyCharacterMap from parcel.");
         }
     }
@@ -216,9 +192,8 @@ public class KeyCharacterMap implements Parcelable {
     }
 
     protected void finalize() throws Throwable {
-        long j = this.mPtr;
-        if (j != 0) {
-            nativeDispose(j);
+        if (this.mPtr != 0) {
+            nativeDispose(this.mPtr);
             this.mPtr = 0L;
         }
     }
@@ -234,6 +209,21 @@ public class KeyCharacterMap implements Parcelable {
             throw new UnavailableException("Could not load key character map for device " + deviceId);
         }
         return inputDevice.getKeyCharacterMap();
+    }
+
+    public static KeyCharacterMap load(String layoutDescriptor, String overlay) {
+        KeyCharacterMap kcm = load(-1);
+        kcm.applyOverlay(layoutDescriptor, overlay);
+        return kcm;
+    }
+
+    private void applyOverlay(String layoutDescriptor, String overlay) {
+        nativeApplyOverlay(this.mPtr, layoutDescriptor, overlay);
+    }
+
+    public int getMappedKeyOrDefault(int scanCode, int defaultKeyCode) {
+        int keyCode = nativeGetMappedKey(this.mPtr, scanCode);
+        return keyCode == 0 ? defaultKeyCode : keyCode;
     }
 
     public int get(int keyCode, int metaState) {
@@ -285,23 +275,25 @@ public class KeyCharacterMap implements Parcelable {
             return 0;
         }
         int combination = (combining << 16) | c;
-        SparseIntArray sparseIntArray = sDeadKeyCache;
-        synchronized (sparseIntArray) {
-            combined = sparseIntArray.get(combination, -1);
+        synchronized (sDeadKeyCache) {
+            combined = sDeadKeyCache.get(combination, -1);
             if (combined == -1) {
-                StringBuilder sb = sDeadKeyBuilder;
-                sb.setLength(0);
-                sb.append((char) c);
-                sb.append((char) combining);
-                String result = Normalizer.normalize(sb, Normalizer.Form.NFC);
+                sDeadKeyBuilder.setLength(0);
+                sDeadKeyBuilder.append((char) c);
+                sDeadKeyBuilder.append((char) combining);
+                String result = Normalizer.normalize(sDeadKeyBuilder, Normalizer.Form.NFC);
                 if (result.codePointCount(0, result.length()) == 1) {
                     i = result.codePointAt(0);
                 }
                 combined = i;
-                sparseIntArray.put(combination, combined);
+                sDeadKeyCache.put(combination, combined);
             }
         }
         return combined;
+    }
+
+    public static int getCombiningChar(int accent) {
+        return sAccentToCombining.get(accent);
     }
 
     @Deprecated
@@ -383,24 +375,18 @@ public class KeyCharacterMap implements Parcelable {
             return false;
         }
         KeyCharacterMap peer = (KeyCharacterMap) obj;
-        long j = this.mPtr;
-        if (j != 0) {
-            long j2 = peer.mPtr;
-            if (j2 != 0) {
-                return nativeEquals(j, j2);
-            }
+        if (this.mPtr == 0 || peer.mPtr == 0) {
+            return this.mPtr == peer.mPtr;
         }
-        return j == peer.mPtr;
+        return nativeEquals(this.mPtr, peer.mPtr);
     }
 
-    /* loaded from: classes4.dex */
     public static class UnavailableException extends AndroidRuntimeException {
         public UnavailableException(String msg) {
             super(msg);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class FallbackAction {
         private static final int MAX_RECYCLED = 10;
         private static FallbackAction sRecycleBin;
@@ -416,10 +402,10 @@ public class KeyCharacterMap implements Parcelable {
         public static FallbackAction obtain() {
             FallbackAction target;
             synchronized (sRecycleLock) {
-                target = sRecycleBin;
-                if (target == null) {
+                if (sRecycleBin == null) {
                     target = new FallbackAction();
                 } else {
+                    target = sRecycleBin;
                     sRecycleBin = target.next;
                     sRecycledCount--;
                     target.next = null;
@@ -430,11 +416,10 @@ public class KeyCharacterMap implements Parcelable {
 
         public void recycle() {
             synchronized (sRecycleLock) {
-                int i = sRecycledCount;
-                if (i < 10) {
+                if (sRecycledCount < 10) {
                     this.next = sRecycleBin;
                     sRecycleBin = this;
-                    sRecycledCount = i + 1;
+                    sRecycledCount++;
                 } else {
                     this.next = null;
                 }

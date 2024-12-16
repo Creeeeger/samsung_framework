@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IGetOtaStatusCallback extends IInterface {
     void onSuccess(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGetOtaStatusCallback {
         @Override // android.service.euicc.IGetOtaStatusCallback
         public void onSuccess(int status) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IGetOtaStatusCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGetOtaStatusCallback {
         public static final String DESCRIPTOR = "android.service.euicc.IGetOtaStatusCallback";
         static final int TRANSACTION_onSuccess = 1;
@@ -66,26 +64,22 @@ public interface IGetOtaStatusCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onSuccess(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onSuccess(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IGetOtaStatusCallback {
+        private static class Proxy implements IGetOtaStatusCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -17,14 +17,13 @@ import android.os.Parcelable;
 import android.os.UserHandle;
 import android.util.Log;
 import com.android.internal.R;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class VpnConfig implements Parcelable {
     public static final String DIALOGS_PACKAGE = "com.android.vpndialogs";
     public static final String LEGACY_VPN = "[Legacy VPN]";
@@ -37,11 +36,9 @@ public class VpnConfig implements Parcelable {
     public boolean allowIPv6;
     public boolean allowPortBypass;
     public List<String> allowedApplications;
-    public List<String> allowedSecureFolderApps;
     public boolean blocking;
     public PendingIntent configureIntent;
     public List<String> disallowedApplications;
-    public List<String> disallowedSecureFolderApps;
     public List<String> dnsServers;
     public int dport;
     public boolean excludeLocalRoutes;
@@ -65,9 +62,7 @@ public class VpnConfig implements Parcelable {
     private static ArrayList<VpnConfig> mConfigsReceived = new ArrayList<>();
     private static ConcurrentHashMap<Integer, ArrayList<VpnConfig>> mConfigByUserMap = new ConcurrentHashMap<>();
     public static final Parcelable.Creator<VpnConfig> CREATOR = new Parcelable.Creator<VpnConfig>() { // from class: com.android.internal.net.VpnConfig.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VpnConfig createFromParcel(Parcel in) {
             VpnConfig config = new VpnConfig();
@@ -81,8 +76,6 @@ public class VpnConfig implements Parcelable {
             config.searchDomains = in.createStringArrayList();
             config.allowedApplications = in.createStringArrayList();
             config.disallowedApplications = in.createStringArrayList();
-            config.allowedSecureFolderApps = in.createStringArrayList();
-            config.disallowedSecureFolderApps = in.createStringArrayList();
             config.allowPortBypass = in.readInt() != 0;
             config.dport = in.readInt();
             config.fwmark = in.readInt();
@@ -105,6 +98,7 @@ public class VpnConfig implements Parcelable {
             return config;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VpnConfig[] newArray(int size) {
             return new VpnConfig[size];
@@ -290,8 +284,7 @@ public class VpnConfig implements Parcelable {
         this.isMetered = other.isMetered;
         this.requiresInternetValidation = other.requiresInternetValidation;
         this.excludeLocalRoutes = other.excludeLocalRoutes;
-        Network[] networkArr = other.underlyingNetworks;
-        this.underlyingNetworks = networkArr != null ? (Network[]) Arrays.copyOf(networkArr, networkArr.length) : null;
+        this.underlyingNetworks = other.underlyingNetworks != null ? (Network[]) Arrays.copyOf(other.underlyingNetworks, other.underlyingNetworks.length) : null;
         this.proxyInfo = other.proxyInfo;
     }
 
@@ -341,8 +334,6 @@ public class VpnConfig implements Parcelable {
         parcel.writeStringList(this.searchDomains);
         parcel.writeStringList(this.allowedApplications);
         parcel.writeStringList(this.disallowedApplications);
-        parcel.writeStringList(this.allowedSecureFolderApps);
-        parcel.writeStringList(this.disallowedSecureFolderApps);
         parcel.writeInt(this.allowPortBypass ? 1 : 0);
         parcel.writeInt(this.dport);
         parcel.writeInt(this.fwmark);
@@ -364,62 +355,13 @@ public class VpnConfig implements Parcelable {
         parcel.writeParcelable(this.proxyInfo, i);
     }
 
-    /* renamed from: com.android.internal.net.VpnConfig$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VpnConfig> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VpnConfig createFromParcel(Parcel in) {
-            VpnConfig config = new VpnConfig();
-            config.user = in.readString();
-            config.interfaze = in.readString();
-            config.session = in.readString();
-            config.mtu = in.readInt();
-            in.readTypedList(config.addresses, LinkAddress.CREATOR);
-            in.readTypedList(config.routes, RouteInfo.CREATOR);
-            config.dnsServers = in.createStringArrayList();
-            config.searchDomains = in.createStringArrayList();
-            config.allowedApplications = in.createStringArrayList();
-            config.disallowedApplications = in.createStringArrayList();
-            config.allowedSecureFolderApps = in.createStringArrayList();
-            config.disallowedSecureFolderApps = in.createStringArrayList();
-            config.allowPortBypass = in.readInt() != 0;
-            config.dport = in.readInt();
-            config.fwmark = in.readInt();
-            config.priority = in.readInt();
-            config.netTableId = in.readInt();
-            config.netIfaceName = in.readString();
-            config.netIfaceAddress = in.readString();
-            config.configureIntent = (PendingIntent) in.readParcelable(null, PendingIntent.class);
-            config.startTime = in.readLong();
-            config.legacy = in.readInt() != 0;
-            config.blocking = in.readInt() != 0;
-            config.allowBypass = in.readInt() != 0;
-            config.allowIPv4 = in.readInt() != 0;
-            config.allowIPv6 = in.readInt() != 0;
-            config.isMetered = in.readInt() != 0;
-            config.requiresInternetValidation = in.readInt() != 0;
-            config.excludeLocalRoutes = in.readInt() != 0;
-            config.underlyingNetworks = (Network[]) in.createTypedArray(Network.CREATOR);
-            config.proxyInfo = (ProxyInfo) in.readParcelable(null, ProxyInfo.class);
-            return config;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VpnConfig[] newArray(int size) {
-            return new VpnConfig[size];
-        }
-    }
-
     public String toString() {
         return TAG + "{ user=" + this.user + ", interface=" + this.interfaze + ", session=" + this.session + ", mtu=" + this.mtu + ", addresses=" + toString(this.addresses) + ", routes=" + toString(this.routes) + ", dns=" + toString(this.dnsServers) + ", searchDomains=" + toString(this.searchDomains) + ", allowedApps=" + toString(this.allowedApplications) + ", disallowedApps=" + toString(this.disallowedApplications) + ", configureIntent=" + this.configureIntent + ", startTime=" + this.startTime + ", legacy=" + this.legacy + ", blocking=" + this.blocking + ", allowBypass=" + this.allowBypass + ", allowIPv4=" + this.allowIPv4 + ", allowIPv6=" + this.allowIPv6 + ", isMetered=" + this.isMetered + ", requiresInternetValidation=" + this.requiresInternetValidation + ", excludeLocalRoutes=" + this.excludeLocalRoutes + ", underlyingNetworks=" + Arrays.toString(this.underlyingNetworks) + ", proxyInfo=" + this.proxyInfo + "}";
     }
 
     static <T> String toString(List<T> ls) {
         if (ls == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         return Arrays.toString(ls.toArray());
     }

@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class AsyncNotedAppOp implements Parcelable {
     public static final Parcelable.Creator<AsyncNotedAppOp> CREATOR = new Parcelable.Creator<AsyncNotedAppOp>() { // from class: android.app.AsyncNotedAppOp.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AsyncNotedAppOp[] newArray(int size) {
             return new AsyncNotedAppOp[size];
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AsyncNotedAppOp createFromParcel(Parcel in) {
             return new AsyncNotedAppOp(in);
@@ -37,7 +36,7 @@ public final class AsyncNotedAppOp implements Parcelable {
     }
 
     private void onConstructed() {
-        Preconditions.checkArgumentInRange(this.mOpCode, 0, 135, "opCode");
+        Preconditions.checkArgumentInRange(this.mOpCode, 0, 148, "opCode");
     }
 
     private String opCodeToString() {
@@ -46,14 +45,14 @@ public final class AsyncNotedAppOp implements Parcelable {
 
     public AsyncNotedAppOp(int opCode, int notingUid, String attributionTag, String message, long time) {
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L);
         this.mNotingUid = notingUid;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, notingUid, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mNotingUid, "from", 0L);
         this.mAttributionTag = attributionTag;
         this.mMessage = message;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) message);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mMessage);
         this.mTime = time;
-        AnnotationValidations.validate((Class<? extends Annotation>) CurrentTimeMillisLong.class, (Annotation) null, time);
+        AnnotationValidations.validate((Class<? extends Annotation>) CurrentTimeMillisLong.class, (Annotation) null, this.mTime);
         onConstructed();
     }
 
@@ -102,9 +101,8 @@ public final class AsyncNotedAppOp implements Parcelable {
         dest.writeByte(flg);
         dest.writeInt(this.mOpCode);
         dest.writeInt(this.mNotingUid);
-        String str = this.mAttributionTag;
-        if (str != null) {
-            dest.writeString(str);
+        if (this.mAttributionTag != null) {
+            dest.writeString(this.mAttributionTag);
         }
         dest.writeString(this.mMessage);
         dest.writeLong(this.mTime);
@@ -123,32 +121,15 @@ public final class AsyncNotedAppOp implements Parcelable {
         String message = in.readString();
         long time = in.readLong();
         this.mOpCode = opCode;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, opCode, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mOpCode, "from", 0L);
         this.mNotingUid = notingUid;
-        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, notingUid, "from", 0L);
+        AnnotationValidations.validate((Class<IntRange>) IntRange.class, (IntRange) null, this.mNotingUid, "from", 0L);
         this.mAttributionTag = attributionTag;
         this.mMessage = message;
-        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) message);
+        AnnotationValidations.validate((Class<NonNull>) NonNull.class, (NonNull) null, (Object) this.mMessage);
         this.mTime = time;
-        AnnotationValidations.validate((Class<? extends Annotation>) CurrentTimeMillisLong.class, (Annotation) null, time);
+        AnnotationValidations.validate((Class<? extends Annotation>) CurrentTimeMillisLong.class, (Annotation) null, this.mTime);
         onConstructed();
-    }
-
-    /* renamed from: android.app.AsyncNotedAppOp$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AsyncNotedAppOp> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AsyncNotedAppOp[] newArray(int size) {
-            return new AsyncNotedAppOp[size];
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AsyncNotedAppOp createFromParcel(Parcel in) {
-            return new AsyncNotedAppOp(in);
-        }
     }
 
     @Deprecated

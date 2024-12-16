@@ -12,7 +12,6 @@ public interface IAudioModeDispatcher extends IInterface {
 
     void dispatchAudioModeChanged(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioModeDispatcher {
         @Override // android.media.IAudioModeDispatcher
         public void dispatchAudioModeChanged(int mode) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IAudioModeDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioModeDispatcher {
         static final int TRANSACTION_dispatchAudioModeChanged = 1;
 
@@ -67,25 +65,22 @@ public interface IAudioModeDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAudioModeDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAudioModeDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAudioModeDispatcher.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    dispatchAudioModeChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            dispatchAudioModeChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioModeDispatcher {
+        private static class Proxy implements IAudioModeDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

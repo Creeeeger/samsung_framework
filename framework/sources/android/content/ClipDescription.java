@@ -21,14 +21,13 @@ public class ClipDescription implements Parcelable {
     public static final int CLASSIFICATION_NOT_COMPLETE = 1;
     public static final int CLASSIFICATION_NOT_PERFORMED = 2;
     public static final Parcelable.Creator<ClipDescription> CREATOR = new Parcelable.Creator<ClipDescription>() { // from class: android.content.ClipDescription.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipDescription createFromParcel(Parcel source) {
             return new ClipDescription(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ClipDescription[] newArray(int size) {
             return new ClipDescription[size];
@@ -40,7 +39,7 @@ public class ClipDescription implements Parcelable {
     public static final String EXTRA_DRAG_AND_DROP_IGNORE_RIGHT_EDGE = "com.samsung.android.content.clipdescription.extra.IGNORE_RIGHT_EDGE";
     public static final String EXTRA_DRAG_AND_DROP_REQUESTER = "com.samsung.android.intent.extra.DRAG_AND_DROP_REQUESTER";
     public static final String EXTRA_DRAG_FROM_RECENT = "com.samsung.android.content.clipdescription.extra.DRAG_FROM_RECENT";
-    public static final String EXTRA_DRAG_SOURCE_TASK_ID = "com.samsung.android.content.clipdescription.extra.EXTRA_DRAG_SOURCE_TASK_ID";
+    public static final String EXTRA_HIDE_DRAG_SOURCE_TASK_ID = "android.intent.extra.HIDE_DRAG_SOURCE_TASK_ID";
     public static final String EXTRA_IS_REMOTE_DEVICE = "android.content.extra.IS_REMOTE_DEVICE";
     public static final String EXTRA_IS_SENSITIVE = "android.content.extra.IS_SENSITIVE";
     public static final String EXTRA_LOGGING_INSTANCE_ID = "android.intent.extra.LOGGING_INSTANCE_ID";
@@ -62,7 +61,6 @@ public class ClipDescription implements Parcelable {
     private long mTimeStamp;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     @interface ClassificationStatus {
     }
 
@@ -160,7 +158,7 @@ public class ClipDescription implements Parcelable {
         return this.mMimeTypes.get(index);
     }
 
-    public void addMimeTypes(String[] mimeTypes) {
+    void addMimeTypes(String[] mimeTypes) {
         for (int i = 0; i != mimeTypes.length; i++) {
             String mimeType = mimeTypes[i];
             if (!this.mMimeTypes.contains(mimeType)) {
@@ -178,11 +176,10 @@ public class ClipDescription implements Parcelable {
     }
 
     public void validate() {
-        ArrayList<String> arrayList = this.mMimeTypes;
-        if (arrayList == null) {
+        if (this.mMimeTypes == null) {
             throw new NullPointerException("null mime types");
         }
-        int size = arrayList.size();
+        int size = this.mMimeTypes.size();
         if (size <= 0) {
             throw new IllegalArgumentException("must have at least 1 mime type");
         }
@@ -197,7 +194,7 @@ public class ClipDescription implements Parcelable {
         return this.mIsStyledText;
     }
 
-    public void setIsStyledText(boolean isStyledText) {
+    void setIsStyledText(boolean isStyledText) {
         this.mIsStyledText = isStyledText;
     }
 
@@ -231,34 +228,14 @@ public class ClipDescription implements Parcelable {
 
     public boolean isDragFromRecent() {
         try {
-            PersistableBundle persistableBundle = this.mExtras;
-            if (persistableBundle != null) {
-                return persistableBundle.getBoolean(EXTRA_DRAG_FROM_RECENT);
+            if (this.mExtras != null) {
+                return this.mExtras.getBoolean(EXTRA_DRAG_FROM_RECENT);
             }
             return false;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public int getDragSourceTaskId() {
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle != null) {
-            try {
-                return persistableBundle.getInt(EXTRA_DRAG_SOURCE_TASK_ID, -1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return -1;
-    }
-
-    public void setDragSourceTaskId(int taskId) {
-        if (this.mExtras == null) {
-            this.mExtras = new PersistableBundle();
-        }
-        this.mExtras.putInt(EXTRA_DRAG_SOURCE_TASK_ID, taskId);
     }
 
     public String toString() {
@@ -328,17 +305,14 @@ public class ClipDescription implements Parcelable {
         for (int i = 0; i < size; i++) {
             proto.write(2237677961217L, this.mMimeTypes.get(i));
         }
-        CharSequence charSequence = this.mLabel;
-        if (charSequence != null) {
-            proto.write(1138166333442L, charSequence.toString());
+        if (this.mLabel != null) {
+            proto.write(1138166333442L, this.mLabel.toString());
         }
-        PersistableBundle persistableBundle = this.mExtras;
-        if (persistableBundle != null) {
-            persistableBundle.dumpDebug(proto, 1146756268035L);
+        if (this.mExtras != null) {
+            this.mExtras.dumpDebug(proto, 1146756268035L);
         }
-        long j = this.mTimeStamp;
-        if (j > 0) {
-            proto.write(1112396529668L, j);
+        if (this.mTimeStamp > 0) {
+            proto.write(1112396529668L, this.mTimeStamp);
         }
         proto.end(token);
     }
@@ -374,7 +348,7 @@ public class ClipDescription implements Parcelable {
         }
     }
 
-    public ClipDescription(Parcel in) {
+    ClipDescription(Parcel in) {
         this.mEntityConfidence = new ArrayMap<>();
         this.mClassificationStatus = 1;
         this.mLabel = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
@@ -384,23 +358,6 @@ public class ClipDescription implements Parcelable {
         this.mIsStyledText = in.readBoolean();
         this.mClassificationStatus = in.readInt();
         readBundleToConfidences(in.readBundle());
-    }
-
-    /* renamed from: android.content.ClipDescription$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ClipDescription> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClipDescription createFromParcel(Parcel source) {
-            return new ClipDescription(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ClipDescription[] newArray(int size) {
-            return new ClipDescription[size];
-        }
     }
 
     public ArrayList<String> semGetMimeTypes() {

@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class DemuxFilterSectionSettingsCondition implements Parcelable {
     public static final Parcelable.Creator<DemuxFilterSectionSettingsCondition> CREATOR = new Parcelable.Creator<DemuxFilterSectionSettingsCondition>() { // from class: android.hardware.tv.tuner.DemuxFilterSectionSettingsCondition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSectionSettingsCondition createFromParcel(Parcel _aidl_source) {
             return new DemuxFilterSectionSettingsCondition(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DemuxFilterSectionSettingsCondition[] newArray(int _aidl_size) {
             return new DemuxFilterSectionSettingsCondition[_aidl_size];
@@ -24,14 +23,9 @@ public final class DemuxFilterSectionSettingsCondition implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int sectionBits = 0;
         public static final int tableInfo = 1;
-    }
-
-    /* synthetic */ DemuxFilterSectionSettingsCondition(Parcel parcel, DemuxFilterSectionSettingsConditionIA demuxFilterSectionSettingsConditionIA) {
-        this(parcel);
     }
 
     public DemuxFilterSectionSettingsCondition() {
@@ -83,35 +77,16 @@ public final class DemuxFilterSectionSettingsCondition implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.DemuxFilterSectionSettingsCondition$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DemuxFilterSectionSettingsCondition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSectionSettingsCondition createFromParcel(Parcel _aidl_source) {
-            return new DemuxFilterSectionSettingsCondition(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DemuxFilterSectionSettingsCondition[] newArray(int _aidl_size) {
-            return new DemuxFilterSectionSettingsCondition[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getSectionBits(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getTableInfo(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

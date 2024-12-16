@@ -9,32 +9,38 @@ import android.hardware.HardwareBuffer;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import com.android.window.flags.Flags;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /* loaded from: classes4.dex */
 public class TaskSnapshot implements Parcelable {
     public static final Parcelable.Creator<TaskSnapshot> CREATOR = new Parcelable.Creator<TaskSnapshot>() { // from class: android.window.TaskSnapshot.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskSnapshot createFromParcel(Parcel source) {
             return new TaskSnapshot(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskSnapshot[] newArray(int size) {
             return new TaskSnapshot[size];
         }
     };
+    public static final int REFERENCE_BROADCAST = 1;
+    public static final int REFERENCE_CACHE = 2;
+    public static final int REFERENCE_PERSIST = 4;
     private final int mAppearance;
     private final long mCaptureTime;
     private final ColorSpace mColorSpace;
-    private boolean mContainsBlurLayers;
     private boolean mContainsSecureLayers;
     private final Rect mContentInsets;
     private final Rect mCutoutInsets;
     private final boolean mHasImeSurface;
     private final long mId;
+    private int mInternalReferences;
+    private boolean mIsFolded;
     private final boolean mIsLowResolution;
     private final boolean mIsRealSnapshot;
     private final boolean mIsTranslucent;
@@ -46,8 +52,8 @@ public class TaskSnapshot implements Parcelable {
     private final ComponentName mTopActivityComponent;
     private final int mWindowingMode;
 
-    /* synthetic */ TaskSnapshot(Parcel parcel, TaskSnapshotIA taskSnapshotIA) {
-        this(parcel);
+    @Retention(RetentionPolicy.SOURCE)
+    @interface ReferenceFlags {
     }
 
     public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface) {
@@ -55,10 +61,14 @@ public class TaskSnapshot implements Parcelable {
     }
 
     public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface, Rect cutoutInsets) {
-        this(id, captureTime, topActivityComponent, snapshot, colorSpace, orientation, rotation, taskSize, contentInsets, letterboxInsets, isLowResolution, isRealSnapshot, windowingMode, appearance, isTranslucent, hasImeSurface, null, false, false);
+        this(id, captureTime, topActivityComponent, snapshot, colorSpace, orientation, rotation, taskSize, contentInsets, letterboxInsets, isLowResolution, isRealSnapshot, windowingMode, appearance, isTranslucent, hasImeSurface, null, false);
     }
 
-    public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface, Rect cutoutInsets, boolean containsSecureLayers, boolean containsBlurLayers) {
+    public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface, Rect cutoutInsets, boolean containsSecureLayers) {
+        this(id, captureTime, topActivityComponent, snapshot, colorSpace, orientation, rotation, taskSize, contentInsets, letterboxInsets, isLowResolution, isRealSnapshot, windowingMode, appearance, isTranslucent, hasImeSurface, null, containsSecureLayers, false);
+    }
+
+    public TaskSnapshot(long id, long captureTime, ComponentName topActivityComponent, HardwareBuffer snapshot, ColorSpace colorSpace, int orientation, int rotation, Point taskSize, Rect contentInsets, Rect letterboxInsets, boolean isLowResolution, boolean isRealSnapshot, int windowingMode, int appearance, boolean isTranslucent, boolean hasImeSurface, Rect cutoutInsets, boolean containsSecureLayers, boolean isFolded) {
         this.mId = id;
         this.mCaptureTime = captureTime;
         this.mTopActivityComponent = topActivityComponent;
@@ -77,7 +87,6 @@ public class TaskSnapshot implements Parcelable {
         this.mHasImeSurface = hasImeSurface;
         this.mCutoutInsets = new Rect(cutoutInsets);
         this.mContainsSecureLayers = containsSecureLayers;
-        this.mContainsBlurLayers = containsBlurLayers;
     }
 
     private TaskSnapshot(Parcel source) {
@@ -106,7 +115,6 @@ public class TaskSnapshot implements Parcelable {
         this.mHasImeSurface = source.readBoolean();
         this.mCutoutInsets = (Rect) source.readTypedObject(Rect.CREATOR);
         this.mContainsSecureLayers = source.readBoolean();
-        this.mContainsBlurLayers = source.readBoolean();
     }
 
     public long getId() {
@@ -181,8 +189,8 @@ public class TaskSnapshot implements Parcelable {
         return this.mContainsSecureLayers;
     }
 
-    public boolean containsBlurLayers() {
-        return this.mContainsBlurLayers;
+    public boolean isFolded() {
+        return this.mIsFolded;
     }
 
     public int getAppearance() {
@@ -198,8 +206,7 @@ public class TaskSnapshot implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.mId);
         ComponentName.writeToParcel(this.mTopActivityComponent, dest);
-        HardwareBuffer hardwareBuffer = this.mSnapshot;
-        dest.writeTypedObject((hardwareBuffer == null || hardwareBuffer.isClosed()) ? null : this.mSnapshot, 0);
+        dest.writeTypedObject((this.mSnapshot == null || this.mSnapshot.isClosed()) ? null : this.mSnapshot, 0);
         dest.writeInt(this.mColorSpace.getId());
         dest.writeInt(this.mOrientation);
         dest.writeInt(this.mRotation);
@@ -214,45 +221,35 @@ public class TaskSnapshot implements Parcelable {
         dest.writeBoolean(this.mHasImeSurface);
         dest.writeTypedObject(this.mCutoutInsets, 0);
         dest.writeBoolean(this.mContainsSecureLayers);
-        dest.writeBoolean(this.mContainsBlurLayers);
     }
 
     public String toString() {
-        HardwareBuffer hardwareBuffer = this.mSnapshot;
-        int width = hardwareBuffer != null ? hardwareBuffer.getWidth() : 0;
-        HardwareBuffer hardwareBuffer2 = this.mSnapshot;
-        int height = hardwareBuffer2 != null ? hardwareBuffer2.getHeight() : 0;
-        return "TaskSnapshot{ mId=" + this.mId + " mCaptureTime=" + this.mCaptureTime + " mTopActivityComponent=" + this.mTopActivityComponent.flattenToShortString() + " mSnapshot=" + this.mSnapshot + " (" + width + "x" + height + ") mColorSpace=" + this.mColorSpace.toString() + " mOrientation=" + this.mOrientation + " mRotation=" + this.mRotation + " mTaskSize=" + this.mTaskSize.toString() + " mContentInsets=" + this.mContentInsets.toShortString() + " mLetterboxInsets=" + this.mLetterboxInsets.toShortString() + " mIsLowResolution=" + this.mIsLowResolution + " mIsRealSnapshot=" + this.mIsRealSnapshot + " mWindowingMode=" + this.mWindowingMode + " mAppearance=" + this.mAppearance + " mIsTranslucent=" + this.mIsTranslucent + " mHasImeSurface=" + this.mHasImeSurface;
+        int width = this.mSnapshot != null ? this.mSnapshot.getWidth() : 0;
+        int height = this.mSnapshot != null ? this.mSnapshot.getHeight() : 0;
+        return "TaskSnapshot{ mId=" + this.mId + " mCaptureTime=" + this.mCaptureTime + " mTopActivityComponent=" + this.mTopActivityComponent.flattenToShortString() + " mSnapshot=" + this.mSnapshot + " (" + width + "x" + height + ") mColorSpace=" + this.mColorSpace.toString() + " mOrientation=" + this.mOrientation + " mRotation=" + this.mRotation + " mTaskSize=" + this.mTaskSize.toString() + " mContentInsets=" + this.mContentInsets.toShortString() + " mLetterboxInsets=" + this.mLetterboxInsets.toShortString() + " mIsLowResolution=" + this.mIsLowResolution + " mIsRealSnapshot=" + this.mIsRealSnapshot + " mWindowingMode=" + this.mWindowingMode + " mAppearance=" + this.mAppearance + " mIsTranslucent=" + this.mIsTranslucent + " mHasImeSurface=" + this.mHasImeSurface + " mInternalReferences=" + this.mInternalReferences;
     }
 
-    /* renamed from: android.window.TaskSnapshot$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TaskSnapshot> {
-        AnonymousClass1() {
-        }
+    public synchronized void addReference(int usage) {
+        this.mInternalReferences |= usage;
+    }
 
-        @Override // android.os.Parcelable.Creator
-        public TaskSnapshot createFromParcel(Parcel source) {
-            return new TaskSnapshot(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskSnapshot[] newArray(int size) {
-            return new TaskSnapshot[size];
+    public synchronized void removeReference(int usage) {
+        this.mInternalReferences &= ~usage;
+        if (Flags.releaseSnapshotAggressively() && this.mInternalReferences == 0 && this.mSnapshot != null && !this.mSnapshot.isClosed()) {
+            this.mSnapshot.close();
         }
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private int mAppearance;
         private long mCaptureTime;
         private ColorSpace mColorSpace;
-        private boolean mContainsBlurLayers;
         private boolean mContainsSecureLayers;
         private Rect mContentInsets;
         private Rect mCutoutInsets;
         private boolean mHasImeSurface;
         private long mId;
+        private boolean mIsFolded;
         private boolean mIsRealSnapshot;
         private boolean mIsTranslucent;
         private Rect mLetterboxInsets;
@@ -358,13 +355,13 @@ public class TaskSnapshot implements Parcelable {
             return this;
         }
 
-        public Builder setContainsBlurLayers(boolean containsBlurLayers) {
-            this.mContainsBlurLayers = containsBlurLayers;
+        public Builder setFolded(boolean folded) {
+            this.mIsFolded = folded;
             return this;
         }
 
         public TaskSnapshot build() {
-            return new TaskSnapshot(this.mId, this.mCaptureTime, this.mTopActivity, this.mSnapshot, this.mColorSpace, this.mOrientation, this.mRotation, this.mTaskSize, this.mContentInsets, this.mLetterboxInsets, false, this.mIsRealSnapshot, this.mWindowingMode, this.mAppearance, this.mIsTranslucent, this.mHasImeSurface, this.mCutoutInsets, this.mContainsSecureLayers, this.mContainsBlurLayers);
+            return new TaskSnapshot(this.mId, this.mCaptureTime, this.mTopActivity, this.mSnapshot, this.mColorSpace, this.mOrientation, this.mRotation, this.mTaskSize, this.mContentInsets, this.mLetterboxInsets, false, this.mIsRealSnapshot, this.mWindowingMode, this.mAppearance, this.mIsTranslucent, this.mHasImeSurface, this.mCutoutInsets, this.mContainsSecureLayers, this.mIsFolded);
         }
     }
 }

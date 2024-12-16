@@ -86,32 +86,28 @@ public class GeneralSubtree extends ASN1Object {
     }
 
     public BigInteger getMinimum() {
-        ASN1Integer aSN1Integer = this.minimum;
-        if (aSN1Integer == null) {
+        if (this.minimum == null) {
             return ZERO;
         }
-        return aSN1Integer.getValue();
+        return this.minimum.getValue();
     }
 
     public BigInteger getMaximum() {
-        ASN1Integer aSN1Integer = this.maximum;
-        if (aSN1Integer == null) {
+        if (this.maximum == null) {
             return null;
         }
-        return aSN1Integer.getValue();
+        return this.maximum.getValue();
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Object, com.android.internal.org.bouncycastle.asn1.ASN1Encodable
     public ASN1Primitive toASN1Primitive() {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         v.add(this.base);
-        ASN1Integer aSN1Integer = this.minimum;
-        if (aSN1Integer != null && !aSN1Integer.hasValue(ZERO)) {
+        if (this.minimum != null && !this.minimum.hasValue(ZERO)) {
             v.add(new DERTaggedObject(false, 0, this.minimum));
         }
-        ASN1Integer aSN1Integer2 = this.maximum;
-        if (aSN1Integer2 != null) {
-            v.add(new DERTaggedObject(false, 1, aSN1Integer2));
+        if (this.maximum != null) {
+            v.add(new DERTaggedObject(false, 1, this.maximum));
         }
         return new DERSequence(v);
     }

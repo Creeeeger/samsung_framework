@@ -8,7 +8,6 @@ public interface IStoraged extends IInterface {
 
     void onUserStopped(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IStoraged {
         @Override // android.os.IStoraged
         public void onUserStarted(int userId) throws RemoteException {
@@ -29,7 +28,6 @@ public interface IStoraged extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IStoraged {
         public static final String DESCRIPTOR = "android.os.IStoraged";
         static final int TRANSACTION_getRecentPerf = 3;
@@ -79,36 +77,33 @@ public interface IStoraged extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUserStarted(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUserStopped(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    int _result = getRecentPerf();
+                    reply.writeNoException();
+                    reply.writeInt(_result);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUserStarted(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUserStopped(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _result = getRecentPerf();
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IStoraged {
             private IBinder mRemote;
 

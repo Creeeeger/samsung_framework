@@ -2,7 +2,7 @@ package com.samsung.android.displayquality;
 
 import android.util.Slog;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public final class SemDisplayQualityManager {
     private static final String TAG = "SemDisplayQualityManager";
     private static final boolean mEnabled = SemDisplayQualityFeature.ENABLED;
@@ -20,13 +20,12 @@ public final class SemDisplayQualityManager {
         if (!mEnabled || !mSupportOutdoor) {
             return;
         }
-        ISemDisplayQualityManager iSemDisplayQualityManager = this.mService;
-        if (iSemDisplayQualityManager == null) {
+        if (this.mService == null) {
             Slog.e(TAG, "SemDisplayQualityManagerService is null");
             return;
         }
         try {
-            iSemDisplayQualityManager.enhanceDisplayOutdoorVisibilityByLux(lux);
+            this.mService.enhanceDisplayOutdoorVisibilityByLux(lux);
         } catch (Exception e) {
             Slog.e(TAG, "enhanceOutdoorVisibilityByLux", e);
         }

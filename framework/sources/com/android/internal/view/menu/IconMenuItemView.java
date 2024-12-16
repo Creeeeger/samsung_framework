@@ -53,18 +53,16 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         this(context, attrs, 0);
     }
 
-    public void initialize(CharSequence title, Drawable icon) {
+    void initialize(CharSequence title, Drawable icon) {
         setClickable(true);
         setFocusable(true);
-        int i = this.mTextAppearance;
-        if (i != -1) {
-            setTextAppearance(this.mTextAppearanceContext, i);
+        if (this.mTextAppearance != -1) {
+            setTextAppearance(this.mTextAppearanceContext, this.mTextAppearance);
         }
         setTitle(title);
         setIcon(icon);
-        MenuItemImpl menuItemImpl = this.mItemData;
-        if (menuItemImpl != null) {
-            CharSequence contentDescription = menuItemImpl.getContentDescription();
+        if (this.mItemData != null) {
+            CharSequence contentDescription = this.mItemData.getContentDescription();
             if (TextUtils.isEmpty(contentDescription)) {
                 setContentDescription(title);
             } else {
@@ -91,8 +89,7 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         if (super.performClick()) {
             return true;
         }
-        MenuBuilder.ItemInvoker itemInvoker = this.mItemInvoker;
-        if (itemInvoker == null || !itemInvoker.invokeItem(this.mItemData)) {
+        if (this.mItemInvoker == null || !this.mItemInvoker.invokeItem(this.mItemData)) {
             return false;
         }
         playSoundEffect(0);
@@ -104,16 +101,15 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
         if (this.mShortcutCaptionMode) {
             setCaptionMode(true);
         } else if (title != null) {
-            setText(title);
+            lambda$setTextAsync$0(title);
         }
     }
 
-    public void setCaptionMode(boolean shortcut) {
-        MenuItemImpl menuItemImpl = this.mItemData;
-        if (menuItemImpl == null) {
+    void setCaptionMode(boolean shortcut) {
+        if (this.mItemData == null) {
             return;
         }
-        this.mShortcutCaptionMode = shortcut && menuItemImpl.shouldShowShortcut();
+        this.mShortcutCaptionMode = shortcut && this.mItemData.shouldShowShortcut();
         CharSequence text = this.mItemData.getTitleForItemView(this);
         if (this.mShortcutCaptionMode) {
             if (this.mShortcutCaption == null) {
@@ -121,7 +117,7 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
             }
             text = this.mShortcutCaption;
         }
-        setText(text);
+        lambda$setTextAsync$0(text);
     }
 
     @Override // com.android.internal.view.menu.MenuView.ItemView
@@ -151,39 +147,37 @@ public final class IconMenuItemView extends TextView implements MenuView.ItemVie
     @Override // android.view.View
     public void setVisibility(int v) {
         super.setVisibility(v);
-        IconMenuView iconMenuView = this.mIconMenuView;
-        if (iconMenuView != null) {
-            iconMenuView.markStaleChildren();
+        if (this.mIconMenuView != null) {
+            this.mIconMenuView.markStaleChildren();
         }
     }
 
-    public void setIconMenuView(IconMenuView iconMenuView) {
+    void setIconMenuView(IconMenuView iconMenuView) {
         this.mIconMenuView = iconMenuView;
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
-        MenuItemImpl menuItemImpl = this.mItemData;
-        if (menuItemImpl != null && this.mIcon != null) {
-            boolean isInAlphaState = !menuItemImpl.isEnabled() && (isPressed() || !isFocused());
+        if (this.mItemData != null && this.mIcon != null) {
+            boolean isInAlphaState = !this.mItemData.isEnabled() && (isPressed() || !isFocused());
             this.mIcon.setAlpha(isInAlphaState ? (int) (this.mDisabledAlpha * 255.0f) : 255);
         }
     }
 
     @Override // android.widget.TextView, android.view.View
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         positionIcon();
     }
 
     @Override // android.widget.TextView
-    public void onTextChanged(CharSequence text, int start, int before, int after) {
+    protected void onTextChanged(CharSequence text, int start, int before, int after) {
         super.onTextChanged(text, start, before, after);
         setLayoutParams(getTextAppropriateLayoutParams());
     }
 
-    public IconMenuView.LayoutParams getTextAppropriateLayoutParams() {
+    IconMenuView.LayoutParams getTextAppropriateLayoutParams() {
         IconMenuView.LayoutParams lp = (IconMenuView.LayoutParams) getLayoutParams();
         if (lp == null) {
             lp = new IconMenuView.LayoutParams(-1, -1);

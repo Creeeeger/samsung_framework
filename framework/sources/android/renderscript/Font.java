@@ -17,7 +17,6 @@ public class Font extends BaseObj {
     private static final String[] sSerifNames = {"serif", "times", "times new roman", "palatino", "georgia", "baskerville", "goudy", "fantasy", "cursive", "ITC Stone Serif"};
     private static final String[] sMonoNames = {"monospace", "courier", "courier new", "monaco"};
 
-    /* loaded from: classes3.dex */
     public enum Style {
         NORMAL,
         BOLD,
@@ -29,17 +28,12 @@ public class Font extends BaseObj {
         initFontFamilyMap();
     }
 
-    /* loaded from: classes3.dex */
-    public static class FontFamily {
+    private static class FontFamily {
         String mBoldFileName;
         String mBoldItalicFileName;
         String mItalicFileName;
         String[] mNames;
         String mNormalFileName;
-
-        /* synthetic */ FontFamily(FontFamilyIA fontFamilyIA) {
-            this();
-        }
 
         private FontFamily() {
         }
@@ -79,47 +73,20 @@ public class Font extends BaseObj {
     static String getFontFileName(String familyName, Style style) {
         FontFamily family = sFontFamilyMap.get(familyName);
         if (family != null) {
-            switch (AnonymousClass1.$SwitchMap$android$renderscript$Font$Style[style.ordinal()]) {
-                case 1:
+            switch (style) {
+                case NORMAL:
                     return family.mNormalFileName;
-                case 2:
+                case BOLD:
                     return family.mBoldFileName;
-                case 3:
+                case ITALIC:
                     return family.mItalicFileName;
-                case 4:
+                case BOLD_ITALIC:
                     return family.mBoldItalicFileName;
                 default:
                     return "DroidSans.ttf";
             }
         }
         return "DroidSans.ttf";
-    }
-
-    /* renamed from: android.renderscript.Font$1 */
-    /* loaded from: classes3.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$android$renderscript$Font$Style;
-
-        static {
-            int[] iArr = new int[Style.values().length];
-            $SwitchMap$android$renderscript$Font$Style = iArr;
-            try {
-                iArr[Style.NORMAL.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Font$Style[Style.BOLD.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Font$Style[Style.ITALIC.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$android$renderscript$Font$Style[Style.BOLD_ITALIC.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-        }
     }
 
     Font(long id, RenderScript rs) {

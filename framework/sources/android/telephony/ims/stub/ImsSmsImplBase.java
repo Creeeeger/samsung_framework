@@ -1,7 +1,7 @@
 package android.telephony.ims.stub;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.os.RemoteException;
 import android.telephony.SmsMessage;
 import android.telephony.ims.aidl.IImsSmsListener;
@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.concurrent.Executor;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsSmsImplBase {
     public static final int DELIVER_STATUS_ERROR_GENERIC = 2;
     public static final int DELIVER_STATUS_ERROR_NO_MEMORY = 3;
@@ -30,17 +30,14 @@ public class ImsSmsImplBase {
     private final Object mLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface DeliverStatusResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SendStatusResult {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface StatusReportResult {
     }
 
@@ -253,7 +250,6 @@ public class ImsSmsImplBase {
     }
 
     public Executor getExecutor() {
-        Executor executor = this.mExecutor;
-        return executor != null ? executor : new PendingIntent$$ExternalSyntheticLambda1();
+        return this.mExecutor != null ? this.mExecutor : new PendingIntent$$ExternalSyntheticLambda0();
     }
 }

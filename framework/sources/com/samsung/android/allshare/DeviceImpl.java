@@ -3,7 +3,6 @@ package com.samsung.android.allshare;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.Parcelable;
 import com.samsung.android.allshare.Device;
 import com.sec.android.allshare.iface.CVMessage;
@@ -14,16 +13,12 @@ import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
-public final class DeviceImpl extends Device implements IBundleHolder, IHandlerHolder {
+/* loaded from: classes3.dex */
+final class DeviceImpl extends Device implements IBundleHolder, IHandlerHolder {
     private static final String TAG = "DeviceImpl";
     private Bundle mDeviceBundle;
     private IAllShareConnector mAllShareConnector = null;
     AllShareResponseHandler mResponseHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.DeviceImpl.1
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         public void handleResponseMessage(CVMessage cvm) {
             String actionID = cvm.getActionID();
@@ -43,7 +38,7 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
         }
     };
 
-    public DeviceImpl(Bundle bundle) {
+    DeviceImpl(Bundle bundle) {
         this.mDeviceBundle = null;
         this.mDeviceBundle = bundle;
     }
@@ -58,49 +53,19 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.DeviceImpl$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AllShareResponseHandler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareResponseHandler
-        public void handleResponseMessage(CVMessage cvm) {
-            String actionID = cvm.getActionID();
-            Bundle resBundle = cvm.getBundle();
-            if (actionID == null || resBundle == null) {
-                DLog.w_api(DeviceImpl.TAG, "handleResponseMessage : actionID == null || resBundle == null");
-                return;
-            }
-            ERROR error = ERROR.FAIL;
-            String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
-            if (errorStr != null) {
-                error = ERROR.stringToEnum(errorStr);
-            }
-            if (actionID.equals(AllShareAction.ACTION_REQUEST_MOBILE_TO_TV) && error.equals(ERROR.SUCCESS)) {
-                DLog.w_api(DeviceImpl.TAG, "handleResponseMessage : actionID :ACTION_REQUEST_MOBILE_TO_TV response SUCCESS");
-            }
-        }
-    }
-
     @Override // com.samsung.android.allshare.Device
     public String getName() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_NAME);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_NAME);
     }
 
     @Override // com.samsung.android.allshare.Device
     public Uri getIcon() {
-        Bundle bundle = this.mDeviceBundle;
-        return (Uri) (bundle == null ? null : bundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_DEVICE_DEFAULT_ICON));
+        return (Uri) (this.mDeviceBundle == null ? null : this.mDeviceBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_DEVICE_DEFAULT_ICON));
     }
 
     @Override // com.samsung.android.allshare.Device
     public ArrayList<Icon> getIconList() {
-        Bundle bundle = this.mDeviceBundle;
-        ArrayList<Parcelable> iconList = bundle == null ? null : bundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_DEVICE_ICONLIST);
+        ArrayList<Parcelable> iconList = this.mDeviceBundle == null ? null : this.mDeviceBundle.getParcelableArrayList(AllShareKey.BUNDLE_PARCELABLE_DEVICE_ICONLIST);
         ArrayList<Icon> result = new ArrayList<>();
         if (iconList == null) {
             return result;
@@ -115,14 +80,12 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
 
     @Override // com.samsung.android.allshare.Device
     public String getID() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString("BUNDLE_STRING_ID");
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString("BUNDLE_STRING_ID");
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getModelName() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_MODELNAME);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_MODELNAME);
     }
 
     @Override // com.samsung.android.allshare.Device
@@ -135,15 +98,8 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
     }
 
     @Override // com.samsung.android.allshare.Device
-    @Deprecated
-    public String getIPAdress() {
-        return getIPAddress();
-    }
-
-    @Override // com.samsung.android.allshare.Device
     public String getIPAddress() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_IP_ADDRESS);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_DEVICE_IP_ADDRESS);
     }
 
     @Override // com.samsung.android.allshare.Device
@@ -157,17 +113,15 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
 
     @Override // com.sec.android.allshare.iface.IBundleHolder
     public Bundle getBundle() {
-        Bundle bundle = this.mDeviceBundle;
-        if (bundle == null) {
+        if (this.mDeviceBundle == null) {
             return null;
         }
-        return bundle;
+        return this.mDeviceBundle;
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getNIC() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_BOUND_INTERFACE);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_BOUND_INTERFACE);
     }
 
     @Override // com.samsung.android.allshare.Device
@@ -182,21 +136,18 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
 
     @Override // com.samsung.android.allshare.Device
     public String getP2pMacAddress() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_MIRRORING_MAC);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_MIRRORING_MAC);
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo() {
-        Bundle bundle = this.mDeviceBundle;
-        return bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING);
+        return this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING);
     }
 
     @Override // com.samsung.android.allshare.Device
     public void requestMobileToTV(String ip, int port) {
         DLog.w_api(TAG, "requestMobileToTV : call requestMobileToTV");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG, "requestMobileToTV : SERVICE_NOT_CONNECTED");
             return;
         }
@@ -231,16 +182,15 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
 
     @Override // com.samsung.android.allshare.Device
     public String getProductCapInfo(Device.InformationType infoType) {
-        Bundle bundle = this.mDeviceBundle;
-        String productCap = bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_SECPRODUCTCAP);
+        String productCap = this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_SECPRODUCTCAP);
         if (productCap == null || "".equals(productCap)) {
             return "";
         }
-        switch (AnonymousClass2.$SwitchMap$com$samsung$android$allshare$Device$InformationType[infoType.ordinal()]) {
-            case 1:
+        switch (infoType) {
+            case ALL_INFO:
                 String result = productCap;
                 return result;
-            case 2:
+            case P2P_MAC_ADDRESS:
                 if (!productCap.toLowerCase().contains("ScreenMirroringP2PMAC=".toLowerCase())) {
                     return "";
                 }
@@ -253,36 +203,16 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.DeviceImpl$2 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Device$InformationType;
-
-        static {
-            int[] iArr = new int[Device.InformationType.values().length];
-            $SwitchMap$com$samsung$android$allshare$Device$InformationType = iArr;
-            try {
-                iArr[Device.InformationType.ALL_INFO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$InformationType[Device.InformationType.P2P_MAC_ADDRESS.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
-    }
-
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo(Device.InformationType infoType) {
-        Bundle bundle = this.mDeviceBundle;
-        String screenSharing = bundle == null ? "" : bundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING);
+        String screenSharing = this.mDeviceBundle == null ? "" : this.mDeviceBundle.getString(AllShareKey.BUNDLE_STRING_SCREENSHARING);
         if (screenSharing == null || "".equals(screenSharing)) {
             return "";
         }
-        switch (AnonymousClass2.$SwitchMap$com$samsung$android$allshare$Device$InformationType[infoType.ordinal()]) {
-            case 1:
+        switch (infoType) {
+            case ALL_INFO:
                 return screenSharing;
-            case 2:
+            case P2P_MAC_ADDRESS:
                 if (!screenSharing.toLowerCase().contains("p2pDeviceAddress:".toLowerCase())) {
                     return "";
                 }
@@ -300,23 +230,22 @@ public final class DeviceImpl extends Device implements IBundleHolder, IHandlerH
     public boolean isSupportedByType(int type) {
         String str = "UNKNOWN";
         boolean isSupported = false;
-        Bundle bundle = this.mDeviceBundle;
-        if (bundle == null) {
+        if (this.mDeviceBundle == null) {
             DLog.w_api(TAG, "[isSupportedByType] : [Type]UNKNOWNmDeviceBundle  is null");
             return false;
         }
         switch (type) {
             case 1:
                 str = "IMAGE";
-                isSupported = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_IMAGE);
+                isSupported = this.mDeviceBundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_IMAGE);
                 break;
             case 2:
                 str = "VIDEO";
-                isSupported = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_VIDEO);
+                isSupported = this.mDeviceBundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_VIDEO);
                 break;
             case 3:
                 str = "AUDIO";
-                isSupported = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_AUDIO);
+                isSupported = this.mDeviceBundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_AUDIO);
                 break;
         }
         DLog.i_api(TAG, "[isSupportedByType] : [Type]" + str + "[isSupported]" + isSupported);

@@ -20,7 +20,6 @@ public interface IOtaDexopt extends IInterface {
 
     void prepare() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IOtaDexopt {
         @Override // android.content.pm.IOtaDexopt
         public void prepare() throws RemoteException {
@@ -55,7 +54,6 @@ public interface IOtaDexopt extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IOtaDexopt {
         public static final String DESCRIPTOR = "android.content.pm.IOtaDexopt";
         static final int TRANSACTION_cleanup = 2;
@@ -114,46 +112,43 @@ public interface IOtaDexopt extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    prepare();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    cleanup();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _result = isDone();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 4:
+                    float _result2 = getProgress();
+                    reply.writeNoException();
+                    reply.writeFloat(_result2);
+                    return true;
+                case 5:
+                    dexoptNextPackage();
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    String _result3 = nextDexoptCommand();
+                    reply.writeNoException();
+                    reply.writeString(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            prepare();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            cleanup();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _result = isDone();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 4:
-                            float _result2 = getProgress();
-                            reply.writeNoException();
-                            reply.writeFloat(_result2);
-                            return true;
-                        case 5:
-                            dexoptNextPackage();
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            String _result3 = nextDexoptCommand();
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
         private static class Proxy implements IOtaDexopt {
             private IBinder mRemote;
 

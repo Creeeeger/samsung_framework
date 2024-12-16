@@ -3,24 +3,22 @@ package com.samsung.android.allshare;
 import android.net.Uri;
 import android.os.Bundle;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 final class SubtitleImpl extends Subtitle {
     private Bundle mBundle;
 
-    public SubtitleImpl(Bundle bundle) {
+    protected SubtitleImpl(Bundle bundle) {
         this.mBundle = null;
         this.mBundle = bundle;
     }
 
     @Override // com.samsung.android.allshare.Subtitle
     public Uri getUri() {
-        Bundle bundle = this.mBundle;
-        return (Uri) (bundle == null ? null : bundle.getParcelable("SUBTITLE_URI"));
+        return (Uri) (this.mBundle == null ? null : this.mBundle.getParcelable("SUBTITLE_URI"));
     }
 
     @Override // com.samsung.android.allshare.Subtitle
     public String getType() {
-        Bundle bundle = this.mBundle;
-        return bundle == null ? "" : bundle.getString("SUBTITLE_TYPE");
+        return this.mBundle == null ? "" : this.mBundle.getString("SUBTITLE_TYPE");
     }
 }

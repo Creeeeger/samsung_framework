@@ -13,7 +13,6 @@ public interface ISearchCallback extends IInterface {
 
     void onResult(ParceledListSlice parceledListSlice) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISearchCallback {
         @Override // android.app.search.ISearchCallback
         public void onResult(ParceledListSlice result) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ISearchCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISearchCallback {
         static final int TRANSACTION_onResult = 1;
 
@@ -68,26 +66,22 @@ public interface ISearchCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISearchCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISearchCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISearchCallback.DESCRIPTOR);
+                case 1:
+                    ParceledListSlice _arg0 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
+                    data.enforceNoDataAvail();
+                    onResult(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParceledListSlice _arg0 = (ParceledListSlice) data.readTypedObject(ParceledListSlice.CREATOR);
-                            data.enforceNoDataAvail();
-                            onResult(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISearchCallback {
+        private static class Proxy implements ISearchCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

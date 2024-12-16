@@ -2,7 +2,7 @@ package com.samsung.android.speech;
 
 import android.util.Log;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class MMUIRecognizer {
     private static final String TAG = MMUIRecognizer.class.getSimpleName();
 
@@ -26,10 +26,9 @@ public class MMUIRecognizer {
 
     public static int init() {
         try {
-            String str = TAG;
-            Log.i(str, "Trying to load libsasr-jni.so");
+            Log.i(TAG, "Trying to load libsasr-jni.so");
             System.loadLibrary("sasr-jni");
-            Log.i(str, "Loading libsasr-jni.so done");
+            Log.i(TAG, "Loading libsasr-jni.so done");
             return 0;
         } catch (Exception e) {
             Log.e(TAG, "WARNING: Could not load libsasr-jni.so");

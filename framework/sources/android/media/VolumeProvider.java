@@ -14,13 +14,11 @@ public abstract class VolumeProvider {
     private int mCurrentVolume;
     private final int mMaxVolume;
 
-    /* loaded from: classes2.dex */
     public static abstract class Callback {
         public abstract void onVolumeChanged(VolumeProvider volumeProvider);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ControlType {
     }
 
@@ -49,9 +47,8 @@ public abstract class VolumeProvider {
 
     public final void setCurrentVolume(int currentVolume) {
         this.mCurrentVolume = currentVolume;
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onVolumeChanged(this);
+        if (this.mCallback != null) {
+            this.mCallback.onVolumeChanged(this);
         }
     }
 

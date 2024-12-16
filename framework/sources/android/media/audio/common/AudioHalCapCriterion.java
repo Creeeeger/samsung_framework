@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class AudioHalCapCriterion implements Parcelable {
     public static final Parcelable.Creator<AudioHalCapCriterion> CREATOR = new Parcelable.Creator<AudioHalCapCriterion>() { // from class: android.media.audio.common.AudioHalCapCriterion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalCapCriterion createFromParcel(Parcel _aidl_source) {
             AudioHalCapCriterion _aidl_out = new AudioHalCapCriterion();
@@ -20,6 +18,7 @@ public class AudioHalCapCriterion implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioHalCapCriterion[] newArray(int _aidl_size) {
             return new AudioHalCapCriterion[_aidl_size];
@@ -28,25 +27,6 @@ public class AudioHalCapCriterion implements Parcelable {
     public String criterionTypeName;
     public String defaultLiteralValue;
     public String name;
-
-    /* renamed from: android.media.audio.common.AudioHalCapCriterion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioHalCapCriterion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalCapCriterion createFromParcel(Parcel _aidl_source) {
-            AudioHalCapCriterion _aidl_out = new AudioHalCapCriterion();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioHalCapCriterion[] newArray(int _aidl_size) {
-            return new AudioHalCapCriterion[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -115,7 +95,7 @@ public class AudioHalCapCriterion implements Parcelable {
         _aidl_sj.add("name: " + Objects.toString(this.name));
         _aidl_sj.add("criterionTypeName: " + Objects.toString(this.criterionTypeName));
         _aidl_sj.add("defaultLiteralValue: " + Objects.toString(this.defaultLiteralValue));
-        return "android.media.audio.common.AudioHalCapCriterion" + _aidl_sj.toString();
+        return "AudioHalCapCriterion" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

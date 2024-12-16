@@ -1,9 +1,11 @@
 package android.telephony;
 
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.annotation.SystemApi;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.app.Service;
 import android.app.admin.PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.IBinder;
@@ -33,103 +35,96 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class DomainSelectionService extends Service {
+@SystemApi
+/* loaded from: classes4.dex */
+public abstract class DomainSelectionService extends Service {
     private static final String LOG_TAG = "DomainSelectionService";
     public static final int SCAN_TYPE_FULL_SERVICE = 2;
     public static final int SCAN_TYPE_LIMITED_SERVICE = 1;
     public static final int SCAN_TYPE_NO_PREFERENCE = 0;
     public static final int SELECTOR_TYPE_CALLING = 1;
     public static final int SELECTOR_TYPE_SMS = 2;
-    public static final int SELECTOR_TYPE_UT = 3;
     public static final String SERVICE_INTERFACE = "android.telephony.DomainSelectionService";
     private Executor mExecutor;
     private final Object mExecutorLock = new Object();
     private final IBinder mDomainSelectionServiceController = new AnonymousClass1();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface EmergencyScanType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SelectorType {
     }
 
-    /* loaded from: classes3.dex */
+    public abstract void onDomainSelection(SelectionAttributes selectionAttributes, TransportSelectorCallback transportSelectorCallback);
+
     public static final class SelectionAttributes implements Parcelable {
         public static final Parcelable.Creator<SelectionAttributes> CREATOR = new Parcelable.Creator<SelectionAttributes>() { // from class: android.telephony.DomainSelectionService.SelectionAttributes.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SelectionAttributes createFromParcel(Parcel in) {
                 return new SelectionAttributes(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SelectionAttributes[] newArray(int size) {
                 return new SelectionAttributes[size];
             }
         };
         private static final String TAG = "SelectionAttributes";
+        private Uri mAddress;
         private String mCallId;
         private int mCause;
-        private EmergencyRegResult mEmergencyRegResult;
+        private EmergencyRegistrationResult mEmergencyRegistrationResult;
         private ImsReasonInfo mImsReasonInfo;
         private boolean mIsEmergency;
         private boolean mIsExitedFromAirplaneMode;
+        private boolean mIsTestEmergencyNumber;
         private boolean mIsVideoCall;
-        private String mNumber;
         private int mSelectorType;
-        private int mSlotId;
+        private int mSlotIndex;
         private int mSubId;
 
-        /* synthetic */ SelectionAttributes(int i, int i2, String str, String str2, int i3, boolean z, boolean z2, boolean z3, ImsReasonInfo imsReasonInfo, int i4, EmergencyRegResult emergencyRegResult, SelectionAttributesIA selectionAttributesIA) {
-            this(i, i2, str, str2, i3, z, z2, z3, imsReasonInfo, i4, emergencyRegResult);
-        }
-
-        /* synthetic */ SelectionAttributes(Parcel parcel, SelectionAttributesIA selectionAttributesIA) {
-            this(parcel);
-        }
-
-        private SelectionAttributes(int slotId, int subId, String callId, String number, int selectorType, boolean video, boolean emergency, boolean exited, ImsReasonInfo imsReasonInfo, int cause, EmergencyRegResult regResult) {
-            this.mSlotId = slotId;
-            this.mSubId = subId;
+        private SelectionAttributes(int slotIndex, int subscriptionId, String callId, Uri address, int selectorType, boolean video, boolean emergency, boolean isTest, boolean exited, ImsReasonInfo imsReasonInfo, int cause, EmergencyRegistrationResult regResult) {
+            this.mSlotIndex = slotIndex;
+            this.mSubId = subscriptionId;
             this.mCallId = callId;
-            this.mNumber = number;
+            this.mAddress = address;
             this.mSelectorType = selectorType;
             this.mIsVideoCall = video;
             this.mIsEmergency = emergency;
+            this.mIsTestEmergencyNumber = isTest;
             this.mIsExitedFromAirplaneMode = exited;
             this.mImsReasonInfo = imsReasonInfo;
             this.mCause = cause;
-            this.mEmergencyRegResult = regResult;
+            this.mEmergencyRegistrationResult = regResult;
         }
 
         public SelectionAttributes(SelectionAttributes s) {
-            this.mSlotId = s.mSlotId;
+            this.mSlotIndex = s.mSlotIndex;
             this.mSubId = s.mSubId;
             this.mCallId = s.mCallId;
-            this.mNumber = s.mNumber;
+            this.mAddress = s.mAddress;
             this.mSelectorType = s.mSelectorType;
             this.mIsEmergency = s.mIsEmergency;
+            this.mIsTestEmergencyNumber = s.mIsTestEmergencyNumber;
             this.mIsExitedFromAirplaneMode = s.mIsExitedFromAirplaneMode;
             this.mImsReasonInfo = s.mImsReasonInfo;
             this.mCause = s.mCause;
-            this.mEmergencyRegResult = s.mEmergencyRegResult;
+            this.mEmergencyRegistrationResult = s.mEmergencyRegistrationResult;
         }
 
         private SelectionAttributes(Parcel in) {
             readFromParcel(in);
         }
 
-        public int getSlotId() {
-            return this.mSlotId;
+        public int getSlotIndex() {
+            return this.mSlotIndex;
         }
 
-        public int getSubId() {
+        public int getSubscriptionId() {
             return this.mSubId;
         }
 
@@ -137,8 +132,8 @@ public class DomainSelectionService extends Service {
             return this.mCallId;
         }
 
-        public String getNumber() {
-            return this.mNumber;
+        public Uri getAddress() {
+            return this.mAddress;
         }
 
         public int getSelectorType() {
@@ -153,6 +148,10 @@ public class DomainSelectionService extends Service {
             return this.mIsEmergency;
         }
 
+        public boolean isTestEmergencyNumber() {
+            return this.mIsTestEmergencyNumber;
+        }
+
         public boolean isExitedFromAirplaneMode() {
             return this.mIsExitedFromAirplaneMode;
         }
@@ -165,12 +164,12 @@ public class DomainSelectionService extends Service {
             return this.mCause;
         }
 
-        public EmergencyRegResult getEmergencyRegResult() {
-            return this.mEmergencyRegResult;
+        public EmergencyRegistrationResult getEmergencyRegistrationResult() {
+            return this.mEmergencyRegistrationResult;
         }
 
         public String toString() {
-            return "{ slotId=" + this.mSlotId + ", subId=" + this.mSubId + ", callId=" + this.mCallId + ", number=" + ((SemTelephonyUtils.SHIP_BUILD || !Build.IS_DEBUGGABLE) ? "***" : this.mNumber) + ", type=" + this.mSelectorType + ", videoCall=" + this.mIsVideoCall + ", emergency=" + this.mIsEmergency + ", airplaneMode=" + this.mIsExitedFromAirplaneMode + ", reasonInfo=" + this.mImsReasonInfo + ", cause=" + this.mCause + ", regResult=" + this.mEmergencyRegResult + " }";
+            return "{ slotIndex=" + this.mSlotIndex + ", subId=" + this.mSubId + ", callId=" + this.mCallId + ", address=" + ((SemTelephonyUtils.SHIP_BUILD || !Build.IS_DEBUGGABLE) ? "***" : this.mAddress) + ", type=" + this.mSelectorType + ", videoCall=" + this.mIsVideoCall + ", emergency=" + this.mIsEmergency + ", isTest=" + this.mIsTestEmergencyNumber + ", airplaneMode=" + this.mIsExitedFromAirplaneMode + ", reasonInfo=" + this.mImsReasonInfo + ", cause=" + this.mCause + ", regResult=" + this.mEmergencyRegistrationResult + " }";
         }
 
         public boolean equals(Object o) {
@@ -181,14 +180,14 @@ public class DomainSelectionService extends Service {
                 return false;
             }
             SelectionAttributes that = (SelectionAttributes) o;
-            if (this.mSlotId == that.mSlotId && this.mSubId == that.mSubId && TextUtils.equals(this.mCallId, that.mCallId) && TextUtils.equals(this.mNumber, that.mNumber) && this.mSelectorType == that.mSelectorType && this.mIsVideoCall == that.mIsVideoCall && this.mIsEmergency == that.mIsEmergency && this.mIsExitedFromAirplaneMode == that.mIsExitedFromAirplaneMode && equalsHandlesNulls(this.mImsReasonInfo, that.mImsReasonInfo) && this.mCause == that.mCause && equalsHandlesNulls(this.mEmergencyRegResult, that.mEmergencyRegResult)) {
+            if (this.mSlotIndex == that.mSlotIndex && this.mSubId == that.mSubId && TextUtils.equals(this.mCallId, that.mCallId) && equalsHandlesNulls(this.mAddress, that.mAddress) && this.mSelectorType == that.mSelectorType && this.mIsVideoCall == that.mIsVideoCall && this.mIsEmergency == that.mIsEmergency && this.mIsTestEmergencyNumber == that.mIsTestEmergencyNumber && this.mIsExitedFromAirplaneMode == that.mIsExitedFromAirplaneMode && equalsHandlesNulls(this.mImsReasonInfo, that.mImsReasonInfo) && this.mCause == that.mCause && equalsHandlesNulls(this.mEmergencyRegistrationResult, that.mEmergencyRegistrationResult)) {
                 return true;
             }
             return false;
         }
 
         public int hashCode() {
-            return Objects.hash(this.mCallId, this.mNumber, this.mImsReasonInfo, Boolean.valueOf(this.mIsVideoCall), Boolean.valueOf(this.mIsEmergency), Boolean.valueOf(this.mIsExitedFromAirplaneMode), this.mEmergencyRegResult, Integer.valueOf(this.mSlotId), Integer.valueOf(this.mSubId), Integer.valueOf(this.mSelectorType), Integer.valueOf(this.mCause));
+            return Objects.hash(this.mCallId, this.mAddress, this.mImsReasonInfo, Boolean.valueOf(this.mIsVideoCall), Boolean.valueOf(this.mIsEmergency), Boolean.valueOf(this.mIsTestEmergencyNumber), Boolean.valueOf(this.mIsExitedFromAirplaneMode), this.mEmergencyRegistrationResult, Integer.valueOf(this.mSlotIndex), Integer.valueOf(this.mSubId), Integer.valueOf(this.mSelectorType), Integer.valueOf(this.mCause));
         }
 
         @Override // android.os.Parcelable
@@ -198,71 +197,56 @@ public class DomainSelectionService extends Service {
 
         @Override // android.os.Parcelable
         public void writeToParcel(Parcel out, int flags) {
-            out.writeInt(this.mSlotId);
+            out.writeInt(this.mSlotIndex);
             out.writeInt(this.mSubId);
             out.writeString8(this.mCallId);
-            out.writeString8(this.mNumber);
+            out.writeParcelable(this.mAddress, 0);
             out.writeInt(this.mSelectorType);
             out.writeBoolean(this.mIsVideoCall);
             out.writeBoolean(this.mIsEmergency);
+            out.writeBoolean(this.mIsTestEmergencyNumber);
             out.writeBoolean(this.mIsExitedFromAirplaneMode);
             out.writeParcelable(this.mImsReasonInfo, 0);
             out.writeInt(this.mCause);
-            out.writeParcelable(this.mEmergencyRegResult, 0);
+            out.writeParcelable(this.mEmergencyRegistrationResult, 0);
         }
 
         private void readFromParcel(Parcel in) {
-            this.mSlotId = in.readInt();
+            this.mSlotIndex = in.readInt();
             this.mSubId = in.readInt();
             this.mCallId = in.readString8();
-            this.mNumber = in.readString8();
+            this.mAddress = (Uri) in.readParcelable(Uri.class.getClassLoader(), Uri.class);
             this.mSelectorType = in.readInt();
             this.mIsVideoCall = in.readBoolean();
             this.mIsEmergency = in.readBoolean();
+            this.mIsTestEmergencyNumber = in.readBoolean();
             this.mIsExitedFromAirplaneMode = in.readBoolean();
             this.mImsReasonInfo = (ImsReasonInfo) in.readParcelable(ImsReasonInfo.class.getClassLoader(), ImsReasonInfo.class);
             this.mCause = in.readInt();
-            this.mEmergencyRegResult = (EmergencyRegResult) in.readParcelable(EmergencyRegResult.class.getClassLoader(), EmergencyRegResult.class);
-        }
-
-        /* renamed from: android.telephony.DomainSelectionService$SelectionAttributes$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SelectionAttributes> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SelectionAttributes createFromParcel(Parcel in) {
-                return new SelectionAttributes(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SelectionAttributes[] newArray(int size) {
-                return new SelectionAttributes[size];
-            }
+            this.mEmergencyRegistrationResult = (EmergencyRegistrationResult) in.readParcelable(EmergencyRegistrationResult.class.getClassLoader(), EmergencyRegistrationResult.class);
         }
 
         private static boolean equalsHandlesNulls(Object a, Object b) {
             return a == null ? b == null : a.equals(b);
         }
 
-        /* loaded from: classes3.dex */
         public static final class Builder {
+            private Uri mAddress;
             private String mCallId;
             private int mCause;
-            private EmergencyRegResult mEmergencyRegResult;
+            private EmergencyRegistrationResult mEmergencyRegistrationResult;
             private ImsReasonInfo mImsReasonInfo;
             private boolean mIsEmergency;
             private boolean mIsExitedFromAirplaneMode;
+            private boolean mIsTestEmergencyNumber;
             private boolean mIsVideoCall;
-            private String mNumber;
             private final int mSelectorType;
-            private final int mSlotId;
+            private final int mSlotIndex;
             private final int mSubId;
 
-            public Builder(int slotId, int subId, int selectorType) {
-                this.mSlotId = slotId;
-                this.mSubId = subId;
+            public Builder(int slotIndex, int subscriptionId, int selectorType) {
+                this.mSlotIndex = slotIndex;
+                this.mSubId = subscriptionId;
                 this.mSelectorType = selectorType;
             }
 
@@ -271,18 +255,23 @@ public class DomainSelectionService extends Service {
                 return this;
             }
 
-            public Builder setNumber(String number) {
-                this.mNumber = number;
+            public Builder setAddress(Uri address) {
+                this.mAddress = address;
                 return this;
             }
 
-            public Builder setVideoCall(boolean video) {
-                this.mIsVideoCall = video;
+            public Builder setVideoCall(boolean isVideo) {
+                this.mIsVideoCall = isVideo;
                 return this;
             }
 
-            public Builder setEmergency(boolean emergency) {
-                this.mIsEmergency = emergency;
+            public Builder setEmergency(boolean isEmergency) {
+                this.mIsEmergency = isEmergency;
+                return this;
+            }
+
+            public Builder setTestEmergencyNumber(boolean isTest) {
+                this.mIsTestEmergencyNumber = isTest;
                 return this;
             }
 
@@ -301,19 +290,19 @@ public class DomainSelectionService extends Service {
                 return this;
             }
 
-            public Builder setEmergencyRegResult(EmergencyRegResult regResult) {
-                this.mEmergencyRegResult = regResult;
+            public Builder setEmergencyRegistrationResult(EmergencyRegistrationResult regResult) {
+                this.mEmergencyRegistrationResult = regResult;
                 return this;
             }
 
             public SelectionAttributes build() {
-                return new SelectionAttributes(this.mSlotId, this.mSubId, this.mCallId, this.mNumber, this.mSelectorType, this.mIsVideoCall, this.mIsEmergency, this.mIsExitedFromAirplaneMode, this.mImsReasonInfo, this.mCause, this.mEmergencyRegResult);
+                return new SelectionAttributes(this.mSlotIndex, this.mSubId, this.mCallId, this.mAddress, this.mSelectorType, this.mIsVideoCall, this.mIsEmergency, this.mIsTestEmergencyNumber, this.mIsExitedFromAirplaneMode, this.mImsReasonInfo, this.mCause, this.mEmergencyRegistrationResult);
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class TransportSelectorCallbackWrapper implements TransportSelectorCallback {
+    /* JADX INFO: Access modifiers changed from: private */
+    final class TransportSelectorCallbackWrapper implements TransportSelectorCallback {
         private static final String TAG = "TransportSelectorCallbackWrapper";
         private final ITransportSelectorCallback mCallback;
         private final Executor mExecutor;
@@ -328,9 +317,8 @@ public class DomainSelectionService extends Service {
         @Override // android.telephony.TransportSelectorCallback
         public void onCreated(DomainSelector selector) {
             try {
-                DomainSelectorWrapper domainSelectorWrapper = new DomainSelectorWrapper(selector, this.mExecutor);
-                this.mSelectorWrapper = domainSelectorWrapper;
-                this.mCallback.onCreated(domainSelectorWrapper.getCallbackBinder());
+                this.mSelectorWrapper = DomainSelectionService.this.new DomainSelectorWrapper(selector, this.mExecutor);
+                this.mCallback.onCreated(this.mSelectorWrapper.getCallbackBinder());
             } catch (Exception e) {
                 com.android.telephony.Rlog.e(TAG, "onCreated e=" + e);
             }
@@ -346,23 +334,10 @@ public class DomainSelectionService extends Service {
         }
 
         @Override // android.telephony.TransportSelectorCallback
-        public WwanSelectorCallback onWwanSelected() {
-            try {
-                IWwanSelectorCallback cb = this.mCallback.onWwanSelected();
-                WwanSelectorCallback callback = new WwanSelectorCallbackWrapper(cb, this.mExecutor);
-                return callback;
-            } catch (Exception e) {
-                com.android.telephony.Rlog.e(TAG, "onWwanSelected e=" + e);
-                return null;
-            }
-        }
-
-        @Override // android.telephony.TransportSelectorCallback
         public void onWwanSelected(final Consumer<WwanSelectorCallback> consumer) {
             try {
-                ITransportSelectorResultCallbackAdapter iTransportSelectorResultCallbackAdapter = new ITransportSelectorResultCallbackAdapter(consumer, this.mExecutor);
-                this.mResultCallback = iTransportSelectorResultCallbackAdapter;
-                this.mCallback.onWwanSelectedAsync(iTransportSelectorResultCallbackAdapter);
+                this.mResultCallback = new ITransportSelectorResultCallbackAdapter(consumer, this.mExecutor);
+                this.mCallback.onWwanSelectedAsync(this.mResultCallback);
             } catch (Exception e) {
                 com.android.telephony.Rlog.e(TAG, "onWwanSelected e=" + e);
                 DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$TransportSelectorCallbackWrapper$$ExternalSyntheticLambda0
@@ -384,8 +359,8 @@ public class DomainSelectionService extends Service {
             }
         }
 
-        /* loaded from: classes3.dex */
-        public class ITransportSelectorResultCallbackAdapter extends ITransportSelectorResultCallback.Stub {
+        /* JADX INFO: Access modifiers changed from: private */
+        class ITransportSelectorResultCallbackAdapter extends ITransportSelectorResultCallback.Stub {
             private final Consumer<WwanSelectorCallback> mConsumer;
             private final Executor mExecutor;
 
@@ -399,7 +374,7 @@ public class DomainSelectionService extends Service {
                 if (this.mConsumer == null) {
                     return;
                 }
-                final WwanSelectorCallback callback = new WwanSelectorCallbackWrapper(cb, this.mExecutor);
+                final WwanSelectorCallback callback = DomainSelectionService.this.new WwanSelectorCallbackWrapper(cb, this.mExecutor);
                 DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$TransportSelectorCallbackWrapper$ITransportSelectorResultCallbackAdapter$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
@@ -408,6 +383,7 @@ public class DomainSelectionService extends Service {
                 }, TransportSelectorCallbackWrapper.TAG, "onWwanSelectedAsync-Completed");
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onCompleted$0(WwanSelectorCallback callback) {
                 this.mConsumer.accept(callback);
             }
@@ -415,8 +391,7 @@ public class DomainSelectionService extends Service {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class DomainSelectorWrapper {
+    final class DomainSelectorWrapper {
         private static final String TAG = "DomainSelectorWrapper";
         private IDomainSelector mCallbackBinder;
 
@@ -425,8 +400,7 @@ public class DomainSelectionService extends Service {
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public class IDomainSelectorAdapter extends IDomainSelector.Stub {
+        class IDomainSelectorAdapter extends IDomainSelector.Stub {
             private final WeakReference<DomainSelector> mDomainSelectorWeakRef;
             private final Executor mExecutor;
 
@@ -436,26 +410,12 @@ public class DomainSelectionService extends Service {
             }
 
             @Override // com.android.internal.telephony.IDomainSelector
-            public void cancelSelection() {
-                final DomainSelector domainSelector = this.mDomainSelectorWeakRef.get();
-                if (domainSelector == null) {
-                    return;
-                }
-                DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$DomainSelectorWrapper$IDomainSelectorAdapter$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        DomainSelector.this.cancelSelection();
-                    }
-                }, DomainSelectorWrapper.TAG, "cancelSelection");
-            }
-
-            @Override // com.android.internal.telephony.IDomainSelector
             public void reselectDomain(final SelectionAttributes attr) {
                 final DomainSelector domainSelector = this.mDomainSelectorWeakRef.get();
                 if (domainSelector == null) {
                     return;
                 }
-                DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$DomainSelectorWrapper$IDomainSelectorAdapter$$ExternalSyntheticLambda0
+                DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$DomainSelectorWrapper$IDomainSelectorAdapter$$ExternalSyntheticLambda1
                     @Override // java.lang.Runnable
                     public final void run() {
                         DomainSelector.this.reselectDomain(attr);
@@ -469,7 +429,7 @@ public class DomainSelectionService extends Service {
                 if (domainSelector == null) {
                     return;
                 }
-                DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$DomainSelectorWrapper$IDomainSelectorAdapter$$ExternalSyntheticLambda1
+                DomainSelectionService.this.executeMethodAsyncNoException(this.mExecutor, new Runnable() { // from class: android.telephony.DomainSelectionService$DomainSelectorWrapper$IDomainSelectorAdapter$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
                         DomainSelector.this.finishSelection();
@@ -484,8 +444,7 @@ public class DomainSelectionService extends Service {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes3.dex */
-    public final class WwanSelectorCallbackWrapper implements WwanSelectorCallback, CancellationSignal.OnCancelListener {
+    final class WwanSelectorCallbackWrapper implements WwanSelectorCallback, CancellationSignal.OnCancelListener {
         private static final String TAG = "WwanSelectorCallbackWrapper";
         private final IWwanSelectorCallback mCallback;
         private final Executor mExecutor;
@@ -506,7 +465,7 @@ public class DomainSelectionService extends Service {
         }
 
         @Override // android.telephony.WwanSelectorCallback
-        public void onRequestEmergencyNetworkScan(List<Integer> preferredNetworks, int scanType, CancellationSignal signal, Consumer<EmergencyRegResult> consumer) {
+        public void onRequestEmergencyNetworkScan(List<Integer> preferredNetworks, int scanType, boolean resetScan, CancellationSignal signal, Consumer<EmergencyRegistrationResult> consumer) {
             if (signal != null) {
                 try {
                     signal.setOnCancelListener(this);
@@ -516,7 +475,7 @@ public class DomainSelectionService extends Service {
                 }
             }
             this.mResultCallback = new IWwanSelectorResultCallbackAdapter(consumer, this.mExecutor);
-            this.mCallback.onRequestEmergencyNetworkScan(preferredNetworks.stream().mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray(), scanType, this.mResultCallback);
+            this.mCallback.onRequestEmergencyNetworkScan(preferredNetworks.stream().mapToInt(new PreferentialNetworkServiceConfig$$ExternalSyntheticLambda2()).toArray(), scanType, resetScan, this.mResultCallback);
         }
 
         @Override // android.telephony.WwanSelectorCallback
@@ -528,18 +487,18 @@ public class DomainSelectionService extends Service {
             }
         }
 
-        /* loaded from: classes3.dex */
-        public class IWwanSelectorResultCallbackAdapter extends IWwanSelectorResultCallback.Stub {
-            private final Consumer<EmergencyRegResult> mConsumer;
+        /* JADX INFO: Access modifiers changed from: private */
+        class IWwanSelectorResultCallbackAdapter extends IWwanSelectorResultCallback.Stub {
+            private final Consumer<EmergencyRegistrationResult> mConsumer;
             private final Executor mExecutor;
 
-            IWwanSelectorResultCallbackAdapter(Consumer<EmergencyRegResult> consumer, Executor executor) {
+            IWwanSelectorResultCallbackAdapter(Consumer<EmergencyRegistrationResult> consumer, Executor executor) {
                 this.mConsumer = consumer;
                 this.mExecutor = executor;
             }
 
             @Override // com.android.internal.telephony.IWwanSelectorResultCallback
-            public void onComplete(final EmergencyRegResult result) {
+            public void onComplete(final EmergencyRegistrationResult result) {
                 if (this.mConsumer == null) {
                     return;
                 }
@@ -551,24 +510,21 @@ public class DomainSelectionService extends Service {
                 }, WwanSelectorCallbackWrapper.TAG, "onScanComplete");
             }
 
-            public /* synthetic */ void lambda$onComplete$0(EmergencyRegResult result) {
+            /* JADX INFO: Access modifiers changed from: private */
+            public /* synthetic */ void lambda$onComplete$0(EmergencyRegistrationResult result) {
                 this.mConsumer.accept(result);
             }
         }
     }
 
-    public void onDomainSelection(SelectionAttributes attr, TransportSelectorCallback callback) {
+    public void onServiceStateUpdated(int slotIndex, int subscriptionId, ServiceState serviceState) {
     }
 
-    public void onServiceStateUpdated(int slotId, int subId, ServiceState serviceState) {
+    public void onBarringInfoUpdated(int slotIndex, int subscriptionId, BarringInfo info) {
     }
 
-    public void onBarringInfoUpdated(int slotId, int subId, BarringInfo info) {
-    }
-
-    /* renamed from: android.telephony.DomainSelectionService$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IDomainSelectionServiceController.Stub {
+    /* renamed from: android.telephony.DomainSelectionService$1, reason: invalid class name */
+    class AnonymousClass1 extends IDomainSelectionServiceController.Stub {
         AnonymousClass1() {
         }
 
@@ -582,45 +538,46 @@ public class DomainSelectionService extends Service {
             }, DomainSelectionService.LOG_TAG, "onDomainSelection");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$selectDomain$0(SelectionAttributes attr, ITransportSelectorCallback callback) {
-            DomainSelectionService domainSelectionService = DomainSelectionService.this;
-            domainSelectionService.onDomainSelection(attr, new TransportSelectorCallbackWrapper(callback, domainSelectionService.getCachedExecutor()));
+            DomainSelectionService.this.onDomainSelection(attr, DomainSelectionService.this.new TransportSelectorCallbackWrapper(callback, DomainSelectionService.this.getCachedExecutor()));
         }
 
         @Override // com.android.internal.telephony.IDomainSelectionServiceController
-        public void updateServiceState(final int slotId, final int subId, final ServiceState serviceState) {
-            DomainSelectionService domainSelectionService = DomainSelectionService.this;
-            domainSelectionService.executeMethodAsyncNoException(domainSelectionService.getCachedExecutor(), new Runnable() { // from class: android.telephony.DomainSelectionService$1$$ExternalSyntheticLambda2
+        public void updateServiceState(final int slotIndex, final int subscriptionId, final ServiceState serviceState) {
+            DomainSelectionService.this.executeMethodAsyncNoException(DomainSelectionService.this.getCachedExecutor(), new Runnable() { // from class: android.telephony.DomainSelectionService$1$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
-                    DomainSelectionService.AnonymousClass1.this.lambda$updateServiceState$1(slotId, subId, serviceState);
+                    DomainSelectionService.AnonymousClass1.this.lambda$updateServiceState$1(slotIndex, subscriptionId, serviceState);
                 }
             }, DomainSelectionService.LOG_TAG, "onServiceStateUpdated");
         }
 
-        public /* synthetic */ void lambda$updateServiceState$1(int slotId, int subId, ServiceState serviceState) {
-            DomainSelectionService.this.onServiceStateUpdated(slotId, subId, serviceState);
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$updateServiceState$1(int slotIndex, int subscriptionId, ServiceState serviceState) {
+            DomainSelectionService.this.onServiceStateUpdated(slotIndex, subscriptionId, serviceState);
         }
 
         @Override // com.android.internal.telephony.IDomainSelectionServiceController
-        public void updateBarringInfo(final int slotId, final int subId, final BarringInfo info) {
-            DomainSelectionService domainSelectionService = DomainSelectionService.this;
-            domainSelectionService.executeMethodAsyncNoException(domainSelectionService.getCachedExecutor(), new Runnable() { // from class: android.telephony.DomainSelectionService$1$$ExternalSyntheticLambda1
+        public void updateBarringInfo(final int slotIndex, final int subscriptionId, final BarringInfo info) {
+            DomainSelectionService.this.executeMethodAsyncNoException(DomainSelectionService.this.getCachedExecutor(), new Runnable() { // from class: android.telephony.DomainSelectionService$1$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
-                    DomainSelectionService.AnonymousClass1.this.lambda$updateBarringInfo$2(slotId, subId, info);
+                    DomainSelectionService.AnonymousClass1.this.lambda$updateBarringInfo$2(slotIndex, subscriptionId, info);
                 }
             }, DomainSelectionService.LOG_TAG, "onBarringInfoUpdated");
         }
 
-        public /* synthetic */ void lambda$updateBarringInfo$2(int slotId, int subId, BarringInfo info) {
-            DomainSelectionService.this.onBarringInfoUpdated(slotId, subId, info);
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$updateBarringInfo$2(int slotIndex, int subscriptionId, BarringInfo info) {
+            DomainSelectionService.this.onBarringInfoUpdated(slotIndex, subscriptionId, info);
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void executeMethodAsync(Executor executor, final Runnable r, String tag, String errorLogName) throws RemoteException {
         try {
-            CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda1
+            CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -632,38 +589,39 @@ public class DomainSelectionService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void executeMethodAsyncNoException(Executor executor, final Runnable r, String tag, String errorLogName) {
         try {
-            CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda0
+            CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.DomainSelectionService$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     TelephonyUtils.runWithCleanCallingIdentity(r);
                 }
-            }, executor).join();
+            }, executor);
         } catch (CancellationException | CompletionException e) {
             com.android.telephony.Rlog.w(tag, "Binder - " + errorLogName + " exception: " + e.getMessage());
         }
     }
 
     @Override // android.app.Service
-    public IBinder onBind(Intent intent) {
-        if (SERVICE_INTERFACE.equals(intent.getAction())) {
-            Log.i(LOG_TAG, "DomainSelectionService Bound.");
-            return this.mDomainSelectionServiceController;
+    public final IBinder onBind(Intent intent) {
+        if (intent == null || !SERVICE_INTERFACE.equals(intent.getAction())) {
+            return null;
         }
-        return null;
+        Log.i(LOG_TAG, "DomainSelectionService Bound.");
+        return this.mDomainSelectionServiceController;
     }
 
-    public Executor getExecutor() {
-        return new PendingIntent$$ExternalSyntheticLambda1();
+    public Executor getCreateExecutor() {
+        return new PendingIntent$$ExternalSyntheticLambda0();
     }
 
-    public Executor getCachedExecutor() {
+    public final Executor getCachedExecutor() {
         Executor e;
         synchronized (this.mExecutorLock) {
             if (this.mExecutor == null) {
-                Executor e2 = getExecutor();
-                this.mExecutor = e2 != null ? e2 : new PendingIntent$$ExternalSyntheticLambda1();
+                Executor e2 = getCreateExecutor();
+                this.mExecutor = e2 != null ? e2 : new PendingIntent$$ExternalSyntheticLambda0();
             }
             e = this.mExecutor;
         }

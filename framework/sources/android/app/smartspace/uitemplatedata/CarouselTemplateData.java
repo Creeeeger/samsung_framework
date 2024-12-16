@@ -12,14 +12,13 @@ import java.util.Objects;
 /* loaded from: classes.dex */
 public final class CarouselTemplateData extends BaseTemplateData {
     public static final Parcelable.Creator<CarouselTemplateData> CREATOR = new Parcelable.Creator<CarouselTemplateData>() { // from class: android.app.smartspace.uitemplatedata.CarouselTemplateData.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CarouselTemplateData createFromParcel(Parcel in) {
             return new CarouselTemplateData(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CarouselTemplateData[] newArray(int size) {
             return new CarouselTemplateData[size];
@@ -27,10 +26,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
     };
     private final TapAction mCarouselAction;
     private final List<CarouselItem> mCarouselItems;
-
-    /* synthetic */ CarouselTemplateData(int i, BaseTemplateData.SubItemInfo subItemInfo, BaseTemplateData.SubItemInfo subItemInfo2, BaseTemplateData.SubItemInfo subItemInfo3, BaseTemplateData.SubItemInfo subItemInfo4, BaseTemplateData.SubItemInfo subItemInfo5, int i2, List list, TapAction tapAction, CarouselTemplateDataIA carouselTemplateDataIA) {
-        this(i, subItemInfo, subItemInfo2, subItemInfo3, subItemInfo4, subItemInfo5, i2, list, tapAction);
-    }
 
     CarouselTemplateData(Parcel in) {
         super(in);
@@ -50,23 +45,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
 
     public TapAction getCarouselAction() {
         return this.mCarouselAction;
-    }
-
-    /* renamed from: android.app.smartspace.uitemplatedata.CarouselTemplateData$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CarouselTemplateData> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CarouselTemplateData createFromParcel(Parcel in) {
-            return new CarouselTemplateData(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CarouselTemplateData[] newArray(int size) {
-            return new CarouselTemplateData[size];
-        }
     }
 
     @Override // android.app.smartspace.uitemplatedata.BaseTemplateData, android.os.Parcelable
@@ -104,7 +82,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
     }
 
     @SystemApi
-    /* loaded from: classes.dex */
     public static final class Builder extends BaseTemplateData.Builder {
         private TapAction mCarouselAction;
         private final List<CarouselItem> mCarouselItems;
@@ -128,17 +105,15 @@ public final class CarouselTemplateData extends BaseTemplateData {
         }
     }
 
-    /* loaded from: classes.dex */
     public static final class CarouselItem implements Parcelable {
         public static final Parcelable.Creator<CarouselItem> CREATOR = new Parcelable.Creator<CarouselItem>() { // from class: android.app.smartspace.uitemplatedata.CarouselTemplateData.CarouselItem.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CarouselItem createFromParcel(Parcel in) {
                 return new CarouselItem(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public CarouselItem[] newArray(int size) {
                 return new CarouselItem[size];
@@ -148,10 +123,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
         private final Text mLowerText;
         private final TapAction mTapAction;
         private final Text mUpperText;
-
-        /* synthetic */ CarouselItem(Text text, Icon icon, Text text2, TapAction tapAction, CarouselItemIA carouselItemIA) {
-            this(text, icon, text2, tapAction);
-        }
 
         CarouselItem(Parcel in) {
             this.mUpperText = (Text) in.readTypedObject(Text.CREATOR);
@@ -181,23 +152,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
 
         public TapAction getTapAction() {
             return this.mTapAction;
-        }
-
-        /* renamed from: android.app.smartspace.uitemplatedata.CarouselTemplateData$CarouselItem$1 */
-        /* loaded from: classes.dex */
-        class AnonymousClass1 implements Parcelable.Creator<CarouselItem> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CarouselItem createFromParcel(Parcel in) {
-                return new CarouselItem(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public CarouselItem[] newArray(int size) {
-                return new CarouselItem[size];
-            }
         }
 
         @Override // android.os.Parcelable
@@ -233,7 +187,6 @@ public final class CarouselTemplateData extends BaseTemplateData {
         }
 
         @SystemApi
-        /* loaded from: classes.dex */
         public static final class Builder {
             private Icon mImage;
             private Text mLowerText;

@@ -8,7 +8,7 @@ import com.samsung.android.sume.core.functional.DescriptorStreamLoader;
 import com.samsung.android.sume.core.plugin.PluginFixture;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public abstract class PluginFixture<T extends PluginFixture<?>> {
     protected ContentFilterRegister contentFilterRegister;
     private Runnable deInitializer;
@@ -24,16 +24,14 @@ public abstract class PluginFixture<T extends PluginFixture<?>> {
     }
 
     public void init(Context context) {
-        Consumer<Context> consumer = this.initializer;
-        if (consumer != null) {
-            consumer.accept(context);
+        if (this.initializer != null) {
+            this.initializer.accept(context);
         }
     }
 
     public void release() {
-        Runnable runnable = this.deInitializer;
-        if (runnable != null) {
-            runnable.run();
+        if (this.deInitializer != null) {
+            this.deInitializer.run();
         }
     }
 

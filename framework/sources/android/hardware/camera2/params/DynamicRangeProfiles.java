@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class DynamicRangeProfiles {
     public static final long DOLBY_VISION_10B_HDR_OEM = 64;
     public static final long DOLBY_VISION_10B_HDR_OEM_PO = 128;
@@ -26,7 +26,6 @@ public final class DynamicRangeProfiles {
     private final HashMap<Long, Boolean> mLookahedLatencyMap = new HashMap<>();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface Profile {
     }
 

@@ -7,13 +7,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IDexSnappingCallback extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.multiwindow.IDexSnappingCallback";
 
     void onWindowSnappingChanged(int i, Rect rect) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IDexSnappingCallback {
         @Override // com.samsung.android.multiwindow.IDexSnappingCallback
         public void onWindowSnappingChanged(int taskID, Rect othersBounds) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IDexSnappingCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IDexSnappingCallback {
         static final int TRANSACTION_onWindowSnappingChanged = 1;
 
@@ -68,27 +66,23 @@ public interface IDexSnappingCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDexSnappingCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDexSnappingCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDexSnappingCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    data.enforceNoDataAvail();
+                    onWindowSnappingChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            Rect _arg1 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            data.enforceNoDataAvail();
-                            onWindowSnappingChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IDexSnappingCallback {
+        private static class Proxy implements IDexSnappingCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

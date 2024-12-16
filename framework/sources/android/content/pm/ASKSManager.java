@@ -21,19 +21,10 @@ import org.xmlpull.v1.XmlPullParserException;
 /* loaded from: classes.dex */
 public class ASKSManager {
     public static final int ASKS_UNKNOWN_BLOCKBYLIST = 1;
-    public static final int ASKS_UNKNOWN_BLOCKBYPEM = 2;
-    public static final int ASKS_UNKNOWN_BLOCKBYURL = 3;
     public static final int ASKS_UNKNOWN_BLOCKED_BYRAMPART = 127;
-    public static final int ASKS_UNKNOWN_BLOCK_DETAIL_0 = 120;
-    public static final int ASKS_UNKNOWN_BLOCK_DETAIL_1 = 121;
-    public static final int ASKS_UNKNOWN_BLOCK_DETAIL_2 = 122;
-    public static final int ASKS_UNKNOWN_BLOCK_DETAIL_3 = 123;
-    public static final int ASKS_UNKNOWN_BLOCK_DETAIL_4 = 124;
     public static final int ASKS_UNKNOWN_BLOCK_DETAIL_GLOBAL_1 = 150;
     public static final int ASKS_UNKNOWN_BLOCK_DETAIL_GLOBAL_2 = 151;
-    public static final int ASKS_UNKNOWN_DANGEROUSBLOCK = 102;
-    public static final int ASKS_UNKNOWN_DANGEROUSBLOCKBYPEM = 103;
-    public static final int ASKS_UNKNOWN_DANGEROUSWARNING = 101;
+    public static final int ASKS_UNKNOWN_DANGEROUSWARNING = 102;
     public static final int ASKS_UNKNOWN_EXCEPT = 0;
     public static final int ASKS_UNKNOWN_EXECUTE_ALLOW = 126;
     public static final int ASKS_UNKNOWN_EXECUTE_BLOCK = 125;
@@ -41,13 +32,9 @@ public class ASKSManager {
     public static final int ASKS_UNKNOWN_TARGET = 128;
     public static final int ASKS_UNKNOWN_TARGET_NO_POPUP = 130;
     public static final int ASKS_UNKNOWN_WARNING = 100;
-    public static final int ASKS_UNKNOWN_WARNING_DETAIL_0 = 110;
-    public static final int ASKS_UNKNOWN_WARNING_DETAIL_1 = 111;
-    public static final int ASKS_UNKNOWN_WARNING_DETAIL_2 = 112;
-    public static final int ASKS_UNKNOWN_WARNING_DETAIL_3 = 113;
-    public static final int ASKS_UNKNOWN_WARNING_DETAIL_4 = 114;
     public static final int ASKS_UNKNOWN_WARNING_DETAIL_GLOBAL_1 = 140;
     public static final int ASKS_UNKNOWN_WARNING_DETAIL_GLOBAL_2 = 141;
+    public static final int ASKS_UNKNOWN_WARNING_GLOBAL = 101;
     private static final String TAG = "ASKSManager";
     public static final String TYPE_DENY = "DENY";
     public static final String TYPE_REVOKE = "REVOKE";

@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes3.dex */
 public class KeyOperationWithPurposeAndModesInfo implements Parcelable {
     public static final Parcelable.Creator<KeyOperationWithPurposeAndModesInfo> CREATOR = new Parcelable.Creator<KeyOperationWithPurposeAndModesInfo>() { // from class: android.security.metrics.KeyOperationWithPurposeAndModesInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyOperationWithPurposeAndModesInfo createFromParcel(Parcel _aidl_source) {
             KeyOperationWithPurposeAndModesInfo _aidl_out = new KeyOperationWithPurposeAndModesInfo();
@@ -17,6 +15,7 @@ public class KeyOperationWithPurposeAndModesInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyOperationWithPurposeAndModesInfo[] newArray(int _aidl_size) {
             return new KeyOperationWithPurposeAndModesInfo[_aidl_size];
@@ -26,25 +25,6 @@ public class KeyOperationWithPurposeAndModesInfo implements Parcelable {
     public int padding_mode_bitmap = 0;
     public int digest_bitmap = 0;
     public int block_mode_bitmap = 0;
-
-    /* renamed from: android.security.metrics.KeyOperationWithPurposeAndModesInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyOperationWithPurposeAndModesInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyOperationWithPurposeAndModesInfo createFromParcel(Parcel _aidl_source) {
-            KeyOperationWithPurposeAndModesInfo _aidl_out = new KeyOperationWithPurposeAndModesInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyOperationWithPurposeAndModesInfo[] newArray(int _aidl_size) {
-            return new KeyOperationWithPurposeAndModesInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {

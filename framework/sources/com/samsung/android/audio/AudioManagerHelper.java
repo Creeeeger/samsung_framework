@@ -24,21 +24,21 @@ import java.util.stream.Collectors;
 /* loaded from: classes5.dex */
 public class AudioManagerHelper {
     private static final int LOGGING_CALLER_DEFAULT_DEPTH = 5;
+    private static final String TAG = "AudioManagerHelper";
     private static final boolean USER_SHIP;
-    private static final ArrayList<String> mLoggingPackages = new ArrayList<>(Arrays.asList("android", AsPackageName.SYSTEMUI, "com.android.settings", AsPackageName.BLUETOOTH));
+    private static final ArrayList<String> mLoggingPackages = new ArrayList<>(Arrays.asList("android", AsPackageName.SYSTEMUI, "com.android.settings"));
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x002f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:4:0x002d, code lost:
     
-        if (android.os.SystemProperties.getBoolean("ro.product_ship", true) != false) goto L18;
+        if (android.os.SystemProperties.getBoolean("ro.product_ship", true) != false) goto L8;
      */
     static {
         /*
             java.util.ArrayList r0 = new java.util.ArrayList
-            java.lang.String r1 = "com.android.settings"
-            java.lang.String r2 = "com.android.bluetooth"
+            java.lang.String r1 = "com.android.systemui"
+            java.lang.String r2 = "com.android.settings"
             java.lang.String r3 = "android"
-            java.lang.String r4 = "com.android.systemui"
-            java.lang.String[] r1 = new java.lang.String[]{r3, r4, r1, r2}
+            java.lang.String[] r1 = new java.lang.String[]{r3, r1, r2}
             java.util.List r1 = java.util.Arrays.asList(r1)
             r0.<init>(r1)
             com.samsung.android.audio.AudioManagerHelper.mLoggingPackages = r0
@@ -46,15 +46,15 @@ public class AudioManagerHelper {
             java.lang.String r1 = "user"
             java.lang.String r0 = android.os.SystemProperties.get(r0, r1)
             boolean r0 = r1.equals(r0)
-            if (r0 == 0) goto L32
+            if (r0 == 0) goto L30
             java.lang.String r0 = "ro.product_ship"
             r1 = 1
             boolean r0 = android.os.SystemProperties.getBoolean(r0, r1)
-            if (r0 == 0) goto L32
-            goto L33
-        L32:
+            if (r0 == 0) goto L30
+            goto L31
+        L30:
             r1 = 0
-        L33:
+        L31:
             com.samsung.android.audio.AudioManagerHelper.USER_SHIP = r1
             return
         */
@@ -157,7 +157,7 @@ public class AudioManagerHelper {
     }
 
     public static String buildCallStack(StackTraceElement[] stack, int depth) {
-        return (String) List.of((Object[]) stack).subList(5, Math.min(depth + 5, stack.length)).stream().map(new Function() { // from class: com.samsung.android.audio.AudioManagerHelper$$ExternalSyntheticLambda0
+        return (String) List.of((Object[]) stack).subList(5, Math.min(depth + 5, stack.length)).stream().map(new Function() { // from class: com.samsung.android.audio.AudioManagerHelper$$ExternalSyntheticLambda1
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 String makeMethodString;
@@ -167,12 +167,13 @@ public class AudioManagerHelper {
         }).collect(Collectors.joining("<-"));
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static String makeMethodString(StackTraceElement element) {
         return getSimpleClassName(element) + MediaMetrics.SEPARATOR + element.getMethodName() + ":" + element.getLineNumber();
     }
 
     private static String getSimpleClassName(StackTraceElement element) {
-        return (String) Arrays.stream(element.getClassName().split("\\.")).reduce(new BinaryOperator() { // from class: com.samsung.android.audio.AudioManagerHelper$$ExternalSyntheticLambda1
+        return (String) Arrays.stream(element.getClassName().split("\\.")).reduce(new BinaryOperator() { // from class: com.samsung.android.audio.AudioManagerHelper$$ExternalSyntheticLambda0
             @Override // java.util.function.BiFunction
             public final Object apply(Object obj, Object obj2) {
                 return AudioManagerHelper.lambda$getSimpleClassName$0((String) obj, (String) obj2);
@@ -180,7 +181,16 @@ public class AudioManagerHelper {
         }).orElse("");
     }
 
-    public static /* synthetic */ String lambda$getSimpleClassName$0(String first, String second) {
+    static /* synthetic */ String lambda$getSimpleClassName$0(String first, String second) {
         return second;
+    }
+
+    public static String convertStartingPathToSystem(String path) {
+        if (path != null && path.startsWith("/product/media/audio/ui/")) {
+            String path2 = path.replaceFirst("/product", "/system");
+            Log.e(TAG, "convert starting path: " + path2);
+            return path2;
+        }
+        return path;
     }
 }

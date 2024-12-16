@@ -20,12 +20,10 @@ public class SoundEffectConstants {
     private static int sLastNavigationRepeatSoundEffectId = -1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface NavigationSoundEffect {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface SoundEffect {
     }
 

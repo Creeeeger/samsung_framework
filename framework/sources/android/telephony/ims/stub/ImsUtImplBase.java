@@ -1,7 +1,7 @@
 package android.telephony.ims.stub;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.telephony.ims.ImsUtListener;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsUtImplBase {
     public static final int CALL_BARRING_ALL = 7;
     public static final int CALL_BARRING_ALL_INCOMING = 1;
@@ -35,30 +35,29 @@ public class ImsUtImplBase {
     public static final int CALL_BLOCKING_INCOMING_WHEN_ROAMING = 5;
     public static final int INVALID_RESULT = -1;
     private static final String TAG = "ImsUtImplBase";
-    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+    private Executor mExecutor = new PendingIntent$$ExternalSyntheticLambda0();
     private final IImsUt.Stub mServiceImpl = new AnonymousClass1();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface CallBarringMode {
     }
 
-    /* renamed from: android.telephony.ims.stub.ImsUtImplBase$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IImsUt.Stub {
+    /* renamed from: android.telephony.ims.stub.ImsUtImplBase$1, reason: invalid class name */
+    class AnonymousClass1 extends IImsUt.Stub {
         private final Object mLock = new Object();
         private ImsUtListener mUtListener;
 
         AnonymousClass1() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$close$0() {
             ImsUtImplBase.this.close();
         }
 
         @Override // com.android.ims.internal.IImsUt
         public void close() throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda5
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda13
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsUtImplBase.AnonymousClass1.this.lambda$close$0();
@@ -66,13 +65,14 @@ public class ImsUtImplBase {
             }, "close");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCallBarring$1(int cbType) {
             return Integer.valueOf(ImsUtImplBase.this.queryCallBarring(cbType));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCallBarring(final int cbType) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda7
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda9
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCallBarring$1;
@@ -82,13 +82,14 @@ public class ImsUtImplBase {
             }, "queryCallBarring")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCallForward$2(int condition, String number) {
             return Integer.valueOf(ImsUtImplBase.this.queryCallForward(condition, number));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCallForward(final int condition, final String number) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda13
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda5
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCallForward$2;
@@ -98,13 +99,14 @@ public class ImsUtImplBase {
             }, "queryCallForward")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCallWaiting$3() {
             return Integer.valueOf(ImsUtImplBase.this.queryCallWaiting());
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCallWaiting() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda17
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda6
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCallWaiting$3;
@@ -114,13 +116,14 @@ public class ImsUtImplBase {
             }, "queryCallWaiting")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCLIR$4() {
             return Integer.valueOf(ImsUtImplBase.this.queryCLIR());
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCLIR() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda15
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda3
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCLIR$4;
@@ -130,13 +133,14 @@ public class ImsUtImplBase {
             }, "queryCLIR")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCLIP$5() {
             return Integer.valueOf(ImsUtImplBase.this.queryCLIP());
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCLIP() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda4
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda2
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCLIP$5;
@@ -146,13 +150,14 @@ public class ImsUtImplBase {
             }, "queryCLIP")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCOLR$6() {
             return Integer.valueOf(ImsUtImplBase.this.queryCOLR());
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCOLR() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda18
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda10
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCOLR$6;
@@ -162,13 +167,14 @@ public class ImsUtImplBase {
             }, "queryCOLR")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCOLP$7() {
             return Integer.valueOf(ImsUtImplBase.this.queryCOLP());
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCOLP() throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda12
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda0
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCOLP$7;
@@ -178,13 +184,14 @@ public class ImsUtImplBase {
             }, "queryCOLP")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$transact$8(Bundle ssInfo) {
             return Integer.valueOf(ImsUtImplBase.this.transact(ssInfo));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int transact(final Bundle ssInfo) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda20
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda14
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$transact$8;
@@ -194,13 +201,14 @@ public class ImsUtImplBase {
             }, "transact")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCallBarring$9(int cbType, int action, String[] barrList) {
             return Integer.valueOf(ImsUtImplBase.this.updateCallBarring(cbType, action, barrList));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCallBarring(final int cbType, final int action, final String[] barrList) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda10
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda8
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCallBarring$9;
@@ -210,13 +218,14 @@ public class ImsUtImplBase {
             }, "updateCallBarring")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCallForward$10(int action, int condition, String number, int serviceClass, int timeSeconds) {
             return Integer.valueOf(ImsUtImplBase.this.updateCallForward(action, condition, number, serviceClass, timeSeconds));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCallForward(final int action, final int condition, final String number, final int serviceClass, final int timeSeconds) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda0
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda15
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCallForward$10;
@@ -226,13 +235,14 @@ public class ImsUtImplBase {
             }, "updateCallForward")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCallWaiting$11(boolean enable, int serviceClass) {
             return Integer.valueOf(ImsUtImplBase.this.updateCallWaiting(enable, serviceClass));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCallWaiting(final boolean enable, final int serviceClass) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda2
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda16
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCallWaiting$11;
@@ -242,13 +252,14 @@ public class ImsUtImplBase {
             }, "updateCallWaiting")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCLIR$12(int clirMode) {
             return Integer.valueOf(ImsUtImplBase.this.updateCLIR(clirMode));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCLIR(final int clirMode) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda11
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda4
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCLIR$12;
@@ -258,13 +269,14 @@ public class ImsUtImplBase {
             }, "updateCLIR")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCLIP$13(boolean enable) {
             return Integer.valueOf(ImsUtImplBase.this.updateCLIP(enable));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCLIP(final boolean enable) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda14
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda21
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCLIP$13;
@@ -274,13 +286,14 @@ public class ImsUtImplBase {
             }, "updateCLIP")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCOLR$14(int presentation) {
             return Integer.valueOf(ImsUtImplBase.this.updateCOLR(presentation));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCOLR(final int presentation) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda1
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda11
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCOLR$14;
@@ -290,13 +303,14 @@ public class ImsUtImplBase {
             }, "updateCOLR")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCOLP$15(boolean enable) {
             return Integer.valueOf(ImsUtImplBase.this.updateCOLP(enable));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCOLP(final boolean enable) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda9
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda12
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCOLP$15;
@@ -308,7 +322,7 @@ public class ImsUtImplBase {
 
         @Override // com.android.ims.internal.IImsUt
         public void setListener(final IImsUtListener listener) throws RemoteException {
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda19
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsUtImplBase.AnonymousClass1.this.lambda$setListener$16(listener);
@@ -316,14 +330,13 @@ public class ImsUtImplBase {
             }, "setListener");
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setListener$16(IImsUtListener listener) {
-            ImsUtListener imsUtListener = this.mUtListener;
-            if (imsUtListener != null && !imsUtListener.getListenerInterface().asBinder().isBinderAlive()) {
+            if (this.mUtListener != null && !this.mUtListener.getListenerInterface().asBinder().isBinderAlive()) {
                 Log.w(ImsUtImplBase.TAG, "setListener: discarding dead Binder");
                 this.mUtListener = null;
             }
-            ImsUtListener imsUtListener2 = this.mUtListener;
-            if (imsUtListener2 != null && listener != null && Objects.equals(imsUtListener2.getListenerInterface().asBinder(), listener.asBinder())) {
+            if (this.mUtListener != null && listener != null && Objects.equals(this.mUtListener.getListenerInterface().asBinder(), listener.asBinder())) {
                 return;
             }
             if (listener == null) {
@@ -337,13 +350,14 @@ public class ImsUtImplBase {
             ImsUtImplBase.this.setListener(this.mUtListener);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$queryCallBarringForServiceClass$17(int cbType, int serviceClass) {
             return Integer.valueOf(ImsUtImplBase.this.queryCallBarringForServiceClass(cbType, serviceClass));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int queryCallBarringForServiceClass(final int cbType, final int serviceClass) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda8
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda20
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$queryCallBarringForServiceClass$17;
@@ -353,13 +367,14 @@ public class ImsUtImplBase {
             }, "queryCallBarringForServiceClass")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCallBarringForServiceClass$18(int cbType, int action, String[] barrList, int serviceClass) {
             return Integer.valueOf(ImsUtImplBase.this.updateCallBarringForServiceClass(cbType, action, barrList, serviceClass));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCallBarringForServiceClass(final int cbType, final int action, final String[] barrList, final int serviceClass) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda21
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda17
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCallBarringForServiceClass$18;
@@ -369,13 +384,14 @@ public class ImsUtImplBase {
             }, "updateCallBarringForServiceClass")).intValue();
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$updateCallBarringWithPassword$19(int cbType, int action, String[] barrList, int serviceClass, String password) {
             return Integer.valueOf(ImsUtImplBase.this.updateCallBarringWithPassword(cbType, action, barrList, serviceClass, password));
         }
 
         @Override // com.android.ims.internal.IImsUt
         public int updateCallBarringWithPassword(final int cbType, final int action, final String[] barrList, final int serviceClass, final String password) throws RemoteException {
-            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda3
+            return ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda1
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$updateCallBarringWithPassword$19;
@@ -387,7 +403,7 @@ public class ImsUtImplBase {
 
         private void executeMethodAsync(final Runnable r, String errorLogName) throws RemoteException {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda6
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda18
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -400,7 +416,7 @@ public class ImsUtImplBase {
         }
 
         private <T> T executeMethodAsyncForResult(final Supplier<T> r, String errorLogName) throws RemoteException {
-            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda16
+            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.stub.ImsUtImplBase$1$$ExternalSyntheticLambda19
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Object runWithCleanCallingIdentity;

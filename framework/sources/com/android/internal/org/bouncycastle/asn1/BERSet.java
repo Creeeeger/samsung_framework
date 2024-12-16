@@ -19,12 +19,12 @@ public class BERSet extends ASN1Set {
         super(elements, false);
     }
 
-    public BERSet(boolean isSorted, ASN1Encodable[] elements) {
+    BERSet(boolean isSorted, ASN1Encodable[] elements) {
         super(isSorted, elements);
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public int encodedLength() throws IOException {
+    int encodedLength() throws IOException {
         int count = this.elements.length;
         int totalLength = 0;
         for (int i = 0; i < count; i++) {
@@ -36,7 +36,7 @@ public class BERSet extends ASN1Set {
     }
 
     @Override // com.android.internal.org.bouncycastle.asn1.ASN1Set, com.android.internal.org.bouncycastle.asn1.ASN1Primitive
-    public void encode(ASN1OutputStream out, boolean withTag) throws IOException {
+    void encode(ASN1OutputStream out, boolean withTag) throws IOException {
         out.writeEncodedIndef(withTag, 49, this.elements);
     }
 }

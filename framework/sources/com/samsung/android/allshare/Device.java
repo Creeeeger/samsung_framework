@@ -4,7 +4,7 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import java.util.ArrayList;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 public abstract class Device {
     public abstract DeviceDomain getDeviceDomain();
 
@@ -13,9 +13,6 @@ public abstract class Device {
     public abstract String getID();
 
     public abstract String getIPAddress();
-
-    @Deprecated
-    public abstract String getIPAdress();
 
     public abstract Uri getIcon();
 
@@ -47,7 +44,9 @@ public abstract class Device {
 
     public abstract void requestMobileToTV(String str, int i);
 
-    /* loaded from: classes5.dex */
+    protected Device() {
+    }
+
     public enum DeviceDomain {
         MY_DEVICE("MY_DEVICE"),
         LOCAL_NETWORK("LOCAL_NETWORK"),
@@ -84,7 +83,6 @@ public abstract class Device {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum DeviceType {
         DEVICE_IMAGEVIEWER("DEVICE_IMAGEVIEWER"),
         DEVICE_AVPLAYER("DEVICE_AVPLAYER"),
@@ -137,7 +135,6 @@ public abstract class Device {
         }
     }
 
-    /* loaded from: classes5.dex */
     public enum InformationType {
         ALL_INFO("ALL_INFO"),
         P2P_MAC_ADDRESS("P2P_MAC_ADDRESS"),

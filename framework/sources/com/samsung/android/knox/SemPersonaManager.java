@@ -6,6 +6,7 @@ import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.admin.DevicePolicyResources;
 import android.appwidget.AppWidgetHostView;
+import android.bluetooth.hci.BluetoothHciProtoEnums;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -50,13 +51,11 @@ import com.samsung.android.common.AsPackageName;
 import com.samsung.android.core.CoreSaConstant;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.feature.SemFloatingFeature;
-import com.samsung.android.ims.options.SemCapabilities;
 import com.samsung.android.knox.ISemPersonaManager;
 import com.samsung.android.knox.analytics.util.UploaderBroadcaster;
 import com.samsung.android.knox.dar.ddar.fsm.State;
 import com.samsung.android.knox.dar.ddar.fsm.StateMachine;
 import com.samsung.android.share.SemShareConstants;
-import com.samsung.android.wallpaper.legibilitycolors.utils.ColorExtractor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,7 +66,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemPersonaManager {
     public static final String ACCESS_TYPE_BLUETOOTH = "bluetooth";
     public static final String ACCESS_TYPE_SDCARD = "sdcard";
@@ -96,9 +95,6 @@ public class SemPersonaManager {
     public static final int CONTAINER_DEFAULT_TYPE = 1;
     public static final String CONTAINER_DESKTOP_PACKAGE = "com.samsung.android.knox.containerdesktop";
     public static final int CONTAINER_LWC_TYPE = 2;
-    public static final int CONTAINER_TYPE_CONTAINER_ONLY = 6;
-    public static final int CONTAINER_TYPE_LEGACY = 5;
-    public static final int CONTAINER_TYPE_MY_KNOX = 1;
     public static final int CONTAINER_TYPE_NONE = 0;
     public static final int CONTAINER_TYPE_PREMIUM = 4;
     public static final int CONTAINER_TYPE_PRIME = 3;
@@ -188,7 +184,8 @@ public class SemPersonaManager {
     public static final String INTENT_PERMISSION_OBSERVER = "com.samsung.container.OBSERVER";
     public static final String INTENT_PERMISSION_RECEIVE_KNOX_APPS_UPDATE = "com.sec.knox.container.permission.RECEIVE_KNOX_APPS_UPDATE";
     public static final int KA_AS_SCHEMA_VERSION = 1;
-    public static final int KA_SCHEMA_VERSION = 5;
+    public static final int KA_SCHEMA_VERSION = 6;
+    public static final int KNOX_CONFIG_CONTAINER_VERSION = 30;
     public static final String KNOX_SETTINGS_SYNC_PREFIX = "knox_container_sync_";
     public static final String LOCK_SCREEN_WALLPAPER = "custom-lock-screen-wallpaper";
     public static final String MANAGED_PROVISIONING_PACKAGE = "com.android.managedprovisioning";
@@ -202,7 +199,6 @@ public class SemPersonaManager {
     public static final String MOVE_FILE_TO_CONTAINER = "move-file-to-container";
     public static final String MOVE_FILE_TO_OWNER = "move-file-to-owner";
     public static final int MOVE_TO_APP_TYPE_GALLERY = 1;
-    public static final int MOVE_TO_APP_TYPE_MUSIC = 3;
     public static final int MOVE_TO_APP_TYPE_MYFILES = 4;
     public static final int MOVE_TO_APP_TYPE_VIDEO = 2;
     public static final int MOVE_TO_CONTAINER_TYPE_ENTERPRISE_CONTAINER = 1000;
@@ -225,13 +221,14 @@ public class SemPersonaManager {
     public static final String PROPERTY_DEVICE_OWNER_EXISTS = "persist.sys.knox.device_owner";
     public static final String PROPERTY_KNOX_CONTAINER_INFO = "persist.sys.knox.userinfo";
     public static final String PROPERTY_SECURE_FOLDER_AVAILABLE = "persist.sys.knox.secure_folder_state_available";
+    public static final String PROPERTY_UCM_WPC_PROVISIONED = "persist.sys.knox.UCM_WPC";
     public static final int REMOVE_OP_SUCCESS = 0;
     public static final String SANITIZE_DATA_LOCKSCREEN = "knox-sanitize-data-lockscreen";
     public static final String SECUREFOLDER_ICON_CLASS_SWITCH_TO_HOME = "com.samsung.knox.securefolder.switcher.SwitchToPersonalIcon";
-    private static final String SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION = "29";
     public static final boolean SEC_PRODUCT_FEATURE_KNOX_SUPPORT_CONTAINER = true;
     private static final boolean SEC_PRODUCT_FEATURE_KNOX_SUPPORT_DUAL_DAR = true;
     public static final boolean SEC_PRODUCT_FEATURE_KNOX_SUPPORT_MDM = true;
+    private static final boolean SEC_PRODUCT_FEATURE_KNOX_SUPPORT_UCS = true;
     public static final String SETUP_WIZARD_PKG_NAME = "com.sec.knox.setup";
     public static final String SHORTCUTS = "Shortcuts";
     public static final String SMS = "Sms";
@@ -263,7 +260,6 @@ public class SemPersonaManager {
     private static ISemPersonaManager _instance = null;
     private static final Object pmInstanceLock = new Object();
 
-    /* loaded from: classes5.dex */
     public enum AppType {
         IME("TYPE_IME"),
         INSTALLER_ALLOWLIST("installerAllowlist"),
@@ -295,314 +291,24 @@ public class SemPersonaManager {
         this.mContext = context;
     }
 
-    /* renamed from: com.samsung.android.knox.SemPersonaManager$2 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion;
-
-        static {
-            int[] iArr = new int[KnoxContainerVersion.values().length];
-            $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion = iArr;
-            try {
-                iArr[KnoxContainerVersion.KNOX_CONTAINER_VERSION_1_0_0.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_0_0.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_1_0.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_2_0.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_3_0.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_3_1.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_4_0.ordinal()] = 7;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_4_1.ordinal()] = 8;
-            } catch (NoSuchFieldError e8) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_0.ordinal()] = 9;
-            } catch (NoSuchFieldError e9) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_1.ordinal()] = 10;
-            } catch (NoSuchFieldError e10) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_2.ordinal()] = 11;
-            } catch (NoSuchFieldError e11) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_6_0.ordinal()] = 12;
-            } catch (NoSuchFieldError e12) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_6_1.ordinal()] = 13;
-            } catch (NoSuchFieldError e13) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_7_0.ordinal()] = 14;
-            } catch (NoSuchFieldError e14) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_7_1.ordinal()] = 15;
-            } catch (NoSuchFieldError e15) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_8_0.ordinal()] = 16;
-            } catch (NoSuchFieldError e16) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_9_0.ordinal()] = 17;
-            } catch (NoSuchFieldError e17) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_0_0.ordinal()] = 18;
-            } catch (NoSuchFieldError e18) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_1_0.ordinal()] = 19;
-            } catch (NoSuchFieldError e19) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_2_0.ordinal()] = 20;
-            } catch (NoSuchFieldError e20) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_2_1.ordinal()] = 21;
-            } catch (NoSuchFieldError e21) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_3_0.ordinal()] = 22;
-            } catch (NoSuchFieldError e22) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_4_0.ordinal()] = 23;
-            } catch (NoSuchFieldError e23) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_4_1.ordinal()] = 24;
-            } catch (NoSuchFieldError e24) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_5_0.ordinal()] = 25;
-            } catch (NoSuchFieldError e25) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_6_0.ordinal()] = 26;
-            } catch (NoSuchFieldError e26) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_7_0.ordinal()] = 27;
-            } catch (NoSuchFieldError e27) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_7_1.ordinal()] = 28;
-            } catch (NoSuchFieldError e28) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_8_0.ordinal()] = 29;
-            } catch (NoSuchFieldError e29) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_9_0.ordinal()] = 30;
-            } catch (NoSuchFieldError e30) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_10_0.ordinal()] = 31;
-            } catch (NoSuchFieldError e31) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[KnoxContainerVersion.KNOX_CONTAINER_VERSION_NONE.ordinal()] = 32;
-            } catch (NoSuchFieldError e32) {
-            }
-        }
-    }
-
-    /* loaded from: classes5.dex */
     public enum KnoxContainerVersion {
         KNOX_CONTAINER_VERSION_NONE,
-        KNOX_CONTAINER_VERSION_1_0_0,
-        KNOX_CONTAINER_VERSION_2_0_0,
-        KNOX_CONTAINER_VERSION_2_1_0,
-        KNOX_CONTAINER_VERSION_2_2_0,
-        KNOX_CONTAINER_VERSION_2_3_0,
-        KNOX_CONTAINER_VERSION_2_3_1,
-        KNOX_CONTAINER_VERSION_2_4_0,
-        KNOX_CONTAINER_VERSION_2_4_1,
-        KNOX_CONTAINER_VERSION_2_5_0,
-        KNOX_CONTAINER_VERSION_2_5_1,
-        KNOX_CONTAINER_VERSION_2_5_2,
-        KNOX_CONTAINER_VERSION_2_6_0,
-        KNOX_CONTAINER_VERSION_2_6_1,
-        KNOX_CONTAINER_VERSION_2_7_0,
-        KNOX_CONTAINER_VERSION_2_7_1,
-        KNOX_CONTAINER_VERSION_2_8_0,
-        KNOX_CONTAINER_VERSION_2_9_0,
-        KNOX_CONTAINER_VERSION_3_0_0,
-        KNOX_CONTAINER_VERSION_3_1_0,
-        KNOX_CONTAINER_VERSION_3_2_0,
-        KNOX_CONTAINER_VERSION_3_2_1,
-        KNOX_CONTAINER_VERSION_3_3_0,
-        KNOX_CONTAINER_VERSION_3_4_0,
-        KNOX_CONTAINER_VERSION_3_4_1,
-        KNOX_CONTAINER_VERSION_3_5_0,
-        KNOX_CONTAINER_VERSION_3_6_0,
-        KNOX_CONTAINER_VERSION_3_7_0,
-        KNOX_CONTAINER_VERSION_3_7_1,
-        KNOX_CONTAINER_VERSION_3_8_0,
-        KNOX_CONTAINER_VERSION_3_9_0,
-        KNOX_CONTAINER_VERSION_3_10_0;
+        KNOX_CONTAINER_VERSION_3_11_0;
 
         @Override // java.lang.Enum
         public String toString() {
-            switch (AnonymousClass2.$SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[ordinal()]) {
+            switch (ordinal()) {
                 case 1:
-                    return ColorExtractor.VERSION;
-                case 2:
-                    return "2.0.0";
-                case 3:
-                    return "2.1.0";
-                case 4:
-                    return "2.2.0";
-                case 5:
-                    return "2.3.0";
-                case 6:
-                    return "2.3.1";
-                case 7:
-                    return "2.4.0";
-                case 8:
-                    return "2.4.1";
-                case 9:
-                    return "2.5.0";
-                case 10:
-                    return "2.5.1";
-                case 11:
-                    return "2.5.2";
-                case 12:
-                    return "2.6.0";
-                case 13:
-                    return "2.6.1";
-                case 14:
-                    return "2.7.0";
-                case 15:
-                    return "2.7.1";
-                case 16:
-                    return "2.8.0";
-                case 17:
-                    return "2.9.0";
-                case 18:
-                    return "3.0.0";
-                case 19:
-                    return "3.1.0";
-                case 20:
-                    return "3.2.0";
-                case 21:
-                    return "3.2.1";
-                case 22:
-                    return "3.3.0";
-                case 23:
-                    return "3.4.0";
-                case 24:
-                    return "3.4.1";
-                case 25:
-                    return "3.5.0";
-                case 26:
-                    return "3.6.0";
-                case 27:
-                    return "3.7.0";
-                case 28:
-                    return "3.7.1";
-                case 29:
-                    return "3.8.0";
-                case 30:
-                    return "3.8.0";
-                case 31:
-                    return "3.10.0";
+                    return "3.11.0";
                 default:
                     return "N/A";
             }
         }
 
         public int getVersionNumber() {
-            switch (AnonymousClass2.$SwitchMap$com$samsung$android$knox$SemPersonaManager$KnoxContainerVersion[ordinal()]) {
+            switch (ordinal()) {
                 case 1:
-                    return 100;
-                case 2:
-                    return 200;
-                case 3:
-                    return 210;
-                case 4:
-                    return 220;
-                case 5:
-                    return 230;
-                case 6:
-                    return 231;
-                case 7:
-                    return 240;
-                case 8:
-                    return 241;
-                case 9:
-                    return 250;
-                case 10:
-                    return 251;
-                case 11:
-                    return 252;
-                case 12:
-                    return 260;
-                case 13:
-                    return 261;
-                case 14:
-                    return 270;
-                case 15:
-                    return 271;
-                case 16:
-                    return 280;
-                case 17:
-                    return 290;
-                case 18:
-                    return 300;
-                case 19:
-                    return 310;
-                case 20:
-                    return 320;
-                case 21:
-                    return 321;
-                case 22:
-                    return 330;
-                case 23:
-                    return 340;
-                case 24:
-                    return 341;
-                case 25:
-                    return 350;
-                case 26:
-                    return 360;
-                case 27:
-                    return 370;
-                case 28:
-                    return 371;
-                case 29:
-                    return 380;
-                case 30:
-                    return 380;
-                case 31:
-                    return 391;
+                    return BluetoothHciProtoEnums.CMD_WRITE_VOICE_SETTINGS;
                 default:
                     return -1;
             }
@@ -627,10 +333,6 @@ public class SemPersonaManager {
             default:
                 return -1;
         }
-    }
-
-    public int getKioskId() {
-        return -1;
     }
 
     public boolean isKnoxKeyguardShown() {
@@ -732,110 +434,11 @@ public class SemPersonaManager {
     }
 
     public static KnoxContainerVersion getKnoxContainerVersion() {
-        KnoxContainerVersion containerVersion = KnoxContainerVersion.KNOX_CONTAINER_VERSION_NONE;
         Bundle mKnoxInfo = getKnoxInfo();
-        if (mKnoxInfo != null) {
-            if ("2.0".equals(mKnoxInfo.getString("version"))) {
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 0) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_0_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 1) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_1_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 2) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_2_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 3) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_3_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 4) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_3_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 5) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_4_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 6) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_4_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 7) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 8) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 9) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_5_2;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 10) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_6_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 11) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_6_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 12) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_7_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 13) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_7_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 14) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_8_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 15) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_2_9_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 16) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_0_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 17) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_1_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 18) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_2_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 19) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_2_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 20) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_3_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 21) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_4_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 22) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_4_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 23) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_5_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 24) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_6_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 25) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_7_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 26) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_7_1;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 27) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_8_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 28) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_9_0;
-                }
-                if (Integer.parseInt(SEC_PRODUCT_FEATURE_KNOX_CONFIG_CONTAINER_VERSION) == 29) {
-                    return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_10_0;
-                }
-                return containerVersion;
-            }
-            if ("1.0".equals(mKnoxInfo.getString("version"))) {
-                Log.i(TAG, "mKnoxInfo returns 1.0");
-                return KnoxContainerVersion.KNOX_CONTAINER_VERSION_1_0_0;
-            }
-            Log.i(TAG, "mKnoxInfo is empty");
-            return KnoxContainerVersion.KNOX_CONTAINER_VERSION_NONE;
+        if (mKnoxInfo != null && mKnoxInfo.getString("version") != null && !mKnoxInfo.getString("version").equals("")) {
+            return KnoxContainerVersion.KNOX_CONTAINER_VERSION_3_11_0;
         }
-        return containerVersion;
+        return KnoxContainerVersion.KNOX_CONTAINER_VERSION_NONE;
     }
 
     public static final boolean isSepLiteDevice(Context context) {
@@ -879,7 +482,7 @@ public class SemPersonaManager {
         if (!isDarDualEncryptionEnabled(userId)) {
             return false;
         }
-        if (!StorageManager.isUserKeyUnlocked(userId)) {
+        if (!StorageManager.isCeStorageUnlocked(userId)) {
             return true;
         }
         State currentState = StateMachine.getCurrentState(userId);
@@ -898,10 +501,9 @@ public class SemPersonaManager {
 
     public int setDualDARProfile(Bundle config) {
         Log.d(TAG, "setDualDARProfile() " + config);
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.setDualDARProfile(config);
+                return this.mService.setDualDARProfile(config);
             } catch (Exception e) {
                 Log.w(TAG, "setDualDARProfile Remote exception", e);
                 return -1;
@@ -912,10 +514,9 @@ public class SemPersonaManager {
 
     public Bundle getDualDARProfile() {
         Log.d(TAG, "getDualDARProfile");
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getDualDARProfile();
+                return this.mService.getDualDARProfile();
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed talking with enterprise policy service", e);
                 return null;
@@ -924,11 +525,54 @@ public class SemPersonaManager {
         return null;
     }
 
-    public boolean registerSystemPersonaObserver(ISystemPersonaObserver mSystemPersonaObserver) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+    public static boolean getUCMDAREncryption() {
+        Log.i(TAG, "getUCMDAREncryption");
+        return SystemProperties.getBoolean(PROPERTY_UCM_WPC_PROVISIONED, false);
+    }
+
+    public int setUCMProfile(Bundle config) {
+        Log.d(TAG, "setUCMProfile() " + config);
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.registerSystemPersonaObserver(mSystemPersonaObserver);
+                return this.mService.setUCMProfile(config);
+            } catch (Exception e) {
+                Log.w(TAG, "setUCMProfile Remote exception", e);
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public Bundle getUCMProfile() {
+        Log.d(TAG, "getUCMProfile");
+        if (this.mService != null) {
+            try {
+                return this.mService.getUCMProfile();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed talking with enterprise policy service", e);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public int resetUCMProfile() {
+        Log.d(TAG, "resetUCMProfile() ");
+        if (this.mService != null) {
+            try {
+                return this.mService.resetUCMProfile();
+            } catch (Exception e) {
+                Log.w(TAG, "resetUCMProfile Remote exception", e);
+                return -1;
+            }
+        }
+        return -1;
+    }
+
+    public boolean registerSystemPersonaObserver(ISystemPersonaObserver mSystemPersonaObserver) {
+        if (this.mService != null) {
+            try {
+                return this.mService.registerSystemPersonaObserver(mSystemPersonaObserver);
             } catch (RemoteException re) {
                 Log.w(TAG, "Could not registerSystemPersonaObserver a callback", re);
                 return false;
@@ -950,10 +594,9 @@ public class SemPersonaManager {
     }
 
     public boolean isFOTAUpgrade() {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.isFOTAUpgrade();
+                return this.mService.isFOTAUpgrade();
             } catch (RemoteException re) {
                 Log.w(TAG, "Could not get FOTAUpgrade", re);
                 return false;
@@ -971,10 +614,9 @@ public class SemPersonaManager {
 
     public List<Integer> getKnoxIds(boolean onlyActiveList) {
         List<Integer> personaIds = new ArrayList<>();
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                List<UserInfo> users = iSemPersonaManager.getProfiles(0, false);
+                List<UserInfo> users = this.mService.getProfiles(0, false);
                 for (UserInfo ui : users) {
                     if (!ui.isDualAppProfile() && (!onlyActiveList || ui.isEnabled())) {
                         personaIds.add(Integer.valueOf(ui.id));
@@ -1009,26 +651,17 @@ public class SemPersonaManager {
     }
 
     public static boolean isKnoxVersionSupported(int version) {
-        KnoxContainerVersion currentVersion;
-        if (version > 0 && (currentVersion = getKnoxContainerVersion()) != null && currentVersion.getVersionNumber() >= version) {
-            return true;
-        }
-        return false;
+        return version > 0 && getKnoxContainerVersion().getVersionNumber() >= version;
     }
 
     public static boolean isKnoxVersionSupported(KnoxContainerVersion version) {
-        KnoxContainerVersion currentVersion;
-        if (version != null && (currentVersion = getKnoxContainerVersion()) != null && currentVersion.compareTo(version) >= 0) {
-            return true;
-        }
-        return false;
+        return version != null;
     }
 
     public void setAppSeparationDefaultPolicy(int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.setAppSeparationDefaultPolicy(userId);
+                this.mService.setAppSeparationDefaultPolicy(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Could not call setAppSeparationDefaultPolicy , inside SemPersonaManager with exception:", re);
             }
@@ -1106,7 +739,7 @@ public class SemPersonaManager {
     public boolean isInstallableAppInContainer(Context appContext, int containerId, String pkgName) {
         boolean isOnlyForOwner;
         boolean isApprovedPackages = false;
-        if (pkgName == null || "".equalsIgnoreCase(pkgName) || SemCapabilities.FEATURE_TAG_NULL.equalsIgnoreCase(pkgName) || !isUserManaged()) {
+        if (pkgName == null || "".equalsIgnoreCase(pkgName) || "null".equalsIgnoreCase(pkgName) || !isUserManaged()) {
             return false;
         }
         for (String pkg : excludedPackages) {
@@ -1167,10 +800,9 @@ public class SemPersonaManager {
                 return false;
             }
         }
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.isPossibleAddAppsToContainer(pkgName, containerId);
+                return this.mService.isPossibleAddAppsToContainer(pkgName, containerId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Could not get isPossibleAddAppsToContainer , inside SemPersonaManager with exception:", re);
             }
@@ -1185,10 +817,9 @@ public class SemPersonaManager {
     }
 
     public boolean getPersonaUserHasBeenShutdownBefore(int personaId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getPersonaUserHasBeenShutdownBefore(personaId);
+                return this.mService.getPersonaUserHasBeenShutdownBefore(personaId);
             } catch (RemoteException re) {
                 Log.w(TAG, "failed to getUserStateForKnox", re);
                 return false;
@@ -1216,14 +847,21 @@ public class SemPersonaManager {
     }
 
     public int getFocusedKnoxId() {
+        int userId = getFocusedUser();
+        if (isKnoxId(userId)) {
+            return userId;
+        }
+        return 0;
+    }
+
+    public int getFocusedUserId() {
         return getFocusedUser();
     }
 
     public int getFocusedUser() {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getFocusedUser();
+                return this.mService.getFocusedUser();
             } catch (RemoteException re) {
                 Log.w(TAG, "getFocusedUser error", re);
             }
@@ -1248,10 +886,9 @@ public class SemPersonaManager {
     }
 
     public boolean isProfileNameCustomized(int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getProfileName(userId) != null;
+                return this.mService.getProfileName(userId) != null;
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona service", re);
             }
@@ -1337,7 +974,7 @@ public class SemPersonaManager {
 
     public static Pair<Boolean, Drawable> getCustomBadgeForCustomContainer(UserHandle user, int density, Context locContext) {
         if (isSecureFolderId(user.getIdentifier())) {
-            return new Pair<>(true, Resources.getSystem().getDrawableForDensity(R.drawable.ic_sf_badge_bottom, density));
+            return new Pair<>(true, Resources.getSystem().getDrawableForDensity(R.drawable.sf_screen_badge, density));
         }
         if (isAppSeparationUserId(user.getIdentifier())) {
             return new Pair<>(true, Resources.getSystem().getDrawableForDensity(R.drawable.screen_badge_separated, density));
@@ -1391,10 +1028,9 @@ public class SemPersonaManager {
     }
 
     public boolean isFotaUpgradeVersionChanged() {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.isFotaUpgradeVersionChanged();
+                return this.mService.isFotaUpgradeVersionChanged();
             } catch (RemoteException re) {
                 Log.w(TAG, "Could not get isFotaUpgradeVersionChanged", re);
                 return false;
@@ -1445,12 +1081,11 @@ public class SemPersonaManager {
     }
 
     public boolean isKnoxReachedToMax() {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager == null) {
+        if (this.mService == null) {
             return false;
         }
         try {
-            List<UserInfo> users = iSemPersonaManager.getProfiles(0, true);
+            List<UserInfo> users = this.mService.getProfiles(0, true);
             if (users == null || users.size() < 2) {
                 return false;
             }
@@ -1509,10 +1144,9 @@ public class SemPersonaManager {
     }
 
     public boolean startActivityThroughPersona(Intent intent) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.startActivityThroughPersona(intent);
+                return this.mService.startActivityThroughPersona(intent);
             } catch (RemoteException re) {
                 Log.e(TAG, "Could not startActivityThroughPersona", re);
                 return false;
@@ -1522,10 +1156,9 @@ public class SemPersonaManager {
     }
 
     public boolean broadcastIntentThroughPersona(Intent intent, int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.broadcastIntentThroughPersona(intent, userId);
+                return this.mService.broadcastIntentThroughPersona(intent, userId);
             } catch (RemoteException re) {
                 Log.e(TAG, "Could not broadcastIntentThroughPersona", re);
                 return false;
@@ -1712,7 +1345,7 @@ public class SemPersonaManager {
 
     private static String getWorkProfileName(final Context ctx, int userId) {
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) ctx.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        String profile_name = devicePolicyManager.getResources().getString(DevicePolicyResources.Strings.Core.RESOLVER_WORK_TAB, new Supplier() { // from class: com.samsung.android.knox.SemPersonaManager$$ExternalSyntheticLambda1
+        String profile_name = devicePolicyManager.getResources().getString(DevicePolicyResources.Strings.Core.RESOLVER_WORK_TAB, new Supplier() { // from class: com.samsung.android.knox.SemPersonaManager$$ExternalSyntheticLambda2
             @Override // java.util.function.Supplier
             public final Object get() {
                 String string;
@@ -1726,7 +1359,7 @@ public class SemPersonaManager {
     private static String getWorkName(final Context ctx, int userId) {
         try {
             DevicePolicyManager devicePolicyManager = (DevicePolicyManager) ctx.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            String profile_name = devicePolicyManager.getResources().getString(DevicePolicyResources.Strings.Core.RESOLVER_WORK_TAB, new Supplier() { // from class: com.samsung.android.knox.SemPersonaManager$$ExternalSyntheticLambda2
+            String profile_name = devicePolicyManager.getResources().getString(DevicePolicyResources.Strings.Core.RESOLVER_WORK_TAB, new Supplier() { // from class: com.samsung.android.knox.SemPersonaManager$$ExternalSyntheticLambda1
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     String string;
@@ -1911,10 +1544,9 @@ public class SemPersonaManager {
                 return uInfo.name;
             }
         }
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getContainerName(userId);
+                return this.mService.getContainerName(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona service", re);
                 return null;
@@ -1977,15 +1609,6 @@ public class SemPersonaManager {
             }
         }
         return null;
-    }
-
-    public static boolean isAppSeparationUserId(Context context, int userId) {
-        UserManager um = (UserManager) context.getSystemService("user");
-        UserInfo uInfo = um.getUserInfo(userId);
-        if (uInfo != null && uInfo.isUserTypeAppSeparation()) {
-            return true;
-        }
-        return false;
     }
 
     public static boolean isAppSeparationUserId(int userId) {
@@ -2151,23 +1774,21 @@ public class SemPersonaManager {
     }
 
     public boolean bindCoreServiceAsUser(ComponentName admin, Intent serviceIntent, ServiceConnection conn, int flags, UserHandle targetUser) {
-        IServiceConnection sd;
         if (getPersonaService() == null) {
             return false;
         }
         try {
-            Context context = this.mContext;
             try {
-                sd = context.getServiceDispatcher(conn, context.getMainThreadHandler(), flags);
-            } catch (RemoteException e) {
-                re = e;
-            }
-            try {
-                serviceIntent.prepareToLeaveProcess(this.mContext);
-                return getPersonaService().bindCoreServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, flags, targetUser.getIdentifier());
+                IServiceConnection sd = this.mContext.getServiceDispatcher(conn, this.mContext.getMainThreadHandler(), flags);
+                try {
+                    serviceIntent.prepareToLeaveProcess(this.mContext);
+                    return getPersonaService().bindCoreServiceAsUser(admin, this.mContext.getIApplicationThread(), this.mContext.getActivityToken(), serviceIntent, sd, flags, targetUser.getIdentifier());
+                } catch (RemoteException e) {
+                    re = e;
+                    throw re.rethrowFromSystemServer();
+                }
             } catch (RemoteException e2) {
                 re = e2;
-                throw re.rethrowFromSystemServer();
             }
         } catch (RemoteException e3) {
             re = e3;
@@ -2241,46 +1862,8 @@ public class SemPersonaManager {
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.knox.SemPersonaManager$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ UserHandle val$user;
-        final /* synthetic */ AppWidgetHostView val$view;
-
-        AnonymousClass1(UserHandle userHandle, AppWidgetHostView appWidgetHostView) {
-            user = userHandle;
-            view = appWidgetHostView;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            try {
-                ImageView dualAppBadge = new ImageView(Context.this);
-                PackageManager pm = Context.this.getPackageManager();
-                Drawable badgeicon = pm.getUserBadgeForDensity(user, 0);
-                if (badgeicon != null) {
-                    dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
-                    params.gravity = 85;
-                    view.addView(dualAppBadge, params);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void drawKnoxAppBadge(Context context, AppWidgetHostView view, UserHandle user) {
+    public static void drawKnoxAppBadge(final Context context, final AppWidgetHostView view, final UserHandle user) {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.samsung.android.knox.SemPersonaManager.1
-            final /* synthetic */ UserHandle val$user;
-            final /* synthetic */ AppWidgetHostView val$view;
-
-            AnonymousClass1(UserHandle user2, AppWidgetHostView view2) {
-                user = user2;
-                view = view2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 try {
@@ -2288,7 +1871,7 @@ public class SemPersonaManager {
                     PackageManager pm = Context.this.getPackageManager();
                     Drawable badgeicon = pm.getUserBadgeForDensity(user, 0);
                     if (badgeicon != null) {
-                        dualAppBadge.lambda$setImageURIAsync$2(badgeicon);
+                        dualAppBadge.setImageDrawable(badgeicon);
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(badgeicon.getIntrinsicWidth(), badgeicon.getIntrinsicHeight());
                         params.gravity = 85;
                         view.addView(dualAppBadge, params);
@@ -2312,10 +1895,9 @@ public class SemPersonaManager {
     }
 
     public boolean isShareClipboardDataToOwnerAllowed(int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.isShareClipboardDataToOwnerAllowed(userId);
+                return this.mService.isShareClipboardDataToOwnerAllowed(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona Policy service", re);
                 return false;
@@ -2325,10 +1907,9 @@ public class SemPersonaManager {
     }
 
     public boolean isShareClipboardDataToContainerAllowed(int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.isShareClipboardDataToContainerAllowed(userId);
+                return this.mService.isShareClipboardDataToContainerAllowed(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona Policy service", re);
                 return false;
@@ -2372,10 +1953,9 @@ public class SemPersonaManager {
     }
 
     public List<String> getSecureFolderPolicy(String key, int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.getSecureFolderPolicy(key, userId);
+                return this.mService.getSecureFolderPolicy(key, userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona Policy service", re);
                 return null;
@@ -2426,9 +2006,8 @@ public class SemPersonaManager {
 
     public boolean setRCPDataPolicy(String appName, String policyProperty, String value) {
         try {
-            ISemPersonaManager iSemPersonaManager = this.mService;
-            if (iSemPersonaManager != null) {
-                return iSemPersonaManager.setRCPDataPolicy(appName, policyProperty, value);
+            if (this.mService != null) {
+                return this.mService.setRCPDataPolicy(appName, policyProperty, value);
             }
             Log.d(TAG, "in PersonaPolicyManager, setRCPDataPolicy() is not called...");
             return false;
@@ -2439,10 +2018,9 @@ public class SemPersonaManager {
     }
 
     public boolean setSecureFolderPolicy(String key, List<String> pkgList, int userId) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.setSecureFolderPolicy(key, pkgList, userId);
+                return this.mService.setSecureFolderPolicy(key, pkgList, userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona Policy service", re);
                 return false;
@@ -2453,10 +2031,9 @@ public class SemPersonaManager {
 
     public void CMFALock(int userId) {
         Log.d(TAG, "CMFALock userId : " + userId);
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.CMFALock(userId);
+                this.mService.CMFALock(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call CMFALock", re);
             }
@@ -2465,10 +2042,9 @@ public class SemPersonaManager {
 
     public void CMFAUnLock(int userId) {
         Log.d(TAG, "CMFAUnLock userId : " + userId);
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.CMFAUnLock(userId);
+                this.mService.CMFAUnLock(userId);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call CMFAUnLock", re);
             }
@@ -2476,10 +2052,9 @@ public class SemPersonaManager {
     }
 
     public void updateProfileActivityTimeFromKnox(int userId, long eventTime) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.updateProfileActivityTimeFromKnox(userId, eventTime);
+                this.mService.updateProfileActivityTimeFromKnox(userId, eventTime);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call Persona Policy service", re);
             }
@@ -2487,10 +2062,9 @@ public class SemPersonaManager {
     }
 
     public void startCountrySelectionActivity(boolean isUnified) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.startCountrySelectionActivity(isUnified);
+                this.mService.startCountrySelectionActivity(isUnified);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call startCountrySelectionActivity", re);
             }
@@ -2498,10 +2072,9 @@ public class SemPersonaManager {
     }
 
     public void startTermsActivity() {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                iSemPersonaManager.startTermsActivity();
+                this.mService.startTermsActivity();
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call startTermsActivity", re);
             }
@@ -2528,10 +2101,9 @@ public class SemPersonaManager {
     }
 
     public boolean sendKnoxForesightBroadcast(Intent intent) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.sendKnoxForesightBroadcast(intent);
+                return this.mService.sendKnoxForesightBroadcast(intent);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call sendKnoxForesightBroadcast", re);
                 return false;
@@ -2541,10 +2113,9 @@ public class SemPersonaManager {
     }
 
     public boolean hasLicensePermission(int uid, String permission) {
-        ISemPersonaManager iSemPersonaManager = this.mService;
-        if (iSemPersonaManager != null) {
+        if (this.mService != null) {
             try {
-                return iSemPersonaManager.hasLicensePermission(uid, permission);
+                return this.mService.hasLicensePermission(uid, permission);
             } catch (RemoteException re) {
                 Log.d(TAG, "Failed to call hasLicensePermission", re);
                 return false;

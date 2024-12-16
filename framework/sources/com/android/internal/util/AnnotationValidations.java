@@ -60,17 +60,15 @@ public class AnnotationValidations {
             case 0:
                 if (value < param) {
                     invalid(annotation, Integer.valueOf(value), paramName, Long.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 if (value > param) {
                     invalid(annotation, Integer.valueOf(value), paramName, Long.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -105,17 +103,15 @@ public class AnnotationValidations {
             case 0:
                 if (value < param) {
                     invalid(annotation, Long.valueOf(value), paramName, Long.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 if (value > param) {
                     invalid(annotation, Long.valueOf(value), paramName, Long.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -150,17 +146,15 @@ public class AnnotationValidations {
             case 0:
                 if (value < param) {
                     invalid(annotation, Float.valueOf(value), paramName, Float.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 1:
                 if (value > param) {
                     invalid(annotation, Float.valueOf(value), paramName, Float.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 
@@ -213,31 +207,29 @@ public class AnnotationValidations {
         }
         switch (c) {
             case 0:
-                if (param == -1 || value == param) {
-                    return;
+                if (param != -1 && value != param) {
+                    invalid(annotation, Integer.valueOf(value), paramName, Integer.valueOf(param));
+                    break;
                 }
-                invalid(annotation, Integer.valueOf(value), paramName, Integer.valueOf(param));
-                return;
+                break;
             case 1:
                 if (value < param) {
                     invalid(annotation, Integer.valueOf(value), paramName, Integer.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 2:
                 if (value > param) {
                     invalid(annotation, Integer.valueOf(value), paramName, Integer.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
+                break;
             case 3:
                 if (value % param != 0) {
                     invalid(annotation, Integer.valueOf(value), paramName, Integer.valueOf(param));
-                    return;
+                    break;
                 }
-                return;
-            default:
-                return;
+                break;
         }
     }
 

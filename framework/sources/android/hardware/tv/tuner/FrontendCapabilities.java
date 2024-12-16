@@ -6,14 +6,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public final class FrontendCapabilities implements Parcelable {
     public static final Parcelable.Creator<FrontendCapabilities> CREATOR = new Parcelable.Creator<FrontendCapabilities>() { // from class: android.hardware.tv.tuner.FrontendCapabilities.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendCapabilities createFromParcel(Parcel _aidl_source) {
             return new FrontendCapabilities(_aidl_source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendCapabilities[] newArray(int _aidl_size) {
             return new FrontendCapabilities[_aidl_size];
@@ -33,7 +32,6 @@ public final class FrontendCapabilities implements Parcelable {
     private int _tag;
     private Object _value;
 
-    /* loaded from: classes2.dex */
     public @interface Tag {
         public static final int analogCaps = 0;
         public static final int atsc3Caps = 2;
@@ -46,10 +44,6 @@ public final class FrontendCapabilities implements Parcelable {
         public static final int isdbs3Caps = 8;
         public static final int isdbsCaps = 7;
         public static final int isdbtCaps = 9;
-    }
-
-    /* synthetic */ FrontendCapabilities(Parcel parcel, FrontendCapabilitiesIA frontendCapabilitiesIA) {
-        this(parcel);
     }
 
     public FrontendCapabilities() {
@@ -218,62 +212,43 @@ public final class FrontendCapabilities implements Parcelable {
         return 1;
     }
 
-    /* renamed from: android.hardware.tv.tuner.FrontendCapabilities$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendCapabilities> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendCapabilities createFromParcel(Parcel _aidl_source) {
-            return new FrontendCapabilities(_aidl_source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendCapabilities[] newArray(int _aidl_size) {
-            return new FrontendCapabilities[_aidl_size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
         _aidl_parcel.writeInt(this._tag);
         switch (this._tag) {
             case 0:
                 _aidl_parcel.writeTypedObject(getAnalogCaps(), _aidl_flag);
-                return;
+                break;
             case 1:
                 _aidl_parcel.writeTypedObject(getAtscCaps(), _aidl_flag);
-                return;
+                break;
             case 2:
                 _aidl_parcel.writeTypedObject(getAtsc3Caps(), _aidl_flag);
-                return;
+                break;
             case 3:
                 _aidl_parcel.writeTypedObject(getDtmbCaps(), _aidl_flag);
-                return;
+                break;
             case 4:
                 _aidl_parcel.writeTypedObject(getDvbsCaps(), _aidl_flag);
-                return;
+                break;
             case 5:
                 _aidl_parcel.writeTypedObject(getDvbcCaps(), _aidl_flag);
-                return;
+                break;
             case 6:
                 _aidl_parcel.writeTypedObject(getDvbtCaps(), _aidl_flag);
-                return;
+                break;
             case 7:
                 _aidl_parcel.writeTypedObject(getIsdbsCaps(), _aidl_flag);
-                return;
+                break;
             case 8:
                 _aidl_parcel.writeTypedObject(getIsdbs3Caps(), _aidl_flag);
-                return;
+                break;
             case 9:
                 _aidl_parcel.writeTypedObject(getIsdbtCaps(), _aidl_flag);
-                return;
+                break;
             case 10:
                 _aidl_parcel.writeTypedObject(getIptvCaps(), _aidl_flag);
-                return;
-            default:
-                return;
+                break;
         }
     }
 

@@ -15,10 +15,6 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
     private boolean mMutated;
     private ColorStateListDrawableState mState;
 
-    /* synthetic */ ColorStateListDrawable(ColorStateListDrawableState colorStateListDrawableState, ColorStateListDrawableIA colorStateListDrawableIA) {
-        this(colorStateListDrawableState);
-    }
-
     public ColorStateListDrawable() {
         this.mMutated = false;
         this.mState = new ColorStateListDrawableState();
@@ -121,13 +117,13 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
     }
 
     @Override // android.graphics.drawable.Drawable
-    public void onBoundsChange(Rect bounds) {
+    protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         this.mColorDrawable.setBounds(bounds);
     }
 
     @Override // android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] state) {
+    protected boolean onStateChange(int[] state) {
         if (this.mState.mColor == null) {
             return false;
         }
@@ -202,8 +198,7 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
         onStateChange(getState());
     }
 
-    /* loaded from: classes.dex */
-    public static final class ColorStateListDrawableState extends Drawable.ConstantState {
+    static final class ColorStateListDrawableState extends Drawable.ConstantState {
         int mAlpha;
         BlendMode mBlendMode;
         int mChangingConfigurations;
@@ -238,37 +233,26 @@ public class ColorStateListDrawable extends Drawable implements Drawable.Callbac
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public int getChangingConfigurations() {
-            int i = this.mChangingConfigurations;
-            ColorStateList colorStateList = this.mColor;
-            int changingConfigurations = i | (colorStateList != null ? colorStateList.getChangingConfigurations() : 0);
-            ColorStateList colorStateList2 = this.mTint;
-            return changingConfigurations | (colorStateList2 != null ? colorStateList2.getChangingConfigurations() : 0);
+            return this.mChangingConfigurations | (this.mColor != null ? this.mColor.getChangingConfigurations() : 0) | (this.mTint != null ? this.mTint.getChangingConfigurations() : 0);
         }
 
         public boolean isStateful() {
-            ColorStateList colorStateList;
-            ColorStateList colorStateList2 = this.mColor;
-            return (colorStateList2 != null && colorStateList2.isStateful()) || ((colorStateList = this.mTint) != null && colorStateList.isStateful());
+            return (this.mColor != null && this.mColor.isStateful()) || (this.mTint != null && this.mTint.isStateful());
         }
 
         public boolean hasFocusStateSpecified() {
-            ColorStateList colorStateList;
-            ColorStateList colorStateList2 = this.mColor;
-            return (colorStateList2 != null && colorStateList2.hasFocusStateSpecified()) || ((colorStateList = this.mTint) != null && colorStateList.hasFocusStateSpecified());
+            return (this.mColor != null && this.mColor.hasFocusStateSpecified()) || (this.mTint != null && this.mTint.hasFocusStateSpecified());
         }
 
         @Override // android.graphics.drawable.Drawable.ConstantState
         public boolean canApplyTheme() {
-            ColorStateList colorStateList;
-            ColorStateList colorStateList2 = this.mColor;
-            return (colorStateList2 != null && colorStateList2.canApplyTheme()) || ((colorStateList = this.mTint) != null && colorStateList.canApplyTheme());
+            return (this.mColor != null && this.mColor.canApplyTheme()) || (this.mTint != null && this.mTint.canApplyTheme());
         }
     }
 
     private void initializeColorDrawable() {
-        ColorDrawable colorDrawable = new ColorDrawable();
-        this.mColorDrawable = colorDrawable;
-        colorDrawable.setCallback(this);
+        this.mColorDrawable = new ColorDrawable();
+        this.mColorDrawable.setCallback(this);
         if (this.mState.mTint != null) {
             this.mColorDrawable.setTintList(this.mState.mTint);
         }

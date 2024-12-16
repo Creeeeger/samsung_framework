@@ -20,9 +20,9 @@ public interface InsetsAnimationControlRunner {
 
     int getTypes();
 
-    boolean isCancelRequested();
-
     void notifyControlRevoked(int i);
+
+    void updateLayoutInsetsDuringAnimation(int i);
 
     void updateSurfacePosition(SparseArray<InsetsSourceControl> sparseArray);
 

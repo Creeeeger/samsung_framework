@@ -69,7 +69,7 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
     }
 
     @Override // android.preference.Preference
-    public void onClick() {
+    protected void onClick() {
         if (getIntent() != null || getFragment() != null || getPreferenceCount() == 0) {
             return;
         }
@@ -78,17 +78,15 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
 
     private void showDialog(Bundle state) {
         Context context = getContext();
-        ListView listView = this.mListView;
-        if (listView != null) {
-            listView.setAdapter((ListAdapter) null);
+        if (this.mListView != null) {
+            this.mListView.setAdapter((ListAdapter) null);
         }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View childPrefScreen = inflater.inflate(this.mLayoutResId, (ViewGroup) null);
         View titleView = childPrefScreen.findViewById(16908310);
-        ListView listView2 = (ListView) childPrefScreen.findViewById(16908298);
-        this.mListView = listView2;
+        this.mListView = (ListView) childPrefScreen.findViewById(16908298);
         if (this.mDividerSpecified) {
-            listView2.setDivider(this.mDividerDrawable);
+            this.mListView.setDivider(this.mDividerDrawable);
         }
         bind(this.mListView);
         CharSequence title = getTitle();
@@ -100,7 +98,7 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
             }
             dialog.getWindow().requestFeature(1);
         } else if (titleView instanceof TextView) {
-            ((TextView) titleView).setText(title);
+            ((TextView) titleView).lambda$setTextAsync$0(title);
             titleView.setVisibility(0);
         } else {
             dialog.setTitle(title);
@@ -136,14 +134,13 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.preference.PreferenceGroup
-    public boolean isOnSameScreenAsChildren() {
+    protected boolean isOnSameScreenAsChildren() {
         return false;
     }
 
     @Override // android.preference.Preference
-    public Parcelable onSaveInstanceState() {
+    protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         Dialog dialog = this.mDialog;
         if (dialog == null || !dialog.isShowing()) {
@@ -156,7 +153,7 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
     }
 
     @Override // android.preference.Preference
-    public void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
@@ -168,17 +165,15 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class SavedState extends Preference.BaseSavedState {
+    private static class SavedState extends Preference.BaseSavedState {
         public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() { // from class: android.preference.PreferenceScreen.SavedState.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
@@ -202,23 +197,6 @@ public final class PreferenceScreen extends PreferenceGroup implements AdapterVi
 
         public SavedState(Parcelable superState) {
             super(superState);
-        }
-
-        /* renamed from: android.preference.PreferenceScreen$SavedState$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<SavedState> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
         }
     }
 

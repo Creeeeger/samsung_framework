@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class MailTo {
     private static final String BODY = "body";
     private static final String CC = "cc";

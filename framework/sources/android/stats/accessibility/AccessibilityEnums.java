@@ -13,6 +13,7 @@ public final class AccessibilityEnums {
     public static final int MAGNIFICATION_FULL_SCREEN = 1;
     public static final int MAGNIFICATION_UNKNOWN_MODE = 0;
     public static final int MAGNIFICATION_WINDOW = 2;
+    public static final int QUICK_SETTINGS = 9;
     public static final int TEXT_READING_ACCESSIBILITY_SETTINGS = 4;
     public static final int TEXT_READING_BOLD_TEXT = 3;
     public static final int TEXT_READING_DISPLAY_SETTINGS = 3;
@@ -25,6 +26,7 @@ public final class AccessibilityEnums {
     public static final int TEXT_READING_UNKNOWN_ENTRY = 0;
     public static final int TEXT_READING_UNKNOWN_ITEM = 0;
     public static final int TRIPLE_TAP = 3;
+    public static final int TWO_FINGER_TRIPLE_TAP = 8;
     public static final int UNKNOWN = 0;
     public static final int UNKNOWN_TYPE = 0;
     public static final int VOLUME_KEY = 2;

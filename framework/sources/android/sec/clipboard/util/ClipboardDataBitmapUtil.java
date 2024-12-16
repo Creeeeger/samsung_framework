@@ -48,38 +48,57 @@ public class ClipboardDataBitmapUtil {
     }
 
     public static Bitmap downloadSimpleBitmap(String urlname, int reqWidth, int reqHeight) {
-        Bitmap result = null;
         try {
-            URL url = new URL(urlname);
-            android.util.Log.d(TAG, "url : " + url);
-            URLConnection connection = url.openConnection();
-            connection.setConnectTimeout(2000);
-            connection.setReadTimeout(3000);
-            InputStream is = connection.getInputStream();
-            BitmapFactory.Options bitmapOption = new BitmapFactory.Options();
-            bitmapOption.inJustDecodeBounds = true;
-            bitmapOption.inPurgeable = true;
-            if (is != null) {
-                result = BitmapFactory.decodeStream(is, null, bitmapOption);
-                is.close();
-            }
-            if (bitmapOption.outWidth > -1 && bitmapOption.outHeight > -1) {
-                bitmapOption.inSampleSize = calculateInSampleSize(bitmapOption, reqWidth, reqHeight);
-                bitmapOption.inJustDecodeBounds = false;
-                InputStream is2 = url.openStream();
-                if (is2 != null) {
-                    Bitmap result2 = BitmapFactory.decodeStream(is2, null, bitmapOption);
-                    is2.close();
-                    return result2;
+            try {
+                URL url = new URL(urlname);
+                android.util.Log.d(TAG, "url : " + url);
+                URLConnection connection = url.openConnection();
+                connection.setConnectTimeout(2000);
+                connection.setReadTimeout(3000);
+                InputStream inputStream = connection.getInputStream();
+                try {
+                    BitmapFactory.Options bitmapOption = new BitmapFactory.Options();
+                    bitmapOption.inJustDecodeBounds = true;
+                    bitmapOption.inPurgeable = true;
+                    Bitmap result = inputStream != null ? BitmapFactory.decodeStream(inputStream, null, bitmapOption) : null;
+                    if (bitmapOption.outWidth > -1 && bitmapOption.outHeight > -1) {
+                        bitmapOption.inSampleSize = calculateInSampleSize(bitmapOption, reqWidth, reqHeight);
+                        bitmapOption.inJustDecodeBounds = false;
+                        InputStream inputStream2 = url.openStream();
+                        if (inputStream2 != null) {
+                            try {
+                                result = BitmapFactory.decodeStream(inputStream2, null, bitmapOption);
+                            } finally {
+                            }
+                        }
+                        if (inputStream2 != null) {
+                            inputStream2.close();
+                        }
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                        return result;
+                    }
+                    android.util.Log.d(TAG, "Return null because received bitmap size is invalid. bitmapOption.outWidth :" + bitmapOption.outWidth + ", bitmapOption.outHeight :" + bitmapOption.outHeight);
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                    return result;
+                } catch (Throwable th) {
+                    if (inputStream != null) {
+                        try {
+                            inputStream.close();
+                        } catch (Throwable th2) {
+                            th.addSuppressed(th2);
+                        }
+                    }
+                    throw th;
                 }
-                return result;
+            } catch (OutOfMemoryError | MalformedURLException e) {
+                android.util.Log.e(TAG, e.getMessage());
+                return null;
             }
-            android.util.Log.d(TAG, "Return null because received bitmap size is invalid. bitmapOption.outWidth :" + bitmapOption.outWidth + ", bitmapOption.outHeight :" + bitmapOption.outHeight);
-            return result;
-        } catch (IOException e) {
-            android.util.Log.e(TAG, e.getMessage());
-            return null;
-        } catch (OutOfMemoryError | MalformedURLException e2) {
+        } catch (IOException e2) {
             android.util.Log.e(TAG, e2.getMessage());
             return null;
         }
@@ -115,9 +134,7 @@ public class ClipboardDataBitmapUtil {
             return null;
         }
         String uriString = uri.toString();
-        int length = uriString.length();
-        int i = LENGTH_CONTENT_URI;
-        if (length <= i || uriString.substring(0, i).compareTo("content://") != 0) {
+        if (uriString.length() <= LENGTH_CONTENT_URI || uriString.substring(0, LENGTH_CONTENT_URI).compareTo("content://") != 0) {
             return null;
         }
         try {
@@ -172,7 +189,7 @@ public class ClipboardDataBitmapUtil {
 
     /* JADX WARN: Code restructure failed: missing block: B:22:0x0048, code lost:
     
-        if (r2 == null) goto L86;
+        if (r2 == null) goto L34;
      */
     /* JADX WARN: Code restructure failed: missing block: B:23:0x004a, code lost:
     
@@ -180,7 +197,7 @@ public class ClipboardDataBitmapUtil {
      */
     /* JADX WARN: Code restructure failed: missing block: B:39:0x0054, code lost:
     
-        if (r2 == null) goto L86;
+        if (r2 == null) goto L34;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -196,10 +213,10 @@ public class ClipboardDataBitmapUtil {
             r3 = -1
             if (r2 == 0) goto L5d
             r2 = 0
-            r6 = 0
-            r7 = 0
             r8 = 0
             r9 = 0
+            r6 = 0
+            r7 = 0
             r4 = r10
             r5 = r11
             android.database.Cursor r4 = r4.query(r5, r6, r7, r8, r9)     // Catch: java.lang.Throwable -> L4e java.lang.Throwable -> L50
@@ -282,14 +299,13 @@ public class ClipboardDataBitmapUtil {
         }
         switch (orientation) {
             case 3:
-                return 180;
+                break;
             case 6:
-                return 90;
+                break;
             case 8:
-                return 270;
-            default:
-                return 0;
+                break;
         }
+        return 0;
     }
 
     private static Bitmap rotateBitmap(Bitmap bitmap, int degrees) {

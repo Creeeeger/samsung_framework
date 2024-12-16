@@ -12,7 +12,6 @@ public interface IMusicRecognitionManager extends IInterface {
 
     void beginRecognition(RecognitionRequest recognitionRequest, IBinder iBinder) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IMusicRecognitionManager {
         @Override // android.media.musicrecognition.IMusicRecognitionManager
         public void beginRecognition(RecognitionRequest recognitionRequest, IBinder callback) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IMusicRecognitionManager extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IMusicRecognitionManager {
         static final int TRANSACTION_beginRecognition = 1;
 
@@ -67,28 +65,24 @@ public interface IMusicRecognitionManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IMusicRecognitionManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IMusicRecognitionManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IMusicRecognitionManager.DESCRIPTOR);
+                case 1:
+                    RecognitionRequest _arg0 = (RecognitionRequest) data.readTypedObject(RecognitionRequest.CREATOR);
+                    IBinder _arg1 = data.readStrongBinder();
+                    data.enforceNoDataAvail();
+                    beginRecognition(_arg0, _arg1);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RecognitionRequest _arg0 = (RecognitionRequest) data.readTypedObject(RecognitionRequest.CREATOR);
-                            IBinder _arg1 = data.readStrongBinder();
-                            data.enforceNoDataAvail();
-                            beginRecognition(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IMusicRecognitionManager {
+        private static class Proxy implements IMusicRecognitionManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -12,18 +12,17 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class CellIdentityNr extends CellIdentity {
     public static final Parcelable.Creator<CellIdentityNr> CREATOR = new Parcelable.Creator<CellIdentityNr>() { // from class: android.telephony.CellIdentityNr.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr createFromParcel(Parcel in) {
             in.readInt();
             return CellIdentityNr.createFromParcelBody(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellIdentityNr[] newArray(int size) {
             return new CellIdentityNr[size];
@@ -86,10 +85,7 @@ public final class CellIdentityNr extends CellIdentity {
     @Override // android.telephony.CellIdentity
     public CellLocation asCellLocation() {
         GsmCellLocation cl = new GsmCellLocation();
-        int tac = this.mTac;
-        if (tac == Integer.MAX_VALUE) {
-            tac = -1;
-        }
+        int tac = this.mTac != Integer.MAX_VALUE ? this.mTac : -1;
         cl.setLacAndCid(tac, -1);
         cl.setPsc(0);
         return cl;
@@ -121,8 +117,7 @@ public final class CellIdentityNr extends CellIdentity {
     }
 
     public int[] getBands() {
-        int[] iArr = this.mBands;
-        return Arrays.copyOf(iArr, iArr.length);
+        return Arrays.copyOf(this.mBands, this.mBands.length);
     }
 
     public int getPci() {
@@ -153,7 +148,7 @@ public final class CellIdentityNr extends CellIdentity {
     }
 
     public String toString() {
-        return "CellIdentityNr:{ mPci = " + SemTelephonyUtils.maskPiiFromCellIdentity(this.mPci) + " mTac = " + SemTelephonyUtils.maskPiiFromCellIdentity(this.mTac) + " mNrArfcn = " + this.mNrArfcn + " mBands = " + Arrays.toString(this.mBands) + " mMcc = " + this.mMccStr + " mMnc = " + this.mMncStr + " mNci = " + SemTelephonyUtils.maskPiiFromCellIdentity(this.mNci) + " mAlphaLong = " + this.mAlphaLong + " mAlphaShort = " + this.mAlphaShort + " mAdditionalPlmns = " + this.mAdditionalPlmns + " }";
+        return "CellIdentityNr:{ mPci = " + this.mPci + " mTac = " + SemTelephonyUtils.maskPiiFromCellIdentity(this.mTac) + " mNrArfcn = " + this.mNrArfcn + " mBands = " + Arrays.toString(this.mBands) + " mMcc = " + this.mMccStr + " mMnc = " + this.mMncStr + " mNci = " + SemTelephonyUtils.maskPiiFromCellIdentity(this.mNci) + " mAlphaLong = " + this.mAlphaLong + " mAlphaShort = " + this.mAlphaShort + " mAdditionalPlmns = " + this.mAdditionalPlmns + " }";
     }
 
     @Override // android.telephony.CellIdentity, android.os.Parcelable
@@ -178,25 +173,7 @@ public final class CellIdentityNr extends CellIdentity {
         updateGlobalCellId();
     }
 
-    /* renamed from: android.telephony.CellIdentityNr$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellIdentityNr> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityNr createFromParcel(Parcel in) {
-            in.readInt();
-            return CellIdentityNr.createFromParcelBody(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellIdentityNr[] newArray(int size) {
-            return new CellIdentityNr[size];
-        }
-    }
-
-    public static CellIdentityNr createFromParcelBody(Parcel in) {
+    protected static CellIdentityNr createFromParcelBody(Parcel in) {
         return new CellIdentityNr(in);
     }
 

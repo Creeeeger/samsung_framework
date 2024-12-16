@@ -24,18 +24,18 @@ class ZygoteCommandBuffer implements AutoCloseable {
 
     private static native void nativeReadFullyAndReset(long j);
 
-    public ZygoteCommandBuffer(LocalSocket socket) {
+    ZygoteCommandBuffer(LocalSocket socket) {
         this.mSocket = socket;
         if (socket == null) {
             this.mNativeSocket = -1;
         } else {
-            this.mNativeSocket = socket.getFileDescriptor().getInt$();
+            this.mNativeSocket = this.mSocket.getFileDescriptor().getInt$();
         }
         this.mNativeBuffer = getNativeBuffer(this.mNativeSocket);
     }
 
     /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
-    public ZygoteCommandBuffer(String[] args) {
+    ZygoteCommandBuffer(String[] args) {
         this((LocalSocket) null);
         setCommand(args);
     }
@@ -46,7 +46,7 @@ class ZygoteCommandBuffer implements AutoCloseable {
         this.mNativeBuffer = 0L;
     }
 
-    public int getCount() {
+    int getCount() {
         try {
             return nativeGetCount(this.mNativeBuffer);
         } finally {
@@ -62,7 +62,7 @@ class ZygoteCommandBuffer implements AutoCloseable {
         }
     }
 
-    public String nextArg() {
+    String nextArg() {
         try {
             return nativeNextArg(this.mNativeBuffer);
         } finally {
@@ -78,7 +78,7 @@ class ZygoteCommandBuffer implements AutoCloseable {
         }
     }
 
-    public boolean forkRepeatedly(FileDescriptor zygoteSocket, int expectedUid, int minUid, String firstNiceName) {
+    boolean forkRepeatedly(FileDescriptor zygoteSocket, int expectedUid, int minUid, String firstNiceName) {
         try {
             return nativeForkRepeatedly(this.mNativeBuffer, zygoteSocket.getInt$(), expectedUid, minUid, firstNiceName);
         } finally {

@@ -32,7 +32,6 @@ public interface ITimeZoneDetectorService extends IInterface {
 
     boolean updateConfiguration(TimeZoneConfiguration timeZoneConfiguration) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITimeZoneDetectorService {
         @Override // android.app.timezonedetector.ITimeZoneDetectorService
         public TimeZoneCapabilitiesAndConfig getCapabilitiesAndConfig() throws RemoteException {
@@ -82,7 +81,6 @@ public interface ITimeZoneDetectorService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITimeZoneDetectorService {
         static final int TRANSACTION_addListener = 2;
         static final int TRANSACTION_confirmTimeZone = 6;
@@ -149,77 +147,73 @@ public interface ITimeZoneDetectorService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITimeZoneDetectorService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITimeZoneDetectorService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITimeZoneDetectorService.DESCRIPTOR);
+                case 1:
+                    TimeZoneCapabilitiesAndConfig _result = getCapabilitiesAndConfig();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    ITimeZoneDetectorListener _arg0 = ITimeZoneDetectorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addListener(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    ITimeZoneDetectorListener _arg02 = ITimeZoneDetectorListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeListener(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    TimeZoneConfiguration _arg03 = (TimeZoneConfiguration) data.readTypedObject(TimeZoneConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result2 = updateConfiguration(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 5:
+                    TimeZoneState _result3 = getTimeZoneState();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 6:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = confirmTimeZone(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 7:
+                    ManualTimeZoneSuggestion _arg05 = (ManualTimeZoneSuggestion) data.readTypedObject(ManualTimeZoneSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result5 = setManualTimeZone(_arg05);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result5);
+                    return true;
+                case 8:
+                    ManualTimeZoneSuggestion _arg06 = (ManualTimeZoneSuggestion) data.readTypedObject(ManualTimeZoneSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result6 = suggestManualTimeZone(_arg06);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 9:
+                    TelephonyTimeZoneSuggestion _arg07 = (TelephonyTimeZoneSuggestion) data.readTypedObject(TelephonyTimeZoneSuggestion.CREATOR);
+                    data.enforceNoDataAvail();
+                    suggestTelephonyTimeZone(_arg07);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            TimeZoneCapabilitiesAndConfig _result = getCapabilitiesAndConfig();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            ITimeZoneDetectorListener _arg0 = ITimeZoneDetectorListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addListener(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            ITimeZoneDetectorListener _arg02 = ITimeZoneDetectorListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeListener(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            TimeZoneConfiguration _arg03 = (TimeZoneConfiguration) data.readTypedObject(TimeZoneConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result2 = updateConfiguration(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 5:
-                            TimeZoneState _result3 = getTimeZoneState();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 6:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = confirmTimeZone(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 7:
-                            ManualTimeZoneSuggestion _arg05 = (ManualTimeZoneSuggestion) data.readTypedObject(ManualTimeZoneSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result5 = setManualTimeZone(_arg05);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result5);
-                            return true;
-                        case 8:
-                            ManualTimeZoneSuggestion _arg06 = (ManualTimeZoneSuggestion) data.readTypedObject(ManualTimeZoneSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result6 = suggestManualTimeZone(_arg06);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 9:
-                            TelephonyTimeZoneSuggestion _arg07 = (TelephonyTimeZoneSuggestion) data.readTypedObject(TelephonyTimeZoneSuggestion.CREATOR);
-                            data.enforceNoDataAvail();
-                            suggestTelephonyTimeZone(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITimeZoneDetectorService {
+        private static class Proxy implements ITimeZoneDetectorService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

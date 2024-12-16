@@ -15,7 +15,7 @@ import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.Queue;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class TvRecordingClient {
     private static final boolean DEBUG = false;
     private static final String TAG = "TvRecordingClient";
@@ -60,8 +60,7 @@ public class TvRecordingClient {
         if (this.mIsRecordingStarted && !this.mIsPaused) {
             throw new IllegalStateException("tune failed - recording already started");
         }
-        MySessionCallback mySessionCallback = this.mSessionCallback;
-        if (mySessionCallback != null && TextUtils.equals(mySessionCallback.mInputId, inputId)) {
+        if (this.mSessionCallback != null && TextUtils.equals(this.mSessionCallback.mInputId, inputId)) {
             if (this.mSession != null) {
                 this.mSessionCallback.mChannelUri = channelUri;
                 this.mSession.tune(channelUri, params);
@@ -76,11 +75,9 @@ public class TvRecordingClient {
             throw new IllegalStateException("tune failed - inputId is changed during pause");
         }
         resetInternal();
-        MySessionCallback mySessionCallback2 = new MySessionCallback(inputId, channelUri, params);
-        this.mSessionCallback = mySessionCallback2;
-        TvInputManager tvInputManager = this.mTvInputManager;
-        if (tvInputManager != null) {
-            tvInputManager.createRecordingSession(inputId, mySessionCallback2, this.mHandler);
+        this.mSessionCallback = new MySessionCallback(inputId, channelUri, params);
+        if (this.mTvInputManager != null) {
+            this.mTvInputManager.createRecordingSession(inputId, this.mSessionCallback, this.mHandler);
         }
     }
 
@@ -91,9 +88,8 @@ public class TvRecordingClient {
     private void resetInternal() {
         this.mSessionCallback = null;
         this.mPendingAppPrivateCommands.clear();
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.release();
+        if (this.mSession != null) {
+            this.mSession.release();
             this.mIsTuned = false;
             this.mIsRecordingStarted = false;
             this.mIsPaused = false;
@@ -113,9 +109,8 @@ public class TvRecordingClient {
         if (this.mIsRecordingStarted) {
             Log.w(TAG, "startRecording failed - recording already started");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.startRecording(programUri, params);
+        if (this.mSession != null) {
+            this.mSession.startRecording(programUri, params);
             this.mIsRecordingStarted = true;
         }
     }
@@ -124,9 +119,8 @@ public class TvRecordingClient {
         if (!this.mIsRecordingStarted) {
             Log.w(TAG, "stopRecording failed - recording not yet started");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.stopRecording();
+        if (this.mSession != null) {
+            this.mSession.stopRecording();
             if (this.mIsRecordingStarted) {
                 this.mIsRecordingStopping = true;
             }
@@ -148,9 +142,8 @@ public class TvRecordingClient {
         if (this.mIsPaused) {
             Log.w(TAG, "pauseRecording failed - recording already paused");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.pauseRecording(params);
+        if (this.mSession != null) {
+            this.mSession.pauseRecording(params);
             this.mIsPaused = true;
         }
     }
@@ -166,9 +159,8 @@ public class TvRecordingClient {
         if (!this.mIsPaused) {
             Log.w(TAG, "resumeRecording failed - recording not yet paused");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.resumeRecording(params);
+        if (this.mSession != null) {
+            this.mSession.resumeRecording(params);
             this.mIsPaused = false;
         }
     }
@@ -177,9 +169,8 @@ public class TvRecordingClient {
         if (TextUtils.isEmpty(action)) {
             throw new IllegalArgumentException("action cannot be null or an empty string");
         }
-        TvInputManager.Session session = this.mSession;
-        if (session != null) {
-            session.sendAppPrivateCommand(action, data);
+        if (this.mSession != null) {
+            this.mSession.sendAppPrivateCommand(action, data);
         } else {
             Log.w(TAG, "sendAppPrivateCommand - session not yet created (action \"" + action + "\" pending)");
             this.mPendingAppPrivateCommands.add(Pair.create(action, data));
@@ -190,7 +181,6 @@ public class TvRecordingClient {
         return this.mSessionCallback;
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class RecordingCallback {
         public void onConnectionFailed(String inputId) {
         }
@@ -212,8 +202,7 @@ public class TvRecordingClient {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class MySessionCallback extends TvInputManager.SessionCallback {
+    private class MySessionCallback extends TvInputManager.SessionCallback {
         Uri mChannelUri;
         Bundle mConnectionParams;
         final String mInputId;

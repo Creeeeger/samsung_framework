@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ServiceID {
     public static final int MSG_DEINIT = 3;
     public static final int MSG_EXCEPTION = -1;
@@ -41,7 +41,6 @@ public class ServiceID {
     public static final int MSG_TRY_INIT = 18;
     public static final String TAG = "PhotoRemasterServiceID";
 
-    /* loaded from: classes5.dex */
     public enum Description {
         MSG_EXCEPTION(-1, "MSG_EXCEPTION"),
         MSG_RET(0, "MSG_RET"),
@@ -89,7 +88,7 @@ public class ServiceID {
             });
         }
 
-        public static /* synthetic */ IllegalArgumentException lambda$createFromId$0(int code) {
+        static /* synthetic */ IllegalArgumentException lambda$createFromId$0(int code) {
             return new IllegalArgumentException("Invalid ID : " + code);
         }
 

@@ -17,26 +17,23 @@ import android.util.Log;
 import android.util.SparseArray;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class GbaService extends Service {
     private static final boolean DBG = Build.IS_DEBUGGABLE;
     private static final int EVENT_GBA_AUTH_REQUEST = 1;
     public static final String SERVICE_INTERFACE = "android.telephony.gba.GbaService";
     private static final String TAG = "GbaService";
     private final GbaServiceHandler mHandler;
-    private final HandlerThread mHandlerThread;
     private final SparseArray<IBootstrapAuthenticationCallback> mCallbacks = new SparseArray<>();
     private final IGbaServiceWrapper mBinder = new IGbaServiceWrapper();
+    private final HandlerThread mHandlerThread = new HandlerThread(TAG);
 
     public GbaService() {
-        HandlerThread handlerThread = new HandlerThread(TAG);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new GbaServiceHandler(handlerThread.getLooper());
+        this.mHandlerThread.start();
+        this.mHandler = new GbaServiceHandler(this.mHandlerThread.getLooper());
         Log.d(TAG, "GBA service created");
     }
 
-    /* loaded from: classes3.dex */
     private class GbaServiceHandler extends Handler {
         GbaServiceHandler(Looper looper) {
             super(looper);
@@ -107,12 +104,7 @@ public class GbaService extends Service {
         super.onDestroy();
     }
 
-    /* loaded from: classes3.dex */
     private class IGbaServiceWrapper extends IGbaService.Stub {
-        /* synthetic */ IGbaServiceWrapper(GbaService gbaService, IGbaServiceWrapperIA iGbaServiceWrapperIA) {
-            this();
-        }
-
         private IGbaServiceWrapper() {
         }
 

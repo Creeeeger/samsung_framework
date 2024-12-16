@@ -12,9 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class ActivityEvent implements Parcelable {
     public static final Parcelable.Creator<ActivityEvent> CREATOR = new Parcelable.Creator<ActivityEvent>() { // from class: android.service.contentcapture.ActivityEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityEvent createFromParcel(Parcel parcel) {
             ComponentName componentName = (ComponentName) parcel.readParcelable(null, ComponentName.class);
@@ -23,6 +21,7 @@ public final class ActivityEvent implements Parcelable {
             return new ActivityEvent(activityId, componentName, eventType);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ActivityEvent[] newArray(int size) {
             return new ActivityEvent[size];
@@ -38,7 +37,6 @@ public final class ActivityEvent implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ActivityEventType {
     }
 
@@ -91,25 +89,5 @@ public final class ActivityEvent implements Parcelable {
         parcel.writeParcelable(this.mComponentName, flags);
         parcel.writeInt(this.mType);
         parcel.writeParcelable(this.mActivityId, flags);
-    }
-
-    /* renamed from: android.service.contentcapture.ActivityEvent$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ActivityEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityEvent createFromParcel(Parcel parcel) {
-            ComponentName componentName = (ComponentName) parcel.readParcelable(null, ComponentName.class);
-            int eventType = parcel.readInt();
-            ActivityId activityId = (ActivityId) parcel.readParcelable(null, ActivityId.class);
-            return new ActivityEvent(activityId, componentName, eventType);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ActivityEvent[] newArray(int size) {
-            return new ActivityEvent[size];
-        }
     }
 }

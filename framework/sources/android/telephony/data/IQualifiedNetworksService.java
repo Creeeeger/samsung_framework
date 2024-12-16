@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import android.telephony.data.IQualifiedNetworksServiceCallback;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public interface IQualifiedNetworksService extends IInterface {
     public static final String DESCRIPTOR = "android.telephony.data.IQualifiedNetworksService";
 
@@ -20,7 +20,6 @@ public interface IQualifiedNetworksService extends IInterface {
 
     void reportThrottleStatusChanged(int i, List<ThrottleStatus> list) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IQualifiedNetworksService {
         @Override // android.telephony.data.IQualifiedNetworksService
         public void createNetworkAvailabilityProvider(int slotId, IQualifiedNetworksServiceCallback callback) throws RemoteException {
@@ -44,7 +43,6 @@ public interface IQualifiedNetworksService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IQualifiedNetworksService {
         static final int TRANSACTION_createNetworkAvailabilityProvider = 1;
         static final int TRANSACTION_removeNetworkAvailabilityProvider = 2;
@@ -96,42 +94,39 @@ public interface IQualifiedNetworksService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IQualifiedNetworksService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IQualifiedNetworksService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IQualifiedNetworksService.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    IQualifiedNetworksServiceCallback _arg1 = IQualifiedNetworksServiceCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    createNetworkAvailabilityProvider(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeNetworkAvailabilityProvider(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    List<ThrottleStatus> _arg12 = data.createTypedArrayList(ThrottleStatus.CREATOR);
+                    data.enforceNoDataAvail();
+                    reportThrottleStatusChanged(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    reportEmergencyDataNetworkPreferredTransportChanged(_arg04, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            IQualifiedNetworksServiceCallback _arg1 = IQualifiedNetworksServiceCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            createNetworkAvailabilityProvider(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeNetworkAvailabilityProvider(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            List<ThrottleStatus> _arg12 = data.createTypedArrayList(ThrottleStatus.CREATOR);
-                            data.enforceNoDataAvail();
-                            reportThrottleStatusChanged(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            reportEmergencyDataNetworkPreferredTransportChanged(_arg04, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IQualifiedNetworksService {
             private IBinder mRemote;
 

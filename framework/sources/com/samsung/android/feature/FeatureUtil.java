@@ -1,13 +1,13 @@
 package com.samsung.android.feature;
 
-import android.os.SemSystemProperties;
+import android.os.SystemProperties;
 import android.telecom.Logging.Session;
 import android.text.TextUtils;
 import android.util.Log;
 import java.io.File;
 
-/* loaded from: classes5.dex */
-public class FeatureUtil {
+/* loaded from: classes6.dex */
+class FeatureUtil {
     private static final String CARRIER_FEATURE_FILE_NAME = "customer_carrier_feature.json";
     private static final String CURRENT_MATCHED_CODE = "mdc.matched_code";
     private static final String CURRENT_SIMSLOT_COUNT = "ro.multisim.simslotcount";
@@ -50,14 +50,13 @@ public class FeatureUtil {
         }
     }
 
-    public static SecCarrier getCarrierFeature(int phoneId, int canonicalId, boolean checkLastSim) {
+    static SecCarrier getCarrierFeature(int phoneId, int canonicalId, boolean checkLastSim) {
         SecCarrier systemFeature = getSecCarrierFeature(getSystemFeaturePath(phoneId, checkLastSim), getMatchedCode(phoneId, checkLastSim), canonicalId);
         SecCarrier updateFeature = getSecCarrierFeature(getUpdateFeaturePath(phoneId, checkLastSim), getMatchedCode(phoneId, checkLastSim), canonicalId);
         if (systemFeature != null && updateFeature != null) {
             if (SemCarrierFeature.DEBUG) {
-                String str = LOG_TAG;
-                Log.d(str, "systemFeature version : " + systemFeature.getVersion() + "  mapped cid version : " + systemFeature.getMappedCidVersion());
-                Log.d(str, "updateFeature version : " + updateFeature.getVersion() + "  mapped cid version : " + updateFeature.getMappedCidVersion());
+                Log.d(LOG_TAG, "systemFeature version : " + systemFeature.getVersion() + "  mapped cid version : " + systemFeature.getMappedCidVersion());
+                Log.d(LOG_TAG, "updateFeature version : " + updateFeature.getVersion() + "  mapped cid version : " + updateFeature.getMappedCidVersion());
             }
             int systemFeatureOsVersion = systemFeature.getMappedCidVersion() / 10000;
             int updateFeatureOsVersion = updateFeature.getMappedCidVersion() / 10000;
@@ -101,35 +100,35 @@ public class FeatureUtil {
     }
 
     private static String getSystemFeaturePath(int phoneId, boolean checkLastSim) {
-        String featurePath = SemSystemProperties.get(CURRENT_SYSTEM_FEATURE_PATH + getReadablePhoneIDName(phoneId), FEATURE_GROUP_VALUE_UNKNOWN);
-        return checkLastSim ? SemSystemProperties.get(LAST_SYSTEM_FEATURE_PATH + getReadablePhoneIDName(phoneId), featurePath) + "/" + CARRIER_FEATURE_FILE_NAME : featurePath + "/" + CARRIER_FEATURE_FILE_NAME;
+        String featurePath = SystemProperties.get(CURRENT_SYSTEM_FEATURE_PATH + getReadablePhoneIDName(phoneId), FEATURE_GROUP_VALUE_UNKNOWN);
+        return checkLastSim ? SystemProperties.get(LAST_SYSTEM_FEATURE_PATH + getReadablePhoneIDName(phoneId), featurePath) + "/" + CARRIER_FEATURE_FILE_NAME : featurePath + "/" + CARRIER_FEATURE_FILE_NAME;
     }
 
     private static String getUpdateFeaturePath(int phoneId, boolean checkLastSim) {
         return checkLastSim ? UPDATE_FEATURE_PATH + phoneId + "/" + LAST_CARRIER_FEATURE_FILE_NAME : UPDATE_FEATURE_PATH + phoneId + "/" + CARRIER_FEATURE_FILE_NAME;
     }
 
-    public static String getMatchedCode(int phoneId, boolean last) {
+    static String getMatchedCode(int phoneId, boolean last) {
         if (last) {
-            return SemSystemProperties.get(LAST_MATCHED_CODE + getReadablePhoneIDName(phoneId), SemSystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
+            return SystemProperties.get(LAST_MATCHED_CODE + getReadablePhoneIDName(phoneId), SystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
         }
-        return SemSystemProperties.get(CURRENT_MATCHED_CODE + getReadablePhoneIDName(phoneId), SemSystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
+        return SystemProperties.get(CURRENT_MATCHED_CODE + getReadablePhoneIDName(phoneId), SystemProperties.get(SALES_CODE, FEATURE_GROUP_VALUE_UNKNOWN));
     }
 
-    public static int getCurrentCanonicalID(int phoneId) {
-        return SemSystemProperties.getInt(CURRENT_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
+    static int getCurrentCanonicalID(int phoneId) {
+        return SystemProperties.getInt(CURRENT_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
     }
 
-    public static int getLastCanonicalID(int phoneId) {
-        return SemSystemProperties.getInt(PERSIST_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
+    static int getLastCanonicalID(int phoneId) {
+        return SystemProperties.getInt(PERSIST_SIMSLOT_PARENT_CANONICAL_ID + getReadablePhoneIDName(phoneId), -1);
     }
 
-    public static int getDefaultCanonicalID() {
+    static int getDefaultCanonicalID() {
         return -1;
     }
 
-    public static int getLastFeatureVersion(int phoneId) {
-        String featureInfo = SemSystemProperties.get(CURRENT_SIMSLOT_FEATURE + getReadablePhoneIDName(phoneId), "");
+    static int getLastFeatureVersion(int phoneId) {
+        String featureInfo = SystemProperties.get(CURRENT_SIMSLOT_FEATURE + getReadablePhoneIDName(phoneId), "");
         if (TextUtils.isEmpty(featureInfo)) {
             return -1;
         }
@@ -151,7 +150,7 @@ public class FeatureUtil {
         return String.valueOf(phoneId + 1);
     }
 
-    public static int readSimCount() {
-        return SemSystemProperties.getInt(CURRENT_SIMSLOT_COUNT, 1);
+    static int readSimCount() {
+        return SystemProperties.getInt(CURRENT_SIMSLOT_COUNT, 1);
     }
 }

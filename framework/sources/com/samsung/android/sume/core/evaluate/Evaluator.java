@@ -2,7 +2,7 @@ package com.samsung.android.sume.core.evaluate;
 
 import java.util.stream.Stream;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public interface Evaluator extends Comparable<Evaluator> {
     Evaluator and(Evaluator evaluator);
 

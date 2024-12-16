@@ -5,23 +5,22 @@ import com.samsung.android.sume.core.format.MutableMediaFormat;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class OpPriorityComputable {
     private ComputeBridge bridge;
     private OpPriorityCompute priorityCompute;
     private final Enum<?> type;
 
     @FunctionalInterface
-    /* loaded from: classes4.dex */
-    public interface ComputeBridge {
+    interface ComputeBridge {
         float compute(MutableMediaFormat mutableMediaFormat, MediaFormat mediaFormat, OpPriorityCompute opPriorityCompute);
     }
 
-    public OpPriorityComputable(Enum<?> type) {
+    OpPriorityComputable(Enum<?> type) {
         this.type = type;
     }
 
-    public void setComputeBridge(ComputeBridge bridge, OpPriorityCompute priorityCompute) {
+    void setComputeBridge(ComputeBridge bridge, OpPriorityCompute priorityCompute) {
         this.bridge = bridge;
         this.priorityCompute = priorityCompute;
     }
@@ -35,11 +34,11 @@ public class OpPriorityComputable {
         })).compute(input, output, this.priorityCompute);
     }
 
-    public static /* synthetic */ float lambda$compute$0(MutableMediaFormat ifmt, MediaFormat ofmt, OpPriorityCompute compute) {
+    static /* synthetic */ float lambda$compute$0(MutableMediaFormat ifmt, MediaFormat ofmt, OpPriorityCompute compute) {
         return -1.0f;
     }
 
-    public static /* synthetic */ ComputeBridge lambda$compute$1() {
+    static /* synthetic */ ComputeBridge lambda$compute$1() {
         return new ComputeBridge() { // from class: com.samsung.android.sume.core.functional.OpPriorityComputable$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.OpPriorityComputable.ComputeBridge
             public final float compute(MutableMediaFormat mutableMediaFormat, MediaFormat mediaFormat, OpPriorityCompute opPriorityCompute) {

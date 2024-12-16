@@ -13,9 +13,8 @@ public class MatrixCursor extends AbstractCursor {
     public MatrixCursor(String[] columnNames, int initialCapacity) {
         this.rowCount = 0;
         this.columnNames = columnNames;
-        int length = columnNames.length;
-        this.columnCount = length;
-        this.data = new Object[length * (initialCapacity < 1 ? 1 : initialCapacity)];
+        this.columnCount = columnNames.length;
+        this.data = new Object[this.columnCount * (initialCapacity < 1 ? 1 : initialCapacity)];
     }
 
     public MatrixCursor(String[] columnNames) {
@@ -37,31 +36,26 @@ public class MatrixCursor extends AbstractCursor {
 
     public RowBuilder newRow() {
         int row = this.rowCount;
-        int i = row + 1;
-        this.rowCount = i;
-        int endIndex = i * this.columnCount;
+        this.rowCount = row + 1;
+        int endIndex = this.rowCount * this.columnCount;
         ensureCapacity(endIndex);
         return new RowBuilder(row);
     }
 
     public void addRow(Object[] columnValues) {
-        int length = columnValues.length;
-        int i = this.columnCount;
-        if (length != i) {
+        if (columnValues.length != this.columnCount) {
             throw new IllegalArgumentException("columnNames.length = " + this.columnCount + ", columnValues.length = " + columnValues.length);
         }
-        int i2 = this.rowCount;
-        this.rowCount = i2 + 1;
-        int start = i2 * i;
-        ensureCapacity(i + start);
+        int i = this.rowCount;
+        this.rowCount = i + 1;
+        int start = i * this.columnCount;
+        ensureCapacity(this.columnCount + start);
         System.arraycopy(columnValues, 0, this.data, start, this.columnCount);
     }
 
     public void addRow(Iterable<?> columnValues) {
-        int i = this.rowCount;
-        int i2 = this.columnCount;
-        int start = i * i2;
-        int end = i2 + start;
+        int start = this.rowCount * this.columnCount;
+        int end = this.columnCount + start;
         ensureCapacity(end);
         if (columnValues instanceof ArrayList) {
             addRow((ArrayList) columnValues, start);
@@ -95,20 +89,17 @@ public class MatrixCursor extends AbstractCursor {
     }
 
     private void ensureCapacity(int size) {
-        Object[] objArr = this.data;
-        if (size > objArr.length) {
+        if (size > this.data.length) {
             Object[] oldData = this.data;
-            int newSize = objArr.length * 2;
+            int newSize = this.data.length * 2;
             if (newSize < size) {
                 newSize = size;
             }
-            Object[] objArr2 = new Object[newSize];
-            this.data = objArr2;
-            System.arraycopy(oldData, 0, objArr2, 0, oldData.length);
+            this.data = new Object[newSize];
+            System.arraycopy(oldData, 0, this.data, 0, oldData.length);
         }
     }
 
-    /* loaded from: classes.dex */
     public class RowBuilder {
         private final int endIndex;
         private int index;
@@ -116,9 +107,8 @@ public class MatrixCursor extends AbstractCursor {
 
         RowBuilder(int row) {
             this.row = row;
-            int i = MatrixCursor.this.columnCount * row;
-            this.index = i;
-            this.endIndex = i + MatrixCursor.this.columnCount;
+            this.index = MatrixCursor.this.columnCount * row;
+            this.endIndex = this.index + MatrixCursor.this.columnCount;
         }
 
         public RowBuilder add(Object columnValue) {

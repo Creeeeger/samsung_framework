@@ -106,9 +106,8 @@ public class ResponseData extends ASN1Object {
         v.add(this.responderID);
         v.add(this.producedAt);
         v.add(this.responses);
-        Extensions extensions = this.responseExtensions;
-        if (extensions != null) {
-            v.add(new DERTaggedObject(true, 1, extensions));
+        if (this.responseExtensions != null) {
+            v.add(new DERTaggedObject(true, 1, this.responseExtensions));
         }
         return new DERSequence(v);
     }

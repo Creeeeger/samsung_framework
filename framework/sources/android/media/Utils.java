@@ -26,30 +26,8 @@ import java.util.concurrent.Executor;
 public class Utils {
     private static final String TAG = "Utils";
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.Utils$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1<T> implements Comparator<Range<T>> {
-        AnonymousClass1() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Range<T> range, Range<T> range2) {
-            if (range.getUpper().compareTo(range2.getLower()) < 0) {
-                return -1;
-            }
-            if (range.getLower().compareTo(range2.getUpper()) > 0) {
-                return 1;
-            }
-            throw new IllegalArgumentException("sample rate ranges must be distinct (" + range + " and " + range2 + NavigationBarInflaterView.KEY_CODE_END);
-        }
-    }
-
     public static <T extends Comparable<? super T>> void sortDistinctRanges(Range<T>[] ranges) {
         Arrays.sort(ranges, new Comparator<Range<T>>() { // from class: android.media.Utils.1
-            AnonymousClass1() {
-            }
-
             @Override // java.util.Comparator
             public int compare(Range<T> range, Range<T> range2) {
                 if (range.getUpper().compareTo(range2.getLower()) < 0) {
@@ -84,30 +62,8 @@ public class Utils {
         return (Range[]) result.toArray(new Range[result.size()]);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.media.Utils$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2<T> implements Comparator<Range<T>> {
-        AnonymousClass2() {
-        }
-
-        @Override // java.util.Comparator
-        public int compare(Range<T> range, Range<T> range2) {
-            if (range.getUpper().compareTo(range2.getLower()) < 0) {
-                return -1;
-            }
-            if (range.getLower().compareTo(range2.getUpper()) > 0) {
-                return 1;
-            }
-            return 0;
-        }
-    }
-
     public static <T extends Comparable<? super T>> int binarySearchDistinctRanges(Range<T>[] ranges, T value) {
         return Arrays.binarySearch(ranges, Range.create(value, value), new Comparator<Range<T>>() { // from class: android.media.Utils.2
-            AnonymousClass2() {
-            }
-
             @Override // java.util.Comparator
             public int compare(Range<T> range, Range<T> range2) {
                 if (range.getUpper().compareTo(range2.getLower()) < 0) {
@@ -139,14 +95,14 @@ public class Utils {
         return b;
     }
 
-    public static Range<Integer> factorRange(Range<Integer> range, int factor) {
+    static Range<Integer> factorRange(Range<Integer> range, int factor) {
         if (factor == 1) {
             return range;
         }
         return Range.create(Integer.valueOf(divUp(range.getLower().intValue(), factor)), Integer.valueOf(range.getUpper().intValue() / factor));
     }
 
-    public static Range<Long> factorRange(Range<Long> range, long factor) {
+    static Range<Long> factorRange(Range<Long> range, long factor) {
         if (factor == 1) {
             return range;
         }
@@ -158,22 +114,22 @@ public class Utils {
         return new Rational((int) (ratio.getNumerator() * (num / common)), (int) (ratio.getDenominator() * (den / common)));
     }
 
-    public static Range<Rational> scaleRange(Range<Rational> range, int num, int den) {
+    static Range<Rational> scaleRange(Range<Rational> range, int num, int den) {
         if (num == den) {
             return range;
         }
         return Range.create(scaleRatio(range.getLower(), num, den), scaleRatio(range.getUpper(), num, den));
     }
 
-    public static Range<Integer> alignRange(Range<Integer> range, int align) {
+    static Range<Integer> alignRange(Range<Integer> range, int align) {
         return range.intersect(Integer.valueOf(divUp(range.getLower().intValue(), align) * align), Integer.valueOf((range.getUpper().intValue() / align) * align));
     }
 
-    public static int divUp(int num, int den) {
+    static int divUp(int num, int den) {
         return ((num + den) - 1) / den;
     }
 
-    public static long divUp(long num, long den) {
+    static long divUp(long num, long den) {
         return ((num + den) - 1) / den;
     }
 
@@ -184,15 +140,15 @@ public class Utils {
         return (a * b) / gcd(a, b);
     }
 
-    public static Range<Integer> intRangeFor(double v) {
+    static Range<Integer> intRangeFor(double v) {
         return Range.create(Integer.valueOf((int) v), Integer.valueOf((int) Math.ceil(v)));
     }
 
-    public static Range<Long> longRangeFor(double v) {
+    static Range<Long> longRangeFor(double v) {
         return Range.create(Long.valueOf((long) v), Long.valueOf((long) Math.ceil(v)));
     }
 
-    public static Size parseSize(Object o, Size fallback) {
+    static Size parseSize(Object o, Size fallback) {
         if (o == null) {
             return fallback;
         }
@@ -204,7 +160,7 @@ public class Utils {
         }
     }
 
-    public static int parseIntSafely(Object o, int fallback) {
+    static int parseIntSafely(Object o, int fallback) {
         if (o == null) {
             return fallback;
         }
@@ -217,7 +173,7 @@ public class Utils {
         }
     }
 
-    public static Range<Integer> parseIntRange(Object o, Range<Integer> fallback) {
+    static Range<Integer> parseIntRange(Object o, Range<Integer> fallback) {
         if (o == null) {
             return fallback;
         }
@@ -235,7 +191,7 @@ public class Utils {
         }
     }
 
-    public static Range<Long> parseLongRange(Object o, Range<Long> fallback) {
+    static Range<Long> parseLongRange(Object o, Range<Long> fallback) {
         if (o == null) {
             return fallback;
         }
@@ -253,7 +209,7 @@ public class Utils {
         }
     }
 
-    public static Range<Rational> parseRationalRange(Object o, Range<Rational> fallback) {
+    static Range<Rational> parseRationalRange(Object o, Range<Rational> fallback) {
         if (o == null) {
             return fallback;
         }
@@ -271,7 +227,7 @@ public class Utils {
         }
     }
 
-    public static Pair<Size, Size> parseSizeRange(Object o) {
+    static Pair<Size, Size> parseSizeRange(Object o) {
         if (o == null) {
             return null;
         }
@@ -301,7 +257,7 @@ public class Utils {
         }
     }
 
-    public static String getFileDisplayNameFromUri(Context context, Uri uri) {
+    static String getFileDisplayNameFromUri(Context context, Uri uri) {
         String scheme = uri.getScheme();
         if ("file".equals(scheme)) {
             return uri.getLastPathSegment();
@@ -337,21 +293,17 @@ public class Utils {
         return uri.toString();
     }
 
-    /* loaded from: classes2.dex */
     public static class ListenerList<V> {
         private final boolean mClearCallingIdentity;
         private final boolean mForceRemoveConsistency;
         private HashMap<Object, ListenerWithCancellation<V>> mListeners;
         private final boolean mRestrictSingleCallerOnEvent;
 
-        /* loaded from: classes2.dex */
         public interface Listener<V> {
             void onEvent(int i, V v);
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public interface ListenerWithCancellation<V> extends Listener<V> {
+        private interface ListenerWithCancellation<V> extends Listener<V> {
             void cancel();
         }
 
@@ -376,9 +328,8 @@ public class Utils {
             }
         }
 
-        /* renamed from: android.media.Utils$ListenerList$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 implements ListenerWithCancellation<V> {
+        /* renamed from: android.media.Utils$ListenerList$1, reason: invalid class name */
+        class AnonymousClass1 implements ListenerWithCancellation<V> {
             final /* synthetic */ Executor val$executor;
             final /* synthetic */ Listener val$listener;
             private final Object mLock = new Object();
@@ -401,6 +352,7 @@ public class Utils {
                 });
             }
 
+            /* JADX INFO: Access modifiers changed from: private */
             public /* synthetic */ void lambda$onEvent$0(Listener listener, int eventCode, Object info) {
                 if (ListenerList.this.mRestrictSingleCallerOnEvent || ListenerList.this.mForceRemoveConsistency) {
                     synchronized (this.mLock) {
@@ -460,5 +412,22 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static String anonymizeBluetoothAddress(String address) {
+        if (address == null) {
+            return null;
+        }
+        if (address.length() != "AA:BB:CC:DD:EE:FF".length()) {
+            return address;
+        }
+        return "XX:XX:XX:XX" + address.substring("XX:XX:XX:XX".length());
+    }
+
+    public static String anonymizeBluetoothAddress(int deviceType, String address) {
+        if (!AudioSystem.isBluetoothDevice(deviceType)) {
+            return address;
+        }
+        return anonymizeBluetoothAddress(address);
     }
 }

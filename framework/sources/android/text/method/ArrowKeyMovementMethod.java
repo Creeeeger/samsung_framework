@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ArrowKeyMovementMethod extends BaseMovementMethod implements MovementMethod {
     private static final Object LAST_TAP_DOWN = new Object();
     private static ArrowKeyMovementMethod sInstance;
@@ -30,9 +30,8 @@ public class ArrowKeyMovementMethod extends BaseMovementMethod implements Moveme
         return 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     @Override // android.text.method.BaseMovementMethod
-    public boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
+    protected boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode, int movementMetaState, KeyEvent event) {
         switch (keyCode) {
             case 23:
                 if (KeyEvent.metaStateHasNoModifiers(movementMetaState) && event.getAction() == 0 && event.getRepeatCount() == 0 && MetaKeyKeyListener.getMetaState(buffer, 2048, event) != 0) {
@@ -272,11 +271,10 @@ public class ArrowKeyMovementMethod extends BaseMovementMethod implements Moveme
                     return true;
                 }
                 if (wasTouchSelecting && this.mIsSpanSet) {
-                    Object obj = LAST_TAP_DOWN;
-                    int startOffset2 = buffer.getSpanStart(obj);
+                    int startOffset2 = buffer.getSpanStart(LAST_TAP_DOWN);
                     int endOffset = widget.getOffsetForPosition(event.getX(), event.getY());
                     Selection.setSelection(buffer, Math.min(startOffset2, endOffset), Math.max(startOffset2, endOffset));
-                    buffer.removeSpan(obj);
+                    buffer.removeSpan(LAST_TAP_DOWN);
                     this.mIsSpanSet = false;
                 }
                 MetaKeyKeyListener.adjustMetaAfterKeypress(buffer);

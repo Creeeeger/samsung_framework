@@ -6,11 +6,10 @@ import android.hardware.camera2.marshal.Marshaler;
 import android.hardware.camera2.utils.TypeReference;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class MarshalQueryableRect implements MarshalQueryable<Rect> {
     private static final int SIZE = 16;
 
-    /* loaded from: classes.dex */
     private class MarshalerRect extends Marshaler<Rect> {
         protected MarshalerRect(TypeReference<Rect> typeReference, int nativeType) {
             super(MarshalQueryableRect.this, typeReference, nativeType);
@@ -24,6 +23,7 @@ public class MarshalQueryableRect implements MarshalQueryable<Rect> {
             buffer.putInt(value.height());
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.hardware.camera2.marshal.Marshaler
         public Rect unmarshal(ByteBuffer buffer) {
             int left = buffer.getInt();

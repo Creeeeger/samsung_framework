@@ -3,18 +3,18 @@ package com.samsung.android.location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.telecom.ParcelableCallAnalytics;
+import com.samsung.android.lock.LsConstants;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemLocationBatchingRequest implements Parcelable {
     public static final Parcelable.Creator<SemLocationBatchingRequest> CREATOR = new Parcelable.Creator<SemLocationBatchingRequest>() { // from class: com.samsung.android.location.SemLocationBatchingRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemLocationBatchingRequest createFromParcel(Parcel in) {
             return new SemLocationBatchingRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemLocationBatchingRequest[] newArray(int size) {
             return new SemLocationBatchingRequest[size];
@@ -26,13 +26,9 @@ public class SemLocationBatchingRequest implements Parcelable {
     private float minDisplacement;
     private long minInterval;
 
-    /* synthetic */ SemLocationBatchingRequest(Parcel parcel, SemLocationBatchingRequestIA semLocationBatchingRequestIA) {
-        this(parcel);
-    }
-
     public SemLocationBatchingRequest() {
         this.minInterval = ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
-        this.maxInterval = 600000L;
+        this.maxInterval = LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT;
         this.maxWaitTime = 36000000L;
         this.maxNumUpdates = 100;
         this.minDisplacement = 500.0f;
@@ -83,23 +79,6 @@ public class SemLocationBatchingRequest implements Parcelable {
         return this;
     }
 
-    /* renamed from: com.samsung.android.location.SemLocationBatchingRequest$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemLocationBatchingRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemLocationBatchingRequest createFromParcel(Parcel in) {
-            return new SemLocationBatchingRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemLocationBatchingRequest[] newArray(int size) {
-            return new SemLocationBatchingRequest[size];
-        }
-    }
-
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -116,7 +95,7 @@ public class SemLocationBatchingRequest implements Parcelable {
 
     private SemLocationBatchingRequest(Parcel in) {
         this.minInterval = ParcelableCallAnalytics.MILLIS_IN_5_MINUTES;
-        this.maxInterval = 600000L;
+        this.maxInterval = LsConstants.SKT_LOCKOUT_ATTEMPT_DEFAULT_TIMEOUT;
         this.maxWaitTime = 36000000L;
         this.maxNumUpdates = 100;
         this.minDisplacement = 500.0f;

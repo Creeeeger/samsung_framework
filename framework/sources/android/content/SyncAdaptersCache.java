@@ -31,6 +31,7 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
         this.mAuthorityToSyncAdapters = new SparseArray<>();
     }
 
+    /* JADX WARN: Can't rename method to resolve collision */
     @Override // android.content.pm.RegisteredServicesCache
     public SyncAdapterType parseServiceAttributes(Resources res, String packageName, AttributeSet attrs) {
         TypedArray sa = res.obtainAttributes(attrs, R.styleable.SyncAdapter);
@@ -53,7 +54,7 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
     }
 
     @Override // android.content.pm.RegisteredServicesCache
-    public void onServicesChangedLocked(int userId) {
+    protected void onServicesChangedLocked(int userId) {
         synchronized (this.mServicesLock) {
             ArrayMap<String, String[]> adapterMap = this.mAuthorityToSyncAdapters.get(userId);
             if (adapterMap != null) {
@@ -88,14 +89,13 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
     }
 
     @Override // android.content.pm.RegisteredServicesCache
-    public void onUserRemoved(int userId) {
+    protected void onUserRemoved(int userId) {
         synchronized (this.mServicesLock) {
             this.mAuthorityToSyncAdapters.remove(userId);
         }
         super.onUserRemoved(userId);
     }
 
-    /* loaded from: classes.dex */
     static class MySerializer implements XmlSerializerAndParser<SyncAdapterType> {
         MySerializer() {
         }
@@ -106,6 +106,7 @@ public class SyncAdaptersCache extends RegisteredServicesCache<SyncAdapterType> 
             out.attribute(null, "accountType", item.accountType);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.content.pm.XmlSerializerAndParser
         public SyncAdapterType createFromXml(TypedXmlPullParser parser) throws IOException, XmlPullParserException {
             String authority = parser.getAttributeValue(null, ContactsContract.Directory.DIRECTORY_AUTHORITY);

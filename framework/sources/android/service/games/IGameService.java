@@ -17,7 +17,6 @@ public interface IGameService extends IInterface {
 
     void gameStarted(GameStartedEvent gameStartedEvent) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IGameService {
         @Override // android.service.games.IGameService
         public void connected(IGameServiceController gameServiceController) throws RemoteException {
@@ -37,7 +36,6 @@ public interface IGameService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IGameService {
         static final int TRANSACTION_connected = 1;
         static final int TRANSACTION_disconnected = 2;
@@ -86,32 +84,29 @@ public interface IGameService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGameService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGameService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGameService.DESCRIPTOR);
+                case 1:
+                    IGameServiceController _arg0 = IGameServiceController.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    connected(_arg0);
+                    return true;
+                case 2:
+                    disconnected();
+                    return true;
+                case 3:
+                    GameStartedEvent _arg02 = (GameStartedEvent) data.readTypedObject(GameStartedEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    gameStarted(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGameServiceController _arg0 = IGameServiceController.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            connected(_arg0);
-                            return true;
-                        case 2:
-                            disconnected();
-                            return true;
-                        case 3:
-                            GameStartedEvent _arg02 = (GameStartedEvent) data.readTypedObject(GameStartedEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            gameStarted(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements IGameService {
             private IBinder mRemote;
 

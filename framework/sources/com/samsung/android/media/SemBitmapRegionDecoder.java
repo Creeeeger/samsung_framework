@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemBitmapRegionDecoder {
     private static final String TAG = "SemBitmapRegionDecoder";
     private static boolean mLibraryLoaded = false;
@@ -43,9 +43,8 @@ public class SemBitmapRegionDecoder {
         }
         Log.d(TAG, "newInstance file e");
         SemBitmapRegionDecoder rd = new SemBitmapRegionDecoder();
-        InternalRegionDecoder newInstance = InternalRegionDecoder.newInstance(pathName);
-        rd.mRegionDecoder = newInstance;
-        if (newInstance == null) {
+        rd.mRegionDecoder = InternalRegionDecoder.newInstance(pathName);
+        if (rd.mRegionDecoder == null) {
             Log.e(TAG, "newInstance file fail");
             return null;
         }
@@ -61,9 +60,8 @@ public class SemBitmapRegionDecoder {
         }
         Log.d(TAG, "newInstance byteArray e");
         SemBitmapRegionDecoder rd = new SemBitmapRegionDecoder();
-        InternalRegionDecoder newInstance = InternalRegionDecoder.newInstance(data, offset, length);
-        rd.mRegionDecoder = newInstance;
-        if (newInstance == null) {
+        rd.mRegionDecoder = InternalRegionDecoder.newInstance(data, offset, length);
+        if (rd.mRegionDecoder == null) {
             Log.e(TAG, "newInstance byteArray fail");
             return null;
         }
@@ -162,32 +160,27 @@ public class SemBitmapRegionDecoder {
 
     public int getWidth() {
         checkRecycled("getWidth called on recycled region decoder");
-        int i = this.mWidth;
-        if (i > 0) {
-            return i;
+        if (this.mWidth > 0) {
+            return this.mWidth;
         }
-        int width = this.mRegionDecoder.getWidth();
-        this.mWidth = width;
-        return width;
+        this.mWidth = this.mRegionDecoder.getWidth();
+        return this.mWidth;
     }
 
     public int getHeight() {
         checkRecycled("getHeight called on recycled region decoder");
-        int i = this.mHeight;
-        if (i > 0) {
-            return i;
+        if (this.mHeight > 0) {
+            return this.mHeight;
         }
-        int height = this.mRegionDecoder.getHeight();
-        this.mHeight = height;
-        return height;
+        this.mHeight = this.mRegionDecoder.getHeight();
+        return this.mHeight;
     }
 
     public void recycle() {
         if (!this.mRecycled) {
             this.mRegionDecoder.recycle();
-            InternalRegionDecoder internalRegionDecoder = this.mGainRD;
-            if (internalRegionDecoder != null) {
-                internalRegionDecoder.recycle();
+            if (this.mGainRD != null) {
+                this.mGainRD.recycle();
             }
             this.mRecycled = true;
         }

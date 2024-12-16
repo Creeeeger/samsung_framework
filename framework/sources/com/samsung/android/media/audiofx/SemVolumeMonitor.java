@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.UUID;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemVolumeMonitor extends AudioEffect {
     public static final UUID EFFECT_TYPE_VOLUME_MONITOR = UUID.fromString("f15b944b-0202-451e-a6ff-c61f11beda02");
     private static final int PARAM_GET_ONE_MIN_SCORE_STATUS = 1;

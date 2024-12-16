@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ITestSessionCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.ITestSessionCallback";
 
@@ -14,7 +14,6 @@ public interface ITestSessionCallback extends IInterface {
 
     void onCleanupStarted(int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ITestSessionCallback {
         @Override // android.hardware.biometrics.ITestSessionCallback
         public void onCleanupStarted(int userId) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ITestSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ITestSessionCallback {
         static final int TRANSACTION_onCleanupFinished = 2;
         static final int TRANSACTION_onCleanupStarted = 1;
@@ -76,31 +74,27 @@ public interface ITestSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITestSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITestSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITestSessionCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCleanupStarted(_arg0);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCleanupFinished(_arg02);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCleanupStarted(_arg0);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCleanupFinished(_arg02);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ITestSessionCallback {
+        private static class Proxy implements ITestSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

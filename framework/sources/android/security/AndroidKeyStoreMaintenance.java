@@ -21,6 +21,7 @@ public class AndroidKeyStoreMaintenance {
     }
 
     public static int onUserAdded(int userId) {
+        StrictMode.noteDiskWrite();
         try {
             getService().onUserAdded(userId);
             return 0;
@@ -33,7 +34,22 @@ public class AndroidKeyStoreMaintenance {
         }
     }
 
+    public static int initUserSuperKeys(int userId, byte[] password, boolean allowExisting) {
+        StrictMode.noteDiskWrite();
+        try {
+            getService().initUserSuperKeys(userId, password, allowExisting);
+            return 0;
+        } catch (ServiceSpecificException e) {
+            Log.e(TAG, "initUserSuperKeys failed", e);
+            return e.errorCode;
+        } catch (Exception e2) {
+            Log.e(TAG, "Can not connect to keystore", e2);
+            return 4;
+        }
+    }
+
     public static int onUserRemoved(int userId) {
+        StrictMode.noteDiskWrite();
         try {
             getService().onUserRemoved(userId);
             return 0;
@@ -47,6 +63,7 @@ public class AndroidKeyStoreMaintenance {
     }
 
     public static int onUserPasswordChanged(int userId, byte[] password) {
+        StrictMode.noteDiskWrite();
         try {
             getService().onUserPasswordChanged(userId, password);
             return 0;
@@ -59,9 +76,23 @@ public class AndroidKeyStoreMaintenance {
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:16:0x00a0  */
-    /* JADX WARN: Removed duplicated region for block: B:19:0x00b5  */
-    /* JADX WARN: Removed duplicated region for block: B:21:0x00a6  */
+    public static int onUserLskfRemoved(int userId) {
+        StrictMode.noteDiskWrite();
+        try {
+            getService().onUserLskfRemoved(userId);
+            return 0;
+        } catch (ServiceSpecificException e) {
+            Log.e(TAG, "onUserLskfRemoved failed", e);
+            return e.errorCode;
+        } catch (Exception e2) {
+            Log.e(TAG, "Can not connect to keystore", e2);
+            return 4;
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:16:0x00a6  */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x00bc  */
+    /* JADX WARN: Removed duplicated region for block: B:21:0x00ac  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -69,19 +100,21 @@ public class AndroidKeyStoreMaintenance {
     public static int clearNamespace(int r10, long r11) {
         /*
             java.lang.String r1 = "AndroidKeyStoreMaintenance"
-            r8 = 1
-            android.security.maintenance.IKeystoreMaintenance r0 = getService()     // Catch: java.lang.Throwable -> L35 java.lang.Exception -> L38 android.os.ServiceSpecificException -> L6a
-            r0.clearNamespace(r10, r11)     // Catch: java.lang.Throwable -> L35 java.lang.Exception -> L38 android.os.ServiceSpecificException -> L6a
-            if (r10 != 0) goto L13
+            r8 = -1
+            android.os.StrictMode.noteDiskWrite()
+            android.security.maintenance.IKeystoreMaintenance r0 = getService()     // Catch: java.lang.Throwable -> L39 java.lang.Exception -> L3c android.os.ServiceSpecificException -> L6f
+            r0.clearNamespace(r10, r11)     // Catch: java.lang.Throwable -> L39 java.lang.Exception -> L3c android.os.ServiceSpecificException -> L6f
+            if (r10 != 0) goto L16
             int r0 = (int) r11
             int r0 = android.os.UserHandle.getUserId(r0)
-            goto L1b
-        L13:
+            goto L1e
+        L16:
             int r0 = android.os.Binder.getCallingUid()
             int r0 = android.os.UserHandle.getUserId(r0)
-        L1b:
+        L1e:
             boolean r1 = android.security.KeyStoreAuditLog.isAuditLogEnabledAsUser(r0)
-            if (r1 == 0) goto L33
+            if (r1 == 0) goto L37
+        L26:
             r1 = 0
             r5 = 1
             java.lang.String r6 = "AndroidKeyStoreMaintenance"
@@ -91,28 +124,29 @@ public class AndroidKeyStoreMaintenance {
             android.security.KeyStoreAuditLog$AuditLogParams r1 = android.security.KeyStoreAuditLog.AuditLogParams.init(r1, r2, r4, r5, r6, r7)
             r1.setUserId(r0)
             android.security.KeyStoreAuditLog.auditLogPrivilegedAsUser(r1)
-        L33:
+        L37:
             r0 = 0
             return r0
-        L35:
+        L39:
             r0 = move-exception
-            goto L9e
-        L38:
+            goto La4
+        L3c:
             r0 = move-exception
             java.lang.String r2 = "Can not connect to keystore"
-            android.util.Log.e(r1, r2, r0)     // Catch: java.lang.Throwable -> L35
+            android.util.Log.e(r1, r2, r0)     // Catch: java.lang.Throwable -> L39
             r8 = 4
-            if (r10 != 0) goto L48
+            if (r10 != 0) goto L4c
             int r1 = (int) r11
             int r1 = android.os.UserHandle.getUserId(r1)
-            goto L50
-        L48:
+            goto L54
+        L4c:
             int r1 = android.os.Binder.getCallingUid()
             int r1 = android.os.UserHandle.getUserId(r1)
-        L50:
+        L54:
             r9 = r1
             boolean r1 = android.security.KeyStoreAuditLog.isAuditLogEnabledAsUser(r9)
-            if (r1 == 0) goto L68
+            if (r1 == 0) goto L6d
+        L5c:
             r1 = 0
             r5 = 1
             java.lang.String r6 = "AndroidKeyStoreMaintenance"
@@ -122,26 +156,27 @@ public class AndroidKeyStoreMaintenance {
             android.security.KeyStoreAuditLog$AuditLogParams r1 = android.security.KeyStoreAuditLog.AuditLogParams.init(r1, r2, r4, r5, r6, r7)
             r1.setUserId(r9)
             android.security.KeyStoreAuditLog.auditLogPrivilegedAsUser(r1)
-        L68:
+        L6d:
             r1 = 4
             return r1
-        L6a:
+        L6f:
             r0 = move-exception
             java.lang.String r2 = "clearNamespace failed"
-            android.util.Log.e(r1, r2, r0)     // Catch: java.lang.Throwable -> L35
-            int r7 = r0.errorCode     // Catch: java.lang.Throwable -> L35
-            int r8 = r0.errorCode     // Catch: java.lang.Throwable -> L9c
-            if (r10 != 0) goto L7c
+            android.util.Log.e(r1, r2, r0)     // Catch: java.lang.Throwable -> L39
+            int r7 = r0.errorCode     // Catch: java.lang.Throwable -> L39
+            int r8 = r0.errorCode     // Catch: java.lang.Throwable -> La2
+            if (r10 != 0) goto L81
             int r1 = (int) r11
             int r1 = android.os.UserHandle.getUserId(r1)
-            goto L84
-        L7c:
+            goto L89
+        L81:
             int r1 = android.os.Binder.getCallingUid()
             int r1 = android.os.UserHandle.getUserId(r1)
-        L84:
+        L89:
             r9 = r1
             boolean r1 = android.security.KeyStoreAuditLog.isAuditLogEnabledAsUser(r9)
-            if (r1 == 0) goto L9b
+            if (r1 == 0) goto La1
+        L91:
             r1 = 0
             r5 = 1
             java.lang.String r6 = "AndroidKeyStoreMaintenance"
@@ -150,23 +185,24 @@ public class AndroidKeyStoreMaintenance {
             android.security.KeyStoreAuditLog$AuditLogParams r1 = android.security.KeyStoreAuditLog.AuditLogParams.init(r1, r2, r4, r5, r6, r7)
             r1.setUserId(r9)
             android.security.KeyStoreAuditLog.auditLogPrivilegedAsUser(r1)
-        L9b:
+        La1:
             return r8
-        L9c:
+        La2:
             r0 = move-exception
             r8 = r7
-        L9e:
-            if (r10 != 0) goto La6
+        La4:
+            if (r10 != 0) goto Lac
             int r1 = (int) r11
             int r1 = android.os.UserHandle.getUserId(r1)
-            goto Lae
-        La6:
+            goto Lb4
+        Lac:
             int r1 = android.os.Binder.getCallingUid()
             int r1 = android.os.UserHandle.getUserId(r1)
-        Lae:
+        Lb4:
             r9 = r1
             boolean r1 = android.security.KeyStoreAuditLog.isAuditLogEnabledAsUser(r9)
-            if (r1 == 0) goto Lc6
+            if (r1 == 0) goto Lcd
+        Lbc:
             r1 = 0
             r5 = 1
             java.lang.String r6 = "AndroidKeyStoreMaintenance"
@@ -176,33 +212,14 @@ public class AndroidKeyStoreMaintenance {
             android.security.KeyStoreAuditLog$AuditLogParams r1 = android.security.KeyStoreAuditLog.AuditLogParams.init(r1, r2, r4, r5, r6, r7)
             r1.setUserId(r9)
             android.security.KeyStoreAuditLog.auditLogPrivilegedAsUser(r1)
-        Lc6:
+        Lcd:
             throw r0
         */
         throw new UnsupportedOperationException("Method not decompiled: android.security.AndroidKeyStoreMaintenance.clearNamespace(int, long):int");
     }
 
-    public static int getState(int userId) {
-        try {
-            return getService().getState(userId);
-        } catch (ServiceSpecificException e) {
-            Log.e(TAG, "getState failed", e);
-            return e.errorCode;
-        } catch (Exception e2) {
-            Log.e(TAG, "Can not connect to keystore", e2);
-            return 4;
-        }
-    }
-
-    public static void onDeviceOffBody() {
-        try {
-            getService().onDeviceOffBody();
-        } catch (Exception e) {
-            Log.e(TAG, "Error while reporting device off body event.", e);
-        }
-    }
-
     public static int migrateKeyNamespace(KeyDescriptor source, KeyDescriptor destination) {
+        StrictMode.noteDiskWrite();
         try {
             getService().migrateKeyNamespace(source, destination);
             return 0;
@@ -212,6 +229,17 @@ public class AndroidKeyStoreMaintenance {
         } catch (Exception e2) {
             Log.e(TAG, "Can not connect to keystore", e2);
             return 4;
+        }
+    }
+
+    public static long[] getAllAppUidsAffectedBySid(int userId, long userSecureId) throws KeyStoreException {
+        StrictMode.noteDiskWrite();
+        try {
+            return getService().getAppUidsAffectedBySid(userId, userSecureId);
+        } catch (RemoteException | NullPointerException e) {
+            throw new KeyStoreException(4, "Failure to connect to Keystore while trying to get apps affected by SID.");
+        } catch (ServiceSpecificException e2) {
+            throw new KeyStoreException(e2.errorCode, "Keystore error while trying to get apps affected by SID.");
         }
     }
 

@@ -18,7 +18,7 @@ public class Element {
     final String uri;
     boolean visited;
 
-    public Element(Element parent, String uri, String localName, int depth) {
+    Element(Element parent, String uri, String localName, int depth) {
         this.parent = parent;
         this.uri = uri;
         this.localName = localName;
@@ -45,12 +45,10 @@ public class Element {
 
     public Element requireChild(String uri, String localName) {
         Element child = getChild(uri, localName);
-        ArrayList<Element> arrayList = this.requiredChilden;
-        if (arrayList == null) {
-            ArrayList<Element> arrayList2 = new ArrayList<>();
-            this.requiredChilden = arrayList2;
-            arrayList2.add(child);
-        } else if (!arrayList.contains(child)) {
+        if (this.requiredChilden == null) {
+            this.requiredChilden = new ArrayList<>();
+            this.requiredChilden.add(child);
+        } else if (!this.requiredChilden.contains(child)) {
             this.requiredChilden.add(child);
         }
         return child;
@@ -94,11 +92,11 @@ public class Element {
         return toString(this.uri, this.localName);
     }
 
-    public static String toString(String uri, String localName) {
+    static String toString(String uri, String localName) {
         return "'" + (uri.equals("") ? localName : uri + ":" + localName) + "'";
     }
 
-    public void resetRequiredChildren() {
+    void resetRequiredChildren() {
         ArrayList<Element> requiredChildren = this.requiredChilden;
         if (requiredChildren != null) {
             for (int i = requiredChildren.size() - 1; i >= 0; i--) {
@@ -107,7 +105,7 @@ public class Element {
         }
     }
 
-    public void checkRequiredChildren(Locator locator) throws SAXParseException {
+    void checkRequiredChildren(Locator locator) throws SAXParseException {
         ArrayList<Element> requiredChildren = this.requiredChilden;
         if (requiredChildren != null) {
             for (int i = requiredChildren.size() - 1; i >= 0; i--) {

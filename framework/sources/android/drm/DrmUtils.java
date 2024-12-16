@@ -12,12 +12,12 @@ import java.util.Iterator;
 @Deprecated
 /* loaded from: classes.dex */
 public class DrmUtils {
-    public static byte[] readBytes(String path) throws IOException {
+    static byte[] readBytes(String path) throws IOException {
         File file = new File(path);
         return readBytes(file);
     }
 
-    public static byte[] readBytes(File file) throws IOException {
+    static byte[] readBytes(File file) throws IOException {
         FileInputStream inputStream = new FileInputStream(file);
         BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
         byte[] data = null;
@@ -34,7 +34,7 @@ public class DrmUtils {
         }
     }
 
-    public static void writeToFile(String path, byte[] data) throws IOException {
+    static void writeToFile(String path, byte[] data) throws IOException {
         FileOutputStream outputStream = null;
         if (path != null && data != null) {
             try {
@@ -46,7 +46,7 @@ public class DrmUtils {
         }
     }
 
-    public static void removeFile(String path) throws IOException {
+    static void removeFile(String path) throws IOException {
         File file = new File(path);
         file.delete();
     }
@@ -64,13 +64,8 @@ public class DrmUtils {
         return new ExtendedMetadataParser(extendedMetadata);
     }
 
-    /* loaded from: classes.dex */
     public static class ExtendedMetadataParser {
         HashMap<String, String> mMap;
-
-        /* synthetic */ ExtendedMetadataParser(byte[] bArr, ExtendedMetadataParserIA extendedMetadataParserIA) {
-            this(bArr);
-        }
 
         private int readByte(byte[] constraintData, int arrayIndex) {
             return constraintData[arrayIndex];

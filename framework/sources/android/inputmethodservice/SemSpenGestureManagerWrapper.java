@@ -11,14 +11,13 @@ final class SemSpenGestureManagerWrapper {
     SemSpenGestureManagerWrapper() {
     }
 
-    public static void notifyKeyboardClosedForAGIF(Context context) {
+    static void notifyKeyboardClosedForAGIF(Context context) {
         if (mSpenGestureManager == null) {
             mSpenGestureManager = (SpenGestureManager) context.getSystemService(Context.SEM_SPEN_GESTURE_SERVICE);
         }
         Log.d("InputMethodService", "notifyKeyboardClosed called.");
-        SpenGestureManager spenGestureManager = mSpenGestureManager;
-        if (spenGestureManager != null) {
-            spenGestureManager.notifyKeyboardClosed();
+        if (mSpenGestureManager != null) {
+            mSpenGestureManager.notifyKeyboardClosed();
         }
     }
 }

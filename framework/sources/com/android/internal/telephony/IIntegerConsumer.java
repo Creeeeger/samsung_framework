@@ -12,7 +12,6 @@ public interface IIntegerConsumer extends IInterface {
 
     void accept(int i) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IIntegerConsumer {
         @Override // com.android.internal.telephony.IIntegerConsumer
         public void accept(int result) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IIntegerConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IIntegerConsumer {
         static final int TRANSACTION_accept = 1;
 
@@ -67,25 +65,22 @@ public interface IIntegerConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIntegerConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIntegerConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIntegerConsumer.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    data.enforceNoDataAvail();
+                    accept(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            data.enforceNoDataAvail();
-                            accept(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IIntegerConsumer {
+        private static class Proxy implements IIntegerConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

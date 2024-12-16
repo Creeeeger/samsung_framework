@@ -12,7 +12,7 @@ public class Element {
     protected int id;
     protected String name;
 
-    public Element(VEContext context, ElementType type, int id, String name) {
+    protected Element(VEContext context, ElementType type, int id, String name) {
         this.context = context;
         this.elementType = type;
         this.id = id;
@@ -40,6 +40,10 @@ public class Element {
     }
 
     public Panel getPanel() {
+        return null;
+    }
+
+    public Element setOpacity(float opacity) {
         return null;
     }
 }

@@ -1,5 +1,6 @@
 package android.widget;
 
+import android.app.backup.FullBackup;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -30,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Calendar;
 
 /* loaded from: classes4.dex */
-public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate {
+class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelegate {
     private static final int AM = 0;
     private static final long DELAY_COMMIT_MILLIS = 2000;
     private static final int FROM_EXTERNAL_API = 0;
@@ -79,22 +80,16 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
     private static final int[] ATTRS_DISABLED_ALPHA = {16842803};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     private @interface ChangeSource {
     }
 
     public TimePickerClockDelegate(TimePicker delegator, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(delegator, context);
-        AnonymousClass2 anonymousClass2;
-        ColorStateList headerTextColor;
         this.mRadialPickerModeEnabled = true;
         this.mIsEnabled = true;
         this.mIsAmPmAtLeft = false;
         this.mIsAmPmAtTop = false;
-        AnonymousClass2 anonymousClass22 = new RadialTimePickerView.OnValueSelectedListener() { // from class: android.widget.TimePickerClockDelegate.2
-            AnonymousClass2() {
-            }
-
+        this.mOnValueSelectedListener = new RadialTimePickerView.OnValueSelectedListener() { // from class: android.widget.TimePickerClockDelegate.2
             @Override // android.widget.RadialTimePickerView.OnValueSelectedListener
             public void onValueSelected(int pickerType, int newValue, boolean autoAdvance) {
                 boolean valueChanged = false;
@@ -124,33 +119,23 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
                 }
             }
         };
-        this.mOnValueSelectedListener = anonymousClass22;
-        AnonymousClass3 anonymousClass3 = new TextInputTimePickerView.OnValueTypedListener() { // from class: android.widget.TimePickerClockDelegate.3
-            AnonymousClass3() {
-            }
-
+        this.mOnValueTypedListener = new TextInputTimePickerView.OnValueTypedListener() { // from class: android.widget.TimePickerClockDelegate.3
             @Override // android.widget.TextInputTimePickerView.OnValueTypedListener
             public void onValueChanged(int pickerType, int newValue) {
                 switch (pickerType) {
                     case 0:
                         TimePickerClockDelegate.this.setHourInternal(newValue, 2, false, true);
-                        return;
+                        break;
                     case 1:
                         TimePickerClockDelegate.this.setMinuteInternal(newValue, 2, true);
-                        return;
+                        break;
                     case 2:
                         TimePickerClockDelegate.this.setAmOrPm(newValue);
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         };
-        this.mOnValueTypedListener = anonymousClass3;
-        AnonymousClass4 anonymousClass4 = new NumericTextView.OnValueChangedListener() { // from class: android.widget.TimePickerClockDelegate.4
-            AnonymousClass4() {
-            }
-
+        this.mDigitEnteredListener = new NumericTextView.OnValueChangedListener() { // from class: android.widget.TimePickerClockDelegate.4
             @Override // com.android.internal.widget.NumericTextView.OnValueChangedListener
             public void onValueChanged(NumericTextView view, int value, boolean isValid, boolean isFinished) {
                 Runnable commitCallback;
@@ -178,45 +163,33 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
                 }
             }
         };
-        this.mDigitEnteredListener = anonymousClass4;
         this.mCommitHour = new Runnable() { // from class: android.widget.TimePickerClockDelegate.5
-            AnonymousClass5() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
-                TimePickerClockDelegate timePickerClockDelegate = TimePickerClockDelegate.this;
-                timePickerClockDelegate.setHour(timePickerClockDelegate.mHourView.getValue());
+                TimePickerClockDelegate.this.setHour(TimePickerClockDelegate.this.mHourView.getValue());
             }
         };
         this.mCommitMinute = new Runnable() { // from class: android.widget.TimePickerClockDelegate.6
-            AnonymousClass6() {
-            }
-
             @Override // java.lang.Runnable
             public void run() {
-                TimePickerClockDelegate timePickerClockDelegate = TimePickerClockDelegate.this;
-                timePickerClockDelegate.setMinute(timePickerClockDelegate.mMinuteView.getValue());
+                TimePickerClockDelegate.this.setMinute(TimePickerClockDelegate.this.mMinuteView.getValue());
             }
         };
-        AnonymousClass7 anonymousClass7 = new View.OnFocusChangeListener() { // from class: android.widget.TimePickerClockDelegate.7
-            AnonymousClass7() {
-            }
-
+        this.mFocusListener = new View.OnFocusChangeListener() { // from class: android.widget.TimePickerClockDelegate.7
             @Override // android.view.View.OnFocusChangeListener
             public void onFocusChange(View v, boolean focused) {
                 if (focused) {
                     switch (v.getId()) {
-                        case R.id.am_label /* 16908785 */:
+                        case R.id.am_label /* 16908786 */:
                             TimePickerClockDelegate.this.setAmOrPm(0);
                             break;
-                        case R.id.hours /* 16909140 */:
+                        case R.id.hours /* 16909149 */:
                             TimePickerClockDelegate.this.setCurrentItemShowing(0, true, true);
                             break;
-                        case R.id.minutes /* 16909329 */:
+                        case R.id.minutes /* 16909333 */:
                             TimePickerClockDelegate.this.setCurrentItemShowing(1, true, true);
                             break;
-                        case R.id.pm_label /* 16909479 */:
+                        case R.id.pm_label /* 16909488 */:
                             TimePickerClockDelegate.this.setAmOrPm(1);
                             break;
                         default:
@@ -226,24 +199,20 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
                 }
             }
         };
-        this.mFocusListener = anonymousClass7;
-        AnonymousClass8 anonymousClass8 = new View.OnClickListener() { // from class: android.widget.TimePickerClockDelegate.8
-            AnonymousClass8() {
-            }
-
+        this.mClickListener = new View.OnClickListener() { // from class: android.widget.TimePickerClockDelegate.8
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.am_label /* 16908785 */:
+                    case R.id.am_label /* 16908786 */:
                         TimePickerClockDelegate.this.setAmOrPm(0);
                         break;
-                    case R.id.hours /* 16909140 */:
+                    case R.id.hours /* 16909149 */:
                         TimePickerClockDelegate.this.setCurrentItemShowing(0, true, true);
                         break;
-                    case R.id.minutes /* 16909329 */:
+                    case R.id.minutes /* 16909333 */:
                         TimePickerClockDelegate.this.setCurrentItemShowing(1, true, true);
                         break;
-                    case R.id.pm_label /* 16909479 */:
+                    case R.id.pm_label /* 16909488 */:
                         TimePickerClockDelegate.this.setAmOrPm(1);
                         break;
                     default:
@@ -252,7 +221,6 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
                 TimePickerClockDelegate.this.tryVibrate();
             }
         };
-        this.mClickListener = anonymousClass8;
         TypedArray a = this.mContext.obtainStyledAttributes(attrs, R.styleable.TimePicker, defStyleAttr, defStyleRes);
         LayoutInflater inflater = (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Resources res = this.mContext.getResources();
@@ -261,77 +229,60 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         int layoutResourceId = a.getResourceId(12, R.layout.time_picker_material);
         View mainView = inflater.inflate(layoutResourceId, delegator);
         mainView.setSaveFromParentEnabled(false);
-        View findViewById = mainView.findViewById(R.id.time_header);
-        this.mRadialTimePickerHeader = findViewById;
-        findViewById.setOnTouchListener(new NearestTouchDelegate());
-        NumericTextView numericTextView = (NumericTextView) mainView.findViewById(R.id.hours);
-        this.mHourView = numericTextView;
-        numericTextView.setOnClickListener(anonymousClass8);
-        numericTextView.setOnFocusChangeListener(anonymousClass7);
-        numericTextView.setOnDigitEnteredListener(anonymousClass4);
-        numericTextView.setAccessibilityDelegate(new ClickActionDelegate(context, R.string.select_hours));
-        TextView textView = (TextView) mainView.findViewById(R.id.separator);
-        this.mSeparatorView = textView;
-        NumericTextView numericTextView2 = (NumericTextView) mainView.findViewById(R.id.minutes);
-        this.mMinuteView = numericTextView2;
-        numericTextView2.setOnClickListener(anonymousClass8);
-        numericTextView2.setOnFocusChangeListener(anonymousClass7);
-        numericTextView2.setOnDigitEnteredListener(anonymousClass4);
-        numericTextView2.setAccessibilityDelegate(new ClickActionDelegate(context, R.string.select_minutes));
-        numericTextView2.setRange(0, 59);
-        View findViewById2 = mainView.findViewById(R.id.ampm_layout);
-        this.mAmPmLayout = findViewById2;
-        findViewById2.setOnTouchListener(new NearestTouchDelegate());
+        this.mRadialTimePickerHeader = mainView.findViewById(R.id.time_header);
+        this.mRadialTimePickerHeader.setOnTouchListener(new NearestTouchDelegate());
+        this.mHourView = (NumericTextView) mainView.findViewById(R.id.hours);
+        this.mHourView.setOnClickListener(this.mClickListener);
+        this.mHourView.setOnFocusChangeListener(this.mFocusListener);
+        this.mHourView.setOnDigitEnteredListener(this.mDigitEnteredListener);
+        this.mHourView.setAccessibilityDelegate(new ClickActionDelegate(context, R.string.select_hours));
+        this.mSeparatorView = (TextView) mainView.findViewById(R.id.separator);
+        this.mMinuteView = (NumericTextView) mainView.findViewById(R.id.minutes);
+        this.mMinuteView.setOnClickListener(this.mClickListener);
+        this.mMinuteView.setOnFocusChangeListener(this.mFocusListener);
+        this.mMinuteView.setOnDigitEnteredListener(this.mDigitEnteredListener);
+        this.mMinuteView.setAccessibilityDelegate(new ClickActionDelegate(context, R.string.select_minutes));
+        this.mMinuteView.setRange(0, 59);
+        this.mAmPmLayout = mainView.findViewById(R.id.ampm_layout);
+        this.mAmPmLayout.setOnTouchListener(new NearestTouchDelegate());
         String[] amPmStrings = TimePicker.getAmPmStrings(context);
-        RadioButton radioButton = (RadioButton) findViewById2.findViewById(R.id.am_label);
-        this.mAmLabel = radioButton;
-        radioButton.setText(obtainVerbatim(amPmStrings[0]));
-        radioButton.setOnClickListener(anonymousClass8);
-        ensureMinimumTextWidth(radioButton);
-        RadioButton radioButton2 = (RadioButton) findViewById2.findViewById(R.id.pm_label);
-        this.mPmLabel = radioButton2;
-        radioButton2.setText(obtainVerbatim(amPmStrings[1]));
-        radioButton2.setOnClickListener(anonymousClass8);
-        ensureMinimumTextWidth(radioButton2);
+        this.mAmLabel = (RadioButton) this.mAmPmLayout.findViewById(R.id.am_label);
+        this.mAmLabel.lambda$setTextAsync$0(obtainVerbatim(amPmStrings[0]));
+        this.mAmLabel.setOnClickListener(this.mClickListener);
+        ensureMinimumTextWidth(this.mAmLabel);
+        this.mPmLabel = (RadioButton) this.mAmPmLayout.findViewById(R.id.pm_label);
+        this.mPmLabel.lambda$setTextAsync$0(obtainVerbatim(amPmStrings[1]));
+        this.mPmLabel.setOnClickListener(this.mClickListener);
+        ensureMinimumTextWidth(this.mPmLabel);
+        ColorStateList headerTextColor = null;
         int timeHeaderTextAppearance = a.getResourceId(1, 0);
-        if (timeHeaderTextAppearance == 0) {
-            anonymousClass2 = anonymousClass22;
-            headerTextColor = null;
-        } else {
-            anonymousClass2 = anonymousClass22;
+        if (timeHeaderTextAppearance != 0) {
             TypedArray textAppearance = this.mContext.obtainStyledAttributes(null, ATTRS_TEXT_COLOR, 0, timeHeaderTextAppearance);
             ColorStateList legacyHeaderTextColor = textAppearance.getColorStateList(0);
             headerTextColor = applyLegacyColorFixes(legacyHeaderTextColor);
             textAppearance.recycle();
         }
         headerTextColor = headerTextColor == null ? a.getColorStateList(11) : headerTextColor;
-        View findViewById3 = mainView.findViewById(R.id.input_header);
-        this.mTextInputPickerHeader = findViewById3;
+        this.mTextInputPickerHeader = mainView.findViewById(R.id.input_header);
         if (headerTextColor != null) {
-            numericTextView.setTextColor(headerTextColor);
-            textView.setTextColor(headerTextColor);
-            numericTextView2.setTextColor(headerTextColor);
-            radioButton.setTextColor(headerTextColor);
-            radioButton2.setTextColor(headerTextColor);
+            this.mHourView.setTextColor(headerTextColor);
+            this.mSeparatorView.setTextColor(headerTextColor);
+            this.mMinuteView.setTextColor(headerTextColor);
+            this.mAmLabel.setTextColor(headerTextColor);
+            this.mPmLabel.setTextColor(headerTextColor);
         }
         if (a.hasValueOrEmpty(0)) {
-            findViewById.setBackground(a.getDrawable(0));
-            findViewById3.setBackground(a.getDrawable(0));
+            this.mRadialTimePickerHeader.setBackground(a.getDrawable(0));
+            this.mTextInputPickerHeader.setBackground(a.getDrawable(0));
         }
         a.recycle();
-        RadialTimePickerView radialTimePickerView = (RadialTimePickerView) mainView.findViewById(R.id.radial_picker);
-        this.mRadialTimePickerView = radialTimePickerView;
-        radialTimePickerView.applyAttributes(attrs, defStyleAttr, defStyleRes);
-        radialTimePickerView.setOnValueSelectedListener(anonymousClass2);
-        TextInputTimePickerView textInputTimePickerView = (TextInputTimePickerView) mainView.findViewById(R.id.input_mode);
-        this.mTextInputPickerView = textInputTimePickerView;
-        textInputTimePickerView.setListener(anonymousClass3);
-        ImageButton imageButton = (ImageButton) mainView.findViewById(R.id.toggle_mode);
-        this.mRadialTimePickerModeButton = imageButton;
-        imageButton.setOnClickListener(new View.OnClickListener() { // from class: android.widget.TimePickerClockDelegate.1
-            AnonymousClass1() {
-            }
-
+        this.mRadialTimePickerView = (RadialTimePickerView) mainView.findViewById(R.id.radial_picker);
+        this.mRadialTimePickerView.applyAttributes(attrs, defStyleAttr, defStyleRes);
+        this.mRadialTimePickerView.setOnValueSelectedListener(this.mOnValueSelectedListener);
+        this.mTextInputPickerView = (TextInputTimePickerView) mainView.findViewById(R.id.input_mode);
+        this.mTextInputPickerView.setListener(this.mOnValueTypedListener);
+        this.mRadialTimePickerModeButton = (ImageButton) mainView.findViewById(R.id.toggle_mode);
+        this.mRadialTimePickerModeButton.setOnClickListener(new View.OnClickListener() { // from class: android.widget.TimePickerClockDelegate.1
             @Override // android.view.View.OnClickListener
             public void onClick(View v) {
                 TimePickerClockDelegate.this.toggleRadialPickerMode();
@@ -341,26 +292,13 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         this.mTextInputPickerModeEnabledDescription = context.getResources().getString(R.string.time_picker_text_input_mode_description);
         this.mAllowAutoAdvance = true;
         updateHourFormat();
-        Calendar calendar = Calendar.getInstance(this.mLocale);
-        this.mTempCalendar = calendar;
-        int currentHour = calendar.get(11);
-        int currentMinute = calendar.get(12);
+        this.mTempCalendar = Calendar.getInstance(this.mLocale);
+        int currentHour = this.mTempCalendar.get(11);
+        int currentMinute = this.mTempCalendar.get(12);
         initialize(currentHour, currentMinute, this.mIs24Hour, 0);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements View.OnClickListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            TimePickerClockDelegate.this.toggleRadialPickerMode();
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void toggleRadialPickerMode() {
         if (this.mRadialPickerModeEnabled) {
             this.mRadialTimePickerView.setVisibility(8);
@@ -398,10 +336,9 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         v.setMinimumWidth(minWidth);
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x0050  */
-    /* JADX WARN: Removed duplicated region for block: B:31:0x0072 A[LOOP:1: B:29:0x006e->B:31:0x0072, LOOP_END] */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x0053  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x0052  */
+    /* JADX WARN: Removed duplicated region for block: B:31:0x0074 A[LOOP:1: B:29:0x0070->B:31:0x0074, LOOP_END] */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x0055  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
@@ -458,14 +395,15 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
             r5 = r4
         L49:
             r10.mHourFormatStartsAtZero = r5
+            boolean r5 = r10.mHourFormatStartsAtZero
             r4 = r4 ^ r5
             boolean r5 = r10.mIs24Hour
-            if (r5 == 0) goto L53
+            if (r5 == 0) goto L55
             r5 = 23
-            goto L55
-        L53:
-            r5 = 11
+            goto L57
         L55:
+            r5 = 11
+        L57:
             int r5 = r5 + r4
             com.android.internal.widget.NumericTextView r6 = r10.mHourView
             r6.setRange(r4, r5)
@@ -477,15 +415,15 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
             java.lang.String[] r6 = r6.getDigitStrings()
             r7 = 0
             r8 = 0
-        L6e:
+        L70:
             r9 = 10
-            if (r8 >= r9) goto L7f
+            if (r8 >= r9) goto L81
             r9 = r6[r8]
             int r9 = r9.length()
             int r7 = java.lang.Math.max(r7, r9)
             int r8 = r8 + 1
-            goto L6e
-        L7f:
+            goto L70
+        L81:
             android.widget.TextInputTimePickerView r8 = r10.mTextInputPickerView
             int r9 = r7 * 2
             r8.setHourFormat(r9)
@@ -494,7 +432,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         throw new UnsupportedOperationException("Method not decompiled: android.widget.TimePickerClockDelegate.updateHourFormat():void");
     }
 
-    public static final CharSequence obtainVerbatim(String text) {
+    static final CharSequence obtainVerbatim(String text) {
         return new SpannableStringBuilder().append(text, new TtsSpan.VerbatimBuilder(text).build(), 0);
     }
 
@@ -529,9 +467,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         return (dstAlpha << 24) | srcRgb;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class ClickActionDelegate extends View.AccessibilityDelegate {
+    private static class ClickActionDelegate extends View.AccessibilityDelegate {
         private final AccessibilityNodeInfo.AccessibilityAction mClickAction;
 
         public ClickActionDelegate(Context context, int resId) {
@@ -577,7 +513,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
             return;
         }
         String dateTimePattern = DateFormat.getBestDateTimePattern(this.mLocale, "hm");
-        boolean isAmPmAtStart = dateTimePattern.startsWith("a");
+        boolean isAmPmAtStart = dateTimePattern.startsWith(FullBackup.APK_TREE_TOKEN);
         setAmPmStart(isAmPmAtStart);
         updateAmPmLabelStates(this.mCurrentHour < 12 ? 0 : 1);
     }
@@ -644,6 +580,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         setHourInternal(hour, 0, true, true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setHourInternal(int hour, int source, boolean announce, boolean notify) {
         if (this.mCurrentHour == hour) {
             return;
@@ -682,6 +619,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         setMinuteInternal(minute, 0, true);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setMinuteInternal(int minute, int source, boolean notify) {
         if (this.mCurrentMinute == minute) {
             return;
@@ -810,6 +748,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void tryVibrate() {
         this.mDelegator.performHapticFeedback(4);
     }
@@ -823,13 +762,13 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         this.mPmLabel.setChecked(isPm);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public int getLocalizedHour(int hourOfDay) {
-        boolean z = this.mIs24Hour;
-        if (!z) {
+        if (!this.mIs24Hour) {
             hourOfDay %= 12;
         }
         if (!this.mHourFormatStartsAtZero && hourOfDay == 0) {
-            return z ? 24 : 12;
+            return this.mIs24Hour ? 24 : 12;
         }
         return hourOfDay;
     }
@@ -852,7 +791,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
     private void updateHeaderSeparator() {
         String bestDateTimePattern = DateFormat.getBestDateTimePattern(this.mLocale, this.mIs24Hour ? "Hm" : "hm");
         String separatorText = getHourMinSeparatorFromPattern(bestDateTimePattern);
-        this.mSeparatorView.setText(separatorText);
+        this.mSeparatorView.lambda$setTextAsync$0(separatorText);
         this.mTextInputPickerView.updateSeparator(separatorText);
     }
 
@@ -909,6 +848,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setCurrentItemShowing(int index, boolean animateCircle, boolean announce) {
         this.mRadialTimePickerView.setCurrentItemShowing(index, animateCircle);
         if (index == 0) {
@@ -922,6 +862,7 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         this.mMinuteView.setActivated(index == 1);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setAmOrPm(int amOrPm) {
         updateAmPmLabelStates(amOrPm);
         if (this.mRadialTimePickerView.setAmOrPm(amOrPm)) {
@@ -933,199 +874,8 @@ public class TimePickerClockDelegate extends TimePicker.AbstractTimePickerDelega
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements RadialTimePickerView.OnValueSelectedListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.widget.RadialTimePickerView.OnValueSelectedListener
-        public void onValueSelected(int pickerType, int newValue, boolean autoAdvance) {
-            boolean valueChanged = false;
-            switch (pickerType) {
-                case 0:
-                    if (TimePickerClockDelegate.this.getHour() != newValue) {
-                        valueChanged = true;
-                    }
-                    boolean isTransition = TimePickerClockDelegate.this.mAllowAutoAdvance && autoAdvance;
-                    TimePickerClockDelegate.this.setHourInternal(newValue, 1, !isTransition, true);
-                    if (isTransition) {
-                        TimePickerClockDelegate.this.setCurrentItemShowing(1, true, false);
-                        int localizedHour = TimePickerClockDelegate.this.getLocalizedHour(newValue);
-                        TimePickerClockDelegate.this.mDelegator.announceForAccessibility(localizedHour + ". " + TimePickerClockDelegate.this.mSelectMinutes);
-                        break;
-                    }
-                    break;
-                case 1:
-                    if (TimePickerClockDelegate.this.getMinute() != newValue) {
-                        valueChanged = true;
-                    }
-                    TimePickerClockDelegate.this.setMinuteInternal(newValue, 1, true);
-                    break;
-            }
-            if (TimePickerClockDelegate.this.mOnTimeChangedListener != null && valueChanged) {
-                TimePickerClockDelegate.this.mOnTimeChangedListener.onTimeChanged(TimePickerClockDelegate.this.mDelegator, TimePickerClockDelegate.this.getHour(), TimePickerClockDelegate.this.getMinute());
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements TextInputTimePickerView.OnValueTypedListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.widget.TextInputTimePickerView.OnValueTypedListener
-        public void onValueChanged(int pickerType, int newValue) {
-            switch (pickerType) {
-                case 0:
-                    TimePickerClockDelegate.this.setHourInternal(newValue, 2, false, true);
-                    return;
-                case 1:
-                    TimePickerClockDelegate.this.setMinuteInternal(newValue, 2, true);
-                    return;
-                case 2:
-                    TimePickerClockDelegate.this.setAmOrPm(newValue);
-                    return;
-                default:
-                    return;
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements NumericTextView.OnValueChangedListener {
-        AnonymousClass4() {
-        }
-
-        @Override // com.android.internal.widget.NumericTextView.OnValueChangedListener
-        public void onValueChanged(NumericTextView view, int value, boolean isValid, boolean isFinished) {
-            Runnable commitCallback;
-            View nextFocusTarget;
-            if (view == TimePickerClockDelegate.this.mHourView) {
-                commitCallback = TimePickerClockDelegate.this.mCommitHour;
-                nextFocusTarget = view.isFocused() ? TimePickerClockDelegate.this.mMinuteView : null;
-            } else if (view == TimePickerClockDelegate.this.mMinuteView) {
-                commitCallback = TimePickerClockDelegate.this.mCommitMinute;
-                nextFocusTarget = null;
-            } else {
-                return;
-            }
-            view.removeCallbacks(commitCallback);
-            if (isValid) {
-                if (isFinished) {
-                    commitCallback.run();
-                    if (nextFocusTarget != null) {
-                        nextFocusTarget.requestFocus();
-                        return;
-                    }
-                    return;
-                }
-                view.postDelayed(commitCallback, TimePickerClockDelegate.DELAY_COMMIT_MILLIS);
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$5 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass5 implements Runnable {
-        AnonymousClass5() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            TimePickerClockDelegate timePickerClockDelegate = TimePickerClockDelegate.this;
-            timePickerClockDelegate.setHour(timePickerClockDelegate.mHourView.getValue());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$6 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass6 implements Runnable {
-        AnonymousClass6() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            TimePickerClockDelegate timePickerClockDelegate = TimePickerClockDelegate.this;
-            timePickerClockDelegate.setMinute(timePickerClockDelegate.mMinuteView.getValue());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$7 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass7 implements View.OnFocusChangeListener {
-        AnonymousClass7() {
-        }
-
-        @Override // android.view.View.OnFocusChangeListener
-        public void onFocusChange(View v, boolean focused) {
-            if (focused) {
-                switch (v.getId()) {
-                    case R.id.am_label /* 16908785 */:
-                        TimePickerClockDelegate.this.setAmOrPm(0);
-                        break;
-                    case R.id.hours /* 16909140 */:
-                        TimePickerClockDelegate.this.setCurrentItemShowing(0, true, true);
-                        break;
-                    case R.id.minutes /* 16909329 */:
-                        TimePickerClockDelegate.this.setCurrentItemShowing(1, true, true);
-                        break;
-                    case R.id.pm_label /* 16909479 */:
-                        TimePickerClockDelegate.this.setAmOrPm(1);
-                        break;
-                    default:
-                        return;
-                }
-                TimePickerClockDelegate.this.tryVibrate();
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.widget.TimePickerClockDelegate$8 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass8 implements View.OnClickListener {
-        AnonymousClass8() {
-        }
-
-        @Override // android.view.View.OnClickListener
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.am_label /* 16908785 */:
-                    TimePickerClockDelegate.this.setAmOrPm(0);
-                    break;
-                case R.id.hours /* 16909140 */:
-                    TimePickerClockDelegate.this.setCurrentItemShowing(0, true, true);
-                    break;
-                case R.id.minutes /* 16909329 */:
-                    TimePickerClockDelegate.this.setCurrentItemShowing(1, true, true);
-                    break;
-                case R.id.pm_label /* 16909479 */:
-                    TimePickerClockDelegate.this.setAmOrPm(1);
-                    break;
-                default:
-                    return;
-            }
-            TimePickerClockDelegate.this.tryVibrate();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static class NearestTouchDelegate implements View.OnTouchListener {
+    private static class NearestTouchDelegate implements View.OnTouchListener {
         private View mInitialTouchTarget;
-
-        /* synthetic */ NearestTouchDelegate(NearestTouchDelegateIA nearestTouchDelegateIA) {
-            this();
-        }
 
         private NearestTouchDelegate() {
         }

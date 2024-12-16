@@ -6,13 +6,12 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IBiometricEnabledOnKeyguardCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.biometrics.IBiometricEnabledOnKeyguardCallback";
 
     void onChanged(boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IBiometricEnabledOnKeyguardCallback {
         @Override // android.hardware.biometrics.IBiometricEnabledOnKeyguardCallback
         public void onChanged(boolean enabled, int userId) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBiometricEnabledOnKeyguardCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IBiometricEnabledOnKeyguardCallback {
         static final int TRANSACTION_onChanged = 1;
 
@@ -67,27 +65,23 @@ public interface IBiometricEnabledOnKeyguardCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBiometricEnabledOnKeyguardCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBiometricEnabledOnKeyguardCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBiometricEnabledOnKeyguardCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IBiometricEnabledOnKeyguardCallback {
+        private static class Proxy implements IBiometricEnabledOnKeyguardCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -25,16 +25,10 @@ public final class IntFlagMapping {
         this.mFlags.add(new Flag(mask, target, name));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes4.dex */
-    public static final class Flag {
+    private static final class Flag {
         private final int mMask;
         private final String mName;
         private final int mTarget;
-
-        /* synthetic */ Flag(int i, int i2, String str, FlagIA flagIA) {
-            this(i, i2, str);
-        }
 
         private Flag(int mask, int target, String name) {
             this.mTarget = target;
@@ -42,6 +36,7 @@ public final class IntFlagMapping {
             this.mName = (String) Objects.requireNonNull(name);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public boolean isEnabledFor(int value) {
             return (this.mMask & value) == this.mTarget;
         }

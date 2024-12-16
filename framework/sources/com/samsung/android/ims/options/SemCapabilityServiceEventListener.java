@@ -8,7 +8,7 @@ import android.os.RemoteException;
 import com.samsung.android.ims.util.SemImsUri;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface SemCapabilityServiceEventListener extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.ims.options.SemCapabilityServiceEventListener";
 
@@ -20,7 +20,6 @@ public interface SemCapabilityServiceEventListener extends IInterface {
 
     void onOwnCapabilitiesChanged() throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements SemCapabilityServiceEventListener {
         @Override // com.samsung.android.ims.options.SemCapabilityServiceEventListener
         public void onOwnCapabilitiesChanged() throws RemoteException {
@@ -44,7 +43,6 @@ public interface SemCapabilityServiceEventListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements SemCapabilityServiceEventListener {
         static final int TRANSACTION_onCapabilitiesChanged = 2;
         static final int TRANSACTION_onCapabilityAndAvailabilityPublished = 4;
@@ -96,45 +94,41 @@ public interface SemCapabilityServiceEventListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(SemCapabilityServiceEventListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(SemCapabilityServiceEventListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(SemCapabilityServiceEventListener.DESCRIPTOR);
+                case 1:
+                    onOwnCapabilitiesChanged();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    SemImsUri _arg0 = (SemImsUri) data.readTypedObject(SemImsUri.CREATOR);
+                    SemCapabilities _arg1 = (SemCapabilities) data.readTypedObject(SemCapabilities.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCapabilitiesChanged(_arg0, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    List<SemImsUri> _arg02 = data.createTypedArrayList(SemImsUri.CREATOR);
+                    List<SemCapabilities> _arg12 = data.createTypedArrayList(SemCapabilities.CREATOR);
+                    data.enforceNoDataAvail();
+                    onMultipleCapabilitiesChanged(_arg02, _arg12);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onCapabilityAndAvailabilityPublished(_arg03);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onOwnCapabilitiesChanged();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            SemImsUri _arg0 = (SemImsUri) data.readTypedObject(SemImsUri.CREATOR);
-                            SemCapabilities _arg1 = (SemCapabilities) data.readTypedObject(SemCapabilities.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCapabilitiesChanged(_arg0, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            List<SemImsUri> _arg02 = data.createTypedArrayList(SemImsUri.CREATOR);
-                            List<SemCapabilities> _arg12 = data.createTypedArrayList(SemCapabilities.CREATOR);
-                            data.enforceNoDataAvail();
-                            onMultipleCapabilitiesChanged(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onCapabilityAndAvailabilityPublished(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements SemCapabilityServiceEventListener {
+        private static class Proxy implements SemCapabilityServiceEventListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

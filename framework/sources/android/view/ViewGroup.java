@@ -1,9 +1,6 @@
 package android.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
-import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +29,6 @@ import android.util.IntArray;
 import android.util.Log;
 import android.util.Pools;
 import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.View;
 import android.view.ViewDebug;
@@ -44,7 +40,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.view.animation.PathInterpolator;
 import android.view.animation.Transformation;
 import android.view.autofill.AutofillId;
 import android.view.autofill.AutofillManager;
@@ -54,8 +49,7 @@ import android.view.inspector.PropertyMapper;
 import android.view.inspector.PropertyReader;
 import android.view.translation.TranslationCapability;
 import android.view.translation.ViewTranslationRequest;
-import android.widget.AbsListView;
-import android.widget.ListView;
+import android.webkit.WebView;
 import android.window.OnBackInvokedDispatcher;
 import com.android.internal.R;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
@@ -75,9 +69,6 @@ import java.util.function.Predicate;
 
 /* loaded from: classes4.dex */
 public abstract class ViewGroup extends View implements ViewParent, ViewManager {
-    private static final int APPWIDGET_EXPAND_ACTION_DELAY = 1500;
-    private static final int APPWIDGET_RELEASE_ACTION_DELAY = 50;
-    private static final int APPWIDGET_RELEASE_DURATION = 400;
     private static final int ARRAY_CAPACITY_INCREMENT = 12;
     private static final int ARRAY_INITIAL_CAPACITY = 12;
     private static final int CHILD_LEFT_INDEX = 0;
@@ -137,15 +128,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     public static final int PERSISTENT_SCROLLING_CACHE = 2;
     private static final String TAG = "ViewGroup";
     private static float[] sDebugLines;
-    private final PathInterpolator EXPAND_INTERPOLATOR;
     private Animation.AnimationListener mAnimationListener;
-    private boolean mAppWidgetImmersiveEnabled;
-    private ListView mAppWidgetListView;
-    private int mAppWidgetListViewId;
-    private int mAppWidgetScrollState;
-    private ViewGroup mAppWidgetToolBar;
-    private int mAppWidgetToolBarHeight;
-    private int mAppWidgetToolBarId;
     Paint mCachePaint;
 
     @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT)
@@ -159,8 +142,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     private DragEvent mCurrentDragStartEvent;
     private View mDefaultFocus;
     protected ArrayList<View> mDisappearingChildren;
-    private final ReleaseRunnable mExpandAction;
-    private ValueAnimator mExpandOffsetAnimator;
     private HoverTarget mFirstHoverTarget;
     private TouchTarget mFirstTouchTarget;
     private View mFocused;
@@ -192,10 +173,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     private PointF mLocalPoint;
     private int mNestedScrollAxes;
     protected OnHierarchyChangeListener mOnHierarchyChangeListener;
-    private AbsListView.OnScrollOffsetListener mOnScrollListener;
     protected int mPersistentDrawingCache;
     private ArrayList<View> mPreSortedChildren;
-    private final ReleaseRunnable mReleaseAction;
     private int mSemHorizontalScrollbarRectRelativePosX;
     private int mSemVerticalScrollbarRectRelativePosY;
     private float mSemX;
@@ -215,9 +194,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     private static final int[] DESCENDANT_FOCUSABILITY_FLAGS = {131072, 262144, 393216};
     public static int LAYOUT_MODE_DEFAULT = 0;
     private static final ActionMode SENTINEL_ACTION_MODE = new ActionMode() { // from class: android.view.ViewGroup.1
-        AnonymousClass1() {
-        }
-
         @Override // android.view.ActionMode
         public void setTitle(CharSequence title) {
         }
@@ -272,7 +248,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     };
 
-    /* loaded from: classes4.dex */
     public interface OnHierarchyChangeListener {
         void onChildViewAdded(View view, View view2);
 
@@ -280,9 +255,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public abstract void onLayout(boolean z, int i, int i2, int i3, int i4);
+    protected abstract void onLayout(boolean z, int i, int i2, int i3, int i4);
 
-    /* loaded from: classes4.dex */
     public static class LayoutParams {
 
         @Deprecated
@@ -297,7 +271,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT, mapping = {@ViewDebug.IntToString(from = -1, to = "MATCH_PARENT"), @ViewDebug.IntToString(from = -2, to = "WRAP_CONTENT")})
         public int width;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<LayoutParams> {
             private int mLayout_heightId;
             private int mLayout_widthId;
@@ -344,7 +317,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             this.height = source.height;
         }
 
-        public LayoutParams() {
+        LayoutParams() {
         }
 
         protected void setBaseAttributes(TypedArray a, int widthAttr, int heightAttr) {
@@ -362,7 +335,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         public void onDebugDraw(View view, Canvas canvas, Paint paint) {
         }
 
-        public static String sizeToString(int size) {
+        protected static String sizeToString(int size) {
             if (size == -2) {
                 return "wrap-content";
             }
@@ -372,19 +345,18 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return String.valueOf(size);
         }
 
-        public void encode(ViewHierarchyEncoder encoder) {
+        void encode(ViewHierarchyEncoder encoder) {
             encoder.beginObject(this);
             encodeProperties(encoder);
             encoder.endObject();
         }
 
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             encoder.addProperty("width", this.width);
             encoder.addProperty("height", this.height);
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class MarginLayoutParams extends LayoutParams {
         public static final int DEFAULT_MARGIN_RELATIVE = Integer.MIN_VALUE;
         private static final int DEFAULT_MARGIN_RESOLVED = 0;
@@ -416,7 +388,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         @ViewDebug.ExportedProperty(category = TtmlUtils.TAG_LAYOUT)
         public int topMargin;
 
-        /* loaded from: classes4.dex */
         public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<MarginLayoutParams> {
             private int mLayout_marginBottomId;
             private int mLayout_marginLeftId;
@@ -460,15 +431,13 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 int horizontalMargin = a.getDimensionPixelSize(9, -1);
                 int verticalMargin = a.getDimensionPixelSize(10, -1);
                 if (horizontalMargin < 0) {
-                    int dimensionPixelSize = a.getDimensionPixelSize(3, Integer.MIN_VALUE);
-                    this.leftMargin = dimensionPixelSize;
-                    if (dimensionPixelSize == Integer.MIN_VALUE) {
+                    this.leftMargin = a.getDimensionPixelSize(3, Integer.MIN_VALUE);
+                    if (this.leftMargin == Integer.MIN_VALUE) {
                         this.mMarginFlags = (byte) (this.mMarginFlags | 4);
                         this.leftMargin = 0;
                     }
-                    int dimensionPixelSize2 = a.getDimensionPixelSize(5, Integer.MIN_VALUE);
-                    this.rightMargin = dimensionPixelSize2;
-                    if (dimensionPixelSize2 == Integer.MIN_VALUE) {
+                    this.rightMargin = a.getDimensionPixelSize(5, Integer.MIN_VALUE);
+                    if (this.rightMargin == Integer.MIN_VALUE) {
                         this.mMarginFlags = (byte) (this.mMarginFlags | 8);
                         this.rightMargin = 0;
                     }
@@ -490,8 +459,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 }
             }
             boolean hasRtlSupport = c.getApplicationInfo().hasRtlSupport();
-            int targetSdkVersion = c.getApplicationInfo().targetSdkVersion;
-            if (targetSdkVersion < 17 || !hasRtlSupport) {
+            if (!hasRtlSupport) {
                 this.mMarginFlags = (byte) (this.mMarginFlags | 16);
             }
             this.mMarginFlags = (byte) (0 | this.mMarginFlags);
@@ -502,13 +470,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             super(width, height);
             this.startMargin = Integer.MIN_VALUE;
             this.endMargin = Integer.MIN_VALUE;
-            byte b = (byte) (this.mMarginFlags | 4);
-            this.mMarginFlags = b;
-            byte b2 = (byte) (b | 8);
-            this.mMarginFlags = b2;
-            byte b3 = (byte) (b2 & (-33));
-            this.mMarginFlags = b3;
-            this.mMarginFlags = (byte) (b3 & (-17));
+            this.mMarginFlags = (byte) (this.mMarginFlags | 4);
+            this.mMarginFlags = (byte) (this.mMarginFlags | 8);
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-33));
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-17));
         }
 
         public MarginLayoutParams(MarginLayoutParams source) {
@@ -529,13 +494,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             super(source);
             this.startMargin = Integer.MIN_VALUE;
             this.endMargin = Integer.MIN_VALUE;
-            byte b = (byte) (this.mMarginFlags | 4);
-            this.mMarginFlags = b;
-            byte b2 = (byte) (b | 8);
-            this.mMarginFlags = b2;
-            byte b3 = (byte) (b2 & (-33));
-            this.mMarginFlags = b3;
-            this.mMarginFlags = (byte) (b3 & (-17));
+            this.mMarginFlags = (byte) (this.mMarginFlags | 4);
+            this.mMarginFlags = (byte) (this.mMarginFlags | 8);
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-33));
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-17));
         }
 
         public final void copyMarginsFrom(MarginLayoutParams source) {
@@ -553,9 +515,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             this.topMargin = top;
             this.rightMargin = right;
             this.bottomMargin = bottom;
-            byte b = (byte) (this.mMarginFlags & (-5));
-            this.mMarginFlags = b;
-            this.mMarginFlags = (byte) (b & (-9));
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-5));
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-9));
             if (isMarginRelative()) {
                 this.mMarginFlags = (byte) (this.mMarginFlags | 32);
             } else {
@@ -581,9 +542,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
 
         public int getMarginStart() {
-            int i = this.startMargin;
-            if (i != Integer.MIN_VALUE) {
-                return i;
+            if (this.startMargin != Integer.MIN_VALUE) {
+                return this.startMargin;
             }
             if ((this.mMarginFlags & 32) == 32) {
                 doResolveMargins();
@@ -602,9 +562,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
 
         public int getMarginEnd() {
-            int i = this.endMargin;
-            if (i != Integer.MIN_VALUE) {
-                return i;
+            if (this.endMargin != Integer.MIN_VALUE) {
+                return this.endMargin;
             }
             if ((this.mMarginFlags & 32) == 32) {
                 doResolveMargins();
@@ -622,14 +581,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
 
         public void setLayoutDirection(int layoutDirection) {
-            if (layoutDirection != 0 && layoutDirection != 1) {
-                return;
-            }
-            byte b = this.mMarginFlags;
-            if (layoutDirection != (b & 3)) {
-                byte b2 = (byte) (b & (-4));
-                this.mMarginFlags = b2;
-                this.mMarginFlags = (byte) (b2 | (layoutDirection & 3));
+            if ((layoutDirection == 0 || layoutDirection == 1) && layoutDirection != (this.mMarginFlags & 3)) {
+                this.mMarginFlags = (byte) (this.mMarginFlags & (-4));
+                this.mMarginFlags = (byte) (this.mMarginFlags | (layoutDirection & 3));
                 if (isMarginRelative()) {
                     this.mMarginFlags = (byte) (this.mMarginFlags | 32);
                 } else {
@@ -652,39 +606,26 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
 
         private void doResolveMargins() {
-            int i;
-            int i2;
-            byte b = this.mMarginFlags;
-            if ((b & 16) == 16) {
-                if ((b & 4) == 4 && (i2 = this.startMargin) > Integer.MIN_VALUE) {
-                    this.leftMargin = i2;
+            if ((this.mMarginFlags & 16) == 16) {
+                if ((this.mMarginFlags & 4) == 4 && this.startMargin > Integer.MIN_VALUE) {
+                    this.leftMargin = this.startMargin;
                 }
-                if ((b & 8) == 8 && (i = this.endMargin) > Integer.MIN_VALUE) {
-                    this.rightMargin = i;
+                if ((this.mMarginFlags & 8) == 8 && this.endMargin > Integer.MIN_VALUE) {
+                    this.rightMargin = this.endMargin;
                 }
             } else {
-                switch (b & 3) {
+                switch (this.mMarginFlags & 3) {
                     case 1:
-                        int i3 = this.endMargin;
-                        if (i3 <= Integer.MIN_VALUE) {
-                            i3 = 0;
-                        }
-                        this.leftMargin = i3;
-                        int i4 = this.startMargin;
-                        this.rightMargin = i4 > Integer.MIN_VALUE ? i4 : 0;
+                        this.leftMargin = this.endMargin > Integer.MIN_VALUE ? this.endMargin : 0;
+                        this.rightMargin = this.startMargin > Integer.MIN_VALUE ? this.startMargin : 0;
                         break;
                     default:
-                        int i5 = this.startMargin;
-                        if (i5 <= Integer.MIN_VALUE) {
-                            i5 = 0;
-                        }
-                        this.leftMargin = i5;
-                        int i6 = this.endMargin;
-                        this.rightMargin = i6 > Integer.MIN_VALUE ? i6 : 0;
+                        this.leftMargin = this.startMargin > Integer.MIN_VALUE ? this.startMargin : 0;
+                        this.rightMargin = this.endMargin > Integer.MIN_VALUE ? this.endMargin : 0;
                         break;
                 }
             }
-            this.mMarginFlags = (byte) (b & (-33));
+            this.mMarginFlags = (byte) (this.mMarginFlags & (-33));
         }
 
         public boolean isLayoutRtl() {
@@ -698,7 +639,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
 
         @Override // android.view.ViewGroup.LayoutParams
-        public void encodeProperties(ViewHierarchyEncoder encoder) {
+        protected void encodeProperties(ViewHierarchyEncoder encoder) {
             super.encodeProperties(encoder);
             encoder.addProperty("leftMargin", this.leftMargin);
             encoder.addProperty("topMargin", this.topMargin);
@@ -709,7 +650,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* loaded from: classes4.dex */
     public final class InspectionCompanion implements android.view.inspector.InspectionCompanion<ViewGroup> {
         private int mAddStatesFromChildrenId;
         private int mAlwaysDrawnWithCacheId;
@@ -777,66 +717,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* renamed from: android.view.ViewGroup$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 extends ActionMode {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.ActionMode
-        public void setTitle(CharSequence title) {
-        }
-
-        @Override // android.view.ActionMode
-        public void setTitle(int resId) {
-        }
-
-        @Override // android.view.ActionMode
-        public void setSubtitle(CharSequence subtitle) {
-        }
-
-        @Override // android.view.ActionMode
-        public void setSubtitle(int resId) {
-        }
-
-        @Override // android.view.ActionMode
-        public void setCustomView(View view) {
-        }
-
-        @Override // android.view.ActionMode
-        public void invalidate() {
-        }
-
-        @Override // android.view.ActionMode
-        public void finish() {
-        }
-
-        @Override // android.view.ActionMode
-        public Menu getMenu() {
-            return null;
-        }
-
-        @Override // android.view.ActionMode
-        public CharSequence getTitle() {
-            return null;
-        }
-
-        @Override // android.view.ActionMode
-        public CharSequence getSubtitle() {
-            return null;
-        }
-
-        @Override // android.view.ActionMode
-        public View getCustomView() {
-            return null;
-        }
-
-        @Override // android.view.ActionMode
-        public MenuInflater getMenuInflater() {
-            return null;
-        }
-    }
-
     public ViewGroup(Context context) {
         this(context, null);
     }
@@ -863,9 +743,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         this.mSemHorizontalScrollbarRectRelativePosX = 0;
         this.mSemVerticalScrollbarRectRelativePosY = 0;
         this.mLayoutTransitionListener = new LayoutTransition.TransitionListener() { // from class: android.view.ViewGroup.4
-            AnonymousClass4() {
-            }
-
             @Override // android.animation.LayoutTransition.TransitionListener
             public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
                 if (transitionType == 3) {
@@ -884,67 +761,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 }
             }
         };
-        this.mAppWidgetToolBarId = -1;
-        this.mAppWidgetListViewId = -1;
-        this.mAppWidgetToolBarHeight = 0;
-        this.mAppWidgetScrollState = 0;
-        this.mAppWidgetImmersiveEnabled = false;
-        this.mReleaseAction = new ReleaseRunnable(1);
-        this.mExpandAction = new ReleaseRunnable(0);
-        this.EXPAND_INTERPOLATOR = new PathInterpolator(0.22f, 0.25f, 0.0f, 1.0f);
-        this.mOnScrollListener = new AbsListView.OnScrollOffsetListener() { // from class: android.view.ViewGroup.5
-            AnonymousClass5() {
-            }
-
-            @Override // android.widget.AbsListView.OnScrollOffsetListener
-            public void onScrollOffsetChanged(AbsListView view, int offset) {
-                int distanceByTop;
-                int offsetAdjusted;
-                MarginLayoutParams params;
-                int offsetAdjusted2;
-                MarginLayoutParams params2;
-                if (ViewGroup.this.mAppWidgetToolBarHeight == 0) {
-                    ViewGroup viewGroup = ViewGroup.this;
-                    viewGroup.mAppWidgetToolBarHeight = viewGroup.mAppWidgetToolBar.getHeight();
-                }
-                if (offset < 0) {
-                    int distanceByTop2 = ViewGroup.this.mAppWidgetToolBar.getBottom() * (-1);
-                    if (distanceByTop2 < 0 && (offsetAdjusted2 = Math.max(distanceByTop2, offset)) < 0 && (params2 = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
-                        params2.topMargin += offsetAdjusted2;
-                        params2.bottomMargin += offsetAdjusted2;
-                        ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params2);
-                        return;
-                    }
-                    return;
-                }
-                if (offset > 0 && (distanceByTop = ViewGroup.this.mAppWidgetToolBar.getTop() * (-1)) > 0 && (offsetAdjusted = Math.min(distanceByTop, offset)) > 0 && (params = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
-                    params.topMargin += offsetAdjusted;
-                    params.bottomMargin += offsetAdjusted;
-                    if (params.topMargin > 0) {
-                        params.topMargin = 0;
-                        params.bottomMargin = ViewGroup.this.mAppWidgetToolBarHeight;
-                    }
-                    ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params);
-                }
-            }
-
-            @Override // android.widget.AbsListView.OnScrollOffsetListener
-            public void onScrollMotionDone(AbsListView view) {
-                int distanceByTop = ViewGroup.this.mAppWidgetToolBar.getBottom();
-                if (distanceByTop <= 0) {
-                    ViewGroup.this.mExpandAction.setDistance(view, ViewGroup.this.mAppWidgetToolBar.getHeight() * (-1));
-                    view.postDelayed(ViewGroup.this.mExpandAction, 1500L);
-                    return;
-                }
-                boolean needToCollapse = distanceByTop < ViewGroup.this.mAppWidgetToolBar.getHeight() / 2;
-                int distanceToScroll = needToCollapse ? distanceByTop : distanceByTop - ViewGroup.this.mAppWidgetToolBar.getHeight();
-                if (distanceToScroll != 0) {
-                    ViewGroup.this.mReleaseAction.setDistance(view, distanceToScroll);
-                    view.removeCallbacks(ViewGroup.this.mReleaseAction);
-                    view.postDelayed(ViewGroup.this.mReleaseAction, 50L);
-                }
-            }
-        };
         initViewGroup();
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -953,18 +769,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (!isShowingLayoutBounds()) {
             setFlags(128, 128);
         }
-        int i = this.mGroupFlags | 1;
-        this.mGroupFlags = i;
-        int i2 = i | 2;
-        this.mGroupFlags = i2;
-        int i3 = i2 | 16;
-        this.mGroupFlags = i3;
-        int i4 = i3 | 64;
-        this.mGroupFlags = i4;
-        this.mGroupFlags = i4 | 16384;
-        if (this.mContext.getApplicationInfo().targetSdkVersion >= 11) {
-            this.mGroupFlags |= 2097152;
-        }
+        this.mGroupFlags |= 1;
+        this.mGroupFlags |= 2;
+        this.mGroupFlags |= 16;
+        this.mGroupFlags |= 64;
+        this.mGroupFlags |= 16384;
+        this.mGroupFlags |= 2097152;
         setDescendantFocusability(131072);
         this.mChildren = new View[12];
         this.mChildrenCount = 0;
@@ -1043,9 +853,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             case 131072:
             case 262144:
             case 393216:
-                int i = this.mGroupFlags & (-393217);
-                this.mGroupFlags = i;
-                this.mGroupFlags = i | (393216 & focusability);
+                this.mGroupFlags &= -393217;
+                this.mGroupFlags |= 393216 & focusability;
                 return;
             default:
                 throw new IllegalArgumentException("must be one of FOCUS_BEFORE_DESCENDANTS, FOCUS_AFTER_DESCENDANTS, FOCUS_BLOCK_DESCENDANTS");
@@ -1053,10 +862,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void handleFocusGainInternal(int direction, Rect previouslyFocusedRect) {
-        View view = this.mFocused;
-        if (view != null) {
-            view.unFocus(this);
+    void handleFocusGainInternal(int direction, Rect previouslyFocusedRect) {
+        if (this.mFocused != null) {
+            this.mFocused.unFocus(this);
             this.mFocused = null;
             this.mFocusedInCluster = null;
         }
@@ -1069,10 +877,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return;
         }
         super.unFocus(focused);
-        View view = this.mFocused;
-        if (view != child) {
-            if (view != null) {
-                view.unFocus(focused);
+        if (this.mFocused != child) {
+            if (this.mFocused != null) {
+                this.mFocused.unFocus(focused);
             }
             this.mFocused = child;
         }
@@ -1081,9 +888,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void setDefaultFocus(View child) {
-        View view = this.mDefaultFocus;
-        if (view != null && view.isFocusedByDefault()) {
+    void setDefaultFocus(View child) {
+        if (this.mDefaultFocus != null && this.mDefaultFocus.isFocusedByDefault()) {
             return;
         }
         this.mDefaultFocus = child;
@@ -1092,9 +898,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void clearDefaultFocus(View child) {
-        View view = this.mDefaultFocus;
-        if (view != child && view != null && view.isFocusedByDefault()) {
+    void clearDefaultFocus(View child) {
+        if (this.mDefaultFocus != child && this.mDefaultFocus != null && this.mDefaultFocus.isFocusedByDefault()) {
             return;
         }
         this.mDefaultFocus = null;
@@ -1114,18 +919,18 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean hasDefaultFocus() {
+    boolean hasDefaultFocus() {
         return this.mDefaultFocus != null || super.hasDefaultFocus();
     }
 
-    public void clearFocusedInCluster(View child) {
+    void clearFocusedInCluster(View child) {
         if (this.mFocusedInCluster != child) {
             return;
         }
         clearFocusedInCluster();
     }
 
-    public void clearFocusedInCluster() {
+    void clearFocusedInCluster() {
         View top = findKeyboardNavigationCluster();
         ViewParent parent = this;
         do {
@@ -1174,10 +979,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     @Override // android.view.ViewParent
     public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
-        int i = this.mGroupFlags;
-        if ((134217728 & i) == 0) {
+        if ((this.mGroupFlags & 134217728) == 0) {
             try {
-                this.mGroupFlags = i | 268435456;
+                this.mGroupFlags |= 268435456;
                 return startActionModeForChild(originalView, callback, 0);
             } finally {
                 this.mGroupFlags = (-268435457) & this.mGroupFlags;
@@ -1187,10 +991,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback, int type) {
-        int i = this.mGroupFlags;
-        if ((268435456 & i) == 0 && type == 0) {
+        if ((this.mGroupFlags & 268435456) == 0 && type == 0) {
             try {
-                this.mGroupFlags = i | 134217728;
+                this.mGroupFlags |= 134217728;
                 ActionMode mode = startActionModeForChild(originalView, callback);
                 this.mGroupFlags = (-134217729) & this.mGroupFlags;
                 if (mode != SENTINEL_ACTION_MODE) {
@@ -1291,8 +1094,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     @Override // android.view.View
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        View view = this.mFocused;
-        return view != null && view.dispatchUnhandledMove(focused, direction);
+        return this.mFocused != null && this.mFocused.dispatchUnhandledMove(focused, direction);
     }
 
     @Override // android.view.ViewParent
@@ -1315,12 +1117,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void unFocus(View focused) {
-        View view = this.mFocused;
-        if (view == null) {
+    void unFocus(View focused) {
+        if (this.mFocused == null) {
             super.unFocus(focused);
         } else {
-            view.unFocus(focused);
+            this.mFocused.unFocus(focused);
             this.mFocused = null;
         }
     }
@@ -1356,9 +1157,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (isFocused()) {
             return this;
         }
-        View view = this.mFocused;
-        if (view != null) {
-            return view.findFocus();
+        if (this.mFocused != null) {
+            return this.mFocused.findFocus();
         }
         return null;
     }
@@ -1493,7 +1293,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (this.mGroupFlags & 67108864) != 0;
     }
 
-    public boolean shouldBlockFocusForTouchscreen() {
+    boolean shouldBlockFocusForTouchscreen() {
         return getTouchscreenBlocksFocus() && this.mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && (!isKeyboardNavigationCluster() || (!hasFocus() && findKeyboardNavigationCluster() == this));
     }
 
@@ -1602,15 +1402,13 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void onChildVisibilityChanged(View child, int oldVisibility, int newVisibility) {
-        LayoutTransition layoutTransition = this.mTransition;
-        if (layoutTransition != null) {
+    protected void onChildVisibilityChanged(View child, int oldVisibility, int newVisibility) {
+        if (this.mTransition != null) {
             if (newVisibility == 0) {
-                layoutTransition.showChild(this, child, oldVisibility);
+                this.mTransition.showChild(this, child, oldVisibility);
             } else {
-                layoutTransition.hideChild(this, child, newVisibility);
-                ArrayList<View> arrayList = this.mTransitioningViews;
-                if (arrayList != null && arrayList.contains(child)) {
+                this.mTransition.hideChild(this, child, newVisibility);
+                if (this.mTransitioningViews != null && this.mTransitioningViews.contains(child)) {
                     if (this.mVisibilityChangingChildren == null) {
                         this.mVisibilityChangingChildren = new ArrayList<>();
                     }
@@ -1629,7 +1427,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchVisibilityChanged(View changedView, int visibility) {
+    protected void dispatchVisibilityChanged(View changedView, int visibility) {
         super.dispatchVisibilityChanged(changedView, visibility);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -1649,7 +1447,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchVisibilityAggregated(boolean isVisible) {
+    boolean dispatchVisibilityAggregated(boolean isVisible) {
         boolean isVisible2 = super.dispatchVisibilityAggregated(isVisible);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -1685,7 +1483,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchCollectViewAttributes(View.AttachInfo attachInfo, int visibility) {
+    void dispatchCollectViewAttributes(View.AttachInfo attachInfo, int visibility) {
         if ((visibility & 12) == 0) {
             super.dispatchCollectViewAttributes(attachInfo, visibility);
             int count = this.mChildrenCount;
@@ -1717,10 +1515,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchDragEnterExitInPreN(DragEvent event) {
-        View view;
-        if (event.mAction == 6 && (view = this.mCurrentDragChild) != null) {
-            view.dispatchDragEnterExitInPreN(event);
+    boolean dispatchDragEnterExitInPreN(DragEvent event) {
+        if (event.mAction == 6 && this.mCurrentDragChild != null) {
+            this.mCurrentDragChild.dispatchDragEnterExitInPreN(event);
             this.mCurrentDragChild = null;
         }
         return this.mIsInterestedInDrag && super.dispatchDragEnterExitInPreN(event);
@@ -1738,11 +1535,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             case 1:
                 this.mCurrentDragChild = null;
                 this.mCurrentDragStartEvent = DragEvent.obtain(event);
-                HashSet<View> hashSet = this.mChildrenInterestedInDrag;
-                if (hashSet == null) {
+                if (this.mChildrenInterestedInDrag == null) {
                     this.mChildrenInterestedInDrag = new HashSet<>();
                 } else {
-                    hashSet.clear();
+                    this.mChildrenInterestedInDrag.clear();
                 }
                 int count = this.mChildrenCount;
                 View[] children = this.mChildren;
@@ -1753,9 +1549,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                         retval = true;
                     }
                 }
-                boolean dispatchDragEvent = super.dispatchDragEvent(event);
-                this.mIsInterestedInDrag = dispatchDragEvent;
-                if (dispatchDragEvent) {
+                this.mIsInterestedInDrag = super.dispatchDragEvent(event);
+                if (this.mIsInterestedInDrag) {
                     retval = true;
                 }
                 if (!retval) {
@@ -1823,9 +1618,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     }
                     childrenInterestedInDrag.clear();
                 }
-                DragEvent dragEvent = this.mCurrentDragStartEvent;
-                if (dragEvent != null) {
-                    dragEvent.recycle();
+                if (this.mCurrentDragStartEvent != null) {
+                    this.mCurrentDragStartEvent.recycle();
                     this.mCurrentDragStartEvent = null;
                 }
                 if (this.mIsInterestedInDrag) {
@@ -1901,7 +1695,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean updateLocalSystemUiVisibility(int localValue, int localChanges) {
+    boolean updateLocalSystemUiVisibility(int localValue, int localChanges) {
         boolean changed = super.updateLocalSystemUiVisibility(localValue, localChanges);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -1917,8 +1711,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if ((this.mPrivateFlags & 18) == 18) {
             return super.dispatchKeyEventPreIme(event);
         }
-        View view = this.mFocused;
-        if (view != null && (view.mPrivateFlags & 16) == 16) {
+        if (this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16) {
             return this.mFocused.dispatchKeyEventPreIme(event);
         }
         return false;
@@ -1933,11 +1726,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             if (super.dispatchKeyEvent(event)) {
                 return true;
             }
-        } else {
-            View view = this.mFocused;
-            if (view != null && (view.mPrivateFlags & 16) == 16 && this.mFocused.dispatchKeyEvent(event)) {
-                return true;
-            }
+        } else if (this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16 && this.mFocused.dispatchKeyEvent(event)) {
+            return true;
         }
         if (this.mInputEventConsistencyVerifier != null) {
             this.mInputEventConsistencyVerifier.onUnhandledEvent(event, 1);
@@ -1951,8 +1741,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if ((this.mPrivateFlags & 18) == 18) {
             return super.dispatchKeyShortcutEvent(event);
         }
-        View view = this.mFocused;
-        if (view != null && (view.mPrivateFlags & 16) == 16) {
+        if (this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16) {
             return this.mFocused.dispatchKeyShortcutEvent(event);
         }
         return false;
@@ -1967,11 +1756,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             if (super.dispatchTrackballEvent(event)) {
                 return true;
             }
-        } else {
-            View view = this.mFocused;
-            if (view != null && (view.mPrivateFlags & 16) == 16 && this.mFocused.dispatchTrackballEvent(event)) {
-                return true;
-            }
+        } else if (this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16 && this.mFocused.dispatchTrackballEvent(event)) {
+            return true;
         }
         if (this.mInputEventConsistencyVerifier != null) {
             this.mInputEventConsistencyVerifier.onUnhandledEvent(event, 1);
@@ -1982,11 +1768,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     @Override // android.view.View
     public boolean dispatchCapturedPointerEvent(MotionEvent event) {
-        if ((this.mPrivateFlags & 18) == 18) {
-            return super.dispatchCapturedPointerEvent(event);
-        }
-        View view = this.mFocused;
-        return view != null && (view.mPrivateFlags & 16) == 16 && this.mFocused.dispatchCapturedPointerEvent(event);
+        return (this.mPrivateFlags & 18) == 18 ? super.dispatchCapturedPointerEvent(event) : this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16 && this.mFocused.dispatchCapturedPointerEvent(event);
     }
 
     @Override // android.view.View
@@ -2006,7 +1788,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         float x = event.getXDispatchLocation(pointerIndex);
         float y = event.getYDispatchLocation(pointerIndex);
         if (isOnScrollbarThumb(x, y) || isDraggingScrollBar()) {
-            return PointerIcon.getSystemIcon(this.mContext, 1000);
+            return null;
         }
         int childrenCount = this.mChildrenCount;
         if (childrenCount != 0) {
@@ -2057,7 +1839,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchHoverEvent(MotionEvent event) {
+    protected boolean dispatchHoverEvent(MotionEvent event) {
         HoverTarget firstOldHoverTarget;
         boolean customOrder;
         HoverTarget firstOldHoverTarget2;
@@ -2186,13 +1968,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             firstOldHoverTarget4 = nextOldHoverTarget;
         }
         boolean newHoveredSelf = (handled || action == 10 || event.isHoverExitPending()) ? false : true;
-        boolean z = this.mHoveredSelf;
-        if (newHoveredSelf == z) {
+        if (newHoveredSelf == this.mHoveredSelf) {
             if (newHoveredSelf) {
                 handled |= super.dispatchHoverEvent(event);
             }
         } else {
-            if (z) {
+            if (this.mHoveredSelf) {
                 if (action == 10) {
                     handled |= super.dispatchHoverEvent(event);
                 } else {
@@ -2261,7 +2042,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchTooltipHoverEvent(MotionEvent event) {
+    boolean dispatchTooltipHoverEvent(MotionEvent event) {
         return semDispatchTooltipHoverEvent(event);
     }
 
@@ -2293,31 +2074,28 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                         preorderedList.clear();
                     }
                 }
-                View view = this.mTooltipHoverTarget;
-                if (view != newTarget) {
-                    if (view != null) {
+                if (this.mTooltipHoverTarget != newTarget) {
+                    if (this.mTooltipHoverTarget != null) {
                         event.setAction(10);
                         this.mTooltipHoverTarget.dispatchTooltipHoverEvent(event);
                         event.setAction(action);
                     }
                     this.mTooltipHoverTarget = newTarget;
                 }
-                if (this.mTooltipHoverTarget != null) {
-                    if (this.mTooltipHoveredSelf) {
-                        this.mTooltipHoveredSelf = false;
-                        event.setAction(10);
-                        super.dispatchTooltipHoverEvent(event);
-                        event.setAction(action);
-                    }
-                    return true;
+                if (this.mTooltipHoverTarget == null) {
+                    this.mTooltipHoveredSelf = super.dispatchTooltipHoverEvent(event);
+                    return this.mTooltipHoveredSelf;
                 }
-                boolean dispatchTooltipHoverEvent = super.dispatchTooltipHoverEvent(event);
-                this.mTooltipHoveredSelf = dispatchTooltipHoverEvent;
-                return dispatchTooltipHoverEvent;
+                if (this.mTooltipHoveredSelf) {
+                    this.mTooltipHoveredSelf = false;
+                    event.setAction(10);
+                    super.dispatchTooltipHoverEvent(event);
+                    event.setAction(action);
+                }
+                return true;
             case 10:
-                View view2 = this.mTooltipHoverTarget;
-                if (view2 != null) {
-                    view2.dispatchTooltipHoverEvent(event);
+                if (this.mTooltipHoverTarget != null) {
+                    this.mTooltipHoverTarget.dispatchTooltipHoverEvent(event);
                     this.mTooltipHoverTarget = null;
                 } else if (this.mTooltipHoveredSelf) {
                     super.dispatchTooltipHoverEvent(event);
@@ -2411,7 +2189,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchGenericPointerEvent(MotionEvent event) {
+    protected boolean dispatchGenericPointerEvent(MotionEvent event) {
         int childrenCount = this.mChildrenCount;
         if (childrenCount != 0) {
             boolean customOrder = false;
@@ -2440,12 +2218,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean dispatchGenericFocusedEvent(MotionEvent event) {
+    protected boolean dispatchGenericFocusedEvent(MotionEvent event) {
         if ((this.mPrivateFlags & 18) == 18) {
             return super.dispatchGenericFocusedEvent(event);
         }
-        View view = this.mFocused;
-        if (view != null && (view.mPrivateFlags & 16) == 16) {
+        if (this.mFocused != null && (this.mFocused.mPrivateFlags & 16) == 16) {
             return this.mFocused.dispatchGenericMotionEvent(event);
         }
         return false;
@@ -2504,6 +2281,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         boolean canceled;
         boolean split;
         boolean alreadyDispatchedToNewTouchTarget;
+        boolean z;
         boolean alreadyDispatchedToNewTouchTarget2;
         boolean canceled2;
         boolean handled2;
@@ -2511,7 +2289,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         boolean canceled3;
         View childWithAccessibilityFocus;
         boolean customOrder;
-        boolean z;
+        boolean z2;
         boolean customOrder2;
         int i;
         if (ViewRootImpl.DEBUG_TOUCH_EVENT) {
@@ -2520,7 +2298,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (this.mInputEventConsistencyVerifier != null) {
             this.mInputEventConsistencyVerifier.onTouchEvent(ev, 1);
         }
-        boolean z2 = false;
         if (ev.isTargetAccessibilityFocus() && isAccessibilityFocusedViewOrHost()) {
             ev.setTargetAccessibilityFocus(false);
         }
@@ -2630,9 +2407,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 cancelAndClearTouchTargets(ev);
                 resetTouchState();
             }
+            ViewRootImpl viewRootImpl = getViewRootImpl();
             if (actionMasked == 0 || actionMasked == 211 || this.mFirstTouchTarget != null) {
                 boolean disallowIntercept = (this.mGroupFlags & 524288) != 0;
-                if (!disallowIntercept) {
+                boolean isBackGestureInProgress = viewRootImpl != null && viewRootImpl.getOnBackInvokedDispatcher().isBackGestureInProgress();
+                if (!disallowIntercept || isBackGestureInProgress) {
                     boolean intercepted2 = onInterceptTouchEvent(ev);
                     ev.setAction(action);
                     intercepted = intercepted2;
@@ -2655,6 +2434,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 canceled = canceled5;
                 split = split2;
                 alreadyDispatchedToNewTouchTarget = false;
+                z = false;
                 alreadyDispatchedToNewTouchTarget2 = intercepted;
             } else {
                 View childWithAccessibilityFocus2 = ev.isTargetAccessibilityFocus() ? findChildWithAccessibilityFocus() : null;
@@ -2663,6 +2443,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     canceled = canceled5;
                     split = split2;
                     alreadyDispatchedToNewTouchTarget = false;
+                    z = false;
                     alreadyDispatchedToNewTouchTarget2 = intercepted;
                 } else {
                     int actionIndex = ev.getActionIndex();
@@ -2674,11 +2455,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                         canceled = canceled5;
                         split = split2;
                         alreadyDispatchedToNewTouchTarget = false;
-                        z2 = false;
+                        z = false;
                         alreadyDispatchedToNewTouchTarget2 = intercepted;
                     } else {
-                        float x = ev.getXDispatchLocation(actionIndex);
                         handled = false;
+                        float x = ev.getXDispatchLocation(actionIndex);
                         float y = ev.getYDispatchLocation(actionIndex);
                         ArrayList<View> preorderedList = buildTouchDispatchChildList();
                         boolean split3 = preorderedList == null && isChildrenDrawingOrderEnabled();
@@ -2718,7 +2499,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                                     canceled3 = canceled5;
                                     childWithAccessibilityFocus = childWithAccessibilityFocus3;
                                     customOrder = alreadyDispatchedToNewTouchTarget3;
-                                    z = false;
+                                    z2 = false;
                                     customOrder2 = intercepted;
                                 } else {
                                     childWithAccessibilityFocus = childWithAccessibilityFocus3;
@@ -2729,7 +2510,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                                             alreadyDispatchedToNewTouchTarget2 = intercepted;
                                             canceled = canceled5;
                                             newTouchTarget = newTouchTarget3;
-                                            z2 = false;
+                                            z = false;
                                         } else {
                                             customOrder = alreadyDispatchedToNewTouchTarget3;
                                             resetCancelNextUpFlag(child);
@@ -2757,7 +2538,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                                                 this.mLastTouchDownY = y;
                                                 newTouchTarget = addTouchTarget(child, idBitsToAssign);
                                                 alreadyDispatchedToNewTouchTarget = true;
-                                                z2 = false;
+                                                z = false;
                                             } else {
                                                 childrenCount = childrenCount2;
                                                 customOrder2 = intercepted;
@@ -2779,11 +2560,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                                         childrenCount = childrenCount2;
                                         canceled3 = canceled5;
                                         customOrder = alreadyDispatchedToNewTouchTarget3;
-                                        z = false;
+                                        z2 = false;
                                         customOrder2 = intercepted;
                                     }
                                 }
-                                ev.setTargetAccessibilityFocus(z);
+                                ev.setTargetAccessibilityFocus(z2);
                                 i = i3;
                                 childWithAccessibilityFocus3 = childWithAccessibilityFocus;
                                 i2 = i - 1;
@@ -2796,7 +2577,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                             } else {
                                 canceled = canceled5;
                                 alreadyDispatchedToNewTouchTarget = intercepted3;
-                                z2 = false;
+                                z = false;
                                 alreadyDispatchedToNewTouchTarget2 = intercepted;
                                 split = split2;
                                 newTouchTarget = newTouchTarget2;
@@ -2827,7 +2608,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     if (alreadyDispatchedToNewTouchTarget && target2 == newTouchTarget) {
                         handled = true;
                     } else if (target2.child != null) {
-                        boolean cancelChild = (resetCancelNextUpFlag(target2.child) || alreadyDispatchedToNewTouchTarget2) ? true : z2;
+                        boolean cancelChild = (resetCancelNextUpFlag(target2.child) || alreadyDispatchedToNewTouchTarget2) ? true : z;
                         if (dispatchTransformedTouchEvent(ev, cancelChild, target2.child, target2.pointerIdBits)) {
                             handled = true;
                         }
@@ -2900,15 +2681,14 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     private void clearTouchTargets() {
         TouchTarget target = this.mFirstTouchTarget;
-        if (target == null) {
-            return;
+        if (target != null) {
+            do {
+                TouchTarget next = target.next;
+                target.recycle();
+                target = next;
+            } while (target != null);
+            this.mFirstTouchTarget = null;
         }
-        do {
-            TouchTarget next = target.next;
-            target.recycle();
-            target = next;
-        } while (target != null);
-        this.mFirstTouchTarget = null;
     }
 
     private void cancelAndClearTouchTargets(MotionEvent event) {
@@ -3016,7 +2796,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mTempPoint;
     }
 
-    public boolean isTransformedTouchPointInView(float x, float y, View child, PointF outLocalPoint) {
+    protected boolean isTransformedTouchPointInView(float x, float y, View child, PointF outLocalPoint) {
         float[] point = getTempLocationF();
         point[0] = x;
         point[1] = y;
@@ -3099,34 +2879,31 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public boolean isTransitionGroup() {
-        int i = this.mGroupFlags;
-        if ((33554432 & i) != 0) {
-            return (i & 16777216) != 0;
+        if ((this.mGroupFlags & 33554432) != 0) {
+            return (this.mGroupFlags & 16777216) != 0;
         }
         ViewOutlineProvider outlineProvider = getOutlineProvider();
         return (getBackground() == null && getTransitionName() == null && (outlineProvider == null || outlineProvider == ViewOutlineProvider.BACKGROUND)) ? false : true;
     }
 
     public void setTransitionGroup(boolean isTransitionGroup) {
-        int i = this.mGroupFlags | 33554432;
-        this.mGroupFlags = i;
+        this.mGroupFlags |= 33554432;
         if (isTransitionGroup) {
-            this.mGroupFlags = i | 16777216;
+            this.mGroupFlags |= 16777216;
         } else {
-            this.mGroupFlags = i & (-16777217);
+            this.mGroupFlags &= -16777217;
         }
     }
 
     @Override // android.view.ViewParent
     public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        int i = this.mGroupFlags;
-        if (disallowIntercept == ((i & 524288) != 0)) {
+        if (disallowIntercept == ((this.mGroupFlags & 524288) != 0)) {
             return;
         }
         if (disallowIntercept) {
-            this.mGroupFlags = i | 524288;
+            this.mGroupFlags |= 524288;
         } else {
-            this.mGroupFlags = i & (-524289);
+            this.mGroupFlags &= -524289;
         }
         if (this.mParent != null) {
             this.mParent.requestDisallowInterceptTouchEvent(disallowIntercept);
@@ -3164,7 +2941,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return took;
     }
 
-    public boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         int index;
         int increment;
         int end;
@@ -3265,7 +3042,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchAttachedToWindow(View.AttachInfo info, int visibility) {
+    void dispatchAttachedToWindow(View.AttachInfo info, int visibility) {
         this.mGroupFlags |= 4194304;
         super.dispatchAttachedToWindow(info, visibility);
         this.mGroupFlags &= -4194305;
@@ -3275,8 +3052,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             View child = children[i];
             child.dispatchAttachedToWindow(info, combineVisibility(visibility, child.getVisibility()));
         }
-        IntArray intArray = this.mTransientIndices;
-        int transientCount = intArray == null ? 0 : intArray.size();
+        int transientCount = this.mTransientIndices == null ? 0 : this.mTransientIndices.size();
         for (int i2 = 0; i2 < transientCount; i2++) {
             View view = this.mTransientViews.get(i2);
             view.dispatchAttachedToWindow(info, combineVisibility(visibility, view.getVisibility()));
@@ -3284,7 +3060,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchScreenStateChanged(int screenState) {
+    void dispatchScreenStateChanged(int screenState) {
         super.dispatchScreenStateChanged(screenState);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -3294,7 +3070,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchMovedToDisplay(Display display, Configuration config) {
+    void dispatchMovedToDisplay(Display display, Configuration config) {
         super.dispatchMovedToDisplay(display, config);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -3330,7 +3106,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     @Override // android.view.View
     public void dispatchProvideStructure(ViewStructure structure) {
         int childrenCount;
-        int childIndex;
         super.dispatchProvideStructure(structure);
         if (isAssistBlocked() || structure.getChildCount() != 0 || (childrenCount = this.mChildrenCount) <= 0) {
             return;
@@ -3345,56 +3120,19 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         structure.setChildCount(childrenCount);
         ArrayList<View> tempPreorderedList = buildOrderedChildList();
         ArrayList<View> preorderedList = tempPreorderedList != null ? new ArrayList<>(tempPreorderedList) : null;
-        boolean z = false;
         boolean customOrder = preorderedList == null && isChildrenDrawingOrderEnabled();
-        int i = 0;
-        boolean customOrder2 = customOrder;
-        ArrayList<View> preorderedList2 = preorderedList;
-        while (i < childrenCount) {
+        for (int i = 0; i < childrenCount; i++) {
             try {
-                childIndex = getAndVerifyPreorderedIndex(childrenCount, i, customOrder2);
+                int childIndex = getAndVerifyPreorderedIndex(childrenCount, i, customOrder);
+                View child = getAndVerifyPreorderedView(preorderedList, this.mChildren, childIndex);
+                ViewStructure cstructure = structure.newChild(i);
+                child.dispatchProvideStructure(cstructure);
             } catch (IndexOutOfBoundsException e) {
-                int childIndex2 = i;
-                if (this.mContext.getApplicationInfo().targetSdkVersion < 23) {
-                    Log.w(TAG, "Bad getChildDrawingOrder while collecting assist @ " + i + " of " + childrenCount, e);
-                    customOrder2 = false;
-                    if (i <= 0) {
-                        childIndex = childIndex2;
-                    } else {
-                        int[] permutation = new int[childrenCount];
-                        SparseBooleanArray usedIndices = new SparseBooleanArray();
-                        for (int j = 0; j < i; j++) {
-                            permutation[j] = getChildDrawingOrder(childrenCount, j);
-                            usedIndices.put(permutation[j], true);
-                        }
-                        int nextIndex = 0;
-                        for (int j2 = i; j2 < childrenCount; j2++) {
-                            while (usedIndices.get(nextIndex, z)) {
-                                nextIndex++;
-                            }
-                            permutation[j2] = nextIndex;
-                            nextIndex++;
-                        }
-                        preorderedList2 = new ArrayList<>(childrenCount);
-                        for (int j3 = 0; j3 < childrenCount; j3++) {
-                            int index = permutation[j3];
-                            View child = this.mChildren[index];
-                            preorderedList2.add(child);
-                        }
-                        childIndex = childIndex2;
-                    }
-                } else {
-                    throw e;
-                }
+                throw e;
             }
-            View child2 = getAndVerifyPreorderedView(preorderedList2, this.mChildren, childIndex);
-            ViewStructure cstructure = structure.newChild(i);
-            child2.dispatchProvideStructure(cstructure);
-            i++;
-            z = false;
         }
-        if (preorderedList2 != null) {
-            preorderedList2.clear();
+        if (preorderedList != null) {
+            preorderedList.clear();
         }
     }
 
@@ -3460,6 +3198,20 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return afm.shouldIncludeAllChildrenViewInAssistStructure();
     }
 
+    private boolean shouldAlwaysIncludeWebview(AutofillManager afm) {
+        if (afm == null) {
+            return false;
+        }
+        return afm.shouldAlwaysIncludeWebviewInAssistStructure();
+    }
+
+    private boolean shouldIncludeInvisibleView(AutofillManager afm) {
+        if (afm == null) {
+            return false;
+        }
+        return afm.shouldIncludeInvisibleViewInAssistStructure();
+    }
+
     private void populateChildrenForAutofill(ArrayList<View> list, int flags) {
         int childrenCount = this.mChildrenCount;
         if (childrenCount <= 0) {
@@ -3471,7 +3223,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         for (int i = 0; i < childrenCount; i++) {
             int childIndex = getAndVerifyPreorderedIndex(childrenCount, i, customOrder);
             View child = preorderedList == null ? this.mChildren[childIndex] : preorderedList.get(childIndex);
-            if ((flags & 1) != 0 || child.isImportantForAutofill() || ((child.isMatchingAutofillableHeuristics() && !child.isActivityDeniedForAutofillForUnimportantView()) || ((shouldIncludeAllChildrenViewWithAutofillTypeNotNone(afm) && child.getAutofillType() != 0) || shouldIncludeAllChildrenViews(afm)))) {
+            if ((flags & 1) != 0 || child.isImportantForAutofill() || (((child instanceof WebView) && shouldAlwaysIncludeWebview(afm)) || ((child.isMatchingAutofillableHeuristics() && !child.isActivityDeniedForAutofillForUnimportantView()) || ((shouldIncludeAllChildrenViewWithAutofillTypeNotNone(afm) && child.getAutofillType() != 0) || shouldIncludeAllChildrenViews(afm) || (shouldIncludeInvisibleView(afm) && (child instanceof ViewGroup) && child.getVisibility() != 0))))) {
                 list.add(child);
             } else if (child instanceof ViewGroup) {
                 ((ViewGroup) child).populateChildrenForAutofill(list, flags);
@@ -3591,7 +3343,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void resetSubtreeAccessibilityStateChanged() {
+    void resetSubtreeAccessibilityStateChanged() {
         super.resetSubtreeAccessibilityStateChanged();
         View[] children = this.mChildren;
         int childCount = this.mChildrenCount;
@@ -3602,7 +3354,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public int getNumChildrenForAccessibility() {
+    int getNumChildrenForAccessibility() {
         int numChildrenForAccessibility = 0;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -3621,7 +3373,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void calculateAccessibilityDataSensitive() {
+    void calculateAccessibilityDataSensitive() {
         super.calculateAccessibilityDataSensitive();
         for (int i = 0; i < this.mChildrenCount; i++) {
             this.mChildren[i].calculateAccessibilityDataSensitive();
@@ -3629,16 +3381,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchDetachedFromWindow() {
+    void dispatchDetachedFromWindow() {
         cancelAndClearTouchTargets(null);
         exitHoverTargets();
         exitTooltipHoverTargets();
         this.mLayoutCalledWhileSuppressed = false;
         this.mChildrenInterestedInDrag = null;
         this.mIsInterestedInDrag = false;
-        DragEvent dragEvent = this.mCurrentDragStartEvent;
-        if (dragEvent != null) {
-            dragEvent.recycle();
+        if (this.mCurrentDragStartEvent != null) {
+            this.mCurrentDragStartEvent.recycle();
             this.mCurrentDragStartEvent = null;
         }
         int count = this.mChildrenCount;
@@ -3656,7 +3407,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void internalSetPadding(int left, int top, int right, int bottom) {
+    protected void internalSetPadding(int left, int top, int right, int bottom) {
         super.internalSetPadding(left, top, right, bottom);
         if ((this.mPaddingLeft | this.mPaddingTop | this.mPaddingRight | this.mPaddingBottom) != 0) {
             this.mGroupFlags |= 32;
@@ -3666,7 +3417,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
         super.dispatchSaveInstanceState(container);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -3678,12 +3429,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void dispatchFreezeSelfOnly(SparseArray<Parcelable> container) {
+    protected void dispatchFreezeSelfOnly(SparseArray<Parcelable> container) {
         super.dispatchSaveInstanceState(container);
     }
 
     @Override // android.view.View
-    public void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
         int count = this.mChildrenCount;
         View[] children = this.mChildren;
@@ -3695,10 +3446,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void dispatchThawSelfOnly(SparseArray<Parcelable> container) {
+    protected void dispatchThawSelfOnly(SparseArray<Parcelable> container) {
         super.dispatchRestoreInstanceState(container);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Deprecated
     public void setChildrenDrawingCacheEnabled(boolean enabled) {
         if (enabled || (this.mPersistentDrawingCache & 3) != 3) {
@@ -3736,7 +3488,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public boolean isLayoutModeOptical() {
+    boolean isLayoutModeOptical() {
         return this.mLayoutMode == 1;
     }
 
@@ -3792,6 +3544,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         drawCorner(canvas, paint, x2, y2, -lineLength, -lineLength, lineWidth);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static void fillDifference(Canvas canvas, int x2, int y2, int x3, int y3, int dx1, int dy1, int dx2, int dy2, Paint paint) {
         int x1 = x2 - dx1;
         int y1 = y2 - dy1;
@@ -3810,7 +3563,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void onDebugDraw(Canvas canvas) {
+    protected void onDebugDraw(Canvas canvas) {
         Paint paint = getDebugPaint();
         paint.setColor(-65536);
         paint.setStyle(Paint.Style.STROKE);
@@ -3837,7 +3590,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         int childrenCount;
         int flags;
         int childrenCount2 = this.mChildrenCount;
@@ -3857,12 +3610,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 this.mGroupFlags |= 128;
             }
             controller.start();
-            int i2 = this.mGroupFlags & (-9);
-            this.mGroupFlags = i2;
-            this.mGroupFlags = i2 & (-17);
-            Animation.AnimationListener animationListener = this.mAnimationListener;
-            if (animationListener != null) {
-                animationListener.onAnimationStart(controller.getAnimation());
+            this.mGroupFlags &= -9;
+            this.mGroupFlags &= -17;
+            if (this.mAnimationListener != null) {
+                this.mAnimationListener.onAnimationStart(controller.getAnimation());
             }
         }
         int clipSaveCount = 0;
@@ -3877,16 +3628,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         boolean more = false;
         long drawingTime = getDrawingTime();
         canvas.enableZ();
-        IntArray intArray = this.mTransientIndices;
-        int transientCount = intArray == null ? 0 : intArray.size();
+        int transientCount = this.mTransientIndices == null ? 0 : this.mTransientIndices.size();
         int transientIndex = transientCount != 0 ? 0 : -1;
         ArrayList<View> preorderedList = drawsWithRenderNode(canvas) ? null : buildOrderedChildList();
         if (preorderedList == null && isChildrenDrawingOrderEnabled()) {
             customOrder = true;
         }
-        int i3 = 0;
-        while (i3 < childrenCount2) {
-            while (transientIndex >= 0 && this.mTransientIndices.get(transientIndex) == i3) {
+        int i2 = 0;
+        while (i2 < childrenCount2) {
+            while (transientIndex >= 0 && this.mTransientIndices.get(transientIndex) == i2) {
                 View transientChild = this.mTransientViews.get(transientIndex);
                 if (transientChild == null) {
                     flags = flags2;
@@ -3903,7 +3653,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 flags2 = flags;
             }
             int flags3 = flags2;
-            int childIndex = getAndVerifyPreorderedIndex(childrenCount2, i3, customOrder);
+            int childIndex = getAndVerifyPreorderedIndex(childrenCount2, i2, customOrder);
             View child2 = getAndVerifyPreorderedView(preorderedList, children, childIndex);
             if (child2 == null) {
                 childrenCount = childrenCount2;
@@ -3913,7 +3663,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     more = drawChild(canvas, child2, drawingTime) | more;
                 }
             }
-            i3++;
+            i2++;
             flags2 = flags3;
             childrenCount2 = childrenCount;
         }
@@ -3933,8 +3683,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (this.mDisappearingChildren != null) {
             ArrayList<View> disappearingChildren = this.mDisappearingChildren;
             int disappearingCount = disappearingChildren.size() - 1;
-            for (int i4 = disappearingCount; i4 >= 0; i4--) {
-                more |= drawChild(canvas, disappearingChildren.get(i4), drawingTime);
+            for (int i3 = disappearingCount; i3 >= 0; i3--) {
+                more |= drawChild(canvas, disappearingChildren.get(i3), drawingTime);
             }
         }
         canvas.disableZ();
@@ -3951,27 +3701,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if ((flags4 & 16) == 0 && (flags4 & 512) == 0 && this.mLayoutAnimationController.isDone() && !more) {
             this.mGroupFlags |= 512;
             Runnable end = new Runnable() { // from class: android.view.ViewGroup.2
-                AnonymousClass2() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     ViewGroup.this.notifyAnimationListener();
                 }
             };
             post(end);
-        }
-    }
-
-    /* renamed from: android.view.ViewGroup$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements Runnable {
-        AnonymousClass2() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewGroup.this.notifyAnimationListener();
         }
     }
 
@@ -3983,7 +3718,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (ViewGroupOverlay) this.mOverlay;
     }
 
-    public int getChildDrawingOrder(int childCount, int drawingPosition) {
+    protected int getChildDrawingOrder(int childCount, int drawingPosition) {
         return drawingPosition;
     }
 
@@ -4000,16 +3735,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return false;
     }
 
-    public ArrayList<View> buildOrderedChildList() {
+    ArrayList<View> buildOrderedChildList() {
         int childrenCount = this.mChildrenCount;
         if (childrenCount <= 1 || !hasChildWithZ()) {
             return null;
         }
-        ArrayList<View> arrayList = this.mPreSortedChildren;
-        if (arrayList == null) {
+        if (this.mPreSortedChildren == null) {
             this.mPreSortedChildren = new ArrayList<>(childrenCount);
         } else {
-            arrayList.clear();
+            this.mPreSortedChildren.clear();
             this.mPreSortedChildren.ensureCapacity(childrenCount);
         }
         boolean customOrder = isChildrenDrawingOrderEnabled();
@@ -4026,15 +3760,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mPreSortedChildren;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyAnimationListener() {
-        int i = this.mGroupFlags & (-513);
-        this.mGroupFlags = i;
-        this.mGroupFlags = i | 16;
+        this.mGroupFlags &= -513;
+        this.mGroupFlags |= 16;
         if (this.mAnimationListener != null) {
             Runnable end = new Runnable() { // from class: android.view.ViewGroup.3
-                AnonymousClass3() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     ViewGroup.this.mAnimationListener.onAnimationEnd(ViewGroup.this.mLayoutAnimationController.getAnimation());
@@ -4043,18 +3774,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             post(end);
         }
         invalidate(true);
-    }
-
-    /* renamed from: android.view.ViewGroup$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        AnonymousClass3() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewGroup.this.mAnimationListener.onAnimationEnd(ViewGroup.this.mLayoutAnimationController.getAnimation());
-        }
     }
 
     @Override // android.view.View
@@ -4094,12 +3813,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         child.mRecreateDisplayList = false;
     }
 
-    public boolean drawChild(Canvas canvas, View child, long drawingTime) {
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
         return child.draw(canvas, this, drawingTime);
     }
 
     @Override // android.view.View
-    public void getScrollIndicatorBounds(Rect out) {
+    void getScrollIndicatorBounds(Rect out) {
         super.getScrollIndicatorBounds(out);
         boolean clipToPadding = (this.mGroupFlags & 34) == 34;
         if (clipToPadding) {
@@ -4193,7 +3912,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void dispatchCancelPendingInputEvents() {
+    void dispatchCancelPendingInputEvents() {
         super.dispatchCancelPendingInputEvents();
         View[] children = this.mChildren;
         int count = this.mChildrenCount;
@@ -4202,15 +3921,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void setStaticTransformationsEnabled(boolean enabled) {
+    protected void setStaticTransformationsEnabled(boolean enabled) {
         setBooleanFlag(2048, enabled);
     }
 
-    public boolean getChildStaticTransformation(View child, Transformation t) {
+    protected boolean getChildStaticTransformation(View child, Transformation t) {
         return false;
     }
 
-    public Transformation getChildTransformation() {
+    Transformation getChildTransformation() {
         if (this.mChildTransformation == null) {
             this.mChildTransformation = new Transformation();
         }
@@ -4218,7 +3937,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public <T extends View> T findViewTraversal(int i) {
+    protected <T extends View> T findViewTraversal(int i) {
         T t;
         if (i == this.mID) {
             return this;
@@ -4235,7 +3954,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public <T extends View> T findViewWithTagTraversal(Object obj) {
+    protected <T extends View> T findViewWithTagTraversal(Object obj) {
         T t;
         if (obj != null && obj.equals(this.mTag)) {
             return this;
@@ -4252,7 +3971,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
+    protected <T extends View> T findViewByPredicateTraversal(Predicate<View> predicate, View view) {
         T t;
         if (predicate.test(this)) {
             return this;
@@ -4299,11 +4018,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public void removeTransientView(View view) {
-        List<View> list = this.mTransientViews;
-        if (list == null) {
+        if (this.mTransientViews == null) {
             return;
         }
-        int size = list.size();
+        int size = this.mTransientViews.size();
         for (int i = 0; i < size; i++) {
             if (view == this.mTransientViews.get(i)) {
                 this.mTransientViews.remove(i);
@@ -4319,24 +4037,21 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public int getTransientViewCount() {
-        IntArray intArray = this.mTransientIndices;
-        if (intArray == null) {
+        if (this.mTransientIndices == null) {
             return 0;
         }
-        return intArray.size();
+        return this.mTransientIndices.size();
     }
 
     public int getTransientViewIndex(int position) {
-        IntArray intArray;
-        if (position < 0 || (intArray = this.mTransientIndices) == null || position >= intArray.size()) {
+        if (position < 0 || this.mTransientIndices == null || position >= this.mTransientIndices.size()) {
             return -1;
         }
         return this.mTransientIndices.get(position);
     }
 
     public View getTransientView(int position) {
-        List<View> list = this.mTransientViews;
-        if (list == null || position >= list.size()) {
+        if (this.mTransientViews == null || position >= this.mTransientViews.size()) {
             return null;
         }
         return this.mTransientViews.get(position);
@@ -4388,7 +4103,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         view.setLayoutParams(params);
     }
 
-    public boolean checkLayoutParams(LayoutParams p) {
+    protected boolean checkLayoutParams(LayoutParams p) {
         return p != null;
     }
 
@@ -4398,9 +4113,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     void dispatchViewAdded(View child) {
         onViewAdded(child);
-        OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-        if (onHierarchyChangeListener != null) {
-            onHierarchyChangeListener.onChildViewAdded(this, child);
+        if (this.mOnHierarchyChangeListener != null) {
+            this.mOnHierarchyChangeListener.onChildViewAdded(this, child);
         }
         if (child != null && child.mOnAddRemoveListener != null) {
             child.mOnAddRemoveListener.onViewAdded(this, child);
@@ -4412,9 +4126,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     void dispatchViewRemoved(View child) {
         onViewRemoved(child);
-        OnHierarchyChangeListener onHierarchyChangeListener = this.mOnHierarchyChangeListener;
-        if (onHierarchyChangeListener != null) {
-            onHierarchyChangeListener.onChildViewRemoved(this, child);
+        if (this.mOnHierarchyChangeListener != null) {
+            this.mOnHierarchyChangeListener.onChildViewRemoved(this, child);
         }
         if (child != null && child.mOnAddRemoveListener != null) {
             child.mOnAddRemoveListener.onViewRemoved(this, child);
@@ -4431,47 +4144,19 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void onAttachedToWindow() {
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         clearCachedLayoutMode();
-        int i = this.mAppWidgetToolBarId;
-        if (i != -1) {
-            View toolBar = findViewById(i);
-            if (!(toolBar instanceof ViewGroup)) {
-                return;
-            }
-            this.mAppWidgetToolBar = (ViewGroup) toolBar;
-            View listView = findViewById(this.mAppWidgetListViewId);
-            if (!(listView instanceof ListView)) {
-                return;
-            }
-            ListView listView2 = (ListView) listView;
-            this.mAppWidgetListView = listView2;
-            boolean semGetAppWidgetImmersiveEnabled = listView2.semGetAppWidgetImmersiveEnabled();
-            this.mAppWidgetImmersiveEnabled = semGetAppWidgetImmersiveEnabled;
-            ListView listView3 = this.mAppWidgetListView;
-            if (listView3 != null && semGetAppWidgetImmersiveEnabled) {
-                registerOnScrollOffsetChangedListener(listView3);
-                this.mAppWidgetScrollState = 0;
-            }
-        }
     }
 
     @Override // android.view.View
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         clearCachedLayoutMode();
-        ListView listView = this.mAppWidgetListView;
-        if (listView != null) {
-            unregisterOnScrollOffsetChangedListener(listView);
-            this.mAppWidgetListView.removeCallbacks(this.mReleaseAction);
-            this.mAppWidgetListView.removeCallbacks(this.mExpandAction);
-            this.mAppWidgetScrollState = 0;
-        }
     }
 
     @Override // android.view.View
-    public void destroyHardwareResources() {
+    protected void destroyHardwareResources() {
         super.destroyHardwareResources();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -4479,11 +4164,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public boolean addViewInLayout(View child, int index, LayoutParams params) {
+    protected boolean addViewInLayout(View child, int index, LayoutParams params) {
         return addViewInLayout(child, index, params, false);
     }
 
-    public boolean addViewInLayout(View child, int index, LayoutParams params, boolean preventRequestLayout) {
+    protected boolean addViewInLayout(View child, int index, LayoutParams params, boolean preventRequestLayout) {
         if (child == null) {
             throw new IllegalArgumentException("Cannot add a null child view to a ViewGroup");
         }
@@ -4493,21 +4178,19 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return true;
     }
 
-    public void cleanupLayoutState(View child) {
+    protected void cleanupLayoutState(View child) {
         child.mPrivateFlags &= -4097;
     }
 
     private void addViewInner(View child, int index, LayoutParams params, boolean preventRequestLayout) {
-        LayoutTransition layoutTransition = this.mTransition;
-        if (layoutTransition != null) {
-            layoutTransition.cancel(3);
+        if (this.mTransition != null) {
+            this.mTransition.cancel(3);
         }
         if (child.getParent() != null) {
             throw new IllegalStateException("The specified child already has a parent. You must call removeView() on the child's parent first.");
         }
-        LayoutTransition layoutTransition2 = this.mTransition;
-        if (layoutTransition2 != null) {
-            layoutTransition2.addChild(this, child);
+        if (this.mTransition != null) {
+            this.mTransition.addChild(this, child);
         }
         if (!checkLayoutParams(params)) {
             params = generateLayoutParams(params);
@@ -4557,9 +4240,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (child.getVisibility() != 8) {
             notifySubtreeAccessibilityStateChangedIfNeeded();
         }
-        IntArray intArray = this.mTransientIndices;
-        if (intArray != null) {
-            int transientCount = intArray.size();
+        if (this.mTransientIndices != null) {
+            int transientCount = this.mTransientIndices.size();
             for (int i = 0; i < transientCount; i++) {
                 int oldIndex = this.mTransientIndices.get(i);
                 if (index <= oldIndex) {
@@ -4590,9 +4272,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         int size = children.length;
         if (index == count) {
             if (size == count) {
-                View[] viewArr = new View[size + 12];
-                this.mChildren = viewArr;
-                System.arraycopy(children, 0, viewArr, 0, size);
+                this.mChildren = new View[size + 12];
+                System.arraycopy(children, 0, this.mChildren, 0, size);
                 children = this.mChildren;
             }
             int i = this.mChildrenCount;
@@ -4602,9 +4283,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
         if (index < count) {
             if (size == count) {
-                View[] viewArr2 = new View[size + 12];
-                this.mChildren = viewArr2;
-                System.arraycopy(children, 0, viewArr2, 0, index);
+                this.mChildren = new View[size + 12];
+                System.arraycopy(children, 0, this.mChildren, 0, index);
                 System.arraycopy(children, index, this.mChildren, index + 1, count - index);
                 children = this.mChildren;
             } else {
@@ -4612,9 +4292,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             }
             children[index] = child;
             this.mChildrenCount++;
-            int i2 = this.mLastTouchDownIndex;
-            if (i2 >= index) {
-                this.mLastTouchDownIndex = i2 + 1;
+            if (this.mLastTouchDownIndex >= index) {
+                this.mLastTouchDownIndex++;
                 return;
             }
             return;
@@ -4624,8 +4303,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     private void removeFromArray(int index) {
         View[] children = this.mChildren;
-        ArrayList<View> arrayList = this.mTransitioningViews;
-        if ((arrayList == null || !arrayList.contains(children[index])) && children[index] != null) {
+        if ((this.mTransitioningViews == null || !this.mTransitioningViews.contains(children[index])) && children[index] != null) {
             children[index].mParent = null;
         }
         int count = this.mChildrenCount;
@@ -4641,12 +4319,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         } else {
             throw new IndexOutOfBoundsException();
         }
-        int i3 = this.mLastTouchDownIndex;
-        if (i3 == index) {
+        if (this.mLastTouchDownIndex == index) {
             this.mLastTouchDownTime = 0L;
             this.mLastTouchDownIndex = -1;
-        } else if (i3 > index) {
-            this.mLastTouchDownIndex = i3 - 1;
+        } else if (this.mLastTouchDownIndex > index) {
+            this.mLastTouchDownIndex--;
         }
     }
 
@@ -4729,10 +4406,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     private void removeViewInternal(int index, View view) {
-        ArrayList<View> arrayList;
-        LayoutTransition layoutTransition = this.mTransition;
-        if (layoutTransition != null) {
-            layoutTransition.removeChild(this, view);
+        if (this.mTransition != null) {
+            this.mTransition.removeChild(this, view);
         }
         boolean clearChildFocus = false;
         if (view == this.mFocused) {
@@ -4745,7 +4420,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         view.clearAccessibilityFocus();
         cancelTouchTarget(view);
         cancelHoverTarget(view);
-        if (view.getAnimation() != null || ((arrayList = this.mTransitioningViews) != null && arrayList.contains(view))) {
+        if (view.getAnimation() != null || (this.mTransitioningViews != null && this.mTransitioningViews.contains(view))) {
             addDisappearingView(view);
         } else if (view.mAttachInfo != null) {
             view.dispatchDetachedFromWindow();
@@ -4771,8 +4446,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (view.getVisibility() != 8) {
             notifySubtreeAccessibilityStateChangedIfNeeded();
         }
-        IntArray intArray = this.mTransientIndices;
-        int transientCount = intArray != null ? intArray.size() : 0;
+        int transientCount = this.mTransientIndices != null ? this.mTransientIndices.size() : 0;
         for (int i = 0; i < transientCount; i++) {
             int oldIndex = this.mTransientIndices.get(i);
             if (index < oldIndex) {
@@ -4791,8 +4465,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             previousTransition.removeTransitionListener(this.mLayoutTransitionListener);
         }
         this.mTransition = transition;
-        if (transition != null) {
-            transition.addTransitionListener(this.mLayoutTransitionListener);
+        if (this.mTransition != null) {
+            this.mTransition.addTransitionListener(this.mLayoutTransitionListener);
         }
     }
 
@@ -4801,7 +4475,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     private void removeViewsInternal(int start, int count) {
-        ArrayList<View> arrayList;
         int end = start + count;
         if (start < 0 || count < 0 || end > this.mChildrenCount) {
             throw new IndexOutOfBoundsException();
@@ -4813,9 +4486,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         View[] children = this.mChildren;
         for (int i = start; i < end; i++) {
             View view = children[i];
-            LayoutTransition layoutTransition = this.mTransition;
-            if (layoutTransition != null) {
-                layoutTransition.removeChild(this, view);
+            if (this.mTransition != null) {
+                this.mTransition.removeChild(this, view);
             }
             if (view == focused) {
                 view.unFocus(null);
@@ -4830,7 +4502,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             view.clearAccessibilityFocus();
             cancelTouchTarget(view);
             cancelHoverTarget(view);
-            if (view.getAnimation() != null || ((arrayList = this.mTransitioningViews) != null && arrayList.contains(view))) {
+            if (view.getAnimation() != null || (this.mTransitioningViews != null && this.mTransitioningViews.contains(view))) {
                 addDisappearingView(view);
             } else if (detach) {
                 view.dispatchDetachedFromWindow();
@@ -4860,7 +4532,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public void removeAllViewsInLayout() {
-        ArrayList<View> arrayList;
         int count = this.mChildrenCount;
         if (count <= 0) {
             return;
@@ -4873,9 +4544,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         needGlobalAttributesUpdate(false);
         for (int i = count - 1; i >= 0; i--) {
             View view = children[i];
-            LayoutTransition layoutTransition = this.mTransition;
-            if (layoutTransition != null) {
-                layoutTransition.removeChild(this, view);
+            if (this.mTransition != null) {
+                this.mTransition.removeChild(this, view);
             }
             if (view == focused) {
                 view.unFocus(null);
@@ -4884,7 +4554,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             view.clearAccessibilityFocus();
             cancelTouchTarget(view);
             cancelHoverTarget(view);
-            if (view.getAnimation() != null || ((arrayList = this.mTransitioningViews) != null && arrayList.contains(view))) {
+            if (view.getAnimation() != null || (this.mTransitioningViews != null && this.mTransitioningViews.contains(view))) {
                 addDisappearingView(view);
             } else if (detach) {
                 view.dispatchDetachedFromWindow();
@@ -4896,13 +4566,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             view.mParent = null;
             children[i] = null;
         }
-        View view2 = this.mDefaultFocus;
-        if (view2 != null) {
-            clearDefaultFocus(view2);
+        if (this.mDefaultFocus != null) {
+            clearDefaultFocus(this.mDefaultFocus);
         }
-        View view3 = this.mFocusedInCluster;
-        if (view3 != null) {
-            clearFocusedInCluster(view3);
+        if (this.mFocusedInCluster != null) {
+            clearFocusedInCluster(this.mFocusedInCluster);
         }
         if (clearChildFocus) {
             clearChildFocus(focused);
@@ -4912,11 +4580,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     public void removeDetachedView(View child, boolean animate) {
-        ArrayList<View> arrayList;
-        LayoutTransition layoutTransition = this.mTransition;
-        if (layoutTransition != null) {
-            layoutTransition.removeChild(this, child);
+        if (this.mTransition != null) {
+            this.mTransition.removeChild(this, child);
         }
         if (child == this.mFocused) {
             child.clearFocus();
@@ -4930,7 +4597,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         child.clearAccessibilityFocus();
         cancelTouchTarget(child);
         cancelHoverTarget(child);
-        if ((animate && child.getAnimation() != null) || ((arrayList = this.mTransitioningViews) != null && arrayList.contains(child))) {
+        if ((animate && child.getAnimation() != null) || (this.mTransitioningViews != null && this.mTransitioningViews.contains(child))) {
             addDisappearingView(child);
         } else if (child.mAttachInfo != null) {
             child.dispatchDetachedFromWindow();
@@ -4941,6 +4608,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         dispatchViewRemoved(child);
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     public void attachViewToParent(View child, int index, LayoutParams params) {
         child.mLayoutParams = params;
         if (index < 0) {
@@ -4962,11 +4630,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         notifySubtreeAccessibilityStateChangedIfNeeded();
     }
 
-    public void detachViewFromParent(View child) {
+    protected void detachViewFromParent(View child) {
         child.setDetached(true);
         removeFromArray(indexOfChild(child));
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     public void detachViewFromParent(int index) {
         if (index >= 0 && index < this.mChildrenCount) {
             this.mChildren[index].setDetached(true);
@@ -4974,7 +4643,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         removeFromArray(index);
     }
 
-    public void detachViewsFromParent(int start, int count) {
+    protected void detachViewsFromParent(int start, int count) {
         int start2 = Math.max(0, start);
         int end = Math.min(this.mChildrenCount, start2 + count);
         for (int i = start2; i < end; i++) {
@@ -4983,7 +4652,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         removeFromArray(start2, count);
     }
 
-    public void detachAllViewsFromParent() {
+    protected void detachAllViewsFromParent() {
         int count = this.mChildrenCount;
         if (count <= 0) {
             return;
@@ -5009,7 +4678,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             target = this;
         }
         if (this.mParent != null) {
-            requestToAllowedPokeDrawLock();
             this.mParent.onDescendantInvalidated(this, target);
         }
     }
@@ -5076,7 +4744,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 if (view == null) {
                     childMatrix = childMatrix2;
                 } else {
-                    view.requestToAllowedPokeDrawLock();
                     Matrix m = view.getMatrix();
                     if (m.isIdentity()) {
                         childMatrix = childMatrix2;
@@ -5101,8 +4768,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     @Deprecated
     public ViewParent invalidateChildInParent(int[] location, Rect dirty) {
         if ((this.mPrivateFlags & 32800) != 0) {
-            int i = this.mGroupFlags;
-            if ((i & 144) != 128) {
+            if ((this.mGroupFlags & 144) != 128) {
                 dirty.offset(location[0] - this.mScrollX, location[1] - this.mScrollY);
                 if ((this.mGroupFlags & 1) == 0) {
                     dirty.union(0, 0, this.mRight - this.mLeft, this.mBottom - this.mTop);
@@ -5115,7 +4781,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 location[0] = left;
                 location[1] = top;
             } else {
-                if ((i & 1) == 1) {
+                if ((this.mGroupFlags & 1) == 1) {
                     dirty.set(0, 0, this.mRight - this.mLeft, this.mBottom - this.mTop);
                 } else {
                     dirty.union(0, 0, this.mRight - this.mLeft, this.mBottom - this.mTop);
@@ -5143,7 +4809,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     /* JADX WARN: Code restructure failed: missing block: B:29:0x0064, code lost:
     
-        if (r10 == false) goto L66;
+        if (r10 == false) goto L27;
      */
     /* JADX WARN: Code restructure failed: missing block: B:30:0x0066, code lost:
     
@@ -5165,7 +4831,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void offsetRectBetweenParentAndChild(android.view.View r8, android.graphics.Rect r9, boolean r10, boolean r11) {
+    void offsetRectBetweenParentAndChild(android.view.View r8, android.graphics.Rect r9, boolean r10, boolean r11) {
         /*
             r7 = this;
             r0 = r8
@@ -5426,11 +5092,9 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     @Override // android.view.View
     public final void layout(int l, int t, int r, int b) {
-        LayoutTransition layoutTransition;
-        if (!this.mSuppressLayout && ((layoutTransition = this.mTransition) == null || !layoutTransition.isChangingLayout())) {
-            LayoutTransition layoutTransition2 = this.mTransition;
-            if (layoutTransition2 != null) {
-                layoutTransition2.layoutChange(this);
+        if (!this.mSuppressLayout && (this.mTransition == null || !this.mTransition.isChangingLayout())) {
+            if (this.mTransition != null) {
+                this.mTransition.layoutChange(this);
             }
             super.layout(l, t, r, b);
             return;
@@ -5438,7 +5102,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         this.mLayoutCalledWhileSuppressed = true;
     }
 
-    public boolean canAnimate() {
+    protected boolean canAnimate() {
         return this.mLayoutAnimationController != null;
     }
 
@@ -5455,7 +5119,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
     public void setLayoutAnimation(LayoutAnimationController controller) {
         this.mLayoutAnimationController = controller;
-        if (controller != null) {
+        if (this.mLayoutAnimationController != null) {
             this.mGroupFlags |= 8;
         }
     }
@@ -5489,17 +5153,18 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return (this.mGroupFlags & 32768) == 32768;
     }
 
+    /* JADX INFO: Access modifiers changed from: protected */
     @Deprecated
     public void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         setBooleanFlag(32768, enabled);
     }
 
     @ViewDebug.ExportedProperty(category = "drawing")
-    public boolean isChildrenDrawingOrderEnabled() {
+    protected boolean isChildrenDrawingOrderEnabled() {
         return (this.mGroupFlags & 1024) == 1024;
     }
 
-    public void setChildrenDrawingOrderEnabled(boolean enabled) {
+    protected void setChildrenDrawingOrderEnabled(boolean enabled) {
         setBooleanFlag(1024, enabled);
     }
 
@@ -5532,15 +5197,14 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void invalidateInheritedLayoutMode(int layoutModeOfRoot) {
-        int i = this.mLayoutMode;
-        if (i == -1 || i == layoutModeOfRoot || hasBooleanFlag(8388608)) {
+    void invalidateInheritedLayoutMode(int layoutModeOfRoot) {
+        if (this.mLayoutMode == -1 || this.mLayoutMode == layoutModeOfRoot || hasBooleanFlag(8388608)) {
             return;
         }
         setLayoutMode(-1, false);
         int N = getChildCount();
-        for (int i2 = 0; i2 < N; i2++) {
-            getChildAt(i2).invalidateInheritedLayoutMode(layoutModeOfRoot);
+        for (int i = 0; i < N; i++) {
+            getChildAt(i).invalidateInheritedLayoutMode(layoutModeOfRoot);
         }
     }
 
@@ -5574,7 +5238,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void debug(int depth) {
+    protected void debug(int depth) {
         super.debug(depth);
         if (this.mFocused != null) {
             String output = debugIndent(depth);
@@ -5629,7 +5293,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mChildren[index];
     }
 
-    public void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void measureChildren(int widthMeasureSpec, int heightMeasureSpec) {
         int size = this.mChildrenCount;
         View[] children = this.mChildren;
         for (int i = 0; i < size; i++) {
@@ -5640,14 +5304,14 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
         LayoutParams lp = child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight, lp.width);
         int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec, this.mPaddingTop + this.mPaddingBottom, lp.height);
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     }
 
-    public void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
+    protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
         MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
         int childWidthMeasureSpec = getChildMeasureSpec(parentWidthMeasureSpec, this.mPaddingLeft + this.mPaddingRight + lp.leftMargin + lp.rightMargin + widthUsed, lp.width);
         int childHeightMeasureSpec = getChildMeasureSpec(parentHeightMeasureSpec, this.mPaddingTop + this.mPaddingBottom + lp.topMargin + lp.bottomMargin + heightUsed, lp.height);
@@ -5682,11 +5346,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     resultMode = 1073741824;
                     break;
                 } else if (childDimension == -1) {
-                    resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+                    resultSize = size;
                     resultMode = 0;
                     break;
                 } else if (childDimension == -2) {
-                    resultSize = View.sUseZeroUnspecifiedMeasureSpec ? 0 : size;
+                    resultSize = size;
                     resultMode = 0;
                     break;
                 }
@@ -5736,7 +5400,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         disappearingChildren.add(v);
     }
 
-    public void finishAnimatingView(View view, Animation animation) {
+    void finishAnimatingView(View view, Animation animation) {
         ArrayList<View> disappearingChildren = this.mDisappearingChildren;
         if (disappearingChildren != null && disappearingChildren.contains(view)) {
             disappearingChildren.remove(view);
@@ -5756,9 +5420,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    public boolean isViewTransitioning(View view) {
-        ArrayList<View> arrayList = this.mTransitioningViews;
-        return arrayList != null && arrayList.contains(view);
+    boolean isViewTransitioning(View view) {
+        return this.mTransitioningViews != null && this.mTransitioningViews.contains(view);
     }
 
     public void startViewTransition(View view) {
@@ -5771,14 +5434,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     public void endViewTransition(View view) {
-        ArrayList<View> arrayList = this.mTransitioningViews;
-        if (arrayList != null) {
-            arrayList.remove(view);
+        if (this.mTransitioningViews != null) {
+            this.mTransitioningViews.remove(view);
             ArrayList<View> disappearingChildren = this.mDisappearingChildren;
             if (disappearingChildren != null && disappearingChildren.contains(view)) {
                 disappearingChildren.remove(view);
-                ArrayList<View> arrayList2 = this.mVisibilityChangingChildren;
-                if (arrayList2 != null && arrayList2.contains(view)) {
+                if (this.mVisibilityChangingChildren != null && this.mVisibilityChangingChildren.contains(view)) {
                     this.mVisibilityChangingChildren.remove(view);
                 } else {
                     if (view.mAttachInfo != null) {
@@ -5789,32 +5450,6 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                     }
                 }
                 invalidate();
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewGroup$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements LayoutTransition.TransitionListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.animation.LayoutTransition.TransitionListener
-        public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-            if (transitionType == 3) {
-                ViewGroup.this.startViewTransition(view);
-            }
-        }
-
-        @Override // android.animation.LayoutTransition.TransitionListener
-        public void endTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
-            if (ViewGroup.this.mLayoutCalledWhileSuppressed && !transition.isChangingLayout()) {
-                ViewGroup.this.requestLayout();
-                ViewGroup.this.mLayoutCalledWhileSuppressed = false;
-            }
-            if (transitionType == 3 && ViewGroup.this.mTransitioningViews != null) {
-                ViewGroup.this.endViewTransition(view);
             }
         }
     }
@@ -6165,17 +5800,16 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void drawableStateChanged() {
+    protected void drawableStateChanged() {
         super.drawableStateChanged();
-        int i = this.mGroupFlags;
-        if ((65536 & i) != 0) {
-            if ((i & 8192) != 0) {
+        if ((this.mGroupFlags & 65536) != 0) {
+            if ((this.mGroupFlags & 8192) != 0) {
                 throw new IllegalStateException("addStateFromChildren cannot be enabled if a child has duplicateParentState set to true");
             }
             View[] children = this.mChildren;
             int count = this.mChildrenCount;
-            for (int i2 = 0; i2 < count; i2++) {
-                View child = children[i2];
+            for (int i = 0; i < count; i++) {
+                View child = children[i];
                 if ((child.mViewFlags & 4194304) != 0) {
                     child.refreshDrawableState();
                 }
@@ -6194,7 +5828,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public int[] onCreateDrawableState(int extraSpace) {
+    protected int[] onCreateDrawableState(int extraSpace) {
         if ((this.mGroupFlags & 8192) == 0) {
             return super.onCreateDrawableState(extraSpace);
         }
@@ -6321,7 +5955,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void resolveDrawables() {
+    protected void resolveDrawables() {
         super.resolveDrawables();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -6391,7 +6025,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public void resetResolvedDrawables() {
+    protected void resetResolvedDrawables() {
         super.resetResolvedDrawables();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
@@ -6446,7 +6080,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return this.mNestedScrollAxes;
     }
 
-    public void onSetLayoutParams(View child, LayoutParams layoutParams) {
+    protected void onSetLayoutParams(View child, LayoutParams layoutParams) {
         requestLayout();
     }
 
@@ -6480,28 +6114,26 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     }
 
     @Override // android.view.View
-    public boolean hasUnhandledKeyListener() {
+    boolean hasUnhandledKeyListener() {
         return this.mChildUnhandledKeyListeners > 0 || super.hasUnhandledKeyListener();
     }
 
-    public void incrementChildUnhandledKeyListeners() {
-        int i = this.mChildUnhandledKeyListeners + 1;
-        this.mChildUnhandledKeyListeners = i;
-        if (i == 1 && (this.mParent instanceof ViewGroup)) {
+    void incrementChildUnhandledKeyListeners() {
+        this.mChildUnhandledKeyListeners++;
+        if (this.mChildUnhandledKeyListeners == 1 && (this.mParent instanceof ViewGroup)) {
             ((ViewGroup) this.mParent).incrementChildUnhandledKeyListeners();
         }
     }
 
-    public void decrementChildUnhandledKeyListeners() {
-        int i = this.mChildUnhandledKeyListeners - 1;
-        this.mChildUnhandledKeyListeners = i;
-        if (i == 0 && (this.mParent instanceof ViewGroup)) {
+    void decrementChildUnhandledKeyListeners() {
+        this.mChildUnhandledKeyListeners--;
+        if (this.mChildUnhandledKeyListeners == 0 && (this.mParent instanceof ViewGroup)) {
             ((ViewGroup) this.mParent).decrementChildUnhandledKeyListeners();
         }
     }
 
     @Override // android.view.View
-    public View dispatchUnhandledKeyEvent(KeyEvent evt) {
+    View dispatchUnhandledKeyEvent(KeyEvent evt) {
         if (!hasUnhandledKeyListener()) {
             return null;
         }
@@ -6533,8 +6165,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return null;
     }
 
-    /* loaded from: classes4.dex */
-    public static final class TouchTarget {
+    private static final class TouchTarget {
         public static final int ALL_POINTER_IDS = -1;
         private static final int MAX_RECYCLED = 32;
         private static TouchTarget sRecycleBin;
@@ -6553,10 +6184,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 throw new IllegalArgumentException("child must be non-null");
             }
             synchronized (sRecycleLock) {
-                target = sRecycleBin;
-                if (target == null) {
+                if (sRecycleBin == null) {
                     target = new TouchTarget();
                 } else {
+                    target = sRecycleBin;
                     sRecycleBin = target.next;
                     sRecycledCount--;
                     target.next = null;
@@ -6572,11 +6203,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 throw new IllegalStateException("already recycled once");
             }
             synchronized (sRecycleLock) {
-                int i = sRecycledCount;
-                if (i < 32) {
+                if (sRecycledCount < 32) {
                     this.next = sRecycleBin;
                     sRecycleBin = this;
-                    sRecycledCount = i + 1;
+                    sRecycledCount++;
                 } else {
                     this.next = null;
                 }
@@ -6585,8 +6215,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static final class HoverTarget {
+    private static final class HoverTarget {
         private static final int MAX_RECYCLED = 32;
         private static HoverTarget sRecycleBin;
         private static final Object sRecycleLock = new Object[0];
@@ -6603,10 +6232,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 throw new IllegalArgumentException("child must be non-null");
             }
             synchronized (sRecycleLock) {
-                target = sRecycleBin;
-                if (target == null) {
+                if (sRecycleBin == null) {
                     target = new HoverTarget();
                 } else {
+                    target = sRecycleBin;
                     sRecycleBin = target.next;
                     sRecycledCount--;
                     target.next = null;
@@ -6621,11 +6250,10 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
                 throw new IllegalStateException("already recycled once");
             }
             synchronized (sRecycleLock) {
-                int i = sRecycledCount;
-                if (i < 32) {
+                if (sRecycledCount < 32) {
                     this.next = sRecycleBin;
                     sRecycleBin = this;
-                    sRecycledCount = i + 1;
+                    sRecycledCount++;
                 } else {
                     this.next = null;
                 }
@@ -6634,8 +6262,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ChildListForAutoFillOrContentCapture extends ArrayList<View> {
+    private static class ChildListForAutoFillOrContentCapture extends ArrayList<View> {
         private static final int MAX_POOL_SIZE = 32;
         private static final Pools.SimplePool<ChildListForAutoFillOrContentCapture> sPool = new Pools.SimplePool<>(32);
 
@@ -6656,8 +6283,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ChildListForAccessibility {
+    static class ChildListForAccessibility {
         private static final int MAX_POOL_SIZE = 32;
         private static final Pools.SynchronizedPool<ChildListForAccessibility> sPool = new Pools.SynchronizedPool<>(32);
         private final ArrayList<View> mChildren = new ArrayList<>();
@@ -6726,8 +6352,7 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class ViewLocationHolder implements Comparable<ViewLocationHolder> {
+    static class ViewLocationHolder implements Comparable<ViewLocationHolder> {
         public static final int COMPARISON_STRATEGY_LOCATION = 2;
         public static final int COMPARISON_STRATEGY_STRIPE = 1;
         private static final int MAX_POOL_SIZE = 32;
@@ -6831,12 +6456,12 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return child2 != null ? -1 : 0;
         }
 
-        public static /* synthetic */ boolean lambda$compareBoundsOfTree$0(Rect tempRect, Rect view1Bounds, View view) {
+        static /* synthetic */ boolean lambda$compareBoundsOfTree$0(Rect tempRect, Rect view1Bounds, View view) {
             view.getBoundsOnScreen(tempRect, true);
             return true ^ tempRect.equals(view1Bounds);
         }
 
-        public static /* synthetic */ boolean lambda$compareBoundsOfTree$1(Rect tempRect, Rect view2Bounds, View view) {
+        static /* synthetic */ boolean lambda$compareBoundsOfTree$1(Rect tempRect, Rect view2Bounds, View view) {
             view.getBoundsOnScreen(tempRect, true);
             return true ^ tempRect.equals(view2Bounds);
         }
@@ -6861,28 +6486,27 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         if (sDebugLines == null) {
             sDebugLines = new float[16];
         }
-        float[] fArr = sDebugLines;
-        fArr[0] = x1;
-        fArr[1] = y1;
-        fArr[2] = x2;
-        fArr[3] = y1;
-        fArr[4] = x2;
-        fArr[5] = y1;
-        fArr[6] = x2;
-        fArr[7] = y2;
-        fArr[8] = x2;
-        fArr[9] = y2;
-        fArr[10] = x1;
-        fArr[11] = y2;
-        fArr[12] = x1;
-        fArr[13] = y2;
-        fArr[14] = x1;
-        fArr[15] = y1;
-        canvas.drawLines(fArr, paint);
+        sDebugLines[0] = x1;
+        sDebugLines[1] = y1;
+        sDebugLines[2] = x2;
+        sDebugLines[3] = y1;
+        sDebugLines[4] = x2;
+        sDebugLines[5] = y1;
+        sDebugLines[6] = x2;
+        sDebugLines[7] = y2;
+        sDebugLines[8] = x2;
+        sDebugLines[9] = y2;
+        sDebugLines[10] = x1;
+        sDebugLines[11] = y2;
+        sDebugLines[12] = x1;
+        sDebugLines[13] = y2;
+        sDebugLines[14] = x1;
+        sDebugLines[15] = y1;
+        canvas.drawLines(sDebugLines, paint);
     }
 
     @Override // android.view.View
-    public void encodeProperties(ViewHierarchyEncoder encoder) {
+    protected void encodeProperties(ViewHierarchyEncoder encoder) {
         super.encodeProperties(encoder);
         encoder.addProperty("focus:descendantFocusability", getDescendantFocusability());
         encoder.addProperty("drawing:clipChildren", getClipChildren());
@@ -6900,9 +6524,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     @Override // android.view.ViewParent
     public final void onDescendantUnbufferedRequested() {
         int focusedChildNonPointerSource = 0;
-        View view = this.mFocused;
-        if (view != null) {
-            focusedChildNonPointerSource = view.mUnbufferedInputSource & (-3);
+        if (this.mFocused != null) {
+            focusedChildNonPointerSource = this.mFocused.mUnbufferedInputSource & (-3);
         }
         this.mUnbufferedInputSource = focusedChildNonPointerSource;
         int i = 0;
@@ -6961,6 +6584,23 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return false;
     }
 
+    @Override // android.view.ViewParent
+    public void requestSendStickyDragStartedEvent(View child) {
+        if (this.mCurrentDragStartEvent != null) {
+            if (this.mCurrentDragStartEvent.isStickyEvent() && !this.mChildrenInterestedInDrag.contains(child)) {
+                if (CoreRune.IS_DEBUG_LEVEL_MID) {
+                    Log.i("View", "requestSendStickyDragStartedEvent this=" + this + ", child=" + child);
+                }
+                notifyChildOfDragStart(child);
+                return;
+            }
+            return;
+        }
+        if (getParent() != null) {
+            getParent().requestSendStickyDragStartedEvent(this);
+        }
+    }
+
     @Override // android.view.View
     public View semDispatchFindView(float x, float y, boolean findImage) {
         int childrenCount = this.mChildrenCount;
@@ -6991,249 +6631,5 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return null;
         }
         return null;
-    }
-
-    @Override // android.view.ViewParent
-    public void requestSendStickyDragStartedEvent(View child) {
-        DragEvent dragEvent = this.mCurrentDragStartEvent;
-        if (dragEvent != null) {
-            if (dragEvent.isStickyEvent() && !this.mChildrenInterestedInDrag.contains(child)) {
-                if (CoreRune.SAFE_DEBUG || CoreRune.IS_DEBUG_LEVEL_MID) {
-                    Log.i("View", "requestSendStickyDragStartedEvent this=" + this + ", child=" + child);
-                }
-                notifyChildOfDragStart(child);
-                return;
-            }
-            return;
-        }
-        if (getParent() != null) {
-            getParent().requestSendStickyDragStartedEvent(this);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewGroup$5 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass5 implements AbsListView.OnScrollOffsetListener {
-        AnonymousClass5() {
-        }
-
-        @Override // android.widget.AbsListView.OnScrollOffsetListener
-        public void onScrollOffsetChanged(AbsListView view, int offset) {
-            int distanceByTop;
-            int offsetAdjusted;
-            MarginLayoutParams params;
-            int offsetAdjusted2;
-            MarginLayoutParams params2;
-            if (ViewGroup.this.mAppWidgetToolBarHeight == 0) {
-                ViewGroup viewGroup = ViewGroup.this;
-                viewGroup.mAppWidgetToolBarHeight = viewGroup.mAppWidgetToolBar.getHeight();
-            }
-            if (offset < 0) {
-                int distanceByTop2 = ViewGroup.this.mAppWidgetToolBar.getBottom() * (-1);
-                if (distanceByTop2 < 0 && (offsetAdjusted2 = Math.max(distanceByTop2, offset)) < 0 && (params2 = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
-                    params2.topMargin += offsetAdjusted2;
-                    params2.bottomMargin += offsetAdjusted2;
-                    ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params2);
-                    return;
-                }
-                return;
-            }
-            if (offset > 0 && (distanceByTop = ViewGroup.this.mAppWidgetToolBar.getTop() * (-1)) > 0 && (offsetAdjusted = Math.min(distanceByTop, offset)) > 0 && (params = (MarginLayoutParams) ViewGroup.this.mAppWidgetToolBar.getLayoutParams()) != null) {
-                params.topMargin += offsetAdjusted;
-                params.bottomMargin += offsetAdjusted;
-                if (params.topMargin > 0) {
-                    params.topMargin = 0;
-                    params.bottomMargin = ViewGroup.this.mAppWidgetToolBarHeight;
-                }
-                ViewGroup.this.mAppWidgetToolBar.setLayoutParams(params);
-            }
-        }
-
-        @Override // android.widget.AbsListView.OnScrollOffsetListener
-        public void onScrollMotionDone(AbsListView view) {
-            int distanceByTop = ViewGroup.this.mAppWidgetToolBar.getBottom();
-            if (distanceByTop <= 0) {
-                ViewGroup.this.mExpandAction.setDistance(view, ViewGroup.this.mAppWidgetToolBar.getHeight() * (-1));
-                view.postDelayed(ViewGroup.this.mExpandAction, 1500L);
-                return;
-            }
-            boolean needToCollapse = distanceByTop < ViewGroup.this.mAppWidgetToolBar.getHeight() / 2;
-            int distanceToScroll = needToCollapse ? distanceByTop : distanceByTop - ViewGroup.this.mAppWidgetToolBar.getHeight();
-            if (distanceToScroll != 0) {
-                ViewGroup.this.mReleaseAction.setDistance(view, distanceToScroll);
-                view.removeCallbacks(ViewGroup.this.mReleaseAction);
-                view.postDelayed(ViewGroup.this.mReleaseAction, 50L);
-            }
-        }
-    }
-
-    public void registerOnScrollOffsetChangedListener(ListView view) {
-        view.setOnScrollOffsetListener(this.mOnScrollListener);
-        view.setOnScrollListener(new AbsListView.OnScrollListener() { // from class: android.view.ViewGroup.6
-            AnonymousClass6() {
-            }
-
-            @Override // android.widget.AbsListView.OnScrollListener
-            public void onScrollStateChanged(AbsListView view2, int scrollState) {
-                if (ViewGroup.this.mAppWidgetScrollState != scrollState) {
-                    ViewGroup.this.mAppWidgetScrollState = scrollState;
-                    if (ViewGroup.this.mAppWidgetScrollState != 0) {
-                        ViewGroup.this.mAppWidgetListView.removeCallbacks(ViewGroup.this.mExpandAction);
-                    }
-                }
-            }
-
-            @Override // android.widget.AbsListView.OnScrollListener
-            public void onScroll(AbsListView view2, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            }
-        });
-    }
-
-    /* renamed from: android.view.ViewGroup$6 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass6 implements AbsListView.OnScrollListener {
-        AnonymousClass6() {
-        }
-
-        @Override // android.widget.AbsListView.OnScrollListener
-        public void onScrollStateChanged(AbsListView view2, int scrollState) {
-            if (ViewGroup.this.mAppWidgetScrollState != scrollState) {
-                ViewGroup.this.mAppWidgetScrollState = scrollState;
-                if (ViewGroup.this.mAppWidgetScrollState != 0) {
-                    ViewGroup.this.mAppWidgetListView.removeCallbacks(ViewGroup.this.mExpandAction);
-                }
-            }
-        }
-
-        @Override // android.widget.AbsListView.OnScrollListener
-        public void onScroll(AbsListView view2, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        }
-    }
-
-    /* loaded from: classes4.dex */
-    public class ReleaseRunnable implements Runnable {
-        private static final int EXPAND_ACTION = 0;
-        private static final int RELEASE_ACTION = 1;
-        private int mActionType;
-        private int mDistance;
-        private int mLastOffset = 0;
-        private AbsListView mView;
-
-        ReleaseRunnable(int action) {
-            this.mActionType = action;
-        }
-
-        public void setDistance(AbsListView view, int distance) {
-            if (view instanceof AbsListView) {
-                this.mView = view;
-                this.mDistance = distance;
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (this.mView != null && ViewGroup.this.mAppWidgetScrollState == 0) {
-                int i = this.mActionType;
-                if (i == 1) {
-                    this.mView.smoothScrollBy(this.mDistance, 400);
-                    return;
-                }
-                if (i == 0) {
-                    ViewGroup.this.mExpandOffsetAnimator = new ValueAnimator();
-                    ViewGroup.this.mExpandOffsetAnimator.setInterpolator(ViewGroup.this.EXPAND_INTERPOLATOR);
-                    ViewGroup.this.mExpandOffsetAnimator.setDuration(400L);
-                    ViewGroup.this.mExpandOffsetAnimator.setIntValues(0, this.mDistance * (-1));
-                    ViewGroup.this.mExpandOffsetAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: android.view.ViewGroup.ReleaseRunnable.1
-                        AnonymousClass1() {
-                        }
-
-                        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            int value = ((Integer) animation.getAnimatedValue()).intValue();
-                            int distance = value - ReleaseRunnable.this.mLastOffset;
-                            ReleaseRunnable.this.mLastOffset = value;
-                            ViewGroup.this.mOnScrollListener.onScrollOffsetChanged(ReleaseRunnable.this.mView, distance);
-                        }
-                    });
-                    ViewGroup.this.mExpandOffsetAnimator.addListener(new AnimatorListenerAdapter() { // from class: android.view.ViewGroup.ReleaseRunnable.2
-                        AnonymousClass2() {
-                        }
-
-                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                        public void onAnimationStart(Animator animator) {
-                            if ((animator instanceof ValueAnimator) && ((ValueAnimator) animator).getAnimatedValue() != null) {
-                                ReleaseRunnable.this.mLastOffset = ((Integer) ((ValueAnimator) animator).getAnimatedValue()).intValue();
-                            }
-                            ReleaseRunnable.this.mView.semShowGoToTOP();
-                        }
-
-                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                        public void onAnimationEnd(Animator animation) {
-                            ReleaseRunnable.this.mLastOffset = 0;
-                        }
-
-                        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-                        public void onAnimationCancel(Animator animation) {
-                            ReleaseRunnable.this.mLastOffset = 0;
-                        }
-                    });
-                    ViewGroup.this.mExpandOffsetAnimator.start();
-                }
-            }
-        }
-
-        /* renamed from: android.view.ViewGroup$ReleaseRunnable$1 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass1 implements ValueAnimator.AnimatorUpdateListener {
-            AnonymousClass1() {
-            }
-
-            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = ((Integer) animation.getAnimatedValue()).intValue();
-                int distance = value - ReleaseRunnable.this.mLastOffset;
-                ReleaseRunnable.this.mLastOffset = value;
-                ViewGroup.this.mOnScrollListener.onScrollOffsetChanged(ReleaseRunnable.this.mView, distance);
-            }
-        }
-
-        /* renamed from: android.view.ViewGroup$ReleaseRunnable$2 */
-        /* loaded from: classes4.dex */
-        class AnonymousClass2 extends AnimatorListenerAdapter {
-            AnonymousClass2() {
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animator) {
-                if ((animator instanceof ValueAnimator) && ((ValueAnimator) animator).getAnimatedValue() != null) {
-                    ReleaseRunnable.this.mLastOffset = ((Integer) ((ValueAnimator) animator).getAnimatedValue()).intValue();
-                }
-                ReleaseRunnable.this.mView.semShowGoToTOP();
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animation) {
-                ReleaseRunnable.this.mLastOffset = 0;
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationCancel(Animator animation) {
-                ReleaseRunnable.this.mLastOffset = 0;
-            }
-        }
-    }
-
-    public void unregisterOnScrollOffsetChangedListener(ListView view) {
-        view.setOnScrollOffsetListener(null);
-        view.setOnScrollListener(null);
-    }
-
-    public void semSetToolBarViewId(int viewId) {
-        this.mAppWidgetToolBarId = viewId;
-    }
-
-    public void semSetListViewId(int viewId) {
-        this.mAppWidgetListViewId = viewId;
     }
 }

@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextStepCountAlert extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextStepCountAlert> CREATOR = new Parcelable.Creator<SemContextStepCountAlert>() { // from class: com.samsung.android.hardware.context.SemContextStepCountAlert.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextStepCountAlert createFromParcel(Parcel in) {
             return new SemContextStepCountAlert(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextStepCountAlert[] newArray(int size) {
             return new SemContextStepCountAlert[size];
@@ -24,24 +23,7 @@ public class SemContextStepCountAlert extends SemContextEventContext {
     public static final int UNKNOWN = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextStepCountAlert$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextStepCountAlert> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextStepCountAlert createFromParcel(Parcel in) {
-            return new SemContextStepCountAlert(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextStepCountAlert[] newArray(int size) {
-            return new SemContextStepCountAlert[size];
-        }
-    }
-
-    public SemContextStepCountAlert() {
+    SemContextStepCountAlert() {
         this.mContext = new Bundle();
     }
 

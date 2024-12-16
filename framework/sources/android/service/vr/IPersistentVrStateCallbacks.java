@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IPersistentVrStateCallbacks extends IInterface {
     void onPersistentVrStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IPersistentVrStateCallbacks {
         @Override // android.service.vr.IPersistentVrStateCallbacks
         public void onPersistentVrStateChanged(boolean enabled) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IPersistentVrStateCallbacks extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IPersistentVrStateCallbacks {
         public static final String DESCRIPTOR = "android.service.vr.IPersistentVrStateCallbacks";
         static final int TRANSACTION_onPersistentVrStateChanged = 1;
@@ -66,26 +64,22 @@ public interface IPersistentVrStateCallbacks extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onPersistentVrStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onPersistentVrStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IPersistentVrStateCallbacks {
+        private static class Proxy implements IPersistentVrStateCallbacks {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

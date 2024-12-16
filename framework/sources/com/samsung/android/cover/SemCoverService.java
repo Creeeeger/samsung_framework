@@ -10,7 +10,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import com.samsung.android.cover.ICoverService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemCoverService extends Service {
     private static final String TAG = "SemCoverService";
     private Handler mHandler;
@@ -19,7 +19,7 @@ public class SemCoverService extends Service {
     private final Object mLock = new Object();
 
     @Override // android.app.Service, android.content.ContextWrapper
-    public void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         this.mHandler = new MyHandler(getMainLooper());
     }
@@ -61,12 +61,7 @@ public class SemCoverService extends Service {
         return 0;
     }
 
-    /* loaded from: classes5.dex */
     private class CoverServiceWrapper extends ICoverService.Stub {
-        /* synthetic */ CoverServiceWrapper(SemCoverService semCoverService, CoverServiceWrapperIA coverServiceWrapperIA) {
-            this();
-        }
-
         private CoverServiceWrapper() {
         }
 
@@ -96,7 +91,6 @@ public class SemCoverService extends Service {
         }
     }
 
-    /* loaded from: classes5.dex */
     private final class MyHandler extends Handler {
         static final int MSG_COVER_APP_COVERED = 3;
         static final int MSG_SYSTEM_READY = 1;
@@ -111,7 +105,7 @@ public class SemCoverService extends Service {
             switch (msg.what) {
                 case 1:
                     SemCoverService.this.onSystemReady();
-                    return;
+                    break;
                 case 2:
                     if (msg.obj != null && (msg.obj instanceof CoverState)) {
                         CoverState cs = (CoverState) msg.obj;
@@ -120,14 +114,12 @@ public class SemCoverService extends Service {
                             SemCoverService.this.mAttach = true;
                         }
                         SemCoverService.this.onCoverStateUpdated(cs);
-                        return;
+                        break;
                     }
-                    return;
+                    break;
                 case 3:
                     SemCoverService.this.onCoverAppCovered(msg.arg1 == 1);
-                    return;
-                default:
-                    return;
+                    break;
             }
         }
     }

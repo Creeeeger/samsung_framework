@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellInfo implements Parcelable {
     public static final Parcelable.Creator<CellInfo> CREATOR = new Parcelable.Creator<CellInfo>() { // from class: android.hardware.radio.network.CellInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfo createFromParcel(Parcel _aidl_source) {
             CellInfo _aidl_out = new CellInfo();
@@ -19,6 +17,7 @@ public class CellInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfo[] newArray(int _aidl_size) {
             return new CellInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class CellInfo implements Parcelable {
     public int connectionStatus;
     public CellInfoRatSpecificInfo ratSpecificInfo;
     public boolean registered = false;
-
-    /* renamed from: android.hardware.radio.network.CellInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfo createFromParcel(Parcel _aidl_source) {
-            CellInfo _aidl_out = new CellInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfo[] newArray(int _aidl_size) {
-            return new CellInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -114,7 +94,7 @@ public class CellInfo implements Parcelable {
         _aidl_sj.add("registered: " + this.registered);
         _aidl_sj.add("connectionStatus: " + CellConnectionStatus$$.toString(this.connectionStatus));
         _aidl_sj.add("ratSpecificInfo: " + Objects.toString(this.ratSpecificInfo));
-        return "android.hardware.radio.network.CellInfo" + _aidl_sj.toString();
+        return "CellInfo" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

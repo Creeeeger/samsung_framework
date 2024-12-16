@@ -58,8 +58,7 @@ public class SmsNumberUtils {
         IDDS_MAPS = new HashMap<>();
     }
 
-    /* loaded from: classes5.dex */
-    public static class NumberEntry {
+    private static class NumberEntry {
         public String IDD;
         public int countryCode;
         public String number;
@@ -83,8 +82,7 @@ public class SmsNumberUtils {
         NumberEntry numberEntry = new NumberEntry(networkPortionNumber);
         ArrayList<String> allIDDs = getAllIDDs(context, activeMcc);
         int nanpState = checkNANP(numberEntry, allIDDs);
-        boolean z = DBG;
-        if (z) {
+        if (DBG) {
             Log.d(TAG, "NANP type: " + getNumberPlanType(nanpState));
         }
         if (nanpState == 1 || nanpState == 2 || nanpState == 3) {
@@ -110,7 +108,7 @@ public class SmsNumberUtils {
             }
         }
         int internationalState = checkInternationalNumberPlan(context, numberEntry, allIDDs, NANP_IDD);
-        if (z) {
+        if (DBG) {
             Log.d(TAG, "International type: " + getNumberPlanType(internationalState));
         }
         String returnNumber = null;
@@ -164,7 +162,7 @@ public class SmsNumberUtils {
      */
     /* JADX WARN: Code restructure failed: missing block: B:26:0x0069, code lost:
     
-        if (com.android.internal.telephony.SmsNumberUtils.DBG == false) goto L68;
+        if (com.android.internal.telephony.SmsNumberUtils.DBG == false) goto L28;
      */
     /* JADX WARN: Code restructure failed: missing block: B:27:0x006b, code lost:
     
@@ -176,7 +174,7 @@ public class SmsNumberUtils {
      */
     /* JADX WARN: Code restructure failed: missing block: B:31:0x005f, code lost:
     
-        if (r10 == null) goto L65;
+        if (r10 == null) goto L25;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -417,81 +415,80 @@ public class SmsNumberUtils {
         return -1;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:23:0x0065, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0066, code lost:
     
         return com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x0060, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0061, code lost:
     
-        if (r0 == null) goto L57;
+        if (r0 == null) goto L24;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    private static int[] getAllCountryCodes(android.content.Context r9) {
+    private static int[] getAllCountryCodes(android.content.Context r8) {
         /*
             int[] r0 = com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES
-            if (r0 == 0) goto L5
+            if (r0 == 0) goto L7
+            int[] r0 = com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES
             return r0
-        L5:
+        L7:
             r0 = 0
-            r1 = 1
-            java.lang.String[] r4 = new java.lang.String[r1]     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
             java.lang.String r1 = "Country_Code"
-            r8 = 0
-            r4[r8] = r1     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            android.content.ContentResolver r2 = r9.getContentResolver()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            android.net.Uri r3 = com.android.internal.telephony.HbpcdLookup.MccLookup.CONTENT_URI     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            r5 = 0
+            java.lang.String[] r4 = new java.lang.String[]{r1}     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            android.content.ContentResolver r2 = r8.getContentResolver()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            android.net.Uri r3 = com.android.internal.telephony.HbpcdLookup.MccLookup.CONTENT_URI     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
             r6 = 0
             r7 = 0
-            android.database.Cursor r1 = r2.query(r3, r4, r5, r6, r7)     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
+            r5 = 0
+            android.database.Cursor r1 = r2.query(r3, r4, r5, r6, r7)     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
             r0 = r1
-            int r1 = r0.getCount()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            if (r1 <= 0) goto L4f
-            int r1 = r0.getCount()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            int[] r1 = new int[r1]     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES = r1     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
+            int r1 = r0.getCount()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            if (r1 <= 0) goto L50
+            int r1 = r0.getCount()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            int[] r1 = new int[r1]     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES = r1     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
             r1 = 0
         L2b:
-            boolean r2 = r0.moveToNext()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            if (r2 == 0) goto L4f
-            int r2 = r0.getInt(r8)     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            int[] r3 = com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
+            boolean r2 = r0.moveToNext()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            if (r2 == 0) goto L50
+            r2 = 0
+            int r2 = r0.getInt(r2)     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            int[] r3 = com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
             int r5 = r1 + 1
-            r3[r1] = r2     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            java.lang.String r1 = java.lang.String.valueOf(r2)     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            java.lang.String r1 = r1.trim()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            int r1 = r1.length()     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            int r3 = com.android.internal.telephony.SmsNumberUtils.MAX_COUNTRY_CODES_LENGTH     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-            if (r1 <= r3) goto L4d
-            com.android.internal.telephony.SmsNumberUtils.MAX_COUNTRY_CODES_LENGTH = r1     // Catch: java.lang.Throwable -> L55 android.database.SQLException -> L57
-        L4d:
+            r3[r1] = r2     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            java.lang.String r1 = java.lang.String.valueOf(r2)     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            java.lang.String r1 = r1.trim()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            int r1 = r1.length()     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            int r3 = com.android.internal.telephony.SmsNumberUtils.MAX_COUNTRY_CODES_LENGTH     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+            if (r1 <= r3) goto L4e
+            com.android.internal.telephony.SmsNumberUtils.MAX_COUNTRY_CODES_LENGTH = r1     // Catch: java.lang.Throwable -> L56 android.database.SQLException -> L58
+        L4e:
             r1 = r5
             goto L2b
-        L4f:
-            if (r0 == 0) goto L63
-        L51:
+        L50:
+            if (r0 == 0) goto L64
+        L52:
             r0.close()
-            goto L63
-        L55:
+            goto L64
+        L56:
             r1 = move-exception
-            goto L66
-        L57:
+            goto L67
+        L58:
             r1 = move-exception
             java.lang.String r2 = "SmsNumberUtils"
             java.lang.String r3 = "Can't access HbpcdLookup database"
-            android.util.Log.e(r2, r3, r1)     // Catch: java.lang.Throwable -> L55
-            if (r0 == 0) goto L63
-            goto L51
-        L63:
+            android.util.Log.e(r2, r3, r1)     // Catch: java.lang.Throwable -> L56
+            if (r0 == 0) goto L64
+            goto L52
+        L64:
             int[] r1 = com.android.internal.telephony.SmsNumberUtils.ALL_COUNTRY_CODES
             return r1
-        L66:
-            if (r0 == 0) goto L6b
+        L67:
+            if (r0 == 0) goto L6c
             r0.close()
-        L6b:
+        L6c:
             throw r1
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.internal.telephony.SmsNumberUtils.getAllCountryCodes(android.content.Context):int[]");
@@ -543,8 +540,7 @@ public class SmsNumberUtils {
     public static String filterDestAddr(Context context, int subId, String destAddr) {
         int networkType;
         String networkMcc;
-        boolean z = DBG;
-        if (z) {
+        if (DBG) {
             Log.d(TAG, "enter filterDestAddr. destAddr=\"" + pii(TAG, destAddr) + "\"");
         }
         if (destAddr == null || !PhoneNumberUtils.isGlobalPhoneNumber(destAddr)) {
@@ -557,7 +553,7 @@ public class SmsNumberUtils {
         if (needToConvert(context, subId) && (networkType = getNetworkType(telephonyManager)) != -1 && !TextUtils.isEmpty(networkOperator) && (networkMcc = networkOperator.substring(0, 3)) != null && networkMcc.trim().length() > 0) {
             result = formatNumber(context, destAddr, networkMcc, networkType);
         }
-        if (z) {
+        if (DBG) {
             Log.d(TAG, "destAddr is " + (result != null ? "formatted." : "not formatted."));
             Log.d(TAG, "leave filterDestAddr, new destAddr=\"" + (result != null ? pii(TAG, result) : pii(TAG, destAddr)) + "\"");
         }

@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class MicrophoneDynamicInfo implements Parcelable {
     public static final Parcelable.Creator<MicrophoneDynamicInfo> CREATOR = new Parcelable.Creator<MicrophoneDynamicInfo>() { // from class: android.media.audio.common.MicrophoneDynamicInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MicrophoneDynamicInfo createFromParcel(Parcel _aidl_source) {
             MicrophoneDynamicInfo _aidl_out = new MicrophoneDynamicInfo();
@@ -20,6 +18,7 @@ public class MicrophoneDynamicInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public MicrophoneDynamicInfo[] newArray(int _aidl_size) {
             return new MicrophoneDynamicInfo[_aidl_size];
@@ -28,30 +27,10 @@ public class MicrophoneDynamicInfo implements Parcelable {
     public int[] channelMapping;
     public String id;
 
-    /* loaded from: classes2.dex */
     public @interface ChannelMapping {
         public static final int DIRECT = 1;
         public static final int PROCESSED = 2;
         public static final int UNUSED = 0;
-    }
-
-    /* renamed from: android.media.audio.common.MicrophoneDynamicInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<MicrophoneDynamicInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MicrophoneDynamicInfo createFromParcel(Parcel _aidl_source) {
-            MicrophoneDynamicInfo _aidl_out = new MicrophoneDynamicInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public MicrophoneDynamicInfo[] newArray(int _aidl_size) {
-            return new MicrophoneDynamicInfo[_aidl_size];
-        }
     }
 
     @Override // android.os.Parcelable
@@ -111,7 +90,7 @@ public class MicrophoneDynamicInfo implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("id: " + Objects.toString(this.id));
         _aidl_sj.add("channelMapping: " + Arrays.toString(this.channelMapping));
-        return "android.media.audio.common.MicrophoneDynamicInfo" + _aidl_sj.toString();
+        return "MicrophoneDynamicInfo" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

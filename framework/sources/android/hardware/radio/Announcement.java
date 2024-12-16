@@ -13,14 +13,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class Announcement implements Parcelable {
     public static final Parcelable.Creator<Announcement> CREATOR = new Parcelable.Creator<Announcement>() { // from class: android.hardware.radio.Announcement.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Announcement createFromParcel(Parcel in) {
             return new Announcement(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public Announcement[] newArray(int size) {
             return new Announcement[size];
@@ -38,18 +37,12 @@ public final class Announcement implements Parcelable {
     private final int mType;
     private final Map<String, String> mVendorInfo;
 
-    /* loaded from: classes2.dex */
     public interface OnListUpdatedListener {
         void onListUpdated(Collection<Announcement> collection);
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
-    }
-
-    /* synthetic */ Announcement(Parcel parcel, AnnouncementIA announcementIA) {
-        this(parcel);
     }
 
     public Announcement(ProgramSelector selector, int type, Map<String, String> vendorInfo) {
@@ -74,23 +67,6 @@ public final class Announcement implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: android.hardware.radio.Announcement$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<Announcement> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Announcement createFromParcel(Parcel in) {
-            return new Announcement(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public Announcement[] newArray(int size) {
-            return new Announcement[size];
-        }
     }
 
     public ProgramSelector getSelector() {

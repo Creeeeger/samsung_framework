@@ -9,21 +9,19 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.telecom.Connection;
-import com.android.internal.telephony.SemTelephonyUtils;
 import java.util.ArrayList;
 import java.util.List;
 
 /* loaded from: classes3.dex */
 public final class ConnectionRequest implements Parcelable {
     public static final Parcelable.Creator<ConnectionRequest> CREATOR = new Parcelable.Creator<ConnectionRequest>() { // from class: android.telecom.ConnectionRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConnectionRequest createFromParcel(Parcel source) {
             return new ConnectionRequest(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ConnectionRequest[] newArray(int size) {
             return new ConnectionRequest[size];
@@ -41,15 +39,6 @@ public final class ConnectionRequest implements Parcelable {
     private final String mTelecomCallId;
     private final int mVideoState;
 
-    /* synthetic */ ConnectionRequest(Parcel parcel, ConnectionRequestIA connectionRequestIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ ConnectionRequest(PhoneAccountHandle phoneAccountHandle, Uri uri, Bundle bundle, int i, String str, boolean z, ParcelFileDescriptor parcelFileDescriptor, ParcelFileDescriptor parcelFileDescriptor2, List list, boolean z2, ConnectionRequestIA connectionRequestIA) {
-        this(phoneAccountHandle, uri, bundle, i, str, z, parcelFileDescriptor, parcelFileDescriptor2, list, z2);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private PhoneAccountHandle mAccountHandle;
         private Uri mAddress;
@@ -155,9 +144,8 @@ public final class ConnectionRequest implements Parcelable {
         this.mShouldShowIncomingCallUi = in.readInt() == 1;
         this.mRttPipeFromInCall = (ParcelFileDescriptor) in.readParcelable(getClass().getClassLoader(), ParcelFileDescriptor.class);
         this.mRttPipeToInCall = (ParcelFileDescriptor) in.readParcelable(getClass().getClassLoader(), ParcelFileDescriptor.class);
-        ArrayList arrayList = new ArrayList();
-        this.mParticipants = arrayList;
-        in.readList(arrayList, getClass().getClassLoader(), Uri.class);
+        this.mParticipants = new ArrayList();
+        in.readList(this.mParticipants, getClass().getClassLoader(), Uri.class);
         this.mIsAdhocConference = in.readInt() == 1;
     }
 
@@ -218,19 +206,15 @@ public final class ConnectionRequest implements Parcelable {
 
     public String toString() {
         Object logSafePhoneNumber;
-        Object[] objArr = new Object[3];
-        Uri uri = this.mAddress;
-        if (uri == null) {
+        if (this.mAddress == null) {
             logSafePhoneNumber = Uri.EMPTY;
         } else {
-            logSafePhoneNumber = Connection.toLogSafePhoneNumber(uri.toString());
+            logSafePhoneNumber = Connection.toLogSafePhoneNumber(this.mAddress.toString());
         }
-        objArr[0] = logSafePhoneNumber;
-        objArr[1] = SemTelephonyUtils.maskPii(bundleToString(this.mExtras));
-        objArr[2] = isAdhocConferenceCall() ? GnssSignalType.CODE_TYPE_Y : GnssSignalType.CODE_TYPE_N;
-        return String.format("ConnectionRequest %s %s isAdhocConf: %s", objArr);
+        return String.format("ConnectionRequest %s %s isAdhocConf: %s", logSafePhoneNumber, Log.maskPii(bundleToString(this.mExtras)), isAdhocConferenceCall() ? GnssSignalType.CODE_TYPE_Y : GnssSignalType.CODE_TYPE_N);
     }
 
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     private static String bundleToString(Bundle extras) {
         char c;
         if (extras == null) {
@@ -247,15 +231,19 @@ public final class ConnectionRequest implements Parcelable {
                         c = 1;
                         break;
                     }
+                    c = 65535;
                     break;
                 case -1513984200:
                     if (key.equals(TelecomManager.EXTRA_INCOMING_CALL_ADDRESS)) {
                         c = 0;
                         break;
                     }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
                     break;
             }
-            c = 65535;
             switch (c) {
                 case 0:
                 case 1:
@@ -269,23 +257,6 @@ public final class ConnectionRequest implements Parcelable {
         }
         sb.append(NavigationBarInflaterView.SIZE_MOD_END);
         return sb.toString();
-    }
-
-    /* renamed from: android.telecom.ConnectionRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<ConnectionRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConnectionRequest createFromParcel(Parcel source) {
-            return new ConnectionRequest(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ConnectionRequest[] newArray(int size) {
-            return new ConnectionRequest[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -11,14 +11,13 @@ import java.util.Objects;
 /* loaded from: classes2.dex */
 public final class RecognitionRequest implements Parcelable {
     public static final Parcelable.Creator<RecognitionRequest> CREATOR = new Parcelable.Creator<RecognitionRequest>() { // from class: android.media.musicrecognition.RecognitionRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionRequest createFromParcel(Parcel p) {
             return new RecognitionRequest(p);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecognitionRequest[] newArray(int size) {
             return new RecognitionRequest[size];
@@ -29,14 +28,6 @@ public final class RecognitionRequest implements Parcelable {
     private final int mCaptureSession;
     private final int mIgnoreBeginningFrames;
     private final int mMaxAudioLengthSeconds;
-
-    /* synthetic */ RecognitionRequest(Builder builder, RecognitionRequestIA recognitionRequestIA) {
-        this(builder);
-    }
-
-    /* synthetic */ RecognitionRequest(Parcel parcel, RecognitionRequestIA recognitionRequestIA) {
-        this(parcel);
-    }
 
     private RecognitionRequest(Builder b) {
         this.mAudioAttributes = (AudioAttributes) Objects.requireNonNull(b.mAudioAttributes);
@@ -67,7 +58,6 @@ public final class RecognitionRequest implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private AudioFormat mAudioFormat = new AudioFormat.Builder().setSampleRate(16000).setEncoding(2).build();
         private AudioAttributes mAudioAttributes = new AudioAttributes.Builder().setContentType(2).build();
@@ -125,22 +115,5 @@ public final class RecognitionRequest implements Parcelable {
         this.mCaptureSession = in.readInt();
         this.mMaxAudioLengthSeconds = in.readInt();
         this.mIgnoreBeginningFrames = in.readInt();
-    }
-
-    /* renamed from: android.media.musicrecognition.RecognitionRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecognitionRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionRequest createFromParcel(Parcel p) {
-            return new RecognitionRequest(p);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecognitionRequest[] newArray(int size) {
-            return new RecognitionRequest[size];
-        }
     }
 }

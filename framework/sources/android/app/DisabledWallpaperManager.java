@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /* loaded from: classes.dex */
-public final class DisabledWallpaperManager extends WallpaperManager {
+final class DisabledWallpaperManager extends WallpaperManager {
     private static final boolean DEBUG = false;
     private static final String TAG = DisabledWallpaperManager.class.getSimpleName();
     private static DisabledWallpaperManager sInstance;
 
-    public static DisabledWallpaperManager getInstance() {
+    static DisabledWallpaperManager getInstance() {
         if (sInstance == null) {
             sInstance = new DisabledWallpaperManager();
         }

@@ -6,7 +6,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import org.json.JSONException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class ZipHandler {
     private static final String TAG = ZipHandler.class.getSimpleName();
 
@@ -32,11 +32,10 @@ public class ZipHandler {
         inflate.setInput(zip.getContent(), 0, zip.getLength());
         byte[] original = new byte[zip.getOriginalLength()];
         int origLength = inflate.inflate(original);
-        String str = TAG;
-        Log.d(str, "inflate(): actual number of uncompressed bytes: " + origLength + " original number of uncompressed bytes: " + zip.getOriginalLength());
+        Log.d(TAG, "inflate(): actual number of uncompressed bytes: " + origLength + " original number of uncompressed bytes: " + zip.getOriginalLength());
         inflate.end();
         if (origLength <= 0) {
-            Log.d(str, "inflate(): Could not return to decompress data");
+            Log.d(TAG, "inflate(): Could not return to decompress data");
             return null;
         }
         return new EventList(original);

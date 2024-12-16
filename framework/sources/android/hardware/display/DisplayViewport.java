@@ -26,7 +26,6 @@ public final class DisplayViewport {
     public final Rect physicalFrame = new Rect();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface ViewportType {
     }
 
@@ -71,9 +70,8 @@ public final class DisplayViewport {
         int i5 = hashCode2 + (hashCode2 * 31) + this.deviceWidth;
         int i6 = i5 + (i5 * 31) + this.deviceHeight;
         int hashCode3 = i6 + (i6 * 31) + this.uniqueId.hashCode();
-        Integer num = this.physicalPort;
-        if (num != null) {
-            hashCode3 += (hashCode3 * 31) + num.hashCode();
+        if (this.physicalPort != null) {
+            hashCode3 += (hashCode3 * 31) + this.physicalPort.hashCode();
         }
         return hashCode3 + (hashCode3 * 31) + this.type;
     }

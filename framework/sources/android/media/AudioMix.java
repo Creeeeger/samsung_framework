@@ -3,15 +3,14 @@ package android.media;
 import android.media.audio.common.AudioConfig;
 import android.media.audio.common.AudioDevice;
 import android.os.BadParcelableException;
+import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /* loaded from: classes2.dex */
 public class AudioMix implements Parcelable {
     public static final Parcelable.Creator<AudioMix> CREATOR = new Parcelable.Creator<AudioMix>() { // from class: android.media.AudioMix.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMix createFromParcel(Parcel _aidl_source) {
             AudioMix _aidl_out = new AudioMix();
@@ -19,6 +18,7 @@ public class AudioMix implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AudioMix[] newArray(int _aidl_size) {
             return new AudioMix[_aidl_size];
@@ -27,31 +27,14 @@ public class AudioMix implements Parcelable {
     public AudioMixMatchCriterion[] criteria;
     public AudioDevice device;
     public AudioConfig format;
+    public IBinder mToken;
     public int mixType;
     public int routeFlags = 0;
     public int cbFlags = 0;
     public boolean allowPrivilegedMediaPlaybackCapture = false;
     public boolean voiceCommunicationCaptureAllowed = false;
+    public int mVirtualDeviceId = 0;
     public int mixFlags = 0;
-
-    /* renamed from: android.media.AudioMix$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AudioMix> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMix createFromParcel(Parcel _aidl_source) {
-            AudioMix _aidl_out = new AudioMix();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AudioMix[] newArray(int _aidl_size) {
-            return new AudioMix[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final void writeToParcel(Parcel _aidl_parcel, int _aidl_flag) {
@@ -65,6 +48,8 @@ public class AudioMix implements Parcelable {
         _aidl_parcel.writeInt(this.cbFlags);
         _aidl_parcel.writeBoolean(this.allowPrivilegedMediaPlaybackCapture);
         _aidl_parcel.writeBoolean(this.voiceCommunicationCaptureAllowed);
+        _aidl_parcel.writeStrongBinder(this.mToken);
+        _aidl_parcel.writeInt(this.mVirtualDeviceId);
         _aidl_parcel.writeInt(this.mixFlags);
         int _aidl_end_pos = _aidl_parcel.dataPosition();
         _aidl_parcel.setDataPosition(_aidl_start_pos);
@@ -143,6 +128,22 @@ public class AudioMix implements Parcelable {
                 return;
             }
             this.voiceCommunicationCaptureAllowed = _aidl_parcel.readBoolean();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.mToken = _aidl_parcel.readStrongBinder();
+            if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
+                if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                _aidl_parcel.setDataPosition(_aidl_start_pos + _aidl_parcelable_size);
+                return;
+            }
+            this.mVirtualDeviceId = _aidl_parcel.readInt();
             if (_aidl_parcel.dataPosition() - _aidl_start_pos >= _aidl_parcelable_size) {
                 if (_aidl_start_pos > Integer.MAX_VALUE - _aidl_parcelable_size) {
                     throw new BadParcelableException("Overflow in the size of parcelable");

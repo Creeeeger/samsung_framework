@@ -1,12 +1,16 @@
 package android.content.res;
 
+import android.app.ResourcesManager;
+import android.app.blob.XmlTags;
 import android.content.om.SamsungThemeConstants;
 import android.content.pm.ActivityInfo;
 import android.content.res.XmlBlock;
 import android.content.res.loader.ResourcesLoader;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemProperties;
+import android.util.ArrayMap;
 import android.util.ArraySet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import com.android.internal.content.om.OverlayConfig;
@@ -53,10 +57,6 @@ public final class AssetManager implements AutoCloseable {
     private static ApkAssets[] sSystemApkAssets = new ApkAssets[0];
     private static CustomizedTextParser sCTxtParser = null;
 
-    /* synthetic */ AssetManager(boolean z, AssetManagerIA assetManagerIA) {
-        this(z);
-    }
-
     public static native String getAssetAllocations();
 
     public static native int getGlobalAssetCount();
@@ -65,16 +65,22 @@ public final class AssetManager implements AutoCloseable {
 
     private static native void nativeApplyStyle(long j, long j2, int i, int i2, long j3, int[] iArr, long j4, long j5);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native void nativeAssetDestroy(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetGetLength(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetGetRemainingLength(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeAssetRead(long j, byte[] bArr, int i, int i2);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeAssetReadChar(long j);
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static native long nativeAssetSeek(long j, long j2, int i);
 
     private static native int[] nativeAttributeResolutionStack(long j, long j2, int i, int i2, int i3);
@@ -147,9 +153,10 @@ public final class AssetManager implements AutoCloseable {
 
     private static native boolean nativeRetrieveAttributes(long j, long j2, int[] iArr, int[] iArr2, int[] iArr3);
 
-    public static native void nativeSetApkAssets(long j, ApkAssets[] apkAssetsArr, boolean z);
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void nativeSetApkAssets(long j, ApkAssets[] apkAssetsArr, boolean z, boolean z2);
 
-    private static native void nativeSetConfiguration(long j, int i, int i2, String str, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15, int i16, int i17, int i18);
+    private static native void nativeSetConfiguration(long j, int i, int i2, String str, String[] strArr, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15, int i16, int i17, int i18, boolean z);
 
     private static native void nativeSetResourceResolutionLoggingEnabled(long j, boolean z);
 
@@ -163,14 +170,14 @@ public final class AssetManager implements AutoCloseable {
 
     private static native int nativeThemeGetAttributeValue(long j, long j2, int i, TypedValue typedValue, boolean z);
 
-    public static native int nativeThemeGetChangingConfigurations(long j);
+    static native int nativeThemeGetChangingConfigurations(long j);
 
     private static native void nativeThemeRebase(long j, long j2, int[] iArr, boolean[] zArr, int i);
 
-    /* loaded from: classes.dex */
     public static class Builder {
         private ArrayList<ApkAssets> mUserApkAssets = new ArrayList<>();
         private ArrayList<ResourcesLoader> mLoaders = new ArrayList<>();
+        private boolean mNoInit = false;
 
         public Builder addApkAssets(ApkAssets apkAssets) {
             this.mUserApkAssets.add(apkAssets);
@@ -182,39 +189,44 @@ public final class AssetManager implements AutoCloseable {
             return this;
         }
 
+        public Builder setNoInit() {
+            this.mNoInit = true;
+            return this;
+        }
+
         public AssetManager build() {
-            ApkAssets[] systemApkAssets = AssetManager.getSystem().getApkAssets();
-            ArrayList<ApkAssets> loaderApkAssets = new ArrayList<>();
-            ArraySet<ApkAssets> uniqueLoaderApkAssets = new ArraySet<>();
-            int i = this.mLoaders.size();
+            boolean z;
+            ApkAssets[] apkAssets = AssetManager.getSystem().getApkAssets();
+            ArrayList arrayList = new ArrayList();
+            ArraySet arraySet = new ArraySet();
+            int size = this.mLoaders.size();
             while (true) {
-                i--;
-                if (i < 0) {
+                size--;
+                z = false;
+                if (size < 0) {
                     break;
                 }
-                List<ApkAssets> currentLoaderApkAssets = this.mLoaders.get(i).getApkAssets();
-                for (int j = currentLoaderApkAssets.size() - 1; j >= 0; j--) {
-                    ApkAssets apkAssets = currentLoaderApkAssets.get(j);
-                    if (uniqueLoaderApkAssets.add(apkAssets)) {
-                        loaderApkAssets.add(0, apkAssets);
+                List<ApkAssets> apkAssets2 = this.mLoaders.get(size).getApkAssets();
+                for (int size2 = apkAssets2.size() - 1; size2 >= 0; size2--) {
+                    ApkAssets apkAssets3 = apkAssets2.get(size2);
+                    if (arraySet.add(apkAssets3)) {
+                        arrayList.add(0, apkAssets3);
                     }
                 }
             }
-            int i2 = systemApkAssets.length;
-            int totalApkAssetCount = i2 + this.mUserApkAssets.size() + loaderApkAssets.size();
-            ApkAssets[] apkAssets2 = new ApkAssets[totalApkAssetCount];
-            System.arraycopy(systemApkAssets, 0, apkAssets2, 0, systemApkAssets.length);
-            int n = this.mUserApkAssets.size();
-            for (int i3 = 0; i3 < n; i3++) {
-                apkAssets2[systemApkAssets.length + i3] = this.mUserApkAssets.get(i3);
+            ApkAssets[] apkAssetsArr = new ApkAssets[apkAssets.length + this.mUserApkAssets.size() + arrayList.size()];
+            System.arraycopy(apkAssets, 0, apkAssetsArr, 0, apkAssets.length);
+            int size3 = this.mUserApkAssets.size();
+            for (int i = 0; i < size3; i++) {
+                apkAssetsArr[apkAssets.length + i] = this.mUserApkAssets.get(i);
             }
-            int n2 = loaderApkAssets.size();
-            for (int i4 = 0; i4 < n2; i4++) {
-                apkAssets2[systemApkAssets.length + i4 + this.mUserApkAssets.size()] = loaderApkAssets.get(i4);
+            int size4 = arrayList.size();
+            for (int i2 = 0; i2 < size4; i2++) {
+                apkAssetsArr[apkAssets.length + i2 + this.mUserApkAssets.size()] = (ApkAssets) arrayList.get(i2);
             }
-            AssetManager assetManager = new AssetManager(false);
-            assetManager.mApkAssets = apkAssets2;
-            AssetManager.nativeSetApkAssets(assetManager.mObject, apkAssets2, false);
+            AssetManager assetManager = new AssetManager(z);
+            assetManager.mApkAssets = apkAssetsArr;
+            AssetManager.nativeSetApkAssets(assetManager.mObject, apkAssetsArr, false, this.mNoInit);
             assetManager.mLoaders = this.mLoaders.isEmpty() ? null : (ResourcesLoader[]) this.mLoaders.toArray(new ResourcesLoader[0]);
             assetManager.updateSamsungThemeOverlays();
             return assetManager;
@@ -260,7 +272,7 @@ public final class AssetManager implements AutoCloseable {
                 apkAssets.add(ApkAssets.loadFromPath(MEDIATEK_APK_PATH, 1));
             }
             sSystemApkAssetsSet = new ArraySet<>(apkAssets);
-            sSystemApkAssets = (ApkAssets[]) apkAssets.toArray(new ApkAssets[apkAssets.size()]);
+            sSystemApkAssets = (ApkAssets[]) apkAssets.toArray(new ApkAssets[0]);
             if (sSystem == null) {
                 sSystem = new AssetManager(true);
             }
@@ -291,9 +303,8 @@ public final class AssetManager implements AutoCloseable {
 
     public void setApkAssets(ApkAssets[] apkAssets, boolean invalidateCaches) {
         Objects.requireNonNull(apkAssets, "apkAssets");
-        ApkAssets[] apkAssetsArr = sSystemApkAssets;
-        ApkAssets[] newApkAssets = new ApkAssets[apkAssetsArr.length + apkAssets.length];
-        System.arraycopy(apkAssetsArr, 0, newApkAssets, 0, apkAssetsArr.length);
+        ApkAssets[] newApkAssets = new ApkAssets[sSystemApkAssets.length + apkAssets.length];
+        System.arraycopy(sSystemApkAssets, 0, newApkAssets, 0, sSystemApkAssets.length);
         int newLength = sSystemApkAssets.length;
         for (ApkAssets apkAsset : apkAssets) {
             if (!sSystemApkAssetsSet.contains(apkAsset)) {
@@ -307,7 +318,7 @@ public final class AssetManager implements AutoCloseable {
         synchronized (this) {
             ensureOpenLocked();
             this.mApkAssets = newApkAssets;
-            nativeSetApkAssets(this.mObject, newApkAssets, invalidateCaches);
+            nativeSetApkAssets(this.mObject, this.mApkAssets, invalidateCaches, false);
             if (invalidateCaches) {
                 invalidateCachesLocked(-1);
             }
@@ -315,6 +326,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void updateSamsungThemeOverlays() {
         synchronized (this) {
             if (this.mSamsungThemeOverlays.size() > 0) {
@@ -329,19 +341,13 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public void setLoaders(List<ResourcesLoader> newLoaders) {
+    void setLoaders(List<ResourcesLoader> newLoaders) {
         Objects.requireNonNull(newLoaders, "newLoaders");
         ArrayList<ApkAssets> apkAssets = new ArrayList<>();
-        int i = 0;
-        while (true) {
-            ApkAssets[] apkAssetsArr = this.mApkAssets;
-            if (i >= apkAssetsArr.length) {
-                break;
-            }
-            if (!apkAssetsArr[i].isForLoader()) {
+        for (int i = 0; i < this.mApkAssets.length; i++) {
+            if (!this.mApkAssets[i].isForLoader()) {
                 apkAssets.add(this.mApkAssets[i]);
             }
-            i++;
         }
         if (!newLoaders.isEmpty()) {
             int loaderStartIndex = apkAssets.size();
@@ -375,9 +381,8 @@ public final class AssetManager implements AutoCloseable {
     public String[] getApkPaths() {
         synchronized (this) {
             if (this.mOpen) {
-                ApkAssets[] apkAssetsArr = this.mApkAssets;
-                String[] paths = new String[apkAssetsArr.length];
-                int count = apkAssetsArr.length;
+                String[] paths = new String[this.mApkAssets.length];
+                int count = this.mApkAssets.length;
                 for (int i = 0; i < count; i++) {
                     paths[i] = this.mApkAssets[i].getAssetPath();
                 }
@@ -403,55 +408,108 @@ public final class AssetManager implements AutoCloseable {
 
     @Deprecated
     public int addAssetPath(String path) {
-        return addAssetPathInternal(path, false, false);
+        return addAssetPathInternal(List.of(new ResourcesManager.ApkKey(path, false, false)), false);
     }
 
     @Deprecated
     public int addAssetPathAsSharedLibrary(String path) {
-        return addAssetPathInternal(path, false, true);
+        return addAssetPathInternal(List.of(new ResourcesManager.ApkKey(path, true, false)), false);
     }
 
     @Deprecated
     public int addOverlayPath(String path) {
-        return addAssetPathInternal(path, true, false);
+        return addAssetPathInternal(List.of(new ResourcesManager.ApkKey(path, false, true)), false);
     }
 
-    private int addAssetPathInternal(String path, boolean overlay, boolean appAsLib) {
-        ApkAssets assets;
-        Objects.requireNonNull(path, "path");
+    public void addPresetApkKeys(List<ResourcesManager.ApkKey> keys) {
+        addAssetPathInternal(keys, true);
+    }
+
+    private int addAssetPathInternal(List<ResourcesManager.ApkKey> apkKeys, boolean presetAssets) {
+        Objects.requireNonNull(apkKeys, "apkKeys");
+        if (apkKeys.isEmpty()) {
+            return 0;
+        }
         synchronized (this) {
             ensureOpenLocked();
-            int count = this.mApkAssets.length;
-            for (int i = 0; i < count; i++) {
-                if (this.mApkAssets[i].getAssetPath().equals(path)) {
-                    return i + 1;
+            int length = this.mApkAssets.length;
+            int originalAssetsCount = this.mApkAssets.length;
+            ArrayMap<String, Integer> assetPaths = new ArrayMap<>(originalAssetsCount);
+            for (int i = 0; i < originalAssetsCount; i++) {
+                assetPaths.put(this.mApkAssets[i].getAssetPath(), Integer.valueOf(i));
+            }
+            ArrayList<ResourcesManager.ApkKey> newKeys = new ArrayList<>(apkKeys.size());
+            int lastFoundIndex = -1;
+            int pathsSize = apkKeys.size();
+            for (int i2 = 0; i2 < pathsSize; i2++) {
+                ResourcesManager.ApkKey key = apkKeys.get(i2);
+                Integer index = assetPaths.get(key.path);
+                if (index == null) {
+                    newKeys.add(key);
+                } else {
+                    lastFoundIndex = index.intValue();
                 }
             }
-            try {
-                if (overlay) {
-                    String idmapPath = "/data/resource-cache/" + path.substring(1).replace('/', '@') + "@idmap";
-                    assets = ApkAssets.loadOverlayFromPath(idmapPath, 0);
-                    if (path.startsWith(SamsungThemeConstants.PATH_OVERLAY_CURRENT_STYLE) && !this.mSamsungThemeOverlays.contains(path)) {
-                        this.mSamsungThemeOverlays.add(path);
-                    }
-                } else {
-                    assets = ApkAssets.loadFromPath(path, appAsLib ? 2 : 0);
-                }
-                ApkAssets[] apkAssetsArr = (ApkAssets[]) Arrays.copyOf(this.mApkAssets, count + 1);
-                this.mApkAssets = apkAssetsArr;
-                apkAssetsArr[count] = assets;
-                nativeSetApkAssets(this.mObject, apkAssetsArr, true);
-                invalidateCachesLocked(-1);
-                return count + 1;
-            } catch (IOException e) {
+            if (newKeys.isEmpty()) {
+                return lastFoundIndex + 1;
+            }
+            ArrayList<ApkAssets> newAssets = loadAssets(newKeys);
+            if (newAssets.isEmpty()) {
                 return 0;
             }
+            this.mApkAssets = makeNewAssetsArrayLocked(newAssets);
+            nativeSetApkAssets(this.mObject, this.mApkAssets, true, presetAssets);
+            invalidateCachesLocked(-1);
+            return originalAssetsCount + 1;
         }
     }
 
+    private ApkAssets[] makeNewAssetsArrayLocked(ArrayList<ApkAssets> newNonLoaderAssets) {
+        int originalAssetsCount = this.mApkAssets.length;
+        int firstLoaderIndex = originalAssetsCount;
+        int i = 0;
+        while (true) {
+            if (i >= originalAssetsCount) {
+                break;
+            }
+            if (!this.mApkAssets[i].isForLoader()) {
+                i++;
+            } else {
+                firstLoaderIndex = i;
+                break;
+            }
+        }
+        int newAssetsSize = newNonLoaderAssets.size();
+        ApkAssets[] newAssetsArray = new ApkAssets[originalAssetsCount + newAssetsSize];
+        if (firstLoaderIndex > 0) {
+            System.arraycopy(this.mApkAssets, 0, newAssetsArray, 0, firstLoaderIndex);
+        }
+        for (int i2 = 0; i2 < newAssetsSize; i2++) {
+            newAssetsArray[firstLoaderIndex + i2] = newNonLoaderAssets.get(i2);
+        }
+        if (originalAssetsCount > firstLoaderIndex) {
+            System.arraycopy(this.mApkAssets, firstLoaderIndex, newAssetsArray, firstLoaderIndex + newAssetsSize, originalAssetsCount - firstLoaderIndex);
+        }
+        return newAssetsArray;
+    }
+
+    private static ArrayList<ApkAssets> loadAssets(ArrayList<ResourcesManager.ApkKey> keys) {
+        int pathsSize = keys.size();
+        ArrayList<ApkAssets> loadedAssets = new ArrayList<>(pathsSize);
+        ResourcesManager resourcesManager = ResourcesManager.getInstance();
+        for (int i = 0; i < pathsSize; i++) {
+            ResourcesManager.ApkKey key = keys.get(i);
+            try {
+                loadedAssets.add(resourcesManager.loadApkAssets(key));
+            } catch (IOException e) {
+                Log.w(TAG, "Failed to load asset, key = " + key, e);
+            }
+        }
+        return loadedAssets;
+    }
+
     public List<ResourcesLoader> getLoaders() {
-        ResourcesLoader[] resourcesLoaderArr = this.mLoaders;
-        return resourcesLoaderArr == null ? Collections.emptyList() : Arrays.asList(resourcesLoaderArr);
+        return this.mLoaders == null ? Collections.emptyList() : Arrays.asList(this.mLoaders);
     }
 
     public ArrayList<String> getSamsungThemeOverlays() {
@@ -477,7 +535,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public boolean getResourceValue(int resId, int densityDpi, TypedValue outValue, boolean resolveRefs) {
+    boolean getResourceValue(int resId, int densityDpi, TypedValue outValue, boolean resolveRefs) {
         Objects.requireNonNull(outValue, "outValue");
         synchronized (this) {
             ensureValidLocked();
@@ -497,7 +555,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public CharSequence getResourceText(int resId) {
+    CharSequence getResourceText(int resId) {
         synchronized (this) {
             TypedValue outValue = this.mValue;
             if (!getResourceValue(resId, 0, outValue, true)) {
@@ -507,7 +565,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public CharSequence getResourceBagText(int resId, int bagEntryId) {
+    CharSequence getResourceBagText(int resId, int bagEntryId) {
         synchronized (this) {
             ensureValidLocked();
             TypedValue outValue = this.mValue;
@@ -523,7 +581,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public int getResourceArraySize(int resId) {
+    int getResourceArraySize(int resId) {
         int nativeGetResourceArraySize;
         synchronized (this) {
             ensureValidLocked();
@@ -532,7 +590,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceArraySize;
     }
 
-    public int getResourceArray(int resId, int[] outData) {
+    int getResourceArray(int resId, int[] outData) {
         int nativeGetResourceArray;
         Objects.requireNonNull(outData, "outData");
         synchronized (this) {
@@ -542,7 +600,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceArray;
     }
 
-    public String[] getResourceStringArray(int resId) {
+    String[] getResourceStringArray(int resId) {
         String[] nativeGetResourceStringArray;
         synchronized (this) {
             ensureValidLocked();
@@ -551,7 +609,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceStringArray;
     }
 
-    public CharSequence[] getResourceTextArray(int resId) {
+    CharSequence[] getResourceTextArray(int resId) {
         CharSequence charSequence;
         synchronized (this) {
             ensureValidLocked();
@@ -580,7 +638,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public int[] getResourceIntArray(int resId) {
+    int[] getResourceIntArray(int resId) {
         int[] nativeGetResourceIntArray;
         synchronized (this) {
             ensureValidLocked();
@@ -589,7 +647,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceIntArray;
     }
 
-    public int[] getStyleAttributes(int resId) {
+    int[] getStyleAttributes(int resId) {
         int[] nativeGetStyleAttributes;
         synchronized (this) {
             ensureValidLocked();
@@ -598,7 +656,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetStyleAttributes;
     }
 
-    public boolean getThemeValue(long theme, int resId, TypedValue outValue, boolean resolveRefs) {
+    boolean getThemeValue(long theme, int resId, TypedValue outValue, boolean resolveRefs) {
         Objects.requireNonNull(outValue, "outValue");
         synchronized (this) {
             ensureValidLocked();
@@ -618,14 +676,14 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public void dumpTheme(long theme, int priority, String tag, String prefix) {
+    void dumpTheme(long theme, int priority, String tag, String prefix) {
         synchronized (this) {
             ensureValidLocked();
             nativeThemeDump(this.mObject, theme, priority, tag, prefix);
         }
     }
 
-    public String getResourceName(int resId) {
+    String getResourceName(int resId) {
         String nativeGetResourceName;
         synchronized (this) {
             ensureValidLocked();
@@ -634,7 +692,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceName;
     }
 
-    public String getResourcePackageName(int resId) {
+    String getResourcePackageName(int resId) {
         String nativeGetResourcePackageName;
         synchronized (this) {
             ensureValidLocked();
@@ -643,7 +701,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourcePackageName;
     }
 
-    public String getResourceTypeName(int resId) {
+    String getResourceTypeName(int resId) {
         String nativeGetResourceTypeName;
         synchronized (this) {
             ensureValidLocked();
@@ -652,7 +710,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceTypeName;
     }
 
-    public String getResourceEntryName(int resId) {
+    String getResourceEntryName(int resId) {
         String nativeGetResourceEntryName;
         synchronized (this) {
             ensureValidLocked();
@@ -661,7 +719,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceEntryName;
     }
 
-    public int getResourceIdentifier(String name, String defType, String defPackage) {
+    int getResourceIdentifier(String name, String defType, String defPackage) {
         int nativeGetResourceIdentifier;
         synchronized (this) {
             ensureValidLocked();
@@ -670,7 +728,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetResourceIdentifier;
     }
 
-    public int getParentThemeIdentifier(int resId) {
+    int getParentThemeIdentifier(int resId) {
         int nativeGetParentThemeIdentifier;
         synchronized (this) {
             ensureValidLocked();
@@ -704,7 +762,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeContainsAllocatedTable;
     }
 
-    public CharSequence getPooledStringForCookie(int cookie, int id) {
+    CharSequence getPooledStringForCookie(int cookie, int id) {
         ApkAssets[] apkAssets = getApkAssets();
         if (apkAssets != null && cookie <= apkAssets.length) {
             return apkAssets[cookie - 1].getStringFromPool(id);
@@ -740,8 +798,7 @@ public final class AssetManager implements AutoCloseable {
             if (pfd == null) {
                 throw new FileNotFoundException("Asset file: " + fileName);
             }
-            long[] jArr = this.mOffsets;
-            assetFileDescriptor = new AssetFileDescriptor(pfd, jArr[0], jArr[1]);
+            assetFileDescriptor = new AssetFileDescriptor(pfd, this.mOffsets[0], this.mOffsets[1]);
         }
         return assetFileDescriptor;
     }
@@ -796,8 +853,7 @@ public final class AssetManager implements AutoCloseable {
             if (pfd == null) {
                 throw new FileNotFoundException("Asset absolute file: " + fileName);
             }
-            long[] jArr = this.mOffsets;
-            assetFileDescriptor = new AssetFileDescriptor(pfd, jArr[0], jArr[1]);
+            assetFileDescriptor = new AssetFileDescriptor(pfd, this.mOffsets[0], this.mOffsets[1]);
         }
         return assetFileDescriptor;
     }
@@ -809,7 +865,7 @@ public final class AssetManager implements AutoCloseable {
     public XmlResourceParser openXmlResourceParser(int cookie, String fileName) throws IOException {
         XmlBlock block = openXmlBlockAsset(cookie, fileName);
         try {
-            XmlResourceParser parser = block.newParser();
+            XmlResourceParser parser = block.newParser(0, new Validator());
             if (parser == null) {
                 throw new AssertionError("block.newParser() returned a null parser");
             }
@@ -833,7 +889,7 @@ public final class AssetManager implements AutoCloseable {
         return openXmlBlockAsset(0, fileName);
     }
 
-    public XmlBlock openXmlBlockAsset(int cookie, String fileName) throws IOException {
+    XmlBlock openXmlBlockAsset(int cookie, String fileName) throws IOException {
         XmlBlock block;
         Objects.requireNonNull(fileName, "fileName");
         synchronized (this) {
@@ -848,13 +904,13 @@ public final class AssetManager implements AutoCloseable {
         return block;
     }
 
-    public void xmlBlockGone(int id) {
+    void xmlBlockGone(int id) {
         synchronized (this) {
             decRefsLocked(id);
         }
     }
 
-    public void applyStyle(long themePtr, int defStyleAttr, int defStyleRes, XmlBlock.Parser parser, int[] inAttrs, long outValuesAddress, long outIndicesAddress) {
+    void applyStyle(long themePtr, int defStyleAttr, int defStyleRes, XmlBlock.Parser parser, int[] inAttrs, long outValuesAddress, long outIndicesAddress) {
         Objects.requireNonNull(inAttrs, "inAttrs");
         synchronized (this) {
             ensureValidLocked();
@@ -862,7 +918,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public int[] getAttributeResolutionStack(long themePtr, int defStyleAttr, int defStyleRes, int xmlStyle) {
+    int[] getAttributeResolutionStack(long themePtr, int defStyleAttr, int defStyleRes, int xmlStyle) {
         int[] nativeAttributeResolutionStack;
         synchronized (this) {
             ensureValidLocked();
@@ -871,7 +927,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeAttributeResolutionStack;
     }
 
-    public boolean resolveAttrs(long themePtr, int defStyleAttr, int defStyleRes, int[] inValues, int[] inAttrs, int[] outValues, int[] outIndices) {
+    boolean resolveAttrs(long themePtr, int defStyleAttr, int defStyleRes, int[] inValues, int[] inAttrs, int[] outValues, int[] outIndices) {
         boolean nativeResolveAttrs;
         Objects.requireNonNull(inAttrs, "inAttrs");
         Objects.requireNonNull(outValues, "outValues");
@@ -883,7 +939,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeResolveAttrs;
     }
 
-    public boolean retrieveAttributes(XmlBlock.Parser parser, int[] inAttrs, int[] outValues, int[] outIndices) {
+    boolean retrieveAttributes(XmlBlock.Parser parser, int[] inAttrs, int[] outValues, int[] outIndices) {
         boolean nativeRetrieveAttributes;
         Objects.requireNonNull(parser, "parser");
         Objects.requireNonNull(inAttrs, "inAttrs");
@@ -896,7 +952,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeRetrieveAttributes;
     }
 
-    public long createTheme() {
+    long createTheme() {
         long themePtr;
         synchronized (this) {
             ensureValidLocked();
@@ -906,24 +962,24 @@ public final class AssetManager implements AutoCloseable {
         return themePtr;
     }
 
-    public void releaseTheme(long themePtr) {
+    void releaseTheme(long themePtr) {
         synchronized (this) {
             decRefsLocked(themePtr);
         }
     }
 
-    public static long getThemeFreeFunction() {
+    static long getThemeFreeFunction() {
         return nativeGetThemeFreeFunction();
     }
 
-    public void applyStyleToTheme(long themePtr, int resId, boolean force) {
+    void applyStyleToTheme(long themePtr, int resId, boolean force) {
         synchronized (this) {
             ensureValidLocked();
             nativeThemeApplyStyle(this.mObject, themePtr, resId, force);
         }
     }
 
-    public AssetManager rebaseTheme(long themePtr, AssetManager newAssetManager, int[] styleIds, boolean[] force, int count) {
+    AssetManager rebaseTheme(long themePtr, AssetManager newAssetManager, int[] styleIds, boolean[] force, int count) {
         if (this != newAssetManager) {
             synchronized (this) {
                 ensureValidLocked();
@@ -945,7 +1001,7 @@ public final class AssetManager implements AutoCloseable {
         }
     }
 
-    public void setThemeTo(long dstThemePtr, AssetManager srcAssetManager, long srcThemePtr) {
+    void setThemeTo(long dstThemePtr, AssetManager srcAssetManager, long srcThemePtr) {
         synchronized (this) {
             ensureValidLocked();
             synchronized (srcAssetManager) {
@@ -957,23 +1013,17 @@ public final class AssetManager implements AutoCloseable {
 
     protected void finalize() throws Throwable {
         synchronized (this) {
-            long j = this.mObject;
-            if (j != 0) {
-                nativeDestroy(j);
+            if (this.mObject != 0) {
+                nativeDestroy(this.mObject);
                 this.mObject = 0L;
             }
         }
     }
 
-    /* loaded from: classes.dex */
     public final class AssetInputStream extends InputStream {
         private long mAssetNativePtr;
         private long mLength;
         private long mMarkPos;
-
-        /* synthetic */ AssetInputStream(AssetManager assetManager, long j, AssetInputStreamIA assetInputStreamIA) {
-            this(j);
-        }
 
         public final int getAssetInt() {
             throw new UnsupportedOperationException();
@@ -997,14 +1047,14 @@ public final class AssetManager implements AutoCloseable {
         @Override // java.io.InputStream
         public final int read(byte[] b) throws IOException {
             ensureOpen();
-            Objects.requireNonNull(b, "b");
+            Objects.requireNonNull(b, XmlTags.TAG_BLOB);
             return AssetManager.nativeAssetRead(this.mAssetNativePtr, b, 0, b.length);
         }
 
         @Override // java.io.InputStream
         public final int read(byte[] b, int off, int len) throws IOException {
             ensureOpen();
-            Objects.requireNonNull(b, "b");
+            Objects.requireNonNull(b, XmlTags.TAG_BLOB);
             return AssetManager.nativeAssetRead(this.mAssetNativePtr, b, off, len);
         }
 
@@ -1012,10 +1062,8 @@ public final class AssetManager implements AutoCloseable {
         public final long skip(long n) throws IOException {
             ensureOpen();
             long pos = AssetManager.nativeAssetSeek(this.mAssetNativePtr, 0L, 0);
-            long j = pos + n;
-            long j2 = this.mLength;
-            if (j > j2) {
-                n = j2 - pos;
+            if (pos + n > this.mLength) {
+                n = this.mLength - pos;
             }
             if (n > 0) {
                 AssetManager.nativeAssetSeek(this.mAssetNativePtr, n, 0);
@@ -1052,9 +1100,8 @@ public final class AssetManager implements AutoCloseable {
 
         @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
         public final void close() throws IOException {
-            long j = this.mAssetNativePtr;
-            if (j != 0) {
-                AssetManager.nativeAssetDestroy(j);
+            if (this.mAssetNativePtr != 0) {
+                AssetManager.nativeAssetDestroy(this.mAssetNativePtr);
                 this.mAssetNativePtr = 0L;
                 synchronized (AssetManager.this) {
                     AssetManager.this.decRefsLocked(hashCode());
@@ -1112,7 +1159,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetLocales;
     }
 
-    public Configuration[] getSizeConfigurations() {
+    Configuration[] getSizeConfigurations() {
         Configuration[] nativeGetSizeConfigurations;
         synchronized (this) {
             ensureValidLocked();
@@ -1121,7 +1168,7 @@ public final class AssetManager implements AutoCloseable {
         return nativeGetSizeConfigurations;
     }
 
-    public Configuration[] getSizeAndUiModeConfigurations() {
+    Configuration[] getSizeAndUiModeConfigurations() {
         Configuration[] nativeGetSizeAndUiModeConfigurations;
         synchronized (this) {
             ensureValidLocked();
@@ -1131,9 +1178,21 @@ public final class AssetManager implements AutoCloseable {
     }
 
     public void setConfiguration(int mcc, int mnc, String locale, int orientation, int touchscreen, int density, int keyboard, int keyboardHidden, int navigation, int screenWidth, int screenHeight, int smallestScreenWidthDp, int screenWidthDp, int screenHeightDp, int screenLayout, int uiMode, int colorMode, int grammaticalGender, int majorVersion) {
+        if (locale != null) {
+            setConfiguration(mcc, mnc, null, new String[]{locale}, orientation, touchscreen, density, keyboard, keyboardHidden, navigation, screenWidth, screenHeight, smallestScreenWidthDp, screenWidthDp, screenHeightDp, screenLayout, uiMode, colorMode, grammaticalGender, majorVersion);
+        } else {
+            setConfiguration(mcc, mnc, null, null, orientation, touchscreen, density, keyboard, keyboardHidden, navigation, screenWidth, screenHeight, smallestScreenWidthDp, screenWidthDp, screenHeightDp, screenLayout, uiMode, colorMode, grammaticalGender, majorVersion);
+        }
+    }
+
+    public void setConfiguration(int mcc, int mnc, String defaultLocale, String[] locales, int orientation, int touchscreen, int density, int keyboard, int keyboardHidden, int navigation, int screenWidth, int screenHeight, int smallestScreenWidthDp, int screenWidthDp, int screenHeightDp, int screenLayout, int uiMode, int colorMode, int grammaticalGender, int majorVersion) {
+        setConfigurationInternal(mcc, mnc, defaultLocale, locales, orientation, touchscreen, density, keyboard, keyboardHidden, navigation, screenWidth, screenHeight, smallestScreenWidthDp, screenWidthDp, screenHeightDp, screenLayout, uiMode, colorMode, grammaticalGender, majorVersion, false);
+    }
+
+    void setConfigurationInternal(int mcc, int mnc, String defaultLocale, String[] locales, int orientation, int touchscreen, int density, int keyboard, int keyboardHidden, int navigation, int screenWidth, int screenHeight, int smallestScreenWidthDp, int screenWidthDp, int screenHeightDp, int screenLayout, int uiMode, int colorMode, int grammaticalGender, int majorVersion, boolean forceRefresh) {
         synchronized (this) {
             ensureValidLocked();
-            nativeSetConfiguration(this.mObject, mcc, mnc, locale, orientation, touchscreen, density, keyboard, keyboardHidden, navigation, screenWidth, screenHeight, smallestScreenWidthDp, screenWidthDp, screenHeightDp, screenLayout, uiMode, colorMode, grammaticalGender, majorVersion);
+            nativeSetConfiguration(this.mObject, mcc, mnc, defaultLocale, locales, orientation, touchscreen, density, keyboard, keyboardHidden, navigation, screenWidth, screenHeight, smallestScreenWidthDp, screenWidthDp, screenHeightDp, screenLayout, uiMode, colorMode, grammaticalGender, majorVersion, forceRefresh);
         }
     }
 
@@ -1172,20 +1231,17 @@ public final class AssetManager implements AutoCloseable {
         this.mNumRefs++;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void decRefsLocked(long id) {
-        int i = this.mNumRefs - 1;
-        this.mNumRefs = i;
-        if (i == 0) {
-            long j = this.mObject;
-            if (j != 0) {
-                nativeDestroy(j);
-                this.mObject = 0L;
-                this.mApkAssets = sEmptyApkAssets;
-            }
+        this.mNumRefs--;
+        if (this.mNumRefs == 0 && this.mObject != 0) {
+            nativeDestroy(this.mObject);
+            this.mObject = 0L;
+            this.mApkAssets = sEmptyApkAssets;
         }
     }
 
-    public synchronized void dump(PrintWriter pw, String prefix) {
+    synchronized void dump(PrintWriter pw, String prefix) {
         pw.println(prefix + "class=" + getClass());
         pw.println(prefix + "apkAssets=");
         for (int i = 0; i < this.mApkAssets.length; i++) {

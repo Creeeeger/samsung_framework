@@ -6,7 +6,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface IInitializeSessionCallback extends IInterface {
     public static final String DESCRIPTOR = "android.hardware.camera2.extension.IInitializeSessionCallback";
 
@@ -14,7 +14,6 @@ public interface IInitializeSessionCallback extends IInterface {
 
     void onSuccess() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IInitializeSessionCallback {
         @Override // android.hardware.camera2.extension.IInitializeSessionCallback
         public void onSuccess() throws RemoteException {
@@ -30,7 +29,6 @@ public interface IInitializeSessionCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IInitializeSessionCallback {
         static final int TRANSACTION_onFailure = 2;
         static final int TRANSACTION_onSuccess = 1;
@@ -76,29 +74,25 @@ public interface IInitializeSessionCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IInitializeSessionCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IInitializeSessionCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IInitializeSessionCallback.DESCRIPTOR);
+                case 1:
+                    onSuccess();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    onFailure();
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            onSuccess();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            onFailure();
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IInitializeSessionCallback {
+        private static class Proxy implements IInitializeSessionCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

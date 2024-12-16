@@ -3,7 +3,7 @@ package com.samsung.android.sume.core.plugin;
 import com.samsung.android.sume.core.plugin.PluginFixture;
 import java.util.function.Consumer;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class PluginAdapter<T extends PluginFixture<?>> implements Plugin<T> {
     private final Consumer<T> function;
     private final Class<T> pluginType;

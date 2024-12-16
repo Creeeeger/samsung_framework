@@ -31,8 +31,16 @@ public final class ProcStatsUtil {
     }
 
     public static String readTerminatedProcFile(String path, byte terminator) {
+        int savedPolicy = StrictMode.allowThreadDiskReadsMask();
+        try {
+            return readTerminatedProcFileInternal(path, terminator);
+        } finally {
+            StrictMode.setThreadPolicyMask(savedPolicy);
+        }
+    }
+
+    private static String readTerminatedProcFileInternal(String path, byte terminator) {
         boolean foundTerminator;
-        StrictMode.ThreadPolicy savedPolicy = StrictMode.allowThreadDiskReads();
         try {
             FileInputStream is = new FileInputStream(path);
             ByteArrayOutputStream byteStream = null;
@@ -59,7 +67,6 @@ public final class ProcStatsUtil {
                     if (foundTerminator && byteStream == null) {
                         String str = new String(buffer, 0, terminatingIndex);
                         is.close();
-                        StrictMode.setThreadPolicy(savedPolicy);
                         return str;
                     }
                     if (byteStream == null) {
@@ -69,27 +76,15 @@ public final class ProcStatsUtil {
                 } while (!foundTerminator);
                 if (byteStream == null) {
                     is.close();
-                    StrictMode.setThreadPolicy(savedPolicy);
                     return "";
                 }
                 String byteArrayOutputStream = byteStream.toString();
                 is.close();
-                StrictMode.setThreadPolicy(savedPolicy);
                 return byteArrayOutputStream;
-            } catch (Throwable th) {
-                try {
-                    is.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-                throw th;
+            } finally {
             }
         } catch (IOException e) {
-            StrictMode.setThreadPolicy(savedPolicy);
             return null;
-        } catch (Throwable th3) {
-            StrictMode.setThreadPolicy(savedPolicy);
-            throw th3;
         }
     }
 }

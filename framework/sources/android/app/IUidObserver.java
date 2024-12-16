@@ -20,7 +20,6 @@ public interface IUidObserver extends IInterface {
 
     void onUidStateChanged(int i, int i2, long j, int i3) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IUidObserver {
         @Override // android.app.IUidObserver
         public void onUidGone(int uid, boolean disabled) throws RemoteException {
@@ -52,7 +51,6 @@ public interface IUidObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IUidObserver {
         public static final String DESCRIPTOR = "android.app.IUidObserver";
         static final int TRANSACTION_onUidActive = 2;
@@ -111,58 +109,54 @@ public interface IUidObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    boolean _arg1 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUidGone(_arg0, _arg1);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUidActive(_arg02);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    boolean _arg12 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUidIdle(_arg03, _arg12);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg13 = data.readInt();
+                    long _arg2 = data.readLong();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUidStateChanged(_arg04, _arg13, _arg2, _arg3);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onUidProcAdjChanged(_arg05, _arg14);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    boolean _arg15 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onUidCachedChanged(_arg06, _arg15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            boolean _arg1 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUidGone(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUidActive(_arg02);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUidIdle(_arg03, _arg12);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg13 = data.readInt();
-                            long _arg2 = data.readLong();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUidStateChanged(_arg04, _arg13, _arg2, _arg3);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onUidProcAdjChanged(_arg05, _arg14);
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            boolean _arg15 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onUidCachedChanged(_arg06, _arg15);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IUidObserver {
+        private static class Proxy implements IUidObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

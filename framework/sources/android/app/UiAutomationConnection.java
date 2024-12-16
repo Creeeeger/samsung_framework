@@ -4,8 +4,8 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.accessibilityservice.IAccessibilityServiceClient;
 import android.app.IActivityManager;
 import android.app.IUiAutomationConnection;
+import android.companion.virtual.VirtualDeviceManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.input.InputManagerGlobal;
 import android.media.MediaMetrics;
@@ -155,9 +155,9 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
         long identity = Binder.clearCallingIdentity();
         try {
             if (rotation == -2) {
-                this.mWindowManager.thawRotation();
+                this.mWindowManager.thawRotation("UiAutomationConnection#setRotation");
             } else {
-                this.mWindowManager.freezeRotation(rotation);
+                this.mWindowManager.freezeRotation(rotation, "UiAutomationConnection#setRotation");
             }
             Binder.restoreCallingIdentity(identity);
             return true;
@@ -171,33 +171,30 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
     }
 
     @Override // android.app.IUiAutomationConnection
-    public Bitmap takeScreenshot(Rect crop) {
+    public boolean takeScreenshot(Rect crop, ScreenCapture.ScreenCaptureListener listener) {
         synchronized (this.mLock) {
             throwIfCalledByNotTrustedUidLocked();
             throwIfShutdownLocked();
             throwIfNotConnectedLocked();
         }
         long identity = Binder.clearCallingIdentity();
-        Bitmap bitmap = null;
         try {
-            ScreenCapture.CaptureArgs captureArgs = new ScreenCapture.CaptureArgs.Builder().setSourceCrop(crop).build();
-            ScreenCapture.SynchronousScreenCaptureListener syncScreenCapture = ScreenCapture.createSyncCaptureListener();
-            this.mWindowManager.captureDisplay(0, captureArgs, syncScreenCapture);
-            ScreenCapture.ScreenshotHardwareBuffer screenshotBuffer = syncScreenCapture.getBuffer();
-            if (screenshotBuffer != null) {
-                bitmap = screenshotBuffer.asBitmap();
+            try {
+                ScreenCapture.CaptureArgs captureArgs = new ScreenCapture.CaptureArgs.Builder().setSourceCrop(crop).build();
+                this.mWindowManager.captureDisplay(0, captureArgs, listener);
+            } catch (RemoteException re) {
+                re.rethrowAsRuntimeException();
             }
-            return bitmap;
-        } catch (RemoteException re) {
-            re.rethrowAsRuntimeException();
-            return null;
-        } finally {
             Binder.restoreCallingIdentity(identity);
+            return true;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(identity);
+            throw th;
         }
     }
 
     @Override // android.app.IUiAutomationConnection
-    public Bitmap takeSurfaceControlScreenshot(SurfaceControl surfaceControl) {
+    public boolean takeSurfaceControlScreenshot(SurfaceControl surfaceControl, ScreenCapture.ScreenCaptureListener listener) {
         synchronized (this.mLock) {
             throwIfCalledByNotTrustedUidLocked();
             throwIfShutdownLocked();
@@ -205,11 +202,13 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
         }
         long identity = Binder.clearCallingIdentity();
         try {
-            ScreenCapture.ScreenshotHardwareBuffer captureBuffer = ScreenCapture.captureLayers(new ScreenCapture.LayerCaptureArgs.Builder(surfaceControl).setChildrenOnly(false).build());
-            if (captureBuffer == null) {
-                return null;
+            ScreenCapture.LayerCaptureArgs args = new ScreenCapture.LayerCaptureArgs.Builder(surfaceControl).setChildrenOnly(false).build();
+            int status = ScreenCapture.captureLayers(args, listener);
+            if (status != 0) {
+                return false;
             }
-            return captureBuffer.asBitmap();
+            Binder.restoreCallingIdentity(identity);
+            return true;
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
@@ -298,7 +297,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
         }
         long identity = Binder.clearCallingIdentity();
         try {
-            this.mPermissionManager.grantRuntimePermission(packageName, permission, userId);
+            this.mPermissionManager.grantRuntimePermission(packageName, permission, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT, userId);
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
@@ -313,7 +312,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
         }
         long identity = Binder.clearCallingIdentity();
         try {
-            this.mPermissionManager.revokeRuntimePermission(packageName, permission, userId, null);
+            this.mPermissionManager.revokeRuntimePermission(packageName, permission, VirtualDeviceManager.PERSISTENT_DEVICE_ID_DEFAULT, userId, null);
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
@@ -364,7 +363,70 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
         }
     }
 
-    /* loaded from: classes.dex */
+    @Override // android.app.IUiAutomationConnection
+    public void addOverridePermissionState(int uid, String permission, int result) throws RemoteException {
+        synchronized (this.mLock) {
+            throwIfCalledByNotTrustedUidLocked();
+            throwIfShutdownLocked();
+            throwIfNotConnectedLocked();
+        }
+        int callingUid = Binder.getCallingUid();
+        long identity = Binder.clearCallingIdentity();
+        try {
+            this.mActivityManager.addOverridePermissionState(callingUid, uid, permission, result);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
+    @Override // android.app.IUiAutomationConnection
+    public void removeOverridePermissionState(int uid, String permission) throws RemoteException {
+        synchronized (this.mLock) {
+            throwIfCalledByNotTrustedUidLocked();
+            throwIfShutdownLocked();
+            throwIfNotConnectedLocked();
+        }
+        int callingUid = Binder.getCallingUid();
+        long identity = Binder.clearCallingIdentity();
+        try {
+            this.mActivityManager.removeOverridePermissionState(callingUid, uid, permission);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
+    @Override // android.app.IUiAutomationConnection
+    public void clearOverridePermissionStates(int uid) throws RemoteException {
+        synchronized (this.mLock) {
+            throwIfCalledByNotTrustedUidLocked();
+            throwIfShutdownLocked();
+            throwIfNotConnectedLocked();
+        }
+        int callingUid = Binder.getCallingUid();
+        long identity = Binder.clearCallingIdentity();
+        try {
+            this.mActivityManager.clearOverridePermissionStates(callingUid, uid);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
+    @Override // android.app.IUiAutomationConnection
+    public void clearAllOverridePermissionStates() throws RemoteException {
+        synchronized (this.mLock) {
+            throwIfCalledByNotTrustedUidLocked();
+            throwIfShutdownLocked();
+            throwIfNotConnectedLocked();
+        }
+        int callingUid = Binder.getCallingUid();
+        long identity = Binder.clearCallingIdentity();
+        try {
+            this.mActivityManager.clearAllOverridePermissionStates(callingUid);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
     public class Repeater implements Runnable {
         private final InputStream readFrom;
         private final OutputStream writeTo;
@@ -403,7 +465,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
     }
 
     @Override // android.app.IUiAutomationConnection
-    public void executeShellCommandWithStderr(String command, ParcelFileDescriptor sink, ParcelFileDescriptor source, ParcelFileDescriptor stderrSink) throws RemoteException {
+    public void executeShellCommandWithStderr(String command, final ParcelFileDescriptor sink, final ParcelFileDescriptor source, final ParcelFileDescriptor stderrSink) throws RemoteException {
         Thread readFromProcess;
         Thread writeToProcess;
         Thread readStderrFromProcess;
@@ -413,7 +475,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             throwIfNotConnectedLocked();
         }
         try {
-            Process process = Runtime.getRuntime().exec(command);
+            final Process process = Runtime.getRuntime().exec(command);
             if (sink != null) {
                 InputStream sink_in = process.getInputStream();
                 OutputStream sink_out = new FileOutputStream(sink.getFileDescriptor());
@@ -441,37 +503,19 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             } else {
                 readStderrFromProcess = null;
             }
+            final Thread thread = writeToProcess;
+            final Thread thread2 = readFromProcess;
+            final Thread thread3 = readStderrFromProcess;
             Thread cleanup = new Thread(new Runnable() { // from class: android.app.UiAutomationConnection.1
-                final /* synthetic */ Process val$process;
-                final /* synthetic */ Thread val$readFromProcess;
-                final /* synthetic */ Thread val$readStderrFromProcess;
-                final /* synthetic */ ParcelFileDescriptor val$sink;
-                final /* synthetic */ ParcelFileDescriptor val$source;
-                final /* synthetic */ ParcelFileDescriptor val$stderrSink;
-                final /* synthetic */ Thread val$writeToProcess;
-
-                AnonymousClass1(Thread writeToProcess3, Thread readFromProcess3, Thread readStderrFromProcess3, ParcelFileDescriptor sink2, ParcelFileDescriptor source2, ParcelFileDescriptor stderrSink2, Process process2) {
-                    thread = writeToProcess3;
-                    thread2 = readFromProcess3;
-                    thread3 = readStderrFromProcess3;
-                    sink = sink2;
-                    source = source2;
-                    stderrSink = stderrSink2;
-                    process = process2;
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     try {
-                        Thread thread = thread;
                         if (thread != null) {
                             thread.join();
                         }
-                        Thread thread2 = thread2;
                         if (thread2 != null) {
                             thread2.join();
                         }
-                        Thread thread3 = thread3;
                         if (thread3 != null) {
                             thread3.join();
                         }
@@ -487,52 +531,6 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
             cleanup.start();
         } catch (IOException exc) {
             throw new RuntimeException("Error running shell command '" + command + "'", exc);
-        }
-    }
-
-    /* renamed from: android.app.UiAutomationConnection$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Runnable {
-        final /* synthetic */ Process val$process;
-        final /* synthetic */ Thread val$readFromProcess;
-        final /* synthetic */ Thread val$readStderrFromProcess;
-        final /* synthetic */ ParcelFileDescriptor val$sink;
-        final /* synthetic */ ParcelFileDescriptor val$source;
-        final /* synthetic */ ParcelFileDescriptor val$stderrSink;
-        final /* synthetic */ Thread val$writeToProcess;
-
-        AnonymousClass1(Thread writeToProcess3, Thread readFromProcess3, Thread readStderrFromProcess3, ParcelFileDescriptor sink2, ParcelFileDescriptor source2, ParcelFileDescriptor stderrSink2, Process process2) {
-            thread = writeToProcess3;
-            thread2 = readFromProcess3;
-            thread3 = readStderrFromProcess3;
-            sink = sink2;
-            source = source2;
-            stderrSink = stderrSink2;
-            process = process2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            try {
-                Thread thread = thread;
-                if (thread != null) {
-                    thread.join();
-                }
-                Thread thread2 = thread2;
-                if (thread2 != null) {
-                    thread2.join();
-                }
-                Thread thread3 = thread3;
-                if (thread3 != null) {
-                    thread3.join();
-                }
-            } catch (InterruptedException e) {
-                Log.e(UiAutomationConnection.TAG, "At least one of the threads was interrupted");
-            }
-            IoUtils.closeQuietly(sink);
-            IoUtils.closeQuietly(source);
-            IoUtils.closeQuietly(stderrSink);
-            process.destroy();
         }
     }
 
@@ -589,11 +587,10 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
 
     private void restoreRotationStateLocked() {
         try {
-            int i = this.mInitialFrozenRotation;
-            if (i != -1) {
-                this.mWindowManager.freezeRotation(i);
+            if (this.mInitialFrozenRotation != -1) {
+                this.mWindowManager.freezeRotation(this.mInitialFrozenRotation, "UiAutomationConnection#restoreRotationStateLocked");
             } else {
-                this.mWindowManager.thawRotation();
+                this.mWindowManager.thawRotation("UiAutomationConnection#restoreRotationStateLocked");
             }
         } catch (RemoteException e) {
         }
@@ -617,8 +614,7 @@ public final class UiAutomationConnection extends IUiAutomationConnection.Stub {
 
     private void throwIfCalledByNotTrustedUidLocked() {
         int callingUid = Binder.getCallingUid();
-        int i = this.mOwningUid;
-        if (callingUid != i && i != 1000 && callingUid != 0) {
+        if (callingUid != this.mOwningUid && this.mOwningUid != 1000 && callingUid != 0) {
             throw new SecurityException("Calling from not trusted UID!");
         }
     }

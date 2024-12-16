@@ -11,9 +11,7 @@ import android.util.Log;
 import com.android.internal.util.FastPrintWriter;
 import com.android.internal.util.Preconditions;
 import com.android.internal.util.TypedProperties;
-import com.samsung.android.common.AsPackageName;
-import com.samsung.android.ims.options.SemCapabilities;
-import com.samsung.android.share.SemShareConstants;
+import com.samsung.android.rune.CoreRune;
 import dalvik.system.VMDebug;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -37,6 +35,7 @@ public final class Debug {
     private static final String DEFAULT_TRACE_EXTENSION = ".trace";
     public static final String EXTRA_INFO_BY_DEVICECARE = "Auto restart by DeviceCare";
     public static final String EXTRA_INFO_BY_HEAPFULL = "Auto restart by Heap Memory Full";
+    private static final boolean IS_PRODUCT_SHIP = true;
     public static final int MEMINFO_ACTIVE = 20;
     public static final int MEMINFO_ACTIVE_ANON = 24;
     public static final int MEMINFO_ACTIVE_FILE = 26;
@@ -55,6 +54,7 @@ public final class Debug {
     public static final int MEMINFO_INACTIVE_FILE = 27;
     public static final int MEMINFO_KERNEL_STACK = 18;
     public static final int MEMINFO_KRECLAIMABLE = 19;
+    public static final int MEMINFO_LIGHT_COUNT = 14;
     public static final int MEMINFO_MAPPED = 15;
     public static final int MEMINFO_PAGE_TABLES = 17;
     public static final int MEMINFO_RBIN_ALLOC = 5;
@@ -88,11 +88,11 @@ public final class Debug {
     @Deprecated
     public static final int TRACE_COUNT_ALLOCS = 1;
     private static volatile boolean mWaiting = false;
+    private static final String[] FRAMEWORK_FEATURES = {"opengl-tracing", "view-hierarchy", "support_boot_stages"};
     private static final TypedProperties debugProperties = null;
 
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes3.dex */
     public @interface DebugProperty {
     }
 
@@ -146,28 +146,30 @@ public final class Debug {
 
     public static native long getPss(int i, long[] jArr, long[] jArr2);
 
+    public static native long getRss();
+
+    public static native long getRss(int i, long[] jArr);
+
     public static native String getUnreachableMemory(int i, boolean z);
 
     public static native long getZramFreeKb();
 
-    private static native int isProductShipNative();
-
     public static native boolean isVmapStack();
+
+    public static native boolean logAllocatorStats();
 
     private Debug() {
     }
 
-    /* loaded from: classes3.dex */
     public static class MemoryInfo implements Parcelable {
         public static final Parcelable.Creator<MemoryInfo> CREATOR = new Parcelable.Creator<MemoryInfo>() { // from class: android.os.Debug.MemoryInfo.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo createFromParcel(Parcel source) {
                 return new MemoryInfo(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public MemoryInfo[] newArray(int size) {
                 return new MemoryInfo[size];
@@ -258,10 +260,6 @@ public final class Debug {
         public int otherSwappedOut;
         public int otherSwappedOutPss;
 
-        /* synthetic */ MemoryInfo(Parcel parcel, MemoryInfoIA memoryInfoIA) {
-            this(parcel);
-        }
-
         public MemoryInfo() {
             this.otherStats = new int[288];
         }
@@ -295,9 +293,7 @@ public final class Debug {
             this.otherSwappedOut = other.otherSwappedOut;
             this.otherSwappedOutPss = other.otherSwappedOutPss;
             this.hasSwappedOutPss = other.hasSwappedOutPss;
-            int[] iArr = other.otherStats;
-            int[] iArr2 = this.otherStats;
-            System.arraycopy(iArr, 0, iArr2, 0, iArr2.length);
+            System.arraycopy(other.otherStats, 0, this.otherStats, 0, this.otherStats.length);
         }
 
         public int getTotalPss() {
@@ -698,23 +694,6 @@ public final class Debug {
             this.otherStats = source.createIntArray();
         }
 
-        /* renamed from: android.os.Debug$MemoryInfo$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<MemoryInfo> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MemoryInfo createFromParcel(Parcel source) {
-                return new MemoryInfo(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public MemoryInfo[] newArray(int size) {
-                return new MemoryInfo[size];
-            }
-        }
-
         private MemoryInfo(Parcel source) {
             this.otherStats = new int[288];
             readFromParcel(source);
@@ -788,6 +767,10 @@ public final class Debug {
 
     public static String[] getVmFeatureList() {
         return VMDebug.getVmFeatureList();
+    }
+
+    public static String[] getFeatureList() {
+        return FRAMEWORK_FEATURES;
     }
 
     @Deprecated
@@ -1074,8 +1057,9 @@ public final class Debug {
         return VMDebug.getRuntimeStats();
     }
 
+    @Deprecated
     public static boolean semIsProductDev() {
-        return isProductShipNative() == 0;
+        return !SystemProperties.getBoolean("ro.product_ship", true);
     }
 
     @Deprecated
@@ -1117,7 +1101,6 @@ public final class Debug {
     }
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public static class InstructionCount {
         public boolean resetAndStart() {
             return false;
@@ -1142,7 +1125,7 @@ public final class Debug {
             return true;
         }
         try {
-            Field primitiveTypeField = cl.getField(SemShareConstants.DMA_SURVEY_FEATURE_INTENT_MIME_TYPE);
+            Field primitiveTypeField = cl.getField("TYPE");
             try {
                 if (fieldClass == ((Class) primitiveTypeField.get(null))) {
                     return true;
@@ -1195,7 +1178,7 @@ public final class Debug {
     }
 
     public static void setFieldsOn(Class<?> cl, boolean partial) {
-        Log.wtf(TAG, "setFieldsOn(" + (cl == null ? SemCapabilities.FEATURE_TAG_NULL : cl.getName()) + ") called in non-DEBUG build");
+        Log.wtf(TAG, "setFieldsOn(" + (cl == null ? "null" : cl.getName()) + ") called in non-DEBUG build");
     }
 
     public static boolean dumpService(String name, FileDescriptor fd, String[] args) {
@@ -1296,29 +1279,27 @@ public final class Debug {
             String pre_brmode = SystemProperties.get("bugreport.mode", "default");
             String nxt_brmode = "default";
             switch (params.getMode()) {
-                case 10:
+                case 11:
                     nxt_brmode = "sys_error";
                     break;
-                case 12:
+                case 13:
                     nxt_brmode = "sys_watchdog";
                     break;
-                case 13:
+                case 14:
                     nxt_brmode = "app_error";
                     break;
-                case 15:
+                case 16:
                     nxt_brmode = "app_anr";
                     break;
             }
-            String debugLevel = SystemProperties.get("ro.boot.debug_level", "0x4f4c");
             String resetReason = SystemProperties.get("sys.reset_reason", "UNKNOWN");
-            String product_ship = SystemProperties.get("ro.product_ship", "true");
             if ("sys_error".equals(nxt_brmode) && PLATFORM_SILENT_RESET.equals(resetReason)) {
                 Log.d(TAG, "No need to trigger dumpstate in PF_SR case");
                 return;
             }
-            if ("0x4f4c".equals(debugLevel) && "true".equals(product_ship)) {
+            if (CoreRune.IS_DEBUG_LEVEL_LOW) {
                 try {
-                    if (nxt_brmode.startsWith("app") && (packageName == null || !isContainingDumpPackage(packageName))) {
+                    if (nxt_brmode.startsWith("app") && (packageName == null || (!packageName.contains("com.sec.") && !packageName.contains("com.samsung.") && !packageName.contains("com.android.phone")))) {
                         Log.d(TAG, "low && ship && 3rdparty app crash, do not dump");
                         return;
                     }
@@ -1348,15 +1329,5 @@ public final class Debug {
             SystemProperties.set("dumpstate.process", str);
             SystemProperties.set("ctl.start", "bugreportm");
         }
-    }
-
-    private static boolean isContainingDumpPackage(String packageName) {
-        String[] validPackages = {"com.sec.", "com.samsung.", "com.android.phone", AsPackageName.SYSTEMUI};
-        for (String validPackage : validPackages) {
-            if (packageName.startsWith(validPackage)) {
-                return true;
-            }
-        }
-        return "system".equals(packageName);
     }
 }

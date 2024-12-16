@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ServiceInfo {
     static final int MAP_LIMIT = 1000;
     private final String className;
@@ -33,9 +33,8 @@ public class ServiceInfo {
         if (newLocales.size() > 1000) {
             throw new RuntimeException("bad locales length " + newLocales.size());
         }
-        HashMap hashMap = new HashMap(newNames.size());
-        this.names = hashMap;
-        hashMap.putAll(newNames);
+        this.names = new HashMap(newNames.size());
+        this.names.putAll(newNames);
         this.className = newClassName;
         this.locales = new ArrayList(newLocales);
         this.serviceId = newServiceId;
@@ -43,7 +42,7 @@ public class ServiceInfo {
         this.sessionEndTime = (Date) end.clone();
     }
 
-    public ServiceInfo(Parcel in) {
+    protected ServiceInfo(Parcel in) {
         int mapCount = in.readInt();
         if (mapCount > 1000 || mapCount < 0) {
             throw new RuntimeException("bad map length" + mapCount);

@@ -15,7 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class TypefaceFinder {
     public static final String DEFAULT_FONT_VALUE = "default";
     private static final String FONT_ASSET_DIR = "xml";
@@ -28,15 +28,6 @@ public class TypefaceFinder {
     private static final String TAG = "TypefaceFinder";
     private final List<SemTypeface> mTypefaces = new ArrayList();
 
-    public SemTypeface findMatchingTypefaceByName(String fontName) {
-        for (SemTypeface typeface : this.mTypefaces) {
-            if (typeface.getName().equalsIgnoreCase(fontName)) {
-                return typeface;
-            }
-        }
-        return null;
-    }
-
     private void findTypefacesWithCR(Context context, String fontPackageName) {
         String[] xmlFiles = null;
         try {
@@ -45,7 +36,7 @@ public class TypefaceFinder {
             if (xmlFilesString != null && !xmlFilesString.isEmpty()) {
                 xmlFiles = xmlFilesString.split("\n");
             }
-            if (xmlFiles == null || xmlFiles.length == 0) {
+            if (xmlFiles == null) {
                 return;
             }
             for (String xmlFile : xmlFiles) {
@@ -66,7 +57,6 @@ public class TypefaceFinder {
                             }
                         }
                         throw th;
-                        break;
                     }
                 } catch (Exception e) {
                 }
@@ -76,7 +66,6 @@ public class TypefaceFinder {
     }
 
     public void findTypefaces(Context context, AssetManager assetManager, String fontPackageName) {
-        InputStream in;
         try {
             String[] xmlFiles = assetManager.list("xml");
             if (xmlFiles == null || xmlFiles.length == 0) {
@@ -85,25 +74,24 @@ public class TypefaceFinder {
             }
             for (String xmlFile : xmlFiles) {
                 try {
-                    in = assetManager.open("xml/" + xmlFile);
+                    InputStream in = assetManager.open("xml/" + xmlFile);
+                    try {
+                        parseTypefaceXml(xmlFile, in, fontPackageName);
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (Throwable th) {
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (Throwable th2) {
+                                th.addSuppressed(th2);
+                            }
+                        }
+                        throw th;
+                    }
                 } catch (Exception e) {
                     Log.v(TAG, "Not possible to open, continue to next file, " + e.getMessage());
-                }
-                try {
-                    parseTypefaceXml(xmlFile, in, fontPackageName);
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (Throwable th) {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (Throwable th2) {
-                            th.addSuppressed(th2);
-                        }
-                    }
-                    throw th;
-                    break;
                 }
             }
         } catch (Exception e2) {
@@ -138,7 +126,7 @@ public class TypefaceFinder {
     */
     public void getSansEntries(android.content.Context r24, android.content.pm.PackageManager r25, java.util.ArrayList r26, java.util.ArrayList r27, java.util.ArrayList r28) {
         /*
-            Method dump skipped, instructions count: 393
+            Method dump skipped, instructions count: 392
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.fontutil.TypefaceFinder.getSansEntries(android.content.Context, android.content.pm.PackageManager, java.util.ArrayList, java.util.ArrayList, java.util.ArrayList):void");
@@ -153,7 +141,6 @@ public class TypefaceFinder {
         return null;
     }
 
-    /* loaded from: classes5.dex */
     public static class TypefaceSortByName implements Comparator<SemTypeface>, Serializable {
         @Override // java.util.Comparator
         public int compare(SemTypeface o1, SemTypeface o2) {

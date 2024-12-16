@@ -18,7 +18,6 @@ public abstract class BroadcastReceiver {
 
     public abstract void onReceive(Context context, Intent intent);
 
-    /* loaded from: classes.dex */
     public static class PendingResult {
         public static final int TYPE_COMPONENT = 0;
         public static final int TYPE_REGISTERED = 1;
@@ -129,15 +128,9 @@ public abstract class BroadcastReceiver {
                 Trace.traceCounter(64L, "PendingResult#finish#ClassName:" + this.mReceiverClassName, 1);
             }
             if (this.mType == 0) {
-                IActivityManager mgr = ActivityManager.getService();
+                final IActivityManager mgr = ActivityManager.getService();
                 if (QueuedWork.hasPendingWork()) {
                     QueuedWork.queue(new Runnable() { // from class: android.content.BroadcastReceiver.PendingResult.1
-                        final /* synthetic */ IActivityManager val$mgr;
-
-                        AnonymousClass1(IActivityManager mgr2) {
-                            mgr = mgr2;
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
                             PendingResult.this.sendFinished(mgr);
@@ -145,32 +138,16 @@ public abstract class BroadcastReceiver {
                     }, false);
                     return;
                 } else {
-                    sendFinished(mgr2);
+                    sendFinished(mgr);
                     return;
                 }
             }
             sendFinished(ActivityManager.getService());
         }
 
-        /* renamed from: android.content.BroadcastReceiver$PendingResult$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 implements Runnable {
-            final /* synthetic */ IActivityManager val$mgr;
-
-            AnonymousClass1(IActivityManager mgr2) {
-                mgr = mgr2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                PendingResult.this.sendFinished(mgr);
-            }
-        }
-
         public void setExtrasClassLoader(ClassLoader cl) {
-            Bundle bundle = this.mResultExtras;
-            if (bundle != null) {
-                bundle.setClassLoader(cl);
+            if (this.mResultExtras != null) {
+                this.mResultExtras.setClassLoader(cl);
             }
         }
 
@@ -181,9 +158,8 @@ public abstract class BroadcastReceiver {
                 }
                 this.mFinished = true;
                 try {
-                    Bundle bundle = this.mResultExtras;
-                    if (bundle != null) {
-                        bundle.setAllowFds(false);
+                    if (this.mResultExtras != null) {
+                        this.mResultExtras.setAllowFds(false);
                     }
                     if (!this.mAssumeDeliveredHint) {
                         if (this.mOrderedHint) {
@@ -246,9 +222,8 @@ public abstract class BroadcastReceiver {
     }
 
     public final int getResultCode() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mResultCode;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mResultCode;
         }
         return 0;
     }
@@ -259,9 +234,8 @@ public abstract class BroadcastReceiver {
     }
 
     public final String getResultData() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mResultData;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mResultData;
         }
         return null;
     }
@@ -272,20 +246,19 @@ public abstract class BroadcastReceiver {
     }
 
     public final Bundle getResultExtras(boolean makeMap) {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult == null) {
+        if (this.mPendingResult == null) {
             return null;
         }
-        Bundle e = pendingResult.mResultExtras;
+        Bundle e = this.mPendingResult.mResultExtras;
         if (!makeMap) {
             return e;
         }
         if (e != null) {
             return e;
         }
-        PendingResult pendingResult2 = this.mPendingResult;
+        PendingResult pendingResult = this.mPendingResult;
         Bundle e2 = new Bundle();
-        pendingResult2.mResultExtras = e2;
+        pendingResult.mResultExtras = e2;
         return e2;
     }
 
@@ -297,9 +270,8 @@ public abstract class BroadcastReceiver {
     }
 
     public final boolean getAbortBroadcast() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mAbortBroadcast;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mAbortBroadcast;
         }
         return false;
     }
@@ -310,24 +282,21 @@ public abstract class BroadcastReceiver {
     }
 
     public final void clearAbortBroadcast() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            pendingResult.mAbortBroadcast = false;
+        if (this.mPendingResult != null) {
+            this.mPendingResult.mAbortBroadcast = false;
         }
     }
 
     public final boolean isOrderedBroadcast() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mOrderedHint;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mOrderedHint;
         }
         return false;
     }
 
     public final boolean isInitialStickyBroadcast() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mInitialStickyHint;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mInitialStickyHint;
         }
         return false;
     }
@@ -353,17 +322,15 @@ public abstract class BroadcastReceiver {
     }
 
     public int getSentFromUid() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mSentFromUid;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mSentFromUid;
         }
         return -1;
     }
 
     public String getSentFromPackage() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult != null) {
-            return pendingResult.mSentFromPackage;
+        if (this.mPendingResult != null) {
+            return this.mPendingResult.mSentFromPackage;
         }
         return null;
     }
@@ -377,11 +344,10 @@ public abstract class BroadcastReceiver {
     }
 
     void checkSynchronousHint() {
-        PendingResult pendingResult = this.mPendingResult;
-        if (pendingResult == null) {
+        if (this.mPendingResult == null) {
             throw new IllegalStateException("Call while result is not pending");
         }
-        if (pendingResult.mOrderedHint || this.mPendingResult.mInitialStickyHint) {
+        if (this.mPendingResult.mOrderedHint || this.mPendingResult.mInitialStickyHint) {
             return;
         }
         RuntimeException e = new RuntimeException("BroadcastReceiver trying to return result during a non-ordered broadcast");

@@ -65,9 +65,8 @@ public class AlgorithmParametersSpi extends java.security.AlgorithmParametersSpi
             ECCurve curve = EC5Util.getCurve(BouncyCastleProvider.CONFIGURATION, params);
             if (params.isNamedCurve()) {
                 ASN1ObjectIdentifier curveId = ASN1ObjectIdentifier.getInstance(params.getParameters());
-                String name = ECNamedCurveTable.getName(curveId);
-                this.curveName = name;
-                if (name == null) {
+                this.curveName = ECNamedCurveTable.getName(curveId);
+                if (this.curveName == null) {
                     this.curveName = curveId.getId();
                 }
             }
@@ -83,9 +82,8 @@ public class AlgorithmParametersSpi extends java.security.AlgorithmParametersSpi
             return this.ecParameterSpec;
         }
         if (ECGenParameterSpec.class.isAssignableFrom(paramSpec)) {
-            String str = this.curveName;
-            if (str != null) {
-                ASN1ObjectIdentifier namedCurveOid = ECUtil.getNamedCurveOid(str);
+            if (this.curveName != null) {
+                ASN1ObjectIdentifier namedCurveOid = ECUtil.getNamedCurveOid(this.curveName);
                 if (namedCurveOid != null) {
                     return new ECGenParameterSpec(namedCurveOid.getId());
                 }
@@ -108,18 +106,14 @@ public class AlgorithmParametersSpi extends java.security.AlgorithmParametersSpi
     protected byte[] engineGetEncoded(String format) throws IOException {
         X962Parameters params;
         if (isASN1FormatString(format)) {
-            ECParameterSpec eCParameterSpec = this.ecParameterSpec;
-            if (eCParameterSpec == null) {
+            if (this.ecParameterSpec == null) {
                 params = new X962Parameters((ASN1Null) DERNull.INSTANCE);
+            } else if (this.curveName != null) {
+                params = new X962Parameters(ECUtil.getNamedCurveOid(this.curveName));
             } else {
-                String str = this.curveName;
-                if (str != null) {
-                    params = new X962Parameters(ECUtil.getNamedCurveOid(str));
-                } else {
-                    com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec ecSpec = EC5Util.convertSpec(eCParameterSpec);
-                    X9ECParameters ecP = new X9ECParameters(ecSpec.getCurve(), new X9ECPoint(ecSpec.getG(), false), ecSpec.getN(), ecSpec.getH(), ecSpec.getSeed());
-                    params = new X962Parameters(ecP);
-                }
+                com.android.internal.org.bouncycastle.jce.spec.ECParameterSpec ecSpec = EC5Util.convertSpec(this.ecParameterSpec);
+                X9ECParameters ecP = new X9ECParameters(ecSpec.getCurve(), new X9ECPoint(ecSpec.getG(), false), ecSpec.getN(), ecSpec.getH(), ecSpec.getSeed());
+                params = new X962Parameters(ecP);
             }
             return params.getEncoded();
         }

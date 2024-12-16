@@ -6,9 +6,9 @@ import android.content.res.XmlResourceParser;
 import android.hardware.scontext.SContextConstants;
 import android.media.audio.Enums;
 import android.os.Build;
-import android.os.SemSystemProperties;
 import android.util.IndentingPrintWriter;
 import android.util.Slog;
+import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
 import com.android.internal.R;
 import com.android.internal.os.PowerProfileProto;
@@ -21,8 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.function.BiConsumer;
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /* loaded from: classes5.dex */
@@ -32,8 +32,9 @@ public class PowerProfile {
     private static final String CPU_CORE_POWER_PREFIX = "cpu.core_power.cluster";
     private static final String CPU_CORE_SPEED_PREFIX = "cpu.core_speeds.cluster";
     private static final String CPU_PER_CLUSTER_CORE_COUNT = "cpu.clusters.cores";
-    private static final String CPU_POWER_BRACKETS_PREFIX = "cpu.power_brackets.cluster";
-    private static final int DEFAULT_CPU_POWER_BRACKET_NUMBER = 3;
+    private static final String CPU_POWER_BRACKETS_PREFIX = "cpu.power_brackets.policy";
+    private static final String CPU_SCALING_POLICY_POWER_POLICY = "cpu.scaling_policy_power.policy";
+    private static final String CPU_SCALING_STEP_POWER_POLICY = "cpu.scaling_step_power.policy";
 
     @Deprecated
     public static final String POWER_AMBIENT_DISPLAY = "ambient.on";
@@ -53,6 +54,7 @@ public class PowerProfile {
 
     @Deprecated
     public static final String POWER_BLUETOOTH_ON = "bluetooth.on";
+    public static final int POWER_BRACKETS_UNSPECIFIED = -1;
     public static final String POWER_CAMERA = "camera.avg";
     public static final String POWER_CPU_ACTIVE = "cpu.active";
     public static final String POWER_CPU_IDLE = "cpu.idle";
@@ -101,6 +103,7 @@ public class PowerProfile {
     private static final String TAG_MODEM = "modem";
     private CpuClusterKey[] mCpuClusters;
     private int mCpuPowerBracketCount;
+    private SparseArray<CpuScalingPolicyPower> mCpuScalingPolicies;
     private int mNumDisplays;
     static final HashMap<String, Double> sPowerItemMap = new HashMap<>();
     static final HashMap<String, Double[]> sPowerArrayMap = new HashMap<>();
@@ -108,13 +111,17 @@ public class PowerProfile {
     private static final Object sLock = new Object();
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface PowerGroup {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes5.dex */
     public @interface Subsystem {
+    }
+
+    public PowerProfile() {
+        synchronized (sLock) {
+            initLocked();
+        }
     }
 
     public PowerProfile(Context context) {
@@ -128,28 +135,44 @@ public class PowerProfile {
         }
     }
 
-    public void forceInitForTesting(Context context, int xmlId) {
+    public void initForTesting(XmlPullParser parser) {
+        initForTesting(parser, null);
+    }
+
+    public void initForTesting(XmlPullParser parser, Resources resources) {
         synchronized (sLock) {
             sPowerItemMap.clear();
             sPowerArrayMap.clear();
             sModemPowerProfile.clear();
-            initLocked(context, xmlId);
+            try {
+                readPowerValuesFromXml(parser, resources);
+                initLocked();
+            } finally {
+                if (parser instanceof XmlResourceParser) {
+                    ((XmlResourceParser) parser).close();
+                }
+            }
         }
     }
 
     private void initLocked(Context context, int xmlId) {
         if (sPowerItemMap.size() == 0 && sPowerArrayMap.size() == 0) {
-            readPowerValuesFromXml(context, xmlId);
+            Resources resources = context.getResources();
+            XmlResourceParser parser = resources.getXml(xmlId);
+            readPowerValuesFromXml(parser, resources);
         }
+        initLocked();
+    }
+
+    private void initLocked() {
         initCpuClusters();
+        initCpuScalingPolicies();
+        initCpuPowerBrackets();
         initDisplays();
         initModem();
     }
 
-    private void readPowerValuesFromXml(Context context, int xmlId) {
-        int value;
-        Resources resources = context.getResources();
-        XmlResourceParser parser = resources.getXml(xmlId);
+    private static void readPowerValuesFromXml(XmlPullParser parser, Resources resources) {
         boolean parsingArray = false;
         ArrayList<Double> array = new ArrayList<>();
         String arrayName = null;
@@ -176,18 +199,18 @@ public class PowerProfile {
                                 sModemPowerProfile.parseFromXml(parser);
                             }
                         }
-                        String name = !parsingArray ? parser.getAttributeValue(null, "name") : null;
+                        String name = parsingArray ? null : parser.getAttributeValue(null, "name");
                         if (parser.next() == 4) {
                             String power = parser.getText();
-                            double value2 = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+                            double value = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
                             try {
-                                value2 = Double.valueOf(power).doubleValue();
+                                value = Double.valueOf(power).doubleValue();
                             } catch (NumberFormatException e) {
                             }
                             if (element.equals("item")) {
-                                sPowerItemMap.put(name, Double.valueOf(value2));
+                                sPowerItemMap.put(name, Double.valueOf(value));
                             } else if (parsingArray) {
-                                array.add(Double.valueOf(value2));
+                                array.add(Double.valueOf(value));
                             }
                         }
                     }
@@ -195,145 +218,192 @@ public class PowerProfile {
                 if (parsingArray) {
                     sPowerArrayMap.put(arrayName, (Double[]) array.toArray(new Double[array.size()]));
                 }
-                parser.close();
-                int[] configResIds = {R.integer.config_bluetooth_idle_cur_ma, R.integer.config_bluetooth_rx_cur_ma, R.integer.config_bluetooth_tx_cur_ma, R.integer.config_bluetooth_operating_voltage_mv};
-                String[] configResIdKeys = {POWER_BLUETOOTH_CONTROLLER_IDLE, POWER_BLUETOOTH_CONTROLLER_RX, POWER_BLUETOOTH_CONTROLLER_TX, POWER_BLUETOOTH_CONTROLLER_OPERATING_VOLTAGE};
-                for (int i = 0; i < configResIds.length; i++) {
-                    String key = configResIdKeys[i];
-                    HashMap<String, Double> hashMap = sPowerItemMap;
-                    if ((!hashMap.containsKey(key) || hashMap.get(key).doubleValue() <= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) && (value = resources.getInteger(configResIds[i])) > 0) {
-                        hashMap.put(key, Double.valueOf(value));
-                    }
+                if (resources != null) {
+                    getDefaultValuesFromConfig(resources);
                 }
             } catch (IOException e2) {
                 throw new RuntimeException(e2);
             } catch (XmlPullParserException e3) {
                 throw new RuntimeException(e3);
             }
-        } catch (Throwable th) {
-            parser.close();
-            throw th;
+        } finally {
+            if (parser instanceof XmlResourceParser) {
+                ((XmlResourceParser) parser).close();
+            }
+        }
+    }
+
+    private static void getDefaultValuesFromConfig(Resources resources) {
+        int value;
+        int[] configResIds = {R.integer.config_bluetooth_idle_cur_ma, R.integer.config_bluetooth_rx_cur_ma, R.integer.config_bluetooth_tx_cur_ma, R.integer.config_bluetooth_operating_voltage_mv};
+        String[] configResIdKeys = {POWER_BLUETOOTH_CONTROLLER_IDLE, POWER_BLUETOOTH_CONTROLLER_RX, POWER_BLUETOOTH_CONTROLLER_TX, POWER_BLUETOOTH_CONTROLLER_OPERATING_VOLTAGE};
+        for (int i = 0; i < configResIds.length; i++) {
+            String key = configResIdKeys[i];
+            if ((!sPowerItemMap.containsKey(key) || sPowerItemMap.get(key).doubleValue() <= SContextConstants.ENVIRONMENT_VALUE_UNKNOWN) && (value = resources.getInteger(configResIds[i])) > 0) {
+                sPowerItemMap.put(key, Double.valueOf(value));
+            }
         }
     }
 
     private void initCpuClusters() {
-        HashMap<String, Double[]> hashMap = sPowerArrayMap;
-        if (hashMap.containsKey(CPU_PER_CLUSTER_CORE_COUNT)) {
-            Double[] data = hashMap.get(CPU_PER_CLUSTER_CORE_COUNT);
+        if (sPowerArrayMap.containsKey(CPU_PER_CLUSTER_CORE_COUNT)) {
+            Double[] data = sPowerArrayMap.get(CPU_PER_CLUSTER_CORE_COUNT);
             this.mCpuClusters = new CpuClusterKey[data.length];
             for (int cluster = 0; cluster < data.length; cluster++) {
                 int numCpusInCluster = (int) Math.round(data[cluster].doubleValue());
                 this.mCpuClusters[cluster] = new CpuClusterKey(CPU_CORE_SPEED_PREFIX + cluster, CPU_CLUSTER_POWER_COUNT + cluster, CPU_CORE_POWER_PREFIX + cluster, numCpusInCluster);
             }
-        } else {
-            this.mCpuClusters = new CpuClusterKey[1];
-            int numCpus = 1;
-            HashMap<String, Double> hashMap2 = sPowerItemMap;
-            if (hashMap2.containsKey(CPU_PER_CLUSTER_CORE_COUNT)) {
-                numCpus = (int) Math.round(hashMap2.get(CPU_PER_CLUSTER_CORE_COUNT).doubleValue());
-            }
-            this.mCpuClusters[0] = new CpuClusterKey("cpu.core_speeds.cluster0", "cpu.cluster_power.cluster0", "cpu.core_power.cluster0", numCpus);
+            return;
         }
-        initCpuPowerBrackets(3);
+        this.mCpuClusters = new CpuClusterKey[1];
+        int numCpus = 1;
+        if (sPowerItemMap.containsKey(CPU_PER_CLUSTER_CORE_COUNT)) {
+            numCpus = (int) Math.round(sPowerItemMap.get(CPU_PER_CLUSTER_CORE_COUNT).doubleValue());
+        }
+        this.mCpuClusters[0] = new CpuClusterKey("cpu.core_speeds.cluster0", "cpu.cluster_power.cluster0", "cpu.core_power.cluster0", numCpus);
     }
 
-    public void initCpuPowerBrackets(int defaultCpuPowerBracketNumber) {
+    private void initCpuScalingPolicies() {
+        double[] stepPower;
+        double[] primitiveStepPower;
+        int policyCount = 0;
+        for (String key : sPowerItemMap.keySet()) {
+            if (key.startsWith(CPU_SCALING_POLICY_POWER_POLICY)) {
+                int policy = Integer.parseInt(key.substring(CPU_SCALING_POLICY_POWER_POLICY.length()));
+                policyCount = Math.max(policyCount, policy + 1);
+            }
+        }
+        for (String key2 : sPowerArrayMap.keySet()) {
+            if (key2.startsWith(CPU_SCALING_STEP_POWER_POLICY)) {
+                int policy2 = Integer.parseInt(key2.substring(CPU_SCALING_STEP_POWER_POLICY.length()));
+                policyCount = Math.max(policyCount, policy2 + 1);
+            }
+        }
+        if (policyCount > 0) {
+            this.mCpuScalingPolicies = new SparseArray<>(policyCount);
+            for (int policy3 = 0; policy3 < policyCount; policy3++) {
+                Double policyPower = sPowerItemMap.get(CPU_SCALING_POLICY_POWER_POLICY + policy3);
+                Double[] stepPower2 = sPowerArrayMap.get(CPU_SCALING_STEP_POWER_POLICY + policy3);
+                if (policyPower != null || stepPower2 != null) {
+                    if (stepPower2 != null) {
+                        primitiveStepPower = new double[stepPower2.length];
+                        for (int i = 0; i < stepPower2.length; i++) {
+                            primitiveStepPower[i] = stepPower2[i].doubleValue();
+                        }
+                    } else {
+                        primitiveStepPower = new double[0];
+                    }
+                    this.mCpuScalingPolicies.put(policy3, new CpuScalingPolicyPower(policyPower != null ? policyPower.doubleValue() : 0.0d, primitiveStepPower));
+                }
+            }
+            return;
+        }
+        int cpuId = 0;
+        for (CpuClusterKey cpuClusterKey : this.mCpuClusters) {
+            policyCount = cpuId + 1;
+            cpuId += cpuClusterKey.numCpus;
+        }
+        if (policyCount > 0) {
+            this.mCpuScalingPolicies = new SparseArray<>(policyCount);
+            int cpuId2 = 0;
+            for (CpuClusterKey cpuCluster : this.mCpuClusters) {
+                double clusterPower = getAveragePower(cpuCluster.clusterPowerKey);
+                int numSteps = getNumElements(cpuCluster.corePowerKey);
+                if (numSteps != 0) {
+                    stepPower = new double[numSteps];
+                    for (int step = 0; step < numSteps; step++) {
+                        stepPower[step] = getAveragePower(cpuCluster.corePowerKey, step);
+                    }
+                } else {
+                    stepPower = new double[1];
+                }
+                this.mCpuScalingPolicies.put(cpuId2, new CpuScalingPolicyPower(clusterPower, stepPower));
+                cpuId2 += cpuCluster.numCpus;
+            }
+            return;
+        }
+        this.mCpuScalingPolicies = new SparseArray<>(1);
+        this.mCpuScalingPolicies.put(0, new CpuScalingPolicyPower(getAveragePower(POWER_CPU_ACTIVE), new double[]{SContextConstants.ENVIRONMENT_VALUE_UNKNOWN}));
+    }
+
+    private void initCpuPowerBrackets() {
         boolean anyBracketsSpecified = false;
         boolean allBracketsSpecified = true;
-        for (int cluster = 0; cluster < this.mCpuClusters.length; cluster++) {
-            int steps = getNumSpeedStepsInCpuCluster(cluster);
-            this.mCpuClusters[cluster].powerBrackets = new int[steps];
-            if (sPowerArrayMap.get(CPU_POWER_BRACKETS_PREFIX + cluster) != null) {
+        int i = this.mCpuScalingPolicies.size();
+        while (true) {
+            i--;
+            if (i < 0) {
+                break;
+            }
+            int policy = this.mCpuScalingPolicies.keyAt(i);
+            CpuScalingPolicyPower cpuScalingPolicyPower = this.mCpuScalingPolicies.valueAt(i);
+            int steps = cpuScalingPolicyPower.stepPower.length;
+            cpuScalingPolicyPower.powerBrackets = new int[steps];
+            if (sPowerArrayMap.get(CPU_POWER_BRACKETS_PREFIX + policy) != null) {
                 anyBracketsSpecified = true;
             } else {
                 allBracketsSpecified = false;
             }
         }
-        if (!anyBracketsSpecified || allBracketsSpecified) {
-            this.mCpuPowerBracketCount = 0;
-            if (allBracketsSpecified) {
-                for (int cluster2 = 0; cluster2 < this.mCpuClusters.length; cluster2++) {
-                    Double[] data = sPowerArrayMap.get(CPU_POWER_BRACKETS_PREFIX + cluster2);
-                    if (data.length != this.mCpuClusters[cluster2].powerBrackets.length) {
-                        throw new RuntimeException("Wrong number of items in cpu.power_brackets.cluster" + cluster2);
-                    }
-                    for (int i = 0; i < data.length; i++) {
-                        int bracket = (int) Math.round(data[i].doubleValue());
-                        this.mCpuClusters[cluster2].powerBrackets[i] = bracket;
-                        if (bracket > this.mCpuPowerBracketCount) {
-                            this.mCpuPowerBracketCount = bracket;
-                        }
-                    }
-                }
-                int cluster3 = this.mCpuPowerBracketCount;
-                this.mCpuPowerBracketCount = cluster3 + 1;
-                return;
-            }
-            double minPower = Double.MAX_VALUE;
-            double maxPower = Double.MIN_VALUE;
-            int stateCount = 0;
-            for (int cluster4 = 0; cluster4 < this.mCpuClusters.length; cluster4++) {
-                int steps2 = getNumSpeedStepsInCpuCluster(cluster4);
-                for (int step = 0; step < steps2; step++) {
-                    double power = getAveragePowerForCpuCore(cluster4, step);
-                    if (power < minPower) {
-                        minPower = power;
-                    }
-                    if (power > maxPower) {
-                        maxPower = power;
-                    }
-                }
-                stateCount += steps2;
-            }
-            if (stateCount <= defaultCpuPowerBracketNumber) {
-                this.mCpuPowerBracketCount = stateCount;
-                int bracket2 = 0;
-                for (int cluster5 = 0; cluster5 < this.mCpuClusters.length; cluster5++) {
-                    int steps3 = getNumSpeedStepsInCpuCluster(cluster5);
-                    int step2 = 0;
-                    while (step2 < steps3) {
-                        this.mCpuClusters[cluster5].powerBrackets[step2] = bracket2;
-                        step2++;
-                        bracket2++;
-                    }
-                }
-                return;
-            }
-            this.mCpuPowerBracketCount = defaultCpuPowerBracketNumber;
-            double minLogPower = Math.log(minPower);
-            double logBracket = (Math.log(maxPower) - minLogPower) / defaultCpuPowerBracketNumber;
-            for (int cluster6 = 0; cluster6 < this.mCpuClusters.length; cluster6++) {
-                int steps4 = getNumSpeedStepsInCpuCluster(cluster6);
-                int step3 = 0;
-                while (step3 < steps4) {
-                    boolean anyBracketsSpecified2 = anyBracketsSpecified;
-                    boolean allBracketsSpecified2 = allBracketsSpecified;
-                    int bracket3 = (int) ((Math.log(getAveragePowerForCpuCore(cluster6, step3)) - minLogPower) / logBracket);
-                    if (bracket3 >= defaultCpuPowerBracketNumber) {
-                        bracket3 = defaultCpuPowerBracketNumber - 1;
-                    }
-                    this.mCpuClusters[cluster6].powerBrackets[step3] = bracket3;
-                    step3++;
-                    allBracketsSpecified = allBracketsSpecified2;
-                    anyBracketsSpecified = anyBracketsSpecified2;
-                }
-            }
+        if (anyBracketsSpecified && !allBracketsSpecified) {
+            throw new RuntimeException("Power brackets should be specified for all scaling policies or none");
+        }
+        if (!allBracketsSpecified) {
+            this.mCpuPowerBracketCount = -1;
             return;
         }
-        throw new RuntimeException("Power brackets should be specified for all clusters or no clusters");
+        this.mCpuPowerBracketCount = 0;
+        for (int i2 = this.mCpuScalingPolicies.size() - 1; i2 >= 0; i2--) {
+            int policy2 = this.mCpuScalingPolicies.keyAt(i2);
+            CpuScalingPolicyPower cpuScalingPolicyPower2 = this.mCpuScalingPolicies.valueAt(i2);
+            Double[] data = sPowerArrayMap.get(CPU_POWER_BRACKETS_PREFIX + policy2);
+            if (data.length != cpuScalingPolicyPower2.powerBrackets.length) {
+                throw new RuntimeException("Wrong number of items in cpu.power_brackets.policy" + policy2 + ", expected: " + cpuScalingPolicyPower2.powerBrackets.length);
+            }
+            for (int j = 0; j < data.length; j++) {
+                int bracket = (int) Math.round(data[j].doubleValue());
+                cpuScalingPolicyPower2.powerBrackets[j] = bracket;
+                if (bracket > this.mCpuPowerBracketCount) {
+                    this.mCpuPowerBracketCount = bracket;
+                }
+            }
+        }
+        int i3 = this.mCpuPowerBracketCount;
+        this.mCpuPowerBracketCount = i3 + 1;
     }
 
-    /* loaded from: classes5.dex */
-    public static class CpuClusterKey {
+    private static class CpuScalingPolicyPower {
+        public final double policyPower;
+        public int[] powerBrackets;
+        public final double[] stepPower;
+
+        private CpuScalingPolicyPower(double policyPower, double[] stepPower) {
+            this.policyPower = policyPower;
+            this.stepPower = stepPower;
+        }
+    }
+
+    public double getAveragePowerForCpuScalingPolicy(int policy) {
+        CpuScalingPolicyPower cpuScalingPolicyPower = this.mCpuScalingPolicies.get(policy);
+        if (cpuScalingPolicyPower != null) {
+            return cpuScalingPolicyPower.policyPower;
+        }
+        return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+    }
+
+    public double getAveragePowerForCpuScalingStep(int policy, int step) {
+        CpuScalingPolicyPower cpuScalingPolicyPower = this.mCpuScalingPolicies.get(policy);
+        if (cpuScalingPolicyPower != null && step >= 0 && step < cpuScalingPolicyPower.stepPower.length) {
+            return cpuScalingPolicyPower.stepPower[step];
+        }
+        return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
+    }
+
+    private static class CpuClusterKey {
         public final String clusterPowerKey;
         public final String corePowerKey;
         public final String freqKey;
         public final int numCpus;
-        public int[] powerBrackets;
-
-        /* synthetic */ CpuClusterKey(String str, String str2, String str3, int i, CpuClusterKeyIA cpuClusterKeyIA) {
-            this(str, str2, str3, i);
-        }
 
         private CpuClusterKey(String freqKey, String clusterPowerKey, String corePowerKey, int numCpus) {
             this.freqKey = freqKey;
@@ -343,54 +413,42 @@ public class PowerProfile {
         }
     }
 
+    @Deprecated
     public int getNumCpuClusters() {
         return this.mCpuClusters.length;
     }
 
+    @Deprecated
     public int getNumCoresInCpuCluster(int cluster) {
-        if (cluster < 0) {
+        if (cluster < 0 || cluster >= this.mCpuClusters.length) {
             return 0;
         }
-        CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-        if (cluster >= cpuClusterKeyArr.length) {
-            return 0;
-        }
-        return cpuClusterKeyArr[cluster].numCpus;
+        return this.mCpuClusters[cluster].numCpus;
     }
 
+    @Deprecated
     public int getNumSpeedStepsInCpuCluster(int cluster) {
-        if (cluster < 0) {
+        if (cluster < 0 || cluster >= this.mCpuClusters.length) {
             return 0;
         }
-        CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-        if (cluster >= cpuClusterKeyArr.length) {
-            return 0;
-        }
-        HashMap<String, Double[]> hashMap = sPowerArrayMap;
-        if (hashMap.containsKey(cpuClusterKeyArr[cluster].freqKey)) {
-            return hashMap.get(this.mCpuClusters[cluster].freqKey).length;
+        if (sPowerArrayMap.containsKey(this.mCpuClusters[cluster].freqKey)) {
+            return sPowerArrayMap.get(this.mCpuClusters[cluster].freqKey).length;
         }
         return 1;
     }
 
+    @Deprecated
     public double getAveragePowerForCpuCluster(int cluster) {
-        if (cluster < 0) {
-            return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-        }
-        CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-        if (cluster < cpuClusterKeyArr.length) {
-            return getAveragePower(cpuClusterKeyArr[cluster].clusterPowerKey);
+        if (cluster >= 0 && cluster < this.mCpuClusters.length) {
+            return getAveragePower(this.mCpuClusters[cluster].clusterPowerKey);
         }
         return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
     }
 
+    @Deprecated
     public double getAveragePowerForCpuCore(int cluster, int step) {
-        if (cluster < 0) {
-            return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-        }
-        CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-        if (cluster < cpuClusterKeyArr.length) {
-            return getAveragePower(cpuClusterKeyArr[cluster].corePowerKey, step);
+        if (cluster >= 0 && cluster < this.mCpuClusters.length) {
+            return getAveragePower(this.mCpuClusters[cluster].corePowerKey, step);
         }
         return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
     }
@@ -399,44 +457,10 @@ public class PowerProfile {
         return this.mCpuPowerBracketCount;
     }
 
-    public String getCpuPowerBracketDescription(int powerBracket) {
-        StringBuilder sb = new StringBuilder();
-        int cluster = 0;
-        while (true) {
-            CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-            if (cluster < cpuClusterKeyArr.length) {
-                int[] brackets = cpuClusterKeyArr[cluster].powerBrackets;
-                for (int step = 0; step < brackets.length; step++) {
-                    if (brackets[step] == powerBracket) {
-                        if (sb.length() != 0) {
-                            sb.append(", ");
-                        }
-                        if (this.mCpuClusters.length > 1) {
-                            sb.append(cluster).append('/');
-                        }
-                        Double[] freqs = sPowerArrayMap.get(this.mCpuClusters[cluster].freqKey);
-                        if (freqs != null && step < freqs.length) {
-                            sb.append(freqs[step].intValue() / 1000);
-                        }
-                        sb.append('(');
-                        sb.append(String.format(Locale.US, "%.1f", Double.valueOf(getAveragePowerForCpuCore(cluster, step))));
-                        sb.append(')');
-                    }
-                }
-                cluster++;
-            } else {
-                return sb.toString();
-            }
-        }
-    }
-
-    public int getPowerBracketForCpuCore(int cluster, int step) {
-        if (cluster < 0) {
-            return 0;
-        }
-        CpuClusterKey[] cpuClusterKeyArr = this.mCpuClusters;
-        if (cluster < cpuClusterKeyArr.length && step >= 0 && step < cpuClusterKeyArr[cluster].powerBrackets.length) {
-            return this.mCpuClusters[cluster].powerBrackets[step];
+    public int getCpuPowerBracketForScalingStep(int policy, int step) {
+        CpuScalingPolicyPower cpuScalingPolicyPower = this.mCpuScalingPolicies.get(policy);
+        if (cpuScalingPolicyPower != null && step >= 0 && step < cpuScalingPolicyPower.powerBrackets.length) {
+            return cpuScalingPolicyPower.powerBrackets[step];
         }
         return 0;
     }
@@ -450,27 +474,26 @@ public class PowerProfile {
                 this.mNumDisplays++;
             }
         }
-        HashMap<String, Double> hashMap = sPowerItemMap;
-        Double deprecatedAmbientDisplay = hashMap.get(POWER_AMBIENT_DISPLAY);
+        Double deprecatedAmbientDisplay = sPowerItemMap.get(POWER_AMBIENT_DISPLAY);
         boolean legacy = false;
         if (deprecatedAmbientDisplay != null && this.mNumDisplays == 0) {
             String key = getOrdinalPowerType(POWER_GROUP_DISPLAY_AMBIENT, 0);
             Slog.w(TAG, "ambient.on is deprecated! Use " + key + " instead.");
-            hashMap.put(key, deprecatedAmbientDisplay);
+            sPowerItemMap.put(key, deprecatedAmbientDisplay);
             legacy = true;
         }
-        Double deprecatedScreenOn = hashMap.get(POWER_SCREEN_ON);
+        Double deprecatedScreenOn = sPowerItemMap.get(POWER_SCREEN_ON);
         if (deprecatedScreenOn != null && this.mNumDisplays == 0) {
             String key2 = getOrdinalPowerType(POWER_GROUP_DISPLAY_SCREEN_ON, 0);
             Slog.w(TAG, "screen.on is deprecated! Use " + key2 + " instead.");
-            hashMap.put(key2, deprecatedScreenOn);
+            sPowerItemMap.put(key2, deprecatedScreenOn);
             legacy = true;
         }
-        Double deprecatedScreenFull = hashMap.get(POWER_SCREEN_FULL);
+        Double deprecatedScreenFull = sPowerItemMap.get(POWER_SCREEN_FULL);
         if (deprecatedScreenFull != null && this.mNumDisplays == 0) {
             String key3 = getOrdinalPowerType(POWER_GROUP_DISPLAY_SCREEN_FULL, 0);
             Slog.w(TAG, "screen.full is deprecated! Use " + key3 + " instead.");
-            hashMap.put(key3, deprecatedScreenFull);
+            sPowerItemMap.put(key3, deprecatedScreenFull);
             legacy = true;
         }
         if (legacy) {
@@ -494,11 +517,10 @@ public class PowerProfile {
     }
 
     private void handleDeprecatedModemConstant(int key, String deprecatedKey, int level) {
-        ModemPowerProfile modemPowerProfile = sModemPowerProfile;
-        double drain = modemPowerProfile.getAverageBatteryDrainMa(key);
+        double drain = sModemPowerProfile.getAverageBatteryDrainMa(key);
         if (Double.isNaN(drain)) {
             double deprecatedDrain = getAveragePower(deprecatedKey, level);
-            modemPowerProfile.setPowerConstant(key, Double.toString(deprecatedDrain));
+            sModemPowerProfile.setPowerConstant(key, Double.toString(deprecatedDrain));
         }
     }
 
@@ -506,21 +528,18 @@ public class PowerProfile {
         if (sPowerItemMap.containsKey(key)) {
             return 1;
         }
-        HashMap<String, Double[]> hashMap = sPowerArrayMap;
-        if (hashMap.containsKey(key)) {
-            return hashMap.get(key).length;
+        if (sPowerArrayMap.containsKey(key)) {
+            return sPowerArrayMap.get(key).length;
         }
         return 0;
     }
 
     public double getAveragePowerOrDefault(String type, double defaultValue) {
-        HashMap<String, Double> hashMap = sPowerItemMap;
-        if (hashMap.containsKey(type)) {
-            return hashMap.get(type).doubleValue();
+        if (sPowerItemMap.containsKey(type)) {
+            return sPowerItemMap.get(type).doubleValue();
         }
-        HashMap<String, Double[]> hashMap2 = sPowerArrayMap;
-        if (hashMap2.containsKey(type)) {
-            return hashMap2.get(type)[0].doubleValue();
+        if (sPowerArrayMap.containsKey(type)) {
+            return sPowerArrayMap.get(type)[0].doubleValue();
         }
         return defaultValue;
     }
@@ -556,15 +575,13 @@ public class PowerProfile {
         if (isIgnoreType(type)) {
             return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         }
-        HashMap<String, Double> hashMap = sPowerItemMap;
-        if (hashMap.containsKey(type)) {
-            return hashMap.get(type).doubleValue();
+        if (sPowerItemMap.containsKey(type)) {
+            return sPowerItemMap.get(type).doubleValue();
         }
-        HashMap<String, Double[]> hashMap2 = sPowerArrayMap;
-        if (!hashMap2.containsKey(type)) {
+        if (!sPowerArrayMap.containsKey(type)) {
             return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         }
-        Double[] values = hashMap2.get(type);
+        Double[] values = sPowerArrayMap.get(type);
         if (values.length <= level || level < 0) {
             return (level < 0 || values.length == 0) ? SContextConstants.ENVIRONMENT_VALUE_UNKNOWN : values[values.length - 1].doubleValue();
         }
@@ -585,9 +602,6 @@ public class PowerProfile {
     }
 
     public double getBatteryTypicalCapacity() {
-        if ("jp".equalsIgnoreCase(SemSystemProperties.getCountryCode()) && SemSystemProperties.get("ro.product.vendor.device", "").contains("beyond")) {
-            return SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
-        }
         return getAveragePower(POWER_BATTERY_TYPICAL_CAPACITY);
     }
 
@@ -666,27 +680,25 @@ public class PowerProfile {
         ipw.decreaseIndent();
     }
 
-    public static /* synthetic */ void lambda$dump$0(IndentingPrintWriter ipw, String key, Double value) {
+    static /* synthetic */ void lambda$dump$0(IndentingPrintWriter ipw, String key, Double value) {
         ipw.print(key, value);
         ipw.println();
     }
 
-    public static /* synthetic */ void lambda$dump$1(IndentingPrintWriter ipw, String key, Double[] value) {
+    static /* synthetic */ void lambda$dump$1(IndentingPrintWriter ipw, String key, Double[] value) {
         ipw.print(key, Arrays.toString(value));
         ipw.println();
     }
 
     private void writePowerConstantToProto(ProtoOutputStream proto, String key, long fieldId) {
-        HashMap<String, Double> hashMap = sPowerItemMap;
-        if (hashMap.containsKey(key)) {
-            proto.write(fieldId, hashMap.get(key).doubleValue());
+        if (sPowerItemMap.containsKey(key)) {
+            proto.write(fieldId, sPowerItemMap.get(key).doubleValue());
         }
     }
 
     private void writePowerConstantArrayToProto(ProtoOutputStream proto, String key, long fieldId) {
-        HashMap<String, Double[]> hashMap = sPowerArrayMap;
-        if (hashMap.containsKey(key)) {
-            for (Double d : hashMap.get(key)) {
+        if (sPowerArrayMap.containsKey(key)) {
+            for (Double d : sPowerArrayMap.get(key)) {
                 proto.write(fieldId, d.doubleValue());
             }
         }
@@ -694,5 +706,14 @@ public class PowerProfile {
 
     private static String getOrdinalPowerType(String group, int ordinal) {
         return group + ordinal;
+    }
+
+    public int getAllFrequencies() {
+        int result = 0;
+        for (int i = this.mCpuScalingPolicies.size() - 1; i >= 0; i--) {
+            CpuScalingPolicyPower cpuScalingPolicyPower = this.mCpuScalingPolicies.valueAt(i);
+            result += cpuScalingPolicyPower.stepPower.length;
+        }
+        return result;
     }
 }

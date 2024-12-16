@@ -35,9 +35,8 @@ public class RSSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override // android.view.SurfaceHolder.Callback
     public void surfaceDestroyed(SurfaceHolder holder) {
         synchronized (this) {
-            RenderScriptGL renderScriptGL = this.mRS;
-            if (renderScriptGL != null) {
-                renderScriptGL.setSurface(null, 0, 0);
+            if (this.mRS != null) {
+                this.mRS.setSurface(null, 0, 0);
             }
         }
     }
@@ -45,24 +44,21 @@ public class RSSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override // android.view.SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         synchronized (this) {
-            RenderScriptGL renderScriptGL = this.mRS;
-            if (renderScriptGL != null) {
-                renderScriptGL.setSurface(holder, w, h);
+            if (this.mRS != null) {
+                this.mRS.setSurface(holder, w, h);
             }
         }
     }
 
     public void pause() {
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.pause();
+        if (this.mRS != null) {
+            this.mRS.pause();
         }
     }
 
     public void resume() {
-        RenderScriptGL renderScriptGL = this.mRS;
-        if (renderScriptGL != null) {
-            renderScriptGL.resume();
+        if (this.mRS != null) {
+            this.mRS.resume();
         }
     }
 

@@ -4,17 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemContextDevicePosition extends SemContextEventContext {
     public static final Parcelable.Creator<SemContextDevicePosition> CREATOR = new Parcelable.Creator<SemContextDevicePosition>() { // from class: com.samsung.android.hardware.context.SemContextDevicePosition.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextDevicePosition createFromParcel(Parcel in) {
             return new SemContextDevicePosition(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemContextDevicePosition[] newArray(int size) {
             return new SemContextDevicePosition[size];
@@ -29,24 +28,7 @@ public class SemContextDevicePosition extends SemContextEventContext {
     public static final int UNKNOWN = 0;
     private Bundle mContext;
 
-    /* renamed from: com.samsung.android.hardware.context.SemContextDevicePosition$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemContextDevicePosition> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextDevicePosition createFromParcel(Parcel in) {
-            return new SemContextDevicePosition(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemContextDevicePosition[] newArray(int size) {
-            return new SemContextDevicePosition[size];
-        }
-    }
-
-    public SemContextDevicePosition() {
+    SemContextDevicePosition() {
         this.mContext = new Bundle();
     }
 

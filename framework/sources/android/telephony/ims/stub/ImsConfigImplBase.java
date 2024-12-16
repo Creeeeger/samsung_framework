@@ -1,7 +1,7 @@
 package android.telephony.ims.stub;
 
 import android.annotation.SystemApi;
-import android.app.PendingIntent$$ExternalSyntheticLambda1;
+import android.app.PendingIntent$$ExternalSyntheticLambda0;
 import android.content.Context;
 import android.os.PersistableBundle;
 import android.os.RemoteException;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @SystemApi
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ImsConfigImplBase {
     public static final int CONFIG_RESULT_FAILED = 1;
     public static final int CONFIG_RESULT_SUCCESS = 0;
@@ -42,11 +42,9 @@ public class ImsConfigImplBase {
     private final Object mRcsConfigDataLock;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface SetConfigResult {
     }
 
-    /* loaded from: classes3.dex */
     public static class ImsConfigStub extends IImsConfig.Stub {
         private Executor mExecutor;
         WeakReference<ImsConfigImplBase> mImsConfigImplBaseWeakReference;
@@ -61,7 +59,7 @@ public class ImsConfigImplBase {
 
         private Executor getExecutor() {
             if (this.mExecutor == null) {
-                this.mExecutor = new PendingIntent$$ExternalSyntheticLambda1();
+                this.mExecutor = new PendingIntent$$ExternalSyntheticLambda0();
             }
             return this.mExecutor;
         }
@@ -69,7 +67,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void addImsConfigCallback(final IImsConfigCallback c) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda16
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda11
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$addImsConfigCallback$0(c, exceptionRef);
@@ -81,6 +79,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addImsConfigCallback$0(IImsConfigCallback c, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().addImsConfigCallback(c);
@@ -92,7 +91,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void removeImsConfigCallback(final IImsConfigCallback c) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda4
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda14
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$removeImsConfigCallback$1(c, exceptionRef);
@@ -104,6 +103,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeImsConfigCallback$1(IImsConfigCallback c, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().removeImsConfigCallback(c);
@@ -115,7 +115,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public int getConfigInt(final int item) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda8
+            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda12
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$getConfigInt$2;
@@ -130,6 +130,7 @@ public class ImsConfigImplBase {
             return retVal;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$getConfigInt$2(int item, AtomicReference exceptionRef) {
             int returnVal = -1;
             synchronized (this.mLock) {
@@ -152,7 +153,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public String getConfigString(final int item) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            String retVal = (String) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda10
+            String retVal = (String) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda2
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     String lambda$getConfigString$3;
@@ -167,6 +168,7 @@ public class ImsConfigImplBase {
             return retVal;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ String lambda$getConfigString$3(int item, AtomicReference exceptionRef) {
             String returnVal = null;
             synchronized (this.mLock) {
@@ -190,7 +192,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public int setConfigInt(final int item, final int value) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda1
+            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda16
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$setConfigInt$4;
@@ -205,6 +207,7 @@ public class ImsConfigImplBase {
             return retVal;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$setConfigInt$4(int item, int value, AtomicReference exceptionRef) {
             int returnVal = -1;
             try {
@@ -228,7 +231,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public int setConfigString(final int item, final String value) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda7
+            int retVal = ((Integer) executeMethodAsyncForResult(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda3
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Integer lambda$setConfigString$5;
@@ -243,6 +246,7 @@ public class ImsConfigImplBase {
             return retVal;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ Integer lambda$setConfigString$5(int item, String value, AtomicReference exceptionRef) {
             int returnVal = -1;
             try {
@@ -264,7 +268,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void updateImsCarrierConfigs(final PersistableBundle bundle) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda9
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$updateImsCarrierConfigs$6(bundle, exceptionRef);
@@ -276,6 +280,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$updateImsCarrierConfigs$6(PersistableBundle bundle, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().updateImsCarrierConfigs(bundle);
@@ -295,7 +300,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void notifyRcsAutoConfigurationReceived(final byte[] config, final boolean isCompressed) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda2
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$notifyRcsAutoConfigurationReceived$7(config, isCompressed, exceptionRef);
@@ -307,6 +312,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyRcsAutoConfigurationReceived$7(byte[] config, boolean isCompressed, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().onNotifyRcsAutoConfigurationReceived(config, isCompressed);
@@ -318,7 +324,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void notifyRcsAutoConfigurationRemoved() throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda13
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda9
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$notifyRcsAutoConfigurationRemoved$8(exceptionRef);
@@ -330,6 +336,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyRcsAutoConfigurationRemoved$8(AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().onNotifyRcsAutoConfigurationRemoved();
@@ -358,10 +365,12 @@ public class ImsConfigImplBase {
             getImsConfigImpl().notifyProvisionedValueChanged(item, value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void notifyImsConfigChanged(int item, int value) throws RemoteException {
             getImsConfigImpl().notifyConfigChanged(item, value);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public void notifyImsConfigChanged(int item, String value) throws RemoteException {
             getImsConfigImpl().notifyConfigChanged(item, value);
         }
@@ -381,7 +390,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void addRcsConfigCallback(final IRcsConfigCallback c) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda14
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda7
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$addRcsConfigCallback$9(c, exceptionRef);
@@ -393,6 +402,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$addRcsConfigCallback$9(IRcsConfigCallback c, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().addRcsConfigCallback(c);
@@ -416,6 +426,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$removeRcsConfigCallback$10(IRcsConfigCallback c, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().removeRcsConfigCallback(c);
@@ -427,7 +438,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void triggerRcsReconfiguration() throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda0
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda6
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$triggerRcsReconfiguration$11(exceptionRef);
@@ -439,6 +450,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$triggerRcsReconfiguration$11(AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().triggerAutoConfiguration();
@@ -455,7 +467,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void setRcsClientConfiguration(final RcsClientConfiguration rcc) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda11
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$setRcsClientConfiguration$12(rcc, exceptionRef);
@@ -467,6 +479,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$setRcsClientConfiguration$12(RcsClientConfiguration rcc, AtomicReference exceptionRef) {
             try {
                 getImsConfigImpl().setRcsClientConfiguration(rcc);
@@ -478,7 +491,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void notifyIntImsConfigChanged(final int item, final int value) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda12
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda13
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$notifyIntImsConfigChanged$13(item, value, exceptionRef);
@@ -490,6 +503,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyIntImsConfigChanged$13(int item, int value, AtomicReference exceptionRef) {
             try {
                 notifyImsConfigChanged(item, value);
@@ -501,7 +515,7 @@ public class ImsConfigImplBase {
         @Override // android.telephony.ims.aidl.IImsConfig
         public void notifyStringImsConfigChanged(final int item, final String value) throws RemoteException {
             final AtomicReference<RemoteException> exceptionRef = new AtomicReference<>();
-            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda3
+            executeMethodAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda8
                 @Override // java.lang.Runnable
                 public final void run() {
                     ImsConfigImplBase.ImsConfigStub.this.lambda$notifyStringImsConfigChanged$14(item, value, exceptionRef);
@@ -513,6 +527,7 @@ public class ImsConfigImplBase {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$notifyStringImsConfigChanged$14(int item, String value, AtomicReference exceptionRef) {
             try {
                 notifyImsConfigChanged(item, value);
@@ -531,7 +546,7 @@ public class ImsConfigImplBase {
 
         private void executeMethodAsync(final Runnable r, String errorLogName) throws RemoteException {
             try {
-                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda6
+                CompletableFuture.runAsync(new Runnable() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda4
                     @Override // java.lang.Runnable
                     public final void run() {
                         TelephonyUtils.runWithCleanCallingIdentity(r);
@@ -544,7 +559,7 @@ public class ImsConfigImplBase {
         }
 
         private <T> T executeMethodAsyncForResult(final Supplier<T> r, String errorLogName) throws RemoteException {
-            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda5
+            CompletableFuture<T> future = CompletableFuture.supplyAsync(new Supplier() { // from class: android.telephony.ims.stub.ImsConfigImplBase$ImsConfigStub$$ExternalSyntheticLambda1
                 @Override // java.util.function.Supplier
                 public final Object get() {
                     Object runWithCleanCallingIdentity;
@@ -582,21 +597,23 @@ public class ImsConfigImplBase {
         this.mImsConfigStub = new ImsConfigStub(this, null);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void addImsConfigCallback(IImsConfigCallback c) {
         this.mCallbacks.register(c);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeImsConfigCallback(IImsConfigCallback c) {
         this.mCallbacks.unregister(c);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public final void notifyConfigChanged(final int item, final int value) {
-        RemoteCallbackListExt<IImsConfigCallback> remoteCallbackListExt = this.mCallbacks;
-        if (remoteCallbackListExt == null) {
+        if (this.mCallbacks == null) {
             return;
         }
-        synchronized (remoteCallbackListExt) {
-            this.mCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda4
+        synchronized (this.mCallbacks) {
+            this.mCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda3
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ImsConfigImplBase.lambda$notifyConfigChanged$0(item, value, (IImsConfigCallback) obj);
@@ -605,7 +622,7 @@ public class ImsConfigImplBase {
         }
     }
 
-    public static /* synthetic */ void lambda$notifyConfigChanged$0(int item, int value, IImsConfigCallback c) {
+    static /* synthetic */ void lambda$notifyConfigChanged$0(int item, int value, IImsConfigCallback c) {
         try {
             c.onIntConfigChanged(item, value);
         } catch (RemoteException e) {
@@ -613,13 +630,13 @@ public class ImsConfigImplBase {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void notifyConfigChanged(final int item, final String value) {
-        RemoteCallbackListExt<IImsConfigCallback> remoteCallbackListExt = this.mCallbacks;
-        if (remoteCallbackListExt == null) {
+        if (this.mCallbacks == null) {
             return;
         }
-        synchronized (remoteCallbackListExt) {
-            this.mCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda3
+        synchronized (this.mCallbacks) {
+            this.mCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda5
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ImsConfigImplBase.lambda$notifyConfigChanged$1(item, value, (IImsConfigCallback) obj);
@@ -628,7 +645,7 @@ public class ImsConfigImplBase {
         }
     }
 
-    public static /* synthetic */ void lambda$notifyConfigChanged$1(int item, String value, IImsConfigCallback c) {
+    static /* synthetic */ void lambda$notifyConfigChanged$1(int item, String value, IImsConfigCallback c) {
         try {
             c.onStringConfigChanged(item, value);
         } catch (RemoteException e) {
@@ -636,14 +653,14 @@ public class ImsConfigImplBase {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void addRcsConfigCallback(IRcsConfigCallback c) {
         this.mRcsCallbacks.register(c);
         synchronized (this.mRcsConfigDataLock) {
-            byte[] bArr = this.mRcsConfigData;
-            if (bArr == null) {
+            if (this.mRcsConfigData == null) {
                 return;
             }
-            byte[] cloneRcsConfigData = (byte[]) bArr.clone();
+            byte[] cloneRcsConfigData = (byte[]) this.mRcsConfigData.clone();
             try {
                 c.onConfigurationChanged(cloneRcsConfigData);
             } catch (RemoteException e) {
@@ -652,10 +669,12 @@ public class ImsConfigImplBase {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeRcsConfigCallback(IRcsConfigCallback c) {
         this.mRcsCallbacks.unregister(c);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onNotifyRcsAutoConfigurationReceived(byte[] config, boolean isCompressed) {
         final byte[] rcsConfigData = isCompressed ? RcsConfig.decompressGzip(config) : config;
         synchronized (this.mRcsConfigDataLock) {
@@ -663,10 +682,9 @@ public class ImsConfigImplBase {
                 return;
             }
             this.mRcsConfigData = rcsConfigData;
-            RemoteCallbackListExt<IRcsConfigCallback> remoteCallbackListExt = this.mRcsCallbacks;
-            if (remoteCallbackListExt != null) {
-                synchronized (remoteCallbackListExt) {
-                    this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda5
+            if (this.mRcsCallbacks != null) {
+                synchronized (this.mRcsCallbacks) {
+                    this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda1
                         @Override // java.util.function.Consumer
                         public final void accept(Object obj) {
                             ImsConfigImplBase.lambda$onNotifyRcsAutoConfigurationReceived$2(rcsConfigData, (IRcsConfigCallback) obj);
@@ -678,7 +696,7 @@ public class ImsConfigImplBase {
         }
     }
 
-    public static /* synthetic */ void lambda$onNotifyRcsAutoConfigurationReceived$2(byte[] rcsConfigData, IRcsConfigCallback c) {
+    static /* synthetic */ void lambda$onNotifyRcsAutoConfigurationReceived$2(byte[] rcsConfigData, IRcsConfigCallback c) {
         try {
             c.onConfigurationChanged((byte[]) rcsConfigData.clone());
         } catch (RemoteException e) {
@@ -686,14 +704,14 @@ public class ImsConfigImplBase {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void onNotifyRcsAutoConfigurationRemoved() {
         synchronized (this.mRcsConfigDataLock) {
             this.mRcsConfigData = null;
         }
-        RemoteCallbackListExt<IRcsConfigCallback> remoteCallbackListExt = this.mRcsCallbacks;
-        if (remoteCallbackListExt != null) {
-            synchronized (remoteCallbackListExt) {
-                this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda1
+        if (this.mRcsCallbacks != null) {
+            synchronized (this.mRcsCallbacks) {
+                this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda2
                     @Override // java.util.function.Consumer
                     public final void accept(Object obj) {
                         ImsConfigImplBase.lambda$onNotifyRcsAutoConfigurationRemoved$3((IRcsConfigCallback) obj);
@@ -704,7 +722,7 @@ public class ImsConfigImplBase {
         notifyRcsAutoConfigurationRemoved();
     }
 
-    public static /* synthetic */ void lambda$onNotifyRcsAutoConfigurationRemoved$3(IRcsConfigCallback c) {
+    static /* synthetic */ void lambda$onNotifyRcsAutoConfigurationRemoved$3(IRcsConfigCallback c) {
         try {
             c.onConfigurationReset();
         } catch (RemoteException e) {
@@ -770,12 +788,11 @@ public class ImsConfigImplBase {
     }
 
     public final void notifyAutoConfigurationErrorReceived(final int errorCode, final String errorString) {
-        RemoteCallbackListExt<IRcsConfigCallback> remoteCallbackListExt = this.mRcsCallbacks;
-        if (remoteCallbackListExt == null) {
+        if (this.mRcsCallbacks == null) {
             return;
         }
-        synchronized (remoteCallbackListExt) {
-            this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda2
+        synchronized (this.mRcsCallbacks) {
+            this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda4
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ImsConfigImplBase.lambda$notifyAutoConfigurationErrorReceived$4(errorCode, errorString, (IRcsConfigCallback) obj);
@@ -784,7 +801,7 @@ public class ImsConfigImplBase {
         }
     }
 
-    public static /* synthetic */ void lambda$notifyAutoConfigurationErrorReceived$4(int errorCode, String errorString, IRcsConfigCallback c) {
+    static /* synthetic */ void lambda$notifyAutoConfigurationErrorReceived$4(int errorCode, String errorString, IRcsConfigCallback c) {
         try {
             c.onAutoConfigurationErrorReceived(errorCode, errorString);
         } catch (RemoteException e) {
@@ -793,11 +810,10 @@ public class ImsConfigImplBase {
     }
 
     public final void notifyPreProvisioningReceived(final byte[] configXml) {
-        RemoteCallbackListExt<IRcsConfigCallback> remoteCallbackListExt = this.mRcsCallbacks;
-        if (remoteCallbackListExt == null) {
+        if (this.mRcsCallbacks == null) {
             return;
         }
-        synchronized (remoteCallbackListExt) {
+        synchronized (this.mRcsCallbacks) {
             this.mRcsCallbacks.broadcastAction(new Consumer() { // from class: android.telephony.ims.stub.ImsConfigImplBase$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
@@ -807,7 +823,7 @@ public class ImsConfigImplBase {
         }
     }
 
-    public static /* synthetic */ void lambda$notifyPreProvisioningReceived$5(byte[] configXml, IRcsConfigCallback c) {
+    static /* synthetic */ void lambda$notifyPreProvisioningReceived$5(byte[] configXml, IRcsConfigCallback c) {
         try {
             c.onPreProvisioningReceived(configXml);
         } catch (RemoteException e) {

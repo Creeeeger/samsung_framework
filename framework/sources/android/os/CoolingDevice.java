@@ -8,9 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 /* loaded from: classes3.dex */
 public final class CoolingDevice implements Parcelable {
     public static final Parcelable.Creator<CoolingDevice> CREATOR = new Parcelable.Creator<CoolingDevice>() { // from class: android.os.CoolingDevice.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoolingDevice createFromParcel(Parcel p) {
             long value = p.readLong();
@@ -19,33 +17,37 @@ public final class CoolingDevice implements Parcelable {
             return new CoolingDevice(value, type, name);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CoolingDevice[] newArray(int size) {
             return new CoolingDevice[size];
         }
     };
     public static final int TYPE_BATTERY = 1;
+    public static final int TYPE_CAMERA = 12;
     public static final int TYPE_COMPONENT = 6;
     public static final int TYPE_CPU = 2;
     public static final int TYPE_DISPLAY = 9;
     public static final int TYPE_FAN = 0;
+    public static final int TYPE_FLASHLIGHT = 13;
     public static final int TYPE_GPU = 3;
     public static final int TYPE_MODEM = 4;
     public static final int TYPE_NPU = 5;
     public static final int TYPE_POWER_AMPLIFIER = 8;
     public static final int TYPE_SPEAKER = 10;
     public static final int TYPE_TPU = 7;
+    public static final int TYPE_USB_PORT = 14;
+    public static final int TYPE_WIFI = 11;
     private final String mName;
     private final int mType;
     private final long mValue;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface Type {
     }
 
     public static boolean isValidType(int type) {
-        return type >= 0 && type <= 10;
+        return type >= 0 && type <= 14;
     }
 
     public CoolingDevice(long value, int type, String name) {
@@ -89,26 +91,6 @@ public final class CoolingDevice implements Parcelable {
         p.writeLong(this.mValue);
         p.writeInt(this.mType);
         p.writeString(this.mName);
-    }
-
-    /* renamed from: android.os.CoolingDevice$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CoolingDevice> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoolingDevice createFromParcel(Parcel p) {
-            long value = p.readLong();
-            int type = p.readInt();
-            String name = p.readString();
-            return new CoolingDevice(value, type, name);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CoolingDevice[] newArray(int size) {
-            return new CoolingDevice[size];
-        }
     }
 
     @Override // android.os.Parcelable

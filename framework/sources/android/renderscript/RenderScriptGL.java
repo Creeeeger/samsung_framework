@@ -13,7 +13,6 @@ public class RenderScriptGL extends RenderScript {
     SurfaceConfig mSurfaceConfig;
     int mWidth;
 
-    /* loaded from: classes3.dex */
     public static class SurfaceConfig {
         int mAlphaMin;
         int mAlphaPref;

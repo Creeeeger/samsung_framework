@@ -13,7 +13,6 @@ public interface IStrategyPreferredDevicesDispatcher extends IInterface {
 
     void dispatchPrefDevicesChanged(int i, List<AudioDeviceAttributes> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IStrategyPreferredDevicesDispatcher {
         @Override // android.media.IStrategyPreferredDevicesDispatcher
         public void dispatchPrefDevicesChanged(int strategyId, List<AudioDeviceAttributes> devices) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IStrategyPreferredDevicesDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IStrategyPreferredDevicesDispatcher {
         static final int TRANSACTION_dispatchPrefDevicesChanged = 1;
 
@@ -68,26 +66,23 @@ public interface IStrategyPreferredDevicesDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStrategyPreferredDevicesDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStrategyPreferredDevicesDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStrategyPreferredDevicesDispatcher.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    List<AudioDeviceAttributes> _arg1 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchPrefDevicesChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            List<AudioDeviceAttributes> _arg1 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchPrefDevicesChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IStrategyPreferredDevicesDispatcher {
+        private static class Proxy implements IStrategyPreferredDevicesDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

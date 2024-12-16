@@ -12,7 +12,7 @@ abstract class WebSyncManager implements Runnable {
 
     abstract void syncFromRamToFlash();
 
-    public WebSyncManager(Context context, String name) {
+    protected WebSyncManager(Context context, String name) {
     }
 
     protected Object clone() throws CloneNotSupportedException {

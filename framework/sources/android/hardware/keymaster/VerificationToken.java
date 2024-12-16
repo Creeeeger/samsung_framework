@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class VerificationToken implements Parcelable {
     public static final Parcelable.Creator<VerificationToken> CREATOR = new Parcelable.Creator<VerificationToken>() { // from class: android.hardware.keymaster.VerificationToken.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerificationToken createFromParcel(Parcel _aidl_source) {
             VerificationToken _aidl_out = new VerificationToken();
@@ -17,6 +15,7 @@ public class VerificationToken implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public VerificationToken[] newArray(int _aidl_size) {
             return new VerificationToken[_aidl_size];
@@ -26,25 +25,6 @@ public class VerificationToken implements Parcelable {
     public Timestamp timestamp;
     public long challenge = 0;
     public int securityLevel = 0;
-
-    /* renamed from: android.hardware.keymaster.VerificationToken$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<VerificationToken> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerificationToken createFromParcel(Parcel _aidl_source) {
-            VerificationToken _aidl_out = new VerificationToken();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public VerificationToken[] newArray(int _aidl_size) {
-            return new VerificationToken[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

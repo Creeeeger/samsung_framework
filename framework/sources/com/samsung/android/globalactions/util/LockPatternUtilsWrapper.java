@@ -10,7 +10,7 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.widget.ILockSettings;
 import com.android.internal.widget.LockPatternUtils;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class LockPatternUtilsWrapper {
     private static final String TAG = "LockPatternUtilsWrapper";
     private final Context mContext;
@@ -57,7 +57,7 @@ public class LockPatternUtilsWrapper {
         this.mLockPatternUtils.requireStrongAuth(32, -1);
         try {
             WindowManagerGlobal.getWindowManagerService().lockNow(null);
-            new Thread(new Runnable() { // from class: com.samsung.android.globalactions.util.LockPatternUtilsWrapper$$ExternalSyntheticLambda1
+            new Thread(new Runnable() { // from class: com.samsung.android.globalactions.util.LockPatternUtilsWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     LockPatternUtilsWrapper.this.lambda$lockDown$0();
@@ -68,7 +68,8 @@ public class LockPatternUtilsWrapper {
         }
     }
 
-    /* renamed from: lockProfiles */
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: lockProfiles, reason: merged with bridge method [inline-methods] */
     public void lambda$lockDown$0() {
         UserManager um = (UserManager) this.mContext.getSystemService("user");
         TrustManager tm = (TrustManager) this.mContext.getSystemService(Context.TRUST_SERVICE);
@@ -82,7 +83,7 @@ public class LockPatternUtilsWrapper {
     }
 
     public void lockDownDelayed(int delay) {
-        this.mHandlerUtil.postDelayed(new Runnable() { // from class: com.samsung.android.globalactions.util.LockPatternUtilsWrapper$$ExternalSyntheticLambda0
+        this.mHandlerUtil.postDelayed(new Runnable() { // from class: com.samsung.android.globalactions.util.LockPatternUtilsWrapper$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
                 LockPatternUtilsWrapper.this.lockDown();

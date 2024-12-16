@@ -4,12 +4,10 @@ import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public class NanoappRpcService implements Parcelable {
     public static final Parcelable.Creator<NanoappRpcService> CREATOR = new Parcelable.Creator<NanoappRpcService>() { // from class: android.hardware.contexthub.NanoappRpcService.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoappRpcService createFromParcel(Parcel _aidl_source) {
             NanoappRpcService _aidl_out = new NanoappRpcService();
@@ -17,6 +15,7 @@ public class NanoappRpcService implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public NanoappRpcService[] newArray(int _aidl_size) {
             return new NanoappRpcService[_aidl_size];
@@ -24,25 +23,6 @@ public class NanoappRpcService implements Parcelable {
     };
     public long id = 0;
     public int version = 0;
-
-    /* renamed from: android.hardware.contexthub.NanoappRpcService$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<NanoappRpcService> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoappRpcService createFromParcel(Parcel _aidl_source) {
-            NanoappRpcService _aidl_out = new NanoappRpcService();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NanoappRpcService[] newArray(int _aidl_size) {
-            return new NanoappRpcService[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

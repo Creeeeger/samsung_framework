@@ -12,7 +12,6 @@ public interface IGetDefaultSmdpAddressCallback extends IInterface {
 
     void onComplete(int i, String str) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IGetDefaultSmdpAddressCallback {
         @Override // com.android.internal.telephony.euicc.IGetDefaultSmdpAddressCallback
         public void onComplete(int resultCode, String address) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IGetDefaultSmdpAddressCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IGetDefaultSmdpAddressCallback {
         static final int TRANSACTION_onComplete = 1;
 
@@ -67,27 +65,23 @@ public interface IGetDefaultSmdpAddressCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IGetDefaultSmdpAddressCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IGetDefaultSmdpAddressCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IGetDefaultSmdpAddressCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    String _arg1 = data.readString();
+                    data.enforceNoDataAvail();
+                    onComplete(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            onComplete(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IGetDefaultSmdpAddressCallback {
+        private static class Proxy implements IGetDefaultSmdpAddressCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

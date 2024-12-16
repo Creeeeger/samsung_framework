@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class FrontendIptvSettings implements Parcelable {
     public static final Parcelable.Creator<FrontendIptvSettings> CREATOR = new Parcelable.Creator<FrontendIptvSettings>() { // from class: android.hardware.tv.tuner.FrontendIptvSettings.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIptvSettings createFromParcel(Parcel _aidl_source) {
             FrontendIptvSettings _aidl_out = new FrontendIptvSettings();
@@ -17,6 +15,7 @@ public class FrontendIptvSettings implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FrontendIptvSettings[] newArray(int _aidl_size) {
             return new FrontendIptvSettings[_aidl_size];
@@ -28,25 +27,6 @@ public class FrontendIptvSettings implements Parcelable {
     public int protocol = 0;
     public int igmp = 0;
     public long bitrate = 0;
-
-    /* renamed from: android.hardware.tv.tuner.FrontendIptvSettings$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FrontendIptvSettings> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIptvSettings createFromParcel(Parcel _aidl_source) {
-            FrontendIptvSettings _aidl_out = new FrontendIptvSettings();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FrontendIptvSettings[] newArray(int _aidl_size) {
-            return new FrontendIptvSettings[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

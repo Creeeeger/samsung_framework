@@ -3,18 +3,17 @@ package android.media.tv;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TsRequest extends BroadcastInfoRequest implements Parcelable {
     public static final Parcelable.Creator<TsRequest> CREATOR = new Parcelable.Creator<TsRequest>() { // from class: android.media.tv.TsRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TsRequest createFromParcel(Parcel source) {
             source.readInt();
             return TsRequest.createFromParcelBody(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TsRequest[] newArray(int size) {
             return new TsRequest[size];
@@ -23,25 +22,7 @@ public final class TsRequest extends BroadcastInfoRequest implements Parcelable 
     private static final int REQUEST_TYPE = 1;
     private final int mTsPid;
 
-    /* renamed from: android.media.tv.TsRequest$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TsRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TsRequest createFromParcel(Parcel source) {
-            source.readInt();
-            return TsRequest.createFromParcelBody(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TsRequest[] newArray(int size) {
-            return new TsRequest[size];
-        }
-    }
-
-    public static TsRequest createFromParcelBody(Parcel in) {
+    static TsRequest createFromParcelBody(Parcel in) {
         return new TsRequest(in);
     }
 

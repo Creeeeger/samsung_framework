@@ -36,9 +36,8 @@ public class X9Curve extends ASN1Object implements X9ObjectIdentifiers {
         int k2;
         int k3;
         this.fieldIdentifier = null;
-        ASN1ObjectIdentifier identifier = fieldID.getIdentifier();
-        this.fieldIdentifier = identifier;
-        if (identifier.equals((ASN1Primitive) prime_field)) {
+        this.fieldIdentifier = fieldID.getIdentifier();
+        if (this.fieldIdentifier.equals((ASN1Primitive) prime_field)) {
             BigInteger p = ((ASN1Integer) fieldID.getParameters()).getValue();
             BigInteger A = new BigInteger(1, ASN1OctetString.getInstance(seq.getObjectAt(0)).getOctets());
             BigInteger B = new BigInteger(1, ASN1OctetString.getInstance(seq.getObjectAt(1)).getOctets());

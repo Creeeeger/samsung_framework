@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class CellInfoTdscdma implements Parcelable {
     public static final Parcelable.Creator<CellInfoTdscdma> CREATOR = new Parcelable.Creator<CellInfoTdscdma>() { // from class: android.hardware.radio.network.CellInfoTdscdma.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoTdscdma createFromParcel(Parcel _aidl_source) {
             CellInfoTdscdma _aidl_out = new CellInfoTdscdma();
@@ -19,6 +17,7 @@ public class CellInfoTdscdma implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public CellInfoTdscdma[] newArray(int _aidl_size) {
             return new CellInfoTdscdma[_aidl_size];
@@ -26,25 +25,6 @@ public class CellInfoTdscdma implements Parcelable {
     };
     public CellIdentityTdscdma cellIdentityTdscdma;
     public TdscdmaSignalStrength signalStrengthTdscdma;
-
-    /* renamed from: android.hardware.radio.network.CellInfoTdscdma$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<CellInfoTdscdma> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoTdscdma createFromParcel(Parcel _aidl_source) {
-            CellInfoTdscdma _aidl_out = new CellInfoTdscdma();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CellInfoTdscdma[] newArray(int _aidl_size) {
-            return new CellInfoTdscdma[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class CellInfoTdscdma implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("cellIdentityTdscdma: " + Objects.toString(this.cellIdentityTdscdma));
         _aidl_sj.add("signalStrengthTdscdma: " + Objects.toString(this.signalStrengthTdscdma));
-        return "android.hardware.radio.network.CellInfoTdscdma" + _aidl_sj.toString();
+        return "CellInfoTdscdma" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

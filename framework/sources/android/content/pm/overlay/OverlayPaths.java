@@ -9,13 +9,16 @@ public class OverlayPaths {
     private final List<String> mOverlayPaths;
     private final List<String> mResourceDirs;
 
-    /* synthetic */ OverlayPaths(OverlayPathsIA overlayPathsIA) {
-        this();
-    }
-
-    /* loaded from: classes.dex */
     public static class Builder {
         final OverlayPaths mPaths = new OverlayPaths();
+
+        public Builder() {
+        }
+
+        public Builder(OverlayPaths base) {
+            this.mPaths.mResourceDirs.addAll(base.getResourceDirs());
+            this.mPaths.mOverlayPaths.addAll(base.getOverlayPaths());
+        }
 
         public Builder addNonApkPath(String idmapPath) {
             this.mPaths.mOverlayPaths.add(idmapPath);

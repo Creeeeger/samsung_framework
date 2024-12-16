@@ -12,7 +12,6 @@ public interface IKeyguardLockedStateListener extends IInterface {
 
     void onKeyguardLockedStateChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IKeyguardLockedStateListener {
         @Override // com.android.internal.policy.IKeyguardLockedStateListener
         public void onKeyguardLockedStateChanged(boolean isKeyguardLocked) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IKeyguardLockedStateListener extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IKeyguardLockedStateListener {
         static final int TRANSACTION_onKeyguardLockedStateChanged = 1;
 
@@ -67,25 +65,22 @@ public interface IKeyguardLockedStateListener extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IKeyguardLockedStateListener.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IKeyguardLockedStateListener.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IKeyguardLockedStateListener.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onKeyguardLockedStateChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onKeyguardLockedStateChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IKeyguardLockedStateListener {
+        private static class Proxy implements IKeyguardLockedStateListener {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

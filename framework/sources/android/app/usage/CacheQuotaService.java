@@ -37,12 +37,7 @@ public abstract class CacheQuotaService extends Service {
         return this.mWrapper;
     }
 
-    /* loaded from: classes.dex */
     private final class CacheQuotaServiceWrapper extends ICacheQuotaService.Stub {
-        /* synthetic */ CacheQuotaServiceWrapper(CacheQuotaService cacheQuotaService, CacheQuotaServiceWrapperIA cacheQuotaServiceWrapperIA) {
-            this();
-        }
-
         private CacheQuotaServiceWrapper() {
         }
 
@@ -54,7 +49,6 @@ public abstract class CacheQuotaService extends Service {
         }
     }
 
-    /* loaded from: classes.dex */
     private final class ServiceHandler extends Handler {
         public static final int MSG_SEND_LIST = 1;
 
@@ -73,10 +67,10 @@ public abstract class CacheQuotaService extends Service {
                     data.putParcelableList(CacheQuotaService.REQUEST_LIST_KEY, processed);
                     RemoteCallback callback = pair.first;
                     callback.sendResult(data);
-                    return;
+                    break;
                 default:
                     Log.w(CacheQuotaService.TAG, "Handling unknown message: " + action);
-                    return;
+                    break;
             }
         }
     }

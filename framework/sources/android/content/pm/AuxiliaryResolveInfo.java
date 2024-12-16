@@ -39,7 +39,6 @@ public final class AuxiliaryResolveInfo {
         this(failureActivity, null, Collections.singletonList(new AuxiliaryFilter(packageName, versionCode, splitName)));
     }
 
-    /* loaded from: classes.dex */
     public static final class AuxiliaryFilter extends IntentFilter {
         public final Bundle extras;
         public final String packageName;

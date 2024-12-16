@@ -7,14 +7,13 @@ import java.util.Arrays;
 /* loaded from: classes4.dex */
 public final class SentenceSuggestionsInfo implements Parcelable {
     public static final Parcelable.Creator<SentenceSuggestionsInfo> CREATOR = new Parcelable.Creator<SentenceSuggestionsInfo>() { // from class: android.view.textservice.SentenceSuggestionsInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SentenceSuggestionsInfo createFromParcel(Parcel source) {
             return new SentenceSuggestionsInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SentenceSuggestionsInfo[] newArray(int size) {
             return new SentenceSuggestionsInfo[size];
@@ -39,15 +38,12 @@ public final class SentenceSuggestionsInfo implements Parcelable {
 
     public SentenceSuggestionsInfo(Parcel source) {
         int infoSize = source.readInt();
-        SuggestionsInfo[] suggestionsInfoArr = new SuggestionsInfo[infoSize];
-        this.mSuggestionsInfos = suggestionsInfoArr;
-        source.readTypedArray(suggestionsInfoArr, SuggestionsInfo.CREATOR);
-        int[] iArr = new int[suggestionsInfoArr.length];
-        this.mOffsets = iArr;
-        source.readIntArray(iArr);
-        int[] iArr2 = new int[suggestionsInfoArr.length];
-        this.mLengths = iArr2;
-        source.readIntArray(iArr2);
+        this.mSuggestionsInfos = new SuggestionsInfo[infoSize];
+        source.readTypedArray(this.mSuggestionsInfos, SuggestionsInfo.CREATOR);
+        this.mOffsets = new int[this.mSuggestionsInfos.length];
+        source.readIntArray(this.mOffsets);
+        this.mLengths = new int[this.mSuggestionsInfos.length];
+        source.readIntArray(this.mLengths);
     }
 
     @Override // android.os.Parcelable
@@ -69,52 +65,23 @@ public final class SentenceSuggestionsInfo implements Parcelable {
     }
 
     public SuggestionsInfo getSuggestionsInfoAt(int i) {
-        if (i < 0) {
-            return null;
-        }
-        SuggestionsInfo[] suggestionsInfoArr = this.mSuggestionsInfos;
-        if (i < suggestionsInfoArr.length) {
-            return suggestionsInfoArr[i];
+        if (i >= 0 && i < this.mSuggestionsInfos.length) {
+            return this.mSuggestionsInfos[i];
         }
         return null;
     }
 
     public int getOffsetAt(int i) {
-        if (i < 0) {
-            return -1;
-        }
-        int[] iArr = this.mOffsets;
-        if (i < iArr.length) {
-            return iArr[i];
+        if (i >= 0 && i < this.mOffsets.length) {
+            return this.mOffsets[i];
         }
         return -1;
     }
 
     public int getLengthAt(int i) {
-        if (i < 0) {
-            return -1;
-        }
-        int[] iArr = this.mLengths;
-        if (i < iArr.length) {
-            return iArr[i];
+        if (i >= 0 && i < this.mLengths.length) {
+            return this.mLengths[i];
         }
         return -1;
-    }
-
-    /* renamed from: android.view.textservice.SentenceSuggestionsInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SentenceSuggestionsInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SentenceSuggestionsInfo createFromParcel(Parcel source) {
-            return new SentenceSuggestionsInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SentenceSuggestionsInfo[] newArray(int size) {
-            return new SentenceSuggestionsInfo[size];
-        }
     }
 }

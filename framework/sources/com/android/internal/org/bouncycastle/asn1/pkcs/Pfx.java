@@ -53,9 +53,8 @@ public class Pfx extends ASN1Object implements PKCSObjectIdentifiers {
         ASN1EncodableVector v = new ASN1EncodableVector(3);
         v.add(new ASN1Integer(3L));
         v.add(this.contentInfo);
-        MacData macData = this.macData;
-        if (macData != null) {
-            v.add(macData);
+        if (this.macData != null) {
+            v.add(this.macData);
         }
         return new BERSequence(v);
     }

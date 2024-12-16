@@ -10,9 +10,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class PhraseSoundModel implements Parcelable {
     public static final Parcelable.Creator<PhraseSoundModel> CREATOR = new Parcelable.Creator<PhraseSoundModel>() { // from class: android.media.soundtrigger.PhraseSoundModel.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhraseSoundModel createFromParcel(Parcel _aidl_source) {
             PhraseSoundModel _aidl_out = new PhraseSoundModel();
@@ -20,6 +18,7 @@ public class PhraseSoundModel implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PhraseSoundModel[] newArray(int _aidl_size) {
             return new PhraseSoundModel[_aidl_size];
@@ -27,25 +26,6 @@ public class PhraseSoundModel implements Parcelable {
     };
     public SoundModel common;
     public Phrase[] phrases;
-
-    /* renamed from: android.media.soundtrigger.PhraseSoundModel$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PhraseSoundModel> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhraseSoundModel createFromParcel(Parcel _aidl_source) {
-            PhraseSoundModel _aidl_out = new PhraseSoundModel();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PhraseSoundModel[] newArray(int _aidl_size) {
-            return new PhraseSoundModel[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -104,7 +84,7 @@ public class PhraseSoundModel implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("common: " + Objects.toString(this.common));
         _aidl_sj.add("phrases: " + Arrays.toString(this.phrases));
-        return "android.media.soundtrigger.PhraseSoundModel" + _aidl_sj.toString();
+        return "PhraseSoundModel" + _aidl_sj.toString();
     }
 
     public boolean equals(Object other) {

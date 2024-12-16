@@ -6,7 +6,7 @@ import com.android.internal.util.Preconditions;
 import java.util.Arrays;
 import java.util.Objects;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public final class LensShadingMap {
     public static final float MINIMUM_GAIN_FACTOR = 1.0f;
     private final int mColumns;
@@ -36,33 +36,30 @@ public final class LensShadingMap {
     }
 
     public float getGainFactor(int colorChannel, int column, int row) {
-        int i;
         if (colorChannel < 0 || colorChannel > 4) {
             throw new IllegalArgumentException("colorChannel out of range");
         }
-        if (column < 0 || column >= (i = this.mColumns)) {
+        if (column < 0 || column >= this.mColumns) {
             throw new IllegalArgumentException("column out of range");
         }
         if (row < 0 || row >= this.mRows) {
             throw new IllegalArgumentException("row out of range");
         }
-        return this.mElements[(((i * row) + column) * 4) + colorChannel];
+        return this.mElements[(((this.mColumns * row) + column) * 4) + colorChannel];
     }
 
     public RggbChannelVector getGainFactorVector(int column, int row) {
-        int i;
-        if (column < 0 || column >= (i = this.mColumns)) {
+        if (column < 0 || column >= this.mColumns) {
             throw new IllegalArgumentException("column out of range");
         }
         if (row < 0 || row >= this.mRows) {
             throw new IllegalArgumentException("row out of range");
         }
-        int offset = ((i * row) + column) * 4;
-        float[] fArr = this.mElements;
-        float red = fArr[offset + 0];
-        float greenEven = fArr[offset + 1];
-        float greenOdd = fArr[offset + 2];
-        float blue = fArr[offset + 3];
+        int offset = ((this.mColumns * row) + column) * 4;
+        float red = this.mElements[offset + 0];
+        float greenEven = this.mElements[offset + 1];
+        float greenOdd = this.mElements[offset + 2];
+        float blue = this.mElements[offset + 3];
         return new RggbChannelVector(red, greenEven, greenOdd, blue);
     }
 

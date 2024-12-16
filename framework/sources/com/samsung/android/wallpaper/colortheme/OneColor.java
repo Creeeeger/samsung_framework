@@ -1,7 +1,7 @@
 package com.samsung.android.wallpaper.colortheme;
 
 /* compiled from: StandardColorPaletteCreator.java */
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 final class OneColor {
     static final int ACCENT1_HUE_DELTA = 0;
     static final float ACCENT1_SAT = 0.7f;

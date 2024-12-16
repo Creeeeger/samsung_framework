@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Deprecated(forRemoval = true, since = "15.0")
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemHEIFRegionDecoder {
     private static final String TAG = "SemHEIFRegionDecoder";
     private static boolean mLibraryLoaded = false;
@@ -131,26 +131,22 @@ public class SemHEIFRegionDecoder {
     public int getWidth() {
         synchronized (this.mNativeLock) {
             checkRecycled("getWidth called on recycled region decoder");
-            int i = this.mWidth;
-            if (i > 0) {
-                return i;
+            if (this.mWidth > 0) {
+                return this.mWidth;
             }
-            int nativeGetWidth = nativeGetWidth(this.mNativeBitmapRegionDecoder);
-            this.mWidth = nativeGetWidth;
-            return nativeGetWidth;
+            this.mWidth = nativeGetWidth(this.mNativeBitmapRegionDecoder);
+            return this.mWidth;
         }
     }
 
     public int getHeight() {
         synchronized (this.mNativeLock) {
             checkRecycled("getHeight called on recycled region decoder");
-            int i = this.mHeight;
-            if (i > 0) {
-                return i;
+            if (this.mHeight > 0) {
+                return this.mHeight;
             }
-            int nativeGetHeight = nativeGetHeight(this.mNativeBitmapRegionDecoder);
-            this.mHeight = nativeGetHeight;
-            return nativeGetHeight;
+            this.mHeight = nativeGetHeight(this.mNativeBitmapRegionDecoder);
+            return this.mHeight;
         }
     }
 

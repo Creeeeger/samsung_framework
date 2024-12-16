@@ -27,7 +27,6 @@ public interface ISearchUiService extends IInterface {
 
     void onUnregisterEmptyQueryResultUpdateCallback(SearchSessionId searchSessionId, ISearchCallback iSearchCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ISearchUiService {
         @Override // android.service.search.ISearchUiService
         public void onCreateSearchSession(SearchContext context, SearchSessionId sessionId) throws RemoteException {
@@ -59,7 +58,6 @@ public interface ISearchUiService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ISearchUiService {
         static final int TRANSACTION_onCreateSearchSession = 1;
         static final int TRANSACTION_onDestroy = 6;
@@ -117,56 +115,53 @@ public interface ISearchUiService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISearchUiService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISearchUiService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISearchUiService.DESCRIPTOR);
+                case 1:
+                    SearchContext _arg0 = (SearchContext) data.readTypedObject(SearchContext.CREATOR);
+                    SearchSessionId _arg1 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onCreateSearchSession(_arg0, _arg1);
+                    return true;
+                case 2:
+                    SearchSessionId _arg02 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    Query _arg12 = (Query) data.readTypedObject(Query.CREATOR);
+                    ISearchCallback _arg2 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onQuery(_arg02, _arg12, _arg2);
+                    return true;
+                case 3:
+                    SearchSessionId _arg03 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    Query _arg13 = (Query) data.readTypedObject(Query.CREATOR);
+                    SearchTargetEvent _arg22 = (SearchTargetEvent) data.readTypedObject(SearchTargetEvent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onNotifyEvent(_arg03, _arg13, _arg22);
+                    return true;
+                case 4:
+                    SearchSessionId _arg04 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    ISearchCallback _arg14 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onRegisterEmptyQueryResultUpdateCallback(_arg04, _arg14);
+                    return true;
+                case 5:
+                    SearchSessionId _arg05 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    ISearchCallback _arg15 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onUnregisterEmptyQueryResultUpdateCallback(_arg05, _arg15);
+                    return true;
+                case 6:
+                    SearchSessionId _arg06 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
+                    data.enforceNoDataAvail();
+                    onDestroy(_arg06);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            SearchContext _arg0 = (SearchContext) data.readTypedObject(SearchContext.CREATOR);
-                            SearchSessionId _arg1 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onCreateSearchSession(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            SearchSessionId _arg02 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            Query _arg12 = (Query) data.readTypedObject(Query.CREATOR);
-                            ISearchCallback _arg2 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onQuery(_arg02, _arg12, _arg2);
-                            return true;
-                        case 3:
-                            SearchSessionId _arg03 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            Query _arg13 = (Query) data.readTypedObject(Query.CREATOR);
-                            SearchTargetEvent _arg22 = (SearchTargetEvent) data.readTypedObject(SearchTargetEvent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onNotifyEvent(_arg03, _arg13, _arg22);
-                            return true;
-                        case 4:
-                            SearchSessionId _arg04 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            ISearchCallback _arg14 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onRegisterEmptyQueryResultUpdateCallback(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            SearchSessionId _arg05 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            ISearchCallback _arg15 = ISearchCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onUnregisterEmptyQueryResultUpdateCallback(_arg05, _arg15);
-                            return true;
-                        case 6:
-                            SearchSessionId _arg06 = (SearchSessionId) data.readTypedObject(SearchSessionId.CREATOR);
-                            data.enforceNoDataAvail();
-                            onDestroy(_arg06);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ISearchUiService {
             private IBinder mRemote;
 

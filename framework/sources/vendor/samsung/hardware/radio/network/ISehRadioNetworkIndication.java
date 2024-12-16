@@ -46,7 +46,6 @@ public interface ISehRadioNetworkIndication extends IInterface {
 
     void vendorConfigurationChanged(int i, SehVendorConfiguration[] sehVendorConfigurationArr) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISehRadioNetworkIndication {
         @Override // vendor.samsung.hardware.radio.network.ISehRadioNetworkIndication
         public void acbInfoChanged(int type, int[] acbInfo) throws RemoteException {
@@ -124,7 +123,6 @@ public interface ISehRadioNetworkIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISehRadioNetworkIndication {
         static final int TRANSACTION_acbInfoChanged = 1;
         static final int TRANSACTION_callDetailsChanged = 2;
@@ -171,123 +169,121 @@ public interface ISehRadioNetworkIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    int[] _arg1 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    acbInfoChanged(_arg0, _arg1);
                     return true;
-                case 16777215:
+                case 2:
+                    int _arg02 = data.readInt();
+                    SehCallDetails[] _arg12 = (SehCallDetails[]) data.createTypedArray(SehCallDetails.CREATOR);
+                    data.enforceNoDataAvail();
+                    callDetailsChanged(_arg02, _arg12);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    int _arg13 = data.readInt();
+                    data.enforceNoDataAvail();
+                    csFallback(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    byte _arg14 = data.readByte();
+                    data.enforceNoDataAvail();
+                    currentNetworkScanIsRequested(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    SehEriInfo _arg15 = (SehEriInfo) data.readTypedObject(SehEriInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    eriInfoReceived(_arg05, _arg15);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    execute(_arg06, _arg16);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    SehExtendedRegStateResult _arg17 = (SehExtendedRegStateResult) data.readTypedObject(SehExtendedRegStateResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    extendedRegistrationState(_arg07, _arg17);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    int[] _arg18 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    imsPreferenceChanged(_arg08, _arg18);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    data.enforceNoDataAvail();
+                    needTurnOnRadioIndication(_arg09);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    int _arg19 = data.readInt();
+                    data.enforceNoDataAvail();
+                    nrBearerAllocationChanged(_arg010, _arg19);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    int _arg110 = data.readInt();
+                    data.enforceNoDataAvail();
+                    nrIconTypeChanged(_arg011, _arg110);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    int _arg111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    nrNetworkTypeAdded(_arg012, _arg111);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    byte[] _arg112 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    roamingNetworkScanIsRequested(_arg013, _arg112);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    SehSignalBar _arg113 = (SehSignalBar) data.readTypedObject(SehSignalBar.CREATOR);
+                    data.enforceNoDataAvail();
+                    signalLevelInfoChanged(_arg014, _arg113);
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    SehVendorConfiguration[] _arg114 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    vendorConfigurationChanged(_arg015, _arg114);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int[] _arg1 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            acbInfoChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            SehCallDetails[] _arg12 = (SehCallDetails[]) data.createTypedArray(SehCallDetails.CREATOR);
-                            data.enforceNoDataAvail();
-                            callDetailsChanged(_arg02, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            csFallback(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            byte _arg14 = data.readByte();
-                            data.enforceNoDataAvail();
-                            currentNetworkScanIsRequested(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            SehEriInfo _arg15 = (SehEriInfo) data.readTypedObject(SehEriInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            eriInfoReceived(_arg05, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            execute(_arg06, _arg16);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            SehExtendedRegStateResult _arg17 = (SehExtendedRegStateResult) data.readTypedObject(SehExtendedRegStateResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            extendedRegistrationState(_arg07, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            int[] _arg18 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            imsPreferenceChanged(_arg08, _arg18);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            data.enforceNoDataAvail();
-                            needTurnOnRadioIndication(_arg09);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            int _arg19 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nrBearerAllocationChanged(_arg010, _arg19);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nrIconTypeChanged(_arg011, _arg110);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            nrNetworkTypeAdded(_arg012, _arg111);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            byte[] _arg112 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            roamingNetworkScanIsRequested(_arg013, _arg112);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            SehSignalBar _arg113 = (SehSignalBar) data.readTypedObject(SehSignalBar.CREATOR);
-                            data.enforceNoDataAvail();
-                            signalLevelInfoChanged(_arg014, _arg113);
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            SehVendorConfiguration[] _arg114 = (SehVendorConfiguration[]) data.createTypedArray(SehVendorConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            vendorConfigurationChanged(_arg015, _arg114);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISehRadioNetworkIndication {
+        private static class Proxy implements ISehRadioNetworkIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

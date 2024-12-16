@@ -21,7 +21,6 @@ public interface IGnssPowerIndication extends IInterface {
 
     void setCallback(IGnssPowerIndicationCallback iGnssPowerIndicationCallback) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IGnssPowerIndication {
         @Override // android.hardware.gnss.IGnssPowerIndication
         public void setCallback(IGnssPowerIndicationCallback callback) throws RemoteException {
@@ -47,7 +46,6 @@ public interface IGnssPowerIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IGnssPowerIndication {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
@@ -101,38 +99,36 @@ public interface IGnssPowerIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IGnssPowerIndicationCallback _arg0 = IGnssPowerIndicationCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
-                    return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 2:
+                    requestGnssPowerStats();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IGnssPowerIndicationCallback _arg0 = IGnssPowerIndicationCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            requestGnssPowerStats();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IGnssPowerIndication {
+        private static class Proxy implements IGnssPowerIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

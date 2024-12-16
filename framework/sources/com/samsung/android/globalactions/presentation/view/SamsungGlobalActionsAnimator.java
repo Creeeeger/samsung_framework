@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -18,7 +17,7 @@ import com.samsung.android.globalactions.util.ConditionChecker;
 import com.samsung.android.globalactions.util.LogWrapper;
 import com.samsung.android.globalactions.util.SystemConditions;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
     private static final String TAG = "SamsungGlobalActionsAnimator";
     private ViewGroup mBackgroundView;
@@ -57,7 +56,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
     private final int ALPHA_HIDE_INT = 0;
     private final int ALPHA_SHOW_INT = 255;
 
-    /* loaded from: classes5.dex */
     public interface ViewUpdateCallback {
         GlobalActionsContentItemView createConfirmView();
 
@@ -124,9 +122,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         AnimatorSet animatorSet = getDefaultAnimatorSet(true);
         animatorSet.setDuration(300L);
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.1
-            AnonymousClass1() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
@@ -136,20 +131,8 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         animatorSet.start();
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 extends AnimatorListenerAdapter {
-        AnonymousClass1() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
-        }
-    }
-
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
-    public void startDismissAnimation(boolean isSecureConfirming) {
+    public void startDismissAnimation(final boolean isSecureConfirming) {
         AnimatorSet animatorSet = getDefaultAnimatorSet(false);
         if (isSecureConfirming) {
             if (this.mConditionChecker.isEnabled(SystemConditions.IS_SUPPORT_POWER_OFF_LOCK)) {
@@ -161,12 +144,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
             animatorSet.setDuration(300L);
         }
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.2
-            final /* synthetic */ boolean val$isSecureConfirming;
-
-            AnonymousClass2(boolean isSecureConfirming2) {
-                isSecureConfirming = isSecureConfirming2;
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 Dialog dialog = SamsungGlobalActionsAnimator.this.mCallback.getDialog();
@@ -191,38 +168,13 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         animatorSet.start();
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$2 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass2 extends AnimatorListenerAdapter {
-        final /* synthetic */ boolean val$isSecureConfirming;
-
-        AnonymousClass2(boolean isSecureConfirming2) {
-            isSecureConfirming = isSecureConfirming2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            Dialog dialog = SamsungGlobalActionsAnimator.this.mCallback.getDialog();
-            if (dialog != null) {
-                dialog.getWindow().getDecorView().setVisibility(8);
-            }
-            if (!isSecureConfirming) {
-                SamsungGlobalActionsAnimator.this.mCallback.getDismissRunnable().run();
-            }
-            if (isSecureConfirming && SamsungGlobalActionsAnimator.this.mCallback.getClearCoverState()) {
-                SamsungGlobalActionsAnimator.this.mCallback.setFlagsForForceDismiss(true);
-            }
-            SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
-        }
-    }
-
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
     public void startShowConfirmAnimation() {
         initializeConfirmView();
         initializeSelectedActionView();
         initializeConfirmBackgroundView();
         this.mViewStateController.setState(ViewAnimationState.SHOW_ANIMATE);
-        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda0
+        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda2
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public final void onGlobalLayout() {
                 SamsungGlobalActionsAnimator.this.lambda$startShowConfirmAnimation$0();
@@ -231,6 +183,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         this.mConfirmationView.getViewTreeObserver().addOnGlobalLayoutListener(this.mViewTreeObserverListener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startShowConfirmAnimation$0() {
         this.mConfirmationView.getViewTreeObserver().removeOnGlobalLayoutListener(this.mViewTreeObserverListener);
         saveOriginalConfirmViewLocation();
@@ -238,9 +191,8 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         setLocationForDescriptionView(deltaY);
         this.mConfirmIconView.setY(getOriginalLocationY(this.mSelectedActionView));
         this.mConfirmIconView.setX(getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft());
-        AnimatorSet defaultConfirmAnimatorSet = getDefaultConfirmAnimatorSet(true);
-        this.mShowConfirmAnimatorSet = defaultConfirmAnimatorSet;
-        defaultConfirmAnimatorSet.start();
+        this.mShowConfirmAnimatorSet = getDefaultConfirmAnimatorSet(true);
+        this.mShowConfirmAnimatorSet.start();
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
@@ -262,7 +214,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         initializeSelectedActionView();
         initializeConfirmBackgroundView();
         this.mViewStateController.setState(ViewAnimationState.SHOW_ANIMATE);
-        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda2
+        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda1
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public final void onGlobalLayout() {
                 SamsungGlobalActionsAnimator.this.lambda$startShowSafeModeAnimation$1();
@@ -271,6 +223,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         this.mConfirmationView.getViewTreeObserver().addOnGlobalLayoutListener(this.mViewTreeObserverListener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startShowSafeModeAnimation$1() {
         this.mConfirmationView.getViewTreeObserver().removeOnGlobalLayoutListener(this.mViewTreeObserverListener);
         saveOriginalConfirmViewLocation();
@@ -280,17 +233,15 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         this.mPowerOffIconView.setY(getOriginalLocationY(this.mSelectedActionView));
         this.mConfirmIconView.setX(getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft());
         this.mPowerOffIconView.setX(getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft());
-        AnimatorSet defaultConfirmAnimatorSet = getDefaultConfirmAnimatorSet(true);
-        this.mShowConfirmAnimatorSet = defaultConfirmAnimatorSet;
-        defaultConfirmAnimatorSet.playTogether(getSafeModeConfirmAnimation(true));
+        this.mShowConfirmAnimatorSet = getDefaultConfirmAnimatorSet(true);
+        this.mShowConfirmAnimatorSet.playTogether(getSafeModeConfirmAnimation(true));
         this.mShowConfirmAnimatorSet.start();
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
     public void startDismissSafeModeAnimation() {
-        AnimatorSet defaultConfirmAnimatorSet = getDefaultConfirmAnimatorSet(false);
-        this.mDismissConfirmAnimatorSet = defaultConfirmAnimatorSet;
-        defaultConfirmAnimatorSet.playTogether(getSafeModeConfirmAnimation(false));
+        this.mDismissConfirmAnimatorSet = getDefaultConfirmAnimatorSet(false);
+        this.mDismissConfirmAnimatorSet.playTogether(getSafeModeConfirmAnimation(false));
         this.mViewStateController.setState(ViewAnimationState.DISMISS_ANIMATE);
         this.mDismissConfirmAnimatorSet.start();
     }
@@ -299,7 +250,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
     public void startSetSafeModeAnimation() {
         saveOriginalConfirmViewLocation();
         initializeConfirmViewForSafeMode();
-        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda1
+        this.mViewTreeObserverListener = new ViewTreeObserver.OnGlobalLayoutListener() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$$ExternalSyntheticLambda0
             @Override // android.view.ViewTreeObserver.OnGlobalLayoutListener
             public final void onGlobalLayout() {
                 SamsungGlobalActionsAnimator.this.lambda$startSetSafeModeAnimation$2();
@@ -308,6 +259,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         this.mConfirmationView.getViewTreeObserver().addOnGlobalLayoutListener(this.mViewTreeObserverListener);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$startSetSafeModeAnimation$2() {
         this.mConfirmationView.getViewTreeObserver().removeOnGlobalLayoutListener(this.mViewTreeObserverListener);
         float deltaY = (this.mConfirmIconView.getHeight() * 0.3f) / 2.0f;
@@ -352,8 +304,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
     public boolean isHideConfirmAnimationRunning() {
-        AnimatorSet animatorSet = this.mDismissConfirmAnimatorSet;
-        return animatorSet != null && animatorSet.isRunning();
+        return this.mDismissConfirmAnimatorSet != null && this.mDismissConfirmAnimatorSet.isRunning();
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
@@ -363,8 +314,7 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
     public boolean isShowConfirmAnimationRunning() {
-        AnimatorSet animatorSet = this.mShowConfirmAnimatorSet;
-        return animatorSet != null && animatorSet.isRunning();
+        return this.mShowConfirmAnimatorSet != null && this.mShowConfirmAnimatorSet.isRunning();
     }
 
     @Override // com.samsung.android.globalactions.presentation.view.GlobalActionsAnimator
@@ -383,9 +333,8 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
 
     private GlobalActionsContentItemView initializeConfirmView() {
         GlobalActionsContentItemView item = this.mCallback.createConfirmView();
-        ViewGroup confirmationView = this.mCallback.getConfirmationView();
-        this.mConfirmationView = confirmationView;
-        this.mConfirmIconView = this.mCallback.getConfirmIconLabelView(confirmationView);
+        this.mConfirmationView = this.mCallback.getConfirmationView();
+        this.mConfirmIconView = this.mCallback.getConfirmIconLabelView(this.mConfirmationView);
         this.mConfirmDescriptionView = this.mCallback.getConfirmDescriptionView(this.mConfirmationView);
         return item;
     }
@@ -393,23 +342,11 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
     private AnimatorSet getDefaultAnimatorSet(boolean show) {
         ObjectAnimator backgroundAlpha;
         AnimatorSet animatorSet = new AnimatorSet();
-        ViewGroup viewGroup = this.mRootView;
-        float[] fArr = new float[2];
-        fArr[0] = show ? 0.0f : 1.0f;
-        fArr[1] = show ? 1.0f : 0.0f;
-        ObjectAnimator contentsAlpha = ObjectAnimator.ofFloat(viewGroup, "alpha", fArr);
+        ObjectAnimator contentsAlpha = ObjectAnimator.ofFloat(this.mRootView, "alpha", show ? 0.0f : 1.0f, show ? 1.0f : 0.0f);
         if (this.mBackgroundView.getBackground() != null) {
-            Drawable mutate = this.mBackgroundView.getBackground().mutate();
-            int[] iArr = new int[2];
-            iArr[0] = show ? 0 : 255;
-            iArr[1] = show ? 255 : 0;
-            backgroundAlpha = ObjectAnimator.ofInt(mutate, "alpha", iArr);
+            backgroundAlpha = ObjectAnimator.ofInt(this.mBackgroundView.getBackground().mutate(), "alpha", show ? 0 : 255, show ? 255 : 0);
         } else {
-            ViewGroup viewGroup2 = this.mBackgroundView;
-            float[] fArr2 = new float[2];
-            fArr2[0] = show ? 0.0f : 1.0f;
-            fArr2[1] = show ? 1.0f : 0.0f;
-            backgroundAlpha = ObjectAnimator.ofFloat(viewGroup2, "alpha", fArr2);
+            backgroundAlpha = ObjectAnimator.ofFloat(this.mBackgroundView, "alpha", show ? 0.0f : 1.0f, show ? 1.0f : 0.0f);
         }
         animatorSet.playTogether(backgroundAlpha, contentsAlpha);
         return animatorSet;
@@ -417,37 +354,13 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
 
     private AnimatorSet getDefaultConfirmAnimatorSet(boolean show) {
         AnimatorSet animatorSet = new AnimatorSet();
-        ViewGroup viewGroup = this.mConfirmIconView;
-        float[] fArr = new float[2];
-        fArr[0] = viewGroup.getScaleX();
-        fArr[1] = show ? 1.3f : 1.0f;
-        ObjectAnimator iconScaleX = ObjectAnimator.ofFloat(viewGroup, "scaleX", fArr);
-        ViewGroup viewGroup2 = this.mConfirmIconView;
-        float[] fArr2 = new float[2];
-        fArr2[0] = viewGroup2.getScaleY();
-        fArr2[1] = show ? 1.3f : 1.0f;
-        ObjectAnimator iconScaleY = ObjectAnimator.ofFloat(viewGroup2, "scaleY", fArr2);
-        ViewGroup viewGroup3 = this.mConfirmIconView;
-        float[] fArr3 = new float[2];
-        fArr3[0] = viewGroup3.getY();
-        fArr3[1] = show ? this.mOriginalConfirmLocationY : getOriginalLocationY(this.mSelectedActionView);
-        ObjectAnimator iconTranslationY = ObjectAnimator.ofFloat(viewGroup3, "y", fArr3);
-        ViewGroup viewGroup4 = this.mConfirmIconView;
-        float[] fArr4 = new float[2];
-        fArr4[0] = viewGroup4.getX();
-        fArr4[1] = show ? this.mOriginalConfirmLocationX - this.mRootView.getPaddingLeft() : getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft();
-        ObjectAnimator iconTranslationX = ObjectAnimator.ofFloat(viewGroup4, "x", fArr4);
-        View view = this.mConfirmDescriptionView;
-        float[] fArr5 = new float[2];
-        fArr5[0] = view.getAlpha();
-        fArr5[1] = show ? 1.0f : 0.0f;
-        ObjectAnimator descriptionAlpha = ObjectAnimator.ofFloat(view, "alpha", fArr5);
+        ObjectAnimator iconScaleX = ObjectAnimator.ofFloat(this.mConfirmIconView, "scaleX", this.mConfirmIconView.getScaleX(), show ? 1.3f : 1.0f);
+        ObjectAnimator iconScaleY = ObjectAnimator.ofFloat(this.mConfirmIconView, "scaleY", this.mConfirmIconView.getScaleY(), show ? 1.3f : 1.0f);
+        ObjectAnimator iconTranslationY = ObjectAnimator.ofFloat(this.mConfirmIconView, "y", this.mConfirmIconView.getY(), show ? this.mOriginalConfirmLocationY : getOriginalLocationY(this.mSelectedActionView));
+        ObjectAnimator iconTranslationX = ObjectAnimator.ofFloat(this.mConfirmIconView, "x", this.mConfirmIconView.getX(), show ? this.mOriginalConfirmLocationX - this.mRootView.getPaddingLeft() : getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft());
+        ObjectAnimator descriptionAlpha = ObjectAnimator.ofFloat(this.mConfirmDescriptionView, "alpha", this.mConfirmDescriptionView.getAlpha(), show ? 1.0f : 0.0f);
         descriptionAlpha.setDuration(400L);
-        Drawable mutate = this.mRootView.getBackground().mutate();
-        int[] iArr = new int[2];
-        iArr[0] = this.mRootView.getBackground().mutate().getAlpha();
-        iArr[1] = show ? 255 : 0;
-        ObjectAnimator backgroundAlpha = ObjectAnimator.ofInt(mutate, "alpha", iArr);
+        ObjectAnimator backgroundAlpha = ObjectAnimator.ofInt(this.mRootView.getBackground().mutate(), "alpha", this.mRootView.getBackground().mutate().getAlpha(), show ? 255 : 0);
         animatorSet.playTogether(iconScaleX, iconScaleY, descriptionAlpha, backgroundAlpha, iconTranslationY, iconTranslationX);
         animatorSet.setInterpolator(this.CONFIRM_ANIMATION_INTERPOLATOR);
         animatorSet.setDuration(300L);
@@ -455,45 +368,9 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         return animatorSet;
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$3 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass3 extends AnimatorListenerAdapter {
-        AnonymousClass3() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationStart() : show");
-            SamsungGlobalActionsAnimator.this.mCallback.requestFocusFor(SamsungGlobalActionsAnimator.this.mConfirmIconView, SamsungGlobalActionsAnimator.this.mSelectedActionView);
-            SamsungGlobalActionsAnimator.this.mConfirmIconView.setAlpha(1.0f);
-            SamsungGlobalActionsAnimator.this.mConfirmDescriptionView.setAlpha(0.0f);
-            SamsungGlobalActionsAnimator.this.mConfirmIconView.setScaleX(1.0f);
-            SamsungGlobalActionsAnimator.this.mConfirmIconView.setScaleY(1.0f);
-            SamsungGlobalActionsAnimator.this.mSelectedActionView.setVisibility(4);
-            SamsungGlobalActionsAnimator.this.mTargetListView.animate().alpha(0.0f).setDuration(200L).start();
-            SamsungGlobalActionsAnimator.this.mBottomView.animate().alpha(0.0f).setDuration(200L).start();
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationEnd() : show");
-            SamsungGlobalActionsAnimator.this.mConfirmDescriptionView.setAlpha(1.0f);
-            SamsungGlobalActionsAnimator.this.mConfirmIconView.setScaleX(1.3f);
-            SamsungGlobalActionsAnimator.this.mConfirmIconView.setScaleY(1.3f);
-            SamsungGlobalActionsAnimator.this.mSelectedActionView.setVisibility(0);
-            SamsungGlobalActionsAnimator.this.mTargetListView.setVisibility(4);
-            SamsungGlobalActionsAnimator.this.mBottomView.setVisibility(8);
-            SamsungGlobalActionsAnimator.this.mShowConfirmAnimatorSet = null;
-            SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
-        }
-    }
-
     private void addAnimatorListenerAdapter(AnimatorSet animatorSet, boolean show) {
         if (show) {
             animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.3
-                AnonymousClass3() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationStart() : show");
@@ -522,9 +399,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
             });
         } else {
             animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.4
-                AnonymousClass4() {
-                }
-
                 @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
                 public void onAnimationStart(Animator animation) {
                     SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationStart() : hide");
@@ -548,36 +422,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
                     SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
                 }
             });
-        }
-    }
-
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$4 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass4 extends AnimatorListenerAdapter {
-        AnonymousClass4() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationStart() : hide");
-            SamsungGlobalActionsAnimator.this.mTargetListView.setVisibility(0);
-            SamsungGlobalActionsAnimator.this.mBottomView.setVisibility(0);
-            SamsungGlobalActionsAnimator.this.mSelectedActionView.setVisibility(4);
-            SamsungGlobalActionsAnimator.this.mTargetListView.animate().alpha(1.0f).setDuration(200L).start();
-            SamsungGlobalActionsAnimator.this.mBottomView.animate().alpha(1.0f).setDuration(200L).start();
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mLogWrapper.logDebug(SamsungGlobalActionsAnimator.TAG, "onAnimationEnd() : hide");
-            SamsungGlobalActionsAnimator.this.mCallback.requestFocusFor(SamsungGlobalActionsAnimator.this.mSelectedActionView, SamsungGlobalActionsAnimator.this.mConfirmationView);
-            SamsungGlobalActionsAnimator.this.mSelectedActionView.setVisibility(0);
-            SamsungGlobalActionsAnimator.this.mConfirmationView.removeAllViews();
-            SamsungGlobalActionsAnimator.this.mConfirmationView.setVisibility(8);
-            SamsungGlobalActionsAnimator.this.mRootView.setDescendantFocusability(262144);
-            SamsungGlobalActionsAnimator.this.mDismissConfirmAnimatorSet = null;
-            SamsungGlobalActionsAnimator.this.mPowerOffIconView = null;
-            SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
         }
     }
 
@@ -611,9 +455,6 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         animatorSet.setDuration(200L);
         animatorSet.playTogether(safeModeIconShow, powerOffIconHide);
         animatorSet.addListener(new AnimatorListenerAdapter() { // from class: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator.5
-            AnonymousClass5() {
-            }
-
             @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
             public void onAnimationEnd(Animator animation) {
                 SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
@@ -623,51 +464,21 @@ public class SamsungGlobalActionsAnimator implements GlobalActionsAnimator {
         animatorSet.start();
     }
 
-    /* renamed from: com.samsung.android.globalactions.presentation.view.SamsungGlobalActionsAnimator$5 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass5 extends AnimatorListenerAdapter {
-        AnonymousClass5() {
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animation) {
-            SamsungGlobalActionsAnimator.this.mViewStateController.setState(ViewAnimationState.IDLE);
-        }
-    }
-
     private AnimatorSet getSafeModeConfirmAnimation(boolean show) {
         AnimatorSet animatorSet = new AnimatorSet();
-        View view = this.mPowerOffIconView;
-        float[] fArr = new float[2];
-        fArr[0] = view.getScaleX();
-        fArr[1] = show ? 1.3f : 1.0f;
-        ObjectAnimator powerOffIconScaleX = ObjectAnimator.ofFloat(view, "scaleX", fArr);
-        View view2 = this.mPowerOffIconView;
-        float[] fArr2 = new float[2];
-        fArr2[0] = view2.getScaleY();
-        fArr2[1] = show ? 1.3f : 1.0f;
-        ObjectAnimator powerOffIconScaleY = ObjectAnimator.ofFloat(view2, "scaleY", fArr2);
-        View view3 = this.mPowerOffIconView;
-        float[] fArr3 = new float[2];
-        fArr3[0] = view3.getY();
-        fArr3[1] = show ? this.mOriginalConfirmLocationY : getOriginalLocationY(this.mSelectedActionView);
-        ObjectAnimator powerOffIconTranslationY = ObjectAnimator.ofFloat(view3, "y", fArr3);
+        ObjectAnimator powerOffIconScaleX = ObjectAnimator.ofFloat(this.mPowerOffIconView, "scaleX", this.mPowerOffIconView.getScaleX(), show ? 1.3f : 1.0f);
+        ObjectAnimator powerOffIconScaleY = ObjectAnimator.ofFloat(this.mPowerOffIconView, "scaleY", this.mPowerOffIconView.getScaleY(), show ? 1.3f : 1.0f);
+        ObjectAnimator powerOffIconTranslationY = ObjectAnimator.ofFloat(this.mPowerOffIconView, "y", this.mPowerOffIconView.getY(), show ? this.mOriginalConfirmLocationY : getOriginalLocationY(this.mSelectedActionView));
         int deltaX = (this.mConfirmIconView.getWidth() - this.mPowerOffIconView.getWidth()) / 2;
-        View view4 = this.mPowerOffIconView;
-        float[] fArr4 = new float[2];
-        fArr4[0] = view4.getX();
-        fArr4[1] = show ? (this.mOriginalConfirmLocationX + deltaX) - this.mRootView.getPaddingLeft() : getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft();
-        ObjectAnimator powerOffIconTranslationX = ObjectAnimator.ofFloat(view4, "x", fArr4);
+        ObjectAnimator powerOffIconTranslationX = ObjectAnimator.ofFloat(this.mPowerOffIconView, "x", this.mPowerOffIconView.getX(), show ? (this.mOriginalConfirmLocationX + deltaX) - this.mRootView.getPaddingLeft() : getOriginalLocationX(this.mCallback.getConfirmIconLabelView(this.mSelectedActionView)) - this.mRootView.getPaddingLeft());
         animatorSet.playTogether(powerOffIconScaleX, powerOffIconScaleY, powerOffIconTranslationY, powerOffIconTranslationX);
         AnimatorSet animatorSetAlpha = new AnimatorSet();
         if (show) {
-            ViewGroup viewGroup = this.mConfirmIconView;
-            ObjectAnimator safeModeIconShow = ObjectAnimator.ofFloat(viewGroup, "alpha", viewGroup.getAlpha(), 1.0f);
+            ObjectAnimator safeModeIconShow = ObjectAnimator.ofFloat(this.mConfirmIconView, "alpha", this.mConfirmIconView.getAlpha(), 1.0f);
             animatorSetAlpha.playTogether(safeModeIconShow);
             this.mPowerOffIconView.setAlpha(0.0f);
         } else {
-            View view5 = this.mPowerOffIconView;
-            ObjectAnimator powerOffIconShow = ObjectAnimator.ofFloat(view5, "alpha", view5.getAlpha(), 1.0f);
+            ObjectAnimator powerOffIconShow = ObjectAnimator.ofFloat(this.mPowerOffIconView, "alpha", this.mPowerOffIconView.getAlpha(), 1.0f);
             animatorSetAlpha.playTogether(powerOffIconShow);
             this.mConfirmIconView.setAlpha(0.0f);
         }

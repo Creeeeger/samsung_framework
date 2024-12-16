@@ -6,11 +6,10 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public interface INetworkRecommendationProvider extends IInterface {
     void requestScores(NetworkKey[] networkKeyArr) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements INetworkRecommendationProvider {
         @Override // android.net.INetworkRecommendationProvider
         public void requestScores(NetworkKey[] networks) throws RemoteException {
@@ -22,7 +21,6 @@ public interface INetworkRecommendationProvider extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements INetworkRecommendationProvider {
         public static final String DESCRIPTOR = "android.net.INetworkRecommendationProvider";
         static final int TRANSACTION_requestScores = 1;
@@ -66,24 +64,21 @@ public interface INetworkRecommendationProvider extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    NetworkKey[] _arg0 = (NetworkKey[]) data.createTypedArray(NetworkKey.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestScores(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            NetworkKey[] _arg0 = (NetworkKey[]) data.createTypedArray(NetworkKey.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestScores(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
         private static class Proxy implements INetworkRecommendationProvider {
             private IBinder mRemote;
 

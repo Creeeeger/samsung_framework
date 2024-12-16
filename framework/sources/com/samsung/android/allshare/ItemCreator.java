@@ -6,13 +6,12 @@ import com.samsung.android.allshare.Item;
 import com.sec.android.allshare.iface.message.AllShareKey;
 import java.util.Date;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes3.dex */
 class ItemCreator {
     ItemCreator() {
     }
 
-    /* loaded from: classes5.dex */
-    public enum ConstructorType {
+    enum ConstructorType {
         MEDIA_SERVER("MEDIA_SERVER"),
         WEB_CONTENT("WEB_CONTENT"),
         LOCAL_CONTENT("LOCAL_CONTENT"),
@@ -48,18 +47,15 @@ class ItemCreator {
         }
     }
 
-    public static Item fromBundle(Bundle itemBundle) {
+    static Item fromBundle(Bundle itemBundle) {
         String itemConstructor;
         Item.WebContentBuilder.DeliveryMode deliverymode;
         if (itemBundle == null || (itemConstructor = itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_CONSTRUCTOR_KEY)) == null || itemConstructor.isEmpty()) {
             return null;
         }
         ConstructorType conType = ConstructorType.stringToEnum(itemConstructor);
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[conType.ordinal()]) {
+        switch (conType.ordinal()) {
             case 1:
-                Item result = createMediaServerItem(itemBundle);
-                return result;
-            case 2:
                 Uri uri = (Uri) itemBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM_URI);
                 String mimeType = itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
                 Item.WebContentBuilder builder = new Item.WebContentBuilder(uri, mimeType).setTitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TITLE)).setSubtitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_SUBTITLE_PATH)).setAlbumTitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_ALBUM_TITLE)).setArtist(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_ARTIST)).setGenre(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_GENRE)).setDuration(itemBundle.getLong(AllShareKey.BUNDLE_LONG_ITEM_DURATION));
@@ -68,90 +64,20 @@ class ItemCreator {
                     builder = builder.setDate(new Date(dateTime));
                 }
                 String playModeStr = itemBundle.getString(AllShareKey.BUNDLE_STRING_WEB_PLAY_MODE);
-                Item.WebContentBuilder.DeliveryMode deliveryMode = Item.WebContentBuilder.DeliveryMode.UNKNOWN;
                 if (playModeStr == null || playModeStr.isEmpty()) {
                     deliverymode = Item.WebContentBuilder.DeliveryMode.UNKNOWN;
                 } else {
                     deliverymode = Item.WebContentBuilder.DeliveryMode.stringToEnum(playModeStr);
                 }
-                Item result2 = builder.setDeliveryMode(deliverymode).build();
-                return result2;
-            case 3:
-                String path = itemBundle.getString(AllShareKey.BUNDLE_STRING_FILEPATH);
-                String mimeType2 = itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
-                Item result3 = new Item.LocalContentBuilder(path, mimeType2).setTitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TITLE)).setSubtitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_SUBTITLE_PATH)).build();
-                return result3;
-            default:
-                return null;
-        }
-    }
-
-    private static Item createMediaServerItem(Bundle itemBundle) {
-        String itemType = itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TYPE);
-        Item.MediaType mediaType = Item.MediaType.stringToEnum(itemType);
-        switch (AnonymousClass1.$SwitchMap$com$samsung$android$allshare$Item$MediaType[mediaType.ordinal()]) {
-            case 1:
-                Item result = new AudioItemImpl(itemBundle);
+                Item result = builder.setDeliveryMode(deliverymode).build();
                 return result;
             case 2:
-                Item result2 = new ImageItemImpl(itemBundle);
+                String path = itemBundle.getString(AllShareKey.BUNDLE_STRING_FILEPATH);
+                String mimeType2 = itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_MIMETYPE);
+                Item result2 = new Item.LocalContentBuilder(path, mimeType2).setTitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_TITLE)).setSubtitle(itemBundle.getString(AllShareKey.BUNDLE_STRING_ITEM_SUBTITLE_PATH)).build();
                 return result2;
-            case 3:
-                Item result3 = new VideoItemImpl(itemBundle);
-                return result3;
-            case 4:
-                Item result4 = new FolderItemImpl(itemBundle);
-                return result4;
-            case 5:
-                return null;
             default:
                 return null;
-        }
-    }
-
-    /* renamed from: com.samsung.android.allshare.ItemCreator$1 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Item$MediaType;
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType;
-
-        static {
-            int[] iArr = new int[Item.MediaType.values().length];
-            $SwitchMap$com$samsung$android$allshare$Item$MediaType = iArr;
-            try {
-                iArr[Item.MediaType.ITEM_AUDIO.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_IMAGE.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_VIDEO.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_FOLDER.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Item$MediaType[Item.MediaType.ITEM_UNKNOWN.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            int[] iArr2 = new int[ConstructorType.values().length];
-            $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType = iArr2;
-            try {
-                iArr2[ConstructorType.MEDIA_SERVER.ordinal()] = 1;
-            } catch (NoSuchFieldError e6) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[ConstructorType.WEB_CONTENT.ordinal()] = 2;
-            } catch (NoSuchFieldError e7) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$ItemCreator$ConstructorType[ConstructorType.LOCAL_CONTENT.ordinal()] = 3;
-            } catch (NoSuchFieldError e8) {
-            }
         }
     }
 }

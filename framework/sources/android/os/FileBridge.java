@@ -96,19 +96,16 @@ public class FileBridge extends Thread {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class FileBridgeOutputStream extends OutputStream {
         private final FileDescriptor mClient;
         private final ParcelFileDescriptor mClientPfd;
         private final byte[] mTemp;
-        private final ByteBuffer mTempBuffer;
+        private final ByteBuffer mTempBuffer = ByteBuffer.allocateDirect(8);
 
         public FileBridgeOutputStream(ParcelFileDescriptor clientPfd) {
             byte[] bArr;
-            ByteBuffer allocateDirect = ByteBuffer.allocateDirect(8);
-            this.mTempBuffer = allocateDirect;
-            if (allocateDirect.hasArray()) {
-                bArr = allocateDirect.array();
+            if (this.mTempBuffer.hasArray()) {
+                bArr = this.mTempBuffer.array();
             } else {
                 bArr = new byte[8];
             }

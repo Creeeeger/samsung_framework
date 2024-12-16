@@ -11,14 +11,14 @@ import java.lang.ref.Reference;
 import java.util.List;
 
 /* loaded from: classes2.dex */
-public class InputDeviceLightsManager extends LightsManager {
+class InputDeviceLightsManager extends LightsManager {
     private static final boolean DEBUG = false;
     private static final String TAG = "InputDeviceLightsManager";
     private final int mDeviceId;
     private final InputManagerGlobal mGlobal = InputManagerGlobal.getInstance();
     private final String mPackageName = ActivityThread.currentPackageName();
 
-    public InputDeviceLightsManager(int deviceId) {
+    InputDeviceLightsManager(int deviceId) {
         this.mDeviceId = deviceId;
     }
 
@@ -45,20 +45,14 @@ public class InputDeviceLightsManager extends LightsManager {
         throw new UnsupportedOperationException();
     }
 
-    /* loaded from: classes2.dex */
     public final class InputDeviceLightsSession extends LightsManager.LightsSession implements AutoCloseable {
         private final CloseGuard mCloseGuard;
         private boolean mClosed;
 
-        /* synthetic */ InputDeviceLightsSession(InputDeviceLightsManager inputDeviceLightsManager, InputDeviceLightsSessionIA inputDeviceLightsSessionIA) {
-            this();
-        }
-
         private InputDeviceLightsSession() {
-            CloseGuard closeGuard = new CloseGuard();
-            this.mCloseGuard = closeGuard;
+            this.mCloseGuard = new CloseGuard();
             this.mClosed = false;
-            closeGuard.open("InputDeviceLightsSession.close");
+            this.mCloseGuard.open("InputDeviceLightsSession.close");
         }
 
         @Override // android.hardware.lights.LightsManager.LightsSession

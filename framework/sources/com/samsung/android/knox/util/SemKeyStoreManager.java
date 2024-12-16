@@ -5,11 +5,19 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import com.samsung.android.knox.util.ISemKeyStoreService;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemKeyStoreManager {
+
+    @Deprecated(forRemoval = true, since = "16.0")
     public static final int KEYSTORE_STATUS_LOCKED = 2;
+
+    @Deprecated(forRemoval = true, since = "16.0")
     public static final int KEYSTORE_STATUS_UNINITIALIZED = 3;
+
+    @Deprecated(forRemoval = true, since = "16.0")
     public static final int KEYSTORE_STATUS_UNKNOWN = 0;
+
+    @Deprecated(forRemoval = true, since = "16.0")
     public static final int KEYSTORE_STATUS_UNLOCKED = 1;
     private ISemKeyStoreService mRemoteServiceKeystore;
 

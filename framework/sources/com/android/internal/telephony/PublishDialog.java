@@ -8,14 +8,13 @@ import java.util.ArrayList;
 /* loaded from: classes5.dex */
 public class PublishDialog implements Parcelable {
     public static final Parcelable.Creator<PublishDialog> CREATOR = new Parcelable.Creator<PublishDialog>() { // from class: com.android.internal.telephony.PublishDialog.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishDialog createFromParcel(Parcel in) {
             return new PublishDialog(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public PublishDialog[] newArray(int size) {
             return new PublishDialog[size];
@@ -321,85 +320,73 @@ public class PublishDialog implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mCallCount);
-        ArrayList<Integer> arrayList = this.mCallId;
-        if (arrayList != null && arrayList.size() > 0) {
+        if (this.mCallId != null && this.mCallId.size() > 0) {
             dest.writeInt(this.mCallId.size());
             dest.writeIntArray(getCallId());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList2 = this.mCallDomain;
-        if (arrayList2 != null && arrayList2.size() > 0) {
+        if (this.mCallDomain != null && this.mCallDomain.size() > 0) {
             dest.writeInt(this.mCallDomain.size());
             dest.writeIntArray(getCallDomain());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList3 = this.mCallStatus;
-        if (arrayList3 != null && arrayList3.size() > 0) {
+        if (this.mCallStatus != null && this.mCallStatus.size() > 0) {
             dest.writeInt(this.mCallStatus.size());
             dest.writeIntArray(getCallStatus());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList4 = this.mCallType;
-        if (arrayList4 != null && arrayList4.size() > 0) {
+        if (this.mCallType != null && this.mCallType.size() > 0) {
             dest.writeInt(this.mCallType.size());
             dest.writeIntArray(getCallType());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList5 = this.mCallDirection;
-        if (arrayList5 != null && arrayList5.size() > 0) {
+        if (this.mCallDirection != null && this.mCallDirection.size() > 0) {
             dest.writeInt(this.mCallDirection.size());
             dest.writeIntArray(getCallDirection());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<String> arrayList6 = this.mCallRemoteUri;
-        if (arrayList6 != null && arrayList6.size() > 0) {
+        if (this.mCallRemoteUri != null && this.mCallRemoteUri.size() > 0) {
             dest.writeInt(this.mCallRemoteUri.size());
             dest.writeStringArray(getCallRemoteUri());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Boolean> arrayList7 = this.mCallPullable;
-        if (arrayList7 != null && arrayList7.size() > 0) {
+        if (this.mCallPullable != null && this.mCallPullable.size() > 0) {
             dest.writeInt(this.mCallPullable.size());
             dest.writeBooleanArray(getCallPullable());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList8 = this.mCallNumberPresentation;
-        if (arrayList8 != null && arrayList8.size() > 0) {
+        if (this.mCallNumberPresentation != null && this.mCallNumberPresentation.size() > 0) {
             dest.writeInt(this.mCallNumberPresentation.size());
             dest.writeIntArray(getCallNumberPresentation());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Integer> arrayList9 = this.mCallCnapNamePresentation;
-        if (arrayList9 != null && arrayList9.size() > 0) {
+        if (this.mCallCnapNamePresentation != null && this.mCallCnapNamePresentation.size() > 0) {
             dest.writeInt(this.mCallCnapNamePresentation.size());
             dest.writeIntArray(getCallCnapNamePresentation());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<String> arrayList10 = this.mCallCnapName;
-        if (arrayList10 != null && arrayList10.size() > 0) {
+        if (this.mCallCnapName != null && this.mCallCnapName.size() > 0) {
             dest.writeInt(this.mCallCnapName.size());
             dest.writeStringArray(getCallCnapName());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Boolean> arrayList11 = this.mCallMptyCall;
-        if (arrayList11 != null && arrayList11.size() > 0) {
+        if (this.mCallMptyCall != null && this.mCallMptyCall.size() > 0) {
             dest.writeInt(this.mCallMptyCall.size());
             dest.writeBooleanArray(getCallMpty());
         } else {
             dest.writeInt(0);
         }
-        ArrayList<Long> arrayList12 = this.mConnectedTime;
-        if (arrayList12 != null && arrayList12.size() > 0) {
+        if (this.mConnectedTime != null && this.mConnectedTime.size() > 0) {
             dest.writeInt(this.mConnectedTime.size());
             dest.writeLongArray(getConnectedTime());
         } else {
@@ -410,22 +397,5 @@ public class PublishDialog implements Parcelable {
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    /* renamed from: com.android.internal.telephony.PublishDialog$1 */
-    /* loaded from: classes5.dex */
-    class AnonymousClass1 implements Parcelable.Creator<PublishDialog> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PublishDialog createFromParcel(Parcel in) {
-            return new PublishDialog(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public PublishDialog[] newArray(int size) {
-            return new PublishDialog[size];
-        }
     }
 }

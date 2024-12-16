@@ -10,16 +10,13 @@ import android.os.OutcomeReceiver;
 public class FullscreenRequestHandler {
     public static final String REMOTE_CALLBACK_RESULT_KEY = "result";
     public static final int RESULT_APPROVED = 0;
-    public static final int RESULT_FAILED_NOT_DEFAULT_FREEFORM = 3;
-    public static final int RESULT_FAILED_NOT_IN_FREEFORM = 1;
-    public static final int RESULT_FAILED_NOT_IN_FULLSCREEN_WITH_HISTORY = 2;
-    public static final int RESULT_FAILED_NOT_TOP_FOCUSED = 4;
+    public static final int RESULT_FAILED_NOT_IN_FULLSCREEN_WITH_HISTORY = 1;
+    public static final int RESULT_FAILED_NOT_TOP_FOCUSED = 2;
 
-    /* loaded from: classes.dex */
     public @interface RequestResult {
     }
 
-    public static void requestFullscreenMode(int request, OutcomeReceiver<Void, Throwable> approvalCallback, Configuration config, IBinder token) {
+    static void requestFullscreenMode(int request, final OutcomeReceiver<Void, Throwable> approvalCallback, Configuration config, IBinder token) {
         int earlyCheck = earlyCheckRequestMatchesWindowingMode(request, config.windowConfiguration.getWindowingMode());
         if (earlyCheck != 0) {
             if (approvalCallback != null) {
@@ -31,9 +28,6 @@ public class FullscreenRequestHandler {
         try {
             if (approvalCallback != null) {
                 ActivityClient.getInstance().requestMultiwindowFullscreen(token, request, new IRemoteCallback.Stub() { // from class: android.app.FullscreenRequestHandler.1
-                    AnonymousClass1() {
-                    }
-
                     @Override // android.os.IRemoteCallback
                     public void sendResult(Bundle res) {
                         FullscreenRequestHandler.notifyFullscreenRequestResult(OutcomeReceiver.this, res.getInt("result"));
@@ -49,31 +43,14 @@ public class FullscreenRequestHandler {
         }
     }
 
-    /* renamed from: android.app.FullscreenRequestHandler$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends IRemoteCallback.Stub {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.IRemoteCallback
-        public void sendResult(Bundle res) {
-            FullscreenRequestHandler.notifyFullscreenRequestResult(OutcomeReceiver.this, res.getInt("result"));
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public static void notifyFullscreenRequestResult(OutcomeReceiver<Void, Throwable> callback, int result) {
         Throwable e = null;
         switch (result) {
             case 1:
-                e = new IllegalStateException("The window is not a freeform window, the request to get into fullscreen cannot be approved.");
-                break;
-            case 2:
                 e = new IllegalStateException("The window is not in fullscreen by calling the requestFullscreenMode API before, such that cannot be restored.");
                 break;
-            case 3:
-                e = new IllegalStateException("The window is not launched in freeform by default.");
-                break;
-            case 4:
+            case 2:
                 e = new IllegalStateException("The window is not the top focused window.");
                 break;
             default:
@@ -86,14 +63,8 @@ public class FullscreenRequestHandler {
     }
 
     private static int earlyCheckRequestMatchesWindowingMode(int request, int windowingMode) {
-        if (request == 1) {
-            if (windowingMode != 5) {
-                return 1;
-            }
-            return 0;
-        }
-        if (windowingMode != 1) {
-            return 2;
+        if (request == 0 && windowingMode != 1) {
+            return 1;
         }
         return 0;
     }

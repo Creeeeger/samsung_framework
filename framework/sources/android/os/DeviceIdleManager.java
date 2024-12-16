@@ -14,7 +14,7 @@ public class DeviceIdleManager {
         this.mService = service;
     }
 
-    public IDeviceIdleController getService() {
+    IDeviceIdleController getService() {
         return this.mService;
     }
 

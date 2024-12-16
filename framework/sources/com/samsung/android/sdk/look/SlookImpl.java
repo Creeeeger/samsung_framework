@@ -14,7 +14,7 @@ import android.os.UserHandle;
 import com.samsung.android.cocktailbar.CocktailBarManager;
 import java.util.List;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SlookImpl {
     private static final int AIRBUTTON = 1;
     private static final int COCKTAIL_BAR = 6;
@@ -28,7 +28,6 @@ public class SlookImpl {
     private static int sUspLevel = -1;
     private static int sHasMetaEdgeSingle = -1;
 
-    /* loaded from: classes5.dex */
     public static class VERSION_CODES {
         public static final int L1 = 1;
         public static final int L2 = 2;
@@ -46,45 +45,44 @@ public class SlookImpl {
                     ActivityThread.getPackageManager();
                 }
                 if (type == 1) {
-                    int i = sUspLevel;
-                    return i >= 2 && i <= 3;
+                    if (sUspLevel < 2 || sUspLevel > 3) {
+                        break;
+                    }
+                } else if (type == 3) {
+                    if (sUspLevel < 2 || sUspLevel > 9) {
+                        break;
+                    }
+                } else if (sUspLevel < 2) {
+                    break;
                 }
-                if (type != 3) {
-                    return sUspLevel >= 2;
-                }
-                int i2 = sUspLevel;
-                return i2 >= 2 && i2 <= 9;
-            case 2:
-            case 4:
-                return false;
-            case 5:
-            default:
-                return false;
+                break;
             case 6:
                 checkCocktailLevel();
-                int i3 = sCocktailLevel;
-                if (i3 > 0 && i3 <= type) {
-                    return true;
+                if (sCocktailLevel <= 0 || sCocktailLevel > type) {
+                    if (sCocktailLevel > 0) {
+                        checkValidCocktailMetaData();
+                        if (sHasMetaEdgeSingle != 1) {
+                            break;
+                        }
+                    }
                 }
-                if (i3 <= 0) {
-                    return false;
-                }
-                checkValidCocktailMetaData();
-                return sHasMetaEdgeSingle == 1;
+                break;
             case 7:
                 checkCocktailLevel();
-                int i4 = sCocktailLevel;
-                return i4 > 0 && i4 <= type;
+                if (sCocktailLevel <= 0 || sCocktailLevel > type) {
+                    break;
+                }
+                break;
         }
+        return false;
     }
 
     private static void checkCocktailLevel() {
         IPackageManager pm;
         if (sCocktailLevel == -1 && (pm = ActivityThread.getPackageManager()) != null) {
             try {
-                int i = pm.hasSystemFeature("com.sec.feature.cocktailbar", 0) ? 6 : 0;
-                sCocktailLevel = i;
-                if (i == 0) {
+                sCocktailLevel = pm.hasSystemFeature("com.sec.feature.cocktailbar", 0) ? 6 : 0;
+                if (sCocktailLevel == 0) {
                     sCocktailLevel = pm.hasSystemFeature(PackageManager.SEM_FEATURE_COCKTAIL_PANEL, 0) ? 7 : 0;
                 }
             } catch (RemoteException e) {

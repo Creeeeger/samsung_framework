@@ -5,16 +5,15 @@ import android.os.Parcelable;
 
 /* compiled from: FragmentManager.java */
 /* loaded from: classes.dex */
-public final class FragmentManagerState implements Parcelable {
+final class FragmentManagerState implements Parcelable {
     public static final Parcelable.Creator<FragmentManagerState> CREATOR = new Parcelable.Creator<FragmentManagerState>() { // from class: android.app.FragmentManagerState.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FragmentManagerState createFromParcel(Parcel in) {
             return new FragmentManagerState(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public FragmentManagerState[] newArray(int size) {
             return new FragmentManagerState[size];
@@ -51,23 +50,5 @@ public final class FragmentManagerState implements Parcelable {
         dest.writeTypedArray(this.mBackStack, flags);
         dest.writeInt(this.mPrimaryNavActiveIndex);
         dest.writeInt(this.mNextFragmentIndex);
-    }
-
-    /* compiled from: FragmentManager.java */
-    /* renamed from: android.app.FragmentManagerState$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<FragmentManagerState> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FragmentManagerState createFromParcel(Parcel in) {
-            return new FragmentManagerState(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public FragmentManagerState[] newArray(int size) {
-            return new FragmentManagerState[size];
-        }
     }
 }

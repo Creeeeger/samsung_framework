@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public abstract class Qos {
+/* loaded from: classes4.dex */
+public abstract class Qos implements Parcelable {
     static final int QOS_TYPE_EPS = 1;
     static final int QOS_TYPE_NR = 2;
     final QosBandwidth downlink;
@@ -15,11 +15,10 @@ public abstract class Qos {
     final QosBandwidth uplink;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface QosType {
     }
 
-    public Qos(int type, QosBandwidth downlink, QosBandwidth uplink) {
+    Qos(int type, QosBandwidth downlink, QosBandwidth uplink) {
         this.type = type;
         this.downlink = downlink;
         this.uplink = uplink;
@@ -33,17 +32,15 @@ public abstract class Qos {
         return this.uplink;
     }
 
-    /* loaded from: classes3.dex */
     public static class QosBandwidth implements Parcelable {
         public static final Parcelable.Creator<QosBandwidth> CREATOR = new Parcelable.Creator<QosBandwidth>() { // from class: android.telephony.data.Qos.QosBandwidth.1
-            AnonymousClass1() {
-            }
-
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public QosBandwidth createFromParcel(Parcel source) {
                 return new QosBandwidth(source);
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // android.os.Parcelable.Creator
             public QosBandwidth[] newArray(int size) {
                 return new QosBandwidth[size];
@@ -51,10 +48,6 @@ public abstract class Qos {
         };
         int guaranteedBitrateKbps;
         int maxBitrateKbps;
-
-        /* synthetic */ QosBandwidth(Parcel parcel, QosBandwidthIA qosBandwidthIA) {
-            this(parcel);
-        }
 
         public QosBandwidth(int maxBitrateKbps, int guaranteedBitrateKbps) {
             this.maxBitrateKbps = maxBitrateKbps;
@@ -106,26 +99,9 @@ public abstract class Qos {
         public String toString() {
             return "Bandwidth { maxBitrateKbps=" + this.maxBitrateKbps + " guaranteedBitrateKbps=" + this.guaranteedBitrateKbps + "}";
         }
-
-        /* renamed from: android.telephony.data.Qos$QosBandwidth$1 */
-        /* loaded from: classes3.dex */
-        class AnonymousClass1 implements Parcelable.Creator<QosBandwidth> {
-            AnonymousClass1() {
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public QosBandwidth createFromParcel(Parcel source) {
-                return new QosBandwidth(source);
-            }
-
-            @Override // android.os.Parcelable.Creator
-            public QosBandwidth[] newArray(int size) {
-                return new QosBandwidth[size];
-            }
-        }
     }
 
-    public Qos(Parcel source) {
+    protected Qos(Parcel source) {
         this.type = source.readInt();
         this.downlink = (QosBandwidth) source.readParcelable(QosBandwidth.class.getClassLoader(), QosBandwidth.class);
         this.uplink = (QosBandwidth) source.readParcelable(QosBandwidth.class.getClassLoader(), QosBandwidth.class);

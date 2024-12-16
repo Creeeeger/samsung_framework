@@ -1,6 +1,5 @@
 package android.util;
 
-import com.samsung.android.ims.options.SemCapabilities;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,7 @@ public class DebugUtils {
                     } while (declaredMethod == null);
                     if (declaredMethod != null) {
                         Object value = declaredMethod.invoke(object, null);
-                        match |= (value != null ? value.toString() : SemCapabilities.FEATURE_TAG_NULL).matches(pair[1]);
+                        match |= (value != null ? value.toString() : "null").matches(pair[1]);
                     }
                 }
             }
@@ -56,7 +55,7 @@ public class DebugUtils {
     public static void buildShortClassTag(Object cls, StringBuilder out) {
         int end;
         if (cls == null) {
-            out.append(SemCapabilities.FEATURE_TAG_NULL);
+            out.append("null");
             return;
         }
         String simpleName = cls.getClass().getSimpleName();
@@ -70,7 +69,7 @@ public class DebugUtils {
 
     public static void printSizeValue(PrintWriter pw, long number) {
         String value;
-        float result = (float) number;
+        float result = number;
         String suffix = "";
         if (result > 900.0f) {
             suffix = "KB";
@@ -110,7 +109,7 @@ public class DebugUtils {
         if (outBuilder == null) {
             outBuilder = new StringBuilder(32);
         }
-        float result = (float) number;
+        float result = number;
         String suffix = "";
         if (result > 900.0f) {
             suffix = "KB";

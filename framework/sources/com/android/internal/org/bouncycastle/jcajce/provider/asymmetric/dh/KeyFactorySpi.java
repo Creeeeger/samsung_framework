@@ -23,7 +23,7 @@ import javax.crypto.spec.DHPublicKeySpec;
 /* loaded from: classes5.dex */
 public class KeyFactorySpi extends BaseKeyFactorySpi {
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
+    protected KeySpec engineGetKeySpec(Key key, Class spec) throws InvalidKeySpecException {
         if (spec.isAssignableFrom(DHPrivateKeySpec.class) && (key instanceof DHPrivateKey)) {
             DHPrivateKey k = (DHPrivateKey) key;
             return new DHPrivateKeySpec(k.getX(), k.getParams().getP(), k.getParams().getG());
@@ -47,7 +47,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PrivateKey engineGeneratePrivate(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof DHPrivateKeySpec) {
             return new BCDHPrivateKey((DHPrivateKeySpec) keySpec);
         }
@@ -55,7 +55,7 @@ public class KeyFactorySpi extends BaseKeyFactorySpi {
     }
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.asymmetric.util.BaseKeyFactorySpi, java.security.KeyFactorySpi
-    public PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
+    protected PublicKey engineGeneratePublic(KeySpec keySpec) throws InvalidKeySpecException {
         if (keySpec instanceof DHPublicKeySpec) {
             try {
                 return new BCDHPublicKey((DHPublicKeySpec) keySpec);

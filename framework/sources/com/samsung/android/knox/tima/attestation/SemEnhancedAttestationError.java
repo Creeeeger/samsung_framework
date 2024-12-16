@@ -1,6 +1,6 @@
 package com.samsung.android.knox.tima.attestation;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemEnhancedAttestationError {
     public static final int ERROR_BIND_FAIL = -7;
     public static final int ERROR_DEVICE_NOT_SUPPORTED = -4;
@@ -24,41 +24,36 @@ public class SemEnhancedAttestationError {
     }
 
     public int getError() {
-        EnhancedAttestationResult enhancedAttestationResult = this.result;
-        if (enhancedAttestationResult != null) {
-            return enhancedAttestationResult.getError();
+        if (this.result != null) {
+            return this.result.getError();
         }
         return -1;
     }
 
     public String getReason() {
-        EnhancedAttestationResult enhancedAttestationResult = this.result;
-        if (enhancedAttestationResult != null) {
-            return enhancedAttestationResult.getReason();
+        if (this.result != null) {
+            return this.result.getReason();
         }
         return null;
     }
 
     public String getUniqueId() {
-        EnhancedAttestationResult enhancedAttestationResult = this.result;
-        if (enhancedAttestationResult != null) {
-            return enhancedAttestationResult.getUniqueId();
+        if (this.result != null) {
+            return this.result.getUniqueId();
         }
         return null;
     }
 
     public String getResponseId() {
-        EnhancedAttestationResult enhancedAttestationResult = this.result;
-        if (enhancedAttestationResult != null) {
-            return enhancedAttestationResult.getServerResponseId();
+        if (this.result != null) {
+            return this.result.getServerResponseId();
         }
         return null;
     }
 
     public int getRetryAfter() {
-        EnhancedAttestationResult enhancedAttestationResult = this.result;
-        if (enhancedAttestationResult != null) {
-            return enhancedAttestationResult.getRetryAfterTime();
+        if (this.result != null) {
+            return this.result.getRetryAfterTime();
         }
         return -1;
     }

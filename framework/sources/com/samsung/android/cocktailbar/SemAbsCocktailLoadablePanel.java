@@ -20,12 +20,10 @@ public abstract class SemAbsCocktailLoadablePanel {
     private CocktailLoadablePanelListener mListener;
     private OnCocktailClickHandler mOnCocktailClickHandler;
 
-    /* loaded from: classes5.dex */
     public interface CocktailLoadablePanelListener {
         void sendOptions(Bundle bundle);
     }
 
-    /* loaded from: classes5.dex */
     public interface OnCocktailClickHandler {
         boolean onClickHandler(View view, PendingIntent pendingIntent);
     }
@@ -77,9 +75,8 @@ public abstract class SemAbsCocktailLoadablePanel {
     }
 
     public boolean performOnClickInCocktailBar(View view, PendingIntent pendingIntent) {
-        OnCocktailClickHandler onCocktailClickHandler = this.mOnCocktailClickHandler;
-        if (onCocktailClickHandler != null) {
-            return onCocktailClickHandler.onClickHandler(view, pendingIntent);
+        if (this.mOnCocktailClickHandler != null) {
+            return this.mOnCocktailClickHandler.onClickHandler(view, pendingIntent);
         }
         Log.e(TAG, "CocktailClickHandler was not set yet");
         return false;

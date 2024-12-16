@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextCallMotion extends SContextEventContext {
     public static final Parcelable.Creator<SContextCallMotion> CREATOR = new Parcelable.Creator<SContextCallMotion>() { // from class: android.hardware.scontext.SContextCallMotion.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextCallMotion createFromParcel(Parcel in) {
             return new SContextCallMotion(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextCallMotion[] newArray(int size) {
             return new SContextCallMotion[size];
@@ -23,7 +22,7 @@ public class SContextCallMotion extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextCallMotion() {
+    SContextCallMotion() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextCallMotion extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextCallMotion$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextCallMotion> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextCallMotion createFromParcel(Parcel in) {
-            return new SContextCallMotion(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextCallMotion[] newArray(int size) {
-            return new SContextCallMotion[size];
-        }
     }
 }

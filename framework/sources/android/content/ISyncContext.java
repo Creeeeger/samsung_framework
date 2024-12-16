@@ -12,7 +12,6 @@ public interface ISyncContext extends IInterface {
 
     void sendHeartbeat() throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISyncContext {
         @Override // android.content.ISyncContext
         public void sendHeartbeat() throws RemoteException {
@@ -28,7 +27,6 @@ public interface ISyncContext extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISyncContext {
         public static final String DESCRIPTOR = "android.content.ISyncContext";
         static final int TRANSACTION_onFinished = 2;
@@ -75,31 +73,27 @@ public interface ISyncContext extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    sendHeartbeat();
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    SyncResult _arg0 = (SyncResult) data.readTypedObject(SyncResult.CREATOR);
+                    data.enforceNoDataAvail();
+                    onFinished(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            sendHeartbeat();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            SyncResult _arg0 = (SyncResult) data.readTypedObject(SyncResult.CREATOR);
-                            data.enforceNoDataAvail();
-                            onFinished(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISyncContext {
+        private static class Proxy implements ISyncContext {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

@@ -1,15 +1,13 @@
 package com.samsung.android.ims.settings;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemImsConstant {
 
-    /* loaded from: classes5.dex */
     public enum ImsFeature {
         VOICE_CALL,
         VIDEO_CALL
     }
 
-    /* loaded from: classes5.dex */
     public static class ImsTech {
         public static final String SERVICE_CDPN = "cdpn";
         public static final String SERVICE_MMTEL_VOICE = "mmtel";
@@ -19,7 +17,6 @@ public class SemImsConstant {
         public static final String VOLTE_SERVICE = "volte";
     }
 
-    /* loaded from: classes5.dex */
     public static class MultiDeviceMultiNumber {
         public static final String DEVICE_GROUP = "DeviceGroup";
         public static final String JANSKY = "Jansky";

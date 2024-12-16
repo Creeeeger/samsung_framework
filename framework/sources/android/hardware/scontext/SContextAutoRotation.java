@@ -8,14 +8,13 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class SContextAutoRotation extends SContextEventContext {
     public static final Parcelable.Creator<SContextAutoRotation> CREATOR = new Parcelable.Creator<SContextAutoRotation>() { // from class: android.hardware.scontext.SContextAutoRotation.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAutoRotation createFromParcel(Parcel in) {
             return new SContextAutoRotation(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SContextAutoRotation[] newArray(int size) {
             return new SContextAutoRotation[size];
@@ -23,7 +22,7 @@ public class SContextAutoRotation extends SContextEventContext {
     };
     private Bundle mContext;
 
-    public SContextAutoRotation() {
+    SContextAutoRotation() {
         this.mContext = new Bundle();
     }
 
@@ -47,22 +46,5 @@ public class SContextAutoRotation extends SContextEventContext {
 
     private void readFromParcel(Parcel src) {
         this.mContext = src.readBundle();
-    }
-
-    /* renamed from: android.hardware.scontext.SContextAutoRotation$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SContextAutoRotation> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAutoRotation createFromParcel(Parcel in) {
-            return new SContextAutoRotation(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SContextAutoRotation[] newArray(int size) {
-            return new SContextAutoRotation[size];
-        }
     }
 }

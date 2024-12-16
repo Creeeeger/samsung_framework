@@ -20,7 +20,6 @@ public final class InputMethodManagerServiceProto {
     public static final long IN_FULLSCREEN_MODE = 1133871366157L;
     public static final long IS_INTERACTIVE = 1133871366164L;
     public static final long LAST_IME_TARGET_WINDOW_NAME = 1138166333445L;
-    public static final long LAST_SWITCH_USER_ID = 1120986464273L;
     public static final long SHOW_EXPLICITLY_REQUESTED = 1133871366154L;
     public static final long SHOW_FORCED = 1133871366155L;
     public static final long SHOW_IME_WITH_HARD_KEYBOARD = 1133871366167L;

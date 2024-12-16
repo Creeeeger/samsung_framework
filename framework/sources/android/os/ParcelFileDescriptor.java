@@ -6,9 +6,9 @@ import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 import android.system.StructStat;
+import android.util.CloseGuard;
 import android.util.Log;
 import android.util.Slog;
-import dalvik.system.CloseGuard;
 import dalvik.system.VMRuntime;
 import java.io.Closeable;
 import java.io.File;
@@ -28,9 +28,7 @@ import libcore.io.Memory;
 /* loaded from: classes3.dex */
 public class ParcelFileDescriptor implements Parcelable, Closeable {
     public static final Parcelable.Creator<ParcelFileDescriptor> CREATOR = new Parcelable.Creator<ParcelFileDescriptor>() { // from class: android.os.ParcelFileDescriptor.2
-        AnonymousClass2() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelFileDescriptor createFromParcel(Parcel in) {
             int hasCommChannel = in.readInt();
@@ -42,6 +40,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             return new ParcelFileDescriptor(fd, commChannel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public ParcelFileDescriptor[] newArray(int size) {
             return new ParcelFileDescriptor[size];
@@ -69,10 +68,20 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     private byte[] mStatusBuf;
     private final ParcelFileDescriptor mWrapped;
 
-    /* loaded from: classes3.dex */
     public interface OnCloseListener {
         void onClose(IOException iOException);
     }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void native_close$ravenwood(FileDescriptor fileDescriptor);
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native int native_getFdInt$ravenwood(FileDescriptor fileDescriptor);
+
+    private static native FileDescriptor native_open$ravenwood(File file, int i) throws IOException;
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void native_setFdInt$ravenwood(FileDescriptor fileDescriptor, int i);
 
     public ParcelFileDescriptor(ParcelFileDescriptor wrapped) {
         this.mGuard = CloseGuard.get();
@@ -87,19 +96,18 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public ParcelFileDescriptor(FileDescriptor fd, FileDescriptor commChannel) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mGuard = closeGuard;
+        this.mGuard = CloseGuard.get();
         if (fd == null) {
             throw new NullPointerException("FileDescriptor must not be null");
         }
         this.mWrapped = null;
         this.mFd = fd;
-        IoUtils.setFdOwner(fd, this);
+        setFdOwner(this.mFd);
         this.mCommFd = commChannel;
-        if (commChannel != null) {
-            IoUtils.setFdOwner(commChannel, this);
+        if (this.mCommFd != null) {
+            setFdOwner(this.mCommFd);
         }
-        closeGuard.open("close");
+        this.mGuard.open("close");
     }
 
     public static ParcelFileDescriptor open(File file, int mode) throws FileNotFoundException {
@@ -126,11 +134,11 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
     public static ParcelFileDescriptor wrap(ParcelFileDescriptor pfd, Handler handler, OnCloseListener listener) throws IOException {
         FileDescriptor original = new FileDescriptor();
-        original.setInt$(pfd.detachFd());
+        setFdInt(original, pfd.detachFd());
         return fromFd(original, handler, listener);
     }
 
-    public static ParcelFileDescriptor fromFd(FileDescriptor fd, Handler handler, OnCloseListener listener) throws IOException {
+    public static ParcelFileDescriptor fromFd(FileDescriptor fd, Handler handler, final OnCloseListener listener) throws IOException {
         if (handler == null) {
             throw new IllegalArgumentException("Handler must not be null");
         }
@@ -139,14 +147,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
         FileDescriptor[] comm = createCommSocketPair();
         ParcelFileDescriptor pfd = new ParcelFileDescriptor(fd, comm[0]);
-        MessageQueue queue = handler.getLooper().getQueue();
+        final MessageQueue queue = handler.getLooper().getQueue();
         queue.addOnFileDescriptorEventListener(comm[1], 1, new MessageQueue.OnFileDescriptorEventListener() { // from class: android.os.ParcelFileDescriptor.1
-            final /* synthetic */ OnCloseListener val$listener;
-
-            AnonymousClass1(OnCloseListener listener2) {
-                listener = listener2;
-            }
-
             @Override // android.os.MessageQueue.OnFileDescriptorEventListener
             public int onFileDescriptorEvents(FileDescriptor fd2, int events) {
                 Status status = null;
@@ -158,7 +160,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
                 }
                 if (status != null) {
                     MessageQueue.this.removeOnFileDescriptorEventListener(fd2);
-                    IoUtils.closeQuietly(fd2);
+                    ParcelFileDescriptor.closeInternal(fd2);
                     listener.onClose(status.asIOException());
                     return 0;
                 }
@@ -166,34 +168,6 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             }
         });
         return pfd;
-    }
-
-    /* renamed from: android.os.ParcelFileDescriptor$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements MessageQueue.OnFileDescriptorEventListener {
-        final /* synthetic */ OnCloseListener val$listener;
-
-        AnonymousClass1(OnCloseListener listener2) {
-            listener = listener2;
-        }
-
-        @Override // android.os.MessageQueue.OnFileDescriptorEventListener
-        public int onFileDescriptorEvents(FileDescriptor fd2, int events) {
-            Status status = null;
-            if ((events & 1) != 0) {
-                byte[] buf = new byte[1024];
-                status = ParcelFileDescriptor.readCommStatus(fd2, buf);
-            } else if ((events & 4) != 0) {
-                status = new Status(-2);
-            }
-            if (status != null) {
-                MessageQueue.this.removeOnFileDescriptorEventListener(fd2);
-                IoUtils.closeQuietly(fd2);
-                listener.onClose(status.asIOException());
-                return 0;
-            }
-            return 1;
-        }
     }
 
     private static FileDescriptor openInternal(File file, int mode) throws FileNotFoundException {
@@ -216,11 +190,26 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
+    private static FileDescriptor openInternal$ravenwood(File file, int mode) throws FileNotFoundException {
+        try {
+            return native_open$ravenwood(file, mode);
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e2) {
+            throw new FileNotFoundException(e2.getMessage());
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void closeInternal(FileDescriptor fd) {
+        IoUtils.closeQuietly(fd);
+    }
+
     public static ParcelFileDescriptor dup(FileDescriptor orig) throws IOException {
         try {
             FileDescriptor fd = new FileDescriptor();
             int intfd = Os.fcntlInt(orig, isAtLeastQ() ? OsConstants.F_DUPFD_CLOEXEC : OsConstants.F_DUPFD, 0);
-            fd.setInt$(intfd);
+            setFdInt(fd, intfd);
             return new ParcelFileDescriptor(fd);
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
@@ -228,20 +217,19 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public ParcelFileDescriptor dup() throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.dup();
+        if (this.mWrapped != null) {
+            return this.mWrapped.dup();
         }
         return dup(getFileDescriptor());
     }
 
     public static ParcelFileDescriptor fromFd(int fd) throws IOException {
         FileDescriptor original = new FileDescriptor();
-        original.setInt$(fd);
+        setFdInt(original, fd);
         try {
             FileDescriptor dup = new FileDescriptor();
             int intfd = Os.fcntlInt(original, isAtLeastQ() ? OsConstants.F_DUPFD_CLOEXEC : OsConstants.F_DUPFD, 0);
-            dup.setInt$(intfd);
+            setFdInt(dup, intfd);
             return new ParcelFileDescriptor(dup);
         } catch (ErrnoException e) {
             throw e.rethrowAsIOException();
@@ -250,7 +238,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
     public static ParcelFileDescriptor adoptFd(int fd) {
         FileDescriptor fdesc = new FileDescriptor();
-        fdesc.setInt$(fd);
+        setFdInt(fdesc, fd);
         return new ParcelFileDescriptor(fdesc);
     }
 
@@ -365,7 +353,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
     public static File getFile(FileDescriptor fd) throws IOException {
         try {
-            String path = Os.readlink("/proc/self/fd/" + fd.getInt$());
+            String path = Os.readlink("/proc/self/fd/" + getFdInt(fd));
             if (!OsConstants.S_ISREG(Os.stat(path).st_mode) && !OsConstants.S_ISCHR(Os.stat(path).st_mode)) {
                 throw new IOException("Not a regular file or character device: " + path);
             }
@@ -376,17 +364,15 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public FileDescriptor getFileDescriptor() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.getFileDescriptor();
+        if (this.mWrapped != null) {
+            return this.mWrapped.getFileDescriptor();
         }
         return this.mFd;
     }
 
     public long getStatSize() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.getStatSize();
+        if (this.mWrapped != null) {
+            return this.mWrapped.getStatSize();
         }
         try {
             StructStat st = Os.fstat(this.mFd);
@@ -401,9 +387,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public long seekTo(long pos) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.seekTo(pos);
+        if (this.mWrapped != null) {
+            return this.mWrapped.seekTo(pos);
         }
         try {
             return Os.lseek(this.mFd, pos, OsConstants.SEEK_SET);
@@ -413,25 +398,23 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public int getFd() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.getFd();
+        if (this.mWrapped != null) {
+            return this.mWrapped.getFd();
         }
         if (this.mClosed) {
             throw new IllegalStateException("Already closed");
         }
-        return this.mFd.getInt$();
+        return getFdInt(this.mFd);
     }
 
     public int detachFd() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.detachFd();
+        if (this.mWrapped != null) {
+            return this.mWrapped.detachFd();
         }
         if (this.mClosed) {
             throw new IllegalStateException("Already closed");
         }
-        int fd = IoUtils.acquireRawFd(this.mFd);
+        int fd = acquireRawFd(this.mFd);
         writeCommStatusAndClose(2, null);
         this.mClosed = true;
         this.mGuard.close();
@@ -441,10 +424,9 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
     @Override // java.io.Closeable, java.lang.AutoCloseable
     public void close() throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
+        if (this.mWrapped != null) {
             try {
-                parcelFileDescriptor.close();
+                this.mWrapped.close();
                 return;
             } finally {
                 releaseResources();
@@ -454,10 +436,9 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public void closeWithError(String msg) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
+        if (this.mWrapped != null) {
             try {
-                parcelFileDescriptor.closeWithError(msg);
+                this.mWrapped.closeWithError(msg);
             } finally {
                 releaseResources();
             }
@@ -474,12 +455,11 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             return;
         }
         this.mClosed = true;
-        CloseGuard closeGuard = this.mGuard;
-        if (closeGuard != null) {
-            closeGuard.close();
+        if (this.mGuard != null) {
+            this.mGuard.close();
         }
         writeCommStatusAndClose(status, msg);
-        IoUtils.closeQuietly(this.mFd);
+        closeInternal(this.mFd);
         releaseResources();
     }
 
@@ -508,9 +488,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
             return;
         }
         try {
-            Status readCommStatus = readCommStatus(this.mCommFd, getOrCreateStatusBuffer());
-            this.mStatus = readCommStatus;
-            if (readCommStatus != null) {
+            this.mStatus = readCommStatus(this.mCommFd, getOrCreateStatusBuffer());
+            if (this.mStatus != null) {
                 return;
             }
             try {
@@ -530,11 +509,12 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
                 Log.w(TAG, "Failed to report status: " + e2);
             }
         } finally {
-            IoUtils.closeQuietly(this.mCommFd);
+            closeInternal(this.mCommFd);
             this.mCommFd = null;
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public static Status readCommStatus(FileDescriptor comm, byte[] buf) {
         try {
             int n = Os.read(comm, buf, 0, buf.length);
@@ -560,35 +540,30 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public boolean canDetectErrors() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.canDetectErrors();
+        if (this.mWrapped != null) {
+            return this.mWrapped.canDetectErrors();
         }
         return this.mCommFd != null;
     }
 
     public void checkError() throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            parcelFileDescriptor.checkError();
+        if (this.mWrapped != null) {
+            this.mWrapped.checkError();
             return;
         }
         if (this.mStatus == null) {
-            FileDescriptor fileDescriptor = this.mCommFd;
-            if (fileDescriptor == null) {
+            if (this.mCommFd == null) {
                 Log.w(TAG, "Peer didn't provide a comm channel; unable to check for errors");
                 return;
             }
-            this.mStatus = readCommStatus(fileDescriptor, getOrCreateStatusBuffer());
+            this.mStatus = readCommStatus(this.mCommFd, getOrCreateStatusBuffer());
         }
-        Status status = this.mStatus;
-        if (status == null || status.status == 0) {
+        if (this.mStatus == null || this.mStatus.status == 0) {
         } else {
             throw this.mStatus.asIOException();
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class AutoCloseInputStream extends FileInputStream {
         private final ParcelFileDescriptor mPfd;
 
@@ -634,14 +609,12 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class KumihoInputStream extends AutoCloseInputStream {
         public KumihoInputStream(ParcelFileDescriptor pfd) throws IOException {
             super(pfd);
         }
     }
 
-    /* loaded from: classes3.dex */
     public static class AutoCloseOutputStream extends FileOutputStream {
         private final ParcelFileDescriptor mPfd;
 
@@ -661,9 +634,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
     }
 
     public String toString() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.toString();
+        if (this.mWrapped != null) {
+            return this.mWrapped.toString();
         }
         return "{ParcelFileDescriptor: " + this.mFd + "}";
     }
@@ -672,9 +644,8 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         if (this.mWrapped != null) {
             releaseResources();
         }
-        CloseGuard closeGuard = this.mGuard;
-        if (closeGuard != null) {
-            closeGuard.warnIfOpen();
+        if (this.mGuard != null) {
+            this.mGuard.warnIfOpen();
         }
         try {
             if (!this.mClosed) {
@@ -687,19 +658,17 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
 
     @Override // android.os.Parcelable
     public int describeContents() {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
-            return parcelFileDescriptor.describeContents();
+        if (this.mWrapped != null) {
+            return this.mWrapped.describeContents();
         }
         return 1;
     }
 
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flags) {
-        ParcelFileDescriptor parcelFileDescriptor = this.mWrapped;
-        if (parcelFileDescriptor != null) {
+        if (this.mWrapped != null) {
             try {
-                parcelFileDescriptor.writeToParcel(out, flags);
+                this.mWrapped.writeToParcel(out, flags);
                 return;
             } finally {
                 releaseResources();
@@ -718,30 +687,6 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
-    /* renamed from: android.os.ParcelFileDescriptor$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 implements Parcelable.Creator<ParcelFileDescriptor> {
-        AnonymousClass2() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelFileDescriptor createFromParcel(Parcel in) {
-            int hasCommChannel = in.readInt();
-            FileDescriptor fd = in.readRawFileDescriptor();
-            FileDescriptor commChannel = null;
-            if (hasCommChannel != 0) {
-                commChannel = in.readRawFileDescriptor();
-            }
-            return new ParcelFileDescriptor(fd, commChannel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ParcelFileDescriptor[] newArray(int size) {
-            return new ParcelFileDescriptor[size];
-        }
-    }
-
-    /* loaded from: classes3.dex */
     public static class FileDescriptorDetachedException extends IOException {
         private static final long serialVersionUID = 955542466045L;
 
@@ -750,8 +695,7 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static class Status {
+    private static class Status {
         public static final int DEAD = -2;
         public static final int DETACHED = 2;
         public static final int ERROR = 1;
@@ -791,6 +735,29 @@ public class ParcelFileDescriptor implements Parcelable, Closeable {
         public String toString() {
             return "{" + this.status + ": " + this.msg + "}";
         }
+    }
+
+    private static void setFdInt(FileDescriptor fd, int fdInt) {
+        fd.setInt$(fdInt);
+    }
+
+    private static int getFdInt(FileDescriptor fd) {
+        return fd.getInt$();
+    }
+
+    private void setFdOwner(FileDescriptor fd) {
+        IoUtils.setFdOwner(fd, this);
+    }
+
+    private void setFdOwner$ravenwood(FileDescriptor fd) {
+    }
+
+    private int acquireRawFd(FileDescriptor fd) {
+        return IoUtils.acquireRawFd(fd);
+    }
+
+    private int acquireRawFd$ravenwood(FileDescriptor fd) {
+        return getFdInt(fd);
     }
 
     private static boolean isAtLeastQ() {

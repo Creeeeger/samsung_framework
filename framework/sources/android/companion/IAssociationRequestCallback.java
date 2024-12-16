@@ -18,7 +18,6 @@ public interface IAssociationRequestCallback extends IInterface {
 
     void onFailure(CharSequence charSequence) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IAssociationRequestCallback {
         @Override // android.companion.IAssociationRequestCallback
         public void onAssociationPending(PendingIntent pendingIntent) throws RemoteException {
@@ -38,7 +37,6 @@ public interface IAssociationRequestCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IAssociationRequestCallback {
         static final int TRANSACTION_onAssociationCreated = 2;
         static final int TRANSACTION_onAssociationPending = 1;
@@ -87,36 +85,32 @@ public interface IAssociationRequestCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAssociationRequestCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAssociationRequestCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAssociationRequestCallback.DESCRIPTOR);
+                case 1:
+                    PendingIntent _arg0 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAssociationPending(_arg0);
+                    return true;
+                case 2:
+                    AssociationInfo _arg02 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onAssociationCreated(_arg02);
+                    return true;
+                case 3:
+                    CharSequence _arg03 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
+                    data.enforceNoDataAvail();
+                    onFailure(_arg03);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            PendingIntent _arg0 = (PendingIntent) data.readTypedObject(PendingIntent.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAssociationPending(_arg0);
-                            return true;
-                        case 2:
-                            AssociationInfo _arg02 = (AssociationInfo) data.readTypedObject(AssociationInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            onAssociationCreated(_arg02);
-                            return true;
-                        case 3:
-                            CharSequence _arg03 = (CharSequence) data.readTypedObject(TextUtils.CHAR_SEQUENCE_CREATOR);
-                            data.enforceNoDataAvail();
-                            onFailure(_arg03);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IAssociationRequestCallback {
+        private static class Proxy implements IAssociationRequestCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

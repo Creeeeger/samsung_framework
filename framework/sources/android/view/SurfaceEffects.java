@@ -9,7 +9,6 @@ public class SurfaceEffects {
     public static final Effect EMPTY_EFFECT = newBuilder().build();
     private static final long FRAME_LENGTH_NANOS = 16666666;
 
-    /* loaded from: classes4.dex */
     public enum InterpMode {
         HOLD(0),
         LINEAR(1),
@@ -24,7 +23,6 @@ public class SurfaceEffects {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum AnimationMode {
         STATIC(0),
         LOOP(1),
@@ -39,7 +37,6 @@ public class SurfaceEffects {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum AnimParam {
         ALPHA(12),
         BLUR_RADIUS(13),
@@ -63,7 +60,6 @@ public class SurfaceEffects {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum EffectTarget {
         SELF(1),
         BEHIND(2),
@@ -76,7 +72,6 @@ public class SurfaceEffects {
         }
     }
 
-    /* loaded from: classes4.dex */
     public enum PixEffectType {
         NONE(0),
         BLUR(1),
@@ -90,15 +85,9 @@ public class SurfaceEffects {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class Effect {
         private String mBytes;
 
-        /* synthetic */ Effect(Builder builder, EffectIA effectIA) {
-            this(builder);
-        }
-
-        /* loaded from: classes4.dex */
         public static class Builder {
             private AnimationMode mAnimationMode;
             private final Vector<Rect> mEffectRegion;
@@ -106,10 +95,6 @@ public class SurfaceEffects {
             private final Vector<AnimKeyFrame> mGeometryAnimationVector;
             private final Vector<AnimKeyFrame> mPixelAnimationVector;
             private PixEffectType mPixelEffectType;
-
-            /* synthetic */ Builder(BuilderIA builderIA) {
-                this();
-            }
 
             private Builder() {
                 this.mAnimationMode = AnimationMode.STATIC;
@@ -240,8 +225,7 @@ public class SurfaceEffects {
         return new Effect.Builder();
     }
 
-    /* loaded from: classes4.dex */
-    public static class AnimKeyFrame {
+    private static class AnimKeyFrame {
         public final AnimParam animParam;
         public final InterpMode interp;
         public final int timeMs;

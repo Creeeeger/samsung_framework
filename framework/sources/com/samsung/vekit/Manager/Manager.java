@@ -16,14 +16,14 @@ public class Manager<T> extends Element {
     protected ManagerType managerType;
     protected HashMap<Integer, T> map;
 
-    public Manager(VEContext context, ManagerType type) {
+    protected Manager(VEContext context, ManagerType type) {
         super(context, ElementType.MANAGER, 0, "Manager");
         this.map = new HashMap<>();
         this.managerType = type;
         this.index = 0;
     }
 
-    public int generateUniqueId() throws Exception {
+    protected int generateUniqueId() throws Exception {
         if (this.map.size() >= 2147483646) {
             throw new Exception("Map is full");
         }
@@ -49,6 +49,10 @@ public class Manager<T> extends Element {
         return Collections.unmodifiableMap(this.map);
     }
 
+    public int size() {
+        return this.map.size();
+    }
+
     public void remove(int id) {
         ElementType targetElementType = getTargetElementType(this.managerType);
         if (targetElementType == null) {
@@ -59,48 +63,17 @@ public class Manager<T> extends Element {
         }
     }
 
-    /* renamed from: com.samsung.vekit.Manager.Manager$1 */
-    /* loaded from: classes6.dex */
-    public static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$vekit$Common$Type$ManagerType;
-
-        static {
-            int[] iArr = new int[ManagerType.values().length];
-            $SwitchMap$com$samsung$vekit$Common$Type$ManagerType = iArr;
-            try {
-                iArr[ManagerType.CONTENT.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ManagerType[ManagerType.ITEM.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ManagerType[ManagerType.LAYER.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ManagerType[ManagerType.ANIMATION.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$vekit$Common$Type$ManagerType[ManagerType.FILTER.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-        }
-    }
-
     private ElementType getTargetElementType(ManagerType managerType) {
-        switch (AnonymousClass1.$SwitchMap$com$samsung$vekit$Common$Type$ManagerType[managerType.ordinal()]) {
-            case 1:
+        switch (managerType) {
+            case CONTENT:
                 return ElementType.CONTENT;
-            case 2:
+            case ITEM:
                 return ElementType.ITEM;
-            case 3:
+            case LAYER:
                 return ElementType.LAYER;
-            case 4:
+            case ANIMATION:
                 return ElementType.ANIMATION;
-            case 5:
+            case FILTER:
                 return ElementType.FILTER;
             default:
                 Log.d(this.TAG, "unexpected manager type = " + managerType);

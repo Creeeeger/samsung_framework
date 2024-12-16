@@ -24,7 +24,6 @@ public interface ITAController extends IInterface {
 
     void unloadTA() throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ITAController {
         @Override // android.spay.ITAController
         public boolean loadTA(ParcelFileDescriptor pfd, long offset, long len) throws RemoteException {
@@ -61,7 +60,6 @@ public interface ITAController extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ITAController {
         static final int TRANSACTION_checkCertInfo = 6;
         static final int TRANSACTION_clearDeviceCertificates = 5;
@@ -119,60 +117,57 @@ public interface ITAController extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ITAController.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ITAController.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ITAController.DESCRIPTOR);
+                case 1:
+                    ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
+                    long _arg1 = data.readLong();
+                    long _arg2 = data.readLong();
+                    data.enforceNoDataAvail();
+                    boolean _result = loadTA(_arg0, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    unloadTA();
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    TACommandRequest _arg02 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    TACommandResponse _result2 = processTACommand(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 4:
+                    int _arg03 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result3 = makeSystemCall(_arg03);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result4 = clearDeviceCertificates(_arg04);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 6:
+                    List<String> _arg05 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    CertInfo _result5 = checkCertInfo(_arg05);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result5, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            ParcelFileDescriptor _arg0 = (ParcelFileDescriptor) data.readTypedObject(ParcelFileDescriptor.CREATOR);
-                            long _arg1 = data.readLong();
-                            long _arg2 = data.readLong();
-                            data.enforceNoDataAvail();
-                            boolean _result = loadTA(_arg0, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            unloadTA();
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            TACommandRequest _arg02 = (TACommandRequest) data.readTypedObject(TACommandRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            TACommandResponse _result2 = processTACommand(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 4:
-                            int _arg03 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result3 = makeSystemCall(_arg03);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result4 = clearDeviceCertificates(_arg04);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 6:
-                            List<String> _arg05 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            CertInfo _result5 = checkCertInfo(_arg05);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result5, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ITAController {
             private IBinder mRemote;
 

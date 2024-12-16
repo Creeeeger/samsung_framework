@@ -3,9 +3,10 @@ package com.samsung.android.sume.core.plugin;
 import android.graphics.Bitmap;
 import android.graphics.Gainmap;
 import android.graphics.Rect;
+import android.hardware.HardwareBuffer;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.media.ExifInterface;
-import android.os.BatteryManager;
+import android.media.Image;
 import android.util.Log;
 import com.samsung.android.feature.SemFloatingFeature;
 import com.samsung.android.sume.core.Def;
@@ -49,7 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     private static final String TAG = Def.tagOf((Class<?>) NativeUniImgpPlugin.class);
     private final ReentrantLock lock = new ReentrantLock();
@@ -66,7 +67,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
 
     private native int nativeCvtData(String str, ByteBuffer byteBuffer, String str2, ByteBuffer byteBuffer2);
 
-    private native int nativeCvtGamut(String str, ByteBuffer byteBuffer, String str2, ByteBuffer byteBuffer2);
+    private native int nativeCvtGamutV2(String str, Object obj, String str2, Object obj2);
 
     private native int nativeDecode(String str, ByteBuffer byteBuffer, String str2, HashMap<String, Object> hashMap);
 
@@ -74,7 +75,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
 
     private native int nativeEncodeHDR(String str, ByteBuffer byteBuffer, String str2, HashMap<String, Object> hashMap);
 
-    private native int nativeFlip(String str, String str2, ByteBuffer byteBuffer, String str3, ByteBuffer byteBuffer2);
+    private native int nativeFlipV2(String str, String str2, Object obj, String str3, Object obj2);
 
     private native int nativeInit(String str, String str2);
 
@@ -104,9 +105,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     }
 
     public NativeUniImgpPlugin(List<ImgpType> opList, MediaFormat inputFormat, MediaFormat outputFormat, ColorFormat preferredColorFormat) {
-        String str = TAG;
-        Log.d(str, "NativeUniImgpPlugin: version= [core=" + Def.getCoreVersion() + NavigationBarInflaterView.SIZE_MOD_END);
-        Log.d(str, "opList=" + opList);
+        Log.d(TAG, "NativeUniImgpPlugin: version= [core=" + Def.getCoreVersion() + NavigationBarInflaterView.SIZE_MOD_END);
+        Log.d(TAG, "opList=" + opList);
         this.persistentInputFormat = inputFormat;
         this.persistentOutputFormat = outputFormat;
         if (preferredColorFormat != null) {
@@ -144,103 +144,103 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         }
     }
 
-    public static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
+    static /* synthetic */ MFDescriptor lambda$bindToFixture$0() {
         return new ImgpDescriptor(ImgpPlugin.Type.NATIVE_UNIIMGP);
     }
 
     @Override // com.samsung.android.sume.core.plugin.Plugin
     public void bindToFixture(ImgpPlugin fixture) {
-        fixture.setDescriptorLoader(new DescriptorLoader() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda3
+        fixture.setDescriptorLoader(new DescriptorLoader() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda1
             @Override // com.samsung.android.sume.core.functional.DescriptorLoader
             public final MFDescriptor load() {
                 return NativeUniImgpPlugin.lambda$bindToFixture$0();
             }
         });
-        fixture.setImgProcessor(ImgpType.RESIZE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda10
+        fixture.setImgProcessor(ImgpType.RESIZE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda8
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.resize(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CVT_COLOR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda11
+        fixture.setImgProcessor(ImgpType.CVT_COLOR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda9
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.cvtColor(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CVT_DATA, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda12
+        fixture.setImgProcessor(ImgpType.CVT_DATA, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda10
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.cvtData(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CVT_GAMUT, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda13
+        fixture.setImgProcessor(ImgpType.CVT_GAMUT, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda11
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.cvtGamut(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CVT_HDR2SDR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda14
+        fixture.setImgProcessor(ImgpType.CVT_HDR2SDR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda12
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.cvtHdr2Sdr(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.ROTATE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda15
+        fixture.setImgProcessor(ImgpType.ROTATE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda13
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.rotate(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CROP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda16
+        fixture.setImgProcessor(ImgpType.CROP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda14
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.crop(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.SPLIT, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda17
+        fixture.setImgProcessor(ImgpType.SPLIT, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda15
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.split(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.MERGE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda18
+        fixture.setImgProcessor(ImgpType.MERGE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda16
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.merge(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.QUALITY_MEASURE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda4
+        fixture.setImgProcessor(ImgpType.QUALITY_MEASURE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda2
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.measureQuality(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.DECODE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda5
+        fixture.setImgProcessor(ImgpType.DECODE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda3
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.decode(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.ENCODE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda6
+        fixture.setImgProcessor(ImgpType.ENCODE, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda4
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.encode(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.ENCODE_HDR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda7
+        fixture.setImgProcessor(ImgpType.ENCODE_HDR, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda5
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.encodeHDR(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.FLIP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda8
+        fixture.setImgProcessor(ImgpType.FLIP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda6
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.flip(mediaBuffer, mutableMediaBuffer);
             }
         });
-        fixture.setImgProcessor(ImgpType.CREATE_GAINMAP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda9
+        fixture.setImgProcessor(ImgpType.CREATE_GAINMAP, new Operator() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda7
             @Override // com.samsung.android.sume.core.functional.Operator
             public final MutableMediaBuffer run(MediaBuffer mediaBuffer, MutableMediaBuffer mutableMediaBuffer) {
                 return NativeUniImgpPlugin.this.createGainmap(mediaBuffer, mutableMediaBuffer);
@@ -269,8 +269,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
             if (buffer.getFormat().getCodecType() != CodecType.NONE) {
                 jsonObject.put("codec-type", buffer.getFormat().getCodecType().stringfy());
             }
-            if (buffer.getFormat().contains(BatteryManager.EXTRA_SCALE)) {
-                jsonObject.put(BatteryManager.EXTRA_SCALE, ((Float) buffer.getFormat().get(BatteryManager.EXTRA_SCALE, Float.valueOf(1.0f))).floatValue());
+            if (buffer.getFormat().contains("scale")) {
+                jsonObject.put("scale", ((Float) buffer.getFormat().get("scale", Float.valueOf(1.0f))).floatValue());
             }
             if (buffer.getFormat().getCropRect() != null) {
                 jsonObject.put("crop-rect", buffer.getFormat().getCropRect().flattenToString());
@@ -301,7 +301,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return jsonObject;
     }
 
-    private JSONObject createImgpOption(MediaBuffer ibuf, MediaBuffer obuf) {
+    private JSONObject createJsonImgpOption(MediaBuffer ibuf, MediaBuffer obuf) {
         JSONObject jsonObject = new JSONObject();
         try {
             if (obuf.getFormat().getSplitType() != SplitType.NONE) {
@@ -313,18 +313,36 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
             if (obuf.getFormat().contains("pad-type")) {
                 jsonObject.put("pad-type", ((PadType) obuf.getFormat().get("pad-type", PadType.NONE)).stringfy());
             }
+            if (ibuf.isNotEmpty() && obuf.isNotEmpty() && ibuf.getData().equals(obuf.getData())) {
+                jsonObject.put("prefer-fast", true);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonObject;
     }
 
+    private Object getNativeSupportBuffer(MediaBuffer buffer) {
+        if (buffer.isEmpty()) {
+            return null;
+        }
+        Class<?> dataClass = buffer.getDataClass();
+        if (HardwareBuffer.class.isAssignableFrom(dataClass) || Image.class.isAssignableFrom(dataClass)) {
+            return buffer.getTypedData(HardwareBuffer.class);
+        }
+        if (Bitmap.class.isAssignableFrom(dataClass)) {
+            return buffer.getTypedData(Bitmap.class);
+        }
+        Log.d(TAG, "convert as default... (ByteBuffer)");
+        return buffer.getTypedData(ByteBuffer.class);
+    }
+
     public MutableMediaBuffer resize(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
-            if (obuf.getFormat().contains(BatteryManager.EXTRA_SCALE)) {
-                float scale = ((Float) obuf.getFormat().get(BatteryManager.EXTRA_SCALE)).floatValue();
+            if (obuf.getFormat().contains("scale")) {
+                float scale = ((Float) obuf.getFormat().get("scale")).floatValue();
                 outputFormat.setCols((int) (ibuf.getCols() * scale));
                 outputFormat.setRows((int) (ibuf.getRows() * scale));
             } else {
@@ -376,18 +394,35 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     }
 
     public MutableMediaBuffer cvtGamut(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
-        String str = TAG;
-        Log.d(str, "ibuf=" + ibuf);
-        Log.d(str, "obuf=" + obuf);
-        ByteBuffer input = (ByteBuffer) ibuf.getTypedData(ByteBuffer.class);
+        MediaBuffer p3Buffer;
+        MediaBuffer bt709Buffer;
+        Log.d(TAG, "ibuf=" + ibuf);
+        Log.d(TAG, "obuf=" + obuf);
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
             outputFormat.setColorSpace(obuf.getFormat().getColorSpace());
             obuf.put(MediaBuffer.of(outputFormat));
         }
-        ByteBuffer output = (ByteBuffer) obuf.getTypedData(ByteBuffer.class);
+        ColorSpace inColorSpace = ibuf.getFormat().getColorSpace();
+        ColorSpace outColorSpace = obuf.getFormat().getColorSpace();
+        if (inColorSpace == ColorSpace.DISPLAY_P3) {
+            p3Buffer = ibuf;
+        } else {
+            Log.d(TAG, "not supported colorSpace. force" + inColorSpace + " to display-p3");
+            MutableMediaFormat p3Format = ibuf.getFormat().toMutableFormat();
+            p3Format.setColorSpace(ColorSpace.DISPLAY_P3);
+            p3Buffer = MediaBuffer.of(p3Format, ibuf.getData());
+        }
+        if (outColorSpace == ColorSpace.BT709_FR) {
+            bt709Buffer = obuf;
+        } else {
+            Log.d(TAG, "not supported colorSpace. force" + outColorSpace + " to bt709-fr");
+            MutableMediaFormat bt709Format = obuf.getFormat().toMutableFormat();
+            bt709Format.setColorSpace(ColorSpace.BT709_FR);
+            bt709Buffer = MediaBuffer.of(bt709Format, obuf.getData());
+        }
         JSONObject inputFormat = bufferToJson(ibuf);
-        Status status = Status.from(nativeCvtGamut(inputFormat.toString(), input, bufferToJson(obuf).toString(), output));
+        Status status = Status.from(nativeCvtGamutV2(inputFormat.toString(), getNativeSupportBuffer(p3Buffer), bufferToJson(obuf).toString(), getNativeSupportBuffer(bt709Buffer)));
         Def.check(status == Status.OK);
         return obuf;
     }
@@ -445,7 +480,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
         JSONObject inputFormat = bufferToJson(ibuf);
         JSONObject outputFormat = bufferToJson(obuf);
-        JSONObject optionJson = createImgpOption(ibuf, obuf);
+        JSONObject optionJson = createJsonImgpOption(ibuf, obuf);
         Status status = Status.from(nativeSplit(optionJson.toString(), inputFormat.toString(), input, outputFormat.toString(), dataMap));
         Def.check(status == Status.OK);
         MediaBuffer splitBuffer = makeBufferFromMap(dataMap);
@@ -463,9 +498,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
             fmt.setShape(ibuf.getFormat().getShape());
             obuf.setFormat(fmt);
         }
-        String str = TAG;
-        Log.d(str, ibuf.toString());
-        Log.d(str, obuf.toString());
+        Log.d(TAG, ibuf.toString());
+        Log.d(TAG, obuf.toString());
         JSONObject inputFormat = bufferToJson(ibuf);
         JSONObject outputFormat = bufferToJson(obuf);
         List<MediaBuffer> ibufList = ibuf.asList();
@@ -477,7 +511,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
                 dataMap.put("block" + blockNum + "-data", toDirectByteBuffer((ByteBuffer) blockBuf.getTypedData(ByteBuffer.class)));
                 blockNum++;
             }
-            JSONObject optionJson = createImgpOption(ibuf, obuf);
+            JSONObject optionJson = createJsonImgpOption(ibuf, obuf);
             Status status = Status.from(nativeMerge(optionJson.toString(), inputFormat.toString(), input, outputFormat.toString(), dataMap));
             Def.check(status == Status.OK);
             MediaBuffer mergeBuffer = makeBufferFromMap(dataMap);
@@ -511,9 +545,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
 
     public MutableMediaBuffer decode(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
         HashMap<String, Object> dataMap = new HashMap<>();
-        String str = TAG;
-        Log.d(str, ibuf.toString());
-        Log.d(str, obuf.toString());
+        Log.d(TAG, ibuf.toString());
+        Log.d(TAG, obuf.toString());
         JSONObject inputFormat = bufferToJson(ibuf);
         JSONObject outputFormat = bufferToJson(obuf);
         if (ibuf.getDataClass() == FileDescriptor.class) {
@@ -532,10 +565,10 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
 
     public MutableMediaBuffer encode(MediaBuffer ibuf, final MutableMediaBuffer obuf) throws UnsupportedOperationException {
         final HashMap<String, Object> dataMap = new HashMap<>();
-        ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda1
+        ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda0
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                NativeUniImgpPlugin.this.m8810xdfdf96db(obuf, dataMap, (MediaBuffer) obj);
+                NativeUniImgpPlugin.this.m9198xdfdf96db(obuf, dataMap, (MediaBuffer) obj);
             }
         });
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
@@ -559,8 +592,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return obuf;
     }
 
-    /* renamed from: lambda$encode$1$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
-    public /* synthetic */ void m8810xdfdf96db(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
+    /* renamed from: lambda$encode$1$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
+    /* synthetic */ void m9198xdfdf96db(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
         if (it.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = obuf.getFormat().getColorFormat().isPlanar() ? adjustExif(it) : it;
             dataMap.put("exif", toDirectByteBuffer((ByteBuffer) exifBuffer.getTypedData(ByteBuffer.class)));
@@ -572,17 +605,19 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     }
 
     public MutableMediaBuffer flip(MediaBuffer ibuf, MutableMediaBuffer obuf) throws UnsupportedOperationException {
-        ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
+        Log.d(TAG, "ibuf=" + ibuf);
+        Log.d(TAG, "obuf=" + obuf);
+        Object input = getNativeSupportBuffer(ibuf);
         if (obuf.isEmpty()) {
             MutableMediaFormat outputFormat = ibuf.getFormat().toMutableFormat().copy();
             outputFormat.setFlipType(obuf.getFormat().getFlipType());
             obuf.put(MediaBuffer.of(outputFormat));
         }
-        ByteBuffer output = toDirectByteBuffer((ByteBuffer) obuf.getTypedData(ByteBuffer.class));
+        Object output = getNativeSupportBuffer(obuf);
         JSONObject inputFormat = bufferToJson(ibuf);
         JSONObject outputFormat2 = bufferToJson(obuf);
-        JSONObject optionJson = createImgpOption(ibuf, obuf);
-        Status status = Status.from(nativeFlip(optionJson.toString(), inputFormat.toString(), input, outputFormat2.toString(), output));
+        JSONObject optionJson = createJsonImgpOption(ibuf, obuf);
+        Status status = Status.from(nativeFlipV2(optionJson.toString(), inputFormat.toString(), input, outputFormat2.toString(), output));
         Def.check(status == Status.OK);
         return obuf;
     }
@@ -593,10 +628,10 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         }
         final HashMap<String, Object> dataMap = new HashMap<>();
         Log.d(TAG, obuf.toString());
-        ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda19
+        ibuf.asList().forEach(new Consumer() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda17
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
-                NativeUniImgpPlugin.this.m8811x6bd652a(obuf, dataMap, (MediaBuffer) obj);
+                NativeUniImgpPlugin.this.m9199x6bd652a(obuf, dataMap, (MediaBuffer) obj);
             }
         });
         ByteBuffer input = toDirectByteBuffer((ByteBuffer) ibuf.getTypedData(ByteBuffer.class));
@@ -626,8 +661,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return obuf;
     }
 
-    /* renamed from: lambda$encodeHDR$2$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
-    public /* synthetic */ void m8811x6bd652a(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
+    /* renamed from: lambda$encodeHDR$2$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
+    /* synthetic */ void m9199x6bd652a(MutableMediaBuffer obuf, HashMap dataMap, MediaBuffer it) {
         if (it.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = obuf.getFormat().getColorFormat().isPlanar() ? adjustExif(it) : it;
             dataMap.put("exif", toDirectByteBuffer((ByteBuffer) exifBuffer.getTypedData(ByteBuffer.class)));
@@ -648,10 +683,9 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         Status status = Status.from(nativeCreateGainmap(inputFormat.toString(), null, outputFormat.toString(), dataMap));
         Def.check(status == Status.OK);
         MediaBuffer gainmapBuffer = makeBufferFromMap(dataMap);
-        String str = TAG;
-        Log.d(str, gainmapBuffer.toString());
+        Log.d(TAG, gainmapBuffer.toString());
         Bitmap gainmapBitmap = (Bitmap) gainmapBuffer.getTypedData(Bitmap.class);
-        Log.d(str, "create gain-map");
+        Log.d(TAG, "create gain-map");
         Gainmap gainmap = new Gainmap(gainmapBitmap);
         float maxContentBoost = ((Float) gainmapBuffer.getExtra("max-content-boost")).floatValue();
         float minContentBoost = ((Float) gainmapBuffer.getExtra("min-content-boost")).floatValue();
@@ -675,8 +709,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     }
 
     public MediaBuffer readCompressedImage(MediaFormat format, String path) {
-        String str = TAG;
-        Log.d(str, "read compressed image: " + path);
+        Log.d(TAG, "read compressed image: " + path);
         String ext = path.substring(path.lastIndexOf(46) + 1).toLowerCase(Locale.ROOT);
         if (!ext.equals("jpg") && !ext.equals("heic")) {
             throw new UnsupportedOperationException("not supported yet");
@@ -691,7 +724,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
                 if (format.getColorFormat() == ColorFormat.NONE) {
                     fmt.setColorFormat(ColorFormat.RGBA);
                 }
-                Log.d(str, "decode format: " + fmt);
+                Log.d(TAG, "decode format: " + fmt);
                 imageBuffer = MediaBuffer.mutableOf(fmt);
                 decode(ibuf, imageBuffer);
                 fis.close();
@@ -738,8 +771,7 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return true;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:38:0x022b  */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x0231 A[Catch: all -> 0x0250, TryCatch #0 {all -> 0x0250, blocks: (B:3:0x0009, B:5:0x0018, B:8:0x001f, B:9:0x0026, B:11:0x0027, B:13:0x002f, B:16:0x0042, B:19:0x0054, B:23:0x01b2, B:26:0x01b9, B:27:0x01c3, B:29:0x01d6, B:31:0x01e2, B:33:0x01ef, B:35:0x01fb, B:36:0x0207, B:39:0x022c, B:41:0x0231, B:43:0x0237, B:44:0x023a, B:48:0x0066, B:51:0x0078, B:53:0x0082, B:54:0x009f, B:56:0x00b4, B:57:0x00bf, B:59:0x00c7, B:60:0x00ee, B:62:0x00f6, B:63:0x00ff, B:65:0x0107, B:66:0x0110, B:68:0x0118, B:69:0x0121, B:71:0x012b, B:72:0x0134, B:74:0x013e, B:75:0x0147, B:77:0x0151, B:78:0x015a, B:80:0x0164, B:82:0x016e, B:85:0x017b, B:86:0x0182, B:87:0x0183, B:89:0x018e, B:90:0x019a, B:94:0x01a5, B:95:0x01ad, B:96:0x00ba, B:99:0x024a, B:100:0x024f), top: B:2:0x0009 }] */
+    /* JADX WARN: Removed duplicated region for block: B:38:0x0229  */
     @Override // com.samsung.android.sume.core.functional.Operator
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -747,14 +779,14 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
     */
     public com.samsung.android.sume.core.buffer.MutableMediaBuffer run(com.samsung.android.sume.core.buffer.MediaBuffer r18, com.samsung.android.sume.core.buffer.MutableMediaBuffer r19) throws java.lang.UnsupportedOperationException {
         /*
-            Method dump skipped, instructions count: 599
+            Method dump skipped, instructions count: 588
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin.run(com.samsung.android.sume.core.buffer.MediaBuffer, com.samsung.android.sume.core.buffer.MutableMediaBuffer):com.samsung.android.sume.core.buffer.MutableMediaBuffer");
     }
 
-    /* renamed from: lambda$run$3$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
-    public /* synthetic */ void m8813xff46b99e(HashMap dataMap, MediaBuffer buf) {
+    /* renamed from: lambda$run$3$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
+    /* synthetic */ void m9201xff46b99e(HashMap dataMap, MediaBuffer buf) {
         if (buf.getFormat().contains("exif")) {
             MediaBuffer exifBuffer = buf;
             if (this.persistentOutputFormat.getColorFormat().isPlanar() || this.preferredColorFormat.isPlanar()) {
@@ -913,10 +945,10 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         Integer blockNum = (Integer) dataMap.get("block-num");
         if (blockNum != null) {
             Log.d(TAG, "block num: " + blockNum);
-            blockBuffers = (List) IntStream.range(0, blockNum.intValue()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda2
+            blockBuffers = (List) IntStream.range(0, blockNum.intValue()).mapToObj(new IntFunction() { // from class: com.samsung.android.sume.core.plugin.NativeUniImgpPlugin$$ExternalSyntheticLambda19
                 @Override // java.util.function.IntFunction
                 public final Object apply(int i) {
-                    return NativeUniImgpPlugin.this.m8812x5755f344(dataMap, i);
+                    return NativeUniImgpPlugin.this.m9200x5755f344(dataMap, i);
                 }
             }).collect(Collectors.toList());
         }
@@ -939,8 +971,8 @@ public class NativeUniImgpPlugin implements Plugin<ImgpPlugin>, Operator {
         return primaryBuffer;
     }
 
-    /* renamed from: lambda$makeBufferFromMap$4$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin */
-    public /* synthetic */ MediaBuffer m8812x5755f344(HashMap dataMap, int it) {
+    /* renamed from: lambda$makeBufferFromMap$4$com-samsung-android-sume-core-plugin-NativeUniImgpPlugin, reason: not valid java name */
+    /* synthetic */ MediaBuffer m9200x5755f344(HashMap dataMap, int it) {
         return makeImageBuffer((String) dataMap.get("block" + it + "-buffer"), dataMap.get("block" + it + "-data"));
     }
 

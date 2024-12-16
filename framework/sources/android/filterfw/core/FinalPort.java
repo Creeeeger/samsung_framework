@@ -9,7 +9,7 @@ public class FinalPort extends FieldPort {
     }
 
     @Override // android.filterfw.core.FieldPort
-    public synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
+    protected synchronized void setFieldFrame(Frame frame, boolean isAssignment) {
         assertPortIsOpen();
         checkFrameType(frame, isAssignment);
         if (this.mFilter.getStatus() != 0) {

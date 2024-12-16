@@ -7,9 +7,7 @@ import android.os.Parcelable;
 /* loaded from: classes2.dex */
 public class KeyMintHardwareInfo implements Parcelable {
     public static final Parcelable.Creator<KeyMintHardwareInfo> CREATOR = new Parcelable.Creator<KeyMintHardwareInfo>() { // from class: android.hardware.security.keymint.KeyMintHardwareInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyMintHardwareInfo createFromParcel(Parcel _aidl_source) {
             KeyMintHardwareInfo _aidl_out = new KeyMintHardwareInfo();
@@ -17,6 +15,7 @@ public class KeyMintHardwareInfo implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public KeyMintHardwareInfo[] newArray(int _aidl_size) {
             return new KeyMintHardwareInfo[_aidl_size];
@@ -27,25 +26,6 @@ public class KeyMintHardwareInfo implements Parcelable {
     public int versionNumber = 0;
     public int securityLevel = 0;
     public boolean timestampTokenRequired = false;
-
-    /* renamed from: android.hardware.security.keymint.KeyMintHardwareInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<KeyMintHardwareInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyMintHardwareInfo createFromParcel(Parcel _aidl_source) {
-            KeyMintHardwareInfo _aidl_out = new KeyMintHardwareInfo();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public KeyMintHardwareInfo[] newArray(int _aidl_size) {
-            return new KeyMintHardwareInfo[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {

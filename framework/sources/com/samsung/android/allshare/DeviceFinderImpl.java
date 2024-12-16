@@ -3,7 +3,6 @@ package com.samsung.android.allshare;
 import android.content.Context;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Bundle;
-import android.os.Looper;
 import android.sec.clipboard.data.ClipboardConstants;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.DeviceFinder;
@@ -15,24 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/* loaded from: classes5.dex */
-public final class DeviceFinderImpl extends DeviceFinder {
+/* loaded from: classes3.dex */
+final class DeviceFinderImpl extends DeviceFinder {
     private static final String TAG_CLASS = "DeviceFinderImpl(v1)";
     private static HashMap<String, Device.DeviceType> mDeviceEventToDeviceTypeMap;
     private static HashMap<Device.DeviceType, String> mDeviceTypeToEventMap;
     private IAllShareConnector mAllShareConnector;
     private HashMap<String, DeviceFinder.IDeviceFinderEventListener> mDiscoveryListenerMap = new HashMap<>();
-    private HashMap<String, ProviderImpl> mProviderMap = new HashMap<>();
     private HashMap<String, AVPlayerImpl> mAVPlayerMap = new HashMap<>();
     private HashMap<String, ImageViewerImpl> mImageViewerMap = new HashMap<>();
-    private HashMap<String, FileReceiverImpl> mFileReceiverMap = new HashMap<>();
     private HashMap<String, ScreenSharingDeviceImpl> mScreenSharingDeviceMap = new HashMap<>();
     private HashMap<String, DeviceImpl> mUnknownDeviceMap = new HashMap<>();
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.DeviceFinderImpl.1
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
         @Override // com.samsung.android.allshare.AllShareEventHandler
         public void handleEventMessage(CVMessage cvm) {
             String evt_id = cvm.getEventID();
@@ -95,18 +88,16 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     static {
         mDeviceTypeToEventMap = null;
-        HashMap<Device.DeviceType, String> hashMap = new HashMap<>();
-        mDeviceTypeToEventMap = hashMap;
-        hashMap.put(Device.DeviceType.DEVICE_PROVIDER, AllShareEvent.EVENT_PROVIDER_DISCOVERY);
+        mDeviceTypeToEventMap = new HashMap<>();
+        mDeviceTypeToEventMap.put(Device.DeviceType.DEVICE_PROVIDER, AllShareEvent.EVENT_PROVIDER_DISCOVERY);
         mDeviceTypeToEventMap.put(Device.DeviceType.DEVICE_AVPLAYER, AllShareEvent.EVENT_AV_PLAYER_DISCOVERY);
         mDeviceTypeToEventMap.put(Device.DeviceType.DEVICE_IMAGEVIEWER, AllShareEvent.EVENT_IMAGE_VIEWER_DISCOVERY);
         mDeviceTypeToEventMap.put(Device.DeviceType.DEVICE_FILERECEIVER, AllShareEvent.EVENT_FILERECEIVER_DISCOVERY);
         mDeviceTypeToEventMap.put(Device.DeviceType.DEVICE_SCREENSHARING, AllShareEvent.EVENT_SCREENSHARING_DISCOVERY);
         mDeviceTypeToEventMap.put(Device.DeviceType.UNKNOWN, AllShareEvent.EVENT_DMR_DISCOVERY);
         mDeviceEventToDeviceTypeMap = null;
-        HashMap<String, Device.DeviceType> hashMap2 = new HashMap<>();
-        mDeviceEventToDeviceTypeMap = hashMap2;
-        hashMap2.put(AllShareEvent.EVENT_PROVIDER_DISCOVERY, Device.DeviceType.DEVICE_PROVIDER);
+        mDeviceEventToDeviceTypeMap = new HashMap<>();
+        mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_PROVIDER_DISCOVERY, Device.DeviceType.DEVICE_PROVIDER);
         mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_AV_PLAYER_DISCOVERY, Device.DeviceType.DEVICE_AVPLAYER);
         mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_IMAGE_VIEWER_DISCOVERY, Device.DeviceType.DEVICE_IMAGEVIEWER);
         mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_FILERECEIVER_DISCOVERY, Device.DeviceType.DEVICE_FILERECEIVER);
@@ -114,7 +105,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
         mDeviceEventToDeviceTypeMap.put(AllShareEvent.EVENT_DMR_DISCOVERY, Device.DeviceType.UNKNOWN);
     }
 
-    public DeviceFinderImpl(IAllShareConnector connector) {
+    DeviceFinderImpl(IAllShareConnector connector) {
         this.mAllShareConnector = null;
         if (connector == null) {
             DLog.w_api(TAG_CLASS, "Connection FAIL: AllShare Service Connector does not exist");
@@ -123,79 +114,10 @@ public final class DeviceFinderImpl extends DeviceFinder {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.DeviceFinderImpl$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AllShareEventHandler {
-        AnonymousClass1(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareEventHandler
-        public void handleEventMessage(CVMessage cvm) {
-            String evt_id = cvm.getEventID();
-            DeviceFinder.IDeviceFinderEventListener listener = null;
-            try {
-                listener = (DeviceFinder.IDeviceFinderEventListener) DeviceFinderImpl.this.mDiscoveryListenerMap.get(evt_id);
-            } catch (Exception e) {
-                DLog.w_api(DeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : Exception", e);
-            }
-            Device.DeviceType deviceType = (Device.DeviceType) DeviceFinderImpl.mDeviceEventToDeviceTypeMap.get(evt_id);
-            Bundle msgBundle = cvm.getBundle();
-            String eventType = msgBundle.getString(AllShareKey.BUNDLE_STRING_TYPE);
-            Bundle deviceBundle = (Bundle) msgBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_DEVICE);
-            if (deviceBundle == null) {
-                DLog.w_api(DeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : deviceBundle is null");
-                return;
-            }
-            Device device = DeviceFinderImpl.this.getDeviceFromMap(deviceBundle, deviceType);
-            if (device == null) {
-                DLog.w_api(DeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : device is null");
-                return;
-            }
-            if (ClipboardConstants.USER_ADDED.equals(eventType)) {
-                if (listener != null) {
-                    try {
-                        listener.onDeviceAdded(deviceType, device, ERROR.SUCCESS);
-                        DLog.i_api(DeviceFinderImpl.TAG_CLASS, "[ADDED] " + device);
-                        return;
-                    } catch (Error err) {
-                        DLog.w_api(DeviceFinderImpl.TAG_CLASS, "[ADDED] Error", err);
-                        return;
-                    } catch (Exception e2) {
-                        DLog.w_api(DeviceFinderImpl.TAG_CLASS, "[ADDED] Exception", e2);
-                        return;
-                    }
-                }
-                return;
-            }
-            if (ClipboardConstants.USER_REMOVED.equals(eventType)) {
-                try {
-                    DeviceFinderImpl.this.removeDeviceFromMap(deviceBundle, deviceType);
-                    ERROR error = ERROR.stringToEnum(msgBundle.getString("BUNDLE_ENUM_ERROR"));
-                    if (listener != null) {
-                        listener.onDeviceRemoved(deviceType, device, error);
-                        DLog.i_api(DeviceFinderImpl.TAG_CLASS, "[REMOVED] " + device);
-                        return;
-                    }
-                    return;
-                } catch (Error err2) {
-                    DLog.w_api(DeviceFinderImpl.TAG_CLASS, "[REMOVED] Exception", err2);
-                    return;
-                } catch (Exception e3) {
-                    DLog.w_api(DeviceFinderImpl.TAG_CLASS, "[REMOVED] Exception", e3);
-                    return;
-                }
-            }
-            DLog.w_api(DeviceFinderImpl.TAG_CLASS, "mEventHandler.handleEventMessage : eventType=" + eventType);
-        }
-    }
-
     @Override // com.samsung.android.allshare.DeviceFinder
     public final void refresh() {
         DLog.i_api(TAG_CLASS, "refresh");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "refresh : mAllShareConnector is null");
             return;
         }
@@ -212,8 +134,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
     @Override // com.samsung.android.allshare.DeviceFinder
     public void refresh(Device.DeviceType type) {
         DLog.i_api(TAG_CLASS, "refresh(" + type + NavigationBarInflaterView.KEY_CODE_END);
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "refresh(" + type + ") : mAllShareConnector is null");
             return;
         }
@@ -224,8 +145,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public void setDeviceFinderEventListener(Device.DeviceType deviceType, DeviceFinder.IDeviceFinderEventListener l) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setEventListener error! AllShareService is not connected");
             return;
         }
@@ -249,8 +169,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public final ArrayList<Device> getDevices(Device.DeviceType deviceType, String NIC) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return new ArrayList<>();
         }
         DLog.i_api(TAG_CLASS, "getDevices - type[" + deviceType + "], NIC[" + NIC + NavigationBarInflaterView.SIZE_MOD_END);
@@ -259,8 +178,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public final ArrayList<Device> getDevices(Device.DeviceDomain domain, Device.DeviceType deviceType) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return new ArrayList<>();
         }
         DLog.i_api(TAG_CLASS, "getDevices - type[" + deviceType + "], domain[" + domain + NavigationBarInflaterView.SIZE_MOD_END);
@@ -269,8 +187,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public final ArrayList<Device> getDevices(Device.DeviceType deviceType) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return new ArrayList<>();
         }
         DLog.i_api(TAG_CLASS, "getDevices - type[" + deviceType + NavigationBarInflaterView.SIZE_MOD_END);
@@ -279,8 +196,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public final Device getDevice(String id, Device.DeviceType deviceType) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected() || id == null || id.isEmpty() || deviceType == null) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected() || id == null || id.isEmpty() || deviceType == null) {
             return null;
         }
         SyncActionInvoker builder = new SyncActionInvoker(AllShareAction.ACTION_DEVICE_FINDER_GET_DEVICE_BY_ID_SYNC);
@@ -294,6 +210,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
         return getDeviceFromMap(req_bundle, deviceType);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void removeDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         if (bundle == null) {
             DLog.w_api(TAG_CLASS, "removeDeviceFromMap : bundle is null");
@@ -305,8 +222,8 @@ public final class DeviceFinderImpl extends DeviceFinder {
             return;
         }
         try {
-            switch (AnonymousClass2.$SwitchMap$com$samsung$android$allshare$Device$DeviceType[type.ordinal()]) {
-                case 1:
+            switch (type) {
+                case DEVICE_AVPLAYER:
                     AVPlayerImpl av = this.mAVPlayerMap.get(id);
                     if (av == null) {
                         DLog.w_api(TAG_CLASS, "cannot get AVPlayer with id: " + id);
@@ -316,7 +233,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
                         this.mAVPlayerMap.remove(id);
                         break;
                     }
-                case 2:
+                case DEVICE_IMAGEVIEWER:
                     ImageViewerImpl iv = this.mImageViewerMap.get(id);
                     if (iv == null) {
                         DLog.w_api(TAG_CLASS, "cannot get ImageViewer with id: " + id);
@@ -326,27 +243,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
                         this.mImageViewerMap.remove(id);
                         break;
                     }
-                case 3:
-                    ProviderImpl p = this.mProviderMap.get(id);
-                    if (p == null) {
-                        DLog.w_api(TAG_CLASS, "cannot get Provider with id: " + id);
-                        break;
-                    } else {
-                        p.removeEventHandler();
-                        this.mProviderMap.remove(id);
-                        break;
-                    }
-                case 4:
-                    FileReceiverImpl fr = this.mFileReceiverMap.get(id);
-                    if (fr == null) {
-                        DLog.w_api(TAG_CLASS, "cannot get FileReceiver with id: " + id);
-                        break;
-                    } else {
-                        fr.removeEventHandler();
-                        this.mFileReceiverMap.remove(id);
-                        break;
-                    }
-                case 5:
+                case DEVICE_SCREENSHARING:
                     ScreenSharingDeviceImpl kd = this.mScreenSharingDeviceMap.get(id);
                     if (kd == null) {
                         DLog.w_api(TAG_CLASS, "cannot get ScreenSharingDevice with id: " + id);
@@ -356,7 +253,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
                         this.mScreenSharingDeviceMap.remove(id);
                         break;
                     }
-                case 6:
+                case UNKNOWN:
                     DeviceImpl deviceImpl = this.mUnknownDeviceMap.get(id);
                     if (deviceImpl == null) {
                         DLog.w_api(TAG_CLASS, "cannot get Device(UNKNOWN) with id: " + id);
@@ -372,41 +269,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
         }
     }
 
-    /* renamed from: com.samsung.android.allshare.DeviceFinderImpl$2 */
-    /* loaded from: classes5.dex */
-    public static /* synthetic */ class AnonymousClass2 {
-        static final /* synthetic */ int[] $SwitchMap$com$samsung$android$allshare$Device$DeviceType;
-
-        static {
-            int[] iArr = new int[Device.DeviceType.values().length];
-            $SwitchMap$com$samsung$android$allshare$Device$DeviceType = iArr;
-            try {
-                iArr[Device.DeviceType.DEVICE_AVPLAYER.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$DeviceType[Device.DeviceType.DEVICE_IMAGEVIEWER.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$DeviceType[Device.DeviceType.DEVICE_PROVIDER.ordinal()] = 3;
-            } catch (NoSuchFieldError e3) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$DeviceType[Device.DeviceType.DEVICE_FILERECEIVER.ordinal()] = 4;
-            } catch (NoSuchFieldError e4) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$DeviceType[Device.DeviceType.DEVICE_SCREENSHARING.ordinal()] = 5;
-            } catch (NoSuchFieldError e5) {
-            }
-            try {
-                $SwitchMap$com$samsung$android$allshare$Device$DeviceType[Device.DeviceType.UNKNOWN.ordinal()] = 6;
-            } catch (NoSuchFieldError e6) {
-            }
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public Device getDeviceFromMap(Bundle bundle, Device.DeviceType type) {
         DeviceImpl deviceImpl;
         if (bundle == null) {
@@ -423,38 +286,26 @@ public final class DeviceFinderImpl extends DeviceFinder {
         } catch (Exception e) {
             DLog.w_api(TAG_CLASS, "getDeviceFromMap : Exception", e);
         }
-        switch (AnonymousClass2.$SwitchMap$com$samsung$android$allshare$Device$DeviceType[type.ordinal()]) {
-            case 1:
+        switch (type) {
+            case DEVICE_AVPLAYER:
                 if (!this.mAVPlayerMap.containsKey(id)) {
                     AVPlayerImpl avPlayer = new AVPlayerImpl(this.mAllShareConnector, deviceImpl);
                     this.mAVPlayerMap.put(id, avPlayer);
                 }
                 return this.mAVPlayerMap.get(id);
-            case 2:
+            case DEVICE_IMAGEVIEWER:
                 if (!this.mImageViewerMap.containsKey(id)) {
                     ImageViewerImpl imageViewer = new ImageViewerImpl(this.mAllShareConnector, deviceImpl);
                     this.mImageViewerMap.put(id, imageViewer);
                 }
                 return this.mImageViewerMap.get(id);
-            case 3:
-                if (!this.mProviderMap.containsKey(id)) {
-                    ProviderImpl provider = new ProviderImpl(this.mAllShareConnector, deviceImpl);
-                    this.mProviderMap.put(id, provider);
-                }
-                return this.mProviderMap.get(id);
-            case 4:
-                if (!this.mFileReceiverMap.containsKey(id)) {
-                    FileReceiverImpl fileReceiver = new FileReceiverImpl(this.mAllShareConnector, deviceImpl);
-                    this.mFileReceiverMap.put(id, fileReceiver);
-                }
-                return this.mFileReceiverMap.get(id);
-            case 5:
+            case DEVICE_SCREENSHARING:
                 if (!this.mScreenSharingDeviceMap.containsKey(id)) {
                     ScreenSharingDeviceImpl upnpDevice = new ScreenSharingDeviceImpl(this.mAllShareConnector, deviceImpl);
                     this.mScreenSharingDeviceMap.put(id, upnpDevice);
                 }
                 return this.mScreenSharingDeviceMap.get(id);
-            case 6:
+            case UNKNOWN:
                 if (!this.mUnknownDeviceMap.containsKey(id)) {
                     if (!deviceImpl.isSupportedByType(1) && !deviceImpl.isSupportedByType(3) && !deviceImpl.isSupportedByType(2)) {
                         DLog.w_api(TAG_CLASS, "all types are not supported");
@@ -508,22 +359,16 @@ public final class DeviceFinderImpl extends DeviceFinder {
         return result;
     }
 
-    /* loaded from: classes5.dex */
-    public class SyncActionInvoker {
+    private class SyncActionInvoker {
         private CVMessage mMessage;
-
-        /* synthetic */ SyncActionInvoker(DeviceFinderImpl deviceFinderImpl, String str, SyncActionInvokerIA syncActionInvokerIA) {
-            this(str);
-        }
 
         private SyncActionInvoker() {
             this.mMessage = new CVMessage();
         }
 
         private SyncActionInvoker(String action_id) {
-            CVMessage cVMessage = new CVMessage();
-            this.mMessage = cVMessage;
-            cVMessage.setActionID(action_id);
+            this.mMessage = new CVMessage();
+            this.mMessage.setActionID(action_id);
         }
 
         void putString(String key, String value) {
@@ -545,8 +390,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public void registerSearchTarget(ArrayList<Device.DeviceType> deviceTypeList) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected() || deviceTypeList == null) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected() || deviceTypeList == null) {
             return;
         }
         String applicationID = "";
@@ -568,8 +412,7 @@ public final class DeviceFinderImpl extends DeviceFinder {
 
     @Override // com.samsung.android.allshare.DeviceFinder
     public void unregisterSearchTarget(ArrayList<Device.DeviceType> deviceTypeList) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected() || deviceTypeList == null) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected() || deviceTypeList == null) {
             return;
         }
         String applicationID = "";

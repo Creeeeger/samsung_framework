@@ -23,22 +23,16 @@ public abstract class Visibility extends Transition {
     private static final String[] sTransitionProperties = {PROPNAME_VISIBILITY, PROPNAME_PARENT};
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     @interface VisibilityMode {
     }
 
-    /* loaded from: classes4.dex */
-    public static class VisibilityInfo {
+    private static class VisibilityInfo {
         ViewGroup endParent;
         int endVisibility;
         boolean fadeIn;
         ViewGroup startParent;
         int startVisibility;
         boolean visibilityChange;
-
-        /* synthetic */ VisibilityInfo(VisibilityInfoIA visibilityInfoIA) {
-            this();
-        }
 
         private VisibilityInfo() {
         }
@@ -194,11 +188,11 @@ public abstract class Visibility extends Transition {
     }
 
     public Animator onDisappear(ViewGroup sceneRoot, TransitionValues startValues, int startVisibility, TransitionValues endValues, int endVisibility) {
-        ViewGroupOverlay overlay;
+        final ViewGroupOverlay overlay;
         if ((this.mMode & 2) != 2 || startValues == null) {
             return null;
         }
-        View startView = startValues.view;
+        final View startView = startValues.view;
         View endView = endValues != null ? endValues.view : null;
         View overlayView = null;
         View viewToKeep = null;
@@ -261,18 +255,8 @@ public abstract class Visibility extends Transition {
                     overlay.remove(overlayView);
                 } else {
                     startView.setTagInternal(R.id.transition_overlay_view_tag, overlayView);
-                    View finalOverlayView = overlayView;
+                    final View finalOverlayView = overlayView;
                     addListener(new TransitionListenerAdapter() { // from class: android.transition.Visibility.1
-                        final /* synthetic */ View val$finalOverlayView;
-                        final /* synthetic */ ViewGroupOverlay val$overlay;
-                        final /* synthetic */ View val$startView;
-
-                        AnonymousClass1(ViewGroupOverlay overlay2, View finalOverlayView2, View startView2) {
-                            overlay = overlay2;
-                            finalOverlayView = finalOverlayView2;
-                            startView = startView2;
-                        }
-
                         @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
                         public void onTransitionPause(Transition transition) {
                             overlay.remove(finalOverlayView);
@@ -315,41 +299,6 @@ public abstract class Visibility extends Transition {
         return null;
     }
 
-    /* renamed from: android.transition.Visibility$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 extends TransitionListenerAdapter {
-        final /* synthetic */ View val$finalOverlayView;
-        final /* synthetic */ ViewGroupOverlay val$overlay;
-        final /* synthetic */ View val$startView;
-
-        AnonymousClass1(ViewGroupOverlay overlay2, View finalOverlayView2, View startView2) {
-            overlay = overlay2;
-            finalOverlayView = finalOverlayView2;
-            startView = startView2;
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionPause(Transition transition) {
-            overlay.remove(finalOverlayView);
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionResume(Transition transition) {
-            if (finalOverlayView.getParent() == null) {
-                overlay.add(finalOverlayView);
-            } else {
-                Visibility.this.cancel();
-            }
-        }
-
-        @Override // android.transition.TransitionListenerAdapter, android.transition.Transition.TransitionListener
-        public void onTransitionEnd(Transition transition) {
-            startView.setTagInternal(R.id.transition_overlay_view_tag, null);
-            overlay.remove(finalOverlayView);
-            transition.removeListener(this);
-        }
-    }
-
     @Override // android.transition.Transition
     public boolean isTransitionRequired(TransitionValues startValues, TransitionValues newValues) {
         if (startValues == null && newValues == null) {
@@ -369,8 +318,7 @@ public abstract class Visibility extends Transition {
         return null;
     }
 
-    /* loaded from: classes4.dex */
-    public static class DisappearListener extends TransitionListenerAdapter implements Animator.AnimatorListener, Animator.AnimatorPauseListener {
+    private static class DisappearListener extends TransitionListenerAdapter implements Animator.AnimatorListener, Animator.AnimatorPauseListener {
         boolean mCanceled = false;
         private final int mFinalVisibility;
         private boolean mLayoutSuppressed;
@@ -437,19 +385,17 @@ public abstract class Visibility extends Transition {
         private void hideViewWhenNotCanceled() {
             if (!this.mCanceled) {
                 this.mView.setTransitionVisibility(this.mFinalVisibility);
-                ViewGroup viewGroup = this.mParent;
-                if (viewGroup != null) {
-                    viewGroup.invalidate();
+                if (this.mParent != null) {
+                    this.mParent.invalidate();
                 }
             }
             suppressLayout(false);
         }
 
         private void suppressLayout(boolean suppress) {
-            ViewGroup viewGroup;
-            if (this.mSuppressLayout && this.mLayoutSuppressed != suppress && (viewGroup = this.mParent) != null) {
+            if (this.mSuppressLayout && this.mLayoutSuppressed != suppress && this.mParent != null) {
                 this.mLayoutSuppressed = suppress;
-                viewGroup.suppressLayout(suppress);
+                this.mParent.suppressLayout(suppress);
             }
         }
     }

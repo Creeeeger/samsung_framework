@@ -2,16 +2,15 @@ package android.media.tv;
 
 import android.text.TextUtils;
 import com.android.internal.util.Preconditions;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvContentRating {
     private static final String DELIMITER = "/";
-    public static final TvContentRating UNRATED = new TvContentRating(SemCapabilities.FEATURE_TAG_NULL, SemCapabilities.FEATURE_TAG_NULL, SemCapabilities.FEATURE_TAG_NULL, null);
+    public static final TvContentRating UNRATED = new TvContentRating("null", "null", "null", null);
     private final String mDomain;
     private final int mHashCode;
     private final String mRating;
@@ -57,7 +56,7 @@ public final class TvContentRating {
             Arrays.sort(subRatings);
             this.mSubRatings = subRatings;
         }
-        this.mHashCode = (Objects.hash(domain, rating) * 31) + Arrays.hashCode(this.mSubRatings);
+        this.mHashCode = (Objects.hash(this.mDomain, this.mRating) * 31) + Arrays.hashCode(this.mSubRatings);
     }
 
     public String getDomain() {
@@ -73,11 +72,10 @@ public final class TvContentRating {
     }
 
     public List<String> getSubRatings() {
-        String[] strArr = this.mSubRatings;
-        if (strArr == null) {
+        if (this.mSubRatings == null) {
             return null;
         }
-        return Collections.unmodifiableList(Arrays.asList(strArr));
+        return Collections.unmodifiableList(Arrays.asList(this.mSubRatings));
     }
 
     public String flattenToString() {
@@ -87,9 +85,8 @@ public final class TvContentRating {
         builder.append(this.mRatingSystem);
         builder.append(DELIMITER);
         builder.append(this.mRating);
-        String[] strArr = this.mSubRatings;
-        if (strArr != null) {
-            for (String subRating : strArr) {
+        if (this.mSubRatings != null) {
+            for (String subRating : this.mSubRatings) {
                 builder.append(DELIMITER);
                 builder.append(subRating);
             }

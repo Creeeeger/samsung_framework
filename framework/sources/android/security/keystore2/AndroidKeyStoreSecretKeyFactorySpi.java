@@ -1,13 +1,11 @@
 package android.security.keystore2;
 
 import android.security.GateKeeper;
-import android.security.KeyStore;
 import android.security.keymaster.KeymasterArguments;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyProperties;
 import android.system.keystore2.Authorization;
-import com.samsung.android.ims.options.SemCapabilities;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.ProviderException;
@@ -22,8 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 /* loaded from: classes3.dex */
 public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
-    private final KeyStore mKeyStore = KeyStore.getInstance();
-
     /* JADX WARN: Multi-variable type inference failed */
     @Override // javax.crypto.SecretKeyFactorySpi
     protected KeySpec engineGetKeySpec(SecretKey secretKey, Class keySpecClass) throws InvalidKeySpecException {
@@ -31,7 +27,7 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
             throw new InvalidKeySpecException("keySpecClass == null");
         }
         if (!(secretKey instanceof AndroidKeyStoreSecretKey)) {
-            throw new InvalidKeySpecException("Only Android KeyStore secret keys supported: " + (secretKey != 0 ? secretKey.getClass().getName() : SemCapabilities.FEATURE_TAG_NULL));
+            throw new InvalidKeySpecException("Only Android KeyStore secret keys supported: " + (secretKey != 0 ? secretKey.getClass().getName() : "null"));
         }
         if (SecretKeySpec.class.isAssignableFrom(keySpecClass)) {
             throw new InvalidKeySpecException("Key material export of Android KeyStore keys is not supported");
@@ -43,8 +39,7 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
         return getKeyInfo(keystoreKey);
     }
 
-    /* JADX WARN: Failed to find 'out' block for switch in B:12:0x0053. Please report as an issue. */
-    public static KeyInfo getKeyInfo(AndroidKeyStoreKey key) {
+    static KeyInfo getKeyInfo(AndroidKeyStoreKey key) {
         Date keyValidityStart;
         Date keyValidityForOriginationEnd;
         Date keyValidityForConsumptionEnd;
@@ -64,6 +59,7 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
         Date keyValidityForConsumptionEnd2 = null;
         boolean userAuthenticationRequired = true;
         boolean userAuthenticationValidWhileOnBody = false;
+        boolean unlockedDeviceRequired = false;
         boolean trustedUserPresenceRequired = false;
         boolean trustedUserConfirmationRequired = false;
         int remainingUsageCount = -1;
@@ -229,25 +225,24 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
                                 long userAuthenticationValidityDurationSeconds2 = KeyStore2ParameterUtils.getUnsignedInt(a);
                                 Date keyValidityForOriginationEnd6 = keyValidityForOriginationEnd2;
                                 Date keyValidityForConsumptionEnd6 = keyValidityForConsumptionEnd2;
-                                if (userAuthenticationValidityDurationSeconds2 <= 2147483647L) {
-                                    userAuthenticationValidityDurationSeconds = userAuthenticationValidityDurationSeconds2;
-                                    keyValidityForConsumptionEnd2 = keyValidityForConsumptionEnd6;
-                                    keyValidityForOriginationEnd2 = keyValidityForOriginationEnd6;
-                                    i++;
-                                    securityLevel3 = i2;
-                                    authorizations = authorizationArr;
-                                } else {
+                                if (userAuthenticationValidityDurationSeconds2 > 2147483647L) {
                                     try {
-                                        try {
-                                            throw new ProviderException("User authentication timeout validity too long: " + userAuthenticationValidityDurationSeconds2 + " seconds");
-                                        } catch (IllegalArgumentException e5) {
-                                            e = e5;
-                                            throw new ProviderException("Unsupported key characteristic", e);
-                                        }
+                                    } catch (IllegalArgumentException e5) {
+                                        e = e5;
+                                    }
+                                    try {
+                                        throw new ProviderException("User authentication timeout validity too long: " + userAuthenticationValidityDurationSeconds2 + " seconds");
                                     } catch (IllegalArgumentException e6) {
                                         e = e6;
+                                        throw new ProviderException("Unsupported key characteristic", e);
                                     }
                                 }
+                                userAuthenticationValidityDurationSeconds = userAuthenticationValidityDurationSeconds2;
+                                keyValidityForConsumptionEnd2 = keyValidityForConsumptionEnd6;
+                                keyValidityForOriginationEnd2 = keyValidityForOriginationEnd6;
+                                i++;
+                                securityLevel3 = i2;
+                                authorizations = authorizationArr;
                             case 1610613136:
                                 Date keyValidityStart6 = KeyStore2ParameterUtils.getDate(a);
                                 keyValidityStart2 = keyValidityStart6;
@@ -294,6 +289,11 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
                                     e = e7;
                                     throw new ProviderException("Unsupported key characteristic", e);
                                 }
+                            case 1879048701:
+                                unlockedDeviceRequired = true;
+                                i++;
+                                securityLevel3 = i2;
+                                authorizations = authorizationArr;
                             default:
                                 keyValidityStart = keyValidityStart2;
                                 keyValidityForOriginationEnd = keyValidityForOriginationEnd2;
@@ -330,7 +330,7 @@ public class AndroidKeyStoreSecretKeyFactorySpi extends SecretKeyFactorySpi {
                 long userAuthenticationValidityDurationSeconds3 = userAuthenticationValidityDurationSeconds;
                 int keymasterHwEnforcedUserAuthenticators2 = keymasterHwEnforcedUserAuthenticators;
                 int keymasterHwEnforcedUserAuthenticators3 = (int) userAuthenticationValidityDurationSeconds3;
-                return new KeyInfo(key.getUserKeyDescriptor().alias, insideSecureHardware, origin, keySize, keyValidityStart7, keyValidityForOriginationEnd8, keyValidityForConsumptionEnd8, purposes, encryptionPaddings, signaturePaddings, digests, blockModes, userAuthenticationRequired, keymasterHwEnforcedUserAuthenticators3, userAuthenticationRequirementEnforcedBySecureHardware ? keymasterHwEnforcedUserAuthenticators2 : keymasterSwEnforcedUserAuthenticators, userAuthenticationRequirementEnforcedBySecureHardware, userAuthenticationValidWhileOnBody, trustedUserPresenceRequired, invalidatedByBiometricEnrollment, trustedUserConfirmationRequired, securityLevel2, remainingUsageCount);
+                return new KeyInfo(key.getUserKeyDescriptor().alias, insideSecureHardware, origin, keySize, keyValidityStart7, keyValidityForOriginationEnd8, keyValidityForConsumptionEnd8, purposes, encryptionPaddings, signaturePaddings, digests, blockModes, userAuthenticationRequired, keymasterHwEnforcedUserAuthenticators3, userAuthenticationRequirementEnforcedBySecureHardware ? keymasterHwEnforcedUserAuthenticators2 : keymasterSwEnforcedUserAuthenticators, userAuthenticationRequirementEnforcedBySecureHardware, userAuthenticationValidWhileOnBody, unlockedDeviceRequired, trustedUserPresenceRequired, invalidatedByBiometricEnrollment, trustedUserConfirmationRequired, securityLevel2, remainingUsageCount);
             } catch (IllegalArgumentException e9) {
                 e = e9;
             }

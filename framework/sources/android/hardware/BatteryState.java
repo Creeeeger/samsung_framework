@@ -12,7 +12,6 @@ public abstract class BatteryState {
     public static final int STATUS_UNKNOWN = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface BatteryStatus {
     }
 

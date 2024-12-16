@@ -1,6 +1,8 @@
 package android.content;
 
+import android.Manifest;
 import android.accounts.Account;
+import android.app.ActivityThread;
 import android.content.ISyncStatusObserver;
 import android.database.IContentObserver;
 import android.net.Uri;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.PermissionEnforcer;
 import android.os.RemoteException;
 import java.util.List;
 
@@ -96,7 +99,6 @@ public interface IContentService extends IInterface {
 
     void unregisterContentObserver(IContentObserver iContentObserver) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements IContentService {
         @Override // android.content.IContentService
         public void unregisterContentObserver(IContentObserver observer) throws RemoteException {
@@ -287,7 +289,6 @@ public interface IContentService extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IContentService {
         public static final String DESCRIPTOR = "android.content.IContentService";
         static final int TRANSACTION_addPeriodicSync = 15;
@@ -331,9 +332,19 @@ public interface IContentService extends IInterface {
         static final int TRANSACTION_sync = 5;
         static final int TRANSACTION_syncAsUser = 6;
         static final int TRANSACTION_unregisterContentObserver = 1;
+        private final PermissionEnforcer mEnforcer;
 
-        public Stub() {
+        public Stub(PermissionEnforcer enforcer) {
             attachInterface(this, DESCRIPTOR);
+            if (enforcer == null) {
+                throw new IllegalArgumentException("enforcer cannot be null");
+            }
+            this.mEnforcer = enforcer;
+        }
+
+        @Deprecated
+        public Stub() {
+            this(PermissionEnforcer.fromContext(ActivityThread.currentActivityThread().getSystemContext()));
         }
 
         public static IContentService asInterface(IBinder obj) {
@@ -451,345 +462,342 @@ public interface IContentService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    IContentObserver _arg0 = IContentObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterContentObserver(_arg0);
+                    reply.writeNoException();
+                    return true;
+                case 2:
+                    Uri _arg02 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    boolean _arg1 = data.readBoolean();
+                    IContentObserver _arg2 = IContentObserver.Stub.asInterface(data.readStrongBinder());
+                    int _arg3 = data.readInt();
+                    int _arg4 = data.readInt();
+                    data.enforceNoDataAvail();
+                    registerContentObserver(_arg02, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    Uri[] _arg03 = (Uri[]) data.createTypedArray(Uri.CREATOR);
+                    IContentObserver _arg12 = IContentObserver.Stub.asInterface(data.readStrongBinder());
+                    boolean _arg22 = data.readBoolean();
+                    int _arg32 = data.readInt();
+                    int _arg42 = data.readInt();
+                    int _arg5 = data.readInt();
+                    String _arg6 = data.readString();
+                    data.enforceNoDataAvail();
+                    notifyChange(_arg03, _arg12, _arg22, _arg32, _arg42, _arg5, _arg6);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    Account _arg04 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg13 = data.readString();
+                    Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    String _arg33 = data.readString();
+                    data.enforceNoDataAvail();
+                    requestSync(_arg04, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    SyncRequest _arg05 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
+                    String _arg14 = data.readString();
+                    data.enforceNoDataAvail();
+                    sync(_arg05, _arg14);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    SyncRequest _arg06 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
+                    int _arg15 = data.readInt();
+                    String _arg24 = data.readString();
+                    data.enforceNoDataAvail();
+                    syncAsUser(_arg06, _arg15, _arg24);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    Account _arg07 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg16 = data.readString();
+                    ComponentName _arg25 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    cancelSync(_arg07, _arg16, _arg25);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    Account _arg08 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg17 = data.readString();
+                    ComponentName _arg26 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg34 = data.readInt();
+                    data.enforceNoDataAvail();
+                    cancelSyncAsUser(_arg08, _arg17, _arg26, _arg34);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    SyncRequest _arg09 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
+                    data.enforceNoDataAvail();
+                    cancelRequest(_arg09);
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    Account _arg010 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg18 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = getSyncAutomatically(_arg010, _arg18);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 11:
+                    Account _arg011 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg19 = data.readString();
+                    int _arg27 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = getSyncAutomaticallyAsUser(_arg011, _arg19, _arg27);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 12:
+                    Account _arg012 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg110 = data.readString();
+                    boolean _arg28 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSyncAutomatically(_arg012, _arg110, _arg28);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    Account _arg013 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg111 = data.readString();
+                    boolean _arg29 = data.readBoolean();
+                    int _arg35 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setSyncAutomaticallyAsUser(_arg013, _arg111, _arg29, _arg35);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    Account _arg014 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg112 = data.readString();
+                    ComponentName _arg210 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    List<PeriodicSync> _result3 = getPeriodicSyncs(_arg014, _arg112, _arg210);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result3, 1);
+                    return true;
+                case 15:
+                    Account _arg015 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg113 = data.readString();
+                    Bundle _arg211 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    long _arg36 = data.readLong();
+                    data.enforceNoDataAvail();
+                    addPeriodicSync(_arg015, _arg113, _arg211, _arg36);
+                    reply.writeNoException();
+                    return true;
+                case 16:
+                    Account _arg016 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg114 = data.readString();
+                    Bundle _arg212 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    removePeriodicSync(_arg016, _arg114, _arg212);
+                    reply.writeNoException();
+                    return true;
+                case 17:
+                    Account _arg017 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg115 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result4 = getIsSyncable(_arg017, _arg115);
+                    reply.writeNoException();
+                    reply.writeInt(_result4);
+                    return true;
+                case 18:
+                    Account _arg018 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg116 = data.readString();
+                    int _arg213 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = getIsSyncableAsUser(_arg018, _arg116, _arg213);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 19:
+                    Account _arg019 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg117 = data.readString();
+                    int _arg214 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIsSyncable(_arg019, _arg117, _arg214);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    Account _arg020 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg118 = data.readString();
+                    int _arg215 = data.readInt();
+                    int _arg37 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIsSyncableAsUser(_arg020, _arg118, _arg215, _arg37);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    boolean _arg021 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMasterSyncAutomatically(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    boolean _arg022 = data.readBoolean();
+                    int _arg119 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setMasterSyncAutomaticallyAsUser(_arg022, _arg119);
+                    reply.writeNoException();
+                    return true;
+                case 23:
+                    boolean _result6 = getMasterSyncAutomatically();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result6);
+                    return true;
+                case 24:
+                    int _arg023 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result7 = getMasterSyncAutomaticallyAsUser(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result7);
+                    return true;
+                case 25:
+                    List<SyncInfo> _result8 = getCurrentSyncs();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result8, 1);
+                    return true;
+                case 26:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<SyncInfo> _result9 = getCurrentSyncsAsUser(_arg024);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result9, 1);
+                    return true;
+                case 27:
+                    SyncAdapterType[] _result10 = getSyncAdapterTypes();
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result10, 1);
+                    return true;
+                case 28:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SyncAdapterType[] _result11 = getSyncAdapterTypesAsUser(_arg025);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result11, 1);
+                    return true;
+                case 29:
+                    String _arg026 = data.readString();
+                    int _arg120 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String[] _result12 = getSyncAdapterPackagesForAuthorityAsUser(_arg026, _arg120);
+                    reply.writeNoException();
+                    reply.writeStringArray(_result12);
+                    return true;
+                case 30:
+                    String _arg027 = data.readString();
+                    String _arg121 = data.readString();
+                    int _arg216 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result13 = getSyncAdapterPackageAsUser(_arg027, _arg121, _arg216);
+                    reply.writeNoException();
+                    reply.writeString(_result13);
+                    return true;
+                case 31:
+                    Account _arg028 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg122 = data.readString();
+                    ComponentName _arg217 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result14 = isSyncActive(_arg028, _arg122, _arg217);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 32:
+                    Account _arg029 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg123 = data.readString();
+                    ComponentName _arg218 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    SyncStatusInfo _result15 = getSyncStatus(_arg029, _arg123, _arg218);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result15, 1);
+                    return true;
+                case 33:
+                    Account _arg030 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg124 = data.readString();
+                    ComponentName _arg219 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg38 = data.readInt();
+                    data.enforceNoDataAvail();
+                    SyncStatusInfo _result16 = getSyncStatusAsUser(_arg030, _arg124, _arg219, _arg38);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result16, 1);
+                    return true;
+                case 34:
+                    Account _arg031 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg125 = data.readString();
+                    ComponentName _arg220 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result17 = isSyncPending(_arg031, _arg125, _arg220);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result17);
+                    return true;
+                case 35:
+                    Account _arg032 = (Account) data.readTypedObject(Account.CREATOR);
+                    String _arg126 = data.readString();
+                    ComponentName _arg221 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
+                    int _arg39 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result18 = isSyncPendingAsUser(_arg032, _arg126, _arg221, _arg39);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 36:
+                    int _arg033 = data.readInt();
+                    ISyncStatusObserver _arg127 = ISyncStatusObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    addStatusChangeListener(_arg033, _arg127);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    ISyncStatusObserver _arg034 = ISyncStatusObserver.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    removeStatusChangeListener(_arg034);
+                    reply.writeNoException();
+                    return true;
+                case 38:
+                    String _arg035 = data.readString();
+                    Uri _arg128 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    Bundle _arg222 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    int _arg310 = data.readInt();
+                    data.enforceNoDataAvail();
+                    putCache(_arg035, _arg128, _arg222, _arg310);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    String _arg036 = data.readString();
+                    Uri _arg129 = (Uri) data.readTypedObject(Uri.CREATOR);
+                    int _arg223 = data.readInt();
+                    data.enforceNoDataAvail();
+                    Bundle _result19 = getCache(_arg036, _arg129, _arg223);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    return true;
+                case 40:
+                    resetTodayStats();
+                    reply.writeNoException();
+                    return true;
+                case 41:
+                    String _arg037 = data.readString();
+                    String _arg130 = data.readString();
+                    String _arg224 = data.readString();
+                    data.enforceNoDataAvail();
+                    onDbCorruption(_arg037, _arg130, _arg224);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IContentObserver _arg0 = IContentObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterContentObserver(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            Uri _arg02 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            boolean _arg1 = data.readBoolean();
-                            IContentObserver _arg2 = IContentObserver.Stub.asInterface(data.readStrongBinder());
-                            int _arg3 = data.readInt();
-                            int _arg4 = data.readInt();
-                            data.enforceNoDataAvail();
-                            registerContentObserver(_arg02, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            Uri[] _arg03 = (Uri[]) data.createTypedArray(Uri.CREATOR);
-                            IContentObserver _arg12 = IContentObserver.Stub.asInterface(data.readStrongBinder());
-                            boolean _arg22 = data.readBoolean();
-                            int _arg32 = data.readInt();
-                            int _arg42 = data.readInt();
-                            int _arg5 = data.readInt();
-                            String _arg6 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyChange(_arg03, _arg12, _arg22, _arg32, _arg42, _arg5, _arg6);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            Account _arg04 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg13 = data.readString();
-                            Bundle _arg23 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            String _arg33 = data.readString();
-                            data.enforceNoDataAvail();
-                            requestSync(_arg04, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            SyncRequest _arg05 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
-                            String _arg14 = data.readString();
-                            data.enforceNoDataAvail();
-                            sync(_arg05, _arg14);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            SyncRequest _arg06 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
-                            int _arg15 = data.readInt();
-                            String _arg24 = data.readString();
-                            data.enforceNoDataAvail();
-                            syncAsUser(_arg06, _arg15, _arg24);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            Account _arg07 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg16 = data.readString();
-                            ComponentName _arg25 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            cancelSync(_arg07, _arg16, _arg25);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            Account _arg08 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg17 = data.readString();
-                            ComponentName _arg26 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg34 = data.readInt();
-                            data.enforceNoDataAvail();
-                            cancelSyncAsUser(_arg08, _arg17, _arg26, _arg34);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            SyncRequest _arg09 = (SyncRequest) data.readTypedObject(SyncRequest.CREATOR);
-                            data.enforceNoDataAvail();
-                            cancelRequest(_arg09);
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            Account _arg010 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg18 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = getSyncAutomatically(_arg010, _arg18);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 11:
-                            Account _arg011 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg19 = data.readString();
-                            int _arg27 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = getSyncAutomaticallyAsUser(_arg011, _arg19, _arg27);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 12:
-                            Account _arg012 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg110 = data.readString();
-                            boolean _arg28 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSyncAutomatically(_arg012, _arg110, _arg28);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            Account _arg013 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg111 = data.readString();
-                            boolean _arg29 = data.readBoolean();
-                            int _arg35 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setSyncAutomaticallyAsUser(_arg013, _arg111, _arg29, _arg35);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            Account _arg014 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg112 = data.readString();
-                            ComponentName _arg210 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            List<PeriodicSync> _result3 = getPeriodicSyncs(_arg014, _arg112, _arg210);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result3, 1);
-                            return true;
-                        case 15:
-                            Account _arg015 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg113 = data.readString();
-                            Bundle _arg211 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            long _arg36 = data.readLong();
-                            data.enforceNoDataAvail();
-                            addPeriodicSync(_arg015, _arg113, _arg211, _arg36);
-                            reply.writeNoException();
-                            return true;
-                        case 16:
-                            Account _arg016 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg114 = data.readString();
-                            Bundle _arg212 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            removePeriodicSync(_arg016, _arg114, _arg212);
-                            reply.writeNoException();
-                            return true;
-                        case 17:
-                            Account _arg017 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg115 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result4 = getIsSyncable(_arg017, _arg115);
-                            reply.writeNoException();
-                            reply.writeInt(_result4);
-                            return true;
-                        case 18:
-                            Account _arg018 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg116 = data.readString();
-                            int _arg213 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = getIsSyncableAsUser(_arg018, _arg116, _arg213);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 19:
-                            Account _arg019 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg117 = data.readString();
-                            int _arg214 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIsSyncable(_arg019, _arg117, _arg214);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            Account _arg020 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg118 = data.readString();
-                            int _arg215 = data.readInt();
-                            int _arg37 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIsSyncableAsUser(_arg020, _arg118, _arg215, _arg37);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            boolean _arg021 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMasterSyncAutomatically(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            boolean _arg022 = data.readBoolean();
-                            int _arg119 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setMasterSyncAutomaticallyAsUser(_arg022, _arg119);
-                            reply.writeNoException();
-                            return true;
-                        case 23:
-                            boolean _result6 = getMasterSyncAutomatically();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result6);
-                            return true;
-                        case 24:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result7 = getMasterSyncAutomaticallyAsUser(_arg023);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result7);
-                            return true;
-                        case 25:
-                            List<SyncInfo> _result8 = getCurrentSyncs();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result8, 1);
-                            return true;
-                        case 26:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<SyncInfo> _result9 = getCurrentSyncsAsUser(_arg024);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result9, 1);
-                            return true;
-                        case 27:
-                            SyncAdapterType[] _result10 = getSyncAdapterTypes();
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result10, 1);
-                            return true;
-                        case 28:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SyncAdapterType[] _result11 = getSyncAdapterTypesAsUser(_arg025);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result11, 1);
-                            return true;
-                        case 29:
-                            String _arg026 = data.readString();
-                            int _arg120 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String[] _result12 = getSyncAdapterPackagesForAuthorityAsUser(_arg026, _arg120);
-                            reply.writeNoException();
-                            reply.writeStringArray(_result12);
-                            return true;
-                        case 30:
-                            String _arg027 = data.readString();
-                            String _arg121 = data.readString();
-                            int _arg216 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result13 = getSyncAdapterPackageAsUser(_arg027, _arg121, _arg216);
-                            reply.writeNoException();
-                            reply.writeString(_result13);
-                            return true;
-                        case 31:
-                            Account _arg028 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg122 = data.readString();
-                            ComponentName _arg217 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result14 = isSyncActive(_arg028, _arg122, _arg217);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 32:
-                            Account _arg029 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg123 = data.readString();
-                            ComponentName _arg218 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            SyncStatusInfo _result15 = getSyncStatus(_arg029, _arg123, _arg218);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result15, 1);
-                            return true;
-                        case 33:
-                            Account _arg030 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg124 = data.readString();
-                            ComponentName _arg219 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg38 = data.readInt();
-                            data.enforceNoDataAvail();
-                            SyncStatusInfo _result16 = getSyncStatusAsUser(_arg030, _arg124, _arg219, _arg38);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result16, 1);
-                            return true;
-                        case 34:
-                            Account _arg031 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg125 = data.readString();
-                            ComponentName _arg220 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result17 = isSyncPending(_arg031, _arg125, _arg220);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 35:
-                            Account _arg032 = (Account) data.readTypedObject(Account.CREATOR);
-                            String _arg126 = data.readString();
-                            ComponentName _arg221 = (ComponentName) data.readTypedObject(ComponentName.CREATOR);
-                            int _arg39 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result18 = isSyncPendingAsUser(_arg032, _arg126, _arg221, _arg39);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 36:
-                            int _arg033 = data.readInt();
-                            ISyncStatusObserver _arg127 = ISyncStatusObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            addStatusChangeListener(_arg033, _arg127);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            ISyncStatusObserver _arg034 = ISyncStatusObserver.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            removeStatusChangeListener(_arg034);
-                            reply.writeNoException();
-                            return true;
-                        case 38:
-                            String _arg035 = data.readString();
-                            Uri _arg128 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            Bundle _arg222 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            int _arg310 = data.readInt();
-                            data.enforceNoDataAvail();
-                            putCache(_arg035, _arg128, _arg222, _arg310);
-                            reply.writeNoException();
-                            return true;
-                        case 39:
-                            String _arg036 = data.readString();
-                            Uri _arg129 = (Uri) data.readTypedObject(Uri.CREATOR);
-                            int _arg223 = data.readInt();
-                            data.enforceNoDataAvail();
-                            Bundle _result19 = getCache(_arg036, _arg129, _arg223);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result19, 1);
-                            return true;
-                        case 40:
-                            resetTodayStats();
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            String _arg037 = data.readString();
-                            String _arg130 = data.readString();
-                            String _arg224 = data.readString();
-                            data.enforceNoDataAvail();
-                            onDbCorruption(_arg037, _arg130, _arg224);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes.dex */
-        public static class Proxy implements IContentService {
+        private static class Proxy implements IContentService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -1521,6 +1529,14 @@ public interface IContentService extends IInterface {
                     _data.recycle();
                 }
             }
+        }
+
+        protected void isSyncActive_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.READ_SYNC_STATS, getCallingPid(), getCallingUid());
+        }
+
+        protected void isSyncPendingAsUser_enforcePermission() throws SecurityException {
+            this.mEnforcer.enforcePermission(Manifest.permission.READ_SYNC_STATS, getCallingPid(), getCallingUid());
         }
 
         @Override // android.os.Binder

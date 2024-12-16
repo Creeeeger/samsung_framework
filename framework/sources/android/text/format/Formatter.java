@@ -15,7 +15,7 @@ import com.android.internal.R;
 import com.android.net.module.util.Inet4AddressUtils;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class Formatter {
     public static final int FLAG_CALCULATE_ROUNDED = 2;
     public static final int FLAG_IEC_UNITS = 8;
@@ -27,15 +27,16 @@ public final class Formatter {
     private static final int SECONDS_PER_MINUTE = 60;
     private static final UnicodeSetSpanner SPACES_AND_CONTROLS = new UnicodeSetSpanner(new UnicodeSet("[[:Zs:][:Cf:]]").freeze());
 
-    /* loaded from: classes3.dex */
     public static class BytesResult {
         public final long roundedBytes;
         public final String units;
+        public final String unitsContentDescription;
         public final String value;
 
-        public BytesResult(String value, String units, long roundedBytes) {
+        public BytesResult(String value, String units, String unitsContentDescription, long roundedBytes) {
             this.value = value;
             this.units = units;
+            this.unitsContentDescription = unitsContentDescription;
             this.roundedBytes = roundedBytes;
         }
     }
@@ -106,7 +107,6 @@ public final class Formatter {
         return formatMeasureShort(locale, numberFormatter, input.value, input.units);
     }
 
-    /* loaded from: classes3.dex */
     public static class RoundedBytesResult {
         public final int fractionDigits;
         public final long roundedBytes;
@@ -128,7 +128,7 @@ public final class Formatter {
             long roundedBytes;
             int unit = (flags & 8) != 0 ? 1024 : 1000;
             boolean isNegative = sizeBytes < 0;
-            float result = isNegative ? (float) (-sizeBytes) : (float) sizeBytes;
+            float result = isNegative ? -sizeBytes : sizeBytes;
             MeasureUnit units2 = MeasureUnit.BYTE;
             long mult2 = 1;
             if (result > 900.0f) {
@@ -198,19 +198,20 @@ public final class Formatter {
     }
 
     public static BytesResult formatBytes(Resources res, long sizeBytes, int flags) {
-        String formattedMeasure;
+        String units;
         RoundedBytesResult rounded = RoundedBytesResult.roundBytes(sizeBytes, flags);
         Locale locale = res.getConfiguration().getLocales().get(0);
         NumberFormat numberFormatter = getNumberFormatter(locale, rounded.fractionDigits);
         String formattedNumber = numberFormatter.format(rounded.value);
-        if (rounded.units == MeasureUnit.BYTE) {
-            formattedMeasure = getByteSuffixOverride(res);
+        String formattedMeasure = formatMeasureShort(locale, numberFormatter, rounded.value, rounded.units);
+        String numberRemoved = deleteFirstFromString(formattedMeasure, formattedNumber);
+        String units2 = SPACES_AND_CONTROLS.trim(numberRemoved).toString();
+        if (rounded.units != MeasureUnit.BYTE) {
+            units = units2;
         } else {
-            String formattedMeasure2 = formatMeasureShort(locale, numberFormatter, rounded.value, rounded.units);
-            String numberRemoved = deleteFirstFromString(formattedMeasure2, formattedNumber);
-            formattedMeasure = SPACES_AND_CONTROLS.trim(numberRemoved).toString();
+            units = getByteSuffixOverride(res);
         }
-        return new BytesResult(formattedNumber, formattedMeasure, rounded.roundedBytes);
+        return new BytesResult(formattedNumber, units, units2, rounded.roundedBytes);
     }
 
     @Deprecated

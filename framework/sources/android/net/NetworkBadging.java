@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Deprecated
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public class NetworkBadging {
     public static final int BADGING_4K = 30;
     public static final int BADGING_HD = 20;
@@ -15,7 +15,6 @@ public class NetworkBadging {
     public static final int BADGING_SD = 10;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Badging {
     }
 

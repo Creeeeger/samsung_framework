@@ -26,7 +26,6 @@ public interface HeavyHitterSketch<T> {
         return new HeavyHitterSketchImpl();
     }
 
-    /* loaded from: classes5.dex */
     public static final class HeavyHitterSketchImpl<T> implements HeavyHitterSketch<T> {
         private int mCapacity;
         private boolean mConfigured;
@@ -54,10 +53,9 @@ public interface HeavyHitterSketch<T> {
             if (!this.mConfigured) {
                 throw new IllegalStateException();
             }
-            int i = this.mNumInputs;
-            if (i < this.mPassSize) {
+            if (this.mNumInputs < this.mPassSize) {
                 addToMGSummary(newInstance);
-            } else if (i < this.mTotalSize) {
+            } else if (this.mNumInputs < this.mTotalSize) {
                 validate(newInstance);
             }
         }
@@ -65,24 +63,21 @@ public interface HeavyHitterSketch<T> {
         private void addToMGSummary(T newInstance) {
             int hashCode = newInstance != null ? newInstance.hashCode() : 0;
             int index = this.mObjects.indexOfKey(hashCode);
-            if (index < 0) {
-                if (this.mObjects.size() >= this.mCapacity - 1) {
-                    for (int i = this.mFrequencies.size() - 1; i >= 0; i--) {
-                        int val = this.mFrequencies.valueAt(i) - 1;
-                        if (val == 0) {
-                            this.mObjects.removeAt(i);
-                            this.mFrequencies.removeAt(i);
-                        } else {
-                            this.mFrequencies.setValueAt(i, val);
-                        }
+            if (index >= 0) {
+                this.mFrequencies.setValueAt(index, this.mFrequencies.valueAt(index) + 1);
+            } else if (this.mObjects.size() >= this.mCapacity - 1) {
+                for (int i = this.mFrequencies.size() - 1; i >= 0; i--) {
+                    int val = this.mFrequencies.valueAt(i) - 1;
+                    if (val == 0) {
+                        this.mObjects.removeAt(i);
+                        this.mFrequencies.removeAt(i);
+                    } else {
+                        this.mFrequencies.setValueAt(i, val);
                     }
-                } else {
-                    this.mObjects.put(hashCode, newInstance);
-                    this.mFrequencies.put(hashCode, 1);
                 }
             } else {
-                SparseIntArray sparseIntArray = this.mFrequencies;
-                sparseIntArray.setValueAt(index, sparseIntArray.valueAt(index) + 1);
+                this.mObjects.put(hashCode, newInstance);
+                this.mFrequencies.put(hashCode, 1);
             }
             int i2 = this.mNumInputs;
             int i3 = i2 + 1;
@@ -98,8 +93,7 @@ public interface HeavyHitterSketch<T> {
             int hashCode = newInstance != null ? newInstance.hashCode() : 0;
             int index = this.mObjects.indexOfKey(hashCode);
             if (index >= 0) {
-                SparseIntArray sparseIntArray = this.mFrequencies;
-                sparseIntArray.setValueAt(index, sparseIntArray.valueAt(index) + 1);
+                this.mFrequencies.setValueAt(index, this.mFrequencies.valueAt(index) + 1);
             }
             int i = this.mNumInputs + 1;
             this.mNumInputs = i;
@@ -162,6 +156,7 @@ public interface HeavyHitterSketch<T> {
             return result;
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ int lambda$getTopHeavyHitters$0(Integer a, Integer b) {
             return this.mFrequencies.valueAt(b.intValue()) - this.mFrequencies.valueAt(a.intValue());
         }

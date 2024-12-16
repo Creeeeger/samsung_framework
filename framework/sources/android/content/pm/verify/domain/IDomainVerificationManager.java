@@ -1,6 +1,7 @@
 package android.content.pm.verify.domain;
 
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
@@ -17,6 +18,8 @@ public interface IDomainVerificationManager extends IInterface {
 
     List<DomainOwner> getOwnersForDomain(String str, int i) throws RemoteException;
 
+    Bundle getUriRelativeFilterGroups(String str, List<String> list) throws RemoteException;
+
     List<String> queryValidVerificationPackageNames() throws RemoteException;
 
     void setDomainVerificationLinkHandlingAllowed(String str, boolean z, int i) throws RemoteException;
@@ -25,7 +28,8 @@ public interface IDomainVerificationManager extends IInterface {
 
     int setDomainVerificationUserSelection(String str, DomainSet domainSet, boolean z, int i) throws RemoteException;
 
-    /* loaded from: classes.dex */
+    void setUriRelativeFilterGroups(String str, Bundle bundle) throws RemoteException;
+
     public static class Default implements IDomainVerificationManager {
         @Override // android.content.pm.verify.domain.IDomainVerificationManager
         public List<String> queryValidVerificationPackageNames() throws RemoteException {
@@ -61,21 +65,31 @@ public interface IDomainVerificationManager extends IInterface {
             return 0;
         }
 
+        @Override // android.content.pm.verify.domain.IDomainVerificationManager
+        public void setUriRelativeFilterGroups(String packageName, Bundle domainToGroupsBundle) throws RemoteException {
+        }
+
+        @Override // android.content.pm.verify.domain.IDomainVerificationManager
+        public Bundle getUriRelativeFilterGroups(String packageName, List<String> domains) throws RemoteException {
+            return null;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements IDomainVerificationManager {
         static final int TRANSACTION_getDomainVerificationInfo = 2;
         static final int TRANSACTION_getDomainVerificationUserState = 3;
         static final int TRANSACTION_getOwnersForDomain = 4;
+        static final int TRANSACTION_getUriRelativeFilterGroups = 9;
         static final int TRANSACTION_queryValidVerificationPackageNames = 1;
         static final int TRANSACTION_setDomainVerificationLinkHandlingAllowed = 6;
         static final int TRANSACTION_setDomainVerificationStatus = 5;
         static final int TRANSACTION_setDomainVerificationUserSelection = 7;
+        static final int TRANSACTION_setUriRelativeFilterGroups = 8;
 
         public Stub() {
             attachInterface(this, IDomainVerificationManager.DESCRIPTOR);
@@ -113,6 +127,10 @@ public interface IDomainVerificationManager extends IInterface {
                     return "setDomainVerificationLinkHandlingAllowed";
                 case 7:
                     return "setDomainVerificationUserSelection";
+                case 8:
+                    return "setUriRelativeFilterGroups";
+                case 9:
+                    return "getUriRelativeFilterGroups";
                 default:
                     return null;
             }
@@ -128,76 +146,87 @@ public interface IDomainVerificationManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IDomainVerificationManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IDomainVerificationManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IDomainVerificationManager.DESCRIPTOR);
+                case 1:
+                    List<String> _result = queryValidVerificationPackageNames();
+                    reply.writeNoException();
+                    reply.writeStringList(_result);
+                    return true;
+                case 2:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    DomainVerificationInfo _result2 = getDomainVerificationInfo(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    String _arg02 = data.readString();
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    DomainVerificationUserState _result3 = getDomainVerificationUserState(_arg02, _arg1);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 4:
+                    String _arg03 = data.readString();
+                    int _arg12 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<DomainOwner> _result4 = getOwnersForDomain(_arg03, _arg12);
+                    reply.writeNoException();
+                    reply.writeTypedList(_result4, 1);
+                    return true;
+                case 5:
+                    String _arg04 = data.readString();
+                    DomainSet _arg13 = (DomainSet) data.readTypedObject(DomainSet.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = setDomainVerificationStatus(_arg04, _arg13, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 6:
+                    String _arg05 = data.readString();
+                    boolean _arg14 = data.readBoolean();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDomainVerificationLinkHandlingAllowed(_arg05, _arg14, _arg22);
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    String _arg06 = data.readString();
+                    DomainSet _arg15 = (DomainSet) data.readTypedObject(DomainSet.CREATOR);
+                    boolean _arg23 = data.readBoolean();
+                    int _arg3 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result6 = setDomainVerificationUserSelection(_arg06, _arg15, _arg23, _arg3);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 8:
+                    String _arg07 = data.readString();
+                    Bundle _arg16 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setUriRelativeFilterGroups(_arg07, _arg16);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    String _arg08 = data.readString();
+                    List<String> _arg17 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    Bundle _result7 = getUriRelativeFilterGroups(_arg08, _arg17);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result7, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            List<String> _result = queryValidVerificationPackageNames();
-                            reply.writeNoException();
-                            reply.writeStringList(_result);
-                            return true;
-                        case 2:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            DomainVerificationInfo _result2 = getDomainVerificationInfo(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            String _arg02 = data.readString();
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            DomainVerificationUserState _result3 = getDomainVerificationUserState(_arg02, _arg1);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 4:
-                            String _arg03 = data.readString();
-                            int _arg12 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<DomainOwner> _result4 = getOwnersForDomain(_arg03, _arg12);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result4, 1);
-                            return true;
-                        case 5:
-                            String _arg04 = data.readString();
-                            DomainSet _arg13 = (DomainSet) data.readTypedObject(DomainSet.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = setDomainVerificationStatus(_arg04, _arg13, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 6:
-                            String _arg05 = data.readString();
-                            boolean _arg14 = data.readBoolean();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDomainVerificationLinkHandlingAllowed(_arg05, _arg14, _arg22);
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            String _arg06 = data.readString();
-                            DomainSet _arg15 = (DomainSet) data.readTypedObject(DomainSet.CREATOR);
-                            boolean _arg23 = data.readBoolean();
-                            int _arg3 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result6 = setDomainVerificationUserSelection(_arg06, _arg15, _arg23, _arg3);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements IDomainVerificationManager {
+        private static class Proxy implements IDomainVerificationManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -337,11 +366,45 @@ public interface IDomainVerificationManager extends IInterface {
                     _data.recycle();
                 }
             }
+
+            @Override // android.content.pm.verify.domain.IDomainVerificationManager
+            public void setUriRelativeFilterGroups(String packageName, Bundle domainToGroupsBundle) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IDomainVerificationManager.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeTypedObject(domainToGroupsBundle, 0);
+                    this.mRemote.transact(8, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.content.pm.verify.domain.IDomainVerificationManager
+            public Bundle getUriRelativeFilterGroups(String packageName, List<String> domains) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(IDomainVerificationManager.DESCRIPTOR);
+                    _data.writeString(packageName);
+                    _data.writeStringList(domains);
+                    this.mRemote.transact(9, _data, _reply, 0);
+                    _reply.readException();
+                    Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
         }
 
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 6;
+            return 8;
         }
     }
 }

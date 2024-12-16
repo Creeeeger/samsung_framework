@@ -25,14 +25,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class DisplayInfo implements Parcelable {
     public static final Parcelable.Creator<DisplayInfo> CREATOR = new Parcelable.Creator<DisplayInfo>() { // from class: android.view.DisplayInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayInfo createFromParcel(Parcel source) {
             return new DisplayInfo(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public DisplayInfo[] newArray(int size) {
             return new DisplayInfo[size];
@@ -42,6 +41,7 @@ public final class DisplayInfo implements Parcelable {
     public int appHeight;
     public long appVsyncOffsetNanos;
     public int appWidth;
+    public Display.Mode[] appsSupportedModes;
     public float brightnessDefault;
     public float brightnessMaximum;
     public float brightnessMinimum;
@@ -88,31 +88,13 @@ public final class DisplayInfo implements Parcelable {
     public int type;
     public String uniqueId;
     public int[] userDisabledHdrTypes;
-
-    /* synthetic */ DisplayInfo(Parcel parcel, DisplayInfoIA displayInfoIA) {
-        this(parcel);
-    }
-
-    /* renamed from: android.view.DisplayInfo$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<DisplayInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayInfo createFromParcel(Parcel source) {
-            return new DisplayInfo(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DisplayInfo[] newArray(int size) {
-            return new DisplayInfo[size];
-        }
-    }
+    public int userPreferredModeId;
 
     public DisplayInfo() {
         this.refreshRateMode = 0;
+        this.userPreferredModeId = -1;
         this.supportedModes = Display.Mode.EMPTY_ARRAY;
+        this.appsSupportedModes = Display.Mode.EMPTY_ARRAY;
         this.supportedColorModes = new int[]{0};
         this.userDisabledHdrTypes = new int[0];
         this.removeMode = 0;
@@ -122,7 +104,9 @@ public final class DisplayInfo implements Parcelable {
 
     public DisplayInfo(DisplayInfo other) {
         this.refreshRateMode = 0;
+        this.userPreferredModeId = -1;
         this.supportedModes = Display.Mode.EMPTY_ARRAY;
+        this.appsSupportedModes = Display.Mode.EMPTY_ARRAY;
         this.supportedColorModes = new int[]{0};
         this.userDisabledHdrTypes = new int[0];
         this.removeMode = 0;
@@ -133,7 +117,9 @@ public final class DisplayInfo implements Parcelable {
 
     private DisplayInfo(Parcel source) {
         this.refreshRateMode = 0;
+        this.userPreferredModeId = -1;
         this.supportedModes = Display.Mode.EMPTY_ARRAY;
+        this.appsSupportedModes = Display.Mode.EMPTY_ARRAY;
         this.supportedColorModes = new int[]{0};
         this.userDisabledHdrTypes = new int[0];
         this.removeMode = 0;
@@ -147,7 +133,7 @@ public final class DisplayInfo implements Parcelable {
     }
 
     public boolean equals(DisplayInfo other) {
-        return other != null && this.layerStack == other.layerStack && this.flags == other.flags && this.type == other.type && this.displayId == other.displayId && this.displayGroupId == other.displayGroupId && Objects.equals(this.address, other.address) && Objects.equals(this.deviceProductInfo, other.deviceProductInfo) && Objects.equals(this.uniqueId, other.uniqueId) && this.appWidth == other.appWidth && this.appHeight == other.appHeight && this.smallestNominalAppWidth == other.smallestNominalAppWidth && this.smallestNominalAppHeight == other.smallestNominalAppHeight && this.largestNominalAppWidth == other.largestNominalAppWidth && this.largestNominalAppHeight == other.largestNominalAppHeight && this.logicalWidth == other.logicalWidth && this.logicalHeight == other.logicalHeight && Objects.equals(this.displayCutout, other.displayCutout) && this.rotation == other.rotation && this.modeId == other.modeId && this.renderFrameRate == other.renderFrameRate && this.defaultModeId == other.defaultModeId && (!CoreRune.FW_VRR_REFRESH_RATE_MODE || this.refreshRateMode == other.refreshRateMode) && Arrays.equals(this.supportedModes, other.supportedModes) && this.colorMode == other.colorMode && Arrays.equals(this.supportedColorModes, other.supportedColorModes) && Objects.equals(this.hdrCapabilities, other.hdrCapabilities) && Arrays.equals(this.userDisabledHdrTypes, other.userDisabledHdrTypes) && this.minimalPostProcessingSupported == other.minimalPostProcessingSupported && this.logicalDensityDpi == other.logicalDensityDpi && this.physicalXDpi == other.physicalXDpi && this.physicalYDpi == other.physicalYDpi && this.appVsyncOffsetNanos == other.appVsyncOffsetNanos && this.presentationDeadlineNanos == other.presentationDeadlineNanos && this.state == other.state && this.committedState == other.committedState && this.ownerUid == other.ownerUid && Objects.equals(this.ownerPackageName, other.ownerPackageName) && this.removeMode == other.removeMode && getRefreshRate() == other.getRefreshRate() && this.brightnessMinimum == other.brightnessMinimum && this.brightnessMaximum == other.brightnessMaximum && this.brightnessDefault == other.brightnessDefault && Objects.equals(this.roundedCorners, other.roundedCorners) && this.installOrientation == other.installOrientation && Objects.equals(this.displayShape, other.displayShape) && Objects.equals(this.layoutLimitedRefreshRate, other.layoutLimitedRefreshRate) && BrightnessSynchronizer.floatEquals(this.hdrSdrRatio, other.hdrSdrRatio) && this.thermalRefreshRateThrottling.contentEquals(other.thermalRefreshRateThrottling) && Objects.equals(this.thermalBrightnessThrottlingDataId, other.thermalBrightnessThrottlingDataId);
+        return other != null && this.layerStack == other.layerStack && this.flags == other.flags && this.type == other.type && this.displayId == other.displayId && this.displayGroupId == other.displayGroupId && Objects.equals(this.address, other.address) && Objects.equals(this.deviceProductInfo, other.deviceProductInfo) && Objects.equals(this.uniqueId, other.uniqueId) && this.appWidth == other.appWidth && this.appHeight == other.appHeight && this.smallestNominalAppWidth == other.smallestNominalAppWidth && this.smallestNominalAppHeight == other.smallestNominalAppHeight && this.largestNominalAppWidth == other.largestNominalAppWidth && this.largestNominalAppHeight == other.largestNominalAppHeight && this.logicalWidth == other.logicalWidth && this.logicalHeight == other.logicalHeight && Objects.equals(this.displayCutout, other.displayCutout) && this.rotation == other.rotation && this.modeId == other.modeId && this.renderFrameRate == other.renderFrameRate && this.defaultModeId == other.defaultModeId && (!CoreRune.FW_VRR_REFRESH_RATE_MODE || this.refreshRateMode == other.refreshRateMode) && this.userPreferredModeId == other.userPreferredModeId && Arrays.equals(this.supportedModes, other.supportedModes) && Arrays.equals(this.appsSupportedModes, other.appsSupportedModes) && this.colorMode == other.colorMode && Arrays.equals(this.supportedColorModes, other.supportedColorModes) && Objects.equals(this.hdrCapabilities, other.hdrCapabilities) && Arrays.equals(this.userDisabledHdrTypes, other.userDisabledHdrTypes) && this.minimalPostProcessingSupported == other.minimalPostProcessingSupported && this.logicalDensityDpi == other.logicalDensityDpi && this.physicalXDpi == other.physicalXDpi && this.physicalYDpi == other.physicalYDpi && this.appVsyncOffsetNanos == other.appVsyncOffsetNanos && this.presentationDeadlineNanos == other.presentationDeadlineNanos && this.state == other.state && this.committedState == other.committedState && this.ownerUid == other.ownerUid && Objects.equals(this.ownerPackageName, other.ownerPackageName) && this.removeMode == other.removeMode && getRefreshRate() == other.getRefreshRate() && this.brightnessMinimum == other.brightnessMinimum && this.brightnessMaximum == other.brightnessMaximum && this.brightnessDefault == other.brightnessDefault && Objects.equals(this.roundedCorners, other.roundedCorners) && this.installOrientation == other.installOrientation && Objects.equals(this.displayShape, other.displayShape) && Objects.equals(this.layoutLimitedRefreshRate, other.layoutLimitedRefreshRate) && BrightnessSynchronizer.floatEquals(this.hdrSdrRatio, other.hdrSdrRatio) && this.thermalRefreshRateThrottling.contentEquals(other.thermalRefreshRateThrottling) && Objects.equals(this.thermalBrightnessThrottlingDataId, other.thermalBrightnessThrottlingDataId);
     }
 
     public int hashCode() {
@@ -180,11 +166,11 @@ public final class DisplayInfo implements Parcelable {
         if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
             this.refreshRateMode = other.refreshRateMode;
         }
-        Display.Mode[] modeArr = other.supportedModes;
-        this.supportedModes = (Display.Mode[]) Arrays.copyOf(modeArr, modeArr.length);
+        this.userPreferredModeId = other.userPreferredModeId;
+        this.supportedModes = (Display.Mode[]) Arrays.copyOf(other.supportedModes, other.supportedModes.length);
+        this.appsSupportedModes = (Display.Mode[]) Arrays.copyOf(other.appsSupportedModes, other.appsSupportedModes.length);
         this.colorMode = other.colorMode;
-        int[] iArr = other.supportedColorModes;
-        this.supportedColorModes = Arrays.copyOf(iArr, iArr.length);
+        this.supportedColorModes = Arrays.copyOf(other.supportedColorModes, other.supportedColorModes.length);
         this.hdrCapabilities = other.hdrCapabilities;
         this.userDisabledHdrTypes = other.userDisabledHdrTypes;
         this.minimalPostProcessingSupported = other.minimalPostProcessingSupported;
@@ -236,17 +222,23 @@ public final class DisplayInfo implements Parcelable {
         if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
             this.refreshRateMode = source.readInt();
         }
+        this.userPreferredModeId = source.readInt();
         int nModes = source.readInt();
         this.supportedModes = new Display.Mode[nModes];
         for (int i = 0; i < nModes; i++) {
             this.supportedModes[i] = Display.Mode.CREATOR.createFromParcel(source);
         }
-        int i2 = source.readInt();
-        this.colorMode = i2;
+        int nAppModes = source.readInt();
+        this.appsSupportedModes = new Display.Mode[nAppModes];
+        for (int i2 = 0; i2 < nAppModes; i2++) {
+            this.appsSupportedModes[i2] = Display.Mode.CREATOR.createFromParcel(source);
+        }
+        int i3 = source.readInt();
+        this.colorMode = i3;
         int nColorModes = source.readInt();
         this.supportedColorModes = new int[nColorModes];
-        for (int i3 = 0; i3 < nColorModes; i3++) {
-            this.supportedColorModes[i3] = source.readInt();
+        for (int i4 = 0; i4 < nColorModes; i4++) {
+            this.supportedColorModes[i4] = source.readInt();
         }
         this.hdrCapabilities = (Display.HdrCapabilities) source.readParcelable(null, Display.HdrCapabilities.class);
         this.minimalPostProcessingSupported = source.readBoolean();
@@ -268,11 +260,11 @@ public final class DisplayInfo implements Parcelable {
         this.roundedCorners = (RoundedCorners) source.readTypedObject(RoundedCorners.CREATOR);
         int numUserDisabledFormats = source.readInt();
         this.userDisabledHdrTypes = new int[numUserDisabledFormats];
-        for (int i4 = 0; i4 < numUserDisabledFormats; i4++) {
-            this.userDisabledHdrTypes[i4] = source.readInt();
+        for (int i5 = 0; i5 < numUserDisabledFormats; i5++) {
+            this.userDisabledHdrTypes[i5] = source.readInt();
         }
-        int i5 = source.readInt();
-        this.installOrientation = i5;
+        int i6 = source.readInt();
+        this.installOrientation = i6;
         this.displayShape = (DisplayShape) source.readTypedObject(DisplayShape.CREATOR);
         this.layoutLimitedRefreshRate = (SurfaceControl.RefreshRateRange) source.readTypedObject(SurfaceControl.RefreshRateRange.CREATOR);
         this.hdrSdrRatio = source.readFloat();
@@ -306,27 +298,20 @@ public final class DisplayInfo implements Parcelable {
         if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
             dest.writeInt(this.refreshRateMode);
         }
+        dest.writeInt(this.userPreferredModeId);
         dest.writeInt(this.supportedModes.length);
-        int i = 0;
-        while (true) {
-            Display.Mode[] modeArr = this.supportedModes;
-            if (i >= modeArr.length) {
-                break;
-            }
-            modeArr[i].writeToParcel(dest, flags);
-            i++;
+        for (int i = 0; i < this.supportedModes.length; i++) {
+            this.supportedModes[i].writeToParcel(dest, flags);
         }
-        int i2 = this.colorMode;
-        dest.writeInt(i2);
+        dest.writeInt(this.appsSupportedModes.length);
+        for (int i2 = 0; i2 < this.appsSupportedModes.length; i2++) {
+            this.appsSupportedModes[i2].writeToParcel(dest, flags);
+        }
+        int i3 = this.colorMode;
+        dest.writeInt(i3);
         dest.writeInt(this.supportedColorModes.length);
-        int i3 = 0;
-        while (true) {
-            int[] iArr = this.supportedColorModes;
-            if (i3 >= iArr.length) {
-                break;
-            }
-            dest.writeInt(iArr[i3]);
-            i3++;
+        for (int i4 = 0; i4 < this.supportedColorModes.length; i4++) {
+            dest.writeInt(this.supportedColorModes[i4]);
         }
         dest.writeParcelable(this.hdrCapabilities, flags);
         dest.writeBoolean(this.minimalPostProcessingSupported);
@@ -347,23 +332,16 @@ public final class DisplayInfo implements Parcelable {
         dest.writeFloat(this.brightnessDefault);
         dest.writeTypedObject(this.roundedCorners, flags);
         dest.writeInt(this.userDisabledHdrTypes.length);
-        int i4 = 0;
-        while (true) {
-            int[] iArr2 = this.userDisabledHdrTypes;
-            if (i4 < iArr2.length) {
-                dest.writeInt(iArr2[i4]);
-                i4++;
-            } else {
-                int i5 = this.installOrientation;
-                dest.writeInt(i5);
-                dest.writeTypedObject(this.displayShape, flags);
-                dest.writeTypedObject(this.layoutLimitedRefreshRate, flags);
-                dest.writeFloat(this.hdrSdrRatio);
-                dest.writeSparseArray(this.thermalRefreshRateThrottling);
-                dest.writeString8(this.thermalBrightnessThrottlingDataId);
-                return;
-            }
+        for (int i5 = 0; i5 < this.userDisabledHdrTypes.length; i5++) {
+            dest.writeInt(this.userDisabledHdrTypes[i5]);
         }
+        int i6 = this.installOrientation;
+        dest.writeInt(i6);
+        dest.writeTypedObject(this.displayShape, flags);
+        dest.writeTypedObject(this.layoutLimitedRefreshRate, flags);
+        dest.writeFloat(this.hdrSdrRatio);
+        dest.writeSparseArray(this.thermalRefreshRateThrottling);
+        dest.writeString8(this.thermalBrightnessThrottlingDataId);
     }
 
     @Override // android.os.Parcelable
@@ -372,9 +350,8 @@ public final class DisplayInfo implements Parcelable {
     }
 
     public float getRefreshRate() {
-        float f = this.refreshRateOverride;
-        if (f > 0.0f) {
-            return f;
+        if (this.refreshRateOverride > 0.0f) {
+            return this.refreshRateOverride;
         }
         if (this.supportedModes.length == 0) {
             return 0.0f;
@@ -391,37 +368,36 @@ public final class DisplayInfo implements Parcelable {
     }
 
     private Display.Mode findMode(int id) {
-        int i = 0;
-        while (true) {
-            Display.Mode[] modeArr = this.supportedModes;
-            if (i < modeArr.length) {
-                if (modeArr[i].getModeId() != id) {
-                    i++;
-                } else {
-                    return this.supportedModes[i];
-                }
-            } else {
-                throw new IllegalStateException("Unable to locate mode id=" + id + ",supportedModes=" + Arrays.toString(this.supportedModes));
+        for (int i = 0; i < this.supportedModes.length; i++) {
+            if (this.supportedModes[i].getModeId() == id) {
+                return this.supportedModes[i];
             }
         }
+        throw new IllegalStateException("Unable to locate mode id=" + id + ",supportedModes=" + Arrays.toString(this.supportedModes));
     }
 
     public Display.Mode findDefaultModeByRefreshRate(float refreshRate) {
-        Display.Mode[] modes = this.supportedModes;
+        return findDefaultModeByRefreshRate(refreshRate, this.appsSupportedModes);
+    }
+
+    public Display.Mode findDefaultModeByRefreshRate(float refreshRate, Display.Mode[] appsSupportedModes) {
         Display.Mode defaultMode = getDefaultMode();
-        for (int i = 0; i < modes.length; i++) {
-            if (modes[i].matches(defaultMode.getPhysicalWidth(), defaultMode.getPhysicalHeight(), refreshRate)) {
-                return modes[i];
+        for (int i = 0; i < appsSupportedModes.length; i++) {
+            if (appsSupportedModes[i].matches(defaultMode.getPhysicalWidth(), defaultMode.getPhysicalHeight(), refreshRate)) {
+                return appsSupportedModes[i];
             }
         }
         return null;
     }
 
     public float[] getDefaultRefreshRates() {
-        Display.Mode[] modes = this.supportedModes;
+        return getDefaultRefreshRates(this.appsSupportedModes);
+    }
+
+    public float[] getDefaultRefreshRates(Display.Mode[] appsSupportedModes) {
         ArraySet<Float> rates = new ArraySet<>();
         Display.Mode defaultMode = getDefaultMode();
-        for (Display.Mode mode : modes) {
+        for (Display.Mode mode : appsSupportedModes) {
             if (mode.getPhysicalWidth() == defaultMode.getPhysicalWidth() && mode.getPhysicalHeight() == defaultMode.getPhysicalHeight()) {
                 rates.add(Float.valueOf(mode.getRefreshRate()));
             }
@@ -460,18 +436,15 @@ public final class DisplayInfo implements Parcelable {
     }
 
     public int getNaturalWidth() {
-        int i = this.rotation;
-        return (i == 0 || i == 2) ? this.logicalWidth : this.logicalHeight;
+        return (this.rotation == 0 || this.rotation == 2) ? this.logicalWidth : this.logicalHeight;
     }
 
     public int getNaturalHeight() {
-        int i = this.rotation;
-        return (i == 0 || i == 2) ? this.logicalHeight : this.logicalWidth;
+        return (this.rotation == 0 || this.rotation == 2) ? this.logicalHeight : this.logicalWidth;
     }
 
     public boolean isHdr() {
-        Display.HdrCapabilities hdrCapabilities = this.hdrCapabilities;
-        int[] types = hdrCapabilities != null ? hdrCapabilities.getSupportedHdrTypes() : null;
+        int[] types = this.hdrCapabilities != null ? this.hdrCapabilities.getSupportedHdrTypes() : null;
         return types != null && types.length > 0;
     }
 
@@ -542,6 +515,7 @@ public final class DisplayInfo implements Parcelable {
         sb.append(this.presentationDeadlineNanos);
         sb.append(", mode ");
         sb.append(this.modeId);
+        sb.append(", renderFrameRate ");
         sb.append(this.renderFrameRate);
         sb.append(", defaultMode ");
         sb.append(this.defaultModeId);
@@ -549,8 +523,12 @@ public final class DisplayInfo implements Parcelable {
             sb.append(", ");
             sb.append(Settings.Secure.refreshRateModeToString(this.refreshRateMode));
         }
-        sb.append(", modes ");
+        sb.append(", userPreferredModeId ");
+        sb.append(this.userPreferredModeId);
+        sb.append(", supportedModes ");
         sb.append(Arrays.toString(this.supportedModes));
+        sb.append(", appsSupportedModes ");
+        sb.append(Arrays.toString(this.appsSupportedModes));
         sb.append(", hdrCapabilities ");
         sb.append(this.hdrCapabilities);
         sb.append(", userDisabledHdrTypes ");
@@ -632,9 +610,8 @@ public final class DisplayInfo implements Parcelable {
         protoOutputStream.write(1120986464260L, this.appHeight);
         protoOutputStream.write(1138166333445L, this.name);
         protoOutputStream.write(1120986464262L, this.flags);
-        DisplayCutout displayCutout = this.displayCutout;
-        if (displayCutout != null) {
-            displayCutout.dumpDebug(protoOutputStream, 1146756268039L);
+        if (this.displayCutout != null) {
+            this.displayCutout.dumpDebug(protoOutputStream, 1146756268039L);
         }
         protoOutputStream.end(token);
     }
@@ -680,11 +657,11 @@ public final class DisplayInfo implements Parcelable {
         if ((flags & 2048) != 0) {
             result.append(", FLAG_OWN_FOCUS");
         }
-        if ((33554432 & flags) != 0) {
-            result.append(", FLAG_REMOTE_APP_DISPLAY");
-        }
         if ((524288 & flags) != 0) {
             result.append(", FLAG_VIEW_COVER_DISPLAY");
+        }
+        if ((2097152 & flags) != 0) {
+            result.append(", FLAG_REMOTE_APP_DISPLAY");
         }
         if ((flags & 8192) != 0) {
             result.append(", FLAG_REAR_DISPLAY");
@@ -692,7 +669,7 @@ public final class DisplayInfo implements Parcelable {
         if (CoreRune.SYSFW_APP_SPEG && (32768 & flags) != 0) {
             result.append(", FLAG_SPEG_DISPLAY");
         }
-        if ((flags & 16384) != 0) {
+        if ((33554432 & flags) != 0) {
             result.append(", FLAG_HIDDEN_SPACE_DISPLAY");
         }
         if ((67108864 & flags) != 0) {

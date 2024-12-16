@@ -7,7 +7,7 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public interface IProxyService extends IInterface {
     public static final String DESCRIPTOR = "com.samsung.android.knox.dar.ddar.proxy.IProxyService";
 
@@ -21,7 +21,6 @@ public interface IProxyService extends IInterface {
 
     Bundle relayAsync(String str, String str2, String str3, Bundle bundle) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements IProxyService {
         @Override // com.samsung.android.knox.dar.ddar.proxy.IProxyService
         public boolean registerAgentByAction(String agentName, int userId, String packageName, String actionName) throws RemoteException {
@@ -53,7 +52,6 @@ public interface IProxyService extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements IProxyService {
         static final int TRANSACTION_deregisterAgent = 3;
         static final int TRANSACTION_registerAgentByAction = 1;
@@ -108,67 +106,63 @@ public interface IProxyService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IProxyService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IProxyService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IProxyService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    int _arg1 = data.readInt();
+                    String _arg2 = data.readString();
+                    String _arg3 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result = registerAgentByAction(_arg0, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    int _arg12 = data.readInt();
+                    String _arg22 = data.readString();
+                    String _arg32 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result2 = registerAgentByMetadata(_arg02, _arg12, _arg22, _arg32);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    data.enforceNoDataAvail();
+                    deregisterAgent(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    String _arg04 = data.readString();
+                    String _arg13 = data.readString();
+                    String _arg23 = data.readString();
+                    Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result3 = relay(_arg04, _arg13, _arg23, _arg33);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result3, 1);
+                    return true;
+                case 5:
+                    String _arg05 = data.readString();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    Bundle _result4 = relayAsync(_arg05, _arg14, _arg24, _arg34);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result4, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            int _arg1 = data.readInt();
-                            String _arg2 = data.readString();
-                            String _arg3 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result = registerAgentByAction(_arg0, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            int _arg12 = data.readInt();
-                            String _arg22 = data.readString();
-                            String _arg32 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result2 = registerAgentByMetadata(_arg02, _arg12, _arg22, _arg32);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            data.enforceNoDataAvail();
-                            deregisterAgent(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            String _arg04 = data.readString();
-                            String _arg13 = data.readString();
-                            String _arg23 = data.readString();
-                            Bundle _arg33 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result3 = relay(_arg04, _arg13, _arg23, _arg33);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result3, 1);
-                            return true;
-                        case 5:
-                            String _arg05 = data.readString();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            Bundle _arg34 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            Bundle _result4 = relayAsync(_arg05, _arg14, _arg24, _arg34);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result4, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements IProxyService {
+        private static class Proxy implements IProxyService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

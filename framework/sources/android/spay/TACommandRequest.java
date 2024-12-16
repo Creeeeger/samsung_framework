@@ -25,23 +25,18 @@ public class TACommandRequest implements Parcelable {
     public int mVersion;
     private static boolean DEBUG = true;
     public static final Parcelable.Creator<TACommandRequest> CREATOR = new Parcelable.Creator<TACommandRequest>() { // from class: android.spay.TACommandRequest.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandRequest createFromParcel(Parcel in) {
             return new TACommandRequest(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TACommandRequest[] newArray(int size) {
             return new TACommandRequest[size];
         }
     };
-
-    /* synthetic */ TACommandRequest(Parcel parcel, TACommandRequestIA tACommandRequestIA) {
-        this(parcel);
-    }
 
     public TACommandRequest() {
         this.mVersion = -1;
@@ -65,23 +60,6 @@ public class TACommandRequest implements Parcelable {
         this.mOffset = 0;
     }
 
-    /* renamed from: android.spay.TACommandRequest$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TACommandRequest> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandRequest createFromParcel(Parcel in) {
-            return new TACommandRequest(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TACommandRequest[] newArray(int size) {
-            return new TACommandRequest[size];
-        }
-    }
-
     private TACommandRequest(Parcel in) {
         this.mVersion = -1;
         this.mMagicNum = null;
@@ -95,21 +73,19 @@ public class TACommandRequest implements Parcelable {
     @Override // android.os.Parcelable
     public void writeToParcel(Parcel out, int flag) {
         out.writeInt(this.mVersion);
-        byte[] bArr = this.mMagicNum;
-        if (bArr == null || bArr.length != 4) {
+        if (this.mMagicNum == null || this.mMagicNum.length != 4) {
             out.writeInt(0);
         } else {
-            out.writeInt(bArr.length);
+            out.writeInt(this.mMagicNum.length);
             out.writeByteArray(this.mMagicNum);
         }
         out.writeInt(this.mCommandId);
         out.writeInt(this.mLength);
         out.writeInt(this.mOffset);
-        byte[] bArr2 = this.mRequest;
-        if (bArr2 == null || bArr2.length == 0) {
+        if (this.mRequest == null || this.mRequest.length == 0) {
             out.writeInt(0);
         } else {
-            out.writeInt(bArr2.length);
+            out.writeInt(this.mRequest.length);
             out.writeByteArray(this.mRequest);
         }
     }
@@ -118,18 +94,16 @@ public class TACommandRequest implements Parcelable {
         this.mVersion = in.readInt();
         int len = in.readInt();
         if (len > 0) {
-            byte[] bArr = new byte[len];
-            this.mMagicNum = bArr;
-            in.readByteArray(bArr);
+            this.mMagicNum = new byte[len];
+            in.readByteArray(this.mMagicNum);
         }
         this.mCommandId = in.readInt();
         this.mLength = in.readInt();
         this.mOffset = in.readInt();
         int len2 = in.readInt();
         if (len2 > 0) {
-            byte[] bArr2 = new byte[len2];
-            this.mRequest = bArr2;
-            in.readByteArray(bArr2);
+            this.mRequest = new byte[len2];
+            in.readByteArray(this.mRequest);
         }
     }
 
@@ -166,13 +140,11 @@ public class TACommandRequest implements Parcelable {
     }
 
     public List<TACommandRequest> disassemble() {
-        int i;
         List<TACommandRequest> arr = new ArrayList<>();
-        byte[] bArr = this.mRequest;
-        if (bArr == null) {
+        if (this.mRequest == null) {
             return null;
         }
-        if (bArr.length <= 2972) {
+        if (this.mRequest.length <= 2972) {
             arr.add(this);
             if (DEBUG) {
                 Log.i(TAG, "no need to divide the mRequest, len=" + this.mRequest.length);
@@ -183,19 +155,14 @@ public class TACommandRequest implements Parcelable {
             Log.i(TAG, "dividing the mRequest, len=" + this.mRequest.length);
         }
         int offset = 0;
-        while (true) {
-            int i2 = offset + 2972;
-            i = this.mLength;
-            if (i2 >= i) {
-                break;
-            }
+        while (offset + 2972 < this.mLength) {
             if (DEBUG) {
                 Log.i(TAG, "generating the chunk from " + offset + " to " + ((offset + 2972) - 1));
             }
             arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, this.mLength, offset, Arrays.copyOfRange(this.mRequest, offset, offset + 2972)));
             offset += 2972;
         }
-        arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, i, offset, Arrays.copyOfRange(this.mRequest, offset, i)));
+        arr.add(new TACommandRequest(this.mVersion, this.mMagicNum, this.mCommandId, this.mLength, offset, Arrays.copyOfRange(this.mRequest, offset, this.mLength)));
         if (DEBUG) {
             Log.i(TAG, "generating the chunk from " + offset + " to " + (this.mLength - 1));
         }
@@ -207,17 +174,11 @@ public class TACommandRequest implements Parcelable {
         Log.d(TAG, "Length = " + this.mRequest.length);
         StringBuilder hex = new StringBuilder((this.mRequest.length * 2) + 100);
         hex.append("{");
-        int i = 0;
-        while (true) {
-            byte[] bArr = this.mRequest;
-            if (i >= bArr.length) {
-                break;
-            }
-            hex.append(String.format("0x%02X", Byte.valueOf(bArr[i])));
+        for (int i = 0; i < this.mRequest.length; i++) {
+            hex.append(String.format("0x%02X", Byte.valueOf(this.mRequest[i])));
             if (i != this.mRequest.length) {
                 hex.append(", ");
             }
-            i++;
         }
         hex.append("}");
         Log.d(TAG, hex.toString());

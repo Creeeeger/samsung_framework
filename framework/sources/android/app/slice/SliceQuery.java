@@ -45,7 +45,7 @@ public class SliceQuery {
         if (container == null || item == null) {
             return false;
         }
-        return stream(container).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda0
+        return stream(container).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda2
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return SliceQuery.lambda$contains$0(SliceItem.this, (SliceItem) obj);
@@ -53,7 +53,7 @@ public class SliceQuery {
         }).findAny().isPresent();
     }
 
-    public static /* synthetic */ boolean lambda$contains$0(SliceItem item, SliceItem s) {
+    static /* synthetic */ boolean lambda$contains$0(SliceItem item, SliceItem s) {
         return s == item;
     }
 
@@ -66,7 +66,7 @@ public class SliceQuery {
     }
 
     public static List<SliceItem> findAll(SliceItem s, final String type, final String[] hints, final String[] nonHints) {
-        return (List) stream(s).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda1
+        return (List) stream(s).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda0
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return SliceQuery.lambda$findAll$1(type, hints, nonHints, (SliceItem) obj);
@@ -74,7 +74,7 @@ public class SliceQuery {
         }).collect(Collectors.toList());
     }
 
-    public static /* synthetic */ boolean lambda$findAll$1(String type, String[] hints, String[] nonHints, SliceItem item) {
+    static /* synthetic */ boolean lambda$findAll$1(String type, String[] hints, String[] nonHints, SliceItem item) {
         return compareTypes(item, type) && item.hasHints(hints) && !item.hasAnyHints(nonHints);
     }
 
@@ -100,7 +100,7 @@ public class SliceQuery {
     }
 
     public static SliceItem find(SliceItem s, final String type, final String[] hints, final String[] nonHints) {
-        return stream(s).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda2
+        return stream(s).filter(new Predicate() { // from class: android.app.slice.SliceQuery$$ExternalSyntheticLambda1
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return SliceQuery.lambda$find$2(type, hints, nonHints, (SliceItem) obj);
@@ -108,25 +108,20 @@ public class SliceQuery {
         }).findFirst().orElse(null);
     }
 
-    public static /* synthetic */ boolean lambda$find$2(String type, String[] hints, String[] nonHints, SliceItem item) {
+    static /* synthetic */ boolean lambda$find$2(String type, String[] hints, String[] nonHints, SliceItem item) {
         return compareTypes(item, type) && item.hasHints(hints) && !item.hasAnyHints(nonHints);
     }
 
     public static Stream<SliceItem> stream(SliceItem slice) {
-        Queue<SliceItem> items = new LinkedList<>();
+        final Queue<SliceItem> items = new LinkedList<>();
         items.add(slice);
         Iterator<SliceItem> iterator = new Iterator<SliceItem>() { // from class: android.app.slice.SliceQuery.1
-            final /* synthetic */ Queue val$items;
-
-            AnonymousClass1(Queue items2) {
-                items = items2;
-            }
-
             @Override // java.util.Iterator
             public boolean hasNext() {
                 return items.size() != 0;
             }
 
+            /* JADX WARN: Can't rename method to resolve collision */
             @Override // java.util.Iterator
             public SliceItem next() {
                 SliceItem item = (SliceItem) items.poll();
@@ -137,30 +132,6 @@ public class SliceQuery {
             }
         };
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
-    }
-
-    /* renamed from: android.app.slice.SliceQuery$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Iterator<SliceItem> {
-        final /* synthetic */ Queue val$items;
-
-        AnonymousClass1(Queue items2) {
-            items = items2;
-        }
-
-        @Override // java.util.Iterator
-        public boolean hasNext() {
-            return items.size() != 0;
-        }
-
-        @Override // java.util.Iterator
-        public SliceItem next() {
-            SliceItem item = (SliceItem) items.poll();
-            if (SliceQuery.compareTypes(item, "slice") || SliceQuery.compareTypes(item, "action")) {
-                items.addAll(item.getSlice().getItems());
-            }
-            return item;
-        }
     }
 
     public static boolean compareTypes(SliceItem item, String desiredType) {

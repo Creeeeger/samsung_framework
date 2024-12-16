@@ -7,13 +7,11 @@ import android.content.res.AssetFileDescriptor;
 public class SemTrustedApplicationExecutor {
     private static final String PERMISSION_REQUEST_AUTHNR_SERVICE = "com.samsung.android.permission.REQUEST_AUTHNR_SERVICE";
 
-    /* loaded from: classes5.dex */
     public enum TrustedAppAssetType {
         PASS_AUTHENTICATOR,
         PASS_ESE
     }
 
-    /* loaded from: classes5.dex */
     public enum TrustedAppType {
         FINGERPRINT_TRUSTED_APP,
         DEVICE_ROOT_KEY_TRUSTED_APP,

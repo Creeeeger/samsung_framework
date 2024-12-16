@@ -12,7 +12,6 @@ public interface IBackAnimationFinishedCallback extends IInterface {
 
     void onAnimationFinished(boolean z) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IBackAnimationFinishedCallback {
         @Override // android.window.IBackAnimationFinishedCallback
         public void onAnimationFinished(boolean triggerBack) throws RemoteException {
@@ -24,7 +23,6 @@ public interface IBackAnimationFinishedCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IBackAnimationFinishedCallback {
         static final int TRANSACTION_onAnimationFinished = 1;
 
@@ -67,27 +65,23 @@ public interface IBackAnimationFinishedCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IBackAnimationFinishedCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IBackAnimationFinishedCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IBackAnimationFinishedCallback.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onAnimationFinished(_arg0);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onAnimationFinished(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IBackAnimationFinishedCallback {
+        private static class Proxy implements IBackAnimationFinishedCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

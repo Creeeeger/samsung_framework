@@ -7,20 +7,17 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.util.AttributeSet;
+import com.android.ims.ImsConfig;
 import com.android.internal.R;
 import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes5.dex */
 public class AnimationScaleListDrawable extends DrawableContainer implements Animatable {
     private static final String TAG = "AnimationScaleListDrawable";
     private AnimationScaleListState mAnimationScaleListState;
     private boolean mMutated;
-
-    /* synthetic */ AnimationScaleListDrawable(AnimationScaleListState animationScaleListState, Resources resources, AnimationScaleListDrawableIA animationScaleListDrawableIA) {
-        this(animationScaleListState, resources);
-    }
 
     public AnimationScaleListDrawable() {
         this(null, null);
@@ -33,7 +30,7 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
     }
 
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
-    public boolean onStateChange(int[] stateSet) {
+    protected boolean onStateChange(int[] stateSet) {
         boolean changed = super.onStateChange(stateSet);
         int idx = this.mAnimationScaleListState.getCurrentDrawableIndexBasedOnScale();
         return selectDrawable(idx) || changed;
@@ -48,100 +45,37 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         onStateChange(getState());
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x003a, code lost:
-    
-        if (r7 == null) goto L59;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x003c, code lost:
-    
-        r8 = r12.next();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0042, code lost:
-    
-        if (r8 != 4) goto L79;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0045, code lost:
-    
-        if (r8 != 2) goto L73;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0047, code lost:
-    
-        r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0068, code lost:
-    
-        throw new org.xmlpull.v1.XmlPullParserException(r12.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0069, code lost:
-    
-        r0.addDrawable(r7);
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void inflateChildElements(android.content.res.Resources r11, org.xmlpull.v1.XmlPullParser r12, android.util.AttributeSet r13, android.content.res.Resources.Theme r14) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException {
-        /*
-            r10 = this;
-            com.android.internal.graphics.drawable.AnimationScaleListDrawable$AnimationScaleListState r0 = r10.mAnimationScaleListState
-            int r1 = r12.getDepth()
-            r2 = 1
-            int r1 = r1 + r2
-        L8:
-            int r3 = r12.next()
-            r4 = r3
-            if (r3 == r2) goto L6d
-            int r3 = r12.getDepth()
-            r5 = r3
-            if (r3 >= r1) goto L19
-            r3 = 3
-            if (r4 == r3) goto L6d
-        L19:
-            r3 = 2
-            if (r4 == r3) goto L1d
-            goto L8
-        L1d:
-            if (r5 > r1) goto L8
-            java.lang.String r6 = r12.getName()
-            java.lang.String r7 = "item"
-            boolean r6 = r6.equals(r7)
-            if (r6 != 0) goto L2c
-            goto L8
-        L2c:
-            int[] r6 = com.android.internal.R.styleable.AnimationScaleListDrawableItem
-            android.content.res.TypedArray r6 = obtainAttributes(r11, r14, r13, r6)
-            r7 = 0
-            android.graphics.drawable.Drawable r7 = r6.getDrawable(r7)
-            r6.recycle()
-            if (r7 != 0) goto L69
-        L3c:
-            int r8 = r12.next()
-            r4 = r8
-            r9 = 4
-            if (r8 != r9) goto L45
-            goto L3c
-        L45:
-            if (r4 != r3) goto L4c
-            android.graphics.drawable.Drawable r7 = android.graphics.drawable.Drawable.createFromXmlInner(r11, r12, r13, r14)
-            goto L69
-        L4c:
-            org.xmlpull.v1.XmlPullParserException r2 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.StringBuilder r3 = new java.lang.StringBuilder
-            r3.<init>()
-            java.lang.String r8 = r12.getPositionDescription()
-            java.lang.StringBuilder r3 = r3.append(r8)
-            java.lang.String r8 = ": <item> tag requires a 'drawable' attribute or child tag defining a drawable"
-            java.lang.StringBuilder r3 = r3.append(r8)
-            java.lang.String r3 = r3.toString()
-            r2.<init>(r3)
-            throw r2
-        L69:
-            r0.addDrawable(r7)
-            goto L8
-        L6d:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.internal.graphics.drawable.AnimationScaleListDrawable.inflateChildElements(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.util.AttributeSet, android.content.res.Resources$Theme):void");
+    private void inflateChildElements(Resources r, XmlPullParser parser, AttributeSet attrs, Resources.Theme theme) throws XmlPullParserException, IOException {
+        int type;
+        AnimationScaleListState state = this.mAnimationScaleListState;
+        int innerDepth = parser.getDepth() + 1;
+        while (true) {
+            int type2 = parser.next();
+            if (type2 != 1) {
+                int depth = parser.getDepth();
+                if (depth >= innerDepth || type2 != 3) {
+                    if (type2 == 2 && depth <= innerDepth && parser.getName().equals(ImsConfig.EXTRA_CHANGED_ITEM)) {
+                        TypedArray a = obtainAttributes(r, theme, attrs, R.styleable.AnimationScaleListDrawableItem);
+                        Drawable dr = a.getDrawable(0);
+                        a.recycle();
+                        if (dr == null) {
+                            do {
+                                type = parser.next();
+                            } while (type == 4);
+                            if (type != 2) {
+                                throw new XmlPullParserException(parser.getPositionDescription() + ": <item> tag requires a 'drawable' attribute or child tag defining a drawable");
+                            }
+                            dr = Drawable.createFromXmlInner(r, parser, attrs, theme);
+                        }
+                        state.addDrawable(dr);
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
     }
 
     @Override // android.graphics.drawable.DrawableContainer, android.graphics.drawable.Drawable
@@ -185,8 +119,7 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         return result;
     }
 
-    /* loaded from: classes4.dex */
-    public static class AnimationScaleListState extends DrawableContainer.DrawableContainerState {
+    static class AnimationScaleListState extends DrawableContainer.DrawableContainerState {
         int mAnimatableDrawableIndex;
         int mStaticDrawableIndex;
         int[] mThemeAttrs;
@@ -204,8 +137,7 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
         }
 
         void mutate() {
-            int[] iArr = this.mThemeAttrs;
-            this.mThemeAttrs = iArr != null ? (int[]) iArr.clone() : null;
+            this.mThemeAttrs = this.mThemeAttrs != null ? (int[]) this.mThemeAttrs.clone() : null;
         }
 
         int addDrawable(Drawable drawable) {
@@ -248,7 +180,7 @@ public class AnimationScaleListDrawable extends DrawableContainer implements Ani
     }
 
     @Override // android.graphics.drawable.DrawableContainer
-    public void setConstantState(DrawableContainer.DrawableContainerState state) {
+    protected void setConstantState(DrawableContainer.DrawableContainerState state) {
         super.setConstantState(state);
         if (state instanceof AnimationScaleListState) {
             this.mAnimationScaleListState = (AnimationScaleListState) state;

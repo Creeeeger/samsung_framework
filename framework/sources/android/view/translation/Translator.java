@@ -36,9 +36,7 @@ public class Translator {
     private ITranslationManager mSystemServerBinder;
     private final TranslationContext mTranslationContext;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes4.dex */
-    public static class ServiceBinderReceiver extends IResultReceiver.Stub {
+    static class ServiceBinderReceiver extends IResultReceiver.Stub {
         private Consumer<Translator> mCallback;
         private final CountDownLatch mLatch = new CountDownLatch(1);
         private int mSessionId;
@@ -70,9 +68,8 @@ public class Translator {
             IBinder binder;
             if (resultCode == 2) {
                 this.mLatch.countDown();
-                Consumer<Translator> consumer = this.mCallback;
-                if (consumer != null) {
-                    consumer.accept(null);
+                if (this.mCallback != null) {
+                    this.mCallback.accept(null);
                     return;
                 }
                 return;
@@ -89,18 +86,12 @@ public class Translator {
             }
             this.mTranslator.setServiceBinder(binder);
             this.mLatch.countDown();
-            Consumer<Translator> consumer2 = this.mCallback;
-            if (consumer2 != null) {
-                consumer2.accept(this.mTranslator);
+            if (this.mCallback != null) {
+                this.mCallback.accept(this.mTranslator);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static final class TimeoutException extends Exception {
-            /* synthetic */ TimeoutException(String str, TimeoutExceptionIA timeoutExceptionIA) {
-                this(str);
-            }
-
+        static final class TimeoutException extends Exception {
             private TimeoutException(String msg) {
                 super(msg);
             }
@@ -115,10 +106,9 @@ public class Translator {
         this.mManager = translationManager;
         this.mHandler = handler;
         this.mSystemServerBinder = systemServerBinder;
-        ServiceBinderReceiver serviceBinderReceiver = new ServiceBinderReceiver(this, callback);
-        this.mServiceBinderReceiver = serviceBinderReceiver;
+        this.mServiceBinderReceiver = new ServiceBinderReceiver(this, callback);
         try {
-            this.mSystemServerBinder.onSessionCreated(translationContext, this.mId, serviceBinderReceiver, context.getUserId());
+            this.mSystemServerBinder.onSessionCreated(this.mTranslationContext, this.mId, this.mServiceBinderReceiver, this.mContext.getUserId());
         } catch (RemoteException e) {
             Log.w(TAG, "RemoteException calling startSession(): " + e);
         }
@@ -135,7 +125,7 @@ public class Translator {
         this.mServiceBinderReceiver = new ServiceBinderReceiver(this);
     }
 
-    public void start() {
+    void start() {
         try {
             this.mSystemServerBinder.onSessionCreated(this.mTranslationContext, this.mId, this.mServiceBinderReceiver, this.mContext.getUserId());
         } catch (RemoteException e) {
@@ -143,7 +133,7 @@ public class Translator {
         }
     }
 
-    public boolean isSessionCreated() throws ServiceBinderReceiver.TimeoutException {
+    boolean isSessionCreated() throws ServiceBinderReceiver.TimeoutException {
         int receivedId = this.mServiceBinderReceiver.getSessionStateResult();
         return receivedId > 0;
     }
@@ -152,6 +142,7 @@ public class Translator {
         return this.mManager.getAvailableRequestId().getAndIncrement();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void setServiceBinder(IBinder binder) {
         synchronized (this.mLock) {
             if (this.mDirectServiceBinder != null) {
@@ -250,8 +241,8 @@ public class Translator {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class TranslationResponseCallbackImpl extends ITranslationCallback.Stub {
+    /* JADX INFO: Access modifiers changed from: private */
+    static class TranslationResponseCallbackImpl extends ITranslationCallback.Stub {
         private final Consumer<TranslationResponse> mCallback;
         private final Executor mExecutor;
 
@@ -279,6 +270,7 @@ public class Translator {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public /* synthetic */ void lambda$onTranslationResponse$0(TranslationResponse response) {
             this.mCallback.accept(response);
         }

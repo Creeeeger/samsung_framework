@@ -4,22 +4,22 @@ import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.VibrationEffect;
-import android.os.Vibrator;
+import android.os.VibratorInfo;
 import com.android.internal.util.Preconditions;
+import com.android.internal.vibrator.persistence.XmlConstants;
 import java.util.Objects;
 
 /* loaded from: classes3.dex */
 public final class StepSegment extends VibrationEffectSegment {
     public static final Parcelable.Creator<StepSegment> CREATOR = new Parcelable.Creator<StepSegment>() { // from class: android.os.vibrator.StepSegment.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StepSegment createFromParcel(Parcel in) {
             in.readInt();
             return new StepSegment(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public StepSegment[] newArray(int size) {
             return new StepSegment[size];
@@ -29,7 +29,7 @@ public final class StepSegment extends VibrationEffectSegment {
     private final int mDuration;
     private final float mFrequencyHz;
 
-    public StepSegment(Parcel in) {
+    StepSegment(Parcel in) {
         this(in.readFloat(), in.readFloat(), in.readInt());
     }
 
@@ -61,10 +61,10 @@ public final class StepSegment extends VibrationEffectSegment {
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean areVibrationFeaturesSupported(Vibrator vibrator) {
-        boolean areFeaturesSupported = frequencyRequiresFrequencyControl(this.mFrequencyHz) ? true & vibrator.hasFrequencyControl() : true;
+    public boolean areVibrationFeaturesSupported(VibratorInfo vibratorInfo) {
+        boolean areFeaturesSupported = frequencyRequiresFrequencyControl(this.mFrequencyHz) ? true & vibratorInfo.hasFrequencyControl() : true;
         if (amplitudeRequiresAmplitudeControl(this.mAmplitude)) {
-            return areFeaturesSupported & vibrator.hasAmplitudeControl();
+            return areFeaturesSupported & vibratorInfo.hasAmplitudeControl();
         }
         return areFeaturesSupported;
     }
@@ -75,16 +75,14 @@ public final class StepSegment extends VibrationEffectSegment {
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
-    public boolean hasNonZeroAmplitude() {
-        return Float.compare(this.mAmplitude, 0.0f) != 0;
-    }
-
-    @Override // android.os.vibrator.VibrationEffectSegment
     public void validate() {
         VibrationEffectSegment.checkFrequencyArgument(this.mFrequencyHz, "frequencyHz");
         VibrationEffectSegment.checkDurationArgument(this.mDuration, "duration");
         if (Float.compare(this.mAmplitude, -1.0f) != 0) {
-            Preconditions.checkArgumentInRange(this.mAmplitude, 0.0f, 1.0f, "amplitude");
+            Preconditions.checkArgumentInRange(this.mAmplitude, 0.0f, 1.0f, XmlConstants.ATTRIBUTE_AMPLITUDE);
+            VibrationEffectSegment.checkFrequencyArgument(this.mFrequencyHz, "frequencyHz");
+        } else if (Float.compare(this.mFrequencyHz, 0.0f) != 0) {
+            throw new IllegalArgumentException("frequency must be default when amplitude is set to default");
         }
     }
 
@@ -104,7 +102,23 @@ public final class StepSegment extends VibrationEffectSegment {
         if (Float.compare(this.mAmplitude, -1.0f) == 0) {
             return this;
         }
-        return new StepSegment(VibrationEffect.scale(this.mAmplitude, scaleFactor), this.mFrequencyHz, this.mDuration);
+        float newAmplitude = VibrationEffect.scale(this.mAmplitude, scaleFactor);
+        if (Float.compare(newAmplitude, this.mAmplitude) == 0) {
+            return this;
+        }
+        return new StepSegment(newAmplitude, this.mFrequencyHz, this.mDuration);
+    }
+
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public StepSegment scaleLinearly(float scaleFactor) {
+        if (Float.compare(this.mAmplitude, -1.0f) == 0) {
+            return this;
+        }
+        float newAmplitude = VibrationEffect.scaleLinearly(this.mAmplitude, scaleFactor);
+        if (Float.compare(newAmplitude, this.mAmplitude) == 0) {
+            return this;
+        }
+        return new StepSegment(newAmplitude, this.mFrequencyHz, this.mDuration);
     }
 
     @Override // android.os.vibrator.VibrationEffectSegment
@@ -120,6 +134,11 @@ public final class StepSegment extends VibrationEffectSegment {
         return "Step{amplitude=" + this.mAmplitude + ", frequencyHz=" + this.mFrequencyHz + ", duration=" + this.mDuration + "}";
     }
 
+    @Override // android.os.vibrator.VibrationEffectSegment
+    public String toDebugString() {
+        return String.format("Step=%dms(amplitude=%.2f%s)", Integer.valueOf(this.mDuration), Float.valueOf(this.mAmplitude), Float.compare(this.mFrequencyHz, 0.0f) == 0 ? "" : " @ " + this.mFrequencyHz + "Hz");
+    }
+
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
@@ -131,23 +150,5 @@ public final class StepSegment extends VibrationEffectSegment {
         out.writeFloat(this.mAmplitude);
         out.writeFloat(this.mFrequencyHz);
         out.writeInt(this.mDuration);
-    }
-
-    /* renamed from: android.os.vibrator.StepSegment$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<StepSegment> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StepSegment createFromParcel(Parcel in) {
-            in.readInt();
-            return new StepSegment(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public StepSegment[] newArray(int size) {
-            return new StepSegment[size];
-        }
     }
 }

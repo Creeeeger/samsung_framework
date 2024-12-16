@@ -9,11 +9,11 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
-/* loaded from: classes.dex */
+/* loaded from: classes2.dex */
 public interface ISession extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$biometrics$fingerprint$ISession".replace('$', '.');
-    public static final String HASH = "637371b53fb7faf9bd43aa51b72c23852d6e6d96";
-    public static final int VERSION = 3;
+    public static final String HASH = "41a730a7a6b5aa9cebebce70ee5b5e509b0af6fb";
+    public static final int VERSION = 4;
 
     ICancellationSignal authenticate(long j) throws RemoteException;
 
@@ -63,9 +63,9 @@ public interface ISession extends IInterface {
 
     void revokeChallenge(long j) throws RemoteException;
 
+    @Deprecated
     void setIgnoreDisplayTouches(boolean z) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ISession {
         @Override // android.hardware.biometrics.fingerprint.ISession
         public void generateChallenge() throws RemoteException {
@@ -177,7 +177,6 @@ public interface ISession extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ISession {
         static final int TRANSACTION_authenticate = 4;
         static final int TRANSACTION_authenticateWithContext = 15;
@@ -291,159 +290,157 @@ public interface ISession extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    generateChallenge();
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    long _arg0 = data.readLong();
+                    data.enforceNoDataAvail();
+                    revokeChallenge(_arg0);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    HardwareAuthToken _arg02 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    ICancellationSignal _result = enroll(_arg02);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result);
+                    return true;
+                case 4:
+                    long _arg03 = data.readLong();
+                    data.enforceNoDataAvail();
+                    ICancellationSignal _result2 = authenticate(_arg03);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result2);
+                    return true;
+                case 5:
+                    ICancellationSignal _result3 = detectInteraction();
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result3);
+                    return true;
+                case 6:
+                    enumerateEnrollments();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int[] _arg04 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    removeEnrollments(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 8:
+                    getAuthenticatorId();
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    invalidateAuthenticatorId();
+                    reply.writeNoException();
+                    return true;
+                case 10:
+                    HardwareAuthToken _arg05 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    data.enforceNoDataAvail();
+                    resetLockout(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 12:
+                    int _arg06 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    float _arg3 = data.readFloat();
+                    float _arg4 = data.readFloat();
+                    data.enforceNoDataAvail();
+                    onPointerDown(_arg06, _arg1, _arg2, _arg3, _arg4);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onPointerUp(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 14:
+                    onUiReady();
+                    reply.writeNoException();
+                    return true;
+                case 15:
+                    long _arg08 = data.readLong();
+                    OperationContext _arg12 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    ICancellationSignal _result4 = authenticateWithContext(_arg08, _arg12);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result4);
+                    return true;
+                case 16:
+                    HardwareAuthToken _arg09 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
+                    OperationContext _arg13 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    ICancellationSignal _result5 = enrollWithContext(_arg09, _arg13);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result5);
+                    return true;
+                case 17:
+                    OperationContext _arg010 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    ICancellationSignal _result6 = detectInteractionWithContext(_arg010);
+                    reply.writeNoException();
+                    reply.writeStrongInterface(_result6);
+                    return true;
+                case 18:
+                    PointerContext _arg011 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPointerDownWithContext(_arg011);
+                    reply.writeNoException();
+                    return true;
+                case 19:
+                    PointerContext _arg012 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPointerUpWithContext(_arg012);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    OperationContext _arg013 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    onContextChanged(_arg013);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    PointerContext _arg014 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
+                    data.enforceNoDataAvail();
+                    onPointerCancelWithContext(_arg014);
+                    reply.writeNoException();
+                    return true;
+                case 22:
+                    boolean _arg015 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setIgnoreDisplayTouches(_arg015);
+                    reply.writeNoException();
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            generateChallenge();
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            long _arg0 = data.readLong();
-                            data.enforceNoDataAvail();
-                            revokeChallenge(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            HardwareAuthToken _arg02 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            ICancellationSignal _result = enroll(_arg02);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result);
-                            return true;
-                        case 4:
-                            long _arg03 = data.readLong();
-                            data.enforceNoDataAvail();
-                            ICancellationSignal _result2 = authenticate(_arg03);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result2);
-                            return true;
-                        case 5:
-                            ICancellationSignal _result3 = detectInteraction();
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result3);
-                            return true;
-                        case 6:
-                            enumerateEnrollments();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int[] _arg04 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            removeEnrollments(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 8:
-                            getAuthenticatorId();
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            invalidateAuthenticatorId();
-                            reply.writeNoException();
-                            return true;
-                        case 10:
-                            HardwareAuthToken _arg05 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            data.enforceNoDataAvail();
-                            resetLockout(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 12:
-                            int _arg06 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            float _arg3 = data.readFloat();
-                            float _arg4 = data.readFloat();
-                            data.enforceNoDataAvail();
-                            onPointerDown(_arg06, _arg1, _arg2, _arg3, _arg4);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onPointerUp(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 14:
-                            onUiReady();
-                            reply.writeNoException();
-                            return true;
-                        case 15:
-                            long _arg08 = data.readLong();
-                            OperationContext _arg12 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            ICancellationSignal _result4 = authenticateWithContext(_arg08, _arg12);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result4);
-                            return true;
-                        case 16:
-                            HardwareAuthToken _arg09 = (HardwareAuthToken) data.readTypedObject(HardwareAuthToken.CREATOR);
-                            OperationContext _arg13 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            ICancellationSignal _result5 = enrollWithContext(_arg09, _arg13);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result5);
-                            return true;
-                        case 17:
-                            OperationContext _arg010 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            ICancellationSignal _result6 = detectInteractionWithContext(_arg010);
-                            reply.writeNoException();
-                            reply.writeStrongInterface(_result6);
-                            return true;
-                        case 18:
-                            PointerContext _arg011 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPointerDownWithContext(_arg011);
-                            reply.writeNoException();
-                            return true;
-                        case 19:
-                            PointerContext _arg012 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPointerUpWithContext(_arg012);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            OperationContext _arg013 = (OperationContext) data.readTypedObject(OperationContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            onContextChanged(_arg013);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            PointerContext _arg014 = (PointerContext) data.readTypedObject(PointerContext.CREATOR);
-                            data.enforceNoDataAvail();
-                            onPointerCancelWithContext(_arg014);
-                            reply.writeNoException();
-                            return true;
-                        case 22:
-                            boolean _arg015 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setIgnoreDisplayTouches(_arg015);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ISession {
+        private static class Proxy implements ISession {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

@@ -5,27 +5,27 @@ import android.text.Spannable;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class ScrollingMovementMethod extends BaseMovementMethod implements MovementMethod {
     private static ScrollingMovementMethod sInstance;
 
     @Override // android.text.method.BaseMovementMethod
-    public boolean left(TextView widget, Spannable buffer) {
+    protected boolean left(TextView widget, Spannable buffer) {
         return scrollLeft(widget, buffer, 1);
     }
 
     @Override // android.text.method.BaseMovementMethod
-    public boolean right(TextView widget, Spannable buffer) {
+    protected boolean right(TextView widget, Spannable buffer) {
         return scrollRight(widget, buffer, 1);
     }
 
     @Override // android.text.method.BaseMovementMethod
-    public boolean up(TextView widget, Spannable buffer) {
+    protected boolean up(TextView widget, Spannable buffer) {
         return scrollUp(widget, buffer, 1);
     }
 
     @Override // android.text.method.BaseMovementMethod
-    public boolean down(TextView widget, Spannable buffer) {
+    protected boolean down(TextView widget, Spannable buffer) {
         return scrollDown(widget, buffer, 1);
     }
 

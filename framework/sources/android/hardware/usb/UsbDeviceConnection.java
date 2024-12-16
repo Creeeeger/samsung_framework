@@ -3,7 +3,6 @@ package android.hardware.usb;
 import android.annotation.SystemApi;
 import android.content.Context;
 import android.os.ParcelFileDescriptor;
-import com.android.internal.location.GpsNetInitiatedHandler;
 import com.android.internal.util.Preconditions;
 import dalvik.system.CloseGuard;
 import java.io.FileDescriptor;
@@ -49,7 +48,7 @@ public class UsbDeviceConnection {
         this.mDevice = device;
     }
 
-    public boolean open(String name, ParcelFileDescriptor pfd, Context context) {
+    boolean open(String name, ParcelFileDescriptor pfd, Context context) {
         boolean wasOpened;
         this.mContext = context.getApplicationContext();
         synchronized (this.mLock) {
@@ -61,7 +60,7 @@ public class UsbDeviceConnection {
         return wasOpened;
     }
 
-    public boolean isOpen() {
+    boolean isOpen() {
         return this.mNativeContext != 0;
     }
 
@@ -69,7 +68,7 @@ public class UsbDeviceConnection {
         return this.mContext;
     }
 
-    public boolean cancelRequest(UsbRequest request) {
+    boolean cancelRequest(UsbRequest request) {
         synchronized (this.mLock) {
             if (!isOpen()) {
                 return false;
@@ -78,7 +77,7 @@ public class UsbDeviceConnection {
         }
     }
 
-    public boolean queueRequest(UsbRequest request, ByteBuffer buffer, int length) {
+    boolean queueRequest(UsbRequest request, ByteBuffer buffer, int length) {
         synchronized (this.mLock) {
             if (!isOpen()) {
                 return false;
@@ -87,7 +86,7 @@ public class UsbDeviceConnection {
         }
     }
 
-    public boolean queueRequest(UsbRequest request, ByteBuffer buffer) {
+    boolean queueRequest(UsbRequest request, ByteBuffer buffer) {
         synchronized (this.mLock) {
             if (!isOpen()) {
                 return false;
@@ -168,7 +167,7 @@ public class UsbDeviceConnection {
     }
 
     public UsbRequest requestWait(long timeout) throws TimeoutException {
-        UsbRequest request = native_request_wait(Preconditions.checkArgumentNonnegative(timeout, GpsNetInitiatedHandler.NI_INTENT_KEY_TIMEOUT));
+        UsbRequest request = native_request_wait(Preconditions.checkArgumentNonnegative(timeout, "timeout"));
         if (request != null) {
             request.dequeue(true);
         }
@@ -188,9 +187,8 @@ public class UsbDeviceConnection {
 
     protected void finalize() throws Throwable {
         try {
-            CloseGuard closeGuard = this.mCloseGuard;
-            if (closeGuard != null) {
-                closeGuard.warnIfOpen();
+            if (this.mCloseGuard != null) {
+                this.mCloseGuard.warnIfOpen();
             }
         } finally {
             super.finalize();

@@ -4,7 +4,6 @@ import android.animation.AnimationHandler;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.Property;
-import java.lang.ref.WeakReference;
 
 /* loaded from: classes.dex */
 public final class ObjectAnimator extends ValueAnimator {
@@ -13,7 +12,7 @@ public final class ObjectAnimator extends ValueAnimator {
     private boolean mAutoCancel = false;
     private Property mProperty;
     private String mPropertyName;
-    private WeakReference<Object> mTarget;
+    private Object mTarget;
 
     public void setPropertyName(String propertyName) {
         if (this.mValues != null) {
@@ -49,9 +48,8 @@ public final class ObjectAnimator extends ValueAnimator {
             String propertyName3 = this.mPropertyName;
             return propertyName3;
         }
-        Property property = this.mProperty;
-        if (property != null) {
-            String propertyName4 = property.getName();
+        if (this.mProperty != null) {
+            String propertyName4 = this.mProperty.getName();
             return propertyName4;
         }
         if (this.mValues == null || this.mValues.length <= 0) {
@@ -223,9 +221,8 @@ public final class ObjectAnimator extends ValueAnimator {
     @Override // android.animation.ValueAnimator
     public void setIntValues(int... values) {
         if (this.mValues == null || this.mValues.length == 0) {
-            Property property = this.mProperty;
-            if (property != null) {
-                setValues(PropertyValuesHolder.ofInt((Property<?, Integer>) property, values));
+            if (this.mProperty != null) {
+                setValues(PropertyValuesHolder.ofInt((Property<?, Integer>) this.mProperty, values));
                 return;
             } else {
                 setValues(PropertyValuesHolder.ofInt(this.mPropertyName, values));
@@ -238,9 +235,8 @@ public final class ObjectAnimator extends ValueAnimator {
     @Override // android.animation.ValueAnimator
     public void setFloatValues(float... values) {
         if (this.mValues == null || this.mValues.length == 0) {
-            Property property = this.mProperty;
-            if (property != null) {
-                setValues(PropertyValuesHolder.ofFloat((Property<?, Float>) property, values));
+            if (this.mProperty != null) {
+                setValues(PropertyValuesHolder.ofFloat((Property<?, Float>) this.mProperty, values));
                 return;
             } else {
                 setValues(PropertyValuesHolder.ofFloat(this.mPropertyName, values));
@@ -253,9 +249,8 @@ public final class ObjectAnimator extends ValueAnimator {
     @Override // android.animation.ValueAnimator
     public void setObjectValues(Object... values) {
         if (this.mValues == null || this.mValues.length == 0) {
-            Property property = this.mProperty;
-            if (property != null) {
-                setValues(PropertyValuesHolder.ofObject(property, (TypeEvaluator) null, values));
+            if (this.mProperty != null) {
+                setValues(PropertyValuesHolder.ofObject(this.mProperty, (TypeEvaluator) null, values));
                 return;
             } else {
                 setValues(PropertyValuesHolder.ofObject(this.mPropertyName, (TypeEvaluator) null, values));
@@ -292,7 +287,7 @@ public final class ObjectAnimator extends ValueAnimator {
         super.start();
     }
 
-    public boolean shouldAutoCancel(AnimationHandler.AnimationFrameCallback anim) {
+    boolean shouldAutoCancel(AnimationHandler.AnimationFrameCallback anim) {
         if (anim != null && (anim instanceof ObjectAnimator)) {
             ObjectAnimator objAnim = (ObjectAnimator) anim;
             if (objAnim.mAutoCancel && hasSameTargetAndProperties(objAnim)) {
@@ -303,7 +298,7 @@ public final class ObjectAnimator extends ValueAnimator {
     }
 
     @Override // android.animation.ValueAnimator
-    public void initAnimation() {
+    void initAnimation() {
         if (!this.mInitialized) {
             Object target = getTarget();
             if (target != null) {
@@ -323,11 +318,7 @@ public final class ObjectAnimator extends ValueAnimator {
     }
 
     public Object getTarget() {
-        WeakReference<Object> weakReference = this.mTarget;
-        if (weakReference == null) {
-            return null;
-        }
-        return weakReference.get();
+        return this.mTarget;
     }
 
     @Override // android.animation.Animator
@@ -337,7 +328,7 @@ public final class ObjectAnimator extends ValueAnimator {
             if (isStarted()) {
                 cancel();
             }
-            this.mTarget = target == null ? null : new WeakReference<>(target);
+            this.mTarget = target;
             this.mInitialized = false;
         }
     }
@@ -367,12 +358,8 @@ public final class ObjectAnimator extends ValueAnimator {
     }
 
     @Override // android.animation.ValueAnimator
-    public void animateValue(float fraction) {
+    void animateValue(float fraction) {
         Object target = getTarget();
-        if (this.mTarget != null && target == null) {
-            cancel();
-            return;
-        }
         super.animateValue(fraction);
         int numValues = this.mValues.length;
         for (int i = 0; i < numValues; i++) {
@@ -380,16 +367,15 @@ public final class ObjectAnimator extends ValueAnimator {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Override // android.animation.ValueAnimator, android.animation.Animator
-    public boolean isInitialized() {
+    boolean isInitialized() {
         return this.mInitialized;
     }
 
     @Override // android.animation.ValueAnimator, android.animation.Animator
     /* renamed from: clone */
-    public ObjectAnimator mo57clone() {
-        ObjectAnimator anim = (ObjectAnimator) super.mo57clone();
+    public ObjectAnimator mo77clone() {
+        ObjectAnimator anim = (ObjectAnimator) super.mo77clone();
         return anim;
     }
 

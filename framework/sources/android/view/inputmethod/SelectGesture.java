@@ -8,14 +8,13 @@ import java.util.Objects;
 /* loaded from: classes4.dex */
 public final class SelectGesture extends PreviewableHandwritingGesture implements Parcelable {
     public static final Parcelable.Creator<SelectGesture> CREATOR = new Parcelable.Creator<SelectGesture>() { // from class: android.view.inputmethod.SelectGesture.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectGesture createFromParcel(Parcel source) {
             return new SelectGesture(source);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SelectGesture[] newArray(int size) {
             return new SelectGesture[size];
@@ -23,14 +22,6 @@ public final class SelectGesture extends PreviewableHandwritingGesture implement
     };
     private RectF mArea;
     private int mGranularity;
-
-    /* synthetic */ SelectGesture(int i, RectF rectF, String str, SelectGestureIA selectGestureIA) {
-        this(i, rectF, str);
-    }
-
-    /* synthetic */ SelectGesture(Parcel parcel, SelectGestureIA selectGestureIA) {
-        this(parcel);
-    }
 
     private SelectGesture(int granularity, RectF area, String fallbackText) {
         this.mType = 1;
@@ -54,7 +45,6 @@ public final class SelectGesture extends PreviewableHandwritingGesture implement
         return this.mArea;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
         private RectF mArea;
         private String mFallbackText;
@@ -76,31 +66,13 @@ public final class SelectGesture extends PreviewableHandwritingGesture implement
         }
 
         public SelectGesture build() {
-            RectF rectF = this.mArea;
-            if (rectF == null || rectF.isEmpty()) {
+            if (this.mArea == null || this.mArea.isEmpty()) {
                 throw new IllegalArgumentException("Selection area must be set.");
             }
             if (this.mGranularity <= 0) {
                 throw new IllegalArgumentException("Selection granularity must be set.");
             }
             return new SelectGesture(this.mGranularity, this.mArea, this.mFallbackText);
-        }
-    }
-
-    /* renamed from: android.view.inputmethod.SelectGesture$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SelectGesture> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectGesture createFromParcel(Parcel source) {
-            return new SelectGesture(source);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SelectGesture[] newArray(int size) {
-            return new SelectGesture[size];
         }
     }
 

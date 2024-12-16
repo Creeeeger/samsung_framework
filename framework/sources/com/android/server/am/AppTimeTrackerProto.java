@@ -8,7 +8,6 @@ public final class AppTimeTrackerProto {
     public static final long STARTED_TIME = 1146756268036L;
     public static final long TOTAL_DURATION_MS = 1112396529666L;
 
-    /* loaded from: classes5.dex */
     public final class PackageTime {
         public static final long DURATION_MS = 1112396529666L;
         public static final long PACKAGE = 1138166333441L;

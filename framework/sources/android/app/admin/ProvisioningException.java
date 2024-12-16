@@ -19,7 +19,6 @@ public class ProvisioningException extends AndroidException {
     private final int mProvisioningError;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface ProvisioningError {
     }
 

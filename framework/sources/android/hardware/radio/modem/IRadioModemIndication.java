@@ -9,8 +9,8 @@ import android.os.RemoteException;
 /* loaded from: classes2.dex */
 public interface IRadioModemIndication extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$radio$modem$IRadioModemIndication".replace('$', '.');
-    public static final String HASH = "09927560afccc75a063944fbbab3af48099261ca";
-    public static final int VERSION = 2;
+    public static final String HASH = "8586a5528f0085c15cff4b6628f1b8153aca29ad";
+    public static final int VERSION = 3;
 
     String getInterfaceHash() throws RemoteException;
 
@@ -20,13 +20,14 @@ public interface IRadioModemIndication extends IInterface {
 
     void modemReset(int i, String str) throws RemoteException;
 
+    void onImeiMappingChanged(int i, ImeiInfo imeiInfo) throws RemoteException;
+
     void radioCapabilityIndication(int i, RadioCapability radioCapability) throws RemoteException;
 
     void radioStateChanged(int i, int i2) throws RemoteException;
 
     void rilConnected(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IRadioModemIndication {
         @Override // android.hardware.radio.modem.IRadioModemIndication
         public void hardwareConfigChanged(int type, HardwareConfig[] configs) throws RemoteException {
@@ -49,6 +50,10 @@ public interface IRadioModemIndication extends IInterface {
         }
 
         @Override // android.hardware.radio.modem.IRadioModemIndication
+        public void onImeiMappingChanged(int type, ImeiInfo imeiInfo) throws RemoteException {
+        }
+
+        @Override // android.hardware.radio.modem.IRadioModemIndication
         public int getInterfaceVersion() {
             return 0;
         }
@@ -64,12 +69,12 @@ public interface IRadioModemIndication extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IRadioModemIndication {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
         static final int TRANSACTION_hardwareConfigChanged = 1;
         static final int TRANSACTION_modemReset = 2;
+        static final int TRANSACTION_onImeiMappingChanged = 6;
         static final int TRANSACTION_radioCapabilityIndication = 3;
         static final int TRANSACTION_radioStateChanged = 4;
         static final int TRANSACTION_rilConnected = 5;
@@ -101,58 +106,62 @@ public interface IRadioModemIndication extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
-                    reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
+                case 1:
+                    int _arg0 = data.readInt();
+                    HardwareConfig[] _arg1 = (HardwareConfig[]) data.createTypedArray(HardwareConfig.CREATOR);
+                    data.enforceNoDataAvail();
+                    hardwareConfigChanged(_arg0, _arg1);
                     return true;
-                case 16777215:
-                    reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
+                case 2:
+                    int _arg02 = data.readInt();
+                    String _arg12 = data.readString();
+                    data.enforceNoDataAvail();
+                    modemReset(_arg02, _arg12);
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    int _arg03 = data.readInt();
+                    RadioCapability _arg13 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
+                    data.enforceNoDataAvail();
+                    radioCapabilityIndication(_arg03, _arg13);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    int _arg14 = data.readInt();
+                    data.enforceNoDataAvail();
+                    radioStateChanged(_arg04, _arg14);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    rilConnected(_arg05);
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    ImeiInfo _arg15 = (ImeiInfo) data.readTypedObject(ImeiInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    onImeiMappingChanged(_arg06, _arg15);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            HardwareConfig[] _arg1 = (HardwareConfig[]) data.createTypedArray(HardwareConfig.CREATOR);
-                            data.enforceNoDataAvail();
-                            hardwareConfigChanged(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            String _arg12 = data.readString();
-                            data.enforceNoDataAvail();
-                            modemReset(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            RadioCapability _arg13 = (RadioCapability) data.readTypedObject(RadioCapability.CREATOR);
-                            data.enforceNoDataAvail();
-                            radioCapabilityIndication(_arg03, _arg13);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            int _arg14 = data.readInt();
-                            data.enforceNoDataAvail();
-                            radioStateChanged(_arg04, _arg14);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            rilConnected(_arg05);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IRadioModemIndication {
+        private static class Proxy implements IRadioModemIndication {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";
@@ -243,6 +252,22 @@ public interface IRadioModemIndication extends IInterface {
                     boolean _status = this.mRemote.transact(5, _data, null, 1);
                     if (!_status) {
                         throw new RemoteException("Method rilConnected is unimplemented.");
+                    }
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // android.hardware.radio.modem.IRadioModemIndication
+            public void onImeiMappingChanged(int type, ImeiInfo imeiInfo) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(DESCRIPTOR);
+                    _data.writeInt(type);
+                    _data.writeTypedObject(imeiInfo, 0);
+                    boolean _status = this.mRemote.transact(6, _data, null, 1);
+                    if (!_status) {
+                        throw new RemoteException("Method onImeiMappingChanged is unimplemented.");
                     }
                 } finally {
                     _data.recycle();

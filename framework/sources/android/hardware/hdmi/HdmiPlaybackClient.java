@@ -11,17 +11,15 @@ public final class HdmiPlaybackClient extends HdmiClient {
     private static final int ADDR_TV = 0;
     private static final String TAG = "HdmiPlaybackClient";
 
-    /* loaded from: classes2.dex */
     public interface DisplayStatusCallback {
         void onComplete(int i);
     }
 
-    /* loaded from: classes2.dex */
     public interface OneTouchPlayCallback {
         void onComplete(int i);
     }
 
-    public HdmiPlaybackClient(IHdmiControlService service) {
+    HdmiPlaybackClient(IHdmiControlService service) {
         super(service);
     }
 
@@ -54,17 +52,11 @@ public final class HdmiPlaybackClient extends HdmiClient {
         }
     }
 
-    private IHdmiControlCallback getCallbackWrapper(OneTouchPlayCallback callback) {
+    private IHdmiControlCallback getCallbackWrapper(final OneTouchPlayCallback callback) {
         if (callback == null) {
             throw new IllegalArgumentException("OneTouchPlayCallback cannot be null.");
         }
         return new IHdmiControlCallback.Stub() { // from class: android.hardware.hdmi.HdmiPlaybackClient.1
-            final /* synthetic */ OneTouchPlayCallback val$callback;
-
-            AnonymousClass1(OneTouchPlayCallback callback2) {
-                callback = callback2;
-            }
-
             @Override // android.hardware.hdmi.IHdmiControlCallback
             public void onComplete(int result) {
                 callback.onComplete(result);
@@ -72,51 +64,15 @@ public final class HdmiPlaybackClient extends HdmiClient {
         };
     }
 
-    /* renamed from: android.hardware.hdmi.HdmiPlaybackClient$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends IHdmiControlCallback.Stub {
-        final /* synthetic */ OneTouchPlayCallback val$callback;
-
-        AnonymousClass1(OneTouchPlayCallback callback2) {
-            callback = callback2;
-        }
-
-        @Override // android.hardware.hdmi.IHdmiControlCallback
-        public void onComplete(int result) {
-            callback.onComplete(result);
-        }
-    }
-
-    private IHdmiControlCallback getCallbackWrapper(DisplayStatusCallback callback) {
+    private IHdmiControlCallback getCallbackWrapper(final DisplayStatusCallback callback) {
         if (callback == null) {
             throw new IllegalArgumentException("DisplayStatusCallback cannot be null.");
         }
         return new IHdmiControlCallback.Stub() { // from class: android.hardware.hdmi.HdmiPlaybackClient.2
-            final /* synthetic */ DisplayStatusCallback val$callback;
-
-            AnonymousClass2(DisplayStatusCallback callback2) {
-                callback = callback2;
-            }
-
             @Override // android.hardware.hdmi.IHdmiControlCallback
             public void onComplete(int status) {
                 callback.onComplete(status);
             }
         };
-    }
-
-    /* renamed from: android.hardware.hdmi.HdmiPlaybackClient$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IHdmiControlCallback.Stub {
-        final /* synthetic */ DisplayStatusCallback val$callback;
-
-        AnonymousClass2(DisplayStatusCallback callback2) {
-            callback = callback2;
-        }
-
-        @Override // android.hardware.hdmi.IHdmiControlCallback
-        public void onComplete(int status) {
-            callback.onComplete(status);
-        }
     }
 }

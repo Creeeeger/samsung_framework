@@ -19,7 +19,6 @@ public interface ICredentialProviderService extends IInterface {
 
     void onClearCredentialState(ClearCredentialStateRequest clearCredentialStateRequest, IClearCredentialStateCallback iClearCredentialStateCallback) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements ICredentialProviderService {
         @Override // android.service.credentials.ICredentialProviderService
         public void onBeginGetCredential(BeginGetCredentialRequest request, IBeginGetCredentialCallback callback) throws RemoteException {
@@ -39,7 +38,6 @@ public interface ICredentialProviderService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements ICredentialProviderService {
         static final int TRANSACTION_onBeginCreateCredential = 2;
         static final int TRANSACTION_onBeginGetCredential = 1;
@@ -88,37 +86,34 @@ public interface ICredentialProviderService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ICredentialProviderService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ICredentialProviderService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ICredentialProviderService.DESCRIPTOR);
+                case 1:
+                    BeginGetCredentialRequest _arg0 = (BeginGetCredentialRequest) data.readTypedObject(BeginGetCredentialRequest.CREATOR);
+                    IBeginGetCredentialCallback _arg1 = IBeginGetCredentialCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onBeginGetCredential(_arg0, _arg1);
+                    return true;
+                case 2:
+                    BeginCreateCredentialRequest _arg02 = (BeginCreateCredentialRequest) data.readTypedObject(BeginCreateCredentialRequest.CREATOR);
+                    IBeginCreateCredentialCallback _arg12 = IBeginCreateCredentialCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onBeginCreateCredential(_arg02, _arg12);
+                    return true;
+                case 3:
+                    ClearCredentialStateRequest _arg03 = (ClearCredentialStateRequest) data.readTypedObject(ClearCredentialStateRequest.CREATOR);
+                    IClearCredentialStateCallback _arg13 = IClearCredentialStateCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    onClearCredentialState(_arg03, _arg13);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            BeginGetCredentialRequest _arg0 = (BeginGetCredentialRequest) data.readTypedObject(BeginGetCredentialRequest.CREATOR);
-                            IBeginGetCredentialCallback _arg1 = IBeginGetCredentialCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onBeginGetCredential(_arg0, _arg1);
-                            return true;
-                        case 2:
-                            BeginCreateCredentialRequest _arg02 = (BeginCreateCredentialRequest) data.readTypedObject(BeginCreateCredentialRequest.CREATOR);
-                            IBeginCreateCredentialCallback _arg12 = IBeginCreateCredentialCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onBeginCreateCredential(_arg02, _arg12);
-                            return true;
-                        case 3:
-                            ClearCredentialStateRequest _arg03 = (ClearCredentialStateRequest) data.readTypedObject(ClearCredentialStateRequest.CREATOR);
-                            IClearCredentialStateCallback _arg13 = IClearCredentialStateCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            onClearCredentialState(_arg03, _arg13);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes3.dex */
         private static class Proxy implements ICredentialProviderService {
             private IBinder mRemote;
 

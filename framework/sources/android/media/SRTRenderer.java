@@ -15,7 +15,7 @@ public class SRTRenderer extends SubtitleController.Renderer {
         this(context, null);
     }
 
-    public SRTRenderer(Context mContext, Handler mEventHandler) {
+    SRTRenderer(Context mContext, Handler mEventHandler) {
         this.mContext = mContext;
         this.mRender = mEventHandler == null;
         this.mEventHandler = mEventHandler;
@@ -23,7 +23,7 @@ public class SRTRenderer extends SubtitleController.Renderer {
 
     @Override // android.media.SubtitleController.Renderer
     public boolean supports(MediaFormat format) {
-        if (format.containsKey(MediaFormat.KEY_MIME) && format.getString(MediaFormat.KEY_MIME).equals("application/x-subrip")) {
+        if (format.containsKey("mime") && format.getString("mime").equals("application/x-subrip")) {
             return this.mRender == (format.getInteger(MediaFormat.KEY_IS_TIMED_TEXT, 0) == 0);
         }
         return false;

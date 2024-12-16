@@ -9,9 +9,7 @@ import java.util.StringJoiner;
 /* loaded from: classes2.dex */
 public class EmergencyNetworkScanTrigger implements Parcelable {
     public static final Parcelable.Creator<EmergencyNetworkScanTrigger> CREATOR = new Parcelable.Creator<EmergencyNetworkScanTrigger>() { // from class: android.hardware.radio.network.EmergencyNetworkScanTrigger.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EmergencyNetworkScanTrigger createFromParcel(Parcel _aidl_source) {
             EmergencyNetworkScanTrigger _aidl_out = new EmergencyNetworkScanTrigger();
@@ -19,6 +17,7 @@ public class EmergencyNetworkScanTrigger implements Parcelable {
             return _aidl_out;
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public EmergencyNetworkScanTrigger[] newArray(int _aidl_size) {
             return new EmergencyNetworkScanTrigger[_aidl_size];
@@ -26,25 +25,6 @@ public class EmergencyNetworkScanTrigger implements Parcelable {
     };
     public int[] accessNetwork;
     public int scanType;
-
-    /* renamed from: android.hardware.radio.network.EmergencyNetworkScanTrigger$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<EmergencyNetworkScanTrigger> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EmergencyNetworkScanTrigger createFromParcel(Parcel _aidl_source) {
-            EmergencyNetworkScanTrigger _aidl_out = new EmergencyNetworkScanTrigger();
-            _aidl_out.readFromParcel(_aidl_source);
-            return _aidl_out;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public EmergencyNetworkScanTrigger[] newArray(int _aidl_size) {
-            return new EmergencyNetworkScanTrigger[_aidl_size];
-        }
-    }
 
     @Override // android.os.Parcelable
     public final int getStability() {
@@ -103,7 +83,7 @@ public class EmergencyNetworkScanTrigger implements Parcelable {
         StringJoiner _aidl_sj = new StringJoiner(", ", "{", "}");
         _aidl_sj.add("accessNetwork: " + AccessNetwork$$.arrayToString(this.accessNetwork));
         _aidl_sj.add("scanType: " + EmergencyScanType$$.toString(this.scanType));
-        return "android.hardware.radio.network.EmergencyNetworkScanTrigger" + _aidl_sj.toString();
+        return "EmergencyNetworkScanTrigger" + _aidl_sj.toString();
     }
 
     @Override // android.os.Parcelable

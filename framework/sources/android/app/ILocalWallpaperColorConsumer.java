@@ -13,7 +13,6 @@ public interface ILocalWallpaperColorConsumer extends IInterface {
 
     void onColorsChanged(RectF rectF, WallpaperColors wallpaperColors) throws RemoteException;
 
-    /* loaded from: classes.dex */
     public static class Default implements ILocalWallpaperColorConsumer {
         @Override // android.app.ILocalWallpaperColorConsumer
         public void onColorsChanged(RectF area, WallpaperColors colors) throws RemoteException {
@@ -25,7 +24,6 @@ public interface ILocalWallpaperColorConsumer extends IInterface {
         }
     }
 
-    /* loaded from: classes.dex */
     public static abstract class Stub extends Binder implements ILocalWallpaperColorConsumer {
         static final int TRANSACTION_onColorsChanged = 1;
 
@@ -68,27 +66,23 @@ public interface ILocalWallpaperColorConsumer extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ILocalWallpaperColorConsumer.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ILocalWallpaperColorConsumer.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ILocalWallpaperColorConsumer.DESCRIPTOR);
+                case 1:
+                    RectF _arg0 = (RectF) data.readTypedObject(RectF.CREATOR);
+                    WallpaperColors _arg1 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
+                    data.enforceNoDataAvail();
+                    onColorsChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            RectF _arg0 = (RectF) data.readTypedObject(RectF.CREATOR);
-                            WallpaperColors _arg1 = (WallpaperColors) data.readTypedObject(WallpaperColors.CREATOR);
-                            data.enforceNoDataAvail();
-                            onColorsChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes.dex */
-        public static class Proxy implements ILocalWallpaperColorConsumer {
+        private static class Proxy implements ILocalWallpaperColorConsumer {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

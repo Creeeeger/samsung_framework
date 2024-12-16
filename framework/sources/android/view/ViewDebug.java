@@ -14,13 +14,14 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import com.samsung.android.ims.options.SemCapabilities;
+import com.android.internal.util.Preconditions;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -35,9 +36,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,7 +51,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -67,9 +69,22 @@ public class ViewDebug {
     public static final String REMOTE_COMMAND_DUMP_ENCODED = "DUMP_ENCODED";
     private static final String REMOTE_COMMAND_DUMP_THEME = "DUMP_THEME";
     private static final String REMOTE_COMMAND_INVALIDATE = "INVALIDATE";
+    private static final String REMOTE_COMMAND_INVOKE_METHOD = "INVOKE_METHOD";
     private static final String REMOTE_COMMAND_OUTPUT_DISPLAYLIST = "OUTPUT_DISPLAYLIST";
     private static final String REMOTE_COMMAND_REQUEST_LAYOUT = "REQUEST_LAYOUT";
     private static final String REMOTE_PROFILE = "PROFILE";
+    private static final char SIG_ARRAY = '[';
+    private static final char SIG_BOOLEAN = 'Z';
+    private static final char SIG_BYTE = 'B';
+    private static final char SIG_CHAR = 'C';
+    private static final char SIG_DOUBLE = 'D';
+    private static final char SIG_FLOAT = 'F';
+    private static final char SIG_INT = 'I';
+    private static final char SIG_LONG = 'J';
+    private static final char SIG_SHORT = 'S';
+    private static final char SIG_STRING = 'R';
+    private static final char SIG_VOID = 'V';
+    private static final String TAG = "ViewDebug";
 
     @Deprecated
     public static final boolean TRACE_HIERARCHY = false;
@@ -79,7 +94,6 @@ public class ViewDebug {
     private static HashMap<Class<?>, PropertyInfo<CapturedViewProperty, ?>[]> sCapturedViewProperties;
     private static HashMap<Class<?>, PropertyInfo<ExportedProperty, ?>[]> sExportProperties;
 
-    /* loaded from: classes4.dex */
     public interface CanvasProvider {
         Bitmap createBitmap();
 
@@ -88,14 +102,12 @@ public class ViewDebug {
 
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes4.dex */
     public @interface CapturedViewProperty {
         boolean retrieveReturn() default false;
     }
 
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes4.dex */
     public @interface ExportedProperty {
         String category() default "";
 
@@ -118,7 +130,6 @@ public class ViewDebug {
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes4.dex */
     public @interface FlagToString {
         int equals();
 
@@ -129,7 +140,6 @@ public class ViewDebug {
         boolean outputIf() default true;
     }
 
-    /* loaded from: classes4.dex */
     public interface HierarchyHandler {
         void dumpViewHierarchyWithProperties(BufferedWriter bufferedWriter, int i);
 
@@ -137,7 +147,6 @@ public class ViewDebug {
     }
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public enum HierarchyTraceType {
         INVALIDATE,
         INVALIDATE_CHILD,
@@ -151,7 +160,6 @@ public class ViewDebug {
 
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
-    /* loaded from: classes4.dex */
     public @interface IntToString {
         int from();
 
@@ -159,7 +167,6 @@ public class ViewDebug {
     }
 
     @Deprecated
-    /* loaded from: classes4.dex */
     public enum RecyclerTraceType {
         NEW_VIEW,
         BIND_VIEW,
@@ -169,8 +176,8 @@ public class ViewDebug {
         MOVE_FROM_ACTIVE_TO_SCRAP_HEAP
     }
 
-    /* loaded from: classes4.dex */
-    public static abstract class PropertyInfo<T extends Annotation, R extends AccessibleObject & Member> {
+    /* JADX INFO: Access modifiers changed from: private */
+    static abstract class PropertyInfo<T extends Annotation, R extends AccessibleObject & Member> {
         public final R member;
         public final String name;
         public final T property;
@@ -187,6 +194,7 @@ public class ViewDebug {
             this.returnType = cls2;
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         public static <T extends Annotation> PropertyInfo<T, ?> forMethod(Method method, Class<T> property) {
             try {
                 if (method.getReturnType() != Void.class) {
@@ -205,6 +213,7 @@ public class ViewDebug {
             }
         }
 
+        /* JADX INFO: Access modifiers changed from: package-private */
         public static <T extends Annotation> PropertyInfo<T, ?> forField(Field field, Class<T> property) {
             if (!field.isAnnotationPresent(property)) {
                 return null;
@@ -214,8 +223,7 @@ public class ViewDebug {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class MethodPI<T extends Annotation> extends PropertyInfo<T, Method> {
+    private static class MethodPI<T extends Annotation> extends PropertyInfo<T, Method> {
         MethodPI(Method method, Class<T> property) {
             super(property, method, method.getReturnType());
         }
@@ -226,8 +234,7 @@ public class ViewDebug {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public static class FieldPI<T extends Annotation> extends PropertyInfo<T, Field> {
+    private static class FieldPI<T extends Annotation> extends PropertyInfo<T, Field> {
         FieldPI(Field field, Class<T> property) {
             super(property, field, field.getType());
         }
@@ -270,7 +277,7 @@ public class ViewDebug {
     public static void stopHierarchyTracing() {
     }
 
-    public static void dispatchCommand(View view, String command, String parameters, OutputStream clientStream) throws IOException {
+    static void dispatchCommand(View view, String command, String parameters, OutputStream clientStream) throws IOException {
         View view2 = view.getRootView();
         if (REMOTE_COMMAND_DUMP.equalsIgnoreCase(command)) {
             dump(view2, false, true, clientStream);
@@ -299,15 +306,15 @@ public class ViewDebug {
         }
         if (REMOTE_COMMAND_INVALIDATE.equalsIgnoreCase(command)) {
             invalidate(view2, params[0]);
-        } else if (REMOTE_COMMAND_REQUEST_LAYOUT.equalsIgnoreCase(command)) {
+            return;
+        }
+        if (REMOTE_COMMAND_REQUEST_LAYOUT.equalsIgnoreCase(command)) {
             requestLayout(view2, params[0]);
         } else if (REMOTE_PROFILE.equalsIgnoreCase(command)) {
             profile(view2, clientStream, params[0]);
+        } else if (REMOTE_COMMAND_INVOKE_METHOD.equals(command)) {
+            invokeViewMethod(view2, clientStream, params);
         }
-    }
-
-    private static String[] hidden_getStyleAttributesDump(Resources resources, Resources.Theme theme) {
-        return getStyleAttributesDump(resources, theme);
     }
 
     public static View findView(View root, String parameter) {
@@ -333,29 +340,14 @@ public class ViewDebug {
     }
 
     private static void requestLayout(View root, String parameter) {
-        View view = findView(root, parameter);
+        final View view = findView(root, parameter);
         if (view != null) {
             root.post(new Runnable() { // from class: android.view.ViewDebug.1
-                AnonymousClass1() {
-                }
-
                 @Override // java.lang.Runnable
                 public void run() {
                     View.this.requestLayout();
                 }
             });
-        }
-    }
-
-    /* renamed from: android.view.ViewDebug$1 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass1 implements Runnable {
-        AnonymousClass1() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            View.this.requestLayout();
         }
     }
 
@@ -389,7 +381,7 @@ public class ViewDebug {
     }
 
     public static void profileViewAndChildren(View view, BufferedWriter out) throws IOException {
-        RenderNode node = RenderNode.create("ViewDebug", null);
+        RenderNode node = RenderNode.create(TAG, null);
         profileViewAndChildren(view, node, out, true);
     }
 
@@ -412,40 +404,8 @@ public class ViewDebug {
         }
     }
 
-    /* renamed from: android.view.ViewDebug$2 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass2 implements ViewOperation {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.ViewDebug.ViewOperation
-        public void pre() {
-            forceLayout(View.this);
-        }
-
-        private void forceLayout(View view) {
-            view.forceLayout();
-            if (view instanceof ViewGroup) {
-                ViewGroup group = (ViewGroup) view;
-                int count = group.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    forceLayout(group.getChildAt(i));
-                }
-            }
-        }
-
-        @Override // android.view.ViewDebug.ViewOperation
-        public void run() {
-            View view = View.this;
-            view.measure(view.mOldWidthMeasureSpec, View.this.mOldHeightMeasureSpec);
-        }
-    }
-
-    private static long profileViewMeasure(View view) {
+    private static long profileViewMeasure(final View view) {
         return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug.2
-            AnonymousClass2() {
-            }
-
             @Override // android.view.ViewDebug.ViewOperation
             public void pre() {
                 forceLayout(View.this);
@@ -464,14 +424,13 @@ public class ViewDebug {
 
             @Override // android.view.ViewDebug.ViewOperation
             public void run() {
-                View view2 = View.this;
-                view2.measure(view2.mOldWidthMeasureSpec, View.this.mOldHeightMeasureSpec);
+                View.this.measure(View.this.mOldWidthMeasureSpec, View.this.mOldHeightMeasureSpec);
             }
         });
     }
 
     private static long profileViewLayout(final View view) {
-        return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda7
+        return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda0
             @Override // android.view.ViewDebug.ViewOperation
             public final void run() {
                 r0.layout(r0.mLeft, r0.mTop, r0.mRight, View.this.mBottom);
@@ -487,7 +446,7 @@ public class ViewDebug {
         if (view.isHardwareAccelerated()) {
             final RecordingCanvas canvas = node.beginRecording(dm.widthPixels, dm.heightPixels);
             try {
-                return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda5
+                return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda1
                     @Override // android.view.ViewDebug.ViewOperation
                     public final void run() {
                         View.this.draw(canvas);
@@ -500,7 +459,7 @@ public class ViewDebug {
         Bitmap bitmap = Bitmap.createBitmap(dm, dm.widthPixels, dm.heightPixels, Bitmap.Config.RGB_565);
         final Canvas canvas2 = new Canvas(bitmap);
         try {
-            return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda6
+            return profileViewOperation(view, new ViewOperation() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda2
                 @Override // android.view.ViewDebug.ViewOperation
                 public final void run() {
                     View.this.draw(canvas2);
@@ -512,8 +471,7 @@ public class ViewDebug {
         }
     }
 
-    /* loaded from: classes4.dex */
-    public interface ViewOperation {
+    interface ViewOperation {
         void run();
 
         default void pre() {
@@ -523,7 +481,7 @@ public class ViewDebug {
     private static long profileViewOperation(View view, final ViewOperation operation) {
         final CountDownLatch latch = new CountDownLatch(1);
         final long[] duration = new long[1];
-        view.post(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda8
+        view.post(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda9
             @Override // java.lang.Runnable
             public final void run() {
                 ViewDebug.lambda$profileViewOperation$3(ViewDebug.ViewOperation.this, duration, latch);
@@ -542,7 +500,7 @@ public class ViewDebug {
         }
     }
 
-    public static /* synthetic */ void lambda$profileViewOperation$3(ViewOperation operation, long[] duration, CountDownLatch latch) {
+    static /* synthetic */ void lambda$profileViewOperation$3(ViewOperation operation, long[] duration, CountDownLatch latch) {
         try {
             operation.pre();
             long start = Debug.threadCpuTimeNanos();
@@ -613,7 +571,6 @@ public class ViewDebug {
         root.getViewRootImpl().outputDisplayList(target);
     }
 
-    /* loaded from: classes4.dex */
     private static class PictureCallbackHandler implements AutoCloseable, HardwareRenderer.PictureCapturedCallback, Runnable {
         private final Function<Picture, Boolean> mCallback;
         private final Executor mExecutor;
@@ -623,17 +580,13 @@ public class ViewDebug {
         private final HardwareRenderer mRenderer;
         private boolean mStopListening;
 
-        /* synthetic */ PictureCallbackHandler(HardwareRenderer hardwareRenderer, Function function, Executor executor, PictureCallbackHandlerIA pictureCallbackHandlerIA) {
-            this(hardwareRenderer, function, executor);
-        }
-
         private PictureCallbackHandler(HardwareRenderer renderer, Function<Picture, Boolean> callback, Executor executor) {
             this.mLock = new ReentrantLock(false);
             this.mQueue = new ArrayDeque<>(3);
             this.mRenderer = renderer;
             this.mCallback = callback;
             this.mExecutor = executor;
-            renderer.setPictureCaptureCallback(this);
+            this.mRenderer.setPictureCaptureCallback(this);
         }
 
         @Override // java.lang.AutoCloseable
@@ -706,7 +659,6 @@ public class ViewDebug {
         return new PictureCallbackHandler(renderer, callback, executor);
     }
 
-    /* loaded from: classes4.dex */
     private static class StreamingPictureCallbackHandler implements AutoCloseable, HardwareRenderer.PictureCapturedCallback, Runnable {
         private final Callable<OutputStream> mCallback;
         private final Executor mExecutor;
@@ -716,17 +668,13 @@ public class ViewDebug {
         private final HardwareRenderer mRenderer;
         private boolean mStopListening;
 
-        /* synthetic */ StreamingPictureCallbackHandler(HardwareRenderer hardwareRenderer, Callable callable, Executor executor, StreamingPictureCallbackHandlerIA streamingPictureCallbackHandlerIA) {
-            this(hardwareRenderer, callable, executor);
-        }
-
         private StreamingPictureCallbackHandler(HardwareRenderer renderer, Callable<OutputStream> callback, Executor executor) {
             this.mLock = new ReentrantLock(false);
             this.mQueue = new ArrayDeque<>(3);
             this.mRenderer = renderer;
             this.mCallback = callback;
             this.mExecutor = executor;
-            renderer.setPictureCaptureCallback(this);
+            this.mRenderer.setPictureCaptureCallback(this);
         }
 
         @Override // java.lang.AutoCloseable
@@ -777,7 +725,7 @@ public class ViewDebug {
             try {
                 stream = this.mCallback.call();
             } catch (Exception ex) {
-                Log.w("ViewDebug", "Aborting rendering commands capture because callback threw exception", ex);
+                Log.w(ViewDebug.TAG, "Aborting rendering commands capture because callback threw exception", ex);
             }
             if (stream != null) {
                 try {
@@ -785,7 +733,7 @@ public class ViewDebug {
                     stream.flush();
                     return;
                 } catch (IOException ex2) {
-                    Log.w("ViewDebug", "Aborting rendering commands capture due to IOException writing to output stream", ex2);
+                    Log.w(ViewDebug.TAG, "Aborting rendering commands capture due to IOException writing to output stream", ex2);
                     return;
                 }
             }
@@ -839,7 +787,7 @@ public class ViewDebug {
         if (captureView != null) {
             final CountDownLatch latch = new CountDownLatch(1);
             final Bitmap[] cache = new Bitmap[1];
-            captureView.post(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda0
+            captureView.post(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda10
                 @Override // java.lang.Runnable
                 public final void run() {
                     ViewDebug.lambda$performViewCapture$4(View.this, cache, skipChildren, latch);
@@ -857,7 +805,7 @@ public class ViewDebug {
         return null;
     }
 
-    public static /* synthetic */ void lambda$performViewCapture$4(View captureView, Bitmap[] cache, boolean skipChildren, CountDownLatch latch) {
+    static /* synthetic */ void lambda$performViewCapture$4(View captureView, Bitmap[] cache, boolean skipChildren, CountDownLatch latch) {
         try {
             try {
                 CanvasProvider provider = captureView.isHardwareAccelerated() ? new HardwareCanvasProvider() : new SoftwareCanvasProvider();
@@ -898,18 +846,10 @@ public class ViewDebug {
         }
     }
 
-    public static void dumpv2(View view, ByteArrayOutputStream out) throws InterruptedException {
-        ViewHierarchyEncoder encoder = new ViewHierarchyEncoder(out);
-        CountDownLatch latch = new CountDownLatch(1);
+    public static void dumpv2(final View view, ByteArrayOutputStream out) throws InterruptedException {
+        final ViewHierarchyEncoder encoder = new ViewHierarchyEncoder(out);
+        final CountDownLatch latch = new CountDownLatch(1);
         view.post(new Runnable() { // from class: android.view.ViewDebug.3
-            final /* synthetic */ CountDownLatch val$latch;
-            final /* synthetic */ View val$view;
-
-            AnonymousClass3(View view2, CountDownLatch latch2) {
-                view = view2;
-                latch = latch2;
-            }
-
             @Override // java.lang.Runnable
             public void run() {
                 ViewHierarchyEncoder.this.addProperty("window:left", view.mAttachInfo.mWindowLeft);
@@ -918,29 +858,8 @@ public class ViewDebug {
                 latch.countDown();
             }
         });
-        latch2.await(2L, TimeUnit.SECONDS);
+        latch.await(2L, TimeUnit.SECONDS);
         encoder.endStream();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewDebug$3 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass3 implements Runnable {
-        final /* synthetic */ CountDownLatch val$latch;
-        final /* synthetic */ View val$view;
-
-        AnonymousClass3(View view2, CountDownLatch latch2) {
-            view = view2;
-            latch = latch2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ViewHierarchyEncoder.this.addProperty("window:left", view.mAttachInfo.mWindowLeft);
-            ViewHierarchyEncoder.this.addProperty("window:top", view.mAttachInfo.mWindowTop);
-            view.encode(ViewHierarchyEncoder.this);
-            latch.countDown();
-        }
     }
 
     private static void dumpEncoded(View view, OutputStream out) throws IOException {
@@ -996,7 +915,7 @@ public class ViewDebug {
                 data[i] = resources.getResourceName(attributeId);
                 int i2 = i + 1;
                 if (!theme.resolveAttribute(attributeId, outValue, true)) {
-                    str = SemCapabilities.FEATURE_TAG_NULL;
+                    str = "null";
                 } else {
                     str = outValue.coerceToString().toString();
                 }
@@ -1063,7 +982,7 @@ public class ViewDebug {
             dumpViewHierarchyOnUIThread(context, group, out, level, skipChildren, includeProperties);
             return;
         }
-        FutureTask task = new FutureTask(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda9
+        FutureTask task = new FutureTask(new Runnable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda8
             @Override // java.lang.Runnable
             public final void run() {
                 ViewDebug.dumpViewHierarchyOnUIThread(Context.this, group, out, level, skipChildren, includeProperties);
@@ -1095,8 +1014,7 @@ public class ViewDebug {
     }
 
     private static void cacheExportedProperties(Class<?> klass) {
-        HashMap<Class<?>, PropertyInfo<ExportedProperty, ?>[]> hashMap = sExportProperties;
-        if (hashMap != null && hashMap.containsKey(klass)) {
+        if (sExportProperties != null && sExportProperties.containsKey(klass)) {
             return;
         }
         do {
@@ -1109,6 +1027,7 @@ public class ViewDebug {
         } while (klass != Object.class);
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     /* JADX WARN: Multi-variable type inference failed */
     public static void dumpViewHierarchyOnUIThread(Context context, ViewGroup viewGroup, BufferedWriter out, int level, boolean skipChildren, boolean includeProperties) {
         if (!dumpView(context, viewGroup, out, level, includeProperties) || skipChildren) {
@@ -1158,26 +1077,26 @@ public class ViewDebug {
     }
 
     private static <T extends Annotation> PropertyInfo<T, ?>[] convertToPropertyInfos(Method[] methods, Field[] fields, final Class<T> property) {
-        return (PropertyInfo[]) Stream.of((Object[]) new Stream[]{Arrays.stream(methods).map(new Function() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda1
+        return (PropertyInfo[]) Stream.of((Object[]) new Stream[]{Arrays.stream(methods).map(new Function() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda4
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 ViewDebug.PropertyInfo forMethod;
                 forMethod = ViewDebug.PropertyInfo.forMethod((Method) obj, property);
                 return forMethod;
             }
-        }), Arrays.stream(fields).map(new Function() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda2
+        }), Arrays.stream(fields).map(new Function() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda5
             @Override // java.util.function.Function
             public final Object apply(Object obj) {
                 ViewDebug.PropertyInfo forField;
                 forField = ViewDebug.PropertyInfo.forField((Field) obj, property);
                 return forField;
             }
-        })}).flatMap(Function.identity()).filter(new Predicate() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda3
+        })}).flatMap(Function.identity()).filter(new Predicate() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda6
             @Override // java.util.function.Predicate
             public final boolean test(Object obj) {
                 return ViewDebug.lambda$convertToPropertyInfos$8(obj);
             }
-        }).toArray(new IntFunction() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda4
+        }).toArray(new IntFunction() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda7
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
                 return ViewDebug.lambda$convertToPropertyInfos$9(i);
@@ -1185,11 +1104,11 @@ public class ViewDebug {
         });
     }
 
-    public static /* synthetic */ boolean lambda$convertToPropertyInfos$8(Object i) {
+    static /* synthetic */ boolean lambda$convertToPropertyInfos$8(Object i) {
         return i != null;
     }
 
-    public static /* synthetic */ PropertyInfo[] lambda$convertToPropertyInfos$9(int x$0) {
+    static /* synthetic */ PropertyInfo[] lambda$convertToPropertyInfos$9(int x$0) {
         return new PropertyInfo[x$0];
     }
 
@@ -1288,7 +1207,7 @@ public class ViewDebug {
                     if (info.property.hasAdjacentMapping() && array != null) {
                         for (int j2 = 0; j2 < array.length; j2 += 2) {
                             if (array[j2] != null) {
-                                writeEntry(out, categoryPrefix + prefix, array[j2], info.entrySuffix, array[j2 + 1] == null ? SemCapabilities.FEATURE_TAG_NULL : array[j2 + 1]);
+                                writeEntry(out, categoryPrefix + prefix, array[j2], info.entrySuffix, array[j2 + 1] == null ? "null" : array[j2 + 1]);
                             }
                         }
                     }
@@ -1437,7 +1356,7 @@ public class ViewDebug {
         }
     }
 
-    public static Object resolveId(Context context, int id) {
+    static Object resolveId(Context context, int id) {
         Resources resources = context.getResources();
         if (id >= 0) {
             try {
@@ -1482,7 +1401,7 @@ public class ViewDebug {
 
     private static String exportCapturedViewProperties(Object obj, Class<?> klass, String prefix) {
         if (obj == null) {
-            return SemCapabilities.FEATURE_TAG_NULL;
+            return "null";
         }
         StringBuilder sb = new StringBuilder();
         for (PropertyInfo<CapturedViewProperty, ?> pi : getCapturedViewProperties(klass)) {
@@ -1496,7 +1415,7 @@ public class ViewDebug {
                         String value = methodValue.toString().replace("\n", "\\n");
                         sb.append(value);
                     } else {
-                        sb.append(SemCapabilities.FEATURE_TAG_NULL);
+                        sb.append("null");
                     }
                     sb.append(pi.valueSuffix).append(" ");
                 }
@@ -1511,97 +1430,91 @@ public class ViewDebug {
         Log.d(tag, (klass.getName() + ": ") + exportCapturedViewProperties(view, klass, ""));
     }
 
-    public static Object invokeViewMethod(View view, Method method, Object[] args) {
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<Object> result = new AtomicReference<>();
-        AtomicReference<Throwable> exception = new AtomicReference<>();
-        view.post(new Runnable() { // from class: android.view.ViewDebug.4
-            final /* synthetic */ Object[] val$args;
-            final /* synthetic */ AtomicReference val$exception;
-            final /* synthetic */ CountDownLatch val$latch;
-            final /* synthetic */ Method val$method;
-            final /* synthetic */ AtomicReference val$result;
-            final /* synthetic */ View val$view;
-
-            AnonymousClass4(AtomicReference result2, Method method2, View view2, Object[] args2, AtomicReference exception2, CountDownLatch latch2) {
-                result = result2;
-                method = method2;
-                view = view2;
-                args = args2;
-                exception = exception2;
-                latch = latch2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    result.set(method.invoke(view, args));
-                } catch (InvocationTargetException e) {
-                    exception.set(e.getCause());
-                } catch (Exception e2) {
-                    exception.set(e2);
-                }
-                latch.countDown();
-            }
-        });
+    private static void invokeViewMethod(View root, OutputStream clientStream, String[] params) throws IOException {
+        byte[] decode;
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientStream), 32768);
         try {
-            latch2.await();
-            if (exception2.get() != null) {
-                throw new RuntimeException(exception2.get());
-            }
-            return result2.get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewDebug$4 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass4 implements Runnable {
-        final /* synthetic */ Object[] val$args;
-        final /* synthetic */ AtomicReference val$exception;
-        final /* synthetic */ CountDownLatch val$latch;
-        final /* synthetic */ Method val$method;
-        final /* synthetic */ AtomicReference val$result;
-        final /* synthetic */ View val$view;
-
-        AnonymousClass4(AtomicReference result2, Method method2, View view2, Object[] args2, AtomicReference exception2, CountDownLatch latch2) {
-            result = result2;
-            method = method2;
-            view = view2;
-            args = args2;
-            exception = exception2;
-            latch = latch2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
             try {
-                result.set(method.invoke(view, args));
-            } catch (InvocationTargetException e) {
-                exception.set(e.getCause());
-            } catch (Exception e2) {
-                exception.set(e2);
+            } catch (Exception e) {
+                out.write("-1");
+                out.newLine();
+                out.write(e.getMessage());
+                out.newLine();
             }
-            latch.countDown();
+            if (params.length < 2) {
+                throw new IllegalArgumentException("Missing parameter");
+            }
+            View targetView = findView(root, params[0]);
+            if (targetView == null) {
+                throw new IllegalArgumentException("View not found: " + params[0]);
+            }
+            String method = params[1];
+            if (params.length < 2) {
+                decode = new byte[0];
+            } else {
+                decode = Base64.decode(params[2], 2);
+            }
+            ByteBuffer args = ByteBuffer.wrap(decode);
+            byte[] result = invokeViewMethod(targetView, method, args);
+            out.write("1");
+            out.newLine();
+            out.write(Base64.encodeToString(result, 2));
+            out.newLine();
+        } finally {
+            out.close();
         }
     }
 
-    public static void setLayoutParameter(View view, String param, int value) throws NoSuchFieldException, IllegalAccessException {
-        ViewGroup.LayoutParams p = view.getLayoutParams();
+    public static byte[] invokeViewMethod(final View targetView, String methodName, ByteBuffer params) throws ViewMethodInvocationSerializationException {
+        Class<?>[] argTypes;
+        final Object[] args;
+        if (!params.hasRemaining()) {
+            argTypes = new Class[0];
+            args = new Object[0];
+        } else {
+            int nArgs = params.getInt();
+            argTypes = new Class[nArgs];
+            Object[] args2 = new Object[nArgs];
+            deserializeMethodParameters(args2, argTypes, params);
+            args = args2;
+        }
+        try {
+            final Method method = targetView.getClass().getMethod(methodName, argTypes);
+            try {
+                FutureTask<Object> task = new FutureTask<>(new Callable() { // from class: android.view.ViewDebug$$ExternalSyntheticLambda3
+                    @Override // java.util.concurrent.Callable
+                    public final Object call() {
+                        Object invoke;
+                        invoke = method.invoke(targetView, args);
+                        return invoke;
+                    }
+                });
+                targetView.post(task);
+                Object result = task.get();
+                Class<?> returnType = method.getReturnType();
+                return serializeReturnValue(returnType, returnType.cast(result));
+            } catch (Exception e) {
+                Log.e(TAG, "Exception while invoking method: " + e.getCause().getMessage());
+                String msg = e.getCause().getMessage();
+                if (msg == null) {
+                    msg = e.getCause().toString();
+                }
+                throw new RuntimeException(msg);
+            }
+        } catch (NoSuchMethodException e2) {
+            Log.e(TAG, "No such method: " + e2.getMessage());
+            throw new ViewMethodInvocationSerializationException("No such method: " + e2.getMessage());
+        }
+    }
+
+    public static void setLayoutParameter(final View view, String param, int value) throws NoSuchFieldException, IllegalAccessException {
+        final ViewGroup.LayoutParams p = view.getLayoutParams();
         Field f = p.getClass().getField(param);
         if (f.getType() != Integer.TYPE) {
             throw new RuntimeException("Only integer layout parameters can be set. Field " + param + " is of type " + f.getType().getSimpleName());
         }
         f.set(p, Integer.valueOf(value));
-        view.post(new Runnable() { // from class: android.view.ViewDebug.5
-            final /* synthetic */ ViewGroup.LayoutParams val$p;
-
-            AnonymousClass5(ViewGroup.LayoutParams p2) {
-                p = p2;
-            }
-
+        view.post(new Runnable() { // from class: android.view.ViewDebug.4
             @Override // java.lang.Runnable
             public void run() {
                 View.this.setLayoutParams(p);
@@ -1609,23 +1522,6 @@ public class ViewDebug {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.view.ViewDebug$5 */
-    /* loaded from: classes4.dex */
-    public class AnonymousClass5 implements Runnable {
-        final /* synthetic */ ViewGroup.LayoutParams val$p;
-
-        AnonymousClass5(ViewGroup.LayoutParams p2) {
-            p = p2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            View.this.setLayoutParams(p);
-        }
-    }
-
-    /* loaded from: classes4.dex */
     public static class SoftwareCanvasProvider implements CanvasProvider {
         private Bitmap mBitmap;
         private Canvas mCanvas;
@@ -1633,12 +1529,11 @@ public class ViewDebug {
 
         @Override // android.view.ViewDebug.CanvasProvider
         public Canvas getCanvas(View view, int width, int height) {
-            Bitmap createBitmap = Bitmap.createBitmap(view.getResources().getDisplayMetrics(), width, height, Bitmap.Config.ARGB_8888);
-            this.mBitmap = createBitmap;
-            if (createBitmap == null) {
+            this.mBitmap = Bitmap.createBitmap(view.getResources().getDisplayMetrics(), width, height, Bitmap.Config.ARGB_8888);
+            if (this.mBitmap == null) {
                 throw new OutOfMemoryError();
             }
-            createBitmap.setDensity(view.getResources().getDisplayMetrics().densityDpi);
+            this.mBitmap.setDensity(view.getResources().getDisplayMetrics().densityDpi);
             if (view.mAttachInfo != null) {
                 this.mCanvas = view.mAttachInfo.mCanvas;
             }
@@ -1658,21 +1553,137 @@ public class ViewDebug {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static class HardwareCanvasProvider implements CanvasProvider {
         private Picture mPicture;
 
         @Override // android.view.ViewDebug.CanvasProvider
         public Canvas getCanvas(View view, int width, int height) {
-            Picture picture = new Picture();
-            this.mPicture = picture;
-            return picture.beginRecording(width, height);
+            this.mPicture = new Picture();
+            return this.mPicture.beginRecording(width, height);
         }
 
         @Override // android.view.ViewDebug.CanvasProvider
         public Bitmap createBitmap() {
             this.mPicture.endRecording();
             return Bitmap.createBitmap(this.mPicture);
+        }
+    }
+
+    public static void deserializeMethodParameters(Object[] args, Class<?>[] argTypes, ByteBuffer in) throws ViewMethodInvocationSerializationException {
+        Preconditions.checkArgument(args.length == argTypes.length);
+        for (int i = 0; i < args.length; i++) {
+            char typeSignature = in.getChar();
+            boolean isArray = typeSignature == '[';
+            if (isArray) {
+                char arrayType = in.getChar();
+                if (arrayType != 'B') {
+                    throw new ViewMethodInvocationSerializationException("Unsupported array parameter type (" + typeSignature + ") to invoke view method @argument " + i);
+                }
+                int arrayLength = in.getInt();
+                if (arrayLength > in.remaining()) {
+                    throw new BufferUnderflowException();
+                }
+                byte[] byteArray = new byte[arrayLength];
+                in.get(byteArray);
+                argTypes[i] = byte[].class;
+                args[i] = byteArray;
+            } else {
+                switch (typeSignature) {
+                    case 'B':
+                        argTypes[i] = Byte.TYPE;
+                        args[i] = Byte.valueOf(in.get());
+                        break;
+                    case 'C':
+                        argTypes[i] = Character.TYPE;
+                        args[i] = Character.valueOf(in.getChar());
+                        break;
+                    case 'D':
+                        argTypes[i] = Double.TYPE;
+                        args[i] = Double.valueOf(in.getDouble());
+                        break;
+                    case 'F':
+                        argTypes[i] = Float.TYPE;
+                        args[i] = Float.valueOf(in.getFloat());
+                        break;
+                    case 'I':
+                        argTypes[i] = Integer.TYPE;
+                        args[i] = Integer.valueOf(in.getInt());
+                        break;
+                    case 'J':
+                        argTypes[i] = Long.TYPE;
+                        args[i] = Long.valueOf(in.getLong());
+                        break;
+                    case 'R':
+                        argTypes[i] = String.class;
+                        int stringUtf8ByteCount = Short.toUnsignedInt(in.getShort());
+                        byte[] rawStringBuffer = new byte[stringUtf8ByteCount];
+                        in.get(rawStringBuffer);
+                        args[i] = new String(rawStringBuffer, StandardCharsets.UTF_8);
+                        break;
+                    case 'S':
+                        argTypes[i] = Short.TYPE;
+                        args[i] = Short.valueOf(in.getShort());
+                        break;
+                    case 'Z':
+                        argTypes[i] = Boolean.TYPE;
+                        args[i] = Boolean.valueOf(in.get() != 0);
+                        break;
+                    default:
+                        Log.e(TAG, "arg " + i + ", unrecognized type: " + typeSignature);
+                        throw new ViewMethodInvocationSerializationException("Unsupported parameter type (" + typeSignature + ") to invoke view method.");
+                }
+            }
+        }
+    }
+
+    public static byte[] serializeReturnValue(Class<?> cls, Object obj) throws ViewMethodInvocationSerializationException, IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
+        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
+        if (cls.isArray()) {
+            if (!cls.equals(byte[].class)) {
+                throw new ViewMethodInvocationSerializationException("Unsupported array return type (" + cls + NavigationBarInflaterView.KEY_CODE_END);
+            }
+            byte[] bArr = (byte[]) obj;
+            dataOutputStream.writeChar(91);
+            dataOutputStream.writeChar(66);
+            dataOutputStream.writeInt(bArr.length);
+            dataOutputStream.write(bArr);
+        } else if (Boolean.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(90);
+            dataOutputStream.write(((Boolean) obj).booleanValue() ? 1 : 0);
+        } else if (Byte.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(66);
+            dataOutputStream.writeByte(((Byte) obj).byteValue());
+        } else if (Character.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(67);
+            dataOutputStream.writeChar(((Character) obj).charValue());
+        } else if (Short.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(83);
+            dataOutputStream.writeShort(((Short) obj).shortValue());
+        } else if (Integer.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(73);
+            dataOutputStream.writeInt(((Integer) obj).intValue());
+        } else if (Long.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(74);
+            dataOutputStream.writeLong(((Long) obj).longValue());
+        } else if (Double.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(68);
+            dataOutputStream.writeDouble(((Double) obj).doubleValue());
+        } else if (Float.TYPE.equals(cls)) {
+            dataOutputStream.writeChar(70);
+            dataOutputStream.writeFloat(((Float) obj).floatValue());
+        } else if (String.class.equals(cls)) {
+            dataOutputStream.writeChar(82);
+            dataOutputStream.writeUTF(obj != null ? (String) obj : "");
+        } else {
+            dataOutputStream.writeChar(86);
+        }
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public static class ViewMethodInvocationSerializationException extends Exception {
+        ViewMethodInvocationSerializationException(String message) {
+            super(message);
         }
     }
 }

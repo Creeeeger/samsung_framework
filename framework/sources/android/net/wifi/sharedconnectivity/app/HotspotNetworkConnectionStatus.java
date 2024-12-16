@@ -23,14 +23,13 @@ public final class HotspotNetworkConnectionStatus implements Parcelable {
     public static final int CONNECTION_STATUS_UNKNOWN = 0;
     public static final int CONNECTION_STATUS_UNKNOWN_ERROR = 2;
     public static final Parcelable.Creator<HotspotNetworkConnectionStatus> CREATOR = new Parcelable.Creator<HotspotNetworkConnectionStatus>() { // from class: android.net.wifi.sharedconnectivity.app.HotspotNetworkConnectionStatus.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotspotNetworkConnectionStatus createFromParcel(Parcel in) {
             return HotspotNetworkConnectionStatus.readFromParcel(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public HotspotNetworkConnectionStatus[] newArray(int size) {
             return new HotspotNetworkConnectionStatus[size];
@@ -41,15 +40,9 @@ public final class HotspotNetworkConnectionStatus implements Parcelable {
     private final int mStatus;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes3.dex */
     public @interface ConnectionStatus {
     }
 
-    /* synthetic */ HotspotNetworkConnectionStatus(int i, HotspotNetwork hotspotNetwork, Bundle bundle, HotspotNetworkConnectionStatusIA hotspotNetworkConnectionStatusIA) {
-        this(i, hotspotNetwork, bundle);
-    }
-
-    /* loaded from: classes3.dex */
     public static final class Builder {
         private Bundle mExtras = Bundle.EMPTY;
         private HotspotNetwork mHotspotNetwork;
@@ -126,23 +119,6 @@ public final class HotspotNetworkConnectionStatus implements Parcelable {
 
     public static HotspotNetworkConnectionStatus readFromParcel(Parcel in) {
         return new HotspotNetworkConnectionStatus(in.readInt(), HotspotNetwork.readFromParcel(in), in.readBundle());
-    }
-
-    /* renamed from: android.net.wifi.sharedconnectivity.app.HotspotNetworkConnectionStatus$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<HotspotNetworkConnectionStatus> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotspotNetworkConnectionStatus createFromParcel(Parcel in) {
-            return HotspotNetworkConnectionStatus.readFromParcel(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HotspotNetworkConnectionStatus[] newArray(int size) {
-            return new HotspotNetworkConnectionStatus[size];
-        }
     }
 
     public String toString() {

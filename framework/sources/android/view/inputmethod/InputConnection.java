@@ -34,22 +34,18 @@ public interface InputConnection {
     public static final int INPUT_CONTENT_GRANT_READ_URI_PERMISSION = 1;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface CursorUpdateFilter {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface CursorUpdateMode {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface GetTextType {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes4.dex */
     public @interface HandwritingGestureResult {
     }
 
@@ -139,7 +135,7 @@ public interface InputConnection {
 
     default void performHandwritingGesture(HandwritingGesture gesture, Executor executor, final IntConsumer consumer) {
         if (executor != null && consumer != null) {
-            executor.execute(new Runnable() { // from class: android.view.inputmethod.InputConnection$$ExternalSyntheticLambda0
+            executor.execute(new Runnable() { // from class: android.view.inputmethod.InputConnection$$ExternalSyntheticLambda1
                 @Override // java.lang.Runnable
                 public final void run() {
                     consumer.accept(2);
@@ -162,7 +158,7 @@ public interface InputConnection {
     default void requestTextBoundsInfo(RectF bounds, Executor executor, final Consumer<TextBoundsInfoResult> consumer) {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(consumer);
-        executor.execute(new Runnable() { // from class: android.view.inputmethod.InputConnection$$ExternalSyntheticLambda1
+        executor.execute(new Runnable() { // from class: android.view.inputmethod.InputConnection$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
                 consumer.accept(new TextBoundsInfoResult(0));

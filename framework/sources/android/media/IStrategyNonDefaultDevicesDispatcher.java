@@ -13,7 +13,6 @@ public interface IStrategyNonDefaultDevicesDispatcher extends IInterface {
 
     void dispatchNonDefDevicesChanged(int i, List<AudioDeviceAttributes> list) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IStrategyNonDefaultDevicesDispatcher {
         @Override // android.media.IStrategyNonDefaultDevicesDispatcher
         public void dispatchNonDefDevicesChanged(int strategyId, List<AudioDeviceAttributes> devices) throws RemoteException {
@@ -25,7 +24,6 @@ public interface IStrategyNonDefaultDevicesDispatcher extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IStrategyNonDefaultDevicesDispatcher {
         static final int TRANSACTION_dispatchNonDefDevicesChanged = 1;
 
@@ -68,26 +66,23 @@ public interface IStrategyNonDefaultDevicesDispatcher extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IStrategyNonDefaultDevicesDispatcher.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IStrategyNonDefaultDevicesDispatcher.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IStrategyNonDefaultDevicesDispatcher.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    List<AudioDeviceAttributes> _arg1 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchNonDefDevicesChanged(_arg0, _arg1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            List<AudioDeviceAttributes> _arg1 = data.createTypedArrayList(AudioDeviceAttributes.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchNonDefDevicesChanged(_arg0, _arg1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IStrategyNonDefaultDevicesDispatcher {
+        private static class Proxy implements IStrategyNonDefaultDevicesDispatcher {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

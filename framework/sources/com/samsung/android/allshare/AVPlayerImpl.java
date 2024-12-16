@@ -6,14 +6,12 @@ import android.database.Cursor;
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.TextUtils;
 import com.samsung.android.allshare.Caption;
 import com.samsung.android.allshare.Device;
 import com.samsung.android.allshare.Item;
 import com.samsung.android.allshare.media.AVPlayer;
 import com.samsung.android.allshare.media.ContentInfo;
-import com.samsung.android.allshare.media.PlaylistPlayer;
 import com.sec.android.allshare.iface.CVMessage;
 import com.sec.android.allshare.iface.IBundleHolder;
 import com.sec.android.allshare.iface.IHandlerHolder;
@@ -25,12 +23,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes5.dex */
-public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHandlerHolder {
+/* loaded from: classes3.dex */
+final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHandlerHolder {
     private static final String TAG_CLASS = "AVPlayerImpl";
     private IAllShareConnector mAllShareConnector;
     private DeviceImpl mDeviceImpl;
-    private PlaylistPlayer mPlaylistPlayer;
     private boolean mSupportControlCaption;
     private boolean mSupportGetAspectRatio;
     private boolean mSupportGetCaptionState;
@@ -48,13 +45,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     private ArrayList<String> mPlayingContentUris = new ArrayList<>();
     private String mCurrentDMRUri = null;
     private AllShareEventHandler mEventHandler = new AllShareEventHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.AVPlayerImpl.1
-        private HashMap<String, AVPlayer.AVPlayerState> mAVStateMap;
+        private HashMap<String, AVPlayer.AVPlayerState> mAVStateMap = new HashMap<>();
 
-        AnonymousClass1(Looper looper) {
-            super(looper);
-            HashMap<String, AVPlayer.AVPlayerState> hashMap = new HashMap<>();
-            this.mAVStateMap = hashMap;
-            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, AVPlayer.AVPlayerState.BUFFERING);
+        {
+            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, AVPlayer.AVPlayerState.BUFFERING);
             this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, AVPlayer.AVPlayerState.PAUSED);
             this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, AVPlayer.AVPlayerState.STOPPED);
             this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, AVPlayer.AVPlayerState.PLAYING);
@@ -156,15 +150,12 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         }
     };
     private AllShareResponseHandler mAllShareRespHandler = new AllShareResponseHandler(ServiceConnector.getMainLooper()) { // from class: com.samsung.android.allshare.AVPlayerImpl.2
-        AnonymousClass2(Looper looper) {
-            super(looper);
-        }
-
         /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:151:0x022c, code lost:
+        /* JADX WARN: Code restructure failed: missing block: B:99:0x01f9, code lost:
         
-            if (r1.equals(com.sec.android.allshare.iface.message.AllShareAction.ACTION_AV_PLAYER_ORIGIN_360_VIEW) != false) goto L335;
+            if (r1.equals(com.sec.android.allshare.iface.message.AllShareAction.ACTION_AV_PLAYER_SET_ASPECT_RATIO) != false) goto L131;
          */
+        /* JADX WARN: Failed to restore switch over string. Please report as a decompilation issue */
         @Override // com.samsung.android.allshare.AllShareResponseHandler
         /*
             Code decompiled incorrectly, please refer to instructions dump.
@@ -172,7 +163,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         */
         public void handleResponseMessage(com.sec.android.allshare.iface.CVMessage r19) {
             /*
-                Method dump skipped, instructions count: 1202
+                Method dump skipped, instructions count: 1012
                 To view this dump change 'Code comments level' option to 'DEBUG'
             */
             throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.allshare.AVPlayerImpl.AnonymousClass2.handleResponseMessage(com.sec.android.allshare.iface.CVMessage):void");
@@ -203,11 +194,9 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
             }
         }
     };
-    private AVPlayer.IAVPlayerWHAResponseListener mAVPlayerWHAResponseListener = null;
 
-    public AVPlayerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
+    AVPlayerImpl(IAllShareConnector connector, DeviceImpl deviceImpl) {
         this.mDeviceImpl = null;
-        this.mPlaylistPlayer = null;
         this.mSupportSetAspectRatio = false;
         this.mSupportGetAspectRatio = false;
         this.mSupportMove360View = false;
@@ -230,8 +219,6 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
             DLog.w_api(TAG_CLASS, "deviceImpl.getBundle is null");
             return;
         }
-        Boolean isSupportAudioPlaylist = Boolean.valueOf(bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_AUDIO_PLAYLIST_PLAYER));
-        Boolean isSupportVideoPlaylist = Boolean.valueOf(bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_VIDEO_PLAYLIST_PLAYER));
         this.mSupportSetAspectRatio = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_SET_ASPECT_RATIO);
         this.mSupportGetAspectRatio = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_GET_ASPECT_RATIO);
         this.mSupportMove360View = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_MOVE_360_VIEW);
@@ -239,31 +226,23 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         this.mSupportOrigin360View = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_ORIGIN_360_VIEW);
         this.mSupportControlCaption = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_CONTROL_CAPTION);
         this.mSupportGetCaptionState = bundle.getBoolean(AllShareKey.BUNDLE_BOOLEAN_SUPPORT_GET_CAPTION_STATE);
-        if (isSupportAudioPlaylist.booleanValue() || isSupportVideoPlaylist.booleanValue()) {
-            this.mPlaylistPlayer = new PlaylistPlayerImpl(connector, deviceImpl);
-        } else {
-            this.mPlaylistPlayer = null;
-        }
     }
 
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void play(Item item, ContentInfo contentInfo) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "play fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
         }
         if (item == 0) {
             DLog.w_api(TAG_CLASS, "play item == null");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener2 = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener2 != null) {
-                iAVPlayerPlaybackResponseListener2.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
                 return;
             }
             return;
@@ -285,9 +264,8 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
             DLog.i_api(TAG_CLASS, "play WEB_CONTENT - " + item.getTitle() + " to " + getName() + " [ " + item.getURI() + " ] ");
             if (item.getURI() == null) {
                 DLog.w_api(TAG_CLASS, "uri == null");
-                AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener3 = this.mAVPlaybackResponseListener;
-                if (iAVPlayerPlaybackResponseListener3 != null) {
-                    iAVPlayerPlaybackResponseListener3.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
+                if (this.mAVPlaybackResponseListener != null) {
+                    this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
                     return;
                 }
                 return;
@@ -345,9 +323,8 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
                 playLocalContent(uri, item, contentInfo, mimeType);
                 return;
             }
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener4 = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener4 != null) {
-                iAVPlayerPlaybackResponseListener4.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.INVALID_ARGUMENT);
             }
         }
     }
@@ -370,8 +347,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void prepare(Item item) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "prepare : SERVICE_NOT_CONNECTED");
             return;
         }
@@ -393,12 +369,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void stop() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "stop fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onStopResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onStopResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -414,12 +388,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void seek(long p) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "seek fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onSeekResponseReceived(p, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onSeekResponseReceived(p, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -437,12 +409,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void pause() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "pause fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onPauseResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onPauseResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -458,12 +428,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void resume() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "resume fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onResumeResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onResumeResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -479,40 +447,34 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void getVolume() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerVolumeResponseListener iAVPlayerVolumeResponseListener = this.mAVPlayerVolumeResponseListener;
-            if (iAVPlayerVolumeResponseListener != null) {
-                iAVPlayerVolumeResponseListener.onGetVolumeResponseReceived(-1, ERROR.SERVICE_NOT_CONNECTED);
-                return;
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
+            if (this.mAVPlayerVolumeResponseListener != null) {
+                this.mAVPlayerVolumeResponseListener.onGetVolumeResponseReceived(-1, ERROR.SERVICE_NOT_CONNECTED);
             }
-            return;
+        } else {
+            CVMessage req_msg = new CVMessage();
+            req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_VOLUME);
+            Bundle req_bundle = new Bundle();
+            req_bundle.putString("BUNDLE_STRING_ID", getID());
+            req_msg.setBundle(req_bundle);
+            this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
         }
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_VOLUME);
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void setVolume(int level) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setVolume fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerVolumeResponseListener iAVPlayerVolumeResponseListener = this.mAVPlayerVolumeResponseListener;
-            if (iAVPlayerVolumeResponseListener != null) {
-                iAVPlayerVolumeResponseListener.onSetVolumeResponseReceived(level, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerVolumeResponseListener != null) {
+                this.mAVPlayerVolumeResponseListener.onSetVolumeResponseReceived(level, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
         }
         if (level < 0 || level > 100) {
             DLog.w_api(TAG_CLASS, "setVolume fail : level (INVALID_ARGUMENT)");
-            AVPlayer.IAVPlayerVolumeResponseListener iAVPlayerVolumeResponseListener2 = this.mAVPlayerVolumeResponseListener;
-            if (iAVPlayerVolumeResponseListener2 != null) {
-                iAVPlayerVolumeResponseListener2.onSetVolumeResponseReceived(level, ERROR.INVALID_ARGUMENT);
+            if (this.mAVPlayerVolumeResponseListener != null) {
+                this.mAVPlayerVolumeResponseListener.onSetVolumeResponseReceived(level, ERROR.INVALID_ARGUMENT);
                 return;
             }
             return;
@@ -529,31 +491,26 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void getMute() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerVolumeResponseListener iAVPlayerVolumeResponseListener = this.mAVPlayerVolumeResponseListener;
-            if (iAVPlayerVolumeResponseListener != null) {
-                iAVPlayerVolumeResponseListener.onSetMuteResponseReceived(false, ERROR.SERVICE_NOT_CONNECTED);
-                return;
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
+            if (this.mAVPlayerVolumeResponseListener != null) {
+                this.mAVPlayerVolumeResponseListener.onSetMuteResponseReceived(false, ERROR.SERVICE_NOT_CONNECTED);
             }
-            return;
+        } else {
+            CVMessage req_msg = new CVMessage();
+            req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_MUTE);
+            Bundle req_bundle = new Bundle();
+            req_bundle.putString("BUNDLE_STRING_ID", getID());
+            req_msg.setBundle(req_bundle);
+            this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
         }
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_MUTE);
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void setMute(boolean m) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setMute fail : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerVolumeResponseListener iAVPlayerVolumeResponseListener = this.mAVPlayerVolumeResponseListener;
-            if (iAVPlayerVolumeResponseListener != null) {
-                iAVPlayerVolumeResponseListener.onSetMuteResponseReceived(m, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerVolumeResponseListener != null) {
+                this.mAVPlayerVolumeResponseListener.onSetMuteResponseReceived(m, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -570,28 +527,24 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void getPlayPosition() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onGetPlayPositionResponseReceived(-1L, ERROR.SERVICE_NOT_CONNECTED);
-                return;
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onGetPlayPositionResponseReceived(-1L, ERROR.SERVICE_NOT_CONNECTED);
             }
-            return;
+        } else {
+            CVMessage req_msg = new CVMessage();
+            req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_PLAY_POSITION);
+            Bundle req_bundle = new Bundle();
+            req_bundle.putString("BUNDLE_STRING_ID", getID());
+            req_msg.setBundle(req_bundle);
+            this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
         }
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_PLAY_POSITION);
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public AVPlayer.AVPlayerState getPlayerState() {
         AVPlayer.AVPlayerState state = AVPlayer.AVPlayerState.UNKNOWN;
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return state;
         }
         CVMessage req_msg = new CVMessage();
@@ -627,17 +580,15 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void setExtensionEventListener(AVPlayer.IAVPlayerExtensionEventListener l) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setEventListener error! AllShareService is not connected");
             return;
         }
         this.mAVPlayerExtensionEventListener = l;
-        boolean z = this.mIsSubscribed;
-        if (!z && l != null) {
+        if (!this.mIsSubscribed && l != null) {
             this.mAllShareConnector.subscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = true;
-        } else if (z && l == null) {
+        } else if (this.mIsSubscribed && l == null) {
             this.mAllShareConnector.unsubscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = false;
         }
@@ -645,17 +596,15 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void setEventListener(AVPlayer.IAVPlayerEventListener l) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setEventListener error! AllShareService is not connected");
             return;
         }
         this.mAVPlayerEventListener = l;
-        boolean z = this.mIsSubscribed;
-        if (!z && l != null) {
+        if (!this.mIsSubscribed && l != null) {
             this.mAllShareConnector.subscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = true;
-        } else if (z && l == null) {
+        } else if (this.mIsSubscribed && l == null) {
             this.mAllShareConnector.unsubscribeAllShareEvent(AllShareEvent.EVENT_DEVICE_SUBSCRIBE, this.mDeviceImpl.getBundle(), this.mEventHandler);
             this.mIsSubscribed = false;
         }
@@ -663,89 +612,74 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.Device
     public String getModelName() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getModelName();
+        return this.mDeviceImpl.getModelName();
     }
 
     @Override // com.samsung.android.allshare.Device
     public Device.DeviceType getDeviceType() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Device.DeviceType.UNKNOWN;
         }
-        return deviceImpl.getDeviceType();
-    }
-
-    @Override // com.samsung.android.allshare.Device
-    @Deprecated
-    public String getIPAdress() {
-        return getIPAddress();
+        return this.mDeviceImpl.getDeviceType();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getIPAddress() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getIPAddress();
+        return this.mDeviceImpl.getIPAddress();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getName() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getName();
+        return this.mDeviceImpl.getName();
     }
 
     @Override // com.samsung.android.allshare.Device
     public Uri getIcon() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Uri.parse("");
         }
-        return deviceImpl.getIcon();
+        return this.mDeviceImpl.getIcon();
     }
 
     @Override // com.samsung.android.allshare.Device
     public ArrayList<Icon> getIconList() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return new ArrayList<>();
         }
-        return deviceImpl.getIconList();
+        return this.mDeviceImpl.getIconList();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getID() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getID();
+        return this.mDeviceImpl.getID();
     }
 
     @Override // com.samsung.android.allshare.Device
     public Device.DeviceDomain getDeviceDomain() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return Device.DeviceDomain.UNKNOWN;
         }
-        return deviceImpl.getDeviceDomain();
+        return this.mDeviceImpl.getDeviceDomain();
     }
 
     @Override // com.sec.android.allshare.iface.IBundleHolder
     public Bundle getBundle() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return new Bundle();
         }
-        return deviceImpl.getBundle();
+        return this.mDeviceImpl.getBundle();
     }
 
     /* JADX WARN: Multi-variable type inference failed */
@@ -780,8 +714,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     }
 
     private void playItem(Item item, ContentInfo contentInfo) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.SERVICE_NOT_CONNECTED);
             return;
         }
@@ -795,8 +728,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     }
 
     private void playUri(Uri uri, Item item, ContentInfo contentInfo, String mimeType, String actionID) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.SERVICE_NOT_CONNECTED);
             return;
         }
@@ -813,8 +745,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     }
 
     private void playFilePath(String filePath, Item item, ContentInfo contentInfo, String mimeType) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.SERVICE_NOT_CONNECTED);
             return;
         }
@@ -829,192 +760,20 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.AVPlayerImpl$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 extends AllShareEventHandler {
-        private HashMap<String, AVPlayer.AVPlayerState> mAVStateMap;
-
-        AnonymousClass1(Looper looper) {
-            super(looper);
-            HashMap<String, AVPlayer.AVPlayerState> hashMap = new HashMap<>();
-            this.mAVStateMap = hashMap;
-            hashMap.put(AllShareEvent.EVENT_RENDERER_STATE_BUFFERING, AVPlayer.AVPlayerState.BUFFERING);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PAUSED, AVPlayer.AVPlayerState.PAUSED);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_STOPPED, AVPlayer.AVPlayerState.STOPPED);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_PLAYING, AVPlayer.AVPlayerState.PLAYING);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_FINISHED, AVPlayer.AVPlayerState.FINISHED);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_NOMEDIA, AVPlayer.AVPlayerState.STOPPED);
-            this.mAVStateMap.put(AllShareEvent.EVENT_RENDERER_STATE_CONTENT_CHANGED, AVPlayer.AVPlayerState.CONTENT_CHANGED);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareEventHandler
-        public void handleEventMessage(CVMessage cvm) {
-            try {
-                Bundle resBundle = cvm.getBundle();
-                String errorStr = resBundle.getString("BUNDLE_ENUM_ERROR");
-                ERROR error = ERROR.stringToEnum(errorStr);
-                String actionId = cvm.getActionID();
-                AVPlayer.AVPlayerState state = this.mAVStateMap.get(actionId);
-                if (state == null) {
-                    String eventValue = resBundle.getString(AllShareKey.BUNDLE_STRING_EXTENSION_EVENT_KEY);
-                    if (actionId != null && eventValue != null) {
-                        notifyExtensionEvent(actionId, eventValue, error);
-                    }
-                    return;
-                }
-                if (state.equals(AVPlayer.AVPlayerState.CONTENT_CHANGED)) {
-                    String currentTrackUri = resBundle.getString(AllShareKey.BUNDLE_STRING_APP_ITEM_ID);
-                    if (currentTrackUri != null && !currentTrackUri.isEmpty()) {
-                        if (AVPlayerImpl.this.mContentChangedNotified) {
-                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event yet");
-                            AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
-                            return;
-                        }
-                        if (currentTrackUri.equalsIgnoreCase(AVPlayerImpl.this.mCurrentDMRUri)) {
-                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is same as currentTrackUri " + currentTrackUri);
-                            return;
-                        }
-                        DLog.d_api(AVPlayerImpl.TAG_CLASS, "CONTENT_CHANGED, mCurrentDMRUri : " + AVPlayerImpl.this.mCurrentDMRUri + "  currentTrackUri : " + currentTrackUri);
-                        if (AVPlayerImpl.this.mCurrentDMRUri == null) {
-                            DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mCurrentDMRUri is null");
-                            AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
-                            return;
-                        }
-                        AVPlayerImpl.this.mCurrentDMRUri = currentTrackUri;
-                        if (AVPlayerImpl.this.mPlayingContentUris != null && !AVPlayerImpl.this.mPlayingContentUris.isEmpty()) {
-                            if (isContains(currentTrackUri, AVPlayerImpl.this.mPlayingContentUris)) {
-                                DLog.d_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage: this is playing content.");
-                                DLog.i_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, this is my=" + currentTrackUri);
-                                return;
-                            } else {
-                                AVPlayerImpl.this.mContentChangedNotified = true;
-                                DLog.w_api(AVPlayerImpl.TAG_CLASS, "Notify CONTENT_CHANGED event, mPlayingContentUris[" + AVPlayerImpl.this.mPlayingContentUris + "] vs currentTrackUri[" + currentTrackUri + NavigationBarInflaterView.SIZE_MOD_END);
-                            }
-                        }
-                        DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, mPlayingContentUris is null");
-                        return;
-                    }
-                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "do not notify CONTENT_CHANGED event, currentTrackUri is null");
-                    return;
-                }
-                notifyEvent(state, error);
-            } catch (Error err) {
-                DLog.w_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage Error", err);
-            } catch (Exception e) {
-                DLog.w_api(AVPlayerImpl.TAG_CLASS, "handleEventMessage Fail to notify event : Exception");
-            }
-        }
-
-        private void notifyEvent(AVPlayer.AVPlayerState state, ERROR error) {
-            if (AVPlayerImpl.this.mAVPlayerEventListener != null) {
-                try {
-                    AVPlayerImpl.this.mAVPlayerEventListener.onDeviceChanged(state, error);
-                } catch (Exception e) {
-                    DLog.w_api(AVPlayerImpl.TAG_CLASS, "mEventHandler.notifyEvent Error", e);
-                }
-            }
-        }
-
-        private void notifyExtensionEvent(String eventName, String eventValue, ERROR error) {
-            if (AVPlayerImpl.this.mAVPlayerExtensionEventListener != null) {
-                try {
-                    AVPlayerImpl.this.mAVPlayerExtensionEventListener.onExtensionEvent(eventName, eventValue, error);
-                } catch (Exception e) {
-                    DLog.w_api(AVPlayerImpl.TAG_CLASS, "mEventExtensionHandler.notifyEvent Error", e);
-                }
-            }
-        }
-
-        private boolean isContains(String currentTrackUri, ArrayList<String> playingContentUris) {
-            if (playingContentUris == null || currentTrackUri == null) {
-                return false;
-            }
-            Iterator<String> it = playingContentUris.iterator();
-            while (it.hasNext()) {
-                String uri = it.next();
-                if (currentTrackUri.endsWith(uri)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.samsung.android.allshare.AVPlayerImpl$2 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass2 extends AllShareResponseHandler {
-        AnonymousClass2(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.samsung.android.allshare.AllShareResponseHandler
-        public void handleResponseMessage(CVMessage cVMessage) {
-            /*  JADX ERROR: Method code generation error
-                java.lang.NullPointerException: Cannot invoke "jadx.core.dex.nodes.IContainer.get(jadx.api.plugins.input.data.attributes.IJadxAttrType)" because "cont" is null
-                	at jadx.core.codegen.RegionGen.declareVars(RegionGen.java:70)
-                	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:65)
-                	at jadx.core.codegen.MethodGen.addRegionInsns(MethodGen.java:297)
-                	at jadx.core.codegen.MethodGen.addInstructions(MethodGen.java:276)
-                	at jadx.core.codegen.ClassGen.addMethodCode(ClassGen.java:406)
-                	at jadx.core.codegen.ClassGen.addMethod(ClassGen.java:335)
-                	at jadx.core.codegen.ClassGen.lambda$addInnerClsAndMethods$3(ClassGen.java:301)
-                	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
-                	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
-                	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
-                	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
-                */
-            /*
-                Method dump skipped, instructions count: 1202
-                To view this dump change 'Code comments level' option to 'DEBUG'
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.allshare.AVPlayerImpl.AnonymousClass2.handleResponseMessage(com.sec.android.allshare.iface.CVMessage):void");
-        }
-
-        private void notifyPlaybackEvent(Bundle resBundle, ERROR error) {
-            Bundle bundle = (Bundle) resBundle.getParcelable(AllShareKey.BUNDLE_PARCELABLE_ITEM);
-            long contentInfoStartingPosition = resBundle.getLong(AllShareKey.BUNDLE_LONG_CONTENT_INFO_STARTINGPOSITION);
-            ContentInfo.Builder cb = new ContentInfo.Builder();
-            ContentInfo contentInfo = cb.setStartingPosition(contentInfoStartingPosition).build();
-            Item item = ItemCreator.fromBundle(bundle);
-            String itemConstructor = bundle.getString(AllShareKey.BUNDLE_STRING_ITEM_CONSTRUCTOR_KEY);
-            if (itemConstructor != null && itemConstructor.equals("WEB_CONTENT") && contentInfo != null) {
-                ContentInfo.Builder builder = new ContentInfo.Builder();
-                builder.setStartingPosition((int) (contentInfo.getStartingPosition() / 1000));
-                contentInfo = builder.build();
-            }
-            if (item == null) {
-                DLog.w_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : item is null");
-                AVPlayerImpl.this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, ERROR.ITEM_NOT_EXIST);
-            } else {
-                if (contentInfo == null) {
-                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : " + item + " = " + error);
-                } else {
-                    DLog.d_api(AVPlayerImpl.TAG_CLASS, "notifyPlaybackEvent : " + item + " position[" + contentInfo.getStartingPosition() + "]=" + error);
-                }
-                AVPlayerImpl.this.mAVPlaybackResponseListener.onPlayResponseReceived(item, contentInfo, error);
-            }
-        }
-    }
-
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void getMediaInfo() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onGetMediaInfoResponseReceived(null, ERROR.SERVICE_NOT_CONNECTED);
-                return;
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onGetMediaInfoResponseReceived(null, ERROR.SERVICE_NOT_CONNECTED);
             }
-            return;
+        } else {
+            CVMessage req_msg = new CVMessage();
+            req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_MEDIA_INFO);
+            Bundle req_bundle = new Bundle();
+            req_bundle.putString("BUNDLE_STRING_ID", getID());
+            req_msg.setBundle(req_bundle);
+            this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
         }
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_MEDIA_INFO);
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
@@ -1030,8 +789,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public boolean isSupportRedirect() {
         Bundle res_bundle;
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return false;
         }
         CVMessage req_msg = new CVMessage();
@@ -1065,35 +823,26 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.Device
     public String getNIC() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getNIC();
+        return this.mDeviceImpl.getNIC();
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void getState() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerPlaybackResponseListener iAVPlayerPlaybackResponseListener = this.mAVPlaybackResponseListener;
-            if (iAVPlayerPlaybackResponseListener != null) {
-                iAVPlayerPlaybackResponseListener.onGetStateResponseReceived(AVPlayer.AVPlayerState.UNKNOWN, ERROR.SERVICE_NOT_CONNECTED);
-                return;
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
+            if (this.mAVPlaybackResponseListener != null) {
+                this.mAVPlaybackResponseListener.onGetStateResponseReceived(AVPlayer.AVPlayerState.UNKNOWN, ERROR.SERVICE_NOT_CONNECTED);
             }
-            return;
+        } else {
+            CVMessage req_msg = new CVMessage();
+            req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_PLAYER_STATE);
+            Bundle req_bundle = new Bundle();
+            req_bundle.putString("BUNDLE_STRING_ID", getID());
+            req_msg.setBundle(req_bundle);
+            this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
         }
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_AV_PLAYER_REQUEST_GET_PLAYER_STATE);
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
-    }
-
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public PlaylistPlayer getPlaylistPlayer() {
-        return this.mPlaylistPlayer;
     }
 
     @Override // com.sec.android.allshare.iface.IHandlerHolder
@@ -1105,8 +854,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public boolean isSupportDynamicBuffering() {
         Bundle res_bundle;
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return false;
         }
         CVMessage req_msg = new CVMessage();
@@ -1129,8 +877,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void skipDynamicBuffering() {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             return;
         }
         CVMessage req_msg = new CVMessage();
@@ -1141,145 +888,53 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
         this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
     }
 
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public void SetWHAResponseListener(AVPlayer.IAVPlayerWHAResponseListener listener) {
-        this.mAVPlayerWHAResponseListener = listener;
-    }
-
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public void GetWHADeviceStatusInfo() {
-        DLog.i_api(TAG_CLASS, "GetWHADeviceStatusInfo");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerWHAResponseListener iAVPlayerWHAResponseListener = this.mAVPlayerWHAResponseListener;
-            if (iAVPlayerWHAResponseListener != null) {
-                iAVPlayerWHAResponseListener.onGetWHADeviceStatusInfo(null, ERROR.SERVICE_NOT_CONNECTED);
-                return;
-            }
-            return;
-        }
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_WHA_GET_DEVICE_STATUS_INFO);
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
-    }
-
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public void CreateWHAParty() {
-        DLog.i_api(TAG_CLASS, "CreateWHAParty");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerWHAResponseListener iAVPlayerWHAResponseListener = this.mAVPlayerWHAResponseListener;
-            if (iAVPlayerWHAResponseListener != null) {
-                iAVPlayerWHAResponseListener.onCreateWHAParty(null, ERROR.SERVICE_NOT_CONNECTED);
-                return;
-            }
-            return;
-        }
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_WHA_CREATE_PARTY);
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
-    }
-
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public void JoinWHAParty(String partyID) {
-        DLog.i_api(TAG_CLASS, "JoinWHAParty to " + partyID);
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerWHAResponseListener iAVPlayerWHAResponseListener = this.mAVPlayerWHAResponseListener;
-            if (iAVPlayerWHAResponseListener != null) {
-                iAVPlayerWHAResponseListener.onJoinWHAParty(ERROR.SERVICE_NOT_CONNECTED);
-                return;
-            }
-            return;
-        }
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        req_bundle.putString(AllShareKey.BUNDLE_STRING_WHA_REQUEST_PARTY_ID, partyID);
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_WHA_JOIN_PARTY);
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
-    }
-
-    @Override // com.samsung.android.allshare.media.AVPlayer
-    public void LeaveWHAParty() {
-        DLog.i_api(TAG_CLASS, "LeaveWHAParty");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
-            AVPlayer.IAVPlayerWHAResponseListener iAVPlayerWHAResponseListener = this.mAVPlayerWHAResponseListener;
-            if (iAVPlayerWHAResponseListener != null) {
-                iAVPlayerWHAResponseListener.onLeaveWHAParty(ERROR.SERVICE_NOT_CONNECTED);
-                return;
-            }
-            return;
-        }
-        Bundle req_bundle = new Bundle();
-        req_bundle.putString("BUNDLE_STRING_ID", getID());
-        CVMessage req_msg = new CVMessage();
-        req_msg.setActionID(AllShareAction.ACTION_WHA_LEAVE_PARTY);
-        req_msg.setBundle(req_bundle);
-        this.mAllShareConnector.requestCVMAsync(req_msg, this.mAllShareRespHandler);
-    }
-
     @Override // com.samsung.android.allshare.Device
     public boolean isSeekableOnPaused() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return false;
         }
-        return deviceImpl.isSeekableOnPaused();
+        return this.mDeviceImpl.isSeekableOnPaused();
     }
 
     @Override // com.samsung.android.allshare.Device
     public boolean isWholeHomeAudio() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return false;
         }
-        return deviceImpl.isWholeHomeAudio();
+        return this.mDeviceImpl.isWholeHomeAudio();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getP2pMacAddress() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getP2pMacAddress();
+        return this.mDeviceImpl.getP2pMacAddress();
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getScreenSharingInfo();
+        return this.mDeviceImpl.getScreenSharingInfo();
     }
 
     @Override // com.samsung.android.allshare.Device
     public void requestMobileToTV(String ip, int port) {
         DLog.w_api(TAG_CLASS, "requestMobileToTV : call requestMobileToTV");
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return;
         }
-        deviceImpl.requestMobileToTV(ip, port);
+        this.mDeviceImpl.requestMobileToTV(ip, port);
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getSecProductP2pMacAddr() {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getSecProductP2pMacAddr();
+        return this.mDeviceImpl.getSecProductP2pMacAddr();
     }
 
     @Override // com.samsung.android.allshare.Device
@@ -1289,31 +944,27 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.Device
     public String getProductCapInfo(Device.InformationType infoType) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getProductCapInfo(infoType);
+        return this.mDeviceImpl.getProductCapInfo(infoType);
     }
 
     @Override // com.samsung.android.allshare.Device
     public String getScreenSharingInfo(Device.InformationType infoType) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return "";
         }
-        return deviceImpl.getScreenSharingInfo(infoType);
+        return this.mDeviceImpl.getScreenSharingInfo(infoType);
     }
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void setAspectRatio(String aspectRatio) {
         DLog.i_api(TAG_CLASS, "setAspectRatio to " + aspectRatio);
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "setAspectRatio : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onSetAspectRatioResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onSetAspectRatioResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1330,12 +981,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void requestAspectRatioState() {
         DLog.i_api(TAG_CLASS, "requestAspectRatioState");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "getAspectRatio : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onAspectRatioStateResponseReceived(null, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onAspectRatioStateResponseReceived(null, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1351,12 +1000,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void move360View(float latitudeOffset, float longitudeOffset) {
         DLog.i_api(TAG_CLASS, "move360View to [latitudeOffset]" + latitudeOffset + " [longitudeOffset]" + longitudeOffset);
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "move360View : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onMove360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onMove360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1374,12 +1021,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void zoom360View(float ScaleFactor) {
         DLog.i_api(TAG_CLASS, "zoom360View to " + ScaleFactor);
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "zoom360View : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onZoom360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onZoom360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1396,12 +1041,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void reset360View() {
         DLog.i_api(TAG_CLASS, "reset360View");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "origin360View : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onReset360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onReset360ViewResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1416,12 +1059,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void controlCaption(Caption.CaptionOperation operation, Caption caption) {
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "controlCaption : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onControlCaptionResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onControlCaptionResponseReceived(ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1455,12 +1096,10 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public void requestCaptionState() {
         DLog.i_api(TAG_CLASS, "requestCaptionState");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "getCaptionState : SERVICE_NOT_CONNECTED");
-            AVPlayer.IAVPlayerExtensionResponseListener iAVPlayerExtensionResponseListener = this.mAVPlayerExtensionResponseListener;
-            if (iAVPlayerExtensionResponseListener != null) {
-                iAVPlayerExtensionResponseListener.onCaptionStateResponseReceived(null, null, ERROR.SERVICE_NOT_CONNECTED);
+            if (this.mAVPlayerExtensionResponseListener != null) {
+                this.mAVPlayerExtensionResponseListener.onCaptionStateResponseReceived(null, null, ERROR.SERVICE_NOT_CONNECTED);
                 return;
             }
             return;
@@ -1497,8 +1136,7 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
     @Override // com.samsung.android.allshare.media.AVPlayer
     public String getCaptionFilePathFromURI(String uri) {
         DLog.i_api(TAG_CLASS, "getCaptionFilePathFromURI");
-        IAllShareConnector iAllShareConnector = this.mAllShareConnector;
-        if (iAllShareConnector == null || !iAllShareConnector.isAllShareServiceConnected()) {
+        if (this.mAllShareConnector == null || !this.mAllShareConnector.isAllShareServiceConnected()) {
             DLog.w_api(TAG_CLASS, "getCaptionFilePathFromURI : SERVICE_NOT_CONNECTED");
             return "";
         }
@@ -1507,10 +1145,9 @@ public final class AVPlayerImpl extends AVPlayer implements IBundleHolder, IHand
 
     @Override // com.samsung.android.allshare.Device
     public boolean isSupportedByType(int type) {
-        DeviceImpl deviceImpl = this.mDeviceImpl;
-        if (deviceImpl == null) {
+        if (this.mDeviceImpl == null) {
             return false;
         }
-        return deviceImpl.isSupportedByType(type);
+        return this.mDeviceImpl.isSupportedByType(type);
     }
 }

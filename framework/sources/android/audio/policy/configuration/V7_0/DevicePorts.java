@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class DevicePorts {
     private List<DevicePort> devicePort;
 
-    /* loaded from: classes.dex */
     public static class DevicePort {
         private Boolean _default;
         private String address;
@@ -106,11 +105,10 @@ public class DevicePorts {
         }
 
         public boolean get_default() {
-            Boolean bool = this._default;
-            if (bool == null) {
+            if (this._default == null) {
                 return false;
             }
-            return bool.booleanValue();
+            return this._default.booleanValue();
         }
 
         boolean has_default() {
@@ -208,7 +206,7 @@ public class DevicePorts {
         return this.devicePort;
     }
 
-    public static DevicePorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
+    static DevicePorts read(XmlPullParser _parser) throws XmlPullParserException, IOException, DatatypeConfigurationException {
         int type;
         DevicePorts _instance = new DevicePorts();
         _parser.getDepth();

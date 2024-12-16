@@ -40,17 +40,16 @@ import java.util.Objects;
 import java.util.Set;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
+/* loaded from: classes3.dex */
 public final class TvInputInfo implements Parcelable {
     public static final Parcelable.Creator<TvInputInfo> CREATOR = new Parcelable.Creator<TvInputInfo>() { // from class: android.media.tv.TvInputInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputInfo createFromParcel(Parcel in) {
             return new TvInputInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TvInputInfo[] newArray(int size) {
             return new TvInputInfo[size];
@@ -90,16 +89,7 @@ public final class TvInputInfo implements Parcelable {
     private final int mType;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes2.dex */
     public @interface Type {
-    }
-
-    /* synthetic */ TvInputInfo(ResolveInfo resolveInfo, String str, int i, boolean z, CharSequence charSequence, int i2, Icon icon, Icon icon2, Icon icon3, String str2, boolean z2, boolean z3, int i3, HdmiDeviceInfo hdmiDeviceInfo, boolean z4, int i4, String str3, Bundle bundle, TvInputInfoIA tvInputInfoIA) {
-        this(resolveInfo, str, i, z, charSequence, i2, icon, icon2, icon3, str2, z2, z3, i3, hdmiDeviceInfo, z4, i4, str3, bundle);
-    }
-
-    /* synthetic */ TvInputInfo(Parcel parcel, TvInputInfoIA tvInputInfoIA) {
-        this(parcel);
     }
 
     @SystemApi
@@ -247,9 +237,8 @@ public final class TvInputInfo implements Parcelable {
     }
 
     public Drawable loadIcon(Context context) {
-        Icon icon = this.mIcon;
-        if (icon != null) {
-            return icon.loadDrawable(context);
+        if (this.mIcon != null) {
+            return this.mIcon.loadDrawable(context);
         }
         if (this.mIconUri != null) {
             try {
@@ -280,16 +269,14 @@ public final class TvInputInfo implements Parcelable {
             return loadIcon(context);
         }
         if (state == 1) {
-            Icon icon = this.mIconStandby;
-            if (icon != null) {
-                return icon.loadDrawable(context);
+            if (this.mIconStandby != null) {
+                return this.mIconStandby.loadDrawable(context);
             }
             return null;
         }
         if (state == 2) {
-            Icon icon2 = this.mIconDisconnected;
-            if (icon2 != null) {
-                return icon2.loadDrawable(context);
+            if (this.mIconDisconnected != null) {
+                return this.mIconDisconnected.loadDrawable(context);
             }
             return null;
         }
@@ -350,23 +337,6 @@ public final class TvInputInfo implements Parcelable {
         return this.mService.serviceInfo.loadIcon(context.getPackageManager());
     }
 
-    /* renamed from: android.media.tv.TvInputInfo$1 */
-    /* loaded from: classes2.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TvInputInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInputInfo createFromParcel(Parcel in) {
-            return new TvInputInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TvInputInfo[] newArray(int size) {
-            return new TvInputInfo[size];
-        }
-    }
-
     private TvInputInfo(Parcel in) {
         this.mService = ResolveInfo.CREATOR.createFromParcel(in);
         this.mId = in.readString();
@@ -389,7 +359,6 @@ public final class TvInputInfo implements Parcelable {
         this.mExtras = in.readBundle();
     }
 
-    /* loaded from: classes2.dex */
     public static final class Builder {
         private static final String DELIMITER_INFO_IN_ID = "/";
         private static final int LENGTH_HDMI_DEVICE_ID = 2;
@@ -397,7 +366,7 @@ public final class TvInputInfo implements Parcelable {
         private static final String PREFIX_HARDWARE_DEVICE = "HW";
         private static final String PREFIX_HDMI_DEVICE = "HDMI";
         private static final String XML_START_TAG_NAME = "tv-input";
-        private static final SparseIntArray sHardwareTypeToTvInputType;
+        private static final SparseIntArray sHardwareTypeToTvInputType = new SparseIntArray();
         private Boolean mCanPauseRecording;
         private Boolean mCanRecord;
         private final Context mContext;
@@ -415,18 +384,16 @@ public final class TvInputInfo implements Parcelable {
         private TvInputHardwareInfo mTvInputHardwareInfo;
 
         static {
-            SparseIntArray sparseIntArray = new SparseIntArray();
-            sHardwareTypeToTvInputType = sparseIntArray;
-            sparseIntArray.put(1, 1000);
-            sparseIntArray.put(2, 0);
-            sparseIntArray.put(3, 1001);
-            sparseIntArray.put(4, 1002);
-            sparseIntArray.put(5, 1003);
-            sparseIntArray.put(6, 1004);
-            sparseIntArray.put(7, 1005);
-            sparseIntArray.put(8, 1006);
-            sparseIntArray.put(9, 1007);
-            sparseIntArray.put(10, 1008);
+            sHardwareTypeToTvInputType.put(1, 1000);
+            sHardwareTypeToTvInputType.put(2, 0);
+            sHardwareTypeToTvInputType.put(3, 1001);
+            sHardwareTypeToTvInputType.put(4, 1002);
+            sHardwareTypeToTvInputType.put(5, 1003);
+            sHardwareTypeToTvInputType.put(6, 1004);
+            sHardwareTypeToTvInputType.put(7, 1005);
+            sHardwareTypeToTvInputType.put(8, 1006);
+            sHardwareTypeToTvInputType.put(9, 1007);
+            sHardwareTypeToTvInputType.put(10, 1008);
         }
 
         public Builder(Context context, ComponentName component) {
@@ -434,9 +401,8 @@ public final class TvInputInfo implements Parcelable {
                 throw new IllegalArgumentException("context cannot be null.");
             }
             Intent intent = new Intent(TvInputService.SERVICE_INTERFACE).setComponent(component);
-            ResolveInfo resolveService = context.getPackageManager().resolveService(intent, 132);
-            this.mResolveInfo = resolveService;
-            if (resolveService == null) {
+            this.mResolveInfo = context.getPackageManager().resolveService(intent, 132);
+            if (this.mResolveInfo == null) {
                 throw new IllegalArgumentException("Invalid component. Can't find the service.");
             }
             this.mContext = context;
@@ -544,41 +510,25 @@ public final class TvInputInfo implements Parcelable {
             boolean isHardwareInput = false;
             boolean isConnectedToHdmiSwitch = false;
             int hdmiConnectionRelativePosition = 0;
-            HdmiDeviceInfo hdmiDeviceInfo = this.mHdmiDeviceInfo;
-            if (hdmiDeviceInfo != null) {
-                id = generateInputId(componentName, hdmiDeviceInfo);
+            if (this.mHdmiDeviceInfo != null) {
+                id = generateInputId(componentName, this.mHdmiDeviceInfo);
                 type = 1007;
                 isHardwareInput = true;
                 hdmiConnectionRelativePosition = getRelativePosition(this.mContext, this.mHdmiDeviceInfo);
-                isConnectedToHdmiSwitch = hdmiConnectionRelativePosition != 1;
-            } else {
-                TvInputHardwareInfo tvInputHardwareInfo = this.mTvInputHardwareInfo;
-                if (tvInputHardwareInfo != null) {
-                    id = generateInputId(componentName, tvInputHardwareInfo);
-                    type = sHardwareTypeToTvInputType.get(this.mTvInputHardwareInfo.getType(), 0);
-                    isHardwareInput = true;
-                    if (this.mTvInputHardwareInfo.getType() == 9) {
-                        this.mHdmiDeviceInfo = HdmiDeviceInfo.hardwarePort(65535, this.mTvInputHardwareInfo.getHdmiPortId());
-                    }
-                } else {
-                    id = generateInputId(componentName);
-                    type = 0;
+                isConnectedToHdmiSwitch = hdmiConnectionRelativePosition == 2;
+            } else if (this.mTvInputHardwareInfo != null) {
+                id = generateInputId(componentName, this.mTvInputHardwareInfo);
+                type = sHardwareTypeToTvInputType.get(this.mTvInputHardwareInfo.getType(), 0);
+                isHardwareInput = true;
+                if (this.mTvInputHardwareInfo.getType() == 9) {
+                    this.mHdmiDeviceInfo = HdmiDeviceInfo.hardwarePort(65535, this.mTvInputHardwareInfo.getHdmiPortId());
                 }
+            } else {
+                id = generateInputId(componentName);
+                type = 0;
             }
             parseServiceMetadata(type);
-            ResolveInfo resolveInfo = this.mResolveInfo;
-            CharSequence charSequence = this.mLabel;
-            int i = this.mLabelResId;
-            Icon icon = this.mIcon;
-            Icon icon2 = this.mIconStandby;
-            Icon icon3 = this.mIconDisconnected;
-            String str = this.mSetupActivity;
-            Boolean bool = this.mCanRecord;
-            boolean booleanValue = bool == null ? false : bool.booleanValue();
-            Boolean bool2 = this.mCanPauseRecording;
-            boolean booleanValue2 = bool2 == null ? false : bool2.booleanValue();
-            Integer num = this.mTunerCount;
-            return new TvInputInfo(resolveInfo, id, type, isHardwareInput, charSequence, i, icon, icon2, icon3, str, booleanValue, booleanValue2, num != null ? num.intValue() : 0, this.mHdmiDeviceInfo, isConnectedToHdmiSwitch, hdmiConnectionRelativePosition, this.mParentId, this.mExtras);
+            return new TvInputInfo(this.mResolveInfo, id, type, isHardwareInput, this.mLabel, this.mLabelResId, this.mIcon, this.mIconStandby, this.mIconDisconnected, this.mSetupActivity, this.mCanRecord == null ? false : this.mCanRecord.booleanValue(), this.mCanPauseRecording == null ? false : this.mCanPauseRecording.booleanValue(), this.mTunerCount != null ? this.mTunerCount.intValue() : 0, this.mHdmiDeviceInfo, isConnectedToHdmiSwitch, hdmiConnectionRelativePosition, this.mParentId, this.mExtras);
         }
 
         private static String generateInputId(ComponentName name) {
@@ -659,7 +609,6 @@ public final class TvInputInfo implements Parcelable {
     }
 
     @SystemApi
-    /* loaded from: classes2.dex */
     public static final class TvInputSettings {
         private static final String CUSTOM_NAME_SEPARATOR = ",";
         private static final String TV_INPUT_SEPARATOR = ":";
@@ -667,10 +616,12 @@ public final class TvInputInfo implements Parcelable {
         private TvInputSettings() {
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static boolean isHidden(Context context, String inputId, int userId) {
             return getHiddenTvInputIds(context, userId).contains(inputId);
         }
 
+        /* JADX INFO: Access modifiers changed from: private */
         public static String getCustomLabel(Context context, String inputId, int userId) {
             return getCustomLabels(context, userId).get(inputId);
         }

@@ -14,7 +14,6 @@ public interface ISemBiometricSysUiDisplayStateCallback extends IInterface {
 
     void onStart(int i, int i2, int i3) throws RemoteException;
 
-    /* loaded from: classes5.dex */
     public static class Default implements ISemBiometricSysUiDisplayStateCallback {
         @Override // com.samsung.android.biometrics.ISemBiometricSysUiDisplayStateCallback
         public void onStart(int stateLogical, int statePhysical, int displayType) throws RemoteException {
@@ -30,7 +29,6 @@ public interface ISemBiometricSysUiDisplayStateCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes5.dex */
     public static abstract class Stub extends Binder implements ISemBiometricSysUiDisplayStateCallback {
         static final int TRANSACTION_onFinish = 2;
         static final int TRANSACTION_onStart = 1;
@@ -76,35 +74,31 @@ public interface ISemBiometricSysUiDisplayStateCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemBiometricSysUiDisplayStateCallback.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemBiometricSysUiDisplayStateCallback.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemBiometricSysUiDisplayStateCallback.DESCRIPTOR);
+                case 1:
+                    int _arg0 = data.readInt();
+                    int _arg1 = data.readInt();
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onStart(_arg0, _arg1, _arg2);
+                    return true;
+                case 2:
+                    int _arg02 = data.readInt();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onFinish(_arg02, _arg12, _arg22);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            int _arg0 = data.readInt();
-                            int _arg1 = data.readInt();
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onStart(_arg0, _arg1, _arg2);
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onFinish(_arg02, _arg12, _arg22);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes5.dex */
-        public static class Proxy implements ISemBiometricSysUiDisplayStateCallback {
+        private static class Proxy implements ISemBiometricSysUiDisplayStateCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

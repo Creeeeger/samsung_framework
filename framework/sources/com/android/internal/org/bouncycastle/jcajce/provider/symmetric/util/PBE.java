@@ -33,7 +33,6 @@ public interface PBE {
     public static final int SHA384 = 8;
     public static final int SHA512 = 9;
 
-    /* loaded from: classes5.dex */
     public static class Util {
         private static PBEParametersGenerator makePBEGenerator(int type, int hash) {
             if (type == 0 || type == 4) {

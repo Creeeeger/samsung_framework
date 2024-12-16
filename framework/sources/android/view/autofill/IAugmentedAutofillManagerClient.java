@@ -27,7 +27,6 @@ public interface IAugmentedAutofillManagerClient extends IInterface {
 
     void requestShowFillUi(int i, AutofillId autofillId, int i2, int i3, Rect rect, IAutofillWindowPresenter iAutofillWindowPresenter) throws RemoteException;
 
-    /* loaded from: classes4.dex */
     public static class Default implements IAugmentedAutofillManagerClient {
         @Override // android.view.autofill.IAugmentedAutofillManagerClient
         public Rect getViewCoordinates(AutofillId id) throws RemoteException {
@@ -62,7 +61,6 @@ public interface IAugmentedAutofillManagerClient extends IInterface {
         }
     }
 
-    /* loaded from: classes4.dex */
     public static abstract class Stub extends Binder implements IAugmentedAutofillManagerClient {
         static final int TRANSACTION_autofill = 3;
         static final int TRANSACTION_getViewCoordinates = 1;
@@ -120,69 +118,66 @@ public interface IAugmentedAutofillManagerClient extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IAugmentedAutofillManagerClient.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IAugmentedAutofillManagerClient.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IAugmentedAutofillManagerClient.DESCRIPTOR);
+                case 1:
+                    AutofillId _arg0 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    data.enforceNoDataAvail();
+                    Rect _result = getViewCoordinates(_arg0);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result, 1);
+                    return true;
+                case 2:
+                    AutofillId _arg02 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    data.enforceNoDataAvail();
+                    AssistStructure.ViewNodeParcelable _result2 = getViewNodeParcelable(_arg02);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result2, 1);
+                    return true;
+                case 3:
+                    int _arg03 = data.readInt();
+                    List<AutofillId> _arg1 = data.createTypedArrayList(AutofillId.CREATOR);
+                    List<AutofillValue> _arg2 = data.createTypedArrayList(AutofillValue.CREATOR);
+                    boolean _arg3 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    autofill(_arg03, _arg1, _arg2, _arg3);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    AutofillId _arg12 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    int _arg22 = data.readInt();
+                    int _arg32 = data.readInt();
+                    Rect _arg4 = (Rect) data.readTypedObject(Rect.CREATOR);
+                    IAutofillWindowPresenter _arg5 = IAutofillWindowPresenter.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    requestShowFillUi(_arg04, _arg12, _arg22, _arg32, _arg4, _arg5);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    AutofillId _arg13 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    data.enforceNoDataAvail();
+                    requestHideFillUi(_arg05, _arg13);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    AutofillId _arg14 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result3 = requestAutofill(_arg06, _arg14);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result3);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AutofillId _arg0 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            data.enforceNoDataAvail();
-                            Rect _result = getViewCoordinates(_arg0);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result, 1);
-                            return true;
-                        case 2:
-                            AutofillId _arg02 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            data.enforceNoDataAvail();
-                            AssistStructure.ViewNodeParcelable _result2 = getViewNodeParcelable(_arg02);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result2, 1);
-                            return true;
-                        case 3:
-                            int _arg03 = data.readInt();
-                            List<AutofillId> _arg1 = data.createTypedArrayList(AutofillId.CREATOR);
-                            List<AutofillValue> _arg2 = data.createTypedArrayList(AutofillValue.CREATOR);
-                            boolean _arg3 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            autofill(_arg03, _arg1, _arg2, _arg3);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            AutofillId _arg12 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            int _arg22 = data.readInt();
-                            int _arg32 = data.readInt();
-                            Rect _arg4 = (Rect) data.readTypedObject(Rect.CREATOR);
-                            IAutofillWindowPresenter _arg5 = IAutofillWindowPresenter.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            requestShowFillUi(_arg04, _arg12, _arg22, _arg32, _arg4, _arg5);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            AutofillId _arg13 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            data.enforceNoDataAvail();
-                            requestHideFillUi(_arg05, _arg13);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            AutofillId _arg14 = (AutofillId) data.readTypedObject(AutofillId.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result3 = requestAutofill(_arg06, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result3);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes4.dex */
-        public static class Proxy implements IAugmentedAutofillManagerClient {
+        private static class Proxy implements IAugmentedAutofillManagerClient {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

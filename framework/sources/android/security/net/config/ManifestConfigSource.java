@@ -32,9 +32,8 @@ public class ManifestConfigSource implements ConfigSource {
     private ConfigSource getConfigSource() {
         ConfigSource source;
         synchronized (this.mLock) {
-            ConfigSource configSource = this.mConfigSource;
-            if (configSource != null) {
-                return configSource;
+            if (this.mConfigSource != null) {
+                return this.mConfigSource;
             }
             int configResource = this.mApplicationInfo.networkSecurityConfigRes;
             boolean usesCleartextTraffic = true;
@@ -49,12 +48,11 @@ public class ManifestConfigSource implements ConfigSource {
                 source = new DefaultConfigSource(usesCleartextTraffic, this.mApplicationInfo);
             }
             this.mConfigSource = source;
-            return source;
+            return this.mConfigSource;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public static final class DefaultConfigSource implements ConfigSource {
+    private static final class DefaultConfigSource implements ConfigSource {
         private final NetworkSecurityConfig mDefaultConfig;
 
         DefaultConfigSource(boolean usesCleartextTraffic, ApplicationInfo info) {

@@ -6,17 +6,16 @@ import android.os.Parcelable;
 import android.telephony.AccessNetworkConstants;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public final class RadioAccessSpecifier implements Parcelable {
     public static final Parcelable.Creator<RadioAccessSpecifier> CREATOR = new Parcelable.Creator<RadioAccessSpecifier>() { // from class: android.telephony.RadioAccessSpecifier.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier createFromParcel(Parcel in) {
             return new RadioAccessSpecifier(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RadioAccessSpecifier[] newArray(int size) {
             return new RadioAccessSpecifier[size];
@@ -25,10 +24,6 @@ public final class RadioAccessSpecifier implements Parcelable {
     private int[] mBands;
     private int[] mChannels;
     private int mRadioAccessNetwork;
-
-    /* synthetic */ RadioAccessSpecifier(Parcel parcel, RadioAccessSpecifierIA radioAccessSpecifierIA) {
-        this(parcel);
-    }
 
     public RadioAccessSpecifier(int ran, int[] bands, int[] channels) {
         this.mRadioAccessNetwork = ran;
@@ -49,36 +44,17 @@ public final class RadioAccessSpecifier implements Parcelable {
     }
 
     public int[] getBands() {
-        int[] iArr = this.mBands;
-        if (iArr == null) {
+        if (this.mBands == null) {
             return null;
         }
-        return (int[]) iArr.clone();
+        return (int[]) this.mBands.clone();
     }
 
     public int[] getChannels() {
-        int[] iArr = this.mChannels;
-        if (iArr == null) {
+        if (this.mChannels == null) {
             return null;
         }
-        return (int[]) iArr.clone();
-    }
-
-    /* renamed from: android.telephony.RadioAccessSpecifier$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RadioAccessSpecifier> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessSpecifier createFromParcel(Parcel in) {
-            return new RadioAccessSpecifier(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RadioAccessSpecifier[] newArray(int size) {
-            return new RadioAccessSpecifier[size];
-        }
+        return (int[]) this.mChannels.clone();
     }
 
     @Override // android.os.Parcelable

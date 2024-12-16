@@ -8,6 +8,8 @@ import java.util.Map;
 public abstract class DevicePolicyCache {
     public abstract boolean canAdminGrantSensorsPermissions();
 
+    public abstract int getContentProtectionPolicy(int i);
+
     public abstract Map<String, String> getLauncherShortcutOverrides();
 
     public abstract int getPasswordQuality(int i);
@@ -24,7 +26,6 @@ public abstract class DevicePolicyCache {
         return dpmi != null ? dpmi.getDevicePolicyCache() : EmptyDevicePolicyCache.INSTANCE;
     }
 
-    /* loaded from: classes.dex */
     private static class EmptyDevicePolicyCache extends DevicePolicyCache {
         private static final EmptyDevicePolicyCache INSTANCE = new EmptyDevicePolicyCache();
 
@@ -44,6 +45,11 @@ public abstract class DevicePolicyCache {
         @Override // android.app.admin.DevicePolicyCache
         public int getPermissionPolicy(int userHandle) {
             return 0;
+        }
+
+        @Override // android.app.admin.DevicePolicyCache
+        public int getContentProtectionPolicy(int userId) {
+            return 1;
         }
 
         @Override // android.app.admin.DevicePolicyCache

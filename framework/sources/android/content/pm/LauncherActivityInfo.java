@@ -5,22 +5,29 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Paint;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
+import android.icu.text.UnicodeSet;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
+import com.android.internal.hidden_from_bootclasspath.android.content.pm.Flags;
 import com.samsung.android.core.pm.PmUtils;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.rune.PMRune;
+import java.util.Objects;
 
 /* loaded from: classes.dex */
 public class LauncherActivityInfo {
     private static final String TAG = "LauncherActivityInfo";
+    private static final UnicodeSet TRIMMABLE_CHARACTERS = new UnicodeSet("[[:White_Space:][:Default_Ignorable_Code_Point:][:gc=Cc:]]", false).freeze();
     private Context mContext;
     private final LauncherActivityInfoInternal mInternal;
     private final PackageManager mPm;
 
-    public LauncherActivityInfo(Context context, LauncherActivityInfoInternal internal) {
+    LauncherActivityInfo(Context context, LauncherActivityInfoInternal internal) {
         this.mPm = context.getPackageManager();
         this.mInternal = internal;
         this.mContext = context;
@@ -35,7 +42,18 @@ public class LauncherActivityInfo {
     }
 
     public CharSequence getLabel() {
-        return getActivityInfo().loadLabel(this.mPm);
+        if (!Flags.lightweightInvisibleLabelDetection()) {
+            return getActivityInfo().loadLabel(this.mPm);
+        }
+        CharSequence label = trim(getActivityInfo().loadLabel(this.mPm));
+        if (TextUtils.isEmpty(label)) {
+            CharSequence label2 = trim(getApplicationInfo().loadLabel(this.mPm));
+            if (TextUtils.isEmpty(label2)) {
+                return getComponentName().getPackageName();
+            }
+            return label2;
+        }
+        return label;
     }
 
     public float getLoadingProgress() {
@@ -52,7 +70,7 @@ public class LauncherActivityInfo {
         }
         int iconRes = getActivityInfo().getIconResource();
         Drawable icon = null;
-        if (density != 0 && iconRes != 0) {
+        if (density != 0 && iconRes != 0 && !getActivityInfo().isArchived) {
             try {
                 Resources resources = this.mPm.getResourcesForApplication(getActivityInfo().applicationInfo);
                 icon = resources.getDrawableForDensity(iconRes, density);
@@ -61,6 +79,31 @@ public class LauncherActivityInfo {
         }
         if (icon == null) {
             return getActivityInfo().loadIcon(this.mPm);
+        }
+        return icon;
+    }
+
+    public Drawable getUnthemedIcon(int density) {
+        int iconRes = getActivityInfo().getIconResource();
+        Drawable icon = null;
+        if (iconRes != 0) {
+            try {
+                Resources resources = this.mPm.getResourcesForApplication(getActivityInfo().applicationInfo);
+                icon = resources.getDrawable(iconRes, null);
+            } catch (Exception e) {
+                Log.i(TAG, "Failed to get original icon from resources: " + getActivityInfo().packageName, e);
+            }
+            if (icon != null) {
+                if (icon instanceof AdaptiveIconDrawable) {
+                    return icon;
+                }
+                Log.i(TAG, "Need to process non-adaptive icon: " + getActivityInfo().packageName);
+                icon = this.mPm.semGetDrawableForIconTray(icon, 2);
+            }
+        }
+        if (icon == null) {
+            Log.i(TAG, "Couldn't get the unthemed icon: " + getActivityInfo().packageName);
+            return getIcon(density, false);
         }
         return icon;
     }
@@ -94,19 +137,85 @@ public class LauncherActivityInfo {
         return this.mPm.getUserBadgedIcon(originalIcon, this.mInternal.getUser());
     }
 
+    private static boolean isTrimmable(Paint paint, CharSequence ch) {
+        Objects.requireNonNull(paint);
+        Objects.requireNonNull(ch);
+        if (TextUtils.isEmpty(ch) || Character.codePointCount(ch, 0, ch.length()) != 1) {
+            return false;
+        }
+        return TRIMMABLE_CHARACTERS.contains(ch) || !paint.hasGlyph(ch.toString());
+    }
+
+    public static CharSequence trimStart(CharSequence sequence) {
+        Objects.requireNonNull(sequence);
+        if (TextUtils.isEmpty(sequence)) {
+            return sequence;
+        }
+        Paint paint = new Paint();
+        int trimCount = 0;
+        int[] codePoints = sequence.codePoints().toArray();
+        for (int i : codePoints) {
+            String ch = new String(new int[]{i}, 0, 1);
+            if (!isTrimmable(paint, ch)) {
+                break;
+            }
+            trimCount += ch.length();
+        }
+        if (trimCount == 0) {
+            return sequence;
+        }
+        return sequence.subSequence(trimCount, sequence.length());
+    }
+
+    public static CharSequence trimEnd(CharSequence sequence) {
+        Objects.requireNonNull(sequence);
+        if (TextUtils.isEmpty(sequence)) {
+            return sequence;
+        }
+        Paint paint = new Paint();
+        int trimCount = 0;
+        int[] codePoints = sequence.codePoints().toArray();
+        for (int i = codePoints.length - 1; i >= 0; i--) {
+            String ch = new String(new int[]{codePoints[i]}, 0, 1);
+            if (!isTrimmable(paint, ch)) {
+                break;
+            }
+            trimCount += ch.length();
+        }
+        if (trimCount == 0) {
+            return sequence;
+        }
+        return sequence.subSequence(0, sequence.length() - trimCount);
+    }
+
+    public static CharSequence trim(CharSequence sequence) {
+        Objects.requireNonNull(sequence);
+        if (TextUtils.isEmpty(sequence)) {
+            return sequence;
+        }
+        CharSequence result = trimStart(sequence);
+        if (TextUtils.isEmpty(result)) {
+            return result;
+        }
+        return trimEnd(result);
+    }
+
     public Drawable semGetBadgedIconForIconTray(int density) {
         ActivityInfo activityInfo = this.mInternal.getActivityInfo();
         String pkgName = activityInfo.packageName;
-        boolean useThemeIcon = false;
+        boolean useThemeIcon = useThemeIcon();
         Drawable originalIcon = null;
+        boolean z = true;
         if (PmUtils.supportLiveIcon(activityInfo.applicationInfo, this.mContext)) {
             Log.i(TAG, "Trying to load live icon for " + pkgName);
             originalIcon = this.mContext.getPackageManager().loadUnbadgedItemIcon(activityInfo, activityInfo.applicationInfo, true, 48);
         }
         if (originalIcon == null) {
-            useThemeIcon = useThemeIcon();
             originalIcon = getIcon(density, useThemeIcon);
-            boolean isDefaultIcon = activityInfo.getIconResource() == 0;
+            if (activityInfo.getIconResource() != 0 && !activityInfo.isArchived) {
+                z = false;
+            }
+            boolean isDefaultIcon = z;
             if (!useThemeIcon && !isDefaultIcon && (this.mPm.semCheckComponentMetadataForIconTray(pkgName, activityInfo.name) || this.mPm.semShouldPackIntoIconTray(pkgName))) {
                 originalIcon = this.mPm.semGetDrawableForIconTray(originalIcon, 48, pkgName, density);
             }

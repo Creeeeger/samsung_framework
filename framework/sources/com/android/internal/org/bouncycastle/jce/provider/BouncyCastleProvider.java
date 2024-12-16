@@ -49,9 +49,6 @@ public final class BouncyCastleProvider extends Provider implements Configurable
         super(PROVIDER_NAME, 1.68d, info);
         this.privateProvider = new PrivateProvider();
         AccessController.doPrivileged(new PrivilegedAction() { // from class: com.android.internal.org.bouncycastle.jce.provider.BouncyCastleProvider.1
-            AnonymousClass1() {
-            }
-
             @Override // java.security.PrivilegedAction
             public Object run() {
                 BouncyCastleProvider.this.setup();
@@ -60,20 +57,7 @@ public final class BouncyCastleProvider extends Provider implements Configurable
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.internal.org.bouncycastle.jce.provider.BouncyCastleProvider$1 */
-    /* loaded from: classes5.dex */
-    public class AnonymousClass1 implements PrivilegedAction {
-        AnonymousClass1() {
-        }
-
-        @Override // java.security.PrivilegedAction
-        public Object run() {
-            BouncyCastleProvider.this.setup();
-            return null;
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void setup() {
         loadAlgorithms(DIGEST_PACKAGE, DIGESTS);
         loadAlgorithms(SYMMETRIC_PACKAGE, SYMMETRIC_GENERIC);
@@ -102,9 +86,8 @@ public final class BouncyCastleProvider extends Provider implements Configurable
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.config.ConfigurableProvider
     public void setParameter(String parameterName, Object parameter) {
-        ProviderConfiguration providerConfiguration = CONFIGURATION;
-        synchronized (providerConfiguration) {
-            ((BouncyCastleProviderConfiguration) providerConfiguration).setParameter(parameterName, parameter);
+        synchronized (CONFIGURATION) {
+            ((BouncyCastleProviderConfiguration) CONFIGURATION).setParameter(parameterName, parameter);
         }
     }
 
@@ -129,9 +112,8 @@ public final class BouncyCastleProvider extends Provider implements Configurable
 
     @Override // com.android.internal.org.bouncycastle.jcajce.provider.config.ConfigurableProvider
     public void addKeyInfoConverter(ASN1ObjectIdentifier oid, AsymmetricKeyInfoConverter keyInfoConverter) {
-        Map map = keyInfoConverters;
-        synchronized (map) {
-            map.put(oid, keyInfoConverter);
+        synchronized (keyInfoConverters) {
+            keyInfoConverters.put(oid, keyInfoConverter);
         }
     }
 
@@ -153,9 +135,8 @@ public final class BouncyCastleProvider extends Provider implements Configurable
 
     private static AsymmetricKeyInfoConverter getAsymmetricKeyInfoConverter(ASN1ObjectIdentifier algorithm) {
         AsymmetricKeyInfoConverter asymmetricKeyInfoConverter;
-        Map map = keyInfoConverters;
-        synchronized (map) {
-            asymmetricKeyInfoConverter = (AsymmetricKeyInfoConverter) map.get(algorithm);
+        synchronized (keyInfoConverters) {
+            asymmetricKeyInfoConverter = (AsymmetricKeyInfoConverter) keyInfoConverters.get(algorithm);
         }
         return asymmetricKeyInfoConverter;
     }
@@ -180,9 +161,7 @@ public final class BouncyCastleProvider extends Provider implements Configurable
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes5.dex */
-    public static final class PrivateProvider extends Provider {
+    private static final class PrivateProvider extends Provider {
         public PrivateProvider() {
             super("BCPrivate", 1.0d, "Android BC private use only");
         }

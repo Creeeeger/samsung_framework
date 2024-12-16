@@ -31,15 +31,14 @@ public class StatLogger {
         this.mLock = new Object();
         this.mNextTickTime = SystemClock.elapsedRealtime() + 1000;
         this.mStatsTag = statsTag;
-        int length = eventLabels.length;
-        this.SIZE = length;
-        this.mCountStats = new int[length];
-        this.mDurationStats = new long[length];
-        this.mCallsPerSecond = new int[length];
-        this.mMaxCallsPerSecond = new int[length];
-        this.mDurationPerSecond = new long[length];
-        this.mMaxDurationPerSecond = new long[length];
-        this.mMaxDurationStats = new long[length];
+        this.SIZE = eventLabels.length;
+        this.mCountStats = new int[this.SIZE];
+        this.mDurationStats = new long[this.SIZE];
+        this.mCallsPerSecond = new int[this.SIZE];
+        this.mMaxCallsPerSecond = new int[this.SIZE];
+        this.mDurationPerSecond = new long[this.SIZE];
+        this.mMaxDurationPerSecond = new long[this.SIZE];
+        this.mMaxDurationStats = new long[this.SIZE];
         this.mLabels = eventLabels;
     }
 
@@ -55,34 +54,25 @@ public class StatLogger {
                 iArr[eventId] = iArr[eventId] + 1;
                 long[] jArr = this.mDurationStats;
                 jArr[eventId] = jArr[eventId] + duration;
-                long[] jArr2 = this.mMaxDurationStats;
-                if (jArr2[eventId] < duration) {
-                    jArr2[eventId] = duration;
+                if (this.mMaxDurationStats[eventId] < duration) {
+                    this.mMaxDurationStats[eventId] = duration;
                 }
                 long nowRealtime = SystemClock.elapsedRealtime();
                 if (nowRealtime > this.mNextTickTime) {
-                    int[] iArr2 = this.mMaxCallsPerSecond;
-                    int i = iArr2[eventId];
-                    int[] iArr3 = this.mCallsPerSecond;
-                    int i2 = iArr3[eventId];
-                    if (i < i2) {
-                        iArr2[eventId] = i2;
+                    if (this.mMaxCallsPerSecond[eventId] < this.mCallsPerSecond[eventId]) {
+                        this.mMaxCallsPerSecond[eventId] = this.mCallsPerSecond[eventId];
                     }
-                    long[] jArr3 = this.mMaxDurationPerSecond;
-                    long j = jArr3[eventId];
-                    long[] jArr4 = this.mDurationPerSecond;
-                    long j2 = jArr4[eventId];
-                    if (j < j2) {
-                        jArr3[eventId] = j2;
+                    if (this.mMaxDurationPerSecond[eventId] < this.mDurationPerSecond[eventId]) {
+                        this.mMaxDurationPerSecond[eventId] = this.mDurationPerSecond[eventId];
                     }
-                    iArr3[eventId] = 0;
-                    jArr4[eventId] = 0;
+                    this.mCallsPerSecond[eventId] = 0;
+                    this.mDurationPerSecond[eventId] = 0;
                     this.mNextTickTime = 1000 + nowRealtime;
                 }
-                int[] iArr4 = this.mCallsPerSecond;
-                iArr4[eventId] = iArr4[eventId] + 1;
-                long[] jArr5 = this.mDurationPerSecond;
-                jArr5[eventId] = jArr5[eventId] + duration;
+                int[] iArr2 = this.mCallsPerSecond;
+                iArr2[eventId] = iArr2[eventId] + 1;
+                long[] jArr2 = this.mDurationPerSecond;
+                jArr2[eventId] = jArr2[eventId] + duration;
                 return duration;
             }
             Slog.wtf(TAG, "Invalid event ID: " + eventId);
@@ -105,15 +95,7 @@ public class StatLogger {
             for (int i = 0; i < this.SIZE; i++) {
                 int count = this.mCountStats[i];
                 double durationMs = this.mDurationStats[i] / 1000.0d;
-                Object[] objArr = new Object[7];
-                objArr[0] = this.mLabels[i];
-                objArr[1] = Integer.valueOf(count);
-                objArr[2] = Double.valueOf(durationMs);
-                objArr[3] = Double.valueOf(count == 0 ? SContextConstants.ENVIRONMENT_VALUE_UNKNOWN : durationMs / count);
-                objArr[4] = Integer.valueOf(this.mMaxCallsPerSecond[i]);
-                objArr[5] = Double.valueOf(this.mMaxDurationPerSecond[i] / 1000.0d);
-                objArr[6] = Double.valueOf(this.mMaxDurationStats[i] / 1000.0d);
-                pw.println(String.format("%s: count=%d, total=%.1fms, avg=%.3fms, max calls/s=%d max dur/s=%.1fms max time=%.1fms", objArr));
+                pw.println(String.format("%s: count=%d, total=%.1fms, avg=%.3fms, max calls/s=%d max dur/s=%.1fms max time=%.1fms", this.mLabels[i], Integer.valueOf(count), Double.valueOf(durationMs), Double.valueOf(count == 0 ? SContextConstants.ENVIRONMENT_VALUE_UNKNOWN : durationMs / count), Integer.valueOf(this.mMaxCallsPerSecond[i]), Double.valueOf(this.mMaxDurationPerSecond[i] / 1000.0d), Double.valueOf(this.mMaxDurationStats[i] / 1000.0d)));
             }
             pw.decreaseIndent();
         }

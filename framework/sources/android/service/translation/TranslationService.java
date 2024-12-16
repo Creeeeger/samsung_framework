@@ -42,9 +42,6 @@ public abstract class TranslationService extends Service {
     private Handler mHandler;
     private final ITranslationService mInterface = new AnonymousClass1();
     private final ITranslationDirectManager mClientInterface = new ITranslationDirectManager.Stub() { // from class: android.service.translation.TranslationService.2
-        AnonymousClass2() {
-        }
-
         @Override // android.view.translation.ITranslationDirectManager
         public void onTranslationRequest(TranslationRequest request, int sessionId, ICancellationSignal transport, ITranslationCallback callback) throws RemoteException {
             Consumer<TranslationResponse> consumer = new OnTranslationResultCallbackWrapper(callback);
@@ -68,7 +65,6 @@ public abstract class TranslationService extends Service {
     };
 
     @Deprecated
-    /* loaded from: classes3.dex */
     public interface OnTranslationResultCallback {
         @Deprecated
         void onError();
@@ -84,15 +80,14 @@ public abstract class TranslationService extends Service {
 
     public abstract void onTranslationRequest(TranslationRequest translationRequest, int i, CancellationSignal cancellationSignal, Consumer<TranslationResponse> consumer);
 
-    /* renamed from: android.service.translation.TranslationService$1 */
-    /* loaded from: classes3.dex */
+    /* renamed from: android.service.translation.TranslationService$1, reason: invalid class name */
     class AnonymousClass1 extends ITranslationService.Stub {
         AnonymousClass1() {
         }
 
         @Override // android.service.translation.ITranslationService
         public void onConnected(IBinder callback) {
-            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.translation.TranslationService$1$$ExternalSyntheticLambda1
+            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.translation.TranslationService$1$$ExternalSyntheticLambda2
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
                     ((TranslationService) obj).handleOnConnected((IBinder) obj2);
@@ -102,7 +97,7 @@ public abstract class TranslationService extends Service {
 
         @Override // android.service.translation.ITranslationService
         public void onDisconnected() {
-            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: android.service.translation.TranslationService$1$$ExternalSyntheticLambda2
+            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: android.service.translation.TranslationService$1$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ((TranslationService) obj).onDisconnected();
@@ -128,34 +123,6 @@ public abstract class TranslationService extends Service {
                     ((TranslationService) obj).handleOnTranslationCapabilitiesRequest(((Integer) obj2).intValue(), ((Integer) obj3).intValue(), (ResultReceiver) obj4);
                 }
             }, TranslationService.this, Integer.valueOf(sourceFormat), Integer.valueOf(targetFormat), resultReceiver));
-        }
-    }
-
-    /* renamed from: android.service.translation.TranslationService$2 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass2 extends ITranslationDirectManager.Stub {
-        AnonymousClass2() {
-        }
-
-        @Override // android.view.translation.ITranslationDirectManager
-        public void onTranslationRequest(TranslationRequest request, int sessionId, ICancellationSignal transport, ITranslationCallback callback) throws RemoteException {
-            Consumer<TranslationResponse> consumer = new OnTranslationResultCallbackWrapper(callback);
-            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new QuintConsumer() { // from class: android.service.translation.TranslationService$2$$ExternalSyntheticLambda0
-                @Override // com.android.internal.util.function.QuintConsumer
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5) {
-                    ((TranslationService) obj).onTranslationRequest((TranslationRequest) obj2, ((Integer) obj3).intValue(), (CancellationSignal) obj4, (Consumer<TranslationResponse>) obj5);
-                }
-            }, TranslationService.this, request, Integer.valueOf(sessionId), CancellationSignal.fromTransport(transport), consumer));
-        }
-
-        @Override // android.view.translation.ITranslationDirectManager
-        public void onFinishTranslationSession(int sessionId) throws RemoteException {
-            TranslationService.this.mHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: android.service.translation.TranslationService$2$$ExternalSyntheticLambda1
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    ((TranslationService) obj).onFinishTranslationSession(((Integer) obj2).intValue());
-                }
-            }, TranslationService.this, Integer.valueOf(sessionId)));
         }
     }
 
@@ -203,54 +170,15 @@ public abstract class TranslationService extends Service {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void handleOnConnected(IBinder callback) {
         this.mCallback = ITranslationServiceCallback.Stub.asInterface(callback);
         onConnected();
     }
 
-    /* renamed from: android.service.translation.TranslationService$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements Consumer<Boolean> {
-        final /* synthetic */ IResultReceiver val$resultReceiver;
-        final /* synthetic */ int val$sessionId;
-        final /* synthetic */ TranslationContext val$translationContext;
-
-        AnonymousClass3(TranslationContext translationContext, IResultReceiver iResultReceiver, int i) {
-            translationContext = translationContext;
-            resultReceiver = iResultReceiver;
-            sessionId = i;
-        }
-
-        @Override // java.util.function.Consumer
-        public void accept(Boolean created) {
-            try {
-                if (!created.booleanValue()) {
-                    Log.w(TranslationService.TAG, "handleOnCreateTranslationSession(): context=" + translationContext + " not supported by service.");
-                    resultReceiver.send(2, null);
-                } else {
-                    Bundle extras = new Bundle();
-                    extras.putBinder("binder", TranslationService.this.mClientInterface.asBinder());
-                    extras.putInt("sessionId", sessionId);
-                    resultReceiver.send(1, extras);
-                }
-            } catch (RemoteException e) {
-                Log.w(TranslationService.TAG, "RemoteException sending client interface: " + e);
-            }
-        }
-    }
-
-    public void handleOnCreateTranslationSession(TranslationContext translationContext, int sessionId, IResultReceiver resultReceiver) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleOnCreateTranslationSession(final TranslationContext translationContext, final int sessionId, final IResultReceiver resultReceiver) {
         onCreateTranslationSession(translationContext, sessionId, new Consumer<Boolean>() { // from class: android.service.translation.TranslationService.3
-            final /* synthetic */ IResultReceiver val$resultReceiver;
-            final /* synthetic */ int val$sessionId;
-            final /* synthetic */ TranslationContext val$translationContext;
-
-            AnonymousClass3(TranslationContext translationContext2, IResultReceiver resultReceiver2, int sessionId2) {
-                translationContext = translationContext2;
-                resultReceiver = resultReceiver2;
-                sessionId = sessionId2;
-            }
-
             @Override // java.util.function.Consumer
             public void accept(Boolean created) {
                 try {
@@ -270,43 +198,9 @@ public abstract class TranslationService extends Service {
         });
     }
 
-    /* renamed from: android.service.translation.TranslationService$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements Consumer<Set<TranslationCapability>> {
-        final /* synthetic */ ResultReceiver val$resultReceiver;
-        final /* synthetic */ int val$sourceFormat;
-        final /* synthetic */ int val$targetFormat;
-
-        AnonymousClass4(int i, int i2, ResultReceiver resultReceiver) {
-            sourceFormat = i;
-            targetFormat = i2;
-            resultReceiver = resultReceiver;
-        }
-
-        @Override // java.util.function.Consumer
-        public void accept(Set<TranslationCapability> values) {
-            if (!TranslationService.this.isValidCapabilities(sourceFormat, targetFormat, values)) {
-                throw new IllegalStateException("Invalid capabilities and format compatibility");
-            }
-            Bundle bundle = new Bundle();
-            ParceledListSlice<TranslationCapability> listSlice = new ParceledListSlice<>(Arrays.asList((TranslationCapability[]) values.toArray(new TranslationCapability[0])));
-            bundle.putParcelable(TranslationManager.EXTRA_CAPABILITIES, listSlice);
-            resultReceiver.send(1, bundle);
-        }
-    }
-
-    public void handleOnTranslationCapabilitiesRequest(int sourceFormat, int targetFormat, ResultReceiver resultReceiver) {
+    /* JADX INFO: Access modifiers changed from: private */
+    public void handleOnTranslationCapabilitiesRequest(final int sourceFormat, final int targetFormat, final ResultReceiver resultReceiver) {
         onTranslationCapabilitiesRequest(sourceFormat, targetFormat, new Consumer<Set<TranslationCapability>>() { // from class: android.service.translation.TranslationService.4
-            final /* synthetic */ ResultReceiver val$resultReceiver;
-            final /* synthetic */ int val$sourceFormat;
-            final /* synthetic */ int val$targetFormat;
-
-            AnonymousClass4(int sourceFormat2, int targetFormat2, ResultReceiver resultReceiver2) {
-                sourceFormat = sourceFormat2;
-                targetFormat = targetFormat2;
-                resultReceiver = resultReceiver2;
-            }
-
             @Override // java.util.function.Consumer
             public void accept(Set<TranslationCapability> values) {
                 if (!TranslationService.this.isValidCapabilities(sourceFormat, targetFormat, values)) {
@@ -320,6 +214,7 @@ public abstract class TranslationService extends Service {
         });
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public boolean isValidCapabilities(int sourceFormat, int targetFormat, Set<TranslationCapability> capabilities) {
         if (sourceFormat != 1 && targetFormat != 1) {
             return true;

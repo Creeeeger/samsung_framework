@@ -88,9 +88,6 @@ public class MediaSource extends Filter {
         this.mOrientation = 0;
         this.mFrameShader = "#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES tex_sampler_0;\nvarying vec2 v_texcoord;\nvoid main() {\n  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n}\n";
         this.onVideoSizeChangedListener = new MediaPlayer.OnVideoSizeChangedListener() { // from class: android.filterpacks.videosrc.MediaSource.1
-            AnonymousClass1() {
-            }
-
             @Override // android.media.MediaPlayer.OnVideoSizeChangedListener
             public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
                 if (MediaSource.this.mLogVerbose) {
@@ -114,9 +111,6 @@ public class MediaSource extends Filter {
             }
         };
         this.onPreparedListener = new MediaPlayer.OnPreparedListener() { // from class: android.filterpacks.videosrc.MediaSource.2
-            AnonymousClass2() {
-            }
-
             @Override // android.media.MediaPlayer.OnPreparedListener
             public void onPrepared(MediaPlayer mp) {
                 if (MediaSource.this.mLogVerbose) {
@@ -129,9 +123,6 @@ public class MediaSource extends Filter {
             }
         };
         this.onCompletionListener = new MediaPlayer.OnCompletionListener() { // from class: android.filterpacks.videosrc.MediaSource.3
-            AnonymousClass3() {
-            }
-
             @Override // android.media.MediaPlayer.OnCompletionListener
             public void onCompletion(MediaPlayer mp) {
                 if (MediaSource.this.mLogVerbose) {
@@ -143,9 +134,6 @@ public class MediaSource extends Filter {
             }
         };
         this.onMediaFrameAvailableListener = new SurfaceTexture.OnFrameAvailableListener() { // from class: android.filterpacks.videosrc.MediaSource.4
-            AnonymousClass4() {
-            }
-
             @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 if (MediaSource.this.mLogVerbose) {
@@ -181,9 +169,8 @@ public class MediaSource extends Filter {
         if (this.mLogVerbose) {
             Log.v(TAG, "Preparing MediaSource");
         }
-        ShaderProgram shaderProgram = new ShaderProgram(context, "#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES tex_sampler_0;\nvarying vec2 v_texcoord;\nvoid main() {\n  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n}\n");
-        this.mFrameExtractor = shaderProgram;
-        shaderProgram.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
+        this.mFrameExtractor = new ShaderProgram(context, "#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES tex_sampler_0;\nvarying vec2 v_texcoord;\nvoid main() {\n  gl_FragColor = texture2D(tex_sampler_0, v_texcoord);\n}\n");
+        this.mFrameExtractor.setSourceRect(0.0f, 1.0f, 1.0f, -1.0f);
         createFormats();
     }
 
@@ -197,9 +184,8 @@ public class MediaSource extends Filter {
                 Log.v(TAG, "Current source is Asset!");
             }
         }
-        GLFrame gLFrame = (GLFrame) context.getFrameManager().newBoundFrame(this.mOutputFormat, 104, 0L);
-        this.mMediaFrame = gLFrame;
-        this.mSurfaceTexture = new SurfaceTexture(gLFrame.getTextureId());
+        this.mMediaFrame = (GLFrame) context.getFrameManager().newBoundFrame(this.mOutputFormat, 104, 0L);
+        this.mSurfaceTexture = new SurfaceTexture(this.mMediaFrame.getTextureId());
         if (!setupMediaPlayer(this.mSelectedIsUrl)) {
             throw new RuntimeException("Error setting up MediaPlayer!");
         }
@@ -334,9 +320,8 @@ public class MediaSource extends Filter {
 
     @Override // android.filterfw.core.Filter
     public void tearDown(FilterContext context) {
-        GLFrame gLFrame = this.mMediaFrame;
-        if (gLFrame != null) {
-            gLFrame.release();
+        if (this.mMediaFrame != null) {
+            this.mMediaFrame.release();
         }
     }
 
@@ -350,9 +335,8 @@ public class MediaSource extends Filter {
                 if (this.mLogVerbose) {
                     Log.v(TAG, "Opening new source URL");
                 }
-                boolean z = this.mSelectedIsUrl;
-                if (z) {
-                    setupMediaPlayer(z);
+                if (this.mSelectedIsUrl) {
+                    setupMediaPlayer(this.mSelectedIsUrl);
                     return;
                 }
                 return;
@@ -364,9 +348,8 @@ public class MediaSource extends Filter {
                 if (this.mLogVerbose) {
                     Log.v(TAG, "Opening new source FD");
                 }
-                boolean z2 = this.mSelectedIsUrl;
-                if (!z2) {
-                    setupMediaPlayer(z2);
+                if (!this.mSelectedIsUrl) {
+                    setupMediaPlayer(this.mSelectedIsUrl);
                     return;
                 }
                 return;
@@ -396,16 +379,10 @@ public class MediaSource extends Filter {
         }
         if (name.equals("volume")) {
             if (isOpen()) {
-                MediaPlayer mediaPlayer = this.mMediaPlayer;
-                float f = this.mVolume;
-                mediaPlayer.setVolume(f, f);
-                return;
+                this.mMediaPlayer.setVolume(this.mVolume, this.mVolume);
             }
-            return;
-        }
-        if (name.equals("orientation") && this.mGotSize) {
-            int i = this.mOrientation;
-            if (i == 0 || i == 180) {
+        } else if (name.equals("orientation") && this.mGotSize) {
+            if (this.mOrientation == 0 || this.mOrientation == 180) {
                 this.mOutputFormat.setDimensions(this.mWidth, this.mHeight);
             } else {
                 this.mOutputFormat.setDimensions(this.mHeight, this.mWidth);
@@ -454,11 +431,10 @@ public class MediaSource extends Filter {
                 if (this.mLogVerbose) {
                     Log.v(TAG, "Setting MediaPlayer source to URI " + this.mSourceUrl);
                 }
-                Context context = this.mContext;
-                if (context == null) {
+                if (this.mContext == null) {
                     this.mMediaPlayer.setDataSource(this.mSourceUrl);
                 } else {
-                    this.mMediaPlayer.setDataSource(context, Uri.parse(this.mSourceUrl.toString()));
+                    this.mMediaPlayer.setDataSource(this.mContext, Uri.parse(this.mSourceUrl.toString()));
                 }
             } else {
                 if (this.mLogVerbose) {
@@ -467,9 +443,7 @@ public class MediaSource extends Filter {
                 this.mMediaPlayer.setDataSource(this.mSourceAsset.getFileDescriptor(), this.mSourceAsset.getStartOffset(), this.mSourceAsset.getLength());
             }
             this.mMediaPlayer.setLooping(this.mLooping);
-            MediaPlayer mediaPlayer = this.mMediaPlayer;
-            float f = this.mVolume;
-            mediaPlayer.setVolume(f, f);
+            this.mMediaPlayer.setVolume(this.mVolume, this.mVolume);
             Surface surface = new Surface(this.mSurfaceTexture);
             this.mMediaPlayer.setSurface(surface);
             surface.release();
@@ -497,93 +471,5 @@ public class MediaSource extends Filter {
             throw new RuntimeException(String.format("Unable to set MediaPlayer to asset %s!", this.mSourceAsset), e2);
         }
         return true;
-    }
-
-    /* renamed from: android.filterpacks.videosrc.MediaSource$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements MediaPlayer.OnVideoSizeChangedListener {
-        AnonymousClass1() {
-        }
-
-        @Override // android.media.MediaPlayer.OnVideoSizeChangedListener
-        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-            if (MediaSource.this.mLogVerbose) {
-                Log.v(MediaSource.TAG, "MediaPlayer sent dimensions: " + width + " x " + height);
-            }
-            if (!MediaSource.this.mGotSize) {
-                if (MediaSource.this.mOrientation == 0 || MediaSource.this.mOrientation == 180) {
-                    MediaSource.this.mOutputFormat.setDimensions(width, height);
-                } else {
-                    MediaSource.this.mOutputFormat.setDimensions(height, width);
-                }
-                MediaSource.this.mWidth = width;
-                MediaSource.this.mHeight = height;
-            } else if (MediaSource.this.mOutputFormat.getWidth() != width || MediaSource.this.mOutputFormat.getHeight() != height) {
-                Log.e(MediaSource.TAG, "Multiple video size change events received!");
-            }
-            synchronized (MediaSource.this) {
-                MediaSource.this.mGotSize = true;
-                MediaSource.this.notify();
-            }
-        }
-    }
-
-    /* renamed from: android.filterpacks.videosrc.MediaSource$2 */
-    /* loaded from: classes.dex */
-    class AnonymousClass2 implements MediaPlayer.OnPreparedListener {
-        AnonymousClass2() {
-        }
-
-        @Override // android.media.MediaPlayer.OnPreparedListener
-        public void onPrepared(MediaPlayer mp) {
-            if (MediaSource.this.mLogVerbose) {
-                Log.v(MediaSource.TAG, "MediaPlayer is prepared");
-            }
-            synchronized (MediaSource.this) {
-                MediaSource.this.mPrepared = true;
-                MediaSource.this.notify();
-            }
-        }
-    }
-
-    /* renamed from: android.filterpacks.videosrc.MediaSource$3 */
-    /* loaded from: classes.dex */
-    class AnonymousClass3 implements MediaPlayer.OnCompletionListener {
-        AnonymousClass3() {
-        }
-
-        @Override // android.media.MediaPlayer.OnCompletionListener
-        public void onCompletion(MediaPlayer mp) {
-            if (MediaSource.this.mLogVerbose) {
-                Log.v(MediaSource.TAG, "MediaPlayer has completed playback");
-            }
-            synchronized (MediaSource.this) {
-                MediaSource.this.mCompleted = true;
-            }
-        }
-    }
-
-    /* renamed from: android.filterpacks.videosrc.MediaSource$4 */
-    /* loaded from: classes.dex */
-    class AnonymousClass4 implements SurfaceTexture.OnFrameAvailableListener {
-        AnonymousClass4() {
-        }
-
-        @Override // android.graphics.SurfaceTexture.OnFrameAvailableListener
-        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-            if (MediaSource.this.mLogVerbose) {
-                Log.v(MediaSource.TAG, "New frame from media player");
-            }
-            synchronized (MediaSource.this) {
-                if (MediaSource.this.mLogVerbose) {
-                    Log.v(MediaSource.TAG, "New frame: notify");
-                }
-                MediaSource.this.mNewFrameAvailable = true;
-                MediaSource.this.notify();
-                if (MediaSource.this.mLogVerbose) {
-                    Log.v(MediaSource.TAG, "New frame: notify done");
-                }
-            }
-        }
     }
 }

@@ -20,27 +20,24 @@ public abstract class ResourceCursorAdapter extends CursorAdapter {
         super(context, c);
         this.mDropDownLayout = layout;
         this.mLayout = layout;
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mInflater = layoutInflater;
-        this.mDropDownInflater = layoutInflater;
+        this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mDropDownInflater = this.mInflater;
     }
 
     public ResourceCursorAdapter(Context context, int layout, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
         this.mDropDownLayout = layout;
         this.mLayout = layout;
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mInflater = layoutInflater;
-        this.mDropDownInflater = layoutInflater;
+        this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mDropDownInflater = this.mInflater;
     }
 
     public ResourceCursorAdapter(Context context, int layout, Cursor c, int flags) {
         super(context, c, flags);
         this.mDropDownLayout = layout;
         this.mLayout = layout;
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mInflater = layoutInflater;
-        this.mDropDownInflater = layoutInflater;
+        this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mDropDownInflater = this.mInflater;
     }
 
     @Override // android.widget.CursorAdapter, android.widget.ThemedSpinnerAdapter

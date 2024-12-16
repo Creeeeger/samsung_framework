@@ -1,6 +1,5 @@
 package com.samsung.android.sume.core.descriptor.nn;
 
-import android.os.BatteryManager;
 import android.util.Pair;
 import com.samsung.android.sume.core.Def;
 import com.samsung.android.sume.core.descriptor.PluginDescriptor;
@@ -18,27 +17,23 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/* loaded from: classes4.dex */
+/* loaded from: classes6.dex */
 public class NNDescriptor extends PluginDescriptor {
     private static final String TAG = Def.tagOf((Class<?>) NNDescriptor.class);
     private transient Supplier<String> modelIdSupplier;
     private transient ModelSelector modelSelector;
     private transient List<NNFileDescriptor> nnFileDescriptor;
-    private final List<NNFWProfile> nnfwProfiles;
+    private final List<NNFWProfile> nnfwProfiles = new ArrayList();
 
     public NNDescriptor() {
-        this.nnfwProfiles = new ArrayList();
     }
 
     public NNDescriptor(Enum<?> modelId) {
-        this.nnfwProfiles = new ArrayList();
         setPluginId(modelId);
     }
 
     public NNDescriptor(Enum<?> modelId, NNFW fw, HwUnit hw, int units) {
-        ArrayList arrayList = new ArrayList();
-        this.nnfwProfiles = arrayList;
-        arrayList.add(new NNFWProfile(fw, hw, units));
+        this.nnfwProfiles.add(new NNFWProfile(fw, hw, units));
         setPluginId(modelId);
     }
 
@@ -90,11 +85,11 @@ public class NNDescriptor extends PluginDescriptor {
 
     public NNDescriptor setOutputFormat(MutableMediaFormat outputFormat) {
         getAll().put(Integer.valueOf(PLUGIN_OUTPUT_FORMAT), outputFormat);
-        if (outputFormat.checkTypeOf(BatteryManager.EXTRA_SCALE, Float.class)) {
-            Float scale = (Float) outputFormat.get(BatteryManager.EXTRA_SCALE);
+        if (outputFormat.checkTypeOf("scale", Float.class)) {
+            Float scale = (Float) outputFormat.get("scale");
             outputFormat.setShape(getInputFormat().getShape().toMutableShape().scale(scale));
-        } else if (outputFormat.checkTypeOf(BatteryManager.EXTRA_SCALE, Pair.class)) {
-            Pair<Float, Float> scale2 = (Pair) outputFormat.get(BatteryManager.EXTRA_SCALE);
+        } else if (outputFormat.checkTypeOf("scale", Pair.class)) {
+            Pair<Float, Float> scale2 = (Pair) outputFormat.get("scale");
             outputFormat.setShape(getInputFormat().getShape().toMutableShape().scale((Pair<Float, Float>) Objects.requireNonNull(scale2)));
         }
         return this;
@@ -113,13 +108,13 @@ public class NNDescriptor extends PluginDescriptor {
         return (String) Optional.ofNullable(this.modelIdSupplier).map(new NNDescriptor$$ExternalSyntheticLambda0()).orElseGet(new Supplier() { // from class: com.samsung.android.sume.core.descriptor.nn.NNDescriptor$$ExternalSyntheticLambda1
             @Override // java.util.function.Supplier
             public final Object get() {
-                return NNDescriptor.this.m8743x6e850223();
+                return NNDescriptor.this.m9132x6e850223();
             }
         });
     }
 
-    /* renamed from: lambda$getModelId$0$com-samsung-android-sume-core-descriptor-nn-NNDescriptor */
-    public /* synthetic */ String m8743x6e850223() {
+    /* renamed from: lambda$getModelId$0$com-samsung-android-sume-core-descriptor-nn-NNDescriptor, reason: not valid java name */
+    /* synthetic */ String m9132x6e850223() {
         return super.getFilterId();
     }
 

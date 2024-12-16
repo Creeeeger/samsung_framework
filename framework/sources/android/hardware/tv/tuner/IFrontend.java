@@ -43,7 +43,6 @@ public interface IFrontend extends IInterface {
 
     void unlinkCiCam(int i) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFrontend {
         @Override // android.hardware.tv.tuner.IFrontend
         public void setCallback(IFrontendCallback callback) throws RemoteException {
@@ -117,7 +116,6 @@ public interface IFrontend extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFrontend {
         static final int TRANSACTION_close = 4;
         static final int TRANSACTION_getFrontendStatusReadiness = 13;
@@ -162,104 +160,102 @@ public interface IFrontend extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(descriptor);
             }
+            if (code == 1598968902) {
+                reply.writeString(descriptor);
+                return true;
+            }
+            if (code == 16777215) {
+                reply.writeNoException();
+                reply.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (code == 16777214) {
+                reply.writeNoException();
+                reply.writeString(getInterfaceHash());
+                return true;
+            }
             switch (code) {
-                case 16777214:
+                case 1:
+                    IFrontendCallback _arg0 = IFrontendCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    setCallback(_arg0);
                     reply.writeNoException();
-                    reply.writeString(getInterfaceHash());
                     return true;
-                case 16777215:
+                case 2:
+                    FrontendSettings _arg02 = (FrontendSettings) data.readTypedObject(FrontendSettings.CREATOR);
+                    data.enforceNoDataAvail();
+                    tune(_arg02);
                     reply.writeNoException();
-                    reply.writeInt(getInterfaceVersion());
                     return true;
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(descriptor);
+                case 3:
+                    stopTune();
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    close();
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    FrontendSettings _arg03 = (FrontendSettings) data.readTypedObject(FrontendSettings.CREATOR);
+                    int _arg1 = data.readInt();
+                    data.enforceNoDataAvail();
+                    scan(_arg03, _arg1);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    stopScan();
+                    reply.writeNoException();
+                    return true;
+                case 7:
+                    int[] _arg04 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    FrontendStatus[] _result = getStatus(_arg04);
+                    reply.writeNoException();
+                    reply.writeTypedArray(_result, 1);
+                    return true;
+                case 8:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setLnb(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 9:
+                    int _arg06 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = linkCiCam(_arg06);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 10:
+                    int _arg07 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unlinkCiCam(_arg07);
+                    reply.writeNoException();
+                    return true;
+                case 11:
+                    String _result3 = getHardwareInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 12:
+                    int _arg08 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeOutputPid(_arg08);
+                    reply.writeNoException();
+                    return true;
+                case 13:
+                    int[] _arg09 = data.createIntArray();
+                    data.enforceNoDataAvail();
+                    int[] _result4 = getFrontendStatusReadiness(_arg09);
+                    reply.writeNoException();
+                    reply.writeIntArray(_result4);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            IFrontendCallback _arg0 = IFrontendCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            setCallback(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            FrontendSettings _arg02 = (FrontendSettings) data.readTypedObject(FrontendSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            tune(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            stopTune();
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            close();
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            FrontendSettings _arg03 = (FrontendSettings) data.readTypedObject(FrontendSettings.CREATOR);
-                            int _arg1 = data.readInt();
-                            data.enforceNoDataAvail();
-                            scan(_arg03, _arg1);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            stopScan();
-                            reply.writeNoException();
-                            return true;
-                        case 7:
-                            int[] _arg04 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            FrontendStatus[] _result = getStatus(_arg04);
-                            reply.writeNoException();
-                            reply.writeTypedArray(_result, 1);
-                            return true;
-                        case 8:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setLnb(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 9:
-                            int _arg06 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = linkCiCam(_arg06);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 10:
-                            int _arg07 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unlinkCiCam(_arg07);
-                            reply.writeNoException();
-                            return true;
-                        case 11:
-                            String _result3 = getHardwareInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 12:
-                            int _arg08 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeOutputPid(_arg08);
-                            reply.writeNoException();
-                            return true;
-                        case 13:
-                            int[] _arg09 = data.createIntArray();
-                            data.enforceNoDataAvail();
-                            int[] _result4 = getFrontendStatusReadiness(_arg09);
-                            reply.writeNoException();
-                            reply.writeIntArray(_result4);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFrontend {
+        private static class Proxy implements IFrontend {
             private IBinder mRemote;
             private int mCachedVersion = -1;
             private String mCachedHash = "-1";

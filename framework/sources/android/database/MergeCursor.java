@@ -5,9 +5,6 @@ public class MergeCursor extends AbstractCursor {
     private Cursor mCursor;
     private Cursor[] mCursors;
     private DataSetObserver mObserver = new DataSetObserver() { // from class: android.database.MergeCursor.1
-        AnonymousClass1() {
-        }
-
         @Override // android.database.DataSetObserver
         public void onChanged() {
             MergeCursor.this.mPos = -1;
@@ -19,38 +16,12 @@ public class MergeCursor extends AbstractCursor {
         }
     };
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.database.MergeCursor$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends DataSetObserver {
-        AnonymousClass1() {
-        }
-
-        @Override // android.database.DataSetObserver
-        public void onChanged() {
-            MergeCursor.this.mPos = -1;
-        }
-
-        @Override // android.database.DataSetObserver
-        public void onInvalidated() {
-            MergeCursor.this.mPos = -1;
-        }
-    }
-
     public MergeCursor(Cursor[] cursors) {
         this.mCursors = cursors;
         this.mCursor = cursors[0];
-        int i = 0;
-        while (true) {
-            Cursor[] cursorArr = this.mCursors;
-            if (i < cursorArr.length) {
-                Cursor cursor = cursorArr[i];
-                if (cursor != null) {
-                    cursor.registerDataSetObserver(this.mObserver);
-                }
-                i++;
-            } else {
-                return;
+        for (int i = 0; i < this.mCursors.length; i++) {
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].registerDataSetObserver(this.mObserver);
             }
         }
     }
@@ -60,9 +31,8 @@ public class MergeCursor extends AbstractCursor {
         int count = 0;
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                count += cursor.getCount();
+            if (this.mCursors[i] != null) {
+                count += this.mCursors[i].getCount();
             }
         }
         return count;
@@ -78,9 +48,8 @@ public class MergeCursor extends AbstractCursor {
             if (i >= length) {
                 break;
             }
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                if (newPosition < cursor.getCount() + cursorStartPos) {
+            if (this.mCursors[i] != null) {
+                if (newPosition < this.mCursors[i].getCount() + cursorStartPos) {
                     this.mCursor = this.mCursors[i];
                     break;
                 }
@@ -88,9 +57,8 @@ public class MergeCursor extends AbstractCursor {
             }
             i++;
         }
-        Cursor cursor2 = this.mCursor;
-        if (cursor2 != null) {
-            boolean ret = cursor2.moveToPosition(newPosition - cursorStartPos);
+        if (this.mCursor != null) {
+            boolean ret = this.mCursor.moveToPosition(newPosition - cursorStartPos);
             return ret;
         }
         return false;
@@ -143,9 +111,8 @@ public class MergeCursor extends AbstractCursor {
 
     @Override // android.database.AbstractCursor, android.database.Cursor
     public String[] getColumnNames() {
-        Cursor cursor = this.mCursor;
-        if (cursor != null) {
-            return cursor.getColumnNames();
+        if (this.mCursor != null) {
+            return this.mCursor.getColumnNames();
         }
         return new String[0];
     }
@@ -154,9 +121,8 @@ public class MergeCursor extends AbstractCursor {
     public void deactivate() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.deactivate();
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].deactivate();
             }
         }
         super.deactivate();
@@ -166,9 +132,8 @@ public class MergeCursor extends AbstractCursor {
     public void close() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.close();
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].close();
             }
         }
         super.close();
@@ -178,9 +143,8 @@ public class MergeCursor extends AbstractCursor {
     public void registerContentObserver(ContentObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.registerContentObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].registerContentObserver(observer);
             }
         }
     }
@@ -189,9 +153,8 @@ public class MergeCursor extends AbstractCursor {
     public void unregisterContentObserver(ContentObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.unregisterContentObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].unregisterContentObserver(observer);
             }
         }
     }
@@ -200,9 +163,8 @@ public class MergeCursor extends AbstractCursor {
     public void registerDataSetObserver(DataSetObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.registerDataSetObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].registerDataSetObserver(observer);
             }
         }
     }
@@ -211,9 +173,8 @@ public class MergeCursor extends AbstractCursor {
     public void unregisterDataSetObserver(DataSetObserver observer) {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null) {
-                cursor.unregisterDataSetObserver(observer);
+            if (this.mCursors[i] != null) {
+                this.mCursors[i].unregisterDataSetObserver(observer);
             }
         }
     }
@@ -222,8 +183,7 @@ public class MergeCursor extends AbstractCursor {
     public boolean requery() {
         int length = this.mCursors.length;
         for (int i = 0; i < length; i++) {
-            Cursor cursor = this.mCursors[i];
-            if (cursor != null && !cursor.requery()) {
+            if (this.mCursors[i] != null && !this.mCursors[i].requery()) {
                 return false;
             }
         }

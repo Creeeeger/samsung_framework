@@ -6,18 +6,18 @@ import com.samsung.android.sume.core.format.MediaFormat;
 import com.samsung.android.sume.core.message.Message;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes4.dex */
-public class StapleBufferAllocator extends MediaBufferAllocator {
+/* loaded from: classes6.dex */
+class StapleBufferAllocator extends MediaBufferAllocator {
     protected StapleBufferAllocator(MediaFormat format) {
         super(format);
     }
 
-    public StapleBufferAllocator(MediaFormat format, Align align) {
+    protected StapleBufferAllocator(MediaFormat format, Align align) {
         super(format, align);
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferAllocator
-    public MediaBuffer allocate() {
+    MediaBuffer allocate() {
         if (this.format.getMediaType().isScala()) {
             return allocAsNumber();
         }
@@ -25,7 +25,7 @@ public class StapleBufferAllocator extends MediaBufferAllocator {
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferAllocator
-    public MediaBuffer allocate(Align align) {
+    MediaBuffer allocate(Align align) {
         if (align.getDimension() != 0) {
             this.align = align;
         } else if (align.getAlignOfWidth() != 0) {
@@ -36,12 +36,12 @@ public class StapleBufferAllocator extends MediaBufferAllocator {
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferAllocator
-    public MediaBuffer allocateShared() {
+    MediaBuffer allocateShared() {
         return new GenericMediaBuffer(this.format, SharedBufferManager.create(this.format));
     }
 
     @Override // com.samsung.android.sume.core.buffer.MediaBufferAllocator
-    public <T> MediaBuffer wrap(T data) {
+    <T> MediaBuffer wrap(T data) {
         if (data instanceof ParcelFileDescriptor) {
             MediaBuffer buf = new GenericMediaBuffer(this.format, new MediaBufferAllocator.Nothing());
             buf.setExtra(Message.KEY_FILE_DESCRIPTOR, data);

@@ -9,6 +9,7 @@ import android.os.IInterface;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.RemoteException;
+import com.samsung.android.wifi.ISemAbTestConfigurationUpdateObserver;
 import com.samsung.android.wifi.ISemSharedPasswordCallback;
 import com.samsung.android.wifi.ISemWifiApClientListUpdateCallback;
 import com.samsung.android.wifi.ISemWifiApClientUpdateCallback;
@@ -32,6 +33,8 @@ public interface ISemWifiManager extends IInterface {
     void addOrUpdateWifiControlHistory(String str, boolean z) throws RemoteException;
 
     void allowAutojoinPasspoint(String str, boolean z) throws RemoteException;
+
+    int autohotspotWifiScanConnect(String str, String str2, String str3, int i, int i2, int i3) throws RemoteException;
 
     void blockFccChannelBackoff(boolean z) throws RemoteException;
 
@@ -61,6 +64,10 @@ public interface ISemWifiManager extends IInterface {
 
     void factoryReset() throws RemoteException;
 
+    List<SemAbTestConfiguration> getAbTestConfigs() throws RemoteException;
+
+    SemAbTestConfiguration getAbTestConfiguredModule(String str) throws RemoteException;
+
     int getAdvancedAutohotspotConnectSettings() throws RemoteException;
 
     int getAdvancedAutohotspotLCDSettings() throws RemoteException;
@@ -68,6 +75,8 @@ public interface ISemWifiManager extends IInterface {
     String getAntInfo() throws RemoteException;
 
     String getAutoShareDump() throws RemoteException;
+
+    boolean getAutoWifiDefaultValue() throws RemoteException;
 
     String getAutoWifiDump() throws RemoteException;
 
@@ -121,11 +130,15 @@ public interface ISemWifiManager extends IInterface {
 
     String getIssueDetectorDump(int i) throws RemoteException;
 
+    String getIwhState() throws RemoteException;
+
     String getL2TransitionLog() throws RemoteException;
 
     List<String> getMHSClientTrafficDetails() throws RemoteException;
 
     String getMHSConfig(String str) throws RemoteException;
+
+    String getMHSMacFromInterface() throws RemoteException;
 
     int getMaxTdlsSession() throws RemoteException;
 
@@ -147,9 +160,13 @@ public interface ISemWifiManager extends IInterface {
 
     int getNumOfWifiAnt() throws RemoteException;
 
+    String getNumberOfDataInEachRssiLevel() throws RemoteException;
+
     int getOptimizerForceControlMode() throws RemoteException;
 
     int[] getOptimizerState() throws RemoteException;
+
+    List getPasspointConfigurations() throws RemoteException;
 
     String getProfileShareDump() throws RemoteException;
 
@@ -171,6 +188,8 @@ public interface ISemWifiManager extends IInterface {
 
     int getRssi(String str) throws RemoteException;
 
+    boolean getSamsungIwhCtrl() throws RemoteException;
+
     boolean getSamsungMloCtrl() throws RemoteException;
 
     int[] getServiceDetectionResult() throws RemoteException;
@@ -189,6 +208,12 @@ public interface ISemWifiManager extends IInterface {
 
     SoftApConfiguration getSoftApConfiguration() throws RemoteException;
 
+    int getSoftApFreq() throws RemoteException;
+
+    int getSoftApSecurityType() throws RemoteException;
+
+    int getSoftApUpStreamNetworkType() throws RemoteException;
+
     String getStationInfo(String str) throws RemoteException;
 
     int[] getTWTParams() throws RemoteException;
@@ -206,6 +231,8 @@ public interface ISemWifiManager extends IInterface {
     String getTopHotspotClientsTodayAsString(int i, int i2) throws RemoteException;
 
     List<String> getTotalAndTop3ClientsDataUsageBetweenGivenDates(long j, long j2) throws RemoteException;
+
+    String getTxPower() throws RemoteException;
 
     int getValidState() throws RemoteException;
 
@@ -231,7 +258,13 @@ public interface ISemWifiManager extends IInterface {
 
     String getWifiApGuestPassword() throws RemoteException;
 
+    String getWifiApHostapdFreq() throws RemoteException;
+
+    String getWifiApHostapdSecurtiy() throws RemoteException;
+
     String getWifiApInterfaceName() throws RemoteException;
+
+    List<String> getWifiApInterfaceNames() throws RemoteException;
 
     boolean getWifiApIsolate() throws RemoteException;
 
@@ -263,11 +296,19 @@ public interface ISemWifiManager extends IInterface {
 
     int getWifiIconVisibility() throws RemoteException;
 
+    String getWifiMACAddress() throws RemoteException;
+
     Bundle getWifiRouterInfo(String str) throws RemoteException;
 
     String getWifiRouterInfoBestEffort(String str) throws RemoteException;
 
+    String getWifiRouterInfoBestEffortByBssid(String str) throws RemoteException;
+
+    Bundle getWifiRouterInfoByBssid(String str) throws RemoteException;
+
     String getWifiRouterInfoPresentable(String str) throws RemoteException;
+
+    String getWifiRouterInfoPresentableByBssid(String str) throws RemoteException;
 
     String getWifiStaInfo() throws RemoteException;
 
@@ -287,15 +328,17 @@ public interface ISemWifiManager extends IInterface {
 
     void isClientAcceptedWifiProfileSharing(boolean z) throws RemoteException;
 
+    int isDataSaverEnabled() throws RemoteException;
+
     boolean isGripSensorMonitorEnabled() throws RemoteException;
 
     boolean isIndividualAppSupported() throws RemoteException;
 
-    boolean isLocationProviderAvailable() throws RemoteException;
-
     boolean isMCFClientAutohotspotSupported() throws RemoteException;
 
     boolean isNCHOModeEnabled() throws RemoteException;
+
+    boolean isNeededToShowWifiApDatalimitReachedDialog() throws RemoteException;
 
     boolean isOverAllMhsDataLimitReached() throws RemoteException;
 
@@ -303,7 +346,13 @@ public interface ISemWifiManager extends IInterface {
 
     boolean isP2pConnected() throws RemoteException;
 
+    boolean isSAFamilySupportedBasedOnCountry() throws RemoteException;
+
     boolean isScanningEnabled() throws RemoteException;
+
+    int isSoftAp6ENetwork() throws RemoteException;
+
+    int isSoftap11axEnabled() throws RemoteException;
 
     boolean isSupportedAutoWifi() throws RemoteException;
 
@@ -341,6 +390,10 @@ public interface ISemWifiManager extends IInterface {
 
     boolean isWifiSharingSupported() throws RemoteException;
 
+    boolean iwhIntendedDisconnection() throws RemoteException;
+
+    void launchWifiApWarningForMcfMHS(int i, int i2, boolean z) throws RemoteException;
+
     boolean linkQosQuery(long j, long j2, long j3, int i, long j4) throws RemoteException;
 
     int manageWifiApMacAclList(String str, String str2, int i, int i2) throws RemoteException;
@@ -350,6 +403,8 @@ public interface ISemWifiManager extends IInterface {
     void notifyReachabilityLost() throws RemoteException;
 
     List<String> readWifiApMacAclList(int i) throws RemoteException;
+
+    void registerAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver iSemAbTestConfigurationUpdateObserver, String str) throws RemoteException;
 
     void registerClientDataUsageCallback(IBinder iBinder, ISemWifiApClientUpdateCallback iSemWifiApClientUpdateCallback, int i, String str) throws RemoteException;
 
@@ -370,6 +425,8 @@ public interface ISemWifiManager extends IInterface {
     boolean removeNetwork(String str) throws RemoteException;
 
     boolean removePktlogFilter(String str, String str2) throws RemoteException;
+
+    void reportAbTestResult(String str, String str2, String str3) throws RemoteException;
 
     void reportBigData(String str, String str2) throws RemoteException;
 
@@ -403,6 +460,8 @@ public interface ISemWifiManager extends IInterface {
 
     boolean saveFwDump() throws RemoteException;
 
+    boolean sendReassociationFrequencyRequestFrame(String str, int i) throws RemoteException;
+
     boolean sendReassociationRequestFrame(String str, int i) throws RemoteException;
 
     boolean sendVendorSpecificActionFrame(String str, int i, int i2, String str2) throws RemoteException;
@@ -422,6 +481,10 @@ public interface ISemWifiManager extends IInterface {
     void setArdkPowerSaveMode(boolean z) throws RemoteException;
 
     void setAutohotspotToastMessage(int i) throws RemoteException;
+
+    void setBtmOptionUserDisabled(String str) throws RemoteException;
+
+    void setBtmOptionUserEnabled(String str) throws RemoteException;
 
     void setConnectionAttemptInfo(int i, boolean z, String str) throws RemoteException;
 
@@ -448,6 +511,8 @@ public interface ISemWifiManager extends IInterface {
     void setIWCMockAction(int i) throws RemoteException;
 
     void setIWCQTables(String str) throws RemoteException;
+
+    void setIlaTrainingResult(double d, String str) throws RemoteException;
 
     void setImsCallEstablished(boolean z) throws RemoteException;
 
@@ -497,6 +562,8 @@ public interface ISemWifiManager extends IInterface {
 
     boolean setRoamTrigger(int i) throws RemoteException;
 
+    void setSamsungIwhCtrl(boolean z) throws RemoteException;
+
     void setSamsungMloCtrl(boolean z) throws RemoteException;
 
     int setSmartMHSLocked(int i) throws RemoteException;
@@ -508,6 +575,8 @@ public interface ISemWifiManager extends IInterface {
     Map setTasPolicy(int i, int i2) throws RemoteException;
 
     boolean setTdlsEnabled(boolean z) throws RemoteException;
+
+    void setTestMode(boolean z) throws RemoteException;
 
     void setTestSettings(int i, Bundle bundle) throws RemoteException;
 
@@ -522,6 +591,10 @@ public interface ISemWifiManager extends IInterface {
     void setVerboseLoggingEnabled(boolean z) throws RemoteException;
 
     boolean setWesModeEnabled(boolean z) throws RemoteException;
+
+    void setWifiAiIwhInferenceResult(boolean[] zArr) throws RemoteException;
+
+    void setWifiAiIwhTrainingResult(String str, int i, int i2, int i3) throws RemoteException;
 
     void setWifiAiServiceNsdResult(int[] iArr, int[] iArr2, int[] iArr3, String[] strArr) throws RemoteException;
 
@@ -569,6 +642,8 @@ public interface ISemWifiManager extends IInterface {
 
     int setWifiUwbCoexEnabled(int i, boolean z) throws RemoteException;
 
+    boolean shouldShowAutoWifiBubbleTip() throws RemoteException;
+
     int startCapture(int i) throws RemoteException;
 
     void startIssueMonitoring(Bundle bundle) throws RemoteException;
@@ -590,6 +665,8 @@ public interface ISemWifiManager extends IInterface {
     void triggerBackoffRoutine(boolean z) throws RemoteException;
 
     void unRegisterWifiApDataUsageCallback(int i) throws RemoteException;
+
+    void unregisterAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver iSemAbTestConfigurationUpdateObserver) throws RemoteException;
 
     void unregisterClientDataUsageCallback(int i) throws RemoteException;
 
@@ -623,7 +700,6 @@ public interface ISemWifiManager extends IInterface {
 
     void wifiApRestoreDailyHotspotDataLimit(long j) throws RemoteException;
 
-    /* loaded from: classes6.dex */
     public static class Default implements ISemWifiManager {
         @Override // com.samsung.android.wifi.ISemWifiManager
         public void setMaxDtimInSuspendMode(boolean enable) throws RemoteException {
@@ -756,6 +832,21 @@ public interface ISemWifiManager extends IInterface {
 
         @Override // com.samsung.android.wifi.ISemWifiManager
         public String getWifiRouterInfoPresentable(String configKey) throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public Bundle getWifiRouterInfoByBssid(String bssid) throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getWifiRouterInfoBestEffortByBssid(String bssid) throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getWifiRouterInfoPresentableByBssid(String bssid) throws RemoteException {
             return null;
         }
 
@@ -1075,6 +1166,11 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getTxPower() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public int getWifiApFreq() throws RemoteException {
             return 0;
         }
@@ -1148,6 +1244,11 @@ public interface ISemWifiManager extends IInterface {
 
         @Override // com.samsung.android.wifi.ISemWifiManager
         public void setWifiApConfigurationToDefault() throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public List<String> getWifiApInterfaceNames() throws RemoteException {
+            return null;
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
@@ -1326,6 +1427,70 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public int getSoftApSecurityType() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int isDataSaverEnabled() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int isSoftap11axEnabled() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int isSoftAp6ENetwork() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int getSoftApUpStreamNetworkType() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getMHSMacFromInterface() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int getSoftApFreq() throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void launchWifiApWarningForMcfMHS(int wifiap_band, int wifiap_set_security, boolean wifiap_security) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean isNeededToShowWifiApDatalimitReachedDialog() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getWifiMACAddress() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public int autohotspotWifiScanConnect(String ssid, String password, String bssid, int hideSSID, int mhsFreq, int security) throws RemoteException {
+            return 0;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getWifiApHostapdFreq() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getWifiApHostapdSecurtiy() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public boolean isMCFClientAutohotspotSupported() throws RemoteException {
             return false;
         }
@@ -1471,6 +1636,11 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean isSAFamilySupportedBasedOnCountry() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public void registerClientListDataUsageCallback(IBinder binder, ISemWifiApClientListUpdateCallback callbackToRegister, int callbackIdentifier, int topConnectedAndDisconnected, int maxListLength) throws RemoteException {
         }
 
@@ -1527,6 +1697,11 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public List getPasspointConfigurations() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public String getIssueDetectorDump(int maxCount) throws RemoteException {
             return null;
         }
@@ -1561,6 +1736,14 @@ public interface ISemWifiManager extends IInterface {
         @Override // com.samsung.android.wifi.ISemWifiManager
         public Map getQoSScores(List<String> bssids) throws RemoteException {
             return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setBtmOptionUserEnabled(String configKey) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setBtmOptionUserDisabled(String configKey) throws RemoteException {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
@@ -1609,6 +1792,16 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean getAutoWifiDefaultValue() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean shouldShowAutoWifiBubbleTip() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public boolean isAvailableAutoWifiScan() throws RemoteException {
             return false;
         }
@@ -1625,11 +1818,6 @@ public interface ISemWifiManager extends IInterface {
 
         @Override // com.samsung.android.wifi.ISemWifiManager
         public boolean hasConfiguredNetworkLocations(String wifiConfigKey) throws RemoteException {
-            return false;
-        }
-
-        @Override // com.samsung.android.wifi.ISemWifiManager
-        public boolean isLocationProviderAvailable() throws RemoteException {
             return false;
         }
 
@@ -1860,11 +2048,39 @@ public interface ISemWifiManager extends IInterface {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getNumberOfDataInEachRssiLevel() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public String getIwhState() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public void setSamsungMloCtrl(boolean enable) throws RemoteException {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setSamsungIwhCtrl(boolean enable) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
         public boolean getSamsungMloCtrl() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean getSamsungIwhCtrl() throws RemoteException {
+            return false;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setTestMode(boolean mode) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean iwhIntendedDisconnection() throws RemoteException {
             return false;
         }
 
@@ -1879,6 +2095,18 @@ public interface ISemWifiManager extends IInterface {
 
         @Override // com.samsung.android.wifi.ISemWifiManager
         public void setWifiAiServiceNsdResult(int[] nsdResult, int[] l1ConvSerPredArr, int[] l2ConvSerPredArr, String[] convArr) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setWifiAiIwhTrainingResult(String gKey, int trScore, int numBssids, int mode) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setWifiAiIwhInferenceResult(boolean[] ret) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void setIlaTrainingResult(double RssiResult, String bssidE) throws RemoteException {
         }
 
         @Override // com.samsung.android.wifi.ISemWifiManager
@@ -2014,312 +2242,376 @@ public interface ISemWifiManager extends IInterface {
         public void setMcfMultiControlMode(boolean enable) throws RemoteException {
         }
 
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void registerAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver observer, String module) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void unregisterAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver observer) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public void reportAbTestResult(String module, String outputDim, String output) throws RemoteException {
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public List<SemAbTestConfiguration> getAbTestConfigs() throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public SemAbTestConfiguration getAbTestConfiguredModule(String module) throws RemoteException {
+            return null;
+        }
+
+        @Override // com.samsung.android.wifi.ISemWifiManager
+        public boolean sendReassociationFrequencyRequestFrame(String bssid, int channel) throws RemoteException {
+            return false;
+        }
+
         @Override // android.os.IInterface
         public IBinder asBinder() {
             return null;
         }
     }
 
-    /* loaded from: classes6.dex */
     public static abstract class Stub extends Binder implements ISemWifiManager {
-        static final int TRANSACTION_addOrUpdateNetwork = 187;
-        static final int TRANSACTION_addOrUpdateWifiControlHistory = 185;
-        static final int TRANSACTION_allowAutojoinPasspoint = 192;
+        static final int TRANSACTION_addOrUpdateNetwork = 206;
+        static final int TRANSACTION_addOrUpdateWifiControlHistory = 204;
+        static final int TRANSACTION_allowAutojoinPasspoint = 211;
+        static final int TRANSACTION_autohotspotWifiScanConnect = 164;
         static final int TRANSACTION_blockFccChannelBackoff = 4;
-        static final int TRANSACTION_canAutoHotspotBeEnabled = 146;
-        static final int TRANSACTION_canSmartMHSLocked = 70;
-        static final int TRANSACTION_checkAppForWiFiOffloading = 257;
-        static final int TRANSACTION_clearAutoHotspotLists = 45;
-        static final int TRANSACTION_connectToMcfMHS = 153;
-        static final int TRANSACTION_connectToSmartD2DClient = 87;
-        static final int TRANSACTION_connectToSmartMHS = 76;
-        static final int TRANSACTION_disableRandomMac = 222;
-        static final int TRANSACTION_disconnectApBlockAutojoin = 242;
-        static final int TRANSACTION_enableHotspotTsfInfo = 143;
-        static final int TRANSACTION_enableTxPowerLogging = 289;
-        static final int TRANSACTION_externalTwtInterface = 259;
-        static final int TRANSACTION_factoryReset = 189;
-        static final int TRANSACTION_getAdvancedAutohotspotConnectSettings = 39;
-        static final int TRANSACTION_getAdvancedAutohotspotLCDSettings = 41;
+        static final int TRANSACTION_canAutoHotspotBeEnabled = 151;
+        static final int TRANSACTION_canSmartMHSLocked = 73;
+        static final int TRANSACTION_checkAppForWiFiOffloading = 280;
+        static final int TRANSACTION_clearAutoHotspotLists = 48;
+        static final int TRANSACTION_connectToMcfMHS = 171;
+        static final int TRANSACTION_connectToSmartD2DClient = 90;
+        static final int TRANSACTION_connectToSmartMHS = 79;
+        static final int TRANSACTION_disableRandomMac = 245;
+        static final int TRANSACTION_disconnectApBlockAutojoin = 265;
+        static final int TRANSACTION_enableHotspotTsfInfo = 148;
+        static final int TRANSACTION_enableTxPowerLogging = 321;
+        static final int TRANSACTION_externalTwtInterface = 282;
+        static final int TRANSACTION_factoryReset = 208;
+        static final int TRANSACTION_getAbTestConfigs = 334;
+        static final int TRANSACTION_getAbTestConfiguredModule = 335;
+        static final int TRANSACTION_getAdvancedAutohotspotConnectSettings = 42;
+        static final int TRANSACTION_getAdvancedAutohotspotLCDSettings = 44;
         static final int TRANSACTION_getAntInfo = 11;
-        static final int TRANSACTION_getAutoShareDump = 208;
-        static final int TRANSACTION_getAutoWifiDump = 212;
-        static final int TRANSACTION_getChannelUtilization = 47;
-        static final int TRANSACTION_getChannelUtilizationExtended = 48;
-        static final int TRANSACTION_getConfiguredNetworkLocations = 213;
-        static final int TRANSACTION_getConfiguredNetworks = 191;
-        static final int TRANSACTION_getConnectivityLog = 199;
-        static final int TRANSACTION_getCountryCode = 59;
-        static final int TRANSACTION_getCountryRev = 58;
-        static final int TRANSACTION_getCtlFeatureState = 261;
-        static final int TRANSACTION_getCurrentL2TransitionMode = 264;
-        static final int TRANSACTION_getCurrentStateAndEnterTime = 30;
-        static final int TRANSACTION_getCurrentStatusMode = 226;
+        static final int TRANSACTION_getAutoShareDump = 230;
+        static final int TRANSACTION_getAutoWifiDefaultValue = 233;
+        static final int TRANSACTION_getAutoWifiDump = 236;
+        static final int TRANSACTION_getChannelUtilization = 50;
+        static final int TRANSACTION_getChannelUtilizationExtended = 51;
+        static final int TRANSACTION_getConfiguredNetworkLocations = 237;
+        static final int TRANSACTION_getConfiguredNetworks = 210;
+        static final int TRANSACTION_getConnectivityLog = 219;
+        static final int TRANSACTION_getCountryCode = 62;
+        static final int TRANSACTION_getCountryRev = 61;
+        static final int TRANSACTION_getCtlFeatureState = 284;
+        static final int TRANSACTION_getCurrentL2TransitionMode = 287;
+        static final int TRANSACTION_getCurrentStateAndEnterTime = 33;
+        static final int TRANSACTION_getCurrentStatusMode = 249;
         static final int TRANSACTION_getCurrentWifiRouterInfo = 25;
-        static final int TRANSACTION_getDailyUsageInfo = 32;
-        static final int TRANSACTION_getDataConsumedValues = 283;
+        static final int TRANSACTION_getDailyUsageInfo = 35;
+        static final int TRANSACTION_getDataConsumedValues = 315;
         static final int TRANSACTION_getDcxoCalibrationData = 24;
-        static final int TRANSACTION_getDiagnosisResults = 196;
-        static final int TRANSACTION_getDynamicFeatureStatus = 290;
-        static final int TRANSACTION_getEasySetupScanSettings = 221;
+        static final int TRANSACTION_getDiagnosisResults = 216;
+        static final int TRANSACTION_getDynamicFeatureStatus = 322;
+        static final int TRANSACTION_getEasySetupScanSettings = 244;
         static final int TRANSACTION_getFactoryMacAddress = 10;
         static final int TRANSACTION_getFrameburstInfo = 12;
-        static final int TRANSACTION_getHotspotAntMode = 97;
-        static final int TRANSACTION_getIWCQTables = 238;
-        static final int TRANSACTION_getIndoorStatus = 120;
-        static final int TRANSACTION_getIsPacketCaptureSupportedByDriver = 297;
-        static final int TRANSACTION_getIssueDetectorDump = 193;
-        static final int TRANSACTION_getL2TransitionLog = 265;
-        static final int TRANSACTION_getMHSClientTrafficDetails = 281;
-        static final int TRANSACTION_getMHSConfig = 100;
-        static final int TRANSACTION_getMaxTdlsSession = 279;
-        static final int TRANSACTION_getMcfConnectedStatus = 154;
-        static final int TRANSACTION_getMcfConnectedStatusFromScanResult = 155;
-        static final int TRANSACTION_getMcfScanDetail = 150;
-        static final int TRANSACTION_getMonthlyDataUsage = 167;
-        static final int TRANSACTION_getNRTTrafficbandwidth = 282;
-        static final int TRANSACTION_getNetworkLastUpdatedTimeMap = 29;
-        static final int TRANSACTION_getNetworkUsageInfo = 31;
-        static final int TRANSACTION_getNumOfTdlsSession = 280;
-        static final int TRANSACTION_getNumOfWifiAnt = 255;
-        static final int TRANSACTION_getOptimizerForceControlMode = 244;
-        static final int TRANSACTION_getOptimizerState = 245;
-        static final int TRANSACTION_getProfileShareDump = 207;
-        static final int TRANSACTION_getProvisionSuccess = 115;
+        static final int TRANSACTION_getHotspotAntMode = 101;
+        static final int TRANSACTION_getIWCQTables = 261;
+        static final int TRANSACTION_getIndoorStatus = 125;
+        static final int TRANSACTION_getIsPacketCaptureSupportedByDriver = 329;
+        static final int TRANSACTION_getIssueDetectorDump = 213;
+        static final int TRANSACTION_getIwhState = 290;
+        static final int TRANSACTION_getL2TransitionLog = 288;
+        static final int TRANSACTION_getMHSClientTrafficDetails = 313;
+        static final int TRANSACTION_getMHSConfig = 104;
+        static final int TRANSACTION_getMHSMacFromInterface = 159;
+        static final int TRANSACTION_getMaxTdlsSession = 311;
+        static final int TRANSACTION_getMcfConnectedStatus = 172;
+        static final int TRANSACTION_getMcfConnectedStatusFromScanResult = 173;
+        static final int TRANSACTION_getMcfScanDetail = 168;
+        static final int TRANSACTION_getMonthlyDataUsage = 185;
+        static final int TRANSACTION_getNRTTrafficbandwidth = 314;
+        static final int TRANSACTION_getNetworkLastUpdatedTimeMap = 32;
+        static final int TRANSACTION_getNetworkUsageInfo = 34;
+        static final int TRANSACTION_getNumOfTdlsSession = 312;
+        static final int TRANSACTION_getNumOfWifiAnt = 278;
+        static final int TRANSACTION_getNumberOfDataInEachRssiLevel = 289;
+        static final int TRANSACTION_getOptimizerForceControlMode = 267;
+        static final int TRANSACTION_getOptimizerState = 268;
+        static final int TRANSACTION_getPasspointConfigurations = 212;
+        static final int TRANSACTION_getProfileShareDump = 229;
+        static final int TRANSACTION_getProvisionSuccess = 120;
         static final int TRANSACTION_getPsmInfo = 13;
-        static final int TRANSACTION_getQoSScores = 200;
-        static final int TRANSACTION_getRVFModeStatus = 121;
-        static final int TRANSACTION_getRoamBand = 56;
-        static final int TRANSACTION_getRoamDelta = 52;
-        static final int TRANSACTION_getRoamScanPeriod = 54;
-        static final int TRANSACTION_getRoamTrigger = 50;
-        static final int TRANSACTION_getRssi = 253;
-        static final int TRANSACTION_getSamsungMloCtrl = 267;
-        static final int TRANSACTION_getServiceDetectionResult = 246;
-        static final int TRANSACTION_getSilentRoamingDump = 198;
-        static final int TRANSACTION_getSmartApConnectedStatus = 78;
-        static final int TRANSACTION_getSmartApConnectedStatusFromScanResult = 83;
-        static final int TRANSACTION_getSmartD2DClientConnectedStatus = 88;
-        static final int TRANSACTION_getSmartMHSLockStatus = 69;
-        static final int TRANSACTION_getSoftApBands = 145;
-        static final int TRANSACTION_getSoftApConfiguration = 92;
-        static final int TRANSACTION_getStationInfo = 94;
-        static final int TRANSACTION_getTWTParams = 260;
-        static final int TRANSACTION_getTasAverage = 285;
-        static final int TRANSACTION_getTcpMonitorAllSocketHistory = 272;
-        static final int TRANSACTION_getTcpMonitorDnsHistory = 273;
-        static final int TRANSACTION_getTcpMonitorSocketForegroundHistory = 271;
-        static final int TRANSACTION_getTopHotspotClientsToday = 162;
-        static final int TRANSACTION_getTopHotspotClientsTodayAsString = 163;
-        static final int TRANSACTION_getTotalAndTop3ClientsDataUsageBetweenGivenDates = 166;
-        static final int TRANSACTION_getValidState = 227;
+        static final int TRANSACTION_getQoSScores = 220;
+        static final int TRANSACTION_getRVFModeStatus = 126;
+        static final int TRANSACTION_getRoamBand = 59;
+        static final int TRANSACTION_getRoamDelta = 55;
+        static final int TRANSACTION_getRoamScanPeriod = 57;
+        static final int TRANSACTION_getRoamTrigger = 53;
+        static final int TRANSACTION_getRssi = 276;
+        static final int TRANSACTION_getSamsungIwhCtrl = 294;
+        static final int TRANSACTION_getSamsungMloCtrl = 293;
+        static final int TRANSACTION_getServiceDetectionResult = 269;
+        static final int TRANSACTION_getSilentRoamingDump = 218;
+        static final int TRANSACTION_getSmartApConnectedStatus = 81;
+        static final int TRANSACTION_getSmartApConnectedStatusFromScanResult = 86;
+        static final int TRANSACTION_getSmartD2DClientConnectedStatus = 91;
+        static final int TRANSACTION_getSmartMHSLockStatus = 72;
+        static final int TRANSACTION_getSoftApBands = 150;
+        static final int TRANSACTION_getSoftApConfiguration = 95;
+        static final int TRANSACTION_getSoftApFreq = 160;
+        static final int TRANSACTION_getSoftApSecurityType = 154;
+        static final int TRANSACTION_getSoftApUpStreamNetworkType = 158;
+        static final int TRANSACTION_getStationInfo = 97;
+        static final int TRANSACTION_getTWTParams = 283;
+        static final int TRANSACTION_getTasAverage = 317;
+        static final int TRANSACTION_getTcpMonitorAllSocketHistory = 304;
+        static final int TRANSACTION_getTcpMonitorDnsHistory = 305;
+        static final int TRANSACTION_getTcpMonitorSocketForegroundHistory = 303;
+        static final int TRANSACTION_getTopHotspotClientsToday = 180;
+        static final int TRANSACTION_getTopHotspotClientsTodayAsString = 181;
+        static final int TRANSACTION_getTotalAndTop3ClientsDataUsageBetweenGivenDates = 184;
+        static final int TRANSACTION_getTxPower = 98;
+        static final int TRANSACTION_getValidState = 250;
         static final int TRANSACTION_getVendorWlanDriverProp = 15;
-        static final int TRANSACTION_getWcmEverQualityTested = 224;
-        static final int TRANSACTION_getWifi7DisabledCountry = 60;
-        static final int TRANSACTION_getWifiApBleD2DScanDetail = 84;
-        static final int TRANSACTION_getWifiApBleScanDetail = 73;
-        static final int TRANSACTION_getWifiApChannel = 102;
-        static final int TRANSACTION_getWifiApClientDetails = 161;
-        static final int TRANSACTION_getWifiApConnectedStationCount = 118;
-        static final int TRANSACTION_getWifiApDailyDataLimit = 165;
-        static final int TRANSACTION_getWifiApFreq = 95;
-        static final int TRANSACTION_getWifiApGuestPassword = 174;
-        static final int TRANSACTION_getWifiApInterfaceName = 111;
-        static final int TRANSACTION_getWifiApIsolate = 131;
-        static final int TRANSACTION_getWifiApLOHSState = 119;
-        static final int TRANSACTION_getWifiApMacAclMode = 135;
-        static final int TRANSACTION_getWifiApMaxClient = 103;
-        static final int TRANSACTION_getWifiApMaxClientFromFramework = 127;
-        static final int TRANSACTION_getWifiApStaList = 106;
-        static final int TRANSACTION_getWifiApStaListDetail = 109;
-        static final int TRANSACTION_getWifiApState = 140;
-        static final int TRANSACTION_getWifiApTodaysTotalDataUsage = 164;
-        static final int TRANSACTION_getWifiApWarningActivityRunningState = 44;
-        static final int TRANSACTION_getWifiApWpsPbc = 129;
+        static final int TRANSACTION_getWcmEverQualityTested = 247;
+        static final int TRANSACTION_getWifi7DisabledCountry = 63;
+        static final int TRANSACTION_getWifiApBleD2DScanDetail = 87;
+        static final int TRANSACTION_getWifiApBleScanDetail = 76;
+        static final int TRANSACTION_getWifiApChannel = 106;
+        static final int TRANSACTION_getWifiApClientDetails = 179;
+        static final int TRANSACTION_getWifiApConnectedStationCount = 123;
+        static final int TRANSACTION_getWifiApDailyDataLimit = 183;
+        static final int TRANSACTION_getWifiApFreq = 99;
+        static final int TRANSACTION_getWifiApGuestPassword = 192;
+        static final int TRANSACTION_getWifiApHostapdFreq = 165;
+        static final int TRANSACTION_getWifiApHostapdSecurtiy = 166;
+        static final int TRANSACTION_getWifiApInterfaceName = 116;
+        static final int TRANSACTION_getWifiApInterfaceNames = 115;
+        static final int TRANSACTION_getWifiApIsolate = 136;
+        static final int TRANSACTION_getWifiApLOHSState = 124;
+        static final int TRANSACTION_getWifiApMacAclMode = 140;
+        static final int TRANSACTION_getWifiApMaxClient = 107;
+        static final int TRANSACTION_getWifiApMaxClientFromFramework = 132;
+        static final int TRANSACTION_getWifiApStaList = 110;
+        static final int TRANSACTION_getWifiApStaListDetail = 113;
+        static final int TRANSACTION_getWifiApState = 145;
+        static final int TRANSACTION_getWifiApTodaysTotalDataUsage = 182;
+        static final int TRANSACTION_getWifiApWarningActivityRunningState = 47;
+        static final int TRANSACTION_getWifiApWpsPbc = 134;
         static final int TRANSACTION_getWifiCid = 8;
-        static final int TRANSACTION_getWifiEnableHistory = 186;
+        static final int TRANSACTION_getWifiEnableHistory = 205;
         static final int TRANSACTION_getWifiFirmwareVersion = 7;
-        static final int TRANSACTION_getWifiIconVisibility = 225;
+        static final int TRANSACTION_getWifiIconVisibility = 248;
+        static final int TRANSACTION_getWifiMACAddress = 163;
         static final int TRANSACTION_getWifiRouterInfo = 26;
         static final int TRANSACTION_getWifiRouterInfoBestEffort = 27;
+        static final int TRANSACTION_getWifiRouterInfoBestEffortByBssid = 30;
+        static final int TRANSACTION_getWifiRouterInfoByBssid = 29;
         static final int TRANSACTION_getWifiRouterInfoPresentable = 28;
-        static final int TRANSACTION_getWifiStaInfo = 254;
+        static final int TRANSACTION_getWifiRouterInfoPresentableByBssid = 31;
+        static final int TRANSACTION_getWifiStaInfo = 277;
         static final int TRANSACTION_getWifiSupportedFeatureSet = 14;
-        static final int TRANSACTION_getWifiUsabilityStatsEntry = 275;
+        static final int TRANSACTION_getWifiUsabilityStatsEntry = 307;
         static final int TRANSACTION_getWifiVersions = 9;
-        static final int TRANSACTION_hasConfiguredNetworkLocations = 214;
-        static final int TRANSACTION_isAvailableAutoWifiScan = 211;
-        static final int TRANSACTION_isAvailableTdls = 276;
-        static final int TRANSACTION_isCaptureRunning = 296;
-        static final int TRANSACTION_isClientAcceptedWifiProfileSharing = 72;
-        static final int TRANSACTION_isGripSensorMonitorEnabled = 34;
-        static final int TRANSACTION_isIndividualAppSupported = 274;
-        static final int TRANSACTION_isLocationProviderAvailable = 215;
-        static final int TRANSACTION_isMCFClientAutohotspotSupported = 149;
-        static final int TRANSACTION_isNCHOModeEnabled = 61;
-        static final int TRANSACTION_isOverAllMhsDataLimitReached = 168;
-        static final int TRANSACTION_isOverAllMhsDataLimitSet = 169;
-        static final int TRANSACTION_isP2pConnected = 147;
-        static final int TRANSACTION_isScanningEnabled = 218;
-        static final int TRANSACTION_isSupportedAutoWifi = 210;
-        static final int TRANSACTION_isSupportedProfileRequest = 206;
-        static final int TRANSACTION_isSupportedQoSProvider = 205;
-        static final int TRANSACTION_isSwitchToMobileDataDefaultOff = 291;
-        static final int TRANSACTION_isUploadModeEnabled = 38;
-        static final int TRANSACTION_isWesModeEnabled = 65;
-        static final int TRANSACTION_isWiderBandwidthTdlsSupported = 277;
-        static final int TRANSACTION_isWifiApEnabled = 117;
-        static final int TRANSACTION_isWifiApEnabledWithDualBand = 141;
-        static final int TRANSACTION_isWifiApGuestClient = 179;
-        static final int TRANSACTION_isWifiApGuestModeEnabled = 175;
-        static final int TRANSACTION_isWifiApGuestModeIsolationEnabled = 177;
-        static final int TRANSACTION_isWifiApMacAclEnabled = 137;
-        static final int TRANSACTION_isWifiApWpa3Supported = 89;
+        static final int TRANSACTION_hasConfiguredNetworkLocations = 238;
+        static final int TRANSACTION_isAvailableAutoWifiScan = 235;
+        static final int TRANSACTION_isAvailableTdls = 308;
+        static final int TRANSACTION_isCaptureRunning = 328;
+        static final int TRANSACTION_isClientAcceptedWifiProfileSharing = 75;
+        static final int TRANSACTION_isDataSaverEnabled = 155;
+        static final int TRANSACTION_isGripSensorMonitorEnabled = 37;
+        static final int TRANSACTION_isIndividualAppSupported = 306;
+        static final int TRANSACTION_isMCFClientAutohotspotSupported = 167;
+        static final int TRANSACTION_isNCHOModeEnabled = 64;
+        static final int TRANSACTION_isNeededToShowWifiApDatalimitReachedDialog = 162;
+        static final int TRANSACTION_isOverAllMhsDataLimitReached = 186;
+        static final int TRANSACTION_isOverAllMhsDataLimitSet = 187;
+        static final int TRANSACTION_isP2pConnected = 152;
+        static final int TRANSACTION_isSAFamilySupportedBasedOnCountry = 198;
+        static final int TRANSACTION_isScanningEnabled = 241;
+        static final int TRANSACTION_isSoftAp6ENetwork = 157;
+        static final int TRANSACTION_isSoftap11axEnabled = 156;
+        static final int TRANSACTION_isSupportedAutoWifi = 232;
+        static final int TRANSACTION_isSupportedProfileRequest = 228;
+        static final int TRANSACTION_isSupportedQoSProvider = 227;
+        static final int TRANSACTION_isSwitchToMobileDataDefaultOff = 323;
+        static final int TRANSACTION_isUploadModeEnabled = 41;
+        static final int TRANSACTION_isWesModeEnabled = 68;
+        static final int TRANSACTION_isWiderBandwidthTdlsSupported = 309;
+        static final int TRANSACTION_isWifiApEnabled = 122;
+        static final int TRANSACTION_isWifiApEnabledWithDualBand = 146;
+        static final int TRANSACTION_isWifiApGuestClient = 197;
+        static final int TRANSACTION_isWifiApGuestModeEnabled = 193;
+        static final int TRANSACTION_isWifiApGuestModeIsolationEnabled = 195;
+        static final int TRANSACTION_isWifiApMacAclEnabled = 142;
+        static final int TRANSACTION_isWifiApWpa3Supported = 92;
         static final int TRANSACTION_isWifiDeveloperModeEnabled = 6;
-        static final int TRANSACTION_isWifiSharingEnabled = 116;
-        static final int TRANSACTION_isWifiSharingLiteSupported = 108;
-        static final int TRANSACTION_isWifiSharingSupported = 107;
-        static final int TRANSACTION_linkQosQuery = 268;
-        static final int TRANSACTION_manageWifiApMacAclList = 133;
-        static final int TRANSACTION_notifyConnect = 144;
-        static final int TRANSACTION_notifyReachabilityLost = 228;
-        static final int TRANSACTION_readWifiApMacAclList = 134;
-        static final int TRANSACTION_registerClientDataUsageCallback = 182;
-        static final int TRANSACTION_registerClientListDataUsageCallback = 180;
-        static final int TRANSACTION_registerPasswordCallback = 201;
-        static final int TRANSACTION_registerTasPolicyChangedListener = 287;
-        static final int TRANSACTION_registerWifiApDataUsageCallback = 81;
-        static final int TRANSACTION_registerWifiApSmartCallback = 79;
-        static final int TRANSACTION_removeExcludedNetwork = 233;
+        static final int TRANSACTION_isWifiSharingEnabled = 121;
+        static final int TRANSACTION_isWifiSharingLiteSupported = 112;
+        static final int TRANSACTION_isWifiSharingSupported = 111;
+        static final int TRANSACTION_iwhIntendedDisconnection = 296;
+        static final int TRANSACTION_launchWifiApWarningForMcfMHS = 161;
+        static final int TRANSACTION_linkQosQuery = 297;
+        static final int TRANSACTION_manageWifiApMacAclList = 138;
+        static final int TRANSACTION_notifyConnect = 149;
+        static final int TRANSACTION_notifyReachabilityLost = 251;
+        static final int TRANSACTION_readWifiApMacAclList = 139;
+        static final int TRANSACTION_registerAbTestConfigUpdateObserver = 331;
+        static final int TRANSACTION_registerClientDataUsageCallback = 201;
+        static final int TRANSACTION_registerClientListDataUsageCallback = 199;
+        static final int TRANSACTION_registerPasswordCallback = 223;
+        static final int TRANSACTION_registerTasPolicyChangedListener = 319;
+        static final int TRANSACTION_registerWifiApDataUsageCallback = 84;
+        static final int TRANSACTION_registerWifiApSmartCallback = 82;
+        static final int TRANSACTION_removeExcludedNetwork = 256;
         static final int TRANSACTION_removeFactoryMacAddress = 17;
-        static final int TRANSACTION_removeNetwork = 188;
-        static final int TRANSACTION_removePktlogFilter = 251;
-        static final int TRANSACTION_reportBigData = 184;
-        static final int TRANSACTION_reportHotspotDumpLogs = 139;
-        static final int TRANSACTION_reportIssue = 194;
-        static final int TRANSACTION_requestPassword = 203;
-        static final int TRANSACTION_requestStopAutohotspotAdvertisement = 77;
-        static final int TRANSACTION_resetCallbackCondition = 262;
-        static final int TRANSACTION_resetComebackCondition = 263;
-        static final int TRANSACTION_resetDeveloperOptionsSettings = 190;
-        static final int TRANSACTION_resetSoftAp = 125;
-        static final int TRANSACTION_resetTotalPriorityDataConsumedValues = 284;
-        static final int TRANSACTION_restoreIWCSettingsValue = 237;
-        static final int TRANSACTION_restoreSemConfigurationsBackupData = 235;
-        static final int TRANSACTION_retrieveSemWifiConfigsBackupData = 234;
-        static final int TRANSACTION_runAutoShareForCurrent = 209;
-        static final int TRANSACTION_runIptablesRulesCommand = 112;
-        static final int TRANSACTION_saveFwDump = 252;
-        static final int TRANSACTION_sendReassociationRequestFrame = 68;
-        static final int TRANSACTION_sendVendorSpecificActionFrame = 67;
-        static final int TRANSACTION_set5GmmWaveSarBackoffEnabled = 36;
-        static final int TRANSACTION_setAdvancedAutohotspotConnectSettings = 40;
-        static final int TRANSACTION_setAdvancedAutohotspotLCDSettings = 46;
-        static final int TRANSACTION_setAllowWifiScan = 217;
+        static final int TRANSACTION_removeNetwork = 207;
+        static final int TRANSACTION_removePktlogFilter = 274;
+        static final int TRANSACTION_reportAbTestResult = 333;
+        static final int TRANSACTION_reportBigData = 203;
+        static final int TRANSACTION_reportHotspotDumpLogs = 144;
+        static final int TRANSACTION_reportIssue = 214;
+        static final int TRANSACTION_requestPassword = 225;
+        static final int TRANSACTION_requestStopAutohotspotAdvertisement = 80;
+        static final int TRANSACTION_resetCallbackCondition = 285;
+        static final int TRANSACTION_resetComebackCondition = 286;
+        static final int TRANSACTION_resetDeveloperOptionsSettings = 209;
+        static final int TRANSACTION_resetSoftAp = 130;
+        static final int TRANSACTION_resetTotalPriorityDataConsumedValues = 316;
+        static final int TRANSACTION_restoreIWCSettingsValue = 260;
+        static final int TRANSACTION_restoreSemConfigurationsBackupData = 258;
+        static final int TRANSACTION_retrieveSemWifiConfigsBackupData = 257;
+        static final int TRANSACTION_runAutoShareForCurrent = 231;
+        static final int TRANSACTION_runIptablesRulesCommand = 117;
+        static final int TRANSACTION_saveFwDump = 275;
+        static final int TRANSACTION_sendReassociationFrequencyRequestFrame = 336;
+        static final int TRANSACTION_sendReassociationRequestFrame = 71;
+        static final int TRANSACTION_sendVendorSpecificActionFrame = 70;
+        static final int TRANSACTION_set5GmmWaveSarBackoffEnabled = 39;
+        static final int TRANSACTION_setAdvancedAutohotspotConnectSettings = 43;
+        static final int TRANSACTION_setAdvancedAutohotspotLCDSettings = 49;
+        static final int TRANSACTION_setAllowWifiScan = 240;
         static final int TRANSACTION_setAntInfo = 21;
-        static final int TRANSACTION_setAntMode = 98;
-        static final int TRANSACTION_setArdkPowerSaveMode = 142;
-        static final int TRANSACTION_setAutohotspotToastMessage = 148;
-        static final int TRANSACTION_setConnectionAttemptInfo = 236;
-        static final int TRANSACTION_setConnectivityCheckDisabled = 229;
-        static final int TRANSACTION_setCountryRev = 57;
+        static final int TRANSACTION_setAntMode = 102;
+        static final int TRANSACTION_setArdkPowerSaveMode = 147;
+        static final int TRANSACTION_setAutohotspotToastMessage = 153;
+        static final int TRANSACTION_setBtmOptionUserDisabled = 222;
+        static final int TRANSACTION_setBtmOptionUserEnabled = 221;
+        static final int TRANSACTION_setConnectionAttemptInfo = 259;
+        static final int TRANSACTION_setConnectivityCheckDisabled = 252;
+        static final int TRANSACTION_setCountryRev = 60;
         static final int TRANSACTION_setDcxoCalibrationData = 23;
         static final int TRANSACTION_setDtimInSuspendMode = 2;
-        static final int TRANSACTION_setEasySetupScanSettings = 220;
+        static final int TRANSACTION_setEasySetupScanSettings = 243;
         static final int TRANSACTION_setFactoryMacAddress = 18;
         static final int TRANSACTION_setFccChannelBackoffEnabled = 19;
         static final int TRANSACTION_setFrameburstInfo = 22;
-        static final int TRANSACTION_setGripSensorMonitorEnabled = 33;
-        static final int TRANSACTION_setHotspotAntMode = 96;
-        static final int TRANSACTION_setIWCMockAction = 241;
-        static final int TRANSACTION_setIWCQTables = 239;
-        static final int TRANSACTION_setImsCallEstablished = 223;
-        static final int TRANSACTION_setKeepConnection = 231;
-        static final int TRANSACTION_setKeepConnectionAlways = 230;
-        static final int TRANSACTION_setKeepConnectionBigData = 232;
-        static final int TRANSACTION_setLatencyCritical = 249;
-        static final int TRANSACTION_setLocalOnlyHotspotEnabled = 91;
-        static final int TRANSACTION_setMHSConfig = 101;
+        static final int TRANSACTION_setGripSensorMonitorEnabled = 36;
+        static final int TRANSACTION_setHotspotAntMode = 100;
+        static final int TRANSACTION_setIWCMockAction = 264;
+        static final int TRANSACTION_setIWCQTables = 262;
+        static final int TRANSACTION_setIlaTrainingResult = 302;
+        static final int TRANSACTION_setImsCallEstablished = 246;
+        static final int TRANSACTION_setKeepConnection = 254;
+        static final int TRANSACTION_setKeepConnectionAlways = 253;
+        static final int TRANSACTION_setKeepConnectionBigData = 255;
+        static final int TRANSACTION_setLatencyCritical = 272;
+        static final int TRANSACTION_setLocalOnlyHotspotEnabled = 94;
+        static final int TRANSACTION_setMHSConfig = 105;
         static final int TRANSACTION_setMaxDtimInSuspendMode = 1;
-        static final int TRANSACTION_setMcfMultiControlMode = 298;
-        static final int TRANSACTION_setMhsAiServiceNsdResult = 293;
-        static final int TRANSACTION_setMhsAiServiceState = 292;
-        static final int TRANSACTION_setNCHOModeEnabled = 62;
-        static final int TRANSACTION_setOptimizerForceControlMode = 243;
-        static final int TRANSACTION_setPktlogFilter = 250;
-        static final int TRANSACTION_setPowerSavingTime = 99;
-        static final int TRANSACTION_setProvisionSuccess = 114;
+        static final int TRANSACTION_setMcfMultiControlMode = 330;
+        static final int TRANSACTION_setMhsAiServiceNsdResult = 325;
+        static final int TRANSACTION_setMhsAiServiceState = 324;
+        static final int TRANSACTION_setNCHOModeEnabled = 65;
+        static final int TRANSACTION_setOptimizerForceControlMode = 266;
+        static final int TRANSACTION_setPktlogFilter = 273;
+        static final int TRANSACTION_setPowerSavingTime = 103;
+        static final int TRANSACTION_setProvisionSuccess = 119;
         static final int TRANSACTION_setPsmInfo = 20;
-        static final int TRANSACTION_setRVFmodeStatus = 122;
-        static final int TRANSACTION_setRoamBand = 55;
-        static final int TRANSACTION_setRoamDelta = 51;
-        static final int TRANSACTION_setRoamScanChannels = 64;
-        static final int TRANSACTION_setRoamScanEnabled = 63;
-        static final int TRANSACTION_setRoamScanPeriod = 53;
-        static final int TRANSACTION_setRoamTrigger = 49;
-        static final int TRANSACTION_setSamsungMloCtrl = 266;
-        static final int TRANSACTION_setSmartMHSLocked = 71;
-        static final int TRANSACTION_setSoftApConfiguration = 93;
-        static final int TRANSACTION_setTCRule = 258;
-        static final int TRANSACTION_setTasPolicy = 286;
-        static final int TRANSACTION_setTdlsEnabled = 278;
-        static final int TRANSACTION_setTestSettings = 216;
-        static final int TRANSACTION_setTrafficPatternTestSettings = 247;
-        static final int TRANSACTION_setUploadModeEnabled = 37;
-        static final int TRANSACTION_setUserConfirmForSharingPassword = 204;
+        static final int TRANSACTION_setRVFmodeStatus = 127;
+        static final int TRANSACTION_setRoamBand = 58;
+        static final int TRANSACTION_setRoamDelta = 54;
+        static final int TRANSACTION_setRoamScanChannels = 67;
+        static final int TRANSACTION_setRoamScanEnabled = 66;
+        static final int TRANSACTION_setRoamScanPeriod = 56;
+        static final int TRANSACTION_setRoamTrigger = 52;
+        static final int TRANSACTION_setSamsungIwhCtrl = 292;
+        static final int TRANSACTION_setSamsungMloCtrl = 291;
+        static final int TRANSACTION_setSmartMHSLocked = 74;
+        static final int TRANSACTION_setSoftApConfiguration = 96;
+        static final int TRANSACTION_setTCRule = 281;
+        static final int TRANSACTION_setTasPolicy = 318;
+        static final int TRANSACTION_setTdlsEnabled = 310;
+        static final int TRANSACTION_setTestMode = 295;
+        static final int TRANSACTION_setTestSettings = 239;
+        static final int TRANSACTION_setTrafficPatternTestSettings = 270;
+        static final int TRANSACTION_setUploadModeEnabled = 40;
+        static final int TRANSACTION_setUserConfirmForSharingPassword = 226;
         static final int TRANSACTION_setVendorWlanDriverProp = 16;
         static final int TRANSACTION_setVerboseLoggingEnabled = 3;
-        static final int TRANSACTION_setWesModeEnabled = 66;
-        static final int TRANSACTION_setWifiAiServiceNsdResult = 270;
-        static final int TRANSACTION_setWifiAiServiceState = 269;
-        static final int TRANSACTION_setWifiApClientDataPaused = 158;
-        static final int TRANSACTION_setWifiApClientEditedName = 159;
-        static final int TRANSACTION_setWifiApClientMobileDataLimit = 156;
-        static final int TRANSACTION_setWifiApClientTimeLimit = 157;
-        static final int TRANSACTION_setWifiApConfigurationToDefault = 110;
-        static final int TRANSACTION_setWifiApDailyDataLimit = 160;
-        static final int TRANSACTION_setWifiApEnabled = 90;
-        static final int TRANSACTION_setWifiApGuestModeEnabled = 176;
-        static final int TRANSACTION_setWifiApGuestModeIsolationEnabled = 178;
-        static final int TRANSACTION_setWifiApGuestPassword = 173;
-        static final int TRANSACTION_setWifiApIsolate = 130;
-        static final int TRANSACTION_setWifiApMacAclEnable = 138;
-        static final int TRANSACTION_setWifiApMacAclMode = 136;
-        static final int TRANSACTION_setWifiApMaxClient = 124;
-        static final int TRANSACTION_setWifiApMaxClientToFramework = 126;
-        static final int TRANSACTION_setWifiApWarningActivityRunning = 43;
-        static final int TRANSACTION_setWifiApWpsPbc = 128;
+        static final int TRANSACTION_setWesModeEnabled = 69;
+        static final int TRANSACTION_setWifiAiIwhInferenceResult = 301;
+        static final int TRANSACTION_setWifiAiIwhTrainingResult = 300;
+        static final int TRANSACTION_setWifiAiServiceNsdResult = 299;
+        static final int TRANSACTION_setWifiAiServiceState = 298;
+        static final int TRANSACTION_setWifiApClientDataPaused = 176;
+        static final int TRANSACTION_setWifiApClientEditedName = 177;
+        static final int TRANSACTION_setWifiApClientMobileDataLimit = 174;
+        static final int TRANSACTION_setWifiApClientTimeLimit = 175;
+        static final int TRANSACTION_setWifiApConfigurationToDefault = 114;
+        static final int TRANSACTION_setWifiApDailyDataLimit = 178;
+        static final int TRANSACTION_setWifiApEnabled = 93;
+        static final int TRANSACTION_setWifiApGuestModeEnabled = 194;
+        static final int TRANSACTION_setWifiApGuestModeIsolationEnabled = 196;
+        static final int TRANSACTION_setWifiApGuestPassword = 191;
+        static final int TRANSACTION_setWifiApIsolate = 135;
+        static final int TRANSACTION_setWifiApMacAclEnable = 143;
+        static final int TRANSACTION_setWifiApMacAclMode = 141;
+        static final int TRANSACTION_setWifiApMaxClient = 129;
+        static final int TRANSACTION_setWifiApMaxClientToFramework = 131;
+        static final int TRANSACTION_setWifiApWarningActivityRunning = 46;
+        static final int TRANSACTION_setWifiApWpsPbc = 133;
         static final int TRANSACTION_setWifiDeveloperModeEnabled = 5;
-        static final int TRANSACTION_setWifiSettingsForegroundState = 42;
-        static final int TRANSACTION_setWifiSharingEnabled = 113;
-        static final int TRANSACTION_setWifiUwbCoexEnabled = 248;
-        static final int TRANSACTION_startCapture = 294;
-        static final int TRANSACTION_startIssueMonitoring = 197;
-        static final int TRANSACTION_startMcfClientMHSDiscovery = 151;
-        static final int TRANSACTION_startMcfMHSAdvertisement = 152;
-        static final int TRANSACTION_startScan = 219;
-        static final int TRANSACTION_startTimerForWifiOffload = 256;
-        static final int TRANSACTION_stopCapture = 295;
-        static final int TRANSACTION_supportWifiAp5GBasedOnCountry = 104;
-        static final int TRANSACTION_supportWifiAp6GBasedOnCountry = 105;
-        static final int TRANSACTION_triggerBackoffRoutine = 35;
-        static final int TRANSACTION_unRegisterWifiApDataUsageCallback = 82;
-        static final int TRANSACTION_unregisterClientDataUsageCallback = 183;
-        static final int TRANSACTION_unregisterClientListDataUsageCallback = 181;
-        static final int TRANSACTION_unregisterPasswordCallback = 202;
-        static final int TRANSACTION_unregisterTasPolicyChangedListener = 288;
-        static final int TRANSACTION_unregisterWifiApSmartCallback = 80;
-        static final int TRANSACTION_updateGuiderFeature = 195;
-        static final int TRANSACTION_updateHostapdMacList = 132;
-        static final int TRANSACTION_updateIWCHintCard = 240;
-        static final int TRANSACTION_wifiApBackUpClientDataUsageSettingsInfo = 170;
-        static final int TRANSACTION_wifiApBleClientRole = 74;
-        static final int TRANSACTION_wifiApBleD2DClientRole = 85;
-        static final int TRANSACTION_wifiApBleD2DMhsRole = 86;
-        static final int TRANSACTION_wifiApBleMhsRole = 75;
-        static final int TRANSACTION_wifiApDisassocSta = 123;
-        static final int TRANSACTION_wifiApRestoreClientDataUsageSettingsInfo = 171;
-        static final int TRANSACTION_wifiApRestoreDailyHotspotDataLimit = 172;
+        static final int TRANSACTION_setWifiSettingsForegroundState = 45;
+        static final int TRANSACTION_setWifiSharingEnabled = 118;
+        static final int TRANSACTION_setWifiUwbCoexEnabled = 271;
+        static final int TRANSACTION_shouldShowAutoWifiBubbleTip = 234;
+        static final int TRANSACTION_startCapture = 326;
+        static final int TRANSACTION_startIssueMonitoring = 217;
+        static final int TRANSACTION_startMcfClientMHSDiscovery = 169;
+        static final int TRANSACTION_startMcfMHSAdvertisement = 170;
+        static final int TRANSACTION_startScan = 242;
+        static final int TRANSACTION_startTimerForWifiOffload = 279;
+        static final int TRANSACTION_stopCapture = 327;
+        static final int TRANSACTION_supportWifiAp5GBasedOnCountry = 108;
+        static final int TRANSACTION_supportWifiAp6GBasedOnCountry = 109;
+        static final int TRANSACTION_triggerBackoffRoutine = 38;
+        static final int TRANSACTION_unRegisterWifiApDataUsageCallback = 85;
+        static final int TRANSACTION_unregisterAbTestConfigUpdateObserver = 332;
+        static final int TRANSACTION_unregisterClientDataUsageCallback = 202;
+        static final int TRANSACTION_unregisterClientListDataUsageCallback = 200;
+        static final int TRANSACTION_unregisterPasswordCallback = 224;
+        static final int TRANSACTION_unregisterTasPolicyChangedListener = 320;
+        static final int TRANSACTION_unregisterWifiApSmartCallback = 83;
+        static final int TRANSACTION_updateGuiderFeature = 215;
+        static final int TRANSACTION_updateHostapdMacList = 137;
+        static final int TRANSACTION_updateIWCHintCard = 263;
+        static final int TRANSACTION_wifiApBackUpClientDataUsageSettingsInfo = 188;
+        static final int TRANSACTION_wifiApBleClientRole = 77;
+        static final int TRANSACTION_wifiApBleD2DClientRole = 88;
+        static final int TRANSACTION_wifiApBleD2DMhsRole = 89;
+        static final int TRANSACTION_wifiApBleMhsRole = 78;
+        static final int TRANSACTION_wifiApDisassocSta = 128;
+        static final int TRANSACTION_wifiApRestoreClientDataUsageSettingsInfo = 189;
+        static final int TRANSACTION_wifiApRestoreDailyHotspotDataLimit = 190;
 
         public Stub() {
             attachInterface(this, ISemWifiManager.DESCRIPTOR);
@@ -2400,545 +2692,621 @@ public interface ISemWifiManager extends IInterface {
                 case 28:
                     return "getWifiRouterInfoPresentable";
                 case 29:
-                    return "getNetworkLastUpdatedTimeMap";
+                    return "getWifiRouterInfoByBssid";
                 case 30:
-                    return "getCurrentStateAndEnterTime";
+                    return "getWifiRouterInfoBestEffortByBssid";
                 case 31:
-                    return "getNetworkUsageInfo";
+                    return "getWifiRouterInfoPresentableByBssid";
                 case 32:
-                    return "getDailyUsageInfo";
+                    return "getNetworkLastUpdatedTimeMap";
                 case 33:
-                    return "setGripSensorMonitorEnabled";
+                    return "getCurrentStateAndEnterTime";
                 case 34:
-                    return "isGripSensorMonitorEnabled";
+                    return "getNetworkUsageInfo";
                 case 35:
-                    return "triggerBackoffRoutine";
+                    return "getDailyUsageInfo";
                 case 36:
-                    return "set5GmmWaveSarBackoffEnabled";
+                    return "setGripSensorMonitorEnabled";
                 case 37:
-                    return "setUploadModeEnabled";
+                    return "isGripSensorMonitorEnabled";
                 case 38:
-                    return "isUploadModeEnabled";
+                    return "triggerBackoffRoutine";
                 case 39:
-                    return "getAdvancedAutohotspotConnectSettings";
+                    return "set5GmmWaveSarBackoffEnabled";
                 case 40:
-                    return "setAdvancedAutohotspotConnectSettings";
+                    return "setUploadModeEnabled";
                 case 41:
-                    return "getAdvancedAutohotspotLCDSettings";
+                    return "isUploadModeEnabled";
                 case 42:
-                    return "setWifiSettingsForegroundState";
+                    return "getAdvancedAutohotspotConnectSettings";
                 case 43:
-                    return "setWifiApWarningActivityRunning";
+                    return "setAdvancedAutohotspotConnectSettings";
                 case 44:
-                    return "getWifiApWarningActivityRunningState";
+                    return "getAdvancedAutohotspotLCDSettings";
                 case 45:
-                    return "clearAutoHotspotLists";
+                    return "setWifiSettingsForegroundState";
                 case 46:
-                    return "setAdvancedAutohotspotLCDSettings";
+                    return "setWifiApWarningActivityRunning";
                 case 47:
-                    return "getChannelUtilization";
+                    return "getWifiApWarningActivityRunningState";
                 case 48:
-                    return "getChannelUtilizationExtended";
+                    return "clearAutoHotspotLists";
                 case 49:
-                    return "setRoamTrigger";
+                    return "setAdvancedAutohotspotLCDSettings";
                 case 50:
-                    return "getRoamTrigger";
+                    return "getChannelUtilization";
                 case 51:
-                    return "setRoamDelta";
+                    return "getChannelUtilizationExtended";
                 case 52:
-                    return "getRoamDelta";
+                    return "setRoamTrigger";
                 case 53:
-                    return "setRoamScanPeriod";
+                    return "getRoamTrigger";
                 case 54:
-                    return "getRoamScanPeriod";
+                    return "setRoamDelta";
                 case 55:
-                    return "setRoamBand";
+                    return "getRoamDelta";
                 case 56:
-                    return "getRoamBand";
+                    return "setRoamScanPeriod";
                 case 57:
-                    return "setCountryRev";
+                    return "getRoamScanPeriod";
                 case 58:
-                    return "getCountryRev";
+                    return "setRoamBand";
                 case 59:
-                    return "getCountryCode";
+                    return "getRoamBand";
                 case 60:
-                    return "getWifi7DisabledCountry";
+                    return "setCountryRev";
                 case 61:
-                    return "isNCHOModeEnabled";
+                    return "getCountryRev";
                 case 62:
-                    return "setNCHOModeEnabled";
+                    return "getCountryCode";
                 case 63:
-                    return "setRoamScanEnabled";
+                    return "getWifi7DisabledCountry";
                 case 64:
-                    return "setRoamScanChannels";
+                    return "isNCHOModeEnabled";
                 case 65:
-                    return "isWesModeEnabled";
+                    return "setNCHOModeEnabled";
                 case 66:
-                    return "setWesModeEnabled";
+                    return "setRoamScanEnabled";
                 case 67:
-                    return "sendVendorSpecificActionFrame";
+                    return "setRoamScanChannels";
                 case 68:
-                    return "sendReassociationRequestFrame";
+                    return "isWesModeEnabled";
                 case 69:
-                    return "getSmartMHSLockStatus";
+                    return "setWesModeEnabled";
                 case 70:
-                    return "canSmartMHSLocked";
+                    return "sendVendorSpecificActionFrame";
                 case 71:
-                    return "setSmartMHSLocked";
+                    return "sendReassociationRequestFrame";
                 case 72:
-                    return "isClientAcceptedWifiProfileSharing";
+                    return "getSmartMHSLockStatus";
                 case 73:
-                    return "getWifiApBleScanDetail";
+                    return "canSmartMHSLocked";
                 case 74:
-                    return "wifiApBleClientRole";
+                    return "setSmartMHSLocked";
                 case 75:
-                    return "wifiApBleMhsRole";
+                    return "isClientAcceptedWifiProfileSharing";
                 case 76:
-                    return "connectToSmartMHS";
+                    return "getWifiApBleScanDetail";
                 case 77:
-                    return "requestStopAutohotspotAdvertisement";
+                    return "wifiApBleClientRole";
                 case 78:
-                    return "getSmartApConnectedStatus";
+                    return "wifiApBleMhsRole";
                 case 79:
-                    return "registerWifiApSmartCallback";
+                    return "connectToSmartMHS";
                 case 80:
-                    return "unregisterWifiApSmartCallback";
+                    return "requestStopAutohotspotAdvertisement";
                 case 81:
-                    return "registerWifiApDataUsageCallback";
+                    return "getSmartApConnectedStatus";
                 case 82:
-                    return "unRegisterWifiApDataUsageCallback";
+                    return "registerWifiApSmartCallback";
                 case 83:
-                    return "getSmartApConnectedStatusFromScanResult";
+                    return "unregisterWifiApSmartCallback";
                 case 84:
-                    return "getWifiApBleD2DScanDetail";
+                    return "registerWifiApDataUsageCallback";
                 case 85:
-                    return "wifiApBleD2DClientRole";
+                    return "unRegisterWifiApDataUsageCallback";
                 case 86:
-                    return "wifiApBleD2DMhsRole";
+                    return "getSmartApConnectedStatusFromScanResult";
                 case 87:
-                    return "connectToSmartD2DClient";
+                    return "getWifiApBleD2DScanDetail";
                 case 88:
-                    return "getSmartD2DClientConnectedStatus";
+                    return "wifiApBleD2DClientRole";
                 case 89:
-                    return "isWifiApWpa3Supported";
+                    return "wifiApBleD2DMhsRole";
                 case 90:
-                    return "setWifiApEnabled";
+                    return "connectToSmartD2DClient";
                 case 91:
-                    return "setLocalOnlyHotspotEnabled";
+                    return "getSmartD2DClientConnectedStatus";
                 case 92:
-                    return "getSoftApConfiguration";
+                    return "isWifiApWpa3Supported";
                 case 93:
-                    return "setSoftApConfiguration";
+                    return "setWifiApEnabled";
                 case 94:
-                    return "getStationInfo";
+                    return "setLocalOnlyHotspotEnabled";
                 case 95:
-                    return "getWifiApFreq";
+                    return "getSoftApConfiguration";
                 case 96:
-                    return "setHotspotAntMode";
+                    return "setSoftApConfiguration";
                 case 97:
-                    return "getHotspotAntMode";
+                    return "getStationInfo";
                 case 98:
-                    return "setAntMode";
+                    return "getTxPower";
                 case 99:
-                    return "setPowerSavingTime";
+                    return "getWifiApFreq";
                 case 100:
-                    return "getMHSConfig";
+                    return "setHotspotAntMode";
                 case 101:
-                    return "setMHSConfig";
+                    return "getHotspotAntMode";
                 case 102:
-                    return "getWifiApChannel";
+                    return "setAntMode";
                 case 103:
-                    return "getWifiApMaxClient";
+                    return "setPowerSavingTime";
                 case 104:
-                    return "supportWifiAp5GBasedOnCountry";
+                    return "getMHSConfig";
                 case 105:
-                    return "supportWifiAp6GBasedOnCountry";
+                    return "setMHSConfig";
                 case 106:
-                    return "getWifiApStaList";
+                    return "getWifiApChannel";
                 case 107:
-                    return "isWifiSharingSupported";
+                    return "getWifiApMaxClient";
                 case 108:
-                    return "isWifiSharingLiteSupported";
+                    return "supportWifiAp5GBasedOnCountry";
                 case 109:
-                    return "getWifiApStaListDetail";
+                    return "supportWifiAp6GBasedOnCountry";
                 case 110:
-                    return "setWifiApConfigurationToDefault";
+                    return "getWifiApStaList";
                 case 111:
-                    return "getWifiApInterfaceName";
+                    return "isWifiSharingSupported";
                 case 112:
-                    return "runIptablesRulesCommand";
+                    return "isWifiSharingLiteSupported";
                 case 113:
-                    return "setWifiSharingEnabled";
+                    return "getWifiApStaListDetail";
                 case 114:
-                    return "setProvisionSuccess";
+                    return "setWifiApConfigurationToDefault";
                 case 115:
-                    return "getProvisionSuccess";
+                    return "getWifiApInterfaceNames";
                 case 116:
-                    return "isWifiSharingEnabled";
+                    return "getWifiApInterfaceName";
                 case 117:
-                    return "isWifiApEnabled";
+                    return "runIptablesRulesCommand";
                 case 118:
-                    return "getWifiApConnectedStationCount";
+                    return "setWifiSharingEnabled";
                 case 119:
-                    return "getWifiApLOHSState";
+                    return "setProvisionSuccess";
                 case 120:
-                    return "getIndoorStatus";
+                    return "getProvisionSuccess";
                 case 121:
-                    return "getRVFModeStatus";
+                    return "isWifiSharingEnabled";
                 case 122:
-                    return "setRVFmodeStatus";
+                    return "isWifiApEnabled";
                 case 123:
-                    return "wifiApDisassocSta";
+                    return "getWifiApConnectedStationCount";
                 case 124:
-                    return "setWifiApMaxClient";
+                    return "getWifiApLOHSState";
                 case 125:
-                    return "resetSoftAp";
+                    return "getIndoorStatus";
                 case 126:
-                    return "setWifiApMaxClientToFramework";
+                    return "getRVFModeStatus";
                 case 127:
-                    return "getWifiApMaxClientFromFramework";
+                    return "setRVFmodeStatus";
                 case 128:
-                    return "setWifiApWpsPbc";
+                    return "wifiApDisassocSta";
                 case 129:
-                    return "getWifiApWpsPbc";
+                    return "setWifiApMaxClient";
                 case 130:
-                    return "setWifiApIsolate";
+                    return "resetSoftAp";
                 case 131:
-                    return "getWifiApIsolate";
+                    return "setWifiApMaxClientToFramework";
                 case 132:
-                    return "updateHostapdMacList";
+                    return "getWifiApMaxClientFromFramework";
                 case 133:
-                    return "manageWifiApMacAclList";
+                    return "setWifiApWpsPbc";
                 case 134:
-                    return "readWifiApMacAclList";
+                    return "getWifiApWpsPbc";
                 case 135:
-                    return "getWifiApMacAclMode";
+                    return "setWifiApIsolate";
                 case 136:
-                    return "setWifiApMacAclMode";
+                    return "getWifiApIsolate";
                 case 137:
-                    return "isWifiApMacAclEnabled";
+                    return "updateHostapdMacList";
                 case 138:
-                    return "setWifiApMacAclEnable";
+                    return "manageWifiApMacAclList";
                 case 139:
-                    return "reportHotspotDumpLogs";
+                    return "readWifiApMacAclList";
                 case 140:
-                    return "getWifiApState";
+                    return "getWifiApMacAclMode";
                 case 141:
-                    return "isWifiApEnabledWithDualBand";
+                    return "setWifiApMacAclMode";
                 case 142:
-                    return "setArdkPowerSaveMode";
+                    return "isWifiApMacAclEnabled";
                 case 143:
-                    return "enableHotspotTsfInfo";
+                    return "setWifiApMacAclEnable";
                 case 144:
-                    return "notifyConnect";
+                    return "reportHotspotDumpLogs";
                 case 145:
-                    return "getSoftApBands";
+                    return "getWifiApState";
                 case 146:
-                    return "canAutoHotspotBeEnabled";
+                    return "isWifiApEnabledWithDualBand";
                 case 147:
-                    return "isP2pConnected";
+                    return "setArdkPowerSaveMode";
                 case 148:
-                    return "setAutohotspotToastMessage";
+                    return "enableHotspotTsfInfo";
                 case 149:
-                    return "isMCFClientAutohotspotSupported";
+                    return "notifyConnect";
                 case 150:
-                    return "getMcfScanDetail";
+                    return "getSoftApBands";
                 case 151:
-                    return "startMcfClientMHSDiscovery";
+                    return "canAutoHotspotBeEnabled";
                 case 152:
-                    return "startMcfMHSAdvertisement";
+                    return "isP2pConnected";
                 case 153:
-                    return "connectToMcfMHS";
+                    return "setAutohotspotToastMessage";
                 case 154:
-                    return "getMcfConnectedStatus";
+                    return "getSoftApSecurityType";
                 case 155:
-                    return "getMcfConnectedStatusFromScanResult";
+                    return "isDataSaverEnabled";
                 case 156:
-                    return "setWifiApClientMobileDataLimit";
+                    return "isSoftap11axEnabled";
                 case 157:
-                    return "setWifiApClientTimeLimit";
+                    return "isSoftAp6ENetwork";
                 case 158:
-                    return "setWifiApClientDataPaused";
+                    return "getSoftApUpStreamNetworkType";
                 case 159:
-                    return "setWifiApClientEditedName";
+                    return "getMHSMacFromInterface";
                 case 160:
-                    return "setWifiApDailyDataLimit";
+                    return "getSoftApFreq";
                 case 161:
-                    return "getWifiApClientDetails";
+                    return "launchWifiApWarningForMcfMHS";
                 case 162:
-                    return "getTopHotspotClientsToday";
+                    return "isNeededToShowWifiApDatalimitReachedDialog";
                 case 163:
-                    return "getTopHotspotClientsTodayAsString";
+                    return "getWifiMACAddress";
                 case 164:
-                    return "getWifiApTodaysTotalDataUsage";
+                    return "autohotspotWifiScanConnect";
                 case 165:
-                    return "getWifiApDailyDataLimit";
+                    return "getWifiApHostapdFreq";
                 case 166:
-                    return "getTotalAndTop3ClientsDataUsageBetweenGivenDates";
+                    return "getWifiApHostapdSecurtiy";
                 case 167:
-                    return "getMonthlyDataUsage";
+                    return "isMCFClientAutohotspotSupported";
                 case 168:
-                    return "isOverAllMhsDataLimitReached";
+                    return "getMcfScanDetail";
                 case 169:
-                    return "isOverAllMhsDataLimitSet";
+                    return "startMcfClientMHSDiscovery";
                 case 170:
-                    return "wifiApBackUpClientDataUsageSettingsInfo";
+                    return "startMcfMHSAdvertisement";
                 case 171:
-                    return "wifiApRestoreClientDataUsageSettingsInfo";
+                    return "connectToMcfMHS";
                 case 172:
-                    return "wifiApRestoreDailyHotspotDataLimit";
+                    return "getMcfConnectedStatus";
                 case 173:
-                    return "setWifiApGuestPassword";
+                    return "getMcfConnectedStatusFromScanResult";
                 case 174:
-                    return "getWifiApGuestPassword";
+                    return "setWifiApClientMobileDataLimit";
                 case 175:
-                    return "isWifiApGuestModeEnabled";
+                    return "setWifiApClientTimeLimit";
                 case 176:
-                    return "setWifiApGuestModeEnabled";
+                    return "setWifiApClientDataPaused";
                 case 177:
-                    return "isWifiApGuestModeIsolationEnabled";
+                    return "setWifiApClientEditedName";
                 case 178:
-                    return "setWifiApGuestModeIsolationEnabled";
+                    return "setWifiApDailyDataLimit";
                 case 179:
-                    return "isWifiApGuestClient";
+                    return "getWifiApClientDetails";
                 case 180:
-                    return "registerClientListDataUsageCallback";
+                    return "getTopHotspotClientsToday";
                 case 181:
-                    return "unregisterClientListDataUsageCallback";
+                    return "getTopHotspotClientsTodayAsString";
                 case 182:
-                    return "registerClientDataUsageCallback";
+                    return "getWifiApTodaysTotalDataUsage";
                 case 183:
-                    return "unregisterClientDataUsageCallback";
+                    return "getWifiApDailyDataLimit";
                 case 184:
-                    return "reportBigData";
+                    return "getTotalAndTop3ClientsDataUsageBetweenGivenDates";
                 case 185:
-                    return "addOrUpdateWifiControlHistory";
+                    return "getMonthlyDataUsage";
                 case 186:
-                    return "getWifiEnableHistory";
+                    return "isOverAllMhsDataLimitReached";
                 case 187:
-                    return "addOrUpdateNetwork";
+                    return "isOverAllMhsDataLimitSet";
                 case 188:
-                    return "removeNetwork";
+                    return "wifiApBackUpClientDataUsageSettingsInfo";
                 case 189:
-                    return "factoryReset";
+                    return "wifiApRestoreClientDataUsageSettingsInfo";
                 case 190:
-                    return "resetDeveloperOptionsSettings";
+                    return "wifiApRestoreDailyHotspotDataLimit";
                 case 191:
-                    return "getConfiguredNetworks";
+                    return "setWifiApGuestPassword";
                 case 192:
-                    return "allowAutojoinPasspoint";
+                    return "getWifiApGuestPassword";
                 case 193:
-                    return "getIssueDetectorDump";
+                    return "isWifiApGuestModeEnabled";
                 case 194:
-                    return "reportIssue";
+                    return "setWifiApGuestModeEnabled";
                 case 195:
-                    return "updateGuiderFeature";
+                    return "isWifiApGuestModeIsolationEnabled";
                 case 196:
-                    return "getDiagnosisResults";
+                    return "setWifiApGuestModeIsolationEnabled";
                 case 197:
-                    return "startIssueMonitoring";
+                    return "isWifiApGuestClient";
                 case 198:
-                    return "getSilentRoamingDump";
+                    return "isSAFamilySupportedBasedOnCountry";
                 case 199:
-                    return "getConnectivityLog";
+                    return "registerClientListDataUsageCallback";
                 case 200:
-                    return "getQoSScores";
+                    return "unregisterClientListDataUsageCallback";
                 case 201:
-                    return "registerPasswordCallback";
+                    return "registerClientDataUsageCallback";
                 case 202:
-                    return "unregisterPasswordCallback";
+                    return "unregisterClientDataUsageCallback";
                 case 203:
-                    return "requestPassword";
+                    return "reportBigData";
                 case 204:
-                    return "setUserConfirmForSharingPassword";
+                    return "addOrUpdateWifiControlHistory";
                 case 205:
-                    return "isSupportedQoSProvider";
+                    return "getWifiEnableHistory";
                 case 206:
-                    return "isSupportedProfileRequest";
+                    return "addOrUpdateNetwork";
                 case 207:
-                    return "getProfileShareDump";
+                    return "removeNetwork";
                 case 208:
-                    return "getAutoShareDump";
+                    return "factoryReset";
                 case 209:
-                    return "runAutoShareForCurrent";
+                    return "resetDeveloperOptionsSettings";
                 case 210:
-                    return "isSupportedAutoWifi";
+                    return "getConfiguredNetworks";
                 case 211:
-                    return "isAvailableAutoWifiScan";
+                    return "allowAutojoinPasspoint";
                 case 212:
-                    return "getAutoWifiDump";
+                    return "getPasspointConfigurations";
                 case 213:
-                    return "getConfiguredNetworkLocations";
+                    return "getIssueDetectorDump";
                 case 214:
-                    return "hasConfiguredNetworkLocations";
+                    return "reportIssue";
                 case 215:
-                    return "isLocationProviderAvailable";
+                    return "updateGuiderFeature";
                 case 216:
-                    return "setTestSettings";
+                    return "getDiagnosisResults";
                 case 217:
-                    return "setAllowWifiScan";
+                    return "startIssueMonitoring";
                 case 218:
-                    return "isScanningEnabled";
+                    return "getSilentRoamingDump";
                 case 219:
-                    return "startScan";
+                    return "getConnectivityLog";
                 case 220:
-                    return "setEasySetupScanSettings";
+                    return "getQoSScores";
                 case 221:
-                    return "getEasySetupScanSettings";
+                    return "setBtmOptionUserEnabled";
                 case 222:
-                    return "disableRandomMac";
+                    return "setBtmOptionUserDisabled";
                 case 223:
-                    return "setImsCallEstablished";
+                    return "registerPasswordCallback";
                 case 224:
-                    return "getWcmEverQualityTested";
+                    return "unregisterPasswordCallback";
                 case 225:
-                    return "getWifiIconVisibility";
+                    return "requestPassword";
                 case 226:
-                    return "getCurrentStatusMode";
+                    return "setUserConfirmForSharingPassword";
                 case 227:
-                    return "getValidState";
+                    return "isSupportedQoSProvider";
                 case 228:
-                    return "notifyReachabilityLost";
+                    return "isSupportedProfileRequest";
                 case 229:
-                    return "setConnectivityCheckDisabled";
+                    return "getProfileShareDump";
                 case 230:
-                    return "setKeepConnectionAlways";
+                    return "getAutoShareDump";
                 case 231:
-                    return "setKeepConnection";
+                    return "runAutoShareForCurrent";
                 case 232:
-                    return "setKeepConnectionBigData";
+                    return "isSupportedAutoWifi";
                 case 233:
-                    return "removeExcludedNetwork";
+                    return "getAutoWifiDefaultValue";
                 case 234:
-                    return "retrieveSemWifiConfigsBackupData";
+                    return "shouldShowAutoWifiBubbleTip";
                 case 235:
-                    return "restoreSemConfigurationsBackupData";
+                    return "isAvailableAutoWifiScan";
                 case 236:
-                    return "setConnectionAttemptInfo";
+                    return "getAutoWifiDump";
                 case 237:
-                    return "restoreIWCSettingsValue";
+                    return "getConfiguredNetworkLocations";
                 case 238:
-                    return "getIWCQTables";
+                    return "hasConfiguredNetworkLocations";
                 case 239:
-                    return "setIWCQTables";
+                    return "setTestSettings";
                 case 240:
-                    return "updateIWCHintCard";
+                    return "setAllowWifiScan";
                 case 241:
-                    return "setIWCMockAction";
+                    return "isScanningEnabled";
                 case 242:
-                    return "disconnectApBlockAutojoin";
+                    return "startScan";
                 case 243:
-                    return "setOptimizerForceControlMode";
+                    return "setEasySetupScanSettings";
                 case 244:
-                    return "getOptimizerForceControlMode";
+                    return "getEasySetupScanSettings";
                 case 245:
-                    return "getOptimizerState";
+                    return "disableRandomMac";
                 case 246:
-                    return "getServiceDetectionResult";
+                    return "setImsCallEstablished";
                 case 247:
-                    return "setTrafficPatternTestSettings";
+                    return "getWcmEverQualityTested";
                 case 248:
-                    return "setWifiUwbCoexEnabled";
+                    return "getWifiIconVisibility";
                 case 249:
-                    return "setLatencyCritical";
+                    return "getCurrentStatusMode";
                 case 250:
-                    return "setPktlogFilter";
+                    return "getValidState";
                 case 251:
-                    return "removePktlogFilter";
+                    return "notifyReachabilityLost";
                 case 252:
-                    return "saveFwDump";
+                    return "setConnectivityCheckDisabled";
                 case 253:
-                    return "getRssi";
+                    return "setKeepConnectionAlways";
                 case 254:
-                    return "getWifiStaInfo";
+                    return "setKeepConnection";
                 case 255:
-                    return "getNumOfWifiAnt";
+                    return "setKeepConnectionBigData";
                 case 256:
-                    return "startTimerForWifiOffload";
+                    return "removeExcludedNetwork";
                 case 257:
-                    return "checkAppForWiFiOffloading";
+                    return "retrieveSemWifiConfigsBackupData";
                 case 258:
-                    return "setTCRule";
+                    return "restoreSemConfigurationsBackupData";
                 case 259:
-                    return "externalTwtInterface";
+                    return "setConnectionAttemptInfo";
                 case 260:
-                    return "getTWTParams";
+                    return "restoreIWCSettingsValue";
                 case 261:
-                    return "getCtlFeatureState";
+                    return "getIWCQTables";
                 case 262:
-                    return "resetCallbackCondition";
+                    return "setIWCQTables";
                 case 263:
-                    return "resetComebackCondition";
+                    return "updateIWCHintCard";
                 case 264:
-                    return "getCurrentL2TransitionMode";
+                    return "setIWCMockAction";
                 case 265:
-                    return "getL2TransitionLog";
+                    return "disconnectApBlockAutojoin";
                 case 266:
-                    return "setSamsungMloCtrl";
+                    return "setOptimizerForceControlMode";
                 case 267:
-                    return "getSamsungMloCtrl";
+                    return "getOptimizerForceControlMode";
                 case 268:
-                    return "linkQosQuery";
+                    return "getOptimizerState";
                 case 269:
-                    return "setWifiAiServiceState";
+                    return "getServiceDetectionResult";
                 case 270:
-                    return "setWifiAiServiceNsdResult";
+                    return "setTrafficPatternTestSettings";
                 case 271:
-                    return "getTcpMonitorSocketForegroundHistory";
+                    return "setWifiUwbCoexEnabled";
                 case 272:
-                    return "getTcpMonitorAllSocketHistory";
+                    return "setLatencyCritical";
                 case 273:
-                    return "getTcpMonitorDnsHistory";
+                    return "setPktlogFilter";
                 case 274:
-                    return "isIndividualAppSupported";
+                    return "removePktlogFilter";
                 case 275:
-                    return "getWifiUsabilityStatsEntry";
+                    return "saveFwDump";
                 case 276:
-                    return "isAvailableTdls";
+                    return "getRssi";
                 case 277:
-                    return "isWiderBandwidthTdlsSupported";
+                    return "getWifiStaInfo";
                 case 278:
-                    return "setTdlsEnabled";
+                    return "getNumOfWifiAnt";
                 case 279:
-                    return "getMaxTdlsSession";
+                    return "startTimerForWifiOffload";
                 case 280:
-                    return "getNumOfTdlsSession";
+                    return "checkAppForWiFiOffloading";
                 case 281:
-                    return "getMHSClientTrafficDetails";
+                    return "setTCRule";
                 case 282:
-                    return "getNRTTrafficbandwidth";
+                    return "externalTwtInterface";
                 case 283:
-                    return "getDataConsumedValues";
+                    return "getTWTParams";
                 case 284:
-                    return "resetTotalPriorityDataConsumedValues";
+                    return "getCtlFeatureState";
                 case 285:
-                    return "getTasAverage";
+                    return "resetCallbackCondition";
                 case 286:
-                    return "setTasPolicy";
+                    return "resetComebackCondition";
                 case 287:
-                    return "registerTasPolicyChangedListener";
+                    return "getCurrentL2TransitionMode";
                 case 288:
-                    return "unregisterTasPolicyChangedListener";
+                    return "getL2TransitionLog";
                 case 289:
-                    return "enableTxPowerLogging";
+                    return "getNumberOfDataInEachRssiLevel";
                 case 290:
-                    return "getDynamicFeatureStatus";
+                    return "getIwhState";
                 case 291:
-                    return "isSwitchToMobileDataDefaultOff";
+                    return "setSamsungMloCtrl";
                 case 292:
-                    return "setMhsAiServiceState";
+                    return "setSamsungIwhCtrl";
                 case 293:
-                    return "setMhsAiServiceNsdResult";
+                    return "getSamsungMloCtrl";
                 case 294:
-                    return "startCapture";
+                    return "getSamsungIwhCtrl";
                 case 295:
-                    return "stopCapture";
+                    return "setTestMode";
                 case 296:
-                    return "isCaptureRunning";
+                    return "iwhIntendedDisconnection";
                 case 297:
-                    return "getIsPacketCaptureSupportedByDriver";
+                    return "linkQosQuery";
                 case 298:
+                    return "setWifiAiServiceState";
+                case 299:
+                    return "setWifiAiServiceNsdResult";
+                case 300:
+                    return "setWifiAiIwhTrainingResult";
+                case 301:
+                    return "setWifiAiIwhInferenceResult";
+                case 302:
+                    return "setIlaTrainingResult";
+                case 303:
+                    return "getTcpMonitorSocketForegroundHistory";
+                case 304:
+                    return "getTcpMonitorAllSocketHistory";
+                case 305:
+                    return "getTcpMonitorDnsHistory";
+                case 306:
+                    return "isIndividualAppSupported";
+                case 307:
+                    return "getWifiUsabilityStatsEntry";
+                case 308:
+                    return "isAvailableTdls";
+                case 309:
+                    return "isWiderBandwidthTdlsSupported";
+                case 310:
+                    return "setTdlsEnabled";
+                case 311:
+                    return "getMaxTdlsSession";
+                case 312:
+                    return "getNumOfTdlsSession";
+                case 313:
+                    return "getMHSClientTrafficDetails";
+                case 314:
+                    return "getNRTTrafficbandwidth";
+                case 315:
+                    return "getDataConsumedValues";
+                case 316:
+                    return "resetTotalPriorityDataConsumedValues";
+                case 317:
+                    return "getTasAverage";
+                case 318:
+                    return "setTasPolicy";
+                case 319:
+                    return "registerTasPolicyChangedListener";
+                case 320:
+                    return "unregisterTasPolicyChangedListener";
+                case 321:
+                    return "enableTxPowerLogging";
+                case 322:
+                    return "getDynamicFeatureStatus";
+                case 323:
+                    return "isSwitchToMobileDataDefaultOff";
+                case 324:
+                    return "setMhsAiServiceState";
+                case 325:
+                    return "setMhsAiServiceNsdResult";
+                case 326:
+                    return "startCapture";
+                case 327:
+                    return "stopCapture";
+                case 328:
+                    return "isCaptureRunning";
+                case 329:
+                    return "getIsPacketCaptureSupportedByDriver";
+                case 330:
                     return "setMcfMultiControlMode";
+                case 331:
+                    return "registerAbTestConfigUpdateObserver";
+                case 332:
+                    return "unregisterAbTestConfigUpdateObserver";
+                case 333:
+                    return "reportAbTestResult";
+                case 334:
+                    return "getAbTestConfigs";
+                case 335:
+                    return "getAbTestConfiguredModule";
+                case 336:
+                    return "sendReassociationFrequencyRequestFrame";
                 default:
                     return null;
             }
@@ -2954,1660 +3322,1691 @@ public interface ISemWifiManager extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(ISemWifiManager.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(ISemWifiManager.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(ISemWifiManager.DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setMaxDtimInSuspendMode(_arg0);
+                    reply.writeNoException();
                     return true;
-                default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMaxDtimInSuspendMode(_arg0);
-                            reply.writeNoException();
-                            return true;
-                        case 2:
-                            int _arg02 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setDtimInSuspendMode(_arg02);
-                            reply.writeNoException();
-                            return true;
-                        case 3:
-                            boolean _arg03 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setVerboseLoggingEnabled(_arg03);
-                            reply.writeNoException();
-                            return true;
-                        case 4:
-                            boolean _arg04 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            blockFccChannelBackoff(_arg04);
-                            reply.writeNoException();
-                            return true;
-                        case 5:
-                            boolean _arg05 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiDeveloperModeEnabled(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            boolean _result = isWifiDeveloperModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result);
-                            return true;
-                        case 7:
-                            String _result2 = getWifiFirmwareVersion();
-                            reply.writeNoException();
-                            reply.writeString(_result2);
-                            return true;
-                        case 8:
-                            String _result3 = getWifiCid();
-                            reply.writeNoException();
-                            reply.writeString(_result3);
-                            return true;
-                        case 9:
-                            String _result4 = getWifiVersions();
-                            reply.writeNoException();
-                            reply.writeString(_result4);
-                            return true;
-                        case 10:
-                            String _result5 = getFactoryMacAddress();
-                            reply.writeNoException();
-                            reply.writeString(_result5);
-                            return true;
-                        case 11:
-                            String _result6 = getAntInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result6);
-                            return true;
-                        case 12:
-                            String _result7 = getFrameburstInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result7);
-                            return true;
-                        case 13:
-                            String _result8 = getPsmInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result8);
-                            return true;
-                        case 14:
-                            String _result9 = getWifiSupportedFeatureSet();
-                            reply.writeNoException();
-                            reply.writeString(_result9);
-                            return true;
-                        case 15:
-                            String _arg06 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result10 = getVendorWlanDriverProp(_arg06);
-                            reply.writeNoException();
-                            reply.writeString(_result10);
-                            return true;
-                        case 16:
-                            String _arg07 = data.readString();
-                            String _arg1 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result11 = setVendorWlanDriverProp(_arg07, _arg1);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result11);
-                            return true;
-                        case 17:
-                            boolean _result12 = removeFactoryMacAddress();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result12);
-                            return true;
-                        case 18:
-                            String _arg08 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result13 = setFactoryMacAddress(_arg08);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result13);
-                            return true;
-                        case 19:
-                            String _arg09 = data.readString();
-                            boolean _arg12 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setFccChannelBackoffEnabled(_arg09, _arg12);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            String _arg010 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result14 = setPsmInfo(_arg010);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result14);
-                            return true;
-                        case 21:
-                            String _arg011 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result15 = setAntInfo(_arg011);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result15);
-                            return true;
-                        case 22:
-                            String _arg012 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result16 = setFrameburstInfo(_arg012);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result16);
-                            return true;
-                        case 23:
-                            String _arg013 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result17 = setDcxoCalibrationData(_arg013);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result17);
-                            return true;
-                        case 24:
-                            String _result18 = getDcxoCalibrationData();
-                            reply.writeNoException();
-                            reply.writeString(_result18);
-                            return true;
-                        case 25:
-                            Bundle _result19 = getCurrentWifiRouterInfo();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result19, 1);
-                            return true;
-                        case 26:
-                            String _arg014 = data.readString();
-                            data.enforceNoDataAvail();
-                            Bundle _result20 = getWifiRouterInfo(_arg014);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result20, 1);
-                            return true;
-                        case 27:
-                            String _arg015 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result21 = getWifiRouterInfoBestEffort(_arg015);
-                            reply.writeNoException();
-                            reply.writeString(_result21);
-                            return true;
-                        case 28:
-                            String _arg016 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result22 = getWifiRouterInfoPresentable(_arg016);
-                            reply.writeNoException();
-                            reply.writeString(_result22);
-                            return true;
-                        case 29:
-                            Map _result23 = getNetworkLastUpdatedTimeMap();
-                            reply.writeNoException();
-                            reply.writeMap(_result23);
-                            return true;
-                        case 30:
-                            String _result24 = getCurrentStateAndEnterTime();
-                            reply.writeNoException();
-                            reply.writeString(_result24);
-                            return true;
-                        case 31:
-                            String _arg017 = data.readString();
-                            data.enforceNoDataAvail();
-                            long[] _result25 = getNetworkUsageInfo(_arg017);
-                            reply.writeNoException();
-                            reply.writeLongArray(_result25);
-                            return true;
-                        case 32:
-                            int _arg018 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result26 = getDailyUsageInfo(_arg018);
-                            reply.writeNoException();
-                            reply.writeString(_result26);
-                            return true;
-                        case 33:
-                            boolean _arg019 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setGripSensorMonitorEnabled(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 34:
-                            boolean _result27 = isGripSensorMonitorEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result27);
-                            return true;
-                        case 35:
-                            boolean _arg020 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            triggerBackoffRoutine(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 36:
-                            boolean _arg021 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            set5GmmWaveSarBackoffEnabled(_arg021);
-                            reply.writeNoException();
-                            return true;
-                        case 37:
-                            boolean _arg022 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result28 = setUploadModeEnabled(_arg022);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result28);
-                            return true;
-                        case 38:
-                            boolean _result29 = isUploadModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result29);
-                            return true;
-                        case 39:
-                            int _result30 = getAdvancedAutohotspotConnectSettings();
-                            reply.writeNoException();
-                            reply.writeInt(_result30);
-                            return true;
-                        case 40:
-                            int _arg023 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAdvancedAutohotspotConnectSettings(_arg023);
-                            reply.writeNoException();
-                            return true;
-                        case 41:
-                            int _result31 = getAdvancedAutohotspotLCDSettings();
-                            reply.writeNoException();
-                            reply.writeInt(_result31);
-                            return true;
-                        case 42:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiSettingsForegroundState(_arg024);
-                            reply.writeNoException();
-                            return true;
-                        case 43:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiApWarningActivityRunning(_arg025);
-                            reply.writeNoException();
-                            return true;
-                        case 44:
-                            int _result32 = getWifiApWarningActivityRunningState();
-                            reply.writeNoException();
-                            reply.writeInt(_result32);
-                            return true;
-                        case 45:
-                            clearAutoHotspotLists();
-                            reply.writeNoException();
-                            return true;
-                        case 46:
-                            int _arg026 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAdvancedAutohotspotLCDSettings(_arg026);
-                            reply.writeNoException();
-                            return true;
-                        case 47:
-                            int _result33 = getChannelUtilization();
-                            reply.writeNoException();
-                            reply.writeInt(_result33);
-                            return true;
-                        case 48:
-                            Map _result34 = getChannelUtilizationExtended();
-                            reply.writeNoException();
-                            reply.writeMap(_result34);
-                            return true;
-                        case 49:
-                            int _arg027 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result35 = setRoamTrigger(_arg027);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result35);
-                            return true;
-                        case 50:
-                            int _result36 = getRoamTrigger();
-                            reply.writeNoException();
-                            reply.writeInt(_result36);
-                            return true;
-                        case 51:
-                            int _arg028 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result37 = setRoamDelta(_arg028);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result37);
-                            return true;
-                        case 52:
-                            int _result38 = getRoamDelta();
-                            reply.writeNoException();
-                            reply.writeInt(_result38);
-                            return true;
-                        case 53:
-                            int _arg029 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result39 = setRoamScanPeriod(_arg029);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result39);
-                            return true;
-                        case 54:
-                            int _result40 = getRoamScanPeriod();
-                            reply.writeNoException();
-                            reply.writeInt(_result40);
-                            return true;
-                        case 55:
-                            int _arg030 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result41 = setRoamBand(_arg030);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result41);
-                            return true;
-                        case 56:
-                            int _result42 = getRoamBand();
-                            reply.writeNoException();
-                            reply.writeInt(_result42);
-                            return true;
-                        case 57:
-                            String _arg031 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result43 = setCountryRev(_arg031);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result43);
-                            return true;
-                        case 58:
-                            String _result44 = getCountryRev();
-                            reply.writeNoException();
-                            reply.writeString(_result44);
-                            return true;
-                        case 59:
-                            String _result45 = getCountryCode();
-                            reply.writeNoException();
-                            reply.writeString(_result45);
-                            return true;
-                        case 60:
-                            String _result46 = getWifi7DisabledCountry();
-                            reply.writeNoException();
-                            reply.writeString(_result46);
-                            return true;
-                        case 61:
-                            boolean _result47 = isNCHOModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result47);
-                            return true;
-                        case 62:
-                            boolean _arg032 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result48 = setNCHOModeEnabled(_arg032);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result48);
-                            return true;
-                        case 63:
-                            boolean _arg033 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result49 = setRoamScanEnabled(_arg033);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result49);
-                            return true;
-                        case 64:
-                            String[] _arg034 = data.createStringArray();
-                            data.enforceNoDataAvail();
-                            boolean _result50 = setRoamScanChannels(_arg034);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result50);
-                            return true;
-                        case 65:
-                            boolean _result51 = isWesModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result51);
-                            return true;
-                        case 66:
-                            boolean _arg035 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result52 = setWesModeEnabled(_arg035);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result52);
-                            return true;
-                        case 67:
-                            return onTransact$sendVendorSpecificActionFrame$(data, reply);
-                        case 68:
-                            String _arg036 = data.readString();
-                            int _arg13 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result53 = sendReassociationRequestFrame(_arg036, _arg13);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result53);
-                            return true;
-                        case 69:
-                            int _result54 = getSmartMHSLockStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result54);
-                            return true;
-                        case 70:
-                            int _result55 = canSmartMHSLocked();
-                            reply.writeNoException();
-                            reply.writeInt(_result55);
-                            return true;
-                        case 71:
-                            int _arg037 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result56 = setSmartMHSLocked(_arg037);
-                            reply.writeNoException();
-                            reply.writeInt(_result56);
-                            return true;
-                        case 72:
-                            boolean _arg038 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            isClientAcceptedWifiProfileSharing(_arg038);
-                            reply.writeNoException();
-                            return true;
-                        case 73:
-                            List<SemWifiApBleScanResult> _result57 = getWifiApBleScanDetail();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result57, 1);
-                            return true;
-                        case 74:
-                            boolean _arg039 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result58 = wifiApBleClientRole(_arg039);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result58);
-                            return true;
-                        case 75:
-                            boolean _arg040 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result59 = wifiApBleMhsRole(_arg040);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result59);
-                            return true;
-                        case 76:
-                            return onTransact$connectToSmartMHS$(data, reply);
-                        case 77:
-                            boolean _arg041 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            requestStopAutohotspotAdvertisement(_arg041);
-                            reply.writeNoException();
-                            return true;
-                        case 78:
-                            String _arg042 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result60 = getSmartApConnectedStatus(_arg042);
-                            reply.writeNoException();
-                            reply.writeInt(_result60);
-                            return true;
-                        case 79:
-                            return onTransact$registerWifiApSmartCallback$(data, reply);
-                        case 80:
-                            int _arg043 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterWifiApSmartCallback(_arg043);
-                            reply.writeNoException();
-                            return true;
-                        case 81:
-                            return onTransact$registerWifiApDataUsageCallback$(data, reply);
-                        case 82:
-                            int _arg044 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unRegisterWifiApDataUsageCallback(_arg044);
-                            reply.writeNoException();
-                            return true;
-                        case 83:
-                            String _arg045 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result61 = getSmartApConnectedStatusFromScanResult(_arg045);
-                            reply.writeNoException();
-                            reply.writeInt(_result61);
-                            return true;
-                        case 84:
-                            List<SemWifiApBleScanResult> _result62 = getWifiApBleD2DScanDetail();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result62, 1);
-                            return true;
-                        case 85:
-                            boolean _arg046 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result63 = wifiApBleD2DClientRole(_arg046);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result63);
-                            return true;
-                        case 86:
-                            boolean _arg047 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result64 = wifiApBleD2DMhsRole(_arg047);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result64);
-                            return true;
-                        case 87:
-                            return onTransact$connectToSmartD2DClient$(data, reply);
-                        case 88:
-                            String _arg048 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result65 = getSmartD2DClientConnectedStatus(_arg048);
-                            reply.writeNoException();
-                            reply.writeInt(_result65);
-                            return true;
-                        case 89:
-                            boolean _result66 = isWifiApWpa3Supported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result66);
-                            return true;
-                        case 90:
-                            SoftApConfiguration _arg049 = (SoftApConfiguration) data.readTypedObject(SoftApConfiguration.CREATOR);
-                            boolean _arg14 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result67 = setWifiApEnabled(_arg049, _arg14);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result67);
-                            return true;
-                        case 91:
-                            return onTransact$setLocalOnlyHotspotEnabled$(data, reply);
-                        case 92:
-                            SoftApConfiguration _result68 = getSoftApConfiguration();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result68, 1);
-                            return true;
-                        case 93:
-                            SoftApConfiguration _arg050 = (SoftApConfiguration) data.readTypedObject(SoftApConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            setSoftApConfiguration(_arg050);
-                            reply.writeNoException();
-                            return true;
-                        case 94:
-                            String _arg051 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result69 = getStationInfo(_arg051);
-                            reply.writeNoException();
-                            reply.writeString(_result69);
-                            return true;
-                        case 95:
-                            int _result70 = getWifiApFreq();
-                            reply.writeNoException();
-                            reply.writeInt(_result70);
-                            return true;
-                        case 96:
-                            int _arg052 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setHotspotAntMode(_arg052);
-                            reply.writeNoException();
-                            return true;
-                        case 97:
-                            int _result71 = getHotspotAntMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result71);
-                            return true;
-                        case 98:
-                            int _arg053 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAntMode(_arg053);
-                            reply.writeNoException();
-                            return true;
-                        case 99:
-                            int _arg054 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setPowerSavingTime(_arg054);
-                            reply.writeNoException();
-                            return true;
-                        case 100:
-                            String _arg055 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result72 = getMHSConfig(_arg055);
-                            reply.writeNoException();
-                            reply.writeString(_result72);
-                            return true;
-                        case 101:
-                            String _arg056 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result73 = setMHSConfig(_arg056);
-                            reply.writeNoException();
-                            reply.writeString(_result73);
-                            return true;
-                        case 102:
-                            int _result74 = getWifiApChannel();
-                            reply.writeNoException();
-                            reply.writeInt(_result74);
-                            return true;
-                        case 103:
-                            int _result75 = getWifiApMaxClient();
-                            reply.writeNoException();
-                            reply.writeInt(_result75);
-                            return true;
-                        case 104:
-                            boolean _result76 = supportWifiAp5GBasedOnCountry();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result76);
-                            return true;
-                        case 105:
-                            boolean _result77 = supportWifiAp6GBasedOnCountry();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result77);
-                            return true;
-                        case 106:
-                            String _result78 = getWifiApStaList();
-                            reply.writeNoException();
-                            reply.writeString(_result78);
-                            return true;
-                        case 107:
-                            boolean _result79 = isWifiSharingSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result79);
-                            return true;
-                        case 108:
-                            boolean _result80 = isWifiSharingLiteSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result80);
-                            return true;
-                        case 109:
-                            List<String> _result81 = getWifiApStaListDetail();
-                            reply.writeNoException();
-                            reply.writeStringList(_result81);
-                            return true;
-                        case 110:
-                            setWifiApConfigurationToDefault();
-                            reply.writeNoException();
-                            return true;
-                        case 111:
-                            String _result82 = getWifiApInterfaceName();
-                            reply.writeNoException();
-                            reply.writeString(_result82);
-                            return true;
-                        case 112:
-                            String _arg057 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result83 = runIptablesRulesCommand(_arg057);
-                            reply.writeNoException();
-                            reply.writeString(_result83);
-                            return true;
-                        case 113:
-                            boolean _arg058 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result84 = setWifiSharingEnabled(_arg058);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result84);
-                            return true;
-                        case 114:
-                            boolean _arg059 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result85 = setProvisionSuccess(_arg059);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result85);
-                            return true;
-                        case 115:
-                            int _result86 = getProvisionSuccess();
-                            reply.writeNoException();
-                            reply.writeInt(_result86);
-                            return true;
-                        case 116:
-                            boolean _result87 = isWifiSharingEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result87);
-                            return true;
-                        case 117:
-                            boolean _result88 = isWifiApEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result88);
-                            return true;
-                        case 118:
-                            int _result89 = getWifiApConnectedStationCount();
-                            reply.writeNoException();
-                            reply.writeInt(_result89);
-                            return true;
-                        case 119:
-                            int _result90 = getWifiApLOHSState();
-                            reply.writeNoException();
-                            reply.writeInt(_result90);
-                            return true;
-                        case 120:
-                            int _result91 = getIndoorStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result91);
-                            return true;
-                        case 121:
-                            int _result92 = getRVFModeStatus();
-                            reply.writeNoException();
-                            reply.writeInt(_result92);
-                            return true;
-                        case 122:
-                            int _arg060 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setRVFmodeStatus(_arg060);
-                            reply.writeNoException();
-                            return true;
-                        case 123:
-                            String _arg061 = data.readString();
-                            data.enforceNoDataAvail();
-                            wifiApDisassocSta(_arg061);
-                            reply.writeNoException();
-                            return true;
-                        case 124:
-                            int _arg062 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiApMaxClient(_arg062);
-                            reply.writeNoException();
-                            return true;
-                        case 125:
-                            Message _arg063 = (Message) data.readTypedObject(Message.CREATOR);
-                            data.enforceNoDataAvail();
-                            resetSoftAp(_arg063);
-                            reply.writeNoException();
-                            return true;
-                        case 126:
-                            int _arg064 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiApMaxClientToFramework(_arg064);
-                            reply.writeNoException();
-                            return true;
-                        case 127:
-                            int _result93 = getWifiApMaxClientFromFramework();
-                            reply.writeNoException();
-                            reply.writeInt(_result93);
-                            return true;
-                        case 128:
-                            boolean _arg065 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApWpsPbc(_arg065);
-                            reply.writeNoException();
-                            return true;
-                        case 129:
-                            boolean _result94 = getWifiApWpsPbc();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result94);
-                            return true;
-                        case 130:
-                            boolean _arg066 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApIsolate(_arg066);
-                            reply.writeNoException();
-                            return true;
-                        case 131:
-                            boolean _result95 = getWifiApIsolate();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result95);
-                            return true;
-                        case 132:
-                            int _arg067 = data.readInt();
-                            data.enforceNoDataAvail();
-                            updateHostapdMacList(_arg067);
-                            reply.writeNoException();
-                            return true;
-                        case 133:
-                            return onTransact$manageWifiApMacAclList$(data, reply);
-                        case 134:
-                            int _arg068 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<String> _result96 = readWifiApMacAclList(_arg068);
-                            reply.writeNoException();
-                            reply.writeStringList(_result96);
-                            return true;
-                        case 135:
-                            int _result97 = getWifiApMacAclMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result97);
-                            return true;
-                        case 136:
-                            int _arg069 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setWifiApMacAclMode(_arg069);
-                            reply.writeNoException();
-                            return true;
-                        case 137:
-                            boolean _result98 = isWifiApMacAclEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result98);
-                            return true;
-                        case 138:
-                            boolean _arg070 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApMacAclEnable(_arg070);
-                            reply.writeNoException();
-                            return true;
-                        case 139:
-                            String _arg071 = data.readString();
-                            data.enforceNoDataAvail();
-                            reportHotspotDumpLogs(_arg071);
-                            reply.writeNoException();
-                            return true;
-                        case 140:
-                            int _result99 = getWifiApState();
-                            reply.writeNoException();
-                            reply.writeInt(_result99);
-                            return true;
-                        case 141:
-                            boolean _result100 = isWifiApEnabledWithDualBand();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result100);
-                            return true;
-                        case 142:
-                            boolean _arg072 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setArdkPowerSaveMode(_arg072);
-                            reply.writeNoException();
-                            return true;
-                        case 143:
-                            boolean _arg073 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            enableHotspotTsfInfo(_arg073);
-                            reply.writeNoException();
-                            return true;
-                        case 144:
-                            int _arg074 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            notifyConnect(_arg074, _arg15);
-                            reply.writeNoException();
-                            return true;
-                        case 145:
-                            int[] _result101 = getSoftApBands();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result101);
-                            return true;
-                        case 146:
-                            boolean _result102 = canAutoHotspotBeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result102);
-                            return true;
-                        case 147:
-                            boolean _result103 = isP2pConnected();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result103);
-                            return true;
-                        case 148:
-                            int _arg075 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setAutohotspotToastMessage(_arg075);
-                            reply.writeNoException();
-                            return true;
-                        case 149:
-                            boolean _result104 = isMCFClientAutohotspotSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result104);
-                            return true;
-                        case 150:
-                            List<SemWifiApBleScanResult> _result105 = getMcfScanDetail();
-                            reply.writeNoException();
-                            reply.writeTypedList(_result105, 1);
-                            return true;
-                        case 151:
-                            boolean _arg076 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result106 = startMcfClientMHSDiscovery(_arg076);
-                            reply.writeNoException();
-                            reply.writeInt(_result106);
-                            return true;
-                        case 152:
-                            boolean _arg077 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result107 = startMcfMHSAdvertisement(_arg077);
-                            reply.writeNoException();
-                            reply.writeInt(_result107);
-                            return true;
-                        case 153:
-                            return onTransact$connectToMcfMHS$(data, reply);
-                        case 154:
-                            String _arg078 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result108 = getMcfConnectedStatus(_arg078);
-                            reply.writeNoException();
-                            reply.writeInt(_result108);
-                            return true;
-                        case 155:
-                            String _arg079 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result109 = getMcfConnectedStatusFromScanResult(_arg079);
-                            reply.writeNoException();
-                            reply.writeInt(_result109);
-                            return true;
-                        case 156:
-                            String _arg080 = data.readString();
-                            long _arg16 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setWifiApClientMobileDataLimit(_arg080, _arg16);
-                            reply.writeNoException();
-                            return true;
-                        case 157:
-                            String _arg081 = data.readString();
-                            long _arg17 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setWifiApClientTimeLimit(_arg081, _arg17);
-                            reply.writeNoException();
-                            return true;
-                        case 158:
-                            String _arg082 = data.readString();
-                            boolean _arg18 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApClientDataPaused(_arg082, _arg18);
-                            reply.writeNoException();
-                            return true;
-                        case 159:
-                            String _arg083 = data.readString();
-                            String _arg19 = data.readString();
-                            data.enforceNoDataAvail();
-                            setWifiApClientEditedName(_arg083, _arg19);
-                            reply.writeNoException();
-                            return true;
-                        case 160:
-                            long _arg084 = data.readLong();
-                            data.enforceNoDataAvail();
-                            setWifiApDailyDataLimit(_arg084);
-                            reply.writeNoException();
-                            return true;
-                        case 161:
-                            String _arg085 = data.readString();
-                            data.enforceNoDataAvail();
-                            SemWifiApClientDetails _result110 = getWifiApClientDetails(_arg085);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result110, 1);
-                            return true;
-                        case 162:
-                            int _arg086 = data.readInt();
-                            int _arg110 = data.readInt();
-                            data.enforceNoDataAvail();
-                            List<SemWifiApClientDetails> _result111 = getTopHotspotClientsToday(_arg086, _arg110);
-                            reply.writeNoException();
-                            reply.writeTypedList(_result111, 1);
-                            return true;
-                        case 163:
-                            int _arg087 = data.readInt();
-                            int _arg111 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result112 = getTopHotspotClientsTodayAsString(_arg087, _arg111);
-                            reply.writeNoException();
-                            reply.writeString(_result112);
-                            return true;
-                        case 164:
-                            long _result113 = getWifiApTodaysTotalDataUsage();
-                            reply.writeNoException();
-                            reply.writeLong(_result113);
-                            return true;
-                        case 165:
-                            long _result114 = getWifiApDailyDataLimit();
-                            reply.writeNoException();
-                            reply.writeLong(_result114);
-                            return true;
-                        case 166:
-                            long _arg088 = data.readLong();
-                            long _arg112 = data.readLong();
-                            data.enforceNoDataAvail();
-                            List<String> _result115 = getTotalAndTop3ClientsDataUsageBetweenGivenDates(_arg088, _arg112);
-                            reply.writeNoException();
-                            reply.writeStringList(_result115);
-                            return true;
-                        case 167:
-                            List<String> _result116 = getMonthlyDataUsage();
-                            reply.writeNoException();
-                            reply.writeStringList(_result116);
-                            return true;
-                        case 168:
-                            boolean _result117 = isOverAllMhsDataLimitReached();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result117);
-                            return true;
-                        case 169:
-                            boolean _result118 = isOverAllMhsDataLimitSet();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result118);
-                            return true;
-                        case 170:
-                            String _result119 = wifiApBackUpClientDataUsageSettingsInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result119);
-                            return true;
-                        case 171:
-                            String _arg089 = data.readString();
-                            data.enforceNoDataAvail();
-                            wifiApRestoreClientDataUsageSettingsInfo(_arg089);
-                            reply.writeNoException();
-                            return true;
-                        case 172:
-                            long _arg090 = data.readLong();
-                            data.enforceNoDataAvail();
-                            wifiApRestoreDailyHotspotDataLimit(_arg090);
-                            reply.writeNoException();
-                            return true;
-                        case 173:
-                            String _arg091 = data.readString();
-                            data.enforceNoDataAvail();
-                            setWifiApGuestPassword(_arg091);
-                            reply.writeNoException();
-                            return true;
-                        case 174:
-                            String _result120 = getWifiApGuestPassword();
-                            reply.writeNoException();
-                            reply.writeString(_result120);
-                            return true;
-                        case 175:
-                            boolean _result121 = isWifiApGuestModeEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result121);
-                            return true;
-                        case 176:
-                            boolean _arg092 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApGuestModeEnabled(_arg092);
-                            reply.writeNoException();
-                            return true;
-                        case 177:
-                            boolean _result122 = isWifiApGuestModeIsolationEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result122);
-                            return true;
-                        case 178:
-                            boolean _arg093 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setWifiApGuestModeIsolationEnabled(_arg093);
-                            reply.writeNoException();
-                            return true;
-                        case 179:
-                            String _arg094 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result123 = isWifiApGuestClient(_arg094);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result123);
-                            return true;
-                        case 180:
-                            return onTransact$registerClientListDataUsageCallback$(data, reply);
-                        case 181:
-                            int _arg095 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterClientListDataUsageCallback(_arg095);
-                            reply.writeNoException();
-                            return true;
-                        case 182:
-                            return onTransact$registerClientDataUsageCallback$(data, reply);
-                        case 183:
-                            int _arg096 = data.readInt();
-                            data.enforceNoDataAvail();
-                            unregisterClientDataUsageCallback(_arg096);
-                            reply.writeNoException();
-                            return true;
-                        case 184:
-                            String _arg097 = data.readString();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            reportBigData(_arg097, _arg113);
-                            return true;
-                        case 185:
-                            String _arg098 = data.readString();
-                            boolean _arg114 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            addOrUpdateWifiControlHistory(_arg098, _arg114);
-                            return true;
-                        case 186:
-                            String _result124 = getWifiEnableHistory();
-                            reply.writeNoException();
-                            reply.writeString(_result124);
-                            return true;
-                        case 187:
-                            SemWifiConfiguration _arg099 = (SemWifiConfiguration) data.readTypedObject(SemWifiConfiguration.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result125 = addOrUpdateNetwork(_arg099);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result125);
-                            return true;
-                        case 188:
-                            String _arg0100 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result126 = removeNetwork(_arg0100);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result126);
-                            return true;
-                        case 189:
-                            factoryReset();
-                            return true;
-                        case 190:
-                            resetDeveloperOptionsSettings();
-                            return true;
-                        case 191:
-                            ParceledListSlice _result127 = getConfiguredNetworks();
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result127, 1);
-                            return true;
-                        case 192:
-                            String _arg0101 = data.readString();
-                            boolean _arg115 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            allowAutojoinPasspoint(_arg0101, _arg115);
-                            return true;
-                        case 193:
-                            int _arg0102 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result128 = getIssueDetectorDump(_arg0102);
-                            reply.writeNoException();
-                            reply.writeString(_result128);
-                            return true;
-                        case 194:
-                            int _arg0103 = data.readInt();
-                            Bundle _arg116 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            reportIssue(_arg0103, _arg116);
-                            return true;
-                        case 195:
-                            Bundle _arg0104 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            updateGuiderFeature(_arg0104);
-                            return true;
-                        case 196:
-                            List<String> _result129 = getDiagnosisResults();
-                            reply.writeNoException();
-                            reply.writeStringList(_result129);
-                            return true;
-                        case 197:
-                            Bundle _arg0105 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            startIssueMonitoring(_arg0105);
-                            return true;
-                        case 198:
-                            int _arg0106 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result130 = getSilentRoamingDump(_arg0106);
-                            reply.writeNoException();
-                            reply.writeString(_result130);
-                            return true;
-                        case 199:
-                            String _arg0107 = data.readString();
-                            data.enforceNoDataAvail();
-                            String _result131 = getConnectivityLog(_arg0107);
-                            reply.writeNoException();
-                            reply.writeString(_result131);
-                            return true;
-                        case 200:
-                            List<String> _arg0108 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            Map _result132 = getQoSScores(_arg0108);
-                            reply.writeNoException();
-                            reply.writeMap(_result132);
-                            return true;
-                        case 201:
-                            String _arg0109 = data.readString();
-                            ISemSharedPasswordCallback _arg117 = ISemSharedPasswordCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerPasswordCallback(_arg0109, _arg117);
-                            return true;
-                        case 202:
-                            ISemSharedPasswordCallback _arg0110 = ISemSharedPasswordCallback.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterPasswordCallback(_arg0110);
-                            return true;
-                        case 203:
-                            boolean _arg0111 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            requestPassword(_arg0111);
-                            return true;
-                        case 204:
-                            boolean _arg0112 = data.readBoolean();
-                            String _arg118 = data.readString();
-                            data.enforceNoDataAvail();
-                            setUserConfirmForSharingPassword(_arg0112, _arg118);
-                            return true;
-                        case 205:
-                            boolean _result133 = isSupportedQoSProvider();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result133);
-                            return true;
-                        case 206:
-                            boolean _result134 = isSupportedProfileRequest();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result134);
-                            return true;
-                        case 207:
-                            String _result135 = getProfileShareDump();
-                            reply.writeNoException();
-                            reply.writeString(_result135);
-                            return true;
-                        case 208:
-                            String _result136 = getAutoShareDump();
-                            reply.writeNoException();
-                            reply.writeString(_result136);
-                            return true;
-                        case 209:
-                            List<String> _arg0113 = data.createStringArrayList();
-                            data.enforceNoDataAvail();
-                            runAutoShareForCurrent(_arg0113);
-                            return true;
-                        case 210:
-                            boolean _result137 = isSupportedAutoWifi();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result137);
-                            return true;
-                        case 211:
-                            boolean _result138 = isAvailableAutoWifiScan();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result138);
-                            return true;
-                        case 212:
-                            String _result139 = getAutoWifiDump();
-                            reply.writeNoException();
-                            reply.writeString(_result139);
-                            return true;
-                        case 213:
-                            Map _result140 = getConfiguredNetworkLocations();
-                            reply.writeNoException();
-                            reply.writeMap(_result140);
-                            return true;
-                        case 214:
-                            String _arg0114 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result141 = hasConfiguredNetworkLocations(_arg0114);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result141);
-                            return true;
-                        case 215:
-                            boolean _result142 = isLocationProviderAvailable();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result142);
-                            return true;
-                        case 216:
-                            int _arg0115 = data.readInt();
-                            Bundle _arg119 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setTestSettings(_arg0115, _arg119);
-                            return true;
-                        case 217:
-                            boolean _arg0116 = data.readBoolean();
-                            String _arg120 = data.readString();
-                            data.enforceNoDataAvail();
-                            setAllowWifiScan(_arg0116, _arg120);
-                            return true;
-                        case 218:
-                            boolean _result143 = isScanningEnabled();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result143);
-                            return true;
-                        case 219:
-                            String _arg0117 = data.readString();
-                            data.enforceNoDataAvail();
-                            boolean _result144 = startScan(_arg0117);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result144);
-                            return true;
-                        case 220:
-                            String _arg0118 = data.readString();
-                            SemEasySetupWifiScanSettings _arg121 = (SemEasySetupWifiScanSettings) data.readTypedObject(SemEasySetupWifiScanSettings.CREATOR);
-                            data.enforceNoDataAvail();
-                            setEasySetupScanSettings(_arg0118, _arg121);
-                            return true;
-                        case 221:
-                            Map<String, SemEasySetupWifiScanSettings> _result145 = getEasySetupScanSettings();
-                            reply.writeNoException();
-                            if (_result145 == null) {
-                                reply.writeInt(-1);
-                            } else {
-                                reply.writeInt(_result145.size());
-                                _result145.forEach(new BiConsumer() { // from class: com.samsung.android.wifi.ISemWifiManager$Stub$$ExternalSyntheticLambda0
-                                    @Override // java.util.function.BiConsumer
-                                    public final void accept(Object obj, Object obj2) {
-                                        ISemWifiManager.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (SemEasySetupWifiScanSettings) obj2);
-                                    }
-                                });
+                case 2:
+                    int _arg02 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setDtimInSuspendMode(_arg02);
+                    reply.writeNoException();
+                    return true;
+                case 3:
+                    boolean _arg03 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setVerboseLoggingEnabled(_arg03);
+                    reply.writeNoException();
+                    return true;
+                case 4:
+                    boolean _arg04 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    blockFccChannelBackoff(_arg04);
+                    reply.writeNoException();
+                    return true;
+                case 5:
+                    boolean _arg05 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiDeveloperModeEnabled(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    boolean _result = isWifiDeveloperModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result);
+                    return true;
+                case 7:
+                    String _result2 = getWifiFirmwareVersion();
+                    reply.writeNoException();
+                    reply.writeString(_result2);
+                    return true;
+                case 8:
+                    String _result3 = getWifiCid();
+                    reply.writeNoException();
+                    reply.writeString(_result3);
+                    return true;
+                case 9:
+                    String _result4 = getWifiVersions();
+                    reply.writeNoException();
+                    reply.writeString(_result4);
+                    return true;
+                case 10:
+                    String _result5 = getFactoryMacAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result5);
+                    return true;
+                case 11:
+                    String _result6 = getAntInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result6);
+                    return true;
+                case 12:
+                    String _result7 = getFrameburstInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result7);
+                    return true;
+                case 13:
+                    String _result8 = getPsmInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result8);
+                    return true;
+                case 14:
+                    String _result9 = getWifiSupportedFeatureSet();
+                    reply.writeNoException();
+                    reply.writeString(_result9);
+                    return true;
+                case 15:
+                    String _arg06 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result10 = getVendorWlanDriverProp(_arg06);
+                    reply.writeNoException();
+                    reply.writeString(_result10);
+                    return true;
+                case 16:
+                    return onTransact$setVendorWlanDriverProp$(data, reply);
+                case 17:
+                    boolean _result11 = removeFactoryMacAddress();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result11);
+                    return true;
+                case 18:
+                    String _arg07 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result12 = setFactoryMacAddress(_arg07);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result12);
+                    return true;
+                case 19:
+                    return onTransact$setFccChannelBackoffEnabled$(data, reply);
+                case 20:
+                    String _arg08 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result13 = setPsmInfo(_arg08);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result13);
+                    return true;
+                case 21:
+                    String _arg09 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result14 = setAntInfo(_arg09);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result14);
+                    return true;
+                case 22:
+                    String _arg010 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result15 = setFrameburstInfo(_arg010);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result15);
+                    return true;
+                case 23:
+                    String _arg011 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result16 = setDcxoCalibrationData(_arg011);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result16);
+                    return true;
+                case 24:
+                    String _result17 = getDcxoCalibrationData();
+                    reply.writeNoException();
+                    reply.writeString(_result17);
+                    return true;
+                case 25:
+                    Bundle _result18 = getCurrentWifiRouterInfo();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result18, 1);
+                    return true;
+                case 26:
+                    String _arg012 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result19 = getWifiRouterInfo(_arg012);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result19, 1);
+                    return true;
+                case 27:
+                    String _arg013 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result20 = getWifiRouterInfoBestEffort(_arg013);
+                    reply.writeNoException();
+                    reply.writeString(_result20);
+                    return true;
+                case 28:
+                    String _arg014 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result21 = getWifiRouterInfoPresentable(_arg014);
+                    reply.writeNoException();
+                    reply.writeString(_result21);
+                    return true;
+                case 29:
+                    String _arg015 = data.readString();
+                    data.enforceNoDataAvail();
+                    Bundle _result22 = getWifiRouterInfoByBssid(_arg015);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result22, 1);
+                    return true;
+                case 30:
+                    String _arg016 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result23 = getWifiRouterInfoBestEffortByBssid(_arg016);
+                    reply.writeNoException();
+                    reply.writeString(_result23);
+                    return true;
+                case 31:
+                    String _arg017 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result24 = getWifiRouterInfoPresentableByBssid(_arg017);
+                    reply.writeNoException();
+                    reply.writeString(_result24);
+                    return true;
+                case 32:
+                    Map _result25 = getNetworkLastUpdatedTimeMap();
+                    reply.writeNoException();
+                    reply.writeMap(_result25);
+                    return true;
+                case 33:
+                    String _result26 = getCurrentStateAndEnterTime();
+                    reply.writeNoException();
+                    reply.writeString(_result26);
+                    return true;
+                case 34:
+                    String _arg018 = data.readString();
+                    data.enforceNoDataAvail();
+                    long[] _result27 = getNetworkUsageInfo(_arg018);
+                    reply.writeNoException();
+                    reply.writeLongArray(_result27);
+                    return true;
+                case 35:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result28 = getDailyUsageInfo(_arg019);
+                    reply.writeNoException();
+                    reply.writeString(_result28);
+                    return true;
+                case 36:
+                    boolean _arg020 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setGripSensorMonitorEnabled(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 37:
+                    boolean _result29 = isGripSensorMonitorEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result29);
+                    return true;
+                case 38:
+                    boolean _arg021 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    triggerBackoffRoutine(_arg021);
+                    reply.writeNoException();
+                    return true;
+                case 39:
+                    boolean _arg022 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    set5GmmWaveSarBackoffEnabled(_arg022);
+                    reply.writeNoException();
+                    return true;
+                case 40:
+                    boolean _arg023 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result30 = setUploadModeEnabled(_arg023);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result30);
+                    return true;
+                case 41:
+                    boolean _result31 = isUploadModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result31);
+                    return true;
+                case 42:
+                    int _result32 = getAdvancedAutohotspotConnectSettings();
+                    reply.writeNoException();
+                    reply.writeInt(_result32);
+                    return true;
+                case 43:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAdvancedAutohotspotConnectSettings(_arg024);
+                    reply.writeNoException();
+                    return true;
+                case 44:
+                    int _result33 = getAdvancedAutohotspotLCDSettings();
+                    reply.writeNoException();
+                    reply.writeInt(_result33);
+                    return true;
+                case 45:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiSettingsForegroundState(_arg025);
+                    reply.writeNoException();
+                    return true;
+                case 46:
+                    int _arg026 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiApWarningActivityRunning(_arg026);
+                    reply.writeNoException();
+                    return true;
+                case 47:
+                    int _result34 = getWifiApWarningActivityRunningState();
+                    reply.writeNoException();
+                    reply.writeInt(_result34);
+                    return true;
+                case 48:
+                    clearAutoHotspotLists();
+                    reply.writeNoException();
+                    return true;
+                case 49:
+                    int _arg027 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAdvancedAutohotspotLCDSettings(_arg027);
+                    reply.writeNoException();
+                    return true;
+                case 50:
+                    int _result35 = getChannelUtilization();
+                    reply.writeNoException();
+                    reply.writeInt(_result35);
+                    return true;
+                case 51:
+                    Map _result36 = getChannelUtilizationExtended();
+                    reply.writeNoException();
+                    reply.writeMap(_result36);
+                    return true;
+                case 52:
+                    int _arg028 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result37 = setRoamTrigger(_arg028);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result37);
+                    return true;
+                case 53:
+                    int _result38 = getRoamTrigger();
+                    reply.writeNoException();
+                    reply.writeInt(_result38);
+                    return true;
+                case 54:
+                    int _arg029 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result39 = setRoamDelta(_arg029);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result39);
+                    return true;
+                case 55:
+                    int _result40 = getRoamDelta();
+                    reply.writeNoException();
+                    reply.writeInt(_result40);
+                    return true;
+                case 56:
+                    int _arg030 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result41 = setRoamScanPeriod(_arg030);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result41);
+                    return true;
+                case 57:
+                    int _result42 = getRoamScanPeriod();
+                    reply.writeNoException();
+                    reply.writeInt(_result42);
+                    return true;
+                case 58:
+                    int _arg031 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result43 = setRoamBand(_arg031);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result43);
+                    return true;
+                case 59:
+                    int _result44 = getRoamBand();
+                    reply.writeNoException();
+                    reply.writeInt(_result44);
+                    return true;
+                case 60:
+                    String _arg032 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result45 = setCountryRev(_arg032);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result45);
+                    return true;
+                case 61:
+                    String _result46 = getCountryRev();
+                    reply.writeNoException();
+                    reply.writeString(_result46);
+                    return true;
+                case 62:
+                    String _result47 = getCountryCode();
+                    reply.writeNoException();
+                    reply.writeString(_result47);
+                    return true;
+                case 63:
+                    String _result48 = getWifi7DisabledCountry();
+                    reply.writeNoException();
+                    reply.writeString(_result48);
+                    return true;
+                case 64:
+                    boolean _result49 = isNCHOModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result49);
+                    return true;
+                case 65:
+                    boolean _arg033 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result50 = setNCHOModeEnabled(_arg033);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result50);
+                    return true;
+                case 66:
+                    boolean _arg034 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result51 = setRoamScanEnabled(_arg034);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result51);
+                    return true;
+                case 67:
+                    String[] _arg035 = data.createStringArray();
+                    data.enforceNoDataAvail();
+                    boolean _result52 = setRoamScanChannels(_arg035);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result52);
+                    return true;
+                case 68:
+                    boolean _result53 = isWesModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result53);
+                    return true;
+                case 69:
+                    boolean _arg036 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result54 = setWesModeEnabled(_arg036);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result54);
+                    return true;
+                case 70:
+                    return onTransact$sendVendorSpecificActionFrame$(data, reply);
+                case 71:
+                    return onTransact$sendReassociationRequestFrame$(data, reply);
+                case 72:
+                    int _result55 = getSmartMHSLockStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result55);
+                    return true;
+                case 73:
+                    int _result56 = canSmartMHSLocked();
+                    reply.writeNoException();
+                    reply.writeInt(_result56);
+                    return true;
+                case 74:
+                    int _arg037 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result57 = setSmartMHSLocked(_arg037);
+                    reply.writeNoException();
+                    reply.writeInt(_result57);
+                    return true;
+                case 75:
+                    boolean _arg038 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    isClientAcceptedWifiProfileSharing(_arg038);
+                    reply.writeNoException();
+                    return true;
+                case 76:
+                    List<SemWifiApBleScanResult> _result58 = getWifiApBleScanDetail();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result58, 1);
+                    return true;
+                case 77:
+                    boolean _arg039 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result59 = wifiApBleClientRole(_arg039);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result59);
+                    return true;
+                case 78:
+                    boolean _arg040 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result60 = wifiApBleMhsRole(_arg040);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result60);
+                    return true;
+                case 79:
+                    return onTransact$connectToSmartMHS$(data, reply);
+                case 80:
+                    boolean _arg041 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    requestStopAutohotspotAdvertisement(_arg041);
+                    reply.writeNoException();
+                    return true;
+                case 81:
+                    String _arg042 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result61 = getSmartApConnectedStatus(_arg042);
+                    reply.writeNoException();
+                    reply.writeInt(_result61);
+                    return true;
+                case 82:
+                    return onTransact$registerWifiApSmartCallback$(data, reply);
+                case 83:
+                    int _arg043 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterWifiApSmartCallback(_arg043);
+                    reply.writeNoException();
+                    return true;
+                case 84:
+                    return onTransact$registerWifiApDataUsageCallback$(data, reply);
+                case 85:
+                    int _arg044 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unRegisterWifiApDataUsageCallback(_arg044);
+                    reply.writeNoException();
+                    return true;
+                case 86:
+                    String _arg045 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result62 = getSmartApConnectedStatusFromScanResult(_arg045);
+                    reply.writeNoException();
+                    reply.writeInt(_result62);
+                    return true;
+                case 87:
+                    List<SemWifiApBleScanResult> _result63 = getWifiApBleD2DScanDetail();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result63, 1);
+                    return true;
+                case 88:
+                    boolean _arg046 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result64 = wifiApBleD2DClientRole(_arg046);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result64);
+                    return true;
+                case 89:
+                    boolean _arg047 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result65 = wifiApBleD2DMhsRole(_arg047);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result65);
+                    return true;
+                case 90:
+                    return onTransact$connectToSmartD2DClient$(data, reply);
+                case 91:
+                    String _arg048 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result66 = getSmartD2DClientConnectedStatus(_arg048);
+                    reply.writeNoException();
+                    reply.writeInt(_result66);
+                    return true;
+                case 92:
+                    boolean _result67 = isWifiApWpa3Supported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result67);
+                    return true;
+                case 93:
+                    return onTransact$setWifiApEnabled$(data, reply);
+                case 94:
+                    return onTransact$setLocalOnlyHotspotEnabled$(data, reply);
+                case 95:
+                    SoftApConfiguration _result68 = getSoftApConfiguration();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result68, 1);
+                    return true;
+                case 96:
+                    SoftApConfiguration _arg049 = (SoftApConfiguration) data.readTypedObject(SoftApConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    setSoftApConfiguration(_arg049);
+                    reply.writeNoException();
+                    return true;
+                case 97:
+                    String _arg050 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result69 = getStationInfo(_arg050);
+                    reply.writeNoException();
+                    reply.writeString(_result69);
+                    return true;
+                case 98:
+                    String _result70 = getTxPower();
+                    reply.writeNoException();
+                    reply.writeString(_result70);
+                    return true;
+                case 99:
+                    int _result71 = getWifiApFreq();
+                    reply.writeNoException();
+                    reply.writeInt(_result71);
+                    return true;
+                case 100:
+                    int _arg051 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setHotspotAntMode(_arg051);
+                    reply.writeNoException();
+                    return true;
+                case 101:
+                    int _result72 = getHotspotAntMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result72);
+                    return true;
+                case 102:
+                    int _arg052 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAntMode(_arg052);
+                    reply.writeNoException();
+                    return true;
+                case 103:
+                    int _arg053 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setPowerSavingTime(_arg053);
+                    reply.writeNoException();
+                    return true;
+                case 104:
+                    String _arg054 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result73 = getMHSConfig(_arg054);
+                    reply.writeNoException();
+                    reply.writeString(_result73);
+                    return true;
+                case 105:
+                    String _arg055 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result74 = setMHSConfig(_arg055);
+                    reply.writeNoException();
+                    reply.writeString(_result74);
+                    return true;
+                case 106:
+                    int _result75 = getWifiApChannel();
+                    reply.writeNoException();
+                    reply.writeInt(_result75);
+                    return true;
+                case 107:
+                    int _result76 = getWifiApMaxClient();
+                    reply.writeNoException();
+                    reply.writeInt(_result76);
+                    return true;
+                case 108:
+                    boolean _result77 = supportWifiAp5GBasedOnCountry();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result77);
+                    return true;
+                case 109:
+                    boolean _result78 = supportWifiAp6GBasedOnCountry();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result78);
+                    return true;
+                case 110:
+                    String _result79 = getWifiApStaList();
+                    reply.writeNoException();
+                    reply.writeString(_result79);
+                    return true;
+                case 111:
+                    boolean _result80 = isWifiSharingSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result80);
+                    return true;
+                case 112:
+                    boolean _result81 = isWifiSharingLiteSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result81);
+                    return true;
+                case 113:
+                    List<String> _result82 = getWifiApStaListDetail();
+                    reply.writeNoException();
+                    reply.writeStringList(_result82);
+                    return true;
+                case 114:
+                    setWifiApConfigurationToDefault();
+                    reply.writeNoException();
+                    return true;
+                case 115:
+                    List<String> _result83 = getWifiApInterfaceNames();
+                    reply.writeNoException();
+                    reply.writeStringList(_result83);
+                    return true;
+                case 116:
+                    String _result84 = getWifiApInterfaceName();
+                    reply.writeNoException();
+                    reply.writeString(_result84);
+                    return true;
+                case 117:
+                    String _arg056 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result85 = runIptablesRulesCommand(_arg056);
+                    reply.writeNoException();
+                    reply.writeString(_result85);
+                    return true;
+                case 118:
+                    boolean _arg057 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result86 = setWifiSharingEnabled(_arg057);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result86);
+                    return true;
+                case 119:
+                    boolean _arg058 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result87 = setProvisionSuccess(_arg058);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result87);
+                    return true;
+                case 120:
+                    int _result88 = getProvisionSuccess();
+                    reply.writeNoException();
+                    reply.writeInt(_result88);
+                    return true;
+                case 121:
+                    boolean _result89 = isWifiSharingEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result89);
+                    return true;
+                case 122:
+                    boolean _result90 = isWifiApEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result90);
+                    return true;
+                case 123:
+                    int _result91 = getWifiApConnectedStationCount();
+                    reply.writeNoException();
+                    reply.writeInt(_result91);
+                    return true;
+                case 124:
+                    int _result92 = getWifiApLOHSState();
+                    reply.writeNoException();
+                    reply.writeInt(_result92);
+                    return true;
+                case 125:
+                    int _result93 = getIndoorStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result93);
+                    return true;
+                case 126:
+                    int _result94 = getRVFModeStatus();
+                    reply.writeNoException();
+                    reply.writeInt(_result94);
+                    return true;
+                case 127:
+                    int _arg059 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setRVFmodeStatus(_arg059);
+                    reply.writeNoException();
+                    return true;
+                case 128:
+                    String _arg060 = data.readString();
+                    data.enforceNoDataAvail();
+                    wifiApDisassocSta(_arg060);
+                    reply.writeNoException();
+                    return true;
+                case 129:
+                    int _arg061 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiApMaxClient(_arg061);
+                    reply.writeNoException();
+                    return true;
+                case 130:
+                    Message _arg062 = (Message) data.readTypedObject(Message.CREATOR);
+                    data.enforceNoDataAvail();
+                    resetSoftAp(_arg062);
+                    reply.writeNoException();
+                    return true;
+                case 131:
+                    int _arg063 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiApMaxClientToFramework(_arg063);
+                    reply.writeNoException();
+                    return true;
+                case 132:
+                    int _result95 = getWifiApMaxClientFromFramework();
+                    reply.writeNoException();
+                    reply.writeInt(_result95);
+                    return true;
+                case 133:
+                    boolean _arg064 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiApWpsPbc(_arg064);
+                    reply.writeNoException();
+                    return true;
+                case 134:
+                    boolean _result96 = getWifiApWpsPbc();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result96);
+                    return true;
+                case 135:
+                    boolean _arg065 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiApIsolate(_arg065);
+                    reply.writeNoException();
+                    return true;
+                case 136:
+                    boolean _result97 = getWifiApIsolate();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result97);
+                    return true;
+                case 137:
+                    int _arg066 = data.readInt();
+                    data.enforceNoDataAvail();
+                    updateHostapdMacList(_arg066);
+                    reply.writeNoException();
+                    return true;
+                case 138:
+                    return onTransact$manageWifiApMacAclList$(data, reply);
+                case 139:
+                    int _arg067 = data.readInt();
+                    data.enforceNoDataAvail();
+                    List<String> _result98 = readWifiApMacAclList(_arg067);
+                    reply.writeNoException();
+                    reply.writeStringList(_result98);
+                    return true;
+                case 140:
+                    int _result99 = getWifiApMacAclMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result99);
+                    return true;
+                case 141:
+                    int _arg068 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setWifiApMacAclMode(_arg068);
+                    reply.writeNoException();
+                    return true;
+                case 142:
+                    boolean _result100 = isWifiApMacAclEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result100);
+                    return true;
+                case 143:
+                    boolean _arg069 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiApMacAclEnable(_arg069);
+                    reply.writeNoException();
+                    return true;
+                case 144:
+                    String _arg070 = data.readString();
+                    data.enforceNoDataAvail();
+                    reportHotspotDumpLogs(_arg070);
+                    reply.writeNoException();
+                    return true;
+                case 145:
+                    int _result101 = getWifiApState();
+                    reply.writeNoException();
+                    reply.writeInt(_result101);
+                    return true;
+                case 146:
+                    boolean _result102 = isWifiApEnabledWithDualBand();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result102);
+                    return true;
+                case 147:
+                    boolean _arg071 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setArdkPowerSaveMode(_arg071);
+                    reply.writeNoException();
+                    return true;
+                case 148:
+                    boolean _arg072 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    enableHotspotTsfInfo(_arg072);
+                    reply.writeNoException();
+                    return true;
+                case 149:
+                    return onTransact$notifyConnect$(data, reply);
+                case 150:
+                    int[] _result103 = getSoftApBands();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result103);
+                    return true;
+                case 151:
+                    boolean _result104 = canAutoHotspotBeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result104);
+                    return true;
+                case 152:
+                    boolean _result105 = isP2pConnected();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result105);
+                    return true;
+                case 153:
+                    int _arg073 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setAutohotspotToastMessage(_arg073);
+                    reply.writeNoException();
+                    return true;
+                case 154:
+                    int _result106 = getSoftApSecurityType();
+                    reply.writeNoException();
+                    reply.writeInt(_result106);
+                    return true;
+                case 155:
+                    int _result107 = isDataSaverEnabled();
+                    reply.writeNoException();
+                    reply.writeInt(_result107);
+                    return true;
+                case 156:
+                    int _result108 = isSoftap11axEnabled();
+                    reply.writeNoException();
+                    reply.writeInt(_result108);
+                    return true;
+                case 157:
+                    int _result109 = isSoftAp6ENetwork();
+                    reply.writeNoException();
+                    reply.writeInt(_result109);
+                    return true;
+                case 158:
+                    int _result110 = getSoftApUpStreamNetworkType();
+                    reply.writeNoException();
+                    reply.writeInt(_result110);
+                    return true;
+                case 159:
+                    String _result111 = getMHSMacFromInterface();
+                    reply.writeNoException();
+                    reply.writeString(_result111);
+                    return true;
+                case 160:
+                    int _result112 = getSoftApFreq();
+                    reply.writeNoException();
+                    reply.writeInt(_result112);
+                    return true;
+                case 161:
+                    return onTransact$launchWifiApWarningForMcfMHS$(data, reply);
+                case 162:
+                    boolean _result113 = isNeededToShowWifiApDatalimitReachedDialog();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result113);
+                    return true;
+                case 163:
+                    String _result114 = getWifiMACAddress();
+                    reply.writeNoException();
+                    reply.writeString(_result114);
+                    return true;
+                case 164:
+                    return onTransact$autohotspotWifiScanConnect$(data, reply);
+                case 165:
+                    String _result115 = getWifiApHostapdFreq();
+                    reply.writeNoException();
+                    reply.writeString(_result115);
+                    return true;
+                case 166:
+                    String _result116 = getWifiApHostapdSecurtiy();
+                    reply.writeNoException();
+                    reply.writeString(_result116);
+                    return true;
+                case 167:
+                    boolean _result117 = isMCFClientAutohotspotSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result117);
+                    return true;
+                case 168:
+                    List<SemWifiApBleScanResult> _result118 = getMcfScanDetail();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result118, 1);
+                    return true;
+                case 169:
+                    boolean _arg074 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result119 = startMcfClientMHSDiscovery(_arg074);
+                    reply.writeNoException();
+                    reply.writeInt(_result119);
+                    return true;
+                case 170:
+                    boolean _arg075 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    int _result120 = startMcfMHSAdvertisement(_arg075);
+                    reply.writeNoException();
+                    reply.writeInt(_result120);
+                    return true;
+                case 171:
+                    return onTransact$connectToMcfMHS$(data, reply);
+                case 172:
+                    String _arg076 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result121 = getMcfConnectedStatus(_arg076);
+                    reply.writeNoException();
+                    reply.writeInt(_result121);
+                    return true;
+                case 173:
+                    String _arg077 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result122 = getMcfConnectedStatusFromScanResult(_arg077);
+                    reply.writeNoException();
+                    reply.writeInt(_result122);
+                    return true;
+                case 174:
+                    return onTransact$setWifiApClientMobileDataLimit$(data, reply);
+                case 175:
+                    return onTransact$setWifiApClientTimeLimit$(data, reply);
+                case 176:
+                    return onTransact$setWifiApClientDataPaused$(data, reply);
+                case 177:
+                    return onTransact$setWifiApClientEditedName$(data, reply);
+                case 178:
+                    long _arg078 = data.readLong();
+                    data.enforceNoDataAvail();
+                    setWifiApDailyDataLimit(_arg078);
+                    reply.writeNoException();
+                    return true;
+                case 179:
+                    String _arg079 = data.readString();
+                    data.enforceNoDataAvail();
+                    SemWifiApClientDetails _result123 = getWifiApClientDetails(_arg079);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result123, 1);
+                    return true;
+                case 180:
+                    return onTransact$getTopHotspotClientsToday$(data, reply);
+                case 181:
+                    return onTransact$getTopHotspotClientsTodayAsString$(data, reply);
+                case 182:
+                    long _result124 = getWifiApTodaysTotalDataUsage();
+                    reply.writeNoException();
+                    reply.writeLong(_result124);
+                    return true;
+                case 183:
+                    long _result125 = getWifiApDailyDataLimit();
+                    reply.writeNoException();
+                    reply.writeLong(_result125);
+                    return true;
+                case 184:
+                    return onTransact$getTotalAndTop3ClientsDataUsageBetweenGivenDates$(data, reply);
+                case 185:
+                    List<String> _result126 = getMonthlyDataUsage();
+                    reply.writeNoException();
+                    reply.writeStringList(_result126);
+                    return true;
+                case 186:
+                    boolean _result127 = isOverAllMhsDataLimitReached();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result127);
+                    return true;
+                case 187:
+                    boolean _result128 = isOverAllMhsDataLimitSet();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result128);
+                    return true;
+                case 188:
+                    String _result129 = wifiApBackUpClientDataUsageSettingsInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result129);
+                    return true;
+                case 189:
+                    String _arg080 = data.readString();
+                    data.enforceNoDataAvail();
+                    wifiApRestoreClientDataUsageSettingsInfo(_arg080);
+                    reply.writeNoException();
+                    return true;
+                case 190:
+                    long _arg081 = data.readLong();
+                    data.enforceNoDataAvail();
+                    wifiApRestoreDailyHotspotDataLimit(_arg081);
+                    reply.writeNoException();
+                    return true;
+                case 191:
+                    String _arg082 = data.readString();
+                    data.enforceNoDataAvail();
+                    setWifiApGuestPassword(_arg082);
+                    reply.writeNoException();
+                    return true;
+                case 192:
+                    String _result130 = getWifiApGuestPassword();
+                    reply.writeNoException();
+                    reply.writeString(_result130);
+                    return true;
+                case 193:
+                    boolean _result131 = isWifiApGuestModeEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result131);
+                    return true;
+                case 194:
+                    boolean _arg083 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiApGuestModeEnabled(_arg083);
+                    reply.writeNoException();
+                    return true;
+                case 195:
+                    boolean _result132 = isWifiApGuestModeIsolationEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result132);
+                    return true;
+                case 196:
+                    boolean _arg084 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setWifiApGuestModeIsolationEnabled(_arg084);
+                    reply.writeNoException();
+                    return true;
+                case 197:
+                    String _arg085 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result133 = isWifiApGuestClient(_arg085);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result133);
+                    return true;
+                case 198:
+                    boolean _result134 = isSAFamilySupportedBasedOnCountry();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result134);
+                    return true;
+                case 199:
+                    return onTransact$registerClientListDataUsageCallback$(data, reply);
+                case 200:
+                    int _arg086 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterClientListDataUsageCallback(_arg086);
+                    reply.writeNoException();
+                    return true;
+                case 201:
+                    return onTransact$registerClientDataUsageCallback$(data, reply);
+                case 202:
+                    int _arg087 = data.readInt();
+                    data.enforceNoDataAvail();
+                    unregisterClientDataUsageCallback(_arg087);
+                    reply.writeNoException();
+                    return true;
+                case 203:
+                    return onTransact$reportBigData$(data, reply);
+                case 204:
+                    return onTransact$addOrUpdateWifiControlHistory$(data, reply);
+                case 205:
+                    String _result135 = getWifiEnableHistory();
+                    reply.writeNoException();
+                    reply.writeString(_result135);
+                    return true;
+                case 206:
+                    SemWifiConfiguration _arg088 = (SemWifiConfiguration) data.readTypedObject(SemWifiConfiguration.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result136 = addOrUpdateNetwork(_arg088);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result136);
+                    return true;
+                case 207:
+                    String _arg089 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result137 = removeNetwork(_arg089);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result137);
+                    return true;
+                case 208:
+                    factoryReset();
+                    return true;
+                case 209:
+                    resetDeveloperOptionsSettings();
+                    return true;
+                case 210:
+                    ParceledListSlice _result138 = getConfiguredNetworks();
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result138, 1);
+                    return true;
+                case 211:
+                    return onTransact$allowAutojoinPasspoint$(data, reply);
+                case 212:
+                    List _result139 = getPasspointConfigurations();
+                    reply.writeNoException();
+                    reply.writeList(_result139);
+                    return true;
+                case 213:
+                    int _arg090 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result140 = getIssueDetectorDump(_arg090);
+                    reply.writeNoException();
+                    reply.writeString(_result140);
+                    return true;
+                case 214:
+                    return onTransact$reportIssue$(data, reply);
+                case 215:
+                    Bundle _arg091 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    updateGuiderFeature(_arg091);
+                    return true;
+                case 216:
+                    List<String> _result141 = getDiagnosisResults();
+                    reply.writeNoException();
+                    reply.writeStringList(_result141);
+                    return true;
+                case 217:
+                    Bundle _arg092 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    startIssueMonitoring(_arg092);
+                    return true;
+                case 218:
+                    int _arg093 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result142 = getSilentRoamingDump(_arg093);
+                    reply.writeNoException();
+                    reply.writeString(_result142);
+                    return true;
+                case 219:
+                    String _arg094 = data.readString();
+                    data.enforceNoDataAvail();
+                    String _result143 = getConnectivityLog(_arg094);
+                    reply.writeNoException();
+                    reply.writeString(_result143);
+                    return true;
+                case 220:
+                    List<String> _arg095 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    Map _result144 = getQoSScores(_arg095);
+                    reply.writeNoException();
+                    reply.writeMap(_result144);
+                    return true;
+                case 221:
+                    String _arg096 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBtmOptionUserEnabled(_arg096);
+                    return true;
+                case 222:
+                    String _arg097 = data.readString();
+                    data.enforceNoDataAvail();
+                    setBtmOptionUserDisabled(_arg097);
+                    return true;
+                case 223:
+                    return onTransact$registerPasswordCallback$(data, reply);
+                case 224:
+                    ISemSharedPasswordCallback _arg098 = ISemSharedPasswordCallback.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    unregisterPasswordCallback(_arg098);
+                    return true;
+                case 225:
+                    boolean _arg099 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    requestPassword(_arg099);
+                    return true;
+                case 226:
+                    return onTransact$setUserConfirmForSharingPassword$(data, reply);
+                case 227:
+                    boolean _result145 = isSupportedQoSProvider();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result145);
+                    return true;
+                case 228:
+                    boolean _result146 = isSupportedProfileRequest();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result146);
+                    return true;
+                case 229:
+                    String _result147 = getProfileShareDump();
+                    reply.writeNoException();
+                    reply.writeString(_result147);
+                    return true;
+                case 230:
+                    String _result148 = getAutoShareDump();
+                    reply.writeNoException();
+                    reply.writeString(_result148);
+                    return true;
+                case 231:
+                    List<String> _arg0100 = data.createStringArrayList();
+                    data.enforceNoDataAvail();
+                    runAutoShareForCurrent(_arg0100);
+                    return true;
+                case 232:
+                    boolean _result149 = isSupportedAutoWifi();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result149);
+                    return true;
+                case 233:
+                    boolean _result150 = getAutoWifiDefaultValue();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result150);
+                    return true;
+                case 234:
+                    boolean _result151 = shouldShowAutoWifiBubbleTip();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result151);
+                    return true;
+                case 235:
+                    boolean _result152 = isAvailableAutoWifiScan();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result152);
+                    return true;
+                case 236:
+                    String _result153 = getAutoWifiDump();
+                    reply.writeNoException();
+                    reply.writeString(_result153);
+                    return true;
+                case 237:
+                    Map _result154 = getConfiguredNetworkLocations();
+                    reply.writeNoException();
+                    reply.writeMap(_result154);
+                    return true;
+                case 238:
+                    String _arg0101 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result155 = hasConfiguredNetworkLocations(_arg0101);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result155);
+                    return true;
+                case 239:
+                    return onTransact$setTestSettings$(data, reply);
+                case 240:
+                    return onTransact$setAllowWifiScan$(data, reply);
+                case 241:
+                    boolean _result156 = isScanningEnabled();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result156);
+                    return true;
+                case 242:
+                    String _arg0102 = data.readString();
+                    data.enforceNoDataAvail();
+                    boolean _result157 = startScan(_arg0102);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result157);
+                    return true;
+                case 243:
+                    return onTransact$setEasySetupScanSettings$(data, reply);
+                case 244:
+                    Map<String, SemEasySetupWifiScanSettings> _result158 = getEasySetupScanSettings();
+                    reply.writeNoException();
+                    if (_result158 == null) {
+                        reply.writeInt(-1);
+                    } else {
+                        reply.writeInt(_result158.size());
+                        _result158.forEach(new BiConsumer() { // from class: com.samsung.android.wifi.ISemWifiManager$Stub$$ExternalSyntheticLambda0
+                            @Override // java.util.function.BiConsumer
+                            public final void accept(Object obj, Object obj2) {
+                                ISemWifiManager.Stub.lambda$onTransact$0(Parcel.this, (String) obj, (SemEasySetupWifiScanSettings) obj2);
                             }
-                            return true;
-                        case 222:
-                            disableRandomMac();
-                            return true;
-                        case 223:
-                            boolean _arg0119 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setImsCallEstablished(_arg0119);
-                            return true;
-                        case 224:
-                            int _result146 = getWcmEverQualityTested();
-                            reply.writeNoException();
-                            reply.writeInt(_result146);
-                            return true;
-                        case 225:
-                            int _result147 = getWifiIconVisibility();
-                            reply.writeNoException();
-                            reply.writeInt(_result147);
-                            return true;
-                        case 226:
-                            int _result148 = getCurrentStatusMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result148);
-                            return true;
-                        case 227:
-                            int _result149 = getValidState();
-                            reply.writeNoException();
-                            reply.writeInt(_result149);
-                            return true;
-                        case 228:
-                            notifyReachabilityLost();
-                            reply.writeNoException();
-                            return true;
-                        case 229:
-                            boolean _arg0120 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setConnectivityCheckDisabled(_arg0120);
-                            reply.writeNoException();
-                            return true;
-                        case 230:
-                            boolean _arg0121 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setKeepConnectionAlways(_arg0121);
-                            return true;
-                        case 231:
-                            boolean _arg0122 = data.readBoolean();
-                            boolean _arg122 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setKeepConnection(_arg0122, _arg122);
-                            return true;
-                        case 232:
-                            int _arg0123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setKeepConnectionBigData(_arg0123);
-                            return true;
-                        case 233:
-                            int _arg0124 = data.readInt();
-                            data.enforceNoDataAvail();
-                            removeExcludedNetwork(_arg0124);
-                            reply.writeNoException();
-                            return true;
-                        case 234:
-                            String _result150 = retrieveSemWifiConfigsBackupData();
-                            reply.writeNoException();
-                            reply.writeString(_result150);
-                            return true;
-                        case 235:
-                            String _arg0125 = data.readString();
-                            data.enforceNoDataAvail();
-                            restoreSemConfigurationsBackupData(_arg0125);
-                            reply.writeNoException();
-                            return true;
-                        case 236:
-                            return onTransact$setConnectionAttemptInfo$(data, reply);
-                        case 237:
-                            int _arg0126 = data.readInt();
-                            int _arg123 = data.readInt();
-                            data.enforceNoDataAvail();
-                            restoreIWCSettingsValue(_arg0126, _arg123);
-                            reply.writeNoException();
-                            return true;
-                        case 238:
-                            String _result151 = getIWCQTables();
-                            reply.writeNoException();
-                            reply.writeString(_result151);
-                            return true;
-                        case 239:
-                            String _arg0127 = data.readString();
-                            data.enforceNoDataAvail();
-                            setIWCQTables(_arg0127);
-                            reply.writeNoException();
-                            return true;
-                        case 240:
-                            long _arg0128 = data.readLong();
-                            data.enforceNoDataAvail();
-                            updateIWCHintCard(_arg0128);
-                            reply.writeNoException();
-                            return true;
-                        case 241:
-                            int _arg0129 = data.readInt();
-                            data.enforceNoDataAvail();
-                            setIWCMockAction(_arg0129);
-                            reply.writeNoException();
-                            return true;
-                        case 242:
-                            boolean _arg0130 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result152 = disconnectApBlockAutojoin(_arg0130);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result152);
-                            return true;
-                        case 243:
-                            int _arg0131 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result153 = setOptimizerForceControlMode(_arg0131);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result153);
-                            return true;
-                        case 244:
-                            int _result154 = getOptimizerForceControlMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result154);
-                            return true;
-                        case 245:
-                            int[] _result155 = getOptimizerState();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result155);
-                            return true;
-                        case 246:
-                            int[] _result156 = getServiceDetectionResult();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result156);
-                            return true;
-                        case 247:
-                            Bundle _arg0132 = (Bundle) data.readTypedObject(Bundle.CREATOR);
-                            data.enforceNoDataAvail();
-                            setTrafficPatternTestSettings(_arg0132);
-                            return true;
-                        case 248:
-                            int _arg0133 = data.readInt();
-                            boolean _arg124 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            int _result157 = setWifiUwbCoexEnabled(_arg0133, _arg124);
-                            reply.writeNoException();
-                            reply.writeInt(_result157);
-                            return true;
-                        case 249:
-                            return onTransact$setLatencyCritical$(data, reply);
-                        case 250:
-                            return onTransact$setPktlogFilter$(data, reply);
-                        case 251:
-                            return onTransact$removePktlogFilter$(data, reply);
-                        case 252:
-                            boolean _result158 = saveFwDump();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result158);
-                            return true;
-                        case 253:
-                            String _arg0134 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result159 = getRssi(_arg0134);
-                            reply.writeNoException();
-                            reply.writeInt(_result159);
-                            return true;
-                        case 254:
-                            String _result160 = getWifiStaInfo();
-                            reply.writeNoException();
-                            reply.writeString(_result160);
-                            return true;
-                        case 255:
-                            int _result161 = getNumOfWifiAnt();
-                            reply.writeNoException();
-                            reply.writeInt(_result161);
-                            return true;
-                        case 256:
-                            startTimerForWifiOffload();
-                            reply.writeNoException();
-                            return true;
-                        case 257:
-                            String _arg0135 = data.readString();
-                            data.enforceNoDataAvail();
-                            checkAppForWiFiOffloading(_arg0135);
-                            reply.writeNoException();
-                            return true;
-                        case 258:
-                            return onTransact$setTCRule$(data, reply);
-                        case 259:
-                            return onTransact$externalTwtInterface$(data, reply);
-                        case 260:
-                            int[] _result162 = getTWTParams();
-                            reply.writeNoException();
-                            reply.writeIntArray(_result162);
-                            return true;
-                        case 261:
-                            Map _result163 = getCtlFeatureState();
-                            reply.writeNoException();
-                            reply.writeMap(_result163);
-                            return true;
-                        case 262:
-                            int _arg0136 = data.readInt();
-                            data.enforceNoDataAvail();
-                            resetCallbackCondition(_arg0136);
-                            reply.writeNoException();
-                            return true;
-                        case 263:
-                            resetComebackCondition();
-                            reply.writeNoException();
-                            return true;
-                        case 264:
-                            int _result164 = getCurrentL2TransitionMode();
-                            reply.writeNoException();
-                            reply.writeInt(_result164);
-                            return true;
-                        case 265:
-                            String _result165 = getL2TransitionLog();
-                            reply.writeNoException();
-                            reply.writeString(_result165);
-                            return true;
-                        case 266:
-                            boolean _arg0137 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setSamsungMloCtrl(_arg0137);
-                            reply.writeNoException();
-                            return true;
-                        case 267:
-                            boolean _result166 = getSamsungMloCtrl();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result166);
-                            return true;
-                        case 268:
-                            return onTransact$linkQosQuery$(data, reply);
-                        case 269:
-                            return onTransact$setWifiAiServiceState$(data, reply);
-                        case 270:
-                            return onTransact$setWifiAiServiceNsdResult$(data, reply);
-                        case 271:
-                            int _arg0138 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result167 = getTcpMonitorSocketForegroundHistory(_arg0138);
-                            reply.writeNoException();
-                            reply.writeString(_result167);
-                            return true;
-                        case 272:
-                            int _arg0139 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result168 = getTcpMonitorAllSocketHistory(_arg0139);
-                            reply.writeNoException();
-                            reply.writeString(_result168);
-                            return true;
-                        case 273:
-                            int _arg0140 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result169 = getTcpMonitorDnsHistory(_arg0140);
-                            reply.writeNoException();
-                            reply.writeString(_result169);
-                            return true;
-                        case 274:
-                            boolean _result170 = isIndividualAppSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result170);
-                            return true;
-                        case 275:
-                            int _arg0141 = data.readInt();
-                            data.enforceNoDataAvail();
-                            String _result171 = getWifiUsabilityStatsEntry(_arg0141);
-                            reply.writeNoException();
-                            reply.writeString(_result171);
-                            return true;
-                        case 276:
-                            boolean _result172 = isAvailableTdls();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result172);
-                            return true;
-                        case 277:
-                            boolean _result173 = isWiderBandwidthTdlsSupported();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result173);
-                            return true;
-                        case 278:
-                            boolean _arg0142 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result174 = setTdlsEnabled(_arg0142);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result174);
-                            return true;
-                        case 279:
-                            int _result175 = getMaxTdlsSession();
-                            reply.writeNoException();
-                            reply.writeInt(_result175);
-                            return true;
-                        case 280:
-                            int _result176 = getNumOfTdlsSession();
-                            reply.writeNoException();
-                            reply.writeInt(_result176);
-                            return true;
-                        case 281:
-                            List<String> _result177 = getMHSClientTrafficDetails();
-                            reply.writeNoException();
-                            reply.writeStringList(_result177);
-                            return true;
-                        case 282:
-                            int _result178 = getNRTTrafficbandwidth();
-                            reply.writeNoException();
-                            reply.writeInt(_result178);
-                            return true;
-                        case 283:
-                            long[] _result179 = getDataConsumedValues();
-                            reply.writeNoException();
-                            reply.writeLongArray(_result179);
-                            return true;
-                        case 284:
-                            resetTotalPriorityDataConsumedValues();
-                            reply.writeNoException();
-                            return true;
-                        case 285:
-                            Map _result180 = getTasAverage();
-                            reply.writeNoException();
-                            reply.writeMap(_result180);
-                            return true;
-                        case 286:
-                            return onTransact$setTasPolicy$(data, reply);
-                        case 287:
-                            SemTasPolicyListener _arg0143 = SemTasPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            registerTasPolicyChangedListener(_arg0143);
-                            return true;
-                        case 288:
-                            SemTasPolicyListener _arg0144 = SemTasPolicyListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            unregisterTasPolicyChangedListener(_arg0144);
-                            return true;
-                        case 289:
-                            return onTransact$enableTxPowerLogging$(data, reply);
-                        case 290:
-                            String _result181 = getDynamicFeatureStatus();
-                            reply.writeNoException();
-                            reply.writeString(_result181);
-                            return true;
-                        case 291:
-                            boolean _result182 = isSwitchToMobileDataDefaultOff();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result182);
-                            return true;
-                        case 292:
-                            return onTransact$setMhsAiServiceState$(data, reply);
-                        case 293:
-                            return onTransact$setMhsAiServiceNsdResult$(data, reply);
-                        case 294:
-                            int _arg0145 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result183 = startCapture(_arg0145);
-                            reply.writeNoException();
-                            reply.writeInt(_result183);
-                            return true;
-                        case 295:
-                            int _result184 = stopCapture();
-                            reply.writeNoException();
-                            reply.writeInt(_result184);
-                            return true;
-                        case 296:
-                            int _result185 = isCaptureRunning();
-                            reply.writeNoException();
-                            reply.writeInt(_result185);
-                            return true;
-                        case 297:
-                            boolean _result186 = getIsPacketCaptureSupportedByDriver();
-                            reply.writeNoException();
-                            reply.writeBoolean(_result186);
-                            return true;
-                        case 298:
-                            boolean _arg0146 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            setMcfMultiControlMode(_arg0146);
-                            reply.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
+                        });
                     }
+                    return true;
+                case 245:
+                    disableRandomMac();
+                    return true;
+                case 246:
+                    boolean _arg0103 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setImsCallEstablished(_arg0103);
+                    return true;
+                case 247:
+                    int _result159 = getWcmEverQualityTested();
+                    reply.writeNoException();
+                    reply.writeInt(_result159);
+                    return true;
+                case 248:
+                    int _result160 = getWifiIconVisibility();
+                    reply.writeNoException();
+                    reply.writeInt(_result160);
+                    return true;
+                case 249:
+                    int _result161 = getCurrentStatusMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result161);
+                    return true;
+                case 250:
+                    int _result162 = getValidState();
+                    reply.writeNoException();
+                    reply.writeInt(_result162);
+                    return true;
+                case 251:
+                    notifyReachabilityLost();
+                    reply.writeNoException();
+                    return true;
+                case 252:
+                    boolean _arg0104 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setConnectivityCheckDisabled(_arg0104);
+                    reply.writeNoException();
+                    return true;
+                case 253:
+                    boolean _arg0105 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setKeepConnectionAlways(_arg0105);
+                    return true;
+                case 254:
+                    return onTransact$setKeepConnection$(data, reply);
+                case 255:
+                    int _arg0106 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setKeepConnectionBigData(_arg0106);
+                    return true;
+                case 256:
+                    int _arg0107 = data.readInt();
+                    data.enforceNoDataAvail();
+                    removeExcludedNetwork(_arg0107);
+                    reply.writeNoException();
+                    return true;
+                case 257:
+                    String _result163 = retrieveSemWifiConfigsBackupData();
+                    reply.writeNoException();
+                    reply.writeString(_result163);
+                    return true;
+                case 258:
+                    String _arg0108 = data.readString();
+                    data.enforceNoDataAvail();
+                    restoreSemConfigurationsBackupData(_arg0108);
+                    reply.writeNoException();
+                    return true;
+                case 259:
+                    return onTransact$setConnectionAttemptInfo$(data, reply);
+                case 260:
+                    return onTransact$restoreIWCSettingsValue$(data, reply);
+                case 261:
+                    String _result164 = getIWCQTables();
+                    reply.writeNoException();
+                    reply.writeString(_result164);
+                    return true;
+                case 262:
+                    String _arg0109 = data.readString();
+                    data.enforceNoDataAvail();
+                    setIWCQTables(_arg0109);
+                    reply.writeNoException();
+                    return true;
+                case 263:
+                    long _arg0110 = data.readLong();
+                    data.enforceNoDataAvail();
+                    updateIWCHintCard(_arg0110);
+                    reply.writeNoException();
+                    return true;
+                case 264:
+                    int _arg0111 = data.readInt();
+                    data.enforceNoDataAvail();
+                    setIWCMockAction(_arg0111);
+                    reply.writeNoException();
+                    return true;
+                case 265:
+                    boolean _arg0112 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result165 = disconnectApBlockAutojoin(_arg0112);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result165);
+                    return true;
+                case 266:
+                    int _arg0113 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result166 = setOptimizerForceControlMode(_arg0113);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result166);
+                    return true;
+                case 267:
+                    int _result167 = getOptimizerForceControlMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result167);
+                    return true;
+                case 268:
+                    int[] _result168 = getOptimizerState();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result168);
+                    return true;
+                case 269:
+                    int[] _result169 = getServiceDetectionResult();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result169);
+                    return true;
+                case 270:
+                    Bundle _arg0114 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+                    data.enforceNoDataAvail();
+                    setTrafficPatternTestSettings(_arg0114);
+                    return true;
+                case 271:
+                    return onTransact$setWifiUwbCoexEnabled$(data, reply);
+                case 272:
+                    return onTransact$setLatencyCritical$(data, reply);
+                case 273:
+                    return onTransact$setPktlogFilter$(data, reply);
+                case 274:
+                    return onTransact$removePktlogFilter$(data, reply);
+                case 275:
+                    boolean _result170 = saveFwDump();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result170);
+                    return true;
+                case 276:
+                    String _arg0115 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result171 = getRssi(_arg0115);
+                    reply.writeNoException();
+                    reply.writeInt(_result171);
+                    return true;
+                case 277:
+                    String _result172 = getWifiStaInfo();
+                    reply.writeNoException();
+                    reply.writeString(_result172);
+                    return true;
+                case 278:
+                    int _result173 = getNumOfWifiAnt();
+                    reply.writeNoException();
+                    reply.writeInt(_result173);
+                    return true;
+                case 279:
+                    startTimerForWifiOffload();
+                    reply.writeNoException();
+                    return true;
+                case 280:
+                    String _arg0116 = data.readString();
+                    data.enforceNoDataAvail();
+                    checkAppForWiFiOffloading(_arg0116);
+                    reply.writeNoException();
+                    return true;
+                case 281:
+                    return onTransact$setTCRule$(data, reply);
+                case 282:
+                    return onTransact$externalTwtInterface$(data, reply);
+                case 283:
+                    int[] _result174 = getTWTParams();
+                    reply.writeNoException();
+                    reply.writeIntArray(_result174);
+                    return true;
+                case 284:
+                    Map _result175 = getCtlFeatureState();
+                    reply.writeNoException();
+                    reply.writeMap(_result175);
+                    return true;
+                case 285:
+                    int _arg0117 = data.readInt();
+                    data.enforceNoDataAvail();
+                    resetCallbackCondition(_arg0117);
+                    reply.writeNoException();
+                    return true;
+                case 286:
+                    resetComebackCondition();
+                    reply.writeNoException();
+                    return true;
+                case 287:
+                    int _result176 = getCurrentL2TransitionMode();
+                    reply.writeNoException();
+                    reply.writeInt(_result176);
+                    return true;
+                case 288:
+                    String _result177 = getL2TransitionLog();
+                    reply.writeNoException();
+                    reply.writeString(_result177);
+                    return true;
+                case 289:
+                    String _result178 = getNumberOfDataInEachRssiLevel();
+                    reply.writeNoException();
+                    reply.writeString(_result178);
+                    return true;
+                case 290:
+                    String _result179 = getIwhState();
+                    reply.writeNoException();
+                    reply.writeString(_result179);
+                    return true;
+                case 291:
+                    boolean _arg0118 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSamsungMloCtrl(_arg0118);
+                    reply.writeNoException();
+                    return true;
+                case 292:
+                    boolean _arg0119 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setSamsungIwhCtrl(_arg0119);
+                    reply.writeNoException();
+                    return true;
+                case 293:
+                    boolean _result180 = getSamsungMloCtrl();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result180);
+                    return true;
+                case 294:
+                    boolean _result181 = getSamsungIwhCtrl();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result181);
+                    return true;
+                case 295:
+                    boolean _arg0120 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    setTestMode(_arg0120);
+                    reply.writeNoException();
+                    return true;
+                case 296:
+                    boolean _result182 = iwhIntendedDisconnection();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result182);
+                    return true;
+                case 297:
+                    return onTransact$linkQosQuery$(data, reply);
+                case 298:
+                    return onTransact$setWifiAiServiceState$(data, reply);
+                case 299:
+                    return onTransact$setWifiAiServiceNsdResult$(data, reply);
+                case 300:
+                    return onTransact$setWifiAiIwhTrainingResult$(data, reply);
+                case 301:
+                    boolean[] _arg0121 = data.createBooleanArray();
+                    data.enforceNoDataAvail();
+                    setWifiAiIwhInferenceResult(_arg0121);
+                    return true;
+                case 302:
+                    return onTransact$setIlaTrainingResult$(data, reply);
+                case 303:
+                    int _arg0122 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result183 = getTcpMonitorSocketForegroundHistory(_arg0122);
+                    reply.writeNoException();
+                    reply.writeString(_result183);
+                    return true;
+                case 304:
+                    int _arg0123 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result184 = getTcpMonitorAllSocketHistory(_arg0123);
+                    reply.writeNoException();
+                    reply.writeString(_result184);
+                    return true;
+                case 305:
+                    int _arg0124 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result185 = getTcpMonitorDnsHistory(_arg0124);
+                    reply.writeNoException();
+                    reply.writeString(_result185);
+                    return true;
+                case 306:
+                    boolean _result186 = isIndividualAppSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result186);
+                    return true;
+                case 307:
+                    int _arg0125 = data.readInt();
+                    data.enforceNoDataAvail();
+                    String _result187 = getWifiUsabilityStatsEntry(_arg0125);
+                    reply.writeNoException();
+                    reply.writeString(_result187);
+                    return true;
+                case 308:
+                    boolean _result188 = isAvailableTdls();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result188);
+                    return true;
+                case 309:
+                    boolean _result189 = isWiderBandwidthTdlsSupported();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result189);
+                    return true;
+                case 310:
+                    return onTransact$setTdlsEnabled$(data, reply);
+                case 311:
+                    int _result190 = getMaxTdlsSession();
+                    reply.writeNoException();
+                    reply.writeInt(_result190);
+                    return true;
+                case 312:
+                    int _result191 = getNumOfTdlsSession();
+                    reply.writeNoException();
+                    reply.writeInt(_result191);
+                    return true;
+                case 313:
+                    List<String> _result192 = getMHSClientTrafficDetails();
+                    reply.writeNoException();
+                    reply.writeStringList(_result192);
+                    return true;
+                case 314:
+                    int _result193 = getNRTTrafficbandwidth();
+                    reply.writeNoException();
+                    reply.writeInt(_result193);
+                    return true;
+                case 315:
+                    long[] _result194 = getDataConsumedValues();
+                    reply.writeNoException();
+                    reply.writeLongArray(_result194);
+                    return true;
+                case 316:
+                    resetTotalPriorityDataConsumedValues();
+                    reply.writeNoException();
+                    return true;
+                case 317:
+                    Map _result195 = getTasAverage();
+                    reply.writeNoException();
+                    reply.writeMap(_result195);
+                    return true;
+                case 318:
+                    return onTransact$setTasPolicy$(data, reply);
+                case 319:
+                    return onTransact$registerTasPolicyChangedListener$(data, reply);
+                case 320:
+                    return onTransact$unregisterTasPolicyChangedListener$(data, reply);
+                case 321:
+                    return onTransact$enableTxPowerLogging$(data, reply);
+                case 322:
+                    String _result196 = getDynamicFeatureStatus();
+                    reply.writeNoException();
+                    reply.writeString(_result196);
+                    return true;
+                case 323:
+                    boolean _result197 = isSwitchToMobileDataDefaultOff();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result197);
+                    return true;
+                case 324:
+                    return onTransact$setMhsAiServiceState$(data, reply);
+                case 325:
+                    return onTransact$setMhsAiServiceNsdResult$(data, reply);
+                case 326:
+                    return onTransact$startCapture$(data, reply);
+                case 327:
+                    int _result198 = stopCapture();
+                    reply.writeNoException();
+                    reply.writeInt(_result198);
+                    return true;
+                case 328:
+                    int _result199 = isCaptureRunning();
+                    reply.writeNoException();
+                    reply.writeInt(_result199);
+                    return true;
+                case 329:
+                    boolean _result200 = getIsPacketCaptureSupportedByDriver();
+                    reply.writeNoException();
+                    reply.writeBoolean(_result200);
+                    return true;
+                case 330:
+                    return onTransact$setMcfMultiControlMode$(data, reply);
+                case 331:
+                    return onTransact$registerAbTestConfigUpdateObserver$(data, reply);
+                case 332:
+                    return onTransact$unregisterAbTestConfigUpdateObserver$(data, reply);
+                case 333:
+                    return onTransact$reportAbTestResult$(data, reply);
+                case 334:
+                    List<SemAbTestConfiguration> _result201 = getAbTestConfigs();
+                    reply.writeNoException();
+                    reply.writeTypedList(_result201, 1);
+                    return true;
+                case 335:
+                    return onTransact$getAbTestConfiguredModule$(data, reply);
+                case 336:
+                    return onTransact$sendReassociationFrequencyRequestFrame$(data, reply);
+                default:
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        public static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, SemEasySetupWifiScanSettings v) {
+        static /* synthetic */ void lambda$onTransact$0(Parcel reply, String k, SemEasySetupWifiScanSettings v) {
             reply.writeString(k);
             reply.writeTypedObject(v, 1);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes6.dex */
-        public static class Proxy implements ISemWifiManager {
+        static class Proxy implements ISemWifiManager {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {
@@ -5078,12 +5477,63 @@ public interface ISemWifiManager extends IInterface {
             }
 
             @Override // com.samsung.android.wifi.ISemWifiManager
+            public Bundle getWifiRouterInfoByBssid(String bssid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(bssid);
+                    this.mRemote.transact(29, _data, _reply, 0);
+                    _reply.readException();
+                    Bundle _result = (Bundle) _reply.readTypedObject(Bundle.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getWifiRouterInfoBestEffortByBssid(String bssid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(bssid);
+                    this.mRemote.transact(30, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getWifiRouterInfoPresentableByBssid(String bssid) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(bssid);
+                    this.mRemote.transact(31, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
             public Map getNetworkLastUpdatedTimeMap() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(29, _data, _reply, 0);
+                    this.mRemote.transact(32, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -5100,7 +5550,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(30, _data, _reply, 0);
+                    this.mRemote.transact(33, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -5117,7 +5567,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(configKey);
-                    this.mRemote.transact(31, _data, _reply, 0);
+                    this.mRemote.transact(34, _data, _reply, 0);
                     _reply.readException();
                     long[] _result = _reply.createLongArray();
                     return _result;
@@ -5134,7 +5584,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(daysAgo);
-                    this.mRemote.transact(32, _data, _reply, 0);
+                    this.mRemote.transact(35, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -5151,7 +5601,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(33, _data, _reply, 0);
+                    this.mRemote.transact(36, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5165,7 +5615,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(34, _data, _reply, 0);
+                    this.mRemote.transact(37, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5182,7 +5632,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(35, _data, _reply, 0);
+                    this.mRemote.transact(38, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5197,7 +5647,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(36, _data, _reply, 0);
+                    this.mRemote.transact(39, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5212,7 +5662,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(37, _data, _reply, 0);
+                    this.mRemote.transact(40, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5228,7 +5678,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(38, _data, _reply, 0);
+                    this.mRemote.transact(41, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5244,7 +5694,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(39, _data, _reply, 0);
+                    this.mRemote.transact(42, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5261,7 +5711,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(val);
-                    this.mRemote.transact(40, _data, _reply, 0);
+                    this.mRemote.transact(43, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5275,7 +5725,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(41, _data, _reply, 0);
+                    this.mRemote.transact(44, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5292,7 +5742,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(val);
-                    this.mRemote.transact(42, _data, _reply, 0);
+                    this.mRemote.transact(45, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5307,51 +5757,6 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(val);
-                    this.mRemote.transact(43, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.wifi.ISemWifiManager
-            public int getWifiApWarningActivityRunningState() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(44, _data, _reply, 0);
-                    _reply.readException();
-                    int _result = _reply.readInt();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.wifi.ISemWifiManager
-            public void clearAutoHotspotLists() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(45, _data, _reply, 0);
-                    _reply.readException();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.wifi.ISemWifiManager
-            public void setAdvancedAutohotspotLCDSettings(int val) throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    _data.writeInt(val);
                     this.mRemote.transact(46, _data, _reply, 0);
                     _reply.readException();
                 } finally {
@@ -5361,7 +5766,7 @@ public interface ISemWifiManager extends IInterface {
             }
 
             @Override // com.samsung.android.wifi.ISemWifiManager
-            public int getChannelUtilization() throws RemoteException {
+            public int getWifiApWarningActivityRunningState() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
@@ -5377,12 +5782,57 @@ public interface ISemWifiManager extends IInterface {
             }
 
             @Override // com.samsung.android.wifi.ISemWifiManager
-            public Map getChannelUtilizationExtended() throws RemoteException {
+            public void clearAutoHotspotLists() throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     this.mRemote.transact(48, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setAdvancedAutohotspotLCDSettings(int val) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeInt(val);
+                    this.mRemote.transact(49, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int getChannelUtilization() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(50, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public Map getChannelUtilizationExtended() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(51, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -5400,7 +5850,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(roamTrigger);
-                    this.mRemote.transact(49, _data, _reply, 0);
+                    this.mRemote.transact(52, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5416,7 +5866,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(50, _data, _reply, 0);
+                    this.mRemote.transact(53, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5433,7 +5883,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(roamDelta);
-                    this.mRemote.transact(51, _data, _reply, 0);
+                    this.mRemote.transact(54, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5449,7 +5899,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(52, _data, _reply, 0);
+                    this.mRemote.transact(55, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5466,7 +5916,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(roamScanPeriod);
-                    this.mRemote.transact(53, _data, _reply, 0);
+                    this.mRemote.transact(56, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5482,7 +5932,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(54, _data, _reply, 0);
+                    this.mRemote.transact(57, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5499,7 +5949,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(band);
-                    this.mRemote.transact(55, _data, _reply, 0);
+                    this.mRemote.transact(58, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5515,7 +5965,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(56, _data, _reply, 0);
+                    this.mRemote.transact(59, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5532,7 +5982,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(countryRev);
-                    this.mRemote.transact(57, _data, _reply, 0);
+                    this.mRemote.transact(60, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5548,7 +5998,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(58, _data, _reply, 0);
+                    this.mRemote.transact(61, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -5564,7 +6014,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(59, _data, _reply, 0);
+                    this.mRemote.transact(62, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -5580,7 +6030,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(60, _data, _reply, 0);
+                    this.mRemote.transact(63, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -5596,7 +6046,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(61, _data, _reply, 0);
+                    this.mRemote.transact(64, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5613,7 +6063,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(62, _data, _reply, 0);
+                    this.mRemote.transact(65, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5630,7 +6080,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(63, _data, _reply, 0);
+                    this.mRemote.transact(66, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5647,7 +6097,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStringArray(channels);
-                    this.mRemote.transact(64, _data, _reply, 0);
+                    this.mRemote.transact(67, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5663,7 +6113,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(65, _data, _reply, 0);
+                    this.mRemote.transact(68, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5680,7 +6130,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(66, _data, _reply, 0);
+                    this.mRemote.transact(69, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5700,7 +6150,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInt(channel);
                     _data.writeInt(dwellTime);
                     _data.writeString(frameBody);
-                    this.mRemote.transact(67, _data, _reply, 0);
+                    this.mRemote.transact(70, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5718,7 +6168,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(bssid);
                     _data.writeInt(channel);
-                    this.mRemote.transact(68, _data, _reply, 0);
+                    this.mRemote.transact(71, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5734,7 +6184,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(69, _data, _reply, 0);
+                    this.mRemote.transact(72, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5750,7 +6200,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(70, _data, _reply, 0);
+                    this.mRemote.transact(73, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5767,7 +6217,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(state);
-                    this.mRemote.transact(71, _data, _reply, 0);
+                    this.mRemote.transact(74, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5784,7 +6234,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(72, _data, _reply, 0);
+                    this.mRemote.transact(75, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5798,7 +6248,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(73, _data, _reply, 0);
+                    this.mRemote.transact(76, _data, _reply, 0);
                     _reply.readException();
                     List<SemWifiApBleScanResult> _result = _reply.createTypedArrayList(SemWifiApBleScanResult.CREATOR);
                     return _result;
@@ -5815,7 +6265,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(74, _data, _reply, 0);
+                    this.mRemote.transact(77, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5832,7 +6282,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(75, _data, _reply, 0);
+                    this.mRemote.transact(78, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5856,7 +6306,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeString(Username);
                     _data.writeInt(ver);
                     _data.writeBoolean(wifiprofileshare);
-                    this.mRemote.transact(76, _data, _reply, 0);
+                    this.mRemote.transact(79, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -5873,7 +6323,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(77, _data, _reply, 0);
+                    this.mRemote.transact(80, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5888,7 +6338,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mhs_mac);
-                    this.mRemote.transact(78, _data, _reply, 0);
+                    this.mRemote.transact(81, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5907,7 +6357,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeStrongBinder(binder);
                     _data.writeStrongInterface(callback);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(79, _data, _reply, 0);
+                    this.mRemote.transact(82, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5922,7 +6372,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(80, _data, _reply, 0);
+                    this.mRemote.transact(83, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5939,7 +6389,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeStrongBinder(binder);
                     _data.writeStrongInterface(callback);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(81, _data, _reply, 0);
+                    this.mRemote.transact(84, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5954,7 +6404,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(82, _data, _reply, 0);
+                    this.mRemote.transact(85, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -5969,7 +6419,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(83, _data, _reply, 0);
+                    this.mRemote.transact(86, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -5985,7 +6435,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(84, _data, _reply, 0);
+                    this.mRemote.transact(87, _data, _reply, 0);
                     _reply.readException();
                     List<SemWifiApBleScanResult> _result = _reply.createTypedArrayList(SemWifiApBleScanResult.CREATOR);
                     return _result;
@@ -6002,7 +6452,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(85, _data, _reply, 0);
+                    this.mRemote.transact(88, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6019,7 +6469,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(86, _data, _reply, 0);
+                    this.mRemote.transact(89, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6038,7 +6488,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeString(bleaddr);
                     _data.writeString(client_mac);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(87, _data, _reply, 0);
+                    this.mRemote.transact(90, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6055,7 +6505,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(88, _data, _reply, 0);
+                    this.mRemote.transact(91, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6071,7 +6521,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(89, _data, _reply, 0);
+                    this.mRemote.transact(92, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6089,7 +6539,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(mSoftApConfig, 0);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(90, _data, _reply, 0);
+                    this.mRemote.transact(93, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6109,7 +6559,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeString(ssid);
                     _data.writeString(password);
                     _data.writeInt(band);
-                    this.mRemote.transact(91, _data, _reply, 0);
+                    this.mRemote.transact(94, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6125,7 +6575,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(92, _data, _reply, 0);
+                    this.mRemote.transact(95, _data, _reply, 0);
                     _reply.readException();
                     SoftApConfiguration _result = (SoftApConfiguration) _reply.readTypedObject(SoftApConfiguration.CREATOR);
                     return _result;
@@ -6142,7 +6592,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(mConfig, 0);
-                    this.mRemote.transact(93, _data, _reply, 0);
+                    this.mRemote.transact(96, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6157,7 +6607,23 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(94, _data, _reply, 0);
+                    this.mRemote.transact(97, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getTxPower() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(98, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6173,7 +6639,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(95, _data, _reply, 0);
+                    this.mRemote.transact(99, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6190,7 +6656,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(96, _data, _reply, 0);
+                    this.mRemote.transact(100, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6204,7 +6670,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(97, _data, _reply, 0);
+                    this.mRemote.transact(101, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6221,7 +6687,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(98, _data, _reply, 0);
+                    this.mRemote.transact(102, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6236,7 +6702,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(min);
-                    this.mRemote.transact(99, _data, _reply, 0);
+                    this.mRemote.transact(103, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6251,7 +6717,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(key);
-                    this.mRemote.transact(100, _data, _reply, 0);
+                    this.mRemote.transact(104, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6268,7 +6734,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(jsonMIFI);
-                    this.mRemote.transact(101, _data, _reply, 0);
+                    this.mRemote.transact(105, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6284,7 +6750,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(102, _data, _reply, 0);
+                    this.mRemote.transact(106, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6300,7 +6766,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(103, _data, _reply, 0);
+                    this.mRemote.transact(107, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6316,7 +6782,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(104, _data, _reply, 0);
+                    this.mRemote.transact(108, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6332,7 +6798,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(105, _data, _reply, 0);
+                    this.mRemote.transact(109, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6348,7 +6814,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(106, _data, _reply, 0);
+                    this.mRemote.transact(110, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6364,7 +6830,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(107, _data, _reply, 0);
+                    this.mRemote.transact(111, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6380,7 +6846,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(108, _data, _reply, 0);
+                    this.mRemote.transact(112, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6396,7 +6862,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(109, _data, _reply, 0);
+                    this.mRemote.transact(113, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -6412,8 +6878,24 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(110, _data, _reply, 0);
+                    this.mRemote.transact(114, _data, _reply, 0);
                     _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public List<String> getWifiApInterfaceNames() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(115, _data, _reply, 0);
+                    _reply.readException();
+                    List<String> _result = _reply.createStringArrayList();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -6426,7 +6908,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(111, _data, _reply, 0);
+                    this.mRemote.transact(116, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6443,7 +6925,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(cmd);
-                    this.mRemote.transact(112, _data, _reply, 0);
+                    this.mRemote.transact(117, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -6460,7 +6942,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(113, _data, _reply, 0);
+                    this.mRemote.transact(118, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6477,7 +6959,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(set);
-                    this.mRemote.transact(114, _data, _reply, 0);
+                    this.mRemote.transact(119, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6493,7 +6975,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(115, _data, _reply, 0);
+                    this.mRemote.transact(120, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6509,7 +6991,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(116, _data, _reply, 0);
+                    this.mRemote.transact(121, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6525,7 +7007,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(117, _data, _reply, 0);
+                    this.mRemote.transact(122, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6541,7 +7023,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(118, _data, _reply, 0);
+                    this.mRemote.transact(123, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6557,7 +7039,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(119, _data, _reply, 0);
+                    this.mRemote.transact(124, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6573,7 +7055,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(120, _data, _reply, 0);
+                    this.mRemote.transact(125, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6589,7 +7071,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(121, _data, _reply, 0);
+                    this.mRemote.transact(126, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6606,7 +7088,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(122, _data, _reply, 0);
+                    this.mRemote.transact(127, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6621,7 +7103,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(123, _data, _reply, 0);
+                    this.mRemote.transact(128, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6636,7 +7118,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(num);
-                    this.mRemote.transact(124, _data, _reply, 0);
+                    this.mRemote.transact(129, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6651,7 +7133,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(msg, 0);
-                    this.mRemote.transact(125, _data, _reply, 0);
+                    this.mRemote.transact(130, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6666,7 +7148,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(num);
-                    this.mRemote.transact(126, _data, _reply, 0);
+                    this.mRemote.transact(131, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6680,7 +7162,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(127, _data, _reply, 0);
+                    this.mRemote.transact(132, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6697,7 +7179,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(128, _data, _reply, 0);
+                    this.mRemote.transact(133, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6711,7 +7193,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(129, _data, _reply, 0);
+                    this.mRemote.transact(134, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6728,7 +7210,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(130, _data, _reply, 0);
+                    this.mRemote.transact(135, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6742,7 +7224,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(131, _data, _reply, 0);
+                    this.mRemote.transact(136, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6759,7 +7241,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(value);
-                    this.mRemote.transact(132, _data, _reply, 0);
+                    this.mRemote.transact(137, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6777,7 +7259,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeString(mac);
                     _data.writeInt(add_or_delete);
                     _data.writeInt(allow_or_deny);
-                    this.mRemote.transact(133, _data, _reply, 0);
+                    this.mRemote.transact(138, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6794,7 +7276,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(allow_or_deny);
-                    this.mRemote.transact(134, _data, _reply, 0);
+                    this.mRemote.transact(139, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -6810,7 +7292,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(135, _data, _reply, 0);
+                    this.mRemote.transact(140, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6827,7 +7309,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(136, _data, _reply, 0);
+                    this.mRemote.transact(141, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6841,7 +7323,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(137, _data, _reply, 0);
+                    this.mRemote.transact(142, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6858,7 +7340,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(138, _data, _reply, 0);
+                    this.mRemote.transact(143, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6873,7 +7355,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(logs);
-                    this.mRemote.transact(139, _data, _reply, 0);
+                    this.mRemote.transact(144, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6887,7 +7369,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(140, _data, _reply, 0);
+                    this.mRemote.transact(145, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -6903,7 +7385,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(141, _data, _reply, 0);
+                    this.mRemote.transact(146, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6920,7 +7402,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(value);
-                    this.mRemote.transact(142, _data, _reply, 0);
+                    this.mRemote.transact(147, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6935,7 +7417,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(143, _data, _reply, 0);
+                    this.mRemote.transact(148, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6951,7 +7433,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(netId);
                     _data.writeString(key);
-                    this.mRemote.transact(144, _data, _reply, 0);
+                    this.mRemote.transact(149, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -6965,7 +7447,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(145, _data, _reply, 0);
+                    this.mRemote.transact(150, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -6981,7 +7463,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(146, _data, _reply, 0);
+                    this.mRemote.transact(151, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -6997,7 +7479,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(147, _data, _reply, 0);
+                    this.mRemote.transact(152, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7014,8 +7496,223 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(noti);
-                    this.mRemote.transact(148, _data, _reply, 0);
+                    this.mRemote.transact(153, _data, _reply, 0);
                     _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int getSoftApSecurityType() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(154, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int isDataSaverEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(155, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int isSoftap11axEnabled() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(156, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int isSoftAp6ENetwork() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(157, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int getSoftApUpStreamNetworkType() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(158, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getMHSMacFromInterface() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(159, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int getSoftApFreq() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(160, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void launchWifiApWarningForMcfMHS(int wifiap_band, int wifiap_set_security, boolean wifiap_security) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeInt(wifiap_band);
+                    _data.writeInt(wifiap_set_security);
+                    _data.writeBoolean(wifiap_security);
+                    this.mRemote.transact(161, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean isNeededToShowWifiApDatalimitReachedDialog() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(162, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getWifiMACAddress() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(163, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public int autohotspotWifiScanConnect(String ssid, String password, String bssid, int hideSSID, int mhsFreq, int security) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(ssid);
+                    _data.writeString(password);
+                    _data.writeString(bssid);
+                    _data.writeInt(hideSSID);
+                    _data.writeInt(mhsFreq);
+                    _data.writeInt(security);
+                    this.mRemote.transact(164, _data, _reply, 0);
+                    _reply.readException();
+                    int _result = _reply.readInt();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getWifiApHostapdFreq() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(165, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getWifiApHostapdSecurtiy() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(166, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
                 } finally {
                     _reply.recycle();
                     _data.recycle();
@@ -7028,7 +7725,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(149, _data, _reply, 0);
+                    this.mRemote.transact(167, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7044,7 +7741,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(150, _data, _reply, 0);
+                    this.mRemote.transact(168, _data, _reply, 0);
                     _reply.readException();
                     List<SemWifiApBleScanResult> _result = _reply.createTypedArrayList(SemWifiApBleScanResult.CREATOR);
                     return _result;
@@ -7061,7 +7758,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(151, _data, _reply, 0);
+                    this.mRemote.transact(169, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7078,7 +7775,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(152, _data, _reply, 0);
+                    this.mRemote.transact(170, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7101,7 +7798,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeString(mhs_mac);
                     _data.writeString(Username);
                     _data.writeInt(ver);
-                    this.mRemote.transact(153, _data, _reply, 0);
+                    this.mRemote.transact(171, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7118,7 +7815,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mhs_mac);
-                    this.mRemote.transact(154, _data, _reply, 0);
+                    this.mRemote.transact(172, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7135,7 +7832,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(155, _data, _reply, 0);
+                    this.mRemote.transact(173, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -7153,7 +7850,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
                     _data.writeLong(val);
-                    this.mRemote.transact(156, _data, _reply, 0);
+                    this.mRemote.transact(174, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7169,7 +7866,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
                     _data.writeLong(val);
-                    this.mRemote.transact(157, _data, _reply, 0);
+                    this.mRemote.transact(175, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7185,7 +7882,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(158, _data, _reply, 0);
+                    this.mRemote.transact(176, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7201,7 +7898,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
                     _data.writeString(val);
-                    this.mRemote.transact(159, _data, _reply, 0);
+                    this.mRemote.transact(177, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7216,7 +7913,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeLong(bytes);
-                    this.mRemote.transact(160, _data, _reply, 0);
+                    this.mRemote.transact(178, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7231,7 +7928,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(161, _data, _reply, 0);
+                    this.mRemote.transact(179, _data, _reply, 0);
                     _reply.readException();
                     SemWifiApClientDetails _result = (SemWifiApClientDetails) _reply.readTypedObject(SemWifiApClientDetails.CREATOR);
                     return _result;
@@ -7249,7 +7946,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(topConnectedAndDisconnected);
                     _data.writeInt(maxListLength);
-                    this.mRemote.transact(162, _data, _reply, 0);
+                    this.mRemote.transact(180, _data, _reply, 0);
                     _reply.readException();
                     List<SemWifiApClientDetails> _result = _reply.createTypedArrayList(SemWifiApClientDetails.CREATOR);
                     return _result;
@@ -7267,7 +7964,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(topConnectedAndDisconnected);
                     _data.writeInt(maxListLength);
-                    this.mRemote.transact(163, _data, _reply, 0);
+                    this.mRemote.transact(181, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7283,7 +7980,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(164, _data, _reply, 0);
+                    this.mRemote.transact(182, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -7299,7 +7996,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(165, _data, _reply, 0);
+                    this.mRemote.transact(183, _data, _reply, 0);
                     _reply.readException();
                     long _result = _reply.readLong();
                     return _result;
@@ -7317,7 +8014,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeLong(timestampInMilliSecsDate1);
                     _data.writeLong(timestampInMilliSecsDate2);
-                    this.mRemote.transact(166, _data, _reply, 0);
+                    this.mRemote.transact(184, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7333,7 +8030,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(167, _data, _reply, 0);
+                    this.mRemote.transact(185, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7349,7 +8046,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(168, _data, _reply, 0);
+                    this.mRemote.transact(186, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7365,7 +8062,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(169, _data, _reply, 0);
+                    this.mRemote.transact(187, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7381,7 +8078,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(170, _data, _reply, 0);
+                    this.mRemote.transact(188, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7398,7 +8095,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(jsonString);
-                    this.mRemote.transact(171, _data, _reply, 0);
+                    this.mRemote.transact(189, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7413,7 +8110,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeLong(bytes);
-                    this.mRemote.transact(172, _data, _reply, 0);
+                    this.mRemote.transact(190, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7428,7 +8125,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(pwd);
-                    this.mRemote.transact(173, _data, _reply, 0);
+                    this.mRemote.transact(191, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7442,7 +8139,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(174, _data, _reply, 0);
+                    this.mRemote.transact(192, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7458,7 +8155,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(175, _data, _reply, 0);
+                    this.mRemote.transact(193, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7475,7 +8172,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(176, _data, _reply, 0);
+                    this.mRemote.transact(194, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7489,7 +8186,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(177, _data, _reply, 0);
+                    this.mRemote.transact(195, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7506,7 +8203,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(val);
-                    this.mRemote.transact(178, _data, _reply, 0);
+                    this.mRemote.transact(196, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7521,7 +8218,23 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(mac);
-                    this.mRemote.transact(179, _data, _reply, 0);
+                    this.mRemote.transact(197, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean isSAFamilySupportedBasedOnCountry() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(198, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7542,7 +8255,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInt(callbackIdentifier);
                     _data.writeInt(topConnectedAndDisconnected);
                     _data.writeInt(maxListLength);
-                    this.mRemote.transact(180, _data, _reply, 0);
+                    this.mRemote.transact(199, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7557,7 +8270,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(181, _data, _reply, 0);
+                    this.mRemote.transact(200, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7575,7 +8288,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeStrongInterface(callbackToRegister);
                     _data.writeInt(callbackIdentifier);
                     _data.writeString(clientMac);
-                    this.mRemote.transact(182, _data, _reply, 0);
+                    this.mRemote.transact(201, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7590,7 +8303,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(callbackIdentifier);
-                    this.mRemote.transact(183, _data, _reply, 0);
+                    this.mRemote.transact(202, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -7605,7 +8318,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(featureName);
                     _data.writeString(parameters);
-                    this.mRemote.transact(184, _data, null, 1);
+                    this.mRemote.transact(203, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7618,7 +8331,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(185, _data, null, 1);
+                    this.mRemote.transact(204, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7630,7 +8343,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(186, _data, _reply, 0);
+                    this.mRemote.transact(205, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7647,7 +8360,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(config, 0);
-                    this.mRemote.transact(187, _data, _reply, 0);
+                    this.mRemote.transact(206, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7664,7 +8377,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(configKey);
-                    this.mRemote.transact(188, _data, _reply, 0);
+                    this.mRemote.transact(207, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7679,7 +8392,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(189, _data, null, 1);
+                    this.mRemote.transact(208, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7690,7 +8403,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(190, _data, null, 1);
+                    this.mRemote.transact(209, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7702,7 +8415,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(191, _data, _reply, 0);
+                    this.mRemote.transact(210, _data, _reply, 0);
                     _reply.readException();
                     ParceledListSlice _result = (ParceledListSlice) _reply.readTypedObject(ParceledListSlice.CREATOR);
                     return _result;
@@ -7719,8 +8432,25 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(fqdn);
                     _data.writeBoolean(allowAutojoin);
-                    this.mRemote.transact(192, _data, null, 1);
+                    this.mRemote.transact(211, _data, null, 1);
                 } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public List getPasspointConfigurations() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(212, _data, _reply, 0);
+                    _reply.readException();
+                    ClassLoader cl = getClass().getClassLoader();
+                    List _result = _reply.readArrayList(cl);
+                    return _result;
+                } finally {
+                    _reply.recycle();
                     _data.recycle();
                 }
             }
@@ -7732,7 +8462,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(maxCount);
-                    this.mRemote.transact(193, _data, _reply, 0);
+                    this.mRemote.transact(213, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7749,7 +8479,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(reportId);
                     _data.writeTypedObject(data, 0);
-                    this.mRemote.transact(194, _data, null, 1);
+                    this.mRemote.transact(214, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7761,7 +8491,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(bundle, 0);
-                    this.mRemote.transact(195, _data, null, 1);
+                    this.mRemote.transact(215, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7773,7 +8503,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(196, _data, _reply, 0);
+                    this.mRemote.transact(216, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -7789,7 +8519,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(bundle, 0);
-                    this.mRemote.transact(197, _data, null, 1);
+                    this.mRemote.transact(217, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7802,7 +8532,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(maxCount);
-                    this.mRemote.transact(198, _data, _reply, 0);
+                    this.mRemote.transact(218, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7819,7 +8549,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(category);
-                    this.mRemote.transact(199, _data, _reply, 0);
+                    this.mRemote.transact(219, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7836,7 +8566,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStringList(bssids);
-                    this.mRemote.transact(200, _data, _reply, 0);
+                    this.mRemote.transact(220, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -7848,13 +8578,37 @@ public interface ISemWifiManager extends IInterface {
             }
 
             @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setBtmOptionUserEnabled(String configKey) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(configKey);
+                    this.mRemote.transact(221, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setBtmOptionUserDisabled(String configKey) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(configKey);
+                    this.mRemote.transact(222, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
             public void registerPasswordCallback(String configKey, ISemSharedPasswordCallback callback) throws RemoteException {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(configKey);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(201, _data, null, 1);
+                    this.mRemote.transact(223, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7866,7 +8620,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStrongInterface(callback);
-                    this.mRemote.transact(202, _data, null, 1);
+                    this.mRemote.transact(224, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7878,7 +8632,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(showConfirm);
-                    this.mRemote.transact(203, _data, null, 1);
+                    this.mRemote.transact(225, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7891,7 +8645,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(isAccept);
                     _data.writeString(userData);
-                    this.mRemote.transact(204, _data, null, 1);
+                    this.mRemote.transact(226, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7903,7 +8657,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(205, _data, _reply, 0);
+                    this.mRemote.transact(227, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7919,7 +8673,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(206, _data, _reply, 0);
+                    this.mRemote.transact(228, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7935,7 +8689,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(207, _data, _reply, 0);
+                    this.mRemote.transact(229, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7951,7 +8705,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(208, _data, _reply, 0);
+                    this.mRemote.transact(230, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -7967,7 +8721,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStringList(target);
-                    this.mRemote.transact(209, _data, null, 1);
+                    this.mRemote.transact(231, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -7979,7 +8733,39 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(210, _data, _reply, 0);
+                    this.mRemote.transact(232, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean getAutoWifiDefaultValue() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(233, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean shouldShowAutoWifiBubbleTip() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(234, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -7995,7 +8781,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(211, _data, _reply, 0);
+                    this.mRemote.transact(235, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8011,7 +8797,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(212, _data, _reply, 0);
+                    this.mRemote.transact(236, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8027,7 +8813,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(213, _data, _reply, 0);
+                    this.mRemote.transact(237, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -8045,23 +8831,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(wifiConfigKey);
-                    this.mRemote.transact(214, _data, _reply, 0);
-                    _reply.readException();
-                    boolean _result = _reply.readBoolean();
-                    return _result;
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-
-            @Override // com.samsung.android.wifi.ISemWifiManager
-            public boolean isLocationProviderAvailable() throws RemoteException {
-                Parcel _data = Parcel.obtain(asBinder());
-                Parcel _reply = Parcel.obtain();
-                try {
-                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(215, _data, _reply, 0);
+                    this.mRemote.transact(238, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8078,7 +8848,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(moduleId);
                     _data.writeTypedObject(settings, 0);
-                    this.mRemote.transact(216, _data, null, 1);
+                    this.mRemote.transact(239, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8091,7 +8861,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
                     _data.writeString(packageName);
-                    this.mRemote.transact(217, _data, null, 1);
+                    this.mRemote.transact(240, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8103,7 +8873,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(218, _data, _reply, 0);
+                    this.mRemote.transact(241, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8120,7 +8890,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(219, _data, _reply, 0);
+                    this.mRemote.transact(242, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8137,7 +8907,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(packageName);
                     _data.writeTypedObject(settings, 0);
-                    this.mRemote.transact(220, _data, null, 1);
+                    this.mRemote.transact(243, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8149,7 +8919,7 @@ public interface ISemWifiManager extends IInterface {
                 final Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(221, _data, _reply, 0);
+                    this.mRemote.transact(244, _data, _reply, 0);
                     _reply.readException();
                     int N = _reply.readInt();
                     final Map<String, SemEasySetupWifiScanSettings> _result = N < 0 ? null : new HashMap<>();
@@ -8166,7 +8936,7 @@ public interface ISemWifiManager extends IInterface {
                 }
             }
 
-            public static /* synthetic */ void lambda$getEasySetupScanSettings$0(Parcel _reply, Map _result, int i) {
+            static /* synthetic */ void lambda$getEasySetupScanSettings$0(Parcel _reply, Map _result, int i) {
                 String k = _reply.readString();
                 SemEasySetupWifiScanSettings v = (SemEasySetupWifiScanSettings) _reply.readTypedObject(SemEasySetupWifiScanSettings.CREATOR);
                 _result.put(k, v);
@@ -8177,7 +8947,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _data = Parcel.obtain(asBinder());
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(222, _data, null, 1);
+                    this.mRemote.transact(245, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8189,7 +8959,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(isEstablished);
-                    this.mRemote.transact(223, _data, null, 1);
+                    this.mRemote.transact(246, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8201,7 +8971,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(224, _data, _reply, 0);
+                    this.mRemote.transact(247, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8217,7 +8987,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(225, _data, _reply, 0);
+                    this.mRemote.transact(248, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8233,7 +9003,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(226, _data, _reply, 0);
+                    this.mRemote.transact(249, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8249,7 +9019,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(227, _data, _reply, 0);
+                    this.mRemote.transact(250, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8265,7 +9035,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(228, _data, _reply, 0);
+                    this.mRemote.transact(251, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8280,7 +9050,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(disabled);
-                    this.mRemote.transact(229, _data, _reply, 0);
+                    this.mRemote.transact(252, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8294,7 +9064,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(keepConnection);
-                    this.mRemote.transact(230, _data, null, 1);
+                    this.mRemote.transact(253, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8307,7 +9077,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(keepConnection);
                     _data.writeBoolean(always);
-                    this.mRemote.transact(231, _data, null, 1);
+                    this.mRemote.transact(254, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8319,7 +9089,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(reason);
-                    this.mRemote.transact(232, _data, null, 1);
+                    this.mRemote.transact(255, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8332,7 +9102,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(networkId);
-                    this.mRemote.transact(233, _data, _reply, 0);
+                    this.mRemote.transact(256, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8346,7 +9116,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(234, _data, _reply, 0);
+                    this.mRemote.transact(257, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8363,7 +9133,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(semconfigs);
-                    this.mRemote.transact(235, _data, _reply, 0);
+                    this.mRemote.transact(258, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8380,7 +9150,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInt(netId);
                     _data.writeBoolean(byUser);
                     _data.writeString(configKey);
-                    this.mRemote.transact(236, _data, _reply, 0);
+                    this.mRemote.transact(259, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8396,7 +9166,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(opType);
                     _data.writeInt(value);
-                    this.mRemote.transact(237, _data, _reply, 0);
+                    this.mRemote.transact(260, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8410,7 +9180,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(238, _data, _reply, 0);
+                    this.mRemote.transact(261, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8427,7 +9197,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(qTables);
-                    this.mRemote.transact(239, _data, _reply, 0);
+                    this.mRemote.transact(262, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8442,7 +9212,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeLong(timestamp);
-                    this.mRemote.transact(240, _data, _reply, 0);
+                    this.mRemote.transact(263, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8457,7 +9227,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(action);
-                    this.mRemote.transact(241, _data, _reply, 0);
+                    this.mRemote.transact(264, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8472,7 +9242,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(block);
-                    this.mRemote.transact(242, _data, _reply, 0);
+                    this.mRemote.transact(265, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8489,7 +9259,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(243, _data, _reply, 0);
+                    this.mRemote.transact(266, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8505,7 +9275,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(244, _data, _reply, 0);
+                    this.mRemote.transact(267, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8521,7 +9291,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(245, _data, _reply, 0);
+                    this.mRemote.transact(268, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8537,7 +9307,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(246, _data, _reply, 0);
+                    this.mRemote.transact(269, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8553,7 +9323,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeTypedObject(settings, 0);
-                    this.mRemote.transact(247, _data, null, 1);
+                    this.mRemote.transact(270, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8567,7 +9337,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(uwbCh);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(248, _data, _reply, 0);
+                    this.mRemote.transact(271, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8585,7 +9355,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(ifaceName);
                     _data.writeInt(enable);
-                    this.mRemote.transact(249, _data, _reply, 0);
+                    this.mRemote.transact(272, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8603,7 +9373,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(ifaceName);
                     _data.writeString(filter);
-                    this.mRemote.transact(250, _data, _reply, 0);
+                    this.mRemote.transact(273, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8621,7 +9391,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(ifaceName);
                     _data.writeString(filter);
-                    this.mRemote.transact(251, _data, _reply, 0);
+                    this.mRemote.transact(274, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8637,7 +9407,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(252, _data, _reply, 0);
+                    this.mRemote.transact(275, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8654,7 +9424,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(ifaceName);
-                    this.mRemote.transact(253, _data, _reply, 0);
+                    this.mRemote.transact(276, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8670,7 +9440,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(254, _data, _reply, 0);
+                    this.mRemote.transact(277, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8686,7 +9456,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(255, _data, _reply, 0);
+                    this.mRemote.transact(278, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8702,7 +9472,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(256, _data, _reply, 0);
+                    this.mRemote.transact(279, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8717,7 +9487,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeString(packageName);
-                    this.mRemote.transact(257, _data, _reply, 0);
+                    this.mRemote.transact(280, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8734,7 +9504,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeBoolean(enabled);
                     _data.writeString(iface);
                     _data.writeInt(limit);
-                    this.mRemote.transact(258, _data, _reply, 0);
+                    this.mRemote.transact(281, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8750,7 +9520,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(cmdId);
                     _data.writeString(cmdLine);
-                    this.mRemote.transact(259, _data, _reply, 0);
+                    this.mRemote.transact(282, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8764,7 +9534,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(260, _data, _reply, 0);
+                    this.mRemote.transact(283, _data, _reply, 0);
                     _reply.readException();
                     int[] _result = _reply.createIntArray();
                     return _result;
@@ -8780,7 +9550,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(261, _data, _reply, 0);
+                    this.mRemote.transact(284, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -8798,7 +9568,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(mode);
-                    this.mRemote.transact(262, _data, _reply, 0);
+                    this.mRemote.transact(285, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8812,7 +9582,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(263, _data, _reply, 0);
+                    this.mRemote.transact(286, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8826,7 +9596,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(264, _data, _reply, 0);
+                    this.mRemote.transact(287, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -8842,7 +9612,39 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(265, _data, _reply, 0);
+                    this.mRemote.transact(288, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getNumberOfDataInEachRssiLevel() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(289, _data, _reply, 0);
+                    _reply.readException();
+                    String _result = _reply.readString();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public String getIwhState() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(290, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8859,7 +9661,22 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(266, _data, _reply, 0);
+                    this.mRemote.transact(291, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setSamsungIwhCtrl(boolean enable) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeBoolean(enable);
+                    this.mRemote.transact(292, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -8873,7 +9690,54 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(267, _data, _reply, 0);
+                    this.mRemote.transact(293, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean getSamsungIwhCtrl() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(294, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setTestMode(boolean mode) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeBoolean(mode);
+                    this.mRemote.transact(295, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean iwhIntendedDisconnection() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(296, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8894,7 +9758,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeLong(desiredThroughputMbps);
                     _data.writeInt(queryType);
                     _data.writeLong(timeWindowMs);
-                    this.mRemote.transact(268, _data, _reply, 0);
+                    this.mRemote.transact(297, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -8912,7 +9776,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeBoolean(enabled);
                     _data.writeIntArray(numClass);
                     _data.writeIntArray(numTimeStep);
-                    this.mRemote.transact(269, _data, null, 1);
+                    this.mRemote.transact(298, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8927,7 +9791,47 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeIntArray(l1ConvSerPredArr);
                     _data.writeIntArray(l2ConvSerPredArr);
                     _data.writeStringArray(convArr);
-                    this.mRemote.transact(270, _data, null, 1);
+                    this.mRemote.transact(299, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setWifiAiIwhTrainingResult(String gKey, int trScore, int numBssids, int mode) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(gKey);
+                    _data.writeInt(trScore);
+                    _data.writeInt(numBssids);
+                    _data.writeInt(mode);
+                    this.mRemote.transact(300, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setWifiAiIwhInferenceResult(boolean[] ret) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeBooleanArray(ret);
+                    this.mRemote.transact(301, _data, null, 1);
+                } finally {
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void setIlaTrainingResult(double RssiResult, String bssidE) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeDouble(RssiResult);
+                    _data.writeString(bssidE);
+                    this.mRemote.transact(302, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -8940,7 +9844,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(count);
-                    this.mRemote.transact(271, _data, _reply, 0);
+                    this.mRemote.transact(303, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8957,7 +9861,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(count);
-                    this.mRemote.transact(272, _data, _reply, 0);
+                    this.mRemote.transact(304, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8974,7 +9878,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(count);
-                    this.mRemote.transact(273, _data, _reply, 0);
+                    this.mRemote.transact(305, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -8990,7 +9894,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(274, _data, _reply, 0);
+                    this.mRemote.transact(306, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9007,7 +9911,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(size);
-                    this.mRemote.transact(275, _data, _reply, 0);
+                    this.mRemote.transact(307, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9023,7 +9927,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(276, _data, _reply, 0);
+                    this.mRemote.transact(308, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9039,7 +9943,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(277, _data, _reply, 0);
+                    this.mRemote.transact(309, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9056,7 +9960,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(278, _data, _reply, 0);
+                    this.mRemote.transact(310, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9072,7 +9976,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(279, _data, _reply, 0);
+                    this.mRemote.transact(311, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9088,7 +9992,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(280, _data, _reply, 0);
+                    this.mRemote.transact(312, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9104,7 +10008,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(281, _data, _reply, 0);
+                    this.mRemote.transact(313, _data, _reply, 0);
                     _reply.readException();
                     List<String> _result = _reply.createStringArrayList();
                     return _result;
@@ -9120,7 +10024,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(282, _data, _reply, 0);
+                    this.mRemote.transact(314, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9136,7 +10040,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(283, _data, _reply, 0);
+                    this.mRemote.transact(315, _data, _reply, 0);
                     _reply.readException();
                     long[] _result = _reply.createLongArray();
                     return _result;
@@ -9152,7 +10056,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(284, _data, _reply, 0);
+                    this.mRemote.transact(316, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9166,7 +10070,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(285, _data, _reply, 0);
+                    this.mRemote.transact(317, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -9185,7 +10089,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(newTasPolicy);
                     _data.writeInt(windowSize);
-                    this.mRemote.transact(286, _data, _reply, 0);
+                    this.mRemote.transact(318, _data, _reply, 0);
                     _reply.readException();
                     ClassLoader cl = getClass().getClassLoader();
                     Map _result = _reply.readHashMap(cl);
@@ -9202,7 +10106,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(287, _data, null, 1);
+                    this.mRemote.transact(319, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -9214,7 +10118,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeStrongInterface(listener);
-                    this.mRemote.transact(288, _data, null, 1);
+                    this.mRemote.transact(320, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -9228,7 +10132,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
                     _data.writeInt(index);
-                    this.mRemote.transact(289, _data, _reply, 0);
+                    this.mRemote.transact(321, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
@@ -9242,7 +10146,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(290, _data, _reply, 0);
+                    this.mRemote.transact(322, _data, _reply, 0);
                     _reply.readException();
                     String _result = _reply.readString();
                     return _result;
@@ -9258,7 +10162,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(291, _data, _reply, 0);
+                    this.mRemote.transact(323, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9276,7 +10180,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeBoolean(enabled);
                     _data.writeIntArray(numClass);
                     _data.writeIntArray(numTimeStep);
-                    this.mRemote.transact(292, _data, null, 1);
+                    this.mRemote.transact(324, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -9289,7 +10193,7 @@ public interface ISemWifiManager extends IInterface {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeIntArray(predArr);
                     _data.writeStringArray(convoStrArr);
-                    this.mRemote.transact(293, _data, null, 1);
+                    this.mRemote.transact(325, _data, null, 1);
                 } finally {
                     _data.recycle();
                 }
@@ -9302,7 +10206,7 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeInt(captureFrameTypes);
-                    this.mRemote.transact(294, _data, _reply, 0);
+                    this.mRemote.transact(326, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9318,7 +10222,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(295, _data, _reply, 0);
+                    this.mRemote.transact(327, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9334,7 +10238,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(296, _data, _reply, 0);
+                    this.mRemote.transact(328, _data, _reply, 0);
                     _reply.readException();
                     int _result = _reply.readInt();
                     return _result;
@@ -9350,7 +10254,7 @@ public interface ISemWifiManager extends IInterface {
                 Parcel _reply = Parcel.obtain();
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
-                    this.mRemote.transact(297, _data, _reply, 0);
+                    this.mRemote.transact(329, _data, _reply, 0);
                     _reply.readException();
                     boolean _result = _reply.readBoolean();
                     return _result;
@@ -9367,13 +10271,131 @@ public interface ISemWifiManager extends IInterface {
                 try {
                     _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
                     _data.writeBoolean(enable);
-                    this.mRemote.transact(298, _data, _reply, 0);
+                    this.mRemote.transact(330, _data, _reply, 0);
                     _reply.readException();
                 } finally {
                     _reply.recycle();
                     _data.recycle();
                 }
             }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void registerAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver observer, String module) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeStrongInterface(observer);
+                    _data.writeString(module);
+                    this.mRemote.transact(331, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void unregisterAbTestConfigUpdateObserver(ISemAbTestConfigurationUpdateObserver observer) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeStrongInterface(observer);
+                    this.mRemote.transact(332, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public void reportAbTestResult(String module, String outputDim, String output) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(module);
+                    _data.writeString(outputDim);
+                    _data.writeString(output);
+                    this.mRemote.transact(333, _data, _reply, 0);
+                    _reply.readException();
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public List<SemAbTestConfiguration> getAbTestConfigs() throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    this.mRemote.transact(334, _data, _reply, 0);
+                    _reply.readException();
+                    List<SemAbTestConfiguration> _result = _reply.createTypedArrayList(SemAbTestConfiguration.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public SemAbTestConfiguration getAbTestConfiguredModule(String module) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(module);
+                    this.mRemote.transact(335, _data, _reply, 0);
+                    _reply.readException();
+                    SemAbTestConfiguration _result = (SemAbTestConfiguration) _reply.readTypedObject(SemAbTestConfiguration.CREATOR);
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+
+            @Override // com.samsung.android.wifi.ISemWifiManager
+            public boolean sendReassociationFrequencyRequestFrame(String bssid, int channel) throws RemoteException {
+                Parcel _data = Parcel.obtain(asBinder());
+                Parcel _reply = Parcel.obtain();
+                try {
+                    _data.writeInterfaceToken(ISemWifiManager.DESCRIPTOR);
+                    _data.writeString(bssid);
+                    _data.writeInt(channel);
+                    this.mRemote.transact(336, _data, _reply, 0);
+                    _reply.readException();
+                    boolean _result = _reply.readBoolean();
+                    return _result;
+                } finally {
+                    _reply.recycle();
+                    _data.recycle();
+                }
+            }
+        }
+
+        private boolean onTransact$setVendorWlanDriverProp$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            boolean _result = setVendorWlanDriverProp(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$setFccChannelBackoffEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setFccChannelBackoffEnabled(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
         }
 
         private boolean onTransact$sendVendorSpecificActionFrame$(Parcel data, Parcel reply) throws RemoteException {
@@ -9383,6 +10405,16 @@ public interface ISemWifiManager extends IInterface {
             String _arg3 = data.readString();
             data.enforceNoDataAvail();
             boolean _result = sendVendorSpecificActionFrame(_arg0, _arg1, _arg2, _arg3);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
+        private boolean onTransact$sendReassociationRequestFrame$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = sendReassociationRequestFrame(_arg0, _arg1);
             reply.writeNoException();
             reply.writeBoolean(_result);
             return true;
@@ -9435,6 +10467,16 @@ public interface ISemWifiManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setWifiApEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            SoftApConfiguration _arg0 = (SoftApConfiguration) data.readTypedObject(SoftApConfiguration.CREATOR);
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = setWifiApEnabled(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
         private boolean onTransact$setLocalOnlyHotspotEnabled$(Parcel data, Parcel reply) throws RemoteException {
             boolean _arg0 = data.readBoolean();
             String _arg1 = data.readString();
@@ -9459,6 +10501,39 @@ public interface ISemWifiManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$notifyConnect$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            notifyConnect(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$launchWifiApWarningForMcfMHS$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            boolean _arg2 = data.readBoolean();
+            data.enforceNoDataAvail();
+            launchWifiApWarningForMcfMHS(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$autohotspotWifiScanConnect$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            String _arg2 = data.readString();
+            int _arg3 = data.readInt();
+            int _arg4 = data.readInt();
+            int _arg5 = data.readInt();
+            data.enforceNoDataAvail();
+            int _result = autohotspotWifiScanConnect(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
         private boolean onTransact$connectToMcfMHS$(Parcel data, Parcel reply) throws RemoteException {
             String _arg0 = data.readString();
             int _arg1 = data.readInt();
@@ -9471,6 +10546,72 @@ public interface ISemWifiManager extends IInterface {
             int _result = connectToMcfMHS(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6);
             reply.writeNoException();
             reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$setWifiApClientMobileDataLimit$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            long _arg1 = data.readLong();
+            data.enforceNoDataAvail();
+            setWifiApClientMobileDataLimit(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setWifiApClientTimeLimit$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            long _arg1 = data.readLong();
+            data.enforceNoDataAvail();
+            setWifiApClientTimeLimit(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setWifiApClientDataPaused$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setWifiApClientDataPaused(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setWifiApClientEditedName$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            setWifiApClientEditedName(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getTopHotspotClientsToday$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            List<SemWifiApClientDetails> _result = getTopHotspotClientsToday(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeTypedList(_result, 1);
+            return true;
+        }
+
+        private boolean onTransact$getTopHotspotClientsTodayAsString$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            String _result = getTopHotspotClientsTodayAsString(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeString(_result);
+            return true;
+        }
+
+        private boolean onTransact$getTotalAndTop3ClientsDataUsageBetweenGivenDates$(Parcel data, Parcel reply) throws RemoteException {
+            long _arg0 = data.readLong();
+            long _arg1 = data.readLong();
+            data.enforceNoDataAvail();
+            List<String> _result = getTotalAndTop3ClientsDataUsageBetweenGivenDates(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeStringList(_result);
             return true;
         }
 
@@ -9497,6 +10638,86 @@ public interface ISemWifiManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$reportBigData$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            reportBigData(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$addOrUpdateWifiControlHistory$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            addOrUpdateWifiControlHistory(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$allowAutojoinPasspoint$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            allowAutojoinPasspoint(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$reportIssue$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+            data.enforceNoDataAvail();
+            reportIssue(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$registerPasswordCallback$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            ISemSharedPasswordCallback _arg1 = ISemSharedPasswordCallback.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            registerPasswordCallback(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setUserConfirmForSharingPassword$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            setUserConfirmForSharingPassword(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setTestSettings$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            Bundle _arg1 = (Bundle) data.readTypedObject(Bundle.CREATOR);
+            data.enforceNoDataAvail();
+            setTestSettings(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setAllowWifiScan$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            setAllowWifiScan(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setEasySetupScanSettings$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            SemEasySetupWifiScanSettings _arg1 = (SemEasySetupWifiScanSettings) data.readTypedObject(SemEasySetupWifiScanSettings.CREATOR);
+            data.enforceNoDataAvail();
+            setEasySetupScanSettings(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setKeepConnection$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setKeepConnection(_arg0, _arg1);
+            return true;
+        }
+
         private boolean onTransact$setConnectionAttemptInfo$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             boolean _arg1 = data.readBoolean();
@@ -9504,6 +10725,25 @@ public interface ISemWifiManager extends IInterface {
             data.enforceNoDataAvail();
             setConnectionAttemptInfo(_arg0, _arg1, _arg2);
             reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$restoreIWCSettingsValue$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            restoreIWCSettingsValue(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$setWifiUwbCoexEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            boolean _arg1 = data.readBoolean();
+            data.enforceNoDataAvail();
+            int _result = setWifiUwbCoexEnabled(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeInt(_result);
             return true;
         }
 
@@ -9588,6 +10828,33 @@ public interface ISemWifiManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$setWifiAiIwhTrainingResult$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            int _arg2 = data.readInt();
+            int _arg3 = data.readInt();
+            data.enforceNoDataAvail();
+            setWifiAiIwhTrainingResult(_arg0, _arg1, _arg2, _arg3);
+            return true;
+        }
+
+        private boolean onTransact$setIlaTrainingResult$(Parcel data, Parcel reply) throws RemoteException {
+            double _arg0 = data.readDouble();
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            setIlaTrainingResult(_arg0, _arg1);
+            return true;
+        }
+
+        private boolean onTransact$setTdlsEnabled$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            data.enforceNoDataAvail();
+            boolean _result = setTdlsEnabled(_arg0);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
         private boolean onTransact$setTasPolicy$(Parcel data, Parcel reply) throws RemoteException {
             int _arg0 = data.readInt();
             int _arg1 = data.readInt();
@@ -9595,6 +10862,20 @@ public interface ISemWifiManager extends IInterface {
             Map _result = setTasPolicy(_arg0, _arg1);
             reply.writeNoException();
             reply.writeMap(_result);
+            return true;
+        }
+
+        private boolean onTransact$registerTasPolicyChangedListener$(Parcel data, Parcel reply) throws RemoteException {
+            SemTasPolicyListener _arg0 = SemTasPolicyListener.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            registerTasPolicyChangedListener(_arg0);
+            return true;
+        }
+
+        private boolean onTransact$unregisterTasPolicyChangedListener$(Parcel data, Parcel reply) throws RemoteException {
+            SemTasPolicyListener _arg0 = SemTasPolicyListener.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterTasPolicyChangedListener(_arg0);
             return true;
         }
 
@@ -9624,9 +10905,72 @@ public interface ISemWifiManager extends IInterface {
             return true;
         }
 
+        private boolean onTransact$startCapture$(Parcel data, Parcel reply) throws RemoteException {
+            int _arg0 = data.readInt();
+            data.enforceNoDataAvail();
+            int _result = startCapture(_arg0);
+            reply.writeNoException();
+            reply.writeInt(_result);
+            return true;
+        }
+
+        private boolean onTransact$setMcfMultiControlMode$(Parcel data, Parcel reply) throws RemoteException {
+            boolean _arg0 = data.readBoolean();
+            data.enforceNoDataAvail();
+            setMcfMultiControlMode(_arg0);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$registerAbTestConfigUpdateObserver$(Parcel data, Parcel reply) throws RemoteException {
+            ISemAbTestConfigurationUpdateObserver _arg0 = ISemAbTestConfigurationUpdateObserver.Stub.asInterface(data.readStrongBinder());
+            String _arg1 = data.readString();
+            data.enforceNoDataAvail();
+            registerAbTestConfigUpdateObserver(_arg0, _arg1);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$unregisterAbTestConfigUpdateObserver$(Parcel data, Parcel reply) throws RemoteException {
+            ISemAbTestConfigurationUpdateObserver _arg0 = ISemAbTestConfigurationUpdateObserver.Stub.asInterface(data.readStrongBinder());
+            data.enforceNoDataAvail();
+            unregisterAbTestConfigUpdateObserver(_arg0);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$reportAbTestResult$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            String _arg1 = data.readString();
+            String _arg2 = data.readString();
+            data.enforceNoDataAvail();
+            reportAbTestResult(_arg0, _arg1, _arg2);
+            reply.writeNoException();
+            return true;
+        }
+
+        private boolean onTransact$getAbTestConfiguredModule$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            data.enforceNoDataAvail();
+            SemAbTestConfiguration _result = getAbTestConfiguredModule(_arg0);
+            reply.writeNoException();
+            reply.writeTypedObject(_result, 1);
+            return true;
+        }
+
+        private boolean onTransact$sendReassociationFrequencyRequestFrame$(Parcel data, Parcel reply) throws RemoteException {
+            String _arg0 = data.readString();
+            int _arg1 = data.readInt();
+            data.enforceNoDataAvail();
+            boolean _result = sendReassociationFrequencyRequestFrame(_arg0, _arg1);
+            reply.writeNoException();
+            reply.writeBoolean(_result);
+            return true;
+        }
+
         @Override // android.os.Binder
         public int getMaxTransactionId() {
-            return 297;
+            return 335;
         }
     }
 }

@@ -1,11 +1,1 @@
-Error decode xml
-java.util.zip.ZipException: invalid END header (bad central directory offset)
-	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1762)
-	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1656)
-	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1479)
-	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1441)
-	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:718)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:252)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:181)
-	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:195)
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><config><compat-change description="For apps targeting S and above, a SecurityException is thrown when they do not have HIGH_SAMPLING_RATE_SENSORS permission, run in debug mode, and request sampling rates that are faster than 200 Hz." enableAfterTargetSdk="30" id="136069189" name="CHANGE_ID_SAMPLING_RATE_SENSORS_PERMISSION"><meta-data definedIn="android.hardware.SystemSensorManager" sourcePosition="frameworks/base/core/java/android/hardware/SystemSensorManager.java:82"/></compat-change></config>

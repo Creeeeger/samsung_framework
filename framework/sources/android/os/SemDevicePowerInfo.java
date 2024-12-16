@@ -7,14 +7,13 @@ import android.telephony.CellSignalStrength;
 /* loaded from: classes3.dex */
 public class SemDevicePowerInfo implements Parcelable {
     public static final Parcelable.Creator<SemDevicePowerInfo> CREATOR = new Parcelable.Creator<SemDevicePowerInfo>() { // from class: android.os.SemDevicePowerInfo.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDevicePowerInfo createFromParcel(Parcel in) {
             return new SemDevicePowerInfo(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public SemDevicePowerInfo[] newArray(int size) {
             return new SemDevicePowerInfo[size];
@@ -350,22 +349,18 @@ public class SemDevicePowerInfo implements Parcelable {
         this.subHrrAlwaysTime += delta.subHrrAlwaysTime;
         this.cpSleepTime += delta.cpSleepTime;
         this.cpIdleTime += delta.cpIdleTime;
-        long j = this.nrTxTime + delta.nrTxTime;
-        this.nrTxTime = j;
-        long j2 = delta.nrTxTime;
-        if (j + j2 != 0) {
-            this.nrTxLevel = ((this.nrTxLevel * j) + (delta.nrTxLevel * j2)) / (j + j2);
+        this.nrTxTime += delta.nrTxTime;
+        if (this.nrTxTime + delta.nrTxTime != 0) {
+            this.nrTxLevel = ((this.nrTxLevel * this.nrTxTime) + (delta.nrTxLevel * delta.nrTxTime)) / (this.nrTxTime + delta.nrTxTime);
         } else {
             this.nrTxLevel = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         }
         this.nrRxTime += delta.nrRxTime;
         this.nrTxByte += delta.nrTxByte;
         this.nrRxByte += delta.nrRxByte;
-        long j3 = this.lcTxTime + delta.lcTxTime;
-        this.lcTxTime = j3;
-        long j4 = delta.lcTxTime;
-        if (j3 + j4 != 0) {
-            this.lcTxLevel = ((this.lcTxLevel * j3) + (delta.lcTxLevel * j4)) / (j3 + j4);
+        this.lcTxTime += delta.lcTxTime;
+        if (this.lcTxTime + delta.lcTxTime != 0) {
+            this.lcTxLevel = ((this.lcTxLevel * this.lcTxTime) + (delta.lcTxLevel * delta.lcTxTime)) / (this.lcTxTime + delta.lcTxTime);
         } else {
             this.lcTxLevel = SContextConstants.ENVIRONMENT_VALUE_UNKNOWN;
         }
@@ -374,7 +369,7 @@ public class SemDevicePowerInfo implements Parcelable {
         this.lcRxByte += delta.lcRxByte;
     }
 
-    public SemDevicePowerInfo(Parcel in) {
+    protected SemDevicePowerInfo(Parcel in) {
         this.screenBrightnessTime = new long[5];
         this.screenAutoBrightnessTime = new long[5];
         this.subScreenBrightnessTime = new long[5];
@@ -459,23 +454,6 @@ public class SemDevicePowerInfo implements Parcelable {
         this.lcRxTime = in.readLong();
         this.lcTxByte = in.readLong();
         this.lcRxByte = in.readLong();
-    }
-
-    /* renamed from: android.os.SemDevicePowerInfo$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<SemDevicePowerInfo> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemDevicePowerInfo createFromParcel(Parcel in) {
-            return new SemDevicePowerInfo(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public SemDevicePowerInfo[] newArray(int size) {
-            return new SemDevicePowerInfo[size];
-        }
     }
 
     @Override // android.os.Parcelable

@@ -8,7 +8,7 @@ import com.android.i18n.phonenumbers.AsYouTypeFormatter;
 import com.android.i18n.phonenumbers.PhoneNumberUtil;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class PhoneNumberFormattingTextWatcher implements TextWatcher {
     private AsYouTypeFormatter mFormatter;
     private boolean mSelfChange;

@@ -105,7 +105,7 @@ public class SemMultiMicManager {
     public static boolean isSupported() {
         int version = 0;
         try {
-            version = Integer.parseInt("07010");
+            version = Integer.parseInt("08020");
         } catch (NumberFormatException e) {
         }
         return version >= 8001 || (version >= 7010 && version < 8000);
@@ -122,8 +122,7 @@ public class SemMultiMicManager {
     }
 
     public boolean setMicSensitivity(int channel, int level) {
-        int i = this.mMode;
-        if (i != 1 && i != 2) {
+        if (this.mMode != 1 && this.mMode != 2) {
             Log.e(TAG, "Current mode is not MODE_ADJUSTING_SENSITIVITY");
             return false;
         }
@@ -178,7 +177,7 @@ public class SemMultiMicManager {
         }
         int version = 0;
         try {
-            version = Integer.parseInt("07010");
+            version = Integer.parseInt("08020");
         } catch (NumberFormatException e) {
         }
         return mode == 0 ? version >= 8001 : mode == 1 ? version >= 8010 || (version >= 7010 && version < 8000) : mode == 2 ? version >= 8020 || (version >= 7020 && version < 8000) : version >= 8001;
@@ -203,13 +202,11 @@ public class SemMultiMicManager {
     }
 
     private static IAudioService getService() {
-        IAudioService iAudioService = sService;
-        if (iAudioService != null) {
-            return iAudioService;
+        if (sService != null) {
+            return sService;
         }
         IBinder b = ServiceManager.getService("audio");
-        IAudioService asInterface = IAudioService.Stub.asInterface(b);
-        sService = asInterface;
-        return asInterface;
+        sService = IAudioService.Stub.asInterface(b);
+        return sService;
     }
 }

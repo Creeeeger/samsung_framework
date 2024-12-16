@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @CheckReturnValue
-/* loaded from: classes4.dex */
+/* loaded from: classes3.dex */
 final class MessageSetSchema<T> implements Schema<T> {
     private final MessageLite defaultInstance;
     private final ExtensionSchema<?> extensionSchema;
@@ -22,17 +22,16 @@ final class MessageSetSchema<T> implements Schema<T> {
         this.defaultInstance = defaultInstance;
     }
 
-    public static <T> MessageSetSchema<T> newSchema(UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MessageLite defaultInstance) {
+    static <T> MessageSetSchema<T> newSchema(UnknownFieldSchema<?, ?> unknownFieldSchema, ExtensionSchema<?> extensionSchema, MessageLite defaultInstance) {
         return new MessageSetSchema<>(unknownFieldSchema, extensionSchema, defaultInstance);
     }
 
     @Override // com.android.framework.protobuf.Schema
     public T newInstance() {
-        MessageLite messageLite = this.defaultInstance;
-        if (messageLite instanceof GeneratedMessageLite) {
-            return (T) ((GeneratedMessageLite) messageLite).newMutableInstance();
+        if (this.defaultInstance instanceof GeneratedMessageLite) {
+            return (T) ((GeneratedMessageLite) this.defaultInstance).newMutableInstance();
         }
-        return (T) messageLite.newBuilderForType().buildPartial();
+        return (T) this.defaultInstance.newBuilderForType().buildPartial();
     }
 
     @Override // com.android.framework.protobuf.Schema

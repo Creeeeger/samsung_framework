@@ -15,19 +15,16 @@ public class AnimationHandler {
     private static boolean sAnimatorPausingEnabled = isPauseBgAnimationsEnabledInSystemProperties();
     private static boolean sOverrideAnimatorPausingSystemProperty = false;
     public static final ThreadLocal<AnimationHandler> sAnimatorHandler = new ThreadLocal<>();
+    private static AnimationHandler sTestHandler = null;
     private final ArrayMap<AnimationFrameCallback, Long> mDelayedCallbackStartTime = new ArrayMap<>();
     private final ArrayList<AnimationFrameCallback> mAnimationCallbacks = new ArrayList<>();
     private final ArrayList<AnimationFrameCallback> mCommitCallbacks = new ArrayList<>();
     private final ArrayList<Animator> mPausedAnimators = new ArrayList<>();
     private final ArrayList<WeakReference<Object>> mAnimatorRequestors = new ArrayList<>();
     private final Choreographer.FrameCallback mFrameCallback = new Choreographer.FrameCallback() { // from class: android.animation.AnimationHandler.1
-        AnonymousClass1() {
-        }
-
         @Override // android.view.Choreographer.FrameCallback
         public void doFrame(long frameTimeNanos) {
-            AnimationHandler animationHandler = AnimationHandler.this;
-            animationHandler.doAnimationFrame(animationHandler.getProvider().getFrameTime());
+            AnimationHandler.this.doAnimationFrame(AnimationHandler.this.getProvider().getFrameTime());
             if (AnimationHandler.this.mAnimationCallbacks.size() > 0) {
                 AnimationHandler.this.getProvider().postFrameCallback(this);
             }
@@ -41,14 +38,12 @@ public class AnimationHandler {
         }
     };
 
-    /* loaded from: classes.dex */
     public interface AnimationFrameCallback {
         void commitAnimationFrame(long j);
 
         boolean doAnimationFrame(long j);
     }
 
-    /* loaded from: classes.dex */
     public interface AnimationFrameCallbackProvider {
         long getFrameDelay();
 
@@ -59,23 +54,6 @@ public class AnimationHandler {
         void postFrameCallback(Choreographer.FrameCallback frameCallback);
 
         void setFrameDelay(long j);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: android.animation.AnimationHandler$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements Choreographer.FrameCallback {
-        AnonymousClass1() {
-        }
-
-        @Override // android.view.Choreographer.FrameCallback
-        public void doFrame(long frameTimeNanos) {
-            AnimationHandler animationHandler = AnimationHandler.this;
-            animationHandler.doAnimationFrame(animationHandler.getProvider().getFrameTime());
-            if (AnimationHandler.this.mAnimationCallbacks.size() > 0) {
-                AnimationHandler.this.getProvider().postFrameCallback(this);
-            }
-        }
     }
 
     public long getMaxAnimationCallbackDuration() {
@@ -92,11 +70,19 @@ public class AnimationHandler {
     }
 
     public static AnimationHandler getInstance() {
-        ThreadLocal<AnimationHandler> threadLocal = sAnimatorHandler;
-        if (threadLocal.get() == null) {
-            threadLocal.set(new AnimationHandler());
+        if (sTestHandler != null) {
+            return sTestHandler;
         }
-        return threadLocal.get();
+        if (sAnimatorHandler.get() == null) {
+            sAnimatorHandler.set(new AnimationHandler());
+        }
+        return sAnimatorHandler.get();
+    }
+
+    public static AnimationHandler setTestHandler(AnimationHandler handler) {
+        AnimationHandler oldHandler = sTestHandler;
+        sTestHandler = handler;
+        return oldHandler;
     }
 
     private static boolean isPauseBgAnimationsEnabledInSystemProperties() {
@@ -169,6 +155,7 @@ public class AnimationHandler {
         this.mPausedAnimators.clear();
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public /* synthetic */ void lambda$new$0(long frameTimeNanos) {
         if (this.mAnimatorRequestors.size() > 0) {
             return;
@@ -193,6 +180,7 @@ public class AnimationHandler {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public AnimationFrameCallbackProvider getProvider() {
         if (this.mProvider == null) {
             this.mProvider = new MyFrameCallbackProvider();
@@ -228,25 +216,19 @@ public class AnimationHandler {
         }
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
     public void doAnimationFrame(long frameTime) {
         long currentTime = SystemClock.uptimeMillis();
         int size = this.mAnimationCallbacks.size();
         for (int i = 0; i < size; i++) {
-            AnimationFrameCallback callback = this.mAnimationCallbacks.get(i);
+            final AnimationFrameCallback callback = this.mAnimationCallbacks.get(i);
             if (callback != null && isCallbackDue(callback, currentTime)) {
                 callback.doAnimationFrame(frameTime);
                 if (this.mCommitCallbacks.contains(callback)) {
                     getProvider().postCommitCallback(new Runnable() { // from class: android.animation.AnimationHandler.2
-                        final /* synthetic */ AnimationFrameCallback val$callback;
-
-                        AnonymousClass2(AnimationFrameCallback callback2) {
-                            callback = callback2;
-                        }
-
                         @Override // java.lang.Runnable
                         public void run() {
-                            AnimationHandler animationHandler = AnimationHandler.this;
-                            animationHandler.commitAnimationFrame(callback, animationHandler.getProvider().getFrameTime());
+                            AnimationHandler.this.commitAnimationFrame(callback, AnimationHandler.this.getProvider().getFrameTime());
                         }
                     });
                 }
@@ -255,22 +237,7 @@ public class AnimationHandler {
         cleanUpList();
     }
 
-    /* renamed from: android.animation.AnimationHandler$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 implements Runnable {
-        final /* synthetic */ AnimationFrameCallback val$callback;
-
-        AnonymousClass2(AnimationFrameCallback callback2) {
-            callback = callback2;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            AnimationHandler animationHandler = AnimationHandler.this;
-            animationHandler.commitAnimationFrame(callback, animationHandler.getProvider().getFrameTime());
-        }
-    }
-
+    /* JADX INFO: Access modifiers changed from: private */
     public void commitAnimationFrame(AnimationFrameCallback callback, long frameTime) {
         if (!this.mDelayedCallbackStartTime.containsKey(callback) && this.mCommitCallbacks.contains(callback)) {
             callback.commitAnimationFrame(frameTime);
@@ -291,7 +258,10 @@ public class AnimationHandler {
     }
 
     public static int getAnimationCount() {
-        AnimationHandler handler = sAnimatorHandler.get();
+        AnimationHandler handler = sTestHandler;
+        if (handler == null) {
+            handler = sAnimatorHandler.get();
+        }
         if (handler == null) {
             return 0;
         }
@@ -306,7 +276,7 @@ public class AnimationHandler {
         return getInstance().getProvider().getFrameDelay();
     }
 
-    public void autoCancelBasedOn(ObjectAnimator objectAnimator) {
+    void autoCancelBasedOn(ObjectAnimator objectAnimator) {
         for (int i = this.mAnimationCallbacks.size() - 1; i >= 0; i--) {
             AnimationFrameCallback cb = this.mAnimationCallbacks.get(i);
             if (cb != null && objectAnimator.shouldAutoCancel(cb)) {
@@ -337,13 +307,8 @@ public class AnimationHandler {
         return count;
     }
 
-    /* loaded from: classes.dex */
-    public class MyFrameCallbackProvider implements AnimationFrameCallbackProvider {
+    private class MyFrameCallbackProvider implements AnimationFrameCallbackProvider {
         final Choreographer mChoreographer;
-
-        /* synthetic */ MyFrameCallbackProvider(AnimationHandler animationHandler, MyFrameCallbackProviderIA myFrameCallbackProviderIA) {
-            this();
-        }
 
         private MyFrameCallbackProvider() {
             this.mChoreographer = Choreographer.getInstance();

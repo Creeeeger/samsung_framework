@@ -13,24 +13,19 @@ import java.util.Objects;
 public final class RecoveryCertPath implements Parcelable {
     private static final String CERT_PATH_ENCODING = "PkiPath";
     public static final Parcelable.Creator<RecoveryCertPath> CREATOR = new Parcelable.Creator<RecoveryCertPath>() { // from class: android.security.keystore.recovery.RecoveryCertPath.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecoveryCertPath createFromParcel(Parcel in) {
             return new RecoveryCertPath(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public RecoveryCertPath[] newArray(int length) {
             return new RecoveryCertPath[length];
         }
     };
     private final byte[] mEncodedCertPath;
-
-    /* synthetic */ RecoveryCertPath(Parcel parcel, RecoveryCertPathIA recoveryCertPathIA) {
-        this(parcel);
-    }
 
     public static RecoveryCertPath createRecoveryCertPath(CertPath certPath) throws CertificateException {
         try {
@@ -50,23 +45,6 @@ public final class RecoveryCertPath implements Parcelable {
 
     private RecoveryCertPath(Parcel in) {
         this.mEncodedCertPath = in.createByteArray();
-    }
-
-    /* renamed from: android.security.keystore.recovery.RecoveryCertPath$1 */
-    /* loaded from: classes3.dex */
-    class AnonymousClass1 implements Parcelable.Creator<RecoveryCertPath> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecoveryCertPath createFromParcel(Parcel in) {
-            return new RecoveryCertPath(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public RecoveryCertPath[] newArray(int length) {
-            return new RecoveryCertPath[length];
-        }
     }
 
     @Override // android.os.Parcelable

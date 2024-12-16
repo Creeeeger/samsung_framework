@@ -100,7 +100,11 @@ public final class PackageUtils {
             try {
                 DigestInputStream digestInputStream = new DigestInputStream(new FileInputStream(f), messageDigest);
                 do {
+                    try {
+                    } finally {
+                    }
                 } while (digestInputStream.read(fileBuffer) != -1);
+                digestInputStream.close();
                 return messageDigest.digest();
             } catch (IOException e) {
                 e.printStackTrace();

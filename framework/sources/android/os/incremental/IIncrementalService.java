@@ -83,7 +83,6 @@ public interface IIncrementalService extends IInterface {
 
     boolean waitForNativeBinariesExtraction(int i) throws RemoteException;
 
-    /* loaded from: classes3.dex */
     public static class Default implements IIncrementalService {
         @Override // android.os.incremental.IIncrementalService
         public int openStorage(String path) throws RemoteException {
@@ -213,7 +212,6 @@ public interface IIncrementalService extends IInterface {
         }
     }
 
-    /* loaded from: classes3.dex */
     public static abstract class Stub extends Binder implements IIncrementalService {
         static final int TRANSACTION_configureNativeBinaries = 21;
         static final int TRANSACTION_createLinkedStorage = 3;
@@ -328,228 +326,224 @@ public interface IIncrementalService extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(IIncrementalService.DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(IIncrementalService.DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(IIncrementalService.DESCRIPTOR);
+                case 1:
+                    String _arg0 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result = openStorage(_arg0);
+                    reply.writeNoException();
+                    reply.writeInt(_result);
+                    return true;
+                case 2:
+                    String _arg02 = data.readString();
+                    DataLoaderParamsParcel _arg1 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
+                    int _arg2 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result2 = createStorage(_arg02, _arg1, _arg2);
+                    reply.writeNoException();
+                    reply.writeInt(_result2);
+                    return true;
+                case 3:
+                    String _arg03 = data.readString();
+                    int _arg12 = data.readInt();
+                    int _arg22 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result3 = createLinkedStorage(_arg03, _arg12, _arg22);
+                    reply.writeNoException();
+                    reply.writeInt(_result3);
+                    return true;
+                case 4:
+                    int _arg04 = data.readInt();
+                    DataLoaderParamsParcel _arg13 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
+                    IDataLoaderStatusListener _arg23 = IDataLoaderStatusListener.Stub.asInterface(data.readStrongBinder());
+                    StorageHealthCheckParams _arg3 = (StorageHealthCheckParams) data.readTypedObject(StorageHealthCheckParams.CREATOR);
+                    IStorageHealthListener _arg4 = IStorageHealthListener.Stub.asInterface(data.readStrongBinder());
+                    PerUidReadTimeouts[] _arg5 = (PerUidReadTimeouts[]) data.createTypedArray(PerUidReadTimeouts.CREATOR);
+                    data.enforceNoDataAvail();
+                    boolean _result4 = startLoading(_arg04, _arg13, _arg23, _arg3, _arg4, _arg5);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result4);
+                    return true;
+                case 5:
+                    int _arg05 = data.readInt();
+                    data.enforceNoDataAvail();
+                    onInstallationComplete(_arg05);
+                    reply.writeNoException();
+                    return true;
+                case 6:
+                    int _arg06 = data.readInt();
+                    String _arg14 = data.readString();
+                    String _arg24 = data.readString();
+                    int _arg32 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result5 = makeBindMount(_arg06, _arg14, _arg24, _arg32);
+                    reply.writeNoException();
+                    reply.writeInt(_result5);
+                    return true;
+                case 7:
+                    int _arg07 = data.readInt();
+                    String _arg15 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result6 = deleteBindMount(_arg07, _arg15);
+                    reply.writeNoException();
+                    reply.writeInt(_result6);
+                    return true;
+                case 8:
+                    int _arg08 = data.readInt();
+                    String _arg16 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result7 = makeDirectory(_arg08, _arg16);
+                    reply.writeNoException();
+                    reply.writeInt(_result7);
+                    return true;
+                case 9:
+                    int _arg09 = data.readInt();
+                    String _arg17 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result8 = makeDirectories(_arg09, _arg17);
+                    reply.writeNoException();
+                    reply.writeInt(_result8);
+                    return true;
+                case 10:
+                    int _arg010 = data.readInt();
+                    String _arg18 = data.readString();
+                    int _arg25 = data.readInt();
+                    IncrementalNewFileParams _arg33 = (IncrementalNewFileParams) data.readTypedObject(IncrementalNewFileParams.CREATOR);
+                    byte[] _arg42 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    int _result9 = makeFile(_arg010, _arg18, _arg25, _arg33, _arg42);
+                    reply.writeNoException();
+                    reply.writeInt(_result9);
+                    return true;
+                case 11:
+                    int _arg011 = data.readInt();
+                    String _arg19 = data.readString();
+                    String _arg26 = data.readString();
+                    long _arg34 = data.readLong();
+                    long _arg43 = data.readLong();
+                    data.enforceNoDataAvail();
+                    int _result10 = makeFileFromRange(_arg011, _arg19, _arg26, _arg34, _arg43);
+                    reply.writeNoException();
+                    reply.writeInt(_result10);
+                    return true;
+                case 12:
+                    int _arg012 = data.readInt();
+                    String _arg110 = data.readString();
+                    int _arg27 = data.readInt();
+                    String _arg35 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result11 = makeLink(_arg012, _arg110, _arg27, _arg35);
+                    reply.writeNoException();
+                    reply.writeInt(_result11);
+                    return true;
+                case 13:
+                    int _arg013 = data.readInt();
+                    String _arg111 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result12 = unlink(_arg013, _arg111);
+                    reply.writeNoException();
+                    reply.writeInt(_result12);
+                    return true;
+                case 14:
+                    int _arg014 = data.readInt();
+                    String _arg112 = data.readString();
+                    data.enforceNoDataAvail();
+                    int _result13 = isFileFullyLoaded(_arg014, _arg112);
+                    reply.writeNoException();
+                    reply.writeInt(_result13);
+                    return true;
+                case 15:
+                    int _arg015 = data.readInt();
+                    data.enforceNoDataAvail();
+                    int _result14 = isFullyLoaded(_arg015);
+                    reply.writeNoException();
+                    reply.writeInt(_result14);
+                    return true;
+                case 16:
+                    int _arg016 = data.readInt();
+                    data.enforceNoDataAvail();
+                    float _result15 = getLoadingProgress(_arg016);
+                    reply.writeNoException();
+                    reply.writeFloat(_result15);
+                    return true;
+                case 17:
+                    int _arg017 = data.readInt();
+                    String _arg113 = data.readString();
+                    data.enforceNoDataAvail();
+                    byte[] _result16 = getMetadataByPath(_arg017, _arg113);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result16);
+                    return true;
+                case 18:
+                    int _arg018 = data.readInt();
+                    byte[] _arg114 = data.createByteArray();
+                    data.enforceNoDataAvail();
+                    byte[] _result17 = getMetadataById(_arg018, _arg114);
+                    reply.writeNoException();
+                    reply.writeByteArray(_result17);
+                    return true;
+                case 19:
+                    int _arg019 = data.readInt();
+                    data.enforceNoDataAvail();
+                    deleteStorage(_arg019);
+                    reply.writeNoException();
+                    return true;
+                case 20:
+                    int _arg020 = data.readInt();
+                    data.enforceNoDataAvail();
+                    disallowReadLogs(_arg020);
+                    reply.writeNoException();
+                    return true;
+                case 21:
+                    int _arg021 = data.readInt();
+                    String _arg115 = data.readString();
+                    String _arg28 = data.readString();
+                    String _arg36 = data.readString();
+                    boolean _arg44 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    boolean _result18 = configureNativeBinaries(_arg021, _arg115, _arg28, _arg36, _arg44);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result18);
+                    return true;
+                case 22:
+                    int _arg022 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result19 = waitForNativeBinariesExtraction(_arg022);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result19);
+                    return true;
+                case 23:
+                    int _arg023 = data.readInt();
+                    IStorageLoadingProgressListener _arg116 = IStorageLoadingProgressListener.Stub.asInterface(data.readStrongBinder());
+                    data.enforceNoDataAvail();
+                    boolean _result20 = registerLoadingProgressListener(_arg023, _arg116);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result20);
+                    return true;
+                case 24:
+                    int _arg024 = data.readInt();
+                    data.enforceNoDataAvail();
+                    boolean _result21 = unregisterLoadingProgressListener(_arg024);
+                    reply.writeNoException();
+                    reply.writeBoolean(_result21);
+                    return true;
+                case 25:
+                    int _arg025 = data.readInt();
+                    data.enforceNoDataAvail();
+                    PersistableBundle _result22 = getMetrics(_arg025);
+                    reply.writeNoException();
+                    reply.writeTypedObject(_result22, 1);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            String _arg0 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result = openStorage(_arg0);
-                            reply.writeNoException();
-                            reply.writeInt(_result);
-                            return true;
-                        case 2:
-                            String _arg02 = data.readString();
-                            DataLoaderParamsParcel _arg1 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
-                            int _arg2 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result2 = createStorage(_arg02, _arg1, _arg2);
-                            reply.writeNoException();
-                            reply.writeInt(_result2);
-                            return true;
-                        case 3:
-                            String _arg03 = data.readString();
-                            int _arg12 = data.readInt();
-                            int _arg22 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result3 = createLinkedStorage(_arg03, _arg12, _arg22);
-                            reply.writeNoException();
-                            reply.writeInt(_result3);
-                            return true;
-                        case 4:
-                            int _arg04 = data.readInt();
-                            DataLoaderParamsParcel _arg13 = (DataLoaderParamsParcel) data.readTypedObject(DataLoaderParamsParcel.CREATOR);
-                            IDataLoaderStatusListener _arg23 = IDataLoaderStatusListener.Stub.asInterface(data.readStrongBinder());
-                            StorageHealthCheckParams _arg3 = (StorageHealthCheckParams) data.readTypedObject(StorageHealthCheckParams.CREATOR);
-                            IStorageHealthListener _arg4 = IStorageHealthListener.Stub.asInterface(data.readStrongBinder());
-                            PerUidReadTimeouts[] _arg5 = (PerUidReadTimeouts[]) data.createTypedArray(PerUidReadTimeouts.CREATOR);
-                            data.enforceNoDataAvail();
-                            boolean _result4 = startLoading(_arg04, _arg13, _arg23, _arg3, _arg4, _arg5);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result4);
-                            return true;
-                        case 5:
-                            int _arg05 = data.readInt();
-                            data.enforceNoDataAvail();
-                            onInstallationComplete(_arg05);
-                            reply.writeNoException();
-                            return true;
-                        case 6:
-                            int _arg06 = data.readInt();
-                            String _arg14 = data.readString();
-                            String _arg24 = data.readString();
-                            int _arg32 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result5 = makeBindMount(_arg06, _arg14, _arg24, _arg32);
-                            reply.writeNoException();
-                            reply.writeInt(_result5);
-                            return true;
-                        case 7:
-                            int _arg07 = data.readInt();
-                            String _arg15 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result6 = deleteBindMount(_arg07, _arg15);
-                            reply.writeNoException();
-                            reply.writeInt(_result6);
-                            return true;
-                        case 8:
-                            int _arg08 = data.readInt();
-                            String _arg16 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result7 = makeDirectory(_arg08, _arg16);
-                            reply.writeNoException();
-                            reply.writeInt(_result7);
-                            return true;
-                        case 9:
-                            int _arg09 = data.readInt();
-                            String _arg17 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result8 = makeDirectories(_arg09, _arg17);
-                            reply.writeNoException();
-                            reply.writeInt(_result8);
-                            return true;
-                        case 10:
-                            int _arg010 = data.readInt();
-                            String _arg18 = data.readString();
-                            int _arg25 = data.readInt();
-                            IncrementalNewFileParams _arg33 = (IncrementalNewFileParams) data.readTypedObject(IncrementalNewFileParams.CREATOR);
-                            byte[] _arg42 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            int _result9 = makeFile(_arg010, _arg18, _arg25, _arg33, _arg42);
-                            reply.writeNoException();
-                            reply.writeInt(_result9);
-                            return true;
-                        case 11:
-                            int _arg011 = data.readInt();
-                            String _arg19 = data.readString();
-                            String _arg26 = data.readString();
-                            long _arg34 = data.readLong();
-                            long _arg43 = data.readLong();
-                            data.enforceNoDataAvail();
-                            int _result10 = makeFileFromRange(_arg011, _arg19, _arg26, _arg34, _arg43);
-                            reply.writeNoException();
-                            reply.writeInt(_result10);
-                            return true;
-                        case 12:
-                            int _arg012 = data.readInt();
-                            String _arg110 = data.readString();
-                            int _arg27 = data.readInt();
-                            String _arg35 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result11 = makeLink(_arg012, _arg110, _arg27, _arg35);
-                            reply.writeNoException();
-                            reply.writeInt(_result11);
-                            return true;
-                        case 13:
-                            int _arg013 = data.readInt();
-                            String _arg111 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result12 = unlink(_arg013, _arg111);
-                            reply.writeNoException();
-                            reply.writeInt(_result12);
-                            return true;
-                        case 14:
-                            int _arg014 = data.readInt();
-                            String _arg112 = data.readString();
-                            data.enforceNoDataAvail();
-                            int _result13 = isFileFullyLoaded(_arg014, _arg112);
-                            reply.writeNoException();
-                            reply.writeInt(_result13);
-                            return true;
-                        case 15:
-                            int _arg015 = data.readInt();
-                            data.enforceNoDataAvail();
-                            int _result14 = isFullyLoaded(_arg015);
-                            reply.writeNoException();
-                            reply.writeInt(_result14);
-                            return true;
-                        case 16:
-                            int _arg016 = data.readInt();
-                            data.enforceNoDataAvail();
-                            float _result15 = getLoadingProgress(_arg016);
-                            reply.writeNoException();
-                            reply.writeFloat(_result15);
-                            return true;
-                        case 17:
-                            int _arg017 = data.readInt();
-                            String _arg113 = data.readString();
-                            data.enforceNoDataAvail();
-                            byte[] _result16 = getMetadataByPath(_arg017, _arg113);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result16);
-                            return true;
-                        case 18:
-                            int _arg018 = data.readInt();
-                            byte[] _arg114 = data.createByteArray();
-                            data.enforceNoDataAvail();
-                            byte[] _result17 = getMetadataById(_arg018, _arg114);
-                            reply.writeNoException();
-                            reply.writeByteArray(_result17);
-                            return true;
-                        case 19:
-                            int _arg019 = data.readInt();
-                            data.enforceNoDataAvail();
-                            deleteStorage(_arg019);
-                            reply.writeNoException();
-                            return true;
-                        case 20:
-                            int _arg020 = data.readInt();
-                            data.enforceNoDataAvail();
-                            disallowReadLogs(_arg020);
-                            reply.writeNoException();
-                            return true;
-                        case 21:
-                            int _arg021 = data.readInt();
-                            String _arg115 = data.readString();
-                            String _arg28 = data.readString();
-                            String _arg36 = data.readString();
-                            boolean _arg44 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            boolean _result18 = configureNativeBinaries(_arg021, _arg115, _arg28, _arg36, _arg44);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result18);
-                            return true;
-                        case 22:
-                            int _arg022 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result19 = waitForNativeBinariesExtraction(_arg022);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result19);
-                            return true;
-                        case 23:
-                            int _arg023 = data.readInt();
-                            IStorageLoadingProgressListener _arg116 = IStorageLoadingProgressListener.Stub.asInterface(data.readStrongBinder());
-                            data.enforceNoDataAvail();
-                            boolean _result20 = registerLoadingProgressListener(_arg023, _arg116);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result20);
-                            return true;
-                        case 24:
-                            int _arg024 = data.readInt();
-                            data.enforceNoDataAvail();
-                            boolean _result21 = unregisterLoadingProgressListener(_arg024);
-                            reply.writeNoException();
-                            reply.writeBoolean(_result21);
-                            return true;
-                        case 25:
-                            int _arg025 = data.readInt();
-                            data.enforceNoDataAvail();
-                            PersistableBundle _result22 = getMetrics(_arg025);
-                            reply.writeNoException();
-                            reply.writeTypedObject(_result22, 1);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes3.dex */
-        public static class Proxy implements IIncrementalService {
+        private static class Proxy implements IIncrementalService {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

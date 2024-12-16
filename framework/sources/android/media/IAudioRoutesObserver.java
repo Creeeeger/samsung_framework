@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IAudioRoutesObserver extends IInterface {
     void dispatchAudioRoutesChanged(AudioRoutesInfo audioRoutesInfo) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IAudioRoutesObserver {
         @Override // android.media.IAudioRoutesObserver
         public void dispatchAudioRoutesChanged(AudioRoutesInfo newRoutes) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IAudioRoutesObserver extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IAudioRoutesObserver {
         public static final String DESCRIPTOR = "android.media.IAudioRoutesObserver";
         static final int TRANSACTION_dispatchAudioRoutesChanged = 1;
@@ -66,25 +64,22 @@ public interface IAudioRoutesObserver extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    AudioRoutesInfo _arg0 = (AudioRoutesInfo) data.readTypedObject(AudioRoutesInfo.CREATOR);
+                    data.enforceNoDataAvail();
+                    dispatchAudioRoutesChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            AudioRoutesInfo _arg0 = (AudioRoutesInfo) data.readTypedObject(AudioRoutesInfo.CREATOR);
-                            data.enforceNoDataAvail();
-                            dispatchAudioRoutesChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IAudioRoutesObserver {
+        private static class Proxy implements IAudioRoutesObserver {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

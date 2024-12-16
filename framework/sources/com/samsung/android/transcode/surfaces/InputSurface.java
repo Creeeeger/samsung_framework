@@ -9,7 +9,7 @@ import android.opengl.EGLSurface;
 import android.view.Surface;
 import com.samsung.android.transcode.util.LogS;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class InputSurface {
     private static final int EGL_OPENGL_ES2_BIT = 4;
     private static final int EGL_RECORDABLE_ANDROID = 12610;
@@ -27,9 +27,8 @@ public class InputSurface {
     }
 
     private void eglSetup() {
-        EGLDisplay eglGetDisplay = EGL14.eglGetDisplay(0);
-        this.mEGLDisplay = eglGetDisplay;
-        if (eglGetDisplay == EGL14.EGL_NO_DISPLAY) {
+        this.mEGLDisplay = EGL14.eglGetDisplay(0);
+        if (this.mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             throw new RuntimeException("unable to get EGL14 display");
         }
         int[] version = new int[2];
@@ -64,9 +63,8 @@ public class InputSurface {
         }
         EGL14.eglDestroySurface(this.mEGLDisplay, this.mEGLSurface);
         EGL14.eglDestroyContext(this.mEGLDisplay, this.mEGLContext);
-        Surface surface = this.mSurface;
-        if (surface != null) {
-            surface.release();
+        if (this.mSurface != null) {
+            this.mSurface.release();
         }
         this.mEGLDisplay = null;
         this.mEGLContext = null;
@@ -75,9 +73,7 @@ public class InputSurface {
     }
 
     public void makeCurrent() {
-        EGLDisplay eGLDisplay = this.mEGLDisplay;
-        EGLSurface eGLSurface = this.mEGLSurface;
-        if (!EGL14.eglMakeCurrent(eGLDisplay, eGLSurface, eGLSurface, this.mEGLContext)) {
+        if (!EGL14.eglMakeCurrent(this.mEGLDisplay, this.mEGLSurface, this.mEGLSurface, this.mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent failed");
         }
     }

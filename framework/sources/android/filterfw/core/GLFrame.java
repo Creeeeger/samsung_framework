@@ -64,19 +64,19 @@ public class GLFrame extends Frame {
 
     private native boolean setNativeViewport(int i, int i2, int i3, int i4);
 
-    public GLFrame(FrameFormat format, FrameManager frameManager) {
+    GLFrame(FrameFormat format, FrameManager frameManager) {
         super(format, frameManager);
         this.glFrameId = -1;
         this.mOwnsTexture = true;
     }
 
-    public GLFrame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
+    GLFrame(FrameFormat format, FrameManager frameManager, int bindingType, long bindingId) {
         super(format, frameManager, bindingType, bindingId);
         this.glFrameId = -1;
         this.mOwnsTexture = true;
     }
 
-    public void init(GLEnvironment glEnv) {
+    void init(GLEnvironment glEnv) {
         FrameFormat format = getFormat();
         this.mGLEnvironment = glEnv;
         if (format.getBytesPerSample() != 4) {
@@ -147,12 +147,12 @@ public class GLFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized boolean hasNativeAllocation() {
+    protected synchronized boolean hasNativeAllocation() {
         return this.glFrameId != -1;
     }
 
     @Override // android.filterfw.core.Frame
-    public synchronized void releaseNativeAllocation() {
+    protected synchronized void releaseNativeAllocation() {
         nativeDeallocate();
         this.glFrameId = -1;
     }
@@ -307,7 +307,7 @@ public class GLFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public void reset(FrameFormat newFormat) {
+    protected void reset(FrameFormat newFormat) {
         if (!nativeResetParams()) {
             throw new RuntimeException("Could not reset GLFrame texture parameters!");
         }
@@ -315,14 +315,14 @@ public class GLFrame extends Frame {
     }
 
     @Override // android.filterfw.core.Frame
-    public void onFrameStore() {
+    protected void onFrameStore() {
         if (!this.mOwnsTexture) {
             nativeDetachTexFromFbo();
         }
     }
 
     @Override // android.filterfw.core.Frame
-    public void onFrameFetch() {
+    protected void onFrameFetch() {
         if (!this.mOwnsTexture) {
             nativeReattachTexToFbo();
         }

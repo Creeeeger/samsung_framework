@@ -51,25 +51,20 @@ public class MtuUtils {
         for (ChildSaProposal proposal : childProposals) {
             for (Pair<Integer, Integer> encryptionAlgoPair : proposal.getEncryptionAlgorithms()) {
                 int algo = encryptionAlgoPair.first.intValue();
-                Map<Integer, Integer> map = AUTHCRYPT_ALGORITHM_OVERHEAD;
-                if (map.containsKey(Integer.valueOf(algo))) {
-                    maxAuthCryptOverhead = Math.max(maxAuthCryptOverhead, map.get(Integer.valueOf(algo)).intValue());
+                if (AUTHCRYPT_ALGORITHM_OVERHEAD.containsKey(Integer.valueOf(algo))) {
+                    maxAuthCryptOverhead = Math.max(maxAuthCryptOverhead, AUTHCRYPT_ALGORITHM_OVERHEAD.get(Integer.valueOf(algo)).intValue());
+                } else if (CRYPT_ALGORITHM_OVERHEAD.containsKey(Integer.valueOf(algo))) {
+                    maxCryptOverhead = Math.max(maxCryptOverhead, CRYPT_ALGORITHM_OVERHEAD.get(Integer.valueOf(algo)).intValue());
                 } else {
-                    Map<Integer, Integer> map2 = CRYPT_ALGORITHM_OVERHEAD;
-                    if (map2.containsKey(Integer.valueOf(algo))) {
-                        maxCryptOverhead = Math.max(maxCryptOverhead, map2.get(Integer.valueOf(algo)).intValue());
-                    } else {
-                        Slog.wtf(TAG, "Unknown encryption algorithm requested: " + algo);
-                        return 1280;
-                    }
+                    Slog.wtf(TAG, "Unknown encryption algorithm requested: " + algo);
+                    return 1280;
                 }
             }
             Iterator<Integer> it = proposal.getIntegrityAlgorithms().iterator();
             while (it.hasNext()) {
                 int algo2 = it.next().intValue();
-                Map<Integer, Integer> map3 = AUTH_ALGORITHM_OVERHEAD;
-                if (map3.containsKey(Integer.valueOf(algo2))) {
-                    maxAuthOverhead = Math.max(maxAuthOverhead, map3.get(Integer.valueOf(algo2)).intValue());
+                if (AUTH_ALGORITHM_OVERHEAD.containsKey(Integer.valueOf(algo2))) {
+                    maxAuthOverhead = Math.max(maxAuthOverhead, AUTH_ALGORITHM_OVERHEAD.get(Integer.valueOf(algo2)).intValue());
                 } else {
                     Slog.wtf(TAG, "Unknown integrity algorithm requested: " + algo2);
                     return 1280;

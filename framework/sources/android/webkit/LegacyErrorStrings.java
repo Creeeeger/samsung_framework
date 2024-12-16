@@ -11,47 +11,48 @@ class LegacyErrorStrings {
     private LegacyErrorStrings() {
     }
 
-    public static String getString(int errorCode, Context context) {
+    static String getString(int errorCode, Context context) {
         return context.getText(getResource(errorCode)).toString();
     }
 
     private static int getResource(int errorCode) {
         switch (errorCode) {
             case -15:
-                return R.string.httpErrorTooManyRequests;
+                break;
             case -14:
-                return R.string.httpErrorFileNotFound;
+                break;
             case -13:
-                return R.string.httpErrorFile;
+                break;
             case -12:
-                return 17039367;
+                break;
             case -11:
-                return R.string.httpErrorFailedSslHandshake;
+                break;
             case -10:
-                return 17039368;
+                break;
             case -9:
-                return R.string.httpErrorRedirectLoop;
+                break;
             case -8:
-                return R.string.httpErrorTimeout;
+                break;
             case -7:
-                return R.string.httpErrorIO;
+                break;
             case -6:
-                return R.string.httpErrorConnect;
+                break;
             case -5:
-                return R.string.httpErrorProxyAuth;
+                break;
             case -4:
-                return R.string.httpErrorAuth;
+                break;
             case -3:
-                return R.string.httpErrorUnsupportedAuthScheme;
+                break;
             case -2:
-                return R.string.httpErrorLookup;
+                break;
             case -1:
-                return R.string.httpError;
+                break;
             case 0:
-                return R.string.httpErrorOk;
+                break;
             default:
                 Log.w(LOGTAG, "Using generic message for unknown error code: " + errorCode);
-                return R.string.httpError;
+                break;
         }
+        return R.string.httpError;
     }
 }

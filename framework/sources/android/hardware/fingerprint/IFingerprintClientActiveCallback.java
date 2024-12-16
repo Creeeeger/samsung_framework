@@ -10,7 +10,6 @@ import android.os.RemoteException;
 public interface IFingerprintClientActiveCallback extends IInterface {
     void onClientActiveChanged(boolean z) throws RemoteException;
 
-    /* loaded from: classes2.dex */
     public static class Default implements IFingerprintClientActiveCallback {
         @Override // android.hardware.fingerprint.IFingerprintClientActiveCallback
         public void onClientActiveChanged(boolean isActive) throws RemoteException {
@@ -22,7 +21,6 @@ public interface IFingerprintClientActiveCallback extends IInterface {
         }
     }
 
-    /* loaded from: classes2.dex */
     public static abstract class Stub extends Binder implements IFingerprintClientActiveCallback {
         public static final String DESCRIPTOR = "android.hardware.fingerprint.IFingerprintClientActiveCallback";
         static final int TRANSACTION_onClientActiveChanged = 1;
@@ -66,26 +64,22 @@ public interface IFingerprintClientActiveCallback extends IInterface {
             if (code >= 1 && code <= 16777215) {
                 data.enforceInterface(DESCRIPTOR);
             }
+            if (code == 1598968902) {
+                reply.writeString(DESCRIPTOR);
+                return true;
+            }
             switch (code) {
-                case IBinder.INTERFACE_TRANSACTION /* 1598968902 */:
-                    reply.writeString(DESCRIPTOR);
+                case 1:
+                    boolean _arg0 = data.readBoolean();
+                    data.enforceNoDataAvail();
+                    onClientActiveChanged(_arg0);
                     return true;
                 default:
-                    switch (code) {
-                        case 1:
-                            boolean _arg0 = data.readBoolean();
-                            data.enforceNoDataAvail();
-                            onClientActiveChanged(_arg0);
-                            return true;
-                        default:
-                            return super.onTransact(code, data, reply, flags);
-                    }
+                    return super.onTransact(code, data, reply, flags);
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        /* loaded from: classes2.dex */
-        public static class Proxy implements IFingerprintClientActiveCallback {
+        private static class Proxy implements IFingerprintClientActiveCallback {
             private IBinder mRemote;
 
             Proxy(IBinder remote) {

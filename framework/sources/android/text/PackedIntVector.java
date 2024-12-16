@@ -3,13 +3,13 @@ package android.text;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.GrowingArrayUtils;
 
-/* loaded from: classes3.dex */
+/* loaded from: classes4.dex */
 public class PackedIntVector {
     private final int mColumns;
     private int[] mValueGap;
     private int mRows = 0;
     private int mRowGapStart = 0;
-    private int mRowGapLength = 0;
+    private int mRowGapLength = this.mRows;
     private int[] mValues = null;
 
     public PackedIntVector(int columns) {
@@ -34,8 +34,7 @@ public class PackedIntVector {
     }
 
     public void setValue(int row, int column, int value) {
-        int i;
-        if ((row | column) < 0 || row >= size() || column >= (i = this.mColumns)) {
+        if ((row | column) < 0 || row >= size() || column >= this.mColumns) {
             throw new IndexOutOfBoundsException(row + ", " + column);
         }
         if (row >= this.mRowGapStart) {
@@ -43,9 +42,9 @@ public class PackedIntVector {
         }
         int[] valuegap = this.mValueGap;
         if (row >= valuegap[column]) {
-            value -= valuegap[column + i];
+            value -= valuegap[this.mColumns + column];
         }
-        this.mValues[(i * row) + column] = value;
+        this.mValues[(this.mColumns * row) + column] = value;
     }
 
     private void setValueInternal(int row, int column, int value) {
@@ -120,9 +119,8 @@ public class PackedIntVector {
         int[] valuegap = this.mValueGap;
         int rowgapstart = this.mRowGapStart;
         int after = this.mRows - (this.mRowGapLength + rowgapstart);
-        int[] iArr = this.mValues;
-        if (iArr != null) {
-            System.arraycopy(iArr, 0, newvalues, 0, columns * rowgapstart);
+        if (this.mValues != null) {
+            System.arraycopy(this.mValues, 0, newvalues, 0, columns * rowgapstart);
             System.arraycopy(this.mValues, (this.mRows - after) * columns, newvalues, (newsize - after) * columns, after * columns);
         }
         for (int i = 0; i < columns; i++) {
@@ -161,22 +159,20 @@ public class PackedIntVector {
     }
 
     private final void moveRowGapTo(int where) {
-        int i = this.mRowGapStart;
-        if (where == i) {
+        if (where == this.mRowGapStart) {
             return;
         }
-        if (where > i) {
-            int i2 = this.mRowGapLength;
-            int moving = (where + i2) - (i + i2);
+        if (where > this.mRowGapStart) {
+            int moving = (this.mRowGapLength + where) - (this.mRowGapStart + this.mRowGapLength);
             int columns = this.mColumns;
             int[] valuegap = this.mValueGap;
             int[] values = this.mValues;
-            int gapend = i + i2;
-            for (int i3 = gapend; i3 < gapend + moving; i3++) {
-                int destrow = (i3 - gapend) + this.mRowGapStart;
+            int gapend = this.mRowGapStart + this.mRowGapLength;
+            for (int i = gapend; i < gapend + moving; i++) {
+                int destrow = (i - gapend) + this.mRowGapStart;
                 for (int j = 0; j < columns; j++) {
-                    int val = values[(i3 * columns) + j];
-                    if (i3 >= valuegap[j]) {
+                    int val = values[(i * columns) + j];
+                    if (i >= valuegap[j]) {
                         val += valuegap[j + columns];
                     }
                     if (destrow >= valuegap[j]) {
@@ -186,16 +182,16 @@ public class PackedIntVector {
                 }
             }
         } else {
-            int moving2 = i - where;
+            int moving2 = this.mRowGapStart - where;
             int columns2 = this.mColumns;
             int[] valuegap2 = this.mValueGap;
             int[] values2 = this.mValues;
-            int gapend2 = i + this.mRowGapLength;
-            for (int i4 = (where + moving2) - 1; i4 >= where; i4--) {
-                int destrow2 = ((i4 - where) + gapend2) - moving2;
+            int gapend2 = this.mRowGapStart + this.mRowGapLength;
+            for (int i2 = (where + moving2) - 1; i2 >= where; i2--) {
+                int destrow2 = ((i2 - where) + gapend2) - moving2;
                 for (int j2 = 0; j2 < columns2; j2++) {
-                    int val2 = values2[(i4 * columns2) + j2];
-                    if (i4 >= valuegap2[j2]) {
+                    int val2 = values2[(i2 * columns2) + j2];
+                    if (i2 >= valuegap2[j2]) {
                         val2 += valuegap2[j2 + columns2];
                     }
                     if (destrow2 >= valuegap2[j2]) {

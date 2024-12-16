@@ -31,7 +31,7 @@ public class MediaFrameworkPlatformInitializer {
         });
     }
 
-    public static /* synthetic */ MediaSessionManager lambda$registerServiceWrappers$0(Context context) {
+    static /* synthetic */ MediaSessionManager lambda$registerServiceWrappers$0(Context context) {
         return new MediaSessionManager(context);
     }
 }

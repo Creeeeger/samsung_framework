@@ -8,48 +8,42 @@ import android.os.Parcelable;
 /* loaded from: classes4.dex */
 public final class TaskFragmentCreationParams implements Parcelable {
     public static final Parcelable.Creator<TaskFragmentCreationParams> CREATOR = new Parcelable.Creator<TaskFragmentCreationParams>() { // from class: android.window.TaskFragmentCreationParams.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentCreationParams createFromParcel(Parcel in) {
             return new TaskFragmentCreationParams(in);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public TaskFragmentCreationParams[] newArray(int size) {
             return new TaskFragmentCreationParams[size];
         }
     };
+    private final boolean mAllowTransitionWhenEmpty;
     private final IBinder mFragmentToken;
     private final Rect mInitialRelativeBounds;
     private final TaskFragmentOrganizerToken mOrganizer;
+    private final int mOverrideOrientation;
     private final IBinder mOwnerToken;
     private final IBinder mPairedActivityToken;
     private final IBinder mPairedPrimaryFragmentToken;
     private final int mWindowingMode;
 
-    /* synthetic */ TaskFragmentCreationParams(Parcel parcel, TaskFragmentCreationParamsIA taskFragmentCreationParamsIA) {
-        this(parcel);
-    }
-
-    /* synthetic */ TaskFragmentCreationParams(TaskFragmentOrganizerToken taskFragmentOrganizerToken, IBinder iBinder, IBinder iBinder2, Rect rect, int i, IBinder iBinder3, IBinder iBinder4, TaskFragmentCreationParamsIA taskFragmentCreationParamsIA) {
-        this(taskFragmentOrganizerToken, iBinder, iBinder2, rect, i, iBinder3, iBinder4);
-    }
-
-    private TaskFragmentCreationParams(TaskFragmentOrganizerToken organizer, IBinder fragmentToken, IBinder ownerToken, Rect initialRelativeBounds, int windowingMode, IBinder pairedPrimaryFragmentToken, IBinder pairedActivityToken) {
-        Rect rect = new Rect();
-        this.mInitialRelativeBounds = rect;
+    private TaskFragmentCreationParams(TaskFragmentOrganizerToken organizer, IBinder fragmentToken, IBinder ownerToken, Rect initialRelativeBounds, int windowingMode, IBinder pairedPrimaryFragmentToken, IBinder pairedActivityToken, boolean allowTransitionWhenEmpty, int overrideOrientation) {
+        this.mInitialRelativeBounds = new Rect();
         if (pairedPrimaryFragmentToken != null && pairedActivityToken != null) {
             throw new IllegalArgumentException("pairedPrimaryFragmentToken and pairedActivityToken should not be set at the same time.");
         }
         this.mOrganizer = organizer;
         this.mFragmentToken = fragmentToken;
         this.mOwnerToken = ownerToken;
-        rect.set(initialRelativeBounds);
+        this.mInitialRelativeBounds.set(initialRelativeBounds);
         this.mWindowingMode = windowingMode;
         this.mPairedPrimaryFragmentToken = pairedPrimaryFragmentToken;
         this.mPairedActivityToken = pairedActivityToken;
+        this.mAllowTransitionWhenEmpty = allowTransitionWhenEmpty;
+        this.mOverrideOrientation = overrideOrientation;
     }
 
     public TaskFragmentOrganizerToken getOrganizer() {
@@ -80,16 +74,25 @@ public final class TaskFragmentCreationParams implements Parcelable {
         return this.mPairedActivityToken;
     }
 
+    public boolean getAllowTransitionWhenEmpty() {
+        return this.mAllowTransitionWhenEmpty;
+    }
+
+    public int getOverrideOrientation() {
+        return this.mOverrideOrientation;
+    }
+
     private TaskFragmentCreationParams(Parcel in) {
-        Rect rect = new Rect();
-        this.mInitialRelativeBounds = rect;
+        this.mInitialRelativeBounds = new Rect();
         this.mOrganizer = TaskFragmentOrganizerToken.CREATOR.createFromParcel(in);
         this.mFragmentToken = in.readStrongBinder();
         this.mOwnerToken = in.readStrongBinder();
-        rect.readFromParcel(in);
+        this.mInitialRelativeBounds.readFromParcel(in);
         this.mWindowingMode = in.readInt();
         this.mPairedPrimaryFragmentToken = in.readStrongBinder();
         this.mPairedActivityToken = in.readStrongBinder();
+        this.mAllowTransitionWhenEmpty = in.readBoolean();
+        this.mOverrideOrientation = in.readInt();
     }
 
     @Override // android.os.Parcelable
@@ -101,27 +104,12 @@ public final class TaskFragmentCreationParams implements Parcelable {
         dest.writeInt(this.mWindowingMode);
         dest.writeStrongBinder(this.mPairedPrimaryFragmentToken);
         dest.writeStrongBinder(this.mPairedActivityToken);
-    }
-
-    /* renamed from: android.window.TaskFragmentCreationParams$1 */
-    /* loaded from: classes4.dex */
-    class AnonymousClass1 implements Parcelable.Creator<TaskFragmentCreationParams> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentCreationParams createFromParcel(Parcel in) {
-            return new TaskFragmentCreationParams(in);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TaskFragmentCreationParams[] newArray(int size) {
-            return new TaskFragmentCreationParams[size];
-        }
+        dest.writeBoolean(this.mAllowTransitionWhenEmpty);
+        dest.writeInt(this.mOverrideOrientation);
     }
 
     public String toString() {
-        return "TaskFragmentCreationParams{ organizer=" + this.mOrganizer + " fragmentToken=" + this.mFragmentToken + " ownerToken=" + this.mOwnerToken + " initialRelativeBounds=" + this.mInitialRelativeBounds + " windowingMode=" + this.mWindowingMode + " pairedFragmentToken=" + this.mPairedPrimaryFragmentToken + " pairedActivityToken=" + this.mPairedActivityToken + "}";
+        return "TaskFragmentCreationParams{ organizer=" + this.mOrganizer + " fragmentToken=" + this.mFragmentToken + " ownerToken=" + this.mOwnerToken + " initialRelativeBounds=" + this.mInitialRelativeBounds + " windowingMode=" + this.mWindowingMode + " pairedFragmentToken=" + this.mPairedPrimaryFragmentToken + " pairedActivityToken=" + this.mPairedActivityToken + " allowTransitionWhenEmpty=" + this.mAllowTransitionWhenEmpty + " overrideOrientation=" + this.mOverrideOrientation + "}";
     }
 
     @Override // android.os.Parcelable
@@ -129,8 +117,8 @@ public final class TaskFragmentCreationParams implements Parcelable {
         return 0;
     }
 
-    /* loaded from: classes4.dex */
     public static final class Builder {
+        private boolean mAllowTransitionWhenEmpty;
         private final IBinder mFragmentToken;
         private final TaskFragmentOrganizerToken mOrganizer;
         private final IBinder mOwnerToken;
@@ -138,6 +126,7 @@ public final class TaskFragmentCreationParams implements Parcelable {
         private IBinder mPairedPrimaryFragmentToken;
         private final Rect mInitialRelativeBounds = new Rect();
         private int mWindowingMode = 0;
+        private int mOverrideOrientation = -1;
 
         public Builder(TaskFragmentOrganizerToken organizer, IBinder fragmentToken, IBinder ownerToken) {
             this.mOrganizer = organizer;
@@ -165,8 +154,18 @@ public final class TaskFragmentCreationParams implements Parcelable {
             return this;
         }
 
+        public Builder setAllowTransitionWhenEmpty(boolean allowTransitionWhenEmpty) {
+            this.mAllowTransitionWhenEmpty = allowTransitionWhenEmpty;
+            return this;
+        }
+
+        public Builder setOverrideOrientation(int overrideOrientation) {
+            this.mOverrideOrientation = overrideOrientation;
+            return this;
+        }
+
         public TaskFragmentCreationParams build() {
-            return new TaskFragmentCreationParams(this.mOrganizer, this.mFragmentToken, this.mOwnerToken, this.mInitialRelativeBounds, this.mWindowingMode, this.mPairedPrimaryFragmentToken, this.mPairedActivityToken);
+            return new TaskFragmentCreationParams(this.mOrganizer, this.mFragmentToken, this.mOwnerToken, this.mInitialRelativeBounds, this.mWindowingMode, this.mPairedPrimaryFragmentToken, this.mPairedActivityToken, this.mAllowTransitionWhenEmpty, this.mOverrideOrientation);
         }
     }
 }

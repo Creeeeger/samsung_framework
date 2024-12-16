@@ -9,18 +9,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /* loaded from: classes.dex */
 public final class AccessibilityGestureEvent implements Parcelable {
     public static final Parcelable.Creator<AccessibilityGestureEvent> CREATOR = new Parcelable.Creator<AccessibilityGestureEvent>() { // from class: android.accessibilityservice.AccessibilityGestureEvent.1
-        AnonymousClass1() {
-        }
-
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityGestureEvent createFromParcel(Parcel parcel) {
             return new AccessibilityGestureEvent(parcel);
         }
 
+        /* JADX WARN: Can't rename method to resolve collision */
         @Override // android.os.Parcelable.Creator
         public AccessibilityGestureEvent[] newArray(int size) {
             return new AccessibilityGestureEvent[size];
@@ -31,20 +32,14 @@ public final class AccessibilityGestureEvent implements Parcelable {
     private List<MotionEvent> mMotionEvents;
 
     @Retention(RetentionPolicy.SOURCE)
-    /* loaded from: classes.dex */
     public @interface GestureId {
     }
 
-    /* synthetic */ AccessibilityGestureEvent(Parcel parcel, AccessibilityGestureEventIA accessibilityGestureEventIA) {
-        this(parcel);
-    }
-
     public AccessibilityGestureEvent(int gestureId, int displayId, List<MotionEvent> motionEvents) {
-        ArrayList arrayList = new ArrayList();
-        this.mMotionEvents = arrayList;
+        this.mMotionEvents = new ArrayList();
         this.mGestureId = gestureId;
         this.mDisplayId = displayId;
-        arrayList.addAll(motionEvents);
+        this.mMotionEvents.addAll(motionEvents);
     }
 
     public AccessibilityGestureEvent(int gestureId, int displayId) {
@@ -69,6 +64,25 @@ public final class AccessibilityGestureEvent implements Parcelable {
 
     public List<MotionEvent> getMotionEvents() {
         return this.mMotionEvents;
+    }
+
+    public AccessibilityGestureEvent copyForAsync() {
+        return new AccessibilityGestureEvent(this.mGestureId, this.mDisplayId, this.mMotionEvents.stream().map(new Function() { // from class: android.accessibilityservice.AccessibilityGestureEvent$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return ((MotionEvent) obj).copy();
+            }
+        }).toList());
+    }
+
+    public void recycle() {
+        this.mMotionEvents.forEach(new Consumer() { // from class: android.accessibilityservice.AccessibilityGestureEvent$$ExternalSyntheticLambda1
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                ((MotionEvent) obj).recycle();
+            }
+        });
+        this.mMotionEvents.clear();
     }
 
     public String toString() {
@@ -204,22 +218,5 @@ public final class AccessibilityGestureEvent implements Parcelable {
         parcel.writeInt(this.mGestureId);
         parcel.writeInt(this.mDisplayId);
         parcel.writeParcelable(new ParceledListSlice(this.mMotionEvents), 0);
-    }
-
-    /* renamed from: android.accessibilityservice.AccessibilityGestureEvent$1 */
-    /* loaded from: classes.dex */
-    class AnonymousClass1 implements Parcelable.Creator<AccessibilityGestureEvent> {
-        AnonymousClass1() {
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityGestureEvent createFromParcel(Parcel parcel) {
-            return new AccessibilityGestureEvent(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public AccessibilityGestureEvent[] newArray(int size) {
-            return new AccessibilityGestureEvent[size];
-        }
     }
 }

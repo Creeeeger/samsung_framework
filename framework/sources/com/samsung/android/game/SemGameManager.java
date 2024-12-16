@@ -9,7 +9,7 @@ import com.samsung.android.game.IGameManagerService;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes5.dex */
+/* loaded from: classes6.dex */
 public class SemGameManager {
     private static final int FPS_PARAM_MAX = 60;
     private static final int FPS_PARAM_MIN = 1;
@@ -66,12 +66,11 @@ public class SemGameManager {
     }
 
     public boolean isForegroundGame() throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            int tempRet = iGameManagerService.identifyForegroundApp();
+            int tempRet = this.mService.identifyForegroundApp();
             boolean ret = tempRet == 1;
             GmsLog.d(TAG, "isForegroundGame(), ret=" + ret);
             return ret;
@@ -81,12 +80,11 @@ public class SemGameManager {
     }
 
     public String getForegroundApp() throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            String ret = iGameManagerService.getForegroundApp();
+            String ret = this.mService.getForegroundApp();
             GmsLog.d(TAG, "getForegroundApp(), ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -95,12 +93,11 @@ public class SemGameManager {
     }
 
     public List<String> getGameList() throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            List<String> ret = iGameManagerService.getGameList();
+            List<String> ret = this.mService.getGameList();
             GmsLog.d(TAG, "getGameList(), ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -108,37 +105,23 @@ public class SemGameManager {
         }
     }
 
-    public boolean init(int mode, Map pkgMap) throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
-            throw new IllegalStateException("gamemanager system service is not available");
-        }
-        try {
-            return iGameManagerService.initGameManager(mode, pkgMap);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("failed to call gamemanager system service");
-        }
-    }
-
     public void syncGameList(Map pkgMap) throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            iGameManagerService.syncGameList(pkgMap);
+            this.mService.syncGameList(pkgMap);
         } catch (RemoteException e) {
             throw new IllegalStateException("failed to call gamemanager system service");
         }
     }
 
     public String getVersion() throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            String ret = iGameManagerService.getVersion();
+            String ret = this.mService.getVersion();
             GmsLog.d(TAG, "getVersion(), ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -147,12 +130,11 @@ public class SemGameManager {
     }
 
     public String requestWithJson(String command, String jsonParam) throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            String ret = iGameManagerService.requestWithJson(command, jsonParam);
+            String ret = this.mService.requestWithJson(command, jsonParam);
             GmsLog.d(TAG, "requestWithJson(), command=" + command + ", jsonParam=" + jsonParam + ", ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -161,12 +143,11 @@ public class SemGameManager {
     }
 
     public String getTopActivityName() throws IllegalStateException {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            String ret = iGameManagerService.getTopActivityName();
+            String ret = this.mService.getTopActivityName();
             GmsLog.d(TAG, "getTopActivityName(), ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -238,12 +219,11 @@ public class SemGameManager {
     }
 
     public boolean setPackageConfigurations(List<SemPackageConfiguration> packageConfigurations) {
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            boolean ret = iGameManagerService.setPackageConfigurations(packageConfigurations);
+            boolean ret = this.mService.setPackageConfigurations(packageConfigurations);
             GmsLog.d(TAG, "setPackageConfigurations(), packageConfigurations=" + packageConfigurations + ", ret=" + ret);
             return ret;
         } catch (RemoteException e) {
@@ -256,12 +236,11 @@ public class SemGameManager {
             GmsLog.e(TAG, "setPerformanceMode(), unexpected param. tunePerformanceMode: " + tunePerformanceMode + ", callerPackageName: " + callerPackageName);
             return false;
         }
-        IGameManagerService iGameManagerService = this.mService;
-        if (iGameManagerService == null) {
+        if (this.mService == null) {
             throw new IllegalStateException("gamemanager system service is not available");
         }
         try {
-            boolean ret = iGameManagerService.setPerformanceMode(tunePerformanceMode, callerPackageName);
+            boolean ret = this.mService.setPerformanceMode(tunePerformanceMode, callerPackageName);
             GmsLog.d(TAG, "setPerformanceMode(), tunePerformanceMode=" + tunePerformanceMode + ", callerPackageName=" + callerPackageName + ", ret=" + ret);
             return ret;
         } catch (RemoteException e) {

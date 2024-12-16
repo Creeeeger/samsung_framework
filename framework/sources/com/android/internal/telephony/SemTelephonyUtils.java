@@ -1,34 +1,20 @@
 package com.android.internal.telephony;
 
 import android.inputmethodservice.navigationbar.NavigationBarInflaterView;
-import android.os.Bundle;
 import android.os.SystemProperties;
 import android.telephony.CallState;
 import android.telephony.PreciseCallState;
+import android.telephony.RadioAccessFamily;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import com.android.internal.content.NativeLibraryHelper;
 import com.android.internal.telephony.util.ArrayUtils;
 import java.util.List;
+import java.util.Locale;
 
 /* loaded from: classes5.dex */
 public class SemTelephonyUtils {
-    public static final int ASR_CARRIER_ID = 1433;
-    public static final int ATT_CARRIER_ID = 1187;
-    public static final int AU_CARRIER_ID = 1581;
-    public static final int CCT_CARRIER_ID = 2032;
-    public static final int CELLCOM_CARRIER_ID = 1802;
-    public static final int CHA_CARRIER_ID = 2126;
-    public static final int CRICKET_CARRIER_ID = 1779;
-    public static final int CSPIRE_CARRIER_ID = 1836;
-    public static final int DSG_CARRIER_ID = 2518;
-    private static final String[] FACTORY_SIM_IMSI;
-    public static final int FKR_CARRIER_ID = 2146;
-    public static final int JIO_CARRIER_ID = 2018;
     private static final String[] KOR_DOMESTIC_PROP_FOR_DS;
-    private static final String LOG_TAG = "SemTelephonyUtils";
-    public static final int LYCAMOBILE_CARRIER_ID = 2067;
-    public static final int MTR_CARRIER_ID = 1943;
     private static final int NTCTYPE_COUNTRY = 3;
     private static final int NTCTYPE_LENGTH = 15;
     private static final int NTCTYPE_MAINOPERATOR = 0;
@@ -36,15 +22,7 @@ public class SemTelephonyUtils {
     private static final int NTCTYPE_OPERATORTYPE = 2;
     private static final int NTCTYPE_SUBOPERATOR = 1;
     public static final String ONEUI_VERSION;
-    public static final int POVO_CARRIER_ID = 2514;
-    public static final int RAKUTEN_MNO_CARRIER_ID = 2429;
     public static final boolean SHIP_BUILD;
-    public static final int TMO_CARRIER_ID = 1;
-    public static final int UNION_CARRIER_ID = 1781;
-    public static final int UQM_CARRIER_ID = 2110;
-    public static final int USC_CARRIER_ID = 1952;
-    public static final int VIAERO_CARRIER_ID = 1193;
-    public static final int VZW_CARRIER_ID = 1839;
 
     static {
         boolean z = true;
@@ -53,7 +31,6 @@ public class SemTelephonyUtils {
         }
         SHIP_BUILD = z;
         ONEUI_VERSION = SystemProperties.get("ro.build.version.oneui", "");
-        FACTORY_SIM_IMSI = new String[]{"001010123456789", "999999999999999", "520360110000010", "512010123456789"};
         KOR_DOMESTIC_PROP_FOR_DS = new String[]{"ril.simtype"};
     }
 
@@ -123,23 +100,8 @@ public class SemTelephonyUtils {
         return isGlobalModel(networkTypeCapability) && isCountrySpecific(networkTypeCapability, "CHN", "HKG", "TPE");
     }
 
-    public static boolean isFactorySim(String imsi) {
-        if (!TextUtils.isEmpty(imsi) && ArrayUtils.contains(FACTORY_SIM_IMSI, imsi)) {
-            return true;
-        }
-        return false;
-    }
-
     public static Object maskPii(Object pii) {
         return SHIP_BUILD ? "<MASKED>" : pii;
-    }
-
-    public static String maskPiiFromVoiceMailNumber(String voiceMailNumber) {
-        if (!SHIP_BUILD || TextUtils.isEmpty(voiceMailNumber) || "*86".equals(voiceMailNumber)) {
-            return voiceMailNumber;
-        }
-        String number = "length " + voiceMailNumber.length();
-        return number;
     }
 
     public static String maskPiiFromCellIdentity(int pii) {
@@ -174,101 +136,20 @@ public class SemTelephonyUtils {
         return num;
     }
 
-    public static boolean isSilentRedial(Bundle intentExtras) {
-        if (intentExtras != null) {
-            String callDomain = intentExtras.getString(SemRILConstants.EXTRA_LATEST_CALL_DOMAIN);
-            if ("PS".equals(callDomain) || "CS".equals(callDomain)) {
-                return true;
-            }
-            return false;
-        }
-        return false;
+    public static String toHexString(int i) {
+        return "0x" + Integer.toHexString(i).toUpperCase(Locale.ROOT);
     }
 
-    public static boolean isSilentRedialFromPs(Bundle intentExtras) {
-        if (intentExtras != null && "PS".equals(intentExtras.getString(SemRILConstants.EXTRA_LATEST_CALL_DOMAIN))) {
-            return true;
-        }
-        return false;
+    public static String toHexString(Long i) {
+        return "0x" + Long.toHexString(i.longValue()).toUpperCase(Locale.ROOT);
     }
 
-    public static boolean isSilentRedialFromCs(Bundle intentExtras) {
-        if (intentExtras != null && "CS".equals(intentExtras.getString(SemRILConstants.EXTRA_LATEST_CALL_DOMAIN))) {
-            return true;
-        }
-        return false;
+    public static String toReadableNetworkTypeString(int networkTypeBitmask) {
+        return toHexString(networkTypeBitmask) + NavigationBarInflaterView.KEY_CODE_START + RadioAccessFamily.getNetworkTypeFromRaf(networkTypeBitmask) + NavigationBarInflaterView.KEY_CODE_END;
     }
 
-    public static String emergencySearchResultToString(int emergencySearchResult) {
-        switch (emergencySearchResult) {
-            case 1:
-                return "CS(1)";
-            case 2:
-                return "LTE(2)";
-            case 3:
-                return "IWLAN(3)";
-            case 4:
-                return "NONE(4)";
-            case 5:
-                return "IGNORE(5)";
-            case 6:
-                return "NR(6)";
-            default:
-                return "UNKNOWN(" + emergencySearchResult + NavigationBarInflaterView.KEY_CODE_END;
-        }
-    }
-
-    public static String emergencyControlCommandToString(int emergencyControlCommand) {
-        switch (emergencyControlCommand) {
-            case 0:
-                return "DIALED(0)";
-            case 1:
-                return "CONNECTED(1)";
-            case 2:
-                return "FINISHED(2)";
-            case 3:
-                return "FINISHED_WITH_ECM(3)";
-            case 4:
-                return "FAILED(4)";
-            default:
-                if (emergencyControlCommand >= 200) {
-                    return "FAILED(" + emergencyControlCommand + NavigationBarInflaterView.KEY_CODE_END;
-                }
-                return "UNKNOWN(" + emergencyControlCommand + NavigationBarInflaterView.KEY_CODE_END;
-        }
-    }
-
-    public static String internalAttributeToString(int internalAttribute) {
-        StringBuilder sb = new StringBuilder(NavigationBarInflaterView.SIZE_MOD_START);
-        if ((internalAttribute & 1) == 1) {
-            sb.append("ON_EMERGENCY_SEARCH ");
-        }
-        if ((internalAttribute & 2) == 2) {
-            sb.append("SKIP_EMERGENCY_SEARCH ");
-        }
-        if ((internalAttribute & 8) == 8) {
-            sb.append("START_DURING_VOLTE_ENABLED ");
-        }
-        if ((internalAttribute & 16) == 16) {
-            sb.append("TRIGGER_E911_START_DAN ");
-        }
-        if ((internalAttribute & 32) == 32) {
-            sb.append("PREPARE_CS_ONLY_DAN ");
-        }
-        if ((internalAttribute & 64) == 64) {
-            sb.append("MIGRATE_FROM_IMSPHONE ");
-        }
-        if ((internalAttribute & 128) == 128) {
-            sb.append("USE_ASSISTED_DIALING ");
-        }
-        if ((internalAttribute & 256) == 256) {
-            sb.append("FALLBACK ");
-        }
-        if ((internalAttribute & 512) == 512) {
-            sb.append("IS_MULTIPARTY ");
-        }
-        sb.append(NavigationBarInflaterView.SIZE_MOD_END);
-        return sb.toString();
+    public static String toReadableNetworkTypeString(long networkTypeBitmask) {
+        return toHexString(Long.valueOf(networkTypeBitmask)) + NavigationBarInflaterView.KEY_CODE_START + RadioAccessFamily.getNetworkTypeFromRaf((int) networkTypeBitmask) + NavigationBarInflaterView.KEY_CODE_END;
     }
 
     public static String preciseCallStateToString(PreciseCallState preciseCallState) {
@@ -293,7 +174,7 @@ public class SemTelephonyUtils {
     }
 
     public static String callStateListToString(List<CallState> callStateList) {
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder(128).append("{");
         for (CallState callState : callStateList) {
             int classification = callState.getCallClassification();
             if (classification == 0) {
